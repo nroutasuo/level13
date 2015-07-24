@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+<head>	
+    
+	<!--  
+	Level 13
+	
+	A text-based science fiction adventure by Noora Routasuo.
+	Based on the Ash.js engine and inspired by several incremental/idle games.
+	
+	See changelog.json for version informatopn.
+	-->
+	
+    <meta charset="utf-8" />
+    <title>Level 13</title>
+	<meta itemprop="description" name="description" property="og:description" content="A text-based science fiction adventure game.">
+	<meta itemprop="image" property="og:image" content="img/favicon.png" />
+	<meta itemprop="name" property="og:title" content="Level 13" />
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<link rel="shortcut icon" href="img/favicon.ico" />
+	<link rel="image_src" href="img/favicon.png" />
+	<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="css/gridism.css" />
+	<link rel="stylesheet" type="text/css" href="css/main.css" />
+	<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
+	<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
+</head>
+
+<body class="wrap wider" style="height:100%">
+	
+	<div class="sticky-footer-wrapper">
+		<div class="grid" id="grid-main">	
+			<div class="unit one-quarter" style="visibility:hidden; padding:1px; height:1px"></div><!-- filler for log -->
+			<div class="unit three-quarters" id="unit-main">
+			
+				<div class="grid" id="grid-main-header">
+					<div id="container-statsbar" class="unit whole">
+						<div id="statsbar-self" class="statsbar">
+							<div id="stats-vision" class="stats-indicator">
+								<span class="label">Vision</span>
+								<span class="value">0</span>
+								<span class="change"></span>
+							</div>
+							<div id="stats-stamina" class="stats-indicator">
+								<span class="label">Stamina</span>
+								<span class="value">0</span>
+								<span class="change"></span>
+							</div>
+							<div id="stats-reputation" class="stats-indicator">
+								<span class="label">Reputation</span>
+								<span class="value">0</span>
+								<span class="change"></span>
+							</div>
+							<div id="stats-rumours" class="stats-indicator">
+								<span class="label">Rumours</span>
+								<span class="value">0</span>
+								<span class="change"></span>
+							</div>
+							<div id="stats-evidence" class="stats-indicator">
+								<span class="label">Evidence</span>
+								<span class="value">0</span>
+								<span class="change"></span>
+							</div>
+						</div>
+
+						<div id="statsbar-resources" class="statsbar">	
+						</div>		
+						<div id="resources-storage" class="stats-indicator">
+							<span class="label">Storage</span>
+							<span class="value">0</span>
+						</div>
+						<div id="statsbar-items" class="statsbar">
+							<ul class="itemlist" id="list-items-perks"></ul>
+							<ul class="itemlist" id="list-items-items"></ul>
+						</div>
+						<div id="statsbar-deity" class="statsbar">
+							<button id="btn-deity-rename" class="context btn-meta">Rename</button>
+							Deity: 
+							<span id="deity-name">Name</span>
+							<span id="deity-favour" class="stats-indicator">
+								<span class="label">Favour</span><span class="value">0</span>
+							</span>
+						</div>
+						
+					</div>
+				</div><!-- grid for the whole stats bar -->			
+		
+				<div class="grid grid-content" id="grid-switch">
+					<div id="switch" class="unit whole">
+						<ul class="tabs" id="switch-tabs">
+							<li id="switch-out">Outside</li>
+							<li id="switch-bag">Bag</li>
+							<li id="switch-upgrades">Upgrades</li>
+							<li id="switch-in">Camp</li>
+							<li id="switch-world">Tribe</li>
+						</ul>
+					</div>
+				</div><!-- grid for the switch -->
+				
+				<div class="grid grid-content" id="grid-switch-content">
+					<div class="grid" id="grid-tab-header">
+						<div class="unit whole" id="tab-header">
+						<button id="btn-header-rename" class="context btn-meta" style="display:none">Rename</button>
+						<h2>&nbsp;</h2>
+						</div>
+					</div><!-- grid for the header" -->
+			
+					<!-- vis for level -->
+					<div class="grid" id="container-tab-vis-out">
+						<div class="unit whole" id="tab-vis-out">
+							<table class="vis"><tr></tr></table>
+						</div>	
+					</div>
+			
+					<!-- vis for camp -->
+					<div class="grid" id="container-tab-vis-in" style="display:none">
+						<div class="unit whole" id="tab-vis-in">
+							<table class="vis"><tr></tr></table>
+						</div>
+					</div>
+					
+					<!-- camp basic stuff: buildings & population -->
+					<div class="grid" id="container-tab-two-in" style="display:none">
+						<div class="unit golden-large">
+							<h3>Buildings</h3>
+							<div id="in-improvements" class="actionbox">
+								<table>
+								<tr id="in-improvements-house">
+									<td><button class="action action-build action-location" action="build_in_house">Hut</button></td>
+									<td class="list-amount">0</td>
+								</tr><tr id="in-improvements-house2">
+									<td><button class="action action-build action-location" action="build_in_house2">Tower block</button></td>
+									<td class="list-amount">0</td>
+								</tr><tr id="in-improvements-storage">
+									<td><button class="action action-build action-location" action="build_in_storage">Storage</button></td>
+									<td class="list-amount">0</td>
+								</tr><tr id="in-improvements-darkfarm">
+									<td><button class="action action-build action-location" action="build_in_darkfarm">Snail farm</button></td>
+									<td class="list-amount">0</td>
+								</tr><tr id="in-improvements-apothecary">
+									<td><button class="action action-build action-location" action="build_in_apothecary">Apothecary shop</button></td>
+									<td class="list-amount">0</td>
+								</tr><tr id="in-improvements-smithy">
+									<td><button class="action action-build action-location" action="build_in_smithy">Smithy</button></td>
+									<td class="list-amount">0</td>
+								</tr><tr id="in-improvements-cementmill">
+									<td><button class="action action-build action-location" action="build_in_cementmill">Cement mill</button></td>
+									<td class="list-amount">0</td>
+								</tr><tr id="in-improvements-library">
+									<td><button class="action action-build action-location" action="build_in_library">Library</button></td>
+									<td class="list-amount">0</td>
+								</tr><tr id="in-improvements-shrine">
+									<td><button class="action action-build action-location" action="build_in_shrine">Shrine</button></td>
+									<td class="list-amount">0</td>
+									<td><button class="action action-use action-location">Worship</button></td>
+								</tr><tr id="in-improvements-barracks">
+									<td><button class="action action-build action-location" action="build_in_barracks">Barracks</button></td>
+									<td class="list-amount">0</td>
+								</tr><tr id="in-improvements-fortification">
+									<td><button class="action action-build action-location" action="build_in_fortification">Fortifications</button></td>
+									<td class="list-amount">0</td>
+								</tr><tr id="in-improvements-campfire">
+									<td><button class="action action-build action-location" action="build_in_campfire">Campfire</button></td>
+									<td class="list-amount">0</td>
+									<td><button class="action action-use action-location" action="use_in_campfire">Sit down</button></td>
+								</tr><tr id="in-improvements-lights">
+									<td><button class="action action-build action-location" action="build_in_lights">Lights</button></td>
+									<td class="list-amount">0</td>
+								</tr><tr id="in-improvements-ceiling">
+									<td><button class="action action-build action-location" action="build_in_ceiling">Tent cover</button></td>
+									<td class="list-amount">0</td>
+								</tr><tr id="in-improvements-hospital">
+									<td><button class="action action-build action-location" action="build_in_hospital">Hospital</button></td>
+									<td class="list-amount">0</td>
+									<td><button class="action action-use action-location" action="use_in_hospital">Treatment</button></td>
+								</tr><tr id="in-improvements-market">
+									<td><button class="action action-build action-location" action="build_in_market">Market</button></td>
+									<td class="list-amount">0</td>
+								</tr><tr id="in-improvements-inn">
+									<td><button class="action action-build action-location" action="build_in_inn">Inn</button></td>
+									<td class="list-amount">0</td>
+									<td><button class="action action-use action-location" action="use_in_inn">Recruit</button></td>
+								</tr><tr id="in-improvements-radio">
+									<td><button class="action action-build action-location" action="build_in_radio">Radio tower</button></td>
+									<td class="list-amount">0</td>
+								</tr><tr id="in-improvements-trading">
+									<td><button class="action action-build action-location" action="build_in_tradingPost">Trading post</button></td>
+									<td class="list-amount">0</td>
+								</tr><tr id="in-improvements-research">
+									<td><button class="action action-build action-location" action="build_in_researchcenter">Research center</button></td>
+									<td class="list-amount">0</td>
+									<td><button class="action action-use action-location">Select</button></td>
+								</tr>
+								</table>
+							</div>
+							<h3 id="header-in-improvements-level">Level projects</h3>
+							<div id="in-improvements-level" class="actionbox">
+								<table>								
+								</table>
+							</div>
+						</div>
+						<div class="unit golden-small">
+							<div id="in-population" class="infobox">
+								<h3>Population</h3>
+								<p style="display:none">free / diseased</p>
+								<table class="full-width" id="in-assign-workers" style="display:none">
+									<tr id="in-assign-water">
+										<td><div class="info-callout-target info-callout-target-small" description="water +0.5/s">Water collector</div></td>
+										<td><div class="stepper" id="stepper-water"></div></td>
+									</tr><tr id="in-assign-trapper">
+										<td><div class="info-callout-target info-callout-target-small" description="food +0.5/s">Trapper</div></td>
+										<td><div class="stepper" id="stepper-trapper"></div></td>
+									</tr><tr id="in-assign-scavenger">
+										<td><div class="info-callout-target info-callout-target-small" description="metal +0.1/s">Scavenger</div></td>
+										<td><div class="stepper" id="stepper-scavenger"></div></td>
+									</tr><tr id="in-assign-weaver">
+										<td><div class="info-callout-target info-callout-target-small" description="rope +0.1/s">Rope-maker</div></td>
+										<td><div class="stepper" id="stepper-rope"></div></td>
+									</tr><tr id="in-assign-chemist">
+										<td><div class="info-callout-target info-callout-target-small" description="fuel +0.1/s">Chemist</div></td>
+										<td><div class="stepper" id="stepper-fuel"></div></td>
+									</tr><tr id="in-assign-apothecary">
+										<td><div class="info-callout-target info-callout-target-small" description="medicine +0.1/s">Apothecary</div></td>
+										<td><div class="stepper" id="stepper-medicine"></div></td>
+									</tr><tr id="in-assign-concrete">
+										<td><div class="info-callout-target info-callout-target-small" description="concrete +0.2/s">Concrete mixer</div></td>
+										<td><div class="stepper" id="stepper-concrete"></div></td>
+									</tr><tr id="in-assign-smith">
+										<td><div class="info-callout-target info-callout-target-small" description="tools +0.2/s">Toolsmith</div></td>
+										<td><div class="stepper" id="stepper-smith"></div></td>
+									</tr><tr id="in-assign-soldier">
+										<td><div class="info-callout-target info-callout-target-small" description="defences +1">Soldier</div></td>
+										<td><div class="stepper" id="stepper-soldier"></div></td>
+									</tr>
+								</table>
+							</div>
+							<div id="in-occurrences" class="infobox">
+								<h3>Events</h3>
+								<div id="in-occurrences-trader">
+									<p>Trader!</p>
+								</div>
+								<div id="in-occurrences-raid">
+									<p>Raid!</p>
+								</div>
+								<p class="p-meta" id="in-occurrences-empty">All is quiet in the camp.</p>
+							</div>
+							<div id="in-demographics" class="infobox">
+								<h3>Stats</h3>
+								<div class="infobox" id="in-demographics-raid">
+									<p id="in-demographics-raid-danger">Danger from raids: <span class="value"></span></p>
+									<p id="in-demographics-raid-defence">Camp defences: <span class="value"></span></p>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- "embark" page when leaving camp -->
+					<div class="grid" id="container-tab-enter-out" style="display:none">
+						<div class="unit whole">
+							<div class="subheader"><h3>Supplies</h3></div>
+							<p>Make sure you pack enough supplies before you leave.</p>
+							<table id="embark-resources">
+							</table>
+							<div class="stats-indicator" id="embark-bag">
+								<span class="label">Bag space</span>
+								<span class="value">0</span>
+							</div>
+							<p class="p-meta">Location info?</p>
+							<button class="action" id="in-action-leave" action="leave_camp">Go</button><br>
+							<button>Clear</button>
+						</div>
+					</div>
+					
+					<!-- level basic stuff: desc, improvements, actions -->
+					<div class="grid" id="container-tab-two-out" style="display:none">
+						<div class="unit golden-large">
+							<div class="unit whole">
+							<div class="subheader"><h3>Location</h3></div>
+							<div id="out-desc" class="infobox"></div>
+							</div>
+							<div class="subheader" id="header-out-improvements">
+								<h3>Build</h3>
+							</div>
+							<div id="out-improvements" class="actionbox">
+								<table>
+								<tr id="out-improvements-collector-water">
+									<td><button class="action action-build action-location" action="build_out_collector_water" id="out-action-build-bucket">Bucket</button></td>
+									<td class="list-amount">0</td>
+									<td><button class="action action-use action-location" action="use_out_collector_water" id="out-action-use-bucket">Collect</button></td>
+									<td class="list-storage"></td>
+								</tr><tr id="out-improvements-collector-food">
+									<td><button class="action action-build action-location" action="build_out_collector_food" id="out-action-build-trap">Trap</button></td>
+									<td class="list-amount">0</td>
+									<td><button class="action action-use action-location" action="use_out_collector_food" id="out-action-use-trap">Collect</button></td>
+									<td class="list-storage"></td>
+								</tr><tr id="out-improvements-camp">
+									<td><button class="action action-build action-location" action="build_out_camp" >Camp</button></td>
+									<td class="list-amount">0</td>
+								</tr>
+								</table>
+								<table>
+								<tr id="out-improvements-passage-up-hole">
+									<td><button class="action action-build action-location" action="build_out_passage_up_hole">Passage Up (H)</button></td>
+									<td class="list-amount">0</td>
+									<td class="list-info"></td>
+								</tr><tr id="out-improvements-passage-up-stairs">
+									<td><button class="action action-build action-location" action="build_out_passage_up_stairs">Passage Up (S)</button></td>
+									<td class="list-amount">0</td>
+									<td class="list-info"></td>
+								</tr><tr id="out-improvements-passage-up-elevator">
+									<td><button class="action action-build action-location" action="build_out_passage_up_elevator">Passage Up (E)</button></td>
+									<td class="list-amount">0</td>
+									<td class="list-info"></td>
+								</tr><tr id="out-improvements-passage-down-hole">
+									<td><button class="action action-build action-location" action="build_out_passage_down_hole">Passage Down (H)</button></td>
+									<td class="list-amount">0</td>
+									<td class="list-info"></td>
+								</tr><tr id="out-improvements-passage-down-stairs">
+									<td><button class="action action-build action-location" action="build_out_passage_down_stairs">Passage Down (S)</button></td>
+									<td class="list-amount">0</td>
+									<td class="list-info"></td>
+								</tr><tr id="out-improvements-passage-down-elevator">
+									<td><button class="action action-build action-location" action="build_out_passage_down_elevator">Passage Down (E)</button></td>
+									<td class="list-amount">0</td>
+									<td class="list-info"></td>
+								</tr><tr id="out-improvements-bridge">
+									<td><button class="action action-build action-location" action="build_out_bridge">Bridge</button></td>
+									<td class="list-amount">0</td>
+								</tr>
+								</table>
+							</div>
+						</div>
+						<div class="unit golden-small">
+							<div class="subheader">
+								<h3>Do</h3>
+							</div>
+							<div id="out-actions" class="actionbox">
+								<table>
+								<tr>
+								<td><button class="action action-location" id="out-action-sca" action="scavenge">Scavenge</button></td>
+								</tr><tr>
+								<td><button class="action action-location" id="out-action-scout" action="scout">Scout</button></td>
+								</tr><tr>
+								<td><button class="action action-location" id="out-action-fight" action="fightcheck">Fight</button></td>
+								</tr><tr>
+								<td><button class="action action-location" id="out-action-investigate">Investigate</button></td>
+								</tr><tr>
+								<td><button class="action btn-icon action-move" id="out-action-move-up" action="move_level_up"><span>Move up</span></button></td>
+								</tr><tr>
+								<td><button class="action btn-icon action-move" id="out-action-move-left" action="move_sector_left"><span>Move left</span></button></td>
+								<td><button class="action btn-icon action-move" id="out-action-move-right" action="move_sector_right"><span>Move right</span></button></td>
+								</tr><tr>
+								<td><button class="action btn-icon action-move" id="out-action-move-down" action="move_level_down"><span>Move down</span></button></td>
+								</tr><tr>
+								<td><button class="action btn-icon action-move" id="out-action-move-camp" action="move_camp_level"><span>Back to camp</span></button></td>
+								</tr>
+								</table>
+							</div>
+							<div id="fight-popup" class="popup fill-on-mobiles" style="display:none">
+								<h3>Fight</h3>
+								<p id="fight-popup-enemy-info">Enemy name & strength</p>
+								<p id="fight-popup-control-info">(#/# enemies needed for sector control)</p>
+								<div id="fight-popup-bars">
+									<div id="fight-bar-enemy" class="progress-wrap progress">
+										<div class="progress-bar progress"></div>
+									</div>
+									<div id="fight-bar-self" class="progress-wrap progress">
+										<div class="progress-bar progress"></div>
+									</div>
+								</div>
+								<p id="fight-popup-self-info">Own strength</p>
+								<div id="fight-popup-results" class="infobox infobox-temporary">
+									<span id="fight-results-win-header" class="listheader">You gained:</span>
+									<ul id="fight-results-win-items" class="resultlist"></ul>
+									<span id="fight-results-lose-header" class="listheader">You lost:</span>
+									<ul id="fight-results-lose-items" class="resultlist"><li>Followers</li></ul>
+									<p id="fight-results-lose-injury" class="warning">You got injured.</p>
+								</div>
+								<div class="buttonbox">
+									<button id="out-action-fight-cancel">Flee</button>
+									<button id="out-action-fight-confirm" class="action" action="fight">Fight</button>
+									<button id="out-action-fight-close">Close</button>
+									<button id="out-action-fight-next" action="fightcheck">Continue</button>
+								</div>
+							</div>
+						</div>
+					</div>
+			
+					<!-- bag main div: item list & crafting -->
+					<div class="grid" id="container-tab-two-bag" style="display:none">
+						<div class="unit golden-large">
+							<div class="subheader" id="header-bag-items"><h3>Items in bag</h3></div>
+							<div class="infobox">
+								<ul id="bag-items" class="itemlist"></ul>
+								<p id="items-empty" class="p-meta">You don't have any items yet</p>
+							</div>
+							<div class="subheader" id="header-followers"><h3>Followers</h3></div>
+							<div class="infobox">
+								<ul id="list-followers" class="itemlist"></ul>
+								<p id="followers-empty" class="p-meta">You don't have any followers</p>
+							</div>
+							<p id="item-desc-help" class="p-meta">Hover for details</p>
+							<div class="infobox infobox-temporary" id="item-desc-div" style="display:none">
+								<h4>Item name</h4>
+								<p id="item-desc-bonus">Bonus: +2</p>
+								<p id="item-desc-equipped">Equipped</p>
+								<p id="item-desc-desc">Item description</p>
+								<button class="action" action="equip_item">Equip</button><br/>
+								<button class="action" action="discard_item">Discard</button><button class="action" action="discard_item_all">Discard All</button>
+							</div>	
+						</div>
+						<div class="unit golden-small">
+							<div class="subheader"><h3>Craft</h3></div>
+							<div id="self-craft" class="actionbox">
+								<table><tr id="self-craft-light">
+									<td><button class="action action-build" action="craft_light">Light</button></td>
+								</tr><tr id="self-craft-weapon">
+									<td><button class="action action-build" action="craft_weapon">Weapon</button></td>
+								</tr>
+								</table>
+							</div>
+							<div class="subheader" id="subheader-self-stats"><h3>Status</h3></div>
+							<div class="infobox" id="self-fight">
+								<p><div class="info-callout-target"><span id="self-status-fight-att"></span></div></p>
+								<p><div class="info-callout-target"><span id="self-status-fight-def"></span></div></p>
+								<p><div class="info-callout-target"><span id="self-status-fight-followers"></span></div></p>
+							</div>
+							<div class="infobox" id="self-misc">
+								<p><div class="info-callout-target"><span id="self-status-efficiency-scavenge"></span></div></p>
+							</div>
+						</div>
+					</div>
+					
+					<div class="grid" id="container-tab-two-upgrades" style="display: none;">
+						<div class="unit whole">						
+							<div id="world-upgrades" class="actionbox">
+								<div class="subheader"><h3>Available upgrades</h3></div>
+								<table id="upgrades-list">
+								</table>
+							</div>
+							<div id="world-upgrades-info" class="infobox">
+								<div class="subheader"><h3>Unlocked upgrades</h3></div>
+								<div class="collapsible-container">
+								<p id="world-upgrades-count" class="collapsible-header">Bought upgrades: 0</p>
+								<div class="collapsible-content">
+									<table id="unlocked-upgrades-list">
+									</table>
+								</div>
+								</div>
+							</div>
+						</div>
+					</div>
+			
+					<div class="grid" id="container-tab-two-world" style="display:none">
+						<div class="unit whole">
+							<div class="infobox">
+								<div class="subheader"><h3>Camp overview</h3></div>
+								<table id="camp-overview">
+									<tr id="camp-overview-header">
+										<th class="th-text" colspan="2">Camp</th>
+										<th class="th-number">Pop</th> 
+										<th class="th-text">Buildings</th>
+										<th class="th-number">Storage</th>
+										<th class="th-text">Production</th>
+										<th class="th-text"></th>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+			</div><!-- main switch content grid -->
+			
+			</div><!-- main unit: the whole 3/4 right of the log -->
+			<div id="log" class="unit one-quarter limit-height">
+				<div id="log-overlay" class="lvl13-fade-down"></div>
+				<ul></ul>
+			</div>
+			
+		</div><!-- main grid -->
+	
+		<div class="grid sticky-footer-push"></div>		
+		
+	</div><!-- sticky footer wrap -->
+	
+	<div class="grid sticky-footer">
+		<div class="unit one-quarter" style="visibility:hidden"></div>
+		<div class="unit three-quarters" id="footer">
+			<span id="game-version" class="p-meta"></span>
+			<span id="game-msg" class="p-meta"></span>
+			<ul id="game-options">
+				<li><button class="btn-meta" id="btn-more">More</button>
+				<li><button class="btn-meta" id="btn-restart">Restart</button></li>
+				<li><button class="btn-meta" id="btn-save">Save</button></li>
+			</ul>
+			<ul id="game-options-extended" class="infobox-temporary" style="display:none">
+				<li><button class="btn-meta" id="btn-info">Info</button></li>
+				<li><button class="btn-meta" id="btn-export">Export save</button></li>
+				<li><button class="btn-meta" id="btn-import">Import save</button></li>
+			</ul>
+		</div>
+	</div><!-- sticky footer -->
+	
+	<div id="page-overlay" class="page-overlay"></div>
+
+	<!-- RequireJS -->
+	<script data-main="src/config" src="lib/vendor/require.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+define(['ash'], function (Ash) {
+    
+    var EnemyVO = Ash.Class.extend({
+	
+		name: "",
+		type: "",
+		att: 0,
+		def: 0,
+		hp: 100,
+		rarity: 0,
+		
+		nouns: [],
+		activeV: [],
+		defeatedV: [],
+		
+		attRandomFactor: 1,
+	
+        constructor: function (name, type, nouns, activeV, defeatedV, att, def, rarity) {
+			this.name = name;
+			this.type = type;
+			this.att = Math.round(att);
+			this.def = Math.round(def);
+			this.hp = 100;
+			this.rarity = rarity ? Math.min(Math.max(Math.round(rarity), 0), 100) : 0;
+			
+			this.nouns = nouns;
+			this.activeV = activeV;
+			this.defeatedV = defeatedV;
+			
+			this.attRandomFactor = Math.random() - 0.5;
+        },
+	
+		toString: function () {
+			return this.name;
+		},
+		
+		clone: function () {
+			return new EnemyVO(this.name, this.type, this.nouns, this.activeV, this.defeatedV, this.att, this.def);
+		}
+    });
+
+    return EnemyVO;
+});

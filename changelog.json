@@ -1,0 +1,34 @@
+{
+    "versions": [
+        {
+            "version": "0.1.1",
+            "phase": "alpha",
+            "final": false,
+            "changes": [
+                {
+                    "type": "UI",
+                    "summary": "Black skin for dark levels/sectors"
+                }
+            ]
+        },
+        {
+            "version": "0.1.0",
+            "phase": "alpha",
+            "final": true,
+            "changes": [
+                {
+                    "type": "GB",
+                    "summary": "Initial building list"
+                },
+                {
+                    "type": "GD",
+                    "summary": "Basic camp game play"
+                },
+                {
+                    "type": "GD",
+                    "summary": "Basic exploration"
+                }
+            ]
+        }
+    ]
+}

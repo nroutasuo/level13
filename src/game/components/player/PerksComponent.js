@@ -1,0 +1,92 @@
+define(['ash', 'game/vos/PerkVO', 'game/constants/PerkConstants'],
+function (Ash, PerkVO, PerkConstants) {
+    var PerksComponent = Ash.Class.extend({
+        
+        perks: {},
+        
+        constructor: function () {
+            this.perks = {};
+            this.perks[PerkConstants.perkTypes.injury] = [];
+            this.perks[PerkConstants.perkTypes.movement] = [];
+        },
+        
+        addPerk: function (perk) {
+            if (typeof this.perks[perk.type] == 'undefined') {
+                this.perks[perk.type] = [];
+            }
+            
+            this.perks[perk.type].push(perk);
+        },
+        
+        hasPerk: function (perkId) {
+            for (var key in this.perks) {
+                for( var i = 0; i < this.perks[key].length; i++) {
+                    if (this.perks[key][i].id == perkId) return true;
+                }
+            }
+            return false;            
+        },
+        
+        getAll: function() {
+            var all = [];
+            for (var key in this.perks) {
+                for( var i = 0; i < this.perks[key].length; i++) {
+                    all.push(this.perks[key][i]);
+                }
+            }
+            return all;
+        },
+        
+        getTotalEffect: function(type) {
+            var effect = 0;
+            var multiply = PerkConstants.isPercentageEffect(type);
+            if (multiply) effect = 1;
+            for (var key in this.perks) {
+                if (key == type) {
+                    for( var i = 0; i < this.perks[key].length; i++) {
+                        if (multiply) effect *= this.perks[key][i].effect;
+                        else effect += this.perks[key][i].effect;
+                    }
+                }
+            }
+            return effect;               
+        },
+        
+        removeItemsByType: function(type) {
+            if (typeof this.perks[type] != 'undefined') {
+                this.perks[type] = [];
+            }
+        },
+        
+        removeItemsById: function(perkId) {
+            for (var key in this.perks) {
+                for( var i = 0; i < this.perks[key].length; i++) {
+                    if (this.perks[key][i].id == perkId) {
+                        this.perks[key].splice(i, 1);
+                        return;
+                    }
+                }
+            }
+        },
+	
+		isNegative: function (perk) {
+			switch (perk.type) {
+				case PerkConstants.perkTypes.injury:
+					return true;
+				default:
+					return perk.effect < 0;
+			}
+		},
+        
+        contains: function(name) {            
+            for (var key in this.perks) {
+                for( var i = 0; i < this.perks[key].length; i++) {
+                    if(this.perks[key][i].name == name) return true;
+                }
+            }
+            return false;
+        },
+    });
+
+    return PerksComponent;
+});
