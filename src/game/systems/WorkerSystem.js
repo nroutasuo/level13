@@ -27,17 +27,17 @@ define([
     var WorkerSystem = Ash.System.extend({
 		
         campNodes: null,
-	playerNodes: null,
-	playerLocationNodes: null,
+		playerNodes: null,
+		playerLocationNodes: null,
         nearestCampNodes: null,
 	
-	resourcesHelper: null,
+		resourcesHelper: null,
 	
-	lastMsgTimeStamp: 0,
-	msgFrequency: 1000 * 120,
+		lastMsgTimeStamp: 0,
+		msgFrequency: 1000 * 120,
 
         constructor: function (resourcesHelper) {
-	    this.resourcesHelper = resourcesHelper;
+		    this.resourcesHelper = resourcesHelper;
         },
 
         addToEngine: function (engine) {
@@ -76,8 +76,7 @@ define([
 	    var resourceAccComponent = node.entity.get(ResourceAccumulationComponent);
 	    
 	    // Basic: Scavengers
-	    var scavengeResult = PlayerActionConstants.getResourcesForScavenge(0, 0, null, false);
-	    var metal = camp.assignedWorkers.scavenger * scavengeResult.metal * time;
+	    var metal = camp.assignedWorkers.scavenger * time * CampConstants.PRODUCTION_METAL_PER_WORKER_PER_S;
 	    resources.addResource(resourceNames.metal, metal);
 	    resourceAccComponent.addChange(resourceNames.metal, metal / time, "Scavengers");
 	    

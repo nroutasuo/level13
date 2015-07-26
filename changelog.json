@@ -6,6 +6,10 @@
             "final": false,
             "changes": [
                 {
+                    "type": "GD",
+                    "summary": "Locales: new scouting opportunities that appear on some sectors"
+                },
+                {
                     "type": "UI",
                     "summary": "Black skin for dark levels/sectors"
                 }

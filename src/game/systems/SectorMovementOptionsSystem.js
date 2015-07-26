@@ -2,19 +2,24 @@
 define([
     'ash',
     'game/nodes/sector/SectorNode',
+    'game/nodes/PlayerLocationNode',
     'game/components/common/PositionComponent',
     'game/components/sector/MovementOptionsComponent',
     'game/components/sector/PassagesComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
 ], function (Ash,
-		SectorNode, PositionComponent, MovementOptionsComponent,
+		SectorNode,
+		PlayerLocationNode,
+		PositionComponent,
+		MovementOptionsComponent,
 		PassagesComponent,
 		SectorConrolComponent,
 		SectorImprovementsComponent) {
-    var SectorMovementOptionsSystem = Ash.System.extend({	
+    var SectorMovementOptionsSystem = Ash.System.extend({
 	    
 		sectorNodes: null,
+		playerLocationNodes: null,
 		
 		movementHelper: null,
 		
@@ -25,27 +30,24 @@ define([
 		},
 	
 		addToEngine: function (engine) {
-			this.sectorNodes = engine.getNodeList( SectorNode );
+			this.sectorNodes = engine.getNodeList(SectorNode);
+			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.findNeighbours();
 		},
 	
         removeFromEngine: function (engine) {
 			this.sectorNodes = null;
-		},	
+		},
 	
 		update: function () {
-			if (this.sectorNodes) {
-				for (var node = this.sectorNodes.head; node; node = node.next) {
-					this.updateSector(node.entity);
-				}
-			}
+			if (this.playerLocationNodes.head)
+				this.updateSector(this.playerLocationNodes.head.entity);
 		},
 		
-		updateSector: function( entity ) {
+		updateSector: function (entity) {
 			var positionComponent = entity.get(PositionComponent);
 			var movementOptions = entity.get(MovementOptionsComponent);
 			var passagesComponent = entity.get(PassagesComponent);
-			var improvementsComponent = entity.get(SectorImprovementsComponent);
 			var controlComponent = entity.get(SectorConrolComponent);
 			
 			if (!positionComponent) return;
@@ -55,8 +57,6 @@ define([
 			
 			var neighbourLeft = this.neighboursDict[sectorKey].left;
 			var neighbourRight = this.neighboursDict[sectorKey].right;
-			var neighbourUp = this.neighboursDict[sectorKey].up;
-			var neighbourDown = this.neighboursDict[sectorKey].down;
 			
 			// Allow left/right movement if neighbour exists
 			movementOptions.canMoveLeft = neighbourLeft != null;
@@ -79,7 +79,7 @@ define([
 			movementOptions.cantMoveDownReason = this.movementHelper.getBlockedReasonDown(entity);
 		},
 		
-		findNeighbours: function() {
+		findNeighbours: function () {
 			this.neighboursDict = {};
 			var sectorKey;
 			var otherPositionComponent;

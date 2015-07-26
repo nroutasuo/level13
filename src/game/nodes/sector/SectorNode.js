@@ -1,10 +1,11 @@
 define([
     'ash',
-    'game/components/type/SectorComponent'
-], function(Ash, SectorComponent) {
+    'game/components/type/SectorComponent',
+    'game/components/common/PositionComponent'
+], function(Ash, SectorComponent, PositionComponent) {
     var SectorNode = Ash.Node.create({
-        sector : SectorComponent
-        
+        sector : SectorComponent,
+        position : PositionComponent,
     });
 
     return SectorNode;

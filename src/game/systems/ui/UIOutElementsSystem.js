@@ -78,23 +78,20 @@ define([
         },
         
         updateButtons: function () {
-            
-            // TODO performance bottleneck
-            
-            var playerActions = this.playerActions;
+            var playerActionsHelper = this.playerActions.playerActionsHelper;
             var uiFunctions = this.uiFunctions;
             var levelHelper = this.levelHelper;
 			
             var playerVision = this.playerStatsNodes.head.vision.value;
             
             var hasButtonCooldown = function (button) {
-                return ($(button).attr("data-hasCooldown") == "true");
+                return ($(button).attr("data-hasCooldown") === "true");
             };
 			
 			var isButtonDisabledVision = function (button) {
                 var action = $(button).attr("action");
 				if (action) {
-					var requirements = PlayerActionConstants.getReqs(action);
+					var requirements = playerActionsHelper.getReqs(action);
 					if (requirements) return (playerVision < requirements.vision);
 				}
 				return false;
@@ -113,7 +110,7 @@ define([
                     return parseInt(input.val()) >= parseInt(input.attr("max"));
                 }
             
-                if (!($(button).hasClass("action"))) return false;	
+                if (!($(button).hasClass("action"))) return false;
                 
                 var action = $(button).attr("action");
                 if (!action) return false;
@@ -125,14 +122,16 @@ define([
                     var s = sector.split("-")[1];
                     sectorEntity = levelHelper.getSectorByPosition(l, s)
                 }
-                return playerActions.checkRequirements(action, false, sectorEntity).value < 1;
+                return playerActionsHelper.checkRequirements(action, false, sectorEntity).value < 1;
             };
             
             var isButtonDisabledResources = function (button) {
                 var action = $(button).attr("action");
-                return playerActions.checkCosts(action, false) < 1;
+                return playerActionsHelper.checkCosts(action, false) < 1;
             };
             
+			// TODO performance bottleneck - cache buttons? -> figure out when to update the lists (all/action buttons)
+			
             // Update disabled status
             $.each($("button"), function () {
 				var disabledVision = isButtonDisabledVision($(this));
@@ -162,10 +161,10 @@ define([
                 } else if(!isVisible) {
                     // skip updating
                 } else {
-                    var ordinal = playerActions.getOrdinal(action);
-                    var costFactor = playerActions.getCostFactor(action);
-                    var costs = PlayerActionConstants.getCosts(action, ordinal, costFactor);
-                    var content = PlayerActionConstants.getDescription(action);
+                    var ordinal = playerActionsHelper.getOrdinal(action);
+                    var costFactor = playerActionsHelper.getCostFactor(action);
+                    var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);
+                    var content = playerActionsHelper.getDescription(action);
                     var hasCosts = action && costs && Object.keys(costs).length > 0;
                     var hasCostBlockers = false;
                     var isHardDisabled = isButtonDisabled($(this)) || isButtonDisabledVision($(this));
@@ -173,7 +172,7 @@ define([
 
                     // Update callout content
                     var bottleNeckCostFraction = 1;
-                    var disabledReason = playerActions.checkRequirements(action, false).reason;
+                    var disabledReason = playerActionsHelper.checkRequirements(action, false).reason;
                     var isDisabledOnlyForCooldown = (!(disabledReason) && hasButtonCooldown($(this)));
                     if (!isHardDisabled || isDisabledOnlyForCooldown) {
                         if (hasCosts) {
@@ -182,7 +181,7 @@ define([
                                 var name = uiFunctions.names.resources[key] ? uiFunctions.names.resources[key] : key;
                                 var value = costs[key];
                                 var classes = "action-cost";
-                                var costFraction = playerActions.checkCost(action, key);
+                                var costFraction = playerActionsHelper.checkCost(action, key);
                                 if (costFraction < 1) classes += " action-cost-blocker";
                                 if (isResource(key.split("_")[1]) && value > showStorage) {
                                     classes += " action-cost-blocker-storage";
@@ -198,17 +197,16 @@ define([
                     }
                     $(this).siblings(".btn-callout").children(".btn-callout-content").html(content);
                     $(this).parent().siblings(".btn-callout").children(".btn-callout-content").html(content);
-                    
                 
                     // Check requirements affecting req-cooldown
-                    bottleNeckCostFraction = Math.min(bottleNeckCostFraction, playerActions.checkRequirements(action, false).value);
+                    bottleNeckCostFraction = Math.min(bottleNeckCostFraction, playerActionsHelper.checkRequirements(action, false).value);
 					if (hasCostBlockers) bottleNeckCostFraction = 0;
 					if (isHardDisabled) bottleNeckCostFraction = 0;
                     
-                    // Update cooldown overla
+                    // Update cooldown overlays
                     var hasReqsCooldown = ($(this).hasClass("btn-disabled-resources") && hasCosts && !hasCostBlockers);
                     $(this).siblings(".cooldown-reqs").css("width", ((bottleNeckCostFraction) * 100) + "%");
-                    $(this).children(".cooldown-action").css("display", !isHardDisabled && !isResDisabled ? "inherit" : "none");
+                    $(this).children(".cooldown-action").css("display", !isHardDisabled ? "inherit" : "none");
                 }
             });
         },

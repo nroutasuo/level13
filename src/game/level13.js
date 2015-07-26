@@ -31,9 +31,11 @@ define([
     'game/systems/occurrences/CampEventsSystem',
     'game/systems/systempriorities',
     'game/EntityCreator',
-    'game/PlayerActions',
+    'game/PlayerActionFunctions',
     'game/OccurrenceFunctions',
     'game/UIFunctions',
+    'game/helpers/PlayerActionsHelper',
+    'game/helpers/PlayerActionRewardsHelper',
     'game/helpers/ResourcesHelper',
     'game/helpers/MovementHelper',
     'game/helpers/LevelHelper',
@@ -72,9 +74,11 @@ define([
     CampEventsSystem,
     SystemPriorities,
     EntityCreator,
-    PlayerActions,
+    PlayerActionFunctions,
     OccurrenceFunctions,
     UIFunctions,
+    PlayerActionsHelper,
+    PlayerActionRewardsHelper,
     ResourcesHelper,
     MovementHelper,
     LevelHelper,
@@ -98,11 +102,14 @@ define([
 
         constructor: function () {
             this.engine = new Ash.Engine();
+			this.gameState = new GameState();
 	    
 			// Singleton helper modules to be passed to systems that need them
 			this.resourcesHelper = new ResourcesHelper(this.engine);
+			this.playerActionsHelper = new PlayerActionsHelper(this.engine, this.gameState, this.resourcesHelper);
+			this.playerActionRewardsHelper = new PlayerActionRewardsHelper(this.engine, this.gameState, this.resourcesHelper);
 			this.movementHelper = new MovementHelper(this.engine);
-			this.levelHelper = new LevelHelper(this.engine);
+			this.levelHelper = new LevelHelper(this.engine, this.playerActionsHelper);
 			this.saveHelper = new SaveHelper();
 			
 			// Global signals
@@ -110,10 +117,9 @@ define([
 			this.improvementBuiltSignal = new Ash.Signals.Signal();
 			
 			// Basic building blocks & special systems
-			this.gameState = new GameState();
 			this.tickProvider = new TickProvider(null);
 			this.saveSystem = new SaveSystem(this.gameState);
-			this.playerActions = new PlayerActions(this.gameState, this.resourcesHelper, this.levelHelper, this.playerMovedSignal, this.improvementBuiltSignal);
+			this.playerActions = new PlayerActionFunctions(this.gameState, this.resourcesHelper, this.levelHelper, this.playerActionsHelper, this.playerActionRewardsHelper, this.playerMovedSignal, this.improvementBuiltSignal);
 			this.uiFunctions = new UIFunctions(this.playerActions, this.gameState, this.saveSystem);
 			this.occurrenceFunctions = new OccurrenceFunctions(this.uiFunctions);
 			
@@ -128,34 +134,34 @@ define([
 			this.gameManager = new GameManager(this.tickProvider, this.gameState, creator, this.uiFunctions, this.playerActions, this.saveHelper);
 			this.engine.addSystem(this.gameManager, SystemPriorities.preUpdate);
 			
-			this.engine.addSystem(this.playerActions, SystemPriorities.preUpdate);	    
-			this.engine.addSystem(this.occurrenceFunctions, SystemPriorities.preUpdate);	    
+			this.engine.addSystem(this.playerActions, SystemPriorities.preUpdate);
+			this.engine.addSystem(this.occurrenceFunctions, SystemPriorities.preUpdate);
 			this.engine.addSystem(this.saveSystem, SystemPriorities.preUpdate);
 			
 			this.engine.addSystem(new UIOutHeaderSystem(this.gameState, this.uiFunctions, this.resourcesHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutElementsSystem(this.gameState, this.playerActions, this.uiFunctions, this.resourcesHelper, this.levelHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutLevelSystem(this.uiFunctions, this.gameState, this.movementHelper, this.resourcesHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutCampSystem(this.uiFunctions, this.gameState, this.levelHelper), SystemPriorities.render);		   
-			this.engine.addSystem(new UIOutBagSystem(this.uiFunctions, this.gameState), SystemPriorities.render);		   
-			this.engine.addSystem(new UIOutUpgradesSystem(this.uiFunctions, this.playerActions), SystemPriorities.render);		   
-			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.resourcesHelper), SystemPriorities.render);		   
-			this.engine.addSystem(new UIOutFightSystem(this.uiFunctions), SystemPriorities.render);		   
+			this.engine.addSystem(new UIOutLevelSystem(this.uiFunctions, this.gameState, this.movementHelper, this.resourcesHelper, this.playerMovedSignal), SystemPriorities.render);
+			this.engine.addSystem(new UIOutCampSystem(this.uiFunctions, this.gameState, this.levelHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutBagSystem(this.uiFunctions, this.gameState), SystemPriorities.render);
+			this.engine.addSystem(new UIOutUpgradesSystem(this.uiFunctions, this.playerActions), SystemPriorities.render);
+			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.resourcesHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutFightSystem(this.uiFunctions), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLogSystem(this.playerMovedSignal), SystemPriorities.update);
 			
 			this.engine.addSystem(new CampEventsSystem(this.occurrenceFunctions, this.gameState, this.saveSystem), SystemPriorities.update);
 			
 			this.engine.addSystem(new VisionSystem(), SystemPriorities.update);
-			this.engine.addSystem(new StaminaSystem(), SystemPriorities.update);		   
+			this.engine.addSystem(new StaminaSystem(), SystemPriorities.update);
 			this.engine.addSystem(new GlobalResourcesSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new BagSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new CollectorSystem(), SystemPriorities.update);
-			this.engine.addSystem(new FightSystem(this.gameState, this.resourcesHelper, this.occurrenceFunctions), SystemPriorities.update);
-			this.engine.addSystem(new PopulationSystem(), SystemPriorities.update);		   
-			this.engine.addSystem(new WorkerSystem(this.resourcesHelper), SystemPriorities.update);		   
-			this.engine.addSystem(new ReputationSystem(), SystemPriorities.update);		   
-			this.engine.addSystem(new RumourSystem(this.gameState), SystemPriorities.update);	    
-			this.engine.addSystem(new EvidenceSystem(this.gameState), SystemPriorities.update);	    
-			this.engine.addSystem(new PlayerPositionSystem(this.gameState, this.uiFunctions, this.occurrenceFunctions, this.playerMovedSignal), SystemPriorities.preupdate);		   
+			this.engine.addSystem(new FightSystem(this.gameState, this.resourcesHelper, this.playerActionRewardsHelper, this.occurrenceFunctions), SystemPriorities.update);
+			this.engine.addSystem(new PopulationSystem(), SystemPriorities.update);
+			this.engine.addSystem(new WorkerSystem(this.resourcesHelper), SystemPriorities.update);
+			this.engine.addSystem(new ReputationSystem(), SystemPriorities.update);
+			this.engine.addSystem(new RumourSystem(this.gameState), SystemPriorities.update);
+			this.engine.addSystem(new EvidenceSystem(this.gameState), SystemPriorities.update);
+			this.engine.addSystem(new PlayerPositionSystem(this.gameState, this.uiFunctions, this.occurrenceFunctions, this.playerMovedSignal), SystemPriorities.preupdate);
 			this.engine.addSystem(new SectorMovementOptionsSystem(this.movementHelper), SystemPriorities.update);
 			this.engine.addSystem(new LevelPassagesSystem(this.levelHelper, this.improvementBuiltSignal), SystemPriorities.update);
 			this.engine.addSystem(new SectorEnemiesSystem(), SystemPriorities.update);
@@ -168,7 +174,7 @@ define([
             this.gameManager.startGame();
 		},
 		
-		cheat: function (input) {    
+		cheat: function (input) {
 			this.playerActions.cheat(input);
 		}
 	

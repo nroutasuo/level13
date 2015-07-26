@@ -146,13 +146,13 @@ define([
             $("#in-improvements-inn").toggle(hasTradePost);
             
             // TODO performance bottleneck
-            var playerActions = this.uiFunctions.playerActions;
+            var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;
             $.each($("#in-improvements tr"), function () {
                 var actionName = $(this).find("button.action-build").attr("action");
                 if (actionName) {
-                    var improvementName = playerActions.getImprovementNameForAction(actionName);
+                    var improvementName = playerActionsHelper.getImprovementNameForAction(actionName);
                     if (improvementName) {
-                        var actionEnabled = playerActions.checkRequirements(actionName, false).value >= 1;
+                        var actionEnabled = playerActionsHelper.checkRequirements(actionName, false).value >= 1;
                         var existingImprovements = improvements.getCount(improvementName);
                         $(this).find(".list-amount").text(existingImprovements);
                         $(this).find(".action-use").toggle(existingImprovements > 0);

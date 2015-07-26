@@ -16,7 +16,7 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
         // food: only represents the amount of trappable food
         resources: null,
         
-        constructor: function (level, buildingDensity, stateOfRepair, sectorType, buildingStyle, sunlit, weather, resources ) {
+        constructor: function (level, buildingDensity, stateOfRepair, sectorType, buildingStyle, sunlit, weather, resources) {
             this.level = level;
             this.buildingDensity = buildingDensity;
             this.stateOfRepair = stateOfRepair;
@@ -28,13 +28,13 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
         },
         
         // Secondary attributes
-        canHaveCamp: function() {
+        canHaveCamp: function () {
             return  this.buildingDensity > 0 && this.buildingDensity < 9 &&
                     this.resources.water > 0 && this.resources.fuel <= 0 &&
                     this.stateOfRepair > 2;
         },
         
-        hasWorkshop: function(resourceName) {
+        hasWorkshop: function (resourceName) {
             if (resourceName) {
                 return this.resources[resourceName] > 0;
             } else {
@@ -43,27 +43,27 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
         },
         
         // Convenience
-        getSectorTypeName: function(hasLight) {
+        getSectorTypeName: function (hasLight) {
             var densityAdj = "";
             var repairAdj = "";
             var typeNoun = "";
             var genericNoun = "";
         
-            if(this.buildingDensity > 8)        densityAdj = "narrow";
-            else if (this.buildingDensity < 1)  densityAdj = "emty";
-            else                                densityAdj = ""
+            if (this.buildingDensity > 8)      densityAdj = "narrow";
+            else if (this.buildingDensity < 1) densityAdj = "emty";
+            else                               densityAdj = ""
             
             if (hasLight) {
-                if (this.stateOfRepair > 7)         repairAdj = "quiet";
-                else if (this.stateOfRepair > 5)    repairAdj = "abandoned";
-                else if (this.stateOfRepair > 2)    repairAdj = "crumbling";
-                else                                repairAdj = "ruined";            
+                if (this.stateOfRepair > 7)      repairAdj = "quiet";
+                else if (this.stateOfRepair > 5) repairAdj = "abandoned";
+                else if (this.stateOfRepair > 2) repairAdj = "crumbling";
+                else                             repairAdj = "ruined";
             } else {
-                if (this.stateOfRepair > 5)         repairAdj = "";
-                else                                repairAdj = "crumbling";            
+                if (this.stateOfRepair > 5)      repairAdj = "";
+                else                             repairAdj = "crumbling";
             }
             
-            switch(this.sectorType) {
+            switch (this.sectorType) {
                 case WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL: typeNoun = "residential"; break;
                 case WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL: typeNoun = "industrial"; break;
                 case WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE: typeNoun = "maintenance"; break;
@@ -75,7 +75,7 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
             if (this.buildingDensity > 8)       genericNoun = "corridor";
             else if (this.buildingDensity > 4)  genericNoun = "street";
             else if (this.buildingDensity > 0)  genericNoun = "square";
-            else noun = "sector";
+            else genericNoun = "sector";
             
             if (hasLight) {
                 if (this.sectorType == WorldCreatorConstants.SECTOR_TYPE_SLUM) genericNoun = "";
@@ -85,7 +85,7 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
             }
         },
         
-        getResourcesString: function(discoveredResources) {
+        getResourcesString: function (discoveredResources) {
             var s = "";
              for(var key in resourceNames) {
                 var name = resourceNames[key];
@@ -94,7 +94,7 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
                     s += key + ", ";
                 }
             }
-            if (s.length > 0) return s.substring(0, s.length-2);
+            if (s.length > 0) return s.substring(0, s.length - 2);
             else if (this.resources.getTotal() > 0) return "Unknown";
             else return "None.";
         },

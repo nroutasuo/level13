@@ -1,11 +1,11 @@
-define(['ash'], function (Ash) {    
+define(['ash'], function (Ash) {
     
     var WorldCreatorConstants = {
         
         // Sector features
-        SECTOR_TYPE_RESIDENTIAL: "residential", 
-        SECTOR_TYPE_INDUSTRIAL: "industrial", 
-        SECTOR_TYPE_MAINTENANCE: "maintenance", 
+        SECTOR_TYPE_RESIDENTIAL: "residential",
+        SECTOR_TYPE_INDUSTRIAL: "industrial",
+        SECTOR_TYPE_MAINTENANCE: "maintenance",
         SECTOR_TYPE_COMMERCIAL: "commercial",
         SECTOR_TYPE_SLUM: "slum",
         
@@ -22,5 +22,5 @@ define(['ash'], function (Ash) {
         LAST_SECTOR: 10,
     };
     
-    return WorldCreatorConstants;    
+    return WorldCreatorConstants;
 });

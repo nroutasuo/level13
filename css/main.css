@@ -42,6 +42,22 @@ hr {
 	margin: 3px 1px;
 }
 
+a:link {
+    border: none !important;
+}
+
+a:visited {
+    border: none !important;
+}
+
+a:hover {
+    border: none !important;
+}
+
+a:active {
+    border: none !important;
+}
+
 img {
 	margin: 0px 2px;
 }
@@ -176,7 +192,7 @@ li.item-equipped, .cooldown-reqs, ul.resultlist li {
 	color: #333;
 }
 
-.lvl13-element, div.btn-callout-content, div.info-callout-content, div.popup, button, ul.tabs li {
+.lvl13-element, div.btn-callout-content, div.info-callout-content, div.popup, button, ul.tabs li, a:link, a:visited {
 	background: #202220;
 	color: #fdfdfd;
 	border: 2px solid #555;
@@ -186,7 +202,7 @@ div.container-btn-action, .changelog-type {
 	border-color: #555;
 }
 
-.sunlit .lvl13-element, .sunlit div.btn-callout-content, .sunlit div.info-callout-content, .sunlit div.popup, .sunlit button, .sunlit ul.tabs li {
+.sunlit .lvl13-element, .sunlit div.btn-callout-content, .sunlit div.info-callout-content, .sunlit div.popup, .sunlit button, .sunlit ul.tabs li, .sunlit a:link, .sunlit a:visited {
 	background: rgb(252, 252, 252);
 	color: #222222;
 	border: 2px solid #aaa;
@@ -286,12 +302,12 @@ hr {
 	background-color: #b3b3b3;
 }
 
-.lvl13-focus, li.item-focused, li.item-focused div.item-count, td.vis-out-sector-current, button:hover {
+.lvl13-focus, li.item-focused, li.item-focused div.item-count, td.vis-out-sector-current, button:hover, a:hover {
 	color: #fff !important;
 	border-color: #aaa;
 }
 
-.sunlit .lvl13-focus, .sunlit li.item-focused, .sunlit li.item-focused div.item-count, .sunlit td.vis-out-sector-current, .sunlit button:hover {
+.sunlit .lvl13-focus, .sunlit li.item-focused, .sunlit li.item-focused div.item-count, .sunlit td.vis-out-sector-current, .sunlit button:hover, .sunlit a:hover {
 	color: black !important;
 	border-color: #4a4a4a;
 }
@@ -393,7 +409,7 @@ ul.itemlist li, ul.resultlist li {
 	padding: 6px;
 	border-width: 2px;
 	border-style: solid;
-	border-radius: 18px;
+	border-radius: 16px;
 	line-height: 1em;
 }
 
@@ -516,7 +532,6 @@ div.btn-callout {
 div.callout-container {
 	position: relative;
 	display: inline-block;
-	width: inherit;
 }
 
 div.btn-callout-content, div.info-callout-content, div.popup {
@@ -629,6 +644,10 @@ div.container-btn-action {
 	border-style: solid;
 }
 
+div.container-btn-action button {
+	margin: -1px;
+}
+
 button.context {
 	width: auto;
 	display: inline;
@@ -695,7 +714,7 @@ button.btn-disabled-basic, button.btn-disabled-vision, li.disabled {
 }
 
 .cooldown-reqs {
-	height: 4px;
+	height: 5px;
 	width: 0%;
 	padding: 0;
 	border-width: 0px;
@@ -824,6 +843,10 @@ button .cooldown-action {
 span.time {
 	font-size: 75%;
 	vertical-align: middle;
+}
+
+span.icon {
+	padding: 2px;
 }
 
 span.action-cost-blocker-storage {

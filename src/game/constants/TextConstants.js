@@ -1,4 +1,4 @@
-define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCreatorConstants) {
+define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/LocaleVO'], function (Ash, WorldCreatorConstants) {
 
     SECTOR_TYPE_NOLIGHT = -1;
     
@@ -20,72 +20,105 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
 				sectorType = SECTOR_TYPE_NOLIGHT;
 			}
 			 
-			for (var d = 0; d < this.densityBrackets.length; d++) {
-				var densityBracket = this.densityBrackets[d];
-				if (density >= densityBracket[0] && density <= densityBracket[1]) {
-					density = densityBracket[0];
-					break;
-				}
-			}
-			 
-			for (var r = 0; r < this.repairBrackets.length; r++) {
-				var repairBracket = this.repairBrackets[r];
-				if (repair >= repairBracket[0] && repair <= repairBracket[1]) {
-					repair = repairBracket[0];
-					break;
-				}
-			}
-			var description = this.sectorDescriptions[sectorType][density][repair];
+			var densityBracket = this.getDensityBracket(density);
+			var repairBracket = this.getRepairBracket(repair);
+			
+			var description = this.sectorDescriptions[sectorType][densityBracket][repairBracket];
 			if (sunlit) {
 				description = description.replace("artificial light", "sunlight");
 			}
 			return description;
 		},
 		
-		getLogResourceText: function(resourcesVO) {
+		getLogResourceText: function (resourcesVO) {
 			var msg = "";
 			var replacements = [];
 			var values = [];
-			for(var key in resourceNames) {
-			var name = resourceNames[key];
-			var amount = resourcesVO.getResource(name);
-			msg += "$" + replacements.length + ", ";
-			replacements.push("#" + replacements.length + " " + name);
-			values.push(Math.round(amount));
+			for (var key in resourceNames) {
+				var name = resourceNames[key];
+				var amount = resourcesVO.getResource(name);
+				msg += "$" + replacements.length + ", ";
+				replacements.push("#" + replacements.length + " " + name);
+				values.push(Math.round(amount));
 			}
 			msg = msg.slice(0, -2);
 			return { msg: msg, replacements: replacements, values: values };
 		},
 		
-		getEnemyText: function(enemyList, defeated, defeatableBlockerL, defeatableBlockerR) {
+		getLocaleName: function (locale, sectorRepair) {
+			var repairBracket = this.getRepairBracket(sectorRepair);
+			switch (locale.type) {
+			case localeTypes.factory:
+				if (repairBracket === this.repairBrackets[0][0]) return "Ruined factory";
+				if (repairBracket === this.repairBrackets[1][0]) return "Abandoned factory";
+				if (repairBracket === this.repairBrackets[2][0]) return "Abandoned factory";
+				return "Empty factory";
+			case localeTypes.house:
+				if (repairBracket === this.repairBrackets[0][0]) return "Ruined house";
+				if (repairBracket === this.repairBrackets[1][0]) return "Decaying house";
+				if (repairBracket === this.repairBrackets[2][0]) return "Neglected house";
+				return "Empty house";
+			case localeTypes.lab:
+				if (repairBracket < this.repairBrackets[0][2]) return "Ruined lab";
+				return "Abandoned lab";
+			case localeTypes.grove:
+				return "Flourishing grove";
+			case localeTypes.market:
+				if (repairBracket === this.repairBrackets[0][0]) return "Ruined market";
+				if (repairBracket === this.repairBrackets[1][0]) return "Abandoned shop";
+				if (repairBracket === this.repairBrackets[2][0]) return "Abandoned mall";
+				return "Silent shopping tower";
+			case localeTypes.maintenance:
+				if (repairBracket === this.repairBrackets[0][0]) return "Ruined market";
+				if (repairBracket === this.repairBrackets[1][0]) return "Abandoned shop";
+				if (repairBracket === this.repairBrackets[2][0]) return "Abandoned mall";
+				return "Silent shopping tower";
+			case localeTypes.transport:
+				if (repairBracket === this.repairBrackets[0][0]) return "Ruined train depot";
+				if (repairBracket === this.repairBrackets[1][0]) return "Rotting cable car station";
+				if (repairBracket === this.repairBrackets[2][0]) return "Abandoned train station";
+				return "Empty tram depot";
+			case localeTypes.sewer:
+				if (repairBracket === this.repairBrackets[0][0]) return "Wrecked sewer";
+				return "Quiet sewer";
+			case localeTypes.warehouse:
+				if (repairBracket === this.repairBrackets[0][0]) return "Warehouse ruin";
+				if (repairBracket === this.repairBrackets[1][0]) return "Decaying warehouse";
+				if (repairBracket === this.repairBrackets[2][0]) return "Abandoned warehouse";
+				return "Sturdy warehouse";
+			default: return "Building";
+			}
+		},
+		
+		getEnemyText: function (enemyList, defeated, defeatableBlockerL, defeatableBlockerR) {
 			var enemyNoun = this.getEnemyNoun(enemyList, !defeated);
 			var enemyActiveV = this.getEnemyActiveVerb(enemyList);
 			var enemyDefeatedV = this.getEnemeyDefeatedVerb(enemyList);
 			var text = "";
-			if(defeated) {
-			text += "All " + enemyNoun + " here have been " + enemyDefeatedV + ". ";
+			if (defeated) {
+				text += "All " + enemyNoun + " here have been " + enemyDefeatedV + ". ";
 			} else {
-			text += "This place is " + enemyActiveV + " " + enemyNoun;
+				text += "This place is " + enemyActiveV + " " + enemyNoun;
 			
-			if (defeatableBlockerL) {
-				text += " and they are blocking movement to the left.";
-			} else if (defeatableBlockerR) {
-				text += " and they are blocking movement to the right. ";
-			} else {
-				 text += ". ";
-			}
+				if (defeatableBlockerL) {
+					text += " and they are blocking movement to the left.";
+				} else if (defeatableBlockerR) {
+					text += " and they are blocking movement to the right. ";
+				} else {
+					text += ". ";
+				}
 			}
 			
 			return text;
 		},
 		
-		getEnemyNoun: function(enemyList, detailed) {
+		getEnemyNoun: function (enemyList, detailed) {
 			var baseNoun = this.getCommonText(enemyList, "nouns", detailed? "name" : "", "someone or something", true);
 			if (detailed) {
-			return baseNoun;
+				return baseNoun;
 			} else {
-			var parts = baseNoun.split(" ");
-			return parts[parts.length - 1];
+				var parts = baseNoun.split(" ");
+				return parts[parts.length - 1];
 			}
 		},
 		
@@ -94,38 +127,60 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
 		},
 		
 		getEnemeyDefeatedVerb: function(enemyList) {
-			return this.getCommonText(enemyList, "defeatedV", "", "defeated", false);    	    
+			return this.getCommonText(enemyList, "defeatedV", "", "defeated", false);
+		},
+		
+		getDensityBracket: function (density) {
+			for (var d = 0; d < this.densityBrackets.length; d++) {
+				var densityBracket = this.densityBrackets[d];
+				if (density >= densityBracket[0] && density <= densityBracket[1]) {
+					density = densityBracket[0];
+					break;
+				}
+			}
+			return density;
+		},
+		
+		getRepairBracket: function (repair) {
+			for (var r = 0; r < this.repairBrackets.length; r++) {
+				var repairBracket = this.repairBrackets[r];
+				if (repair >= repairBracket[0] && repair <= repairBracket[1]) {
+					repair = repairBracket[0];
+					break;
+				}
+			}
+			return repair;
 		},
 		
 		// get common description word for a list of objects that contain possible words are in arrays named objectAttribute
 		// if nothing common is found, defaultWord is returned
 		// is allowSeveral, two common words can be returned if one doesn't cover all objects
-		getCommonText: function(objectList, objectAttribute, objectDetailAttribute, defaultWord, allowSeveral) {
+		getCommonText: function (objectList, objectAttribute, objectDetailAttribute, defaultWord, allowSeveral) {
 			var allWords = [];
 			var allDetails = [];
 			var minimumWords = [];
 			for (var i1 in objectList) {
-			var o = objectList[i1];
-			if (o) {
-				for (var j1 in o[objectAttribute]) {
-				var word = o[objectAttribute][j1];
-				var detail = objectDetailAttribute ? o[objectDetailAttribute] : "";
-				if ($.inArray(word, allWords) < 0) allWords.push(word);
-				if (objectDetailAttribute && $.inArray(detail, allDetails) < 0) allDetails.push(detail);
-				if (j1 == 0 && $.inArray(word, minimumWords) < 0) minimumWords.push(word);
+				var o = objectList[i1];
+				if (o) {
+					for (var j1 in o[objectAttribute]) {
+					var word = o[objectAttribute][j1];
+					var detail = objectDetailAttribute ? o[objectDetailAttribute] : "";
+					if ($.inArray(word, allWords) < 0) allWords.push(word);
+					if (objectDetailAttribute && $.inArray(detail, allDetails) < 0) allDetails.push(detail);
+					if (j1 == 0 && $.inArray(word, minimumWords) < 0) minimumWords.push(word);
+					}
 				}
-			}
 			}
 			
 			var validWords = [];
 			for (var i2 in allWords) {
-			var word = allWords[i2];
-			var valid = true;
-				for (var j2 in objectList) {
-				var o = objectList[j2];
-				if ($.inArray(word, o[objectAttribute]) < 0) valid = false;
-			}
-			if (valid) validWords.push(word);
+				var word = allWords[i2];
+				var valid = true;
+					for (var j2 in objectList) {
+					var o = objectList[j2];
+					if ($.inArray(word, o[objectAttribute]) < 0) valid = false;
+				}
+				if (valid) validWords.push(word);
 			}
 			
 			var validDetail = "";
@@ -152,13 +207,16 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
 			}
 		},
 		
-		pluralify: function(s) {
-			return s + "s";
+		pluralify: function (s) {
+			if (s[s.length - 1] !== "s") {
+				return s + "s";
+			} else {
+				return s;
+			}
 		}
+	};
 		
-		};
-		
-		function initSectorTexts() {
+	function initSectorTexts() {
 		var d1 = TextConstants.densityBrackets[0][0];
 		var d2 = TextConstants.densityBrackets[1][0];
 		var d3 = TextConstants.densityBrackets[2][0];

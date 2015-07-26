@@ -25,8 +25,11 @@ define([
 		levelNodes: null,
 		sectorNodes: null,
 		
-		constructor: function (engine) {
+		playerActionsHelper: null,
+		
+		constructor: function (engine, playerActionsHelper) {
 			this.engine = engine;
+			this.playerActionsHelper = playerActionsHelper;
 			this.levelNodes = engine.getNodeList(LevelNode);
 			this.sectorNodes = engine.getNodeList(SectorNode);
 		},
@@ -87,7 +90,7 @@ define([
 									actionName = "build_out_passage_up_stairs";
 									break;
 							}
-							if (playerActions.checkRequirements(actionName, false, sectorEntity).value > 0)
+							if (this.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0)
 								projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, s));
 						}
 						if (levelPassagesComponent.passagesDown[s] && !levelPassagesComponent.passagesDownBuilt[s]) {
@@ -105,7 +108,7 @@ define([
 									actionName = "build_out_passage_down_stairs";
 									break;
 							}
-							if (playerActions.checkRequirements(actionName, false, sectorEntity).value > 0)
+							if (this.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0)
 								projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, s));
 						}
 					}

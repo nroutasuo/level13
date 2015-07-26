@@ -3,12 +3,11 @@ define([
     'game/constants/UIConstants',
     'game/constants/FightConstants',
     'game/constants/ItemConstants',
-    'game/constants/PlayerActionConstants',
     'game/nodes/ItemsNode',
     'game/components/common/ResourcesComponent',
     'game/components/player/StaminaComponent',
     'game/components/player/VisionComponent',
-], function (Ash, UIConstants, FightConstants, ItemConstants, PlayerActionConstants, ItemsNode, ResourcesComponent, StaminaComponent, VisionComponent) {
+], function (Ash, UIConstants, FightConstants, ItemConstants, ItemsNode, ResourcesComponent, StaminaComponent, VisionComponent) {
     var UIOutBagSystem = Ash.System.extend({
 	
 		uiFunctions : null,
@@ -121,7 +120,7 @@ define([
 			
 			var playerHealth = playerStamina.health;
 			var playerVision = this.itemNodes.head.entity.get(VisionComponent).value;
-			var scavengeEfficiency = Math.round(PlayerActionConstants.getScavengeEfficiency(playerVision, playerHealth) * 200) / 2;
+			var scavengeEfficiency = Math.round(this.uiFunctions.playerActions.playerActionRewardsHelper.getScavengeEfficiency() * 200) / 2;
 			$("#self-status-efficiency-scavenge").text("Scavenge efficiency: " + scavengeEfficiency + "%");
 			UIConstants.updateCalloutContent("#self-status-efficiency-scavenge", "health: " + Math.round(playerHealth) + "<br/>vision: " + Math.round(playerVision));
 		},

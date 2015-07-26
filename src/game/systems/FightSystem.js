@@ -17,18 +17,21 @@ define([
     PositionComponent,
     FightComponent, SectorControlComponent, EnemiesComponent,
     StaminaComponent, ItemsComponent, PerksComponent) {
+	
     var FightSystem = Ash.System.extend({
         
         resourcesHelper: null,
-	occurrenceFunctions: null,
+		playerActionRewardsHelper: null,
+		occurrenceFunctions: null,
         gameState: null,
         
-	fightNodes: null,
+		fightNodes: null,
         playerStatsNodes: null,
         
-        constructor: function(gameState, resourcesHelper, occurrenceFunctions) {
+        constructor: function (gameState, resourcesHelper, playerActionRewardsHelper, occurrenceFunctions) {
             this.gameState = gameState;
             this.resourcesHelper = resourcesHelper;
+			this.playerActionRewardsHelper = playerActionRewardsHelper;
 			this.occurrenceFunctions = occurrenceFunctions;
         },
 
@@ -47,7 +50,7 @@ define([
         onFightNodeAdded: function(node) {
         },
 
-        update: function (time) {            
+        update: function (time) {
             if (!this.fightNodes || !this.fightNodes.head) return;
             if (this.fightNodes.head.fight.finished) return;
             
@@ -55,7 +58,7 @@ define([
             var playerStamina = this.playerStatsNodes.head.stamina;
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             
-            if (enemy.hp < 0 || playerStamina.hp < 0) {              
+            if (enemy.hp < 0 || playerStamina.hp < 0) {
                 this.endFight();
             }
             
@@ -103,7 +106,11 @@ define([
             
             // Determine rewards and penalties
             this.fightNodes.head.fight.rewards.resources = FightConstants.getRewardResources(won);
-            this.fightNodes.head.fight.rewards.items = FightConstants.getRewardItems(won, playerItems, levelOrdinal);
+            if (won) {
+                this.fightNodes.head.fight.rewards.items = this.playerActionRewardsHelper.getRewardItems(0.1, 50, playerItems, levelOrdinal);
+            } else {
+				this.fightNodes.head.fight.rewards.items = [];
+			}
             this.fightNodes.head.fight.rewards.reputation = FightConstants.getRewardReputation(won, cleared, enemyDifficulty);
             this.fightNodes.head.fight.penalties.items = FightConstants.getPenaltyFollowers(won);
             this.fightNodes.head.fight.injuries = FightConstants.getPenaltyInjuries(won);

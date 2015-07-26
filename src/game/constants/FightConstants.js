@@ -1,10 +1,9 @@
 define(['ash',
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
-	'game/constants/PlayerActionConstants',
 	'game/constants/WorldCreatorConstants',
 	'game/vos/ResourcesVO'],
-function (Ash, ItemConstants, PerkConstants, PlayerActionConstants, WorldCreatorConstants, ResourcesVO) {
+function (Ash, ItemConstants, PerkConstants, WorldCreatorConstants, ResourcesVO) {
 
     var FightConstants = {
 	
@@ -13,9 +12,9 @@ function (Ash, ItemConstants, PerkConstants, PlayerActionConstants, WorldCreator
 		FIGHT_LENGTH_SECONDS: 3,
 		MAX_FOLLOWER_MAX: 5,
 		 
-		getPlayerAtt: function(playerStamina, itemsComponent) {
+		getPlayerAtt: function (playerStamina, itemsComponent) {
 			var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemTypes.weapon);
-			var healthFactor = (playerStamina.health/100);
+			var healthFactor = (playerStamina.health / 100);
 			var playerAtt = Math.floor((this.FIGHT_PLAYER_BASE_ATT + itemBonus) * healthFactor);
 			var followerBonus = itemsComponent.getCurrentBonus(ItemConstants.itemTypes.follower);
             return playerAtt + followerBonus;
@@ -56,7 +55,7 @@ function (Ash, ItemConstants, PerkConstants, PlayerActionConstants, WorldCreator
         
         // Damage done by player to an enemy per sec
         getEnemyDamagePerSec: function(enemy, playerStamina, itemsComponent) {            
-                var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
+            var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
             return (playerAtt / enemy.def);
         },
         
@@ -96,13 +95,6 @@ function (Ash, ItemConstants, PerkConstants, PlayerActionConstants, WorldCreator
             var r = 0;
             if (won) r = cleared ? 2 * enemyDifficulty : 1 * enemyDifficulty;
             return r;
-        },
-        
-        getRewardItems: function (won, currentItems, levelOrdinal) {
-            if (won) {
-                return PlayerActionConstants.getScaFIItems(0.1, 50, currentItems, levelOrdinal);
-            }
-            return [];
         },
         
         getPenaltyFollowers: function (won) {

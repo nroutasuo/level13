@@ -28,6 +28,7 @@ define([
     'game/components/sector/MovementOptionsComponent',
     'game/components/sector/PassagesComponent',
     'game/components/sector/SectorFeaturesComponent',
+    'game/components/sector/SectorLocalesComponent',
     'game/components/sector/improvements/CampComponent',
     'game/components/tribe/UpgradesComponent',
 	'game/components/level/LevelPassagesComponent',
@@ -62,6 +63,7 @@ define([
     MovementOptionsComponent,
     PassagesComponent,
     SectorFeaturesComponent,
+    SectorLocalesComponent,
     CampComponent,
     UpgradesComponent,
 	LevelPassagesComponent,
@@ -105,20 +107,20 @@ define([
 					EvidenceComponent,
 					LogMessagesComponent
 			] ));
-			this.engine.addEntity(player);			
+			this.engine.addEntity(player);
 			return player;
         },
 	
-		createLevel: function(pos) {
+		createLevel: function (pos) {
 			var level = new Ash.Entity()
 			.add(new LevelComponent(pos))
 			.add(new PositionComponent(pos))
 			.add(new LevelPassagesComponent());
-			this.engine.addEntity(level);	
+			this.engine.addEntity(level);
 			return level;
 		},
 	
-		createSector: function(saveKey, level, pos, passageOptions, sectorFeatures, enemies, enemyNum) {
+		createSector: function (saveKey, level, pos, passageOptions, sectorFeatures, locales, enemies, enemyNum) {
 			var sector = new Ash.Entity()
 			.add(new SectorComponent())
 			.add(new ResourcesComponent(0))
@@ -143,6 +145,7 @@ define([
 				sectorFeatures.sunlit,
 				sectorFeatures.weather,
 				sectorFeatures.resources))
+			.add(new SectorLocalesComponent(locales))
 			.add(new SaveComponent(saveKey, [
 				ResourcesComponent,
 				CampComponent,

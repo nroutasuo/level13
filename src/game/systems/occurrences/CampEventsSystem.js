@@ -115,7 +115,7 @@ define([
 			var campTimers = campNode.entity.get(CampEventTimersComponent);
 			var timeToNext = OccurrenceConstants.scheduleNext(event);
 			campTimers.onEventEnded(event, timeToNext);
-			console.log("End " + event + " at " + campNode.camp.campName + ". Next in " + timeToNext + "s.");
+			if (window.app) console.log("End " + event + " at " + campNode.camp.campName + "(" + campNode.position.level + ")" + ". Next in " + timeToNext + "s.");
 			
 			if (!this.hasCampEvent(campNode, event)) return;
 			

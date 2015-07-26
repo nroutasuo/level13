@@ -35,6 +35,8 @@ define([
 			var vision = node.vision;
 			var oldMaximum = vision.maximum;
 			var oldValue = vision.value;
+			
+			if (!this.locationNodes.head) return;
             
 			var featuresComponent = this.locationNodes.head.entity.get(SectorFeaturesComponent);
 			var itemsComponent = node.items;

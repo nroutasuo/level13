@@ -1,4 +1,4 @@
-// A class that checks raw user input from the DOM and passes game-related actions to PlayerActions
+// A class that checks raw user input from the DOM and passes game-related actions to PlayerActionFunctions
 define(['ash',
         'game/constants/UIConstants',
         'game/constants/PlayerActionConstants',
@@ -56,6 +56,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
         },
         
         mapActions: function () {
+            var playerActions = this.playerActions;
             // Out improvements
             this.actionToFunctionMap["move_camp_level"] = this.playerActions.moveToCamp;
             this.actionToFunctionMap["build_out_collector_water"] = this.playerActions.buildBucket;
@@ -98,6 +99,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             // Non-improvement actions
             this.actionToFunctionMap["scavenge"] = this.playerActions.scavenge;
             this.actionToFunctionMap["scout"] = this.playerActions.scout;
+            this.actionToFunctionMap["scout_locale"] = playerActions.scoutLocale;
         },
         
         registerListeners: function () {
@@ -141,7 +143,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             $('.stepper input.amount').change(this.onStepperInputChanged);
             
             // All number inputs
-            $("input.amount").keydown( this.onNumberInputKeyDown );
+            $("input.amount").keydown(this.onNumberInputKeyDown);
             
             // Action buttons buttons
             this.registerActionButtonListeners("");
@@ -203,7 +205,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             var playerActions = this.playerActions;
             
             // All action buttons
-            $(scope + " button.action").click( function(e) {
+            $(scope + " button.action").click(function (e) {
                 var action = $(this).attr("action");
                 if (action) {
                     var cooldown = PlayerActionConstants.getCooldown(action);
@@ -213,14 +215,14 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                         uiFunctions.startButtonCooldown($(this), cooldown);
                     }
                     
-                    var func = uiFunctions.actionToFunctionMap[action];
+                    var func = uiFunctions.actionToFunctionMap[playerActions.playerActionsHelper.getBaseActionID(action)];
                     if (func) {
+                        var param = null;
                         var isProject = $(this).hasClass("action-level-project");
-                        var sectorPos = null;
-                        if (isProject) {                            
-                            sectorPos = $(this).attr("sector");
-                        }
-                        func.call(playerActions, sectorPos); 
+                        if (isProject) param = $(this).attr("sector");
+                        var actionIDParam = playerActions.playerActionsHelper.getActionIDParam(action);
+                        if (actionIDParam) param = actionIDParam;
+                        func.call(playerActions, param);
                     } else {
                         switch(action) {
                             case "move_sector_left": break;
@@ -265,7 +267,6 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                 uiFunctions.popupManager.closePopup("fight-popup", true);
                 playerActions.endFight();
             });
-            
             $(scope + " button[action='leave_camp']").click( function(e) {
                 var selectedResVO = new ResourcesVO();                
                 $.each($("#embark-resources tr"), function() {
@@ -331,14 +332,15 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             $(scope + " div.container-btn-action").wrap('<div class="callout-container"></div>');
             $(scope + " div.container-btn-action").after(function () {
                 var action = $($(this).children("button")[0]).attr("action");
-                var ordinal = playerActions.getOrdinal(action);
-                var costFactor =  playerActions.getCostFactor(action);
-                var costs = PlayerActionConstants.getCosts(action, ordinal, costFactor);
-                var description = PlayerActionConstants.getDescription(action);
+                var ordinal = playerActions.playerActionsHelper.getOrdinal(action);
+                var costFactor =  playerActions.playerActionsHelper.getCostFactor(action);
+                var costs = playerActions.playerActionsHelper.getCosts(action, ordinal, costFactor);
+                var description = playerActions.playerActionsHelper.getDescription(action);
                 if ((costs && Object.keys(costs).length > 0) || description) {
                     var content = '<div class="arrow-up"></div><div class="btn-callout-content">' + "" + "</div>";
                     return '<div class="btn-callout">' + content + '</div>'
                 } else {
+                    console.log("WARN: No callout could be created for action button with action " + action);
                     return "";
                 }
             });
@@ -366,8 +368,9 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
         },
         
         getGameInfoDiv: function () {
-            var html = "<p>Text-based clicker adventure by Noora Routasuo. Please note that this game is still in development and many features are incomplete. Feedback is much appreciated!</p>";
-            html += "<p><b>Current version</b><br/><span id='changelog-version'>" + this.changeLogHelper.getCurrentVersionNumber() + "</span><p>";
+            var html = "<p>Please note that this game is still in development and many features are incomplete and unbalanced. Feedback is much appreciated!</p>";
+            html += "<p><b>Links</b>: <a href='https://github.com/nroutasuo/level13' target='_blank'>github</a></p>";
+            html += "<p><b>Current version</b>: <span id='changelog-version'>" + this.changeLogHelper.getCurrentVersionNumber() + "</span><p>";
             html += "<p><b>Changelog</b></p>";
             html += "<div id='changelog' class='infobox infobox-scrollable'><p class='p-meta'>" + this.changeLogHelper.getChangeLogHTML() + "</p></div>";
             return html;

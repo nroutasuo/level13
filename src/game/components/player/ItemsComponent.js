@@ -45,7 +45,7 @@ function (Ash, ItemVO, ItemConstants) {
                     console.log("WARN: Item to discard not found.");
                 }
             } 
-            this.uniqueItems = {};               
+            this.uniqueItems = {};
         },
         
         discardItems: function(item) {
@@ -59,7 +59,7 @@ function (Ash, ItemVO, ItemConstants) {
         // Equips the given item if it's better than the previous equipment
         autoEquip: function (item) {
             var shouldEquip = item.equippable;
-            for(var i = 0; i < this.items[item.type].length; i++) {
+            for (var i = 0; i < this.items[item.type].length; i++) {
                 var existingItem = this.items[item.type][i];
                 if (existingItem.itemID === item.itemID) continue;
                 if (existingItem.equipped) {
@@ -94,8 +94,7 @@ function (Ash, ItemVO, ItemConstants) {
             this.uniqueItems = {};
         },
         
-        getEquipped: function(type) {
-            // TODO performance bottleneck
+        getEquipped: function (type) {
             var equipped = [];
             for (var key in this.items) {
                 if (key == type || !type) {

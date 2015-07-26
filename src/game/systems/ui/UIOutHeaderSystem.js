@@ -86,12 +86,12 @@ define([
 			var alphaVal = (0.8 - visionPercentage * 0.8);
             alphaVal = Math.min(alphaVal, 1);
 			alphaVal = Math.max(alphaVal, 0);
-			var alphaValMod = alphaVal * alphaVal;
 			
 			var bgColorVal = 0;
 			if (sunlit) bgColorVal = 255;
 			var textColorVal = 255;
 			if (sunlit) textColorVal = 0;
+			// TODO performance consider appending to stylesheet (https://learn.jquery.com/performance/use-stylesheets-for-changing-css/)
 			$("#page-overlay").css("background-color", "rgba(" + bgColorVal + "," + bgColorVal + "," + bgColorVal + "," + (alphaVal * 0.5) + ")");
 			$("body").toggleClass("sunlit", sunlit);
 			$("body").toggleClass("dark", !sunlit);
@@ -208,11 +208,14 @@ define([
 			var showResourceAcc = this.getShowResourceAcc();
 			var showStorage = this.resourcesHelper.getCurrentStorageCap();
 			var showStorageName = this.resourcesHelper.getCurrentStorageName();
+			var inventoryUnlocked = false;
 	
 			// Update indicators
 			// TODO Noora decide where to put the res details; only show in camp? where? layout?
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
+				var resourceUnlocked = this.gameState.unlockedFeatures.resources[name] === true;
+				inventoryUnlocked = inventoryUnlocked || resourceUnlocked;
                 UIConstants.updateResourceIndicator(
                     name,
                     "#resources-" + name,
@@ -221,13 +224,14 @@ define([
                     showStorage,
                     false,//this.gameState.numCamps > 0
                     false,//this.gameState.numCamps > 0,
-                    this.gameState.unlockedFeatures.resources[name] === true
+                    resourceUnlocked
                 );
                 if (showResourceAcc) {
                     UIConstants.updateResourceIndicatorCallout("#resources-" + name, showResourceAcc.getSources(name));
                 }
 			}
 			
+			$("#resources-storage").toggle(inventoryUnlocked);
 			$("#resources-storage .label").text(showStorageName);
 			$("#resources-storage .value").text(showStorage);
 		},

@@ -18,7 +18,9 @@ require([
                         level13.start();
                         
                         var enableCheats = document.URL.indexOf("file:///") >= 0;
-                        if (enableCheats) window.app = level13;
+                        if (enableCheats) {
+                                window.app = level13;
+                        }
             };
         }
 

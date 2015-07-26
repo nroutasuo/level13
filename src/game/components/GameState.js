@@ -12,13 +12,14 @@ define(['ash'], function (Ash) {
             this.numCamps = 0;
             
             this.unlockedFeatures = {
+                vision: false,
                 fight: false,
                 investigate: false,
                 bag: false,
                 upgrades: false,
                 resources: {
-                    food: true,
-                    water: true,
+                    food: false,
+                    water: false,
                     metal: false,
                     rope: false,
                     herbs: false,

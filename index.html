@@ -8,7 +8,7 @@
 	A text-based science fiction adventure by Noora Routasuo.
 	Based on the Ash.js engine and inspired by several incremental/idle games.
 	
-	See changelog.json for version informatopn.
+	See changelog.json for version information.
 	-->
 	
     <meta charset="utf-8" />
@@ -329,6 +329,13 @@
 								</tr>
 								</table>
 							</div>
+							<div class="actionbox" id="out-locales">
+								<div class="subheader">
+									<h3>Places of interest</h3>
+								</div>
+								<table id="table-out-actions-locales">
+								</table>
+							</div>
 						</div>
 						<div class="unit golden-small">
 							<div class="subheader">
@@ -344,8 +351,13 @@
 								<td><button class="action action-location" id="out-action-fight" action="fightcheck">Fight</button></td>
 								</tr><tr>
 								<td><button class="action action-location" id="out-action-investigate">Investigate</button></td>
-								</tr><tr>
-								<td><button class="action btn-icon action-move" id="out-action-move-up" action="move_level_up"><span>Move up</span></button></td>
+								</tr>
+							</table>
+							<div class="subheader">
+								<h3>Movement</h3>
+							</div>
+							<table>
+								<tr><td><button class="action btn-icon action-move" id="out-action-move-up" action="move_level_up"><span>Move up</span></button></td>
 								</tr><tr>
 								<td><button class="action btn-icon action-move" id="out-action-move-left" action="move_sector_left"><span>Move left</span></button></td>
 								<td><button class="action btn-icon action-move" id="out-action-move-right" action="move_sector_right"><span>Move right</span></button></td>
