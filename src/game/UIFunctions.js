@@ -164,10 +164,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                 $("#game-options-extended").toggle();
                 $(this).text($("#game-options-extended").is(":visible") ? "less" : "more");
             });
-            $("#btn-import").click(function (e) {
-                uiFunctions.showInfoPopup(UIConstants.FEATURE_MISSING_TITLE, UIConstants.FEATURE_MISSING_COPY);
-            });
-            $("#btn-export").click(function (e) {
+            $("#btn-importexport").click(function (e) {
                 uiFunctions.showInfoPopup(UIConstants.FEATURE_MISSING_TITLE, UIConstants.FEATURE_MISSING_COPY);
             });
             $("#btn-info").click(function (e) {
@@ -195,7 +192,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                     prevCampName,
                     function(input) {
                         playerActions.setNearestCampName(input);
-                    });   
+                    });
             });
         },
         
@@ -418,7 +415,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
                     $("#container-tab-footer").slideUp(transitionTime);
-                    playerActions.enterCamp();
+                    playerActions.enterCamp(true);
                     break;
                 
                 case elementIDs.tabs.world:
@@ -613,6 +610,27 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
 			} else if (!show && visible && !toggling) {
                 $(element).attr("data-toggling", "true");
 				$(element).slideToggle(durationOut, function () {
+					if(replacement) $(replacement).toggle(true);
+                    $(element).toggle(false);
+                    $(element).attr("data-toggling", "false");
+				});
+			}
+        },
+        
+        tabToggleIf: function(element, replacement, show, durationIn, durationOut) {
+            var visible = $(element).is(":visible");
+            var toggling = ($(element).attr("data-toggling") == "true");
+            
+            if (show && !visible && !toggling) {
+				if(replacement) $(replacement).toggle(false);
+                $(element).attr("data-toggling", "true");
+				$(element).fadeToggle(durationIn, function () {
+                    $(element).toggle(true);
+                    $(element).attr("data-toggling", "false");
+                });
+			} else if (!show && visible && !toggling) {
+                $(element).attr("data-toggling", "true");
+				$(element).fadeToggle(durationOut, function () {
 					if(replacement) $(replacement).toggle(true);
                     $(element).toggle(false);
                     $(element).attr("data-toggling", "false");

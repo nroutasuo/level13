@@ -13,6 +13,7 @@ define(['ash',
 	'game/nodes/player/PlayerResourcesNode',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/NearestCampNode',
+    'game/nodes/LastVisitedCampNode',
 	'game/nodes/sector/CampNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/components/common/PositionComponent',
@@ -27,6 +28,7 @@ define(['ash',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/SectorStatusComponent',
+	'game/components/sector/LastVisitedCampComponent',
 	'game/components/sector/PassagesComponent',
 	'game/components/sector/events/CampEventTimersComponent',
 	'game/components/common/LogMessagesComponent',
@@ -36,11 +38,11 @@ define(['ash',
 ], function (Ash,
 	PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UIConstants, TextConstants,
 	PlayerPositionNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
-	NearestCampNode, CampNode, TribeUpgradesNode,
+	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent, VisitedComponent,
 	ItemsComponent, PerksComponent,
 	CampComponent, SectorImprovementsComponent, FightComponent, EnemiesComponent,
-	SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent,
+	SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, CampEventTimersComponent,
 	LogMessagesComponent,
 	UIOutHeaderSystem, UIOutElementsSystem, SaveSystem
@@ -59,6 +61,7 @@ define(['ash',
 		playerPositionNodes: null,
 		playerLocationNodes: null,
 		nearestCampNodes: null,
+		lastVisitedCamps: null,
         campNodes: null,
         playerStatsNodes: null,
         playerResourcesNodes: null,
@@ -90,6 +93,7 @@ define(['ash',
 			this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             this.nearestCampNodes = engine.getNodeList(NearestCampNode);
+            this.lastVisitedCamps = engine.getNodeList(LastVisitedCampNode);
             this.campNodes = engine.getNodeList(CampNode);
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
@@ -100,6 +104,7 @@ define(['ash',
             this.playerPositionNodes = null;
             this.playerLocationNodes = null;
             this.nearestCampNodes = null;
+            this.lastVisitedCamps = null;
             this.campNodes = null;
             this.playerStatsNodes = null;
             this.playerResourcesNodes = null;
@@ -169,7 +174,7 @@ define(['ash',
                 campPosition = campSector.get(PositionComponent);
                 playerPos.level = campPosition.level;
                 playerPos.sector = campPosition.sector;
-                this.enterCamp();
+                this.enterCamp(true);
             } else {
                 console.log("WARN: No camp found for level " + level);
             }
@@ -177,7 +182,7 @@ define(['ash',
         
         moveResFromCampToBag: function (resourcesVO) {
             var playerLevelCamp = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity : null;
-            var playerResources = this.playerResourcesNodes.head.resources.resources;		
+            var playerResources = this.playerResourcesNodes.head.resources.resources;
             var campResourcesSource = playerLevelCamp.get(ResourcesComponent).resources;
             this.moveResourcesFromVOToVO(resourcesVO, campResourcesSource, playerResources);
         },
@@ -200,7 +205,7 @@ define(['ash',
             }
         },
         
-        enterCamp: function () {
+        enterCamp: function (log) {
             var playerPos = this.playerPositionNodes.head.position;
             var campNode = this.nearestCampNodes.head;
             if (campNode && campNode.position.level === playerPos.level && campNode.position.sector === playerPos.sector) {
@@ -210,7 +215,10 @@ define(['ash',
                         this.moveResFromBagToCamp();
                     }
                     
-                    this.addLogMessage("Entered camp.");
+					if (this.lastVisitedCamps.head) this.lastVisitedCamps.head.entity.remove(LastVisitedCampComponent);
+                    campNode.entity.add(new LastVisitedCampComponent());
+                    
+                    if(log) this.addLogMessage("Entered camp.");
                     this.playerMovedSignal.dispatch(playerPos);
                     this.forceResourceBarUpdate();
                     this.save();
@@ -774,12 +782,17 @@ define(['ash',
             var name = inputParts[0];
             switch(name) {
 				case "res":
+                    var amount = 0;
+                    if (inputParts.length > 1) {
+                        amount = parseInt(inputParts[1]);
+                    } else {
+                        amount = this.resourcesHelper.getCurrentStorageCap();
+                    }
                     var playerResources = this.resourcesHelper.getCurrentStorage(true).resources;
-                    var storageCap = this.resourcesHelper.getCurrentStorageCap();
                     for(var key in resourceNames) {
                         var name = resourceNames[key];
                         if(this.gameState.unlockedFeatures.resources[name])
-                            playerResources.setResource(name, storageCap);
+                            playerResources.setResource(name, amount);
                     }
                     this.forceResourceBarUpdate();
 					break;

@@ -26,8 +26,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 				new ItemVO("light2", "Electric light", "Light", 75, true, true, "img/items/light-electric.png", "Advanced light for serious travellers."),
 				new ItemVO("light3", "Ghost light", "Light", 125, true, true, "img/items/light-ghost.png", "They say the ghost light can show you more in the darkness."),
 			],
-			shades: [
-				
+			shades: [				
 				new ItemVO("shade1", "Basic goggles", "Shades", 25, true, true, "img/items/shades-basic.png", "Improvised protection from sunlight."),
 				new ItemVO("shade2", "Sporty sunglasses", "Shades", 75, true, true, "img/items/shades-fancy.png", "Good sunglasses help keep the blinding rays to a minimum."),
 			],
@@ -72,6 +71,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 				new ItemVO("artefact-ground-2", "Charred seed", "Artefact", 0, false, true, "img/items/artefact-test.png", "They are said to contain life itself. Ancient gods knew how to unlock their power."),
 				new ItemVO("artefact-surface-1", "Canned tuna", "Artefact", 0, false, true, "img/items/artefact-test.png", "Leftovers from a bygone time. They say there used to be fish tanks, somewhere near the surface."),
 				new ItemVO("artefact-history-1", "Mobile phone", "Artefact", 0, false, true, "img/items/artefact-test.png", "Some ancient civilization used these for communication."),
+				new ItemVO("artefact-history-2", "Pearl", "Artefact", 0, false, true, "img/items/artefact-test.png", "A beautiful orb said to have formed in the Sea, a massive body of water that is the origin of all life."),
 				new ItemVO("artefact-doom-1", "USB Stick", "Artefact", 0, false, true, "img/items/artefact-test.png", "Hard to say if this would still work even if you found a port to connect it to. But if it did, who knows what it might contain?"),
 			],
 		},
@@ -79,8 +79,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 		getItemByID: function (id) {
 			if (id.indexOf("follower-") >= 0) return this.getFollowerByID(id);
 			for (var type in this.itemDefinitions) {
-				for(var i in this.itemDefinitions[type])
-				{
+				for (var i in this.itemDefinitions[type]) {
 					var item = this.itemDefinitions[type][i];
 					if (item.id === id) {
 						return item.clone();

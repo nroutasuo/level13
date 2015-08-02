@@ -22,6 +22,7 @@ define([
     'game/systems/FightSystem',
     'game/systems/PopulationSystem',
     'game/systems/WorkerSystem',
+    'game/systems/FaintingSystem',
     'game/systems/ReputationSystem',
     'game/systems/RumourSystem',
     'game/systems/EvidenceSystem',
@@ -65,6 +66,7 @@ define([
     FightSystem,
     PopulationSystem,
     WorkerSystem,
+    FaintingSystem,
     ReputationSystem,
     RumourSystem,
     EvidenceSystem,
@@ -158,6 +160,7 @@ define([
 			this.engine.addSystem(new FightSystem(this.gameState, this.resourcesHelper, this.playerActionRewardsHelper, this.occurrenceFunctions), SystemPriorities.update);
 			this.engine.addSystem(new PopulationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new WorkerSystem(this.resourcesHelper), SystemPriorities.update);
+			this.engine.addSystem(new FaintingSystem(this.uiFunctions, this.playerActions), SystemPriorities.update);
 			this.engine.addSystem(new ReputationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new RumourSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new EvidenceSystem(this.gameState), SystemPriorities.update);

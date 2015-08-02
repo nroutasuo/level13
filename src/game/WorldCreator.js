@@ -175,7 +175,7 @@ function (Ash, ResourcesVO, LocaleVO, WorldCreatorConstants, EnemyConstants) {
 				if (sectorType == WorldCreatorConstants.SECTOR_TYPE_SLUM) food = Math.round(this.random(seed+l*l*4*seed+s*33+2114)*(Math.abs(l-10)));
 				if (l == bottomLevel) food = Math.max(food, 3);
 				if (l == bottomLevel+1) food = food + 2;
-				if (l == 13 && s == 2) food = 0;
+				if (l == 13 && s == 2) food = 5;
 				if (food < 3) food = 0;
 				
 				var waterRandomPart = Math.round(this.random(seed*l*s+10134)*stateOfRepair/2);

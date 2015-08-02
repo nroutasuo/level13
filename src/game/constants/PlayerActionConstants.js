@@ -462,18 +462,26 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                 
                 move_level_up: {
                     stamina: 75,
+                    resource_food: 1,
+                    resource_water: 1,
                 },
             
                 move_level_down: {
                     stamina: 75,
+                    resource_food: 1,
+                    resource_water: 1,
                 },
             
                 move_sector_left: {
                     stamina: 10,
+                    resource_food: 1,
+                    resource_water: 1,
                 },
             
                 move_sector_right: {
                     stamina: 10,
+                    resource_food: 1,
+                    resource_water: 1,
                 },
                 
                 build_out_camp: {
@@ -748,7 +756,7 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
             },
         
             cooldowns: {
-                scavenge: 12,
+                scavenge: 10,
                 fightCheck: 20,
                 use_in_campfire: 60,
                 use_in_inn: 60 * 30,
@@ -760,6 +768,7 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                 scavenge: "Look for resources.",
                 move_sector_left: "Move to another area",
                 move_sector_right: "Move to another area",
+                move_camp_level: "Shortcut back to the nearest camp.",
                 build_out_collector_food: "Collect food.",
                 build_out_collector_water: "Collect water.",
                 build_in_house: "A place for people to stay.",

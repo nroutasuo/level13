@@ -25,9 +25,9 @@ define(['ash'], function (Ash) {
 			this.itemID = Math.random() * 100000;
         },
 	
-	clone: function() {
-	    return new ItemVO(this.id, this.name, this.type, this.bonus, this.equippable, this.unequippable, this.icon, this.description);
-	}
+		clone: function () {
+		    return new ItemVO(this.id, this.name, this.type, this.bonus, this.equippable, this.unequippable, this.icon, this.description);
+		}
     });
 
     return ItemVO;

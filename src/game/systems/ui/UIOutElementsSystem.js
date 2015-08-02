@@ -229,28 +229,23 @@ define([
             });
         },
         
-        updateTabVisibility: function() {
-            var posHasCamp =
-            this.currentLocationNodes.head != null &&
-            this.currentLocationNodes.head.entity.has(CampComponent);
+        updateTabVisibility: function () {
             var levelHasCamp = this.nearestCampNodes.head != null;
-            $("#switch-tabs #switch-in").toggle(levelHasCamp);
-            $("#switch-tabs #switch-upgrades").toggle(this.gameState.unlockedFeatures.upgrades);
-            $("#switch-tabs #switch-world").toggle(this.gameState.numCamps > 1 && this.gameState.unlockedFeatures.trade == true);
-            $("#switch-tabs #switch-bag").toggle(this.gameState.unlockedFeatures.bag);
-            $("#switch-tabs #switch-out").toggle(true);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-in", null, levelHasCamp, 200, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-upgrades", null, this.gameState.unlockedFeatures.upgrades, 200, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-world", null, this.gameState.numCamps > 1 && this.gameState.unlockedFeatures.trade === true, 200, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-bag", null, this.gameState.unlockedFeatures.bag, 200, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-out", null, true, 0, 0);
         },
         
-        updateTabs: function() {
-            var posHasCamp =
-            this.currentLocationNodes.head != null &&
-            this.currentLocationNodes.head.entity.has(CampComponent);
+        updateTabs: function () {
+            var posHasCamp = this.currentLocationNodes.head != null && this.currentLocationNodes.head.entity.has(CampComponent);
             var levelCamp = this.nearestCampNodes.head;
             var currentCamp = levelCamp ? levelCamp.entity : null;
             if (currentCamp) {
-            var campComponent = currentCamp.get(CampComponent);
-            $("#switch-tabs #switch-in").text(campComponent.getName());
-            $("#switch-tabs #switch-in").toggleClass("disabled", !posHasCamp);
+				var campComponent = currentCamp.get(CampComponent);
+				$("#switch-tabs #switch-in").text(campComponent.getName());
+				$("#switch-tabs #switch-in").toggleClass("disabled", !posHasCamp);
             }
         },
         

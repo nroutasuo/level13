@@ -3,10 +3,11 @@ define([
     'ash',
     'game/components/sector/improvements/CampComponent',
     'game/components/common/VisitedComponent',
+	'game/components/sector/LastVisitedCampComponent',
     'game/components/sector/events/CampEventTimersComponent',
-], function (Ash, CampComponent, VisitedComponent, CampEventTimersComponent) {
-    
-    var SaveHelper = Ash.Class.extend({        
+], function (Ash, CampComponent, VisitedComponent, LastVisitedCampComponent, CampEventTimersComponent) {
+
+    var SaveHelper = Ash.Class.extend({
 	
 		saveKeys: {
 			player: "player",
@@ -14,15 +15,14 @@ define([
 			sector: "sector-",
 		},
 		
-		optionalComponents: [ CampComponent, VisitedComponent, CampEventTimersComponent ],
+		optionalComponents: [ CampComponent, VisitedComponent, LastVisitedCampComponent, CampEventTimersComponent ],
 		
-		constructor: function () {
-			
+		constructor: function () {			
 		},
 		
-		loadEntity: function(entitiesObject, saveKey, entity) {
+		loadEntity: function (entitiesObject, saveKey, entity) {
 			var failedComponents = 0;
-			var entityComponents = entitiesObject[saveKey];                
+			var entityComponents = entitiesObject[saveKey];
 			for(var componentKey in entityComponents) {
 			var component = entity.get(componentKey);
 			var componentValues = entityComponents[componentKey];

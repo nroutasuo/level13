@@ -8,6 +8,7 @@ define([
     'game/nodes/PlayerLocationNode',
     'game/nodes/tribe/TribeUpgradesNode',
     'game/nodes/sector/CampNode',
+    'game/nodes/NearestCampNode',
     'game/components/common/PositionComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
@@ -23,7 +24,7 @@ define([
     'game/components/sector/improvements/CampComponent',
 ], function (
 	Ash, PlayerActionConstants, ItemConstants,
-	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode,
+	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	PositionComponent, ItemsComponent, PerksComponent, DeityComponent,
 	PassagesComponent, EnemiesComponent, MovementOptionsComponent,
 	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, SectorImprovementsComponent,
@@ -39,6 +40,7 @@ define([
 		playerResourcesNodes: null,
 		playerLocationNodes: null,
         tribeUpgradesNodes: null,
+        nearestCampNodes: null,
 		
 		constructor: function (engine, gameState, resourcesHelper) {
 			this.engine = engine;
@@ -48,6 +50,7 @@ define([
             this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
+            this.nearestCampNodes = engine.getNodeList(NearestCampNode);
 		},
         
         getItemForCraftAction: function (actionName) {
@@ -578,14 +581,20 @@ define([
 					}
 				}
 			} else {
+                if (!this.playerLocationNodes.head) return result;
+				var sector = sector || this.playerLocationNodes.head.entity;
 				switch(this.getBaseActionID(action)) {
 					case "move_camp_level":
+                        if (!this.nearestCampNodes.head) return this.getCosts("move_sector_left", 1, 100);
+                        var campSector = this.nearestCampNodes.head.entity;
+                        var sectorsToMove = Math.abs(sector.get(PositionComponent).sector - campSector.get(PositionComponent).sector);
+                        return this.getCosts("move_sector_left", 1, sectorsToMove);
+                    
 					case "move_camp_global":
 						result.stamina = 5 * PlayerActionConstants.costs.move_sector_left.stamina * statusCostFactor;
 						break;
 					
 					case "scout_locale":
-						var sector = sector || this.playerLocationNodes.head.entity;
 						var localei = parseInt(action.split("_")[2]);
 						var sectorLocalesComponent = sector.get(SectorLocalesComponent);
 						var localeVO = sectorLocalesComponent.locales[localei];

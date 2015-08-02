@@ -29,6 +29,7 @@ define([
     'game/components/sector/PassagesComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorLocalesComponent',
+    'game/components/sector/LastVisitedCampComponent',
     'game/components/sector/improvements/CampComponent',
     'game/components/tribe/UpgradesComponent',
 	'game/components/level/LevelPassagesComponent',
@@ -64,6 +65,7 @@ define([
     PassagesComponent,
     SectorFeaturesComponent,
     SectorLocalesComponent,
+    LastVisitedCampComponent,
     CampComponent,
     UpgradesComponent,
 	LevelPassagesComponent,
@@ -153,7 +155,8 @@ define([
 				SectorImprovementsComponent,
 				SectorStatusComponent,
 				SectorControlComponent,
-				VisitedComponent
+				VisitedComponent,
+				LastVisitedCampComponent
 			]));
 			
 			this.engine.addEntity(sector);

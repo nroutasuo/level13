@@ -153,7 +153,7 @@ define([
 			UIConstants.updateCalloutContent("#" + indicatorID, content);
 		},
 		
-		updateDeity: function() {
+		updateDeity: function () {
 			var hasDeity = this.deityNodes.head != null;
 			$("#statsbar-deity").toggle(hasDeity);
 			

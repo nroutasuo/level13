@@ -10,7 +10,7 @@ define(['ash'], function (Ash) {
 			metal: "img/res-metal.png",
 		},
         
-		getItemLI: function(item, count, hideCallout) {
+		getItemLI: function (item, count, hideCallout) {
 			var url = item.icon;
 			var hasCount = count && count > 0;
 			
@@ -20,10 +20,9 @@ define(['ash'], function (Ash) {
 			var li = "<li class='" + classes + "' data-itemid='" + item.id + "' data-iteminstanceid='" + item.itemID + "'>";
 			
 			if (!hideCallout) {
-			var detail = item.type;
-			detail += this.getItemBonusText(item);
-			li += "<div class='info-callout-target info-callout-target-small' description='" +
-				item.name + " (" + detail + ")'>";
+				var detail = item.type;
+				detail += this.getItemBonusText(item);
+				li += "<div class='info-callout-target info-callout-target-small' description='" + item.name + " (" + detail + ")'>";
 			}
 			
 			li += "<img src='" + url + "'/>";
@@ -31,7 +30,7 @@ define(['ash'], function (Ash) {
 			if (hasCount)
 				li += "<div class='item-count lvl13-box-3'>" + count + "x </div>";
 			
-			if(!hideCallout) li += "</div>";
+			if (!hideCallout) li += "</div>";
 			
 			li += "</li>"
 			
@@ -66,11 +65,9 @@ define(['ash'], function (Ash) {
 			if (!showName && !showChange) div += "</div>";
 			div += "</span>";
 			
-			if (showName) {
-			div += "<span class='label'>" + name + "</span>";
-			}
+			if (showName) div += "<span class='label'>" + name + "</span>";
 			
-			if(showAmount) div += "<span class='value'></span>";
+			if (showAmount) div += "<span class='value'></span>";
 			div += "<span class='change-indicator'></span>";
 			div += "<span class='change'></span>";
 			div += "<span class='forecast'></span>";
@@ -83,8 +80,9 @@ define(['ash'], function (Ash) {
 		
 		updateResourceIndicator: function (name, id, value, change, storage, showChange, showDetails, visible) {
 			$(id).toggle(visible);
+			var roundedValue = value > 5 ? Math.floor(value) : Math.floor(value*10)/10;
 			if (visible) {
-				$(id).children(".value").text(Math.floor(value));
+				$(id).children(".value").text(roundedValue);
 				$(id).children(".change").toggleClass("warning", change < 0);
 				$(id).children(".change").toggle(showChange);
 				$(id).children(".forecast").toggle(showDetails);

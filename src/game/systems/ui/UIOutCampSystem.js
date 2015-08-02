@@ -94,9 +94,10 @@ define([
             this.updateStats();
         },
 	
-        updateWorkers: function() {
+        updateWorkers: function () {
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+			if (!campComponent) return;
             var posComponent = this.playerPosNodes.head.position;
             
             var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
@@ -204,6 +205,7 @@ define([
         },
         
         updateStats: function () {
+			if (!this.playerLocationNodes.head.entity.get(CampComponent)) return;
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var soldiers = this.playerLocationNodes.head.entity.get(CampComponent).assignedWorkers.soldier;
             var raidDanger = Math.round(OccurrenceConstants.getRaidDanger(improvements, soldiers));

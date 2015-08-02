@@ -196,21 +196,25 @@ define([
 				items.push(necessityItem);
 			}
 			
+			// TODO define and use item rarity
+			
 			// Normal items
 			if (Math.random() < itemProbability) {
 				var itemTypeRand = Math.random();
-				if(itemTypeRand < 0.2) {
-					items.push( ItemConstants.itemDefinitions.shoes[0].clone());
+				if (itemTypeRand < 0.2) {
+					items.push(ItemConstants.itemDefinitions.shoes[0].clone());
 				} else if (itemTypeRand < 0.25) {
-					var i = Math.floor(Math.random()*ItemConstants.itemDefinitions.bag.length-1);
-					items.push( ItemConstants.itemDefinitions.bag[i+1].clone());
+					var i = Math.floor(Math.random()*ItemConstants.itemDefinitions.bag.length - 1);
+					items.push(ItemConstants.itemDefinitions.bag[i + 1].clone());
 				} else if (itemTypeRand < 0.5) {
 					items.push(ItemConstants.getDefaultClothing(levelOrdinal));
 				} else if (itemTypeRand < 0.75) {
 					items.push(ItemConstants.getDefaultWeapon(levelOrdinal));
+				} else if (itemTypeRand < 0.8) {
+					items.push(ItemConstants.itemDefinitions.light[1].clone());
 				} else {
 					var i = Math.floor(Math.random()*ItemConstants.itemDefinitions.artefact.length);
-					items.push( ItemConstants.itemDefinitions.artefact[i].clone());
+					items.push(ItemConstants.itemDefinitions.artefact[i].clone());
 				}
 			}
 			return items;

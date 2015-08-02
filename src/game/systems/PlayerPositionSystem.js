@@ -102,12 +102,12 @@ define([
 			}
 		},
 		
-		handleNewLevel: function(levelNode, levelPos) {
+		handleNewLevel: function (levelNode, levelPos) {
 			levelNode.entity.add(new VisitedComponent());
 			if (levelPos != 13) this.gameState.unlockedFeatures.levels = true;
 		},
 		
-		handleNewSector: function(sectorNode, sectorPos) {	    
+		handleNewSector: function (sectorNode, sectorPos) {	    
 			// occurrences
 			this.occurrenceFunctions.onEnterNewSector(sectorNode.entity);
 			
