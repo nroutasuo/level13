@@ -15,6 +15,7 @@ define([
     'game/components/sector/SectorStatusComponent',
 	'game/components/player/DeityComponent',
     'game/components/common/LogMessagesComponent',
+    'game/vos/ResultVO',
 ], function (Ash,
     SaveSystem,
 	PlayerResourcesNode,
@@ -29,7 +30,8 @@ define([
 	SectorFeaturesComponent,
 	SectorStatusComponent,
 	DeityComponent,
-	LogMessagesComponent
+	LogMessagesComponent,
+    ResultVO
 ) {
     var FaintingSystem = Ash.System.extend({
 		
@@ -39,13 +41,14 @@ define([
         nearestCampNodes: null,
 		sectorNodes: null,
 
-        constructor: function (uiFunctions, playerActionFunctions) {
+        constructor: function (uiFunctions, playerActionFunctions, playerActionResultsHelper) {
 			this.uiFunctions = uiFunctions;
 			this.playerActionFunctions = playerActionFunctions;
+            this.playerActionResultsHelper = playerActionResultsHelper;
         },
 
         addToEngine: function (engine) {
-            this.engine = engine;            
+            this.engine = engine;
             this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             this.lastVisitedCampNodes = engine.getNodeList(LastVisitedCampNode);
@@ -61,14 +64,19 @@ define([
             this.nearestCampNodes = null;
 			this.sectorNodes = null;
         },
-
-        update: function (time) {
+        
+        checkFainting: function () {
 			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
 			if (playerPosition.inCamp) return;
+            
 			if (this.playerLocationNodes.head.entity.has(CampComponent)) return;
+            
 			var hasFood = this.playerResourcesNodes.head.resources.resources.getResource(resourceNames.food) > 0;
 			var hasWater = this.playerResourcesNodes.head.resources.resources.getResource(resourceNames.water) > 0;
-			if (hasFood && hasWater) return;
+			if (hasFood && hasWater) {
+                this.log("You rest a bit, eat and drink some. Then you decide to continue.");
+                return;
+            }
 			
 			// Player is hungry or thirsty and is out exploring
 			
@@ -86,14 +94,14 @@ define([
 			if (hasDeity && Math.random() < 0.1) {
 				// rescued by deity: back to random camp, keep items, no injury
 				// TODO deity specific text
-				msgMain = "Exhausted and " + msgAdjective + ", you sit to rest.\nYour deity takes pity on you and brings you to a camp.";
+				msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>Your deity takes pity on you and brings you to a camp.";
 				msgLog = "The world fades. You wake up back in camp.";
 				this.fadeOut(msgMain, msgLog, this.lastVisitedCampNodes.head.entity, 0, 0);
 			}
 			
 			if (hasCampOnLevel && Math.random() < 0.2) {
 				// rescued by campers: back to nearest camp, keep items, maybe injured
-				msgMain = "Exhausted and " + msgAdjective + ", you sit to rest.\nYou wake up back in camp. Some of the scavengers found you and brought you home.";
+				msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. Some of the scavengers found you and brought you home.";
 				msgLog = "The world fades. You wake up back in camp.";
 				this.fadeOut(msgMain, msgLog, this.lastVisitedCampNodes.head.entity, 0, 0.25);
 				return;
@@ -101,9 +109,9 @@ define([
 			
 			if (hasLastVisitedCamp) {
 				// pass out and teleport to last visited camp: lose items, back to last visited camp, maybe injured
-				msgMain = "Exhausted and " + msgAdjective + ", you sit to rest.\n When you wake up, you find yourself back in camp.";
+				msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in camp.";
 				msgLog = "The world fades. You wake up with no memory how you found your way back.";
-				this.fadeOut(msgMain, msgLog, this.lastVisitedCampNodes.head.entity, 1, 0.5);
+				this.fadeOut(msgMain, msgLog, this.lastVisitedCampNodes.head.entity, 1, 1);
 				return;
 			}
 			
@@ -138,7 +146,7 @@ define([
 					}
 				}
 				
-				msgMain = "Exhausted and " + msgAdjective + ", you sit to rest.\n When you wake up, you find yourself back in a familiar area.";
+				msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in a familiar area.";
 				msgLog = "The world fades. You wake up with no memory how you got here.";
 				if (nearestKnownSafeSector) {
 					this.fadeOut(msgMain, msgLog, nearestKnownSafeSector, 1, 0);
@@ -163,10 +171,10 @@ define([
 		},
 		
 		fadeOut: function (msg, msgLog, sector, loseInventoryProbability, injuryProbability) {
-			this.uiFunctions.showInfoPopup("Exhaustion", msg, "Continue");
-			
-			// TODO losing items & injuries
-            // TODO lost items & injuries in the info pop-up
+            var resultVO = this.playerActionResultsHelper.getFadeOutResults(loseInventoryProbability, injuryProbability);
+            this.playerActionResultsHelper.collectRewards(resultVO);
+            
+			this.uiFunctions.showInfoPopup("Exhaustion", msg, "Continue", resultVO);
 
             // Teleport player
 			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
@@ -187,7 +195,7 @@ define([
 			}
 		},
         
-        save: function() {
+        save: function () {
             var saveSystem = this.engine.getSystem(SaveSystem);
             saveSystem.save();
         }

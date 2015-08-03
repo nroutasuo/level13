@@ -15,7 +15,12 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 	
         constructor: function () {
 			this.gainedResources = new ResourcesVO();
+            this.gainedItems = [];
+            this.gainedEvidence = 0;
+            
 			this.lostResources = new ResourcesVO();
+            this.lostItems = [];
+            this.gainedInjuries = [];
 		},
         
     });

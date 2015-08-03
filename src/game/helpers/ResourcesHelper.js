@@ -1,6 +1,6 @@
 // Singleton with helper methods for resource storage etc
 define([
-    'ash', 
+    'ash',
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/NearestCampNode',
     'game/nodes/tribe/TribeResourcesNode',
@@ -18,13 +18,13 @@ define([
 		nearestCampNodes: null,
 		globalResourcesNodes: null,
 		
-		constructor: function(engine) {
-			this.nearestCampNodes = engine.getNodeList( NearestCampNode );
-			this.playerResourcesNodes = engine.getNodeList( PlayerResourcesNode );
-			this.globalResourcesNodes = engine.getNodeList( TribeResourcesNode );	    
+		constructor: function (engine) {
+			this.nearestCampNodes = engine.getNodeList(NearestCampNode);
+			this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
+			this.globalResourcesNodes = engine.getNodeList(TribeResourcesNode);
 		},
 		
-			getCurrentStorage: function( forWrite ) {	    
+		getCurrentStorage: function (forWrite) {
 			var playerResources = this.getPlayerStorage();
 			var campResources = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity.get(ResourcesComponent) : null;
 			var globalResources = this.globalResourcesNodes.head.resources;
@@ -37,7 +37,7 @@ define([
 			if (!forWrite && this.hasAccessToTradeNetwork()) {
 				currentResources = globalResources;
 			}
-			}
+		}
 				
 				return currentResources;
 			},
@@ -84,11 +84,11 @@ define([
 			
 			var showResourceAcc = playerResourceAcc;
 			if (playerPosition.inCamp && this.hasCampStorage()) {
-			showResourceAcc = campResourceAcc;		
-			
-			if (!forWrite && this.hasAccessToTradeNetwork()) {
-				showResourceAcc = globalResourceAcc;
-			}
+				showResourceAcc = campResourceAcc;
+				
+				if (!forWrite && this.hasAccessToTradeNetwork()) {
+					showResourceAcc = globalResourceAcc;
+				}
 			}
 			
 			return showResourceAcc;    
@@ -111,7 +111,7 @@ define([
 			return false;
 		},
 		
-		getPlayerStorage: function() {
+		getPlayerStorage: function () {
 			return this.playerResourcesNodes.head.resources;
 		},
     });

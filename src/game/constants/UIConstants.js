@@ -37,8 +37,29 @@ define(['ash'], function (Ash) {
 			return li;
 		},
 		
+		getItemList: function (items) {
+			var html = "";
+			for (var i = 0; i < items.length; i++) {
+				html += this.getItemLI(items[i], 1);
+			}
+			return html;
+		},
+		
 		getResourceLi: function (name, amount) {
-			return "<li><div class='info-callout-target info-callout-target-small' description='" + name + "'>" + this.getResourceImg(name) + "</div> " + amount + "</li>";
+			return "<li><div class='info-callout-target info-callout-target-small' description='" + name + "'>" + this.getResourceImg(name) + "</div> " + Math.round(amount) + "</li>";
+		},
+		
+		getResourceList: function (resourceVO) {
+			var html = "";
+			for (var key in resourceNames) {
+				var name = resourceNames[key];
+				var amount = resourceVO.getResource(name);
+				if (amount > 0) {
+					var li = this.getResourceLi(name, amount);
+					html += li;
+				}
+			}
+			return html;
 		},
 		
 		getItemBonusText: function (item) {

@@ -233,6 +233,7 @@ define([
 			$("#out-improvements-collector-water .list-storage").text(
 				collectorWaterCapacity > 0 ? (Math.floor(collectorWater.storedResources.water * 10) / 10) + " / " + collectorWaterCapacity : "");
 			
+			$("#out-improvements").toggle(this.gameState.unlockedFeatures.vision);
 			var hasAvailableImprovements = $("#out-improvements table tr:visible").length > 0;
 			$("#header-out-improvements").toggle(hasAvailableImprovements);
 			
@@ -250,10 +251,13 @@ define([
 				$("#out-action-move-camp").toggle(hasCamp && !hasCampHere);
 			}
 			
+			var discoveredResources = this.getLocationDiscoveredResources();
 			var showFight = this.gameState.unlockedFeatures.fight && !sectorControlComponent.hasControl() && isScouted;
+			var showDespair = !hasCampHere && (discoveredResources.indexOf(resourceNames.food) < 0 || discoveredResources.indexOf(resourceNames.water) < 0);
 			$("#out-action-scout").toggle(this.gameState.unlockedFeatures.vision);
 			$("#out-action-investigate").toggle(this.gameState.unlockedFeatures.investigate);
 			$("#out-action-fight").toggle(showFight);
+			$("#out-action-despair").toggle(showDespair);
 			
 			this.uiFunctions.slideToggleIf("#out-locales", null, isScouted && sectorLocalesComponent.locales.length > 0, 200, 0);
 			
@@ -262,7 +266,7 @@ define([
 		
 		getDescription: function (entity, hasCampHere, hasCampOnLevel, hasVision, isScouted) {
 			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
-			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent); 	    
+			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var description = "<p>";
 			description += this.getTextureDescription(hasVision, featuresComponent);
 			description += this.getFunctionalDescription(hasVision, isScouted, featuresComponent, hasCampHere, hasCampOnLevel);

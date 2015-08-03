@@ -29,12 +29,12 @@ function (Ash, ItemVO, ItemConstants) {
             if (typeof this.items[item.type] != 'undefined') {
                 var typeItems = this.items[item.type];
                 var splicei = -1;
-                for( var i = 0; i < typeItems.length; i++) {
+                for (var i = 0; i < typeItems.length; i++) {
                     if (typeItems[i].id == item.id) {
                         splicei = i;
                         break;
                     }
-                }                
+                }
                 if (splicei >= 0) {
                     typeItems.splice(splicei, 1);
                     if (item.equipped) {
@@ -44,7 +44,7 @@ function (Ash, ItemVO, ItemConstants) {
                 } else {
                     console.log("WARN: Item to discard not found.");
                 }
-            } 
+            }
             this.uniqueItems = {};
         },
         
@@ -117,7 +117,7 @@ function (Ash, ItemVO, ItemConstants) {
                     }
                 }
             }
-            return bonus;    
+            return bonus;
         },
         
         getAll: function() {
@@ -127,7 +127,7 @@ function (Ash, ItemVO, ItemConstants) {
                     all.push(this.items[key][i]);
                 }
             }
-            return all.sort(this.itemSortFunction);           
+            return all.sort(this.itemSortFunction);
         },
         
         getUnique: function() {

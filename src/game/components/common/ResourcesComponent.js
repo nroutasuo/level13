@@ -27,10 +27,17 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             }
         },
         
-        addResources: function(resourceVO) {
+        addResources: function (resourceVO) {
             for(var key in resourceNames) {
                 var name = resourceNames[key];
                 this.resources.addResource(name, resourceVO[name]);
+            }
+        },
+        
+        substractResources: function (resourceVO) {
+            for(var key in resourceNames) {
+                var name = resourceNames[key];
+                this.resources.addResource(name, -resourceVO[name]);
             }
         },
     

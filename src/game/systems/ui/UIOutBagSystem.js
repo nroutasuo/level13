@@ -120,7 +120,7 @@ define([
 			
 			var playerHealth = playerStamina.health;
 			var playerVision = this.itemNodes.head.entity.get(VisionComponent).value;
-			var scavengeEfficiency = Math.round(this.uiFunctions.playerActions.playerActionRewardsHelper.getScavengeEfficiency() * 200) / 2;
+			var scavengeEfficiency = Math.round(this.uiFunctions.playerActions.playerActionResultsHelper.getScavengeEfficiency() * 200) / 2;
 			$("#self-status-efficiency-scavenge").text("Scavenge efficiency: " + scavengeEfficiency + "%");
 			UIConstants.updateCalloutContent("#self-status-efficiency-scavenge", "health: " + Math.round(playerHealth) + "<br/>vision: " + Math.round(playerVision));
 		},

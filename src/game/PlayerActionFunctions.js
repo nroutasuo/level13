@@ -34,6 +34,7 @@ define(['ash',
 	'game/components/common/LogMessagesComponent',
 	'game/systems/ui/UIOutHeaderSystem',
 	'game/systems/ui/UIOutElementsSystem',
+	'game/systems/FaintingSystem',
 	'game/systems/SaveSystem'
 ], function (Ash,
 	PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UIConstants, TextConstants,
@@ -45,7 +46,7 @@ define(['ash',
 	SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, CampEventTimersComponent,
 	LogMessagesComponent,
-	UIOutHeaderSystem, UIOutElementsSystem, SaveSystem
+	UIOutHeaderSystem, UIOutElementsSystem, FaintingSystem, SaveSystem
 ) {
     
     var PlayerActionFunctions = Ash.System.extend({
@@ -74,16 +75,16 @@ define(['ash',
         improvementBuiltSignal: null,
 		
 		playerActionsHelper: null,
-		playerActionRewardsHelper: null,
+		playerActionResultsHelper: null,
         resourcesHelper: null,
 		levelHelper: null,
         
-        constructor: function (gameState, resourcesHelper, levelHelper, playerActionsHelper, playerActionRewardsHelper, playerMovedSignal, improvementBuiltSignal) {
+        constructor: function (gameState, resourcesHelper, levelHelper, playerActionsHelper, playerActionResultsHelper, playerMovedSignal, improvementBuiltSignal) {
             this.gameState = gameState;
             this.resourcesHelper = resourcesHelper;
 			this.levelHelper = levelHelper;
 			this.playerActionsHelper = playerActionsHelper;
-			this.playerActionRewardsHelper = playerActionRewardsHelper;
+			this.playerActionResultsHelper = playerActionResultsHelper;
             this.playerMovedSignal = playerMovedSignal;
             this.improvementBuiltSignal = improvementBuiltSignal;
         },
@@ -124,20 +125,20 @@ define(['ash',
         moveTo: function (direction) {
             if (direction) {
                 var playerPos = this.playerPositionNodes.head.position;
-                switch(direction) {
+                switch (direction) {
                     case this.directions.left:
                         this.playerActionsHelper.deductCosts("move_sector_left");
                         playerPos.sector--;
                         break;
-                    case this.directions.right:           
+                    case this.directions.right:
                         this.playerActionsHelper.deductCosts("move_sector_right");
                         playerPos.sector++;
                         break;
-                    case this.directions.up:           
+                    case this.directions.up:
                         this.playerActionsHelper.deductCosts("move_level_up");
                         playerPos.level++;
                         break;
-                    case this.directions.down:           
+                    case this.directions.down:
                         this.playerActionsHelper.deductCosts("move_level_down");
                         playerPos.level--;
                         break;
@@ -147,6 +148,7 @@ define(['ash',
                         var campPosition = campSector.get(PositionComponent);
                         playerPos.level = campPosition.level;
                         playerPos.sector = campPosition.sector;
+                        this.enterCamp(true);
                         break;
                 }
                 
@@ -218,7 +220,7 @@ define(['ash',
 					if (this.lastVisitedCamps.head) this.lastVisitedCamps.head.entity.remove(LastVisitedCampComponent);
                     campNode.entity.add(new LastVisitedCampComponent());
                     
-                    if(log) this.addLogMessage("Entered camp.");
+                    if (log) this.addLogMessage("Entered camp.");
                     this.playerMovedSignal.dispatch(playerPos);
                     this.forceResourceBarUpdate();
                     this.save();
@@ -238,11 +240,12 @@ define(['ash',
             var campNode = this.nearestCampNodes.head;
             if (campNode && campNode.position.level === playerPos.level && campNode.position.sector === playerPos.sector) {
                 var oldPlayerPos = playerPos.clone();
+                var sunlit = campNode.entity.get(SectorFeaturesComponent).sunlit;
                 playerPos.inCamp = false;
-                this.addLogMessage("Left camp.");
+                var msg = "Left camp. " + (sunlit ? "Sunlight is sharp and merciless." : " Darkess of the city envelops you.");
+                this.addLogMessage(msg);
                 this.playerMovedSignal.dispatch(playerPos);
                 this.forceResourceBarUpdate();
-                // this.addLogMessage("The people have missed you.", null, null, oldPlayerPos);
                 this.save();
             } else {
                 console.log("WARN: No valid camp found.");
@@ -253,14 +256,14 @@ define(['ash',
             if (this.playerActionsHelper.checkAvailability("scavenge", true)) {
                 this.playerActionsHelper.deductCosts("scavenge");
                 
-				var rewards = this.playerActionRewardsHelper.getScavengeRewards();
-				this.playerActionRewardsHelper.collectRewards(rewards);
+				var rewards = this.playerActionResultsHelper.getScavengeRewards();
+				this.playerActionResultsHelper.collectRewards(rewards);
 				
 				var playerVision = this.playerStatsNodes.head.vision.value;
 				var baseMsg = "";
 				if (playerVision <= PlayerStatConstants.VISION_BASE) baseMsg = "Rummaged in the dark. ";
 				else baseMsg = "Went scavenging. ";
-                var msgTemplate = this.playerActionRewardsHelper.getRewardsMessage(rewards, baseMsg);
+                var msgTemplate = this.playerActionResultsHelper.getRewardsMessage(rewards, baseMsg);
                 
                 this.addLogMessage(msgTemplate.msg, msgTemplate.replacements, msgTemplate.values);
                 this.forceResourceBarUpdate();
@@ -287,9 +290,9 @@ define(['ash',
                     sectorStatus.scouted = true;
 					
                     // TODO add details to message base depending on the location
-					var rewards = this.playerActionRewardsHelper.getScoutRewards();
-					this.playerActionRewardsHelper.collectRewards(rewards);
-					var msgTemplate = this.playerActionRewardsHelper.getRewardsMessage(rewards, "Scouted the area. ");
+					var rewards = this.playerActionResultsHelper.getScoutRewards();
+					this.playerActionResultsHelper.collectRewards(rewards);
+					var msgTemplate = this.playerActionResultsHelper.getRewardsMessage(rewards, "Scouted the area. ");
                     
 					this.addLogMessage(msgTemplate.msg, msgTemplate.replacements, msgTemplate.values);
                     this.forceResourceBarUpdate();
@@ -310,15 +313,22 @@ define(['ash',
                 
                 // TODO add a more interesting log message
 				var localeVO = sectorLocalesComponent.locales[i];
-				var rewards = this.playerActionRewardsHelper.getScoutLocaleRewards(localeVO);
-				this.playerActionRewardsHelper.collectRewards(rewards);
+				var rewards = this.playerActionResultsHelper.getScoutLocaleRewards(localeVO);
+				this.playerActionResultsHelper.collectRewards(rewards);
 				var localeName = TextConstants.getLocaleName(localeVO, sectorFeaturesComponent.stateOfRepair);
 				localeName = localeName.split(" ")[localeName.split(" ").length - 1];
-				var msgTemplate = this.playerActionRewardsHelper.getRewardsMessage(rewards, "Scouted the " + localeName +  ". ");
+				var msgTemplate = this.playerActionResultsHelper.getRewardsMessage(rewards, "Scouted the " + localeName +  ". ");
                 
 				this.addLogMessage(msgTemplate.msg, msgTemplate.replacements, msgTemplate.values);
                 this.forceResourceBarUpdate();
                 this.save();
+            }
+        },
+        
+        despair: function () {
+            if (this.playerActionsHelper.checkAvailability("despair", true)) {
+                this.playerActionsHelper.deductCosts("despair");
+                this.engine.getSystem(FaintingSystem).checkFainting();
             }
         },
         
@@ -327,9 +337,9 @@ define(['ash',
             sector.get(EnemiesComponent).selectNextEnemy();
         },
         
-        startFight: function() {
+        startFight: function () {
             if (this.playerActionsHelper.checkAvailability("fight", true)) {
-                this.playerActionsHelper.deductCosts("fight");  
+                this.playerActionsHelper.deductCosts("fight");
                 var sector = this.playerLocationNodes.head.entity;
                 var enemiesComponent = sector.get(EnemiesComponent);
                 sector.add(new FightComponent(enemiesComponent.getNextEnemy()));

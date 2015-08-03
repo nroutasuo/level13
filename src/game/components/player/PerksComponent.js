@@ -11,6 +11,7 @@ function (Ash, PerkVO, PerkConstants) {
         },
         
         addPerk: function (perk) {
+			console.log("ADD PERK " + perk.type);
             if (typeof this.perks[perk.type] == 'undefined') {
                 this.perks[perk.type] = [];
             }
@@ -24,7 +25,7 @@ function (Ash, PerkVO, PerkConstants) {
                     if (this.perks[key][i].id == perkId) return true;
                 }
             }
-            return false;            
+            return false;
         },
         
         getAll: function() {
@@ -49,10 +50,10 @@ function (Ash, PerkVO, PerkConstants) {
                     }
                 }
             }
-            return effect;               
+            return effect;
         },
         
-        removeItemsByType: function(type) {
+        removeItemsByType: function (type) {
             if (typeof this.perks[type] != 'undefined') {
                 this.perks[type] = [];
             }

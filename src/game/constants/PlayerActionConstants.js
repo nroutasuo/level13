@@ -760,6 +760,7 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                 fightCheck: 20,
                 use_in_campfire: 60,
                 use_in_inn: 60 * 30,
+                despair: 60,
             },
         
             descriptions: {
@@ -769,6 +770,7 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                 move_sector_left: "Move to another area",
                 move_sector_right: "Move to another area",
                 move_camp_level: "Shortcut back to the nearest camp.",
+                despair: "Give up. Stop moving. Rest.",
                 build_out_collector_food: "Collect food.",
                 build_out_collector_water: "Collect water.",
                 build_in_house: "A place for people to stay.",

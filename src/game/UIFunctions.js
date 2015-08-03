@@ -58,7 +58,6 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
         mapActions: function () {
             var playerActions = this.playerActions;
             // Out improvements
-            this.actionToFunctionMap["move_camp_level"] = this.playerActions.moveToCamp;
             this.actionToFunctionMap["build_out_collector_water"] = this.playerActions.buildBucket;
             this.actionToFunctionMap["build_out_collector_food"] = this.playerActions.buildTrap;
             this.actionToFunctionMap["use_out_collector_water"] = this.playerActions.collectWater;
@@ -100,6 +99,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             this.actionToFunctionMap["scavenge"] = this.playerActions.scavenge;
             this.actionToFunctionMap["scout"] = this.playerActions.scout;
             this.actionToFunctionMap["scout_locale"] = playerActions.scoutLocale;
+            this.actionToFunctionMap["despair"] = playerActions.despair;
         },
         
         registerListeners: function () {
@@ -246,7 +246,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                 $("#fight-popup").wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");
                 $(".popup-overlay").fadeIn(200, function() {
                     uiFunctions.popupManager.onResize();
-                    $("#fight-popup").fadeIn(200, uiFunctions.popupManager.onResize);                    
+                    $("#fight-popup").fadeIn(200, uiFunctions.popupManager.onResize);
                 });
             });
             $(scope + " #out-action-fight-confirm").click( function(e) {
@@ -343,7 +343,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             });
         },
         
-        generateSteppers: function(scope) {
+        generateSteppers: function (scope) {
             $(scope + " .stepper").append("<button type='button' class='btn-glyph' data-type='minus' data-field=''>-</button>");
             $(scope + " .stepper").append("<input class='amount' type='text' min='0' max='100' autocomplete='false' value='0' name=''></input>");  
             $(scope + " .stepper").append("<button type='button' class='btn-glyph' data-type='plus' data-field=''>+</button>");
@@ -674,9 +674,9 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             this.onTabClicked(tabID, this.elementIDs, this.gameState, this.playerActions);
         },
         
-        showInfoPopup: function(title, msg, buttonLabel) {
+        showInfoPopup: function(title, msg, buttonLabel, resultVO) {
             if (!buttonLabel) buttonLabel = "Continue";
-            this.popupManager.showPopup("info-popup", title, msg, buttonLabel);
+            this.popupManager.showPopup("info-popup", title, msg, buttonLabel, false, resultVO);
         },
         
         showConfirmation: function(msg, callback) {

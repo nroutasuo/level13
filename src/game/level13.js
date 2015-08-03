@@ -36,7 +36,7 @@ define([
     'game/OccurrenceFunctions',
     'game/UIFunctions',
     'game/helpers/PlayerActionsHelper',
-    'game/helpers/PlayerActionRewardsHelper',
+    'game/helpers/PlayerActionResultsHelper',
     'game/helpers/ResourcesHelper',
     'game/helpers/MovementHelper',
     'game/helpers/LevelHelper',
@@ -80,7 +80,7 @@ define([
     OccurrenceFunctions,
     UIFunctions,
     PlayerActionsHelper,
-    PlayerActionRewardsHelper,
+    PlayerActionResultsHelper,
     ResourcesHelper,
     MovementHelper,
     LevelHelper,
@@ -109,7 +109,7 @@ define([
 			// Singleton helper modules to be passed to systems that need them
 			this.resourcesHelper = new ResourcesHelper(this.engine);
 			this.playerActionsHelper = new PlayerActionsHelper(this.engine, this.gameState, this.resourcesHelper);
-			this.playerActionRewardsHelper = new PlayerActionRewardsHelper(this.engine, this.gameState, this.resourcesHelper);
+			this.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine, this.gameState, this.resourcesHelper);
 			this.movementHelper = new MovementHelper(this.engine);
 			this.levelHelper = new LevelHelper(this.engine, this.playerActionsHelper);
 			this.saveHelper = new SaveHelper();
@@ -121,7 +121,7 @@ define([
 			// Basic building blocks & special systems
 			this.tickProvider = new TickProvider(null);
 			this.saveSystem = new SaveSystem(this.gameState);
-			this.playerActions = new PlayerActionFunctions(this.gameState, this.resourcesHelper, this.levelHelper, this.playerActionsHelper, this.playerActionRewardsHelper, this.playerMovedSignal, this.improvementBuiltSignal);
+			this.playerActions = new PlayerActionFunctions(this.gameState, this.resourcesHelper, this.levelHelper, this.playerActionsHelper, this.playerActionResultsHelper, this.playerMovedSignal, this.improvementBuiltSignal);
 			this.uiFunctions = new UIFunctions(this.playerActions, this.gameState, this.saveSystem);
 			this.occurrenceFunctions = new OccurrenceFunctions(this.uiFunctions);
 			
@@ -157,10 +157,10 @@ define([
 			this.engine.addSystem(new GlobalResourcesSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new BagSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new CollectorSystem(), SystemPriorities.update);
-			this.engine.addSystem(new FightSystem(this.gameState, this.resourcesHelper, this.playerActionRewardsHelper, this.occurrenceFunctions), SystemPriorities.update);
+			this.engine.addSystem(new FightSystem(this.gameState, this.resourcesHelper, this.playerActionResultsHelper, this.occurrenceFunctions), SystemPriorities.update);
 			this.engine.addSystem(new PopulationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new WorkerSystem(this.resourcesHelper), SystemPriorities.update);
-			this.engine.addSystem(new FaintingSystem(this.uiFunctions, this.playerActions), SystemPriorities.update);
+			this.engine.addSystem(new FaintingSystem(this.uiFunctions, this.playerActions, this.playerActionResultsHelper), SystemPriorities.update);
 			this.engine.addSystem(new ReputationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new RumourSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new EvidenceSystem(this.gameState), SystemPriorities.update);
