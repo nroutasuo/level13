@@ -13,16 +13,23 @@ define([
 		uiFunctions : null,
 		gameState: null,
 		
+		tabChangedSignal: null,
+		
 		itemNodes: null,
 	
-		constructor: function (uiFunctions, gameState) {
+		constructor: function (uiFunctions, tabChangedSignal, gameState) {
 			this.gameState = gameState;
 			this.uiFunctions = uiFunctions;
+			this.tabChangedSignal = tabChangedSignal;
 			
 			var system = this;
 			$("#container-tab-two-bag .golden-large").mouseleave(function (e) {
 				system.setSelectedItemLI(null);
 			});
+			
+			this.onTabChanged = function () {
+				system.updateCrafting();
+			};
 			
 			return this;
 		},
@@ -31,15 +38,17 @@ define([
 			this.itemNodes = engine.getNodeList(ItemsNode);
 			this.initButtonListeners();
 			this.setSelectedItemLI(null);
+			
+			this.tabChangedSignal.add(this.onTabChanged);
 		},
 		
-		initButtonListeners: function() {
+		initButtonListeners: function () {
 			var itemsComponent = this.itemNodes.head.items;
 			var uiFunctions = this.uiFunctions;
 			var system = this;
-			$("button[action='discard_item']").click(function(e) {
+			$("button[action='discard_item']").click(function (e) {
 				var item = itemsComponent.selectedItem;
-				var questionS = item.type == ItemConstants.itemTypes.follower ?
+				var questionS = item.type === ItemConstants.itemTypes.follower ?
 					"Are you sure you want to disband this follower?" : "Are you sure you want to discard this item?";
 				uiFunctions.showConfirmation(
 					questionS,
@@ -61,7 +70,6 @@ define([
 					}
 				);
 			});
-			
 			$("button[action='equip_item']").click(function (e) {
 				var item = itemsComponent.selectedItem;
 				if (item.equipped) itemsComponent.unequip(item);
@@ -72,11 +80,12 @@ define([
 
 		removeFromEngine: function (engine) {
 			this.itemNodes = null;
+			this.tabChangedSignal.remove(this.onTabChanged);
 			$("button[action='discard_item']").click(null);
 		},
 	
 		update: function (time) {
-			if (this.uiFunctions.gameState.uiStatus.currentTab != this.uiFunctions.elementIDs.tabs.bag) return;
+			if (this.uiFunctions.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.bag) return;
 			
 			var itemsComponent = this.itemNodes.head.items;
 			var selectedItem = itemsComponent.selectedItem;
@@ -87,21 +96,53 @@ define([
 			// Items
 			var itemsComponent = this.itemNodes.head.items;
 			var uniqueItems = itemsComponent.getUnique();
-			var itemListL = $("#bag-items li").length;
-			var followerListL = $("#list-followers li").length;
-			if (uniqueItems.length != itemListL + followerListL) {
-				this.updateItemLists();
-			} else {
-				this.refreshItemLists();
-			}
+			this.updateItems(uniqueItems);
 			
 			// Description
 			$("#items-empty").toggle(uniqueItems.length === 0);
 			this.updateItemDetails(selectedItem, itemsComponent.getCount(selectedItem));
 			
 			// Additional infos
+			this.updateStats();
+		},
+		
+		updateItems: function (uniqueItems) {
+			var itemListL = $("#bag-items li").length;
+			var followerListL = $("#list-followers li").length;
+			if (uniqueItems.length !== itemListL + followerListL) {
+				this.updateItemLists();
+			} else {
+				this.refreshItemLists();
+			}
+		},
+		
+		updateCrafting: function () {
+			if (this.uiFunctions.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.bag) return;
+			$("#self-craft table").empty();
+			
+			var itemList;
+			var itemDefinition;
+			var tr;
+			for (var type in ItemConstants.itemDefinitions) {
+				itemList = ItemConstants.itemDefinitions[type];
+				for (var i in itemList) {
+					itemDefinition = itemList[i];
+					if (itemDefinition.craftable) {
+						tr = "<tr><td><button class='action' action='craft_" + itemDefinition.id + "'>" + itemDefinition.name + "</button></td></tr>";
+						$("#self-craft table").append(tr);
+					}
+				}
+			}
+			
+			this.uiFunctions.registerActionButtonListeners("#self-craft");
+			this.uiFunctions.generateButtonOverlays("#self-craft");
+			this.uiFunctions.generateCallouts("#self-craft");
+		},
+		
+		updateStats: function () {
 			// TODO update only when necessary
 			var playerStamina = this.itemNodes.head.entity.get(StaminaComponent);
+			var itemsComponent = this.itemNodes.head.items;
 			$("#self-status-fight-att").text("Fight strength: " + FightConstants.getPlayerAtt(playerStamina, itemsComponent));
 			var attCalloutContent = FightConstants.getPlayerAttDesc(playerStamina, itemsComponent);
 			UIConstants.updateCalloutContent("#self-status-fight-att", attCalloutContent);
@@ -125,7 +166,7 @@ define([
 			UIConstants.updateCalloutContent("#self-status-efficiency-scavenge", "health: " + Math.round(playerHealth) + "<br/>vision: " + Math.round(playerVision));
 		},
 		
-		updateItemLists: function() {
+		updateItemLists: function () {
 			var itemsComponent = this.itemNodes.head.items;
 			var items = itemsComponent.getUnique();
 			$("#bag-items").empty();

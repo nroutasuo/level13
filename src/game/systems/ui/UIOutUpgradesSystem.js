@@ -11,12 +11,15 @@ define([
 		
 		engine: null,
 		
+		tabChangedSignal: null,
+		
 		tribeNodes: null,
 		
 		lastUpdateUpgradeCount: 0,
 	
-		constructor: function (uiFunctions, playerActions) {
+		constructor: function (uiFunctions, tabChangedSignal, playerActions) {
 			this.uiFunctions = uiFunctions;
+			this.tabChangedSignal = tabChangedSignal;
 			this.playerActions = playerActions;
 			return this;
 		},
@@ -65,7 +68,7 @@ define([
 					var nameTD = "<td><span class='upgrade'>" + upgradeDefinition.name + "</span></td>";
 					var descriptionTD = "<td>"+ upgradeDefinition.description +"</td>"
 					var tr = "<tr>" + nameTD + "" + descriptionTD + "</tr>";
-					$("#unlocked-upgrades-list").append(tr);		    
+					$("#unlocked-upgrades-list").append(tr);
 				}
 			}
 			

@@ -665,13 +665,123 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                     resource_metal: 200,
                 },
                 
-                craft_light: {
+                craft_light1: {
                     resource_metal: 8,
                 },
                 
-                craft_weapon: {
+                craft_light2: {
+                    resource_metal: 100,
+                    resource_fuel: 10,
+                },
+                
+                craft_shade1: {
+                    resource_metal: 10,
+                },
+                
+                craft_shade2: {
+                    resource_metal: 10,
+                },
+                
+                craft_weapon1: {
                     resource_metal: 10,
                     resource_rope: 1
+                },
+                
+                craft_weapon1: {
+                    resource_metal: 10,
+                    resource_rope: 1
+                },
+                
+                craft_weapon2: {
+                    resource_metal: 20,
+                    resource_rope: 2
+                },
+                
+                craft_weapon3: {
+                    resource_metal: 10,
+                    resource_rope: 1,
+                    resource_tools: 10,
+                },
+                
+                craft_weapon4: {
+                    resource_metal: 10,
+                    resource_rope: 1,
+                    resource_tools: 10,
+                },
+                
+                craft_weapon5: {
+                    resource_metal: 10,
+                    resource_rope: 1,
+                    resource_tools: 10,
+                },
+                
+                craft_weapon6: {
+                    resource_metal: 10,
+                    resource_rope: 1,
+                    resource_tools: 10,
+                },
+                
+                craft_weapon7: {
+                    resource_metal: 10,
+                    resource_rope: 1,
+                    resource_tools: 10,
+                },
+                
+                craft_weapon8: {
+                    resource_metal: 10,
+                    resource_rope: 1,
+                    resource_tools: 10,
+                },
+                
+                craft_clothing1: {
+                    resource_rope: 10,
+                },
+                
+                craft_clothing2: {
+                    resource_rope: 20,
+                },
+                
+                craft_clothing3: {
+                    resource_rope: 30,
+                },
+                
+                craft_clothing4: {
+                    resource_rope: 40,
+                },
+                
+                craft_clothing5: {
+                    resource_rope: 50,
+                },
+                
+                craft_clothing6: {
+                    resource_rope: 60,
+                },
+                
+                craft_clothing7: {
+                    resource_rope: 70,
+                },
+                
+                craft_clothing8: {
+                    resource_rope: 80,
+                },
+                
+                craft_bag_0: {
+                    resource_rope: 20,
+                },
+                
+                craft_bag_1: {
+                    resource_rope: 100,
+                },
+                
+                craft_bag_2: {
+                    resource_rope: 100,
+                    resource_herbs: 10,
+                },
+                
+                craft_bag_3: {
+                    resource_rope: 100,
+                    resource_herbs: 10,
+                    resource_fuel: 10,
                 },
             
                 unlock_worker_rope: {
@@ -767,6 +877,7 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                 scout: "Scout the area for evidence.",
                 scout_locale: "Scout for additional resources and evidence.",
                 scavenge: "Look for resources.",
+                fightcheck: "Attempt to gain control of the area.",
                 move_sector_left: "Move to another area",
                 move_sector_right: "Move to another area",
                 move_camp_level: "Shortcut back to the nearest camp.",

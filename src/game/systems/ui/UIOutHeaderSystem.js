@@ -34,7 +34,7 @@ define([
 		lastUpdateTimeStamp: 0,
 		updateFrequency: 1000 * 2,
 	
-		constructor: function (gameState, uiFunctions, resourcesHelper) {
+		constructor: function (uiFunctions, gameState, resourcesHelper) {
 			this.gameState = gameState;
 			this.uiFunctions = uiFunctions;
 			this.resourcesHelper = resourcesHelper;

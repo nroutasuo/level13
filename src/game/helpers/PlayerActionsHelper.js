@@ -54,12 +54,10 @@ define([
 		},
         
         getItemForCraftAction: function (actionName) {
-            switch (actionName) {
-				case "craft_light":
-					return ItemConstants.itemDefinitions.light[0];
-				
-				case "craft_weapon":
-					return ItemConstants.itemDefinitions.weapon[0];
+			var baseActionName = this.getBaseActionID(actionName);
+            switch (baseActionName) {
+				case "craft":
+					return ItemConstants.getItemByID(this.getActionIDParam(actionName));
 				
 				default: return null;
             }
@@ -84,6 +82,14 @@ define([
             
             if (costs.resource_fuel) {
                 currentStorage.resources.fuel -= costs.resource_fuel;
+            }
+            
+            if (costs.resource_tools) {
+                currentStorage.resources.tools -= costs.resource_tools;
+            }
+            
+            if (costs.resource_herbs) {
+                currentStorage.resources.herbs -= costs.resource_herbs;
             }
             
             if (costs.resource_rope) {
@@ -466,6 +472,12 @@ define([
                 case "resource_fuel":
                     return (playerResources.resources.fuel / costs.resource_fuel);  
                 
+                case "resource_tools":
+                    return (playerResources.resources.tools / costs.resource_tools);  
+                
+                case "resource_herbs":
+                    return (playerResources.resources.herbs / costs.resource_herbs); 
+                
                 case "resource_rope":
                     return (playerResources.resources.rope / costs.resource_rope);   
                 
@@ -621,6 +633,7 @@ define([
 		getBaseActionID: function (action) {
 			if (!action) return action;
 			if (action.indexOf("scout_locale") >= 0) return "scout_locale";
+			if (action.indexOf("craft_") >= 0) return "craft";
 			return action;
 		},
         

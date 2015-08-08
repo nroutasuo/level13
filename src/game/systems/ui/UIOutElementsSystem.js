@@ -34,7 +34,7 @@ define([
         levelHelper: null,
         engine: null,
     
-        constructor: function (gameState, playerActions, uiFunctions, resourcesHelper, levelHelper) {
+        constructor: function (uiFunctions, gameState, playerActions, resourcesHelper, levelHelper) {
             this.gameState = gameState;
             this.playerActions = playerActions;
             this.uiFunctions = uiFunctions;
@@ -251,14 +251,22 @@ define([
         
         updateInfoCallouts: function () {
             // TODO performance bottleeck
-            $.each($(".callout-container"), function() {
-            if ($(this).children(".info-callout-target").length > 0) {
-                var visible = true;
-                $.each($(this).children(".info-callout-target").children(), function() {
-                    visible = visible && $(this).css("display") != "none";
-                });
-                $(this).toggle(visible);
-            }
+            $.each($(".callout-container"), function () {
+				if ($(this).children(".info-callout-target").length > 0) {
+					var visible = true;
+					$.each($(this).children(".info-callout-target").children(), function () {
+						visible = visible && $(this).css("display") !== "none";
+					});
+					$(this).toggle(visible);
+				}
+				
+				if ($(this).children(".container-btn-action").length > 0) {
+					var visible = true;
+					$.each($(this).children(".container-btn-action"), function () {
+						visible = visible && $(this).css("display") !== "none";
+					});
+					$(this).toggle(visible);
+				}
             });
         },
     });

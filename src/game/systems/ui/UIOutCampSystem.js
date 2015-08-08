@@ -30,14 +30,17 @@ define([
         gameState : null,
         
         engine: null,
+		
+		tabChangedSignal: null,
 	
         playerPosNodes: null,
         playerLocationNodes: null,
         deityNodes: null,
         tribeUpgradesNodes: null,
 
-        constructor: function (uiFunctions, gameState, levelHelper) {
+        constructor: function (uiFunctions, tabChangedSignal, gameState, levelHelper) {
             this.uiFunctions = uiFunctions;
+			this.tabChangedSignal = tabChangedSignal;
             this.gameState = gameState;
             this.levelHelper = levelHelper;
             return this;

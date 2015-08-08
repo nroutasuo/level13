@@ -16,17 +16,20 @@ define([
 ) {
     var UIOutTribeSystem = Ash.System.extend({
 	
-	uiFunctions : null,
-	resourcesHelper: null,
-	
-	engine: null,
+		uiFunctions : null,
+		resourcesHelper: null,
+		
+		engine: null,
+		
+		tabChangedSignal: null,
 	
         campNodes: null,
-	playerPosNodes: null,
+		playerPosNodes: null,
 
-        constructor: function (uiFunctions, resourcesHelper) {
-	    this.uiFunctions = uiFunctions;
-	    this.resourcesHelper = resourcesHelper;
+        constructor: function (uiFunctions, tabChangedSignal, resourcesHelper) {
+			this.uiFunctions = uiFunctions;
+			this.tabChangedSignal = tabChangedSignal;
+			this.resourcesHelper = resourcesHelper;
             return this;
         },
 

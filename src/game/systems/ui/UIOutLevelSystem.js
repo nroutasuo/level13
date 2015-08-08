@@ -45,15 +45,17 @@ define([
 		sectorNodes: null,
 		visitedSectorNodes: null,
 		
+		tabChangedSignal: null,
 		playerMovedSignal: null,
 		
 		visitedSectors: 0,
 	
-		constructor: function (uiFunctions, gameState, movementHelper, resourceHelper, playerMovedSignal) {
+		constructor: function (uiFunctions, tabChangedSignal, gameState, movementHelper, resourceHelper, playerMovedSignal) {
 			this.uiFunctions = uiFunctions;
 			this.gameState = gameState;
 			this.movementHelper = movementHelper;
 			this.resourcesHelper = resourceHelper;
+			this.tabChangedSignal = tabChangedSignal;
 			this.playerMovedSignal = playerMovedSignal;
 			return this;
 		},

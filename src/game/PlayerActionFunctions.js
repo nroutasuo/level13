@@ -79,13 +79,14 @@ define(['ash',
         resourcesHelper: null,
 		levelHelper: null,
         
-        constructor: function (gameState, resourcesHelper, levelHelper, playerActionsHelper, playerActionResultsHelper, playerMovedSignal, improvementBuiltSignal) {
+        constructor: function (gameState, resourcesHelper, levelHelper, playerActionsHelper, playerActionResultsHelper, playerMovedSignal, tabChangedSignal, improvementBuiltSignal) {
             this.gameState = gameState;
             this.resourcesHelper = resourcesHelper;
 			this.levelHelper = levelHelper;
 			this.playerActionsHelper = playerActionsHelper;
 			this.playerActionResultsHelper = playerActionResultsHelper;
             this.playerMovedSignal = playerMovedSignal;
+            this.tabChangedSignal = tabChangedSignal;
             this.improvementBuiltSignal = improvementBuiltSignal;
         },
 
@@ -643,17 +644,8 @@ define(['ash',
             this.save();   
         },
         
-        craftLight: function() {
-            this.craftItem("craft_light");
-            this.gameState.unlockedFeatures.vision = true;
-        },
-        
-        craftWeapon: function() {
-            this.craftItem("craft_weapon");
-            this.gameState.unlockedFeatures.fight = true;
-        },
-        
-        craftItem: function(actionName) {            
+        craftItem: function(itemId) {
+			var actionName = "craft_" + itemId;
             if (this.playerActionsHelper.checkAvailability(actionName, true)) {                
                 this.playerActionsHelper.deductCosts(actionName);
                 

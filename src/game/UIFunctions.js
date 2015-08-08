@@ -34,6 +34,8 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                 resource_food: "Food",
                 resource_water: "Water",
                 resource_concrete: "Concrete",
+                resource_herbs: "Herbs",
+                resource_tools: "Tools",
                 rumours: "Rumours",
                 evidence: "Evidence",
             }
@@ -93,8 +95,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             this.actionToFunctionMap["use_in_hospital"] = this.playerActions.useHospital;
             this.actionToFunctionMap["use_in_inn"] = this.playerActions.useInn;
             // Crafting
-            this.actionToFunctionMap["craft_light"] = this.playerActions.craftLight;
-            this.actionToFunctionMap["craft_weapon"] = this.playerActions.craftWeapon;
+            this.actionToFunctionMap["craft"] = this.playerActions.craftItem;
             // Non-improvement actions
             this.actionToFunctionMap["scavenge"] = this.playerActions.scavenge;
             this.actionToFunctionMap["scout"] = this.playerActions.scout;
@@ -459,7 +460,9 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                     $("#container-tab-two-world").slideUp(transitionTime);
                     $("#container-tab-footer").slideUp(transitionTime);
                     break;
-            } 
+            }
+            
+            playerActions.tabChangedSignal.dispatch(tabID);
         },
         
         onStepperButtonClicked: function(e) {
