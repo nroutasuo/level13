@@ -24,74 +24,73 @@ define([
 			var failedComponents = 0;
 			var entityComponents = entitiesObject[saveKey];
 			for(var componentKey in entityComponents) {
-			var component = entity.get(componentKey);
-			var componentValues = entityComponents[componentKey];
-			
-			if (!component) {
-				for(var i=0; i< this.optionalComponents.length; i++)
-				{
-				var optionalComponent = this.optionalComponents[i];
-				if (componentKey == optionalComponent) {
-					component = new optionalComponent();
-					entity.add(component);
-					break;
+				var component = entity.get(componentKey);
+				var componentValues = entityComponents[componentKey];
+				
+				if (!component) {
+					for(var i=0; i< this.optionalComponents.length; i++) {
+						var optionalComponent = this.optionalComponents[i];
+						if (componentKey == optionalComponent) {
+							component = new optionalComponent();
+							entity.add(component);
+							break;
+						}
+					}
 				}
+				
+				if (!component) {
+					console.log("WARN: Component not found while loading:");
+					console.log(componentKey);
+					failedComponents++;
+					continue;
 				}
-			}
-			
-			if (!component) {
-				console.log("WARN: Component not found while loading:");
-				console.log(componentKey);
-				failedComponents++;
-				continue;
-			}
-			
-			if(component.customLoadFromSave) {
-				component.customLoadFromSave(componentValues);
-			} else {
-				this.loadComponent(component, componentValues, saveKey);
-			}
+				
+				if (component.customLoadFromSave) {
+					component.customLoadFromSave(componentValues);
+				} else {
+					this.loadComponent(component, componentValues, saveKey);
+				}
 			}
 			
 			return failedComponents;
 		},
 			
-			loadComponent: function(component, componentValues, saveKey) {		
+		loadComponent: function(component, componentValues, saveKey) {
 			// console.log(component);
 			for(var valueKey in componentValues) {
-			// console.log(valueKey + ": " + componentValues[valueKey]);
-			if (typeof componentValues[valueKey] != 'object') {
-				if (valueKey != "id") {
-				component[valueKey] = componentValues[valueKey];
-				}
-			}
-			else
-			{
-				if (component[valueKey] == null) continue;
-				for(var valueKey2 in componentValues[valueKey]) {
-				var value2 = componentValues[valueKey][valueKey2];
-				// console.log(valueKey2 + ": " + value2)
-				if (value2 == null) {
-					continue;
-				} else if (typeof value2 != 'object') {
-					if (valueKey2 != "id") {
-					component[valueKey][valueKey2] = value2;
+				// console.log(valueKey + ": " + componentValues[valueKey]);
+				if (typeof componentValues[valueKey] != 'object') {
+					if (valueKey != "id") {
+						component[valueKey] = componentValues[valueKey];
 					}
-				} else if(parseInt(valueKey2) >= 0 && component[valueKey] instanceof Array) {
-					var valueKey2Int = parseInt(valueKey2);
-					if (!component[valueKey][valueKey2Int]) {
-					component[valueKey][valueKey2Int] = {};    
-					}
-					this.loadObject(component[valueKey][valueKey2], componentValues[valueKey][valueKey2Int]);
-				} else {
-					if (!component[valueKey][valueKey2]) {
-					console.log("WARN: Error loading. Unknown value key " + valueKey2 + " for object " + valueKey + " in " + saveKey);
-					continue;
-					}
-					this.loadObject(component[valueKey][valueKey2], value2);
 				}
+				else
+				{
+					if (component[valueKey] == null) continue;
+					for(var valueKey2 in componentValues[valueKey]) {
+						var value2 = componentValues[valueKey][valueKey2];
+						// console.log(valueKey2 + ": " + value2)
+						if (value2 == null) {
+							continue;
+						} else if (typeof value2 != 'object') {
+							if (valueKey2 != "id") {
+								component[valueKey][valueKey2] = value2;
+							}
+						} else if (parseInt(valueKey2) >= 0 && component[valueKey] instanceof Array) {
+							var valueKey2Int = parseInt(valueKey2);
+							if (!component[valueKey][valueKey2Int]) {
+								component[valueKey][valueKey2Int] = {};    
+							}
+							this.loadObject(component[valueKey][valueKey2], componentValues[valueKey][valueKey2Int]);
+						} else {
+							if (!component[valueKey][valueKey2]) {
+								console.log("WARN: Error loading. Unknown value key " + valueKey2 + " for object " + valueKey + " in " + saveKey);
+								continue;
+							}
+							this.loadObject(component[valueKey][valueKey2], value2);
+						}
+					}
 				}
-			}
 			}
 		},
 		

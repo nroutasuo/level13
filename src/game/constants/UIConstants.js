@@ -39,8 +39,21 @@ define(['ash'], function (Ash) {
 		
 		getItemList: function (items) {
 			var html = "";
+			var itemsCounted = {};
+			var itemsById = {};
 			for (var i = 0; i < items.length; i++) {
-				html += this.getItemLI(items[i], 1);
+				if (typeof itemsCounted[items[i].id]  === 'undefined') {
+					itemsCounted[items[i].id] = 1;
+					itemsById[items[i].id] = items[i];
+				} else {
+					itemsCounted[items[i].id]++;
+				}
+			}
+			
+			for (var key in itemsById) {
+				var item = itemsById[key];
+				var amount = itemsCounted[key];
+				html += this.getItemLI(item, amount);
 			}
 			return html;
 		},
@@ -54,7 +67,7 @@ define(['ash'], function (Ash) {
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
 				var amount = resourceVO.getResource(name);
-				if (amount > 0) {
+				if (Math.round(amount) > 0) {
 					var li = this.getResourceLi(name, amount);
 					html += li;
 				}

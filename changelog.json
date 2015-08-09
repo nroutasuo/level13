@@ -7,15 +7,19 @@
             "changes": [
                 {
                     "type": "GD",
-                    "summary": "Exploration now requires food and water"
+                    "summary": "Working crafting system and all basic items. Secondary resources (parts) that can be scavenged and used for crafting."
                 },
                 {
                     "type": "GD",
-                    "summary": "Locales: new scouting opportunities that appear on some sectors"
+                    "summary": "Exploration now requires food and water."
+                },
+                {
+                    "type": "GD",
+                    "summary": "Locales: new scouting opportunities that appear on some sectors."
                 },
                 {
                     "type": "UI",
-                    "summary": "Black skin for dark levels/sectors"
+                    "summary": "Black skin for dark levels/sectors."
                 }
             ]
         },

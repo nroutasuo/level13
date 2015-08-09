@@ -34,13 +34,13 @@ define([
 			var hasNewMessages = false;
 			
 			var messages = [];
-				for (var node = this.logNodes.head; node; node = node.next) {
-			messages = messages.concat(node.logMessages.messages);
-			hasNewMessages = hasNewMessages || node.logMessages.hasNewMessages;
-			node.logMessages.hasNewMessages = false;
-				}
-			
-			if(!hasNewMessages && !isTime) return;
+			for (var node = this.logNodes.head; node; node = node.next) {
+				messages = messages.concat(node.logMessages.messages);
+				hasNewMessages = hasNewMessages || node.logMessages.hasNewMessages;
+				node.logMessages.hasNewMessages = false;
+			}
+		
+			if (!hasNewMessages && !isTime) return;
 			
 			this.pruneMessages();
 			this.refreshMessages(messages);
@@ -84,16 +84,16 @@ define([
 			}
 		},
 		
-		pruneMessages: function() {
-			var maxMessages = 50;
+		pruneMessages: function () {
+			var maxMessages = 30;
 			var messagesToPrune = 10;
 					
 			var nodeMessages;
 			for (var node = this.logNodes.head; node; node = node.next) {
-			nodeMessages = node.logMessages.messages;		    
-			if (nodeMessages.length > maxMessages) {
-				nodeMessages.splice(0, nodeMessages.length - maxMessages + messagesToPrune);
-			}
+				nodeMessages = node.logMessages.messages;
+				if (nodeMessages.length > maxMessages) {
+					nodeMessages.splice(0, nodeMessages.length - maxMessages + messagesToPrune);
+				}
 			}
 		},
 

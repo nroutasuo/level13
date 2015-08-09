@@ -34,7 +34,10 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                         control: false,
                         enemies: true,
                         scouted: true,
-                    }
+                    },
+                    perks: {
+                        Injury: [1, -1],
+                    },
                 },
                     
                 fight: {
@@ -44,7 +47,10 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                         control: false,
                         enemies: true,
                         scouted: true,
-                    }
+                    },
+                    perks: {
+                        Injury: [1, -1],
+                    },
                 },
                         
                 move_sector_left: {
@@ -672,6 +678,7 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                 craft_light2: {
                     resource_metal: 50,
                     resource_fuel: 20,
+                    item_res_matches: 2
                 },
                 
                 craft_shade1: {
@@ -690,39 +697,41 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                 craft_weapon2: {
                     resource_metal: 20,
                     resource_rope: 10,
+                    item_res_bands: 1,
                 },
                 
                 craft_weapon3: {
                     resource_metal: 100,
                     resource_rope: 10,
-                    resource_tools: 2,
+                    item_res_bands: 1,
                 },
                 
                 craft_weapon4: {
                     resource_metal: 100,
                     resource_rope: 5,
-                    resource_tools: 10,
                     resource_fuel: 5,
+                    item_res_bands: 10,
                 },
                 
                 craft_weapon5: {
                     resource_metal: 200,
-                    resource_rope: 5,
                     resource_tools: 20,
                     resource_fuel: 50,
+                    item_res_bands: 50,
                 },
                 
                 craft_weapon6: {
-                    resource_metal: 500,
+                    resource_metal: 300,
                     resource_tools: 50,
                     resource_fuel: 100,
+                    item_res_bands: 50,
                 },
                 
                 craft_weapon7: {
                     resource_metal: 500,
                     resource_tools: 50,
                     resource_fuel: 100,
-                    resource_concrete: 10,
+                    item_res_bands: 75,
                 },
                 
                 craft_clothing1: {
@@ -741,22 +750,26 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                 craft_clothing4: {
                     resource_rope: 100,
                     resource_metal: 200,
+                    item_res_silk: 5,
                 },
                 
                 craft_clothing5: {
                     resource_rope: 100,
                     resource_metal: 500,
+                    item_res_silk: 5,
                 },
                 
                 craft_clothing6: {
                     resource_rope: 100,
                     resource_fuel: 100,
+                    item_res_silk: 20,
                 },
                 
                 craft_clothing7: {
                     resource_rope: 200,
                     resource_fuel: 100,
-                    resouce_herbs: 100,
+                    resouce_herbs: 10,
+                    item_res_silk: 50,
                 },
                 
                 craft_bag_0: {

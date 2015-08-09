@@ -18,6 +18,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 			// Just inventory
 			artefact: "Artefact",
 			note: "Note",
+			ingredient: "Part",
 		},
 		
 		itemDefinitions: {
@@ -88,7 +89,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 						   "A more spacious bag with lots of pockets."),
 				new ItemVO("bag_2", "Hiker's Rucksack", "Bag", 100, true, false, true, "img/items/bag-1.png",
 						   "With this bag, weight is starting to be more of a problem than space."),
-				new ItemVO("bag_3", "Automatic luggage", "Bag", 200, true, false, true, "img/items/bag-1.png",
+				new ItemVO("bag_3", "Automatic luggage", "Bag", 200, true, false, true, "img/items/bag-3.png",
 						   "Mechanical chest that automatically follows its owner around. No more worrying about carrying all that stuff yourself."),
 			],
 			artefact: [
@@ -120,6 +121,11 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 						   "Fragile, yellow and light pink shell that must have been looted from a museum."),
 				new ItemVO("artefact_doom_4", "Pamphlet", "Seashell", 0, false, true, false, "img/items/artefact-test.png",
 						   "Bold political leaflet printed on thick paper urging residents of the 'sewers' to rebel against segregation."),
+			],
+			ingredient: [
+				new ItemVO("res_matches", "Matches", "Part", 0, false, false, false, "img/items/res-matches.png", "Used for crafting."),
+				new ItemVO("res_bands", "Rubber bands", "Part", 0, false, false, false, "img/items/res-bands.png", "Used for crafting."),
+				new ItemVO("res_silk", "Spider silk", "Part", 0, false, false, false, "img/items/res-silk.png", "Used for crafting."),
 			],
 		},
 		
@@ -177,7 +183,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 		
 		getShades: function (levelOrdinal) {
 			if (levelOrdinal > 18) {
-				return this.itemDefinitions.shades[parseInt(this.itemDefinitions.shades.length - 1) * Math.random()];
+				return this.itemDefinitions.shades[parseInt(this.itemDefinitions.shades.length) * Math.random()];
 			}
 			return null;
 		},
@@ -190,7 +196,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 		
 		getMovement: function (levelOrdinal) {
 			if (levelOrdinal > 2)
-				return this.itemDefinitions.movement[parseInt(this.itemDefinitions.movement.length - 1) * Math.random()];
+				return this.itemDefinitions.movement[parseInt(this.itemDefinitions.movement.length) * Math.random()];
 			return null;
 		},
 		
@@ -247,6 +253,11 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 			}
 			return this.itemDefinitions.weapon[6];
 		},
+		
+		getIngredient: function () {
+			var i = (this.itemDefinitions.ingredient.length) * Math.random();
+			return this.itemDefinitions.ingredient[parseInt(i)];
+		}
     };
     
     return ItemConstants;

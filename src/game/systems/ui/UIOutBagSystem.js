@@ -9,41 +9,41 @@ define([
     'game/components/player/VisionComponent',
 ], function (Ash, UIConstants, FightConstants, ItemConstants, ItemsNode, ResourcesComponent, StaminaComponent, VisionComponent) {
     var UIOutBagSystem = Ash.System.extend({
-	
+
 		uiFunctions : null,
 		playerActionsHelper: null,
 		gameState: null,
-		
+
 		tabChangedSignal: null,
-		
+
 		itemNodes: null,
-	
+
 		constructor: function (uiFunctions, tabChangedSignal, playerActionsHelper, gameState) {
 			this.gameState = gameState;
 			this.uiFunctions = uiFunctions;
 			this.playerActionsHelper = playerActionsHelper;
 			this.tabChangedSignal = tabChangedSignal;
-			
+
 			var system = this;
 			$("#container-tab-two-bag .golden-large").mouseleave(function (e) {
 				system.setSelectedItemLI(null);
 			});
-			
+
 			this.onTabChanged = function () {
 				system.updateCrafting();
 			};
-			
+
 			return this;
 		},
-	
+
 		addToEngine: function (engine) {
 			this.itemNodes = engine.getNodeList(ItemsNode);
 			this.initButtonListeners();
 			this.setSelectedItemLI(null);
-			
+
 			this.tabChangedSignal.add(this.onTabChanged);
 		},
-		
+
 		initButtonListeners: function () {
 			var itemsComponent = this.itemNodes.head.items;
 			var uiFunctions = this.uiFunctions;
@@ -85,29 +85,29 @@ define([
 			this.tabChangedSignal.remove(this.onTabChanged);
 			$("button[action='discard_item']").click(null);
 		},
-	
+
 		update: function (time) {
 			if (this.uiFunctions.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.bag) return;
-			
+
 			var itemsComponent = this.itemNodes.head.items;
 			var selectedItem = itemsComponent.selectedItem;
-			
+
 			// Header
 			$("#tab-header h2").text("Bag");
-			
-			// Items
+
+			// Items, parts and followers
 			var itemsComponent = this.itemNodes.head.items;
 			var uniqueItems = itemsComponent.getUnique();
 			this.updateItems(uniqueItems);
-			
+
 			// Description
 			$("#items-empty").toggle(uniqueItems.length === 0);
 			this.updateItemDetails(selectedItem, itemsComponent.getCount(selectedItem));
-			
+
 			// Additional infos
 			this.updateStats();
 		},
-		
+
 		updateItems: function (uniqueItems) {
 			var itemListL = $("#bag-items li").length;
 			var followerListL = $("#list-followers li").length;
@@ -117,11 +117,11 @@ define([
 				this.refreshItemLists();
 			}
 		},
-		
+
 		updateCrafting: function () {
 			if (this.uiFunctions.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.bag) return;
 			$("#self-craft table").empty();
-			
+
 			var itemList;
 			var itemDefinition;
 			var tr;
@@ -138,12 +138,12 @@ define([
 					}
 				}
 			}
-			
+
 			this.uiFunctions.registerActionButtonListeners("#self-craft");
 			this.uiFunctions.generateButtonOverlays("#self-craft");
 			this.uiFunctions.generateCallouts("#self-craft");
 		},
-		
+
 		updateStats: function () {
 			// TODO update only when necessary
 			var playerStamina = this.itemNodes.head.entity.get(StaminaComponent);
@@ -151,11 +151,11 @@ define([
 			$("#self-status-fight-att").text("Fight strength: " + FightConstants.getPlayerAtt(playerStamina, itemsComponent));
 			var attCalloutContent = FightConstants.getPlayerAttDesc(playerStamina, itemsComponent);
 			UIConstants.updateCalloutContent("#self-status-fight-att", attCalloutContent);
-			
+
 			$("#self-status-fight-def").text("Fight defence: " + FightConstants.getPlayerDef(playerStamina, itemsComponent));
 			var defCalloutContent = FightConstants.getPlayerDefDesc(playerStamina, itemsComponent);
 			UIConstants.updateCalloutContent("#self-status-fight-def", defCalloutContent);
-				
+
 			var numCamps = this.gameState.numCamps;
 			$("#self-status-fight-followers").toggle(this.gameState.unlockedFeatures.followers);
 			if (this.gameState.unlockedFeatures.followers) {
@@ -163,14 +163,14 @@ define([
 				var defCalloutContent = "More camps allow more followers.";
 				UIConstants.updateCalloutContent("#self-status-fight-followers", defCalloutContent);
 			}
-			
+
 			var playerHealth = playerStamina.health;
 			var playerVision = this.itemNodes.head.entity.get(VisionComponent).value;
 			var scavengeEfficiency = Math.round(this.uiFunctions.playerActions.playerActionResultsHelper.getScavengeEfficiency() * 200) / 2;
 			$("#self-status-efficiency-scavenge").text("Scavenge efficiency: " + scavengeEfficiency + "%");
 			UIConstants.updateCalloutContent("#self-status-efficiency-scavenge", "health: " + Math.round(playerHealth) + "<br/>vision: " + Math.round(playerVision));
 		},
-		
+
 		updateItemLists: function () {
 			var itemsComponent = this.itemNodes.head.items;
 			var items = itemsComponent.getUnique();
@@ -187,20 +187,20 @@ define([
 					$("#list-followers").append(li);
 				}
 			}
-			
+
 			var hasFollowers = $("#list-followers li").length > 0;
 			var showFollowers = hasFollowers || this.gameState.unlockedFeatures.followers;
 			$("#list-followers").toggle(hasFollowers);
 			$("#header-followers").toggle(showFollowers);
 			$("#followers-empty").toggle(showFollowers && !hasFollowers);
-			
+
 			$.each($("#container-tab-two-bag .itemlist li"), function () {
 				$(this).hover(function (e) {
 					UIOutBagSystem.setSelectedItemLI($(this));
 				});
 			});
 		},
-		
+
 		refreshItemLists: function () {
 			var itemsComponent = this.itemNodes.head.items;
 			var items = itemsComponent.getUnique();
@@ -211,11 +211,11 @@ define([
 				$(this).children(".item-count").text(count + "x");
 			});
 		},
-		
+
 		updateItemDetails: function (selectedItem, count) {
 			if (selectedItem) {
 				$("#item-desc-div h4").text(selectedItem.name);
-			
+
 				var itemBonusTxt = selectedItem.type;
 				if (selectedItem.bonus !== 0) {
 					var bonusName = "";
@@ -228,22 +228,22 @@ define([
 						case ItemConstants.itemTypes.shoes: bonusName = "movement cost"; break;
 						case ItemConstants.itemTypes.bag: bonusName = "bag capacity"; break;
 					}
-					
+
 					itemBonusTxt += " (" + bonusName + " " + UIConstants.getItemBonusText(selectedItem) + ")";
 				}
 				else {
-					
+
 					switch (selectedItem.id) {
 					case "movement-bat":
 						itemBonusTxt += " (all level passages and most sector obstacles)";
 						break;
 					}
 				}
-				
+
 				$("#item-desc-div p#item-desc-bonus").text(itemBonusTxt);
 				$("#item-desc-div p#item-desc-equipped").text(selectedItem.equippable && !selectedItem.unequippable ? (selectedItem.equipped ? "Equipped" : "Not equipped") : "");
 				$("#item-desc-div p#item-desc-desc").text(selectedItem.description);
-		
+
 				var isFollower = selectedItem.type === ItemConstants.itemTypes.follower;
 				$("button[action='equip_item']").text(selectedItem.equipped ? "Unequip" : "Equip");
 				$("button[action='equip_item']").toggle((!selectedItem.equipped && selectedItem.equippable) || (selectedItem.equipped && selectedItem.unequippable));
@@ -251,14 +251,14 @@ define([
 				$("button[action='discard_item_all']").toggle(count > 1);
 			}
 		},
-		
+
 		setSelectedItemLI: function (li) {
 			$.each($("#container-tab-two-bag .itemlist li"), function () {
 				$(this).toggleClass("item-focused", false);
 			});
-			
+
 			var itemsComponent = this.itemNodes.head.items;
-			
+
 			if (li) {
 				$(li).toggleClass("item-focused", true);
 				var id = $(li).attr("data-itemid");
@@ -268,7 +268,7 @@ define([
 			} else {
 				itemsComponent.selectedItem = null;
 			}
-			
+
 			this.uiFunctions.slideToggleIf("#item-desc-div", "#item-desc-help", itemsComponent.selectedItem, 250, 150);
 		},
     });

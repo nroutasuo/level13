@@ -107,7 +107,7 @@ define([
             // Determine rewards and penalties
             this.fightNodes.head.fight.rewards.resources = FightConstants.getRewardResources(won);
             if (won) {
-                this.fightNodes.head.fight.rewards.items = this.playerActionResultsHelper.getRewardItems(0.1, 50, playerItems, levelOrdinal);
+                this.fightNodes.head.fight.rewards.items = this.playerActionResultsHelper.getRewardItems(0.1, 0.2, 50, playerItems, levelOrdinal);
             } else {
 				this.fightNodes.head.fight.rewards.items = [];
 			}

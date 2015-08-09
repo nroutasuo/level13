@@ -780,6 +780,7 @@ define(['ash',
         cheat: function(input) {
 			var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+            var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
             var inputParts = input.split(" ");
             var name = inputParts[0];
             switch(name) {
@@ -863,7 +864,6 @@ define(['ash',
                 
                 case "injury":
                     var defaultInjury = PerkConstants.perkDefinitions.injury[0];
-                    var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
                     perksComponent.addPerk(defaultInjury.clone());
                     break;
                 
@@ -882,6 +882,16 @@ define(['ash',
                         itemsComponent.addItem(item);                       
                     } else {
                         console.log("WARN: No such item: " + itemID);
+                    }
+                    break;
+                
+                case "perk":
+                    var perkID = inputParts[1];
+                    var perk = PerkConstants.getPerk(perkID);
+                    if (perk) {
+                        perksComponent.addPerk(perk);                       
+                    } else {
+                        console.log("WARN: No such perk: " + perkID);
                     }
                     break;
             }

@@ -156,7 +156,8 @@ define([
                 if (actionName) {
                     var improvementName = playerActionsHelper.getImprovementNameForAction(actionName);
                     if (improvementName) {
-                        var actionEnabled = playerActionsHelper.checkRequirements(actionName, false).value >= 1;
+						var requirementCheck = playerActionsHelper.checkRequirements(actionName, false, null);
+                        var actionEnabled = requirementCheck.value >= 1;
                         var existingImprovements = improvements.getCount(improvementName);
                         $(this).find(".list-amount").text(existingImprovements);
                         $(this).find(".action-use").toggle(existingImprovements > 0);

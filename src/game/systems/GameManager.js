@@ -53,7 +53,7 @@ define([
 			var startTab = this.uiFunctions.elementIDs.tabs.out;
 				var playerPos = this.playerActions.playerPositionNodes.head.position;
 			if (playerPos.inCamp) startTab = this.uiFunctions.elementIDs.tabs.in;
-			this.uiFunctions.showTab(startTab);	    
+			this.uiFunctions.showTab(startTab);
 		},
 		
 		restartGame: function() {

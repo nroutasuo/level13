@@ -27,17 +27,20 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
         
         names: {
             resources: {
-                stamina: "Stamina",
-                resource_metal: "Metal",
-                resource_fuel: "Fuel",
-                resource_rope: "Rope",
-                resource_food: "Food",
-                resource_water: "Water",
-                resource_concrete: "Concrete",
-                resource_herbs: "Herbs",
-                resource_tools: "Tools",
-                rumours: "Rumours",
-                evidence: "Evidence",
+                stamina: "stamina",
+                resource_metal: "metal",
+                resource_fuel: "fuel",
+                resource_rope: "rope",
+                resource_food: "food",
+                resource_water: "water",
+                resource_concrete: "concrete",
+                resource_herbs: "herbs",
+                resource_tools: "tools",
+                item_res_silk: "spider silk",
+                item_res_bands: "rubber band",
+                item_res_matches: "match",
+                rumours: "rumours",
+                evidence: "evidence",
             }
         },
         
@@ -366,11 +369,11 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
         },
         
         getGameInfoDiv: function () {
-            var html = "<p>Please note that this game is still in development and many features are incomplete and unbalanced. Feedback is much appreciated!</p>";
+            var html = "<p>Please note that this game is still in development and many features are incomplete and unbalanced. Feedback and bug reports are much appreciated!</p>";
             html += "<p><b>Links</b>: <a href='https://github.com/nroutasuo/level13' target='_blank'>github</a></p>";
-            html += "<p><b>Current version</b>: <span id='changelog-version'>" + this.changeLogHelper.getCurrentVersionNumber() + "</span><p>";
-            html += "<p><b>Changelog</b></p>";
-            html += "<div id='changelog' class='infobox infobox-scrollable'><p class='p-meta'>" + this.changeLogHelper.getChangeLogHTML() + "</p></div>";
+            html += "<p><b>Changelog</b><br/>";
+            html += "Current version: <span id='changelog-version'>" + this.changeLogHelper.getCurrentVersionNumber() + "</span></p>";
+            html += "<div id='changelog' class='infobox infobox-scrollable'>" + this.changeLogHelper.getChangeLogHTML() + "</div>";
             return html;
         },
         

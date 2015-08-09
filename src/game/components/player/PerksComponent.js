@@ -6,12 +6,17 @@ function (Ash, PerkVO, PerkConstants) {
         
         constructor: function () {
             this.perks = {};
+			this.initTypes();
+		},
+		
+		initTypes: function() {
             this.perks[PerkConstants.perkTypes.injury] = [];
             this.perks[PerkConstants.perkTypes.movement] = [];
+            this.perks[PerkConstants.perkTypes.health] = [];
         },
         
         addPerk: function (perk) {
-			console.log("ADD PERK " + perk.type);
+			console.log("ADD PERK " + perk.type + " " + perk.effect);
             if (typeof this.perks[perk.type] == 'undefined') {
                 this.perks[perk.type] = [];
             }
@@ -87,6 +92,18 @@ function (Ash, PerkVO, PerkConstants) {
             }
             return false;
         },
+        
+        customLoadFromSave: function(componentValues) {
+            for(var key in componentValues.perks) {
+                for (var i in componentValues.perks[key]) {
+                    var perkID = componentValues.perks[key][i].id;
+                    var perk = PerkConstants.getPerk(perkID);
+                    if (perk) {
+                        this.addPerk(perk);
+                    }
+                }
+            }
+        }
     });
 
     return PerksComponent;

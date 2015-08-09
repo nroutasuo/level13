@@ -71,8 +71,8 @@ define([
             
 			if (this.playerLocationNodes.head.entity.has(CampComponent)) return;
             
-			var hasFood = this.playerResourcesNodes.head.resources.resources.getResource(resourceNames.food) > 0;
-			var hasWater = this.playerResourcesNodes.head.resources.resources.getResource(resourceNames.water) > 0;
+			var hasFood = this.playerResourcesNodes.head.resources.resources.getResource(resourceNames.food) >= 1;
+			var hasWater = this.playerResourcesNodes.head.resources.resources.getResource(resourceNames.water) >= 1;
 			if (hasFood && hasWater) {
                 this.log("You rest a bit, eat and drink some. Then you decide to continue.");
                 return;

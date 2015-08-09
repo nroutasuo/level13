@@ -56,7 +56,7 @@ define([
 			var playerVision = this.playerStatsNodes.head.vision.value;
 
 			rewards.gainedResources = this.getRewardResources(1, efficiency, sectorResources);
-			rewards.gainedItems = this.getRewardItems(0.0075, playerVision * 0.25, itemsComponent, levelOrdinal);
+			rewards.gainedItems = this.getRewardItems(0.0075, 0.2, playerVision * 0.25, itemsComponent, levelOrdinal);
 			rewards.gainedInjuries = this.getResultInjuries();
 
 			return rewards;
@@ -68,7 +68,7 @@ define([
 			var efficiency = this.getScavengeEfficiency();
             var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resources;
 
-			rewards.gainedResources = this.getRewardResources(0.5, efficiency * 5, sectorResources);
+			rewards.gainedResources = this.getRewardResources(0.5, efficiency * 2, sectorResources);
 			rewards.gainedEvidence = 1;
 
 			return rewards;
@@ -86,7 +86,7 @@ define([
 			var localeDifficulty = localeVO.requirements.vision + localeVO.costs.stamina;
 
 			rewards.gainedResources = this.getRewardResources(1, efficiency * localeDifficulty / 15, availableResources);
-			rewards.gainedItems = this.getRewardItems(0.2, localeDifficulty / 2, itemsComponent, levelOrdinal);
+			rewards.gainedItems = this.getRewardItems(0.2, 0, localeDifficulty / 2, itemsComponent, levelOrdinal);
 			rewards.gainedInjuries = this.getResultInjuries();
 			rewards.gainedEvidence = 1;
 
@@ -165,12 +165,18 @@ define([
 					msg += ", ";
 					foundSomething = true;
 				}
-
+				
+				var loggedItems = {};
 				for (var i = 0; i < rewards.gainedItems.length; i++) {
 					var item = rewards.gainedItems[i];
-					msg += "$" + replacements.length + ", ";
-					replacements.push("#" + replacements.length);
-					values.push(item.name);
+					if(typeof loggedItems[item.id]  === 'undefined') {
+						msg += "$" + replacements.length + ", ";
+						replacements.push("#" + replacements.length + " " + item.name.toLowerCase());
+						values.push(1);
+						loggedItems[item.id] = replacements.length - 1;
+					} else {
+						values[loggedItems[item.id]]++;
+					}
 				}
 			}
 
@@ -225,9 +231,9 @@ define([
 			return results;
 		},
 
-		// probability of getting something: 0-1 for one item
+		// probability of getting something: 0-1 for one item / some ingredients
 		// typical rarity of items: 0-100
-		getRewardItems: function (itemProbability, itemRarity, currentItems, levelOrdinal) {
+		getRewardItems: function (itemProbability, ingredientProbability, itemRarity, currentItems, levelOrdinal) {
 			var items = [];
 
 			// Neccessity items that the player should find quickly if missing
@@ -253,15 +259,26 @@ define([
 				} else if (itemTypeRand < 0.5) {
 					item = ItemConstants.getShoes(levelOrdinal);
 				} else if (itemTypeRand < 0.7) {
-					items.push(ItemConstants.getDefaultWeapon(levelOrdinal));
+					item = ItemConstants.getDefaultWeapon(levelOrdinal);
 				} else if (itemTypeRand < 0.9) {
-					items.push(ItemConstants.getDefaultClothing(levelOrdinal));
+					item = ItemConstants.getDefaultClothing(levelOrdinal);
 				} else {
 					var i = Math.floor(Math.random() * ItemConstants.itemDefinitions.artefact.length);
-					items.push(ItemConstants.itemDefinitions.artefact[i].clone());
+					item = ItemConstants.itemDefinitions.artefact[i].clone();
 				}
 				if (item) items.push(item);
 			}
+			
+			// TODO get parts / ingredients depending on the sector
+			// Parts / ingredients
+			if (Math.random() < ingredientProbability) {
+				var amount = parseInt(Math.random() * ingredientProbability * 5) + 1;
+				var ingredient = ItemConstants.getIngredient();
+				for (var i = 0; i <= amount; i++) {
+					items.push(ingredient.clone());
+				}
+			}
+			
 			return items;
 		},
 

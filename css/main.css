@@ -818,7 +818,7 @@ button .cooldown-action {
    overflow-y: auto;
    padding-left: 5px;
    padding-right: 5px;
-   max-height: 16em;
+   max-height: 15em;
 }
 
 .actionbox {

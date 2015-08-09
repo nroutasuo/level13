@@ -71,6 +71,7 @@ define([
             }
             
 			var currentStorage = this.resourcesHelper.getCurrentStorage(true);
+            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             
             if (costs.stamina) {
                 this.playerStatsNodes.head.stamina.stamina -= costs.stamina;
@@ -102,6 +103,18 @@ define([
             
             if (costs.resource_food) {
                 currentStorage.resources.food -= costs.resource_food;
+            }
+            
+            if (costs.item_res_silk) {
+                itemsComponent.discardItem(itemsComponent.getItem("res_silk"));
+            }
+            
+            if (costs.item_res_bands) {
+                itemsComponent.discardItem(itemsComponent.getItem("res_bands"));
+            }
+            
+            if (costs.item_res_matches) {
+                itemsComponent.discardItem(itemsComponent.getItem("res_matches"));
             }
                 
             if (costs.rumours) {
@@ -300,8 +313,8 @@ define([
                         if (max < 0) max = 9999999;
                         var totalEffect = playerPerks.getTotalEffect(perkName);
                         if (min > totalEffect || max <= totalEffect) {
-                            if (min > totalEffect) reason = "Perk required: " + perkName;
-                            if (max <= totalEffect) reason = "Perk required: " + perkName;
+                            if (min > totalEffect) reason = "Can't do this while: " + perkName;
+                            if (max < totalEffect) reason = "Perk required: " + perkName;
                             if(log) console.log("WARN: " + reason);
                             return { value: 0, reason: reason };
                         }
@@ -463,6 +476,7 @@ define([
             var playerVision = this.playerStatsNodes.head.vision.value;
             var playerStamina = this.playerStatsNodes.head.stamina.stamina;
             var playerResources = this.resourcesHelper.getCurrentStorage(false);
+            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             
             var sector = otherSector || (this.playerLocationNodes.head && this.playerLocationNodes.head.entity);
             if (!sector) return false;
@@ -492,6 +506,15 @@ define([
                 
                 case "resource_food":
                     return (playerResources.resources.food / costs.resource_food);
+                
+                case "item_res_silk":
+                    return itemsComponent.getCountById("res_silk") / costs.item_res_silk;
+                
+                case "item_res_bands":
+                    return itemsComponent.getCountById("res_bands") / costs.item_res_bands;
+                
+                case "item_res_matches":
+                    return itemsComponent.getCountById("res_matches") / costs.item_res_matches;
                 
                 case "rumours":
                     return (this.playerStatsNodes.head.rumours.value / costs.rumours);

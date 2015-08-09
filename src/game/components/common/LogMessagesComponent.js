@@ -12,8 +12,8 @@ function (Ash, LogMessageVO) {
 			this.messagesPendingMovement = [];
 		},
 			
-		addMessage: function(message, replacements, values, visibleLevel, visibleSector, visibleInCamp) {
-			var isPending = Boolean(visibleLevel || visibleSector || visibleInCamp);	    
+		addMessage: function (message, replacements, values, visibleLevel, visibleSector, visibleInCamp) {
+			var isPending = Boolean(visibleLevel || visibleSector || visibleInCamp);
 			var newMsg = new LogMessageVO(message, replacements, values);
 			
 			if (!isPending) {
@@ -69,11 +69,16 @@ function (Ash, LogMessageVO) {
 		},
 		
 		combineMessages: function (oldMsg, newMgs) {
+			var oldVal;
+			var newVal;
 			for (var i = 0; i < oldMsg.values.length; i++) {
-				if(typeof oldMsg.values[i] === 'number' && typeof newMgs.values[i] === 'number') 
-					oldMsg.values[i] += newMgs.values[i];
-				else
-					oldMsg.values[i] += ", " + newMgs.values[i];
+				oldVal = oldMsg.values[i];
+				newVal = newMgs.values[i];
+				if (typeof oldVal === 'number' && typeof newVal === 'number') {
+					oldMsg.values[i] += newVal;
+				} else {
+					oldMsg.values[i] += ", " + newVal;
+				}
 			}
 			oldMsg.time = newMgs.time;
 			oldMsg.combined++;

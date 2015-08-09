@@ -79,11 +79,11 @@ define([
             this.engine = engine;
         },
 
-        destroyEntity: function(entity) {
+        destroyEntity: function (entity) {
             this.engine.removeEntity(entity);
         },
         
-        createPlayer: function(saveKey) {
+        createPlayer: function (saveKey) {
             var player = new Ash.Entity()
 			.add(new PlayerComponent())
 			.add(new VisionComponent(0))
@@ -97,7 +97,7 @@ define([
 			.add(new EvidenceComponent())
 			.add(new PositionComponent(13, 2, false))
 			.add(new LogMessagesComponent())
-			.add(new SaveComponent( saveKey, [
+			.add(new SaveComponent(saveKey, [
 					ResourcesComponent,
 					VisionComponent,
 					ItemsComponent,
@@ -108,7 +108,7 @@ define([
 					RumoursComponent,
 					EvidenceComponent,
 					LogMessagesComponent
-			] ));
+				]));
 			this.engine.addEntity(player);
 			return player;
         },

@@ -26,6 +26,8 @@ function (Ash, ItemVO, ItemConstants) {
         },
         
         discardItem: function (item) {
+            if(!item) console.log("WARN: Trying to discard null item.");
+            
             if (typeof this.items[item.type] != 'undefined') {
                 var typeItems = this.items[item.type];
                 var splicei = -1;
@@ -107,7 +109,7 @@ function (Ash, ItemVO, ItemConstants) {
             return equipped.sort(this.itemSortFunction);
         },
         
-        getCurrentBonus: function(type) {        
+        getCurrentBonus: function(type) {
             var bonus = 0;
             for (var key in this.items) {
                 if (key == type) {
@@ -153,14 +155,18 @@ function (Ash, ItemVO, ItemConstants) {
             if (!item) return 0;
             if (Object.keys(this.uniqueItems).length <= 0) this.getUnique();
             var itemKey = item.id;
-            return this.uniqueItems[itemKey];
+            return this.getCountById(itemKey);
         },
         
-        getCountByType: function(type) {
+        getCountById: function (id) {
+            return typeof this.uniqueItems[id] === 'undefined' ? 0 : this.uniqueItems[id];
+        },
+        
+        getCountByType: function (type) {
             return this.items[type].length;
         },
         
-        getWeakestByType: function(type) {
+        getWeakestByType: function (type) {
             var weakest = null;
             for( var i = 0; i < this.items[type].length; i++) {
                 var item = this.items[type][i];
@@ -179,7 +185,7 @@ function (Ash, ItemVO, ItemConstants) {
             return null;
         },
         
-        getSimilar: function(item) {            
+        getSimilar: function(item) {
             for (var key in this.items) {
                 for( var i = 0; i < this.items[key].length; i++) {
                     var otherItem = this.items[key][i];
