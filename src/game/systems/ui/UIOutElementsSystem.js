@@ -61,11 +61,11 @@ define([
             this.nearestCampNodes = null;
         },
         
-        onCampNodeAdded: function( node ) {
+        onCampNodeAdded: function (node) {
             this.updateTabVisibility();
         },
         
-        onCampNodeRemoved: function( node ) {
+        onCampNodeRemoved: function (node) {
             this.updateTabVisibility();
         },
     
@@ -134,6 +134,9 @@ define([
 			
             // Update disabled status
             $.each($("button"), function () {
+                var isVisible = ($(this).is(":visible"));
+				if (!isVisible) return;
+				
 				var disabledVision = isButtonDisabledVision($(this));
 				var disabledBasic = !disabledVision && isButtonDisabled($(this));
 				var disabledResources = !disabledVision && !disabledBasic && isButtonDisabledResources($(this));

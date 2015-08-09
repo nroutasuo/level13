@@ -90,14 +90,12 @@ define([
 			
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
-				if (item.id == ItemConstants.itemDefinitions.movement[0].id) isHook = true;
-				if (item.id == ItemConstants.itemDefinitions.movement[1].id) isAdvHook = true;
-				if (item.id == ItemConstants.itemDefinitions.movement[2].id) isFlying = true;
+				if (item.id == ItemConstants.itemDefinitions.movement[0].id) isFlying = true;
 			}
 			
 			blocked = true;
 			var passage = null;
-			if (direction == this.DIRECTION_UP) passage = passagesComponent.passageUp;    
+			if (direction == this.DIRECTION_UP) passage = passagesComponent.passageUp;
 			if (direction == this.DIRECTION_DOWN) passage = passagesComponent.passageDown;
 			
 			if (!passage) {

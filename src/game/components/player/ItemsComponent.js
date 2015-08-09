@@ -48,7 +48,7 @@ function (Ash, ItemVO, ItemConstants) {
             this.uniqueItems = {};
         },
         
-        discardItems: function(item) {
+        discardItems: function (item) {
             var count;
             do {
                 this.discardItem(item);
@@ -130,13 +130,13 @@ function (Ash, ItemVO, ItemConstants) {
             return all.sort(this.itemSortFunction);
         },
         
-        getUnique: function() {
+        getUnique: function () {
             var all = {};
             var allList = [];
             for (var key in this.items) {
                 for( var i = 0; i < this.items[key].length; i++) {
                     var item = this.items[key][i];
-                    var itemKey = item.unequippable ? item.id + item.itemID : item.id;
+                    var itemKey = item.id;
                     if (all[itemKey]) {
                         all[itemKey] = all[itemKey] + 1;
                     } else {
@@ -149,10 +149,10 @@ function (Ash, ItemVO, ItemConstants) {
             return allList.sort(this.itemSortFunction);
         },
         
-        getCount: function(item) {
+        getCount: function (item) {
             if (!item) return 0;
             if (Object.keys(this.uniqueItems).length <= 0) this.getUnique();
-            var itemKey = item.unequippable ? item.id + item.itemID : item.id;
+            var itemKey = item.id;
             return this.uniqueItems[itemKey];
         },
         

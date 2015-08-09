@@ -11,15 +11,17 @@ define([
     var UIOutBagSystem = Ash.System.extend({
 	
 		uiFunctions : null,
+		playerActionsHelper: null,
 		gameState: null,
 		
 		tabChangedSignal: null,
 		
 		itemNodes: null,
 	
-		constructor: function (uiFunctions, tabChangedSignal, gameState) {
+		constructor: function (uiFunctions, tabChangedSignal, playerActionsHelper, gameState) {
 			this.gameState = gameState;
 			this.uiFunctions = uiFunctions;
+			this.playerActionsHelper = playerActionsHelper;
 			this.tabChangedSignal = tabChangedSignal;
 			
 			var system = this;
@@ -128,8 +130,11 @@ define([
 				for (var i in itemList) {
 					itemDefinition = itemList[i];
 					if (itemDefinition.craftable) {
-						tr = "<tr><td><button class='action' action='craft_" + itemDefinition.id + "'>" + itemDefinition.name + "</button></td></tr>";
-						$("#self-craft table").append(tr);
+						var actionName = "craft_" + itemDefinition.id;
+						if (this.playerActionsHelper.checkRequirements(actionName, false).value >= 1) {
+							tr = "<tr><td><button class='action' action='" + actionName + "'>" + itemDefinition.name + "</button></td></tr>";
+							$("#self-craft table").append(tr);
+						}
 					}
 				}
 			}

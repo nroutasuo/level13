@@ -149,15 +149,21 @@ define([
                 return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveUpReason };
             if (action === "move_level_down" && !movementOptionsComponent.canMoveDown)
                 return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveDownReason };
-            
+                
+			if (costs) {
+				if (requirements && costs.stamina > 0) {
+					requirements.health = costs.stamina;
+				}
+				if ((costs.resource_fuel > 0 && !this.gameState.unlockedFeatures.resources.fuel) ||
+					(costs.resource_herbs > 0 && !this.gameState.unlockedFeatures.resources.herbs) ||
+					(costs.resource_tools > 0 && !this.gameState.unlockedFeatures.resources.tools) ||
+					(costs.resource_concrete > 0 && !this.gameState.unlockedFeatures.resources.concrete)) {
+					reason = "Locked resources.";
+					return { value: 0, reason: reason };
+				}
+			}
+                
             if (requirements) {
-                
-                if (costs) {
-                    if (costs.stamina > 0) {
-                        requirements.health = costs.stamina;
-                    }
-                }
-                
                 if (requirements.vision) {
                     if (playerVision < requirements.vision) {
                         if (log) console.log("WARN: Not enough vision to perform action [" + action + "]");
@@ -619,11 +625,14 @@ define([
 		
 		getDescription: function (action) {
 			if (action) {
-				action = this.getBaseActionID(action);
-				if (PlayerActionConstants.descriptions[action]) {
-					return PlayerActionConstants.descriptions[action];
+				var baseAction = this.getBaseActionID(action);
+				if (PlayerActionConstants.descriptions[baseAction]) {
+					return PlayerActionConstants.descriptions[baseAction];
 				} else {
-                    switch(action) {
+                    switch(baseAction) {
+						case "craft":
+							var item = this.getItemForCraftAction(action);
+							return item.description;
                     }
                 }
 			}

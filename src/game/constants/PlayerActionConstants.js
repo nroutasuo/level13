@@ -670,8 +670,8 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                 },
                 
                 craft_light2: {
-                    resource_metal: 100,
-                    resource_fuel: 10,
+                    resource_metal: 50,
+                    resource_fuel: 20,
                 },
                 
                 craft_shade1: {
@@ -679,12 +679,7 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                 },
                 
                 craft_shade2: {
-                    resource_metal: 10,
-                },
-                
-                craft_weapon1: {
-                    resource_metal: 10,
-                    resource_rope: 1
+                    resource_metal: 20,
                 },
                 
                 craft_weapon1: {
@@ -694,43 +689,40 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                 
                 craft_weapon2: {
                     resource_metal: 20,
-                    resource_rope: 2
+                    resource_rope: 10,
                 },
                 
                 craft_weapon3: {
-                    resource_metal: 10,
-                    resource_rope: 1,
-                    resource_tools: 10,
+                    resource_metal: 100,
+                    resource_rope: 10,
+                    resource_tools: 2,
                 },
                 
                 craft_weapon4: {
-                    resource_metal: 10,
-                    resource_rope: 1,
+                    resource_metal: 100,
+                    resource_rope: 5,
                     resource_tools: 10,
+                    resource_fuel: 5,
                 },
                 
                 craft_weapon5: {
-                    resource_metal: 10,
-                    resource_rope: 1,
-                    resource_tools: 10,
+                    resource_metal: 200,
+                    resource_rope: 5,
+                    resource_tools: 20,
+                    resource_fuel: 50,
                 },
                 
                 craft_weapon6: {
-                    resource_metal: 10,
-                    resource_rope: 1,
-                    resource_tools: 10,
+                    resource_metal: 500,
+                    resource_tools: 50,
+                    resource_fuel: 100,
                 },
                 
                 craft_weapon7: {
-                    resource_metal: 10,
-                    resource_rope: 1,
-                    resource_tools: 10,
-                },
-                
-                craft_weapon8: {
-                    resource_metal: 10,
-                    resource_rope: 1,
-                    resource_tools: 10,
+                    resource_metal: 500,
+                    resource_tools: 50,
+                    resource_fuel: 100,
+                    resource_concrete: 10,
                 },
                 
                 craft_clothing1: {
@@ -738,31 +730,33 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                 },
                 
                 craft_clothing2: {
-                    resource_rope: 20,
-                },
-                
-                craft_clothing3: {
                     resource_rope: 30,
                 },
                 
+                craft_clothing3: {
+                    resource_rope: 100,
+                    resource_metal: 20,
+                },
+                
                 craft_clothing4: {
-                    resource_rope: 40,
+                    resource_rope: 100,
+                    resource_metal: 200,
                 },
                 
                 craft_clothing5: {
-                    resource_rope: 50,
+                    resource_rope: 100,
+                    resource_metal: 500,
                 },
                 
                 craft_clothing6: {
-                    resource_rope: 60,
+                    resource_rope: 100,
+                    resource_fuel: 100,
                 },
                 
                 craft_clothing7: {
-                    resource_rope: 70,
-                },
-                
-                craft_clothing8: {
-                    resource_rope: 80,
+                    resource_rope: 200,
+                    resource_fuel: 100,
+                    resouce_herbs: 100,
                 },
                 
                 craft_bag_0: {

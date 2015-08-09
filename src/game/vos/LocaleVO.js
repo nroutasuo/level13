@@ -83,7 +83,6 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
                 break;
             case localeTypes.maintenance:
             case localeTypes.transport:
-            case localeTypes.transport:
                 res.addResource(resourceNames.water, 5);
                 if (unlockedResources.tools) res.addResource(resourceNames.tools, 5);
                 break;

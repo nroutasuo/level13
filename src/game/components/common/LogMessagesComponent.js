@@ -34,7 +34,7 @@ function (Ash, LogMessageVO) {
 			this.messages.splice(this.messages.indexOf(message), 1);
 		},
 		
-		showPendingMessage: function(message) {
+		showPendingMessage: function (message) {
 			// why no work? message.setPendingOver();
 			this.messagesPendingMovement.splice(this.messagesPendingMovement.indexOf(message), 1);
 			this.addMessageImmediate(message);
@@ -68,9 +68,12 @@ function (Ash, LogMessageVO) {
 			return false;
 		},
 		
-		combineMessages: function(oldMsg, newMgs) {
+		combineMessages: function (oldMsg, newMgs) {
 			for (var i = 0; i < oldMsg.values.length; i++) {
-				oldMsg.values[i] += newMgs.values[i];
+				if(typeof oldMsg.values[i] === 'number' && typeof newMgs.values[i] === 'number') 
+					oldMsg.values[i] += newMgs.values[i];
+				else
+					oldMsg.values[i] += ", " + newMgs.values[i];
 			}
 			oldMsg.time = newMgs.time;
 			oldMsg.combined++;
