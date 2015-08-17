@@ -44,9 +44,9 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.initStorage();
 		},
 	
-		initStorage: function() {	    
+		initStorage: function() {
 			switch (this.name) {
-			case improvementNames.collector_food:		    
+			case improvementNames.collector_food:
 				this.storedResources = new ResourcesVO();
 				this.storageCapacity = new ResourcesVO();
 				this.storageCapacity.food = 10;
@@ -56,7 +56,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 				this.storageCapacity = new ResourcesVO();
 				this.storageCapacity.water = 10;
 				break;
-			}	    
+			}
         }
     });
 

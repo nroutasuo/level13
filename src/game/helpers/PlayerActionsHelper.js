@@ -120,6 +120,11 @@ define([
             if (costs.rumours) {
                 this.playerStatsNodes.head.rumours.value -= costs.rumours;
             }
+            
+            if (costs.favour) {
+                if (this.playerStatsNodes.head.entity.has(DeityComponent))
+                    this.playerStatsNodes.head.entity.get(DeityComponent).favour -= costs.favour;
+            }
                 
             if (costs.evidence) {
                 this.playerStatsNodes.head.evidence.value -= costs.evidence;
@@ -518,6 +523,10 @@ define([
                 
                 case "rumours":
                     return (this.playerStatsNodes.head.rumours.value / costs.rumours);
+                
+                case "favour":
+                    var favour = this.playerStatsNodes.head.entity.has(DeityComponent) ? this.playerStatsNodes.head.entity.get(DeityComponent).favour : 0;
+                    return (favour / costs.favour);
                 
                 case "evidence":
                     return (this.playerStatsNodes.head.evidence.value / costs.evidence);

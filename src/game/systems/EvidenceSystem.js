@@ -31,23 +31,23 @@ define([
 	    var cap = 100;
 	    
 	    if (this.campNodes.head) {
-		var accSpeed = 0;
-		var improvementsComponent;
-		var libraryCount = 0;
-		for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
-		    improvementsComponent = campNode.entity.get(SectorImprovementsComponent);
-		    libraryCount = improvementsComponent.getCount(improvementNames.library);
-		    var accLibrary = 0.0005 * libraryCount;
-		    var accSpeedCamp = accLibrary;
-		    accSpeed += accSpeedCamp;
-		    cap += libraryCount * 100;
-		    
-		    evidenceComponent.addChange("Libraries", accSpeedCamp);
-		    evidenceComponent.accumulation += accSpeed;
-		}
-		
-		evidenceComponent.value += time * accSpeed;
-		evidenceComponent.isAccumulating = true;
+			var accSpeed = 0;
+			var improvementsComponent;
+			var libraryCount = 0;
+			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				improvementsComponent = campNode.entity.get(SectorImprovementsComponent);
+				libraryCount = improvementsComponent.getCount(improvementNames.library);
+				var accLibrary = 0.0005 * libraryCount;
+				var accSpeedCamp = accLibrary;
+				accSpeed += accSpeedCamp;
+				cap += libraryCount * 100;
+				
+				evidenceComponent.addChange("Libraries", accSpeedCamp);
+				evidenceComponent.accumulation += accSpeed;
+			}
+			
+			evidenceComponent.value += time * accSpeed;
+			evidenceComponent.isAccumulating = true;
 	    }
 	    
 	    evidenceComponent.cap = cap;

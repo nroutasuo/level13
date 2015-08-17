@@ -57,7 +57,6 @@ define([
 			for (var id in UpgradeConstants.upgradeDefinitions) {
 				upgradeDefinition = UpgradeConstants.upgradeDefinitions[id];
 				if (!this.tribeNodes.head.upgrades.hasBought(id)) {
-					console.log(id + " | " + this.playerActions.playerActionsHelper.checkRequirements(id, false).value)
 					if (this.playerActions.playerActionsHelper.checkRequirements(id, false).value > 0) {
 						var buttonTD = "<td><button class='action btn-wide' action='" + upgradeDefinition.id + "'>" + upgradeDefinition.name + "</button></td>";
 						var descriptionTD = "<td>"+ upgradeDefinition.description +"</td>"

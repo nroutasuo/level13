@@ -87,14 +87,14 @@ define([
 			}
 		},
 		
-		isCampValidForEvent: function(campNode, event) {
+		isCampValidForEvent: function (campNode, event) {
 			var improvements = campNode.entity.get(SectorImprovementsComponent);
-			switch(event) {
-			case OccurrenceConstants.campOccurrenceTypes.trader:
-				return improvements.getCount(improvementNames.market) > 0;
+			switch (event) {
+				case OccurrenceConstants.campOccurrenceTypes.trader:
+					return improvements.getCount(improvementNames.market) > 0;
 			
-			default:
-				return true;
+				default:
+					return true;
 			}
 		},
 		
