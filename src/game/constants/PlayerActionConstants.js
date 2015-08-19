@@ -1112,7 +1112,6 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                     rumours: 7399,
                     evidence: 35
 				},
-                
             },
         
             cooldowns: {

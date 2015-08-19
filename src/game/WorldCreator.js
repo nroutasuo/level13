@@ -1,6 +1,12 @@
 // Stores world definitions and returns world-related constants given a seed. The seed should be a positive int.
-define(['ash', 'game/vos/ResourcesVO', 'game/vos/LocaleVO', 'game/constants/WorldCreatorConstants', 'game/constants/EnemyConstants'],
-function (Ash, ResourcesVO, LocaleVO, WorldCreatorConstants, EnemyConstants) {
+define([
+	'ash',
+	'game/vos/ResourcesVO',
+	'game/vos/LocaleVO',
+	'game/constants/WorldCreatorConstants',
+	'game/constants/EnemyConstants',
+	'game/constants/UpgradeConstants'
+], function (Ash, ResourcesVO, LocaleVO, WorldCreatorConstants, EnemyConstants, UpgradeConstants) {
 
     var WorldCreator = {
         
@@ -27,7 +33,7 @@ function (Ash, ResourcesVO, LocaleVO, WorldCreatorConstants, EnemyConstants) {
 		// campable sectors, movement blockers, passages
 		prepareWorldStructure: function (seed, topLevel, bottomLevel) {
 			var passageDownPos = [];
-			for (var l = topLevel; l>= bottomLevel; l--) {
+			for (var l = topLevel; l >= bottomLevel; l--) {
 				this.world[l] = [];
 				
 				var firstSector = this.getFirstSector(seed, l);
@@ -272,16 +278,19 @@ function (Ash, ResourcesVO, LocaleVO, WorldCreatorConstants, EnemyConstants) {
 				}
 				return localeType;
 			};
-			for(var l = topLevel; l>= bottomLevel; l--) {
+			for(var l = topLevel; l >= bottomLevel; l--) {
 				var firstSector = this.getFirstSector(seed, l);
 				var lastSector = this.getLastSector(seed, l);
 				var levelOrdinal = this.getLevelOrdinal(seed, l);
 				var countRand = this.random((seed % 84) * l * l * l);
-				var levelLocaleCount = Math.max(1, Math.round(countRand * 5));
+				// min number of (easy) locales ensures that player can get all upgrades intended for that level
+				var minLocales = Math.max(1, UpgradeConstants.bluePrintsByLevelOrdinal[levelOrdinal] ? UpgradeConstants.bluePrintsByLevelOrdinal[levelOrdinal].length : 0);
+				var levelLocaleCount = Math.max(minLocales, Math.round(countRand * 10));
 				for(var i = 0; i < levelLocaleCount; i++) {
 					var localePos = this.randomInt(seed + i * l + l * 7394, firstSector, lastSector + 1);
 					var localeType = getLocaleType(this.world[l][localePos].sectorType, l, levelOrdinal, this.random(seed+seed+l*i*seed+localePos));
-					var locale = new LocaleVO(localeType);
+					var isEasy = i <= minLocales;
+					var locale = new LocaleVO(localeType, isEasy);
 					this.world[l][localePos].locales.push(locale);
 				}
 			}

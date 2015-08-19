@@ -172,6 +172,10 @@ define([
 				if (requirements && costs.stamina > 0) {
 					requirements.health = costs.stamina;
 				}
+                if (costs.favour && !this.gameState.unlockedFeatures.favour) {
+					reason = "Locked stats.";
+					return { value: 0, reason: reason };
+                }
 				if ((costs.resource_fuel > 0 && !this.gameState.unlockedFeatures.resources.fuel) ||
 					(costs.resource_herbs > 0 && !this.gameState.unlockedFeatures.resources.herbs) ||
 					(costs.resource_tools > 0 && !this.gameState.unlockedFeatures.resources.tools) ||
@@ -335,8 +339,17 @@ define([
                             if (requirementBoolean) reason = "Upgrade required: " + upgradeId;
                             else reason = "Upgrade already researched (" + upgradeId + ")";
                             if (log) console.log("WARN: " + reason);
-                            return { value: 0, reason: reason } ; 
+                            return { value: 0, reason: reason };
                         }
+                    }
+                }
+                
+                if (requirements.blueprint) {
+                    var blueprintName = action;
+                    var hasBlueprint = this.tribeUpgradesNodes.head.upgrades.hasAvailableBlueprint(blueprintName);
+                    if (!hasBlueprint) {
+                        reason = "Blueprint required.";
+                        return { value: 0, reason: reason };
                     }
                 }
                 
@@ -649,6 +662,10 @@ define([
 						var sectorLocalesComponent = sector.get(SectorLocalesComponent);
 						var localeVO = sectorLocalesComponent.locales[localei];
 						if(localeVO) return localeVO.costs;
+                        break;
+                        
+                    case "unlock_upgrade":
+                        return { blueprint: 1 };
 				}
 			}
 		
@@ -675,6 +692,7 @@ define([
 			if (!action) return action;
 			if (action.indexOf("scout_locale") >= 0) return "scout_locale";
 			if (action.indexOf("craft_") >= 0) return "craft";
+			if (action.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
 			return action;
 		},
         

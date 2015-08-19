@@ -652,6 +652,8 @@ define(['ash',
                 var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
                 var item = this.playerActionsHelper.getItemForCraftAction(actionName);
                 itemsComponent.addItem(item.clone());
+                
+            this.gameState.unlockedFeatures.vision = true;
                            
                 this.addLogMessage("Crafted " + item.name);
                 this.forceResourceBarUpdate();
@@ -659,8 +661,12 @@ define(['ash',
             }
         },
         
+        unlockUpgrade: function(upgradeId) {
+            this.tribeUpgradesNodes.head.upgrades.useBlueprint(upgradeId);
+        },
+        
         buyUpgrade: function(upgradeId) {
-            if(this.playerActionsHelper.checkAvailability(upgradeId, true)) {
+            if (this.playerActionsHelper.checkAvailability(upgradeId, true)) {
                 this.playerActionsHelper.deductCosts(upgradeId);
                 this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeId);
                 this.save();

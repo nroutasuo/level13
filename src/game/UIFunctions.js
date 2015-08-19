@@ -104,6 +104,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             this.actionToFunctionMap["scout"] = this.playerActions.scout;
             this.actionToFunctionMap["scout_locale"] = playerActions.scoutLocale;
             this.actionToFunctionMap["despair"] = playerActions.despair;
+            this.actionToFunctionMap["unlock_upgrade"] = playerActions.unlockUpgrade;
         },
         
         registerListeners: function () {
@@ -216,7 +217,8 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                         uiFunctions.startButtonCooldown($(this), cooldown);
                     }
                     
-                    var func = uiFunctions.actionToFunctionMap[playerActions.playerActionsHelper.getBaseActionID(action)];
+                    var baseId = playerActions.playerActionsHelper.getBaseActionID(action);
+                    var func = uiFunctions.actionToFunctionMap[baseId];
                     if (func) {
                         var param = null;
                         var isProject = $(this).hasClass("action-level-project");

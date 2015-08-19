@@ -4,12 +4,12 @@ define(['ash'], function (Ash) {
 
     var SectorLocalesComponent = Ash.Class.extend({
         
-        // Primary attributes
         locales: [],
         
         constructor: function (locales) {
             this.locales = locales;
         },
+        
     });
 
     return SectorLocalesComponent;

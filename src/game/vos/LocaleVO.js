@@ -16,11 +16,13 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
     var LocaleVO = Ash.Class.extend({
 		
 		type: "",
+		isEasy: false,
 		requirements: {},
         costs: {},
 	
-        constructor: function (type) {
+        constructor: function (type, isEasy) {
 			this.type = type;
+			this.isEasy = isEasy;
 			this.requirements.vision = this.getVisionRequirement();
 			this.costs.stamina = this.getStaminaRequirement();
 		},
@@ -29,13 +31,13 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             switch (this.type) {
                 case localeTypes.factory: return 50;
                 case localeTypes.house: return 30;
-                case localeTypes.lab: return 90;
+                case localeTypes.lab: return this.isEasy ? 50 : 90;
                 case localeTypes.grove: return 20;
                 case localeTypes.market: return 40;
                 case localeTypes.maintenance: return 50;
                 case localeTypes.transport: return 50;
-                case localeTypes.sewer: return 80;
-                case localeTypes.warehouse: return 60;
+                case localeTypes.sewer: return this.isEasy ? 50 : 80;
+                case localeTypes.warehouse: return this.isEasy ? 50 : 60;
                 default: return 30;
             }
         },

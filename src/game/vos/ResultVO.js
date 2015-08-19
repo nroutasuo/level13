@@ -6,6 +6,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		// rewards
 		gainedResources: null,
 		gainedItems: [],
+		gainedBlueprint: null,
 		gainedEvidence: 0,
 		
 		// penalties
@@ -16,6 +17,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
         constructor: function () {
 			this.gainedResources = new ResourcesVO();
             this.gainedItems = [];
+			this.gainedBlueprint = null;
             this.gainedEvidence = 0;
             
 			this.lostResources = new ResourcesVO();

@@ -109,9 +109,9 @@ define([
 			// Singleton helper modules to be passed to systems that need them
 			this.resourcesHelper = new ResourcesHelper(this.engine);
 			this.playerActionsHelper = new PlayerActionsHelper(this.engine, this.gameState, this.resourcesHelper);
-			this.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine, this.gameState, this.resourcesHelper);
-			this.movementHelper = new MovementHelper(this.engine);
 			this.levelHelper = new LevelHelper(this.engine, this.playerActionsHelper);
+			this.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine, this.gameState, this.resourcesHelper, this.levelHelper);
+			this.movementHelper = new MovementHelper(this.engine);
 			this.saveHelper = new SaveHelper();
 			
 			// Global signals

@@ -4,9 +4,11 @@ define([
 	'game/constants/TextConstants',
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
+	'game/constants/UpgradeConstants',
     'game/nodes/PlayerStatsNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/PlayerResourcesNode',
+    'game/nodes/tribe/TribeUpgradesNode',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/player/ItemsComponent',
@@ -18,9 +20,11 @@ define([
 	TextConstants,
 	ItemConstants,
 	PerkConstants,
+	UpgradeConstants,
 	PlayerStatsNode,
 	PlayerLocationNode,
 	PlayerResourcesNode,
+	TribeUpgradesNode,
 	SectorFeaturesComponent,
 	SectorStatusComponent,
 	ItemsComponent,
@@ -31,18 +35,22 @@ define([
     var PlayerActionResultsHelper = Ash.Class.extend({
 
 		resourcesHelper: null,
+		levelHelper: null,
 
 		playerStatsNodes: null,
 		playerResourcesNodes: null,
 		playerLocationNodes: null,
+		tribeUpgradesNodes: null,
 
-		constructor: function (engine, gameState, resourcesHelper) {
+		constructor: function (engine, gameState, resourcesHelper, levelHelper) {
 			this.engine = engine;
 			this.gameState = gameState;
 			this.resourcesHelper = resourcesHelper;
+			this.levelHelper = levelHelper;
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
+			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 		},
 
         getScavengeRewards: function () {
@@ -88,6 +96,7 @@ define([
 			rewards.gainedResources = this.getRewardResources(1, efficiency * localeDifficulty / 15, availableResources);
 			rewards.gainedItems = this.getRewardItems(0.2, 0, localeDifficulty / 2, itemsComponent, levelOrdinal);
 			rewards.gainedInjuries = this.getResultInjuries();
+			rewards.gainedBlueprint = this.getResultBlueprint(localeVO);
 			rewards.gainedEvidence = 1;
 
 			return rewards;
@@ -138,6 +147,10 @@ define([
 					itemsComponent.discardItem(rewards.lostItems[i]);
 				}
 			}
+			
+			if (rewards.gainedBlueprint) {
+				this.tribeUpgradesNodes.head.upgrades.addNewBlueprint(rewards.gainedBlueprint);
+			}
 
 			if (rewards.gainedInjuries) {
 				var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
@@ -186,6 +199,14 @@ define([
 				msg += "$" + replacements.length + ", ";
 				replacements.push("#" + replacements.length + " evidence");
 				values.push(rewards.gainedEvidence);
+			}
+
+			if (rewards.gainedBlueprint) {
+				msg += ", ";
+				foundSomething = true;
+				msg += "$" + replacements.length + ", ";
+				replacements.push("#" + replacements.length + " blueprint");
+				values.push(1);
 			}
 
 			if (foundSomething) {
@@ -292,6 +313,30 @@ define([
 		getResultInjuries: function () {
 			// TODO injuries perks for sca/fi/i
 			return {};
+		},
+		
+		getResultBlueprint: function (localeVO) {
+			var playerPos = this.playerLocationNodes.head.position;
+			var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
+			
+			var levelBlueprints = UpgradeConstants.bluePrintsByLevelOrdinal[levelOrdinal];
+			var blueprintsToFind = [];
+			for (var i = 0; i < levelBlueprints.length; i++) {
+				if (!this.tribeUpgradesNodes.head.upgrades.hasBlueprint(levelBlueprints[i]))
+					blueprintsToFind.push(levelBlueprints[i]);
+			}
+			
+			var unscoutedLocales = this.levelHelper.getLevelLocales(playerPos.level, false, localeVO).length + 1;
+			
+			var levelBlueprintProbability = blueprintsToFind.length / unscoutedLocales;
+			console.log(blueprintsToFind.length + " / " + unscoutedLocales + " -> " + levelBlueprintProbability);
+			if (Math.random() < levelBlueprintProbability) {
+				return blueprintsToFind[Math.floor(Math.random() * blueprintsToFind.length)];
+			} else {
+				// TODO a change to get unfound upgrades from previous levels
+			}
+			
+			return null;
 		},
 
     });
