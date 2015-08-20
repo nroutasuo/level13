@@ -33,6 +33,7 @@ define(['ash'], function (Ash) {
                 trade: false,
                 followers: false,
                 favour: false,
+                evidence: false,
             };
             
             this.uiStatus = {

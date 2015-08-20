@@ -289,6 +289,7 @@ define(['ash',
                 if (!sectorStatus.scouted) {
                     this.playerActionsHelper.deductCosts("scout");
                     sectorStatus.scouted = true;
+                    this.gameState.unlockedFeatures.evidence = true;
 					
                     // TODO add details to message base depending on the location
 					var rewards = this.playerActionResultsHelper.getScoutRewards();
@@ -879,6 +880,11 @@ define(['ash',
                     var sector = this.playerLocationNodes.head.entity;                
                     var improvementsComponent = sector.get(SectorImprovementsComponent);
                     improvementsComponent.add(name, amount);                    
+                    break;
+                
+                case "blueprint":
+                    var name = inputParts[1];
+                    this.tribeUpgradesNodes.head.upgrades.addNewBlueprint(name);
                     break;
                 
                 case "item":

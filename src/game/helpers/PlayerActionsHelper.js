@@ -558,8 +558,8 @@ define([
             var sector = this.playerLocationNodes.head.entity;
             var playerPos = sector.get(PositionComponent);
             
-            if (action.indexOf("build_in") >= 0) {
-                    var improvementName = this.getImprovementNameForAction(action);
+                if (action.indexOf("build_in") >= 0) {
+                        var improvementName = this.getImprovementNameForAction(action);
                     var improvementsComponent = sector.get(SectorImprovementsComponent);
                     return improvementsComponent.getCount(improvementName) + 1;
             }

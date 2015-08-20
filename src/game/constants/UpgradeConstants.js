@@ -59,7 +59,7 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
         
         bluePrintsByLevelOrdinal: {
             1: ["unlock_building_passage_staircase"],
-            2: ["unlock_building_darkfarm"],
+            2: ["unlock_building_darkfarm", "unlock_building_tradingpost"],
             3: ["unlock_building_market", "unlock_building_lights"],
             4: ["unlock_building_passage_hole", "unlock_building_library", "upgrade_worker_scavenger"],
             5: ["unlock_building_passage_elevator", "unlock_item_weapon2", "unlock_building_bridge", "upgrade_building_storage1"],

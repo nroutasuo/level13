@@ -29,6 +29,18 @@ div.grid-content .grid .unit {
 	padding-bottom: 0;
 }
 
+table.fullwidth {
+	width: 100%;
+}
+
+td.minwidth {
+	width: 5%;
+}
+
+td.maxwidth {
+	width: 95%;
+}
+
 table td {
 	padding: 0px 2px;
 	text-transform: lowercase;

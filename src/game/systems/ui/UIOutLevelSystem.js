@@ -255,7 +255,12 @@ define([
 			
 			var discoveredResources = this.getLocationDiscoveredResources();
 			var showFight = this.gameState.unlockedFeatures.fight && !sectorControlComponent.hasControl() && isScouted;
-			var showDespair = !hasCampHere && (discoveredResources.indexOf(resourceNames.food) < 0 || discoveredResources.indexOf(resourceNames.water) < 0);
+			var showDespair =
+				!hasCampHere &&
+				(discoveredResources.indexOf(resourceNames.food) < 0 || discoveredResources.indexOf(resourceNames.water) < 0) &&
+				this.gameState.unlockedFeatures.resources.food &&
+				this.gameState.unlockedFeatures.resources.water &&
+				(this.resourcesHelper.getCurrentStorage().resources.water < 1 || this.resourcesHelper.getCurrentStorage().resources.food < 1);
 			$("#out-action-scout").toggle(this.gameState.unlockedFeatures.vision);
 			$("#out-action-investigate").toggle(this.gameState.unlockedFeatures.investigate);
 			$("#out-action-fight").toggle(showFight);

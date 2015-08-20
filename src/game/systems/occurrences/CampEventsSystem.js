@@ -22,23 +22,25 @@ define([
     var CampEventsSystem = Ash.System.extend({	
 	    
 		occurrenceFunctions: null,
+		upgradesHelper: null,
 		gameState: null,
 		saveSystem: null,
 		
 		playerNodes: null,
 		campNodes: null,
 	
-        constructor: function (occurrenceFunctions, gameState, saveSystem) {
+        constructor: function (occurrenceFunctions, upgradesHelper, gameState, saveSystem) {
 			this.occurrenceFunctions = occurrenceFunctions;
+			this.upgradesHelper = upgradesHelper;
 			this.gameState = gameState;
 			this.saveSystem = saveSystem;
         },
 
         addToEngine: function (engine) {
 			var sys = this;
-			this.playerNodes = engine.getNodeList( PlayerResourcesNode );
-			this.campNodes = engine.getNodeList( CampNode );
-			this.campNodes.nodeAdded.add(function(node) {
+			this.playerNodes = engine.getNodeList(PlayerResourcesNode);
+			this.campNodes = engine.getNodeList(CampNode);
+			this.campNodes.nodeAdded.add(function (node) {
 				sys.resetTimers(node);
 			});
 			this.resetAllTimers();
@@ -52,18 +54,18 @@ define([
         update: function (time) {
             for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 				var campTimers = campNode.entity.get(CampEventTimersComponent);		
-				for(var key in OccurrenceConstants.campOccurrenceTypes) {
-					var event = OccurrenceConstants.campOccurrenceTypes[key];
-					if (this.isCampValidForEvent(campNode, event)) {
-					if (this.hasCampEvent(campNode, event)) {
-						if (campTimers.hasTimeEnded(event)) {
-						this.endEvent(campNode, event);
+					for(var key in OccurrenceConstants.campOccurrenceTypes) {
+						var event = OccurrenceConstants.campOccurrenceTypes[key];
+						if (this.isCampValidForEvent(campNode, event)) {
+						if (this.hasCampEvent(campNode, event)) {
+							if (campTimers.hasTimeEnded(event)) {
+								this.endEvent(campNode, event);
+							}
+						} else {
+							if (campTimers.isTimeToStart(event)) {
+								this.startEvent(campNode, event);
+							}
 						}
-					} else {
-						if (campTimers.isTimeToStart(event)) {
-						this.startEvent(campNode, event);
-						}
-					}
 					}
 				}
 			}
@@ -91,7 +93,7 @@ define([
 			var improvements = campNode.entity.get(SectorImprovementsComponent);
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.trader:
-					return improvements.getCount(improvementNames.market) > 0;
+					return improvements.getCount(this.upgradesHelper.getImprovementForOccurrence(event)) > 0;
 			
 				default:
 					return true;
@@ -99,7 +101,7 @@ define([
 		},
 		
 		hasCampEvent: function(campNode, event) {
-			switch(event) {
+			switch (event) {
 			case OccurrenceConstants.campOccurrenceTypes.trader:
 				return campNode.entity.has(TraderComponent);
 			
@@ -156,15 +158,15 @@ define([
 			
 			var playerInCamp = this.isPlayerInCamp(campNode);
 			if (playerInCamp && logMsg) {
-			this.addLogMessage(logMsg, replacements, values);
+				this.addLogMessage(logMsg, replacements, values);
 			} else if (!playerInCamp && awayLogMsg) {
-			this.addLogMessage(awayLogMsg, replacements, values, campNode);
+				this.addLogMessage(awayLogMsg, replacements, values, campNode);
 			}
 			
 			this.saveSystem.save();
 		},
 		
-		startEvent: function(campNode, event) {
+		startEvent: function (campNode, event) {
 			var campTimers = campNode.entity.get(CampEventTimersComponent);
 			var duration = OccurrenceConstants.getDuration(event);
 			campTimers.onEventStarted(event, duration);

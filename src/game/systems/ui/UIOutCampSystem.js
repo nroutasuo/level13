@@ -38,11 +38,12 @@ define([
         deityNodes: null,
         tribeUpgradesNodes: null,
 
-        constructor: function (uiFunctions, tabChangedSignal, gameState, levelHelper) {
+        constructor: function (uiFunctions, tabChangedSignal, gameState, levelHelper, upgradesHelper) {
             this.uiFunctions = uiFunctions;
 			this.tabChangedSignal = tabChangedSignal;
             this.gameState = gameState;
             this.levelHelper = levelHelper;
+			this.upgradesHelper = upgradesHelper;
             return this;
         },
 
@@ -111,12 +112,12 @@ define([
             this.uiFunctions.slideToggleIf("#in-population p", null, campComponent.population >= 1, 200, 200);
             this.uiFunctions.slideToggleIf("#in-assign-workers", null, campComponent.population >= 1, 200, 200);
             
-            $("#in-assign-weaver").toggle(this.hasUpgrade(UpgradeConstants.upgradeIds.unlock_worker_rope));
+            $("#in-assign-weaver").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("weaver")));
             $("#in-assign-chemist").toggle(this.levelHasClearedWorkshop(posComponent.level, resourceNames.fuel));
-            $("#in-assign-apothecary").toggle(this.hasUpgrade(UpgradeConstants.upgradeIds.unlock_building_apothecary));
-            $("#in-assign-concrete").toggle(this.hasUpgrade(UpgradeConstants.upgradeIds.unlock_building_cementmill));
-            $("#in-assign-smith").toggle(this.hasUpgrade(UpgradeConstants.upgradeIds.unlock_building_smithy));
-            $("#in-assign-soldier").toggle(this.hasUpgrade(UpgradeConstants.upgradeIds.unlock_building_barracks));
+            $("#in-assign-apothecary").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("apothecary")));
+            $("#in-assign-concrete").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("concrete")));
+            $("#in-assign-smith").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("smith")));
+            $("#in-assign-soldier").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("soldier")));
             
             var maxApothecaries = improvements.getCount(improvementNames.apothecary) * CampConstants.APOTECARIES_PER_SHOP;
             var maxConcrete = improvements.getCount(improvementNames.cementmill) * CampConstants.CONCRETE_WORKERS_PER_MILL;

@@ -286,8 +286,9 @@ define([
 				// min number of (easy) locales ensures that player can get all upgrades intended for that level
 				var minLocales = Math.max(1, UpgradeConstants.bluePrintsByLevelOrdinal[levelOrdinal] ? UpgradeConstants.bluePrintsByLevelOrdinal[levelOrdinal].length : 0);
 				var levelLocaleCount = Math.max(minLocales, Math.round(countRand * 10));
+				var firstLocaleSector = l == 13 ? 5 : 1;
 				for(var i = 0; i < levelLocaleCount; i++) {
-					var localePos = this.randomInt(seed + i * l + l * 7394, firstSector, lastSector + 1);
+					var localePos = this.randomInt(seed + i * l + l * 7394, firstLocaleSector, lastSector + 1);
 					var localeType = getLocaleType(this.world[l][localePos].sectorType, l, levelOrdinal, this.random(seed+seed+l*i*seed+localePos));
 					var isEasy = i <= minLocales;
 					var locale = new LocaleVO(localeType, isEasy);

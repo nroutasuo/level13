@@ -1,0 +1,187 @@
+// Singleton with helper methods for movement, blockers etc
+define([
+    'ash',
+    'game/constants/UpgradeConstants',
+    'game/constants/PlayerActionConstants',
+    'game/constants/OccurrenceConstants',
+	'game/vos/ImprovementVO',
+], function (Ash, UpgradeConstants, PlayerActionConstants, OccurrenceConstants, ImprovementVO) {
+    
+    var UpgradeEffectsHelper = Ash.Class.extend({
+		
+		upgradesByWorker: {
+			"weaver": UpgradeConstants.upgradeIds.unlock_worker_rope,
+			"apothecary": UpgradeConstants.upgradeIds.unlock_building_apothecary,
+			"concrete": UpgradeConstants.upgradeIds.unlock_building_cementmill,
+			"smith": UpgradeConstants.upgradeIds.unlock_building_smithy,
+			"soldier": UpgradeConstants.upgradeIds.unlock_building_barracks,
+		},
+		
+		improvementsByOccurrence: {
+		},
+		
+		improvingUpgradesByImprovement: {
+		},
+		
+		improvingUpgradesByWorker: {
+		},
+		
+		improvingUpgradesByEvent: {
+		},
+		
+		constructor: function (playerActionsHelper) {
+			this.playerActionsHelper = playerActionsHelper;
+			
+			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.trader] = improvementNames.market;
+			
+			this.improvingUpgradesByImprovement[improvementNames.storage] = ["upgrade_building_storage1", "upgrade_building_storage2" ];
+			this.improvingUpgradesByImprovement[improvementNames.smithy] = ["unlock_item_weapon4"];
+			this.improvingUpgradesByImprovement[improvementNames.market] = ["upgrade_building_market", "upgrade_building_market2"];
+			this.improvingUpgradesByImprovement[improvementNames.library] = ["upgrade_building_library"];
+			this.improvingUpgradesByImprovement[improvementNames.inn] = ["upgrade_building_inn"];
+			this.improvingUpgradesByImprovement[improvementNames.hospital] = ["upgrade_building_hospital"];
+			this.improvingUpgradesByImprovement[improvementNames.cementmill] = ["upgrade_building_cementmill"];
+			this.improvingUpgradesByImprovement[improvementNames.campfire] = ["upgrade_building_campfire"];
+			this.improvingUpgradesByImprovement[improvementNames.barracks] = ["unlock_item_weapon5", "unlock_item_weapon7"];
+			this.improvingUpgradesByImprovement[improvementNames.apothecary] = ["upgrade_building_apothecary"];
+			
+			this.improvingUpgradesByWorker["trapper"] = ["upgrade_worker_trapper"];
+			this.improvingUpgradesByWorker["soldier"] = ["unlock_item_weapon5", "unlock_item_weapon7"];
+			this.improvingUpgradesByWorker["smith"] = ["unlock_item_weapon4"];
+			this.improvingUpgradesByWorker["scavenger"] = ["upgrade_worker_scavenger"];
+			this.improvingUpgradesByWorker["weaver"] = ["unlock_item_clothing4"];
+			this.improvingUpgradesByWorker["concrete"] = ["upgrade_building_cementmill"];
+			this.improvingUpgradesByWorker["collector"] = ["upgrade_worker_collector1", "upgrade_worker_collector2"];
+			this.improvingUpgradesByWorker["chemist"] = ["upgrade_worker_chemist"];
+			this.improvingUpgradesByWorker["apothecary"] = ["upgrade_building_apothecary"];
+			
+			this.improvingUpgradesByEvent[OccurrenceConstants.campOccurrenceTypes.trader] = [ "upgrade_building_market", "upgrade_building_market2" ];
+		},
+		
+		getUnlockedBuildings: function (upgradeId) {
+			// TODO separate in and out improvements
+			// TODO performance
+			var buildings = [];
+			var reqsDefinition;
+			var improvementName;
+			for (var action in PlayerActionConstants.requirements) {
+				reqsDefinition = PlayerActionConstants.requirements[action];
+				if (reqsDefinition.upgrades) {
+					for (var requiredUpgradeId in reqsDefinition.upgrades) {
+						if (requiredUpgradeId === upgradeId) {
+							improvementName = this.playerActionsHelper.getImprovementNameForAction(action, true);
+							if (improvementName) buildings.push(improvementName);
+						}
+					}
+				}
+			}
+			return buildings;
+		},
+		
+		getUnlockedItems: function (upgradeId) {
+			// TODO performance
+			var items = [];
+			var reqsDefinition;
+			var item;
+			for (var action in PlayerActionConstants.requirements) {
+				reqsDefinition = PlayerActionConstants.requirements[action];
+				if (reqsDefinition.upgrades) {
+					for (var requiredUpgradeId in reqsDefinition.upgrades) {
+						if (requiredUpgradeId === upgradeId) {
+							item = this.playerActionsHelper.getItemForCraftAction(action);
+							if (item) items.push(item.name);
+						}
+					}
+				}
+			}
+			return items;
+		},
+		
+		getUnlockedWorkers: function (upgradeId) {
+			var workers = [];
+			var workerUpgrade;
+			for (var worker in this.upgradesByWorker) {
+				workerUpgrade = this.upgradesByWorker[worker];
+				if (workerUpgrade === upgradeId) {
+					workers.push(worker);
+				}
+			}
+			return workers;
+		},
+		
+		getUnlockedOccurrences: function (upgradeId) {
+			var unlockedBuildings = this.getUnlockedBuildings(upgradeId);
+			var occurrences = [];
+			if(unlockedBuildings.length > 0) {
+				var occurrenceBuilding;
+				var unlockedBuilding;
+				for (var i = 0; i < unlockedBuildings.length; i++) {
+					unlockedBuilding = unlockedBuildings[i];
+					for (var occurrence in this.improvementsByOccurrence) {
+						occurrenceBuilding = this.improvementsByOccurrence[occurrence];
+						if (occurrenceBuilding === unlockedBuilding) {
+							occurrences.push(occurrence);
+						}
+					}
+				}
+			}
+			return occurrences;
+		},
+		
+		getImprovedBuildings: function (upgradeId) {
+			var buildings = [];
+			var buildingUpgrade;
+			for (var building in this.improvingUpgradesByImprovement) {
+				buildingUpgradeList = this.improvingUpgradesByImprovement[building];
+				for(var i = 0; i < buildingUpgradeList.length; i++) {
+					buildingUpgrade = buildingUpgradeList[i];
+					if (buildingUpgrade === upgradeId) {
+						buildings.push(building);
+					}
+				}
+			}
+			return buildings;
+		},
+		
+		getImprovedWorkers: function (upgradeId) {
+			var workers = [];
+			var workerUpgrade;
+			for (var worker in this.improvingUpgradesByWorker) {
+				workerUpgradeList = this.improvingUpgradesByWorker[worker];
+				for(var i = 0; i < workerUpgradeList.length; i++) {
+					workerUpgrade = workerUpgradeList[i];
+					if (workerUpgrade === upgradeId) {
+						workers.push(worker);
+					}
+				}
+			}
+			return workers;
+		},
+		
+		getImprovedOccurrences: function (upgradeId) {
+			var events = [];
+			var eventUpgrade;
+			for (var event in this.improvingUpgradesByEvent) {
+				eventUpgradeList = this.improvingUpgradesByEvent[event];
+				for(var i = 0; i < eventUpgradeList.length; i++) {
+					eventUpgrade = eventUpgradeList[i];
+					if (eventUpgrade === upgradeId) {
+						events.push(event);
+					}
+				}
+			}
+			return events;
+		},
+		
+		getUpgradeIdForWorker: function (worker) {
+			return this.upgradesByWorker[worker];
+		},
+		
+		getImprovementForOccurrence: function (occurrence) {
+			return this.improvementsByOccurrence[occurrence];
+		},
+		
+    });
+    
+    return UpgradeEffectsHelper;
+});

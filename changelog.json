@@ -7,6 +7,10 @@
             "changes": [
                 {
                     "type": "GD",
+                    "summary": "Initial list of upgrades, upgrades balancing & blueprint mechanic."
+                },
+                {
+                    "type": "GD",
                     "summary": "Working crafting system and all basic items. Secondary resources (parts) that can be scavenged and used for crafting."
                 },
                 {

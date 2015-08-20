@@ -101,6 +101,9 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                         camp: [1, -1],
                         bridge: [0, 1],
                     },
+                    upgrades: {
+                        unlock_building_bridge: true,
+                    }
                 },
             
                 build_out_collector_food: {
@@ -250,6 +253,9 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                     numCamps: 2,
                     improvements: {
                         tradepost: [0,1],
+                    },
+                    upgrades: {
+                        unlock_building_tradingpost: true,
                     }
                 },
             
@@ -277,7 +283,7 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                         market: [0, 1],
                     },
                     upgrades: {
-                        unlock_building_tradingpost: true,
+                        unlock_building_market: true,
                     }
                 },
             
@@ -350,7 +356,129 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                 },
             
                 build_in_researchcenter: {
-                    
+                    upgrades: {
+                        unlock_building_researchcenter: true,
+                    }
+                },
+                
+                craft_light1: {
+                },
+                
+                craft_light2: {
+                    upgrades: {
+                        unlock_building_lights: true,
+                    }
+                },
+                
+                craft_shade1: {
+                    upgrades: {
+                        unlock_item_shades1: true,
+                    }
+                },
+                
+                craft_shade2: {
+                    upgrades: {
+                        unlock_item_shades2: true,
+                    }
+                },
+                
+                craft_weapon1: {
+                },
+                
+                craft_weapon2: {
+                    upgrades: {
+                        unlock_item_weapon2: true,
+                    }
+                },
+                
+                craft_weapon3: {
+                    upgrades: {
+                        unlock_building_smithy: true,
+                    }
+                },
+                
+                craft_weapon4: {
+                    upgrades: {
+                        unlock_item_weapon4: true,
+                    }
+                },
+                
+                craft_weapon5: {
+                    upgrades: {
+                        unlock_item_weapon5: true,
+                    }
+                },
+                
+                craft_weapon6: {
+                    upgrades: {
+                        unlock_item_weapon6: true,
+                    }
+                },
+                
+                craft_weapon7: {
+                    upgrades: {
+                        unlock_item_weapon7: true,
+                    }
+                },
+                
+                craft_clothing1: {
+                    upgrades: {
+                        unlock_worker_rope: true,
+                    }
+                },
+                
+                craft_clothing2: {
+                    upgrades: {
+                        unlock_item_clothing2: true,
+                    }
+                },
+                
+                craft_clothing3: {
+                    upgrades: {
+                        unlock_item_clothing3: true,
+                    }
+                },
+                
+                craft_clothing4: {
+                    upgrades: {
+                        unlock_item_clothing4: true,
+                    }
+                },
+                
+                craft_clothing5: {
+                    upgrades: {
+                        unlock_item_clothing5: true,
+                    }
+                },
+                
+                craft_clothing6: {
+                    upgrades: {
+                        unlock_item_clothing6: true,
+                    }
+                },
+                
+                craft_clothing7: {
+                    upgrades: {
+                        unlock_item_clothing7: true,
+                    }
+                },
+                
+                craft_bag_0: {
+                    upgrades: {
+                        unlock_item_shoe1: true,
+                    }
+                },
+                
+                craft_bag_1: {
+                    upgrades: {
+                        unlock_item_bag2: true,
+                    }
+                },
+                
+                craft_bag_2: {
+                    upgrades: {
+                        unlock_item_bag3: true,
+                    }
                 },
                 
 				unlock_worker_rope: {
@@ -377,8 +505,11 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
 				unlock_building_researchcenter: {
                     blueprint: 19,
 				},
+                
 				unlock_building_tradingpost: {
+                    blueprint: 2,
 				},
+                
 				unlock_building_market: {
                     blueprint: 3,
                     upgrades: {
@@ -498,6 +629,9 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                     }
 				},
 				upgrade_worker_collector1: {
+                    upgrades: {
+                        unlock_building_tradingpost: true,
+                    }
 				},
 				upgrade_worker_trapper: {
                     blueprint: 11,
@@ -938,7 +1072,6 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                     resource_herbs: 10,
                     resource_fuel: 10,
                 },
-                
                 
 				unlock_worker_rope: {
                     rumours: 3

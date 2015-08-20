@@ -41,6 +41,7 @@ define([
     'game/helpers/MovementHelper',
     'game/helpers/LevelHelper',
     'game/helpers/SaveHelper',
+    'game/helpers/UpgradeEffectsHelper',
     'brejep/tickprovider',
 ], function (
     Ash,
@@ -85,6 +86,7 @@ define([
     MovementHelper,
     LevelHelper,
     SaveHelper,
+    UpgradeEffectsHelper,
     TickProvider
 ) {
     var Level13 = Ash.Class.extend({
@@ -113,6 +115,7 @@ define([
 			this.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine, this.gameState, this.resourcesHelper, this.levelHelper);
 			this.movementHelper = new MovementHelper(this.engine);
 			this.saveHelper = new SaveHelper();
+			this.upgradeEffectsHelper = new UpgradeEffectsHelper(this.playerActionsHelper);
 			
 			// Global signals
 			this.playerMovedSignal = new Ash.Signals.Signal();
@@ -152,14 +155,14 @@ define([
 			this.engine.addSystem(new UIOutHeaderSystem(this.uiFunctions, this.gameState, this.resourcesHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutElementsSystem(this.uiFunctions, this.gameState, this.playerActions, this.resourcesHelper, this.levelHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLevelSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.movementHelper, this.resourcesHelper, this.playerMovedSignal), SystemPriorities.render);
-			this.engine.addSystem(new UIOutCampSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.levelHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutCampSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.levelHelper, this.upgradeEffectsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutBagSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionsHelper, this.gameState), SystemPriorities.render);
-			this.engine.addSystem(new UIOutUpgradesSystem(this.uiFunctions, this.tabChangedSignal, this.playerActions), SystemPriorities.render);
+			this.engine.addSystem(new UIOutUpgradesSystem(this.uiFunctions, this.tabChangedSignal, this.playerActions, this.upgradeEffectsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.tabChangedSignal, this.resourcesHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutFightSystem(this.uiFunctions), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLogSystem(this.playerMovedSignal), SystemPriorities.update);
 			
-			this.engine.addSystem(new CampEventsSystem(this.occurrenceFunctions, this.gameState, this.saveSystem), SystemPriorities.update);
+			this.engine.addSystem(new CampEventsSystem(this.occurrenceFunctions, this.upgradeEffectsHelper, this.gameState, this.saveSystem), SystemPriorities.update);
 			
 			this.engine.addSystem(new VisionSystem(), SystemPriorities.update);
 			this.engine.addSystem(new StaminaSystem(), SystemPriorities.update);

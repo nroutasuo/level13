@@ -129,7 +129,7 @@ define([
 			this.updateStatsCallout("stats-rumours", playerStatsNode.rumours.accSources);
 			
 			$("#stats-evidence .value").text(Math.round(playerStatsNode.evidence.value) + " / " + playerStatsNode.evidence.cap);
-			$("#stats-evidence").toggle(playerStatsNode.evidence.value > 0);
+			$("#stats-evidence").toggle(this.gameState.unlockedFeatures.evidence);
 			this.updateStatsCallout("stats-evidence", playerStatsNode.evidence.accSources);
 		},
 		
