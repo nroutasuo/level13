@@ -248,6 +248,15 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                         Injury: [0.1, 1],
                     },
                 },
+                
+                use_in_hospital2: {
+                    improvements: {
+                        hospital: [1, -1],
+                    },
+                    upgrades: {
+                        upgrade_building_hospital: true,
+                    }
+                },
             
                 build_in_tradingPost: {
                     numCamps: 2,
@@ -882,6 +891,11 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                     resource_food: 15,
                 },
             
+                use_in_hospital2: {
+                    resource_water: 100,
+                    resource_food: 15,
+                },
+            
                 build_in_tradingPost: {
                     resource_metal: 100,
                 },
@@ -1271,6 +1285,7 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                 build_in_campfire: "Increases rumour generation and unlocks upgrades.",
                 build_in_library: "Accumulate and store more evidence.",
                 build_in_hospital: "Enables healing injuries.",
+                build_in_hospital2: "Improve your general health.",
                 build_in_darkfarm: "Produces food",
                 build_in_tradingPost: "Connect camps to a trade network.",
                 build_in_market: "Enables foreign traders to visit.",

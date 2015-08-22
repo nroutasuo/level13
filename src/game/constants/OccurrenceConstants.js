@@ -16,22 +16,22 @@ function (Ash) {
 		OCCURRENCE_CAMP_RAID_COOLDOWN: 60 * 30,
 		OCCURRENCE_CAMP_RAID_RANDOMNESS: 5,
 		
-		scheduleNext: function (occurrenceType) {
+		scheduleNext: function (occurrenceType, upgradeTimeFactor) {
 			var minimumTime = 1;
 			var randomFactor = 1;
-			switch(occurrenceType) {
-			case this.campOccurrenceTypes.trader:
-				minimumTime = this.OCCURRENCE_CAMP_TRADER_COOLDOWN;
-				randomFactor = 1 + (Math.random() * this.OCCURRENCE_CAMP_TRADER_RANDOMNESS);
-				break;
-			
-			case this.campOccurrenceTypes.raid:
-				minimumTime = this.OCCURRENCE_CAMP_RAID_COOLDOWN;
-				randomFactor = 1 + (Math.random() * this.OCCURRENCE_CAMP_RAID_RANDOMNESS);
-				break;
+			switch (occurrenceType) {
+				case this.campOccurrenceTypes.trader:
+					minimumTime = this.OCCURRENCE_CAMP_TRADER_COOLDOWN;
+					randomFactor = 1 + (Math.random() * this.OCCURRENCE_CAMP_TRADER_RANDOMNESS);
+					break;
 				
+				case this.campOccurrenceTypes.raid:
+					minimumTime = this.OCCURRENCE_CAMP_RAID_COOLDOWN;
+					randomFactor = 1 + (Math.random() * this.OCCURRENCE_CAMP_RAID_RANDOMNESS);
+					break;
 			}
-			return Math.floor(minimumTime * randomFactor);
+			console.log(occurrenceType + " " +  Math.floor(minimumTime * randomFactor * upgradeTimeFactor) + " " + Math.floor(minimumTime * randomFactor));
+			return Math.floor(minimumTime * randomFactor * upgradeTimeFactor);
 		},
 		
 		getDuration: function(occurrenceType) {

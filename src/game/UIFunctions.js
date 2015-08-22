@@ -96,6 +96,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             this.actionToFunctionMap["build_in_radio"] = this.playerActions.buildRadioTower;
             this.actionToFunctionMap["use_in_campfire"] = this.playerActions.useCampfire;
             this.actionToFunctionMap["use_in_hospital"] = this.playerActions.useHospital;
+            this.actionToFunctionMap["use_in_hospital2"] = this.playerActions.useHospital2;
             this.actionToFunctionMap["use_in_inn"] = this.playerActions.useInn;
             // Crafting
             this.actionToFunctionMap["craft"] = this.playerActions.craftItem;

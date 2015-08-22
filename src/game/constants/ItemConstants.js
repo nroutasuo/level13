@@ -165,7 +165,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 			// TODO more varied follower descriptions
 			var description = "A fellow traveller who has agreed to travel together.";
 			
-			return new ItemVO(id, name, type, strength, true, true, icon, description);
+			return new ItemVO(id, name, type, strength, true, true, false, icon, description);
 		},
 		
 		getBag: function (levelOrdinal) {

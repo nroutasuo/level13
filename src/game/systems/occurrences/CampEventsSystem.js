@@ -5,6 +5,7 @@ define([
     'game/constants/TextConstants',
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/sector/CampNode',
+    'game/nodes/tribe/TribeUpgradesNode',
     'game/components/common/PositionComponent',
     'game/components/common/LogMessagesComponent',
     'game/components/sector/events/TraderComponent',
@@ -14,24 +15,25 @@ define([
 ], function (
 	Ash,
 	OccurrenceConstants, TextConstants,
-	PlayerResourcesNode, CampNode,
+	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	PositionComponent, LogMessagesComponent,
 	TraderComponent, RaidComponent, CampEventTimersComponent,
 	SectorImprovementsComponent) {
     
-    var CampEventsSystem = Ash.System.extend({	
+    var CampEventsSystem = Ash.System.extend({
 	    
 		occurrenceFunctions: null,
-		upgradesHelper: null,
+		upgradeEffectsHelper: null,
 		gameState: null,
 		saveSystem: null,
 		
 		playerNodes: null,
 		campNodes: null,
+        tribeUpgradesNodes: null,
 	
-        constructor: function (occurrenceFunctions, upgradesHelper, gameState, saveSystem) {
+        constructor: function (occurrenceFunctions, upgradeEffectsHelper, gameState, saveSystem) {
 			this.occurrenceFunctions = occurrenceFunctions;
-			this.upgradesHelper = upgradesHelper;
+			this.upgradeEffectsHelper = upgradeEffectsHelper;
 			this.gameState = gameState;
 			this.saveSystem = saveSystem;
         },
@@ -39,6 +41,7 @@ define([
         addToEngine: function (engine) {
 			var sys = this;
 			this.playerNodes = engine.getNodeList(PlayerResourcesNode);
+            this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 			this.campNodes = engine.getNodeList(CampNode);
 			this.campNodes.nodeAdded.add(function (node) {
 				sys.resetTimers(node);
@@ -48,15 +51,16 @@ define([
 
         removeFromEngine: function (engine) {
 			this.playerNodes = null;
+            this.tribeUpgradesNodes = null;
 			this.campNodes = null;
         },
 
         update: function (time) {
             for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
-				var campTimers = campNode.entity.get(CampEventTimersComponent);		
-					for(var key in OccurrenceConstants.campOccurrenceTypes) {
-						var event = OccurrenceConstants.campOccurrenceTypes[key];
-						if (this.isCampValidForEvent(campNode, event)) {
+				var campTimers = campNode.entity.get(CampEventTimersComponent);
+                for(var key in OccurrenceConstants.campOccurrenceTypes) {
+                    var event = OccurrenceConstants.campOccurrenceTypes[key];
+                    if (this.isCampValidForEvent(campNode, event)) {
 						if (this.hasCampEvent(campNode, event)) {
 							if (campTimers.hasTimeEnded(event)) {
 								this.endEvent(campNode, event);
@@ -72,13 +76,13 @@ define([
 		},
 	
 		// Re-schedule events where the next time has passed while offline
-		resetAllTimers: function() {	    
+		resetAllTimers: function() {
 			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 				this.resetTimers(campNode);
 			}
 		},
 		
-		resetTimers: function(campNode) {
+		resetTimers: function (campNode) {
 			var campTimers = campNode.entity.get(CampEventTimersComponent);
 			for(var key in OccurrenceConstants.campOccurrenceTypes) {
 				var event = OccurrenceConstants.campOccurrenceTypes[key];
@@ -93,14 +97,14 @@ define([
 			var improvements = campNode.entity.get(SectorImprovementsComponent);
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.trader:
-					return improvements.getCount(this.upgradesHelper.getImprovementForOccurrence(event)) > 0;
+					return improvements.getCount(this.upgradeEffectsHelper.getImprovementForOccurrence(event)) > 0;
 			
 				default:
 					return true;
 			}
 		},
 		
-		hasCampEvent: function(campNode, event) {
+		hasCampEvent: function (campNode, event) {
 			switch (event) {
 			case OccurrenceConstants.campOccurrenceTypes.trader:
 				return campNode.entity.has(TraderComponent);
@@ -113,9 +117,10 @@ define([
 			}
 		},
 		
-		endEvent: function(campNode, event) {
+		endEvent: function (campNode, event) {
 			var campTimers = campNode.entity.get(CampEventTimersComponent);
-			var timeToNext = OccurrenceConstants.scheduleNext(event);
+            var eventUpgradeFactor = this.getEventUpgradeFactor(event);
+			var timeToNext = OccurrenceConstants.scheduleNext(event, eventUpgradeFactor);
 			campTimers.onEventEnded(event, timeToNext);
 			if (window.app) console.log("End " + event + " at " + campNode.camp.campName + "(" + campNode.position.level + ")" + ". Next in " + timeToNext + "s.");
 			
@@ -123,37 +128,37 @@ define([
 			
 			var logMsg;
 			var awayLogMsg;
-				var replacements = [];
-				var values = [];
+			var replacements = [];
+			var values = [];
 			switch (event) {
-			case OccurrenceConstants.campOccurrenceTypes.trader:
-				campNode.entity.remove(TraderComponent);
-				logMsg = "Trader leaves.";
-				break;
-			
-			case OccurrenceConstants.campOccurrenceTypes.raid:
-				this.occurrenceFunctions.onEndRaid(campNode.entity);
-				var raidComponent = campNode.entity.get(RaidComponent);
-				var lostResources = raidComponent.resourcesLost;
-				if (raidComponent.victory) {
-				logMsg = "Raid over. We drove the attackers away.";
-				awayLogMsg = "There has been a raid, but the camp was defended.";
-				} else {
-				awayLogMsg = "There has been a raid.";
-				logMsg = "Raid over.";
-				if (lostResources.getTotal() > 0) {
-					var lostResTxt = TextConstants.getLogResourceText(lostResources);
-					logMsg += " We lost " + lostResTxt.msg;
-					awayLogMsg += " We lost " + lostResTxt.msg;
-					replacements = replacements.concat(lostResTxt.replacements);
-					values = values.concat(lostResTxt.values);
-				} else {
-					logMsg += " There was nothing left to steal.";
-					awayLogMsg += " There was nothing left to steal.";
-				}
-				}
-				campNode.entity.remove(RaidComponent);
-				break;
+                case OccurrenceConstants.campOccurrenceTypes.trader:
+                    campNode.entity.remove(TraderComponent);
+                    logMsg = "Trader leaves.";
+                    break;
+                
+                case OccurrenceConstants.campOccurrenceTypes.raid:
+                    this.occurrenceFunctions.onEndRaid(campNode.entity);
+                    var raidComponent = campNode.entity.get(RaidComponent);
+                    var lostResources = raidComponent.resourcesLost;
+                    if (raidComponent.victory) {
+                        logMsg = "Raid over. We drove the attackers away.";
+                        awayLogMsg = "There has been a raid, but the camp was defended.";
+                    } else {
+                        awayLogMsg = "There has been a raid.";
+                        logMsg = "Raid over.";
+                        if (lostResources.getTotal() > 0) {
+                            var lostResTxt = TextConstants.getLogResourceText(lostResources);
+                            logMsg += " We lost " + lostResTxt.msg;
+                            awayLogMsg += " We lost " + lostResTxt.msg;
+                            replacements = replacements.concat(lostResTxt.replacements);
+                            values = values.concat(lostResTxt.values);
+                        } else {
+                            logMsg += " There was nothing left to steal.";
+                            awayLogMsg += " There was nothing left to steal.";
+                        }
+                    }
+                    campNode.entity.remove(RaidComponent);
+                    break;
 			}
 			
 			var playerInCamp = this.isPlayerInCamp(campNode);
@@ -195,14 +200,25 @@ define([
 			var campPosition = campNode.entity.get(PositionComponent);
 			return playerPosition.level == campPosition.level && playerPosition.sector == campPosition.sector && playerPosition.inCamp;
 		},
+        
+        getEventUpgradeFactor: function (event) {
+			var upgradeLevel = 0;
+			var eventUpgrades = this.upgradeEffectsHelper.getImprovingUpgradeIdsForOccurrence(event);
+			var eventUpgrade;
+			for (var i in eventUpgrades) {
+				eventUpgrade = eventUpgrades[i];
+				if (this.tribeUpgradesNodes.head.upgrades.hasBought(eventUpgrade)) upgradeLevel++;
+			}
+			return (upgradeLevel * 0.05) + 1;
+        },
 		
-		addLogMessage: function(msg, replacements, values, forCamp) {	    
+		addLogMessage: function (msg, replacements, values, forCamp) {
 			var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
 			if (!forCamp) {
-			logComponent.addMessage(msg, replacements, values);
+                logComponent.addMessage(msg, replacements, values);
 			} else {
-			var campPos = forCamp.entity.get(PositionComponent);
-			logComponent.addMessage(msg, replacements, values, campPos.level, campPos.sector, true);
+                var campPos = forCamp.entity.get(PositionComponent);
+                logComponent.addMessage(msg, replacements, values, campPos.level, campPos.sector, true);
 			}
 		}
         

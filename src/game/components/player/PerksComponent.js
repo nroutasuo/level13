@@ -16,7 +16,6 @@ function (Ash, PerkVO, PerkConstants) {
         },
         
         addPerk: function (perk) {
-			console.log("ADD PERK " + perk.type + " " + perk.effect);
             if (typeof this.perks[perk.type] == 'undefined') {
                 this.perks[perk.type] = [];
             }

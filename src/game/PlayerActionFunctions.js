@@ -602,6 +602,17 @@ define(['ash',
             this.gameState.unlockedFeatures.fight = true;
         },
         
+        useHospital2: function() {
+            if(this.playerActionsHelper.checkAvailability("use_in_hospital2", true)) {
+                this.playerActionsHelper.deductCosts("use_in_hospital2");
+                
+                var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
+                perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.healthAugment));
+                this.addLogMessage("Improved health.");            
+            }    
+            this.forceResourceBarUpdate();
+        },
+        
         useInn: function() {
             if (this.playerActionsHelper.checkAvailability("use_in_inn", true)) {                
                 // TODO add varied results depending on follower
@@ -666,8 +677,8 @@ define(['ash',
             this.tribeUpgradesNodes.head.upgrades.useBlueprint(upgradeId);
         },
         
-        buyUpgrade: function(upgradeId) {
-            if (this.playerActionsHelper.checkAvailability(upgradeId, true)) {
+        buyUpgrade: function(upgradeId, automatic) {
+            if (automatic || this.playerActionsHelper.checkAvailability(upgradeId, true)) {
                 this.playerActionsHelper.deductCosts(upgradeId);
                 this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeId);
                 this.save();
@@ -810,8 +821,8 @@ define(['ash',
                 case "stat":                    
                     this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health;
                     this.playerStatsNodes.head.vision.value = 75;
-                    this.playerStatsNodes.head.rumours.value += 5;
-                    this.playerStatsNodes.head.evidence.value += 5;
+                    this.playerStatsNodes.head.rumours.value *= 2;
+                    this.playerStatsNodes.head.evidence.value *= 2;
                     break;
                 
                 case "vision":                    
@@ -885,6 +896,11 @@ define(['ash',
                 case "blueprint":
                     var name = inputParts[1];
                     this.tribeUpgradesNodes.head.upgrades.addNewBlueprint(name);
+                    break;
+                
+                case "tech":
+                    var name = inputParts[1];
+                    this.buyUpgrade(name, true);
                     break;
                 
                 case "item":

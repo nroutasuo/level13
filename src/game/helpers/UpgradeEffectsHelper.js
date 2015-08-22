@@ -45,10 +45,10 @@ define([
 			this.improvingUpgradesByImprovement[improvementNames.barracks] = ["unlock_item_weapon5", "unlock_item_weapon7"];
 			this.improvingUpgradesByImprovement[improvementNames.apothecary] = ["upgrade_building_apothecary"];
 			
+			this.improvingUpgradesByWorker["scavenger"] = ["upgrade_worker_scavenger"];
 			this.improvingUpgradesByWorker["trapper"] = ["upgrade_worker_trapper"];
 			this.improvingUpgradesByWorker["soldier"] = ["unlock_item_weapon5", "unlock_item_weapon7"];
 			this.improvingUpgradesByWorker["smith"] = ["unlock_item_weapon4"];
-			this.improvingUpgradesByWorker["scavenger"] = ["upgrade_worker_scavenger"];
 			this.improvingUpgradesByWorker["weaver"] = ["unlock_item_clothing4"];
 			this.improvingUpgradesByWorker["concrete"] = ["upgrade_building_cementmill"];
 			this.improvingUpgradesByWorker["collector"] = ["upgrade_worker_collector1", "upgrade_worker_collector2"];
@@ -131,6 +131,7 @@ define([
 		getImprovedBuildings: function (upgradeId) {
 			var buildings = [];
 			var buildingUpgrade;
+			var buildingUpgradeList;
 			for (var building in this.improvingUpgradesByImprovement) {
 				buildingUpgradeList = this.improvingUpgradesByImprovement[building];
 				for(var i = 0; i < buildingUpgradeList.length; i++) {
@@ -146,6 +147,7 @@ define([
 		getImprovedWorkers: function (upgradeId) {
 			var workers = [];
 			var workerUpgrade;
+			var workerUpgradeList;
 			for (var worker in this.improvingUpgradesByWorker) {
 				workerUpgradeList = this.improvingUpgradesByWorker[worker];
 				for(var i = 0; i < workerUpgradeList.length; i++) {
@@ -161,6 +163,7 @@ define([
 		getImprovedOccurrences: function (upgradeId) {
 			var events = [];
 			var eventUpgrade;
+			var eventUpgradeList;
 			for (var event in this.improvingUpgradesByEvent) {
 				eventUpgradeList = this.improvingUpgradesByEvent[event];
 				for(var i = 0; i < eventUpgradeList.length; i++) {
@@ -177,8 +180,20 @@ define([
 			return this.upgradesByWorker[worker];
 		},
 		
+		getImprovingUpgradeIdsForWorker: function (worker) {
+			return this.improvingUpgradesByWorker[worker];
+		},
+		
+		getUpgradeIdsForImprovement: function (improvementName) {
+			return this.improvingUpgradesByImprovement[improvementName];
+		},
+		
 		getImprovementForOccurrence: function (occurrence) {
 			return this.improvementsByOccurrence[occurrence];
+		},
+		
+		getImprovingUpgradeIdsForOccurrence: function (occurrence) {
+			return this.improvingUpgradesByEvent[occurrence];
 		},
 		
     });

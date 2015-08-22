@@ -1,26 +1,31 @@
 define([
-    'ash', 'game/nodes/PlayerStatsNode', 'game/nodes/sector/CampNode',
+    'ash', 'game/nodes/PlayerStatsNode', 'game/nodes/sector/CampNode', 'game/nodes/tribe/TribeUpgradesNode',
     'game/components/sector/improvements/SectorImprovementsComponent',
-], function (Ash, PlayerStatsNode, CampNode, SectorImprovementsComponent) {
+], function (Ash, PlayerStatsNode, CampNode, TribeUpgradesNode, SectorImprovementsComponent) {
     var RumourSystem = Ash.System.extend({
 	
         gameState: null,
+		upgradeEffectsHelper: null,
 	
         playerStatsNodes: null,
 		campNodes: null,
+        tribeUpgradesNodes: null,
 
-        constructor: function (gameState) {
-	    this.gameState = gameState;
+        constructor: function (gameState, upgradeEffectsHelper) {
+			this.gameState = gameState;
+			this.upgradeEffectsHelper = upgradeEffectsHelper;
         },
 
         addToEngine: function (engine) {
-            this.playerStatsNodes = engine.getNodeList( PlayerStatsNode );
-            this.campNodes = engine.getNodeList( CampNode );
+            this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
+            this.campNodes = engine.getNodeList(CampNode);
+            this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
         },
 
         removeFromEngine: function (engine) {
             this.playerStatsNodes = null;
             this.campNodes = null;
+            this.tribeUpgradesNodes = null;
         },
 
         update: function (time) {
@@ -28,6 +33,8 @@ define([
 			
 			rumoursComponent.accSources = [];
 			rumoursComponent.accumulation = 0;
+			
+			var campfireUpgradeLevel = this.getCampfireUpgradeLevel();
 			
 			if (this.campNodes.head) {
 				var accSpeed = 0;
@@ -40,6 +47,7 @@ define([
 					
 					campfireCount = improvementsComponent.getCount(improvementNames.campfire);
 					campfireFactor = 1 + (campfireCount > 0 ? (campfireCount/10) : 0);
+					campfireFactor = campfireFactor * campfireUpgradeLevel;
 					var accSpeedPopulation = 0.00005 * (Math.floor(campNode.camp.population)+1);
 					var accSpeedCampfire = accSpeedPopulation * campfireFactor - accSpeedPopulation;
 					var accSpeedCamp = accSpeedPopulation + accSpeedCampfire;
@@ -54,8 +62,18 @@ define([
 				if (rumoursComponent.value > rumoursComponent.cap) rumoursComponent.value = rumoursComponent.cap;
 				rumoursComponent.isAccumulating = true;
 			}
-	    
         },
+		
+		getCampfireUpgradeLevel: function () {
+			var upgradeLevel = 1;
+			var campfireUpgrades = this.upgradeEffectsHelper.getUpgradeIdsForImprovement(improvementNames.campfire);
+			var campfireUpgrade;
+			for (var i in campfireUpgrades) {
+				campfireUpgrade = campfireUpgrades[i];
+				if (this.tribeUpgradesNodes.head.upgrades.hasBought(campfireUpgrade)) upgradeLevel++;
+			}
+			return upgradeLevel;
+		},
     });
 
     return RumourSystem;

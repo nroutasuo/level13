@@ -3,12 +3,14 @@ define([
     'game/constants/UpgradeConstants',
     'game/constants/OccurrenceConstants',
     'game/constants/CampConstants',
+    'game/constants/PerkConstants',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/sector/SectorNode',
     'game/nodes/sector/CampNode',
     'game/nodes/player/DeityNode',
     'game/nodes/tribe/TribeUpgradesNode',
+    'game/components/player/PerksComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/common/PositionComponent',
     'game/components/sector/improvements/CampComponent',
@@ -18,9 +20,10 @@ define([
     'game/components/sector/events/TraderComponent',
     'game/components/sector/events/RaidComponent',
 ], function (
-    Ash, UpgradeConstants, OccurrenceConstants, CampConstants,
+    Ash, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants,
     PlayerPositionNode, PlayerLocationNode, SectorNode, CampNode, DeityNode, TribeUpgradesNode,
-    SectorFeaturesComponent, PositionComponent,
+    PerksComponent,
+	SectorFeaturesComponent, PositionComponent,
     CampComponent, SectorImprovementsComponent, SectorControlComponent, CampEventTimersComponent,
     TraderComponent, RaidComponent
 ) {
@@ -166,6 +169,14 @@ define([
                     }
                 }
             });
+			
+            var perksComponent = this.playerPosNodes.head.entity.get(PerksComponent);
+			var hasHospital = improvements.getCount(improvementNames.hospital);
+			var isInjured = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury) != 1;
+			var isAugmented = perksComponent.hasPerk(PerkConstants.perkIds.healthAugment);
+			var isAugmentAvailable = this.hasUpgrade(this.upgradesHelper.getUpgradeIdsForImprovement(improvementNames.hospital)[0]);
+			$("#btn-use_in_hospital").toggle(hasHospital && (isInjured || isAugmented || !isAugmentAvailable));
+			$("#btn-use_in_hospital2").toggle(hasHospital && !isInjured && !isAugmented && isAugmentAvailable);
             
             var numProjectsTR = $("#in-improvements-level table tr").length;
             var projects = this.levelHelper.getAvailableProjects(this.playerLocationNodes.head.entity, this.uiFunctions.playerActions);
