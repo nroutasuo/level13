@@ -84,7 +84,7 @@ define([
 		
 		resetTimers: function (campNode) {
 			var campTimers = campNode.entity.get(CampEventTimersComponent);
-			for(var key in OccurrenceConstants.campOccurrenceTypes) {
+			for (var key in OccurrenceConstants.campOccurrenceTypes) {
 				var event = OccurrenceConstants.campOccurrenceTypes[key];
 				var scheduledEventStart = campTimers.getEventStartTimeLeft(event);
 				if (scheduledEventStart <= 0) {
@@ -98,6 +98,10 @@ define([
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.trader:
 					return improvements.getCount(this.upgradeEffectsHelper.getImprovementForOccurrence(event)) > 0;
+				
+				case OccurrenceConstants.campOccurrenceTypes.raid:
+					var soldiers = campNode.camp.assignedWorkers.soldier;
+					return OccurrenceConstants.getRaidDanger(improvements, soldiers) > 0;
 			
 				default:
 					return true;
@@ -191,11 +195,11 @@ define([
 			}
 			
 			if (this.isPlayerInCamp(campNode) && logMsg) {
-			this.addLogMessage(logMsg);
+				this.addLogMessage(logMsg);
 			}
 		},
 		
-		isPlayerInCamp: function(campNode) {
+		isPlayerInCamp: function (campNode) {
 			var playerPosition = this.playerNodes.head.entity.get(PositionComponent);
 			var campPosition = campNode.entity.get(PositionComponent);
 			return playerPosition.level == campPosition.level && playerPosition.sector == campPosition.sector && playerPosition.inCamp;

@@ -636,7 +636,8 @@ define([
 				var costFactor = costs.cost_factor;
 				if (!costFactor) costFactor = 1;
 				if (!ordinal) ordinal = 1;
-				var ordinalCostFactor = Math.pow(costFactor, ordinal-1);
+				if(action == "build_in_house" && ordinal === 1) ordinal = 0.5;
+				var ordinalCostFactor = Math.pow(costFactor, ordinal-1);				
 				
 				for(var key in costs) {
 					if (key != "cost_factor" && key != "cost_source") {

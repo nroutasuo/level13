@@ -1208,7 +1208,7 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                     favour: 7,
 				},
 				unlock_item_shoe1: {
-                    rumours: 33,
+                    rumours: 30,
 				},
 				unlock_item_clothing2: {
                     rumours: 90,
@@ -1280,6 +1280,7 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                 despair: "Give up. Stop moving. Rest.",
                 build_out_collector_food: "Collect food.",
                 build_out_collector_water: "Collect water.",
+                build_out_camp: "Build a camp here. Choose a good location - only one camp per level.",
                 build_in_house: "A place for people to stay.",
                 build_in_storage: "Increases resource storage.",
                 build_in_campfire: "Increases rumour generation and unlocks upgrades.",
@@ -1293,6 +1294,8 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                 use_in_campfire: "Collect rumours from the population.",
                 use_in_hospital: "Heal injuries.",
                 use_in_inn: "Recruit followers.",
+                use_out_collector_food: "Collect accumulated food.",
+                use_out_collector_water: "Collect accumulated water.",
                 leave_camp: "Venture out into the corridors.",
             },
         

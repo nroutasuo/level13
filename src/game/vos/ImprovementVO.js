@@ -34,6 +34,11 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		lights: "Lights",
 		ceiling: "Ceiling",
     };
+	
+	improvementTypes = {
+		camp: "Camp",
+		level: "Level",
+	};
     
     var ImprovementVO = Ash.Class.extend({
 	
@@ -46,18 +51,36 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 	
 		initStorage: function() {
 			switch (this.name) {
-			case improvementNames.collector_food:
-				this.storedResources = new ResourcesVO();
-				this.storageCapacity = new ResourcesVO();
-				this.storageCapacity.food = 10;
-				break;
-			case improvementNames.collector_water:
-				this.storedResources = new ResourcesVO();
-				this.storageCapacity = new ResourcesVO();
-				this.storageCapacity.water = 10;
-				break;
+				case improvementNames.collector_food:
+					this.storedResources = new ResourcesVO();
+					this.storageCapacity = new ResourcesVO();
+					this.storageCapacity.food = 10;
+					break;
+				case improvementNames.collector_water:
+					this.storedResources = new ResourcesVO();
+					this.storageCapacity = new ResourcesVO();
+					this.storageCapacity.water = 10;
+					break;
 			}
-        }
+        },
+		
+		getType: function() {
+			switch (this.name) {
+				case improvementNames.collector_food:
+				case improvementNames.collector_water:
+				case improvementNames.bridge:
+				case improvementNames.passageUpStairs:
+				case improvementNames.passageUpElevator:
+				case improvementNames.passageUpHole:
+				case improvementNames.passageDownStairs:
+				case improvementNames.passageDownElevator:
+				case improvementNames.passageDownHole:
+					return improvementTypes.level;
+				
+				default:
+					return improvementTypes.camp;
+			}
+		},
     });
 
     return ImprovementVO;

@@ -204,9 +204,10 @@ define([
 		},
 		
 		updateResources: function () {
+			var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
 			var showResources = this.getShowResources();
 			var showResourceAcc = this.getShowResourceAcc();
-			var showStorage = this.resourcesHelper.getCurrentStorageCap();
+			var storageCap = this.resourcesHelper.getCurrentStorageCap();
 			var showStorageName = this.resourcesHelper.getCurrentStorageName();
 			var inventoryUnlocked = false;
 	
@@ -221,9 +222,10 @@ define([
                     "#resources-" + name,
                     showResources.getResource(name),
                     showResourceAcc == null ? 0 : Math.round(showResourceAcc.resourceChange.getResource(name) * 10000) / 10000,
-                    showStorage,
-                    false,//this.gameState.numCamps > 0
-                    false,//this.gameState.numCamps > 0,
+                    storageCap,
+					true,
+                    false,//inCamp,
+                    false,//inCamp,
                     resourceUnlocked
                 );
                 if (showResourceAcc) {
@@ -231,9 +233,10 @@ define([
                 }
 			}
 			
-			$("#resources-storage").toggle(inventoryUnlocked);
+			// TODO decide if this is needed
+			$("#resources-storage").toggle(false)//inventoryUnlocked);
 			$("#resources-storage .label").text(showStorageName);
-			$("#resources-storage .value").text(showStorage);
+			$("#resources-storage .value").text(storageCap);
 		},
 		
 		updateGameMsg: function () {

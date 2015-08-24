@@ -42,8 +42,8 @@ define([
 			
 			var sector = this.playerLocationNodes.head.entity;
 			
-			var fightActive = this.fightNodes.head != null && this.fightNodes.head.fight.finished != true;
-			var fightFinished = this.fightNodes.head != null && this.fightNodes.head.fight.finished == true;
+			var fightActive = this.fightNodes.head != null && this.fightNodes.head.fight.finished !== true;
+			var fightFinished = this.fightNodes.head != null && this.fightNodes.head.fight.finished === true;
 			var fightWon = fightFinished && this.fightNodes.head.fight.won;
 			
 			$("#out-action-fight-cancel").toggle(!fightActive && !fightFinished);

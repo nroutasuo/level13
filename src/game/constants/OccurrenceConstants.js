@@ -30,7 +30,6 @@ function (Ash) {
 					randomFactor = 1 + (Math.random() * this.OCCURRENCE_CAMP_RAID_RANDOMNESS);
 					break;
 			}
-			console.log(occurrenceType + " " +  Math.floor(minimumTime * randomFactor * upgradeTimeFactor) + " " + Math.floor(minimumTime * randomFactor));
 			return Math.floor(minimumTime * randomFactor * upgradeTimeFactor);
 		},
 		
@@ -47,7 +46,7 @@ function (Ash) {
 		
 		getRaidDanger: function (improvements, soldiers) {
 			var dangerPoints = 0;
-			dangerPoints += improvements.getAll().length;
+			dangerPoints += Math.max(0, improvements.getTotal(improvementTypes.camp) - 4);
 			var defencePoints = this.getRaidDefence(improvements, soldiers);
 			return dangerPoints / defencePoints * 100;
 		},

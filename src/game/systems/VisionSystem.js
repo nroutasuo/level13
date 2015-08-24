@@ -58,7 +58,7 @@ define([
             // Check max value and accumulation
 			var maxValueBase = 25;
 			maxValue = maxValueBase;
-            addAccumulation("Base", 25/maxValueBase);
+            addAccumulation("Base", 25 / maxValueBase);
 			
 			if (inCamp) {
 				if (!sunlit) {
@@ -101,7 +101,7 @@ define([
 			if (oldMaximum > 0 && maxValue < oldMaximum) {
 				vision.value = 0;
 			}
-			if (oldMaximum > 0 && maxValue > oldMaximum) {
+			if (oldMaximum > 0 && maxValue > oldMaximum && sunlit) {
 				vision = vision * 0.5;
 			}
 			

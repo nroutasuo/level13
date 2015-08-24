@@ -165,7 +165,7 @@ define([
 			var foodOnLevel = 0;
 			
 			var fuelSectors = [];
-			if(this.isDarkLevel(seed, l) && (l % 2 == 0))
+			if (this.isDarkLevel(seed, l) && (l % 2 == 0))
 				fuelSectors = this.randomSectors(seed*l^2/7*l, l, firstSector, lastSector, 1, 3, "camp");
 			
 			for(var s = firstSector; s <= lastSector; s++) {
@@ -197,16 +197,16 @@ define([
 				if (water < 3) water = 0;
 				
 				if (this.world[l][s].camp) water = Math.max(water, 3);
-				if (l == 13 && this.world[l][s].camp) food = Math.max(food, 3);
+				if (this.world[l][s].camp) food = Math.max(food, 3);
 				
 				var fuel = 0;
 				var herbs = 0;
-				if(this.isSunLevel(seed, l)) {
+				if (this.isSunLevel(seed, l)) {
 				
 				} else if (fuelSectors.indexOf(s) >= 0) {
-				fuel = 5;
+					fuel = 5;
 				}
-				else if (this.isEarthLevel(seed, l)) {
+					else if (this.isEarthLevel(seed, l)) {
 				}
 				
 				this.world[l][s].resources.water = water;
@@ -285,9 +285,9 @@ define([
 				var countRand = this.random((seed % 84) * l * l * l);
 				// min number of (easy) locales ensures that player can get all upgrades intended for that level
 				var minLocales = Math.max(1, UpgradeConstants.bluePrintsByLevelOrdinal[levelOrdinal] ? UpgradeConstants.bluePrintsByLevelOrdinal[levelOrdinal].length : 0);
-				var levelLocaleCount = Math.max(minLocales, Math.round(countRand * 10));
+				var levelLocaleCount = Math.max(minLocales, Math.round(countRand * 5));
 				var firstLocaleSector = l == 13 ? 5 : 1;
-				for(var i = 0; i < levelLocaleCount; i++) {
+				for (var i = 0; i < levelLocaleCount; i++) {
 					var localePos = this.randomInt(seed + i * l + l * 7394, firstLocaleSector, lastSector + 1);
 					var localeType = getLocaleType(this.world[l][localePos].sectorType, l, levelOrdinal, this.random(seed+seed+l*i*seed+localePos));
 					var isEasy = i <= minLocales;

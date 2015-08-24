@@ -10,7 +10,7 @@ define([
 		saveNodes:null,
 		
 		lastSaveTimeStamp: 0,
-		saveFrequency: 1000 * 60,
+		saveFrequency: 1000 * 60 * 2,
 
         constructor: function (gameState) {
 			this.gameState = gameState;

@@ -112,11 +112,11 @@ define(['ash'], function (Ash) {
 			return div;
 		},
 		
-		updateResourceIndicator: function (name, id, value, change, storage, showChange, showDetails, visible) {
+		updateResourceIndicator: function (name, id, value, change, storage, showStorage, showChange, showDetails, visible) {
 			$(id).toggle(visible);
 			var roundedValue = value > 5 ? Math.floor(value) : Math.floor(value*10)/10;
 			if (visible) {
-				$(id).children(".value").text(roundedValue);
+				$(id).children(".value").text(showStorage ? roundedValue + " / " + storage : roundedValue);
 				$(id).children(".change").toggleClass("warning", change < 0);
 				$(id).children(".change").toggle(showChange);
 				$(id).children(".forecast").toggle(showDetails);

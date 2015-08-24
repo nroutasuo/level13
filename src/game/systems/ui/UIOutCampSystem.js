@@ -171,7 +171,7 @@ define([
             });
 			
             var perksComponent = this.playerPosNodes.head.entity.get(PerksComponent);
-			var hasHospital = improvements.getCount(improvementNames.hospital);
+			var hasHospital = improvements.getCount(improvementNames.hospital) > 0;
 			var isInjured = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury) != 1;
 			var isAugmented = perksComponent.hasPerk(PerkConstants.perkIds.healthAugment);
 			var isAugmentAvailable = this.hasUpgrade(this.upgradesHelper.getUpgradeIdsForImprovement(improvementNames.hospital)[0]);
@@ -222,12 +222,20 @@ define([
         
         updateStats: function () {
 			if (!this.playerLocationNodes.head.entity.get(CampComponent)) return;
-            var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-            var soldiers = this.playerLocationNodes.head.entity.get(CampComponent).assignedWorkers.soldier;
-            var raidDanger = Math.round(OccurrenceConstants.getRaidDanger(improvements, soldiers));
-            var raidDefence = OccurrenceConstants.getRaidDefence(improvements, soldiers);
-            $("#in-demographics-raid-danger .value").text(raidDanger + "%");
-            $("#in-demographics-raid-defence .value").text(raidDefence);
+			
+			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			var soldiers = this.playerLocationNodes.head.entity.get(CampComponent).assignedWorkers.soldier;
+			var raidDanger = Math.round(OccurrenceConstants.getRaidDanger(improvements, soldiers));
+			
+			var showRaid = raidDanger > 0;
+			if (showRaid) {
+				var raidDefence = OccurrenceConstants.getRaidDefence(improvements, soldiers);
+				$("#in-demographics-raid-danger .value").text(raidDanger + "%");
+				$("#in-demographics-raid-defence .value").text(raidDefence);
+			}
+			$("#in-demographics-raid").toggle(showRaid);
+			
+			$("#in-demographics").toggle(showRaid);
         },
         
         levelHasClearedWorkshop: function (level, resourceName) {

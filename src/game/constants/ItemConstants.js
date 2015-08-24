@@ -18,7 +18,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 			// Just inventory
 			artefact: "Artefact",
 			note: "Note",
-			ingredient: "Part",
+			ingredient: "Ingredient",
 		},
 		
 		itemDefinitions: {
@@ -123,9 +123,9 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 						   "Bold political leaflet printed on thick paper urging residents of the 'sewers' to rebel against segregation."),
 			],
 			ingredient: [
-				new ItemVO("res_matches", "Matches", "Part", 0, false, false, false, "img/items/res-matches.png", "Used for crafting."),
-				new ItemVO("res_bands", "Rubber bands", "Part", 0, false, false, false, "img/items/res-bands.png", "Used for crafting."),
-				new ItemVO("res_silk", "Spider silk", "Part", 0, false, false, false, "img/items/res-silk.png", "Used for crafting."),
+				new ItemVO("res_matches", "Matches", "Ingredient", 0, false, false, false, "img/items/res-matches.png", "Used for crafting."),
+				new ItemVO("res_bands", "Rubber bands", "Ingredient", 0, false, false, false, "img/items/res-bands.png", "Used for crafting."),
+				new ItemVO("res_silk", "Spider silk", "Ingredient", 0, false, false, false, "img/items/res-silk.png", "Used for crafting."),
 			],
 		},
 		

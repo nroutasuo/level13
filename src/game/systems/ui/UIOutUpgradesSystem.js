@@ -73,22 +73,7 @@ define([
 					hasBlueprintNew = this.tribeNodes.head.upgrades.hasNewBlueprint(id);
 					isAvailable = this.playerActions.playerActionsHelper.checkRequirements(id, false).value > 0;
 					if (hasBlueprintNew || isAvailable) {
-						var nameTD = "<td class='item-name'>" + upgradeDefinition.name + "</td>";
-						var classes = hasBlueprintNew ? "item item-equipped" : "item";
-						var iconTD = "<td style='padding: 0px 3px'>";
-						if (hasBlueprintUnlocked || hasBlueprintNew)
-							iconTD += "<span class='" + classes + "'><div class='info-callout-target info-callout-target-small' description='blueprint'><img src='img/items/blueprint.png'/></div></span>";
-						iconTD += "</td>";
-						var descriptionTD = "<td class='maxwidth'>" + upgradeDefinition.description + "<br/>" + this.getEffectDescription(upgradeDefinition.id, hasBlueprintNew)  + "</td>";
-						
-						if (isAvailable)
-							buttonTD = "<td class='minwidth'><button class='action' action='" + upgradeDefinition.id + "'>research</button></td>";
-						else if(hasBlueprintNew)
-							buttonTD = "<td class='minwidth'><button class='action' action='unlock_upgrade_" + upgradeDefinition.id + "'>unlock</button></td>";
-						else
-							buttonTD = "<td></td>";
-							
-						var tr = "<tr>" + nameTD + "" + descriptionTD + "" + iconTD + "" + buttonTD + "</tr>";
+						var tr = this.getUpgradeTR(upgradeDefinition, isAvailable, hasBlueprintUnlocked, hasBlueprintNew);
 						if (hasBlueprintNew)
 							$("#blueprints-list").append(tr);
 						else
@@ -117,6 +102,30 @@ define([
 			this.uiFunctions.generateCallouts("#blueprints-list");
 			this.uiFunctions.registerActionButtonListeners("#blueprints-list");
 			this.lastUpdateUpgradeCount = this.tribeNodes.head.upgrades.boughtUpgrades.length;
+		},
+		
+		getUpgradeTR: function (upgradeDefinition, isAvailable, hasBlueprintUnlocked, hasBlueprintNew) {
+			var nameTD = "<td class='item-name'>" + upgradeDefinition.name + "</td>";
+			var classes = hasBlueprintNew ? "item item-equipped" : "item";
+			var iconTD = "<td style='padding: 0px 3px'>";
+			if (hasBlueprintUnlocked || hasBlueprintNew)
+				iconTD += "<span class='" + classes + "'><div class='info-callout-target info-callout-target-small' description='blueprint'><img src='img/items/blueprint.png'/></div></span>";
+			iconTD += "</td>";
+			
+			var descriptionTD = "<td class='maxwidth'>";
+			if (hasBlueprintNew)
+				descriptionTD += upgradeDefinition.description + "<br/>" + this.getEffectDescription(upgradeDefinition.id, hasBlueprintNew)  + "</td>";
+			else
+				descriptionTD += upgradeDefinition.description + "<br/>" + this.getEffectDescription(upgradeDefinition.id, hasBlueprintNew)  + "</td>";
+			
+			if (isAvailable)
+				buttonTD = "<td class='minwidth'><button class='action' action='" + upgradeDefinition.id + "'>research</button></td>";
+			else if(hasBlueprintNew)
+				buttonTD = "<td class='minwidth'><button class='action' action='unlock_upgrade_" + upgradeDefinition.id + "'>unlock</button></td>";
+			else
+				buttonTD = "<td></td>";
+						
+			return "<tr>" + nameTD + "" + descriptionTD + "" + iconTD + "" + buttonTD + "</tr>";
 		},
 		
 		getEffectDescription: function (upgradeId, isUnlockable) {

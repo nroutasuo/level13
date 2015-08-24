@@ -260,7 +260,7 @@ define([
 				(discoveredResources.indexOf(resourceNames.food) < 0 || discoveredResources.indexOf(resourceNames.water) < 0) &&
 				this.gameState.unlockedFeatures.resources.food &&
 				this.gameState.unlockedFeatures.resources.water &&
-				(this.resourcesHelper.getCurrentStorage().resources.water < 1 || this.resourcesHelper.getCurrentStorage().resources.food < 1);
+				(this.resourcesHelper.getCurrentStorage().resources.water < 0.5 || this.resourcesHelper.getCurrentStorage().resources.food < 0.5);
 			$("#out-action-scout").toggle(this.gameState.unlockedFeatures.vision);
 			$("#out-action-investigate").toggle(this.gameState.unlockedFeatures.investigate);
 			$("#out-action-fight").toggle(showFight);
@@ -333,7 +333,7 @@ define([
 			if (featuresComponent.resources.getTotal() > 0) {
 				var discoveredResources = this.getLocationDiscoveredResources();
 				if (discoveredResources.length > 0) {
-					description += "Resources found: " + featuresComponent.getResourcesString(discoveredResources) + ". ";
+					description += "Resources found here: " + featuresComponent.getResourcesString(discoveredResources) + ". ";
 				}
 			}
 			

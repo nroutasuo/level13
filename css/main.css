@@ -555,6 +555,10 @@ div.btn-callout-content, div.info-callout-content {
 	overflow-wrap: break-word;
 }
 
+div.info-callout-content {
+    width: 100%;
+}
+
 div.popup {
 	padding: 20px;
 	text-align: center;
@@ -759,10 +763,19 @@ button .cooldown-action {
 
 .stats-indicator span.label {
 	margin-right: 2px;
+    text-transform: lowercase;
 }
 
 .stats-indicator span.value {
 	text-align: center;
+}
+
+#container-statsbar {
+	text-align: center;
+}
+
+#container-statsbar .statsbar {
+	margin-bottom: 3px;
 }
 
 #container-statsbar-resources .stats-indicator {

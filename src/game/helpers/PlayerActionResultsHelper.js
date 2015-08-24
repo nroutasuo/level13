@@ -64,7 +64,7 @@ define([
 			var playerVision = this.playerStatsNodes.head.vision.value;
 
 			rewards.gainedResources = this.getRewardResources(1, efficiency, sectorResources);
-			rewards.gainedItems = this.getRewardItems(0.0075, 0.2, playerVision * 0.25, itemsComponent, levelOrdinal);
+			rewards.gainedItems = this.getRewardItems(0.0075, 0.1, playerVision * 0.25, itemsComponent, levelOrdinal);
 			rewards.gainedInjuries = this.getResultInjuries();
 
 			return rewards;
@@ -292,7 +292,8 @@ define([
 			
 			// TODO get parts / ingredients depending on the sector
 			// Parts / ingredients
-			if (Math.random() < ingredientProbability) {
+			var hasBag = currentItems.getCurrentBonus(ItemConstants.itemTypes.bag) > 0;
+			if (hasBag && Math.random() < ingredientProbability) {
 				var amount = parseInt(Math.random() * ingredientProbability * 5) + 1;
 				var ingredient = ItemConstants.getIngredient();
 				for (var i = 0; i <= amount; i++) {

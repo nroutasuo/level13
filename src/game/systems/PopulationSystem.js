@@ -10,6 +10,9 @@ define([
 	
         campNodes: null,
         playerNodes: null,
+		
+		populationCooldownSecondsMin: 30,
+		lastPopulationIncreaseTimestamps: [],
 
         constructor: function () {
         },
@@ -31,33 +34,40 @@ define([
         },
 
         updateNode: function (node, time) {
-	    var camp = node.camp;
-	    var reputation = this.playerNodes.head.reputation.value;
-	    var improvements = node.entity.get(SectorImprovementsComponent);
-	    
-	    var populationBonus = Math.max(1 + reputation/10-Math.floor(camp.population), 0)/5;
-	    var changePerSec = populationBonus + reputation/2000;
-	    var change = time * changePerSec;
-	    
-	    var oldPopulation = camp.population;    
-	    var housingCap = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
-	    housingCap += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
-	    
-	    if (oldPopulation + change > housingCap) change = housingCap - oldPopulation;
-	    
-	    camp.addPopulation(change);
-	    
-	    // Log new arrivals in current location
-	    var playerPosition = this.playerNodes.head.entity.get(PositionComponent);
-	    var campPosition = node.entity.get(PositionComponent);
-	    if (playerPosition.level == campPosition.level && playerPosition.sector == campPosition.sector) {
-		if (Math.floor(camp.population) > Math.floor(oldPopulation)) {
-		    camp.rumourpoolchecked = false;
-		    var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
-		    logComponent.addMessage("A stranger shows up.");		
-		}
-	    }
-	    
+			var camp = node.camp;
+			var reputation = this.playerNodes.head.reputation.value;
+			var improvements = node.entity.get(SectorImprovementsComponent);
+			var campPosition = node.entity.get(PositionComponent);
+			var level = campPosition.level;
+			
+			var populationBonus = Math.max(1 + reputation/10-Math.floor(camp.population), 0)/5;
+			var changePerSec = populationBonus + reputation/2000;
+			var change = time * changePerSec;
+			
+			var timeStamp = new Date().getTime();
+			var lastIncreaseTimeStamp = this.lastPopulationIncreaseTimestamps[level] ? this.lastPopulationIncreaseTimestamps[level] : 0;
+			var isPopulationCooldown  = timeStamp - lastIncreaseTimeStamp < this.populationCooldownSecondsMin * 1000;
+			
+			if (!isPopulationCooldown) {
+				var oldPopulation = camp.population;
+				var housingCap = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
+				housingCap += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
+			
+				if (oldPopulation + change > housingCap) change = housingCap - oldPopulation;
+			
+				camp.addPopulation(change);
+			
+				// Log new arrivals in current location
+				var playerPosition = this.playerNodes.head.entity.get(PositionComponent);
+				if (Math.floor(camp.population) > Math.floor(oldPopulation)) {
+					this.lastPopulationIncreaseTimestamps[level] = new Date().getTime();
+					if (playerPosition.level === campPosition.level && playerPosition.sector === campPosition.sector) {
+						camp.rumourpoolchecked = false;
+						var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
+						logComponent.addMessage("A stranger shows up.");
+					}
+				}
+			}
         }
     });
 

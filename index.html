@@ -39,36 +39,33 @@
 							<div id="stats-vision" class="stats-indicator">
 								<span class="label">Vision</span>
 								<span class="value">0</span>
-								<span class="change"></span>
 							</div>
 							<div id="stats-stamina" class="stats-indicator">
 								<span class="label">Stamina</span>
 								<span class="value">0</span>
-								<span class="change"></span>
 							</div>
 							<div id="stats-reputation" class="stats-indicator">
 								<span class="label">Reputation</span>
 								<span class="value">0</span>
-								<span class="change"></span>
 							</div>
 							<div id="stats-rumours" class="stats-indicator">
 								<span class="label">Rumours</span>
 								<span class="value">0</span>
-								<span class="change"></span>
 							</div>
 							<div id="stats-evidence" class="stats-indicator">
 								<span class="label">Evidence</span>
 								<span class="value">0</span>
-								<span class="change"></span>
 							</div>
 						</div>
 
 						<div id="statsbar-resources" class="statsbar">	
 						</div>		
+						
 						<div id="resources-storage" class="stats-indicator">
 							<span class="label">Storage</span>
 							<span class="value">0</span>
 						</div>
+						
 						<div id="statsbar-items" class="statsbar">
 							<ul class="itemlist" id="list-items-perks"></ul>
 							<ul class="itemlist" id="list-items-items"></ul>
@@ -266,9 +263,10 @@
 								<span class="label">Bag space</span>
 								<span class="value">0</span>
 							</div>
-							<p class="p-meta">Location info?</p>
-							<button class="action" id="in-action-leave" action="leave_camp">Go</button><br>
-							<button>Clear</button>
+							
+							<div class="actionbox">
+							<button class="action" id="in-action-leave" action="leave_camp">Go</button>
+							</div>
 						</div>
 					</div>
 					
@@ -471,7 +469,7 @@
 						<div class="unit whole">
 							<div class="infobox">
 								<div class="subheader"><h3>Camp overview</h3></div>
-								<table id="camp-overview">
+								<table id="camp-overview" class="full-width">
 									<tr id="camp-overview-header">
 										<th class="th-text" colspan="2">Camp</th>
 										<th class="th-number">Pop</th> 

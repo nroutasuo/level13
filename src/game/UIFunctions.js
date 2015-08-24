@@ -562,7 +562,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             var direction = null;
             var id = $(target).attr("id");
             
-            switch(id) {
+            switch (id) {
                 case "out-action-move-left":
                     direction = playerActions.directions.left;
                     break;

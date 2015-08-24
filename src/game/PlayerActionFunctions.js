@@ -34,6 +34,7 @@ define(['ash',
 	'game/components/common/LogMessagesComponent',
 	'game/systems/ui/UIOutHeaderSystem',
 	'game/systems/ui/UIOutElementsSystem',
+	'game/systems/ui/UIOutLevelSystem',
 	'game/systems/FaintingSystem',
 	'game/systems/SaveSystem'
 ], function (Ash,
@@ -46,7 +47,7 @@ define(['ash',
 	SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, CampEventTimersComponent,
 	LogMessagesComponent,
-	UIOutHeaderSystem, UIOutElementsSystem, FaintingSystem, SaveSystem
+	UIOutHeaderSystem, UIOutElementsSystem, UIOutLevelSystem, FaintingSystem, SaveSystem
 ) {
     
     var PlayerActionFunctions = Ash.System.extend({
@@ -164,8 +165,7 @@ define(['ash',
             var campSector = null;
             var campPosition = null;
             for (var node = this.campNodes.head; node; node = node.next) {
-                campPosition = node.entity.get(PositionComponent);
-                if (campPosition.level === level) {
+                if (campPosition.level === parseInt(level)) {
                     campSector = node.entity;
                     break;
                 }
@@ -260,9 +260,9 @@ define(['ash',
 				var rewards = this.playerActionResultsHelper.getScavengeRewards();
 				this.playerActionResultsHelper.collectRewards(rewards);
 				
-				var playerVision = this.playerStatsNodes.head.vision.value;
+				var playerMaxVision = this.playerStatsNodes.head.vision.maximum;
 				var baseMsg = "";
-				if (playerVision <= PlayerStatConstants.VISION_BASE) baseMsg = "Rummaged in the dark. ";
+				if (playerMaxVision <= PlayerStatConstants.VISION_BASE) baseMsg = "Rummaged in the dark. ";
 				else baseMsg = "Went scavenging. ";
                 var msgTemplate = this.playerActionResultsHelper.getRewardsMessage(rewards, baseMsg);
                 
@@ -296,6 +296,7 @@ define(['ash',
 					this.playerActionResultsHelper.collectRewards(rewards);
 					var msgTemplate = this.playerActionResultsHelper.getRewardsMessage(rewards, "Scouted the area. ");
                     
+                    // TODO signal to force out vis update
 					this.addLogMessage(msgTemplate.msg, msgTemplate.replacements, msgTemplate.values);
                     this.forceResourceBarUpdate();
                     this.occurrenceFunctions.onScoutSector(sector);
@@ -381,15 +382,15 @@ define(['ash',
             this.buildPassage(sectorPos, false, "build_out_passage_down_stairs", "build_out_passage_up_stairs");
         },
 		
-		buildPassageUpElevator: function(sectorPos) {
+		buildPassageUpElevator: function (sectorPos) {
             this.buildPassage(sectorPos, true, "build_out_passage_up_elevator", "build_out_passage_down_elevator");
         },
         
-        buildPassageDownElevator: function(sectorPos) {
+        buildPassageDownElevator: function (sectorPos) {
             this.buildPassage(sectorPos, false, "build_out_passage_down_elevator", "build_out_passage_up_elevator");
         },
 		
-		buildPassageUpHole: function(sectorPos) {
+		buildPassageUpHole: function (sectorPos) {
             this.buildPassage(sectorPos, true, "build_out_passage_up_hole", "build_out_passage_down_hole");
         },
         
@@ -404,7 +405,7 @@ define(['ash',
 			var neighbour = this.levelHelper.getSectorByPosition(up ? l + 1 : l - 1, s);
             this.buildImprovement(action, this.playerActionsHelper.getImprovementNameForAction(action), sector);
             this.buildImprovement(neighbourAction, this.playerActionsHelper.getImprovementNameForAction(neighbourAction), neighbour, true);
-			this.addLogMessage("Passage up ready in sector " + s);
+			this.addLogMessage("Passage " + (up ? " up" : " down") + " ready in sector " + s);
 		},
         
         buildTrap: function() {
@@ -417,17 +418,19 @@ define(['ash',
             this.addLogMessage("Made a bucket. It will collect water.");
         },
         
-        buildHouse: function(automatic) {
-            this.buildImprovement("build_in_house", this.playerActionsHelper.getImprovementNameForAction("build_in_house"), null, automatic);
-            if (!automatic && this.playerActionsHelper.checkAvailability("build_in_house")) {
-                var msg = "Built a house.";
-                var totalHouses = 0;
-                for (var node = this.engine.getNodeList(CampNode).head; node; node = node.next) {
-                    var improvementsComponent = node.entity.get(SectorImprovementsComponent);
-                    totalHouses += improvementsComponent.getCount(improvementNames.house);
+        buildHouse: function (automatic) {
+            if(this.playerActionsHelper.checkAvailability("build_in_house")) {
+                this.buildImprovement("build_in_house", this.playerActionsHelper.getImprovementNameForAction("build_in_house"), null, automatic);
+                if (!automatic) {
+                    var msg = "Built a hut.";
+                    var totalHouses = 0;
+                    for (var node = this.engine.getNodeList(CampNode).head; node; node = node.next) {
+                        var improvementsComponent = node.entity.get(SectorImprovementsComponent);
+                        totalHouses += improvementsComponent.getCount(improvementNames.house);
+                    }
+                    if (totalHouses < 5) msg += " People will come if they hear about the camp.";
+                    this.addLogMessage(msg);
                 }
-                if (totalHouses < 5) msg += " People will come if they hear about the camp.";
-                this.addLogMessage(msg);
             }
         },
         
