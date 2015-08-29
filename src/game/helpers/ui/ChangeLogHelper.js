@@ -32,11 +32,12 @@ define(['ash'], function (Ash) {
 			var v;
 			for (var i in this.versions) {
 				v = this.versions[i];
+				if (v.changes.length === 0) continue;
 				html += "<div class='changelog-version'>";
 				html += this.getVersionNumber(v);
 				if (!v.final) html += " (work in progress)";
 				html += "<ul>";
-				for(var j in v.changes) {
+				for (var j in v.changes) {
 					var change = v.changes[j];
 					html += "<li>";
 					html += "<span class='changelog-type changelog-type-" + change.type + "'>" + change.type + "</span>";
@@ -54,7 +55,15 @@ define(['ash'], function (Ash) {
 		},
 		
 		getCurrentVersion: function () {
-			return this.versions && this.versions.length > 0 ? this.versions[0] : null;
+			if (!this.versions) return null;
+			
+			var version = null;
+			var i = 0;
+			while (!version && i < this.versions.length) {
+				if (this.versions[i].changes.length > 0) version = this.versions[i];
+				i++;
+			}
+			return version;
 		}
 	
     });

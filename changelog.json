@@ -1,9 +1,16 @@
 {
     "versions": [
         {
-            "version": "0.1.1",
+            "version": "0.1.2",
             "phase": "alpha",
             "final": false,
+            "changes": [
+            ]
+        },
+        {
+            "version": "0.1.1",
+            "phase": "alpha",
+            "final": true,
             "changes": [
                 {
                     "type": "GD",
