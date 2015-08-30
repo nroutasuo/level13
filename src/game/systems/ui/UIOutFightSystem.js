@@ -38,7 +38,7 @@ define([
         },
 
         update: function (time) {
-			if(!($("#fight-popup").is(":visible")) || $("#fight-popup").data("fading") == true) return;
+			if (!($("#fight-popup").is(":visible")) || $("#fight-popup").data("fading") == true) return;
 			
 			var sector = this.playerLocationNodes.head.entity;
 			
@@ -57,15 +57,16 @@ define([
 			$("#fight-popup-results").toggle(fightFinished);
 			
 			$("#fight-popup-enemy-info").toggleClass("strike-through", fightFinished && fightWon);
+            
 			
 			this.updateFightCommon(!fightActive && !fightFinished);
 			
 			if (fightActive && !fightFinished) {
-			this.updateFightActive();
-			} else if(fightFinished) {
-			this.updateFightFinished();
+                this.updateFightActive();
+			} else if (fightFinished) {
+                this.updateFightFinished();
 			} else {
-			this.updateFightPending();
+                this.updateFightPending();
 			}
 		},
 	
@@ -78,12 +79,12 @@ define([
 			enemyText += "<br/>";
 			enemyText += "att: " + currentEnemy.att + " | def: " + currentEnemy.def;
 			if (fightPending) {
-					var playerStamina = this.playerStatsNodes.head.stamina;
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-			enemyText += "<br/>";
-			enemyText += FightConstants.getFightChances(currentEnemy, playerStamina, itemsComponent);
+				var playerStamina = this.playerStatsNodes.head.stamina;
+                var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+                enemyText += "<br/>";
+                enemyText += FightConstants.getFightChances(currentEnemy, playerStamina, itemsComponent);
 			}
-			$("#fight-popup-enemy-info").html(enemyText);   
+			$("#fight-popup-enemy-info").html(enemyText);
 			
 			// Sector control
 			var sectorControlComponent = sector.get(SectorControlComponent);
@@ -91,6 +92,7 @@ define([
 			var maxEnemies = sectorControlComponent.maxUndefeatedEnemies;
 			var sectionControlDesc = enemies + " / " + maxEnemies + " enemies in this area";
 			if (enemies <= 0) sectionControlDesc = "no enemies left here";
+            $("#out-action-fight-cancel").text(enemies > 0 ? "flee" : "close");
 			$("#fight-popup-control-info").text(sectionControlDesc);
 		},
 	

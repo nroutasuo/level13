@@ -307,7 +307,7 @@ define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/LocaleVO'], fun
 		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE][d2][r4] = "A transport hall dominated by well-maintained cable car lines and empty taxi lanes criss-crossing just above your head.";
 		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE][d3] = {};
 		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE][d3][r1] = "A desolate corridor criss-crossed with the remains of broken cable systems and maintenance ducts.";
-		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE][d3][r2] = "A crumbling street behind a maintenance center, the low ceiling cross-crossed by old wires and ducts.";
+		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE][d3][r2] = "A crumbling street behind a maintenance center, the low ceiling criss-crossed by old wires and ducts.";
 		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE][d3][r3] = "A narrow street lined by decommissioned control units for City services like water, electricity, air filtering and robotics.";
 		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE][d3][r4] = "A well-maintained transport hall with a few elevators and an empty cable car station.";
 		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE][d4] = {};

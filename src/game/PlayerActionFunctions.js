@@ -165,6 +165,7 @@ define(['ash',
             var campSector = null;
             var campPosition = null;
             for (var node = this.campNodes.head; node; node = node.next) {
+                campPosition = node.position;
                 if (campPosition.level === parseInt(level)) {
                     campSector = node.entity;
                     break;

@@ -84,7 +84,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 			],
 			bag: [
 				new ItemVO("bag_0", "Sack", "Bag", 25, true, false, true, "img/items/bag-0.png",
-						   "It's not fancy, but allows one to carry around more stuff than what their hands and pockets can hold."),
+						   "It's not fancy, but allows one to carry around more stuff than their hands and pockets can hold."),
 				new ItemVO("bag_1", "Backpack", "Bag", 50, true, false, true, "img/items/bag-1.png",
 						   "A more spacious bag with lots of pockets."),
 				new ItemVO("bag_2", "Hiker's Rucksack", "Bag", 100, true, false, true, "img/items/bag-1.png",

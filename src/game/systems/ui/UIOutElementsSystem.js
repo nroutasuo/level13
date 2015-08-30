@@ -262,14 +262,6 @@ define([
 					});
 					$(this).toggle(visible);
 				}
-				
-				if ($(this).children(".container-btn-action").length > 0) {
-					var visible = true;
-					$.each($(this).children(".container-btn-action"), function () {
-						visible = visible && $(this).css("display") !== "none";
-					});
-					$(this).toggle(visible);
-				}
             });
         },
     });

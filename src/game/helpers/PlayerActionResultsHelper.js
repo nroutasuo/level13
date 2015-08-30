@@ -64,7 +64,7 @@ define([
 			var playerVision = this.playerStatsNodes.head.vision.value;
 
 			rewards.gainedResources = this.getRewardResources(1, efficiency, sectorResources);
-			rewards.gainedItems = this.getRewardItems(0.0075, 0.1, playerVision * 0.25, itemsComponent, levelOrdinal);
+			rewards.gainedItems = this.getRewardItems(0.0075, 0.05, playerVision * 0.25, itemsComponent, levelOrdinal);
 			rewards.gainedInjuries = this.getResultInjuries();
 
 			return rewards;
@@ -182,7 +182,7 @@ define([
 				var loggedItems = {};
 				for (var i = 0; i < rewards.gainedItems.length; i++) {
 					var item = rewards.gainedItems[i];
-					if(typeof loggedItems[item.id]  === 'undefined') {
+					if (typeof loggedItems[item.id]  === 'undefined') {
 						msg += "$" + replacements.length + ", ";
 						replacements.push("#" + replacements.length + " " + item.name.toLowerCase());
 						values.push(1);
@@ -268,13 +268,14 @@ define([
 			// Normal items
 			if (Math.random() < itemProbability) {
 				var item;
+				var pendingItem;
 				var itemTypeRand = Math.random();
 				if (itemTypeRand < 0.1) {
-					item = ItemConstants.getBag(levelOrdinal);
+					pendingItem = ItemConstants.getBag(levelOrdinal);
 				} else if (itemTypeRand < 0.15) {
-					item = ItemConstants.getShades(levelOrdinal);
+					pendingItem = ItemConstants.getShades(levelOrdinal);
 				} else if (itemTypeRand < 0.25) {
-					item = ItemConstants.getLight(levelOrdinal);
+					pendingItem = ItemConstants.getLight(levelOrdinal);
 				} else if (itemTypeRand < 0.35) {
 					item = ItemConstants.getMovement(levelOrdinal);
 				} else if (itemTypeRand < 0.5) {
@@ -287,6 +288,8 @@ define([
 					var i = Math.floor(Math.random() * ItemConstants.itemDefinitions.artefact.length);
 					item = ItemConstants.itemDefinitions.artefact[i].clone();
 				}
+				if (!item && pendingItem)
+					if (currentItems.getCount(pendingItem) <= 0) item = pendingItem;
 				if (item) items.push(item);
 			}
 			

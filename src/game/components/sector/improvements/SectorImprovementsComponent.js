@@ -44,7 +44,7 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
             }
         },
         
-        getAll: function(improvementType) {
+        getAll: function (improvementType) {
             var allImprovements = [];
             for (var key in this.improvements) {
 				var val = this.improvements[key];
