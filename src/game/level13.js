@@ -17,7 +17,6 @@ define([
     'game/systems/PlayerPositionSystem',
     'game/systems/SectorMovementOptionsSystem',
     'game/systems/LevelPassagesSystem',
-    'game/systems/SectorEnemiesSystem',
     'game/systems/CollectorSystem',
     'game/systems/FightSystem',
     'game/systems/PopulationSystem',
@@ -62,7 +61,6 @@ define([
     PlayerPositionSystem,
     SectorMovementOptionsSystem,
     LevelPassagesSystem,
-    SectorEnemiesSystem,
     CollectorSystem,
     FightSystem,
     PopulationSystem,
@@ -179,7 +177,6 @@ define([
 			this.engine.addSystem(new PlayerPositionSystem(this.gameState, this.uiFunctions, this.occurrenceFunctions, this.playerMovedSignal), SystemPriorities.preupdate);
 			this.engine.addSystem(new SectorMovementOptionsSystem(this.movementHelper), SystemPriorities.update);
 			this.engine.addSystem(new LevelPassagesSystem(this.levelHelper, this.improvementBuiltSignal), SystemPriorities.update);
-			this.engine.addSystem(new SectorEnemiesSystem(), SystemPriorities.update);
 			this.engine.addSystem(new UnlockedFeaturesSystem(this.gameState), SystemPriorities.update);
 		},
 	

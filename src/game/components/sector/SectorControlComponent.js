@@ -16,22 +16,21 @@ define(['ash'], function (Ash) {
             this.defeatedEnemies = 0;
         },
         
-        hasControl: function() {
+        hasControl: function () {
             return this.currentUndefeatedEnemies <= 0;
         },
         
-        addWin: function() {
+        addWin: function () {
             this.defeatedEnemies++;
             this.currentUndefeatedEnemies--;
             this.lastWinTimeStamp = new Date().getTime();
         },
         
-        spawn: function() {
+        spawn: function () {
             if (this.currentUndefeatedEnemies < this.maxUndefeatedEnemies) {
                 this.currentUndefeatedEnemies++;
                 this.lastSpawnTimeStamp = new Date().getTime();
             }
-            
         }
         
     });
