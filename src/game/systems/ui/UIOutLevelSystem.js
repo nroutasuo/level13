@@ -157,6 +157,7 @@ define([
 			var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var vision = this.playerPosNodes.head.entity.get(VisionComponent).value;
+			var hasEnemies = this.playerLocationNodes.head.entity.get(SectorControlComponent).maxUndefeatedEnemies > 0;
 			var hasVision = vision > PlayerStatConstants.VISION_BASE;
 			var hasBridgeableBlocker = (passagesComponent.blockerLeft != null && passagesComponent.blockerLeft.bridgeable) || (passagesComponent.blockerRight != null && passagesComponent.blockerRight.bridgeable);
 			var passageUpAvailable = passagesComponent.passageUp != null;
@@ -221,7 +222,7 @@ define([
 			var hasFoundWater = featuresComponent.resources.water > 0 && discoveredResources.indexOf("water") >= 0;
 			$("#out-improvements-collector-food").toggle(collectorFood.count > 0 || hasFoundFood);
 			$("#out-improvements-collector-water").toggle(collectorWater.count > 0 || hasFoundWater);
-			$("#out-improvements-camp").toggle(isScouted && !hasCamp && featuresComponent.canHaveCamp() && !passagesComponent.passageUp && !passagesComponent.passageDown);
+			$("#out-improvements-camp").toggle(isScouted && !hasCamp && featuresComponent.canHaveCamp() && !passagesComponent.passageUp && !passagesComponent.passageDown && !hasEnemies);
 			$("#out-improvements-bridge").toggle(hasCamp && hasBridgeableBlocker);
 			$("#out-improvements-passage-up").toggle(isScouted && passageUpAvailable);
 			$("#out-improvements-passage-down").toggle(isScouted && passageDownAvailable);
@@ -274,11 +275,12 @@ define([
 		getDescription: function (entity, hasCampHere, hasCampOnLevel, hasVision, isScouted) {
 			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			var hasEnemies = this.playerLocationNodes.head.entity.get(SectorControlComponent).maxUndefeatedEnemies > 0;
 			var description = "<p>";
 			description += this.getTextureDescription(hasVision, featuresComponent);
 			description += this.getFunctionalDescription(hasVision, isScouted, featuresComponent, hasCampHere, hasCampOnLevel);
 			description += "</p><p>";
-			description += this.getStatusDescription(hasVision, isScouted, featuresComponent, passagesComponent, hasCampHere, hasCampOnLevel);
+			description += this.getStatusDescription(hasVision, isScouted, hasEnemies, featuresComponent, passagesComponent, hasCampHere, hasCampOnLevel);
 			description += this.getMovementDescription(isScouted, passagesComponent, entity);
 			description += "</p>";
 			return description;
@@ -323,7 +325,7 @@ define([
 		},
 		
 		// Found resources, enemies
-		getStatusDescription: function (hasVision, isScouted, featuresComponent, passagesComponent, hasCampHere, hasCampOnLevel) {
+		getStatusDescription: function (hasVision, isScouted, hasEnemies, featuresComponent, passagesComponent, hasCampHere, hasCampOnLevel) {
 			var description = "";
 			
 			if (hasVision) {
@@ -338,7 +340,7 @@ define([
 			}
 			
 			if (isScouted && hasVision && !hasCampHere && !hasCampOnLevel) {
-				if (featuresComponent.canHaveCamp() && !passagesComponent.passageUp && !passagesComponent.passageDown)
+				if (featuresComponent.canHaveCamp() && !hasEnemies && !passagesComponent.passageUp && !passagesComponent.passageDown)
 					description += "This would be a good place for a camp. ";
 			}
 			

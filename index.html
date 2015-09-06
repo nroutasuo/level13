@@ -200,7 +200,7 @@
 						<div class="unit golden-small">
 							<div id="in-population" class="infobox">
 								<h3>Population</h3>
-								<p style="display:none">free / diseased</p>
+								<p style="display:none" id="in-population-status">free / diseased</p>
 								<table class="full-width" id="in-assign-workers" style="display:none">
 									<tr id="in-assign-water">
 										<td><div class="info-callout-target info-callout-target-small" description="water +0.5/s">Water collector</div></td>
@@ -231,6 +231,11 @@
 										<td><div class="stepper" id="stepper-soldier"></div></td>
 									</tr>
 								</table>
+								<p style="display:none" id="in-population-next">Next worker:</p>
+								<div id="in-population-bar-next" class="progress-wrap progress">
+									<div class="progress-bar progress"></div>
+									<span class="progress progress-label"></span>
+								</div>
 							</div>
 							<div id="in-occurrences" class="infobox">
 								<h3>Events</h3>

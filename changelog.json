@@ -5,6 +5,14 @@
             "phase": "alpha",
             "final": false,
             "changes": [
+                {
+                    "type": "UI",
+                    "summary": "Timer for next worker."
+                },
+                {
+                    "type": "GB",
+                    "summary": "Adjusted the number of camps and levels and introduced campless levels."
+                }
             ]
         },
         {

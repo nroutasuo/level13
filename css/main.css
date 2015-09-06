@@ -929,6 +929,10 @@ input.amount {
 	border-width: 0px !important;
 }
 
+.golden-small .progress {
+	max-width: 100%;
+}
+
 .progress-wrap {
 	margin: 6px auto;
 	overflow: hidden;
@@ -939,6 +943,15 @@ input.amount {
     left: 0;
     top: 0;
     position: absolute;
+}
+
+.progress-label {
+    left: 0;
+    top: 0;
+    position: absolute;
+	width: 100%;
+	font-size: 85%;
+	text-align: center;
 }
 
 .collapsible-container {
