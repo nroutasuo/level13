@@ -127,10 +127,12 @@ define([
 			currentStorage.substractResources(rewards.lostResources);
 
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resources;
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
 				var amount = rewards.gainedResources.getResource(name);
-				if (amount > 0) {
+				var inSector = sectorResources.getResource(name) > 0;
+				if (amount > 0 && inSector) {
 					sectorStatus.addDiscoveredResource(name);
 				}
 			}

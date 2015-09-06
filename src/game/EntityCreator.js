@@ -146,6 +146,7 @@ define([
 				sectorFeatures.buildingStyle,
 				sectorFeatures.sunlit,
 				sectorFeatures.weather,
+				sectorFeatures.campable,
 				sectorFeatures.resources))
 			.add(new SectorLocalesComponent(locales))
 			.add(new SaveComponent(saveKey, [

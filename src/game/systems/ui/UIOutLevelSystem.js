@@ -405,7 +405,18 @@ define([
 		},
 		
 		getLocationDiscoveredResources: function () {
-			return this.playerLocationNodes.head.entity.get(SectorStatusComponent).discoveredResources;
+            var resources = [];
+            var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+            var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			for (var i = 0; i < sectorStatus.discoveredResources.length; i++) {
+                var res = sectorStatus.discoveredResources[i];
+                if (sectorFeatures.resources[res] > 0) {
+                    resources.push(res);
+                } else {
+                    console.log("WARN: Resource in discovered resources not found on sector.");
+                }
+			}
+            return resources;
 		},
 		
 		updateLocales: function () {

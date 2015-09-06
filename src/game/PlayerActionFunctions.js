@@ -395,26 +395,28 @@ define(['ash',
             this.buildPassage(sectorPos, true, "build_out_passage_up_hole", "build_out_passage_down_hole");
         },
         
-        buildPassageDownHole: function(sectorPos) {
+        buildPassageDownHole: function (sectorPos) {
             this.buildPassage(sectorPos, false, "build_out_passage_down_hole", "build_out_passage_up_hole");
         },
         
-        buildPassage: function(sectorPos, up, action, neighbourAction) {
+        buildPassage: function (sectorPos, up, action, neighbourAction) {
 			var l = sectorPos.split("-")[0];
 			var s = sectorPos.split("-")[1];
+            var playerPos = this.playerPositionNodes.head.position;
 			var sector = this.levelHelper.getSectorByPosition(l, s);
 			var neighbour = this.levelHelper.getSectorByPosition(up ? l + 1 : l - 1, s);
+            var msg = "Passage " + (up ? " up" : " down") + " ready in sector " + s + (playerPos.level === l ? "" : ", level " + l);
             this.buildImprovement(action, this.playerActionsHelper.getImprovementNameForAction(action), sector);
             this.buildImprovement(neighbourAction, this.playerActionsHelper.getImprovementNameForAction(neighbourAction), neighbour, true);
-			this.addLogMessage("Passage " + (up ? " up" : " down") + " ready in sector " + s);
+			this.addLogMessage(msg);
 		},
         
-        buildTrap: function() {
+        buildTrap: function () {
             this.buildImprovement("build_out_collector_food", this.playerActionsHelper.getImprovementNameForAction("build_out_collector_food"));
             this.addLogMessage("Built a trap. It will catch food.");
         },
         
-        buildBucket: function() {
+        buildBucket: function () {
             this.buildImprovement("build_out_collector_water", this.playerActionsHelper.getImprovementNameForAction("build_out_collector_water"));
             this.addLogMessage("Made a bucket. It will collect water.");
         },

@@ -17,8 +17,7 @@ define([
 			var topLevel = this.getHighestLevel(seed);
 			var bottomLevel = this.getBottomLevel(seed);
 			
-			// Create base
-			// passages, campable sectors, sunlight
+			// base: passages, campable sectors and levels, sunlight
 			this.prepareWorldStructure(seed, topLevel, bottomLevel);
 			// building density, state of repair
 			this.prepareWorldTexture(seed, topLevel, bottomLevel);
@@ -30,7 +29,7 @@ define([
 			this.prepareWorldEnemies(seed, topLevel, bottomLevel);
 		},
 		
-		// campable sectors, movement blockers, passages
+		// campable sectors and levels, movement blockers, passages, sunlight
 		prepareWorldStructure: function (seed, topLevel, bottomLevel) {
 			var passageDownPos = [];
 			for (var l = topLevel; l >= bottomLevel; l--) {
@@ -38,22 +37,24 @@ define([
 				
 				var firstSector = this.getFirstSector(seed, l);
 				var lastSector = this.getLastSector(seed, l);
+                var isCampableLevel = this.isCampableLevel(seed, l);
 				for (var s = firstSector; s <= lastSector; s++) {
 					this.world[l][s] = {};
 					this.world[l][s].camp = false;
+                    this.world[l][s].campableLevel = isCampableLevel; // TODO define reasons for camping disabled: waste etc
 					this.world[l][s].blockerRight = 0;
 					this.world[l][s].blockerLeft = 0;
 					this.world[l][s].locales = [];
 				}
 					
-				// camp: 1-2 spots for every level
+				// camp: 1-2 spots for every campable level
 				if (l === 13) {
 					this.world[l][3].camp = true;
 				} else {
-					var numCamps = this.randomInt(seed/3*l, 1, 5);
+					var numCamps = isCampableLevel ? this.randomInt(seed / 3 * l, 1, 5) : 0;
 					for (var i = 0; i < numCamps; i++)
 					{
-						var campS = this.randomInt(seed*l*534*(i+7), firstSector, lastSector);
+						var campS = this.randomInt(seed * l * 534 * (i + 7), firstSector, lastSector);
 						this.world[l][campS].camp = true;
 					}
 				}
@@ -90,20 +91,20 @@ define([
 					}
 				}
 				
-				// movement blockers: a few per level 
+				// movement blockers: a few per level
 				var numBlockers = this.randomInt(88 + seed * 56 * l + seed % 7, 0, Math.ceil(1+(Math.abs(l-13)/3)));
 				if (l === 13) numBlockers = 0;
-				for(var i = 0; i < numBlockers; i++) {
+				for (var i = 0; i < numBlockers; i++) {
 					var blockerType = this.randomInt(seed*5831/l+seed%2, 1, 4);
 					var blockedSector = this.randomInt(seed*l*l+1*22*i, firstSector, lastSector);
 					this.world[l][blockedSector].blockerRight = blockerType;
-					this.world[l][blockedSector+1].blockerLeft = blockerType;
+					this.world[l][blockedSector + 1].blockerLeft = blockerType;
 				}
 			}
 			
 			// Debug print
-			console.log("World structure ready.");
-			// this.printWorld(seed, [ "passageDown" ]);
+			console.log("World structure ready. (ground: " + bottomLevel + ", surface: " + topLevel + ")");
+			this.printWorld(seed, [ "campableLevel" ]);
 			// this.printWorld(seed, [ "blockerLeft" ]);
 		},
 		
@@ -197,7 +198,7 @@ define([
 				if (water < 3) water = 0;
 				
 				if (this.world[l][s].camp) water = Math.max(water, 3);
-				if (this.world[l][s].camp) food = Math.max(food, 3);
+				if (this.world[l][s].camp) food = Math.max(food, 1);
 				
 				var fuel = 0;
 				var herbs = 0;
@@ -378,27 +379,77 @@ define([
 			console.log("World enemies ready.");
 			// this.printWorld(seed, [ "enemies.length" ]);
 		},
+        
 		
-		getBottomLevel: function( seed ) {
-			return 1 - Math.round(this.random(seed)*6);
+		getBottomLevel: function (seed) {
+			return 3 - Math.ceil(this.random(seed)*6);
 		},
 		
-		getHighestLevel: function( seed ) {
-			return 19 + Math.round(this.random(seed+2)*5);
+		getHighestLevel: function (seed) {
+            var bottomLevel = this.getBottomLevel(seed);
+			return Math.max(bottomLevel+WorldCreatorConstants.LEVEL_NUMBER_MIN-1, 14+WorldCreatorConstants.CAMPS_AFTER_GROUND);
 		},
 		
 		getLevelOrdinal: function(seed, level) {
-				if (level <= 13) return -level+14;
-				else return level+1;
+			if (level > 13) {
+                var bottomLevel = this.getBottomLevel(seed);
+                var bottomLevelOrdinal = this.getLevelOrdinal(seed, bottomLevel);
+                return bottomLevelOrdinal + (level - 13);
+			} else {
+                return -level + 14;
+            }
 		},
 		
-		getFirstSector: function( seed, level ) {
+		getFirstSector: function (seed, level) {
 			return WorldCreatorConstants.FIRST_SECTOR;
 		},
 		
-		getLastSector: function( seed, level ) {
+		getLastSector: function (seed, level) {
 			return WorldCreatorConstants.LAST_SECTOR;
 		},
+        
+        isCampableLevel: function(seed, level) {
+            var isBeforeGround = level < 14;
+            var camplessLevelOrdinals = [];
+            
+            var camplessLvlFreq;
+            var camplessLvlFreqSmall;
+            var camplessLvlFreqBig;
+            var numCamplessLvls;
+            var groundLvlOrdinal = this.getLevelOrdinal(seed, this.getBottomLevel(seed));
+            if (isBeforeGround) {
+                numCamplessLvls = groundLvlOrdinal - WorldCreatorConstants.CAMPS_BEFORE_GROUND;
+                camplessLvlFreq = (groundLvlOrdinal-3)/(numCamplessLvls);
+                camplessLvlFreqSmall = camplessLvlFreq < 2 ? 1 : camplessLvlFreq;
+                camplessLvlFreqBig = Math.max(2, camplessLvlFreq);
+                for (var i = 1; i <= numCamplessLvls; i++) {
+                     if(i == 1)
+                        camplessLevelOrdinals.push(groundLvlOrdinal - Math.floor(camplessLvlFreqSmall));
+                     else if(i == 2)
+                        camplessLevelOrdinals.push(Math.ceil(groundLvlOrdinal - camplessLvlFreqSmall * 2));
+                     else
+                        camplessLevelOrdinals.push(Math.ceil(camplessLevelOrdinals[camplessLevelOrdinals.length-1] - camplessLvlFreqBig));
+                }
+            } else {
+                var totalLevels = this.getHighestLevel(seed) - this.getBottomLevel(seed) + 1;
+                var numLevelsAfterGround = totalLevels - groundLvlOrdinal;
+                numCamplessLvls = numLevelsAfterGround - WorldCreatorConstants.CAMPS_AFTER_GROUND;
+                camplessLvlFreq = (numLevelsAfterGround-1)/(numCamplessLvls);
+                camplessLvlFreqSmall = camplessLvlFreq < 2 ? 1 : camplessLvlFreq;
+                camplessLvlFreqBig = Math.max(2, camplessLvlFreq);
+                for (var i = 1; i <= numCamplessLvls; i++) {
+                     if(i == 1)
+                        camplessLevelOrdinals.push(groundLvlOrdinal + 1);
+                     else if(i == 2)
+                        camplessLevelOrdinals.push(Math.ceil(groundLvlOrdinal + camplessLvlFreqSmall));
+                     else
+                        camplessLevelOrdinals.push(Math.floor(camplessLevelOrdinals[camplessLevelOrdinals.length-1] + camplessLvlFreqBig));
+                }
+            }
+            
+            var levelOrdinal = this.getLevelOrdinal(seed, level);
+            return camplessLevelOrdinals.indexOf(levelOrdinal) < 0;
+        },
 		
 		isDarkLevel: function( seed, level ) {
 			return !this.isEarthLevel(seed, level) && !this.isSunLevel(seed, level);
@@ -414,7 +465,7 @@ define([
 			return level >= highest - 5;
 		},
 		
-		// Functions that require that prepareWorld has been called first below this
+		// !! Functions that require that prepareWorld has been called first below this
 		
 		getPassageUp: function( level, sector ) {
 			var def = this.world[level][sector];
@@ -476,6 +527,7 @@ define([
 			sectorFeatures.sunlit = def.sunlit;
 			sectorFeatures.sectorType = def.sectorType;	    
 			sectorFeatures.resources = def.resources;
+            sectorFeatures.campable = def.campableLevel;
 			return sectorFeatures;
 		},
 		
@@ -491,7 +543,7 @@ define([
 			return this.world[level][sector].enemies.length > 0 ? 5 : 0;
 		},
 		
-		// Helper functions:
+		// Helper functions for randomisation, seeds etc below this
 		
 		printWorld: function(seed, keys) {
 			console.log("Print world, seed: " + seed + ", attributes: " + keys)
@@ -553,7 +605,7 @@ define([
 		},
 		
 		// Pseudo-random number based on the seed, evenly distributed between 0-1
-		random: function(seed) {
+		random: function (seed) {
 			var mod1 = 7247;
 			var mod2 = 7823;
 			var result = (seed*seed) % (mod1*mod2);

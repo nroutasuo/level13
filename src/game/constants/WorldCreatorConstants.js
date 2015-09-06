@@ -17,7 +17,11 @@ define(['ash'], function (Ash) {
         BUILDING_STYLE_URBAN_ASIAN: 5,
         BUILDING_STYLE_HISTORICAL: 6,
         
-        LEVEL_NUMBER: 20,
+        CAMPS_BEFORE_GROUND: 9,
+        CAMPS_AFTER_GROUND: 6,
+        CAMPS_TOTAL: 15,
+        LEVEL_NUMBER_MIN: 20,
+        LEVEL_NUMBER_MAX: 24,
         FIRST_SECTOR: 1,
         LAST_SECTOR: 10,
     };

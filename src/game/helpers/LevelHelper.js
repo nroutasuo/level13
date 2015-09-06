@@ -29,8 +29,9 @@ define([
 		
 		playerActionsHelper: null,
 		
-		constructor: function (engine, playerActionsHelper) {
+		constructor: function (engine, gameState, playerActionsHelper) {
 			this.engine = engine;
+			this.gameState = gameState;
 			this.playerActionsHelper = playerActionsHelper;
 			this.levelNodes = engine.getNodeList(LevelNode);
 			this.sectorNodes = engine.getNodeList(SectorNode);
@@ -57,15 +58,54 @@ define([
 			return null;
 		},
 		
-		getAvailableProjects: function (sectorEntity, playerActions) {
+		getAvailableProjectsForCamp: function (sectorEntity, playerActions) {
 			var projects = [];
-			var levelEntity = this.getLevelEntityForSector(sectorEntity);
+			
+			var campLevelEntity = this.getLevelEntityForSector(sectorEntity); // use to get projects only for that level
+			
+			// get all levels
+			for (var node = this.levelNodes.head; node; node = node.next) {
+				projects = projects.concat(this.getAvailableProjectsForLevel(node.entity, playerActions));
+			}
+			
+			// sort by level ordinal
+			var gameState = this.gameState;
+			projects.sort(function (a, b) {
+				var levelOrdinalA = gameState.getLevelOrdinal(a.level);
+				var levelOrdinalB = gameState.getLevelOrdinal(b.level);
+				return levelOrdinalA - levelOrdinalB;
+			});
+			
+			// filter duplicates (corresponding up and down)
+			var projectsFiltered = [];
+			var project;
+			var projectExists;
+			var existingProject;
+			for (var i = 0; i < projects.length; i++) {
+				project = projects[i];
+				projectExists = false;
+				for (var j = 0; j < projectsFiltered.length; j++) {
+					existingProject = projectsFiltered[j];
+					if (existingProject.sector === project.sector && (existingProject.level - 1 === project.level || existingProject.level + 1 === project.level)) {
+						projectExists = true;
+						break;
+					}
+				}
+				if (!projectExists) projectsFiltered.push(project);
+			}
+			
+			return projectsFiltered;
+		},
+		
+		getAvailableProjectsForLevel: function (levelEntity, playerActions) {
+			var projects = [];
 			var level = levelEntity.get(PositionComponent).level;
 			var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
 			
 			// TODO check if the levelPassagesComponent + system are needed if we need the sector entity anyway
 			
 			if (levelPassagesComponent) {
+				var sectorEntity;
 				var sectorEntityS;
 				var statusComponent;
 				var scouted;
@@ -93,10 +133,10 @@ define([
 									break;
 							}
 							if (this.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0)
-								projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, s));
+								projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, level, s));
 						}
 						if (levelPassagesComponent.passagesDown[s] && !levelPassagesComponent.passagesDownBuilt[s]) {
-							switch(levelPassagesComponent.passagesDown[s].type) {
+							switch (levelPassagesComponent.passagesDown[s].type) {
 								case 1:
 									improvementName = improvementNames.passageDownHole;
 									actionName = "build_out_passage_down_hole";
@@ -111,7 +151,7 @@ define([
 									break;
 							}
 							if (this.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0)
-								projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, s));
+								projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, level, s));
 						}
 					}
 				}

@@ -49,18 +49,18 @@ function (Ash, ItemConstants, PerkConstants, WorldCreatorConstants, ResourcesVO)
             return att + def;
         },
         
-        getMaxFollowers: function(numCamps) {
-            return Math.round((numCamps/(WorldCreatorConstants.LEVEL_NUMBER-1)*this.MAX_FOLLOWER_MAX));
+        getMaxFollowers: function (numCamps) {
+            return Math.round((numCamps/(WorldCreatorConstants.CAMPS_TOTAL-1) * this.MAX_FOLLOWER_MAX));
         },
         
         // Damage done by player to an enemy per sec
-        getEnemyDamagePerSec: function(enemy, playerStamina, itemsComponent) {            
+        getEnemyDamagePerSec: function (enemy, playerStamina, itemsComponent) {
             var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
             return (playerAtt / enemy.def);
         },
         
         // Damage done by the enemy to the player per sec
-        getPlayerDamagePerSec: function(enemy, playerStamina, itemsComponent) {
+        getPlayerDamagePerSec: function (enemy, playerStamina, itemsComponent) {
             var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent);
             return (enemy.att / playerDef);
         },

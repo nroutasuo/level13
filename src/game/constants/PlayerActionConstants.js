@@ -499,6 +499,9 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants) {
                     blueprint: 2,
 				},
 				unlock_building_hospital: {
+                    upgrades: {
+                        unlock_worker_rope: true,
+                    }
 				},
 				unlock_building_inn: {
                     blueprint: 6,

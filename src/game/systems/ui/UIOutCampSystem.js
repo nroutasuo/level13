@@ -179,17 +179,17 @@ define([
 			$("#btn-use_in_hospital2").toggle(hasHospital && !isInjured && !isAugmented && isAugmentAvailable);
             
             var numProjectsTR = $("#in-improvements-level table tr").length;
-            var projects = this.levelHelper.getAvailableProjects(this.playerLocationNodes.head.entity, this.uiFunctions.playerActions);
+            var projects = this.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity, this.uiFunctions.playerActions);
             var level = this.playerLocationNodes.head.entity.get(PositionComponent).level;
             if (numProjectsTR !== projects.length) {
                 $("#in-improvements-level table").empty();
                 for (var i = 0; i < projects.length; i++) {
                     var project = projects[i];
                     var name = project.name;
-                    var info = project.name + " on sector " + project.sector;
+                    var info = project.name + " on sector " + project.sector + (project.level === level ? "" : " (level " + project.level + ")");
                     var classes = "action action-build action-level-project";
                     var action = project.action;
-                    var sector = level + "-" + project.sector;
+                    var sector = project.level + "-" + project.sector;
                     var tr = "<tr><td><button class='" + classes + "' action='" + action + "' sector='" + sector + "'>" + name + "</button></td><td>" + info + "</td></tr>";
                     $("#in-improvements-level table").append(tr);
                 }

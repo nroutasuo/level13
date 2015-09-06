@@ -12,11 +12,12 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
         
         sunlit: false,
         weather: false,
+        campable: false,
         
         // food: only represents the amount of trappable food
         resources: null,
         
-        constructor: function (level, buildingDensity, stateOfRepair, sectorType, buildingStyle, sunlit, weather, resources) {
+        constructor: function (level, buildingDensity, stateOfRepair, sectorType, buildingStyle, sunlit, weather, campable, resources) {
             this.level = level;
             this.buildingDensity = buildingDensity;
             this.stateOfRepair = stateOfRepair;
@@ -24,17 +25,20 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
             this.buildingStyle = buildingStyle,
             this.sunlit = sunlit;
             this.weather = weather;
+            this.campable = campable;
             this.resources = resources;
         },
         
         // Secondary attributes
         canHaveCamp: function () {
-            return  this.buildingDensity > 0 && this.buildingDensity < 9 &&
-                    this.resources.water > 0 && this.resources.fuel <= 0 &&
+            return  this.campable &&
+                    this.buildingDensity > 0 && this.buildingDensity < 9 &&
+                    this.resources.water > 0 && this.resources.food > 0 && this.resources.fuel <= 0 &&
                     this.stateOfRepair > 2;
         },
         
         hasWorkshop: function (resourceName) {
+            if (!this.campable) return false;
             if (resourceName) {
                 return this.resources[resourceName] > 0;
             } else {

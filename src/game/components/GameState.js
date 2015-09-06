@@ -1,4 +1,4 @@
-define(['ash'], function (Ash) {
+define(['ash', 'game/WorldCreator'], function (Ash, WorldCreator) {
     var GameState = Ash.Class.extend({
         
         constructor: function () {
@@ -45,8 +45,7 @@ define(['ash'], function (Ash) {
         },
         
         getLevelOrdinal: function (level) {
-            if (level <= 13) return -level + 14;
-            else return level + 1;
+            return WorldCreator.getLevelOrdinal(this.worldSeed, level);
         },
         
         setActionCooldown: function (action, key, cooldown) {

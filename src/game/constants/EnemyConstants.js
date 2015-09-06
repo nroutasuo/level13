@@ -21,24 +21,24 @@ function (Ash, WorldCreatorConstants, EnemyVO) {
 		
 		getRequiredStength: function (levelOrdinal) {
 			if (levelOrdinal <= 1) return 0;
-			if (levelOrdinal == 2) return 8;
-			if (levelOrdinal == 3) return 14;
-			if (levelOrdinal == 4) return 17;
-			if (levelOrdinal == 5) return 21;
-			if (levelOrdinal == 6) return 28;
-			if (levelOrdinal == 7) return 36;
-			if (levelOrdinal == 8) return 44;
-			if (levelOrdinal == 9) return 48;
-			if (levelOrdinal == 10) return 68;
-			if (levelOrdinal == 11) return 89;
-			if (levelOrdinal == 12) return 97;
-			if (levelOrdinal == 13) return 120;
-			if (levelOrdinal == 14) return 165;
-			if (levelOrdinal == 15) return 193;
-			if (levelOrdinal == 16) return 251;
-			if (levelOrdinal == 17) return 332;
-			if (levelOrdinal == 18) return 378;
-			if (levelOrdinal == 19) return 537;
+			if (levelOrdinal === 2) return 8;
+			if (levelOrdinal === 3) return 14;
+			if (levelOrdinal === 4) return 17;
+			if (levelOrdinal === 5) return 21;
+			if (levelOrdinal === 6) return 28;
+			if (levelOrdinal === 7) return 36;
+			if (levelOrdinal === 8) return 44;
+			if (levelOrdinal === 9) return 48;
+			if (levelOrdinal === 10) return 68;
+			if (levelOrdinal === 11) return 89;
+			if (levelOrdinal === 12) return 97;
+			if (levelOrdinal === 13) return 120;
+			if (levelOrdinal === 14) return 165;
+			if (levelOrdinal === 15) return 193;
+			if (levelOrdinal === 16) return 251;
+			if (levelOrdinal === 17) return 332;
+			if (levelOrdinal === 18) return 378;
+			if (levelOrdinal === 19) return 537;
 			return 755;
 		},
 		
@@ -47,7 +47,7 @@ function (Ash, WorldCreatorConstants, EnemyVO) {
 		// will return at least one enemy; if no matching enemy exists, one with lower difficulty is returned
 		getEnemies: function (type, difficulty, restrictDifficulty) {
 			var enemies = [];
-			if (difficulty <= 0) return enemies;
+			if (difficulty <= 0 ) return enemies;
 			
 			var enemy;
 			var enemyDifficulty;
@@ -69,12 +69,12 @@ function (Ash, WorldCreatorConstants, EnemyVO) {
 			var stats = enemy.att + enemy.def;
 			var level = 0;
 			var iDifficulty;
-			for(var i = 1; i < WorldCreatorConstants.LEVEL_NUMBER; i++) {
+			for (var i = 1; i < WorldCreatorConstants.LEVEL_NUMBER_MAX; i++) {
 				iDifficulty = this.getRequiredStength(i);
 				if (iDifficulty > stats) return level;
 				level = i;
 			}
-			return WorldCreatorConstants.LEVEL_NUMBER;
+			return WorldCreatorConstants.LEVEL_NUMBER_MAX;
 		}
 	};
 		
