@@ -6,7 +6,6 @@ define([
     'game/constants/PerkConstants',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
-    'game/nodes/sector/SectorNode',
     'game/nodes/sector/CampNode',
     'game/nodes/player/DeityNode',
     'game/nodes/tribe/TribeUpgradesNode',
@@ -21,7 +20,7 @@ define([
     'game/components/sector/events/RaidComponent',
 ], function (
     Ash, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants,
-    PlayerPositionNode, PlayerLocationNode, SectorNode, CampNode, DeityNode, TribeUpgradesNode,
+    PlayerPositionNode, PlayerLocationNode, CampNode, DeityNode, TribeUpgradesNode,
     PerksComponent,
 	SectorFeaturesComponent, PositionComponent,
     CampComponent, SectorImprovementsComponent, SectorControlComponent, CampEventTimersComponent,
@@ -114,7 +113,7 @@ define([
             var isPopulationMaxed = campComponent.population >= maxPopulation;
             $("#in-population h3").text("Population: " + Math.floor(campComponent.population) + " / " + (maxPopulation));
             $("#in-population p#in-population-status").text("Free workers: " + freePopulation);
-            if(!isPopulationMaxed) {
+            if (!isPopulationMaxed) {
                 $("#in-population-bar-next").data("progress-percent", nextWorkerProgress);
                 // TODO show time to next worker in min/s
                 $("#in-population-bar-next .progress-label").text(Math.round(nextWorkerProgress) + "%");
@@ -126,7 +125,7 @@ define([
             this.uiFunctions.slideToggleIf("#in-assign-workers", null, campComponent.population >= 1, 200, 200);
             
             $("#in-assign-weaver").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("weaver")));
-            $("#in-assign-chemist").toggle(this.levelHasClearedWorkshop(posComponent.level, resourceNames.fuel));
+            $("#in-assign-chemist").toggle(this.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel) > 0);
             $("#in-assign-apothecary").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("apothecary")));
             $("#in-assign-concrete").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("concrete")));
             $("#in-assign-smith").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("smith")));
@@ -136,22 +135,24 @@ define([
             var maxConcrete = improvements.getCount(improvementNames.cementmill) * CampConstants.CONCRETE_WORKERS_PER_MILL;
             var maxSmiths = improvements.getCount(improvementNames.smithy) * CampConstants.SMIHTS_PER_SMITHY;
             var maxSoldiers = improvements.getCount(improvementNames.barracks) * CampConstants.SOLDIERS_PER_BARRACKS;
-            this.updateWorkerStepper(campComponent, "#stepper-scavenger", "scavenger", maxPopulation);
-            this.updateWorkerStepper(campComponent, "#stepper-trapper", "trapper", maxPopulation);
-            this.updateWorkerStepper(campComponent, "#stepper-water", "water", maxPopulation);
-            this.updateWorkerStepper(campComponent, "#stepper-rope", "ropemaker", maxPopulation);
-            this.updateWorkerStepper(campComponent, "#stepper-fuel", "chemist", maxPopulation);
-            this.updateWorkerStepper(campComponent, "#stepper-medicine", "apothecary", maxApothecaries);
-            this.updateWorkerStepper(campComponent, "#stepper-concrete", "concrete", maxConcrete);
-            this.updateWorkerStepper(campComponent, "#stepper-smith", "toolsmith", maxSmiths);
-            this.updateWorkerStepper(campComponent, "#stepper-soldier", "soldier", maxSoldiers);
+            var maxChemists = this.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel) * CampConstants.CHEMISTS_PER_WORKSHOP;
+            this.updateWorkerStepper(campComponent, "#stepper-scavenger", "scavenger", maxPopulation, false);
+            this.updateWorkerStepper(campComponent, "#stepper-trapper", "trapper", maxPopulation, false);
+            this.updateWorkerStepper(campComponent, "#stepper-water", "water", maxPopulation, false);
+            this.updateWorkerStepper(campComponent, "#stepper-rope", "ropemaker", maxPopulation, false);
+            this.updateWorkerStepper(campComponent, "#stepper-fuel", "chemist", maxChemists, true);
+            this.updateWorkerStepper(campComponent, "#stepper-medicine", "apothecary", maxApothecaries, true);
+            this.updateWorkerStepper(campComponent, "#stepper-concrete", "concrete", maxConcrete, true);
+            this.updateWorkerStepper(campComponent, "#stepper-smith", "toolsmith", maxSmiths, true);
+            this.updateWorkerStepper(campComponent, "#stepper-soldier", "soldier", maxSoldiers, true);
         },
         
-        updateWorkerStepper: function (campComponent, id, workerType, maxWorkers) {
+        updateWorkerStepper: function (campComponent, id, workerType, maxWorkers, showMax) {
             var freePopulation = campComponent.getFreePopulation();
             var assignedWorkers = campComponent.assignedWorkers[workerType];
             $(id + " input").attr("max", Math.min(assignedWorkers + freePopulation, maxWorkers));
             $(id + " input").val(assignedWorkers);
+			$(id).parent().siblings(".in-assign-worker-limit").text(showMax ? " / " + maxWorkers : "");
         },
         
         updateImprovements: function (campCount) {
@@ -246,24 +247,6 @@ define([
 			$("#in-demographics-raid").toggle(showRaid);
 			
 			$("#in-demographics").toggle(showRaid);
-        },
-        
-        levelHasClearedWorkshop: function (level, resourceName) {
-            var featuresComponent;
-            var sectorControlComponent;
-            for (var node = this.engine.getNodeList(SectorNode).head; node; node = node.next) {
-                if (node.entity.get(PositionComponent).level === level)
-                {
-                    featuresComponent = node.entity.get(SectorFeaturesComponent);
-                    sectorControlComponent = node.entity.get(SectorControlComponent);
-                    if (featuresComponent.hasWorkshop(resourceName)) {
-                        if (sectorControlComponent && sectorControlComponent.hasControl()) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
         },
         
         hasUpgrade: function (upgradeId) {

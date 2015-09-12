@@ -28,6 +28,7 @@ define(['ash'], function (Ash) {
         SMIHTS_PER_SMITHY: 2,
         CONCRETE_WORKERS_PER_MILL: 2,
         APOTECARIES_PER_SHOP: 2,
+        CHEMISTS_PER_WORKSHOP: 5,
         
         WORKER_TYPES: {
             scavenger: "scavenger",

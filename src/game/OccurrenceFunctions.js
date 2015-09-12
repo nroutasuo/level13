@@ -1,6 +1,7 @@
 // A class responds to player actions parsed by the UIFunctions
 define(['ash',
     'game/constants/OccurrenceConstants',
+    'game/constants/TextConstants',
     'game/nodes/sector/CampNode',
     'game/components/common/PositionComponent',
     'game/components/common/ResourcesComponent',
@@ -9,24 +10,24 @@ define(['ash',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/improvements/CampComponent'
-], function (Ash, OccurrenceConstants, CampNode,
+], function (Ash, OccurrenceConstants, TextConstants, CampNode,
     PositionComponent, ResourcesComponent, RaidComponent,
     SectorFeaturesComponent, SectorControlComponent, SectorImprovementsComponent, CampComponent) {
     
     var OccurrenceFunctions = Ash.System.extend({
         
-		uiFunctions: null,	
+		uiFunctions: null,
 		engine: null,
 		
 		campNodes: null,
 	
-        constructor: function(uiFunctions) {
+        constructor: function (uiFunctions) {
 			this.uiFunctions = uiFunctions;
         },
 
         addToEngine: function (engine) {
             this.engine = engine;
-			this.campNodes = engine.getNodeList( CampNode );
+			this.campNodes = engine.getNodeList(CampNode);
         },
 
         removeFromEngine: function (engine) {
@@ -34,37 +35,39 @@ define(['ash',
 			this.campNodes = null;
         },
 	
-		onEnterNewSector: function(sectorEntity) {
+		onEnterNewSector: function (sectorEntity) {
 			var sectorPosition = sectorEntity.get(PositionComponent);
 		},
 	
-		onScoutSector: function(sectorEntity) {	    
+		onScoutSector: function(sectorEntity) {
 			var featuresComponent = sectorEntity.get(SectorFeaturesComponent);
 			var sectorControlComponent = sectorEntity.get(SectorControlComponent);
 			var sectorPosition = sectorEntity.get(PositionComponent);
 			var hasCampOnLevel = this.hasCampOnLevel(sectorEntity);
 			var hasEnemies = !sectorControlComponent.hasControl();
+			var workshopName = TextConstants.getWorkshopName(featuresComponent.getWorkshopResource());
 			
 			// Workshops
 			if (featuresComponent.hasWorkshop()) {
-			var helpString = "";
-			if (hasEnemies && !hasCampOnLevel) helpString = "Clear the sector and build a camp nearby to use it.";
-			else if (!hasCampOnLevel) helpString = "Build a camp nearby to use it.";
-			this.showClickOccurrence("You've discovered a workshop! " + helpString);
+				var helpString = "";
+				if (hasEnemies && !hasCampOnLevel) helpString = "Clear the sector and build a camp nearby to use it.";
+				else if (!hasCampOnLevel) helpString = "Build a camp nearby to use it.";
+				this.showClickOccurrence("You've discovered a " + workshopName + "! " + helpString);
 			}
 		},
 	
-		onScoutSectorWeakling: function(sectorEntity) {
+		onScoutSectorWeakling: function (sectorEntity) {
 			this.showLevelStrengthWarning(sectorEntity);
 		},
 		
-		onGainSectorControl: function(sectorEntity) {
+		onGainSectorControl: function (sectorEntity) {
 			var featuresComponent = sectorEntity.get(SectorFeaturesComponent);
 			if (featuresComponent.hasWorkshop()) {
+				var workshopName = TextConstants.getWorkshopName(featuresComponent.getWorkshopResource());
 				if (this.hasCampOnLevel(sectorEntity)) {
-					this.showClickOccurrence("The workshop is now safe for workers to use.");
-				} else {		    
-					this.showClickOccurrence("The workshop is now secured. Build a camp nearby to use it.");
+					this.showClickOccurrence("The " + workshopName + " is now safe for workers to use.");
+				} else {
+					this.showClickOccurrence("The " + workshopName + " is now secured. Build a camp nearby to send workers to it.");
 				}
 			}
 		},

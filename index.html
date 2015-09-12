@@ -205,30 +205,39 @@
 									<tr id="in-assign-water">
 										<td><div class="info-callout-target info-callout-target-small" description="water +0.5/s">Water collector</div></td>
 										<td><div class="stepper" id="stepper-water"></div></td>
+										<td class="in-assign-worker-limit"></td>
 									</tr><tr id="in-assign-trapper">
 										<td><div class="info-callout-target info-callout-target-small" description="food +0.5/s">Trapper</div></td>
 										<td><div class="stepper" id="stepper-trapper"></div></td>
+										<td class="in-assign-worker-limit"></td>
 									</tr><tr id="in-assign-scavenger">
 										<td><div class="info-callout-target info-callout-target-small" description="metal +0.1/s">Scavenger</div></td>
 										<td><div class="stepper" id="stepper-scavenger"></div></td>
+										<td class="in-assign-worker-limit"></td>
 									</tr><tr id="in-assign-weaver">
 										<td><div class="info-callout-target info-callout-target-small" description="rope +0.1/s">Rope-maker</div></td>
 										<td><div class="stepper" id="stepper-rope"></div></td>
+										<td class="in-assign-worker-limit"></td>
 									</tr><tr id="in-assign-chemist">
 										<td><div class="info-callout-target info-callout-target-small" description="fuel +0.1/s">Chemist</div></td>
 										<td><div class="stepper" id="stepper-fuel"></div></td>
+										<td class="in-assign-worker-limit"></td>
 									</tr><tr id="in-assign-apothecary">
 										<td><div class="info-callout-target info-callout-target-small" description="medicine +0.1/s">Apothecary</div></td>
 										<td><div class="stepper" id="stepper-medicine"></div></td>
+										<td class="in-assign-worker-limit"></td>
 									</tr><tr id="in-assign-concrete">
 										<td><div class="info-callout-target info-callout-target-small" description="concrete +0.2/s">Concrete mixer</div></td>
 										<td><div class="stepper" id="stepper-concrete"></div></td>
+										<td class="in-assign-worker-limit"></td>
 									</tr><tr id="in-assign-smith">
 										<td><div class="info-callout-target info-callout-target-small" description="tools +0.2/s">Toolsmith</div></td>
 										<td><div class="stepper" id="stepper-smith"></div></td>
+										<td class="in-assign-worker-limit"></td>
 									</tr><tr id="in-assign-soldier">
 										<td><div class="info-callout-target info-callout-target-small" description="defences +1">Soldier</div></td>
 										<td><div class="stepper" id="stepper-soldier"></div></td>
+										<td class="in-assign-worker-limit"></td>
 									</tr>
 								</table>
 								<p style="display:none" id="in-population-next">Next worker:</p>
@@ -374,32 +383,33 @@
 								</tr>
 								</table>
 							</div>
-							<div id="fight-popup" class="popup fill-on-mobiles" style="display:none">
-								<h3>Fight</h3>
-								<p id="fight-popup-enemy-info">Enemy name & strength</p>
-								<p id="fight-popup-control-info">(#/# enemies needed for sector control)</p>
-								<div id="fight-popup-bars">
-									<div id="fight-bar-enemy" class="progress-wrap progress">
-										<div class="progress-bar progress"></div>
-									</div>
-									<div id="fight-bar-self" class="progress-wrap progress">
-										<div class="progress-bar progress"></div>
-									</div>
+						</div>
+						
+						<div id="fight-popup" class="popup fill-on-mobiles" style="display:none">
+							<h3>Fight</h3>
+							<p id="fight-popup-enemy-info">Enemy name & strength</p>
+							<p id="fight-popup-control-info">(#/# enemies needed for sector control)</p>
+							<div id="fight-popup-bars">
+								<div id="fight-bar-enemy" class="progress-wrap progress">
+									<div class="progress-bar progress"></div>
 								</div>
-								<p id="fight-popup-self-info">Own strength</p>
-								<div id="fight-popup-results" class="infobox infobox-temporary">
-									<span id="fight-results-win-header" class="listheader">Gained:</span>
-									<ul id="fight-results-win-items" class="resultlist"></ul>
-									<span id="fight-results-lose-header" class="listheader">Lost:</span>
-									<ul id="fight-results-lose-items" class="resultlist"><li>Followers</li></ul>
-									<p id="fight-results-lose-injury" class="warning">You got injured.</p>
+								<div id="fight-bar-self" class="progress-wrap progress">
+									<div class="progress-bar progress"></div>
 								</div>
-								<div class="buttonbox">
-									<button id="out-action-fight-cancel">Flee</button>
-									<button id="out-action-fight-confirm" class="action" action="fight">Fight</button>
-									<button id="out-action-fight-close">Close</button>
-									<button id="out-action-fight-next" action="fightcheck">Continue</button>
-								</div>
+							</div>
+							<p id="fight-popup-self-info">Own strength</p>
+							<div id="fight-popup-results" class="infobox infobox-temporary">
+								<span id="fight-results-win-header" class="listheader">Gained:</span>
+								<ul id="fight-results-win-items" class="resultlist"></ul>
+								<span id="fight-results-lose-header" class="listheader">Lost:</span>
+								<ul id="fight-results-lose-items" class="resultlist"><li>Followers</li></ul>
+								<p id="fight-results-lose-injury" class="warning">You got injured.</p>
+							</div>
+							<div class="buttonbox">
+								<button id="out-action-fight-cancel">Flee</button>
+								<button id="out-action-fight-confirm" class="action" action="fight">Fight</button>
+								<button id="out-action-fight-close">Close</button>
+								<button id="out-action-fight-next" action="fightcheck">Continue</button>
 							</div>
 						</div>
 					</div>

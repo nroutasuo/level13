@@ -558,20 +558,24 @@ define([
             var sector = this.playerLocationNodes.head.entity;
             var playerPos = sector.get(PositionComponent);
             
-                if (action.indexOf("build_in") >= 0) {
-                        var improvementName = this.getImprovementNameForAction(action);
-                    var improvementsComponent = sector.get(SectorImprovementsComponent);
-                    return improvementsComponent.getCount(improvementName) + 1;
+            if (action.indexOf("build_in") >= 0) {
+                var improvementName = this.getImprovementNameForAction(action);
+                var improvementsComponent = sector.get(SectorImprovementsComponent);
+                return improvementsComponent.getCount(improvementName) + 1;
             }
                 
-            switch(action) {
+            switch (action) {
                 case "use_in_inn":
                     var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
                     return itemsComponent.getEquipped(ItemConstants.itemTypes.follower).length;
                 
-                case "build_out_passage_up":
-                case "build_out_passage_down":
-                    var level = action == "build_out_passage_up" ? playerPos.level + 1 : playerPos.level - 1;
+                case "build_out_passage_down_stairs":
+                case "build_out_passage_down_elevator":
+                case "build_out_passage_down_hole":
+                case "build_out_passage_up_stairs":
+                case "build_out_passage_up_elevator":
+                case "build_out_passage_up_hole":
+                    var level = action.indexOf("up") > 0 ? playerPos.level + 1 : playerPos.level - 1;
                     return this.gameState.getLevelOrdinal(level);
                 
                 default: return 1;

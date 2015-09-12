@@ -92,20 +92,22 @@ define([
 				}
 				
 				// movement blockers: a few per level
-				var numBlockers = this.randomInt(88 + seed * 56 * l + seed % 7, 0, Math.ceil(1+(Math.abs(l-13)/3)));
+				var numBlockers = this.randomInt(88 + seed * 56 * l + seed % 7, 0, Math.ceil(1 + (Math.abs(l - 13) / 3)));
 				if (l === 13) numBlockers = 0;
-				for (var i = 0; i < numBlockers; i++) {
-					var blockerType = this.randomInt(seed*5831/l+seed%2, 1, 4);
-					var blockedSector = this.randomInt(seed*l*l+1*22*i, firstSector, lastSector);
+				var blockerSectors = this.randomSectors(seed * l * l + 1 * 22 * i, l, firstSector, lastSector, numBlockers, numBlockers + 1, "camp");
+				for (var i = 0; i < blockerSectors.length; i++) {
+					var blockerType = this.randomInt(seed * 5831 / l + seed % 2, 1, 4);
+					var blockedSector = blockerSectors[i];
 					this.world[l][blockedSector].blockerRight = blockerType;
-					this.world[l][blockedSector + 1].blockerLeft = blockerType;
+					if(blockedSector < lastSector) this.world[l][blockedSector + 1].blockerLeft = blockerType;
 				}
 			}
 			
 			// Debug print
 			console.log("World structure ready. (ground: " + bottomLevel + ", surface: " + topLevel + ")");
-			this.printWorld(seed, [ "campableLevel" ]);
-			// this.printWorld(seed, [ "blockerLeft" ]);
+			//this.printWorld(seed, [ "campableLevel" ]);
+			//this.printWorld(seed, [ "blockerLeft" ]);
+			//this.printWorld(seed, [ "blockerRight" ]);
 		},
 		
 		// sector type, building density, state of repair, sunlight
@@ -306,12 +308,12 @@ define([
 			for(var l = topLevel; l>= bottomLevel; l--) {		
 				var firstSector = this.getFirstSector(seed, l);
 				var lastSector = this.getLastSector(seed, l);
-				for(var s = firstSector; s <= lastSector; s++) {
+				for (var s = firstSector; s <= lastSector; s++) {
 					this.world[l][s].enemies = [];		    
 					var hasEnemies = !this.world[l][s].camp && (this.world[l][s].blockerLeft == 3 ||
-					this.world[l][s].blockerRight == 3 ||
-					this.world[l][s].workshop ||
-					this.random(l*s*seed+s*seed+4848) > 0.2);
+						this.world[l][s].blockerRight == 3 ||
+						this.world[l][s].workshop ||
+						this.random(l*s*seed+s*seed+4848) > 0.2);
 					
 					if (hasEnemies) {
 					var enemies = this.world[l][s].enemies;
@@ -377,7 +379,7 @@ define([
 			}
 			
 			console.log("World enemies ready.");
-			// this.printWorld(seed, [ "enemies.length" ]);
+			//this.printWorld(seed, [ "camp" ]);
 		},
         
 		

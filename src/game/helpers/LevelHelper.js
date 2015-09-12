@@ -7,6 +7,8 @@ define([
     'game/components/common/PositionComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/SectorLocalesComponent',
+    'game/components/sector/SectorFeaturesComponent',
+    'game/components/sector/SectorControlComponent',
     'game/components/level/LevelPassagesComponent',
     'game/vos/LevelProjectVO',
     'game/vos/ImprovementVO',
@@ -17,6 +19,8 @@ define([
 	PositionComponent,
 	SectorStatusComponent,
 	SectorLocalesComponent,
+	SectorFeaturesComponent,
+	SectorControlComponent,
 	LevelPassagesComponent,
 	LevelProjectVO,
 	ImprovementVO
@@ -159,6 +163,25 @@ define([
 			
 			return projects;
 		},
+		
+        getLevelClearedWorkshopCount: function (level, resourceName) {
+			var count = 0;
+            var featuresComponent;
+            var sectorControlComponent;
+            for (var node = this.sectorNodes.head; node; node = node.next) {
+                if (node.entity.get(PositionComponent).level === level)
+                {
+                    featuresComponent = node.entity.get(SectorFeaturesComponent);
+                    sectorControlComponent = node.entity.get(SectorControlComponent);
+                    if (featuresComponent.getWorkshopResource() === resourceName) {
+                        if (sectorControlComponent && sectorControlComponent.hasControl()) {
+                            count++;
+                        }
+                    }
+                }
+            }
+            return count;
+        },
 		
 		getLevelLocales: function (level, includeScouted, excludeLocaleVO) {
 			var locales = [];

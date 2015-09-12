@@ -437,20 +437,20 @@ define(['ash',
             }
         },
         
-        buildHouse2: function() {
+        buildHouse2: function () {
             this.buildImprovement("build_in_house2", this.playerActionsHelper.getImprovementNameForAction("build_in_house2"));
             if (this.playerActionsHelper.checkAvailability("build_in_house2")) {
                 var msg = "Built a tower block.";
                 this.addLogMessage(msg);
-            }            
+            }
         },
         
-        buildLights: function() {
+        buildLights: function () {
             this.buildImprovement("build_in_lights", this.playerActionsHelper.getImprovementNameForAction("build_in_lights"));
             if (this.playerActionsHelper.checkAvailability("build_in_lights")) {
                 var msg = "Installed lights to the camp.";
                 this.addLogMessage(msg);
-            }            
+            }
         },
         
         buildCeiling: function() {

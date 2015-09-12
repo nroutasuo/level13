@@ -37,13 +37,15 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
                     this.stateOfRepair > 2;
         },
         
-        hasWorkshop: function (resourceName) {
+        hasWorkshop: function () {
             if (!this.campable) return false;
-            if (resourceName) {
-                return this.resources[resourceName] > 0;
-            } else {
-                return this.resources.fuel > 0;
-            }
+            return this.getWorkshopResource() !== null;
+        },
+        
+        getWorkshopResource: function () {
+            if (!this.campable) return null;
+            if (this.resources.fuel > 0) return resourceNames.fuel;
+            return null;
         },
         
         // Convenience

@@ -287,7 +287,7 @@ define([
 		},
 		
 		// Sector type, density, repair. Sunlight.
-		getTextureDescription: function(hasVision, featuresComponent) {
+		getTextureDescription: function (hasVision, featuresComponent) {
 			var desc = TextConstants.getSectorDescription(
 				hasVision,
 				featuresComponent.sunlit,
@@ -296,7 +296,7 @@ define([
 				featuresComponent.stateOfRepair) + " ";
 			
 			if (window.app) {
-			desc += "(" +
+                desc += "(" +
 				featuresComponent.sectorType + "/" +
 				featuresComponent.buildingDensity + "/" +
 				featuresComponent.stateOfRepair + ") ";
@@ -318,7 +318,8 @@ define([
 			}
 			
 			if (isScouted && featuresComponent.hasWorkshop()) {
-				description += "There is a workshop here. ";
+				var workshopName = TextConstants.getWorkshopName(featuresComponent.getWorkshopResource());
+				description += "There is a " + workshopName + " here. ";
 			}
 			
 			return description;

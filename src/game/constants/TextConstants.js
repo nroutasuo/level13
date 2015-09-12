@@ -90,6 +90,13 @@ define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/LocaleVO'], fun
 			}
 		},
 		
+		getWorkshopName: function (resource) {
+			switch (resource) {
+				case resourceNames.fuel: return "refinery";
+				default: return "workshop";
+			}
+		},
+		
 		getEnemyText: function (enemyList, defeated, defeatableBlockerL, defeatableBlockerR) {
 			var enemyNoun = this.getEnemyNoun(enemyList, !defeated);
 			var enemyActiveV = this.getEnemyActiveVerb(enemyList);
@@ -185,25 +192,25 @@ define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/LocaleVO'], fun
 			
 			var validDetail = "";
 			if (objectDetailAttribute) {
-			for(var i3 in allDetails) {
+			for (var i3 in allDetails) {
 				var detail = allDetails[i3];
 				var valid = true;
 				for (var j3 in objectList) {
-				var o = objectList[j3];
-				if (o[objectDetailAttribute] != detail) valid = false;
+					var o = objectList[j3];
+					if (o[objectDetailAttribute] != detail) valid = false;
+					}
+					if (valid) validDetail = detail;
 				}
-				if (valid) validDetail = detail;
-			}
 			}
 			
 			if (validDetail.length > 0) {
-			return this.pluralify(validDetail);
-			} else if (validWords.length > 0) {	    
-			return validWords[0];
+				return this.pluralify(validDetail);
+			} else if (validWords.length > 0) {
+				return validWords[0];
 			} else if (allowSeveral && minimumWords.length > 1) {
-			return minimumWords[0] + " and " + minimumWords[1];
+				return minimumWords[0] + " and " + minimumWords[1];
 			} else {
-			return defaultWord;
+				return defaultWord;
 			}
 		},
 		
