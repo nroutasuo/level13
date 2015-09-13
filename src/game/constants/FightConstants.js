@@ -2,8 +2,9 @@ define(['ash',
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
 	'game/constants/WorldCreatorConstants',
+	'game/constants/PlayerActionConstants',
 	'game/vos/ResourcesVO'],
-function (Ash, ItemConstants, PerkConstants, WorldCreatorConstants, ResourcesVO) {
+function (Ash, ItemConstants, PerkConstants, WorldCreatorConstants, PlayerActionConstants, ResourcesVO) {
 
     var FightConstants = {
 	
@@ -20,18 +21,18 @@ function (Ash, ItemConstants, PerkConstants, WorldCreatorConstants, ResourcesVO)
             return playerAtt + followerBonus;
         },
 		 
-        getPlayerAttDesc: function(playerStamina, itemsComponent) {
+        getPlayerAttDesc: function (playerStamina, itemsComponent) {
             var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemTypes.weapon);
             var healthFactor = (playerStamina.health/100);
             var followerBonus = itemsComponent.getCurrentBonus(ItemConstants.itemTypes.follower);
             var desc = "Player: " + this.FIGHT_PLAYER_BASE_ATT;
-            if(itemBonus > 0) desc += "<br>Weapons: " + itemBonus;
+            if (itemBonus > 0) desc += "<br>Weapons: " + itemBonus;
             if (healthFactor < 1) desc += "<br>Health: -" + (1-healthFactor) * 100 + "%";
-            if(followerBonus > 0) desc += "<br>Followers: " + followerBonus;
+            if (followerBonus > 0) desc += "<br>Followers: " + followerBonus;
             return desc;
         },
         
-        getPlayerDef: function(playerStamina, itemsComponent) {
+        getPlayerDef: function (playerStamina, itemsComponent) {
             var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemTypes.clothing);
             return this.FIGHT_PLAYER_BASE_DEF + itemBonus;
         },
@@ -39,7 +40,7 @@ function (Ash, ItemConstants, PerkConstants, WorldCreatorConstants, ResourcesVO)
         getPlayerDefDesc: function (playerStamina, itemsComponent) {
             var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemTypes.clothing);
             var desc = "Player: " + this.FIGHT_PLAYER_BASE_DEF;
-            if(itemBonus > 0 ) desc += "</br>Clothing: " + itemBonus;
+            if (itemBonus > 0 ) desc += "</br>Clothing: " + itemBonus;
             return desc;
         },
         
@@ -50,7 +51,11 @@ function (Ash, ItemConstants, PerkConstants, WorldCreatorConstants, ResourcesVO)
         },
         
         getMaxFollowers: function (numCamps) {
-            return Math.round((numCamps/(WorldCreatorConstants.CAMPS_TOTAL-1) * this.MAX_FOLLOWER_MAX));
+			var firstFollowerCamp = PlayerActionConstants.getFirstCampForUpgrade("unlock_building_inn");
+			var numFollowerCamps = numCamps - firstFollowerCamp + 1;
+			var totalFollowerCamps = (WorldCreatorConstants.CAMPS_TOTAL - firstFollowerCamp + 1);
+			var maxFollowers = Math.ceil(numFollowerCamps / totalFollowerCamps * this.MAX_FOLLOWER_MAX);
+			return Math.max(0, maxFollowers);
         },
         
         // Damage done by player to an enemy per sec

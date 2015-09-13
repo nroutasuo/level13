@@ -8,7 +8,6 @@ define(['ash', 'game/WorldCreator'], function (Ash, WorldCreator) {
         reset: function () {
             this.stage = 1;
             this.worldSeed = 0;
-            this.levelOffset = 0;
             this.numCamps = 0;
             
             this.unlockedFeatures = {
@@ -46,6 +45,18 @@ define(['ash', 'game/WorldCreator'], function (Ash, WorldCreator) {
         
         getLevelOrdinal: function (level) {
             return WorldCreator.getLevelOrdinal(this.worldSeed, level);
+        },
+        
+        getCampOrdinal: function (level) {
+            return WorldCreator.getCampOrdinal(this.worldSeed, level);
+        },
+        
+        getTotalLevels: function () {
+            return WorldCreator.getHighestLevel(this.worldSeed) - WorldCreator.getBottomLevel(this.worldSeed) + 1;
+        },
+        
+        getGroundLevelOrdinal: function () {
+            return WorldCreator.getBottomLevel(this.worldSeed);
         },
         
         setActionCooldown: function (action, key, cooldown) {

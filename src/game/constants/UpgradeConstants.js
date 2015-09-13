@@ -57,28 +57,28 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
             unlock_item_weapon7: "unlock_item_weapon7",
         },
         
-        bluePrintsByLevelOrdinal: {
-            1: ["unlock_building_passage_staircase"],
-            2: ["unlock_building_darkfarm", "unlock_building_tradingpost"],
-            3: ["unlock_building_market", "unlock_building_lights"],
-            4: ["unlock_building_passage_hole", "unlock_building_library", "upgrade_worker_scavenger"],
-            5: ["unlock_building_passage_elevator", "unlock_item_weapon2", "unlock_building_bridge", "upgrade_building_storage1"],
-            6: ["upgrade_building_market", "unlock_building_inn"],
-            7: ["unlock_item_clothing3"],
-            8: ["unlock_building_smithy"],
-            9: ["upgrade_building_market2"],
-            10: ["unlock_item_clothing4"],
-            11: ["upgrade_worker_trapper", "unlock_item_weapon4"],
-            12: ["upgrade_worker_collector2"],
-            13: ["unlock_item_clothing5"],
-            14: ["unlock_building_apothecary", "unlock_item_weapon5"],
-            15: ["upgrade_building_storage2"],
-            16: ["unlock_building_cementmill", "unlock_item_clothing6", "unlock_building_radio"],
-            17: ["upgrade_worker_chemist", "upgrade_building_hospital", "unlock_item_weapon6", "unlock_item_bag3"],
-            18: ["upgrade_building_cementmill"],
-            19: ["unlock_item_clothing7", "upgrade_building_apothecary", "unlock_item_shades2", "unlock_building_researchcenter"],
-            20: ["unlock_building_ceiling", "unlock_item_weapon7"],
-        },
+		bluePrintsByCampOrdinal: {
+			1: ["unlock_building_passage_staircase"],
+			2: ["unlock_building_darkfarm", "unlock_building_tradingpost"],
+			3: ["unlock_building_lights", "unlock_building_market", "unlock_building_inn"],
+			4: ["upgrade_worker_scavenger", "unlock_building_library", "unlock_building_passage_hole", "unlock_item_weapon2"],
+			5: ["unlock_building_passage_elevator", "unlock_item_clothing3"],
+			6: ["upgrade_building_market", "unlock_building_smithy"],
+			7: ["unlock_building_bridge", "upgrade_building_storage1", "unlock_item_clothing4"],
+			8: ["upgrade_building_market2", "unlock_item_weapon4"],
+			9: ["upgrade_worker_trapper", "unlock_item_clothing5"],
+			10: ["upgrade_worker_collector2", "unlock_building_apothecary"],
+			11: ["unlock_item_weapon5", "upgrade_building_storage2", "unlock_building_cementmill", "unlock_item_clothing6"],
+			12: ["upgrade_worker_chemist", "unlock_item_bag3"],
+			13: ["unlock_building_radio", "upgrade_building_hospital", "unlock_item_weapon6", "unlock_item_clothing7"],
+			14: ["upgrade_building_cementmill", "unlock_building_researchcenter", "unlock_item_weapon7"],
+			15: ["upgrade_building_apothecary", "unlock_item_shades2", "unlock_building_ceiling"],
+		},
+		
+		getBlueprintCampOrdinal: function (upgradeId) {
+			var level = 1;
+			return level;
+		},
         
         upgradeDefinitions: {},
     };

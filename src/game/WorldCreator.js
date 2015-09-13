@@ -99,7 +99,7 @@ define([
 					var blockerType = this.randomInt(seed * 5831 / l + seed % 2, 1, 4);
 					var blockedSector = blockerSectors[i];
 					this.world[l][blockedSector].blockerRight = blockerType;
-					if(blockedSector < lastSector) this.world[l][blockedSector + 1].blockerLeft = blockerType;
+					if (blockedSector < lastSector) this.world[l][blockedSector + 1].blockerLeft = blockerType;
 				}
 			}
 			
@@ -281,17 +281,18 @@ define([
 				}
 				return localeType;
 			};
-			for(var l = topLevel; l >= bottomLevel; l--) {
+			for (var l = topLevel; l >= bottomLevel; l--) {
 				var firstSector = this.getFirstSector(seed, l);
 				var lastSector = this.getLastSector(seed, l);
 				var levelOrdinal = this.getLevelOrdinal(seed, l);
+				var campOrdinal = this.getCampOrdinal(seed, l);
 				var countRand = this.random((seed % 84) * l * l * l);
 				// min number of (easy) locales ensures that player can get all upgrades intended for that level
-				var minLocales = Math.max(1, UpgradeConstants.bluePrintsByLevelOrdinal[levelOrdinal] ? UpgradeConstants.bluePrintsByLevelOrdinal[levelOrdinal].length : 0);
+				var minLocales = Math.max(1, UpgradeConstants.bluePrintsByCampOrdinal[campOrdinal] ? UpgradeConstants.bluePrintsByCampOrdinal[campOrdinal].length : 0);
 				var levelLocaleCount = Math.max(minLocales, Math.round(countRand * 5));
 				var firstLocaleSector = l == 13 ? 5 : 1;
 				for (var i = 0; i < levelLocaleCount; i++) {
-					var localePos = this.randomInt(seed + i * l + l * 7394, firstLocaleSector, lastSector + 1);
+					var localePos = this.randomInt(seed + i * l + i * 7394 * seed + i * i * l, firstLocaleSector, lastSector + 1);
 					var localeType = getLocaleType(this.world[l][localePos].sectorType, l, levelOrdinal, this.random(seed+seed+l*i*seed+localePos));
 					var isEasy = i <= minLocales;
 					var locale = new LocaleVO(localeType, isEasy);
@@ -305,6 +306,7 @@ define([
 		// enemies
 		prepareWorldEnemies: function(seed, topLevel, bottomLevel) {	
 			var passageDownPos = [];
+			var totalLevels = topLevel - bottomLevel + 1;
 			for(var l = topLevel; l>= bottomLevel; l--) {		
 				var firstSector = this.getFirstSector(seed, l);
 				var lastSector = this.getLastSector(seed, l);
@@ -325,7 +327,7 @@ define([
 						return r > threshold;
 					};
 					
-					var globalE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.global, enemyDifficulty);
+					var globalE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.global, enemyDifficulty, false, bottomLevel, totalLevels);
 					var enemy;
 					for(var e in globalE) {
 						enemy = globalE[e];
@@ -333,7 +335,7 @@ define([
 					}
 					
 					if (l <= bottomLevel+1) {
-						var earthE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.earth, enemyDifficulty);
+						var earthE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.earth, enemyDifficulty, false, bottomLevel, totalLevels);
 						for(var e in earthE) {
 						enemy = earthE[e];
 						if (randomEnemyCheck(333*(e+1), enemy)) enemies.push(enemy);
@@ -341,7 +343,7 @@ define([
 					}
 					
 					if (this.world[l][s].sunlit) {
-						var sunE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.sunlit, enemyDifficulty);
+						var sunE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.sunlit, enemyDifficulty, false, bottomLevel, totalLevels);
 						for(var e in sunE) {
 						enemy = sunE[e];
 						if (randomEnemyCheck(6666*(e+4)+2, enemy)) enemies.push(enemy);
@@ -349,7 +351,7 @@ define([
 					}
 					
 					if (l >= topLevel-10) {
-						var inhabitedE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.inhabited, enemyDifficulty);
+						var inhabitedE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.inhabited, enemyDifficulty, false, bottomLevel, totalLevels);
 						for(var e in inhabitedE) {
 						enemy = inhabitedE[e];
 						if (randomEnemyCheck(777*(e+2)^2, enemy)) enemies.push(enemy);
@@ -357,7 +359,7 @@ define([
 					}
 					
 					if (l >= topLevel-5) {
-						var urbanE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.urban, enemyDifficulty);
+						var urbanE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.urban, enemyDifficulty, false, bottomLevel, totalLevels);
 						for(var e in urbanE) {
 						enemy = urbanE[e];
 						if (randomEnemyCheck(99*(e+1), enemy)) enemies.push(enemy);
@@ -402,6 +404,22 @@ define([
             }
 		},
 		
+		getLevelOrdinalFromCampOrdinal: function (campOrdinal) {
+			var levelOrdinal = 1;
+			// TODO calculate level ordinal from camp ordinal
+			return levelOrdinal;
+		},
+		
+		getCampOrdinal: function (seed, level) {
+            var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
+			var levelOrdinal = this.getLevelOrdinal(seed, level);
+			var ordinal = 0;
+			for (var i = 0; i < levelOrdinal; i++) {
+				if (camplessLevelOrdinals.indexOf(i) < 0) ordinal++;
+			}
+			return ordinal;
+		},
+		
 		getFirstSector: function (seed, level) {
 			return WorldCreatorConstants.FIRST_SECTOR;
 		},
@@ -410,8 +428,13 @@ define([
 			return WorldCreatorConstants.LAST_SECTOR;
 		},
         
-        isCampableLevel: function(seed, level) {
-            var isBeforeGround = level < 14;
+        isCampableLevel: function (seed, level) {
+            var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);            
+            var levelOrdinal = this.getLevelOrdinal(seed, level);
+            return camplessLevelOrdinals.indexOf(levelOrdinal) < 0;
+        },
+		
+		getCamplessLevelOrdinals: function (seed) {
             var camplessLevelOrdinals = [];
             
             var camplessLvlFreq;
@@ -419,41 +442,41 @@ define([
             var camplessLvlFreqBig;
             var numCamplessLvls;
             var groundLvlOrdinal = this.getLevelOrdinal(seed, this.getBottomLevel(seed));
-            if (isBeforeGround) {
-                numCamplessLvls = groundLvlOrdinal - WorldCreatorConstants.CAMPS_BEFORE_GROUND;
-                camplessLvlFreq = (groundLvlOrdinal-3)/(numCamplessLvls);
-                camplessLvlFreqSmall = camplessLvlFreq < 2 ? 1 : camplessLvlFreq;
-                camplessLvlFreqBig = Math.max(2, camplessLvlFreq);
-                for (var i = 1; i <= numCamplessLvls; i++) {
-                     if(i == 1)
-                        camplessLevelOrdinals.push(groundLvlOrdinal - Math.floor(camplessLvlFreqSmall));
-                     else if(i == 2)
-                        camplessLevelOrdinals.push(Math.ceil(groundLvlOrdinal - camplessLvlFreqSmall * 2));
-                     else
-                        camplessLevelOrdinals.push(Math.ceil(camplessLevelOrdinals[camplessLevelOrdinals.length-1] - camplessLvlFreqBig));
-                }
-            } else {
-                var totalLevels = this.getHighestLevel(seed) - this.getBottomLevel(seed) + 1;
-                var numLevelsAfterGround = totalLevels - groundLvlOrdinal;
-                numCamplessLvls = numLevelsAfterGround - WorldCreatorConstants.CAMPS_AFTER_GROUND;
-                camplessLvlFreq = (numLevelsAfterGround-1)/(numCamplessLvls);
-                camplessLvlFreqSmall = camplessLvlFreq < 2 ? 1 : camplessLvlFreq;
-                camplessLvlFreqBig = Math.max(2, camplessLvlFreq);
-                for (var i = 1; i <= numCamplessLvls; i++) {
-                     if(i == 1)
-                        camplessLevelOrdinals.push(groundLvlOrdinal + 1);
-                     else if(i == 2)
-                        camplessLevelOrdinals.push(Math.ceil(groundLvlOrdinal + camplessLvlFreqSmall));
-                     else
-                        camplessLevelOrdinals.push(Math.floor(camplessLevelOrdinals[camplessLevelOrdinals.length-1] + camplessLvlFreqBig));
-                }
-            }
-            
-            var levelOrdinal = this.getLevelOrdinal(seed, level);
-            return camplessLevelOrdinals.indexOf(levelOrdinal) < 0;
-        },
+			var totalLevels = this.getHighestLevel(seed) - this.getBottomLevel(seed) + 1;
+			
+			// before ground
+			numCamplessLvls = groundLvlOrdinal - WorldCreatorConstants.CAMPS_BEFORE_GROUND;
+			camplessLvlFreq = (groundLvlOrdinal-3)/(numCamplessLvls);
+			camplessLvlFreqSmall = camplessLvlFreq < 2 ? 1 : camplessLvlFreq;
+			camplessLvlFreqBig = Math.max(2, camplessLvlFreq);
+			for (var i = 1; i <= numCamplessLvls; i++) {
+				 if(i == 1)
+					camplessLevelOrdinals.push(groundLvlOrdinal - Math.floor(camplessLvlFreqSmall));
+				 else if(i == 2)
+					camplessLevelOrdinals.push(Math.ceil(groundLvlOrdinal - camplessLvlFreqSmall * 2));
+				 else
+					camplessLevelOrdinals.push(Math.ceil(camplessLevelOrdinals[camplessLevelOrdinals.length-1] - camplessLvlFreqBig));
+			}
+			
+			// after ground	
+			var numLevelsAfterGround = totalLevels - groundLvlOrdinal;
+			numCamplessLvls = numLevelsAfterGround - WorldCreatorConstants.CAMPS_AFTER_GROUND;
+			camplessLvlFreq = (numLevelsAfterGround-1)/(numCamplessLvls);
+			camplessLvlFreqSmall = camplessLvlFreq < 2 ? 1 : camplessLvlFreq;
+			camplessLvlFreqBig = Math.max(2, camplessLvlFreq);
+			for (var i = 1; i <= numCamplessLvls; i++) {
+				 if(i == 1)
+					camplessLevelOrdinals.push(groundLvlOrdinal + 1);
+				 else if(i == 2)
+					camplessLevelOrdinals.push(Math.ceil(groundLvlOrdinal + camplessLvlFreqSmall));
+				 else
+					camplessLevelOrdinals.push(Math.floor(camplessLevelOrdinals[camplessLevelOrdinals.length-1] + camplessLvlFreqBig));
+			}
+			
+			return camplessLevelOrdinals;
+		},
 		
-		isDarkLevel: function( seed, level ) {
+		isDarkLevel: function (seed, level) {
 			return !this.isEarthLevel(seed, level) && !this.isSunLevel(seed, level);
 		},
 		

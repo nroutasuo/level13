@@ -102,7 +102,9 @@ define([
             var playerItems = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var positionComponent = this.fightNodes.head.entity.get(PositionComponent);
             var levelOrdinal = this.gameState.getLevelOrdinal(positionComponent.level);
-            var enemyDifficulty = EnemyConstants.getEnemyDifficultyLevel(enemy);
+			var groundLevelOrdinal = this.gameState.getGroundLevelOrdinal();
+			var totalLevels = this.gameState.getTotalLevels();
+            var enemyDifficulty = EnemyConstants.getEnemyDifficultyLevel(enemy, groundLevelOrdinal, totalLevels);
             
             // Determine rewards and penalties
             this.fightNodes.head.fight.rewards.resources = FightConstants.getRewardResources(won);

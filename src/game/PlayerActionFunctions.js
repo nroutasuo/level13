@@ -281,7 +281,9 @@ define(['ash',
                 var fightStrength = FightConstants.getPlayerStrength(this.playerStatsNodes.head.stamina, itemsComponent);
                 var positionComponent = sector.get(PositionComponent);
                 var levelOrdinal = this.gameState.getLevelOrdinal(positionComponent.level);
-                if (fightStrength < EnemyConstants.getRequiredStength(levelOrdinal)) {
+                var totalLevels = this.gameState.getTotalLevels();
+                var groundLevelOrdinal = this.gameState.getGroundLevelOrdinal();
+                if (fightStrength < EnemyConstants.getRequiredStength(levelOrdinal, groundLevelOrdinal, totalLevels)) {
                     this.occurrenceFunctions.onScoutSectorWeakling(sector);
                     return;
                 }
@@ -624,8 +626,8 @@ define(['ash',
                 // TODO add varied results depending on follower
                 var sector = this.playerLocationNodes.head.entity;
                 var positionComponent = sector.get(PositionComponent);
-                var levelOrdinal = this.gameState.getLevelOrdinal(positionComponent.level);
-                var follower = ItemConstants.getFollower(positionComponent.level, levelOrdinal);
+                var campCount = this.gameState.numCamps;
+                var follower = ItemConstants.getFollower(positionComponent.level, campCount);
                 var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
                 var currentFollowers = itemsComponent.getCountByType(ItemConstants.itemTypes.follower);
                 if (currentFollowers < FightConstants.getMaxFollowers(this.gameState.numCamps)) {

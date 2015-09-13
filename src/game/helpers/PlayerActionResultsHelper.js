@@ -34,6 +34,7 @@ define([
 ) {
     var PlayerActionResultsHelper = Ash.Class.extend({
 
+		gameState: null,
 		resourcesHelper: null,
 		levelHelper: null,
 
@@ -258,6 +259,7 @@ define([
 		// typical rarity of items: 0-100
 		getRewardItems: function (itemProbability, ingredientProbability, itemRarity, currentItems, levelOrdinal) {
 			var items = [];
+			var totalLevels = this.gameState.getTotalLevels();
 
 			// Neccessity items that the player should find quickly if missing
 			var necessityItem = this.getNecessityItem(currentItems, levelOrdinal);
@@ -283,9 +285,9 @@ define([
 				} else if (itemTypeRand < 0.5) {
 					item = ItemConstants.getShoes(levelOrdinal);
 				} else if (itemTypeRand < 0.7) {
-					item = ItemConstants.getDefaultWeapon(levelOrdinal);
+					item = ItemConstants.getDefaultWeapon(levelOrdinal, totalLevels);
 				} else if (itemTypeRand < 0.9) {
-					item = ItemConstants.getDefaultClothing(levelOrdinal);
+					item = ItemConstants.getDefaultClothing(levelOrdinal, totalLevels);
 				} else {
 					var i = Math.floor(Math.random() * ItemConstants.itemDefinitions.artefact.length);
 					item = ItemConstants.itemDefinitions.artefact[i].clone();
@@ -323,9 +325,8 @@ define([
 		
 		getResultBlueprint: function (localeVO) {
 			var playerPos = this.playerLocationNodes.head.position;
-			var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
-			
-			var levelBlueprints = UpgradeConstants.bluePrintsByLevelOrdinal[levelOrdinal];
+			var campOrdinal = this.gameState.getCampOrdinal(playerPos.level);			
+			var levelBlueprints = UpgradeConstants.bluePrintsByCampOrdinal[campOrdinal];
 			var blueprintsToFind = [];
 			for (var i = 0; i < levelBlueprints.length; i++) {
 				if (!this.tribeUpgradesNodes.head.upgrades.hasBlueprint(levelBlueprints[i]))

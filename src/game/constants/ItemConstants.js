@@ -142,11 +142,11 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 			return null;
 		},
 		
-		getFollower: function (level, levelOrdinal) {
-			var minStrength = levelOrdinal;
-			var maxStrength = 1.5 + levelOrdinal * 1.5;
+		getFollower: function (level, campCount) {
+			var minStrength = campCount;
+			var maxStrength = 1.5 + campCount * 1.5;
 			var strengthDiff = maxStrength - minStrength;
-			var strength = Math.round(minStrength + strengthDiff*Math.random());
+			var strength = Math.round(minStrength + strengthDiff * Math.random());
 			var type = "d";
 			if (level < 5) type = "g";
 			if (level > 15) type = "c";
@@ -210,48 +210,16 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 			return this.itemDefinitions.bag[3 * Math.random()];
 		},
 		
-		getDefaultWeapon: function (levelOrdinal) {
-			if (levelOrdinal < 5) {
-				return this.itemDefinitions.weapon[0];
-			}
-			if (levelOrdinal < 8) {
-				return this.itemDefinitions.weapon[1];
-			}
-			if (levelOrdinal < 11) {
-				return this.itemDefinitions.weapon[2];
-			}
-			if (levelOrdinal < 14) {
-				return this.itemDefinitions.weapon[3];
-			}
-			if (levelOrdinal < 17) {
-				return this.itemDefinitions.weapon[4];
-			}
-			if (levelOrdinal < 20) {
-				return this.itemDefinitions.weapon[5];
-			}
-			return this.itemDefinitions.weapon[6];
+		getDefaultWeapon: function (levelOrdinal, totalLevels) {
+			var totalWeapons = this.itemDefinitions.weapon.length;
+			var weapon = Math.max(1, Math.floor(levelOrdinal / totalLevels * totalWeapons));
+			return this.itemDefinitions.weapon[weapon - 1];
 		},
 		
-		getDefaultClothing: function (levelOrdinal) {
-			if (levelOrdinal < 3) {
-				return this.itemDefinitions.clothing[0];
-			}
-			if (levelOrdinal < 7) {
-				return this.itemDefinitions.clothing[1];
-			}
-			if (levelOrdinal < 10) {
-				return this.itemDefinitions.clothing[2];
-			}
-			if (levelOrdinal < 13) {
-				return this.itemDefinitions.clothing[3];
-			}
-			if (levelOrdinal < 16) {
-				return this.itemDefinitions.clothing[4];
-			}
-			if (levelOrdinal < 19) {
-				return this.itemDefinitions.clothing[5];
-			}
-			return this.itemDefinitions.weapon[6];
+		getDefaultClothing: function (levelOrdinal, totalLevels) {
+			var totalClothing = this.itemDefinitions.clothing.length;
+			var clothing = Math.max(1, Math.min(7, Math.floor((levelOrdinal + 2) / totalLevels * totalClothing)));
+			return this.itemDefinitions.clothing[clothing - 1];
 		},
 		
 		getIngredient: function () {

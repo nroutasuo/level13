@@ -402,7 +402,9 @@ define([
 			
 			var posComponent = this.playerLocationNodes.head.position;
 			var levelOrdinal = this.gameState.getLevelOrdinal(posComponent.level);
-			if (window.app) enemyDesc += "Required strength: " + EnemyConstants.getRequiredStength(levelOrdinal) + ". ";
+            var groundLevelOrdinal = this.gameState.getGroundLevelOrdinal();
+			var totalLevels = this.gameState.getTotalLevels();
+			if (window.app) enemyDesc += "Required strength: " + EnemyConstants.getRequiredStength(levelOrdinal, groundLevelOrdinal, totalLevels) + ". ";
 			
 			return enemyDesc;
 		},

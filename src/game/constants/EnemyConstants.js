@@ -1,13 +1,20 @@
-define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/EnemyVO'],
-function (Ash, WorldCreatorConstants, EnemyVO) {
+define(['ash',
+	'game/constants/WorldCreatorConstants',
+	'game/constants/PlayerActionConstants',
+	'game/constants/FightConstants',
+	'game/constants/PerkConstants',
+	'game/constants/ItemConstants',
+	'game/components/player/ItemsComponent',
+	'game/vos/EnemyVO'],
+function (Ash, WorldCreatorConstants, PlayerActionConstants, FightConstants, PerkConstants, ItemConstants, ItemsComponent, EnemyVO) {
 
     var EnemyConstants = {
 		
 		enemyTypes: {
-			urban: "urban",		// top 5 levels
+			urban: "urban",			// top 5 levels
 			inhabited: "inhabited",	// top 10 levels
 			sunlit: "sunlit",		// anywhere with sunlight
-			earth: "earth",		// bottom 2 levels
+			earth: "earth",			// bottom 2 levels
 			global: "global",		// any level
 		},
 		
@@ -19,58 +26,57 @@ function (Ash, WorldCreatorConstants, EnemyVO) {
 			global: [ ],
 		},
 		
-		getRequiredStength: function (levelOrdinal) {
+		getRequiredStength: function (levelOrdinal, groundLevelOrdinal, totalLevels) {
 			if (levelOrdinal <= 1) return 0;
-			if (levelOrdinal === 2) return 8;
-			if (levelOrdinal === 3) return 14;
-			if (levelOrdinal === 4) return 17;
-			if (levelOrdinal === 5) return 21;
-			if (levelOrdinal === 6) return 28;
-			if (levelOrdinal === 7) return 36;
-			if (levelOrdinal === 8) return 44;
-			if (levelOrdinal === 9) return 48;
-			if (levelOrdinal === 10) return 68;
-			if (levelOrdinal === 11) return 89;
-			if (levelOrdinal === 12) return 97;
-			if (levelOrdinal === 13) return 120;
-			if (levelOrdinal === 14) return 165;
-			if (levelOrdinal === 15) return 193;
-			if (levelOrdinal === 16) return 251;
-			if (levelOrdinal === 17) return 332;
-			if (levelOrdinal === 18) return 378;
-			if (levelOrdinal === 19) return 537;
-			return 755;
+			var typicalStrength = this.getTypicalStrength(levelOrdinal, groundLevelOrdinal, totalLevels);
+			var typicalStrengthPrevious = this.getTypicalStrength(levelOrdinal - 1, groundLevelOrdinal, totalLevels);
+			return (typicalStrength + typicalStrength + typicalStrengthPrevious) / 3;
+		},
+		
+		getTypicalStrength: function (levelOrdinal, groundLevelOrdinal, totalLevels) {
+			var typicalHealth = 50;
+			var healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus).effect;
+			if (levelOrdinal > 1) typicalHealth = 100;
+			if (levelOrdinal >= groundLevelOrdinal)  typicalHealth = typicalHealth * healthyPerkFactor;
+			
+			var typicalItems = new ItemsComponent();
+			typicalItems.addItem(ItemConstants.getDefaultWeapon(levelOrdinal, totalLevels));
+			typicalItems.addItem(ItemConstants.getDefaultClothing(levelOrdinal, totalLevels));
+			
+			var typicalStamina = {};
+			typicalStamina.health = typicalHealth;
+			return FightConstants.getPlayerStrength(typicalStamina, typicalItems);
 		},
 		
 		// get enemies by type (string) and difficulty (1-20)
 		// by default will also include enemies of one difficulty lower, if restrictDifficulty, then not
 		// will return at least one enemy; if no matching enemy exists, one with lower difficulty is returned
-		getEnemies: function (type, difficulty, restrictDifficulty) {
+		getEnemies: function (type, difficulty, restrictDifficulty, groundLevelOrdinal, totalLevels) {
 			var enemies = [];
-			if (difficulty <= 0 ) return enemies;
+			if (difficulty <= 0) return enemies;
 			
 			var enemy;
 			var enemyDifficulty;
 			for (var i = 0; i < this.enemyDefinitions[type].length; i++) {
 				enemy = this.enemyDefinitions[type][i];
-				enemyDifficulty = this.getEnemyDifficultyLevel(enemy);
+				enemyDifficulty = this.getEnemyDifficultyLevel(enemy, groundLevelOrdinal, totalLevels);
 				if (enemyDifficulty === difficulty) enemies.push(enemy);
 				if (enemyDifficulty === difficulty - 1 && difficulty > 1 && !restrictDifficulty) enemies.push(enemy);
 			}
 			
 			if (enemies.length <= 0) {
-				return this.getEnemies(type, difficulty - 1);
+				return this.getEnemies(type, difficulty - 1, restrictDifficulty, groundLevelOrdinal, totalLevels);
 			}
 			
 			return enemies;
 		},
 		
-		getEnemyDifficultyLevel: function (enemy) {
+		getEnemyDifficultyLevel: function (enemy, groundLevelOrdinal, totalLevels) {
 			var stats = enemy.att + enemy.def;
 			var level = 0;
 			var iDifficulty;
 			for (var i = 1; i < WorldCreatorConstants.LEVEL_NUMBER_MAX; i++) {
-				iDifficulty = this.getRequiredStength(i);
+				iDifficulty = this.getRequiredStength(i, groundLevelOrdinal, totalLevels);
 				if (iDifficulty > stats) return level;
 				level = i;
 			}
@@ -96,10 +102,10 @@ function (Ash, WorldCreatorConstants, EnemyVO) {
 	
 	// Enemy definitions (level: level ordinal, difficulty: 1-10, attRatio: 0-1, rarity: 0-100)
 	var createEnemy = function (name, type, nouns, activeV, defeatedV, level, difficulty, attRatio, rarity) {
-		var reqStr = EnemyConstants.getRequiredStength(level);
-		var reqStrPrev = EnemyConstants.getRequiredStength(level-1);
-		var reqStrNext = EnemyConstants.getRequiredStength(level+1);
-		var statsMin = Math.max(0, reqStr - (reqStr-reqStrPrev) * 0.5);
+		var reqStr = EnemyConstants.getRequiredStength(level, 1, 20);
+		var reqStrPrev = EnemyConstants.getRequiredStength(level - 1, 1, 20);
+		var reqStrNext = EnemyConstants.getRequiredStength(level + 1, 1, 20);
+		var statsMin = Math.max(0, reqStr - (reqStr - reqStrPrev) * 0.5);
 		var statsMax = Math.max(2, reqStr + (reqStrNext - reqStr) * 0.5);
 		if (reqStr == reqStrNext) {
 			statsMax = Math.max(2, reqStr + (reqStr-reqStrPrev) * 0.5);
