@@ -35,7 +35,7 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
             upgrade_building_cementmill: "upgrade_building_cementmill",
             upgrade_building_apothecary: "upgrade_building_apothecary",
             upgrade_worker_scavenger: "upgrade_worker_scavenger",
-            upgrade_worker_collector2: "upgrade_worker_collector2",
+            unlock_building_aqueduct: "unlock_building_aqueduct",
             upgrade_worker_collector1: "upgrade_worker_collector1",
             upgrade_worker_trapper: "upgrade_worker_trapper",
             upgrade_worker_chemist: "upgrade_worker_chemist",
@@ -67,7 +67,7 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
 			7: ["unlock_building_bridge", "upgrade_building_storage1", "unlock_item_clothing4"],
 			8: ["upgrade_building_market2", "unlock_item_weapon4"],
 			9: ["upgrade_worker_trapper", "unlock_item_clothing5"],
-			10: ["upgrade_worker_collector2", "unlock_building_apothecary"],
+			10: ["unlock_building_aqueduct", "unlock_building_apothecary"],
 			11: ["unlock_item_weapon5", "upgrade_building_storage2", "unlock_building_cementmill", "unlock_item_clothing6"],
 			12: ["upgrade_worker_chemist", "unlock_item_bag3"],
 			13: ["unlock_building_radio", "upgrade_building_hospital", "unlock_item_weapon6", "unlock_item_clothing7"],
@@ -147,8 +147,8 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
 	= new UpgradeVO("upgrade_worker_scavenger", "Smelting", "Processing technique that allows more metal left behind by previous inhabitants to be salvaged.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_worker_collector1]
 	= new UpgradeVO("upgrade_worker_collector1", "Water purification", "Techniques for large-scale filtering and disinfecting drinking water that permit using more water sources.");
-    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_worker_collector2]
-	= new UpgradeVO("upgrade_worker_collector2", "Aqueducts", "Tapping into the decaying water infrastructure and extending it to efficiently store and convey water.");
+    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_aqueduct]
+	= new UpgradeVO("unlock_building_aqueduct", "Aqueducts", "Tapping into the decaying water infrastructure and extending it to efficiently store and convey water.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_worker_trapper]
 	= new UpgradeVO("upgrade_worker_trapper", "Food preservation", "Salting, smoking and pickling food to make it last longer.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_worker_chemist]

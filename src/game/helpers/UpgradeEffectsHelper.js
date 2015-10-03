@@ -51,7 +51,7 @@ define([
 			this.improvingUpgradesByWorker["smith"] = ["unlock_item_weapon4"];
 			this.improvingUpgradesByWorker["weaver"] = ["unlock_item_clothing4"];
 			this.improvingUpgradesByWorker["concrete"] = ["upgrade_building_cementmill"];
-			this.improvingUpgradesByWorker["collector"] = ["upgrade_worker_collector1", "upgrade_worker_collector2"];
+			this.improvingUpgradesByWorker["collector"] = ["upgrade_worker_collector1"];
 			this.improvingUpgradesByWorker["chemist"] = ["upgrade_worker_chemist"];
 			this.improvingUpgradesByWorker["apothecary"] = ["upgrade_building_apothecary"];
 			

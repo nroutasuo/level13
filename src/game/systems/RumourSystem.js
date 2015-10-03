@@ -59,7 +59,6 @@ define([
 				}
 				
 				rumoursComponent.value += time * accSpeed;
-				if (rumoursComponent.value > rumoursComponent.cap) rumoursComponent.value = rumoursComponent.cap;
 				rumoursComponent.isAccumulating = true;
 			}
         },

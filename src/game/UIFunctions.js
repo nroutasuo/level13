@@ -89,6 +89,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             this.actionToFunctionMap["build_in_library"] = this.playerActions.buildLibrary;
             this.actionToFunctionMap["build_in_market"] = this.playerActions.buildMarket;
             this.actionToFunctionMap["build_in_fortification"] = this.playerActions.buildFortification;
+            this.actionToFunctionMap["build_in_aqueduct"] = this.playerActions.buildAqueduct;
             this.actionToFunctionMap["build_in_barracks"] = this.playerActions.buildBarracks;
             this.actionToFunctionMap["build_in_apothecary"] = this.playerActions.buildApothecary;
             this.actionToFunctionMap["build_in_smithy"] = this.playerActions.buildSmithy;

@@ -79,6 +79,7 @@ define([
 			var camp = node.camp;
 			var resources = node.entity.get(ResourcesComponent).resources;
 			var resourceAccComponent = node.entity.get(ResourceAccumulationComponent);
+			var improvementsComponent = node.entity.get(SectorImprovementsComponent);
 			
 			// Basic: Scavengers
 			var metalUpgradeBonus = this.getUpgradeBonus("scavenger");
@@ -94,7 +95,8 @@ define([
 			
 			// Basic: Water collectors
 			var waterUpgradeBonus = this.getUpgradeBonus("collector");
-			var water = camp.assignedWorkers.water * CampConstants.PRODUCTION_WATER_PER_WORKER_PER_S * time * waterUpgradeBonus;
+			var waterImprovementBonus = 1 + (improvementsComponent.getCount(improvementNames.aqueduct) / 4);
+			var water = camp.assignedWorkers.water * CampConstants.PRODUCTION_WATER_PER_WORKER_PER_S * time * waterUpgradeBonus * waterImprovementBonus;
 			resources.addResource(resourceNames.water, water);
 			resourceAccComponent.addChange(resourceNames.water, water / time, "Collectors");
 			
@@ -174,18 +176,18 @@ define([
 			}
 			}
 			else if(!hasThirstPerk) {
-			this.log("Out of water!");
-			perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.thirst));
+				this.log("Out of water!");
+				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.thirst));
 			}
 			if (!isHungry) {
-			if (hasHungerPerk) {
-				this.log("No longer hungry.");
-				perksComponent.removeItemsById(PerkConstants.perkIds.hunger);
-			}
+				if (hasHungerPerk) {
+					this.log("No longer hungry.");
+					perksComponent.removeItemsById(PerkConstants.perkIds.hunger);
+				}
 			}
 			else if (!hasHungerPerk) {
-			this.log("Out of food!");
-			perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.hunger));
+				this.log("Out of food!");
+				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.hunger));
 			}
 		},
 		

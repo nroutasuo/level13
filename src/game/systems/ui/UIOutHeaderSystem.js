@@ -124,7 +124,7 @@ define([
 			$("#stats-reputation").toggle(playerStatsNode.reputation.isAccumulating);
 			this.updateStatsCallout("stats-reputation", playerStatsNode.reputation.accSources);
 			
-			$("#stats-rumours .value").text(Math.floor(playerStatsNode.rumours.value) + " / " + playerStatsNode.rumours.cap);
+			$("#stats-rumours .value").text(Math.floor(playerStatsNode.rumours.value));
 			$("#stats-rumours").toggle(playerStatsNode.rumours.isAccumulating);
 			this.updateStatsCallout("stats-rumours", playerStatsNode.rumours.accSources);
 			

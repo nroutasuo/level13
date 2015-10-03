@@ -127,6 +127,15 @@
 		left: 0;
 		top: inherit !important; 
 	}
+	
+	dl {
+		padding: 0 10em 0 0 !important;
+	}
+	
+	dd p.p-meta {
+		right: -10em !important;
+		width: 9em !important;
+	}
 }
 
 @media screen and (max-width: 568px) {
@@ -159,6 +168,7 @@
 		margin: 0px 5px 5px 5px;
 		padding-left: 0px !important;
 	}
+}
 
   /* Sometimes, you just want to be different on small screens */
   .center-on-mobiles {

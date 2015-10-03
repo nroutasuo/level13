@@ -460,27 +460,32 @@ define(['ash',
             if (this.playerActionsHelper.checkAvailability("build_in_ceiling")) {
                 var msg = "Build a big tent to protect the camp from the sun.";
                 this.addLogMessage(msg);
-            }   
+            }
         },
         
-        buildStorage: function(automatic, sector) {
+        buildStorage: function (automatic, sector) {
             this.buildImprovement("build_in_storage", this.playerActionsHelper.getImprovementNameForAction("build_in_storage"), null, automatic);
             if (!automatic) {
                 this.addLogMessage("Built a storage.");
-            }            
+            }
         },
         
-        buildFortification: function() {
+        buildFortification: function () {
             this.buildImprovement("build_in_fortification", this.playerActionsHelper.getImprovementNameForAction("build_in_fortification"));
             this.addLogMessage("Fortified the camp.");
         },
+		
+		buildAqueduct: function () {
+			this.buildImprovement("build_in_aqueduct", this.playerActionsHelper.getImprovementNameForAction("build_in_aqueduct"));
+			this.addLogMessage("Built an aqueduct.");
+		},
         
-        buildBarracks: function() {
+        buildBarracks: function () {
             this.buildImprovement("build_in_barracks", this.playerActionsHelper.getImprovementNameForAction("build_in_barracks"));
-            this.addLogMessage("Built a barracks.");            
+            this.addLogMessage("Built a barracks.");
         },
         
-        buildSmithy: function() {
+        buildSmithy: function () {
             this.buildImprovement("build_in_smithy", this.playerActionsHelper.getImprovementNameForAction("build_in_smithy"));
             this.addLogMessage("Built a smithy.");            
         },

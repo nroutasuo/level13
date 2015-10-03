@@ -331,6 +331,12 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants, Worl
                     }
                 },
             
+                build_in_aqueduct: {
+                    upgrades: {
+                        unlock_building_aqueduct: true,
+                    }
+                },
+            
                 build_in_barracks: {
                     improvements: {},
                     upgrades: {
@@ -670,7 +676,7 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants, Worl
                     }
                 },
                 
-                upgrade_worker_collector2: {
+                unlock_building_aqueduct: {
                     blueprint: 10,
                     upgrades: {
                         upgrade_worker_collector1: true,
@@ -973,6 +979,11 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants, Worl
                     resource_concrete: 10,
                     cost_factor: 1.75,
                 },
+                
+                build_in_aqueduct: {
+                    resource_metal: 300,
+                    cost_factor: 2,
+                },
             
                 build_in_barracks: {
                     resource_metal: 100,
@@ -1265,7 +1276,7 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants, Worl
                     rumours: 674,
                 },
                 
-                upgrade_worker_collector2: {
+                unlock_building_aqueduct: {
                     evidence: 34,
                 },
                 
@@ -1388,6 +1399,8 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants, Worl
                 build_in_tradingPost: "Connect camps to a trade network.",
                 build_in_market: "Enables foreign traders to visit.",
                 build_in_barracks: "Allows 10 soldiers.",
+                build_in_lights: "Keep darkness at for good.",
+                build_in_aqueduct: "Water infrastructure to improve collecting efficiency.",
                 use_in_campfire: "Collect rumours from the population.",
                 use_in_hospital: "Heal injuries.",
                 use_in_inn: "Recruit followers.",
