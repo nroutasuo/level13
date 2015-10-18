@@ -6,6 +6,10 @@
             "final": false,
             "changes": [
                 {
+                    "type": "GD",
+                    "summary": "New improvement: aqueduct."
+                },
+                {
                     "type": "UI",
                     "summary": "Timer for next worker."
                 },

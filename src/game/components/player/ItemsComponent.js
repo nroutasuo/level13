@@ -26,13 +26,17 @@ function (Ash, ItemVO, ItemConstants) {
         },
         
         discardItem: function (item) {
-            if(!item) console.log("WARN: Trying to discard null item.");
+            if (!item) console.log("WARN: Trying to discard null item.");
+            if (!this.isItemDiscardable(item)) {
+                console.log("WARN: Trying to discard un-discardable item.");
+                return;
+            }
             
-            if (typeof this.items[item.type] != 'undefined') {
+            if (typeof this.items[item.type] !== 'undefined') {
                 var typeItems = this.items[item.type];
                 var splicei = -1;
                 for (var i = 0; i < typeItems.length; i++) {
-                    if (typeItems[i].id == item.id) {
+                    if (typeItems[i].id === item.id) {
                         splicei = i;
                         break;
                     }
@@ -41,7 +45,7 @@ function (Ash, ItemVO, ItemConstants) {
                     typeItems.splice(splicei, 1);
                     if (item.equipped) {
                         var nextItem = this.getSimilar(item);
-                        if(nextItem) this.equip(nextItem);
+                        if (nextItem) this.equip(nextItem);
                     }
                 } else {
                     console.log("WARN: Item to discard not found.");
@@ -52,10 +56,25 @@ function (Ash, ItemVO, ItemConstants) {
         
         discardItems: function (item) {
             var count;
+            var keepOne = !this.isItemsDiscardable(item);
+            var target = keepOne ? 1 : 0;
             do {
                 this.discardItem(item);
                 count = this.getCount(item);
-            } while(count > 0);
+            } while (count > target);
+        },
+        
+        isItemDiscardable: function (item) {
+            return this.isItemsDiscardable(item) || this.getCount(item) > 1;
+        },
+        
+        isItemsDiscardable: function (item) {
+            switch (item.type) {
+                case ItemConstants.itemTypes.bag:
+                    return this.getStrongestByType(item.type).id !== item.id;
+                
+                default: return true;
+            }
         },
         
         // Equips the given item if it's better than the previous equipment
@@ -109,11 +128,11 @@ function (Ash, ItemVO, ItemConstants) {
             return equipped.sort(this.itemSortFunction);
         },
         
-        getCurrentBonus: function(type) {
+        getCurrentBonus: function (type) {
             var bonus = 0;
             for (var key in this.items) {
-                if (key == type) {
-                    for( var i = 0; i < this.items[key].length; i++) {
+                if (key === type) {
+                    for (var i = 0; i < this.items[key].length; i++) {
                         var item = this.items[key][i];
                         if (item.equipped) bonus += item.bonus;
                     }
@@ -168,14 +187,23 @@ function (Ash, ItemVO, ItemConstants) {
         
         getWeakestByType: function (type) {
             var weakest = null;
-            for( var i = 0; i < this.items[type].length; i++) {
+            for (var i = 0; i < this.items[type].length; i++) {
                 var item = this.items[type][i];
-                if(!weakest || item.bonus < weakest.bonus) weakest = item;
+                if (!weakest || item.bonus < weakest.bonus) weakest = item;
             }
             return weakest;
         },
         
-        getItem: function(id, instanceId) {
+        getStrongestByType: function (type) {
+            var strongest = null;
+            for (var i = 0; i < this.items[type].length; i++) {
+                var item = this.items[type][i];
+                if (!strongest || item.bonus > strongest.bonus) strongest = item;
+            }
+            return strongest;
+        },
+        
+        getItem: function (id, instanceId) {
             for (var key in this.items) {
                 for( var i = 0; i < this.items[key].length; i++) {
                     var item = this.items[key][i];
@@ -185,7 +213,7 @@ function (Ash, ItemVO, ItemConstants) {
             return null;
         },
         
-        getSimilar: function(item) {
+        getSimilar: function (item) {
             for (var key in this.items) {
                 for( var i = 0; i < this.items[key].length; i++) {
                     var otherItem = this.items[key][i];
@@ -197,7 +225,7 @@ function (Ash, ItemVO, ItemConstants) {
             return null;
         },
         
-        contains: function(name) {            
+        contains: function (name) {
             for (var key in this.items) {
                 for( var i = 0; i < this.items[key].length; i++) {
                     if(this.items[key][i].name == name) return true;
@@ -216,7 +244,7 @@ function (Ash, ItemVO, ItemConstants) {
             return b.bonus - a.bonus;
         },
         
-        customLoadFromSave: function(componentValues) {
+        customLoadFromSave: function (componentValues) {
             for(var key in componentValues.items) {
                 for (var i in componentValues.items[key]) {
                     var itemID = componentValues.items[key][i].id;

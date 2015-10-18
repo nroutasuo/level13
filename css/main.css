@@ -603,7 +603,7 @@ div.popup {
 	left: 50%;
 	margin: 20px;
 	min-width: 40%;
-	max-width: 80%;
+	max-width: 80% !important; 
 	z-index: 7;
 }
 

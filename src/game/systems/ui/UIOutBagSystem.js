@@ -50,6 +50,11 @@ define([
 			var system = this;
 			$("button[action='discard_item']").click(function (e) {
 				var item = itemsComponent.selectedItem;
+				var isDiscardable = itemsComponent.isItemDiscardable(item);
+				if (!isDiscardable) {
+					uiFunctions.showInfoPopup("Warning", "This item can't be discarded.");
+					return;
+				}
 				var questionS = item.type === ItemConstants.itemTypes.follower ?
 					"Are you sure you want to disband this follower?" : "Are you sure you want to discard this item?";
 				uiFunctions.showConfirmation(
@@ -63,12 +68,14 @@ define([
 			});
 			$("button[action='discard_item_all']").click(function (e) {
 				var item = itemsComponent.selectedItem;
+				var isDiscardable = itemsComponent.isItemsDiscardable(item);
+				var msg = isDiscardable ? "Are you sure you want to discard all of these items?" : "Are you sure you want to discard all but one of these items?";
 				uiFunctions.showConfirmation(
-					"Are you sure you want to discard all of these items?",
+					msg,
 					function () {
 						itemsComponent.discardItems(item);
 						itemsComponent.selectedItem = null;
-						system.updateItemList();
+						system.updateItemLists();
 					}
 				);
 			});
@@ -94,6 +101,7 @@ define([
 
 			// Header
 			$("#tab-header h2").text("Bag");
+			$("span#self-bag-capacity").text(itemsComponent.getCurrentBonus(ItemConstants.itemTypes.bag));
 
 			// Items, parts and followers
 			var itemsComponent = this.itemNodes.head.items;
@@ -101,7 +109,7 @@ define([
 			this.updateItems(uniqueItems);
 
 			// Description
-			$("#items-empty").toggle(uniqueItems.length === 0);
+			$("#items-empty").toggle($("#bag-items li").length === 0);
 			this.updateItemDetails(selectedItem, itemsComponent.getCount(selectedItem));
 
 			// Additional infos
@@ -109,9 +117,8 @@ define([
 		},
 
 		updateItems: function (uniqueItems) {
-			var itemListL = $("#bag-items li").length;
-			var followerListL = $("#list-followers li").length;
-			if (uniqueItems.length !== itemListL + followerListL) {
+			if (uniqueItems.length !== this.lastUpdatedItemsLength) {
+				this.lastUpdatedItemsLength = uniqueItems.length;
 				this.updateItemLists();
 			} else {
 				this.refreshItemLists();
@@ -172,16 +179,18 @@ define([
 		},
 
 		updateItemLists: function () {
+			console.log("update item lists");
 			var itemsComponent = this.itemNodes.head.items;
 			var items = itemsComponent.getUnique();
 			$("#bag-items").empty();
 			$("#list-followers").empty();
-			var uiFunctions = this.uiFunctions;
 			var UIOutBagSystem = this;
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
+				if (item.type === ItemConstants.itemTypes.bag) continue;
+				
 				var li = UIConstants.getItemLI(item, itemsComponent.getCount(item), true);
-				if (item.type != ItemConstants.itemTypes.follower) {
+				if (item.type !== ItemConstants.itemTypes.follower) {
 					$("#bag-items").append(li);
 				} else {
 					$("#list-followers").append(li);
@@ -214,6 +223,7 @@ define([
 
 		updateItemDetails: function (selectedItem, count) {
 			if (selectedItem) {
+				var itemsComponent = this.itemNodes.head.items;
 				$("#item-desc-div h4").text(selectedItem.name);
 
 				var itemBonusTxt = selectedItem.type;
@@ -241,14 +251,20 @@ define([
 				}
 
 				$("#item-desc-div p#item-desc-bonus").text(itemBonusTxt);
-				$("#item-desc-div p#item-desc-equipped").text(selectedItem.equippable && !selectedItem.unequippable ? (selectedItem.equipped ? "Equipped" : "Not equipped") : "");
+				$("#item-desc-div p#item-desc-equipped").text(selectedItem.equippable ? (selectedItem.equipped ? "Equipped" : "Not equipped") : "");
 				$("#item-desc-div p#item-desc-desc").text(selectedItem.description);
 
 				var isFollower = selectedItem.type === ItemConstants.itemTypes.follower;
+				var unequippable = itemsComponent.isItemDiscardable(selectedItem);
 				$("button[action='equip_item']").text(selectedItem.equipped ? "Unequip" : "Equip");
-				$("button[action='equip_item']").toggle((!selectedItem.equipped && selectedItem.equippable) || (selectedItem.equipped && selectedItem.unequippable));
-				$("button[action='discard_item']").text(isFollower ? "Part ways" : "Discard");
-				$("button[action='discard_item_all']").toggle(count > 1);
+				$("button[action='equip_item']").toggle((!selectedItem.equipped && selectedItem.equippable) || (selectedItem.equipped && unequippable));
+				
+				var isDiscardable = itemsComponent.isItemDiscardable(selectedItem);
+				var isAllDiscardable = itemsComponent.isItemsDiscardable(selectedItem);
+				$("button[action='discard_item']").toggle(isDiscardable);
+				$("button[action='discard_item']").text(isFollower ? "Part ways" : "Discard 1");
+				$("button[action='discard_item_all']").text(isAllDiscardable ? "Discard all" : "Discard " + (count - 1));
+				$("button[action='discard_item_all']").toggle(isAllDiscardable ? count > 1 : count > 2);
 			}
 		},
 
@@ -270,8 +286,10 @@ define([
 			}
 
 			this.uiFunctions.slideToggleIf("#item-desc-div", "#item-desc-help", itemsComponent.selectedItem, 250, 150);
+			$("#item-desc-help").toggle($("#item-desc-help").is(":visible") && $("#bag-items li").length > 0);
 		},
-    });
+    
+	});
 
     return UIOutBagSystem;
 });
