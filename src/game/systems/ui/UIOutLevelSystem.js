@@ -295,12 +295,13 @@ define([
 				featuresComponent.buildingDensity,
 				featuresComponent.stateOfRepair) + " ";
 			
+			/*
 			if (window.app) {
                 desc += "(" +
 				featuresComponent.sectorType + "/" +
 				featuresComponent.buildingDensity + "/" +
 				featuresComponent.stateOfRepair + ") ";
-			}
+			}*/
 			
 			if (featuresComponent.sunlit) {
 				if (hasVision) desc += "Fierce sunlight soothes your nerves. ";
@@ -350,12 +351,26 @@ define([
 		
 		getMovementDescription: function (isScouted, passagesComponent, entity) {
 			var description = "";
+			var movementOptionsComponent = this.playerLocationNodes.head.entity.get(MovementOptionsComponent);
+			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			
 			// Passages up / down
-			if (isScouted && passagesComponent.passageUp)
-				description += "There is a passage up here (" + passagesComponent.passageUp.name + "). ";
-			if (isScouted && passagesComponent.passageDown)
-				description += "There is a passage down here (" + passagesComponent.passageDown.name + "). ";
+			var passageUpBuilt = improvements.getCount(improvementNames.passageUpStairs) +
+				improvements.getCount(improvementNames.passageUpElevator) +
+				improvements.getCount(improvementNames.passageUpHole) > 0;
+			var passageDownBuilt = improvements.getCount(improvementNames.passageDownStairs) +
+				improvements.getCount(improvementNames.passageDownElevator) +
+				improvements.getCount(improvementNames.passageDownHole) > 0;
+			if (isScouted && passagesComponent.passageUp) {
+				description += "There is a passage up here (" + passagesComponent.passageUp.name.toLowerCase() + ")";
+				if (!passageUpBuilt) description += ", but it requires repair";
+				description += ". ";
+			}
+			if (isScouted && passagesComponent.passageDown) {
+				description += "There is a passage down here (" + passagesComponent.passageDown.name.toLowerCase() + ")";
+				if (!passageDownBuilt) description += ", but it requires repair";
+				description += ". ";
+			}
 			
 			// Blockers left / right
 			var bridgedLeft = this.movementHelper.isBridged(entity, this.movementHelper.DIRECTION_LEFT);
@@ -400,10 +415,10 @@ define([
 				enemyDesc += "There doesn't seem to be anything dangerous here. ";
 			}
 			
-			var posComponent = this.playerLocationNodes.head.position;
-			var levelOrdinal = this.gameState.getLevelOrdinal(posComponent.level);
-            var groundLevelOrdinal = this.gameState.getGroundLevelOrdinal();
-			var totalLevels = this.gameState.getTotalLevels();
+			// var posComponent = this.playerLocationNodes.head.position;
+			// var levelOrdinal = this.gameState.getLevelOrdinal(posComponent.level);
+            // var groundLevelOrdinal = this.gameState.getGroundLevelOrdinal();
+			// var totalLevels = this.gameState.getTotalLevels();
 			// if (window.app) enemyDesc += "Required strength: " + EnemyConstants.getRequiredStength(levelOrdinal, groundLevelOrdinal, totalLevels) + ". ";
 			
 			return enemyDesc;

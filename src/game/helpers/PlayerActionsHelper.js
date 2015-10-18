@@ -302,10 +302,14 @@ define([
             
                         if (min > amount || max <= amount) {
                             var improvementName = this.getImprovementNameForAction(action, true);
-                            if (min > amount) reason = "Improvement required";
-                            else reason = "Improvement already exists";
-                            reason += ": " + min + "x " + improvName;
-                            if(log) console.log("WARN: " + reason);
+                            if (min > amount) {
+								reason = "Improvement required";
+								if (min > 1) reason += ": " + min + "x " + improvName;
+							} else {
+								reason = "Improvement already exists";
+								if(max > 1) reason += ": " + max + "x " + improvName;
+							}
+                            if (log) console.log("WARN: " + reason);
                             if (min > amount) return { value: amount/min, reason: reason };
                             else return { value: 0, reason: reason };
                         }

@@ -3,7 +3,7 @@ define(['ash'], function (Ash) {
     var passageTypes = {
         1: [ "Hole" ],
 		2: [ "Elevator" ],
-		3: [ "Staircase" ],
+		3: [ "Stairwell" ],
     };
     
     var PassageVO = Ash.Class.extend({
