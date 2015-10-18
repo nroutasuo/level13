@@ -395,7 +395,7 @@ define([
 					defeatableBlockerRight
 					);
 				}
-				if (window.app) enemyDesc += "(" + enemiesComponent.possibleEnemies + ") ";
+				// if (window.app) enemyDesc += "(" + enemiesComponent.possibleEnemies + ") ";
 			} else if (!hasCampHere && isScouted) {
 				enemyDesc += "There doesn't seem to be anything dangerous here. ";
 			}
@@ -404,7 +404,7 @@ define([
 			var levelOrdinal = this.gameState.getLevelOrdinal(posComponent.level);
             var groundLevelOrdinal = this.gameState.getGroundLevelOrdinal();
 			var totalLevels = this.gameState.getTotalLevels();
-			if (window.app) enemyDesc += "Required strength: " + EnemyConstants.getRequiredStength(levelOrdinal, groundLevelOrdinal, totalLevels) + ". ";
+			// if (window.app) enemyDesc += "Required strength: " + EnemyConstants.getRequiredStength(levelOrdinal, groundLevelOrdinal, totalLevels) + ". ";
 			
 			return enemyDesc;
 		},
