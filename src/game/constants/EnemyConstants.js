@@ -75,7 +75,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, FightConstants, Per
 			var stats = enemy.att + enemy.def;
 			var level = 0;
 			var iDifficulty;
-			for (var i = 1; i < WorldCreatorConstants.LEVEL_NUMBER_MAX; i++) {
+			for (var i = 1; i < totalLevels; i++) {
 				iDifficulty = this.getRequiredStength(i, groundLevelOrdinal, totalLevels);
 				if (iDifficulty > stats) return level;
 				level = i;

@@ -134,7 +134,7 @@ function (Ash, ItemVO, ItemConstants) {
                 if (key === type) {
                     for (var i = 0; i < this.items[key].length; i++) {
                         var item = this.items[key][i];
-                        if (item.equipped) bonus += item.bonus;
+                        if (item.equipped) return item.bonus;
                     }
                 }
             }
