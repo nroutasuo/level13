@@ -179,7 +179,6 @@ define([
 		},
 
 		updateItemLists: function () {
-			console.log("update item lists");
 			var itemsComponent = this.itemNodes.head.items;
 			var items = itemsComponent.getUnique();
 			$("#bag-items").empty();

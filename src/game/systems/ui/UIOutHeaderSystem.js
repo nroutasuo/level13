@@ -253,7 +253,7 @@ define([
 		},
 		
 		getShowResources: function () {
-			return this.resourcesHelper.getCurrentStorage(false).resources;
+			return this.resourcesHelper.getCurrentStorage().resources;
 		},
 		
 		getShowResourceAcc: function () {

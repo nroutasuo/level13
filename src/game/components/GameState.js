@@ -9,6 +9,7 @@ define(['ash', 'game/WorldCreator'], function (Ash, WorldCreator) {
             this.stage = 1;
             this.worldSeed = 0;
             this.numCamps = 0;
+            this.numTradePostCamps = 0;
             
             this.unlockedFeatures = {
                 vision: false,

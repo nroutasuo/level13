@@ -70,7 +70,7 @@ define([
                 return;
             }
             
-			var currentStorage = this.resourcesHelper.getCurrentStorage(true);
+			var currentStorage = this.resourcesHelper.getCurrentStorage();
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             
             if (costs.stamina) {
@@ -497,7 +497,7 @@ define([
         checkCost: function(action, name, otherSector) {
             var playerVision = this.playerStatsNodes.head.vision.value;
             var playerStamina = this.playerStatsNodes.head.stamina.stamina;
-            var playerResources = this.resourcesHelper.getCurrentStorage(false);
+            var playerResources = this.resourcesHelper.getCurrentStorage();
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             
             var sector = otherSector || (this.playerLocationNodes.head && this.playerLocationNodes.head.entity);

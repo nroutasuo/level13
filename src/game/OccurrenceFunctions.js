@@ -17,12 +17,14 @@ define(['ash',
     var OccurrenceFunctions = Ash.System.extend({
         
 		uiFunctions: null,
-		engine: null,
+		resourcesHelper: null,
 		
+		engine: null,
 		campNodes: null,
 	
-        constructor: function (uiFunctions) {
+        constructor: function (uiFunctions, resourcesHelper) {
 			this.uiFunctions = uiFunctions;
+			this.resourcesHelper = resourcesHelper;
         },
 
         addToEngine: function (engine) {
@@ -72,7 +74,7 @@ define(['ash',
 			}
 		},
 	
-		onEndRaid: function(sectorEntity) {
+		onEndRaid: function (sectorEntity) {
 			var improvements = sectorEntity.get(SectorImprovementsComponent);
 			var raidComponent = sectorEntity.get(RaidComponent);
 			var campResources = sectorEntity.get(ResourcesComponent).resources;

@@ -24,7 +24,7 @@ define([
 			this.globalResourcesNodes = engine.getNodeList(TribeResourcesNode);
 		},
 		
-		getCurrentStorage: function (forWrite) {
+		getCurrentStorage: function () {
 			var playerResources = this.getPlayerStorage();
 			var campResources = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity.get(ResourcesComponent) : null;
 			var globalResources = this.globalResourcesNodes.head.resources;
@@ -33,24 +33,24 @@ define([
 			
 			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
 			if (playerPosition.inCamp && this.hasCampStorage()) {
-			currentResources = campResources;
-			if (!forWrite && this.hasAccessToTradeNetwork()) {
-				currentResources = globalResources;
+				currentResources = campResources;
+				if (this.hasAccessToTradeNetwork()) {
+					currentResources = globalResources;
+				}
 			}
-		}
 				
-				return currentResources;
-			},
+			return currentResources;
+		},
 		
-		getCurrentStorageCap: function() {
-			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);	    
+		getCurrentStorageCap: function () {
+			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
 			var showStorage =  this.playerResourcesNodes.head.entity.get(ResourcesComponent).storageCapacity;
 			
 			if (playerPosition.inCamp && this.hasCampStorage()) {
-			showStorage = this.nearestCampNodes.head.entity.get(ResourcesComponent).storageCapacity;
-			if (this.hasAccessToTradeNetwork()) {
-				showStorage = this.globalResourcesNodes.head.resources.storageCapacity;
-			}
+				showStorage = this.nearestCampNodes.head.entity.get(ResourcesComponent).storageCapacity;
+				if (this.hasAccessToTradeNetwork()) {
+					showStorage = this.globalResourcesNodes.head.resources.storageCapacity;
+				}
 			}
 			
 			return showStorage;
@@ -66,47 +66,46 @@ define([
 			}
 			
 			if (playerPosition.inCamp && this.hasCampStorage()) {
-			storageName = "Camp storage";
-			if (this.hasAccessToTradeNetwork()) {
-				storageName = "Tribe storage";
-			}
+				storageName = "Camp storage";
+				if (this.hasAccessToTradeNetwork()) {
+					storageName = "Tribe storage";
+				}
 			}
 			
 			return storageName;
 		},
 		
-		getCurrentStorageAccumulation: function( forWrite ) {
+		getCurrentStorageAccumulation: function (forWrite) {
 			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
 			
-			var playerResourceAcc = this.playerResourcesNodes.head.entity.get(ResourceAccumulationComponent);	    
-			var campResourceAcc = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity.get(ResourceAccumulationComponent) : null;	    
+			var playerResourceAcc = this.playerResourcesNodes.head.entity.get(ResourceAccumulationComponent);
+			var campResourceAcc = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity.get(ResourceAccumulationComponent) : null;
 			var globalResourceAcc = this.globalResourcesNodes.head.resourceAccumulation;
 			
 			var showResourceAcc = playerResourceAcc;
 			if (playerPosition.inCamp && this.hasCampStorage()) {
 				showResourceAcc = campResourceAcc;
-				
 				if (!forWrite && this.hasAccessToTradeNetwork()) {
 					showResourceAcc = globalResourceAcc;
 				}
 			}
 			
-			return showResourceAcc;    
+			return showResourceAcc;
 		},
 		
-		hasAccessToTradeNetwork: function() {
+		hasAccessToTradeNetwork: function () {
 			if (this.nearestCampNodes.head) {
-			var improvements = this.nearestCampNodes.head.entity.get(SectorImprovementsComponent);
-			if (improvements.getCount(improvementNames.tradepost) > 0) {
-				return true;
-			}
+				var improvements = this.nearestCampNodes.head.entity.get(SectorImprovementsComponent);
+				if (improvements.getCount(improvementNames.tradepost) > 0) {
+					return true;
+				}
 			}
 			return false;
 		},
 		
-		hasCampStorage: function() {
-			if (this.nearestCampNodes.head ) {
-			return this.nearestCampNodes.head.entity.get(ResourcesComponent).storageCapacity > 0;
+		hasCampStorage: function () {
+			if (this.nearestCampNodes.head) {
+				return this.nearestCampNodes.head.entity.get(ResourcesComponent).storageCapacity > 0;
 			}
 			return false;
 		},

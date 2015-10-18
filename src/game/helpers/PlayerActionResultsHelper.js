@@ -123,7 +123,7 @@ define([
         },
 
 		collectRewards: function (rewards) {
-			var currentStorage = this.resourcesHelper.getCurrentStorage(true);
+			var currentStorage = this.resourcesHelper.getCurrentStorage();
 			currentStorage.addResources(rewards.gainedResources);
 			currentStorage.substractResources(rewards.lostResources);
 

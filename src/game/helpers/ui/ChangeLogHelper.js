@@ -14,8 +14,9 @@ define(['ash'], function (Ash) {
 			})
 			.fail(function (jqxhr, textStatus, error) {
 				helper.loadingSuccessfull = false;
-				var err = textStatus + ", " + error;
-				console.log("Request Failed: " + err);
+				var err = textStatus;
+				if (error) err += ", " + error;
+				console.log("WARN: Change log request failed: " + err);
 			});
 		},
 		

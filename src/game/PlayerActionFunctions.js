@@ -701,7 +701,7 @@ define(['ash',
         collectCollector: function(actionName, improvementName) {
             if(this.playerActionsHelper.checkAvailability(actionName, true)) {
                 this.playerActionsHelper.deductCosts(actionName);
-                var currentStorage = this.resourcesHelper.getCurrentStorage(true);
+                var currentStorage = this.resourcesHelper.getCurrentStorage();
                 
                 var sector = this.playerLocationNodes.head.entity;
                 var improvementsComponent = sector.get(SectorImprovementsComponent);
@@ -822,7 +822,7 @@ define(['ash',
                     } else {
                         amount = this.resourcesHelper.getCurrentStorageCap();
                     }
-                    var playerResources = this.resourcesHelper.getCurrentStorage(true).resources;
+                    var playerResources = this.resourcesHelper.getCurrentStorage().resources;
                     for(var key in resourceNames) {
                         var name = resourceNames[key];
                         if(this.gameState.unlockedFeatures.resources[name])

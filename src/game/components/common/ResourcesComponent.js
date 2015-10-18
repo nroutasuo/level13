@@ -12,19 +12,26 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             this.resetStorage();
         },
         
-        resetStorage: function() {
+        resetStorage: function () {
             this.resources.reset();
         },
         
-        limitToStorage: function() {
+        limitToStorage: function (fixNegatives) {
+            var spilledResources = new ResourcesVO();
             if (this.storageCapacity >= 0) {
-                for(var key in resourceNames) {
+                for (var key in resourceNames) {
                     var name = resourceNames[key];
                     if (this.resources.getResource(name) > this.storageCapacity) {
+                        spilledResources.addResource(name, this.resources.getResource(name) - this.storageCapacity);
                         this.resources.setResource(name, this.storageCapacity);
+                    }
+                    if (fixNegatives && this.resources.getResource(name) < 0) {
+                        spilledResources.addResource(name, -this.resources.getResource(name));
+                        this.resources.setResource(name, 0);
                     }
                 }
             }
+            return spilledResources;
         },
         
         addResources: function (resourceVO) {
@@ -41,7 +48,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             }
         },
     
-        getResourceForLevel: function(lvl) {
+        getResourceForLevel: function (lvl) {
             if (lvl < 0) {
                 return resourceNames.herbs;
             }

@@ -164,29 +164,29 @@ define([
 			return sector;
 		},
 		
-		createTribe: function(saveKey) {
+		createTribe: function (saveKey) {
 			var tribe = new Ash.Entity()
 			.add(new TribeComponent())
 			.add(new ResourcesComponent(0))
 			.add(new UpgradesComponent())
 			.add(new ResourceAccumulationComponent(saveKey))
-			.add(new SaveComponent(saveKey, [ UpgradesComponent ]));
+			.add(new SaveComponent(saveKey, [ UpgradesComponent, ResourcesComponent ]));
 			this.engine.addEntity(tribe);
 			return tribe;
 		},
 		
-		initPlayer: function(entity) {
+		initPlayer: function (entity) {
 			var defaultInjury = PerkConstants.perkDefinitions.injury[0];
 			var perksComponent = entity.get(PerksComponent);
-				perksComponent.addPerk(defaultInjury.clone());
+			perksComponent.addPerk(defaultInjury.clone());
 			
 			var logComponent = entity.get(LogMessagesComponent);
-				logComponent.addMessage("You are alone in a massive dark corridor, far below sunlight.");
+			logComponent.addMessage("You are alone in a massive dark corridor, far below sunlight.");
 		},
 		
-		syncSector: function(entity) {
+		syncSector: function (entity) {
 			if (entity.has(CampComponent) && !entity.has(CampEventTimersComponent)) {
-			entity.add(new CampEventTimersComponent());
+				entity.add(new CampEventTimersComponent());
 			}
 		},
     });

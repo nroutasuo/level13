@@ -118,7 +118,7 @@ define([
             this.fightNodes.head.fight.injuries = FightConstants.getPenaltyInjuries(won);
             
             // Add rewards and penalties
-            var currentStorage = this.resourcesHelper.getCurrentStorage(true);
+            var currentStorage = this.resourcesHelper.getCurrentStorage();
             currentStorage.addResources(this.fightNodes.head.fight.rewards.resources);
             
             this.playerStatsNodes.head.reputation.value += this.fightNodes.head.fight.rewards.reputation;

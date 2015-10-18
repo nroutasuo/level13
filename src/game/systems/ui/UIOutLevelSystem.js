@@ -92,7 +92,7 @@ define([
 		
 		initLeaveCampRes: function () {
 			if (this.gameState.uiStatus.leaveCampRes) {	
-				var campResources = this.resourcesHelper.getCurrentStorage(false);
+				var campResources = this.resourcesHelper.getCurrentStorage();
 				for(var key in resourceNames) {
 					var name = resourceNames[key];
 					var oldVal = this.gameState.uiStatus.leaveCampRes[name];
@@ -132,7 +132,7 @@ define([
 		
 		updateEmbarkPage: function () {
 			$("#tab-header h2").text("Leave camp");
-			var campResources = this.resourcesHelper.getCurrentStorage(false);
+			var campResources = this.resourcesHelper.getCurrentStorage();
 			var bagResources = this.resourcesHelper.getPlayerStorage();
 			var bagStorage = bagResources.storageCapacity;
 			

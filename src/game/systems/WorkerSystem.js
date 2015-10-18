@@ -69,7 +69,6 @@ define([
 		},
 	
         updateNode: function (node, time) {
-			node.entity.get(ResourceAccumulationComponent).reset();
 			this.updateWorkerHunger(node, time);
 			this.updateWorkers(node, time);
 			this.updateResourceImprovements(node, time);
@@ -129,7 +128,7 @@ define([
 			if (metalRequiredTools > 0) {
 				var metalUsedTools = Math.min(resources.getResource(resourceNames.metal), metalRequiredTools);
 				var toolsUpgradeBonus = this.getUpgradeBonus("smith");
-				var tools = (metalUsedTools/metalRequiredTools) * camp.assignedWorkers.toolsmith * CampConstants.PRODUCTION_TOOLS_PER_WORKER_PER_S * time * toolsUpgradeBonus;
+				var tools = (metalUsedTools / metalRequiredTools) * camp.assignedWorkers.toolsmith * CampConstants.PRODUCTION_TOOLS_PER_WORKER_PER_S * time * toolsUpgradeBonus;
 				resources.addResource(resourceNames.tools, tools);
 				resources.addResource(resourceNames.metal, -metalUsedTools);
 				resourceAccComponent.addChange(resourceNames.tools, tools / time, "Toolsmiths");
@@ -141,7 +140,7 @@ define([
 			if (metalRequiredConcrete > 0) {
 				var metalUsedConcrete = Math.min(resources.getResource(resourceNames.metal), metalRequiredConcrete);
 				var concreteUpgradeBonus = this.getUpgradeBonus("concrete");
-				var concrete = (metalUsedConcrete/metalRequiredConcrete) * camp.assignedWorkers.concrete * CampConstants.PRODUCTION_CONCRETE_PER_WORKER_PER_S * time * concreteUpgradeBonus;
+				var concrete = (metalUsedConcrete / metalRequiredConcrete) * camp.assignedWorkers.concrete * CampConstants.PRODUCTION_CONCRETE_PER_WORKER_PER_S * time * concreteUpgradeBonus;
 				resources.addResource(resourceNames.concrete, concrete);
 				resources.addResource(resourceNames.metal, -metalUsedConcrete);
 				resourceAccComponent.addChange(resourceNames.concrete, concrete / time, "Concrete mixers");
@@ -157,25 +156,24 @@ define([
 		},
 		
 		updatePlayer: function (time) {
-			var playerFoodSource = this.resourcesHelper.getCurrentStorage(true);
+			var playerFoodSource = this.resourcesHelper.getCurrentStorage();
 			var playerFoodSourceAcc = this.resourcesHelper.getCurrentStorageAccumulation(true);
 			this.deductHunger(time, playerFoodSource.resources, 1, false);
 			this.deductHunger(time, playerFoodSourceAcc.resourceChange, 1, true, playerFoodSourceAcc, "Player");
 			
 			// Manage perks
 			var isThirsty = playerFoodSource.resources.water <= 0;
-			var isHungry = playerFoodSource.resources.food <= 0;    
+			var isHungry = playerFoodSource.resources.food <= 0;
 			var perksComponent = this.playerNodes.head.entity.get(PerksComponent);
 			
 			var hasThirstPerk = perksComponent.hasPerk(PerkConstants.perkIds.thirst);
 			var hasHungerPerk = perksComponent.hasPerk(PerkConstants.perkIds.hunger);
 			if (!isThirsty) {
-			if (hasThirstPerk) {
-				this.log("No longer thirsty.");
-				perksComponent.removeItemsById(PerkConstants.perkIds.thirst);
-			}
-			}
-			else if(!hasThirstPerk) {
+				if (hasThirstPerk) {
+					this.log("No longer thirsty.");
+					perksComponent.removeItemsById(PerkConstants.perkIds.thirst);
+				}
+			} else if (!hasThirstPerk) {
 				this.log("Out of water!");
 				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.thirst));
 			}
@@ -184,8 +182,7 @@ define([
 					this.log("No longer hungry.");
 					perksComponent.removeItemsById(PerkConstants.perkIds.hunger);
 				}
-			}
-			else if (!hasHungerPerk) {
+			} else if (!hasHungerPerk) {
 				this.log("Out of food!");
 				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.hunger));
 			}
@@ -199,7 +196,7 @@ define([
 			// Darkfarms
 			var farmFood = improvementsComponent.getCount(improvementNames.darkfarm) * 0.01 * time;
 			resources.addResource(resourceNames.food, farmFood);
-			resourceAcc.addChange(resourceNames.food, farmFood / time, "Snail farms");	    
+			resourceAcc.addChange(resourceNames.food, farmFood / time, "Snail farms");
 		},
 		
 		deductHunger: function (time, resourceVO, population, accumulation, accComponent, sourceName) {
@@ -207,13 +204,11 @@ define([
 			var waterChange = timeMod  * CampConstants.CONSUMPTION_WATER_PER_WORKER_PER_S * Math.floor(population);
 			var foodChange = timeMod * CampConstants.CONSUMPTION_FOOD_PER_WORKER_PER_S * Math.floor(population);
 			if (!accumulation) {
-			resourceVO.water -= waterChange;
-			resourceVO.food -= foodChange;
-				if (resourceVO.water < 0 ) resourceVO.water = 0;
-				if (resourceVO.food < 0 ) resourceVO.food = 0;
+				resourceVO.water -= waterChange;
+				resourceVO.food -= foodChange;
 			} else {
-			accComponent.addChange(resourceNames.water, -waterChange, sourceName);
-			accComponent.addChange(resourceNames.food, -foodChange, sourceName);
+				accComponent.addChange(resourceNames.water, -waterChange, sourceName);
+				accComponent.addChange(resourceNames.food, -foodChange, sourceName);
 			}
 		},
 		
