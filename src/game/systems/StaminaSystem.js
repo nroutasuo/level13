@@ -1,6 +1,6 @@
 define([
-    'ash', 'game/nodes/player/StaminaNode', 'game/constants/PerkConstants'
-], function (Ash, StaminaNode, PerkConstants) {
+    'ash', 'game/constants/GameConstants', 'game/nodes/player/StaminaNode', 'game/constants/PerkConstants'
+], function (Ash, GameConstants, StaminaNode, PerkConstants) {
     var VisionSystem = Ash.System.extend({
         creator: null,
         nodeList: null,
@@ -10,7 +10,7 @@ define([
         },
 
         addToEngine: function (engine) {
-            this.nodeList = engine.getNodeList( StaminaNode );
+            this.nodeList = engine.getNodeList(StaminaNode);
         },
 
         removeFromEngine: function (engine) {
@@ -34,7 +34,7 @@ define([
 			staminaComponent.health = Math.round(20 * Math.abs(healthEffects) * injuryEffects) * 5;
 			
 			var healthVal = staminaComponent.health;
-			var staminaPerS = staminaComponent.health / 100 * 5;
+			var staminaPerS = staminaComponent.health / 100 * 5 * GameConstants.gameSpeed;
 			
 			staminaComponent.stamina += time * staminaPerS;
 			staminaComponent.accSources[0] = { source: "Base", amount: staminaPerS };

@@ -1,11 +1,13 @@
 define([
-    'ash', 'game/constants/CampConstants',
+    'ash',
+	'game/constants/GameConstants',
+	'game/constants/CampConstants',
     'game/nodes/sector/CampNode',
     'game/nodes/PlayerStatsNode',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/PositionComponent',
     'game/components/common/LogMessagesComponent',
-], function (Ash, CampConstants, CampNode, PlayerStatsNode, SectorImprovementsComponent, PositionComponent, LogMessagesComponent) {
+], function (Ash, GameConstants, CampConstants, CampNode, PlayerStatsNode, SectorImprovementsComponent, PositionComponent, LogMessagesComponent) {
     var PopulationSystem = Ash.System.extend({
 	
         campNodes: null,
@@ -41,12 +43,12 @@ define([
 			var level = campPosition.level;
 			
 			var populationBonus = Math.max(1 + reputation/10-Math.floor(camp.population), 0)/5;
-			var changePerSec = populationBonus + reputation/2000;
+			var changePerSec = populationBonus + reputation/2000 * GameConstants.gameSpeed;
 			var change = time * changePerSec;
 			
 			var timeStamp = new Date().getTime();
 			var lastIncreaseTimeStamp = this.lastPopulationIncreaseTimestamps[level] ? this.lastPopulationIncreaseTimestamps[level] : 0;
-			var isPopulationCooldown  = timeStamp - lastIncreaseTimeStamp < this.populationCooldownSecondsMin * 1000;
+			var isPopulationCooldown  = timeStamp - lastIncreaseTimeStamp < this.populationCooldownSecondsMin * 1000 * GameConstants.gameSpeed;
 			
 			if (!isPopulationCooldown) {
 				var oldPopulation = camp.population;

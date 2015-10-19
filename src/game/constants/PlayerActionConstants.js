@@ -1,12 +1,13 @@
 // Costs, requirements, descriptions, and cooldowns for all player actions plus some related helper functions
 define(['ash',
+    'game/constants/GameConstants',
     'game/vos/ResourcesVO',
     'game/constants/ItemConstants',
     'game/constants/UpgradeConstants',
     'game/constants/CampConstants',
     'game/constants/WorldCreatorConstants'
 ],
-function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants, WorldCreatorConstants) {
+function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants, WorldCreatorConstants) {
 
     const COST_SOURCE_CAMP = "camp";
     const COST_SOURCE_DEFAULT = "default";
@@ -1417,7 +1418,7 @@ function (Ash, ResourcesVO, ItemConstants, UpgradeConstants, CampConstants, Worl
                    
             getCooldown: function (action) {
                 if (this.cooldowns[action]) {
-                    return this.cooldowns[action];
+                    return this.cooldowns[action] / GameConstants.gameSpeed;
                 }
                 return 0;
             },

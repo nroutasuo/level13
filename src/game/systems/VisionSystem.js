@@ -1,12 +1,13 @@
 define([
     'ash',
+	'game/constants/GameConstants',
     'game/constants/ItemConstants',
     'game/nodes/player/VisionNode',
     'game/nodes/PlayerLocationNode',
     'game/components/common/PositionComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/SectorFeaturesComponent',
-], function (Ash, ItemConstants, VisionNode, PlayerLocationNode, PositionComponent, SectorImprovementsComponent, SectorFeaturesComponent) {
+], function (Ash, GameConstants, ItemConstants, VisionNode, PlayerLocationNode, PositionComponent, SectorImprovementsComponent, SectorFeaturesComponent) {
     var VisionSystem = Ash.System.extend({
 	
         visionNodes: null,
@@ -50,7 +51,7 @@ define([
             
             vision.accSources = [];
             var addAccumulation = function (sourceName, value) {
-                var visionPerSecSource = Math.round(value * accSpeedFactor * 10) / 10;
+                var visionPerSecSource = Math.round(value * accSpeedFactor * 10) / 10 * GameConstants.gameSpeed;
                 visionPerSec += visionPerSecSource;
                 vision.accSources.push({ source: sourceName, amount: visionPerSecSource });
             };
@@ -64,16 +65,16 @@ define([
 				if (!sunlit) {
 					if (improvements.getCount(improvementNames.campfire) > 0) {
                         maxValue = Math.max(maxValue, 70);
-                        addAccumulation("Campfire", 70/maxValueBase);
+                        addAccumulation("Campfire", 70 / maxValueBase);
                     }
 					if (improvements.getCount(improvementNames.lights) > 0) {
                         maxValue = Math.max(maxValue, 100);
-                        addAccumulation("Lights", 100/maxValueBase);
+                        addAccumulation("Lights", 100 / maxValueBase);
                     }
 				} else {
 					if (improvements.getCount(improvementNames.ceiling) > 0) {
                         maxValue = Math.max(maxValue, 100);
-                        addAccumulation("Ceiling", 100/maxValueBase);
+                        addAccumulation("Ceiling", 100 / maxValueBase);
                     }
 				}
 			}

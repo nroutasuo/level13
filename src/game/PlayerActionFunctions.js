@@ -1,5 +1,6 @@
 // Functions to respond to player actions parsed by the UIFunctions
 define(['ash',
+	'game/constants/GameConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/PlayerStatConstants',
 	'game/constants/ItemConstants',
@@ -38,7 +39,7 @@ define(['ash',
 	'game/systems/FaintingSystem',
 	'game/systems/SaveSystem'
 ], function (Ash,
-	PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UIConstants, TextConstants,
+	GameConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UIConstants, TextConstants,
 	PlayerPositionNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent, VisitedComponent,
@@ -812,9 +813,14 @@ define(['ash',
 			var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
             var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
+			
             var inputParts = input.split(" ");
             var name = inputParts[0];
             switch(name) {
+				case "speed":
+					GameConstants.gameSpeed = parseFloat(inputParts[1]);
+					break;
+				
 				case "res":
                     var amount = 0;
                     if (inputParts.length > 1) {

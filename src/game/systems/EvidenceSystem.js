@@ -1,10 +1,11 @@
 define([
     'ash',
+	'game/constants/GameConstants',
 	'game/nodes/PlayerStatsNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/nodes/sector/CampNode',
     'game/components/sector/improvements/SectorImprovementsComponent',
-], function (Ash, PlayerStatsNode, TribeUpgradesNode, CampNode, SectorImprovementsComponent) {
+], function (Ash, GameConstants, PlayerStatsNode, TribeUpgradesNode, CampNode, SectorImprovementsComponent) {
     var EvidenceSystem = Ash.System.extend({
 	
         gameState: null,
@@ -46,7 +47,7 @@ define([
 				for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 					improvementsComponent = campNode.entity.get(SectorImprovementsComponent);
 					libraryCount = improvementsComponent.getCount(improvementNames.library);
-					var accLibrary = 0.0005 * libraryCount * libraryUpgradeLevel;
+					var accLibrary = 0.0005 * libraryCount * libraryUpgradeLevel * GameConstants.gameSpeed;
 					var accSpeedCamp = accLibrary;
 					accSpeed += accSpeedCamp;
 					cap += libraryCount * 100;

@@ -30,7 +30,7 @@ define([
     'game/systems/BagSystem',
     'game/systems/UnlockedFeaturesSystem',
     'game/systems/occurrences/CampEventsSystem',
-    'game/systems/systempriorities',
+    'game/constants/SystemPriorities',
     'game/EntityCreator',
     'game/PlayerActionFunctions',
     'game/OccurrenceFunctions',

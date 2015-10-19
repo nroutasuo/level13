@@ -1,7 +1,10 @@
 define([
-    'ash', 'game/nodes/PlayerStatsNode', 'game/nodes/sector/CampNode',
+    'ash',
+	'game/constants/GameConstants',
+	'game/nodes/PlayerStatsNode',
+	'game/nodes/sector/CampNode',
     'game/components/sector/improvements/SectorImprovementsComponent'
-], function (Ash, PlayerStatsNode, CampNode, SectorImprovementsComponent) {
+], function (Ash, GameConstants, PlayerStatsNode, CampNode, SectorImprovementsComponent) {
     var ReputationSystem = Ash.System.extend({
 	
         creator: null,
@@ -36,8 +39,8 @@ define([
 				
 				for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 					var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
-					accImprovements = 0.001 * (sectorImprovements.getTotal(improvementTypes.camp));
-					accRadio = accImprovements * sectorImprovements.getCount(improvementNames.radio) * 0.5;
+					accImprovements = 0.001 * (sectorImprovements.getTotal(improvementTypes.camp)) * GameConstants.gameSpeed;
+					accRadio = accImprovements * sectorImprovements.getCount(improvementNames.radio) * 0.5 * GameConstants.gameSpeed;
 					accSpeed = Math.max(0, accImprovements + accRadio);
 					limit += 100;
 					reputationComponent.addChange("Buildings", accImprovements);

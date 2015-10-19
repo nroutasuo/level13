@@ -1,5 +1,5 @@
-define(['ash'],
-function (Ash) {
+define(['ash', 'game/constants/GameConstants'],
+function (Ash, GameConstants) {
 
     var OccurrenceConstants = {
 	
@@ -10,7 +10,7 @@ function (Ash) {
 		
 		OCCURRENCE_CAMP_TRADER_LENGTH: 60 * 5,
 		OCCURRENCE_CAMP_TRADER_COOLDOWN: 60 * 10,
-		OCCURRENCE_CAMP_TRADER_RANDOMNESS: 3, 
+		OCCURRENCE_CAMP_TRADER_RANDOMNESS: 3,
 		
 		OCCURRENCE_CAMP_RAID_LENGTH: 5,
 		OCCURRENCE_CAMP_RAID_COOLDOWN: 60 * 30,
@@ -30,7 +30,7 @@ function (Ash) {
 					randomFactor = 1 + (Math.random() * this.OCCURRENCE_CAMP_RAID_RANDOMNESS);
 					break;
 			}
-			return Math.floor(minimumTime * randomFactor * upgradeTimeFactor);
+			return Math.floor(minimumTime * randomFactor * upgradeTimeFactor) * GameConstants.gameSpeed;
 		},
 		
 		getDuration: function(occurrenceType) {

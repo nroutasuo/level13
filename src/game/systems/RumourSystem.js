@@ -1,7 +1,11 @@
 define([
-    'ash', 'game/nodes/PlayerStatsNode', 'game/nodes/sector/CampNode', 'game/nodes/tribe/TribeUpgradesNode',
+    'ash',
+	'game/constants/GameConstants',
+	'game/nodes/PlayerStatsNode',
+	'game/nodes/sector/CampNode',
+	'game/nodes/tribe/TribeUpgradesNode',
     'game/components/sector/improvements/SectorImprovementsComponent',
-], function (Ash, PlayerStatsNode, CampNode, TribeUpgradesNode, SectorImprovementsComponent) {
+], function (Ash, GameConstants, PlayerStatsNode, CampNode, TribeUpgradesNode, SectorImprovementsComponent) {
     var RumourSystem = Ash.System.extend({
 	
         gameState: null,
@@ -48,8 +52,8 @@ define([
 					campfireCount = improvementsComponent.getCount(improvementNames.campfire);
 					campfireFactor = 1 + (campfireCount > 0 ? (campfireCount/10) : 0);
 					campfireFactor = campfireFactor * campfireUpgradeLevel;
-					var accSpeedPopulation = 0.00005 * (Math.floor(campNode.camp.population)+1);
-					var accSpeedCampfire = accSpeedPopulation * campfireFactor - accSpeedPopulation;
+					var accSpeedPopulation = 0.00005 * (Math.floor(campNode.camp.population)+1) * GameConstants.gameSpeed;
+					var accSpeedCampfire = (accSpeedPopulation * campfireFactor - accSpeedPopulation) * GameConstants.gameSpeed;
 					var accSpeedCamp = accSpeedPopulation + accSpeedCampfire;
 					accSpeed += accSpeedCamp;
 					
