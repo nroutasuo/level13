@@ -66,13 +66,13 @@ define([
 				
 				// passages: down 1-2 per level
 				if (l > bottomLevel) {
-					var numPassages = this.randomInt(seed * l / 7 + l + l * l + seed, 1, 3);
+					var numPassages = this.random(seed * l / 7 + l + l * l + seed) > 0.8 ? 2 : 1;
 					if (l === 14) numPassages = 1;
 					if (l === 13) numPassages = 1;
 					var firstPassSector = firstSector;
 					if (l === 13 || l === 14) firstPassSector = 5;
 					var lastPassSector = lastSector;
-					passageDownPos = this.randomSectors(seed * l * 654* (i + 2), l, firstPassSector, lastPassSector, numPassages, numPassages+1);
+					passageDownPos = this.randomSectors(seed * l * 654 * (i + 2), l, firstPassSector, lastPassSector, numPassages, numPassages + 1, "camp");
 					
 					for (var i = 0; i < passageDownPos.length; i++) {
 						if (l === 13) {
@@ -108,6 +108,7 @@ define([
 			//this.printWorld(seed, [ "campableLevel" ]);
 			//this.printWorld(seed, [ "blockerLeft" ]);
 			//this.printWorld(seed, [ "blockerRight" ]);
+			// this.printWorld(seed, [ "camp" ]);
 		},
 		
 		// sector type, building density, state of repair, sunlight
