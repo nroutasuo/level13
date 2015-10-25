@@ -216,18 +216,25 @@ define([
 			for (var node = this.sectorNodes.head; node; node = node.next) {
 				sectorPosition = node.entity.get(PositionComponent);
 				if (sectorPosition.level === level) {
-					var sectorLocalesComponent = node.entity.get(SectorLocalesComponent);
-					var sectorStatus = node.entity.get(SectorStatusComponent);
-					var locale;
-					for (var i = 0; i < sectorLocalesComponent.locales.length; i++) {
-						locale = sectorLocalesComponent.locales[i];
-						if (locale !== excludeLocaleVO && (includeScouted || !sectorStatus.isLocaleScouted(i)))
-							locales.push(locale);
-					}
+					locales.concat(this.getSectorLocales(node.entity, includeScouted, excludeLocaleVO));
 				}
 			}
 			return locales;
 		},
+		
+		getSectorLocales: function (sectorEntity, includeScouted, excludeLocaleVO) {
+			var locales = [];
+			var sectorLocalesComponent = sectorEntity.get(SectorLocalesComponent);
+			var sectorStatus = sectorEntity.get(SectorStatusComponent);
+			var locale;
+			for (var i = 0; i < sectorLocalesComponent.locales.length; i++) {
+				locale = sectorLocalesComponent.locales[i];
+				if (locale !== excludeLocaleVO && (includeScouted || !sectorStatus.isLocaleScouted(i)))
+					locales.push(locale);
+			}
+			return locales;
+		},
+		
     });
     
     return LevelHelper;

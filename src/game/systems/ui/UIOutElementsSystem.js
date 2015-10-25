@@ -94,6 +94,17 @@ define([
                 return ($(button).attr("data-hasCooldown") === "true");
             };
 			
+			var getButtonSectorEntity = function (button) {
+				var sector = $(button).attr("sector");
+				var sectorEntity = null;
+                if (sector) {
+                    var l = parseInt(sector.split("-")[0]);
+                    var s = parseInt(sector.split("-")[1]);
+                    sectorEntity = levelHelper.getSectorByPosition(l, s);
+                }
+				return sectorEntity;
+			};
+			
 			var isButtonDisabledVision = function (button) {
                 var action = $(button).attr("action");
 				if (action) {
@@ -121,13 +132,7 @@ define([
                 var action = $(button).attr("action");
                 if (!action) return false;
                 
-                var sector = $(button).attr("sector");
-                var sectorEntity = null;
-                if (sector) {
-                    var l = sector.split("-")[0];
-                    var s = sector.split("-")[1];
-                    sectorEntity = levelHelper.getSectorByPosition(l, s)
-                }
+				var sectorEntity = getButtonSectorEntity(button);
                 return playerActionsHelper.checkRequirements(action, false, sectorEntity).value < 1;
             };
             
@@ -181,7 +186,8 @@ define([
 
                     // Update callout content
                     var bottleNeckCostFraction = 1;
-                    var disabledReason = playerActionsHelper.checkRequirements(action, false).reason;
+					var sectorEntity = getButtonSectorEntity((this));
+                    var disabledReason = playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
                     var isDisabledOnlyForCooldown = (!(disabledReason) && hasButtonCooldown($(this)));
                     if (!isHardDisabled || isDisabledOnlyForCooldown) {
                         if (hasCosts) {

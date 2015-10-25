@@ -201,7 +201,7 @@ define([
                     var classes = "action action-build action-level-project";
                     var action = project.action;
                     var sector = project.level + "-" + project.sector;
-                    var tr = "<tr><td><button class='" + classes + "' action='" + action + "' sector='" + sector + "'>" + name + "</button></td><td>" + info + "</td></tr>";
+                    var tr = "<tr><td><button class='" + classes + "' action='" + action + "' sector='" + sector + "' + id='btn-" + action + "-" + sector + "'>" + name + "</button></td><td>" + info + "</td></tr>";
                     $("#in-improvements-level table").append(tr);
                 }
                 this.uiFunctions.registerActionButtonListeners("#in-improvements-level");

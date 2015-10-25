@@ -99,7 +99,15 @@ function (Ash, UIConstants) {
                     
                     popupManager.showQueuedPopup();
                 });
-            });        
+            });
+        },
+        
+        closeAllPopups: function () {
+            this.popupQueue = [];
+            var popupManager = this;
+            $.each($(".popup:visible"), function () {
+                popupManager.closePopup($(this).attr("id"), true);
+            });
         },
         
         showQueuedPopup: function () {

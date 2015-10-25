@@ -8,25 +8,34 @@ define(['ash',
 	'game/components/common/CampComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorFeaturesComponent',
-	'game/components/sector/improvements/SectorImprovementsComponent'
+	'game/components/sector/SectorLocalesComponent',
+	'game/components/sector/improvements/SectorImprovementsComponent',
+    'game/constants/CampConstants',
+    'game/constants/UpgradeConstants',
+    'game/constants/EnemyConstants',
+    'game/constants/FightConstants',
+    'game/vos/ResourcesVO'
 ], function (Ash,
     ItemConstants, AutoPlayNode, PlayerStatsNode, ItemsNode,
-    PositionComponent, CampComponent, SectorStatusComponent, SectorFeaturesComponent, SectorImprovementsComponent) {
+    PositionComponent, CampComponent, SectorStatusComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorImprovementsComponent,
+    CampConstants, UpgradeConstants, EnemyConstants, FightConstants, ResourcesVO) {
     
 	var AutoPlaySystem = Ash.System.extend({
 		
 		playerActionFunctions: null,
 		levelHelper: null,
         sectorHelper: null,
+        upgradesHelper: null,
 		
 		autoPlayNodes: null,
 		playerStatsNodes: null,
 		itemsNodes: null,
 	    
-		constructor: function (playerActionFunctions, levelHelper, sectorHelper) {
+		constructor: function (playerActionFunctions, levelHelper, sectorHelper, upgradesHelper) {
 			this.playerActionFunctions = playerActionFunctions;
 			this.levelHelper = levelHelper;
             this.sectorHelper = sectorHelper;
+            this.upgradesHelper = upgradesHelper;
         },
 
         addToEngine: function (engine) {
@@ -50,11 +59,13 @@ define(['ash',
         onAutoPlayNodeAdded: function (node) {
             node.autoPlay.isExploring = false;
             node.autoPlay.isManagingCamps = true;
+            if (node.autoPlay.express) this.playerActionFunctions.cheat("speed 25");
         },
         
         onAutoPlayNodeRemoved: function (node) {
             node.autoPlay.isExploring = false;
             node.autoPlay.isManagingCamps = false;
+            if (node.autoPlay.express) this.playerActionFunctions.cheat("speed 1");
         },
 
         update: function (time) {
@@ -77,7 +88,9 @@ define(['ash',
                 
                 if (this.autoPlayNodes.head.autoPlay.isManagingCamps) {
                     didSomething = didSomething || this.manageCamp(isExpress);
+                    didSomething = didSomething || this.buildPassages(isExpress);
                     didSomething = didSomething || this.buildInImprovements(isExpress);
+                    didSomething = didSomething || this.unlockUpgrades(isExpress);
                     didSomething = didSomething || this.idleIn(isExpress);
                 }
                 
@@ -88,6 +101,7 @@ define(['ash',
 		},
 		
 		resetTurn: function (isExpress) {
+            this.playerActionFunctions.uiFunctions.popupManager.closeAllPopups();
             if (isExpress) {
                 this.playerActionFunctions.cheat("stamina");
             }
@@ -97,13 +111,19 @@ define(['ash',
             var wasExploring = this.autoPlayNodes.head.autoPlay.isExploring;
             if (wasExploring) {
                 this.playerActionFunctions.moveTo(this.playerActionFunctions.directions.camp);
+                this.playerActionFunctions.uiFunctions.showTab(this.playerActionFunctions.uiFunctions.elementIDs.tabs.in);
             } else {
+                var currentStorage = this.playerActionFunctions.resourcesHelper.getCurrentStorage();
+                var selectedResVO = new ResourcesVO();
+                selectedResVO.setResource(resourceNames.food, Math.min(2, currentStorage.resources.getResource(resourceNames.food)));
+                selectedResVO.setResource(resourceNames.water, Math.min(2, currentStorage.resources.getResource(resourceNames.water)));
+                this.playerActionFunctions.moveResFromCampToBag(selectedResVO);
                 this.playerActionFunctions.leaveCamp();
+                this.playerActionFunctions.uiFunctions.showTab(this.playerActionFunctions.uiFunctions.elementIDs.tabs.out);
             }
             
             this.autoPlayNodes.head.autoPlay.isExploring = !this.autoPlayNodes.head.autoPlay.isExploring;
             this.autoPlayNodes.head.autoPlay.isManagingCamps = !this.autoPlayNodes.head.autoPlay.isExploring;
-            this.printStep("switched mode");
         },
 
 		move: function (isExpress) {
@@ -111,6 +131,12 @@ define(['ash',
 			var l = playerPosition.level;
 			var s = playerPosition.sector;
 			var levelHelper = this.levelHelper;
+            var playerActionFunctions = this.playerActionFunctions;
+            
+            var itemsComponent = this.itemsNodes.head.items;
+            var fightStrength = FightConstants.getPlayerStrength(this.playerStatsNodes.head.stamina, itemsComponent);
+            var groundLevelOrdinal = this.playerActionFunctions.gameState.getGroundLevelOrdinal();
+            var totalLevels = this.playerActionFunctions.gameState.getTotalLevels();
 			
 			var nearestCampableSector = null;
 			var nearestUnscoutedLocaleSector = null;
@@ -118,12 +144,14 @@ define(['ash',
 			var nearestCampSector = null;
 			
 			var checkSector = function (testL, testS) {
+                var levelOrdinal = playerActionFunctions.gameState.getLevelOrdinal(testL);
 				var sector = levelHelper.getSectorByPosition(testL, testS);
-				if (sector) {
+                var sectorSafe = fightStrength >= EnemyConstants.getRequiredStength(levelOrdinal, groundLevelOrdinal, totalLevels);
+				if (sector && sectorSafe) {
 					var sectorCamp = sector.has(CampComponent);
 					var sectorUnscouted = !sector.get(SectorStatusComponent).scouted;
-					var sectorUnscoutedLocales = sector.get(SectorStatusComponent).getNumLocalesScouted() > 0;
-					var sectorCampable = sector.get(SectorStatusComponent).canBuildCamp;
+					var sectorUnscoutedLocales = levelHelper.getSectorLocales(sector, false, null).length > 0;
+					var sectorCampable = sector.get(SectorStatusComponent).canBuildCamp && !sectorCamp;
 					
 					if (!nearestCampableSector && sectorCampable) nearestCampableSector = sector;
 					if (!nearestUnscoutedLocaleSector && sectorUnscoutedLocales) nearestUnscoutedLocaleSector = sector;
@@ -144,19 +172,18 @@ define(['ash',
 			for (var ld = 0; ld < 30; ld++) {
 				checkLevel(l + ld);
 				checkLevel(l - ld);
-				if (nearestCampableSector || nearestUnscoutedLocaleSector || nearestUnscoutedSector) break;
 			}
 			
 			// if possible, move to a campable sector
 			if (nearestCampableSector) {
 				l = nearestCampableSector.get(PositionComponent).level;
 				s = nearestCampableSector.get(PositionComponent).sector;
-			} else if (nearestUnscoutedLocaleSector) {
-				l = nearestUnscoutedLocaleSector.get(PositionComponent).level;
-				s = nearestUnscoutedLocaleSector.get(PositionComponent).sector;
 			} else if (nearestUnscoutedSector) {
 				l = nearestUnscoutedSector.get(PositionComponent).level;
 				s = nearestUnscoutedSector.get(PositionComponent).sector;
+			} else if (nearestUnscoutedLocaleSector) {
+				l = nearestUnscoutedLocaleSector.get(PositionComponent).level;
+				s = nearestUnscoutedLocaleSector.get(PositionComponent).sector;
 			} else {
 				l = nearestCampSector.get(PositionComponent).level;
 				s = nearestCampSector.get(PositionComponent).sector;
@@ -212,6 +239,21 @@ define(['ash',
 				this.playerActionFunctions.scout();
                 return true;
             }
+            
+			var sectorLocalesComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorLocalesComponent);
+			var sectorStatusComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			for (var i = 0; i < sectorLocalesComponent.locales.length; i++) {
+				var locale = sectorLocalesComponent.locales[i];
+                if (!sectorStatusComponent.isLocaleScouted(i)) {
+                    var action = "scout_locale_" + i;
+                    if (this.playerActionFunctions.playerActionsHelper.checkAvailability(action)) {
+                        this.playerActionFunctions.scoutLocale(i);
+                        this.printStep("scout locale " + locale.type);
+                        return;
+                    }
+                }
+            }
+            
             return false;
 		},
 		
@@ -246,8 +288,8 @@ define(['ash',
         idleOut: function (isExpress) {
             var hasVision = this.playerStatsNodes.head.vision.value >= this.playerStatsNodes.head.vision.maximum;
             if (!hasVision) {
-                this.printStep("waiting for vision");
                 if (isExpress) this.playerStatsNodes.head.vision.value = this.playerStatsNodes.head.vision.maximum;
+                else this.printStep("waiting for vision");
                 return true;
             }
             return false;
@@ -256,21 +298,29 @@ define(['ash',
         manageCamp: function (isExpress) {
             var campComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(CampComponent);
             if (campComponent) {
+                var improvementsComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+                
+                // cheat population
+                var maxPopulation = improvementsComponent.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
+                maxPopulation += improvementsComponent.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
+                if (isExpress && campComponent.population < maxPopulation) this.playerActionFunctions.cheat("pop");
+                
                 // assign workers
-                if (campComponent.freePopulation > 0) {
+                if (campComponent.getFreePopulation() > 0 || this.refreshWorkers) {
                     var pop = campComponent.population;
                     var trappers = Math.floor(pop / 2);
                     var waters = Math.floor(pop / 4);
-                    var specialistPop = pop - trappers - waters;
-                    var ropers = specialistPop > 1 ? 1 : 0;
+                    var specialistPop = Math.floor(pop - trappers - waters);
+                    var ropers = specialistPop > 1 && this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("weaver")) ? 1 : 0;
                     var chemists = 0;
                     var apothecaries = 0;
                     var smiths = 0;
                     var concrete = 0;
                     var soldiers = 0;
-                    var scavengers = pop - trappers - waters - ropers - chemists - apothecaries - smiths - concrete - soldiers;
+                    var scavengers = Math.floor(pop - trappers - waters - ropers - chemists - apothecaries - smiths - concrete - soldiers);
                     this.playerActionFunctions.assignWorkers(scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers);
                     this.printStep("assigned workers");
+                    this.refreshWorkers = false;
                     return true;
                 }
                 
@@ -278,6 +328,31 @@ define(['ash',
                 if (this.playerActionFunctions.playerActionsHelper.checkAvailability("use_in_campfire")) {
                     this.playerActionFunctions.useCampfire();
                     this.printStep("used campfire");
+                    return true;
+                }
+                
+                if (this.playerActionFunctions.playerActionsHelper.checkAvailability("use_in_hospital")) {
+                    this.playerActionFunctions.useHospital();
+                    this.printStep("used hospital");
+                    return true;
+                }
+            }
+            return false;
+        },
+        
+        buildPassages: function (isExpress) {
+            var projects = this.levelHelper.getAvailableProjectsForCamp(this.playerActionFunctions.playerLocationNodes.head.entity, this.playerActionFunctions);
+            for (var i = 0; i < projects.length; i++) {
+                var project = projects[i];
+                var action = project.action;
+                var sectorEntity = this.levelHelper.getSectorByPosition(project.level, project.sector);
+                var available = this.playerActionFunctions.playerActionsHelper.checkAvailability(action, false, sectorEntity);
+                if (available) {
+                    var sectorId = project.level + "-" + project.sector;
+                    var baseId = this.playerActionFunctions.playerActionsHelper.getBaseActionID(action);
+                    var func = this.playerActionFunctions.uiFunctions.actionToFunctionMap[baseId];
+                    func.call(this.playerActionFunctions, sectorId);
+                    this.printStep("build project: " + project.name);
                     return true;
                 }
             }
@@ -299,6 +374,12 @@ define(['ash',
                 return true;
             }
             
+            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_hospital")) {
+                this.printStep("build hospital");
+                this.playerActionFunctions.buildHospital();
+                return true;
+            }
+            
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_campfire")) {
                 if (improvementsComponent.getCount(improvementNames.campfire) < 1) {
                     this.printStep("build campfire");
@@ -310,8 +391,35 @@ define(['ash',
             return false;
         },
         
+        unlockUpgrades: function (isExpress) {
+            var unlocked = false;
+            var upgradeDefinition;
+            var hasBlueprintUnlocked;
+            var hasBlueprintNew;
+            var isAvailable;
+			for (var id in UpgradeConstants.upgradeDefinitions) {
+				upgradeDefinition = UpgradeConstants.upgradeDefinitions[id];
+				if (!this.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasBought(id)) {
+					hasBlueprintUnlocked = this.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasAvailableBlueprint(id);
+					hasBlueprintNew = this.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasNewBlueprint(id);
+					isAvailable = this.playerActionFunctions.playerActionsHelper.checkAvailability(id);
+                    if (hasBlueprintNew) {
+                        this.playerActionFunctions.unlockUpgrade(upgradeDefinition.id);
+                        this.printStep("unlocked upgrade with blueprint " + upgradeDefinition.name);
+                        unlocked = true;
+                    } else if (isAvailable) {
+                        this.playerActionFunctions.buyUpgrade(upgradeDefinition.id);
+                        this.printStep("bought upgrade " + upgradeDefinition.name);
+                        this.refreshWorkers = true;
+                        unlocked = true;
+                    }
+                }
+            }
+            return unlocked;
+        },
+        
         idleIn: function (isExpress) {
-            return false;
+            return Math.random() > 0.5;
         },
         
         printStep: function (message) {
@@ -321,6 +429,10 @@ define(['ash',
             if (this.autoPlayNodes.head.autoPlay.isManagingCamps) status = "managing";
             var isExpress = this.autoPlayNodes.head.autoPlay.express;
             console.log("autoplay (" + isExpress + ") (" + status + ") " + playerPosition.level + "-" + playerPosition.sector + ": " + message);
+        },
+        
+        hasUpgrade: function (upgradeId) {
+            return this.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasBought(upgradeId);
         },
         
     });

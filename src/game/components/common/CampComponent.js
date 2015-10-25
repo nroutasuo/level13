@@ -19,7 +19,7 @@ define(['ash', 'game/constants/CampConstants'], function (Ash, CampConstants) {
             this.campName = "";
         },
         
-        getFreePopulation: function() {
+        getFreePopulation: function () {
             return Math.floor(this.population - this.getAssignedPopulation());
         },
         

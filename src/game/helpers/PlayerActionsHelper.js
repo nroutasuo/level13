@@ -427,7 +427,7 @@ define([
                                     if (log) console.log("WARN: " + reason);
                                     return { value: 0, reason: "Blocked. " + reason };
                                 }
-                            }                            
+                            }
                         }
                     }
                     if (typeof requirements.sector.passageDown != 'undefined') {

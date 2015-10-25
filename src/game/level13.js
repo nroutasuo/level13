@@ -175,7 +175,7 @@ define([
 			this.engine.addSystem(new GlobalResourcesSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new CampEventsSystem(this.occurrenceFunctions, this.upgradeEffectsHelper, this.gameState, this.saveSystem), SystemPriorities.update);
 			
-			this.engine.addSystem(new AutoPlaySystem(this.playerActionFunctions, this.levelHelper, this.sectorHelper), SystemPriorities.postUpdate);
+			this.engine.addSystem(new AutoPlaySystem(this.playerActionFunctions, this.levelHelper, this.sectorHelper, this.upgradeEffectsHelper), SystemPriorities.postUpdate);
 			
 			this.engine.addSystem(new UIOutHeaderSystem(this.uiFunctions, this.gameState, this.resourcesHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutElementsSystem(this.uiFunctions, this.gameState, this.playerActionFunctions, this.resourcesHelper, this.levelHelper), SystemPriorities.render);

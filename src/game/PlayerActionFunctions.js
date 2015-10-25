@@ -190,9 +190,11 @@ define(['ash',
         
         moveResFromCampToBag: function (resourcesVO) {
             var playerLevelCamp = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity : null;
-            var playerResources = this.playerResourcesNodes.head.resources.resources;
-            var campResourcesSource = playerLevelCamp.get(ResourcesComponent).resources;
-            this.moveResourcesFromVOToVO(resourcesVO, campResourcesSource, playerResources);
+            if (playerLevelCamp) {
+                var playerResources = this.playerResourcesNodes.head.resources.resources;
+                var campResourcesSource = playerLevelCamp.get(ResourcesComponent).resources;
+                this.moveResourcesFromVOToVO(resourcesVO, campResourcesSource, playerResources);
+            }
         },
         
         moveResFromBagToCamp: function () {
@@ -410,8 +412,8 @@ define(['ash',
         },
         
         buildPassage: function (sectorPos, up, action, neighbourAction) {
-			var l = sectorPos.split("-")[0];
-			var s = sectorPos.split("-")[1];
+			var l = parseInt(sectorPos.split("-")[0]);
+			var s = parseInt(sectorPos.split("-")[1]);
             var playerPos = this.playerPositionNodes.head.position;
 			var sector = this.levelHelper.getSectorByPosition(l, s);
 			var neighbour = this.levelHelper.getSectorByPosition(up ? l + 1 : l - 1, s);
@@ -864,7 +866,7 @@ define(['ash',
                             var pop = parseInt(inputParts[1]);
                             camp.setPopulation(pop);
                         } else {
-                            camp.addPopulation(5);
+                            camp.addPopulation(1);
                         }
                     } else {
                         console.log("WARN: Camp not found.");
