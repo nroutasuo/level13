@@ -3,7 +3,7 @@ define([
     'ash',
 	'game/constants/PlayerActionConstants',
 	'game/constants/ItemConstants',
-    'game/nodes/PlayerStatsNode',
+    'game/nodes/player/PlayerStatsNode',
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/tribe/TribeUpgradesNode',
@@ -21,7 +21,7 @@ define([
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
-    'game/components/sector/improvements/CampComponent',
+    'game/components/common/CampComponent',
 ], function (
 	Ash, PlayerActionConstants, ItemConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,

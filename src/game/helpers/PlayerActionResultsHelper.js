@@ -5,7 +5,7 @@ define([
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
 	'game/constants/UpgradeConstants',
-    'game/nodes/PlayerStatsNode',
+    'game/nodes/player/PlayerStatsNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/tribe/TribeUpgradesNode',

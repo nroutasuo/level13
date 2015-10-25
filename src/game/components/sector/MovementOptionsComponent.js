@@ -1,5 +1,5 @@
 // A convenience component to store which directions the player can move to from this sector
-// Updated by the SectorMovementOptionsSystem
+// Updated by the SectorStatusSystem
 define(['ash'], function (Ash) {
     var MovementOptionsComponent = Ash.Class.extend({
         

@@ -2,7 +2,8 @@ define(function () {
     var SystemPriorities = {
         preUpdate : 1,
         update : 2,
-        render : 3
+        postUpdate: 3,
+        render : 4
     };
     return SystemPriorities;
 });

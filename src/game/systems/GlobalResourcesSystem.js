@@ -9,7 +9,7 @@ define([
     'game/nodes/tribe/TribeResourcesNode',
     'game/components/common/ResourcesComponent',
     'game/components/tribe/UpgradesComponent',
-    'game/components/sector/improvements/CampComponent',
+    'game/components/common/CampComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/vos/ResourcesVO'
 ], function (Ash,

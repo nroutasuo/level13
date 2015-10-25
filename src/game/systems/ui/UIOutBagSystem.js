@@ -3,7 +3,7 @@ define([
     'game/constants/UIConstants',
     'game/constants/FightConstants',
     'game/constants/ItemConstants',
-    'game/nodes/ItemsNode',
+    'game/nodes/player/ItemsNode',
     'game/components/common/ResourcesComponent',
     'game/components/player/StaminaComponent',
     'game/components/player/VisionComponent',

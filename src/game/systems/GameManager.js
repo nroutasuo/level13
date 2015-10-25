@@ -3,8 +3,9 @@ define([
     'game/WorldCreator',
     'game/helpers/SaveHelper',
     'game/nodes/sector/SectorNode',
+    'game/nodes/LevelNode',
     'game/components/common/PositionComponent'
-], function (Ash, WorldCreator, SaveHelper, SectorNode, PositionComponent) {
+], function (Ash, WorldCreator, SaveHelper, SectorNode, LevelNode, PositionComponent) {
 
     var GameManager = Ash.System.extend({
 	
@@ -75,7 +76,7 @@ define([
 		
 		createLevels: function (seed) {
 			for(var i = WorldCreator.getBottomLevel(seed); i<= WorldCreator.getHighestLevel(seed); i++) {
-				this.creator.createLevel(i);
+				this.creator.createLevel(this.saveHelper.saveKeys.level + i, i);
 				for(var s = WorldCreator.getFirstSector(seed, i); s <= WorldCreator.getLastSector(seed, i); s++) {
 					var up = WorldCreator.getPassageUp(i, s);
 					var down = WorldCreator.getPassageDown(i, s);
@@ -119,26 +120,33 @@ define([
 			this.gameState.worldSeed = worldSeed;
 			
 			// Create other entities and fill components
-			if (hasSave) {		
-			var entitiesObject = JSON.parse(localStorage.entitiesObject);
-			var failedComponents = 0;
-			
-			var sectorNodes = this.creator.engine.getNodeList(SectorNode);
-			var positionComponent;
-			var saveKey;
-			for (var node = sectorNodes.head; node; node = node.next) {
-				positionComponent = node.entity.get(PositionComponent);
-				saveKey = this.saveHelper.saveKeys.sector + positionComponent.level + "-" + positionComponent.sector;
-				failedComponents += this.saveHelper.loadEntity(entitiesObject, saveKey, node.entity);
-			}
-			
-			failedComponents += this.saveHelper.loadEntity(entitiesObject, this.saveHelper.saveKeys.player, this.player);
-			failedComponents += this.saveHelper.loadEntity(entitiesObject, this.saveHelper.saveKeys.tribe, this.tribe);
-			
-			console.log("Loaded from " + localStorage.timeStamp);
-			
-			if (failedComponents > 0) {
-				console.log(failedComponents + " components failed to load.");
+			if (hasSave) {
+				var entitiesObject = JSON.parse(localStorage.entitiesObject);
+				var failedComponents = 0;
+				
+				var sectorNodes = this.creator.engine.getNodeList(SectorNode);
+				var positionComponent;
+				var saveKey;
+				for (var sectorNode = sectorNodes.head; sectorNode; sectorNode = sectorNode.next) {
+					positionComponent = sectorNode.entity.get(PositionComponent);
+					saveKey = this.saveHelper.saveKeys.sector + positionComponent.level + "-" + positionComponent.sector;
+					failedComponents += this.saveHelper.loadEntity(entitiesObject, saveKey, sectorNode.entity);
+				}
+				
+				var levelNodes = this.creator.engine.getNodeList(LevelNode);
+				for (var levelNode = levelNodes.head; levelNode; levelNode = levelNode.next) {
+					positionComponent = levelNode.entity.get(PositionComponent);
+					saveKey = this.saveHelper.saveKeys.sector + positionComponent.level;
+					failedComponents += this.saveHelper.loadEntity(entitiesObject, saveKey, levelNode.entity);
+				}
+				
+				failedComponents += this.saveHelper.loadEntity(entitiesObject, this.saveHelper.saveKeys.player, this.player);
+				failedComponents += this.saveHelper.loadEntity(entitiesObject, this.saveHelper.saveKeys.tribe, this.tribe);
+				
+				console.log("Loaded from " + localStorage.timeStamp);
+				
+				if (failedComponents > 0) {
+					console.log(failedComponents + " components failed to load.");
 			}
 			
 			return true;

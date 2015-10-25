@@ -1,7 +1,7 @@
 define([
     'ash',
 	'game/constants/GameConstants',
-	'game/nodes/PlayerStatsNode',
+	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/nodes/sector/CampNode',
     'game/components/sector/improvements/SectorImprovementsComponent',

@@ -30,7 +30,7 @@ define([
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/LastVisitedCampComponent',
-    'game/components/sector/improvements/CampComponent',
+    'game/components/common/CampComponent',
     'game/components/tribe/UpgradesComponent',
 	'game/components/level/LevelPassagesComponent',
     'game/vos/PerkVO',
@@ -113,11 +113,12 @@ define([
 			return player;
         },
 	
-		createLevel: function (pos) {
+		createLevel: function (saveKey, pos) {
 			var level = new Ash.Entity()
 			.add(new LevelComponent(pos))
 			.add(new PositionComponent(pos))
-			.add(new LevelPassagesComponent());
+			.add(new LevelPassagesComponent())
+			.add(new SaveComponent(saveKey, [CampComponent]));
 			this.engine.addEntity(level);
 			return level;
 		},

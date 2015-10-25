@@ -4,10 +4,11 @@ define([
     'game/WorldCreator',
     'game/constants/PlayerActionConstants',
     'game/nodes/PlayerLocationNode',
-    'game/nodes/PlayerStatsNode',
+    'game/nodes/player/PlayerStatsNode',
+    'game/nodes/player/AutoPlayNode',
     'game/nodes/sector/CampNode',
     'game/nodes/NearestCampNode',
-    'game/components/sector/improvements/CampComponent',
+    'game/components/common/CampComponent',
     'game/components/common/PositionComponent',
 ], function (Ash,
     UIConstants,
@@ -15,6 +16,7 @@ define([
 	PlayerActionConstants,
 	PlayerLocationNode,
 	PlayerStatsNode,
+	AutoPlayNode,
 	CampNode,
 	NearestCampNode,
 	CampComponent,
@@ -26,6 +28,7 @@ define([
         campNodes: null,
         nearestCampNodes: null,
 		playerStatsNodes: null,
+		autoPlayNodes: null,
         
         gameState: null,
         playerActions: null,
@@ -49,6 +52,7 @@ define([
             this.campNodes = engine.getNodeList(CampNode);
             this.nearestCampNodes = engine.getNodeList(NearestCampNode);
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
+			this.autoPlayNodes = engine.getNodeList(AutoPlayNode);
             
             this.campNodes.nodeAdded.add(this.onCampNodeAdded, this);
             this.campNodes.nodeRemoved.add(this.onCampNodeRemoved, this);
@@ -59,6 +63,7 @@ define([
             this.currentLocationNodes = null;
             this.campNodes = null;
             this.nearestCampNodes = null;
+			this.autoPlayNodes = null;
         },
         
         onCampNodeAdded: function (node) {
@@ -83,6 +88,7 @@ define([
             var levelHelper = this.levelHelper;
 			
             var playerVision = this.playerStatsNodes.head.vision.value;
+			var isAutoPlaying = this.autoPlayNodes.head;
             
             var hasButtonCooldown = function (button) {
                 return ($(button).attr("data-hasCooldown") === "true");
@@ -148,7 +154,7 @@ define([
 				$(this).parent(".container-btn-action").toggleClass("btn-disabled-vision", disabledVision);
 				$(this).toggleClass("btn-disabled-resources", disabledResources);
 				$(this).toggleClass("btn-disabled-cooldown", disabledCooldown);
-				$(this).attr("disabled", isDisabled);
+				$(this).attr("disabled", isDisabled || isAutoPlaying);
             });
             
             // Update button callouts and cooldowns

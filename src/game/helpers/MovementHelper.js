@@ -2,7 +2,7 @@
 define([
     'ash',
     'game/constants/ItemConstants',
-    'game/nodes/ItemsNode',
+    'game/nodes/player/ItemsNode',
     'game/components/sector/PassagesComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',

@@ -9,7 +9,7 @@ define(['ash',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
-    'game/components/sector/improvements/CampComponent'
+    'game/components/common/CampComponent',
 ], function (Ash, OccurrenceConstants, TextConstants, CampNode,
     PositionComponent, ResourcesComponent, RaidComponent,
     SectorFeaturesComponent, SectorControlComponent, SectorImprovementsComponent, CampComponent) {

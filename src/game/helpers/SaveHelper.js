@@ -1,7 +1,7 @@
 // Singleton with helper methods for saving and loading and related string manipulation
 define([
     'ash',
-    'game/components/sector/improvements/CampComponent',
+    'game/components/common/CampComponent',
     'game/components/common/VisitedComponent',
 	'game/components/sector/LastVisitedCampComponent',
     'game/components/sector/events/CampEventTimersComponent',
@@ -13,11 +13,12 @@ define([
 			player: "player",
 			tribe: "tribe",
 			sector: "sector-",
+			level: "level-",
 		},
 		
 		optionalComponents: [ CampComponent, VisitedComponent, LastVisitedCampComponent, CampEventTimersComponent ],
 		
-		constructor: function () {			
+		constructor: function () {
 		},
 		
 		loadEntity: function (entitiesObject, saveKey, entity) {

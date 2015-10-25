@@ -13,7 +13,7 @@ define([
     'game/components/common/PositionComponent',
     'game/components/common/ResourceAccumulationComponent',
     'game/components/player/PerksComponent',
-    'game/components/sector/improvements/CampComponent',
+    'game/components/common/CampComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/LogMessagesComponent',
 ], function (Ash, GameConstants, PlayerActionConstants, PerkConstants, CampConstants,

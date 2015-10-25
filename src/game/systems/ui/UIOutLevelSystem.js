@@ -17,7 +17,7 @@ define([
     'game/components/sector/MovementOptionsComponent',
     'game/components/common/PositionComponent',
     'game/components/common/VisitedComponent',
-    'game/components/sector/improvements/CampComponent',
+    'game/components/common/CampComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/EnemiesComponent'
@@ -37,6 +37,7 @@ define([
 		gameState : null,
 		movementHelper: null,
 		resourcesHelper: null,
+		sectorHelper: null,
 		
 		engine: null,
 		
@@ -50,11 +51,12 @@ define([
 		
 		visitedSectors: 0,
 	
-		constructor: function (uiFunctions, tabChangedSignal, gameState, movementHelper, resourceHelper, playerMovedSignal) {
+		constructor: function (uiFunctions, tabChangedSignal, gameState, movementHelper, resourceHelper, sectorHelper, playerMovedSignal) {
 			this.uiFunctions = uiFunctions;
 			this.gameState = gameState;
 			this.movementHelper = movementHelper;
 			this.resourcesHelper = resourceHelper;
+			this.sectorHelper = sectorHelper;
 			this.tabChangedSignal = tabChangedSignal;
 			this.playerMovedSignal = playerMovedSignal;
 			return this;
@@ -91,9 +93,9 @@ define([
 		},
 		
 		initLeaveCampRes: function () {
-			if (this.gameState.uiStatus.leaveCampRes) {	
+			if (this.gameState.uiStatus.leaveCampRes) {
 				var campResources = this.resourcesHelper.getCurrentStorage();
-				for(var key in resourceNames) {
+				for (var key in resourceNames) {
 					var name = resourceNames[key];
 					var oldVal = this.gameState.uiStatus.leaveCampRes[name];
 					var campVal = campResources.resources.getResource(name);
@@ -106,7 +108,7 @@ define([
 		},
 		
 		update: function (time) {
-			if (this.gameState.uiStatus.currentTab != this.uiFunctions.elementIDs.tabs.out) {
+			if (this.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.out) {
 				this.refreshedEmbark = false;
 				this.refreshedLevel = false;
 				return;
@@ -155,9 +157,9 @@ define([
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
 			var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
+			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var vision = this.playerPosNodes.head.entity.get(VisionComponent).value;
-			var hasEnemies = this.playerLocationNodes.head.entity.get(SectorControlComponent).maxUndefeatedEnemies > 0;
 			var hasVision = vision > PlayerStatConstants.VISION_BASE;
 			var hasBridgeableBlocker = (passagesComponent.blockerLeft != null && passagesComponent.blockerLeft.bridgeable) || (passagesComponent.blockerRight != null && passagesComponent.blockerRight.bridgeable);
 			var passageUpAvailable = passagesComponent.passageUp != null;
@@ -185,7 +187,7 @@ define([
 			$("#tab-vis-out").toggle(this.visitedSectors > 1 || this.gameState.unlockedFeatures.levels);
 			
 			// Description
-			var isScouted = this.playerLocationNodes.head.entity.get(SectorStatusComponent).scouted;
+			var isScouted = sectorStatusComponent.scouted;
 			$("#out-desc").html(this.getDescription(
 				this.playerLocationNodes.head.entity,
 				hasCampHere,
@@ -217,12 +219,12 @@ define([
 			});
 			var collectorFood = improvements.getVO(improvementNames.collector_food);
 			var collectorWater = improvements.getVO(improvementNames.collector_water);
-			var discoveredResources = this.getLocationDiscoveredResources();
+			var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
 			var hasFoundFood = featuresComponent.resources.food > 0 && discoveredResources.indexOf("food") >= 0;
 			var hasFoundWater = featuresComponent.resources.water > 0 && discoveredResources.indexOf("water") >= 0;
 			$("#out-improvements-collector-food").toggle(collectorFood.count > 0 || hasFoundFood);
 			$("#out-improvements-collector-water").toggle(collectorWater.count > 0 || hasFoundWater);
-			$("#out-improvements-camp").toggle(isScouted && !hasCamp && featuresComponent.canHaveCamp() && !passagesComponent.passageUp && !passagesComponent.passageDown && !hasEnemies);
+			$("#out-improvements-camp").toggle(sectorStatusComponent.canBuildCamp);
 			$("#out-improvements-bridge").toggle(hasCamp && hasBridgeableBlocker);
 			$("#out-improvements-passage-up").toggle(isScouted && passageUpAvailable);
 			$("#out-improvements-passage-down").toggle(isScouted && passageDownAvailable);
@@ -254,7 +256,7 @@ define([
 				$("#out-action-move-camp").toggle(hasCamp && !hasCampHere);
 			}
 			
-			var discoveredResources = this.getLocationDiscoveredResources();
+			var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
 			var showFight = this.gameState.unlockedFeatures.fight && !sectorControlComponent.hasControl() && isScouted;
 			var showDespair =
 				!hasCampHere &&
@@ -335,7 +337,7 @@ define([
 			}
 			
 			if (featuresComponent.resources.getTotal() > 0) {
-				var discoveredResources = this.getLocationDiscoveredResources();
+				var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
 				if (discoveredResources.length > 0) {
 					description += "Resources found here: " + featuresComponent.getResourcesString(discoveredResources) + ". ";
 				}
@@ -422,21 +424,6 @@ define([
 			// if (window.app) enemyDesc += "Required strength: " + EnemyConstants.getRequiredStength(levelOrdinal, groundLevelOrdinal, totalLevels) + ". ";
 			
 			return enemyDesc;
-		},
-		
-		getLocationDiscoveredResources: function () {
-            var resources = [];
-            var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-            var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			for (var i = 0; i < sectorStatus.discoveredResources.length; i++) {
-                var res = sectorStatus.discoveredResources[i];
-                if (sectorFeatures.resources[res] > 0) {
-                    resources.push(res);
-                } else {
-                    console.log("WARN: Resource in discovered resources not found on sector.");
-                }
-			}
-            return resources;
 		},
 		
 		updateLocales: function () {

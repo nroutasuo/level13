@@ -198,7 +198,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                 uiFunctions.showInput(
                     "Give your camp a new name",
                     prevCampName,
-                    function(input) {
+                    function (input) {
                         playerActions.setNearestCampName(input);
                     });
             });

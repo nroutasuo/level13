@@ -3,7 +3,8 @@ define([
     'game/constants/UIConstants',
     'game/WorldCreator',
     'game/systems/SaveSystem',
-    'game/nodes/PlayerStatsNode',
+    'game/nodes/player/PlayerStatsNode',
+    'game/nodes/player/AutoPlayNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/DeityNode',
     'game/components/player/DeityComponent',
@@ -13,7 +14,7 @@ define([
     'game/components/sector/SectorFeaturesComponent',
 ], function (Ash,
     UIConstants, WorldCreator, SaveSystem,
-	PlayerStatsNode, PlayerLocationNode, DeityNode,
+	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, DeityNode,
 	DeityComponent,
 	ItemsComponent,
 	PerksComponent,
@@ -46,6 +47,7 @@ define([
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			this.deityNodes = engine.getNodeList(DeityNode);
 			this.currentLocationNodes = engine.getNodeList(PlayerLocationNode);
+			this.autoPlayNodes = engine.getNodeList(AutoPlayNode);
 			
 			this.generateStatsCallouts();
 		},
@@ -55,6 +57,7 @@ define([
 			this.playerStatsNodes = null;
 			this.deityNodes = null;
 			this.currentLocationNodes = null;
+			this.autoPlayNodes = null;
 		},
 		
 		generateStatsCallouts: function () {
@@ -241,12 +244,16 @@ define([
 		
 		updateGameMsg: function () {
 			if (this.engine) {
+				var gameMsg = "";
+				
 				var saveSystem = this.engine.getSystem(SaveSystem);
 				var timeStamp = new Date().getTime();
-				if (saveSystem.lastSaveTimeStamp > 0 && timeStamp - saveSystem.lastSaveTimeStamp < 3*1000)
-					$("#game-msg").text("Game saved");
-				else
-					$("#game-msg").text("");
+				if (saveSystem.lastSaveTimeStamp > 0 && timeStamp - saveSystem.lastSaveTimeStamp < 3 * 1000)
+					gameMsg = "Game saved ";
+					
+				if (this.autoPlayNodes.head) gameMsg += "Autoplaying";
+				
+				$("#game-msg").text(gameMsg);
 			}
 			
 			$("#game-version").text("v. " + this.uiFunctions.changeLogHelper.getCurrentVersionNumber());

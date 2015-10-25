@@ -9,7 +9,7 @@ define([
     'game/components/sector/CurrentNearestCampComponent',
     'game/components/common/PositionComponent',
     'game/components/common/VisitedComponent',
-    'game/components/sector/improvements/CampComponent',
+    'game/components/common/CampComponent',
 ], function (Ash, PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, PositionComponent,
 	VisitedComponent, CampComponent) {

@@ -4,7 +4,7 @@ define([
     'game/constants/FightConstants',
     'game/constants/EnemyConstants',
     'game/nodes/FightNode',
-    'game/nodes/PlayerStatsNode',
+    'game/nodes/player/PlayerStatsNode',
     'game/components/common/PositionComponent',
     'game/components/sector/FightComponent',
     'game/components/sector/SectorControlComponent',

@@ -10,7 +10,7 @@ define(['ash',
 	'game/constants/UIConstants',
 	'game/constants/TextConstants',
 	'game/nodes/PlayerPositionNode',
-	'game/nodes/PlayerStatsNode',
+	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/player/PlayerResourcesNode',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/NearestCampNode',
@@ -22,7 +22,8 @@ define(['ash',
 	'game/components/common/VisitedComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PerksComponent',
-	'game/components/sector/improvements/CampComponent',
+	'game/components/player/AutoPlayComponent',
+    'game/components/common/CampComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/FightComponent',
 	'game/components/sector/EnemiesComponent',
@@ -43,7 +44,7 @@ define(['ash',
 	PlayerPositionNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent, VisitedComponent,
-	ItemsComponent, PerksComponent,
+	ItemsComponent, PerksComponent, AutoPlayComponent,
 	CampComponent, SectorImprovementsComponent, FightComponent, EnemiesComponent,
 	SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, CampEventTimersComponent,
@@ -146,12 +147,14 @@ define(['ash',
                         playerPos.level--;
                         break;
                     case this.directions.camp:
-                        this.playerActionsHelper.deductCosts("move_camp_level");
-                        var campSector = this.nearestCampNodes.head.entity;
-                        var campPosition = campSector.get(PositionComponent);
-                        playerPos.level = campPosition.level;
-                        playerPos.sector = campPosition.sector;
-                        this.enterCamp(true);
+                        if (this.nearestCampNodes.head) {
+                            this.playerActionsHelper.deductCosts("move_camp_level");
+                            var campSector = this.nearestCampNodes.head.entity;
+                            var campPosition = campSector.get(PositionComponent);
+                            playerPos.level = campPosition.level;
+                            playerPos.sector = campPosition.sector;
+                            this.enterCamp(true);
+                        }
                         break;
                 }
                 
@@ -363,26 +366,30 @@ define(['ash',
             this.save();
         },
         
-        buildCamp: function() {
-            if(this.playerActionsHelper.checkAvailability("build_out_camp", true)) {
+        buildCamp: function () {
+            if (this.playerActionsHelper.checkAvailability("build_out_camp", true)) {
                 this.playerActionsHelper.deductCosts("build_out_camp");               
                 
                 var sector = this.playerLocationNodes.head.entity;
                 sector.add(new CampComponent());
                 sector.add(new CampEventTimersComponent());
+				
+				var level = this.levelHelper.getLevelEntityForSector(sector);
+				level.add(new CampComponent());
+				
                 this.buildStorage(true, sector);
                 
-                this.addLogMessage("Built a camp.");                
+                this.addLogMessage("Built a camp.");
                 this.forceResourceBarUpdate();
                 this.save();
             }
         },
 		
-		buildPassageUpStairs: function(sectorPos) {
+		buildPassageUpStairs: function (sectorPos) {
             this.buildPassage(sectorPos, true, "build_out_passage_up_stairs", "build_out_passage_down_stairs");
         },
         
-        buildPassageDownStairs: function(sectorPos) {
+        buildPassageDownStairs: function (sectorPos) {
             this.buildPassage(sectorPos, false, "build_out_passage_down_stairs", "build_out_passage_up_stairs");
         },
 		
@@ -424,19 +431,17 @@ define(['ash',
             this.addLogMessage("Made a bucket. It will collect water.");
         },
         
-        buildHouse: function (automatic) {
-            if(this.playerActionsHelper.checkAvailability("build_in_house")) {
-                this.buildImprovement("build_in_house", this.playerActionsHelper.getImprovementNameForAction("build_in_house"), null, automatic);
-                if (!automatic) {
-                    var msg = "Built a hut.";
-                    var totalHouses = 0;
-                    for (var node = this.engine.getNodeList(CampNode).head; node; node = node.next) {
-                        var improvementsComponent = node.entity.get(SectorImprovementsComponent);
-                        totalHouses += improvementsComponent.getCount(improvementNames.house);
-                    }
-                    if (totalHouses < 5) msg += " People will come if they hear about the camp.";
-                    this.addLogMessage(msg);
+        buildHouse: function () {
+            if (this.playerActionsHelper.checkAvailability("build_in_house")) {
+                this.buildImprovement("build_in_house", this.playerActionsHelper.getImprovementNameForAction("build_in_house"), null);
+                var msg = "Built a hut.";
+                var totalHouses = 0;
+                for (var node = this.engine.getNodeList(CampNode).head; node; node = node.next) {
+                    var improvementsComponent = node.entity.get(SectorImprovementsComponent);
+                    totalHouses += improvementsComponent.getCount(improvementNames.house);
                 }
+                if (totalHouses < 5) msg += " People will come if they hear about the camp.";
+                this.addLogMessage(msg);
             }
         },
         
@@ -488,60 +493,60 @@ define(['ash',
         
         buildSmithy: function () {
             this.buildImprovement("build_in_smithy", this.playerActionsHelper.getImprovementNameForAction("build_in_smithy"));
-            this.addLogMessage("Built a smithy.");            
+            this.addLogMessage("Built a smithy.");
         },
         
-        buildApothecary: function() {
+        buildApothecary: function () {
             this.buildImprovement("build_in_apothecary", this.playerActionsHelper.getImprovementNameForAction("build_in_apothecary"));
-            this.addLogMessage("Built an apothecary.");            
+            this.addLogMessage("Built an apothecary.");
         },
         
-        buildCementMill: function() {
+        buildCementMill: function () {
             this.buildImprovement("build_in_cementmill", this.playerActionsHelper.getImprovementNameForAction("build_in_cementmill"));
-            this.addLogMessage("Built a cement mill for making concrete.");            
+            this.addLogMessage("Built a cement mill for making concrete.");
         },
         
-        buildRadioTower: function() {
+        buildRadioTower: function () {
             this.buildImprovement("build_in_radio", this.playerActionsHelper.getImprovementNameForAction("build_in_radio"));
-            this.addLogMessage("Built a radio tower.");             
+            this.addLogMessage("Built a radio tower.");
         },
         
-        buildCampfire: function() {
+        buildCampfire: function () {
             this.buildImprovement("build_in_campfire", this.playerActionsHelper.getImprovementNameForAction("build_in_campfire"));
             this.addLogMessage("Built a campfire. Here, ideas are shared and discussed.");
         },
         
-        buildDarkFarm: function() {
+        buildDarkFarm: function () {
             this.buildImprovement("build_in_darkfarm", this.playerActionsHelper.getImprovementNameForAction("build_in_darkfarm"));
             this.addLogMessage("Built a snail farm.");
         },
         
-        buildHospital: function() {
+        buildHospital: function () {
             this.buildImprovement("build_in_hospital", this.playerActionsHelper.getImprovementNameForAction("build_in_hospital"));
             this.addLogMessage("Built a hospital.");
         },
         
-        buildLibrary: function() {
+        buildLibrary: function () {
             this.buildImprovement("build_in_library", this.playerActionsHelper.getImprovementNameForAction("build_in_library"));
-            this.addLogMessage("Built a library.");            
+            this.addLogMessage("Built a library.");
         },
         
-        buildMarket: function() {
+        buildMarket: function () {
             this.buildImprovement("build_in_market", this.playerActionsHelper.getImprovementNameForAction("build_in_market"));
-            this.addLogMessage("Built a market."); 
+            this.addLogMessage("Built a market.");
         },
         
-        buildTradingPost: function() {
+        buildTradingPost: function () {
             this.buildImprovement("build_in_tradingPost", this.playerActionsHelper.getImprovementNameForAction("build_in_tradingPost"));
             this.addLogMessage("Build a trading post.");
         },
         
-        buildInn: function() {
+        buildInn: function () {
             this.buildImprovement("build_in_inn", this.playerActionsHelper.getImprovementNameForAction("build_in_inn"));
-            this.addLogMessage("Build an inn. Maybe it will attract adventurers.");            
+            this.addLogMessage("Build an inn. Maybe it will attract adventurers.");
         },
         
-        buildBridge: function() {
+        buildBridge: function () {
             if (this.playerActionsHelper.checkAvailability("build_out_bridge"), true) {
                 var sector = this.playerLocationNodes.head.entity;
                 var positionComponent = sector.get(PositionComponent);
@@ -590,7 +595,7 @@ define(['ash',
         useCampfire: function() {            
             var campSector = this.nearestCampNodes.head.entity;
             var campComponent = campSector.get(CampComponent);
-            if(this.playerActionsHelper.checkAvailability("use_in_campfire", true) && campSector) {
+            if (this.playerActionsHelper.checkAvailability("use_in_campfire", true) && campSector) {
                 this.playerActionsHelper.deductCosts("use_in_campfire");
                 if (campComponent.rumourpool >= 1) {
                     campComponent.rumourpool--;
@@ -670,7 +675,7 @@ define(['ash',
             this.save();   
         },
         
-        craftItem: function(itemId) {
+        craftItem: function (itemId) {
 			var actionName = "craft_" + itemId;
             if (this.playerActionsHelper.checkAvailability(actionName, true)) {                
                 this.playerActionsHelper.deductCosts(actionName);
@@ -679,7 +684,7 @@ define(['ash',
                 var item = this.playerActionsHelper.getItemForCraftAction(actionName);
                 itemsComponent.addItem(item.clone());
                 
-            this.gameState.unlockedFeatures.vision = true;
+				this.gameState.unlockedFeatures.vision = true;
                            
                 this.addLogMessage("Crafted " + item.name);
                 this.forceResourceBarUpdate();
@@ -734,7 +739,7 @@ define(['ash',
         buildImprovement: function(actionName, improvementName, otherSector, isFree) {
             var sector = otherSector || this.playerLocationNodes.head.entity;
             if (isFree || this.playerActionsHelper.checkAvailability(actionName, true, sector)) {
-                if(typeof isFree == "undefined" || !isFree) this.playerActionsHelper.deductCosts(actionName);
+                if (typeof isFree == "undefined" || !isFree) this.playerActionsHelper.deductCosts(actionName);
                 
                 var improvementsComponent = sector.get(SectorImprovementsComponent);
                 improvementsComponent.add(improvementName);
@@ -848,6 +853,10 @@ define(['ash',
                     this.playerStatsNodes.head.vision.value = parseInt(inputParts[1]);
                     break;
                 
+                case "stamina":                    
+                    this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health;
+                    break;
+                
 				case "pop":
                     var camp = currentSector.get(CampComponent);
                     if (camp) {
@@ -869,31 +878,31 @@ define(['ash',
                     break;
                 
                 case "camp":
-                    this.cheat("res");
-                    this.craftLight();
-                    itemsComponent.addItem(ItemConstants.itemDefinitions.bag[0].clone());
-                    this.cheat("stat");
-                    this.playerPositionNodes.head.position.level = 13;
-                    this.playerPositionNodes.head.position.sector = 3;
-                    this.scout();
-                    this.engine.updateComplete.addOnce(function() {
-                        this.cheat("res");
-                        this.scout();
-                        this.buildCamp();
-                        this.engine.updateComplete.addOnce(function() {
-                            this.cheat("res");
-                            this.buildHouse();
-                            this.engine.updateComplete.addOnce(function() {
-                                this.cheat("pop");
-                                this.cheat("heal");
-                            }, this);
-                        }, this);
-                        
-                    }, this);
+					var numCamps = parseInt(inputParts[1]);
+					if(!numCamps || numCamps < 1) numCamps = 1;
+			
+					this.cheat("item " + ItemConstants.itemDefinitions.bag[0].id);
+			
+					var autoplayStep = function () {
+						if (this.gameState.numCamps >= numCamps) {
+							this.engine.updateComplete.remove(autoplayStep, this);
+							this.cheat("autoplay off");
+						}
+					}
+					this.cheat("autoplay true");
+					this.engine.updateComplete.add(autoplayStep, this);					
                     break;
-                
-                case "2camp":
-                    break;
+				
+				case "autoplay":
+					var param = inputParts[1];
+					if (param === "off")
+						this.playerStatsNodes.head.entity.remove(AutoPlayComponent);
+					else if (param === "true") {
+						if (!this.playerStatsNodes.head.entity.has(AutoPlayComponent)) this.playerStatsNodes.head.entity.add(new AutoPlayComponent(true));
+					} else {
+						if (!this.playerStatsNodes.head.entity.has(AutoPlayComponent)) this.playerStatsNodes.head.entity.add(new AutoPlayComponent(false));
+					}
+					break;
                 
                 case "heal":
                     this.useHospital(true);

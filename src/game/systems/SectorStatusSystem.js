@@ -4,29 +4,40 @@ define([
     'game/nodes/sector/SectorNode',
     'game/nodes/PlayerLocationNode',
     'game/components/common/PositionComponent',
+    'game/components/common/CampComponent',
     'game/components/sector/MovementOptionsComponent',
     'game/components/sector/PassagesComponent',
+    'game/components/sector/SectorControlComponent',
+    'game/components/sector/SectorStatusComponent',
+    'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
 ], function (Ash,
 		SectorNode,
 		PlayerLocationNode,
 		PositionComponent,
+		CampComponent,
 		MovementOptionsComponent,
 		PassagesComponent,
 		SectorConrolComponent,
+		SectorStatusComponent,
+		SectorFeaturesComponent,
+		SectorControlComponent,
 		SectorImprovementsComponent) {
-    var SectorMovementOptionsSystem = Ash.System.extend({
+	
+    var SectorStatusSystem = Ash.System.extend({
 	    
 		sectorNodes: null,
 		playerLocationNodes: null,
 		
 		movementHelper: null,
+		levelHelper: null,
 		
 		sectorNeighboursDict: null,
 		
-		constructor: function (movementHelper) {
+		constructor: function (movementHelper, levelHelper) {
 			this.movementHelper = movementHelper;
+			this.levelHelper = levelHelper;
 		},
 	
 		addToEngine: function (engine) {
@@ -46,11 +57,25 @@ define([
 		
 		updateSector: function (entity) {
 			var positionComponent = entity.get(PositionComponent);
-			var movementOptions = entity.get(MovementOptionsComponent);
+			var sectorStatusComponent = entity.get(SectorStatusComponent);
+			var featuresComponent = entity.get(SectorFeaturesComponent);
 			var passagesComponent = entity.get(PassagesComponent);
-			var controlComponent = entity.get(SectorConrolComponent);
+			var hasEnemies = entity.get(SectorControlComponent).maxUndefeatedEnemies > 0;
 			
 			if (!positionComponent) return;
+			
+			var isScouted = sectorStatusComponent.scouted;
+			var hasCamp = this.levelHelper.getLevelEntityForSector(entity).has(CampComponent);
+			
+			this.updateMovementOptions(entity);
+			
+			sectorStatusComponent.canBuildCamp = isScouted && !hasCamp && featuresComponent.canHaveCamp() && !passagesComponent.passageUp && !passagesComponent.passageDown && !hasEnemies;
+		},
+		
+		updateMovementOptions: function (entity) {
+			var movementOptions = entity.get(MovementOptionsComponent);
+			var passagesComponent = entity.get(PassagesComponent);
+			var positionComponent = entity.get(PositionComponent);
 			
 			var sectorKey = this.getSectorKey(positionComponent);
 			if (!this.neighboursDict[sectorKey]) this.findNeighbours();
@@ -100,7 +125,7 @@ define([
 						}
 					}
 					
-					if (positionComponent.sector == otherPositionComponent.sector) {		       
+					if (positionComponent.sector == otherPositionComponent.sector) {
 						if (positionComponent.level - 1 == otherPositionComponent.level) {
 							this.neighboursDict[sectorKey].down = otherNode.entity;
 						}
@@ -112,11 +137,11 @@ define([
 			}
 		},
 		
-		getSectorKey: function(positionComponent) {
+		getSectorKey: function (positionComponent) {
 			return positionComponent.level + "-" + positionComponent.sector;
 		}
         
     });
 
-    return SectorMovementOptionsSystem;
+    return SectorStatusSystem;
 });

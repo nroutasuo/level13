@@ -141,10 +141,10 @@ function (Ash, ItemVO, ItemConstants) {
             return bonus;
         },
         
-        getAll: function() {
+        getAll: function () {
             var all = [];
             for (var key in this.items) {
-                for( var i = 0; i < this.items[key].length; i++) {
+                for (var i = 0; i < this.items[key].length; i++) {
                     all.push(this.items[key][i]);
                 }
             }
@@ -178,6 +178,7 @@ function (Ash, ItemVO, ItemConstants) {
         },
         
         getCountById: function (id) {
+            if (Object.keys(this.uniqueItems).length <= 0) this.getUnique();
             return typeof this.uniqueItems[id] === 'undefined' ? 0 : this.uniqueItems[id];
         },
         

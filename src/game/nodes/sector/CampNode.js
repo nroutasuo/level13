@@ -2,7 +2,7 @@ define([
     'ash',
     'game/components/type/SectorComponent',
     'game/components/common/PositionComponent',
-    'game/components/sector/improvements/CampComponent',
+    'game/components/common/CampComponent',
     'game/components/sector/events/CampEventTimersComponent',
 ], function(Ash, SectorComponent, PositionComponent, CampComponent, CampEventTimersComponent) {
     var CampNode = Ash.Node.create({

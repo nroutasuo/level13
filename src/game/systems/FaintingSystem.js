@@ -10,7 +10,7 @@ define([
     'game/components/common/ResourcesComponent',
     'game/components/common/PositionComponent',
     'game/components/common/VisitedComponent',
-    'game/components/sector/improvements/CampComponent',
+    'game/components/common/CampComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorStatusComponent',
 	'game/components/player/DeityComponent',

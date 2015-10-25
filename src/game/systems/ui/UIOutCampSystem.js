@@ -12,7 +12,7 @@ define([
     'game/components/player/PerksComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/common/PositionComponent',
-    'game/components/sector/improvements/CampComponent',
+    'game/components/common/CampComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/events/CampEventTimersComponent',

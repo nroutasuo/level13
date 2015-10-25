@@ -3,7 +3,7 @@ define([
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
     'game/nodes/sector/CampNode',
-    'game/nodes/PlayerStatsNode',
+    'game/nodes/player/PlayerStatsNode',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/PositionComponent',
     'game/components/common/LogMessagesComponent',

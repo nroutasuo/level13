@@ -52,13 +52,21 @@ define([
 			return null;
 		},
 		
+		getLevelEntityForPosition: function (level) {
+			var levelPosition;
+			for (var node = this.levelNodes.head; node; node = node.next) {
+				levelPosition = node.entity.get(PositionComponent);
+				if (levelPosition.level === level) return node.entity;
+			}
+			return null;
+		},
+		
 		getSectorByPosition: function (level, sector) {
 			var sectorPosition;
 			for (var node = this.sectorNodes.head; node; node = node.next) {
 				sectorPosition = node.entity.get(PositionComponent);
-				if (sectorPosition.level == level && sectorPosition.sector == sector) return node.entity;
+				if (sectorPosition.level === level && sectorPosition.sector === sector) return node.entity;
 			}
-			console.log("WARN:: No sector entity found for position " + level + "-" + sector);
 			return null;
 		},
 		
@@ -106,11 +114,8 @@ define([
 			var level = levelEntity.get(PositionComponent).level;
 			var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
 			
-			// TODO check if the levelPassagesComponent + system are needed if we need the sector entity anyway
-			
 			if (levelPassagesComponent) {
 				var sectorEntity;
-				var sectorEntityS;
 				var statusComponent;
 				var scouted;
 				var passage;
@@ -169,8 +174,7 @@ define([
             var featuresComponent;
             var sectorControlComponent;
             for (var node = this.sectorNodes.head; node; node = node.next) {
-                if (node.entity.get(PositionComponent).level === level)
-                {
+                if (node.entity.get(PositionComponent).level === level) {
                     featuresComponent = node.entity.get(SectorFeaturesComponent);
                     sectorControlComponent = node.entity.get(SectorControlComponent);
                     if (featuresComponent.getWorkshopResource() === resourceName) {
@@ -182,6 +186,29 @@ define([
             }
             return count;
         },
+		
+		isLevelUnlocked: function (level) {
+			if (level === 13) return true;
+			
+			var levelEntity = this.getLevelEntityForPosition(level);
+			if (levelEntity) {
+				var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
+				
+				if (level < 13) {
+					for (var iu = 0; iu < levelPassagesComponent.passagesUpBuilt.length; iu++) {
+						if (levelPassagesComponent.passagesUpBuilt[iu]) return true;
+					}
+				}
+				
+				if (level > 13) {
+					for (var id = 0; id < levelPassagesComponent.passagesDownBuilt.length; id++) {
+						if (levelPassagesComponent.passagesDownBuilt[id]) return true;
+					}
+				}
+			}
+			
+			return false;
+		},
 		
 		getLevelLocales: function (level, includeScouted, excludeLocaleVO) {
 			var locales = [];

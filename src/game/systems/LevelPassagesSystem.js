@@ -86,7 +86,7 @@ define([
 				improvementsComponent.getCount(improvementNames.passageUpHole) > 0 ||
 				improvementsComponent.getCount(improvementNames.passageUpElevator) > 0;
 			
-			var levelEntity = this.levelHelper.getLevelEntityForSector(entity);			
+			var levelEntity = this.levelHelper.getLevelEntityForSector(entity);
 			this.updateLevelPassagesComponent(levelEntity, s, passageUp, passageUpBuilt, passageDown, passageDownBuilt);
 		},
 		
