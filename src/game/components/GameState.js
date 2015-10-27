@@ -57,7 +57,7 @@ define(['ash', 'game/WorldCreator'], function (Ash, WorldCreator) {
         },
         
         getGroundLevelOrdinal: function () {
-            return WorldCreator.getBottomLevel(this.worldSeed);
+            return WorldCreator.getLevelOrdinal(this.worldSeed, WorldCreator.getBottomLevel(this.worldSeed));
         },
         
         setActionCooldown: function (action, key, cooldown) {
