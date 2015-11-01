@@ -638,7 +638,7 @@ define(['ash',
             this.forceResourceBarUpdate();
         },
         
-        useInn: function() {
+        useInn: function (auto) {
             if (this.playerActionsHelper.checkAvailability("use_in_inn", true)) {                
                 // TODO add varied results depending on follower
                 var sector = this.playerLocationNodes.head.entity;
@@ -652,22 +652,29 @@ define(['ash',
                     this.addFollower(follower);
                 } else {
                     var oldFollower = itemsComponent.getWeakestByType(ItemConstants.itemTypes.follower);
-                    var oldFollowerLi = UIConstants.getItemLI(oldFollower);
-                    var newFollowerLi = UIConstants.getItemLI(follower);
-                    var playerActions = this;
-                    this.uiFunctions.showConfirmation(
-                        "<p>Do you want to invite this new follower to join your party? Someone else will have to leave to make room.</p>" +
-                        "Joining:<br/>" +
-                        "<ul class='resultlist' id='inn-follower-list-join'>" + newFollowerLi + "</ul><br/>" +
-                        "Leaving:<br/>" +
-                        "<ul class='resultlist' id='inn-follower-list-leave'>" + oldFollowerLi + "</ul><br/>",
-                        function() {
-                            playerActions.deductCosts("use_in_inn");
+                    if (auto) {
+                        if (oldFollower.bonus < follower.bonus) {
                             itemsComponent.discardItem(oldFollower);
-                            playerActions.addFollower(follower);
-                    });
-                    this.uiFunctions.generateCallouts("#inn-follower-list-join");
-                    this.uiFunctions.generateCallouts("#inn-follower-list-leave");
+                            this.addFollower(follower);
+                        }
+                    } else {
+                        var oldFollowerLi = UIConstants.getItemLI(oldFollower);
+                        var newFollowerLi = UIConstants.getItemLI(follower);
+                        var playerActions = this;
+                        this.uiFunctions.showConfirmation(
+                            "<p>Do you want to invite this new follower to join your party? Someone else will have to leave to make room.</p>" +
+                            "Joining:<br/>" +
+                            "<ul class='resultlist' id='inn-follower-list-join'>" + newFollowerLi + "</ul><br/>" +
+                            "Leaving:<br/>" +
+                            "<ul class='resultlist' id='inn-follower-list-leave'>" + oldFollowerLi + "</ul><br/>",
+                            function() {
+                                playerActions.playerActionsHelper.deductCosts("use_in_inn");
+                                itemsComponent.discardItem(oldFollower);
+                                playerActions.addFollower(follower);
+                        });
+                        this.uiFunctions.generateCallouts("#inn-follower-list-join");
+                        this.uiFunctions.generateCallouts("#inn-follower-list-leave");
+                    }
                 }
             }
         },

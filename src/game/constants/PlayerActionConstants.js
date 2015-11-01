@@ -1428,7 +1428,6 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 
                 var requiredTechCamp = 1;
                 var requiredTech;
-                console.log(upgradeId);
                 for (var i = 0; i < this.requirements[upgradeId].upgrades; i++) {
                     console.log(this.requirements.upgradeId.upgrades[i]);
                 }

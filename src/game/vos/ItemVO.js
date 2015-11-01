@@ -10,7 +10,6 @@ define(['ash'], function (Ash) {
 		description: "",
 		
 		equippable: false,
-		discardable: false,
 		craftable: false,
 		
 		equipped: false,

@@ -188,7 +188,8 @@ define([
 				var item = items[i];
 				if (item.type === ItemConstants.itemTypes.bag) continue;
 				
-				var li = UIConstants.getItemLI(item, itemsComponent.getCount(item), true);
+				var count = itemsComponent.getCount(item);
+				var li = UIConstants.getItemLI(item, count, true);
 				if (item.type !== ItemConstants.itemTypes.follower) {
 					$("#bag-items").append(li);
 				} else {
@@ -213,9 +214,8 @@ define([
 			var itemsComponent = this.itemNodes.head.items;
 			var items = itemsComponent.getUnique();
 			$.each($("#container-tab-two-bag .itemlist li"), function () {
-				var index = ($(this)).parent().children("li").index($(this));
-				var item = items[index];
-				var count = itemsComponent.getCount(item);
+				var id = $(this).attr("data-itemid");
+				var count = itemsComponent.getCountById(id);
 				$(this).children(".item-count").text(count + "x");
 			});
 		},
@@ -254,9 +254,9 @@ define([
 				$("#item-desc-div p#item-desc-desc").text(selectedItem.description);
 
 				var isFollower = selectedItem.type === ItemConstants.itemTypes.follower;
-				var unequippable = itemsComponent.isItemDiscardable(selectedItem);
+				var unequippable = itemsComponent.isItemDiscardable(selectedItem) || itemsComponent.isItemUnequippable(selectedItem);
 				$("button[action='equip_item']").text(selectedItem.equipped ? "Unequip" : "Equip");
-				$("button[action='equip_item']").toggle((!selectedItem.equipped && selectedItem.equippable) || (selectedItem.equipped && unequippable));
+				$("button[action='equip_item']").toggle(!unequippable);
 				
 				var isDiscardable = itemsComponent.isItemDiscardable(selectedItem);
 				var isAllDiscardable = itemsComponent.isItemsDiscardable(selectedItem);

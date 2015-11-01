@@ -423,7 +423,7 @@ define(['ash',
                     var scavengers = Math.floor(pop - trappers - waters - ropers - chemists - apothecaries - smiths - concrete - soldiers);
                     
                     this.playerActionFunctions.assignWorkers(scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers);
-                    this.printStep("assigned workers (" + scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers + ")");
+                    this.printStep("assigned workers (" + scavengers + ", " + trappers + ", " + waters + ", " + ropers + ", " + chemists + ", " + apothecaries + ", " + smiths + ", " + concrete + ", " + soldiers + ")");
                     this.refreshWorkers = false;
                     return true;
                 }
@@ -438,6 +438,12 @@ define(['ash',
                 if (this.playerActionFunctions.playerActionsHelper.checkAvailability("use_in_hospital")) {
                     this.playerActionFunctions.useHospital();
                     this.printStep("used hospital");
+                    return true;
+                }
+                
+                if (this.playerActionFunctions.playerActionsHelper.checkAvailability("use_in_inn") && Math.random() < 0.05) {
+                    this.playerActionFunctions.useInn(true);
+                    this.printStep("used inn");
                     return true;
                 }
             }
