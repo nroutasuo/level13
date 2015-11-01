@@ -22,7 +22,7 @@ define(['ash'], function (Ash) {
 			if (!hideCallout) {
 				var detail = item.type;
 				detail += this.getItemBonusText(item);
-				li += "<div class='info-callout-target info-callout-target-small' description='" + item.name + " (" + detail + ")'>";
+				li += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(item.name + " (" + detail) + ")'>";
 			}
 			
 			li += "<img src='" + url + "'/>";
@@ -223,7 +223,11 @@ define(['ash'], function (Ash) {
 		
 		getResourceImg: function (name) {
 			return "<img src='img/res-" + name + ".png' alt='" + name + "'/>"
-		}
+		},
+		
+		cleanupText: function (text) {
+			return text.replace(/'/g, "&#39;")
+		},
 	
     };
     
