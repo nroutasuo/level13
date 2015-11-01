@@ -64,12 +64,17 @@ define([
 			
 			if (!positionComponent) return;
 			
+			var levelEntity = this.levelHelper.getLevelEntityForSector(entity);
+			
 			var isScouted = sectorStatusComponent.scouted;
-			var hasCamp = this.levelHelper.getLevelEntityForSector(entity).has(CampComponent);
+			var hasCampLevel = levelEntity.has(CampComponent);
+			var hasCampSector = entity.has(CampComponent);
 			
 			this.updateMovementOptions(entity);
 			
-			sectorStatusComponent.canBuildCamp = isScouted && !hasCamp && featuresComponent.canHaveCamp() && !passagesComponent.passageUp && !passagesComponent.passageDown && !hasEnemies;
+			sectorStatusComponent.canBuildCamp = isScouted && !hasCampLevel && featuresComponent.canHaveCamp() && !passagesComponent.passageUp && !passagesComponent.passageDown && !hasEnemies;
+			
+			if (hasCampSector && !hasCampLevel) levelEntity.add(entity.get(CampComponent));
 		},
 		
 		updateMovementOptions: function (entity) {
