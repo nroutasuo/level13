@@ -305,8 +305,9 @@ define([
 		},
 		
 		// enemies
-		prepareWorldEnemies: function(seed, topLevel, bottomLevel) {	
+		prepareWorldEnemies: function (seed, topLevel, bottomLevel) {	
 			var passageDownPos = [];
+			var bottomLevelOrdinal = this.getLevelOrdinal(seed, bottomLevel);
 			var totalLevels = topLevel - bottomLevel + 1;
 			for(var l = topLevel; l>= bottomLevel; l--) {		
 				var firstSector = this.getFirstSector(seed, l);
@@ -328,7 +329,7 @@ define([
 						return r > threshold;
 					};
 					
-					var globalE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.global, enemyDifficulty, false, bottomLevel, totalLevels);
+					var globalE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.global, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
 					var enemy;
 					for(var e in globalE) {
 						enemy = globalE[e];
@@ -336,7 +337,7 @@ define([
 					}
 					
 					if (l <= bottomLevel+1) {
-						var earthE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.earth, enemyDifficulty, false, bottomLevel, totalLevels);
+						var earthE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.earth, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
 						for(var e in earthE) {
 						enemy = earthE[e];
 						if (randomEnemyCheck(333*(e+1), enemy)) enemies.push(enemy);
@@ -344,7 +345,7 @@ define([
 					}
 					
 					if (this.world[l][s].sunlit) {
-						var sunE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.sunlit, enemyDifficulty, false, bottomLevel, totalLevels);
+						var sunE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.sunlit, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
 						for(var e in sunE) {
 						enemy = sunE[e];
 						if (randomEnemyCheck(6666*(e+4)+2, enemy)) enemies.push(enemy);
@@ -352,7 +353,7 @@ define([
 					}
 					
 					if (l >= topLevel-10) {
-						var inhabitedE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.inhabited, enemyDifficulty, false, bottomLevel, totalLevels);
+						var inhabitedE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.inhabited, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
 						for(var e in inhabitedE) {
 						enemy = inhabitedE[e];
 						if (randomEnemyCheck(777*(e+2)^2, enemy)) enemies.push(enemy);
@@ -360,7 +361,7 @@ define([
 					}
 					
 					if (l >= topLevel-5) {
-						var urbanE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.urban, enemyDifficulty, false, bottomLevel, totalLevels);
+						var urbanE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.urban, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
 						for(var e in urbanE) {
 						enemy = urbanE[e];
 						if (randomEnemyCheck(99*(e+1), enemy)) enemies.push(enemy);

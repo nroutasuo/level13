@@ -65,7 +65,7 @@ define([
 			var playerVision = this.playerStatsNodes.head.vision.value;
 
 			rewards.gainedResources = this.getRewardResources(1, efficiency, sectorResources);
-			rewards.gainedItems = this.getRewardItems(0.0075, 0.05, playerVision * 0.25, itemsComponent, levelOrdinal);
+			rewards.gainedItems = this.getRewardItems(0.007, 0.05, playerVision * 0.25, itemsComponent, levelOrdinal);
 			rewards.gainedInjuries = this.getResultInjuries();
 
 			return rewards;
@@ -282,11 +282,11 @@ define([
 					pendingItem = ItemConstants.getLight(levelOrdinal);
 				} else if (itemTypeRand < 0.35) {
 					item = ItemConstants.getMovement(levelOrdinal);
-				} else if (itemTypeRand < 0.5) {
+				} else if (itemTypeRand < 0.52) {
 					item = ItemConstants.getShoes(levelOrdinal);
-				} else if (itemTypeRand < 0.7) {
+				} else if (itemTypeRand < 0.75) {
 					item = ItemConstants.getDefaultWeapon(levelOrdinal, totalLevels);
-				} else if (itemTypeRand < 0.9) {
+				} else if (itemTypeRand < 0.99) {
 					item = ItemConstants.getDefaultClothing(levelOrdinal, totalLevels);
 				} else {
 					var i = Math.floor(Math.random() * ItemConstants.itemDefinitions.artefact.length);

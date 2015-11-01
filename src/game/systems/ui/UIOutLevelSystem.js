@@ -421,7 +421,7 @@ define([
 			// var levelOrdinal = this.gameState.getLevelOrdinal(posComponent.level);
             // var groundLevelOrdinal = this.gameState.getGroundLevelOrdinal();
 			// var totalLevels = this.gameState.getTotalLevels();
-			// if (window.app) enemyDesc += "Required strength: " + EnemyConstants.getRequiredStength(levelOrdinal, groundLevelOrdinal, totalLevels) + ". ";
+			// if (window.app) enemyDesc += "Required strength: " + EnemyConstants.getRequiredStrength(levelOrdinal, groundLevelOrdinal, totalLevels) + ". ";
 			
 			return enemyDesc;
 		},

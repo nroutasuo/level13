@@ -1,6 +1,7 @@
-// A system that updates various GameState.unlockedFeatures based on improvements etc
+// A system to autoplay the game - mostly useful for quickly cheating to a semi-realistic later state of the game
 define(['ash',
 	'game/constants/ItemConstants',
+	'game/constants/PlayerActionConstants',
 	'game/nodes/player/AutoPlayNode',
 	'game/nodes/player/PlayerStatsNode',
     'game/nodes/player/ItemsNode',
@@ -16,7 +17,7 @@ define(['ash',
     'game/constants/FightConstants',
     'game/vos/ResourcesVO'
 ], function (Ash,
-    ItemConstants, AutoPlayNode, PlayerStatsNode, ItemsNode,
+    ItemConstants, PlayerActionConstants, AutoPlayNode, PlayerStatsNode, ItemsNode,
     PositionComponent, CampComponent, SectorStatusComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorImprovementsComponent,
     CampConstants, UpgradeConstants, EnemyConstants, FightConstants, ResourcesVO) {
     
@@ -30,6 +31,8 @@ define(['ash',
 		autoPlayNodes: null,
 		playerStatsNodes: null,
 		itemsNodes: null,
+        
+        latestCampLevel: 0,
 	    
 		constructor: function (playerActionFunctions, levelHelper, sectorHelper, upgradesHelper) {
 			this.playerActionFunctions = playerActionFunctions;
@@ -80,7 +83,6 @@ define(['ash',
                     didSomething = didSomething || this.move(isExpress);
                     didSomething = didSomething || this.buildCamp(isExpress);
                     didSomething = didSomething || this.buildOutImprovements(isExpress);
-                    didSomething = didSomething || this.craftItems(isExpress);
                     didSomething = didSomething || this.scout(isExpress);
                     didSomething = didSomething || this.scavenge(isExpress);
                     didSomething = didSomething || this.idleOut(isExpress);
@@ -91,7 +93,9 @@ define(['ash',
                     didSomething = didSomething || this.buildPassages(isExpress);
                     didSomething = didSomething || this.buildInImprovements(isExpress);
                     didSomething = didSomething || this.unlockUpgrades(isExpress);
+                    didSomething = didSomething || this.craftItems(isExpress);
                     didSomething = didSomething || this.idleIn(isExpress);
+                    didSomething = didSomething || this.switchCamps(isExpress);
                 }
                 
                 if (!didSomething) {
@@ -109,8 +113,9 @@ define(['ash',
         
         switchMode: function () {
             var wasExploring = this.autoPlayNodes.head.autoPlay.isExploring;
-            if (wasExploring) {
-                this.playerActionFunctions.moveTo(this.playerActionFunctions.directions.camp);
+            if (wasExploring && this.playerActionFunctions.nearestCampNodes.head) {
+                this.printStep("enter camp " + this.latestCampLevel);
+                this.playerActionFunctions.moveToCamp(this.latestCampLevel);
                 this.playerActionFunctions.uiFunctions.showTab(this.playerActionFunctions.uiFunctions.elementIDs.tabs.in);
             } else {
                 var currentStorage = this.playerActionFunctions.resourcesHelper.getCurrentStorage();
@@ -142,21 +147,29 @@ define(['ash',
 			var nearestUnscoutedLocaleSector = null;
 			var nearestUnscoutedSector = null;
 			var nearestCampSector = null;
+            
+            var latestCampLevel = 0;
 			
 			var checkSector = function (testL, testS) {
-                var levelOrdinal = playerActionFunctions.gameState.getLevelOrdinal(testL);
 				var sector = levelHelper.getSectorByPosition(testL, testS);
-                var sectorSafe = fightStrength >= EnemyConstants.getRequiredStength(levelOrdinal, groundLevelOrdinal, totalLevels);
-				if (sector && sectorSafe) {
+                var levelOrdinal = playerActionFunctions.gameState.getLevelOrdinal(testL);
+                var levelSafe = fightStrength >= EnemyConstants.getRequiredStrength(levelOrdinal, groundLevelOrdinal, totalLevels);
+                var latestCampLevelOrdinal = latestCampLevel ? playerActionFunctions.gameState.getLevelOrdinal(latestCampLevel) : 0;
+				if (sector) {
 					var sectorCamp = sector.has(CampComponent);
-					var sectorUnscouted = !sector.get(SectorStatusComponent).scouted;
-					var sectorUnscoutedLocales = levelHelper.getSectorLocales(sector, false, null).length > 0;
-					var sectorCampable = sector.get(SectorStatusComponent).canBuildCamp && !sectorCamp;
-					
-					if (!nearestCampableSector && sectorCampable) nearestCampableSector = sector;
-					if (!nearestUnscoutedLocaleSector && sectorUnscoutedLocales) nearestUnscoutedLocaleSector = sector;
-					if (!nearestUnscoutedSector && sectorUnscouted) nearestUnscoutedSector = sector;
 					if (!nearestCampSector && sectorCamp) nearestCampSector = sector;
+                    
+                    if (sectorCamp && latestCampLevelOrdinal < levelOrdinal) latestCampLevel = testL;
+                    
+                    if (levelSafe) {
+                        var sectorUnscouted = !sector.get(SectorStatusComponent).scouted;
+                        var sectorUnscoutedLocales = levelHelper.getSectorLocalesForPlayer(sector).length > 0;
+                        var sectorCampable = sector.get(SectorStatusComponent).canBuildCamp && !sectorCamp;
+					
+                        if (!nearestCampableSector && sectorCampable) nearestCampableSector = sector;
+                        if (!nearestUnscoutedLocaleSector && sectorUnscoutedLocales) nearestUnscoutedLocaleSector = sector;
+                        if (!nearestUnscoutedSector && sectorUnscouted) nearestUnscoutedSector = sector;
+                    }
 				}
 			}
 			
@@ -173,6 +186,8 @@ define(['ash',
 				checkLevel(l + ld);
 				checkLevel(l - ld);
 			}
+            
+            this.latestCampLevel = latestCampLevel;
 			
 			// if possible, move to a campable sector
 			if (nearestCampableSector) {
@@ -200,7 +215,10 @@ define(['ash',
 		},
 		
 		buildCamp: function (isExpress) {
-			if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_out_camp", false)) {
+            var currentStorage = this.playerActionFunctions.resourcesHelper.getCurrentStorage();
+            var hasFood = currentStorage.resources.getResource(resourceNames.water) > 20;
+            var hasWater = currentStorage.resources.getResource(resourceNames.food) > 20;
+			if (hasFood && hasWater && this.playerActionFunctions.playerActionsHelper.checkAvailability("build_out_camp", false)) {
                 this.printStep("build camp");
 				this.playerActionFunctions.buildCamp();
                 return true;
@@ -215,7 +233,8 @@ define(['ash',
             
             // traps & buckets
             var hasMetal = currentStorage.resources.getResource(resourceNames.metal) > 20;
-            if (hasMetal) {
+            var hasVision = this.playerStatsNodes.head.vision.value >= PlayerActionConstants.requirements.build_out_collector_water.vision;
+            if (hasMetal && hasVision) {
                 var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
                 var hasFoundFood = featuresComponent.resources.food > 0 && discoveredResources.indexOf("food") >= 0;
                 var hasFoundWater = featuresComponent.resources.water > 0 && discoveredResources.indexOf("water") >= 0;
@@ -257,18 +276,6 @@ define(['ash',
             return false;
 		},
 		
-		craftItems: function (isExpress) {
-			var lanternId = ItemConstants.itemDefinitions.light[0].id;
-			if (this.itemsNodes.head.items.getCountById(lanternId) < 1) {
-                if (this.playerActionFunctions.playerActionsHelper.checkAvailability("craft_" + lanternId)) {
-                    this.printStep("craft lantern");
-                    this.playerActionFunctions.craftItem(lanternId);
-                    return true;
-                }
-            }
-            return false;
-		},
-		
 		scavenge: function (isExpress) {
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("scavenge")) {
                 var currentStorage = this.playerActionFunctions.resourcesHelper.getCurrentStorage();
@@ -295,10 +302,42 @@ define(['ash',
             return false;
         },
         
+        switchCamps: function (isExpress) {
+            var playerPosition = this.playerActionFunctions.playerPositionNodes.head.position;
+            var currentLevelOrdinal = this.playerActionFunctions.gameState.getLevelOrdinal(playerPosition.level);
+            
+            var campPosition;
+            var campOrdinal;
+            var campOrdinalDiff = 100;
+            var nextCampOrdinalDiff = 100;
+            var nextCamp = null;
+            for (var node = this.playerActionFunctions.campNodes.head; node; node = node.next) {
+                campPosition = node.position;
+                campOrdinal = this.playerActionFunctions.gameState.getLevelOrdinal(campPosition.level);
+                if (campOrdinal < currentLevelOrdinal) {
+                    campOrdinalDiff = currentLevelOrdinal - campOrdinal;
+                    if (campOrdinalDiff < nextCampOrdinalDiff) {
+                        nextCamp = node;
+                        nextCampOrdinalDiff = campOrdinalDiff;
+                    }
+                }
+            }
+            
+            if (nextCamp) {
+                this.playerActionFunctions.moveToCamp(nextCamp.position.level);
+                return true;
+            }
+            
+            this.playerActionFunctions.moveToCamp(this.latestCampLevel);
+            
+            return false;
+        },
+        
         manageCamp: function (isExpress) {
             var campComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(CampComponent);
             if (campComponent) {
                 var improvementsComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+                var currentStorage = this.playerActionFunctions.resourcesHelper.getCurrentStorage();
                 
                 // cheat population
                 var maxPopulation = improvementsComponent.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
@@ -307,17 +346,24 @@ define(['ash',
                 
                 // assign workers
                 if (campComponent.getFreePopulation() > 0 || this.refreshWorkers) {
+                    var currentRope = currentStorage.resources.getResource(resourceNames.rope);
+                    var maxStorage = currentStorage.storageCapacity;
+                    
+                    var canRope = this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("weaver"));
                     var pop = campComponent.population;
+                    
                     var trappers = Math.floor(pop / 2);
                     var waters = Math.floor(pop / 4);
                     var specialistPop = Math.floor(pop - trappers - waters);
-                    var ropers = specialistPop > 1 && this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("weaver")) ? 1 : 0;
+                    
+                    var ropers = canRope && currentRope < maxStorage ? Math.min(specialistPop, (currentRope < 30 ? 2 : 1)) : 0;
                     var chemists = 0;
                     var apothecaries = 0;
                     var smiths = 0;
                     var concrete = 0;
                     var soldiers = 0;
                     var scavengers = Math.floor(pop - trappers - waters - ropers - chemists - apothecaries - smiths - concrete - soldiers);
+                    
                     this.playerActionFunctions.assignWorkers(scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers);
                     this.printStep("assigned workers");
                     this.refreshWorkers = false;
@@ -362,6 +408,18 @@ define(['ash',
         buildInImprovements: function (isExpress) {
 			var improvementsComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             
+            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_tradingPost")) {
+                this.printStep("build trading post");
+                this.playerActionFunctions.buildTradingPost();
+                return true;
+            }
+
+            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_hospital")) {
+                this.printStep("build hospital");
+                this.playerActionFunctions.buildHospital();
+                return true;
+            }
+            
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_house")) {
                 this.printStep("build house");
                 this.playerActionFunctions.buildHouse();
@@ -374,18 +432,34 @@ define(['ash',
                 return true;
             }
             
-            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_hospital")) {
-                this.printStep("build hospital");
-                this.playerActionFunctions.buildHospital();
+            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_darkfarm")) {
+                this.printStep("build darkfarm");
+                this.playerActionFunctions.buildDarkFarm();
                 return true;
             }
             
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_campfire")) {
-                if (improvementsComponent.getCount(improvementNames.campfire) < 1) {
-                    this.printStep("build campfire");
-                    this.playerActionFunctions.buildCampfire();
-                    return true;
-                }
+                this.printStep("build campfire");
+                this.playerActionFunctions.buildCampfire();
+                return true;
+            }
+            
+            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_lights")) {
+                this.printStep("build lights");
+                this.playerActionFunctions.buildLights();
+                return true;
+            }
+            
+            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_library")) {
+                this.printStep("build library");
+                this.playerActionFunctions.buildLibrary();
+                return true;
+            }
+            
+            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_market")) {
+                this.printStep("build market");
+                this.playerActionFunctions.buildMarket();
+                return true;
             }
             
             return false;
@@ -417,9 +491,30 @@ define(['ash',
             }
             return unlocked;
         },
+		
+		craftItems: function (isExpress) {
+            var itemList;
+			var itemDefinition;
+			for (var type in ItemConstants.itemDefinitions) {
+				itemList = ItemConstants.itemDefinitions[type];
+				for (var i in itemList) {
+					itemDefinition = itemList[i];
+					if (itemDefinition.craftable) {
+                        if (this.itemsNodes.head.items.getCountById(itemDefinition.id) < 1) {
+                            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("craft_" + itemDefinition.id)) {
+                                this.printStep("craft " + itemDefinition.name);
+                                this.playerActionFunctions.craftItem(itemDefinition.id);
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+		},
         
         idleIn: function (isExpress) {
-            return Math.random() > 0.5;
+            return Math.random() > 0.8;
         },
         
         printStep: function (message) {

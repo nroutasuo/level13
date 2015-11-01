@@ -16,13 +16,17 @@ function (Ash, ItemVO, ItemConstants) {
         },
         
         addItem: function (item) {
-            if (typeof this.items[item.type] == 'undefined') {
-                this.items[item.type] = [];
+            if (item) {
+                if (typeof this.items[item.type] == 'undefined') {
+                    this.items[item.type] = [];
+                }
+                
+                this.items[item.type].push(item);
+                if (item.equippable) this.autoEquip(item);
+                this.uniqueItems = {};
+            } else {
+                console.log("WARN: Trying to add undefined item.");
             }
-            
-            this.items[item.type].push(item);
-            if (item.equippable) this.autoEquip(item);
-            this.uniqueItems = {};
         },
         
         discardItem: function (item) {

@@ -38,6 +38,7 @@ define(['ash',
 	'game/systems/ui/UIOutElementsSystem',
 	'game/systems/ui/UIOutLevelSystem',
 	'game/systems/FaintingSystem',
+	'game/systems/PlayerPositionSystem',
 	'game/systems/SaveSystem'
 ], function (Ash,
 	GameConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UIConstants, TextConstants,
@@ -49,7 +50,7 @@ define(['ash',
 	SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, CampEventTimersComponent,
 	LogMessagesComponent,
-	UIOutHeaderSystem, UIOutElementsSystem, UIOutLevelSystem, FaintingSystem, SaveSystem
+	UIOutHeaderSystem, UIOutElementsSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem, SaveSystem
 ) {
     
     var PlayerActionFunctions = Ash.System.extend({
@@ -182,6 +183,7 @@ define(['ash',
                 campPosition = campSector.get(PositionComponent);
                 playerPos.level = campPosition.level;
                 playerPos.sector = campPosition.sector;
+                this.engine.getSystem(PlayerPositionSystem).update();
                 this.enterCamp(true);
             } else {
                 console.log("WARN: No camp found for level " + level);
@@ -289,7 +291,7 @@ define(['ash',
                 var levelOrdinal = this.gameState.getLevelOrdinal(positionComponent.level);
                 var totalLevels = this.gameState.getTotalLevels();
                 var groundLevelOrdinal = this.gameState.getGroundLevelOrdinal();
-                if (fightStrength < EnemyConstants.getRequiredStength(levelOrdinal, groundLevelOrdinal, totalLevels)) {
+                if (fightStrength < EnemyConstants.getRequiredStrength(levelOrdinal, groundLevelOrdinal, totalLevels)) {
                     this.occurrenceFunctions.onScoutSectorWeakling(sector);
                     return;
                 }

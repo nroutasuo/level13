@@ -235,6 +235,21 @@ define([
 			return locales;
 		},
 		
+		getSectorLocalesForPlayer: function (sectorEntity) {
+			var locales = [];
+			var sectorLocalesComponent = sectorEntity.get(SectorLocalesComponent);
+			var sectorStatus = sectorEntity.get(SectorStatusComponent);
+			var locale;
+			for (var i = 0; i < sectorLocalesComponent.locales.length; i++) {
+				locale = sectorLocalesComponent.locales[i];
+				var action = "scout_locale_" + i;
+				if (!sectorStatus.isLocaleScouted(i))
+					if (this.playerActionsHelper.checkRequirements(action, false, sectorEntity).value >= 1)
+						locales.push(locale);
+			}
+			return locales;
+		}
+		
     });
     
     return LevelHelper;
