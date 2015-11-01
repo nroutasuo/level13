@@ -187,6 +187,20 @@ define([
             return count;
         },
 		
+		getSectorUnclearedWorkshopCount: function (sectorEntity) {
+			var count = 0;
+            var featuresComponent;
+            var sectorControlComponent;
+			featuresComponent = sectorEntity.get(SectorFeaturesComponent);
+			sectorControlComponent = sectorEntity.get(SectorControlComponent);
+			if (featuresComponent.getWorkshopResource()) {
+				if (!sectorControlComponent.hasControl()) {
+					count++;
+				}
+			}
+            return count;
+		},
+		
 		isLevelUnlocked: function (level) {
 			if (level === 13) return true;
 			

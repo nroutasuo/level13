@@ -194,7 +194,7 @@ define(['ash',
             var playerLevelCamp = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity : null;
             if (playerLevelCamp) {
                 var playerResources = this.playerResourcesNodes.head.resources.resources;
-                var campResourcesSource = playerLevelCamp.get(ResourcesComponent).resources;
+                var campResourcesSource = this.resourcesHelper.getCurrentStorage().resources;
                 this.moveResourcesFromVOToVO(resourcesVO, campResourcesSource, playerResources);
             }
         },
@@ -207,7 +207,7 @@ define(['ash',
         },
         
         moveResourcesFromVOToVO: function (amountsVO, fromResVO, toResVO) {
-            for(var key in resourceNames) {
+            for (var key in resourceNames) {
 				var name = resourceNames[key];
 				var amount = Math.min(amountsVO.getResource(name), fromResVO.getResource(name));
 				if (amount > 0) {
@@ -258,6 +258,7 @@ define(['ash',
                 this.forceResourceBarUpdate();
                 this.save();
             } else {
+                console.log(campNode.bu.bu());
                 console.log("WARN: No valid camp found.");
             }
         },
@@ -375,11 +376,12 @@ define(['ash',
                 this.playerActionsHelper.deductCosts("build_out_camp");               
                 
                 var sector = this.playerLocationNodes.head.entity;
-                sector.add(new CampComponent());
+                var campComponent = new CampComponent();
+                sector.add(campComponent);
                 sector.add(new CampEventTimersComponent());
 				
 				var level = this.levelHelper.getLevelEntityForSector(sector);
-				level.add(new CampComponent());
+				level.add(campComponent);
 				
                 this.buildStorage(true, sector);
                 
@@ -763,15 +765,15 @@ define(['ash',
             }
             
             if (camp) {
-                camp.assignedWorkers.scavenger = scavengers;   
-                camp.assignedWorkers.trapper = trappers;   
-                camp.assignedWorkers.water = waters;   
-                camp.assignedWorkers.ropemaker = ropers;
-                camp.assignedWorkers.chemist = chemists;
-                camp.assignedWorkers.apothecary = apothecaries;
-                camp.assignedWorkers.toolsmith = smiths;
-                camp.assignedWorkers.concrete = concrete;
-                camp.assignedWorkers.soldier = soldiers;
+                camp.assignedWorkers.scavenger = Math.max(0, Math.floor(scavengers));
+                camp.assignedWorkers.trapper = Math.max(0, Math.floor(trappers));
+                camp.assignedWorkers.water = Math.max(0, Math.floor(waters));
+                camp.assignedWorkers.ropemaker = Math.max(0, Math.floor(ropers));
+                camp.assignedWorkers.chemist = Math.max(0, Math.floor(chemists));
+                camp.assignedWorkers.apothecary = Math.max(0, Math.floor(apothecaries));
+                camp.assignedWorkers.toolsmith = Math.max(0, Math.floor(smiths));
+                camp.assignedWorkers.concrete = Math.max(0, Math.floor(concrete));
+                camp.assignedWorkers.soldier = Math.max(0, Math.floor(soldiers));
             }
             else {
                 console.log("WARN: No camp found for worker assignment.");
