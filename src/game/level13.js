@@ -140,7 +140,7 @@ define([
 				this.tabChangedSignal,
 				this.improvementBuiltSignal);
 			this.uiFunctions = new UIFunctions(this.playerActionFunctions, this.gameState, this.saveSystem);
-			this.occurrenceFunctions = new OccurrenceFunctions(this.uiFunctions, this.resourcesHelper);
+			this.occurrenceFunctions = new OccurrenceFunctions(this.gameState, this.uiFunctions, this.resourcesHelper);
 			
 			this.playerActionFunctions.occurrenceFunctions = this.occurrenceFunctions;
 			this.playerActionFunctions.uiFunctions = this.uiFunctions;

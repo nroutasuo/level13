@@ -51,7 +51,7 @@ define([
 			
 			// Level
 			var levelpos;
-			for(var levelNode = this.levelNodes.head; levelNode; levelNode = levelNode.next) {		
+			for(var levelNode = this.levelNodes.head; levelNode; levelNode = levelNode.next) {
 				levelpos = levelNode.level.position;
 				if (levelpos == playerPos.level && !levelNode.entity.has(CurrentPlayerLocationComponent)) {
 					levelNode.entity.add(new CurrentPlayerLocationComponent());
@@ -104,10 +104,11 @@ define([
 		
 		handleNewLevel: function (levelNode, levelPos) {
 			levelNode.entity.add(new VisitedComponent());
-			if (levelPos != 13) this.gameState.unlockedFeatures.levels = true;
+			if (levelPos !== 13) this.gameState.unlockedFeatures.levels = true;
+			if (levelPos === this.gameState.getGroundLevel()) this.gameState.unlockedFeatures.favour = true;
 		},
 		
-		handleNewSector: function (sectorNode, sectorPos) {	    
+		handleNewSector: function (sectorNode, sectorPos) {
 			// occurrences
 			this.occurrenceFunctions.onEnterNewSector(sectorNode.entity);
 			

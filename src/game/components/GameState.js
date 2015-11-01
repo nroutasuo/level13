@@ -56,6 +56,10 @@ define(['ash', 'game/WorldCreator'], function (Ash, WorldCreator) {
             return WorldCreator.getHighestLevel(this.worldSeed) - WorldCreator.getBottomLevel(this.worldSeed) + 1;
         },
         
+        getGroundLevel: function () {
+            return WorldCreator.getBottomLevel(this.worldSeed);
+        },
+        
         getGroundLevelOrdinal: function () {
             return WorldCreator.getLevelOrdinal(this.worldSeed, WorldCreator.getBottomLevel(this.worldSeed));
         },

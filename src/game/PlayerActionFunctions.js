@@ -258,7 +258,6 @@ define(['ash',
                 this.forceResourceBarUpdate();
                 this.save();
             } else {
-                console.log(campNode.bu.bu());
                 console.log("WARN: No valid camp found.");
             }
         },
@@ -650,12 +649,14 @@ define(['ash',
                 if (currentFollowers < FightConstants.getMaxFollowers(this.gameState.numCamps)) {
                     this.playerActionsHelper.deductCosts("use_in_inn");
                     this.addFollower(follower);
+                    return true;
                 } else {
                     var oldFollower = itemsComponent.getWeakestByType(ItemConstants.itemTypes.follower);
                     if (auto) {
                         if (oldFollower.bonus < follower.bonus) {
                             itemsComponent.discardItem(oldFollower);
                             this.addFollower(follower);
+                            return true;
                         }
                     } else {
                         var oldFollowerLi = UIConstants.getItemLI(oldFollower);
@@ -677,6 +678,8 @@ define(['ash',
                     }
                 }
             }
+            
+            return false;
         },
         
         addFollower: function(follower) {

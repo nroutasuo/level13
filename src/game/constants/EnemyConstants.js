@@ -30,7 +30,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, FightConstants, Per
 			if (levelOrdinal <= 1) return 0;
 			var typicalStrength = this.getTypicalStrength(levelOrdinal, groundLevelOrdinal, totalLevels);
 			var typicalStrengthPrevious = this.getTypicalStrength(levelOrdinal - 1, groundLevelOrdinal, totalLevels);
-			return (typicalStrength + typicalStrength + typicalStrengthPrevious) / 3;
+			return Math.ceil((typicalStrength + typicalStrength + typicalStrengthPrevious) / 3);
 		},
 		
 		getTypicalStrength: function (levelOrdinal, groundLevelOrdinal, totalLevels) {

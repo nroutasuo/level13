@@ -1,6 +1,7 @@
 // A class responds to player actions parsed by the UIFunctions
 define(['ash',
     'game/constants/OccurrenceConstants',
+    'game/constants/EnemyConstants',
     'game/constants/TextConstants',
     'game/nodes/sector/CampNode',
     'game/components/common/PositionComponent',
@@ -10,19 +11,21 @@ define(['ash',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/CampComponent',
-], function (Ash, OccurrenceConstants, TextConstants, CampNode,
+], function (Ash, OccurrenceConstants, EnemyConstants, TextConstants, CampNode,
     PositionComponent, ResourcesComponent, RaidComponent,
     SectorFeaturesComponent, SectorControlComponent, SectorImprovementsComponent, CampComponent) {
     
     var OccurrenceFunctions = Ash.System.extend({
         
+		gameState: null,
 		uiFunctions: null,
 		resourcesHelper: null,
 		
 		engine: null,
 		campNodes: null,
 	
-        constructor: function (uiFunctions, resourcesHelper) {
+        constructor: function (gameState, uiFunctions, resourcesHelper) {
+			this.gameState = gameState;
 			this.uiFunctions = uiFunctions;
 			this.resourcesHelper = resourcesHelper;
         },
@@ -41,7 +44,7 @@ define(['ash',
 			var sectorPosition = sectorEntity.get(PositionComponent);
 		},
 	
-		onScoutSector: function(sectorEntity) {
+		onScoutSector: function (sectorEntity) {
 			var featuresComponent = sectorEntity.get(SectorFeaturesComponent);
 			var sectorControlComponent = sectorEntity.get(SectorControlComponent);
 			var sectorPosition = sectorEntity.get(PositionComponent);
@@ -93,7 +96,7 @@ define(['ash',
 				} else if (campAmount > largestSelectedAmount) {
 				selectedResources.pop();
 				selectedResources.push(name);			
-				largestSelectedAmount = Math.max(largestSelectedAmount, campAmount);			
+				largestSelectedAmount = Math.max(largestSelectedAmount, campAmount);
 				}
 			}
 			
@@ -109,25 +112,30 @@ define(['ash',
 			}
 		},
 		
-		hasCampOnLevel: function(sectorEntity) {
+		hasCampOnLevel: function (sectorEntity) {
 			var sectorPosition = sectorEntity.get(PositionComponent);
 			var campPosition;
-				for (var node = this.campNodes.head; node; node = node.next) {
-			campPosition = node.entity.get(PositionComponent);
-			if (sectorPosition.level == campPosition.level) {
-				return true;
-			}
+			for (var node = this.campNodes.head; node; node = node.next) {
+				campPosition = node.entity.get(PositionComponent);
+				if (sectorPosition.level == campPosition.level) {
+					return true;
+				}
 			}
 			return false;
 		},
 		
-		showLevelStrengthWarning: function(sectorEntity) {	    
-			var sectorControlComponent = sectorEntity.get(SectorControlComponent);	    
+		showLevelStrengthWarning: function (sectorEntity) {
+			var positionComponent = sectorEntity.get(PositionComponent);
+			var sectorControlComponent = sectorEntity.get(SectorControlComponent);
 			var hasEnemies = !sectorControlComponent.hasControl();
-			this.showClickOccurrence("Too dangerous for you here.");
+			var levelOrdinal = this.gameState.getLevelOrdinal(positionComponent.level);
+			var totalLevels = this.gameState.getTotalLevels();
+			var groundLevelOrdinal = this.gameState.getGroundLevelOrdinal();
+			var requiredStrength = EnemyConstants.getRequiredStrength(levelOrdinal, groundLevelOrdinal, totalLevels);
+			this.showClickOccurrence("Too dangerous for you here.<br/>You need fight strength of at least " + requiredStrength);
 		},
 		
-		showClickOccurrence: function(text) {
+		showClickOccurrence: function (text) {
 			this.uiFunctions.showInfoPopup("Occurrence!", text);
 		},
 	

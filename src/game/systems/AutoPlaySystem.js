@@ -120,17 +120,19 @@ define(['ash',
         switchMode: function () {
             var wasExploring = this.autoPlayNodes.head.autoPlay.isExploring;
             if (wasExploring && this.playerActionFunctions.nearestCampNodes.head) {
-                this.printStep("enter camp " + this.latestCampLevel);
+                // this.printStep("enter camp " + this.latestCampLevel);
                 this.playerActionFunctions.moveToCamp(this.latestCampLevel);
                 this.playerActionFunctions.uiFunctions.showTab(this.playerActionFunctions.uiFunctions.elementIDs.tabs.in);
             } else {
-                this.printStep("leave camp");
-                var currentStorage = this.playerActionFunctions.resourcesHelper.getCurrentStorage();
-                var selectedResVO = new ResourcesVO();
-                selectedResVO.setResource(resourceNames.food, Math.min(10, currentStorage.resources.getResource(resourceNames.food)));
-                selectedResVO.setResource(resourceNames.water, Math.min(10, currentStorage.resources.getResource(resourceNames.water)));
-                this.playerActionFunctions.moveResFromCampToBag(selectedResVO);
-                this.playerActionFunctions.leaveCamp();
+                // this.printStep("leave camp");
+                if (this.playerActionFunctions.nearestCampNodes.head) {
+                    var currentStorage = this.playerActionFunctions.resourcesHelper.getCurrentStorage();
+                    var selectedResVO = new ResourcesVO();
+                    selectedResVO.setResource(resourceNames.food, Math.min(10, currentStorage.resources.getResource(resourceNames.food)));
+                    selectedResVO.setResource(resourceNames.water, Math.min(10, currentStorage.resources.getResource(resourceNames.water)));
+                    this.playerActionFunctions.moveResFromCampToBag(selectedResVO);
+                    this.playerActionFunctions.leaveCamp();
+                }
                 this.playerActionFunctions.uiFunctions.showTab(this.playerActionFunctions.uiFunctions.elementIDs.tabs.out);
             }
             
@@ -174,10 +176,11 @@ define(['ash',
                         var sectorUnscouted = !sector.get(SectorStatusComponent).scouted;
                         var sectorUnscoutedLocales = levelHelper.getSectorLocalesForPlayer(sector).length > 0;
                         var sectorCampable = sector.get(SectorStatusComponent).canBuildCamp && !sectorCamp;
+                        var canScoutSector = sector.get(SectorFeaturesComponent).sunlit ? itemsComponent.getCurrentBonus(ItemConstants.itemTypes.shades) > 0 : itemsComponent.getCurrentBonus(ItemConstants.itemTypes.light) > 0;
 					
                         if (!nearestCampableSector && sectorCampable) nearestCampableSector = sector;
                         if (!nearestUnscoutedLocaleSector && sectorUnscoutedLocales) nearestUnscoutedLocaleSector = sector;
-                        if (!nearestUnscoutedSector && sectorUnscouted) nearestUnscoutedSector = sector;
+                        if (!nearestUnscoutedSector && sectorUnscouted && canScoutSector) nearestUnscoutedSector = sector;
                         if (!nearestUnclearedSector && sectorUncleared) nearestUnclearedSector = sector;
                     }
 				}
@@ -216,7 +219,7 @@ define(['ash',
                 l = nearestUnclearedSector.get(PositionComponent).level;
                 s = nearestUnclearedSector.get(PositionComponent).sector;
                 moveType = "uncleared sector";
-			} else {
+			} else if (nearestCampSector) {
 				l = nearestCampSector.get(PositionComponent).level;
 				s = nearestCampSector.get(PositionComponent).sector;
                 moveType = "camp sector";
@@ -326,7 +329,7 @@ define(['ash',
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("scavenge")) {
                 var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
                 var currentStorage = this.playerActionFunctions.resourcesHelper.getCurrentStorage();
-                var bagFull = true;
+                var bagFull = discoveredResources.length > 0;
                 for (var key in discoveredResources) {
                     var name = discoveredResources[key];
                     if (name !== resourceNames.fuel)
@@ -377,7 +380,8 @@ define(['ash',
                 return true;
             }
             
-            this.playerActionFunctions.moveToCamp(this.latestCampLevel);
+            if (this.playerActionFunctions.nearestCampNodes.head)
+                this.playerActionFunctions.moveToCamp(this.latestCampLevel);
             
             return false;
         },
@@ -399,6 +403,7 @@ define(['ash',
                     var currentFood = currentStorage.resources.getResource(resourceNames.food);
                     var currentWater = currentStorage.resources.getResource(resourceNames.water);
                     var currentRope = currentStorage.resources.getResource(resourceNames.rope);
+                    var currentTools = currentStorage.resources.getResource(resourceNames.tools);
                     var maxStorage = currentStorage.storageCapacity;
                     
                     var canRope = this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("weaver"));
@@ -416,7 +421,7 @@ define(['ash',
                     
                     var ropers = canRope && currentRope < maxStorage ? Math.min(specialistPop, (currentRope < 30 ? 2 : 1)) : 0;
                     var chemists = Math.min(1, specialistPop - ropers, maxChemists);
-                    var smiths = Math.min(1, specialistPop - ropers - chemists, maxSmiths);
+                    var smiths = Math.min((currentTools > maxSmiths * 0.9 ? 0 : 1), specialistPop - ropers - chemists, maxSmiths);
                     var apothecaries = Math.min(1, specialistPop - ropers - chemists - smiths, maxApothecaries);
                     var concrete = Math.min(1, specialistPop - ropers - chemists - smiths - apothecaries, maxConcrete);
                     var soldiers = Math.min(1, specialistPop - ropers - chemists - smiths - apothecaries - concrete, maxSoldiers);
@@ -442,9 +447,11 @@ define(['ash',
                 }
                 
                 if (this.playerActionFunctions.playerActionsHelper.checkAvailability("use_in_inn") && Math.random() < 0.05) {
-                    this.playerActionFunctions.useInn(true);
-                    this.printStep("used inn");
-                    return true;
+                    var newFollower = this.playerActionFunctions.useInn(true);
+                    if (newFollower) {
+                        this.printStep("used inn");
+                        return true;
+                    }
                 }
             }
             return false;
@@ -481,6 +488,12 @@ define(['ash',
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_hospital")) {
                 this.printStep("build hospital");
                 this.playerActionFunctions.buildHospital();
+                return true;
+            }
+            
+            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_house2")) {
+                this.printStep("build house2");
+                this.playerActionFunctions.buildHouse2();
                 return true;
             }
             
