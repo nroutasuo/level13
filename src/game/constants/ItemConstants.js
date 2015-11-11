@@ -13,12 +13,13 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 			follower: "Follower",
 			movement: "Movement",
 			shoes: "Shoes",
-			// One-time use
+			// Special
 			bag: "Bag",
+			ingredient: "Ingredient",
+			exploration: "Exploration",
 			// Just inventory
 			artefact: "Artefact",
 			note: "Note",
-			ingredient: "Ingredient",
 		},
 		
 		itemDefinitions: {
@@ -129,6 +130,9 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 				new ItemVO("res_bands", "Rubber bands", "Ingredient", 0, false, false, "img/items/res-bands.png", "Used for crafting."),
 				new ItemVO("res_silk", "Spider silk", "Ingredient", 0, false, false, "img/items/res-silk.png", "Used for crafting."),
 			],
+			exploration: [
+				new ItemVO("exploration_1", "Lock pick", "Exploration", 0, false, true, "img/items/exploration-1.png", "Useful tool when exploring and scouting.")
+			]
 		},
 		
 		getItemByID: function (id) {

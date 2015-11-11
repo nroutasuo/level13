@@ -25,6 +25,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.isEasy = isEasy;
 			this.requirements.vision = this.getVisionRequirement();
 			this.costs.stamina = this.getStaminaRequirement();
+			this.costs.item_exploration_1 = 1;
 		},
         
         getVisionRequirement: function () {

@@ -39,6 +39,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                 item_res_silk: "spider silk",
                 item_res_bands: "rubber band",
                 item_res_matches: "match",
+                item_exploration_1: "lock pick",
                 rumours: "rumours",
                 evidence: "evidence",
             }

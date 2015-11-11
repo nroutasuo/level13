@@ -73,61 +73,29 @@ define([
 			var currentStorage = this.resourcesHelper.getCurrentStorage();
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             
-            if (costs.stamina) {
-                this.playerStatsNodes.head.stamina.stamina -= costs.stamina;
-            }
-            
-            if (costs.resource_metal) {
-                currentStorage.resources.metal -= costs.resource_metal;
-            }
-            
-            if (costs.resource_fuel) {
-                currentStorage.resources.fuel -= costs.resource_fuel;
-            }
-            
-            if (costs.resource_tools) {
-                currentStorage.resources.tools -= costs.resource_tools;
-            }
-            
-            if (costs.resource_herbs) {
-                currentStorage.resources.herbs -= costs.resource_herbs;
-            }
-            
-            if (costs.resource_rope) {
-                currentStorage.resources.rope -= costs.resource_rope;
-            }
-            
-            if (costs.resource_water) {
-                currentStorage.resources.water -= costs.resource_water;
-            }
-            
-            if (costs.resource_food) {
-                currentStorage.resources.food -= costs.resource_food;
-            }
-            
-            if (costs.item_res_silk) {
-                itemsComponent.discardItem(itemsComponent.getItem("res_silk"));
-            }
-            
-            if (costs.item_res_bands) {
-                itemsComponent.discardItem(itemsComponent.getItem("res_bands"));
-            }
-            
-            if (costs.item_res_matches) {
-                itemsComponent.discardItem(itemsComponent.getItem("res_matches"));
-            }
-                
-            if (costs.rumours) {
-                this.playerStatsNodes.head.rumours.value -= costs.rumours;
-            }
-            
-            if (costs.favour) {
-                if (this.playerStatsNodes.head.entity.has(DeityComponent))
-                    this.playerStatsNodes.head.entity.get(DeityComponent).favour -= costs.favour;
-            }
-                
-            if (costs.evidence) {
-                this.playerStatsNodes.head.evidence.value -= costs.evidence;
+            var costNameParts;
+            var costAmount;
+            for (var costName in costs) {
+                costNameParts = costName.split("_");
+                costAmount = costs[costName];
+                if (costName === "stamina") {
+                    this.playerStatsNodes.head.stamina.stamina -= costAmount;
+                } else if (costName === "rumours") {
+                    this.playerStatsNodes.head.rumours.value -= costAmount;
+                } else if (costName === "favour") {
+                    this.playerStatsNodes.head.entity.get(DeityComponent).favour -= costAmount;
+                } else if (costName === "evidence") {
+                    this.playerStatsNodes.head.evidence.value -= costAmount;
+                } else if (costNameParts[0] === "resource") {
+                    currentStorage.resources.addResource(costNameParts[1], -costAmount);
+                } else if (costNameParts[0] === "item") {
+                    var itemId = costName.replace(costNameParts[0] + "_", "");
+                    for (var i = 0; i < costAmount; i++) {
+                        itemsComponent.discardItem(itemsComponent.getItem(itemId));
+                    }
+                } else {
+                    console.log("WARN: unknown cost: " + costName);
+                }
             }
         },
 		
@@ -504,51 +472,34 @@ define([
             if (!sector) return false;
             
             var costs = this.getCosts(action, this.getOrdinal(action), this.getCostFactor(action));
-            switch(name) {
-                case "stamina":
-                    return (playerStamina / costs.stamina);
-                
-                case "resource_metal":
-                    return (playerResources.resources.metal / costs.resource_metal);
-                
-                case "resource_fuel":
-                    return (playerResources.resources.fuel / costs.resource_fuel);  
-                
-                case "resource_tools":
-                    return (playerResources.resources.tools / costs.resource_tools);  
-                
-                case "resource_herbs":
-                    return (playerResources.resources.herbs / costs.resource_herbs); 
-                
-                case "resource_rope":
-                    return (playerResources.resources.rope / costs.resource_rope);   
-                
-                case "resource_water":
-                    return (playerResources.resources.water / costs.resource_water);
-                
-                case "resource_food":
-                    return (playerResources.resources.food / costs.resource_food);
-                
-                case "item_res_silk":
-                    return itemsComponent.getCountById("res_silk") / costs.item_res_silk;
-                
-                case "item_res_bands":
-                    return itemsComponent.getCountById("res_bands") / costs.item_res_bands;
-                
-                case "item_res_matches":
-                    return itemsComponent.getCountById("res_matches") / costs.item_res_matches;
-                
-                case "rumours":
-                    return (this.playerStatsNodes.head.rumours.value / costs.rumours);
-                
-                case "favour":
-                    var favour = this.playerStatsNodes.head.entity.has(DeityComponent) ? this.playerStatsNodes.head.entity.get(DeityComponent).favour : 0;
-                    return (favour / costs.favour);
-                
-                case "evidence":
-                    return (this.playerStatsNodes.head.evidence.value / costs.evidence);
+            
+            var costNameParts = name.split("_");
+            var costAmount = costs[name];
+            
+            if (costNameParts[0] === "resource") {
+                return (playerResources.resources.getResource(costNameParts[1]) / costAmount);
+            } else if (costNameParts[0] === "item") {
+                var itemId = name.replace(costNameParts[0] + "_", "");
+                return itemsComponent.getCountById(itemId) / costAmount;
+            } else {            
+                switch (name) {
+                    case "stamina":
+                        return (playerStamina / costs.stamina);                    
                     
-                default: return 1;
+                    case "rumours":
+                        return (this.playerStatsNodes.head.rumours.value / costs.rumours);
+                    
+                    case "favour":
+                        var favour = this.playerStatsNodes.head.entity.has(DeityComponent) ? this.playerStatsNodes.head.entity.get(DeityComponent).favour : 0;
+                        return (favour / costs.favour);
+                    
+                    case "evidence":
+                        return (this.playerStatsNodes.head.evidence.value / costs.evidence);
+                        
+                    default:
+                        console.log("WARN: Unknown cost: " + name);
+                        return 1;
+                }
             }
         },
         

@@ -392,6 +392,12 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     }
                 },
                 
+                craft_exploration_1: {
+                    upgrades: {
+                        unlock_item_shoe1: true,
+                    }
+                },
+                
                 craft_shade1: {
                     upgrades: {
                         unlock_item_shades1: true,
@@ -1030,6 +1036,11 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     resource_metal: 50,
                     resource_fuel: 20,
                     item_res_matches: 2
+                },
+                
+                craft_exploration_1: {
+                    resource_metal: 5,
+                    item_res_silk: 1,
                 },
                 
                 craft_shade1: {

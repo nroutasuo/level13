@@ -173,8 +173,8 @@ define([
 					effects += "items: ";
 					for (var i in unlockedItems) {
 						effects += unlockedItems[i];
+						effects += ", ";
 					}
-					effects += ", ";
 				}
 				
 				var unlockedOccurrences = this.upgradeEffectsHelper.getUnlockedOccurrences(upgradeId);
