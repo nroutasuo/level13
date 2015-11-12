@@ -5,6 +5,7 @@ define([
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
 	'game/constants/UpgradeConstants',
+	'game/constants/UIConstants',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/PlayerResourcesNode',
@@ -21,6 +22,7 @@ define([
 	ItemConstants,
 	PerkConstants,
 	UpgradeConstants,
+	UIConstants,
 	PlayerStatsNode,
 	PlayerLocationNode,
 	PlayerResourcesNode,
@@ -102,6 +104,26 @@ define([
 
 			return rewards;
 		},
+		
+		getFightRewards: function (won) {
+			var rewards = new ResultVO();
+            if (won) {
+				// TODO make fight rewards dependent on enemy difficulty (amount) and type
+				var availableResources = new ResourcesVO();
+				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+				var playerPos = this.playerLocationNodes.head.position;
+				var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
+				availableResources.setResource(resourceNames.food, 10);
+				availableResources.setResource(resourceNames.metal, 5);
+				rewards.gainedResources = this.getRewardResources(0.3, 1, availableResources);
+                rewards.gainedItems = this.getRewardItems(0.2, 0.2, 50, itemsComponent, levelOrdinal);
+				rewards.gainedReputation = 1;
+            } else {
+				// TODO lost followers
+				rewards = this.getFadeOutResults(1, 0.75);
+			}
+			return rewards;
+		},
 
         getFadeOutResults: function (loseInventoryProbability, injuryProbability) {
             var resultVO = new ResultVO();
@@ -116,13 +138,15 @@ define([
             if (injuryProbability > Math.random()) {
 				var injuryi = parseInt(Math.random() * PerkConstants.perkDefinitions.injury.length);
 				var injury = PerkConstants.perkDefinitions.injury[injuryi];
-                resultVO.gainedInjuries.push(injury);
+                resultVO.gainedInjuries.push(injury.clone());
             }
 
             return resultVO;
         },
 
 		collectRewards: function (rewards) {
+			console.log("collect rewards");
+			console.log(rewards);
 			var currentStorage = this.resourcesHelper.getCurrentStorage();
 			currentStorage.addResources(rewards.gainedResources);
 			currentStorage.substractResources(rewards.lostResources);
@@ -163,6 +187,7 @@ define([
 			}
 
 			if (rewards.gainedEvidence) this.playerStatsNodes.head.evidence.value += rewards.gainedEvidence;
+			if (rewards.gainedReputation) this.playerStatsNodes.head.reputation.value += rewards.gainedReputation;
 		},
 
 		getRewardsMessage: function (rewards, baseMsg) {
@@ -222,6 +247,41 @@ define([
 			// TODO add perks (injuries)
 
 			return { msg: msg, replacements: replacements, values: values };
+		},
+		
+		getRewardDiv: function (resultVO) {
+			var div = "<div class='infobox infobox-temporary'>";
+            var gainedhtml = "<span class='listheader'>Gained:</span>";
+            gainedhtml += "<ul class='resultlist'>";
+            if (resultVO.gainedResources) {
+                gainedhtml += UIConstants.getResourceList(resultVO.gainedResources);
+			}
+			if (resultVO.gainedItems) {
+				gainedhtml += UIConstants.getItemList(resultVO.gainedItems);
+			}
+			if (resultVO.gainedEvidence) {
+				gainedhtml += "<li>" + resultVO.gainedEvidence + " evidence</li>";
+			}
+			gainedhtml += "</ul>";
+			if (gainedhtml.indexOf("<li") > 0) div += gainedhtml;
+			
+			var losthtml = "<span class='listheader'>Lost:</span>";
+			losthtml += "<ul class='resultlist'>";
+			if (resultVO.lostResources) {
+				losthtml += UIConstants.getResourceList(resultVO.lostResources);
+			}
+			if (resultVO.lostItems) {
+				losthtml += UIConstants.getItemList(resultVO.lostItems);
+			}
+			losthtml += "</ul>";
+			if (losthtml.indexOf("<li") > 0) div += losthtml;
+			
+			if (resultVO.gainedInjuries.length > 0) {
+				losthtml += "<p class='warning'>You got injured.</p>";
+			}
+                
+			div += "</div>";
+			return div;
 		},
 
 		getScavengeEfficiency: function () {

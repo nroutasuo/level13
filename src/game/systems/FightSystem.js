@@ -36,18 +36,20 @@ define([
         },
 
         addToEngine: function (engine) {
+			this.engine = engine;
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.fightNodes = engine.getNodeList(FightNode);
             this.fightNodes.nodeAdded.add(this.onFightNodeAdded);
         },
 
         removeFromEngine: function (engine) {
+			this.engine = null;
             this.fightNodes.nodeAdded.remove(this.onFightNodeAdded);
             this.fightNodes = null;
             this.playerStatsNodes = null;
         },
         
-        onFightNodeAdded: function(node) {
+        onFightNodeAdded: function (node) {
         },
 
         update: function (time) {
@@ -107,34 +109,8 @@ define([
             var enemyDifficulty = EnemyConstants.getEnemyDifficultyLevel(enemy, groundLevelOrdinal, totalLevels);
             
             // Determine rewards and penalties
-            this.fightNodes.head.fight.rewards.resources = FightConstants.getRewardResources(won);
-            if (won) {
-                this.fightNodes.head.fight.rewards.items = this.playerActionResultsHelper.getRewardItems(0.1, 0.2, 50, playerItems, levelOrdinal);
-            } else {
-				this.fightNodes.head.fight.rewards.items = [];
-			}
-            this.fightNodes.head.fight.rewards.reputation = FightConstants.getRewardReputation(won, cleared, enemyDifficulty);
-            this.fightNodes.head.fight.penalties.items = FightConstants.getPenaltyFollowers(won);
-            this.fightNodes.head.fight.injuries = FightConstants.getPenaltyInjuries(won);
-            
-            // Add rewards and penalties
-            var currentStorage = this.resourcesHelper.getCurrentStorage();
-            currentStorage.addResources(this.fightNodes.head.fight.rewards.resources);
-            
-            this.playerStatsNodes.head.reputation.value += this.fightNodes.head.fight.rewards.reputation;
-             
-            for(var i=0; i < this.fightNodes.head.fight.rewards.items.length; i++) {
-                var item = this.fightNodes.head.fight.rewards.items[i];
-                playerItems.addItem(item);
-            }
-            
-            var playerPerks = this.playerStatsNodes.head.entity.get(PerksComponent);
-            for(var i=0; i < this.fightNodes.head.fight.injuries.length; i++) {
-                var injury = this.fightNodes.head.fight.injuries[i];
-                playerPerks.addPerk(injury);
-            }
-            
-            // TODO lost followers
+            this.fightNodes.head.fight.resultVO = this.playerActionResultsHelper.getFightRewards(won);
+			this.playerActionResultsHelper.collectRewards(this.fightNodes.head.fight.resultVO);
         },
         
     });

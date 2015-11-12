@@ -363,8 +363,12 @@ define(['ash',
         
         endFight: function () {
             var sector = this.playerLocationNodes.head.entity;
-            if (sector.has(FightComponent) && sector.get(FightComponent).won) {
-                sector.get(EnemiesComponent).resetNextEnemy();
+            if (sector.has(FightComponent)) {
+				if (sector.get(FightComponent).won) {
+					sector.get(EnemiesComponent).resetNextEnemy();
+				} else {
+					this.engine.getSystem(FaintingSystem).fadeOutToLastVisitedCamp(false, false);
+				}
             }
             sector.remove(FightComponent);
             this.save();
@@ -372,7 +376,7 @@ define(['ash',
         
         buildCamp: function () {
             if (this.playerActionsHelper.checkAvailability("build_out_camp", true)) {
-                this.playerActionsHelper.deductCosts("build_out_camp");               
+                this.playerActionsHelper.deductCosts("build_out_camp");
                 
                 var sector = this.playerLocationNodes.head.entity;
                 var campComponent = new CampComponent();

@@ -495,6 +495,9 @@ define([
                     
                     case "evidence":
                         return (this.playerStatsNodes.head.evidence.value / costs.evidence);
+					
+					case "blueprint":
+						return 1;
                         
                     default:
                         console.log("WARN: Unknown cost: " + name);

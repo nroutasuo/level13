@@ -4,9 +4,10 @@ define(['ash'], function (Ash) {
     var FightComponent = Ash.Class.extend({
         
         enemy: null,
-        rewards: {},
-        penalties: {},
-        injuries: [],
+             
+        finished: false,
+        won: null,
+        resultVO: null,
         
         constructor: function (enemy) {
             this.enemy = enemy;

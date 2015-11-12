@@ -87,7 +87,6 @@ define([
 			// TODO rework texts
 			
 			var msgAdjective = hasWater ? "hungry" : "thirsty";
-			var msgNoun = hasWater ? "food" : "water";
 			var msgMain = "";
 			var msgLog = "";
 			
@@ -96,65 +95,27 @@ define([
 				// TODO deity specific text
 				msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>Your deity takes pity on you and brings you to a camp.";
 				msgLog = "The world fades. You wake up back in camp.";
-				this.fadeOut(msgMain, msgLog, this.lastVisitedCampNodes.head.entity, 0, 0);
+				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 0);
 			}
 			
 			if (hasCampOnLevel && Math.random() < 0.2) {
 				// rescued by campers: back to nearest camp, keep items, maybe injured
 				msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. Some of the scavengers found you and brought you home.";
 				msgLog = "The world fades. You wake up back in camp.";
-				this.fadeOut(msgMain, msgLog, this.lastVisitedCampNodes.head.entity, 0, 0.25);
+				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 0.25);
 				return;
 			}
 			
 			if (hasLastVisitedCamp) {
 				// pass out and teleport to last visited camp: lose items, back to last visited camp, maybe injured
-				msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in camp.";
-				msgLog = "The world fades. You wake up with no memory how you found your way back.";
-				this.fadeOut(msgMain, msgLog, this.lastVisitedCampNodes.head.entity, 1, 1);
+				this.fadeOutToLastVisitedCamp(true, true, msgAdjective);
 				return;
 			}
 			
 			var sectorSafe = this.isSectorSafe(this.playerLocationNodes.head.entity);
 			if (!sectorSafe) {
 				// pass out and teleport to nearest safe sector (with scavengable food & water)
-				var nearestKnownSafeSector;
-				var nearestKnownSafeSectorDist = 100;
-				var nearestVisitedSafeSector;
-				var nearestVisitedSafeSectorDist = 100;
-				
-				var dist;
-				var isVisited;
-				var isSafe;
-				var isKnownSafe;
-				for (var node = this.sectorNodes.head; node; node = node.next) {
-					if (node.position.level === playerPosition.level) {
-						isVisited = node.entity.has(VisitedComponent);
-						if (!isVisited) continue;
-						isSafe = this.isSectorSafe(node.entity);
-						if (!isSafe) continue;
-						dist = Math.abs(playerPosition.sector - node.position.sector);
-						if (dist < nearestVisitedSafeSectorDist) {
-							nearestVisitedSafeSector = node.entity;
-							nearestVisitedSafeSectorDist = dist;
-						}
-						isKnownSafe = this.isSectorKnownSafe(node.entity);
-						if (dist < nearestKnownSafeSectorDist) {
-							nearestKnownSafeSector = node.entity;
-							nearestKnownSafeSectorDist = dist;
-						}
-					}
-				}
-				
-				msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in a familiar area.";
-				msgLog = "The world fades. You wake up with no memory how you got here.";
-				if (nearestKnownSafeSector) {
-					this.fadeOut(msgMain, msgLog, nearestKnownSafeSector, 1, 0);
-				} else if (nearestVisitedSafeSector) {
-					this.fadeOut(msgMain, msgLog, nearestVisitedSafeSector, 1, 0);
-				} else {
-					console.log("WARN: Nowhere to fade out to.");
-				}
+				this.fadeOutToOutside(msgAdjective);
 			}
 		},
 		
@@ -170,13 +131,64 @@ define([
 			return knownSectorSafe;
 		},
 		
-		fadeOut: function (msg, msgLog, sector, loseInventoryProbability, injuryProbability) {
-            var resultVO = this.playerActionResultsHelper.getFadeOutResults(loseInventoryProbability, injuryProbability);
-            this.playerActionResultsHelper.collectRewards(resultVO);
-            
-			this.uiFunctions.showInfoPopup("Exhaustion", msg, "Continue", resultVO);
-
-            // Teleport player
+		fadeOutToLastVisitedCamp: function (showPopup, handleResults, msgAdjective) {
+			var msgMain = showPopup ? "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in camp." : null;
+			var msgLog = "The world fades. You wake up with no memory how you found your way back.";
+			this.fadeOut(msgMain, msgLog, handleResults, this.lastVisitedCampNodes.head.entity, 1, 1);
+		},
+		
+		fadeOutToOutside: function (msgAdjective) {
+			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
+			var nearestKnownSafeSector;
+			var nearestKnownSafeSectorDist = 100;
+			var nearestVisitedSafeSector;
+			var nearestVisitedSafeSectorDist = 100;
+			
+			var dist;
+			var isVisited;
+			var isSafe;
+			var isKnownSafe;
+			for (var node = this.sectorNodes.head; node; node = node.next) {
+				if (node.position.level === playerPosition.level) {
+					isVisited = node.entity.has(VisitedComponent);
+					if (!isVisited) continue;
+					isSafe = this.isSectorSafe(node.entity);
+					if (!isSafe) continue;
+					dist = Math.abs(playerPosition.sector - node.position.sector);
+					if (dist < nearestVisitedSafeSectorDist) {
+						nearestVisitedSafeSector = node.entity;
+						nearestVisitedSafeSectorDist = dist;
+					}
+					isKnownSafe = this.isSectorKnownSafe(node.entity);
+					if (dist < nearestKnownSafeSectorDist) {
+						nearestKnownSafeSector = node.entity;
+						nearestKnownSafeSectorDist = dist;
+					}
+				}
+			}
+			
+			var msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in a familiar area.";
+			var msgLog = "The world fades. You wake up with no memory how you got here.";
+			if (nearestKnownSafeSector) {
+				this.fadeOut(msgMain, msgLog, true, nearestKnownSafeSector, 1, 0);
+			} else if (nearestVisitedSafeSector) {
+				this.fadeOut(msgMain, msgLog, true, nearestVisitedSafeSector, 1, 0);
+			} else {
+				console.log("WARN: Nowhere to fade out to.");
+			}
+		},
+		
+		fadeOut: function (msg, msgLog, handleResults, sector, loseInventoryProbability, injuryProbability) {
+			if (handleResults) {
+				var resultVO = this.playerActionResultsHelper.getFadeOutResults(loseInventoryProbability, injuryProbability);
+				this.playerActionResultsHelper.collectRewards(resultVO);
+				if (msg) this.uiFunctions.showInfoPopup("Exhaustion", msg, "Continue", resultVO);
+			}
+			
+            this.teleport(msgLog, sector);
+		},
+		
+		teleport: function (msgLog, sector) {
 			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
 			var sectorPosition = sector.get(PositionComponent);
 			playerPosition.level = sectorPosition.level;

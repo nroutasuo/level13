@@ -4,9 +4,11 @@ function (Ash, UIConstants) {
     var UIPopupManager = Ash.Class.extend({
         
         popupQueue: null,
+        playerActionResultsHelper: null,
         
-        constructor: function () {
+        constructor: function (playerActionResultsHelper) {
             $(window).resize(this.onResize);
+            this.playerActionResultsHelper = playerActionResultsHelper;
             this.popupQueue = [];
         },
         
@@ -28,37 +30,7 @@ function (Ash, UIConstants) {
             popup += "<h3>" + title + "</h3><p>" + msg + "</p>";
             
             if (resultVO) {
-                popup += "<div class='infobox infobox-temporary'>";
-                var gainedhtml = "<span class='listheader'>Gained:</span>";
-                gainedhtml += "<ul class='resultlist'>";
-                if (resultVO.gainedResources) {
-                    gainedhtml += UIConstants.getResourceList(resultVO.gainedResources);
-                }
-                if (resultVO.gainedItems) {
-                    gainedhtml += UIConstants.getItemList(resultVO.gainedItems);
-                }
-                if (resultVO.gainedEvidence) {
-                    gainedhtml += "<li>" + resultVO.gainedEvidence + " evidence</li>";
-                }
-                gainedhtml += "</ul>";
-                if (gainedhtml.indexOf("<li") > 0) popup += gainedhtml;
-                
-				var losthtml = "<span class='listheader'>Lost:</span>";
-                losthtml += "<ul class='resultlist'>";
-                if (resultVO.lostResources) {
-                    losthtml += UIConstants.getResourceList(resultVO.lostResources);
-                }
-                if (resultVO.lostItems) {
-                    losthtml += UIConstants.getItemList(resultVO.lostItems);
-                }
-                losthtml += "</ul>";
-                if (losthtml.indexOf("<li") > 0) popup += losthtml;
-                
-                if (resultVO.gainedInjuries.length > 0) {
-					losthtml += "<p class='warning'>You got injured.</p>";
-                }
-                
-                popup += "</div>";
+                popup += this.playerActionResultsHelper.getRewardDiv(resultVO);
             }
             
             popup += "<div class='buttonbox'>";

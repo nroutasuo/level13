@@ -85,34 +85,6 @@ function (Ash, ItemConstants, PerkConstants, WorldCreatorConstants, PlayerAction
             
             return "risky";
         },
-        
-        getRewardResources: function (won) {
-            var res = new ResourcesVO();
-            if (won) {
-                // TODO fight result resources should depend on current level and/or the enemy
-                res.metal = Math.random() > 0.75 ? 20 : 1;
-                res.food = Math.random() > 0.5 ? 10 : 0;
-            }
-            return res;
-        },
-        
-        getRewardReputation: function (won, cleared, enemyDifficulty) {
-            var r = 0;
-            if (won) r = cleared ? 2 * enemyDifficulty : 1 * enemyDifficulty;
-            return r;
-        },
-        
-        getPenaltyFollowers: function (won) {
-            return [];
-        },
-        
-        getPenaltyInjuries: function (won) {
-            var injuries = [];
-            if (!won) {
-                injuries.push(PerkConstants.perkDefinitions.injury[Math.floor(Math.random()*2)].clone());
-            }
-            return injuries;
-        },
 	
     };
     

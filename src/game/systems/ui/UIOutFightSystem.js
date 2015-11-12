@@ -13,6 +13,7 @@ define([
     var UIOutFightSystem = Ash.System.extend({
 	
 		uiFunctions: null,
+		playerActionResultsHelper: null,
 		
 		playerLocationNodes: null,
 		playerStatsNodes: null,
@@ -21,8 +22,9 @@ define([
 		lastUpdateTimeStamp: 0,
 		updateFrequency: 500,
 	
-        constructor: function (uiFunctions) {
+        constructor: function (uiFunctions, playerActionResultsHelper) {
 			this.uiFunctions = uiFunctions;
+			this.playerActionResultsHelper = playerActionResultsHelper;
         },
 
         addToEngine: function (engine) {
@@ -57,7 +59,6 @@ define([
 			$("#fight-popup-results").toggle(fightFinished);
 			
 			$("#fight-popup-enemy-info").toggleClass("strike-through", fightFinished && fightWon);
-            
 			
 			this.updateFightCommon(!fightActive && !fightFinished);
 			
@@ -113,7 +114,7 @@ define([
 			if (timeStamp - this.lastUpdateTimeStamp > this.updateFrequency) {
 				var enemy = this.fightNodes.head.fight.enemy;
 				var playerStamina = this.playerStatsNodes.head.stamina;
-				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);	
+				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 				var playerVal = Math.round(playerStamina.hp);
 				var enemyVal = Math.round(enemy.hp);
 				$("#fight-bar-enemy").data("progress-percent", enemyVal);
@@ -140,35 +141,10 @@ define([
 			$("#fight-results-win-res").toggle(isWon);
 			$("#fight-results-win-items").toggle(isWon);
 			$("#fight-results-lose-header").toggle(!isWon && false);
-			$("#fight-results-lose-items").toggle(!isWon && false); // TODO show lost followers
+			$("#fight-results-lose-items").toggle(!isWon && false);
 			
-			if ($("#fight-results-win-items li").length <= 0) {
-				for (var key in resourceNames) {
-					var name = resourceNames[key];
-					var amount = this.fightNodes.head.fight.rewards.resources.getResource(name);
-					if (amount > 0) {
-						var li = UIConstants.getResourceLi(name, amount);
-						$("#fight-results-win-items").append(li);
-					}
-				}
-			
-				if (this.fightNodes.head.fight.rewards.items.length > 0) {
-					for (var i=0; i < this.fightNodes.head.fight.rewards.items.length; i++) {
-						var item = this.fightNodes.head.fight.rewards.items[i];
-						var li = UIConstants.getItemLI(item, 1);
-						$("#fight-results-win-items").append(li);
-					}
-				}
-				
-				if (this.fightNodes.head.fight.rewards.reputation > 0) {
-					var li = "<li>" + this.fightNodes.head.fight.rewards.reputation  + " reputation</li>";
-					$("#fight-results-win-items").append(li);
-				}
-				
-				this.uiFunctions.generateCallouts("#fight-popup");
-			}
-			
-			$("#fight-results-lose-injury").toggle(this.fightNodes.head.fight.injuries.length > 0);
+			$("#fight-popup-results").html(this.playerActionResultsHelper.getRewardDiv(this.fightNodes.head.fight.resultVO));
+			this.uiFunctions.generateCallouts("#fight-popup");
         },
 		
     });

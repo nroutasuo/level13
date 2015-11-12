@@ -7,6 +7,10 @@
             "changes": [
                 {
                     "type": "GD",
+                    "summary": "Reworked exploration and fighting systems. Exploration is not more risky, but has more rewards."
+                }
+                {
+                    "type": "GD",
                     "summary": "New improvement: aqueduct."
                 },
                 {
