@@ -7,7 +7,7 @@
             "changes": [
                 {
                     "type": "GD",
-                    "summary": "Reworked exploration and fighting systems. Exploration is not more risky, but has more rewards."
+                    "summary": "Reworked exploration and fighting systems. Exploration is more risky, but also has more rewards. Healing injuries is no longer instant."
                 }
                 {
                     "type": "GD",

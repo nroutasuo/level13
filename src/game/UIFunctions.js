@@ -217,10 +217,11 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                     var duration = PlayerActionConstants.getDuration(action);
                     if (duration > 0) {
                         var locationKey = uiFunctions.getLocationKey($(this));
+                        playerActions.startBusy(action);
                         uiFunctions.gameState.setActionDuration(action, locationKey, duration);
                         uiFunctions.startButtonDuration($(this), duration);
                     } else {
-                        uiFunctions.completeAction($(this), action);
+                        uiFunctions.completeAction(action);
                     }
                 }
             });
@@ -355,7 +356,8 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             $(scope + " div.container-btn-action").append("<div class='cooldown-reqs' />");
         },
         
-        completeAction: function (button, action) {
+        completeAction: function (action) {
+            var button = $("button[action='" + action + "']");
             var cooldown = PlayerActionConstants.getCooldown(action);
             if (cooldown > 0) {
                 var locationKey = this.getLocationKey($(button));
@@ -615,7 +617,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                     cooldownTotal = PlayerActionConstants.getCooldown(action);
                     cooldownLeft = Math.min(cooldownTotal, uiFunctions.gameState.getActionCooldown(action, locationKey) / 1000);
                     durationTotal = PlayerActionConstants.getDuration(action);
-                    durationLeft = Math.min(cooldownTotal, uiFunctions.gameState.getActionDuration(action, locationKey) / 1000);
+                    durationLeft = Math.min(durationTotal, uiFunctions.gameState.getActionDuration(action, locationKey) / 1000);
                     if (cooldownLeft > 0) uiFunctions.startButtonCooldown($(this), cooldownTotal, cooldownLeft);
                     else uiFunctions.stopButtonCooldown($(this));
                     if (durationLeft > 0) uiFunctions.startButtonDuration($(this), cooldownTotal, durationLeft);
@@ -692,8 +694,6 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             $(button).children(".cooldown-duration").css("display", "none");
             $(button).children(".cooldown-duration").css("width", "0%");
             $(button).attr("data-isInProgress", "false");
-            var action = $(button).attr("action");
-            this.completeAction(button, action);
         },
         
         startButtonDuration: function (button, duration, durationLeft) {

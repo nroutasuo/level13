@@ -24,6 +24,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     sector: {
                         scouted: false,
                     },
+                    busy: false,
                 },
                     
                 scavenge: {
@@ -42,6 +43,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     perks: {
                         Injury: [1, -1],
                     },
+                    busy: false,
                 },
                     
                 fight: {
@@ -55,6 +57,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     perks: {
                         Injury: [1, -1],
                     },
+                    busy: false,
                 },
                         
                 move_sector_left: {
@@ -62,6 +65,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     sector: {
                         blockerLeft: false,
                     },
+                    busy: false,
                 },
                         
                 move_sector_right: {
@@ -69,6 +73,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     sector: {
                         blockerRight: false,
                     },
+                    busy: false,
                 },
                     
                 move_level_up: {
@@ -78,6 +83,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     improvements: {
                         passageUp: [1, -1],
                     },
+                    busy: false,
                 },
                     
                 move_level_down: {
@@ -87,6 +93,11 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     improvements: {
                         passageDown: [1, -1],
                     },
+                    busy: false,
+                },
+                
+                leave_camp: {
+                    busy: false,
                 },
                         
                 build_out_camp: {
@@ -259,13 +270,13 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     },
                     upgrades: {
                         upgrade_building_hospital: true,
-                    }
+                    },
                 },
             
                 build_in_tradingPost: {
                     numCamps: 2,
                     improvements: {
-                        tradepost: [0,1],
+                        tradepost: [0, 1],
                     },
                     upgrades: {
                         unlock_building_tradingpost: true,
@@ -274,7 +285,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
             
                 build_in_inn: {
                     improvements: {
-                        inn: [0,1],
+                        inn: [0, 1],
                     },
                     upgrades: {
                         unlock_building_inn: true,
@@ -288,11 +299,12 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     upgrades: {
                         unlock_building_inn: true,
                     },
+                    busy: false,
                 },
             
                 build_in_market: {
                     improvements: {
-                        tradepost: [1,-1],
+                        tradepost: [1, -1],
                         market: [0, 1],
                     },
                     upgrades: {
@@ -507,7 +519,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     upgrades: {
                         unlock_item_bag3: true,
                     }
-                },                
+                },
 				
                 unlock_building_hospital: {
                     upgrades: {

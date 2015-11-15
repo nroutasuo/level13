@@ -15,6 +15,7 @@ define([
     'game/components/type/LevelComponent',
     'game/components/type/SectorComponent',
     'game/components/common/PositionComponent',
+    'game/components/common/PlayerActionComponent',
     'game/components/common/ResourcesComponent',
     'game/components/common/ResourceAccumulationComponent',
     'game/components/common/VisitedComponent',
@@ -51,6 +52,7 @@ define([
     LevelComponent,
     SectorComponent,
     PositionComponent,
+    PlayerActionComponent,
     ResourcesComponent,
     ResourceAccumulationComponent,
     VisitedComponent,
@@ -97,6 +99,7 @@ define([
 			.add(new EvidenceComponent())
 			.add(new PositionComponent(13, 2, false))
 			.add(new LogMessagesComponent())
+			.add(new PlayerActionComponent())
 			.add(new SaveComponent(saveKey, [
 					ResourcesComponent,
 					VisionComponent,
@@ -107,7 +110,8 @@ define([
 					ReputationComponent,
 					RumoursComponent,
 					EvidenceComponent,
-					LogMessagesComponent
+					LogMessagesComponent,
+					PlayerActionComponent
 				]));
 			this.engine.addEntity(player);
 			return player;

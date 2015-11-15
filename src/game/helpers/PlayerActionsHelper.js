@@ -10,6 +10,7 @@ define([
     'game/nodes/sector/CampNode',
     'game/nodes/NearestCampNode',
     'game/components/common/PositionComponent',
+    'game/components/common/PlayerActionComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
     'game/components/player/DeityComponent',
@@ -25,7 +26,7 @@ define([
 ], function (
 	Ash, PlayerActionConstants, ItemConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
-	PositionComponent, ItemsComponent, PerksComponent, DeityComponent,
+	PositionComponent, PlayerActionComponent, ItemsComponent, PerksComponent, DeityComponent,
 	PassagesComponent, EnemiesComponent, MovementOptionsComponent,
 	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, SectorImprovementsComponent,
 	CampComponent
@@ -127,6 +128,7 @@ define([
             var campComponent = sector.get(CampComponent);
             var featuresComponent = sector.get(SectorFeaturesComponent);
             var statusComponent = sector.get(SectorStatusComponent);
+			var playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
             
             var lowestFraction = 1;
             var reason = "";
@@ -179,7 +181,7 @@ define([
                     }
                 }
                 
-                if (typeof requirements.sunlit != "undefined") {
+                if (typeof requirements.sunlit !== "undefined") {
                     var currentValue = featuresComponent.sunlit;
                     var requiredValue = requirements.sunlit;
                     if (currentValue !== requiredValue) {
@@ -324,6 +326,17 @@ define([
                         return { value: 0, reason: reason };
                     }
                 }
+				
+				if (typeof requirements.busy !== "undefined") {
+                    var currentValue = playerActionComponent.isBusy();
+                    var requiredValue = requirements.busy;
+                    if (currentValue !== requiredValue) {
+                        if (currentValue) reason = "Busy " + playerActionComponent.getDescription();
+                        else reason = "Need to be busy to do this.";
+                        if (log) console.log("WARN: " + reason);
+                        return { value: 0, reason: reason };
+                    }
+				}
                 
                 if (requirements.sector) {
                     if (requirements.sector.canHaveCamp) {

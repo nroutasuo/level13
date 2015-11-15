@@ -245,17 +245,17 @@ ul.tabs li.selected {
 	border: 2px solid #555;
 }
 
-div.container-btn-action, .changelog-type {
-	border-color: #555;
-}
-
 .sunlit .lvl13-element, .sunlit div.btn-callout-content, .sunlit div.info-callout-content, .sunlit div.popup, .sunlit button, .sunlit ul.tabs li, .sunlit a:link, .sunlit a:visited {
 	background: rgb(252, 252, 252);
 	color: #222222;
 	border: 2px solid #aaa;
 }
 
-.sunlit div.container-btn-action {
+div.container-btn-action, .changelog-type, p.notification {
+	border-color: #555;
+}
+
+.sunlit div.container-btn-action, .sunlit .changelog-type, .sunlit p.notification {
 	border-color: #aaa;
 }
 
@@ -855,6 +855,14 @@ button .cooldown-action, button .cooldown-duration {
 .sunlit .indicator-even {
 	background-image: url('../img/eldorado/icon-even.png');
 	opacity: 0.25;
+}
+
+p.notification {
+    padding: 2px;
+    margin: 0;
+    border-width: 1px;
+    border-style: solid;
+    text-align: center;
 }
 
 .actionbox, .infobox, .buttonbox {

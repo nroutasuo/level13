@@ -23,6 +23,7 @@ define(['ash',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PerksComponent',
 	'game/components/player/AutoPlayComponent',
+	'game/components/common/PlayerActionComponent',
     'game/components/common/CampComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/FightComponent',
@@ -45,7 +46,7 @@ define(['ash',
 	PlayerPositionNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent, VisitedComponent,
-	ItemsComponent, PerksComponent, AutoPlayComponent,
+	ItemsComponent, PerksComponent, AutoPlayComponent, PlayerActionComponent,
 	CampComponent, SectorImprovementsComponent, FightComponent, EnemiesComponent,
 	SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, CampEventTimersComponent,
@@ -259,6 +260,13 @@ define(['ash',
                 this.save();
             } else {
                 console.log("WARN: No valid camp found.");
+            }
+        },
+        
+        startBusy: function (action) {
+            var duration = PlayerActionConstants.getDuration(action);
+            if (duration > 0) {
+                this.playerStatsNodes.head.entity.get(PlayerActionComponent).addAction(action, duration);
             }
         },
         

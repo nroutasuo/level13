@@ -10,6 +10,7 @@ define([
     'game/components/player/DeityComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
+    'game/components/common/PlayerActionComponent',
     'game/components/common/PositionComponent',
     'game/components/sector/SectorFeaturesComponent',
 ], function (Ash,
@@ -18,6 +19,7 @@ define([
 	DeityComponent,
 	ItemsComponent,
 	PerksComponent,
+	PlayerActionComponent,
 	PositionComponent,
 	SectorFeaturesComponent
 ) {
@@ -72,6 +74,7 @@ define([
 			this.updateOverlay();
 			this.updateLevelColours();
 			this.updateGameMsg();
+			this.updateNotifications();
 			
 			if (new Date().getTime() - this.lastUpdateTimeStamp < this.updateFrequency) return;
 			this.updatePlayerStats();
@@ -257,6 +260,15 @@ define([
 			}
 			
 			$("#game-version").text("v. " + this.uiFunctions.changeLogHelper.getCurrentVersionNumber());
+		},
+		
+		updateNotifications: function () {
+			var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
+			var isBusy = this.playerStatsNodes.head.entity.has(PlayerActionComponent) && busyComponent.isBusy();
+			$("#notification-player").toggle(isBusy);
+			if (isBusy) {
+				$("#notification-player p").html(busyComponent.getDescription());
+			}
 		},
 		
 		getShowResources: function () {

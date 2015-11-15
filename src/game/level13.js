@@ -16,6 +16,7 @@ define([
     'game/systems/VisionSystem',
     'game/systems/StaminaSystem',
     'game/systems/PlayerPositionSystem',
+    'game/systems/PlayerActionSystem',
     'game/systems/SectorStatusSystem',
     'game/systems/LevelPassagesSystem',
     'game/systems/CollectorSystem',
@@ -63,6 +64,7 @@ define([
     VisionSystem,
     StaminaSystem,
     PlayerPositionSystem,
+    PlayerActionSystem,
     SectorStatusSystem,
     LevelPassagesSystem,
     CollectorSystem,
@@ -169,6 +171,7 @@ define([
 			this.engine.addSystem(new RumourSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new EvidenceSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new PlayerPositionSystem(this.gameState, this.uiFunctions, this.occurrenceFunctions, this.playerMovedSignal), SystemPriorities.preupdate);
+			this.engine.addSystem(new PlayerActionSystem(this.uiFunctions), SystemPriorities.update);
 			this.engine.addSystem(new SectorStatusSystem(this.movementHelper, this.levelHelper), SystemPriorities.update);
 			this.engine.addSystem(new LevelPassagesSystem(this.levelHelper, this.improvementBuiltSignal), SystemPriorities.update);
 			this.engine.addSystem(new UnlockedFeaturesSystem(this.gameState), SystemPriorities.update);
