@@ -42,6 +42,7 @@ define(['ash', 'game/WorldCreator'], function (Ash, WorldCreator) {
             };
             
             this.actionCooldownEndTimestamps = {};
+            this.actionDurationEndTimestamps = {};
         },
         
         getLevelOrdinal: function (level) {
@@ -74,6 +75,24 @@ define(['ash', 'game/WorldCreator'], function (Ash, WorldCreator) {
             var actionKey = action;
             if (key.length > 0) actionKey += "-" + key;
             var timestamp = this.actionCooldownEndTimestamps[actionKey];
+            if (timestamp) {
+                var now = new Date().getTime();
+                var diff = timestamp - now;
+                if (diff > 0) return timestamp - now;
+            }
+            return 0;
+        },
+        
+        setActionDuration: function (action, key, duration) {
+            var actionKey = action;
+            if (key.length > 0) actionKey += "-" + key;
+            this.actionDurationEndTimestamps[actionKey] = new Date().getTime() + duration * 1000;
+        },
+        
+        getActionDuration: function (action, key) {
+            var actionKey = action;
+            if (key.length > 0) actionKey += "-" + key;
+            var timestamp = this.actionDurationEndTimestamps[actionKey];
             if (timestamp) {
                 var now = new Date().getTime();
                 var diff = timestamp - now;

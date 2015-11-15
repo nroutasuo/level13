@@ -1388,6 +1388,11 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 use_in_inn: 60 * 30,
                 despair: 60,
             },
+            
+            durations: {
+                use_in_hospital: 60 * 2,
+                use_in_campfire: 5,
+            },
         
             descriptions: {
                 scout: "Scout the area for evidence.",
@@ -1430,6 +1435,13 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
             getCooldown: function (action) {
                 if (this.cooldowns[action]) {
                     return this.cooldowns[action] / GameConstants.gameSpeed;
+                }
+                return 0;
+            },
+                   
+            getDuration: function (action) {
+                if (this.durations[action]) {
+                    return this.durations[action] / GameConstants.gameSpeed;
                 }
                 return 0;
             },

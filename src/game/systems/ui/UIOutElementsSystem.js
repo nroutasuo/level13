@@ -94,6 +94,10 @@ define([
                 return ($(button).attr("data-hasCooldown") === "true");
             };
 			
+			var hasButtonDuration = function (button) {
+                return ($(button).attr("data-isInProgress") === "true");
+            };
+			
 			var getButtonSectorEntity = function (button) {
 				var sector = $(button).attr("sector");
 				var sectorEntity = null;
@@ -152,13 +156,14 @@ define([
 				var disabledBasic = !disabledVision && isButtonDisabled($(this));
 				var disabledResources = !disabledVision && !disabledBasic && isButtonDisabledResources($(this));
 				var disabledCooldown = !disabledVision && !disabledBasic && !disabledResources && hasButtonCooldown($(this));
-				var isDisabled = disabledBasic || disabledVision || disabledResources || disabledCooldown;
+				var disabledDuration = !disabledVision && !disabledBasic && !disabledResources && !disabledCooldown && hasButtonDuration($(this));
+				var isDisabled = disabledBasic || disabledVision || disabledResources || disabledCooldown || disabledDuration;
 				$(this).toggleClass("btn-disabled", isDisabled);
 				$(this).toggleClass("btn-disabled-basic", disabledBasic);
 				$(this).toggleClass("btn-disabled-vision", disabledVision);
 				$(this).parent(".container-btn-action").toggleClass("btn-disabled-vision", disabledVision);
 				$(this).toggleClass("btn-disabled-resources", disabledResources);
-				$(this).toggleClass("btn-disabled-cooldown", disabledCooldown);
+				$(this).toggleClass("btn-disabled-cooldown", disabledCooldown || disabledDuration);
 				$(this).attr("disabled", isDisabled || isAutoPlaying);
             });
             
@@ -172,7 +177,7 @@ define([
                 if (!action) {
                     // console.log("WARN: Action button w unknown action: " + $(this).attr("id"));
                     // skip updating
-                } else if(!isVisible) {
+                } else if (!isVisible) {
                     // skip updating
                 } else {
                     var ordinal = playerActionsHelper.getOrdinal(action);
@@ -222,6 +227,7 @@ define([
                     var hasReqsCooldown = ($(this).hasClass("btn-disabled-resources") && hasCosts && !hasCostBlockers);
                     $(this).siblings(".cooldown-reqs").css("width", ((bottleNeckCostFraction) * 100) + "%");
                     $(this).children(".cooldown-action").css("display", !isHardDisabled ? "inherit" : "none");
+                    $(this).children(".cooldown-duration").css("display", !isHardDisabled ? "inherit" : "none");
                 }
             });
         },

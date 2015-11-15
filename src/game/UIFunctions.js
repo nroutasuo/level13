@@ -214,67 +214,47 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             $(scope + " button.action").click(function (e) {
                 var action = $(this).attr("action");
                 if (action) {
-                    var cooldown = PlayerActionConstants.getCooldown(action);
-                    if (cooldown > 0) {
+                    var duration = PlayerActionConstants.getDuration(action);
+                    if (duration > 0) {
                         var locationKey = uiFunctions.getLocationKey($(this));
-                        uiFunctions.gameState.setActionCooldown(action, locationKey, cooldown);
-                        uiFunctions.startButtonCooldown($(this), cooldown);
-                    }
-                    
-                    var baseId = playerActions.playerActionsHelper.getBaseActionID(action);
-                    var func = uiFunctions.actionToFunctionMap[baseId];
-                    if (func) {
-                        var param = null;
-                        var isProject = $(this).hasClass("action-level-project");
-                        if (isProject) param = $(this).attr("sector");
-                        var actionIDParam = playerActions.playerActionsHelper.getActionIDParam(action);
-                        if (actionIDParam) param = actionIDParam;
-                        func.call(playerActions, param);
+                        uiFunctions.gameState.setActionDuration(action, locationKey, duration);
+                        uiFunctions.startButtonDuration($(this), duration);
                     } else {
-                        switch(action) {
-                            case "move_sector_left": break;
-                            case "move_sector_right": break;
-                            case "leave_camp": break;
-                            default:
-                            console.log("WARN: No function found for button with action " + action);
-                            break;
-                        }
+                        uiFunctions.completeAction($(this), action);
                     }
-                } else {
-                    // console.log("WARN: button.action with no action (#"+ $(this).attr('id') +")");
                 }
-            }); 
+            });
             
             // Special actions
             var onMoveButtonClicked = this.onMoveButtonClicked;
-            $(scope + " button.action-move").click( function(e) {
+            $(scope + " button.action-move").click(function (e) {
                 onMoveButtonClicked(this, playerActions);
             });
-            $(scope + " #out-action-fight").click( function(e) {
+            $(scope + " #out-action-fight").click(function (e) {
                 playerActions.initFight();
                 $("body").css("overflow", "hidden");
                 $("#fight-popup").wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");
-                $(".popup-overlay").fadeIn(200, function() {
+                $(".popup-overlay").fadeIn(200, function () {
                     uiFunctions.popupManager.onResize();
                     $("#fight-popup").fadeIn(200, uiFunctions.popupManager.onResize);
                 });
             });
-            $(scope + " #out-action-fight-confirm").click( function(e) {
+            $(scope + " #out-action-fight-confirm").click(function (e) {
                 playerActions.startFight();
             });
-            $(scope + " #out-action-fight-close").click( function(e) {
+            $(scope + " #out-action-fight-close").click(function (e) {
                 uiFunctions.popupManager.closePopup("fight-popup", true);
                 playerActions.endFight();
             });
-            $(scope + " #out-action-fight-next").click( function(e) {
+            $(scope + " #out-action-fight-next").click(function (e) {
                 playerActions.endFight();
                 playerActions.initFight();
             });
-            $(scope + " #out-action-fight-cancel").click( function(e) {
+            $(scope + " #out-action-fight-cancel").click(function (e) {
                 uiFunctions.popupManager.closePopup("fight-popup", true);
                 playerActions.endFight();
             });
-            $(scope + " button[action='leave_camp']").click( function(e) {
+            $(scope + " button[action='leave_camp']").click(function (e) {
                 var selectedResVO = new ResourcesVO();                
                 $.each($("#embark-resources tr"), function() {
                     var resourceName = $(this).attr("id").split("-")[2];
@@ -291,7 +271,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             // some in UIOoutBagSystem
         },
         
-        generateElements: function() {
+        generateElements: function () {
             this.generateResourceIndicators();
             this.generateSteppers("body");
             this.generateButtonOverlays("body");
@@ -368,10 +348,40 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             });
         },
         
-        generateButtonOverlays: function(scope) {
+        generateButtonOverlays: function (scope) {
             $(scope + " button.action").append("<div class='cooldown-action' style='display:none' />");
+            $(scope + " button.action").append("<div class='cooldown-duration' style='display:none' />");
             $(scope + " button.action").wrap("<div class='container-btn-action' />");
             $(scope + " div.container-btn-action").append("<div class='cooldown-reqs' />");
+        },
+        
+        completeAction: function (button, action) {
+            var cooldown = PlayerActionConstants.getCooldown(action);
+            if (cooldown > 0) {
+                var locationKey = this.getLocationKey($(button));
+                this.gameState.setActionCooldown(action, locationKey, cooldown);
+                this.startButtonCooldown($(button), cooldown);
+            }
+            
+            var baseId = this.playerActions.playerActionsHelper.getBaseActionID(action);
+            var func = this.actionToFunctionMap[baseId];
+            if (func) {
+                var param = null;
+                var isProject = $(button).hasClass("action-level-project");
+                if (isProject) param = $(button).attr("sector");
+                var actionIDParam = this.playerActions.playerActionsHelper.getActionIDParam(action);
+                if (actionIDParam) param = actionIDParam;
+                func.call(this.playerActions, param);
+            } else {
+                switch (action) {
+                    case "move_sector_left": break;
+                    case "move_sector_right": break;
+                    case "leave_camp": break;
+                    default:
+                        console.log("WARN: No function found for button with action " + action);
+                        break;
+                }
+            }
         },
         
         getGameInfoDiv: function () {
@@ -383,10 +393,10 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             return html;
         },
         
-        onResize: function() {
+        onResize: function () {
         },
         
-        onTabClicked: function(tabID, elementIDs, gameState, playerActions) {
+        onTabClicked: function (tabID, elementIDs, gameState, playerActions) {
             $("#switch-tabs li").removeClass("selected");
             $("#tab-header h2").text(tabID);
             
@@ -596,14 +606,19 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             var uiFunctions = this;
             var cooldownLeft;
             var cooldownTotal;
+            var durationLeft;
+            var durationTotal;
             $.each($("button.action-location"), function() {
                 var action = $(this).attr("action");
                 if (action) {
                     var locationKey = uiFunctions.getLocationKey($(this));
                     cooldownTotal = PlayerActionConstants.getCooldown(action);
                     cooldownLeft = Math.min(cooldownTotal, uiFunctions.gameState.getActionCooldown(action, locationKey) / 1000);
+                    durationTotal = PlayerActionConstants.getDuration(action);
+                    durationLeft = Math.min(cooldownTotal, uiFunctions.gameState.getActionDuration(action, locationKey) / 1000);
                     if (cooldownLeft > 0) uiFunctions.startButtonCooldown($(this), cooldownTotal, cooldownLeft);
                     else uiFunctions.stopButtonCooldown($(this));
+                    if (durationLeft > 0) uiFunctions.startButtonDuration($(this), cooldownTotal, durationLeft);
                 }
             });
         },
@@ -650,17 +665,15 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
 			}
         },
         
-        stopButtonCooldown: function(button) {
+        stopButtonCooldown: function (button) {
             $(button).children(".cooldown-action").stop(true, true);
-            var action = $(button).attr("action");
             $(button).attr("data-hasCooldown", "false");
             $(button).children(".cooldown-action").css("display", "none");
         },
         
-        startButtonCooldown: function(button, cooldown, cooldownLeft) {
+        startButtonCooldown: function (button, cooldown, cooldownLeft) {
             var action = $(button).attr("action");
             if (!cooldownLeft) cooldownLeft = cooldown;
-
             var uiFunctions = this;
             var startingWidth = (cooldownLeft/cooldown * 100);
             $(button).attr("data-hasCooldown", "true");
@@ -670,6 +683,32 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                 'linear',
                 function() {
                     uiFunctions.stopButtonCooldown($(this).parent());
+                }
+            );
+        },
+        
+        stopButtonDuration: function (button, complete) {
+            $(button).children(".cooldown-duration").stop(true, true);
+            $(button).children(".cooldown-duration").css("display", "none");
+            $(button).children(".cooldown-duration").css("width", "0%");
+            $(button).attr("data-isInProgress", "false");
+            var action = $(button).attr("action");
+            this.completeAction(button, action);
+        },
+        
+        startButtonDuration: function (button, duration, durationLeft) {
+            var action = $(button).attr("action");
+            if (!durationLeft) durationLeft = duration;
+
+            var uiFunctions = this;
+            var startingWidth = (1-durationLeft/duration) * 100;
+            $(button).attr("data-isInProgress", "true");
+            $(button).children(".cooldown-duration").stop(true, false).css("display", "inherit").css("width", startingWidth + "%").animate(
+                { width: '100%' },
+                durationLeft * 1000,
+                'linear',
+                function() {
+                    uiFunctions.stopButtonDuration($(this).parent(), true);
                 }
             );
         },

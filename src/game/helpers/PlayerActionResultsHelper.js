@@ -68,7 +68,6 @@ define([
 
 			rewards.gainedResources = this.getRewardResources(1, efficiency, sectorResources);
 			rewards.gainedItems = this.getRewardItems(0.007, 0.05, playerVision * 0.25, itemsComponent, levelOrdinal);
-			rewards.gainedInjuries = this.getResultInjuries();
 
 			return rewards;
 		},
@@ -79,8 +78,11 @@ define([
 			var efficiency = this.getScavengeEfficiency();
             var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resources;
 
-			rewards.gainedResources = this.getRewardResources(0.5, efficiency * 2, sectorResources);
 			rewards.gainedEvidence = 1;
+			rewards.gainedInjuries = this.getResultInjuries(0.15);
+			if (rewards.gainedInjuries.length === 0) {
+				rewards.gainedResources = this.getRewardResources(0.5, efficiency * 2, sectorResources);
+			}
 
 			return rewards;
 		},
@@ -96,11 +98,13 @@ define([
 			var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
 			var localeDifficulty = localeVO.requirements.vision + localeVO.costs.stamina;
 
-			rewards.gainedResources = this.getRewardResources(1, efficiency * localeDifficulty / 15, availableResources);
-			rewards.gainedItems = this.getRewardItems(0.2, 0, localeDifficulty / 2, itemsComponent, levelOrdinal);
-			rewards.gainedInjuries = this.getResultInjuries();
-			rewards.gainedBlueprint = this.getResultBlueprint(localeVO);
 			rewards.gainedEvidence = 1;
+			rewards.gainedBlueprint = this.getResultBlueprint(localeVO);
+			rewards.gainedInjuries = this.getResultInjuries(0.2);
+			if (rewards.gainedInjuries.length === 0) {
+				rewards.gainedResources = this.getRewardResources(1, efficiency * localeDifficulty / 15, availableResources);
+				rewards.gainedItems = this.getRewardItems(0.2, 0, localeDifficulty / 2, itemsComponent, levelOrdinal);
+			}
 
 			return rewards;
 		},
@@ -135,11 +139,7 @@ define([
                 }
             }
 
-            if (injuryProbability > Math.random()) {
-				var injuryi = parseInt(Math.random() * PerkConstants.perkDefinitions.injury.length);
-				var injury = PerkConstants.perkDefinitions.injury[injuryi];
-                resultVO.gainedInjuries.push(injury.clone());
-            }
+            resultVO.gainedInjuries = this.getResultInjuries(injuryProbability);
 
             return resultVO;
         },
@@ -243,8 +243,12 @@ define([
 			} else {
 				msg = "Didn't find anything.";
 			}
-
-			// TODO add perks (injuries)
+			
+			// TODO more (varied?) messages for getting injured
+			
+			if (rewards.gainedInjuries.length > 0) {
+				msg += " Got injured.";
+			}
 
 			return { msg: msg, replacements: replacements, values: values };
 		},
@@ -274,11 +278,10 @@ define([
 				losthtml += UIConstants.getItemList(resultVO.lostItems);
 			}
 			losthtml += "</ul>";
-			if (losthtml.indexOf("<li") > 0) div += losthtml;
-			
 			if (resultVO.gainedInjuries.length > 0) {
 				losthtml += "<p class='warning'>You got injured.</p>";
 			}
+			if (losthtml.indexOf("<li") > 0 || losthtml.indexOf("<p") > 0) div += losthtml;
                 
 			div += "</div>";
 			return div;
@@ -378,9 +381,14 @@ define([
 			return null;
 		},
 
-		getResultInjuries: function () {
-			// TODO injuries perks for sca/fi/i
-			return {};
+		getResultInjuries: function (injuryProbability) {
+			var injuries = [];
+			if (injuryProbability > Math.random()) {
+				var injuryi = parseInt(Math.random() * PerkConstants.perkDefinitions.injury.length);
+				var injury = PerkConstants.perkDefinitions.injury[injuryi];
+                injuries.push(injury.clone());
+            }
+			return injuries;
 		},
 		
 		getResultBlueprint: function (localeVO) {

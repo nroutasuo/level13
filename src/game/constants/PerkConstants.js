@@ -24,14 +24,14 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 		getPerk: function (perkId) {
 			for (var key in this.perkDefinitions) {
 				for (var i = 0; i < this.perkDefinitions[key].length; i++) {
-					if (this.perkDefinitions[key][i].id == perkId) return this.perkDefinitions[key][i];
+					if (this.perkDefinitions[key][i].id === perkId) return this.perkDefinitions[key][i];
 				}
 			}
 			return null;
 		},
 		
-		isPercentageEffect: function(perkType) {
-			switch(perkType) {
+		isPercentageEffect: function (perkType) {
+			switch (perkType) {
 				case this.perkTypes.health: return true;
 				case this.perkTypes.injury: return true;
 				default: return false;

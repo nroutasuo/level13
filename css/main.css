@@ -201,12 +201,12 @@ ul.tabs li.selected {
 	border-width: 1px !important;
 }
 
-.item-equipped, .cooldown-reqs, ul.resultlist li {
+.item-equipped, .cooldown-reqs, .cooldown-duration, ul.resultlist li {
 	background: rgba(200,200,200,0.1);
 	border-color: #666;
 }
 
-.sunlit .item-equipped, .sunlit .cooldown-reqs, .sunlit ul.resultlist li {
+.sunlit .item-equipped, .sunlit .cooldown-reqs, .sunlit .cooldown-duration, .sunlit ul.resultlist li {
 	background: #fff;
 	border-color: #bbb;
 }
@@ -772,7 +772,7 @@ button.btn-disabled-basic, button.btn-disabled-vision, li.disabled {
 	transition: all 0.1s;
 }
 
-button .cooldown-action {
+button .cooldown-action, button .cooldown-duration {
 	height: 100%;
 	width: 0%;
 	position: absolute;
