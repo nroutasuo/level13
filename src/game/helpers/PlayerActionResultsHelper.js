@@ -10,6 +10,7 @@ define([
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/tribe/TribeUpgradesNode',
+    'game/nodes/NearestCampNode',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/player/ItemsComponent',
@@ -27,6 +28,7 @@ define([
 	PlayerLocationNode,
 	PlayerResourcesNode,
 	TribeUpgradesNode,
+	NearestCampNode,
 	SectorFeaturesComponent,
 	SectorStatusComponent,
 	ItemsComponent,
@@ -44,6 +46,11 @@ define([
 		playerResourcesNodes: null,
 		playerLocationNodes: null,
 		tribeUpgradesNodes: null,
+		
+		itemResultTypes: {
+			scavenge: { bag: 0.1, shades: 0.15, light: 0.25, movement: 0.35, shoes: 0.52, weapon: 0.75, clothing: 0.95, exploration: 0.99 },
+			fight: { bag: 0, shades: 0, light: 0, movement: 0.1, shoes: 0.25, weapon: 0.4, clothing: 0.55, exploration: 0.6 }
+		},
 
 		constructor: function (engine, gameState, resourcesHelper, levelHelper) {
 			this.engine = engine;
@@ -54,6 +61,7 @@ define([
             this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
+			this.nearestCampNodes = engine.getNodeList(NearestCampNode);
 		},
 
         getScavengeRewards: function () {
@@ -64,10 +72,9 @@ define([
 			var playerPos = this.playerLocationNodes.head.position;
 			var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
 			var efficiency = this.getScavengeEfficiency();
-			var playerVision = this.playerStatsNodes.head.vision.value;
 
 			rewards.gainedResources = this.getRewardResources(1, efficiency, sectorResources);
-			rewards.gainedItems = this.getRewardItems(0.007, 0.05, playerVision * 0.25, itemsComponent, levelOrdinal);
+			rewards.gainedItems = this.getRewardItems(0.007, 0.05, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
 
 			return rewards;
 		},
@@ -103,8 +110,9 @@ define([
 			rewards.gainedInjuries = this.getResultInjuries(0.2);
 			if (rewards.gainedInjuries.length === 0) {
 				rewards.gainedResources = this.getRewardResources(1, efficiency * localeDifficulty / 15, availableResources);
-				rewards.gainedItems = this.getRewardItems(0.2, 0, localeDifficulty / 2, itemsComponent, levelOrdinal);
+				rewards.gainedItems = this.getRewardItems(0.2, 0, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
 			}
+			rewards.gainedPopulation = Math.random() < 0.1 ? 1 : 0;
 
 			return rewards;
 		},
@@ -118,9 +126,9 @@ define([
 				var playerPos = this.playerLocationNodes.head.position;
 				var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
 				availableResources.setResource(resourceNames.food, 10);
-				availableResources.setResource(resourceNames.metal, 5);
+				availableResources.setResource(resourceNames.metal, 3);
 				rewards.gainedResources = this.getRewardResources(0.3, 1, availableResources);
-                rewards.gainedItems = this.getRewardItems(0.2, 0.2, 50, itemsComponent, levelOrdinal);
+                rewards.gainedItems = this.getRewardItems(0.2, 0.2, this.itemResultTypes.fight, itemsComponent, levelOrdinal);
 				rewards.gainedReputation = 1;
             } else {
 				// TODO lost followers
@@ -185,6 +193,16 @@ define([
 					perksComponent.addPerk(rewards.gainedInjuries[i].clone());
 				}
 			}
+			
+			if (rewards.gainedPopulation > 0) {
+				var nearestCampNode = this.nearestCampNodes.head;
+				if (nearestCampNode) {
+					console.log(nearestCampNode.position);
+					nearestCampNode.camp.population += 1;
+				} else {
+					console.log("WARN: No nearest camp found.");
+				}
+			}
 
 			if (rewards.gainedEvidence) this.playerStatsNodes.head.evidence.value += rewards.gainedEvidence;
 			if (rewards.gainedReputation) this.playerStatsNodes.head.reputation.value += rewards.gainedReputation;
@@ -236,6 +254,14 @@ define([
 				replacements.push("#" + replacements.length + " blueprint");
 				values.push(1);
 			}
+			
+			if (rewards.gainedPopulation) {
+				msg += ", ";
+				foundSomething = true;
+				msg += "$" + replacements.length + ", ";
+				replacements.push("#" + replacements.length + " population");
+				values.push(rewards.gainedPopulation);
+			}
 
 			if (foundSomething) {
 				msg = msg.slice(0, -2);
@@ -265,6 +291,9 @@ define([
 			}
 			if (resultVO.gainedEvidence) {
 				gainedhtml += "<li>" + resultVO.gainedEvidence + " evidence</li>";
+			}
+			if (resultVO.gainedPopulation) {
+				gainedhtml += "<li>" + resultVO.gainedPopulation + " population</li>";
 			}
 			gainedhtml += "</ul>";
 			if (gainedhtml.indexOf("<li") > 0) div += gainedhtml;
@@ -317,10 +346,9 @@ define([
 
 			return results;
 		},
-
+		
 		// probability of getting something: 0-1 for one item / some ingredients
-		// typical rarity of items: 0-100
-		getRewardItems: function (itemProbability, ingredientProbability, itemRarity, currentItems, levelOrdinal) {
+		getRewardItems: function (itemProbability, ingredientProbability, itemResultType, currentItems, levelOrdinal) {
 			var items = [];
 			var totalLevels = this.gameState.getTotalLevels();
 
@@ -330,29 +358,32 @@ define([
 				items.push(necessityItem);
 			}
 
-			// TODO define and use item rarity
-
 			// Normal items
 			if (Math.random() < itemProbability) {
 				var item;
+				var i;
 				var pendingItem;
 				var itemTypeRand = Math.random();
-				if (itemTypeRand < 0.1) {
+				var itemTypeLimits = this.itemResultTypes[itemResultType];
+				if (itemTypeRand < itemTypeLimits.bag) {
 					pendingItem = ItemConstants.getBag(levelOrdinal);
-				} else if (itemTypeRand < 0.15) {
+				} else if (itemTypeRand < itemTypeLimits.shades) {
 					pendingItem = ItemConstants.getShades(levelOrdinal);
-				} else if (itemTypeRand < 0.25) {
+				} else if (itemTypeRand < itemTypeLimits.light) {
 					pendingItem = ItemConstants.getLight(levelOrdinal);
-				} else if (itemTypeRand < 0.35) {
+				} else if (itemTypeRand < itemTypeLimits.movement) {
 					item = ItemConstants.getMovement(levelOrdinal);
-				} else if (itemTypeRand < 0.52) {
+				} else if (itemTypeRand < itemTypeLimits.shoes) {
 					item = ItemConstants.getShoes(levelOrdinal);
-				} else if (itemTypeRand < 0.75) {
+				} else if (itemTypeRand < itemTypeLimits.weapon) {
 					item = ItemConstants.getDefaultWeapon(levelOrdinal, totalLevels);
-				} else if (itemTypeRand < 0.99) {
+				} else if (itemTypeRand < itemTypeLimits.clothing) {
 					item = ItemConstants.getDefaultClothing(levelOrdinal, totalLevels);
+				} else if (itemTypeRand < itemTypeLimits.exploration) {
+					i = Math.floor(Math.random() * ItemConstants.itemDefinitions.exploration.length);
+					item = ItemConstants.itemDefinitions.exploration[i].clone();
 				} else {
-					var i = Math.floor(Math.random() * ItemConstants.itemDefinitions.artefact.length);
+					i = Math.floor(Math.random() * ItemConstants.itemDefinitions.artefact.length);
 					item = ItemConstants.itemDefinitions.artefact[i].clone();
 				}
 				if (!item && pendingItem)

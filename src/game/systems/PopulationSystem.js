@@ -55,9 +55,9 @@ define([
 				var housingCap = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
 				housingCap += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
 			
-				if (oldPopulation + change > housingCap) change = housingCap - oldPopulation;
-			
-				camp.addPopulation(change);
+				if (oldPopulation + change <= housingCap) {
+					camp.addPopulation(change);
+				}
 			
 				// Log new arrivals in current location
 				var playerPosition = this.playerNodes.head.entity.get(PositionComponent);

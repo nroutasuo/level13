@@ -257,7 +257,6 @@ define([
 			}
 			
 			var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
-			var showFight = this.gameState.unlockedFeatures.fight && !sectorControlComponent.hasControl() && isScouted;
 			var showDespair =
 				!hasCampHere &&
 				(discoveredResources.indexOf(resourceNames.food) < 0 || discoveredResources.indexOf(resourceNames.water) < 0) &&
@@ -266,7 +265,6 @@ define([
 				(this.resourcesHelper.getCurrentStorage().resources.water < 0.5 || this.resourcesHelper.getCurrentStorage().resources.food < 0.5);
 			$("#out-action-scout").toggle(this.gameState.unlockedFeatures.vision);
 			$("#out-action-investigate").toggle(this.gameState.unlockedFeatures.investigate);
-			$("#out-action-fight").toggle(showFight);
 			$("#out-action-despair").toggle(showDespair);
 			
 			this.uiFunctions.slideToggleIf("#out-locales", null, isScouted && sectorLocalesComponent.locales.length > 0, 200, 0);
