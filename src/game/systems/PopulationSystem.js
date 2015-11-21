@@ -57,6 +57,8 @@ define([
 			
 				if (oldPopulation + change <= housingCap) {
 					camp.addPopulation(change);
+				} else if (oldPopulation < housingCap) {
+					camp.addPopulation(housingCap - oldPopulation);
 				}
 			
 				// Log new arrivals in current location
