@@ -53,17 +53,7 @@ define([
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
             this.nearestCampNodes = engine.getNodeList(NearestCampNode);
 		},
-        
-        getItemForCraftAction: function (actionName) {
-			var baseActionName = this.getBaseActionID(actionName);
-            switch (baseActionName) {
-				case "craft":
-					return ItemConstants.getItemByID(this.getActionIDParam(actionName));
-				
-				default: return null;
-            }
-        },
-		
+
 		deductCosts: function (action) {
             var costs = this.getCosts(action, this.getOrdinal(action), this.getCostFactor(action));
             
@@ -678,7 +668,7 @@ define([
             return "";
         },
 		
-        getImprovementNameForAction: function(action, disableWarnings) {            
+        getImprovementNameForAction: function(action, disableWarnings) {
             switch(action) {
                 case "build_out_collector_food": return improvementNames.collector_food;
                 case "build_out_collector_water": return improvementNames.collector_water;
@@ -715,6 +705,16 @@ define([
                 default:
                     if(!disableWarnings) console.log("WARN: No improvement name found for action " + action);
                     return "";
+            }
+        },
+		
+        getItemForCraftAction: function (actionName) {
+			var baseActionName = this.getBaseActionID(actionName);
+            switch (baseActionName) {
+				case "craft":
+					return ItemConstants.getItemByID(this.getActionIDParam(actionName));
+				
+				default: return null;
             }
         },
         

@@ -6,32 +6,34 @@ define(['ash'], function (Ash) {
         nextEnemy: null,
         possibleEnemies: [],
         
-        constructor: function ( possibleEnemies ) {
+        constructor: function (possibleEnemies) {
             this.possibleEnemies = possibleEnemies;
         },
         
-        hasEnemies: function() {
+        hasEnemies: function () {
             return this.possibleEnemies.length > 0;
         },
         
-        selectNextEnemy: function() {
-            if (this.possibleEnemies.length < 1) return null;
-            
-            if (!this.nextEnemy) {
-                var index = Math.floor(Math.random() * this.possibleEnemies.length);
-                this.nextEnemy = this.possibleEnemies[index].clone();
+        selectNextEnemy: function () {
+            if (this.possibleEnemies.length < 1) {
+                this.nextEnemy = null;
             } else {
-                this.nextEnemy = this.nextEnemy.clone();    
+                if (!this.nextEnemy) {
+                    var index = Math.floor(Math.random() * this.possibleEnemies.length);
+                    this.nextEnemy = this.possibleEnemies[index].clone();
+                } else {
+                    this.nextEnemy = this.nextEnemy.clone();
+                }
             }
             return this.nextEnemy;
         },
         
-        getNextEnemy: function() {
+        getNextEnemy: function () {
             if (!this.nextEnemy) this.selectNextEnemy();
             return this.nextEnemy;
         },
         
-        resetNextEnemy: function() {
+        resetNextEnemy: function () {
             this.nextEnemy = null;
         },
     });

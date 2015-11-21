@@ -26,7 +26,6 @@ define(['ash',
 	'game/components/common/PlayerActionComponent',
     'game/components/common/CampComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
-	'game/components/sector/FightComponent',
 	'game/components/sector/EnemiesComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorLocalesComponent',
@@ -47,7 +46,7 @@ define(['ash',
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent, VisitedComponent,
 	ItemsComponent, PerksComponent, AutoPlayComponent, PlayerActionComponent,
-	CampComponent, SectorImprovementsComponent, FightComponent, EnemiesComponent,
+	CampComponent, SectorImprovementsComponent, EnemiesComponent,
 	SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, CampEventTimersComponent,
 	LogMessagesComponent,
@@ -81,14 +80,16 @@ define(['ash',
 		
 		playerActionsHelper: null,
 		playerActionResultsHelper: null,
+        fightHelper: null,
         resourcesHelper: null,
 		levelHelper: null,
         
-        constructor: function (gameState, resourcesHelper, levelHelper, playerActionsHelper, playerActionResultsHelper, playerMovedSignal, tabChangedSignal, improvementBuiltSignal) {
+        constructor: function (gameState, resourcesHelper, levelHelper, playerActionsHelper, fightHelper, playerActionResultsHelper, playerMovedSignal, tabChangedSignal, improvementBuiltSignal) {
             this.gameState = gameState;
             this.resourcesHelper = resourcesHelper;
 			this.levelHelper = levelHelper;
 			this.playerActionsHelper = playerActionsHelper;
+            this.fightHelper = fightHelper;
 			this.playerActionResultsHelper = playerActionResultsHelper;
             this.playerMovedSignal = playerMovedSignal;
             this.tabChangedSignal = tabChangedSignal;
@@ -273,19 +274,30 @@ define(['ash',
         scavenge: function () {
             if (this.playerActionsHelper.checkAvailability("scavenge", true)) {
                 this.playerActionsHelper.deductCosts("scavenge");
-                
-				var rewards = this.playerActionResultsHelper.getScavengeRewards();
-				this.playerActionResultsHelper.collectRewards(rewards);
 				
-				var playerMaxVision = this.playerStatsNodes.head.vision.maximum;
-				var baseMsg = "";
-				if (playerMaxVision <= PlayerStatConstants.VISION_BASE) baseMsg = "Rummaged in the dark. ";
-				else baseMsg = "Went scavenging. ";
-                var msgTemplate = this.playerActionResultsHelper.getRewardsMessage(rewards, baseMsg);
-                
-                this.addLogMessage(msgTemplate.msg, msgTemplate.replacements, msgTemplate.values);
-                this.forceResourceBarUpdate();
-                this.forceTabUpdate();
+				var playerActionFunctions = this;
+					
+                var playerMaxVision = playerActionFunctions.playerStatsNodes.head.vision.maximum;
+                var baseMsg = "";
+                if (playerMaxVision <= PlayerStatConstants.VISION_BASE) baseMsg = "Rummaged in the dark. ";
+                else baseMsg = "Went scavenging. ";
+                    
+                this.fightHelper.handleRandomEncounter("scavenge", function () {
+					var rewards = playerActionFunctions.playerActionResultsHelper.getScavengeRewards();
+					playerActionFunctions.playerActionResultsHelper.collectRewards(rewards);
+                    
+					var msgTemplate = playerActionFunctions.playerActionResultsHelper.getRewardsMessage(rewards, baseMsg);
+                    playerActionFunctions.uiFunctions.completeAction("scavenge");
+					playerActionFunctions.addLogMessage(msgTemplate.msg, msgTemplate.replacements, msgTemplate.values);
+					playerActionFunctions.forceResourceBarUpdate();
+					playerActionFunctions.forceTabUpdate();
+				}, function () {
+                    playerActionFunctions.uiFunctions.completeAction("scavenge");
+                    playerActionFunctions.addLogMessage(baseMsg + "Fled empty-handed.");
+                }, function () {
+                    playerActionFunctions.uiFunctions.completeAction("scavenge");
+                    playerActionFunctions.addLogMessage(baseMsg + "Got into a fight and was defeated.");
+                });
             }
         },
         
@@ -351,35 +363,8 @@ define(['ash',
             if (this.playerActionsHelper.checkAvailability("despair", true)) {
                 this.playerActionsHelper.deductCosts("despair");
                 this.engine.getSystem(FaintingSystem).checkFainting();
+                this.uiFunctions.completeAction("despair");
             }
-        },
-        
-        initFight: function () {
-            var sector = this.playerLocationNodes.head.entity;
-            sector.get(EnemiesComponent).selectNextEnemy();
-        },
-        
-        startFight: function () {
-            if (this.playerActionsHelper.checkAvailability("fight", true)) {
-                this.playerActionsHelper.deductCosts("fight");
-                var sector = this.playerLocationNodes.head.entity;
-                var enemiesComponent = sector.get(EnemiesComponent);
-                sector.add(new FightComponent(enemiesComponent.getNextEnemy()));
-                this.forceResourceBarUpdate();
-            }
-        },
-        
-        endFight: function () {
-            var sector = this.playerLocationNodes.head.entity;
-            if (sector.has(FightComponent)) {
-				if (sector.get(FightComponent).won) {
-					sector.get(EnemiesComponent).resetNextEnemy();
-				} else {
-					this.engine.getSystem(FaintingSystem).fadeOutToLastVisitedCamp(false, false);
-				}
-            }
-            sector.remove(FightComponent);
-            this.save();
         },
         
         buildCamp: function () {
@@ -620,9 +605,10 @@ define(['ash',
                     this.addLogMessage("Sat at the campfire to exchange stories about the corridors.");    
                 } else {
                     this.addLogMessage("Sat at the campfire to exchange stories, but there was nothing new.");   
-		    campComponent.rumourpoolchecked = true;
+                    campComponent.rumourpoolchecked = true;
                 }
             }    
+            this.uiFunctions.completeAction("use_in_campfire");
             this.forceResourceBarUpdate();
         },
         
@@ -689,6 +675,7 @@ define(['ash',
                         this.uiFunctions.generateCallouts("#inn-follower-list-leave");
                     }
                 }
+                this.uiFunctions.completeAction("use_in_inn");
             }
             
             return false;
@@ -802,7 +789,7 @@ define(['ash',
             }
         },
         
-        getNearestCampName: function() {
+        getNearestCampName: function () {
             var campSector = this.nearestCampNodes.head.entity;
             if (campSector) {
                 return campSector.get(CampComponent).campName;
@@ -811,20 +798,20 @@ define(['ash',
             }
         },
         
-        setNearestCampName: function(newName) {
+        setNearestCampName: function (newName) {
             var campSector = this.nearestCampNodes.head.entity;
             if (campSector) {
                 campSector.get(CampComponent).campName = newName;
                 this.save();
             }
         },
-        
-        forceResourceBarUpdate: function() {
+        		
+        forceResourceBarUpdate: function () {
             var system = this.engine.getSystem(UIOutHeaderSystem);
             system.lastUpdateTimeStamp = 0;   
         },
         
-        forceStatsBarUpdate: function() {
+        forceStatsBarUpdate: function () {
             var system = this.engine.getSystem(UIOutHeaderSystem);
             system.updateItems(true);
             system.updatePerks(true);
@@ -832,17 +819,17 @@ define(['ash',
             system.updateDeity(true);
         },
         
-        forceTabUpdate: function() {
+        forceTabUpdate: function () {
             var system = this.engine.getSystem(UIOutElementsSystem);
             system.updateTabVisibility();
         },
         
-        save: function() {
+        save: function () {
             var saveSystem = this.engine.getSystem(SaveSystem);
             saveSystem.save();
         },
         
-        cheat: function(input) {
+        cheat: function (input) {
 			var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
             var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);

@@ -2,14 +2,16 @@ define([
     'ash',
     'game/constants/UIConstants',
     'game/constants/FightConstants',
+    'game/constants/TextConstants',
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/FightNode',
     'game/components/player/ItemsComponent',
     'game/components/sector/FightComponent',
+    'game/components/sector/FightEncounterComponent',
     'game/components/sector/EnemiesComponent',
     'game/components/sector/SectorControlComponent',
-], function (Ash, UIConstants, FightConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightComponent, EnemiesComponent, SectorControlComponent) {
+], function (Ash, UIConstants, FightConstants, TextConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightComponent, FightEncounterComponent, EnemiesComponent, SectorControlComponent) {
     var UIOutFightSystem = Ash.System.extend({
 	
 		uiFunctions: null,
@@ -50,7 +52,7 @@ define([
 			
 			$("#out-action-fight-cancel").toggle(!fightActive && !fightFinished);
 			$("#out-action-fight-confirm").toggle(!fightActive && !fightFinished);
-			$("#out-action-fight-close").toggle(fightFinished);
+			$("#out-action-fight-close").toggle(fightFinished && !fightWon);
 			$("#out-action-fight-next").toggle(fightFinished);
 			
 			$("#fight-popup-control-info").toggle(!fightActive);
@@ -72,8 +74,12 @@ define([
 		},
 	
 		updateFightCommon: function (fightPending) {
-			// Enemy info
 			var sector = this.playerLocationNodes.head.entity;
+			var encounterComponent = sector.get(FightEncounterComponent);
+			$("#fight-desc").toggle(fightPending);
+			$("#fight-desc").text(this.getDescriptionByContext(encounterComponent.context, encounterComponent.enemy));
+			
+			// Enemy info
 			var enemiesComponent = sector.get(EnemiesComponent);
 			var currentEnemy = enemiesComponent.getNextEnemy();
 			var enemyText = currentEnemy.name;
@@ -91,10 +97,8 @@ define([
 			var sectorControlComponent = sector.get(SectorControlComponent);
 			var enemies = sectorControlComponent.currentUndefeatedEnemies;
 			var maxEnemies = sectorControlComponent.maxUndefeatedEnemies;
-			var sectionControlDesc = enemies + " / " + maxEnemies + " enemies in this area";
-			if (enemies <= 0) sectionControlDesc = "no enemies left here";
             $("#out-action-fight-cancel").text(enemies > 0 ? "flee" : "close");
-			$("#fight-popup-control-info").text(sectionControlDesc);
+			$("#fight-popup-control-info").text(this.getSectorControlDesc(enemies, maxEnemies));
 		},
 	
 		updateFightPending: function () {
@@ -146,6 +150,30 @@ define([
 			$("#fight-popup-results").html(this.playerActionResultsHelper.getRewardDiv(this.fightNodes.head.fight.resultVO));
 			this.uiFunctions.generateCallouts("#fight-popup");
         },
+		
+		getSectorControlDesc: function (enemies, maxEnemies) {
+			var ratioLeft = enemies / maxEnemies;
+			
+			if (ratioLeft > 0.3) {
+				return "many enemies left in this area";
+			} else if (ratioLeft > 0.1) {
+				return "some enemies left in this area";
+			} else if (ratioLeft > 0) {
+				return "few enemies left in this area";
+			} else {
+				return "no enemies left here";
+			}
+		},
+		
+		getDescriptionByContext: function (context, enemy) {
+			var enemyNoun = TextConstants.depluralify(TextConstants.getEnemyNoun([enemy]));
+			switch (context) {
+				case "scavenge":
+					return "surprised while scavenging";
+				default:
+					return TextConstants.addArticle(enemyNoun) + " approaches";
+			}
+		},
 		
     });
 

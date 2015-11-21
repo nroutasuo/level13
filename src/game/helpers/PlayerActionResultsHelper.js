@@ -153,7 +153,6 @@ define([
         },
 
 		collectRewards: function (rewards) {
-			console.log("collect rewards");
 			console.log(rewards);
 			var currentStorage = this.resourcesHelper.getCurrentStorage();
 			currentStorage.addResources(rewards.gainedResources);
@@ -348,7 +347,7 @@ define([
 		},
 		
 		// probability of getting something: 0-1 for one item / some ingredients
-		getRewardItems: function (itemProbability, ingredientProbability, itemResultType, currentItems, levelOrdinal) {
+		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, currentItems, levelOrdinal) {
 			var items = [];
 			var totalLevels = this.gameState.getTotalLevels();
 
@@ -364,7 +363,6 @@ define([
 				var i;
 				var pendingItem;
 				var itemTypeRand = Math.random();
-				var itemTypeLimits = this.itemResultTypes[itemResultType];
 				if (itemTypeRand < itemTypeLimits.bag) {
 					pendingItem = ItemConstants.getBag(levelOrdinal);
 				} else if (itemTypeRand < itemTypeLimits.shades) {

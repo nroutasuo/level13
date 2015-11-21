@@ -221,7 +221,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                         uiFunctions.gameState.setActionDuration(action, locationKey, duration);
                         uiFunctions.startButtonDuration($(this), duration);
                     } else {
-                        uiFunctions.completeAction(action);
+                        uiFunctions.performAction(action);
                     }
                 }
             });
@@ -231,32 +231,23 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             $(scope + " button.action-move").click(function (e) {
                 onMoveButtonClicked(this, playerActions);
             });
-            $(scope + " #out-action-fight").click(function (e) {
-                playerActions.initFight();
-                $("body").css("overflow", "hidden");
-                $("#fight-popup").wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");
-                $(".popup-overlay").fadeIn(200, function () {
-                    uiFunctions.popupManager.onResize();
-                    $("#fight-popup").fadeIn(200, uiFunctions.popupManager.onResize);
-                });
-            });
             $(scope + " #out-action-fight-confirm").click(function (e) {
-                playerActions.startFight();
+                playerActions.fightHelper.startFight();
             });
             $(scope + " #out-action-fight-close").click(function (e) {
                 uiFunctions.popupManager.closePopup("fight-popup", true);
-                playerActions.endFight();
+                playerActions.fightHelper.endFight();
             });
             $(scope + " #out-action-fight-next").click(function (e) {
-                playerActions.endFight();
-                playerActions.initFight();
+                uiFunctions.popupManager.closePopup("fight-popup", true);
+                playerActions.fightHelper.endFight();
             });
             $(scope + " #out-action-fight-cancel").click(function (e) {
                 uiFunctions.popupManager.closePopup("fight-popup", true);
-                playerActions.endFight();
+                playerActions.fightHelper.endFight();
             });
             $(scope + " button[action='leave_camp']").click(function (e) {
-                var selectedResVO = new ResourcesVO();                
+                var selectedResVO = new ResourcesVO();
                 $.each($("#embark-resources tr"), function() {
                     var resourceName = $(this).attr("id").split("-")[2];
                     var selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
@@ -356,15 +347,8 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             $(scope + " div.container-btn-action").append("<div class='cooldown-reqs' />");
         },
         
-        completeAction: function (action) {
+        performAction: function (action) {
             var button = $("button[action='" + action + "']");
-            var cooldown = PlayerActionConstants.getCooldown(action);
-            if (cooldown > 0) {
-                var locationKey = this.getLocationKey($(button));
-                this.gameState.setActionCooldown(action, locationKey, cooldown);
-                this.startButtonCooldown($(button), cooldown);
-            }
-            
             var baseId = this.playerActions.playerActionsHelper.getBaseActionID(action);
             var func = this.actionToFunctionMap[baseId];
             if (func) {
@@ -383,6 +367,16 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                         console.log("WARN: No function found for button with action " + action);
                         break;
                 }
+            }
+        },
+        
+        completeAction: function (action) {
+            var button = $("button[action='" + action + "']");
+            var cooldown = PlayerActionConstants.getCooldown(action);
+            if (cooldown > 0) {
+                var locationKey = this.getLocationKey($(button));
+                this.gameState.setActionCooldown(action, locationKey, cooldown);
+                this.startButtonCooldown($(button), cooldown);
             }
         },
         
@@ -723,6 +717,16 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
         
         showTab: function(tabID) {
             this.onTabClicked(tabID, this.elementIDs, this.gameState, this.playerActions);
+        },
+        
+        showFight: function () {
+            $("body").css("overflow", "hidden");
+            $("#fight-popup").wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");
+            var uiFunctions = this;
+            $(".popup-overlay").fadeIn(200, function () {
+                uiFunctions.popupManager.onResize();
+                $("#fight-popup").fadeIn(200, uiFunctions.popupManager.onResize);
+            });
         },
         
         showInfoPopup: function(title, msg, buttonLabel, resultVO) {

@@ -61,7 +61,7 @@ function (Ash, UIConstants) {
             
             var popupManager = this;
             $("#" + id).fadeOut(200, function () {
-                $(".popup-overlay").fadeOut(200, function() {
+                $(".popup-overlay").fadeOut(200, function () {
                     $("#" + id).unwrap();
                     if (!keep) {
                         $("#" + id).remove();

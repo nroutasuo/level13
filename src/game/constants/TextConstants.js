@@ -220,6 +220,14 @@ define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/LocaleVO'], fun
 			} else {
 				return s;
 			}
+		},
+		
+		depluralify: function (s) {
+			return s.substr(0, s.length - 1);
+		},
+		
+		addArticle: function (s) {
+			return "a " + s;
 		}
 	};
 		

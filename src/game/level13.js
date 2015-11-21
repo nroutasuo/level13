@@ -41,6 +41,7 @@ define([
     'game/helpers/PlayerActionResultsHelper',
     'game/helpers/ResourcesHelper',
     'game/helpers/MovementHelper',
+    'game/helpers/FightHelper',
     'game/helpers/LevelHelper',
     'game/helpers/SectorHelper',
     'game/helpers/SaveHelper',
@@ -89,6 +90,7 @@ define([
     PlayerActionResultsHelper,
     ResourcesHelper,
     MovementHelper,
+    FightHelper,
     LevelHelper,
     SectorHelper,
     SaveHelper,
@@ -113,21 +115,22 @@ define([
         constructor: function () {
             this.engine = new Ash.Engine();
 			this.gameState = new GameState();
+			
+			// Global signals
+			this.playerMovedSignal = new Ash.Signals.Signal();
+			this.improvementBuiltSignal = new Ash.Signals.Signal();
+			this.tabChangedSignal = new Ash.Signals.Signal();
 	    
 			// Singleton helper modules to be passed to systems that need them
 			this.resourcesHelper = new ResourcesHelper(this.engine);
 			this.playerActionsHelper = new PlayerActionsHelper(this.engine, this.gameState, this.resourcesHelper);
+			this.fightHelper = new FightHelper(this.engine, this.playerActionsHelper);
 			this.levelHelper = new LevelHelper(this.engine, this.gameState, this.playerActionsHelper);
 			this.sectorHelper = new SectorHelper(this.engine);
 			this.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine, this.gameState, this.resourcesHelper, this.levelHelper);
 			this.movementHelper = new MovementHelper(this.engine);
 			this.saveHelper = new SaveHelper();
 			this.upgradeEffectsHelper = new UpgradeEffectsHelper(this.playerActionsHelper);
-			
-			// Global signals
-			this.playerMovedSignal = new Ash.Signals.Signal();
-			this.improvementBuiltSignal = new Ash.Signals.Signal();
-			this.tabChangedSignal = new Ash.Signals.Signal();
 			
 			// Basic building blocks & special systems
 			this.tickProvider = new TickProvider(null);
@@ -137,6 +140,7 @@ define([
 				this.resourcesHelper,
 				this.levelHelper,
 				this.playerActionsHelper,
+				this.fightHelper,
 				this.playerActionResultsHelper,
 				this.playerMovedSignal,
 				this.tabChangedSignal,
@@ -146,6 +150,7 @@ define([
 			
 			this.playerActionFunctions.occurrenceFunctions = this.occurrenceFunctions;
 			this.playerActionFunctions.uiFunctions = this.uiFunctions;
+			this.fightHelper.uiFunctions = this.uiFunctions;
 			
 			// Systems
 			this.addSystems(new EntityCreator(this.engine));

@@ -296,34 +296,6 @@ define(['ash',
             
             return false;
 		},
-		
-        fight: function (isExpress) {
-            var featuresComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-            var fightNode = this.fightNodes.head;
-            
-            if (fightNode) {
-                if (fightNode.fight.finished) {
-                    this.printStep("fight end, won = " + fightNode.fight.won);
-                    this.playerActionFunctions.endFight();
-                }
-                return true;
-            } else {
-                var canFight = true;
-                var shouldFight = true;
-                
-                canFight = canFight && this.playerActionFunctions.playerActionsHelper.checkAvailability("fight");
-                shouldFight = shouldFight && featuresComponent.getWorkshopResource() !== null;
-                
-                if (canFight && shouldFight) {
-                    this.printStep("fight start");
-                    this.playerActionFunctions.initFight();
-                    this.playerActionFunctions.startFight();
-                    return true;
-                }
-                
-                return false;
-            }
-        },
         
 		scavenge: function (isExpress) {
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("scavenge")) {

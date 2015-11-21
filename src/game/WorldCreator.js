@@ -567,7 +567,7 @@ define([
 		},
 		
 		getSectorEnemyCount: function(level, sector) {
-			return this.world[level][sector].enemies.length > 0 ? 5 : 0;
+			return this.world[level][sector].enemies.length > 0 ? 25 : 0;
 		},
 		
 		// Helper functions for randomisation, seeds etc below this

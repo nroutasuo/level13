@@ -41,7 +41,7 @@ define([
                     newDict[timeStamp] = action;
                     newList.push(timeStamp);
                 } else {
-					this.uiFunctions.completeAction(action);
+					this.uiFunctions.performAction(action);
 				}
             }
             
