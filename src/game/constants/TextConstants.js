@@ -86,6 +86,10 @@ define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/LocaleVO'], fun
 				if (repairBracket === this.repairBrackets[1][0]) return "Decaying warehouse";
 				if (repairBracket === this.repairBrackets[2][0]) return "Abandoned warehouse";
 				return "Sturdy warehouse";
+			case localeTypes.camp: return "Foreign camp";
+			case localeTypes.hut: return "Lone hut";
+			case localeTypes.hermit: return "Lone hut";
+			case localeTypes.caravan: return "Trade caravan";
 			default: return "Building";
 			}
 		},
@@ -215,7 +219,9 @@ define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/LocaleVO'], fun
 		},
 		
 		pluralify: function (s) {
-			if (s[s.length - 1] !== "s") {
+			if (s.endsWith("roach")) {
+				return s + "es";
+			} else if (s[s.length - 1] !== "s") {
 				return s + "s";
 			} else {
 				return s;

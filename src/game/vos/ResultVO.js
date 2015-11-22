@@ -6,9 +6,11 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		// rewards
 		gainedResources: null,
 		gainedItems: [],
+		gainedFollowers: [],
 		gainedBlueprint: null,
 		gainedEvidence: 0,
 		gainedReputation: 0,
+		gainedRumours: 0,
 		gainedPopulation: 0,
 		
 		// penalties

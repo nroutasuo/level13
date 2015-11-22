@@ -579,8 +579,9 @@ define([
             if (!this.playerLocationNodes.head) return;
             var sector = sector || this.playerLocationNodes.head.entity;
 			switch (this.getBaseActionID(action)) {
-				case "scout_locale":
-					var localei = parseInt(action.split("_")[2]);
+				case "scout_locale_i":
+				case "scout_locale_u":
+					var localei = parseInt(action.split("_")[3]);
 					var sectorLocalesComponent = sector.get(SectorLocalesComponent);
 					var localeVO = sectorLocalesComponent.locales[localei];
 					var requirements = localeVO.requirements;
@@ -623,12 +624,12 @@ define([
 						result.stamina = 5 * PlayerActionConstants.costs.move_sector_left.stamina * statusCostFactor;
 						break;
 					
-					case "scout_locale":
-						var localei = parseInt(action.split("_")[2]);
+					case "scout_locale_i":
+					case "scout_locale_u":
+						var localei = parseInt(action.split("_")[3]);
 						var sectorLocalesComponent = sector.get(SectorLocalesComponent);
 						var localeVO = sectorLocalesComponent.locales[localei];
-						if(localeVO) return localeVO.costs;
-                        break;
+						if (localeVO) return localeVO.costs;
                         
                     case "unlock_upgrade":
                         return { blueprint: 1 };
@@ -656,7 +657,8 @@ define([
 		
 		getBaseActionID: function (action) {
 			if (!action) return action;
-			if (action.indexOf("scout_locale") >= 0) return "scout_locale";
+			if (action.indexOf("scout_locale_i") >= 0) return "scout_locale_i";
+			if (action.indexOf("scout_locale_u") >= 0) return "scout_locale_u";
 			if (action.indexOf("craft_") >= 0) return "craft";
 			if (action.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
 			return action;

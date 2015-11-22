@@ -10,12 +10,17 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		maintenance: 5,
 		transport: 6,
 		sewer: 7,
-        warehouse: 8
+        warehouse: 8,
+		
+		camp: 50,
+		hut: 51,
+		hermit: 52,
+		caravan: 53,
 	};
     
     var LocaleVO = Ash.Class.extend({
 		
-		type: "",
+		type: -1,
 		isEasy: false,
 		requirements: {},
         costs: {},
@@ -24,8 +29,9 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.type = type;
 			this.isEasy = isEasy;
 			this.requirements.vision = this.getVisionRequirement();
+			this.costs = {};
 			this.costs.stamina = this.getStaminaRequirement();
-			this.costs.item_exploration_1 = 1;
+			this.costs.item_exploration_1 = this.getCategory() == "u" ? 1 : 0;
 		},
         
         getVisionRequirement: function () {
@@ -39,6 +45,10 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
                 case localeTypes.transport: return 50;
                 case localeTypes.sewer: return this.isEasy ? 50 : 80;
                 case localeTypes.warehouse: return this.isEasy ? 50 : 60;
+                case localeTypes.camp: return 20;
+                case localeTypes.hut: return 30;
+                case localeTypes.hermit: return 30;
+                case localeTypes.caravan: return 30;
                 default: return 30;
             }
         },
@@ -54,6 +64,10 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
                 case localeTypes.transport: return 40;
                 case localeTypes.sewer: return 70;
                 case localeTypes.warehouse: return 10;
+                case localeTypes.camp: return 20;
+                case localeTypes.hut: return 30;
+                case localeTypes.hermit: return 40;
+                case localeTypes.caravan: return 40;
                 default: return 20;
             }
         },
@@ -98,8 +112,21 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             }
             
             return res;
-        }
+        },
         
+		getCategory: function () {
+			switch (this.type) {
+                case localeTypes.camp:
+                case localeTypes.hut:
+                case localeTypes.hermit:
+                case localeTypes.caravan:
+					return "i";
+				
+				default:
+					return "u";
+			}
+		},
+		
     });
 
     return LocaleVO;

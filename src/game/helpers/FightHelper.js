@@ -1,6 +1,7 @@
 // Helper methods related to player actions (costs, requirements, descriptions) - common definitions for all actions
 define([
     'ash',
+    'game/constants/PlayerActionConstants',
     'game/components/sector/EnemiesComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/FightComponent',
@@ -9,7 +10,7 @@ define([
     'game/systems/FaintingSystem',
     'game/systems/SaveSystem'
 ], function (
-	Ash, EnemiesComponent, SectorControlComponent, FightComponent, FightEncounterComponent, PlayerLocationNode, FaintingSystem, SaveSystem
+	Ash, PlayerActionConstants, EnemiesComponent, SectorControlComponent, FightComponent, FightEncounterComponent, PlayerLocationNode, FaintingSystem, SaveSystem
 ) {
     var FightHelper = Ash.Class.extend({
 		
@@ -34,7 +35,7 @@ define([
 			var hasEnemies = enemiesComponent.hasEnemies() && sectorControlComponent.maxUndefeatedEnemies > 0 && sectorControlComponent.currentUndefeatedEnemies > 0;
 
 			if (hasEnemies) {
-				var encounterProbability =  0.03; // TODO get random encounter probability by action
+				var encounterProbability =  PlayerActionConstants.getRandomEncounterProbability(this.playerActionsHelper.getBaseActionID(action));
 				if (Math.random() < encounterProbability) {
 					this.pendingWinCallback = winCallback;
 					this.pendingFleeCallback = fleeCallback;
@@ -51,7 +52,7 @@ define([
             var sector = this.playerLocationNodes.head.entity;
             var enemiesComponent = sector.get(EnemiesComponent);
             enemiesComponent.selectNextEnemy();
-			sector.add(new FightEncounterComponent(enemiesComponent.getNextEnemy(), action));
+			sector.add(new FightEncounterComponent(enemiesComponent.getNextEnemy(), this.playerActionsHelper.getBaseActionID(action)));
 			this.uiFunctions.showFight();
         },
         

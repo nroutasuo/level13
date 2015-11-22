@@ -170,6 +170,10 @@ define([
 			switch (context) {
 				case "scavenge":
 					return "surprised while scavenging";
+				case "scout_locale_u":
+					return "surprised while scouting";
+				case "scout_locale_i":
+					return "attacked while scouting";
 				default:
 					return TextConstants.addArticle(enemyNoun) + " approaches";
 			}

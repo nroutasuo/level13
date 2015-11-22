@@ -49,7 +49,8 @@ define([
 		
 		itemResultTypes: {
 			scavenge: { bag: 0.1, shades: 0.15, light: 0.25, movement: 0.35, shoes: 0.52, weapon: 0.75, clothing: 0.95, exploration: 0.99 },
-			fight: { bag: 0, shades: 0, light: 0, movement: 0.1, shoes: 0.25, weapon: 0.4, clothing: 0.55, exploration: 0.6 }
+			fight: { bag: 0, shades: 0, light: 0, movement: 0.1, shoes: 0.25, weapon: 0.4, clothing: 0.55, exploration: 0.6 },
+			meet: { bag: 0.1, shades: 0.2, light: 0.2, movement: 0.3, shoes: 0.4, weapon: 0.6, clothing: 0.8, exploration: 0.9 }
 		},
 
 		constructor: function (engine, gameState, resourcesHelper, levelHelper) {
@@ -96,6 +97,7 @@ define([
 
 		getScoutLocaleRewards: function (localeVO) {
 			var rewards = new ResultVO();
+			var localeCategory = localeVO.getCategory();
 
             var availableResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resources.clone();
 			availableResources.addAll(localeVO.getResourceBonus(this.gameState.unlockedFeatures.resources));
@@ -105,14 +107,25 @@ define([
 			var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
 			var localeDifficulty = localeVO.requirements.vision + localeVO.costs.stamina;
 
-			rewards.gainedEvidence = 1;
 			rewards.gainedBlueprint = this.getResultBlueprint(localeVO);
-			rewards.gainedInjuries = this.getResultInjuries(0.2);
-			if (rewards.gainedInjuries.length === 0) {
-				rewards.gainedResources = this.getRewardResources(1, efficiency * localeDifficulty / 15, availableResources);
-				rewards.gainedItems = this.getRewardItems(0.2, 0, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
+			if (localeCategory === "u") {
+				rewards.gainedEvidence = 1;
+				rewards.gainedPopulation = Math.random() < 0.05 ? 1 : 0;
+			} else {
+				rewards.gainedPopulation = Math.random() < 0.2 ? 1 : 0;
+				rewards.gainedFollowers = this.getRewardFollowers(0.1);
+				rewards.gainedRumours = Math.random() < 0.3 ? Math.ceil(Math.random() * levelOrdinal * levelOrdinal) : 0;
 			}
-			rewards.gainedPopulation = Math.random() < 0.1 ? 1 : 0;
+				
+			rewards.gainedInjuries = this.getResultInjuries(0.1);
+			if (rewards.gainedInjuries.length === 0) {
+				if (localeCategory === "u") {
+					rewards.gainedResources = this.getRewardResources(1, efficiency * localeDifficulty / 15, availableResources);
+					rewards.gainedItems = this.getRewardItems(0.2, 0, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
+				} else {
+					rewards.gainedItems = this.getRewardItems(0.2, 0, this.itemResultTypes.meet, itemsComponent, levelOrdinal);
+				}
+			}
 
 			return rewards;
 		},
@@ -175,6 +188,12 @@ define([
 					itemsComponent.addItem(rewards.gainedItems[i]);
 				}
 			}
+			
+			if (rewards.gainedFollowers) {
+				for (var i = 0; i < rewards.gainedFollowers.length; i++) {
+					itemsComponent.addItem(rewards.gainedFollowers[i]);
+				}
+			}
 
 			if (rewards.lostItems) {
 				for (var i = 0; i < rewards.lostItems.length; i++) {
@@ -205,6 +224,7 @@ define([
 
 			if (rewards.gainedEvidence) this.playerStatsNodes.head.evidence.value += rewards.gainedEvidence;
 			if (rewards.gainedReputation) this.playerStatsNodes.head.reputation.value += rewards.gainedReputation;
+			if (rewards.gainedRumours) this.playerStatsNodes.head.rumours.value += rewards.gainedRumours;
 		},
 
 		getRewardsMessage: function (rewards, baseMsg) {
@@ -218,11 +238,9 @@ define([
 			replacements = replacements.concat(resourceTemplate.replacements);
 			values = values.concat(resourceTemplate.values);
 
-			if (rewards.gainedItems) {
-				if (rewards.gainedItems.length > 0) {
-					msg += ", ";
-					foundSomething = true;
-				}
+			if (rewards.gainedItems && rewards.gainedItems.length > 0) {
+				msg += ", ";
+				foundSomething = true;
 				
 				var loggedItems = {};
 				for (var i = 0; i < rewards.gainedItems.length; i++) {
@@ -237,6 +255,17 @@ define([
 					}
 				}
 			}
+			
+			if (rewards.gainedFollowers && rewards.gainedFollowers.length > 0) {
+				msg += ", ";
+				foundSomething = true;
+				for (var i = 0; i < rewards.gainedFollowers.length; i++) {
+					var follower = rewards.gainedFollowers[i];
+					msg += "$" + replacements.length + ", ";
+					replacements.push("#" + replacements.length + " " + follower.name.toLowerCase());
+					values.push(1);
+				}
+			}
 
 			if (rewards.gainedEvidence) {
 				msg += ", ";
@@ -244,6 +273,14 @@ define([
 				msg += "$" + replacements.length + ", ";
 				replacements.push("#" + replacements.length + " evidence");
 				values.push(rewards.gainedEvidence);
+			}
+
+			if (rewards.gainedRumours) {
+				msg += ", ";
+				foundSomething = true;
+				msg += "$" + replacements.length + ", ";
+				replacements.push("#" + replacements.length + " rumours");
+				values.push(rewards.gainedRumours);
 			}
 
 			if (rewards.gainedBlueprint) {
@@ -288,8 +325,14 @@ define([
 			if (resultVO.gainedItems) {
 				gainedhtml += UIConstants.getItemList(resultVO.gainedItems);
 			}
+			if (resultVO.gainedFollowers) {
+				gainedhtml += UIConstants.getItemList(resultVO.gainedFollowers);
+			}
 			if (resultVO.gainedEvidence) {
 				gainedhtml += "<li>" + resultVO.gainedEvidence + " evidence</li>";
+			}
+			if (resultVO.gainedRumours) {
+				gainedhtml += "<li>" + resultVO.gainedRumours + " rumours</li>";
 			}
 			if (resultVO.gainedPopulation) {
 				gainedhtml += "<li>" + resultVO.gainedPopulation + " population</li>";
@@ -402,6 +445,17 @@ define([
 			
 			return items;
 		},
+		
+		getRewardFollowers: function (probability) {
+			var followers = [];
+			if (Math.random() < probability) {
+				var playerPos = this.playerLocationNodes.head.position;
+				var campCount = this.gameState.numCamps;
+				var follower = ItemConstants.getFollower(playerPos.level, campCount);
+				followers.push(follower);
+			}
+			return followers;
+		},
 
 		getNecessityItem: function (currentItems, levelOrdinal) {
 			if (currentItems.getCurrentBonus(ItemConstants.itemTypes.bag) <= 0) {
@@ -422,7 +476,7 @@ define([
 		
 		getResultBlueprint: function (localeVO) {
 			var playerPos = this.playerLocationNodes.head.position;
-			var campOrdinal = this.gameState.getCampOrdinal(playerPos.level);			
+			var campOrdinal = this.gameState.getCampOrdinal(playerPos.level);
 			var levelBlueprints = UpgradeConstants.bluePrintsByCampOrdinal[campOrdinal];
 			var blueprintsToFind = [];
 			for (var i = 0; i < levelBlueprints.length; i++) {

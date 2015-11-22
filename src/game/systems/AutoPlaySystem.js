@@ -85,7 +85,6 @@ define(['ash',
                 var didSomething = false;
                 
                 if (this.autoPlayNodes.head.autoPlay.isExploring) {
-                    didSomething = didSomething || this.fight(isExpress);
                     didSomething = didSomething || this.buildCamp(isExpress);
                     didSomething = didSomething || this.buildOutImprovements(isExpress);
                     didSomething = didSomething || this.scout(isExpress);
@@ -285,7 +284,7 @@ define(['ash',
 			for (var i = 0; i < sectorLocalesComponent.locales.length; i++) {
 				var locale = sectorLocalesComponent.locales[i];
                 if (!sectorStatusComponent.isLocaleScouted(i)) {
-                    var action = "scout_locale_" + i;
+                    var action = "scout_locale_" + locale.getCategory() + "_" + i;
                     if (this.playerActionFunctions.playerActionsHelper.checkAvailability(action)) {
                         this.playerActionFunctions.scoutLocale(i);
                         this.printStep("scout locale " + locale.type);

@@ -337,25 +337,38 @@ define(['ash',
         },
         
         scoutLocale: function (i) {
-            var action = "scout_locale_" + i;
+            var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+            var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
+            var sectorFeaturesComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+            var localeVO = sectorLocalesComponent.locales[i];
+            var action = "scout_locale_" + localeVO.getCategory() + "_" + i;
             if (this.playerActionsHelper.checkAvailability(action, true)) {
                 this.playerActionsHelper.deductCosts(action);
-                var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-                var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
-                var sectorFeaturesComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-                sectorStatus.localesScouted[i] = true;
+				var playerActionFunctions = this;
                 
-                // TODO add a more interesting log message
-				var localeVO = sectorLocalesComponent.locales[i];
-				var rewards = this.playerActionResultsHelper.getScoutLocaleRewards(localeVO);
-				this.playerActionResultsHelper.collectRewards(rewards);
-				var localeName = TextConstants.getLocaleName(localeVO, sectorFeaturesComponent.stateOfRepair);
-				localeName = localeName.split(" ")[localeName.split(" ").length - 1];
-				var msgTemplate = this.playerActionResultsHelper.getRewardsMessage(rewards, "Scouted the " + localeName +  ". ");
+                // TODO add more interesting log messages
+                var localeName = TextConstants.getLocaleName(localeVO, sectorFeaturesComponent.stateOfRepair);
+                localeName = localeName.split(" ")[localeName.split(" ").length - 1];
+                var baseMsg = "Scouted the " + localeName +  ". ";
                 
-				this.addLogMessage(msgTemplate.msg, msgTemplate.replacements, msgTemplate.values);
-                this.forceResourceBarUpdate();
-                this.save();
+                this.fightHelper.handleRandomEncounter(action, function () {
+                    sectorStatus.localesScouted[i] = true;
+                    var rewards = playerActionFunctions.playerActionResultsHelper.getScoutLocaleRewards(localeVO);
+                    playerActionFunctions.playerActionResultsHelper.collectRewards(rewards);
+                    var msgTemplate = playerActionFunctions.playerActionResultsHelper.getRewardsMessage(rewards, baseMsg);
+                    playerActionFunctions.addLogMessage(msgTemplate.msg, msgTemplate.replacements, msgTemplate.values);
+                    playerActionFunctions.forceResourceBarUpdate();
+                    playerActionFunctions.uiFunctions.completeAction(action);
+                    playerActionFunctions.save();
+                }, function () {
+                    playerActionFunctions.addLogMessage(baseMsg + " Got surprised and fled.");
+                    playerActionFunctions.uiFunctions.completeAction(action);
+                    playerActionFunctions.save();
+                }, function () {
+                    playerActionFunctions.addLogMessage(baseMsg + " Got surprised and beaten.");
+                    playerActionFunctions.uiFunctions.completeAction(action);
+                    playerActionFunctions.save();
+                });
             }
         },
         

@@ -244,10 +244,14 @@ define([
 				else {
 					switch(sectorType) {
 						case WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL:
-							if (localeRandom > 0.5) localeType = localeTypes.house;
-							else if (localeRandom > 0.4) localeType = localeTypes.transport;
-							else if (localeRandom > 0.3) localeType = localeTypes.sewer;
-							else if (localeRandom > 0.2) localeType = localeTypes.warehouse;
+							if (localeRandom > 0.7) localeType = localeTypes.house;
+							else if (localeRandom > 0.6) localeType = localeTypes.transport;
+							else if (localeRandom > 0.55) localeType = localeTypes.sewer;
+							else if (localeRandom > 0.45) localeType = localeTypes.warehouse;
+							else if (localeRandom > 0.4) localeType = localeTypes.camp;
+							else if (localeRandom > 0.3) localeType = localeTypes.hut;
+							else if (localeRandom > 0.2) localeType = localeTypes.hermit;
+							else if (localeRandom > 0.1) localeType = localeTypes.caravan;
 							else localeType = localeTypes.market;
 							break;
 						
@@ -260,20 +264,28 @@ define([
 							break;
 						
 						case WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE:
-							if (localeRandom > 0.5) localeType = localeTypes.maintenance;
+							if (localeRandom > 0.6) localeType = localeTypes.maintenance;
 							else if (localeRandom > 0.4) localeType = localeTypes.transport;
+							else if (localeRandom > 0.3) localeType = localeTypes.hermit;
+							else if (localeRandom > 0.2) localeType = localeTypes.caravan;
 							else localeType = localeTypes.sewer;
 							break;
 						
 						case WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL:
-							if (localeRandom > 5) localeType = localeTypes.market;
-							else if (localeRandom > 0.3) localeType = localeTypes.warehouse;
-							else if (localeRandom > 0.2) localeType = localeTypes.transport;
+							if (localeRandom > 6) localeType = localeTypes.market;
+							else if (localeRandom > 0.4) localeType = localeTypes.warehouse;
+							else if (localeRandom > 0.3) localeType = localeTypes.transport;
+							else if (localeRandom > 0.25) localeType = localeTypes.hut;
+							else if (localeRandom > 0.2) localeType = localeTypes.hermit;
+							else if (localeRandom > 0.15) localeType = localeTypes.caravan;
 							else localeType = localeTypes.house;
 							break;
 						
 						case WorldCreatorConstants.SECTOR_TYPE_SLUM:
-							if (localeRandom > 0.3) localeType = localeTypes.house;
+							if (localeRandom > 0.4) localeType = localeTypes.house;
+							else if (localeRandom > 0.35) localeType = localeTypes.camp;
+							else if (localeRandom > 0.3) localeType = localeTypes.hut;
+							else if (localeRandom > 0.25) localeType = localeTypes.hermit;
 							else localeType = localeTypes.sewer;
 							break;
 						
@@ -293,7 +305,7 @@ define([
 				var levelLocaleCount = Math.max(minLocales, Math.round(countRand * 5));
 				var firstLocaleSector = l == 13 ? 5 : 1;
 				for (var i = 0; i < levelLocaleCount; i++) {
-					var localePos = this.randomInt(seed + i * l + i * 7394 * seed + i * i * l, firstLocaleSector, lastSector + 1);
+					var localePos = this.randomInt(seed + i * l + i * 7394 * seed + i * i * l + i, firstLocaleSector, lastSector + 1);
 					var localeType = getLocaleType(this.world[l][localePos].sectorType, l, levelOrdinal, this.random(seed+seed+l*i*seed+localePos));
 					var isEasy = i <= minLocales;
 					var locale = new LocaleVO(localeType, isEasy);

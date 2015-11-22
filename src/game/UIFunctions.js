@@ -106,7 +106,8 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             // Non-improvement actions
             this.actionToFunctionMap["scavenge"] = this.playerActions.scavenge;
             this.actionToFunctionMap["scout"] = this.playerActions.scout;
-            this.actionToFunctionMap["scout_locale"] = playerActions.scoutLocale;
+            this.actionToFunctionMap["scout_locale_i"] = playerActions.scoutLocale;
+            this.actionToFunctionMap["scout_locale_u"] = playerActions.scoutLocale;
             this.actionToFunctionMap["despair"] = playerActions.despair;
             this.actionToFunctionMap["unlock_upgrade"] = playerActions.unlockUpgrade;
         },
@@ -372,7 +373,8 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
         
         completeAction: function (action) {
             var button = $("button[action='" + action + "']");
-            var cooldown = PlayerActionConstants.getCooldown(action);
+            var baseId = this.playerActions.playerActionsHelper.getBaseActionID(action);
+            var cooldown = PlayerActionConstants.getCooldown(baseId);
             if (cooldown > 0) {
                 var locationKey = this.getLocationKey($(button));
                 this.gameState.setActionCooldown(action, locationKey, cooldown);

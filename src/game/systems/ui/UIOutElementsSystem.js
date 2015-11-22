@@ -208,7 +208,8 @@ define([
                                     hasCostBlockers = true;
                                 }
                                 else if (costFraction < bottleNeckCostFraction) bottleNeckCostFraction = costFraction;
-                                content += "<span class='" + classes + "'>" + name + ": " + value + "</span><br/>";
+                                
+								if (value > 0) content += "<span class='" + classes + "'>" + name + ": " + value + "</span><br/>";
                             }
                         }
                     } else {

@@ -256,7 +256,7 @@ define([
 			var locale;
 			for (var i = 0; i < sectorLocalesComponent.locales.length; i++) {
 				locale = sectorLocalesComponent.locales[i];
-				var action = "scout_locale_" + i;
+				var action = "scout_locale_" + locale.getCategory() + "_" + i;
 				if (!sectorStatus.isLocaleScouted(i))
 					if (this.playerActionsHelper.checkRequirements(action, false, sectorEntity).value >= 1)
 						locales.push(locale);

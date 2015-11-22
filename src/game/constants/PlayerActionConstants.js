@@ -52,7 +52,6 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     sector: {
                         control: false,
                         enemies: true,
-                        scouted: true,
                     },
                     perks: {
                         Injury: [1, -1],
@@ -1397,6 +1396,8 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 scavenge: 10,
                 fightCheck: 20,
                 use_in_campfire: 60,
+                scout_locale_i: 60,
+                scout_locale_u: 60,
                 use_in_inn: 60 * 30,
                 despair: 60,
             },
@@ -1405,10 +1406,17 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 use_in_hospital: 60 * 2,
                 use_in_campfire: 5,
             },
+            
+            randomEncounterProbabilities: {
+                scavenge: 0.03,
+                scout_locale_i: 0.2,
+                scout_locale_u: 0.1,
+            },
         
             descriptions: {
                 scout: "Scout the area for evidence.",
-                scout_locale: "Scout for additional resources and evidence.",
+                scout_locale_i: "Find out if there is anyone living here.",
+                scout_locale_u: "Scout for additional resources and evidence.",
                 scavenge: "Look for resources.",
                 fightcheck: "Attempt to gain control of the area.",
                 move_sector_left: "Move to another area",
@@ -1454,6 +1462,14 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
             getDuration: function (action) {
                 if (this.durations[action]) {
                     return this.durations[action] / GameConstants.gameSpeed;
+                }
+                return 0;
+            },
+            
+            getRandomEncounterProbability: function (action) {
+                // TODO for locales get probability based on locale type
+                if (this.randomEncounterProbabilities[action]) {
+                    return this.randomEncounterProbabilities[action] / GameConstants.gameSpeed;
                 }
                 return 0;
             },
