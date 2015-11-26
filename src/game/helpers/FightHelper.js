@@ -32,7 +32,7 @@ define([
 		handleRandomEncounter: function (action, winCallback, fleeCallback, loseCallback) {
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
 			var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
-			var hasEnemies = enemiesComponent.hasEnemies() && sectorControlComponent.maxUndefeatedEnemies > 0 && sectorControlComponent.currentUndefeatedEnemies > 0;
+			var hasEnemies = enemiesComponent.hasEnemies() && sectorControlComponent.maxSectorEnemies > 0 && sectorControlComponent.currentSectorEnemies > 0;
 
 			if (hasEnemies) {
 				var encounterProbability =  PlayerActionConstants.getRandomEncounterProbability(this.playerActionsHelper.getBaseActionID(action));

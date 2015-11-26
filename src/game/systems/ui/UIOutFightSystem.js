@@ -95,8 +95,8 @@ define([
 			
 			// Sector control
 			var sectorControlComponent = sector.get(SectorControlComponent);
-			var enemies = sectorControlComponent.currentUndefeatedEnemies;
-			var maxEnemies = sectorControlComponent.maxUndefeatedEnemies;
+			var enemies = sectorControlComponent.currentSectorEnemies;
+			var maxEnemies = sectorControlComponent.maxSectorEnemies;
             $("#out-action-fight-cancel").text(enemies > 0 ? "flee" : "close");
 			$("#fight-popup-control-info").text(this.getSectorControlDesc(enemies, maxEnemies));
 		},

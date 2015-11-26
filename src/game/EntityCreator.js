@@ -22,6 +22,7 @@ define([
     'game/components/common/LogMessagesComponent',
     'game/components/common/SaveComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
+    'game/components/sector/improvements/WorkshopComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/EnemiesComponent',
@@ -59,6 +60,7 @@ define([
     LogMessagesComponent,
     SaveComponent,
     SectorImprovementsComponent,
+    WorkshopComponent,
     SectorStatusComponent,
     SectorControlComponent,
     EnemiesComponent,
@@ -164,6 +166,10 @@ define([
 				VisitedComponent,
 				LastVisitedCampComponent
 			]));
+			
+			if (sectorFeatures.workshopResource) {
+				sector.add(new WorkshopComponent(sectorFeatures.workshopResource));
+			}
 			
 			this.engine.addEntity(sector);
 			return sector;

@@ -9,6 +9,7 @@ define([
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorControlComponent',
+    'game/components/sector/improvements/WorkshopComponent',
     'game/components/level/LevelPassagesComponent',
     'game/vos/LevelProjectVO',
     'game/vos/ImprovementVO',
@@ -21,6 +22,7 @@ define([
 	SectorLocalesComponent,
 	SectorFeaturesComponent,
 	SectorControlComponent,
+	WorkshopComponent,
 	LevelPassagesComponent,
 	LevelProjectVO,
 	ImprovementVO
@@ -173,11 +175,13 @@ define([
 			var count = 0;
             var featuresComponent;
             var sectorControlComponent;
+			var workshopComponent;
             for (var node = this.sectorNodes.head; node; node = node.next) {
                 if (node.entity.get(PositionComponent).level === level) {
                     featuresComponent = node.entity.get(SectorFeaturesComponent);
                     sectorControlComponent = node.entity.get(SectorControlComponent);
-                    if (featuresComponent.getWorkshopResource() === resourceName) {
+					workshopComponent = node.entity.get(WorkshopComponent);
+                    if (workshopComponent && workshopComponent.resource === resourceName) {
                         if (sectorControlComponent && sectorControlComponent.hasControl()) {
                             count++;
                         }
@@ -193,7 +197,7 @@ define([
             var sectorControlComponent;
 			featuresComponent = sectorEntity.get(SectorFeaturesComponent);
 			sectorControlComponent = sectorEntity.get(SectorControlComponent);
-			if (featuresComponent.getWorkshopResource()) {
+			if (sectorEntity.has(WorkshopComponent)) {
 				if (!sectorControlComponent.hasControl()) {
 					count++;
 				}

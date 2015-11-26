@@ -169,8 +169,8 @@ define([
 			var foodOnLevel = 0;
 			
 			var fuelSectors = [];
-			if (this.isDarkLevel(seed, l) && (l % 2 == 0))
-				fuelSectors = this.randomSectors(seed*l^2/7*l, l, firstSector, lastSector, 1, 3, "camp");
+			if (this.isDarkLevel(seed, l) && (l % 2 == 0) || true)
+				fuelSectors = this.randomSectors(seed*l^2/7*l, l, firstSector, lastSector, 1, 2, "camp");
 			
 			for(var s = firstSector; s <= lastSector; s++) {
 				this.world[l][s].resources = new ResourcesVO();
@@ -216,9 +216,9 @@ define([
 				this.world[l][s].resources.water = water;
 				this.world[l][s].resources.food = food;
 				this.world[l][s].resources.metal = 5;
-				this.world[l][s].resources.fuel = fuel;
 				this.world[l][s].resources.herbs = herbs;
-				this.world[l][s].workshop = this.world[l][s].resources.fuel > 0;
+				this.world[l][s].workshopResource = fuel > 0 ? resourceNames.fuel : null;
+				this.world[l][s].workshop = this.world[l][s].workshopResource !== null;
 				
 				foodOnLevel += food;
 			}
@@ -229,7 +229,7 @@ define([
 			}
 			
 			console.log("World resources ready.");
-			// this.printWorld(seed, [ "resources.fuel" ]);
+			this.printWorld(seed, [ "workshopResource" ]);
 		},
 		
 		// locales
@@ -566,6 +566,7 @@ define([
 			sectorFeatures.sunlit = def.sunlit;
 			sectorFeatures.sectorType = def.sectorType;	    
 			sectorFeatures.resources = def.resources;
+			sectorFeatures.workshopResource = def.workshopResource;
             sectorFeatures.campable = def.campableLevel;
 			return sectorFeatures;
 		},

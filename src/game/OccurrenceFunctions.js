@@ -10,10 +10,11 @@ define(['ash',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
+    'game/components/sector/improvements/WorkshopComponent',
     'game/components/common/CampComponent',
 ], function (Ash, OccurrenceConstants, EnemyConstants, TextConstants, CampNode,
     PositionComponent, ResourcesComponent, RaidComponent,
-    SectorFeaturesComponent, SectorControlComponent, SectorImprovementsComponent, CampComponent) {
+    SectorFeaturesComponent, SectorControlComponent, SectorImprovementsComponent, WorkshopComponent, CampComponent) {
     
     var OccurrenceFunctions = Ash.System.extend({
         
@@ -41,19 +42,16 @@ define(['ash',
         },
 	
 		onEnterNewSector: function (sectorEntity) {
-			var sectorPosition = sectorEntity.get(PositionComponent);
 		},
 	
 		onScoutSector: function (sectorEntity) {
-			var featuresComponent = sectorEntity.get(SectorFeaturesComponent);
 			var sectorControlComponent = sectorEntity.get(SectorControlComponent);
-			var sectorPosition = sectorEntity.get(PositionComponent);
 			var hasCampOnLevel = this.hasCampOnLevel(sectorEntity);
 			var hasEnemies = !sectorControlComponent.hasControl();
-			var workshopName = TextConstants.getWorkshopName(featuresComponent.getWorkshopResource());
 			
 			// Workshops
-			if (featuresComponent.hasWorkshop()) {
+			if (sectorEntity.has(WorkshopComponent)) {
+				var workshopName = TextConstants.getWorkshopName(sectorEntity.get(WorkshopComponent).resource);
 				var helpString = "";
 				if (hasEnemies && !hasCampOnLevel) helpString = "Clear the sector and build a camp nearby to use it.";
 				else if (!hasCampOnLevel) helpString = "Build a camp nearby to use it.";
@@ -66,9 +64,8 @@ define(['ash',
 		},
 		
 		onGainSectorControl: function (sectorEntity) {
-			var featuresComponent = sectorEntity.get(SectorFeaturesComponent);
-			if (featuresComponent.hasWorkshop()) {
-				var workshopName = TextConstants.getWorkshopName(featuresComponent.getWorkshopResource());
+			if (sectorEntity.has(WorkshopComponent)) {
+				var workshopName = TextConstants.getWorkshopName(sectorEntity.get(WorkshopComponent).resource);
 				if (this.hasCampOnLevel(sectorEntity)) {
 					this.showClickOccurrence("The " + workshopName + " is now safe for workers to use.");
 				} else {
@@ -84,31 +81,31 @@ define(['ash',
 			var soldiers = sectorEntity.get(CampComponent).assignedWorkers.soldier;
 			raidComponent.victory = OccurrenceConstants.getRaidDanger(improvements, soldiers) < Math.random()*100;
 			if (!raidComponent.victory) {
-			var selectedResources = [];
-			var maxSelectedResources = 3;
-			var largestSelectedAmount = 0;
-			for(var key in resourceNames) {
-				var name = resourceNames[key];
-				var campAmount = campResources.getResource(name);
-				if (selectedResources.length < maxSelectedResources) {
-				selectedResources.push(name);
-				largestSelectedAmount = Math.max(largestSelectedAmount, campAmount);
-				} else if (campAmount > largestSelectedAmount) {
-				selectedResources.pop();
-				selectedResources.push(name);			
-				largestSelectedAmount = Math.max(largestSelectedAmount, campAmount);
+				var selectedResources = [];
+				var maxSelectedResources = 3;
+				var largestSelectedAmount = 0;
+				for (var key in resourceNames) {
+					var name = resourceNames[key];
+					var campAmount = campResources.getResource(name);
+					if (selectedResources.length < maxSelectedResources) {
+						selectedResources.push(name);
+						largestSelectedAmount = Math.max(largestSelectedAmount, campAmount);
+					} else if (campAmount > largestSelectedAmount) {
+						selectedResources.pop();
+						selectedResources.push(name);
+						largestSelectedAmount = Math.max(largestSelectedAmount, campAmount);
+					}
 				}
-			}
 			
-			for(var i in selectedResources) {
-				var name = selectedResources[i];
-				var campAmount = campResources.getResource(name);
-				var lostAmount = campAmount * 0.5;
-				if (lostAmount >= 5) {
-				campResources.setResource(name, campAmount - lostAmount);
-				raidComponent.resourcesLost.addResource(name, lostAmount);
+				for(var i in selectedResources) {
+					var name = selectedResources[i];
+					var campAmount = campResources.getResource(name);
+					var lostAmount = campAmount * 0.5;
+					if (lostAmount >= 5) {
+					campResources.setResource(name, campAmount - lostAmount);
+					raidComponent.resourcesLost.addResource(name, lostAmount);
+					}
 				}
-			}
 			}
 		},
 		

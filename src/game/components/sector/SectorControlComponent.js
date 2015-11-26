@@ -1,37 +1,30 @@
-// Current sector control status & wins needed
+// Current sector control status & wins needed for sector contorl (no more random encounters)
 define(['ash'], function (Ash) {
     
     var SectorControlComponent = Ash.Class.extend({
         
-        maxUndefeatedEnemies: 0,
-        currentUndefeatedEnemies: 0,
-        defeatedEnemies: 0,
+        maxSectorEnemies: 0,
+        currentSectorEnemies: 0,
+        defeatedSectorEnemies: 0,
         
-        lastWinTimeStamp: 0,
-        lastSpawnTimeStamp: 0,
+        maxLocaleEnemies: {},
+        currentLocaleEnemies: {},
+        defeatedLocaleEnemies: {},
         
         constructor: function (enemies) {
-            this.maxUndefeatedEnemies = enemies;
-            this.currentUndefeatedEnemies = enemies;
-            this.defeatedEnemies = 0;
+            this.maxSectorEnemies = enemies;
+            this.currentSectorEnemies = enemies;
+            this.defeatedSectorEnemies = 0;
         },
         
         hasControl: function () {
-            return this.currentUndefeatedEnemies <= 0;
+            return this.currentSectorEnemies <= 0;
         },
         
         addWin: function () {
-            this.defeatedEnemies++;
-            this.currentUndefeatedEnemies--;
-            this.lastWinTimeStamp = new Date().getTime();
+            this.defeatedSectorEnemies++;
+            this.currentSectorEnemies--;
         },
-        
-        spawn: function () {
-            if (this.currentUndefeatedEnemies < this.maxUndefeatedEnemies) {
-                this.currentUndefeatedEnemies++;
-                this.lastSpawnTimeStamp = new Date().getTime();
-            }
-        }
         
     });
 

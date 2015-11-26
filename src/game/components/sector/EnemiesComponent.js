@@ -1,4 +1,4 @@
-// Information about the enemies in a given sector & sector control status
+// Information about the enemies in a given sector
 define(['ash'], function (Ash) {
     
     var EnemiesComponent = Ash.Class.extend({

@@ -19,6 +19,7 @@ define([
     'game/components/common/VisitedComponent',
     'game/components/common/CampComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
+    'game/components/sector/improvements/WorkshopComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/EnemiesComponent'
 ], function (
@@ -29,7 +30,7 @@ define([
     PositionComponent,
     VisitedComponent,
     CampComponent,
-    SectorImprovementsComponent, SectorStatusComponent, EnemiesComponent
+    SectorImprovementsComponent, WorkshopComponent, SectorStatusComponent, EnemiesComponent
 ) {
     var UIOutLevelSystem = Ash.System.extend({
 	
@@ -274,11 +275,13 @@ define([
 		
 		getDescription: function (entity, hasCampHere, hasCampOnLevel, hasVision, isScouted) {
 			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
+			var workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var hasEnemies = this.playerLocationNodes.head.entity.get(SectorControlComponent).maxUndefeatedEnemies > 0;
+			var hasEnemies = this.playerLocationNodes.head.entity.get(SectorControlComponent).maxSectorEnemies > 0;
+			
 			var description = "<p>";
 			description += this.getTextureDescription(hasVision, featuresComponent);
-			description += this.getFunctionalDescription(hasVision, isScouted, featuresComponent, hasCampHere, hasCampOnLevel);
+			description += this.getFunctionalDescription(hasVision, isScouted, featuresComponent, workshopComponent, hasCampHere, hasCampOnLevel);
 			description += "</p><p>";
 			description += this.getStatusDescription(hasVision, isScouted, hasEnemies, featuresComponent, passagesComponent, hasCampHere, hasCampOnLevel);
 			description += this.getMovementDescription(isScouted, passagesComponent, entity);
@@ -312,14 +315,14 @@ define([
 		},
 		
 		// Existing improvements. Workshops. Passages. Potential improvements (camp).
-		getFunctionalDescription: function (hasVision, isScouted, featuresComponent, hasCampHere, hasCampOnLevel) {
+		getFunctionalDescription: function (hasVision, isScouted, featuresComponent, workshopComponent, hasCampHere, hasCampOnLevel) {
 			var description = "";
 			if (hasVision) {
 				if (hasCampHere) description += "There is a camp here. ";
 			}
 			
-			if (isScouted && featuresComponent.hasWorkshop()) {
-				var workshopName = TextConstants.getWorkshopName(featuresComponent.getWorkshopResource());
+			if (isScouted && workshopComponent) {
+				var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
 				description += "There is a " + workshopName + " here. ";
 			}
 			
@@ -392,7 +395,7 @@ define([
 			
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
 			var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
-			var hasEnemies = enemiesComponent.hasEnemies() && sectorControlComponent.maxUndefeatedEnemies > 0;
+			var hasEnemies = enemiesComponent.hasEnemies() && sectorControlComponent.maxSectorEnemies > 0;
 			
 			if (!isScouted) {
 				enemyDesc += "You have not scouted this sector yet. ";
@@ -402,7 +405,7 @@ define([
 				var defeatableBlockerLeft = passagesComponent.isLeftDefeatable();
 				var defeatableBlockerRight = passagesComponent.isRightDefeatable();
 				if (isScouted || defeatableBlockerLeft || defeatableBlockerRight) {
-					var defeated = sectorControlComponent.hasControl() && sectorControlComponent.defeatedEnemies > 0;
+					var defeated = sectorControlComponent.hasControl() && sectorControlComponent.defeatedSectorEnemies > 0;
 					enemyDesc = TextConstants.getEnemyText(
 					enemiesComponent.possibleEnemies,
 					defeated,
@@ -471,7 +474,7 @@ define([
 					var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
 					if (isScouted) content = sectorPos.sector;
 					if (sectorNode.entity.has(CampComponent)) content = "c";
-					if (sectorNode.entity.get(SectorFeaturesComponent).hasWorkshop()) content = "w";
+					if (sectorNode.entity.has(WorkshopComponent)) content = "w";
 					if (sectorPassages.passageUp && isScouted) content += "U";
 					if (sectorPassages.passageDown && isScouted) content += "D";
 					if (unScoutedLocales > 0 && isScouted) content += "l";
