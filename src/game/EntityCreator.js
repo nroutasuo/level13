@@ -129,7 +129,7 @@ define([
 			return level;
 		},
 	
-		createSector: function (saveKey, level, pos, passageOptions, sectorFeatures, locales, enemies, enemyNum) {
+		createSector: function (saveKey, level, pos, passageOptions, sectorFeatures, locales, enemies, enemyNum, localeEnemyNum) {
 			var sector = new Ash.Entity()
 			.add(new SectorComponent())
 			.add(new ResourcesComponent(0))
@@ -137,7 +137,7 @@ define([
 			.add(new EnemiesComponent(enemies))
 			.add(new SectorImprovementsComponent())
 			.add(new PositionComponent(level, pos))
-			.add(new SectorControlComponent(enemyNum))
+			.add(new SectorControlComponent(enemyNum, localeEnemyNum))
 			.add(new MovementOptionsComponent())
 			.add(new SectorStatusComponent())
 			.add(new PassagesComponent(

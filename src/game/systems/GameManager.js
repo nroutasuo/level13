@@ -91,7 +91,8 @@ define([
 						WorldCreator.getSectorFeatures(i, s),
 						WorldCreator.getLocales(i, s),
 						WorldCreator.getSectorEnemies(i, s),
-						WorldCreator.getSectorEnemyCount(i, s)
+						WorldCreator.getSectorEnemyCount(i, s),
+						WorldCreator.getSectorLocaleEnemyCount(i, s)
 					);
 				}
 			}

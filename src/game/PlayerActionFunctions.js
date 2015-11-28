@@ -371,6 +371,24 @@ define(['ash',
                 });
             }
         },
+		
+		clearWorkshop: function () {
+			var action = "clear_workshop";
+            if (this.playerActionsHelper.checkAvailability(action, true)) {
+                this.playerActionsHelper.deductCosts(action);
+				var playerActionFunctions = this;
+				this.fightHelper.handleRandomEncounter(action, function () {
+					playerActionFunctions.addLogMessage("Workshop cleared.");
+                    playerActionFunctions.uiFunctions.completeAction(action);
+				}, function () {
+					// fled
+                    playerActionFunctions.uiFunctions.completeAction(action);
+				}, function () {
+					// lost
+                    playerActionFunctions.uiFunctions.completeAction(action);
+				});
+			}
+		},
         
         despair: function () {
             if (this.playerActionsHelper.checkAvailability("despair", true)) {

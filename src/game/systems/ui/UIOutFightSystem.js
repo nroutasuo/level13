@@ -95,10 +95,10 @@ define([
 			
 			// Sector control
 			var sectorControlComponent = sector.get(SectorControlComponent);
-			var enemies = sectorControlComponent.currentSectorEnemies;
-			var maxEnemies = sectorControlComponent.maxSectorEnemies;
+			var enemies = sectorControlComponent.getCurrentEnemies(encounterComponent.context);
+			var maxEnemies = sectorControlComponent.getMaxEnemies(encounterComponent.context);
             $("#out-action-fight-cancel").text(enemies > 0 ? "flee" : "close");
-			$("#fight-popup-control-info").text(this.getSectorControlDesc(enemies, maxEnemies));
+			$("#fight-popup-control-info").text(this.getSectorControlDesc(enemies, maxEnemies, encounterComponent.context));
 		},
 	
 		updateFightPending: function () {
@@ -151,15 +151,16 @@ define([
 			this.uiFunctions.generateCallouts("#fight-popup");
         },
 		
-		getSectorControlDesc: function (enemies, maxEnemies) {
+		getSectorControlDesc: function (enemies, maxEnemies, context) {
 			var ratioLeft = enemies / maxEnemies;
+			var areaName = context ? "place" : "area";
 			
 			if (ratioLeft > 0.3) {
-				return "many enemies left in this area";
+				return "many enemies left in this " + areaName;
 			} else if (ratioLeft > 0.1) {
-				return "some enemies left in this area";
+				return "some enemies left in this " + areaName;
 			} else if (ratioLeft > 0) {
-				return "few enemies left in this area";
+				return "few enemies left in this " + areaName;
 			} else {
 				return "no enemies left here";
 			}
@@ -174,6 +175,8 @@ define([
 					return "surprised while scouting";
 				case "scout_locale_i":
 					return "attacked while scouting";
+				case "clear_workshop":
+					return "workshop " + enemy.activeV + " " + TextConstants.addArticle(enemyNoun);
 				default:
 					return TextConstants.addArticle(enemyNoun) + " approaches";
 			}

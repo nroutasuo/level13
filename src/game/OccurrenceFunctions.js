@@ -123,8 +123,6 @@ define(['ash',
 		
 		showLevelStrengthWarning: function (sectorEntity) {
 			var positionComponent = sectorEntity.get(PositionComponent);
-			var sectorControlComponent = sectorEntity.get(SectorControlComponent);
-			var hasEnemies = !sectorControlComponent.hasControl();
 			var levelOrdinal = this.gameState.getLevelOrdinal(positionComponent.level);
 			var totalLevels = this.gameState.getTotalLevels();
 			var groundLevelOrdinal = this.gameState.getGroundLevelOrdinal();

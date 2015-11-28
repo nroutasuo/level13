@@ -1,10 +1,11 @@
 define(['ash',
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
+	'game/constants/LocaleConstants',
 	'game/constants/WorldCreatorConstants',
 	'game/constants/PlayerActionConstants',
 	'game/vos/ResourcesVO'],
-function (Ash, ItemConstants, PerkConstants, WorldCreatorConstants, PlayerActionConstants, ResourcesVO) {
+function (Ash, ItemConstants, PerkConstants, LocaleConstants, WorldCreatorConstants, PlayerActionConstants, ResourcesVO) {
 
     var FightConstants = {
 	
@@ -84,7 +85,14 @@ function (Ash, ItemConstants, PerkConstants, WorldCreatorConstants, PlayerAction
             }
             
             return "risky";
-        },
+        },		
+		
+		getEnemyLocaleId: function (action) {
+			switch (action) {
+				case "clear_workshop": return LocaleConstants.LOCALE_ID_WORKSHOP;
+				default: return null;
+			}
+		},
 	
     };
     

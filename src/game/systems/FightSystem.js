@@ -7,6 +7,7 @@ define([
     'game/nodes/player/PlayerStatsNode',
     'game/components/common/PositionComponent',
     'game/components/sector/FightComponent',
+    'game/components/sector/FightEncounterComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/EnemiesComponent',
     'game/components/player/StaminaComponent',
@@ -15,7 +16,7 @@ define([
 ], function (Ash, FightConstants, EnemyConstants,
     FightNode, PlayerStatsNode,
     PositionComponent,
-    FightComponent, SectorControlComponent, EnemiesComponent,
+    FightComponent, FightEncounterComponent, SectorControlComponent, EnemiesComponent,
     StaminaComponent, ItemsComponent, PerksComponent) {
 	
     var FightSystem = Ash.System.extend({
@@ -85,7 +86,9 @@ define([
             
             if (won) {
                 var sectorControlComponent = sector.get(SectorControlComponent);
-                sectorControlComponent.addWin();
+				var encounterComponent = sector.get(FightEncounterComponent);
+				var localeId = FightConstants.getEnemyLocaleId(encounterComponent.context);
+                sectorControlComponent.addWin(localeId);
                 cleared = sectorControlComponent.hasControl();
                 if (cleared) {
                     this.occurrenceFunctions.onGainSectorControl(sector);

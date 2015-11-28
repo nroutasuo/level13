@@ -4,6 +4,7 @@ define([
     'game/constants/PlayerStatConstants',
     'game/constants/TextConstants',
     'game/constants/EnemyConstants',
+    'game/constants/LocaleConstants',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/sector/SectorNode',
@@ -23,7 +24,7 @@ define([
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/EnemiesComponent'
 ], function (
-    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, EnemyConstants,
+    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, EnemyConstants, LocaleConstants,
     PlayerPositionNode, PlayerLocationNode, SectorNode, CampNode, VisitedSectorNode,
     VisionComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
     MovementOptionsComponent,
@@ -156,10 +157,12 @@ define([
 			var posComponent = this.playerLocationNodes.head.position;
 			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
 			var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
 			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			var workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
+			
 			var vision = this.playerPosNodes.head.entity.get(VisionComponent).value;
 			var hasVision = vision > PlayerStatConstants.VISION_BASE;
 			var hasBridgeableBlocker = (passagesComponent.blockerLeft != null && passagesComponent.blockerLeft.bridgeable) || (passagesComponent.blockerRight != null && passagesComponent.blockerRight.bridgeable);
@@ -266,6 +269,7 @@ define([
 				(this.resourcesHelper.getCurrentStorage().resources.water < 0.5 || this.resourcesHelper.getCurrentStorage().resources.food < 0.5);
 			$("#out-action-scout").toggle(this.gameState.unlockedFeatures.vision);
 			$("#out-action-investigate").toggle(this.gameState.unlockedFeatures.investigate);
+			$("#out-action-clear-workshop").toggle(workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP));
 			$("#out-action-despair").toggle(showDespair);
 			
 			this.uiFunctions.slideToggleIf("#out-locales", null, isScouted && sectorLocalesComponent.locales.length > 0, 200, 0);

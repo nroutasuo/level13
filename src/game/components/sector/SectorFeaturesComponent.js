@@ -37,12 +37,6 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
                     this.stateOfRepair > 2;
         },
         
-        getWorkshopResource: function () {
-            if (!this.campable) return null;
-            if (this.resources.fuel > 0) return resourceNames.fuel;
-            return null;
-        },
-        
         // Convenience
         getSectorTypeName: function (hasLight) {
             var densityAdj = "";

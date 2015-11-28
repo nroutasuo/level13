@@ -5,8 +5,9 @@ define([
 	'game/vos/LocaleVO',
 	'game/constants/WorldCreatorConstants',
 	'game/constants/EnemyConstants',
-	'game/constants/UpgradeConstants'
-], function (Ash, ResourcesVO, LocaleVO, WorldCreatorConstants, EnemyConstants, UpgradeConstants) {
+	'game/constants/UpgradeConstants',
+	'game/constants/LocaleConstants'
+], function (Ash, ResourcesVO, LocaleVO, WorldCreatorConstants, EnemyConstants, UpgradeConstants, LocaleConstants) {
 
     var WorldCreator = {
         
@@ -326,69 +327,77 @@ define([
 				var lastSector = this.getLastSector(seed, l);
 				for (var s = firstSector; s <= lastSector; s++) {
 					this.world[l][s].enemies = [];		    
+					this.world[l][s].localeEnemies = {};
+					
+					// regular enemies
 					var hasEnemies = !this.world[l][s].camp && (this.world[l][s].blockerLeft == 3 ||
 						this.world[l][s].blockerRight == 3 ||
 						this.world[l][s].workshop ||
 						this.random(l*s*seed+s*seed+4848) > 0.2);
 					
 					if (hasEnemies) {
-					var enemies = this.world[l][s].enemies;
-					var enemyDifficulty = this.getLevelOrdinal(seed, l);
-					var pseudorandom = this.random;
-					var randomEnemyCheck = function(typeSeed, enemy) {
-						var threshold = (enemy.rarity + 5)/110;
-						var r = pseudorandom(typeSeed*l*seed + s*l + s + typeSeed + typeSeed*s - s*typeSeed*s);
-						return r > threshold;
-					};
+						var enemies = this.world[l][s].enemies;
+						var enemyDifficulty = this.getLevelOrdinal(seed, l);
+						var pseudorandom = this.random;
+						var randomEnemyCheck = function(typeSeed, enemy) {
+							var threshold = (enemy.rarity + 5)/110;
+							var r = pseudorandom(typeSeed*l*seed + s*l + s + typeSeed + typeSeed*s - s*typeSeed*s);
+							return r > threshold;
+						};
 					
-					var globalE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.global, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
-					var enemy;
-					for(var e in globalE) {
-						enemy = globalE[e];
-						if (randomEnemyCheck(11*(e+1), enemy)) enemies.push(enemy);
-					}
-					
-					if (l <= bottomLevel+1) {
-						var earthE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.earth, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
-						for(var e in earthE) {
-						enemy = earthE[e];
-						if (randomEnemyCheck(333*(e+1), enemy)) enemies.push(enemy);
+						var globalE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.global, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+						var enemy;
+						for(var e in globalE) {
+							enemy = globalE[e];
+							if (randomEnemyCheck(11*(e+1), enemy)) enemies.push(enemy);
 						}
-					}
-					
-					if (this.world[l][s].sunlit) {
-						var sunE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.sunlit, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
-						for(var e in sunE) {
-						enemy = sunE[e];
-						if (randomEnemyCheck(6666*(e+4)+2, enemy)) enemies.push(enemy);
+						
+						if (l <= bottomLevel+1) {
+							var earthE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.earth, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+							for(var e in earthE) {
+							enemy = earthE[e];
+							if (randomEnemyCheck(333*(e+1), enemy)) enemies.push(enemy);
+							}
 						}
+						
+						if (this.world[l][s].sunlit) {
+							var sunE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.sunlit, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+							for(var e in sunE) {
+							enemy = sunE[e];
+							if (randomEnemyCheck(6666*(e+4)+2, enemy)) enemies.push(enemy);
+							}
+						}
+						
+						if (l >= topLevel-10) {
+							var inhabitedE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.inhabited, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+							for(var e in inhabitedE) {
+							enemy = inhabitedE[e];
+							if (randomEnemyCheck(777*(e+2)^2, enemy)) enemies.push(enemy);
+							} 
+						}
+						
+						if (l >= topLevel-5) {
+							var urbanE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.urban, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+							for(var e in urbanE) {
+							enemy = urbanE[e];
+							if (randomEnemyCheck(99*(e+1), enemy)) enemies.push(enemy);
+							}     
+						}
+						
+						if (enemies.length < 1) enemies.push(globalE[0]);
+						
+						var enemyS = l+"."+s + ":\t";
+						var stats;
+						for(var e in enemies) {
+							stats = enemies[e].att + enemies[e].def;
+							enemyS += enemies[e].name + "(" + stats + "), ";
+						}
+						// console.log(enemyS.slice(0,-2));
 					}
 					
-					if (l >= topLevel-10) {
-						var inhabitedE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.inhabited, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
-						for(var e in inhabitedE) {
-						enemy = inhabitedE[e];
-						if (randomEnemyCheck(777*(e+2)^2, enemy)) enemies.push(enemy);
-						} 
-					}
-					
-					if (l >= topLevel-5) {
-						var urbanE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.urban, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
-						for(var e in urbanE) {
-						enemy = urbanE[e];
-						if (randomEnemyCheck(99*(e+1), enemy)) enemies.push(enemy);
-						}     
-					}
-					
-					if (enemies.length < 1) enemies.push(globalE[0]);
-					
-					var enemyS = l+"."+s + ":\t";
-					var stats;
-					for(var e in enemies) {
-						stats = enemies[e].att + enemies[e].def;
-						enemyS += enemies[e].name + "(" + stats + "), ";
-					}
-					// console.log(enemyS.slice(0,-2));
+					// workshop and locale enemies
+					if (this.world[l][s].workshop) {
+						this.world[l][s].localeEnemies[LocaleConstants.LOCALE_ID_WORKSHOP] = 3;
 					}
 				}
 			//console.log("- - - ")
@@ -575,12 +584,16 @@ define([
 			return this.world[level][sector].locales;
 		},
 		
-		getSectorEnemies: function( level, sector ) {
+		getSectorEnemies: function (level, sector) {
 			return this.world[level][sector].enemies;
 		},
 		
-		getSectorEnemyCount: function(level, sector) {
+		getSectorEnemyCount: function (level, sector) {
 			return this.world[level][sector].enemies.length > 0 ? 25 : 0;
+		},
+		
+		getSectorLocaleEnemyCount: function (level, sector) {
+			return this.world[level][sector].localeEnemies;
 		},
 		
 		// Helper functions for randomisation, seeds etc below this

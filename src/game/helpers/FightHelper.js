@@ -2,6 +2,8 @@
 define([
     'ash',
     'game/constants/PlayerActionConstants',
+    'game/constants/LocaleConstants',
+    'game/constants/FightConstants',
     'game/components/sector/EnemiesComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/FightComponent',
@@ -10,7 +12,7 @@ define([
     'game/systems/FaintingSystem',
     'game/systems/SaveSystem'
 ], function (
-	Ash, PlayerActionConstants, EnemiesComponent, SectorControlComponent, FightComponent, FightEncounterComponent, PlayerLocationNode, FaintingSystem, SaveSystem
+	Ash, PlayerActionConstants, LocaleConstants, FightConstants, EnemiesComponent, SectorControlComponent, FightComponent, FightEncounterComponent, PlayerLocationNode, FaintingSystem, SaveSystem
 ) {
     var FightHelper = Ash.Class.extend({
 		
@@ -32,8 +34,9 @@ define([
 		handleRandomEncounter: function (action, winCallback, fleeCallback, loseCallback) {
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
 			var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
-			var hasEnemies = enemiesComponent.hasEnemies() && sectorControlComponent.maxSectorEnemies > 0 && sectorControlComponent.currentSectorEnemies > 0;
-
+			
+			var localeId = FightConstants.getEnemyLocaleId(action);
+			var hasEnemies = enemiesComponent.hasEnemies() && !sectorControlComponent.hasControlOfLocale(localeId);
 			if (hasEnemies) {
 				var encounterProbability =  PlayerActionConstants.getRandomEncounterProbability(this.playerActionsHelper.getBaseActionID(action));
 				if (Math.random() < encounterProbability) {

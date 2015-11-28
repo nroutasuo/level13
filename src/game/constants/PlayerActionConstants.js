@@ -58,6 +58,14 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     },
                     busy: false,
                 },
+                
+                clear_workshop: {
+                    vision: 30,
+                    health: 70,
+                    sector: {
+                        scouted: true,
+                    },
+                },
                         
                 move_sector_left: {
                     vision: 10,
@@ -824,6 +832,10 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     stamina: 10,
                 },
                 
+                clear_workshop: {
+                    stamina: 10,
+                },
+                
                 move_level_up: {
                     stamina: 75,
                     resource_food: 1,
@@ -1398,6 +1410,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 use_in_campfire: 60,
                 scout_locale_i: 60,
                 scout_locale_u: 60,
+                clear_workshop: 60,
                 use_in_inn: 60 * 30,
                 despair: 60,
             },
@@ -1411,6 +1424,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 scavenge: 0.03,
                 scout_locale_i: 0.2,
                 scout_locale_u: 0.1,
+                clear_workshop: 1,
             },
         
             descriptions: {
@@ -1419,6 +1433,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 scout_locale_u: "Scout for additional resources and evidence.",
                 scavenge: "Look for resources.",
                 fightcheck: "Attempt to gain control of the area.",
+                clear_workshop: "Scout the workshop to see if it can be used.",
                 move_sector_left: "Move to another area",
                 move_sector_right: "Move to another area",
                 move_camp_level: "Shortcut back to the nearest camp.",

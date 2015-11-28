@@ -2,6 +2,7 @@
 define([
     'ash',
     'game/constants/WorldCreatorConstants',
+    'game/constants/LocaleConstants',
     'game/nodes/LevelNode',
     'game/nodes/sector/SectorNode',
     'game/components/common/PositionComponent',
@@ -16,6 +17,7 @@ define([
 ], function (
 	Ash,
 	WorldCreatorConstants,
+	LocaleConstants,
 	LevelNode, SectorNode,
 	PositionComponent,
 	SectorStatusComponent,
@@ -182,7 +184,7 @@ define([
                     sectorControlComponent = node.entity.get(SectorControlComponent);
 					workshopComponent = node.entity.get(WorkshopComponent);
                     if (workshopComponent && workshopComponent.resource === resourceName) {
-                        if (sectorControlComponent && sectorControlComponent.hasControl()) {
+                        if (sectorControlComponent && sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)) {
                             count++;
                         }
                     }
@@ -198,7 +200,7 @@ define([
 			featuresComponent = sectorEntity.get(SectorFeaturesComponent);
 			sectorControlComponent = sectorEntity.get(SectorControlComponent);
 			if (sectorEntity.has(WorkshopComponent)) {
-				if (!sectorControlComponent.hasControl()) {
+				if (!sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)) {
 					count++;
 				}
 			}
