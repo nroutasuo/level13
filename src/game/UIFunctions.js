@@ -237,20 +237,17 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                 playerActions.fightHelper.startFight();
             });
             $(scope + " #out-action-fight-close").click(function (e) {
-                uiFunctions.popupManager.closePopup("fight-popup", true);
                 playerActions.fightHelper.endFight();
             });
             $(scope + " #out-action-fight-next").click(function (e) {
-                uiFunctions.popupManager.closePopup("fight-popup", true);
                 playerActions.fightHelper.endFight();
             });
             $(scope + " #out-action-fight-cancel").click(function (e) {
-                uiFunctions.popupManager.closePopup("fight-popup", true);
                 playerActions.fightHelper.endFight();
             });
             $(scope + " button[action='leave_camp']").click(function (e) {
                 var selectedResVO = new ResourcesVO();
-                $.each($("#embark-resources tr"), function() {
+                $.each($("#embark-resources tr"), function () {
                     var resourceName = $(this).attr("id").split("-")[2];
                     var selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
                     selectedResVO.setResource(resourceName, selectedVal);
@@ -723,6 +720,8 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
         },
         
         showFight: function () {
+            if ($("#fight-popup").is(":visible")) return;
+            
             $("body").css("overflow", "hidden");
             $("#fight-popup").wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");
             var uiFunctions = this;

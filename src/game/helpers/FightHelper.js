@@ -21,6 +21,7 @@ define([
 		
 		playerLocationNodes: null,
 		
+		pendingEnemies: 0,
 		pendingWinCallback: null,
 		pendingFleeCallback: null,
 		pendingLoseCallback: null,
@@ -40,6 +41,7 @@ define([
 			if (hasEnemies) {
 				var encounterProbability =  PlayerActionConstants.getRandomEncounterProbability(this.playerActionsHelper.getBaseActionID(action));
 				if (Math.random() < encounterProbability) {
+					this.pendingEnemies = Math.min(this.getEnemyCount(action), sectorControlComponent.getCurrentEnemies(localeId));
 					this.pendingWinCallback = winCallback;
 					this.pendingFleeCallback = fleeCallback;
 					this.pendingLoseCallback = loseCallback;
@@ -52,7 +54,10 @@ define([
 		},
         
         initFight: function (action) {
+			console.log("init fight " + action + " " + this.pendingEnemies);
             var sector = this.playerLocationNodes.head.entity;
+            sector.remove(FightComponent);
+			
             var enemiesComponent = sector.get(EnemiesComponent);
             enemiesComponent.selectNextEnemy();
 			sector.add(new FightEncounterComponent(enemiesComponent.getNextEnemy(), this.playerActionsHelper.getBaseActionID(action)));
@@ -74,9 +79,15 @@ define([
         
         endFight: function () {
             var sector = this.playerLocationNodes.head.entity;
+			var encounterComponent = sector.get(FightEncounterComponent);
             if (sector.has(FightComponent)) {
 				if (sector.get(FightComponent).won) {
 					sector.get(EnemiesComponent).resetNextEnemy();
+					this.pendingEnemies--;
+					if (this.pendingEnemies > 0) {
+						this.initFight(encounterComponent.context);
+						return;
+					}
 					if (this.pendingWinCallback) this.pendingWinCallback();
 				} else {
 					if (this.pendingLoseCallback) this.pendingLoseCallback();
@@ -85,12 +96,24 @@ define([
             } else {
 				if (this.pendingFleeCallback) this.pendingFleeCallback();
 			}
+			
+            this.uiFunctions.popupManager.closePopup("fight-popup", true);
             sector.remove(FightComponent);
 			this.pendingWinCallback = null;
 			this.pendingFleeCallback = null;
 			this.pendingLoseCallback = null;
             this.save();
         },
+		
+		getEnemyCount: function (action) {
+			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
+			var localeId = FightConstants.getEnemyLocaleId(action);
+			switch (action) {
+				case "clear_workshop":
+					return sectorControlComponent.getCurrentEnemies(localeId);
+				default: return 1;
+			}
+		},
         
         save: function () {
             var saveSystem = this.engine.getSystem(SaveSystem);

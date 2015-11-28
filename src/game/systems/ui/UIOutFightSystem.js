@@ -95,8 +95,8 @@ define([
 			
 			// Sector control
 			var sectorControlComponent = sector.get(SectorControlComponent);
-			var enemies = sectorControlComponent.getCurrentEnemies(encounterComponent.context);
-			var maxEnemies = sectorControlComponent.getMaxEnemies(encounterComponent.context);
+			var enemies = sectorControlComponent.getCurrentEnemies(FightConstants.getEnemyLocaleId(encounterComponent.context));
+			var maxEnemies = sectorControlComponent.getMaxEnemies(FightConstants.getEnemyLocaleId(encounterComponent.context));
             $("#out-action-fight-cancel").text(enemies > 0 ? "flee" : "close");
 			$("#fight-popup-control-info").text(this.getSectorControlDesc(enemies, maxEnemies, encounterComponent.context));
 		},

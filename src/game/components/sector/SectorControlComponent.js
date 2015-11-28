@@ -37,17 +37,17 @@ define(['ash'], function (Ash) {
         
         hasControlOfLocale: function (localeId) {
             if (!localeId) return this.hasControl();
-            return !this.currentLocaleEnemies[localeId] || this.currentLocaleEnemies[localeId] <= 0;
+            return this.currentLocaleEnemies[localeId] <= 0;
         },
         
         getMaxEnemies: function (localeId) {
             if (!localeId) return this.maxSectorEnemies;
-            return !this.maxLocaleEnemies[localeId] ? this.maxLocaleEnemies[localeId] : 0;
+            return this.maxLocaleEnemies[localeId] ? this.maxLocaleEnemies[localeId] : 0;
         },
         
         getCurrentEnemies: function (localeId) {
             if (!localeId) return this.currentSectorEnemies;
-            return !this.currentLocaleEnemies[localeId] ? this.currentLocaleEnemies[localeId] : 0;
+            return this.currentLocaleEnemies[localeId] ? this.currentLocaleEnemies[localeId] : 0;
         },
         
         addWin: function (localeId) {

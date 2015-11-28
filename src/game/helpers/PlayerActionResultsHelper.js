@@ -87,7 +87,7 @@ define([
             var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resources;
 
 			rewards.gainedEvidence = 1;
-			rewards.gainedInjuries = this.getResultInjuries(0.15);
+			rewards.gainedInjuries = this.getResultInjuries(0.1);
 			if (rewards.gainedInjuries.length === 0) {
 				rewards.gainedResources = this.getRewardResources(0.5, efficiency * 2, sectorResources);
 			}
