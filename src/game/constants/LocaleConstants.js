@@ -4,7 +4,11 @@ define(['ash'], function (Ash) {
     
 
         LOCALE_ID_WORKSHOP: "workshop",
+        LOCALE_ID_PASSAGE: "passage",
         
+        getPassageLocaleId: function (direction) {
+            return this.LOCALE_ID_PASSAGE + "_" + direction;
+        },
     
     };
     

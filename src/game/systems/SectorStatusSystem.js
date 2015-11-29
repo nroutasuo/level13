@@ -1,6 +1,7 @@
 // A system that updates a Sector's MovementOptionsComponent based on its neighbours and improvements
 define([
     'ash',
+    'game/constants/LocaleConstants',
     'game/nodes/sector/SectorNode',
     'game/nodes/PlayerLocationNode',
     'game/components/common/PositionComponent',
@@ -13,6 +14,7 @@ define([
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
 ], function (Ash,
+		LocaleConstants,
 		SectorNode,
 		PlayerLocationNode,
 		PositionComponent,
@@ -70,11 +72,52 @@ define([
 			var hasCampLevel = levelEntity.has(CampComponent);
 			var hasCampSector = entity.has(CampComponent);
 			
+			this.updateGangs(entity);
 			this.updateMovementOptions(entity);
 			
 			sectorStatusComponent.canBuildCamp = isScouted && !hasCampLevel && featuresComponent.canHaveCamp() && !passagesComponent.passageUp && !passagesComponent.passageDown && !hasEnemies;
 			
 			if (hasCampSector && !hasCampLevel) levelEntity.add(entity.get(CampComponent));
+		},
+		
+		updateGangs: function (entity) {
+			var sectorControlComponent = entity.get(SectorControlComponent);
+			var positionComponent = entity.get(PositionComponent);
+			
+			var sectorKey = this.getSectorKey(positionComponent);
+			if (!this.neighboursDict[sectorKey]) this.findNeighbours();
+			
+			var blockerLeft = this.movementHelper.getBlockerLeft(entity);
+			var blockerRight = this.movementHelper.getBlockerRight(entity);
+			
+			var neighboursDict = this.neighboursDict;
+			
+			function checkNeighbour(direction) {
+				var localeId = LocaleConstants.getPassageLocaleId(direction === 0 ? 0 : 1);
+				var currentEnemies = sectorControlComponent.getCurrentEnemies(localeId);
+				
+				var neighbour = direction === 0 ? neighboursDict[sectorKey].left : neighboursDict[sectorKey].right;
+				if (neighbour) {
+					var neighbourSectorControlComponent = neighbour.get(SectorControlComponent);
+					var neighbourLocaleID = LocaleConstants.getPassageLocaleId(direction === 0 ? 1 : 0);
+					var neighbourEnemies = neighbourSectorControlComponent.getCurrentEnemies(neighbourLocaleID);
+					var targetEnemies = Math.min(currentEnemies, neighbourEnemies);
+					
+					if (targetEnemies < currentEnemies) {
+						console.log("set sector control for " + localeId + " at " + positionComponent.level + "-" + positionComponent.sector + " | " + targetEnemies + " < " + currentEnemies);
+						sectorControlComponent.defeatedLocaleEnemies[localeId] += (currentEnemies - targetEnemies);
+						sectorControlComponent.currentLocaleEnemies[localeId] -= (currentEnemies - targetEnemies);
+					}
+				}
+			}
+			
+			if (blockerLeft && blockerLeft.type === 3) {
+				checkNeighbour(0);
+			}
+			
+			if (blockerRight && blockerRight.type === 3) {
+				checkNeighbour(1);
+			}
 		},
 		
 		updateMovementOptions: function (entity) {

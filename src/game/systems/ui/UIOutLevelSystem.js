@@ -90,6 +90,7 @@ define([
 			this.playerMovedSignal.add(function () {
 				sys.visitedSectors = rebuildVis(playerPosNodes, sectorNodes);
 				sys.updateLocales();
+				sys.updateMovementRelatedActions();
 			});
 			sys.visitedSectors = rebuildVis(playerPosNodes, sectorNodes);
 		},
@@ -269,6 +270,7 @@ define([
 				(this.resourcesHelper.getCurrentStorage().resources.water < 0.5 || this.resourcesHelper.getCurrentStorage().resources.food < 0.5);
 			$("#out-action-scout").toggle(this.gameState.unlockedFeatures.vision);
 			$("#out-action-investigate").toggle(this.gameState.unlockedFeatures.investigate);
+			$("#out-action-fight-gang").toggle(this.gameState.unlockedFeatures.fight);
 			$("#out-action-despair").toggle(showDespair);
             
 			$("#out-action-clear-workshop").toggle(isScouted && workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP));
@@ -278,6 +280,7 @@ define([
             }
 			
 			this.uiFunctions.slideToggleIf("#out-locales", null, isScouted && sectorLocalesComponent.locales.length > 0, 200, 0);
+			this.uiFunctions.slideToggleIf("#table-out-actions-movement-related", null, isScouted > 0, 200, 0);
 			
 			// Actions results
 		},
@@ -350,6 +353,8 @@ define([
 				description += this.getEnemyDescription(isScouted, passagesComponent, hasCampHere);
 			}
 			
+			description += "</p><p>";
+			
 			if (featuresComponent.resources.getTotal() > 0) {
 				var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
 				if (discoveredResources.length > 0) {
@@ -417,17 +422,11 @@ define([
 			if (hasEnemies) {
 				var defeatableBlockerLeft = passagesComponent.isLeftDefeatable();
 				var defeatableBlockerRight = passagesComponent.isRightDefeatable();
-				if (isScouted || defeatableBlockerLeft || defeatableBlockerRight) {
-					var defeated = sectorControlComponent.hasControl() && sectorControlComponent.defeatedSectorEnemies > 0;
-					enemyDesc = TextConstants.getEnemyText(
-					enemiesComponent.possibleEnemies,
-					defeated,
-					defeatableBlockerLeft,
-					defeatableBlockerRight
-					);
+				if (isScouted) {
+					enemyDesc = TextConstants.getEnemyText(enemiesComponent.possibleEnemies, sectorControlComponent, defeatableBlockerLeft, defeatableBlockerRight);
 				}
 				// if (window.app) enemyDesc += "(" + enemiesComponent.possibleEnemies + ") ";
-			} else if (!hasCampHere && isScouted) {
+			} else {
 				enemyDesc += "There doesn't seem to be anything dangerous here. ";
 			}
 			
@@ -455,6 +454,30 @@ define([
             this.uiFunctions.registerActionButtonListeners("#table-out-actions-locales");
             this.uiFunctions.generateButtonOverlays("#table-out-actions-locales");
             this.uiFunctions.generateCallouts("#table-out-actions-locales");
+		},
+		
+		updateMovementRelatedActions: function () {
+			var currentSector = this.playerLocationNodes.head.entity;
+			$("#table-out-actions-movement-related").empty();
+			
+			function addBlockerActionButton(blocker, direction) {
+				if (blocker.type !== 1) {
+					var action = blocker.actionBaseID + "_" + direction;
+					var description = blocker.actionDescription;
+					var button = "<button class='action' action='" + action + "'>" + description + "</button>";
+					$("#table-out-actions-movement-related").append("<tr><td>" + button + "</td></tr>");
+				}
+			}
+			
+			var blockerLeft = this.movementHelper.getBlockerLeft(currentSector);
+			if (blockerLeft) addBlockerActionButton(blockerLeft, this.movementHelper.DIRECTION_LEFT);
+			
+			var blockerRight = this.movementHelper.getBlockerRight(currentSector);
+			if (blockerRight) addBlockerActionButton(blockerRight, this.movementHelper.DIRECTION_RIGHT);
+			
+            this.uiFunctions.registerActionButtonListeners("#table-out-actions-movement-related");
+            this.uiFunctions.generateButtonOverlays("#table-out-actions-movement-related");
+            this.uiFunctions.generateCallouts("#table-out-actions-movement-related");
 		},
 		
 		rebuildVis: function (playerPosNodes, sectorNodes) {

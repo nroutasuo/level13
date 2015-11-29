@@ -1,15 +1,17 @@
-define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/LocaleVO'], function (Ash, WorldCreatorConstants) {
+define(
+['ash', 'game/constants/WorldCreatorConstants', 'game/constants/LocaleConstants', 'game/vos/LocaleVO'],
+function (Ash, WorldCreatorConstants, LocaleConstants, LocaleVO) {
 
     SECTOR_TYPE_NOLIGHT = -1;
     
     var TextConstants = {
 	
 		densityBrackets: [
-			[0,0], [1,4], [5,8], [9,10]
+			[0, 0], [1, 4], [5, 8], [9, 10]
 		],
 		
 		repairBrackets: [
-			[0,1], [2,4], [5,7], [8,10]
+			[0, 1], [2, 4], [5, 7], [8, 10]
 		],
 		
 		sectorDescriptions: {
@@ -101,26 +103,38 @@ define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/LocaleVO'], fun
 			}
 		},
 		
-		getEnemyText: function (enemyList, defeated, defeatableBlockerL, defeatableBlockerR) {
-			var enemyNoun = this.getEnemyNoun(enemyList, !defeated);
+		getEnemyText: function (enemyList, sectorControlComponent, defeatableBlockerLeft, defeatableBlockerRight) {
 			var enemyActiveV = this.getEnemyActiveVerb(enemyList);
 			var enemyDefeatedV = this.getEnemeyDefeatedVerb(enemyList);
-			var text = "";
-			if (defeated) {
-				text += "All " + enemyNoun + " here have been " + enemyDefeatedV + ". ";
-			} else {
-				text += "This place is " + enemyActiveV + " " + enemyNoun;
 			
-				if (defeatableBlockerL) {
-					text += " and they are blocking movement to the left.";
-				} else if (defeatableBlockerR) {
-					text += " and they are blocking movement to the right. ";
-				} else {
-					text += ". ";
+			var sectorPart = "";
+			var sectorDefeated = sectorControlComponent.hasControl();
+			var enemyNounSector = this.getEnemyNoun(enemyList, !sectorDefeated);
+			
+			if (sectorDefeated) {
+				sectorPart += "All " + enemyNounSector + " here have been " + enemyDefeatedV + ". ";
+			} else {
+				sectorPart += "This area is " + enemyActiveV + " " + enemyNounSector + ". ";
+			}
+			
+			var gangPart = "";
+			if (defeatableBlockerLeft) {
+				var gangLeftDefeated = sectorControlComponent.hasControlOfLocale(LocaleConstants.getPassageLocaleId(0));
+				if (!gangLeftDefeated) {
+					gangPart += "There is a gang of " + enemyNounSector + " blocking passage to the left. ";
 				}
 			}
 			
-			return text;
+			if (defeatableBlockerRight) {
+				var gangRightDefeated = sectorControlComponent.hasControlOfLocale(LocaleConstants.getPassageLocaleId(1));
+				if (!gangRightDefeated) {
+					gangPart += "There is a gang of " + enemyNounSector + " blocking passage to the right. ";
+				}
+			}
+			
+			var workshopPart = "";
+			
+			return sectorPart + workshopPart + gangPart;
 		},
 		
 		getEnemyNoun: function (enemyList, detailed) {

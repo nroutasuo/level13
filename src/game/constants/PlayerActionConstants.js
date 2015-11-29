@@ -49,10 +49,6 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 fight: {
                     vision: 30,
                     health: 70,
-                    sector: {
-                        control: false,
-                        enemies: true,
-                    },
                     perks: {
                         Injury: [1, -1],
                     },
@@ -65,6 +61,11 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     sector: {
                         scouted: true,
                     },
+                },
+                
+                fight_gang: {
+                    vision: 30,
+                    health: 70,
                 },
                         
                 move_sector_left: {
@@ -836,6 +837,10 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     stamina: 10,
                 },
                 
+                fight_gang: {
+                    stamina: 10,
+                },
+                
                 move_level_up: {
                     stamina: 75,
                     resource_food: 1,
@@ -1411,6 +1416,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 scout_locale_i: 60,
                 scout_locale_u: 60,
                 clear_workshop: 60,
+                fight_gang: 60,
                 use_in_inn: 60 * 30,
                 despair: 60,
             },
@@ -1425,6 +1431,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 scout_locale_i: 0.2,
                 scout_locale_u: 0.1,
                 clear_workshop: 1,
+                fight_gang: 1,
             },
         
             descriptions: {
@@ -1434,6 +1441,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 scavenge: "Look for resources.",
                 fightcheck: "Attempt to gain control of the area.",
                 clear_workshop: "Scout the workshop to see if it can be used.",
+                fight_gang: "Clear the enemies blocking passage.",
                 move_sector_left: "Move to another area",
                 move_sector_right: "Move to another area",
                 move_camp_level: "Shortcut back to the nearest camp.",
@@ -1481,10 +1489,10 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 return 0;
             },
             
-            getRandomEncounterProbability: function (action) {
+            getRandomEncounterProbability: function (baseActionID) {
                 // TODO for locales get probability based on locale type
-                if (this.randomEncounterProbabilities[action]) {
-                    return this.randomEncounterProbabilities[action] / GameConstants.gameSpeed;
+                if (this.randomEncounterProbabilities[baseActionID]) {
+                    return this.randomEncounterProbabilities[baseActionID];
                 }
                 return 0;
             },

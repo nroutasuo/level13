@@ -85,11 +85,13 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, WorldCreatorConsta
             }
             
             return "risky";
-        },		
+        },
 		
-		getEnemyLocaleId: function (action) {
-			switch (action) {
+		getEnemyLocaleId: function (baseActionID, action) {
+			switch (baseActionID) {
 				case "clear_workshop": return LocaleConstants.LOCALE_ID_WORKSHOP;
+				case "fight_gang":
+					return LocaleConstants.getPassageLocaleId(parseInt(action.split("_")[2]));
 				default: return null;
 			}
 		},

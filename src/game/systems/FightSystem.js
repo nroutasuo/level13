@@ -23,16 +23,18 @@ define([
         
         resourcesHelper: null,
 		playerActionResultsHelper: null,
+		playerActionsHelper: null,
 		occurrenceFunctions: null,
         gameState: null,
         
 		fightNodes: null,
         playerStatsNodes: null,
         
-        constructor: function (gameState, resourcesHelper, playerActionResultsHelper, occurrenceFunctions) {
+        constructor: function (gameState, resourcesHelper, playerActionResultsHelper, playerActionsHelper, occurrenceFunctions) {
             this.gameState = gameState;
             this.resourcesHelper = resourcesHelper;
 			this.playerActionResultsHelper = playerActionResultsHelper;
+			this.playerActionsHelper = playerActionsHelper;
 			this.occurrenceFunctions = occurrenceFunctions;
         },
 
@@ -68,7 +70,7 @@ define([
             var enemyDamage =  FightConstants.getEnemyDamagePerSec(enemy, playerStamina, itemsComponent);
             var playerDamage = FightConstants.getPlayerDamagePerSec(enemy, playerStamina, itemsComponent);
             
-            var secondsToComplete = Math.min(100/enemyDamage, 100/playerDamage);
+            var secondsToComplete = Math.min(100 / enemyDamage, 100 / playerDamage);
             var timeFactor = secondsToComplete / FightConstants.FIGHT_LENGTH_SECONDS;
             
             var playerRandomDamage = enemy.attRandomFactor * playerDamage;
@@ -87,7 +89,8 @@ define([
             if (won) {
                 var sectorControlComponent = sector.get(SectorControlComponent);
 				var encounterComponent = sector.get(FightEncounterComponent);
-				var localeId = FightConstants.getEnemyLocaleId(encounterComponent.context);
+				var baseActionID = this.playerActionsHelper.getBaseActionID(encounterComponent.context);
+				var localeId = FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context);
                 sectorControlComponent.addWin(localeId);
                 cleared = sectorControlComponent.hasControl();
                 if (cleared) {

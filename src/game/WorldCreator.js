@@ -39,6 +39,7 @@ define([
 				var firstSector = this.getFirstSector(seed, l);
 				var lastSector = this.getLastSector(seed, l);
                 var isCampableLevel = this.isCampableLevel(seed, l);
+				var levelOrdinal = this.getLevelOrdinal(seed, l);
 				for (var s = firstSector; s <= lastSector; s++) {
 					this.world[l][s] = {};
 					this.world[l][s].camp = false;
@@ -95,9 +96,12 @@ define([
 				// movement blockers: a few per level
 				var numBlockers = this.randomInt(88 + seed * 56 * l + seed % 7, 0, Math.ceil(1 + (Math.abs(l - 13) / 3)));
 				if (l === 13) numBlockers = 0;
-				var blockerSectors = this.randomSectors(seed * l * l + 1 * 22 * i, l, firstSector, lastSector, numBlockers, numBlockers + 1, "camp");
+				var blockerSectors = this.randomSectors(seed * l * l + 1 * 22 * i, l, firstSector, lastSector-1, numBlockers, numBlockers + 1, "camp");
 				for (var i = 0; i < blockerSectors.length; i++) {
 					var blockerType = this.randomInt(seed * 5831 / l + seed % 2, 1, 4);
+					if (l < 14 && blockerType === 2) blockerType = 1;
+					if (levelOrdinal < 7 && blockerType === 1) blockerType = 3;
+					
 					var blockedSector = blockerSectors[i];
 					this.world[l][blockedSector].blockerRight = blockerType;
 					if (blockedSector < lastSector) this.world[l][blockedSector + 1].blockerLeft = blockerType;
@@ -107,7 +111,7 @@ define([
 			// Debug print
 			console.log("World structure ready. (ground: " + bottomLevel + ", surface: " + topLevel + ")");
 			//this.printWorld(seed, [ "campableLevel" ]);
-			//this.printWorld(seed, [ "blockerLeft" ]);
+			this.printWorld(seed, [ "blockerLeft" ]);
 			//this.printWorld(seed, [ "blockerRight" ]);
 			// this.printWorld(seed, [ "camp" ]);
 		},
@@ -330,12 +334,10 @@ define([
 					this.world[l][s].localeEnemies = {};
 					
 					// regular enemies
-					var hasEnemies = !this.world[l][s].camp && (this.world[l][s].blockerLeft == 3 ||
-						this.world[l][s].blockerRight == 3 ||
-						this.world[l][s].workshop ||
-						this.random(l*s*seed+s*seed+4848) > 0.2);
+					var hasSectorEnemies = !this.world[l][s].camp && this.random(l*s*seed+s*seed+4848) > 0.2;
+					var hasLocaleEnemies = this.world[l][s].blockerLeft === 3 || this.world[l][s].blockerRight === 3 || this.world[l][s].workshop;
 					
-					if (hasEnemies) {
+					if (hasSectorEnemies || hasLocaleEnemies) {
 						var enemies = this.world[l][s].enemies;
 						var enemyDifficulty = this.getLevelOrdinal(seed, l);
 						var pseudorandom = this.random;
@@ -398,6 +400,14 @@ define([
 					// workshop and locale enemies
 					if (this.world[l][s].workshop) {
 						this.world[l][s].localeEnemies[LocaleConstants.LOCALE_ID_WORKSHOP] = 3;
+					}
+					
+					if (this.world[l][s].blockerLeft === 3) {
+						this.world[l][s].localeEnemies[LocaleConstants.getPassageLocaleId(0)] = 3;
+					}
+					
+					if (this.world[l][s].blockerRight === 3) {
+						this.world[l][s].localeEnemies[LocaleConstants.getPassageLocaleId(1)] = 3;
 					}
 				}
 			//console.log("- - - ")
@@ -521,13 +531,13 @@ define([
 			return null;
 		},
 		
-		getPassageDown: function( level, sector ) {
+		getPassageDown: function (level, sector) {
 			var def = this.world[level][sector];
 			if (def.passageDown) return def.passageDown;
 			return null;
 		},
 		
-		getBlockerLeft: function( level, sector ) {
+		getBlockerLeft: function (level, sector) {
 			var def = this.world[level][sector];
 			if (def.blockerLeft) return def.blockerLeft;
 			return 0;

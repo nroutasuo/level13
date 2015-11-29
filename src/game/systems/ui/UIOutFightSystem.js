@@ -16,6 +16,7 @@ define([
 	
 		uiFunctions: null,
 		playerActionResultsHelper: null,
+		playerActionsHelper: null,
 		
 		playerLocationNodes: null,
 		playerStatsNodes: null,
@@ -24,9 +25,10 @@ define([
 		lastUpdateTimeStamp: 0,
 		updateFrequency: 500,
 	
-        constructor: function (uiFunctions, playerActionResultsHelper) {
+        constructor: function (uiFunctions, playerActionResultsHelper, playerActionsHelper) {
 			this.uiFunctions = uiFunctions;
 			this.playerActionResultsHelper = playerActionResultsHelper;
+			this.playerActionsHelper = playerActionsHelper;
         },
 
         addToEngine: function (engine) {
@@ -95,8 +97,9 @@ define([
 			
 			// Sector control
 			var sectorControlComponent = sector.get(SectorControlComponent);
-			var enemies = sectorControlComponent.getCurrentEnemies(FightConstants.getEnemyLocaleId(encounterComponent.context));
-			var maxEnemies = sectorControlComponent.getMaxEnemies(FightConstants.getEnemyLocaleId(encounterComponent.context));
+			var baseActionID = this.playerActionsHelper.getBaseActionID(encounterComponent.context);
+			var enemies = sectorControlComponent.getCurrentEnemies(FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context));
+			var maxEnemies = sectorControlComponent.getMaxEnemies(FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context));
             $("#out-action-fight-cancel").text(enemies > 0 ? "flee" : "close");
 			$("#fight-popup-control-info").text(this.getSectorControlDesc(enemies, maxEnemies, encounterComponent.context));
 		},
@@ -152,8 +155,10 @@ define([
         },
 		
 		getSectorControlDesc: function (enemies, maxEnemies, context) {
+			var baseActionID = this.playerActionsHelper.getBaseActionID(context);
+			var localeId = FightConstants.getEnemyLocaleId(baseActionID, context);
 			var ratioLeft = enemies / maxEnemies;
-			var areaName = context ? "place" : "area";
+			var areaName = localeId ? "place" : "area";
 			
 			if (ratioLeft > 0.3 && enemies > 2) {
 				return "many enemies left in this " + areaName;
@@ -169,7 +174,8 @@ define([
 		getDescriptionByContext: function (context, enemy) {
             var enemiesNoun = TextConstants.getEnemyNoun([enemy]);
 			var enemyNoun = TextConstants.depluralify(enemiesNoun);
-			switch (context) {
+			var baseActionID = this.playerActionsHelper.getBaseActionID(context);
+			switch (baseActionID) {
 				case "scavenge":
 					return "surprised while scavenging";
 				case "scout_locale_u":
@@ -178,6 +184,8 @@ define([
 					return "attacked while scouting";
 				case "clear_workshop":
 					return "workshop " + enemy.activeV + " " + enemiesNoun;
+				case "fight_gang":
+					return TextConstants.addArticle(enemyNoun) + " is blocking passage";
 				default:
 					return TextConstants.addArticle(enemyNoun) + " approaches";
 			}

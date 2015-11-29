@@ -390,6 +390,24 @@ define(['ash',
 			}
 		},
         
+        fightGang: function (direction) {
+            var action = "fight_gang_" + direction;
+            if (this.playerActionsHelper.checkAvailability(action, true)) {
+                this.playerActionsHelper.deductCosts(action);
+				var playerActionFunctions = this;
+				this.fightHelper.handleRandomEncounter(action, function () {
+					playerActionFunctions.addLogMessage("The road is clear.");
+                    playerActionFunctions.uiFunctions.completeAction(action);
+				}, function () {
+					// fled
+                    playerActionFunctions.uiFunctions.completeAction(action);
+				}, function () {
+					// lost
+                    playerActionFunctions.uiFunctions.completeAction(action);
+				});
+			}
+        },
+        
         despair: function () {
             if (this.playerActionsHelper.checkAvailability("despair", true)) {
                 this.playerActionsHelper.deductCosts("despair");

@@ -168,7 +168,7 @@ define([
 			this.engine.addSystem(new StaminaSystem(), SystemPriorities.update);
 			this.engine.addSystem(new BagSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new CollectorSystem(), SystemPriorities.update);
-			this.engine.addSystem(new FightSystem(this.gameState, this.resourcesHelper, this.playerActionResultsHelper, this.occurrenceFunctions), SystemPriorities.update);
+			this.engine.addSystem(new FightSystem(this.gameState, this.resourcesHelper, this.playerActionResultsHelper, this.playerActionsHelper, this.occurrenceFunctions), SystemPriorities.update);
 			this.engine.addSystem(new PopulationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new WorkerSystem(this.resourcesHelper, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new FaintingSystem(this.uiFunctions, this.playerActionFunctions, this.playerActionResultsHelper), SystemPriorities.update);
@@ -192,7 +192,7 @@ define([
 			this.engine.addSystem(new UIOutBagSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionsHelper, this.gameState), SystemPriorities.render);
 			this.engine.addSystem(new UIOutUpgradesSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionFunctions, this.upgradeEffectsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.tabChangedSignal, this.resourcesHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutFightSystem(this.uiFunctions, this.playerActionResultsHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutFightSystem(this.uiFunctions, this.playerActionResultsHelper, this.playerActionsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLogSystem(this.playerMovedSignal), SystemPriorities.render);
 		},
 	

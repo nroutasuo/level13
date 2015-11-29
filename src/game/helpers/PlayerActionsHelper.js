@@ -3,6 +3,7 @@ define([
     'ash',
 	'game/constants/PlayerActionConstants',
 	'game/constants/ItemConstants',
+	'game/constants/UpgradeConstants',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/PlayerLocationNode',
@@ -24,7 +25,7 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/CampComponent',
 ], function (
-	Ash, PlayerActionConstants, ItemConstants,
+	Ash, PlayerActionConstants, ItemConstants, UpgradeConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	PositionComponent, PlayerActionComponent, ItemsComponent, PerksComponent, DeityComponent,
 	PassagesComponent, EnemiesComponent, MovementOptionsComponent,
@@ -122,7 +123,7 @@ define([
             
             var lowestFraction = 1;
             var reason = "";
-            
+					
             if (action === "move_level_up" && !movementOptionsComponent.canMoveUp)
                 return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveUpReason };
             if (action === "move_level_down" && !movementOptionsComponent.canMoveDown)
@@ -300,7 +301,7 @@ define([
                         var requirementBoolean = upgradeRequirements[upgradeId];
                         var hasBoolean = this.tribeUpgradesNodes.head.upgrades.hasBought(upgradeId);
                         if (requirementBoolean != hasBoolean) {
-                            if (requirementBoolean) reason = "Upgrade required: " + upgradeId;
+                            if (requirementBoolean) reason = "Upgrade required: " + UpgradeConstants.upgradeDefinitions[upgradeId].name;
                             else reason = "Upgrade already researched (" + upgradeId + ")";
                             if (log) console.log("WARN: " + reason);
                             return { value: 0, reason: reason };
@@ -371,18 +372,33 @@ define([
                     }
                     
                     if (typeof requirements.sector.blockerLeft != 'undefined') {
-                        if (!movementOptionsComponent.canMoveLeft) {
-                            if (log) console.log("WARN: Movement to left blocked.");
-                            return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveLeftReason };
+						var requiredValue = requirements.sector.blockerLeft;
+						var currentValue = !movementOptionsComponent.canMoveLeft;
+			
+                        if (requiredValue !== currentValue) {
+							if (currentValue) {
+								if (log) console.log("WARN: Movement to left blocked.");
+								return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveLeftReason };
+							} else {
+								if (log) console.log("WARN: Nothing blocking movemen to left.");
+								return { value: 0, reason: "Nothing blocking movemen to left" };
+							}
                         }
                     }
 					
                     if (typeof requirements.sector.blockerRight != 'undefined') {
-                        if (!movementOptionsComponent.canMoveRight) {
-                            if (log) console.log("WARN: Movement to right blocked.");
-                            return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveRightReason };
+						var requiredValue = requirements.sector.blockerRight;
+						var currentValue = !movementOptionsComponent.canMoveRight;
+                        if (requiredValue !== currentValue) {
+							if (currentValue) {
+								if (log) console.log("WARN: Movement to right blocked.");
+								return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveRightReason };
+							} else {
+								if (log) console.log("WARN: Nothing blocking movemen to right.");
+								return { value: 0, reason: "Nothing blocking movemen to right" };
+							}
                         }
-                    }					
+                    }
 					
                     if (typeof requirements.sector.passageUp != 'undefined') {
                         if (!passagesComponent.passageUp) {
@@ -415,11 +431,11 @@ define([
                                     if (log) console.log("WARN: " + reason);
                                     return { value: 0, reason: "Blocked. " + reason };
                                 }
-                            }                            
+                            }
                         }
                     }
                     
-                    if (typeof requirements.sector.collected_food != "undefined") {                      
+                    if (typeof requirements.sector.collected_food != "undefined") {
                         var collector = improvementComponent.getVO(improvementNames.collector_food);
                         var requiredStorage = requirements.sector.collected_food;
                         var currentStorage = collector.storedResources.getResource(resourceNames.food);
@@ -429,7 +445,7 @@ define([
                         }
                     }
                     
-                    if (typeof requirements.sector.collected_water != "undefined") {                          
+                    if (typeof requirements.sector.collected_water != "undefined") {
                         var collector = improvementComponent.getVO(improvementNames.collector_water);
                         var requiredStorage = requirements.sector.collected_water;
                         var currentStorage = collector.storedResources.getResource(resourceNames.water);
@@ -438,7 +454,7 @@ define([
                             lowestFraction = Math.min(lowestFraction, currentStorage / requiredStorage);
                         }
                     }
-                }                
+                }
                 return { value: lowestFraction, reason: reason };
             }
             
@@ -578,18 +594,27 @@ define([
 		getReqs: function (action, sector) {
             if (!this.playerLocationNodes.head) return;
             var sector = sector || this.playerLocationNodes.head.entity;
-			switch (this.getBaseActionID(action)) {
+			var baseActionID = this.getBaseActionID(action);
+			var requirements = {};
+			switch (baseActionID) {
 				case "scout_locale_i":
 				case "scout_locale_u":
 					var localei = parseInt(action.split("_")[3]);
 					var sectorLocalesComponent = sector.get(SectorLocalesComponent);
 					var localeVO = sectorLocalesComponent.locales[localei];
-					var requirements = localeVO.requirements;
+					requirements = localeVO.requirements;
                     localeVO.requirements.sector = {};
                     localeVO.requirements.sector.scouted = true;
                     localeVO.requirements.sector.scoutedLocales = {};
                     localeVO.requirements.sector.scoutedLocales[localei] = false;
                     return requirements;
+				case "fight_gang":
+					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
+					var direction = parseInt(action.split("_")[2]);
+					if (!requirements.sector) requirements.sector = {};
+					requirements.sector.blockerLeft = (direction === 0) ? true : undefined;
+					requirements.sector.blockerRight = (direction === 1) ? true : undefined;
+					return requirements;
 				default:
 					return PlayerActionConstants.requirements[action];
 			}
@@ -597,6 +622,7 @@ define([
         
 		getCosts: function (action, ordinal, statusCostFactor, sector) {
 			var result = {};
+			var baseActionID = this.getBaseActionID(action);
 			var costs = PlayerActionConstants.costs[action];
 			if (costs) {
 				var costFactor = costs.cost_factor;
@@ -613,7 +639,7 @@ define([
 			} else {
                 if (!this.playerLocationNodes.head) return result;
 				var sector = sector || this.playerLocationNodes.head.entity;
-				switch(this.getBaseActionID(action)) {
+				switch (baseActionID) {
 					case "move_camp_level":
                         if (!this.nearestCampNodes.head) return this.getCosts("move_sector_left", 1, 100);
                         var campSector = this.nearestCampNodes.head.entity;
@@ -661,6 +687,7 @@ define([
 			if (action.indexOf("scout_locale_u") >= 0) return "scout_locale_u";
 			if (action.indexOf("craft_") >= 0) return "craft";
 			if (action.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
+			if (action.indexOf("fight_gang_") >= 0) return "fight_gang";
 			return action;
 		},
         

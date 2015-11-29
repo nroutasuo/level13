@@ -36,11 +36,13 @@ define([
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
 			var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
 			
-			var localeId = FightConstants.getEnemyLocaleId(action);
+			var baseActionID = this.playerActionsHelper.getBaseActionID(action);
+			var localeId = FightConstants.getEnemyLocaleId(baseActionID, action);
 			var hasEnemies = enemiesComponent.hasEnemies() && !sectorControlComponent.hasControlOfLocale(localeId);
 			if (hasEnemies) {
-				var encounterProbability =  PlayerActionConstants.getRandomEncounterProbability(this.playerActionsHelper.getBaseActionID(action));
+				var encounterProbability =  PlayerActionConstants.getRandomEncounterProbability(baseActionID);
 				if (Math.random() < encounterProbability) {
+					console.log("pendingEnemies = Math.min(" + this.getEnemyCount(action) + ", " + sectorControlComponent.getCurrentEnemies(localeId));
 					this.pendingEnemies = Math.min(this.getEnemyCount(action), sectorControlComponent.getCurrentEnemies(localeId));
 					this.pendingWinCallback = winCallback;
 					this.pendingFleeCallback = fleeCallback;
@@ -60,7 +62,7 @@ define([
 			
             var enemiesComponent = sector.get(EnemiesComponent);
             enemiesComponent.selectNextEnemy();
-			sector.add(new FightEncounterComponent(enemiesComponent.getNextEnemy(), this.playerActionsHelper.getBaseActionID(action)));
+			sector.add(new FightEncounterComponent(enemiesComponent.getNextEnemy(), action));
 			this.uiFunctions.showFight();
         },
         
@@ -107,9 +109,11 @@ define([
 		
 		getEnemyCount: function (action) {
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
-			var localeId = FightConstants.getEnemyLocaleId(action);
-			switch (action) {
+			var baseActionID = this.playerActionsHelper.getBaseActionID(action);
+			var localeId = FightConstants.getEnemyLocaleId(baseActionID, action);
+			switch (baseActionID) {
 				case "clear_workshop":
+				case "fight_gang":
 					return sectorControlComponent.getCurrentEnemies(localeId);
 				default: return 1;
 			}

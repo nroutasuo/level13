@@ -50,6 +50,11 @@ define(['ash'], function (Ash) {
             return this.currentLocaleEnemies[localeId] ? this.currentLocaleEnemies[localeId] : 0;
         },
         
+        getDefeatedLocaleEnemies: function (localeId) {
+            if (!localeId) return this.defeatedSectorEnemies;
+            return this.defeatedLocaleEnemies[localeId] ? this.defeatedLocaleEnemies[localeId] : 0;
+        },
+        
         addWin: function (localeId) {
             console.log("add win " + localeId);
             if (!localeId) {

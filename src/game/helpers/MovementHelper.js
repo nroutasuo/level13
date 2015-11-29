@@ -2,17 +2,20 @@
 define([
     'ash',
     'game/constants/ItemConstants',
+    'game/constants/LocaleConstants',
     'game/nodes/player/ItemsNode',
+    'game/components/common/PositionComponent',
     'game/components/sector/PassagesComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
-], function (Ash, ItemConstants, ItemsNode, PassagesComponent, SectorControlComponent, SectorImprovementsComponent) {
+], function (Ash, ItemConstants, LocaleConstants, ItemsNode, PositionComponent, PassagesComponent, SectorControlComponent, SectorImprovementsComponent) {
     
     var MovementHelper = Ash.Class.extend({
         
 		engine: null,
 		itemsNodes: null,
 		
+		// TODO move to constants - used in WorldCreator too
 		DIRECTION_LEFT: 0,
 		DIRECTION_RIGHT: 1,
 		DIRECTION_UP: 2,
@@ -21,6 +24,16 @@ define([
 		constructor: function (engine) {
 			this.engine = engine;
 			this.itemsNodes = engine.getNodeList(ItemsNode);
+		},
+		
+		getBlockerLeft: function (sectorEntity) {
+			var passagesComponent = sectorEntity.get(PassagesComponent);
+			return passagesComponent.blockerLeft;
+		},
+		
+		getBlockerRight: function (sectorEntity) {
+			var passagesComponent = sectorEntity.get(PassagesComponent);
+			return passagesComponent.blockerRight;
 		},
 		
 		isBlockedLeft: function (sectorEntity) {
@@ -40,11 +53,11 @@ define([
 		},
 		
 		getBlockedReasonLeft: function (sectorEntity) {
-				return this.isBlocked(sectorEntity, this.DIRECTION_LEFT).reason;
+			return this.isBlocked(sectorEntity, this.DIRECTION_LEFT).reason;
 		},
 		
 		getBlockedReasonRight: function (sectorEntity) {
-				return this.isBlocked(sectorEntity, this.DIRECTION_RIGHT).reason;
+			return this.isBlocked(sectorEntity, this.DIRECTION_RIGHT).reason;
 		},
 		
 		getBlockedReasonUp: function (sectorEntity) {
@@ -55,8 +68,9 @@ define([
 			return this.isBlocked(sectorEntity, this.DIRECTION_DOWN).reason;
 		},
 		
-		isBlocked: function(sectorEntity, direction) {
+		isBlocked: function (sectorEntity, direction) {
 			var passagesComponent = sectorEntity.get(PassagesComponent);
+			var positionComponent = sectorEntity.get(PositionComponent);
 			
 			var reason = "";
 			var blocked = true;
@@ -82,44 +96,43 @@ define([
 				return { value: blocked, reason: reason };
 			}
 			
-			if (direction == this.DIRECTION_UP || direction == this.DIRECTION_DOWN) {
-			var items = this.itemsNodes.head.items.getEquipped(ItemConstants.itemTypes.movement);
-			var isHook = false;
-			var isAdvHook = false;
-			var isFlying = false;
-			
-			for (var i = 0; i < items.length; i++) {
-				var item = items[i];
-				if (item.id == ItemConstants.itemDefinitions.movement[0].id) isFlying = true;
-			}
-			
-			blocked = true;
-			var passage = null;
-			if (direction == this.DIRECTION_UP) passage = passagesComponent.passageUp;
-			if (direction == this.DIRECTION_DOWN) passage = passagesComponent.passageDown;
-			
-			if (!passage) {
+			if (direction === this.DIRECTION_UP || direction === this.DIRECTION_DOWN) {
+				var items = this.itemsNodes.head.items.getEquipped(ItemConstants.itemTypes.movement);
+				var isFlying = false;
+				
+				for (var i = 0; i < items.length; i++) {
+					var item = items[i];
+					if (item.id === ItemConstants.itemDefinitions.movement[0].id) isFlying = true;
+				}
+				
 				blocked = true;
-				reason = "No passage.";
-			} else {
-				blocked = false;
-			}
+				var passage = null;
+				if (direction === this.DIRECTION_UP) passage = passagesComponent.passageUp;
+				if (direction === this.DIRECTION_DOWN) passage = passagesComponent.passageDown;
+				
+				if (!passage) {
+					blocked = true;
+					reason = "No passage.";
+				} else {
+					blocked = false;
+				}
 			}
 			
 			return { value: blocked, reason: reason };
 		},
 		
-		isBridged: function(sectorEntity, direction) {
-			var improvementsComponent = sectorEntity.get(SectorImprovementsComponent); 
+		isBridged: function (sectorEntity, direction) {
+			var improvementsComponent = sectorEntity.get(SectorImprovementsComponent);
 			return this.hasBridgeableBlocker(sectorEntity, direction) && improvementsComponent.getCount(improvementNames.bridge) > 0;
 		},
 		
-		isDefeated: function(sectorEntity, direction) {
-			var controlComponent = sectorEntity.get(SectorControlComponent); 
-			return this.hasDefeatableBlocker(sectorEntity, direction) && controlComponent.hasControl();
+		isDefeated: function (sectorEntity, direction) {
+			var controlComponent = sectorEntity.get(SectorControlComponent);
+			var localeId = LocaleConstants.getPassageLocaleId(direction);
+			return this.hasDefeatableBlocker(sectorEntity, direction) && controlComponent.hasControlOfLocale(localeId);
 		},
 		
-		hasBridgeableBlocker: function(sectorEntity, direction) {
+		hasBridgeableBlocker: function (sectorEntity, direction) {
 			var passagesComponent = sectorEntity.get(PassagesComponent);
 			
 			if (direction === this.DIRECTION_RIGHT) {

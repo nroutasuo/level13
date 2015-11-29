@@ -109,6 +109,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             this.actionToFunctionMap["scout_locale_i"] = playerActions.scoutLocale;
             this.actionToFunctionMap["scout_locale_u"] = playerActions.scoutLocale;
             this.actionToFunctionMap["clear_workshop"] = playerActions.clearWorkshop;
+            this.actionToFunctionMap["fight_gang"] = playerActions.fightGang;
             this.actionToFunctionMap["despair"] = playerActions.despair;
             this.actionToFunctionMap["unlock_upgrade"] = playerActions.unlockUpgrade;
         },

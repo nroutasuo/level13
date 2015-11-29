@@ -10,19 +10,19 @@ define(['ash', 'game/vos/PassageVO', 'game/vos/MovementBlockerVO'], function (As
             this.blockerRight = blockerRight ? new MovementBlockerVO(blockerRight) : null;
         },
         
-        isLeftBridgeable: function() {
+        isLeftBridgeable: function () {
             return this.blockerLeft != null && this.blockerLeft.bridgeable;
         },
         
-        isRightBridgeable: function() {
+        isRightBridgeable: function () {
             return this.blockerRight != null && this.blockerRight.bridgeable;
         },
         
-        isLeftDefeatable: function() {
+        isLeftDefeatable: function () {
             return this.blockerLeft != null && this.blockerLeft.defeatable;
         },
         
-        isRightDefeatable: function() {
+        isRightDefeatable: function () {
             return this.blockerRight != null && this.blockerRight.defeatable;
         },
     });
