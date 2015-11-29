@@ -121,7 +121,6 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 build_out_bridge: {
                     vision: 30,
                     improvements: {
-                        camp: [1, -1],
                         bridge: [0, 1],
                     },
                     upgrades: {

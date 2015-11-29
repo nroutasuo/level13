@@ -31,7 +31,7 @@ function (Ash, UpgradeVO) {
         },
         
         addNewBlueprint: function (upgradeId) {
-            if (!this.hasBlueprint(upgradeId)) this.newBlueprints.push(upgradeId);
+            if (!this.hasBlueprint(upgradeId) && !this.hasBought(upgradeId)) this.newBlueprints.push(upgradeId);
         },
         
         hasBlueprint: function (upgradeId) {

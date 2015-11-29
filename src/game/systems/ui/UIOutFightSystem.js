@@ -110,6 +110,7 @@ define([
 			$("#fight-bar-enemy").data("animation-length", 100);
 			$("#fight-bar-self").data("animation-length", 100);
 			$("#fight-popup h3").text("Fight");
+			this.displayedRewards = null;
 		},
 		
 		updateFightActive: function () {
@@ -150,8 +151,11 @@ define([
 			$("#fight-results-lose-header").toggle(!isWon && false);
 			$("#fight-results-lose-items").toggle(!isWon && false);
 			
-			$("#fight-popup-results").html(this.playerActionResultsHelper.getRewardDiv(this.fightNodes.head.fight.resultVO));
-			this.uiFunctions.generateCallouts("#fight-popup");
+			if (this.displayedRewards !== this.fightNodes.head.fight.resultVO) {
+				$("#fight-popup-results").html(this.playerActionResultsHelper.getRewardDiv(this.fightNodes.head.fight.resultVO));
+				this.uiFunctions.generateCallouts("#fight-popup-results");
+				this.displayedRewards = this.fightNodes.head.fight.resultVO;
+			}
         },
 		
 		getSectorControlDesc: function (enemies, maxEnemies, context) {

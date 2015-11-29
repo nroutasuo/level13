@@ -48,7 +48,7 @@ define([
 			$("#world-blueprints").toggle($("#blueprints-list tr").length > 0);
 			
 			var listsEmpty = $("#upgrades-list button").length + $("#researched-upgrades-list button").length <= 0;
-			if (listsEmpty || this.lastUpdateUpgradeCount !== this.tribeNodes.head.upgrades.boughtUpgrades.length) {
+			if (listsEmpty || this.lastUpdateUpgradeCount != this.tribeNodes.head.upgrades.boughtUpgrades.length) {
 				this.updateUpgradesLists();
 			}
 			
@@ -68,11 +68,11 @@ define([
 			var buttonTD;
 			for (var id in UpgradeConstants.upgradeDefinitions) {
 				upgradeDefinition = UpgradeConstants.upgradeDefinitions[id];
+				hasBlueprintUnlocked = this.tribeNodes.head.upgrades.hasAvailableBlueprint(id);
+				hasBlueprintNew = this.tribeNodes.head.upgrades.hasNewBlueprint(id);
 				if (!this.tribeNodes.head.upgrades.hasBought(id)) {
-					hasBlueprintUnlocked = this.tribeNodes.head.upgrades.hasAvailableBlueprint(id);
-					hasBlueprintNew = this.tribeNodes.head.upgrades.hasNewBlueprint(id);
 					isAvailable = this.playerActions.playerActionsHelper.checkRequirements(id, false).value > 0;
-					if (hasBlueprintNew || isAvailable) {
+					if (hasBlueprintNew || hasBlueprintUnlocked || isAvailable) {
 						var tr = this.getUpgradeTR(upgradeDefinition, isAvailable, hasBlueprintUnlocked, hasBlueprintNew);
 						if (hasBlueprintNew)
 							$("#blueprints-list").append(tr);
@@ -84,6 +84,8 @@ define([
 					var descriptionTD = "<td>"+ upgradeDefinition.description +"</td>"
 					var tr = "<tr>" + nameTD + "" + descriptionTD + "</tr>";
 					$("#researched-upgrades-list").append(tr);
+					
+					if (hasBlueprintNew) this.tribeNodes.head.upgrades.useBlueprint(id);
 				}
 			}
 			
@@ -118,7 +120,7 @@ define([
 			else
 				descriptionTD += upgradeDefinition.description + "<br/>" + this.getEffectDescription(upgradeDefinition.id, hasBlueprintNew)  + "</td>";
 			
-			if (isAvailable)
+			if (isAvailable || hasBlueprintUnlocked)
 				buttonTD = "<td class='minwidth'><button class='action' action='" + upgradeDefinition.id + "'>research</button></td>";
 			else if(hasBlueprintNew)
 				buttonTD = "<td class='minwidth'><button class='action' action='unlock_upgrade_" + upgradeDefinition.id + "'>unlock</button></td>";

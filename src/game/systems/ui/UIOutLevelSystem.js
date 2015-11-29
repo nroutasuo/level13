@@ -230,7 +230,7 @@ define([
 			$("#out-improvements-collector-food").toggle(collectorFood.count > 0 || hasFoundFood);
 			$("#out-improvements-collector-water").toggle(collectorWater.count > 0 || hasFoundWater);
 			$("#out-improvements-camp").toggle(sectorStatusComponent.canBuildCamp);
-			$("#out-improvements-bridge").toggle(hasCamp && hasBridgeableBlocker);
+			$("#out-improvements-bridge").toggle(hasBridgeableBlocker);
 			$("#out-improvements-passage-up").toggle(isScouted && passageUpAvailable);
 			$("#out-improvements-passage-down").toggle(isScouted && passageDownAvailable);
 			
@@ -426,7 +426,7 @@ define([
 					enemyDesc = TextConstants.getEnemyText(enemiesComponent.possibleEnemies, sectorControlComponent, defeatableBlockerLeft, defeatableBlockerRight);
 				}
 				// if (window.app) enemyDesc += "(" + enemiesComponent.possibleEnemies + ") ";
-			} else {
+			} else if (isScouted) {
 				enemyDesc += "There doesn't seem to be anything dangerous here. ";
 			}
 			
@@ -458,14 +458,17 @@ define([
 		
 		updateMovementRelatedActions: function () {
 			var currentSector = this.playerLocationNodes.head.entity;
+			var movementOptionsComponent = currentSector.get(MovementOptionsComponent);
 			$("#table-out-actions-movement-related").empty();
 			
 			function addBlockerActionButton(blocker, direction) {
 				if (blocker.type !== 1) {
-					var action = blocker.actionBaseID + "_" + direction;
-					var description = blocker.actionDescription;
-					var button = "<button class='action' action='" + action + "'>" + description + "</button>";
-					$("#table-out-actions-movement-related").append("<tr><td>" + button + "</td></tr>");
+					if ((direction === 0 && !movementOptionsComponent.canMoveLeft) || (direction === 1 && !movementOptionsComponent.canMoveRight)) {
+						var action = blocker.actionBaseID + "_" + direction;
+						var description = blocker.actionDescription;
+						var button = "<button class='action' action='" + action + "'>" + description + "</button>";
+						$("#table-out-actions-movement-related").append("<tr><td>" + button + "</td></tr>");
+					}
 				}
 			}
 			

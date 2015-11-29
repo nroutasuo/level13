@@ -35,17 +35,25 @@ define([
 		movementHelper: null,
 		levelHelper: null,
 		
+		playerMovedSignal: null,
+		
 		sectorNeighboursDict: null,
 		
-		constructor: function (movementHelper, levelHelper) {
+		constructor: function (movementHelper, levelHelper, playerMovedSignal) {
 			this.movementHelper = movementHelper;
 			this.levelHelper = levelHelper;
+			this.playerMovedSignal = playerMovedSignal;
 		},
 	
 		addToEngine: function (engine) {
 			this.sectorNodes = engine.getNodeList(SectorNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.findNeighbours();
+
+			var sys = this;
+			this.playerMovedSignal.add(function () {
+				sys.update();
+			});
 		},
 	
         removeFromEngine: function (engine) {

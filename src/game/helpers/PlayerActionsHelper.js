@@ -231,7 +231,7 @@ define([
                         if (max < 0) max = 9999999;
                         
                         var amount = 0;
-                        switch(improvName)
+                        switch (improvName)
                         {
                             case "camp":
 								// TODO global function for camps per level & get rid of PositionComponent & engine
