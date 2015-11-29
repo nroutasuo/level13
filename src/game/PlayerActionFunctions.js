@@ -378,7 +378,7 @@ define(['ash',
                 this.playerActionsHelper.deductCosts(action);
 				var playerActionFunctions = this;
 				this.fightHelper.handleRandomEncounter(action, function () {
-					playerActionFunctions.addLogMessage("Workshop cleared.");
+					playerActionFunctions.addLogMessage("Workshop cleared. Workers can now use it.");
                     playerActionFunctions.uiFunctions.completeAction(action);
 				}, function () {
 					// fled

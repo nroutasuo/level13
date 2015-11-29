@@ -170,7 +170,7 @@ define([
 			var foodOnLevel = 0;
 			
 			var fuelSectors = [];
-			if (this.isDarkLevel(seed, l))//&& (l % 2 == 0))
+			if (this.isDarkLevel(seed, l) && (l % 2 == 0))
 				fuelSectors = this.randomSectors(seed*l^2/7*l, l, firstSector, lastSector, 1, 2, "camp");
 			
 			for(var s = firstSector; s <= lastSector; s++) {
@@ -230,7 +230,7 @@ define([
 			}
 			
 			console.log("World resources ready.");
-			this.printWorld(seed, [ "workshopResource" ]);
+			// this.printWorld(seed, [ "workshopResource" ]);
 		},
 		
 		// locales

@@ -269,8 +269,13 @@ define([
 				(this.resourcesHelper.getCurrentStorage().resources.water < 0.5 || this.resourcesHelper.getCurrentStorage().resources.food < 0.5);
 			$("#out-action-scout").toggle(this.gameState.unlockedFeatures.vision);
 			$("#out-action-investigate").toggle(this.gameState.unlockedFeatures.investigate);
-			$("#out-action-clear-workshop").toggle(workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP));
 			$("#out-action-despair").toggle(showDespair);
+            
+			$("#out-action-clear-workshop").toggle(isScouted && workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP));
+            if (workshopComponent) {
+                var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
+                $("#out-action-clear-workshop").text("scout " + workshopName);
+            }
 			
 			this.uiFunctions.slideToggleIf("#out-locales", null, isScouted && sectorLocalesComponent.locales.length > 0, 200, 0);
 			
@@ -320,6 +325,8 @@ define([
 		
 		// Existing improvements. Workshops. Passages. Potential improvements (camp).
 		getFunctionalDescription: function (hasVision, isScouted, featuresComponent, workshopComponent, hasCampHere, hasCampOnLevel) {
+			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
+            
 			var description = "";
 			if (hasVision) {
 				if (hasCampHere) description += "There is a camp here. ";
@@ -327,7 +334,9 @@ define([
 			
 			if (isScouted && workshopComponent) {
 				var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
-				description += "There is a " + workshopName + " here. ";
+                var workshopControl = sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP);
+                var workshopStatus = workshopControl ? "cleared for use" : "not cleared";
+				description += "There is a " + workshopName + " here (" + workshopStatus + "). ";
 			}
 			
 			return description;

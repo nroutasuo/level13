@@ -45,18 +45,6 @@ define(['ash',
 		},
 	
 		onScoutSector: function (sectorEntity) {
-			var sectorControlComponent = sectorEntity.get(SectorControlComponent);
-			var hasCampOnLevel = this.hasCampOnLevel(sectorEntity);
-			var hasEnemies = !sectorControlComponent.hasControl();
-			
-			// Workshops
-			if (sectorEntity.has(WorkshopComponent)) {
-				var workshopName = TextConstants.getWorkshopName(sectorEntity.get(WorkshopComponent).resource);
-				var helpString = "";
-				if (hasEnemies && !hasCampOnLevel) helpString = "Clear the sector and build a camp nearby to use it.";
-				else if (!hasCampOnLevel) helpString = "Build a camp nearby to use it.";
-				this.showClickOccurrence("You've discovered a " + workshopName + "! " + helpString);
-			}
 		},
 	
 		onScoutSectorWeakling: function (sectorEntity) {
@@ -64,14 +52,6 @@ define(['ash',
 		},
 		
 		onGainSectorControl: function (sectorEntity) {
-			if (sectorEntity.has(WorkshopComponent)) {
-				var workshopName = TextConstants.getWorkshopName(sectorEntity.get(WorkshopComponent).resource);
-				if (this.hasCampOnLevel(sectorEntity)) {
-					this.showClickOccurrence("The " + workshopName + " is now safe for workers to use.");
-				} else {
-					this.showClickOccurrence("The " + workshopName + " is now secured. Build a camp nearby to send workers to it.");
-				}
-			}
 		},
 	
 		onEndRaid: function (sectorEntity) {

@@ -155,9 +155,9 @@ define([
 			var ratioLeft = enemies / maxEnemies;
 			var areaName = context ? "place" : "area";
 			
-			if (ratioLeft > 0.3) {
+			if (ratioLeft > 0.3 && enemies > 2) {
 				return "many enemies left in this " + areaName;
-			} else if (ratioLeft > 0.1) {
+			} else if (ratioLeft > 0.1 && enemies > 1) {
 				return "some enemies left in this " + areaName;
 			} else if (ratioLeft > 0) {
 				return "few enemies left in this " + areaName;
@@ -167,7 +167,8 @@ define([
 		},
 		
 		getDescriptionByContext: function (context, enemy) {
-			var enemyNoun = TextConstants.depluralify(TextConstants.getEnemyNoun([enemy]));
+            var enemiesNoun = TextConstants.getEnemyNoun([enemy]);
+			var enemyNoun = TextConstants.depluralify(enemiesNoun);
 			switch (context) {
 				case "scavenge":
 					return "surprised while scavenging";
@@ -176,7 +177,7 @@ define([
 				case "scout_locale_i":
 					return "attacked while scouting";
 				case "clear_workshop":
-					return "workshop " + enemy.activeV + " " + TextConstants.addArticle(enemyNoun);
+					return "workshop " + enemy.activeV + " " + enemiesNoun;
 				default:
 					return TextConstants.addArticle(enemyNoun) + " approaches";
 			}
