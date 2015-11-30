@@ -8,15 +8,15 @@
                 {
                     "type": "GD",
                     "summary": "Added random encounters and removed fight as an independent action."
-                }
+                },
                 {
                     "type": "GD",
                     "summary": "Healing injuries is no longer instant."
-                }
+                },
                 {
                     "type": "GD",
                     "summary": "Reworked exploration and fighting systems. Exploration is more risky, but also has more rewards."
-                }
+                },
                 {
                     "type": "GD",
                     "summary": "New improvement: aqueduct."

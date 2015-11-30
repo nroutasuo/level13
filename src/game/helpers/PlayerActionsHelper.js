@@ -223,16 +223,15 @@ define([
                 if (requirements.improvements) {
                     var improvementRequirements = requirements.improvements;
                     
-                    for(var improvName in improvementRequirements)
-                    {
+                    for (var improvName in improvementRequirements) {
+			
                         var requirementDef = improvementRequirements[improvName];
                         var min = requirementDef[0];
                         var max = requirementDef[1];
                         if (max < 0) max = 9999999;
                         
                         var amount = 0;
-                        switch (improvName)
-                        {
+                        switch (improvName) {
                             case "camp":
 								// TODO global function for camps per level & get rid of PositionComponent & engine
 								for (var node = this.engine.getNodeList(CampNode).head; node; node = node.next) {
@@ -268,7 +267,7 @@ define([
 								if (min > 1) reason += ": " + min + "x " + improvName;
 							} else {
 								reason = "Improvement already exists";
-								if(max > 1) reason += ": " + max + "x " + improvName;
+								if (max > 1) reason += ": " + max + "x " + improvName;
 							}
                             if (log) console.log("WARN: " + reason);
                             if (min > amount) return { value: amount/min, reason: reason };

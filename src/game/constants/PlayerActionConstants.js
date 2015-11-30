@@ -873,6 +873,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 build_out_bridge: {
                     resource_metal: 150,
                     resource_rope: 150,
+                    cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_up_hole: {

@@ -10,6 +10,7 @@ define([
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorControlComponent',
+    'game/components/sector/PassagesComponent',
     'game/components/sector/improvements/WorkshopComponent',
     'game/components/level/LevelPassagesComponent',
     'game/vos/LevelProjectVO',
@@ -24,6 +25,7 @@ define([
 	SectorLocalesComponent,
 	SectorFeaturesComponent,
 	SectorControlComponent,
+	PassagesComponent,
 	WorkshopComponent,
 	LevelPassagesComponent,
 	LevelProjectVO,
@@ -117,7 +119,7 @@ define([
 			var projects = [];
 			var level = levelEntity.get(PositionComponent).level;
 			var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
-			
+			var sectorPassagesComponent;
 			if (levelPassagesComponent) {
 				var sectorEntity;
 				var statusComponent;
@@ -126,10 +128,13 @@ define([
 				for (var s = WorldCreatorConstants.FIRST_SECTOR; s <= WorldCreatorConstants.LAST_SECTOR; s++) {
 					sectorEntity = this.getSectorByPosition(level, s);
 					statusComponent = sectorEntity.get(SectorStatusComponent);
+					sectorPassagesComponent = sectorEntity.get(PassagesComponent);
 					scouted = statusComponent && statusComponent.scouted;
 					if (scouted) {
 						var improvementName = "";
 						var actionName = "";
+						
+						// passages
 						if (levelPassagesComponent.passagesUp[s] && !levelPassagesComponent.passagesUpBuilt[s]) {
 							switch (levelPassagesComponent.passagesUp[s].type) {
 								case 1:
@@ -165,6 +170,12 @@ define([
 							}
 							if (this.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0)
 								projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, level, s));
+						}
+						
+						// bridges
+						var hasBridgeableBlocker = (sectorPassagesComponent.blockerLeft != null && sectorPassagesComponent.blockerLeft.bridgeable) || (sectorPassagesComponent.blockerRight != null && sectorPassagesComponent.blockerRight.bridgeable);
+						if (hasBridgeableBlocker && this.playerActionsHelper.checkRequirements("build_out_bridge", false, sectorEntity).value > 0) {
+							projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.bridge), "build_out_bridge", level, s));
 						}
 					}
 				}

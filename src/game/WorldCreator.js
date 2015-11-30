@@ -100,7 +100,7 @@ define([
 				for (var i = 0; i < blockerSectors.length; i++) {
 					var blockerType = this.randomInt(seed * 5831 / l + seed % 2, 1, 4);
 					if (l < 14 && blockerType === 2) blockerType = 1;
-					if (levelOrdinal < 7 && blockerType === 1) blockerType = 3;
+					//if (levelOrdinal < 7 && blockerType === 1) blockerType = 3;
 					
 					var blockedSector = blockerSectors[i];
 					this.world[l][blockedSector].blockerRight = blockerType;

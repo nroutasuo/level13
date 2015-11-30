@@ -512,7 +512,7 @@ define(['ash',
             }
         },
         
-        buildCeiling: function() {
+        buildCeiling: function () {
             this.buildImprovement("build_in_ceiling", this.playerActionsHelper.getImprovementNameForAction("build_in_ceiling"));
             if (this.playerActionsHelper.checkAvailability("build_in_ceiling")) {
                 var msg = "Build a big tent to protect the camp from the sun.";
@@ -597,9 +597,11 @@ define(['ash',
             this.addLogMessage("Build an inn. Maybe it will attract adventurers.");
         },
         
-        buildBridge: function () {
-            if (this.playerActionsHelper.checkAvailability("build_out_bridge"), true) {
-                var sector = this.playerLocationNodes.head.entity;
+        buildBridge: function (sectorPos) {
+			var l = parseInt(sectorPos.split("-")[0]);
+			var s = parseInt(sectorPos.split("-")[1]);
+			var sector = this.levelHelper.getSectorByPosition(l, s);
+            if (this.playerActionsHelper.checkAvailability("build_out_bridge"), true, sector) {
                 var positionComponent = sector.get(PositionComponent);
                 var passagesComponent = sector.get(PassagesComponent);
                 var isLeft = passagesComponent.isLeftBridgeable();
@@ -616,7 +618,7 @@ define(['ash',
                 }
                 
                 // Find neighbours
-                var neighbour = this.levelHelper = getSectorByPosition(
+                var neighbour = this.levelHelper.getSectorByPosition(
 					positionComponent.level,
 					isLeft ? positionComponent.sector - 1 : positionComponent.sector + 1
 				);
@@ -630,7 +632,7 @@ define(['ash',
                     return;
                 }
                 
-                this.buildImprovement("build_out_bridge", this.playerActionsHelper.getImprovementNameForAction("build_out_bridge"));
+                this.buildImprovement("build_out_bridge", this.playerActionsHelper.getImprovementNameForAction("build_out_bridge"), sector);
                 this.buildImprovement("build_out_bridge", this.playerActionsHelper.getImprovementNameForAction("build_out_bridge"), neighbour, true);
             }
         },
