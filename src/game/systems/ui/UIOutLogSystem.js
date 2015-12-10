@@ -56,7 +56,7 @@ define([
 			for(var i in pendingMessages) {
 				var msg = node.logMessages.messagesPendingMovement[i];
 				validLevel = !msg.pendingLevel || msg.pendingLevel == playerPosition.level;
-				validSector = !msg.pendingSector || msg.pendingSector == playerPosition.sector;
+				validSector = !msg.pendingSector || msg.pendingSector == playerPosition.sectorID;
 				validInCamp = (typeof msg.pendingInCamp === "undefined") || msg.pendingInCamp == playerPosition.inCamp;
 				if (validLevel && validSector && validInCamp) {
 				node.logMessages.showPendingMessage(msg);

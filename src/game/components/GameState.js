@@ -1,4 +1,4 @@
-define(['ash', 'game/WorldCreator'], function (Ash, WorldCreator) {
+define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHelper) {
     var GameState = Ash.Class.extend({
         
         constructor: function () {
@@ -46,23 +46,23 @@ define(['ash', 'game/WorldCreator'], function (Ash, WorldCreator) {
         },
         
         getLevelOrdinal: function (level) {
-            return WorldCreator.getLevelOrdinal(this.worldSeed, level);
+            return WorldCreatorHelper.getLevelOrdinal(this.worldSeed, level);
         },
         
         getCampOrdinal: function (level) {
-            return WorldCreator.getCampOrdinal(this.worldSeed, level);
+            return WorldCreatorHelper.getCampOrdinal(this.worldSeed, level);
         },
         
         getTotalLevels: function () {
-            return WorldCreator.getHighestLevel(this.worldSeed) - WorldCreator.getBottomLevel(this.worldSeed) + 1;
+            return WorldCreatorHelper.getHighestLevel(this.worldSeed) - WorldCreatorHelper.getBottomLevel(this.worldSeed) + 1;
         },
         
         getGroundLevel: function () {
-            return WorldCreator.getBottomLevel(this.worldSeed);
+            return WorldCreatorHelper.getBottomLevel(this.worldSeed);
         },
         
         getGroundLevelOrdinal: function () {
-            return WorldCreator.getLevelOrdinal(this.worldSeed, WorldCreator.getBottomLevel(this.worldSeed));
+            return WorldCreatorHelper.getLevelOrdinal(this.worldSeed, WorldCreatorHelper.getBottomLevel(this.worldSeed));
         },
         
         setActionCooldown: function (action, key, cooldown) {

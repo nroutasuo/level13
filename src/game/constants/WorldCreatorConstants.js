@@ -22,8 +22,12 @@ define(['ash'], function (Ash) {
         CAMPS_TOTAL: 15,
         LEVEL_NUMBER_MIN: 20,
         LEVEL_NUMBER_MAX: 24,
-        FIRST_SECTOR: 1,
-        LAST_SECTOR: 10,
+        
+        SECTORS_PER_LEVEL_MIN: 200,
+        EXCURSIONS_PER_LEVEL_MIN: 1.75,
+        
+        FIRST_CAMP_X: 1,
+        FIRST_CAMP_Y: 0,
     };
     
     return WorldCreatorConstants;

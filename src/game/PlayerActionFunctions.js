@@ -123,7 +123,7 @@ define(['ash',
         addLogMessage: function (msg, replacements, values, pendingPosition) {
             var logComponent = this.playerPositionNodes.head.entity.get(LogMessagesComponent);
             if (pendingPosition) {
-                logComponent.addMessage(msg, replacements, values, pendingPosition.level, pendingPosition.sector, pendingPosition.inCamp);
+                logComponent.addMessage(msg, replacements, values, pendingPosition.level, pendingPosition.sectorID, pendingPosition.inCamp);
             } else {
                 logComponent.addMessage(msg, replacements, values);
             }
@@ -155,7 +155,8 @@ define(['ash',
                             var campSector = this.nearestCampNodes.head.entity;
                             var campPosition = campSector.get(PositionComponent);
                             playerPos.level = campPosition.level;
-                            playerPos.sector = campPosition.sector;
+                            playerPos.sectorX = campPosition.sectorX;
+                            playerPos.sectorY = campPosition.sectorY;
                             this.enterCamp(true);
                         }
                         break;
@@ -184,7 +185,8 @@ define(['ash',
                 this.playerActionsHelper.deductCosts("move_camp_global");
                 campPosition = campSector.get(PositionComponent);
                 playerPos.level = campPosition.level;
-                playerPos.sector = campPosition.sector;
+                playerPos.sectorX = campPosition.sectorX;
+                playerPos.sectorY = campPosition.sectorY;
                 this.engine.getSystem(PlayerPositionSystem).update();
                 this.enterCamp(true);
             } else {
@@ -222,7 +224,7 @@ define(['ash',
         enterCamp: function (log) {
             var playerPos = this.playerPositionNodes.head.position;
             var campNode = this.nearestCampNodes.head;
-            if (campNode && campNode.position.level === playerPos.level && campNode.position.sector === playerPos.sector) {
+            if (campNode && campNode.position.level === playerPos.level && campNode.position.sectorID === playerPos.sectorID) {
                 if (!playerPos.inCamp) {
                     playerPos.inCamp = true;
                     if (this.resourcesHelper.hasCampStorage()) {
@@ -250,7 +252,7 @@ define(['ash',
         leaveCamp: function () {
             var playerPos = this.playerPositionNodes.head.position;
             var campNode = this.nearestCampNodes.head;
-            if (campNode && campNode.position.level === playerPos.level && campNode.position.sector === playerPos.sector) {
+            if (campNode && campNode.position.level === playerPos.level && campNode.position.sectorID === playerPos.sectorID) {
                 var oldPlayerPos = playerPos.clone();
                 var sunlit = campNode.entity.get(SectorFeaturesComponent).sunlit;
                 playerPos.inCamp = false;
@@ -940,7 +942,8 @@ define(['ash',
                 case "pos":                    
                     var playerPos = this.playerPositionNodes.head.position;
                     playerPos.level = parseInt(inputParts[1]);
-                    playerPos.sector = parseInt(inputParts[2]);
+                    playerPos.sectorX = parseInt(inputParts[2]);
+                    playerPos.sectorY = parseInt(inputParts[3]);
                     break;
                 
                 case "camp":

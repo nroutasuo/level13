@@ -202,7 +202,7 @@ define([
 		isPlayerInCamp: function (campNode) {
 			var playerPosition = this.playerNodes.head.entity.get(PositionComponent);
 			var campPosition = campNode.entity.get(PositionComponent);
-			return playerPosition.level == campPosition.level && playerPosition.sector == campPosition.sector && playerPosition.inCamp;
+			return playerPosition.level == campPosition.level && playerPosition.sectorID == campPosition.sectorID && playerPosition.inCamp;
 		},
         
         getEventUpgradeFactor: function (event) {
@@ -222,7 +222,7 @@ define([
                 logComponent.addMessage(msg, replacements, values);
 			} else {
                 var campPos = forCamp.entity.get(PositionComponent);
-                logComponent.addMessage(msg, replacements, values, campPos.level, campPos.sector, true);
+                logComponent.addMessage(msg, replacements, values, campPos.level, campPos.sectorID, true);
 			}
 		}
         

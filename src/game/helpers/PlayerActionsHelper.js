@@ -461,7 +461,7 @@ define([
         },
 		
         // Check the costs of an action; returns lowest fraction of the cost player can cover; >1 means the action is available
-        checkCosts: function(action, log, otherSector) {            
+        checkCosts: function(action, log, otherSector) {
             var costs = this.getCosts(action, this.getOrdinal(action), this.getCostFactor(action));
             if (costs) {
                 var currentFraction = 1;
@@ -642,7 +642,7 @@ define([
 					case "move_camp_level":
                         if (!this.nearestCampNodes.head) return this.getCosts("move_sector_left", 1, 100);
                         var campSector = this.nearestCampNodes.head.entity;
-                        var sectorsToMove = Math.abs(sector.get(PositionComponent).sector - campSector.get(PositionComponent).sector);
+                        var sectorsToMove = Math.abs(sector.get(PositionComponent).sectorID - campSector.get(PositionComponent).sectorID);
                         return this.getCosts("move_sector_left", 1, sectorsToMove);
                     
 					case "move_camp_global":

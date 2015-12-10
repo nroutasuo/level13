@@ -1,11 +1,13 @@
 define([
     'ash',
-    'game/WorldCreator',
+    'game/worldcreator/WorldCreator',
+    'game/worldcreator/WorldCreatorHelper',
+    'game/worldcreator/WorldCreatorRandom',
     'game/helpers/SaveHelper',
     'game/nodes/sector/SectorNode',
     'game/nodes/LevelNode',
     'game/components/common/PositionComponent'
-], function (Ash, WorldCreator, SaveHelper, SectorNode, LevelNode, PositionComponent) {
+], function (Ash, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SaveHelper, SectorNode, LevelNode, PositionComponent) {
 
     var GameManager = Ash.System.extend({
 	
@@ -17,32 +19,32 @@ define([
 		uiFunctions: null,
 		playerActions: null,
 		
-		engine: null,	
+		engine: null,
 		
 		player: null,
 		tribe: null,
 	
-			constructor: function (tickProvider, gameState, creator, uiFunctions, playerActions, saveHelper) {
-				this.tickProvider = tickProvider;
-				this.gameState = gameState;
-				this.creator = creator;
+		constructor: function (tickProvider, gameState, creator, uiFunctions, playerActions, saveHelper) {
+			this.tickProvider = tickProvider;
+			this.gameState = gameState;
+			this.creator = creator;
 			this.uiFunctions = uiFunctions;
 			this.playerActions = playerActions;
 			this.saveHelper = saveHelper;
-			},
+		},
 	
-			addToEngine: function (engine) {
+		addToEngine: function (engine) {
 			this.engine = engine;
 			this.setupGame();
-			},
+		},
 	
-			removeFromEngine: function (engine) {
+		removeFromEngine: function (engine) {
 			this.player = null;
 			this.engine = null;
-			},
+		},
 		
 		// Called on add to engine
-		setupGame: function() {
+		setupGame: function () {
 			this.initializeEntities();
 			var loaded = this.loadGameState();
 			if (loaded) this.syncLoadedGameState();
@@ -50,50 +52,58 @@ define([
 		},
 		
 		// Called after all other systems are ready
-		startGame: function() {
+		startGame: function () {
 			var startTab = this.uiFunctions.elementIDs.tabs.out;
-				var playerPos = this.playerActions.playerPositionNodes.head.position;
+			var playerPos = this.playerActions.playerPositionNodes.head.position;
 			if (playerPos.inCamp) startTab = this.uiFunctions.elementIDs.tabs.in;
 			this.uiFunctions.showTab(startTab);
 		},
 		
-		restartGame: function() {
+		restartGame: function () {
 			this.engine.removeAllEntities();
 			this.gameState.reset();
 			this.setupGame();
 			this.startGame();
 		},
 		
-		initializeEntities: function() {
-				this.player = this.creator.createPlayer(this.saveHelper.saveKeys.player);
+		initializeEntities: function () {
+			this.player = this.creator.createPlayer(this.saveHelper.saveKeys.player);
 			this.tribe = this.creator.createTribe(this.saveHelper.saveKeys.tribe);
 		},
 		
 		// Called if there is no save to load
-		setupNewGame: function() {
-				this.creator.initPlayer(this.player);
+		setupNewGame: function () {
+			this.creator.initPlayer(this.player);
 		},
 		
-		createLevels: function (seed) {
-			for(var i = WorldCreator.getBottomLevel(seed); i<= WorldCreator.getHighestLevel(seed); i++) {
+		createLevelEntities: function (seed) {
+            var levelVO;
+            var sectorVO;
+			for (var i = WorldCreatorHelper.getBottomLevel(seed); i <= WorldCreatorHelper.getHighestLevel(seed); i++) {
+                levelVO = WorldCreator.world.getLevel(i);
 				this.creator.createLevel(this.saveHelper.saveKeys.level + i, i);
-				for(var s = WorldCreator.getFirstSector(seed, i); s <= WorldCreator.getLastSector(seed, i); s++) {
-					var up = WorldCreator.getPassageUp(i, s);
-					var down = WorldCreator.getPassageDown(i, s);
-					var blockerLeft = WorldCreator.getBlockerLeft(i, s);
-					var blockerRight = WorldCreator.getBlockerRight(i, s);
-					var passageOptions = { passageUp: up, passageDown: down, blockerLeft: blockerLeft, blockerRight: blockerRight};
-					this.creator.createSector(
-						this.saveHelper.saveKeys.sector + i + "-" + s,
-						i,
-						s,
-						passageOptions,
-						WorldCreator.getSectorFeatures(i, s),
-						WorldCreator.getLocales(i, s),
-						WorldCreator.getSectorEnemies(i, s),
-						WorldCreator.getSectorEnemyCount(i, s),
-						WorldCreator.getSectorLocaleEnemyCount(i, s)
-					);
+				for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
+					for (var x = levelVO.minX; x <= levelVO.maxX; x++) {
+                        sectorVO = levelVO.getSector(x, y);
+                        if (!sectorVO) continue;
+                        var up = WorldCreator.getPassageUp(i, x, y);
+                        var down = WorldCreator.getPassageDown(i, x, y);
+                        var blockerLeft = WorldCreator.getBlockerLeft(i, x, y);
+                        var blockerRight = WorldCreator.getBlockerRight(i, x, y);
+                        var passageOptions = { passageUp: up, passageDown: down, blockerLeft: blockerLeft, blockerRight: blockerRight};
+                        this.creator.createSector(
+                            this.saveHelper.saveKeys.sector + i + "." + x + "." + y,
+                            i,
+                            x,
+                            y,
+                            passageOptions,
+                            WorldCreator.getSectorFeatures(i, x, y),
+                            WorldCreator.getLocales(i, x, y),
+                            WorldCreator.getSectorEnemies(i, x, y),
+                            WorldCreator.getSectorEnemyCount(i, x, y),
+                            WorldCreator.getSectorLocaleEnemyCount(i, x, y)
+                        );
+                    }
 				}
 			}
 		},
@@ -114,10 +124,10 @@ define([
 			// Create world
 			var worldSeed;
 			if (hasSave) worldSeed = parseInt(loadedGameState.worldSeed);
-			else worldSeed = WorldCreator.getNewSeed();
+			else worldSeed = WorldCreatorRandom.getNewSeed();
 			
 			WorldCreator.prepareWorld(worldSeed);
-			this.createLevels(worldSeed);
+			this.createLevelEntities(worldSeed);
 			this.gameState.worldSeed = worldSeed;
 			
 			// Create other entities and fill components
@@ -130,14 +140,14 @@ define([
 				var saveKey;
 				for (var sectorNode = sectorNodes.head; sectorNode; sectorNode = sectorNode.next) {
 					positionComponent = sectorNode.entity.get(PositionComponent);
-					saveKey = this.saveHelper.saveKeys.sector + positionComponent.level + "-" + positionComponent.sector;
+					saveKey = this.saveHelper.saveKeys.sector + positionComponent.level + "." + positionComponent.sectorX + "." + positionComponent.sectorY;
 					failedComponents += this.saveHelper.loadEntity(entitiesObject, saveKey, sectorNode.entity);
 				}
 				
 				var levelNodes = this.creator.engine.getNodeList(LevelNode);
 				for (var levelNode = levelNodes.head; levelNode; levelNode = levelNode.next) {
 					positionComponent = levelNode.entity.get(PositionComponent);
-					saveKey = this.saveHelper.saveKeys.sector + positionComponent.level;
+					saveKey = this.saveHelper.saveKeys.level + positionComponent.level;
 					failedComponents += this.saveHelper.loadEntity(entitiesObject, saveKey, levelNode.entity);
 				}
 				
@@ -154,16 +164,16 @@ define([
 			}
 			else
 			{
-			console.log("No save found.");
-			return false;
+				console.log("No save found.");
+				return false;
 			}
 		},
 		
 		// Clean up a loaded game state, mostly used to ensure backwards compatibility
-		syncLoadedGameState: function() {
+		syncLoadedGameState: function () {
 			var sectorNodes = this.creator.engine.getNodeList(SectorNode);
 			for (var node = sectorNodes.head; node; node = node.next) {
-			this.creator.syncSector(node.entity);
+				this.creator.syncSector(node.entity);
 			}
 		}
     });

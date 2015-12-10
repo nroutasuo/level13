@@ -1,7 +1,7 @@
 define([
     'ash',
     'game/constants/UIConstants',
-    'game/WorldCreator',
+    'game/worldcreator/WorldCreatorHelper',
     'game/systems/SaveSystem',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/player/AutoPlayNode',
@@ -14,7 +14,7 @@ define([
     'game/components/common/PositionComponent',
     'game/components/sector/SectorFeaturesComponent',
 ], function (Ash,
-    UIConstants, WorldCreator, SaveSystem,
+    UIConstants, WorldCreatorHelper, SaveSystem,
 	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, DeityNode,
 	DeityComponent,
 	ItemsComponent,
@@ -282,8 +282,8 @@ define([
 		getLevelColour: function () {
 			var featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var level = this.currentLocationNodes.head.entity.get(PositionComponent).level;
-			var maxLevel = WorldCreator.getHighestLevel(this.gameState.worldSeed);
-			var minLevel = WorldCreator.getBottomLevel(this.gameState.worldSeed);
+			var maxLevel = WorldCreatorHelper.getHighestLevel(this.gameState.worldSeed);
+			var minLevel = WorldCreatorHelper.getBottomLevel(this.gameState.worldSeed);
 			var sunlit = featuresComponent.sunlit;
 			
 			var c = new Object();

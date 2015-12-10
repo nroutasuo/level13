@@ -104,7 +104,7 @@ define([
 				projectExists = false;
 				for (var j = 0; j < projectsFiltered.length; j++) {
 					existingProject = projectsFiltered[j];
-					if (existingProject.sector === project.sector && (existingProject.level - 1 === project.level || existingProject.level + 1 === project.level)) {
+					if (existingProject.sectorID === project.sectorID && (existingProject.level - 1 === project.level || existingProject.level + 1 === project.level)) {
 						projectExists = true;
 						break;
 					}

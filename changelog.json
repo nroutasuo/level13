@@ -7,6 +7,10 @@
             "changes": [
                 {
                     "type": "GD",
+                    "summary": "Added intersections to levels."
+                },
+                {
+                    "type": "GD",
                     "summary": "Added random encounters and removed fight as an independent action."
                 },
                 {

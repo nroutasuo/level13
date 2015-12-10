@@ -489,6 +489,8 @@ define([
 			
 			var visitedSectors = 0;
 			
+			// TODO fix performance bottleneck since WorldCreator update
+			/*
 			var posComponent = playerPosNodes.head.position;
 			for (var sectorNode = sectorNodes.head; sectorNode; sectorNode = sectorNode.next) {
 				var sectorPos = sectorNode.entity.get(PositionComponent);
@@ -498,7 +500,7 @@ define([
 					var localesComponent = sectorNode.entity.get(SectorLocalesComponent);
 					var isScouted = statusComponent.scouted;
 					var classes = "vis-out-sector";
-					if (sectorPos.sector === posComponent.sector) {
+					if (sectorPos.sectorID === posComponent.sectorID) {
 						classes += " vis-out-sector-current";
 					}
 					
@@ -511,7 +513,7 @@ define([
 					
 					var content = "?";
 					var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
-					if (isScouted) content = sectorPos.sector;
+					if (isScouted) content = sectorPos.sectorID;
 					if (sectorNode.entity.has(CampComponent)) content = "c";
 					if (sectorNode.entity.has(WorkshopComponent)) content = "w";
 					if (sectorPassages.passageUp && isScouted) content += "U";
@@ -521,6 +523,7 @@ define([
 					$("#tab-vis-out table tr").append(td);
 				}
 			}
+			*/
 			return visitedSectors;
 		},
     });

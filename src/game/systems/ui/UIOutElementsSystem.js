@@ -1,7 +1,7 @@
 define([
     'ash',
     'game/constants/UIConstants',
-    'game/WorldCreator',
+    'game/worldcreator/WorldCreator',
     'game/constants/PlayerActionConstants',
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/PlayerStatsNode',
