@@ -2,6 +2,7 @@
 define([
     'ash',
     'game/systems/SaveSystem',
+    'game/constants/PositionConstants',
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/sector/SectorNode',
     'game/nodes/PlayerLocationNode',
@@ -18,6 +19,7 @@ define([
     'game/vos/ResultVO',
 ], function (Ash,
     SaveSystem,
+	PositionConstants,
 	PlayerResourcesNode,
 	SectorNode,
 	PlayerLocationNode,
@@ -154,7 +156,7 @@ define([
 					if (!isVisited) continue;
 					isSafe = this.isSectorSafe(node.entity);
 					if (!isSafe) continue;
-					dist = Math.abs(playerPosition.sector - node.position.sector);
+					dist = PositionConstants.getDistanceTo(playerPosition.position, node.position.position);
 					if (dist < nearestVisitedSafeSectorDist) {
 						nearestVisitedSafeSector = node.entity;
 						nearestVisitedSafeSectorDist = dist;
@@ -192,7 +194,8 @@ define([
 			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
 			var sectorPosition = sector.get(PositionComponent);
 			playerPosition.level = sectorPosition.level;
-			playerPosition.sector = sectorPosition.sector;
+			playerPosition.sectorX = sectorPosition.sectorX;
+			playerPosition.sectorY = sectorPosition.sectorY;
 			if (sector.has(CampComponent)) this.uiFunctions.showTab(this.uiFunctions.elementIDs.tabs.in);
             
 			this.log(msgLog);

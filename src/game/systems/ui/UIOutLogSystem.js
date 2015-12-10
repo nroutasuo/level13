@@ -47,21 +47,21 @@ define([
 			this.lastUpdateTimeStamp = timeStamp;
 		},
 	
-		checkPendingMessages: function(playerPosition) {
+		checkPendingMessages: function (playerPosition) {
 			var validLevel;
 			var validSector;
 			var validInCamp;
-				for (var node = this.logNodes.head; node; node = node.next) {
-			var pendingMessages = node.logMessages.messagesPendingMovement;
-			for(var i in pendingMessages) {
-				var msg = node.logMessages.messagesPendingMovement[i];
-				validLevel = !msg.pendingLevel || msg.pendingLevel == playerPosition.level;
-				validSector = !msg.pendingSector || msg.pendingSector == playerPosition.sectorID;
-				validInCamp = (typeof msg.pendingInCamp === "undefined") || msg.pendingInCamp == playerPosition.inCamp;
-				if (validLevel && validSector && validInCamp) {
-				node.logMessages.showPendingMessage(msg);
+			for (var node = this.logNodes.head; node; node = node.next) {
+				var pendingMessages = node.logMessages.messagesPendingMovement;
+				for(var i in pendingMessages) {
+					var msg = node.logMessages.messagesPendingMovement[i];
+					validLevel = !msg.pendingLevel || msg.pendingLevel == playerPosition.level;
+					validSector = !msg.pendingSector || msg.pendingSector == playerPosition.sectorId();
+					validInCamp = (typeof msg.pendingInCamp === "undefined") || msg.pendingInCamp == playerPosition.inCamp;
+					if (validLevel && validSector && validInCamp) {
+					node.logMessages.showPendingMessage(msg);
+					}
 				}
-			}
             }
 		},
 	

@@ -99,7 +99,7 @@ define([
 			.add(new ReputationComponent())
 			.add(new RumoursComponent())
 			.add(new EvidenceComponent())
-			.add(new PositionComponent(13, 2, false))
+			.add(new PositionComponent(13, 1, 0, false))
 			.add(new LogMessagesComponent())
 			.add(new PlayerActionComponent())
 			.add(new SaveComponent(saveKey, [

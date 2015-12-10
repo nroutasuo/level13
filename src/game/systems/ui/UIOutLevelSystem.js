@@ -175,7 +175,7 @@ define([
 				var campPosition = node.entity.get(PositionComponent);
 				if (campPosition.level === this.playerPosNodes.head.position.level) {
 					hasCamp = true;
-					if (campPosition.sector === this.playerPosNodes.head.position.sector) hasCampHere = true;
+					if (campPosition.sectorId() === this.playerPosNodes.head.position.sectorId()) hasCampHere = true;
 					break;
 				}
 			}
@@ -488,6 +488,8 @@ define([
 			$("#tab-vis-out table tr").empty();
 			
 			var visitedSectors = 0;
+			var td = "<td class='vis-out-sector'>" + playerPosNodes.head.position.sectorX + "." + playerPosNodes.head.position.sectorY + "</td>";
+			$("#tab-vis-out table tr").append(td);
 			
 			// TODO fix performance bottleneck since WorldCreator update
 			/*

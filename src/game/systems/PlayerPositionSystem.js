@@ -70,12 +70,12 @@ define([
 			var hasCamp;
 			for (var sectorNode = this.sectorNodes.head; sectorNode; sectorNode = sectorNode.next) {
 				levelpos = sectorNode.entity.get(PositionComponent).level;
-				sectorPos = sectorNode.entity.get(PositionComponent).sector;
+				sectorPos = sectorNode.entity.get(PositionComponent).sectorId();
 				hasLocationComponent = sectorNode.entity.has(CurrentPlayerLocationComponent);
 				hasCurrentCampComponent = sectorNode.entity.has(CurrentNearestCampComponent);
 				hasCamp = sectorNode.entity.has(CampComponent);
 			
-				if (levelpos === playerPos.level && sectorPos === playerPos.sector) {
+				if (levelpos === playerPos.level && sectorPos === playerPos.sectorId()) {
 					playerSectorFound = true;
 				}
 			
@@ -84,7 +84,7 @@ define([
 				} else if (hasCamp && levelpos !== playerPos.level && hasCurrentCampComponent) {
 					sectorNode.entity.remove(CurrentNearestCampComponent);
 				}
-				if (levelpos === playerPos.level && sectorPos === playerPos.sector && !hasLocationComponent) {
+				if (levelpos === playerPos.level && sectorPos === playerPos.sectorId() && !hasLocationComponent) {
 					if (this.playerLocationNodes.head) this.playerLocationNodes.head.entity.remove(CurrentPlayerLocationComponent);
 					sectorNode.entity.add(new CurrentPlayerLocationComponent());
 					if (!sectorNode.entity.has(VisitedComponent)) {
@@ -92,13 +92,13 @@ define([
 					}
 					this.playerMovedSignal.dispatch(playerPos);
 					this.uiFunctions.onPlayerMoved();
-				} else if ((levelpos !== playerPos.level || sectorPos !== playerPos.sector) && hasLocationComponent) {
+				} else if ((levelpos !== playerPos.level || sectorPos !== playerPos.sectorId()) && hasLocationComponent) {
 					sectorNode.entity.remove(CurrentPlayerLocationComponent);
 				}
 			}
 			
 			if (!playerSectorFound) {
-				console.log("WARN: Player location could not be found (" + playerPos.level + "." + playerPos.sector + ")");
+				console.log("WARN: Player location could not be found (" + playerPos.level + "." + playerPos.sectorId() + ")");
 			}
 		},
 		

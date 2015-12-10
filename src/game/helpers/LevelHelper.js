@@ -71,7 +71,7 @@ define([
 			var sectorPosition;
 			for (var node = this.sectorNodes.head; node; node = node.next) {
 				sectorPosition = node.entity.get(PositionComponent);
-				if (sectorPosition.level === level && sectorPosition.sector === sector) return node.entity;
+				if (sectorPosition.level === level && sectorPosition.sectorId() === sector) return node.entity;
 			}
 			return null;
 		},
@@ -104,7 +104,7 @@ define([
 				projectExists = false;
 				for (var j = 0; j < projectsFiltered.length; j++) {
 					existingProject = projectsFiltered[j];
-					if (existingProject.sectorID === project.sectorID && (existingProject.level - 1 === project.level || existingProject.level + 1 === project.level)) {
+					if (existingProject.sectorId() === project.sectorId() && (existingProject.level - 1 === project.level || existingProject.level + 1 === project.level)) {
 						projectExists = true;
 						break;
 					}

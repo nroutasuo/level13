@@ -65,7 +65,7 @@ define([
 				var playerPosition = this.playerNodes.head.entity.get(PositionComponent);
 				if (Math.floor(camp.population) > Math.floor(oldPopulation)) {
 					this.lastPopulationIncreaseTimestamps[level] = new Date().getTime();
-					if (playerPosition.level === campPosition.level && playerPosition.sector === campPosition.sector) {
+					if (playerPosition.level === campPosition.level && playerPosition.sectorId() === campPosition.sectorId()) {
 						camp.rumourpoolchecked = false;
 						var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
 						logComponent.addMessage("A stranger shows up.");

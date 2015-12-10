@@ -224,7 +224,7 @@ define(['ash',
                 moveType = "camp sector";
 			}
 			
-            if (playerPosition.level !== l || playerPosition.sector !== s) {
+            if (playerPosition.level !== l || playerPosition.sectorId() !== sectorId) {
                 this.printStep("move to " + l + "-" + s + " (" + moveType + ")");
                 playerPosition.level = l;
                 playerPosition.sector = s;

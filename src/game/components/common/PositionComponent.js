@@ -11,11 +11,11 @@ function (Ash) {
         },
         
         sectorId: function () {
-            return this.sectorX + "-" + this.sectorY;
+            return this.sectorX + "." + this.sectorY;
         },
         
         toString: function () {
-            return this.level + "-" + this.sectorX + "-" + this.sectorY;
+            return this.level + "." + this.sectorX + "." + this.sectorY;
         },
         
         clone: function () {

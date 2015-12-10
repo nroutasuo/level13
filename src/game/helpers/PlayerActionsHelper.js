@@ -642,7 +642,7 @@ define([
 					case "move_camp_level":
                         if (!this.nearestCampNodes.head) return this.getCosts("move_sector_left", 1, 100);
                         var campSector = this.nearestCampNodes.head.entity;
-                        var sectorsToMove = Math.abs(sector.get(PositionComponent).sectorID - campSector.get(PositionComponent).sectorID);
+                        var sectorsToMove = Math.abs(sector.get(PositionComponent).sectorId() - campSector.get(PositionComponent).sectorId());
                         return this.getCosts("move_sector_left", 1, sectorsToMove);
                     
 					case "move_camp_global":

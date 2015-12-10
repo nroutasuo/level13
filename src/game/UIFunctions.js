@@ -712,7 +712,7 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             var isLocationAction = $(button).hasClass("action-location");
             var playerPos = this.playerActions.playerPositionNodes.head.position;
             var locationKey = ""
-            if (isLocationAction) locationKey = playerPos.level + "-" + playerPos.sectorID;
+            if (isLocationAction) locationKey = playerPos.level + "-" + playerPos.sectorId();
             return locationKey;
         },
         

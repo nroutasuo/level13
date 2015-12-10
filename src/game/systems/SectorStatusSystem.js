@@ -112,7 +112,7 @@ define([
 					var targetEnemies = Math.min(currentEnemies, neighbourEnemies);
 					
 					if (targetEnemies < currentEnemies) {
-						console.log("set sector control for " + localeId + " at " + positionComponent.level + "-" + positionComponent.sector + " | " + targetEnemies + " < " + currentEnemies);
+						console.log("set sector control for " + localeId + " at " + positionComponent.level + "-" + positionComponent.sectorId() + " | " + targetEnemies + " < " + currentEnemies);
 						sectorControlComponent.defeatedLocaleEnemies[localeId] += (currentEnemies - targetEnemies);
 						sectorControlComponent.currentLocaleEnemies[localeId] -= (currentEnemies - targetEnemies);
 					}
@@ -172,29 +172,40 @@ define([
 				for (var otherNode = this.sectorNodes.head; otherNode; otherNode = otherNode.next) {
 					otherPositionComponent = otherNode.entity.get(PositionComponent);
 					
-					if (positionComponent.level == otherPositionComponent.level) {
-						if (positionComponent.sector - 1 == otherPositionComponent.sector) {
-							this.neighboursDict[sectorKey].left = otherNode.entity;
+					if (positionComponent.level === otherPositionComponent.level) {
+						if (positionComponent.sectorY === otherPositionComponent.sectorY) {
+							if (positionComponent.sectorX - 1 === otherPositionComponent.sectorX) {
+								this.neighboursDict[sectorKey].left = otherNode.entity;
+							}
+							if (positionComponent.sectorX + 1 === otherPositionComponent.sectorX) {
+								this.neighboursDict[sectorKey].right = otherNode.entity;
+							}
 						}
-						if (positionComponent.sector + 1 == otherPositionComponent.sector) {
-							this.neighboursDict[sectorKey].right = otherNode.entity;
+						
+						if (positionComponent.sectorX === otherPositionComponent.sectorX) {
+							if (positionComponent.sectorY - 1 === otherPositionComponent.sectorY) {
+								this.neighboursDict[sectorKey].north = otherNode.entity;
+							}
+							if (positionComponent.sectorY + 1 === otherPositionComponent.sectorY) {
+								this.neighboursDict[sectorKey].south = otherNode.entity;
+							}
 						}
 					}
 					
-					if (positionComponent.sector == otherPositionComponent.sector) {
-						if (positionComponent.level - 1 == otherPositionComponent.level) {
+					if (positionComponent.sectorId() === otherPositionComponent.sectorId()) {
+						if (positionComponent.level - 1 === otherPositionComponent.level) {
 							this.neighboursDict[sectorKey].down = otherNode.entity;
 						}
-						if (positionComponent.level + 1 == otherPositionComponent.level) {
+						if (positionComponent.level + 1 === otherPositionComponent.level) {
 							this.neighboursDict[sectorKey].up = otherNode.entity;
-						} 
+						}
 					}
 				}
 			}
 		},
 		
 		getSectorKey: function (positionComponent) {
-			return positionComponent.level + "-" + positionComponent.sector;
+			return positionComponent.level + "." + positionComponent.sectorId();
 		}
         
     });

@@ -41,7 +41,7 @@ define(['ash'], function (Ash) {
             var xs = sectorPosFrom.sectorX - sectorPosTo.sectorX;
             xs = xs * xs;
             var ys = sectorPosFrom.sectorY - sectorPosTo.sectorY;
-            ys = ys * ys;           
+            ys = ys * ys;
             return Math.sqrt(xs + ys);
         }
     
