@@ -159,8 +159,8 @@ define(['ash',
             
             var latestCampLevel = 0;
 			
-			var checkSector = function (testL, testS) {
-				var sector = levelHelper.getSectorByPosition(testL, testS);
+			var checkSector = function (testL, testSX, testSY) {
+				var sector = levelHelper.getSectorByPosition(testL, testSX, testXY);
                 var levelOrdinal = playerActionFunctions.gameState.getLevelOrdinal(testL);
                 var levelSafe = fightStrength >= EnemyConstants.getRequiredStrength(levelOrdinal, groundLevelOrdinal, totalLevels);
                 var latestCampLevelOrdinal = latestCampLevel ? playerActionFunctions.gameState.getLevelOrdinal(latestCampLevel) : 0;

@@ -68,18 +68,34 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     health: 70,
                 },
                         
-                move_sector_left: {
+                move_sector_north: {
                     vision: 10,
                     sector: {
-                        blockerLeft: false,
+                        blockerNorth: false,
                     },
                     busy: false,
                 },
                         
-                move_sector_right: {
+                move_sector_south: {
                     vision: 10,
                     sector: {
-                        blockerRight: false,
+                        blockerSouth: false,
+                    },
+                    busy: false,
+                },
+                        
+                move_sector_east: {
+                    vision: 10,
+                    sector: {
+                        blockerEast: false,
+                    },
+                    busy: false,
+                },
+                        
+                move_sector_west: {
+                    vision: 10,
+                    sector: {
+                        blockerWest: false,
                     },
                     busy: false,
                 },
@@ -852,13 +868,25 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     resource_water: 1,
                 },
             
-                move_sector_left: {
+                move_sector_north: {
                     stamina: 10,
                     resource_food: 1,
                     resource_water: 1,
                 },
             
-                move_sector_right: {
+                move_sector_south: {
+                    stamina: 10,
+                    resource_food: 1,
+                    resource_water: 1,
+                },
+            
+                move_sector_west: {
+                    stamina: 10,
+                    resource_food: 1,
+                    resource_water: 1,
+                },
+            
+                move_sector_east: {
                     stamina: 10,
                     resource_food: 1,
                     resource_water: 1,
@@ -1442,8 +1470,10 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 fightcheck: "Attempt to gain control of the area.",
                 clear_workshop: "Scout the workshop to see if it can be used.",
                 fight_gang: "Clear the enemies blocking passage.",
-                move_sector_left: "Move to another area",
-                move_sector_right: "Move to another area",
+                move_sector_north: "Move to another area",
+                move_sector_south: "Move to another area",
+                move_sector_west: "Move to another area",
+                move_sector_east: "Move to another area",
                 move_camp_level: "Shortcut back to the nearest camp.",
                 despair: "Give up. Stop moving. Rest.",
                 build_out_collector_food: "Collect food.",

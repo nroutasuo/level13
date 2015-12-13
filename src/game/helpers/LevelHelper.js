@@ -67,11 +67,11 @@ define([
 			return null;
 		},
 		
-		getSectorByPosition: function (level, sector) {
+		getSectorByPosition: function (level, sectorX, sectorY) {
 			var sectorPosition;
 			for (var node = this.sectorNodes.head; node; node = node.next) {
 				sectorPosition = node.entity.get(PositionComponent);
-				if (sectorPosition.level === level && sectorPosition.sectorId() === sector) return node.entity;
+				if (sectorPosition.level === level && sectorPosition.sectorX === sectorX && sectorPosition.sectorY === sectorY) return node.entity;
 			}
 			return null;
 		},
@@ -125,6 +125,10 @@ define([
 				var statusComponent;
 				var scouted;
 				var passage;
+				
+				// TODO re-implement available projects
+				console.log("WARN: getAvailableProjectsForLevel disabled");
+				/*
 				for (var s = WorldCreatorConstants.FIRST_SECTOR; s <= WorldCreatorConstants.LAST_SECTOR; s++) {
 					sectorEntity = this.getSectorByPosition(level, s);
 					statusComponent = sectorEntity.get(SectorStatusComponent);
@@ -179,6 +183,7 @@ define([
 						}
 					}
 				}
+					*/
 			}
 			
 			return projects;

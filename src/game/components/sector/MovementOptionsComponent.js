@@ -9,8 +9,10 @@ define(['ash'], function (Ash) {
         constructor: function () {
             this.canMoveUp = false;
             this.canMoveDown = false;
-            this.canMoveLeft = true;
-            this.canMoveRight = true;
+            this.canMoveNorth = true;
+            this.canMoveSouth = true;
+            this.canMoveEast = true;
+            this.canMoveWest = true;
         }
     });
 

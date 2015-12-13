@@ -461,7 +461,7 @@ define([
             // fill in the rest by creating random paths
             while (sectorsCentral.length < sectorsCentralMin || sectorsAll.length < sectorsTotalMin) {
                 var pathRandomSeed = sectorsAll.length * 4 + l * (sectorsCentral.length + 5);
-                var isStartingPath = l === 13 && !levelVO.hasSector(0, 0);
+                var isStartingPath = l === 13 && (!levelVO.hasSector(0, 0) || !levelVO.hasSector(WorldCreatorConstants.FIRST_CAMP_X, WorldCreatorConstants.FIRST_CAMP_Y));
                 if (isStartingPath) {
                     pathStartingPos = new PositionVO(l, 0, 0);
                 } else if (sectorsCentral.length === 0) {
@@ -471,7 +471,7 @@ define([
                 }
                 
                 var numPathDirections = isStartingPath ? 1 : pathDirectionNums[WorldCreatorRandom.randomInt(seed * l * l + levelVO.levelOrdinal + pathRandomSeed, 0, pathDirectionNums.length)];
-                var pathDirections = isStartingPath ? [ 1 ] : WorldCreatorRandom.randomDirections(seed * levelVO.levelOrdinal + 28381 + pathRandomSeed, numPathDirections);
+                var pathDirections = isStartingPath ? [ PositionConstants.DIRECTION_EAST ] : WorldCreatorRandom.randomDirections(seed * levelVO.levelOrdinal + 28381 + pathRandomSeed, numPathDirections);
                 
                 // console.log("starting pos: " + pathStartingPos.toString() + ", directions: " + pathDirections);
                 

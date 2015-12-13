@@ -42,7 +42,6 @@ define([
 			if (hasEnemies) {
 				var encounterProbability =  PlayerActionConstants.getRandomEncounterProbability(baseActionID);
 				if (Math.random() < encounterProbability) {
-					console.log("pendingEnemies = Math.min(" + this.getEnemyCount(action) + ", " + sectorControlComponent.getCurrentEnemies(localeId));
 					this.pendingEnemies = Math.min(this.getEnemyCount(action), sectorControlComponent.getCurrentEnemies(localeId));
 					this.pendingWinCallback = winCallback;
 					this.pendingFleeCallback = fleeCallback;

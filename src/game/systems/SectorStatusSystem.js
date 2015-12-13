@@ -1,6 +1,7 @@
 // A system that updates a Sector's MovementOptionsComponent based on its neighbours and improvements
 define([
     'ash',
+    'game/constants/PositionConstants',
     'game/constants/LocaleConstants',
     'game/nodes/sector/SectorNode',
     'game/nodes/PlayerLocationNode',
@@ -14,6 +15,7 @@ define([
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
 ], function (Ash,
+		PositionConstants,
 		LocaleConstants,
 		SectorNode,
 		PlayerLocationNode,
@@ -94,17 +96,14 @@ define([
 			
 			var sectorKey = this.getSectorKey(positionComponent);
 			if (!this.neighboursDict[sectorKey]) this.findNeighbours();
-			
-			var blockerLeft = this.movementHelper.getBlockerLeft(entity);
-			var blockerRight = this.movementHelper.getBlockerRight(entity);
-			
-			var neighboursDict = this.neighboursDict;
+			var sys = this;
 			
 			function checkNeighbour(direction) {
 				var localeId = LocaleConstants.getPassageLocaleId(direction === 0 ? 0 : 1);
 				var currentEnemies = sectorControlComponent.getCurrentEnemies(localeId);
 				
-				var neighbour = direction === 0 ? neighboursDict[sectorKey].left : neighboursDict[sectorKey].right;
+				var neighbour = sys.getNeighbour(sectorKey, direction);
+				
 				if (neighbour) {
 					var neighbourSectorControlComponent = neighbour.get(SectorControlComponent);
 					var neighbourLocaleID = LocaleConstants.getPassageLocaleId(direction === 0 ? 1 : 0);
@@ -119,13 +118,10 @@ define([
 				}
 			}
 			
-			if (blockerLeft && blockerLeft.type === 3) {
-				checkNeighbour(0);
-			}
-			
-			if (blockerRight && blockerRight.type === 3) {
-				checkNeighbour(1);
-			}
+			checkNeighbour(PositionConstants.DIRECTION_NORTH);
+			checkNeighbour(PositionConstants.DIRECTION_SOUTH);
+			checkNeighbour(PositionConstants.DIRECTION_WEST);
+			checkNeighbour(PositionConstants.DIRECTION_EAST);
 		},
 		
 		updateMovementOptions: function (entity) {
@@ -136,28 +132,51 @@ define([
 			var sectorKey = this.getSectorKey(positionComponent);
 			if (!this.neighboursDict[sectorKey]) this.findNeighbours();
 			
-			var neighbourLeft = this.neighboursDict[sectorKey].left;
-			var neighbourRight = this.neighboursDict[sectorKey].right;
+			var neighbourWest = this.neighboursDict[sectorKey].west;
+			var neighbourEast = this.neighboursDict[sectorKey].east;
+			var neighbourNorth = this.neighboursDict[sectorKey].north;
+			var neighbourSouth = this.neighboursDict[sectorKey].south;
 			
-			// Allow left/right movement if neighbour exists
-			movementOptions.canMoveLeft = neighbourLeft != null;
-			movementOptions.canMoveRight = neighbourRight != null;
+			// Allow n/s/w/e movement if neighbour exists
+			movementOptions.canMoveNorth = neighbourNorth != null;
+			movementOptions.canMoveSouth = neighbourSouth != null;
+			movementOptions.canMoveWest = neighbourWest != null;
+			movementOptions.canMoveEast = neighbourEast != null;
 			
-			// Block left/right movement if blocker exits and there is no bridge/sector control/other improvement
-			var blockedLeft = this.movementHelper.isBlockedLeft(entity);
-			var blockedRight = this.movementHelper.isBlockedRight(entity);
-			movementOptions.canMoveLeft = movementOptions.canMoveLeft && !blockedLeft;
-			movementOptions.cantMoveLeftReason = this.movementHelper.getBlockedReasonLeft(entity);
-			if (!neighbourLeft) movementOptions.cantMoveLeftReason = "Nothing here.";
-			movementOptions.canMoveRight = movementOptions.canMoveRight && !blockedRight;
-			movementOptions.cantMoveRightReason = this.movementHelper.getBlockedReasonRight(entity);
-			if (!neighbourRight) movementOptions.cantMoveRightReason = "Nothing here.";
+			// Block n/s/w/e movement if blocker exits and there is no bridge/sector control/other improvement
+			var blockedNorth = this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_NORTH);
+			var blockedSouth = this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_SOUTH);
+			var blockedWest = this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_WEST);
+			var blockedEast = this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_EAST);
+			movementOptions.canMoveNorth = movementOptions.canMoveNorth && !blockedNorth;
+			movementOptions.cantMoveNorthReason = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_NORTH);
+			if (!neighbourNorth) movementOptions.cantMoveNorthReason = "Nothing here.";
+			movementOptions.canMoveSouth = movementOptions.canMoveSouth && !blockedSouth;
+			movementOptions.cantMoveSouthReason = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_SOUTH);
+			if (!neighbourSouth) movementOptions.cantMoveSouthReason = "Nothing here.";
+			movementOptions.canMoveWest = movementOptions.canMoveWest && !blockedWest;
+			movementOptions.cantMoveWestReason = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_WEST);
+			if (!neighbourWest) movementOptions.cantMoveWestReason = "Nothing here.";
+			movementOptions.canMoveEast = movementOptions.canMoveEast && !blockedEast;
+			movementOptions.cantMoveEastReason = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_EAST);
+			if (!neighbourEast) movementOptions.cantMoveEastReason = "Nothing here.";
 			
 			// Allow up/down movement if passages exists
-			movementOptions.canMoveUp = passagesComponent != null && !this.movementHelper.isBlockedUp(entity);
-			movementOptions.cantMoveUpReason = this.movementHelper.getBlockedReasonUp(entity);
-			movementOptions.canMoveDown = passagesComponent != null && !this.movementHelper.isBlockedDown(entity);
-			movementOptions.cantMoveDownReason = this.movementHelper.getBlockedReasonDown(entity);
+			movementOptions.canMoveUp = passagesComponent != null && !this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_UP);
+			movementOptions.cantMoveUpReason = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_UP);
+			movementOptions.canMoveDown = passagesComponent != null && !this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_DOWN);
+			movementOptions.cantMoveDownReason = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_DOWN);
+		},
+		
+		getNeighbour: function (sectorKey, direction) {
+            switch (direction) {
+            case this.DIRECTION_NORTH: return this.neighboursDict[sectorKey].north;
+            case this.DIRECTION_EAST: return this.neighboursDict[sectorKey].east;
+            case this.DIRECTION_SOUTH: return this.neighboursDict[sectorKey].south;
+            case this.DIRECTION_WEST: return this.neighboursDict[sectorKey].west;
+            default:
+                return null;
+            }
 		},
 		
 		findNeighbours: function () {
@@ -175,10 +194,10 @@ define([
 					if (positionComponent.level === otherPositionComponent.level) {
 						if (positionComponent.sectorY === otherPositionComponent.sectorY) {
 							if (positionComponent.sectorX - 1 === otherPositionComponent.sectorX) {
-								this.neighboursDict[sectorKey].left = otherNode.entity;
+								this.neighboursDict[sectorKey].west = otherNode.entity;
 							}
 							if (positionComponent.sectorX + 1 === otherPositionComponent.sectorX) {
-								this.neighboursDict[sectorKey].right = otherNode.entity;
+								this.neighboursDict[sectorKey].east = otherNode.entity;
 							}
 						}
 						

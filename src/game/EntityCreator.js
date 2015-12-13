@@ -143,8 +143,10 @@ define([
 			.add(new PassagesComponent(
 				passageOptions.passageUp,
 				passageOptions.passageDown,
-				passageOptions.blockerLeft,
-				passageOptions.blockerRight))
+				passageOptions.blockerNorth,
+				passageOptions.blockerSouth,
+				passageOptions.blockerWest,
+				passageOptions.blockerEast))
 			.add(new SectorFeaturesComponent(
 				level,
 				sectorFeatures.buildingDensity,

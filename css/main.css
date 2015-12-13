@@ -279,12 +279,12 @@ button {
 	border-color: #777;
 }
 
-.lvl13-element-disabled, button.btn-disabled-basic, button.btn-disabled-vision, button.btn-disabled-basic:hover, button.btn-disabled-vision:hover, button.btn-disabled-resources, button.btn-disabled-resources:hover, button.btn-disabled-cooldown, button.btn-disabled-cooldown:hover, li.disabled {
+.lvl13-element-disabled, button.btn-disabled-basic, button.btn-disabled-vision, button.btn-disabled-basic:hover, button.btn-disabled-vision:hover, button.btn-disabled-resources, button.btn-disabled-resources:hover, button.btn-disabled-cooldown, button.btn-disabled-cooldown:hover, li.disabled, #tab-vis-out table.vis {
 	border-color: #444;
 	color: #999 !important;
 }
 
-.sunlit .lvl13-element-disabled, .sunlit button.btn-disabled-basic, .sunlit button.btn-disabled-vision, .sunlit button.btn-disabled-vision:hover, .sunlit button.btn-disabled-basic:hover, .sunlit button.btn-disabled-resources, .sunlit button.btn-disabled-resources:hover, .sunlit button.btn-disabled-cooldown, .sunlit button.btn-disabled-cooldown:hover, .sunlit li.disabled {
+.sunlit .lvl13-element-disabled, .sunlit button.btn-disabled-basic, .sunlit button.btn-disabled-vision, .sunlit button.btn-disabled-vision:hover, .sunlit button.btn-disabled-basic:hover, .sunlit button.btn-disabled-resources, .sunlit button.btn-disabled-resources:hover, .sunlit button.btn-disabled-cooldown, .sunlit button.btn-disabled-cooldown:hover, .sunlit li.disabled, .sunlit #tab-vis-out table.vis {
 	border-color: #999;
 	color: #666 !important;
 }
@@ -341,7 +341,7 @@ hr {
 	background-color: #444;
 }
 
-.sunlit .lvl13-element-overlay, .sunlit button .cooldown-action, .sunlit  .cooldown-reqs {
+.sunlit .lvl13-element-overlay, .sunlit button .cooldown-action, .sunlit  .cooldown-reqs, td.vis-out-sector-visited {
 	background-color: rgba(136, 136, 136, 0.3);
 }
 
@@ -511,11 +511,22 @@ table.vis {
 	margin: 15px auto;
 }
 
+#tab-vis-out table.vis {
+    width: auto;
+    border: 1px dashed;
+    padding: -1px;
+    border-collapse: collapse;
+}
+
 td.vis-out-sector {
-	width: 30px;
-	height: 10px;
+	width: 25px;
+	height: 9px;
 	text-align: center;
 	font-size: 75%;
+}
+
+td.vis-out-sector-null {
+    border-width: 0px;
 }
 
 tr.current .camp-overview-level, tr.current .camp-overview-name {

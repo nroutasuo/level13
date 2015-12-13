@@ -2,10 +2,11 @@
 define(['ash',
         'game/constants/UIConstants',
         'game/constants/PlayerActionConstants',
+        'game/constants/PositionConstants',
         'game/helpers/ui/UIPopupManager',
         'game/helpers/ui/ChangeLogHelper',
         'game/vos/ResourcesVO'],
-function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelper, ResourcesVO) {
+function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ChangeLogHelper, ResourcesVO) {
     var UIFunctions = Ash.Class.extend({
         
         playerActions: null,
@@ -360,12 +361,14 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
                 func.call(this.playerActions, param);
             } else {
                 switch (action) {
-                    case "move_sector_left": break;
-                    case "move_sector_right": break;
-                    case "leave_camp": break;
-                    default:
-                        console.log("WARN: No function found for button with action " + action);
-                        break;
+                case "move_sector_north": break;
+                case "move_sector_west": break;
+                case "move_sector_east": break;
+                case "move_sector_south": break;
+                case "leave_camp": break;
+                default:
+                    console.log("WARN: No function found for button with action " + action);
+                    break;
                 }
             }
         },
@@ -573,20 +576,26 @@ function (Ash, UIConstants, PlayerActionConstants, UIPopupManager, ChangeLogHelp
             var id = $(target).attr("id");
             
             switch (id) {
-                case "out-action-move-left":
-                    direction = playerActions.directions.left;
+                case "out-action-move-north":
+                    direction = PositionConstants.DIRECTION_NORTH;
                     break;
-                case "out-action-move-right":
-                    direction = playerActions.directions.right;
+                case "out-action-move-south":
+                    direction = PositionConstants.DIRECTION_SOUTH;
+                    break;
+                case "out-action-move-west":
+                    direction = PositionConstants.DIRECTION_WEST;
+                    break;
+                case "out-action-move-east":
+                    direction = PositionConstants.DIRECTION_EAST;
                     break;
                 case "out-action-move-up":
-                    direction = playerActions.directions.up;
+                    direction = PositionConstants.DIRECTION_UP;
                     break;
                 case "out-action-move-down":
-                    direction = playerActions.directions.down;
+                    direction = PositionConstants.DIRECTION_DOWN;
                     break;
                 case "out-action-move-camp":
-                    direction = playerActions.directions.camp;
+                    direction = PositionConstants.DIRECTION_CAMP;
                     break;
             }
             

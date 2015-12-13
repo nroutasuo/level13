@@ -102,9 +102,10 @@ define([
 				var sector = $(button).attr("sector");
 				var sectorEntity = null;
                 if (sector) {
-                    var l = parseInt(sector.split("-")[0]);
-                    var s = parseInt(sector.split("-")[1]);
-                    sectorEntity = levelHelper.getSectorByPosition(l, s);
+                    var l = parseInt(sector.split(".")[0]);
+                    var sX = parseInt(sector.split(".")[1]);
+                    var sY = parseInt(sector.split(".")[2]);
+                    sectorEntity = levelHelper.getSectorByPosition(l, sX, sY);
                 }
 				return sectorEntity;
 			};

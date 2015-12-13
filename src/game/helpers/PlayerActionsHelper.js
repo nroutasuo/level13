@@ -370,31 +370,59 @@ define([
                         }
                     }
                     
-                    if (typeof requirements.sector.blockerLeft != 'undefined') {
-						var requiredValue = requirements.sector.blockerLeft;
-						var currentValue = !movementOptionsComponent.canMoveLeft;
+                    if (typeof requirements.sector.blockerNorth !== 'undefined') {
+						var requiredValue = requirements.sector.blockerNorth;
+						var currentValue = !movementOptionsComponent.canMoveNorth;
 			
                         if (requiredValue !== currentValue) {
 							if (currentValue) {
-								if (log) console.log("WARN: Movement to left blocked.");
-								return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveLeftReason };
+								if (log) console.log("WARN: Movement to north blocked.");
+								return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveNorthReason };
 							} else {
-								if (log) console.log("WARN: Nothing blocking movemen to left.");
-								return { value: 0, reason: "Nothing blocking movemen to left" };
+								if (log) console.log("WARN: Nothing blocking movemen to north.");
+								return { value: 0, reason: "Nothing blocking movemen to north" };
 							}
                         }
                     }
 					
-                    if (typeof requirements.sector.blockerRight != 'undefined') {
-						var requiredValue = requirements.sector.blockerRight;
-						var currentValue = !movementOptionsComponent.canMoveRight;
+                    if (typeof requirements.sector.blockerSouth !== 'undefined') {
+						var requiredValue = requirements.sector.blockerSouth;
+						var currentValue = !movementOptionsComponent.canMoveSouth;
                         if (requiredValue !== currentValue) {
 							if (currentValue) {
-								if (log) console.log("WARN: Movement to right blocked.");
-								return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveRightReason };
+								if (log) console.log("WARN: Movement to south blocked.");
+								return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveSouthReason };
 							} else {
-								if (log) console.log("WARN: Nothing blocking movemen to right.");
-								return { value: 0, reason: "Nothing blocking movemen to right" };
+								if (log) console.log("WARN: Nothing blocking movemen to south.");
+								return { value: 0, reason: "Nothing blocking movemen to south" };
+							}
+                        }
+                    }
+					
+                    if (typeof requirements.sector.blockerWest !== 'undefined') {
+						var requiredValue = requirements.sector.blockerWest;
+						var currentValue = !movementOptionsComponent.canMoveWest;
+                        if (requiredValue !== currentValue) {
+							if (currentValue) {
+								if (log) console.log("WARN: Movement to south blocked.");
+								return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveWestReason };
+							} else {
+								if (log) console.log("WARN: Nothing blocking movemen to west.");
+								return { value: 0, reason: "Nothing blocking movemen to west" };
+							}
+                        }
+                    }
+					
+                    if (typeof requirements.sector.blockerEast !== 'undefined') {
+						var requiredValue = requirements.sector.blockerEast;
+						var currentValue = !movementOptionsComponent.canMoveEast;
+                        if (requiredValue !== currentValue) {
+							if (currentValue) {
+								if (log) console.log("WARN: Movement to east blocked.");
+								return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveEastReason };
+							} else {
+								if (log) console.log("WARN: Nothing blocking movemen to east.");
+								return { value: 0, reason: "Nothing blocking movemen to east" };
 							}
                         }
                     }
@@ -579,8 +607,10 @@ define([
                     if (items.length > 0) factor *= items[0].bonus;
                     break;
                 
-                case "move_sector_left":
-                case "move_sector_right":
+                case "move_sector_north":
+                case "move_sector_east":
+                case "move_sector_west":
+                case "move_sector_south":
                 case "move_camp_level":
                 case "move_camp_global":
                     if (items.length > 0) factor *= items[0].bonus;                    
@@ -640,13 +670,13 @@ define([
 				var sector = sector || this.playerLocationNodes.head.entity;
 				switch (baseActionID) {
 					case "move_camp_level":
-                        if (!this.nearestCampNodes.head) return this.getCosts("move_sector_left", 1, 100);
+                        if (!this.nearestCampNodes.head) return this.getCosts("move_sector_west", 1, 100);
                         var campSector = this.nearestCampNodes.head.entity;
                         var sectorsToMove = Math.abs(sector.get(PositionComponent).sectorId() - campSector.get(PositionComponent).sectorId());
-                        return this.getCosts("move_sector_left", 1, sectorsToMove);
+                        return this.getCosts("move_sector_west", 1, sectorsToMove);
                     
 					case "move_camp_global":
-						result.stamina = 5 * PlayerActionConstants.costs.move_sector_left.stamina * statusCostFactor;
+						result.stamina = 5 * PlayerActionConstants.costs.move_sector_west.stamina * statusCostFactor;
 						break;
 					
 					case "scout_locale_i":

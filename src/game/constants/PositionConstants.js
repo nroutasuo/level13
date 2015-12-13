@@ -3,12 +3,15 @@ define(['ash'], function (Ash) {
     var PositionConstants = {
     
         DIRECTION_NONE: -1,
-        DIRECTION_NORTH: 0,
-        DIRECTION_EAST: 1,
-        DIRECTION_SOUTH: 2,
-        DIRECTION_WEST: 3,
-        DIRECTION_UP: 4,
-        DIRECTION_DOWN: 5,
+        DIRECTION_CAMP: 0,
+        DIRECTION_NORTH: 1,
+        DIRECTION_EAST: 2,
+        DIRECTION_SOUTH: 3,
+        DIRECTION_WEST: 4,
+        DIRECTION_UP: 5,
+        DIRECTION_DOWN: 6,
+        
+        LEVEL_DIRECTIONS: [this.DIRECTION_NORTH, this.DIRECTION_EAST, this.DIRECTION_SOUTH, this.DIRECTION_WEST],
         
         getPositionOnPath: function (pathStartingPos, pathDirection, pathStep) {
             var resultPos = pathStartingPos.clone();
@@ -43,7 +46,12 @@ define(['ash'], function (Ash) {
             var ys = sectorPosFrom.sectorY - sectorPosTo.sectorY;
             ys = ys * ys;
             return Math.sqrt(xs + ys);
-        }
+        },
+        
+        isLevelDirection: function (direction) {
+            this.LEVEL_DIRECTIONS = [this.DIRECTION_NORTH, this.DIRECTION_EAST, this.DIRECTION_SOUTH, this.DIRECTION_WEST];
+            return this.LEVEL_DIRECTIONS.indexOf(direction) >= 0;
+        },
     
     };
     

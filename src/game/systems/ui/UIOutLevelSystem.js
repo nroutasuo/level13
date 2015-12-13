@@ -3,6 +3,7 @@ define([
     'game/constants/PlayerActionConstants',
     'game/constants/PlayerStatConstants',
     'game/constants/TextConstants',
+    'game/constants/PositionConstants',
     'game/constants/EnemyConstants',
     'game/constants/LocaleConstants',
     'game/nodes/PlayerPositionNode',
@@ -24,7 +25,7 @@ define([
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/EnemiesComponent'
 ], function (
-    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, EnemyConstants, LocaleConstants,
+    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, PositionConstants, EnemyConstants, LocaleConstants,
     PlayerPositionNode, PlayerLocationNode, SectorNode, CampNode, VisitedSectorNode,
     VisionComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
     MovementOptionsComponent,
@@ -40,6 +41,7 @@ define([
 		movementHelper: null,
 		resourcesHelper: null,
 		sectorHelper: null,
+        levelHelper: null,
 		
 		engine: null,
 		
@@ -50,15 +52,14 @@ define([
 		
 		tabChangedSignal: null,
 		playerMovedSignal: null,
-		
-		visitedSectors: 0,
 	
-		constructor: function (uiFunctions, tabChangedSignal, gameState, movementHelper, resourceHelper, sectorHelper, playerMovedSignal) {
+		constructor: function (uiFunctions, tabChangedSignal, gameState, movementHelper, resourceHelper, sectorHelper, levelHelper, playerMovedSignal) {
 			this.uiFunctions = uiFunctions;
 			this.gameState = gameState;
 			this.movementHelper = movementHelper;
 			this.resourcesHelper = resourceHelper;
 			this.sectorHelper = sectorHelper;
+            this.levelHelper = levelHelper;
 			this.tabChangedSignal = tabChangedSignal;
 			this.playerMovedSignal = playerMovedSignal;
 			return this;
@@ -83,16 +84,15 @@ define([
 		},
 	
 		initListeners: function () {
-			var rebuildVis = this.rebuildVis;
 			var playerPosNodes = this.playerPosNodes;
 			var sectorNodes = this.sectorNodes;
 			var sys = this;
 			this.playerMovedSignal.add(function () {
-				sys.visitedSectors = rebuildVis(playerPosNodes, sectorNodes);
+				sys.rebuildVis(playerPosNodes, sectorNodes);
 				sys.updateLocales();
 				sys.updateMovementRelatedActions();
 			});
-			sys.visitedSectors = rebuildVis(playerPosNodes, sectorNodes);
+			this.rebuildVis(playerPosNodes, sectorNodes);
 		},
 		
 		initLeaveCampRes: function () {
@@ -166,7 +166,7 @@ define([
 			
 			var vision = this.playerPosNodes.head.entity.get(VisionComponent).value;
 			var hasVision = vision > PlayerStatConstants.VISION_BASE;
-			var hasBridgeableBlocker = (passagesComponent.blockerLeft != null && passagesComponent.blockerLeft.bridgeable) || (passagesComponent.blockerRight != null && passagesComponent.blockerRight.bridgeable);
+			var hasBridgeableBlocker = this.movementHelper.hasBridgeableBlocker(this.playerLocationNodes.head.entity);
 			var passageUpAvailable = passagesComponent.passageUp != null;
 			var passageDownAvailable = passagesComponent.passageDown != null;
 			var hasCamp = false;
@@ -189,7 +189,6 @@ define([
 			
 			// Vis
 			// TODO update improvements
-			$("#tab-vis-out").toggle(this.visitedSectors > 1 || this.gameState.unlockedFeatures.levels);
 			
 			// Description
 			var isScouted = sectorStatusComponent.scouted;
@@ -393,18 +392,12 @@ define([
 				description += ". ";
 			}
 			
-			// Blockers left / right
-			var bridgedLeft = this.movementHelper.isBridged(entity, this.movementHelper.DIRECTION_LEFT);
-			var blockedLeft = this.movementHelper.isBlockedLeft(entity);
-			if (blockedLeft && !passagesComponent.blockerLeft.defeatable)
-				description += "Passage to the left is blocked by a " + passagesComponent.blockerLeft.name + ". ";
-			
-			var bridgedRight = this.movementHelper.isBridged(entity, this.movementHelper.DIRECTION_RIGHT);
-			var blockedRight = this.movementHelper.isBlockedRight(entity);
-			if (blockedRight && !passagesComponent.blockerRight.defeatable)
-				description += "Passage to the right is blocked by a " + passagesComponent.blockerRight.name + ". ";
-			else if (bridgedRight) description += "The gap on the right has been bridged.";
-			
+			// Blockers n/s/w/e
+			for (var direction in PositionConstants.LEVEL_DIRECTIONS) {
+				var blocker = this.movementHelper.getBlocker(entity, direction);
+				if (blocker)
+					description += "Passage to the " + TextConstants.getDirectionName(direction) + " is blocked by a " + blocker.name + ". ";
+			}
 			return description;
 		},
 		
@@ -420,10 +413,12 @@ define([
 			}
 			
 			if (hasEnemies) {
-				var defeatableBlockerLeft = passagesComponent.isLeftDefeatable();
-				var defeatableBlockerRight = passagesComponent.isRightDefeatable();
+				var defeatableBlockerN = passagesComponent.isDefeatable(PositionConstants.DIRECTION_NORTH);
+				var defeatableBlockerS = passagesComponent.isDefeatable(PositionConstants.DIRECTION_SOUTH);
+				var defeatableBlockerW = passagesComponent.isDefeatable(PositionConstants.DIRECTION_WEST);
+				var defeatableBlockerE = passagesComponent.isDefeatable(PositionConstants.DIRECTION_EAST);
 				if (isScouted) {
-					enemyDesc = TextConstants.getEnemyText(enemiesComponent.possibleEnemies, sectorControlComponent, defeatableBlockerLeft, defeatableBlockerRight);
+					enemyDesc = TextConstants.getEnemyText(enemiesComponent.possibleEnemies, sectorControlComponent, defeatableBlockerN, defeatableBlockerS, defeatableBlockerW, defeatableBlockerE);
 				}
 				// if (window.app) enemyDesc += "(" + enemiesComponent.possibleEnemies + ") ";
 			} else if (isScouted) {
@@ -472,11 +467,10 @@ define([
 				}
 			}
 			
-			var blockerLeft = this.movementHelper.getBlockerLeft(currentSector);
-			if (blockerLeft) addBlockerActionButton(blockerLeft, this.movementHelper.DIRECTION_LEFT);
-			
-			var blockerRight = this.movementHelper.getBlockerRight(currentSector);
-			if (blockerRight) addBlockerActionButton(blockerRight, this.movementHelper.DIRECTION_RIGHT);
+			for (var direction in PositionConstants.LEVEL_DIRECTIONS) {
+				var directionBlocker = this.movementHelper.getBlocker(currentSector, direction);
+				if (directionBlocker) addBlockerActionButton(directionBlocker, direction);
+			}
 			
             this.uiFunctions.registerActionButtonListeners("#table-out-actions-movement-related");
             this.uiFunctions.generateButtonOverlays("#table-out-actions-movement-related");
@@ -485,48 +479,50 @@ define([
 		
 		rebuildVis: function (playerPosNodes, sectorNodes) {
 			if (!playerPosNodes.head) return 0;
-			$("#tab-vis-out table tr").empty();
+			$("#tab-vis-out table").empty();
+            
+            var mapSize = 5;
+            var mapDiameter = (mapSize - 1)/2;
 			
-			var visitedSectors = 0;
-			var td = "<td class='vis-out-sector'>" + playerPosNodes.head.position.sectorX + "." + playerPosNodes.head.position.sectorY + "</td>";
-			$("#tab-vis-out table tr").append(td);
-			
-			// TODO fix performance bottleneck since WorldCreator update
-			/*
 			var posComponent = playerPosNodes.head.position;
-			for (var sectorNode = sectorNodes.head; sectorNode; sectorNode = sectorNode.next) {
-				var sectorPos = sectorNode.entity.get(PositionComponent);
-				var sectorPassages = sectorNode.entity.get(PassagesComponent);
-				if (sectorPos.level === posComponent.level) {
-					var statusComponent = sectorNode.entity.get(SectorStatusComponent);
-					var localesComponent = sectorNode.entity.get(SectorLocalesComponent);
-					var isScouted = statusComponent.scouted;
-					var classes = "vis-out-sector";
-					if (sectorPos.sectorID === posComponent.sectorID) {
-						classes += " vis-out-sector-current";
-					}
-					
-					if (sectorNode.entity.has(VisitedComponent)) {
-						visitedSectors++;
-						classes += " vis-out-sector-visited";
-					} else {
-						continue;
-					}
-					
-					var content = "?";
-					var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
-					if (isScouted) content = sectorPos.sectorID;
-					if (sectorNode.entity.has(CampComponent)) content = "c";
-					if (sectorNode.entity.has(WorkshopComponent)) content = "w";
-					if (sectorPassages.passageUp && isScouted) content += "U";
-					if (sectorPassages.passageDown && isScouted) content += "D";
-					if (unScoutedLocales > 0 && isScouted) content += "l";
+            var neighbour;
+            var sectorPos;
+            for (var dy = -mapDiameter; dy <= mapDiameter; dy++) {
+                var trID = "tab-vis-out-tr-" + dy;
+                $("#tab-vis-out table").append("<tr id=" + trID + "></tr>");
+                for (var dx = -mapDiameter; dx <= mapDiameter; dx++) {
+                    var content = "";
+                    var classes = "vis-out-sector";
+                    neighbour = this.levelHelper.getSectorByPosition(posComponent.level, posComponent.sectorX + dx, posComponent.sectorY + dy);
+                    if (neighbour) {
+                        sectorPos = neighbour.get(PositionComponent);
+                        var statusComponent = neighbour.get(SectorStatusComponent);
+                        var localesComponent = neighbour.get(SectorLocalesComponent);
+                        var sectorPassages = neighbour.get(PassagesComponent);
+                        var isScouted = statusComponent.scouted;
+                        if (sectorPos.sectorID === posComponent.sectorID) {
+                            classes += " vis-out-sector-current";
+                        }
+                        
+                        if (neighbour.has(VisitedComponent)) {
+                            classes += " vis-out-sector-visited";
+                        }
+                        
+                        content = "?";
+                        var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
+                        if (isScouted) content = sectorPos.sectorId();
+                        if (neighbour.has(CampComponent)) content = "c";
+                        if (neighbour.has(WorkshopComponent)) content = "w";
+                        if (sectorPassages.passageUp && isScouted) content += "U";
+                        if (sectorPassages.passageDown && isScouted) content += "D";
+                        if (unScoutedLocales > 0 && isScouted) content += "l";
+                    } else {
+                        classes += " vis-out-sector-null";
+                    }
 					var td = "<td class='" + classes + "'>" + content + "</td>";
-					$("#tab-vis-out table tr").append(td);
-				}
-			}
-			*/
-			return visitedSectors;
+                    $("#tab-vis-out table tr#" + trID).append(td);
+                }
+            }
 		},
     });
 

@@ -1,6 +1,7 @@
 // Functions to respond to player actions parsed by the UIFunctions
 define(['ash',
 	'game/constants/GameConstants',
+	'game/constants/PositionConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/PlayerStatConstants',
 	'game/constants/ItemConstants',
@@ -41,7 +42,7 @@ define(['ash',
 	'game/systems/PlayerPositionSystem',
 	'game/systems/SaveSystem'
 ], function (Ash,
-	GameConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UIConstants, TextConstants,
+	GameConstants, PositionConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UIConstants, TextConstants,
 	PlayerPositionNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent, VisitedComponent,
@@ -54,14 +55,6 @@ define(['ash',
 ) {
     
     var PlayerActionFunctions = Ash.System.extend({
-        
-        directions: {
-            left: "LEFT",
-            right: "RIGHT",
-            up: "UP",
-            down: "DOWN",
-            camp: "CAMP"
-        },
         
 		playerPositionNodes: null,
 		playerLocationNodes: null,
@@ -133,33 +126,41 @@ define(['ash',
             if (direction) {
                 var playerPos = this.playerPositionNodes.head.position;
                 switch (direction) {
-                    case this.directions.left:
-                        this.playerActionsHelper.deductCosts("move_sector_left");
-                        playerPos.sector--;
-                        break;
-                    case this.directions.right:
-                        this.playerActionsHelper.deductCosts("move_sector_right");
-                        playerPos.sector++;
-                        break;
-                    case this.directions.up:
-                        this.playerActionsHelper.deductCosts("move_level_up");
-                        playerPos.level++;
-                        break;
-                    case this.directions.down:
-                        this.playerActionsHelper.deductCosts("move_level_down");
-                        playerPos.level--;
-                        break;
-                    case this.directions.camp:
-                        if (this.nearestCampNodes.head) {
-                            this.playerActionsHelper.deductCosts("move_camp_level");
-                            var campSector = this.nearestCampNodes.head.entity;
-                            var campPosition = campSector.get(PositionComponent);
-                            playerPos.level = campPosition.level;
-                            playerPos.sectorX = campPosition.sectorX;
-                            playerPos.sectorY = campPosition.sectorY;
-                            this.enterCamp(true);
-                        }
-                        break;
+				case PositionConstants.DIRECTION_WEST:
+					this.playerActionsHelper.deductCosts("move_sector_west");
+					playerPos.sectorX--;
+					break;
+				case PositionConstants.DIRECTION_NORTH:
+					this.playerActionsHelper.deductCosts("move_sector_north");
+					playerPos.sectorY--;
+					break;
+				case PositionConstants.DIRECTION_SOUTH:
+					this.playerActionsHelper.deductCosts("move_sector_south");
+					playerPos.sectorY++;
+					break;
+				case PositionConstants.DIRECTION_EAST:
+					this.playerActionsHelper.deductCosts("move_sector_east");
+					playerPos.sectorX++;
+					break;
+				case PositionConstants.DIRECTION_UP:
+					this.playerActionsHelper.deductCosts("move_level_up");
+					playerPos.level++;
+					break;
+				case PositionConstants.DIRECTION_DOWN:
+					this.playerActionsHelper.deductCosts("move_level_down");
+					playerPos.level--;
+					break;
+				case PositionConstants.DIRECTION_CAMP:
+					if (this.nearestCampNodes.head) {
+						this.playerActionsHelper.deductCosts("move_camp_level");
+						var campSector = this.nearestCampNodes.head.entity;
+						var campPosition = campSector.get(PositionComponent);
+						playerPos.level = campPosition.level;
+						playerPos.sectorX = campPosition.sectorX;
+						playerPos.sectorY = campPosition.sectorY;
+						this.enterCamp(true);
+					}
+					break;
                 }
                 
                 this.forceResourceBarUpdate();
@@ -600,15 +601,16 @@ define(['ash',
         },
         
         buildBridge: function (sectorPos) {
-			var l = parseInt(sectorPos.split("-")[0]);
-			var s = parseInt(sectorPos.split("-")[1]);
-			var sector = this.levelHelper.getSectorByPosition(l, s);
-            if (this.playerActionsHelper.checkAvailability("build_out_bridge"), true, sector) {
+			var l = parseInt(sectorPos.split(".")[0]);
+			var sX = parseInt(sectorPos.split(".")[1]);
+			var sY = parseInt(sectorPos.split(".")[2]);
+			var sector = this.levelHelper.getSectorByPosition(l, sX, sY);
+            if (this.playerActionsHelper.checkAvailability("build_out_bridge", true, sector)) {
                 var positionComponent = sector.get(PositionComponent);
                 var passagesComponent = sector.get(PassagesComponent);
-                var isLeft = passagesComponent.isLeftBridgeable();
-                var isRight = passagesComponent.isRightBridgeable();
                 
+				// TODO re-implement bridge building
+				/*
                 if (isLeft && isRight) {
                     console.log("WARN: Both left and right bridgeable.");
                     return;
@@ -636,6 +638,7 @@ define(['ash',
                 
                 this.buildImprovement("build_out_bridge", this.playerActionsHelper.getImprovementNameForAction("build_out_bridge"), sector);
                 this.buildImprovement("build_out_bridge", this.playerActionsHelper.getImprovementNameForAction("build_out_bridge"), neighbour, true);
+                */
             }
         },
         
