@@ -200,7 +200,7 @@ define([
                     var info = project.name + " on sector " + project.sector + (project.level === level ? "" : " (level " + project.level + ")");
                     var classes = "action action-build action-level-project";
                     var action = project.action;
-                    var sector = project.level + "-" + project.sector;
+                    var sector = project.level + "." + project.sector + "." + project.direction;
                     var tr = "<tr><td><button class='" + classes + "' action='" + action + "' sector='" + sector + "' + id='btn-" + action + "-" + sector + "'>" + name + "</button></td><td>" + info + "</td></tr>";
                     $("#in-improvements-level table").append(tr);
                 }

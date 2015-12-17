@@ -1,6 +1,8 @@
 define(
-['ash', 'game/constants/WorldCreatorConstants', 'game/constants/PositionConstants', 'game/constants/LocaleConstants', 'game/vos/LocaleVO'],
-function (Ash, WorldCreatorConstants, PositionConstants, LocaleConstants, LocaleVO) {
+['ash',
+ 'game/constants/WorldCreatorConstants', 'game/constants/PositionConstants', 'game/constants/MovementConstants',
+ 'game/constants/LocaleConstants', 'game/vos/LocaleVO'],
+function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, LocaleConstants, LocaleVO) {
 
     SECTOR_TYPE_NOLIGHT = -1;
     
@@ -168,6 +170,14 @@ function (Ash, WorldCreatorConstants, PositionConstants, LocaleConstants, Locale
 		
 		getEnemeyDefeatedVerb: function(enemyList) {
 			return this.getCommonText(enemyList, "defeatedV", "", "defeated", false);
+		},
+		
+		getUnblockedVerb: function (blockerType) {
+			switch (blockerType) {
+				case MovementConstants.BLOCKER_TYPE_GAP: return "bridged";
+				case MovementConstants.BLOCKER_TYPE_WASTE: return "cleared";
+				case MovementConstants.BLOCKER_TYPE_GANG: return "defeated";
+	 	 	}
 		},
 		
 		getDensityBracket: function (density) {

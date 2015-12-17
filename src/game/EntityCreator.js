@@ -2,6 +2,7 @@ define([
     'ash',
     'game/constants/PerkConstants',
     'game/constants/ItemConstants',
+    'game/constants/PositionConstants',
     'game/components/player/VisionComponent',
     'game/components/player/StaminaComponent',
     'game/components/player/ReputationComponent',
@@ -40,6 +41,7 @@ define([
     Ash,
     PerkConstants,
     ItemConstants,
+	PositionConstants,
     VisionComponent,
     StaminaComponent,
     ReputationComponent,
@@ -129,7 +131,7 @@ define([
 			return level;
 		},
 	
-		createSector: function (saveKey, level, posX, posY, passageOptions, sectorFeatures, locales, enemies, enemyNum, localeEnemyNum) {
+		createSector: function (saveKey, level, posX, posY, passageOptions, movementBlockers, sectorFeatures, locales, enemies, enemyNum, localeEnemyNum) {
 			var sector = new Ash.Entity()
 			.add(new SectorComponent())
 			.add(new ResourcesComponent(0))
@@ -143,10 +145,10 @@ define([
 			.add(new PassagesComponent(
 				passageOptions.passageUp,
 				passageOptions.passageDown,
-				passageOptions.blockerNorth,
-				passageOptions.blockerSouth,
-				passageOptions.blockerWest,
-				passageOptions.blockerEast))
+				movementBlockers[PositionConstants.DIRECTION_NORTH],
+				movementBlockers[PositionConstants.DIRECTION_SOUTH],
+				movementBlockers[PositionConstants.DIRECTION_WEST],
+				movementBlockers[PositionConstants.DIRECTION_EAST]))
 			.add(new SectorFeaturesComponent(
 				level,
 				sectorFeatures.buildingDensity,

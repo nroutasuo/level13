@@ -227,13 +227,13 @@ ul.tabs li.selected {
 	background: #e6e6e6;
 }
 
-.lvl13-box-3, .vis-out-sector {
+.lvl13-box-3, .vis-out-sector, #tab-vis-out table.via {
 	border: 1px solid #555;
 	background: #262826;
 	color: #999;
 }
 
-.sunlit .lvl13-box-3, .sunlit .vis-out-sector {
+.sunlit .lvl13-box-3, .sunlit .vis-out-sector, .sunlit #tab-vis-out table.via {
 	border: 1px solid #aaa;
 	background: #efefef;
 	color: #333;
@@ -341,7 +341,7 @@ hr {
 	background-color: #444;
 }
 
-.sunlit .lvl13-element-overlay, .sunlit button .cooldown-action, .sunlit  .cooldown-reqs, td.vis-out-sector-visited {
+.sunlit .lvl13-element-overlay, .sunlit button .cooldown-action, .sunlit  .cooldown-reqs, div.vis-out-sector-visited {
 	background-color: rgba(136, 136, 136, 0.3);
 }
 
@@ -349,12 +349,12 @@ hr {
 	background-color: #b3b3b3;
 }
 
-.lvl13-focus, li.item-focused, li.item-focused div.item-count, td.vis-out-sector-current, button:hover, a:hover {
+.lvl13-focus, li.item-focused, li.item-focused div.item-count, div.vis-out-sector-current, button:hover, a:hover {
 	color: #fff !important;
 	border-color: #aaa;
 }
 
-.sunlit .lvl13-focus, .sunlit li.item-focused, .sunlit li.item-focused div.item-count, .sunlit td.vis-out-sector-current, .sunlit button:hover, .sunlit a:hover {
+.sunlit .lvl13-focus, .sunlit li.item-focused, .sunlit li.item-focused div.item-count, .sunlit div.vis-out-sector-current, .sunlit button:hover, .sunlit a:hover {
 	color: black !important;
 	border-color: #4a4a4a;
 }
@@ -514,19 +514,69 @@ table.vis {
 #tab-vis-out table.vis {
     width: auto;
     border: 1px dashed;
-    padding: -1px;
-    border-collapse: collapse;
 }
 
-td.vis-out-sector {
-	width: 25px;
-	height: 9px;
+td.vis-out-sector-container {
+    height: 15px;
+    width: 25px;
+    overflow: hidden;
+    position: relative;
+}
+
+div.vis-out-sector {
 	text-align: center;
-	font-size: 75%;
+	font-size: 50%;
 }
 
-td.vis-out-sector-null {
+div.vis-out-sector-null {
     border-width: 0px;
+}
+
+div.vis-out-blocker {
+    background: red;
+    width: 5px;
+    height: 5px;
+    position: absolute;
+}
+
+div.vis-out-blocker-north {
+    top: 0;
+    left: 13px;
+}
+
+div.vis-out-blocker-east {
+    right: 0;
+    top: 8px;
+}
+
+div.vis-out-blocker-south {
+    bottom: 0;
+    left: 13px;
+}
+
+div.vis-out-blocker-west {
+    left: 0;
+    top: 8px;
+}
+
+div.vis-out-blocker-null {
+    background: none;
+}
+
+div.vis-out-blocker-3 {
+    background: red;
+}
+
+div.vis-out-blocker-2 {
+    background: green;
+}
+
+div.vis-out-blocker-1 {
+    background: blue;
+}
+
+div.vis-out-sector-current {
+    border-width: 2px;
 }
 
 tr.current .camp-overview-level, tr.current .camp-overview-name {

@@ -1,5 +1,16 @@
 // Singleton with helper methods for UI elements used throughout the game
-define(['ash'], function (Ash) {
+define(['ash',
+	'game/constants/PositionConstants',
+    'game/components/common/PositionComponent',
+    'game/components/common/CampComponent',
+    'game/components/sector/SectorStatusComponent',
+    'game/components/sector/SectorLocalesComponent',
+    'game/components/sector/PassagesComponent',
+    'game/components/common/VisitedComponent',
+    'game/components/sector/improvements/WorkshopComponent',
+], function (Ash,
+	PositionConstants,
+	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent, PassagesComponent, VisitedComponent, WorkshopComponent) {
     
     var UIConstants = {
 		
@@ -73,6 +84,49 @@ define(['ash'], function (Ash) {
 				}
 			}
 			return html;
+		},
+		
+		getSectorTD: function (playerPosition, sector) {
+			var content = "";
+			var classes = "vis-out-sector";
+			if (sector) {
+				var sectorPos = sector.get(PositionComponent);
+				var statusComponent = sector.get(SectorStatusComponent);
+				var localesComponent = sector.get(SectorLocalesComponent);
+				var sectorPassages = sector.get(PassagesComponent);
+				var isScouted = statusComponent.scouted;
+				if (sectorPos.sectorId() === playerPosition.sectorId()) {
+					classes += " vis-out-sector-current";
+				}
+				
+				if (sector.has(VisitedComponent)) {
+					classes += " vis-out-sector-visited";
+				}
+				
+				content = "?";
+				var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
+				if (isScouted) content = sectorPos.sectorId();
+				if (sector.has(CampComponent)) content = "c";
+				if (sector.has(WorkshopComponent)) content = "w";
+				if (sectorPassages.passageUp && isScouted) content += "U";
+				if (sectorPassages.passageDown && isScouted) content += "D";
+				if (unScoutedLocales > 0 && isScouted) content += "l";
+			} else {
+				classes += " vis-out-sector-null";
+			}
+			
+			content = "<div class='" + classes + "'>" + content + "<div>";
+			
+			if (sector) {
+				for (var i in PositionConstants.getLevelDirections()) {
+					var direction = PositionConstants.getLevelDirections()[i];
+					var blocker = sectorPassages.getBlocker(direction);
+					var blockerType = blocker ? blocker.type : "null";
+					content += "<div class='vis-out-blocker vis-out-blocker-" + PositionConstants.getDirectionName(direction) + " vis-out-blocker-" + blockerType + "'/>";
+				}
+			}
+			
+			return "<td class='vis-out-sector-container'>" + content + "</td>";
 		},
 		
 		getItemBonusText: function (item) {

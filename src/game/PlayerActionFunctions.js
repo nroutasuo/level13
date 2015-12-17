@@ -2,6 +2,7 @@
 define(['ash',
 	'game/constants/GameConstants',
 	'game/constants/PositionConstants',
+	'game/constants/MovementConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/PlayerStatConstants',
 	'game/constants/ItemConstants',
@@ -42,7 +43,7 @@ define(['ash',
 	'game/systems/PlayerPositionSystem',
 	'game/systems/SaveSystem'
 ], function (Ash,
-	GameConstants, PositionConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UIConstants, TextConstants,
+	GameConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UIConstants, TextConstants,
 	PlayerPositionNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent, VisitedComponent,
@@ -604,53 +605,43 @@ define(['ash',
 			var l = parseInt(sectorPos.split(".")[0]);
 			var sX = parseInt(sectorPos.split(".")[1]);
 			var sY = parseInt(sectorPos.split(".")[2]);
+			var direction = parseInt(sectorPos.split(".")[3]);
 			var sector = this.levelHelper.getSectorByPosition(l, sX, sY);
             if (this.playerActionsHelper.checkAvailability("build_out_bridge", true, sector)) {
                 var positionComponent = sector.get(PositionComponent);
                 var passagesComponent = sector.get(PassagesComponent);
-                
-				// TODO re-implement bridge building
-				/*
-                if (isLeft && isRight) {
-                    console.log("WARN: Both left and right bridgeable.");
+				var blocker = passagesComponent.getBlocker(direction);
+				
+				if (!blocker || blocker.type !== MovementConstants.BLOCKER_TYPE_GAP) {
+					console.log("WARN: Can't build bridge because there is no gap: " + sectorPos);
                     return;
-                }
+				}
                 
-                if (!isLeft && !isRight) {
-                    console.log("WARN: Trying to build a bridge but there's nothing to bridge.");
-                    return;
-                }
-                
-                // Find neighbours
-                var neighbour = this.levelHelper.getSectorByPosition(
-					positionComponent.level,
-					isLeft ? positionComponent.sector - 1 : positionComponent.sector + 1
-				);
-                
+                // Find neighbour
+				var neighbourPos = PositionConstants.getPositionOnPath(positionComponent.getPosition(), direction, 1);
+                var neighbour = this.levelHelper.getSectorByPosition(neighbourPos.level, neighbourPos.sectorX, neighbourPos.sectorY);
                 var neighbourPassagesComponent = neighbour.get(PassagesComponent);
-                var neighbourBlockedLeft = neighbourPassagesComponent.isLeftBridgeable();
-                var neighbourBlockedRight = neighbourPassagesComponent.isRightBridgeable();
+				var neighbourBlocker = neighbourPassagesComponent.getBlocker(PositionConstants.getOppositeDirection(direction));
                 
-                if ((isLeft && !neighbourBlockedRight) || (isRight && !neighbourBlockedLeft)) {
-                    console.log("WARN: Trying to build bridge but neighbour doesn't match.");
+				if (!neighbourBlocker || neighbourBlocker.type !== MovementConstants.BLOCKER_TYPE_GAP) {
+                    console.log("WARN: Trying to build bridge but neighbour have gap.");
                     return;
                 }
                 
                 this.buildImprovement("build_out_bridge", this.playerActionsHelper.getImprovementNameForAction("build_out_bridge"), sector);
                 this.buildImprovement("build_out_bridge", this.playerActionsHelper.getImprovementNameForAction("build_out_bridge"), neighbour, true);
-                */
             }
         },
         
-        collectFood: function() {
+        collectFood: function () {
             this.collectCollector("use_out_collector_food", "collector_food");
         },
         
-        collectWater: function() {
+        collectWater: function () {
             this.collectCollector("use_out_collector_water", "collector_water");
         },
         
-        useCampfire: function() {            
+        useCampfire: function () {
             var campSector = this.nearestCampNodes.head.entity;
             var campComponent = campSector.get(CampComponent);
             if (this.playerActionsHelper.checkAvailability("use_in_campfire", true) && campSector) {
@@ -739,16 +730,16 @@ define(['ash',
         
         addFollower: function(follower) {
             var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-            itemsComponent.addItem(follower);                    
+            itemsComponent.addItem(follower);
             this.addLogMessage("A wanderer agrees to travel together for awhile.");
             this.forceResourceBarUpdate();
             this.forceStatsBarUpdate();
-            this.save();   
+            this.save();
         },
         
         craftItem: function (itemId) {
 			var actionName = "craft_" + itemId;
-            if (this.playerActionsHelper.checkAvailability(actionName, true)) {                
+            if (this.playerActionsHelper.checkAvailability(actionName, true)) {
                 this.playerActionsHelper.deductCosts(actionName);
                 
                 var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);

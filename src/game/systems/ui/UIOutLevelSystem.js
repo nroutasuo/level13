@@ -3,9 +3,11 @@ define([
     'game/constants/PlayerActionConstants',
     'game/constants/PlayerStatConstants',
     'game/constants/TextConstants',
+    'game/constants/UIConstants',
     'game/constants/PositionConstants',
     'game/constants/EnemyConstants',
     'game/constants/LocaleConstants',
+    'game/constants/MovementConstants',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/sector/SectorNode',
@@ -25,7 +27,7 @@ define([
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/EnemiesComponent'
 ], function (
-    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, PositionConstants, EnemyConstants, LocaleConstants,
+    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, UIConstants, PositionConstants, EnemyConstants, LocaleConstants, MovementConstants,
     PlayerPositionNode, PlayerLocationNode, SectorNode, CampNode, VisitedSectorNode,
     VisionComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
     MovementOptionsComponent,
@@ -393,10 +395,16 @@ define([
 			}
 			
 			// Blockers n/s/w/e
-			for (var direction in PositionConstants.LEVEL_DIRECTIONS) {
-				var blocker = this.movementHelper.getBlocker(entity, direction);
-				if (blocker)
-					description += "Passage to the " + TextConstants.getDirectionName(direction) + " is blocked by a " + blocker.name + ". ";
+			for (var i in PositionConstants.getLevelDirections()) {
+				var direction = PositionConstants.getLevelDirections()[i];
+				var blocker = passagesComponent.getBlocker(direction);
+				if (blocker) {
+                    if (this.movementHelper.isBlocked(entity, direction)) {
+                        description += "Passage to the " + TextConstants.getDirectionName(direction) + " is blocked by a " + blocker.name + ". ";
+                    } else {
+                        description += "A " + blocker.name.toLowerCase() + " on the " + TextConstants.getDirectionName(direction) + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
+                    }
+                }
 			}
 			return description;
 		},
@@ -457,17 +465,18 @@ define([
 			$("#table-out-actions-movement-related").empty();
 			
 			function addBlockerActionButton(blocker, direction) {
-				if (blocker.type !== 1) {
-					if ((direction === 0 && !movementOptionsComponent.canMoveLeft) || (direction === 1 && !movementOptionsComponent.canMoveRight)) {
-						var action = blocker.actionBaseID + "_" + direction;
-						var description = blocker.actionDescription;
-						var button = "<button class='action' action='" + action + "'>" + description + "</button>";
-						$("#table-out-actions-movement-related").append("<tr><td>" + button + "</td></tr>");
-					}
-				}
+                if (blocker.type !== MovementConstants.BLOCKER_TYPE_GAP) {
+                    if (!movementOptionsComponent.canMoveToDirection(direction)) {
+                        var action = blocker.actionBaseID + "_" + direction;
+                        var description = blocker.actionDescription;
+                        var button = "<button class='action' action='" + action + "'>" + description + "</button>";
+                        $("#table-out-actions-movement-related").append("<tr><td>" + button + "</td></tr>");
+                    }
+                }
 			}
 			
-			for (var direction in PositionConstants.LEVEL_DIRECTIONS) {
+			for (var i in PositionConstants.getLevelDirections()) {
+				var direction = PositionConstants.getLevelDirections()[i];
 				var directionBlocker = this.movementHelper.getBlocker(currentSector, direction);
 				if (directionBlocker) addBlockerActionButton(directionBlocker, direction);
 			}
@@ -478,11 +487,12 @@ define([
 		},
 		
 		rebuildVis: function (playerPosNodes, sectorNodes) {
-			if (!playerPosNodes.head) return 0;
+			if (!playerPosNodes.head || !this.playerLocationNodes.head) return;
+			
 			$("#tab-vis-out table").empty();
             
-            var mapSize = 5;
-            var mapDiameter = (mapSize - 1)/2;
+            var mapSize = 7;
+            var mapDiameter = (mapSize - 1) / 2;
 			
 			var posComponent = playerPosNodes.head.position;
             var neighbour;
@@ -491,36 +501,8 @@ define([
                 var trID = "tab-vis-out-tr-" + dy;
                 $("#tab-vis-out table").append("<tr id=" + trID + "></tr>");
                 for (var dx = -mapDiameter; dx <= mapDiameter; dx++) {
-                    var content = "";
-                    var classes = "vis-out-sector";
                     neighbour = this.levelHelper.getSectorByPosition(posComponent.level, posComponent.sectorX + dx, posComponent.sectorY + dy);
-                    if (neighbour) {
-                        sectorPos = neighbour.get(PositionComponent);
-                        var statusComponent = neighbour.get(SectorStatusComponent);
-                        var localesComponent = neighbour.get(SectorLocalesComponent);
-                        var sectorPassages = neighbour.get(PassagesComponent);
-                        var isScouted = statusComponent.scouted;
-                        if (sectorPos.sectorID === posComponent.sectorID) {
-                            classes += " vis-out-sector-current";
-                        }
-                        
-                        if (neighbour.has(VisitedComponent)) {
-                            classes += " vis-out-sector-visited";
-                        }
-                        
-                        content = "?";
-                        var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
-                        if (isScouted) content = sectorPos.sectorId();
-                        if (neighbour.has(CampComponent)) content = "c";
-                        if (neighbour.has(WorkshopComponent)) content = "w";
-                        if (sectorPassages.passageUp && isScouted) content += "U";
-                        if (sectorPassages.passageDown && isScouted) content += "D";
-                        if (unScoutedLocales > 0 && isScouted) content += "l";
-                    } else {
-                        classes += " vis-out-sector-null";
-                    }
-					var td = "<td class='" + classes + "'>" + content + "</td>";
-                    $("#tab-vis-out table tr#" + trID).append(td);
+                    $("#tab-vis-out table tr#" + trID).append(UIConstants.getSectorTD(posComponent, neighbour));
                 }
             }
 		},

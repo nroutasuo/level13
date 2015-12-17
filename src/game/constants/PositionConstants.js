@@ -11,8 +11,6 @@ define(['ash'], function (Ash) {
         DIRECTION_UP: 5,
         DIRECTION_DOWN: 6,
         
-        LEVEL_DIRECTIONS: [this.DIRECTION_NORTH, this.DIRECTION_EAST, this.DIRECTION_SOUTH, this.DIRECTION_WEST],
-        
         getPositionOnPath: function (pathStartingPos, pathDirection, pathStep) {
             var resultPos = pathStartingPos.clone();
             if (pathDirection === this.DIRECTION_NORTH) resultPos.sectorY -= pathStep;
@@ -40,6 +38,14 @@ define(['ash'], function (Ash) {
             return this.DIRECTION_NONE;
         },
         
+        getDirectionFrom: function (sectorPosFrom, sectorPosTo) {
+            if (sectorPosFrom.sectorX < sectorPosTo.sectorX) return this.DIRECTION_EAST;
+            if (sectorPosFrom.sectorX > sectorPosTo.sectorX) return this.DIRECTION_WEST;
+            if (sectorPosFrom.sectorY < sectorPosTo.sectorY) return this.DIRECTION_SOUTH;
+            if (sectorPosFrom.sectorY > sectorPosTo.sectorY) return this.DIRECTION_NORTH;
+            return this.DIRECTION_NONE;
+        },
+        
         getDistanceTo: function (sectorPosFrom, sectorPosTo) {
             var xs = sectorPosFrom.sectorX - sectorPosTo.sectorX;
             xs = xs * xs;
@@ -48,9 +54,38 @@ define(['ash'], function (Ash) {
             return Math.sqrt(xs + ys);
         },
         
+        getOppositeDirection: function (direction) {
+            switch (direction) {
+                case this.DIRECTION_WEST: return this.DIRECTION_EAST;
+                case this.DIRECTION_NORTH: return this.DIRECTION_SOUTH;
+                case this.DIRECTION_SOUTH: return this.DIRECTION_NORTH;
+                case this.DIRECTION_EAST: return this.DIRECTION_WEST;
+                case this.DIRECTION_UP: return this.DIRECTION_DOWN;
+                case this.DIRECTION_DOWN: return this.DIRECTION_UP;
+                case this.DIRECTION_CAMP: return this.DIRECTION_CAMP;
+            }
+        },
+        
+        getDirectionName: function (direction) {
+            switch (direction) {
+                case this.DIRECTION_WEST: return "west";
+                case this.DIRECTION_NORTH: return "north";
+                case this.DIRECTION_SOUTH: return "south";
+                case this.DIRECTION_EAST: return "east";
+                case this.DIRECTION_UP: return "up";
+                case this.DIRECTION_DOWN: "down";
+                case this.DIRECTION_CAMP: "camp";
+                case this.DIRECTION_NONE: "none";
+            }
+            return "unknown";
+        },
+        
+        getLevelDirections: function () {
+            return [this.DIRECTION_NORTH, this.DIRECTION_EAST, this.DIRECTION_SOUTH, this.DIRECTION_WEST];
+        },
+        
         isLevelDirection: function (direction) {
-            this.LEVEL_DIRECTIONS = [this.DIRECTION_NORTH, this.DIRECTION_EAST, this.DIRECTION_SOUTH, this.DIRECTION_WEST];
-            return this.LEVEL_DIRECTIONS.indexOf(direction) >= 0;
+            return this.getLevelDirections().indexOf(direction) >= 0;
         },
     
     };

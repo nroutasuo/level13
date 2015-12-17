@@ -108,7 +108,8 @@ define([
             var playerPerks = this.playerResourcesNodes.head.entity.get(PerksComponent);
             var deityComponent = this.playerResourcesNodes.head.entity.get(DeityComponent);
             
-            var sector = otherSector || this.playerLocationNodes.head.entity;
+            var sector = otherSector;
+			if (!sector) sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             if (!sector) return { value: 0, reason: "No selected sector" };
             
             var requirements = this.getReqs(action, sector);

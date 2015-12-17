@@ -148,6 +148,7 @@ define([
 			var blockedSouth = this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_SOUTH);
 			var blockedWest = this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_WEST);
 			var blockedEast = this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_EAST);
+			
 			movementOptions.canMoveNorth = movementOptions.canMoveNorth && !blockedNorth;
 			movementOptions.cantMoveNorthReason = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_NORTH);
 			if (!neighbourNorth) movementOptions.cantMoveNorthReason = "Nothing here.";

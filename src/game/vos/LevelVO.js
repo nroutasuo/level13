@@ -22,7 +22,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			
 			this.sectors = [];
 			this.centralSectors = [];
-			this.sectorsByPos = {};
+			this.sectorsByPos = [];
 			this.minX = 0;
 			this.maxX = 0;
 			this.minY = 0;
@@ -30,6 +30,14 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
         },
 		
 		addSector: function (sectorVO) {
+			if (sectorVO === null) {
+				console.log("WARN: tried to add null sector to a level");
+			}
+			
+			if (this.hasSector(sectorVO.position.sectorX, sectorVO.position.sectorY)) {
+				console.log("WARN: Level aready contains sector " + sectorVO.position + " " + this.getSector(sectorVO.position.sectorX, sectorVO.position.sectorY).position);
+			}
+			
 			this.sectors.push(sectorVO);
 			
 			if (this.isCentral(sectorVO.position.sectorX, sectorVO.position.sectorY)) this.centralSectors.push(sectorVO);
@@ -44,7 +52,14 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 		},
 		
 		hasSector: function (sectorX, sectorY) {
-			return this.sectorsByPos[sectorX] && this.sectorsByPos[sectorX][sectorY];
+			var colList = this.sectorsByPos[sectorX];
+			if (colList) {
+				var sector = this.sectorsByPos[sectorX][sectorY];
+				if (sector != null && typeof sector !== 'undefined') {
+					return true;
+				}
+			}
+			return false;
 		},
 		
 		getSector: function (sectorX, sectorY) {

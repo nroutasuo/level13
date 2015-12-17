@@ -1,43 +1,42 @@
-define(['ash'], function (Ash) {
-	
-    var blockerTypes = {
-        1: [ "Gap" ],
-		2: [ "Toxic Waste" ],
-		3: [ "Gang" ],
-    };
+define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConstants) {
     
     var MovementBlockerVO = Ash.Class.extend({
 	
         constructor: function (type) {
 			this.type = type;
-			
-			if (!blockerTypes[type]) console.log("WARN: No such blocker type: " + type);
-			
-			this.name = blockerTypes[type][0];
-			this.bridgeable = type == 1;
-			this.cleanable = type == 2;
-			this.defeatable = type == 3;
-			this.flyable = type == 1 || type == 2;
+			this.name = this.getName();
+			this.bridgeable = type === MovementConstants.BLOCKER_TYPE_GAP;
+			this.cleanable = type === MovementConstants.BLOCKER_TYPE_WASTE;
+			this.defeatable = type === MovementConstants.BLOCKER_TYPE_GANG;
+			this.flyable = type === MovementConstants.BLOCKER_TYPE_GAP || type === MovementConstants.BLOCKER_TYPE_WASTE;
 			
 			this.actionDescription = this.getActionDescription();
 			this.actionBaseID = this.getActionBaseId();
         },
 		
+		getName: function () {
+			switch (this.type) {
+				case MovementConstants.BLOCKER_TYPE_GAP: return "Gap";
+				case MovementConstants.BLOCKER_TYPE_WASTE: return "Toxic waste";
+				case MovementConstants.BLOCKER_TYPE_GANG: return "Gang";
+	 	 	}
+		},
+		
 		getActionDescription: function () {
 			switch (this.type) {
-				case 1: return "Bridge cap";
-				case 2: return "Clear waste";
-				case 3: return "Fight gang";
+				case MovementConstants.BLOCKER_TYPE_GAP: return "Bridge gap";
+				case MovementConstants.BLOCKER_TYPE_WASTE: return "Clear waste";
+				case MovementConstants.BLOCKER_TYPE_GANG: return "Fight gang";
 	 	 	}
 		},
 		
 		getActionBaseId: function () {
 			switch (this.type) {
-				case 1: return "build_out_bridge";
-				case 2: return "clear_waste";
-				case 3: return "fight_gang";
+				case MovementConstants.BLOCKER_TYPE_GAP: return "build_out_bridge";
+				case MovementConstants.BLOCKER_TYPE_WASTE: return "clear_waste";
+				case MovementConstants.BLOCKER_TYPE_GANG: return "fight_gang";
 	 	 	}
-		},		
+		},
 		
     });
 

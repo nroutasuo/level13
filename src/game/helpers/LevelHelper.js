@@ -3,6 +3,7 @@ define([
     'ash',
     'game/constants/WorldCreatorConstants',
     'game/constants/LocaleConstants',
+    'game/constants/PositionConstants',
     'game/nodes/LevelNode',
     'game/nodes/sector/SectorNode',
     'game/components/common/PositionComponent',
@@ -19,6 +20,7 @@ define([
 	Ash,
 	WorldCreatorConstants,
 	LocaleConstants,
+	PositionConstants,
 	LevelNode, SectorNode,
 	PositionComponent,
 	SectorStatusComponent,
@@ -104,7 +106,7 @@ define([
 				projectExists = false;
 				for (var j = 0; j < projectsFiltered.length; j++) {
 					existingProject = projectsFiltered[j];
-					if (existingProject.sectorId() === project.sectorId() && (existingProject.level - 1 === project.level || existingProject.level + 1 === project.level)) {
+					if (existingProject.sector === project.sector && (existingProject.level - 1 === project.level || existingProject.level + 1 === project.level)) {
 						projectExists = true;
 						break;
 					}
@@ -121,26 +123,24 @@ define([
 			var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
 			var sectorPassagesComponent;
 			if (levelPassagesComponent) {
-				var sectorEntity;
 				var statusComponent;
 				var scouted;
 				var passage;
-				
-				// TODO re-implement available projects
-				console.log("WARN: getAvailableProjectsForLevel disabled");
-				/*
-				for (var s = WorldCreatorConstants.FIRST_SECTOR; s <= WorldCreatorConstants.LAST_SECTOR; s++) {
-					sectorEntity = this.getSectorByPosition(level, s);
-					statusComponent = sectorEntity.get(SectorStatusComponent);
-					sectorPassagesComponent = sectorEntity.get(PassagesComponent);
+				var sectorPosition;
+				for (var node = this.sectorNodes.head; node; node = node.next) {
+					sectorPosition = node.entity.get(PositionComponent);
+					if (sectorPosition.level !== level) continue;
+					
+					statusComponent = node.entity.get(SectorStatusComponent);
+					sectorPassagesComponent = node.entity.get(PassagesComponent);
 					scouted = statusComponent && statusComponent.scouted;
 					if (scouted) {
 						var improvementName = "";
 						var actionName = "";
 						
 						// passages
-						if (levelPassagesComponent.passagesUp[s] && !levelPassagesComponent.passagesUpBuilt[s]) {
-							switch (levelPassagesComponent.passagesUp[s].type) {
+						if (levelPassagesComponent.passagesUp[sectorPosition.sectorId()] && !levelPassagesComponent.passagesUpBuilt[sectorPosition.sectorId()]) {
+							switch (levelPassagesComponent.passagesUp[sectorPosition.sectorId()].type) {
 								case 1:
 									improvementName = improvementNames.passageUpHole;
 									actionName = "build_out_passage_up_hole";
@@ -154,11 +154,11 @@ define([
 									actionName = "build_out_passage_up_stairs";
 									break;
 							}
-							if (this.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0)
-								projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, level, s));
+							if (this.playerActionsHelper.checkRequirements(actionName, false, node.entity).value > 0)
+								projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, level, sectorPosition.sectorId(), PositionConstants.DIRECTION_UP));
 						}
-						if (levelPassagesComponent.passagesDown[s] && !levelPassagesComponent.passagesDownBuilt[s]) {
-							switch (levelPassagesComponent.passagesDown[s].type) {
+						if (levelPassagesComponent.passagesDown[sectorPosition.sectorId()] && !levelPassagesComponent.passagesDownBuilt[sectorPosition.sectorId()]) {
+							switch (levelPassagesComponent.passagesDown[sectorPosition.sectorId()].type) {
 								case 1:
 									improvementName = improvementNames.passageDownHole;
 									actionName = "build_out_passage_down_hole";
@@ -172,18 +172,20 @@ define([
 									actionName = "build_out_passage_down_stairs";
 									break;
 							}
-							if (this.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0)
-								projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, level, s));
+							if (this.playerActionsHelper.checkRequirements(actionName, false, node.entity).value > 0)
+								projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, level, sectorPosition.sectorId(), PositionConstants.DIRECTION_DOWN));
 						}
 						
 						// bridges
-						var hasBridgeableBlocker = (sectorPassagesComponent.blockerLeft != null && sectorPassagesComponent.blockerLeft.bridgeable) || (sectorPassagesComponent.blockerRight != null && sectorPassagesComponent.blockerRight.bridgeable);
-						if (hasBridgeableBlocker && this.playerActionsHelper.checkRequirements("build_out_bridge", false, sectorEntity).value > 0) {
-							projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.bridge), "build_out_bridge", level, s));
+						for (var i in PositionConstants.getLevelDirections()) {
+							var direction = PositionConstants.getLevelDirections()[i];
+							var directionBlocker = sectorPassagesComponent.getBlocker(direction);
+							if (directionBlocker && directionBlocker.bridgeable) {
+								projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.bridge), "build_out_bridge", level, sectorPosition.sectorId(), direction));
+							}
 						}
 					}
 				}
-					*/
 			}
 			
 			return projects;

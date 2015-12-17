@@ -1,5 +1,5 @@
 // Random and seed related functions for the WorldCreator
-define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
+define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], function (Ash, PositionConstants, PositionVO) {
 
     var WorldCreatorRandom = {
 		
@@ -35,13 +35,26 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 				var direction;
 				var additionalRandom = 0;
 				do {
-					direction = this.randomInt(seed*i^37+additionalRandom+seed*i+i+seed*num+seed, 0, 4);
+					direction = this.randomInt(seed*i^37+additionalRandom+seed*i+i+seed*num+seed, 1, 5);
 					additionalRandom += 39;
 				} while(directions.indexOf(direction) >= 0);
 				directions.push(direction);
 			}
 			
 			return directions;
+		},
+		
+		getRandomSectorNeighbour: function (seed, levelVO, sectorVO) {
+			// TODO add a preference for non-camp sectors
+			var neighbour = null;
+			var directionOrder = this.randomDirections(seed * 3, 4);
+			for (var i = 0; i < directionOrder.length; i++) {
+				var direction = directionOrder[i];
+				var directionNeighbourPos = PositionConstants.getPositionOnPath(sectorVO.position, direction, 1);
+				var directionNeighbour = levelVO.getSector(directionNeighbourPos.sectorX, directionNeighbourPos.sectorY);
+				if (directionNeighbour) neighbour = directionNeighbour;
+			}
+			return neighbour;
 		},
 		
 		// Pseudo-random sector position on the given level, within the given area (distance from 0,0)
@@ -61,7 +74,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		
 		// Pseudo-random int between min (inclusive) and max (exclusive)
 		randomInt: function (seed, min, max) {
-			return Math.min(max-1, Math.floor(this.random(seed) * (max - min + 1)) + min);
+			return Math.floor(Math.min(max - 1, Math.floor(this.random(seed) * (max - min + 1)) + min));
 		},
 		
 		// Pseudo-random number based on the seed, evenly distributed between 0-1

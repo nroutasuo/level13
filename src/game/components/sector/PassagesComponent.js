@@ -34,7 +34,7 @@ function (Ash, PositionConstants, PassageVO, MovementBlockerVO) {
                 return this.isBridgeable(PositionConstants.DIRECTION_NORTH) || this.isBridgeable(PositionConstants.DIRECTION_SOUTH) || this.isBridgeable(PositionConstants.DIRECTION_WEST) || this.isBridgeable(PositionConstants.DIRECTION_EAST);
             }
             var blocker = this.getBlocker(direction);
-            return blocker && blocker.bridgeable;
+            return blocker !== null && blocker.bridgeable;
         },
         
         isDefeatable: function (direction) {
@@ -42,7 +42,7 @@ function (Ash, PositionConstants, PassageVO, MovementBlockerVO) {
                 return this.isDefeatable(PositionConstants.DIRECTION_NORTH) || this.isDefeatable(PositionConstants.DIRECTION_SOUTH) || this.isDefeatable(PositionConstants.DIRECTION_WEST) || this.isDefeatable(PositionConstants.DIRECTION_EAST);
             }
             var blocker = this.getBlocker(direction);
-            return blocker && blocker.defeatable;
+            return blocker !== null && blocker.defeatable;
         },
     });
 

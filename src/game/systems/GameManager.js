@@ -88,15 +88,15 @@ define([
                         if (!sectorVO) continue;
                         var up = WorldCreator.getPassageUp(i, x, y);
                         var down = WorldCreator.getPassageDown(i, x, y);
-                        var blockerLeft = WorldCreator.getBlockerLeft(i, x, y);
-                        var blockerRight = WorldCreator.getBlockerRight(i, x, y);
-                        var passageOptions = { passageUp: up, passageDown: down, blockerLeft: blockerLeft, blockerRight: blockerRight};
+                        var passageOptions = { passageUp: up, passageDown: down };
+						var blockers = sectorVO.movementBlockers;
                         this.creator.createSector(
                             this.saveHelper.saveKeys.sector + i + "." + x + "." + y,
                             i,
                             x,
                             y,
                             passageOptions,
+							blockers,
                             WorldCreator.getSectorFeatures(i, x, y),
                             WorldCreator.getLocales(i, x, y),
                             WorldCreator.getSectorEnemies(i, x, y),

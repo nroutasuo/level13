@@ -12,6 +12,7 @@ define([
 	'game/vos/PositionVO',
 	'game/constants/WorldCreatorConstants',
 	'game/constants/PositionConstants',
+	'game/constants/MovementConstants',
 	'game/constants/EnemyConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/LocaleConstants',
@@ -20,7 +21,7 @@ define([
     Ash,
     WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug,
     WorldVO, LevelVO, SectorVO, ResourcesVO, LocaleVO, PositionVO,
-    WorldCreatorConstants, PositionConstants, EnemyConstants, UpgradeConstants, LocaleConstants, ItemConstants
+    WorldCreatorConstants, PositionConstants, MovementConstants, EnemyConstants, UpgradeConstants, LocaleConstants, ItemConstants
 ) {
 
     var WorldCreator = {
@@ -97,28 +98,28 @@ define([
 					}
 				}
 				
-                // TODO re-enable movement blockers
 				// movement blockers: a few per level
-                /*
-				var numBlockers = WorldCreatorRandom.randomInt(88 + seed * 56 * l + seed % 7, 0, Math.ceil(1 + (Math.abs(l - 13) / 2)));
-				if (l === 13) numBlockers = 0;
+				// TODO remove debug numbers for blockers
+				var maxBlockers = WorldCreatorConstants.SECTORS_PER_LEVEL_MIN * levelOrdinal / 25 / 5;
+				var numBlockers = 80//WorldCreatorRandom.randomInt(88 + seed * 56 * l + seed % 7, 1, maxBlockers);
+				// if (l === 13) numBlockers = 0;
 				var blockerSectors = WorldCreatorRandom.randomSectors(seed * l * l + 1 * 22 * i, levelVO, numBlockers, numBlockers + 1, true, "camp");
 				for (var i = 0; i < blockerSectors.length; i++) {
-					var blockerType = this.randomInt(seed * 5831 / l + seed % 2, 1, 4);
-					if (l < 14 && blockerType === 2) blockerType = 1;
-					//if (levelOrdinal < 7 && blockerType === 1) blockerType = 3;
+					var blockerType = WorldCreatorRandom.randomInt(seed * 5831 / l + seed % 2 + (i + 78) * 4, 1, 4);
+					// if (l < 14 && blockerType === MovementConstants.BLOCKER_TYPE_WASTE) blockerType = MovementConstants.BLOCKER_TYPE_GAP;
+					// if (levelOrdinal < 7 && blockerType === MovementConstants.BLOCKER_TYPE_GAP) blockerType = MovementConstants.BLOCKER_TYPE_GANG;
 					
 					var blockedSector = blockerSectors[i];
-					this.world[l][blockedSector].blockerRight = blockerType;
-					if (blockedSector < lastSector) this.world[l][blockedSector + 1].blockerLeft = blockerType;
+					var blockedNeighbour = WorldCreatorRandom.getRandomSectorNeighbour(seed * 101 + (i + 70) * (l + 900), levelVO, blockedSector);
+					var direction = PositionConstants.getDirectionFrom(blockedSector.position, blockedNeighbour.position);
+					
+					blockedSector.addBlocker(direction, blockerType);
+					blockedNeighbour.addBlocker(PositionConstants.getOppositeDirection(direction), blockerType);
 				}
-				*/
-                // WorldCreatorDebug.printLevel(this.world, levelVO);
 			}
 			
 			// Debug print
 			console.log("World structure ready. (ground: " + bottomLevel + ", surface: " + topLevel + ")");
-            // WorldCreatorDebug.printWorld(this.world, [ "blockerLeft" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "camp" ]);
 		},
 		
@@ -339,7 +340,7 @@ define([
                         
                         // regular enemies
                         var hasSectorEnemies = !sectorVO.camp && WorldCreatorRandom.random(l * x * seed + y * seed + 4848) > 0.2;
-                        var hasLocaleEnemies = sectorVO.blockerLeft === 3 || sectorVO.blockerRight === 3 || sectorVO.workshop;
+                        var hasLocaleEnemies = sectorVO.hasBlockerOfType(MovementConstants.BLOCKER_TYPE_GANG) || sectorVO.workshop;
                         
                         if (hasSectorEnemies || hasLocaleEnemies) {
                             var enemies = sectorVO.enemies;
@@ -406,13 +407,12 @@ define([
                             sectorVO.localeEnemies[LocaleConstants.LOCALE_ID_WORKSHOP] = 3;
                         }
                         
-                        if (sectorVO.blockerLeft === 3) {
-                            sectorVO.localeEnemies[LocaleConstants.getPassageLocaleId(0)] = 3;
-                        }
-                        
-                        if (sectorVO.blockerRight === 3) {
-                            sectorVO.localeEnemies[LocaleConstants.getPassageLocaleId(1)] = 3;
-                        }
+						for (var i in PositionConstants.getLevelDirections()) {
+							var direction = PositionConstants.getLevelDirections()[i];
+							if (sectorVO.getBlockerByDirection(direction) === MovementConstants.BLOCKER_TYPE_GANG) {
+								sectorVO.localeEnemies[LocaleConstants.getPassageLocaleId(direction)] = 3;
+							}
+						}
                     }
 				}
 			//console.log("- - - ")
@@ -459,15 +459,18 @@ define([
             }
             
             // fill in the rest by creating random paths
-            while (sectorsCentral.length < sectorsCentralMin || sectorsAll.length < sectorsTotalMin) {
-                var pathRandomSeed = sectorsAll.length * 4 + l * (sectorsCentral.length + 5);
+            var attempts = 0;
+            var maxAttempts = 100;
+            while ((sectorsCentral.length < sectorsCentralMin || sectorsAll.length < sectorsTotalMin) && attempts < maxAttempts) {
+                attempts++;
+                var pathRandomSeed = sectorsAll.length * 4 + l * (sectorsCentral.length + 5) + attempts * 5;
                 var isStartingPath = l === 13 && (!levelVO.hasSector(0, 0) || !levelVO.hasSector(WorldCreatorConstants.FIRST_CAMP_X, WorldCreatorConstants.FIRST_CAMP_Y));
                 if (isStartingPath) {
                     pathStartingPos = new PositionVO(l, 0, 0);
                 } else if (sectorsCentral.length === 0) {
-                    pathStartingPos = WorldCreatorRandom.randomSectorPosition(seed * 66 / l + pathRandomSeed * 7 + 23123, l, Math.ceil(levelVO.centralAreaSize / 4));
+                    pathStartingPos = WorldCreatorRandom.randomSectorPosition(seed * 66 / (l + 99) + pathRandomSeed * 7 + 23123, l, Math.ceil(levelVO.centralAreaSize / 4));
                 } else {
-                    pathStartingPos = sectorsCentral[Math.floor(WorldCreatorRandom.random(seed * 938 * l / pathRandomSeed + 2342 * l) * sectorsCentral.length)].clone();
+                    pathStartingPos = sectorsCentral[Math.floor(WorldCreatorRandom.random(seed * 938 * (l + 60) / pathRandomSeed + 2342 * l) * sectorsCentral.length)].clone();
                 }
                 
                 var numPathDirections = isStartingPath ? 1 : pathDirectionNums[WorldCreatorRandom.randomInt(seed * l * l + levelVO.levelOrdinal + pathRandomSeed, 0, pathDirectionNums.length)];
@@ -480,21 +483,30 @@ define([
                     this.generateSectorPath(levelVO, pathStartingPos, pathDirections[di], pathLength, sectorsAll, sectorsCentral);
                 }
             }
-        },
             
+            if (attempts === maxAttempts) console.log("WARN: Generating sectors for level " + levelVO.level + " failed.");
+        },
+
         generateSectorPath: function (levelVO, pathStartingPos, pathDirection, pathLength, sectorsAll, sectorsCentral) {
             var sectorPos;
             for (var si = 0; si < pathLength; si++) {
                 sectorPos = PositionConstants.getPositionOnPath(pathStartingPos, pathDirection, si);
+                sectorPos.level = levelVO.level;
 
                 // stop path when intersecting existing paths
-                if (si > 0 && levelVO.hasSector(sectorPos.sectorX, sectorPos.sectorY)) break;
+                var sectorExists = levelVO.hasSector(sectorPos.sectorX, sectorPos.sectorY);
+                if (sectorExists) {
+                    if (si > 0) {
+                        break;
+                    } else {
+                        continue;
+                    }
+                }
                 
                 var sectorVO = new SectorVO(sectorPos, levelVO.isCampable);
                 levelVO.addSector(sectorVO);
                 sectorsAll.push(sectorPos);
-                if (PositionConstants.isPositionInArea(sectorPos, levelVO.centralAreaSize))
-                    sectorsCentral.push(sectorPos);
+                if (PositionConstants.isPositionInArea(sectorPos, levelVO.centralAreaSize)) sectorsCentral.push(sectorPos);
             }
         },
 
@@ -512,18 +524,6 @@ define([
 			var sectorVO = this.world.getLevel(level).getSector(sectorX, sectorY);
 			if (sectorVO.passageDown) return sectorVO.passageDown;
 			return null;
-		},
-		
-		getBlockerLeft: function (level, sectorX, sectorY) {
-			var sectorVO = this.world.getLevel(level).getSector(sectorX, sectorY);
-			if (sectorVO.blockerLeft) return sectorVO.blockerLeft;
-			return 0;
-		},
-		
-		getBlockerRight: function (level, sectorX, sectorY) {
-			var sectorVO = this.world.getLevel(level).getSector(sectorX, sectorY);
-			if (sectorVO.blockerRight) return sectorVO.blockerRight;
-			return 0;
 		},
 		
 		getSectorFeatures: function (level, sectorX, sectorY) {
