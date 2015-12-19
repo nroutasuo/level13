@@ -62,8 +62,8 @@ define([
 				var component = node.entity.get(componentType);
 				if (component) {
 					var saveObject = component;
-					if (component.customSaveObject) {
-						saveObject = component.customSaveObject();
+					if (component.getCustomSaveObject) {
+						saveObject = component.getCustomSaveObject();
 					}
 					entityObject[componentType] = saveObject;
 					
@@ -76,8 +76,8 @@ define([
 				}
 			}
 			
-			//console.log(biggestComponent);
-			//console.log(biggestComponentSize + " / " + totalSize);
+			// console.log(biggestComponent);
+			// console.log(biggestComponentSize + " / " + totalSize);
 			
 			return entityObject;
 		},

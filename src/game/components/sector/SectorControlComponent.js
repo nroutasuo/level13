@@ -5,31 +5,27 @@ define(['ash'], function (Ash) {
         
         maxSectorEnemies: 0,
         currentSectorEnemies: 0,
-        defeatedSectorEnemies: 0,
         
         maxLocaleEnemies: {},
         currentLocaleEnemies: {},
-        defeatedLocaleEnemies: {},
         
         constructor: function (enemies, localeEnemies) {
             this.maxSectorEnemies = enemies;
             this.currentSectorEnemies = enemies;
-            this.defeatedSectorEnemies = 0;
             
             this.initLocaleEnemies(localeEnemies);
         },
         
         initLocaleEnemies: function (localeEnemies) {
-            this.maxLocaleEnemies = {};
-            this.currentLocaleEnemies = {};
-            this.defeatedLocaleEnemies = {};
+            if (localeEnemies.length > 0) {
+                this.maxLocaleEnemies = {};
+                this.currentLocaleEnemies = {};
+            }
             
             for (var localeId in localeEnemies) {
                 this.maxLocaleEnemies[localeId] = localeEnemies[localeId];
                 this.currentLocaleEnemies[localeId] = localeEnemies[localeId];
-                this.defeatedLocaleEnemies[localeId] = 0;
             }
-            this.componentId = Math.floor(Math.random()*100);
         },
         
         hasControl: function () {
@@ -51,19 +47,12 @@ define(['ash'], function (Ash) {
             return this.currentLocaleEnemies[localeId] ? this.currentLocaleEnemies[localeId] : 0;
         },
         
-        getDefeatedLocaleEnemies: function (localeId) {
-            if (!localeId) return this.defeatedSectorEnemies;
-            return this.defeatedLocaleEnemies[localeId] ? this.defeatedLocaleEnemies[localeId] : 0;
-        },
-        
         addWin: function (localeId) {
             if (!localeId) {
                 console.log("add win " + localeId + " " + this.currentSectorEnemies);
-                this.defeatedSectorEnemies++;
                 this.currentSectorEnemies--;
             } else {
                 console.log("add win " + localeId + " " + this.currentLocaleEnemies[localeId]);
-                this.defeatedLocaleEnemies[localeId]++;
                 this.currentLocaleEnemies[localeId]--;
             }
         },

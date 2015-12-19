@@ -35,6 +35,7 @@ define(['ash'], function (Ash) {
 		// Advanced
 		tools: 0,
 		medicine: 0,
+		concrete: 0,
     
         constructor: function () {
 			this.reset();
