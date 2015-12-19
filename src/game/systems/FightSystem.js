@@ -2,6 +2,7 @@
 define([
     'ash',
     'game/constants/FightConstants',
+    'game/constants/PositionConstants',
     'game/constants/EnemyConstants',
     'game/nodes/FightNode',
     'game/nodes/player/PlayerStatsNode',
@@ -13,7 +14,7 @@ define([
     'game/components/player/StaminaComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
-], function (Ash, FightConstants, EnemyConstants,
+], function (Ash, FightConstants, PositionConstants, EnemyConstants,
     FightNode, PlayerStatsNode,
     PositionComponent,
     FightComponent, FightEncounterComponent, SectorControlComponent, EnemiesComponent,
@@ -22,6 +23,7 @@ define([
     var FightSystem = Ash.System.extend({
         
         resourcesHelper: null,
+        levelHelper: null,
 		playerActionResultsHelper: null,
 		playerActionsHelper: null,
 		occurrenceFunctions: null,
@@ -30,9 +32,10 @@ define([
 		fightNodes: null,
         playerStatsNodes: null,
         
-        constructor: function (gameState, resourcesHelper, playerActionResultsHelper, playerActionsHelper, occurrenceFunctions) {
+        constructor: function (gameState, resourcesHelper, levelHelper, playerActionResultsHelper, playerActionsHelper, occurrenceFunctions) {
             this.gameState = gameState;
             this.resourcesHelper = resourcesHelper;
+			this.levelHelper = levelHelper;
 			this.playerActionResultsHelper = playerActionResultsHelper;
 			this.playerActionsHelper = playerActionsHelper;
 			this.occurrenceFunctions = occurrenceFunctions;
@@ -91,7 +94,17 @@ define([
 				var encounterComponent = sector.get(FightEncounterComponent);
 				var baseActionID = this.playerActionsHelper.getBaseActionID(encounterComponent.context);
 				var localeId = FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context);
-                sectorControlComponent.addWin(localeId);
+				sectorControlComponent.addWin(localeId);
+				
+				var relatedSectorDirection = FightConstants.getRelatedSectorDirection(baseActionID, encounterComponent.context);
+				if (relatedSectorDirection !== PositionConstants.DIRECTION_NONE) {
+					var relatedSectorPosition = PositionConstants.getPositionOnPath(sector.get(PositionComponent).getPosition(), relatedSectorDirection, 1);
+					var relatedSector = this.levelHelper.getSectorByPosition(relatedSectorPosition.level, relatedSectorPosition.sectorX, relatedSectorPosition.sectorY);
+					var relatedSectorControlComponent = relatedSector.get(SectorControlComponent);
+					var relatedSectorLocaleId = FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context, true);
+					relatedSectorControlComponent.addWin(relatedSectorLocaleId);
+				}
+				
                 cleared = sectorControlComponent.hasControl();
                 if (cleared) {
                     this.occurrenceFunctions.onGainSectorControl(sector);

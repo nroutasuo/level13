@@ -20,15 +20,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		
 		addBlocker: function (direction, blockerType) {
             this.movementBlockerCount++;
-            if (this.position.level == 13 && this.position.sectorX == 5 && this.position.sectorY === 0) {
-                console.log("add blocker " + direction + " " + blockerType + " " + this.id);
-                console.log(this.movementBlockerCount);
-                console.log(this.movementBlockers);
-            }
 			this.movementBlockers[direction] = blockerType;
-            if (this.position.level == 13 && this.position.sectorX == 5 && this.position.sectorY === 0) {
-                console.log(this.movementBlockers);
-            }
 		},
 		
 		getBlockerByDirection: function (direction) {

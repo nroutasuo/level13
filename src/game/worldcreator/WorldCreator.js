@@ -99,15 +99,14 @@ define([
 				}
 				
 				// movement blockers: a few per level
-				// TODO remove debug numbers for blockers
 				var maxBlockers = WorldCreatorConstants.SECTORS_PER_LEVEL_MIN * levelOrdinal / 25 / 5;
-				var numBlockers = 80//WorldCreatorRandom.randomInt(88 + seed * 56 * l + seed % 7, 1, maxBlockers);
-				// if (l === 13) numBlockers = 0;
+				var numBlockers = WorldCreatorRandom.randomInt(88 + seed * 56 * l + seed % 7, 1, maxBlockers);
+				if (l === 13) numBlockers = 0;
 				var blockerSectors = WorldCreatorRandom.randomSectors(seed * l * l + 1 * 22 * i, levelVO, numBlockers, numBlockers + 1, true, "camp");
 				for (var i = 0; i < blockerSectors.length; i++) {
 					var blockerType = WorldCreatorRandom.randomInt(seed * 5831 / l + seed % 2 + (i + 78) * 4, 1, 4);
-					// if (l < 14 && blockerType === MovementConstants.BLOCKER_TYPE_WASTE) blockerType = MovementConstants.BLOCKER_TYPE_GAP;
-					// if (levelOrdinal < 7 && blockerType === MovementConstants.BLOCKER_TYPE_GAP) blockerType = MovementConstants.BLOCKER_TYPE_GANG;
+					if (l < 14 && blockerType === MovementConstants.BLOCKER_TYPE_WASTE) blockerType = MovementConstants.BLOCKER_TYPE_GAP;
+					if (levelOrdinal < 7 && blockerType === MovementConstants.BLOCKER_TYPE_GAP) blockerType = MovementConstants.BLOCKER_TYPE_GANG;
 					
 					var blockedSector = blockerSectors[i];
 					var blockedNeighbour = WorldCreatorRandom.getRandomSectorNeighbour(seed * 101 + (i + 70) * (l + 900), levelVO, blockedSector);

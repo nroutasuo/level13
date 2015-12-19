@@ -76,8 +76,8 @@ define([
 				}
 			}
 			
-			// console.log(biggestComponent);
-			// console.log(biggestComponentSize + " / " + totalSize);
+			//console.log(biggestComponent);
+			//console.log(biggestComponentSize + " / " + totalSize);
 			
 			return entityObject;
 		},

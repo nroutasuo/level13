@@ -2,10 +2,11 @@ define(['ash',
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
 	'game/constants/LocaleConstants',
+	'game/constants/PositionConstants',
 	'game/constants/WorldCreatorConstants',
 	'game/constants/PlayerActionConstants',
 	'game/vos/ResourcesVO'],
-function (Ash, ItemConstants, PerkConstants, LocaleConstants, WorldCreatorConstants, PlayerActionConstants, ResourcesVO) {
+function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants, WorldCreatorConstants, PlayerActionConstants, ResourcesVO) {
 
     var FightConstants = {
 	
@@ -87,12 +88,21 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, WorldCreatorConsta
             return "risky";
         },
 		
-		getEnemyLocaleId: function (baseActionID, action) {
+		getEnemyLocaleId: function (baseActionID, action, isNeighbour) {
 			switch (baseActionID) {
 				case "clear_workshop": return LocaleConstants.LOCALE_ID_WORKSHOP;
 				case "fight_gang":
-					return LocaleConstants.getPassageLocaleId(parseInt(action.split("_")[2]));
+					var direction = parseInt(action.split("_")[2]);
+					if (isNeighbour) direction = PositionConstants.getOppositeDirection(direction);
+					return LocaleConstants.getPassageLocaleId(direction);
 				default: return null;
+			}
+		},
+		
+		getRelatedSectorDirection: function (baseActionID, action) {
+			switch (baseActionID) {
+				case "fight_gang": return parseInt(action.split("_")[2]);
+				default: return PositionConstants.DIRECTION_NONE;
 			}
 		},
 	

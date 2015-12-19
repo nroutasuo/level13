@@ -29,6 +29,7 @@ define(['ash'], function (Ash) {
                 this.currentLocaleEnemies[localeId] = localeEnemies[localeId];
                 this.defeatedLocaleEnemies[localeId] = 0;
             }
+            this.componentId = Math.floor(Math.random()*100);
         },
         
         hasControl: function () {
@@ -56,11 +57,12 @@ define(['ash'], function (Ash) {
         },
         
         addWin: function (localeId) {
-            console.log("add win " + localeId);
             if (!localeId) {
+                console.log("add win " + localeId + " " + this.currentSectorEnemies);
                 this.defeatedSectorEnemies++;
                 this.currentSectorEnemies--;
             } else {
+                console.log("add win " + localeId + " " + this.currentLocaleEnemies[localeId]);
                 this.defeatedLocaleEnemies[localeId]++;
                 this.currentLocaleEnemies[localeId]--;
             }

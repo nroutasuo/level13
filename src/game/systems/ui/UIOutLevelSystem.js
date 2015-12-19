@@ -189,9 +189,6 @@ define([
 			if (this.gameState.unlockedFeatures.levels) header = "Level " + posComponent.level + ": " + header;
 			$("#tab-header h2").text(header);
 			
-			// Vis
-			// TODO update improvements
-			
 			// Description
 			var isScouted = sectorStatusComponent.scouted;
 			$("#out-desc").html(this.getDescription(
