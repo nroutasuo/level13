@@ -90,7 +90,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 						   "A more spacious bag with lots of pockets."),
 				new ItemVO("bag_2", "Hiker's Rucksack", "Bag", 100, true, true, "img/items/bag-1.png",
 						   "With this bag, weight is starting to be more of a problem than space."),
-				new ItemVO("bag_3", "Automatic luggage", "Bag", 200, true, true, "img/items/bag-3.png",
+				new ItemVO("bag_3", "Automatic luggage", "Bag", 150, true, true, "img/items/bag-3.png",
 						   "Mechanical chest that automatically follows its owner around. No more worrying about carrying all that stuff yourself."),
 			],
 			artefact: [
@@ -184,7 +184,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 			if (levelOrdinal < 15) {
 				return this.itemDefinitions.bag[2];
 			}
-			return this.itemDefinitions.weapon[3];
+			return this.itemDefinitions.bag[3];
 		},
 		
 		getShades: function (levelOrdinal) {

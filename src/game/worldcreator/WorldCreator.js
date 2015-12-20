@@ -48,13 +48,14 @@ define([
 		// campable sectors and levels, movement blockers, passages, sunlight
 		prepareWorldStructure: function (seed, topLevel, bottomLevel) {
 			var passageDownSectors = [];
+			var passageDownPositions = [];
 			for (var l = topLevel; l >= bottomLevel; l--) {
                 var isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, l);
 				var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
                 var levelVO = new LevelVO(l, levelOrdinal, isCampableLevel);
 				this.world.addLevel(levelVO);
 
-                this.generateSectors(seed, levelVO, passageDownSectors);
+                this.generateSectors(seed, levelVO, passageDownPositions);
 					
 				// camp: 1-5 spots for every campable level
 				if (l === 13) {
@@ -82,7 +83,9 @@ define([
 					if (l === 14) numPassages = 1;
 					if (l === 13) numPassages = 1;
 					passageDownSectors = WorldCreatorRandom.randomSectors(seed * l * 654 * (i + 2), levelVO, numPassages, numPassages + 1, true, "camp");
+					passageDownPositions = [];
 					for (var i = 0; i < passageDownSectors.length; i++) {
+						passageDownPositions.push(passageDownSectors[i].position);
 						if (l === 13) {
 							passageDownSectors[i].passageDown = 3;
 						} else if (l === 14) {
@@ -421,10 +424,12 @@ define([
 			// WorldCreatorDebug.printWorld(this.world, [ "enemies.length" ]);
 		},
         
-        generateSectors: function (seed, levelVO, passagesUpSectors) {
+        generateSectors: function (seed, levelVO, passagesUpPositions) {
             var l = levelVO.level;
             var excursionLength = ItemConstants.getBag(levelVO.levelOrdinal).bonus;
-            levelVO.centralAreaSize = excursionLength;
+			var lowerLevelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l - 1);
+			var lowerLevelExcursionLength = ItemConstants.getBag(lowerLevelOrdinal).bonus;
+            levelVO.centralAreaSize = Math.min((excursionLength + lowerLevelExcursionLength) * 0.5, WorldCreatorConstants.MAX_CENTRAL_AREA_SIZE);
             
             var pathDirectionNums = [ 1, 1, 1, 1, 2, 2, 2, 3, 3, 4 ];
             
@@ -436,23 +441,27 @@ define([
             var pathStartingPos;
             var pathLength;
             var pathDirection;
+			
+			var existingPointsToConnect = [];
+			existingPointsToConnect = existingPointsToConnect.concat(passagesUpPositions);
+			if (l === 13) existingPointsToConnect.push(new PositionVO(13, 0, 0));
             
-            // connect existing passages
-            if (passagesUpSectors.length === 1) {
-                pathStartingPos = passagesUpSectors[0].position.clone();
+            // connect existing passages (up / down) and other predefined points
+            if (existingPointsToConnect.length === 1) {
+                pathStartingPos = existingPointsToConnect[0].clone();
                 pathDirection = WorldCreatorRandom.randomDirections(seed * levelVO.levelOrdinal + 284, 1)[0];
                 pathLength = WorldCreatorRandom.randomInt(seed * 3 * 53 * (l + 1) + l + 55, 2, 30);
                 this.generateSectorPath(levelVO, pathStartingPos, pathDirection, pathLength, sectorsAll, sectorsCentral);
-            } else if (passagesUpSectors.length > 1) {
-                for (var pi = 0; pi < passagesUpSectors.length-1; pi++) {
-                    pathStartingPos = passagesUpSectors[pi].position.clone();
-                    pathLength = Math.abs(pathStartingPos.sectorX - passagesUpSectors[pi + 1].position.sectorX) + 1;
-                    pathDirection = PositionConstants.getXDirectionFrom(pathStartingPos, passagesUpSectors[pi + 1].position);
+            } else if (existingPointsToConnect.length > 1) {
+                for (var pi = 0; pi < existingPointsToConnect.length - 1; pi++) {
+                    pathStartingPos = existingPointsToConnect[pi].clone();
+                    pathLength = Math.abs(pathStartingPos.sectorX - existingPointsToConnect[pi + 1].sectorX) + 1;
+                    pathDirection = PositionConstants.getXDirectionFrom(pathStartingPos, existingPointsToConnect[pi + 1]);
                     this.generateSectorPath(levelVO, pathStartingPos, pathDirection, pathLength, sectorsAll, sectorsCentral);
                     
                     var wayPoint = PositionConstants.getPositionOnPath(pathStartingPos, pathDirection, pathLength - 1);
-                    pathLength = Math.abs(pathStartingPos.sectorY - passagesUpSectors[pi + 1].position.sectorY) + WorldCreatorRandom.randomInt(seed * l / 35 * (pi + 1), 1, 5);
-                    pathDirection = PositionConstants.getYDirectionFrom(pathStartingPos, passagesUpSectors[pi + 1].position);
+                    pathLength = Math.abs(pathStartingPos.sectorY - existingPointsToConnect[pi + 1].sectorY) + WorldCreatorRandom.randomInt(seed * l / 35 * (pi + 1), 1, 5);
+                    pathDirection = PositionConstants.getYDirectionFrom(pathStartingPos, existingPointsToConnect[pi + 1]);
                     this.generateSectorPath(levelVO, wayPoint, pathDirection, pathLength, sectorsAll, sectorsCentral);
                 }
             }
@@ -478,12 +487,33 @@ define([
                 // console.log("starting pos: " + pathStartingPos.toString() + ", directions: " + pathDirections);
                 
                 for (var di = 0; di < pathDirections.length; di++) {
-                    pathLength = WorldCreatorRandom.randomInt(seed * 3 * pathRandomSeed * (di + 1) + (di + 3) * l + 55, 2, 30);
+                    pathLength = WorldCreatorRandom.randomInt(seed * 3 * pathRandomSeed * (di + 1) + (di + 3) * l + 55, 3, 20);
                     this.generateSectorPath(levelVO, pathStartingPos, pathDirections[di], pathLength, sectorsAll, sectorsCentral);
                 }
             }
+			
+			// fill in annoying hole sectors (if an empty position has more than one sector neighbours, fill it)
+			var minY = levelVO.minY;
+			var maxY = levelVO.maxY;
+			var minX = levelVO.minY;
+			var maxX = levelVO.maxX;
+			var neighbours;
+			for (var y = minY; y <= maxY; y++) {
+				for (var x = minX; x <= maxX; x++) {
+					if (!levelVO.hasSector(x, y)) {
+						neighbours = levelVO.getNeighbours(x, y);
+						var isHorizontalNeighbours = neighbours[PositionConstants.DIRECTION_WEST] && neighbours[PositionConstants.DIRECTION_EAST];
+						var isVerticalNeighbours = neighbours[PositionConstants.DIRECTION_NORTH] && neighbours[PositionConstants.DIRECTION_SOUTH];
+						if ((isHorizontalNeighbours || isVerticalNeighbours) && neighbours.length === 2) {
+							this.createSector(levelVO, new PositionVO(levelVO.level, x, y), sectorsAll, sectorsCentral);
+						}
+					}
+				}
+			}
             
             if (attempts === maxAttempts) console.log("WARN: Generating sectors for level " + levelVO.level + " failed.");
+			
+			// WorldCreatorDebug.printLevel(this.world, levelVO);
         },
 
         generateSectorPath: function (levelVO, pathStartingPos, pathDirection, pathLength, sectorsAll, sectorsCentral) {
@@ -494,20 +524,30 @@ define([
 
                 // stop path when intersecting existing paths
                 var sectorExists = levelVO.hasSector(sectorPos.sectorX, sectorPos.sectorY);
-                if (sectorExists) {
+				var sectorHasUnmatchingNeighbours = false;
+				var neighbours = levelVO.getNeighbours(sectorPos.sectorX, sectorPos.sectorY);
+				if (neighbours[PositionConstants.DIRECTION_EAST] && neighbours[PositionConstants.DIRECTION_SOUTH]) sectorHasUnmatchingNeighbours = true;
+				if (neighbours[PositionConstants.DIRECTION_EAST] && neighbours[PositionConstants.DIRECTION_NORTH]) sectorHasUnmatchingNeighbours = true;
+				if (neighbours[PositionConstants.DIRECTION_WEST] && neighbours[PositionConstants.DIRECTION_SOUTH]) sectorHasUnmatchingNeighbours = true;
+				if (neighbours[PositionConstants.DIRECTION_WEST] && neighbours[PositionConstants.DIRECTION_NORTH]) sectorHasUnmatchingNeighbours = true;
+                if (sectorExists || sectorHasUnmatchingNeighbours) {
                     if (si > 0) {
                         break;
                     } else {
                         continue;
                     }
                 }
-                
-                var sectorVO = new SectorVO(sectorPos, levelVO.isCampable);
-                levelVO.addSector(sectorVO);
-                sectorsAll.push(sectorPos);
-                if (PositionConstants.isPositionInArea(sectorPos, levelVO.centralAreaSize)) sectorsCentral.push(sectorPos);
+				
+				this.createSector(levelVO, sectorPos, sectorsAll, sectorsCentral);
             }
         },
+		
+		createSector: function (levelVO, sectorPos, sectorsAll, sectorsCentral) {
+			var sectorVO = new SectorVO(sectorPos, levelVO.isCampable);
+			levelVO.addSector(sectorVO);
+			sectorsAll.push(sectorPos);
+			if (PositionConstants.isPositionInArea(sectorPos, levelVO.centralAreaSize)) sectorsCentral.push(sectorPos);
+		},
 
 
 

@@ -41,7 +41,9 @@ define(['ash',
 	'game/systems/ui/UIOutLevelSystem',
 	'game/systems/FaintingSystem',
 	'game/systems/PlayerPositionSystem',
-	'game/systems/SaveSystem'
+	'game/systems/SaveSystem',
+	'game/worldcreator/WorldCreator',
+	'game/worldcreator/WorldCreatorDebug'
 ], function (Ash,
 	GameConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UIConstants, TextConstants,
 	PlayerPositionNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
@@ -52,7 +54,7 @@ define(['ash',
 	SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, CampEventTimersComponent,
 	LogMessagesComponent,
-	UIOutHeaderSystem, UIOutElementsSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem, SaveSystem
+	UIOutHeaderSystem, UIOutElementsSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem, SaveSystem, WorldCreator, WorldCreatorDebug
 ) {
     
     var PlayerActionFunctions = Ash.System.extend({
@@ -1012,6 +1014,11 @@ define(['ash',
                     } else {
                         console.log("WARN: No such perk: " + perkID);
                     }
+                    break;
+                
+                case "printLevel":
+                    var l = this.playerPositionNodes.head.position.level;
+                    WorldCreatorDebug.printLevel(WorldCreator.world, WorldCreator.world.getLevel(l));
                     break;
             }
         }

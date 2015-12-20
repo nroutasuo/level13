@@ -87,7 +87,7 @@ define([
             var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resources;
 
 			rewards.gainedEvidence = 1;
-			rewards.gainedInjuries = this.getResultInjuries(0.08);
+			rewards.gainedInjuries = this.getResultInjuries(0.005);
 			if (rewards.gainedInjuries.length === 0) {
 				rewards.gainedResources = this.getRewardResources(0.5, efficiency * 2, sectorResources);
 			}
@@ -117,7 +117,7 @@ define([
 				rewards.gainedRumours = Math.random() < 0.3 ? Math.ceil(Math.random() * levelOrdinal * levelOrdinal) : 0;
 			}
 				
-			rewards.gainedInjuries = this.getResultInjuries(0.1);
+			rewards.gainedInjuries = this.getResultInjuries(0.05);
 			if (rewards.gainedInjuries.length === 0) {
 				if (localeCategory === "u") {
 					rewards.gainedResources = this.getRewardResources(1, efficiency * localeDifficulty / 15, availableResources);

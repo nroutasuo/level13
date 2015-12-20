@@ -62,6 +62,17 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			return false;
 		},
 		
+		getNeighbours: function (sectorX, sectorY) {
+			var neighbours = {};
+			var startingPos = new PositionVO(this.level, sectorX, sectorY);
+			for (var i in PositionConstants.getLevelDirections()) {
+				var direction = PositionConstants.getLevelDirections()[i];
+				var neighbourPos = PositionConstants.getPositionOnPath(startingPos, direction, 1);
+				neighbours[direction] = this.getSector(neighbourPos.sectorX, neighbourPos.sectorY);
+			}
+			return neighbours;
+		},
+		
 		getSector: function (sectorX, sectorY) {
 			return this.hasSector(sectorX, sectorY) ? this.sectorsByPos[sectorX][sectorY] : null;
 		},
