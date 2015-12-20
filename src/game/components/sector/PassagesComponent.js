@@ -5,33 +5,26 @@ function (Ash, PositionConstants, PassageVO, MovementBlockerVO) {
     
     var PassagesComponent = Ash.Class.extend({
 
-        constructor: function (passageUp, passageDown, blockerNorth, blockerSouth, blockerWest, blockerEast) {
+        constructor: function (passageUp, passageDown, blockers) {
             this.passageUp = passageUp ? new PassageVO(passageUp) : null;
             this.passageDown = passageDown ? new PassageVO(passageDown) : null;
-            this.blockerNorth = blockerNorth ? new MovementBlockerVO(blockerNorth) : null;
-            this.blockerSouth = blockerSouth ? new MovementBlockerVO(blockerSouth) : null;
-            this.blockerWest = blockerWest ? new MovementBlockerVO(blockerWest) : null;
-            this.blockerEast = blockerEast ? new MovementBlockerVO(blockerEast) : null;
+            this.blockers = blockers;
         },
         
         getBlocker: function (direction) {
-            switch (direction) {
-            case PositionConstants.DIRECTION_NORTH:
-                return this.blockerNorth;
-            case PositionConstants.DIRECTION_SOUTH:
-                return this.blockerSouth;
-            case PositionConstants.DIRECTION_WEST:
-                return this.blockerWest;
-            case PositionConstants.DIRECTION_EAST:
-                return this.blockerEast;
-            default:
-                return null;
-            }
+            return typeof this.blockers[direction] === 'undefined' ? null : this.blockers[direction];
         },
         
         isBridgeable: function (direction) {
             if (direction === null) {
-                return this.isBridgeable(PositionConstants.DIRECTION_NORTH) || this.isBridgeable(PositionConstants.DIRECTION_SOUTH) || this.isBridgeable(PositionConstants.DIRECTION_WEST) || this.isBridgeable(PositionConstants.DIRECTION_EAST);
+                return this.isBridgeable(PositionConstants.DIRECTION_NORTH) ||
+                    this.isBridgeable(PositionConstants.DIRECTION_SOUTH) ||
+                    this.isBridgeable(PositionConstants.DIRECTION_WEST) ||
+                    this.isBridgeable(PositionConstants.DIRECTION_EAST) ||
+                    this.isBridgeable(PositionConstants.DIRECTION_NE) ||
+                    this.isBridgeable(PositionConstants.DIRECTION_SE) ||
+                    this.isBridgeable(PositionConstants.DIRECTION_SW) ||
+                    this.isBridgeable(PositionConstants.DIRECTION_NW);
             }
             var blocker = this.getBlocker(direction);
             return blocker !== null && blocker.bridgeable;
@@ -39,7 +32,14 @@ function (Ash, PositionConstants, PassageVO, MovementBlockerVO) {
         
         isDefeatable: function (direction) {
             if (direction === null) {
-                return this.isDefeatable(PositionConstants.DIRECTION_NORTH) || this.isDefeatable(PositionConstants.DIRECTION_SOUTH) || this.isDefeatable(PositionConstants.DIRECTION_WEST) || this.isDefeatable(PositionConstants.DIRECTION_EAST);
+                return this.isDefeatable(PositionConstants.DIRECTION_NORTH) ||
+                    this.isDefeatable(PositionConstants.DIRECTION_SOUTH) ||
+                    this.isDefeatable(PositionConstants.DIRECTION_WEST) ||
+                    this.isDefeatable(PositionConstants.DIRECTION_EAST) ||
+                    this.isDefeatable(PositionConstants.DIRECTION_NE) ||
+                    this.isDefeatable(PositionConstants.DIRECTION_SE) ||
+                    this.isDefeatable(PositionConstants.DIRECTION_SW) ||
+                    this.isDefeatable(PositionConstants.DIRECTION_NW);
             }
             var blocker = this.getBlocker(direction);
             return blocker !== null && blocker.defeatable;

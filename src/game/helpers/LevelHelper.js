@@ -4,6 +4,7 @@ define([
     'game/constants/WorldCreatorConstants',
     'game/constants/LocaleConstants',
     'game/constants/PositionConstants',
+    'game/constants/MovementConstants',
     'game/nodes/LevelNode',
     'game/nodes/sector/SectorNode',
     'game/components/common/PositionComponent',
@@ -21,6 +22,7 @@ define([
 	WorldCreatorConstants,
 	LocaleConstants,
 	PositionConstants,
+	MovementConstants,
 	LevelNode, SectorNode,
 	PositionComponent,
 	SectorStatusComponent,
@@ -159,18 +161,18 @@ define([
 					}
 					if (levelPassagesComponent.passagesDown[sectorPosition.sectorId()] && !levelPassagesComponent.passagesDownBuilt[sectorPosition.sectorId()]) {
 						switch (levelPassagesComponent.passagesDown[sectorPosition.sectorId()].type) {
-							case 1:
-								improvementName = improvementNames.passageDownHole;
-								actionName = "build_out_passage_down_hole";
-								break;
-							case 2:
-								improvementName = improvementNames.passageDownElevator;
-								actionName = "build_out_passage_down_elevator";
-								break;
-							case 3:
-								improvementName = improvementNames.passageDownStairs;
-								actionName = "build_out_passage_down_stairs";
-								break;
+						case MovementConstants.PASSAGE_TYPE_HOLE:
+							improvementName = improvementNames.passageDownHole;
+							actionName = "build_out_passage_down_hole";
+							break;
+						case MovementConstants.PASSAGE_TYPE_ELEVATOR:
+							improvementName = improvementNames.passageDownElevator;
+							actionName = "build_out_passage_down_elevator";
+							break;
+						case MovementConstants.PASSAGE_TYPE_STAIRWELL:
+							improvementName = improvementNames.passageDownStairs;
+							actionName = "build_out_passage_down_stairs";
+							break;
 						}
 						if (this.playerActionsHelper.checkRequirements(actionName, false, node.entity).value > 0)
 							projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, level, sectorPosition.sectorId(), PositionConstants.DIRECTION_DOWN));

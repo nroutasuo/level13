@@ -145,10 +145,7 @@ define([
 			.add(new PassagesComponent(
 				passageOptions.passageUp,
 				passageOptions.passageDown,
-				movementBlockers[PositionConstants.DIRECTION_NORTH],
-				movementBlockers[PositionConstants.DIRECTION_SOUTH],
-				movementBlockers[PositionConstants.DIRECTION_WEST],
-				movementBlockers[PositionConstants.DIRECTION_EAST]))
+				movementBlockers))
 			.add(new SectorFeaturesComponent(
 				level,
 				sectorFeatures.buildingDensity,

@@ -273,6 +273,10 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
 		
 		addArticle: function (s) {
 			return "a " + s;
+		},
+		
+		capitalize: function (string) {
+			return string.charAt(0).toUpperCase() + string.slice(1);
 		}
 	};
 		

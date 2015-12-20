@@ -145,6 +145,26 @@ define(['ash',
 					this.playerActionsHelper.deductCosts("move_sector_east");
 					playerPos.sectorX++;
 					break;
+				case PositionConstants.DIRECTION_NE:
+					this.playerActionsHelper.deductCosts("move_sector_ne");
+					playerPos.sectorX++;
+					playerPos.sectorY--;
+					break;
+				case PositionConstants.DIRECTION_SE:
+					this.playerActionsHelper.deductCosts("move_sector_se");
+					playerPos.sectorX++;
+					playerPos.sectorY++;
+					break;
+				case PositionConstants.DIRECTION_SW:
+					this.playerActionsHelper.deductCosts("move_sector_sw");
+					playerPos.sectorX--;
+					playerPos.sectorY++;
+					break;
+				case PositionConstants.DIRECTION_NW:
+					this.playerActionsHelper.deductCosts("move_sector_nw");
+					playerPos.sectorX--;
+					playerPos.sectorY--;
+					break;
 				case PositionConstants.DIRECTION_UP:
 					this.playerActionsHelper.deductCosts("move_level_up");
 					playerPos.level++;

@@ -1,9 +1,11 @@
 // Helper methods related to player actions (costs, requirements, descriptions) - common definitions for all actions
 define([
     'ash',
+	'game/constants/PositionConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/ItemConstants',
 	'game/constants/UpgradeConstants',
+	'game/constants/TextConstants',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/PlayerLocationNode',
@@ -25,7 +27,7 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/CampComponent',
 ], function (
-	Ash, PlayerActionConstants, ItemConstants, UpgradeConstants,
+	Ash, PositionConstants, PlayerActionConstants, ItemConstants, UpgradeConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	PositionComponent, PlayerActionComponent, ItemsComponent, PerksComponent, DeityComponent,
 	PassagesComponent, EnemiesComponent, MovementOptionsComponent,
@@ -125,10 +127,10 @@ define([
             var lowestFraction = 1;
             var reason = "";
 					
-            if (action === "move_level_up" && !movementOptionsComponent.canMoveUp)
-                return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveUpReason };
-            if (action === "move_level_down" && !movementOptionsComponent.canMoveDown)
-                return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveDownReason };
+            if (action === "move_level_up" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_UP])
+                return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_UP] };
+            if (action === "move_level_down" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_DOWN])
+                return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_DOWN] };
                 
 			if (costs) {
 				if (requirements && costs.stamina > 0) {
@@ -371,62 +373,25 @@ define([
                         }
                     }
                     
-                    if (typeof requirements.sector.blockerNorth !== 'undefined') {
-						var requiredValue = requirements.sector.blockerNorth;
-						var currentValue = !movementOptionsComponent.canMoveNorth;
-			
-                        if (requiredValue !== currentValue) {
-							if (currentValue) {
-								if (log) console.log("WARN: Movement to north blocked.");
-								return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveNorthReason };
-							} else {
-								if (log) console.log("WARN: Nothing blocking movemen to north.");
-								return { value: 0, reason: "Nothing blocking movemen to north" };
+					for (var i in PositionConstants.getLevelDirections()) {
+						var direction = PositionConstants.getLevelDirections()[i];
+						var directionName = PositionConstants.getDirectionName(direction);
+						var blockerKey = "blocker" + TextConstants.capitalize(directionName);
+						if (typeof requirements.sector[blockerKey] !== 'undefined') {
+							var requiredValue = requirements.sector[blockerKey];
+							var currentValue = !movementOptionsComponent.canMoveTo[direction];
+				
+							if (requiredValue !== currentValue) {
+								if (currentValue) {
+									if (log) console.log("WARN: Movement to " + directionName + " blocked.");
+									return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[direction] };
+								} else {
+									if (log) console.log("WARN: Nothing blocking movemen to " + directionName + "." );
+									return { value: 0, reason: "Nothing blocking movemen to " + directionName + "." };
+								}
 							}
-                        }
-                    }
-					
-                    if (typeof requirements.sector.blockerSouth !== 'undefined') {
-						var requiredValue = requirements.sector.blockerSouth;
-						var currentValue = !movementOptionsComponent.canMoveSouth;
-                        if (requiredValue !== currentValue) {
-							if (currentValue) {
-								if (log) console.log("WARN: Movement to south blocked.");
-								return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveSouthReason };
-							} else {
-								if (log) console.log("WARN: Nothing blocking movemen to south.");
-								return { value: 0, reason: "Nothing blocking movemen to south" };
-							}
-                        }
-                    }
-					
-                    if (typeof requirements.sector.blockerWest !== 'undefined') {
-						var requiredValue = requirements.sector.blockerWest;
-						var currentValue = !movementOptionsComponent.canMoveWest;
-                        if (requiredValue !== currentValue) {
-							if (currentValue) {
-								if (log) console.log("WARN: Movement to south blocked.");
-								return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveWestReason };
-							} else {
-								if (log) console.log("WARN: Nothing blocking movemen to west.");
-								return { value: 0, reason: "Nothing blocking movemen to west" };
-							}
-                        }
-                    }
-					
-                    if (typeof requirements.sector.blockerEast !== 'undefined') {
-						var requiredValue = requirements.sector.blockerEast;
-						var currentValue = !movementOptionsComponent.canMoveEast;
-                        if (requiredValue !== currentValue) {
-							if (currentValue) {
-								if (log) console.log("WARN: Movement to east blocked.");
-								return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveEastReason };
-							} else {
-								if (log) console.log("WARN: Nothing blocking movemen to east.");
-								return { value: 0, reason: "Nothing blocking movemen to east" };
-							}
-                        }
-                    }
+						}
+					}
 					
                     if (typeof requirements.sector.passageUp != 'undefined') {
                         if (!passagesComponent.passageUp) {

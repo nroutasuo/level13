@@ -166,7 +166,6 @@ define([
         },
 
 		collectRewards: function (rewards) {
-			console.log(rewards);
 			var currentStorage = this.resourcesHelper.getCurrentStorage();
 			currentStorage.addResources(rewards.gainedResources);
 			currentStorage.substractResources(rewards.lostResources);

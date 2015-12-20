@@ -28,14 +28,14 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			return sectors;
 		},
 		
-		randomDirections: function (seed, num) {
+		randomDirections: function (seed, num, includeDiagonals) {
 			var directions = [];
 			
 			for (var i = 0; i < num; i++) {
 				var direction;
 				var additionalRandom = 0;
 				do {
-					direction = this.randomInt(seed*i^37+additionalRandom+seed*i+i+seed*num+seed, 1, 5);
+					direction = this.randomInt(seed*i^37+additionalRandom+seed*i+i+seed*num+seed, 1, includeDiagonals ? 9 : 5);
 					additionalRandom += 39;
 				} while(directions.indexOf(direction) >= 0);
 				directions.push(direction);
@@ -44,10 +44,10 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			return directions;
 		},
 		
-		getRandomSectorNeighbour: function (seed, levelVO, sectorVO) {
+		getRandomSectorNeighbour: function (seed, levelVO, sectorVO, includeDiagonals) {
 			// TODO add a preference for non-camp sectors
 			var neighbour = null;
-			var directionOrder = this.randomDirections(seed * 3, 4);
+			var directionOrder = this.randomDirections(seed * 3, 8, includeDiagonals);
 			for (var i = 0; i < directionOrder.length; i++) {
 				var direction = directionOrder[i];
 				var directionNeighbourPos = PositionConstants.getPositionOnPath(sectorVO.position, direction, 1);

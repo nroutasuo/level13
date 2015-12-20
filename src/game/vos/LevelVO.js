@@ -68,7 +68,9 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			for (var i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var neighbourPos = PositionConstants.getPositionOnPath(startingPos, direction, 1);
-				neighbours[direction] = this.getSector(neighbourPos.sectorX, neighbourPos.sectorY);
+				if (this.hasSector(neighbourPos.sectorX, neighbourPos.sectorY)) {
+					neighbours[direction] = this.getSector(neighbourPos.sectorX, neighbourPos.sectorY);
+				}
 			}
 			return neighbours;
 		},

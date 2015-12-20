@@ -15,19 +15,19 @@ define([
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
 ], function (Ash,
-		PositionConstants,
-		LocaleConstants,
-		SectorNode,
-		PlayerLocationNode,
-		PositionComponent,
-		CampComponent,
-		MovementOptionsComponent,
-		PassagesComponent,
-		SectorConrolComponent,
-		SectorStatusComponent,
-		SectorFeaturesComponent,
-		SectorControlComponent,
-		SectorImprovementsComponent) {
+	PositionConstants,
+	LocaleConstants,
+	SectorNode,
+	PlayerLocationNode,
+	PositionComponent,
+	CampComponent,
+	MovementOptionsComponent,
+	PassagesComponent,
+	SectorConrolComponent,
+	SectorStatusComponent,
+	SectorFeaturesComponent,
+	SectorControlComponent,
+	SectorImprovementsComponent) {
 	
     var SectorStatusSystem = Ash.System.extend({
 	    
@@ -112,16 +112,15 @@ define([
 					
 					if (targetEnemies < currentEnemies) {
 						console.log("WARN: set sector control for " + localeId + " at " + positionComponent.level + "-" + positionComponent.sectorId() + " | " + targetEnemies + " < " + currentEnemies);
-						sectorControlComponent.defeatedLocaleEnemies[localeId] += (currentEnemies - targetEnemies);
 						sectorControlComponent.currentLocaleEnemies[localeId] -= (currentEnemies - targetEnemies);
 					}
 				}
 			}
 			
-			checkNeighbour(PositionConstants.DIRECTION_NORTH);
-			checkNeighbour(PositionConstants.DIRECTION_SOUTH);
-			checkNeighbour(PositionConstants.DIRECTION_WEST);
-			checkNeighbour(PositionConstants.DIRECTION_EAST);
+			for (var i in PositionConstants.getLevelDirections()) {
+				var direction = PositionConstants.getLevelDirections()[i];
+				checkNeighbour(direction);
+			}
 		},
 		
 		updateMovementOptions: function (entity) {
@@ -132,35 +131,15 @@ define([
 			var sectorKey = this.getSectorKey(positionComponent);
 			if (!this.neighboursDict[sectorKey]) this.findNeighbours();
 			
-			var neighbourWest = this.neighboursDict[sectorKey].west;
-			var neighbourEast = this.neighboursDict[sectorKey].east;
-			var neighbourNorth = this.neighboursDict[sectorKey].north;
-			var neighbourSouth = this.neighboursDict[sectorKey].south;
-			
-			// Allow n/s/w/e movement if neighbour exists
-			movementOptions.canMoveNorth = neighbourNorth != null;
-			movementOptions.canMoveSouth = neighbourSouth != null;
-			movementOptions.canMoveWest = neighbourWest != null;
-			movementOptions.canMoveEast = neighbourEast != null;
-			
-			// Block n/s/w/e movement if blocker exits and there is no bridge/sector control/other improvement
-			var blockedNorth = this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_NORTH);
-			var blockedSouth = this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_SOUTH);
-			var blockedWest = this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_WEST);
-			var blockedEast = this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_EAST);
-			
-			movementOptions.canMoveNorth = movementOptions.canMoveNorth && !blockedNorth;
-			movementOptions.cantMoveNorthReason = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_NORTH);
-			if (!neighbourNorth) movementOptions.cantMoveNorthReason = "Nothing here.";
-			movementOptions.canMoveSouth = movementOptions.canMoveSouth && !blockedSouth;
-			movementOptions.cantMoveSouthReason = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_SOUTH);
-			if (!neighbourSouth) movementOptions.cantMoveSouthReason = "Nothing here.";
-			movementOptions.canMoveWest = movementOptions.canMoveWest && !blockedWest;
-			movementOptions.cantMoveWestReason = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_WEST);
-			if (!neighbourWest) movementOptions.cantMoveWestReason = "Nothing here.";
-			movementOptions.canMoveEast = movementOptions.canMoveEast && !blockedEast;
-			movementOptions.cantMoveEastReason = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_EAST);
-			if (!neighbourEast) movementOptions.cantMoveEastReason = "Nothing here.";
+			// Allow n/s/w/e movement if neighbour exists and there is no active blocker
+			for (var i in PositionConstants.getLevelDirections()) {
+				var direction = PositionConstants.getLevelDirections()[i];
+				var neighbour = this.getNeighbour(sectorKey, direction);
+				movementOptions.canMoveTo[direction] = neighbour != null;
+				movementOptions.canMoveTo[direction] = movementOptions.canMoveTo[direction] && !this.movementHelper.isBlocked(entity, direction);
+				movementOptions.cantMoveToReason[direction] = this.movementHelper.getBlockedReason(entity, direction);
+				if (!neighbour) movementOptions.cantMoveToReason[direction] = "Nothing here.";
+			}
 			
 			// Allow up/down movement if passages exists
 			movementOptions.canMoveUp = passagesComponent != null && !this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_UP);
@@ -171,10 +150,14 @@ define([
 		
 		getNeighbour: function (sectorKey, direction) {
             switch (direction) {
-            case this.DIRECTION_NORTH: return this.neighboursDict[sectorKey].north;
-            case this.DIRECTION_EAST: return this.neighboursDict[sectorKey].east;
-            case this.DIRECTION_SOUTH: return this.neighboursDict[sectorKey].south;
-            case this.DIRECTION_WEST: return this.neighboursDict[sectorKey].west;
+			case PositionConstants.DIRECTION_NORTH: return this.neighboursDict[sectorKey].north;
+			case PositionConstants.DIRECTION_EAST: return this.neighboursDict[sectorKey].east;
+			case PositionConstants.DIRECTION_SOUTH: return this.neighboursDict[sectorKey].south;
+			case PositionConstants.DIRECTION_WEST: return this.neighboursDict[sectorKey].west;
+			case PositionConstants.DIRECTION_NE: return this.neighboursDict[sectorKey].ne;
+			case PositionConstants.DIRECTION_SE: return this.neighboursDict[sectorKey].se;
+			case PositionConstants.DIRECTION_SW: return this.neighboursDict[sectorKey].sw;
+			case PositionConstants.DIRECTION_NW: return this.neighboursDict[sectorKey].nw;
             default:
                 return null;
             }
@@ -209,6 +192,22 @@ define([
 							if (positionComponent.sectorY + 1 === otherPositionComponent.sectorY) {
 								this.neighboursDict[sectorKey].south = otherNode.entity;
 							}
+						}
+						
+						if (positionComponent.sectorX - 1 === otherPositionComponent.sectorX && positionComponent.sectorY - 1 === otherPositionComponent.sectorY) {
+							this.neighboursDict[sectorKey].nw = otherNode.entity;
+						}
+						
+						if (positionComponent.sectorX - 1 === otherPositionComponent.sectorX && positionComponent.sectorY + 1 === otherPositionComponent.sectorY) {
+							this.neighboursDict[sectorKey].sw = otherNode.entity;
+						}
+						
+						if (positionComponent.sectorX + 1 === otherPositionComponent.sectorX && positionComponent.sectorY - 1 === otherPositionComponent.sectorY) {
+							this.neighboursDict[sectorKey].ne = otherNode.entity;
+						}
+						
+						if (positionComponent.sectorX + 1 === otherPositionComponent.sectorX && positionComponent.sectorY + 1 === otherPositionComponent.sectorY) {
+							this.neighboursDict[sectorKey].se = otherNode.entity;
 						}
 					}
 					

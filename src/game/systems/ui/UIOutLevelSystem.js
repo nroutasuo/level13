@@ -252,12 +252,9 @@ define([
 			var passageDownBuilt = improvements.getCount(improvementNames.passageDownStairs) +
 				improvements.getCount(improvementNames.passageDownElevator) +
 				improvements.getCount(improvementNames.passageDownHole) > 0;
-			var movementOptionsComponent = this.playerLocationNodes.head.entity.get(MovementOptionsComponent);
-			if (movementOptionsComponent) {
-				$("#out-action-move-up").toggle((isScouted && passagesComponent.passageUp != null) || passageUpBuilt);
-				$("#out-action-move-down").toggle((isScouted && passagesComponent.passageDown != null) || passageDownBuilt);
-				$("#out-action-move-camp").toggle(hasCamp && !hasCampHere);
-			}
+			$("#out-action-move-up").toggle((isScouted && passagesComponent.passageUp != null) || passageUpBuilt);
+			$("#out-action-move-down").toggle((isScouted && passagesComponent.passageDown != null) || passageDownBuilt);
+			$("#out-action-move-camp").toggle(hasCamp && !hasCampHere);
 			
 			var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
 			var showDespair =
@@ -370,7 +367,6 @@ define([
 		
 		getMovementDescription: function (isScouted, passagesComponent, entity) {
 			var description = "";
-			var movementOptionsComponent = this.playerLocationNodes.head.entity.get(MovementOptionsComponent);
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			
 			// Passages up / down
@@ -397,9 +393,9 @@ define([
 				var blocker = passagesComponent.getBlocker(direction);
 				if (blocker) {
                     if (this.movementHelper.isBlocked(entity, direction)) {
-                        description += "Passage to the " + TextConstants.getDirectionName(direction) + " is blocked by a " + blocker.name + ". ";
+                        description += "Passage to the " + PositionConstants.getDirectionName(direction) + " is blocked by a " + blocker.name + ". ";
                     } else {
-                        description += "A " + blocker.name.toLowerCase() + " on the " + TextConstants.getDirectionName(direction) + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
+                        description += "A " + blocker.name.toLowerCase() + " on the " + PositionConstants.getDirectionName(direction) + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
                     }
                 }
 			}

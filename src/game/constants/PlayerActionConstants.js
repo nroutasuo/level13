@@ -99,6 +99,38 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     },
                     busy: false,
                 },
+                        
+                move_sector_ne: {
+                    vision: 10,
+                    sector: {
+                        blockerNE: false,
+                    },
+                    busy: false,
+                },
+                        
+                move_sector_se: {
+                    vision: 10,
+                    sector: {
+                        blockerSE: false,
+                    },
+                    busy: false,
+                },
+                        
+                move_sector_sw: {
+                    vision: 10,
+                    sector: {
+                        blockerSW: false,
+                    },
+                    busy: false,
+                },
+                        
+                move_sector_nw: {
+                    vision: 10,
+                    sector: {
+                        blockerNW: false,
+                    },
+                    busy: false,
+                },
                     
                 move_level_up: {
                     sector: {
@@ -891,6 +923,30 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     resource_food: 1,
                     resource_water: 1,
                 },
+            
+                move_sector_ne: {
+                    stamina: 10,
+                    resource_food: 1,
+                    resource_water: 1,
+                },
+            
+                move_sector_se: {
+                    stamina: 10,
+                    resource_food: 1,
+                    resource_water: 1,
+                },
+            
+                move_sector_sw: {
+                    stamina: 10,
+                    resource_food: 1,
+                    resource_water: 1,
+                },
+            
+                move_sector_nw: {
+                    stamina: 10,
+                    resource_food: 1,
+                    resource_water: 1,
+                },
                 
                 build_out_camp: {
                     resource_metal: 20,
@@ -1474,6 +1530,10 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 move_sector_south: "Move to another area",
                 move_sector_west: "Move to another area",
                 move_sector_east: "Move to another area",
+                move_sector_ne: "Move to another area",
+                move_sector_se: "Move to another area",
+                move_sector_sw: "Move to another area",
+                move_sector_nw: "Move to another area",
                 move_camp_level: "Shortcut back to the nearest camp.",
                 despair: "Give up. Stop moving. Rest.",
                 build_out_collector_food: "Collect food.",

@@ -365,6 +365,10 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                 case "move_sector_west": break;
                 case "move_sector_east": break;
                 case "move_sector_south": break;
+                case "move_sector_ne": break;
+                case "move_sector_se": break;
+                case "move_sector_sw": break;
+                case "move_sector_nw": break;
                 case "leave_camp": break;
                 default:
                     console.log("WARN: No function found for button with action " + action);
@@ -587,6 +591,18 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                     break;
                 case "out-action-move-east":
                     direction = PositionConstants.DIRECTION_EAST;
+                    break;
+                case "out-action-move-ne":
+                    direction = PositionConstants.DIRECTION_NE;
+                    break;
+                case "out-action-move-se":
+                    direction = PositionConstants.DIRECTION_SE;
+                    break;
+                case "out-action-move-sw":
+                    direction = PositionConstants.DIRECTION_SW;
+                    break;
+                case "out-action-move-nw":
+                    direction = PositionConstants.DIRECTION_NW;
                     break;
                 case "out-action-move-up":
                     direction = PositionConstants.DIRECTION_UP;

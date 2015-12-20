@@ -76,7 +76,7 @@ define([
 			
 			var positionComponent = entity.get(PositionComponent);
 			var improvementsComponent = entity.get(SectorImprovementsComponent);
-			var s = positionComponent.sector;
+			var s = positionComponent.sectorId();
 			var passageUpBuilt =
 				improvementsComponent.getCount(improvementNames.passageUpStairs) > 0 ||
 				improvementsComponent.getCount(improvementNames.passageUpHole) > 0 ||
