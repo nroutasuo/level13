@@ -132,9 +132,6 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                     }
                 });
             });
-            $("button[action='move_camp_level']").click(function (e) {
-                onTabClicked(elementIDs.tabs.in, elementIDs, gameState, playerActions);
-            });
             
             // Collapsible divs
             $(".collapsible-header").click(function () {
@@ -320,7 +317,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                     var content = '<div class="arrow-up"></div><div class="btn-callout-content">' + "" + "</div>";
                     return '<div class="btn-callout">' + content + '</div>'
                 } else {
-                    console.log("WARN: No callout could be created for action button with action " + action);
+                    console.log("WARN: No callout could be created for action button with action " + action + ". Description and costs both missing.");
                     return "";
                 }
             });
@@ -369,6 +366,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                 case "move_sector_se": break;
                 case "move_sector_sw": break;
                 case "move_sector_nw": break;
+                case "move_camp_level": break;
                 case "leave_camp": break;
                 default:
                     console.log("WARN: No function found for button with action " + action);

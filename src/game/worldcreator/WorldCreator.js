@@ -433,8 +433,6 @@ define([
 			var lowerLowerLevelExcursionLength = ItemConstants.getBag(lowerLowerLevelOrdinal).bonus;
             levelVO.centralAreaSize = Math.floor(Math.min((excursionLength + lowerLevelExcursionLength + lowerLowerLevelExcursionLength)  / 3 / 5 * 3, WorldCreatorConstants.MAX_CENTRAL_AREA_SIZE));
             
-            console.log(levelVO.level + ": " +levelVO.centralAreaSize)
-            
             var pathDirectionNums = [ 1, 1, 1, 1, 2, 2, 2, 3, 3, 4 ];
             
             var sectorsAll = [];

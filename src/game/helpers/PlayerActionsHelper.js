@@ -637,8 +637,9 @@ define([
 				switch (baseActionID) {
 					case "move_camp_level":
                         if (!this.nearestCampNodes.head) return this.getCosts("move_sector_west", 1, 100);
+                        // TODO calculate back to camp costs on actual required steps instead of raw distance?
                         var campSector = this.nearestCampNodes.head.entity;
-                        var sectorsToMove = Math.abs(sector.get(PositionComponent).sectorId() - campSector.get(PositionComponent).sectorId());
+                        var sectorsToMove = Math.ceil(PositionConstants.getDistanceTo(sector.get(PositionComponent).getPosition(), campSector.get(PositionComponent).getPosition()));
                         return this.getCosts("move_sector_west", 1, sectorsToMove);
                     
 					case "move_camp_global":
