@@ -81,7 +81,7 @@ define([
             var sectorVO;
 			for (var i = WorldCreatorHelper.getBottomLevel(seed); i <= WorldCreatorHelper.getHighestLevel(seed); i++) {
                 levelVO = WorldCreator.world.getLevel(i);
-				this.creator.createLevel(this.saveHelper.saveKeys.level + i, i);
+				this.creator.createLevel(this.saveHelper.saveKeys.level + i, i, levelVO);
 				for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
 					for (var x = levelVO.minX; x <= levelVO.maxX; x++) {
                         sectorVO = levelVO.getSector(x, y);

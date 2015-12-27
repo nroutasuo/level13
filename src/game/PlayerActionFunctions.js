@@ -286,7 +286,7 @@ define(['ash',
                 this.forceResourceBarUpdate();
                 this.save();
             } else {
-                console.log("WARN: No valid camp found.");
+                console.log("WARN: No valid camp found. (player pos: " + playerPos + ")");
             }
         },
         
@@ -487,15 +487,24 @@ define(['ash',
         },
         
         buildPassage: function (sectorPos, up, action, neighbourAction) {
-			var l = parseInt(sectorPos.split("-")[0]);
-			var s = parseInt(sectorPos.split("-")[1]);
+			var l = parseInt(sectorPos.split(".")[0]);
+			var sX = parseInt(sectorPos.split(".")[1]);
+			var sY = parseInt(sectorPos.split(".")[2]);
             var playerPos = this.playerPositionNodes.head.position;
-			var sector = this.levelHelper.getSectorByPosition(l, s);
-			var neighbour = this.levelHelper.getSectorByPosition(up ? l + 1 : l - 1, s);
-            var msg = "Passage " + (up ? " up" : " down") + " ready in sector " + s + (playerPos.level === l ? "" : ", level " + l);
-            this.buildImprovement(action, this.playerActionsHelper.getImprovementNameForAction(action), sector);
-            this.buildImprovement(neighbourAction, this.playerActionsHelper.getImprovementNameForAction(neighbourAction), neighbour, true);
-			this.addLogMessage(msg);
+			var sector = this.levelHelper.getSectorByPosition(l, sX, sY);
+			var neighbour = this.levelHelper.getSectorByPosition(up ? l + 1 : l - 1, sX, sY);
+			
+			if (sector && neighbour) {
+				var msg = "Passage " + (up ? " up" : " down") + " ready in sector " + sX + "." + sY + (playerPos.level === l ? "" : ", level " + l);
+				this.buildImprovement(action, this.playerActionsHelper.getImprovementNameForAction(action), sector);
+				this.buildImprovement(neighbourAction, this.playerActionsHelper.getImprovementNameForAction(neighbourAction), neighbour, true);
+				this.addLogMessage(msg);
+			} else {
+				console.log("WARN: Couldn't find sectors for building passage.");
+				console.log(sector);
+				console.log(neighbour);
+				console.log(sectorPos);
+			}
 		},
         
         buildTrap: function () {

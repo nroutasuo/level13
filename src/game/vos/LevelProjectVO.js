@@ -3,11 +3,12 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
     
     var LevelProjectVO = Ash.Class.extend({
 	
-        constructor: function (improvement, action, level, sector, direction, name) {
+        constructor: function (improvement, action, position, direction, name) {
 			this.improvement = improvement;
 			this.action = action;
-			this.level = level;
-			this.sector = sector;
+			this.position = position;
+			this.level = position.level;
+			this.sector = position.sectorId();
             this.direction = direction;
 			this.name = name;
 			if (!this.name) {

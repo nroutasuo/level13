@@ -121,9 +121,9 @@ define([
 			return player;
         },
 	
-		createLevel: function (saveKey, pos) {
+		createLevel: function (saveKey, pos, levelVO) {
 			var level = new Ash.Entity()
-			.add(new LevelComponent(pos))
+			.add(new LevelComponent(pos, levelVO))
 			.add(new PositionComponent(pos))
 			.add(new LevelPassagesComponent())
 			.add(new SaveComponent(saveKey, [CampComponent]));

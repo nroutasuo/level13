@@ -157,7 +157,7 @@ define([
 								break;
 						}
 						if (this.playerActionsHelper.checkRequirements(actionName, false, node.entity).value > 0)
-							projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, level, sectorPosition.sectorId(), PositionConstants.DIRECTION_UP));
+							projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, sectorPosition, PositionConstants.DIRECTION_UP));
 					}
 					if (levelPassagesComponent.passagesDown[sectorPosition.sectorId()] && !levelPassagesComponent.passagesDownBuilt[sectorPosition.sectorId()]) {
 						switch (levelPassagesComponent.passagesDown[sectorPosition.sectorId()].type) {
@@ -175,7 +175,7 @@ define([
 							break;
 						}
 						if (this.playerActionsHelper.checkRequirements(actionName, false, node.entity).value > 0)
-							projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, level, sectorPosition.sectorId(), PositionConstants.DIRECTION_DOWN));
+							projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, sectorPosition, PositionConstants.DIRECTION_DOWN));
 					}
 					
 					// bridges
@@ -183,7 +183,7 @@ define([
 						var direction = PositionConstants.getLevelDirections()[i];
 						var directionBlocker = sectorPassagesComponent.getBlocker(direction);
 						if (directionBlocker && directionBlocker.bridgeable) {
-							projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.bridge), "build_out_bridge", level, sectorPosition.sectorId(), direction));
+							projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.bridge), "build_out_bridge", sectorPosition, direction));
 						}
 					}
 				}
@@ -232,16 +232,18 @@ define([
 			var levelEntity = this.getLevelEntityForPosition(level);
 			if (levelEntity) {
 				var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
-				
+				var passageSectors;
 				if (level < 13) {
-					for (var iu = 0; iu < levelPassagesComponent.passagesUpBuilt.length; iu++) {
-						if (levelPassagesComponent.passagesUpBuilt[iu]) return true;
+					passageSectors = Object.keys(levelPassagesComponent.passagesUpBuilt);
+					for (var iu = 0; iu < passageSectors.length; iu++) {
+						if (levelPassagesComponent.passagesUpBuilt[passageSectors[iu]]) return true;
 					}
 				}
 				
 				if (level > 13) {
-					for (var id = 0; id < levelPassagesComponent.passagesDownBuilt.length; id++) {
-						if (levelPassagesComponent.passagesDownBuilt[id]) return true;
+					passageSectors = Object.keys(levelPassagesComponent.passagesDownBuilt);
+					for (var id = 0; id < passageSectors.length; id++) {
+						if (levelPassagesComponent.passagesDownBuilt[passageSectors[id]]) return true;
 					}
 				}
 			}

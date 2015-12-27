@@ -395,6 +395,8 @@ define([
                     if (this.movementHelper.isBlocked(entity, direction)) {
                         description += "Passage to the " + PositionConstants.getDirectionName(direction) + " is blocked by a " + blocker.name + ". ";
                     } else {
+						console.log(blocker)
+						console.log(passagesComponent);
                         description += "A " + blocker.name.toLowerCase() + " on the " + PositionConstants.getDirectionName(direction) + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
                     }
                 }

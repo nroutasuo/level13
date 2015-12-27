@@ -8,7 +8,11 @@ function (Ash, PositionConstants, PassageVO, MovementBlockerVO) {
         constructor: function (passageUp, passageDown, blockers) {
             this.passageUp = passageUp ? new PassageVO(passageUp) : null;
             this.passageDown = passageDown ? new PassageVO(passageDown) : null;
-            this.blockers = blockers;
+            
+            this.blockers = {};
+            for (var b in blockers) {
+                this.blockers[b] = new MovementBlockerVO(blockers[b]);
+            }
         },
         
         getBlocker: function (direction) {
