@@ -10,6 +10,7 @@ function (Ash, LogMessageVO) {
 		constructor: function () {
 			this.messages = [];
 			this.messagesPendingMovement = [];
+			this.hasNewMessages = true;
 		},
 			
 		addMessage: function (message, replacements, values, visibleLevel, visibleSector, visibleInCamp) {
@@ -24,7 +25,7 @@ function (Ash, LogMessageVO) {
 			}
 		},
 		
-		addMessageImmediate: function(message) {
+		addMessageImmediate: function (message) {
 			this.hasNewMessages = true;
 			var combined = this.combineMessagesCheck(message);
 			if(!combined) this.messages.push(message);

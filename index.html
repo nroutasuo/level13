@@ -31,7 +31,7 @@
 	<div class="sticky-footer-wrapper">
 		<div class="grid" id="grid-main">	
 			<div class="unit one-quarter" style="visibility:hidden; padding:1px; height:1px"></div><!-- filler for log -->
-			<div class="unit three-quarters" id="unit-main">
+			<div class="unit three-quarters" id="unit-main" style="display: none">
 			
 				<div class="grid" id="grid-main-header">
 					<div id="container-statsbar" class="unit whole">
@@ -377,12 +377,12 @@
 								</tr><tr>
 								<td><button class="action action-location" id="out-action-despair" action="despair">Despair</button></td>
 								</tr>
-							</table>
+                                </table>
 							<div class="subheader">
 								<h3>Movement</h3>
 							</div>
                             <table id="table-out-actions-movement">
-								<tr><td><button class="action btn-icon action-move" id="out-action-move-up" action="move_level_up"><span>Move up</span></button></td>
+								<tr><td><button class="action btn-icon action-move" id="out-action-move-up" action="move_level_up"><span>Move up</span></button></td></tr>
 								<tr><td><button class="action btn-icon action-move" id="out-action-move-north" action="move_sector_north"><span>Move north</span></button></td></tr>
 								<tr><td><button class="action btn-icon action-move" id="out-action-move-east" action="move_sector_east"><span>Move east</span></button></td></tr>
 								<tr><td><button class="action btn-icon action-move" id="out-action-move-west" action="move_sector_west"><span>Move west</span></button></td></tr>
@@ -509,8 +509,7 @@
 							</div>
 						</div>
 					</div>
-			</div><!-- main switch content grid -->
-			
+			</div><!-- main switch content grid -->			
 			</div><!-- main unit: the whole 3/4 right of the log -->
 			<div id="log" class="unit one-quarter limit-height">
 				<div id="log-overlay" class="lvl13-fade-down"></div>

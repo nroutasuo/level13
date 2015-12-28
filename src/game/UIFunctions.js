@@ -386,6 +386,21 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             }
         },
         
+        showGame: function () {
+            $(".sticky-footer").css("display", "block");
+            $("#grid-main").css("display", "block");
+            $("#unit-main").css("display", "block");
+        },
+        
+        hideGame: function () {
+            $("#unit-main").css("display", "none");
+            $(".sticky-footer").css("display", "none");
+            $("#grid-main").css("display", "none");
+        },
+        
+        onResize: function () {
+        },
+        
         getGameInfoDiv: function () {
             var html = "<p>Please note that this game is still in development and many features are incomplete and unbalanced. Feedback and bug reports are much appreciated!</p>";
             html += "<p><b>Links</b>: <a href='https://github.com/nroutasuo/level13' target='_blank'>github</a></p>";
@@ -393,9 +408,6 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             html += "Current version: <span id='changelog-version'>" + this.changeLogHelper.getCurrentVersionNumber() + "</span></p>";
             html += "<div id='changelog' class='infobox infobox-scrollable'>" + this.changeLogHelper.getChangeLogHTML() + "</div>";
             return html;
-        },
-        
-        onResize: function () {
         },
         
         onTabClicked: function (tabID, elementIDs, gameState, playerActions) {

@@ -158,6 +158,7 @@ dd p.p-meta {
 .sticky-footer {
 	height: 70px;
 	padding: 15px 0;
+    display: none;
 }
 
 .sticky-footer .one-quarter {

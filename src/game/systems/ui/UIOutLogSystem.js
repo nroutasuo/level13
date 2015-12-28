@@ -21,6 +21,7 @@ define([
 				logSystem.checkPendingMessages(playerPosition);
 			};
 			this.playerMovedSignal.add(this.onPlayerMoved);
+			this.update();
         },
 
         removeFromEngine: function (engine) {
@@ -40,7 +41,7 @@ define([
 				node.logMessages.hasNewMessages = false;
 			}
 		
-			if (!hasNewMessages && !isTime) return;
+			if (!hasNewMessages && !isTime && time) return;
 			
 			this.pruneMessages();
 			this.refreshMessages(messages);
@@ -65,22 +66,22 @@ define([
             }
 		},
 	
-		refreshMessages: function(messages) {
+		refreshMessages: function (messages) {
 			$("#log ul").empty();
 				
 			var msg;
 			var liMsg;
 			for	(var index = 0; index < messages.length; index++) {
-			msg = messages[index];
-			var li = '<li';
-			if (msg.loadedFromSave)
-				li += ' class="log-loaded"';
-			li += '><span class="time">' + UIConstants.getTimeSinceText(msg.time) + " ago" + '</span> ';
-			li += '<span class="msg">' + msg.text;
-			if (msg.combined > 0) li += '<span class="msg-count"> (' + (msg.combined + 1) + ")</span>";
-			li += '</span></li>';
-			liMsg = $(li);
-			$( "#log ul" ).prepend( liMsg );
+				msg = messages[index];
+				var li = '<li';
+				if (msg.loadedFromSave)
+					li += ' class="log-loaded"';
+				li += '><span class="time">' + UIConstants.getTimeSinceText(msg.time) + " ago" + '</span> ';
+				li += '<span class="msg">' + msg.text;
+				if (msg.combined > 0) li += '<span class="msg-count"> (' + (msg.combined + 1) + ")</span>";
+				li += '</span></li>';
+				liMsg = $(li);
+				$( "#log ul" ).prepend( liMsg );
 			}
 		},
 		

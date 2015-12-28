@@ -61,9 +61,11 @@ define([
 			var playerPos = this.playerActions.playerPositionNodes.head.position;
 			if (playerPos.inCamp) startTab = this.uiFunctions.elementIDs.tabs.in;
 			this.uiFunctions.showTab(startTab);
+			this.uiFunctions.showGame();
 		},
 		
 		restartGame: function () {
+			this.uiFunctions.hideGame();
 			this.engine.removeAllEntities();
 			this.gameState.reset();
 			this.setupGame();
@@ -141,6 +143,9 @@ define([
 				var entitiesObject = JSON.parse(localStorage.entitiesObject);
 				var failedComponents = 0;
 				
+				failedComponents += this.saveHelper.loadEntity(entitiesObject, this.saveHelper.saveKeys.player, this.player);
+				failedComponents += this.saveHelper.loadEntity(entitiesObject, this.saveHelper.saveKeys.tribe, this.tribe);
+				
 				var sectorNodes = this.creator.engine.getNodeList(SectorNode);
 				var positionComponent;
 				var saveKey;
@@ -156,9 +161,6 @@ define([
 					saveKey = this.saveHelper.saveKeys.level + positionComponent.level;
 					failedComponents += this.saveHelper.loadEntity(entitiesObject, saveKey, levelNode.entity);
 				}
-				
-				failedComponents += this.saveHelper.loadEntity(entitiesObject, this.saveHelper.saveKeys.player, this.player);
-				failedComponents += this.saveHelper.loadEntity(entitiesObject, this.saveHelper.saveKeys.tribe, this.tribe);
 				
 				console.log("Loaded from " + localStorage.timeStamp);
 				
