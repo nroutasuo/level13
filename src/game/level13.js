@@ -1,5 +1,6 @@
 define([
     'ash',
+	'game/constants/GameConstants',
     'game/components/GameState',
     'game/systems/GameManager',
     'game/systems/SaveSystem',
@@ -49,6 +50,7 @@ define([
     'brejep/tickprovider',
 ], function (
     Ash,
+	GameConstants,
     GameState,
     GameManager,
     SaveSystem,
@@ -113,6 +115,8 @@ define([
         tickProvider: null,
 
         constructor: function () {
+            if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t setting up singletons");
+						
             this.engine = new Ash.Engine();
 			this.gameState = new GameState();
 			
@@ -159,6 +163,8 @@ define([
 		addSystems: function (creator) {
 			this.gameManager = new GameManager(this.tickProvider, this.gameState, creator, this.uiFunctions, this.playerActionFunctions, this.saveHelper);
 			this.engine.addSystem(this.gameManager, SystemPriorities.preUpdate);
+			
+			if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t initializing systems");
 			this.engine.addSystem(this.playerActionFunctions, SystemPriorities.preUpdate);
 			this.engine.addSystem(this.occurrenceFunctions, SystemPriorities.preUpdate);
 			this.engine.addSystem(this.saveSystem, SystemPriorities.preUpdate);
@@ -182,7 +188,6 @@ define([
 			this.engine.addSystem(new UnlockedFeaturesSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new GlobalResourcesSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new CampEventsSystem(this.occurrenceFunctions, this.upgradeEffectsHelper, this.gameState, this.saveSystem), SystemPriorities.update);
-			
 			this.engine.addSystem(new AutoPlaySystem(this.playerActionFunctions, this.levelHelper, this.sectorHelper, this.upgradeEffectsHelper), SystemPriorities.postUpdate);
 			
 			this.engine.addSystem(new UIOutHeaderSystem(this.uiFunctions, this.gameState, this.resourcesHelper), SystemPriorities.render);
@@ -194,6 +199,7 @@ define([
 			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.tabChangedSignal, this.resourcesHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutFightSystem(this.uiFunctions, this.playerActionResultsHelper, this.playerActionsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLogSystem(this.playerMovedSignal), SystemPriorities.render);
+			
 		},
 	
 		start: function () {

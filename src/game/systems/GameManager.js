@@ -1,5 +1,6 @@
 define([
     'ash',
+	'game/constants/GameConstants',
     'game/worldcreator/WorldCreator',
     'game/worldcreator/WorldCreatorHelper',
     'game/worldcreator/WorldCreatorRandom',
@@ -7,7 +8,7 @@ define([
     'game/nodes/sector/SectorNode',
     'game/nodes/LevelNode',
     'game/components/common/PositionComponent'
-], function (Ash, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SaveHelper, SectorNode, LevelNode, PositionComponent) {
+], function (Ash, GameConstants, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SaveHelper, SectorNode, LevelNode, PositionComponent) {
 
     var GameManager = Ash.System.extend({
 	
@@ -45,7 +46,9 @@ define([
 		
 		// Called on add to engine
 		setupGame: function () {
+            if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t loading and setting up game");
 			this.initializeEntities();
+			
 			var loaded = this.loadGameState();
 			if (loaded) this.syncLoadedGameState();
 			if (!loaded) this.setupNewGame();
@@ -53,6 +56,7 @@ define([
 		
 		// Called after all other systems are ready
 		startGame: function () {
+            if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t starting game");
 			var startTab = this.uiFunctions.elementIDs.tabs.out;
 			var playerPos = this.playerActions.playerPositionNodes.head.position;
 			if (playerPos.inCamp) startTab = this.uiFunctions.elementIDs.tabs.in;
@@ -122,15 +126,17 @@ define([
 			}
 			
 			// Create world
+			if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t creating world");
 			var worldSeed;
 			if (hasSave) worldSeed = parseInt(loadedGameState.worldSeed);
 			else worldSeed = WorldCreatorRandom.getNewSeed();
 			
 			WorldCreator.prepareWorld(worldSeed);
-			this.createLevelEntities(worldSeed);
 			this.gameState.worldSeed = worldSeed;
-			
+
 			// Create other entities and fill components
+			if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t loading entities");
+			this.createLevelEntities(worldSeed);
 			if (hasSave) {
 				var entitiesObject = JSON.parse(localStorage.entitiesObject);
 				var failedComponents = 0;
@@ -158,9 +164,9 @@ define([
 				
 				if (failedComponents > 0) {
 					console.log(failedComponents + " components failed to load.");
-			}
-			
-			return true;
+				}
+				
+				return true;
 			}
 			else
 			{

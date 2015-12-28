@@ -39,7 +39,7 @@ define([
 		
 		playerMovedSignal: null,
 		
-		sectorNeighboursDict: null,
+		neighboursDict: {},
 		
 		constructor: function (movementHelper, levelHelper, playerMovedSignal) {
 			this.movementHelper = movementHelper;
@@ -50,7 +50,6 @@ define([
 		addToEngine: function (engine) {
 			this.sectorNodes = engine.getNodeList(SectorNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
-			this.findNeighbours();
 
 			var sys = this;
 			this.playerMovedSignal.add(function () {
@@ -95,7 +94,7 @@ define([
 			var positionComponent = entity.get(PositionComponent);
 			
 			var sectorKey = this.getSectorKey(positionComponent);
-			if (!this.neighboursDict[sectorKey]) this.findNeighbours();
+			if (!this.neighboursDict[sectorKey]) this.findNeighbours(entity);
 			var sys = this;
 			
 			function checkNeighbour(direction) {
@@ -129,7 +128,7 @@ define([
 			var positionComponent = entity.get(PositionComponent);
 			
 			var sectorKey = this.getSectorKey(positionComponent);
-			if (!this.neighboursDict[sectorKey]) this.findNeighbours();
+			if (!this.neighboursDict[sectorKey]) this.findNeighbours(entity);
 			
 			// Allow n/s/w/e movement if neighbour exists and there is no active blocker
 			for (var i in PositionConstants.getLevelDirections()) {
@@ -163,61 +162,57 @@ define([
             }
 		},
 		
-		findNeighbours: function () {
-			this.neighboursDict = {};
-			var sectorKey;
+		findNeighbours: function (entity) {
+			var positionComponent = entity.get(PositionComponent);
+			var sectorKey = this.getSectorKey(positionComponent);
+			
 			var otherPositionComponent;
-			var positionComponent;
-			for (var node = this.sectorNodes.head; node; node = node.next) {
-				positionComponent = node.entity.get(PositionComponent);
-				sectorKey = this.getSectorKey(positionComponent);
-				this.neighboursDict[sectorKey] = {};
-				for (var otherNode = this.sectorNodes.head; otherNode; otherNode = otherNode.next) {
-					otherPositionComponent = otherNode.entity.get(PositionComponent);
+			this.neighboursDict[sectorKey] = {};
+			for (var otherNode = this.sectorNodes.head; otherNode; otherNode = otherNode.next) {
+				otherPositionComponent = otherNode.entity.get(PositionComponent);
 					
-					if (positionComponent.level === otherPositionComponent.level) {
-						if (positionComponent.sectorY === otherPositionComponent.sectorY) {
-							if (positionComponent.sectorX - 1 === otherPositionComponent.sectorX) {
-								this.neighboursDict[sectorKey].west = otherNode.entity;
-							}
-							if (positionComponent.sectorX + 1 === otherPositionComponent.sectorX) {
-								this.neighboursDict[sectorKey].east = otherNode.entity;
-							}
+				if (positionComponent.level === otherPositionComponent.level) {
+					if (positionComponent.sectorY === otherPositionComponent.sectorY) {
+						if (positionComponent.sectorX - 1 === otherPositionComponent.sectorX) {
+							this.neighboursDict[sectorKey].west = otherNode.entity;
 						}
-						
-						if (positionComponent.sectorX === otherPositionComponent.sectorX) {
-							if (positionComponent.sectorY - 1 === otherPositionComponent.sectorY) {
-								this.neighboursDict[sectorKey].north = otherNode.entity;
-							}
-							if (positionComponent.sectorY + 1 === otherPositionComponent.sectorY) {
-								this.neighboursDict[sectorKey].south = otherNode.entity;
-							}
-						}
-						
-						if (positionComponent.sectorX - 1 === otherPositionComponent.sectorX && positionComponent.sectorY - 1 === otherPositionComponent.sectorY) {
-							this.neighboursDict[sectorKey].nw = otherNode.entity;
-						}
-						
-						if (positionComponent.sectorX - 1 === otherPositionComponent.sectorX && positionComponent.sectorY + 1 === otherPositionComponent.sectorY) {
-							this.neighboursDict[sectorKey].sw = otherNode.entity;
-						}
-						
-						if (positionComponent.sectorX + 1 === otherPositionComponent.sectorX && positionComponent.sectorY - 1 === otherPositionComponent.sectorY) {
-							this.neighboursDict[sectorKey].ne = otherNode.entity;
-						}
-						
-						if (positionComponent.sectorX + 1 === otherPositionComponent.sectorX && positionComponent.sectorY + 1 === otherPositionComponent.sectorY) {
-							this.neighboursDict[sectorKey].se = otherNode.entity;
+						if (positionComponent.sectorX + 1 === otherPositionComponent.sectorX) {
+							this.neighboursDict[sectorKey].east = otherNode.entity;
 						}
 					}
 					
-					if (positionComponent.sectorId() === otherPositionComponent.sectorId()) {
-						if (positionComponent.level - 1 === otherPositionComponent.level) {
-							this.neighboursDict[sectorKey].down = otherNode.entity;
+					if (positionComponent.sectorX === otherPositionComponent.sectorX) {
+						if (positionComponent.sectorY - 1 === otherPositionComponent.sectorY) {
+							this.neighboursDict[sectorKey].north = otherNode.entity;
 						}
-						if (positionComponent.level + 1 === otherPositionComponent.level) {
-							this.neighboursDict[sectorKey].up = otherNode.entity;
+						if (positionComponent.sectorY + 1 === otherPositionComponent.sectorY) {
+							this.neighboursDict[sectorKey].south = otherNode.entity;
 						}
+					}
+						
+					if (positionComponent.sectorX - 1 === otherPositionComponent.sectorX && positionComponent.sectorY - 1 === otherPositionComponent.sectorY) {
+						this.neighboursDict[sectorKey].nw = otherNode.entity;
+					}
+						
+					if (positionComponent.sectorX - 1 === otherPositionComponent.sectorX && positionComponent.sectorY + 1 === otherPositionComponent.sectorY) {
+						this.neighboursDict[sectorKey].sw = otherNode.entity;
+					}
+						
+					if (positionComponent.sectorX + 1 === otherPositionComponent.sectorX && positionComponent.sectorY - 1 === otherPositionComponent.sectorY) {
+						this.neighboursDict[sectorKey].ne = otherNode.entity;
+					}
+						
+					if (positionComponent.sectorX + 1 === otherPositionComponent.sectorX && positionComponent.sectorY + 1 === otherPositionComponent.sectorY) {
+						this.neighboursDict[sectorKey].se = otherNode.entity;
+					}
+				}
+					
+				if (positionComponent.sectorId() === otherPositionComponent.sectorId()) {
+					if (positionComponent.level - 1 === otherPositionComponent.level) {
+						this.neighboursDict[sectorKey].down = otherNode.entity;
+					}
+					if (positionComponent.level + 1 === otherPositionComponent.level) {
+						this.neighboursDict[sectorKey].up = otherNode.entity;
 					}
 				}
 			}

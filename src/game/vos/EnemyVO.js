@@ -7,7 +7,7 @@ define(['ash'], function (Ash) {
 		att: 0,
 		def: 0,
 		hp: 100,
-		rarity: 0,
+		rarity: 0, // 0-100
 		
 		nouns: [],
 		activeV: [],
@@ -28,6 +28,7 @@ define(['ash'], function (Ash) {
 			this.defeatedV = defeatedV;
 			
 			this.attRandomFactor = Math.random() - 0.5;
+			this.id = this.name.replace(/ /g, "-") + "-" + this.att + "-" + this.def;
         },
 	
 		toString: function () {
@@ -35,7 +36,7 @@ define(['ash'], function (Ash) {
 		},
 		
 		clone: function () {
-			return new EnemyVO(this.name, this.type, this.nouns, this.activeV, this.defeatedV, this.att, this.def);
+			return new EnemyVO(this.name, this.type, this.nouns, this.activeV, this.defeatedV, this.att, this.def, this.rarity);
 		}
     });
 

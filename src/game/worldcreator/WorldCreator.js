@@ -1,6 +1,7 @@
 // Stores world definitions and returns world-related constants given a seed. The seed should be a positive int.
 define([
 	'ash',
+	'game/constants/GameConstants',
     'game/worldcreator/WorldCreatorHelper',
     'game/worldcreator/WorldCreatorRandom',
     'game/worldcreator/WorldCreatorDebug',
@@ -18,7 +19,7 @@ define([
 	'game/constants/LocaleConstants',
 	'game/constants/ItemConstants'
 ], function (
-    Ash,
+    Ash, GameConstants,
     WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug,
     WorldVO, LevelVO, SectorVO, ResourcesVO, LocaleVO, PositionVO,
     WorldCreatorConstants, PositionConstants, MovementConstants, EnemyConstants, UpgradeConstants, LocaleConstants, ItemConstants
@@ -120,8 +121,9 @@ define([
 				}
 			}
 			
-			// Debug print
-			console.log("World structure ready. (ground: " + bottomLevel + ", surface: " + topLevel + ")");
+			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
+				+ "World structure ready."
+				+ (GameConstants.isDebugOutputEnabled ? " (ground: " + bottomLevel + ", surface: " + topLevel + ")" : ""));
             // WorldCreatorDebug.printWorld(this.world, [ "camp" ]);
 		},
 		
@@ -170,7 +172,8 @@ define([
 				}
 			}
 			
-			console.log("World texture ready.");
+			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
+				+ "World texture ready.");
 			// WorldCreatorDebug.printWorld(this.world, [ "sectorType" ]);
 		},
 		
@@ -237,7 +240,8 @@ define([
                 }
 			}
 			
-			console.log("World resources ready.");
+			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
+				+ "World resources ready.");
             // WorldCreatorDebug.printWorld(this.world, [ "resources.food" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "sectorType" ]);
 		},
@@ -299,7 +303,8 @@ define([
                         else localeType = localeTypes.sewer;
                         break;
 						
-					default: console.log("WARN: Unknown sector type " + sectorType);
+					default:
+						console.log("WARN: Unknown sector type " + sectorType);
 					}
 				}
 				return localeType;
@@ -323,14 +328,13 @@ define([
 					sectorVO.locales.push(locale);
 				}
 			}
-			console.log("World locales ready.");
+			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
+				+ "World locales ready.");
 			// WorldCreatorDebug.printWorld(this.world, [ "locales.length" ]);
 		},
 		
 		// enemies
 		prepareWorldEnemies: function (seed, topLevel, bottomLevel) {
-			var bottomLevelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, bottomLevel);
-			var totalLevels = topLevel - bottomLevel + 1;
 			for (var l = topLevel; l >= bottomLevel; l--) {
                 var levelVO = this.world.getLevel(l);
 				for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
@@ -340,71 +344,14 @@ define([
                         sectorVO.enemies = [];
                         sectorVO.localeEnemies = {};
                         
-                        // regular enemies
+                        // regular enemies & enemy definitions
                         var hasSectorEnemies = !sectorVO.camp && WorldCreatorRandom.random(l * x * seed + y * seed + 4848) > 0.2;
                         var hasLocaleEnemies = sectorVO.hasBlockerOfType(MovementConstants.BLOCKER_TYPE_GANG) || sectorVO.workshop;
-                        
                         if (hasSectorEnemies || hasLocaleEnemies) {
-                            var enemies = sectorVO.enemies;
-                            var enemyDifficulty = WorldCreatorHelper.getLevelOrdinal(seed, l);
-                            var pseudorandom = this.random;
-                            var randomEnemyCheck = function (typeSeed, enemy) {
-                                var threshold = (enemy.rarity + 5) / 110;
-                                var r = WorldCreatorRandom.random(typeSeed * l * seed + x * l + y + typeSeed + typeSeed * x - y * typeSeed * x);
-                                return r > threshold;
-                            };
+							sectorVO.enemies = this.generateEnemies(seed, topLevel, bottomLevel, sectorVO);
+						}
                         
-                            var globalE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.global, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
-                            var enemy;
-                            for (var e in globalE) {
-                                enemy = globalE[e];
-                                if (randomEnemyCheck(11 * (e + 1), enemy)) enemies.push(enemy);
-                            }
-                            
-                            if (l <= bottomLevel + 1) {
-                                var earthE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.earth, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
-                                for (var e in earthE) {
-                                    enemy = earthE[e];
-                                    if (randomEnemyCheck(333 * (e + 1), enemy)) enemies.push(enemy);
-                                }
-                            }
-                            
-                            if (sectorVO.sunlit) {
-                                var sunE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.sunlit, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
-                                for (var e in sunE) {
-                                    enemy = sunE[e];
-                                    if (randomEnemyCheck(6666 * (e + 4) + 2, enemy)) enemies.push(enemy);
-                                }
-                            }
-                            
-                            if (l >= topLevel - 10) {
-                                var inhabitedE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.inhabited, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
-                                for (var e in inhabitedE) {
-                                    enemy = inhabitedE[e];
-                                    if (randomEnemyCheck(777 * (e + 2) ^ 2, enemy)) enemies.push(enemy);
-                                }
-                            }
-                            
-                            if (l >= topLevel - 5) {
-                                var urbanE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.urban, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
-                                for (var e in urbanE) {
-                                    enemy = urbanE[e];
-                                    if (randomEnemyCheck(99 * (e + 1), enemy)) enemies.push(enemy);
-                                }
-                            }
-                            
-                            if (enemies.length < 1) enemies.push(globalE[0]);
-                            
-                            var enemyS = l + "." + x + "." + y + ":\t";
-                            var stats;
-                            for (var e in enemies) {
-                                stats = enemies[e].att + enemies[e].def;
-                                enemyS += enemies[e].name + "(" + stats + "), ";
-                            }
-                            // console.log(enemyS.slice(0,-2));
-                        }
-                        
-                        // workshop and locale enemies
+                        // workshop and locale enemies (counts)
                         if (sectorVO.workshop) {
                             sectorVO.localeEnemies[LocaleConstants.LOCALE_ID_WORKSHOP] = 3;
                         }
@@ -417,10 +364,10 @@ define([
 						}
                     }
 				}
-			//console.log("- - - ")
 			}
 			
-			console.log("World enemies ready.");
+			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
+				+ "World enemies ready.");
 			// WorldCreatorDebug.printWorld(this.world, [ "enemies.length" ]);
 		},
         
@@ -501,6 +448,14 @@ define([
                     this.generateSectorPath(levelVO, pathStartingPos, pathDirections[di], pathLength, sectorsAll, sectorsCentral);
                 }
             }
+            
+            if (attempts === maxAttempts) {
+                console.log("WARN: Generating sectors for level " + levelVO.level + " failed ("
+                            + sectorsAll.length + "/" + sectorsTotalMin + " sectors, " + sectorsCentral.length + "/" + sectorsCentralMin + " central, "
+							+ "passage up positions: " + passagesUpPositions
+							+ ").");
+                WorldCreatorDebug.printLevel(this.world, levelVO);
+            }
 			
 			// fill in annoying hole sectors (if an empty position has more than one sector neighbours, fill it)
 			var minY = levelVO.minY;
@@ -522,12 +477,6 @@ define([
 					}
 				}
 			}
-            
-            if (attempts === maxAttempts) {
-                console.log("WARN: Generating sectors for level " + levelVO.level + " failed ("
-                            + sectorsAll.length + "/" + sectorsTotalMin + " sectors, " + sectorsCentral.length + "/" + sectorsCentralMin + " central).");
-                WorldCreatorDebug.printLevel(this.world, levelVO);
-            }
 			
 			// WorldCreatorDebug.printLevel(this.world, levelVO);
         },
@@ -546,7 +495,7 @@ define([
 				if (neighbours[PositionConstants.DIRECTION_EAST] && neighbours[PositionConstants.DIRECTION_NORTH]) sectorHasUnmatchingNeighbours = true;
 				if (neighbours[PositionConstants.DIRECTION_WEST] && neighbours[PositionConstants.DIRECTION_SOUTH]) sectorHasUnmatchingNeighbours = true;
 				if (neighbours[PositionConstants.DIRECTION_WEST] && neighbours[PositionConstants.DIRECTION_NORTH]) sectorHasUnmatchingNeighbours = true;
-                if (sectorExists || sectorHasUnmatchingNeighbours || Object.keys(neighbours).length > 2) {
+                if (sectorExists || sectorHasUnmatchingNeighbours || Object.keys(neighbours).length > 4) {
                     if (si > 0) {
                         break;
                     } else {
@@ -563,6 +512,66 @@ define([
 			levelVO.addSector(sectorVO);
 			sectorsAll.push(sectorPos);
 			if (PositionConstants.isPositionInArea(sectorPos, levelVO.centralAreaSize)) sectorsCentral.push(sectorPos);
+		},
+		
+		generateEnemies: function (seed, topLevel, bottomLevel, sectorVO) {
+			var l = sectorVO.position.level;
+			var x = sectorVO.position.sectorX;
+			var y = sectorVO.position.sectorY;
+			
+			var bottomLevelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, bottomLevel);
+			var totalLevels = topLevel - bottomLevel + 1;
+			
+			var enemies = sectorVO.enemies;
+			var enemyDifficulty = WorldCreatorHelper.getLevelOrdinal(seed, l);
+			var randomEnemyCheck = function (typeSeed, enemy) {
+				var threshold = (enemy.rarity + 5) / 110;
+				var r = WorldCreatorRandom.random(typeSeed * l * seed + x * l + y + typeSeed + typeSeed * x - y * typeSeed * x);
+				return r > threshold;
+			};
+		
+			var globalE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.global, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+			var enemy;
+			for (var e in globalE) {
+				enemy = globalE[e];
+				if (randomEnemyCheck(11 * (e + 1), enemy)) enemies.push(enemy);
+			}
+			
+			if (l <= bottomLevel + 1) {
+				var earthE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.earth, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+				for (var e in earthE) {
+					enemy = earthE[e];
+					if (randomEnemyCheck(333 * (e + 1), enemy)) enemies.push(enemy);
+				}
+			}
+			
+			if (sectorVO.sunlit) {
+				var sunE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.sunlit, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+				for (var e in sunE) {
+					enemy = sunE[e];
+					if (randomEnemyCheck(6666 * (e + 4) + 2, enemy)) enemies.push(enemy);
+				}
+			}
+			
+			if (l >= topLevel - 10) {
+				var inhabitedE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.inhabited, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+				for (var e in inhabitedE) {
+					enemy = inhabitedE[e];
+					if (randomEnemyCheck(777 * (e + 2) ^ 2, enemy)) enemies.push(enemy);
+				}
+			}
+			
+			if (l >= topLevel - 5) {
+				var urbanE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.urban, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+				for (var e in urbanE) {
+					enemy = urbanE[e];
+					if (randomEnemyCheck(99 * (e + 1), enemy)) enemies.push(enemy);
+				}
+			}
+			
+			if (enemies.length < 1) enemies.push(globalE[0]);
+			
+			return enemies;
 		},
 
 

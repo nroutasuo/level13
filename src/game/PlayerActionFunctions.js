@@ -264,6 +264,7 @@ define(['ash',
                     this.save();
                 }
             } else {
+				playerPos.inCamp = false;
                 console.log("WARN: No valid camp found.");
             }
         },

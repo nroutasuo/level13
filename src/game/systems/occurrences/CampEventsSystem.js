@@ -1,6 +1,7 @@
 // Triggers in-occurrences (camp events)
 define([
     'ash',
+    'game/constants/GameConstants',
     'game/constants/OccurrenceConstants',
     'game/constants/TextConstants',
     'game/nodes/player/PlayerResourcesNode',
@@ -14,7 +15,7 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
 ], function (
 	Ash,
-	OccurrenceConstants, TextConstants,
+	GameConstants, OccurrenceConstants, TextConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	PositionComponent, LogMessagesComponent,
 	TraderComponent, RaidComponent, CampEventTimersComponent,
@@ -126,7 +127,7 @@ define([
             var eventUpgradeFactor = this.getEventUpgradeFactor(event);
 			var timeToNext = OccurrenceConstants.scheduleNext(event, eventUpgradeFactor);
 			campTimers.onEventEnded(event, timeToNext);
-			if (window.app) console.log("End " + event + " at " + campNode.camp.campName + "(" + campNode.position.level + ")" + ". Next in " + timeToNext + "s.");
+			if (GameConstants.isDebugOutputEnabled) console.log("End " + event + " at " + campNode.camp.campName + "(" + campNode.position.level + ")" + ". Next in " + timeToNext + "s.");
 			
 			if (!this.hasCampEvent(campNode, event)) return;
 			

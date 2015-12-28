@@ -305,14 +305,6 @@ define([
 				featuresComponent.buildingDensity,
 				featuresComponent.stateOfRepair) + " ";
 			
-			/*
-			if (window.app) {
-                desc += "(" +
-				featuresComponent.sectorType + "/" +
-				featuresComponent.buildingDensity + "/" +
-				featuresComponent.stateOfRepair + ") ";
-			}*/
-			
 			if (featuresComponent.sunlit) {
 				if (hasVision) desc += "Fierce sunlight soothes your nerves. ";
 				else desc += "Sunlight blinds you. ";
@@ -423,16 +415,9 @@ define([
 				if (isScouted) {
 					enemyDesc = TextConstants.getEnemyText(enemiesComponent.possibleEnemies, sectorControlComponent, defeatableBlockerN, defeatableBlockerS, defeatableBlockerW, defeatableBlockerE);
 				}
-				// if (window.app) enemyDesc += "(" + enemiesComponent.possibleEnemies + ") ";
 			} else if (isScouted) {
 				enemyDesc += "There doesn't seem to be anything dangerous here. ";
 			}
-			
-			// var posComponent = this.playerLocationNodes.head.position;
-			// var levelOrdinal = this.gameState.getLevelOrdinal(posComponent.level);
-            // var groundLevelOrdinal = this.gameState.getGroundLevelOrdinal();
-			// var totalLevels = this.gameState.getTotalLevels();
-			// if (window.app) enemyDesc += "Required strength: " + EnemyConstants.getRequiredStrength(levelOrdinal, groundLevelOrdinal, totalLevels) + ". ";
 			
 			return enemyDesc;
 		},
