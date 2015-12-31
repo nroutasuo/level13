@@ -141,10 +141,10 @@ define([
 			}
 			
 			// Allow up/down movement if passages exists
-			movementOptions.canMoveUp = passagesComponent != null && !this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_UP);
-			movementOptions.cantMoveUpReason = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_UP);
-			movementOptions.canMoveDown = passagesComponent != null && !this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_DOWN);
-			movementOptions.cantMoveDownReason = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_DOWN);
+			movementOptions.canMoveTo[PositionConstants.DIRECTION_UP] = passagesComponent != null && !this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_UP);
+			movementOptions.cantMoveToReason[PositionConstants.DIRECTION_UP] = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_UP);
+			movementOptions.canMoveTo[PositionConstants.DIRECTION_DOWN] = passagesComponent != null && !this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_DOWN);
+			movementOptions.cantMoveToReason[PositionConstants.DIRECTION_DOWN] = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_DOWN);
 		},
 		
 		getNeighbour: function (sectorKey, direction) {

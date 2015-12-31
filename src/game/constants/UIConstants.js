@@ -105,17 +105,17 @@ define(['ash',
 				
 				content = "?";
 				var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
-				if (isScouted) content = sectorPos.sectorId();
+				if (isScouted) content = sectorPos.sectorId() + " ";
 				if (sector.has(CampComponent)) content = "c";
 				if (sector.has(WorkshopComponent)) content = "w";
-				if (sectorPassages.passageUp && isScouted) content += "U";
-				if (sectorPassages.passageDown && isScouted) content += "D";
-				if (unScoutedLocales > 0 && isScouted) content += "l";
+				if (sectorPassages.passageUp && isScouted) content = "U";
+				if (sectorPassages.passageDown && isScouted) content = "D";
+				if (unScoutedLocales > 0 && isScouted) content = "L";
 			} else {
 				classes += " vis-out-sector-null";
 			}
 			
-			content = "<div class='" + classes + "'>" + content + "<div>";
+			content = "<div class='" + classes + "'>" + content.trim() + "<div>";
 			
 			if (sector) {
 				for (var i in PositionConstants.getLevelDirections()) {

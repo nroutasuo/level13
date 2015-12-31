@@ -115,8 +115,6 @@ define([
         tickProvider: null,
 
         constructor: function () {
-            if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t setting up singletons");
-						
             this.engine = new Ash.Engine();
 			this.gameState = new GameState();
 			

@@ -28,10 +28,10 @@ function (Ash, LogMessageVO) {
 		addMessageImmediate: function (message) {
 			this.hasNewMessages = true;
 			var combined = this.combineMessagesCheck(message);
-			if(!combined) this.messages.push(message);
+			if (!combined) this.messages.push(message);
 		},
 		
-		removeMessage: function(message) {
+		removeMessage: function (message) {
 			this.messages.splice(this.messages.indexOf(message), 1);
 		},
 		
@@ -47,21 +47,21 @@ function (Ash, LogMessageVO) {
 			
 			var isCombineTime = newMsg.time.getTime() - prevMsg.time.getTime() < 1000 * 15;
 			if (isCombineTime) {
-			// Combine with previous single message?
-			if (!prevMsg.loadedFromSave && newMsg.message == prevMsg.message) {
-				this.combineMessages(prevMsg, newMsg);
-				return true;
-			}
-			
-			// Combine with previous pair of messages?
-			var prev2Msg = this.messages[this.messages.length-2];
-			if (prev2Msg && !prev2Msg.loadedFromSave && newMsg.message == prev2Msg.message) {
-				var prev3Msg = this.messages[this.messages.length-3];
-				if (!prev3Msg.loadedFromSave && prevMsg.message == prev3Msg.message) {
-					this.combineMessages(prev2Msg, newMsg);
-					this.combineMessages(prev3Msg, prevMsg);
-					this.removeMessage(prevMsg);
+				// Combine with previous single message?
+				if (!prevMsg.loadedFromSave && newMsg.message == prevMsg.message) {
+					this.combineMessages(prevMsg, newMsg);
 					return true;
+				}
+				
+				// Combine with previous pair of messages?
+				var prev2Msg = this.messages[this.messages.length - 2];
+				if (prev2Msg && !prev2Msg.loadedFromSave && newMsg.message === prev2Msg.message && newMsg.replacements.length === 0) {
+					var prev3Msg = this.messages[this.messages.length-3];
+					if (!prev3Msg.loadedFromSave && prevMsg.message === prev3Msg.message) {
+						this.combineMessages(prev2Msg, newMsg);
+						this.combineMessages(prev3Msg, prevMsg);
+						this.removeMessage(prevMsg);
+						return true;
 					}
 				}
 			}

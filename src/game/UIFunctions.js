@@ -410,7 +410,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             return html;
         },
         
-        onTabClicked: function (tabID, elementIDs, gameState, playerActions) {
+        onTabClicked: function (tabID, elementIDs, gameState, playerActions, noAction) {
             $("#switch-tabs li").removeClass("selected");
             $("#tab-header h2").text(tabID);
             
@@ -418,8 +418,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             var transitionTime = transition ? 200 : 0;
             gameState.uiStatus.currentTab = tabID;
             
-            switch(tabID)
-            {
+            switch (tabID) {
                 case elementIDs.tabs.out:
                     $("#switch-tabs li#switch-out").addClass("selected");
                     $("#btn-header-rename").slideUp(transitionTime);
@@ -432,7 +431,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
                     $("#container-tab-footer").slideUp(transitionTime);
-                    playerActions.enterOutTab();
+                    if (!noAction) playerActions.enterOutTab();
                     break;
                 
                 case elementIDs.tabs.in:
@@ -449,7 +448,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
                     $("#container-tab-footer").slideUp(transitionTime);
-                    playerActions.enterCamp(true);
+                    if (!noAction) playerActions.enterCamp(true);
                     break;
                 
                 case elementIDs.tabs.world:
@@ -751,8 +750,8 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             return locationKey;
         },
         
-        showTab: function(tabID) {
-            this.onTabClicked(tabID, this.elementIDs, this.gameState, this.playerActions);
+        showTab: function (tabID) {
+            this.onTabClicked(tabID, this.elementIDs, this.gameState, this.playerActions, true);
         },
         
         showFight: function () {

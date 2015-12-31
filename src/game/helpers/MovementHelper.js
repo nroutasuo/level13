@@ -71,8 +71,8 @@ define([
 				
 				blocked = true;
 				var passage = null;
-				if (direction === this.DIRECTION_UP) passage = passagesComponent.passageUp;
-				if (direction === this.DIRECTION_DOWN) passage = passagesComponent.passageDown;
+				if (direction === PositionConstants.DIRECTION_UP) passage = passagesComponent.passageUp;
+				if (direction === PositionConstants.DIRECTION_DOWN) passage = passagesComponent.passageDown;
 				
 				if (!passage) {
 					blocked = true;

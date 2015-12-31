@@ -120,7 +120,7 @@ define([
 			rewards.gainedInjuries = this.getResultInjuries(0.05);
 			if (rewards.gainedInjuries.length === 0) {
 				if (localeCategory === "u") {
-					rewards.gainedResources = this.getRewardResources(1, efficiency * localeDifficulty / 15, availableResources);
+					rewards.gainedResources = this.getRewardResources(1, efficiency * localeDifficulty / 25, availableResources);
 					rewards.gainedItems = this.getRewardItems(0.2, 0, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
 				} else {
 					rewards.gainedItems = this.getRewardItems(0.2, 0, this.itemResultTypes.meet, itemsComponent, levelOrdinal);
