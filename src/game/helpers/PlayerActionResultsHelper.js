@@ -1,6 +1,7 @@
 // Helper methods related to rewards from player actions such as scavenging and scouting
 define([
     'ash',
+	'game/constants/PlayerActionConstants',
 	'game/constants/TextConstants',
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
@@ -19,6 +20,7 @@ define([
 	'game/vos/ResourcesVO'
 ], function (
 	Ash,
+	PlayerActionConstants,
 	TextConstants,
 	ItemConstants,
 	PerkConstants,
@@ -87,7 +89,7 @@ define([
             var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resources;
 
 			rewards.gainedEvidence = 1;
-			rewards.gainedInjuries = this.getResultInjuries(0.005);
+			rewards.gainedInjuries = this.getResultInjuries(PlayerActionConstants.injuryProbabilities.scout);
 			if (rewards.gainedInjuries.length === 0) {
 				rewards.gainedResources = this.getRewardResources(0.5, efficiency * 2, sectorResources);
 			}
@@ -117,7 +119,7 @@ define([
 				rewards.gainedRumours = Math.random() < 0.3 ? Math.ceil(Math.random() * levelOrdinal * levelOrdinal) : 0;
 			}
 				
-			rewards.gainedInjuries = this.getResultInjuries(0.05);
+			rewards.gainedInjuries = this.getResultInjuries(PlayerActionConstants.injuryProbabilities.scavenge);
 			if (rewards.gainedInjuries.length === 0) {
 				if (localeCategory === "u") {
 					rewards.gainedResources = this.getRewardResources(1, efficiency * localeDifficulty / 25, availableResources);

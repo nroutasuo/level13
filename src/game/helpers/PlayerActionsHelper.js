@@ -281,8 +281,7 @@ define([
 
                 if (requirements.perks) {
                     var perkRequirements = requirements.perks;
-                    for(var perkName in perkRequirements)
-                    {
+                    for(var perkName in perkRequirements) {
                         var requirementDef = perkRequirements[perkName];
                         var min = requirementDef[0];
                         var max = requirementDef[1];
@@ -290,8 +289,8 @@ define([
                         var totalEffect = playerPerks.getTotalEffect(perkName);
                         if (min > totalEffect || max <= totalEffect) {
                             if (min > totalEffect) reason = "Can't do this while: " + perkName;
-                            if (max < totalEffect) reason = "Perk required: " + perkName;
-                            if(log) console.log("WARN: " + reason);
+                            if (max <= totalEffect) reason = "Perk required: " + perkName;
+                            if (log) console.log("WARN: " + reason);
                             return { value: 0, reason: reason };
                         }
                     }

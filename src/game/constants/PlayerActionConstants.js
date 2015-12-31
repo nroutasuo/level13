@@ -1517,6 +1517,11 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 clear_workshop: 1,
                 fight_gang: 1,
             },
+            
+            injuryProbabilities: {
+                scout: 0.005,
+                scavenge: 0.05,
+            },
         
             descriptions: {
                 scout: "Scout the area for evidence.",
@@ -1583,6 +1588,13 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 // TODO for locales get probability based on locale type
                 if (this.randomEncounterProbabilities[baseActionID]) {
                     return this.randomEncounterProbabilities[baseActionID];
+                }
+                return 0;
+            },
+            
+            getInjuryProbability: function (action) {
+                if (this.injuryProbabilities[action]) {
+                    return this.injuryProbabilities[action];
                 }
                 return 0;
             },

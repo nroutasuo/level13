@@ -175,6 +175,7 @@ define([
                 $(this).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");
                 $(this).parent(".container-btn-action").css("display", $(this).css("display"));
                 var action = $(this).attr("action");
+				var baseActionId = playerActionsHelper.getBaseActionID(action);
                 if (!action) {
                     // console.log("WARN: Action button w unknown action: " + $(this).attr("id"));
                     // skip updating
@@ -184,13 +185,17 @@ define([
                     var ordinal = playerActionsHelper.getOrdinal(action);
                     var costFactor = playerActionsHelper.getCostFactor(action);
                     var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);
-                    var content = playerActionsHelper.getDescription(action);
+					var duration = PlayerActionConstants.getDuration(action);
+					var injuryRisk = PlayerActionConstants.getInjuryProbability(action);
+					var fightRisk = PlayerActionConstants.getRandomEncounterProbability(baseActionId);
+					var description = playerActionsHelper.getDescription(action);
                     var hasCosts = action && costs && Object.keys(costs).length > 0;
                     var hasCostBlockers = false;
                     var isHardDisabled = isButtonDisabled($(this)) || isButtonDisabledVision($(this));
                     var isResDisabled = isButtonDisabledResources($(this));
 
                     // Update callout content
+                    var content = description;
                     var bottleNeckCostFraction = 1;
 					var sectorEntity = getButtonSectorEntity((this));
                     var disabledReason = playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
@@ -213,6 +218,17 @@ define([
 								if (value > 0) content += "<span class='" + classes + "'>" + name + ": " + value + "</span><br/>";
                             }
                         }
+						
+						if (duration > 0) {
+                            if (content.length > 0) content += "<hr/>";
+							content += "<span class='action-duration'>duration: " + duration + "s</span>";
+						}
+						
+						if (injuryRisk > 0 || fightRisk > 0) {
+                            if (content.length > 0) content += "<hr/>";
+							if (injuryRisk > 0) content += "<span class='action-risk warning'>risk of injury: " + (injuryRisk * 100) + "%</span><br/>";
+							if (fightRisk > 0) content += "<span class='action-risk warning'>risk of fight: " + (fightRisk * 100) + "%</span>";
+						}
                     } else {
                         if (content.length > 0) content += "<hr/>";
                         content += "<span class='btn-disabled-reason action-cost-blocker'>" + disabledReason + "</span>";
