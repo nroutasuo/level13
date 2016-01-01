@@ -6,6 +6,10 @@
             "final": false,
             "changes": [
                 {
+                    "type": "UI",
+                    "summary": "Improved exploration UI and the distinction between exploration and in-camp mdoes."
+                },
+                {
                     "type": "GD",
                     "summary": "Added intersections to levels."
                 },

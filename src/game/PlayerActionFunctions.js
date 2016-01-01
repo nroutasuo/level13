@@ -912,6 +912,7 @@ define(['ash',
 			var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
             var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
+            var campCount = this.gameState.numCamps;
 			
             var inputParts = input.split(" ");
             var name = inputParts[0];
@@ -1034,6 +1035,11 @@ define(['ash',
                     } else {
                         console.log("WARN: No such item: " + itemID);
                     }
+                    break;
+                
+                case "follower":
+                var follower = ItemConstants.getFollower(this.playerPositionNodes.head.position.level, campCount);
+                    this.addFollower(follower);
                     break;
                 
                 case "perk":

@@ -17,10 +17,8 @@ define(['ash'], function (Ash) {
         },
         
         initLocaleEnemies: function (localeEnemies) {
-            if (localeEnemies.length > 0) {
-                this.maxLocaleEnemies = {};
-                this.currentLocaleEnemies = {};
-            }
+            this.maxLocaleEnemies = {};
+            this.currentLocaleEnemies = {};
             
             for (var localeId in localeEnemies) {
                 this.maxLocaleEnemies[localeId] = localeEnemies[localeId];

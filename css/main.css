@@ -134,12 +134,12 @@ dd p.p-meta {
 
 #log .msg { display: block; }
 
-#statsbar, #switch, #switch-content {
+#switch, #switch-content {
 	padding: 0;
 }
 
 #grid-switch {
-	margin: 0px !important;
+	margin: 15px 0px 0px 0px !important;
 	border: 0;
 	padding: 0;
 }
@@ -503,6 +503,16 @@ ul.resultlist li {
 	display: block;
 }
 
+#grid-main-header .unit {
+    padding: 15px;
+    height: 110pt;
+}
+
+#statsbar-resources .callout-container {
+    width: 50%;
+    border: 0px;
+}
+
 
 /* -- Appearance: Specific elements: Visualizations -- */
 
@@ -558,6 +568,26 @@ div.vis-out-blocker-south {
 div.vis-out-blocker-west {
     left: 0;
     top: 8px;
+}
+
+div.vis-out-blocker-NE {
+    right: 0;
+    top: 0;
+}
+
+div.vis-out-blocker-SE {
+    right: 0;
+    bottom: 0;
+}
+
+div.vis-out-blocker-SW {
+    left: 0;
+    bottom: 0;
+}
+
+div.vis-out-blocker-NW {
+    left: 0;
+    top: 0;
 }
 
 div.vis-out-blocker-null {
@@ -848,7 +878,7 @@ button .cooldown-action, button .cooldown-duration {
 /* -- Appearance: All-purpose elements -- */
 
 .stats-indicator {
-	display: inline;
+	display: block;
 	margin: 0 10px 0 0;
 	white-space: nowrap;
 }
@@ -865,18 +895,6 @@ button .cooldown-action, button .cooldown-duration {
 
 .stats-indicator span.value {
 	text-align: center;
-}
-
-#container-statsbar {
-	text-align: center;
-}
-
-#container-statsbar .statsbar {
-	margin-bottom: 3px;
-}
-
-#container-statsbar-resources .stats-indicator {
-	display: block;
 }
 
 .stats-indicator .change, .stats-indicator .forecast {

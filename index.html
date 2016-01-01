@@ -32,54 +32,66 @@
 		<div class="grid" id="grid-main">	
 			<div class="unit one-quarter" style="visibility:hidden; padding:1px; height:1px"></div><!-- filler for log -->
 			<div class="unit three-quarters" id="unit-main" style="display: none">
-			
+                
 				<div class="grid" id="grid-main-header">
-					<div id="container-statsbar" class="unit whole">
-						<div id="statsbar-self" class="statsbar">
-							<div id="stats-vision" class="stats-indicator">
-								<span class="label">Vision</span>
-								<span class="value">0</span>
-							</div>
-							<div id="stats-stamina" class="stats-indicator">
-								<span class="label">Stamina</span>
-								<span class="value">0</span>
-							</div>
-							<div id="stats-reputation" class="stats-indicator">
-								<span class="label">Reputation</span>
-								<span class="value">0</span>
-							</div>
-							<div id="stats-rumours" class="stats-indicator">
-								<span class="label">Rumours</span>
-								<span class="value">0</span>
-							</div>
-							<div id="stats-evidence" class="stats-indicator">
-								<span class="label">Evidence</span>
-								<span class="value">0</span>
-							</div>
-						</div>
-
+                    
+                    <div class="unit one-third lvl13-box-2" id="grid-header-global">
+                        <div id="statsbar-self" class="statsbar">
+                            <div id="stats-reputation" class="stats-indicator">
+                                <span class="label">Reputation</span>
+                                <span class="value">0</span>
+                            </div><br />
+                            <div id="stats-rumours" class="stats-indicator">
+                                <span class="label">Rumours</span>
+                                <span class="value">0</span>
+                            </div><br />
+                            <div id="stats-evidence" class="stats-indicator">
+                                <span class="label">Evidence</span>
+                                <span class="value">0</span>
+                            </div><br />
+                        </div>
+                        <div id="statsbar-deity" class="statsbar">
+                            <button id="btn-deity-rename" class="context btn-meta">Rename</button>
+                            Deity: 
+                            <span id="deity-name">Name</span>
+                            <span id="deity-favour" class="stats-indicator">
+                                <span class="label">Favour</span><span class="value">0</span>
+                            </span>
+                        </div>
+                            
+                        <ul class="itemlist" id="list-items-followers"></ul>
+                        <ul class="itemlist" id="list-items-perks"></ul>
+                    </div>                            
+                    
+                    <div class="unit one-third lvl13-box-2" id="statsbar-exploration">
+                        <div id="stats-vision" class="stats-indicator">
+                            <span class="label">Vision</span>
+                            <span class="value">0</span>
+                        </div>
+                        <div id="stats-stamina" class="stats-indicator">
+                            <span class="label">Stamina</span>
+                            <span class="value">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="unit one-third lvl13-box-2" id="main-header-bag">
+                        <div id="header-bag-storage" class="stats-indicator">
+                            <span class="label">Bag capacity</span>
+                            <span class="value">0</span>
+                        </div>
+						<div id="bag-resources" class="statsbar"></div>	
+                        <ul class="itemlist" id="list-items-items"></ul>
+                    </div>
+						
+                    <div class="unit two-thirds lvl13-box-2" id="main-header-camp">
+                        <div id="header-camp-storage" class="stats-indicator">
+                            <span class="label">Storage</span>
+                            <span class="value">0</span>
+                        </div>
 						<div id="statsbar-resources" class="statsbar">	
-						</div>		
-						
-						<div id="resources-storage" class="stats-indicator">
-							<span class="label">Storage</span>
-							<span class="value">0</span>
 						</div>
+                    </div>
 						
-						<div id="statsbar-items" class="statsbar">
-							<ul class="itemlist" id="list-items-perks"></ul>
-							<ul class="itemlist" id="list-items-items"></ul>
-						</div>
-						<div id="statsbar-deity" class="statsbar">
-							<button id="btn-deity-rename" class="context btn-meta">Rename</button>
-							Deity: 
-							<span id="deity-name">Name</span>
-							<span id="deity-favour" class="stats-indicator">
-								<span class="label">Favour</span><span class="value">0</span>
-							</span>
-						</div>
-						
-					</div>
 				</div><!-- grid for the whole stats bar -->			
 		
 				<div class="grid" id="grid-notifications">
@@ -510,8 +522,10 @@
 						</div>
 					</div>
 			</div><!-- main switch content grid -->			
-			</div><!-- main unit: the whole 3/4 right of the log -->
-			<div id="log" class="unit one-quarter limit-height">
+			
+            </div><!-- main unit: the whole 3/4 right of the log -->
+			
+            <div id="log" class="unit one-quarter limit-height">
 				<div id="log-overlay" class="lvl13-fade-down"></div>
 				<ul></ul>
 			</div>

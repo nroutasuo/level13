@@ -1,6 +1,7 @@
 define([
     'ash',
     'game/constants/UIConstants',
+    'game/constants/ItemConstants',
     'game/worldcreator/WorldCreatorHelper',
     'game/systems/SaveSystem',
     'game/nodes/player/PlayerStatsNode',
@@ -14,7 +15,8 @@ define([
     'game/components/common/PositionComponent',
     'game/components/sector/SectorFeaturesComponent',
 ], function (Ash,
-    UIConstants, WorldCreatorHelper, SaveSystem,
+    UIConstants, ItemConstants,
+    WorldCreatorHelper, SaveSystem,
 	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, DeityNode,
 	DeityComponent,
 	ItemsComponent,
@@ -71,17 +73,20 @@ define([
 	
 		update: function (time) {
 			if (!this.currentLocationNodes.head) return;
+			
+			var isInCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
+			
 			this.updateOverlay();
 			this.updateLevelColours();
 			this.updateGameMsg();
 			this.updateNotifications();
 			
 			if (new Date().getTime() - this.lastUpdateTimeStamp < this.updateFrequency) return;
-			this.updatePlayerStats();
+			this.updatePlayerStats(isInCamp);
 			this.updateDeity();
-			this.updateItems();
+			this.updateItems(false, isInCamp);
 			this.updatePerks();
-			this.updateResources();
+			this.updateResources(isInCamp);
 			this.lastUpdateTimeStamp = new Date().getTime();
 		},
 		
@@ -115,10 +120,13 @@ define([
 			});
 		},
 		
-		updatePlayerStats: function () {
+		updatePlayerStats: function (isInCamp) {
 			var playerStatsNode = this.playerStatsNodes.head;
 			var maxVision = playerStatsNode.vision.maximum;
 			var maxStamina = Math.round(playerStatsNode.stamina.health);
+			
+			$("#stats-vision").toggle(!isInCamp);
+			$("#stats-stamina").toggle(!isInCamp);
 			
 			$("#stats-vision .value").text(Math.round(playerStatsNode.vision.value) + " / " + maxVision);
 			this.updateStatsCallout("stats-vision", playerStatsNode.vision.accSources);
@@ -139,7 +147,7 @@ define([
 			this.updateStatsCallout("stats-evidence", playerStatsNode.evidence.accSources);
 		},
 		
-		updateStatsCallout: function( indicatorID, changeSources ) {
+		updateStatsCallout: function (indicatorID, changeSources) {
 			var content = "";
 			var source;
 			for (var i in changeSources) {
@@ -169,19 +177,25 @@ define([
 			}
 		},
 		
-		updateItems: function(forced) {
+		updateItems: function (forced, isInCamp) {
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+            $("ul#list-items-items").toggle(!isInCamp);
 			
 			var items = itemsComponent.getEquipped();
-			if (forced || items.length != $("#statsbar-items ul#list-items-items li").length) {
-			$("#statsbar-items ul#list-items-items").empty();
-			for (var i = 0; i < items.length; i++) {
-				var item = items[i];
-				var li = UIConstants.getItemLI(item);
-				$("#statsbar-items ul#list-items-items").append(li);
-			}
-			
-			this.uiFunctions.generateCallouts("#statsbar-items");
+			if (forced || (items.length !== $("ul#list-items-items li").length + $("ul#list-items-followers li").length)) {
+                $("ul#list-items-items").empty();
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    var li = UIConstants.getItemLI(item);
+                    if (item.type !== ItemConstants.itemTypes.follower) {
+                        $("ul#list-items-items").append(li);
+                    } else {
+                        $("ul#list-items-followers").append(li);
+                    }
+                }
+                
+                this.uiFunctions.generateCallouts("ul#list-items-items");
+                this.uiFunctions.generateCallouts("ul#list-items-followers");
 			}
 		},
 		
@@ -189,8 +203,8 @@ define([
 			var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
 			
 			var perks = perksComponent.getAll();
-			if (forced || perks.length !== $("#statsbar-items ul#list-items-perks li").length) {
-				$("#statsbar-items ul#list-items-perks").empty();
+			if (forced || perks.length !== $("ul#list-items-perks li").length) {
+				$("ul#list-items-perks").empty();
 				for (var i = 0; i < perks.length; i++) {
 					var perk = perks[i];
 					var url = perk.icon;
@@ -202,47 +216,65 @@ define([
 					"<div class='info-callout-target info-callout-target-small' description='" +
 					perk.name + " (" + perk.effect + ")" + 
 					"'><img src='" + url + "'/></div></li>"
-					$("#statsbar-items ul#list-items-perks").append(li);
+					$("ul#list-items-perks").append(li);
 				}
 				
-				this.uiFunctions.generateCallouts("#statsbar-items");
+				this.uiFunctions.generateCallouts("ul#list-items-perks");
 			}
 		},
 		
-		updateResources: function () {
-			var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
+		updateResources: function (inCamp) {
 			var showResources = this.getShowResources();
 			var showResourceAcc = this.getShowResourceAcc();
 			var storageCap = this.resourcesHelper.getCurrentStorageCap();
 			var showStorageName = this.resourcesHelper.getCurrentStorageName();
 			var inventoryUnlocked = false;
+            
+            $("#main-header-camp").toggle(inCamp);
+            $("#statsbar-exploration").toggle(!inCamp);
+            $("#main-header-bag").toggle(!inCamp);
+            $("#statsbar-resources").toggle(inCamp);
+            $("#header-camp-storage").toggle(inCamp);
+            $("#bag-resources").toggle(!inCamp);
+            $("#header-bag-storage").toggle(!inCamp);
 	
-			// Update indicators
-			// TODO Noora decide where to put the res details; only show in camp? where? layout?
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
 				var resourceUnlocked = this.gameState.unlockedFeatures.resources[name] === true;
 				inventoryUnlocked = inventoryUnlocked || resourceUnlocked;
-                UIConstants.updateResourceIndicator(
-                    name,
-                    "#resources-" + name,
-                    showResources.getResource(name),
-                    showResourceAcc == null ? 0 : Math.round(showResourceAcc.resourceChange.getResource(name) * 10000) / 10000,
-                    storageCap,
-					true,
-                    false,//inCamp,
-                    false,//inCamp,
-                    resourceUnlocked
-                );
-                if (showResourceAcc) {
-                    UIConstants.updateResourceIndicatorCallout("#resources-" + name, showResourceAcc.getSources(name));
+                if (inCamp) {
+                    UIConstants.updateResourceIndicator(
+                        name,
+                        "#resources-" + name,
+                        showResources.getResource(name),
+                        showResourceAcc == null ? 0 : Math.round(showResourceAcc.resourceChange.getResource(name) * 10000) / 10000,
+                        storageCap,
+                        false,
+                        true,
+                        true,
+                        resourceUnlocked
+                    );
+                    if (showResourceAcc) {
+                        UIConstants.updateResourceIndicatorCallout("#resources-" + name, showResourceAcc.getSources(name));
+                    }
+                    $("#header-camp-storage .label").text(showStorageName);
+                    $("#header-camp-storage .value").text(storageCap);
+                } else {
+                    UIConstants.updateResourceIndicator(
+                        name,
+                        "#resources-bag-" + name,
+                        showResources.getResource(name),
+                        showResourceAcc == null ? 0 : Math.round(showResourceAcc.resourceChange.getResource(name) * 10000) / 10000,
+                        storageCap,
+                        false,
+                        false,
+                        false,
+                        resourceUnlocked && (name === "water" || name === "food" || showResources.getResource(name) > 0)
+                    );
+                    $("#header-bag-storage .value").text(showStorageName);
+                    $("#header-bag-storage .value").text(storageCap);
                 }
 			}
-			
-			// TODO decide if this is needed
-			$("#resources-storage").toggle(false)//inventoryUnlocked);
-			$("#resources-storage .label").text(showStorageName);
-			$("#resources-storage .value").text(storageCap);
 		},
 		
 		updateGameMsg: function () {

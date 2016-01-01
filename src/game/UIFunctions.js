@@ -163,7 +163,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             $("#btn-save").click(function (e) {saveSystem.save() });
             $("#btn-restart").click(function (e) {
                 uiFunctions.showConfirmation(
-                    "Do you want to restart the game? Your progrss will be lost.",
+                    "Do you want to restart the game? Your progress will be lost.",
                     function () {
                         $("#log ul").empty();
                         onTabClicked(elementIDs.tabs.out, elementIDs, gameState, playerActions);
@@ -282,7 +282,8 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
         generateResourceIndicators: function () {
             for (var key in resourceNames) {
                 var name = resourceNames[key];
-                $("#statsbar-resources").append(UIConstants.createResourceIndicator(name, true, "resources-" + name, true, true));
+                $("#statsbar-resources").append(UIConstants.createResourceIndicator(name, false, "resources-" + name, true, true));
+                $("#bag-resources").append(UIConstants.createResourceIndicator(name, false, "resources-bag-" + name, true, true));
                 
                 var indicatorEmbark = UIConstants.createResourceIndicator(name, true, "embark-resources-" + name, true, false);
                 $("#embark-resources").append(
