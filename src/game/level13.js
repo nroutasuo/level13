@@ -10,6 +10,7 @@ define([
     'game/systems/ui/UIOutLevelSystem',
     'game/systems/ui/UIOutCampSystem',
     'game/systems/ui/UIOutBagSystem',
+    'game/systems/ui/UIOutMapSystem',
     'game/systems/ui/UIOutUpgradesSystem',
     'game/systems/ui/UIOutTribeSystem',
     'game/systems/ui/UIOutFightSystem',
@@ -47,6 +48,7 @@ define([
     'game/helpers/SectorHelper',
     'game/helpers/SaveHelper',
     'game/helpers/UpgradeEffectsHelper',
+    'game/helpers/ui/UIMapHelper',
     'brejep/tickprovider',
 ], function (
     Ash,
@@ -60,6 +62,7 @@ define([
     UIOutLevelSystem,
     UIOutCampSystem,
     UIOutBagSystem,
+    UIOutMapSystem,
     UIOutUpgradesSystem,
     UIOutTribeSystem,
     UIOutFightSystem,
@@ -97,6 +100,7 @@ define([
     SectorHelper,
     SaveHelper,
     UpgradeEffectsHelper,
+    UIMapHelper,
     TickProvider
 ) {
     var Level13 = Ash.Class.extend({
@@ -133,6 +137,7 @@ define([
 			this.movementHelper = new MovementHelper(this.engine);
 			this.saveHelper = new SaveHelper();
 			this.upgradeEffectsHelper = new UpgradeEffectsHelper(this.playerActionsHelper);
+            this.uiMapHelper = new UIMapHelper(this.engine, this.levelHelper, this.sectorHelper);
 			
 			// Basic building blocks & special systems
 			this.tickProvider = new TickProvider(null);
@@ -180,7 +185,7 @@ define([
 			this.engine.addSystem(new ReputationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new RumourSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new EvidenceSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
-			this.engine.addSystem(new PlayerPositionSystem(this.gameState, this.uiFunctions, this.occurrenceFunctions, this.playerMovedSignal), SystemPriorities.preupdate);
+			this.engine.addSystem(new PlayerPositionSystem(this.gameState, this.levelHelper, this.uiFunctions, this.occurrenceFunctions, this.playerMovedSignal), SystemPriorities.preupdate);
 			this.engine.addSystem(new PlayerActionSystem(this.uiFunctions), SystemPriorities.update);
 			this.engine.addSystem(new SectorStatusSystem(this.movementHelper, this.levelHelper, this.playerMovedSignal), SystemPriorities.update);
 			this.engine.addSystem(new LevelPassagesSystem(this.levelHelper, this.improvementBuiltSignal), SystemPriorities.update);
@@ -191,9 +196,10 @@ define([
 			
 			this.engine.addSystem(new UIOutHeaderSystem(this.uiFunctions, this.gameState, this.resourcesHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutElementsSystem(this.uiFunctions, this.gameState, this.playerActionFunctions, this.resourcesHelper, this.levelHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutLevelSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.movementHelper, this.resourcesHelper, this.sectorHelper, this.levelHelper, this.playerMovedSignal), SystemPriorities.render);
+			this.engine.addSystem(new UIOutLevelSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.movementHelper, this.resourcesHelper, this.sectorHelper, this.levelHelper, this.uiMapHelper, this.playerMovedSignal), SystemPriorities.render);
 			this.engine.addSystem(new UIOutCampSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.levelHelper, this.upgradeEffectsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutBagSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionsHelper, this.gameState), SystemPriorities.render);
+			this.engine.addSystem(new UIOutMapSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.uiMapHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutUpgradesSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionFunctions, this.upgradeEffectsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.tabChangedSignal, this.resourcesHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutFightSystem(this.uiFunctions, this.playerActionResultsHelper, this.playerActionsHelper), SystemPriorities.render);

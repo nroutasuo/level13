@@ -20,6 +20,7 @@ define([
     'game/components/common/ResourcesComponent',
     'game/components/common/ResourceAccumulationComponent',
     'game/components/common/VisitedComponent',
+    'game/components/common/RevealedComponent',
     'game/components/common/LogMessagesComponent',
     'game/components/common/SaveComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
@@ -59,6 +60,7 @@ define([
     ResourcesComponent,
     ResourceAccumulationComponent,
     VisitedComponent,
+    RevealedComponent,
     LogMessagesComponent,
     SaveComponent,
     SectorImprovementsComponent,
@@ -165,6 +167,7 @@ define([
 				SectorStatusComponent,
 				SectorControlComponent,
 				VisitedComponent,
+				RevealedComponent,
 				LastVisitedCampComponent
 			]));
 			

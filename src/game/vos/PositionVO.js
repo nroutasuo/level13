@@ -12,6 +12,10 @@ define(['ash'], function (Ash) {
 			this.sectorX = sectorX;
 			this.sectorY = sectorY;
         },
+        
+        equals: function (positionVO) {
+            return this.level === positionVO.level && this.sectorX === positionVO.sectorX && this.sectorY === positionVO.sectorY;
+        },
 		
 		toString: function () {
 			return this.level + "." + this.sectorX + "." + this.sectorY;

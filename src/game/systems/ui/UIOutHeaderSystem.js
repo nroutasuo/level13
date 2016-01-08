@@ -2,6 +2,7 @@ define([
     'ash',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
+    'game/constants/FightConstants',
     'game/worldcreator/WorldCreatorHelper',
     'game/systems/SaveSystem',
     'game/nodes/player/PlayerStatsNode',
@@ -15,7 +16,7 @@ define([
     'game/components/common/PositionComponent',
     'game/components/sector/SectorFeaturesComponent',
 ], function (Ash,
-    UIConstants, ItemConstants,
+    UIConstants, ItemConstants, FightConstants,
     WorldCreatorHelper, SaveSystem,
 	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, DeityNode,
 	DeityComponent,
@@ -68,18 +69,26 @@ define([
 			$.each($("#statsbar-self .stats-indicator"), function () {
 				$(this).wrap("<div class='info-callout-target'></div>");
 			});
+			$.each($("#statsbar-exploration .stats-indicator"), function () {
+				$(this).wrap("<div class='info-callout-target'></div>");
+			});
 			this.uiFunctions.generateCallouts("#statsbar-self");
+			this.uiFunctions.generateCallouts("#statsbar-exploration");
 		},
 	
 		update: function (time) {
 			if (!this.currentLocationNodes.head) return;
 			
-			var isInCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
+            var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
+			var isInCamp = playerPosition.inCamp;
 			
 			this.updateOverlay();
 			this.updateLevelColours();
 			this.updateGameMsg();
 			this.updateNotifications();
+            
+            $("#grid-location-header h1").text(isInCamp ? "camp" : "level " + playerPosition.level);
+            $("#grid-tab-header").toggle(this.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.out || isInCamp);
 			
 			if (new Date().getTime() - this.lastUpdateTimeStamp < this.updateFrequency) return;
 			this.updatePlayerStats(isInCamp);
@@ -122,16 +131,18 @@ define([
 		
 		updatePlayerStats: function (isInCamp) {
 			var playerStatsNode = this.playerStatsNodes.head;
+            var playerStamina = playerStatsNode.stamina.stamina;
+			var playerVision = playerStatsNode.vision.value;
 			var maxVision = playerStatsNode.vision.maximum;
 			var maxStamina = Math.round(playerStatsNode.stamina.health);
 			
 			$("#stats-vision").toggle(!isInCamp);
 			$("#stats-stamina").toggle(!isInCamp);
 			
-			$("#stats-vision .value").text(Math.round(playerStatsNode.vision.value) + " / " + maxVision);
+			$("#stats-vision .value").text(Math.round(playerVision) + " / " + maxVision);
 			this.updateStatsCallout("stats-vision", playerStatsNode.vision.accSources);
 			
-			$("#stats-stamina .value").text(Math.round(playerStatsNode.stamina.stamina) + " / " + maxStamina);
+			$("#stats-stamina .value").text(Math.round(playerStamina) + " / " + maxStamina);
 			this.updateStatsCallout("stats-stamina", playerStatsNode.stamina.accSources);
 			
 			$("#stats-reputation .value").text(Math.round(playerStatsNode.reputation.value) + " / " + playerStatsNode.reputation.limit);
@@ -145,6 +156,29 @@ define([
 			$("#stats-evidence .value").text(Math.round(playerStatsNode.evidence.value) + " / " + playerStatsNode.evidence.cap);
 			$("#stats-evidence").toggle(this.gameState.unlockedFeatures.evidence);
 			this.updateStatsCallout("stats-evidence", playerStatsNode.evidence.accSources);
+            
+			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+            var fightAtt = FightConstants.getPlayerAtt(playerStatsNode.stamina, itemsComponent);
+            var fightDef = FightConstants.getPlayerDef(playerStatsNode.stamina, itemsComponent);
+            var fightStrength = fightAtt + fightDef;
+            
+            $("#stats-fight .value").text(fightStrength);
+            $("#stats-fight-att .value").text(fightAtt);
+            $("#stats-fight-def .value").text(fightDef);
+			$("#stats-fight").toggle(this.gameState.unlockedFeatures.fight);
+			$("#stats-fight-att").toggle(this.gameState.unlockedFeatures.fight);
+			$("#stats-fight-def").toggle(this.gameState.unlockedFeatures.fight);
+            
+			var attCalloutContent = FightConstants.getPlayerAttDesc(playerStamina, itemsComponent);
+			var defCalloutContent = FightConstants.getPlayerDefDesc(playerStamina, itemsComponent);
+            UIConstants.updateCalloutContent("#stats-fight", "att+def");
+            UIConstants.updateCalloutContent("#stats-fight-att", attCalloutContent);
+            UIConstants.updateCalloutContent("#stats-fight-def", defCalloutContent);
+            
+            $("#stats-scavenge").toggle(this.gameState.unlockedFeatures.scavenge);
+			var scavengeEfficiency = Math.round(this.uiFunctions.playerActions.playerActionResultsHelper.getScavengeEfficiency() * 200) / 2;
+			$("#stats-scavenge .value").text(scavengeEfficiency + "%");
+			UIConstants.updateCalloutContent("#stats-scavenge", "health: " + Math.round(maxStamina) + "<br/>vision: " + Math.round(playerVision));
 		},
 		
 		updateStatsCallout: function (indicatorID, changeSources) {
@@ -181,21 +215,28 @@ define([
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             $("ul#list-items-items").toggle(!isInCamp);
 			
-			var items = itemsComponent.getEquipped();
-			if (forced || (items.length !== $("ul#list-items-items li").length + $("ul#list-items-followers li").length)) {
+			var items = itemsComponent.getUnique();
+			if (forced || items.length !== this.lastItemsUpdateItemCount) {
                 $("ul#list-items-items").empty();
+                $("ul#list-items-followers").empty();
                 for (var i = 0; i < items.length; i++) {
                     var item = items[i];
-                    var li = UIConstants.getItemLI(item);
+                    var count = itemsComponent.getCount(item);
                     if (item.type !== ItemConstants.itemTypes.follower) {
-                        $("ul#list-items-items").append(li);
+                        if (item.equipped) {
+                            $("ul#list-items-items").append(UIConstants.getItemLI(item));
+                        } else if (item.type === ItemConstants.itemTypes.exploration) {
+                            $("ul#list-items-items").append(UIConstants.getItemLI(item, count));
+                        }
                     } else {
-                        $("ul#list-items-followers").append(li);
+                        $("ul#list-items-followers").append(UIConstants.getItemLI(item));
                     }
                 }
                 
                 this.uiFunctions.generateCallouts("ul#list-items-items");
                 this.uiFunctions.generateCallouts("ul#list-items-followers");
+                
+                this.lastItemsUpdateItemCount = items.length;
 			}
 		},
 		
@@ -236,7 +277,7 @@ define([
             $("#statsbar-resources").toggle(inCamp);
             $("#header-camp-storage").toggle(inCamp);
             $("#bag-resources").toggle(!inCamp);
-            $("#header-bag-storage").toggle(!inCamp);
+            $("#header-bag-storage").toggle(!inCamp && this.gameState.unlockedFeatures.bag);
 	
 			for (var key in resourceNames) {
 				var name = resourceNames[key];

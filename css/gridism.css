@@ -64,6 +64,8 @@
 .grid .four-fifths,    .grid .w-4-5 { width: 80%; }
 .grid .golden-small,   .grid .w-g-s { width: 38.2716%; } /* Golden section: smaller piece */
 .grid .golden-large,   .grid .w-g-l { width: 61.7283%; } /* Golden section: larger piece */
+.grid .unit-compass { width: 33% }
+.grid .unit-rest { width: 67% }
 
 /* Clearfix after every .grid */
 .grid {

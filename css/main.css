@@ -139,9 +139,32 @@ dd p.p-meta {
 }
 
 #grid-switch {
-	margin: 15px 0px 0px 0px !important;
+	margin: 0px !important;
 	border: 0;
 	padding: 0;
+}
+
+#switch-context-indicator {
+    float: right;
+}
+
+#minimap, #minimap-fallback-container {
+    width: 198px;
+    height: 198px;
+    overflow: hidden;
+}
+
+#mainmap, #mainmap-fallback-container {
+    overflow: hidden;
+}
+
+#out-container-compass, #out-container-compass-actions {
+    text-align: center;
+}
+
+#out-container-compass canvas, #out-container-compass-actions table {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .sticky-footer-wrapper {
@@ -228,13 +251,13 @@ ul.tabs li.selected {
 	background: #e6e6e6;
 }
 
-.lvl13-box-3, .vis-out-sector, #tab-vis-out table.via {
+.lvl13-box-3, .vis-out-sector {
 	border: 1px solid #555;
 	background: #262826;
 	color: #999;
 }
 
-.sunlit .lvl13-box-3, .sunlit .vis-out-sector, .sunlit #tab-vis-out table.via {
+.sunlit .lvl13-box-3, .sunlit .vis-out-sector, .sunlit {
 	border: 1px solid #aaa;
 	background: #efefef;
 	color: #333;
@@ -280,12 +303,12 @@ button {
 	border-color: #777;
 }
 
-.lvl13-element-disabled, button.btn-disabled-basic, button.btn-disabled-vision, button.btn-disabled-basic:hover, button.btn-disabled-vision:hover, button.btn-disabled-resources, button.btn-disabled-resources:hover, button.btn-disabled-cooldown, button.btn-disabled-cooldown:hover, li.disabled, #tab-vis-out table.vis {
+.lvl13-element-disabled, button.btn-disabled-basic, button.btn-disabled-vision, button.btn-disabled-basic:hover, button.btn-disabled-vision:hover, button.btn-disabled-resources, button.btn-disabled-resources:hover, button.btn-disabled-cooldown, button.btn-disabled-cooldown:hover, li.disabled {
 	border-color: #444;
 	color: #999 !important;
 }
 
-.sunlit .lvl13-element-disabled, .sunlit button.btn-disabled-basic, .sunlit button.btn-disabled-vision, .sunlit button.btn-disabled-vision:hover, .sunlit button.btn-disabled-basic:hover, .sunlit button.btn-disabled-resources, .sunlit button.btn-disabled-resources:hover, .sunlit button.btn-disabled-cooldown, .sunlit button.btn-disabled-cooldown:hover, .sunlit li.disabled, .sunlit #tab-vis-out table.vis {
+.sunlit .lvl13-element-disabled, .sunlit button.btn-disabled-basic, .sunlit button.btn-disabled-vision, .sunlit button.btn-disabled-vision:hover, .sunlit button.btn-disabled-basic:hover, .sunlit button.btn-disabled-resources, .sunlit button.btn-disabled-resources:hover, .sunlit button.btn-disabled-cooldown, .sunlit button.btn-disabled-cooldown:hover, .sunlit li.disabled, .sunlit {
 	border-color: #999;
 	color: #666 !important;
 }
@@ -506,6 +529,14 @@ ul.resultlist li {
 #grid-main-header .unit {
     padding: 15px;
     height: 110pt;
+    position: relative;
+}
+
+#grid-main-header .statsbar-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin: 15px;
 }
 
 #statsbar-resources .callout-container {
@@ -522,14 +553,9 @@ table.vis {
 	margin: 15px auto;
 }
 
-#tab-vis-out table.vis {
-    width: auto;
-    border: 1px dashed;
-}
-
 td.vis-out-sector-container {
-    height: 15px;
-    width: 25px;
+    height: 20px;
+    width: 20px;
     overflow: hidden;
     position: relative;
 }
@@ -537,6 +563,8 @@ td.vis-out-sector-container {
 div.vis-out-sector {
 	text-align: center;
 	font-size: 50%;
+    width: 18px;
+    height: 18px;
 }
 
 div.vis-out-sector-null {
@@ -779,6 +807,10 @@ button.action {
 	margin-bottom: 0px;
 }
 
+button.action-move {
+    width: 55px;
+}
+
 div.container-btn-action {
 	display: inline-block;
 	padding: -1px;
@@ -881,6 +913,9 @@ button .cooldown-action, button .cooldown-duration {
 	display: block;
 	margin: 0 10px 0 0;
 	white-space: nowrap;
+}
+
+.stats-indicator-secondary {
 }
 
 .stats-indicator span {

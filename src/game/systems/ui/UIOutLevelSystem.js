@@ -55,13 +55,14 @@ define([
 		tabChangedSignal: null,
 		playerMovedSignal: null,
 	
-		constructor: function (uiFunctions, tabChangedSignal, gameState, movementHelper, resourceHelper, sectorHelper, levelHelper, playerMovedSignal) {
+		constructor: function (uiFunctions, tabChangedSignal, gameState, movementHelper, resourceHelper, sectorHelper, levelHelper, uiMapHelper, playerMovedSignal) {
 			this.uiFunctions = uiFunctions;
 			this.gameState = gameState;
 			this.movementHelper = movementHelper;
 			this.resourcesHelper = resourceHelper;
 			this.sectorHelper = sectorHelper;
             this.levelHelper = levelHelper;
+            this.uiMapHelper = uiMapHelper;
 			this.tabChangedSignal = tabChangedSignal;
 			this.playerMovedSignal = playerMovedSignal;
 			return this;
@@ -86,15 +87,14 @@ define([
 		},
 	
 		initListeners: function () {
-			var playerPosNodes = this.playerPosNodes;
-			var sectorNodes = this.sectorNodes;
+			var uiMapHelper = this.uiMapHelper;
 			var sys = this;
 			this.playerMovedSignal.add(function () {
-				sys.rebuildVis(playerPosNodes, sectorNodes);
+				sys.rebuildVis(uiMapHelper);
 				sys.updateLocales();
 				sys.updateMovementRelatedActions();
 			});
-			this.rebuildVis(playerPosNodes, sectorNodes);
+			this.rebuildVis(uiMapHelper);
 		},
 		
 		initLeaveCampRes: function () {
@@ -121,9 +121,10 @@ define([
 			
 			var posComponent = this.playerPosNodes.head.position;
 			
-			$("#container-tab-vis-out").toggle(!posComponent.inCamp);
+            // TODO create nice transitions for leaving camp
 			$("#container-tab-enter-out").toggle(posComponent.inCamp);
 			$("#container-tab-two-out").toggle(!posComponent.inCamp);
+			$("#container-tab-two-out-actions").toggle(!posComponent.inCamp);
 			
 			if (posComponent.inCamp) {
 				if (!this.refreshedEmbark) {
@@ -163,6 +164,7 @@ define([
 			var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
 			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
+            
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
 			
@@ -186,8 +188,7 @@ define([
 			var header = "";
 			var name = featuresComponent.getSectorTypeName(hasVision || featuresComponent.sunlit);
 			header = name;
-			if (this.gameState.unlockedFeatures.levels) header = "Level " + posComponent.level + ": " + header;
-			$("#tab-header h2").text(header);
+            $("#header-sector").text(header);
 			
 			// Description
 			var isScouted = sectorStatusComponent.scouted;
@@ -263,6 +264,7 @@ define([
 				this.gameState.unlockedFeatures.resources.food &&
 				this.gameState.unlockedFeatures.resources.water &&
 				(this.resourcesHelper.getCurrentStorage().resources.water < 0.5 || this.resourcesHelper.getCurrentStorage().resources.food < 0.5);
+			$("#out-action-enter").toggle(hasCampHere);
 			$("#out-action-scout").toggle(this.gameState.unlockedFeatures.vision);
 			$("#out-action-investigate").toggle(this.gameState.unlockedFeatures.investigate);
 			$("#out-action-fight-gang").toggle(this.gameState.unlockedFeatures.fight);
@@ -387,8 +389,6 @@ define([
                     if (this.movementHelper.isBlocked(entity, direction)) {
                         description += "Passage to the " + PositionConstants.getDirectionName(direction) + " is blocked by a " + blocker.name + ". ";
                     } else {
-						console.log(blocker)
-						console.log(passagesComponent);
                         description += "A " + blocker.name.toLowerCase() + " on the " + PositionConstants.getDirectionName(direction) + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
                     }
                 }
@@ -466,25 +466,9 @@ define([
             this.uiFunctions.generateCallouts("#table-out-actions-movement-related");
 		},
 		
-		rebuildVis: function (playerPosNodes, sectorNodes) {
-			if (!playerPosNodes.head || !this.playerLocationNodes.head) return;
-			
-			$("#tab-vis-out table").empty();
-            
-            var mapSize = 7;
-            var mapDiameter = (mapSize - 1) / 2;
-			
-			var posComponent = playerPosNodes.head.position;
-            var neighbour;
-            var sectorPos;
-            for (var dy = -mapDiameter; dy <= mapDiameter; dy++) {
-                var trID = "tab-vis-out-tr-" + dy;
-                $("#tab-vis-out table").append("<tr id=" + trID + "></tr>");
-                for (var dx = -mapDiameter; dx <= mapDiameter; dx++) {
-                    neighbour = this.levelHelper.getSectorByPosition(posComponent.level, posComponent.sectorX + dx, posComponent.sectorY + dy);
-                    $("#tab-vis-out table tr#" + trID).append(UIConstants.getSectorTD(posComponent, neighbour));
-                }
-            }
+		rebuildVis: function (uiMapHelper) {
+            if (!uiMapHelper) uiMapHelper = this.uiMapHelper;
+            uiMapHelper.rebuildMap("minimap", "minimap-fallback", UIConstants.MAP_MINIMAP_SIZE, true);
 		},
     });
 

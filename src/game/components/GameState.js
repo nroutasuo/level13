@@ -12,6 +12,7 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
             this.numTradePostCamps = 0;
             
             this.unlockedFeatures = {
+                scavenge: false,
                 vision: false,
                 fight: false,
                 investigate: false,

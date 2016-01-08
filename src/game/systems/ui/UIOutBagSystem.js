@@ -1,13 +1,12 @@
 define([
     'ash',
     'game/constants/UIConstants',
-    'game/constants/FightConstants',
     'game/constants/ItemConstants',
     'game/nodes/player/ItemsNode',
     'game/components/common/ResourcesComponent',
     'game/components/player/StaminaComponent',
     'game/components/player/VisionComponent',
-], function (Ash, UIConstants, FightConstants, ItemConstants, ItemsNode, ResourcesComponent, StaminaComponent, VisionComponent) {
+], function (Ash, UIConstants, ItemConstants, ItemsNode, ResourcesComponent, StaminaComponent, VisionComponent) {
     var UIOutBagSystem = Ash.System.extend({
 
 		uiFunctions : null,
@@ -111,9 +110,6 @@ define([
 			// Description
 			$("#items-empty").toggle($("#bag-items li").length === 0);
 			this.updateItemDetails(selectedItem, itemsComponent.getCount(selectedItem));
-
-			// Additional infos
-			this.updateStats();
 		},
 
 		updateItems: function (uniqueItems) {
@@ -149,33 +145,6 @@ define([
 			this.uiFunctions.registerActionButtonListeners("#self-craft");
 			this.uiFunctions.generateButtonOverlays("#self-craft");
 			this.uiFunctions.generateCallouts("#self-craft");
-		},
-
-		updateStats: function () {
-			// TODO update only when necessary
-			var playerStamina = this.itemNodes.head.entity.get(StaminaComponent);
-			var itemsComponent = this.itemNodes.head.items;
-			$("#self-status-fight-att").text("Fight strength: " + FightConstants.getPlayerAtt(playerStamina, itemsComponent));
-			var attCalloutContent = FightConstants.getPlayerAttDesc(playerStamina, itemsComponent);
-			UIConstants.updateCalloutContent("#self-status-fight-att", attCalloutContent);
-
-			$("#self-status-fight-def").text("Fight defence: " + FightConstants.getPlayerDef(playerStamina, itemsComponent));
-			var defCalloutContent = FightConstants.getPlayerDefDesc(playerStamina, itemsComponent);
-			UIConstants.updateCalloutContent("#self-status-fight-def", defCalloutContent);
-
-			var numCamps = this.gameState.numCamps;
-			$("#self-status-fight-followers").toggle(this.gameState.unlockedFeatures.followers);
-			if (this.gameState.unlockedFeatures.followers) {
-				$("#self-status-fight-followers").text("Max followers: " + FightConstants.getMaxFollowers(numCamps));
-				var defCalloutContent = "More camps allow more followers.";
-				UIConstants.updateCalloutContent("#self-status-fight-followers", defCalloutContent);
-			}
-
-			var playerHealth = playerStamina.health;
-			var playerVision = this.itemNodes.head.entity.get(VisionComponent).value;
-			var scavengeEfficiency = Math.round(this.uiFunctions.playerActions.playerActionResultsHelper.getScavengeEfficiency() * 200) / 2;
-			$("#self-status-efficiency-scavenge").text("Scavenge efficiency: " + scavengeEfficiency + "%");
-			UIConstants.updateCalloutContent("#self-status-efficiency-scavenge", "health: " + Math.round(playerHealth) + "<br/>vision: " + Math.round(playerVision));
 		},
 
 		updateItemLists: function () {

@@ -19,6 +19,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
         elementIDs: {
             tabs: {
                 bag: "switch-bag",
+                map: "switch-map",
                 in: "switch-in",
                 out: "switch-out",
                 upgrades: "switch-upgrades",
@@ -105,6 +106,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             // Crafting
             this.actionToFunctionMap["craft"] = this.playerActions.craftItem;
             // Non-improvement actions
+            this.actionToFunctionMap["enter_camp"] = this.playerActions.enterCamp;
             this.actionToFunctionMap["scavenge"] = this.playerActions.scavenge;
             this.actionToFunctionMap["scout"] = this.playerActions.scout;
             this.actionToFunctionMap["scout_locale_i"] = playerActions.scoutLocale;
@@ -230,6 +232,15 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             // Special actions
             var onMoveButtonClicked = this.onMoveButtonClicked;
             $(scope + " button.action-move").click(function (e) {
+                onMoveButtonClicked(this, playerActions);
+            });
+            $(scope + " #out-action-move-up").click(function (e) {
+                onMoveButtonClicked(this, playerActions);
+            });
+            $(scope + " #out-action-move-down").click(function (e) {
+                onMoveButtonClicked(this, playerActions);
+            });
+            $(scope + " #out-action-move-camp").click(function (e) {
                 onMoveButtonClicked(this, playerActions);
             });
             $(scope + " #out-action-fight-confirm").click(function (e) {
@@ -423,12 +434,13 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                 case elementIDs.tabs.out:
                     $("#switch-tabs li#switch-out").addClass("selected");
                     $("#btn-header-rename").slideUp(transitionTime);
-                    $("#container-tab-vis-out").slideUp(transitionTime);
                     $("#container-tab-vis-in").slideUp(transitionTime);
                     $("#container-tab-enter-out").slideDown(transitionTime);
                     $("#container-tab-two-in").slideUp(transitionTime);
                     $("#container-tab-two-out").slideUp(transitionTime);
+                    $("#container-tab-two-out-actions").slideUp(transitionTime);
                     $("#container-tab-two-bag").slideUp(transitionTime);
+                    $("#container-tab-two-map").slideUp(transitionTime);
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
                     $("#container-tab-footer").slideUp(transitionTime);
@@ -439,13 +451,14 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                     $("#switch-tabs li#switch-in").addClass("selected");
                     $("#btn-header-rename").slideDown(transitionTime);
                     $("#container-tab-vis-in").slideDown(transitionTime);
-                    $("#container-tab-vis-out").slideUp(transitionTime);
                     $("#container-tab-enter-out").slideUp(transitionTime);
                     $("#container-tab-5-4").slideDown(transitionTime);
                     $("#container-tab-1-8").slideUp(transitionTime);
                     $("#container-tab-two-in").slideDown(transitionTime);
                     $("#container-tab-two-out").slideUp(transitionTime);
+                    $("#container-tab-two-out-actions").slideUp(transitionTime);
                     $("#container-tab-two-bag").slideUp(transitionTime);
+                    $("#container-tab-two-map").slideUp(transitionTime);
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
                     $("#container-tab-footer").slideUp(transitionTime);
@@ -455,12 +468,13 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                 case elementIDs.tabs.world:
                     $("#switch-tabs li#switch-world").addClass("selected");
                     $("#btn-header-rename").slideUp(transitionTime);
-                    $("#container-tab-vis-out").slideUp(transitionTime);
                     $("#container-tab-vis-in").slideUp(transitionTime);
                     $("#container-tab-enter-out").slideUp(transitionTime);
                     $("#container-tab-two-in").slideUp(transitionTime);
                     $("#container-tab-two-out").slideUp(transitionTime);
+                    $("#container-tab-two-out-actions").slideUp(transitionTime);
                     $("#container-tab-two-bag").slideUp(transitionTime);
+                    $("#container-tab-two-map").slideUp(transitionTime);
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
                     $("#container-tab-two-world").slideDown(transitionTime);
                     $("#container-tab-footer").slideUp(transitionTime);
@@ -469,12 +483,13 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                 case elementIDs.tabs.upgrades:
                     $("#switch-tabs li#switch-upgrades").addClass("selected");
                     $("#btn-header-rename").slideUp(transitionTime);
-                    $("#container-tab-vis-out").slideUp(transitionTime);
                     $("#container-tab-vis-in").slideUp(transitionTime);
                     $("#container-tab-enter-out").slideUp(transitionTime);
                     $("#container-tab-two-in").slideUp(transitionTime);
                     $("#container-tab-two-out").slideUp(transitionTime);
+                    $("#container-tab-two-out-actions").slideUp(transitionTime);
                     $("#container-tab-two-bag").slideUp(transitionTime);
+                    $("#container-tab-two-map").slideUp(transitionTime);
                     $("#container-tab-two-upgrades").slideDown(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
                     $("#container-tab-footer").slideUp(transitionTime);
@@ -483,12 +498,28 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                 case elementIDs.tabs.bag:
                     $("#switch-tabs li#switch-bag").addClass("selected");
                     $("#btn-header-rename").slideUp(transitionTime);
-                    $("#container-tab-vis-out").slideUp(transitionTime);
                     $("#container-tab-vis-in").slideUp(transitionTime);
                     $("#container-tab-enter-out").slideUp(transitionTime);
                     $("#container-tab-two-in").slideUp(transitionTime);
                     $("#container-tab-two-out").slideUp(transitionTime);
+                    $("#container-tab-two-out-actions").slideUp(transitionTime);
                     $("#container-tab-two-bag").slideDown(transitionTime);
+                    $("#container-tab-two-map").slideUp(transitionTime);
+                    $("#container-tab-two-upgrades").slideUp(transitionTime);
+                    $("#container-tab-two-world").slideUp(transitionTime);
+                    $("#container-tab-footer").slideUp(transitionTime);
+                    break;
+                
+                case elementIDs.tabs.map:
+                    $("#switch-tabs li#switch-map").addClass("selected");
+                    $("#btn-header-rename").slideUp(transitionTime);
+                    $("#container-tab-vis-in").slideUp(transitionTime);
+                    $("#container-tab-enter-out").slideUp(transitionTime);
+                    $("#container-tab-two-in").slideUp(transitionTime);
+                    $("#container-tab-two-out").slideUp(transitionTime);
+                    $("#container-tab-two-out-actions").slideUp(transitionTime);
+                    $("#container-tab-two-bag").slideUp(transitionTime);
+                    $("#container-tab-two-map").slideDown(transitionTime);
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
                     $("#container-tab-footer").slideUp(transitionTime);

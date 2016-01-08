@@ -101,7 +101,9 @@ function (Ash, ItemVO, ItemConstants) {
                 }
             }
             
-            item.equipped = shouldEquip;
+            if (shouldEquip) this.equip(item);
+            else item.equipped = false;
+            
             this.uniqueItems = {};
         },
         
@@ -110,15 +112,21 @@ function (Ash, ItemVO, ItemConstants) {
         },
         
         isItemUnequippable: function (item) {
-            return item.type === ItemConstants.itemTypes.follower;
+            return item.type !== ItemConstants.itemTypes.follower;
         },
         
         // Equips the given item regardless of whether it's better than the previous equipment
         equip: function (item) {
             if (item.equippable) {
-                var previousItem = this.getEquipped(item.type)[0];
-                if (previousItem && !(this.isItemMultiEquippable(item) && this.isItemMultiEquippable(previousItem))) {
-                    this.unequip(previousItem);
+                var previousItems = this.getEquipped(item.type);
+            
+                for (var i = 0; i < previousItems.length; i++) {
+                    var previousItem = previousItems[i];
+                    if (previousItem && previousItem !== item) {
+                        if (!(this.isItemMultiEquippable(item) && this.isItemMultiEquippable(previousItem))) {
+                            this.unequip(previousItem);
+                        }
+                    }
                 }
                 item.equipped = true;
             }

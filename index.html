@@ -58,20 +58,38 @@
                                 <span class="label">Favour</span><span class="value">0</span>
                             </span>
                         </div>
-                            
-                        <ul class="itemlist" id="list-items-followers"></ul>
-                        <ul class="itemlist" id="list-items-perks"></ul>
+                        
+                        <div class="statsbar-bottom">
+                            <ul class="itemlist" id="list-items-followers"></ul>
+                            <ul class="itemlist" id="list-items-perks"></ul>
+                        </div>
                     </div>                            
                     
                     <div class="unit one-third lvl13-box-2" id="statsbar-exploration">
                         <div id="stats-vision" class="stats-indicator">
                             <span class="label">Vision</span>
                             <span class="value">0</span>
-                        </div>
+                        </div><br/>
                         <div id="stats-stamina" class="stats-indicator">
                             <span class="label">Stamina</span>
                             <span class="value">0</span>
-                        </div>
+                        </div><br/>
+                        <div id="stats-scavenge" class="stats-indicator stats-indicator-secondary">
+                            <span class="label">Scavenge efficiency</span>
+                            <span class="value">0</span>
+                        </div><br/>
+                        <div id="stats-fight" class="stats-indicator">
+                            <span class="label">Fight strength</span>
+                            <span class="value">0</span>
+                        </div><br/>
+                        <div id="stats-fight-att" class="stats-indicator stats-indicator-secondary">
+                            <span class="label">Attack</span>
+                            <span class="value">0</span>
+                        </div><br/>
+                        <div id="stats-fight-def" class="stats-indicator stats-indicator-secondary">
+                            <span class="label">Defence</span>
+                            <span class="value">0</span>
+                        </div><br/>
                     </div>
                     
                     <div class="unit one-third lvl13-box-2" id="main-header-bag">
@@ -79,7 +97,7 @@
                             <span class="label">Bag capacity</span>
                             <span class="value">0</span>
                         </div>
-						<div id="bag-resources" class="statsbar"></div>	
+						<div id="bag-resources" class="statsbar"></div>
                         <ul class="itemlist" id="list-items-items"></ul>
                     </div>
 						
@@ -93,7 +111,13 @@
                     </div>
 						
 				</div><!-- grid for the whole stats bar -->			
-		
+                
+                <div class="grid" id="grid-location-header">
+                    <div id="grid-location-header" class="unit whole">
+                        <h1>Camp</h1>
+                    </div>
+                </div>
+                
 				<div class="grid" id="grid-notifications">
                     <div id="notification-player" class="unit whole notification">
                         <p class="notification"></p>
@@ -105,6 +129,7 @@
 						<ul class="tabs" id="switch-tabs">
 							<li id="switch-out">Outside</li>
 							<li id="switch-bag">Bag</li>
+							<li id="switch-map">Map</li>
 							<li id="switch-upgrades">Upgrades</li>
 							<li id="switch-in">Camp</li>
 							<li id="switch-world">Tribe</li>
@@ -113,19 +138,13 @@
 				</div><!-- grid for the switch -->
 				
 				<div class="grid grid-content" id="grid-switch-content">
+                
 					<div class="grid" id="grid-tab-header">
 						<div class="unit whole" id="tab-header">
 						<button id="btn-header-rename" class="context btn-meta" style="display:none">Rename</button>
 						<h2>&nbsp;</h2>
 						</div>
 					</div><!-- grid for the header" -->
-			
-					<!-- vis for level -->
-					<div class="grid" id="container-tab-vis-out">
-						<div class="unit whole" id="tab-vis-out">
-							<table class="vis"><tr></tr></table>
-						</div>	
-					</div>
 			
 					<!-- vis for camp -->
 					<div class="grid" id="container-tab-vis-in" style="display:none">
@@ -305,13 +324,63 @@
 						</div>
 					</div>
 					
-					<!-- level basic stuff: desc, improvements, actions -->
-					<div class="grid" id="container-tab-two-out" style="display:none">
-						<div class="unit golden-large">
-							<div class="unit whole">
-							<div class="subheader"><h3>Location</h3></div>
+					<!-- level: minimap and header -->
+					<div class="grid" id="container-tab-two-out" style="display:none;">
+                        <div class="unit unit-compass" id="out-container-compass">
+                            <canvas id="minimap" class="lvl13-box-2" width="198" height="198">
+                                <div id="minimap-fallback-container"><table class="vis lvl13-box-2" id="minimap-fallback"></table></div>
+                            </canvas>
+                        </div>
+						<div class="unit unit-rest">
+                            <h2 id="header-sector">Sector header</h2>
 							<div id="out-desc" class="infobox"></div>
+						</div>
+					</div>
+                    
+                    <div class="grid" id="container-tab-two-out-actions" style="display:none;">
+                        
+                        <div class="unit unit-compass" id="out-container-compass-actions">
+                            <table id="table-out-actions-movement">
+                                <tr>
+                                    <td><button class="action btn-icon action-move" id="out-action-move-nw" action="move_sector_nw"><span>NW</span></button></td>
+                                    <td><button class="action btn-icon action-move" id="out-action-move-north" action="move_sector_north"><span>N</span></button></td>
+                                    <td><button class="action btn-icon action-move" id="out-action-move-ne" action="move_sector_ne"><span>NE</span></button></td>
+                                </tr>
+                                <tr>
+                                    <td><button class="action btn-icon action-move" id="out-action-move-west" action="move_sector_west"><span>W</span></button></td>
+                                    <td></td>
+                                    <td><button class="action btn-icon action-move" id="out-action-move-east" action="move_sector_east"><span>E</span></button></td>
+                                </tr>
+                                <tr>
+                                    <td><button class="action btn-icon action-move" id="out-action-move-sw" action="move_sector_sw"><span>SW</span></button></td>
+                                    <td><button class="action btn-icon action-move" id="out-action-move-south" action="move_sector_south"><span>S</span></button></td>
+                                    <td><button class="action btn-icon action-move" id="out-action-move-se" action="move_sector_se"><span>SE</span></button></td>
+                                </tr>
+                            </table>
+                            <div id="out-actions-movement" class="actionbox">
+                            <button class="action action-location" id="out-action-enter" action="enter_camp">Enter camp</button><br/>
+                            <button class="action btn-icon" id="out-action-move-camp" action="move_camp_level"><span>Back to camp</span></button><br/>
+                            <button class="action btn-icon" id="out-action-move-up" action="move_level_up"><span>Move up</span></button><br/>
+                            <button class="action btn-icon" id="out-action-move-down" action="move_level_down"><span>Move down</span></button>
+                            <button class="action action-location" id="out-action-despair" action="despair">Despair</button>
+                            </div>
+                        </div>
+                        
+                        <div class="unit unit-rest"> 
+							<div class="subheader" id="header-out-improvements">
+								<h3>Search</h3>
 							</div>
+                            <div id="out-actions" class="actionbox">
+                            <button class="action action-location" id="out-action-sca" action="scavenge">Scavenge</button>
+                            <button class="action action-location" id="out-action-scout" action="scout">Scout</button>
+                            <button class="action action-location" id="out-action-investigate" action="investigate">Investigate</button>
+                            <button class="action action-location" id="out-action-clear-workshop" action="clear_workshop">Scout workshop</button>
+                            </tr>
+                            </table>
+                            <table id="table-out-actions-movement-related">
+                            </table>
+                            </div>
+                            
 							<div class="subheader" id="header-out-improvements">
 								<h3>Build</h3>
 							</div>
@@ -366,77 +435,40 @@
 							</div>
 							<div class="actionbox" id="out-locales">
 								<div class="subheader">
-									<h3>Places of interest</h3>
+									<h3>Locations</h3>
 								</div>
 								<table id="table-out-actions-locales">
 								</table>
 							</div>
-						</div>
-						<div class="unit golden-small">
-							<div class="subheader">
-								<h3>Do</h3>
-							</div>
-							<div id="out-actions" class="actionbox">
-								<table>
-								<tr>
-								<td><button class="action action-location" id="out-action-sca" action="scavenge">Scavenge</button></td>
-								</tr><tr>
-								<td><button class="action action-location" id="out-action-scout" action="scout">Scout</button></td>
-								</tr><tr>
-								<td><button class="action action-location" id="out-action-investigate" action="investigate">Investigate</button></td>
-								</tr><tr>
-								<td><button class="action action-location" id="out-action-clear-workshop" action="clear_workshop">Scout workshop</button></td>
-								</tr><tr>
-								<td><button class="action action-location" id="out-action-despair" action="despair">Despair</button></td>
-								</tr>
-                                </table>
-							<div class="subheader">
-								<h3>Movement</h3>
-							</div>
-                            <table id="table-out-actions-movement">
-								<tr><td><button class="action btn-icon action-move" id="out-action-move-up" action="move_level_up"><span>Move up</span></button></td></tr>
-								<tr><td><button class="action btn-icon action-move" id="out-action-move-north" action="move_sector_north"><span>Move north</span></button></td></tr>
-								<tr><td><button class="action btn-icon action-move" id="out-action-move-east" action="move_sector_east"><span>Move east</span></button></td></tr>
-								<tr><td><button class="action btn-icon action-move" id="out-action-move-west" action="move_sector_west"><span>Move west</span></button></td></tr>
-								<tr><td><button class="action btn-icon action-move" id="out-action-move-south" action="move_sector_south"><span>Move south</span></button></td></tr>
-								<tr><td><button class="action btn-icon action-move" id="out-action-move-ne" action="move_sector_ne"><span>Move NE</span></button></td></tr>
-								<tr><td><button class="action btn-icon action-move" id="out-action-move-se" action="move_sector_se"><span>Move SE</span></button></td></tr>
-								<tr><td><button class="action btn-icon action-move" id="out-action-move-sw" action="move_sector_sw"><span>Move SW</span></button></td></tr>
-								<tr><td><button class="action btn-icon action-move" id="out-action-move-nw" action="move_sector_nw"><span>Move NW</span></button></td></tr>
-								<tr><td><button class="action btn-icon action-move" id="out-action-move-down" action="move_level_down"><span>Move down</span></button></td></tr>
-								<tr><td><button class="action btn-icon action-move" id="out-action-move-camp" action="move_camp_level"><span>Back to camp</span></button></td></tr>
-                            </table>
-                            <table id="table-out-actions-movement-related">
-                            </table>
-							</div>
-						</div>
-						
-						<div id="fight-popup" class="popup fill-on-mobiles" style="display:none">
-							<h3>Fight</h3>
-                            <p id="fight-desc"></p>
-							<p id="fight-popup-enemy-info">Enemy name & strength</p>
-							<p id="fight-popup-control-info">(#/# enemies needed for sector control)</p>
-							<div id="fight-popup-bars">
-								<div id="fight-bar-enemy" class="progress-wrap progress">
-									<div class="progress-bar progress"></div>
-								</div>
-								<div id="fight-bar-self" class="progress-wrap progress">
-									<div class="progress-bar progress"></div>
-								</div>
-							</div>
-							<p id="fight-popup-self-info">Own strength</p>
-							<div id="fight-popup-results">
-								
-							</div>
-							<div class="buttonbox">
-								<button id="out-action-fight-cancel">Flee</button>
-								<button id="out-action-fight-confirm" class="action" action="fight">Fight</button>
-								<button id="out-action-fight-close">Close</button>
-								<button id="out-action-fight-next" action="fightcheck">Continue</button>
-							</div>
-						</div>
-					</div>
-			
+                        
+                            <div id="fight-popup" class="popup fill-on-mobiles" style="display:none">
+                                <h3>Fight</h3>
+                                <p id="fight-desc"></p>
+                                <p id="fight-popup-enemy-info">Enemy name & strength</p>
+                                <p id="fight-popup-control-info">(#/# enemies needed for sector control)</p>
+                                <div id="fight-popup-bars">
+                                    <div id="fight-bar-enemy" class="progress-wrap progress">
+                                        <div class="progress-bar progress"></div>
+                                    </div>
+                                    <div id="fight-bar-self" class="progress-wrap progress">
+                                        <div class="progress-bar progress"></div>
+                                    </div>
+                                </div>
+                                <p id="fight-popup-self-info">Own strength</p>
+                                <div id="fight-popup-results">
+                                    
+                                </div>
+                                <div class="buttonbox">
+                                    <button id="out-action-fight-cancel">Flee</button>
+                                    <button id="out-action-fight-confirm" class="action" action="fight">Fight</button>
+                                    <button id="out-action-fight-close">Close</button>
+                                    <button id="out-action-fight-next" action="fightcheck">Continue</button>
+                                </div>
+                            </div>
+                        
+                        </div>
+                    </div>
+                    
 					<!-- bag main div: item list & crafting -->
 					<div class="grid" id="container-tab-two-bag" style="display:none">
 						<div class="unit golden-large">
@@ -467,18 +499,15 @@
 								<table>
 								</table>
 							</div>
-							<div class="subheader" id="subheader-self-stats"><h3>Status</h3></div>
-							<div class="infobox" id="self-fight">
-								<div class="info-callout-target"><span id="self-status-fight-att"></span></div><br/>
-								<div class="info-callout-target"><span id="self-status-fight-def"></span></div><br/>
-								<div class="info-callout-target"><span id="self-status-fight-followers"></span></div><br/>
-							</div>
-							<div class="infobox" id="self-misc">
-								<div class="info-callout-target"><span id="self-status-efficiency-scavenge"></span></div>
-							</div>
 						</div>
 					</div>
 					
+                    <div class="grid" id="container-tab-two-map" style="display:none">
+                        <canvas id="mainmap" class="lvl13-box-2" width="500" height="500">
+                            <div id="mainmap-fallback-container"><table class="vis lvl13-box-2" id="mainmap-fallback"></table></div>
+                        </canvas>
+                    </div>
+                    
 					<div class="grid" id="container-tab-two-upgrades" style="display: none;">
 						<div class="unit whole">
 							<div id="world-blueprints" class="actionbox">

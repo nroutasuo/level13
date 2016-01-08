@@ -1,6 +1,8 @@
 // A system that saves the player's current location (level&sector) based on their PositionComponent
+// and handles updating sector components related to the player's position
 define([
     'ash',
+    'game/constants/UIConstants',
     'game/nodes/PlayerPositionNode',
     'game/nodes/LevelNode',
     'game/nodes/PlayerLocationNode',
@@ -9,13 +11,17 @@ define([
     'game/components/sector/CurrentNearestCampComponent',
     'game/components/common/PositionComponent',
     'game/components/common/VisitedComponent',
+    'game/components/common/RevealedComponent',
     'game/components/common/CampComponent',
-], function (Ash, PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode,
+], function (Ash, UIConstants,
+    PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, PositionComponent,
-	VisitedComponent, CampComponent) {
+	VisitedComponent, RevealedComponent, CampComponent) {
+    
     var PlayerPositionSystem = Ash.System.extend({
 	    
 		gameState: null,
+		levelHelper: null,
 		uiFunctions: null,
 		occurrenceFunctions: null,
 		
@@ -24,8 +30,9 @@ define([
 		playerPositionNodes: null,
 		playerLocationNodes: null,
 		
-		constructor: function (gameState, uiFunctions, occurrenceFunctions, playerMovedSignal) {
+		constructor: function (gameState, levelHelper, uiFunctions, occurrenceFunctions, playerMovedSignal) {
 			this.gameState = gameState;
+            this.levelHelper = levelHelper;
 			this.uiFunctions = uiFunctions;
 			this.occurrenceFunctions = occurrenceFunctions;
 			this.playerMovedSignal = playerMovedSignal;
@@ -104,6 +111,7 @@ define([
 		
 		handleNewLevel: function (levelNode, levelPos) {
 			levelNode.entity.add(new VisitedComponent());
+			levelNode.entity.add(new RevealedComponent());
 			if (levelPos !== 13) this.gameState.unlockedFeatures.levels = true;
 			if (levelPos === this.gameState.getGroundLevel()) this.gameState.unlockedFeatures.favour = true;
 		},
@@ -113,7 +121,23 @@ define([
 			this.occurrenceFunctions.onEnterNewSector(sectorNode.entity);
 			
 			sectorNode.entity.add(new VisitedComponent());
-			if (sectorPos != 2) this.gameState.unlockedFeatures.sectors = true;
+			sectorNode.entity.add(new RevealedComponent());
+            
+            var sectorPosition = sectorNode.entity.get(PositionComponent);
+            var revealedRange = UIConstants.MAP_MINIMAP_SIZE;
+            var revealDiameter = Math.ceil(revealedRange - 1) / 2;
+            
+            var revealedNeighbour;
+            for (var dx = -revealDiameter; dx <= revealDiameter; dx++) {
+                for (var dy = -revealDiameter; dy <= revealDiameter; dy++) {
+                    revealedNeighbour = this.levelHelper.getSectorByPosition(sectorPosition.level, sectorPosition.sectorX + dx, sectorPosition.sectorY + dy);
+                    if (revealedNeighbour && !revealedNeighbour.has(RevealedComponent)) {
+                        revealedNeighbour.add(new RevealedComponent());
+                    }
+                }
+            }
+            
+			this.gameState.unlockedFeatures.sectors = true;
 		},
         
     });

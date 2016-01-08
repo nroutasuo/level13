@@ -21,7 +21,6 @@ define(['ash',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/components/common/PositionComponent',
 	'game/components/common/ResourcesComponent',
-	'game/components/common/VisitedComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PerksComponent',
 	'game/components/player/AutoPlayComponent',
@@ -48,7 +47,7 @@ define(['ash',
 	GameConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UIConstants, TextConstants,
 	PlayerPositionNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
-	PositionComponent, ResourcesComponent, VisitedComponent,
+	PositionComponent, ResourcesComponent,
 	ItemsComponent, PerksComponent, AutoPlayComponent, PlayerActionComponent,
 	CampComponent, SectorImprovementsComponent, EnemiesComponent,
 	SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
@@ -180,7 +179,6 @@ define(['ash',
                     playerPos.level = campPosition.level;
                     playerPos.sectorX = campPosition.sectorX;
                     playerPos.sectorY = campPosition.sectorY;
-                    this.uiFunctions.showTab(this.uiFunctions.elementIDs.tabs.in);
                     this.enterCamp(true);
                 }
                 break;
@@ -251,6 +249,7 @@ define(['ash',
             if (campNode && campNode.position.level === playerPos.level && campNode.position.sectorId() === playerPos.sectorId()) {
                 if (!playerPos.inCamp) {
                     playerPos.inCamp = true;
+                    this.uiFunctions.showTab(this.uiFunctions.elementIDs.tabs.in);
                     if (this.resourcesHelper.hasCampStorage()) {
                         this.moveResFromBagToCamp();
                     }
@@ -301,6 +300,7 @@ define(['ash',
         scavenge: function () {
             if (this.playerActionsHelper.checkAvailability("scavenge", true)) {
                 this.playerActionsHelper.deductCosts("scavenge");
+                this.gameState.unlockedFeatures.scavenge = true;
 				
 				var playerActionFunctions = this;
 					
@@ -360,6 +360,8 @@ define(['ash',
                     this.occurrenceFunctions.onScoutSector(sector);
                     this.save();
                 }
+                
+                this.engine.getSystem(UIOutLevelSystem).rebuildVis();
             }
         },
         
@@ -386,6 +388,7 @@ define(['ash',
                     playerActionFunctions.addLogMessage(msgTemplate.msg, msgTemplate.replacements, msgTemplate.values);
                     playerActionFunctions.forceResourceBarUpdate();
                     playerActionFunctions.uiFunctions.completeAction(action);
+                    playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
                     playerActionFunctions.save();
                 }, function () {
                     playerActionFunctions.addLogMessage(baseMsg + " Got surprised and fled.");
@@ -407,6 +410,7 @@ define(['ash',
 				this.fightHelper.handleRandomEncounter(action, function () {
 					playerActionFunctions.addLogMessage("Workshop cleared. Workers can now use it.");
                     playerActionFunctions.uiFunctions.completeAction(action);
+                    playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 				}, function () {
 					// fled
                     playerActionFunctions.uiFunctions.completeAction(action);
