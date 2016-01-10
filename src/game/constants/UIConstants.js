@@ -1,31 +1,23 @@
 // Singleton with helper methods for UI elements used throughout the game
 define(['ash',
 	'game/constants/PositionConstants',
-	'game/constants/LocaleConstants',
+	'game/constants/SectorConstants',
     'game/components/common/PositionComponent',
     'game/components/common/CampComponent',
     'game/components/sector/SectorStatusComponent',
-    'game/components/sector/SectorControlComponent',
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/PassagesComponent',
     'game/components/common/VisitedComponent',
-    'game/components/common/RevealedComponent',
     'game/components/sector/improvements/WorkshopComponent',
 ], function (Ash,
-	PositionConstants, LocaleConstants,
-	PositionComponent, CampComponent, SectorStatusComponent, SectorControlComponent, SectorLocalesComponent,
-	PassagesComponent, VisitedComponent, RevealedComponent, WorkshopComponent) {
+	PositionConstants, SectorConstants,
+	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
+	PassagesComponent, VisitedComponent, WorkshopComponent) {
     
     var UIConstants = {
 		
 		FEATURE_MISSING_TITLE: "Missing feature",
 		FEATURE_MISSING_COPY: "This feature is not yet implemented. Come back later!",
-		
-		MAP_SECTOR_STATUS_UNVISITED_INVISIBLE: "unvisited-invisible",
-		MAP_SECTOR_STATUS_UNVISITED_VISIBLE: "unvisited-seen",
-		MAP_SECTOR_STATUS_UNVISITED_VISITED: "visited",
-		MAP_SECTOR_STATUS_UNVISITED_SCOUTED: "scouted",
-		MAP_SECTOR_STATUS_UNVISITED_CLEARED: "cleared",
 		
 		MAP_MINIMAP_SIZE: 5,
 		
@@ -98,42 +90,11 @@ define(['ash',
 			return html;
 		},
 		
-		getSectorStatus: function (playerPosition, sector) {
-			if (!sector) return null;
-			
-			var isVisited = sector.has(VisitedComponent);
-			if (isVisited) {
-				var statusComponent = sector.get(SectorStatusComponent);
-				var isScouted = statusComponent.scouted;
-				if (isScouted) {
-					var localesComponent = sector.get(SectorLocalesComponent);
-					var workshopComponent = sector.get(WorkshopComponent);
-					var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
-					var sectorControlComponent = sector.get(SectorControlComponent);
-					var hasUnclearedWorkshop = workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP);
-					var isCleared = unScoutedLocales === 0 && !hasUnclearedWorkshop;
-					if (isCleared) {
-						return this.MAP_SECTOR_STATUS_UNVISITED_CLEARED;
-					} else {
-						return this.MAP_SECTOR_STATUS_UNVISITED_SCOUTED;
-					}
-				} else {
-					return this.MAP_SECTOR_STATUS_UNVISITED_VISITED;
-				}
-			} else {
-				if (sector.has(RevealedComponent)) {
-					return this.MAP_SECTOR_STATUS_UNVISITED_VISIBLE;
-				} else {
-					return this.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
-				}
-			}
-		},
-		
 		getSectorTD: function (playerPosition, sector) {
 			var content = "";
-            var sectorStatus = this.getSectorStatus(playerPosition, sector);
+            var sectorStatus = SectorConstants.getSectorStatus(sector);
 			var classes = "vis-out-sector";
-			if (sector && sectorStatus !== this.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE) {
+			if (sector && sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE) {
 				var sectorPos = sector.get(PositionComponent);
 				var statusComponent = sector.get(SectorStatusComponent);
 				var localesComponent = sector.get(SectorLocalesComponent);
@@ -161,7 +122,7 @@ define(['ash',
 			
 			content = "<div class='" + classes + "'>" + content.trim() + "<div>";
 			
-			if (sector && sectorStatus !== this.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE) {
+			if (sector && sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE) {
 				for (var i in PositionConstants.getLevelDirections()) {
 					var direction = PositionConstants.getLevelDirections()[i];
 					var blocker = sectorPassages.getBlocker(direction);

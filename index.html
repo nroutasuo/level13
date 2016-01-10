@@ -327,9 +327,11 @@
 					<!-- level: minimap and header -->
 					<div class="grid" id="container-tab-two-out" style="display:none;">
                         <div class="unit unit-compass" id="out-container-compass">
-                            <canvas id="minimap" class="lvl13-box-2" width="198" height="198">
+                            <div id="minimap-container" class="canvas-container">
+                            <canvas id="minimap" width="198" height="198">
                                 <div id="minimap-fallback-container"><table class="vis lvl13-box-2" id="minimap-fallback"></table></div>
                             </canvas>
+                            </div>
                         </div>
 						<div class="unit unit-rest">
                             <h2 id="header-sector">Sector header</h2>
@@ -503,9 +505,12 @@
 					</div>
 					
                     <div class="grid" id="container-tab-two-map" style="display:none">
-                        <canvas id="mainmap" class="lvl13-box-2" width="500" height="500">
+                        <p id="map-completion-hint">There are still places to explore on this level.</p>
+                        <div id="mainmap-container" class="canvas-container lvl13-box-1">
+                        <canvas id="mainmap" width="500" height="500">
                             <div id="mainmap-fallback-container"><table class="vis lvl13-box-2" id="mainmap-fallback"></table></div>
                         </canvas>
+                        </div>
                     </div>
                     
 					<div class="grid" id="container-tab-two-upgrades" style="display: none;">

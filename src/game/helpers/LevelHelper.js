@@ -5,9 +5,11 @@ define([
     'game/constants/LocaleConstants',
     'game/constants/PositionConstants',
     'game/constants/MovementConstants',
+    'game/constants/SectorConstants',
     'game/nodes/LevelNode',
     'game/nodes/sector/SectorNode',
     'game/components/common/PositionComponent',
+    'game/components/common/RevealedComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/SectorFeaturesComponent',
@@ -23,8 +25,10 @@ define([
 	LocaleConstants,
 	PositionConstants,
 	MovementConstants,
+	SectorConstants,
 	LevelNode, SectorNode,
 	PositionComponent,
+    RevealedComponent,
 	SectorStatusComponent,
 	SectorLocalesComponent,
 	SectorFeaturesComponent,
@@ -119,6 +123,35 @@ define([
 			
 			return projectsFiltered;
 		},
+        
+        getLevelStats: function (level) {
+            var levelStats = {};
+            levelStats.totalSectors = 0;
+            levelStats.countClearedSectors = 0;
+            levelStats.countScoutedSectors = 0;
+            levelStats.countRevealedSectors = 0;
+            
+            var sectorPosition;
+            var statusComponent;
+            var sectorStatus;
+			for (var node = this.sectorNodes.head; node; node = node.next) {
+				sectorPosition = node.entity.get(PositionComponent);
+                sectorStatus = SectorConstants.getSectorStatus(node.entity);
+				if (sectorPosition.level !== level) continue;
+                levelStats.totalSectors++;
+                
+                statusComponent = node.entity.get(SectorStatusComponent);
+                if (sectorStatus === SectorConstants.MAP_SECTOR_STATUS_UNVISITED_CLEARED) levelStats.countClearedSectors++;
+                if (statusComponent.scouted) levelStats.countScoutedSectors++;
+                if (node.entity.has(RevealedComponent)) levelStats.countRevealedSectors++;
+            }
+            
+            levelStats.percentClearedSectors = levelStats.countClearedSectors / levelStats.totalSectors;
+            levelStats.percentScoutedSectors = levelStats.countScoutedSectors / levelStats.totalSectors;
+            levelStats.percentRevealedSectors = levelStats.countRevealedSectors / levelStats.totalSectors;
+            
+            return levelStats;
+        },
 		
 		getAvailableProjectsForLevel: function (levelEntity, playerActions) {
 			var projects = [];

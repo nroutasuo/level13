@@ -1,23 +1,32 @@
 define([
     'ash',
-    'game/constants/UIConstants'
-], function (Ash, UIConstants) {
+    'game/constants/GameConstants',
+    'game/constants/UIConstants',
+    'game/nodes/PlayerPositionNode'
+], function (Ash, GameConstants, UIConstants, PlayerPositionNode) {
     var UIOutBagSystem = Ash.System.extend({
 
 		uiFunctions: null,
 		gameState: null,
 		tabChangedSignal: null,
+        
+        playerPositionNodes: null,
 
-		constructor: function (uiFunctions, tabChangedSignal, gameState, uiMapHelper) {
+		constructor: function (uiFunctions, tabChangedSignal, gameState, uiMapHelper, levelHelper) {
             this.uiFunctions = uiFunctions;
 			this.gameState = gameState;
             this.uiMapHelper = uiMapHelper;
+            this.levelHelper = levelHelper;
 			this.tabChangedSignal = tabChangedSignal;
 
 			var system = this;
 
 			this.onTabChanged = function (tabID) {
-				if (tabID === uiFunctions.elementIDs.tabs.map) system.updateMap();
+				if (tabID === uiFunctions.elementIDs.tabs.map) {
+                    system.updateMap();
+                    system.centerMap();
+                    system.updateMapCompletionHint();
+                }
 			};
 
 			return this;
@@ -25,10 +34,14 @@ define([
 
 		addToEngine: function (engine) {
 			this.tabChangedSignal.add(this.onTabChanged);
+            this.uiMapHelper.enableScrollingForMap("mainmap");
+            this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
 		},
 
 		removeFromEngine: function (engine) {
 			this.tabChangedSignal.remove(this.onTabChanged);
+            this.uiMapHelper.disableScrollingForMap("mainmap");
+            this.playerPosNodes = null;
 		},
 
 		update: function (time) {
@@ -38,7 +51,27 @@ define([
 
 		updateMap: function () {
             this.uiMapHelper.rebuildMap("mainmap", "mainmap-fallback", -1, false);
-        }
+        },
+
+		centerMap: function () {
+            this.uiMapHelper.centerMapToPlayer("mainmap");
+        },
+        
+        updateMapCompletionHint: function () {
+            var mapStatus = this.levelHelper.getLevelStats(this.playerPosNodes.head.position.level);
+            if (GameConstants.isDebugOutputEnabled) console.log(mapStatus);
+            var mapStatusText = "There are still many unvisited streets on this level.";
+            if (mapStatus.percentClearedSectors >= 1)
+                mapStatusText = "This level has been thoroughly mapped. All locations have been checked.";
+            else if (mapStatus.percentScoutedSectors >= 1)
+                mapStatusText = "This level has been thoroughly mapped. There are a few unexplored locations left.";
+            else if (mapStatus.percentRevealedSectors >= 1)
+                mapStatusText = "There are still unscouted streets on this level.";
+            else if (mapStatus.percentRevealedSectors >= 0.5)
+                mapStatusText = "There are still some unvisited streets on this level.";
+            
+            $("#map-completion-hint").text(mapStatusText);
+        },
     
 	});
 
