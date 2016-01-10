@@ -237,7 +237,7 @@ define([
                     $(this).parent().siblings(".btn-callout").children(".btn-callout-content").html(content);
                 
                     // Check requirements affecting req-cooldown
-                    bottleNeckCostFraction = Math.min(bottleNeckCostFraction, playerActionsHelper.checkRequirements(action, false).value);
+                    bottleNeckCostFraction = Math.min(bottleNeckCostFraction, playerActionsHelper.checkRequirements(action, false, sectorEntity).value);
 					if (hasCostBlockers) bottleNeckCostFraction = 0;
 					if (isHardDisabled) bottleNeckCostFraction = 0;
                     
