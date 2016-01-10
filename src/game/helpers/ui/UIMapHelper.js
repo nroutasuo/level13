@@ -8,13 +8,14 @@ define(['ash',
     'game/components/common/CampComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/SectorLocalesComponent',
+    'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/PassagesComponent',
     'game/components/sector/improvements/WorkshopComponent',
     'game/vos/PositionVO'],
 function (Ash,
     UIConstants, PositionConstants, SectorConstants,
     PlayerPositionNode,
-    LevelComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent, PassagesComponent, WorkshopComponent,
+    LevelComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, WorkshopComponent,
     PositionVO) {
     
     var UIMapHelper = Ash.Class.extend({
