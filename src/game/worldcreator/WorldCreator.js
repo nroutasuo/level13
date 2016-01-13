@@ -147,7 +147,8 @@ define([
                         
                         var distanceToCenter = PositionConstants.getDistanceTo(sectorVO.position, new PositionVO(l, 0, 0));
                         var edgeSector = y === levelVO.minY || y === levelVO.maxY || x === levelVO.minX || x === levelVO.maxX;
-                        var ceilingStateOfRepair = l === topLevel || !ceilingSector ? 0 : ceilingSector.stateOfRepair;
+                        var ceilingStateOfRepair = l === topLevel ? 0 : !ceilingSector ? sectorVO.stateOfRepair : ceilingSector.stateOfRepair;
+                        var ceilingSunlit = l === topLevel || !ceilingSector ? true : ceilingSector.sunlit;
                     
                         // state of repair
                         var explosionStrength = i - topLevel >= -3 && distanceToCenter <= 10 ? distanceToCenter * 2 : 0;
@@ -156,7 +157,7 @@ define([
                         sectorVO.stateOfRepair = stateOfRepair;
                         
                         // sunlight
-                        sectorVO.sunlit = l === topLevel || (l === topLevel - 1 && ceilingStateOfRepair < 2) || (edgeSector && stateOfRepair < 2);
+                        sectorVO.sunlit = l === topLevel || (ceilingSunlit && ceilingStateOfRepair < 3) || (edgeSector && stateOfRepair < 5);
                         
                         // sector type
                         var sectorType = WorldCreatorHelper.getSectorType(seed, l, x, y);

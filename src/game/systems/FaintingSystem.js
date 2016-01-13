@@ -100,7 +100,7 @@ define([
 				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 0);
 			}
 			
-			if (hasCampOnLevel && Math.random() < 0.2) {
+			if (hasCampOnLevel && this.lastVisitedCampNodes.head && Math.random() < 0.2) {
 				// rescued by campers: back to nearest camp, keep items, maybe injured
 				msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. Some of the scavengers found you and brought you home.";
 				msgLog = "The world fades. You wake up back in camp.";
@@ -156,7 +156,7 @@ define([
 					if (!isVisited) continue;
 					isSafe = this.isSectorSafe(node.entity);
 					if (!isSafe) continue;
-					dist = PositionConstants.getDistanceTo(playerPosition.position, node.position.position);
+					dist = PositionConstants.getDistanceTo(playerPosition.getPosition(), node.position.getPosition());
 					if (dist < nearestVisitedSafeSectorDist) {
 						nearestVisitedSafeSector = node.entity;
 						nearestVisitedSafeSectorDist = dist;

@@ -158,7 +158,15 @@ define([
                 resultVO.lostResources = this.playerResourcesNodes.head.resources.resources.clone();
                 var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAll();
                 for (var i = 0; i < playerItems.length; i++) {
-                    if (playerItems[i].type !== ItemConstants.itemTypes.bag) resultVO.lostItems.push(playerItems[i].clone());
+					switch (playerItems[i].type) {
+						case ItemConstants.itemTypes.bag:
+						case ItemConstants.itemTypes.uniqueEquipment:
+							break;
+						
+						default:
+							resultVO.lostItems.push(playerItems[i].clone());
+							break;
+					}
                 }
             }
 
@@ -461,6 +469,9 @@ define([
 		getNecessityItem: function (currentItems, levelOrdinal) {
 			if (currentItems.getCurrentBonus(ItemConstants.itemTypes.bag) <= 0) {
 				return ItemConstants.getBag(levelOrdinal);
+			}
+			if (currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id) <= 0) {
+				return ItemConstants.itemDefinitions.uniqueEquipment[0].clone();
 			}
 			return null;
 		},

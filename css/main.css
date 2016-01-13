@@ -156,6 +156,11 @@ dd p.p-meta {
     overflow: hidden;
 }
 
+#minimap-container {
+    width: 198px;
+    height: 198px;
+}
+
 #mainmap-container {
     width: 100%;
     max-height: 450px;

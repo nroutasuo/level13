@@ -1,6 +1,7 @@
 define([
     'ash',
     'game/constants/UIConstants',
+    'game/constants/ItemConstants',
     'game/worldcreator/WorldCreator',
     'game/constants/PlayerActionConstants',
     'game/nodes/PlayerLocationNode',
@@ -10,8 +11,10 @@ define([
     'game/nodes/NearestCampNode',
     'game/components/common/CampComponent',
     'game/components/common/PositionComponent',
+    'game/components/player/ItemsComponent'
 ], function (Ash,
     UIConstants,
+    ItemConstants,
 	WorldCreator,
 	PlayerActionConstants,
 	PlayerLocationNode,
@@ -20,7 +23,8 @@ define([
 	CampNode,
 	NearestCampNode,
 	CampComponent,
-	PositionComponent
+	PositionComponent,
+	ItemsComponent
 ) {
     var UIOutElementsSystem = Ash.System.extend({
 	
@@ -270,12 +274,13 @@ define([
         
         updateTabVisibility: function () {
             var isInCamp = this.playerStatsNodes.head && this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
-            var levelHasCamp = this.nearestCampNodes.head != null;
+            var hasMap = this.playerStatsNodes.head.entity.get(ItemsComponent).getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id) > 0;
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-in", null, isInCamp, 200, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-upgrades", null, isInCamp && this.gameState.unlockedFeatures.upgrades, 200, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-world", null, isInCamp && this.gameState.numCamps > 1, 200, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-bag", null, this.gameState.unlockedFeatures.bag, 200, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-out", null, true, 0, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-map", null, hasMap, 200, 0);
         },
         
         updateTabs: function () {

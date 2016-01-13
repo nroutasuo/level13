@@ -77,6 +77,9 @@ function (Ash, ItemVO, ItemConstants) {
                 case ItemConstants.itemTypes.bag:
                     return this.getStrongestByType(item.type).id !== item.id;
                 
+                case ItemConstants.itemTypes.uniqueEquipment:
+                    return false;
+                
                 default: return true;
             }
         },

@@ -309,12 +309,17 @@ function (Ash,
             
             $("#" + fallbackTableId).empty();
             
+            var minDrawY = Math.max(dimensions.minVisibleY, playerPosition.sectorY - 12);
+            var maxDrawY = Math.min(dimensions.maxVisibleY, playerPosition.sectorY + 12);
+            var minDrawX = Math.max(dimensions.minVisibleX, playerPosition.sectorX - 15);
+            var maxDrawX = Math.min(dimensions.maxVisibleX, playerPosition.sectorX + 15);
+            
             var sector;
             var sectorStatus;
-            for (var y = dimensions.minVisibleY; y <= dimensions.maxVisibleY; y++) {
+            for (var y = minDrawY; y <= maxDrawY; y++) {
                 var trID = "minimap-fallback-tr-" + y;
                 $("#" + fallbackTableId).append("<tr id=" + trID + "></tr>");
-                for (var x = dimensions.minVisibleX; x <= dimensions.maxVisibleX; x++) {
+                for (var x = minDrawX; x <= maxDrawX; x++) {
                     sector = visibleSectors[x + "." + y];
                     $("#" + fallbackTableId + " tr#" + trID).append(UIConstants.getSectorTD(playerPosition, sector));
                 }

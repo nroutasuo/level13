@@ -17,6 +17,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 			bag: "Bag",
 			ingredient: "Ingredient",
 			exploration: "Exploration",
+			uniqueEquipment: "UniqueEquipment",
 			// Just inventory
 			artefact: "Artefact",
 			note: "Note",
@@ -132,7 +133,10 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 			],
 			exploration: [
 				new ItemVO("exploration_1", "Lock pick", "Exploration", 0, false, true, "img/items/exploration-1.png", "Useful tool when exploring and scouting.")
-			]
+			],
+			uniqueEquipment: [
+				new ItemVO("equipment_map", "Map", "UniqueEquipment", 0, false, false, "img/items/exploration-map.png", "Helps you navigate the City."),
+			],
 		},
 		
 		getItemByID: function (id) {

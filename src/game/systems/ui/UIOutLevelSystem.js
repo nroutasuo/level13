@@ -279,7 +279,7 @@ define([
 			this.uiFunctions.slideToggleIf("#out-locales", null, isScouted && sectorLocalesComponent.locales.length > 0, 200, 0);
 			this.uiFunctions.slideToggleIf("#table-out-actions-movement-related", null, isScouted > 0, 200, 0);
 			
-			// Actions results
+			$("#minimap").toggle(hasVision);
 		},
 		
 		getDescription: function (entity, hasCampHere, hasCampOnLevel, hasVision, isScouted) {
