@@ -44,6 +44,8 @@ define([
 		engine: null,
 		levelNodes: null,
 		sectorNodes: null,
+        
+        sectorEntitiesByLevel: {}, // int (level) -> int (x) -> int (y) -> entity
 		
 		playerActionsHelper: null,
 		
@@ -77,10 +79,26 @@ define([
 		
 		getSectorByPosition: function (level, sectorX, sectorY) {
 			var sectorPosition;
+            
+            // TODO check if saving uses up too much memory / this is the neatest way, speeds up fps a lot (esp for map)
+            
+            if (!this.sectorEntitiesByLevel[level]) this.sectorEntitiesByLevel[level] = {};
+            if (!this.sectorEntitiesByLevel[level][sectorX]) this.sectorEntitiesByLevel[level][sectorX] = {};
+            
+            if (this.sectorEntitiesByLevel[level][sectorX][sectorY]) return this.sectorEntitiesByLevel[level][sectorX][sectorY];
+            
+            if (this.sectorEntitiesByLevel[level][sectorX][sectorY] === null) return null;
+            
 			for (var node = this.sectorNodes.head; node; node = node.next) {
 				sectorPosition = node.entity.get(PositionComponent);
-				if (sectorPosition.level === level && sectorPosition.sectorX === sectorX && sectorPosition.sectorY === sectorY) return node.entity;
+				if (sectorPosition.level === level && sectorPosition.sectorX === sectorX && sectorPosition.sectorY === sectorY) {
+                    this.sectorEntitiesByLevel[level][sectorX][sectorY] = node.entity;
+                    return node.entity;
+                }
 			}
+            
+            this.sectorEntitiesByLevel[level][sectorX][sectorY] = null;
+            
 			return null;
 		},
 		

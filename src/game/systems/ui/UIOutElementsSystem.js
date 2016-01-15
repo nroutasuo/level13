@@ -152,30 +152,28 @@ define([
             
 			// TODO performance bottleneck - cache buttons? -> figure out when to update the lists (all/action buttons)
 			
-            // Update disabled status
-            $.each($("button"), function () {
-                var isVisible = ($(this).is(":visible"));
-				if (!isVisible) return;
-				
-				var disabledVision = isButtonDisabledVision($(this));
-				var disabledBasic = !disabledVision && isButtonDisabled($(this));
-				var disabledResources = !disabledVision && !disabledBasic && isButtonDisabledResources($(this));
-				var disabledCooldown = !disabledVision && !disabledBasic && !disabledResources && hasButtonCooldown($(this));
-				var disabledDuration = !disabledVision && !disabledBasic && !disabledResources && !disabledCooldown && hasButtonDuration($(this));
-				var isDisabled = disabledBasic || disabledVision || disabledResources || disabledCooldown || disabledDuration;
-				$(this).toggleClass("btn-disabled", isDisabled);
-				$(this).toggleClass("btn-disabled-basic", disabledBasic);
-				$(this).toggleClass("btn-disabled-vision", disabledVision);
-				$(this).parent(".container-btn-action").toggleClass("btn-disabled-vision", disabledVision);
-				$(this).toggleClass("btn-disabled-resources", disabledResources);
-				$(this).toggleClass("btn-disabled-cooldown", disabledCooldown || disabledDuration);
-				$(this).attr("disabled", isDisabled || isAutoPlaying);
-            });
-            
-            // Update button callouts and cooldowns
             var showStorage = this.resourcesHelper.getCurrentStorageCap();
             $.each($("button.action"), function () {
+                // Update disabled status
                 var isVisible = ($(this).is(":visible"));
+				
+                if (isVisible) {
+                    var disabledVision = isButtonDisabledVision($(this));
+                    var disabledBasic = !disabledVision && isButtonDisabled($(this));
+                    var disabledResources = !disabledVision && !disabledBasic && isButtonDisabledResources($(this));
+                    var disabledCooldown = !disabledVision && !disabledBasic && !disabledResources && hasButtonCooldown($(this));
+                    var disabledDuration = !disabledVision && !disabledBasic && !disabledResources && !disabledCooldown && hasButtonDuration($(this));
+                    var isDisabled = disabledBasic || disabledVision || disabledResources || disabledCooldown || disabledDuration;
+                    $(this).toggleClass("btn-disabled", isDisabled);
+                    $(this).toggleClass("btn-disabled-basic", disabledBasic);
+                    $(this).toggleClass("btn-disabled-vision", disabledVision);
+                    $(this).parent(".container-btn-action").toggleClass("btn-disabled-vision", disabledVision);
+                    $(this).toggleClass("btn-disabled-resources", disabledResources);
+                    $(this).toggleClass("btn-disabled-cooldown", disabledCooldown || disabledDuration);
+                    $(this).attr("disabled", isDisabled || isAutoPlaying);
+                }
+                
+                // Update button callouts and cooldowns
                 $(this).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");
                 $(this).parent(".container-btn-action").css("display", $(this).css("display"));
                 var action = $(this).attr("action");
@@ -196,7 +194,6 @@ define([
                     var hasCosts = action && costs && Object.keys(costs).length > 0;
                     var hasCostBlockers = false;
                     var isHardDisabled = isButtonDisabled($(this)) || isButtonDisabledVision($(this));
-                    var isResDisabled = isButtonDisabledResources($(this));
 
                     // Update callout content
                     var content = description;
