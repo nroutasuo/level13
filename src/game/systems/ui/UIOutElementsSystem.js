@@ -153,7 +153,7 @@ define([
 			// TODO performance bottleneck - cache buttons? -> figure out when to update the lists (all/action buttons)
 			
             var showStorage = this.resourcesHelper.getCurrentStorageCap();
-            $.each($("button.action"), function () {
+            $.each($("button"), function () {
                 // Update disabled status
                 var isVisible = ($(this).is(":visible"));
 				
