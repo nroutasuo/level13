@@ -98,7 +98,7 @@ define([
 				if (this.pendingFleeCallback) this.pendingFleeCallback();
 			}
 			
-            this.uiFunctions.popupManager.closePopup("fight-popup", true);
+            this.uiFunctions.popupManager.closePopup("fight-popup");
             sector.remove(FightComponent);
 			this.pendingWinCallback = null;
 			this.pendingFleeCallback = null;

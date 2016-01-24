@@ -45,7 +45,7 @@ function (Ash, LogMessageVO) {
 			var prevMsg = this.messages[this.messages.length-1];
 			if (!prevMsg) return false;
 			
-			var isCombineTime = newMsg.time.getTime() - prevMsg.time.getTime() < 1000 * 15;
+			var isCombineTime = newMsg.time.getTime() - prevMsg.time.getTime() < 1000 * 60 * 5;
 			if (isCombineTime) {
 				// Combine with previous single message?
 				if (!prevMsg.loadedFromSave && newMsg.message == prevMsg.message) {

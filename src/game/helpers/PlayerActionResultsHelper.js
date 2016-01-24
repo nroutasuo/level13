@@ -326,8 +326,9 @@ define([
 		
 		getRewardDiv: function (resultVO) {
 			var div = "<div class='infobox infobox-temporary'>";
+			
             var gainedhtml = "<span class='listheader'>Gained:</span>";
-            gainedhtml += "<ul class='resultlist'>";
+            gainedhtml += "<ul class='resultlist'>";			
             if (resultVO.gainedResources) {
                 gainedhtml += UIConstants.getResourceList(resultVO.gainedResources);
 			}
@@ -347,7 +348,8 @@ define([
 				gainedhtml += "<li>" + resultVO.gainedPopulation + " population</li>";
 			}
 			gainedhtml += "</ul>";
-			if (gainedhtml.indexOf("<li") > 0) div += gainedhtml;
+			var hasGainedStuff = gainedhtml.indexOf("<li") > 0;
+			if (hasGainedStuff) div += gainedhtml;
 			
 			var losthtml = "<span class='listheader'>Lost:</span>";
 			losthtml += "<ul class='resultlist'>";
@@ -361,7 +363,10 @@ define([
 			if (resultVO.gainedInjuries.length > 0) {
 				losthtml += "<p class='warning'>You got injured.</p>";
 			}
-			if (losthtml.indexOf("<li") > 0 || losthtml.indexOf("<p") > 0) div += losthtml;
+			var hasLostStuff = losthtml.indexOf("<li") > 0 || losthtml.indexOf("<p") > 0;
+			if (hasLostStuff) div += losthtml;
+			
+			if (!hasGainedStuff && !hasLostStuff) div += "<p>Didn't find anything useful.</p>";
                 
 			div += "</div>";
 			return div;

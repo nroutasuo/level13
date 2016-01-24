@@ -32,7 +32,6 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                     
                 fightcheck: {
-                    vision: 30,
                     health: 70,
                     stamina: 10,
                     sector: {
@@ -47,7 +46,6 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                     
                 fight: {
-                    vision: 30,
                     health: 70,
                     perks: {
                         Injury: [1, -1],
@@ -64,7 +62,6 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                 
                 fight_gang: {
-                    vision: 30,
                     health: 70,
                 },
                         

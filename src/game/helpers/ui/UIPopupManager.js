@@ -21,71 +21,68 @@ function (Ash, UIConstants) {
         
         showPopup: function (id, title, msg, okButtonLabel, showCancel, resultVO) {
             if (this.hasOpenPopup()) {
-                this.popupQueue.push({id: id, title: title, msg: msg, okButtonLabel: okButtonLabel, showCancel: showCancel });
+                this.popupQueue.push({id: id, title: title, msg: msg, okButtonLabel: okButtonLabel, showCancel: showCancel, resultVO: resultVO });
                 return;
             }
             
             var popUpManager = this;
-            var popup = "<div class='popup fill-on-mobiles' id='" + id + "' style='display:none;'>";
-            popup += "<h3>" + title + "</h3><p>" + msg + "</p>";
+            var popup = $("#common-popup");
+            $("#common-popup-input-container").toggle(false);
+            $("#common-popup h3").text(title);
+            $("#common-popup p#common-popup-desc").text(msg);
             
-            if (resultVO) {
-                popup += this.playerActionResultsHelper.getRewardDiv(resultVO);
+            var hasResult = typeof resultVO !== 'undefined';
+            $("#info-results").toggle(hasResult);
+            if (hasResult) {
+                $("#info-results").empty();
+                var rewardDiv = this.playerActionResultsHelper.getRewardDiv(resultVO);
+                $("#info-results").append(rewardDiv);
             }
             
-            popup += "<div class='buttonbox'>";
+            $("#common-popup .buttonbox").empty();
             if (showCancel) {
-                popup += "<button id='confirmation-cancel'>Cancel</button>";
+                $("#common-popup .buttonbox").append("<button id='confirmation-cancel'>Cancel</button>");
             }
-            popup += "<button id='info-ok' class='action'>" + okButtonLabel + "</button></div>";
-            popup += "</div>";
-            
-            $("#grid-main").append(popup);
+            $("#common-popup .buttonbox").append("<button id='info-ok' class='action'>" + okButtonLabel + "</button>");
             
             $("#info-ok").click(function (e) {
-                popUpManager.closePopup(id);
+                popUpManager.closePopup("common-popup");
             });
             
-            $("body").css("overflow", "hidden");
-            $("#" + id).wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");
-            $(".popup-overlay").fadeIn(200, function () {
-                popUpManager.onResize();
-                $("#" + id).fadeIn(150, popUpManager.onResize);
-            });
+            $("#common-popup").wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");
+            $(".popup-overlay").toggle(true);
+            $("#common-popup").slideDown(200, popUpManager.onResize);
         },
         
-        closePopup: function (id, keep) {
-            $("#" + id).data("fading", true);
-            $("#" + id + " button").toggle(false);
-            $("body").css("overflow", "initial");
-            
+        closePopup: function (id) {
             var popupManager = this;
-            $("#" + id).fadeOut(200, function () {
-                $(".popup-overlay").fadeOut(200, function () {
+            if (popupManager.popupQueue.length === 0) {
+                $("#" + id).data("fading", true);
+                $("#" + id).slideUp(200, function () {
+                    $(".popup-overlay").toggle(false);
                     $("#" + id).unwrap();
-                    if (!keep) {
-                        $("#" + id).remove();
-                    } else {
-                        $("#" + id).data("fading", false);
-                    }
-                    
+                    $("#" + id).data("fading", false);
                     popupManager.showQueuedPopup();
                 });
-            });
+            } else {
+                $("#" + id).toggle(false);
+                $("#" + id).data("fading", false);
+                popupManager.showQueuedPopup();
+            }
         },
         
         closeAllPopups: function () {
             this.popupQueue = [];
             var popupManager = this;
             $.each($(".popup:visible"), function () {
-                popupManager.closePopup($(this).attr("id"), true);
+                popupManager.closePopup($(this).attr("id"));
             });
         },
         
         showQueuedPopup: function () {
             if (this.popupQueue.length > 0) {
                 var queued = this.popupQueue.pop();
-                this.showPopup(queued.id, queued.title, queued.msg, queued.okButtonLabel, queued.showCancel );
+                this.showPopup(queued.id, queued.title, queued.msg, queued.okButtonLabel, queued.showCancel, queued.resultVO);
             }
         },
         

@@ -305,25 +305,26 @@ define(['ash',
 				var playerActionFunctions = this;
 					
                 var playerMaxVision = playerActionFunctions.playerStatsNodes.head.vision.maximum;
-                var baseMsg = "";
-                if (playerMaxVision <= PlayerStatConstants.VISION_BASE) baseMsg = "Rummaged in the dark. ";
-                else baseMsg = "Went scavenging. ";
+                var logMsg = "";
+                var detailedMessage = "";
+                if (playerMaxVision <= PlayerStatConstants.VISION_BASE) logMsg = "Rummaged in the dark. ";
+                else logMsg = "Went scavenging. ";
+                detailedMessage = logMsg;
                     
                 this.fightHelper.handleRandomEncounter("scavenge", function () {
 					var rewards = playerActionFunctions.playerActionResultsHelper.getScavengeRewards();
 					playerActionFunctions.playerActionResultsHelper.collectRewards(rewards);
-                    
-					var msgTemplate = playerActionFunctions.playerActionResultsHelper.getRewardsMessage(rewards, baseMsg);
                     playerActionFunctions.uiFunctions.completeAction("scavenge");
-					playerActionFunctions.addLogMessage(msgTemplate.msg, msgTemplate.replacements, msgTemplate.values);
+					playerActionFunctions.addLogMessage(logMsg);
+                    playerActionFunctions.uiFunctions.showInfoPopup("Scavenge", detailedMessage, "Continue", rewards);
 					playerActionFunctions.forceResourceBarUpdate();
 					playerActionFunctions.forceTabUpdate();
 				}, function () {
                     playerActionFunctions.uiFunctions.completeAction("scavenge");
-                    playerActionFunctions.addLogMessage(baseMsg + "Fled empty-handed.");
+                    playerActionFunctions.addLogMessage(logMsg + "Fled empty-handed.");
                 }, function () {
                     playerActionFunctions.uiFunctions.completeAction("scavenge");
-                    playerActionFunctions.addLogMessage(baseMsg + "Got into a fight and was defeated.");
+                    playerActionFunctions.addLogMessage(logMsg + "Got into a fight and was defeated.");
                 });
             }
         },
@@ -351,11 +352,12 @@ define(['ash',
 					
                     // TODO add details to message base depending on the location
 					var rewards = this.playerActionResultsHelper.getScoutRewards();
+                    var msgBase = "Scouted the area.";
 					this.playerActionResultsHelper.collectRewards(rewards);
-					var msgTemplate = this.playerActionResultsHelper.getRewardsMessage(rewards, "Scouted the area. ");
                     
-                    // TODO signal to force out vis update
-					this.addLogMessage(msgTemplate.msg, msgTemplate.replacements, msgTemplate.values);
+                    // TODO signal to force out map update
+					this.addLogMessage(msgBase);
+                    this.uiFunctions.showInfoPopup("Scout", msgBase, "Continue", rewards);
                     this.forceResourceBarUpdate();
                     this.occurrenceFunctions.onScoutSector(sector);
                     this.save();
@@ -384,9 +386,9 @@ define(['ash',
                     sectorStatus.localesScouted[i] = true;
                     var rewards = playerActionFunctions.playerActionResultsHelper.getScoutLocaleRewards(localeVO);
                     playerActionFunctions.playerActionResultsHelper.collectRewards(rewards);
-                    var msgTemplate = playerActionFunctions.playerActionResultsHelper.getRewardsMessage(rewards, baseMsg);
-                    playerActionFunctions.addLogMessage(msgTemplate.msg, msgTemplate.replacements, msgTemplate.values);
+                    playerActionFunctions.addLogMessage(baseMsg);
                     playerActionFunctions.forceResourceBarUpdate();
+                    playerActionFunctions.uiFunctions.showInfoPopup("Scout", baseMsg, "Continue", rewards);
                     playerActionFunctions.uiFunctions.completeAction(action);
                     playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
                     playerActionFunctions.save();
@@ -685,12 +687,12 @@ define(['ash',
                 if (campComponent.rumourpool >= 1) {
                     campComponent.rumourpool--;
                     this.playerStatsNodes.head.rumours.value++;
-                    this.addLogMessage("Sat at the campfire to exchange stories about the corridors.");    
+                    this.addLogMessage("Sat at the campfire to exchange stories about the corridors.");
                 } else {
-                    this.addLogMessage("Sat at the campfire to exchange stories, but there was nothing new.");   
+                    this.addLogMessage("Sat at the campfire to exchange stories, but there was nothing new.");
                     campComponent.rumourpoolchecked = true;
                 }
-            }    
+            }
             this.uiFunctions.completeAction("use_in_campfire");
             this.forceResourceBarUpdate();
         },
@@ -701,20 +703,20 @@ define(['ash',
                 
                 var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
                 perksComponent.removeItemsByType(PerkConstants.perkTypes.injury);
-                this.addLogMessage("Healed all injuries.");            
-            }    
+                this.addLogMessage("Healed all injuries.");
+            }
             this.forceResourceBarUpdate();
             this.gameState.unlockedFeatures.fight = true;
         },
         
-        useHospital2: function() {
+        useHospital2: function () {
             if(this.playerActionsHelper.checkAvailability("use_in_hospital2", true)) {
                 this.playerActionsHelper.deductCosts("use_in_hospital2");
                 
                 var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
                 perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.healthAugment));
-                this.addLogMessage("Improved health.");            
-            }    
+                this.addLogMessage("Improved health.");
+            }
             this.forceResourceBarUpdate();
         },
         
@@ -827,11 +829,11 @@ define(['ash',
                 }
                 else
                 {
-                    this.addLogMessage("Nothing to collect yet.");                             
+                    this.addLogMessage("Nothing to collect yet.");
                 }
                 
                 this.forceResourceBarUpdate();
-            }            
+            }
         },
         
         buildImprovement: function(actionName, improvementName, otherSector, isFree) {

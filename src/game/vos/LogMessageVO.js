@@ -13,13 +13,13 @@ define(['ash'], function (Ash) {
 			this.text = this.createText();
         },
 	
-		setPending: function(visibleLevel, visibleSector, visibleInCamp) {
+		setPending: function (visibleLevel, visibleSector, visibleInCamp) {
 			this.pendingLevel = visibleLevel;
 			this.pendingSector = visibleSector;
 			this.pendingInCamp = visibleInCamp;
 		},
 	
-		setPendingOver: function() {
+		setPendingOver: function () {
 			this.time = new Date();
 		},
 		
@@ -43,17 +43,18 @@ define(['ash'], function (Ash) {
 				}
 			}
 			
+            this.text = this.text.trim();
 			this.text = this.text.replace(/ ,/g, "");
-			if(this.text.substr(this.text.length - 1) != "." && this.text.substr(this.text.length - 1) != "!")
-			this.text += ".";;
+			if (this.text.substr(this.text.length - 1) !== "." && this.text.substr(this.text.length - 1) !== "!")
+                this.text += ".";
 			this.text = this.text.replace(/\, \./g, ".");
 			
 			return this.text;
 		},
 		
-		getText: function() {
+		getText: function () {
 			if (!this.text) {
-			this.createText();
+                this.createText();
 			}
 			return this.text;
 		}

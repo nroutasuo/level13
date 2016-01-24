@@ -442,34 +442,8 @@
 								<table id="table-out-actions-locales">
 								</table>
 							</div>
-                        
-                            <div id="fight-popup" class="popup fill-on-mobiles" style="display:none">
-                                <h3>Fight</h3>
-                                <p id="fight-desc"></p>
-                                <p id="fight-popup-enemy-info">Enemy name & strength</p>
-                                <p id="fight-popup-control-info">(#/# enemies needed for sector control)</p>
-                                <div id="fight-popup-bars">
-                                    <div id="fight-bar-enemy" class="progress-wrap progress">
-                                        <div class="progress-bar progress"></div>
-                                    </div>
-                                    <div id="fight-bar-self" class="progress-wrap progress">
-                                        <div class="progress-bar progress"></div>
-                                    </div>
-                                </div>
-                                <p id="fight-popup-self-info">Own strength</p>
-                                <div id="fight-popup-results">
-                                    
-                                </div>
-                                <div class="buttonbox">
-                                    <button id="out-action-fight-cancel">Flee</button>
-                                    <button id="out-action-fight-confirm" class="action" action="fight">Fight</button>
-                                    <button id="out-action-fight-close">Close</button>
-                                    <button id="out-action-fight-next" action="fightcheck">Continue</button>
-                                </div>
-                            </div>
-                        
                         </div>
-                    </div>
+                    </div>                    
                     
 					<!-- bag main div: item list & crafting -->
 					<div class="grid" id="container-tab-two-bag" style="display:none">
@@ -555,7 +529,7 @@
 							</div>
 						</div>
 					</div>
-			</div><!-- main switch content grid -->			
+			</div><!-- main switch content grid -->
 			
             </div><!-- main unit: the whole 3/4 right of the log -->
 			
@@ -565,6 +539,38 @@
 			</div>
 			
 		</div><!-- main grid -->
+                        
+        <div id="fight-popup" class="popup fill-on-mobiles" style="display:none">
+            <h3>Fight</h3>
+            <p id="fight-desc"></p>
+            <p id="fight-popup-enemy-info">Enemy name & strength</p>
+            <p id="fight-popup-control-info">(#/# enemies needed for sector control)</p>
+            <div id="fight-popup-bars">
+                <div id="fight-bar-enemy" class="progress-wrap progress">
+                    <div class="progress-bar progress"></div>
+                </div>
+                <div id="fight-bar-self" class="progress-wrap progress">
+                    <div class="progress-bar progress"></div>
+                </div>
+            </div>
+            <p id="fight-popup-self-info">Own strength</p>
+            <div id="fight-popup-results">                                    
+            </div>
+            <div class="buttonbox">
+                <button id="out-action-fight-cancel">Flee</button>
+                <button id="out-action-fight-confirm" class="action" action="fight">Fight</button>
+                <button id="out-action-fight-close">Close</button>
+                <button id="out-action-fight-next" action="fightcheck">Continue</button>
+            </div>
+        </div>
+        
+        <div id="common-popup" class="popup fill-on-mobiles" style="display:none">
+            <h3></h3>
+            <p id="common-popup-desc"></p>
+            <p id="common-popup-input-container"><input class="text" autocomplete="false" autofocus="true"/></p>
+            <div id="info-results"></div>
+            <div class="buttonbox"></div>
+        </div>
 	
 		<div class="grid sticky-footer-push"></div>		
 		

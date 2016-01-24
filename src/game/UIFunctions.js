@@ -788,8 +788,6 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
         
         showFight: function () {
             if ($("#fight-popup").is(":visible")) return;
-            
-            $("body").css("overflow", "hidden");
             $("#fight-popup").wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");
             var uiFunctions = this;
             $(".popup-overlay").fadeIn(200, function () {
@@ -808,10 +806,10 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                   
             var uiFunctions = this;
             $("#confirmation-cancel").click( function(e) {
-                uiFunctions.popupManager.closePopup("confirmation-popup");
+                uiFunctions.popupManager.closePopup("common-popup");
             });
             $("#info-ok").click( function(e) {
-                uiFunctions.popupManager.closePopup("confirmation-popup");
+                uiFunctions.popupManager.closePopup("common-popup");
                 callback();
             });
         },
@@ -821,18 +819,19 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             
             var uiFunctions = this;
             var maxChar = 40;
-            $("<p><input class='text' autocomplete='false' autofocus='true' maxlength='" + maxChar + "' /></p>").insertBefore($("#input-popup .buttonbox"));
+            $("#common-popup-input-container").toggle(true);
+            $("#common-popup-input-container input").attr("maxlength", maxChar);
             
-            $("#input-popup input").val(defaultValue);
-            $("#input-popup input").keydown( uiFunctions.onTextInputKeyDown );
-            $("#input-popup input").keyup( uiFunctions.onTextInputKeyUp );
+            $("#common-popup input").val(defaultValue);
+            $("#common-popup input").keydown( uiFunctions.onTextInputKeyDown );
+            $("#common-popup input").keyup( uiFunctions.onTextInputKeyUp );
             
             $("#confirmation-cancel").click( function(e) {
-                uiFunctions.popupManager.closePopup("input-popup");
+                uiFunctions.popupManager.closePopup("common-popup");
             });
             $("#info-ok").click( function(e) {
-                uiFunctions.popupManager.closePopup("input-popup");
-                var input = $("#input-popup input").val();
+                uiFunctions.popupManager.closePopup("common-popup");
+                var input = $("#common-popup input").val();
                 callback(input);
             });
         },

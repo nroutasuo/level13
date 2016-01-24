@@ -78,7 +78,7 @@ define([
 					li += ' class="log-loaded"';
 				li += '><span class="time">' + UIConstants.getTimeSinceText(msg.time) + " ago" + '</span> ';
 				li += '<span class="msg">' + msg.text;
-				if (msg.combined > 0) li += '<span class="msg-count"> (' + (msg.combined + 1) + ")</span>";
+				if (msg.combined > 0) li += '<span class="msg-count"> (x' + (msg.combined + 1) + ")</span>";
 				li += '</span></li>';
 				liMsg = $(li);
 				$( "#log ul" ).prepend( liMsg );
