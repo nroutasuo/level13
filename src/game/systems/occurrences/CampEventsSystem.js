@@ -2,6 +2,7 @@
 define([
     'ash',
     'game/constants/GameConstants',
+    'game/constants/LogConstants',
     'game/constants/OccurrenceConstants',
     'game/constants/TextConstants',
     'game/nodes/player/PlayerResourcesNode',
@@ -15,7 +16,7 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
 ], function (
 	Ash,
-	GameConstants, OccurrenceConstants, TextConstants,
+	GameConstants, LogConstants, OccurrenceConstants, TextConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	PositionComponent, LogMessagesComponent,
 	TraderComponent, RaidComponent, CampEventTimersComponent,
@@ -220,10 +221,10 @@ define([
 		addLogMessage: function (msg, replacements, values, forCamp) {
 			var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
 			if (!forCamp) {
-                logComponent.addMessage(msg, replacements, values);
+                logComponent.addMessage(LogConstants.MSG_ID_CAMP_EVENT, msg, replacements, values);
 			} else {
                 var campPos = forCamp.entity.get(PositionComponent);
-                logComponent.addMessage(msg, replacements, values, campPos.level, campPos.sectorId(), true);
+                logComponent.addMessage(LogConstants.MSG_ID_CAMP_EVENT, msg, replacements, values, campPos.level, campPos.sectorId(), true);
 			}
 		}
         

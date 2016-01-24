@@ -1,6 +1,7 @@
 // Functions to respond to player actions parsed by the UIFunctions
 define(['ash',
 	'game/constants/GameConstants',
+	'game/constants/LogConstants',
 	'game/constants/PositionConstants',
 	'game/constants/MovementConstants',
 	'game/constants/PlayerActionConstants',
@@ -44,7 +45,7 @@ define(['ash',
 	'game/worldcreator/WorldCreator',
 	'game/worldcreator/WorldCreatorDebug'
 ], function (Ash,
-	GameConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UIConstants, TextConstants,
+	GameConstants, LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UIConstants, TextConstants,
 	PlayerPositionNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
@@ -115,12 +116,12 @@ define(['ash',
             this.engine = null;
         },
         
-        addLogMessage: function (msg, replacements, values, pendingPosition) {
+        addLogMessage: function (msgID, msg, replacements, values, pendingPosition) {
             var logComponent = this.playerPositionNodes.head.entity.get(LogMessagesComponent);
             if (pendingPosition) {
-                logComponent.addMessage(msg, replacements, values, pendingPosition.level, pendingPosition.sectorId(), pendingPosition.inCamp);
+                logComponent.addMessage(msgID, msg, replacements, values, pendingPosition.level, pendingPosition.sectorId(), pendingPosition.inCamp);
             } else {
-                logComponent.addMessage(msg, replacements, values);
+                logComponent.addMessage(msgID, msg, replacements, values);
             }
         },
         
@@ -257,7 +258,7 @@ define(['ash',
 					if (this.lastVisitedCamps.head) this.lastVisitedCamps.head.entity.remove(LastVisitedCampComponent);
                     campNode.entity.add(new LastVisitedCampComponent());
                     
-                    if (log) this.addLogMessage("Entered camp.");
+                    if (log) this.addLogMessage(LogConstants.MSG_ID_ENTER_CAMP, "Entered camp.");
                     this.playerMovedSignal.dispatch(playerPos);
                     this.forceResourceBarUpdate();
                     this.save();
@@ -281,7 +282,7 @@ define(['ash',
                 var sunlit = campNode.entity.get(SectorFeaturesComponent).sunlit;
                 playerPos.inCamp = false;
                 var msg = "Left camp. " + (sunlit ? "Sunlight is sharp and merciless." : " Darkess of the city envelops you.");
-                this.addLogMessage(msg);
+                this.addLogMessage(LogConstants.MSG_ID_LEAVE_CAMP, msg);
                 this.playerMovedSignal.dispatch(playerPos);
                 this.forceResourceBarUpdate();
                 this.save();
@@ -315,16 +316,16 @@ define(['ash',
 					var rewards = playerActionFunctions.playerActionResultsHelper.getScavengeRewards();
 					playerActionFunctions.playerActionResultsHelper.collectRewards(rewards);
                     playerActionFunctions.uiFunctions.completeAction("scavenge");
-					playerActionFunctions.addLogMessage(logMsg);
+					playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCAVENGE, logMsg);
                     playerActionFunctions.uiFunctions.showInfoPopup("Scavenge", detailedMessage, "Continue", rewards);
 					playerActionFunctions.forceResourceBarUpdate();
 					playerActionFunctions.forceTabUpdate();
 				}, function () {
                     playerActionFunctions.uiFunctions.completeAction("scavenge");
-                    playerActionFunctions.addLogMessage(logMsg + "Fled empty-handed.");
+                    playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCAVENGE, logMsg + "Fled empty-handed.");
                 }, function () {
                     playerActionFunctions.uiFunctions.completeAction("scavenge");
-                    playerActionFunctions.addLogMessage(logMsg + "Got into a fight and was defeated.");
+                    playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCAVENGE, logMsg + "Got into a fight and was defeated.");
                 });
             }
         },
@@ -356,7 +357,7 @@ define(['ash',
 					this.playerActionResultsHelper.collectRewards(rewards);
                     
                     // TODO signal to force out map update
-					this.addLogMessage(msgBase);
+					this.addLogMessage(LogConstants.MSG_ID_SCOUT, msgBase);
                     this.uiFunctions.showInfoPopup("Scout", msgBase, "Continue", rewards);
                     this.forceResourceBarUpdate();
                     this.occurrenceFunctions.onScoutSector(sector);
@@ -386,18 +387,18 @@ define(['ash',
                     sectorStatus.localesScouted[i] = true;
                     var rewards = playerActionFunctions.playerActionResultsHelper.getScoutLocaleRewards(localeVO);
                     playerActionFunctions.playerActionResultsHelper.collectRewards(rewards);
-                    playerActionFunctions.addLogMessage(baseMsg);
+                    playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCOUT_LOCALE, baseMsg);
                     playerActionFunctions.forceResourceBarUpdate();
                     playerActionFunctions.uiFunctions.showInfoPopup("Scout", baseMsg, "Continue", rewards);
                     playerActionFunctions.uiFunctions.completeAction(action);
                     playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
                     playerActionFunctions.save();
                 }, function () {
-                    playerActionFunctions.addLogMessage(baseMsg + " Got surprised and fled.");
+                    playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCOUT_LOCALE, baseMsg + " Got surprised and fled.");
                     playerActionFunctions.uiFunctions.completeAction(action);
                     playerActionFunctions.save();
                 }, function () {
-                    playerActionFunctions.addLogMessage(baseMsg + " Got surprised and beaten.");
+                    playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCOUT_LOCALE, baseMsg + " Got surprised and beaten.");
                     playerActionFunctions.uiFunctions.completeAction(action);
                     playerActionFunctions.save();
                 });
@@ -410,7 +411,7 @@ define(['ash',
                 this.playerActionsHelper.deductCosts(action);
 				var playerActionFunctions = this;
 				this.fightHelper.handleRandomEncounter(action, function () {
-					playerActionFunctions.addLogMessage("Workshop cleared. Workers can now use it.");
+					playerActionFunctions.addLogMessage(LogConstants.MSG_ID_WORKSHOP_CLEARED, "Workshop cleared. Workers can now use it.");
                     playerActionFunctions.uiFunctions.completeAction(action);
                     playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 				}, function () {
@@ -429,7 +430,7 @@ define(['ash',
                 this.playerActionsHelper.deductCosts(action);
 				var playerActionFunctions = this;
 				this.fightHelper.handleRandomEncounter(action, function () {
-					playerActionFunctions.addLogMessage("The road is clear.");
+					playerActionFunctions.addLogMessage(LogConstants.MSG_ID_GANG_DEFEATED, "The road is clear.");
                     playerActionFunctions.uiFunctions.completeAction(action);
 				}, function () {
 					// fled
@@ -463,7 +464,7 @@ define(['ash',
 				
                 this.buildStorage(true, sector);
                 
-                this.addLogMessage("Built a camp.");
+                this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "Built a camp.");
                 this.forceResourceBarUpdate();
                 this.save();
             }
@@ -505,7 +506,7 @@ define(['ash',
 				var msg = "Passage " + (up ? " up" : " down") + " ready in sector " + sX + "." + sY + (playerPos.level === l ? "" : ", level " + l);
 				this.buildImprovement(action, this.playerActionsHelper.getImprovementNameForAction(action), sector);
 				this.buildImprovement(neighbourAction, this.playerActionsHelper.getImprovementNameForAction(neighbourAction), neighbour, true);
-				this.addLogMessage(msg);
+				this.addLogMessage(LogConstants.MSG_ID_BUILT_PASSAGE, msg);
 			} else {
 				console.log("WARN: Couldn't find sectors for building passage.");
 				console.log(sector);
@@ -516,12 +517,12 @@ define(['ash',
         
         buildTrap: function () {
             this.buildImprovement("build_out_collector_food", this.playerActionsHelper.getImprovementNameForAction("build_out_collector_food"));
-            this.addLogMessage("Built a trap. It will catch food.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_TRAP, "Built a trap. It will catch food.");
         },
         
         buildBucket: function () {
             this.buildImprovement("build_out_collector_water", this.playerActionsHelper.getImprovementNameForAction("build_out_collector_water"));
-            this.addLogMessage("Made a bucket. It will collect water.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_BUCKET, "Made a bucket. It will collect water.");
         },
         
         buildHouse: function () {
@@ -534,7 +535,7 @@ define(['ash',
                     totalHouses += improvementsComponent.getCount(improvementNames.house);
                 }
                 if (totalHouses < 5) msg += " People will come if they hear about the camp.";
-                this.addLogMessage(msg);
+                this.addLogMessage(LogConstants.MSG_ID_BUILT_HOUSE, msg);
             }
         },
         
@@ -542,7 +543,7 @@ define(['ash',
             this.buildImprovement("build_in_house2", this.playerActionsHelper.getImprovementNameForAction("build_in_house2"));
             if (this.playerActionsHelper.checkAvailability("build_in_house2")) {
                 var msg = "Built a tower block.";
-                this.addLogMessage(msg);
+                this.addLogMessage(LogConstants.MSG_ID_BUILT_HOUSE, msg);
             }
         },
         
@@ -550,7 +551,7 @@ define(['ash',
             this.buildImprovement("build_in_lights", this.playerActionsHelper.getImprovementNameForAction("build_in_lights"));
             if (this.playerActionsHelper.checkAvailability("build_in_lights")) {
                 var msg = "Installed lights to the camp.";
-                this.addLogMessage(msg);
+                this.addLogMessage(LogConstants.MSG_ID_BUILT_LIGHTS, msg);
             }
         },
         
@@ -558,85 +559,85 @@ define(['ash',
             this.buildImprovement("build_in_ceiling", this.playerActionsHelper.getImprovementNameForAction("build_in_ceiling"));
             if (this.playerActionsHelper.checkAvailability("build_in_ceiling")) {
                 var msg = "Build a big tent to protect the camp from the sun.";
-                this.addLogMessage(msg);
+                this.addLogMessage(LogConstants.MSG_ID_BUILT_CEILING, msg);
             }
         },
         
         buildStorage: function (automatic, sector) {
             this.buildImprovement("build_in_storage", this.playerActionsHelper.getImprovementNameForAction("build_in_storage"), null, automatic);
             if (!automatic) {
-                this.addLogMessage("Built a storage.");
+                this.addLogMessage(LogConstants.MSG_ID_BUILT_STORAGE, "Built a storage.");
             }
         },
         
         buildFortification: function () {
             this.buildImprovement("build_in_fortification", this.playerActionsHelper.getImprovementNameForAction("build_in_fortification"));
-            this.addLogMessage("Fortified the camp.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_FORTIFICATION, "Fortified the camp.");
         },
 		
 		buildAqueduct: function () {
 			this.buildImprovement("build_in_aqueduct", this.playerActionsHelper.getImprovementNameForAction("build_in_aqueduct"));
-			this.addLogMessage("Built an aqueduct.");
+			this.addLogMessage(LogConstants.MSG_ID_BUILT_AQUEDUCT, "Built an aqueduct.");
 		},
         
         buildBarracks: function () {
             this.buildImprovement("build_in_barracks", this.playerActionsHelper.getImprovementNameForAction("build_in_barracks"));
-            this.addLogMessage("Built a barracks.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_BARRACKS, "Built a barracks.");
         },
         
         buildSmithy: function () {
             this.buildImprovement("build_in_smithy", this.playerActionsHelper.getImprovementNameForAction("build_in_smithy"));
-            this.addLogMessage("Built a smithy.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_SMITHY, "Built a smithy.");
         },
         
         buildApothecary: function () {
             this.buildImprovement("build_in_apothecary", this.playerActionsHelper.getImprovementNameForAction("build_in_apothecary"));
-            this.addLogMessage("Built an apothecary.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_APOTHECARY, "Built an apothecary.");
         },
         
         buildCementMill: function () {
             this.buildImprovement("build_in_cementmill", this.playerActionsHelper.getImprovementNameForAction("build_in_cementmill"));
-            this.addLogMessage("Built a cement mill for making concrete.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_CEMENT_MILL, "Built a cement mill for making concrete.");
         },
         
         buildRadioTower: function () {
             this.buildImprovement("build_in_radio", this.playerActionsHelper.getImprovementNameForAction("build_in_radio"));
-            this.addLogMessage("Built a radio tower.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_RADIO, "Built a radio tower.");
         },
         
         buildCampfire: function () {
             this.buildImprovement("build_in_campfire", this.playerActionsHelper.getImprovementNameForAction("build_in_campfire"));
-            this.addLogMessage("Built a campfire. Here, ideas are shared and discussed.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMPFIRE, "Built a campfire. Here, ideas are shared and discussed.");
         },
         
         buildDarkFarm: function () {
             this.buildImprovement("build_in_darkfarm", this.playerActionsHelper.getImprovementNameForAction("build_in_darkfarm"));
-            this.addLogMessage("Built a snail farm.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_DARKFARM, "Built a snail farm.");
         },
         
         buildHospital: function () {
             this.buildImprovement("build_in_hospital", this.playerActionsHelper.getImprovementNameForAction("build_in_hospital"));
-            this.addLogMessage("Built a hospital.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_HOSPITAL, "Built a hospital.");
         },
         
         buildLibrary: function () {
             this.buildImprovement("build_in_library", this.playerActionsHelper.getImprovementNameForAction("build_in_library"));
-            this.addLogMessage("Built a library.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_LIBRARY, "Built a library.");
         },
         
         buildMarket: function () {
             this.buildImprovement("build_in_market", this.playerActionsHelper.getImprovementNameForAction("build_in_market"));
-            this.addLogMessage("Built a market.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_MARKET, "Built a market.");
         },
         
         buildTradingPost: function () {
             this.buildImprovement("build_in_tradingPost", this.playerActionsHelper.getImprovementNameForAction("build_in_tradingPost"));
-            this.addLogMessage("Build a trading post.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_TRADING_POST, "Build a trading post.");
         },
         
         buildInn: function () {
             this.buildImprovement("build_in_inn", this.playerActionsHelper.getImprovementNameForAction("build_in_inn"));
-            this.addLogMessage("Build an inn. Maybe it will attract adventurers.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_INN, "Build an inn. Maybe it will attract adventurers.");
         },
         
         buildBridge: function (sectorPos) {
@@ -687,9 +688,9 @@ define(['ash',
                 if (campComponent.rumourpool >= 1) {
                     campComponent.rumourpool--;
                     this.playerStatsNodes.head.rumours.value++;
-                    this.addLogMessage("Sat at the campfire to exchange stories about the corridors.");
+                    this.addLogMessage(LogConstants.MSG_ID_USE_CAMPFIRE_SUCC, "Sat at the campfire to exchange stories about the corridors.");
                 } else {
-                    this.addLogMessage("Sat at the campfire to exchange stories, but there was nothing new.");
+                    this.addLogMessage(LogConstants.MSG_ID_USE_CAMPFIRE_FAIL, "Sat at the campfire to exchange stories, but there was nothing new.");
                     campComponent.rumourpoolchecked = true;
                 }
             }
@@ -703,7 +704,7 @@ define(['ash',
                 
                 var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
                 perksComponent.removeItemsByType(PerkConstants.perkTypes.injury);
-                this.addLogMessage("Healed all injuries.");
+                this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL, "Healed all injuries.");
             }
             this.forceResourceBarUpdate();
             this.gameState.unlockedFeatures.fight = true;
@@ -715,7 +716,7 @@ define(['ash',
                 
                 var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
                 perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.healthAugment));
-                this.addLogMessage("Improved health.");
+                this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL2, "Improved health.");
             }
             this.forceResourceBarUpdate();
         },
@@ -769,7 +770,7 @@ define(['ash',
         addFollower: function(follower) {
             var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
             itemsComponent.addItem(follower);
-            this.addLogMessage("A wanderer agrees to travel together for awhile.");
+            this.addLogMessage(LogConstants.MSG_ID_ADD_FOLLOWER, "A wanderer agrees to travel together for awhile.");
             this.forceResourceBarUpdate();
             this.forceStatsBarUpdate();
             this.save();
@@ -786,7 +787,7 @@ define(['ash',
                 
 				this.gameState.unlockedFeatures.vision = true;
                            
-                this.addLogMessage("Crafted " + item.name);
+                this.addLogMessage(LogConstants.MSG_ID_CRAFT_ITEM, "Crafted " + item.name);
                 this.forceResourceBarUpdate();
                 this.save();
             }
@@ -829,7 +830,7 @@ define(['ash',
                 }
                 else
                 {
-                    this.addLogMessage("Nothing to collect yet.");
+                    this.addLogMessage(LogConstants.MSG_ID_USE_COLLECTOR_FAIL, "Nothing to collect yet.");
                 }
                 
                 this.forceResourceBarUpdate();

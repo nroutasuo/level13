@@ -1,6 +1,7 @@
 define([
     'ash',
 	'game/constants/GameConstants',
+	'game/constants/LogConstants',
     'game/constants/PlayerActionConstants',
     'game/constants/PerkConstants',
     'game/constants/CampConstants',
@@ -16,7 +17,7 @@ define([
     'game/components/common/CampComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/LogMessagesComponent',
-], function (Ash, GameConstants, PlayerActionConstants, PerkConstants, CampConstants,
+], function (Ash, GameConstants, LogConstants, PlayerActionConstants, PerkConstants, CampConstants,
 	CampNode, PlayerPositionNode, PlayerLocationNode, NearestCampNode, TribeUpgradesNode,
 	ResourcesComponent,
 	PositionComponent,
@@ -270,7 +271,7 @@ define([
 		log: function (msg) {
 			if (msg) {
 				var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
-				logComponent.addMessage(msg);
+				logComponent.addMessage(LogConstants.MSG_ID_WORKER_STATUS, msg);
 				this.lastMsgTimeStamp = new Date().getTime();
 			}
 		}

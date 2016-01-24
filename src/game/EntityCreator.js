@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/constants/LogConstants',
     'game/constants/PerkConstants',
     'game/constants/ItemConstants',
     'game/constants/PositionConstants',
@@ -40,6 +41,7 @@ define([
     'game/vos/PerkVO',
 ], function (
     Ash,
+    LogConstants,
     PerkConstants,
     ItemConstants,
 	PositionConstants,
@@ -196,7 +198,7 @@ define([
 			perksComponent.addPerk(defaultInjury.clone());
 			
 			var logComponent = entity.get(LogMessagesComponent);
-			logComponent.addMessage("You are alone in a massive dark corridor, far below sunlight.");
+			logComponent.addMessage(LogConstants.MSG_ID_START, "You are alone in a massive dark corridor, far below sunlight.");
 		},
 		
 		syncSector: function (entity) {

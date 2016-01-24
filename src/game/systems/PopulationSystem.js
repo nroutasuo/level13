@@ -1,13 +1,14 @@
 define([
     'ash',
 	'game/constants/GameConstants',
+	'game/constants/LogConstants',
 	'game/constants/CampConstants',
     'game/nodes/sector/CampNode',
     'game/nodes/player/PlayerStatsNode',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/PositionComponent',
     'game/components/common/LogMessagesComponent',
-], function (Ash, GameConstants, CampConstants, CampNode, PlayerStatsNode, SectorImprovementsComponent, PositionComponent, LogMessagesComponent) {
+], function (Ash, GameConstants, LogConstants, CampConstants, CampNode, PlayerStatsNode, SectorImprovementsComponent, PositionComponent, LogMessagesComponent) {
     var PopulationSystem = Ash.System.extend({
 	
         campNodes: null,
@@ -68,7 +69,7 @@ define([
 					if (playerPosition.level === campPosition.level && playerPosition.sectorId() === campPosition.sectorId()) {
 						camp.rumourpoolchecked = false;
 						var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
-						logComponent.addMessage("A stranger shows up.");
+						logComponent.addMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "A stranger shows up.");
 					}
 				}
 			}

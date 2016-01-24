@@ -2,6 +2,7 @@
 define([
     'ash',
     'game/systems/SaveSystem',
+    'game/constants/LogConstants',
     'game/constants/PositionConstants',
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/sector/SectorNode',
@@ -19,6 +20,7 @@ define([
     'game/vos/ResultVO',
 ], function (Ash,
     SaveSystem,
+	LogConstants,
 	PositionConstants,
 	PlayerResourcesNode,
 	SectorNode,
@@ -205,7 +207,7 @@ define([
 		log: function (msg) {
 			if (msg) {
 				var logComponent = this.playerResourcesNodes.head.entity.get(LogMessagesComponent);
-				logComponent.addMessage(msg);
+				logComponent.addMessage(LogConstants.MSG_ID_FAINTED, msg);
 				this.lastMsgTimeStamp = new Date().getTime();
 			}
 		},

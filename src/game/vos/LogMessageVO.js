@@ -2,12 +2,13 @@ define(['ash'], function (Ash) {
     
     var LogMessageVO = Ash.Class.extend({
         
-		constructor: function (message, replacements, values) {
-			this.time = new Date();
+		constructor: function (logMsgID, message, replacements, values) {
+            this.logMsgID = logMsgID;
 			this.message = message;
 			this.replacements = replacements ? replacements : [];
 			this.values = values ? values : [];
 			
+			this.time = new Date();
 			this.loadedFromSave = false;
 			this.combined = 0;
 			this.text = this.createText();
