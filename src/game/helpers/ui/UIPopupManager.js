@@ -27,6 +27,8 @@ function (Ash, UIConstants) {
             
             var popUpManager = this;
             var popup = $("#common-popup");
+            if ($(popup).parent().hasClass("popup-overlay")) $(popup).unwrap();
+            
             $("#common-popup-input-container").toggle(false);
             $("#common-popup h3").text(title);
             $("#common-popup p#common-popup-desc").text(msg);

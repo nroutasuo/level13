@@ -14,6 +14,7 @@ define([
     'game/components/player/PerksComponent',
     'game/components/common/PlayerActionComponent',
     'game/components/common/PositionComponent',
+    'game/components/common/CampComponent',
     'game/components/sector/SectorFeaturesComponent',
 ], function (Ash,
     UIConstants, ItemConstants, FightConstants,
@@ -24,6 +25,7 @@ define([
 	PerksComponent,
 	PlayerActionComponent,
 	PositionComponent,
+    CampComponent,
 	SectorFeaturesComponent
 ) {
     var UIOutHeaderSystem = Ash.System.extend({
@@ -80,6 +82,7 @@ define([
 			if (!this.currentLocationNodes.head) return;
 			
             var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
+			var campComponent = this.currentLocationNodes.head.entity.get(CampComponent);
 			var isInCamp = playerPosition.inCamp;
 			
 			this.updateOverlay();
@@ -87,7 +90,7 @@ define([
 			this.updateGameMsg();
 			this.updateNotifications();
             
-            $("#grid-location-header h1").text(isInCamp ? "camp" : "level " + playerPosition.level);
+            $("#grid-location-header h1").text(isInCamp ? campComponent.getName() : "level " + playerPosition.level);
             $("#grid-tab-header").toggle(this.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.out || isInCamp);
 			
 			if (new Date().getTime() - this.lastUpdateTimeStamp < this.updateFrequency) return;

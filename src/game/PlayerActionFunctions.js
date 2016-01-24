@@ -250,7 +250,6 @@ define(['ash',
             if (campNode && campNode.position.level === playerPos.level && campNode.position.sectorId() === playerPos.sectorId()) {
                 if (!playerPos.inCamp) {
                     playerPos.inCamp = true;
-                    this.uiFunctions.showTab(this.uiFunctions.elementIDs.tabs.in);
                     if (this.resourcesHelper.hasCampStorage()) {
                         this.moveResFromBagToCamp();
                     }
@@ -259,6 +258,7 @@ define(['ash',
                     campNode.entity.add(new LastVisitedCampComponent());
                     
                     if (log) this.addLogMessage(LogConstants.MSG_ID_ENTER_CAMP, "Entered camp.");
+                    this.uiFunctions.showTab(this.uiFunctions.elementIDs.tabs.in);
                     this.playerMovedSignal.dispatch(playerPos);
                     this.forceResourceBarUpdate();
                     this.save();

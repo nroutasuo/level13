@@ -42,11 +42,15 @@ define(['ash', 'game/constants/CampConstants'], function (Ash, CampConstants) {
             this.rumourpool += rumourpoolchange;
         },
         
-        getName: function() {
+        getType: function () {
+            return "Camp";
+        },
+        
+        getName: function () {
             if (this.campName) {
-                return "Camp " + this.campName;
+                return this.getType() + " " + this.campName;
             } else {
-                return "Camp";
+                return this.getType();
             }
         }
     });

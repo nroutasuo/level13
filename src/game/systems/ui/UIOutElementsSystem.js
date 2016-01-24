@@ -286,7 +286,7 @@ define([
             var currentCamp = levelCamp ? levelCamp.entity : null;
             if (currentCamp) {
 				var campComponent = currentCamp.get(CampComponent);
-				$("#switch-tabs #switch-in").text(campComponent.getName());
+				$("#switch-tabs #switch-in").text(campComponent.getType());
 				$("#switch-tabs #switch-in").toggleClass("disabled", !posHasCamp);
 				$("#switch-tabs #switch-world").toggleClass("disabled", !posHasCamp);
             }
