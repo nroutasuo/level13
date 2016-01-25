@@ -948,6 +948,7 @@ define(['ash',
                     this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health;
                     this.playerStatsNodes.head.vision.value = 75;
                     this.playerStatsNodes.head.rumours.value *= 2;
+                    this.playerStatsNodes.head.evidence.value++;
                     this.playerStatsNodes.head.evidence.value *= 2;
                     break;
                 

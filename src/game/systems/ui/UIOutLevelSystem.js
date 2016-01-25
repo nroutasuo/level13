@@ -113,6 +113,7 @@ define([
 		},
 		
 		update: function (time) {
+            $("#switch-out .bubble").toggle(false);
 			if (this.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.out) {
 				this.refreshedEmbark = false;
 				this.refreshedLevel = false;

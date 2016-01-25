@@ -47,7 +47,7 @@ define([
             
             var maxValue = 0;
             var visionPerSec = 0;
-            var accSpeedFactor = Math.max(100 - oldValue, 10) / 100;
+            var accSpeedFactor = Math.max(150 - oldValue, 10) / 100;
             
             vision.accSources = [];
             var addAccumulation = function (sourceName, value) {
@@ -83,13 +83,13 @@ define([
 				var shadeItem = itemsComponent.getEquipped(ItemConstants.itemTypes.shades)[0];
 				if (shadeItem && shadeItem.bonus + maxValueBase > maxValue) {
 					maxValue = shadeItem.bonus + maxValueBase;
-					addAccumulation(shadeItem.name, shadeItem.bonus / 25);
+					addAccumulation(shadeItem.name, shadeItem.bonus / maxValueBase);
 				}
 			} else {
 				var lightItem = itemsComponent.getEquipped(ItemConstants.itemTypes.light)[0];
 				if (lightItem && lightItem.bonus + maxValueBase > maxValue) {
 					maxValue = lightItem.bonus + maxValueBase;
-					addAccumulation(lightItem.name, lightItem.bonus / 25);
+					addAccumulation(lightItem.name, lightItem.bonus / maxValueBase);
 				}
 			}
 			

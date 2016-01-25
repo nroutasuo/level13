@@ -270,6 +270,7 @@ define([
         },
         
         updateTabVisibility: function () {
+            if (!this.playerStatsNodes.head) return;
             var isInCamp = this.playerStatsNodes.head && this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
             var hasMap = this.playerStatsNodes.head.entity.get(ItemsComponent).getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id) > 0;
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-in", null, isInCamp, 200, 0);
@@ -286,7 +287,7 @@ define([
             var currentCamp = levelCamp ? levelCamp.entity : null;
             if (currentCamp) {
 				var campComponent = currentCamp.get(CampComponent);
-				$("#switch-tabs #switch-in").text(campComponent.getType());
+				$("#switch-tabs #switch-in .name").text(campComponent.getType());
 				$("#switch-tabs #switch-in").toggleClass("disabled", !posHasCamp);
 				$("#switch-tabs #switch-world").toggleClass("disabled", !posHasCamp);
             }

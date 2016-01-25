@@ -17,6 +17,11 @@ define([
 		tribeNodes: null,
 		
 		lastUpdateUpgradeCount: 0,
+		
+		currentBlueprints: 0,
+		lastShownBlueprints: 0,
+		currentUpgrades: 0,
+		lastShownUpgrades: 0,
 	
 		constructor: function (uiFunctions, tabChangedSignal, playerActions, upgradeEffectsHelper) {
 			this.uiFunctions = uiFunctions;
@@ -30,6 +35,7 @@ define([
 			this.engine = engine;
 			this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
 			this.lastUpdateUpgradeCount = 0;
+			this.hasNeverBeenOpened = !this.uiFunctions.gameState.unlockedFeatures.upgrades;
 		},
 	
 		removeFromEngine: function (engine) {
@@ -38,34 +44,54 @@ define([
 		},
 	
 		update: function (time) {
-			if (this.uiFunctions.gameState.uiStatus.currentTab != this.uiFunctions.elementIDs.tabs.upgrades) {
-				return;
-			}
+			var isActive = this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.upgrades;
 			
 			var blueprintsShown = $("#blueprints-list tr").length;
-			if (blueprintsShown !== this.tribeNodes.head.upgrades.newBlueprints.length)
-				this.updateUpgradesLists();
+			var listsEmpty = $("#upgrades-list button").length + $("#researched-upgrades-list button").length <= 0;
+			var resetLists = listsEmpty;
+			resetLists = resetLists || blueprintsShown !== this.tribeNodes.head.upgrades.newBlueprints.length;
+			resetLists = resetLists || this.lastUpdateUpgradeCount !== this.tribeNodes.head.upgrades.boughtUpgrades.length;
+			resetLists = resetLists && isActive;
+			this.updateUpgradesLists(isActive, resetLists);
 			$("#world-blueprints").toggle($("#blueprints-list tr").length > 0);
 			
-			var listsEmpty = $("#upgrades-list button").length + $("#researched-upgrades-list button").length <= 0;
-			if (listsEmpty || this.lastUpdateUpgradeCount != this.tribeNodes.head.upgrades.boughtUpgrades.length) {
-				this.updateUpgradesLists();
+			this.updateBubble();
+			
+			if (!isActive) {
+				return;
+			} else {
+				this.hasNeverBeenOpened = false;
 			}
 			
 			$("#tab-header h2").text("Upgrades");
 			$("#world-upgrades-count").toggle(this.lastUpdateUpgradeCount > 0);
 			$("#world-upgrades-count").text("Upgrades researched: " + this.lastUpdateUpgradeCount);
 		},
+        
+        updateBubble: function () {
+			var blueprintsNum = this.currentBlueprints - this.lastShownBlueprints;
+			var upgradesNum = this.currentUpgrades - this.lastShownUpgrades;
+            this.bubbleNumber = blueprintsNum + upgradesNum;
+			if (this.hasNeverBeenOpened) this.bubbleNumber += this.availableUpgrades;
+            $("#switch-upgrades .bubble").text(this.bubbleNumber);
+            $("#switch-upgrades .bubble").toggle(this.bubbleNumber > 0);
+        },
 		
-		updateUpgradesLists: function () {
-			$("#blueprints-list").empty();
-			$("#upgrades-list").empty();
-			$("#researched-upgrades-list").empty();
+		updateUpgradesLists: function (isActive, resetLists) {
+			this.currentBlueprints = 0;
+			this.currentUpgrades = 0;
+			this.availableUpgrades = 0;
+			
+			if (isActive && resetLists) {
+				$("#blueprints-list").empty();
+				$("#upgrades-list").empty();
+				$("#researched-upgrades-list").empty();
+			}
+			
 			var upgradeDefinition;
 			var hasBlueprintUnlocked;
 			var hasBlueprintNew;
 			var isAvailable;
-			var buttonTD;
 			for (var id in UpgradeConstants.upgradeDefinitions) {
 				upgradeDefinition = UpgradeConstants.upgradeDefinitions[id];
 				hasBlueprintUnlocked = this.tribeNodes.head.upgrades.hasAvailableBlueprint(id);
@@ -73,37 +99,52 @@ define([
 				if (!this.tribeNodes.head.upgrades.hasBought(id)) {
 					isAvailable = this.playerActions.playerActionsHelper.checkRequirements(id, false).value > 0;
 					if (hasBlueprintNew || hasBlueprintUnlocked || isAvailable) {
-						var tr = this.getUpgradeTR(upgradeDefinition, isAvailable, hasBlueprintUnlocked, hasBlueprintNew);
-						if (hasBlueprintNew)
-							$("#blueprints-list").append(tr);
-						else
-							$("#upgrades-list").append(tr);
+						if (isActive && resetLists) {
+							var tr = this.getUpgradeTR(upgradeDefinition, isAvailable, hasBlueprintUnlocked, hasBlueprintNew);
+							if (hasBlueprintNew)
+								$("#blueprints-list").append(tr);
+							else
+								$("#upgrades-list").append(tr);
+						}
+						var isResearchable = this.playerActions.playerActionsHelper.checkAvailability(id, false);
+						if (hasBlueprintNew) this.currentBlueprints++;
+						else {
+							if (isResearchable) this.currentUpgrades++;
+							this.availableUpgrades++;
+						}
 					}
 				} else {
-					var nameTD = "<td class='item-name'><span class='upgrade'>" + upgradeDefinition.name + "</span></td>";
-					var descriptionTD = "<td>"+ upgradeDefinition.description +"</td>"
-					var tr = "<tr>" + nameTD + "" + descriptionTD + "</tr>";
-					$("#researched-upgrades-list").append(tr);
+					if (isActive && resetLists) {
+						var nameTD = "<td class='item-name'><span class='upgrade'>" + upgradeDefinition.name + "</span></td>";
+						var descriptionTD = "<td>" + upgradeDefinition.description + "</td>";
+						var tr = "<tr>" + nameTD + "" + descriptionTD + "</tr>";
+						$("#researched-upgrades-list").append(tr);
+					}
 					
 					if (hasBlueprintNew) this.tribeNodes.head.upgrades.useBlueprint(id);
 				}
 			}
 			
-			$("#world-upgrades-info").toggle($("#researched-upgrades-list tr").length > 0);
+			if (resetLists) {
+				$("#world-upgrades-info").toggle($("#researched-upgrades-list tr").length > 0);
 			
-			var playerActions = this.playerActions;
-			$.each($("#upgrades-list button.action"), function () {
-				$(this).click(function () {
-					playerActions.buyUpgrade($(this).attr("action"));
-				})
-			});
+				var playerActions = this.playerActions;
+				$.each($("#upgrades-list button.action"), function () {
+					$(this).click(function () {
+						playerActions.buyUpgrade($(this).attr("action"));
+					})
+				});
+				
+				this.uiFunctions.generateButtonOverlays("#upgrades-list");
+				this.uiFunctions.generateCallouts("#upgrades-list");
+				this.uiFunctions.generateButtonOverlays("#blueprints-list");
+				this.uiFunctions.generateCallouts("#blueprints-list");
+				this.uiFunctions.registerActionButtonListeners("#blueprints-list");
+				this.lastUpdateUpgradeCount = this.tribeNodes.head.upgrades.boughtUpgrades.length;
+			}
 			
-			this.uiFunctions.generateButtonOverlays("#upgrades-list");
-			this.uiFunctions.generateCallouts("#upgrades-list");
-			this.uiFunctions.generateButtonOverlays("#blueprints-list");
-			this.uiFunctions.generateCallouts("#blueprints-list");
-			this.uiFunctions.registerActionButtonListeners("#blueprints-list");
-			this.lastUpdateUpgradeCount = this.tribeNodes.head.upgrades.boughtUpgrades.length;
+			if (isActive) this.lastShownBlueprints = this.currentBlueprints;
+			if (isActive) this.lastShownUpgrades = this.currentUpgrades;
 		},
 		
 		getUpgradeTR: function (upgradeDefinition, isAvailable, hasBlueprintUnlocked, hasBlueprintNew) {

@@ -39,6 +39,16 @@ define([
         playerLocationNodes: null,
         deityNodes: null,
         tribeUpgradesNodes: null,
+        
+        bubbleNumber: 0,
+        visibleBuildingCount: 0,
+        availableBuildingCount: 0,
+        lastShownVisibleBuildingCount: 0,
+        lastShownAvailableBuildingCount: 0,
+        currentEvents: 0,
+        lastShownEvents: 0,
+        currentPopulation: 0,
+        lastShownPopulation: 0,
 
         constructor: function (uiFunctions, tabChangedSignal, gameState, levelHelper, upgradesHelper) {
             this.uiFunctions = uiFunctions;
@@ -66,20 +76,19 @@ define([
         },
 
         update: function (time) {
-            if (this.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.in) {
+            var isActive = this.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.in;
+            var campCount = this.gameState.numCamps;
+            
+            this.updateImprovements(isActive, campCount);
+            this.updateWorkers(isActive);
+            this.updateEvents(isActive);
+            this.updateBubble();
+            
+            if (!isActive) {
                 return;
             }
 	    
-            var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-            var campComponent = null;
-            var campCount = 0;
-            for (var node = this.engine.getNodeList(CampNode).head; node; node = node.next) {
-                if (node.entity.get(PositionComponent).level == this.playerPosNodes.head.position.level) {
-                    campComponent = node.camp;
-                }
-                campCount++;
-            }
-            
+            var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
             if (!campComponent) {
                 console.log("WARN: Camp UI systen active but no camp found.");
                 this.uiFunctions.showTab(this.uiFunctions.elementIDs.tabs.out);
@@ -94,18 +103,29 @@ define([
             // Vis
             // TODO camp vis
                
-            this.updateWorkers();
-            this.updateImprovements(campCount);
-            this.updateEvents();
             this.updateStats();
         },
+        
+        updateBubble: function () {
+            var buildingNum = this.availableBuildingCount - this.lastShownAvailableBuildingCount + this.visibleBuildingCount - this.lastShownVisibleBuildingCount;
+            var eventNum = this.currentEvents - this.lastShownEvents;
+            var populationNum = this.currentPopulation - this.lastShownPopulation;
+            this.bubbleNumber = buildingNum + eventNum + populationNum;
+            $("#switch-in .bubble").text(this.bubbleNumber);
+            $("#switch-in .bubble").toggle(this.bubbleNumber > 0);
+        },
 	
-        updateWorkers: function () {
-            var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+        updateWorkers: function (isActive) {
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
-            var posComponent = this.playerPosNodes.head.position;
             
+            this.currentPopulation = Math.floor(campComponent.population);
+            if (isActive) this.lastShownPopulation = this.currentPopulation;
+            
+            if (!isActive) return;
+            
+            var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+            var posComponent = this.playerPosNodes.head.position;
             var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
             maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
             nextWorkerProgress = (campComponent.population - Math.floor(campComponent.population)) * 100;
@@ -155,35 +175,49 @@ define([
 			$(id).parent().siblings(".in-assign-worker-limit").text(showMax ? " / " + maxWorkers : "");
         },
         
-        updateImprovements: function (campCount) {
+        updateImprovements: function (isActive, campCount) {
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
-            $("#in-improvements-shrine").toggle(this.deityNodes.head != null);
-            $("#in-improvements-trading").toggle(campCount > 1);
-            $("#in-improvements-research").toggle(campCount > 1);
-            $("#in-improvements-market").toggle(hasTradePost);
-            $("#in-improvements-inn").toggle(hasTradePost);
+            var hasDeity = this.deityNodes.head != null;
+            
+            var availableBuildingCount = 0;
+            var visibleBuildingCount = 0;
             
             // TODO performance bottleneck
             var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;
             $.each($("#in-improvements tr"), function () {
                 var actionName = $(this).find("button.action-build").attr("action");
+                var id = $(this).attr("id");
                 if (actionName) {
                     var improvementName = playerActionsHelper.getImprovementNameForAction(actionName);
                     if (improvementName) {
 						var requirementCheck = playerActionsHelper.checkRequirements(actionName, false, null);
                         var actionEnabled = requirementCheck.value >= 1;
+                        var actionAvailable = playerActionsHelper.checkAvailability(actionName, false);
                         var existingImprovements = improvements.getCount(improvementName);
-                        $(this).find(".list-amount").text(existingImprovements);
-                        $(this).find(".action-use").toggle(existingImprovements > 0);
-                        $(this).toggle(actionEnabled || existingImprovements > 0);
+                        if (isActive) {
+                            $(this).find(".list-amount").text(existingImprovements);
+                            $(this).find(".action-use").toggle(existingImprovements > 0);
+                        }
+                        
+                        var commonVisibilityRule = (actionEnabled || existingImprovements > 0);
+                        var specialVisibilityRule = true;
+                        if (id === "in-improvements-shrine") specialVisibilityRule = hasDeity;
+                        if (id === "in-improvements-trading") specialVisibilityRule = campCount > 1;
+                        if (id === "in-improvements-research") specialVisibilityRule = campCount > 1;
+                        if (id === "in-improvements-market") specialVisibilityRule = hasTradePost;
+                        if (id === "in-improvements-inn") specialVisibilityRule = hasTradePost;
+                        var isVisible = specialVisibilityRule && commonVisibilityRule;
+                        $(this).toggle(isVisible);
+                        if (isVisible) visibleBuildingCount++;
+                        if (actionAvailable) availableBuildingCount++;
                     }
                 }
             });
 			
             var perksComponent = this.playerPosNodes.head.entity.get(PerksComponent);
 			var hasHospital = improvements.getCount(improvementNames.hospital) > 0;
-			var isInjured = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury) != 1;
+			var isInjured = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury) !== 1;
 			var isAugmented = perksComponent.hasPerk(PerkConstants.perkIds.healthAugment);
 			var isAugmentAvailable = this.hasUpgrade(this.upgradesHelper.getUpgradeIdsForImprovement(improvementNames.hospital)[0]);
 			$("#btn-use_in_hospital").toggle(hasHospital && (isInjured || isAugmented || !isAugmentAvailable));
@@ -192,42 +226,63 @@ define([
             var numProjectsTR = $("#in-improvements-level table tr").length;
             var projects = this.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity, this.uiFunctions.playerActions);
             var level = this.playerLocationNodes.head.entity.get(PositionComponent).level;
-            if (numProjectsTR !== projects.length) {
-                $("#in-improvements-level table").empty();
-                for (var i = 0; i < projects.length; i++) {
-                    var project = projects[i];
+            var updateTable = isActive && numProjectsTR !== projects.length;
+            if (updateTable) $("#in-improvements-level table").empty();
+            for (var i = 0; i < projects.length; i++) {
+                var project = projects[i];
+                var action = project.action;
+                var sectorEntity = this.levelHelper.getSectorByPosition(project.level, project.position.sectorX, project.position.sectorY);
+                var actionAvailable = playerActionsHelper.checkAvailability(action, false, sectorEntity);
+                if (updateTable) {
+                    var sector = project.level + "." + project.sector + "." + project.direction;
                     var name = project.name;
                     var info = project.name + " on sector " + project.sector + (project.level === level ? "" : " (level " + project.level + ")");
                     var classes = "action action-build action-level-project";
-                    var action = project.action;
-                    var sector = project.level + "." + project.sector + "." + project.direction;
                     var tr = "<tr><td><button class='" + classes + "' action='" + action + "' sector='" + sector + "' + id='btn-" + action + "-" + sector + "'>" + name + "</button></td><td>" + info + "</td></tr>";
                     $("#in-improvements-level table").append(tr);
                 }
+                visibleBuildingCount++;
+                if (actionAvailable) availableBuildingCount++;
+            }
+            if (updateTable) {
                 this.uiFunctions.registerActionButtonListeners("#in-improvements-level");
                 this.uiFunctions.generateButtonOverlays("#in-improvements-level");
                 this.uiFunctions.generateCallouts("#in-improvements-level");
             }
             $("#header-in-improvements-level").toggle(projects.length > 0);
+            
+            this.availableBuildingCount = availableBuildingCount;
+            if (isActive) this.lastShownAvailableBuildingCount = this.availableBuildingCount;
+            this.visibleBuildingCount = visibleBuildingCount
+            if (isActive) this.lastShownVisibleBuildingCount = this.visibleBuildingCount;
         },
     
-        updateEvents: function () {
+        updateEvents: function (isActive) {
             var hasEvents = false;
             var eventTimers = this.playerLocationNodes.head.entity.get(CampEventTimersComponent);
+            this.currentEvents = 0;
             
             // Traders
             var hasTrader = this.playerLocationNodes.head.entity.has(TraderComponent);
-            var isTraderLeaving = hasTrader && eventTimers.getEventTimeLeft(OccurrenceConstants.campOccurrenceTypes.trader) < 5; 
-            hasEvents = hasEvents || hasTrader;
-            $("#in-occurrences-trader").toggle(hasTrader);
-            $("#in-occurrences-trader").toggleClass("event-ending", isTraderLeaving);
+            if (isActive) {
+                var isTraderLeaving = hasTrader && eventTimers.getEventTimeLeft(OccurrenceConstants.campOccurrenceTypes.trader) < 5;
+                hasEvents = hasEvents || hasTrader;
+                $("#in-occurrences-trader").toggle(hasTrader);
+                $("#in-occurrences-trader").toggleClass("event-ending", isTraderLeaving);
+            }
             
             // Raiders
             var hasRaid = this.playerLocationNodes.head.entity.has(RaidComponent);
-            hasEvents = hasEvents || hasRaid;
-            $("#in-occurrences-raid").toggle(hasRaid);
-            $("#in-occurrences-raid").toggleClass("event-ending", hasRaid);
+            if (isActive) {
+                $("#in-occurrences-raid").toggle(hasRaid);
+                $("#in-occurrences-raid").toggleClass("event-ending", hasRaid);
+            }
             
+            if (hasRaid) this.currentEvents++;
+            if (hasTrader) this.currentEvents++;
+            if (isActive) this.lastShownEvents = this.currentEvents;
+            
+            hasEvents = hasEvents || hasRaid;
             $("#in-occurrences-empty").toggle(!hasEvents);
         },
         

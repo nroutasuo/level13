@@ -301,7 +301,7 @@ ul.tabs li.selected {
     background: #aaa;
 }
 
-.collapsible-header, .item-focused .item-count, .progress-bar  {
+.collapsible-header, .item-focused .item-count, .progress-bar {
 	background: #2f322f;
 }
 
@@ -491,6 +491,11 @@ input {
    background-color: #fff;
    color: #202220;
    border: 1px solid #bbb;
+}
+
+.bubble {
+    background-color: #ccc;
+    color: #202220;
 }
 
 
@@ -820,8 +825,8 @@ ul.tabs {
 
 ul.tabs li {
 	display: inline;
-	margin: 0px 2px 0px 0px;
-	padding: 6px 7px;
+	margin: 0px 5px 0px 0px;
+	padding: 6px 10px;
 	border-width: 0px !important;
 	position: relative;
 	top: 2px;
@@ -838,6 +843,19 @@ ul.tabs li.selected {
 
 ul.tabs li:hover, button.btn-meta:hover {
 	text-decoration: underline;
+}
+
+.bubble {
+    position: absolute;
+    top: 5px;
+    right: -8px;
+    border: 1px solid;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+    border-radius: 8px;
+	font-weight: bold;
+    font-size: 80%;
 }
 
 button:active {

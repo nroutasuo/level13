@@ -16,6 +16,12 @@ define([
 		tabChangedSignal: null,
 
 		itemNodes: null,
+		
+		bubbleNumber: 0,
+		craftableItems: -1,
+		lastShownCraftableItems: -1,
+		uniqueItemsCount: -1,
+		lastShownUniqueItemsCount: -1,
 
 		constructor: function (uiFunctions, tabChangedSignal, playerActionsHelper, gameState) {
 			this.gameState = gameState;
@@ -28,10 +34,6 @@ define([
 				system.setSelectedItemLI(null);
 			});
 
-			this.onTabChanged = function () {
-				system.updateCrafting();
-			};
-
 			return this;
 		},
 
@@ -39,8 +41,6 @@ define([
 			this.itemNodes = engine.getNodeList(ItemsNode);
 			this.initButtonListeners();
 			this.setSelectedItemLI(null);
-
-			this.tabChangedSignal.add(this.onTabChanged);
 		},
 
 		initButtonListeners: function () {
@@ -93,9 +93,20 @@ define([
 		},
 
 		update: function (time) {
-			if (this.uiFunctions.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.bag) return;
-
+			var isActive = this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.bag;
 			var itemsComponent = this.itemNodes.head.items;
+            var hasMap = itemsComponent.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id) > 0;
+			var uniqueItems = itemsComponent.getUnique();
+			
+			this.uniqueItemsCount = uniqueItems.length;
+			if (hasMap) this.uniqueItemsCount--;
+			if (isActive || this.lastShownUniqueItemsCount < 0) this.lastShownUniqueItemsCount = this.uniqueItemsCount;
+			
+			this.updateCrafting(isActive);
+			this.updateBubble();
+			
+			if (!isActive) return;
+
 			var selectedItem = itemsComponent.selectedItem;
 
 			// Header
@@ -104,13 +115,21 @@ define([
 
 			// Items, parts and followers
 			var itemsComponent = this.itemNodes.head.items;
-			var uniqueItems = itemsComponent.getUnique();
 			this.updateItems(uniqueItems);
 
 			// Description
 			$("#items-empty").toggle($("#bag-items li").length === 0);
 			this.updateItemDetails(selectedItem, itemsComponent.getCount(selectedItem));
 		},
+        
+        updateBubble: function () {
+			var craftableNum = Math.max(0, this.craftableItems - this.lastShownCraftableItems);
+			var availableCraftableNum = Math.max(0, this.availableCraftableItems - this.lastShownAvailableCraftableItems);
+			var uniqueNum = Math.max(0, this.uniqueItemsCount - this.lastShownUniqueItemsCount);
+            this.bubbleNumber = craftableNum + availableCraftableNum + uniqueNum;
+            $("#switch-bag .bubble").text(this.bubbleNumber);
+            $("#switch-bag .bubble").toggle(this.bubbleNumber > 0);
+        },
 
 		updateItems: function (uniqueItems) {
 			if (uniqueItems.length !== this.lastUpdatedItemsLength) {
@@ -121,9 +140,14 @@ define([
 			}
 		},
 
-		updateCrafting: function () {
-			if (this.uiFunctions.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.bag) return;
-			$("#self-craft table").empty();
+		updateCrafting: function (isActive) {
+			var requiresUpdate = $("#self-craft table tr").length !== this.craftableItems;
+			if (requiresUpdate) $("#self-craft table").empty();
+			
+			this.craftableItems = 0;
+			this.availableCraftableItems = 0;
+			
+			var itemsComponent = this.itemNodes.head.items;
 
 			var itemList;
 			var itemDefinition;
@@ -135,16 +159,26 @@ define([
 					if (itemDefinition.craftable) {
 						var actionName = "craft_" + itemDefinition.id;
 						if (this.playerActionsHelper.checkRequirements(actionName, false).value >= 1) {
-							tr = "<tr><td><button class='action' action='" + actionName + "'>" + itemDefinition.name + "</button></td></tr>";
-							$("#self-craft table").append(tr);
+							var isAvailable = this.playerActionsHelper.checkAvailability(actionName, false);
+							if (requiresUpdate) {
+								tr = "<tr><td><button class='action' action='" + actionName + "'>" + itemDefinition.name + "</button></td></tr>";
+								$("#self-craft table").append(tr);
+							}
+							this.craftableItems++;
+							if (isAvailable && !itemsComponent.contains(itemDefinition.name)) this.availableCraftableItems++;
 						}
 					}
 				}
 			}
 
-			this.uiFunctions.registerActionButtonListeners("#self-craft");
-			this.uiFunctions.generateButtonOverlays("#self-craft");
-			this.uiFunctions.generateCallouts("#self-craft");
+			if (requiresUpdate) {
+				this.uiFunctions.registerActionButtonListeners("#self-craft");
+				this.uiFunctions.generateButtonOverlays("#self-craft");
+				this.uiFunctions.generateCallouts("#self-craft");
+			}
+			
+			if (isActive || this.lastShownCraftableItems < 0) this.lastShownCraftableItems = this.craftableItems;
+			if (isActive || this.lastShownAvailableCraftableItems < 0) this.lastShownAvailableCraftableItems = this.availableCraftableItems;
 		},
 
 		updateItemLists: function () {

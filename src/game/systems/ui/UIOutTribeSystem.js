@@ -46,6 +46,7 @@ define([
         },
 
         update: function (time) {
+            $("#switch-world .bubble").toggle(false);
 			if (this.uiFunctions.gameState.uiStatus.currentTab != this.uiFunctions.elementIDs.tabs.world) {
 				return;
 			}

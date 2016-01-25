@@ -273,6 +273,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
         },
         
         generateElements: function () {
+            this.generateTabBubbles();
             this.generateResourceIndicators();
             this.generateSteppers("body");
             this.generateButtonOverlays("body");
@@ -288,6 +289,10 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                     }
                 }
             });
+        },
+        
+        generateTabBubbles: function () {
+            $("#switch li").append("<div class='bubble'>1</div>");
         },
         
         generateResourceIndicators: function () {
