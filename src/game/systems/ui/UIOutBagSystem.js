@@ -165,7 +165,8 @@ define([
 								$("#self-craft table").append(tr);
 							}
 							this.craftableItems++;
-							if (isAvailable && !itemsComponent.contains(itemDefinition.name)) this.availableCraftableItems++;
+							if (isAvailable && !itemsComponent.contains(itemDefinition.name) && itemsComponent.getCurrentBonus(itemDefinition.type) < itemDefinition.bonus)
+								this.availableCraftableItems++;
 						}
 					}
 				}

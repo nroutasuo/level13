@@ -347,6 +347,9 @@ define([
 			if (resultVO.gainedPopulation) {
 				gainedhtml += "<li>" + resultVO.gainedPopulation + " population</li>";
 			}
+			if (resultVO.gainedBlueprint) {
+				gainedhtml += "<li>a blueprint</li>";
+			}
 			gainedhtml += "</ul>";
 			var hasGainedStuff = gainedhtml.indexOf("<li") > 0;
 			if (hasGainedStuff) div += gainedhtml;

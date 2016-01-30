@@ -30,6 +30,7 @@ define([
         },
 
         update: function (time) {
+            if ($(".popup:visible").length > 0) return;
 			var timeStamp = new Date().getTime();
 			var isTime = timeStamp - this.lastUpdateTimeStamp > this.updateFrequency;
 			var hasNewMessages = false;
@@ -67,6 +68,7 @@ define([
 		},
 	
 		refreshMessages: function (messages) {
+            var animateFromIndex = messages.length - (messages.length - $("#log ul li").length);
 			$("#log ul").empty();
 				
 			var msg;
@@ -81,7 +83,12 @@ define([
 				if (msg.combined > 0) li += '<span class="msg-count"> (x' + (msg.combined + 1) + ")</span>";
 				li += '</span></li>';
 				liMsg = $(li);
-				$( "#log ul" ).prepend(liMsg);
+				$("#log ul").prepend(liMsg);
+                var animate = index >= animateFromIndex;
+                if (animate) {
+                    liMsg.toggle(false);
+                    liMsg.fadeIn(500);
+                }
 			}
 		},
 		
