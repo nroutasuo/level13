@@ -52,11 +52,13 @@ define([
 		},
 
 		updateMap: function () {
-            this.uiMapHelper.rebuildMap("mainmap", "mainmap-fallback", -1, false);
+            var mapPosition = this.playerPosNodes.head.position.getPosition();
+            this.uiMapHelper.rebuildMap("mainmap", "mainmap-fallback", mapPosition, -1, false);
         },
 
 		centerMap: function () {
-            this.uiMapHelper.centerMapToPlayer("mainmap");
+            var mapPosition = this.playerPosNodes.head.position.getPosition();
+            this.uiMapHelper.centerMapToPlayer("mainmap", mapPosition);
         },
         
         updateMapCompletionHint: function () {

@@ -848,7 +848,7 @@ define(['ash',
                 this.improvementBuiltSignal.dispatch();
                 this.forceResourceBarUpdate();                
                 this.save();
-            }            
+            }
         },
         
         assignWorkers: function(scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers) {
@@ -974,11 +974,15 @@ define(['ash',
                     }
 					break;
                 
-                case "pos":                    
+                case "pos":
                     var playerPos = this.playerPositionNodes.head.position;
-                    playerPos.level = parseInt(inputParts[1]);
-                    playerPos.sectorX = parseInt(inputParts[2]);
-                    playerPos.sectorY = parseInt(inputParts[3]);
+                    if (inputParts.length === 1) {
+                        console.log(playerPos);
+                    } else {
+                        playerPos.level = parseInt(inputParts[1]);
+                        playerPos.sectorX = parseInt(inputParts[2]);
+                        playerPos.sectorY = parseInt(inputParts[3]);
+                    }
                     break;
                 
                 case "camp":

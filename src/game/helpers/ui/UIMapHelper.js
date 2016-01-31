@@ -137,79 +137,91 @@ function (Ash,
             var scrollContainer = $("#" + canvasId).parent();
             var maxScrollPosX = Math.max(0, -(scrollContainer.width() - $("#" + canvasId).width()));
             var maxScrollPosY = Math.max(0, -(scrollContainer.height() - $("#" + canvasId).height()));
-            var isScrollEnabled = maxScrollPosY > 0 && maxScrollPosX > 0;
+            var isScrollEnabled = maxScrollPosY > 0 || maxScrollPosX > 0;
             if (!isScrollEnabled && $("#" + canvasId).hasClass("scroll-enabled"))
                 $("#" + canvasId).removeClass("scroll-enabled");
             if (isScrollEnabled && !$("#" + canvasId).hasClass("scroll-enabled"))
                 $("#" + canvasId).addClass("scroll-enabled");
         },
         
-        centerMapToPlayer: function (canvasId) {
+        centerMapToPlayer: function (canvasId, mapPosition) {
             var sectorSize = this.getSectorSize(false);
-            var mapDimensions = this.getMapSectorDimensions(-1, false);
-			var playerPosition = this.playerPosNodes.head.position;
-            var playerPosVO = playerPosition.getPosition();
-            var playerPosX = sectorSize + (playerPosVO.sectorX - mapDimensions.minVisibleX) * sectorSize * 2;
-            var playerPosY = sectorSize + (playerPosVO.sectorY - mapDimensions.minVisibleY) * sectorSize * 2;
+            var mapDimensions = this.getMapSectorDimensions(canvasId, -1, false, mapPosition);
+            var playerPosX = sectorSize + (mapPosition.sectorX - mapDimensions.minVisibleX) * sectorSize * 2;
+            var playerPosY = sectorSize + (mapPosition.sectorY - mapDimensions.minVisibleY) * sectorSize * 2;
             $("#" + canvasId).parent().scrollLeft(playerPosX - $("#" + canvasId).parent().width() * 0.5);
             $("#" + canvasId).parent().scrollTop(playerPosY - $("#" + canvasId).parent().height() * 0.5);
             this.snapScrollPositionToGrid(canvasId);
             this.updateScrollIndicators(canvasId);
         },
         
-        rebuildMap: function (canvasId, fallbackTableId, mapSize, centered) {
+        rebuildMap: function (canvasId, fallbackTableId, mapPosition, mapSize, centered) {
             var canvas = $("#" + canvasId)[0];
-            var ctx = canvas.getContext && canvas.getContext('2d');
+            var ctx = canvas ? canvas.getContext && canvas.getContext('2d') : null;
             
             var visibleSectors = {};
-            var mapDimensions = this.getMapSectorDimensions(mapSize, centered, visibleSectors);
+            var allSectors = {};
+            var mapDimensions = this.getMapSectorDimensions(canvasId, mapSize, centered, mapPosition, visibleSectors, allSectors);
             
             if (ctx) {
-                this.rebuildMapWithCanvas(canvas, ctx, centered, visibleSectors, mapDimensions);
+                this.rebuildMapWithCanvas(mapPosition, canvas, ctx, centered, visibleSectors, allSectors, mapDimensions);
             } else {
                 this.rebuildMapWithFallback(fallbackTableId, centered, visibleSectors, mapDimensions);
             }
         },
         
-        rebuildMapWithCanvas: function (canvas, ctx, centered, visibleSectors, dimensions) {
-			var playerPosition = this.playerPosNodes.head.position;
-            
+        rebuildMapWithCanvas: function (mapPosition, canvas, ctx, centered, visibleSectors, allSectors, dimensions) {
             var sectorSize = this.getSectorSize(centered);
-            var mapWidth = (dimensions.maxVisibleX - dimensions.minVisibleX + 1.5) * sectorSize * 2;
-            var mapHeight = (dimensions.maxVisibleY - dimensions.minVisibleY + 1.5) * sectorSize * 2;
-            var canvasWidth = Math.max(mapWidth, this.getMapMinimumWidth(canvas));
-            var canvasHeight = Math.max(mapHeight, this.getMapMinimumHeight(canvas));
-            ctx.canvas.width = canvasWidth;
-            ctx.canvas.height = canvasHeight;
+            var gridSize = 10;
             
+            ctx.canvas.width = dimensions.canvasWidth;
+            ctx.canvas.height = dimensions.canvasHeight;
             ctx.clearRect(0, 0, canvas.scrollWidth, canvas.scrollWidth);
+            ctx.fillStyle = "#202220";
+            ctx.fillRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
+            
+            // city background
+            var cityBackgroundMinX = this.getSectorPixelPos(dimensions, centered, sectorSize, dimensions.mapMinX, dimensions.mapMinY).x - (centered ? sectorSize : sectorSize / 2);
+            var cityBackgroundMinY = this.getSectorPixelPos(dimensions, centered, sectorSize, dimensions.mapMinX, dimensions.mapMinY).y - (centered ? sectorSize : sectorSize / 2);
+            var cityBackgroundMaxX = cityBackgroundMinX + (dimensions.mapMaxX - dimensions.mapMinX) * sectorSize * 2 + (centered ? sectorSize * 3 : sectorSize * 2);
+            var cityBackgroundMaxY = cityBackgroundMinY + (dimensions.mapMaxY - dimensions.mapMinY) * sectorSize * 2 + (centered ? sectorSize * 3 : sectorSize * 2);
+            ctx.fillStyle = "#282a28";
+            ctx.fillRect(
+                cityBackgroundMinX,
+                cityBackgroundMinY,
+                cityBackgroundMaxX - cityBackgroundMinX,
+                cityBackgroundMaxY - cityBackgroundMinY);
+            
+            this.drawGridOnCanvas(ctx, gridSize, sectorSize, dimensions, centered);
             
             var sector;
             var sectorStatus;
             var sectorXpx;
             var sectorYpx;
             var sectorPos;
+            
+            // sectors and paths
             for (var y = dimensions.minVisibleY; y <= dimensions.maxVisibleY; y++) {
                 for (var x = dimensions.minVisibleX; x <= dimensions.maxVisibleX; x++) {
                     sector = visibleSectors[x + "." + y];
                     sectorStatus = SectorConstants.getSectorStatus(sector);
-                    sectorXpx = sectorSize + (x - dimensions.minVisibleX) * sectorSize * 2;
-                    sectorYpx = sectorSize + (y - dimensions.minVisibleY) * sectorSize * 2;
+                    sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).x
+                    sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
                     
                     if (this.showSectorOnMap(centered, sector, sectorStatus)) {
-                        sectorPos = new PositionVO(playerPosition.level, x, y);
+                        sectorPos = new PositionVO(mapPosition.level, x, y);
                         this.drawSectorOnCanvas(ctx, sector, sectorStatus, sectorXpx, sectorYpx, sectorSize);
-                        this.drawMovementLinesOnCanvas(ctx, sector, sectorPos, sectorXpx, sectorYpx, sectorSize);
+                        this.drawMovementLinesOnCanvas(ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize);
                     }
                 }
             }
                         
             // border on current
-            var playerPosVO = playerPosition.getPosition();
-            sectorXpx = sectorSize + (playerPosVO.sectorX - dimensions.minVisibleX) * sectorSize * 2;
-            sectorYpx = sectorSize + (playerPosVO.sectorY - dimensions.minVisibleY) * sectorSize * 2;
+            var playerPosVO = this.playerPosNodes.head.position.getPosition();
+            sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, playerPosVO.sectorX, playerPosVO.sectorY).x;
+            sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, playerPosVO.sectorX, playerPosVO.sectorY).y;
             ctx.strokeStyle = "#666";
-            ctx.lineWidth = centered ? 2 : 1;
+            ctx.lineWidth = centered ? 3 : 2;
             ctx.beginPath();
             ctx.arc(sectorXpx + sectorSize * 0.5, sectorYpx + 0.5 * sectorSize, sectorSize, 0, 2 * Math.PI);
             ctx.stroke();
@@ -229,10 +241,49 @@ function (Ash,
             
             this.updateScrollEnable($(canvas).attr("id"));
         },
+            
+        getSectorPixelPos: function (dimensions, centered, sectorSize, x, y) {
+            var smallMapOffsetX = Math.max(0, (dimensions.canvasWidth - dimensions.mapWidth) / 2);
+            return {
+                x: sectorSize + (x - dimensions.minVisibleX) * sectorSize * 2 + smallMapOffsetX,
+                y: sectorSize + (y - dimensions.minVisibleY) * sectorSize * 2
+            };
+        },
+        
+        drawGridOnCanvas: function (ctx, gridSize, sectorSize, dimensions, centered) {
+            ctx.strokeStyle = "#343434";
+            ctx.lineWidth = 1;
+            var startGridY = (Math.floor(dimensions.mapMinY / gridSize) - 1) * gridSize;
+            var endGridY = (Math.ceil(dimensions.mapMaxY / gridSize) + 1) * gridSize;
+            var startGridX = (Math.floor(dimensions.mapMinX / gridSize) - 1) * gridSize;
+            var endGridX = (Math.ceil(dimensions.mapMaxX / gridSize) + 1) * gridSize;
+            for (var y = startGridY; y <= endGridY; y += gridSize) {
+                for (var x = startGridX; x <= endGridX; x += gridSize) {
+                    ctx.strokeRect(
+                        this.getSectorPixelPos(dimensions, centered, sectorSize, x - (gridSize - 1 / 2), y - (gridSize - 1 / 2)).x - sectorSize * 0.5,
+                        this.getSectorPixelPos(dimensions, centered, sectorSize, x - (gridSize - 1 / 2), y - (gridSize - 1 / 2)).y - sectorSize * 0.5,
+                        sectorSize * gridSize * 2,
+                        sectorSize * gridSize * 2);
+                }
+            }
+        },
         
         drawSectorOnCanvas: function (ctx, sector, sectorStatus, sectorXpx, sectorYpx, sectorSize) {
             ctx.fillStyle = this.getSectorFill(sectorStatus);
             ctx.fillRect(sectorXpx, sectorYpx, sectorSize, sectorSize);
+            
+            // border for sunlit sectors
+            if (sector.get(SectorFeaturesComponent).sunlit) {
+                ctx.strokeStyle = "#ddee66";
+                ctx.lineWidth = Math.ceil(sectorSize / 8);
+                ctx.beginPath();
+                ctx.moveTo(sectorXpx - 1, sectorYpx - 1);
+                ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx - 1);
+                ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx + sectorSize + 1);
+                ctx.lineTo(sectorXpx - 1, sectorYpx + sectorSize + 1);
+                ctx.lineTo(sectorXpx - 1, sectorYpx - 1);
+                ctx.stroke();
+            }
             
             // sector contents: points of interest
             var sectorPassages = sector.get(PassagesComponent);
@@ -265,20 +316,20 @@ function (Ash,
                     ctx.fillStyle = this.getResourceFill(discoveredResources[r]);
                     ctx.fillRect(sectorXpx + 2 + r * 4, sectorYpx + sectorSize - 5, 3, 3);
                 }
-            }            
+            }
         },
         
-        drawMovementLinesOnCanvas: function (ctx, sector, sectorPos, sectorXpx, sectorYpx, sectorSize) {
+        drawMovementLinesOnCanvas: function (ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize) {
             var sectorPassages = sector.get(PassagesComponent);
             for (var i in PositionConstants.getLevelDirections()) {
                 var direction = PositionConstants.getLevelDirections()[i];
                 var neighbourPos = PositionConstants.getPositionOnPath(sectorPos, direction, 1);
-                var neighbour = this.levelHelper.getSectorByPosition(sectorPos.level, neighbourPos.sectorX, neighbourPos.sectorY);
+                var neighbour = this.levelHelper.getSectorByPosition(mapPosition.level, neighbourPos.sectorX, neighbourPos.sectorY);
                 if (neighbour) {
                     var distX = neighbourPos.sectorX - sectorPos.sectorX;
                     var distY = neighbourPos.sectorY - sectorPos.sectorY;
                     ctx.strokeStyle = "#3a3a3a";
-                    ctx.lineWidth = Math.ceil(sectorSize / 6);
+                    ctx.lineWidth = Math.ceil(sectorSize / 3);
                     ctx.beginPath();
                     ctx.moveTo(sectorXpx + sectorSize * 0.5 + 0.5 * sectorSize * distX, sectorYpx + sectorSize * 0.5 + 0.5 * sectorSize * distY);
                     ctx.lineTo(sectorXpx + sectorSize * 0.5 + 1.5 * sectorSize * distX, sectorYpx + sectorSize * 0.5 + 1.5 * sectorSize * distY);
@@ -330,26 +381,26 @@ function (Ash,
             return sector && sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
         },
         
-        getMapMinimumWidth: function (canvas) {
+        getCanvasMinimumWidth: function (canvas) {
             switch ($(canvas).attr("id")) {
-                case "mainmap": return 50;
+                case "mainmap": return $(canvas).parent().width();
                 case "minimap": return 198;
                 default: return 0;
             }
         },
         
-        getMapMinimumHeight: function (canvas) {
+        getCanvasMinimumHeight: function (canvas) {
             switch ($(canvas).attr("id")) {
-                case "mainmap": return 50;
+                case "mainmap": return 45;
                 case "minimap": return 198;
                 default: return 0;
             }
         },
         
-        getMapSectorDimensions: function (mapSize, centered, visibleSectors) {
-			var playerPosition = this.playerPosNodes.head.position;
-            var level = playerPosition.level;
+        getMapSectorDimensions: function (canvasId, mapSize, centered, mapPosition, visibleSectors, allSectors) {
+            var level = mapPosition.level;
             var levelVO = this.levelHelper.getLevelEntityForPosition(level).get(LevelComponent).levelVO;
+            var sectorSize = this.getSectorSize(centered);
             
             var dimensions = {};
             dimensions.mapMinX = levelVO.minX;
@@ -357,15 +408,20 @@ function (Ash,
             dimensions.mapMinY = levelVO.minY;
             dimensions.mapMaxY = levelVO.maxY;
             
+            dimensions.canvasMinX = levelVO.minX;
+            dimensions.canvasMaxX = levelVO.maxX;
+            dimensions.canvasMinY = levelVO.minY;
+            dimensions.canvasMaxY = levelVO.maxY;
+            
             if (centered) {
                 var levelSize = Math.max(Math.abs(levelVO.minX - levelVO.maxX), Math.abs(levelVO.minY - levelVO.maxY));
                 mapSize = mapSize && mapSize > 0 ? mapSize : levelSize;
                 if (mapSize % 2 === 0) mapSize = mapSize + 1;
                 var mapDiameter = (mapSize - 1) / 2;
-                dimensions.mapMinX = playerPosition.sectorX - mapDiameter;
-                dimensions.mapMaxX = playerPosition.sectorX + mapDiameter;
-                dimensions.mapMinY = playerPosition.sectorY - mapDiameter;
-                dimensions.mapMaxY = playerPosition.sectorY + mapDiameter;
+                dimensions.canvasMinX = mapPosition.sectorX - mapDiameter;
+                dimensions.canvasMaxX = mapPosition.sectorX + mapDiameter;
+                dimensions.canvasMinY = mapPosition.sectorY - mapDiameter;
+                dimensions.canvasMaxY = mapPosition.sectorY + mapDiameter;
             }
 
             var sector;
@@ -377,8 +433,9 @@ function (Ash,
             dimensions.maxVisibleY = dimensions.mapMinY - 1;
             for (var y = dimensions.mapMinY; y <= dimensions.mapMaxY; y++) {
                 for (var x = dimensions.mapMinX; x <= dimensions.mapMaxX; x++) {
-                    sector = this.levelHelper.getSectorByPosition(playerPosition.level, x, y);
+                    sector = this.levelHelper.getSectorByPosition(mapPosition.level, x, y);
                     sectorStatus = SectorConstants.getSectorStatus(sector);
+                    if (allSectors && sector) allSectors[x + "." + y] = sector;
                     // if map is centered, make a tr+td / node for empty sectors too
                     if (centered || this.showSectorOnMap(centered, sector, sectorStatus)) {
                         if (visibleSectors) visibleSectors[x + "." + y] = sector;
@@ -389,6 +446,18 @@ function (Ash,
                     }
                 }
             }
+            
+            dimensions.minVisibleX = Math.max(dimensions.minVisibleX, dimensions.canvasMinX);
+            dimensions.maxVisibleX = Math.min(dimensions.maxVisibleX, dimensions.canvasMaxX);
+            dimensions.minVisibleY = Math.max(dimensions.minVisibleY, dimensions.canvasMinY);
+            dimensions.maxVisibleY = Math.min(dimensions.maxVisibleY, dimensions.canvasMaxY);
+            
+            var canvas = $("#" + canvasId);
+            dimensions.mapWidth = (dimensions.maxVisibleX - dimensions.minVisibleX + (centered ? 1.5 : 1.5)) * sectorSize * 2;
+            dimensions.mapHeight = (dimensions.maxVisibleY - dimensions.minVisibleY + (centered ? 1.5 : 1.5)) * sectorSize * 2;
+            dimensions.canvasWidth = Math.max(dimensions.mapWidth, this.getCanvasMinimumWidth(canvas));
+            dimensions.canvasHeight = Math.max(dimensions.mapHeight, this.getCanvasMinimumHeight(canvas));
+            dimensions.sectorSize = sectorSize;
             
             return dimensions;
         },

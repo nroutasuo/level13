@@ -468,8 +468,9 @@ define([
 		},
 		
 		rebuildVis: function (uiMapHelper) {
+            if (!this.playerLocationNodes.head) return;
             if (!uiMapHelper) uiMapHelper = this.uiMapHelper;
-            uiMapHelper.rebuildMap("minimap", "minimap-fallback", UIConstants.MAP_MINIMAP_SIZE, true);
+            uiMapHelper.rebuildMap("minimap", "minimap-fallback", this.playerLocationNodes.head.position.getPosition(), UIConstants.MAP_MINIMAP_SIZE, true);
 		},
     });
 
