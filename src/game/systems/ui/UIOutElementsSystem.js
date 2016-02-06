@@ -222,7 +222,7 @@ define([
 						
 						if (duration > 0) {
                             if (content.length > 0) content += "<hr/>";
-							content += "<span class='action-duration'>duration: " + duration + "s</span>";
+							content += "<span class='action-duration'>duration: " + Math.round(duration * 100)/100 + "s</span>";
 						}
 						
 						if (injuryRisk > 0 || fightRisk > 0) {

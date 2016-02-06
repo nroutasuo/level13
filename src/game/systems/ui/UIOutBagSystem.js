@@ -158,7 +158,8 @@ define([
 					itemDefinition = itemList[i];
 					if (itemDefinition.craftable) {
 						var actionName = "craft_" + itemDefinition.id;
-						if (this.playerActionsHelper.checkRequirements(actionName, false).value >= 1) {
+						var reqsCheck = this.playerActionsHelper.checkRequirements(actionName, false);
+						if (reqsCheck.value >= 1 || reqsCheck.reason === "Bag full.") {
 							var isAvailable = this.playerActionsHelper.checkAvailability(actionName, false);
 							if (requiresUpdate) {
 								tr = "<tr><td><button class='action' action='" + actionName + "'>" + itemDefinition.name + "</button></td></tr>";

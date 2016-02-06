@@ -767,7 +767,7 @@ define(['ash',
             return false;
         },
         
-        addFollower: function(follower) {
+        addFollower: function (follower) {
             var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
             itemsComponent.addItem(follower);
             this.addLogMessage(LogConstants.MSG_ID_ADD_FOLLOWER, "A wanderer agrees to travel together for awhile.");

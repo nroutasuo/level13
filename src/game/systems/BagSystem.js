@@ -30,6 +30,7 @@ define([
 			var playerBagBonus = playerItems.getCurrentBonus(ItemConstants.itemTypes.bag);
 			
 			playerResources.storageCapacity = Math.max(playerBagBonus, ItemConstants.PLAYER_DEFAULT_STORAGE);
+			playerItems.capacity = Math.max(playerBagBonus, ItemConstants.PLAYER_DEFAULT_STORAGE);
 			
 			this.gameState.unlockedFeatures.bag = playerBagBonus > 0;
 		}

@@ -108,6 +108,7 @@ define([
         checkRequirements: function (action, log, otherSector) {
             var playerVision = this.playerStatsNodes.head.vision.value;
             var playerPerks = this.playerResourcesNodes.head.entity.get(PerksComponent);
+            var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent);
             var deityComponent = this.playerResourcesNodes.head.entity.get(DeityComponent);
             
             var sector = otherSector;
@@ -148,6 +149,14 @@ define([
 					return { value: 0, reason: reason };
 				}
 			}
+            
+            var item = this.getItemForCraftAction(action);
+            if (item) {
+                var count = playerItems.getCountById(item.id);
+                if (playerItems.capacity > 0 && playerItems.capacity < count + 1) {
+                    return { value: 0, reason: "Bag full." };
+                }
+            }
                 
             if (requirements) {
                 if (requirements.vision) {
@@ -447,6 +456,7 @@ define([
                         }
                     }
                 }
+                
                 return { value: lowestFraction, reason: reason };
             }
             
@@ -466,14 +476,14 @@ define([
                         lowestFraction = currentFraction;
                     }
                 }
-                return lowestFraction;                
+                return lowestFraction;
             }
             
             return 1;
         },
         
         // Check if player can afford a cost; returns fraction of the cost the player can cover; >1 means ok
-        checkCost: function(action, name, otherSector) {
+        checkCost: function (action, name, otherSector) {
             var playerVision = this.playerStatsNodes.head.vision.value;
             var playerStamina = this.playerStatsNodes.head.stamina.stamina;
             var playerResources = this.resourcesHelper.getCurrentStorage();
