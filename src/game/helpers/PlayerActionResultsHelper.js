@@ -157,16 +157,30 @@ define([
             if (loseInventoryProbability > Math.random()) {
                 resultVO.lostResources = this.playerResourcesNodes.head.resources.resources.clone();
                 var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAll();
+				var itemLoseProbability;
                 for (var i = 0; i < playerItems.length; i++) {
+					itemLoseProbability = 1;
 					switch (playerItems[i].type) {
 						case ItemConstants.itemTypes.bag:
 						case ItemConstants.itemTypes.uniqueEquipment:
+							itemLoseProbability = 0;
+							break;
+						
+						case ItemConstants.itemTypes.follower:
+							itemLoseProbability = injuryProbability;
+						
+						case ItemConstants.itemTypes.clothing:
+						case ItemConstants.itemTypes.shoes:
+						case ItemConstants.itemTypes.light:
+						case ItemConstants.itemTypes.shades:
+							itemLoseProbability = 0.55;
 							break;
 						
 						default:
-							resultVO.lostItems.push(playerItems[i].clone());
+							itemLoseProbability = 0.95;
 							break;
 					}
+					if (itemLoseProbability > Math.random()) resultVO.lostItems.push(playerItems[i].clone());
                 }
             }
 
@@ -328,7 +342,7 @@ define([
 			var div = "<div class='infobox infobox-temporary'>";
 			
             var gainedhtml = "<span class='listheader'>Gained:</span>";
-            gainedhtml += "<ul class='resultlist'>";			
+            gainedhtml += "<ul class='resultlist'>";
             if (resultVO.gainedResources) {
                 gainedhtml += UIConstants.getResourceList(resultVO.gainedResources);
 			}

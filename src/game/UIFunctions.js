@@ -804,10 +804,12 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
         showInfoPopup: function(title, msg, buttonLabel, resultVO) {
             if (!buttonLabel) buttonLabel = "Continue";
             this.popupManager.showPopup("info-popup", title, msg, buttonLabel, false, resultVO);
+            this.generateCallouts(".popup");
         },
         
         showConfirmation: function(msg, callback) {
             this.popupManager.showPopup("confirmation-popup", "Confirmation", msg, "Confirm", true);
+            this.generateCallouts(".popup");
                   
             var uiFunctions = this;
             $("#confirmation-cancel").click( function(e) {
@@ -821,6 +823,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
         
         showInput: function(msg, defaultValue, callback) {
             this.popupManager.showPopup("input-popup", "Input", msg, "Confirm", true);
+            this.generateCallouts(".popup");
             
             var uiFunctions = this;
             var maxChar = 40;

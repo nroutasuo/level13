@@ -296,6 +296,7 @@ define([
                         false,
                         true,
                         true,
+                        name === resourceNames.food || name === resourceNames.water,
                         resourceUnlocked
                     );
                     if (showResourceAcc) {
@@ -313,6 +314,7 @@ define([
                         false,
                         false,
                         false,
+                        name === resourceNames.food || name === resourceNames.water,
                         resourceUnlocked && (name === "water" || name === "food" || showResources.getResource(name) > 0)
                     );
                     $("#header-bag-storage .value").text(showStorageName);

@@ -759,8 +759,6 @@ define(['ash',
                                 itemsComponent.discardItem(oldFollower);
                                 playerActions.addFollower(follower);
                         });
-                        this.uiFunctions.generateCallouts("#inn-follower-list-join");
-                        this.uiFunctions.generateCallouts("#inn-follower-list-leave");
                     }
                 }
                 this.uiFunctions.completeAction("use_in_inn");

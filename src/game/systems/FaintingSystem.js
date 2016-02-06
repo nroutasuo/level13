@@ -198,8 +198,10 @@ define([
 			playerPosition.level = sectorPosition.level;
 			playerPosition.sectorX = sectorPosition.sectorX;
 			playerPosition.sectorY = sectorPosition.sectorY;
-			if (sector.has(CampComponent)) this.uiFunctions.showTab(this.uiFunctions.elementIDs.tabs.in);
-            
+			if (sector.has(CampComponent)) {
+                this.uiFunctions.playerActions.enterCamp(false);
+                this.uiFunctions.showTab(this.uiFunctions.elementIDs.tabs.in);
+            }
 			this.log(msgLog);
 			this.save();
 		},
