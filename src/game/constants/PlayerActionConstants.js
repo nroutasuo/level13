@@ -1518,6 +1518,11 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
             injuryProbabilities: {
                 scout: 0.005,
                 scavenge: 0.05,
+                despair: 0.7, // TODO make dynamic and link to cases in FaintingSystem
+            },
+            
+            loseInventoryProbabilities: {
+                despair: 0.75, // TODO make dynamic and link to cases in FaintingSystem
             },
         
             descriptions: {
@@ -1530,8 +1535,8 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 fight_gang: "Clear the enemies blocking passage.",
                 move_camp_level: "Shortcut back to the nearest camp.",
                 despair: "Give up. Stop moving. Rest.",
-                build_out_collector_food: "Collect food.",
-                build_out_collector_water: "Collect water.",
+                build_out_collector_food: "Accumulates food.",
+                build_out_collector_water: "Accumulates water.",
                 build_out_camp: "Build a camp here. Choose a good location - only one camp per level.",
                 build_in_house: "A place for people to stay.",
                 build_in_storage: "Increases resource storage.",
@@ -1584,6 +1589,13 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
             getInjuryProbability: function (action) {
                 if (this.injuryProbabilities[action]) {
                     return this.injuryProbabilities[action];
+                }
+                return 0;
+            },
+            
+            getLoseInventoryProbability: function (action) {
+                if (this.loseInventoryProbabilities[action]) {
+                    return this.loseInventoryProbabilities[action];
                 }
                 return 0;
             },

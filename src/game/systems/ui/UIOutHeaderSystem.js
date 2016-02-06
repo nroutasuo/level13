@@ -91,6 +91,7 @@ define([
 			this.updateNotifications();
             
             $("#grid-location-header h1").text(isInCamp ? campComponent.getName() : "level " + playerPosition.level);
+            $("#in-game-date").text(UIConstants.getInGameDate(this.gameState.gamePlayedSeconds));
             $("#grid-tab-header").toggle(this.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.out || isInCamp);
 			
 			if (new Date().getTime() - this.lastUpdateTimeStamp < this.updateFrequency) return;

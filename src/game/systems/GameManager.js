@@ -79,6 +79,7 @@ define([
 		
 		// Called if there is no save to load
 		setupNewGame: function () {
+            this.gameState.gameStartTimeStamp = new Date().getTime();
 			this.creator.initPlayer(this.player);
 		},
 		

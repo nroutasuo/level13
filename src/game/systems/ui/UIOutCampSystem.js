@@ -303,11 +303,15 @@ define([
         },
         
         updateStats: function () {
-			if (!this.playerLocationNodes.head.entity.get(CampComponent)) return;
+            var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+			if (!campComponent) return;
 			
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var soldiers = this.playerLocationNodes.head.entity.get(CampComponent).assignedWorkers.soldier;
 			var raidDanger = Math.round(OccurrenceConstants.getRaidDanger(improvements, soldiers));
+            
+            var inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
+            $("#in-demographics-general-age .value").text(inGameFoundingDate);
 			
 			var showRaid = raidDanger > 0;
 			if (showRaid) {
@@ -316,8 +320,6 @@ define([
 				$("#in-demographics-raid-defence .value").text(raidDefence);
 			}
 			$("#in-demographics-raid").toggle(showRaid);
-			
-			$("#in-demographics").toggle(showRaid);
         },
         
         hasUpgrade: function (upgradeId) {

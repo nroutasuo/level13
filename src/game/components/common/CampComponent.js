@@ -23,7 +23,7 @@ define(['ash', 'game/constants/CampConstants'], function (Ash, CampConstants) {
             return Math.floor(this.population - this.getAssignedPopulation());
         },
         
-        getAssignedPopulation: function() {
+        getAssignedPopulation: function () {
             var assigned = 0;
             for(var key in this.assignedWorkers) {
                 assigned += this.assignedWorkers[key];
@@ -31,7 +31,7 @@ define(['ash', 'game/constants/CampConstants'], function (Ash, CampConstants) {
             return assigned;
         },
         
-        addPopulation: function(value) {
+        addPopulation: function (value) {
             this.population += value;
             this.rumourpool += value * CampConstants.POOL_RUMOURS_PER_POPULATION;
         },

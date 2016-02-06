@@ -10,7 +10,7 @@ define([
     var UpgradeEffectsHelper = Ash.Class.extend({
 		
 		upgradesByWorker: {
-			"weaver": UpgradeConstants.upgradeIds.unlock_worker_rope,
+			"rope-maker": UpgradeConstants.upgradeIds.unlock_worker_rope,
 			"apothecary": UpgradeConstants.upgradeIds.unlock_building_apothecary,
 			"concrete": UpgradeConstants.upgradeIds.unlock_building_cementmill,
 			"smith": UpgradeConstants.upgradeIds.unlock_building_smithy,

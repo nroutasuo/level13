@@ -1,5 +1,6 @@
 // Singleton with helper methods for UI elements used throughout the game
 define(['ash',
+	'game/constants/StoryConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
     'game/components/common/PositionComponent',
@@ -10,7 +11,7 @@ define(['ash',
     'game/components/common/VisitedComponent',
     'game/components/sector/improvements/WorkshopComponent',
 ], function (Ash,
-	PositionConstants, SectorConstants,
+	StoryConstants, PositionConstants, SectorConstants,
 	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
 	PassagesComponent, VisitedComponent, WorkshopComponent) {
     
@@ -237,51 +238,70 @@ define(['ash',
 			var days = hours / 24;
 			
 			if (days > 2) {
-			return Math.floor(days) + "days";
+				return Math.floor(days) + "days";
 			}
 			else if (hours > 2) {
-			return Math.floor(hours) + "h";
+				return Math.floor(hours) + "h";
 			}
 			else if (minutes > 2) {
-			return Math.floor(minutes) + "min";
+				return Math.floor(minutes) + "min";
 			} else {
-			return Math.round(seconds) + "s";		
+				return Math.round(seconds) + "s";
 			}
 		},
 		
-		getTimeSinceText: function(date) {
-			var seconds = Math.floor((new Date() - date) / 1000);	
+		getTimeSinceText: function (date) {
+			var seconds = Math.floor((new Date() - date) / 1000);
+			
 			var interval = Math.floor(seconds / 31536000);
-		
 			if (interval > 1) {
-			return interval + " years";
+				return interval + " years";
 			}
 			interval = Math.floor(seconds / 2592000);
 			if (interval > 1) {
-			return interval + " months";
+				return interval + " months";
 			}
 			interval = Math.floor(seconds / 86400);
 			if (interval > 1) {
-			return interval + " days";
+				return interval + " days";
 			}
 			interval = Math.floor(seconds / 3600);
 			if (interval > 1) {
-			return interval + " hours";
+				return interval + " hours";
 			}
 			interval = Math.floor(seconds / 60);
 			if (interval > 1) {
-			return interval + " minutes";
+				return interval + " minutes";
 			}
-			if (interval == 1) {
-			return interval + " minute";
+			if (interval === 1) {
+				return interval + " minute";
 			}
-			
-			// seconds
 			if (seconds < 10) {
-			return "a few seconds";
+				return "a few seconds";
 			}
 			
 			return "less than a minute";
+		},
+		
+		getInGameDate: function (gamePlayedSeconds) {
+			var secondSinceGameStart = gamePlayedSeconds;
+			var inGameDaysSinceGameStart = Math.floor(secondSinceGameStart / 86400 * 365);
+			var inGameWeeksSinceGameStart = inGameDaysSinceGameStart / 40;
+			
+			var year = StoryConstants.GAME_START_YEAR;
+			var week = StoryConstants.GAME_START_WEEK;
+			if (inGameWeeksSinceGameStart < 40 - StoryConstants.GAME_START_WEEK) {
+				week += inGameWeeksSinceGameStart;
+			} else {
+				var weeksSinceFirstNewYear = inGameWeeksSinceGameStart - (40 - StoryConstants.GAME_START_WEEK);
+				week = weeksSinceFirstNewYear - (Math.floor(weeksSinceFirstNewYear / 40) * 40) + 1;
+				year += 1 + (weeksSinceFirstNewYear) / 40;
+			}
+			
+			year = Math.floor(year);
+			week = Math.floor(week);
+			
+			return "Y" + year + "-N" + week;
 		},
 		
 		getResourceImg: function (name) {

@@ -905,6 +905,10 @@ button.context {
 	float: right;
 }
 
+#in-game-date {
+    float: right;
+}
+
 button.btn-wide {
 	width: 110pt;
 }
