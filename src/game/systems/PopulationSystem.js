@@ -14,15 +14,14 @@ define([
         campNodes: null,
         playerNodes: null,
 		
-		populationCooldownSecondsMin: 30,
 		lastPopulationIncreaseTimestamps: [],
 
         constructor: function () {
         },
 
         addToEngine: function (engine) {
-            this.campNodes = engine.getNodeList( CampNode );
-            this.playerNodes = engine.getNodeList( PlayerStatsNode );
+            this.campNodes = engine.getNodeList(CampNode);
+            this.playerNodes = engine.getNodeList(PlayerStatsNode);
         },
 
         removeFromEngine: function (engine) {
@@ -43,15 +42,16 @@ define([
 			var campPosition = node.entity.get(PositionComponent);
 			var level = campPosition.level;
 			
-			var populationBonus = Math.max(1 + reputation/10-Math.floor(camp.population), 0)/5;
-			var changePerSec = populationBonus + reputation/2000 * GameConstants.gameSpeed;
+			var changePerSec = reputation / (camp.population * camp.population * camp.population * camp.population * camp.population + 1) / 25 * GameConstants.gameSpeed;
 			var change = time * changePerSec;
+            camp.populationChangePerSec = changePerSec;
 			
 			var timeStamp = new Date().getTime();
+            var cooldownMillis = CampConstants.POPULATION_COOLDOWN_SECONDS * 1000 * GameConstants.gameSpeed;
 			var lastIncreaseTimeStamp = this.lastPopulationIncreaseTimestamps[level] ? this.lastPopulationIncreaseTimestamps[level] : 0;
-			var isPopulationCooldown  = timeStamp - lastIncreaseTimeStamp < this.populationCooldownSecondsMin * 1000 * GameConstants.gameSpeed;
+            camp.populationCooldownSec = Math.max(0, (cooldownMillis - (timeStamp - lastIncreaseTimeStamp)) / 1000);
 			
-			if (!isPopulationCooldown) {
+			if (camp.populationCooldownSec === 0) {
 				var oldPopulation = camp.population;
 				var housingCap = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
 				housingCap += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
@@ -66,13 +66,13 @@ define([
 				var playerPosition = this.playerNodes.head.entity.get(PositionComponent);
 				if (Math.floor(camp.population) > Math.floor(oldPopulation)) {
 					this.lastPopulationIncreaseTimestamps[level] = new Date().getTime();
+					camp.rumourpoolchecked = false;
 					if (playerPosition.level === campPosition.level && playerPosition.sectorId() === campPosition.sectorId()) {
-						camp.rumourpoolchecked = false;
 						var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
 						logComponent.addMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "A stranger shows up.");
 					}
 				}
-			}
+            }
         }
     });
 

@@ -130,19 +130,21 @@ define([
             var posComponent = this.playerPosNodes.head.position;
             var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
             maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
-            nextWorkerProgress = (campComponent.population - Math.floor(campComponent.population)) * 100;
             var freePopulation = campComponent.getFreePopulation();
             var isPopulationMaxed = campComponent.population >= maxPopulation;
             $("#in-population h3").text("Population: " + Math.floor(campComponent.population) + " / " + (maxPopulation));
             $("#in-population p#in-population-status").text("Free workers: " + freePopulation);
             if (!isPopulationMaxed) {
+                var populationToNextWorker = 1 - (campComponent.population - Math.floor(campComponent.population));
+                var populationChangePerSec = campComponent.populationChangePerSec;
+                var secondsToNextWorker = populationToNextWorker / populationChangePerSec + campComponent.populationCooldownSec;
+                var nextWorkerProgress = (1 - populationToNextWorker) * 100;
                 $("#in-population-bar-next").data("progress-percent", nextWorkerProgress);
-                // TODO show time to next worker in min/s
-                $("#in-population-bar-next .progress-label").text(Math.round(nextWorkerProgress) + "%");
+                $("#in-population-bar-next .progress-label").text(UIConstants.getTimeToNum(secondsToNextWorker));
                 $("#in-population-bar-next").data("animation-length", 500);
             }
-            this.uiFunctions.slideToggleIf("#in-population-bar-next", null, campComponent.population >= 1 && !isPopulationMaxed, 200, 200);
-            this.uiFunctions.slideToggleIf("#in-population-next", null, campComponent.population >= 1 && !isPopulationMaxed, 200, 200);
+            this.uiFunctions.slideToggleIf("#in-population-bar-next", null, campComponent.population > 0 && !isPopulationMaxed, 200, 200);
+            this.uiFunctions.slideToggleIf("#in-population-next", null, campComponent.population > 0 && !isPopulationMaxed, 200, 200);
             this.uiFunctions.slideToggleIf("#in-population-status", null, campComponent.population >= 1, 200, 200);
             this.uiFunctions.slideToggleIf("#in-assign-workers", null, campComponent.population >= 1, 200, 200);
             
