@@ -31,7 +31,7 @@ function (Ash, UIConstants) {
             
             $("#common-popup-input-container").toggle(false);
             $("#common-popup h3").text(title);
-            $("#common-popup p#common-popup-desc").text(msg);
+            $("#common-popup p#common-popup-desc").html(msg);
             
             var hasResult = typeof resultVO !== 'undefined';
             $("#info-results").toggle(hasResult);

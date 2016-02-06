@@ -724,7 +724,7 @@ define(['ash',
         },
         
         useInn: function (auto) {
-            if (this.playerActionsHelper.checkAvailability("use_in_inn", true)) {                
+            if (this.playerActionsHelper.checkAvailability("use_in_inn", true)) {
                 // TODO add varied results depending on follower
                 var sector = this.playerLocationNodes.head.entity;
                 var positionComponent = sector.get(PositionComponent);
@@ -754,7 +754,7 @@ define(['ash',
                             "<ul class='resultlist' id='inn-follower-list-join'>" + newFollowerLi + "</ul><br/>" +
                             "Leaving:<br/>" +
                             "<ul class='resultlist' id='inn-follower-list-leave'>" + oldFollowerLi + "</ul><br/>",
-                            function() {
+                            function () {
                                 playerActions.playerActionsHelper.deductCosts("use_in_inn");
                                 itemsComponent.discardItem(oldFollower);
                                 playerActions.addFollower(follower);
@@ -1085,6 +1085,10 @@ define(['ash',
                     } else {
                         console.log("WARN: No such perk: " + perkID);
                     }
+                    break;
+                
+                case "resetcooldowns":
+                    this.gameState.actionCooldownEndTimestamps = {};
                     break;
                 
                 case "printLevel":
