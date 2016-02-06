@@ -408,7 +408,7 @@ define(['ash',
                     var currentTools = currentStorage.resources.getResource(resourceNames.tools);
                     var maxStorage = currentStorage.storageCapacity;
                     
-                    var canRope = this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("weaver"));
+                    var canRope = this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("rope-maker"));
                     var maxApothecaries = improvementsComponent.getCount(improvementNames.apothecary) * CampConstants.APOTECARIES_PER_SHOP;
                     var maxConcrete = improvementsComponent.getCount(improvementNames.cementmill) * CampConstants.CONCRETE_WORKERS_PER_MILL;
                     var maxSmiths = improvementsComponent.getCount(improvementNames.smithy) * CampConstants.SMIHTS_PER_SMITHY;

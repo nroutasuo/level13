@@ -148,7 +148,7 @@ define([
             this.uiFunctions.slideToggleIf("#in-population-status", null, campComponent.population >= 1, 200, 200);
             this.uiFunctions.slideToggleIf("#in-assign-workers", null, campComponent.population >= 1, 200, 200);
             
-            $("#in-assign-weaver").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("weaver")));
+            $("#in-assign-weaver").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("rope-maker")));
             $("#in-assign-chemist").toggle(this.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel) > 0);
             $("#in-assign-apothecary").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("apothecary")));
             $("#in-assign-concrete").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("concrete")));
