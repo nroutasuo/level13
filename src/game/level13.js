@@ -46,6 +46,7 @@ define([
     'game/helpers/FightHelper',
     'game/helpers/LevelHelper',
     'game/helpers/SectorHelper',
+    'game/helpers/CampHelper',
     'game/helpers/SaveHelper',
     'game/helpers/UpgradeEffectsHelper',
     'game/helpers/ui/UIMapHelper',
@@ -98,6 +99,7 @@ define([
     FightHelper,
     LevelHelper,
     SectorHelper,
+    CampHelper,
     SaveHelper,
     UpgradeEffectsHelper,
     UIMapHelper,
@@ -130,13 +132,14 @@ define([
 			// Singleton helper modules to be passed to systems that need them
 			this.resourcesHelper = new ResourcesHelper(this.engine);
 			this.playerActionsHelper = new PlayerActionsHelper(this.engine, this.gameState, this.resourcesHelper);
+			this.upgradeEffectsHelper = new UpgradeEffectsHelper(this.playerActionsHelper);
 			this.fightHelper = new FightHelper(this.engine, this.playerActionsHelper);
 			this.levelHelper = new LevelHelper(this.engine, this.gameState, this.playerActionsHelper);
 			this.sectorHelper = new SectorHelper(this.engine);
+			this.campHelper = new CampHelper(this.engine, this.upgradeEffectsHelper);
 			this.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine, this.gameState, this.resourcesHelper, this.levelHelper);
 			this.movementHelper = new MovementHelper(this.engine);
 			this.saveHelper = new SaveHelper();
-			this.upgradeEffectsHelper = new UpgradeEffectsHelper(this.playerActionsHelper);
             this.uiMapHelper = new UIMapHelper(this.engine, this.levelHelper, this.sectorHelper, this.movementHelper);
 			
 			// Basic building blocks & special systems
@@ -180,7 +183,7 @@ define([
 			this.engine.addSystem(new CollectorSystem(), SystemPriorities.update);
 			this.engine.addSystem(new FightSystem(this.gameState, this.resourcesHelper, this.levelHelper, this.playerActionResultsHelper, this.playerActionsHelper, this.occurrenceFunctions), SystemPriorities.update);
 			this.engine.addSystem(new PopulationSystem(), SystemPriorities.update);
-			this.engine.addSystem(new WorkerSystem(this.resourcesHelper, this.upgradeEffectsHelper), SystemPriorities.update);
+			this.engine.addSystem(new WorkerSystem(this.resourcesHelper, this.campHelper), SystemPriorities.update);
 			this.engine.addSystem(new FaintingSystem(this.uiFunctions, this.playerActionFunctions, this.playerActionResultsHelper), SystemPriorities.update);
 			this.engine.addSystem(new ReputationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new RumourSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
@@ -197,7 +200,7 @@ define([
 			this.engine.addSystem(new UIOutHeaderSystem(this.uiFunctions, this.gameState, this.resourcesHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutElementsSystem(this.uiFunctions, this.gameState, this.playerActionFunctions, this.resourcesHelper, this.levelHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLevelSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.movementHelper, this.resourcesHelper, this.sectorHelper, this.levelHelper, this.uiMapHelper, this.playerMovedSignal), SystemPriorities.render);
-			this.engine.addSystem(new UIOutCampSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.levelHelper, this.upgradeEffectsHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutCampSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.levelHelper, this.upgradeEffectsHelper, this.campHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutBagSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionsHelper, this.gameState), SystemPriorities.render);
 			this.engine.addSystem(new UIOutMapSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.uiMapHelper, this.levelHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutUpgradesSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionFunctions, this.upgradeEffectsHelper), SystemPriorities.render);

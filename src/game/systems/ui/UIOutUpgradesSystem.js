@@ -48,7 +48,7 @@ define([
 			
 			var blueprintsShown = $("#blueprints-list tr").length;
 			var listsEmpty = $("#upgrades-list button").length + $("#researched-upgrades-list button").length <= 0;
-			var resetLists = listsEmpty;
+			var resetLists = false;
 			resetLists = resetLists || blueprintsShown !== this.tribeNodes.head.upgrades.newBlueprints.length;
 			resetLists = resetLists || this.lastUpdateUpgradeCount !== this.tribeNodes.head.upgrades.boughtUpgrades.length;
 			resetLists = resetLists && isActive;

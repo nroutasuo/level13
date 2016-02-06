@@ -222,8 +222,11 @@ define(['ash',
 			this.updateCalloutContent(id, content);
 		},
 		
-		updateCalloutContent: function (targetElementId, content) {
-			$(targetElementId).parents(".info-callout-target").siblings(".info-callout").children(".info-callout-content").html(content);
+		updateCalloutContent: function (targetElementId, content, isTargetDirect) {
+			if (isTargetDirect)
+				$(targetElementId).siblings(".info-callout").children(".info-callout-content").html(content);
+			else
+				$(targetElementId).parents(".info-callout-target").siblings(".info-callout").children(".info-callout-content").html(content);
 		},
 		
 		getTimeToNum: function (seconds) {

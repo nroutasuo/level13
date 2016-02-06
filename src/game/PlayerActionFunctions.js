@@ -10,6 +10,7 @@ define(['ash',
 	'game/constants/PerkConstants',
 	'game/constants/FightConstants',
 	'game/constants/EnemyConstants',
+	'game/constants/UpgradeConstants',
 	'game/constants/UIConstants',
 	'game/constants/TextConstants',
 	'game/nodes/PlayerPositionNode',
@@ -24,6 +25,7 @@ define(['ash',
 	'game/components/common/ResourcesComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PerksComponent',
+	'game/components/player/DeityComponent',
 	'game/components/player/AutoPlayComponent',
 	'game/components/common/PlayerActionComponent',
     'game/components/common/CampComponent',
@@ -45,11 +47,11 @@ define(['ash',
 	'game/worldcreator/WorldCreator',
 	'game/worldcreator/WorldCreatorDebug'
 ], function (Ash,
-	GameConstants, LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UIConstants, TextConstants,
+	GameConstants, LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UpgradeConstants, UIConstants, TextConstants,
 	PlayerPositionNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
-	ItemsComponent, PerksComponent, AutoPlayComponent, PlayerActionComponent,
+	ItemsComponent, PerksComponent, DeityComponent, AutoPlayComponent, PlayerActionComponent,
 	CampComponent, SectorImprovementsComponent, EnemiesComponent,
 	SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, CampEventTimersComponent,
@@ -855,7 +857,7 @@ define(['ash',
             var camp = null;
 			for (var node = this.engine.getNodeList(CampNode).head; node; node = node.next) {
                 if (node.entity.get(PositionComponent).level == this.playerPositionNodes.head.position.level) {
-                    camp = node.camp;    
+                    camp = node.camp;
                 }
             }
             
@@ -947,10 +949,26 @@ define(['ash',
                 case "stat":                    
                     this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health;
                     this.playerStatsNodes.head.vision.value = 75;
+                    this.playerStatsNodes.head.rumours.value = Math.max(this.playerStatsNodes.head.rumours.value, 0);
+                    this.playerStatsNodes.head.rumours.value++;
                     this.playerStatsNodes.head.rumours.value *= 2;
                     this.playerStatsNodes.head.evidence.value++;
                     this.playerStatsNodes.head.evidence.value *= 2;
                     break;
+                
+                case "deity":
+                    var name = inputParts[1];
+                    this.playerStatsNodes.head.entity.add(new DeityComponent(name));
+                    break;
+                
+                case "favour":
+                    if (this.playerStatsNodes.head.entity.get(DeityComponent)) {
+                        this.gameState.unlockedFeatures.favour = true;
+                        this.playerStatsNodes.head.entity.get(DeityComponent).favour++;
+                        this.playerStatsNodes.head.entity.get(DeityComponent).favour *= 2;
+                    } else {
+                        console.log("WARN: No deity.");
+                    }
                 
                 case "vision":                    
                     this.playerStatsNodes.head.vision.value = parseInt(inputParts[1]);
@@ -1036,7 +1054,12 @@ define(['ash',
                 
                 case "tech":
                     var name = inputParts[1];
-                    this.buyUpgrade(name, true);
+                    if (name !== "all")
+                        this.buyUpgrade(name, true);
+                    else
+                        for (var id in UpgradeConstants.upgradeDefinitions) {
+                            this.buyUpgrade(id, true);
+                        }
                     break;
                 
                 case "item":

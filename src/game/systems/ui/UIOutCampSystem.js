@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/constants/UIConstants',
     'game/constants/UpgradeConstants',
     'game/constants/OccurrenceConstants',
     'game/constants/CampConstants',
@@ -19,7 +20,7 @@ define([
     'game/components/sector/events/TraderComponent',
     'game/components/sector/events/RaidComponent',
 ], function (
-    Ash, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants,
+    Ash, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants,
     PlayerPositionNode, PlayerLocationNode, CampNode, DeityNode, TribeUpgradesNode,
     PerksComponent,
 	SectorFeaturesComponent, PositionComponent,
@@ -50,12 +51,13 @@ define([
         currentPopulation: 0,
         lastShownPopulation: 0,
 
-        constructor: function (uiFunctions, tabChangedSignal, gameState, levelHelper, upgradesHelper) {
+        constructor: function (uiFunctions, tabChangedSignal, gameState, levelHelper, upgradesHelper, campHelper) {
             this.uiFunctions = uiFunctions;
 			this.tabChangedSignal = tabChangedSignal;
             this.gameState = gameState;
             this.levelHelper = levelHelper;
 			this.upgradesHelper = upgradesHelper;
+            this.campHelper = campHelper;
             return this;
         },
 
@@ -150,6 +152,18 @@ define([
             $("#in-assign-concrete").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("concrete")));
             $("#in-assign-smith").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("smith")));
             $("#in-assign-soldier").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("soldier")));
+            
+            var workerConsumptionS = "<br/><span class='warning'>water -" + this.campHelper.getWaterConsumptionPerSecond(1) + "/s</span>" +
+                "<br/><span class='warning'>food -" + this.campHelper.getFoodConsumptionPerSecond(1) + "/s</span>";
+            UIConstants.updateCalloutContent("#in-assign-water .info-callout-target", "water +" + this.campHelper.getWaterProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-scavenger .info-callout-target", "metal +" + this.campHelper.getMetalProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-trapper .info-callout-target", "food +" + this.campHelper.getFoodProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-weaver .info-callout-target", "rope +" + this.campHelper.getRopeProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-chemist .info-callout-target", "fuel +" + this.campHelper.getFuelProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-apothecary .info-callout-target", "medicine +" + this.campHelper.getMedicineProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>herbs -" + this.campHelper.getHerbsConsumptionPerSecond(1) + "/s</span>", true);
+            UIConstants.updateCalloutContent("#in-assign-concrete .info-callout-target", "concrete +" + this.campHelper.getConcreteProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>metal -" + this.campHelper.getMetalConsumptionPerSecondConcrete(1) + "/s</span>", true);
+            UIConstants.updateCalloutContent("#in-assign-smith .info-callout-target", "tools +" + this.campHelper.getToolsProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>metal -" + this.campHelper.getMetalConsumptionPerSecondSmith(1) + "/s</span>", true);
+            UIConstants.updateCalloutContent("#in-assign-soldier .info-callout-target", "camp defence +1" + workerConsumptionS, true);
             
             var maxApothecaries = improvements.getCount(improvementNames.apothecary) * CampConstants.APOTECARIES_PER_SHOP;
             var maxConcrete = improvements.getCount(improvementNames.cementmill) * CampConstants.CONCRETE_WORKERS_PER_MILL;

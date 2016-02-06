@@ -9,7 +9,6 @@ define([
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/NearestCampNode',
-    'game/nodes/tribe/TribeUpgradesNode',
     'game/components/common/ResourcesComponent',
     'game/components/common/PositionComponent',
     'game/components/common/ResourceAccumulationComponent',
@@ -18,7 +17,7 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/LogMessagesComponent',
 ], function (Ash, GameConstants, LogConstants, PlayerActionConstants, PerkConstants, CampConstants,
-	CampNode, PlayerPositionNode, PlayerLocationNode, NearestCampNode, TribeUpgradesNode,
+	CampNode, PlayerPositionNode, PlayerLocationNode, NearestCampNode,
 	ResourcesComponent,
 	PositionComponent,
 	ResourceAccumulationComponent,
@@ -35,14 +34,14 @@ define([
         nearestCampNodes: null,
 	
 		resourcesHelper: null,
-		upgradeEffectsHelper: null,
+		campHelper: null,
 	
 		lastMsgTimeStamp: 0,
 		msgFrequency: 1000 * 120,
 
-        constructor: function (resourcesHelper, upgradeEffectsHelper) {
+        constructor: function (resourcesHelper, campHelper) {
 		    this.resourcesHelper = resourcesHelper;
-			this.upgradeEffectsHelper = upgradeEffectsHelper;
+            this.campHelper = campHelper;
         },
 
         addToEngine: function (engine) {
@@ -50,7 +49,6 @@ define([
             this.playerNodes = engine.getNodeList(PlayerPositionNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             this.nearestCampNodes = engine.getNodeList(NearestCampNode);
-            this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
         },
 
         removeFromEngine: function (engine) {
@@ -58,7 +56,6 @@ define([
             this.playerNodes = null;
 			this.playerLocationNodes = null;
             this.nearestCampNodes = null;
-            this.tribeUpgradesNodes = null;
         },
 
         update: function (time) {
@@ -83,42 +80,35 @@ define([
 			var improvementsComponent = node.entity.get(SectorImprovementsComponent);
 			
 			// Basic: Scavengers
-			var metalUpgradeBonus = this.getUpgradeBonus("scavenger");
-			var metal = camp.assignedWorkers.scavenger * time * CampConstants.PRODUCTION_METAL_PER_WORKER_PER_S * metalUpgradeBonus * GameConstants.gameSpeed;
+			var metal = time * this.campHelper.getMetalProductionPerSecond(camp.assignedWorkers.scavenger, improvementsComponent);
 			resources.addResource(resourceNames.metal, metal);
 			resourceAccComponent.addChange(resourceNames.metal, metal / time, "Scavengers");
 			
 			// Basic: Trappers
-			var foodUpgradeBonus = this.getUpgradeBonus("trapper");
-			var food = camp.assignedWorkers.trapper * time * CampConstants.PRODUCTION_FOOD_PER_WORKER_PER_S * foodUpgradeBonus * GameConstants.gameSpeed;
+			var food = time * this.campHelper.getFoodProductionPerSecond(camp.assignedWorkers.trapper, improvementsComponent);
 			resources.addResource(resourceNames.food, food);
 			resourceAccComponent.addChange(resourceNames.food, food / time, "Trappers");
 			
 			// Basic: Water collectors
-			var waterUpgradeBonus = this.getUpgradeBonus("collector");
-			var waterImprovementBonus = 1 + (improvementsComponent.getCount(improvementNames.aqueduct) / 4);
-			var water = camp.assignedWorkers.water * CampConstants.PRODUCTION_WATER_PER_WORKER_PER_S * time * waterUpgradeBonus * waterImprovementBonus * GameConstants.gameSpeed;
+			var water = time * this.campHelper.getWaterProductionPerSecond(camp.assignedWorkers.water, improvementsComponent);
 			resources.addResource(resourceNames.water, water);
 			resourceAccComponent.addChange(resourceNames.water, water / time, "Collectors");
 			
 			// Basic: Rope-makers
-			var ropeUpgradeBonus = this.getUpgradeBonus("weaver");
-			var rope = camp.assignedWorkers.ropemaker * CampConstants.PRODUCTION_ROPE_PER_WORKER_PER_S * time * ropeUpgradeBonus * GameConstants.gameSpeed;
+            var rope = time * this.campHelper.getRopeProductionPerSecond(camp.assignedWorkers.ropemaker, improvementsComponent);
 			resources.addResource(resourceNames.rope, rope);
 			resourceAccComponent.addChange(resourceNames.rope, rope / time, "Rope-makers");
 			
 			// Workshop: Chemists
-			var fuelUpgradeBonus = this.getUpgradeBonus("chemist");
-			var fuel = camp.assignedWorkers.chemist * CampConstants.PRODUCTION_FUEL_PER_WORKER_PER_S * time * fuelUpgradeBonus * GameConstants.gameSpeed;
+            var fuel = time * this.campHelper.getFuelProductionPerSecond(camp.assignedWorkers.chemist, improvementsComponent);
 			resources.addResource(resourceNames.fuel, fuel);
 			resourceAccComponent.addChange(resourceNames.fuel, fuel / time, "Chemists");
 			
 			// Advanced: Apothecaries
-			var herbsRequired = camp.assignedWorkers.apothecary * CampConstants.CONSUMPTION_HERBS_PER_WORKER_PER_S * time * GameConstants.gameSpeed;
+			var herbsRequired = time * this.campHelper.getHerbsConsumptionPerSecond(camp.assignedWorkers.apothecary);
 			if (herbsRequired > 0) {
 				var herbsUsed = Math.min(resources.getResource(resourceNames.herbs), herbsRequired);
-				var medicineUpgradeBonus = this.getUpgradeBonus("apothecary");
-				var medicine = (herbsUsed/herbsRequired) * camp.assignedWorkers.apothecary * CampConstants.PRODUCTION_MEDICINE_PER_WORKER_PER_S * time * medicineUpgradeBonus * GameConstants.gameSpeed;
+				var medicine = time * (herbsUsed / herbsRequired) * this.campHelper.getMedicineProductionPerSecond(camp.assignedWorkers.apothecary, improvementsComponent);
 				resources.addResource(resourceNames.medicine, medicine);
 				resources.addResource(resourceNames.herbs, -herbsUsed);
 				resourceAccComponent.addChange(resourceNames.medicine, medicine / time, "Apothecaries");
@@ -126,11 +116,10 @@ define([
 			}
 			
 			// Advanced: Toolsmiths
-			var metalRequiredTools = camp.assignedWorkers.toolsmith * CampConstants.CONSUMPTION_METAL_PER_TOOLSMITH_PER_S * time * GameConstants.gameSpeed;
+			var metalRequiredTools = time * this.campHelper.getMetalConsumptionPerSecondSmith(camp.assignedWorkers.toolsmith);
 			if (metalRequiredTools > 0) {
 				var metalUsedTools = Math.min(resources.getResource(resourceNames.metal), metalRequiredTools);
-				var toolsUpgradeBonus = this.getUpgradeBonus("smith");
-				var tools = (metalUsedTools / metalRequiredTools) * camp.assignedWorkers.toolsmith * CampConstants.PRODUCTION_TOOLS_PER_WORKER_PER_S * time * toolsUpgradeBonus * GameConstants.gameSpeed;
+                var tools = time * (metalUsedTools / metalRequiredTools) * this.campHelper.getToolsProductionPerSecond(camp.assignedWorkers.toolsmith, improvementsComponent);
 				resources.addResource(resourceNames.tools, tools);
 				resources.addResource(resourceNames.metal, -metalUsedTools);
 				resourceAccComponent.addChange(resourceNames.tools, tools / time, "Toolsmiths");
@@ -138,11 +127,10 @@ define([
 			}
 			
 			// Advanced: Concrete mixers
-			var metalRequiredConcrete = camp.assignedWorkers.concrete * CampConstants.CONSUMPTION_METAL_PER_CONCRETE_PER_S * time * GameConstants.gameSpeed;
+			var metalRequiredConcrete = time * this.campHelper.getMetalConsumptionPerSecondConcrete(camp.assignedWorkers.concrete);
 			if (metalRequiredConcrete > 0) {
 				var metalUsedConcrete = Math.min(resources.getResource(resourceNames.metal), metalRequiredConcrete);
-				var concreteUpgradeBonus = this.getUpgradeBonus("concrete");
-				var concrete = (metalUsedConcrete / metalRequiredConcrete) * camp.assignedWorkers.concrete * CampConstants.PRODUCTION_CONCRETE_PER_WORKER_PER_S * time * concreteUpgradeBonus * GameConstants.gameSpeed;
+                var concrete = time * (metalUsedConcrete / metalRequiredConcrete) * this.campHelper.getConcreteProductionPerSecond(camp.assignedWorkers.concrete);
 				resources.addResource(resourceNames.concrete, concrete);
 				resources.addResource(resourceNames.metal, -metalUsedConcrete);
 				resourceAccComponent.addChange(resourceNames.concrete, concrete / time, "Concrete mixers");
@@ -151,8 +139,8 @@ define([
 		},
 		
 		updateWorkerHunger: function (node, time) {
-			campResources = node.entity.get(ResourcesComponent);
-			campResourceAcc = node.entity.get(ResourceAccumulationComponent);
+			var campResources = node.entity.get(ResourcesComponent);
+			var campResourceAcc = node.entity.get(ResourceAccumulationComponent);
 			this.deductHunger(time, campResources.resources, node.camp.getAssignedPopulation(), false);
 			this.deductHunger(time, campResourceAcc.resourceChange, node.camp.getAssignedPopulation(), true, campResourceAcc, "Workers");
 		},
@@ -203,8 +191,8 @@ define([
 		
 		deductHunger: function (time, resourceVO, population, accumulation, accComponent, sourceName) {
 			var timeMod = accumulation ? 1 : time;
-			var waterChange = timeMod  * CampConstants.CONSUMPTION_WATER_PER_WORKER_PER_S * Math.floor(population) * GameConstants.gameSpeed;
-			var foodChange = timeMod * CampConstants.CONSUMPTION_FOOD_PER_WORKER_PER_S * Math.floor(population) * GameConstants.gameSpeed;
+			var waterChange = timeMod  * this.campHelper.getWaterConsumptionPerSecond(population);
+			var foodChange = timeMod * this.campHelper.getFoodConsumptionPerSecond(population);
 			if (!accumulation) {
 				resourceVO.water -= waterChange;
 				resourceVO.food -= foodChange;
@@ -212,17 +200,6 @@ define([
 				accComponent.addChange(resourceNames.water, -waterChange, sourceName);
 				accComponent.addChange(resourceNames.food, -foodChange, sourceName);
 			}
-		},
-		
-		getUpgradeBonus: function (worker) {
-			var upgradeLevel = 1;
-			var workerUpgrades = this.upgradeEffectsHelper.getImprovingUpgradeIdsForWorker(worker);
-			var workerUpgrade;
-			for (var i in workerUpgrades) {
-				workerUpgrade = workerUpgrades[i];
-				if (this.tribeUpgradesNodes.head.upgrades.hasBought(workerUpgrade)) upgradeLevel += 0.25;
-			}
-			return upgradeLevel;
 		},
 		
 		logAmbient: function () {
