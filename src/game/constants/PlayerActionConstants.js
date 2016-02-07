@@ -1504,7 +1504,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
             
             durations: {
                 use_in_hospital: 60 * 2,
-                use_in_campfire: 5,
+                use_in_campfire: 60,
             },
             
             randomEncounterProbabilities: {
@@ -1538,7 +1538,8 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 build_out_collector_food: "Accumulates food.",
                 build_out_collector_water: "Accumulates water.",
                 build_out_camp: "Build a camp here. Choose a good location - only one camp per level.",
-                build_in_house: "A place for people to stay.",
+                build_in_house: "A place for " + CampConstants.POPULATION_PER_HOUSE + "people to stay.",
+                build_in_house2: "Houses " + CampConstants.POPULATION_PER_HOUSE2 + "people.",
                 build_in_storage: "Increases resource storage.",
                 build_in_campfire: "Increases rumour generation and unlocks upgrades.",
                 build_in_library: "Accumulate and store more evidence.",

@@ -156,19 +156,30 @@ define([
                         if (sectorVO.camp) stateOfRepair = Math.max(3, stateOfRepair);
                         sectorVO.stateOfRepair = stateOfRepair;
                         
-                        // sunlight
-                        sectorVO.sunlit = l === topLevel || (ceilingSunlit && ceilingStateOfRepair < 3) || (edgeSector && stateOfRepair < 5);
-                        
                         // sector type
                         var sectorType = WorldCreatorHelper.getSectorType(seed, l, x, y);
                         sectorVO.sectorType = sectorType;
                                 
                         // buildingDensity
-                        var buildingDensity = Math.ceil(Math.min(Math.min(levelDensity + 1, 10), Math.max(0, levelDensity / 1.5 + Math.round((WorldCreatorRandom.random(seed * l * x)-0.5)*5) + (stateOfRepair) / 5)));
+                        var buildingDensity = Math.ceil(
+                            Math.min(Math.min(levelDensity + 1, 10),
+                            Math.max(0, levelDensity / 1.5 + Math.round((WorldCreatorRandom.random(seed * l * x + y + x) - 0.5) * 5) + (stateOfRepair) / 5)));
                         if (sectorVO.camp) {
                             buildingDensity = Math.min(1, Math.max(8, buildingDensity));
                         }
                         sectorVO.buildingDensity = buildingDensity;
+                        
+                        // sunlight
+                        sectorVO.sunlit = l === topLevel || (ceilingSunlit && ceilingStateOfRepair < 3) || (edgeSector && stateOfRepair < 5);
+                        if (!sectorVO.sunlit && (buildingDensity < 5 || stateOfRepair < 5)) {
+                            var neighbours = levelVO.getNeighbours(x, y);
+                            for (var neighbourDirection in neighbours) {
+                                var sunlitRandVal = WorldCreatorRandom.random(seed / 3 + l + x + y * l * l + x * x + y * 7 - ceilingStateOfRepair);
+                                if (neighbours[neighbourDirection].sunlit && sunlitRandVal > 0.15) {
+                                    sectorVO.sunlit = true;
+                                }
+                            }
+                        }
                     }
 				}
 			}

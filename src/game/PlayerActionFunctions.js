@@ -306,12 +306,18 @@ define(['ash',
                 this.gameState.unlockedFeatures.scavenge = true;
 				
 				var playerActionFunctions = this;
+                var sector = this.playerLocationNodes.head.entity;
+                var sunlit = sector.get(SectorFeaturesComponent).sunlit;
 					
                 var playerMaxVision = playerActionFunctions.playerStatsNodes.head.vision.maximum;
                 var logMsg = "";
                 var detailedMessage = "";
-                if (playerMaxVision <= PlayerStatConstants.VISION_BASE) logMsg = "Rummaged in the dark. ";
-                else logMsg = "Went scavenging. ";
+                if (playerMaxVision <= PlayerStatConstants.VISION_BASE) {
+                    if (sunlit) logMsg = "Rummaged blindly for loot. ";
+                    else logMsg = "Rummaged in the dark. ";
+                } else {
+                    logMsg = "Went scavenging. ";
+                }
                 detailedMessage = logMsg;
                     
                 this.fightHelper.handleRandomEncounter("scavenge", function () {

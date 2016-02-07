@@ -11,6 +11,7 @@ body {
 	height: 100%;
 	line-height: 1.3em;
 	margin: 0;
+    border-width: 0px !important;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -162,7 +163,6 @@ dd p.p-meta {
 }
 
 #mainmap-container {
-    background: #202220;
     max-height: 450px;
     overflow: hidden;
     position: relative;
@@ -243,12 +243,12 @@ dd p.p-meta {
 
 /* -- Appearance: Base colours -- */
 
-.lvl3-bg, body, div.dark, ul#tabs, #switch {
+.lvl3-bg, body, div.dark, ul#tabs, #switch, #mainmap-container {
 	background: #202220;
 	color: #fdfdfd;
 }
 
-.sunlit .lvl-13-bg, body.sunlit, div.sunlit, .sunlit ul#tabs, .sunlit #switch {
+.sunlit .lvl-13-bg, body.sunlit, div.sunlit, .sunlit ul#tabs, .sunlit #switch, .sunlit #mainmap-container {
 	background: #fdfdfd;
 	color: #202220;
 }
@@ -280,9 +280,15 @@ ul.tabs li.selected {
 	border-color: #666;
 }
 
-.sunlit .item-equipped, .sunlit .cooldown-reqs, .sunlit .cooldown-duration, .sunlit ul.resultlist li {
+.sunlit .item-equipped, .sunlit .cooldown-reqs, .sunlit ul.resultlist li {
 	background: #fff;
 	border-color: #bbb;
+}
+
+.sunlit .cooldown-duration {
+	background: rgba(100,100,100,0.2);
+	border-color: #bbb;
+    
 }
 
 .lvl13-box-2, .infobox-temporary, .collapsible-container, .infobox-scrollable, .canvas-container {

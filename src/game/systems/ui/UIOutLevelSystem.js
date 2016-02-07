@@ -309,9 +309,12 @@ define([
 				featuresComponent.stateOfRepair) + " ";
 			
 			if (featuresComponent.sunlit) {
-				if (hasVision) desc += "Fierce sunlight soothes your nerves. ";
-				else desc += "Sunlight blinds you. ";
-			}
+				if (hasVision) desc += "The area is swathed in relentless daylight. ";
+				else desc += "The area is swathed in blinding sunlight. ";
+			} else {
+                if (hasVision) desc += "";
+                else desc += "There is no light.";
+            }
 			
 			return desc;
 		},

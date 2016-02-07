@@ -37,16 +37,28 @@ function (Ash,
             
             this.icons["camp"] = new Image();
             this.icons["camp"].src = "img/map-camp.png";
+            this.icons["camp-sunlit"] = new Image();
+            this.icons["camp-sunlit"].src = "img/map-camp-sunlit.png";
             this.icons["passage-up"] = new Image();
             this.icons["passage-up"].src = "img/map-passage-up.png";
+            this.icons["passage-up-sunlit"] = new Image();
+            this.icons["passage-up-sunlit"].src = "img/map-passage-up-sunlit.png";
             this.icons["passage-down"] = new Image();
             this.icons["passage-down"].src = "img/map-passage-down.png";
+            this.icons["passage-down-sunlit"] = new Image();
+            this.icons["passage-down-sunlit"].src = "img/map-passage-down-sunlit.png";
             this.icons["interest"] = new Image();
             this.icons["interest"].src = "img/map-interest.png";
+            this.icons["interest-sunlit"] = new Image();
+            this.icons["interest-sunlit"].src = "img/map-interest-sunlit.png";
             this.icons["unknown"] = new Image();
             this.icons["unknown"].src = "img/map-unvisited.png";
+            this.icons["unknown-sunlit"] = new Image();
+            this.icons["unknown-sunlit"].src = "img/map-unvisited-sunlit.png";
             this.icons["workshop"] = new Image();
             this.icons["workshop"].src = "img/map-workshop.png";
+            this.icons["workshop-sunlit"] = new Image();
+            this.icons["workshop-sunlit"].src = "img/map-workshop-sunlit.png";
         },
         
         enableScrollingForMap: function (canvasId) {
@@ -173,11 +185,12 @@ function (Ash,
         rebuildMapWithCanvas: function (mapPosition, canvas, ctx, centered, visibleSectors, allSectors, dimensions) {
             var sectorSize = this.getSectorSize(centered);
             var gridSize = 10;
+            var sunlit = $("body").hasClass("sunlit");
             
             ctx.canvas.width = dimensions.canvasWidth;
             ctx.canvas.height = dimensions.canvasHeight;
             ctx.clearRect(0, 0, canvas.scrollWidth, canvas.scrollWidth);
-            ctx.fillStyle = "#202220";
+            ctx.fillStyle = sunlit ? "#fdfdfd" : "#202220";
             ctx.fillRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
             
             // city background
@@ -185,7 +198,7 @@ function (Ash,
             var cityBackgroundMinY = this.getSectorPixelPos(dimensions, centered, sectorSize, dimensions.mapMinX, dimensions.mapMinY).y - (centered ? sectorSize : sectorSize / 2);
             var cityBackgroundMaxX = cityBackgroundMinX + (dimensions.mapMaxX - dimensions.mapMinX) * sectorSize * 2 + (centered ? sectorSize * 3 : sectorSize * 2);
             var cityBackgroundMaxY = cityBackgroundMinY + (dimensions.mapMaxY - dimensions.mapMinY) * sectorSize * 2 + (centered ? sectorSize * 3 : sectorSize * 2);
-            ctx.fillStyle = "#282a28";
+            ctx.fillStyle = sunlit ? "#efefef" : "#282a28";
             ctx.fillRect(
                 cityBackgroundMinX,
                 cityBackgroundMinY,
@@ -220,7 +233,7 @@ function (Ash,
             var playerPosVO = this.playerPosNodes.head.position.getPosition();
             sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, playerPosVO.sectorX, playerPosVO.sectorY).x;
             sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, playerPosVO.sectorX, playerPosVO.sectorY).y;
-            ctx.strokeStyle = "#666";
+            ctx.strokeStyle = sunlit ? "#bbb" : "#666";
             ctx.lineWidth = centered ? 3 : 2;
             ctx.beginPath();
             ctx.arc(sectorXpx + sectorSize * 0.5, sectorYpx + 0.5 * sectorSize, sectorSize, 0, 2 * Math.PI);
@@ -228,7 +241,7 @@ function (Ash,
             
             // border on map itself
             if (centered) {
-                ctx.strokeStyle = "#3a3a3a";
+                ctx.strokeStyle = sunlit ? "#aaa" : "#3a3a3a";
                 ctx.beginPath();
                 ctx.arc(
                         canvas.scrollWidth * 0.5,
@@ -251,7 +264,8 @@ function (Ash,
         },
         
         drawGridOnCanvas: function (ctx, gridSize, sectorSize, dimensions, centered) {
-            ctx.strokeStyle = "#343434";
+            var sunlit = $("body").hasClass("sunlit");
+            ctx.strokeStyle = sunlit ? "#d9d9d9" : "#343434";
             ctx.lineWidth = 1;
             var startGridY = (Math.floor(dimensions.mapMinY / gridSize) - 1) * gridSize;
             var endGridY = (Math.ceil(dimensions.mapMaxY / gridSize) + 1) * gridSize;
@@ -271,10 +285,11 @@ function (Ash,
         drawSectorOnCanvas: function (ctx, sector, sectorStatus, sectorXpx, sectorYpx, sectorSize) {
             ctx.fillStyle = this.getSectorFill(sectorStatus);
             ctx.fillRect(sectorXpx, sectorYpx, sectorSize, sectorSize);
+            var sunlit = $("body").hasClass("sunlit");
             
             // border for sunlit sectors
             if (sector.get(SectorFeaturesComponent).sunlit) {
-                ctx.strokeStyle = "#ddee66";
+                ctx.strokeStyle = sunlit ? "#ffee11" : "#ddee66";
                 ctx.lineWidth = Math.ceil(sectorSize / 8);
                 ctx.beginPath();
                 ctx.moveTo(sectorXpx - 1, sectorYpx - 1);
@@ -297,17 +312,17 @@ function (Ash,
             var iconPosY = sectorSize > iconSize ? sectorYpx + 1 : sectorYpx;
             
             if (!isScouted)
-                ctx.drawImage(this.icons["unknown"], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["unknown" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (unScoutedLocales > 0)
-                ctx.drawImage(this.icons["interest"], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["interest" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sector.has(WorkshopComponent))
-                ctx.drawImage(this.icons["workshop"], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["workshop" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sector.has(CampComponent))
-                ctx.drawImage(this.icons["camp"], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["camp" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sectorPassages.passageUp)
-                ctx.drawImage(this.icons["passage-up"], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["passage-up" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sectorPassages.passageDown)
-                ctx.drawImage(this.icons["passage-down"], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["passage-down" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
                 
             // sector contents: resources
             if (sectorSize > iconSize) {
@@ -320,6 +335,7 @@ function (Ash,
         },
         
         drawMovementLinesOnCanvas: function (ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize) {
+            var sunlit = $("body").hasClass("sunlit");
             var sectorPassages = sector.get(PassagesComponent);
             for (var i in PositionConstants.getLevelDirections()) {
                 var direction = PositionConstants.getLevelDirections()[i];
@@ -328,8 +344,8 @@ function (Ash,
                 if (neighbour) {
                     var distX = neighbourPos.sectorX - sectorPos.sectorX;
                     var distY = neighbourPos.sectorY - sectorPos.sectorY;
-                    ctx.strokeStyle = "#3a3a3a";
-                    ctx.lineWidth = Math.ceil(sectorSize / 3);
+                    ctx.strokeStyle = sunlit ? "#b0b0b0" : "#3a3a3a";
+                    ctx.lineWidth = Math.ceil(sectorSize / 6);
                     ctx.beginPath();
                     ctx.moveTo(sectorXpx + sectorSize * 0.5 + 0.5 * sectorSize * distX, sectorYpx + sectorSize * 0.5 + 0.5 * sectorSize * distY);
                     ctx.lineTo(sectorXpx + sectorSize * 0.5 + 1.5 * sectorSize * distX, sectorYpx + sectorSize * 0.5 + 1.5 * sectorSize * distY);
@@ -340,7 +356,7 @@ function (Ash,
                     var blockerType = blocker ? blocker.type : "null";
                     if (blocker) {
                         var isBlocked = this.movementHelper.isBlocked(sector, direction);
-                        ctx.strokeStyle = isBlocked ? "#dd0000" : "#3a3a3a";
+                        ctx.strokeStyle = isBlocked ? "#dd0000" : (sunlit ? "#b0b0b0" : "#3a3a3a");
                         ctx.lineWidth = Math.ceil(sectorSize / 9);
                         ctx.beginPath();
                         ctx.arc(
@@ -467,18 +483,19 @@ function (Ash,
         },
         
         getSectorFill: function (sectorStatus) {
+            var sunlit = $("body").hasClass("sunlit");
             switch (sectorStatus) {
                 case SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE:
-                    return "#3a3a3a";
+                    return sunlit ? "#d0d0d0" : "#3a3a3a";
                 
-                case SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISITED:
-                    return "#666";
+                case SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED:
+                    return sunlit ? "#bbb" : "#666";
                 
-                case SectorConstants.MAP_SECTOR_STATUS_UNVISITED_SCOUTED:
-                    return "#999";
+                case SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED:
+                    return sunlit ? "#999" : "#999";
                 
-                case SectorConstants.MAP_SECTOR_STATUS_UNVISITED_CLEARED:
-                    return "#ccc";
+                case SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED:
+                    return sunlit ? "#333" : "#ccc";
             }
         },
         

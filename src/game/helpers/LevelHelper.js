@@ -159,7 +159,7 @@ define([
                 levelStats.totalSectors++;
                 
                 statusComponent = node.entity.get(SectorStatusComponent);
-                if (sectorStatus === SectorConstants.MAP_SECTOR_STATUS_UNVISITED_CLEARED) levelStats.countClearedSectors++;
+                if (sectorStatus === SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED) levelStats.countClearedSectors++;
                 if (statusComponent.scouted) levelStats.countScoutedSectors++;
                 if (node.entity.has(RevealedComponent)) levelStats.countRevealedSectors++;
             }

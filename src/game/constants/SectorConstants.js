@@ -12,9 +12,9 @@ define(['ash',
 		
 		MAP_SECTOR_STATUS_UNVISITED_INVISIBLE: "unvisited-invisible",
 		MAP_SECTOR_STATUS_UNVISITED_VISIBLE: "unvisited-seen",
-		MAP_SECTOR_STATUS_UNVISITED_VISITED: "visited",
-		MAP_SECTOR_STATUS_UNVISITED_SCOUTED: "scouted",
-		MAP_SECTOR_STATUS_UNVISITED_CLEARED: "cleared",
+		MAP_SECTOR_STATUS_VISITED_UNSCOUTED: "visited",
+		MAP_SECTOR_STATUS_VISITED_SCOUTED: "scouted",
+		MAP_SECTOR_STATUS_VISITED_CLEARED: "cleared",
 		
 		getSectorStatus: function (sector) {
 			if (!sector) return null;
@@ -31,12 +31,12 @@ define(['ash',
 					var hasUnclearedWorkshop = workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP);
 					var isCleared = unScoutedLocales === 0 && !hasUnclearedWorkshop;
 					if (isCleared) {
-						return this.MAP_SECTOR_STATUS_UNVISITED_CLEARED;
+						return this.MAP_SECTOR_STATUS_VISITED_CLEARED;
 					} else {
-						return this.MAP_SECTOR_STATUS_UNVISITED_SCOUTED;
+						return this.MAP_SECTOR_STATUS_VISITED_SCOUTED;
 					}
 				} else {
-					return this.MAP_SECTOR_STATUS_UNVISITED_VISITED;
+					return this.MAP_SECTOR_STATUS_VISITED_UNSCOUTED;
 				}
 			} else {
 				if (sector.has(RevealedComponent)) {

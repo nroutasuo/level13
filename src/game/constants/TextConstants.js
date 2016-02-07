@@ -30,6 +30,7 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
 			var description = this.sectorDescriptions[sectorType][densityBracket][repairBracket];
 			if (sunlit) {
 				description = description.replace("artificial light", "sunlight");
+				description = description.replace("vast darkness", "vast brightness");
 			}
 			return description;
 		},
