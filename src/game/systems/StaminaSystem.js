@@ -1,6 +1,6 @@
 define([
-    'ash', 'game/constants/GameConstants', 'game/nodes/player/StaminaNode', 'game/constants/PerkConstants'
-], function (Ash, GameConstants, StaminaNode, PerkConstants) {
+    'ash', 'game/constants/GameConstants', 'game/constants/PlayerStatConstants', 'game/nodes/player/StaminaNode', 'game/constants/PerkConstants'
+], function (Ash, GameConstants, PlayerStatConstants, StaminaNode, PerkConstants) {
     var VisionSystem = Ash.System.extend({
         creator: null,
         nodeList: null,
@@ -31,7 +31,7 @@ define([
 			var healthEffects = perksComponent.getTotalEffect(PerkConstants.perkTypes.health);
 			healthEffects = Math.abs(healthEffects);
 			healthEffects = healthEffects === 0 ? 1 : healthEffects;
-			staminaComponent.health = Math.round(20 * Math.abs(healthEffects) * injuryEffects) * 5;
+			staminaComponent.health = Math.max(PlayerStatConstants.HEALTH_MINIMUM, Math.round(20 * Math.abs(healthEffects) * injuryEffects) * 5);
 			
 			var healthVal = staminaComponent.health;
 			var staminaPerS = staminaComponent.health / 100 * 5 * GameConstants.gameSpeed;

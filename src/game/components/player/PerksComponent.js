@@ -42,12 +42,12 @@ function (Ash, PerkVO, PerkConstants) {
             return all;
         },
         
-        getTotalEffect: function(type) {
+        getTotalEffect: function (type) {
             var effect = 0;
             var multiply = PerkConstants.isPercentageEffect(type);
             if (multiply) effect = 1;
             for (var key in this.perks) {
-                if (key == type) {
+                if (key === type) {
                     for( var i = 0; i < this.perks[key].length; i++) {
                         if (multiply) effect *= this.perks[key][i].effect;
                         else effect += this.perks[key][i].effect;
