@@ -258,10 +258,10 @@ define([
 					var liClass = isNegative ? "li-item-negative" : "li-item-positive";
 					liClass += " " + "item-equipped";
 					var li =
-					"<li class='" + liClass + "'>"+
-					"<div class='info-callout-target info-callout-target-small' description='" +
-					perk.name + " (" + perk.effect + ")" + 
-					"'><img src='" + url + "'/></div></li>"
+                        "<li class='" + liClass + "'>" +
+                        "<div class='info-callout-target info-callout-target-small' description='" +
+                        perk.name + " (" + UIConstants.getPerkBonusText(perk) + ")" + "'><img src='" + url + "'/>" +
+                        "</div></li>"
 					$("ul#list-items-perks").append(li);
 				}
 				

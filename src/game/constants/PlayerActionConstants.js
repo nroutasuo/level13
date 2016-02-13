@@ -1504,7 +1504,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
             
             durations: {
                 use_in_hospital: 60 * 2,
-                use_in_campfire: 60,
+                use_in_campfire: 5,
             },
             
             randomEncounterProbabilities: {

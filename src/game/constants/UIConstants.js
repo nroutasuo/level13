@@ -3,6 +3,7 @@ define(['ash',
 	'game/constants/StoryConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
+	'game/constants/PerkConstants',
     'game/components/common/PositionComponent',
     'game/components/common/CampComponent',
     'game/components/sector/SectorStatusComponent',
@@ -11,7 +12,7 @@ define(['ash',
     'game/components/common/VisitedComponent',
     'game/components/sector/improvements/WorkshopComponent',
 ], function (Ash,
-	StoryConstants, PositionConstants, SectorConstants,
+	StoryConstants, PositionConstants, SectorConstants, PerkConstants,
 	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
 	PassagesComponent, VisitedComponent, WorkshopComponent) {
     
@@ -146,6 +147,25 @@ define(['ash',
 				return " +" + Math.round((1-item.bonus)*100) + "%";
 			else
 				return " " + item.bonus; 
+		},
+		
+		getPerkBonusText: function (perk) {
+			var value = 0;
+			if (perk.effect < 1) {
+				value = "-" + Math.round((1 - perk.effect) * 100) + "%";
+			} else {
+				value = Math.round((perk.effect - 1) * 100) + "%";
+			}
+			
+			var effect = perk.type;
+			switch (perk.type) {
+				case PerkConstants.perkTypes.injury:
+				case PerkConstants.perkTypes.health:
+					effect = "health";
+					break;
+			}
+			
+			return effect + " " + value;
 		},
 		
 		createResourceIndicator: function (name, showName, id, showAmount, showChange) {
