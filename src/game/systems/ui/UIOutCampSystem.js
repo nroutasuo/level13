@@ -99,7 +99,7 @@ define([
             
             // Header
             var header = campComponent.getName();
-            if (campCount > 1) header += " (lvl " + this.playerPosNodes.head.position.level + ")";
+            if (campCount > 1) header += " (" + this.playerPosNodes.head.position.getInGameFormat(true) + ")";
             $("#tab-header h2").text(header);
             
             // Vis
@@ -252,9 +252,9 @@ define([
                 if (updateTable) {
                     var sector = project.level + "." + project.sector + "." + project.direction;
                     var name = project.name;
-                    var info = project.name + " on sector " + project.sector + (project.level === level ? "" : " (level " + project.level + ")");
+                    var info = "at " + project.position.getInGameFormat();
                     var classes = "action action-build action-level-project";
-                    var tr = "<tr><td><button class='" + classes + "' action='" + action + "' sector='" + sector + "' + id='btn-" + action + "-" + sector + "'>" + name + "</button></td><td>" + info + "</td></tr>";
+                    var tr = "<tr><td><button class='" + classes + "' action='" + action + "' sector='" + sector + "' + id='btn-" + action + "-" + sector + "'>" + name + "</button></td><td class='list-description'>" + info + "</td></tr>";
                     $("#in-improvements-level table").append(tr);
                 }
                 visibleBuildingCount++;

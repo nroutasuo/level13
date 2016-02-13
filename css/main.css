@@ -44,7 +44,6 @@ td.maxwidth {
 
 table td {
 	padding: 0px 2px;
-	text-transform: lowercase;
 }
 
 table button, table div.container-btn-action {
@@ -1123,8 +1122,12 @@ span.action-cost-blocker-storage {
 }
 
 td.list-amount, td.list-storage {
-	min-width: 45pt;
+	min-width: 35pt;
 	text-align: center;
+}
+
+td.list-description {
+    padding-left: 10px;
 }
 
 td.item-name {

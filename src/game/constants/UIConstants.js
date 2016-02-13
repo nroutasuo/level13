@@ -91,9 +91,9 @@ define(['ash',
 			return html;
 		},
 		
-		getSectorTD: function (playerPosition, sector) {
+		getSectorTD: function (playerPosition, sector, levelHelper) {
 			var content = "";
-            var sectorStatus = SectorConstants.getSectorStatus(sector);
+            var sectorStatus = SectorConstants.getSectorStatus(sector, levelHelper);
 			var classes = "vis-out-sector";
 			if (sector && sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE) {
 				var sectorPos = sector.get(PositionComponent);

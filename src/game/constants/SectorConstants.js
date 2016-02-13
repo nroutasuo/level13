@@ -16,7 +16,7 @@ define(['ash',
 		MAP_SECTOR_STATUS_VISITED_SCOUTED: "scouted",
 		MAP_SECTOR_STATUS_VISITED_CLEARED: "cleared",
 		
-		getSectorStatus: function (sector) {
+		getSectorStatus: function (sector, levelHelper) {
 			if (!sector) return null;
 			
 			var isVisited = sector.has(VisitedComponent);
@@ -29,7 +29,8 @@ define(['ash',
 					var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
 					var sectorControlComponent = sector.get(SectorControlComponent);
 					var hasUnclearedWorkshop = workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP);
-					var isCleared = unScoutedLocales === 0 && !hasUnclearedWorkshop;
+                    var hasUnbuiltProjects = levelHelper.getAvailableProjectsForSector(sector).length > 0;
+					var isCleared = unScoutedLocales === 0 && !hasUnclearedWorkshop && !hasUnbuiltProjects;
 					if (isCleared) {
 						return this.MAP_SECTOR_STATUS_VISITED_CLEARED;
 					} else {

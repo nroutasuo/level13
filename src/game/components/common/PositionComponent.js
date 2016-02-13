@@ -23,6 +23,12 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
             this.inCamp = position.inCamp;
         },
         
+        getInGameFormat: function (includeLevel) {
+            var sectorXS = this.sectorX < 0 ? -this.sectorX + "W" : this.sectorX + "E";
+            var sectorYS = this.sectorY < 0 ? -this.sectorY + "S" : this.sectorX + "N";
+            return sectorXS + " " + sectorYS + (includeLevel ? " " + "level " + this.level : "");
+        },
+        
         toString: function () {
             return this.level + "." + this.sectorX + "." + this.sectorY;
         },

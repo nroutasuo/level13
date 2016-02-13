@@ -8,12 +8,14 @@ define([
     'game/constants/EnemyConstants',
     'game/constants/LocaleConstants',
     'game/constants/MovementConstants',
+    'game/constants/ItemConstants',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/sector/SectorNode',
     'game/nodes/sector/CampNode',
     'game/nodes/sector/VisitedSectorNode',
     'game/components/player/VisionComponent',
+    'game/components/player/ItemsComponent',
     'game/components/sector/PassagesComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/SectorFeaturesComponent',
@@ -27,9 +29,9 @@ define([
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/EnemiesComponent'
 ], function (
-    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, UIConstants, PositionConstants, EnemyConstants, LocaleConstants, MovementConstants,
+    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, UIConstants, PositionConstants, EnemyConstants, LocaleConstants, MovementConstants, ItemConstants,
     PlayerPositionNode, PlayerLocationNode, SectorNode, CampNode, VisitedSectorNode,
-    VisionComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
+    VisionComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
     MovementOptionsComponent,
     PositionComponent,
     VisitedComponent,
@@ -216,7 +218,7 @@ define([
 						$(this).find(".list-amount").text(existingImprovements);
 						$(this).find(".action-use").toggle(existingImprovements > 0);
 						if (isProject) {
-							$($(this).find(".list-info")).find("span").text(actionEnabled ? "Available in camp" : "");
+							$(this).find(".list-description").text(actionEnabled ? "Available in camp" : "");
 						}
 						$(this).toggle(actionEnabled || existingImprovements > 0);
 					}
@@ -245,7 +247,9 @@ define([
 			
 			$("#out-improvements").toggle(this.gameState.unlockedFeatures.vision);
 			var hasAvailableImprovements = $("#out-improvements table tr:visible").length > 0;
+			var hasAvailableProjects = $("#out-projects tr:visible").length > 0;
 			$("#header-out-improvements").toggle(hasAvailableImprovements);
+			$("#header-out-projects").toggle(hasAvailableProjects);
 			
 			// Actions
 			var passageUpBuilt = improvements.getCount(improvementNames.passageUpStairs) +
@@ -281,6 +285,9 @@ define([
 			this.uiFunctions.slideToggleIf("#table-out-actions-movement-related", null, isScouted > 0, 200, 0);
 			
 			$("#minimap").toggle(hasVision);
+            
+            var hasMap = this.playerPosNodes.head.entity.get(ItemsComponent).getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id) > 0;
+            $("#out-position-indicator").text(hasMap ? posComponent.getInGameFormat(false) : "");
 		},
 		
 		getDescription: function (entity, hasCampHere, hasCampOnLevel, hasVision, isScouted) {
@@ -295,6 +302,8 @@ define([
 			description += "</p><p>";
 			description += this.getStatusDescription(hasVision, isScouted, hasEnemies, featuresComponent, passagesComponent, hasCampHere, hasCampOnLevel);
 			description += this.getMovementDescription(isScouted, passagesComponent, entity);
+			description += "</p><p>";
+			description += this.getResourcesDescription(featuresComponent);
 			description += "</p>";
 			return description;
 		},
@@ -346,15 +355,6 @@ define([
 				description += this.getEnemyDescription(isScouted, passagesComponent, hasCampHere);
 			}
 			
-			description += "</p><p>";
-			
-			if (featuresComponent.resources.getTotal() > 0) {
-				var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
-				if (discoveredResources.length > 0) {
-					description += "Resources found here: " + featuresComponent.getResourcesString(discoveredResources) + ". ";
-				}
-			}
-			
 			if (isScouted && hasVision && !hasCampHere && !hasCampOnLevel) {
 				if (featuresComponent.canHaveCamp() && !hasEnemies && !passagesComponent.passageUp && !passagesComponent.passageDown)
 					description += "This would be a good place for a camp. ";
@@ -362,6 +362,17 @@ define([
 			
 			return description;
 		},
+        
+        getResourcesDescription: function (featuresComponent) {
+            var description = "";
+			if (featuresComponent.resources.getTotal() > 0) {
+				var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
+				if (discoveredResources.length > 0) {
+					description += "Resources found here: " + featuresComponent.getResourcesString(discoveredResources) + ". ";
+				}
+			}
+			return description;
+        },
 		
 		getMovementDescription: function (isScouted, passagesComponent, entity) {
 			var description = "";

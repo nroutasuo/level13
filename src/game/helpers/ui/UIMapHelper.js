@@ -217,7 +217,7 @@ function (Ash,
             for (var y = dimensions.minVisibleY; y <= dimensions.maxVisibleY; y++) {
                 for (var x = dimensions.minVisibleX; x <= dimensions.maxVisibleX; x++) {
                     sector = visibleSectors[x + "." + y];
-                    sectorStatus = SectorConstants.getSectorStatus(sector);
+                    sectorStatus = SectorConstants.getSectorStatus(sector, this.levelHelper);
                     sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).x
                     sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
                     
@@ -303,7 +303,6 @@ function (Ash,
             // sector contents: points of interest
             var sectorPassages = sector.get(PassagesComponent);
             var statusComponent = sector.get(SectorStatusComponent);
-            var statusComponent = sector.get(SectorStatusComponent);
             var localesComponent = sector.get(SectorLocalesComponent);
             var isScouted = statusComponent.scouted;
             var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
@@ -388,7 +387,7 @@ function (Ash,
                 $("#" + fallbackTableId).append("<tr id=" + trID + "></tr>");
                 for (var x = minDrawX; x <= maxDrawX; x++) {
                     sector = visibleSectors[x + "." + y];
-                    $("#" + fallbackTableId + " tr#" + trID).append(UIConstants.getSectorTD(playerPosition, sector));
+                    $("#" + fallbackTableId + " tr#" + trID).append(UIConstants.getSectorTD(playerPosition, sector, this.levelHelper));
                 }
             }
         },
@@ -450,7 +449,7 @@ function (Ash,
             for (var y = dimensions.mapMinY; y <= dimensions.mapMaxY; y++) {
                 for (var x = dimensions.mapMinX; x <= dimensions.mapMaxX; x++) {
                     sector = this.levelHelper.getSectorByPosition(mapPosition.level, x, y);
-                    sectorStatus = SectorConstants.getSectorStatus(sector);
+                    sectorStatus = SectorConstants.getSectorStatus(sector, this.levelHelper);
                     if (allSectors && sector) allSectors[x + "." + y] = sector;
                     // if map is centered, make a tr+td / node for empty sectors too
                     if (centered || this.showSectorOnMap(centered, sector, sectorStatus)) {

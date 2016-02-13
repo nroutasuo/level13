@@ -154,7 +154,7 @@ define([
             var sectorStatus;
 			for (var node = this.sectorNodes.head; node; node = node.next) {
 				sectorPosition = node.entity.get(PositionComponent);
-                sectorStatus = SectorConstants.getSectorStatus(node.entity);
+                sectorStatus = SectorConstants.getSectorStatus(node.entity, this);
 				if (sectorPosition.level !== level) continue;
                 levelStats.totalSectors++;
                 
@@ -175,73 +175,79 @@ define([
 			var projects = [];
 			var level = levelEntity.get(PositionComponent).level;
 			var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
-			var sectorPassagesComponent;
-			var statusComponent;
-			var scouted;
-			var passage;
-			var sectorPosition;
+            var sectorPosition;
 			for (var node = this.sectorNodes.head; node; node = node.next) {
 				sectorPosition = node.entity.get(PositionComponent);
 				if (sectorPosition.level !== level) continue;
-				
-				statusComponent = node.entity.get(SectorStatusComponent);
-				sectorPassagesComponent = node.entity.get(PassagesComponent);
-				scouted = statusComponent && statusComponent.scouted;
-				if (scouted) {
-					var improvementName = "";
-					var actionName = "";
-					
-					// passages
-					if (levelPassagesComponent.passagesUp[sectorPosition.sectorId()] && !levelPassagesComponent.passagesUpBuilt[sectorPosition.sectorId()]) {
-						switch (levelPassagesComponent.passagesUp[sectorPosition.sectorId()].type) {
-							case 1:
-								improvementName = improvementNames.passageUpHole;
-								actionName = "build_out_passage_up_hole";
-								break;
-							case 2:
-								improvementName = improvementNames.passageUpElevator;
-								actionName = "build_out_passage_up_elevator";
-								break;
-							case 3:
-								improvementName = improvementNames.passageUpStairs;
-								actionName = "build_out_passage_up_stairs";
-								break;
-						}
-						if (this.playerActionsHelper.checkRequirements(actionName, false, node.entity).value > 0)
-							projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, sectorPosition, PositionConstants.DIRECTION_UP));
-					}
-					if (levelPassagesComponent.passagesDown[sectorPosition.sectorId()] && !levelPassagesComponent.passagesDownBuilt[sectorPosition.sectorId()]) {
-						switch (levelPassagesComponent.passagesDown[sectorPosition.sectorId()].type) {
-						case MovementConstants.PASSAGE_TYPE_HOLE:
-							improvementName = improvementNames.passageDownHole;
-							actionName = "build_out_passage_down_hole";
-							break;
-						case MovementConstants.PASSAGE_TYPE_ELEVATOR:
-							improvementName = improvementNames.passageDownElevator;
-							actionName = "build_out_passage_down_elevator";
-							break;
-						case MovementConstants.PASSAGE_TYPE_STAIRWELL:
-							improvementName = improvementNames.passageDownStairs;
-							actionName = "build_out_passage_down_stairs";
-							break;
-						}
-						if (this.playerActionsHelper.checkRequirements(actionName, false, node.entity).value > 0)
-							projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, sectorPosition, PositionConstants.DIRECTION_DOWN));
-					}
-					
-					// bridges
-					for (var i in PositionConstants.getLevelDirections()) {
-						var direction = PositionConstants.getLevelDirections()[i];
-						var directionBlocker = sectorPassagesComponent.getBlocker(direction);
-						if (directionBlocker && directionBlocker.bridgeable) {
-							projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.bridge), "build_out_bridge", sectorPosition, direction));
-						}
-					}
-				}
+				projects = projects.concat(this.getAvailableProjectsForSector(node.entity, levelPassagesComponent));
 			}
 			
 			return projects;
 		},
+        
+        getAvailableProjectsForSector: function (sectorEntity, levelPassagesComponent) {
+            var projects = [];
+			var sectorPosition = sectorEntity.get(PositionComponent);
+            var statusComponent = sectorEntity.get(SectorStatusComponent);
+            var sectorPassagesComponent = sectorEntity.get(PassagesComponent);
+            
+            var scouted = statusComponent && statusComponent.scouted;
+            if (!scouted) return projects;
+            
+            levelPassagesComponent = levelPassagesComponent || this.getLevelEntityForPosition(sectorPosition.level).get(LevelPassagesComponent);
+            
+            var improvementName = "";
+            var actionName = "";
+            
+            // passages
+            if (levelPassagesComponent.passagesUp[sectorPosition.sectorId()] && !levelPassagesComponent.passagesUpBuilt[sectorPosition.sectorId()]) {
+                switch (levelPassagesComponent.passagesUp[sectorPosition.sectorId()].type) {
+                    case 1:
+                        improvementName = improvementNames.passageUpHole;
+                        actionName = "build_out_passage_up_hole";
+                        break;
+                    case 2:
+                        improvementName = improvementNames.passageUpElevator;
+                        actionName = "build_out_passage_up_elevator";
+                        break;
+                    case 3:
+                        improvementName = improvementNames.passageUpStairs;
+                        actionName = "build_out_passage_up_stairs";
+                        break;
+                }
+                if (this.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0)
+                    projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, sectorPosition, PositionConstants.DIRECTION_UP));
+            }
+            if (levelPassagesComponent.passagesDown[sectorPosition.sectorId()] && !levelPassagesComponent.passagesDownBuilt[sectorPosition.sectorId()]) {
+                switch (levelPassagesComponent.passagesDown[sectorPosition.sectorId()].type) {
+                case MovementConstants.PASSAGE_TYPE_HOLE:
+                    improvementName = improvementNames.passageDownHole;
+                    actionName = "build_out_passage_down_hole";
+                    break;
+                case MovementConstants.PASSAGE_TYPE_ELEVATOR:
+                    improvementName = improvementNames.passageDownElevator;
+                    actionName = "build_out_passage_down_elevator";
+                    break;
+                case MovementConstants.PASSAGE_TYPE_STAIRWELL:
+                    improvementName = improvementNames.passageDownStairs;
+                    actionName = "build_out_passage_down_stairs";
+                    break;
+                }
+                if (this.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0)
+                    projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, sectorPosition, PositionConstants.DIRECTION_DOWN));
+            }
+            
+            // bridges
+            for (var i in PositionConstants.getLevelDirections()) {
+                var direction = PositionConstants.getLevelDirections()[i];
+                var directionBlocker = sectorPassagesComponent.getBlocker(direction);
+                if (directionBlocker && directionBlocker.bridgeable) {
+                    projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.bridge), "build_out_bridge", sectorPosition, direction));
+                }
+            }
+            
+            return projects;
+        },
 		
         getLevelClearedWorkshopCount: function (level, resourceName) {
 			var count = 0;
