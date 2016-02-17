@@ -287,7 +287,7 @@ define([
 			$("#minimap").toggle(hasVision);
             
             var hasMap = this.playerPosNodes.head.entity.get(ItemsComponent).getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id) > 0;
-            $("#out-position-indicator").text(hasMap ? posComponent.getInGameFormat(false) : "");
+            $("#out-position-indicator").text(hasMap ? posComponent.getPosition().getInGameFormat(false) : "");
 		},
 		
 		getDescription: function (entity, hasCampHere, hasCampOnLevel, hasVision, isScouted) {

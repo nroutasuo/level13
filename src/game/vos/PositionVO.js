@@ -13,6 +13,12 @@ define(['ash'], function (Ash) {
 			this.sectorY = sectorY;
         },
         
+        getInGameFormat: function (includeLevel) {
+            var sectorXS = this.sectorX < 0 ? -this.sectorX + "W" : this.sectorX + "E";
+            var sectorYS = this.sectorY < 0 ? -this.sectorY + "S" : this.sectorX + "N";
+            return sectorXS + " " + sectorYS + (includeLevel ? " " + "level " + this.level : "");
+        },
+        
         equals: function (positionVO) {
             return this.level === positionVO.level && this.sectorX === positionVO.sectorX && this.sectorY === positionVO.sectorY;
         },

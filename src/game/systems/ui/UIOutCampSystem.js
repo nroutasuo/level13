@@ -99,7 +99,7 @@ define([
             
             // Header
             var header = campComponent.getName();
-            if (campCount > 1) header += " (" + this.playerPosNodes.head.position.getInGameFormat(true) + ")";
+            if (campCount > 1) header += " (" + this.playerPosNodes.head.position.getPosition().getInGameFormat(true) + ")";
             $("#tab-header h2").text(header);
             
             // Vis
@@ -157,21 +157,27 @@ define([
             
             var workerConsumptionS = "<br/><span class='warning'>water -" + this.campHelper.getWaterConsumptionPerSecond(1) + "/s</span>" +
                 "<br/><span class='warning'>food -" + this.campHelper.getFoodConsumptionPerSecond(1) + "/s</span>";
-            UIConstants.updateCalloutContent("#in-assign-water .info-callout-target", "water +" + this.campHelper.getWaterProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-scavenger .info-callout-target", "metal +" + this.campHelper.getMetalProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-trapper .info-callout-target", "food +" + this.campHelper.getFoodProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-weaver .info-callout-target", "rope +" + this.campHelper.getRopeProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-chemist .info-callout-target", "fuel +" + this.campHelper.getFuelProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-apothecary .info-callout-target", "medicine +" + this.campHelper.getMedicineProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>herbs -" + this.campHelper.getHerbsConsumptionPerSecond(1) + "/s</span>", true);
-            UIConstants.updateCalloutContent("#in-assign-concrete .info-callout-target", "concrete +" + this.campHelper.getConcreteProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>metal -" + this.campHelper.getMetalConsumptionPerSecondConcrete(1) + "/s</span>", true);
-            UIConstants.updateCalloutContent("#in-assign-smith .info-callout-target", "tools +" + this.campHelper.getToolsProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>metal -" + this.campHelper.getMetalConsumptionPerSecondSmith(1) + "/s</span>", true);
-            UIConstants.updateCalloutContent("#in-assign-soldier .info-callout-target", "camp defence +1" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-water .in-assing-worker-desc .info-callout-target", "water +" + this.campHelper.getWaterProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-scavenger .in-assing-worker-desc .info-callout-target", "metal +" + this.campHelper.getMetalProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-trapper .in-assing-worker-desc .info-callout-target", "food +" + this.campHelper.getFoodProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-weaver .in-assing-worker-desc .info-callout-target", "rope +" + this.campHelper.getRopeProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-chemist .in-assing-worker-desc .info-callout-target", "fuel +" + this.campHelper.getFuelProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-apothecary .in-assing-worker-desc .info-callout-target", "medicine +" + this.campHelper.getMedicineProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>herbs -" + this.campHelper.getHerbsConsumptionPerSecond(1) + "/s</span>", true);
+            UIConstants.updateCalloutContent("#in-assign-concrete .in-assing-worker-desc .info-callout-target", "concrete +" + this.campHelper.getConcreteProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>metal -" + this.campHelper.getMetalConsumptionPerSecondConcrete(1) + "/s</span>", true);
+            UIConstants.updateCalloutContent("#in-assign-smith .in-assing-worker-desc .info-callout-target", "tools +" + this.campHelper.getToolsProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>metal -" + this.campHelper.getMetalConsumptionPerSecondSmith(1) + "/s</span>", true);
+            UIConstants.updateCalloutContent("#in-assign-soldier .in-assing-worker-desc .info-callout-target", "camp defence +1" + workerConsumptionS, true);
             
-            var maxApothecaries = improvements.getCount(improvementNames.apothecary) * CampConstants.APOTECARIES_PER_SHOP;
-            var maxConcrete = improvements.getCount(improvementNames.cementmill) * CampConstants.CONCRETE_WORKERS_PER_MILL;
-            var maxSmiths = improvements.getCount(improvementNames.smithy) * CampConstants.SMIHTS_PER_SMITHY;
-            var maxSoldiers = improvements.getCount(improvementNames.barracks) * CampConstants.SOLDIERS_PER_BARRACKS;
-            var maxChemists = this.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel) * CampConstants.CHEMISTS_PER_WORKSHOP;
+            var refineriesOnLevel = this.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel);
+            var apothecariesInCamp = improvements.getCount(improvementNames.apothecary);
+            var cementMillsInCamp = improvements.getCount(improvementNames.cementmill);
+            var smithiesInCamp = improvements.getCount(improvementNames.smithy);
+            var barracksInCamp = improvements.getCount(improvementNames.barracks);
+            
+            var maxApothecaries = apothecariesInCamp * CampConstants.APOTECARIES_PER_SHOP;
+            var maxConcrete = cementMillsInCamp * CampConstants.CONCRETE_WORKERS_PER_MILL;
+            var maxSmiths = smithiesInCamp * CampConstants.SMIHTS_PER_SMITHY;
+            var maxSoldiers = barracksInCamp * CampConstants.SOLDIERS_PER_BARRACKS;
+            var maxChemists = refineriesOnLevel * CampConstants.CHEMISTS_PER_WORKSHOP;
             this.updateWorkerStepper(campComponent, "#stepper-scavenger", "scavenger", maxPopulation, false);
             this.updateWorkerStepper(campComponent, "#stepper-trapper", "trapper", maxPopulation, false);
             this.updateWorkerStepper(campComponent, "#stepper-water", "water", maxPopulation, false);
@@ -181,6 +187,12 @@ define([
             this.updateWorkerStepper(campComponent, "#stepper-concrete", "concrete", maxConcrete, true);
             this.updateWorkerStepper(campComponent, "#stepper-smith", "toolsmith", maxSmiths, true);
             this.updateWorkerStepper(campComponent, "#stepper-soldier", "soldier", maxSoldiers, true);
+            
+            UIConstants.updateCalloutContent("#in-assign-chemist .in-assign-worker-limit .info-callout-target", refineriesOnLevel + " refineries found", true);
+            UIConstants.updateCalloutContent("#in-assign-apothecary .in-assign-worker-limit .info-callout-target", apothecariesInCamp + " apothecaries built", true);
+            UIConstants.updateCalloutContent("#in-assign-concrete .in-assign-worker-limit .info-callout-target", cementMillsInCamp + " cement mills built", true);
+            UIConstants.updateCalloutContent("#in-assign-smith .in-assign-worker-limit .info-callout-target", smithiesInCamp + " smithies built", true);
+            UIConstants.updateCalloutContent("#in-assign-soldier .in-assign-worker-limit .info-callout-target", barracksInCamp + " barracks built", true);
         },
         
         updateWorkerStepper: function (campComponent, id, workerType, maxWorkers, showMax) {
@@ -188,7 +200,7 @@ define([
             var assignedWorkers = campComponent.assignedWorkers[workerType];
             $(id + " input").attr("max", Math.min(assignedWorkers + freePopulation, maxWorkers));
             $(id + " input").val(assignedWorkers);
-			$(id).parent().siblings(".in-assign-worker-limit").text(showMax ? " / " + maxWorkers : "");
+			$(id).parent().siblings(".in-assign-worker-limit").children(".callout-container").children(".info-callout-target").html(showMax ? "<span>/ " + maxWorkers + "</span>" : "");
         },
         
         updateImprovements: function (isActive, campCount) {
@@ -252,7 +264,7 @@ define([
                 if (updateTable) {
                     var sector = project.level + "." + project.sector + "." + project.direction;
                     var name = project.name;
-                    var info = "at " + project.position.getInGameFormat();
+                    var info = "at " + project.position.getPosition().getInGameFormat();
                     var classes = "action action-build action-level-project";
                     var tr = "<tr><td><button class='" + classes + "' action='" + action + "' sector='" + sector + "' + id='btn-" + action + "-" + sector + "'>" + name + "</button></td><td class='list-description'>" + info + "</td></tr>";
                     $("#in-improvements-level table").append(tr);

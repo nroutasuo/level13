@@ -147,7 +147,6 @@ dd p.p-meta {
 #switch-context-indicator {
     float: right;
 }
-
 #minimap, #minimap-fallback-container {
     overflow: hidden;
 }
@@ -252,12 +251,12 @@ dd p.p-meta {
 	color: #202220;
 }
 
-.lvl13-box-1, div.grid-content, ul.tabs li.selected , .item, .li-item-negative, .li-item-positive {
+.lvl13-box-1, div.grid-content, ul.tabs li.selected , .item, .li-item-negative, .li-item-positive, .info-callout-target {
 	background: #282a28;
 	border: 2px solid #3a3a3a;
 }
 
-.sunlit .lvl13-box-1, .sunlit div.grid-content, .sunlit ul.tabs li.selected, .sunlit .item, .sunlit .li-item-negative, .sunlit .li-item-positive {
+.sunlit .lvl13-box-1, .sunlit div.grid-content, .sunlit ul.tabs li.selected, .sunlit .item, .sunlit .li-item-negative, .sunlit .li-item-positive, .sunlit .info-callout-target {
 	background: #efefef;
 	border: 1px solid #d0d0d0;
 }
@@ -287,7 +286,6 @@ ul.tabs li.selected {
 .sunlit .cooldown-duration {
 	background: rgba(100,100,100,0.2);
 	border-color: #bbb;
-    
 }
 
 .lvl13-box-2, .infobox-temporary, .collapsible-container, .infobox-scrollable, .canvas-container {
@@ -326,19 +324,19 @@ ul.tabs li.selected {
 	color: #333;
 }
 
-.lvl13-element, div.btn-callout-content, div.info-callout-content, div.popup, button, ul.tabs li, a:link, a:visited {
+.lvl13-element, div.btn-callout-content, div.info-callout-content, div.popup, button, a:link, a:visited {
 	background: #202220;
 	color: #fdfdfd;
 	border: 2px solid #555;
 }
 
-.sunlit .lvl13-element, .sunlit div.btn-callout-content, .sunlit div.info-callout-content, .sunlit div.popup, .sunlit button, .sunlit ul.tabs li, .sunlit a:link, .sunlit a:visited {
+.sunlit .lvl13-element, .sunlit div.btn-callout-content, .sunlit div.info-callout-content, .sunlit div.popup, .sunlit button, .sunlit a:link, .sunlit a:visited {
 	background: rgb(252, 252, 252);
 	color: #222222;
 	border: 2px solid #aaa;
 }
 
-div.container-btn-action, .changelog-type, p.notification {
+div.container-btn-action, .changelog-type, .notification {
 	border-color: #555;
 }
 
@@ -753,6 +751,19 @@ div.info-callout {
 	max-width: 100%;
 }
 
+div.info-callout-target {
+    border-width: 1px;
+    border-style: solid;
+    padding: 1px 2px;
+    margin: 1px 0px;
+    cursor: help;
+}
+
+.item div.info-callout-target {
+    border-width: 0px;
+    background-color: inherit;
+}
+
 .info-callout-target-small + div.info-callout {
 	width: auto; !important;
 	max-width: none;
@@ -832,13 +843,19 @@ ul.tabs li {
 	display: inline;
 	margin: 0px 5px 0px 0px;
 	padding: 6px 10px;
-	border-width: 0px !important;
+	border-width: 1px !important;
+    border-style: solid;
 	position: relative;
 	top: 2px;
 	z-index: 3;
 	white-space: nowrap;
 	cursor: pointer;
 	text-transform: lowercase;
+    border-color: #333;
+}
+
+.sunlit ul.tabs li {
+    border-color: #ddd;
 }
 
 ul.tabs li.selected {
@@ -1060,9 +1077,14 @@ button .cooldown-action, button .cooldown-duration {
 p.notification {
     padding: 2px;
     margin: 0;
+    text-align: center;
+}
+
+#notification-player {
+    padding: 0px;
     border-width: 1px;
     border-style: solid;
-    text-align: center;
+    height: 20px;
 }
 
 .actionbox, .infobox, .buttonbox {

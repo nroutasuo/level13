@@ -507,12 +507,13 @@ define(['ash',
 			var l = parseInt(sectorPos.split(".")[0]);
 			var sX = parseInt(sectorPos.split(".")[1]);
 			var sY = parseInt(sectorPos.split(".")[2]);
+            var sectorPosVO = new PositionVO(l, sX, sY);
             var playerPos = this.playerPositionNodes.head.position;
 			var sector = this.levelHelper.getSectorByPosition(l, sX, sY);
 			var neighbour = this.levelHelper.getSectorByPosition(up ? l + 1 : l - 1, sX, sY);
 			
 			if (sector && neighbour) {
-				var msg = "Passage " + (up ? " up" : " down") + " ready in sector " + sX + "." + sY + (playerPos.level === l ? "" : ", level " + l);
+				var msg = "Passage " + (up ? " up" : " down") + " ready at " + sectorPosVO.getInGameFormat(playerPos.level === l);
 				this.buildImprovement(action, this.playerActionsHelper.getImprovementNameForAction(action), sector);
 				this.buildImprovement(neighbourAction, this.playerActionsHelper.getImprovementNameForAction(neighbourAction), neighbour, true);
 				this.addLogMessage(LogConstants.MSG_ID_BUILT_PASSAGE, msg);

@@ -92,6 +92,7 @@ define([
             var levelHelper = this.levelHelper;
 			
             var playerVision = this.playerStatsNodes.head.vision.value;
+            var playerHealth = this.playerStatsNodes.head.stamina.health;
 			var isAutoPlaying = this.autoPlayNodes.head;
             
             var hasButtonCooldown = function (button) {
@@ -211,7 +212,7 @@ define([
                                 var classes = "action-cost";
                                 var costFraction = playerActionsHelper.checkCost(action, key);
                                 if (costFraction < 1) classes += " action-cost-blocker";
-                                if (isResource(key.split("_")[1]) && value > showStorage) {
+                                if (isResource(key.split("_")[1]) && value > showStorage || key == "stamina" && value > playerHealth) {
                                     classes += " action-cost-blocker-storage";
                                     hasCostBlockers = true;
                                 }

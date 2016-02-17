@@ -345,10 +345,10 @@ define([
 		updateNotifications: function () {
 			var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
 			var isBusy = this.playerStatsNodes.head.entity.has(PlayerActionComponent) && busyComponent.isBusy();
-			$("#notification-player").toggle(isBusy);
 			if (isBusy) {
-				$("#notification-player p").html(busyComponent.getDescription());
+				$("#notification-player p").text(busyComponent.getDescription());
 			}
+			$("#notification-player").css("opacity", isBusy ? 1 : 0);
 		},
 		
 		getShowResources: function () {
