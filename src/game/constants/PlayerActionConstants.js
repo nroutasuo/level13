@@ -1530,7 +1530,6 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 scout_locale_i: "Find out if there is anyone living here.",
                 scout_locale_u: "Scout for additional resources and evidence.",
                 scavenge: "Look for resources.",
-                fightcheck: "Attempt to gain control of the area.",
                 clear_workshop: "Scout the workshop to see if it can be used.",
                 fight_gang: "Clear the enemies blocking passage.",
                 move_camp_level: "Shortcut back to the nearest camp.",

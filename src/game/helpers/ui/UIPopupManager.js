@@ -37,7 +37,7 @@ function (Ash, UIConstants) {
             $("#info-results").toggle(hasResult);
             if (hasResult) {
                 $("#info-results").empty();
-                var rewardDiv = this.playerActionResultsHelper.getRewardDiv(resultVO);
+                var rewardDiv = this.playerActionResultsHelper.getRewardDiv(resultVO, false);
                 $("#info-results").append(rewardDiv);
             }
             

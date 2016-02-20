@@ -562,10 +562,9 @@
 	</div><!-- sticky footer -->
                         
     <div id="fight-popup" class="popup fill-on-mobiles" style="display:none">
-        <h3>Fight</h3>
+        <h3 id="fight-title">a</h3>
         <p id="fight-desc"></p>
         <p id="fight-popup-enemy-info">Enemy name & strength</p>
-        <p id="fight-popup-control-info">(#/# enemies needed for sector control)</p>
         <div id="fight-popup-bars">
             <div id="fight-bar-enemy" class="progress-wrap progress">
                 <div class="progress-bar progress"></div>
@@ -578,7 +577,7 @@
         <div id="fight-popup-results">                                    
         </div>
         <div class="buttonbox">
-            <button id="out-action-fight-cancel">Flee</button>
+            <button id="out-action-fight-cancel" action="fight_cancel">Flee</button>
             <button id="out-action-fight-confirm" class="action" action="fight">Fight</button>
             <button id="out-action-fight-close">Close</button>
             <button id="out-action-fight-next" action="fightcheck">Continue</button>

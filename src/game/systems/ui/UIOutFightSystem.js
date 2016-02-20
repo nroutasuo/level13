@@ -61,6 +61,8 @@ define([
 			$("#fight-popup-bars").toggle(fightActive);
 			$("#fight-popup-self-info").toggle(fightActive);
 			$("#fight-popup-results").toggle(fightFinished);
+            
+			$("#fight-desc").toggle(!fightActive);
 			
 			$("#fight-popup-enemy-info").toggleClass("strike-through", fightFinished && fightWon);
 			
@@ -78,8 +80,7 @@ define([
 		updateFightCommon: function (fightPending) {
 			var sector = this.playerLocationNodes.head.entity;
 			var encounterComponent = sector.get(FightEncounterComponent);
-			$("#fight-desc").toggle(fightPending);
-			$("#fight-desc").text(this.getDescriptionByContext(encounterComponent.context, encounterComponent.enemy));
+			$("#fight-title").text(encounterComponent.context);
 			
 			// Enemy info
 			var enemiesComponent = sector.get(EnemiesComponent);
@@ -99,24 +100,23 @@ define([
 			var sectorControlComponent = sector.get(SectorControlComponent);
 			var baseActionID = this.playerActionsHelper.getBaseActionID(encounterComponent.context);
 			var enemies = sectorControlComponent.getCurrentEnemies(FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context));
-			var maxEnemies = sectorControlComponent.getMaxEnemies(FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context));
             $("#out-action-fight-cancel").text(enemies > 0 ? "flee" : "close");
-			$("#fight-popup-control-info").text(this.getSectorControlDesc(enemies, maxEnemies, encounterComponent.context));
 		},
 	
 		updateFightPending: function () {
+			var sector = this.playerLocationNodes.head.entity;
+			var encounterComponent = sector.get(FightEncounterComponent);
 			$("#fight-results-win-res").empty();
 			$("#fight-results-win-items").empty();
 			$("#fight-bar-enemy").data("animation-length", 100);
 			$("#fight-bar-self").data("animation-length", 100);
-			$("#fight-popup h3").text("Fight");
+			$("#fight-desc").text(this.getDescriptionByContext(encounterComponent.context, encounterComponent.enemy));
 			this.displayedRewards = null;
 		},
 		
 		updateFightActive: function () {
 			$("#fight-results-win-res").empty();
 			$("#fight-results-win-items").empty();
-			$("#fight-popup h3").text("Fight");
 			
 			var timeStamp = new Date().getTime();
 			if (timeStamp - this.lastUpdateTimeStamp > this.updateFrequency) {
@@ -142,8 +142,10 @@ define([
 		},
 		
 		updateFightFinished: function () {
+			var sector = this.playerLocationNodes.head.entity;
+			var encounterComponent = sector.get(FightEncounterComponent);
 			var isWon = this.fightNodes.head.fight.won;
-			$("#fight-popup h3").text(isWon ? "Won" : "Lost");
+			$("#fight-desc").text(isWon ? this.getWonDescriptionByContext(encounterComponent.context) : this.getLostDescriptionByContext(encounterComponent.context));
 			
 			$("#fight-results-win-header").toggle(isWon);
 			$("#fight-results-win-res").toggle(isWon);
@@ -152,28 +154,11 @@ define([
 			$("#fight-results-lose-items").toggle(!isWon && false);
 			
 			if (this.displayedRewards !== this.fightNodes.head.fight.resultVO) {
-				$("#fight-popup-results").html(this.playerActionResultsHelper.getRewardDiv(this.fightNodes.head.fight.resultVO));
+				$("#fight-popup-results").html(this.playerActionResultsHelper.getRewardDiv(this.fightNodes.head.fight.resultVO, true));
 				this.uiFunctions.generateCallouts("#fight-popup-results");
 				this.displayedRewards = this.fightNodes.head.fight.resultVO;
 			}
         },
-		
-		getSectorControlDesc: function (enemies, maxEnemies, context) {
-			var baseActionID = this.playerActionsHelper.getBaseActionID(context);
-			var localeId = FightConstants.getEnemyLocaleId(baseActionID, context);
-			var ratioLeft = enemies / maxEnemies;
-			var areaName = localeId ? "place" : "area";
-			
-			if (ratioLeft > 0.3 && enemies > 2) {
-				return "many enemies left in this " + areaName;
-			} else if (ratioLeft > 0.1 && enemies > 1) {
-				return "some enemies left in this " + areaName;
-			} else if (ratioLeft > 0) {
-				return "few enemies left in this " + areaName;
-			} else {
-				return "no enemies left here";
-			}
-		},
 		
 		getDescriptionByContext: function (context, enemy) {
             var enemiesNoun = TextConstants.getEnemyNoun([enemy]);
@@ -181,9 +166,9 @@ define([
 			var baseActionID = this.playerActionsHelper.getBaseActionID(context);
 			switch (baseActionID) {
 				case "scavenge":
-					return "surprised while scavenging";
+					return "surprised by " + TextConstants.addArticle(enemyNoun) + " while scavenging";
 				case "scout_locale_u":
-					return "surprised while scouting";
+					return "surprised by " + TextConstants.addArticle(enemyNoun) + " while scouting";
 				case "scout_locale_i":
 					return "attacked while scouting";
 				case "clear_workshop":
@@ -192,6 +177,34 @@ define([
 					return TextConstants.addArticle(enemyNoun) + " is blocking passage";
 				default:
 					return TextConstants.addArticle(enemyNoun) + " approaches";
+			}
+        },
+		
+		getWonDescriptionByContext: function (context) {
+			var baseActionID = this.playerActionsHelper.getBaseActionID(context);
+			switch (baseActionID) {
+				case "scavenge":
+				case "scout_locale_u":
+				case "scout_locale_i":
+					return "area clear";
+
+				case "clear_workshop":
+				case "fight_gang":
+				default:
+					return "fight won";
+			}
+        },
+		
+		getLostDescriptionByContext: function (context) {
+			var baseActionID = this.playerActionsHelper.getBaseActionID(context);
+			switch (baseActionID) {
+				case "scavenge":
+				case "scout_locale_u":
+				case "scout_locale_i":
+				case "clear_workshop":
+				case "fight_gang":
+				default:
+					"fight lost";
 			}
 		},
 		

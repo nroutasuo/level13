@@ -158,22 +158,26 @@ define([
 			
 			var hasThirstPerk = perksComponent.hasPerk(PerkConstants.perkIds.thirst);
 			var hasHungerPerk = perksComponent.hasPerk(PerkConstants.perkIds.hunger);
+			
+			var playerLevelCamp = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity : null;
+			var inCamp = this.playerNodes.head.position.inCamp;
+            
 			if (!isThirsty) {
 				if (hasThirstPerk) {
-					this.log("No longer thirsty.");
+					if (!inCamp) this.log("No longer thirsty.");
 					perksComponent.removeItemsById(PerkConstants.perkIds.thirst);
 				}
 			} else if (!hasThirstPerk) {
-				this.log("Out of water!");
+				if (!inCamp) this.log("Out of water!");
 				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.thirst));
 			}
 			if (!isHungry) {
 				if (hasHungerPerk) {
-					this.log("No longer hungry.");
+					if (!inCamp) this.log("No longer hungry.");
 					perksComponent.removeItemsById(PerkConstants.perkIds.hunger);
 				}
 			} else if (!hasHungerPerk) {
-				this.log("Out of food!");
+				if (!inCamp) this.log("Out of food!");
 				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.hunger));
 			}
 		},

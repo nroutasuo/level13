@@ -338,7 +338,7 @@ define([
 			return { msg: msg, replacements: replacements, values: values };
 		},
 		
-		getRewardDiv: function (resultVO) {
+		getRewardDiv: function (resultVO, isFight) {
 			var div = "<div class='infobox infobox-temporary'>";
 			
             var gainedhtml = "<span class='listheader'>Gained:</span>";
@@ -383,7 +383,10 @@ define([
 			var hasLostStuff = losthtml.indexOf("<li") > 0 || losthtml.indexOf("<p") > 0;
 			if (hasLostStuff) div += losthtml;
 			
-			if (!hasGainedStuff && !hasLostStuff) div += "<p>Didn't find anything useful.</p>";
+			if (!hasGainedStuff && !hasLostStuff) {
+				if (isFight) div += "<p>Nothing left behind.</p>"
+				else div += "<p>Didn't find anything useful.</p>";
+			}
                 
 			div += "</div>";
 			return div;
