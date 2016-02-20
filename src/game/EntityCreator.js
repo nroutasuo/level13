@@ -159,6 +159,7 @@ define([
 				sectorFeatures.sunlit,
 				sectorFeatures.weather,
 				sectorFeatures.campable,
+                sectorFeatures.notCampableReason,
 				sectorFeatures.resources))
 			.add(new SectorLocalesComponent(locales))
 			.add(new SaveComponent(saveKey, [

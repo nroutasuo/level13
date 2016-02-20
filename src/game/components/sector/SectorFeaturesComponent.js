@@ -17,7 +17,7 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
         // food: only represents the amount of trappable food
         resources: null,
         
-        constructor: function (level, buildingDensity, stateOfRepair, sectorType, buildingStyle, sunlit, weather, campable, resources) {
+        constructor: function (level, buildingDensity, stateOfRepair, sectorType, buildingStyle, sunlit, weather, campable, notCampableReason, resources) {
             this.level = level;
             this.buildingDensity = buildingDensity;
             this.stateOfRepair = stateOfRepair;
@@ -26,6 +26,7 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
             this.sunlit = sunlit;
             this.weather = weather;
             this.campable = campable;
+            this.notCampableReason = notCampableReason;
             this.resources = resources;
         },
         

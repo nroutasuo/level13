@@ -52,8 +52,9 @@ define([
 			var passageDownPositions = [];
 			for (var l = topLevel; l >= bottomLevel; l--) {
                 var isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, l);
+                var notCampableReason = isCampableLevel ? null : WorldCreatorHelper.getNotCampableReason(seed, l);
 				var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
-                var levelVO = new LevelVO(l, levelOrdinal, isCampableLevel);
+                var levelVO = new LevelVO(l, levelOrdinal, isCampableLevel, notCampableReason);
 				this.world.addLevel(levelVO);
 
                 this.generateSectors(seed, levelVO, passageDownPositions);
@@ -520,7 +521,7 @@ define([
         },
 		
 		createSector: function (levelVO, sectorPos, sectorsAll, sectorsCentral) {
-			var sectorVO = new SectorVO(sectorPos, levelVO.isCampable);
+			var sectorVO = new SectorVO(sectorPos, levelVO.isCampable, levelVO.notCampableReason);
 			levelVO.addSector(sectorVO);
 			sectorsAll.push(sectorPos);
 			if (PositionConstants.isPositionInArea(sectorPos, levelVO.centralAreaSize)) sectorsCentral.push(sectorPos);
@@ -612,6 +613,7 @@ define([
 			sectorFeatures.resources = sectorVO.resources;
 			sectorFeatures.workshopResource = sectorVO.workshopResource;
             sectorFeatures.campable = sectorVO.campableLevel;
+            sectorFeatures.notCampableReason = sectorVO.notCampableReason;
 			return sectorFeatures;
 		},
 		

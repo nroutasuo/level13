@@ -3,7 +3,8 @@ define([
 	'ash',
 	'game/worldcreator/WorldCreatorRandom',
 	'game/constants/WorldCreatorConstants',
-], function (Ash, WorldCreatorRandom, WorldCreatorConstants) {
+	'game/constants/LevelConstants',
+], function (Ash, WorldCreatorRandom, WorldCreatorConstants, LevelConstants) {
 
     var WorldCreatorHelper = {
 		
@@ -75,6 +76,14 @@ define([
             var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);            
             var levelOrdinal = this.getLevelOrdinal(seed, level);
             return camplessLevelOrdinals.indexOf(levelOrdinal) < 0;
+        },
+        
+        getNotCampableReason: function (seed, level) {
+            if (this.isCampableLevel(seed, level)) return null;
+            var rand = WorldCreatorRandom.random(seed % 4 + level + level * 8 + 88);
+            if (rand < 0.33) return LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
+            if (rand < 0.66 && level < 16) return LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION;
+            return LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
         },
 		
 		getCamplessLevelOrdinals: function (seed) {

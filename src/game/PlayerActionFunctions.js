@@ -440,6 +440,7 @@ define(['ash',
 				this.fightHelper.handleRandomEncounter(action, function () {
 					playerActionFunctions.addLogMessage(LogConstants.MSG_ID_GANG_DEFEATED, "The road is clear.");
                     playerActionFunctions.uiFunctions.completeAction(action);
+                    playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 				}, function () {
 					// fled
                     playerActionFunctions.uiFunctions.completeAction(action);

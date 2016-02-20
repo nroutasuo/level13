@@ -5,6 +5,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 		level: -1,
 		levelOrdinal: -1,
 		isCampable: false,
+        notCampableReason: null,
 		centralAreaSize: 0,
 		
 		sectors: [],
@@ -15,10 +16,11 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 		minY: 0,
 		maxY: 0,
 	
-        constructor: function (level, levelOrdinal, isCampable) {
+        constructor: function (level, levelOrdinal, isCampable, notCampableReason) {
 			this.level = level;
 			this.levelOrdinal = levelOrdinal;
 			this.isCampable = isCampable;
+            this.notCampableReason = notCampableReason;
 			
 			this.sectors = [];
 			this.centralSectors = [];

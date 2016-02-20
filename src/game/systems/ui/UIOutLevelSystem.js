@@ -7,6 +7,7 @@ define([
     'game/constants/PositionConstants',
     'game/constants/EnemyConstants',
     'game/constants/LocaleConstants',
+    'game/constants/LevelConstants',
     'game/constants/MovementConstants',
     'game/constants/ItemConstants',
     'game/nodes/PlayerPositionNode',
@@ -29,7 +30,7 @@ define([
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/EnemiesComponent'
 ], function (
-    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, UIConstants, PositionConstants, EnemyConstants, LocaleConstants, MovementConstants, ItemConstants,
+    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, UIConstants, PositionConstants, EnemyConstants, LocaleConstants, LevelConstants, MovementConstants, ItemConstants,
     PlayerPositionNode, PlayerLocationNode, SectorNode, CampNode, VisitedSectorNode,
     VisionComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
     MovementOptionsComponent,
@@ -352,7 +353,7 @@ define([
 			var description = "";
 			
 			if (hasVision) {
-				description += this.getEnemyDescription(isScouted, passagesComponent, hasCampHere);
+				description += this.getDangerDescription(isScouted, featuresComponent, passagesComponent, hasCampHere);
 			}
 			
 			if (isScouted && hasVision && !hasCampHere && !hasCampOnLevel) {
@@ -411,7 +412,7 @@ define([
 			return description;
 		},
 		
-		getEnemyDescription: function (isScouted, passagesComponent, hasCampHere) {
+		getDangerDescription: function (isScouted, featuresComponent, passagesComponent, hasCampOnLevel) {
 			var enemyDesc = "";
 			
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
@@ -431,10 +432,33 @@ define([
 					enemyDesc = TextConstants.getEnemyText(enemiesComponent.possibleEnemies, sectorControlComponent, defeatableBlockerN, defeatableBlockerS, defeatableBlockerW, defeatableBlockerE);
 				}
 			} else if (isScouted) {
-				enemyDesc += "There doesn't seem to be anything dangerous here. ";
+				enemyDesc += "There doesn't seem to be anything hostile here. ";
 			}
+            
+            var notCampableDesc = "";
+            if (!featuresComponent.campable) {
+                var inhabited = featuresComponent.level > 10;
+                switch (featuresComponent.notCampableReason) {
+                    case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
+                        if (inhabited && featuresComponent.stateOfRepair > 6) notCampableDesc = "Many entrances have big yellow warning signs on them, with the text 'KEEP OUT' and a radiation sign. ";
+                        else if (inhabited && featuresComponent.buildingDensity > 5) notCampableDesc = "Walls are covered in graffiti warning about radiation. ";
+                        else notCampableDesc = "There is an eerie air as if the place has been abandoned in a hurry.";
+                        break;
+            
+                    case UNCAMPABLE_LEVEL_TYPE_POLLUTION:
+                        if (inhabited && featuresComponent.stateOfRepair > 6) notCampableDesc = "Many entrances have big red warning signs on them with a skull sign and the text 'KEEP OUT'. ";
+                        else if (inhabited && featuresComponent.buildingDensity > 5) notCampableDesc = "Walls are covered in graffiti warning about some kind of pollution.";
+                        else notCampableDesc = "A noxious smell hangs in the air.";
+                        break;
+                    
+                    case UNCAMPABLE_LEVEL_TYPE_SUPERSTITION:
+                        if (inhabited) notCampableDesc = "There aren't any signs of recent human habitation. ";
+                        else notCampableDesc = "An unnerving silence blankets the streets. ";
+                        break;
+                }
+            }
 			
-			return enemyDesc;
+			return enemyDesc + notCampableDesc;
 		},
 		
 		updateLocales: function () {

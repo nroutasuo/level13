@@ -5,13 +5,14 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		position: null,
         movementBlockers: {},
 	
-        constructor: function (position, isCampableLevel) {
+        constructor: function (position, isCampableLevel, notCampableReason) {
 			this.position = position;
             this.camp = false;
-            this.campableLevel = isCampableLevel; // TODO define reasons for camping disabled: waste etc
+            this.campableLevel = isCampableLevel;
+            this.notCampableReason = notCampableReason;
             this.locales = [];
 			this.movementBlockers = {};
-            this.id = Math.floor(Math.random()*100000);
+            this.id = Math.floor(Math.random() * 100000);
 			this.passageUp = 0;
 			this.passageDown = 0;
             this.resources = new ResourcesVO();
