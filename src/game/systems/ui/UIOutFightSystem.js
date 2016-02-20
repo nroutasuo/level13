@@ -51,11 +51,13 @@ define([
 			var fightActive = this.fightNodes.head != null && this.fightNodes.head.fight.finished !== true;
 			var fightFinished = this.fightNodes.head != null && this.fightNodes.head.fight.finished === true;
 			var fightWon = fightFinished && this.fightNodes.head.fight.won;
+            
+            console.log(this.fightNodes.head ? this.fightNodes.head.fight.finished : "null");
 			
 			$("#out-action-fight-cancel").toggle(!fightActive && !fightFinished);
 			$("#out-action-fight-confirm").toggle(!fightActive && !fightFinished);
 			$("#out-action-fight-close").toggle(fightFinished && !fightWon);
-			$("#out-action-fight-next").toggle(fightFinished);
+			$("#out-action-fight-next").toggle(fightFinished && fightWon);
 			
 			$("#fight-popup-control-info").toggle(!fightActive);
 			$("#fight-popup-bars").toggle(fightActive);
@@ -80,7 +82,7 @@ define([
 		updateFightCommon: function (fightPending) {
 			var sector = this.playerLocationNodes.head.entity;
 			var encounterComponent = sector.get(FightEncounterComponent);
-			$("#fight-title").text(encounterComponent.context);
+			$("#fight-title").text(this.getTitleByContext(encounterComponent.context));
 			
 			// Enemy info
 			var enemiesComponent = sector.get(EnemiesComponent);
@@ -159,6 +161,11 @@ define([
 				this.displayedRewards = this.fightNodes.head.fight.resultVO;
 			}
         },
+        
+        getTitleByContext: function (context) {
+			var baseActionID = this.playerActionsHelper.getBaseActionID(context);
+            return baseActionID.replace(/_/g, " ");
+        },
 		
 		getDescriptionByContext: function (context, enemy) {
             var enemiesNoun = TextConstants.getEnemyNoun([enemy]);
@@ -204,7 +211,7 @@ define([
 				case "clear_workshop":
 				case "fight_gang":
 				default:
-					"fight lost";
+					return "fight lost";
 			}
 		},
 		

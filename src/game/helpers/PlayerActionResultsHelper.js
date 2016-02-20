@@ -147,7 +147,7 @@ define([
 				rewards.gainedReputation = 1;
             } else {
 				// TODO lost followers
-				rewards = this.getFadeOutResults(1, 0.75);
+				rewards = this.getFadeOutResults(0.75, 1);
 			}
 			return rewards;
 		},
