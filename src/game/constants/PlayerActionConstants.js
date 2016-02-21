@@ -572,6 +572,10 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                         unlock_item_bag3: true,
                     }
                 },
+                
+                create_blueprint: {
+                    inCamp: true,
+                },
 				
                 unlock_building_hospital: {
                     upgrades: {
@@ -1533,6 +1537,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 clear_workshop: "Scout the workshop to see if it can be used.",
                 fight_gang: "Clear the enemies blocking passage.",
                 move_camp_level: "Shortcut back to the nearest camp.",
+                create_blueprint: "Combine pieces to a blueprint.",
                 despair: "Give up. Stop moving. Rest.",
                 build_out_collector_food: "Accumulates food.",
                 build_out_collector_water: "Accumulates water.",

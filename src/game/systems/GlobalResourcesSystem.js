@@ -149,7 +149,7 @@ define([
 			var storageUpgrade;
 			for (var i in storageUpgrades) {
 				storageUpgrade = storageUpgrades[i];
-				if (upgradeComponent.hasBought(storageUpgrade)) upgradeLevel++;
+				if (upgradeComponent.hasUpgrade(storageUpgrade)) upgradeLevel++;
 			}
 			return upgradeLevel;
 		},

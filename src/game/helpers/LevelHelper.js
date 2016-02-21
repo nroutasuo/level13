@@ -314,7 +314,7 @@ define([
 			for (var node = this.sectorNodes.head; node; node = node.next) {
 				sectorPosition = node.entity.get(PositionComponent);
 				if (sectorPosition.level === level) {
-					locales.concat(this.getSectorLocales(node.entity, includeScouted, excludeLocaleVO));
+					locales = locales.concat(this.getSectorLocales(node.entity, includeScouted, excludeLocaleVO));
 				}
 			}
 			return locales;

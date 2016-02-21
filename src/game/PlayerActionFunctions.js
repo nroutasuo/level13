@@ -13,6 +13,7 @@ define(['ash',
 	'game/constants/UpgradeConstants',
 	'game/constants/UIConstants',
 	'game/constants/TextConstants',
+	'game/vos/PositionVO',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/player/PlayerResourcesNode',
@@ -48,7 +49,8 @@ define(['ash',
 	'game/worldcreator/WorldCreatorDebug'
 ], function (Ash,
 	GameConstants, LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UpgradeConstants, UIConstants, TextConstants,
-	PlayerPositionNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
+	PositionVO,
+    PlayerPositionNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
 	ItemsComponent, PerksComponent, DeityComponent, AutoPlayComponent, PlayerActionComponent,
@@ -326,6 +328,7 @@ define(['ash',
                     playerActionFunctions.uiFunctions.completeAction("scavenge");
 					playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCAVENGE, logMsg);
                     playerActionFunctions.uiFunctions.showInfoPopup("Scavenge", detailedMessage, "Continue", rewards);
+					playerActionFunctions.playerActionResultsHelper.logSpecialFinds(rewards);
 					playerActionFunctions.forceResourceBarUpdate();
 					playerActionFunctions.forceTabUpdate();
 				}, function () {
@@ -366,6 +369,7 @@ define(['ash',
                     
                     // TODO signal to force out map update
 					this.addLogMessage(LogConstants.MSG_ID_SCOUT, msgBase);
+					this.playerActionResultsHelper.logSpecialFinds(rewards);
                     this.uiFunctions.showInfoPopup("Scout", msgBase, "Continue", rewards);
                     this.forceResourceBarUpdate();
                     this.occurrenceFunctions.onScoutSector(sector);
@@ -396,6 +400,7 @@ define(['ash',
                     var rewards = playerActionFunctions.playerActionResultsHelper.getScoutLocaleRewards(localeVO);
                     playerActionFunctions.playerActionResultsHelper.collectRewards(rewards);
                     playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCOUT_LOCALE, baseMsg);
+					playerActionFunctions.playerActionResultsHelper.logSpecialFinds(rewards);
                     playerActionFunctions.forceResourceBarUpdate();
                     playerActionFunctions.uiFunctions.showInfoPopup("Scout", baseMsg, "Continue", rewards);
                     playerActionFunctions.uiFunctions.completeAction(action);
@@ -802,11 +807,15 @@ define(['ash',
             }
         },
         
-        unlockUpgrade: function(upgradeId) {
+        createBlueprint: function (upgradeId) {
+            this.tribeUpgradesNodes.head.upgrades.createBlueprint(upgradeId);
+        },
+        
+        unlockUpgrade: function (upgradeId) {
             this.tribeUpgradesNodes.head.upgrades.useBlueprint(upgradeId);
         },
         
-        buyUpgrade: function(upgradeId, automatic) {
+        buyUpgrade: function (upgradeId, automatic) {
             if (automatic || this.playerActionsHelper.checkAvailability(upgradeId, true)) {
                 this.playerActionsHelper.deductCosts(upgradeId);
                 this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeId);
@@ -814,7 +823,7 @@ define(['ash',
             }
         },
         
-        collectCollector: function(actionName, improvementName) {
+        collectCollector: function (actionName, improvementName) {
             if(this.playerActionsHelper.checkAvailability(actionName, true)) {
                 this.playerActionsHelper.deductCosts(actionName);
                 var currentStorage = this.resourcesHelper.getCurrentStorage();
@@ -824,7 +833,7 @@ define(['ash',
                 var improvementVO = improvementsComponent.getVO(improvementNames[improvementName]);
                 var resourcesVO = improvementVO.storedResources;
                 
-                var totalCollected = 0;                
+                var totalCollected = 0;
                 for(var key in resourceNames) {
                     var name = resourceNames[key];
                     var amount = resourcesVO.getResource(name);
@@ -1052,11 +1061,6 @@ define(['ash',
                     var sector = this.playerLocationNodes.head.entity;                
                     var improvementsComponent = sector.get(SectorImprovementsComponent);
                     improvementsComponent.add(name, amount);                    
-                    break;
-                
-                case "blueprint":
-                    var name = inputParts[1];
-                    this.tribeUpgradesNodes.head.upgrades.addNewBlueprint(name);
                     break;
                 
                 case "tech":

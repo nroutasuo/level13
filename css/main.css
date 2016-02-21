@@ -251,12 +251,12 @@ dd p.p-meta {
 	color: #202220;
 }
 
-.lvl13-box-1, div.grid-content, ul.tabs li.selected , .item, .li-item-negative, .li-item-positive, .info-callout-target {
+.lvl13-box-1, div.grid-content, ul.tabs li.selected , .item, .li-item-negative, .li-item-positive, .info-callout-target, .blueprint-piece-box-missing {
 	background: #282a28;
 	border: 2px solid #3a3a3a;
 }
 
-.sunlit .lvl13-box-1, .sunlit div.grid-content, .sunlit ul.tabs li.selected, .sunlit .item, .sunlit .li-item-negative, .sunlit .li-item-positive, .sunlit .info-callout-target {
+.sunlit .lvl13-box-1, .sunlit div.grid-content, .sunlit ul.tabs li.selected, .sunlit .item, .sunlit .li-item-negative, .sunlit .li-item-positive, .sunlit .info-callout-target, .sunlit .blueprint-piece-box-missing {
 	background: #efefef;
 	border: 1px solid #d0d0d0;
 }
@@ -273,12 +273,12 @@ ul.tabs li.selected {
 	border-width: 1px !important;
 }
 
-.item-equipped, .cooldown-reqs, .cooldown-duration, ul.resultlist li {
+.item-equipped, .cooldown-reqs, .cooldown-duration, ul.resultlist li, .blueprint-piece-box-found {
 	background: rgba(200,200,200,0.1);
 	border-color: #666;
 }
 
-.sunlit .item-equipped, .sunlit .cooldown-reqs, .sunlit ul.resultlist li {
+.sunlit .item-equipped, .sunlit .cooldown-reqs, .sunlit ul.resultlist li, .sunlit .blueprint-piece-box-found {
 	background: #fff;
 	border-color: #bbb;
 }
@@ -759,7 +759,7 @@ div.info-callout-target {
     cursor: help;
 }
 
-.item div.info-callout-target {
+.item div.info-callout-target, .resultlist li div.info-callout-target, .itemlist div.info-callout-target {
     border-width: 0px;
     background-color: inherit;
 }
@@ -869,8 +869,8 @@ ul.tabs li:hover, button.btn-meta:hover {
 
 .bubble {
     position: absolute;
-    top: 5px;
-    right: -8px;
+    top: -6px;
+    right: -6px;
     border: 1px solid;
     width: 16px;
     height: 16px;
@@ -1152,6 +1152,11 @@ td.list-description {
     padding-left: 10px;
 }
 
+td.list-action {
+    text-align: center;
+    width: 100pt;
+}
+
 td.item-name {
 	min-width: 8em;
 }
@@ -1221,6 +1226,22 @@ input.amount {
 	width: 100%;
 	font-size: 85%;
 	text-align: center;
+}
+
+.blueprint-piece-box {
+    width: 2em;
+    height: 2em;
+    display: inline-block;
+    margin: 0px 3px;
+    border-width: 2px;
+    border-style: solid;
+    position: relative;
+}
+
+.blueprint-piece-box img {
+    position: absolute;
+    top: 25%;
+    left: 12%;
 }
 
 .collapsible-container {

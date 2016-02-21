@@ -20,6 +20,7 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
                 investigate: false,
                 bag: false,
                 upgrades: false,
+                blueprints: false,
                 resources: {
                     food: false,
                     water: false,

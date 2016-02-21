@@ -565,7 +565,7 @@ define(['ash',
             var isAvailable;
 			for (var id in UpgradeConstants.upgradeDefinitions) {
 				upgradeDefinition = UpgradeConstants.upgradeDefinitions[id];
-				if (!this.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasBought(id)) {
+				if (!this.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasUpgrade(id)) {
 					hasBlueprintUnlocked = this.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasAvailableBlueprint(id);
 					hasBlueprintNew = this.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasNewBlueprint(id);
 					isAvailable = this.playerActionFunctions.playerActionsHelper.checkAvailability(id);
@@ -619,7 +619,7 @@ define(['ash',
         },
         
         hasUpgrade: function (upgradeId) {
-            return this.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasBought(upgradeId);
+            return this.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeId);
         },
 		
 		isBagFull: function () {

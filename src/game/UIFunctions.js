@@ -23,6 +23,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                 in: "switch-in",
                 out: "switch-out",
                 upgrades: "switch-upgrades",
+                blueprints: "switch-blueprints",
                 world: "switch-world"
             },
         },
@@ -115,6 +116,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             this.actionToFunctionMap["fight_gang"] = playerActions.fightGang;
             this.actionToFunctionMap["despair"] = playerActions.despair;
             this.actionToFunctionMap["unlock_upgrade"] = playerActions.unlockUpgrade;
+            this.actionToFunctionMap["create_blueprint"] = playerActions.createBlueprint;
         },
         
         registerListeners: function () {
@@ -446,6 +448,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                     $("#container-tab-two-out-actions").slideUp(transitionTime);
                     $("#container-tab-two-bag").slideUp(transitionTime);
                     $("#container-tab-two-map").slideUp(transitionTime);
+                    $("#container-tab-two-blueprints").slideUp(transitionTime);
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
                     $("#container-tab-footer").slideUp(transitionTime);
@@ -465,6 +468,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                     $("#container-tab-two-bag").slideUp(transitionTime);
                     $("#container-tab-two-map").slideUp(transitionTime);
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
+                    $("#container-tab-two-blueprints").slideUp(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
                     $("#container-tab-footer").slideUp(transitionTime);
                     if (!noAction) playerActions.enterCamp(true);
@@ -481,6 +485,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                     $("#container-tab-two-bag").slideUp(transitionTime);
                     $("#container-tab-two-map").slideUp(transitionTime);
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
+                    $("#container-tab-two-blueprints").slideUp(transitionTime);
                     $("#container-tab-two-world").slideDown(transitionTime);
                     $("#container-tab-footer").slideUp(transitionTime);
                     break;
@@ -496,6 +501,23 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                     $("#container-tab-two-bag").slideUp(transitionTime);
                     $("#container-tab-two-map").slideUp(transitionTime);
                     $("#container-tab-two-upgrades").slideDown(transitionTime);
+                    $("#container-tab-two-blueprints").slideUp(transitionTime);
+                    $("#container-tab-two-world").slideUp(transitionTime);
+                    $("#container-tab-footer").slideUp(transitionTime);
+                    break;
+                
+                case elementIDs.tabs.blueprints:
+                    $("#switch-tabs li#switch-blueprints").addClass("selected");
+                    $("#btn-header-rename").slideUp(transitionTime);
+                    $("#container-tab-vis-in").slideUp(transitionTime);
+                    $("#container-tab-enter-out").slideUp(transitionTime);
+                    $("#container-tab-two-in").slideUp(transitionTime);
+                    $("#container-tab-two-out").slideUp(transitionTime);
+                    $("#container-tab-two-out-actions").slideUp(transitionTime);
+                    $("#container-tab-two-bag").slideUp(transitionTime);
+                    $("#container-tab-two-map").slideUp(transitionTime);
+                    $("#container-tab-two-upgrades").slideUp(transitionTime);
+                    $("#container-tab-two-blueprints").slideDown(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
                     $("#container-tab-footer").slideUp(transitionTime);
                     break;
@@ -511,6 +533,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                     $("#container-tab-two-bag").slideDown(transitionTime);
                     $("#container-tab-two-map").slideUp(transitionTime);
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
+                    $("#container-tab-two-blueprints").slideUp(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
                     $("#container-tab-footer").slideUp(transitionTime);
                     break;
@@ -526,6 +549,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                     $("#container-tab-two-bag").slideUp(transitionTime);
                     $("#container-tab-two-map").slideDown(transitionTime);
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
+                    $("#container-tab-two-blueprints").slideUp(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
                     $("#container-tab-footer").slideUp(transitionTime);
                     break;

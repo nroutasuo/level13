@@ -1,0 +1,31 @@
+
+IMAGE SOURCES for LEVEL 13
+
+--------------------------------------------------
+
+Map & Resource icons
+
+Noora Routasuo
+see LICENCE at project root
+
+--------------------------------------------------
+
+UI icons
+
+Eldorado Icons
+http://www.icojam.com
+see eldorado/readme.txt
+
+Open-Iconic
+(c) 2014 Waybury
+see open-iconic/ICON-LICENCE
+
+--------------------------------------------------
+
+Items
+
+Fugue Icons
+(C) 2013 Yusuke Kamiyamane
+see items/FUGURE-README.txt
+
+--------------------------------------------------

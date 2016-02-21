@@ -6,6 +6,14 @@
             "final": false,
             "changes": [
                 {
+                    "type": "GD",
+                    "summary": "Made blueprints more interesting by introducing pieces that need to be collected to make a blueprint."
+                },
+                {
+                    "type": "UI",
+                    "summary": "Added notifications to tabs when there is new content like available buildigs or items."
+                },
+                {
                     "type": "UI",
                     "summary": "Improved exploration UI and the distinction between exploration and in-camp mdoes."
                 },

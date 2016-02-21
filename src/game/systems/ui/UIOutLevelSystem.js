@@ -436,25 +436,29 @@ define([
 			}
             
             var notCampableDesc = "";
-            if (!featuresComponent.campable) {
-                var inhabited = featuresComponent.level > 10;
-                switch (featuresComponent.notCampableReason) {
-                    case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
-                        if (inhabited && featuresComponent.stateOfRepair > 6) notCampableDesc = "Many entrances have big yellow warning signs on them, with the text 'KEEP OUT' and a radiation sign. ";
-                        else if (inhabited && featuresComponent.buildingDensity > 5) notCampableDesc = "Walls are covered in graffiti warning about radiation. ";
-                        else notCampableDesc = "There is an eerie air as if the place has been abandoned in a hurry.";
-                        break;
-            
-                    case UNCAMPABLE_LEVEL_TYPE_POLLUTION:
-                        if (inhabited && featuresComponent.stateOfRepair > 6) notCampableDesc = "Many entrances have big red warning signs on them with a skull sign and the text 'KEEP OUT'. ";
-                        else if (inhabited && featuresComponent.buildingDensity > 5) notCampableDesc = "Walls are covered in graffiti warning about some kind of pollution.";
-                        else notCampableDesc = "A noxious smell hangs in the air.";
-                        break;
-                    
-                    case UNCAMPABLE_LEVEL_TYPE_SUPERSTITION:
-                        if (inhabited) notCampableDesc = "There aren't any signs of recent human habitation. ";
-                        else notCampableDesc = "An unnerving silence blankets the streets. ";
-                        break;
+            if (isScouted) {
+                if (!featuresComponent.campable) {
+                    var inhabited = featuresComponent.level > 10;
+                    switch (featuresComponent.notCampableReason) {
+                        case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
+                            if (inhabited && featuresComponent.stateOfRepair > 6) notCampableDesc = "Many entrances have big yellow warning signs on them, with the text 'KEEP OUT' and a radiation sign. ";
+                            else if (inhabited && featuresComponent.buildingDensity > 5) notCampableDesc = "Walls are covered in graffiti warning about radiation. ";
+                            else notCampableDesc = "There is an eerie air as if the place has been abandoned in a hurry.";
+                            break;
+                
+                        case UNCAMPABLE_LEVEL_TYPE_POLLUTION:
+                            if (inhabited && featuresComponent.stateOfRepair > 6) notCampableDesc = "Many entrances have big red warning signs on them with a skull sign and the text 'KEEP OUT'. ";
+                            else if (inhabited && featuresComponent.buildingDensity > 5) notCampableDesc = "Walls are covered in graffiti warning about some kind of pollution.";
+                            else notCampableDesc = "A noxious smell hangs in the air.";
+                            break;
+                        
+                        case UNCAMPABLE_LEVEL_TYPE_SUPERSTITION:
+                            if (inhabited) notCampableDesc = "There aren't any signs of recent human habitation. ";
+                            else notCampableDesc = "An unnerving silence blankets the streets. ";
+                            break;
+                    }
+                } else {
+                    notCampableDesc = "The area seems safe for habitation.";
                 }
             }
 			

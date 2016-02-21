@@ -213,7 +213,7 @@ define([
 			var eventUpgrade;
 			for (var i in eventUpgrades) {
 				eventUpgrade = eventUpgrades[i];
-				if (this.tribeUpgradesNodes.head.upgrades.hasBought(eventUpgrade)) upgradeLevel++;
+				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(eventUpgrade)) upgradeLevel++;
 			}
 			return (upgradeLevel * 0.05) + 1;
         },

@@ -49,10 +49,11 @@ define([
 			var blueprintsShown = $("#blueprints-list tr").length;
 			var listsEmpty = $("#upgrades-list button").length + $("#researched-upgrades-list button").length <= 0;
 			var resetLists = $("#upgrades-list tr").length < 1 && $("#researched-upgrades-list tr").length < 1;
-			resetLists = resetLists || blueprintsShown !== this.tribeNodes.head.upgrades.newBlueprints.length;
 			resetLists = resetLists || this.lastUpdateUpgradeCount !== this.tribeNodes.head.upgrades.boughtUpgrades.length;
+			resetLists = resetLists || $("#blueprints-list tr").length !== this.tribeNodes.head.upgrades.getNewBlueprints().length - this.tribeNodes.head.upgrades.getUnfinishedBlueprints().length;
 			resetLists = resetLists && isActive;
 			this.updateUpgradesLists(isActive, resetLists);
+			
 			$("#world-blueprints").toggle($("#blueprints-list tr").length > 0);
 			
 			this.updateBubble();
@@ -96,7 +97,7 @@ define([
 				upgradeDefinition = UpgradeConstants.upgradeDefinitions[id];
 				hasBlueprintUnlocked = this.tribeNodes.head.upgrades.hasAvailableBlueprint(id);
 				hasBlueprintNew = this.tribeNodes.head.upgrades.hasNewBlueprint(id);
-				if (!this.tribeNodes.head.upgrades.hasBought(id)) {
+				if (!this.tribeNodes.head.upgrades.hasUpgrade(id)) {
 					isAvailable = this.playerActions.playerActionsHelper.checkRequirements(id, false).value > 0;
 					if (hasBlueprintNew || hasBlueprintUnlocked || isAvailable) {
 						if (isActive && resetLists) {
@@ -163,7 +164,7 @@ define([
 			
 			if (isAvailable || hasBlueprintUnlocked)
 				buttonTD = "<td class='minwidth'><button class='action' action='" + upgradeDefinition.id + "'>research</button></td>";
-			else if(hasBlueprintNew)
+			else if (hasBlueprintNew)
 				buttonTD = "<td class='minwidth'><button class='action' action='unlock_upgrade_" + upgradeDefinition.id + "'>unlock</button></td>";
 			else
 				buttonTD = "<td></td>";

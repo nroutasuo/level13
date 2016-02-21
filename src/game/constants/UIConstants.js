@@ -4,6 +4,8 @@ define(['ash',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
 	'game/constants/PerkConstants',
+	'game/constants/UpgradeConstants',
+	'game/constants/PlayerActionConstants',
     'game/components/common/PositionComponent',
     'game/components/common/CampComponent',
     'game/components/sector/SectorStatusComponent',
@@ -12,7 +14,7 @@ define(['ash',
     'game/components/common/VisitedComponent',
     'game/components/sector/improvements/WorkshopComponent',
 ], function (Ash,
-	StoryConstants, PositionConstants, SectorConstants, PerkConstants,
+	StoryConstants, PositionConstants, SectorConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
 	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
 	PassagesComponent, VisitedComponent, WorkshopComponent) {
     
@@ -77,6 +79,12 @@ define(['ash',
 		
 		getResourceLi: function (name, amount) {
 			return "<li><div class='info-callout-target info-callout-target-small' description='" + name + "'>" + this.getResourceImg(name) + "</div> " + Math.round(amount) + "</li>";
+		},
+		
+		getBlueprintPieceLI: function (blueprintVO) {
+			var upgradeDefinition = UpgradeConstants.upgradeDefinitions[blueprintVO.upgradeId];
+			var name = upgradeDefinition.name;
+			return "<li><div class='info-callout-target info-callout-target-small' description='A piece of forgotten technology (" + name + ")'>" + this.getBlueprintPieceIcon(blueprintVO) + "</li>";
 		},
 		
 		getResourceList: function (resourceVO) {
@@ -249,6 +257,14 @@ define(['ash',
 				$(targetElementId).siblings(".info-callout").children(".info-callout-content").html(content);
 			else
 				$(targetElementId).parents(".info-callout-target").siblings(".info-callout").children(".info-callout-content").html(content);
+		},
+		
+		getBlueprintPieceIcon: function (blueprintVO) {
+            var costs = PlayerActionConstants.costs[blueprintVO.upgradeId];
+			var type = "rumours";
+			if (costs.favour > 0) type = "favour";
+			else if (costs.evidence > 0) type = "evidence";
+			return "<img src='img/items/blueprints/blueprint-" + type + ".png' />";
 		},
 		
 		getTimeToNum: function (seconds) {

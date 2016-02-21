@@ -329,8 +329,8 @@ define([
 				var countRand = WorldCreatorRandom.random((seed % 84) * l * l * l);
                 
 				// min number of (easy) locales ensures that player can get all upgrades intended for that level
-				var minLocales = Math.max(1, UpgradeConstants.bluePrintsByCampOrdinal[campOrdinal] ? UpgradeConstants.bluePrintsByCampOrdinal[campOrdinal].length : 0);
-				var levelLocaleCount = Math.max(minLocales, Math.round(countRand * 15));
+				var minLocales = Math.max(1, UpgradeConstants.getPiecesByCampOrdinal(campOrdinal));
+				var levelLocaleCount = Math.max(minLocales, Math.round(countRand * 25));
 				var firstLocaleSector = l === 13 ? 5 : 1;
 				for (var i = 0; i < levelLocaleCount; i++) {
 					var localePos = WorldCreatorRandom.randomSectors(seed + i * l + i * 7394 * seed + i * i * l + i, levelVO, 1, 2, true, "camp");

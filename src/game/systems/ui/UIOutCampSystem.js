@@ -335,7 +335,7 @@ define([
         },
         
         hasUpgrade: function (upgradeId) {
-            return this.tribeUpgradesNodes.head.upgrades.hasBought(upgradeId);
+            return this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeId);
         },
         
     });

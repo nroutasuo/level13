@@ -132,6 +132,7 @@
 							<li id="switch-in"><span class="name">Camp</span></li>
 							<li id="switch-bag"<span class="name">Bag</span></li>
 							<li id="switch-map"><span class="name">Map</span></li>
+							<li id="switch-blueprints"><span class="name">Blueprints</span></li>
 							<li id="switch-upgrades"><span class="name">Upgrades</span></li>
 							<li id="switch-world"><span class="name">Tribe</span></li>
 						</ul>
@@ -346,6 +347,7 @@
                     
                     <div class="grid" id="container-tab-two-out-actions" style="display:none;">
                         <div class="unit unit-compass" id="out-container-compass-actions">
+                        <h3>Wander</h3>
                             <table id="table-out-actions-movement">
                                 <tr>
                                     <td><button class="action btn-icon action-move" id="out-action-move-nw" action="move_sector_nw"><span>NW</span></button></td>
@@ -381,8 +383,6 @@
                             <button class="action action-location" id="out-action-scout" action="scout">Scout</button>
                             <button class="action action-location" id="out-action-investigate" action="investigate">Investigate</button>
                             <button class="action action-location" id="out-action-clear-workshop" action="clear_workshop">Scout workshop</button>
-                            </tr>
-                            </table>
                             <table id="table-out-actions-movement-related">
                             </table>
                             </div>
@@ -487,10 +487,20 @@
                         </div>
                     </div>
                     
+                    <div class="grid" id="container-tab-two-blueprints" style="display:none;">
+                        <div class="unit whole">
+                            <div id="blueprints-list-container" class="actionbox">
+                            <table id="blueprints-pieces-list" class="fullwidth">
+                            </table>
+                            <p id="blueprints-list-empty-message">There are currently no blueprints in progress.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
 					<div class="grid" id="container-tab-two-upgrades" style="display: none;">
 						<div class="unit whole">
 							<div id="world-blueprints" class="actionbox">
-								<div class="subheader"><h3>Available blueprints</h3></div>
+								<div class="subheader"><h3>Completed blueprints</h3></div>
 								<table id="blueprints-list" class="fullwidth">
 								</table>
 							</div>

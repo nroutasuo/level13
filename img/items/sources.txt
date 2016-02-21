@@ -1,8 +1,0 @@
-
-Items:
-
-Fugue Icons
-(C) 2013 Yusuke Kamiyamane
-see FUGURE-README.txt
-
---------------------------------------------------

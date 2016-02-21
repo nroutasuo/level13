@@ -1,7 +1,9 @@
 // Helper methods related to rewards from player actions such as scavenging and scouting
 define([
     'ash',
+	'game/constants/GameConstants',
 	'game/constants/PlayerActionConstants',
+	'game/constants/LogConstants',
 	'game/constants/TextConstants',
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
@@ -12,6 +14,7 @@ define([
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/tribe/TribeUpgradesNode',
     'game/nodes/NearestCampNode',
+	'game/components/common/LogMessagesComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/player/ItemsComponent',
@@ -20,7 +23,9 @@ define([
 	'game/vos/ResourcesVO'
 ], function (
 	Ash,
+	GameConstants,
 	PlayerActionConstants,
+	LogConstants,
 	TextConstants,
 	ItemConstants,
 	PerkConstants,
@@ -31,6 +36,7 @@ define([
 	PlayerResourcesNode,
 	TribeUpgradesNode,
 	NearestCampNode,
+	LogMessagesComponent,
 	SectorFeaturesComponent,
 	SectorStatusComponent,
 	ItemsComponent,
@@ -109,7 +115,7 @@ define([
 			var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
 			var localeDifficulty = localeVO.requirements.vision + localeVO.costs.stamina;
 
-			rewards.gainedBlueprint = this.getResultBlueprint(localeVO);
+			rewards.gainedBlueprintPiece = this.getResultBlueprint(localeVO);
 			if (localeCategory === "u") {
 				rewards.gainedEvidence = 1;
 				rewards.gainedPopulation = Math.random() < 0.05 ? 1 : 0;
@@ -224,8 +230,9 @@ define([
 				}
 			}
 			
-			if (rewards.gainedBlueprint) {
-				this.tribeUpgradesNodes.head.upgrades.addNewBlueprint(rewards.gainedBlueprint);
+			if (rewards.gainedBlueprintPiece) {
+				this.tribeUpgradesNodes.head.upgrades.addNewBlueprintPiece(rewards.gainedBlueprintPiece);
+				this.gameState.unlockedFeatures.blueprints = true;
 			}
 
 			if (rewards.gainedInjuries) {
@@ -306,11 +313,11 @@ define([
 				values.push(rewards.gainedRumours);
 			}
 
-			if (rewards.gainedBlueprint) {
+			if (rewards.gainedBlueprintPiece) {
 				msg += ", ";
 				foundSomething = true;
 				msg += "$" + replacements.length + ", ";
-				replacements.push("#" + replacements.length + " blueprint");
+				replacements.push("#" + replacements.length + " piece of forgotten technology");
 				values.push(1);
 			}
 			
@@ -361,8 +368,9 @@ define([
 			if (resultVO.gainedPopulation) {
 				gainedhtml += "<li>" + resultVO.gainedPopulation + " population</li>";
 			}
-			if (resultVO.gainedBlueprint) {
-				gainedhtml += "<li>a blueprint</li>";
+			if (resultVO.gainedBlueprintPiece) {
+				var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(resultVO.gainedBlueprintPiece);
+				gainedhtml += UIConstants.getBlueprintPieceLI(blueprintVO);
 			}
 			gainedhtml += "</ul>";
 			var hasGainedStuff = gainedhtml.indexOf("<li") > 0;
@@ -391,7 +399,16 @@ define([
 			div += "</div>";
 			return div;
 		},
-
+		
+		logSpecialFinds: function (rewards) {
+            var logComponent = this.playerStatsNodes.head.entity.get(LogMessagesComponent);
+			if (rewards.gainedBlueprintPiece) {
+				var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(rewards.gainedBlueprintPiece);
+				if (blueprintVO.currentPieces === 1)
+					logComponent.addMessage(LogConstants.MSG_ID_FOUND_BLUEPRINT_FIRST, "Found a piece of forgotten technology.");
+			}
+		},
+		
 		getScavengeEfficiency: function () {
 			var playerVision = this.playerStatsNodes.head.vision.value;
 			var playerHealth = this.playerStatsNodes.head.stamina.health;
@@ -513,18 +530,26 @@ define([
 		
 		getResultBlueprint: function (localeVO) {
 			var playerPos = this.playerLocationNodes.head.position;
+			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
 			var campOrdinal = this.gameState.getCampOrdinal(playerPos.level);
 			var levelBlueprints = UpgradeConstants.bluePrintsByCampOrdinal[campOrdinal];
 			var blueprintsToFind = [];
+			var blueprintPiecesToFind = 0;
 			for (var i = 0; i < levelBlueprints.length; i++) {
-				if (!this.tribeUpgradesNodes.head.upgrades.hasBlueprint(levelBlueprints[i]))
-					blueprintsToFind.push(levelBlueprints[i]);
+				var blueprintId = levelBlueprints[i];
+				if (!upgradesComponent.hasUpgrade(blueprintId) && !upgradesComponent.hasAvailableBlueprint(blueprintId)) {
+					blueprintsToFind.push(blueprintId);
+					var blueprintVO = upgradesComponent.getBlueprint(blueprintId);
+					blueprintPiecesToFind = blueprintVO ? blueprintVO.maxPieces - blueprintVO.currentPieces : UpgradeConstants.getMaxPiecesForBlueprint(blueprintId);
+				}
 			}
 			
 			var unscoutedLocales = this.levelHelper.getLevelLocales(playerPos.level, false, localeVO).length + 1;
 			
-			var levelBlueprintProbability = blueprintsToFind.length / unscoutedLocales;
-			console.log(blueprintsToFind.length + " / " + unscoutedLocales + " -> " + levelBlueprintProbability);
+			var levelBlueprintProbability = blueprintPiecesToFind / unscoutedLocales;
+			if (GameConstants.isDebugOutputEnabled)
+				console.log(blueprintPiecesToFind + " / " + unscoutedLocales + " -> " + levelBlueprintProbability);
+				
 			if (Math.random() < levelBlueprintProbability) {
 				return blueprintsToFind[Math.floor(Math.random() * blueprintsToFind.length)];
 			} else {

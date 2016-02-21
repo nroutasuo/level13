@@ -232,6 +232,18 @@ define([
 					}
 				}
                 
+                if (typeof requirements.inCamp !== "undefined") {
+                    var required = requirements.inCamp;
+                    var current = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
+                    if (required !== current) {
+                        if (required) {
+                            return { value: 0, reason: "Must be in camp to do this." };
+                        } else {
+                            return { value: 0, reason: "Must be outside to do this." };
+                        }
+                    }
+                }
+                
                 if (requirements.improvements) {
                     var improvementRequirements = requirements.improvements;
                     
@@ -309,7 +321,7 @@ define([
                     var upgradeRequirements = requirements.upgrades;
                     for (var upgradeId in upgradeRequirements) {
                         var requirementBoolean = upgradeRequirements[upgradeId];
-                        var hasBoolean = this.tribeUpgradesNodes.head.upgrades.hasBought(upgradeId);
+                        var hasBoolean = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeId);
                         if (requirementBoolean != hasBoolean) {
                             if (requirementBoolean) reason = "Upgrade required: " + UpgradeConstants.upgradeDefinitions[upgradeId].name;
                             else reason = "Upgrade already researched (" + upgradeId + ")";
@@ -324,6 +336,19 @@ define([
                     var hasBlueprint = this.tribeUpgradesNodes.head.upgrades.hasAvailableBlueprint(blueprintName);
                     if (!hasBlueprint) {
                         reason = "Blueprint required.";
+                        return { value: 0, reason: reason };
+                    }
+                }
+                
+                if (typeof requirements.blueprintpieces !== "undefined") {
+                    var upgradeId = requirements.blueprintpieces;
+                    var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(upgradeId);
+                    if (!blueprintVO || blueprintVO.completed) {
+                        reason = "No such blueprint in progress.";
+                        return { value: 0, reason: reason };
+                    }
+                    if (blueprintVO.maxPieces - blueprintVO.currentPieces > 0) {
+                        reason = "Missing pieces.";
                         return { value: 0, reason: reason };
                     }
                 }
@@ -619,6 +644,10 @@ define([
 					requirements.sector.blockerLeft = (direction === 0) ? true : undefined;
 					requirements.sector.blockerRight = (direction === 1) ? true : undefined;
 					return requirements;
+                case "create_blueprint":
+                    requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
+                    requirements.blueprintpieces = action.replace(baseActionID + "_", "");
+                    return requirements;
 				default:
 					return PlayerActionConstants.requirements[action];
 			}
@@ -692,6 +721,7 @@ define([
 			if (action.indexOf("scout_locale_u") >= 0) return "scout_locale_u";
 			if (action.indexOf("craft_") >= 0) return "craft";
 			if (action.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
+			if (action.indexOf("create_blueprint_") >= 0) return "create_blueprint";
 			if (action.indexOf("fight_gang_") >= 0) return "fight_gang";
 			return action;
 		},

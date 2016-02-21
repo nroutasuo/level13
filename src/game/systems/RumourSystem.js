@@ -73,7 +73,7 @@ define([
 			var campfireUpgrade;
 			for (var i in campfireUpgrades) {
 				campfireUpgrade = campfireUpgrades[i];
-				if (this.tribeUpgradesNodes.head.upgrades.hasBought(campfireUpgrade)) upgradeLevel++;
+				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(campfireUpgrade)) upgradeLevel++;
 			}
 			return upgradeLevel;
 		},

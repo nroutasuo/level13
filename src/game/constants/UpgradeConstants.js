@@ -74,11 +74,37 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
 			14: ["upgrade_building_cementmill", "unlock_building_researchcenter", "unlock_item_weapon7"],
 			15: ["upgrade_building_apothecary", "unlock_item_shades2", "unlock_building_ceiling"],
 		},
+        
+        piecesByBlueprint: {
+            unlock_building_darkfarm: 5,
+            unlock_building_tradingpost: 4,
+            unlock_item_weapon2: 4,
+            unlock_item_weapon5: 9,
+            unlock_item_clothing5: 8,
+            upgrade_worker_scavenger: 4,
+            unlock_building_passage_hole: 6,
+        },
 		
 		getBlueprintCampOrdinal: function (upgradeId) {
 			var level = 1;
 			return level;
 		},
+        
+        getMaxPiecesForBlueprint: function (upgradeId) {
+            if (this.piecesByBlueprint[upgradeId]) return this.piecesByBlueprint[upgradeId];
+            return 3;
+        },
+        
+        getPiecesByCampOrdinal: function (campOrdinal) {
+            var pieceCount = 0;
+            var blueprintsByCampOrdinal = this.bluePrintsByCampOrdinal[campOrdinal];
+            if (blueprintsByCampOrdinal) {
+                for (var i = 0; i < blueprintsByCampOrdinal.length; i++) {
+                    pieceCount += this.getMaxPiecesForBlueprint(blueprintsByCampOrdinal[i]);
+                }
+            }
+            return pieceCount;
+        },
         
         upgradeDefinitions: {},
     };

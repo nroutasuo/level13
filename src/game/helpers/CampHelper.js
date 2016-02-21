@@ -80,7 +80,7 @@ define([
 			var workerUpgrade;
 			for (var i in workerUpgrades) {
 				workerUpgrade = workerUpgrades[i];
-				if (this.tribeUpgradesNodes.head.upgrades.hasBought(workerUpgrade)) upgradeLevel += 0.25;
+				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(workerUpgrade)) upgradeLevel += 0.25;
 			}
 			return upgradeLevel;
 		},

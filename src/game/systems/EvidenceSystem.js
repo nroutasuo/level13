@@ -69,7 +69,7 @@ define([
 			var libraryUpgrade;
 			for (var i in libraryUpgrades) {
 				libraryUpgrade = libraryUpgrades[i];
-				if (this.tribeUpgradesNodes.head.upgrades.hasBought(libraryUpgrade)) upgradeLevel++;
+				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(libraryUpgrade)) upgradeLevel++;
 			}
 			return upgradeLevel;
 		},
