@@ -55,10 +55,11 @@ define([
 		playerLocationNodes: null,
 		tribeUpgradesNodes: null,
 		
+		// probabilities of getting item of that type, Math.random() < prob, else artefact
 		itemResultTypes: {
-			scavenge: { bag: 0.1, shades: 0.15, light: 0.25, movement: 0.35, shoes: 0.52, weapon: 0.75, clothing: 0.95, exploration: 0.99 },
-			fight: { bag: 0, shades: 0, light: 0, movement: 0.1, shoes: 0.25, weapon: 0.4, clothing: 0.55, exploration: 0.6 },
-			meet: { bag: 0.1, shades: 0.2, light: 0.2, movement: 0.3, shoes: 0.4, weapon: 0.6, clothing: 0.8, exploration: 0.9 }
+			scavenge: { bag: 0.15, shades: 0.2, light: 0.35, shoes: 0.50, weapon: 0.70, clothing: 0.90, exploration: 0.99 },
+			fight: { bag: 0, shades: 0, light: 0, shoes: 0.2, weapon: 0.4, clothing: 0.55, exploration: 0.6 },
+			meet: { bag: 0.1, shades: 0.2, light: 0.2, shoes: 0.3, weapon: 0.5, clothing: 0.7, exploration: 0.8 }
 		},
 
 		constructor: function (engine, gameState, resourcesHelper, levelHelper) {
@@ -463,8 +464,6 @@ define([
 					pendingItem = ItemConstants.getShades(levelOrdinal);
 				} else if (itemTypeRand < itemTypeLimits.light) {
 					pendingItem = ItemConstants.getLight(levelOrdinal);
-				} else if (itemTypeRand < itemTypeLimits.movement) {
-					item = ItemConstants.getMovement(levelOrdinal);
 				} else if (itemTypeRand < itemTypeLimits.shoes) {
 					item = ItemConstants.getShoes(levelOrdinal);
 				} else if (itemTypeRand < itemTypeLimits.weapon) {

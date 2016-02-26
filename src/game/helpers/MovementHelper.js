@@ -61,14 +61,6 @@ define([
 			}
 			
 			if (direction === PositionConstants.DIRECTION_UP || direction === PositionConstants.DIRECTION_DOWN) {
-				var items = this.itemsNodes.head.items.getEquipped(ItemConstants.itemTypes.movement);
-				var isFlying = false;
-				
-				for (var i = 0; i < items.length; i++) {
-					var item = items[i];
-					if (item.id === ItemConstants.itemDefinitions.movement[0].id) isFlying = true;
-				}
-				
 				blocked = true;
 				var passage = null;
 				if (direction === PositionConstants.DIRECTION_UP) passage = passagesComponent.passageUp;

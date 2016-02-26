@@ -11,7 +11,6 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 			weapon: "Weapon",
 			clothing: "Clothing",
 			follower: "Follower",
-			movement: "Movement",
 			shoes: "Shoes",
 			// Special
 			bag: "Bag",
@@ -69,10 +68,6 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 						   "Protects AND looks respectable."),
 				new ItemVO("clothing7", "Combat suit", "Clothing", 309, true, true, "img/items/clothing-3.png",
 						   "Based on the old world military suit but with added environmental protection."),
-			],
-			movement: [
-				new ItemVO("movement_bat", "Flying giant rat", "Movement", 0, true, false, "img/items/bat.png",
-						   "This well-trained rat can carry one person and will get across most obstacles."),
 			],
 			shoes: [
 				new ItemVO("shoe_1", "Improvised flip-flops", "Shoes", 0.9, true, false, "img/items/shoe-1.png",
@@ -202,12 +197,6 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 			if (levelOrdinal < 5) return this.itemDefinitions.light[0];
 			if (levelOrdinal < 15 || Math.random() > 0.9) return this.itemDefinitions.light[1];
 			return this.itemDefinitions.light[2];
-		},
-		
-		getMovement: function (levelOrdinal) {
-			if (levelOrdinal > 2)
-				return this.itemDefinitions.movement[parseInt(this.itemDefinitions.movement.length) * Math.random()];
-			return null;
 		},
 		
 		getShoes: function (levelOrdinal) {

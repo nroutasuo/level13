@@ -245,14 +245,6 @@ define([
 
 					itemBonusTxt += " (" + bonusName + " " + UIConstants.getItemBonusText(selectedItem) + ")";
 				}
-				else {
-
-					switch (selectedItem.id) {
-					case "movement-bat":
-						itemBonusTxt += " (all level passages and most sector obstacles)";
-						break;
-					}
-				}
 
 				$("#item-desc-div p#item-desc-bonus").text(itemBonusTxt);
 				$("#item-desc-div p#item-desc-equipped").text(selectedItem.equippable ? (selectedItem.equipped ? "Equipped" : "Not equipped") : "");
