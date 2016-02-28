@@ -85,6 +85,13 @@ define([
 
 			rewards.gainedResources = this.getRewardResources(1, efficiency, sectorResources);
 			rewards.gainedItems = this.getRewardItems(0.007, 0.05, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
+			
+			// should never be needed, but as a fallback
+			var unscoutedLocales = this.levelHelper.getLevelLocales(playerPos.level, false).length;
+			var levelBlueprintPieces = this.getPendingBlueprintPiecesCount();
+			if (unscoutedLocales === 0 && levelBlueprintPieces > 0 && Math.random() < 0.1) {
+				rewards.gainedBlueprintPiece = this.getResultBlueprint(null);
+			}
 
 			return rewards;
 		},
@@ -529,17 +536,16 @@ define([
 		
 		getResultBlueprint: function (localeVO) {
 			var playerPos = this.playerLocationNodes.head.position;
-			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
 			var campOrdinal = this.gameState.getCampOrdinal(playerPos.level);
+			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
 			var levelBlueprints = UpgradeConstants.bluePrintsByCampOrdinal[campOrdinal];
+			
 			var blueprintsToFind = [];
-			var blueprintPiecesToFind = 0;
+			var blueprintPiecesToFind = this.getPendingBlueprintPiecesCount();
 			for (var i = 0; i < levelBlueprints.length; i++) {
 				var blueprintId = levelBlueprints[i];
 				if (!upgradesComponent.hasUpgrade(blueprintId) && !upgradesComponent.hasAvailableBlueprint(blueprintId)) {
 					blueprintsToFind.push(blueprintId);
-					var blueprintVO = upgradesComponent.getBlueprint(blueprintId);
-					blueprintPiecesToFind = blueprintVO ? blueprintVO.maxPieces - blueprintVO.currentPieces : UpgradeConstants.getMaxPiecesForBlueprint(blueprintId);
 				}
 			}
 			
@@ -556,6 +562,24 @@ define([
 			}
 			
 			return null;
+		},
+		
+		getPendingBlueprintPiecesCount: function () {
+			var playerPos = this.playerLocationNodes.head.position;
+			var campOrdinal = this.gameState.getCampOrdinal(playerPos.level);
+			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
+			var levelBlueprints = UpgradeConstants.bluePrintsByCampOrdinal[campOrdinal];
+			
+			var blueprintPiecesToFind = 0;
+			
+			for (var i = 0; i < levelBlueprints.length; i++) {
+				var blueprintId = levelBlueprints[i];
+				if (!upgradesComponent.hasUpgrade(blueprintId) && !upgradesComponent.hasAvailableBlueprint(blueprintId)) {
+					var blueprintVO = upgradesComponent.getBlueprint(blueprintId);
+					blueprintPiecesToFind += blueprintVO ? blueprintVO.maxPieces - blueprintVO.currentPieces : UpgradeConstants.getMaxPiecesForBlueprint(blueprintId);
+				}
+			}
+			return blueprintPiecesToFind;
 		},
 
     });

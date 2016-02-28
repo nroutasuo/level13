@@ -25,7 +25,7 @@ define(['ash'], function (Ash) {
 			this.description = description;
 			
 			this.equipped = false;
-			this.itemID = Math.random() * 100000;
+			this.itemID = Math.floor(Math.random() * 1000000);
         },
 	
 		clone: function () {

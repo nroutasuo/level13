@@ -5,6 +5,7 @@ define([
 	'game/constants/PlayerActionConstants',
 	'game/constants/ItemConstants',
 	'game/constants/UpgradeConstants',
+	'game/constants/UIConstants',
 	'game/constants/TextConstants',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/player/PlayerResourcesNode',
@@ -27,7 +28,7 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/CampComponent',
 ], function (
-	Ash, PositionConstants, PlayerActionConstants, ItemConstants, UpgradeConstants, TextConstants,
+	Ash, PositionConstants, PlayerActionConstants, ItemConstants, UpgradeConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	PositionComponent, PlayerActionComponent, ItemsComponent, PerksComponent, DeityComponent,
 	PassagesComponent, EnemiesComponent, MovementOptionsComponent,
@@ -708,7 +709,7 @@ define([
                     switch(baseAction) {
 						case "craft":
 							var item = this.getItemForCraftAction(action);
-							return item.description;
+							return item.description + (item.bonus === 0 ? "" : "<hr/>" + UIConstants.getItemBonusName(item) + " " + UIConstants.getItemBonusText(item));
                     }
                 }
 			}

@@ -10,6 +10,7 @@ define([
     'game/systems/ui/UIOutLevelSystem',
     'game/systems/ui/UIOutCampSystem',
     'game/systems/ui/UIOutBagSystem',
+    'game/systems/ui/UIOutFollowersSystem',
     'game/systems/ui/UIOutMapSystem',
     'game/systems/ui/UIOutUpgradesSystem',
     'game/systems/ui/UIOutTribeSystem',
@@ -64,6 +65,7 @@ define([
     UIOutLevelSystem,
     UIOutCampSystem,
     UIOutBagSystem,
+    UIOutFollowersSystem,
     UIOutMapSystem,
     UIOutUpgradesSystem,
     UIOutTribeSystem,
@@ -185,7 +187,7 @@ define([
 			this.engine.addSystem(new CollectorSystem(), SystemPriorities.update);
 			this.engine.addSystem(new FightSystem(this.gameState, this.resourcesHelper, this.levelHelper, this.playerActionResultsHelper, this.playerActionsHelper, this.occurrenceFunctions), SystemPriorities.update);
 			this.engine.addSystem(new PopulationSystem(), SystemPriorities.update);
-			this.engine.addSystem(new WorkerSystem(this.resourcesHelper, this.campHelper), SystemPriorities.update);
+			this.engine.addSystem(new WorkerSystem(this.gameState, this.resourcesHelper, this.campHelper), SystemPriorities.update);
 			this.engine.addSystem(new FaintingSystem(this.uiFunctions, this.playerActionFunctions, this.playerActionResultsHelper), SystemPriorities.update);
 			this.engine.addSystem(new ReputationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new RumourSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
@@ -204,6 +206,7 @@ define([
 			this.engine.addSystem(new UIOutLevelSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.movementHelper, this.resourcesHelper, this.sectorHelper, this.levelHelper, this.uiMapHelper, this.playerMovedSignal), SystemPriorities.render);
 			this.engine.addSystem(new UIOutCampSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.levelHelper, this.upgradeEffectsHelper, this.campHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutBagSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionsHelper, this.gameState), SystemPriorities.render);
+			this.engine.addSystem(new UIOutFollowersSystem(this.uiFunctions, this.tabChangedSignal, this.gameState), SystemPriorities.render);
 			this.engine.addSystem(new UIOutMapSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.uiMapHelper, this.levelHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutUpgradesSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionFunctions, this.upgradeEffectsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutBlueprintsSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionFunctions, this.upgradeEffectsHelper), SystemPriorities.render);

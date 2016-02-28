@@ -57,7 +57,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 				new ItemVO("clothing1", "Rags", "Clothing", 2, true, true, "img/items/clothing-rags.png",
 						   "Barely counts for clothing, but for now, it'll do."),
 				new ItemVO("clothing2", "Worker's uniform", "Clothing", 4, true, true, "img/items/clothing-rags.png",
-						   "Makes the wearer feel oddly comfortable in dark corridors and abandoned factories."),
+						   "Feel oddly comfortable in dark corridors and abandoned factories."),
 				new ItemVO("clothing3", "Protective vest", "Clothing", 8, true, true, "img/items/clothing-2.png",
 						   "Something that's actually produced with the aim of keeping one safe."),
 				new ItemVO("clothing4", "Kevlar vest", "Clothing", 21, true, true, "img/items/clothing-2.png",

@@ -33,13 +33,15 @@ define([
 		playerLocationNodes: null,
         nearestCampNodes: null,
 	
+        gameState: null,
 		resourcesHelper: null,
 		campHelper: null,
 	
 		lastMsgTimeStamp: 0,
 		msgFrequency: 1000 * 120,
 
-        constructor: function (resourcesHelper, campHelper) {
+        constructor: function (gameState, resourcesHelper, campHelper) {
+            this.gameState = gameState;
 		    this.resourcesHelper = resourcesHelper;
             this.campHelper = campHelper;
         },
@@ -168,16 +170,17 @@ define([
 					perksComponent.removeItemsById(PerkConstants.perkIds.thirst);
 				}
 			} else if (!hasThirstPerk) {
-				if (!inCamp) this.log("Out of water!");
+				if (!inCamp && (this.gameState.unlockedFeatures.resources.water)) this.log("Out of water!");
 				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.thirst));
 			}
+            
 			if (!isHungry) {
 				if (hasHungerPerk) {
 					if (!inCamp) this.log("No longer hungry.");
 					perksComponent.removeItemsById(PerkConstants.perkIds.hunger);
 				}
 			} else if (!hasHungerPerk) {
-				if (!inCamp) this.log("Out of food!");
+				if (!inCamp && (this.gameState.unlockedFeatures.resources.food)) this.log("Out of food!");
 				perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.hunger));
 			}
 		},

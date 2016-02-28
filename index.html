@@ -130,7 +130,8 @@
 						<ul class="tabs" id="switch-tabs">
 							<li id="switch-out"><span class="name">Outside</span></li>
 							<li id="switch-in"><span class="name">Camp</span></li>
-							<li id="switch-bag"<span class="name">Bag</span></li>
+							<li id="switch-bag"><span class="name">Bag</span></li>
+							<li id="switch-followers"><span class="name">Party</span></li>
 							<li id="switch-map"><span class="name">Map</span></li>
 							<li id="switch-blueprints"><span class="name">Blueprints</span></li>
 							<li id="switch-upgrades"><span class="name">Upgrades</span></li>
@@ -316,13 +317,24 @@
 						<div class="unit whole">
 							<div class="subheader"><h3>Supplies</h3></div>
 							<p>Make sure you pack enough supplies before you leave.</p>
-							<table id="embark-resources">
-							</table>
-							<div class="stats-indicator" id="embark-bag">
-								<span class="label">Bag space</span>
-								<span class="value">0</span>
+                            <div class="grid">
+                                <div class="unit one-third">
+                                    <table id="embark-resources">
+                                    </table>
+                                </div>
+                                <div class="unit one-third">
+                                    Items in bag
+                                </div>
+                                <div class="unit one-third">
+                                    Items in camp
+                                </div>
 							</div>
-							
+                            
+                            <div class="stats-indicator" id="embark-bag">
+                                <span class="label">Bag space</span>
+                                <span class="value">0</span>
+                            </div>
+                            
 							<div class="actionbox">
 							<button class="action" id="in-action-leave" action="leave_camp">Go</button>
 							</div>
@@ -447,36 +459,40 @@
                     
 					<!-- bag main div: item list & crafting -->
 					<div class="grid" id="container-tab-two-bag" style="display:none">
-						<div class="unit golden-large">
-							<div class="subheader" id="header-bag-items"><h3>Items in bag</h3></div>
-							<p>Bag capacity: <span id="self-bag-capacity">-</span></p>
-							<div class="infobox">
-								<ul id="bag-items" class="itemlist"></ul>
-								<p id="items-empty" class="p-meta">You don't have any items yet</p>
+						<div class="unit three-quarters">
+							<div class="subheader" id="header-bag-items"><h3>Equipment</h3></div>
+							<div class="infobox" id="container-equipment-slots">
+                                <div id="item-slot-bag" class="item-slot item-slot-big lvl13-box-1"></div>
+                                <div id="item-slot-light" class="item-slot item-slot-big lvl13-box-1"></div>
+                                <div id="item-slot-shades" class="item-slot item-slot-big lvl13-box-1"></div>
+                                <div id="item-slot-weapon" class="item-slot item-slot-big lvl13-box-1"></div>
+                                <div id="item-slot-clothing" class="item-slot item-slot-big lvl13-box-1"></div>
+                                <div id="item-slot-shoes" class="item-slot item-slot-big lvl13-box-1"></div>
 							</div>
-							<div class="subheader" id="header-followers"><h3>Followers</h3></div>
-							<div class="infobox">
-								<ul id="list-followers" class="itemlist"></ul>
-								<p id="followers-empty" class="p-meta">You don't have any followers</p>
-							</div>
-							<p id="item-desc-help" class="p-meta">Hover for details</p>
-							<div class="infobox infobox-temporary" id="item-desc-div" style="display:none">
-								<h4>Item name</h4>
-								<p id="item-desc-bonus">Bonus: +2</p>
-								<p id="item-desc-equipped">Equipped</p>
-								<p id="item-desc-desc">Item description</p>
-								<button class="action" action="equip_item">Equip</button>
-								<button class="action" action="discard_item">Discard</button><button class="action" action="discard_item_all">Discard All</button>
-							</div>	
+							<div class="subheader" id="header-bag-items"><h3>Other items</h3></div>
+                            <div class="infobox">
+								<ul id="bag-items" style="padding:0px; margin: 0px"></ul>
+                            </div>
 						</div>
-						<div class="unit golden-small">
+						<div class="unit one-quarter">
 							<div class="subheader"><h3>Craft</h3></div>
+                            <input type="checkbox" class="checkbox" id="checkbox-crafting-show-obsolete" /><p class="checkbox-label">Show obsolete</p>
 							<div id="self-craft" class="actionbox">
 								<table>
 								</table>
 							</div>
 						</div>
 					</div>
+                    
+                    <div class="grid" id="container-tab-two-followers" style="display:none;">
+						<div class="unit whole">							
+							<div class="subheader" id="header-followers"><h3>Followers</h3></div>
+							<div class="infobox">
+								<ul id="list-followers" class="itemlist"></ul>
+								<p id="followers-empty" class="p-meta">You don't have any followers</p>
+							</div>
+						</div>
+                    </div>
 					
                     <div class="grid" id="container-tab-two-map" style="display:none">
                         <p id="map-completion-hint">There are still places to explore on this level.</p>

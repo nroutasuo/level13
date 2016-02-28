@@ -28,19 +28,13 @@ define([
 			this.uiFunctions = uiFunctions;
 			this.playerActionsHelper = playerActionsHelper;
 			this.tabChangedSignal = tabChangedSignal;
-
-			var system = this;
-			$("#container-tab-two-bag .golden-large").mouseleave(function (e) {
-				system.setSelectedItemLI(null);
-			});
-
 			return this;
 		},
 
 		addToEngine: function (engine) {
 			this.itemNodes = engine.getNodeList(ItemsNode);
 			this.initButtonListeners();
-			this.setSelectedItemLI(null);
+			this.initItemSlots();
 		},
 
 		initButtonListeners: function () {
@@ -86,6 +80,15 @@ define([
 			});
 		},
 
+		initItemSlots: function () {
+			$.each($("#container-equipment-slots .item-slot"), function () {
+				var typeDisplay = $(this).attr("id").split("-")[2];
+				$(this).append("<span class='item-slot-type'>" + typeDisplay + "</span>");
+				$(this).append("<span class='item-slot-effect'></span>");
+				$(this).append("<div class='item-slot-image'></div>");
+			});
+		},
+		
 		removeFromEngine: function (engine) {
 			this.itemNodes = null;
 			this.tabChangedSignal.remove(this.onTabChanged);
@@ -99,6 +102,7 @@ define([
 			var uniqueItems = itemsComponent.getUnique();
 			
 			this.uniqueItemsCount = uniqueItems.length;
+			
 			if (hasMap) this.uniqueItemsCount--;
 			if (isActive || this.lastShownUniqueItemsCount < 0) this.lastShownUniqueItemsCount = this.uniqueItemsCount;
 			
@@ -107,19 +111,10 @@ define([
 			
 			if (!isActive) return;
 
-			var selectedItem = itemsComponent.selectedItem;
-
 			// Header
 			$("#tab-header h2").text("Bag");
-			$("span#self-bag-capacity").text(itemsComponent.getCurrentBonus(ItemConstants.itemTypes.bag));
 
-			// Items, parts and followers
-			var itemsComponent = this.itemNodes.head.items;
 			this.updateItems(uniqueItems);
-
-			// Description
-			$("#items-empty").toggle($("#bag-items li").length === 0);
-			this.updateItemDetails(selectedItem, itemsComponent.getCount(selectedItem));
 		},
         
         updateBubble: function () {
@@ -142,34 +137,44 @@ define([
 
 		updateCrafting: function (isActive) {
 			var requiresUpdate = $("#self-craft table tr").length !== this.craftableItems;
+			var showObsolete = $("#checkbox-crafting-show-obsolete").is(':checked');
 			if (requiresUpdate) $("#self-craft table").empty();
 			
 			this.craftableItems = 0;
 			this.availableCraftableItems = 0;
 			
 			var itemsComponent = this.itemNodes.head.items;
+			var itemDefinitionList = [];
 
 			var itemList;
 			var itemDefinition;
-			var tr;
 			for (var type in ItemConstants.itemDefinitions) {
 				itemList = ItemConstants.itemDefinitions[type];
 				for (var i in itemList) {
 					itemDefinition = itemList[i];
-					if (itemDefinition.craftable) {
-						var actionName = "craft_" + itemDefinition.id;
-						var reqsCheck = this.playerActionsHelper.checkRequirements(actionName, false);
-						if (reqsCheck.value >= 1 || reqsCheck.reason === "Bag full.") {
-							var isAvailable = this.playerActionsHelper.checkAvailability(actionName, false);
-							if (requiresUpdate) {
-								tr = "<tr><td><button class='action' action='" + actionName + "'>" + itemDefinition.name + "</button></td></tr>";
-								$("#self-craft table").append(tr);
-							}
-							this.craftableItems++;
-							if (isAvailable && !itemsComponent.contains(itemDefinition.name) && itemsComponent.getCurrentBonus(itemDefinition.type) < itemDefinition.bonus)
-								this.availableCraftableItems++;
-						}
+					if (itemDefinition.craftable && (showObsolete || !itemsComponent.isItemObsolete(itemDefinition))) {
+						itemDefinitionList.push(itemDefinition);
 					}
+				}
+			}
+			
+			itemDefinitionList = itemDefinitionList.sort(this.sortItemsByType);
+			
+			var tr;
+			for (var j = 0; j < itemDefinitionList.length; j++) {
+				var itemDefinition = itemDefinitionList[j];
+				var actionName = "craft_" + itemDefinition.id;
+				var reqsCheck = this.playerActionsHelper.checkRequirements(actionName, false);
+				if (reqsCheck.value >= 1 || reqsCheck.reason === "Bag full.") {
+					var isAvailable = this.playerActionsHelper.checkAvailability(actionName, false);
+					if (requiresUpdate) {
+						tr = "<tr><td><button class='action' action='" + actionName + "'>" + itemDefinition.name + "</button></td></tr>";
+						$("#self-craft table").append(tr);
+					}
+					
+					this.craftableItems++;
+					if (isAvailable && !itemsComponent.contains(itemDefinition.name) && itemsComponent.getCurrentBonus(itemDefinition.type) < itemDefinition.bonus)
+						this.availableCraftableItems++;
 				}
 			}
 
@@ -186,103 +191,99 @@ define([
 		updateItemLists: function () {
 			var itemsComponent = this.itemNodes.head.items;
 			var items = itemsComponent.getUnique();
+			
+			this.updateItemSlot(ItemConstants.itemTypes.light, null);
+			this.updateItemSlot(ItemConstants.itemTypes.shades, null);
+			this.updateItemSlot(ItemConstants.itemTypes.weapon, null);
+			this.updateItemSlot(ItemConstants.itemTypes.clothing, null);
+			this.updateItemSlot(ItemConstants.itemTypes.shoes, null);
+			this.updateItemSlot(ItemConstants.itemTypes.bag, null);
+			
+			items = items.sort(this.sortItemsByType);
+
 			$("#bag-items").empty();
-			$("#list-followers").empty();
-			var UIOutBagSystem = this;
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
-				if (item.type === ItemConstants.itemTypes.bag) continue;
-				
 				var count = itemsComponent.getCount(item);
-				var li = UIConstants.getItemLI(item, count, true);
-				if (item.type !== ItemConstants.itemTypes.follower) {
-					$("#bag-items").append(li);
-				} else {
-					$("#list-followers").append(li);
+				var smallSlot = UIConstants.getItemSlot(item, count);
+				switch (item.type) {
+					case ItemConstants.itemTypes.light:
+					case ItemConstants.itemTypes.shades:
+					case ItemConstants.itemTypes.weapon:
+					case ItemConstants.itemTypes.clothing:
+					case ItemConstants.itemTypes.shoes:
+					case ItemConstants.itemTypes.bag:
+						if (item.equipped) {
+							this.updateItemSlot(item.type, item);
+							if (count > 1) {
+								smallSlot = UIConstants.getItemSlot(item, count - 1);
+								$("#bag-items").append(smallSlot);
+							}
+						} else {
+							$("#bag-items").append(smallSlot);
+						}
+						break;
+					
+					case ItemConstants.itemTypes.follower:
+					case ItemConstants.itemTypes.uniqueEquipment:
+						break;
+					
+					default:
+						$("#bag-items").append(smallSlot);
+						break;
 				}
 			}
+			
+			var rowItemCount = Math.floor($("#bag-items").width() / 46);
+			var rowsToShow = 1 + Math.ceil($("#bag-items li").length / rowItemCount);
+			for (var j = items.length; j <= rowsToShow * rowItemCount; j++) {
+				$("#bag-items").append(UIConstants.getItemSlot(null));
+			}
 
-			var hasFollowers = $("#list-followers li").length > 0;
-			var showFollowers = hasFollowers || this.gameState.unlockedFeatures.followers;
-			$("#list-followers").toggle(hasFollowers);
-			$("#header-followers").toggle(showFollowers);
-			$("#followers-empty").toggle(showFollowers && !hasFollowers);
-
-			$.each($("#container-tab-two-bag .itemlist li"), function () {
-				$(this).hover(function (e) {
-					UIOutBagSystem.setSelectedItemLI($(this));
-				});
-			});
+            this.uiFunctions.generateCallouts("#container-tab-two-bag .three-quarters");
 		},
 
 		refreshItemLists: function () {
 			var itemsComponent = this.itemNodes.head.items;
-			var items = itemsComponent.getUnique();
-			$.each($("#container-tab-two-bag .itemlist li"), function () {
+			$.each($("#bag-items li .item"), function () {
 				var id = $(this).attr("data-itemid");
 				var count = itemsComponent.getCountById(id);
-				$(this).children(".item-count").text(count + "x");
+				$(this).find(".item-count").text(count + "x");
 			});
 		},
-
-		updateItemDetails: function (selectedItem, count) {
-			if (selectedItem) {
-				var itemsComponent = this.itemNodes.head.items;
-				$("#item-desc-div h4").text(selectedItem.name);
-
-				var itemBonusTxt = selectedItem.type;
-				if (selectedItem.bonus !== 0) {
-					var bonusName = "";
-					switch (selectedItem.type) {
-						case ItemConstants.itemTypes.light: bonusName = "max vision"; break;
-						case ItemConstants.itemTypes.shades: bonusName = "max vision"; break;
-						case ItemConstants.itemTypes.weapon: bonusName = "fight strength"; break;
-						case ItemConstants.itemTypes.clothing: bonusName = "fight defence"; break;
-						case ItemConstants.itemTypes.follower: bonusName = "follower strength"; break;
-						case ItemConstants.itemTypes.shoes: bonusName = "movement cost"; break;
-						case ItemConstants.itemTypes.bag: bonusName = "bag capacity"; break;
-					}
-
-					itemBonusTxt += " (" + bonusName + " " + UIConstants.getItemBonusText(selectedItem) + ")";
+		
+		updateItemSlot: function (itemType, itemVO) {
+			var slot = $("#item-slot-" + itemType.toLowerCase());
+			$(slot).children(".item-slot-effect").html(itemVO ? UIConstants.getItemBonusName(itemVO) + "<br/>" + UIConstants.getItemBonusText(itemVO) : "");
+			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemVO, 0, false, false) : "");
+			
+			$(slot).children(".item-slot-type").toggle(itemVO === null);
+			$(slot).children(".item-slot-effect").toggle(itemVO !== null);
+			$(slot).toggleClass("item-slot-equipped", itemVO !== null);
+		},
+		
+		sortItemsByType: function (a, b) {
+			var getItemSortVal = function (itemVO) {
+				var typeVal = 0;
+				switch (itemVO.type) {
+					case ItemConstants.itemTypes.bag: typeVal = 1; break;
+					case ItemConstants.itemTypes.light: typeVal = 2; break;
+					case ItemConstants.itemTypes.shades: typeVal = 3; break;
+					case ItemConstants.itemTypes.weapon: typeVal = 4; break;
+					case ItemConstants.itemTypes.clothing: typeVal = 5; break;
+					case ItemConstants.itemTypes.shoes: typeVal = 6; break;
+					case ItemConstants.itemTypes.exploration: typeVal = 7; break;
+					case ItemConstants.itemTypes.ingredient: typeVal = 8; break;
+					case ItemConstants.itemTypes.uniqueEquipment: typeVal = 0; break;
+					case ItemConstants.itemTypes.artefact: typeVal = 9; break;
+					case ItemConstants.itemTypes.note: typeVal = 10; break;
+					case ItemConstants.itemTypes.follower: typeVal = 0; break;
 				}
-
-				$("#item-desc-div p#item-desc-bonus").text(itemBonusTxt);
-				$("#item-desc-div p#item-desc-equipped").text(selectedItem.equippable ? (selectedItem.equipped ? "Equipped" : "Not equipped") : "");
-				$("#item-desc-div p#item-desc-desc").text(selectedItem.description);
-
-				var isFollower = selectedItem.type === ItemConstants.itemTypes.follower;
-				var unequippable = itemsComponent.isItemDiscardable(selectedItem) || itemsComponent.isItemUnequippable(selectedItem);
-				$("button[action='equip_item']").text(selectedItem.equipped ? "Unequip" : "Equip");
-				$("button[action='equip_item']").toggle(!unequippable);
-				
-				var isDiscardable = itemsComponent.isItemDiscardable(selectedItem);
-				var isAllDiscardable = itemsComponent.isItemsDiscardable(selectedItem);
-				$("button[action='discard_item']").toggle(isDiscardable);
-				$("button[action='discard_item']").text(isFollower ? "Part ways" : "Discard 1");
-				$("button[action='discard_item_all']").text(isAllDiscardable ? "Discard all" : "Discard " + (count - 1));
-				$("button[action='discard_item_all']").toggle(isAllDiscardable ? count > 1 : count > 2);
-			}
-		},
-
-		setSelectedItemLI: function (li) {
-			$.each($("#container-tab-two-bag .itemlist li"), function () {
-				$(this).toggleClass("item-focused", false);
-			});
-
-			var itemsComponent = this.itemNodes.head.items;
-
-			if (li) {
-				$(li).toggleClass("item-focused", true);
-				var id = $(li).attr("data-itemid");
-				var instanceId = $(li).attr("data-iteminstanceid");
-				var item = itemsComponent.getItem(id, instanceId);
-				itemsComponent.selectedItem = item;
-			} else {
-				itemsComponent.selectedItem = null;
-			}
-
-			this.uiFunctions.slideToggleIf("#item-desc-div", "#item-desc-help", itemsComponent.selectedItem, 250, 150);
-			$("#item-desc-help").toggle($("#item-desc-help").is(":visible") && $("#bag-items li").length > 0);
+				return typeVal * 1000 - itemVO.bonus;
+			};
+			var aVal = getItemSortVal(a);
+			var bVal = getItemSortVal(b);
+			return aVal - bVal;
 		},
     
 	});

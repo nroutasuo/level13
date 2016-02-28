@@ -759,8 +759,8 @@ define(['ash',
                             return true;
                         }
                     } else {
-                        var oldFollowerLi = UIConstants.getItemLI(oldFollower);
-                        var newFollowerLi = UIConstants.getItemLI(follower);
+                        var oldFollowerLi = UIConstants.getItemDiv(oldFollower, -1, true, false);
+                        var newFollowerLi = UIConstants.getItemDiv(follower, -1, true, false);
                         var playerActions = this;
                         this.uiFunctions.showConfirmation(
                             "<p>Do you want to invite this new follower to join your party? Someone else will have to leave to make room.</p>" +
@@ -941,7 +941,7 @@ define(['ash',
 			
             var inputParts = input.split(" ");
             var name = inputParts[0];
-            switch(name) {
+            switch (name) {
 				case "speed":
 					GameConstants.gameSpeed = parseFloat(inputParts[1]);
 					break;

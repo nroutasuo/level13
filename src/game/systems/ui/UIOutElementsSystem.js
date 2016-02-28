@@ -281,6 +281,7 @@ define([
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-blueprints", null, this.gameState.unlockedFeatures.blueprints, 200, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-world", null, isInCamp && this.gameState.numCamps > 1, 200, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-bag", null, this.gameState.unlockedFeatures.bag, 200, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-followers", null, this.gameState.unlockedFeatures.followers, 200, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-out", null, true, 0, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-map", null, hasMap, 200, 0);
         },

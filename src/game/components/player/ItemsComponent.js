@@ -90,6 +90,13 @@ function (Ash, ItemVO, ItemConstants) {
             }
         },
         
+        isItemObsolete: function (item) {
+            if (!item.equippable) return false;
+            
+            var currentBonus = this.getCurrentBonus(item.type);
+            return item.bonus <= currentBonus;
+        },
+        
         // Equips the given item if it's better than the previous equipment
         autoEquip: function (item) {
             var shouldEquip = item.equippable;

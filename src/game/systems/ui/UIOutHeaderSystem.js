@@ -108,7 +108,7 @@ define([
 			var featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var sunlit = featuresComponent.sunlit;
             var visionPercentage = (this.playerStatsNodes.head.vision.value / 100);
-			var alphaVal = (0.8 - visionPercentage * 0.8);
+			var alphaVal = (0.5 - visionPercentage * 0.5);
             alphaVal = Math.min(alphaVal, 1);
 			alphaVal = Math.max(alphaVal, 0);
 			
@@ -227,14 +227,20 @@ define([
                 for (var i = 0; i < items.length; i++) {
                     var item = items[i];
                     var count = itemsComponent.getCount(item);
-                    if (item.type !== ItemConstants.itemTypes.follower) {
-                        if (item.equipped) {
-                            $("ul#list-items-items").append(UIConstants.getItemLI(item));
-                        } else if (item.type === ItemConstants.itemTypes.exploration) {
-                            $("ul#list-items-items").append(UIConstants.getItemLI(item, count));
-                        }
-                    } else {
-                        $("ul#list-items-followers").append(UIConstants.getItemLI(item));
+                    switch (item.type) {
+                        case ItemConstants.itemTypes.follower:
+                            $("ul#list-items-followers").append("<li>" + UIConstants.getItemDiv(item, -1, true, false) + "</li>");
+                            break;
+                        
+                        case ItemConstants.itemTypes.exploration:
+                            $("ul#list-items-items").append("<li>" + UIConstants.getItemDiv(item, count, true, false) + "</li>");
+                            break;
+                        
+                        default:
+                            if (item.equipped) {
+                                $("ul#list-items-items").append("<li>" + UIConstants.getItemDiv(item, -1, true, false) + "</li>");
+                            }
+                            break;
                     }
                 }
                 
@@ -256,7 +262,7 @@ define([
 					var url = perk.icon;
 					var isNegative = perksComponent.isNegative(perk);
 					var liClass = isNegative ? "li-item-negative" : "li-item-positive";
-					liClass += " " + "item-equipped";
+					liClass += " item item-equipped";
 					var li =
                         "<li class='" + liClass + "'>" +
                         "<div class='info-callout-target info-callout-target-small' description='" +

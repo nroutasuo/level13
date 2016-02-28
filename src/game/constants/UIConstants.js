@@ -3,6 +3,7 @@ define(['ash',
 	'game/constants/StoryConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
+	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/PlayerActionConstants',
@@ -14,7 +15,7 @@ define(['ash',
     'game/components/common/VisitedComponent',
     'game/components/sector/improvements/WorkshopComponent',
 ], function (Ash,
-	StoryConstants, PositionConstants, SectorConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
+	StoryConstants, PositionConstants, SectorConstants, ItemConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
 	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
 	PassagesComponent, VisitedComponent, WorkshopComponent) {
     
@@ -29,31 +30,39 @@ define(['ash',
 			metal: "img/res-metal.png",
 		},
         
-		getItemLI: function (item, count, hideCallout) {
-			var url = item.icon;
+		getItemDiv: function (item, count, smallCallout, hideCallout) {
+			var url = item ? item.icon : null;
 			var hasCount = count && count > 0;
 			
 			var classes = "item";
-			if (item.equipped) classes += " item-equipped";
+			if (item && item.equipped) classes += " item-equipped";
 			if (hasCount) classes += " item-with-count";
-			var li = "<li class='" + classes + "' data-itemid='" + item.id + "' data-iteminstanceid='" + item.itemID + "'>";
+			var div = "<div class='" + classes + (item ? "' data-itemid='" + item.id + "' data-iteminstanceid='" + item.itemID + "'>" : ">");
 			
-			if (!hideCallout) {
-				var detail = item.type;
-				detail += this.getItemBonusText(item);
-				li += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(item.name + " (" + detail) + ")'>";
+			if (item && !hideCallout) {
+				detail = this.getItemBonusName(item) ? " (" + this.getItemBonusName(item) + " " + this.getItemBonusText(item) + ")" : "";
+				
+				var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + item.type + " " + detail + "</br>" + item.description;
+				if (smallCallout) itemCalloutContent = item.name + (detail.length > 0 ? " " + detail : "");
+				
+				div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(itemCalloutContent) + "'>";
 			}
 			
-			li += "<img src='" + url + "'/>";
+			if (item) div += "<img src='" + url + "'/>";
 			
 			if (hasCount)
-				li += "<div class='item-count lvl13-box-3'>" + count + "x </div>";
+				div += "<div class='item-count lvl13-box-3'>" + count + "x </div>";
 			
-			if (!hideCallout) li += "</div>";
+			if (!hideCallout) div += "</div>";
 			
-			li += "</li>"
+			div += "</div>"
 			
-			return li;
+			return div;
+		},
+		
+		getItemSlot: function (item, count) {
+			var imageDiv = "<div class='item-slot-image'>" + this.getItemDiv(item, count, false, false) + "</div>";
+			return "<li class='item-slot item-slot-small lvl13-box-1'>" + imageDiv + "</li>"
 		},
 		
 		getItemList: function (items) {
@@ -72,7 +81,7 @@ define(['ash',
 			for (var key in itemsById) {
 				var item = itemsById[key];
 				var amount = itemsCounted[key];
-				html += this.getItemLI(item, amount);
+				html += "<li>" + this.getItemDiv(item, amount, true, false) + "</li>";
 			}
 			return html;
 		},
@@ -144,11 +153,23 @@ define(['ash',
 			return "<td class='vis-out-sector-container'>" + content + "</td>";
 		},
 		
+		getItemBonusName: function (item) {
+			switch (item.type) {
+				case ItemConstants.itemTypes.light: return "max vision"; break;
+				case ItemConstants.itemTypes.shades: return "max vision"; break;
+				case ItemConstants.itemTypes.weapon: return "attack"; break;
+				case ItemConstants.itemTypes.clothing: return "defence"; break;
+				case ItemConstants.itemTypes.follower: return "follower strength"; break;
+				case ItemConstants.itemTypes.shoes: return "movement cost"; break;
+				case ItemConstants.itemTypes.bag: return "bag size"; break;
+			}
+		},
+		
 		getItemBonusText: function (item) {
 			if (item.bonus === 0)
 				return "";
 			else if (item.bonus > 1)
-				return " +" + item.bonus;
+				return item.type === ItemConstants.itemTypes.bag ? " " + item.bonus : " +" + item.bonus;
 			else if (item.bonus > 0)
 				return " -" + Math.round((1-item.bonus)*100) + "%";
 			else if (item.bonus > -1)
