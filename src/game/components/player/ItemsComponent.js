@@ -3,8 +3,10 @@ function (Ash, ItemVO, ItemConstants) {
     var ItemsComponent = Ash.Class.extend({
         
         items: {},
+        
         capacity: -1,
-        uniqueItems: {},
+        uniqueItemsAll: {},
+        uniqueItemsCarried: {},
         selectedItem: null,
         
         constructor: function () {
@@ -16,17 +18,19 @@ function (Ash, ItemVO, ItemConstants) {
             this.items[ItemConstants.itemTypes.follower] = [];
         },
         
-        addItem: function (item) {
+        addItem: function (item, isCarried) {
             if (item) {
                 if (typeof this.items[item.type] == 'undefined') {
                     this.items[item.type] = [];
                 }
                 
-                var currentCount = this.getCountById(item.id);
+                var currentCount = this.getCountById(item.id, true);
                 if (this.capacity <= 0 || currentCount + 1 <= this.capacity) {
                     this.items[item.type].push(item);
                     if (item.equippable) this.autoEquip(item);
-                    this.uniqueItems = {};
+                    item.carried = isCarried;
+                    this.uniqueItemsCarried = {};
+                    this.uniqueItemsAll = {};
                 } else {
                     console.log("WARN: Trying to add item but the bag is full. (id:" + item.id + ", capacity: " + this.capacity + ")");
                 }
@@ -41,6 +45,8 @@ function (Ash, ItemVO, ItemConstants) {
                 console.log("WARN: Trying to discard un-discardable item.");
                 return;
             }
+            
+            // TODO prefer carried items when discarding
             
             if (typeof this.items[item.type] !== 'undefined') {
                 var typeItems = this.items[item.type];
@@ -61,7 +67,8 @@ function (Ash, ItemVO, ItemConstants) {
                     console.log("WARN: Item to discard not found.");
                 }
             }
-            this.uniqueItems = {};
+            this.uniqueItemsCarried = {};
+            this.uniqueItemsAll = {};
         },
         
         discardItems: function (item) {
@@ -70,12 +77,12 @@ function (Ash, ItemVO, ItemConstants) {
             var target = keepOne ? 1 : 0;
             do {
                 this.discardItem(item);
-                count = this.getCount(item);
+                count = this.getCount(item, true);
             } while (count > target);
         },
         
         isItemDiscardable: function (item) {
-            return this.isItemsDiscardable(item) || this.getCount(item) > 1;
+            return this.isItemsDiscardable(item) || this.getCount(item, true) > 1;
         },
         
         isItemsDiscardable: function (item) {
@@ -120,7 +127,8 @@ function (Ash, ItemVO, ItemConstants) {
             if (shouldEquip) this.equip(item);
             else item.equipped = false;
             
-            this.uniqueItems = {};
+            this.uniqueItemsCarried = {};
+            this.uniqueItemsAll = {};
         },
         
         isItemMultiEquippable: function (item) {
@@ -146,13 +154,15 @@ function (Ash, ItemVO, ItemConstants) {
                 }
                 item.equipped = true;
             }
-            this.uniqueItems = {};
+            this.uniqueItemsCarried = {};
+            this.uniqueItemsAll = {};
         },
         
         unequip: function (item) {
             if (this.isItemUnequippable(item)) {
                 item.equipped = false;
-                this.uniqueItems = {};
+                this.uniqueItemsCarried = {};
+                this.uniqueItemsAll = {};
             }
         },
         
@@ -182,45 +192,58 @@ function (Ash, ItemVO, ItemConstants) {
             return bonus;
         },
         
-        getAll: function () {
+        getAll: function (includeNotCarried) {
             var all = [];
+            var item;
             for (var key in this.items) {
                 for (var i = 0; i < this.items[key].length; i++) {
-                    all.push(this.items[key][i]);
+                    item = this.items[key][i];
+                    if (includeNotCarried || item.carried) all.push(item);
                 }
             }
             return all.sort(this.itemSortFunction);
         },
         
-        getUnique: function () {
+        getUnique: function (includeNotCarried) {
             var all = {};
             var allList = [];
             for (var key in this.items) {
                 for( var i = 0; i < this.items[key].length; i++) {
                     var item = this.items[key][i];
-                    var itemKey = item.id;
-                    if (all[itemKey]) {
-                        all[itemKey] = all[itemKey] + 1;
-                    } else {
-                        all[itemKey] = 1;
-                        allList.push(item);
+                    if (includeNotCarried || item.carried) {
+                        var itemKey = item.id;
+                        if (all[itemKey]) {
+                            all[itemKey] = all[itemKey] + 1;
+                        } else {
+                            all[itemKey] = 1;
+                            allList.push(item);
+                        }
                     }
                 }
             }
-            this.uniqueItems = all;
+            
+            if (includeNotCarried) {
+                this.uniqueItemsAll = all;
+            } else {
+                this.uniqueItemsCarried = all;
+            }
+            
             return allList.sort(this.itemSortFunction);
         },
         
-        getCount: function (item) {
+        getCount: function (item, includeNotCarried) {
             if (!item) return 0;
-            if (Object.keys(this.uniqueItems).length <= 0) this.getUnique();
+            if (Object.keys(includeNotCarried ? this.uniqueItemsAll : this.uniqueItemsCarried).length <= 0) this.getUnique();
             var itemKey = item.id;
-            return this.getCountById(itemKey);
+            return this.getCountById(itemKey, includeNotCarried);
         },
         
-        getCountById: function (id) {
-            if (Object.keys(this.uniqueItems).length <= 0) this.getUnique();
-            return typeof this.uniqueItems[id] === 'undefined' ? 0 : this.uniqueItems[id];
+        getCountById: function (id, includeNotCarried) {
+            if (Object.keys(includeNotCarried ? this.uniqueItemsAll : this.uniqueItemsCarried).length <= 0) this.getUnique();
+            if (includeNotCarried)
+                return typeof this.uniqueItemsAll[id] === 'undefined' ? 0 : this.uniqueItemsAll[id];
+            else
+                return typeof this.uniqueItemsCarried[id] === 'undefined' ? 0 : this.uniqueItemsCarried[id];
         },
         
         getCountByType: function (type) {
@@ -292,7 +315,8 @@ function (Ash, ItemVO, ItemConstants) {
                     var itemID = componentValues.items[key][i].id;
                     var item = ItemConstants.getItemByID(itemID);
                     if (item) {
-                        this.addItem(item);
+                        item.carried = componentValues.items[key][i].carried;
+                        this.addItem(item, item.carried);
                     }
                 }
             }

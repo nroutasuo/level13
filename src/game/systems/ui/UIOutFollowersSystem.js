@@ -110,13 +110,13 @@ define([
 		updateItems: function () {
             this.lastShownFollowerCount = this.followerCount;
 			var itemsComponent = this.itemNodes.head.items;
-			var items = itemsComponent.getUnique();
+			var items = itemsComponent.getUnique(true);
 			$("#list-followers").empty();
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
 				if (item.type !== ItemConstants.itemTypes.follower) continue;
 				
-				var count = itemsComponent.getCount(item);
+				var count = itemsComponent.getCount(item, true);
 				var li = "<li>" + UIConstants.getItemDiv(item, -1, false, false) + "</li>";
 				$("#list-followers").append(li);
 			}

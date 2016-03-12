@@ -48,9 +48,9 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, FightConstants, Per
 			var typicalItems = new ItemsComponent();
 			var typicalWeapon = ItemConstants.getDefaultWeapon(levelOrdinal, totalLevels);
 			var typicalClothing = ItemConstants.getDefaultClothing(levelOrdinal, totalLevels);
-			if (typicalWeapon) typicalItems.addItem(typicalWeapon);
+			if (typicalWeapon) typicalItems.addItem(typicalWeapon, false);
 			else console.log("WARN: No typical weapon for level ordinal " + levelOrdinal);
-			if (typicalClothing) typicalItems.addItem(typicalClothing);
+			if (typicalClothing) typicalItems.addItem(typicalClothing, false);
 			else console.log("WARN: No typical clothing for level ordinal " + levelOrdinal);
 			
 			var typicalStamina = {};

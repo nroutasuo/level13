@@ -248,6 +248,29 @@ define(['ash',
             }
         },
         
+        updateCarriedItems: function (selectedItems) {
+            var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+            var allItems = itemsComponent.getAll(true);
+            for (var i = 0; i < allItems.length; i++) {
+                var item = allItems[i];
+                if (item.equipped) {
+                    item.carried = true;
+                } else if (item.type === ItemConstants.itemTypes.uniqueEquipment) {
+                    item.carried = true;
+                } else if (item.type === ItemConstants.itemTypes.follower) {
+                    // skip
+                } else {
+                    var countCarried = selectedItems[item.id];
+                    if (countCarried > 0) {
+                        item.carried = true;
+                        selectedItems[item.id]--;
+                    } else {
+                        item.carried = false;
+                    }
+                }
+            }
+        },
+        
         enterCamp: function (log) {
             var playerPos = this.playerPositionNodes.head.position;
             var campNode = this.nearestCampNodes.head;
@@ -783,7 +806,7 @@ define(['ash',
         
         addFollower: function (follower) {
             var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-            itemsComponent.addItem(follower);
+            itemsComponent.addItem(follower, false);
             this.addLogMessage(LogConstants.MSG_ID_ADD_FOLLOWER, "A wanderer agrees to travel together for awhile.");
             this.forceResourceBarUpdate();
             this.forceStatsBarUpdate();
@@ -797,7 +820,7 @@ define(['ash',
                 
                 var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
                 var item = this.playerActionsHelper.getItemForCraftAction(actionName);
-                itemsComponent.addItem(item.clone());
+                itemsComponent.addItem(item.clone(), !this.playerPositionNodes.head.position.inCamp);
                 
 				this.gameState.unlockedFeatures.vision = true;
                            
@@ -1077,7 +1100,7 @@ define(['ash',
                     var itemID = inputParts[1];
                     var item = ItemConstants.getItemByID(itemID);
                     if (item) {
-                        itemsComponent.addItem(item);                       
+                        itemsComponent.addItem(item, !playerPos.inCamp);                       
                     } else {
                         console.log("WARN: No such item: " + itemID);
                     }

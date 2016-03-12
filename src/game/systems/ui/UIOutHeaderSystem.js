@@ -220,26 +220,20 @@ define([
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             $("ul#list-items-items").toggle(!isInCamp);
 			
-			var items = itemsComponent.getUnique();
+			var items = itemsComponent.getUnique(isInCamp);
 			if (forced || items.length !== this.lastItemsUpdateItemCount) {
                 $("ul#list-items-items").empty();
                 $("ul#list-items-followers").empty();
                 for (var i = 0; i < items.length; i++) {
                     var item = items[i];
-                    var count = itemsComponent.getCount(item);
+                    var count = itemsComponent.getCount(item, isInCamp);
                     switch (item.type) {
                         case ItemConstants.itemTypes.follower:
                             $("ul#list-items-followers").append("<li>" + UIConstants.getItemDiv(item, -1, true, false) + "</li>");
                             break;
                         
-                        case ItemConstants.itemTypes.exploration:
-                            $("ul#list-items-items").append("<li>" + UIConstants.getItemDiv(item, count, true, false) + "</li>");
-                            break;
-                        
                         default:
-                            if (item.equipped) {
-                                $("ul#list-items-items").append("<li>" + UIConstants.getItemDiv(item, -1, true, false) + "</li>");
-                            }
+                            $("ul#list-items-items").append("<li>" + UIConstants.getItemDiv(item, -1, true, false) + "</li>");
                             break;
                     }
                 }

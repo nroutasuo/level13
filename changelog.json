@@ -7,6 +7,10 @@
             "changes": [
                 {
                     "type": "GD",
+                    "summary": "Added selecting items to take with you when leaving camp."
+                },
+                {
+                    "type": "GD",
                     "summary": "Made blueprints more interesting by introducing pieces that need to be collected to make a blueprint."
                 },
                 {

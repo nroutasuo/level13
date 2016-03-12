@@ -151,14 +151,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             });
             
             // Steppers and stepper buttons
-            $(".stepper button").click(this.onStepperButtonClicked);
-            $(".stepper input.amount").focusin(function () {
-                $(this).data('oldValue', $(this).val());
-            });
-            $('.stepper input.amount').change(this.onStepperInputChanged);
-            
-            // All number inputs
-            $("input.amount").keydown(this.onNumberInputKeyDown);
+            this.registerStepperListeners("");
             
             // Action buttons buttons
             this.registerActionButtonListeners("");
@@ -259,6 +252,9 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                 playerActions.fightHelper.endFight();
             });
             $(scope + " button[action='leave_camp']").click(function (e) {
+                gameState.uiStatus.leaveCampItems = {};
+                gameState.uiStatus.leaveCampRes = {};
+                
                 var selectedResVO = new ResourcesVO();
                 $.each($("#embark-resources tr"), function () {
                     var resourceName = $(this).attr("id").split("-")[2];
@@ -267,12 +263,32 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                     gameState.uiStatus.leaveCampRes[resourceName] = selectedVal;
                 });
                 
+                var selectedItems = {};
+                $.each($("#embark-items tr"), function () {
+                    var itemID = $(this).attr("id").split("-")[2];
+                    var selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
+                    gameState.uiStatus.leaveCampItems[itemID] = selectedVal;
+                    selectedItems[itemID] = selectedVal;
+                });
+                
+                playerActions.updateCarriedItems(selectedItems);
                 playerActions.moveResFromCampToBag(selectedResVO);
                 playerActions.leaveCamp();
             });
             
             // Buttons: Bag: Item details
             // some in UIOoutBagSystem
+        },
+        
+        registerStepperListeners: function (scope) {
+            $(scope + " .stepper button").click(this.onStepperButtonClicked);
+            $(scope + " .stepper input.amount").focusin(function () {
+                $(this).data('oldValue', $(this).val());
+            });
+            $(scope + ' .stepper input.amount').change(this.onStepperInputChanged);
+            
+            // All number inputs
+            $(scope + " input.amount").keydown(this.onNumberInputKeyDown);
         },
         
         generateElements: function () {
@@ -347,13 +363,13 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             $(scope + " .stepper").append("<button type='button' class='btn-glyph' data-type='minus' data-field=''>-</button>");
             $(scope + " .stepper").append("<input class='amount' type='text' min='0' max='100' autocomplete='false' value='0' name=''></input>");  
             $(scope + " .stepper").append("<button type='button' class='btn-glyph' data-type='plus' data-field=''>+</button>");
-            $(scope + " .stepper button").attr("data-field", function( i, val ) {
+            $(scope + " .stepper button").attr("data-field", function (i, val) {
                 return $(this).parent().attr("id") + "-input";
             });
-            $(scope + " .stepper button").attr("action", function( i, val ) {
+            $(scope + " .stepper button").attr("action", function (i, val) {
                 return $(this).parent().attr("id") + "-" + $(this).attr("data-type");
             });
-            $(scope + " .stepper input").attr("name", function( i, val ) {
+            $(scope + " .stepper input").attr("name", function (i, val) {
                 return $(this).parent().attr("id") + "-input";
             });
         },

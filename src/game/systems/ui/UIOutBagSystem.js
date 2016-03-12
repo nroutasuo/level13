@@ -4,9 +4,10 @@ define([
     'game/constants/ItemConstants',
     'game/nodes/player/ItemsNode',
     'game/components/common/ResourcesComponent',
+    'game/components/common/PositionComponent',
     'game/components/player/StaminaComponent',
     'game/components/player/VisionComponent',
-], function (Ash, UIConstants, ItemConstants, ItemsNode, ResourcesComponent, StaminaComponent, VisionComponent) {
+], function (Ash, UIConstants, ItemConstants, ItemsNode, ResourcesComponent, PositionComponent, StaminaComponent, VisionComponent) {
     var UIOutBagSystem = Ash.System.extend({
 
 		uiFunctions : null,
@@ -98,8 +99,9 @@ define([
 		update: function (time) {
 			var isActive = this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.bag;
 			var itemsComponent = this.itemNodes.head.items;
-            var hasMap = itemsComponent.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id) > 0;
-			var uniqueItems = itemsComponent.getUnique();
+            var hasMap = itemsComponent.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
+			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
+			var uniqueItems = itemsComponent.getUnique(inCamp);
 			
 			this.uniqueItemsCount = uniqueItems.length;
 			
@@ -136,8 +138,12 @@ define([
 		},
 
 		updateCrafting: function (isActive) {
-			var requiresUpdate = $("#self-craft table tr").length !== this.craftableItems;
-			var showObsolete = $("#checkbox-crafting-show-obsolete").is(':checked');
+			var checkBoxHidden = !($("#checkbox-crafting-show-obsolete").is(':visible')) && $("#self-craft").is(":visible");
+			var showObsolete = $("#checkbox-crafting-show-obsolete").is(':checked') || checkBoxHidden;
+			var requiresUpdate = $("#self-craft table tr").length !== this.craftableItems || showObsolete !== this.showObsolete;
+			this.showObsolete = showObsolete;
+			
+			var countObsolete = 0;
 			if (requiresUpdate) $("#self-craft table").empty();
 			
 			this.craftableItems = 0;
@@ -152,31 +158,36 @@ define([
 				itemList = ItemConstants.itemDefinitions[type];
 				for (var i in itemList) {
 					itemDefinition = itemList[i];
-					if (itemDefinition.craftable && (showObsolete || !itemsComponent.isItemObsolete(itemDefinition))) {
-						itemDefinitionList.push(itemDefinition);
-					}
+					if (itemDefinition.craftable) itemDefinitionList.push(itemDefinition);
 				}
 			}
 			
-			itemDefinitionList = itemDefinitionList.sort(this.sortItemsByType);
+			itemDefinitionList = itemDefinitionList.sort(UIConstants.sortItemsByType);
 			
 			var tr;
 			for (var j = 0; j < itemDefinitionList.length; j++) {
 				var itemDefinition = itemDefinitionList[j];
 				var actionName = "craft_" + itemDefinition.id;
+				var isObsolete = itemsComponent.isItemObsolete(itemDefinition);
 				var reqsCheck = this.playerActionsHelper.checkRequirements(actionName, false);
 				if (reqsCheck.value >= 1 || reqsCheck.reason === "Bag full.") {
-					var isAvailable = this.playerActionsHelper.checkAvailability(actionName, false);
-					if (requiresUpdate) {
-						tr = "<tr><td><button class='action' action='" + actionName + "'>" + itemDefinition.name + "</button></td></tr>";
-						$("#self-craft table").append(tr);
-					}
+					if (isObsolete) countObsolete++;
+					if (!isObsolete || showObsolete) {
+						var isAvailable = this.playerActionsHelper.checkAvailability(actionName, false);
+						if (requiresUpdate) {
+							tr = "<tr><td><button class='action' action='" + actionName + "'>" + itemDefinition.name + "</button></td></tr>";
+							$("#self-craft table").append(tr);
+						}
+						this.craftableItems++;
 					
-					this.craftableItems++;
-					if (isAvailable && !itemsComponent.contains(itemDefinition.name) && itemsComponent.getCurrentBonus(itemDefinition.type) < itemDefinition.bonus)
-						this.availableCraftableItems++;
+						if (isAvailable && !itemsComponent.contains(itemDefinition.name) && itemsComponent.getCurrentBonus(itemDefinition.type) < itemDefinition.bonus)
+							this.availableCraftableItems++;
+					}
 				}
 			}
+			
+			$("#checkbox-crafting-show-obsolete").toggle(countObsolete > 0);
+			$("#label-crafting-show-obsolete").toggle(countObsolete > 0);
 
 			if (requiresUpdate) {
 				this.uiFunctions.registerActionButtonListeners("#self-craft");
@@ -190,7 +201,8 @@ define([
 
 		updateItemLists: function () {
 			var itemsComponent = this.itemNodes.head.items;
-			var items = itemsComponent.getUnique();
+			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
+			var items = itemsComponent.getUnique(inCamp);
 			
 			this.updateItemSlot(ItemConstants.itemTypes.light, null);
 			this.updateItemSlot(ItemConstants.itemTypes.shades, null);
@@ -199,12 +211,12 @@ define([
 			this.updateItemSlot(ItemConstants.itemTypes.shoes, null);
 			this.updateItemSlot(ItemConstants.itemTypes.bag, null);
 			
-			items = items.sort(this.sortItemsByType);
+			items = items.sort(UIConstants.sortItemsByType);
 
 			$("#bag-items").empty();
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
-				var count = itemsComponent.getCount(item);
+				var count = itemsComponent.getCount(item, inCamp);
 				var smallSlot = UIConstants.getItemSlot(item, count);
 				switch (item.type) {
 					case ItemConstants.itemTypes.light:
@@ -245,10 +257,12 @@ define([
 
 		refreshItemLists: function () {
 			var itemsComponent = this.itemNodes.head.items;
+			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
 			$.each($("#bag-items li .item"), function () {
 				var id = $(this).attr("data-itemid");
-				var count = itemsComponent.getCountById(id);
-				$(this).find(".item-count").text(count + "x");
+				var count = itemsComponent.getCountById(id, inCamp);
+				var showCount = itemsComponent.getItem(id).equipped ? count - 1 : count;
+				$(this).find(".item-count").text(showCount + "x");
 			});
 		},
 		
@@ -260,30 +274,6 @@ define([
 			$(slot).children(".item-slot-type").toggle(itemVO === null);
 			$(slot).children(".item-slot-effect").toggle(itemVO !== null);
 			$(slot).toggleClass("item-slot-equipped", itemVO !== null);
-		},
-		
-		sortItemsByType: function (a, b) {
-			var getItemSortVal = function (itemVO) {
-				var typeVal = 0;
-				switch (itemVO.type) {
-					case ItemConstants.itemTypes.bag: typeVal = 1; break;
-					case ItemConstants.itemTypes.light: typeVal = 2; break;
-					case ItemConstants.itemTypes.shades: typeVal = 3; break;
-					case ItemConstants.itemTypes.weapon: typeVal = 4; break;
-					case ItemConstants.itemTypes.clothing: typeVal = 5; break;
-					case ItemConstants.itemTypes.shoes: typeVal = 6; break;
-					case ItemConstants.itemTypes.exploration: typeVal = 7; break;
-					case ItemConstants.itemTypes.ingredient: typeVal = 8; break;
-					case ItemConstants.itemTypes.uniqueEquipment: typeVal = 0; break;
-					case ItemConstants.itemTypes.artefact: typeVal = 9; break;
-					case ItemConstants.itemTypes.note: typeVal = 10; break;
-					case ItemConstants.itemTypes.follower: typeVal = 0; break;
-				}
-				return typeVal * 1000 - itemVO.bonus;
-			};
-			var aVal = getItemSortVal(a);
-			var bVal = getItemSortVal(b);
-			return aVal - bVal;
 		},
     
 	});

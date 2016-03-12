@@ -97,6 +97,9 @@ define([
 				sys.updateLocales();
 				sys.updateMovementRelatedActions();
 			});
+            this.tabChangedSignal.add(function () {
+                sys.regenrateEmbarkItems();
+            });
 			this.rebuildVis(uiMapHelper);
 		},
 		
@@ -114,6 +117,21 @@ define([
 				}
 			}
 		},
+        
+        initLeaveCampItems: function () {
+			if (this.gameState.uiStatus.leaveCampItems) {
+                var itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
+				for (var key in this.gameState.uiStatus.leaveCampItems) {
+					var itemID = key;
+					var oldVal = this.gameState.uiStatus.leaveCampItems[itemID];
+					var ownedCount = itemsComponent.getCountById(itemID, true);
+					if (oldVal && oldVal > 0) {
+						var value = Math.floor(Math.min(oldVal, ownedCount));
+						$("#stepper-embark-" + itemID + " input").val(value);
+					}
+				}
+			}
+        },
 		
 		update: function (time) {
             $("#switch-out .bubble").toggle(false);
@@ -133,6 +151,7 @@ define([
 			if (posComponent.inCamp) {
 				if (!this.refreshedEmbark) {
 					this.initLeaveCampRes();
+                    this.initLeaveCampItems();
 				}
 				this.updateEmbarkPage();
 				this.refreshedEmbark = true;
@@ -157,9 +176,48 @@ define([
 				$(this).toggle(visible);
 				$(this).children("td").children(".stepper").children("input").attr("max", inputMax);
 			});
+            
+            // Items steppers
+            var itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
+			$.each($("#embark-items tr"), function () {
+				var itemID = $(this).attr("id").split("-")[2];
+                var count = itemsComponent.getCountById(itemID, true);
+				var visible = count > 0;
+				var inputMax = Math.min(bagStorage, Math.floor(count));
+                var inputMin = 0;
+                var inputValue = $(this).children("td").children(".stepper").children("input").attr("value");
+				$(this).toggle(visible);
+				$(this).children("td").children(".stepper").children("input").attr("max", inputMax);
+				$(this).children("td").children(".stepper").children("input").attr("min", inputMin);
+				$(this).children("td").children(".stepper").children("input").attr("value", Math.max(inputValue, inputMin));
+			});
 			
 			$("#embark-bag .value").text(bagStorage);
 		},
+        
+        regenrateEmbarkItems: function () {
+            $("#embark-items").empty();
+            var itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
+            var uniqueItems = itemsComponent.getUnique(true);
+			uniqueItems = uniqueItems.sort(UIConstants.sortItemsByType);
+            for (var i = 0; i < uniqueItems.length; i++) {
+                var item = uniqueItems[i];
+                var count = itemsComponent.getCountById(item.id, true);
+                var showCount = item.equipped ? count - 1 : count;
+                if (item.type === ItemConstants.itemTypes.uniqueEquipment) continue;
+                if (item.type === ItemConstants.itemTypes.follower) continue;
+                if (item.equipped && count === 1) continue;
+                $("#embark-items").append(
+                    "<tr id='embark-assign-" + item.id + "'>" +
+                    "<td><img src='" + item.icon + "'/>" + item.name + "</td>" +
+                    "<td><div class='stepper' id='stepper-embark-" + item.id + "'></div></td>" +
+                    "<td class='list-amount'> / " + showCount + "</div></td>" +
+                    "</tr>"
+                );
+            }
+            this.uiFunctions.generateSteppers("#embark-items");
+            this.uiFunctions.registerStepperListeners("#embark-items");
+        },
 		
 		updateLevelPage: function () {
 			var posComponent = this.playerLocationNodes.head.position;
@@ -287,7 +345,7 @@ define([
 			
 			$("#minimap").toggle(hasVision);
             
-            var hasMap = this.playerPosNodes.head.entity.get(ItemsComponent).getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id) > 0;
+            var hasMap = this.playerPosNodes.head.entity.get(ItemsComponent).getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
             $("#out-position-indicator").text(hasMap ? posComponent.getPosition().getInGameFormat(false) : "");
 		},
 		

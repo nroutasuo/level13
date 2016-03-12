@@ -592,7 +592,7 @@ define(['ash',
 				for (var i in itemList) {
 					itemDefinition = itemList[i];
 					if (itemDefinition.craftable) {
-                        if (this.itemsNodes.head.items.getCountById(itemDefinition.id) < 1) {
+                        if (this.itemsNodes.head.items.getCountById(itemDefinition.id, true) < 1) {
                             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("craft_" + itemDefinition.id)) {
                                 this.printStep("craft " + itemDefinition.name);
                                 this.playerActionFunctions.craftItem(itemDefinition.id);

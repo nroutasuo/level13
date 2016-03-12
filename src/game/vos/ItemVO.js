@@ -13,6 +13,7 @@ define(['ash'], function (Ash) {
 		craftable: false,
 		
 		equipped: false,
+		carried: false,
 	
         constructor: function (id, name, type, bonus, equippable, craftable, icon, description) {
 			this.id = id;
@@ -25,6 +26,7 @@ define(['ash'], function (Ash) {
 			this.description = description;
 			
 			this.equipped = false;
+			this.carried = false;
 			this.itemID = Math.floor(Math.random() * 1000000);
         },
 	

@@ -197,6 +197,30 @@ define(['ash',
 			return effect + " " + value;
 		},
 		
+		sortItemsByType: function (a, b) {
+			var getItemSortVal = function (itemVO) {
+				var typeVal = 0;
+				switch (itemVO.type) {
+					case ItemConstants.itemTypes.bag: typeVal = 1; break;
+					case ItemConstants.itemTypes.light: typeVal = 2; break;
+					case ItemConstants.itemTypes.shades: typeVal = 3; break;
+					case ItemConstants.itemTypes.weapon: typeVal = 4; break;
+					case ItemConstants.itemTypes.clothing: typeVal = 5; break;
+					case ItemConstants.itemTypes.shoes: typeVal = 6; break;
+					case ItemConstants.itemTypes.exploration: typeVal = 7; break;
+					case ItemConstants.itemTypes.ingredient: typeVal = 8; break;
+					case ItemConstants.itemTypes.uniqueEquipment: typeVal = 0; break;
+					case ItemConstants.itemTypes.artefact: typeVal = 9; break;
+					case ItemConstants.itemTypes.note: typeVal = 10; break;
+					case ItemConstants.itemTypes.follower: typeVal = 0; break;
+				}
+				return typeVal * 1000 - itemVO.bonus;
+			};
+			var aVal = getItemSortVal(a);
+			var bVal = getItemSortVal(b);
+			return aVal - bVal;
+		},
+		
 		createResourceIndicator: function (name, showName, id, showAmount, showChange) {
 			var div = "<div class='stats-indicator' id='" + id + "'>";
 			

@@ -44,6 +44,7 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
                 currentTab: null,
                 mapVisited: false,
                 leaveCampRes: {},
+                leaveCampItems: {},
             };
             
             this.actionCooldownEndTimestamps = {};

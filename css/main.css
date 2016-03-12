@@ -1234,6 +1234,7 @@ th.th-text {
 	min-width: 70px;
 	vertical-align: middle;
 	margin: 1px;
+    white-space: nowrap;
 }
 
 input.amount {

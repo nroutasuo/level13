@@ -153,7 +153,7 @@ define([
             
             var item = this.getItemForCraftAction(action);
             if (item) {
-                var count = playerItems.getCountById(item.id);
+                var count = playerItems.getCountById(item.id, true);
                 if (playerItems.capacity > 0 && playerItems.capacity < count + 1) {
                     return { value: 0, reason: "Bag full." };
                 }
@@ -514,6 +514,7 @@ define([
             var playerStamina = this.playerStatsNodes.head.stamina.stamina;
             var playerResources = this.resourcesHelper.getCurrentStorage();
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+            var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
             
             var sector = otherSector || (this.playerLocationNodes.head && this.playerLocationNodes.head.entity);
             if (!sector) return false;
@@ -527,7 +528,7 @@ define([
                 return (playerResources.resources.getResource(costNameParts[1]) / costAmount);
             } else if (costNameParts[0] === "item") {
                 var itemId = name.replace(costNameParts[0] + "_", "");
-                return itemsComponent.getCountById(itemId) / costAmount;
+                return itemsComponent.getCountById(itemId, inCamp) / costAmount;
             } else {            
                 switch (name) {
                     case "stamina":

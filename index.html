@@ -315,25 +315,25 @@
 					<!-- "embark" page when leaving camp -->
 					<div class="grid" id="container-tab-enter-out" style="display:none">
 						<div class="unit whole">
-							<div class="subheader"><h3>Supplies</h3></div>
-							<p>Make sure you pack enough supplies before you leave.</p>
-                            <div class="grid">
-                                <div class="unit one-third">
-                                    <table id="embark-resources">
-                                    </table>
-                                </div>
-                                <div class="unit one-third">
-                                    Items in bag
-                                </div>
-                                <div class="unit one-third">
-                                    Items in camp
-                                </div>
-							</div>
-                            
+							<p>Make sure you pack enough supplies before you leave.</p>                            
+                            <p>
                             <div class="stats-indicator" id="embark-bag">
                                 <span class="label">Bag space</span>
                                 <span class="value">0</span>
                             </div>
+                            </p>
+                            <div class="grid">
+                                <div class="unit one-third">
+                                    <div class="subheader"><h3>Resources</h3></div>
+                                    <table id="embark-resources">
+                                    </table>
+                                </div>
+                                <div class="unit two-thirds">
+                                    <div class="subheader"><h3>Items</h3></div>
+                                    <table id="embark-items">
+                                    </table>
+                                </div>
+							</div>
                             
 							<div class="actionbox">
 							<button class="action" id="in-action-leave" action="leave_camp">Go</button>
@@ -476,7 +476,7 @@
 						</div>
 						<div class="unit one-quarter">
 							<div class="subheader"><h3>Craft</h3></div>
-                            <input type="checkbox" class="checkbox" id="checkbox-crafting-show-obsolete" /><p class="checkbox-label">Show obsolete</p>
+                            <input type="checkbox" class="checkbox" id="checkbox-crafting-show-obsolete" /><p class="checkbox-label" id="label-crafting-show-obsolete">Show obsolete</p>
 							<div id="self-craft" class="actionbox">
 								<table>
 								</table>

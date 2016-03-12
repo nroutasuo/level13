@@ -170,7 +170,7 @@ define([
             var resultVO = new ResultVO();
             if (loseInventoryProbability > Math.random()) {
                 resultVO.lostResources = this.playerResourcesNodes.head.resources.resources.clone();
-                var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAll();
+                var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAll(false);
 				var itemLoseProbability;
                 for (var i = 0; i < playerItems.length; i++) {
 					itemLoseProbability = 1;
@@ -205,6 +205,8 @@ define([
 
 		collectRewards: function (rewards) {
 			var currentStorage = this.resourcesHelper.getCurrentStorage();
+			var playerPos = this.playerLocationNodes.head.position;
+			
 			currentStorage.addResources(rewards.gainedResources);
 			currentStorage.substractResources(rewards.lostResources);
 
@@ -222,13 +224,13 @@ define([
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			if (rewards.gainedItems) {
 				for (var i = 0; i < rewards.gainedItems.length; i++) {
-					itemsComponent.addItem(rewards.gainedItems[i]);
+					itemsComponent.addItem(rewards.gainedItems[i], !playerPos.inCamp);
 				}
 			}
 			
 			if (rewards.gainedFollowers) {
 				for (var i = 0; i < rewards.gainedFollowers.length; i++) {
-					itemsComponent.addItem(rewards.gainedFollowers[i]);
+					itemsComponent.addItem(rewards.gainedFollowers[i], false);
 				}
 			}
 
@@ -485,7 +487,7 @@ define([
 					item = ItemConstants.itemDefinitions.artefact[i].clone();
 				}
 				if (!item && pendingItem)
-					if (currentItems.getCount(pendingItem) <= 0) item = pendingItem;
+					if (currentItems.getCount(pendingItem, true) <= 0) item = pendingItem;
 				if (item) items.push(item);
 			}
 			
@@ -518,7 +520,7 @@ define([
 			if (currentItems.getCurrentBonus(ItemConstants.itemTypes.bag) <= 0) {
 				return ItemConstants.getBag(levelOrdinal);
 			}
-			if (currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id) <= 0) {
+			if (currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) <= 0) {
 				return ItemConstants.itemDefinitions.uniqueEquipment[0].clone();
 			}
 			return null;
