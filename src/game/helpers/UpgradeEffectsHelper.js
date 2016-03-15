@@ -16,6 +16,9 @@ define([
 			"smith": UpgradeConstants.upgradeIds.unlock_building_smithy,
 			"soldier": UpgradeConstants.upgradeIds.unlock_building_barracks,
 		},
+        
+        upgradesByUIEffects: {
+        },
 		
 		improvementsByOccurrence: {
 		},
@@ -56,6 +59,8 @@ define([
 			this.improvingUpgradesByWorker["apothecary"] = ["upgrade_building_apothecary"];
 			
 			this.improvingUpgradesByEvent[OccurrenceConstants.campOccurrenceTypes.trader] = [ "upgrade_building_market", "upgrade_building_market2" ];
+            
+            this.upgradesByUIEffects[UpgradeConstants.upgradeUIEffects.calendar] = UpgradeConstants.upgradeIds.unlock_building_library;
 		},
 		
 		getUnlockedBuildings: function (upgradeId) {
@@ -128,6 +133,18 @@ define([
 			return occurrences;
 		},
 		
+        getUnlockedUI: function (upgradeId) {
+			var uiEffects = [];
+			var uiUpgrade;
+			for (var ui in this.upgradesByUIEffects) {
+				uiUpgrade = this.upgradesByUIEffects[ui];
+				if (uiUpgrade === upgradeId) {
+					uiEffects.push(ui);
+				}
+			}
+			return uiEffects;
+        },
+        
 		getImprovedBuildings: function (upgradeId) {
 			var buildings = [];
 			var buildingUpgrade;
@@ -179,6 +196,10 @@ define([
 		getUpgradeIdForWorker: function (worker) {
 			return this.upgradesByWorker[worker];
 		},
+        
+        getUpgradeIdForUIEffect: function (effect) {
+            return this.upgradesByUIEffects[effect];
+        },
 		
 		getImprovingUpgradeIdsForWorker: function (worker) {
 			return this.improvingUpgradesByWorker[worker];

@@ -323,7 +323,9 @@ define([
 			var raidDanger = Math.round(OccurrenceConstants.getRaidDanger(improvements, soldiers));
             
             var inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
+            var showCalendar = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(this.upgradesHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
             $("#in-demographics-general-age .value").text(inGameFoundingDate);
+            $("#in-demographics-general-age").toggle(showCalendar);
 			
 			var showRaid = raidDanger > 0;
 			if (showRaid) {
@@ -332,6 +334,8 @@ define([
 				$("#in-demographics-raid-defence .value").text(raidDefence);
 			}
 			$("#in-demographics-raid").toggle(showRaid);
+            
+            $("#in-demographics").toggle(showCalendar || showRaid);
         },
         
         hasUpgrade: function (upgradeId) {

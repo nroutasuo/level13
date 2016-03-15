@@ -632,10 +632,6 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     }
                 },
                 
-                unlock_building_library: {
-                    blueprint: 4,
-                },
-                
                 unlock_building_passage_hole: {
                     blueprint: 4,
                     upgrades: {
@@ -1541,7 +1537,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 despair: "Give up. Stop moving. Rest.",
                 build_out_collector_food: "Accumulates food.",
                 build_out_collector_water: "Accumulates water.",
-                build_out_camp: "Build a camp here. Choose a good location - only one camp per level.",
+                build_out_camp: "Build a camp here. Only one camp per level.",
                 build_in_house: "A place for " + CampConstants.POPULATION_PER_HOUSE + "people to stay.",
                 build_in_house2: "Houses " + CampConstants.POPULATION_PER_HOUSE2 + "people.",
                 build_in_storage: "Increases resource storage.",

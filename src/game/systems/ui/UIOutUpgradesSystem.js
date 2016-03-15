@@ -237,6 +237,15 @@ define([
 					}
 					effects += ", ";
 				}
+				
+				var unlockedUI = this.upgradeEffectsHelper.getUnlockedUI(upgradeId);
+				if (unlockedUI.length > 0) {
+					for (var i in unlockedUI) {
+						effects += "show " + unlockedUI[i];
+					}
+					effects += ", ";
+				}
+				
 			
 				// TODO unlocked upgrades? only when other requirements met / blueprint not required?
 

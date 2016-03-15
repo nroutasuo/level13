@@ -3,11 +3,13 @@ define([
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/FightConstants',
+    'game/constants/UpgradeConstants',
     'game/worldcreator/WorldCreatorHelper',
     'game/systems/SaveSystem',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/player/AutoPlayNode',
     'game/nodes/PlayerLocationNode',
+    'game/nodes/tribe/TribeUpgradesNode',
     'game/nodes/player/DeityNode',
     'game/components/player/DeityComponent',
     'game/components/player/ItemsComponent',
@@ -16,36 +18,41 @@ define([
     'game/components/common/PositionComponent',
     'game/components/common/CampComponent',
     'game/components/sector/SectorFeaturesComponent',
+    'game/components/tribe/UpgradesComponent',
 ], function (Ash,
-    UIConstants, ItemConstants, FightConstants,
+    UIConstants, ItemConstants, FightConstants, UpgradeConstants,
     WorldCreatorHelper, SaveSystem,
-	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, DeityNode,
+	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
 	DeityComponent,
 	ItemsComponent,
 	PerksComponent,
 	PlayerActionComponent,
 	PositionComponent,
     CampComponent,
-	SectorFeaturesComponent
+	SectorFeaturesComponent,
+	UpgradesComponent
 ) {
     var UIOutHeaderSystem = Ash.System.extend({
 	
 		playerStatsNodes: null,
 		deityNodes: null,
+		tribeNodes: null,
 		currentLocationNodes: null,
 		
 		gameState: null,
 		uiFunctions: null,
 		resourcesHelper: null,
+        upgradeEffectsHelper: null,
 		engine: null,
 		
 		lastUpdateTimeStamp: 0,
 		updateFrequency: 1000 * 2,
 	
-		constructor: function (uiFunctions, gameState, resourcesHelper) {
+		constructor: function (uiFunctions, gameState, resourcesHelper, upgradeEffectsHelper) {
 			this.gameState = gameState;
 			this.uiFunctions = uiFunctions;
 			this.resourcesHelper = resourcesHelper;
+            this.upgradeEffectsHelper = upgradeEffectsHelper;
 			return this;
 		},
 	
@@ -53,6 +60,7 @@ define([
 			this.engine = engine;
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			this.deityNodes = engine.getNodeList(DeityNode);
+            this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
 			this.currentLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.autoPlayNodes = engine.getNodeList(AutoPlayNode);
 			
@@ -91,8 +99,10 @@ define([
 			this.updateNotifications();
             
             var headerText = isInCamp ? campComponent.getName() + "  (level " + playerPosition.level + ")" : "level " + playerPosition.level;
+            var showCalendar = this.tribeNodes.head.upgrades.hasUpgrade(this.upgradeEffectsHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
             $("#grid-location-header h1").text(headerText);
             $("#in-game-date").text(UIConstants.getInGameDate(this.gameState.gamePlayedSeconds));
+            $("#in-game-date").toggle(showCalendar);
             $("#grid-tab-header").toggle(this.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.out || isInCamp);
 			
 			if (new Date().getTime() - this.lastUpdateTimeStamp < this.updateFrequency) return;
@@ -228,6 +238,9 @@ define([
                     var item = items[i];
                     var count = itemsComponent.getCount(item, isInCamp);
                     switch (item.type) {
+                        case ItemConstants.itemTypes.uniqueEquipment:
+                            break;
+                        
                         case ItemConstants.itemTypes.follower:
                             $("ul#list-items-followers").append("<li>" + UIConstants.getItemDiv(item, -1, true, false) + "</li>");
                             break;

@@ -57,6 +57,10 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
             unlock_item_weapon7: "unlock_item_weapon7",
         },
         
+        upgradeUIEffects: {
+            calendar: "calendar",
+        },
+        
 		bluePrintsByCampOrdinal: {
 			1: ["unlock_building_passage_staircase"],
 			2: ["unlock_building_darkfarm", "unlock_building_tradingpost"],

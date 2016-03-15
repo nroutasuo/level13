@@ -814,8 +814,8 @@ div.info-callout {
 div.info-callout-target {
     border-width: 1px;
     border-style: solid;
-    padding: 1px 2px;
-    margin: 1px 0px;
+    padding: 1px;
+    margin: 1px;
     cursor: help;
 }
 
