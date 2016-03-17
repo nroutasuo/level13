@@ -412,10 +412,22 @@ define([
 		
 		logSpecialFinds: function (rewards) {
             var logComponent = this.playerStatsNodes.head.entity.get(LogMessagesComponent);
+			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			
 			if (rewards.gainedBlueprintPiece) {
 				var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(rewards.gainedBlueprintPiece);
 				if (blueprintVO.currentPieces === 1)
 					logComponent.addMessage(LogConstants.MSG_ID_FOUND_BLUEPRINT_FIRST, "Found a piece of forgotten technology.");
+			}
+			
+			if (rewards.gainedItems) {
+				for (var i = 0; i < rewards.gainedItems.length; i++) {
+					var item = rewards.gainedItems[i];
+					if (itemsComponent.getCountById(item.id, true) === 1) {
+						if (item.equippable && !item.equipped) continue;
+						logComponent.addMessage(LogConstants.MSG_ID_FOUND_ITEM_FIRST, "Found a " + item.name + ".");
+					}
+				}
 			}
 		},
 		

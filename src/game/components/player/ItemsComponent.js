@@ -207,6 +207,7 @@ function (Ash, ItemVO, ItemConstants) {
         getUnique: function (includeNotCarried) {
             var all = {};
             var allList = [];
+            
             for (var key in this.items) {
                 for( var i = 0; i < this.items[key].length; i++) {
                     var item = this.items[key][i];
@@ -239,7 +240,7 @@ function (Ash, ItemVO, ItemConstants) {
         },
         
         getCountById: function (id, includeNotCarried) {
-            if (Object.keys(includeNotCarried ? this.uniqueItemsAll : this.uniqueItemsCarried).length <= 0) this.getUnique();
+            if (Object.keys(includeNotCarried ? this.uniqueItemsAll : this.uniqueItemsCarried).length <= 0) this.getUnique(includeNotCarried);
             if (includeNotCarried)
                 return typeof this.uniqueItemsAll[id] === 'undefined' ? 0 : this.uniqueItemsAll[id];
             else
