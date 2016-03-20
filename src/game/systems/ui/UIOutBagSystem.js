@@ -22,6 +22,7 @@ define([
 		craftableItems: -1,
 		lastShownCraftableItems: -1,
 		uniqueItemsCount: -1,
+		lastShownAvailableCraftableItems: -1,
 		lastShownUniqueItemsCount: -1,
 
 		constructor: function (uiFunctions, tabChangedSignal, playerActionsHelper, gameState) {

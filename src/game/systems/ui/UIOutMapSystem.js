@@ -45,9 +45,9 @@ define([
 		},
 
 		update: function (time) {
-            $("#switch-map .bubble").toggle(!this.gameState.mapVisited);
+            $("#switch-map .bubble").toggle(!this.gameState.uiStatus.mapVisited);
 			if (this.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.map) return;
-            this.gameState.mapVisited = true;
+            this.gameState.uiStatus.mapVisited = true;
 			$("#tab-header h2").text("Map");
 		},
 

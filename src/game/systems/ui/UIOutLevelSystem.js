@@ -179,10 +179,12 @@ define([
             
             // Items steppers
             var itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
+            var visibleItemTRs = 0;
 			$.each($("#embark-items tr"), function () {
 				var itemID = $(this).attr("id").split("-")[2];
                 var count = itemsComponent.getCountById(itemID, true);
 				var visible = count > 0;
+                if (visible) visibleItemTRs++;
 				var inputMax = Math.min(bagStorage, Math.floor(count));
                 var inputMin = 0;
                 var inputValue = $(this).children("td").children(".stepper").children("input").attr("value");
@@ -192,6 +194,7 @@ define([
 				$(this).children("td").children(".stepper").children("input").attr("value", Math.max(inputValue, inputMin));
 			});
 			
+            $("#embark-items-container").toggle(visibleItemTRs > 0);
 			$("#embark-bag .value").text(bagStorage);
 		},
         
