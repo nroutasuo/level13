@@ -137,6 +137,7 @@ define([
                 }
             }
             
+            this.gameState.numVisitedSectors++;
 			this.gameState.unlockedFeatures.sectors = true;
 		},
         

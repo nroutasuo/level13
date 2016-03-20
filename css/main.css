@@ -1032,7 +1032,7 @@ button.btn-disabled, li.disabled {
 }
 
 button.btn-disabled-vision {
-	opacity: 0;
+	opacity: 0.2;
 }
 
 button.btn-disabled-vision:hover {
@@ -1268,7 +1268,7 @@ input.amount {
 .progress {
 	width: 100%;
 	max-width: 250px;
-	height: 12px;
+	height: 1em;
 	border-width: 0px !important;
 }
 

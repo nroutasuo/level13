@@ -314,6 +314,7 @@ define(['ash',
 		
 		getTimeToNum: function (seconds) {
 			seconds = Math.ceil(Math.abs(seconds));
+			
 			var minutes = seconds / 60;
 			var hours = minutes / 60;
 			var days = hours / 24;

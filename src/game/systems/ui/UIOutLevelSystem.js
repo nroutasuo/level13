@@ -519,7 +519,7 @@ define([
                             break;
                     }
                 } else {
-                    notCampableDesc = "The area seems safe for habitation.";
+                    notCampableDesc = "The level seems safe for habitation.";
                 }
             }
 			

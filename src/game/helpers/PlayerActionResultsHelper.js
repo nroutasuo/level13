@@ -448,7 +448,7 @@ define([
 					probability = 0.98;
 					resAmountFactor = 2;
 				} else if (name === "water" || name === "food") {
-					probability = 0.3;
+					probability = this.gameState.unlockedFeatures.resources[name] === true ? 0.35 : 0.75;
 					resAmountFactor = 3;
 				}
 				probability = probability * probabilityFactor;
@@ -469,7 +469,7 @@ define([
 
 			// Neccessity items that the player should find quickly if missing
 			var necessityItem = this.getNecessityItem(currentItems, levelOrdinal);
-			if (necessityItem && Math.random() < itemProbability * 33) {
+			if (necessityItem && Math.random() < itemProbability * 40) {
 				items.push(necessityItem);
 			}
 
@@ -529,10 +529,11 @@ define([
 		},
 
 		getNecessityItem: function (currentItems, levelOrdinal) {
+			var visitedSectors = this.gameState.numVisitedSectors;
 			if (currentItems.getCurrentBonus(ItemConstants.itemTypes.bag) <= 0) {
 				return ItemConstants.getBag(levelOrdinal);
 			}
-			if (currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) <= 0) {
+			if (visitedSectors > 3 && currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) <= 0) {
 				return ItemConstants.itemDefinitions.uniqueEquipment[0].clone();
 			}
 			return null;
