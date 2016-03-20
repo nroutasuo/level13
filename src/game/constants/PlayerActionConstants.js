@@ -632,6 +632,10 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     }
                 },
                 
+                unlock_building_library: {
+                    blueprint: 4,
+                },
+                
                 unlock_building_passage_hole: {
                     blueprint: 4,
                     upgrades: {
