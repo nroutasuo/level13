@@ -787,7 +787,7 @@ ul#game-options li, ul#game-options-extended li {
 
 /* Appearance: Specific elements: callouts and popups */
 
-button.action:hover + div.btn-callout, div.container-btn-action:hover + div.btn-callout, .info-callout-target:hover + div.info-callout {
+div.container-btn-action:hover + div.btn-callout, div.btn-callout:hover, .info-callout-target:hover + div.info-callout, div.info-callout:hover {
 	display: block;
 }
 
@@ -832,7 +832,7 @@ div.info-callout-target {
 
 div.btn-callout {
 	text-align: center;
-	top: 35px;
+	top: 37px;
 }
 
 div.callout-container {
