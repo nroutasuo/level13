@@ -138,6 +138,8 @@
 		right: -10em !important;
 		width: 9em !important;
 	}
+    
+	div.popup { max-width: 80% !important }
 }
 
 @media screen and (max-width: 568px) {
@@ -201,5 +203,5 @@
 		max-width: 265px !important;
 	}
 	
-	.popup { max-width: 50% !important }
+	div.popup { max-width: 40% !important }
 }

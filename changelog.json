@@ -3,39 +3,41 @@
         {
             "version": "0.1.2",
             "phase": "alpha",
-            "final": false,
+            "final": true,
+            "released": "2016-03-20",
+            "updated": "2016-03-20",
             "changes": [
                 {
                     "type": "GD",
-                    "summary": "Added selecting items to take with you when leaving camp."
+                    "summary": "Some items can be left in the camp (and not lost them when fainting)."
                 },
                 {
                     "type": "GD",
-                    "summary": "Made blueprints more interesting by introducing pieces that need to be collected to make a blueprint."
+                    "summary": "Blueprints are made of pieces which must be separately collected."
                 },
                 {
                     "type": "UI",
-                    "summary": "Added notifications to tabs when there is new content like available buildigs or items."
+                    "summary": "Notifications for new content in tabs like available buildigs or items."
                 },
                 {
                     "type": "UI",
-                    "summary": "Improved exploration UI and the distinction between exploration and in-camp mdoes."
+                    "summary": "Improved exploration UI."
                 },
                 {
                     "type": "GD",
-                    "summary": "Added intersections to levels."
+                    "summary": "Levels are composed of randomly generated paths and have intersections."
                 },
                 {
                     "type": "GD",
-                    "summary": "Added random encounters and removed fight as an independent action."
+                    "summary": "Fight is no longer an independent action. Other actions can lead to random encounters."
+                },
+                {
+                    "type": "GD",
+                    "summary": "Exploration in general is more risky, but also has more rewards."
                 },
                 {
                     "type": "GD",
                     "summary": "Healing injuries is no longer instant."
-                },
-                {
-                    "type": "GD",
-                    "summary": "Reworked exploration and fighting systems. Exploration is more risky, but also has more rewards."
                 },
                 {
                     "type": "GD",
@@ -47,7 +49,7 @@
                 },
                 {
                     "type": "GB",
-                    "summary": "Adjusted the number of camps and levels and introduced campless levels."
+                    "summary": "There are levels where no camp can be built."
                 }
             ]
         },
@@ -56,6 +58,7 @@
             "phase": "alpha",
             "final": true,
             "released": "2015-09-02",
+            "updated": "2015-09-02",
             "changes": [
                 {
                     "type": "GD",
@@ -84,6 +87,7 @@
             "phase": "alpha",
             "final": true,
             "released": "2015-07-08",
+            "updated": "2015-07-08",
             "changes": [
                 {
                     "type": "GB",

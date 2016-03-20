@@ -25,8 +25,16 @@ define(['ash'], function (Ash) {
 			if (currentVersion) {
 				return this.getVersionNumber(currentVersion);
 			}
-			return "unknown";
+			return "unknown version";
 		},
+        
+        getCurrentVersionDate: function () {
+			var currentVersion = this.getCurrentVersion();
+			if (currentVersion) {
+				return currentVersion.final ? currentVersion.released : currentVersion.updated;
+			}
+			return "[no time stamp]";
+        },
 		
 		getChangeLogHTML: function () {
 			var html = "";
@@ -35,13 +43,14 @@ define(['ash'], function (Ash) {
 				v = this.versions[i];
 				if (v.changes.length === 0) continue;
 				html += "<div class='changelog-version'>";
-				html += this.getVersionNumber(v);
+				html += "version " + this.getVersionNumber(v);
 				if (!v.final) html += " (work in progress)";
 				html += "<ul>";
 				for (var j in v.changes) {
 					var change = v.changes[j];
+                    if (change.type === "UI") continue;
 					html += "<li>";
-					html += "<span class='changelog-type changelog-type-" + change.type + "'>" + change.type + "</span>";
+					// html += "<span class='changelog-type changelog-type-" + change.type + "'>" + change.type + "</span>";
 					html += "<span class='changelog-summary'>" + change.summary + "</span>";
 					html += "</li>";
 				}
