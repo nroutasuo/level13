@@ -797,7 +797,7 @@ div.btn-callout, div.info-callout {
 	position: absolute;
 	width: 100%;
 	min-width: 75px;
-	z-index: 15;
+	z-index: 5;
 	text-transform: none;
 }
 
@@ -1046,8 +1046,16 @@ button.btn-disabled-basic, button.btn-disabled-vision, button.btn-disabled-resou
 	font-weight: normal !important;
 }
 
-button.btn-disabled-basic, button.btn-disabled-vision, li.disabled {
+button.action.btn-disabled-basic, button.btn-disabled-vision, li.disabled {
 	text-decoration: line-through !important;
+}
+
+button.action.btn-disabled-basic:before {
+    content: "\00a0";
+}
+
+button.action.btn-disabled-basic:after {
+    content: "\00a0";
 }
 
 .cooldown-reqs {
