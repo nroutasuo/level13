@@ -3,6 +3,7 @@
 define([
     'ash',
     'game/constants/UIConstants',
+    'game/constants/WorldCreatorConstants',
     'game/nodes/PlayerPositionNode',
     'game/nodes/LevelNode',
     'game/nodes/PlayerLocationNode',
@@ -13,7 +14,7 @@ define([
     'game/components/common/VisitedComponent',
     'game/components/common/RevealedComponent',
     'game/components/common/CampComponent',
-], function (Ash, UIConstants,
+], function (Ash, UIConstants, WorldCreatorConstants,
     PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, PositionComponent,
 	VisitedComponent, RevealedComponent, CampComponent) {
@@ -105,7 +106,11 @@ define([
 			}
 			
 			if (!playerSectorFound) {
-				console.log("WARN: Player location could not be found (" + playerPos.level + "." + playerPos.sectorId() + ")");
+				console.log("WARN: Player location could not be found (" + playerPos.level + "." + playerPos.sectorId() + ").");
+                console.log("WARN: Moving to a known valid position.");
+                playerPos.level = 13;
+                playerPos.sectorX = WorldCreatorConstants.FIRST_CAMP_X;
+                playerPos.sectorY = WorldCreatorConstants.FIRST_CAMP_Y;
 			}
 		},
 		

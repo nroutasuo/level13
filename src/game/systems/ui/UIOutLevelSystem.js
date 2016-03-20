@@ -142,6 +142,10 @@ define([
 			}
 			
 			var posComponent = this.playerPosNodes.head.position;
+            
+            if (!this.playerLocationNodes.head) {
+                return;
+            }
 			
             // TODO create nice transitions for leaving camp
 			$("#container-tab-enter-out").toggle(posComponent.inCamp);

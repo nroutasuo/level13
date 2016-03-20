@@ -81,6 +81,8 @@ define([
             var isActive = this.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.in;
             var campCount = this.gameState.numCamps;
             
+            if (!this.playerLocationNodes.head) return;
+            
             this.updateImprovements(isActive, campCount);
             this.updateWorkers(isActive);
             this.updateEvents(isActive);
