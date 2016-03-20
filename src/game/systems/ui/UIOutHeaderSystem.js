@@ -289,13 +289,13 @@ define([
 			var showStorageName = this.resourcesHelper.getCurrentStorageName();
 			var inventoryUnlocked = false;
             
-            $("#main-header-camp").toggle(inCamp);
-            $("#statsbar-exploration").toggle(!inCamp);
-            $("#main-header-bag").toggle(!inCamp);
-            $("#statsbar-resources").toggle(inCamp);
+            this.uiFunctions.slideToggleIf("#main-header-camp", null, inCamp, 250, 50);
+            this.uiFunctions.slideToggleIf("#statsbar-exploration", null, !inCamp, 250, 50);
+            this.uiFunctions.slideToggleIf("#main-header-bag", null, !inCamp, 250, 50);
             $("#header-camp-storage").toggle(inCamp);
-            $("#bag-resources").toggle(!inCamp);
+            $("#statsbar-resources").toggle(inCamp);
             $("#header-bag-storage").toggle(!inCamp && this.gameState.unlockedFeatures.bag);
+            $("#bag-resources").toggle(!inCamp);
 	
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
