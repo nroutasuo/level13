@@ -33,6 +33,8 @@ define([
         },
 
         update: function (time) {
+            if (this.gameState.isPaused) return;
+            
 			var rumoursComponent = this.playerStatsNodes.head.rumours;
 			
 			rumoursComponent.accSources = [];

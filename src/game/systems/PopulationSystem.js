@@ -16,7 +16,8 @@ define([
 		
 		lastPopulationIncreaseTimestamps: [],
 
-        constructor: function () {
+        constructor: function (gameState) {
+            this.gameState = gameState;
         },
 
         addToEngine: function (engine) {
@@ -30,6 +31,7 @@ define([
         },
 
         update: function (time) {
+            if (this.gameState.isPaused) return;
             for (var node = this.campNodes.head; node; node = node.next) {
                 this.updateNode(node, time);
             }

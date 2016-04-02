@@ -6,8 +6,9 @@ function (Ash, UIConstants) {
         popupQueue: null,
         playerActionResultsHelper: null,
         
-        constructor: function (playerActionResultsHelper) {
+        constructor: function (gameState, playerActionResultsHelper) {
             $(window).resize(this.onResize);
+            this.gameState = gameState;
             this.playerActionResultsHelper = playerActionResultsHelper;
             this.popupQueue = [];
         },
@@ -55,6 +56,8 @@ function (Ash, UIConstants) {
             $(".popup-overlay").toggle(true);
             popUpManager.onResize();
             $("#common-popup").slideDown(200, popUpManager.onResize);
+            
+            this.gameState.isPaused = this.hasOpenPopup();
         },
         
         closePopup: function (id) {
@@ -66,11 +69,13 @@ function (Ash, UIConstants) {
                     $("#" + id).unwrap();
                     $("#" + id).data("fading", false);
                     popupManager.showQueuedPopup();
+                    popupManager.gameState.isPaused = popupManager.hasOpenPopup();
                 });
             } else {
                 $("#" + id).toggle(false);
                 $("#" + id).data("fading", false);
                 popupManager.showQueuedPopup();
+                popupManager.gameState.isPaused = popupManager.hasOpenPopup();
             }
         },
         

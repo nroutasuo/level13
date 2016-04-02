@@ -33,6 +33,8 @@ define([
         },
 
         update: function (time) {
+            if (this.gameState.isPaused) return;
+            
 			var evidenceComponent = this.playerStatsNodes.head.evidence;
 			
 			evidenceComponent.accSources = [];

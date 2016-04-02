@@ -10,10 +10,13 @@ define([
 ], function (Ash, GameConstants, ItemConstants, VisionNode, PlayerLocationNode, PositionComponent, SectorImprovementsComponent, SectorFeaturesComponent) {
     var VisionSystem = Ash.System.extend({
 	
+        gameState: null,
+    
         visionNodes: null,
         locationNodes: null,
 
-        constructor: function () {
+        constructor: function (gameState) {
+            this.gameState = gameState;
         },
 
         addToEngine: function (engine) {
@@ -33,6 +36,8 @@ define([
         },
 
         updateNode: function (node, time) {
+            if (this.gameState.isPaused) return;
+            
 			var vision = node.vision;
 			var oldMaximum = vision.maximum;
 			var oldValue = vision.value;

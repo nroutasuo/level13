@@ -127,6 +127,7 @@ define([
 					this.gameState[key] = loadedGameState[key];
 				}
 			}
+            this.gameState.isPaused = false;
 			
 			// Create world
 			if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t creating world");

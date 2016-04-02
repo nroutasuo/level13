@@ -7,9 +7,11 @@ define([
 	
         playerActionNodes: null,
 		
+        gameState: null,
 		uiFunctions: null,
 
-        constructor: function (uiFunctions) {
+        constructor: function (gameState, uiFunctions) {
+            this.gameState = gameState;
 			this.uiFunctions = uiFunctions;
         },
 
@@ -22,6 +24,7 @@ define([
         },
 
         update: function (time) {
+            if (this.gameState.isPaused) return;
             for (var node = this.playerActionNodes.head; node; node = node.next) {
                 this.updateNode(node, time);
             }

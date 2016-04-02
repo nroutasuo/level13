@@ -7,13 +7,13 @@ define([
 ], function (Ash, GameConstants, PlayerStatsNode, CampNode, SectorImprovementsComponent) {
     var ReputationSystem = Ash.System.extend({
 	
-        creator: null,
+        gameState: null,
 	
         playerStatsNodes: null,
 		campNodes: null,
 
-        constructor: function (creator) {
-            this.creator = creator;
+        constructor: function (gameState) {
+            this.gameState = gameState;
         },
 
         addToEngine: function (engine) {
@@ -27,6 +27,7 @@ define([
         },
 
         update: function (time) {
+            if (this.gameState.isPaused) return;
 			var reputationComponent = this.playerStatsNodes.head.reputation;
 			reputationComponent.accSources = [];
 			reputationComponent.accumulation = 0;

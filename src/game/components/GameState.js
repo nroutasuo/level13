@@ -10,6 +10,7 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
             this.worldSeed = 0;
             this.gameStartTimeStamp = 0;
             this.gamePlayedSeconds = 0;
+            this.isPaused = false;
             this.numCamps = 0;
             this.numTradePostCamps = 0;
             this.numVisitedSectors = 0;

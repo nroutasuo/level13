@@ -2,11 +2,12 @@ define([
     'ash', 'game/constants/GameConstants', 'game/constants/PlayerStatConstants', 'game/nodes/player/StaminaNode', 'game/constants/PerkConstants'
 ], function (Ash, GameConstants, PlayerStatConstants, StaminaNode, PerkConstants) {
     var VisionSystem = Ash.System.extend({
-        creator: null,
+        
+        gameState: null,
         nodeList: null,
 
-        constructor: function (creator) {
-            this.creator = creator;
+        constructor: function (gameState) {
+            this.gameState = gameState;
         },
 
         addToEngine: function (engine) {
@@ -18,6 +19,7 @@ define([
         },
 
         update: function (time) {
+            if (this.gameState.isPaused) return;
             for (var node = this.nodeList.head; node; node = node.next) {
                 this.updateNode(node, time);
             }
