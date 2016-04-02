@@ -281,9 +281,8 @@ define(['ash',
             var hasMetal = currentStorage.resources.getResource(resourceNames.metal) > 20;
             var hasVision = this.playerStatsNodes.head.vision.value >= PlayerActionConstants.requirements.build_out_collector_water.vision;
             if (hasMetal && hasVision) {
-                var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
-                var hasFoundFood = featuresComponent.resources.food > 0 && discoveredResources.indexOf("food") >= 0;
-                var hasFoundWater = featuresComponent.resources.water > 0 && discoveredResources.indexOf("water") >= 0;
+                var hasFoundFood = featuresComponent.resourcesCollectable.food > 0;
+                var hasFoundWater = featuresComponent.resourcesCollectable.water > 0;
                 if (hasFoundWater && improvementsComponent.getCount(improvementNames.collector_water) < 1) {
                     this.playerActionFunctions.buildBucket();
                     return true;

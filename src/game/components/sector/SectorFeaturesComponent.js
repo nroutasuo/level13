@@ -14,10 +14,10 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
         weather: false,
         campable: false,
         
-        // food: only represents the amount of trappable food
-        resources: null,
+        resourcesScavengable: null,
+        resourcesCollectable: null,
         
-        constructor: function (level, buildingDensity, stateOfRepair, sectorType, buildingStyle, sunlit, weather, campable, notCampableReason, resources) {
+        constructor: function (level, buildingDensity, stateOfRepair, sectorType, buildingStyle, sunlit, weather, campable, notCampableReason, resourcesScavengable, resourcesCollectable) {
             this.level = level;
             this.buildingDensity = buildingDensity;
             this.stateOfRepair = stateOfRepair;
@@ -27,14 +27,15 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
             this.weather = weather;
             this.campable = campable;
             this.notCampableReason = notCampableReason;
-            this.resources = resources;
+            this.resourcesScavengable = resourcesScavengable;
+            this.resourcesCollectable = resourcesCollectable;
         },
         
         // Secondary attributes
         canHaveCamp: function () {
             return  this.campable &&
                     this.buildingDensity > 0 && this.buildingDensity < 9 &&
-                    this.resources.water > 0 && this.resources.food > 0 && this.resources.fuel <= 0 &&
+                    this.resourcesScavengable.water > 0 && this.resourcesScavengable.food > 0 && this.resourcesScavengable.fuel <= 0 &&
                     this.stateOfRepair > 2;
         },
         
@@ -81,19 +82,34 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
             }
         },
         
-        getResourcesString: function (discoveredResources) {
+        getScaResourcesString: function (discoveredResources) {
             var s = "";
              for(var key in resourceNames) {
                 var name = resourceNames[key];
-                var amount = this.resources.getResource(name);
+                var amount = this.resourcesScavengable.getResource(name);
                 if (amount > 0 && discoveredResources.indexOf(name) >= 0) {
                     s += key + ", ";
                 }
             }
             if (s.length > 0) return s.substring(0, s.length - 2);
-            else if (this.resources.getTotal() > 0) return "Unknown";
-            else return "None.";
+            else if (this.resourcesScavengable.getTotal() > 0) return "Unknown";
+            else return "None";
         },
+        
+        getColResourcesString: function () {
+            var s = "";
+             for(var key in resourceNames) {
+                var name = resourceNames[key];
+                var amount = this.resourcesCollectable.getResource(name);
+                if (amount > 0) {
+                    s += key + ", ";
+                }
+            }
+            if (s.length > 0) return s.substring(0, s.length - 2);
+            else if (this.resourcesCollectable.getTotal() > 0) return "Unknown";
+            else return "None";
+        },
+        
     });
 
     return SectorFeaturesComponent;

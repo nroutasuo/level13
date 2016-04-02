@@ -292,9 +292,8 @@ define([
 			});
 			var collectorFood = improvements.getVO(improvementNames.collector_food);
 			var collectorWater = improvements.getVO(improvementNames.collector_water);
-			var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
-			var hasFoundFood = featuresComponent.resources.food > 0 && discoveredResources.indexOf("food") >= 0;
-			var hasFoundWater = featuresComponent.resources.water > 0 && discoveredResources.indexOf("water") >= 0;
+			var hasFoundFood = isScouted && featuresComponent.resourcesCollectable.food > 0;
+			var hasFoundWater = isScouted && featuresComponent.resourcesCollectable.water > 0;
 			$("#out-improvements-collector-food").toggle(collectorFood.count > 0 || hasFoundFood);
 			$("#out-improvements-collector-water").toggle(collectorWater.count > 0 || hasFoundWater);
 			$("#out-improvements-camp").toggle(sectorStatusComponent.canBuildCamp);
@@ -369,7 +368,7 @@ define([
 			description += this.getStatusDescription(hasVision, isScouted, hasEnemies, featuresComponent, passagesComponent, hasCampHere, hasCampOnLevel);
 			description += this.getMovementDescription(isScouted, passagesComponent, entity);
 			description += "</p><p>";
-			description += this.getResourcesDescription(featuresComponent);
+			description += this.getResourcesDescription(isScouted, featuresComponent);
 			description += "</p>";
 			return description;
 		},
@@ -429,14 +428,18 @@ define([
 			return description;
 		},
         
-        getResourcesDescription: function (featuresComponent) {
+        getResourcesDescription: function (isScouted, featuresComponent) {
             var description = "";
-			if (featuresComponent.resources.getTotal() > 0) {
+			if (featuresComponent.resourcesScavengable.getTotal() > 0) {
 				var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
 				if (discoveredResources.length > 0) {
-					description += "Resources found here: " + featuresComponent.getResourcesString(discoveredResources) + ". ";
+					description += "Resources found here: " + featuresComponent.getScaResourcesString(discoveredResources) + ". ";
 				}
 			}
+            if (isScouted) {
+                if (description.length > 0) description += "<br />";
+				description += "Resources abundant here: " + featuresComponent.getColResourcesString() + ". ";
+            }
 			return description;
         },
 		

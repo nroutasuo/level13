@@ -160,7 +160,8 @@ define([
 				sectorFeatures.weather,
 				sectorFeatures.campable,
                 sectorFeatures.notCampableReason,
-				sectorFeatures.resources))
+				sectorFeatures.resourcesScavengable,
+                sectorFeatures.resourcesCollectable))
 			.add(new SectorLocalesComponent(locales))
 			.add(new SaveComponent(saveKey, [
 				ResourcesComponent,

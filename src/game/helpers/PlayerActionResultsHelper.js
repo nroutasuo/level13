@@ -77,7 +77,7 @@ define([
         getScavengeRewards: function () {
 			var rewards = new ResultVO();
 
-			var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resources;
+			var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			var playerPos = this.playerLocationNodes.head.position;
 			var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
@@ -100,7 +100,7 @@ define([
 			var rewards = new ResultVO();
 
 			var efficiency = this.getScavengeEfficiency();
-            var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resources;
+            var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
 
 			rewards.gainedEvidence = 1;
 			rewards.gainedInjuries = this.getResultInjuries(PlayerActionConstants.injuryProbabilities.scout);
@@ -115,7 +115,7 @@ define([
 			var rewards = new ResultVO();
 			var localeCategory = localeVO.getCategory();
 
-            var availableResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resources.clone();
+            var availableResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable.clone();
 			availableResources.addAll(localeVO.getResourceBonus(this.gameState.unlockedFeatures.resources));
 			var efficiency = this.getScavengeEfficiency();
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
@@ -211,7 +211,7 @@ define([
 			currentStorage.substractResources(rewards.lostResources);
 
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resources;
+			var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
 				var amount = rewards.gainedResources.getResource(name);
@@ -447,14 +447,21 @@ define([
 				if (name === "metal") {
 					probability = 0.98;
 					resAmountFactor = 2;
-				} else if (name === "water" || name === "food") {
-					probability = this.gameState.unlockedFeatures.resources[name] === true ? 0.35 : 0.75;
+				} else if (name === "water") {
+					probability = 1;
+					resAmountFactor = 10;
+				} else if (name === "food") {
+					probability = this.gameState.unlockedFeatures.resources[name] === true ? 0.3 : 0.75;
 					resAmountFactor = 3;
 				}
 				probability = probability * probabilityFactor;
 				var resultAmount = Math.random() < probability ?
 					Math.ceil(amountFactor * resAmountFactor * resAmount * Math.random()) :
 					0;
+				
+				if (resultAmount > 0 && name === "water") {
+					resultAmount = Math.ceil(resultAmount / 5) * 5;
+				}
 
 				results.setResource(name, resultAmount);
 			}
@@ -533,7 +540,7 @@ define([
 			if (currentItems.getCurrentBonus(ItemConstants.itemTypes.bag) <= 0) {
 				return ItemConstants.getBag(levelOrdinal);
 			}
-			if (visitedSectors > 3 && currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) <= 0) {
+			if (visitedSectors > 4 && currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) <= 0) {
 				return ItemConstants.itemDefinitions.uniqueEquipment[0].clone();
 			}
 			return null;

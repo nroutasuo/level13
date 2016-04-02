@@ -37,7 +37,7 @@ define([
             var sectorFeatures = sector.get(SectorFeaturesComponent);
 			for (var i = 0; i < sectorStatus.discoveredResources.length; i++) {
                 var res = sectorStatus.discoveredResources[i];
-                if (sectorFeatures.resources[res] > 0) {
+                if (sectorFeatures.resourcesScavengable[res] > 0) {
                     resources.push(res);
                 } else {
                     console.log("WARN: Resource in discovered resources not found on sector.");

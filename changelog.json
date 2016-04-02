@@ -1,6 +1,18 @@
 {
     "versions": [
         {
+            "version": "0.1.3",
+            "phase": "alpha",
+            "final": false,
+            "updated": "2016-03-28",
+            "changes": [
+            {
+                "type": "GD",
+                "summary": "Rework of all survival elements, especially stamina and vision",
+            },
+            ]
+        },
+        {
             "version": "0.1.2",
             "phase": "alpha",
             "final": true,
