@@ -193,7 +193,7 @@ define([
 			this.engine.addSystem(new RumourSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new EvidenceSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new PlayerPositionSystem(this.gameState, this.levelHelper, this.uiFunctions, this.occurrenceFunctions, this.playerMovedSignal), SystemPriorities.preupdate);
-			this.engine.addSystem(new PlayerActionSystem(this.uiFunctions), SystemPriorities.update);
+			this.engine.addSystem(new PlayerActionSystem(this.gameState, this.uiFunctions), SystemPriorities.update);
 			this.engine.addSystem(new SectorStatusSystem(this.movementHelper, this.levelHelper, this.playerMovedSignal), SystemPriorities.update);
 			this.engine.addSystem(new LevelPassagesSystem(this.levelHelper, this.improvementBuiltSignal), SystemPriorities.update);
 			this.engine.addSystem(new UnlockedFeaturesSystem(this.gameState), SystemPriorities.update);
