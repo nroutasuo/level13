@@ -12,6 +12,7 @@ define(['ash'], function (Ash) {
         
         MSG_ID_SCAVENGE: "SCAVENGE",
         MSG_ID_SCOUT: "SCOUT",
+        MSG_ID_USE_SPRING: "MSG_ID_USE_SPRING",
         MSG_ID_SCOUT_LOCALE: "SCOUT_LOCALE",
         MSG_ID_WORKSHOP_CLEARED: "WORKSHOP_CLEARED",
         MSG_ID_GANG_DEFEATED: "GANG_DEFEATED",

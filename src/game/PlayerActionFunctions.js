@@ -440,6 +440,37 @@ define(['ash',
                 });
             }
         },
+        
+        useSpring: function () {
+            if (this.playerActionsHelper.checkAvailability("use_spring", true)) {
+                this.playerActionsHelper.deductCosts("use_spring");
+				
+				var playerActionFunctions = this;
+                var sector = this.playerLocationNodes.head.entity;
+                var sectorFeatures = sector.get(SectorFeaturesComponent);
+                var springName = TextConstants.getSpringName(sectorFeatures);
+                
+                var okMessage = "Refilled water at the " + springName + ".";
+                var failMessage = "Approached the " + springName + ", but got attacked. ";
+                    
+                this.fightHelper.handleRandomEncounter("use_spring", function () {
+					var rewards = playerActionFunctions.playerActionResultsHelper.getUseSpringRewards();
+					playerActionFunctions.playerActionResultsHelper.collectRewards(rewards);
+                    playerActionFunctions.uiFunctions.completeAction("use_spring");
+					playerActionFunctions.addLogMessage(LogConstants.MSG_ID_USE_SPRING, okMessage);
+                    playerActionFunctions.uiFunctions.showInfoPopup(springName, okMessage, "Continue", rewards);
+					playerActionFunctions.playerActionResultsHelper.logSpecialFinds(rewards);
+					playerActionFunctions.forceResourceBarUpdate();
+					playerActionFunctions.forceTabUpdate();
+				}, function () {
+                    playerActionFunctions.uiFunctions.completeAction("scavenge");
+                    playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCAVENGE, failMessage + "Fled empty-handed.");
+                }, function () {
+                    playerActionFunctions.uiFunctions.completeAction("scavenge");
+                    playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCAVENGE, failMessage + "Lost the fight.");
+                });
+            }
+        },
 		
 		clearWorkshop: function () {
 			var action = "clear_workshop";
@@ -985,7 +1016,7 @@ define(['ash',
                     this.forceResourceBarUpdate();
 					break;
                 
-                case "stat":                    
+                case "stat":
                     this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health;
                     this.playerStatsNodes.head.vision.value = 75;
                     this.playerStatsNodes.head.rumours.value = Math.max(this.playerStatsNodes.head.rumours.value, 0);

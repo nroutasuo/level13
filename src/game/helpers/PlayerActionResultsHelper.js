@@ -14,6 +14,7 @@ define([
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/tribe/TribeUpgradesNode',
     'game/nodes/NearestCampNode',
+	'game/components/common/ResourcesComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent',
@@ -36,6 +37,7 @@ define([
 	PlayerResourcesNode,
 	TribeUpgradesNode,
 	NearestCampNode,
+	ResourcesComponent,
 	LogMessagesComponent,
 	SectorFeaturesComponent,
 	SectorStatusComponent,
@@ -143,6 +145,15 @@ define([
 				}
 			}
 
+			return rewards;
+		},
+		
+		getUseSpringRewards: function () {
+			var rewards = new ResultVO();
+			var playerBag = this.playerResourcesNodes.head.entity.get(ResourcesComponent).storageCapacity;
+			var playerWater = this.playerResourcesNodes.head.entity.get(ResourcesComponent).resources.water;
+			rewards.gainedResources = new ResourcesVO();
+			rewards.gainedResources.water = playerBag - playerWater;
 			return rewards;
 		},
 		
@@ -442,6 +453,7 @@ define([
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
 				var resAmount = availableResources.getResource(name);
+				var resRoundTo = 1;
 				var probability = 0.2;
 				var resAmountFactor = 1;
 				if (name === "metal") {
@@ -449,18 +461,19 @@ define([
 					resAmountFactor = 2;
 				} else if (name === "water") {
 					probability = 1;
-					resAmountFactor = 10;
+					resAmountFactor = 3;
 				} else if (name === "food") {
 					probability = this.gameState.unlockedFeatures.resources[name] === true ? 0.3 : 0.75;
 					resAmountFactor = 3;
+					resRoundTo = 2;
 				}
 				probability = probability * probabilityFactor;
 				var resultAmount = Math.random() < probability ?
 					Math.ceil(amountFactor * resAmountFactor * resAmount * Math.random()) :
 					0;
 				
-				if (resultAmount > 0 && name === "water") {
-					resultAmount = Math.ceil(resultAmount / 5) * 5;
+				if (resultAmount > 0 && resRoundTo > 1) {
+					resultAmount = Math.ceil(resultAmount / resRoundTo) * resRoundTo;
 				}
 
 				results.setResource(name, resultAmount);

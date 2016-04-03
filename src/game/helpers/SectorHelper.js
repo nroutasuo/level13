@@ -35,14 +35,21 @@ define([
             sector = sector ? sector : this.playerLocationNodes.head.entity;
             var sectorStatus = sector.get(SectorStatusComponent);
             var sectorFeatures = sector.get(SectorFeaturesComponent);
+            var missingResources = [];
+            
 			for (var i = 0; i < sectorStatus.discoveredResources.length; i++) {
                 var res = sectorStatus.discoveredResources[i];
                 if (sectorFeatures.resourcesScavengable[res] > 0) {
                     resources.push(res);
                 } else {
                     console.log("WARN: Resource in discovered resources not found on sector.");
+                    missingResources.push(res);
                 }
 			}
+            
+            for (var j = 0; j < missingResources.length; j++) {
+                sectorStatus.discoveredResources.splice(sectorStatus.discoveredResources.indexOf(missingResources[j]), 1);
+            }
             
             resources.sort(function (a, b) {
                 if (a === b) return 0;

@@ -61,6 +61,13 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     },
                 },
                 
+                use_spring: {
+                    vision: 10,
+                    sector: {
+                        scouted: true,
+                    },
+                },
+                
                 fight_gang: {
                     health: 70,
                 },
@@ -885,6 +892,10 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     stamina: 10,
                 },
                 
+                use_spring: {
+                    stamina: 5,
+                },
+                
                 fight_gang: {
                     stamina: 10,
                 },
@@ -1496,6 +1507,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
         
             cooldowns: {
                 scavenge: 10,
+                use_spring: 30,
                 fightCheck: 20,
                 use_in_campfire: 60,
                 scout_locale_i: 60,
@@ -1515,6 +1527,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 scavenge: 0.03,
                 scout_locale_i: 0.2,
                 scout_locale_u: 0.1,
+                use_spring: 0.1,
                 clear_workshop: 1,
                 fight_gang: 1,
             },
@@ -1535,6 +1548,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 scout_locale_u: "Scout for additional resources and evidence.",
                 scavenge: "Look for resources.",
                 clear_workshop: "Scout the workshop to see if it can be used.",
+                use_spring: "Get water.",
                 fight_gang: "Clear the enemies blocking passage.",
                 move_camp_level: "Shortcut back to the nearest camp.",
                 create_blueprint: "Combine pieces to a blueprint.",

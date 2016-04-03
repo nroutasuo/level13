@@ -295,7 +295,7 @@ define([
 			var hasFoundFood = isScouted && featuresComponent.resourcesCollectable.food > 0;
 			var hasFoundWater = isScouted && featuresComponent.resourcesCollectable.water > 0;
 			$("#out-improvements-collector-food").toggle(collectorFood.count > 0 || hasFoundFood);
-			$("#out-improvements-collector-water").toggle(collectorWater.count > 0 || hasFoundWater);
+			$("#out-improvements-collector-water").toggle((collectorWater.count > 0 || hasFoundWater) && !featuresComponent.hasSpring);
 			$("#out-improvements-camp").toggle(sectorStatusComponent.canBuildCamp);
 			$("#out-improvements-bridge").toggle(hasBridgeableBlocker);
 			$("#out-improvements-passage-up").toggle(isScouted && passageUpAvailable);
@@ -336,6 +336,7 @@ define([
 				(this.resourcesHelper.getCurrentStorage().resources.water < 0.5 || this.resourcesHelper.getCurrentStorage().resources.food < 0.5);
 			$("#out-action-enter").toggle(hasCampHere);
 			$("#out-action-scout").toggle(this.gameState.unlockedFeatures.vision);
+			$("#out-action-use-spring").toggle(isScouted && featuresComponent.hasSpring);
 			$("#out-action-investigate").toggle(this.gameState.unlockedFeatures.investigate);
 			$("#out-action-fight-gang").toggle(this.gameState.unlockedFeatures.fight);
 			$("#out-action-despair").toggle(showDespair);
@@ -398,9 +399,12 @@ define([
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
             
 			var description = "";
-			if (hasVision) {
-				if (hasCampHere) description += "There is a camp here. ";
-			}
+            
+            if (isScouted && featuresComponent.hasSpring) {
+                description += "There is a <span class='text-highlight-functionality'>" + TextConstants.getSpringName(featuresComponent) + "</span> here. ";
+            }
+            
+			if (hasCampHere) description += "There is a <span class='text-highlight-functionality'>camp</span> here. ";
 			
 			if (isScouted && workshopComponent) {
 				var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
@@ -433,12 +437,12 @@ define([
 			if (featuresComponent.resourcesScavengable.getTotal() > 0) {
 				var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
 				if (discoveredResources.length > 0) {
-					description += "Resources found here: " + featuresComponent.getScaResourcesString(discoveredResources) + ". ";
+					description += "Resources scavenged here: " + featuresComponent.getScaResourcesString(discoveredResources) + ". ";
 				}
 			}
             if (isScouted) {
                 if (description.length > 0) description += "<br />";
-				description += "Resources abundant here: " + featuresComponent.getColResourcesString() + ". ";
+				description += "Resources naturally occurring here: " + featuresComponent.getColResourcesString() + ". ";
             }
 			return description;
         },
@@ -500,7 +504,7 @@ define([
 					enemyDesc = TextConstants.getEnemyText(enemiesComponent.possibleEnemies, sectorControlComponent, defeatableBlockerN, defeatableBlockerS, defeatableBlockerW, defeatableBlockerE);
 				}
 			} else if (isScouted) {
-				enemyDesc += "There doesn't seem to be anything hostile here. ";
+				enemyDesc += "There doesn't seem to be anything hostile around. ";
 			}
             
             var notCampableDesc = "";

@@ -106,6 +106,17 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
 			}
 		},
 		
+		getSpringName: function (featuresComponent) {
+			if (featuresComponent.stateOfRepair < 4) {
+				return "leaking water pipe";
+			}
+			switch (featuresComponent.sectorType) {
+				case WorldCreatorConstants.SECTOR_TYPE_SLUM:
+					return "well";
+			}
+			return "water tower";
+		},
+		
 		getDirectionName: function (direction) {
 			switch (direction) {
 			case PositionConstants.DIRECTION_WEST: return "west";

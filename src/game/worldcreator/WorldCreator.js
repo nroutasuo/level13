@@ -195,81 +195,40 @@ define([
 			for (var l = topLevel; l >= bottomLevel; l--) {
                 var levelVO = this.world.getLevel(l);
                 var fuelSectors = [];
+                var springSectors = [];
                 
                 if (WorldCreatorHelper.isDarkLevel(seed, l) && (l % 2 === 0))
-                    fuelSectors = WorldCreatorRandom.randomSectors(seed * l * 2 / 7 * l, levelVO, 1, 2, "camp");
+                    fuelSectors = WorldCreatorRandom.randomSectors(seed * l * 2 / 7 * l, levelVO, 1, 2, true, "camp");
+                
+                var maxSprings = 3;
+                var minSprings = 1;
+                if (l === bottomLevel) {
+                    maxSprings = 20;
+                    minSprings = 5;
+                }
+                if (l > topLevel - 3) {
+                    maxSprings = 10;
+                    minSprings = 2;
+                }
+                springSectors = WorldCreatorRandom.randomSectors(seed * (l + 1000) / 11, levelVO, minSprings, maxSprings, true);
 				
 				for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
 					for (var x = levelVO.minX; x <= levelVO.maxX; x++) {
                         var sectorVO = levelVO.getSector(x, y);
-                        var sRandom = (x + y + 3000);
                         if (!sectorVO) continue;
                         
-                        sectorVO.resourcesScavengable = new ResourcesVO();
-                        sectorVO.resourcesCollectable = new ResourcesVO();
-                        var stateOfRepair = sectorVO.stateOfRepair;
-                        var sectorType = sectorVO.sectorType;
-                        
-                        var food = 0;
-                        if (sectorType === WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL) food = Math.round(WorldCreatorRandom.random(seed + l * l + sRandom * 88 + 324) * 3 + stateOfRepair / 2);
-                        if (sectorType === WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL) food = 0;
-                        if (sectorType === WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE) food = WorldCreatorRandom.randomInt(seed % 8 + 33 + seed * l + sRandom * 33 + seed, 0, 6);
-                        if (sectorType === WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL) food = Math.round(WorldCreatorRandom.random(seed + l * l + sRandom * 33 + 324) * 3 + stateOfRepair / 2);
-                        if (sectorType === WorldCreatorConstants.SECTOR_TYPE_SLUM) food = Math.round(WorldCreatorRandom.random(seed + l * l * 4 * seed + sRandom * 33 + 2114) * (Math.abs(l - 10)));
-                        if (l === bottomLevel) food = Math.max(food, 3);
-                        if (l === bottomLevel + 1) food = food + 2;
-                        if (l === 13 && x === WorldCreatorConstants.FIRST_CAMP_X && y === WorldCreatorConstants.FIRST_CAMP_Y)
-                            food = 5;
-                        if (food < 3) food = 0;
-                        
-                        var waterRandomPart = Math.round(WorldCreatorRandom.random(seed * l * (x + y + 900) + 10134) * stateOfRepair / 2);
-                        var waterSectorTypePart = 0;
-                        if (sectorType === WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL) waterSectorTypePart = Math.round(WorldCreatorRandom.random(seed * 5 * l * sRandom + 1364) * 3);
-                        if (sectorType === WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL) waterSectorTypePart = Math.round(WorldCreatorRandom.random(seed * 5 * l * sRandom + 1364) * 1);
-                        if (sectorType === WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE) waterSectorTypePart = Math.round(WorldCreatorRandom.random(seed * 5 * l * sRandom + 1364) * 5);
-                        if (sectorType === WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL) waterSectorTypePart = Math.round(WorldCreatorRandom.random(seed * 5 * l * sRandom + 1364) * 2);
-                        if (sectorType === WorldCreatorConstants.SECTOR_TYPE_SLUM) waterSectorTypePart = Math.round(WorldCreatorRandom.random(seed * 5 * l * sRandom + 1364) * 1);
-                        var water = Math.max(0, Math.min(10, Math.round(waterRandomPart + waterSectorTypePart)));
-                        if (l === bottomLevel) water = water + 2;
-                        if (l === 13 && x === WorldCreatorConstants.FIRST_CAMP_X && y === WorldCreatorConstants.FIRST_CAMP_Y)
-                            water = Math.max(6, water);
-                        
-                        if (sectorVO.camp) water = Math.max(water, 3);
-                        if (sectorVO.camp) food = Math.max(food, 1);
-                        
-                        var herbs = 0;
-                        if (l === bottomLevel) herbs = WorldCreatorRandom.random(seed * l / x + y * 423) * (10 - stateOfRepair);
-                        if (l === bottomLevel + 1) herbs = WorldCreatorRandom.random(seed * l + x * y * 77) * (8 - stateOfRepair);
-                        if (l >= topLevel - 2) herbs = WorldCreatorRandom.random(seed * l + x * y * 22) * stateOfRepair / 2;
-                        if (herbs < 3) herbs = 0;
-                        if (herbs > 10) herbs = 10;
-                        
-                        var rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.95 ? 1 : 0;
-                        if (sectorType === WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL) rope = 0;
-                        if (sectorType === WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE) rope = 0;
-                        
-                        var tools = 0;
-                        if (l > 13 && sectorType === WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL) {
-                            tools = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.95 ? 1 : 0;
-                        }
+                        sectorVO.resourcesScavengable = WorldCreatorHelper.getSectorScavengableResources(seed, topLevel, bottomLevel, sectorVO);
+                        sectorVO.resourcesCollectable = WorldCreatorHelper.getSectorCollectableResources(seed, topLevel, bottomLevel, sectorVO);
                         
                         var fuel = 0;
                         if (fuelSectors.indexOf(sectorVO) >= 0) fuel = 5;
-                        
-                        sectorVO.resourcesScavengable.water = water > 5 ? water : 0;
-                        sectorVO.resourcesScavengable.food = food;
-                        sectorVO.resourcesScavengable.metal = 5;
                         sectorVO.resourcesScavengable.fuel = fuel;
-                        sectorVO.resourcesScavengable.herbs = herbs;
-                        sectorVO.resourcesScavengable.rope = rope;
-                        sectorVO.resourcesScavengable.tools = tools;
                         
-                        sectorVO.resourcesCollectable.water = water > 2 ? water : 0;
-                        sectorVO.resourcesCollectable.food = food;
-                        sectorVO.resourcesCollectable.herbs = herbs;
-                        
-                        sectorVO.workshopResource = fuel > 0 ? resourceNames.fuel : null;
+                        sectorVO.workshopResource = sectorVO.resourcesScavengable.fuel > 0 ? resourceNames.fuel : null;
                         sectorVO.workshop = sectorVO.workshopResource !== null;
+                        
+                        sectorVO.hasSpring = springSectors.indexOf(sectorVO) >= 0;
+                        if (sectorVO.hasSpring) sectorVO.resourcesCollectable.water = Math.max(3, sectorVO.resourcesCollectable.water);
                     }
                 }
 			}
@@ -277,7 +236,7 @@ define([
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World resources ready.");
             // WorldCreatorDebug.printWorld(this.world, [ "resourcesCollectable.water" ]);
-            // WorldCreatorDebug.printWorld(this.world, [ "sectorType" ]);
+            // WorldCreatorDebug.printWorld(this.world, [ "hasSpring" ]);
 		},
 		
 		// locales
@@ -631,6 +590,7 @@ define([
 			sectorFeatures.stateOfRepair = sectorVO.stateOfRepair;
 			sectorFeatures.sunlit = sectorVO.sunlit;
 			sectorFeatures.sectorType = sectorVO.sectorType;
+			sectorFeatures.hasSpring = sectorVO.hasSpring;
 			sectorFeatures.resourcesScavengable = sectorVO.resourcesScavengable;
 			sectorFeatures.resourcesCollectable = sectorVO.resourcesCollectable;
 			sectorFeatures.workshopResource = sectorVO.workshopResource;

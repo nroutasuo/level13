@@ -17,7 +17,8 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
         resourcesScavengable: null,
         resourcesCollectable: null,
         
-        constructor: function (level, buildingDensity, stateOfRepair, sectorType, buildingStyle, sunlit, weather, campable, notCampableReason, resourcesScavengable, resourcesCollectable) {
+        constructor: function (level, buildingDensity, stateOfRepair, sectorType, buildingStyle, sunlit, weather,
+                               campable, notCampableReason, resourcesScavengable, resourcesCollectable, hasSpring) {
             this.level = level;
             this.buildingDensity = buildingDensity;
             this.stateOfRepair = stateOfRepair;
@@ -29,6 +30,7 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
             this.notCampableReason = notCampableReason;
             this.resourcesScavengable = resourcesScavengable;
             this.resourcesCollectable = resourcesCollectable;
+            this.hasSpring = hasSpring;
         },
         
         // Secondary attributes

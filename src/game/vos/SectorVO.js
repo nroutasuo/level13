@@ -15,6 +15,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             this.id = Math.floor(Math.random() * 100000);
 			this.passageUp = 0;
 			this.passageDown = 0;
+            this.hasSpring = false;
             this.resourcesScavengable = new ResourcesVO();
             this.resourcesCollectable = new ResourcesVO();
             this.movementBlockerCount = 0;
