@@ -5,16 +5,13 @@ define([
     'game/constants/TextConstants',
     'game/constants/UIConstants',
     'game/constants/PositionConstants',
-    'game/constants/EnemyConstants',
     'game/constants/LocaleConstants',
     'game/constants/LevelConstants',
     'game/constants/MovementConstants',
     'game/constants/ItemConstants',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
-    'game/nodes/sector/SectorNode',
     'game/nodes/sector/CampNode',
-    'game/nodes/sector/VisitedSectorNode',
     'game/components/player/VisionComponent',
     'game/components/player/ItemsComponent',
     'game/components/sector/PassagesComponent',
@@ -23,20 +20,15 @@ define([
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/MovementOptionsComponent',
     'game/components/common/PositionComponent',
-    'game/components/common/VisitedComponent',
-    'game/components/common/CampComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/improvements/WorkshopComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/EnemiesComponent'
 ], function (
-    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, UIConstants, PositionConstants, EnemyConstants, LocaleConstants, LevelConstants, MovementConstants, ItemConstants,
-    PlayerPositionNode, PlayerLocationNode, SectorNode, CampNode, VisitedSectorNode,
+    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, ItemConstants,
+    PlayerPositionNode, PlayerLocationNode, CampNode,
     VisionComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
-    MovementOptionsComponent,
-    PositionComponent,
-    VisitedComponent,
-    CampComponent,
+    MovementOptionsComponent, PositionComponent,
     SectorImprovementsComponent, WorkshopComponent, SectorStatusComponent, EnemiesComponent
 ) {
     var UIOutLevelSystem = Ash.System.extend({
@@ -46,25 +38,21 @@ define([
 		movementHelper: null,
 		resourcesHelper: null,
 		sectorHelper: null,
-        levelHelper: null,
 		
 		engine: null,
 		
 		playerPosNodes: null,
 		playerLocationNodes: null,
-		sectorNodes: null,
-		visitedSectorNodes: null,
 		
 		tabChangedSignal: null,
 		playerMovedSignal: null,
 	
-		constructor: function (uiFunctions, tabChangedSignal, gameState, movementHelper, resourceHelper, sectorHelper, levelHelper, uiMapHelper, playerMovedSignal) {
+		constructor: function (uiFunctions, tabChangedSignal, gameState, movementHelper, resourceHelper, sectorHelper, uiMapHelper, playerMovedSignal) {
 			this.uiFunctions = uiFunctions;
 			this.gameState = gameState;
 			this.movementHelper = movementHelper;
 			this.resourcesHelper = resourceHelper;
 			this.sectorHelper = sectorHelper;
-            this.levelHelper = levelHelper;
             this.uiMapHelper = uiMapHelper;
 			this.tabChangedSignal = tabChangedSignal;
 			this.playerMovedSignal = playerMovedSignal;
@@ -74,8 +62,6 @@ define([
 		addToEngine: function (engine) {
 			this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
-			this.sectorNodes = engine.getNodeList(SectorNode);
-			this.visitedSectorNodes = engine.getNodeList(VisitedSectorNode);
 			
 			this.initListeners();
 			
@@ -85,7 +71,6 @@ define([
 		removeFromEngine: function (engine) {
 			this.playerPosNodes = null;
 			this.playerLocationNodes = null;
-			this.sectorNodes = null;
 			this.engine = null;
 		},
 	
@@ -97,49 +82,11 @@ define([
 				sys.updateLocales();
 				sys.updateMovementRelatedActions();
 			});
-            this.tabChangedSignal.add(function () {
-                sys.regenrateEmbarkItems();
-            });
 			this.rebuildVis(uiMapHelper);
 		},
 		
-		initLeaveCampRes: function () {
-			if (this.gameState.uiStatus.leaveCampRes) {
-				var campResources = this.resourcesHelper.getCurrentStorage();
-				for (var key in resourceNames) {
-					var name = resourceNames[key];
-					var oldVal = this.gameState.uiStatus.leaveCampRes[name];
-					var campVal = campResources.resources.getResource(name);
-					if (oldVal && oldVal > 0) {
-						var value = Math.floor(Math.min(oldVal, campVal));
-						$("#stepper-embark-" + name + " input").val(value);
-					}
-				}
-			}
-		},
-        
-        initLeaveCampItems: function () {
-			if (this.gameState.uiStatus.leaveCampItems) {
-                var itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
-				for (var key in this.gameState.uiStatus.leaveCampItems) {
-					var itemID = key;
-					var oldVal = this.gameState.uiStatus.leaveCampItems[itemID];
-					var ownedCount = itemsComponent.getCountById(itemID, true);
-					if (oldVal && oldVal > 0) {
-						var value = Math.floor(Math.min(oldVal, ownedCount));
-						$("#stepper-embark-" + itemID + " input").val(value);
-					}
-				}
-			}
-        },
-		
 		update: function (time) {
             $("#switch-out .bubble").toggle(false);
-			if (this.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.out) {
-				this.refreshedEmbark = false;
-				this.refreshedLevel = false;
-				return;
-			}
 			
 			var posComponent = this.playerPosNodes.head.position;
             
@@ -147,84 +94,10 @@ define([
                 return;
             }
 			
-            // TODO create nice transitions for leaving camp
-			$("#container-tab-enter-out").toggle(posComponent.inCamp);
-			$("#container-tab-two-out").toggle(!posComponent.inCamp);
-			$("#container-tab-two-out-actions").toggle(!posComponent.inCamp);
-			
-			if (posComponent.inCamp) {
-				if (!this.refreshedEmbark) {
-					this.initLeaveCampRes();
-                    this.initLeaveCampItems();
-				}
-				this.updateEmbarkPage();
-				this.refreshedEmbark = true;
-			} else {
+			if (!posComponent.inCamp) {
 				this.updateLevelPage();
-				this.refreshedLevel = true;
 			}
 		},
-		
-		updateEmbarkPage: function () {
-			$("#tab-header h2").text("Leave camp");
-			var campResources = this.resourcesHelper.getCurrentStorage();
-			var bagResources = this.resourcesHelper.getPlayerStorage();
-			var bagStorage = bagResources.storageCapacity;
-			
-			// Resource steppers
-			$.each($("#embark-resources tr"), function () {
-				var resourceName = $(this).attr("id").split("-")[2];
-				var campVal = campResources.resources.getResource(resourceName);
-				var visible = campVal > 0;
-				var inputMax = Math.min(bagStorage, Math.floor(campVal));
-				$(this).toggle(visible);
-				$(this).children("td").children(".stepper").children("input").attr("max", inputMax);
-			});
-            
-            // Items steppers
-            var itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
-            var visibleItemTRs = 0;
-			$.each($("#embark-items tr"), function () {
-				var itemID = $(this).attr("id").split("-")[2];
-                var count = itemsComponent.getCountById(itemID, true);
-				var visible = count > 0;
-                if (visible) visibleItemTRs++;
-				var inputMax = Math.min(bagStorage, Math.floor(count));
-                var inputMin = 0;
-                var inputValue = $(this).children("td").children(".stepper").children("input").attr("value");
-				$(this).toggle(visible);
-				$(this).children("td").children(".stepper").children("input").attr("max", inputMax);
-				$(this).children("td").children(".stepper").children("input").attr("min", inputMin);
-				$(this).children("td").children(".stepper").children("input").attr("value", Math.max(inputValue, inputMin));
-			});
-			
-            $("#embark-items-container").toggle(visibleItemTRs > 0);
-			$("#embark-bag .value").text(bagStorage);
-		},
-        
-        regenrateEmbarkItems: function () {
-            $("#embark-items").empty();
-            var itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
-            var uniqueItems = itemsComponent.getUnique(true);
-			uniqueItems = uniqueItems.sort(UIConstants.sortItemsByType);
-            for (var i = 0; i < uniqueItems.length; i++) {
-                var item = uniqueItems[i];
-                var count = itemsComponent.getCountById(item.id, true);
-                var showCount = item.equipped ? count - 1 : count;
-                if (item.type === ItemConstants.itemTypes.uniqueEquipment) continue;
-                if (item.type === ItemConstants.itemTypes.follower) continue;
-                if (item.equipped && count === 1) continue;
-                $("#embark-items").append(
-                    "<tr id='embark-assign-" + item.id + "'>" +
-                    "<td><img src='" + item.icon + "'/>" + item.name + "</td>" +
-                    "<td><div class='stepper' id='stepper-embark-" + item.id + "'></div></td>" +
-                    "<td class='list-amount'> / " + showCount + "</div></td>" +
-                    "</tr>"
-                );
-            }
-            this.uiFunctions.generateSteppers("#embark-items");
-            this.uiFunctions.registerStepperListeners("#embark-items");
-        },
 		
 		updateLevelPage: function () {
 			var posComponent = this.playerLocationNodes.head.position;
