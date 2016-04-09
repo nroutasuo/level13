@@ -4,6 +4,7 @@ define([
     'game/constants/PerkConstants',
     'game/constants/ItemConstants',
     'game/constants/PositionConstants',
+    'game/constants/WorldCreatorConstants',
     'game/components/player/VisionComponent',
     'game/components/player/StaminaComponent',
     'game/components/player/ReputationComponent',
@@ -45,6 +46,7 @@ define([
     PerkConstants,
     ItemConstants,
 	PositionConstants,
+    WorldCreatorConstants,
     VisionComponent,
     StaminaComponent,
     ReputationComponent,
@@ -105,7 +107,7 @@ define([
 			.add(new ReputationComponent())
 			.add(new RumoursComponent())
 			.add(new EvidenceComponent())
-			.add(new PositionComponent(13, 1, 0, false))
+			.add(new PositionComponent(13, WorldCreatorConstants.FIRST_CAMP_X, WorldCreatorConstants.FIRST_CAMP_Y, false))
 			.add(new LogMessagesComponent())
 			.add(new PlayerActionComponent())
 			.add(new SaveComponent(saveKey, [

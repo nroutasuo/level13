@@ -326,9 +326,16 @@ function (Ash,
             // sector contents: resources
             if (sectorSize > iconSize) {
                 var discoveredResources = this.sectorHelper.getLocationDiscoveredResources(sector);
-                for (var r = 0; r < discoveredResources.length; r++) {
-                    ctx.fillStyle = this.getResourceFill(discoveredResources[r]);
-                    ctx.fillRect(sectorXpx + 2 + r * 4, sectorYpx + sectorSize - 5, 3, 3);
+                var resourcesCollectable = sector.get(SectorFeaturesComponent).resourcesCollectable;
+                var r = 0;
+                for (var key in resourceNames) {
+                    var name = resourceNames[key];
+                    var colAmount = resourcesCollectable.getResource(name);
+                    if (colAmount > 0 || discoveredResources.indexOf(name) >= 0) {
+                        ctx.fillStyle = this.getResourceFill(name);
+                        ctx.fillRect(sectorXpx + 2 + r * 4, sectorYpx + sectorSize - 5, 3, 3);
+                        r++;
+                    }
                 }
             }
         },
