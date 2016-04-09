@@ -5,6 +5,7 @@ define([
     'game/constants/ItemConstants',
     'game/constants/PositionConstants',
     'game/constants/WorldCreatorConstants',
+    'game/components/player/BagComponent',
     'game/components/player/VisionComponent',
     'game/components/player/StaminaComponent',
     'game/components/player/ReputationComponent',
@@ -47,6 +48,7 @@ define([
     ItemConstants,
 	PositionConstants,
     WorldCreatorConstants,
+    BagComponent,
     VisionComponent,
     StaminaComponent,
     ReputationComponent,
@@ -98,6 +100,7 @@ define([
         createPlayer: function (saveKey) {
             var player = new Ash.Entity()
 			.add(new PlayerComponent())
+			.add(new BagComponent(0))
 			.add(new VisionComponent(0))
 			.add(new ItemsComponent())
 			.add(new PerksComponent())

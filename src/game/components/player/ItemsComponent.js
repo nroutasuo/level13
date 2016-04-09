@@ -4,7 +4,6 @@ function (Ash, ItemVO, ItemConstants) {
         
         items: {},
         
-        capacity: -1,
         uniqueItemsAll: {},
         uniqueItemsCarried: {},
         selectedItem: null,
@@ -25,15 +24,11 @@ function (Ash, ItemVO, ItemConstants) {
                 }
                 
                 var currentCount = this.getCountById(item.id, true);
-                if (this.capacity <= 0 || currentCount + 1 <= this.capacity) {
-                    this.items[item.type].push(item);
-                    if (item.equippable) this.autoEquip(item);
-                    item.carried = isCarried;
-                    this.uniqueItemsCarried = {};
-                    this.uniqueItemsAll = {};
-                } else {
-                    console.log("WARN: Trying to add item but the bag is full. (id:" + item.id + ", capacity: " + this.capacity + ")");
-                }
+                this.items[item.type].push(item);
+                if (item.equippable) this.autoEquip(item);
+                item.carried = isCarried;
+                this.uniqueItemsCarried = {};
+                this.uniqueItemsAll = {};
             } else {
                 console.log("WARN: Trying to add undefined item.");
             }

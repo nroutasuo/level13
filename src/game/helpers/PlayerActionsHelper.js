@@ -15,6 +15,7 @@ define([
     'game/nodes/NearestCampNode',
     'game/components/common/PositionComponent',
     'game/components/common/PlayerActionComponent',
+    'game/components/player/BagComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
     'game/components/player/DeityComponent',
@@ -30,7 +31,7 @@ define([
 ], function (
 	Ash, PositionConstants, PlayerActionConstants, ItemConstants, UpgradeConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
-	PositionComponent, PlayerActionComponent, ItemsComponent, PerksComponent, DeityComponent,
+	PositionComponent, PlayerActionComponent, BagComponent, ItemsComponent, PerksComponent, DeityComponent,
 	PassagesComponent, EnemiesComponent, MovementOptionsComponent,
 	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, SectorImprovementsComponent,
 	CampComponent
@@ -153,10 +154,7 @@ define([
             
             var item = this.getItemForCraftAction(action);
             if (item) {
-                var count = playerItems.getCountById(item.id, true);
-                if (playerItems.capacity > 0 && playerItems.capacity < count + 1) {
-                    return { value: 0, reason: "Bag full." };
-                }
+                // TODO if the player is out exploring, check if there is room in the bag for this item
             }
                 
             if (requirements) {
@@ -364,6 +362,16 @@ define([
                         return { value: 0, reason: reason };
                     }
 				}
+                
+                if (typeof requirements.bag !== "undefined") {
+                    var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
+                    if (requirements.bag.validSelection) {
+                        if (bagComponent.selectedCapacity > bagComponent.totalCapacity) {
+                            if (log) console.log("WARN: Can't carry that much stuff.");
+                            return { value: 0, reason: "Can't carry that much stuff." };
+                        }
+                    }
+                }
                 
                 if (requirements.sector) {
                     if (requirements.sector.canHaveCamp) {

@@ -315,13 +315,7 @@
 					<!-- "embark" page when leaving camp -->
 					<div class="grid" id="container-tab-enter-out" style="display:none">
 						<div class="unit whole">
-							<p>Make sure you pack enough supplies before you leave.</p>                            
-                            <p>
-                            <div class="stats-indicator" id="embark-bag">
-                                <span class="label">Bag space</span>
-                                <span class="value">0</span>
-                            </div>
-                            </p>
+							<p>Make sure you pack enough supplies before you leave.</p>
                             <div class="grid">
                                 <div class="unit one-third" id="embark-resources-container">
                                     <div class="subheader"><h3>Resources</h3></div>
@@ -334,7 +328,14 @@
                                     </table>
                                 </div>
 							</div>
-                            
+                            <p>
+                            <div class="stats-indicator" id="embark-bag">
+                                <span class="label">Selected</span>
+                                <span class="value">0</span>
+                                /
+                                <span class="value-total">0</span>
+                            </div>
+                            </p>                            
 							<div class="actionbox">
 							<button class="action" id="in-action-leave" action="leave_camp">Go</button>
 							</div>

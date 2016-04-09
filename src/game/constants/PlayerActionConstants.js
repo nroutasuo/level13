@@ -158,6 +158,9 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 
                 leave_camp: {
                     busy: false,
+                    bag: {
+                        validSelection: true,
+                    },
                 },
                         
                 build_out_camp: {

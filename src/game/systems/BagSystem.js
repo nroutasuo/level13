@@ -4,8 +4,9 @@ define([
     'game/constants/ItemConstants',
     'game/nodes/player/PlayerResourcesNode',
     'game/components/player/ItemsComponent',
+    'game/components/player/BagComponent',
     'game/vos/ResourcesVO'
-], function (Ash, ItemConstants, PlayerResourcesNode, ItemsComponent, ResourcesVO) {
+], function (Ash, ItemConstants, PlayerResourcesNode, ItemsComponent, BagComponent, ResourcesVO) {
     var BagSystem = Ash.System.extend({	
 	    
 		gameState: null,
@@ -26,11 +27,12 @@ define([
 
         update: function (time) {
 			var playerResources = this.playerNodes.head.resources;
+            var playerBag = this.playerNodes.head.entity.get(BagComponent);
 			var playerItems = this.playerNodes.head.entity.get(ItemsComponent);
+            
 			var playerBagBonus = playerItems.getCurrentBonus(ItemConstants.itemTypes.bag);
-			
 			playerResources.storageCapacity = Math.max(playerBagBonus, ItemConstants.PLAYER_DEFAULT_STORAGE);
-			playerItems.capacity = Math.max(playerBagBonus, ItemConstants.PLAYER_DEFAULT_STORAGE);
+			playerBag.totalCapacity = Math.max(playerBagBonus, ItemConstants.PLAYER_DEFAULT_STORAGE);
 			
 			this.gameState.unlockedFeatures.bag = playerBagBonus > 0;
 		}

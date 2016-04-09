@@ -4,12 +4,13 @@ define([
     'game/constants/ItemConstants',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
+    'game/components/player/BagComponent',
     'game/components/player/ItemsComponent',
     'game/components/common/PositionComponent',
 ], function (
     Ash, UIConstants, ItemConstants,
     PlayerPositionNode, PlayerLocationNode,
-    ItemsComponent, PositionComponent
+    BagComponent, ItemsComponent, PositionComponent
 ) {
     var UIOutEmbarkSystem = Ash.System.extend({
 	
@@ -114,18 +115,20 @@ define([
 		
 		updateEmbarkPage: function () {
 			$("#tab-header h2").text("Leave camp");
+            
 			var campResources = this.resourcesHelper.getCurrentStorage();
-			var bagResources = this.resourcesHelper.getPlayerStorage();
-			var bagStorage = bagResources.storageCapacity;
+            var bagComponent = this.playerPosNodes.head.entity.get(BagComponent);
+            var selectedCapacity = 0;
 			
 			// Resource steppers
 			$.each($("#embark-resources tr"), function () {
 				var resourceName = $(this).attr("id").split("-")[2];
 				var campVal = campResources.resources.getResource(resourceName);
 				var visible = campVal > 0;
-				var inputMax = Math.min(bagStorage, Math.floor(campVal));
+				var inputMax = Math.min(Math.floor(campVal));
 				$(this).toggle(visible);
 				$(this).children("td").children(".stepper").children("input").attr("max", inputMax);
+                selectedCapacity += Math.max(0, $(this).children("td").children(".stepper").children("input").val());
 			});
             
             // Items steppers
@@ -136,17 +139,21 @@ define([
                 var count = itemsComponent.getCountById(itemID, true);
 				var visible = count > 0;
                 if (visible) visibleItemTRs++;
-				var inputMax = Math.min(bagStorage, Math.floor(count));
+				var inputMax = Math.min(Math.floor(count));
                 var inputMin = 0;
                 var inputValue = $(this).children("td").children(".stepper").children("input").attr("value");
 				$(this).toggle(visible);
 				$(this).children("td").children(".stepper").children("input").attr("max", inputMax);
 				$(this).children("td").children(".stepper").children("input").attr("min", inputMin);
 				$(this).children("td").children(".stepper").children("input").attr("value", Math.max(inputValue, inputMin));
+                selectedCapacity += Math.max(0, $(this).children("td").children(".stepper").children("input").val());
 			});
 			
             $("#embark-items-container").toggle(visibleItemTRs > 0);
-			$("#embark-bag .value").text(bagStorage);
+            
+            bagComponent.selectedCapacity = selectedCapacity;
+			$("#embark-bag .value").text(bagComponent.selectedCapacity);
+			$("#embark-bag .value-total").text(bagComponent.totalCapacity);
 		},
         
         regenrateEmbarkItems: function () {
