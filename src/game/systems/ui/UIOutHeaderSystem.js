@@ -11,10 +11,11 @@ define([
     'game/nodes/PlayerLocationNode',
     'game/nodes/tribe/TribeUpgradesNode',
     'game/nodes/player/DeityNode',
+    'game/components/player/BagComponent',
     'game/components/player/DeityComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
-    'game/components/common/PlayerActionComponent',
+    'game/components/player/PlayerActionComponent',
     'game/components/common/PositionComponent',
     'game/components/common/CampComponent',
     'game/components/sector/SectorFeaturesComponent',
@@ -23,6 +24,7 @@ define([
     UIConstants, ItemConstants, FightConstants, UpgradeConstants,
     WorldCreatorHelper, SaveSystem,
 	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
+    BagComponent,
 	DeityComponent,
 	ItemsComponent,
 	PerksComponent,
@@ -332,8 +334,10 @@ define([
                         name === resourceNames.food || name === resourceNames.water,
                         resourceUnlocked && (name === "water" || name === "food" || showResources.getResource(name) > 0)
                     );
-                    $("#header-bag-storage .value").text(showStorageName);
-                    $("#header-bag-storage .value").text(storageCap);
+                    
+                    var bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
+                    $("#header-bag-storage .value").text(Math.floor(bagComponent.usedCapacity));
+                    $("#header-bag-storage .value-total").text(storageCap);
                 }
 			}
 		},

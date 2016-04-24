@@ -252,12 +252,12 @@ dd p.p-meta {
 	color: #202220;
 }
 
-.lvl13-box-1, div.grid-content, ul.tabs li.selected , .item, .li-item-negative, .li-item-positive, .info-callout-target, .blueprint-piece-box-missing {
+.lvl13-box-1, div.grid-content, div.popup, ul.tabs li.selected , .item, .res, .li-item-negative, .li-item-positive, .info-callout-target, .blueprint-piece-box-missing {
 	background: #282a28;
 	border: 2px solid #3a3a3a;
 }
 
-.sunlit .lvl13-box-1, .sunlit div.grid-content, .sunlit ul.tabs li.selected, .sunlit .item, .sunlit .li-item-negative, .sunlit .li-item-positive, .sunlit .info-callout-target, .sunlit .blueprint-piece-box-missing {
+.sunlit .lvl13-box-1, .sunlit div.grid-content, .sunlit .popup, .sunlit ul.tabs li.selected, .sunlit .item, .sunlit .res, .sunlit .li-item-negative, .sunlit .li-item-positive, .sunlit .info-callout-target, .sunlit .blueprint-piece-box-missing {
 	background: #efefef;
 	border: 1px solid #d0d0d0;
 }
@@ -325,23 +325,23 @@ ul.tabs li.selected {
 	color: #333;
 }
 
-.lvl13-element, div.btn-callout-content, div.info-callout-content, div.popup, button, a:link, a:visited {
+.lvl13-element, div.btn-callout-content, div.info-callout-content, button, a:link, a:visited {
 	background: #202220;
 	color: #fdfdfd;
 	border: 2px solid #555;
 }
 
-.sunlit .lvl13-element, .sunlit div.btn-callout-content, .sunlit div.info-callout-content, .sunlit div.popup, .sunlit button, .sunlit a:link, .sunlit a:visited {
+.sunlit .lvl13-element, .sunlit div.btn-callout-content, .sunlit div.info-callout-content, .sunlit button, .sunlit a:link, .sunlit a:visited {
 	background: rgb(252, 252, 252);
 	color: #222222;
 	border: 2px solid #aaa;
 }
 
-div.container-btn-action, .changelog-type, .notification, .item-slot-equipped {
+div.container-btn-action, .changelog-type, .notification, .item-slot-equipped, .inventorybox {
 	border-color: #555;
 }
 
-.sunlit div.container-btn-action, .sunlit .changelog-type, .sunlit .notification, .sunlit .item-slot-equipped {
+.sunlit div.container-btn-action, .sunlit .changelog-type, .sunlit .notification, .sunlit .item-slot-equipped, .sunlit .inventorybox {
 	border-color: #aaa;
 }
 
@@ -375,11 +375,11 @@ button {
 	color: #666 !important;
 }
 
-.lvl13-element-secondary, .stats-indicator .value, .stats-indicator .change, .stats-indicator .forecast, span.msg-count, span.time  {
+.lvl13-element-secondary, .stats-indicator .value, .stats-indicator .value-total, .stats-indicator .change, .stats-indicator .forecast, span.msg-count, span.time  {
 	color: #bbb;
 }
 
-.sunlit .lvl13-element-secondary, .sunlit .stats-indicator .value, .sunlit .stats-indicator .change, .sunlit .stats-indicator .forecast, .sunlit span.msg-count, .sunlit span.time  {
+.sunlit .lvl13-element-secondary, .sunlit .stats-indicator .value, .sunlit .stats-indicator .value-total, .sunlit .stats-indicator .change, .sunlit .stats-indicator .forecast, .sunlit span.msg-count, .sunlit span.time  {
 	color: #777;
 }
 
@@ -547,11 +547,11 @@ ul.itemlist, ul.resultlist {
 	display: inline-block;
 }
 
-.itemlist li, .resultlist li {
+.itemlist li {
 	display: inline-flex;    
 }
  
-.item {
+.item, .res {
 	vertical-align: middle;
 	display: inline-flex;    
 	position: relative;
@@ -562,18 +562,32 @@ ul.itemlist, ul.resultlist {
     border-radius: 50%;
 }
 
+.res {
+    border-radius: 0 !important;
+    margin: 8px 6px 6px 6px !important;
+    padding: 0px !important;
+    border-width: 1px;
+}
+
 .item img, .li-item-negative img, .li-item-positive img {
-	margin: 0px;
+	margin: -2px 0px 2px 0px;
 	vertical-align: middle;
 	height: 16px;
 	width: 16px;
+}
+
+.res img {
+	margin: -2px 2px 6px 2px;
+	vertical-align: middle;
+	height: 12px;
+	width: 12px;
 }
 
 .item-focused, .blueprint:hover {
 	border-width: 2px !important;
 }
 
-.item div.item-count {
+.item div.item-count, .res div.item-count {
 	font-size: 75%;
 	position: absolute;
 	bottom: -0.9em;
@@ -594,13 +608,21 @@ ul.resultlist li {
 	background-color: transparent;
 }
 
-.item-slot {
+ul.resultlist-positive li:before {
+    content: "+ ";
+}
+
+.item-slot, .inventorybox ul li {
     margin: 0px 7px 7px 0px;
     padding: 0;
     border-width: 1px;
     border-style: solid;
     display: inline-block;
     position: relative;
+}
+
+#resultlist-inventorymanagement-found ul li {
+    border-width: 0px;
 }
 
 .item-slot-big {
@@ -819,7 +841,7 @@ div.info-callout-target {
     cursor: help;
 }
 
-.item div.info-callout-target, .resultlist li div.info-callout-target, .itemlist div.info-callout-target {
+.item div.info-callout-target, .res div.info-callout-target, .resultlist li div.info-callout-target, .itemlist div.info-callout-target {
     border-width: 0px;
     background-color: inherit;
 }
@@ -1186,6 +1208,13 @@ p.notification {
 	padding: 3px 0px;
 }
 
+.inventorybox {
+    border-width: 1px;
+    border-style: solid;
+    padding: 7px 0px 0px 7px !important;
+    margin: 5px 0px;
+}
+
 .full-width {
 	width: 100%;
 }
@@ -1208,6 +1237,9 @@ span.time {
 
 span.icon {
 	padding: 2px;
+}
+span.text-highlight-functionality {
+   font-weight: bold;
 }
 
 span.action-cost-blocker-storage {

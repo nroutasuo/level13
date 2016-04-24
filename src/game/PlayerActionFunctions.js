@@ -24,11 +24,13 @@ define(['ash',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/components/common/PositionComponent',
 	'game/components/common/ResourcesComponent',
+	'game/components/player/BagComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PerksComponent',
 	'game/components/player/DeityComponent',
 	'game/components/player/AutoPlayComponent',
-	'game/components/common/PlayerActionComponent',
+	'game/components/player/PlayerActionComponent',
+	'game/components/player/PlayerActionResultComponent',
     'game/components/common/CampComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/EnemiesComponent',
@@ -53,7 +55,7 @@ define(['ash',
     PlayerPositionNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
-	ItemsComponent, PerksComponent, DeityComponent, AutoPlayComponent, PlayerActionComponent,
+	BagComponent, ItemsComponent, PerksComponent, DeityComponent, AutoPlayComponent, PlayerActionComponent, PlayerActionResultComponent,
 	CampComponent, SectorImprovementsComponent, EnemiesComponent,
 	SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, CampEventTimersComponent,
@@ -347,13 +349,18 @@ define(['ash',
                     
                 this.fightHelper.handleRandomEncounter("scavenge", function () {
 					var rewards = playerActionFunctions.playerActionResultsHelper.getScavengeRewards();
-					playerActionFunctions.playerActionResultsHelper.collectRewards(rewards);
-                    playerActionFunctions.uiFunctions.completeAction("scavenge");
-					playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCAVENGE, logMsg);
-                    playerActionFunctions.uiFunctions.showInfoPopup("Scavenge", detailedMessage, "Continue", rewards);
-					playerActionFunctions.playerActionResultsHelper.logSpecialFinds(rewards);
-					playerActionFunctions.forceResourceBarUpdate();
-					playerActionFunctions.forceTabUpdate();
+                    playerActionFunctions.playerStatsNodes.head.entity.add(new PlayerActionResultComponent(rewards));
+                    
+                    var resultPopupCallback = function () {
+                        playerActionFunctions.playerActionResultsHelper.collectRewards(rewards);
+                        playerActionFunctions.uiFunctions.completeAction("scavenge");
+                        playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCAVENGE, logMsg);
+                        playerActionFunctions.playerActionResultsHelper.logSpecialFinds(rewards);
+                        playerActionFunctions.forceResourceBarUpdate();
+                        playerActionFunctions.forceTabUpdate();
+                    };
+                    
+                    playerActionFunctions.uiFunctions.showResultPopup("Scavenge", detailedMessage, rewards, resultPopupCallback);
 				}, function () {
                     playerActionFunctions.uiFunctions.completeAction("scavenge");
                     playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCAVENGE, logMsg + "Fled empty-handed.");
@@ -878,30 +885,31 @@ define(['ash',
         },
         
         collectCollector: function (actionName, improvementName) {
-            if(this.playerActionsHelper.checkAvailability(actionName, true)) {
+            if (this.playerActionsHelper.checkAvailability(actionName, true)) {
                 this.playerActionsHelper.deductCosts(actionName);
+                
                 var currentStorage = this.resourcesHelper.getCurrentStorage();
+                var bagComponent = this.playerPositionNodes.head.entity.get(BagComponent);
                 
                 var sector = this.playerLocationNodes.head.entity;
                 var improvementsComponent = sector.get(SectorImprovementsComponent);
                 var improvementVO = improvementsComponent.getVO(improvementNames[improvementName]);
                 var resourcesVO = improvementVO.storedResources;
                 
+                var maxToCollect = bagComponent.totalCapacity - bagComponent.usedCapacity;
                 var totalCollected = 0;
-                for(var key in resourceNames) {
+                for (var key in resourceNames) {
                     var name = resourceNames[key];
                     var amount = resourcesVO.getResource(name);
                     if (amount >= 1) {
-                        currentStorage.resources.addResource(name, amount);
-                        totalCollected += amount;
+                        var toCollect = Math.min(amount, maxToCollect - totalCollected);
+                        currentStorage.resources.addResource(name, toCollect);
+                        resourcesVO.addResource(name, -toCollect);
+                        totalCollected += toCollect;
                     }
                 }
                 
-                if (totalCollected > 0) {
-                    resourcesVO.reset(); 
-                }
-                else
-                {
+                if (totalCollected === 0) {
                     this.addLogMessage(LogConstants.MSG_ID_USE_COLLECTOR_FAIL, "Nothing to collect yet.");
                 }
                 

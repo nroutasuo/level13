@@ -868,28 +868,36 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             });
         },
         
-        showInfoPopup: function(title, msg, buttonLabel, resultVO) {
+        showInfoPopup: function (title, msg, buttonLabel, resultVO) {
             if (!buttonLabel) buttonLabel = "Continue";
-            this.popupManager.showPopup("info-popup", title, msg, buttonLabel, false, resultVO);
+            this.popupManager.showPopup(title, msg, buttonLabel, false, resultVO);
             this.generateCallouts(".popup");
         },
         
-        showConfirmation: function(msg, callback) {
-            this.popupManager.showPopup("confirmation-popup", "Confirmation", msg, "Confirm", true);
+        showResultPopup: function (title, msg, resultVO, callback) {
+            this.popupManager.showPopup(title, msg, "Continue", false, resultVO, callback);
             this.generateCallouts(".popup");
-                  
+        },
+        
+        showConfirmation: function (msg, callback) {
             var uiFunctions = this;
-            $("#confirmation-cancel").click( function(e) {
-                uiFunctions.popupManager.closePopup("common-popup");
-            });
-            $("#info-ok").click( function(e) {
+            var okCallback = function(e) {
                 uiFunctions.popupManager.closePopup("common-popup");
                 callback();
-            });
+            };
+            var cancelCallback = function() {
+                uiFunctions.popupManager.closePopup("common-popup");
+            };
+            this.popupManager.showPopup("Confirmation", msg, "Confirm", true, null, okCallback, cancelCallback);
+            this.generateCallouts(".popup");
         },
         
         showInput: function(msg, defaultValue, callback) {
-            this.popupManager.showPopup("input-popup", "Input", msg, "Confirm", true);
+            var okCallback = function () {
+                var input = $("#common-popup input").val();
+                callback(input);
+            };
+            this.popupManager.showPopup("Input", msg, "Confirm", true, null, okCallback);
             this.generateCallouts(".popup");
             
             var uiFunctions = this;
@@ -898,17 +906,8 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             $("#common-popup-input-container input").attr("maxlength", maxChar);
             
             $("#common-popup input").val(defaultValue);
-            $("#common-popup input").keydown( uiFunctions.onTextInputKeyDown );
-            $("#common-popup input").keyup( uiFunctions.onTextInputKeyUp );
-            
-            $("#confirmation-cancel").click( function(e) {
-                uiFunctions.popupManager.closePopup("common-popup");
-            });
-            $("#info-ok").click( function(e) {
-                uiFunctions.popupManager.closePopup("common-popup");
-                var input = $("#common-popup input").val();
-                callback(input);
-            });
+            $("#common-popup input").keydown( uiFunctions.onTextInputKeyDown);
+            $("#common-popup input").keyup( uiFunctions.onTextInputKeyUp);
         },
     });
 

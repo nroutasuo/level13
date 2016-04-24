@@ -19,7 +19,7 @@ define([
     'game/components/type/LevelComponent',
     'game/components/type/SectorComponent',
     'game/components/common/PositionComponent',
-    'game/components/common/PlayerActionComponent',
+    'game/components/player/PlayerActionComponent',
     'game/components/common/ResourcesComponent',
     'game/components/common/ResourceAccumulationComponent',
     'game/components/common/VisitedComponent',

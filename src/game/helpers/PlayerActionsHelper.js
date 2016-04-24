@@ -14,7 +14,7 @@ define([
     'game/nodes/sector/CampNode',
     'game/nodes/NearestCampNode',
     'game/components/common/PositionComponent',
-    'game/components/common/PlayerActionComponent',
+    'game/components/player/PlayerActionComponent',
     'game/components/player/BagComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',

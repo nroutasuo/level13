@@ -33,6 +33,14 @@ define([
 			var playerBagBonus = playerItems.getCurrentBonus(ItemConstants.itemTypes.bag);
 			playerResources.storageCapacity = Math.max(playerBagBonus, ItemConstants.PLAYER_DEFAULT_STORAGE);
 			playerBag.totalCapacity = Math.max(playerBagBonus, ItemConstants.PLAYER_DEFAULT_STORAGE);
+            
+            var usedCapacity = 0;
+            var carriedItems = playerItems.getAll(false);
+            usedCapacity += playerResources.resources.getTotal();
+            for (var i = 0; i < carriedItems.length; i++) {
+                if (!carriedItems[i].equipped) usedCapacity += 1;
+            }
+            playerBag.usedCapacity = usedCapacity;
 			
 			this.gameState.unlockedFeatures.bag = playerBagBonus > 0;
 		}

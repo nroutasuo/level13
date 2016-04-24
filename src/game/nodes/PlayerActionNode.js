@@ -1,6 +1,6 @@
 define([
     'ash',
-    'game/components/common/PlayerActionComponent',
+    'game/components/player/PlayerActionComponent',
 ], function (Ash, PlayerActionComponent) {
     var PlayerActionNode = Ash.Node.create({
         playerActions : PlayerActionComponent,

@@ -18,6 +18,7 @@ define([
     'game/systems/ui/UIOutBlueprintsSystem',
     'game/systems/ui/UIOutFightSystem',
     'game/systems/ui/UIOutLogSystem',
+    'game/systems/ui/UIOutPopupInventorySystem',
     'game/systems/VisionSystem',
     'game/systems/StaminaSystem',
     'game/systems/PlayerPositionSystem',
@@ -74,6 +75,7 @@ define([
     UIOutBlueprintsSystem,
     UIOutFightSystem,
     UIOutLogSystem,
+    UIOutPopupInventorySystem,
     VisionSystem,
     StaminaSystem,
     PlayerPositionSystem,
@@ -216,6 +218,7 @@ define([
 			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.tabChangedSignal, this.resourcesHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutFightSystem(this.uiFunctions, this.playerActionResultsHelper, this.playerActionsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLogSystem(this.playerMovedSignal), SystemPriorities.render);
+			this.engine.addSystem(new UIOutPopupInventorySystem(this.uiFunctions), SystemPriorities.render);
 		},
 	
 		start: function () {

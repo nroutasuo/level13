@@ -87,13 +87,21 @@ define(['ash',
 		},
 		
 		getResourceLi: function (name, amount) {
-			return "<li><div class='info-callout-target info-callout-target-small' description='" + name + "'>" + this.getResourceImg(name) + "</div> " + Math.round(amount) + "</li>";
+			var classes = "res item-with-count";
+			var div = "<div class='" + classes + "' data-resourcename='" + name + "'>";
+			div += "<div class='info-callout-target info-callout-target-small' description='" + name + "'>";
+			div += this.getResourceImg(name);
+			div += "<div class='item-count lvl13-box-3'>" + Math.round(amount) + "x </div>";
+			div += "</div>";
+			div += "</div>"
+			var imageDiv = "<div class='item-slot-image'>" + div + "</div>";
+			return "<li class='item-slot item-slot-small lvl13-box-1'>" + imageDiv + "</li>";
 		},
 		
 		getBlueprintPieceLI: function (blueprintVO) {
 			var upgradeDefinition = UpgradeConstants.upgradeDefinitions[blueprintVO.upgradeId];
 			var name = upgradeDefinition.name;
-			return "<li><div class='info-callout-target info-callout-target-small' description='A piece of forgotten technology (" + name + ")'>" + this.getBlueprintPieceIcon(blueprintVO) + "</li>";
+			return "<li><div class='info-callout-target info-callout-target-small' description='A piece of forgotten technology (" + name + ")'>" + this.getBlueprintPieceIcon(blueprintVO) + " blueprint</li>";
 		},
 		
 		getResourceList: function (resourceVO) {

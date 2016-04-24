@@ -20,21 +20,24 @@ function (Ash, UIConstants) {
             });
         },
         
-        showPopup: function (id, title, msg, okButtonLabel, showCancel, resultVO) {
+        showPopup: function (title, msg, okButtonLabel, showCancel, resultVO, okCallback, cancelCallback) {
             if (this.hasOpenPopup()) {
-                this.popupQueue.push({id: id, title: title, msg: msg, okButtonLabel: okButtonLabel, showCancel: showCancel, resultVO: resultVO });
+                this.popupQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, showCancel: showCancel, resultVO: resultVO });
                 return;
             }
             
+            // use the same popup container for all popups
             var popUpManager = this;
             var popup = $("#common-popup");
             if ($(popup).parent().hasClass("popup-overlay")) $(popup).unwrap();
             
+            // text
             $("#common-popup-input-container").toggle(false);
             $("#common-popup h3").text(title);
             $("#common-popup p#common-popup-desc").html(msg);
             
-            var hasResult = typeof resultVO !== 'undefined';
+            // results and rewards
+            var hasResult = resultVO && typeof resultVO !== 'undefined';
             $("#info-results").toggle(hasResult);
             if (hasResult) {
                 $("#info-results").empty();
@@ -42,21 +45,28 @@ function (Ash, UIConstants) {
                 $("#info-results").append(rewardDiv);
             }
             
+            // buttons and callbacks
             $("#common-popup .buttonbox").empty();
-            if (showCancel) {
-                $("#common-popup .buttonbox").append("<button id='confirmation-cancel'>Cancel</button>");
-            }
             $("#common-popup .buttonbox").append("<button id='info-ok' class='action'>" + okButtonLabel + "</button>");
-            
             $("#info-ok").click(function (e) {
                 popUpManager.closePopup("common-popup");
+                if (okCallback) okCallback();
             });
+            if (showCancel) {
+                $("#common-popup .buttonbox").append("<button id='confirmation-cancel'>Cancel</button>");
+                $("#confirmation-cancel").click(function (e) {
+                    popUpManager.closePopup("common-popup");
+                    if (cancelCallback) cancelCallback();
+                });
+            }
             
+            // overlay
             $("#common-popup").wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");
             $(".popup-overlay").toggle(true);
             popUpManager.onResize();
             $("#common-popup").slideDown(200, popUpManager.onResize);
             
+            // pause the game while a popup is open
             this.gameState.isPaused = this.hasOpenPopup();
         },
         
@@ -90,7 +100,7 @@ function (Ash, UIConstants) {
         showQueuedPopup: function () {
             if (this.popupQueue.length > 0) {
                 var queued = this.popupQueue.pop();
-                this.showPopup(queued.id, queued.title, queued.msg, queued.okButtonLabel, queued.showCancel, queued.resultVO);
+                this.showPopup(queued.title, queued.msg, queued.okButtonLabel, queued.showCancel, queued.resultVO);
             }
         },
         

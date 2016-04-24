@@ -18,6 +18,7 @@ define([
 	'game/components/common/LogMessagesComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorStatusComponent',
+	'game/components/player/BagComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PerksComponent',
 	'game/vos/ResultVO',
@@ -41,6 +42,7 @@ define([
 	LogMessagesComponent,
 	SectorFeaturesComponent,
 	SectorStatusComponent,
+	BagComponent,
 	ItemsComponent,
 	PerksComponent,
 	ResultVO,
@@ -87,6 +89,36 @@ define([
 
 			rewards.gainedResources = this.getRewardResources(1, efficiency, sectorResources);
 			rewards.gainedItems = this.getRewardItems(0.007, 0.05, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
+			
+			/*
+			rewards.gainedItems = this.getRewardItems(0.7, 0.1, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
+			rewards.gainedFollowers = this.getRewardFollowers(0.2);
+			rewards.gainedBlueprintPiece = this.getResultBlueprint(null);
+			rewards.gainedEvidence = Math.floor(Math.random(2));
+			rewards.gainedReputation = Math.floor(Math.random(2));
+			rewards.gainedRumours = Math.floor(Math.random(2));
+			rewards.gainedPopulation = Math.floor(Math.random(2));
+			rewards.gainedInjuries = this.getResultInjuries(0.1);
+			rewards.lostResources = new ResourcesVO();
+			rewards.lostResources.metal = Math.random() > 0.8 ? 2 : 0;
+			
+			var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAll(false);
+			var itemLoseProbability;
+			for (var i = 0; i < playerItems.length; i++) {
+				itemLoseProbability = 0;
+				switch (playerItems[i].type) {
+					case ItemConstants.itemTypes.clothing:
+					case ItemConstants.itemTypes.shoes:
+					case ItemConstants.itemTypes.light:
+					case ItemConstants.itemTypes.shades:
+						itemLoseProbability = 0.1;
+						break;
+				}
+				if (itemLoseProbability > Math.random()) {
+					rewards.lostItems.push(playerItems[i].clone());
+				}
+			}
+			*/
 			
 			// should never be needed, but as a fallback
 			var unscoutedLocales = this.levelHelper.getLevelLocales(playerPos.level, false).length;
@@ -218,8 +250,8 @@ define([
 			var currentStorage = this.resourcesHelper.getCurrentStorage();
 			var playerPos = this.playerLocationNodes.head.position;
 			
-			currentStorage.addResources(rewards.gainedResources);
-			currentStorage.substractResources(rewards.lostResources);
+			currentStorage.addResources(rewards.selectedResources);
+			currentStorage.substractResources(rewards.discardedResources);
 
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
@@ -233,9 +265,9 @@ define([
 			}
 
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-			if (rewards.gainedItems) {
-				for (var i = 0; i < rewards.gainedItems.length; i++) {
-					itemsComponent.addItem(rewards.gainedItems[i], !playerPos.inCamp);
+			if (rewards.selectedItems) {
+				for (var i = 0; i < rewards.selectedItems.length; i++) {
+					itemsComponent.addItem(rewards.selectedItems[i], !playerPos.inCamp);
 				}
 			}
 			
@@ -244,16 +276,22 @@ define([
 					itemsComponent.addItem(rewards.gainedFollowers[i], false);
 				}
 			}
+			
+			if (rewards.gainedBlueprintPiece) {
+				this.tribeUpgradesNodes.head.upgrades.addNewBlueprintPiece(rewards.gainedBlueprintPiece);
+				this.gameState.unlockedFeatures.blueprints = true;
+			}
 
 			if (rewards.lostItems) {
 				for (var i = 0; i < rewards.lostItems.length; i++) {
 					itemsComponent.discardItem(rewards.lostItems[i]);
 				}
 			}
-			
-			if (rewards.gainedBlueprintPiece) {
-				this.tribeUpgradesNodes.head.upgrades.addNewBlueprintPiece(rewards.gainedBlueprintPiece);
-				this.gameState.unlockedFeatures.blueprints = true;
+
+			if (rewards.discardedItems) {
+				for (var i = 0; i < rewards.discardedItems.length; i++) {
+					itemsComponent.discardItem(rewards.discardedItems[i]);
+				}
 			}
 
 			if (rewards.gainedInjuries) {
@@ -289,13 +327,13 @@ define([
 			replacements = replacements.concat(resourceTemplate.replacements);
 			values = values.concat(resourceTemplate.values);
 
-			if (rewards.gainedItems && rewards.gainedItems.length > 0) {
+			if (rewards.selectedItems && rewards.selectedItems.length > 0) {
 				msg += ", ";
 				foundSomething = true;
 				
 				var loggedItems = {};
-				for (var i = 0; i < rewards.gainedItems.length; i++) {
-					var item = rewards.gainedItems[i];
+				for (var i = 0; i < rewards.selectedItems.length; i++) {
+					var item = rewards.selectedItems[i];
 					if (typeof loggedItems[item.id]  === 'undefined') {
 						msg += "$" + replacements.length + ", ";
 						replacements.push("#" + replacements.length + " " + item.name.toLowerCase());
@@ -369,16 +407,11 @@ define([
 		getRewardDiv: function (resultVO, isFight) {
 			var div = "<div class='infobox infobox-temporary'>";
 			
-            var gainedhtml = "<span class='listheader'>Gained:</span>";
-            gainedhtml += "<ul class='resultlist'>";
-            if (resultVO.gainedResources) {
-                gainedhtml += UIConstants.getResourceList(resultVO.gainedResources);
-			}
-			if (resultVO.gainedItems) {
-				gainedhtml += UIConstants.getItemList(resultVO.gainedItems);
-			}
-			if (resultVO.gainedFollowers) {
-				gainedhtml += UIConstants.getItemList(resultVO.gainedFollowers);
+            var gainedhtml = "";
+            gainedhtml += "<ul class='resultlist resultlist-positive'>";
+			if (resultVO.gainedFollowers && resultVO.gainedFollowers.length > 0) {
+				gainedhtml += "<li>" + resultVO.gainedFollowers.length + " follower" + (resultVO.gainedFollowers.length > 1 ? "s" : "");
+				// gainedhtml += UIConstants.getItemList(resultVO.gainedFollowers);
 			}
 			if (resultVO.gainedEvidence) {
 				gainedhtml += "<li>" + resultVO.gainedEvidence + " evidence</li>";
@@ -391,30 +424,49 @@ define([
 			}
 			if (resultVO.gainedBlueprintPiece) {
 				var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(resultVO.gainedBlueprintPiece);
-				gainedhtml += UIConstants.getBlueprintPieceLI(blueprintVO);
+				if (blueprintVO) gainedhtml += UIConstants.getBlueprintPieceLI(blueprintVO);
 			}
 			gainedhtml += "</ul>";
 			var hasGainedStuff = gainedhtml.indexOf("<li") > 0;
 			if (hasGainedStuff) div += gainedhtml;
 			
-			var losthtml = "<span class='listheader'>Lost:</span>";
-			losthtml += "<ul class='resultlist'>";
-			if (resultVO.lostResources) {
-				losthtml += UIConstants.getResourceList(resultVO.lostResources);
+			if (resultVO.lostResources || resultVO.lostItems) {
+				var losthtml = "<div id='resultlist-loststuff' class='infobox'>";
+				losthtml += "<div id='resultlist-loststuff-lost' class='infobox inventorybox'>";
+				if (resultVO.lostResources) {
+					losthtml += UIConstants.getResourceList(resultVO.lostResources);
+				}
+				if (resultVO.lostItems) {
+					losthtml += UIConstants.getItemList(resultVO.lostItems);
+				}
+				losthtml += "</div>"
+				losthtml += "</div>";
 			}
-			if (resultVO.lostItems) {
-				losthtml += UIConstants.getItemList(resultVO.lostItems);
-			}
-			losthtml += "</ul>";
-			if (resultVO.gainedInjuries.length > 0) {
-				losthtml += "<p class='warning'>You got injured.</p>";
-			}
-			var hasLostStuff = losthtml.indexOf("<li") > 0 || losthtml.indexOf("<p") > 0;
-			if (hasLostStuff) div += losthtml;
 			
+			if (resultVO.gainedResources || resultVO.gainedItems) {
+				var baghtml = "<div id='resultlist-inventorymanagement' class='infobox'>";
+				
+				baghtml += "<div id='resultlist-inventorymanagement-found' class='infobox inventorybox'>";
+				baghtml += "<ul style='padding:0px; margin: 0px'></ul>";
+				baghtml += "</div>"
+				
+				baghtml += "<div id='resultlist-inventorymanagement-kept' class='infobox inventorybox'>";
+				baghtml += "<ul style='padding:0px; margin: 0px'></ul>";
+				baghtml += "</div>"
+				
+				baghtml += "</div>"
+				div += baghtml;
+			}
+			
+			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0;
+			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0;
 			if (!hasGainedStuff && !hasLostStuff) {
 				if (isFight) div += "<p>Nothing left behind.</p>"
 				else div += "<p>Didn't find anything useful.</p>";
+			}
+			
+			if (resultVO.gainedInjuries.length > 0) {
+				div += "<p class='warning'>You got injured.</p>";
 			}
                 
 			div += "</div>";
@@ -431,9 +483,9 @@ define([
 					logComponent.addMessage(LogConstants.MSG_ID_FOUND_BLUEPRINT_FIRST, "Found a piece of forgotten technology.");
 			}
 			
-			if (rewards.gainedItems) {
-				for (var i = 0; i < rewards.gainedItems.length; i++) {
-					var item = rewards.gainedItems[i];
+			if (rewards.selectedItems) {
+				for (var i = 0; i < rewards.selectedItems.length; i++) {
+					var item = rewards.selectedItems[i];
 					if (itemsComponent.getCountById(item.id, true) === 1) {
 						if (item.equippable && !item.equipped) continue;
 						logComponent.addMessage(LogConstants.MSG_ID_FOUND_ITEM_FIRST, "Found a " + item.name + ".");
