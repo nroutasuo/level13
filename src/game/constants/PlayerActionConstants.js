@@ -162,6 +162,12 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                         validSelection: true,
                     },
                 },
+                
+                accept_inventory: {
+                    bag: {
+                        validSelection: true,
+                    },
+                },
                         
                 build_out_camp: {
                     vision: 30,

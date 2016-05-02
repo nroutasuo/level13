@@ -3,7 +3,8 @@ define([
     'game/constants/UIConstants',
     'game/nodes/player/PlayerActionResultNode',
     'game/components/common/PositionComponent',
-], function (Ash, UIConstants, PlayerActionResultNode, PositionComponent) {
+    'game/components/player/BagComponent',
+], function (Ash, UIConstants, PlayerActionResultNode, PositionComponent, BagComponent) {
     var UIOutPopupInventorySystem = Ash.System.extend({
 
         uiFunctions: null,
@@ -41,10 +42,12 @@ define([
             $("#resultlist-inventorymanagement-found ul").empty();
             $("#resultlist-inventorymanagement-kept ul").empty();
             
+            var selectedCapacity = 0;
             var sys = this;
             
 			var inCamp = this.playerActionResultNodes.head.entity.get(PositionComponent).inCamp;
             var resultNode = this.playerActionResultNodes.head;
+            var bagComponent = this.playerActionResultNodes.head.entity.get(BagComponent);
             var rewards = resultNode.result.pendingResultVO;
             var playerItems = resultNode.items.getUnique(inCamp);
             var li;
@@ -122,6 +125,7 @@ define([
                 li = UIConstants.getItemSlot(item, 1);
                 if (rewards.selectedItems.indexOf(item) < 0) {
                     $("#resultlist-inventorymanagement-found ul").append(li);
+                    selectedCapacity++;
                 } else {
                     $("#resultlist-inventorymanagement-kept ul").append(li);
                 }
@@ -135,6 +139,7 @@ define([
                     $("#resultlist-inventorymanagement-kept ul").append(li);
                 } else {
                     $("#resultlist-inventorymanagement-found ul").append(li);
+                    selectedCapacity++;
                 }
             }
             
@@ -158,6 +163,8 @@ define([
                         UIConstants.getResourceLi(name, amountFound)
                     );
                 }
+                
+                selectedCapacity += amountKept;
             }
             
             $("#resultlist-inventorymanagement-kept li").click(onLiClicked);
@@ -170,6 +177,8 @@ define([
             
             this.uiFunctions.generateCallouts("#resultlist-inventorymanagement-kept");
             this.uiFunctions.generateCallouts("#resultlist-inventorymanagement-found");
+            
+            bagComponent.selectedCapacity = selectedCapacity;
             
             this.pendingListUpdate = false;
         },

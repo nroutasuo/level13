@@ -48,6 +48,7 @@ function (Ash, UIConstants) {
             // buttons and callbacks
             $("#common-popup .buttonbox").empty();
             $("#common-popup .buttonbox").append("<button id='info-ok' class='action'>" + okButtonLabel + "</button>");
+            if (hasResult) $("#info-ok").attr("action", "accept_inventory");
             $("#info-ok").click(function (e) {
                 popUpManager.closePopup("common-popup");
                 if (okCallback) okCallback();
