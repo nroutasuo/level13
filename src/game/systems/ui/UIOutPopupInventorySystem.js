@@ -170,7 +170,7 @@ define([
             $("#resultlist-inventorymanagement-kept li").click(onLiClicked);
             $("#resultlist-inventorymanagement-found li").click(onLiClicked);
             
-            var emptySlots = 3;
+            var emptySlots = bagComponent.totalCapacity - selectedCapacity;
 			for (var j = 0; j < emptySlots; j++) {
                 $("#resultlist-inventorymanagement-kept ul").append(UIConstants.getItemSlot(null));
             }
