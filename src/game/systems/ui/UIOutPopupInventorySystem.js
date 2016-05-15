@@ -10,33 +10,33 @@ define([
         uiFunctions: null,
         playerActionResultNodes: null,
     
-		constructor: function (uiFunctions) {
+        constructor: function (uiFunctions) {
             this.uiFunctions = uiFunctions;
 			return this;
-		},
+        },
 
-		addToEngine: function (engine) {
+        addToEngine: function (engine) {
             this.playerActionResultNodes = engine.getNodeList(PlayerActionResultNode);
             this.playerActionResultNodes.nodeAdded.add(this.onNodeAdded, this);
-		},
+        },
 		
-		removeFromEngine: function (engine) {
+        removeFromEngine: function (engine) {
             this.playerActionResultNodes.nodeAdded.remove(this.onNodeAdded, this);
             this.playerActionResultNodes = null;
-		},
+        },
         
         onNodeAdded: function (node) {
             this.pendingListUpdate = true;
         },
 
-		update: function (time) {
+        update: function (time) {
             if (this.pendingListUpdate) {
                 this.updateLists();
             }
             
-			if (!($("#common-popup").is(":visible")) || $("#common-popup").data("fading") == true) return;
-			if (!($("#info-results").is(":visible"))) return;
-		},
+            if (!($("#common-popup").is(":visible")) || $("#common-popup").data("fading") == true) return;
+            if (!($("#info-results").is(":visible"))) return;
+        },
         
         updateLists: function () {
             $("#resultlist-inventorymanagement-found ul").empty();
@@ -45,7 +45,7 @@ define([
             var selectedCapacity = 0;
             var sys = this;
             
-			var inCamp = this.playerActionResultNodes.head.entity.get(PositionComponent).inCamp;
+            var inCamp = this.playerActionResultNodes.head.entity.get(PositionComponent).inCamp;
             var resultNode = this.playerActionResultNodes.head;
             var bagComponent = this.playerActionResultNodes.head.entity.get(BagComponent);
             var rewards = resultNode.result.pendingResultVO;
@@ -82,13 +82,11 @@ define([
                 var isSelected = $(this).parents("#resultlist-inventorymanagement-kept").length > 0;
                 
                 if (resourceName) {
-                    console.log(isSelected + " " + resourceName);
                     if (isSelected) {
                         rewards.discardedResources.addResource(resourceName, 1);
                     } else {
                         rewards.selectedResources.addResource(resourceName, 1);
                     }
-                    console.log(rewards);
                 } else if (itemId) {
                     var item = findItemById(itemId);
                     
@@ -98,8 +96,6 @@ define([
                     }
                     
                     var isInRewards = rewards.gainedItems.indexOf(item) >= 0;
-                    
-                    console.log(isSelected + " " + isInRewards + " " + itemId);
                     
                     if (isSelected) {
                         if (isInRewards)
@@ -112,8 +108,6 @@ define([
                         else
                             rewards.discardedItems.splice(rewards.discardedItems.indexOf(item));
                     }
-                    
-                    console.log(rewards);
                 }
                 
                 sys.updateLists();
@@ -151,7 +145,8 @@ define([
 				var amountGained = rewards.gainedResources.getResource(name);
                 var amountDiscarded = rewards.discardedResources.getResource(name);
                 var amountSelected = rewards.selectedResources.getResource(name);
-                var amountKept = amountOriginal - amountDiscarded + amountSelected;
+                var amountLost = rewards.lostResources.getResource(name);
+                var amountKept = amountOriginal - amountDiscarded - amountLost + amountSelected;
                 var amountFound = amountGained + amountDiscarded - amountSelected;
                 if (amountKept >= 1) {
                     $("#resultlist-inventorymanagement-kept ul").append(

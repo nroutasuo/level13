@@ -1215,6 +1215,12 @@ p.notification {
     margin: 5px 0px;
 }
 
+.inventorybox ul {
+    width: 560px; /* 12 * 46px (li width) + padding */
+    padding: 0px;
+    margin: 0px;
+}
+
 .full-width {
 	width: 100%;
 }

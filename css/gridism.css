@@ -140,6 +140,10 @@
 	}
     
 	div.popup { max-width: 80% !important }
+
+    .inventorybox ul {
+        width: 370px !important; /* 8 * 46px (li width) + padding */
+    }
 }
 
 @media screen and (max-width: 568px) {
@@ -185,6 +189,10 @@
 	max-width: 100% !important;
 	margin: 0px !important;
   }
+
+    .inventorybox ul {
+        width: 100% !important; /* 8 * 46px (li width) + padding */
+    }
   
 }
 
