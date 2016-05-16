@@ -18,6 +18,16 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
 		
 		sectorDescriptions: {
 		},
+        
+        getActionName: function (baseActionID) {
+            switch (baseActionID) {
+                case "scout_locale_i":
+                case "scout_locale_u":
+                    return "Scout";
+                default:
+                    return baseActionID;
+            }
+        },
 		
 		getSectorDescription: function (hasLight, sunlit, sectorType, density, repair) {
 			if (!hasLight) {

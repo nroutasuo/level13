@@ -185,11 +185,15 @@ define([
 		fadeOut: function (msg, msgLog, handleResults, sector, loseInventoryProbability, injuryProbability) {
 			if (handleResults) {
 				var resultVO = this.playerActionResultsHelper.getFadeOutResults(loseInventoryProbability, injuryProbability);
-				this.playerActionResultsHelper.collectRewards(resultVO);
-				if (msg) this.uiFunctions.showInfoPopup("Exhaustion", msg, "Continue", resultVO);
-			}
-			
-            this.teleport(msgLog, sector);
+                this.playerResourcesNodes.head.entity.add(new PlayerActionResultComponent(rewards));
+                var resultPopUpCallback = function () {
+                    this.playerActionResultsHelper.collectRewards(resultVO);  
+                    this.teleport(msgLog, sector);                  
+                }
+				if (msg) this.uiFunctions.showResultPopup("Exhaustion", msg, resultVO, resultPopUpCallback);
+			} else {
+                this.teleport(msgLog, sector);
+            }
 		},
 		
 		teleport: function (msgLog, sector) {

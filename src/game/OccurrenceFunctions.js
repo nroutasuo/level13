@@ -7,14 +7,12 @@ define(['ash',
     'game/components/common/PositionComponent',
     'game/components/common/ResourcesComponent',
     'game/components/sector/events/RaidComponent',
-    'game/components/sector/SectorFeaturesComponent',
-    'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/improvements/WorkshopComponent',
     'game/components/common/CampComponent',
 ], function (Ash, OccurrenceConstants, EnemyConstants, TextConstants, CampNode,
     PositionComponent, ResourcesComponent, RaidComponent,
-    SectorFeaturesComponent, SectorControlComponent, SectorImprovementsComponent, WorkshopComponent, CampComponent) {
+    SectorImprovementsComponent, WorkshopComponent, CampComponent) {
     
     var OccurrenceFunctions = Ash.System.extend({
         
@@ -45,10 +43,6 @@ define(['ash',
 		},
 	
 		onScoutSector: function (sectorEntity) {
-		},
-	
-		onScoutSectorWeakling: function (sectorEntity) {
-			this.showLevelStrengthWarning(sectorEntity);
 		},
 		
 		onGainSectorControl: function (sectorEntity) {

@@ -129,6 +129,7 @@ define([
             
             // Determine rewards and penalties
             this.fightNodes.head.fight.resultVO = this.playerActionResultsHelper.getFightRewards(won);
+            this.fightNodes.head.entity.add(new PlayerActionResultComponent(this.fightNodes.head.fight.resultVO));
 			this.playerActionResultsHelper.collectRewards(this.fightNodes.head.fight.resultVO);
         },
         

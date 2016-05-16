@@ -743,7 +743,7 @@ define([
         },
 		
         getImprovementNameForAction: function(action, disableWarnings) {
-            switch(action) {
+            switch (action) {
                 case "build_out_collector_food": return improvementNames.collector_food;
                 case "build_out_collector_water": return improvementNames.collector_water;
                 case "build_in_house": return improvementNames.house;

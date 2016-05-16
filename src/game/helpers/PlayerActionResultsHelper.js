@@ -18,7 +18,7 @@ define([
     'game/components/common/LogMessagesComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorStatusComponent',
-    'game/components/player/BagComponent',
+    'game/components/sector/SectorLocalesComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
     'game/vos/ResultVO',
@@ -42,7 +42,7 @@ define([
     LogMessagesComponent,
     SectorFeaturesComponent,
     SectorStatusComponent,
-    BagComponent,
+    SectorLocalesComponent,
     ItemsComponent,
     PerksComponent,
     ResultVO,
@@ -51,6 +51,7 @@ define([
     var PlayerActionResultsHelper = Ash.Class.extend({
 
         gameState: null,
+        playerActionsHelper: null,
         resourcesHelper: null,
         levelHelper: null,
 
@@ -66,9 +67,10 @@ define([
             meet: { bag: 0.1, shades: 0.2, light: 0.2, shoes: 0.3, weapon: 0.5, clothing: 0.7, exploration: 0.8 }
         },
 
-        constructor: function (engine, gameState, resourcesHelper, levelHelper) {
+        constructor: function (engine, gameState, playerActionsHelper, resourcesHelper, levelHelper) {
             this.engine = engine;
             this.gameState = gameState;
+            this.playerActionsHelper = playerActionsHelper;
             this.resourcesHelper = resourcesHelper;
             this.levelHelper = levelHelper;
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
@@ -76,6 +78,28 @@ define([
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
             this.nearestCampNodes = engine.getNodeList(NearestCampNode);
+        },
+        
+        getResultVOByAction: function (action) {
+            var baseActionID = this.playerActionsHelper.getBaseActionID(action);
+            switch (baseActionID) {
+                case "scavenge":
+                    return this.getScavengeRewards();                    
+                case "scout":
+                    return this.getScoutRewards();
+                case "scout_locale_i":
+                case "scout_locale_u":
+                    // TODO global helper to get locale vo from action?
+					var localei = parseInt(action.split("_")[3]);
+                    var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
+                    var localeVO = sectorLocalesComponent.locales[localei];
+                    return this.getScoutLocaleRewards(localeVO);
+                case "use_spring":
+                    return this.getUseSpringRewards();
+                default:
+                    if (GameConstants.isDebugOutputEnabled) console.log("WARN: Unknown action: " + baseActionID + ". Can't create result vo.");
+                    break;
+            }
         },
 
         getScavengeRewards: function () {
@@ -89,35 +113,6 @@ define([
 
             rewards.gainedResources = this.getRewardResources(1, efficiency, sectorResources);
             rewards.gainedItems = this.getRewardItems(0.007, 0.05, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
-
-            /*
-            rewards.gainedItems = this.getRewardItems(0.7, 0.1, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
-            rewards.gainedFollowers = this.getRewardFollowers(0.2);
-            rewards.gainedBlueprintPiece = this.getResultBlueprint(null);
-            rewards.gainedEvidence = Math.floor(Math.random(2));
-            rewards.gainedReputation = Math.floor(Math.random(2));
-            rewards.gainedRumours = Math.floor(Math.random(2));
-            rewards.gainedPopulation = Math.floor(Math.random(2));
-            rewards.gainedInjuries = this.getResultInjuries(0.1);
-            rewards.lostResources = new ResourcesVO();
-            rewards.lostResources.metal = Math.random() > 0.8 ? 2 : 0;
-            var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAll(false);
-            var itemLoseProbability;
-            for (var i = 0; i < playerItems.length; i++) {
-                    itemLoseProbability = 0;
-                    switch (playerItems[i].type) {
-                            case ItemConstants.itemTypes.clothing:
-                            case ItemConstants.itemTypes.shoes:
-                            case ItemConstants.itemTypes.light:
-                            case ItemConstants.itemTypes.shades:
-                                    itemLoseProbability = 0.1;
-                                    break;
-                    }
-                    if (itemLoseProbability > Math.random()) {
-                            rewards.lostItems.push(playerItems[i].clone());
-                    }
-            }
-            */
 
             // should never be needed, but as a fallback
             var unscoutedLocales = this.levelHelper.getLevelLocales(playerPos.level, false).length;

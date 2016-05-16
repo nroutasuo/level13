@@ -224,7 +224,7 @@ define(['ash',
         },
         
         moveResFromCampToBag: function (resourcesVO) {
-            var playerLevelCamp = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity : null;
+            var playerLevelCamp = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.entity : null;
             if (playerLevelCamp) {
                 var playerResources = this.playerResourcesNodes.head.resources.resources;
                 var campResourcesSource = this.resourcesHelper.getCurrentStorage().resources;
@@ -233,7 +233,7 @@ define(['ash',
         },
         
         moveResFromBagToCamp: function () {
-            var playerLevelCamp = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity : null;
+            var playerLevelCamp = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.entity : null;
             var playerResources = this.playerResourcesNodes.head.resources.resources;
             var campResourcesSource = playerLevelCamp.get(ResourcesComponent).resources;
             this.moveResourcesFromVOToVO( playerResources, playerResources, campResourcesSource);
@@ -331,82 +331,46 @@ define(['ash',
             if (this.playerActionsHelper.checkAvailability("scavenge", true)) {
                 this.playerActionsHelper.deductCosts("scavenge");
                 this.gameState.unlockedFeatures.scavenge = true;
-				
-				var playerActionFunctions = this;
+					
+                var logMsg = "";
+                var playerMaxVision = this.playerStatsNodes.head.vision.maximum;				
                 var sector = this.playerLocationNodes.head.entity;
                 var sunlit = sector.get(SectorFeaturesComponent).sunlit;
-					
-                var playerMaxVision = playerActionFunctions.playerStatsNodes.head.vision.maximum;
-                var logMsg = "";
-                var detailedMessage = "";
                 if (playerMaxVision <= PlayerStatConstants.VISION_BASE) {
                     if (sunlit) logMsg = "Rummaged blindly for loot. ";
                     else logMsg = "Rummaged in the dark. ";
                 } else {
                     logMsg = "Went scavenging. ";
                 }
-                detailedMessage = logMsg;
-                    
-                this.fightHelper.handleRandomEncounter("scavenge", function () {
-					var rewards = playerActionFunctions.playerActionResultsHelper.getScavengeRewards();
-                    playerActionFunctions.playerStatsNodes.head.entity.add(new PlayerActionResultComponent(rewards));
-                    
-                    var resultPopupCallback = function () {
-                        playerActionFunctions.playerActionResultsHelper.collectRewards(rewards);
-                        playerActionFunctions.uiFunctions.completeAction("scavenge");
-                        playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCAVENGE, logMsg);
-                        playerActionFunctions.playerActionResultsHelper.logSpecialFinds(rewards);
-                        playerActionFunctions.forceResourceBarUpdate();
-                        playerActionFunctions.forceTabUpdate();
-                    };
-                    
-                    playerActionFunctions.uiFunctions.showResultPopup("Scavenge", detailedMessage, rewards, resultPopupCallback);
-				}, function () {
-                    playerActionFunctions.uiFunctions.completeAction("scavenge");
-                    playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCAVENGE, logMsg + "Fled empty-handed.");
-                }, function () {
-                    playerActionFunctions.uiFunctions.completeAction("scavenge");
-                    playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCAVENGE, logMsg + "Got into a fight and was defeated.");
-                });
+                
+                var logMsgSuccess = logMsg;
+                var logMsgFlee = logMsg + "Fled empty-handed.";
+                var logMsgDefeat = logMsg + "Got into a fight and was defeated.";
+                this.handleOutActionResults("scavenge", LogConstants.MSG_ID_SCAVENGE, logMsgSuccess, logMsgFlee, logMsgDefeat);
             }
         },
         
         scout: function () {
             if (this.playerActionsHelper.checkAvailability("scout", true)) {
-                var sector = this.playerLocationNodes.head.entity;
-				
-                var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-                var fightStrength = FightConstants.getPlayerStrength(this.playerStatsNodes.head.stamina, itemsComponent);
-                var positionComponent = sector.get(PositionComponent);
-                var levelOrdinal = this.gameState.getLevelOrdinal(positionComponent.level);
-                var totalLevels = this.gameState.getTotalLevels();
-                var groundLevelOrdinal = this.gameState.getGroundLevelOrdinal();
-                if (fightStrength < EnemyConstants.getRequiredStrength(levelOrdinal, groundLevelOrdinal, totalLevels)) {
-                    this.occurrenceFunctions.onScoutSectorWeakling(sector);
-                    return;
-                }
-                
+                var sector = this.playerLocationNodes.head.entity;                
                 var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
                 if (!sectorStatus.scouted) {
                     this.playerActionsHelper.deductCosts("scout");
                     sectorStatus.scouted = true;
                     this.gameState.unlockedFeatures.evidence = true;
-					
-                    // TODO add details to message base depending on the location
-					var rewards = this.playerActionResultsHelper.getScoutRewards();
-                    var msgBase = "Scouted the area.";
-					this.playerActionResultsHelper.collectRewards(rewards);
                     
-                    // TODO signal to force out map update
-					this.addLogMessage(LogConstants.MSG_ID_SCOUT, msgBase);
-					this.playerActionResultsHelper.logSpecialFinds(rewards);
-                    this.uiFunctions.showInfoPopup("Scout", msgBase, "Continue", rewards);
-                    this.forceResourceBarUpdate();
-                    this.occurrenceFunctions.onScoutSector(sector);
-                    this.save();
-                }
-                
-                this.engine.getSystem(UIOutLevelSystem).rebuildVis();
+                    // TODO add details to message base depending on the location
+                    var logMsg = "Scouted the area.";
+                    
+                    var playerActionFunctions = this;
+                    var successCallback = function () {
+                        playerActionFunctions.occurrenceFunctions.onScoutSector(sector);
+                        playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
+                        playerActionFunctions.save();
+                    };
+                    
+                    this.handleOutActionResults("scout", LogConstants.MSG_ID_SCOUT, logMsg, logMsg, logMsg, successCallback);
+                }                
             }
         },
         
@@ -418,33 +382,23 @@ define(['ash',
             var action = "scout_locale_" + localeVO.getCategory() + "_" + i;
             if (this.playerActionsHelper.checkAvailability(action, true)) {
                 this.playerActionsHelper.deductCosts(action);
-				var playerActionFunctions = this;
                 
                 // TODO add more interesting log messages
                 var localeName = TextConstants.getLocaleName(localeVO, sectorFeaturesComponent.stateOfRepair);
                 localeName = localeName.split(" ")[localeName.split(" ").length - 1];
                 var baseMsg = "Scouted the " + localeName +  ". ";
+                var logMsgSuccess = baseMsg;
+                var logMsgFlee = baseMsg + " Got surprised and fled.";
+                var logMsgDefeat = baseMsg + " Got surprised and beaten.";
                 
-                this.fightHelper.handleRandomEncounter(action, function () {
+                var playerActionFunctions = this;
+                var successCallback = function () {
                     sectorStatus.localesScouted[i] = true;
-                    var rewards = playerActionFunctions.playerActionResultsHelper.getScoutLocaleRewards(localeVO);
-                    playerActionFunctions.playerActionResultsHelper.collectRewards(rewards);
-                    playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCOUT_LOCALE, baseMsg);
-					playerActionFunctions.playerActionResultsHelper.logSpecialFinds(rewards);
-                    playerActionFunctions.forceResourceBarUpdate();
-                    playerActionFunctions.uiFunctions.showInfoPopup("Scout", baseMsg, "Continue", rewards);
-                    playerActionFunctions.uiFunctions.completeAction(action);
                     playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
                     playerActionFunctions.save();
-                }, function () {
-                    playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCOUT_LOCALE, baseMsg + " Got surprised and fled.");
-                    playerActionFunctions.uiFunctions.completeAction(action);
-                    playerActionFunctions.save();
-                }, function () {
-                    playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCOUT_LOCALE, baseMsg + " Got surprised and beaten.");
-                    playerActionFunctions.uiFunctions.completeAction(action);
-                    playerActionFunctions.save();
-                });
+                };
+                
+                this.handleOutActionResults(action, LogConstants.MSG_ID_SCOUT_LOCALE, logMsgSuccess, logMsgFlee, logMsgDefeat, successCallback);
             }
         },
         
@@ -452,30 +406,16 @@ define(['ash',
             if (this.playerActionsHelper.checkAvailability("use_spring", true)) {
                 this.playerActionsHelper.deductCosts("use_spring");
 				
-				var playerActionFunctions = this;
                 var sector = this.playerLocationNodes.head.entity;
                 var sectorFeatures = sector.get(SectorFeaturesComponent);
                 var springName = TextConstants.getSpringName(sectorFeatures);
                 
-                var okMessage = "Refilled water at the " + springName + ".";
-                var failMessage = "Approached the " + springName + ", but got attacked. ";
-                    
-                this.fightHelper.handleRandomEncounter("use_spring", function () {
-					var rewards = playerActionFunctions.playerActionResultsHelper.getUseSpringRewards();
-					playerActionFunctions.playerActionResultsHelper.collectRewards(rewards);
-                    playerActionFunctions.uiFunctions.completeAction("use_spring");
-					playerActionFunctions.addLogMessage(LogConstants.MSG_ID_USE_SPRING, okMessage);
-                    playerActionFunctions.uiFunctions.showInfoPopup(springName, okMessage, "Continue", rewards);
-					playerActionFunctions.playerActionResultsHelper.logSpecialFinds(rewards);
-					playerActionFunctions.forceResourceBarUpdate();
-					playerActionFunctions.forceTabUpdate();
-				}, function () {
-                    playerActionFunctions.uiFunctions.completeAction("scavenge");
-                    playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCAVENGE, failMessage + "Fled empty-handed.");
-                }, function () {
-                    playerActionFunctions.uiFunctions.completeAction("scavenge");
-                    playerActionFunctions.addLogMessage(LogConstants.MSG_ID_SCAVENGE, failMessage + "Lost the fight.");
-                });
+                var logMsgSuccess = "Refilled water at the " + springName + ".";
+                var logMsgFailBase = "Approached the " + springName + ", but got attacked. ";
+                var logMsgFlee = logMsgFailBase + "Fled empty-handed.";
+                var logMsgDefeat = logMsgFailBase + "Lost the fight.";
+                
+                this.handleOutActionResults("use_spring", LogConstants.MSG_ID_USE_SPRING, logMsgSuccess, logMsgFlee, logMsgDefeat);
             }
         },
 		
@@ -483,20 +423,46 @@ define(['ash',
 			var action = "clear_workshop";
             if (this.playerActionsHelper.checkAvailability(action, true)) {
                 this.playerActionsHelper.deductCosts(action);
-				var playerActionFunctions = this;
-				this.fightHelper.handleRandomEncounter(action, function () {
-					playerActionFunctions.addLogMessage(LogConstants.MSG_ID_WORKSHOP_CLEARED, "Workshop cleared. Workers can now use it.");
-                    playerActionFunctions.uiFunctions.completeAction(action);
+                
+                var logMsgSuccess = "Workshop cleared. Workers can now use it.";
+                var logMsgFlee = "";
+                var logMsgDefeat = "";
+                
+                var successCallback = function () {
                     playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
-				}, function () {
-					// fled
-                    playerActionFunctions.uiFunctions.completeAction(action);
-				}, function () {
-					// lost
-                    playerActionFunctions.uiFunctions.completeAction(action);
-				});
+                };
+                
+                this.handleOutActionResults(action, LogConstants.MSG_ID_WORKSHOP_CLEARED, logMsgSuccess, logMsgFlee, logMsgDefeat, successCallback);
 			}
 		},
+        
+        handleOutActionResults: function (action, logMsgId, logMsgSuccess, logMsgFlee, logMsgDefeat, successCallback) {
+            var playerActionFunctions = this;
+            var baseActionID = this.playerActionsHelper.getBaseActionID(action);
+            if (!logMsgSuccess) logMsgSuccess = action;
+            if (!logMsgFlee) logMsgFlee = logMsgSuccess;
+            if (!logMsgDefeat) logMsgDefeat = logMsgSuccess;
+            this.fightHelper.handleRandomEncounter(action, function () {
+                var rewards = playerActionFunctions.playerActionResultsHelper.getResultVOByAction(action);
+                playerActionFunctions.playerStatsNodes.head.entity.add(new PlayerActionResultComponent(rewards));
+                var resultPopupCallback = function () {
+                    playerActionFunctions.playerActionResultsHelper.collectRewards(rewards);
+                    playerActionFunctions.uiFunctions.completeAction(action);
+                    playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
+                    playerActionFunctions.playerActionResultsHelper.logSpecialFinds(rewards);
+                    playerActionFunctions.forceResourceBarUpdate();
+                    playerActionFunctions.forceTabUpdate();
+                    if (successCallback) successCallback();
+                };
+                playerActionFunctions.uiFunctions.showResultPopup(TextConstants.getActionName(baseActionID), logMsgSuccess, rewards, resultPopupCallback);
+            }, function () {
+                playerActionFunctions.uiFunctions.completeAction(action);
+                playerActionFunctions.addLogMessage(logMsgId, logMsgFlee);
+            }, function () {
+                playerActionFunctions.uiFunctions.completeAction(action);
+                playerActionFunctions.addLogMessage(logMsgId, logMsgDefeat);
+            });
+        },
         
         fightGang: function (direction) {
             var action = "fight_gang_" + direction;
@@ -1047,6 +1013,7 @@ define(['ash',
                     } else {
                         console.log("WARN: No deity.");
                     }
+                    break;
                 
                 case "vision":                    
                     this.playerStatsNodes.head.vision.value = parseInt(inputParts[1]);
@@ -1092,7 +1059,7 @@ define(['ash',
 							this.engine.updateComplete.remove(autoplayStep, this);
 							this.cheat("autoplay off");
 						}
-					}
+					};
 					this.cheat("autoplay true");
 					this.engine.updateComplete.add(autoplayStep, this);					
                     break;
