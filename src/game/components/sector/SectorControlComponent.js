@@ -55,6 +55,29 @@ define(['ash'], function (Ash) {
             }
         },
         
+        getSaveKey: function () {
+            return "SectorControl";
+        },
+        
+        getCustomSaveObject: function () {
+            var copy = {};
+            copy.cSE = this.currentSectorEnemies;
+            copy.cLE = this.currentLocaleEnemies;
+            return copy;
+        },
+        
+        customLoadFromSave: function (componentValues) {
+            if (componentValues.cSE)
+                this.currentSectorEnemies = componentValues.cSE;
+            else
+                this.currentSectorEnemies = componentValues.currentSectorEnemies;
+            
+            if (componentValues.cLE)
+                this.currentLocaleEnemies = componentValues.cLE;
+            else
+                this.currentLocaleEnemies = componentValues.currentLocaleEnemies;
+        }
+        
     });
 
     return SectorControlComponent;

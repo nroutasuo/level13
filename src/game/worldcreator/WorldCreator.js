@@ -50,6 +50,7 @@ define([
 		prepareWorldStructure: function (seed, topLevel, bottomLevel) {
 			var passageDownSectors = [];
 			var passageDownPositions = [];
+            this.totalSectors = 0;
 			for (var l = topLevel; l >= bottomLevel; l--) {
                 var isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, l);
                 var notCampableReason = isCampableLevel ? null : WorldCreatorHelper.getNotCampableReason(seed, l);
@@ -124,7 +125,7 @@ define([
 			
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World structure ready."
-				+ (GameConstants.isDebugOutputEnabled ? " (ground: " + bottomLevel + ", surface: " + topLevel + ")" : ""));
+				+ (GameConstants.isDebugOutputEnabled ? " (ground: " + bottomLevel + ", surface: " + topLevel + ", total sectors: " + this.totalSectors + ")" : ""));
             // WorldCreatorDebug.printWorld(this.world, [ "camp" ]);
 		},
 		
@@ -359,13 +360,14 @@ define([
 				}
 			}
 			
-			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
-				+ "World enemies ready.");
+			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "") + "World enemies ready.");
 			// WorldCreatorDebug.printWorld(this.world, [ "enemies.length" ]);
 		},
         
         generateSectors: function (seed, levelVO, passagesUpPositions) {
             var l = levelVO.level;
+            
+            // TODO calculate excursion length better with new exploration vars
             var excursionLength = ItemConstants.getBag(levelVO.levelOrdinal).bonus;
 			var lowerLevelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l - 1);
 			var lowerLowerLevelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l - 2);
@@ -380,6 +382,7 @@ define([
             
             var sectorsCentralMin = Math.floor(excursionLength * WorldCreatorConstants.EXCURSIONS_PER_LEVEL_MIN);
             var sectorsTotalMin = Math.floor(Math.max(sectorsCentralMin, WorldCreatorConstants.SECTORS_PER_LEVEL_MIN));
+            var sectorsTotalMax = WorldCreatorConstants.SECTORS_PER_LEVEL_MAX;
             var pathStartingPos;
             var pathLength;
             var pathDirection;
@@ -416,7 +419,7 @@ define([
             // fill in the rest by creating random paths
             var attempts = 0;
             var maxAttempts = 1000;
-            while ((sectorsCentral.length < sectorsCentralMin || sectorsAll.length < sectorsTotalMin) && attempts < maxAttempts) {
+            while ((sectorsCentral.length < sectorsCentralMin || sectorsAll.length < sectorsTotalMin) && attempts < maxAttempts && sectorsAll.length < sectorsTotalMax) {
                 attempts++;
                 var pathRandomSeed = sectorsAll.length * 4 + l * (sectorsCentral.length + 5) + attempts * 5;
                 var isStartingPath = l === 13 && (!levelVO.hasSector(0, 0) || !levelVO.hasSector(WorldCreatorConstants.FIRST_CAMP_X, WorldCreatorConstants.FIRST_CAMP_Y));
@@ -501,6 +504,7 @@ define([
         },
 		
 		createSector: function (levelVO, sectorPos, sectorsAll, sectorsCentral) {
+            this.totalSectors++;
 			var sectorVO = new SectorVO(sectorPos, levelVO.isCampable, levelVO.notCampableReason);
 			levelVO.addSector(sectorVO);
 			sectorsAll.push(sectorPos);

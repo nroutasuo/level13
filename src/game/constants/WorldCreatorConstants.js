@@ -24,6 +24,7 @@ define(['ash'], function (Ash) {
         LEVEL_NUMBER_MAX: 24,
         
         SECTORS_PER_LEVEL_MIN: 100,
+        SECTORS_PER_LEVEL_MAX: 500,
         EXCURSIONS_PER_LEVEL_MIN: 1.75,
         MAX_CENTRAL_AREA_SIZE: 50,
         DIAGONAL_PATH_PROBABILITY: 0.1,

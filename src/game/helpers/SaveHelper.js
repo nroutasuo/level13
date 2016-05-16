@@ -24,11 +24,26 @@ define([
 		
 		loadEntity: function (entitiesObject, saveKey, entity) {
 			var failedComponents = 0;
-			var entityComponents = entitiesObject[saveKey];
-			for(var componentKey in entityComponents) {
-				var component = entity.get(componentKey);
-				var componentValues = entityComponents[componentKey];
-				
+			var savedComponents = entitiesObject[saveKey];
+            var existingComponents = entity.getAll();
+			for (var componentKey in savedComponents) {
+                var componentDefinition = componentKey;
+                var component = entity.get(componentDefinition);
+                
+                // if the component has a shortened save key, we have to compare to existing components to find the instance
+                if (!component) {
+                    for (var i in existingComponents) {
+                        var existingComponent = existingComponents[i];
+                        if (existingComponent.getSaveKey) {
+                            if (existingComponent.getSaveKey() === componentKey) {
+                                component = existingComponent;
+                            }
+                        }
+                    }
+                }
+                
+                var componentValues = savedComponents[componentKey];
+                
 				if (!component) {
 					for(var i=0; i< this.optionalComponents.length; i++) {
 						var optionalComponent = this.optionalComponents[i];
@@ -72,7 +87,7 @@ define([
 					for(var valueKey2 in componentValues[valueKey]) {
 						var value2 = componentValues[valueKey][valueKey2];
 						// console.log(valueKey2 + ": " + value2)
-						if (value2 == null) {
+						if (value2 === null) {
 							continue;
 						} else if (typeof value2 != 'object') {
 							if (valueKey2 != "id") {

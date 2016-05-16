@@ -30,6 +30,27 @@ define(['ash'], function (Ash) {
                 if (this.localesScouted[i]) scouted++;
             }
             return scouted;
+        },
+        
+        getSaveKey: function () {
+            return "SectorStatus";
+        },
+        
+        getCustomSaveObject: function () {
+            var copy = {};
+            copy.dR = this.discoveredResources;
+            copy.s = this.scouted;
+            copy.lS = this.localesScouted;
+            return copy;
+        },
+        
+        customLoadFromSave: function (componentValues) {
+            this.discoveredResources = componentValues.dR ? componentValues.dR : componentValues.discoveredResources;
+            this.scouted = typeof componentValues.s !== "undefined" ? componentValues.s : componentValues.scouted;
+            if (componentValues.lS)
+                this.localesScouted = componentValues.lS;
+            else
+                this.localesScouted = componentValues.localesScouted;
         }
         
     });
