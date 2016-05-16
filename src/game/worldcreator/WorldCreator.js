@@ -148,7 +148,7 @@ define([
                         if (!sectorVO) continue;
                         
                         var distanceToCenter = PositionConstants.getDistanceTo(sectorVO.position, new PositionVO(l, 0, 0));
-                        var edgeSector = y === levelVO.minY || y === levelVO.maxY || x === levelVO.minX || x === levelVO.maxX;
+                        var edgeSector = (y === levelVO.minY || y === levelVO.maxY || x === levelVO.minX || x === levelVO.maxX) && Math.abs(x) > 1 && Math.abs(y) > 1;
                         var ceilingStateOfRepair = l === topLevel ? 0 : !ceilingSector ? sectorVO.stateOfRepair : ceilingSector.stateOfRepair;
                         var ceilingSunlit = l === topLevel || !ceilingSector ? true : ceilingSector.sunlit;
                     

@@ -35,9 +35,10 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
         
         // Secondary attributes
         canHaveCamp: function () {
+            var hasWater = (this.resourcesCollectable.water > 0 || this.resourcesScavengable.water > 0 || this.hasSpring);
             return  this.campable &&
                     this.buildingDensity > 0 && this.buildingDensity < 9 &&
-                    this.resourcesScavengable.water > 0 && this.resourcesScavengable.food > 0 && this.resourcesScavengable.fuel <= 0 &&
+                    hasWater && this.resourcesScavengable.food > 0 && this.resourcesScavengable.fuel <= 0 &&
                     this.stateOfRepair > 2;
         },
         
@@ -50,7 +51,7 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
         
             if (this.buildingDensity > 8)      densityAdj = "narrow";
             else if (this.buildingDensity < 1) densityAdj = "emty";
-            else                               densityAdj = ""
+            else                               densityAdj = "";
             
             if (hasLight) {
                 if (this.stateOfRepair > 7)      repairAdj = "quiet";
