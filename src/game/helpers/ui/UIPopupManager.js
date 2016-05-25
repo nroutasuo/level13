@@ -22,7 +22,7 @@ function (Ash, UIConstants) {
         
         showPopup: function (title, msg, okButtonLabel, showCancel, resultVO, okCallback, cancelCallback) {
             if (this.hasOpenPopup()) {
-                this.popupQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, showCancel: showCancel, resultVO: resultVO });
+                this.popupQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, showCancel: showCancel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback });
                 return;
             }
             
@@ -101,7 +101,7 @@ function (Ash, UIConstants) {
         showQueuedPopup: function () {
             if (this.popupQueue.length > 0) {
                 var queued = this.popupQueue.pop();
-                this.showPopup(queued.title, queued.msg, queued.okButtonLabel, queued.showCancel, queued.resultVO);
+                this.showPopup(queued.title, queued.msg, queued.okButtonLabel, queued.showCancel, queued.resultVO, queued.okCallback, queued.cancelCallback);
             }
         },
         

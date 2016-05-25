@@ -141,11 +141,11 @@ define([
 			this.resourcesHelper = new ResourcesHelper(this.engine);
 			this.playerActionsHelper = new PlayerActionsHelper(this.engine, this.gameState, this.resourcesHelper);
 			this.upgradeEffectsHelper = new UpgradeEffectsHelper(this.playerActionsHelper);
-			this.fightHelper = new FightHelper(this.engine, this.playerActionsHelper);
 			this.levelHelper = new LevelHelper(this.engine, this.gameState, this.playerActionsHelper);
 			this.sectorHelper = new SectorHelper(this.engine);
 			this.campHelper = new CampHelper(this.engine, this.upgradeEffectsHelper);
 			this.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine, this.gameState, this.playerActionsHelper, this.resourcesHelper, this.levelHelper);
+            this.fightHelper = new FightHelper(this.engine, this.playerActionsHelper, this.playerActionResultsHelper);
 			this.movementHelper = new MovementHelper(this.engine);
 			this.saveHelper = new SaveHelper();
             this.uiMapHelper = new UIMapHelper(this.engine, this.levelHelper, this.sectorHelper, this.movementHelper);

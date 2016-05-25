@@ -18,6 +18,7 @@ define([
 		
 		uiFunctions: null,
 		playerActionsHelper: null,
+        playerActionResultsHelper: null,
 		
 		playerLocationNodes: null,
 		
@@ -26,8 +27,9 @@ define([
 		pendingFleeCallback: null,
 		pendingLoseCallback: null,
 		
-		constructor: function (engine, playerActionsHelper) {
+		constructor: function (engine, playerActionsHelper, playerActionResultsHelper) {
 			this.playerActionsHelper = playerActionsHelper;
+            this.playerActionResultsHelper = playerActionResultsHelper;
 			this.engine = engine;
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 		},
@@ -82,14 +84,18 @@ define([
             var sector = this.playerLocationNodes.head.entity;
 			var encounterComponent = sector.get(FightEncounterComponent);
             if (sector.has(FightComponent)) {
-				if (sector.get(FightComponent).won) {
+                var fightComponent = sector.get(FightComponent);
+				if (fightComponent.won) {
 					sector.get(EnemiesComponent).resetNextEnemy();
 					this.pendingEnemies--;
 					if (this.pendingEnemies > 0) {
 						this.initFight(encounterComponent.context);
 						return;
 					}
-					if (this.pendingWinCallback) this.pendingWinCallback();
+					if (this.pendingWinCallback) {
+                        this.playerActionResultsHelper.collectRewards(fightComponent.resultVO);
+                        this.pendingWinCallback();
+                    }
 				} else {
 					if (this.pendingLoseCallback) this.pendingLoseCallback();
 					this.engine.getSystem(FaintingSystem).fadeOutToLastVisitedCamp(false, false);

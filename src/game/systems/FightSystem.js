@@ -13,12 +13,12 @@ define([
     'game/components/sector/EnemiesComponent',
     'game/components/player/StaminaComponent',
     'game/components/player/ItemsComponent',
-    'game/components/player/PerksComponent',
+    'game/components/player/PlayerActionResultComponent',
 ], function (Ash, FightConstants, PositionConstants, EnemyConstants,
     FightNode, PlayerStatsNode,
     PositionComponent,
     FightComponent, FightEncounterComponent, SectorControlComponent, EnemiesComponent,
-    StaminaComponent, ItemsComponent, PerksComponent) {
+    StaminaComponent, ItemsComponent, PlayerActionResultComponent) {
 	
     var FightSystem = Ash.System.extend({
         
@@ -120,17 +120,8 @@ define([
         },
         
         addFightRewardsAndPenalties: function (won, cleared, enemy) {
-            var playerItems = this.playerStatsNodes.head.entity.get(ItemsComponent);
-            var positionComponent = this.fightNodes.head.entity.get(PositionComponent);
-            var levelOrdinal = this.gameState.getLevelOrdinal(positionComponent.level);
-			var groundLevelOrdinal = this.gameState.getGroundLevelOrdinal();
-			var totalLevels = this.gameState.getTotalLevels();
-            var enemyDifficulty = EnemyConstants.getEnemyDifficultyLevel(enemy, groundLevelOrdinal, totalLevels);
-            
-            // Determine rewards and penalties
             this.fightNodes.head.fight.resultVO = this.playerActionResultsHelper.getFightRewards(won);
-            this.fightNodes.head.entity.add(new PlayerActionResultComponent(this.fightNodes.head.fight.resultVO));
-			this.playerActionResultsHelper.collectRewards(this.fightNodes.head.fight.resultVO);
+            this.playerStatsNodes.head.entity.add(new PlayerActionResultComponent(this.fightNodes.head.fight.resultVO));
         },
         
     });

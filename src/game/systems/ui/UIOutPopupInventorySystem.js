@@ -34,8 +34,7 @@ define([
                 this.updateLists();
             }
             
-            if (!($("#common-popup").is(":visible")) || $("#common-popup").data("fading") == true) return;
-            if (!($("#info-results").is(":visible"))) return;
+            if (!($(".popup").is(":visible")) || $(".popup").data("fading") == true) return;
         },
         
         updateLists: function () {

@@ -1,6 +1,5 @@
 define([
     'ash',
-    'game/constants/UIConstants',
     'game/constants/FightConstants',
     'game/constants/TextConstants',
     'game/nodes/PlayerLocationNode',
@@ -11,7 +10,7 @@ define([
     'game/components/sector/FightEncounterComponent',
     'game/components/sector/EnemiesComponent',
     'game/components/sector/SectorControlComponent',
-], function (Ash, UIConstants, FightConstants, TextConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightComponent, FightEncounterComponent, EnemiesComponent, SectorControlComponent) {
+], function (Ash, FightConstants, TextConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightComponent, FightEncounterComponent, EnemiesComponent, SectorControlComponent) {
     var UIOutFightSystem = Ash.System.extend({
 	
 		uiFunctions: null,
@@ -46,13 +45,9 @@ define([
         update: function (time) {
 			if (!($("#fight-popup").is(":visible")) || $("#fight-popup").data("fading") == true) return;
 			
-			var sector = this.playerLocationNodes.head.entity;
-			
-			var fightActive = this.fightNodes.head != null && this.fightNodes.head.fight.finished !== true;
-			var fightFinished = this.fightNodes.head != null && this.fightNodes.head.fight.finished === true;
+			var fightActive = this.fightNodes.head !== null && this.fightNodes.head.fight.finished !== true;
+			var fightFinished = this.fightNodes.head !== null && this.fightNodes.head.fight.finished === true;
 			var fightWon = fightFinished && this.fightNodes.head.fight.won;
-            
-            console.log(this.fightNodes.head ? this.fightNodes.head.fight.finished : "null");
 			
 			$("#out-action-fight-cancel").toggle(!fightActive && !fightFinished);
 			$("#out-action-fight-confirm").toggle(!fightActive && !fightFinished);
