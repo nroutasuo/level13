@@ -72,10 +72,13 @@ define(['ash'], function (Ash) {
             else
                 this.currentSectorEnemies = componentValues.currentSectorEnemies;
             
+            var localeEnemies = componentValues.currentLocaleEnemies;
             if (componentValues.cLE)
-                this.currentLocaleEnemies = componentValues.cLE;
-            else
-                this.currentLocaleEnemies = componentValues.currentLocaleEnemies;
+                localeEnemies = componentValues.cLE;
+            
+            for (var locale in localeEnemies) {
+                this.currentLocaleEnemies[locale] = localeEnemies[locale];
+            }
         }
         
     });

@@ -96,6 +96,8 @@ define([
                     return this.getScoutLocaleRewards(localeVO);
                 case "use_spring":
                     return this.getUseSpringRewards();
+                case "clear_workshop":
+                    return this.getClearWorkshopRewards();
                 default:
                     if (GameConstants.isDebugOutputEnabled) console.log("WARN: Unknown action: " + baseActionID + ". Can't create result vo.");
                     break;
@@ -182,6 +184,11 @@ define([
 			rewards.gainedResources.water = playerBag - playerWater;
 			return rewards;
 		},
+        
+        getClearWorkshopRewards: function () {
+            var rewards = new ResultVO();
+            return rewards;
+        },
 		
 		getFightRewards: function (won) {
 			var rewards = new ResultVO();
