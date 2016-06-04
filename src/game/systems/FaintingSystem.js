@@ -16,6 +16,7 @@ define([
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorStatusComponent',
 	'game/components/player/DeityComponent',
+	'game/components/player/PlayerActionResultComponent',
     'game/components/common/LogMessagesComponent',
     'game/vos/ResultVO',
 ], function (Ash,
@@ -34,6 +35,7 @@ define([
 	SectorFeaturesComponent,
 	SectorStatusComponent,
 	DeityComponent,
+    PlayerActionResultComponent,
 	LogMessagesComponent,
     ResultVO
 ) {
@@ -185,11 +187,12 @@ define([
 		fadeOut: function (msg, msgLog, handleResults, sector, loseInventoryProbability, injuryProbability) {
 			if (handleResults) {
 				var resultVO = this.playerActionResultsHelper.getFadeOutResults(loseInventoryProbability, injuryProbability);
-                this.playerResourcesNodes.head.entity.add(new PlayerActionResultComponent(rewards));
+                var sys = this;
+                this.playerResourcesNodes.head.entity.add(new PlayerActionResultComponent(resultVO));
                 var resultPopUpCallback = function () {
-                    this.playerActionResultsHelper.collectRewards(resultVO);  
-                    this.teleport(msgLog, sector);                  
-                }
+                    sys.playerActionResultsHelper.collectRewards(resultVO);  
+                    sys.teleport(msgLog, sector);                  
+                };
 				if (msg) this.uiFunctions.showResultPopup("Exhaustion", msg, resultVO, resultPopUpCallback);
 			} else {
                 this.teleport(msgLog, sector);

@@ -10,15 +10,13 @@ define([
     'game/components/sector/FightComponent',
     'game/components/sector/FightEncounterComponent',
     'game/components/sector/SectorControlComponent',
-    'game/components/sector/EnemiesComponent',
-    'game/components/player/StaminaComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PlayerActionResultComponent',
 ], function (Ash, FightConstants, PositionConstants, EnemyConstants,
     FightNode, PlayerStatsNode,
     PositionComponent,
-    FightComponent, FightEncounterComponent, SectorControlComponent, EnemiesComponent,
-    StaminaComponent, ItemsComponent, PlayerActionResultComponent) {
+    FightComponent, FightEncounterComponent, SectorControlComponent,
+    ItemsComponent, PlayerActionResultComponent) {
 	
     var FightSystem = Ash.System.extend({
         
