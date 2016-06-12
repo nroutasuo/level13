@@ -93,7 +93,7 @@ define([
 						return;
 					}
 					if (this.pendingWinCallback) {
-                        this.playerActionResultsHelper.collectRewards(fightComponent.resultVO);
+                        this.playerActionResultsHelper.collectRewards(false, fightComponent.resultVO);
                         this.pendingWinCallback();
                     }
 				} else {

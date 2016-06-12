@@ -445,8 +445,8 @@ define(['ash',
             this.fightHelper.handleRandomEncounter(action, function () {
                 var rewards = playerActionFunctions.playerActionResultsHelper.getResultVOByAction(action);
                 playerActionFunctions.playerStatsNodes.head.entity.add(new PlayerActionResultComponent(rewards));
-                var resultPopupCallback = function () {
-                    playerActionFunctions.playerActionResultsHelper.collectRewards(rewards);
+                var resultPopupCallback = function (isTakeAll) {
+                    playerActionFunctions.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
                     playerActionFunctions.uiFunctions.completeAction(action);
                     playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
                     playerActionFunctions.playerActionResultsHelper.logSpecialFinds(rewards);

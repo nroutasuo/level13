@@ -332,12 +332,12 @@ define([
 				improvements.getCount(improvementNames.passageDownElevator) +
 				improvements.getCount(improvementNames.passageDownHole) > 0;
 			if (isScouted && passagesComponent.passageUp) {
-				description += "There is a passage up here (" + passagesComponent.passageUp.name.toLowerCase() + ")";
+				description += "There is a <span class='text-highlight-functionality'>passage up</span> here (" + passagesComponent.passageUp.name.toLowerCase() + ")";
 				if (!passageUpBuilt) description += ", but it requires repair";
 				description += ". ";
 			}
 			if (isScouted && passagesComponent.passageDown) {
-				description += "There is a passage down here (" + passagesComponent.passageDown.name.toLowerCase() + ")";
+				description += "There is a <span class='text-highlight-functionality'>passage down</span> here (" + passagesComponent.passageDown.name.toLowerCase() + ")";
 				if (!passageDownBuilt) description += ", but it requires repair";
 				description += ". ";
 			}

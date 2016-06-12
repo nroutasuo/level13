@@ -248,9 +248,16 @@ define([
             return resultVO;
         },
 
-		collectRewards: function (rewards) {
+		collectRewards: function (isTakeAll, rewards) {
 			var currentStorage = this.resourcesHelper.getCurrentStorage();
 			var playerPos = this.playerLocationNodes.head.position;
+            
+            if (isTakeAll) {
+                rewards.selectedItems = rewards.gainedItems;
+                rewards.selectedResources = rewards.gainedResources;
+                rewards.discardedItems = [];
+                rewards.discardedResources = null;
+            }
 			
 			currentStorage.addResources(rewards.selectedResources);
 			currentStorage.substractResources(rewards.discardedResources);

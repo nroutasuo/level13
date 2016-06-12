@@ -1,10 +1,11 @@
 define([
     'ash',
     'game/constants/UIConstants',
+    'game/constants/ItemConstants',
     'game/nodes/player/PlayerActionResultNode',
     'game/components/common/PositionComponent',
     'game/components/player/BagComponent',
-], function (Ash, UIConstants, PlayerActionResultNode, PositionComponent, BagComponent) {
+], function (Ash, UIConstants, ItemConstants, PlayerActionResultNode, PositionComponent, BagComponent) {
     var UIOutPopupInventorySystem = Ash.System.extend({
 
         uiFunctions: null,
@@ -41,15 +42,12 @@ define([
             $("#resultlist-inventorymanagement-found ul").empty();
             $("#resultlist-inventorymanagement-kept ul").empty();
             
-            var selectedCapacity = 0;
             var sys = this;
             
             var inCamp = this.playerActionResultNodes.head.entity.get(PositionComponent).inCamp;
             var resultNode = this.playerActionResultNodes.head;
-            var bagComponent = this.playerActionResultNodes.head.entity.get(BagComponent);
             var rewards = resultNode.result.pendingResultVO;
             
-            var playerUniqueItems = resultNode.items.getUnique(inCamp);
             var playerAllItems = resultNode.items.getAll(inCamp);
             
             var findItemById = function (itemID, itemList, notInItemList) {
@@ -117,23 +115,45 @@ define([
                 sys.updateLists();
             };
             
-            selectedCapacity += this.addItemsToLists(rewards, playerAllItems);
-            selectedCapacity += this.addResourcesToLists(rewards, resultNode);
+            this.addItemsToLists(rewards, playerAllItems);
+            this.addResourcesToLists(rewards, resultNode);
             
             $("#resultlist-inventorymanagement-kept li").click(onLiClicked);
             $("#resultlist-inventorymanagement-found li").click(onLiClicked);
             
-            var emptySlots = bagComponent.totalCapacity - selectedCapacity;
-			for (var j = 0; j < emptySlots; j++) {
-                $("#resultlist-inventorymanagement-kept ul").append(UIConstants.getItemSlot(null));
-            }
-            
             this.uiFunctions.generateCallouts("#resultlist-inventorymanagement-kept");
             this.uiFunctions.generateCallouts("#resultlist-inventorymanagement-found");
             
-            bagComponent.selectedCapacity = selectedCapacity;
+            this.updateCapacity(rewards, resultNode, playerAllItems);
             
             this.pendingListUpdate = false;
+        },
+        
+        updateCapacity: function (rewards, resultNode, playerAllItems) {
+            var bagComponent = this.playerActionResultNodes.head.entity.get(BagComponent);
+            
+            var originalResC = this.getResourcesCapacity(resultNode.resources.resources);
+            var discardedResC = this.getResourcesCapacity(rewards.discardedResources);
+            var lostResC = this.getResourcesCapacity(rewards.lostResources);
+            var selectedResC = this.getResourcesCapacity(rewards.selectedResources);
+            var gainedResC = this.getResourcesCapacity(rewards.gainedResources);
+            
+            var originalItemC = this.getItemsCapacity(playerAllItems);
+            var discardedItemC = this.getItemsCapacity(rewards.discardedItems);
+            var lostItemC = this.getItemsCapacity(rewards.lostItems);
+            var selectedItemC = this.getItemsCapacity(rewards.selectedItems);
+            var gainedItemC = this.getItemsCapacity(rewards.gainedItems);
+            
+            var originalCapacity = originalResC + originalItemC;
+            var selectedCapacity = originalResC - discardedResC - lostResC + selectedResC + originalItemC - discardedItemC - lostItemC + selectedItemC;
+            var selectableCapacity = originalResC - lostResC + gainedResC + originalItemC - lostItemC + gainedItemC;
+            
+            console.log(originalCapacity + " " + selectedCapacity + " " + selectableCapacity);
+            
+            $("#confirmation-takeall").toggle(selectableCapacity > originalCapacity);
+
+            bagComponent.selectedCapacity = selectedCapacity;
+            bagComponent.selectableCapacity = selectableCapacity;
         },
         
         addItemsToLists: function (rewards, playerAllItems) {
@@ -142,7 +162,6 @@ define([
             var keptItemCounts = {};
             var keptItemVOs = {};
             
-            var selectedCapacity = 0;
             var item;
             var li;
             
@@ -159,8 +178,7 @@ define([
                     keptItemCounts[item.id] = 0;
                     keptItemVOs[item.id] = item;
                 }
-                keptItemCounts[item.id]++;             
-                selectedCapacity++;
+                keptItemCounts[item.id]++;
             };
 
             // gained items: non-selected to found, selected to kept
@@ -177,6 +195,7 @@ define([
             // bag items: non-discarded to kept, discarded to found
             for (var k = 0; k < playerAllItems.length; k++ ) {
                 item = playerAllItems[k];
+                if (item.type === ItemConstants.itemTypes.bag) continue;
                 if (rewards.discardedItems.indexOf(item) < 0) {
                     countKeptItem(item);
                 } else {
@@ -195,12 +214,9 @@ define([
                 li = UIConstants.getItemSlot(item, keptItemCounts[itemId]);
                 $("#resultlist-inventorymanagement-kept ul").append(li);
             }
-            
-            return selectedCapacity;
         },
         
         addResourcesToLists: function (rewards, resultNode) {
-            var selectedCapacity = 0;
             
             // bag resources: non-discarded to kept, discarded to found
             // gained resources: non-selected to found, selected to kept
@@ -223,10 +239,15 @@ define([
                         UIConstants.getResourceLi(name, amountFound)
                         );
                 }
-
-                selectedCapacity += amountKept;
             }
-            return selectedCapacity;
+        },
+        
+        getResourcesCapacity: function (resourcesVO) {
+            return resourcesVO.getTotal();
+        },
+        
+        getItemsCapacity: function (itemList) {
+            return itemList.length;
         }
     
 	});

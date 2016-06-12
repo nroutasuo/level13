@@ -47,12 +47,20 @@ function (Ash, UIConstants) {
             
             // buttons and callbacks
             $("#common-popup .buttonbox").empty();
+            var showTakeAll = hasResult;
+            if (showTakeAll) {
+                $("#common-popup .buttonbox").append("<button id='confirmation-takeall' class='action' action='take_all'>Take all</button>");
+                $("#confirmation-takeall").click(function (e) {
+                    popUpManager.closePopup("common-popup");
+                    if (okCallback) okCallback(true);
+                });
+            }
             $("#common-popup .buttonbox").append("<button id='info-ok' class='action'>" + okButtonLabel + "</button>");
             if (hasResult) $("#info-ok").attr("action", "accept_inventory");
             $("#info-ok").click(function (e) {
                 popUpManager.closePopup("common-popup");
-                if (okCallback) okCallback();
-            });
+                if (okCallback) okCallback(false);
+            });            
             if (showCancel) {
                 $("#common-popup .buttonbox").append("<button id='confirmation-cancel'>Cancel</button>");
                 $("#confirmation-cancel").click(function (e) {

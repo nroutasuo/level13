@@ -189,8 +189,8 @@ define([
 				var resultVO = this.playerActionResultsHelper.getFadeOutResults(loseInventoryProbability, injuryProbability);
                 var sys = this;
                 this.playerResourcesNodes.head.entity.add(new PlayerActionResultComponent(resultVO));
-                var resultPopUpCallback = function () {
-                    sys.playerActionResultsHelper.collectRewards(resultVO);  
+                var resultPopUpCallback = function (isTakeAll) {
+                    sys.playerActionResultsHelper.collectRewards(isTakeAll, resultVO);  
                     sys.teleport(msgLog, sector);                  
                 };
 				if (msg) this.uiFunctions.showResultPopup("Exhaustion", msg, resultVO, resultPopUpCallback);

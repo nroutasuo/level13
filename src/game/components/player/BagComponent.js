@@ -4,6 +4,7 @@ define(['ash'], function (Ash) {
         constructor: function (capacity) {
             this.totalCapacity = capacity;
             this.selectedCapacity = 0;
+            this.selectableCapacity = 0;
             this.usedCapacity = 0;
         }
     });

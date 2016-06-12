@@ -168,6 +168,12 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                         validSelection: true,
                     },
                 },
+                
+                take_all: {
+                    bag: {
+                        validSelectionAll: true,
+                    }
+                },
                         
                 build_out_camp: {
                     vision: 30,
