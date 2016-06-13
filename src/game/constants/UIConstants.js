@@ -60,9 +60,9 @@ define(['ash',
 			return div;
 		},
 		
-		getItemSlot: function (item, count) {
+		getItemSlot: function (item, count, isLost) {
 			var imageDiv = "<div class='item-slot-image'>" + this.getItemDiv(item, count, false, false) + "</div>";
-			return "<li class='item-slot item-slot-small lvl13-box-1'>" + imageDiv + "</li>"
+			return "<li class='item-slot item-slot-small lvl13-box-1 " + (isLost ? "item-slot-lost" : "") + "'>" + imageDiv + "</li>"
 		},
 		
 		getItemList: function (items) {
@@ -86,16 +86,16 @@ define(['ash',
 			return html;
 		},
 		
-		getResourceLi: function (name, amount) {
+		getResourceLi: function (name, amount, isLost) {
 			var classes = "res item-with-count";
 			var div = "<div class='" + classes + "' data-resourcename='" + name + "'>";
 			div += "<div class='info-callout-target info-callout-target-small' description='" + name + "'>";
 			div += this.getResourceImg(name);
-			div += "<div class='item-count lvl13-box-3'>" + Math.round(amount) + "x </div>";
+			div += "<div class='item-count lvl13-box-3'>" + Math.ceil(amount) + "x </div>";
 			div += "</div>";
 			div += "</div>"
 			var imageDiv = "<div class='item-slot-image'>" + div + "</div>";
-			return "<li class='item-slot item-slot-small lvl13-box-1'>" + imageDiv + "</li>";
+			return "<li class='item-slot item-slot-small lvl13-box-1 " + (isLost ? "item-slot-lost" : "") + "'>" + imageDiv + "</li>";
 		},
 		
 		getBlueprintPieceLI: function (blueprintVO) {
@@ -255,7 +255,7 @@ define(['ash',
 		
 		updateResourceIndicator: function (name, id, value, change, storage, showStorage, showChange, showDetails, showWarning, visible) {
 			$(id).toggle(visible);
-			var roundedValue = value > 5 ? Math.floor(value) : Math.floor(value * 10) / 10;
+			var roundedValue = value >= 10 ? Math.ceil(value) : Math.ceil(value * 10) / 10;
 			if (visible) {
 				$(id).children(".value").text(showStorage ? roundedValue + " / " + storage : roundedValue);
 				$(id).children(".value").toggleClass("warning", showWarning && roundedValue < 5);

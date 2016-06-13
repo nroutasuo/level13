@@ -445,8 +445,12 @@ hr {
 	border-color: #4a4a4a;
 }
 
-.lvl13-warning, .warning, .warning span, li.li-item-negative {
+.lvl13-warning, .warning, .warning span, li.li-item-negative, .item-slot-lost .item-count {
 	color: rgb(230, 70, 70) !important;
+}
+
+.inventorybox-negative, .item-slot-lost .item-count {
+    border: 1px solid #E13232 !important;
 }
 
 .li-item-negative { 
@@ -621,8 +625,12 @@ ul.resultlist-positive li:before {
     position: relative;
 }
 
-#resultlist-inventorymanagement-found ul li {
+#resultlist-inventorymanagement-found ul li, #resultlist-loststuff-lost ul li {
     border-width: 0px;
+}
+
+.inventorybox-negative > li {
+    opacity: 80%;
 }
 
 .item-slot-big {
@@ -657,6 +665,9 @@ div.item-slot > div, div.item-slot > span {
 .item-slot-big .item-slot-image {
     left: 22px;
     top: 3px;
+}
+
+.item-slot-lost div {
 }
 
 .item-slot-effect {

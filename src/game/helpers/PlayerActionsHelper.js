@@ -376,6 +376,9 @@ define([
                             if (log) console.log("WARN: Can't carry that much stuff.");
                             return {value: 0, reason: "Can't carry that much stuff."};
                         }
+                        if (bagComponent.selectableCapacity <= bagComponent.selectedCapacity) {
+                            return {value: 0, reason: "Everything already selected."};
+                        }
                     }
                 }
                 

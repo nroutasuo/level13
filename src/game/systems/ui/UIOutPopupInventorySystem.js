@@ -38,9 +38,10 @@ define([
             if (!($(".popup").is(":visible")) || $(".popup").data("fading") == true) return;
         },
         
-        updateLists: function () {
+        updateLists: function () {            
             $("#resultlist-inventorymanagement-found ul").empty();
             $("#resultlist-inventorymanagement-kept ul").empty();
+            $("#resultlist-loststuff-lost ul").empty();
             
             var sys = this;
             
@@ -123,6 +124,7 @@ define([
             
             this.uiFunctions.generateCallouts("#resultlist-inventorymanagement-kept");
             this.uiFunctions.generateCallouts("#resultlist-inventorymanagement-found");
+            this.uiFunctions.generateCallouts("#resultlist-loststuff-lost");
             
             this.updateCapacity(rewards, resultNode, playerAllItems);
             
@@ -148,7 +150,8 @@ define([
             var selectedCapacity = originalResC - discardedResC - lostResC + selectedResC + originalItemC - discardedItemC - lostItemC + selectedItemC;
             var selectableCapacity = originalResC - lostResC + gainedResC + originalItemC - lostItemC + gainedItemC;
             
-            console.log(originalCapacity + " " + selectedCapacity + " " + selectableCapacity);
+            $("#inventory-popup-bar").data("progress-percent", selectedCapacity/bagComponent.totalCapacity*100);
+            $("#inventory-popup-bar .progress-label").text(Math.ceil(selectedCapacity) + " / " + bagComponent.totalCapacity);
             
             $("#confirmation-takeall").toggle(selectableCapacity > originalCapacity);
 
@@ -157,6 +160,8 @@ define([
         },
         
         addItemsToLists: function (rewards, playerAllItems) {
+            var lostItemCounts = {};
+            var lostItemVOs = {};
             var foundItemCounts = {};
             var foundItemVOs = {};
             var keptItemCounts = {};
@@ -164,6 +169,14 @@ define([
             
             var item;
             var li;
+            
+            var countLostItem = function (item) {
+                if (!lostItemCounts[item.id]) {
+                    lostItemCounts[item.id] = 0;
+                    lostItemVOs[item.id] = item;
+                }
+                lostItemCounts[item.id]++;
+            };
             
             var countFoundItem = function (item) {
                 if (!foundItemCounts[item.id]) {
@@ -180,6 +193,11 @@ define([
                 }
                 keptItemCounts[item.id]++;
             };
+            
+            // lost items: one list
+            for (var j = 0; j < rewards.lostItems.length; j++) {
+                countLostItem(rewards.lostItems[j]);
+            }
 
             // gained items: non-selected to found, selected to kept
             for ( var i = 0; i < rewards.gainedItems.length; i++ ) {
@@ -196,11 +214,18 @@ define([
             for (var k = 0; k < playerAllItems.length; k++ ) {
                 item = playerAllItems[k];
                 if (item.type === ItemConstants.itemTypes.bag) continue;
+                if (rewards.lostItems.indexOf(item) >= 0) continue; 
                 if (rewards.discardedItems.indexOf(item) < 0) {
                     countKeptItem(item);
                 } else {
                     countFoundItem(item);
                 }
+            }
+            
+            for (var itemId in lostItemCounts ) {
+                item = lostItemVOs[itemId];
+                li = UIConstants.getItemSlot(item, lostItemCounts[itemId], true);
+                $("#resultlist-loststuff-lost ul").append(li);
             }
             
             for (var itemId in foundItemCounts) {
@@ -229,15 +254,14 @@ define([
                 var amountLost = rewards.lostResources.getResource(name);
                 var amountKept = amountOriginal - amountDiscarded - amountLost + amountSelected;
                 var amountFound = amountGained + amountDiscarded - amountSelected;
+                if (amountLost >= 1) {                    
+                    $("#resultlist-loststuff-lost ul").append(UIConstants.getResourceLi(name, amountLost, true));
+                }
                 if (amountKept >= 1) {
-                    $("#resultlist-inventorymanagement-kept ul").append(
-                        UIConstants.getResourceLi(name, amountKept)
-                        );
+                    $("#resultlist-inventorymanagement-kept ul").append(UIConstants.getResourceLi(name, amountKept));
                 }
                 if (amountFound >= 1) {
-                    $("#resultlist-inventorymanagement-found ul").append(
-                        UIConstants.getResourceLi(name, amountFound)
-                        );
+                    $("#resultlist-inventorymanagement-found ul").append(UIConstants.getResourceLi(name, amountFound));
                 }
             }
         },

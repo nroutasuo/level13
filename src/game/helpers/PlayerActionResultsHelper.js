@@ -120,7 +120,7 @@ define([
             var unscoutedLocales = this.levelHelper.getLevelLocales(playerPos.level, false).length;
             var levelBlueprintPieces = this.getPendingBlueprintPiecesCount();
             if (unscoutedLocales === 0 && levelBlueprintPieces > 0 && Math.random() < 0.1) {
-                    rewards.gainedBlueprintPiece = this.getResultBlueprint(null);
+                rewards.gainedBlueprintPiece = this.getResultBlueprint(null);
             }
 
             return rewards;
@@ -214,33 +214,7 @@ define([
             var resultVO = new ResultVO();
             if (loseInventoryProbability > Math.random()) {
                 resultVO.lostResources = this.playerResourcesNodes.head.resources.resources.clone();
-                var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAll(false);
-                var itemLoseProbability;
-                for (var i = 0; i < playerItems.length; i++) {
-					itemLoseProbability = 1;
-					switch (playerItems[i].type) {
-						case ItemConstants.itemTypes.bag:
-						case ItemConstants.itemTypes.uniqueEquipment:
-							itemLoseProbability = 0;
-							break;
-						
-						case ItemConstants.itemTypes.follower:
-                                                    itemLoseProbability = injuryProbability;
-                                                    break;
-						
-						case ItemConstants.itemTypes.clothing:
-						case ItemConstants.itemTypes.shoes:
-						case ItemConstants.itemTypes.light:
-						case ItemConstants.itemTypes.shades:
-							itemLoseProbability = 0.55;
-							break;
-						
-						default:
-							itemLoseProbability = 0.95;
-							break;
-					}
-					if (itemLoseProbability > Math.random()) resultVO.lostItems.push(playerItems[i].clone());
-                }
+                resultVO.lostItems = this.getLostItems(injuryProbability);
             }
 
             resultVO.gainedInjuries = this.getResultInjuries(injuryProbability);
@@ -442,13 +416,8 @@ define([
 			
 			if (resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0) {
 				var losthtml = "<div id='resultlist-loststuff' class='infobox'>";
-				losthtml += "<div id='resultlist-loststuff-lost' class='infobox inventorybox'>";
-				if (resultVO.lostResources) {
-					losthtml += UIConstants.getResourceList(resultVO.lostResources);
-				}
-				if (resultVO.lostItems) {
-					losthtml += UIConstants.getItemList(resultVO.lostItems);
-				}
+				losthtml += "<div id='resultlist-loststuff-lost' class='infobox inventorybox inventorybox-negative'>";
+                losthtml += "<ul></ul>";
 				losthtml += "</div>"
 				losthtml += "</div>";
                 div += losthtml;
@@ -467,6 +436,8 @@ define([
 				
 				baghtml += "</div>"
 				div += baghtml;
+                
+                div += "<div id='inventory-popup-bar' class='progress-wrap progress'><div class='progress-bar progress'/><span class='progress-label progress'>?/?</span></div>";
 			}
 			
 			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0;
@@ -621,6 +592,35 @@ define([
 			}
 			return null;
 		},
+
+        getLostItems: function(loseFollowerProbability) {
+            var lostItems = [];
+            var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAll(false);
+            var itemLoseProbability;
+            for (var i = 0; i < playerItems.length; i++) {
+                itemLoseProbability = 1;
+                switch (playerItems[i].type) {
+                    case ItemConstants.itemTypes.bag:
+                    case ItemConstants.itemTypes.uniqueEquipment:
+                        itemLoseProbability = 0;
+                        break;
+                    case ItemConstants.itemTypes.follower:
+                        itemLoseProbability = loseFollowerProbability;
+                        break;
+                    case ItemConstants.itemTypes.clothing:
+                    case ItemConstants.itemTypes.shoes:
+                    case ItemConstants.itemTypes.light:
+                    case ItemConstants.itemTypes.shades:
+                        itemLoseProbability = 0.55;
+                        break;
+                    default:
+                        itemLoseProbability = 0.95;
+                        break;
+                }
+                if (itemLoseProbability > Math.random()) lostItems.push(playerItems[i]);
+            }
+            return lostItems;
+        },
 
 		getResultInjuries: function (injuryProbability) {
 			var injuries = [];
