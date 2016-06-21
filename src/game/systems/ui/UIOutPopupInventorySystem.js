@@ -2,10 +2,11 @@ define([
     'ash',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
+    'game/constants/BagConstants',
     'game/nodes/player/PlayerActionResultNode',
     'game/components/common/PositionComponent',
     'game/components/player/BagComponent',
-], function (Ash, UIConstants, ItemConstants, PlayerActionResultNode, PositionComponent, BagComponent) {
+], function (Ash, UIConstants, ItemConstants, BagConstants, PlayerActionResultNode, PositionComponent, BagComponent) {
     var UIOutPopupInventorySystem = Ash.System.extend({
 
         uiFunctions: null,
@@ -213,7 +214,9 @@ define([
             // bag items: non-discarded to kept, discarded to found
             for (var k = 0; k < playerAllItems.length; k++ ) {
                 item = playerAllItems[k];
+                if (item.equipped) continue;
                 if (item.type === ItemConstants.itemTypes.bag) continue;
+                if (item.type === ItemConstants.itemTypes.uniqueEquipment) continue;
                 if (rewards.lostItems.indexOf(item) >= 0) continue; 
                 if (rewards.discardedItems.indexOf(item) < 0) {
                     countKeptItem(item);
@@ -241,8 +244,7 @@ define([
             }
         },
         
-        addResourcesToLists: function (rewards, resultNode) {
-            
+        addResourcesToLists: function (rewards, resultNode) {            
             // bag resources: non-discarded to kept, discarded to found
             // gained resources: non-selected to found, selected to kept
             for ( var key in resourceNames ) {
@@ -267,11 +269,15 @@ define([
         },
         
         getResourcesCapacity: function (resourcesVO) {
-            return resourcesVO.getTotal();
+            return BagConstants.getResourcesCapacity(resourcesVO);
         },
         
         getItemsCapacity: function (itemList) {
-            return itemList.length;
+            var capacity = 0;
+            for(var i = 0; i < itemList.length; i++) {
+                capacity += BagConstants.getItemCapacity(itemList[i]);
+            }
+            return capacity;
         }
     
 	});

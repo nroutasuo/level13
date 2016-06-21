@@ -2,11 +2,12 @@
 define([
     'ash',
     'game/constants/ItemConstants',
+    'game/constants/BagConstants',
     'game/nodes/player/PlayerResourcesNode',
     'game/components/player/ItemsComponent',
     'game/components/player/BagComponent',
     'game/vos/ResourcesVO'
-], function (Ash, ItemConstants, PlayerResourcesNode, ItemsComponent, BagComponent, ResourcesVO) {
+], function (Ash, ItemConstants, BagConstants, PlayerResourcesNode, ItemsComponent, BagComponent, ResourcesVO) {
     var BagSystem = Ash.System.extend({	
 	    
 		gameState: null,
@@ -36,9 +37,9 @@ define([
             
             var usedCapacity = 0;
             var carriedItems = playerItems.getAll(false);
-            usedCapacity += playerResources.resources.getTotal();
+            usedCapacity += BagConstants.getResourcesCapacity(playerResources.resources);
             for (var i = 0; i < carriedItems.length; i++) {
-                if (!carriedItems[i].equipped) usedCapacity += 1;
+                 usedCapacity += BagConstants.getItemCapacity(carriedItems[i]);
             }
             playerBag.usedCapacity = usedCapacity;
 			

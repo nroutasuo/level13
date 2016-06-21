@@ -2,15 +2,15 @@ define([
     'ash',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
+    'game/constants/BagConstants',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
     'game/components/player/BagComponent',
     'game/components/player/ItemsComponent',
-    'game/components/common/PositionComponent',
 ], function (
-    Ash, UIConstants, ItemConstants,
+    Ash, UIConstants, ItemConstants, BagConstants,
     PlayerPositionNode, PlayerLocationNode,
-    BagComponent, ItemsComponent, PositionComponent
+    BagComponent, ItemsComponent
 ) {
     var UIOutEmbarkSystem = Ash.System.extend({
 	
@@ -119,7 +119,8 @@ define([
 			var campResources = this.resourcesHelper.getCurrentStorage();
             var bagComponent = this.playerPosNodes.head.entity.get(BagComponent);
             var selectedCapacity = 0;
-			
+			var selectedAmount;
+            
 			// Resource steppers
 			$.each($("#embark-resources tr"), function () {
 				var resourceName = $(this).attr("id").split("-")[2];
@@ -128,7 +129,8 @@ define([
 				var inputMax = Math.min(Math.floor(campVal));
 				$(this).toggle(visible);
 				$(this).children("td").children(".stepper").children("input").attr("max", inputMax);
-                selectedCapacity += Math.max(0, $(this).children("td").children(".stepper").children("input").val());
+                selectedAmount = Math.max(0, $(this).children("td").children(".stepper").children("input").val());
+                selectedCapacity += selectedAmount * BagConstants.getResourceCapacity(resourceName);
 			});
             
             // Items steppers
@@ -146,10 +148,16 @@ define([
 				$(this).children("td").children(".stepper").children("input").attr("max", inputMax);
 				$(this).children("td").children(".stepper").children("input").attr("min", inputMin);
 				$(this).children("td").children(".stepper").children("input").attr("value", Math.max(inputValue, inputMin));
-                selectedCapacity += Math.max(0, $(this).children("td").children(".stepper").children("input").val());
+                selectedAmount = Math.max(0, $(this).children("td").children(".stepper").children("input").val());
+                selectedCapacity += selectedAmount * BagConstants.getItemCapacity(itemsComponent.getItem(itemID));
 			});
 			
             $("#embark-items-container").toggle(visibleItemTRs > 0);
+            
+            var equippedItems = itemsComponent.getEquipped();
+            for (var e = 0; e < equippedItems.length; e++) {
+                selectedCapacity += BagConstants.getItemCapacity(equippedItems[e]);
+            }
             
             bagComponent.selectedCapacity = selectedCapacity;
 			$("#embark-bag .value").text(bagComponent.selectedCapacity);

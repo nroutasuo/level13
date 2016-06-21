@@ -423,7 +423,7 @@ define([
                 div += losthtml;
 			}
 			
-			if (resultVO.gainedResources || resultVO.gainedItems) {
+			if (resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0) {
 				var baghtml = "<div id='resultlist-inventorymanagement' class='infobox'>";
 				
 				baghtml += "<div id='resultlist-inventorymanagement-found' class='infobox inventorybox'>";

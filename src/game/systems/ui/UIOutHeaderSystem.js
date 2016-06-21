@@ -238,7 +238,6 @@ define([
                 $("ul#list-items-followers").empty();
                 for (var i = 0; i < items.length; i++) {
                     var item = items[i];
-                    var count = itemsComponent.getCount(item, isInCamp);
                     switch (item.type) {
                         case ItemConstants.itemTypes.uniqueEquipment:
                             break;
@@ -336,7 +335,7 @@ define([
                     );
                     
                     var bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
-                    $("#header-bag-storage .value").text(Math.floor(bagComponent.usedCapacity));
+                    $("#header-bag-storage .value").text(Math.ceil(bagComponent.usedCapacity));
                     $("#header-bag-storage .value-total").text(storageCap);
                 }
 			}
