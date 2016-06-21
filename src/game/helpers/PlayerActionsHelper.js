@@ -4,6 +4,7 @@ define([
 	'game/constants/PositionConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/ItemConstants',
+	'game/constants/BagConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/UIConstants',
 	'game/constants/TextConstants',
@@ -28,13 +29,15 @@ define([
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/CampComponent',
+    'game/vos/ResourcesVO'
 ], function (
-	Ash, PositionConstants, PlayerActionConstants, ItemConstants, UpgradeConstants, UIConstants, TextConstants,
+	Ash, PositionConstants, PlayerActionConstants, ItemConstants, BagConstants, UpgradeConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	PositionComponent, PlayerActionComponent, BagComponent, ItemsComponent, PerksComponent, DeityComponent,
 	PassagesComponent, EnemiesComponent, MovementOptionsComponent,
 	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, SectorImprovementsComponent,
-	CampComponent
+	CampComponent,
+    ResourcesVO
 ) {
     var PlayerActionsHelper = Ash.Class.extend({
 		
@@ -108,9 +111,9 @@ define([
         // value: fraction the player has of requirements or 0 depending on req type (if 0, action is not available)
         // reason: string to describe the non-passed requirement (for button explanations)
         checkRequirements: function (action, log, otherSector) {
+            var baseActionID = this.getBaseActionID(action);
             var playerVision = this.playerStatsNodes.head.vision.value;
             var playerPerks = this.playerResourcesNodes.head.entity.get(PerksComponent);
-            var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent);
             var deityComponent = this.playerResourcesNodes.head.entity.get(DeityComponent);
             
             var sector = otherSector;
@@ -126,6 +129,8 @@ define([
             var featuresComponent = sector.get(SectorFeaturesComponent);
             var statusComponent = sector.get(SectorStatusComponent);
 			var playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
+            var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
+            var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
             
             var lowestFraction = 1;
             var reason = "";
@@ -154,7 +159,14 @@ define([
             
             var item = this.getItemForCraftAction(action);
             if (item) {
-                // TODO if the player is out exploring, check if there is room in the bag for this item
+                if (!inCamp) {
+                    var spaceNow = bagComponent.totalCapacity - bagComponent.usedCapacity;
+                    var spaceRequired = BagConstants.getItemCapacity(item);
+                    var spaceFreed = BagConstants.getResourcesCapacity(this.getCostResourcesVO(action));
+                    if (spaceNow - spaceRequired + spaceFreed < 0) {
+                        return { value: 0, reason: "Bag full." };
+                    }
+                }
             }
                 
             if (requirements) {
@@ -233,7 +245,7 @@ define([
                 
                 if (typeof requirements.inCamp !== "undefined") {
                     var required = requirements.inCamp;
-                    var current = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
+                    var current = inCamp;
                     if (required !== current) {
                         if (required) {
                             return { value: 0, reason: "Must be in camp to do this." };
@@ -364,7 +376,6 @@ define([
 				}
                 
                 if (typeof requirements.bag !== "undefined") {
-                    var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
                     if (requirements.bag.validSelection) {
                         if (bagComponent.selectedCapacity > bagComponent.totalCapacity) {
                             if (log) console.log("WARN: Can't carry that much stuff.");
@@ -527,7 +538,6 @@ define([
         
         // Check if player can afford a cost; returns fraction of the cost the player can cover; >1 means ok
         checkCost: function (action, name, otherSector) {
-            var playerVision = this.playerStatsNodes.head.vision.value;
             var playerStamina = this.playerStatsNodes.head.stamina.stamina;
             var playerResources = this.resourcesHelper.getCurrentStorage();
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
@@ -569,6 +579,21 @@ define([
                         return 1;
                 }
             }
+        },
+        
+        getCostResourcesVO: function (action) {
+            var costs = this.getCosts(action, this.getOrdinal(action), this.getCostFactor(action));
+            var resourcesVO = new ResourcesVO();
+            if (costs) {
+                for (var key in costs) {                    
+                    var costNameParts = key.split("_");
+                    var costAmount = costs[key];
+                    if (costNameParts[0] === "resource") {
+                        resourcesVO.addResource(costNameParts[1], costAmount);
+                    }
+                }
+            }
+            return resourcesVO;            
         },
         
 		// Return the ordinal of the action (for example, if the player has 2 houses and wants to build another one, it's 3)
@@ -709,7 +734,7 @@ define([
 						var sectorLocalesComponent = sector.get(SectorLocalesComponent);
 						var localeVO = sectorLocalesComponent.locales[localei];
 						if (localeVO) return localeVO.costs;
-                        
+
                     case "unlock_upgrade":
                         return { blueprint: 1 };
 				}
