@@ -4,6 +4,7 @@ define(['ash',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
 	'game/constants/ItemConstants',
+	'game/constants/BagConstants',
 	'game/constants/PerkConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/PlayerActionConstants',
@@ -15,7 +16,7 @@ define(['ash',
     'game/components/common/VisitedComponent',
     'game/components/sector/improvements/WorkshopComponent',
 ], function (Ash,
-	StoryConstants, PositionConstants, SectorConstants, ItemConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
+	StoryConstants, PositionConstants, SectorConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
 	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
 	PassagesComponent, VisitedComponent, WorkshopComponent) {
     
@@ -40,9 +41,10 @@ define(['ash',
 			var div = "<div class='" + classes + (item ? "' data-itemid='" + item.id + "' data-iteminstanceid='" + item.itemID + "'>" : ">");
 			
 			if (item && !hideCallout) {
-				detail = this.getItemBonusName(item) ? " (" + this.getItemBonusName(item) + " " + this.getItemBonusText(item) + ")" : "";
+				var detail = this.getItemBonusName(item) ? " (" + this.getItemBonusName(item) + " " + this.getItemBonusText(item) + ")" : "";
+                var weight = BagConstants.getItemCapacity(item);
 				
-				var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + item.type + " " + detail + "</br>" + item.description;
+				var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + item.type + " " + detail + "</br>Weight: " + weight + "</br>" + item.description;
 				if (smallCallout) itemCalloutContent = item.name + (detail.length > 0 ? " " + detail : "");
 				
 				div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(itemCalloutContent) + "'>";
