@@ -977,8 +977,8 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 
                 build_out_camp: {
                     resource_metal: 20,
-                    resource_food: 15,
-                    resource_water: 15,
+                    resource_food: 10,
+                    resource_water: 10,
                 },
             
                 build_out_bridge: {

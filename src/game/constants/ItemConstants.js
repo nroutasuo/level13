@@ -2,7 +2,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
     
     var ItemConstants = {
 	
-		PLAYER_DEFAULT_STORAGE: 5,
+		PLAYER_DEFAULT_STORAGE: 10,
 		
 		itemTypes: {
 			// Equippable:
@@ -80,13 +80,13 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 			follower: [
 			],
 			bag: [
-				new ItemVO("bag_0", "Sack", "Bag", 25, true, true, "img/items/bag-0.png",
+				new ItemVO("bag_0", "Sack", "Bag", 50, true, true, "img/items/bag-0.png",
 						   "It's not fancy, but allows one to carry around more stuff than their hands and pockets can hold."),
-				new ItemVO("bag_1", "Backpack", "Bag", 50, true, true, "img/items/bag-1.png",
+				new ItemVO("bag_1", "Backpack", "Bag", 80, true, true, "img/items/bag-1.png",
 						   "A more spacious bag with lots of pockets."),
-				new ItemVO("bag_2", "Hiker's Rucksack", "Bag", 100, true, true, "img/items/bag-1.png",
+				new ItemVO("bag_2", "Hiker's Rucksack", "Bag", 120, true, true, "img/items/bag-1.png",
 						   "With this bag, weight is starting to be more of a problem than space."),
-				new ItemVO("bag_3", "Automatic luggage", "Bag", 150, true, true, "img/items/bag-3.png",
+				new ItemVO("bag_3", "Automatic luggage", "Bag", 200, true, true, "img/items/bag-3.png",
 						   "Mechanical chest that automatically follows its owner around. No more worrying about carrying all that stuff yourself."),
 			],
 			artefact: [
