@@ -21,6 +21,7 @@ define([
     'game/components/sector/SectorLocalesComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
+    'game/components/player/BagComponent',
     'game/vos/ResultVO',
     'game/vos/ResourcesVO'
 ], function (
@@ -45,6 +46,7 @@ define([
     SectorLocalesComponent,
     ItemsComponent,
     PerksComponent,
+    BagComponent,
     ResultVO,
     ResourcesVO
 ) {
@@ -178,10 +180,9 @@ define([
 		
 		getUseSpringRewards: function () {
 			var rewards = new ResultVO();
-			var playerBag = this.playerResourcesNodes.head.entity.get(ResourcesComponent).storageCapacity;
-			var playerWater = this.playerResourcesNodes.head.entity.get(ResourcesComponent).resources.water;
+            var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
 			rewards.gainedResources = new ResourcesVO();
-			rewards.gainedResources.water = playerBag - playerWater;
+			rewards.gainedResources.water = bagComponent.totalCapacity -  bagComponent.usedCapacity;
 			return rewards;
 		},
         

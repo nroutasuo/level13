@@ -238,16 +238,14 @@ define([
                 $("ul#list-items-followers").empty();
                 for (var i = 0; i < items.length; i++) {
                     var item = items[i];
-                    switch (item.type) {
-                        case ItemConstants.itemTypes.uniqueEquipment:
-                            break;
-                        
+                    switch (item.type) {                        
                         case ItemConstants.itemTypes.follower:
                             $("ul#list-items-followers").append("<li>" + UIConstants.getItemDiv(item, -1, true, false) + "</li>");
                             break;
                         
                         default:
-                            $("ul#list-items-items").append("<li>" + UIConstants.getItemDiv(item, -1, true, false) + "</li>");
+                            if (item.equipped)
+                                $("ul#list-items-items").append("<li>" + UIConstants.getItemDiv(item, -1, true, false) + "</li>");
                             break;
                     }
                 }

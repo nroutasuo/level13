@@ -965,6 +965,7 @@ define(['ash',
 			var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
             var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
+            var playerResources = this.resourcesHelper.getCurrentStorage().resources;
             var campCount = this.gameState.numCamps;
 			
             var inputParts = input.split(" ");
@@ -981,7 +982,6 @@ define(['ash',
                     } else {
                         amount = this.resourcesHelper.getCurrentStorageCap();
                     }
-                    var playerResources = this.resourcesHelper.getCurrentStorage().resources;
                     for(var key in resourceNames) {
                         var name = resourceNames[key];
                         if(this.gameState.unlockedFeatures.resources[name])
@@ -989,6 +989,11 @@ define(['ash',
                     }
                     this.forceResourceBarUpdate();
 					break;
+                    
+                case "supplies":
+                    playerResources.setResource("food", 15);
+                    playerResources.setResource("water", 15);
+                    break;
                 
                 case "stat":
                     this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health;

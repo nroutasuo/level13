@@ -32,11 +32,12 @@ define([
         },
 
         update: function (time) {
+            if (!($(".popup").is(":visible")) || $(".popup").data("fading") == true)
+                return;
+            
             if (this.pendingListUpdate) {
                 this.updateLists();
             }
-            
-            if (!($(".popup").is(":visible")) || $(".popup").data("fading") == true) return;
         },
         
         updateLists: function () {            
