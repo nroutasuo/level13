@@ -324,7 +324,7 @@ function (Ash,
                 ctx.drawImage(this.icons["passage-down" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
                 
             // sector contents: resources
-            if (sectorSize > iconSize) {
+            if (sectorSize > iconSize && isScouted) {
                 var discoveredResources = this.sectorHelper.getLocationDiscoveredResources(sector);
                 var resourcesCollectable = sector.get(SectorFeaturesComponent).resourcesCollectable;
                 var r = 0;
