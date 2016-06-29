@@ -3,6 +3,7 @@ define([
     'ash',
 	'game/constants/PositionConstants',
 	'game/constants/PlayerActionConstants',
+	'game/constants/PlayerStatConstants',
 	'game/constants/ItemConstants',
 	'game/constants/BagConstants',
 	'game/constants/UpgradeConstants',
@@ -31,7 +32,7 @@ define([
     'game/components/common/CampComponent',
     'game/vos/ResourcesVO'
 ], function (
-	Ash, PositionConstants, PlayerActionConstants, ItemConstants, BagConstants, UpgradeConstants, UIConstants, TextConstants,
+	Ash, PositionConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, BagConstants, UpgradeConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	PositionComponent, PlayerActionComponent, BagComponent, ItemsComponent, PerksComponent, DeityComponent,
 	PassagesComponent, EnemiesComponent, MovementOptionsComponent,
@@ -142,7 +143,7 @@ define([
                 
 			if (costs) {
 				if (requirements && costs.stamina > 0) {
-					requirements.health = costs.stamina;
+					requirements.health = costs.stamina / PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
 				}
                 if (costs.favour && !this.gameState.unlockedFeatures.favour) {
 					reason = "Locked stats.";

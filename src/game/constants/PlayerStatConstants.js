@@ -4,6 +4,7 @@ define(['ash'], function (Ash) {
     
 		VISION_BASE: 25,
         HEALTH_MINIMUM: 10,
+        HEALTH_TO_STAMINA_FACTOR: 10,
     
     };
     

@@ -4,6 +4,7 @@ define([
     'game/constants/ItemConstants',
     'game/constants/FightConstants',
     'game/constants/UpgradeConstants',
+    'game/constants/PlayerStatConstants',
     'game/worldcreator/WorldCreatorHelper',
     'game/systems/SaveSystem',
     'game/nodes/player/PlayerStatsNode',
@@ -21,7 +22,7 @@ define([
     'game/components/sector/SectorFeaturesComponent',
     'game/components/tribe/UpgradesComponent',
 ], function (Ash,
-    UIConstants, ItemConstants, FightConstants, UpgradeConstants,
+    UIConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
     WorldCreatorHelper, SaveSystem,
 	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
     BagComponent,
@@ -151,16 +152,22 @@ define([
             var playerStamina = playerStatsNode.stamina.stamina;
 			var playerVision = playerStatsNode.vision.value;
 			var maxVision = playerStatsNode.vision.maximum;
-			var maxStamina = Math.round(playerStatsNode.stamina.health);
+			var maxStamina = Math.round(playerStatsNode.stamina.health) * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
 			
 			$("#stats-vision").toggle(!isInCamp);
 			$("#stats-stamina").toggle(!isInCamp);
+			$("#stats-stamina-in").toggle(isInCamp);
 			
 			$("#stats-vision .value").text(Math.round(playerVision) + " / " + maxVision);
 			this.updateStatsCallout("stats-vision", playerStatsNode.vision.accSources);
 			
 			$("#stats-stamina .value").text(Math.round(playerStamina) + " / " + maxStamina);
+			$("#stats-stamina-in .value").text(Math.round(playerStamina) + " / " + maxStamina);
 			this.updateStatsCallout("stats-stamina", playerStatsNode.stamina.accSources);
+			this.updateStatsCallout("stats-stamina-in", playerStatsNode.stamina.accSources);
+
+            $("#stats-health .value").text(playerStatsNode.stamina.health);
+            this.updateStatsCallout("stats-health", null);
 			
 			$("#stats-reputation .value").text(Math.round(playerStatsNode.reputation.value) + " / " + playerStatsNode.reputation.limit);
 			$("#stats-reputation").toggle(playerStatsNode.reputation.isAccumulating);

@@ -996,7 +996,7 @@ define(['ash',
                     break;
                 
                 case "stat":
-                    this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health;
+                    this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
                     this.playerStatsNodes.head.vision.value = 75;
                     this.playerStatsNodes.head.rumours.value = Math.max(this.playerStatsNodes.head.rumours.value, 0);
                     this.playerStatsNodes.head.rumours.value++;
@@ -1025,7 +1025,7 @@ define(['ash',
                     break;
                 
                 case "stamina":                    
-                    this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health;
+                    this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
                     break;
                 
 				case "pop":

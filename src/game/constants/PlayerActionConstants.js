@@ -892,11 +892,11 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
             costs: {
                     
                 scout: {
-                    stamina: 10,
+                    stamina: 5,
                 },
             
                 scavenge: {
-                    stamina: 5,
+                    stamina: 3,
                 },
             
                 fight: {
@@ -908,7 +908,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                 
                 use_spring: {
-                    stamina: 5,
+                    stamina: 1,
                 },
                 
                 fight_gang: {
@@ -916,13 +916,13 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                 
                 move_level_up: {
-                    stamina: 75,
+                    stamina: 100,
                     resource_food: 1,
                     resource_water: 1,
                 },
             
                 move_level_down: {
-                    stamina: 75,
+                    stamina: 100,
                     resource_food: 1,
                     resource_water: 1,
                 },

@@ -104,7 +104,7 @@ define([
 			.add(new VisionComponent(0))
 			.add(new ItemsComponent())
 			.add(new PerksComponent())
-			.add(new StaminaComponent(0))
+			.add(new StaminaComponent(100))
 			.add(new ResourcesComponent(ItemConstants.PLAYER_DEFAULT_STORAGE))
 			.add(new ResourceAccumulationComponent(saveKey))
 			.add(new ReputationComponent())

@@ -1,12 +1,13 @@
 define(['ash',
 	'game/constants/WorldCreatorConstants',
 	'game/constants/PlayerActionConstants',
+	'game/constants/PlayerStatConstants',
 	'game/constants/FightConstants',
 	'game/constants/PerkConstants',
 	'game/constants/ItemConstants',
 	'game/components/player/ItemsComponent',
 	'game/vos/EnemyVO'],
-function (Ash, WorldCreatorConstants, PlayerActionConstants, FightConstants, PerkConstants, ItemConstants, ItemsComponent, EnemyVO) {
+function (Ash, WorldCreatorConstants, PlayerActionConstants, PlayerStatConstants, FightConstants, PerkConstants, ItemConstants, ItemsComponent, EnemyVO) {
 
     var EnemyConstants = {
 		
@@ -54,7 +55,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, FightConstants, Per
 			else console.log("WARN: No typical clothing for level ordinal " + levelOrdinal);
 			
 			var typicalStamina = {};
-			typicalStamina.health = typicalHealth;
+			typicalStamina.health = typicalHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
 			return FightConstants.getPlayerStrength(typicalStamina, typicalItems);
 		},
 		
