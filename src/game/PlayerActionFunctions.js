@@ -834,6 +834,40 @@ define(['ash',
             }
         },
         
+        useItem: function (itemId) {
+            var actionName = "use_item_" + itemId;
+            if (this.playerActionsHelper.checkAvailability(actionName, true)) {
+                this.playerActionsHelper.deductCosts(actionName);
+                var reqs = this.playerActionsHelper.getReqs(actionName);
+
+                switch(itemId) {
+                    case "first_aid_kit_1":
+                    case "first_aid_kit_2":
+                        var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
+                        var injuries = perksComponent.getItemsByType(PerkConstants.perkTypes.injury);
+                        var minValue = reqs.perks.Injury[0];
+                        var injuryToHeal = null;
+                        for (var i = 0; i < injuries.length; i++) {
+                            if (injuries[i].effect > minValue) {
+                                injuryToHeal = injuries[i];
+                                break;
+                            }
+                        }
+                        if (injuryToHeal !== null) {
+                            perksComponent.removeItemsById(injuryToHeal.id);
+                        } else {
+                            console.log("WARN: No injury found that can be healed!");
+                        }
+                        this.forceStatsBarUpdate();
+                        break;
+                        
+                    default:
+                        console.log("WARN: Item not mapped for useItem: " + itemId);
+                        break;
+                }
+            }
+        },
+        
         createBlueprint: function (upgradeId) {
             this.tribeUpgradesNodes.head.upgrades.createBlueprint(upgradeId);
         },
@@ -966,6 +1000,7 @@ define(['ash',
             var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
             var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
             var playerResources = this.resourcesHelper.getCurrentStorage().resources;
+            var playerPos = this.playerPositionNodes.head.position;
             var campCount = this.gameState.numCamps;
 			
             var inputParts = input.split(" ");
@@ -1043,7 +1078,6 @@ define(['ash',
 					break;
                 
                 case "pos":
-                    var playerPos = this.playerPositionNodes.head.position;
                     if (inputParts.length === 1) {
                         console.log(playerPos);
                     } else {
@@ -1085,7 +1119,8 @@ define(['ash',
                     break;
                 
                 case "injury":
-                    var defaultInjury = PerkConstants.perkDefinitions.injury[0];
+                    var injuryi = Math.round(Math.random() * PerkConstants.perkDefinitions.injury.length);
+                    var defaultInjury = PerkConstants.perkDefinitions.injury[injuryi];
                     perksComponent.addPerk(defaultInjury.clone());
                     break;
                 

@@ -207,7 +207,9 @@ define([
                         if (hasCosts) {
                             if (content.length > 0) content += "<hr/>";
                             for (var key in costs) {
-                                var name = uiFunctions.names.resources[key] ? uiFunctions.names.resources[key] : key;
+                                var itemName = key.replace("item_", "");
+                                var item = ItemConstants.getItemByID(itemName);
+                                var name = (uiFunctions.names.resources[key] ? uiFunctions.names.resources[key] : item !== null ? item.name : key).toLowerCase();
                                 var value = costs[key];
                                 var classes = "action-cost";
                                 var costFraction = playerActionsHelper.checkCost(action, key);

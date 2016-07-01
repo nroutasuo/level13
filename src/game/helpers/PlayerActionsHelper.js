@@ -318,9 +318,11 @@ define([
                         var requirementDef = perkRequirements[perkName];
                         var min = requirementDef[0];
                         var max = requirementDef[1];
+                        var isOneValue = requirementDef[2];
                         if (max < 0) max = 9999999;
                         var totalEffect = playerPerks.getTotalEffect(perkName);
-                        if (min > totalEffect || max <= totalEffect) {
+                        var validPerk = playerPerks.getPerkWithEffect(perkName, min, max);
+                        if ((!isOneValue && (min > totalEffect || max <= totalEffect)) || (isOneValue && validPerk == null)) {
                             if (min > totalEffect) reason = "Can't do this while: " + perkName;
                             if (max <= totalEffect) reason = "Perk required: " + perkName;
                             if (log) console.log("WARN: " + reason);
@@ -735,6 +737,13 @@ define([
 						var sectorLocalesComponent = sector.get(SectorLocalesComponent);
 						var localeVO = sectorLocalesComponent.locales[localei];
 						if (localeVO) return localeVO.costs;
+                        break;
+                        
+                    case "use_item":
+                        var itemName = action.replace("use_item_", "item_");
+                        var itemCost = {};
+                        itemCost[itemName] = 1;
+                        return itemCost;
 
                     case "unlock_upgrade":
                         return { blueprint: 1 };
@@ -765,6 +774,7 @@ define([
 			if (action.indexOf("scout_locale_i") >= 0) return "scout_locale_i";
 			if (action.indexOf("scout_locale_u") >= 0) return "scout_locale_u";
 			if (action.indexOf("craft_") >= 0) return "craft";
+            if (action.indexOf("use_item") >= 0) return "use_item";
 			if (action.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
 			if (action.indexOf("create_blueprint_") >= 0) return "create_blueprint";
 			if (action.indexOf("fight_gang_") >= 0) return "fight_gang";

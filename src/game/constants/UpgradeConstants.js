@@ -45,6 +45,7 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
             unlock_item_weapon2: "unlock_item_weapon2",
             unlock_item_clothing3: "unlock_item_clothing3",
             unlock_item_clothing4: "unlock_item_clothing4",
+            unlock_item_firstaid: "unlock_item_firstaid",
             unlock_item_weapon4: "unlock_item_weapon4",
             unlock_item_bag3: "unlock_item_bag3",
             unlock_item_clothing5: "unlock_item_clothing5",
@@ -120,7 +121,7 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_darkfarm]
 	= new UpgradeVO("unlock_building_darkfarm", "Urban Heliciculture", "Alternative source of food.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_hospital]
-	= new UpgradeVO("unlock_building_hospital", "First Aid", "Treating basic injuries.");
+	= new UpgradeVO("unlock_building_hospital", "Field medicine", "Treating basic injuries.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_inn]
 	= new UpgradeVO("unlock_building_inn", "Hospitality", "Sometimes strangers pass by the camp. Perhaps we can offer them a place to sleep?");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_house2]
@@ -201,6 +202,8 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
     = new UpgradeVO("unlock_item_clothing3", "Vest plating", "Basic protective clothing to give an edge in fights.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_clothing4]
     = new UpgradeVO("unlock_item_clothing4", "Synthetic fibers", "Create and manipulate new, stronger fibers for better protection and easier manufacturing.");
+    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_firstaid]
+    = new UpgradeVO("unlock_item_firstaid", "First Aid", "Heal injuries on the go.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_weapon4]
     = new UpgradeVO("unlock_item_weapon4", "Metal working 2", "Better techniques for metal-working allow better weapons and more tools.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_bag3]

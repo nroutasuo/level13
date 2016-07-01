@@ -57,8 +57,25 @@ function (Ash, PerkVO, PerkConstants) {
             return effect;
         },
         
+        getPerkWithEffect: function (type, min, max) {  
+            var effect = 0;
+            for (var key in this.perks) {
+                if (key === type) {
+                    for (var i = 0; i < this.perks[key].length; i++) {
+                        effect = this.perks[key][i].effect;
+                        if (effect >= min && effect <= max) return this.perks[key][i];
+                    }
+                }
+            }
+            return null;
+        },
+        
+        getItemsByType: function (type) {
+            return this.perks[type] ? this.perks[type] : [];
+        },
+        
         removeItemsByType: function (type) {
-            if (typeof this.perks[type] != 'undefined') {
+            if (typeof this.perks[type] !== 'undefined') {
                 this.perks[type] = [];
             }
         },
@@ -66,7 +83,7 @@ function (Ash, PerkVO, PerkConstants) {
         removeItemsById: function(perkId) {
             for (var key in this.perks) {
                 for( var i = 0; i < this.perks[key].length; i++) {
-                    if (this.perks[key][i].id == perkId) {
+                    if (this.perks[key][i].id === perkId) {
                         this.perks[key].splice(i, 1);
                         return;
                     }

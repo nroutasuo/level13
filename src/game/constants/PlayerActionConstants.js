@@ -484,6 +484,18 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     }
                 },
                 
+                craft_first_aid_kit_1: {
+                    upgrades: {
+                        unlock_item_firstaid: true,
+                    }
+                },
+
+                craft_first_aid_kit_2: {
+                    upgrades: {
+                        upgrade_building_hospital: true,
+                    }
+                },
+                
                 craft_shade1: {
                     upgrades: {
                         unlock_item_shades1: true,
@@ -593,6 +605,19 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     upgrades: {
                         unlock_item_bag3: true,
                     }
+                },
+                
+                use_item_first_aid_kit_1: {
+                    perks: {
+                        Injury: [0.6, 0.99, true],
+                    },
+                    
+                },
+
+                use_item_first_aid_kit_2: {
+                    perks: {
+                        Injury: [0.05, 0.99, true],
+                    },
                 },
                 
                 create_blueprint: {
@@ -739,6 +764,12 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     blueprint: 7,
                     upgrades: {
                         unlock_item_shoe1: true,
+                    }
+                },
+                
+                unlock_item_firstaid: {
+                    upgrades: {
+                        upgrade_worker_collector1: true,
                     }
                 },
                 
@@ -1182,6 +1213,18 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     item_res_silk: 1,
                 },
                 
+                craft_first_aid_kit_1: {
+                    item_res_bands: 2,
+                    resource_water: 10,
+                    resource_herbs: 10
+                },
+
+                craft_first_aid_kit_2: {
+                    item_res_bands: 2,
+                    resource_water: 10,
+                    resource_medicine: 5,
+                },
+                
                 craft_shade1: {
                     resource_metal: 10,
                 },
@@ -1398,6 +1441,10 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 unlock_item_clothing4: {
                     rumours: 637,
                     evidence: 8,
+                },
+
+                unlock_item_firstaid: {
+                    rumours: 775,
                 },
                 
                 upgrade_building_market2: {

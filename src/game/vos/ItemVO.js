@@ -11,17 +11,19 @@ define(['ash'], function (Ash) {
 		
 		equippable: false,
 		craftable: false,
+        useable: false,
 		
 		equipped: false,
 		carried: false,
 	
-        constructor: function (id, name, type, bonus, equippable, craftable, icon, description) {
+        constructor: function (id, name, type, bonus, equippable, craftable, useable, icon, description) {
 			this.id = id;
 			this.name = name;
 			this.type = type;
 			this.bonus = bonus;
 			this.equippable = equippable;
 			this.craftable = craftable;
+            this.useable = useable;
 			this.icon = icon;
 			this.description = description;
 			
@@ -31,7 +33,7 @@ define(['ash'], function (Ash) {
         },
 	
 		clone: function () {
-		    return new ItemVO(this.id, this.name, this.type, this.bonus, this.equippable, this.craftable, this.icon, this.description);
+		    return new ItemVO(this.id, this.name, this.type, this.bonus, this.equippable, this.craftable, this.useable, this.icon, this.description);
 		}
     });
 

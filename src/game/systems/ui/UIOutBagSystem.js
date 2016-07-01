@@ -118,6 +118,7 @@ define([
 			$("#tab-header h2").text("Bag");
 
 			this.updateItems(uniqueItems);
+            this.updateUseItems();
 		},
         
         updateBubble: function () {
@@ -199,6 +200,44 @@ define([
 			if (isActive || this.lastShownCraftableItems < 0) this.lastShownCraftableItems = this.craftableItems;
 			if (isActive || this.lastShownAvailableCraftableItems < 0) this.lastShownAvailableCraftableItems = this.availableCraftableItems;
 		},
+        
+        updateUseItems: function () {
+            var itemDefinitionList = [];
+
+            var itemList;
+            var itemDefinition;
+            for ( var type in ItemConstants.itemDefinitions ) {
+                itemList = ItemConstants.itemDefinitions[type];
+                for (var i in itemList) {
+                    itemDefinition = itemList[i];
+                    if (itemDefinition.useable) {
+                        var actionName = "use_item_" + itemDefinition.id;
+                        var reqsCheck = this.playerActionsHelper.checkAvailability(actionName, false);
+                        if (reqsCheck) {                
+                            itemDefinitionList.push(itemDefinition);
+                        }
+                    }
+                }
+            }
+            
+            $("#header-self-use-items").toggle(itemDefinitionList.length > 0);
+            if ($("#self-use-items table tr").length === itemDefinitionList.length) return;            
+            $("#self-use-items table").empty();
+
+            itemDefinitionList = itemDefinitionList.sort(UIConstants.sortItemsByType);
+
+            var tr;
+            for (var j = 0; j < itemDefinitionList.length; j++) {
+                var itemDefinition = itemDefinitionList[j];
+                var actionName = "use_item_" + itemDefinition.id;
+                tr = "<tr><td><button class='action' action='" + actionName + "'>Use " + itemDefinition.name + "</button></td></tr>";
+                $("#self-use-items table").append(tr);
+            }
+            
+            this.uiFunctions.registerActionButtonListeners("#self-use-items");
+            this.uiFunctions.generateButtonOverlays("#self-use-items");
+            this.uiFunctions.generateCallouts("#self-use-items");
+        },
 
 		updateItemLists: function () {
 			var itemsComponent = this.itemNodes.head.items;

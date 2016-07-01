@@ -40,9 +40,6 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                 resource_concrete: "concrete",
                 resource_herbs: "herbs",
                 resource_tools: "tools",
-                item_res_silk: "spider silk",
-                item_res_bands: "rubber band",
-                item_res_matches: "match",
                 item_exploration_1: "lock pick",
                 rumours: "rumours",
                 evidence: "evidence",
@@ -107,6 +104,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             this.actionToFunctionMap["use_in_inn"] = this.playerActions.useInn;
             // Crafting
             this.actionToFunctionMap["craft"] = this.playerActions.craftItem;
+            this.actionToFunctionMap["use_item"] = this.playerActions.useItem;
             // Non-improvement actions
             this.actionToFunctionMap["enter_camp"] = this.playerActions.enterCamp;
             this.actionToFunctionMap["scavenge"] = this.playerActions.scavenge;
@@ -412,6 +410,10 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             }
         },
         
+        /**
+         * Resets cooldown for an action. Should be called directly after an action is completed and any relevant popup is closed.
+         * @param {type} action action
+         */
         completeAction: function (action) {
             var button = $("button[action='" + action + "']");
             var baseId = this.playerActions.playerActionsHelper.getBaseActionID(action);
