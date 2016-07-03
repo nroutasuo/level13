@@ -41,6 +41,7 @@ define([
             var staminaPerSHealth = staminaPerS - staminaPerSBase;
 			
 			staminaComponent.stamina += time * staminaPerS;
+            staminaComponent.accSources = [];
 			staminaComponent.accSources[0] = { source: "Base", amount: staminaPerSBase };
 			staminaComponent.accSources[1] = { source: "Health", amount: staminaPerSHealth };
 			staminaComponent.accumulation = staminaPerS;
