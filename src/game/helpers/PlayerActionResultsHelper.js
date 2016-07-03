@@ -442,7 +442,7 @@ define([
 			}
 			
 			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0;
-			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0;
+			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.gainedInjuries.length > 0;
 			if (!hasGainedStuff && !hasLostStuff) {
 				if (isFight) div += "<p>Nothing left behind.</p>"
 				else div += "<p>Didn't find anything useful.</p>";

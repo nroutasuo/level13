@@ -2,9 +2,11 @@
 define([
     'ash',
     'game/systems/SaveSystem',
+    'game/constants/PlayerActionConstants',
     'game/constants/LogConstants',
     'game/constants/PositionConstants',
     'game/nodes/player/PlayerResourcesNode',
+    'game/nodes/player/PlayerStatsNode',
     'game/nodes/sector/SectorNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/NearestCampNode',
@@ -17,13 +19,14 @@ define([
     'game/components/sector/SectorStatusComponent',
 	'game/components/player/DeityComponent',
 	'game/components/player/PlayerActionResultComponent',
-    'game/components/common/LogMessagesComponent',
-    'game/vos/ResultVO',
+    'game/components/common/LogMessagesComponent'
 ], function (Ash,
     SaveSystem,
+    PlayerActionConstants,
 	LogConstants,
 	PositionConstants,
 	PlayerResourcesNode,
+	PlayerStatsNode,
 	SectorNode,
 	PlayerLocationNode,
 	NearestCampNode,
@@ -36,12 +39,12 @@ define([
 	SectorStatusComponent,
 	DeityComponent,
     PlayerActionResultComponent,
-	LogMessagesComponent,
-    ResultVO
+	LogMessagesComponent
 ) {
     var FaintingSystem = Ash.System.extend({
 		
 		playerResourcesNodes: null,
+		playerStatsNodes: null,
 		playerLocationNodes: null,
         lastVisitedCampNodes: null,
         nearestCampNodes: null,
@@ -56,6 +59,7 @@ define([
         addToEngine: function (engine) {
             this.engine = engine;
             this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
+            this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             this.lastVisitedCampNodes = engine.getNodeList(LastVisitedCampNode);
             this.nearestCampNodes = engine.getNodeList(NearestCampNode);
@@ -65,6 +69,7 @@ define([
         removeFromEngine: function (engine) {
             this.engine = null;
             this.playerResourcesNodes = null;
+            this.playerStatsNodes = null;
 			this.playerLocationNodes = null;
 			this.lastVisitedCampNodes = null;
             this.nearestCampNodes = null;
@@ -79,20 +84,21 @@ define([
             
 			var hasFood = this.playerResourcesNodes.head.resources.resources.getResource(resourceNames.food) >= 1;
 			var hasWater = this.playerResourcesNodes.head.resources.resources.getResource(resourceNames.water) >= 1;
-			if (hasFood && hasWater) {
+            var hasStamina = this.playerStatsNodes.head.stamina.stamina > PlayerActionConstants.costs.move_sector_east.stamina;
+			if (hasFood && hasWater && hasStamina) {
                 this.log("You rest a bit, eat and drink some. Then you decide to continue.");
                 return;
             }
 			
-			// Player is hungry or thirsty and is out exploring
+			// Player is hungry or thirsty or out of staminaand is out exploring
 			
 			var hasDeity = this.playerResourcesNodes.head.entity.has(DeityComponent);
-			var hasLastVisitedCamp = this.lastVisitedCampNodes.head != null;
-			var hasCampOnLevel = this.nearestCampNodes.head != null;
+			var hasLastVisitedCamp = this.lastVisitedCampNodes.head !== null;
+			var hasCampOnLevel = this.nearestCampNodes.head !== null;
 			
 			// TODO rework texts
 			
-			var msgAdjective = hasWater ? "hungry" : "thirsty";
+			var msgAdjective = hasWater ? (hasFood ? "helpless" : "hungry") : "thirsty";
 			var msgMain = "";
 			var msgLog = "";
 			

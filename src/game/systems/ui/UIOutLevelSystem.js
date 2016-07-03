@@ -13,6 +13,7 @@ define([
     'game/nodes/PlayerLocationNode',
     'game/nodes/sector/CampNode',
     'game/components/player/VisionComponent',
+    'game/components/player/StaminaComponent',
     'game/components/player/ItemsComponent',
     'game/components/sector/PassagesComponent',
     'game/components/sector/SectorControlComponent',
@@ -27,7 +28,7 @@ define([
 ], function (
     Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, ItemConstants,
     PlayerPositionNode, PlayerLocationNode, CampNode,
-    VisionComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
+    VisionComponent, StaminaComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
     MovementOptionsComponent, PositionComponent,
     SectorImprovementsComponent, WorkshopComponent, SectorStatusComponent, EnemiesComponent
 ) {
@@ -201,12 +202,13 @@ define([
 			$("#out-action-move-camp").toggle(hasCamp && !hasCampHere);
 			
 			var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
-			var showDespair =
-				!hasCampHere &&
-				(discoveredResources.indexOf(resourceNames.food) < 0 || discoveredResources.indexOf(resourceNames.water) < 0) &&
-				this.gameState.unlockedFeatures.resources.food &&
-				this.gameState.unlockedFeatures.resources.water &&
-				(this.resourcesHelper.getCurrentStorage().resources.water < 0.5 || this.resourcesHelper.getCurrentStorage().resources.food < 0.5);
+            var isValidDespairRes = 
+                (discoveredResources.indexOf(resourceNames.food) < 0 || discoveredResources.indexOf(resourceNames.water) < 0) &&
+                this.gameState.unlockedFeatures.resources.food &&
+                this.gameState.unlockedFeatures.resources.water &&
+                (this.resourcesHelper.getCurrentStorage().resources.water < 0.5 || this.resourcesHelper.getCurrentStorage().resources.food < 0.5);
+            var isValidDespairStamina = this.playerPosNodes.head.entity.get(StaminaComponent).stamina < PlayerActionConstants.costs.move_sector_east.stamina;
+			var showDespair = !hasCampHere && (isValidDespairRes || isValidDespairStamina);
 			$("#out-action-enter").toggle(hasCampHere);
 			$("#out-action-scout").toggle(this.gameState.unlockedFeatures.vision);
 			$("#out-action-use-spring").toggle(isScouted && featuresComponent.hasSpring);
