@@ -52,7 +52,7 @@ define([
             
             var maxValue = 0;
             var visionPerSec = 0;
-            var accSpeedFactor = Math.max(150 - oldValue, 10) / 100;
+            var accSpeedFactor = Math.max(100 - oldValue, 10) / 200;
             
             vision.accSources = [];
             var addAccumulation = function (sourceName, value) {
@@ -105,10 +105,10 @@ define([
 			
             // Effects of moving from different light environments
 			if (oldMaximum > 0 && maxValue < oldMaximum) {
-				vision.value = 0;
+				vision.value = vision.value - (oldMaximum - maxValue);
 			}
 			if (oldMaximum > 0 && maxValue > oldMaximum && sunlit) {
-				vision = vision * 0.5;
+				vision.value = vision.value - (oldMaximum - maxValue);
 			}
 			
             // Limit to min / max
