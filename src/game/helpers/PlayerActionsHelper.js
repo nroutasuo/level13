@@ -115,6 +115,7 @@ define([
             var baseActionID = this.getBaseActionID(action);
             var playerVision = this.playerStatsNodes.head.vision.value;
             var playerPerks = this.playerResourcesNodes.head.entity.get(PerksComponent);
+            var playerStamina = this.playerStatsNodes.head.stamina.stamina;
             var deityComponent = this.playerResourcesNodes.head.entity.get(DeityComponent);
             
             var sector = otherSector;
@@ -180,10 +181,20 @@ define([
                 }
                 
                 if (requirements.stamina) {
-                    var playerStamina = this.playerStatsNodes.head.stamina.stamina;
                     if (playerStamina < requirements.stamina) {
                         if (log) console.log("WARN: Not enough stamina to perform action [" + action + "]");
                         lowestFraction = Math.min(lowestFraction, playerStamina / requirements.stamina);
+                    }
+                }
+                
+                if (typeof requirements.maxStamina !== "undefined") {
+                    var currentValue = playerStamina === this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
+                    var requiredValue = requirements.maxStamina;
+                    if (currentValue !== requiredValue) {
+                        if (currentValue) reason = "Already fully rested.";
+                        else reason = "Must be fully rested.";
+                        if (log) console.log("WARN: " + reason);
+                        return {value: 0, reason: reason};                        
                     }
                 }
                 
@@ -801,6 +812,7 @@ define([
             switch (action) {
                 case "build_out_collector_food": return improvementNames.collector_food;
                 case "build_out_collector_water": return improvementNames.collector_water;
+                case "build_in_home": return improvementNames.home;
                 case "build_in_house": return improvementNames.house;
                 case "build_in_storage": return improvementNames.storage;
                 case "build_in_hospital": return improvementNames.hospital;

@@ -295,6 +295,12 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                         unlock_building_passage_hole: true,
                     }
                 },
+                
+                build_in_home: {
+                    improvements: {
+                        home: [-1, 1],
+                    }
+                },
             
                 build_in_house: {
                     improvements: {
@@ -312,6 +318,10 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 use_in_campfire: {
                     rumourpoolchecked: false,
                     population: [1, -1],
+                },
+                
+                use_in_home: {
+                    maxStamina: false,
                 },
             
                 build_in_darkfarm: {
@@ -1572,6 +1582,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 use_spring: 30,
                 fightCheck: 20,
                 use_in_campfire: 60,
+                use_in_home: 180,
                 scout_locale_i: 60,
                 scout_locale_u: 60,
                 clear_workshop: 60,
@@ -1583,6 +1594,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
             durations: {
                 use_in_hospital: 60 * 2,
                 use_in_campfire: 5,
+                use_in_home: 60,
             },
             
             randomEncounterProbabilities: {
@@ -1618,8 +1630,8 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 build_out_collector_food: "Accumulates food.",
                 build_out_collector_water: "Accumulates water.",
                 build_out_camp: "A place to rest.",
-                build_in_house: "A place for " + CampConstants.POPULATION_PER_HOUSE + "people to stay.",
-                build_in_house2: "Houses " + CampConstants.POPULATION_PER_HOUSE2 + "people.",
+                build_in_house: "A place for " + CampConstants.POPULATION_PER_HOUSE + " people to stay.",
+                build_in_house2: "Houses " + CampConstants.POPULATION_PER_HOUSE2 + " people.",
                 build_in_storage: "Increases resource storage.",
                 build_in_campfire: "Increases rumour generation and unlocks upgrades.",
                 build_in_library: "Accumulate and store more evidence.",
@@ -1631,6 +1643,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 build_in_barracks: "Allows 10 soldiers.",
                 build_in_lights: "Keep darkness at for good.",
                 build_in_aqueduct: "Water infrastructure to improve collecting efficiency.",
+                use_in_home: "Recover stamina.",
                 use_in_campfire: "Collect rumours from the population.",
                 use_in_hospital: "Heal injuries.",
                 use_in_inn: "Recruit followers.",

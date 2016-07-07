@@ -33,6 +33,7 @@ define(['ash'], function (Ash) {
         
         getDescription: function () {
             switch (this.getLastAction()) {
+                case "use_in_home": return "resting";
                 case "use_in_campfire": return "discussing";
                 case "use_in_hospital": return "recovering";
                 default: return this.action;

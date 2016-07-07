@@ -43,6 +43,9 @@ define([
 				if (improvementsComponent.getCount(improvementNames.campfire) > 0) {
 					this.gameState.unlockedFeatures.upgrades = true;
 				}
+                if (improvementsComponent.getCount(improvementNames.home) < 1) {
+                    improvementsComponent.add(improvementNames.home);
+                }
 				numCamps++;
 			}
 			this.gameState.numCamps = numCamps;

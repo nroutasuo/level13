@@ -55,19 +55,19 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
         
         getStaminaRequirement: function () {
             switch (this.type) {
-                case localeTypes.factory: return 80;
-                case localeTypes.house: return 20;
-                case localeTypes.lab: return 60;
-                case localeTypes.grove: return 10;
-                case localeTypes.market: return 20;
-                case localeTypes.maintenance: return 75;
-                case localeTypes.transport: return 40;
-                case localeTypes.sewer: return 70;
-                case localeTypes.warehouse: return 10;
-                case localeTypes.camp: return 20;
-                case localeTypes.hut: return 30;
-                case localeTypes.hermit: return 40;
-                case localeTypes.caravan: return 40;
+                case localeTypes.factory: return 800;
+                case localeTypes.house: return 200;
+                case localeTypes.lab: return 600;
+                case localeTypes.grove: return 100;
+                case localeTypes.market: return 200;
+                case localeTypes.maintenance: return 750;
+                case localeTypes.transport: return 400;
+                case localeTypes.sewer: return 700;
+                case localeTypes.warehouse: return 100;
+                case localeTypes.camp: return 200;
+                case localeTypes.hut: return 300;
+                case localeTypes.hermit: return 400;
+                case localeTypes.caravan: return 400;
                 default: return 20;
             }
         },

@@ -98,6 +98,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             this.actionToFunctionMap["build_in_cementmill"] = this.playerActions.buildCementMill;
             this.actionToFunctionMap["build_in_radio"] = this.playerActions.buildRadioTower;
             this.actionToFunctionMap["build_in_lights"] = this.playerActions.buildLights;
+            this.actionToFunctionMap["use_in_home"] = this.playerActions.useHome;
             this.actionToFunctionMap["use_in_campfire"] = this.playerActions.useCampfire;
             this.actionToFunctionMap["use_in_hospital"] = this.playerActions.useHospital;
             this.actionToFunctionMap["use_in_hospital2"] = this.playerActions.useHospital2;

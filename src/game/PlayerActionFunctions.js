@@ -504,7 +504,8 @@ define(['ash',
 				var level = this.levelHelper.getLevelEntityForSector(sector);
 				level.add(campComponent);
 				
-                this.buildStorage(true, sector);
+                var improvementsComponent = sector.get(SectorImprovementsComponent);
+                improvementsComponent.add(improvementNames.home);
                 
                 this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "Built a camp.");
                 this.forceResourceBarUpdate();
@@ -723,6 +724,15 @@ define(['ash',
             this.collectCollector("use_out_collector_water", "collector_water");
         },
         
+        useHome: function() {
+            if (this.playerActionsHelper.checkAvailability("use_in_home", true)) {
+                this.playerActionsHelper.deductCosts("use_in_home");
+                this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
+            }
+            this.uiFunctions.completeAction("use_in_home");
+            this.forceStatsBarUpdate();
+        },
+        
         useCampfire: function () {
             var campSector = this.nearestCampNodes.head.entity;
             var campComponent = campSector.get(CampComponent);
@@ -749,6 +759,7 @@ define(['ash',
                 perksComponent.removeItemsByType(PerkConstants.perkTypes.injury);
                 this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL, "Healed all injuries.");
             }
+            this.uiFunctions.completeAction("use_in_hospital");
             this.forceResourceBarUpdate();
             this.gameState.unlockedFeatures.fight = true;
         },

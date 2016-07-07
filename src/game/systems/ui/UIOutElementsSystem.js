@@ -2,6 +2,7 @@ define([
     'ash',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
+    'game/constants/PlayerStatConstants',
     'game/worldcreator/WorldCreator',
     'game/constants/PlayerActionConstants',
     'game/nodes/PlayerLocationNode',
@@ -15,6 +16,7 @@ define([
 ], function (Ash,
     UIConstants,
     ItemConstants,
+    PlayerStatConstants,
 	WorldCreator,
 	PlayerActionConstants,
 	PlayerLocationNode,
@@ -214,7 +216,7 @@ define([
                                 var classes = "action-cost";
                                 var costFraction = playerActionsHelper.checkCost(action, key);
                                 if (costFraction < 1) classes += " action-cost-blocker";
-                                if (isResource(key.split("_")[1]) && value > showStorage || key == "stamina" && value > playerHealth) {
+                                if (isResource(key.split("_")[1]) && value > showStorage || key == "stamina" && value > playerHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR) {
                                     classes += " action-cost-blocker-storage";
                                     hasCostBlockers = true;
                                 }

@@ -13,6 +13,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		passageDownElevator: "Passage Down (E)",
 		passageDownHole: "Passage Down (H)",
 		
+        home: "Tent",
 		house: "Hut",
 		house2: "Tower block",
 		storage: "Storage",

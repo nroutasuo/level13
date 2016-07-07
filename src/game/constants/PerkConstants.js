@@ -40,7 +40,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 	};
     
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.hunger, "Hunger", "Health", -0.5, "img/items/health-negative.png"));
-	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.thirst, "Thist", "Health", -0.5, "img/items/health-negative.png"));
+	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.thirst, "Thirst", "Health", -0.5, "img/items/health-negative.png"));
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.healthBonus, "Healthy", "Health", 1.25, "img/items/health-positive.png"));
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.healthAugment, "Augmented", "Health", 1.25, "img/items/health-positive.png"));
 	PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-big", "Injury (serious)", "Injury", 0.5, "img/items/injury-basic.png"));
