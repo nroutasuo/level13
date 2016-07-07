@@ -184,7 +184,6 @@ define([
 			$("#out-improvements-collector-water .list-storage").text(
 				collectorWaterCapacity > 0 ? (Math.floor(collectorWater.storedResources.water * 10) / 10) + " / " + collectorWaterCapacity : "");
 			
-			$("#out-improvements").toggle(this.gameState.unlockedFeatures.vision);
 			var hasAvailableImprovements = $("#out-improvements table tr:visible").length > 0;
 			var hasAvailableProjects = $("#out-projects tr:visible").length > 0;
 			$("#header-out-improvements").toggle(hasAvailableImprovements);
@@ -225,7 +224,13 @@ define([
 			this.uiFunctions.slideToggleIf("#out-locales", null, isScouted && sectorLocalesComponent.locales.length > 0, 200, 0);
 			this.uiFunctions.slideToggleIf("#table-out-actions-movement-related", null, isScouted > 0, 200, 0);
 			
-			$("#minimap").toggle(hasVision);
+            // hide movement until the player makes a light
+            $("#container-tab-two-out-actions table").toggle(this.gameState.numCamps > 0);
+            $("#container-tab-two-out-actions h3").toggle(this.gameState.numCamps > 0);
+            $("#out-improvements").toggle(this.gameState.unlockedFeatures.vision);
+            $("#out-improvements table").toggle(this.gameState.unlockedFeatures.vision);
+
+            $("#minimap").toggle(hasVision);
             
             var hasMap = this.playerPosNodes.head.entity.get(ItemsComponent).getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
             $("#out-position-indicator").text(hasMap ? posComponent.getPosition().getInGameFormat(false) : "");
@@ -405,7 +410,7 @@ define([
                             break;
                     }
                 } else {
-                    notCampableDesc = "The level seems safe for habitation.";
+                    notCampableDesc = "The level seems safe for habitation. ";
                 }
             }
 			

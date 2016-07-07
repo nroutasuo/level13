@@ -2,6 +2,7 @@
 define(['ash', 'game/constants/CampConstants'], function (Ash, CampConstants) {
     var CampComponent = Ash.Class.extend({
         
+        
         population: 0,
         rumourpool: 0,
         rumourpoolchecked: false,

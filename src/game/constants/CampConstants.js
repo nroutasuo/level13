@@ -6,6 +6,7 @@ define(['ash'], function (Ash) {
         POPULATION_PER_HOUSE2: 10,
         POOL_RUMOURS_PER_POPULATION: 2,
         POPULATION_COOLDOWN_SECONDS: 30,
+        BASE_STORAGE: 50,
         
         // Cost of workers
         CONSUMPTION_WATER_PER_WORKER_PER_S: 0.02,

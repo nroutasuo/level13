@@ -36,7 +36,7 @@ define([
 			staminaComponent.health = Math.max(PlayerStatConstants.HEALTH_MINIMUM, Math.round(20 * Math.abs(healthEffects) * injuryEffects) * 5);
 			
 			var healthVal = staminaComponent.health;
-            var staminaPerS = 20 * staminaComponent.health / 100 / 60 * GameConstants.gameSpeed;
+            var staminaPerS = 2 * staminaComponent.health / 100 / 60 * GameConstants.gameSpeed;
             var staminaPerSBase = staminaPerS / staminaComponent.health * 100;
             var staminaPerSHealth = staminaPerS - staminaPerSBase;
 			
@@ -47,7 +47,7 @@ define([
 			staminaComponent.accumulation = staminaPerS;
 			
 			if (node.position.inCamp) {
-                var staminaPerSCamp = staminaPerS * 3;
+                var staminaPerSCamp = staminaPerS * 9;
 				staminaComponent.stamina += time * staminaPerSCamp;
 				staminaComponent.accSources[2] = { source: "Being in camp", amount: staminaPerSCamp };
 				staminaComponent.accumulation += staminaPerS;

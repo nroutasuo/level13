@@ -130,10 +130,16 @@ define([
             
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var posComponent = this.playerPosNodes.head.position;
+            
+            var showPopulation = campComponent.population > 0 || this.gameState.numCamps > 1;
+            $("#in-population").toggle(showPopulation);
+            if (!showPopulation) return;
+            
             var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
             maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
             var freePopulation = campComponent.getFreePopulation();
             var isPopulationMaxed = campComponent.population >= maxPopulation;
+
             $("#in-population h3").text("Population: " + Math.floor(campComponent.population) + " / " + (maxPopulation));
             $("#in-population p#in-population-status").text("Free workers: " + freePopulation);
             if (!isPopulationMaxed) {
@@ -283,18 +289,24 @@ define([
             
             this.availableBuildingCount = availableBuildingCount;
             if (isActive) this.lastShownAvailableBuildingCount = this.availableBuildingCount;
-            this.visibleBuildingCount = visibleBuildingCount
+            this.visibleBuildingCount = visibleBuildingCount;
             if (isActive) this.lastShownVisibleBuildingCount = this.visibleBuildingCount;
         },
     
         updateEvents: function (isActive) {
+            var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+            if (!campComponent) return;
+            
             var hasEvents = false;
             var eventTimers = this.playerLocationNodes.head.entity.get(CampEventTimersComponent);
             this.currentEvents = 0;
             
+            var showEvents = campComponent.population >= 1 || this.gameState.numCamps > 1;
+            $("#in-occurrences").toggle(showEvents);
+            
             // Traders
             var hasTrader = this.playerLocationNodes.head.entity.has(TraderComponent);
-            if (isActive) {
+            if (isActive && showEvents) {
                 var isTraderLeaving = hasTrader && eventTimers.getEventTimeLeft(OccurrenceConstants.campOccurrenceTypes.trader) < 5;
                 hasEvents = hasEvents || hasTrader;
                 $("#in-occurrences-trader").toggle(hasTrader);
@@ -303,7 +315,7 @@ define([
             
             // Raiders
             var hasRaid = this.playerLocationNodes.head.entity.has(RaidComponent);
-            if (isActive) {
+            if (isActive && showEvents) {
                 $("#in-occurrences-raid").toggle(hasRaid);
                 $("#in-occurrences-raid").toggleClass("event-ending", hasRaid);
             }

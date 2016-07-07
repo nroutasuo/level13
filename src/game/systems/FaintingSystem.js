@@ -132,9 +132,11 @@ define([
 		},
 		
 		isSectorSafe: function (sector) {
-			var sectorResources = sector.get(SectorFeaturesComponent).resources;
-			var sectorSafe = sectorResources.getResource(resourceNames.food) > 0 && sectorResources.getResource(resourceNames.water) > 0;
-			return sectorSafe;
+            var featuresComponent = sector.get(SectorFeaturesComponent);
+			var sectorResourcesSca = featuresComponent.resourcesScavengable;
+			var sectorResourcesCo = featuresComponent.resourcesCollectable;
+			return (sectorResourcesSca.getResource(resourceNames.food) > 0 || sectorResourcesCo.getResource(resourceNames.food) > 0) && 
+                (sectorResourcesSca.getResource(resourceNames.water) > 0 || sectorResourcesCo.getResource(resourceNames.water) > 0);
 		},
 		
 		isSectorKnownSafe: function (sector) {

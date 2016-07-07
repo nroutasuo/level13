@@ -713,7 +713,17 @@ define([
 				
 				for(var key in costs) {
 					if (key != "cost_factor" && key != "cost_source") {
-						result[key] = Math.round(costs[key] * ordinalCostFactor * statusCostFactor);
+                        var value = costs[key];
+                        var costValue = 0;
+                        if (typeof value === "object") {
+                            if (value[1] <= ordinal) costValue = value[0];
+                        }
+                        if (typeof value === "number") {
+                            costValue = value;
+                        }
+                        if (costValue > 0) {
+                            result[key] = Math.round(costValue * ordinalCostFactor * statusCostFactor);
+                        }
 					}
 				}
 			} else {

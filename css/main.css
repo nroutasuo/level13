@@ -1224,6 +1224,7 @@ p.notification {
     border-style: solid;
     padding: 7px 0px 0px 7px !important;
     margin: 5px 0px;
+    min-height: 1em;
 }
 
 .inventorybox ul {

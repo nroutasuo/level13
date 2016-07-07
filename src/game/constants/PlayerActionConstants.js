@@ -299,6 +299,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 build_in_house: {
                     improvements: {
                         camp: [1, -1],
+                        campfire: [1, -1],
                     },
                 },
             
@@ -1007,9 +1008,8 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                 
                 build_out_camp: {
-                    resource_metal: 20,
-                    resource_food: 10,
-                    resource_water: 10,
+                    resource_metal: 10,
+                    resource_food: 2,
                 },
             
                 build_out_bridge: {
@@ -1090,7 +1090,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 
                 build_in_storage: {
                     resource_metal: 50,
-                    resource_rope: 5,
+                    resource_rope: [8, 2],
                     cost_factor: 1.8,
                 },
                 
@@ -1617,7 +1617,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 despair: "Give up. Stop moving. Rest.",
                 build_out_collector_food: "Accumulates food.",
                 build_out_collector_water: "Accumulates water.",
-                build_out_camp: "Build a camp here. Only one camp per level.",
+                build_out_camp: "A place to rest.",
                 build_in_house: "A place for " + CampConstants.POPULATION_PER_HOUSE + "people to stay.",
                 build_in_house2: "Houses " + CampConstants.POPULATION_PER_HOUSE2 + "people.",
                 build_in_storage: "Increases resource storage.",

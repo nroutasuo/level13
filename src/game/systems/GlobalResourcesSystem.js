@@ -11,11 +11,12 @@ define([
     'game/components/tribe/UpgradesComponent',
     'game/components/common/CampComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
+    'game/constants/CampConstants',
     'game/vos/ResourcesVO'
 ], function (Ash,
 	SectorResourcesNode, PlayerResourcesNode, TribeResourcesNode,
 	ResourcesComponent, UpgradesComponent, CampComponent, SectorImprovementsComponent,
-	ResourcesVO) {
+	CampConstants, ResourcesVO) {
     var GlobalResourcesSystem = Ash.System.extend({
 	    
 		playerNodes: null,
@@ -63,7 +64,7 @@ define([
 				if (node.entity.has(CampComponent)) {
 					campImprovements = node.entity.get(SectorImprovementsComponent);
 					hasTradePost = campImprovements.getCount(improvementNames.tradepost) > 0;
-					node.resources.storageCapacity = campImprovements.getCount(improvementNames.storage) * storagePerImprovement;
+					node.resources.storageCapacity = CampConstants.BASE_STORAGE + campImprovements.getCount(improvementNames.storage) * storagePerImprovement;
 					node.resources.limitToStorage(!hasTradePost);
 				}
 			}
