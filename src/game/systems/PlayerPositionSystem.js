@@ -44,6 +44,11 @@ define([
 			this.levelNodes = engine.getNodeList(LevelNode);
 			this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
+            
+            var sys = this;
+            this.playerLocationNodes.nodeAdded.addOnce(function (node) {
+                sys.handleNewSector(node, node.entity.get(PositionComponent).sectorId());
+            });
 		},
 	
 		removeFromEngine: function (engine) {
@@ -129,7 +134,7 @@ define([
 			sectorNode.entity.add(new RevealedComponent());
             
             var sectorPosition = sectorNode.entity.get(PositionComponent);
-            var revealedRange = UIConstants.MAP_MINIMAP_SIZE;
+            var revealedRange = UIConstants.MAP_MINIMAP_SIZE - 2;
             var revealDiameter = Math.ceil(revealedRange - 1) / 2;
             
             var revealedNeighbour;
