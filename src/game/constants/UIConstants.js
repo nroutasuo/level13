@@ -191,7 +191,7 @@ define(['ash',
 		getPerkBonusText: function (perk) {
 			var value = 0;
 			if (perk.effect < 1) {
-				value = "-" + Math.round((1 - perk.effect) * 100) + "%";
+				value = "-" + Math.round(perk.effect * 100) + "%";
 			} else {
 				value = Math.round((perk.effect - 1) * 100) + "%";
 			}

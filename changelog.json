@@ -16,7 +16,7 @@
             },
             {
                 "type": "GD",
-                "summary": "Make stamina regenerate much slower while exploring.",
+                "summary": "Make stamina regenerate much slower while exploring, and add option to recover it in camp",
             },
             {
                 "type": "GD",

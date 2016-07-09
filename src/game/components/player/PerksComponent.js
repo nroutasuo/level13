@@ -96,7 +96,7 @@ function (Ash, PerkVO, PerkConstants) {
 				case PerkConstants.perkTypes.injury:
 					return true;
 				default:
-					return perk.effect < 0;
+					return perk.effect < 1;
 			}
 		},
         

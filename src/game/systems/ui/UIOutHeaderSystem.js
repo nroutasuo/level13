@@ -152,7 +152,7 @@ define([
             var playerStamina = playerStatsNode.stamina.stamina;
 			var playerVision = playerStatsNode.vision.value;
 			var maxVision = playerStatsNode.vision.maximum;
-			var maxStamina = Math.round(playerStatsNode.stamina.health) * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
+			var maxStamina = Math.round(playerStatsNode.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
 			
 			$("#stats-vision").toggle(!isInCamp);
 			$("#stats-stamina").toggle(!isInCamp);

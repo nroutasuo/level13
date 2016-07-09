@@ -1592,7 +1592,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
             },
             
             durations: {
-                use_in_hospital: 60 * 2,
+                use_in_hospital: 60 * 3,
                 use_in_campfire: 5,
                 use_in_home: 60,
             },
