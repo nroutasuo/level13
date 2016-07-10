@@ -33,7 +33,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     
                 fightcheck: {
                     health: 70,
-                    stamina: 10,
+                    stamina: 20,
                     sector: {
                         control: false,
                         enemies: true,
@@ -46,10 +46,6 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                     
                 fight: {
-                    health: 70,
-                    perks: {
-                        Injury: [1, -1],
-                    },
                     busy: false,
                 },
                 
@@ -941,9 +937,9 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 scavenge: {
                     stamina: 3,
                 },
-            
-                fight: {
-                    stamina: 10,
+                
+                flee: {                    
+                    stamina: 20,
                 },
                 
                 clear_workshop: {
@@ -1581,7 +1577,6 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
             cooldowns: {
                 scavenge: 10,
                 use_spring: 30,
-                fightCheck: 20,
                 use_in_campfire: 60,
                 use_in_home: 180,
                 scout_locale_i: 60,

@@ -49,10 +49,10 @@ define([
 			var fightFinished = this.fightNodes.head !== null && this.fightNodes.head.fight.finished === true;
 			var fightWon = fightFinished && this.fightNodes.head.fight.won;
 			
-			$("#out-action-fight-cancel").toggle(!fightActive && !fightFinished);
 			$("#out-action-fight-confirm").toggle(!fightActive && !fightFinished);
 			$("#out-action-fight-close").toggle(fightFinished && !fightWon);
 			$("#out-action-fight-next").toggle(fightFinished && fightWon);
+            $("#out-action-fight-cancel").toggle(!fightFinished && !fightActive);
 			
 			$("#fight-popup-control-info").toggle(!fightActive);
 			$("#fight-popup-bars").toggle(fightActive);
@@ -97,7 +97,6 @@ define([
 			var sectorControlComponent = sector.get(SectorControlComponent);
 			var baseActionID = this.playerActionsHelper.getBaseActionID(encounterComponent.context);
 			var enemies = sectorControlComponent.getCurrentEnemies(FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context));
-            $("#out-action-fight-cancel").text(enemies > 0 ? "flee" : "close");
 		},
 	
 		updateFightPending: function () {

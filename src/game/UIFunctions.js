@@ -249,6 +249,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                 playerActions.fightHelper.endFight();
             });
             $(scope + " #out-action-fight-cancel").click(function (e) {
+                playerActions.flee();
                 playerActions.fightHelper.endFight();
             });
             $(scope + " button[action='leave_camp']").click(function (e) {

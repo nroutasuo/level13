@@ -106,7 +106,7 @@ define([
 				
 				// movement blockers: a few per level
 				var maxBlockers = Math.round(WorldCreatorConstants.SECTORS_PER_LEVEL_MIN / (28 - levelOrdinal)) + levelOrdinal + 5;
-				var numBlockers = WorldCreatorRandom.randomInt(88 + seed * 56 * l + seed % 7, levelOrdinal, maxBlockers);
+				var numBlockers = WorldCreatorRandom.randomInt(88 + seed * 56 * l + seed % 7, levelOrdinal + 1, maxBlockers);
 				var blockerSectors = WorldCreatorRandom.randomSectors(seed * l * l + 1 * 22 * i, levelVO, numBlockers, numBlockers + 1, true, "camp");
 				for (var i = 0; i < blockerSectors.length; i++) {
 					var blockerType = WorldCreatorRandom.randomInt(seed * 5831 / l + seed % 2 + (i + 78) * 4, 1, 4);
@@ -117,7 +117,10 @@ define([
 					var blockedNeighbour = WorldCreatorRandom.getRandomSectorNeighbour(seed * 101 + (i + 70) * (l + 900), levelVO, blockedSector, true);
 					var direction = PositionConstants.getDirectionFrom(blockedSector.position, blockedNeighbour.position);
 					
-                    if (levelOrdinal === 1 && (Math.abs(blockedSector.position.sectorX < 3 || Math.abs(blockedSector.position.sectorY < 3)))) continue;
+                    if (levelOrdinal === 1 && (Math.abs(blockedSector.position.sectorX) < 2 || Math.abs(blockedSector.position.sectorY < 2))) {
+                        console.log("skip blocker at " + blockedSector.position);
+                        continue;
+                    }
 					blockedSector.addBlocker(direction, blockerType);
 					blockedNeighbour.addBlocker(PositionConstants.getOppositeDirection(direction), blockerType);
 				}

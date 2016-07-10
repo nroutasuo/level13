@@ -483,6 +483,13 @@ define(['ash',
 			}
         },
         
+        flee: function () {
+            if (this.playerActionsHelper.checkAvailability("flee", true)) {
+                this.playerActionsHelper.deductCosts("flee");
+                this.uiFunctions.completeAction("flee");
+            }
+        },
+        
         despair: function () {
             if (this.playerActionsHelper.checkAvailability("despair", true)) {
                 this.playerActionsHelper.deductCosts("despair");
