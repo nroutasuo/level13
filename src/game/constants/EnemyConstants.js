@@ -34,10 +34,11 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, PlayerStatConstants
 		},
 		
 		getRequiredStrength: function (levelOrdinal, groundLevelOrdinal, totalLevels) {
-			if (levelOrdinal <= 1) return 0;
+			if (levelOrdinal < 1) return 1;
+			if (levelOrdinal === 1) return FightConstants.FIGHT_PLAYER_BASE_ATT + FightConstants.FIGHT_PLAYER_BASE_DEF;
 			var typicalStrength = this.getTypicalStrength(levelOrdinal, groundLevelOrdinal, totalLevels);
 			var typicalStrengthPrevious = this.getTypicalStrength(levelOrdinal - 1, groundLevelOrdinal, totalLevels);
-			return Math.ceil((typicalStrength + typicalStrength + typicalStrengthPrevious) / 3);
+			return Math.ceil((typicalStrength + typicalStrengthPrevious) / 2);
 		},
 		
 		getTypicalStrength: function (levelOrdinal, groundLevelOrdinal, totalLevels) {
@@ -53,9 +54,13 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, PlayerStatConstants
 			else console.log("WARN: No typical weapon for level ordinal " + levelOrdinal);
 			if (typicalClothing) typicalItems.addItem(typicalClothing, false);
 			else console.log("WARN: No typical clothing for level ordinal " + levelOrdinal);
-			
+            
+            var numCamps = Math.floor(15 / 20 * levelOrdinal);
+            var numFollowers = FightConstants.getMaxFollowers(numCamps);
+            for (var f = 0; f < numFollowers; f++) typicalItems.addItem(ItemConstants.getFollower(13, numCamps));
+            
 			var typicalStamina = {};
-			typicalStamina.health = typicalHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
+			typicalStamina.health = typicalHealth;
 			return FightConstants.getPlayerStrength(typicalStamina, typicalItems);
 		},
 		
@@ -74,9 +79,14 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, PlayerStatConstants
 			var enemyDifficulty;
 			for (var i = 0; i < this.enemyDefinitions[type].length; i++) {
 				enemy = this.enemyDefinitions[type][i];
-				enemyDifficulty = this.enemyDifficulties[enemy.id];
-				if (enemyDifficulty === difficulty) enemies.push(enemy);
-				if (enemyDifficulty === difficulty - 1 && difficulty > 1 && !restrictDifficulty) enemies.push(enemy);
+                    if (enemy && typeof enemy !== "undefined") {
+                        enemyDifficulty = Math.max(this.enemyDifficulties[enemy.id], 1);
+                        if (enemyDifficulty === difficulty) enemies.push(enemy);
+                        if (enemyDifficulty === difficulty - 1 && difficulty > 1 && !restrictDifficulty) enemies.push(enemy);
+                    } else {
+                        console.log("WARN: Enemy defintions missing for type " + type);
+                        console.log(enemyDefinitions[type]);
+                    }
 			}
 			
 			if (enemies.length <= 0) {
@@ -104,10 +114,10 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, PlayerStatConstants
 		getEnemyDifficultyLevel: function (enemy, groundLevelOrdinal, totalLevels) {
 			var stats = enemy.att + enemy.def;
 			var level = 0;
-			var iDifficulty;
+			var levelDifficulty;
 			for (var i = 1; i < totalLevels; i++) {
-				iDifficulty = this.getRequiredStrength(i, groundLevelOrdinal, totalLevels);
-				if (iDifficulty > stats) return level;
+                levelDifficulty = this.getRequiredStrength(i, groundLevelOrdinal, totalLevels);
+				if (levelDifficulty > stats) return level;
 				level = i;
 			}
 			return WorldCreatorConstants.LEVEL_NUMBER_MAX;
@@ -132,9 +142,9 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, PlayerStatConstants
 	
 	// Enemy definitions (level: level ordinal, difficulty: 1-10, attRatio: 0-1, rarity: 0-100)
 	var createEnemy = function (name, type, nouns, activeV, defeatedV, level, normalizedDifficulty, attRatio, rarity) {
-		var reqStr = EnemyConstants.getRequiredStrength(level, 13, 20);
-		var reqStrPrev = EnemyConstants.getRequiredStrength(level - 1, 13, 20);
-		var reqStrNext = EnemyConstants.getRequiredStrength(level + 1, 13, 20);
+		var reqStr = EnemyConstants.getRequiredStrength(level, 0, 20);
+		var reqStrPrev = EnemyConstants.getRequiredStrength(level - 1, 0, 20);
+		var reqStrNext = EnemyConstants.getRequiredStrength(level + 1, 0, 20);
 		var statsMin = Math.max(0, reqStr - (reqStr - reqStrPrev) * 0.5);
 		var statsMax = Math.max(2, reqStr + (reqStrNext - reqStr) * 0.5);
 		if (reqStr === reqStrNext) {
@@ -147,15 +157,17 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, PlayerStatConstants
 		return new EnemyVO(name, type, nouns, activeV, defeatedV, att, def, rarity);
 	};
     
-    EnemyConstants.enemyDefinitions.global.push(createEnemy("giant centipede", "global", [nPest,nAnimal], [aInfest], [dCleared], 1, 4, 0.4, 50));
-    EnemyConstants.enemyDefinitions.global.push(createEnemy("poisonous centipede", "global", [nPest,nAnimal], [aInfest], [dCleared], 2, 4, 0.4, 50));
-    EnemyConstants.enemyDefinitions.global.push(createEnemy("radioactive cockroach", "global", [nPest,nAnimal], [aInfest,aCover], [dCleared], 3, 3, 0.1));
-    EnemyConstants.enemyDefinitions.global.push(createEnemy("cave bat", "global", [nPest,nAnimal], [aInfest], [dCleared,dDrive], 4, 5, 0.6, 20));
-    EnemyConstants.enemyDefinitions.global.push(createEnemy("vampire bat", "global", [nPest,nAnimal], [aInfest], [dCleared,dDrive], 5, 5, 0.7, 70));
-    EnemyConstants.enemyDefinitions.global.push(createEnemy("poisonous spider", "global", [nPest,nAnimal], [aInfest,aGuard], [dKilled], 6, 5, 0.8, 20));
-    EnemyConstants.enemyDefinitions.global.push(createEnemy("gigantic spider", "global", [nPest,nAnimal], [aInfest,aGuard], [dKilled], 7, 5, 0.8, 20));
-    EnemyConstants.enemyDefinitions.global.push(createEnemy("albino salamander", "global", [nPest,nAnimal], [aInfest], [dKilled], 8, 5, 0.6, 50));
-    EnemyConstants.enemyDefinitions.global.push(createEnemy("fire salamander", "global", [nPest,nAnimal], [aInfest], [dKilled], 9, 5, 0.6, 50));
+    EnemyConstants.enemyDefinitions.global.push(createEnemy("huge rat", "inhabited", [nPest, nAnimal], [aInfest], [dCleared], 1, 5, 0.75));
+    EnemyConstants.enemyDefinitions.global.push(createEnemy("poisonous centipede", "global", [nPest,nAnimal], [aInfest], [dCleared], 1, 4, 0.4, 50));
+    EnemyConstants.enemyDefinitions.global.push(createEnemy("giant centipede", "global", [nPest, nAnimal], [aInfest], [dCleared], 2, 2, 0.4, 30));
+    EnemyConstants.enemyDefinitions.global.push(createEnemy("radioactive cockroach", "global", [nPest,nAnimal], [aInfest,aCover], [dCleared], 2, 3, 0.1));
+    EnemyConstants.enemyDefinitions.global.push(createEnemy("cave bat", "global", [nPest,nAnimal], [aInfest], [dCleared,dDrive], 3, 5, 0.6, 20));
+    EnemyConstants.enemyDefinitions.global.push(createEnemy("vampire bat", "global", [nPest,nAnimal], [aInfest], [dCleared,dDrive], 4, 5, 0.7, 70));
+    EnemyConstants.enemyDefinitions.global.push(createEnemy("poisonous spider", "global", [nPest,nAnimal], [aInfest,aGuard], [dKilled], 5, 5, 0.8, 20));
+    EnemyConstants.enemyDefinitions.global.push(createEnemy("gigantic spider", "global", [nPest,nAnimal], [aInfest,aGuard], [dKilled], 6, 5, 0.8, 20));
+    EnemyConstants.enemyDefinitions.global.push(createEnemy("albino salamander", "global", [nPest,nAnimal], [aInfest], [dKilled], 7, 5, 0.6, 50));
+    EnemyConstants.enemyDefinitions.global.push(createEnemy("fire salamander", "global", [nPest,nAnimal], [aInfest], [dKilled], 8, 5, 0.6, 50));
+    EnemyConstants.enemyDefinitions.global.push(createEnemy("duskboar", "global", [nAnimal], [aInfest, aGuard], [dCleared], 9, 4, 0.4, 50));
     EnemyConstants.enemyDefinitions.global.push(createEnemy("rusted guard bot", "global", [nPest,nBot], [aPatrol,aGuard,aInfest], [dDisabled], 10, 5, 0.5, 65));
     EnemyConstants.enemyDefinitions.global.push(createEnemy("ancient guard bot", "global", [nPest,nBot], [aPatrol,aGuard,aInfest], [dDisabled], 11, 5, 0.3, 65));
     EnemyConstants.enemyDefinitions.global.push(createEnemy("robot from a forgotten war", "global", [nPest,nBot], [aGuard,aInfest], [dDisabled], 12, 5, 0.5, 60));
@@ -180,7 +192,6 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, PlayerStatConstants
     EnemyConstants.enemyDefinitions.earth.push(createEnemy("bear", "earth", [nAnimal], [], [dDrive], 14, 6, 0.6));
     EnemyConstants.enemyDefinitions.earth.push(createEnemy("drove of boars", "earth", [nAnimal], [], [dDrive], 15, 5, 0.8));
 		
-    EnemyConstants.enemyDefinitions.inhabited.push(createEnemy("radioactive rat", "inhabited", [nPest, nAnimal], [aInfest], [dCleared], 1, 5, 0.75));
     EnemyConstants.enemyDefinitions.inhabited.push(createEnemy("security bot", "inhabited", [nBot], [aPatrol, aGuard], [dDisabled], 14, 5, 0.3));
     EnemyConstants.enemyDefinitions.inhabited.push(createEnemy("rabid dog", "inhabited", [nPest,nAnimal], [aInfest], [dKilled], 15, 5, 0.6));
     EnemyConstants.enemyDefinitions.inhabited.push(createEnemy("leaking gas pipe", "inhabited", [], [], [dCleared], 16, 4, 0.2, 75));
@@ -191,7 +202,8 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, PlayerStatConstants
     
     EnemyConstants.enemyDefinitions.sunlit.push(createEnemy("thorny bush", "sunlit", [nPest], [aInfest,aCover], [], 1, 5, 0.5));
     EnemyConstants.enemyDefinitions.sunlit.push(createEnemy("overgrown nettle", "sunlit", [nPest], [aInfest,aCover], [], 2, 5, 0.25));
-    EnemyConstants.enemyDefinitions.sunlit.push(createEnemy("hawk", "sunlit", [nPest,nAnimal], [aInfest], [], 4, 5, 0.3, 50));
+    EnemyConstants.enemyDefinitions.sunlit.push(createEnemy("hawk", "sunlit", [nPest,nAnimal], [aInfest], [], 3, 5, 0.3, 50));
+    EnemyConstants.enemyDefinitions.sunlit.push(createEnemy("a group of seagulls", "sunlit", [nPest, nAnimal], [aInfest], [], 4, 6, 0.8, 20));
     EnemyConstants.enemyDefinitions.sunlit.push(createEnemy("scorpion", "sunlit", [nPest,nAnimal], [aInfest], [], 5, 5, 0.7));
     EnemyConstants.enemyDefinitions.sunlit.push(createEnemy("territorial magpie", "sunlit", [nPest,nAnimal], [aInfest], [], 6, 4, 0.7, 35));
     EnemyConstants.enemyDefinitions.sunlit.push(createEnemy("great black pelican", "sunlit", [nPest,nAnimal], [aInfest,aGuard], [dKilled,dDrive], 9, 5, 0.5, 35));

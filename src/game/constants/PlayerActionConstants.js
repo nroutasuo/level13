@@ -322,6 +322,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 
                 use_in_home: {
                     maxStamina: false,
+                    busy: false,
                 },
             
                 build_in_darkfarm: {

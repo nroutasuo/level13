@@ -105,19 +105,19 @@ define([
 				}
 				
 				// movement blockers: a few per level
-				var maxBlockers = WorldCreatorConstants.SECTORS_PER_LEVEL_MIN * levelOrdinal / 25 / 5;
-				var numBlockers = WorldCreatorRandom.randomInt(88 + seed * 56 * l + seed % 7, 1, maxBlockers);
-				if (l === 13) numBlockers = 0;
+				var maxBlockers = Math.round(WorldCreatorConstants.SECTORS_PER_LEVEL_MIN / (28 - levelOrdinal)) + levelOrdinal + 5;
+				var numBlockers = WorldCreatorRandom.randomInt(88 + seed * 56 * l + seed % 7, levelOrdinal, maxBlockers);
 				var blockerSectors = WorldCreatorRandom.randomSectors(seed * l * l + 1 * 22 * i, levelVO, numBlockers, numBlockers + 1, true, "camp");
 				for (var i = 0; i < blockerSectors.length; i++) {
 					var blockerType = WorldCreatorRandom.randomInt(seed * 5831 / l + seed % 2 + (i + 78) * 4, 1, 4);
 					if (l < 14 && blockerType === MovementConstants.BLOCKER_TYPE_WASTE) blockerType = MovementConstants.BLOCKER_TYPE_GAP;
 					if (levelOrdinal < 7 && blockerType === MovementConstants.BLOCKER_TYPE_GAP) blockerType = MovementConstants.BLOCKER_TYPE_GANG;
-					
+                    
 					var blockedSector = blockerSectors[i];
 					var blockedNeighbour = WorldCreatorRandom.getRandomSectorNeighbour(seed * 101 + (i + 70) * (l + 900), levelVO, blockedSector, true);
 					var direction = PositionConstants.getDirectionFrom(blockedSector.position, blockedNeighbour.position);
 					
+                    if (levelOrdinal === 1 && (Math.abs(blockedSector.position.sectorX < 3 || Math.abs(blockedSector.position.sectorY < 3)))) continue;
 					blockedSector.addBlocker(direction, blockerType);
 					blockedNeighbour.addBlocker(PositionConstants.getOppositeDirection(direction), blockerType);
 				}
@@ -236,7 +236,7 @@ define([
 			
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World resources ready.");
-            // WorldCreatorDebug.printWorld(this.world, [ "resourcesCollectable.water" ]);
+            // WorldCreatorDebug.printWorld(this.world, [ "resourcesScavengable.herbs" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "hasSpring" ]);
 		},
 		
@@ -368,7 +368,9 @@ define([
             var l = levelVO.level;
             
             // TODO calculate excursion length better with new exploration vars
-            var excursionLength = ItemConstants.getBag(levelVO.levelOrdinal).bonus;
+            // TODO make world structure not directly dependent on item constants so if they are changed, world doesn't change
+            var equipmentSize = 4*3;
+            var excursionLength = ItemConstants.getBag(levelVO.levelOrdinal).bonus - equipmentSize;
 			var lowerLevelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l - 1);
 			var lowerLowerLevelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l - 2);
 			var lowerLevelExcursionLength = ItemConstants.getBag(lowerLevelOrdinal).bonus;
@@ -566,7 +568,13 @@ define([
 				}
 			}
 			
-			if (enemies.length < 1) enemies.push(globalE[0]);
+			if (enemies.length < 1) {
+                if (globalE.length > 0) {
+                    enemies.push(globalE[0]);
+                } else {
+                    console.log("WARN: No valid enemies defined for sector " + sectorVO.position);
+                }
+            }
 			
 			return enemies;
 		},

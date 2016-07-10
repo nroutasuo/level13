@@ -44,8 +44,10 @@ define(['ash',], function (Ash) {
 				}
 				print = print.substring(0, print.length - 1);
 				print += "\n\n";
+                console.log(print);
+                print = "";
 			}
-			console.log(print.trim());
+			//console.log(print.trim());
 		},
 		
 		printLevel: function (woldVO, levelVO) {

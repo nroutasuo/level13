@@ -74,7 +74,7 @@ define([
             var secondsToComplete = Math.min(100 / enemyDamage, 100 / playerDamage);
             var timeFactor = secondsToComplete / FightConstants.FIGHT_LENGTH_SECONDS;
             
-            var playerRandomDamage = enemy.attRandomFactor * playerDamage;
+            var playerRandomDamage = FightConstants.getRandomDamagePerSec(enemy, playerStamina, itemsComponent);
             
             enemy.hp -= (enemyDamage) * time * timeFactor;
             playerStamina.hp -= (playerDamage + playerRandomDamage) * time * timeFactor;

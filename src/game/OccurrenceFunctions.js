@@ -88,20 +88,11 @@ define(['ash',
 			var campPosition;
 			for (var node = this.campNodes.head; node; node = node.next) {
 				campPosition = node.entity.get(PositionComponent);
-				if (sectorPosition.level == campPosition.level) {
+				if (sectorPosition.level === campPosition.level) {
 					return true;
 				}
 			}
 			return false;
-		},
-		
-		showLevelStrengthWarning: function (sectorEntity) {
-			var positionComponent = sectorEntity.get(PositionComponent);
-			var levelOrdinal = this.gameState.getLevelOrdinal(positionComponent.level);
-			var totalLevels = this.gameState.getTotalLevels();
-			var groundLevelOrdinal = this.gameState.getGroundLevelOrdinal();
-			var requiredStrength = EnemyConstants.getRequiredStrength(levelOrdinal, groundLevelOrdinal, totalLevels);
-			this.showClickOccurrence("Too dangerous for you here.<br/>You need fight strength of at least " + requiredStrength);
 		},
 		
 		showClickOccurrence: function (text) {

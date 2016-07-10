@@ -837,6 +837,9 @@ define(['ash',
                 var item = this.playerActionsHelper.getItemForCraftAction(actionName);
                 itemsComponent.addItem(item.clone(), !this.playerPositionNodes.head.position.inCamp);
                 
+                if (item.type === ItemConstants.itemTypes.weapon)
+                    this.gameState.unlockedFeatures.fight = true;
+                
 				this.gameState.unlockedFeatures.vision = true;
                            
                 this.addLogMessage(LogConstants.MSG_ID_CRAFT_ITEM, "Crafted " + item.name);
@@ -1136,11 +1139,10 @@ define(['ash',
                     break;
                 
                 case "building":
-                    var name = inputParts[1];
-                    var amount = parseInt(inputParts[2]);
-                    var sector = this.playerLocationNodes.head.entity;                
-                    var improvementsComponent = sector.get(SectorImprovementsComponent);
-                    improvementsComponent.add(name, amount);                    
+                    var buildingNmae = inputParts[1];
+                    var buildingAmount = parseInt(inputParts[2]);      
+                    var improvementsComponent = currentSector.get(SectorImprovementsComponent);
+                    improvementsComponent.add(buildingNmae, buildingAmount);                    
                     break;
                 
                 case "tech":
@@ -1164,9 +1166,9 @@ define(['ash',
                     break;
                 
                 case "follower":
-                var follower = ItemConstants.getFollower(this.playerPositionNodes.head.position.level, campCount);
-                    this.addFollower(follower);
-                    break;
+                    var follower = ItemConstants.getFollower(this.playerPositionNodes.head.position.level, campCount);
+                        this.addFollower(follower);
+                        break;
                 
                 case "perk":
                     var perkID = inputParts[1];
@@ -1183,8 +1185,22 @@ define(['ash',
                     break;
                 
                 case "printLevel":
-                    var l = this.playerPositionNodes.head.position.level;
+                    var l = inputParts[1] ? inputParts[1] : this.playerPositionNodes.head.position.level;
                     WorldCreatorDebug.printLevel(WorldCreator.world, WorldCreator.world.getLevel(l));
+                    break;
+                    
+                case "printEnemies":
+                    var enemiesComponent = currentSector.get(EnemiesComponent);
+                    var playerStamina = this.playerStatsNodes.head.stamina;
+                    if (enemiesComponent.possibleEnemies.length < 1) console.log("No enemies here.");
+                    for (var e = 0; e < enemiesComponent.possibleEnemies.length; e++) {
+                        var enemy = enemiesComponent.possibleEnemies[e];
+                        console.log(
+                            enemy.name + " " + 
+                            "(att: " + enemy.att + ", def: " + enemy.def + ", rarity: " + enemy.rarity + ") " +
+                            "chances: " + Math.round(100 * FightConstants.getFightWinProbability(enemy, playerStamina, itemsComponent)) + "% " + 
+                            FightConstants.getFightChances(enemy, playerStamina, itemsComponent));
+                    }
                     break;
             }
         }

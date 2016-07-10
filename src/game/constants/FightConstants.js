@@ -12,7 +12,7 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
 	
 		FIGHT_PLAYER_BASE_ATT: 3,
 		FIGHT_PLAYER_BASE_DEF: 3,
-		FIGHT_LENGTH_SECONDS: 3,
+		FIGHT_LENGTH_SECONDS: 4,
 		MAX_FOLLOWER_MAX: 5,
 		 
 		getPlayerAtt: function (playerStamina, itemsComponent) {
@@ -72,20 +72,45 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             return (enemy.att / playerDef);
         },
         
-        getFightChances: function (enemy, playerStamina, itemComponent) {
-            var avgEnemyDamage = this.getEnemyDamagePerSec(enemy, playerStamina, itemComponent);
-            var avgPlayerDamage = this.getPlayerDamagePerSec(enemy, playerStamina, itemComponent);
-            var damageRatio = avgPlayerDamage / avgEnemyDamage;
-            console.log(enemy.name + " " + Math.round(damageRatio * 100) / 100 + " | " + Math.round(enemy.attRandomFactor * 100) / 100);
-            if (damageRatio > 1.2) {
+        getRandomDamagePerSec: function (enemy, playerStamina, itemsComponent) {
+            var playerDamage = FightConstants.getPlayerDamagePerSec(enemy, playerStamina, itemsComponent);
+            return enemy.attRandomFactor * playerDamage;
+        },
+        
+        getFightChances: function (enemy, playerStamina, itemsComponent) {
+            var probability = this.getFightWinProbability(enemy, playerStamina, itemsComponent);
+            if (probability <= 0.05) {
+                return "deadly";
+            }
+            if (probability < 0.2) {
+                return "very dangerous";
+            }
+            if (probability < 0.4) {
                 return "dangerous";
             }
-            
-            if (damageRatio < 0.8) {
+            if (probability >= 0.95) {
+                return "harmless";
+            }
+            if (probability > 0.8) {
                 return "easy";
+            }
+            if (probability > 0.6) {
+                return "intimidating";
             }
             
             return "risky";
+        },
+        
+        getFightWinProbability: function(enemy, playerStamina, itemsComponent) {
+            var avgEnemyDamage = this.getEnemyDamagePerSec(enemy, playerStamina, itemsComponent);
+            var avgPlayerDamage = this.getPlayerDamagePerSec(enemy, playerStamina, itemsComponent);
+            var randomDamageMin = -0.5 * avgPlayerDamage;
+            var randomDamageMax = 0.5 * avgPlayerDamage;
+            var totalDamageMin = avgPlayerDamage + randomDamageMin;
+            var totalDamageMax = avgPlayerDamage + randomDamageMax;
+            var damageRatioMin = avgEnemyDamage / totalDamageMin;
+            var damageRatioMax = avgEnemyDamage / totalDamageMax;
+            return 1 - ((Math.min(1, damageRatioMax) - Math.min(1, damageRatioMin)) / (damageRatioMax - damageRatioMin));
         },
 		
 		getEnemyLocaleId: function (baseActionID, action, isNeighbour) {
