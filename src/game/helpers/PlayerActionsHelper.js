@@ -83,7 +83,11 @@ define([
                 } else if (costName === "rumours") {
                     this.playerStatsNodes.head.rumours.value -= costAmount;
                 } else if (costName === "favour") {
-                    this.playerStatsNodes.head.entity.get(DeityComponent).favour -= costAmount;
+                    var deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
+                    if (deityComponent) 
+                        deityComponent.favour -= costAmount;
+                    else
+                        console.log("WARN: Trying to deduct favour cost but there's no deity component!");
                 } else if (costName === "evidence") {
                     this.playerStatsNodes.head.evidence.value -= costAmount;
                 } else if (costNameParts[0] === "resource") {
@@ -173,10 +177,16 @@ define([
                 
             if (requirements) {
                 if (requirements.vision) {
-                    if (playerVision < requirements.vision) {
+                    var min = requirements.vision[0];
+                    var max = requirements.vision[1];
+                    if (playerVision < min) {
                         if (log) console.log("WARN: Not enough vision to perform action [" + action + "]");
-                        reason = requirements.vision + " vision needed.";
-                        lowestFraction = Math.min(lowestFraction, playerVision / requirements.vision);
+                        reason = requirements.vision[0] + " vision needed.";
+                        lowestFraction = Math.min(lowestFraction, playerVision / requirements.vision[0]);
+                    } else if (max > 0 && playerVision > max) {
+                        if (log) console.log("WARN: Too much vision for action [" + action + "]");
+                        reason = requirements.vision[1] + " vision max.";
+                        lowestFraction = 0;                        
                     }
                 }
                 
@@ -761,7 +771,8 @@ define([
                         break;
                         
                     case "use_item":
-                        var itemName = action.replace("use_item_", "item_");
+                    case "use_item_fight":
+                        var itemName = action.replace(baseActionID + "_", "item_");
                         var itemCost = {};
                         itemCost[itemName] = 1;
                         return itemCost;
@@ -777,7 +788,9 @@ define([
 		getDescription: function (action) {
 			if (action) {
 				var baseAction = this.getBaseActionID(action);
-				if (PlayerActionConstants.descriptions[baseAction]) {
+                if (PlayerActionConstants.descriptions[action]) {
+                    return PlayerActionConstants.descriptions[action];
+                } else if (PlayerActionConstants.descriptions[baseAction]) {
 					return PlayerActionConstants.descriptions[baseAction];
 				} else {
                     switch(baseAction) {
@@ -795,6 +808,7 @@ define([
 			if (action.indexOf("scout_locale_i") >= 0) return "scout_locale_i";
 			if (action.indexOf("scout_locale_u") >= 0) return "scout_locale_u";
 			if (action.indexOf("craft_") >= 0) return "craft";
+            if (action.indexOf("use_item_fight") >= 0) return "use_item_fight";
             if (action.indexOf("use_item") >= 0) return "use_item";
 			if (action.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
 			if (action.indexOf("create_blueprint_") >= 0) return "create_blueprint";

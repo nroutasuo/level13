@@ -64,7 +64,7 @@ define([
 
         // probabilities of getting item of that type, Math.random() < prob, else artefact
         itemResultTypes: {
-            scavenge: { bag: 0.15, shades: 0.2, light: 0.35, shoes: 0.50, weapon: 0.70, clothing: 0.90, exploration: 0.99 },
+            scavenge: { bag: 0.1, shades: 0.15, light: 0.30, shoes: 0.45, weapon: 0.65, clothing: 0.85, exploration: 0.998 },
             fight: { bag: 0, shades: 0, light: 0, shoes: 0.2, weapon: 0.4, clothing: 0.55, exploration: 0.6 },
             meet: { bag: 0.1, shades: 0.2, light: 0.2, shoes: 0.3, weapon: 0.5, clothing: 0.7, exploration: 0.8 }
         },
@@ -153,7 +153,7 @@ define([
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var playerPos = this.playerLocationNodes.head.position;
             var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
-            var localeDifficulty = localeVO.requirements.vision + localeVO.costs.stamina;
+            var localeDifficulty = localeVO.requirements.vision[0] + localeVO.costs.stamina;
 
             rewards.gainedBlueprintPiece = this.getResultBlueprint(localeVO);
             if (localeCategory === "u") {

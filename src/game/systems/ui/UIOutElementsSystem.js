@@ -121,7 +121,7 @@ define([
                 var action = $(button).attr("action");
 				if (action) {
 					var requirements = playerActionsHelper.getReqs(action);
-					if (requirements) return (playerVision < requirements.vision);
+					if (requirements && requirements.vision) return (playerVision < requirements.vision[0]);
 				}
 				return false;
 			};

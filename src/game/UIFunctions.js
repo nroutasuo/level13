@@ -106,6 +106,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             // Crafting
             this.actionToFunctionMap["craft"] = this.playerActions.craftItem;
             this.actionToFunctionMap["use_item"] = this.playerActions.useItem;
+            this.actionToFunctionMap["use_item_fight"] = this.playerActions.useItemFight;
             // Non-improvement actions
             this.actionToFunctionMap["enter_camp"] = this.playerActions.enterCamp;
             this.actionToFunctionMap["scavenge"] = this.playerActions.scavenge;

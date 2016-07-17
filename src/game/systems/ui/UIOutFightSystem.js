@@ -21,8 +21,8 @@ define([
 		playerStatsNodes: null,
 		fightNodes: null,
 		
-		lastUpdateTimeStamp: 0,
-		updateFrequency: 500,
+		lastProgressBarUpdateTimeStamp: 0,
+		lastProgressBarUpdateFreq: 300,
 	
         constructor: function (uiFunctions, playerActionResultsHelper, playerActionsHelper) {
 			this.uiFunctions = uiFunctions;
@@ -53,6 +53,7 @@ define([
 			$("#out-action-fight-close").toggle(fightFinished && !fightWon);
 			$("#out-action-fight-next").toggle(fightFinished && fightWon);
             $("#out-action-fight-cancel").toggle(!fightFinished && !fightActive);
+            $("#fight-buttons-infightactions").toggle(fightActive);
 			
 			$("#fight-popup-control-info").toggle(!fightActive);
 			$("#fight-popup-bars").toggle(fightActive);
@@ -82,9 +83,9 @@ define([
 			// Enemy info
 			var enemiesComponent = sector.get(EnemiesComponent);
 			var currentEnemy = enemiesComponent.getNextEnemy();
-			var enemyText = currentEnemy.name;
+			var enemyText = " " + currentEnemy.name + " ";
 			enemyText += "<br/>";
-			enemyText += "att: " + currentEnemy.att + " | def: " + currentEnemy.def;
+			enemyText += " att: " + currentEnemy.att + " | def: " + currentEnemy.def + " ";
 			if (fightPending) {
 				var playerStamina = this.playerStatsNodes.head.stamina;
                 var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
@@ -92,11 +93,6 @@ define([
                 enemyText += FightConstants.getFightChances(currentEnemy, playerStamina, itemsComponent);
 			}
 			$("#fight-popup-enemy-info").html(enemyText);
-			
-			// Sector control
-			var sectorControlComponent = sector.get(SectorControlComponent);
-			var baseActionID = this.playerActionsHelper.getBaseActionID(encounterComponent.context);
-			var enemies = sectorControlComponent.getCurrentEnemies(FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context));
 		},
 	
 		updateFightPending: function () {
@@ -113,18 +109,19 @@ define([
 		updateFightActive: function () {
 			$("#fight-results-win-res").empty();
 			$("#fight-results-win-items").empty();
+            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			
+            // update progress bars
 			var timeStamp = new Date().getTime();
-			if (timeStamp - this.lastUpdateTimeStamp > this.updateFrequency) {
+			if (timeStamp - this.lastProgressBarUpdateTimeStamp > this.lastProgressBarUpdateFreq) {
 				var enemy = this.fightNodes.head.fight.enemy;
 				var playerStamina = this.playerStatsNodes.head.stamina;
-				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 				var playerVal = Math.round(playerStamina.hp);
 				var enemyVal = Math.round(enemy.hp);
 				$("#fight-bar-enemy").data("progress-percent", enemyVal);
-				$("#fight-bar-enemy").data("animation-length", this.updateFrequency);
+				$("#fight-bar-enemy").data("animation-length", this.lastProgressBarUpdateFreq);
 				$("#fight-bar-self").data("progress-percent", playerVal);
-				$("#fight-bar-self").data("animation-length", this.updateFrequency);
+				$("#fight-bar-self").data("animation-length", this.lastProgressBarUpdateFreq);
 					
 				var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
 				var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent);
@@ -133,8 +130,27 @@ define([
 				playerText += "att: " + playerAtt + " | def: " + playerDef;
 				$("#fight-popup-self-info").html(playerText);
 				
-				this.lastUpdateTimeStamp = new Date().getTime();
+				this.lastProgressBarUpdateTimeStamp = new Date().getTime();
 			}
+            
+            // update action buttons
+            // TODO remove hard-coding of items usable in fight, instead have fight effect desc in ItemVO (damage, heal, defend, stun)
+            // TODO show fight effect of items in fight ui
+            var itemsToShow = [];
+            if (itemsComponent.getCountById("glowstick_1") > 0) itemsToShow.push(itemsComponent.getItem("glowstick_1"));
+            var numItemsShown = $("#fight-buttons-infightactions button").length;
+            if (numItemsShown !== itemsToShow.length) {
+                $("#fight-buttons-infightactions").empty();
+                for(var i = 0; i < itemsToShow.length; i++) {
+                    var item = itemsToShow[i];
+                    var action = "use_item_fight_" + item.id;                    
+                    $("#fight-buttons-infightactions").append("<button class='action' action='" + action + "'>" + item.name + "</button>");
+                }
+                
+                this.uiFunctions.registerActionButtonListeners("#fight-buttons-infightactions");
+                this.uiFunctions.generateButtonOverlays("#fight-buttons-infightactions");
+                this.uiFunctions.generateCallouts("#fight-buttons-infightactions");
+            }
 		},
 		
 		updateFightFinished: function () {

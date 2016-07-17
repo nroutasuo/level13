@@ -129,7 +129,8 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 			exploration: [
 				new ItemVO("exploration_1", "Lock pick", "Exploration", 0, false, true, false, "img/items/exploration-1.png", "Useful tool when exploring and scouting."),
 				new ItemVO("first_aid_kit_1", "Basic First Aid Kit", "Exploration", 0, false, true, true, "img/items/firstaid-1.png", "Heal light injuries on the go."),
-				new ItemVO("first_aid_kit_2", "Full First Aid Kit", "Exploration", 0, false, true, true, "img/items/firstaid-2.png", "Heal all injuries on the go.")
+				new ItemVO("first_aid_kit_2", "Full First Aid Kit", "Exploration", 0, false, true, true, "img/items/firstaid-2.png", "Heal all injuries on the go."),
+				new ItemVO("glowstick_1", "Glowstick", "Exploration", 0, false, true, true, "img/items/glowstick-1.png", "Temporary light. Can be used as a distraction.")
 			],
 			uniqueEquipment: [
 				new ItemVO("equipment_map", "Map", "UniqueEquipment", 0, false, false, false, "img/items/exploration-map.png", "Helps you navigate the City."),

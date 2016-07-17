@@ -20,7 +20,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
             requirements: {
     
                 scout: {
-                    vision: 30,
+                    vision: [30, -1],
                     sector: {
                         scouted: false,
                     },
@@ -28,7 +28,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                     
                 scavenge: {
-                    vision: 10,
+                    vision: [10, -1],
                 },
                     
                 fightcheck: {
@@ -50,7 +50,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                 
                 clear_workshop: {
-                    vision: 30,
+                    vision: [30, -1],
                     health: 70,
                     sector: {
                         scouted: true,
@@ -58,7 +58,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                 
                 use_spring: {
-                    vision: 10,
+                    vision: [10, -1],
                     sector: {
                         scouted: true,
                     },
@@ -69,7 +69,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                         
                 move_sector_north: {
-                    vision: 10,
+                    vision: [10, -1],
                     sector: {
                         blockerNorth: false,
                     },
@@ -77,7 +77,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                         
                 move_sector_south: {
-                    vision: 10,
+                    vision: [10, -1],
                     sector: {
                         blockerSouth: false,
                     },
@@ -85,7 +85,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                         
                 move_sector_east: {
-                    vision: 10,
+                    vision: [10, -1],
                     sector: {
                         blockerEast: false,
                     },
@@ -93,7 +93,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                         
                 move_sector_west: {
-                    vision: 10,
+                    vision: [10, -1],
                     sector: {
                         blockerWest: false,
                     },
@@ -101,7 +101,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                         
                 move_sector_ne: {
-                    vision: 10,
+                    vision: [10, -1],
                     sector: {
                         blockerNE: false,
                     },
@@ -109,7 +109,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                         
                 move_sector_se: {
-                    vision: 10,
+                    vision: [10, -1],
                     sector: {
                         blockerSE: false,
                     },
@@ -117,7 +117,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                         
                 move_sector_sw: {
-                    vision: 10,
+                    vision: [10, -1],
                     sector: {
                         blockerSW: false,
                     },
@@ -125,7 +125,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                         
                 move_sector_nw: {
-                    vision: 10,
+                    vision: [10, -1],
                     sector: {
                         blockerNW: false,
                     },
@@ -172,7 +172,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                         
                 build_out_camp: {
-                    vision: 30,
+                    vision: [30, -1],
                     improvements: {
                         camp: [0, 1],
                     },
@@ -182,7 +182,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
             
                 build_out_bridge: {
-                    vision: 30,
+                    vision: [30, -1],
                     improvements: {
                         bridge: [0, 1],
                     },
@@ -192,11 +192,11 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
             
                 build_out_collector_food: {
-                    vision: 30,
+                    vision: [30, -1],
                 },
             
                 build_out_collector_water: {
-                    vision: 30,
+                    vision: [30, -1],
                 },
             
                 use_out_collector_food: {
@@ -218,7 +218,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
             
                 build_out_passage_up_stairs:  {
-                    vision: 30,
+                    vision: [30, -1],
                     sector: {
                         passageUp: 3,
                     },
@@ -228,7 +228,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
             
                 build_out_passage_up_elevator:  {
-                    vision: 30,
+                    vision: [30, -1],
                     sector: {
                         passageUp: 2,
                     },
@@ -241,7 +241,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
             
                 build_out_passage_up_hole:  {
-                    vision: 30,
+                    vision: [30, -1],
                     sector: {
                         passageUp: 1,
                     },
@@ -254,7 +254,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
             
                 build_out_passage_down_stairs:  {
-                    vision: 30,
+                    vision: [30, -1],
                     sector: {
                         passageDown: 3,
                     },
@@ -267,7 +267,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
             
                 build_out_passage_down_elevator:  {
-                    vision: 30,
+                    vision: [30, -1],
                     sector: {
                         passageDown: 2,
                     },
@@ -280,7 +280,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
             
                 build_out_passage_down_hole:  {
-                    vision: 30,
+                    vision: [30, -1],
                     sector: {
                         passageDown: 1,
                     },
@@ -504,6 +504,12 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     }
                 },
                 
+                craft_glowstick_1: {
+                    upgrades: {
+                        "upgrade_worker_chemist": true,
+                    }
+                },
+                
                 craft_shade1: {
                     upgrades: {
                         unlock_item_shades1: true,
@@ -615,11 +621,14 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     }
                 },
                 
+                use_item_glowstick_1: {
+                    vision: [0, 30],
+                },
+                
                 use_item_first_aid_kit_1: {
                     perks: {
                         Injury: [0.6, 0.99, true],
-                    },
-                    
+                    }                    
                 },
 
                 use_item_first_aid_kit_2: {
@@ -1226,6 +1235,12 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     resource_herbs: 10
                 },
 
+                craft_glowstick_1: {
+                    resource_metal: 2,
+                    resource_water: 10,
+                    resource_fuel: 10
+                },
+
                 craft_first_aid_kit_2: {
                     item_res_bands: 2,
                     resource_water: 10,
@@ -1643,6 +1658,7 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 use_in_campfire: "Collect rumours from the population.",
                 use_in_hospital: "Heal injuries.",
                 use_in_inn: "Recruit followers.",
+                use_item_glowstick_1: "Create a temporary light in this location.",
                 use_out_collector_food: "Collect accumulated food.",
                 use_out_collector_water: "Collect accumulated water.",
                 leave_camp: "Venture out into the corridors.",

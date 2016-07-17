@@ -62,20 +62,35 @@ define([
             
             var enemy = this.fightNodes.head.fight.enemy;
             var playerStamina = this.playerStatsNodes.head.stamina;
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             
             if (enemy.hp < 0 || playerStamina.hp < 0) {
                 this.endFight();
             }
             
-            var enemyDamage =  FightConstants.getEnemyDamagePerSec(enemy, playerStamina, itemsComponent);
+            this.applyFightStep(time);
+        },
+        
+        applyFightStep: function (time) {
+            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+            var enemy = this.fightNodes.head.fight.enemy;
+            var playerStamina = this.playerStatsNodes.head.stamina;
+            
+            // calculate regular damage
+            var enemyDamage = FightConstants.getEnemyDamagePerSec(enemy, playerStamina, itemsComponent);
             var playerDamage = FightConstants.getPlayerDamagePerSec(enemy, playerStamina, itemsComponent);
-            
-            var secondsToComplete = Math.min(100 / enemyDamage, 100 / playerDamage);
-            var timeFactor = secondsToComplete / FightConstants.FIGHT_LENGTH_SECONDS;
-            
             var playerRandomDamage = FightConstants.getRandomDamagePerSec(enemy, playerStamina, itemsComponent);
+            var secondsToComplete = Math.min(100 / enemyDamage, 100 / playerDamage);
             
+            // calculate one-use-item effects
+            var itemEffects = this.fightNodes.head.fight.itemEffects;
+            if (itemEffects.enemyStunnedSeconds > 0) {
+                playerDamage = 0;
+            }
+            itemEffects.enemyStunnedSeconds -= time;
+            itemEffects.enemyStunnedSeconds = Math.max(itemEffects.enemyStunnedSeconds, 0);
+
+            // apply effects
+            var timeFactor = secondsToComplete / FightConstants.FIGHT_LENGTH_SECONDS;            
             enemy.hp -= (enemyDamage) * time * timeFactor;
             playerStamina.hp -= (playerDamage + playerRandomDamage) * time * timeFactor;
         },

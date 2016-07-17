@@ -12,7 +12,7 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
 	
 		FIGHT_PLAYER_BASE_ATT: 3,
 		FIGHT_PLAYER_BASE_DEF: 3,
-		FIGHT_LENGTH_SECONDS: 4,
+		FIGHT_LENGTH_SECONDS: 5,
 		MAX_FOLLOWER_MAX: 5,
 		 
 		getPlayerAtt: function (playerStamina, itemsComponent) {

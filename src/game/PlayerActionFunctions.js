@@ -15,6 +15,7 @@ define(['ash',
 	'game/constants/TextConstants',
 	'game/vos/PositionVO',
 	'game/nodes/PlayerPositionNode',
+	'game/nodes/FightNode',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/player/PlayerResourcesNode',
 	'game/nodes/PlayerLocationNode',
@@ -52,7 +53,7 @@ define(['ash',
 ], function (Ash,
 	GameConstants, LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UpgradeConstants, UIConstants, TextConstants,
 	PositionVO,
-    PlayerPositionNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
+    PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
 	BagComponent, ItemsComponent, PerksComponent, DeityComponent, AutoPlayComponent, PlayerActionComponent, PlayerActionResultComponent,
@@ -70,6 +71,7 @@ define(['ash',
 		nearestCampNodes: null,
 		lastVisitedCamps: null,
         campNodes: null,
+        fightNodes: null,
         playerStatsNodes: null,
         playerResourcesNodes: null,
         tribeUpgradesNodes: null,
@@ -105,6 +107,7 @@ define(['ash',
             this.nearestCampNodes = engine.getNodeList(NearestCampNode);
             this.lastVisitedCamps = engine.getNodeList(LastVisitedCampNode);
             this.campNodes = engine.getNodeList(CampNode);
+            this.fightNodes = engine.getNodeList(FightNode);
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
@@ -861,7 +864,7 @@ define(['ash',
                 this.playerActionsHelper.deductCosts(actionName);
                 var reqs = this.playerActionsHelper.getReqs(actionName);
 
-                switch(itemId) {
+                switch (itemId) {
                     case "first_aid_kit_1":
                     case "first_aid_kit_2":
                         var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
@@ -882,11 +885,36 @@ define(['ash',
                         this.forceStatsBarUpdate();
                         break;
                         
+                    case "glowstick_1":
+                        console.log("TBI");
+                        break;
+                        
                     default:
                         console.log("WARN: Item not mapped for useItem: " + itemId);
                         break;
                 }
             }
+        },
+        
+        useItemFight: function (itemId) {
+            var actionName = "use_item_fight_" + itemId;
+            if (this.playerActionsHelper.checkAvailability(actionName, true)) {
+                this.playerActionsHelper.deductCosts(actionName);
+
+                switch (itemId) {
+                    case "glowstick_1":
+                        var fightComponent = this.fightNodes.head.fight;
+                        if (fightComponent) {
+                            fightComponent.itemEffects.enemyStunnedSeconds = FightConstants.FIGHT_LENGTH_SECONDS / 4;
+                        }
+                        break;
+
+                    default:
+                        console.log("WARN: Item not mapped for useItemFight: " + itemId);
+                        break;
+                }
+            }
+            
         },
         
         createBlueprint: function (upgradeId) {
@@ -1208,6 +1236,10 @@ define(['ash',
                             "chances: " + Math.round(100 * FightConstants.getFightWinProbability(enemy, playerStamina, itemsComponent)) + "% " + 
                             FightConstants.getFightChances(enemy, playerStamina, itemsComponent));
                     }
+                    break;
+                    
+                default:
+                    console.log("Unknown cheat.");
                     break;
             }
         }
