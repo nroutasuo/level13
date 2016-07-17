@@ -886,7 +886,8 @@ define(['ash',
                         break;
                         
                     case "glowstick_1":
-                        console.log("TBI");
+                        var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+                        sectorStatus.glowStickSeconds = 120;
                         break;
                         
                     default:

@@ -6,6 +6,7 @@ define(['ash'], function (Ash) {
         discoveredResources: [],
         scouted: false,
         localesScouted: [],
+        glowStickSeconds: -100, // not saved
         
         constructor: function () {
             this.discoveredResources = [];

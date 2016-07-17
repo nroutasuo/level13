@@ -4,7 +4,7 @@
             "version": "0.1.3",
             "phase": "alpha",
             "final": false,
-            "updated": "2016-06-22",
+            "updated": "2016-07-15",
             "changes": [
             {
                 "type": "GD",
@@ -20,7 +20,7 @@
             },
             {
                 "type": "GD",
-                "summary": "Add first aid kits.",
+                "summary": "New items: first aid kits and glowsticks.",
             },
             ]
             ]

@@ -240,10 +240,11 @@ define([
 			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
 			var workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			var statusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var hasEnemies = this.playerLocationNodes.head.entity.get(SectorControlComponent).maxSectorEnemies > 0;
 			
 			var description = "<p>";
-			description += this.getTextureDescription(hasVision, featuresComponent);
+			description += this.getTextureDescription(hasVision, featuresComponent, statusComponent);
 			description += this.getFunctionalDescription(hasVision, isScouted, featuresComponent, workshopComponent, hasCampHere, hasCampOnLevel);
 			description += "</p><p>";
 			description += this.getStatusDescription(hasVision, isScouted, hasEnemies, featuresComponent, passagesComponent, hasCampHere, hasCampOnLevel);
@@ -255,7 +256,7 @@ define([
 		},
 		
 		// Sector type, density, repair. Sunlight.
-		getTextureDescription: function (hasVision, featuresComponent) {
+		getTextureDescription: function (hasVision, featuresComponent, statusComponent) {
 			var desc = TextConstants.getSectorDescription(
 				hasVision,
 				featuresComponent.sunlit,
@@ -267,8 +268,15 @@ define([
 				if (hasVision) desc += "The area is swathed in relentless daylight. ";
 				else desc += "The area is swathed in blinding sunlight. ";
 			} else {
-                if (hasVision) desc += "";
-                else desc += "There is no light.";
+                if (statusComponent.glowStickSeconds > -5) {
+                    if (statusComponent.glowStickSeconds < 5)
+                        desc += "The glowstick fades out.";
+                    else
+                        desc += "A glowstick casts a sickly light.";
+                } else {
+                    if (hasVision) desc += "";
+                    else desc += "There is no light.";
+                }
             }
 			
 			return desc;

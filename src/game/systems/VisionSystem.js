@@ -7,7 +7,8 @@ define([
     'game/components/common/PositionComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/SectorFeaturesComponent',
-], function (Ash, GameConstants, ItemConstants, VisionNode, PlayerLocationNode, PositionComponent, SectorImprovementsComponent, SectorFeaturesComponent) {
+    'game/components/sector/SectorStatusComponent',
+], function (Ash, GameConstants, ItemConstants, VisionNode, PlayerLocationNode, PositionComponent, SectorImprovementsComponent, SectorFeaturesComponent, SectorStatusComponent) {
     var VisionSystem = Ash.System.extend({
 	
         gameState: null,
@@ -45,6 +46,7 @@ define([
 			if (!this.locationNodes.head) return;
             
 			var featuresComponent = this.locationNodes.head.entity.get(SectorFeaturesComponent);
+            var statusComponent = this.locationNodes.head.entity.get(SectorStatusComponent);
 			var itemsComponent = node.items;
 			var improvements = this.locationNodes.head.entity.get(SectorImprovementsComponent);
 			var inCamp = node.entity.get(PositionComponent).inCamp;
@@ -96,6 +98,12 @@ define([
 					maxValue = lightItem.bonus + maxValueBase;
 					addAccumulation(lightItem.name, lightItem.bonus / maxValueBase);
 				}
+                if (statusComponent.glowStickSeconds > 0) {
+                    // TODO remove hardcoded glowstick vision value
+                    maxValue = 30 + maxValueBase;
+                    addAccumulation("Glowstick", 30 / maxValueBase);
+                }
+                statusComponent.glowStickSeconds -= time * GameConstants.gameSpeed;
 			}
 			
 			// Increase
