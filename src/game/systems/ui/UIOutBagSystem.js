@@ -245,7 +245,6 @@ define([
 			var items = itemsComponent.getUnique(inCamp);
 			
 			this.updateItemSlot(ItemConstants.itemTypes.light, null);
-			this.updateItemSlot(ItemConstants.itemTypes.shades, null);
 			this.updateItemSlot(ItemConstants.itemTypes.weapon, null);
 			this.updateItemSlot(ItemConstants.itemTypes.clothing, null);
 			this.updateItemSlot(ItemConstants.itemTypes.shoes, null);
@@ -260,7 +259,6 @@ define([
 				var smallSlot = UIConstants.getItemSlot(item, count);
 				switch (item.type) {
 					case ItemConstants.itemTypes.light:
-					case ItemConstants.itemTypes.shades:
 					case ItemConstants.itemTypes.weapon:
 					case ItemConstants.itemTypes.clothing:
 					case ItemConstants.itemTypes.shoes:

@@ -52,9 +52,7 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
             unlock_item_weapon5: "unlock_item_weapon5",
             unlock_item_clothing6: "unlock_item_clothing6",
             unlock_item_weapon6: "unlock_item_weapon6",
-            unlock_item_shades1: "unlock_item_shades1",
             unlock_item_clothing7: "unlock_item_clothing7",
-            unlock_item_shades2: "unlock_item_shades2",
             unlock_item_weapon7: "unlock_item_weapon7",
         },
         
@@ -77,7 +75,7 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
 			12: ["upgrade_worker_chemist", "unlock_item_bag3"],
 			13: ["unlock_building_radio", "upgrade_building_hospital", "unlock_item_weapon6", "unlock_item_clothing7"],
 			14: ["upgrade_building_cementmill", "unlock_building_researchcenter", "unlock_item_weapon7"],
-			15: ["upgrade_building_apothecary", "unlock_item_shades2", "unlock_building_ceiling"],
+			15: ["upgrade_building_apothecary", "unlock_building_ceiling"],
 		},
         
         piecesByBlueprint: {
@@ -216,12 +214,8 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
     = new UpgradeVO("unlock_item_clothing6", "Augmented clothing", "New techniques for improving old designs.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_weapon6]
     = new UpgradeVO("unlock_item_weapon6", "Automatic pistols", "Unlocks a new class of lethal weapons.");
-    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_shades1]
-    = new UpgradeVO("unlock_item_shades1", "Goggles", "Eyewear that offers basic protection from sunlight.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_clothing7]
     = new UpgradeVO("unlock_item_clothing7", "Augmented clothing 2", "New techniques for improving old designs.");
-    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_shades2]
-    = new UpgradeVO("unlock_item_shades2", "Sunglasses", "Eyewear that offers better protection from sunlight.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_weapon7]
     = new UpgradeVO("unlock_item_weapon7", "Jet engine", "Taking weapons and fighting to a new level of destructiveness.");
     

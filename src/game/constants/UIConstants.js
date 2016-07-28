@@ -166,7 +166,6 @@ define(['ash',
 		getItemBonusName: function (item) {
 			switch (item.type) {
 				case ItemConstants.itemTypes.light: return "max vision"; break;
-				case ItemConstants.itemTypes.shades: return "max vision"; break;
 				case ItemConstants.itemTypes.weapon: return "attack"; break;
 				case ItemConstants.itemTypes.clothing: return "defence"; break;
 				case ItemConstants.itemTypes.follower: return "follower strength"; break;
@@ -213,7 +212,6 @@ define(['ash',
 				switch (itemVO.type) {
 					case ItemConstants.itemTypes.bag: typeVal = 1; break;
 					case ItemConstants.itemTypes.light: typeVal = 2; break;
-					case ItemConstants.itemTypes.shades: typeVal = 3; break;
 					case ItemConstants.itemTypes.weapon: typeVal = 4; break;
 					case ItemConstants.itemTypes.clothing: typeVal = 5; break;
 					case ItemConstants.itemTypes.shoes: typeVal = 6; break;

@@ -7,7 +7,6 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 		itemTypes: {
 			// Equippable:
 			light: "Light",
-			shades: "Shades",
 			weapon: "Weapon",
 			clothing: "Clothing",
 			follower: "Follower",
@@ -30,12 +29,6 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 						   "Advanced light for serious travellers."),
 				new ItemVO("light3", "Ghost light", "Light", 125, true, false, false, "img/items/light-ghost.png",
 						   "They say the ghost light can show you more the darker places you go."),
-			],
-			shades: [
-				new ItemVO("shade1", "Basic goggles", "Shades", 25, true, true, false, "img/items/shades-basic.png",
-						   "Improvised protection from sunlight."),
-				new ItemVO("shade2", "Sporty sunglasses", "Shades", 75, true, true, false, "img/items/shades-fancy.png",
-						   "Good sunglasses help keep the blinding rays to a minimum."),
 			],
 			weapon: [
 				new ItemVO("weapon1", "Shiv", "Weapon", 2, true, true, false, "img/items/weapon-shiv.png",
@@ -187,13 +180,6 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
 				return this.itemDefinitions.bag[2];
 			}
 			return this.itemDefinitions.bag[3];
-		},
-		
-		getShades: function (levelOrdinal) {
-			if (levelOrdinal > 18) {
-				return this.itemDefinitions.shades[parseInt(this.itemDefinitions.shades.length) * Math.random()];
-			}
-			return null;
 		},
 		
 		getLight: function (levelOrdinal) {

@@ -64,9 +64,9 @@ define([
 
         // probabilities of getting item of that type, Math.random() < prob, else artefact
         itemResultTypes: {
-            scavenge: { bag: 0.1, shades: 0.15, light: 0.30, shoes: 0.45, weapon: 0.65, clothing: 0.85, exploration: 0.998 },
-            fight: { bag: 0, shades: 0, light: 0, shoes: 0.2, weapon: 0.4, clothing: 0.55, exploration: 0.6 },
-            meet: { bag: 0.1, shades: 0.2, light: 0.2, shoes: 0.3, weapon: 0.5, clothing: 0.7, exploration: 0.8 }
+            scavenge: { bag: 0.1, light: 0.20, shoes: 0.35, weapon: 0.55, clothing: 0.85, exploration: 0.998 },
+            fight: { bag: 0, light: 0, shoes: 0.2, weapon: 0.4, clothing: 0.55, exploration: 0.6 },
+            meet: { bag: 0.1, light: 0.2, shoes: 0.3, weapon: 0.5, clothing: 0.7, exploration: 0.8 }
         },
 
         constructor: function (engine, gameState, playerActionsHelper, resourcesHelper, levelHelper) {
@@ -536,9 +536,7 @@ define([
 				var itemTypeRand = Math.random();
 				if (itemTypeRand < itemTypeLimits.bag) {
 					pendingItem = ItemConstants.getBag(levelOrdinal);
-				} else if (itemTypeRand < itemTypeLimits.shades) {
-					pendingItem = ItemConstants.getShades(levelOrdinal);
-				} else if (itemTypeRand < itemTypeLimits.light) {
+				}  else if (itemTypeRand < itemTypeLimits.light) {
 					pendingItem = ItemConstants.getLight(levelOrdinal);
 				} else if (itemTypeRand < itemTypeLimits.shoes) {
 					item = ItemConstants.getShoes(levelOrdinal);
@@ -611,7 +609,6 @@ define([
                     case ItemConstants.itemTypes.clothing:
                     case ItemConstants.itemTypes.shoes:
                     case ItemConstants.itemTypes.light:
-                    case ItemConstants.itemTypes.shades:
                         itemLoseProbability = 0.55;
                         break;
                     default:

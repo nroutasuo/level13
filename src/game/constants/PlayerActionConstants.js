@@ -510,18 +510,6 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     }
                 },
                 
-                craft_shade1: {
-                    upgrades: {
-                        unlock_item_shades1: true,
-                    }
-                },
-                
-                craft_shade2: {
-                    upgrades: {
-                        unlock_item_shades2: true,
-                    }
-                },
-                
                 craft_weapon1: {
                 },
                 
@@ -902,12 +890,6 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     }
                 },
                 
-                unlock_item_shades1: {
-                    upgrades: {
-                        upgrade_worker_chemist: true,
-                    }
-                },
-                
                 upgrade_building_cementmill: {
                     blueprint: 14,
                     upgrades: {
@@ -924,10 +906,6 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 },
                 
                 upgrade_building_apothecary: {
-                    blueprint: 15,
-                },
-                
-                unlock_item_shades2: {
                     blueprint: 15,
                 },
                 
@@ -1556,11 +1534,6 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                     rumours: 948,
                 },
                 
-                unlock_item_shades1: {
-                    rumours: 1981,
-                    evidence: 6,
-                },
-                
                 upgrade_building_cementmill: {
                     evidence: 9,
                 },
@@ -1577,11 +1550,6 @@ function (Ash, GameConstants, ResourcesVO, ItemConstants, UpgradeConstants, Camp
                 upgrade_building_apothecary: {
                     evidence: 11,
                     favour: 7,
-                },
-                
-                unlock_item_shades2: {
-                    rumours: 4446,
-                    evidence: 11,
                 },
                 
                 unlock_building_ceiling: {

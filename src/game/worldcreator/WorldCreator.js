@@ -204,15 +204,15 @@ define([
                 if (WorldCreatorHelper.isDarkLevel(seed, l) && (l % 2 === 0))
                     fuelSectors = WorldCreatorRandom.randomSectors(seed * l * 2 / 7 * l, levelVO, 1, 2, true, "camp");
                 
-                var maxSprings = 3;
-                var minSprings = 1;
+                var maxSprings = 5;
+                var minSprings = 2;
                 if (l === bottomLevel) {
                     maxSprings = 20;
-                    minSprings = 5;
+                    minSprings = 10;
                 }
                 if (l > topLevel - 3) {
                     maxSprings = 10;
-                    minSprings = 2;
+                    minSprings = 3;
                 }
                 springSectors = WorldCreatorRandom.randomSectors(seed * (l + 1000) / 11, levelVO, minSprings, maxSprings, true);
 				
@@ -240,7 +240,7 @@ define([
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World resources ready.");
             // WorldCreatorDebug.printWorld(this.world, [ "resourcesScavengable.herbs" ]);
-            // WorldCreatorDebug.printWorld(this.world, [ "hasSpring" ]);
+            WorldCreatorDebug.printWorld(this.world, [ "hasSpring" ]);
 		},
 		
 		// locales

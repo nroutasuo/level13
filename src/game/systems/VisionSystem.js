@@ -87,11 +87,14 @@ define([
 			}
 			
 			if (sunlit) {
+                // TODO add share item from new clothing slots
+                /*
 				var shadeItem = itemsComponent.getEquipped(ItemConstants.itemTypes.shades)[0];
 				if (shadeItem && shadeItem.bonus + maxValueBase > maxValue) {
 					maxValue = shadeItem.bonus + maxValueBase;
 					addAccumulation(shadeItem.name, shadeItem.bonus / maxValueBase);
 				}
+                */
 			} else {
 				var lightItem = itemsComponent.getEquipped(ItemConstants.itemTypes.light)[0];
 				if (lightItem && lightItem.bonus + maxValueBase > maxValue) {

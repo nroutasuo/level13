@@ -184,7 +184,9 @@ define(['ash',
                         var sectorUnscouted = !sector.get(SectorStatusComponent).scouted;
                         var sectorUnscoutedLocales = levelHelper.getSectorLocalesForPlayer(sector).length > 0;
                         var sectorCampable = sector.get(SectorStatusComponent).canBuildCamp && !sectorCamp;
-                        var canScoutSector = sector.get(SectorFeaturesComponent).sunlit ? itemsComponent.getCurrentBonus(ItemConstants.itemTypes.shades) > 0 : itemsComponent.getCurrentBonus(ItemConstants.itemTypes.light) > 0;
+                        
+                        // TODO add check for vision protection for sunlit levels
+                        var canScoutSector = itemsComponent.getCurrentBonus(ItemConstants.itemTypes.light) > 0;
 					
                         if (!nearestCampableSector && sectorCampable) nearestCampableSector = sector;
                         if (!nearestUnscoutedLocaleSector && sectorUnscoutedLocales) nearestUnscoutedLocaleSector = sector;

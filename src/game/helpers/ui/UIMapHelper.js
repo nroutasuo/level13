@@ -59,6 +59,11 @@ function (Ash,
             this.icons["workshop"].src = "img/map-workshop.png";
             this.icons["workshop-sunlit"] = new Image();
             this.icons["workshop-sunlit"].src = "img/map-workshop-sunlit.png";
+            this.icons["unknown-sunlit"].src = "img/map-unvisited-sunlit.png";
+            this.icons["water"] = new Image();
+            this.icons["water"].src = "img/map-water.png";
+            this.icons["water-sunlit"] = new Image();
+            this.icons["water-sunlit"].src = "img/map-water.png";
         },
         
         enableScrollingForMap: function (canvasId) {
@@ -218,7 +223,7 @@ function (Ash,
                 for (var x = dimensions.minVisibleX; x <= dimensions.maxVisibleX; x++) {
                     sector = visibleSectors[x + "." + y];
                     sectorStatus = SectorConstants.getSectorStatus(sector, this.levelHelper);
-                    sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).x
+                    sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).x;
                     sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
                     
                     if (this.showSectorOnMap(centered, sector, sectorStatus)) {
@@ -299,6 +304,24 @@ function (Ash,
                 ctx.lineTo(sectorXpx - 1, sectorYpx - 1);
                 ctx.stroke();
             }
+
+            // sector contents: resources
+            var hasWater = false;
+            var discoveredResources = this.sectorHelper.getLocationDiscoveredResources(sector);
+            var resourcesCollectable = sector.get(SectorFeaturesComponent).resourcesCollectable;
+            var r = 0;
+            for ( var key in resourceNames ) {
+                var name = resourceNames[key];
+                var colAmount = resourcesCollectable.getResource(name);
+                if (colAmount > 0 || discoveredResources.indexOf(name) >= 0) {
+                    if (name === "water") hasWater = true;
+                    if (sectorSize > iconSize && isScouted) {
+                        ctx.fillStyle = this.getResourceFill(name);
+                        ctx.fillRect(sectorXpx + 2 + r * 4, sectorYpx + sectorSize - 5, 3, 3);
+                        r++;
+                    }
+                }
+            }
             
             // sector contents: points of interest
             var sectorPassages = sector.get(PassagesComponent);
@@ -322,22 +345,8 @@ function (Ash,
                 ctx.drawImage(this.icons["passage-up" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sectorPassages.passageDown)
                 ctx.drawImage(this.icons["passage-down" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
-                
-            // sector contents: resources
-            if (sectorSize > iconSize && isScouted) {
-                var discoveredResources = this.sectorHelper.getLocationDiscoveredResources(sector);
-                var resourcesCollectable = sector.get(SectorFeaturesComponent).resourcesCollectable;
-                var r = 0;
-                for (var key in resourceNames) {
-                    var name = resourceNames[key];
-                    var colAmount = resourcesCollectable.getResource(name);
-                    if (colAmount > 0 || discoveredResources.indexOf(name) >= 0) {
-                        ctx.fillStyle = this.getResourceFill(name);
-                        ctx.fillRect(sectorXpx + 2 + r * 4, sectorYpx + sectorSize - 5, 3, 3);
-                        r++;
-                    }
-                }
-            }
+            else if (hasWater)
+                ctx.drawImage(this.icons["water" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
         },
         
         drawMovementLinesOnCanvas: function (ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize) {
