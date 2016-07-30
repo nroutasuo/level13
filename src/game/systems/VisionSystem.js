@@ -87,7 +87,7 @@ define([
 			}
 			
 			if (sunlit) {
-                // TODO add share item from new clothing slots
+                // TODO add shade item from new clothing slots
                 /*
 				var shadeItem = itemsComponent.getEquipped(ItemConstants.itemTypes.shades)[0];
 				if (shadeItem && shadeItem.bonus + maxValueBase > maxValue) {
@@ -97,9 +97,9 @@ define([
                 */
 			} else {
 				var lightItem = itemsComponent.getEquipped(ItemConstants.itemTypes.light)[0];
-				if (lightItem && lightItem.bonus + maxValueBase > maxValue) {
-					maxValue = lightItem.bonus + maxValueBase;
-					addAccumulation(lightItem.name, lightItem.bonus / maxValueBase);
+				if (lightItem && lightItem.getBonus(ItemConstants.itemBonusTypes.light) + maxValueBase > maxValue) {
+					maxValue = lightItem.getBonus(ItemConstants.itemBonusTypes.light) + maxValueBase;
+					addAccumulation(lightItem.name, lightItem.getBonus(ItemConstants.itemBonusTypes.light) / maxValueBase);
 				}
                 if (statusComponent.glowStickSeconds > 0) {
                     // TODO remove hardcoded glowstick vision value

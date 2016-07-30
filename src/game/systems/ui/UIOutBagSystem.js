@@ -170,7 +170,8 @@ define([
 			for (var j = 0; j < itemDefinitionList.length; j++) {
 				var itemDefinition = itemDefinitionList[j];
 				var actionName = "craft_" + itemDefinition.id;
-				var isObsolete = itemsComponent.isItemObsolete(itemDefinition);
+                // TODO re-implement item obsolete check after new item slots and bonuses
+				var isObsolete = false;
 				var reqsCheck = this.playerActionsHelper.checkRequirements(actionName, false);
 				if (reqsCheck.value >= 1 || reqsCheck.reason === "Bag full.") {
 					if (isObsolete) countObsolete++;
@@ -182,7 +183,7 @@ define([
 						}
 						this.craftableItems++;
 					
-						if (isAvailable && !itemsComponent.contains(itemDefinition.name) && itemsComponent.getCurrentBonus(itemDefinition.type) < itemDefinition.bonus)
+						if (isAvailable && !itemsComponent.contains(itemDefinition.name) && !itemsComponent.isObsolete(itemDefinition))
 							this.availableCraftableItems++;
 					}
 				}
@@ -246,7 +247,11 @@ define([
 			
 			this.updateItemSlot(ItemConstants.itemTypes.light, null);
 			this.updateItemSlot(ItemConstants.itemTypes.weapon, null);
-			this.updateItemSlot(ItemConstants.itemTypes.clothing, null);
+			this.updateItemSlot(ItemConstants.itemTypes.clothing_over, null);
+			this.updateItemSlot(ItemConstants.itemTypes.clothing_upper, null);
+			this.updateItemSlot(ItemConstants.itemTypes.clothing_lower, null);
+			this.updateItemSlot(ItemConstants.itemTypes.clothing_head, null);
+			this.updateItemSlot(ItemConstants.itemTypes.clothing_hands, null);
 			this.updateItemSlot(ItemConstants.itemTypes.shoes, null);
 			this.updateItemSlot(ItemConstants.itemTypes.bag, null);
 			
@@ -260,7 +265,11 @@ define([
 				switch (item.type) {
 					case ItemConstants.itemTypes.light:
 					case ItemConstants.itemTypes.weapon:
-					case ItemConstants.itemTypes.clothing:
+                    case ItemConstants.itemTypes.clothing_over:
+                    case ItemConstants.itemTypes.clothing_upper:
+                    case ItemConstants.itemTypes.clothing_lower:
+                    case ItemConstants.itemTypes.clothing_head:
+                    case ItemConstants.itemTypes.clothing_hands:
 					case ItemConstants.itemTypes.shoes:
 					case ItemConstants.itemTypes.bag:
 						if (item.equipped) {

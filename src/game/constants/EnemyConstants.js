@@ -50,9 +50,15 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, PlayerStatConstants
 			var typicalItems = new ItemsComponent();
 			var typicalWeapon = ItemConstants.getDefaultWeapon(levelOrdinal, totalLevels);
 			var typicalClothing = ItemConstants.getDefaultClothing(levelOrdinal, totalLevels);
-			if (typicalWeapon) typicalItems.addItem(typicalWeapon, false);
+			
+            if (typicalWeapon) typicalItems.addItem(typicalWeapon, false);
 			else console.log("WARN: No typical weapon for level ordinal " + levelOrdinal);
-			if (typicalClothing) typicalItems.addItem(typicalClothing, false);
+			
+            if (typicalClothing.length > 0 ) {
+                for (var i = 0; i < typicalClothing.length; i++) {
+                    typicalItems.addItem(typicalClothing[i], false);
+                }
+            }
 			else console.log("WARN: No typical clothing for level ordinal " + levelOrdinal);
             
             var numCamps = Math.floor(15 / 20 * levelOrdinal);
@@ -79,14 +85,14 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, PlayerStatConstants
 			var enemyDifficulty;
 			for (var i = 0; i < this.enemyDefinitions[type].length; i++) {
 				enemy = this.enemyDefinitions[type][i];
-                    if (enemy && typeof enemy !== "undefined") {
-                        enemyDifficulty = Math.max(this.enemyDifficulties[enemy.id], 1);
-                        if (enemyDifficulty === difficulty) enemies.push(enemy);
-                        if (enemyDifficulty === difficulty - 1 && difficulty > 1 && !restrictDifficulty) enemies.push(enemy);
-                    } else {
-                        console.log("WARN: Enemy defintions missing for type " + type);
-                        console.log(enemyDefinitions[type]);
-                    }
+                if (enemy && typeof enemy !== "undefined") {
+                    enemyDifficulty = Math.max(this.enemyDifficulties[enemy.id], 1);
+                    if (enemyDifficulty === difficulty) enemies.push(enemy);
+                    if (enemyDifficulty === difficulty - 1 && difficulty > 1 && !restrictDifficulty) enemies.push(enemy);
+                } else {
+                    console.log("WARN: Enemy defintions missing for type " + type);
+                    console.log(enemyDefinitions[type]);
+                }
 			}
 			
 			if (enemies.length <= 0) {

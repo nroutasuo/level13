@@ -16,17 +16,17 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
 		MAX_FOLLOWER_MAX: 5,
 		 
 		getPlayerAtt: function (playerStamina, itemsComponent) {
-			var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemTypes.weapon);
+			var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.weapon);
 			var healthFactor = (playerStamina.health / 100);
 			var playerAtt = Math.floor((this.FIGHT_PLAYER_BASE_ATT + itemBonus) * healthFactor);
-			var followerBonus = itemsComponent.getCurrentBonus(ItemConstants.itemTypes.follower);
+			var followerBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.follower);
             return playerAtt + followerBonus;
         },
 		 
         getPlayerAttDesc: function (playerStamina, itemsComponent) {
-            var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemTypes.weapon);
+            var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.weapon);
             var healthFactor = (playerStamina.health/100);
-            var followerBonus = itemsComponent.getCurrentBonus(ItemConstants.itemTypes.follower);
+            var followerBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.follower);
             var desc = "Player: " + this.FIGHT_PLAYER_BASE_ATT;
             if (itemBonus > 0) desc += "<br>Weapons: " + itemBonus;
             if (healthFactor < 1) desc += "<br>Health: -" + (1-healthFactor) * 100 + "%";
@@ -35,12 +35,12 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
         },
         
         getPlayerDef: function (playerStamina, itemsComponent) {
-            var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemTypes.clothing);
+            var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_def);
             return this.FIGHT_PLAYER_BASE_DEF + itemBonus;
         },
         
         getPlayerDefDesc: function (playerStamina, itemsComponent) {
-            var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemTypes.clothing);
+            var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_def);
             var desc = "Player: " + this.FIGHT_PLAYER_BASE_DEF;
             if (itemBonus > 0 ) desc += "</br>Clothing: " + itemBonus;
             return desc;

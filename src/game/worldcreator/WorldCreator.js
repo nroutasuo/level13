@@ -240,7 +240,7 @@ define([
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World resources ready.");
             // WorldCreatorDebug.printWorld(this.world, [ "resourcesScavengable.herbs" ]);
-            WorldCreatorDebug.printWorld(this.world, [ "hasSpring" ]);
+            // WorldCreatorDebug.printWorld(this.world, [ "hasSpring" ]);
 		},
 		
 		// locales
@@ -373,11 +373,11 @@ define([
             // TODO calculate excursion length better with new exploration vars
             // TODO make world structure not directly dependent on item constants so if they are changed, world doesn't change
             var equipmentSize = 4*3;
-            var excursionLength = ItemConstants.getBag(levelVO.levelOrdinal).bonus - equipmentSize;
+            var excursionLength = ItemConstants.getBag(levelVO.levelOrdinal).getBonus(ItemConstants.itemBonusTypes.bag) - equipmentSize;
 			var lowerLevelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l - 1);
 			var lowerLowerLevelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l - 2);
-			var lowerLevelExcursionLength = ItemConstants.getBag(lowerLevelOrdinal).bonus;
-			var lowerLowerLevelExcursionLength = ItemConstants.getBag(lowerLowerLevelOrdinal).bonus;
+			var lowerLevelExcursionLength = ItemConstants.getBag(lowerLevelOrdinal).getBonus(ItemConstants.itemBonusTypes.bag);
+			var lowerLowerLevelExcursionLength = ItemConstants.getBag(lowerLowerLevelOrdinal).getBonus(ItemConstants.itemBonusTypes.bag);
             levelVO.centralAreaSize = Math.floor(Math.min((excursionLength + lowerLevelExcursionLength + lowerLowerLevelExcursionLength)  / 3 / 5 * 3, WorldCreatorConstants.MAX_CENTRAL_AREA_SIZE));
             
             var pathDirectionNums = [ 1, 1, 1, 1, 2, 2, 2, 3, 3, 4 ];

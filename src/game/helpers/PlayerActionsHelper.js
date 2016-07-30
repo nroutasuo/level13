@@ -661,18 +661,19 @@ define([
             var sector = this.playerLocationNodes.head.entity;
             var passageComponent = sector.get(PassagesComponent);
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-            var items = itemsComponent.getEquipped(ItemConstants.itemTypes.shoes);
+            var shoeBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.movement);
+            if (shoeBonus === 0) shoeBonus = 1;
             
             var factor = 1;
             switch(action) {
                 case "move_level_down":
                     factor += passageComponent.passageDown && passageComponent.passageDown.climbable ? 2 : 0;
-                    if (items.length > 0) factor *= items[0].bonus;
+                    factor *= shoeBonus;
                     break;
                 
                 case "move_level_up":
                     factor += passageComponent.passageUp && passageComponent.passageUp.climbable ? 2 : 0;
-                    if (items.length > 0) factor *= items[0].bonus;
+                    factor *= shoeBonus;
                     break;
                 
                 case "move_sector_north":
@@ -681,7 +682,7 @@ define([
                 case "move_sector_south":
                 case "move_camp_level":
                 case "move_camp_global":
-                    if (items.length > 0) factor *= items[0].bonus;                    
+                    factor *= shoeBonus;                    
                     break;
             }
             
@@ -796,7 +797,7 @@ define([
                     switch(baseAction) {
 						case "craft":
 							var item = this.getItemForCraftAction(action);
-							return item.description + (item.bonus === 0 ? "" : "<hr/>" + UIConstants.getItemBonusName(item) + " " + UIConstants.getItemBonusText(item));
+							return item.description + (item.getTotalBonus() === 0 ? "" : "<hr/>" + UIConstants.getItemBonusName(item) + " " + UIConstants.getItemBonusText(item));
                     }
                 }
 			}

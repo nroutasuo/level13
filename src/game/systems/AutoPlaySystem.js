@@ -186,7 +186,7 @@ define(['ash',
                         var sectorCampable = sector.get(SectorStatusComponent).canBuildCamp && !sectorCamp;
                         
                         // TODO add check for vision protection for sunlit levels
-                        var canScoutSector = itemsComponent.getCurrentBonus(ItemConstants.itemTypes.light) > 0;
+                        var canScoutSector = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.light) > 0;
 					
                         if (!nearestCampableSector && sectorCampable) nearestCampableSector = sector;
                         if (!nearestUnscoutedLocaleSector && sectorUnscoutedLocales) nearestUnscoutedLocaleSector = sector;

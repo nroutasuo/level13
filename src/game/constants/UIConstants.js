@@ -167,7 +167,6 @@ define(['ash',
 			switch (item.type) {
 				case ItemConstants.itemTypes.light: return "max vision"; break;
 				case ItemConstants.itemTypes.weapon: return "attack"; break;
-				case ItemConstants.itemTypes.clothing: return "defence"; break;
 				case ItemConstants.itemTypes.follower: return "follower strength"; break;
 				case ItemConstants.itemTypes.shoes: return "movement cost"; break;
 				case ItemConstants.itemTypes.bag: return "bag size"; break;
@@ -175,6 +174,9 @@ define(['ash',
 		},
 		
 		getItemBonusText: function (item) {
+            // TODO re-implement 
+            return "??";
+            /*
 			if (item.bonus === 0)
 				return "";
 			else if (item.bonus > 1)
@@ -185,6 +187,7 @@ define(['ash',
 				return " +" + Math.round((1-item.bonus)*100) + "%";
 			else
 				return " " + item.bonus; 
+            */
 		},
 		
 		getPerkBonusText: function (perk) {
@@ -213,16 +216,20 @@ define(['ash',
 					case ItemConstants.itemTypes.bag: typeVal = 1; break;
 					case ItemConstants.itemTypes.light: typeVal = 2; break;
 					case ItemConstants.itemTypes.weapon: typeVal = 4; break;
-					case ItemConstants.itemTypes.clothing: typeVal = 5; break;
-					case ItemConstants.itemTypes.shoes: typeVal = 6; break;
-					case ItemConstants.itemTypes.exploration: typeVal = 7; break;
-					case ItemConstants.itemTypes.ingredient: typeVal = 8; break;
+					case ItemConstants.itemTypes.clothing_over: typeVal = 5; break;
+					case ItemConstants.itemTypes.clothing_upper: typeVal = 6; break;
+					case ItemConstants.itemTypes.clothing_lower: typeVal = 7; break;
+					case ItemConstants.itemTypes.clothing_hands: typeVal = 8; break;
+					case ItemConstants.itemTypes.clothing_head: typeVal = 9; break;
+					case ItemConstants.itemTypes.shoes: typeVal = 10; break;
+					case ItemConstants.itemTypes.exploration: typeVal = 11; break;
+					case ItemConstants.itemTypes.ingredient: typeVal = 12; break;
 					case ItemConstants.itemTypes.uniqueEquipment: typeVal = 0; break;
-					case ItemConstants.itemTypes.artefact: typeVal = 9; break;
-					case ItemConstants.itemTypes.note: typeVal = 10; break;
+					case ItemConstants.itemTypes.artefact: typeVal = 13; break;
+					case ItemConstants.itemTypes.note: typeVal = 14; break;
 					case ItemConstants.itemTypes.follower: typeVal = 0; break;
 				}
-				return typeVal * 1000 - itemVO.bonus;
+				return typeVal * 1000 - itemVO.getTotalBonus();
 			};
 			var aVal = getItemSortVal(a);
 			var bVal = getItemSortVal(b);

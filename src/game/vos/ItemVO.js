@@ -1,11 +1,11 @@
-define(['ash'], function (Ash) {
+define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
     
     var ItemVO = Ash.Class.extend({
 	
 		id: "",
 		name: "",
 		type: "",
-		bonus: 0,
+		bonus: null,
 		icon: "",
 		description: "",
 		
@@ -20,7 +20,7 @@ define(['ash'], function (Ash) {
 			this.id = id;
 			this.name = name;
 			this.type = type;
-			this.bonus = bonus;
+			this.bonus = new ItemBonusVO(bonus);
 			this.equippable = equippable;
 			this.craftable = craftable;
             this.useable = useable;
@@ -30,6 +30,14 @@ define(['ash'], function (Ash) {
 			this.equipped = false;
 			this.carried = false;
 			this.itemID = Math.floor(Math.random() * 1000000);
+        },
+        
+        getTotalBonus: function () {
+            return this.bonus ? this.bonus.getTotal() : 0;
+        },
+        
+        getBonus: function (bonusType) {
+            return this.bonus ? this.bonus.getBonus(bonusType) : 0;
         },
 	
 		clone: function () {

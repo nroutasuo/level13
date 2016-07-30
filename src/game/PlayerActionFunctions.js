@@ -801,7 +801,7 @@ define(['ash',
                 } else {
                     var oldFollower = itemsComponent.getWeakestByType(ItemConstants.itemTypes.follower);
                     if (auto) {
-                        if (oldFollower.bonus < follower.bonus) {
+                        if (oldFollower.getBonusTotalBonus() < follower.getTotalBonus()) {
                             itemsComponent.discardItem(oldFollower);
                             this.addFollower(follower);
                             return true;

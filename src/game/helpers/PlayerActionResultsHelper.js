@@ -542,8 +542,6 @@ define([
 					item = ItemConstants.getShoes(levelOrdinal);
 				} else if (itemTypeRand < itemTypeLimits.weapon) {
 					item = ItemConstants.getDefaultWeapon(levelOrdinal, totalLevels);
-				} else if (itemTypeRand < itemTypeLimits.clothing) {
-					item = ItemConstants.getDefaultClothing(levelOrdinal, totalLevels);
 				} else if (itemTypeRand < itemTypeLimits.exploration) {
 					i = Math.floor(Math.random() * ItemConstants.itemDefinitions.exploration.length);
 					item = ItemConstants.itemDefinitions.exploration[i].clone();
@@ -558,7 +556,7 @@ define([
 			
 			// TODO get parts / ingredients depending on the sector
 			// Parts / ingredients
-			var hasBag = currentItems.getCurrentBonus(ItemConstants.itemTypes.bag) > 0;
+			var hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
 			if (hasBag && Math.random() < ingredientProbability) {
 				var amount = parseInt(Math.random() * ingredientProbability * 5) + 1;
 				var ingredient = ItemConstants.getIngredient();
@@ -583,7 +581,7 @@ define([
 
 		getNecessityItem: function (currentItems, levelOrdinal) {
 			var visitedSectors = this.gameState.numVisitedSectors;
-			if (currentItems.getCurrentBonus(ItemConstants.itemTypes.bag) <= 0) {
+			if (currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) <= 0) {
 				return ItemConstants.getBag(levelOrdinal);
 			}
 			if (visitedSectors > 4 && currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) <= 0) {
@@ -606,7 +604,11 @@ define([
                     case ItemConstants.itemTypes.follower:
                         itemLoseProbability = loseFollowerProbability;
                         break;
-                    case ItemConstants.itemTypes.clothing:
+                    case ItemConstants.itemTypes.clothing_over:
+                    case ItemConstants.itemTypes.clothing_upper:
+                    case ItemConstants.itemTypes.clothing_lower:
+                    case ItemConstants.itemTypes.clothing_head:
+                    case ItemConstants.itemTypes.clothing_hands:
                     case ItemConstants.itemTypes.shoes:
                     case ItemConstants.itemTypes.light:
                         itemLoseProbability = 0.55;

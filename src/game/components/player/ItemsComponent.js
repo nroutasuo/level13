@@ -10,20 +10,14 @@ function (Ash, ItemVO, ItemConstants) {
         
         constructor: function () {
             this.items = {};
-            this.items[ItemConstants.itemTypes.light] = [];
-            this.items[ItemConstants.itemTypes.shades] = [];
-            this.items[ItemConstants.itemTypes.weapon] = [];
-            this.items[ItemConstants.itemTypes.clothing] = [];
-            this.items[ItemConstants.itemTypes.follower] = [];
         },
         
         addItem: function (item, isCarried) {
             if (item) {
-                if (typeof this.items[item.type] == 'undefined') {
+                if (typeof this.items[item.type] === 'undefined') {
                     this.items[item.type] = [];
                 }
                 
-                var currentCount = this.getCountById(item.id, true);
                 this.items[item.type].push(item);
                 if (item.equippable) this.autoEquip(item);
                 item.carried = isCarried;
@@ -92,13 +86,6 @@ function (Ash, ItemVO, ItemConstants) {
             }
         },
         
-        isItemObsolete: function (item) {
-            if (!item.equippable) return false;
-            
-            var currentBonus = this.getCurrentBonus(item.type);
-            return item.bonus <= currentBonus;
-        },
-        
         // Equips the given item if it's better than the previous equipment
         autoEquip: function (item) {
             var shouldEquip = item.equippable;
@@ -108,7 +95,7 @@ function (Ash, ItemVO, ItemConstants) {
                     var existingItem = this.items[item.type][i];
                     if (existingItem.itemID === item.itemID) continue;
                     if (existingItem.equipped && !(this.isItemMultiEquippable(existingItem) && this.isItemMultiEquippable(item))) {
-                        var isExistingBonusBetter = existingItem.bonus >= item.bonus;
+                        var isExistingBonusBetter = existingItem.getTotalBonus() >= item.getTotalBonus();
                         if (!isExistingBonusBetter) {
                             this.unequip(existingItem);
                         }
@@ -174,13 +161,15 @@ function (Ash, ItemVO, ItemConstants) {
             return equipped.sort(this.itemSortFunction);
         },
         
-        getCurrentBonus: function (type) {
+        getCurrentBonus: function (bonusType, itemType) {
             var bonus = 0;
             for (var key in this.items) {
-                if (key === type) {
+                if (!itemType || itemType === key) {
                     for (var i = 0; i < this.items[key].length; i++) {
                         var item = this.items[key][i];
-                        if (item.equipped) return item.bonus;
+                        if (item.equipped) {
+                            bonus += item.getBonus(bonusType);
+                        }
                     }
                 }
             }
@@ -243,14 +232,14 @@ function (Ash, ItemVO, ItemConstants) {
         },
         
         getCountByType: function (type) {
-            return this.items[type].length;
+            return this.items[type] ? this.items[type].length : 0;
         },
         
         getWeakestByType: function (type) {
             var weakest = null;
             for (var i = 0; i < this.items[type].length; i++) {
                 var item = this.items[type][i];
-                if (!weakest || item.bonus < weakest.bonus) weakest = item;
+                if (!weakest || item.getTotalBonus() < weakest.getTotalBonus()) weakest = item;
             }
             return weakest;
         },
@@ -259,7 +248,7 @@ function (Ash, ItemVO, ItemConstants) {
             var strongest = null;
             for (var i = 0; i < this.items[type].length; i++) {
                 var item = this.items[type][i];
-                if (!strongest || item.bonus > strongest.bonus) strongest = item;
+                if (!strongest || item.getTotalBonus() > strongest.getTotalBonus()) strongest = item;
             }
             return strongest;
         },
@@ -302,7 +291,7 @@ function (Ash, ItemVO, ItemConstants) {
             if (a.equippable && !b.equippable) return -1;
             if (a.type > b.type) return 1;
             if (a.type < b.type) return -1;
-            return b.bonus - a.bonus;
+            return b.getTotalBonus() - a.getTotalBonus();
         },
         
         customLoadFromSave: function (componentValues) {
