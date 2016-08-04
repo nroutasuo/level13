@@ -45,6 +45,7 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
             unlock_item_weapon2: "unlock_item_weapon2",
             unlock_item_clothing3: "unlock_item_clothing3",
             unlock_item_clothing4: "unlock_item_clothing4",
+            unlock_clothing_warm: "unlock_clothing_warm",
             unlock_item_firstaid: "unlock_item_firstaid",
             unlock_item_weapon4: "unlock_item_weapon4",
             unlock_item_bag3: "unlock_item_bag3",
@@ -60,23 +61,23 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
             calendar: "calendar",
         },
         
-		bluePrintsByCampOrdinal: {
-			1: ["unlock_building_passage_staircase"],
-			2: ["unlock_building_darkfarm", "unlock_building_tradingpost"],
-			3: ["unlock_building_lights", "unlock_building_market", "unlock_building_inn"],
-			4: ["upgrade_worker_scavenger", "unlock_building_library", "unlock_building_passage_hole", "unlock_item_weapon2"],
-			5: ["unlock_building_passage_elevator", "unlock_item_clothing3"],
-			6: ["upgrade_building_market", "unlock_building_smithy"],
-			7: ["unlock_building_bridge", "upgrade_building_storage1", "unlock_item_clothing4"],
-			8: ["upgrade_building_market2", "unlock_item_weapon4"],
-			9: ["upgrade_worker_trapper", "unlock_item_clothing5"],
-			10: ["unlock_building_aqueduct", "unlock_building_apothecary"],
-			11: ["unlock_item_weapon5", "upgrade_building_storage2", "unlock_building_cementmill", "unlock_item_clothing6"],
-			12: ["upgrade_worker_chemist", "unlock_item_bag3"],
-			13: ["unlock_building_radio", "upgrade_building_hospital", "unlock_item_weapon6", "unlock_item_clothing7"],
-			14: ["upgrade_building_cementmill", "unlock_building_researchcenter", "unlock_item_weapon7"],
-			15: ["upgrade_building_apothecary", "unlock_building_ceiling"],
-		},
+        bluePrintsByCampOrdinal: {
+            1: ["unlock_building_passage_staircase"],
+            2: ["unlock_building_darkfarm", "unlock_building_tradingpost"],
+            3: ["unlock_building_inn", "unlock_building_lights", "unlock_building_market"],
+            4: ["unlock_building_library", "unlock_item_weapon2", "unlock_building_passage_hole", "upgrade_worker_scavenger"],
+            5: ["unlock_building_passage_elevator"],
+            6: ["upgrade_building_market", "unlock_building_smithy"],
+            7: ["unlock_item_clothing5", "unlock_building_bridge", "upgrade_building_storage1", "unlock_item_clothing4"],
+            8: ["upgrade_building_market2", "unlock_item_weapon4", "unlock_clothing3"],
+            9: ["upgrade_worker_trapper"],
+            10: ["unlock_item_clothing3", "unlock_building_apothecary", "unlock_building_aqueduct"],
+            11: ["unlock_item_clothing6", "unlock_building_cementmill", "unlock_item_weapon5", "upgrade_building_storage2"],
+            12: ["unlock_item_bag3", "upgrade_worker_chemist"],
+            13: ["upgrade_building_hospital", "unlock_item_clothing7", "unlock_item_weapon6", "unlock_building_radio"],
+            14: ["upgrade_building_cementmill", "unlock_building_researchcenter", "unlock_item_weapon7"],
+            15: ["upgrade_building_apothecary", "unlock_item_clothing8", "unlock_building_ceiling"],
+        },
         
         piecesByBlueprint: {
             unlock_building_darkfarm: 5,
@@ -218,6 +219,8 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
     = new UpgradeVO("unlock_item_clothing7", "Augmented clothing 2", "New techniques for improving old designs.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_weapon7]
     = new UpgradeVO("unlock_item_weapon7", "Jet engine", "Taking weapons and fighting to a new level of destructiveness.");
+    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_clothing_warm]
+    = new UpgradeVO("unlock_clothing_warm", "Textile Arts", "New ways of making textiles.");
     
     return UpgradeConstants;
     

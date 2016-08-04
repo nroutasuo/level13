@@ -39,6 +39,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                 resource_water: "water",
                 resource_concrete: "concrete",
                 resource_herbs: "herbs",
+                resource_medicine: "medicine",
                 resource_tools: "tools",
                 item_exploration_1: "lock pick",
                 rumours: "rumours",

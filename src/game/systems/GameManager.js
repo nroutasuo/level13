@@ -16,6 +16,7 @@ define([
         gameState: null,
         creator: null,
 		saveHelper: null,
+        enemyHelper: null,
 		
 		uiFunctions: null,
 		playerActions: null,
@@ -25,13 +26,14 @@ define([
 		player: null,
 		tribe: null,
 	
-		constructor: function (tickProvider, gameState, creator, uiFunctions, playerActions, saveHelper) {
+		constructor: function (tickProvider, gameState, creator, uiFunctions, playerActions, saveHelper, enemyHelper) {
 			this.tickProvider = tickProvider;
 			this.gameState = gameState;
 			this.creator = creator;
 			this.uiFunctions = uiFunctions;
 			this.playerActions = playerActions;
 			this.saveHelper = saveHelper;
+            this.enemyHelper = enemyHelper;
 		},
 	
 		addToEngine: function (engine) {
@@ -135,7 +137,7 @@ define([
 			if (hasSave) worldSeed = parseInt(loadedGameState.worldSeed);
 			else worldSeed = WorldCreatorRandom.getNewSeed();
 			
-			WorldCreator.prepareWorld(worldSeed);
+			WorldCreator.prepareWorld(worldSeed, this.enemyHelper);
 			this.gameState.worldSeed = worldSeed;
 
 			// Create other entities and fill components

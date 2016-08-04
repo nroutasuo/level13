@@ -31,7 +31,7 @@ define([
             var playerBag = this.playerNodes.head.entity.get(BagComponent);
 			var playerItems = this.playerNodes.head.entity.get(ItemsComponent);
             
-			var playerBagBonus = playerItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag);
+			var playerBagBonus = playerItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag, null, true);
 			playerResources.storageCapacity = Math.max(playerBagBonus, ItemConstants.PLAYER_DEFAULT_STORAGE);
 			playerBag.totalCapacity = Math.max(playerBagBonus, ItemConstants.PLAYER_DEFAULT_STORAGE);
             

@@ -2,10 +2,10 @@ define(['ash'], function (Ash) {
 
     var ItemBonusVO = Ash.Class.extend({
         
-        bonuses: {},
+        bonuses: null,
         
-        constructor: function (bonuses) {
-            this.bonuses = bonuses ? bonuses : {};
+        constructor: function (bonusDict) {
+            this.bonuses = bonusDict ? bonusDict : {};
         },
         
         getTotal: function () {
@@ -18,7 +18,7 @@ define(['ash'], function (Ash) {
 
         getBonus: function (bonusType) {
             return this.bonuses[bonusType] ? this.bonuses[bonusType] : 0;
-        },
+        }
         
     });
 

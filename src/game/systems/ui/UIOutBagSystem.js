@@ -84,7 +84,8 @@ define([
 
 		initItemSlots: function () {
 			$.each($("#container-equipment-slots .item-slot"), function () {
-				var typeDisplay = $(this).attr("id").split("-")[2];
+				var rawType = $(this).attr("id").split("-")[2];
+                var typeDisplay = ItemConstants.itemTypes[rawType].toLowerCase();
 				$(this).append("<span class='item-slot-type'>" + typeDisplay + "</span>");
 				$(this).append("<span class='item-slot-effect'></span>");
 				$(this).append("<div class='item-slot-image'></div>");
@@ -171,8 +172,14 @@ define([
 				var itemDefinition = itemDefinitionList[j];
 				var actionName = "craft_" + itemDefinition.id;
                 // TODO re-implement item obsolete check after new item slots and bonuses
-				var isObsolete = false;
+				var isObsolete = this.isObsolete(itemDefinition);
 				var reqsCheck = this.playerActionsHelper.checkRequirements(actionName, false);
+                var ordinal = this.playerActionsHelper.getOrdinal(actionName);
+                var costFactor = this.playerActionsHelper.getCostFactor(actionName);
+                var hasCosts = Object.keys(this.playerActionsHelper.getCosts(actionName, ordinal, costFactor)).length > 0;
+                if (isActive && !hasCosts) {
+                    console.log("WARN: Craftable item has no costs: " + itemDefinition.id);
+                }
 				if (reqsCheck.value >= 1 || reqsCheck.reason === "Bag full.") {
 					if (isObsolete) countObsolete++;
 					if (!isObsolete || showObsolete) {
@@ -183,7 +190,7 @@ define([
 						}
 						this.craftableItems++;
 					
-						if (isAvailable && !itemsComponent.contains(itemDefinition.name) && !itemsComponent.isObsolete(itemDefinition))
+						if (isAvailable && !itemsComponent.contains(itemDefinition.name) && !this.isObsolete(itemDefinition))
 							this.availableCraftableItems++;
 					}
 				}
@@ -322,6 +329,10 @@ define([
 			$(slot).children(".item-slot-effect").toggle(itemVO !== null);
 			$(slot).toggleClass("item-slot-equipped", itemVO !== null);
 		},
+        
+        isObsolete: function (itemVO) {
+            return false;
+        }
     
 	});
 

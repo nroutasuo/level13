@@ -45,6 +45,8 @@ define([
     'game/UIFunctions',
     'game/helpers/PlayerActionsHelper',
     'game/helpers/PlayerActionResultsHelper',
+    'game/helpers/ItemsHelper',
+    'game/helpers/EnemyHelper',
     'game/helpers/ResourcesHelper',
     'game/helpers/MovementHelper',
     'game/helpers/FightHelper',
@@ -102,6 +104,8 @@ define([
     UIFunctions,
     PlayerActionsHelper,
     PlayerActionResultsHelper,
+    ItemsHelper,
+    EnemyHelper,
     ResourcesHelper,
     MovementHelper,
     FightHelper,
@@ -138,6 +142,8 @@ define([
 			this.tabChangedSignal = new Ash.Signals.Signal();
 	    
 			// Singleton helper modules to be passed to systems that need them
+            this.itemsHelper = new ItemsHelper();
+            this.enemyHelper = new EnemyHelper(this.itemsHelper);
 			this.resourcesHelper = new ResourcesHelper(this.engine);
 			this.playerActionsHelper = new PlayerActionsHelper(this.engine, this.gameState, this.resourcesHelper);
 			this.upgradeEffectsHelper = new UpgradeEffectsHelper(this.playerActionsHelper);
@@ -169,13 +175,15 @@ define([
 			this.playerActionFunctions.occurrenceFunctions = this.occurrenceFunctions;
 			this.playerActionFunctions.uiFunctions = this.uiFunctions;
 			this.fightHelper.uiFunctions = this.uiFunctions;
+            
+            this.enemyHelper.createEnemies();
 			
 			// Systems
 			this.addSystems(new EntityCreator(this.engine));
         },
 	
 		addSystems: function (creator) {
-			this.gameManager = new GameManager(this.tickProvider, this.gameState, creator, this.uiFunctions, this.playerActionFunctions, this.saveHelper);
+			this.gameManager = new GameManager(this.tickProvider, this.gameState, creator, this.uiFunctions, this.playerActionFunctions, this.saveHelper, this.enemyHelper);
 			this.engine.addSystem(this.gameManager, SystemPriorities.preUpdate);
 			
 			if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t initializing systems");

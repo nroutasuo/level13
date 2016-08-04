@@ -29,7 +29,7 @@ define([
         
 		world: null,
 		
-		prepareWorld: function (seed) {
+		prepareWorld: function (seed, enemyHelper) {
 			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
             this.world = new WorldVO(seed, topLevel, bottomLevel);
@@ -43,7 +43,7 @@ define([
 			// locales
 			this.prepareWorldLocales(seed, topLevel, bottomLevel);
 			// enemies
-			this.prepareWorldEnemies(seed, topLevel, bottomLevel);
+			this.prepareWorldEnemies(seed, topLevel, bottomLevel, enemyHelper);
 		},
 		
 		// campable sectors and levels, movement blockers, passages, sunlight
@@ -331,7 +331,7 @@ define([
 		},
 		
 		// enemies
-		prepareWorldEnemies: function (seed, topLevel, bottomLevel) {
+		prepareWorldEnemies: function (seed, topLevel, bottomLevel, enemyHelper) {
 			for (var l = topLevel; l >= bottomLevel; l--) {
                 var levelVO = this.world.getLevel(l);
 				for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
@@ -345,7 +345,7 @@ define([
                         var hasSectorEnemies = !sectorVO.camp && WorldCreatorRandom.random(l * x * seed + y * seed + 4848) > 0.2;
                         var hasLocaleEnemies = sectorVO.hasBlockerOfType(MovementConstants.BLOCKER_TYPE_GANG) || sectorVO.workshop;
                         if (hasSectorEnemies || hasLocaleEnemies) {
-							sectorVO.enemies = this.generateEnemies(seed, topLevel, bottomLevel, sectorVO);
+							sectorVO.enemies = this.generateEnemies(seed, topLevel, bottomLevel, sectorVO, enemyHelper);
 						}
                         
                         // workshop and locale enemies (counts)
@@ -516,7 +516,7 @@ define([
 			if (PositionConstants.isPositionInArea(sectorPos, levelVO.centralAreaSize)) sectorsCentral.push(sectorPos);
 		},
 		
-		generateEnemies: function (seed, topLevel, bottomLevel, sectorVO) {
+		generateEnemies: function (seed, topLevel, bottomLevel, sectorVO, enemyHelper) {
 			var l = sectorVO.position.level;
 			var x = sectorVO.position.sectorX;
 			var y = sectorVO.position.sectorY;
@@ -532,7 +532,7 @@ define([
 				return r > threshold;
 			};
 		
-			var globalE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.global, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+			var globalE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.global, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
 			var enemy;
 			for (var e in globalE) {
 				enemy = globalE[e];
@@ -540,7 +540,7 @@ define([
 			}
 			
 			if (l <= bottomLevel + 1) {
-				var earthE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.earth, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+				var earthE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.earth, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
 				for (var e in earthE) {
 					enemy = earthE[e];
 					if (randomEnemyCheck(333 * (e + 1), enemy)) enemies.push(enemy);
@@ -548,7 +548,7 @@ define([
 			}
 			
 			if (sectorVO.sunlit) {
-				var sunE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.sunlit, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+				var sunE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.sunlit, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
 				for (var e in sunE) {
 					enemy = sunE[e];
 					if (randomEnemyCheck(6666 * (e + 4) + 2, enemy)) enemies.push(enemy);
@@ -556,7 +556,7 @@ define([
 			}
 			
 			if (l >= topLevel - 10) {
-				var inhabitedE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.inhabited, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+				var inhabitedE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.inhabited, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
 				for (var e in inhabitedE) {
 					enemy = inhabitedE[e];
 					if (randomEnemyCheck(777 * (e + 2) ^ 2, enemy)) enemies.push(enemy);
@@ -564,7 +564,7 @@ define([
 			}
 			
 			if (l >= topLevel - 5) {
-				var urbanE = EnemyConstants.getEnemies(EnemyConstants.enemyTypes.urban, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+				var urbanE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.urban, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
 				for (var e in urbanE) {
 					enemy = urbanE[e];
 					if (randomEnemyCheck(99 * (e + 1), enemy)) enemies.push(enemy);
