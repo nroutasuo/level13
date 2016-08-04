@@ -47,81 +47,81 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
                     "They say the ghost light can show you more the darker places you go."),
             ],
             weapon: [
-                new ItemVO("weapon1", "Shiv", "Weapon", {"fight_att": 2}, true, true, false, "img/items/weapon-shiv.png",
+                new ItemVO("weapon1", "Shiv", "Weapon", {"fight attack": 2}, true, true, false, "img/items/weapon-shiv.png",
                     "Improvised sharp poking implement."),
-                new ItemVO("weapon2", "Spear", "Weapon", {"fight_att": 5}, true, true, false, "img/items/weapon-shiv.png",
+                new ItemVO("weapon2", "Spear", "Weapon", {"fight attack": 5}, true, true, false, "img/items/weapon-shiv.png",
                     "Old-fashioned but reliable weapon."),
-                new ItemVO("weapon3", "Crossbow", "Weapon", {"fight_att": 11}, true, true, false, "img/items/weapon-shiv.png",
+                new ItemVO("weapon3", "Crossbow", "Weapon", {"fight attack": 11}, true, true, false, "img/items/weapon-shiv.png",
                     "A deadly ranged weapon consisting of a horizontal limb assembly mounted on a stock that shoots projectiles."),
-                new ItemVO("weapon4", "Pistol", "Weapon", {"fight_att": 24}, true, true, false, "img/items/weapon-bomb.png",
+                new ItemVO("weapon4", "Pistol", "Weapon", {"fight attack": 24}, true, true, false, "img/items/weapon-bomb.png",
                     "A crude single-shot pistol, like a hand-held miniature cannon."),
-                new ItemVO("weapon5", "Revolver", "Weapon", {"fight_att": 52}, true, true, false, "img/items/weapon-bomb.png",
+                new ItemVO("weapon5", "Revolver", "Weapon", {"fight attack": 52}, true, true, false, "img/items/weapon-bomb.png",
                     "A more sophisticated handgun that allows several shots before reloading."),
-                new ItemVO("weapon6", "Custom SMG", "Weapon", {"fight_att": 116}, true, true, false, "img/items/weapon-bomb.png",
+                new ItemVO("weapon6", "Custom SMG", "Weapon", {"fight attack": 116}, true, true, false, "img/items/weapon-bomb.png",
                     "It may be made from scrap metal but it is still a serious weapon."),
-                new ItemVO("weapon7", "Improvised bazooka", "Weapon", {"fight_att": 225}, true, true, false, "img/items/weapon-bomb.png",
+                new ItemVO("weapon7", "Improvised bazooka", "Weapon", {"fight attack": 225}, true, true, false, "img/items/weapon-bomb.png",
                     "Powerful but heavy and somewhat unreliable construction of pipes, reclaimed weapon parts and improvised ammunition."),
             ],
             clothing_over: [
-                new ItemVO("clothing_over_1", "Warm Coat", "Armor", {"fight_def": 1, warmth: 20}, true, true, false, "img/items/clothing-2.png",
+                new ItemVO("clothing_over_1", "Warm Coat", "Armor", {"fight defence": 1, warmth: 20}, true, true, false, "img/items/clothing-2.png",
                     "Something against the chill."),
-                new ItemVO("clothing_over_2", "Biker jacket", "Armor", {"fight_def": 6, warmth: 10, res_radiation: 3, res_poison: 3}, true, false, false, "img/items/clothing-2.png",
+                new ItemVO("clothing_over_2", "Biker jacket", "Armor", {"fight defence": 6, warmth: 10, res_radiation: 3, "poison protection": 3}, true, false, false, "img/items/clothing-2.png",
                     "Doesn't make one invincible, but feels like it."),
-                new ItemVO("clothing_over_3", "Scrap metal armor", "Armor", {"fight_def": 18, warmth: 0, res_radiation: 5, res_poison: 5}, true, true, false, "img/items/clothing-2.png",
+                new ItemVO("clothing_over_3", "Scrap metal armor", "Armor", {"fight defence": 18, warmth: 0, res_radiation: 5, "poison protection": 5}, true, true, false, "img/items/clothing-2.png",
                     "Something that's actually produced with the aim of keeping one safe."),
-                new ItemVO("clothing_over_4", "Kevlar vest", "Armor", {"fight_def": 40, warmth: 0, res_radiation: 0, res_poison: 5}, true, true, false, "img/items/clothing-2.png",
+                new ItemVO("clothing_over_4", "Kevlar vest", "Armor", {"fight defence": 40, warmth: 0, res_radiation: 0, "poison protection": 5}, true, true, false, "img/items/clothing-2.png",
                     "Heavy, but worth it."),
-                new ItemVO("clothing_over_5", "Riot police vest", "Armor", {"fight_def": 100, warmth: 10, res_radiation: 0, res_poison: 10}, true, false, false, "img/items/clothing-3.png",
+                new ItemVO("clothing_over_5", "Riot police vest", "Armor", {"fight defence": 100, warmth: 10, res_radiation: 0, "poison protection": 10}, true, false, false, "img/items/clothing-3.png",
                     "Based on the old Surface Guard uniform with additional environmental proection."),
-                new ItemVO("clothing_over_6", "Exoskeleton", "Armor", {"fight_def": 290, warmth: 10, res_radiation: 30, res_poison: 20}, true, true, false, "img/items/clothing-3.png",
+                new ItemVO("clothing_over_6", "Exoskeleton", "Armor", {"fight defence": 290, warmth: 10, res_radiation: 30, "poison protection": 20}, true, true, false, "img/items/clothing-3.png",
                     "Based on the old Surface Guard uniform with additional environmental proection."),
             ],
             clothing_upper: [
                 new ItemVO("clothing_upper_1", "Tattered shirt", "Shirt", {warmth: 1}, true, false, false, "img/items/clothing-rags.png",
                     "Barely counts for clothing, but for now it'll have to do."),
-                new ItemVO("clothing_upper_2", "Factory uniform shirt", "Shirt", {fight_def: 1, warmth: 3}, true, false, false, "img/items/clothing-2.png",
+                new ItemVO("clothing_upper_2", "Factory uniform shirt", "Shirt", {"fight defence": 1, warmth: 3}, true, false, false, "img/items/clothing-2.png",
                     "Feels oddly comfortable in dark corridors and abandoned factories."),
-                new ItemVO("clothing_upper_3", "Guard shirt", "Shirt", {fight_def: 2, warmth: 3}, true, false, false, "img/items/clothing-2.png",
+                new ItemVO("clothing_upper_3", "Guard shirt", "Shirt", {"fight defence": 2, warmth: 3}, true, false, false, "img/items/clothing-2.png",
                     "Looks official, but not particularly protective."),
-                new ItemVO("clothing_upper_4", "Protective shirt", "Shirt", {fight_def: 10, warmth: 10, res_radiation: 5, res_poison: 5}, true, true, false, "img/items/clothing-3.png",
+                new ItemVO("clothing_upper_4", "Protective shirt", "Shirt", {"fight defence": 10, warmth: 10, res_radiation: 5, "poison protection": 5}, true, true, false, "img/items/clothing-3.png",
                     "Specifically made for keeping travellers warm and safe."),
-                new ItemVO("clothing_upper_5", "Scavenger's raincoat", "Shirt", {fight_def: 0, warmth: 25, res_radiation: 40, res_poison: 60}, true, true, false, "img/items/clothing-3.png",
+                new ItemVO("clothing_upper_5", "Scavenger's raincoat", "Shirt", {"fight defence": 0, warmth: 25, res_radiation: 40, "poison protection": 60}, true, true, false, "img/items/clothing-3.png",
                     "The best protection an explorer can hope for."),
             ],
             clothing_lower: [
                 new ItemVO("clothing_lower_1", "Ragged pants", "Legs", {warmth: 1}, true, false, false, "img/items/clothing-rags.png",
                     "Barely counts for clothing, but for now it'll have to do."),
-                new ItemVO("clothing_lower_2", "Factory uniform pants", "Legs", {fight_def: 1, warmth: 3}, true, false, false, "img/items/clothing-2.png",
+                new ItemVO("clothing_lower_2", "Factory uniform pants", "Legs", {"fight defence": 1, warmth: 3}, true, false, false, "img/items/clothing-2.png",
                     "Used to be the standard univorm in the dark levels of the City."),
-                new ItemVO("clothing_lower_3", "Guard uniform pants", "Legs", {fight_def: 2, warmth: 3}, true, false, false, "img/items/clothing-2.png",
+                new ItemVO("clothing_lower_3", "Guard uniform pants", "Legs", {"fight defence": 2, warmth: 3}, true, false, false, "img/items/clothing-2.png",
                     "Looks official, but not particularly protective."),
-                new ItemVO("clothing_lower_4", "Padded pants", "Legs", {fight_def: 15, warmth: 5}, true, true, false, "img/items/clothing-3.png",
+                new ItemVO("clothing_lower_4", "Padded pants", "Legs", {"fight defence": 15, warmth: 5}, true, true, false, "img/items/clothing-3.png",
                     "Protects from bites and scratches."),
-                new ItemVO("clothing_lower_5", "Long underwear", "Legs", {fight_def: 1, warmth: 20}, true, false, false, "img/items/clothing-3.png",
+                new ItemVO("clothing_lower_5", "Long underwear", "Legs", {"fight defence": 1, warmth: 20}, true, false, false, "img/items/clothing-3.png",
                     "Nothing keeps you warm like long underwear."),
             ],
             clothing_head: [
-                new ItemVO("clothing_head_0", "Sunglasses", "Head", {"res_sunlight": 30}, true, false, false, "img/items/clothing-hat-1.png",
+                new ItemVO("clothing_head_0", "Sunglasses", "Head", {"sunblindness protection": 30}, true, false, false, "img/items/clothing-hat-1.png",
                     "If there was any sunlight, these would probably be handy."),
-                new ItemVO("clothing_head_1", "Wollen hat", "Head", {fight_def: 1, warmth: 10}, true, true, false, "img/items/clothing-hat-1.png",
+                new ItemVO("clothing_head_1", "Wollen hat", "Head", {"fight defence": 1, warmth: 10}, true, true, false, "img/items/clothing-hat-1.png",
                     "Warm basic headwear."),
-                new ItemVO("clothing_head_2", "Pollution mask", "Head", {res_poison: 15}, true, false, false, "img/items/clothing-hat-1.png",
+                new ItemVO("clothing_head_2", "Pollution mask", "Head", {"poison protection": 15}, true, false, false, "img/items/clothing-hat-1.png",
                     "Meager protection against the effects of polluted air."),
-                new ItemVO("clothing_head_3", "Scrap metal helmet", "Head", {fight_def: 5, warmth: 5, res_radiation: 5, res_poison: 5}, true, true, false, "img/items/clothing-hat-2.png",
+                new ItemVO("clothing_head_3", "Scrap metal helmet", "Head", {"fight defence": 5, warmth: 5, res_radiation: 5, "poison protection": 5}, true, true, false, "img/items/clothing-hat-2.png",
                     "Perfect apparel for the post-apocalyptic knight."),
-                new ItemVO("clothing_head_4", "Gas mask", "Head", {fight_def: 5, warmth: 5, res_radiation: 15, res_poison: 30}, true, false, false, "img/items/clothing-hat-2.png",
+                new ItemVO("clothing_head_4", "Gas mask", "Head", {"fight defence": 5, warmth: 5, res_radiation: 15, "poison protection": 30}, true, false, false, "img/items/clothing-hat-2.png",
                     "Gives a definite sense of security in dangerous environments."),
-                new ItemVO("clothing_head_5", "Explroer's helmet", "Head", {fight_def: 30, warmth: 10, res_radiation: 20, res_poison: 10}, true, true, false, "img/items/clothing-hat-3.png",
+                new ItemVO("clothing_head_5", "Explroer's helmet", "Head", {"fight defence": 30, warmth: 10, res_radiation: 20, "poison protection": 10}, true, true, false, "img/items/clothing-hat-3.png",
                     "Headgear designed specifically for scavenging in the City."),
             ],
             clothing_hands: [
                 new ItemVO("clothing_hands_1", "Mittens", "Hands", {"warmth": 10}, true, true, false, "img/items/clothing-hand-0.png",
                     "Nothing keeps hands warm like fluffy mittens."),
-                new ItemVO("clothing_hands_2", "Work gloves", "Hands", {"warmth": 5, res_radiation: 3, res_poison: 3}, true, true, false, "img/items/clothing-hand-0.png",
+                new ItemVO("clothing_hands_2", "Work gloves", "Hands", {"warmth": 5, res_radiation: 3, "poison protection": 3}, true, true, false, "img/items/clothing-hand-0.png",
                     "Basic protection for hands."),
-                new ItemVO("clothing_hands_3", "Quality gloves", "Hands", {"warmth": 5, res_radiation: 5, res_poison: 10}, true, true, false, "img/items/clothing-hand-0.png",
+                new ItemVO("clothing_hands_3", "Quality gloves", "Hands", {"warmth": 5, res_radiation: 5, "poison protection": 10}, true, true, false, "img/items/clothing-hand-0.png",
                     "No scavenger ever regretted having good gloves."),
-                new ItemVO("clothing_hands_4", "Scavenger's gloves", "Hands", {fight_def: 5, warmth: 15, res_radiation: 10, res_poison: 10}, true, true, false, "img/items/clothing-hand-0.png",
+                new ItemVO("clothing_hands_4", "Scavenger's gloves", "Hands", {"fight defence": 5, warmth: 15, res_radiation: 10, "poison protection": 10}, true, true, false, "img/items/clothing-hand-0.png",
                     "Gloves that protect from almost all environmental hazards."),
             ],
             shoes: [
@@ -205,6 +205,28 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
             }
             return null;
         },
+
+        getItemDefaultBonus: function (item) {
+            switch (item.type) {
+                case ItemConstants.itemTypes.light:
+                    return ItemConstants.itemBonusTypes.light;
+                case ItemConstants.itemTypes.weapon:
+                    return ItemConstants.itemBonusTypes.fight_att;
+                case ItemConstants.itemTypes.shoes:
+                    return ItemConstants.itemBonusTypes.movement;
+                case ItemConstants.itemTypes.bag:
+                    return ItemConstants.itemBonusTypes.bag;
+                case ItemConstants.itemTypes.clothing_over:
+                case ItemConstants.itemTypes.clothing_upper:
+                case ItemConstants.itemTypes.clothing_lower:
+                case ItemConstants.itemTypes.clothing_head:
+                case ItemConstants.itemTypes.clothing_hands:
+                case ItemConstants.itemTypes.follower:
+                    return ItemConstants.itemBonusTypes.fight_def;
+                default:
+                    return null;
+            }
+        },
         
         getFollower: function (level, campCount) {
             var minStrength = campCount;
@@ -231,7 +253,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
             // TODO more varied follower descriptions
             var description = "A fellow traveller who has agreed to travel together.";
 
-            return new ItemVO(id, name, type, {"fight_att": strength}, true, false, icon, description);
+            return new ItemVO(id, name, type, {"fight attack": strength}, true, false, icon, description);
         },
         
         getBag: function (levelOrdinal) {

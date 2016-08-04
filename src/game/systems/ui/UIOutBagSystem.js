@@ -322,7 +322,25 @@ define([
 		
 		updateItemSlot: function (itemType, itemVO) {
 			var slot = $("#item-slot-" + itemType.toLowerCase());
-			$(slot).children(".item-slot-effect").html(itemVO ? UIConstants.getItemBonusName(itemVO) + "<br/>" + UIConstants.getItemBonusText(itemVO) : "");
+            switch (itemType) {
+                case ItemConstants.itemTypes.clothing_over:
+                    slot = $("#item-slot-clothing_over");
+                    break;
+                case ItemConstants.itemTypes.clothing_upper:
+                    slot = $("#item-slot-clothing_upper");
+                    break;
+                case ItemConstants.itemTypes.clothing_lower:
+                    slot = $("#item-slot-clothing_lower");
+                    break;
+                case ItemConstants.itemTypes.clothing_head:
+                    slot = $("#item-slot-clothing_head");
+                    break;
+                case ItemConstants.itemTypes.clothing_hands:
+                    slot = $("#item-slot-clothing_hands");
+                    break;                    
+            }
+                
+			$(slot).children(".item-slot-effect").html(itemVO ? UIConstants.getItemBonusDescription(itemVO, false, true) : "");
 			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemVO, 0, false, false) : "");
 			
 			$(slot).children(".item-slot-type").toggle(itemVO === null);

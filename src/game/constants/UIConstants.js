@@ -41,7 +41,8 @@ define(['ash',
 			var div = "<div class='" + classes + (item ? "' data-itemid='" + item.id + "' data-iteminstanceid='" + item.itemID + "'>" : ">");
 			
 			if (item && !hideCallout) {
-				var detail = this.getItemBonusName(item) ? " (" + this.getItemBonusName(item) + " " + this.getItemBonusText(item) + ")" : "";
+				var detail = " (" + this.getItemBonusDescription(item, true, false) + ")";
+                if (detail.length < 5) detail = "";
                 var weight = BagConstants.getItemCapacity(item);
 				
 				var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + item.type + " " + detail + "</br>Weight: " + weight + "</br>" + item.description;
@@ -162,32 +163,64 @@ define(['ash',
 			
 			return "<td class='vis-out-sector-container'>" + content + "</td>";
 		},
+        
+        getItemBonusDescription: function(item, showAllBonuses, useLineBreaks) {
+            var result = "";
+            var defaultType = ItemConstants.getItemDefaultBonus(item);
+            var value;
+            for (var bonusKey in ItemConstants.itemBonusTypes) {
+                var bonusType = ItemConstants.itemBonusTypes[bonusKey];
+                if (bonusType === defaultType || showAllBonuses) {
+                    value = item.getBonus(bonusType);
+                    if (value <= 0 && showAllBonuses) {
+                        continue;
+                    }
+                    if (value <= 0 && !showAllBonuses) {
+                    }
+                    result += this.getItemBonusName(bonusType);
+                    result += useLineBreaks && !showAllBonuses ? "<br/>" : " ";
+                    result += this.getItemBonusText(item, bonusType);
+                }
+                if (showAllBonuses) {
+                    result += useLineBreaks ? "<br/>" : ", ";
+                }
+            }
+            
+            if (showAllBonuses) {
+                result = result.substring(0, result.length - (useLineBreaks ? 5 : 2));
+            }
+            
+            return result;
+        },
 		
-		getItemBonusName: function (item) {
-			switch (item.type) {
-				case ItemConstants.itemTypes.light: return "max vision"; break;
-				case ItemConstants.itemTypes.weapon: return "attack"; break;
-				case ItemConstants.itemTypes.follower: return "follower strength"; break;
-				case ItemConstants.itemTypes.shoes: return "movement cost"; break;
-				case ItemConstants.itemTypes.bag: return "bag size"; break;
+		getItemBonusName: function (bonusType) {
+			switch (bonusType) {
+				case ItemConstants.itemBonusTypes.light: return "max vision";
+				case ItemConstants.itemBonusTypes.fight_att: return "attack";
+				case ItemConstants.itemBonusTypes.movement: return "movement cost";
+				case ItemConstants.itemBonusTypes.bag: return "bag size";
+                case ItemConstants.itemBonusTypes.fight_def: return "defence";
+                case ItemConstants.itemBonusTypes.res_cold: return "warmth";
+                case ItemConstants.itemBonusTypes.res_radiation: return "radiation protection";
+                case ItemConstants.itemBonusTypes.res_poison: return "poison protection";
+                case ItemConstants.itemBonusTypes.res_sunlight: return "sunblindness protection";
+                default:
+                    return null;
 			}
 		},
 		
-		getItemBonusText: function (item) {
-            // TODO re-implement 
-            return "??";
-            /*
-			if (item.bonus === 0)
-				return "";
-			else if (item.bonus > 1)
-				return item.type === ItemConstants.itemTypes.bag ? " " + item.bonus : " +" + item.bonus;
-			else if (item.bonus > 0)
-				return " -" + Math.round((1-item.bonus)*100) + "%";
-			else if (item.bonus > -1)
-				return " +" + Math.round((1-item.bonus)*100) + "%";
-			else
-				return " " + item.bonus; 
-            */
+		getItemBonusText: function (item, bonusType) {
+            var bonusValue = item.getBonus(bonusType);
+			if (bonusValue === 0)
+				return "+0";
+			else if (bonusValue >= 1)
+				return item.type === ItemConstants.itemTypes.bag ? " " + bonusValue : " +" + bonusValue;
+			else if (bonusValue > 0) {
+				return " -" + Math.round((1-bonusValue)*100) + "%";
+            } else if (bonusValue > -1) {
+				return " +" + Math.round((1-bonusValue)*100) + "%";
+            } else
+				return " " + bonusValue; 
 		},
 		
 		getPerkBonusText: function (perk) {

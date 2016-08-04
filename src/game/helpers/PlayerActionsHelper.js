@@ -797,7 +797,7 @@ define([
                     switch(baseAction) {
 						case "craft":
 							var item = this.getItemForCraftAction(action);
-							return item.description + (item.getTotalBonus() === 0 ? "" : "<hr/>" + UIConstants.getItemBonusName(item) + " " + UIConstants.getItemBonusText(item));
+							return item.description + (item.getTotalBonus() === 0 ? "" : "<hr/>" + UIConstants.getItemBonusDescription(item, true, true));
                     }
                 }
 			}
