@@ -120,6 +120,7 @@ define([
 
 			this.updateItems(uniqueItems);
             this.updateUseItems();
+            this.updateStats();
 		},
         
         updateBubble: function () {
@@ -245,6 +246,16 @@ define([
             this.uiFunctions.registerActionButtonListeners("#self-use-items");
             this.uiFunctions.generateButtonOverlays("#self-use-items");
             this.uiFunctions.generateCallouts("#self-use-items");
+        },
+        
+        updateStats: function () {
+            var itemsComponent = this.itemNodes.head.items;
+            for (var bonusKey in ItemConstants.itemBonusTypes) {
+                var bonusType = ItemConstants.itemBonusTypes[bonusKey];
+                var bonus = itemsComponent.getCurrentBonus(bonusType);
+                $("#stats-equipment-" + bonusKey + " .value").text(bonus);
+                $("#stats-equipment-" + bonusKey).toggle(bonus > 0);
+            }
         },
 
 		updateItemLists: function () {

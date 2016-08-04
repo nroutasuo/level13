@@ -1,12 +1,13 @@
 // A class that checks raw user input from the DOM and passes game-related actions to PlayerActionFunctions
 define(['ash',
         'game/constants/UIConstants',
+        'game/constants/ItemConstants',
         'game/constants/PlayerActionConstants',
         'game/constants/PositionConstants',
         'game/helpers/ui/UIPopupManager',
         'game/helpers/ui/ChangeLogHelper',
         'game/vos/ResourcesVO'],
-function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ChangeLogHelper, ResourcesVO) {
+function (Ash, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ChangeLogHelper, ResourcesVO) {
     var UIFunctions = Ash.Class.extend({
         
         playerActions: null,
@@ -301,6 +302,7 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
             this.generateButtonOverlays("body");
             this.generateCallouts("body");
             
+            // building project info
             $.each($("#out-improvements tr"), function () {
                 var actionName = $(this).find("button.action-build").attr("action");
                 if (actionName) {
@@ -311,6 +313,15 @@ function (Ash, UIConstants, PlayerActionConstants, PositionConstants, UIPopupMan
                     }
                 }
             });
+            
+            // equipment stats labels
+            for (var bonusKey in ItemConstants.itemBonusTypes) {
+                var bonusType = ItemConstants.itemBonusTypes[bonusKey];
+                var div = "<div id='stats-equipment-" + bonusKey + "' class='stats-indicator stats-indicator-secondary'>";
+                div += "<span class='label'/>" + UIConstants.getItemBonusName(bonusType);
+                div += "<span class='value'/></div>";
+                $("#container-equipment-stats").append(div);
+            }
         },
         
         generateTabBubbles: function () {

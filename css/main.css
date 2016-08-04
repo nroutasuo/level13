@@ -1127,12 +1127,12 @@ button .cooldown-action, button .cooldown-duration {
 }
 
 .stats-indicator span.label {
-	margin-right: 2px;
     text-transform: lowercase;
 }
 
 .stats-indicator span.value {
 	text-align: center;
+    margin-left: 4px;
 }
 
 .stats-indicator .change, .stats-indicator .forecast {
