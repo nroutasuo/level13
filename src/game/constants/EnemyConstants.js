@@ -27,23 +27,22 @@ function (Ash, WorldCreatorConstants, EnemyVO) {
 		enemyDifficulties: {
 		},
         
+        // For TextConstants: nouns and verbs to describe enemies
+        nPest: "urban pests",
+        nAnimal: "aggressive animals",
+        nGangster: "bandits",
+        nBot: "bots",
+        aPatrol: "patrolled by",
+        aGuard: "guarded by",
+        aInfest: "infested with",
+        aCover: "covered in",
+        dCleared: "cleared",
+        dDisabled: "disabled",
+        dKilled: "killed",
+        dDrive: "driven away",
+        
 	};
 		
-	// For TextConstants: nouns and verbs to describe enemies
-	var nPest = "urban pests";
-	var nAnimal = "aggressive animals";
-	var nGangster = "bandits";
-	var nBot = "bots";
-	
-	var aPatrol = "patrolled by";
-	var aGuard = "guarded by";
-	var aInfest = "infested with";
-	var aCover = "covered in";
-	
-	var dCleared = "cleared";
-	var dDisabled = "disabled";
-	var dKilled = "killed";
-	var dDrive = "driven away";
     
     return EnemyConstants;
     
