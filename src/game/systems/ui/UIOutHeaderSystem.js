@@ -169,15 +169,15 @@ define([
             $("#stats-health .value").text(playerStatsNode.stamina.health);
             this.updateStatsCallout("stats-health", null);
 			
-			$("#stats-reputation .value").text(Math.round(playerStatsNode.reputation.value) + " / " + playerStatsNode.reputation.limit);
+			$("#stats-reputation .value").text(this.roundStatValue(playerStatsNode.reputation.value) + " / " + playerStatsNode.reputation.limit);
 			$("#stats-reputation").toggle(playerStatsNode.reputation.isAccumulating);
 			this.updateStatsCallout("stats-reputation", playerStatsNode.reputation.accSources);
 			
-			$("#stats-rumours .value").text(Math.floor(playerStatsNode.rumours.value));
+			$("#stats-rumours .value").text(this.roundStatValue(playerStatsNode.rumours.value));
 			$("#stats-rumours").toggle(playerStatsNode.rumours.isAccumulating);
 			this.updateStatsCallout("stats-rumours", playerStatsNode.rumours.accSources);
 			
-			$("#stats-evidence .value").text(Math.round(playerStatsNode.evidence.value) + " / " + playerStatsNode.evidence.cap);
+			$("#stats-evidence .value").text(this.roundStatValue(playerStatsNode.evidence.value) + " / " + playerStatsNode.evidence.cap);
 			$("#stats-evidence").toggle(this.gameState.unlockedFeatures.evidence);
 			this.updateStatsCallout("stats-evidence", playerStatsNode.evidence.accSources);
             
@@ -365,6 +365,12 @@ define([
 			}
 			$("#notification-player").css("opacity", isBusy ? 1 : 0);
 		},
+        
+        roundStatValue: function (value) {
+            if (value < 10) return Math.floor(value * 100) / 100;
+            if (value < 100) return Math.floor(value * 10) / 10;
+            return Math.floor(value);
+        },
 		
 		getShowResources: function () {
 			return this.resourcesHelper.getCurrentStorage().resources;

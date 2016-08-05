@@ -11,13 +11,14 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
         sectorType: 0,
         
         sunlit: false,
+        hazards: null,
         weather: false,
         campable: false,
         
         resourcesScavengable: null,
         resourcesCollectable: null,
         
-        constructor: function (level, buildingDensity, stateOfRepair, sectorType, buildingStyle, sunlit, weather,
+        constructor: function (level, buildingDensity, stateOfRepair, sectorType, buildingStyle, sunlit, hazards, weather,
                                campable, notCampableReason, resourcesScavengable, resourcesCollectable, hasSpring) {
             this.level = level;
             this.buildingDensity = buildingDensity;
@@ -25,6 +26,7 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
             this.sectorType = sectorType;
             this.buildingStyle = buildingStyle,
             this.sunlit = sunlit;
+            this.hazards = hazards;
             this.weather = weather;
             this.campable = campable;
             this.notCampableReason = notCampableReason;
@@ -34,15 +36,18 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
         },
         
         // Secondary attributes
+        
         canHaveCamp: function () {
             var hasWater = (this.resourcesCollectable.water > 0 || this.resourcesScavengable.water > 0 || this.hasSpring);
             return  this.campable &&
                     this.buildingDensity > 0 && this.buildingDensity < 9 &&
                     hasWater && this.resourcesScavengable.food > 0 && this.resourcesScavengable.fuel <= 0 &&
+                    !hazards.hasHazards() &&
                     this.stateOfRepair > 2;
         },
         
-        // Convenience
+        // Text functions
+        
         getSectorTypeName: function (hasLight) {
             var densityAdj = "";
             var repairAdj = "";

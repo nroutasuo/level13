@@ -114,8 +114,8 @@ define([
 			var vision = this.playerPosNodes.head.entity.get(VisionComponent).value;
 			var hasVision = vision > PlayerStatConstants.VISION_BASE;
 			var hasBridgeableBlocker = this.movementHelper.hasBridgeableBlocker(this.playerLocationNodes.head.entity);
-			var passageUpAvailable = passagesComponent.passageUp != null;
-			var passageDownAvailable = passagesComponent.passageDown != null;
+			var passageUpAvailable = passagesComponent.passageUp !== null;
+			var passageDownAvailable = passagesComponent.passageDown !== null;
 			var hasCamp = false;
 			var hasCampHere = false;
 			for (var node = this.engine.getNodeList(CampNode).head; node; node = node.next) {
@@ -406,23 +406,35 @@ define([
                             else notCampableDesc = "There is an eerie air as if the place has been abandoned in a hurry.";
                             break;
                 
-                        case UNCAMPABLE_LEVEL_TYPE_POLLUTION:
+                        case LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION:
                             if (inhabited && featuresComponent.stateOfRepair > 6) notCampableDesc = "Many entrances have big red warning signs on them with a skull sign and the text 'KEEP OUT'. ";
                             else if (inhabited && featuresComponent.buildingDensity > 5) notCampableDesc = "Walls are covered in graffiti warning about some kind of pollution.";
                             else notCampableDesc = "A noxious smell hangs in the air.";
                             break;
                         
-                        case UNCAMPABLE_LEVEL_TYPE_SUPERSTITION:
+                        case LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION:
                             if (inhabited) notCampableDesc = "There aren't any signs of recent human habitation. ";
                             else notCampableDesc = "An unnerving silence blankets the streets. ";
                             break;
                     }
-                } else {
-                    notCampableDesc = "The level seems safe for habitation. ";
+                }
+            }
+            
+            var hasHazards = featuresComponent.hazards.hasHazards();
+            var hazardDesc = "";
+            if (hasHazards) {
+                if (featuresComponent.hazards.radiation > 0) {
+                    hazardDesc += "This place is radioactive. ";
+                }
+                if (featuresComponent.hazards.poison > 0) {
+                    hazardDesc += "This place is dangerously polluted. ";
+                }
+                if (featuresComponent.hazards.cold > 0) {
+                    hazardDesc += "It's very cold here. ";
                 }
             }
 			
-			return enemyDesc + notCampableDesc;
+			return enemyDesc + (hasHazards ? hazardDesc : notCampableDesc);
 		},
 		
 		updateLocales: function () {

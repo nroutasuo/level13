@@ -162,6 +162,7 @@ define([
 				sectorFeatures.sectorType,
 				sectorFeatures.buildingStyle,
 				sectorFeatures.sunlit,
+                sectorFeatures.hazards,
 				sectorFeatures.weather,
 				sectorFeatures.campable,
                 sectorFeatures.notCampableReason,

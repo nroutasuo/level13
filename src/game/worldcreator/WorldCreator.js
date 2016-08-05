@@ -185,13 +185,27 @@ define([
                                 }
                             }
                         }
+                        
+                        // enviromental hazards
+                        // TODO plan a better distribution of env hazards in world creator
+                        if (Math.abs(y) > 2 && Math.abs(x) > 2 && !sectorVO.camp) {
+                            var hazardTypeRand = WorldCreatorRandom.random(seed % x * y / (l + 30) * 3 + x + 28 + x * 7 - l * y * 77 + x * 51);
+                            var hazardValueRand = WorldCreatorRandom.random(seed / (l + 40) + x * y / 6 + seed + y * 2 + l * l * 959);
+                            if (hazardTypeRand > 0.8) {
+                                sectorVO.hazards.radiation = Math.min(100, Math.ceil(hazardValueRand * 10) * 10);
+                            } else if (hazardTypeRand > 0.6) {
+                                sectorVO.hazards.poison = Math.min(100, Math.ceil(hazardValueRand * 10) * 10);
+                            } else if (hazardTypeRand > 0.4) {
+                                sectorVO.hazards.cold = Math.min(100, Math.ceil(hazardValueRand * 10) * 10);
+                            }
+                        }
                     }
 				}
 			}
 			
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World texture ready.");
-			// WorldCreatorDebug.printWorld(this.world, [ "sectorType" ]);
+			// WorldCreatorDebug.printWorld(this.world, [ "hazards.radiation" ]);
 		},
 		
 		// resources
@@ -604,6 +618,7 @@ define([
 			sectorFeatures.buildingDensity = sectorVO.buildingDensity;
 			sectorFeatures.stateOfRepair = sectorVO.stateOfRepair;
 			sectorFeatures.sunlit = sectorVO.sunlit;
+            sectorFeatures.hazards = sectorVO.hazards;
 			sectorFeatures.sectorType = sectorVO.sectorType;
 			sectorFeatures.hasSpring = sectorVO.hasSpring;
 			sectorFeatures.resourcesScavengable = sectorVO.resourcesScavengable;

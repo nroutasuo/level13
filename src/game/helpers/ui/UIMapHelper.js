@@ -288,21 +288,26 @@ function (Ash,
         },
         
         drawSectorOnCanvas: function (ctx, sector, sectorStatus, sectorXpx, sectorYpx, sectorSize) {
+            var isLocationSunlit = $("body").hasClass("sunlit");
             ctx.fillStyle = this.getSectorFill(sectorStatus);
             ctx.fillRect(sectorXpx, sectorYpx, sectorSize, sectorSize);
-            var sunlit = $("body").hasClass("sunlit");
             
-            // border for sunlit sectors
-            if (sector.get(SectorFeaturesComponent).sunlit) {
-                ctx.strokeStyle = sunlit ? "#ffee11" : "#ddee66";
-                ctx.lineWidth = Math.ceil(sectorSize / 8);
-                ctx.beginPath();
-                ctx.moveTo(sectorXpx - 1, sectorYpx - 1);
-                ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx - 1);
-                ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx + sectorSize + 1);
-                ctx.lineTo(sectorXpx - 1, sectorYpx + sectorSize + 1);
-                ctx.lineTo(sectorXpx - 1, sectorYpx - 1);
-                ctx.stroke();
+            // border for sectors with hazards or sunlight
+            var isVisited = sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE && sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE;
+            if (isVisited) {
+                var isSectorSunlit = sector.get(SectorFeaturesComponent).sunlit;
+                var hasSectorHazard = sector.get(SectorFeaturesComponent).hazards.hasHazards();
+                if (isSectorSunlit || hasSectorHazard) {
+                    ctx.strokeStyle = isSectorSunlit ? (isLocationSunlit ? "#ffee11" : "#ddee66") : "#ee4444";
+                    ctx.lineWidth = Math.ceil(sectorSize / 8);
+                    ctx.beginPath();
+                    ctx.moveTo(sectorXpx - 1, sectorYpx - 1);
+                    ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx - 1);
+                    ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx + sectorSize + 1);
+                    ctx.lineTo(sectorXpx - 1, sectorYpx + sectorSize + 1);
+                    ctx.lineTo(sectorXpx - 1, sectorYpx - 1);
+                    ctx.stroke();
+                }
             }
 
             // sector contents: resources
@@ -310,7 +315,7 @@ function (Ash,
             var discoveredResources = this.sectorHelper.getLocationDiscoveredResources(sector);
             var resourcesCollectable = sector.get(SectorFeaturesComponent).resourcesCollectable;
             var r = 0;
-            for ( var key in resourceNames ) {
+            for (var key in resourceNames) {
                 var name = resourceNames[key];
                 var colAmount = resourcesCollectable.getResource(name);
                 if (colAmount > 0 || discoveredResources.indexOf(name) >= 0) {
@@ -334,19 +339,19 @@ function (Ash,
             var iconPosY = sectorSize > iconSize ? sectorYpx + 1 : sectorYpx;
             
             if (!isScouted)
-                ctx.drawImage(this.icons["unknown" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["unknown" + (isLocationSunlit ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (unScoutedLocales > 0)
-                ctx.drawImage(this.icons["interest" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["interest" + (isLocationSunlit ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sector.has(WorkshopComponent))
-                ctx.drawImage(this.icons["workshop" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["workshop" + (isLocationSunlit ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sector.has(CampComponent))
-                ctx.drawImage(this.icons["camp" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["camp" + (isLocationSunlit ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sectorPassages.passageUp)
-                ctx.drawImage(this.icons["passage-up" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["passage-up" + (isLocationSunlit ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sectorPassages.passageDown)
-                ctx.drawImage(this.icons["passage-down" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["passage-down" + (isLocationSunlit ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (hasWater)
-                ctx.drawImage(this.icons["water" + (sunlit ? "-sunlit" : "")], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["water" + (isLocationSunlit ? "-sunlit" : "")], iconPosX, iconPosY);
         },
         
         drawMovementLinesOnCanvas: function (ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize) {

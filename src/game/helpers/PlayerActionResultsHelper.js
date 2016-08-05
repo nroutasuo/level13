@@ -518,7 +518,9 @@ define([
             if (results.getTotal() === results.getResource(resourceNames.metal)) {
                 var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
                 var freeSpace = bagComponent.totalCapacity - bagComponent.usedCapacity;
-                results.setResource(resourceNames.metal, Math.min(results.getResource(resourceNames.metal), freeSpace));
+                if (freeSpace > 0) {
+                    results.setResource(resourceNames.metal, Math.min(results.getResource(resourceNames.metal), freeSpace));
+                }
             }
 
 			return results;

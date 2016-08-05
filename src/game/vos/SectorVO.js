@@ -1,4 +1,4 @@
-define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
+define(['ash', 'game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'], function (Ash, ResourcesVO, EnvironmentalHazardsVO) {
 
     var SectorVO = Ash.Class.extend({
 	
@@ -15,6 +15,8 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             this.id = Math.floor(Math.random() * 100000);
 			this.passageUp = 0;
 			this.passageDown = 0;
+            this.sunlit = false;
+            this.hazards = new EnvironmentalHazardsVO();
             this.hasSpring = false;
             this.resourcesScavengable = new ResourcesVO();
             this.resourcesCollectable = new ResourcesVO();
