@@ -375,7 +375,33 @@ define([
 		},
         
         isObsolete: function (itemVO) {
-            return false;
+            var itemsComponent = this.itemNodes.head.items;
+            var equipped = itemsComponent.getEquipped(itemVO.type);
+            
+            // if no equipped item of type -> not obsolete
+            if (equipped.length === 0) return false;
+
+            // if item is equippable but the player already has one, not equipped -> obsolete
+            if (itemVO.equippable) {
+                var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
+                var all = itemsComponent.getUnique(inCamp);
+                for (var j = 0; j < all.length; j++) {
+                    if (!all[j].equipped && all[j].id === itemVO.id) return true;
+                }
+            }
+            
+            // if item bonus is higher than any bonus on the currently equipped item of the same type -> not obsolete
+            for (var bonusKey in ItemConstants.itemBonusTypes) {
+                var bonusType = ItemConstants.itemBonusTypes[bonusKey];
+                var itemBonus = itemVO.getBonus(bonusType);
+                for (var i = 0; i < equipped.length; i++)
+                    if (itemBonus > equipped[i].getBonus(bonusType)) {
+                        return false;
+                    }
+            }
+            
+            // has equipped item of type and no bonus is higher -> obsolete
+            return true;
         }
     
 	});

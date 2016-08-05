@@ -29,7 +29,7 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             var followerBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.follower);
             var desc = "player: " + this.FIGHT_PLAYER_BASE_ATT;
             if (itemBonus > 0) desc += ", weapons: " + itemBonus;
-            if (healthFactor < 1) desc += ", health: -" + (1-healthFactor) * 100 + "%";
+            if (healthFactor < 1) desc += ", health: -" + Math.round((1-healthFactor) * 1000) / 10 + "%";
             if (followerBonus > 0) desc += ", followers: " + followerBonus;
             return desc;
         },
