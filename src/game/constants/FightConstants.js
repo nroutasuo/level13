@@ -27,10 +27,10 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.weapon);
             var healthFactor = (playerStamina.health/100);
             var followerBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.follower);
-            var desc = "Player: " + this.FIGHT_PLAYER_BASE_ATT;
-            if (itemBonus > 0) desc += "<br>Weapons: " + itemBonus;
-            if (healthFactor < 1) desc += "<br>Health: -" + (1-healthFactor) * 100 + "%";
-            if (followerBonus > 0) desc += "<br>Followers: " + followerBonus;
+            var desc = "player: " + this.FIGHT_PLAYER_BASE_ATT;
+            if (itemBonus > 0) desc += ", weapons: " + itemBonus;
+            if (healthFactor < 1) desc += ", health: -" + (1-healthFactor) * 100 + "%";
+            if (followerBonus > 0) desc += ", followers: " + followerBonus;
             return desc;
         },
         
@@ -41,8 +41,8 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
         
         getPlayerDefDesc: function (playerStamina, itemsComponent) {
             var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_def);
-            var desc = "Player: " + this.FIGHT_PLAYER_BASE_DEF;
-            if (itemBonus > 0 ) desc += "</br>Clothing: " + itemBonus;
+            var desc = "player: " + this.FIGHT_PLAYER_BASE_DEF;
+            if (itemBonus > 0) desc += ", clothing: " + itemBonus;
             return desc;
         },
         

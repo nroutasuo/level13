@@ -2,12 +2,13 @@ define([
     'ash',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
+    'game/constants/FightConstants',
     'game/nodes/player/ItemsNode',
     'game/components/common/ResourcesComponent',
     'game/components/common/PositionComponent',
     'game/components/player/StaminaComponent',
     'game/components/player/VisionComponent',
-], function (Ash, UIConstants, ItemConstants, ItemsNode, ResourcesComponent, PositionComponent, StaminaComponent, VisionComponent) {
+], function (Ash, UIConstants, ItemConstants, FightConstants, ItemsNode, ResourcesComponent, PositionComponent, StaminaComponent, VisionComponent) {
     var UIOutBagSystem = Ash.System.extend({
 
 		uiFunctions : null,
@@ -250,11 +251,25 @@ define([
         
         updateStats: function () {
             var itemsComponent = this.itemNodes.head.items;
+            var playerStamina = this.itemNodes.head.entity.get(StaminaComponent);
             for (var bonusKey in ItemConstants.itemBonusTypes) {
                 var bonusType = ItemConstants.itemBonusTypes[bonusKey];
                 var bonus = itemsComponent.getCurrentBonus(bonusType);
-                $("#stats-equipment-" + bonusKey + " .value").text(bonus);
-                $("#stats-equipment-" + bonusKey).toggle(bonus > 0);
+                var value = bonus;
+                var detail = bonus + " from items";
+                switch (bonusType) {
+                    case ItemConstants.itemBonusTypes.fight_att:
+                        value = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
+                        detail = FightConstants.getPlayerAttDesc(playerStamina, itemsComponent);
+                        break;
+                        
+                    case ItemConstants.itemBonusTypes.fight_def:
+                        value = FightConstants.getPlayerDef(playerStamina, itemsComponent);
+                        detail = FightConstants.getPlayerDefDesc(playerStamina, itemsComponent);
+                        break;                        
+                }
+                $("#stats-equipment-" + bonusKey + " .value").text(value + " (" + detail + ")");
+                $("#stats-equipment-" + bonusKey).toggle(value > 0);
             }
         },
 

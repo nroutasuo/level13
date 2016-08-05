@@ -193,12 +193,6 @@ define([
 			$("#stats-fight-att").toggle(this.gameState.unlockedFeatures.fight);
 			$("#stats-fight-def").toggle(this.gameState.unlockedFeatures.fight);
             
-			var attCalloutContent = FightConstants.getPlayerAttDesc(playerStamina, itemsComponent);
-			var defCalloutContent = FightConstants.getPlayerDefDesc(playerStamina, itemsComponent);
-            UIConstants.updateCalloutContent("#stats-fight", "att+def");
-            UIConstants.updateCalloutContent("#stats-fight-att", attCalloutContent);
-            UIConstants.updateCalloutContent("#stats-fight-def", defCalloutContent);
-            
             $("#stats-scavenge").toggle(this.gameState.unlockedFeatures.scavenge);
 			var scavengeEfficiency = Math.round(this.uiFunctions.playerActions.playerActionResultsHelper.getScavengeEfficiency() * 200) / 2;
 			$("#stats-scavenge .value").text(scavengeEfficiency + "%");
