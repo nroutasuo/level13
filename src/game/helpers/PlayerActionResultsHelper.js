@@ -513,6 +513,13 @@ define([
 
 				results.setResource(name, resultAmount);
 			}
+            
+            // if result only consists of metal, for convenience limit to free space -> can always use "take all"
+            if (results.getTotal() === results.getResource(resourceNames.metal)) {
+                var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
+                var freeSpace = bagComponent.totalCapacity - bagComponent.usedCapacity;
+                results.setResource(resourceNames.metal, Math.min(results.getResource(resourceNames.metal), freeSpace));
+            }
 
 			return results;
 		},
