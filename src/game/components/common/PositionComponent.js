@@ -1,6 +1,7 @@
 // Defines the position of an entity
 define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
     var PositionComponent = Ash.Class.extend({
+        
         constructor: function (level, sectorX, sectorY, inCamp) {
             this.level = level;
             this.sectorX = sectorX;

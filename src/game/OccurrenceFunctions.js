@@ -40,6 +40,7 @@ define(['ash',
         },
 	
 		onEnterNewSector: function (sectorEntity) {
+            // TODO log message for hazards?
 		},
 	
 		onScoutSector: function (sectorEntity) {

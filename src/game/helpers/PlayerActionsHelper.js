@@ -5,6 +5,7 @@ define([
 	'game/constants/PlayerActionConstants',
 	'game/constants/PlayerStatConstants',
 	'game/constants/ItemConstants',
+	'game/constants/HazardConstants',
 	'game/constants/BagConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/UIConstants',
@@ -32,7 +33,7 @@ define([
     'game/components/common/CampComponent',
     'game/vos/ResourcesVO'
 ], function (
-	Ash, PositionConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, BagConstants, UpgradeConstants, UIConstants, TextConstants,
+	Ash, PositionConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	PositionComponent, PlayerActionComponent, BagComponent, ItemsComponent, PerksComponent, DeityComponent,
 	PassagesComponent, EnemiesComponent, MovementOptionsComponent,
@@ -136,6 +137,7 @@ define([
             var statusComponent = sector.get(SectorStatusComponent);
 			var playerActionComponent = this.playerResourcesNodes.head.entity.get(PlayerActionComponent);
             var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
+            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
             
             var lowestFraction = 1;
@@ -173,6 +175,10 @@ define([
                         return { value: 0, reason: "Bag full." };
                     }
                 }
+            }
+                
+            if (HazardConstants.isAffectedByHazard(featuresComponent, itemsComponent) && !this.isActionIndependentOfHazards(action)) {
+                return { value: 0, reason: HazardConstants.getHazardDisabledReason(featuresComponent, itemsComponent) };
             }
                 
             if (requirements) {
@@ -472,8 +478,8 @@ define([
 									if (log) console.log("WARN: Movement to " + directionName + " blocked.");
 									return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[direction] };
 								} else {
-									if (log) console.log("WARN: Nothing blocking movemen to " + directionName + "." );
-									return { value: 0, reason: "Nothing blocking movemen to " + directionName + "." };
+									if (log) console.log("WARN: Nothing blocking movement to " + directionName + "." );
+									return { value: 0, reason: "Nothing blocking movement to " + directionName + "." };
 								}
 							}
 						}
@@ -873,7 +879,31 @@ define([
 				default: return null;
             }
         },
-        
+       
+        isActionIndependentOfHazards: function (action) {
+            var baseActionID = this.getBaseActionID(action);
+            switch (baseActionID) {
+                case "craft": return true;
+                case "move_camp_level": return true;
+                case "despair": return true;
+                
+                case "move_sector_north":
+                case "move_sector_south":
+                case "move_sector_east":
+                case "move_sector_west":
+                case "move_sector_ne":
+                case "move_sector_se":
+                case "move_sector_sw":
+                case "move_sector_nw":
+                case "move_level_up":
+                case "move_level_down":
+                    // handled by the SectorStatusSystem / MovementOptionsComponent
+                    return true;
+                
+                default: return false;
+            }
+        }
+    
     });
     
     return PlayerActionsHelper;

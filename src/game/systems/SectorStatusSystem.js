@@ -3,10 +3,13 @@ define([
     'ash',
     'game/constants/PositionConstants',
     'game/constants/LocaleConstants',
+    'game/constants/HazardConstants',
     'game/nodes/sector/SectorNode',
     'game/nodes/PlayerLocationNode',
+    'game/nodes/player/ItemsNode',
     'game/components/common/PositionComponent',
     'game/components/common/CampComponent',
+    'game/components/common/VisitedComponent',
     'game/components/sector/MovementOptionsComponent',
     'game/components/sector/PassagesComponent',
     'game/components/sector/SectorControlComponent',
@@ -17,10 +20,13 @@ define([
 ], function (Ash,
 	PositionConstants,
 	LocaleConstants,
+	HazardConstants,
 	SectorNode,
 	PlayerLocationNode,
+    ItemsNode,
 	PositionComponent,
 	CampComponent,
+    VisitedComponent,
 	MovementOptionsComponent,
 	PassagesComponent,
 	SectorConrolComponent,
@@ -33,6 +39,7 @@ define([
 	    
 		sectorNodes: null,
 		playerLocationNodes: null,
+        itemsNodes: null,
 		
 		movementHelper: null,
 		levelHelper: null,
@@ -50,6 +57,7 @@ define([
 		addToEngine: function (engine) {
 			this.sectorNodes = engine.getNodeList(SectorNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
+            this.itemsNodes = engine.getNodeList(ItemsNode);
 
 			var sys = this;
 			this.playerMovedSignal.add(function () {
@@ -126,21 +134,29 @@ define([
 			var movementOptions = entity.get(MovementOptionsComponent);
 			var passagesComponent = entity.get(PassagesComponent);
 			var positionComponent = entity.get(PositionComponent);
-			
+            var featuresComponent = entity.get(SectorFeaturesComponent);
+            
 			var sectorKey = this.getSectorKey(positionComponent);
 			if (!this.neighboursDict[sectorKey]) this.findNeighbours(entity);
+            
+            var isAffectedByHazard = HazardConstants.isAffectedByHazard(featuresComponent, this.itemsNodes.head.items);
 			
-			// Allow n/s/w/e movement if neighbour exists and there is no active blocker
+			// Allow n/s/w/e movement if neighbour exists and there is no active blocker AND no hazard
 			for (var i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var neighbour = this.getNeighbour(sectorKey, direction);
+                var isBlockedByHazard = neighbour ? isAffectedByHazard && !(neighbour.has(VisitedComponent) && !HazardConstants.isAffectedByHazard(neighbour.get(SectorFeaturesComponent), this.itemsNodes.head.items)) : false;
 				movementOptions.canMoveTo[direction] = neighbour != null;
+                movementOptions.canMoveTo[direction] = movementOptions.canMoveTo[direction] && !isBlockedByHazard;
 				movementOptions.canMoveTo[direction] = movementOptions.canMoveTo[direction] && !this.movementHelper.isBlocked(entity, direction);
 				movementOptions.cantMoveToReason[direction] = this.movementHelper.getBlockedReason(entity, direction);
+                if (isBlockedByHazard) movementOptions.cantMoveToReason[direction] = HazardConstants.getHazardDisabledReason(featuresComponent, this.itemsNodes.head.items);
 				if (!neighbour) movementOptions.cantMoveToReason[direction] = "Nothing here.";
+                
+                //console.log(PositionConstants.getDirectionName(direction) + "\t" + isBlockedByHazard + " | " + movementOptions.cantMoveToReason[direction]);
 			}
 			
-			// Allow up/down movement if passages exists
+			// Allow up/down movement if passages exists AND no hazard
 			movementOptions.canMoveTo[PositionConstants.DIRECTION_UP] = passagesComponent != null && !this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_UP);
 			movementOptions.cantMoveToReason[PositionConstants.DIRECTION_UP] = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_UP);
 			movementOptions.canMoveTo[PositionConstants.DIRECTION_DOWN] = passagesComponent != null && !this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_DOWN);
@@ -149,16 +165,16 @@ define([
 		
 		getNeighbour: function (sectorKey, direction) {
             switch (direction) {
-			case PositionConstants.DIRECTION_NORTH: return this.neighboursDict[sectorKey].north;
-			case PositionConstants.DIRECTION_EAST: return this.neighboursDict[sectorKey].east;
-			case PositionConstants.DIRECTION_SOUTH: return this.neighboursDict[sectorKey].south;
-			case PositionConstants.DIRECTION_WEST: return this.neighboursDict[sectorKey].west;
-			case PositionConstants.DIRECTION_NE: return this.neighboursDict[sectorKey].ne;
-			case PositionConstants.DIRECTION_SE: return this.neighboursDict[sectorKey].se;
-			case PositionConstants.DIRECTION_SW: return this.neighboursDict[sectorKey].sw;
-			case PositionConstants.DIRECTION_NW: return this.neighboursDict[sectorKey].nw;
-            default:
-                return null;
+                case PositionConstants.DIRECTION_NORTH: return this.neighboursDict[sectorKey].north;
+                case PositionConstants.DIRECTION_EAST: return this.neighboursDict[sectorKey].east;
+                case PositionConstants.DIRECTION_SOUTH: return this.neighboursDict[sectorKey].south;
+                case PositionConstants.DIRECTION_WEST: return this.neighboursDict[sectorKey].west;
+                case PositionConstants.DIRECTION_NE: return this.neighboursDict[sectorKey].ne;
+                case PositionConstants.DIRECTION_SE: return this.neighboursDict[sectorKey].se;
+                case PositionConstants.DIRECTION_SW: return this.neighboursDict[sectorKey].sw;
+                case PositionConstants.DIRECTION_NW: return this.neighboursDict[sectorKey].nw;
+                default:
+                    return null;
             }
 		},
 		

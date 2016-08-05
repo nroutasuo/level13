@@ -137,65 +137,65 @@ define(['ash',
         moveTo: function (direction) {
             var playerPos = this.playerPositionNodes.head.position;
             switch (direction) {
-            case PositionConstants.DIRECTION_WEST:
-                this.playerActionsHelper.deductCosts("move_sector_west");
-                playerPos.sectorX--;
-                break;
-            case PositionConstants.DIRECTION_NORTH:
-                this.playerActionsHelper.deductCosts("move_sector_north");
-                playerPos.sectorY--;
-                break;
-            case PositionConstants.DIRECTION_SOUTH:
-                this.playerActionsHelper.deductCosts("move_sector_south");
-                playerPos.sectorY++;
-                break;
-            case PositionConstants.DIRECTION_EAST:
-                this.playerActionsHelper.deductCosts("move_sector_east");
-                playerPos.sectorX++;
-                break;
-            case PositionConstants.DIRECTION_NE:
-                this.playerActionsHelper.deductCosts("move_sector_ne");
-                playerPos.sectorX++;
-                playerPos.sectorY--;
-                break;
-            case PositionConstants.DIRECTION_SE:
-                this.playerActionsHelper.deductCosts("move_sector_se");
-                playerPos.sectorX++;
-                playerPos.sectorY++;
-                break;
-            case PositionConstants.DIRECTION_SW:
-                this.playerActionsHelper.deductCosts("move_sector_sw");
-                playerPos.sectorX--;
-                playerPos.sectorY++;
-                break;
-            case PositionConstants.DIRECTION_NW:
-                this.playerActionsHelper.deductCosts("move_sector_nw");
-                playerPos.sectorX--;
-                playerPos.sectorY--;
-                break;
-            case PositionConstants.DIRECTION_UP:
-                this.playerActionsHelper.deductCosts("move_level_up");
-                playerPos.level++;
-                break;
-            case PositionConstants.DIRECTION_DOWN:
-                this.playerActionsHelper.deductCosts("move_level_down");
-                playerPos.level--;
-                break;
-            case PositionConstants.DIRECTION_CAMP:
-                if (this.nearestCampNodes.head) {
-                    this.playerActionsHelper.deductCosts("move_camp_level");
-                    var campSector = this.nearestCampNodes.head.entity;
-                    var campPosition = campSector.get(PositionComponent);
-                    playerPos.level = campPosition.level;
-                    playerPos.sectorX = campPosition.sectorX;
-                    playerPos.sectorY = campPosition.sectorY;
-                    this.enterCamp(true);
-                }
-                break;
-            
-            default:
-                console.log("WARN: unknown direction: " + direction);
-                break;
+                case PositionConstants.DIRECTION_WEST:
+                    this.playerActionsHelper.deductCosts("move_sector_west");
+                    playerPos.sectorX--;
+                    break;
+                case PositionConstants.DIRECTION_NORTH:
+                    this.playerActionsHelper.deductCosts("move_sector_north");
+                    playerPos.sectorY--;
+                    break;
+                case PositionConstants.DIRECTION_SOUTH:
+                    this.playerActionsHelper.deductCosts("move_sector_south");
+                    playerPos.sectorY++;
+                    break;
+                case PositionConstants.DIRECTION_EAST:
+                    this.playerActionsHelper.deductCosts("move_sector_east");
+                    playerPos.sectorX++;
+                    break;
+                case PositionConstants.DIRECTION_NE:
+                    this.playerActionsHelper.deductCosts("move_sector_ne");
+                    playerPos.sectorX++;
+                    playerPos.sectorY--;
+                    break;
+                case PositionConstants.DIRECTION_SE:
+                    this.playerActionsHelper.deductCosts("move_sector_se");
+                    playerPos.sectorX++;
+                    playerPos.sectorY++;
+                    break;
+                case PositionConstants.DIRECTION_SW:
+                    this.playerActionsHelper.deductCosts("move_sector_sw");
+                    playerPos.sectorX--;
+                    playerPos.sectorY++;
+                    break;
+                case PositionConstants.DIRECTION_NW:
+                    this.playerActionsHelper.deductCosts("move_sector_nw");
+                    playerPos.sectorX--;
+                    playerPos.sectorY--;
+                    break;
+                case PositionConstants.DIRECTION_UP:
+                    this.playerActionsHelper.deductCosts("move_level_up");
+                    playerPos.level++;
+                    break;
+                case PositionConstants.DIRECTION_DOWN:
+                    this.playerActionsHelper.deductCosts("move_level_down");
+                    playerPos.level--;
+                    break;
+                case PositionConstants.DIRECTION_CAMP:
+                    if (this.nearestCampNodes.head) {
+                        this.playerActionsHelper.deductCosts("move_camp_level");
+                        var campSector = this.nearestCampNodes.head.entity;
+                        var campPosition = campSector.get(PositionComponent);
+                        playerPos.level = campPosition.level;
+                        playerPos.sectorX = campPosition.sectorX;
+                        playerPos.sectorY = campPosition.sectorY;
+                        this.enterCamp(true);
+                    }
+                    break;
+
+                default:
+                    console.log("WARN: unknown direction: " + direction);
+                    break;
             }
             
             this.forceResourceBarUpdate();
@@ -1223,6 +1223,10 @@ define(['ash',
                 case "printLevel":
                     var l = inputParts[1] ? inputParts[1] : this.playerPositionNodes.head.position.level;
                     WorldCreatorDebug.printLevel(WorldCreator.world, WorldCreator.world.getLevel(l));
+                    break;
+                    
+                case "printSector":
+                    console.log(currentSector.get(SectorFeaturesComponent));
                     break;
                     
                 case "printEnemies":
