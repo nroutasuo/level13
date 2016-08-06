@@ -49,7 +49,7 @@ define([
 		engine: null,
 		
 		lastUpdateTimeStamp: 0,
-		updateFrequency: 1000 * 2,
+		updateFrequency: 1000 * 1,
 	
 		constructor: function (uiFunctions, gameState, resourcesHelper, upgradeEffectsHelper) {
 			this.gameState = gameState;
@@ -262,24 +262,32 @@ define([
 			var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
 			
 			var perks = perksComponent.getAll();
-			if (forced || perks.length !== $("ul#list-items-perks li").length) {
+            var resetList = forced || perks.length !== $("ul#list-items-perks li").length;
+			if (resetList) {
 				$("ul#list-items-perks").empty();
-				for (var i = 0; i < perks.length; i++) {
-					var perk = perks[i];
-					var url = perk.icon;
-					var isNegative = perksComponent.isNegative(perk);
-					var liClass = isNegative ? "li-item-negative" : "li-item-positive";
-					liClass += " item item-equipped";
-					var li =
-                        "<li class='" + liClass + "'>" +
-                        "<div class='info-callout-target info-callout-target-small' description='" +
-                        perk.name + " (" + UIConstants.getPerkBonusText(perk) + ")" + "'><img src='" + url + "'/>" +
-                        "</div></li>"
-					$("ul#list-items-perks").append(li);
-				}
+            }
+            
+            for (var i = 0; i < perks.length; i++) {
+                var perk = perks[i];
+                var desc = perk.name + " (" + UIConstants.getPerkDetailText(perk) + ")";
+                if (resetList) {
+                    var url = perk.icon;
+                    var isNegative = perksComponent.isNegative(perk);
+                    var liClass = isNegative ? "li-item-negative" : "li-item-positive";
+                    liClass += " item item-equipped";
+                    var li =
+                        "<li class='" + liClass + "' id='perk-header-" + perk.id + "'>" +
+                        "<div class='info-callout-target info-callout-target-small' description='" + desc + "'>" +
+                        "<img src='" + url + "'/>" +
+                        "</div></li>";
+                } else {
+                    $("#perk-header-" + perk.id + " .info-callout-target").attr("description", desc);
+                    $("#perk-header-" + perk.id).toggleClass("event-ending", perk.effectTimer >= 0 && perk.effectTimer < 5);
+                }
+                $("ul#list-items-perks").append(li);
+            }
 				
-				this.uiFunctions.generateCallouts("ul#list-items-perks");
-			}
+            this.uiFunctions.generateCallouts("ul#list-items-perks");
 		},
 		
 		updateResources: function (inCamp) {

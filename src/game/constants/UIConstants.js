@@ -222,11 +222,19 @@ define(['ash',
             } else
 				return " " + bonusValue; 
 		},
+        
+        getPerkDetailText: function (perk) {
+            if (perk.effectTimer >= 0) {
+                return this.getPerkBonusText(perk) + ", time left: " + this.getTimeToNum(perk.effectTimer);
+            } else {
+                return this.getPerkBonusText(perk);
+            }
+        },
 		
 		getPerkBonusText: function (perk) {
 			var value = 0;
 			if (perk.effect < 1) {
-				value = "-" + Math.round(perk.effect * 100) + "%";
+				value = "-" + Math.round(100 - perk.effect * 100) + "%";
 			} else {
 				value = Math.round((perk.effect - 1) * 100) + "%";
 			}

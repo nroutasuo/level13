@@ -7,6 +7,8 @@ define(['ash'], function (Ash) {
 		type: "",
 		effect: 0,
 		icon: "",
+        
+        effectTimer: -1,
 	
         constructor: function (id, name, type, effect, icon) {
 			this.id = id;

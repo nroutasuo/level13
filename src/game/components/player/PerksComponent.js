@@ -32,6 +32,16 @@ function (Ash, PerkVO, PerkConstants) {
             return false;
         },
         
+        getPerk: function (perkID) {
+            for (var key in this.perks) {
+                for (var i = 0; i < this.perks[key].length; i++) {
+                    if (this.perks[key][i].id == perkID)
+                        return this.perks[key][i];
+                }
+            }
+            return null;
+        },
+        
         getAll: function() {
             var all = [];
             for (var key in this.perks) {
@@ -113,7 +123,8 @@ function (Ash, PerkVO, PerkConstants) {
             for(var key in componentValues.perks) {
                 for (var i in componentValues.perks[key]) {
                     var perkID = componentValues.perks[key][i].id;
-                    var perk = PerkConstants.getPerk(perkID);
+                    var perk = PerkConstants.getPerk(perkID).clone();
+                    perk.effectTimer = componentValues.perks[key][i].effectTimer;
                     if (perk) {
                         this.addPerk(perk);
                     }

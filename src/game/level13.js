@@ -36,6 +36,7 @@ define([
     'game/systems/GlobalResourcesSystem',
     'game/systems/GlobalResourcesResetSystem',
     'game/systems/BagSystem',
+    'game/systems/HazardSystem',
     'game/systems/UnlockedFeaturesSystem',
     'game/systems/occurrences/CampEventsSystem',
     'game/constants/SystemPriorities',
@@ -95,6 +96,7 @@ define([
     GlobalResourcesSystem,
     GlobalResourcesResetSystem,
     BagSystem,
+    HazardSystem,
     UnlockedFeaturesSystem,
     CampEventsSystem,
     SystemPriorities,
@@ -196,6 +198,7 @@ define([
 			this.engine.addSystem(new VisionSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new StaminaSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new BagSystem(this.gameState), SystemPriorities.update);
+			this.engine.addSystem(new HazardSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CollectorSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new FightSystem(this.gameState, this.resourcesHelper, this.levelHelper, this.playerActionResultsHelper, this.playerActionsHelper, this.occurrenceFunctions), SystemPriorities.update);
 			this.engine.addSystem(new PopulationSystem(this.gameState), SystemPriorities.update);

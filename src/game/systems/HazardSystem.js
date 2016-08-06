@@ -1,0 +1,143 @@
+// Add and remove hazard-based perks to the player based on ther location
+define([
+    'ash',
+    'game/constants/HazardConstants',
+    'game/constants/PerkConstants',
+    'game/constants/GameConstants',
+    'game/constants/LogConstants',
+    'game/nodes/PlayerPositionNode',
+    'game/nodes/PlayerLocationNode',
+    'game/components/common/LogMessagesComponent',
+    'game/components/sector/SectorFeaturesComponent',
+    'game/components/player/ItemsComponent',
+    'game/components/player/PerksComponent'
+], function (Ash, 
+    HazardConstants, PerkConstants, GameConstants, LogConstants, 
+    PlayerPositionNode, PlayerLocationNode, 
+    LogMessagesComponent, SectorFeaturesComponent, ItemsComponent, PerksComponent) {
+    
+    var HazardSystem = Ash.System.extend({
+        
+        playerNodes: null,
+        sectorNodes: null,
+        
+        constructor: function () {
+        },
+        
+        addToEngine: function (engine) {
+            this.playerNodes = engine.getNodeList(PlayerPositionNode);
+            this.sectorNodes = engine.getNodeList(PlayerLocationNode);
+        },
+        
+        removeFromEngine: function (engine) {
+            this.playerNodes = null;
+            this.sectorNodes = null;
+        },
+        
+        update: function (time) {
+            this.addPerks();
+            this.updatePerks(time);
+        },
+        
+        addPerks: function () {
+            var featuresComponent = this.sectorNodes.head.entity.get(SectorFeaturesComponent);
+            var itemsComponent = this.playerNodes.head.entity.get(ItemsComponent);
+            var isAffectedByHazard = HazardConstants.isAffectedByHazard(featuresComponent, itemsComponent);
+            if (isAffectedByHazard) {
+                var perksComponent = this.playerNodes.head.entity.get(PerksComponent);
+                var hazardPerks = HazardConstants.getPerksForSector(featuresComponent, itemsComponent);
+                for (var i = 0; i < hazardPerks.length; i++) {
+                    var perkID = hazardPerks[i];
+                    var playerPerk = perksComponent.getPerk(perkID);
+                    if (!playerPerk) {
+                        perksComponent.addPerk(PerkConstants.getPerk(perkID).clone());
+                        this.addAddedPerkLogMessage(perkID);
+                    } else {
+                        playerPerk.effectTimer = -1;
+                    }
+                }
+            }
+        },
+        
+        updatePerks: function (time) {
+            // TODO generic effect timer system?
+            
+            var featuresComponent = this.sectorNodes.head.entity.get(SectorFeaturesComponent);
+            var itemsComponent = this.playerNodes.head.entity.get(ItemsComponent);
+            var perksComponent = this.playerNodes.head.entity.get(PerksComponent);
+            
+            var hazardPerksForSector = HazardConstants.getPerksForSector(featuresComponent, itemsComponent);
+            var hazardPerksAll = [ PerkConstants.perkIds.hazardCold, PerkConstants.perkIds.hazardPoison, PerkConstants.perkIds.hazardRadiation];
+            for (var i = 0; i < hazardPerksAll.length; i++) {
+                var perkID = hazardPerksAll[i];
+                if (hazardPerksForSector.indexOf(perkID) < 0) {
+                    var playerPerk = perksComponent.getPerk(perkID);
+                    if (playerPerk) {
+                        if (playerPerk.effectTimer === -1) {
+                            playerPerk.effectTimer = (1 - playerPerk.effect) * 100;
+                            this.addTimedPerkLogMessage(perkID);
+                        } else {
+                            playerPerk.effectTimer -= time * GameConstants.gameSpeed;
+                            if (playerPerk.effectTimer < 0) {
+                                perksComponent.removeItemsById(playerPerk.id);
+                                this.addRemovedPerkLogMessage(perkID);
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        
+        addAddedPerkLogMessage: function (perkID) {
+            var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
+            var msg = "";
+            switch (perkID) {
+                case PerkConstants.perkIds.hazardCold:
+                    msg = "It's unbearably cold.";
+                    break;
+                    
+                case PerkConstants.perkIds.hazardPoison:
+                    msg = "The air here is toxic.";
+                    break;
+                    
+                case PerkConstants.perkIds.hazardRadiation:
+                    msg = "Feeling nauseous.";
+                    break;
+            }
+            logComponent.addMessage(LogConstants.MSG_ID_ADD_HAZARD_PERK, msg);
+        },
+        
+        addTimedPerkLogMessage: function (perkID) {
+            var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
+            var msg = "";
+            switch (perkID) {
+                case PerkConstants.perkIds.hazardCold:
+                    msg = "Safer here.";
+                    break;
+            }
+            logComponent.addMessage(LogConstants.MSG_ID_TIME_HAZARD_PERK, msg);
+        },
+        
+        addRemovedPerkLogMessage: function (perkID) {
+            var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
+            var msg = "";
+            switch (perkID) {
+                case PerkConstants.perkIds.hazardCold:
+                    msg = "Feeling warm again.";
+                    break;
+                    
+                case PerkConstants.perkIds.hazardPoison:
+                    msg = "Feeling better again.";
+                    break;
+                    
+                case PerkConstants.perkIds.hazardRadiation:
+                    msg = "Feeling better again.";
+                    break;
+            }
+            logComponent.addMessage(LogConstants.MSG_ID_REMOVE_HAZARD_PERK, msg);
+        },
+
+    });
+
+    return HazardSystem;
+});

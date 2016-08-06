@@ -1,4 +1,4 @@
-define(['ash', 'game/constants/ItemConstants'], function (Ash, ItemConstants) {
+define(['ash', 'game/constants/ItemConstants', 'game/constants/PerkConstants'], function (Ash, ItemConstants, PerkConstants) {
 
     var HazardConstants = {
         
@@ -18,6 +18,17 @@ define(['ash', 'game/constants/ItemConstants'], function (Ash, ItemConstants) {
                 return "area too cold";
             return null;
         },
+        
+        getPerksForSector: function (featuresComponent, itemsComponent) {
+            var result = [];
+            if (featuresComponent.hazards.radiation > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_radiation))
+                result.push(PerkConstants.perkIds.hazardRadiation);
+            if (featuresComponent.hazards.poison > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_poison))
+                result.push(PerkConstants.perkIds.hazardPoison);
+            if (featuresComponent.hazards.cold > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_cold))
+                result.push(PerkConstants.perkIds.hazardCold);
+            return result;
+        }
 
     };
 
