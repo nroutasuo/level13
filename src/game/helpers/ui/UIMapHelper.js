@@ -292,6 +292,10 @@ function (Ash,
             ctx.fillStyle = this.getSectorFill(sectorStatus);
             ctx.fillRect(sectorXpx, sectorYpx, sectorSize, sectorSize);
             
+            var iconSize = 10;
+            var statusComponent = sector.get(SectorStatusComponent);
+            var isScouted = statusComponent.scouted;
+            
             // border for sectors with hazards or sunlight
             var isVisited = sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE && sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE;
             if (isVisited) {
@@ -330,11 +334,8 @@ function (Ash,
             
             // sector contents: points of interest
             var sectorPassages = sector.get(PassagesComponent);
-            var statusComponent = sector.get(SectorStatusComponent);
             var localesComponent = sector.get(SectorLocalesComponent);
-            var isScouted = statusComponent.scouted;
             var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
-            var iconSize = 10;
             var iconPosX = sectorXpx + (sectorSize - iconSize) / 2;
             var iconPosY = sectorSize > iconSize ? sectorYpx + 1 : sectorYpx;
             
