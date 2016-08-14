@@ -2,6 +2,7 @@
 define([
 	'ash',
 	'game/constants/GameConstants',
+	'game/constants/LevelConstants',
     'game/worldcreator/WorldCreatorHelper',
     'game/worldcreator/WorldCreatorRandom',
     'game/worldcreator/WorldCreatorDebug',
@@ -19,7 +20,7 @@ define([
 	'game/constants/LocaleConstants',
 	'game/constants/ItemConstants'
 ], function (
-    Ash, GameConstants,
+    Ash, GameConstants, LevelConstants,
     WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug,
     WorldVO, LevelVO, SectorVO, ResourcesVO, LocaleVO, PositionVO,
     WorldCreatorConstants, PositionConstants, MovementConstants, EnemyConstants, UpgradeConstants, LocaleConstants, ItemConstants
@@ -204,8 +205,8 @@ define([
 			
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World texture ready.");
-            //WorldCreatorDebug.printWorld(this.world, [ "hazards.cold" ]);
-            WorldCreatorDebug.printWorld(this.world, [ "sunlit" ]);
+            //WorldCreatorDebug.printWorld(this.world, [ "hazards.poison" ]);
+            //WorldCreatorDebug.printWorld(this.world, [ "sunlit" ]);
 		},
 		
 		// resources
@@ -541,29 +542,48 @@ define([
             var maxHazardPoison = Math.min(100, itemsHelper.getMaxHazardPoisonForLevel(levelOrdinal));
             
             if (maxHazardRadiation <= 0 && maxHazardPoison <= 0) return;
-                        
-            var maxNumHazardClusters = Math.min(4, levelVO.sectors.length / 100);
-            var hazardSectors = WorldCreatorRandom.randomSectors(seed / 3 * levelOrdinal + 73 * levelVO.maxX, levelVO, 0, maxNumHazardClusters, false, "camp");
-            // console.log("level " + levelVO.level + ": " + hazardSectors.length + "/" + maxNumHazardClusters + " clusters");
-            for (var h = 0; h < hazardSectors.length; h++) {
-                var hs = hazardSectors[h];
-                var hrRandom = WorldCreatorRandom.random(84848 + levelOrdinal * 99 + (h+12) * 111 + seed / 777);
-                var hr = Math.round(hrRandom * 8) + 2;
-                var isRadiation = WorldCreatorRandom.random(seed / 33 + levelOrdinal * 777 + (h+44)*(h+1)) > 0.5;
-                var maxHazardValue = isRadiation ? maxHazardRadiation : maxHazardPoison;
-                var minHazardValue = maxHazardValue / 3 * 2;
-                var hazardValueRand = WorldCreatorRandom.random(levelOrdinal * (h+11) / seed * 55 + seed/(h+99) - h*h);
-                var hazardValue = Math.ceil((minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue)) / 5) * 5;
-                for (var hx = hs.position.sectorX - hr; hx <= hs.position.sectorX + hr; hx++) {
-                    for (var hy = hs.position.sectorY - hr; hy <= hs.position.sectorY + hr; hy++) {
-                        var sectorVO = levelVO.getSector(hx, hy);
-                        if (sectorVO && !sectorVO.camp) {
-                            if (isRadiation) {
-                                sectorVO.hazards.radiation = hazardValue;
-                            } else {
-                                sectorVO.hazards.poison = hazardValue;
+            var isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
+            var isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
+            
+            if (!(isPollutedLevel || isRadiatedLevel)) {
+                var maxNumHazardClusters = Math.min(4, levelVO.sectors.length / 100);
+                var hazardSectors = WorldCreatorRandom.randomSectors(seed / 3 * levelOrdinal + 73 * levelVO.maxX, levelVO, 0, maxNumHazardClusters, false, "camp");
+
+                // console.log("level " + levelVO.level + ": " + hazardSectors.length + "/" + maxNumHazardClusters + " clusters");
+
+                for (var h = 0; h < hazardSectors.length; h++) {
+                    var hs = hazardSectors[h];
+                    var hrRandom = WorldCreatorRandom.random(84848 + levelOrdinal * 99 + (h+12) * 111 + seed / 777);
+                    var hr = Math.round(hrRandom * 8) + 2;
+                    var isRadiation = WorldCreatorRandom.random(seed / 3381 + levelOrdinal * 777 + (h+44)*(h+11)) > 0.5;
+                    var maxHazardValue = isRadiation ? maxHazardRadiation : maxHazardPoison;
+                    var minHazardValue = maxHazardValue / 3 * 2;
+                    var hazardValueRand = WorldCreatorRandom.random(levelOrdinal * (h+11) / seed * 2 + seed/(h+99+levelOrdinal) - h*h);
+                    var hazardValue = Math.ceil((minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue)) / 5) * 5;
+                    for (var hx = hs.position.sectorX - hr; hx <= hs.position.sectorX + hr; hx++) {
+                        for (var hy = hs.position.sectorY - hr; hy <= hs.position.sectorY + hr; hy++) {
+                            var sectorVO = levelVO.getSector(hx, hy);
+                            if (sectorVO && !sectorVO.camp) {
+                                if (isRadiation) {
+                                    sectorVO.hazards.radiation = hazardValue;
+                                } else {
+                                    sectorVO.hazards.poison = hazardValue;
+                                }
                             }
                         }
+                    }
+                }
+            } else {
+                for (var i = 0; i < levelVO.sectors.length; i++) {
+                    var sectorVO = levelVO.sectors[i];
+                    var maxHazardValue = isRadiatedLevel ? maxHazardRadiation : maxHazardPoison;
+                    var minHazardValue = Math.min(10, maxHazardValue);
+                    var hazardValueRand = WorldCreatorRandom.random(levelOrdinal * (i + 11) / seed * 55 + seed / (i + 99) - i * i);
+                    var hazardValue = Math.ceil((minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue)) / 5) * 5;
+                    if (isPollutedLevel) {
+                        sectorVO.hazards.poison = hazardValue;                        
+                    } else if (isRadiatedLevel) {
+                        sectorVO.hazards.radiation = hazardValue;                        
                     }
                 }
             }

@@ -120,7 +120,7 @@ define([
                 break;
             case WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL:
             case WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE:
-                result.food = sectorNatureFactor > 0.5 ? Math.round(sectorNatureFactor * 8) : 0;
+                result.food = sectorNatureFactor > 0.4 ? Math.round(sectorNatureFactor * 8) : 0;
                 result.water = sectorWaterFactor > 0.7 ? Math.round(Math.min(10, sectorWaterFactor * 11)) : 0;
                 break;
             case WorldCreatorConstants.SECTOR_TYPE_SLUM:
@@ -142,6 +142,11 @@ define([
             if (l === bottomLevel + 1) {
                 result.food = result.food > 0 ? result.food + 1 : 0;
                 result.water = result.water > 0 ? result.water + 1 : 0;
+            }
+
+            if (sectorVO.hazards.poison > 0 || sectorVO.hazards.radiation > 0) {
+                result.water = 0;
+                result.food = 0;
             }
             
             return result;
@@ -193,10 +198,13 @@ define([
         
         getNotCampableReason: function (seed, level) {
             if (this.isCampableLevel(seed, level)) return null;
+            var levelOrdinal = this.getLevelOrdinal(seed, level);
             var rand = WorldCreatorRandom.random(seed % 4 + level + level * 8 + 88);
-            if (rand < 0.33) return LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
-            if (rand < 0.66 && level < 16) return LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION;
-            return LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
+            if (rand < 0.33 && levelOrdinal < WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION) 
+                return LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
+            if (rand < 0.66 && WorldCreatorConstants.MIN_LEVEL_HAZARD_POISON) 
+                return LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
+            return LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION;
         },
 		
 		getCamplessLevelOrdinals: function (seed) {
