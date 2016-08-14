@@ -4,29 +4,32 @@
             "version": "0.1.3",
             "phase": "alpha",
             "final": false,
-            "updated": "2016-07-27",
+            "updated": "2016-08-14",
             "changes": [
-            {
-                "type": "GD",
-                "summary": "Rework how food and water work while exploring & add springs",
-            },
-            {
-                "type": "GD",
-                "summary": "Add proper inventory management, add weights for items, and enforce carry limit",
-            },
-            {
-                "type": "GD",
-                "summary": "Make stamina regenerate much slower while exploring, and add option to recover it in camp",
-            },
-            {
-                "type": "GD",
-                "summary": "New items: first aid kits and glowsticks.",
-            },
-            {
-                "type": "GD",
-                "summary": "More clothing slots & items.",
-            },
-            ]
+                {
+                    "type": "GD",
+                    "summary": "Rework how food and water work while exploring & add springs"
+                },
+                {
+                    "type": "GD",
+                    "summary": "Add proper inventory management, add weights for items, and enforce carry limit"
+                },
+                {
+                    "type": "GD",
+                    "summary": "Make stamina regenerate much slower while exploring, and add option to recover it in camp"
+                },
+                {
+                    "type": "GD",
+                    "summary": "New items: first aid kits and glowsticks."
+                },
+                {
+                    "type": "GD",
+                    "summary": "Environmental hazards: cold, radiation and poison."
+                },
+                {
+                    "type": "GD",
+                    "summary": "More clothing slots & items."
+                }
             ]
         },
         {

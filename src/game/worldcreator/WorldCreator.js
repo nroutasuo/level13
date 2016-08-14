@@ -29,15 +29,15 @@ define([
         
 		world: null,
 		
-		prepareWorld: function (seed, enemyHelper) {
+		prepareWorld: function (seed, enemyHelper, itemsHelper) {
 			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
             this.world = new WorldVO(seed, topLevel, bottomLevel);
 			
 			// base: passages, campable sectors and levels, sunlight
 			this.prepareWorldStructure(seed, topLevel, bottomLevel);
-			// building density, state of repair
-			this.prepareWorldTexture(seed, topLevel, bottomLevel);
+			// building density, state of repair, hazards
+			this.prepareWorldTexture(seed, topLevel, bottomLevel, itemsHelper);
 			// resources (and workshops)
 			this.prepareWorldResources(seed, topLevel, bottomLevel);
 			// locales
@@ -133,16 +133,21 @@ define([
 		},
 		
 		// sector type, building density, state of repair, sunlight
-		prepareWorldTexture: function (seed, topLevel, bottomLevel) {
+		prepareWorldTexture: function (seed, topLevel, bottomLevel, itemsHelper) {
 			for (var i = topLevel; i >= bottomLevel; i--) {
 				var l = i === 0 ? 1342 : i;
+                var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, i);
                 var levelVO = this.world.getLevel(i);
-                var previousLevelVO = this.world.getLevel(l + 1);
+                var previousLevelVO = this.world.getLevel(i + 1);
 				
 				var levelDensity = Math.min(Math.max(2, i % 2 * 4 + Math.random(seed * 7 * l / 3 + 62) * 7), 8);
 				if (Math.abs(i - 15) < 2) levelDensity = 10;
 				var levelRepair = Math.max(2, (i - 15) * 2);
 				if (i <= 5) levelRepair = levelRepair - 2;
+                
+                var maxHazardRadiation = Math.min(100, itemsHelper.getMaxHazardRadiationForLevel(levelOrdinal));
+                var maxHazardPoison = Math.min(100, itemsHelper.getMaxHazardPoisonForLevel(levelOrdinal));
+                var maxHazardCold = Math.min(100, itemsHelper.getMaxHazardColdForLevel(levelOrdinal));
 				
 				for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
 					for (var x = levelVO.minX; x <= levelVO.maxX; x++) {
@@ -186,17 +191,24 @@ define([
                             }
                         }
                         
-                        // enviromental hazards
-                        // TODO plan a better distribution of env hazards in world creator
+                        // environmental hazards
                         if (Math.abs(y) > 2 && Math.abs(x) > 2 && !sectorVO.camp) {
                             var hazardTypeRand = WorldCreatorRandom.random(seed % x * y / (l + 30) * 3 + x + 28 + x * 7 - l * y * 77 + x * 51);
                             var hazardValueRand = WorldCreatorRandom.random(seed / (l + 40) + x * y / 6 + seed + y * 2 + l * l * 959);
-                            if (hazardTypeRand > 0.8) {
-                                sectorVO.hazards.radiation = Math.min(100, Math.ceil(hazardValueRand * 10) * 10);
-                            } else if (hazardTypeRand > 0.6) {
-                                sectorVO.hazards.poison = Math.min(100, Math.ceil(hazardValueRand * 10) * 10);
-                            } else if (hazardTypeRand > 0.4) {
-                                sectorVO.hazards.cold = Math.min(100, Math.ceil(hazardValueRand * 10) * 10);
+                            
+                            // enviromnetal hazards: radiation
+                            if (levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION && hazardTypeRand > 0.8) {
+                                sectorVO.hazards.radiation = Math.min(maxHazardRadiation, Math.ceil(hazardValueRand * 10) * 10);
+                            }
+
+                            // enironmental hazards: poison
+                            else if (i >= WorldCreatorConstants.MIN_LEVEL_HAZARD_POISON && hazardTypeRand > 0.6) {
+                                sectorVO.hazards.poison = Math.min(maxHazardPoison, Math.ceil(hazardValueRand * 10) * 10);
+                            }
+
+                            // enviromental hazards: cold} 
+                            else if (hazardTypeRand > 0.4) {
+                                sectorVO.hazards.cold = Math.min(maxHazardCold, Math.ceil(hazardValueRand * 10) * 10);
                             }
                         }
                     }

@@ -1,4 +1,4 @@
-define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
+define(['ash', 'game/constants/LevelConstants', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], function (Ash, LevelConstants, PlayerActionConstants, UpgradeVO) {
     
     var UpgradeConstants = {
     
@@ -56,6 +56,8 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
             unlock_item_clothing7: "unlock_item_clothing7",
             unlock_item_weapon7: "unlock_item_weapon7",
         },
+
+        upgradeDefinitions: {},
         
         upgradeUIEffects: {
             calendar: "calendar",
@@ -91,6 +93,9 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
 		
 		getBlueprintCampOrdinal: function (upgradeId) {
 			var level = 1;
+            for (var key in this.bluePrintsByCampOrdinal) {
+                if (this.bluePrintsByCampOrdinal[key].indexOf(upgradeId) >= 0) return key;
+            }
 			return level;
 		},
         
@@ -110,7 +115,21 @@ define(['ash', 'game/vos/UpgradeVO'], function (Ash, UpgradeVO) {
             return pieceCount;
         },
         
-        upgradeDefinitions: {},
+        getMinimumCampOrdinalForUpgrade: function (upgrade) {
+            // required tech
+            var reqs = PlayerActionConstants.requirements[upgrade];
+            var requiredTechCampOrdinal = 0;
+            if (reqs && reqs.upgrades) {
+                var requiredTech = Object.keys(reqs.upgrades);
+                for (var i = 0; i < requiredTech.length; i++) {
+                    requiredTechCampOrdinal = Math.max(requiredTechCampOrdinal, this.getMinimumCampOrdinalForUpgrade(requiredTech[i]));
+                }
+            }
+            // blueprint
+            var blueprintCampOrdinal = this.getBlueprintCampOrdinal(upgrade);
+            
+            return Math.max(blueprintCampOrdinal, requiredTechCampOrdinal);
+        },
     };
     
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_worker_rope]

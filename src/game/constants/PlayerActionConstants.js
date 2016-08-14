@@ -1,14 +1,12 @@
 // Costs, requirements, descriptions, and cooldowns for all player actions plus some related helper functions
 define(['ash',
     'game/constants/GameConstants',
-    'game/constants/UpgradeConstants',
     'game/constants/CampConstants',
-    'game/constants/WorldCreatorConstants'
 ],
-function (Ash, GameConstants, UpgradeConstants, CampConstants, WorldCreatorConstants) {
+function (Ash, GameConstants, CampConstants) {
 
-    const COST_SOURCE_CAMP = "camp";
-    const COST_SOURCE_DEFAULT = "default";
+    var COST_SOURCE_CAMP = "camp";
+    var COST_SOURCE_DEFAULT = "default";
 
     var PlayerActionConstants = {
         
@@ -558,6 +556,12 @@ function (Ash, GameConstants, UpgradeConstants, CampConstants, WorldCreatorConst
                     }
                 },
                 
+                craft_clothing_over_6: {
+                    upgrades: {
+                        unlock_building_ceiling: true,
+                    }
+                },
+                
                 craft_clothing_upper_5: {
                     upgrades: {
                         unlock_building_researchcenter: true
@@ -582,9 +586,27 @@ function (Ash, GameConstants, UpgradeConstants, CampConstants, WorldCreatorConst
                     }
                 },
                 
+                craft_clothing_lower_5: {
+                    upgrades: {
+                        unlock_building_researchcenter: true,
+                    }
+                },
+                
                 craft_clothing_head_3: {
                     upgrades: {
                         unlock_item_clothing5: true,
+                    }
+                },
+                
+                craft_clothing_head_5: {
+                    upgrades: {
+                        unlock_item_clothing7: true,
+                    }
+                },
+                
+                craft_clothing_hands_4: {
+                    upgrades: {
+                        unlock_item_clothing7: true,
                     }
                 },
                 
@@ -1336,6 +1358,10 @@ function (Ash, GameConstants, UpgradeConstants, CampConstants, WorldCreatorConst
                     resource_concrete: 10
                 },
                 
+                craft_clothing_lower_5: {
+                    resource_rope: 50
+                },
+                
                 craft_clothing_upper_1: {
                     resource_rope: 5
                 },
@@ -1676,21 +1702,6 @@ function (Ash, GameConstants, UpgradeConstants, CampConstants, WorldCreatorConst
                     return this.loseInventoryProbabilities[action];
                 }
                 return 0;
-            },
-            
-            getFirstCampForUpgrade: function (upgradeId) {
-                var blueprintCamp = UpgradeConstants.getBlueprintCampOrdinal(upgradeId);
-                
-                var requiredTechCamp = 1;
-                var requiredTech;
-                for (var i = 0; i < this.requirements[upgradeId].upgrades; i++) {
-                    console.log(this.requirements.upgradeId.upgrades[i]);
-                }
-                
-                var requiredStatCamp = 1;
-                if (this.costs[upgradeId].favour > 0) requiredStatCamp = WorldCreatorConstants.CAMPS_BEFORE_GROUND;
-                
-                return Math.max(blueprintCamp, requiredTechCamp, requiredStatCamp);
             },
 
         };

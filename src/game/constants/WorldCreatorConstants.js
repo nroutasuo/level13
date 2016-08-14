@@ -31,6 +31,9 @@ define(['ash'], function (Ash) {
         
         FIRST_CAMP_X: 1,
         FIRST_CAMP_Y: 0,
+        
+        MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 5,
+        MIN_LEVEL_HAZARD_POISON: 15,
     };
     
     return WorldCreatorConstants;

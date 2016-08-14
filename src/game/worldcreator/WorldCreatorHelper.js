@@ -166,12 +166,6 @@ define([
             }
 		},
 		
-		getLevelOrdinalFromCampOrdinal: function (campOrdinal) {
-			var levelOrdinal = 1;
-			// TODO calculate level ordinal from camp ordinal
-			return levelOrdinal;
-		},
-		
 		getCampOrdinal: function (seed, level) {
             var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
 			var levelOrdinal = this.getLevelOrdinal(seed, level);
@@ -181,6 +175,15 @@ define([
 			}
 			return ordinal;
 		},
+        
+        getLevelOrdinalForCampOrdinal: function (seed, campOrdinal) {
+            var levelOrdinal = campOrdinal;
+            var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
+            for (var i = 0; i < camplessLevelOrdinals.length; i++) {
+                if (camplessLevelOrdinals[i] <= campOrdinal) levelOrdinal++;
+            }
+            return levelOrdinal;
+        },
         
         isCampableLevel: function (seed, level) {
             var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);            
