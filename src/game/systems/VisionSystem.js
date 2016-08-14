@@ -64,7 +64,7 @@ define([
             };
             
             // Check max value and accumulation
-			var maxValueBase = 25;
+			var maxValueBase = sunlit ? 50 : 25;
 			maxValue = maxValueBase;
             addAccumulation("Base", 25 / maxValueBase);
 			
@@ -87,14 +87,11 @@ define([
 			}
 			
 			if (sunlit) {
-                // TODO add shade item from new clothing slots
-                /*
-				var shadeItem = itemsComponent.getEquipped(ItemConstants.itemTypes.shades)[0];
-				if (shadeItem && shadeItem.bonus + maxValueBase > maxValue) {
-					maxValue = shadeItem.bonus + maxValueBase;
-					addAccumulation(shadeItem.name, shadeItem.bonus / maxValueBase);
+				var shadeBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_sunlight);
+				if (shadeBonus + maxValueBase > maxValue) {
+					maxValue = shadeBonus + maxValueBase;
+					addAccumulation("Equipment", shadeBonus / maxValueBase);
 				}
-                */
 			} else {
 				var lightItem = itemsComponent.getEquipped(ItemConstants.itemTypes.light)[0];
 				if (lightItem && lightItem.getBonus(ItemConstants.itemBonusTypes.light) + maxValueBase > maxValue) {
@@ -116,10 +113,10 @@ define([
 			
             // Effects of moving from different light environments
 			if (oldMaximum > 0 && maxValue < oldMaximum) {
-				vision.value = vision.value - (oldMaximum - maxValue);
+				vision.value = vision.value - Math.abs(oldMaximum - maxValue);
 			}
 			if (oldMaximum > 0 && maxValue > oldMaximum && sunlit) {
-				vision.value = vision.value - (oldMaximum - maxValue);
+				vision.value = vision.value - Math.abs(oldMaximum - maxValue);
 			}
 			
             // Limit to min / max
