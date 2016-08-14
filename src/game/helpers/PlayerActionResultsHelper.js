@@ -56,6 +56,7 @@ define([
         playerActionsHelper: null,
         resourcesHelper: null,
         levelHelper: null,
+        itemsHelper: null,
 
         playerStatsNodes: null,
         playerResourcesNodes: null,
@@ -69,12 +70,13 @@ define([
             meet: { bag: 0.1, light: 0.2, shoes: 0.3, weapon: 0.5, clothing: 0.7, exploration: 0.8 }
         },
 
-        constructor: function (engine, gameState, playerActionsHelper, resourcesHelper, levelHelper) {
+        constructor: function (engine, gameState, playerActionsHelper, resourcesHelper, levelHelper, itemsHelper) {
             this.engine = engine;
             this.gameState = gameState;
             this.playerActionsHelper = playerActionsHelper;
             this.resourcesHelper = resourcesHelper;
             this.levelHelper = levelHelper;
+            this.itemsHelper = itemsHelper;
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
@@ -551,6 +553,8 @@ define([
 					item = ItemConstants.getShoes(levelOrdinal);
 				} else if (itemTypeRand < itemTypeLimits.weapon) {
 					item = ItemConstants.getDefaultWeapon(levelOrdinal, totalLevels);
+                } else if (itemTypeRand < itemTypeLimits.clothing) {
+                    item = this.itemsHelper.getScavengeRewardClothing(levelOrdinal, totalLevels);
 				} else if (itemTypeRand < itemTypeLimits.exploration) {
 					i = Math.floor(Math.random() * ItemConstants.itemDefinitions.exploration.length);
 					item = ItemConstants.itemDefinitions.exploration[i].clone();

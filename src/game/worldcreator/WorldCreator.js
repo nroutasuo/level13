@@ -181,7 +181,7 @@ define([
                         sectorVO.buildingDensity = buildingDensity;
                         
                         // sunlight
-                        sectorVO.sunlit = l === topLevel || (ceilingSunlit && ceilingStateOfRepair < 3) || (edgeSector && stateOfRepair < 5) || distanceToEdge < 10;
+                        sectorVO.sunlit = l === topLevel || (ceilingSunlit && ceilingStateOfRepair < 3) || (edgeSector && stateOfRepair < 5);
                         if (!sectorVO.sunlit && (buildingDensity < 5 || stateOfRepair < 5)) {
                             var neighbours = levelVO.getNeighbours(x, y);
                             for (var neighbourDirection in neighbours) {

@@ -604,6 +604,12 @@ function (Ash, GameConstants, CampConstants) {
                     }
                 },
                 
+                craft_clothing_hands_3: {
+                    upgrades: {
+                        unlock_item_clothing3: true,
+                    }
+                },
+                
                 craft_clothing_hands_4: {
                     upgrades: {
                         unlock_item_clothing7: true,

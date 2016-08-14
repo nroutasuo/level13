@@ -20,8 +20,21 @@ define([
         defaultClothing: {
         },
         
+        availableClothing: {            
+        },
+        
         getDefaultClothing: function (levelOrdinal, totalLevels) {
-            if (this.defaultClothing[levelOrdinal]) return this.defaultClothing[levelOrdinal];
+            return this.getAvailableClothingList(levelOrdinal, totalLevels, false, false);
+        },
+        
+        getScavengeRewardClothing: function (levelOrdinal, totalLevels) {
+            var possibleItems = this.getAvailableClothingList(levelOrdinal, totalLevels, true, true);
+            return possibleItems[Math.floor(Math.random() * possibleItems.length)];
+        },
+        
+        getAvailableClothingList: function (levelOrdinal, totalLevels, includeNonCraftable, includeMultiplePerType) {
+            if (!includeNonCraftable && !includeMultiplePerType && this.defaultClothing[levelOrdinal]) return this.defaultClothing[levelOrdinal];
+            if (includeNonCraftable && includeMultiplePerType && this.availableClothing[levelOrdinal]) return this.availableClothing[levelOrdinal];
             
             var result = [];
             var clothingLists = [
@@ -31,7 +44,6 @@ define([
                 ItemConstants.itemDefinitions.clothing_hands,
                 ItemConstants.itemDefinitions.clothing_head
             ];
-
             var bestAvailableItem;
             var clothingList;
             var clothingItem;
@@ -43,7 +55,7 @@ define([
                     clothingItem = clothingList[j];
                     isAvailable = false;
                     
-                    // non-craftable items are not considered default (no reliable source especially when possible to lose once acquired)
+                    // only craftable items are considered default (no reliable source especially when possible to lose once acquired)
                     if (clothingItem.craftable) {
                         var reqs = PlayerActionConstants.requirements["craft_" + clothingItem.id];
                         if (reqs) {
@@ -58,23 +70,35 @@ define([
                             isAvailable = true;
                         }
                     }
-                    
+
+                    // non-craftable items added for scavenging results
+                    if (!clothingItem.craftable && includeNonCraftable) {
+                        isAvailable = clothingItem.requiredLevel >= 0 && clothingItem.requiredLevel <= levelOrdinal;
+                    }
+
                     if (isAvailable && (!bestAvailableItem || bestAvailableItem.getTotalBonus() < clothingItem.getTotalBonus())) {
                         bestAvailableItem = clothingItem;
                     }
+                    
+                    if (isAvailable && includeMultiplePerType) {
+                        result.push(clothingItem);
+                    }
                 }
-                
-                if (bestAvailableItem) {
+
+                if (!includeMultiplePerType && bestAvailableItem) {
                     // var reqs = PlayerActionConstants.requirements["craft_" + clothingItem.id];
                     // var reqTech = reqs ? Object.keys(reqs.upgrades) : "none";
                     // console.log("-> level ordinal " + levelOrdinal + " best " + clothingList[0].type + ": " + bestAvailableItem.name + " " + bestAvailableItem.id + " | " + bestAvailableItem.craftable + " " + reqTech)
                     result.push(bestAvailableItem);
                 }
             }
-            
-            this.defaultClothing[levelOrdinal] = result;
 
-            return this.defaultClothing[levelOrdinal];
+            if (!includeNonCraftable && !includeMultiplePerType)
+                this.defaultClothing[levelOrdinal] = result;
+            else if (includeNonCraftable && includeMultiplePerType)
+                this.availableClothing[levelOrdinal] = result;
+            
+            return result;
         },
         
         getMaxHazardRadiationForLevel: function (levelOrdinal) {

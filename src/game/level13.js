@@ -152,7 +152,7 @@ define([
 			this.levelHelper = new LevelHelper(this.engine, this.gameState, this.playerActionsHelper);
 			this.sectorHelper = new SectorHelper(this.engine);
 			this.campHelper = new CampHelper(this.engine, this.upgradeEffectsHelper);
-			this.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine, this.gameState, this.playerActionsHelper, this.resourcesHelper, this.levelHelper);
+			this.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine, this.gameState, this.playerActionsHelper, this.resourcesHelper, this.levelHelper, this.itemsHelper);
             this.fightHelper = new FightHelper(this.engine, this.playerActionsHelper, this.playerActionResultsHelper);
 			this.movementHelper = new MovementHelper(this.engine);
 			this.saveHelper = new SaveHelper();

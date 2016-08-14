@@ -8,6 +8,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		bonus: null,
 		icon: "",
 		description: "",
+        requiredLevel: 1,
 		
 		equippable: false,
 		craftable: false,
@@ -16,7 +17,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		equipped: false,
 		carried: false,
 	
-        constructor: function (id, name, type, bonuses, equippable, craftable, useable, icon, description) {
+        constructor: function (id, name, type, bonuses, equippable, craftable, useable, icon, description, requiredLevel) {
 			this.id = id;
 			this.name = name;
 			this.type = type;
@@ -26,7 +27,8 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
             this.useable = useable;
 			this.icon = icon;
 			this.description = description;
-			
+			this.requiredLevel = typeof requiredLevel != 'undefined' ? requiredLevel : 1;
+            
 			this.equipped = false;
 			this.carried = false;
 			this.itemID = Math.floor(Math.random() * 1000000);
@@ -41,7 +43,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
         },
 	
 		clone: function () {
-		    return new ItemVO(this.id, this.name, this.type, this.bonus.bonuses, this.equippable, this.craftable, this.useable, this.icon, this.description);
+		    return new ItemVO(this.id, this.name, this.type, this.bonus.bonuses, this.equippable, this.craftable, this.useable, this.icon, this.description, this.requiredLevel);
 		}
     });
 
