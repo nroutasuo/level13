@@ -132,22 +132,21 @@ define([
             // WorldCreatorDebug.printWorld(this.world, [ "camp" ]);
 		},
 		
-		// sector type, building density, state of repair, sunlight
+		// sector type, building density, state of repair, sunlight, hazards
 		prepareWorldTexture: function (seed, topLevel, bottomLevel, itemsHelper) {
 			for (var i = topLevel; i >= bottomLevel; i--) {
 				var l = i === 0 ? 1342 : i;
-                var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, i);
                 var levelVO = this.world.getLevel(i);
                 var previousLevelVO = this.world.getLevel(i + 1);
 				
-				var levelDensity = Math.min(Math.max(2, i % 2 * 4 + Math.random(seed * 7 * l / 3 + 62) * 7), 8);
+				var levelDensity = Math.min(Math.max(2, i % 2 * 4 + WorldCreatorRandom.random(seed * 7 * l / 3 + 62) * 7), 8);
 				if (Math.abs(i - 15) < 2) levelDensity = 10;
 				var levelRepair = Math.max(2, (i - 15) * 2);
 				if (i <= 5) levelRepair = levelRepair - 2;
                 
-                var maxHazardRadiation = Math.min(100, itemsHelper.getMaxHazardRadiationForLevel(levelOrdinal));
-                var maxHazardPoison = Math.min(100, itemsHelper.getMaxHazardPoisonForLevel(levelOrdinal));
-                var maxHazardCold = Math.min(100, itemsHelper.getMaxHazardColdForLevel(levelOrdinal));
+                // hazards: level-wide values
+                var maxHazardCold = Math.min(100, itemsHelper.getMaxHazardColdForLevel(levelVO.levelOrdinal));
+                this.generateHazardClusters(seed, levelVO, itemsHelper);
 				
 				for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
 					for (var x = levelVO.minX; x <= levelVO.maxX; x++) {
@@ -157,6 +156,7 @@ define([
                         
                         var distanceToCenter = PositionConstants.getDistanceTo(sectorVO.position, new PositionVO(l, 0, 0));
                         var edgeSector = (y === levelVO.minY || y === levelVO.maxY || x === levelVO.minX || x === levelVO.maxX) && Math.abs(x) > 1 && Math.abs(y) > 1;
+                        var distanceToEdge = Math.min(Math.abs(y - levelVO.minY), Math.abs(y - levelVO.maxY), Math.abs(x - levelVO.minX), Math.abs(x - levelVO.maxX));
                         var ceilingStateOfRepair = l === topLevel ? 0 : !ceilingSector ? sectorVO.stateOfRepair : ceilingSector.stateOfRepair;
                         var ceilingSunlit = l === topLevel || !ceilingSector ? true : ceilingSector.sunlit;
                     
@@ -191,23 +191,10 @@ define([
                             }
                         }
                         
-                        // environmental hazards
+                        // non-clustered environmental hazards (cold)
                         if (Math.abs(y) > 2 && Math.abs(x) > 2 && !sectorVO.camp) {
-                            var hazardTypeRand = WorldCreatorRandom.random(seed % x * y / (l + 30) * 3 + x + 28 + x * 7 - l * y * 77 + x * 51);
                             var hazardValueRand = WorldCreatorRandom.random(seed / (l + 40) + x * y / 6 + seed + y * 2 + l * l * 959);
-                            
-                            // enviromnetal hazards: radiation
-                            if (levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION && hazardTypeRand > 0.8) {
-                                sectorVO.hazards.radiation = Math.min(maxHazardRadiation, Math.ceil(hazardValueRand * 10) * 10);
-                            }
-
-                            // enironmental hazards: poison
-                            else if (i >= WorldCreatorConstants.MIN_LEVEL_HAZARD_POISON && hazardTypeRand > 0.6) {
-                                sectorVO.hazards.poison = Math.min(maxHazardPoison, Math.ceil(hazardValueRand * 10) * 10);
-                            }
-
-                            // enviromental hazards: cold} 
-                            else if (hazardTypeRand > 0.4) {
+                            if (edgeSector || l === topLevel || distanceToEdge < 5 || Math.abs(y) > 50 || Math.abs(x) > 50) {
                                 sectorVO.hazards.cold = Math.min(maxHazardCold, Math.ceil(hazardValueRand * 10) * 10);
                             }
                         }
@@ -217,7 +204,8 @@ define([
 			
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World texture ready.");
-			// WorldCreatorDebug.printWorld(this.world, [ "hazards.radiation" ]);
+            //WorldCreatorDebug.printWorld(this.world, [ "hazards.cold" ]);
+            WorldCreatorDebug.printWorld(this.world, [ "sunlit" ]);
 		},
 		
 		// resources
@@ -542,6 +530,45 @@ define([
 			if (PositionConstants.isPositionInArea(sectorPos, levelVO.centralAreaSize)) sectorsCentral.push(sectorPos);
 		},
 		
+        generateHazardClusters: function (seed, levelVO, itemsHelper) {
+            var levelOrdinal = levelVO.levelOrdinal;
+
+            if (levelOrdinal < WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION && levelVO.level < WorldCreatorConstants.MIN_LEVEL_HAZARD_POISON) {
+                return;
+            }
+            
+            var maxHazardRadiation = Math.min(100, itemsHelper.getMaxHazardRadiationForLevel(levelOrdinal));
+            var maxHazardPoison = Math.min(100, itemsHelper.getMaxHazardPoisonForLevel(levelOrdinal));
+            
+            if (maxHazardRadiation <= 0 && maxHazardPoison <= 0) return;
+                        
+            var maxNumHazardClusters = Math.min(4, levelVO.sectors.length / 100);
+            var hazardSectors = WorldCreatorRandom.randomSectors(seed / 3 * levelOrdinal + 73 * levelVO.maxX, levelVO, 0, maxNumHazardClusters, false, "camp");
+            // console.log("level " + levelVO.level + ": " + hazardSectors.length + "/" + maxNumHazardClusters + " clusters");
+            for (var h = 0; h < hazardSectors.length; h++) {
+                var hs = hazardSectors[h];
+                var hrRandom = WorldCreatorRandom.random(84848 + levelOrdinal * 99 + (h+12) * 111 + seed / 777);
+                var hr = Math.round(hrRandom * 8) + 2;
+                var isRadiation = WorldCreatorRandom.random(seed / 33 + levelOrdinal * 777 + (h+44)*(h+1)) > 0.5;
+                var maxHazardValue = isRadiation ? maxHazardRadiation : maxHazardPoison;
+                var minHazardValue = maxHazardValue / 3 * 2;
+                var hazardValueRand = WorldCreatorRandom.random(levelOrdinal * (h+11) / seed * 55 + seed/(h+99) - h*h);
+                var hazardValue = Math.ceil((minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue)) / 5) * 5;
+                for (var hx = hs.position.sectorX - hr; hx <= hs.position.sectorX + hr; hx++) {
+                    for (var hy = hs.position.sectorY - hr; hy <= hs.position.sectorY + hr; hy++) {
+                        var sectorVO = levelVO.getSector(hx, hy);
+                        if (sectorVO && !sectorVO.camp) {
+                            if (isRadiation) {
+                                sectorVO.hazards.radiation = hazardValue;
+                            } else {
+                                sectorVO.hazards.poison = hazardValue;
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        
 		generateEnemies: function (seed, topLevel, bottomLevel, sectorVO, enemyHelper) {
 			var l = sectorVO.position.level;
 			var x = sectorVO.position.sectorX;
