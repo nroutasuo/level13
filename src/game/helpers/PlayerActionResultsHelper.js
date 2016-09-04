@@ -86,26 +86,40 @@ define([
         
         getResultVOByAction: function (action) {
             var baseActionID = this.playerActionsHelper.getBaseActionID(action);
+            var resultVO;
             switch (baseActionID) {
                 case "scavenge":
-                    return this.getScavengeRewards();                    
+                    resultVO = this.getScavengeRewards();                    
+                    break;
                 case "scout":
-                    return this.getScoutRewards();
+                    resultVO = this.getScoutRewards();
+                    break;
                 case "scout_locale_i":
                 case "scout_locale_u":
                     // TODO global helper to get locale vo from action?
 					var localei = parseInt(action.split("_")[3]);
                     var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
                     var localeVO = sectorLocalesComponent.locales[localei];
-                    return this.getScoutLocaleRewards(localeVO);
+                    resultVO = this.getScoutLocaleRewards(localeVO);
+                    break;
                 case "use_spring":
-                    return this.getUseSpringRewards();
+                    resultVO = this.getUseSpringRewards();
+                    break;
                 case "clear_workshop":
-                    return this.getClearWorkshopRewards();
+                    resultVO = this.getClearWorkshopRewards();
+                    break;
                 default:
                     if (GameConstants.isDebugOutputEnabled) console.log("WARN: Unknown action: " + baseActionID + ". Can't create result vo.");
-                    break;
+                    return null;
             }
+            
+            var playerVision = this.playerStatsNodes.head.vision.value;
+            var loseInventoryProbability = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
+            if (loseInventoryProbability > Math.random()) {
+                resultVO.lostItems = this.getLostItems(action);
+            }
+            
+            return resultVO;
         },
 
         getScavengeRewards: function () {
@@ -220,7 +234,7 @@ define([
             var resultVO = new ResultVO();
             if (loseInventoryProbability > Math.random()) {
                 resultVO.lostResources = this.playerResourcesNodes.head.resources.resources.clone();
-                resultVO.lostItems = this.getLostItems(injuryProbability);
+                resultVO.lostItems = this.getLostItems("despair");
             }
 
             resultVO.gainedInjuries = this.getResultInjuries(injuryProbability);
@@ -606,9 +620,14 @@ define([
 			return null;
 		},
 
-        getLostItems: function(loseFollowerProbability) {
+        getLostItems: function(action) {
             var lostItems = [];
             var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAll(false);
+
+            // TODO choose mroe random item to lose when losing just one item
+            var isSingle = action === "despair" ? false : true;
+            var loseFollowerProbability = action === "despair" ? 1 : 0;
+            
             var itemLoseProbability;
             for (var i = 0; i < playerItems.length; i++) {
                 itemLoseProbability = 1;
@@ -634,6 +653,7 @@ define([
                         break;
                 }
                 if (itemLoseProbability > Math.random()) lostItems.push(playerItems[i]);
+                if (lostItems.length > 0 && isSingle) break;
             }
             return lostItems;
         },

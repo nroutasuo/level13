@@ -48,7 +48,7 @@ define([
 			var localeId = FightConstants.getEnemyLocaleId(baseActionID, action);
 			var hasEnemies = enemiesComponent.hasEnemies() && !sectorControlComponent.hasControlOfLocale(localeId);
 			if (hasEnemies) {
-                var vision = this.playerStatsNodes.vision.value;
+                var vision = this.playerStatsNodes.head.vision.value;
 				var encounterProbability =  PlayerActionConstants.getRandomEncounterProbability(baseActionID, vision);
 				if (Math.random() < encounterProbability) {
 					this.pendingEnemies = Math.min(this.getEnemyCount(action), sectorControlComponent.getCurrentEnemies(localeId));

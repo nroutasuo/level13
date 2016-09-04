@@ -232,10 +232,11 @@ define([
 						}
 						
 						if (injuryRisk > 0 || fightRisk > 0 || inventoryRisk > 0) {
+                            var inventoryRiskLabel = action === "despair" ? "lose items" : "lose item";
                             if (content.length > 0) content += "<hr/>";
 							if (injuryRisk > 0) content += "<span class='action-risk warning'>risk of injury: " + Math.round(injuryRisk * 100 * 100) / 100 + "%</span><br/>";
-							if (fightRisk > 0) content += "<span class='action-risk warning'>risk of fight: " + Math.round(fightRisk * 100 * 100) / 100 + "%</span>";
-							if (inventoryRisk > 0) content += "<span class='action-risk warning'>lose items: " + Math.round(inventoryRisk * 100 * 100) / 100 + "%</span>";
+							if (fightRisk > 0) content += "<span class='action-risk warning'>risk of fight: " + Math.round(fightRisk * 100 * 100) / 100 + "%</span><br/>";
+							if (inventoryRisk > 0) content += "<span class='action-risk warning'>" + inventoryRiskLabel + ": " + Math.round(inventoryRisk * 100 * 100) / 100 + "%</span>";
 						}
                     } else {
                         if (content.length > 0) content += "<hr/>";

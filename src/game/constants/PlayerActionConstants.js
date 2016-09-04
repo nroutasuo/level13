@@ -1628,6 +1628,8 @@ function (Ash, GameConstants, CampConstants) {
             },
             
             loseInventoryProbabilities: {
+                scout: 0.001,
+                scavenge: 0.001,
                 despair: 0.75, // TODO make dynamic and link to cases in FaintingSystem
             },
         
