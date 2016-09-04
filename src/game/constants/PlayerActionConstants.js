@@ -1688,24 +1688,30 @@ function (Ash, GameConstants, CampConstants) {
                 return 0;
             },
             
-            getRandomEncounterProbability: function (baseActionID) {
+            getRandomEncounterProbability: function (baseActionID, vision) {
                 // TODO for locales get probability based on locale type
                 if (this.randomEncounterProbabilities[baseActionID]) {
-                    return this.randomEncounterProbabilities[baseActionID];
+                    var visionFactor = 1 - vision / 100;
+                    var baseProbability = this.randomEncounterProbabilities[baseActionID];
+                    return baseProbability + (Math.min(baseProbability, 1-baseProbability) * visionFactor);
                 }
                 return 0;
             },
             
-            getInjuryProbability: function (action) {
+            getInjuryProbability: function (action, vision) {
                 if (this.injuryProbabilities[action]) {
-                    return this.injuryProbabilities[action];
+                    var visionFactor = 1 - vision / 100;
+                    var baseProbability = this.injuryProbabilities[action];
+                    return baseProbability + (Math.min(baseProbability, 1 - baseProbability) * visionFactor);
                 }
                 return 0;
             },
             
-            getLoseInventoryProbability: function (action) {
+            getLoseInventoryProbability: function (action, vision) {
                 if (this.loseInventoryProbabilities[action]) {
-                    return this.loseInventoryProbabilities[action];
+                    var visionFactor = 1 - vision / 100;
+                    var baseProbability = this.loseInventoryProbabilities[action];
+                    return baseProbability + (Math.min(baseProbability, 1 - baseProbability) * visionFactor);
                 }
                 return 0;
             },

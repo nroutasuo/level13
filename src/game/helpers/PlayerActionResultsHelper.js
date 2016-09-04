@@ -133,11 +133,12 @@ define([
         getScoutRewards: function () {
             var rewards = new ResultVO();
 
+            var playerVision = this.playerStatsNodes.head.vision.value;
             var efficiency = this.getScavengeEfficiency();
             var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
 
             rewards.gainedEvidence = 1;
-            rewards.gainedInjuries = this.getResultInjuries(PlayerActionConstants.injuryProbabilities.scout);
+            rewards.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability("scout", playerVision));
             if (rewards.gainedInjuries.length === 0) {
                 rewards.gainedResources = this.getRewardResources(0.5, efficiency * 2, sectorResources);
             }
@@ -148,6 +149,8 @@ define([
         getScoutLocaleRewards: function (localeVO) {
             var rewards = new ResultVO();
             var localeCategory = localeVO.getCategory();
+            
+            var playerVision = this.playerStatsNodes.head.vision.value;
 
             var availableResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable.clone();
             availableResources.addAll(localeVO.getResourceBonus(this.gameState.unlockedFeatures.resources));
@@ -167,7 +170,7 @@ define([
                 rewards.gainedRumours = Math.random() < 0.3 ? Math.ceil(Math.random() * levelOrdinal * levelOrdinal) : 0;
             }
 
-            rewards.gainedInjuries = this.getResultInjuries(PlayerActionConstants.injuryProbabilities.scavenge);
+            rewards.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability("scavenge", playerVision));
             if (rewards.gainedInjuries.length === 0) {
                 if (localeCategory === "u") {
                     rewards.gainedResources = this.getRewardResources(1, efficiency * localeDifficulty / 25, availableResources);

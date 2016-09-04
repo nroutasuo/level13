@@ -191,9 +191,9 @@ define([
                     var costFactor = playerActionsHelper.getCostFactor(action);
                     var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);
 					var duration = PlayerActionConstants.getDuration(action);
-					var injuryRisk = PlayerActionConstants.getInjuryProbability(action);
-                    var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action);
-					var fightRisk = PlayerActionConstants.getRandomEncounterProbability(baseActionId);
+					var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
+                    var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
+					var fightRisk = PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision);
 					var description = playerActionsHelper.getDescription(action);
                     var hasCosts = action && costs && Object.keys(costs).length > 0;
                     var hasCostBlockers = false;
@@ -233,9 +233,9 @@ define([
 						
 						if (injuryRisk > 0 || fightRisk > 0 || inventoryRisk > 0) {
                             if (content.length > 0) content += "<hr/>";
-							if (injuryRisk > 0) content += "<span class='action-risk warning'>risk of injury: " + (injuryRisk * 100) + "%</span><br/>";
-							if (fightRisk > 0) content += "<span class='action-risk warning'>risk of fight: " + (fightRisk * 100) + "%</span>";
-							if (inventoryRisk > 0) content += "<span class='action-risk warning'>lose items: " + (inventoryRisk * 100) + "%</span>";
+							if (injuryRisk > 0) content += "<span class='action-risk warning'>risk of injury: " + Math.round(injuryRisk * 100 * 100) / 100 + "%</span><br/>";
+							if (fightRisk > 0) content += "<span class='action-risk warning'>risk of fight: " + Math.round(fightRisk * 100 * 100) / 100 + "%</span>";
+							if (inventoryRisk > 0) content += "<span class='action-risk warning'>lose items: " + Math.round(inventoryRisk * 100 * 100) / 100 + "%</span>";
 						}
                     } else {
                         if (content.length > 0) content += "<hr/>";
