@@ -2,13 +2,14 @@ define([
     'ash',
 	'game/constants/GameConstants',
     'game/constants/ItemConstants',
+    'game/constants/PlayerStatConstants',
     'game/nodes/player/VisionNode',
     'game/nodes/PlayerLocationNode',
     'game/components/common/PositionComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorStatusComponent',
-], function (Ash, GameConstants, ItemConstants, VisionNode, PlayerLocationNode, PositionComponent, SectorImprovementsComponent, SectorFeaturesComponent, SectorStatusComponent) {
+], function (Ash, GameConstants, ItemConstants, PlayerStatConstants, VisionNode, PlayerLocationNode, PositionComponent, SectorImprovementsComponent, SectorFeaturesComponent, SectorStatusComponent) {
     var VisionSystem = Ash.System.extend({
 	
         gameState: null,
@@ -64,7 +65,7 @@ define([
             };
             
             // Check max value and accumulation
-			var maxValueBase = sunlit ? 50 : 25;
+			var maxValueBase = sunlit ? PlayerStatConstants.VISION_BASE_SUNLIT : PlayerStatConstants.VISION_BASE;
 			maxValue = maxValueBase;
             addAccumulation("Base", 25 / maxValueBase);
 			

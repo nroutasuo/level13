@@ -153,7 +153,7 @@ define([
             var selectableCapacity = originalResC - lostResC + gainedResC + originalItemC - lostItemC + gainedItemC;
             
             $("#inventory-popup-bar").data("progress-percent", selectedCapacity/bagComponent.totalCapacity*100);
-            $("#inventory-popup-bar .progress-label").text(Math.ceil(selectedCapacity) + " / " + bagComponent.totalCapacity);
+            $("#inventory-popup-bar .progress-label").text((Math.ceil(selectedCapacity * 10) / 10) + " / " + bagComponent.totalCapacity);
             
             $("#confirmation-takeall").toggle(selectableCapacity > originalCapacity);
 

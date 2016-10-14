@@ -1,4 +1,4 @@
-define(['ash'], function (Ash) {
+define(['ash', 'game/constants/ItemConstants'], function (Ash) {
     
     var CampConstants = {
     

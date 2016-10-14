@@ -3,12 +3,13 @@ define([
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/FightConstants',
+    'game/constants/PlayerStatConstants',
     'game/nodes/player/ItemsNode',
     'game/components/common/ResourcesComponent',
     'game/components/common/PositionComponent',
     'game/components/player/StaminaComponent',
     'game/components/player/VisionComponent',
-], function (Ash, UIConstants, ItemConstants, FightConstants, ItemsNode, ResourcesComponent, PositionComponent, StaminaComponent, VisionComponent) {
+], function (Ash, UIConstants, ItemConstants, FightConstants, PlayerStatConstants, ItemsNode, ResourcesComponent, PositionComponent, StaminaComponent, VisionComponent) {
     var UIOutBagSystem = Ash.System.extend({
 
 		uiFunctions : null,
@@ -252,6 +253,7 @@ define([
         updateStats: function () {
             var itemsComponent = this.itemNodes.head.items;
             var playerStamina = this.itemNodes.head.entity.get(StaminaComponent);
+            var playerVision = this.itemNodes.head.entity.get(VisionComponent);
             for (var bonusKey in ItemConstants.itemBonusTypes) {
                 var bonusType = ItemConstants.itemBonusTypes[bonusKey];
                 var bonus = itemsComponent.getCurrentBonus(bonusType);
@@ -266,7 +268,11 @@ define([
                     case ItemConstants.itemBonusTypes.fight_def:
                         value = FightConstants.getPlayerDef(playerStamina, itemsComponent);
                         detail = FightConstants.getPlayerDefDesc(playerStamina, itemsComponent);
-                        break;                        
+                        break;
+                        
+                    case ItemConstants.itemBonusTypes.light:
+                        value = playerVision.value;
+                        break;
                 }
                 $("#stats-equipment-" + bonusKey + " .value").text(value + " (" + detail + ")");
                 $("#stats-equipment-" + bonusKey).toggle(value > 0);

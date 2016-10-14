@@ -42,7 +42,7 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
             return  this.campable &&
                     this.buildingDensity > 0 && this.buildingDensity < 9 &&
                     hasWater && this.resourcesScavengable.food > 0 && this.resourcesScavengable.fuel <= 0 &&
-                    !hazards.hasHazards() &&
+                    !this.hazards.hasHazards() &&
                     this.stateOfRepair > 2;
         },
         
