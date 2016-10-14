@@ -630,7 +630,13 @@ function (Ash, GameConstants, CampConstants) {
                 
                 craft_bag_2: {
                     upgrades: {
-                        unlock_item_bag3: true,
+                        unlock_item_bag3: true
+                    }
+                },
+                
+                craft_bag_3: {
+                    upgraders: {
+                        unlock_item_clothing8: true                        
                     }
                 },
                 

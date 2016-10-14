@@ -276,6 +276,7 @@ define([
         getItemsCapacity: function (itemList) {
             var capacity = 0;
             for(var i = 0; i < itemList.length; i++) {
+                if (itemList[i].equipped) continue;
                 capacity += BagConstants.getItemCapacity(itemList[i]);
             }
             return capacity;

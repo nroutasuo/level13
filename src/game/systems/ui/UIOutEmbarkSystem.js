@@ -154,11 +154,6 @@ define([
 			
             $("#embark-items-container").toggle(visibleItemTRs > 0);
             
-            var equippedItems = itemsComponent.getEquipped();
-            for (var e = 0; e < equippedItems.length; e++) {
-                selectedCapacity += BagConstants.getItemCapacity(equippedItems[e]);
-            }
-            
             bagComponent.selectedCapacity = selectedCapacity;
 			$("#embark-bag .value").text(bagComponent.selectedCapacity);
 			$("#embark-bag .value-total").text(bagComponent.totalCapacity);

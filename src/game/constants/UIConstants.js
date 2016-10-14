@@ -442,6 +442,12 @@ define(['ash',
 			return "Y" + year + "-N" + week;
 		},
 		
+        roundValue: function (value) {
+            if (value % 1 === 0) return value;
+            if (value * 10 % 1 === 0) return Math.ceil(value * 10) / 10;
+            return Math.ceil(value * 100) / 100;
+        },
+        
 		getResourceImg: function (name) {
 			return "<img src='img/res-" + name + ".png' alt='" + name + "'/>"
 		},

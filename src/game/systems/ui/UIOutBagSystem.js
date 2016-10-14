@@ -3,13 +3,12 @@ define([
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/FightConstants',
-    'game/constants/PlayerStatConstants',
     'game/nodes/player/ItemsNode',
     'game/components/common/ResourcesComponent',
     'game/components/common/PositionComponent',
     'game/components/player/StaminaComponent',
     'game/components/player/VisionComponent',
-], function (Ash, UIConstants, ItemConstants, FightConstants, PlayerStatConstants, ItemsNode, ResourcesComponent, PositionComponent, StaminaComponent, VisionComponent) {
+], function (Ash, UIConstants, ItemConstants, FightConstants, ItemsNode, ResourcesComponent, PositionComponent, StaminaComponent, VisionComponent) {
     var UIOutBagSystem = Ash.System.extend({
 
 		uiFunctions : null,
@@ -274,7 +273,7 @@ define([
                         value = playerVision.value;
                         break;
                 }
-                $("#stats-equipment-" + bonusKey + " .value").text(value + " (" + detail + ")");
+                $("#stats-equipment-" + bonusKey + " .value").text(UIConstants.roundValue(value) + " (" + detail + ")");
                 $("#stats-equipment-" + bonusKey).toggle(value > 0);
             }
         },
