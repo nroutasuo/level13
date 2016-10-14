@@ -117,7 +117,6 @@ define([
         // value: fraction the player has of requirements or 0 depending on req type (if 0, action is not available)
         // reason: string to describe the non-passed requirement (for button explanations)
         checkRequirements: function (action, log, otherSector) {
-            var baseActionID = this.getBaseActionID(action);
             var playerVision = this.playerStatsNodes.head.vision.value;
             var playerPerks = this.playerResourcesNodes.head.entity.get(PerksComponent);
             var playerStamina = this.playerStatsNodes.head.stamina.stamina;

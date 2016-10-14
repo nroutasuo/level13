@@ -142,6 +142,7 @@ define([
 			this.playerMovedSignal = new Ash.Signals.Signal();
 			this.improvementBuiltSignal = new Ash.Signals.Signal();
 			this.tabChangedSignal = new Ash.Signals.Signal();
+            this.calloutsGeneratedSignal = new Ash.Signals.Signal();
 	    
 			// Singleton helper modules to be passed to systems that need them
             this.itemsHelper = new ItemsHelper(this.gameState);
@@ -171,7 +172,7 @@ define([
 				this.playerMovedSignal,
 				this.tabChangedSignal,
 				this.improvementBuiltSignal);
-			this.uiFunctions = new UIFunctions(this.playerActionFunctions, this.gameState, this.saveSystem);
+			this.uiFunctions = new UIFunctions(this.playerActionFunctions, this.gameState, this.saveSystem, this.calloutsGeneratedSignal);
 			this.occurrenceFunctions = new OccurrenceFunctions(this.gameState, this.uiFunctions, this.resourcesHelper);
 			
 			this.playerActionFunctions.occurrenceFunctions = this.occurrenceFunctions;
@@ -217,7 +218,7 @@ define([
 			this.engine.addSystem(new AutoPlaySystem(this.playerActionFunctions, this.levelHelper, this.sectorHelper, this.upgradeEffectsHelper), SystemPriorities.postUpdate);
 			
 			this.engine.addSystem(new UIOutHeaderSystem(this.uiFunctions, this.gameState, this.resourcesHelper, this.upgradeEffectsHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutElementsSystem(this.uiFunctions, this.gameState, this.playerActionFunctions, this.resourcesHelper, this.levelHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutElementsSystem(this.uiFunctions, this.gameState, this.playerActionFunctions, this.resourcesHelper, this.levelHelper, this.calloutsGeneratedSignal), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLevelSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.movementHelper, this.resourcesHelper, this.sectorHelper, this.uiMapHelper, this.playerMovedSignal), SystemPriorities.render);
 			this.engine.addSystem(new UIOutCampSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.levelHelper, this.upgradeEffectsHelper, this.campHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutEmbarkSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.resourcesHelper), SystemPriorities.render);

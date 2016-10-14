@@ -24,8 +24,13 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
             this.inCamp = position.inCamp;
         },
         
+        equals: function (position) {
+            if (!position) return false;
+            return this.level === position.level && this.sectorX === position.sectorX && this.sectorY === position.sectorY && this.inCamp === position.inCamp;
+        },
+        
         toString: function () {
-            return this.level + "." + this.sectorX + "." + this.sectorY;
+            return this.level + "." + this.sectorX + "." + this.sectorY + "(inCamp: " + this.inCamp + ")";
         },
         
         clone: function () {

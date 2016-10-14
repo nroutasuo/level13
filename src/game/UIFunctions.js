@@ -51,10 +51,11 @@ function (Ash, UIConstants, ItemConstants, PlayerActionConstants, PositionConsta
         actionToFunctionMap: {
         },
         
-        constructor: function (playerActions, gameState, saveSystem) {
+        constructor: function (playerActions, gameState, saveSystem, calloutsGeneratedSignal) {
             this.playerActions = playerActions;
             this.gameState = gameState;
             this.saveSystem = saveSystem;
+            this.calloutsGeneratedSignal = calloutsGeneratedSignal;
 
             this.mapActions();
             this.generateElements();
@@ -371,6 +372,8 @@ function (Ash, UIConstants, ItemConstants, PlayerActionConstants, PositionConsta
                     return "";
                 }
             });
+            
+            this.calloutsGeneratedSignal.dispatch();
         },
         
         generateSteppers: function (scope) {

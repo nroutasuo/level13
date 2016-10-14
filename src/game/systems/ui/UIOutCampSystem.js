@@ -80,8 +80,8 @@ define([
         update: function (time) {
             var isActive = this.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.in;
             var campCount = this.gameState.numCamps;
-            
             if (!this.playerLocationNodes.head) return;
+            if (!this.playerPosNodes.head.position.inCamp) return;
             
             this.updateImprovements(isActive, campCount);
             this.updateWorkers(isActive);
@@ -219,7 +219,6 @@ define([
             var availableBuildingCount = 0;
             var visibleBuildingCount = 0;
             
-            // TODO performance bottleneck
             var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;
             $.each($("#in-improvements tr"), function () {
                 var actionName = $(this).find("button.action-build").attr("action");

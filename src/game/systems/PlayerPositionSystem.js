@@ -30,6 +30,8 @@ define([
 		levelNodes: null,
 		playerPositionNodes: null,
 		playerLocationNodes: null,
+        
+        lastUpdatePosition: null,
 		
 		constructor: function (gameState, levelHelper, uiFunctions, occurrenceFunctions, playerMovedSignal) {
 			this.gameState = gameState;
@@ -59,65 +61,72 @@ define([
 		},
 	
 		update: function (time) {
-			var playerPos = this.playerPositionNodes.head.position;
-			var playerSectorFound = false;
-			
-			// Level
-			var levelpos;
-			for(var levelNode = this.levelNodes.head; levelNode; levelNode = levelNode.next) {
-				levelpos = levelNode.level.position;
-				if (levelpos == playerPos.level && !levelNode.entity.has(CurrentPlayerLocationComponent)) {
-					levelNode.entity.add(new CurrentPlayerLocationComponent());
-					if (!levelNode.entity.has(VisitedComponent)) {
-						this.handleNewLevel(levelNode, levelpos);
-					}
-				} else if(levelpos != playerPos.level && levelNode.entity.has(CurrentPlayerLocationComponent)) {
-					levelNode.entity.remove(CurrentPlayerLocationComponent);
-				}
-			}
-			
-			// Sector & camp
-			var sectorPos;
-			var hasLocationComponent;
-			var hasCurrentCampComponent;
-			var hasCamp;
-			for (var sectorNode = this.sectorNodes.head; sectorNode; sectorNode = sectorNode.next) {
-				levelpos = sectorNode.entity.get(PositionComponent).level;
-				sectorPos = sectorNode.entity.get(PositionComponent).sectorId();
-				hasLocationComponent = sectorNode.entity.has(CurrentPlayerLocationComponent);
-				hasCurrentCampComponent = sectorNode.entity.has(CurrentNearestCampComponent);
-				hasCamp = sectorNode.entity.has(CampComponent);
-			
-				if (levelpos === playerPos.level && sectorPos === playerPos.sectorId()) {
-					playerSectorFound = true;
-				}
-			
-				if (hasCamp && levelpos === playerPos.level && !hasCurrentCampComponent) {
-					sectorNode.entity.add(new CurrentNearestCampComponent());
-				} else if (hasCamp && levelpos !== playerPos.level && hasCurrentCampComponent) {
-					sectorNode.entity.remove(CurrentNearestCampComponent);
-				}
-				if (levelpos === playerPos.level && sectorPos === playerPos.sectorId() && !hasLocationComponent) {
-					if (this.playerLocationNodes.head) this.playerLocationNodes.head.entity.remove(CurrentPlayerLocationComponent);
-					sectorNode.entity.add(new CurrentPlayerLocationComponent());
-					if (!sectorNode.entity.has(VisitedComponent)) {
-						this.handleNewSector(sectorNode, sectorPos);
-					}
-					this.playerMovedSignal.dispatch(playerPos);
-					this.uiFunctions.onPlayerMoved();
-				} else if ((levelpos !== playerPos.level || sectorPos !== playerPos.sectorId()) && hasLocationComponent) {
-					sectorNode.entity.remove(CurrentPlayerLocationComponent);
-				}
-			}
-			
-			if (!playerSectorFound) {
-				console.log("WARN: Player location could not be found (" + playerPos.level + "." + playerPos.sectorId() + ").");
-                console.log("WARN: Moving to a known valid position.");
-                playerPos.level = 13;
-                playerPos.sectorX = WorldCreatorConstants.FIRST_CAMP_X;
-                playerPos.sectorY = WorldCreatorConstants.FIRST_CAMP_Y;
-			}
+            var playerPos = this.playerPositionNodes.head.position;
+            if (!this.lastUpdatePosition || !this.lastUpdatePosition.equals(playerPos)) {
+                this.updateLevelEntities();
+                this.updateSectors();
+                this.lastUpdatePosition = playerPos.clone();
+            }
 		},
+        
+        updateLevelEntities: function() {
+            var playerPos = this.playerPositionNodes.head.position;
+            var levelpos;
+            for (var levelNode = this.levelNodes.head; levelNode; levelNode = levelNode.next) {
+                levelpos = levelNode.level.position;
+                if (levelpos == playerPos.level && !levelNode.entity.has(CurrentPlayerLocationComponent)) {
+                    levelNode.entity.add(new CurrentPlayerLocationComponent());
+                    if (!levelNode.entity.has(VisitedComponent)) {
+                        this.handleNewLevel(levelNode, levelpos);
+                    }
+                } else if (levelpos != playerPos.level && levelNode.entity.has(CurrentPlayerLocationComponent)) {
+                    levelNode.entity.remove(CurrentPlayerLocationComponent);
+                }
+            }
+        },
+        
+        updateSectors: function() {
+            var playerPos = this.playerPositionNodes.head.position; 
+            var playerSectorFound = false;
+            
+            var sectorPos;
+            var hasLocationComponent;
+            var hasCurrentCampComponent;
+            var hasCamp;
+            for (var sectorNode = this.sectorNodes.head; sectorNode; sectorNode = sectorNode.next) {
+                levelpos = sectorNode.entity.get(PositionComponent).level;
+                sectorPos = sectorNode.entity.get(PositionComponent).sectorId();
+                hasLocationComponent = sectorNode.entity.has(CurrentPlayerLocationComponent);
+                hasCurrentCampComponent = sectorNode.entity.has(CurrentNearestCampComponent);
+                hasCamp = sectorNode.entity.has(CampComponent);
+
+                if (levelpos === playerPos.level && sectorPos === playerPos.sectorId()) {
+                    playerSectorFound = true;
+                }
+
+                if (hasCamp && levelpos === playerPos.level && !hasCurrentCampComponent) {
+                    sectorNode.entity.add(new CurrentNearestCampComponent());
+                } else if (hasCamp && levelpos !== playerPos.level && hasCurrentCampComponent) {
+                    sectorNode.entity.remove(CurrentNearestCampComponent);
+                }
+                if (levelpos === playerPos.level && sectorPos === playerPos.sectorId() && !hasLocationComponent) {
+                    if (this.playerLocationNodes.head)
+                        this.playerLocationNodes.head.entity.remove(CurrentPlayerLocationComponent);
+                    sectorNode.entity.add(new CurrentPlayerLocationComponent());
+                    if (!sectorNode.entity.has(VisitedComponent)) {
+                        this.handleNewSector(sectorNode, sectorPos);
+                    }
+                    this.playerMovedSignal.dispatch(playerPos);
+                    this.uiFunctions.onPlayerMoved();
+                } else if ((levelpos !== playerPos.level || sectorPos !== playerPos.sectorId()) && hasLocationComponent) {
+                    sectorNode.entity.remove(CurrentPlayerLocationComponent);
+                }
+            }
+
+            if (!playerSectorFound) {
+                handleInvalidPosition();
+            }
+        },
 		
 		handleNewLevel: function (levelNode, levelPos) {
 			levelNode.entity.add(new VisitedComponent());
@@ -126,8 +135,7 @@ define([
 			if (levelPos === this.gameState.getGroundLevel()) this.gameState.unlockedFeatures.favour = true;
 		},
 		
-		handleNewSector: function (sectorNode, sectorPos) {
-			// occurrences
+		handleNewSector: function (sectorNode) {
 			this.occurrenceFunctions.onEnterNewSector(sectorNode.entity);
 			
 			sectorNode.entity.add(new VisitedComponent());
@@ -150,6 +158,15 @@ define([
             this.gameState.numVisitedSectors++;
 			this.gameState.unlockedFeatures.sectors = true;
 		},
+        
+        handleInvalidPosition: function () {
+            var playerPos = this.playerPositionNodes.head.position; 
+            console.log("WARN: Player location could not be found (" + playerPos.level + "." + playerPos.sectorId() + ").");
+            console.log("WARN: Moving to a known valid position.");
+            playerPos.level = 13;
+            playerPos.sectorX = WorldCreatorConstants.FIRST_CAMP_X;
+            playerPos.sectorY = WorldCreatorConstants.FIRST_CAMP_Y;
+        },
         
     });
 

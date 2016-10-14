@@ -199,7 +199,7 @@ define(['ash', 'game/vos/ItemVO'], function (Ash, ItemVO) {
                 for ( var i in this.itemDefinitions[type] ) {
                     var item = this.itemDefinitions[type][i];
                     if (item.id === id) {
-                        return item.clone();
+                        return item;
                     }
                 }
             }

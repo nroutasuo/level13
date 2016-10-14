@@ -41,6 +41,8 @@ define([
 		sectorHelper: null,
 		
 		engine: null,
+        
+        elementsOutImprovementsTR: null,
 		
 		playerPosNodes: null,
 		playerLocationNodes: null,
@@ -67,6 +69,7 @@ define([
 			this.initListeners();
 			
 			this.engine  = engine;
+            this.elementsOutImprovementsTR = $("#out-improvements tr");
 		},
 
 		removeFromEngine: function (engine) {
@@ -142,28 +145,9 @@ define([
 				hasVision,
 				isScouted
 			));
-			
-			// Improvements
-			var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;
-			// TODO performance bottlenneck - only update as needed
-			$.each($("#out-improvements tr"), function () {
-				var actionName = $(this).find("button.action-build").attr("action");
-				if (actionName) {
-					var improvementName = playerActionsHelper.getImprovementNameForAction(actionName);
-					if (improvementName) {
-						var actionEnabled = playerActionsHelper.checkRequirements(actionName, false).value >= 1;
-						var existingImprovements = improvements.getCount(improvementName);
-						var costSource = PlayerActionConstants.getCostSource(actionName);
-						var isProject = costSource === PlayerActionConstants.COST_SOURCE_CAMP;
-						$(this).find(".list-amount").text(existingImprovements);
-						$(this).find(".action-use").toggle(existingImprovements > 0);
-						if (isProject) {
-							$(this).find(".list-description").text(actionEnabled ? "Available in camp" : "");
-						}
-						$(this).toggle(actionEnabled || existingImprovements > 0);
-					}
-				}
-			});
+			            
+			this.updateOutImprovements(improvements);
+            
 			var collectorFood = improvements.getVO(improvementNames.collector_food);
 			var collectorWater = improvements.getVO(improvementNames.collector_water);
 			var hasFoundFood = isScouted && featuresComponent.resourcesCollectable.food > 0;
@@ -437,6 +421,35 @@ define([
 			return enemyDesc + (hasHazards ? hazardDesc : notCampableDesc);
 		},
 		
+        updateOutImprovements: function (improvements) {
+            var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;
+            $.each(this.elementsOutImprovementsTR, function () {
+                var actionName = $(this).attr("btn-action");
+                
+                // limit calls to find; was a performance issue
+                if (!actionName) {
+                    actionName = $(this).find("button.action-build").attr("action");
+                    $(this).attr("btn-action", actionName);
+                }
+                
+                if (actionName) {
+                    var improvementName = playerActionsHelper.getImprovementNameForAction(actionName);
+                    if (improvementName) {
+                        var actionEnabled = playerActionsHelper.checkRequirements(actionName, false).value >= 1;
+                        var existingImprovements = improvements.getCount(improvementName);
+                        var costSource = PlayerActionConstants.getCostSource(actionName);
+                        var isProject = costSource === PlayerActionConstants.COST_SOURCE_CAMP;
+                        $(this).find(".list-amount").text(existingImprovements);
+                        $(this).find(".action-use").toggle(existingImprovements > 0);
+                        if (isProject) {
+                            $(this).find(".list-description").text(actionEnabled ? "Available in camp" : "");
+                        }
+                        $(this).toggle(actionEnabled || existingImprovements > 0);
+                    }
+                }
+            });
+        },
+        
 		updateLocales: function () {
 			var currentSector = this.playerLocationNodes.head.entity;
 			var sectorLocalesComponent = currentSector.get(SectorLocalesComponent);

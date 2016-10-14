@@ -310,7 +310,6 @@ define(['ash',
             var playerPos = this.playerPositionNodes.head.position;
             var campNode = this.nearestCampNodes.head;
             if (campNode && campNode.position.level === playerPos.level && campNode.position.sectorId() === playerPos.sectorId()) {
-                var oldPlayerPos = playerPos.clone();
                 var sunlit = campNode.entity.get(SectorFeaturesComponent).sunlit;
                 playerPos.inCamp = false;
                 var msg = "Left camp. " + (sunlit ? "Sunlight is sharp and merciless." : " Darkess of the city envelops you.");
@@ -1195,7 +1194,7 @@ define(['ash',
                     var itemID = inputParts[1];
                     var item = ItemConstants.getItemByID(itemID);
                     if (item) {
-                        itemsComponent.addItem(item, !playerPos.inCamp);                       
+                        itemsComponent.addItem(item.clone(), !playerPos.inCamp);                       
                     } else {
                         console.log("WARN: No such item: " + itemID);
                     }

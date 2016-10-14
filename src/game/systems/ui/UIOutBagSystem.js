@@ -18,6 +18,8 @@ define([
 		tabChangedSignal: null,
 
 		itemNodes: null,
+        
+        craftableItemDefinitionList: [],
 		
 		bubbleNumber: 0,
 		craftableItems: -1,
@@ -114,7 +116,10 @@ define([
 			this.updateCrafting(isActive);
 			this.updateBubble();
 			
-			if (!isActive) return;
+			if (!isActive) {
+                this.craftableItemDefinitionList = [];
+                return;
+            }
 
 			// Header
 			$("#tab-header h2").text("Bag");
@@ -155,26 +160,13 @@ define([
 			this.availableCraftableItems = 0;
 			
 			var itemsComponent = this.itemNodes.head.items;
-			var itemDefinitionList = [];
-
-			var itemList;
-			var itemDefinition;
-			for (var type in ItemConstants.itemDefinitions) {
-				itemList = ItemConstants.itemDefinitions[type];
-				for (var i in itemList) {
-					itemDefinition = itemList[i];
-					if (itemDefinition.craftable) itemDefinitionList.push(itemDefinition);
-				}
-			}
-			
-			itemDefinitionList = itemDefinitionList.sort(UIConstants.sortItemsByType);
+			var itemDefinitionList = this.getCraftableItemDefinitionList();
 			
 			var tr;
+            var itemDefinition;
 			for (var j = 0; j < itemDefinitionList.length; j++) {
-				var itemDefinition = itemDefinitionList[j];
-				var actionName = "craft_" + itemDefinition.id;
-                // TODO re-implement item obsolete check after new item slots and bonuses
-				var isObsolete = this.isObsolete(itemDefinition);
+				itemDefinition = itemDefinitionList[j];
+				var actionName = "craft_" + itemDefinition.id;         
 				var reqsCheck = this.playerActionsHelper.checkRequirements(actionName, false);
                 var ordinal = this.playerActionsHelper.getOrdinal(actionName);
                 var costFactor = this.playerActionsHelper.getCostFactor(actionName);
@@ -183,6 +175,7 @@ define([
                     console.log("WARN: Craftable item has no costs: " + itemDefinition.id);
                 }
 				if (reqsCheck.value >= 1 || reqsCheck.reason === "Bag full.") {
+                    var isObsolete = this.isObsolete(itemDefinition);
 					if (isObsolete) countObsolete++;
 					if (!isObsolete || showObsolete) {
 						var isAvailable = this.playerActionsHelper.checkAvailability(actionName, false);
@@ -407,7 +400,26 @@ define([
             
             // has equipped item of type and no bonus is higher -> obsolete
             return true;
-        }
+        },
+        
+        getCraftableItemDefinitionList: function () {
+            if (this.craftableItemDefinitionList && this.craftableItemDefinitionList.length > 0) return this.craftableItemDefinitionList;
+            
+            this.craftableItemDefinitionList = [];
+            var itemList;
+            var itemDefinition;
+            for (var type in ItemConstants.itemDefinitions) {
+                itemList = ItemConstants.itemDefinitions[type];
+                for (var i in itemList) {
+                    itemDefinition = itemList[i];
+                    if (itemDefinition.craftable)
+                        this.craftableItemDefinitionList.push(itemDefinition);
+                }
+            }
+
+            this.craftableItemDefinitionList = this.craftableItemDefinitionList.sort(UIConstants.sortItemsByType);
+            return this.craftableItemDefinitionList;
+        },
     
 	});
 

@@ -36,6 +36,8 @@ define([
 		playerStatsNodes: null,
 		autoPlayNodes: null,
         
+        elementsCalloutContainers: null,
+        
         gameState: null,
         playerActions: null,
         uiFunctions: null,
@@ -43,12 +45,13 @@ define([
         levelHelper: null,
         engine: null,
     
-        constructor: function (uiFunctions, gameState, playerActions, resourcesHelper, levelHelper) {
+        constructor: function (uiFunctions, gameState, playerActions, resourcesHelper, levelHelper, calloutsGeneratedSignal) {
             this.gameState = gameState;
             this.playerActions = playerActions;
             this.uiFunctions = uiFunctions;
             this.resourcesHelper = resourcesHelper;
             this.levelHelper = levelHelper;
+            this.calloutsGeneratedSignal = calloutsGeneratedSignal;
             return this;
         },
     
@@ -62,6 +65,9 @@ define([
             
             this.campNodes.nodeAdded.add(this.onCampNodeAdded, this);
             this.campNodes.nodeRemoved.add(this.onCampNodeRemoved, this);
+            
+            this.refreshSavedElements();
+            this.calloutsGeneratedSignal.add(this.refreshSavedElements);
         },
     
         removeFromEngine: function (engine) {
@@ -86,6 +92,10 @@ define([
             this.updateTabVisibility();
             this.updateTabs();
             this.updateInfoCallouts();
+        },
+        
+        refreshSavedElements: function () {            
+            this.elementsCalloutContainers = $(".callout-container");
         },
         
         updateButtons: function () {
@@ -304,11 +314,12 @@ define([
         },
         
         updateInfoCallouts: function () {
-            // TODO performance bottleeck
-            $.each($(".callout-container"), function () {
-				if ($(this).children(".info-callout-target").length > 0) {
+            var targets;
+            $.each(this.elementsCalloutContainers, function () {
+                targets = $(this).children(".info-callout-target");
+				if (targets.length > 0) {
 					var visible = true;
-					$.each($(this).children(".info-callout-target").children(), function () {
+					$.each(targets.children(), function () {
 						visible = visible && $(this).css("display") !== "none";
 					});
 					$(this).toggle(visible);

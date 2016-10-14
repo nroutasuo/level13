@@ -301,7 +301,7 @@ function (Ash, ItemVO, ItemConstants) {
                     var item = ItemConstants.getItemByID(itemID);
                     if (item) {
                         item.carried = componentValues.items[key][i].carried;
-                        this.addItem(item, item.carried);
+                        this.addItem(item.clone(), item.carried);
                     }
                 }
             }

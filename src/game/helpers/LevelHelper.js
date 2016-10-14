@@ -1,7 +1,6 @@
 // Singleton with helper methods for level entities
 define([
     'ash',
-    'game/constants/WorldCreatorConstants',
     'game/constants/LocaleConstants',
     'game/constants/PositionConstants',
     'game/constants/MovementConstants',
@@ -21,7 +20,6 @@ define([
     'game/vos/ImprovementVO',
 ], function (
 	Ash,
-	WorldCreatorConstants,
 	LocaleConstants,
 	PositionConstants,
 	MovementConstants,
@@ -45,7 +43,8 @@ define([
 		levelNodes: null,
 		sectorNodes: null,
         
-        sectorEntitiesByLevel: {}, // int (level) -> int (x) -> int (y) -> entity
+        sectorEntitiesByPosition: {}, // int (level) -> int (x) -> int (y) -> entity
+        sectorEntitiesByLevel: {}, // int (level) -> []
 		
 		playerActionsHelper: null,
 		
@@ -82,22 +81,22 @@ define([
             
             // TODO check if saving uses up too much memory / this is the neatest way, speeds up fps a lot (esp for map)
             
-            if (!this.sectorEntitiesByLevel[level]) this.sectorEntitiesByLevel[level] = {};
-            if (!this.sectorEntitiesByLevel[level][sectorX]) this.sectorEntitiesByLevel[level][sectorX] = {};
+            if (!this.sectorEntitiesByPosition[level]) this.sectorEntitiesByPosition[level] = {};
+            if (!this.sectorEntitiesByPosition[level][sectorX]) this.sectorEntitiesByPosition[level][sectorX] = {};
             
-            if (this.sectorEntitiesByLevel[level][sectorX][sectorY]) return this.sectorEntitiesByLevel[level][sectorX][sectorY];
+            if (this.sectorEntitiesByPosition[level][sectorX][sectorY]) return this.sectorEntitiesByPosition[level][sectorX][sectorY];
             
-            if (this.sectorEntitiesByLevel[level][sectorX][sectorY] === null) return null;
+            if (this.sectorEntitiesByPosition[level][sectorX][sectorY] === null) return null;
             
 			for (var node = this.sectorNodes.head; node; node = node.next) {
 				sectorPosition = node.entity.get(PositionComponent);
 				if (sectorPosition.level === level && sectorPosition.sectorX === sectorX && sectorPosition.sectorY === sectorY) {
-                    this.sectorEntitiesByLevel[level][sectorX][sectorY] = node.entity;
+                    this.sectorEntitiesByPosition[level][sectorX][sectorY] = node.entity;
                     return node.entity;
                 }
 			}
             
-            this.sectorEntitiesByLevel[level][sectorX][sectorY] = null;
+            this.sectorEntitiesByPosition[level][sectorX][sectorY] = null;
             
 			return null;
 		},
@@ -110,7 +109,7 @@ define([
 			
 			// get all levels
 			for (var node = this.levelNodes.head; node; node = node.next) {
-				projects = projects.concat(this.getAvailableProjectsForLevel(node.entity, playerActions));
+				projects = projects.concat(this.getAvailableProjectsForLevel(node.entity));
 			}
 			
 			// sort by level ordinal
@@ -171,15 +170,18 @@ define([
             return levelStats;
         },
 		
-		getAvailableProjectsForLevel: function (levelEntity, playerActions) {
+		getAvailableProjectsForLevel: function (levelEntity) {
 			var projects = [];
 			var level = levelEntity.get(PositionComponent).level;
 			var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
+            
+            this.saveSectorsForLevel(level);
+            
             var sectorPosition;
-			for (var node = this.sectorNodes.head; node; node = node.next) {
-				sectorPosition = node.entity.get(PositionComponent);
+			for (var i = 0; i < this.sectorEntitiesByLevel[level].length; i++) {
+				sectorPosition = this.sectorEntitiesByLevel[level][i].get(PositionComponent);
 				if (sectorPosition.level !== level) continue;
-				projects = projects.concat(this.getAvailableProjectsForSector(node.entity, levelPassagesComponent));
+				projects = projects.concat(this.getAvailableProjectsForSector(this.sectorEntitiesByLevel[level][i], levelPassagesComponent));
 			}
 			
 			return projects;
@@ -346,8 +348,24 @@ define([
 						locales.push(locale);
 			}
 			return locales;
-		}
+		},
 		
+        saveSectorsForLevel: function (level) {
+            if (this.sectorEntitiesByLevel[level] && this.sectorEntitiesByLevel[level] !== null && this.sectorEntitiesByLevel[level].length > 0) {
+                return;
+            }            
+            
+            this.sectorEntitiesByLevel[level] = [];
+            
+            var sectorPosition;
+            for (var node = this.sectorNodes.head; node; node = node.next) {
+                sectorPosition = node.entity.get(PositionComponent);
+                if (sectorPosition.level !== level)
+                    continue;
+                this.sectorEntitiesByLevel[level].push(node.entity);
+            }
+        }
+        
     });
     
     return LevelHelper;

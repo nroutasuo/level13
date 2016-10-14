@@ -19,19 +19,19 @@ define([
     var HazardSystem = Ash.System.extend({
         
         playerNodes: null,
-        sectorNodes: null,
+        locationNodes: null,
         
         constructor: function () {
         },
         
         addToEngine: function (engine) {
             this.playerNodes = engine.getNodeList(PlayerPositionNode);
-            this.sectorNodes = engine.getNodeList(PlayerLocationNode);
+            this.locationNodes = engine.getNodeList(PlayerLocationNode);
         },
         
         removeFromEngine: function (engine) {
             this.playerNodes = null;
-            this.sectorNodes = null;
+            this.locationNodes = null;
         },
         
         update: function (time) {
@@ -40,7 +40,7 @@ define([
         },
         
         addPerks: function () {
-            var featuresComponent = this.sectorNodes.head.entity.get(SectorFeaturesComponent);
+            var featuresComponent = this.locationNodes.head.entity.get(SectorFeaturesComponent);
             var itemsComponent = this.playerNodes.head.entity.get(ItemsComponent);
             var isAffectedByHazard = HazardConstants.isAffectedByHazard(featuresComponent, itemsComponent);
             if (isAffectedByHazard) {
@@ -62,7 +62,7 @@ define([
         updatePerks: function (time) {
             // TODO generic effect timer system?
             
-            var featuresComponent = this.sectorNodes.head.entity.get(SectorFeaturesComponent);
+            var featuresComponent = this.locationNodes.head.entity.get(SectorFeaturesComponent);
             var itemsComponent = this.playerNodes.head.entity.get(ItemsComponent);
             var perksComponent = this.playerNodes.head.entity.get(PerksComponent);
             
