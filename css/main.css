@@ -1185,7 +1185,11 @@ p.notification {
     padding: 0px;
     border-width: 1px;
     border-style: solid;
-    height: 20px;
+}
+
+#notification-player .progress {
+    width: 100%;
+    max-width: 100%;
 }
 
 .actionbox, .infobox, .buttonbox {

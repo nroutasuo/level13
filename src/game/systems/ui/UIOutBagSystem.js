@@ -127,7 +127,6 @@ define([
         
         updateBubble: function () {
             this.bubbleNumber = Math.max(0, this.numOwnedUnseen + this.numCraftableUnlockedUnseen + this.numCraftableAvailableUnseen);
-            console.log(this.bubbleNumber + " = " + this.numOwnedUnseen + " + " + this.numCraftableUnlockedUnseen + " + " + this.numCraftableAvailableUnseen);
             $("#switch-bag .bubble").text(this.bubbleNumber);
             $("#switch-bag .bubble").toggle(this.bubbleNumber > 0);
         },
@@ -366,8 +365,6 @@ define([
                         this.numOwnedUnseen++;
                     }
                 }
-            } else {
-                console.log("already seen item: " + item.id);
             }
         },
 
