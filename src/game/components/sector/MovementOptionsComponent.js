@@ -22,6 +22,14 @@ define(['ash', 'game/constants/PositionConstants'], function (Ash, PositionConst
         canMoveToDirection: function (direction) {
             return this.canMoveTo[direction];
         },
+        
+        canMove: function() {
+            for (var i in PositionConstants.getLevelDirections()) {
+                var direction = PositionConstants.getLevelDirections()[i];
+                if (this.canMoveToDirection(direction)) return true;
+            }
+            return false;
+        }
     });
 
     return MovementOptionsComponent;

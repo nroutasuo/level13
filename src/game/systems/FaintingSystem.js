@@ -17,6 +17,7 @@ define([
     'game/components/common/CampComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorStatusComponent',
+    'game/components/sector/MovementOptionsComponent',
 	'game/components/player/DeityComponent',
 	'game/components/player/PlayerActionResultComponent',
     'game/components/common/LogMessagesComponent'
@@ -37,6 +38,7 @@ define([
 	CampComponent,
 	SectorFeaturesComponent,
 	SectorStatusComponent,
+    MovementOptionsComponent,
 	DeityComponent,
     PlayerActionResultComponent,
 	LogMessagesComponent
@@ -78,6 +80,7 @@ define([
         
         checkFainting: function () {
 			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
+            var movementOptionsComponent = this.playerLocationNodes.head.entity.get(MovementOptionsComponent);
 			if (playerPosition.inCamp) return;
             
 			if (this.playerLocationNodes.head.entity.has(CampComponent)) return;
@@ -85,12 +88,13 @@ define([
 			var hasFood = this.playerResourcesNodes.head.resources.resources.getResource(resourceNames.food) >= 1;
 			var hasWater = this.playerResourcesNodes.head.resources.resources.getResource(resourceNames.water) >= 1;
             var hasStamina = this.playerStatsNodes.head.stamina.stamina > PlayerActionConstants.costs.move_sector_east.stamina;
-			if (hasFood && hasWater && hasStamina) {
+            var canMove = movementOptionsComponent.canMove();
+			if (hasFood && hasWater && hasStamina && canMove) {
                 this.log("You rest a bit, eat and drink some. Then you decide to continue.");
                 return;
             }
 			
-			// Player is hungry or thirsty or out of staminaand is out exploring
+			// Player is hungry or thirsty or out of stamina and is out exploring
 			
 			var hasDeity = this.playerResourcesNodes.head.entity.has(DeityComponent);
 			var hasLastVisitedCamp = this.lastVisitedCampNodes.head !== null;

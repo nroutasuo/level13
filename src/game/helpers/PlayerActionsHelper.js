@@ -175,7 +175,7 @@ define([
                     }
                 }
             }
-                
+            
             if (HazardConstants.isAffectedByHazard(featuresComponent, itemsComponent) && !this.isActionIndependentOfHazards(action)) {
                 return { value: 0, reason: HazardConstants.getHazardDisabledReason(featuresComponent, itemsComponent) };
             }
@@ -885,6 +885,7 @@ define([
                 case "craft": return true;
                 case "move_camp_level": return true;
                 case "despair": return true;
+                case "accept_inventory": return true;
                 
                 case "move_sector_north":
                 case "move_sector_south":

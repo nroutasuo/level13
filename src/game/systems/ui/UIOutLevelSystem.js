@@ -110,6 +110,7 @@ define([
 			var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
 			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
+            var movementOptionsComponent = this.playerLocationNodes.head.entity.get(MovementOptionsComponent);
             
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
@@ -191,7 +192,8 @@ define([
                 this.gameState.unlockedFeatures.resources.water &&
                 (this.resourcesHelper.getCurrentStorage().resources.water < 0.5 || this.resourcesHelper.getCurrentStorage().resources.food < 0.5);
             var isValidDespairStamina = this.playerPosNodes.head.entity.get(StaminaComponent).stamina < PlayerActionConstants.costs.move_sector_east.stamina;
-			var showDespair = !hasCampHere && (isValidDespairRes || isValidDespairStamina);
+            var isValidDespairMove = !movementOptionsComponent.canMove(); // conceivably happens in hazard sectors if you lose equipment
+			var showDespair = !hasCampHere && (isValidDespairRes || isValidDespairStamina) || isValidDespairMove;
 			$("#out-action-enter").toggle(hasCampHere);
 			$("#out-action-scout").toggle(this.gameState.unlockedFeatures.vision);
 			$("#out-action-use-spring").toggle(isScouted && featuresComponent.hasSpring);
