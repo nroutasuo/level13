@@ -22,11 +22,12 @@ define([
         craftableItemDefinitionList: [],
 		
 		bubbleNumber: 0,
-		craftableItems: -1,
-		lastShownCraftableItems: -1,
-		uniqueItemsCount: -1,
-		lastShownAvailableCraftableItems: -1,
-		lastShownUniqueItemsCount: -1,
+        craftableItems: -1,
+        lastShownCraftableItems: -1,
+        numOwned: -1,
+        numOwnedUnseen: 0,
+		numCraftableUnlockedUnseen: -1,
+		numCraftableAvailableUnseen: -1,
 
 		constructor: function (uiFunctions, tabChangedSignal, playerActionsHelper, gameState) {
 			this.gameState = gameState;
@@ -104,19 +105,14 @@ define([
 		update: function (time) {
 			var isActive = this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.bag;
 			var itemsComponent = this.itemNodes.head.items;
-            var hasMap = itemsComponent.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
 			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
 			var uniqueItems = itemsComponent.getUnique(inCamp);
-			
-			this.uniqueItemsCount = uniqueItems.length;
-			
-			if (hasMap) this.uniqueItemsCount--;
-			if (isActive || this.lastShownUniqueItemsCount < 0) this.lastShownUniqueItemsCount = this.uniqueItemsCount;
 			
 			this.updateCrafting(isActive);
 			this.updateBubble();
 			
 			if (!isActive) {
+                this.updateItemCounts(isActive);
                 this.craftableItemDefinitionList = [];
                 return;
             }
@@ -130,17 +126,15 @@ define([
 		},
         
         updateBubble: function () {
-			var craftableNum = Math.max(0, this.craftableItems - this.lastShownCraftableItems);
-			var availableCraftableNum = Math.max(0, this.availableCraftableItems - this.lastShownAvailableCraftableItems);
-			var uniqueNum = Math.max(0, this.uniqueItemsCount - this.lastShownUniqueItemsCount);
-            this.bubbleNumber = craftableNum + availableCraftableNum + uniqueNum;
+            this.bubbleNumber = Math.max(0, this.numOwnedUnseen + this.numCraftableUnlockedUnseen + this.numCraftableAvailableUnseen);
+            console.log(this.bubbleNumber + " = " + this.numOwnedUnseen + " + " + this.numCraftableUnlockedUnseen + " + " + this.numCraftableAvailableUnseen);
             $("#switch-bag .bubble").text(this.bubbleNumber);
             $("#switch-bag .bubble").toggle(this.bubbleNumber > 0);
         },
 
 		updateItems: function (uniqueItems) {
-			if (uniqueItems.length !== this.lastUpdatedItemsLength) {
-				this.lastUpdatedItemsLength = uniqueItems.length;
+			if (uniqueItems.length !== this.numOwned) {
+				this.numOwned = uniqueItems.length;
 				this.updateItemLists();
 			} else {
 				this.refreshItemLists();
@@ -156,8 +150,9 @@ define([
 			var countObsolete = 0;
 			if (requiresUpdate) $("#self-craft table").empty();
 			
-			this.craftableItems = 0;
-			this.availableCraftableItems = 0;
+            this.craftableItems = 0;
+			this.numCraftableUnlockedUnseen = 0;
+            this.numCraftableAvailableUnseen = 0;
 			
 			var itemsComponent = this.itemNodes.head.items;
 			var itemDefinitionList = this.getCraftableItemDefinitionList();
@@ -177,16 +172,34 @@ define([
 				if (reqsCheck.value >= 1 || reqsCheck.reason === "Bag full.") {
                     var isObsolete = this.isObsolete(itemDefinition);
 					if (isObsolete) countObsolete++;
+                    if (!isObsolete) {
+                        if (this.gameState.uiBagStatus.itemsCraftableUnlockedSeen.indexOf(itemDefinition.id) < 0) {
+                            if (isActive) {
+                                this.gameState.uiBagStatus.itemsCraftableUnlockedSeen.push(itemDefinition.id);
+                            } else {
+                                this.numCraftableUnlockedUnseen++;
+                            }
+                        }
+                    }
+                    
 					if (!isObsolete || showObsolete) {
 						var isAvailable = this.playerActionsHelper.checkAvailability(actionName, false);
 						if (requiresUpdate) {
 							tr = "<tr><td><button class='action' action='" + actionName + "'>" + itemDefinition.name + "</button></td></tr>";
 							$("#self-craft table").append(tr);
 						}
-						this.craftableItems++;
+                        
+                        this.craftableItems++;
 					
-						if (isAvailable && !itemsComponent.contains(itemDefinition.name) && !this.isObsolete(itemDefinition))
-							this.availableCraftableItems++;
+						if (isAvailable && !itemsComponent.contains(itemDefinition.name) && !this.isObsolete(itemDefinition)) {
+                            if (this.gameState.uiBagStatus.itemsCraftableAvailableSeen.indexOf(itemDefinition.id) < 0) {
+                                if (isActive) {
+                                    this.gameState.uiBagStatus.itemsCraftableAvailableSeen.push(itemDefinition.id);
+                                } else {
+                                    this.numCraftableAvailableUnseen++;
+                                }
+                            }
+                        }
 					}
 				}
 			}
@@ -199,9 +212,6 @@ define([
 				this.uiFunctions.generateButtonOverlays("#self-craft");
 				this.uiFunctions.generateCallouts("#self-craft");
 			}
-			
-			if (isActive || this.lastShownCraftableItems < 0) this.lastShownCraftableItems = this.craftableItems;
-			if (isActive || this.lastShownAvailableCraftableItems < 0) this.lastShownAvailableCraftableItems = this.availableCraftableItems;
 		},
         
         updateUseItems: function () {
@@ -271,7 +281,18 @@ define([
             }
         },
 
+        updateItemCounts: function (isActive) {
+            this.numOwnedUnseen = 0;
+            var itemsComponent = this.itemNodes.head.items;
+            var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
+            var items = itemsComponent.getUnique(inCamp);
+            for (var i = 0; i < items.length; i++) {
+                this.updateItemCount(isActive, items[i]);
+            }
+        },
+
 		updateItemLists: function () {
+            var isActive = this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.bag;
 			var itemsComponent = this.itemNodes.head.items;
 			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
 			var items = itemsComponent.getUnique(inCamp);
@@ -287,10 +308,13 @@ define([
 			this.updateItemSlot(ItemConstants.itemTypes.bag, null);
 			
 			items = items.sort(UIConstants.sortItemsByType);
+            
+            this.numOwnedUnseen = 0;
 
 			$("#bag-items").empty();
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
+                this.updateItemCount(isActive, item);
 				var count = itemsComponent.getCount(item, inCamp);
 				var smallSlot = UIConstants.getItemSlot(item, count);
 				switch (item.type) {
@@ -332,6 +356,20 @@ define([
 
             this.uiFunctions.generateCallouts("#container-tab-two-bag .three-quarters");
 		},
+        
+        updateItemCount: function (isActive, item) {
+            if (this.gameState.uiBagStatus.itemsOwnedSeen.indexOf(item.id) < 0) {
+                if (item.id !== "equipment_map") {
+                    if (isActive) {
+                        this.gameState.uiBagStatus.itemsOwnedSeen.push(item.id);
+                    } else {
+                        this.numOwnedUnseen++;
+                    }
+                }
+            } else {
+                console.log("already seen item: " + item.id);
+            }
+        },
 
 		refreshItemLists: function () {
 			var itemsComponent = this.itemNodes.head.items;
@@ -339,8 +377,11 @@ define([
 			$.each($("#bag-items li .item"), function () {
 				var id = $(this).attr("data-itemid");
 				var count = itemsComponent.getCountById(id, inCamp);
-				var showCount = itemsComponent.getItem(id).equipped ? count - 1 : count;
-				$(this).find(".item-count").text(showCount + "x");
+                var item = itemsComponent.getItem(id);
+                if (item) {
+                    var showCount = item.equipped ? count - 1 : count;
+                    $(this).find(".item-count").text(showCount + "x");
+                }
 			});
 		},
 		

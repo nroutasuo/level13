@@ -122,7 +122,12 @@ define([
 		// Loads a game if a save can be found, otherwise initializes world seed & levels
 		// Returns a boolean indicating whether a save was found
 		loadGameState: function () {
-			var hasSave = localStorage && localStorage.timeStamp && localStorage.entitiesObject && localStorage.gameState;
+            var hasSave = false;
+            try {
+                hasSave = localStorage && localStorage.timeStamp && localStorage.entitiesObject && localStorage.gameState;
+            } catch (exception) {
+                
+            }
 			
 			// Load game state
 			if (hasSave) {

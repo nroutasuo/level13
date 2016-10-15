@@ -49,6 +49,12 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
                 leaveCampItems: {},
             };
             
+            this.uiBagStatus = {
+                itemsOwnedSeen: [],
+                itemsCraftableUnlockedSeen: [],
+                itemsCraftableAvailableSeen: []
+            },
+            
             this.actionCooldownEndTimestamps = {};
             this.actionDurationEndTimestamps = {};
         },
