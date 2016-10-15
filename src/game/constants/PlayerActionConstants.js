@@ -591,6 +591,12 @@ function (Ash, GameConstants, CampConstants) {
                         unlock_building_researchcenter: true,
                     }
                 },
+
+                clothing_head_1: {
+                    upgrades: {
+                        unlock_clothing_warm: true,
+                    }
+                },
                 
                 craft_clothing_head_3: {
                     upgrades: {
@@ -601,6 +607,12 @@ function (Ash, GameConstants, CampConstants) {
                 craft_clothing_head_5: {
                     upgrades: {
                         unlock_item_clothing7: true,
+                    }
+                },
+                
+                craft_clothing_hands_1: {
+                    upgrades: {
+                        unlock_clothing_warm: true,
                     }
                 },
                 
