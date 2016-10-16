@@ -5,6 +5,7 @@
             "phase": "alpha",
             "final": true,
             "updated": "2016-10-16",
+            "released": "2016-10-16",
             "changes": [
                 {
                     "type": "GD",
