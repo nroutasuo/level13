@@ -91,6 +91,57 @@ define(['ash'], function (Ash) {
             }
         },
         
+        getNextClockWise: function (direction, includeDiagonalSteps) {
+            switch (direction) {
+                case this.DIRECTION_WEST:
+                    return includeDiagonalSteps ? this.DIRECTION_NW : this.DIRECTION_NORTH;
+                case this.DIRECTION_NORTH:
+                    return includeDiagonalSteps ? this.DIRECTION_NE : this.DIRECTION_EAST;
+                case this.DIRECTION_SOUTH:
+                    return includeDiagonalSteps ? this.DIRECTION_SW : this.DIRECTION_WEST;
+                case this.DIRECTION_EAST:
+                    return includeDiagonalSteps ? this.DIRECTION_SE : this.DIRECTION_SOUTH;
+                case this.DIRECTION_NE:
+                    return includeDiagonalSteps ? this.DIRECTION_EAST : this.DIRECTION_SE;
+                case this.DIRECTION_SE:
+                    return includeDiagonalSteps ? this.DIRECTION_SOUTH : this.DIRECTION_SW;
+                case this.DIRECTION_SW:
+                    return includeDiagonalSteps ? this.DIRECTION_WEST : this.DIRECTION_NW;
+                case this.DIRECTION_NW:
+                    return includeDiagonalSteps ? this.DIRECTION_NORTH : this.DIRECTION_NE;
+                default:
+                    return this.DIRECTION_NONE;
+            }            
+        },
+
+        getNextCounterClockWise: function (direction, includeDiagonalSteps) {
+            switch (direction) {
+                case this.DIRECTION_WEST:
+                    return includeDiagonalSteps ? this.DIRECTION_SW : this.DIRECTION_SOUTH;
+                case this.DIRECTION_NORTH:
+                    return includeDiagonalSteps ? this.DIRECTION_NW : this.DIRECTION_WEST;
+                case this.DIRECTION_SOUTH:
+                    return includeDiagonalSteps ? this.DIRECTION_SE : this.DIRECTION_EAST;
+                case this.DIRECTION_EAST:
+                    return includeDiagonalSteps ? this.DIRECTION_NE : this.DIRECTION_NORTH;
+                case this.DIRECTION_NE:
+                    return includeDiagonalSteps ? this.DIRECTION_NORTH : this.DIRECTION_NW;
+                case this.DIRECTION_SE:
+                    return includeDiagonalSteps ? this.DIRECTION_EAST : this.DIRECTION_NE;
+                case this.DIRECTION_SW:
+                    return includeDiagonalSteps ? this.DIRECTION_SOUTH : this.DIRECTION_SE;
+                case this.DIRECTION_NW:
+                    return includeDiagonalSteps ? this.DIRECTION_WEST : this.DIRECTION_SW;
+                default:
+                    return this.DIRECTION_NONE;
+            }
+        },
+        
+        isNeighbouringDirection: function (direction1, direction2) {
+            return this.getNextClockWise(direction1, false) == direction2 || this.getNextClockWise(direction1, true) == direction2 ||
+                this.getNextClockWise(direction2, false) == direction1 || this.getNextClockWise(direction2, true) == direction1;
+        },
+        
         getDirectionName: function (direction) {
             switch (direction) {
                 case this.DIRECTION_WEST: return "west";
@@ -117,6 +168,18 @@ define(['ash'], function (Ash) {
         isLevelDirection: function (direction) {
             return this.getLevelDirections().indexOf(direction) >= 0;
         },
+        
+        isHorizontalDirection: function (direction) {
+            switch(direction) {
+                case this.DIRECTION_EAST:
+                case this.DIRECTION_WEST:
+                case this.DIRECTION_NW:
+                case this.DIRECTION_SE:
+                    return true;
+                default: 
+                    return false;
+            }
+        }
     
     };
     

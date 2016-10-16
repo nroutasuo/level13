@@ -47,6 +47,10 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			if (!this.sectorsByPos[sectorVO.position.sectorX]) this.sectorsByPos[sectorVO.position.sectorX] = {};
 			this.sectorsByPos[sectorVO.position.sectorX][sectorVO.position.sectorY] = sectorVO;
 			
+            if (sectorVO.position.sectorY > 90) {
+                console.log(sectorVO.position + " | " + this.centralSectors.length + " | " + (this.isCentral(sectorVO.position.sectorX, sectorVO.position.sectorY)))
+            }
+            
 			this.minX = Math.min(this.minX, sectorVO.position.sectorX);
 			this.maxX = Math.max(this.maxX, sectorVO.position.sectorX);
 			this.minY = Math.min(this.minY, sectorVO.position.sectorY);

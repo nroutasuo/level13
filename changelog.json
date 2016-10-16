@@ -1,6 +1,19 @@
 {
     "versions": [
         {
+            "version": "0.1.4",
+            "phase": "alpha",
+            "final": true,
+            "updated": "2016-10-16",
+            "released": "",
+            "changes": [
+                {
+                    "type": "GD",
+                    "summary": "Improve sector generation to create more intersections and generally more interesting level shapes."
+                },
+            ]
+        },
+        {
             "version": "0.1.3",
             "phase": "alpha",
             "final": true,

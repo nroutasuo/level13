@@ -51,7 +51,7 @@ define(['ash',], function (Ash) {
 		},
 		
 		printLevel: function (woldVO, levelVO) {
-			console.log("Print level, seed: " + woldVO.seed + ", level: " + levelVO.level + ", total sectors: " + levelVO.sectors.length + ", bounds: " + levelVO.minX + "." + levelVO.minY + "-" + levelVO.maxX + "." + levelVO.maxY);
+			console.log("Print level, seed: " + woldVO.seed + ", level: " + levelVO.level + ", total sectors: " + levelVO.sectors.length + ", bounds: " + levelVO.minX + "." + levelVO.minY + "-" + levelVO.maxX + "." + levelVO.maxY + ", central area: " + levelVO.centralAreaSize);
 			var print = "\t";
 		
 			for (var x = levelVO.minX; x <= levelVO.maxX; x++) {

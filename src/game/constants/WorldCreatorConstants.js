@@ -24,16 +24,32 @@ define(['ash'], function (Ash) {
         LEVEL_NUMBER_MAX: 24,
         
         SECTORS_PER_LEVEL_MIN: 100,
-        SECTORS_PER_LEVEL_MAX: 500,
-        EXCURSIONS_PER_LEVEL_MIN: 1.75,
-        MAX_CENTRAL_AREA_SIZE: 50,
         DIAGONAL_PATH_PROBABILITY: 0.1,
+        
+        SECTOR_PATH_LENGTH_MIN: 10,
+        SECTOR_PATH_LENGTH_MAX: 20,
         
         FIRST_CAMP_X: 1,
         FIRST_CAMP_Y: 0,
+        LVL_13_PASSAGE_UP_X: 18,
+        LVL_13_PASSAGE_UP_Y: 18,
         
         MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 5,
         MIN_LEVEL_HAZARD_POISON: 15,
+        
+        getNumSectors: function (levelOrdinal) {
+            return this.getNumSectorsCentral(levelOrdinal) * 1.1;
+        },
+        
+        getNumSectorsCentral: function (levelOrdinal) {
+            if (levelOrdinal < 2)
+                return 100;
+            if (levelOrdinal < 10)
+                return 150;
+            if (levelOrdinal < 15)
+                return 200;
+            return 300;
+        }
     };
     
     return WorldCreatorConstants;
