@@ -23,9 +23,9 @@ define(['ash'], function (Ash) {
         LEVEL_NUMBER_MIN: 20,
         LEVEL_NUMBER_MAX: 24,
         
-        SECTORS_PER_LEVEL_MIN: 100,
         DIAGONAL_PATH_PROBABILITY: 0.1,
         
+        MAX_CENTRAL_AREA_SIZE: 25,
         SECTOR_PATH_LENGTH_MIN: 10,
         SECTOR_PATH_LENGTH_MAX: 20,
         
@@ -36,6 +36,15 @@ define(['ash'], function (Ash) {
         
         MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 5,
         MIN_LEVEL_HAZARD_POISON: 15,
+        
+        LEVEL_ORDINAL_BAG_2: 5,
+        LEVEL_ORDINAL_BAG_3: 10,
+        LEVEL_ORDINAL_BAG_4: 15,
+        
+        BAG_BONUS_1: 30,
+        BAG_BONUS_2: 50,
+        BAG_BONUS_3: 80,
+        BAG_BONUS_4: 150,
         
         getNumSectors: function (levelOrdinal) {
             return this.getNumSectorsCentral(levelOrdinal) * 1.1;
@@ -49,6 +58,19 @@ define(['ash'], function (Ash) {
             if (levelOrdinal < 15)
                 return 200;
             return 300;
+        },
+        
+        getBagBonus: function (levelOrdinal) {
+            if (levelOrdinal < this.LEVEL_ORDINAL_BAG_2) {
+                return this.BAG_BONUS_1;
+            }
+            if (levelOrdinal < this.LEVEL_ORDINAL_BAG_3) {
+                return this.BAG_BONUS_2;
+            }
+            if (levelOrdinal < this.LEVEL_ORDINAL_BAG_4) {
+                return this.BAG_BONUS_3;
+            }
+            return this.BAG_BONUS_4;
         }
     };
     

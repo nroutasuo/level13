@@ -18,12 +18,11 @@ define([
 	'game/constants/EnemyConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/LocaleConstants',
-	'game/constants/ItemConstants'
 ], function (
     Ash, GameConstants, LevelConstants,
     WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug,
     WorldVO, LevelVO, SectorVO, ResourcesVO, LocaleVO, PositionVO,
-    WorldCreatorConstants, PositionConstants, MovementConstants, EnemyConstants, UpgradeConstants, LocaleConstants, ItemConstants
+    WorldCreatorConstants, PositionConstants, MovementConstants, EnemyConstants, UpgradeConstants, LocaleConstants
 ) {
 
     var WorldCreator = {
@@ -386,10 +385,9 @@ define([
         generateSectors: function (seed, levelVO, passagesUpPositions) {
             var l = levelVO.level;
             
-            // TODO make world structure not directly dependent on item constants so if they are changed, world doesn't change
-            var bagSize = ItemConstants.getBag(levelVO.levelOrdinal).getBonus(ItemConstants.itemBonusTypes.bag);
-            var bagSizePrevious = ItemConstants.getBag(levelVO.levelOrdinal - 1).getBonus(ItemConstants.itemBonusTypes.bag);
-            levelVO.centralAreaSize = Math.min((bagSize + bagSizePrevious) / 2 / 2, 25);
+            var bagSize = WorldCreatorConstants.getBagBonus(levelVO.levelOrdinal);
+            var bagSizePrevious = WorldCreatorConstants.getBagBonus(levelVO.levelOrdinal - 1);
+            levelVO.centralAreaSize = Math.min((bagSize + bagSizePrevious) / 2 / 2, WorldCreatorConstants.MAX_CENTRAL_AREA_SIZE);
             
             var numSectors = WorldCreatorConstants.getNumSectors(levelVO.levelOrdinal);
             var numSectorsCentral = WorldCreatorConstants.getNumSectorsCentral(levelVO.levelOrdinal);
