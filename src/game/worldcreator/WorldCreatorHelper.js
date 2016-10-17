@@ -48,13 +48,14 @@ define([
             
             var sectorAbundanceFactor = WorldCreatorRandom.random(seed * sRandom + (x + 99) * 7 * (y - 888));
             var waterRandomPart = WorldCreatorRandom.random(seed * (l + 1000) * (x + y + 900) + 10134) * Math.abs(5 - stateOfRepair) / 5;
+
             var result = new ResourcesVO();
             
             // Sector type based defaults
             switch (sectorType) {
             case WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL:
                 result.metal = 3;
-                result.food = Math.round(sectorAbundanceFactor * 5 + stateOfRepair / 2);
+                result.food = WorldCreatorRandom.random(seed + l * x * y * 24 + x * 33 + 6) > 0.60 ? Math.round(sectorAbundanceFactor * 5 + stateOfRepair / 2) : 0;
                 result.water = waterRandomPart > 0.82 ? 2 : 0;
                 result.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.95 ? 1 : 0;
                 break;
@@ -74,7 +75,7 @@ define([
                 break;
             case WorldCreatorConstants.SECTOR_TYPE_SLUM:
                 result.metal = 5;
-                result.food = Math.round(sectorAbundanceFactor * 7 + stateOfRepair / 5);
+                result.food = WorldCreatorRandom.random(seed / (l+10) + x * y * 63) > 0.75 ? Math.round(sectorAbundanceFactor * 5 + stateOfRepair / 2) : 0;
                 result.water = waterRandomPart > 0.75 ? 1 : 0;
                 result.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.95 ? 1 : 0;
                 break;
@@ -91,6 +92,13 @@ define([
             
             if (sectorVO.camp || (l === 13 && x === WorldCreatorConstants.FIRST_CAMP_X && y === WorldCreatorConstants.FIRST_CAMP_Y)) {
                 result.food = Math.max(result.food, 3);
+            }
+            
+            // Adjustment for required supplies
+            if (sectorVO.requiredResources) {
+                if (sectorVO.requiredResources.getResource("food") > 0) {
+                    result.food = Math.max(result.food, 3);
+                }
             }
             
             // Final adjustments for possible values
@@ -116,12 +124,12 @@ define([
             case WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL:
             case WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL:
                 result.food = sectorNatureFactor > 0.2 ? Math.round(sectorNatureFactor * 10) : 0;
-                result.water = sectorWaterFactor > 0.5 ? Math.round(Math.min(10, sectorWaterFactor * 10)) : 0;
+                result.water = sectorWaterFactor > 0.75 ? Math.round(Math.min(10, sectorWaterFactor * 10)) : 0;
                 break;
             case WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL:
             case WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE:
                 result.food = sectorNatureFactor > 0.4 ? Math.round(sectorNatureFactor * 8) : 0;
-                result.water = sectorWaterFactor > 0.7 ? Math.round(Math.min(10, sectorWaterFactor * 11)) : 0;
+                result.water = sectorWaterFactor > 0.95 ? Math.round(Math.min(10, sectorWaterFactor * 11)) : 0;
                 break;
             case WorldCreatorConstants.SECTOR_TYPE_SLUM:
                 result.food = sectorNatureFactor > 0.1 ? Math.round(sectorNatureFactor * 10) : 0;
@@ -147,6 +155,13 @@ define([
             if (sectorVO.hazards.poison > 0 || sectorVO.hazards.radiation > 0) {
                 result.water = 0;
                 result.food = 0;
+            }
+
+            // Adjustment for required supplies
+            if (sectorVO.requiredResources) {
+                if (sectorVO.requiredResources.getResource("water") > 0) {
+                    result.water = Math.max(result.water, 3);
+                }
             }
             
             return result;

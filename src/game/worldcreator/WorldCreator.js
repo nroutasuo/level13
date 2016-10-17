@@ -130,7 +130,7 @@ define([
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World structure ready."
 				+ (GameConstants.isDebugOutputEnabled ? " (ground: " + bottomLevel + ", surface: " + topLevel + ", total sectors: " + this.totalSectors + ")" : ""));
-            // WorldCreatorDebug.printWorld(this.world, [ "camp" ]);
+            // WorldCreatorDebug.printWorld(this.world, [ "requiredResources.food" ]);
 		},
 		
 		// sector type, building density, state of repair, sunlight, hazards
@@ -229,7 +229,12 @@ define([
                     maxSprings = 10;
                     minSprings = 3;
                 }
-                springSectors = WorldCreatorRandom.randomSectors(seed * (l + 1000) / 11, levelVO, minSprings, maxSprings, true);
+                
+                var numSprings = WorldCreatorRandom.randomInt(seed * (l + 1000) / 11, minSprings, maxSprings);
+                var shuffledPossibleSprings = levelVO.possibleSpringSectors.sort(function (a, b) {
+                    return .5 - WorldCreatorRandom.random(seed + a.sectorX + b.sectorY);
+                });
+                springSectors = shuffledPossibleSprings.slice(0, Math.min(numSprings, shuffledPossibleSprings.length));
 				
 				for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
 					for (var x = levelVO.minX; x <= levelVO.maxX; x++) {
@@ -254,7 +259,7 @@ define([
 			
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World resources ready.");
-            // WorldCreatorDebug.printWorld(this.world, [ "resourcesScavengable.herbs" ]);
+            // WorldCreatorDebug.printWorld(this.world, [ "resourcesScavengable.food" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "hasSpring" ]);
 		},
 		
@@ -388,6 +393,7 @@ define([
             var bagSize = WorldCreatorConstants.getBagBonus(levelVO.levelOrdinal);
             var bagSizePrevious = WorldCreatorConstants.getBagBonus(levelVO.levelOrdinal - 1);
             levelVO.centralAreaSize = Math.min((bagSize + bagSizePrevious) / 2 / 2, WorldCreatorConstants.MAX_CENTRAL_AREA_SIZE);
+            levelVO.bagSize = Math.floor((bagSize + bagSizePrevious) / 2);
             
             var numSectors = WorldCreatorConstants.getNumSectors(levelVO.levelOrdinal);
             var numSectorsCentral = WorldCreatorConstants.getNumSectorsCentral(levelVO.levelOrdinal);
@@ -419,12 +425,12 @@ define([
                 this.generateSectorsFillSingleGaps(levelVO);
             }
 			
-			WorldCreatorDebug.printLevel(this.world, levelVO);
+			// WorldCreatorDebug.printLevel(this.world, levelVO);
         },
         
         generateSectorsForExistingPoints: function (seed, levelVO, existingPoints) {
             if (existingPoints.length === 0) {
-                this.createSector(levelVO, new PositionVO(levelVO.level, 0, 0));
+                this.createSector(levelVO, new PositionVO(levelVO.level, 0, 0), null);
                 return;
             }
             
@@ -436,7 +442,7 @@ define([
             var pathLength;
             if (existingPoints.length === 1) {
                 pathStartingPos = existingPoints[0].clone();
-                pathDirection = WorldCreatorRandom.randomDirections(seed * levelVO.levelOrdinal + 284, 1, includeDiagonals)[0];
+                pathDirection = WorldCreatorRandom.randomDirections(seed * levelVO.levelOrdinal + 482, 1, includeDiagonals)[0];
                 pathLength = WorldCreatorRandom.randomInt(seed * 3 * 53 * (l + 1) + l + 55, WorldCreatorConstants.SECTOR_PATH_LENGTH_MIN, WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX);
                 this.generateSectorPath(levelVO, pathStartingPos, pathDirection, pathLength);
             } else if (existingPoints.length > 1) {
@@ -479,7 +485,7 @@ define([
             var pathStartingI = Math.floor(WorldCreatorRandom.random(seed * 938 * (l + 60) / pathRandomSeed + 2342 * l) * startingPosArray.length);
             var pathStartingPos = startingPosArray[pathStartingI].position.clone();
             
-            var isDiagonal = WorldCreatorRandom.random(seed + (l + 70) * pathRandomSeed) < WorldCreatorConstants.DIAGONAL_PATH_PROBABILITY;
+            var isDiagonal = WorldCreatorRandom.random(seed + (l * 44) * pathRandomSeed + pathSeed) < WorldCreatorConstants.DIAGONAL_PATH_PROBABILITY;
             var numRectangles = WorldCreatorRandom.randomInt((seed + pathRandomSeed * l - pathRandomSeed) / (pathSeed + 5), 2, isMassive ? 3 : 5);
             var startDirections = WorldCreatorRandom.randomDirections(seed * levelVO.levelOrdinal + 28381 + pathRandomSeed, numRectangles, false);
             var maxRectangleSize = isMassive ? WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX * 3 / 4 : Math.min(WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX / 2, levelVO.centralAreaSize / 2);
@@ -495,7 +501,7 @@ define([
                 sideStartingPos = pathStartingPos;
                 for (var j = 0; j < 4; j++) {
                     var sideLength = PositionConstants.isHorizontalDirection(currentDirection) ? w : h;
-                    var fullyCreated = this.generateSectorPath(levelVO, sideStartingPos, currentDirection, sideLength);
+                    var fullyCreated = this.generateSectorPath(levelVO, sideStartingPos, currentDirection, sideLength, i > 0 || j > 0);
                     if (!fullyCreated) break;
                     sideStartingPos = PositionConstants.getPositionOnPath(sideStartingPos, currentDirection, sideLength);
                     currentDirection = PositionConstants.getNextClockWise(currentDirection, false);
@@ -541,18 +547,42 @@ define([
                         var canMoveAround = canMoveAroundSector(neighbours);
                         var needFill = neighboursCount > 1 && neighboursCount < 6 && !canMoveAround;                        
                         if (needFill) {
-                            this.createSector(levelVO, new PositionVO(levelVO.level, x, y));
+                            this.createSector(levelVO, new PositionVO(levelVO.level, x, y, null));
                         }
                     }
                 }
             }
         },
         
-        generateSectorPath: function (levelVO, pathStartingPos, pathDirection, pathLength) {
+        stepsTillSupplies: {
+            water: 0,
+            food: 0,
+        },
+        
+        generateSectorPath: function (levelVO, pathStartingPos, pathDirection, pathLength, continueStepsTillSupplies) {
+            var maxStepsTillSupplies = continueStepsTillSupplies ?  levelVO.bagSize / 2 : Math.min(pathLength, levelVO.bagSize / 2);
+            
+            if (!continueStepsTillSupplies) {
+                this.stepsTillSupplies.water = Math.floor(
+                    maxStepsTillSupplies / 2 +
+                    WorldCreatorRandom.random(73999 + levelVO.level * 9 + levelVO.maxX * pathStartingPos.sectorY + pathStartingPos.sectorX * 5) * maxStepsTillSupplies / 2 +
+                    1);
+                this.stepsTillSupplies.food = Math.floor(
+                    maxStepsTillSupplies / 2 +
+                    WorldCreatorRandom.random(10764 + levelVO.level * 3 + +levelVO.maxY * pathStartingPos.sectorX + pathStartingPos.sectorY * 8) * maxStepsTillSupplies / 2 +
+                    1);
+            }
+                     
+            var requiredResources = null;
+            var requiresWater = true;
+            var requiresFood = true;
             var sectorPos;
             for (var si = 0; si < pathLength; si++) {
                 sectorPos = PositionConstants.getPositionOnPath(pathStartingPos, pathDirection, si);
                 sectorPos.level = levelVO.level;
+
+                this.stepsTillSupplies.water--;
+                this.stepsTillSupplies.food--;
 
                 // stop path when intersecting existing paths
                 var sectorExists = levelVO.hasSector(sectorPos.sectorX, sectorPos.sectorY);
@@ -569,15 +599,32 @@ define([
                         continue;
                     }
                 }
-				
-				this.createSector(levelVO, sectorPos);
+                
+                requiresWater = this.stepsTillSupplies.water <= 0;
+                requiresFood = this.stepsTillSupplies.food <= 0;
+                
+                if (requiresWater || requiresFood) {
+                    requiredResources = new ResourcesVO();
+                    if (requiresWater) {
+                        requiredResources.setResource(resourceNames.water, 1);
+                        this.stepsTillSupplies.water = maxStepsTillSupplies;
+                    }
+                    if (requiresFood) {
+                        requiredResources.setResource(resourceNames.food, 1); 
+                        this.stepsTillSupplies.food = maxStepsTillSupplies;
+                    }
+                } else {
+                    requiredResources = null;
+                }
+                
+				this.createSector(levelVO, sectorPos, requiredResources);
             }
             return true;
         },
 		
-		createSector: function (levelVO, sectorPos) {
+		createSector: function (levelVO, sectorPos, requiredResources) {
             this.totalSectors++;
-			var sectorVO = new SectorVO(sectorPos, levelVO.isCampable, levelVO.notCampableReason);
+			var sectorVO = new SectorVO(sectorPos, levelVO.isCampable, levelVO.notCampableReason, requiredResources);
 			levelVO.addSector(sectorVO);
 		},
 		

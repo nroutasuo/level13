@@ -6,11 +6,13 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 		levelOrdinal: -1,
 		isCampable: false,
         notCampableReason: null,
+        bagSize: 0,
 		centralAreaSize: 0,
 		
 		sectors: [],
 		centralSectors: [],
 		sectorsByPos: {},
+        possibleSpringSectors: [],
 		minX: 0,
 		maxX: 0,
 		minY: 0,
@@ -25,6 +27,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			this.sectors = [];
 			this.centralSectors = [];
 			this.sectorsByPos = [];
+            this.possibleSpringSectors = [];
 			this.minX = 0;
 			this.maxX = 0;
 			this.minY = 0;
@@ -43,13 +46,10 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			this.sectors.push(sectorVO);
 			
 			if (this.isCentral(sectorVO.position.sectorX, sectorVO.position.sectorY)) this.centralSectors.push(sectorVO);
+            if (sectorVO.requiredResources && sectorVO.requiredResources.getResource("water") > 0) this.possibleSpringSectors.push(sectorVO);
 			
 			if (!this.sectorsByPos[sectorVO.position.sectorX]) this.sectorsByPos[sectorVO.position.sectorX] = {};
 			this.sectorsByPos[sectorVO.position.sectorX][sectorVO.position.sectorY] = sectorVO;
-			
-            if (sectorVO.position.sectorY > 90) {
-                console.log(sectorVO.position + " | " + this.centralSectors.length + " | " + (this.isCentral(sectorVO.position.sectorX, sectorVO.position.sectorY)))
-            }
             
 			this.minX = Math.min(this.minX, sectorVO.position.sectorX);
 			this.maxX = Math.max(this.maxX, sectorVO.position.sectorX);

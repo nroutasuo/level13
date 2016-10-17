@@ -5,26 +5,27 @@ define(['ash', 'game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'], funct
 		position: null,
         movementBlockers: {},
 	
-        constructor: function (position, isCampableLevel, notCampableReason) {
+        constructor: function (position, isCampableLevel, notCampableReason, requiredResources) {
 			this.position = position;
-            this.camp = false;
             this.campableLevel = isCampableLevel;
             this.notCampableReason = notCampableReason;
+            this.requiredResources = requiredResources ? requiredResources : new ResourcesVO();
+            
+            this.id = Math.floor(Math.random() * 100000);
+            this.camp = false;
             this.locales = [];
 			this.movementBlockers = {};
-            this.id = Math.floor(Math.random() * 100000);
 			this.passageUp = 0;
 			this.passageDown = 0;
             this.sunlit = false;
             this.hazards = new EnvironmentalHazardsVO();
             this.hasSpring = false;
+            this.resourcesRequired = new ResourcesVO();
             this.resourcesScavengable = new ResourcesVO();
             this.resourcesCollectable = new ResourcesVO();
-            this.movementBlockerCount = 0;
         },
 		
 		addBlocker: function (direction, blockerType) {
-            this.movementBlockerCount++;
 			this.movementBlockers[direction] = blockerType;
 		},
 		
