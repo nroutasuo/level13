@@ -158,11 +158,11 @@ define([
 			$("#stats-stamina").toggle(!isInCamp);
 			$("#stats-stamina-in").toggle(isInCamp);
 			
-			$("#stats-vision .value").text(Math.round(playerVision) + " / " + maxVision);
+			$("#stats-vision .value").text(UIConstants.roundValue(playerVision, true, false) + " / " + maxVision);
 			this.updateStatsCallout("stats-vision", playerStatsNode.vision.accSources);
 			
-			$("#stats-stamina .value").text(Math.round(playerStamina) + " / " + maxStamina);
-			$("#stats-stamina-in .value").text(Math.round(playerStamina) + " / " + maxStamina);
+			$("#stats-stamina .value").text(UIConstants.roundValue(playerStamina, true, false) + " / " + maxStamina);
+			$("#stats-stamina-in .value").text(UIConstants.roundValue(playerStamina, true, false) + " / " + maxStamina);
 			this.updateStatsCallout("stats-stamina", playerStatsNode.stamina.accSources);
 			this.updateStatsCallout("stats-stamina-in", playerStatsNode.stamina.accSources);
 
@@ -351,7 +351,7 @@ define([
                     );
                     
                     var bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
-                    $("#header-bag-storage .value").text(Math.ceil(bagComponent.usedCapacity * 10) / 10);
+                    $("#header-bag-storage .value").text(Math.floor(bagComponent.usedCapacity * 10) / 10);
                     $("#header-bag-storage .value-total").text(storageCap);
                 }
 			}

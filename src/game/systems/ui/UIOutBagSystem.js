@@ -272,10 +272,10 @@ define([
                         break;
                         
                     case ItemConstants.itemBonusTypes.light:
-                        value = playerVision.value;
+                        value = playerVision.maximum;
                         break;
                 }
-                $("#stats-equipment-" + bonusKey + " .value").text(UIConstants.roundValue(value) + " (" + detail + ")");
+                $("#stats-equipment-" + bonusKey + " .value").text(UIConstants.roundValue(value, true, true) + " (" + detail + ")");
                 $("#stats-equipment-" + bonusKey).toggle(value > 0);
             }
         },

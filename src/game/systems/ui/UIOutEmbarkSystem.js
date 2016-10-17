@@ -155,7 +155,7 @@ define([
             $("#embark-items-container").toggle(visibleItemTRs > 0);
             
             bagComponent.selectedCapacity = selectedCapacity;
-			$("#embark-bag .value").text(UIConstants.roundValue(bagComponent.selectedCapacity));
+			$("#embark-bag .value").text(UIConstants.roundValue(bagComponent.selectedCapacity), true, true);
 			$("#embark-bag .value-total").text(bagComponent.totalCapacity);
 		},
         

@@ -9,6 +9,7 @@ define([
     'game/constants/LevelConstants',
     'game/constants/MovementConstants',
     'game/constants/ItemConstants',
+    'game/constants/WorldCreatorConstants',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/sector/CampNode',
@@ -26,7 +27,7 @@ define([
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/EnemiesComponent'
 ], function (
-    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, ItemConstants,
+    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, ItemConstants, WorldCreatorConstants,
     PlayerPositionNode, PlayerLocationNode, CampNode,
     VisionComponent, StaminaComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
     MovementOptionsComponent, PositionComponent,
@@ -193,7 +194,8 @@ define([
                 (this.resourcesHelper.getCurrentStorage().resources.water < 0.5 || this.resourcesHelper.getCurrentStorage().resources.food < 0.5);
             var isValidDespairStamina = this.playerPosNodes.head.entity.get(StaminaComponent).stamina < PlayerActionConstants.costs.move_sector_east.stamina;
             var isValidDespairMove = !movementOptionsComponent.canMove(); // conceivably happens in hazard sectors if you lose equipment
-			var showDespair = !hasCampHere && (isValidDespairRes || isValidDespairStamina) || isValidDespairMove;
+            var isFirstPosition = posComponent.level === 13 && posComponent.sectorX === WorldCreatorConstants.FIRST_CAMP_X && posComponent.sectorY === WorldCreatorConstants.FIRST_CAMP_Y;
+			var showDespair = !hasCampHere && !isFirstPosition && (isValidDespairRes || isValidDespairStamina) || isValidDespairMove;
 			$("#out-action-enter").toggle(hasCampHere);
 			$("#out-action-scout").toggle(this.gameState.unlockedFeatures.vision);
 			$("#out-action-use-spring").toggle(isScouted && featuresComponent.hasSpring);

@@ -94,7 +94,7 @@ define(['ash',
 			var div = "<div class='" + classes + "' data-resourcename='" + name + "'>";
 			div += "<div class='info-callout-target info-callout-target-small' description='" + name + "'>";
 			div += this.getResourceImg(name);
-			div += "<div class='item-count lvl13-box-3'>" + Math.ceil(amount) + "x </div>";
+			div += "<div class='item-count lvl13-box-3'>" + Math.floor(amount) + "x </div>";
 			div += "</div>";
 			div += "</div>"
 			var imageDiv = "<div class='item-slot-image'>" + div + "</div>";
@@ -303,7 +303,7 @@ define(['ash',
 		
 		updateResourceIndicator: function (name, id, value, change, storage, showStorage, showChange, showDetails, showWarning, visible) {
 			$(id).toggle(visible);
-			var roundedValue = value >= 10 ? Math.ceil(value) : Math.ceil(value * 10) / 10;
+			var roundedValue = this.roundValue(value, true, false);
 			if (visible) {
 				$(id).children(".value").text(showStorage ? roundedValue + " / " + storage : roundedValue);
 				$(id).children(".value").toggleClass("warning", showWarning && roundedValue < 5);
@@ -442,10 +442,14 @@ define(['ash',
 			return "Y" + year + "-N" + week;
 		},
 		
-        roundValue: function (value) {
-            if (value % 1 === 0) return value;
-            if (value * 10 % 1 === 0) return Math.ceil(value * 10) / 10;
-            return Math.ceil(value * 100) / 100;
+        roundValue: function (value, showDecimalsWhenSmall, showDecimalsAlways) {
+            var decimalDivisor = 0;
+            if (showDecimalsWhenSmall && value <= 10) decimalDivisor = 10;
+            if (showDecimalsAlways) decimalDivisor = 100;
+            
+            if (value % 1 === 0 || decimalDivisor <= 0) return Math.floor(value);
+            
+            return Math.floor(value * decimalDivisor) / decimalDivisor;
         },
         
 		getResourceImg: function (name) {
