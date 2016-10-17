@@ -124,7 +124,7 @@ define([
             }
 
             if (!playerSectorFound) {
-                handleInvalidPosition();
+                this.handleInvalidPosition();
             }
         },
 		
@@ -166,6 +166,8 @@ define([
             playerPos.level = 13;
             playerPos.sectorX = WorldCreatorConstants.FIRST_CAMP_X;
             playerPos.sectorY = WorldCreatorConstants.FIRST_CAMP_Y;
+            playerPos.inCamp = false;
+            this.lastUpdatePosition = null;
         },
         
     });

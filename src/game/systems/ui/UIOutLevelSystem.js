@@ -455,6 +455,8 @@ define([
         },
         
 		updateLocales: function () {
+            if (!this.playerLocationNodes.head) return;
+            
 			var currentSector = this.playerLocationNodes.head.entity;
 			var sectorLocalesComponent = currentSector.get(SectorLocalesComponent);
 			var sectorFeaturesComponent = currentSector.get(SectorFeaturesComponent);
@@ -472,6 +474,8 @@ define([
 		},
 		
 		updateMovementRelatedActions: function () {
+            if (!this.playerLocationNodes.head) return;
+            
 			var currentSector = this.playerLocationNodes.head.entity;
 			var movementOptionsComponent = currentSector.get(MovementOptionsComponent);
 			$("#table-out-actions-movement-related").empty();

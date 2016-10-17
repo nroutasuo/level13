@@ -35,11 +35,12 @@ define([
         },
         
         update: function (time) {
+            if (!this.locationNodes.head) return;
             this.addPerks();
             this.updatePerks(time);
         },
         
-        addPerks: function () {
+        addPerks: function () {            
             var featuresComponent = this.locationNodes.head.entity.get(SectorFeaturesComponent);
             var itemsComponent = this.playerNodes.head.entity.get(ItemsComponent);
             var isAffectedByHazard = HazardConstants.isAffectedByHazard(featuresComponent, itemsComponent);
