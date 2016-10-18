@@ -60,11 +60,11 @@ define([
 
                 this.generateSectors(seed, levelVO, passageDownPositions);
 					
-				// camp: 1-5 spots for every campable level
+				// camp: 3-10 guaranteed spots for every campable level
 				if (l === 13) {
 					levelVO.getSector(WorldCreatorConstants.FIRST_CAMP_X, WorldCreatorConstants.FIRST_CAMP_Y).camp = true;
 				} else {
-					var numCamps = isCampableLevel ? WorldCreatorRandom.randomInt(seed / 3 * l, 1, 6) : 0;
+					var numCamps = isCampableLevel ? WorldCreatorRandom.randomInt(seed / 3 * l, 3, 11) : 0;
 					for (var i = 0; i < numCamps; i++) {
 						var campPosition = WorldCreatorRandom.randomSector(seed * l * 534 * (i + 7), levelVO, true).position;
 						levelVO.getSector(campPosition.sectorX, campPosition.sectorY).camp = true;
@@ -335,7 +335,6 @@ define([
 				// min number of (easy) locales ensures that player can get all upgrades intended for that level
 				var minLocales = Math.max(1, UpgradeConstants.getPiecesByCampOrdinal(campOrdinal));
 				var levelLocaleCount = Math.max(minLocales, Math.round(countRand * 25));
-				var firstLocaleSector = l === 13 ? 5 : 1;
 				for (var i = 0; i < levelLocaleCount; i++) {
 					var localePos = WorldCreatorRandom.randomSectors(seed + i * l + i * 7394 * seed + i * i * l + i, levelVO, 1, 2, true, "camp");
                     var sectorVO = localePos[0];

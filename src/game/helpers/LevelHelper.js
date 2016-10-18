@@ -310,26 +310,26 @@ define([
 			return false;
 		},
 		
-		getLevelLocales: function (level, includeScouted, excludeLocaleVO) {
+		getLevelLocales: function (level, includeScouted, includeHard, excludeLocaleVO) {
 			var locales = [];
 			var sectorPosition;
 			for (var node = this.sectorNodes.head; node; node = node.next) {
 				sectorPosition = node.entity.get(PositionComponent);
 				if (sectorPosition.level === level) {
-					locales = locales.concat(this.getSectorLocales(node.entity, includeScouted, excludeLocaleVO));
+					locales = locales.concat(this.getSectorLocales(node.entity, includeScouted, includeHard, excludeLocaleVO));
 				}
 			}
 			return locales;
 		},
 		
-		getSectorLocales: function (sectorEntity, includeScouted, excludeLocaleVO) {
+		getSectorLocales: function (sectorEntity, includeScouted, includeHard, excludeLocaleVO) {
 			var locales = [];
 			var sectorLocalesComponent = sectorEntity.get(SectorLocalesComponent);
 			var sectorStatus = sectorEntity.get(SectorStatusComponent);
 			var locale;
 			for (var i = 0; i < sectorLocalesComponent.locales.length; i++) {
 				locale = sectorLocalesComponent.locales[i];
-				if (locale !== excludeLocaleVO && (includeScouted || !sectorStatus.isLocaleScouted(i)))
+				if (locale !== excludeLocaleVO && (includeScouted || !sectorStatus.isLocaleScouted(i)) && (includeHard || locale.isEasy))
 					locales.push(locale);
 			}
 			return locales;

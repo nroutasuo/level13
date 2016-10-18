@@ -135,9 +135,9 @@ define([
             rewards.gainedItems = this.getRewardItems(0.007, 0.05, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
 
             // should never be needed, but as a fallback
-            var unscoutedLocales = this.levelHelper.getLevelLocales(playerPos.level, false).length;
+            var unscoutedLocales = this.levelHelper.getLevelLocales(playerPos.level, false, false).length;
             var levelBlueprintPieces = this.getPendingBlueprintPiecesCount();
-            if (unscoutedLocales === 0 && levelBlueprintPieces > 0 && Math.random() < 0.1) {
+            if (unscoutedLocales === 0 && levelBlueprintPieces > 0 && Math.random() < 0.07) {
                 rewards.gainedBlueprintPiece = this.getResultBlueprint(null);
             }
 
@@ -683,7 +683,7 @@ define([
 				}
 			}
 			
-			var unscoutedLocales = this.levelHelper.getLevelLocales(playerPos.level, false, localeVO).length + 1;
+			var unscoutedLocales = this.levelHelper.getLevelLocales(playerPos.level, false, false, localeVO).length + 1;
 			
 			var levelBlueprintProbability = blueprintPiecesToFind / unscoutedLocales;
 			if (GameConstants.isDebugOutputEnabled)
