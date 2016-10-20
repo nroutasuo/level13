@@ -1056,7 +1056,9 @@ define(['ash',
             var name = inputParts[0];
             switch (name) {
 				case "speed":
-					GameConstants.gameSpeed = parseFloat(inputParts[1]);
+                    var spd = parseFloat(inputParts[1]);
+					GameConstants.gameSpeedCamp = spd;
+                    GameConstants.gameSpeedExploration = spd;
 					break;
 				
 				case "res":

@@ -54,8 +54,8 @@ define([
 					campfireCount = improvementsComponent.getCount(improvementNames.campfire);
 					campfireFactor = 1 + (campfireCount > 0 ? (campfireCount/10) : 0);
 					campfireFactor = campfireFactor * campfireUpgradeLevel;
-					var accSpeedPopulation = 0.00005 * (Math.floor(campNode.camp.population)+1) * GameConstants.gameSpeed;
-					var accSpeedCampfire = (accSpeedPopulation * campfireFactor - accSpeedPopulation) * GameConstants.gameSpeed;
+					var accSpeedPopulation = 0.00005 * (Math.floor(campNode.camp.population)+1) * GameConstants.gameSpeedCamp;
+					var accSpeedCampfire = (accSpeedPopulation * campfireFactor - accSpeedPopulation) * GameConstants.gameSpeedCamp;
 					var accSpeedCamp = accSpeedPopulation + accSpeedCampfire;
 					accSpeed += accSpeedCamp;
 					

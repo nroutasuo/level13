@@ -1695,15 +1695,17 @@ function (Ash, GameConstants, CampConstants) {
             },
                    
             getCooldown: function (action) {
+                var speed = this.isExplorationAction(action) ? GameConstants.gameSpeedExploration : GameConstants.gameSpeedCamp;
                 if (this.cooldowns[action]) {
-                    return this.cooldowns[action] / GameConstants.gameSpeed;
+                    return this.cooldowns[action] / speed;
                 }
                 return 0;
             },
                    
             getDuration: function (action) {
+                var speed = this.isExplorationAction(action) ? GameConstants.gameSpeedExploration : GameConstants.gameSpeedCamp;
                 if (this.durations[action]) {
-                    return this.durations[action] / GameConstants.gameSpeed;
+                    return this.durations[action] / speed;
                 }
                 return 0;
             },
@@ -1735,6 +1737,21 @@ function (Ash, GameConstants, CampConstants) {
                 }
                 return 0;
             },
+            
+            isExplorationAction: function (action) {
+                console.log("is exploration action? " + action);
+                switch (action) {
+                    case "scavenge":
+                    case "use_spring":
+                    case "scout_locale_i":
+                    case "scout_locale_u":
+                    case "clear_workshop":
+                    case "fight_gang":
+                        return true;
+                    default:
+                        return false;
+                }
+            }
 
         };
     

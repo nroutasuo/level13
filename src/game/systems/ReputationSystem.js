@@ -40,8 +40,8 @@ define([
 				
 				for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 					var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
-					accImprovements = 0.001 * (sectorImprovements.getTotal(improvementTypes.camp)) * GameConstants.gameSpeed;
-					accRadio = accImprovements * sectorImprovements.getCount(improvementNames.radio) * 0.5 * GameConstants.gameSpeed;
+					accImprovements = 0.001 * (sectorImprovements.getTotal(improvementTypes.camp)) * GameConstants.gameSpeedCamp;
+					accRadio = accImprovements * sectorImprovements.getCount(improvementNames.radio) * 0.5 * GameConstants.gameSpeedCamp;
 					accSpeed = Math.max(0, accImprovements + accRadio);
 					limit += 100;
 					reputationComponent.addChange("Buildings", accImprovements);

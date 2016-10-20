@@ -49,7 +49,7 @@ define([
 				for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 					improvementsComponent = campNode.entity.get(SectorImprovementsComponent);
 					libraryCount = improvementsComponent.getCount(improvementNames.library);
-					var accLibrary = 0.0005 * libraryCount * libraryUpgradeLevel * GameConstants.gameSpeed;
+					var accLibrary = 0.0005 * libraryCount * libraryUpgradeLevel * GameConstants.gameSpeedCamp;
 					var accSpeedCamp = accLibrary;
 					accSpeed += accSpeedCamp;
 					cap += libraryCount * 100;

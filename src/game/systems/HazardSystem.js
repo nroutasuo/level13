@@ -78,7 +78,7 @@ define([
                             playerPerk.effectTimer = (1 - playerPerk.effect) * 100;
                             this.addTimedPerkLogMessage(perkID);
                         } else {
-                            playerPerk.effectTimer -= time * GameConstants.gameSpeed;
+                            playerPerk.effectTimer -= time * GameConstants.gameSpeedExploration;
                             if (playerPerk.effectTimer < 0) {
                                 perksComponent.removeItemsById(playerPerk.id);
                                 this.addRemovedPerkLogMessage(perkID);

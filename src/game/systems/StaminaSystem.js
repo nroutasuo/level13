@@ -35,7 +35,7 @@ define([
 			staminaComponent.health = Math.max(PlayerStatConstants.HEALTH_MINIMUM, Math.round(200 * healthEffects * injuryEffects) / 2);
 			
 			var healthVal = staminaComponent.health;
-            var staminaPerS = 2 * staminaComponent.health / 100 / 60 * GameConstants.gameSpeed;
+            var staminaPerS = 2 * staminaComponent.health / 100 / 60 * GameConstants.gameSpeedExploration;
             var staminaPerSBase = staminaPerS / staminaComponent.health * 100;
             var staminaPerSHealth = staminaPerS - staminaPerSBase;
 			

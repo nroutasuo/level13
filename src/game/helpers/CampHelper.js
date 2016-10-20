@@ -15,63 +15,65 @@ define([
         
         getMetalProductionPerSecond: function (workers, improvementsComponent) {
 			var metalUpgradeBonus = this.getUpgradeBonus("scavenger");
-			return workers * CampConstants.PRODUCTION_METAL_PER_WORKER_PER_S * metalUpgradeBonus * GameConstants.gameSpeed;
+			return workers * CampConstants.PRODUCTION_METAL_PER_WORKER_PER_S * metalUpgradeBonus * GameConstants.gameSpeedCamp;
         },
         
         getFoodProductionPerSecond: function (workers, improvementsComponent) {
 			var foodUpgradeBonus = this.getUpgradeBonus("trapper");
-			return workers * CampConstants.PRODUCTION_FOOD_PER_WORKER_PER_S * foodUpgradeBonus * GameConstants.gameSpeed;
+			return workers * CampConstants.PRODUCTION_FOOD_PER_WORKER_PER_S * foodUpgradeBonus * GameConstants.gameSpeedCamp;
         },
         
         getWaterProductionPerSecond: function (workers, improvementsComponent) {
 			var waterUpgradeBonus = this.getUpgradeBonus("collector");
 			var waterImprovementBonus = 1 + (improvementsComponent.getCount(improvementNames.aqueduct) / 4);
-            return CampConstants.PRODUCTION_WATER_PER_WORKER_PER_S * workers * waterUpgradeBonus * waterImprovementBonus * GameConstants.gameSpeed;
+            return CampConstants.PRODUCTION_WATER_PER_WORKER_PER_S * workers * waterUpgradeBonus * waterImprovementBonus * GameConstants.gameSpeedCamp;
         },
         
         getRopeProductionPerSecond: function (workers, improvementsComponent) {
 			var ropeUpgradeBonus = this.getUpgradeBonus("weaver");
-			return workers * CampConstants.PRODUCTION_ROPE_PER_WORKER_PER_S * ropeUpgradeBonus * GameConstants.gameSpeed;
+			return workers * CampConstants.PRODUCTION_ROPE_PER_WORKER_PER_S * ropeUpgradeBonus * GameConstants.gameSpeedCamp;
         },
         
         getFuelProductionPerSecond: function (workers, improvementsComponent) {
 			var fuelUpgradeBonus = this.getUpgradeBonus("chemist");
-			return workers * CampConstants.PRODUCTION_FUEL_PER_WORKER_PER_S * fuelUpgradeBonus * GameConstants.gameSpeed;
+			return workers * CampConstants.PRODUCTION_FUEL_PER_WORKER_PER_S * fuelUpgradeBonus * GameConstants.gameSpeedCamp;
         },
         
         getMedicineProductionPerSecond: function (workers, improvementsComponent) {
 			var medicineUpgradeBonus = this.getUpgradeBonus("apothecary");
-			return workers * CampConstants.PRODUCTION_MEDICINE_PER_WORKER_PER_S * medicineUpgradeBonus * GameConstants.gameSpeed;
+			return workers * CampConstants.PRODUCTION_MEDICINE_PER_WORKER_PER_S * medicineUpgradeBonus * GameConstants.gameSpeedCamp;
         },
         
         getToolsProductionPerSecond: function (workers, improvementsComponent) {
 			var toolsUpgradeBonus = this.getUpgradeBonus("smith");
-			return workers * CampConstants.PRODUCTION_TOOLS_PER_WORKER_PER_S * toolsUpgradeBonus * GameConstants.gameSpeed;
+			return workers * CampConstants.PRODUCTION_TOOLS_PER_WORKER_PER_S * toolsUpgradeBonus * GameConstants.gameSpeedCamp;
         },
         
         getConcreteProductionPerSecond: function (workers, improvementComponent) {
 			var concreteUpgradeBonus = this.getUpgradeBonus("concrete");
-			return workers * CampConstants.PRODUCTION_CONCRETE_PER_WORKER_PER_S * concreteUpgradeBonus * GameConstants.gameSpeed;
+			return workers * CampConstants.PRODUCTION_CONCRETE_PER_WORKER_PER_S * concreteUpgradeBonus * GameConstants.gameSpeedCamp;
         },
         
-        getWaterConsumptionPerSecond: function (population) {
-            return CampConstants.CONSUMPTION_WATER_PER_WORKER_PER_S * Math.floor(population) * GameConstants.gameSpeed;
+        getWaterConsumptionPerSecond: function (population, useExplorationSpeed) {
+            var speed = useExplorationSpeed ? GameConstants.gameSpeedExploration : GameConstants.gameSpeedCamp;
+            return CampConstants.CONSUMPTION_WATER_PER_WORKER_PER_S * Math.floor(population) * speed;
         },
         
-        getFoodConsumptionPerSecond: function (population) {
-            return CampConstants.CONSUMPTION_FOOD_PER_WORKER_PER_S * Math.floor(population) * GameConstants.gameSpeed;
+        getFoodConsumptionPerSecond: function (population, useExplorationSpeed) {
+            var speed = useExplorationSpeed ? GameConstants.gameSpeedExploration : GameConstants.gameSpeedCamp;
+            return CampConstants.CONSUMPTION_FOOD_PER_WORKER_PER_S * Math.floor(population) * speed;
         },
         
         getHerbsConsumptionPerSecond: function (workers) {
-            return workers * CampConstants.CONSUMPTION_HERBS_PER_WORKER_PER_S * GameConstants.gameSpeed;
+            return workers * CampConstants.CONSUMPTION_HERBS_PER_WORKER_PER_S * GameConstants.gameSpeedCamp;
         },
         
         getMetalConsumptionPerSecondSmith: function (workers) {
-            return workers * CampConstants.CONSUMPTION_METAL_PER_TOOLSMITH_PER_S * GameConstants.gameSpeed;
+            return workers * CampConstants.CONSUMPTION_METAL_PER_TOOLSMITH_PER_S * GameConstants.gameSpeedCamp;
         },
         
         getMetalConsumptionPerSecondConcrete: function (workers) {
-            return workers * CampConstants.CONSUMPTION_METAL_PER_CONCRETE_PER_S * GameConstants.gameSpeed;
+            return workers * CampConstants.CONSUMPTION_METAL_PER_CONCRETE_PER_S * GameConstants.gameSpeedCamp;
         },
 		
 		getUpgradeBonus: function (worker) {

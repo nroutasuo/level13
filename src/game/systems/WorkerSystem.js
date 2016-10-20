@@ -145,15 +145,16 @@ define([
 		updateWorkerHunger: function (node, time) {
 			var campResources = node.entity.get(ResourcesComponent);
 			var campResourceAcc = node.entity.get(ResourceAccumulationComponent);
-			this.deductHunger(time, campResources.resources, node.camp.getAssignedPopulation(), false);
-			this.deductHunger(time, campResourceAcc.resourceChange, node.camp.getAssignedPopulation(), true, campResourceAcc, "Workers");
+			this.deductHunger(time, campResources.resources, node.camp.getAssignedPopulation(), false, false);
+			this.deductHunger(time, campResourceAcc.resourceChange, node.camp.getAssignedPopulation(), false, true, campResourceAcc, "Workers");
 		},
 		
 		updatePlayer: function (time) {
+            var inCamp = this.playerNodes.head.entity.get(PositionComponent).inCamp;
 			var playerFoodSource = this.resourcesHelper.getCurrentStorage();
 			var playerFoodSourceAcc = this.resourcesHelper.getCurrentStorageAccumulation(true);
-			this.deductHunger(time, playerFoodSource.resources, 1, false);
-			this.deductHunger(time, playerFoodSourceAcc.resourceChange, 1, true, playerFoodSourceAcc, "Player");
+			this.deductHunger(time, playerFoodSource.resources, 1, inCamp, false);
+			this.deductHunger(time, playerFoodSourceAcc.resourceChange, 1, inCamp, true, playerFoodSourceAcc, "Player");
 			
 			// Manage perks
 			var isThirsty = playerFoodSource.resources.water <= 0;
@@ -193,15 +194,15 @@ define([
 			var improvementsComponent = node.entity.get(SectorImprovementsComponent);
 			
 			// Darkfarms
-			var farmFood = improvementsComponent.getCount(improvementNames.darkfarm) * 0.01 * time * GameConstants.gameSpeed;
+			var farmFood = improvementsComponent.getCount(improvementNames.darkfarm) * 0.01 * time * GameConstants.gameSpeedCamp;
 			resources.addResource(resourceNames.food, farmFood);
 			resourceAcc.addChange(resourceNames.food, farmFood / time, "Snail farms");
 		},
 		
-		deductHunger: function (time, resourceVO, population, accumulation, accComponent, sourceName) {
+		deductHunger: function (time, resourceVO, population, isExplorationMode, accumulation, accComponent, sourceName) {
 			var timeMod = accumulation ? 1 : time;
-			var waterChange = timeMod  * this.campHelper.getWaterConsumptionPerSecond(population);
-			var foodChange = timeMod * this.campHelper.getFoodConsumptionPerSecond(population);
+			var waterChange = timeMod  * this.campHelper.getWaterConsumptionPerSecond(population, isExplorationMode);
+			var foodChange = timeMod * this.campHelper.getFoodConsumptionPerSecond(population, isExplorationMode);
 			if (!accumulation) {
 				resourceVO.water -= waterChange;
 				resourceVO.food -= foodChange;

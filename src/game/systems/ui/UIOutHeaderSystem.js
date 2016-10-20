@@ -360,7 +360,7 @@ define([
 		updateGameMsg: function () {
 			if (this.engine) {
 				var gameMsg = "";
-				
+                
 				var saveSystem = this.engine.getSystem(SaveSystem);
 				var timeStamp = new Date().getTime();
 				if (saveSystem.lastSaveTimeStamp > 0 && timeStamp - saveSystem.lastSaveTimeStamp < 3 * 1000)

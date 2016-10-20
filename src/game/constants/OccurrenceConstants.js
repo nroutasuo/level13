@@ -30,7 +30,7 @@ function (Ash, GameConstants) {
 					randomFactor = 1 + (Math.random() * this.OCCURRENCE_CAMP_RAID_RANDOMNESS);
 					break;
 			}
-			return Math.floor(minimumTime * randomFactor * upgradeTimeFactor) * GameConstants.gameSpeed;
+			return Math.floor(minimumTime * randomFactor * upgradeTimeFactor) * GameConstants.gameSpeedCamp;
 		},
 		
 		getDuration: function(occurrenceType) {

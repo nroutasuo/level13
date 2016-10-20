@@ -59,7 +59,7 @@ define([
             
             vision.accSources = [];
             var addAccumulation = function (sourceName, value) {
-                var visionPerSecSource = Math.round(value * accSpeedFactor * 10) / 10 * GameConstants.gameSpeed;
+                var visionPerSecSource = Math.round(value * accSpeedFactor * 10) / 10 * GameConstants.gameSpeedExploration;
                 visionPerSec += visionPerSecSource;
                 vision.accSources.push({ source: sourceName, amount: visionPerSecSource });
             };
@@ -104,7 +104,7 @@ define([
                     maxValue = 30 + maxValueBase;
                     addAccumulation("Glowstick", 30 / maxValueBase);
                 }
-                statusComponent.glowStickSeconds -= time * GameConstants.gameSpeed;
+                statusComponent.glowStickSeconds -= time * GameConstants.gameSpeedExploration;
 			}
 			
 			// Increase

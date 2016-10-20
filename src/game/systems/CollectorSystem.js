@@ -38,7 +38,7 @@ define([
 		},
 		
 		updateCollector: function (time, collector, resource) {
-			collector.storedResources.addResource(resource, time * 0.05 * GameConstants.gameSpeed);
+			collector.storedResources.addResource(resource, time * 0.05 * GameConstants.gameSpeedExploration);
 			
 			var storage = collector.storageCapacity.getResource(resource) * collector.count;
 			if (collector.storedResources.getResource(resource) > storage) {
