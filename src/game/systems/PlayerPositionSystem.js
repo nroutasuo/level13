@@ -48,6 +48,9 @@ define([
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             
             var sys = this;
+            this.playerPositionNodes.nodeAdded.addOnce(function(node) {
+                sys.lastUpdatePosition = null;
+            });
             this.playerLocationNodes.nodeAdded.addOnce(function (node) {
                 sys.handleNewSector(node, node.entity.get(PositionComponent).sectorId());
             });

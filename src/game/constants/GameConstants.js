@@ -3,9 +3,8 @@ define( function () {
         
         gameSpeedCamp: 1,
         gameSpeedExploration: 1,
-        isQuickMode: false,
         isCheatsEnabled: false,
-        isDebugOutputEnabled: false,
+        isDebugOutputEnabled: true,
         
     };
     return GameConstants;

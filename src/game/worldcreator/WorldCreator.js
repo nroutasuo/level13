@@ -28,11 +28,13 @@ define([
     var WorldCreator = {
         
 		world: null,
+        isQuickMode: false,
 		
-		prepareWorld: function (seed, enemyHelper, itemsHelper) {
+		prepareWorld: function (seed, isQuickMode, enemyHelper, itemsHelper) {
 			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
             this.world = new WorldVO(seed, topLevel, bottomLevel);
+            this.isQuickMode = isQuickMode;
 			
 			// base: passages, campable sectors and levels, sunlight
 			this.prepareWorldStructure(seed, topLevel, bottomLevel);
@@ -86,7 +88,11 @@ define([
 					if (l === 14) numPassages = 1;
 					if (l === 13) numPassages = 1;
 					passageDownSectors = WorldCreatorRandom.randomSectors(seed * l * 654 * (i + 2), levelVO, numPassages, numPassages + 1, true, "camp");
-                    if (l === 14) passageDownSectors = [ levelVO.getSector(WorldCreatorConstants.LVL_13_PASSAGE_UP_X, WorldCreatorConstants.LVL_13_PASSAGE_UP_Y) ];
+                    if (l === 14) {
+                        var passageDownSector = levelVO.getSector(WorldCreatorConstants.LVL_13_PASSAGE_UP_X, WorldCreatorConstants.LVL_13_PASSAGE_UP_Y);
+                        if (passageDownSector) passageDownSectors = [ passageDownSector ];
+                        else console.log("WARN: Default passage from lvl 13 to 14 not created.");
+                    }
 					passageDownPositions = [];
 					for (var i = 0; i < passageDownSectors.length; i++) {
 						passageDownPositions.push(passageDownSectors[i].position);
@@ -404,7 +410,7 @@ define([
                 existingPointsToConnect.push(new PositionVO(13, WorldCreatorConstants.FIRST_CAMP_X, WorldCreatorConstants.FIRST_CAMP_Y));
             }
             if (l === 14) {
-                existingPointsToConnect.push(new PositionVO(13, WorldCreatorConstants.LVL_13_PASSAGE_UP_X, WorldCreatorConstants.LVL_13_PASSAGE_UP_Y));                
+                existingPointsToConnect.push(new PositionVO(14, WorldCreatorConstants.LVL_13_PASSAGE_UP_X, WorldCreatorConstants.LVL_13_PASSAGE_UP_Y));                
             }
             this.generateSectorsForExistingPoints(seed, levelVO, existingPointsToConnect);
             
@@ -530,7 +536,7 @@ define([
                     }
                 }
                 return true;
-            }
+            };
             
             var minY = levelVO.minY;
             var maxY = levelVO.maxY;

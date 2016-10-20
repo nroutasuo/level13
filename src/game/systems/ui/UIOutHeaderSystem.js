@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/constants/GameConstants',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/FightConstants',
@@ -22,7 +23,7 @@ define([
     'game/components/sector/SectorFeaturesComponent',
     'game/components/tribe/UpgradesComponent',
 ], function (Ash,
-    UIConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
+    GameConstants, UIConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
     WorldCreatorHelper, SaveSystem,
 	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
     BagComponent,
@@ -360,7 +361,7 @@ define([
 		updateGameMsg: function () {
 			if (this.engine) {
 				var gameMsg = "";
-                
+                if (this.gameState.isQuickMode) gameMsg = "QuickMode";
 				var saveSystem = this.engine.getSystem(SaveSystem);
 				var timeStamp = new Date().getTime();
 				if (saveSystem.lastSaveTimeStamp > 0 && timeStamp - saveSystem.lastSaveTimeStamp < 3 * 1000)

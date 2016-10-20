@@ -1739,7 +1739,6 @@ function (Ash, GameConstants, CampConstants) {
             },
             
             isExplorationAction: function (action) {
-                console.log("is exploration action? " + action);
                 switch (action) {
                     case "scavenge":
                     case "use_spring":

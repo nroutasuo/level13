@@ -96,6 +96,7 @@ define([
 			var posComponent = this.playerPosNodes.head.position;
             
             if (!this.playerLocationNodes.head) {
+                console.log("WARN: No player location");
                 return;
             }
 			

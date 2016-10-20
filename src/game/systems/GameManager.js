@@ -49,13 +49,15 @@ define([
 		},
 		
 		// Called on add to engine
-		setupGame: function () {
+		setupGame: function (isQuickMode) {
             if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t loading and setting up game");
+            GameConstants.gameSpeedCamp = isQuickMode ? 5 : 1;
+            GameConstants.gameSpeedExploration = isQuickMode ? 2 : 1;
 			this.initializeEntities();
 			
-			var loaded = this.loadGameState();
+			var loaded = this.loadGameState(isQuickMode);
 			if (loaded) this.syncLoadedGameState();
-			if (!loaded) this.setupNewGame();
+			if (!loaded) this.setupNewGame(isQuickMode);
 		},
 		
 		// Called after all other systems are ready
@@ -68,11 +70,11 @@ define([
 			this.uiFunctions.showGame();
 		},
 		
-		restartGame: function () {
+		restartGame: function (isQuickMode) {
 			this.uiFunctions.hideGame();
 			this.engine.removeAllEntities();
 			this.gameState.reset();
-			this.setupGame();
+			this.setupGame(isQuickMode);
 			this.startGame();
 		},
 		
@@ -121,13 +123,15 @@ define([
 		
 		// Loads a game if a save can be found, otherwise initializes world seed & levels
 		// Returns a boolean indicating whether a save was found
-		loadGameState: function () {
+		loadGameState: function (isQuickMode) {
             var hasSave = false;
             try {
                 hasSave = localStorage && localStorage.timeStamp && localStorage.entitiesObject && localStorage.gameState;
             } catch (exception) {
                 
             }
+            
+            this.gameState.isQuickMode = isQuickMode ? isQuickMode : false;
 			
 			// Load game state
 			if (hasSave) {
@@ -144,7 +148,7 @@ define([
 			if (hasSave) worldSeed = parseInt(loadedGameState.worldSeed);
 			else worldSeed = WorldCreatorRandom.getNewSeed();
 			
-			WorldCreator.prepareWorld(worldSeed, this.enemyHelper, this.itemsHelper);
+			WorldCreator.prepareWorld(worldSeed, isQuickMode, this.enemyHelper, this.itemsHelper);
 			this.gameState.worldSeed = worldSeed;
 
 			// Create other entities and fill components
