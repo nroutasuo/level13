@@ -34,10 +34,11 @@ define(['ash',
 ) {
     var CheatSystem = Ash.System.extend({
         
-        constructor: function (gameState, playerActionFunctions, resourcesHelper) {
+        constructor: function (gameState, playerActionFunctions, resourcesHelper, uiMapHelper) {
             this.gameState = gameState;
             this.playerActionFunctions = playerActionFunctions;
             this.resourcesHelper = resourcesHelper;
+            this.uiMapHelper = uiMapHelper;
         },
 
         addToEngine: function (engine) {
@@ -47,7 +48,7 @@ define(['ash',
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
         },
 
-        cheat: function (input) {
+        applyCheat: function (input) {
             if (!GameConstants.isCheatsEnabled) return; 
             
             var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
@@ -60,12 +61,23 @@ define(['ash',
                     this.setGameSpeed(spd);
                     break;
 
+                case CheatConstants.CHEAT_NAME_AUTOPLAY:
+                    var param1 = inputParts[1];
+                    var param2 = parseInt(inputParts[2]);
+                    this.setAutoPlay(param1, param2);
+                    break;
+                    
+                case CheatConstants.CHEAT_NAME_TIME:
+                    var mins = parseFloat(inputParts[1]);
+                    this.passTime(mins);
+                    break;
+
                 case CheatConstants.CHEAT_NAME_RES:
                     var amount = 0;
                     if (inputParts.length > 1) {
                         amount = parseInt(inputParts[1]);
                     } else {
-                        amount = this.resourcesHelper.getCurrentStorageCap();
+                        amount = this.resourcesHelper.getCurrentStorageCap() / unlockedResources;
                     }
                     this.setResources(amount);
                     break;
@@ -89,13 +101,6 @@ define(['ash',
                 case CheatConstants.CHEAT_NAME_POS:
                     this.setPlayerPosition(parseInt(inputParts[1]), parseInt(inputParts[2]), parseInt(inputParts[3]));
                     break;
-
-                case CheatConstants.CHEAT_NAME_AUTOPLAY:
-                    var param1 = inputParts[1];
-                    var param2 = parseInt(inputParts[2]);
-                    this.setAutoPlay(param1, param2);
-                    break;
-
                 case CheatConstants.CHEAT_NAME_HEAL:
                     this.heal();
                     break;
@@ -127,6 +132,10 @@ define(['ash',
                     var perkID = inputParts[1];
                     this.addPerk(perkID);
                     break;
+                    
+                case CheatConstants.CHEAT_NAME_REVEAL_MAP:
+                    this.revealMap(inputParts[1]);
+                    break;
 
                 case "printSector":
                     console.log(currentSector.get(SectorFeaturesComponent));
@@ -156,6 +165,10 @@ define(['ash',
         setGameSpeed: function (speed) {            
             GameConstants.gameSpeedCamp = speed;
             GameConstants.gameSpeedExploration = speed;
+        },
+        
+        passTime: function (mins) {
+            
         },
         
         setAutoPlay: function (type, numCampsTarget) {
@@ -279,6 +292,10 @@ define(['ash',
             var injuryi = Math.round(Math.random() * PerkConstants.perkDefinitions.injury.length);
             var defaultInjury = PerkConstants.perkDefinitions.injury[injuryi];
             perksComponent.addPerk(defaultInjury.clone());
+        },
+        
+        revealMap: function (value) {            
+            this.uiMapHelper.isMapRevealed = value ? true : false;
         }
     
     });

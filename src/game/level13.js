@@ -192,7 +192,7 @@ define([
 			this.gameManager = new GameManager(this.tickProvider, this.gameState, creator, this.uiFunctions, this.playerActionFunctions, this.saveHelper, this.enemyHelper, this.itemsHelper);
 			this.engine.addSystem(this.gameManager, SystemPriorities.preUpdate);
             
-            this.cheatSystem = new CheatSystem(this.gameState, this.playerActionFunctions, this.resourcesHelper);
+            this.cheatSystem = new CheatSystem(this.gameState, this.playerActionFunctions, this.resourcesHelper, this.uiMapHelper);
             this.engine.addSystem(this.cheatSystem, SystemPriorities.update);
 			
 			if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t initializing systems");

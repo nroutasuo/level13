@@ -1,10 +1,9 @@
 define([
     'ash',
     'game/constants/GameConstants',
-    'game/constants/UIConstants',
     'game/nodes/PlayerPositionNode'
-], function (Ash, GameConstants, UIConstants, PlayerPositionNode) {
-    var UIOutBagSystem = Ash.System.extend({
+], function (Ash, GameConstants, PlayerPositionNode) {
+    var UIOutMapSystem = Ash.System.extend({
 
 		uiFunctions: null,
 		gameState: null,
@@ -53,7 +52,6 @@ define([
 
 		updateMap: function () {
             var mapPosition = this.playerPosNodes.head.position.getPosition();
-            this.uiMapHelper.isMapRevealed = false; 
             this.uiMapHelper.rebuildMap("mainmap", "mainmap-fallback", mapPosition, -1, false);
         },
 
@@ -80,5 +78,5 @@ define([
     
 	});
 
-    return UIOutBagSystem;
+    return UIOutMapSystem;
 });
