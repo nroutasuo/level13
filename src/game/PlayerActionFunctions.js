@@ -1164,10 +1164,6 @@ define(['ash',
 						if (!this.playerStatsNodes.head.entity.has(AutoPlayComponent)) this.playerStatsNodes.head.entity.add(new AutoPlayComponent(false));
 					}
 					break;
-                    
-                case "quickmode":                    
-                    this.engine.getSystem(SaveSystem).restart(true);
-                    break;
                 
                 case "heal":
                     this.useHospital(true);

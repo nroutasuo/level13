@@ -28,13 +28,11 @@ define([
     var WorldCreator = {
         
 		world: null,
-        isQuickMode: false,
 		
-		prepareWorld: function (seed, isQuickMode, enemyHelper, itemsHelper) {
+		prepareWorld: function (seed, enemyHelper, itemsHelper) {
 			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
             this.world = new WorldVO(seed, topLevel, bottomLevel);
-            this.isQuickMode = isQuickMode;
 			
 			// base: passages, campable sectors and levels, sunlight
 			this.prepareWorldStructure(seed, topLevel, bottomLevel);

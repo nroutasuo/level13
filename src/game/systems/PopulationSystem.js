@@ -44,12 +44,12 @@ define([
 			var campPosition = node.entity.get(PositionComponent);
 			var level = campPosition.level;
 			
-			var changePerSec = reputation / (camp.population * camp.population * camp.population * camp.population * camp.population + 1) / 25 * GameConstants.gameSpeedCamp;
-			var change = time * changePerSec;
+			var changePerSec = (reputation / (camp.population * camp.population * camp.population * camp.population * camp.population + 1) / 25);
+			var change = time * changePerSec * GameConstants.gameSpeedCamp;
             camp.populationChangePerSec = changePerSec;
 			
 			var timeStamp = new Date().getTime();
-            var cooldownMillis = CampConstants.POPULATION_COOLDOWN_SECONDS * 1000 * GameConstants.gameSpeedCamp;
+            var cooldownMillis = CampConstants.POPULATION_COOLDOWN_SECONDS * 1000 / GameConstants.gameSpeedCamp;
 			var lastIncreaseTimeStamp = this.lastPopulationIncreaseTimestamps[level] ? this.lastPopulationIncreaseTimestamps[level] : 0;
             camp.populationCooldownSec = Math.max(0, (cooldownMillis - (timeStamp - lastIncreaseTimeStamp)) / 1000);
 			

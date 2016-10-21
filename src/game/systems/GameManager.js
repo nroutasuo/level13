@@ -49,15 +49,14 @@ define([
 		},
 		
 		// Called on add to engine
-		setupGame: function (isQuickMode) {
+		setupGame: function () {
             if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t loading and setting up game");
-            GameConstants.gameSpeedCamp = isQuickMode ? 5 : 1;
-            GameConstants.gameSpeedExploration = isQuickMode ? 2 : 1;
-			this.initializeEntities();
-			
-			var loaded = this.loadGameState(isQuickMode);
+			this.initializeEntities();			
+			var loaded = this.loadGameState();
+            GameConstants.gameSpeedCamp = 1;
+            GameConstants.gameSpeedExploration = 1;
 			if (loaded) this.syncLoadedGameState();
-			if (!loaded) this.setupNewGame(isQuickMode);
+			if (!loaded) this.setupNewGame();
 		},
 		
 		// Called after all other systems are ready
@@ -70,11 +69,11 @@ define([
 			this.uiFunctions.showGame();
 		},
 		
-		restartGame: function (isQuickMode) {
+		restartGame: function () {
 			this.uiFunctions.hideGame();
 			this.engine.removeAllEntities();
 			this.gameState.reset();
-			this.setupGame(isQuickMode);
+			this.setupGame();
 			this.startGame();
 		},
 		
@@ -123,15 +122,13 @@ define([
 		
 		// Loads a game if a save can be found, otherwise initializes world seed & levels
 		// Returns a boolean indicating whether a save was found
-		loadGameState: function (isQuickMode) {
+		loadGameState: function () {
             var hasSave = false;
             try {
                 hasSave = localStorage && localStorage.timeStamp && localStorage.entitiesObject && localStorage.gameState;
             } catch (exception) {
-                
+                // TODO show no save found to user?
             }
-            
-            this.gameState.isQuickMode = isQuickMode ? isQuickMode : false;
 			
 			// Load game state
 			if (hasSave) {
@@ -148,7 +145,7 @@ define([
 			if (hasSave) worldSeed = parseInt(loadedGameState.worldSeed);
 			else worldSeed = WorldCreatorRandom.getNewSeed();
 			
-			WorldCreator.prepareWorld(worldSeed, isQuickMode, this.enemyHelper, this.itemsHelper);
+			WorldCreator.prepareWorld(worldSeed, this.enemyHelper, this.itemsHelper);
 			this.gameState.worldSeed = worldSeed;
 
 			// Create other entities and fill components

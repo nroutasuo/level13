@@ -89,12 +89,12 @@ define([
 			return entityObject;
 		},
 		
-		restart: function (isQuickMode) {
+		restart: function () {
 			if(typeof(Storage) !== "undefined") {
 				localStorage.removeItem("entitiesObject");
 				localStorage.removeItem("gameState");
 				localStorage.removeItem("timeStamp");
-				this.engine.getSystem(GameManager).restartGame(isQuickMode);
+				this.engine.getSystem(GameManager).restartGame();
 				console.log("Restarted.");
 			} else {
 			// Sorry! No Web Storage support..

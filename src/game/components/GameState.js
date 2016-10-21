@@ -57,7 +57,6 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
             
             this.actionCooldownEndTimestamps = {};
             this.actionDurationEndTimestamps = {};
-            this.isQuickMode = false;
         },
         
         getLevelOrdinal: function (level) {

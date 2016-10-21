@@ -14,7 +14,6 @@ define([
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/tribe/TribeUpgradesNode',
     'game/nodes/NearestCampNode',
-    'game/components/common/ResourcesComponent',
     'game/components/common/LogMessagesComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorStatusComponent',
@@ -39,7 +38,6 @@ define([
     PlayerResourcesNode,
     TribeUpgradesNode,
     NearestCampNode,
-    ResourcesComponent,
     LogMessagesComponent,
     SectorFeaturesComponent,
     SectorStatusComponent,
@@ -151,7 +149,6 @@ define([
             var efficiency = this.getScavengeEfficiency();
             var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
 
-            rewards.gainedEvidence = 1;
             rewards.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability("scout", playerVision));
             if (rewards.gainedInjuries.length === 0) {
                 rewards.gainedResources = this.getRewardResources(0.5, efficiency * 2, sectorResources);
@@ -611,10 +608,11 @@ define([
 
 		getNecessityItem: function (currentItems, levelOrdinal) {
 			var visitedSectors = this.gameState.numVisitedSectors;
+            var numSectorsRequiredForMap = 4;
 			if (currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) <= 0) {
 				return ItemConstants.getBag(levelOrdinal);
 			}
-			if (visitedSectors > 4 && currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) <= 0) {
+			if (visitedSectors > numSectorsRequiredForMap && currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) <= 0) {
 				return ItemConstants.itemDefinitions.uniqueEquipment[0].clone();
 			}
 			return null;
@@ -624,7 +622,7 @@ define([
             var lostItems = [];
             var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAll(false);
 
-            // TODO choose mroe random item to lose when losing just one item
+            // TODO choose more random item to lose when losing just one item
             var isSingle = action === "despair" ? false : true;
             var loseFollowerProbability = action === "despair" ? 1 : 0;
             

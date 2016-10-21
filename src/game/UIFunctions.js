@@ -169,7 +169,7 @@ function (Ash, UIConstants, ItemConstants, PlayerActionConstants, PositionConsta
                     function () {
                         $("#log ul").empty();
                         onTabClicked(elementIDs.tabs.out, elementIDs, gameState, playerActions);
-                        saveSystem.restart();
+                        saveSystem.restart(false);
                     });
             });
             $("#btn-more").click(function (e) {
@@ -436,7 +436,6 @@ function (Ash, UIConstants, ItemConstants, PlayerActionConstants, PositionConsta
             var button = $("button[action='" + action + "']");
             var baseId = this.playerActions.playerActionsHelper.getBaseActionID(action);
             var cooldown = PlayerActionConstants.getCooldown(baseId);
-            console.log("cooldown: " + cooldown);
             if (cooldown > 0) {
                 var locationKey = this.getLocationKey($(button));
                 this.gameState.setActionCooldown(action, locationKey, cooldown);

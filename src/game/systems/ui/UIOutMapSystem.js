@@ -53,6 +53,7 @@ define([
 
 		updateMap: function () {
             var mapPosition = this.playerPosNodes.head.position.getPosition();
+            this.uiMapHelper.isMapRevealed = false; 
             this.uiMapHelper.rebuildMap("mainmap", "mainmap-fallback", mapPosition, -1, false);
         },
 

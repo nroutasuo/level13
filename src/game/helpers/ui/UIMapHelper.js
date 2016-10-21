@@ -29,11 +29,14 @@ function (Ash,
         
         SCROLL_INDICATOR_SIZE: 5,
         
+        isMapRevealed: false,
+        
         constructor: function (engine, levelHelper, sectorHelper, movementHelper) {
             this.levelHelper = levelHelper;
             this.sectorHelper = sectorHelper;
             this.movementHelper = movementHelper;
 			this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
+            this.isMapRevealed = false;
             
             this.icons["camp"] = new Image();
             this.icons["camp"].src = "img/map-camp.png";
@@ -339,20 +342,22 @@ function (Ash,
             var iconPosX = sectorXpx + (sectorSize - iconSize) / 2;
             var iconPosY = sectorSize > iconSize ? sectorYpx + 1 : sectorYpx;
             
-            if (!isScouted)
-                ctx.drawImage(this.icons["unknown" + (isLocationSunlit ? "-sunlit" : "")], iconPosX, iconPosY);
+            var useSunlitImage = isLocationSunlit || (!isScouted && this.isMapRevealed);
+            
+            if (!isScouted && !this.isMapRevealed)
+                ctx.drawImage(this.icons["unknown" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (unScoutedLocales > 0)
-                ctx.drawImage(this.icons["interest" + (isLocationSunlit ? "-sunlit" : "")], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["interest" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sector.has(WorkshopComponent))
-                ctx.drawImage(this.icons["workshop" + (isLocationSunlit ? "-sunlit" : "")], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["workshop" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sector.has(CampComponent))
-                ctx.drawImage(this.icons["camp" + (isLocationSunlit ? "-sunlit" : "")], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["camp" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sectorPassages.passageUp)
-                ctx.drawImage(this.icons["passage-up" + (isLocationSunlit ? "-sunlit" : "")], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["passage-up" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sectorPassages.passageDown)
-                ctx.drawImage(this.icons["passage-down" + (isLocationSunlit ? "-sunlit" : "")], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["passage-down" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (hasWater)
-                ctx.drawImage(this.icons["water" + (isLocationSunlit ? "-sunlit" : "")], iconPosX, iconPosY);
+                ctx.drawImage(this.icons["water" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
         },
         
         drawMovementLinesOnCanvas: function (ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize) {
@@ -415,7 +420,7 @@ function (Ash,
         },
         
         showSectorOnMap: function (centered, sector, sectorStatus) {
-            return sector && sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
+            return this.isMapRevealed ? sector : sector  && sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
         },
         
         getCanvasMinimumWidth: function (canvas) {
@@ -506,6 +511,7 @@ function (Ash,
         getSectorFill: function (sectorStatus) {
             var sunlit = $("body").hasClass("sunlit");
             switch (sectorStatus) {
+                case SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE:
                 case SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE:
                     return sunlit ? "#d0d0d0" : "#3a3a3a";
                 

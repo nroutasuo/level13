@@ -150,11 +150,11 @@ define([
 		},
 		
 		updatePlayer: function (time) {
-            var inCamp = this.playerNodes.head.entity.get(PositionComponent).inCamp;
+            var inCamp = this.playerNodes.head.position.inCamp;
 			var playerFoodSource = this.resourcesHelper.getCurrentStorage();
 			var playerFoodSourceAcc = this.resourcesHelper.getCurrentStorageAccumulation(true);
-			this.deductHunger(time, playerFoodSource.resources, 1, inCamp, false);
-			this.deductHunger(time, playerFoodSourceAcc.resourceChange, 1, inCamp, true, playerFoodSourceAcc, "Player");
+			this.deductHunger(time, playerFoodSource.resources, 1, !inCamp, false);
+			this.deductHunger(time, playerFoodSourceAcc.resourceChange, 1, !inCamp, true, playerFoodSourceAcc, "Player");
 			
 			// Manage perks
 			var isThirsty = playerFoodSource.resources.water <= 0;

@@ -126,6 +126,7 @@ define([
 					LogMessagesComponent,
 					PlayerActionComponent
 				]));
+                
 			this.engine.addEntity(player);
 			return player;
         },
