@@ -70,6 +70,8 @@ define(['ash'], function (Ash) {
                 case resourceNames.tools: this.tools += amount; break;
                 case resourceNames.medicine: this.medicine += amount; break;
                 case resourceNames.concrete: this.concrete += amount; break;
+                default:
+                    console.log("WARN: Unknown resource name: " + res);
             }
         },
 		
@@ -91,6 +93,8 @@ define(['ash'], function (Ash) {
                 case resourceNames.tools: this.tools = amount; break;
                 case resourceNames.medicine: this.medicine = amount; break;
                 case resourceNames.concrete: this.concrete = amount; break;
+                default:
+                    console.log("WARN: Unknown resource name: " + res);
             }
         },
 	
@@ -107,6 +111,9 @@ define(['ash'], function (Ash) {
                 case resourceNames.medicine: return this.medicine;
                 case resourceNames.tools: return this.tools;
                 case resourceNames.concrete: return this.concrete;
+                
+                default:
+                    console.log("WARN: Unknown resource name: " + res);
             }	    
 			return 0;
 		},

@@ -73,13 +73,14 @@ define(['ash',
                     break;
 
                 case CheatConstants.CHEAT_NAME_RES:
+                    var name = inputParts[1];
                     var amount = 0;
-                    if (inputParts.length > 1) {
-                        amount = parseInt(inputParts[1]);
+                    if (inputParts.length > 2) {
+                        amount = parseInt(inputParts[2]);
                     } else {
                         amount = this.resourcesHelper.getCurrentStorageCap() / unlockedResources;
                     }
-                    this.setResources(amount);
+                    this.setResource(name, amount);
                     break;
 
                 case CheatConstants.CHEAT_NAME_SUPPLIES:
@@ -209,12 +210,13 @@ define(['ash',
             }
         },
         
-        setResources: function (amount) {
-            var playerResources = this.resourcesHelper.getCurrentStorage().resources;
-            for (var key in resourceNames) {
-                var name = resourceNames[key];
-                if (this.gameState.unlockedFeatures.resources[name])
-                    playerResources.setResource(name, amount);
+        setResource: function (name, amount) {
+            if (resourceNames[name]) {
+                var playerResources = this.resourcesHelper.getCurrentStorage().resources;
+                playerResources.setResource(name, amount);
+            } else {
+                console.log(name + " is not a valid resource. Possible names are:");
+                console.log(Object.keys(resourceNames));
             }
         },
         
