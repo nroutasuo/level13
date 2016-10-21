@@ -17,18 +17,20 @@ define([
         },
 
         addToEngine: function (engine) {
+            this.engine = engine;
 			this.campNodes = engine.getNodeList(CampNode);
         },
 
         removeFromEngine: function (engine) {
 			this.campNodes = null;
+            this.engine = null;
         },
 
         update: function (time) {
 			var numCamps = 0;
 			var numTradePostCamps = 0;
             
-            this.gameState.gamePlayedSeconds += time;
+            this.gameState.gamePlayedSeconds += time + this.engine.extraUpdateTime;
 			
 			// Global improvements
 			for (var node = this.campNodes.head; node; node = node.next) {

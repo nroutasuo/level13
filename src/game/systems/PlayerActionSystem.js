@@ -16,17 +16,19 @@ define([
         },
 
         addToEngine: function (engine) {
+            this.engine = engine;
             this.playerActionNodes = engine.getNodeList(PlayerActionNode);
         },
 
         removeFromEngine: function (engine) {
             this.playerActionNodes = null;
+            this.engine = null;
         },
 
         update: function (time) {
             if (this.gameState.isPaused) return;
             for (var node = this.playerActionNodes.head; node; node = node.next) {
-                this.updateNode(node, time);
+                this.updateNode(node, time + this.engine.extraUpdateTime);
             }
         },
 

@@ -17,6 +17,7 @@ define([
         },
 
         addToEngine: function (engine) {
+            this.engine = engine;
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.campNodes = engine.getNodeList(CampNode);
         },
@@ -24,6 +25,7 @@ define([
         removeFromEngine: function (engine) {
             this.playerStatsNodes = null;
             this.campNodes = null;
+            this.engine = null;
         },
 
         update: function (time) {
@@ -50,7 +52,7 @@ define([
 				}
 				
 				reputationComponent.limit = limit;
-				reputationComponent.value += time * accSpeed;
+				reputationComponent.value += (time + this.engine.extraUpdateTime) * accSpeed;
 				reputationComponent.value = Math.min(limit, reputationComponent.value);
 				reputationComponent.isAccumulating = true;
 			}

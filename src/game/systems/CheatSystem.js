@@ -43,6 +43,7 @@ define(['ash',
 
         addToEngine: function (engine) {
             this.engine = engine;
+            this.engine.extraUpdateTime = 0;
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
@@ -169,7 +170,12 @@ define(['ash',
         },
         
         passTime: function (mins) {
-            
+            this.engine.updateComplete.addOnce(function () {
+                this.engine.extraUpdateTime = mins * 60;
+                this.engine.updateComplete.addOnce(function () {
+                    this.engine.extraUpdateTime = 0;
+                }, this);
+            }, this);
         },
         
         setAutoPlay: function (type, numCampsTarget) {

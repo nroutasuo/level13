@@ -11,6 +11,7 @@ define([
         },
 
         addToEngine: function (engine) {
+            this.engine = engine;
 			this.improvementNodes = engine.getNodeList(SectorImprovementsNode);
         },
 
@@ -21,7 +22,7 @@ define([
         update: function (time) {
             if (this.gameState.isPaused) return;
 			for (var node = this.improvementNodes.head; node; node = node.next) {
-				this.updateNode(time, node);
+				this.updateNode(time + this.engine.extraUpdateTime, node);
 			}
         },
 	

@@ -21,6 +21,7 @@ define([
         },
 
         addToEngine: function (engine) {
+            this.engine = engine;
             this.campNodes = engine.getNodeList(CampNode);
             this.playerNodes = engine.getNodeList(PlayerStatsNode);
         },
@@ -28,12 +29,13 @@ define([
         removeFromEngine: function (engine) {
             this.campNodes = null;
             this.playerNodes = null;
+            this.engine = null;
         },
 
         update: function (time) {
             if (this.gameState.isPaused) return;
             for (var node = this.campNodes.head; node; node = node.next) {
-                this.updateNode(node, time);
+                this.updateNode(node, time + this.engine.extraUpdateTime);
             }
         },
 

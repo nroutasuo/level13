@@ -11,17 +11,19 @@ define([
         },
 
         addToEngine: function (engine) {
+            this.engine = engine;
             this.nodeList = engine.getNodeList(StaminaNode);
         },
 
         removeFromEngine: function (engine) {
             this.nodeList = null;
+            this.engine = null;
         },
 
         update: function (time) {
             if (this.gameState.isPaused) return;
             for (var node = this.nodeList.head; node; node = node.next) {
-                this.updateNode(node, time);
+                this.updateNode(node, time + this.engine.extraUpdateTime);
             }
         },
 

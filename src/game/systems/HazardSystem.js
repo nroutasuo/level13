@@ -25,6 +25,7 @@ define([
         },
         
         addToEngine: function (engine) {
+            this.engine = engine;
             this.playerNodes = engine.getNodeList(PlayerPositionNode);
             this.locationNodes = engine.getNodeList(PlayerLocationNode);
         },
@@ -32,12 +33,13 @@ define([
         removeFromEngine: function (engine) {
             this.playerNodes = null;
             this.locationNodes = null;
+            this.engine = null;
         },
         
         update: function (time) {
             if (!this.locationNodes.head) return;
             this.addPerks();
-            this.updatePerks(time);
+            this.updatePerks(time + this.engine.extraUpdateTime);
         },
         
         addPerks: function () {            

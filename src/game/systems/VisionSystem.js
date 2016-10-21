@@ -22,6 +22,7 @@ define([
         },
 
         addToEngine: function (engine) {
+            this.engine = engine;
             this.visionNodes = engine.getNodeList(VisionNode);
             this.locationNodes = engine.getNodeList(PlayerLocationNode);
         },
@@ -29,11 +30,12 @@ define([
         removeFromEngine: function (engine) {
             this.visionNodes = null;
             this.locationNodes = null;
+            this.engine = null;
         },
 
         update: function (time) {
             for (var node = this.visionNodes.head; node; node = node.next) {
-                this.updateNode(node, time);
+                this.updateNode(node, time + this.engine.extraUpdateTime);
             }
         },
 

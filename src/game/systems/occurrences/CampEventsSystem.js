@@ -60,6 +60,8 @@ define([
         update: function (time) {
             if (this.gameState.isPaused) return;
             
+            // TODO take this.engine.extraUpdateTime into account
+            
             for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 				var campTimers = campNode.entity.get(CampEventTimersComponent);
                 for(var key in OccurrenceConstants.campOccurrenceTypes) {

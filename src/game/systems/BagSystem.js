@@ -19,6 +19,7 @@ define([
         },
 
         addToEngine: function (engine) {
+            this.engine = engine;
 			this.playerNodes = engine.getNodeList(PlayerResourcesNode);
         },
 

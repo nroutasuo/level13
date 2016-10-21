@@ -21,6 +21,7 @@ define([
         },
 
         addToEngine: function (engine) {
+            this.engine = engine;
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.campNodes = engine.getNodeList(CampNode);
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
@@ -30,6 +31,7 @@ define([
             this.playerStatsNodes = null;
             this.campNodes = null;
             this.tribeUpgradesNodes = null;
+            this.engine = null;
         },
 
         update: function (time) {
@@ -58,7 +60,7 @@ define([
 					evidenceComponent.accumulation += accSpeed;
 				}
 				
-				evidenceComponent.value += time * accSpeed;
+				evidenceComponent.value += (time + this.engine.extraUpdateTime) * accSpeed;
 				evidenceComponent.isAccumulating = true;
 			}
 			
