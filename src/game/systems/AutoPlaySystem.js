@@ -30,6 +30,7 @@ define(['ash',
 	var AutoPlaySystem = Ash.System.extend({
 		
 		playerActionFunctions: null,
+		cheatFunctions: null,
 		levelHelper: null,
         sectorHelper: null,
         upgradesHelper: null,
@@ -41,8 +42,9 @@ define(['ash',
         
         latestCampLevel: 0,
 	    
-		constructor: function (playerActionFunctions, levelHelper, sectorHelper, upgradesHelper) {
+		constructor: function (playerActionFunctions, cheatFunctions, levelHelper, sectorHelper, upgradesHelper) {
 			this.playerActionFunctions = playerActionFunctions;
+            this.cheatFunctions = cheatFunctions;
 			this.levelHelper = levelHelper;
             this.sectorHelper = sectorHelper;
             this.upgradesHelper = upgradesHelper;
@@ -72,13 +74,13 @@ define(['ash',
             node.autoPlay.isExploring = false;
             node.autoPlay.isManagingCamps = true;
 			this.latestCampLevel = this.playerActionFunctions.nearestCampNodes.head ? this.playerActionFunctions.nearestCampNodes.head.entity.get(PositionComponent).level : -100;
-            if (node.autoPlay.express) this.playerActionFunctions.cheat("speed 25");
+            if (node.autoPlay.express) this.cheatFunctions.cheat("speed 25");
         },
         
         onAutoPlayNodeRemoved: function (node) {
             node.autoPlay.isExploring = false;
             node.autoPlay.isManagingCamps = false;
-            if (node.autoPlay.express) this.playerActionFunctions.cheat("speed 1");
+            if (node.autoPlay.express) this.cheatFunctions.cheat("speed 1");
         },
 
         update: function (time) {
@@ -120,7 +122,7 @@ define(['ash',
 		resetTurn: function (isExpress, isFight) {
             if (!isFight) this.playerActionFunctions.uiFunctions.popupManager.closeAllPopups();
             if (isExpress) {
-                this.playerActionFunctions.cheat("stamina");
+                this.playerActionFunctions.cheatFunctions("stamina");
             }
 		},
         
@@ -399,7 +401,7 @@ define(['ash',
                 // cheat population
                 var maxPopulation = improvementsComponent.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
                 maxPopulation += improvementsComponent.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
-                if (isExpress && campComponent.population < maxPopulation) this.playerActionFunctions.cheat("pop");
+                if (isExpress && campComponent.population < maxPopulation) this.playerActionFunctions.cheatFunctions("pop");
                 
                 // assign workers
                 if (campComponent.getFreePopulation() > 0 || this.refreshWorkers) {

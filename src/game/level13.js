@@ -19,6 +19,7 @@ define([
     'game/systems/ui/UIOutFightSystem',
     'game/systems/ui/UIOutLogSystem',
     'game/systems/ui/UIOutPopupInventorySystem',
+    'game/systems/CheatSystem',
     'game/systems/VisionSystem',
     'game/systems/StaminaSystem',
     'game/systems/PlayerPositionSystem',
@@ -79,6 +80,7 @@ define([
     UIOutFightSystem,
     UIOutLogSystem,
     UIOutPopupInventorySystem,
+    CheatSystem,
     VisionSystem,
     StaminaSystem,
     PlayerPositionSystem,
@@ -128,6 +130,7 @@ define([
 		uiFunctions: null,
 		occurrenceFunctions: null,
 		playerActionFunctions: null,
+        cheatSystem: null,
 		
 		gameManager: null,
 		saveSystem: null,
@@ -188,6 +191,9 @@ define([
 		addSystems: function (creator) {
 			this.gameManager = new GameManager(this.tickProvider, this.gameState, creator, this.uiFunctions, this.playerActionFunctions, this.saveHelper, this.enemyHelper, this.itemsHelper);
 			this.engine.addSystem(this.gameManager, SystemPriorities.preUpdate);
+            
+            this.cheatSystem = new CheatSystem(this.gameState, this.playerActionFunctions, this.resourcesHelper);
+            this.engine.addSystem(this.cheatSystem, SystemPriorities.update);
 			
 			if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t initializing systems");
 			
@@ -215,7 +221,7 @@ define([
 			this.engine.addSystem(new UnlockedFeaturesSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new GlobalResourcesSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new CampEventsSystem(this.occurrenceFunctions, this.upgradeEffectsHelper, this.gameState, this.saveSystem), SystemPriorities.update);
-			this.engine.addSystem(new AutoPlaySystem(this.playerActionFunctions, this.levelHelper, this.sectorHelper, this.upgradeEffectsHelper), SystemPriorities.postUpdate);
+			this.engine.addSystem(new AutoPlaySystem(this.playerActionFunctions, this.cheatSystem, this.levelHelper, this.sectorHelper, this.upgradeEffectsHelper), SystemPriorities.postUpdate);
 			
 			this.engine.addSystem(new UIOutHeaderSystem(this.uiFunctions, this.gameState, this.resourcesHelper, this.upgradeEffectsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutElementsSystem(this.uiFunctions, this.gameState, this.playerActionFunctions, this.resourcesHelper, this.levelHelper, this.calloutsGeneratedSignal), SystemPriorities.render);
@@ -240,7 +246,7 @@ define([
 		},
 		
 		cheat: function (input) {
-			this.playerActionFunctions.cheat(input);
+			this.cheatSystem.applyCheat(input);
 		}
 	
     });

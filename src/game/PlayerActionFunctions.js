@@ -1,6 +1,5 @@
 // Functions to respond to player actions parsed by the UIFunctions
 define(['ash',
-	'game/constants/GameConstants',
 	'game/constants/LogConstants',
 	'game/constants/PositionConstants',
 	'game/constants/MovementConstants',
@@ -29,12 +28,10 @@ define(['ash',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PerksComponent',
 	'game/components/player/DeityComponent',
-	'game/components/player/AutoPlayComponent',
 	'game/components/player/PlayerActionComponent',
 	'game/components/player/PlayerActionResultComponent',
     'game/components/common/CampComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
-	'game/components/sector/EnemiesComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/SectorStatusComponent',
@@ -48,20 +45,18 @@ define(['ash',
 	'game/systems/FaintingSystem',
 	'game/systems/PlayerPositionSystem',
 	'game/systems/SaveSystem',
-	'game/worldcreator/WorldCreator',
-	'game/worldcreator/WorldCreatorDebug'
 ], function (Ash,
-	GameConstants, LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UpgradeConstants, UIConstants, TextConstants,
+	LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UpgradeConstants, UIConstants, TextConstants,
 	PositionVO,
     PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
-	BagComponent, ItemsComponent, PerksComponent, DeityComponent, AutoPlayComponent, PlayerActionComponent, PlayerActionResultComponent,
-	CampComponent, SectorImprovementsComponent, EnemiesComponent,
+	BagComponent, ItemsComponent, PerksComponent, DeityComponent, PlayerActionComponent, PlayerActionResultComponent,
+	CampComponent, SectorImprovementsComponent,
 	SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, CampEventTimersComponent,
 	LogMessagesComponent,
-	UIOutHeaderSystem, UIOutElementsSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem, SaveSystem, WorldCreator, WorldCreatorDebug
+	UIOutHeaderSystem, UIOutElementsSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem, SaveSystem
 ) {
     
     var PlayerActionFunctions = Ash.System.extend({
@@ -1044,211 +1039,6 @@ define(['ash',
             saveSystem.save();
         },
         
-        cheat: function (input) {
-			var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
-            var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-            var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
-            var playerResources = this.resourcesHelper.getCurrentStorage().resources;
-            var playerPos = this.playerPositionNodes.head.position;
-            var campCount = this.gameState.numCamps;
-			
-            var inputParts = input.split(" ");
-            var name = inputParts[0];
-            switch (name) {
-				case "speed":
-                    var spd = parseFloat(inputParts[1]);
-					GameConstants.gameSpeedCamp = spd;
-                    GameConstants.gameSpeedExploration = spd;
-					break;
-				
-				case "res":
-                    var amount = 0;
-                    if (inputParts.length > 1) {
-                        amount = parseInt(inputParts[1]);
-                    } else {
-                        amount = this.resourcesHelper.getCurrentStorageCap();
-                    }
-                    for(var key in resourceNames) {
-                        var name = resourceNames[key];
-                        if(this.gameState.unlockedFeatures.resources[name])
-                            playerResources.setResource(name, amount);
-                    }
-                    this.forceResourceBarUpdate();
-					break;
-                    
-                case "supplies":
-                    playerResources.setResource("food", 15);
-                    playerResources.setResource("water", 15);
-                    break;
-                
-                case "stat":
-                    this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
-                    this.playerStatsNodes.head.vision.value = 75;
-                    this.playerStatsNodes.head.rumours.value = Math.max(this.playerStatsNodes.head.rumours.value, 0);
-                    this.playerStatsNodes.head.rumours.value++;
-                    this.playerStatsNodes.head.rumours.value *= 2;
-                    this.playerStatsNodes.head.evidence.value++;
-                    this.playerStatsNodes.head.evidence.value *= 2;
-                    break;
-                
-                case "deity":
-                    var name = inputParts[1];
-                    this.playerStatsNodes.head.entity.add(new DeityComponent(name));
-                    break;
-                
-                case "favour":
-                    if (this.playerStatsNodes.head.entity.get(DeityComponent)) {
-                        this.gameState.unlockedFeatures.favour = true;
-                        this.playerStatsNodes.head.entity.get(DeityComponent).favour++;
-                        this.playerStatsNodes.head.entity.get(DeityComponent).favour *= 2;
-                    } else {
-                        console.log("WARN: No deity.");
-                    }
-                    break;
-                
-                case "vision":                    
-                    this.playerStatsNodes.head.vision.value = parseInt(inputParts[1]);
-                    break;
-                
-                case "stamina":                    
-                    this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
-                    break;
-                
-				case "pop":
-                    var camp = currentSector.get(CampComponent);
-                    if (camp) {
-                        if (inputParts.length > 1) {
-                            var pop = parseInt(inputParts[1]);
-                            camp.setPopulation(pop);
-                        } else {
-                            camp.addPopulation(1);
-                        }
-                    } else {
-                        console.log("WARN: Camp not found.");
-                    }
-					break;
-                
-                case "pos":
-                    if (inputParts.length === 1) {
-                        console.log(playerPos);
-                    } else {
-                        playerPos.level = parseInt(inputParts[1]);
-                        playerPos.sectorX = parseInt(inputParts[2]);
-                        playerPos.sectorY = parseInt(inputParts[3]);
-                    }
-                    break;
-                
-                case "camp":
-					var numCamps = parseInt(inputParts[1]);
-					if(!numCamps || numCamps < 1) numCamps = 1;
-			
-					this.cheat("item " + ItemConstants.itemDefinitions.bag[0].id);
-			
-					var autoplayStep = function () {
-						if (this.gameState.numCamps >= numCamps) {
-							this.engine.updateComplete.remove(autoplayStep, this);
-							this.cheat("autoplay off");
-						}
-					};
-					this.cheat("autoplay true");
-					this.engine.updateComplete.add(autoplayStep, this);					
-                    break;
-				
-				case "autoplay":
-					var param = inputParts[1];
-					if (param === "off")
-						this.playerStatsNodes.head.entity.remove(AutoPlayComponent);
-					else if (param === "true") {
-						if (!this.playerStatsNodes.head.entity.has(AutoPlayComponent)) this.playerStatsNodes.head.entity.add(new AutoPlayComponent(true));
-					} else {
-						if (!this.playerStatsNodes.head.entity.has(AutoPlayComponent)) this.playerStatsNodes.head.entity.add(new AutoPlayComponent(false));
-					}
-					break;
-                
-                case "heal":
-                    this.useHospital(true);
-                    break;
-                
-                case "injury":
-                    var injuryi = Math.round(Math.random() * PerkConstants.perkDefinitions.injury.length);
-                    var defaultInjury = PerkConstants.perkDefinitions.injury[injuryi];
-                    perksComponent.addPerk(defaultInjury.clone());
-                    break;
-                
-                case "building":
-                    var buildingNmae = inputParts[1];
-                    var buildingAmount = parseInt(inputParts[2]);      
-                    var improvementsComponent = currentSector.get(SectorImprovementsComponent);
-                    improvementsComponent.add(buildingNmae, buildingAmount);                    
-                    break;
-                
-                case "tech":
-                    var name = inputParts[1];
-                    if (name !== "all")
-                        this.buyUpgrade(name, true);
-                    else
-                        for (var id in UpgradeConstants.upgradeDefinitions) {
-                            this.buyUpgrade(id, true);
-                        }
-                    break;
-                
-                case "item":
-                    var itemID = inputParts[1];
-                    var item = ItemConstants.getItemByID(itemID);
-                    if (item) {
-                        itemsComponent.addItem(item.clone(), !playerPos.inCamp);                       
-                    } else {
-                        console.log("WARN: No such item: " + itemID);
-                    }
-                    break;
-                
-                case "follower":
-                    var follower = ItemConstants.getFollower(this.playerPositionNodes.head.position.level, campCount);
-                        this.addFollower(follower);
-                        break;
-                
-                case "perk":
-                    var perkID = inputParts[1];
-                    var perk = PerkConstants.getPerk(perkID);
-                    if (perk) {
-                        perksComponent.addPerk(perk);                       
-                    } else {
-                        console.log("WARN: No such perk: " + perkID);
-                    }
-                    break;
-                
-                case "resetcooldowns":
-                    this.gameState.actionCooldownEndTimestamps = {};
-                    break;
-                
-                case "printLevel":
-                    var l = inputParts[1] ? inputParts[1] : this.playerPositionNodes.head.position.level;
-                    WorldCreatorDebug.printLevel(WorldCreator.world, WorldCreator.world.getLevel(l));
-                    break;
-                    
-                case "printSector":
-                    console.log(currentSector.get(SectorFeaturesComponent));
-                    break;
-                    
-                case "printEnemies":
-                    var enemiesComponent = currentSector.get(EnemiesComponent);
-                    var playerStamina = this.playerStatsNodes.head.stamina;
-                    if (enemiesComponent.possibleEnemies.length < 1) console.log("No enemies here.");
-                    for (var e = 0; e < enemiesComponent.possibleEnemies.length; e++) {
-                        var enemy = enemiesComponent.possibleEnemies[e];
-                        console.log(
-                            enemy.name + " " + 
-                            "(att: " + enemy.att + ", def: " + enemy.def + ", rarity: " + enemy.rarity + ") " +
-                            "chances: " + Math.round(100 * FightConstants.getFightWinProbability(enemy, playerStamina, itemsComponent)) + "% " + 
-                            FightConstants.getFightChances(enemy, playerStamina, itemsComponent));
-                    }
-                    break;
-                    
-                default:
-                    console.log("Unknown cheat.");
-                    break;
-            }
-        }
     });
 
     return PlayerActionFunctions;

@@ -4,7 +4,7 @@ define( function () {
         gameSpeedCamp: 1,
         gameSpeedExploration: 1,
         isCheatsEnabled: false,
-        isDebugOutputEnabled: true,
+        isDebugOutputEnabled: false,
         
     };
     return GameConstants;
