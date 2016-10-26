@@ -92,6 +92,11 @@ define(['ash',
                     this.playerStatsNodes.head.vision.value = parseInt(inputParts[1]);
                     break;
 
+                case CheatConstants.CHEAT_NAME_EVIDENCE:
+                    this.playerStatsNodes.head.evidence.value = parseInt(inputParts[1]);
+                    break;
+
+
                 case CheatConstants.CHEAT_NAME_POPULATION:
                     var amount = 1;
                     if (inputParts.length > 1) {
