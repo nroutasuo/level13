@@ -28,20 +28,22 @@ define([
         update: function (time) {
             if (this.gameState.isPaused) return;
             for (var node = this.playerActionNodes.head; node; node = node.next) {
-                this.updateNode(node, time + this.engine.extraUpdateTime);
+                this.updateNode(node, this.engine.extraUpdateTime);
             }
         },
 
-        updateNode: function (node, time) {
+        updateNode: function (node, extraTime) {
             var now = new Date().getTime();
             var newDict = {};
             var newList = [];
+            
+            node.playerActions.applyExtraTime(extraTime);
             
             var timeStamp;
 			var action;
             for (var i = 0; i < node.playerActions.endTimeStampList.length; i++) {
                 timeStamp = node.playerActions.endTimeStampList[i];
-				action = node.playerActions.endTimeStampToActionDict[timeStamp];
+                action = node.playerActions.endTimeStampToActionDict[timeStamp];
                 if (timeStamp > now) {
                     newDict[timeStamp] = action;
                     newList.push(timeStamp);
