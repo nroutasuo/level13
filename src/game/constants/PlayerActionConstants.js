@@ -1597,7 +1597,7 @@ function (Ash, GameConstants, CampConstants) {
                     rumours: 21,
                 },
                 unlock_building_passage_staircase: {
-                    evidence: 34,
+                    evidence: 21,
                 },
                 unlock_building_hospital: {
                     evidence: 25,

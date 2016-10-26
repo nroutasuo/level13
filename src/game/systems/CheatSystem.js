@@ -177,6 +177,11 @@ define(['ash',
         passTime: function (mins) {
             this.engine.updateComplete.addOnce(function () {
                 this.engine.extraUpdateTime = mins * 60;
+                var cooldownkeys = Object.keys(this.gameState.actionCooldownEndTimestamps);                
+                for (var i = 0; i < cooldownkeys.length; i++) {
+                    this.gameState.actionCooldownEndTimestamps[cooldownkeys[i]] = this.gameState.actionCooldownEndTimestamps[cooldownkeys[i]] - mins * 60 * 1000;
+                }
+                this.playerActionFunctions.uiFunctions.onPlayerMoved(); // reset cooldowns for buttons
                 this.engine.updateComplete.addOnce(function () {
                     this.engine.extraUpdateTime = 0;
                 }, this);

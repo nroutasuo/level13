@@ -171,9 +171,9 @@ define([
             this.updateStatsCallout("stats-health", null);
 
             var staminaCostToMoveOneSector = this.uiFunctions.playerActions.playerActionsHelper.getCosts("move_sector_west", 1, 1).stamina;
-            var staminaWarningLimit = Math.max(
+            var staminaWarningLimit = Math.min(maxStamina * 0.25, Math.max(
                 this.uiFunctions.playerActions.playerActionsHelper.getCosts("move_camp_level", 1, 100).stamina + staminaCostToMoveOneSector * 3,
-                staminaCostToMoveOneSector * 5);
+                staminaCostToMoveOneSector * 5));
             $("#stats-health .value").toggleClass("warning", playerStatsNode.stamina.health <= 25);
             $("#stats-vision .value").toggleClass("warning", playerVision <= 25);
             $("#stats-stamina .value").toggleClass("warning", playerStamina <= staminaWarningLimit);

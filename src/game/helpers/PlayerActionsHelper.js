@@ -634,6 +634,7 @@ define([
             
             var sector = this.playerLocationNodes.head.entity;
             var playerPos = sector.get(PositionComponent);
+            var baseActionID = this.getBaseActionID(action);
             
             if (action.indexOf("build_in") >= 0) {
                 var improvementName = this.getImprovementNameForAction(action);
@@ -641,7 +642,7 @@ define([
                 return improvementsComponent.getCount(improvementName) + 1;
             }
                 
-            switch (action) {
+            switch (baseActionID) {
                 case "use_in_inn":
                     var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
                     return itemsComponent.getEquipped(ItemConstants.itemTypes.follower).length;
@@ -652,8 +653,7 @@ define([
                 case "build_out_passage_up_stairs":
                 case "build_out_passage_up_elevator":
                 case "build_out_passage_up_hole":
-                    var level = action.indexOf("up") > 0 ? playerPos.level + 1 : playerPos.level - 1;
-                    return this.gameState.getLevelOrdinal(level);
+                    return action.substring(action.lastIndexOf("_") + 1);
                 
                 default: return 1;
             }
@@ -722,6 +722,13 @@ define([
                     requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
                     requirements.blueprintpieces = action.replace(baseActionID + "_", "");
                     return requirements;
+                case "build_out_passage_up_stairs":
+                case "build_out_passage_up_elevator":
+                case "build_out_passage_up_hole":
+                case "build_out_passage_down_stairs":
+                case "build_out_passage_down_elevator":
+                case "build_out_passage_down_hole":
+                    return PlayerActionConstants.requirements[baseActionID];
 				default:
 					return PlayerActionConstants.requirements[action];
 			}
@@ -731,12 +738,15 @@ define([
 			var result = {};
 			var baseActionID = this.getBaseActionID(action);
 			var costs = PlayerActionConstants.costs[action];
+            if (!costs) {
+                costs = PlayerActionConstants.costs[baseActionID];
+            }
 			if (costs) {
 				var costFactor = costs.cost_factor;
 				if (!costFactor) costFactor = 1;
 				if (!ordinal) ordinal = 1;
 				if (action === "build_in_house" && ordinal === 1) ordinal = 0.5;
-				var ordinalCostFactor = Math.pow(costFactor, ordinal-1);				
+				var ordinalCostFactor = Math.pow(costFactor, ordinal-1);
 				
 				for(var key in costs) {
 					if (key != "cost_factor" && key != "cost_source") {
@@ -819,6 +829,9 @@ define([
 			if (action.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
 			if (action.indexOf("create_blueprint_") >= 0) return "create_blueprint";
 			if (action.indexOf("fight_gang_") >= 0) return "fight_gang";
+            if (action.indexOf("build_out_passage") >= 0) {
+                return action.substring(0, action.lastIndexOf("_"));
+            }
 			return action;
 		},
         

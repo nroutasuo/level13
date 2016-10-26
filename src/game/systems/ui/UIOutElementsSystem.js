@@ -42,15 +42,15 @@ define([
         playerActions: null,
         uiFunctions: null,
         resourcesHelper: null,
-        levelHelper: null,
+        buttonHelper: null,
         engine: null,
     
-        constructor: function (uiFunctions, gameState, playerActions, resourcesHelper, levelHelper, calloutsGeneratedSignal) {
+        constructor: function (uiFunctions, gameState, playerActions, resourcesHelper, buttonHelper, calloutsGeneratedSignal) {
             this.gameState = gameState;
             this.playerActions = playerActions;
             this.uiFunctions = uiFunctions;
             this.resourcesHelper = resourcesHelper;
-            this.levelHelper = levelHelper;
+            this.buttonHelper = buttonHelper;
             this.calloutsGeneratedSignal = calloutsGeneratedSignal;
             return this;
         },
@@ -101,7 +101,7 @@ define([
         updateButtons: function () {
             var playerActionsHelper = this.playerActions.playerActionsHelper;
             var uiFunctions = this.uiFunctions;
-            var levelHelper = this.levelHelper;
+            var buttonHelper = this.buttonHelper;
 			
             var playerVision = this.playerStatsNodes.head.vision.value;
             var playerHealth = this.playerStatsNodes.head.stamina.health;
@@ -114,18 +114,6 @@ define([
 			var hasButtonDuration = function (button) {
                 return ($(button).attr("data-isInProgress") === "true");
             };
-			
-			var getButtonSectorEntity = function (button) {
-				var sector = $(button).attr("sector");
-				var sectorEntity = null;
-                if (sector) {
-                    var l = parseInt(sector.split(".")[0]);
-                    var sX = parseInt(sector.split(".")[1]);
-                    var sY = parseInt(sector.split(".")[2]);
-                    sectorEntity = levelHelper.getSectorByPosition(l, sX, sY);
-                }
-				return sectorEntity;
-			};
 			
 			var isButtonDisabledVision = function (button) {
                 var action = $(button).attr("action");
@@ -154,7 +142,7 @@ define([
                 var action = $(button).attr("action");
                 if (!action) return false;
                 
-				var sectorEntity = getButtonSectorEntity(button);
+				var sectorEntity = buttonHelper.getButtonSectorEntity(button);
                 return playerActionsHelper.checkRequirements(action, false, sectorEntity).value < 1;
             };
             
@@ -212,7 +200,7 @@ define([
                     // Update callout content
                     var content = description;
                     var bottleNeckCostFraction = 1;
-					var sectorEntity = getButtonSectorEntity((this));
+					var sectorEntity = buttonHelper.getButtonSectorEntity((this));
                     var disabledReason = playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
                     var isDisabledOnlyForCooldown = (!(disabledReason) && hasButtonCooldown($(this)));
                     if (!isHardDisabled || isDisabledOnlyForCooldown) {

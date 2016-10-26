@@ -260,7 +260,7 @@ define([
             
             var numProjectsTR = $("#in-improvements-level table tr").length;
             var projects = this.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity, this.uiFunctions.playerActions);
-            var level = this.playerLocationNodes.head.entity.get(PositionComponent).level;
+            var showLevel = this.gameState.unlockedFeatures.level;
             var updateTable = isActive && numProjectsTR !== projects.length;
             if (updateTable) $("#in-improvements-level table").empty();
             for (var i = 0; i < projects.length; i++) {
@@ -271,7 +271,7 @@ define([
                 if (updateTable) {
                     var sector = project.level + "." + project.sector + "." + project.direction;
                     var name = project.name;
-                    var info = "at " + project.position.getPosition().getInGameFormat();
+                    var info = "at " + project.position.getPosition().getInGameFormat() + (showLevel ? " level " + project.level : "");
                     var classes = "action action-build action-level-project";
                     var tr = "<tr><td><button class='" + classes + "' action='" + action + "' sector='" + sector + "' + id='btn-" + action + "-" + sector + "'>" + name + "</button></td><td class='list-description'>" + info + "</td></tr>";
                     $("#in-improvements-level table").append(tr);

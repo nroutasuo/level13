@@ -545,6 +545,11 @@ define(['ash',
 			var l = parseInt(sectorPos.split(".")[0]);
 			var sX = parseInt(sectorPos.split(".")[1]);
 			var sY = parseInt(sectorPos.split(".")[2]);
+            var levelOrdinal = this.gameState.getLevelOrdinal(l);
+            action = action + "_" + levelOrdinal;
+            
+            console.log("build passage: action: " + action);
+            
             var sectorPosVO = new PositionVO(l, sX, sY);
             var playerPos = this.playerPositionNodes.head.position;
 			var sector = this.levelHelper.getSectorByPosition(l, sX, sY);
