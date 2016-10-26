@@ -148,7 +148,8 @@ define([
             var playerVision = this.playerStatsNodes.head.vision.value;
             var efficiency = this.getScavengeEfficiency();
             var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
-
+           
+            rewards.gainedEvidence = 1;
             rewards.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability("scout", playerVision));
             if (rewards.gainedInjuries.length === 0) {
                 rewards.gainedResources = this.getRewardResources(0.5, efficiency * 2, sectorResources);
