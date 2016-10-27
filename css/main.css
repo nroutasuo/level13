@@ -617,7 +617,7 @@ ul.resultlist-positive li:before {
 }
 
 .item-slot, .inventorybox ul li {
-    margin: 0px 7px 7px 0px;
+    margin: 0px 2px 2px 0px;
     padding: 0;
     border-width: 1px;
     border-style: solid;
@@ -1226,7 +1226,7 @@ p.notification {
 .inventorybox {
     border-width: 1px;
     border-style: solid;
-    padding: 7px 0px 0px 7px !important;
+    padding: 2px 0px 0px 7px !important;
     margin: 5px 0px;
     min-height: 1em;
 }

@@ -45,11 +45,12 @@ define([
         buttonHelper: null,
         engine: null,
     
-        constructor: function (uiFunctions, gameState, playerActions, resourcesHelper, buttonHelper, calloutsGeneratedSignal) {
+        constructor: function (uiFunctions, gameState, playerActions, resourcesHelper, fightHelper, buttonHelper, calloutsGeneratedSignal) {
             this.gameState = gameState;
             this.playerActions = playerActions;
             this.uiFunctions = uiFunctions;
             this.resourcesHelper = resourcesHelper;
+            this.fightHelper = fightHelper;
             this.buttonHelper = buttonHelper;
             this.calloutsGeneratedSignal = calloutsGeneratedSignal;
             return this;
@@ -101,6 +102,7 @@ define([
         updateButtons: function () {
             var playerActionsHelper = this.playerActions.playerActionsHelper;
             var uiFunctions = this.uiFunctions;
+            var fightHelper = this.fightHelper;
             var buttonHelper = this.buttonHelper;
 			
             var playerVision = this.playerStatsNodes.head.vision.value;
@@ -189,9 +191,10 @@ define([
                     var costFactor = playerActionsHelper.getCostFactor(action);
                     var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);
 					var duration = PlayerActionConstants.getDuration(action);
+                    var hasEnemies = fightHelper.hasEnemiesCurrentLocation(action);
 					var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
                     var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
-					var fightRisk = PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision);
+					var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision) : 0;
 					var description = playerActionsHelper.getDescription(action);
                     var hasCosts = action && costs && Object.keys(costs).length > 0;
                     var hasCostBlockers = false;

@@ -42,11 +42,10 @@ define([
 
 		handleRandomEncounter: function (action, winCallback, fleeCallback, loseCallback) {
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
-			var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
 			
 			var baseActionID = this.playerActionsHelper.getBaseActionID(action);
 			var localeId = FightConstants.getEnemyLocaleId(baseActionID, action);
-			var hasEnemies = enemiesComponent.hasEnemies() && !sectorControlComponent.hasControlOfLocale(localeId);
+			var hasEnemies = this.hasEnemiesCurrentLocation(action);
 			if (hasEnemies) {
                 var vision = this.playerStatsNodes.head.vision.value;
 				var encounterProbability =  PlayerActionConstants.getRandomEncounterProbability(baseActionID, vision);
@@ -62,6 +61,14 @@ define([
 
 			winCallback();
 		},
+        
+        hasEnemiesCurrentLocation: function(action) {  
+            var baseActionID = this.playerActionsHelper.getBaseActionID(action); 
+            var localeId = FightConstants.getEnemyLocaleId(baseActionID, action);    
+            var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);     
+            var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
+            return enemiesComponent.hasEnemies() && !sectorControlComponent.hasControlOfLocale(localeId);
+        },
         
         initFight: function (action) {
 			console.log("init fight " + action + " " + this.pendingEnemies);

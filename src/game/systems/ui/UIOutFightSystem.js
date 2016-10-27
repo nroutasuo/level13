@@ -201,14 +201,18 @@ define([
 			var baseActionID = this.playerActionsHelper.getBaseActionID(context);
 			switch (baseActionID) {
 				case "scavenge":
+				case "scout":
+				case "use_spring":
+                    return "Intruder defeated.";
+                    
 				case "scout_locale_u":
 				case "scout_locale_i":
-					return "area clear";
+					return "Area clear.";
 
 				case "clear_workshop":
 				case "fight_gang":
 				default:
-					return "fight won";
+					return "Fight won.";
 			}
         },
 		

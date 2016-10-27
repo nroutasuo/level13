@@ -121,6 +121,9 @@ define([
             this.addItemsToLists(rewards, playerAllItems);
             this.addResourcesToLists(rewards, resultNode);
             
+            $("#resultlist-inventorymanagement-kept .msg-empty").toggle($("#resultlist-inventorymanagement-kept ul li").length === 0);
+            $("#resultlist-inventorymanagement-found .msg-empty").toggle($("#resultlist-inventorymanagement-found ul li").length === 0);
+            
             $("#resultlist-inventorymanagement-kept li").click(onLiClicked);
             $("#resultlist-inventorymanagement-found li").click(onLiClicked);
             

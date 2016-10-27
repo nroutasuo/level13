@@ -407,7 +407,10 @@ define([
 		},
 		
 		getRewardDiv: function (resultVO, isFight) {
-			var div = "<div class='infobox infobox-temporary'>";
+            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+            var hasBag = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
+            
+			var div = "<div>";
 			
             var gainedhtml = "";
             gainedhtml += "<ul class='resultlist resultlist-positive'>";
@@ -442,20 +445,22 @@ define([
 			}
 			
 			if (resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0) {
-				var baghtml = "<div id='resultlist-inventorymanagement' class='infobox'>";
+				var baghtml = "<div id='resultlist-inventorymanagement'>";
 				
 				baghtml += "<div id='resultlist-inventorymanagement-found' class='infobox inventorybox'>";
 				baghtml += "<ul></ul>";
+				baghtml += "<p class='msg-empty'>" + (isFight ? "Nothing left of the enemy." : "Nothing left here.") + "<p>";
 				baghtml += "</div>"
 				
 				baghtml += "<div id='resultlist-inventorymanagement-kept' class='infobox inventorybox'>";
 				baghtml += "<ul></ul>";
+                baghtml += "<p class='msg-empty'>Your " + (hasBag ? "bag is" : "pockets are") + " empty.<p>";
 				baghtml += "</div>"
 				
+                baghtml += "<div id='inventory-popup-bar' class='progress-wrap progress' style='margin-top: 10px'><div class='progress-bar progress'/><span class='progress-label progress'>?/?</span></div>";
 				baghtml += "</div>"
 				div += baghtml;
                 
-                div += "<div id='inventory-popup-bar' class='progress-wrap progress'><div class='progress-bar progress'/><span class='progress-label progress'>?/?</span></div>";
 			}
 			
 			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0;
