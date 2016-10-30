@@ -79,7 +79,7 @@ define(['ash',
                     if (inputParts.length > 2) {
                         amount = parseInt(inputParts[2]);
                     } else {
-                        amount = this.resourcesHelper.getCurrentStorageCap() / unlockedResources;
+                        amount = this.resourcesHelper.getCurrentStorageCap() / 3;
                     }
                     this.setResource(name, amount);
                     break;

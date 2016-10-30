@@ -30,29 +30,36 @@
 	
 	<div class="sticky-footer-wrapper">
 		<div class="grid" id="grid-main">	
-			<div class="unit one-quarter" style="visibility:hidden; padding:1px; height:1px"></div><!-- filler for log -->
+            <div class="unit one-quarter" style="visibility:hidden; padding:1px; height:1px"></div><!-- filler for log -->            
 			<div class="unit three-quarters" id="unit-main" style="display: none">
+
+                <div id="header-self-bar" class="lvl13-box-2">
+                    <div id="header-self-inout"><img src="img/ui-camp-dark.png" alt="camp" /></div>
+                    <span id="out-position-indicator"></span>
+                    <div id="notification-player" class="unit whole notification">
+                        <div id="notification-player-bar" class="progress-wrap progress">
+                            <div class="progress-bar progress"></div>
+                            <span class="progress-label progress"></span>
+                        </div>
+                    </div>
+                    <ul class="itemlist" id="list-items-perks"></ul>
+                    <div id="stats-stamina" class="stats-indicator"><span class="label">Stamina</span><br/><span class="value">0</span></div>
+                    <div id="stats-health" class="stats-indicator"><span class="label">Health</span><br/><span class="value">0</span></div>
+                    <div id="stats-vision" class="stats-indicator"><span class="label">Vision</span><br/><span class="value">0</span></div>
+                    <div id="stats-scavenge" class="stats-indicator"><span class="label">Scavenge<br/>efficiency</span><br/><span class="value">0</span></div>
+                </div>
                 
 				<div class="grid" id="grid-main-header">
-                    
-                    <div class="unit one-third lvl13-box-2" id="grid-header-global">
+                    <div class="unit whole lvl13-box-3 header-section" id="header-tribe-container">
                         <div id="statsbar-self" class="statsbar">
                             <div id="stats-evidence" class="stats-indicator">
                                 <span class="label">Evidence</span>
                                 <span class="value">0</span>
-                            </div><br />
+                            </div>
                             <div id="stats-rumours" class="stats-indicator">
                                 <span class="label">Rumours</span>
                                 <span class="value">0</span>
-                            </div><br />
-                            <div id="stats-reputation" class="stats-indicator">
-                                <span class="label">Reputation</span>
-                                <span class="value">0</span>
-                            </div><br />
-                        <div id="stats-stamina-in" class="stats-indicator">
-                            <span class="label">Stamina</span>
-                            <span class="value">0</span>
-                        </div><br/>
+                            </div>
                         </div>
                         <div id="statsbar-deity" class="statsbar">
                             <button id="btn-deity-rename" class="context btn-meta">Rename</button>
@@ -62,62 +69,48 @@
                                 <span class="label">Favour</span><span class="value">0</span>
                             </span>
                         </div>
-                        
-                        <div class="statsbar-bottom">
-                            <ul class="itemlist" id="list-items-followers"></ul>
-                            <ul class="itemlist" id="list-items-perks"></ul>
-                        </div>
-                    </div>                            
-                    
-                    <div class="unit one-third lvl13-box-2" id="statsbar-exploration">
-                        <div id="stats-health" class="stats-indicator">
-                            <span class="label">Health</span>
-                            <span class="value">0</span>
-                        </div><br/>
-                        <div id="stats-stamina" class="stats-indicator">
-                            <span class="label">Stamina</span>
-                            <span class="value">0</span>
-                        </div><br/>
-                        <div id="stats-vision" class="stats-indicator">
-                            <span class="label">Vision</span>
-                            <span class="value">0</span>
-                        </div><br/>
-                        <div id="stats-scavenge" class="stats-indicator stats-indicator-secondary">
-                            <span class="label">Scavenge efficiency</span>
-                            <span class="value">0</span>
-                        </div><br/>
                     </div>
                     
-                    <div class="unit one-third lvl13-box-2" id="main-header-bag">
+                <div class="unit whole lvl13-box-3" id="header-camp-container">
+                    
+                    <div class="header-section" id="main-header-bag">
                         <div id="header-bag-storage" class="stats-indicator">
                             <span class="label">Bag capacity</span>
                             <span class="value">0</span>
                             /
                             <span class="value-total">0</span>
                         </div>
-						<div id="bag-resources" class="statsbar"></div>
-                        <ul class="itemlist" id="list-items-items"></ul>
+                        <div id="bag-resources" class="statsbar"></div>
+                    </div>
+                    
+                    <div class="lvl13-box-2 header-section" id="main-header-equipment">
+                        <ul class="itemlist" id="list-header-equipment"></ul>                        
+                    </div>
+                    
+                    <div class="header-section" id="main-header-items">
+                        <ul class="itemlist" id="list-items-followers"></ul>
+                        <ul class="itemlist" id="list-header-items"></ul>
                     </div>
 						
-                    <div class="unit two-thirds lvl13-box-2" id="main-header-camp">
+                    <div class="lvl13-box-2 header-section" id="main-header-camp">
+                        <div class="header-section" style="width: 25%">
                         <div id="header-camp-storage" class="stats-indicator">
                             <span class="label">Storage</span>
                             <span class="value">0</span>
                         </div>
+                        <div id="header-camp-reputation" class="stats-indicator">
+                            <span class="label">Reputation</span>
+                            <span class="value">0</span>
+                        </div>
+                        </div>
+                        <div class="header-section">
 						<div id="statsbar-resources" class="statsbar">	
-						</div>
-                    </div>
-						
-				</div><!-- grid for the whole stats bar -->		
-                
-				<div class="grid" id="grid-notifications">
-                    <div id="notification-player" class="unit whole notification">
-                        <div id="notification-player-bar" class="progress-wrap progress">
-                            <div class="progress-bar progress"></div>
-                            <span class="progress-label progress"></span>
+                        </div>
                         </div>
                     </div>
-                </div>	
+						
+                </div>
+				</div><!-- grid for the whole stats bar -->
                 
                 <div class="grid" id="grid-location-header">
                     <div id="grid-location-header" class="unit whole">
@@ -355,7 +348,6 @@
                                 <div id="minimap-fallback-container"><table class="vis lvl13-box-2" id="minimap-fallback"></table></div>
                             </canvas>
                             </div>
-                            <span id="out-position-indicator"></span>
                         </div>
 						<div class="unit unit-rest">
                             <h2 id="header-sector">Sector header</h2>

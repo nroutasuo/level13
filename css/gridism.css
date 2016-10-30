@@ -99,6 +99,7 @@
   
 	#grid-main > .unit, .sticky-footer > .unit {
 		width: 100% !important;
+        padding-left: 65px;
 	}
   
 	#footer {
@@ -129,7 +130,6 @@
 		left: 0;
 		top: inherit !important; 
 	}
-	
 	dl {
 		padding: 0 10em 0 0 !important;
 	}

@@ -277,7 +277,7 @@ define(['ash',
 			return aVal - bVal;
 		},
 		
-		createResourceIndicator: function (name, showName, id, showAmount, showChange) {
+		createResourceIndicator: function (name, showName, id, showAmount, showChange, showProgressBar) {
 			var div = "<div class='stats-indicator' id='" + id + "'>";
 			
 			if (!showName) div = "<div class='info-callout-target info-callout-target-small' description='" + name + "'>" + div;
@@ -292,7 +292,9 @@ define(['ash',
 			
 			if (showAmount) div += "<span class='value'></span>";
 			div += "<span class='change-indicator'></span>";
-			div += "<span class='change'></span>";
+			if (showProgressBar)
+                div += "<div class='progress-wrap progress'><div class='progress-bar progress'/></div>";
+            div += "<span class='change'></span>";
 			div += "<span class='forecast'></span>";
 			div += "</div>";
 			
@@ -301,8 +303,9 @@ define(['ash',
 			return div;
 		},
 		
-		updateResourceIndicator: function (name, id, value, change, storage, showStorage, showChange, showDetails, showWarning, visible) {
+		updateResourceIndicator: function (name, id, value, change, storage, showStorage, showChangeIcon, showChange, showDetails, showWarning, visible) {
 			$(id).toggle(visible);
+			$(id).parent().toggle(visible);
 			var roundedValue = this.roundValue(value, true, false);
 			if (visible) {
 				$(id).children(".value").text(showStorage ? roundedValue + " / " + storage : roundedValue);
@@ -328,11 +331,14 @@ define(['ash',
 						$(id).children(".forecast").text("");
 					}
 				}
+                
+                $(id).children(".progress-wrap").data("progress-percent", (value - Math.floor(value)) * 100);
 			
 				change = Math.round(change * 10000) / 10000;
 				$(id).children(".change-indicator").toggleClass("indicator-increase", change > 0 && !isCappedByStorage);
 				$(id).children(".change-indicator").toggleClass("indicator-decrease", change < 0);
 				$(id).children(".change-indicator").toggleClass("indicator-even", change === 0 || isCappedByStorage);
+				$(id).children(".change-indicator").toggle(showChangeIcon);
 			}
 		},
 		

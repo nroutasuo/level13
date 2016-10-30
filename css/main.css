@@ -84,7 +84,7 @@ img {
 	background: none;
 	max-width: 244px;
 	width: 25%;
-	padding-right: 15px;
+	padding-right: 50px;
 }
 
 dl {
@@ -260,6 +260,14 @@ dd p.p-meta {
 .sunlit .lvl13-box-1, .sunlit div.grid-content, .sunlit .popup, .sunlit ul.tabs li.selected, .sunlit .item, .sunlit .res, .sunlit .li-item-negative, .sunlit .li-item-positive, .sunlit .info-callout-target, .sunlit .blueprint-piece-box-missing {
 	background: #efefef;
 	border: 1px solid #d0d0d0;
+}
+
+.item-equipped {
+    background: #2f322f;    
+}
+
+.sunlit .item-equpped {
+    background: #ececec;
 }
   
 ul.tabs li.selected {
@@ -518,8 +526,9 @@ input {
 
 /* -- Appearance: Specific elements: Menus and bars -- */
 
-#tab-header { margin: 10px 0px }
+#tab-header { margin: 5px 0px }
 #tab-header h2 { margin: 2px 0px; }
+#grid-location-header { padding: 15px 0px 0px 0px; }
 
 .page-overlay {
 	position:fixed;
@@ -544,10 +553,44 @@ input {
 	padding: 5px;
  }
  
+#header-self-bar {
+     position: fixed; 
+     width: 50px;
+     z-index: 5;
+     text-align: center; 
+     padding: 3px; 
+     margin-left: -70px; 
+     font-size: 85%;
+ }
+ 
+#header-self-bar ul {
+     margin-top: 10px;
+     margin-bottom: 10px;
+}
+
+#header-self-bar .stats-indicator {
+    margin: 5px 0px 0px 0px;
+    width: 100%;
+} 
+
+#header-self-bar .callout-container {
+    width: 100%;
+} 
+
+#header-self-bar .stats-indicator .value {
+    font-size: 85%;
+    margin: 0;
+} 
+
+#header-self-bar .info-callout {
+    max-width: auto;
+    min-width: 100%;
+}
+
 ul.itemlist, ul.resultlist {
 	list-style-type: none;
 	padding: 0;
-	margin: 0 0 0 -3px;
+	margin: 0;
 	display: inline-block;
 }
 
@@ -564,6 +607,11 @@ ul.itemlist, ul.resultlist {
 	border-width: 2px;
 	border-style: solid;
     border-radius: 50%;
+}
+
+.item {
+    width: 20px;
+    height: 20px;
 }
 
 .res {
@@ -686,21 +734,17 @@ div.item-slot > div, div.item-slot > span {
 }
 
 #grid-main-header .unit {
-    padding: 15px;
-    height: 110pt;
+    padding: 2px;
     position: relative;
 }
 
-#grid-main-header .statsbar-bottom {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    margin: 15px;
+#statsbar-resources .callout-container {
+    width: 33%;
+    border: 0px;
 }
 
-#statsbar-resources .callout-container {
-    width: 50%;
-    border: 0px;
+#header-tribe-container {
+    margin-bottom: 5px;
 }
 
 
@@ -1185,11 +1229,13 @@ p.notification {
     padding: 0px;
     border-width: 1px;
     border-style: solid;
+    margin-top: 5px;
 }
 
 #notification-player .progress {
     width: 100%;
     max-width: 100%;
+    margin: 0;
 }
 
 .actionbox, .infobox, .buttonbox {
@@ -1237,8 +1283,48 @@ p.notification {
     margin: 0px;
 }
 
+.header-section {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0px 5px 0px 0px;
+    float: left;
+    padding: 0px 2px;
+}
+
+#main-header-camp {
+    width: 100%;
+}
+
+#main-header-bag {
+    min-width: 20%;
+    max-width: 25%;
+}
+
+#main-header-equipment {
+    width: 122px;
+    max-height: 122px;
+    min-height: 81px;
+    text-align: center;
+}
+
+#main-header-items {
+    min-width: 35px;
+    max-width: 35%;
+}
+
 .full-width {
 	width: 100%;
+}
+
+.stats-indicator .progress {
+    height: 0.5em;
+    width: 35px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.stats-indicator .progress-wrap {
+    margin: auto 1px auto 3px;
 }
 
 .strike-through {
@@ -1255,6 +1341,10 @@ p.notification {
 span.time {
 	font-size: 75%;
 	vertical-align: middle;
+}
+
+span#out-position-indicator {
+    font-size: 80%;
 }
 
 span.icon {
@@ -1352,6 +1442,7 @@ input.amount {
 	width: 100%;
 	font-size: 85%;
 	text-align: center;
+    vertical-align: text-top;
 }
 
 .checkbox {

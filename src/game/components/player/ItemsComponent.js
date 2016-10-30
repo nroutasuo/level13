@@ -289,8 +289,35 @@ function (Ash, ItemVO, ItemConstants) {
             if (a.equipped && !b.equipped) return -1;
             if (!a.equippable && b.equippable) return 1;
             if (a.equippable && !b.equippable) return -1;
-            if (a.type > b.type) return 1;
-            if (a.type < b.type) return -1;
+
+            var getSortTypeValue = function (t) {
+            switch (t) {
+            case ItemConstants.itemTypes.follower:
+                return 0;
+                case ItemConstants.itemTypes.bag:
+                return 1;
+                case ItemConstants.itemTypes.weapon:
+                return 2;
+                case ItemConstants.itemTypes.clothing_over:
+                return 3;
+                case ItemConstants.itemTypes.clothing_upper:
+                return 4;
+                case ItemConstants.itemTypes.clothing_lower:
+                return 5;
+                case ItemConstants.itemTypes.clothing_head:
+                return 6;
+                case ItemConstants.itemTypes.clothing_hands:
+                return 7;
+                case ItemConstants.itemTypes.shoes:
+                return 8;
+                case ItemConstants.itemTypes.light:
+                return 9;
+                default:
+                return 100;
+            }
+            };
+            if (getSortTypeValue(a.type) > getSortTypeValue(b.type)) return 1;
+            if (getSortTypeValue(a.type) < getSortTypeValue(b.type)) return -1;
             return b.getTotalBonus() - a.getTotalBonus();
         },
         
