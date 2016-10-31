@@ -297,7 +297,7 @@ define([
 				var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
                 var workshopControl = sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP);
                 var workshopStatus = workshopControl ? "cleared for use" : "not cleared";
-				description += "There is a " + workshopName + " here (" + workshopStatus + "). ";
+				description += "There is " + TextConstants.addArticle(workshopName) + " here (" + workshopStatus + "). ";
 			}
 			
 			return description;

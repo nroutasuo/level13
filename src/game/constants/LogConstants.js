@@ -8,6 +8,7 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
         // out actions
         MSG_ID_SCAVENGE: "SCAVENGE",
         MSG_ID_SCOUT: "SCOUT",
+        MSG_ID_SCOUT_FOUND_SOMETHING: "MSG_ID_SCOUT_FOUND_SOMETHING",
         MSG_ID_USE_SPRING: "MSG_ID_USE_SPRING",
         MSG_ID_SCOUT_LOCALE: "SCOUT_LOCALE",
         MSG_ID_WORKSHOP_CLEARED: "WORKSHOP_CLEARED",

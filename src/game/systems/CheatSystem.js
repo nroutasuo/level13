@@ -104,10 +104,15 @@ define(['ash',
                     }
                     this.addPopulation(amount);
                     break;
+                    
+                case CheatConstants.CHEAT_NAME_STAMINA:
+                    this.refillStamina();
+                    break;
 
                 case CheatConstants.CHEAT_NAME_POS:
                     this.setPlayerPosition(parseInt(inputParts[1]), parseInt(inputParts[2]), parseInt(inputParts[3]));
                     break;
+                    
                 case CheatConstants.CHEAT_NAME_HEAL:
                     this.heal();
                     break;
@@ -250,6 +255,10 @@ define(['ash',
             } else {
                 console.log("WARN: Camp not found.");
             }
+        },
+        
+        refillStamina: function () {
+            this.playerStatsNodes.head.stamina.stamina = 1000;        
         },
         
         setPlayerPosition: function (lvl, x, y) {            

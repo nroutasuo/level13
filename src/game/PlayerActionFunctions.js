@@ -32,6 +32,7 @@ define(['ash',
 	'game/components/player/PlayerActionResultComponent',
     'game/components/common/CampComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
+	'game/components/sector/improvements/WorkshopComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/SectorStatusComponent',
@@ -52,7 +53,7 @@ define(['ash',
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
 	BagComponent, ItemsComponent, PerksComponent, DeityComponent, PlayerActionComponent, PlayerActionResultComponent,
-	CampComponent, SectorImprovementsComponent,
+	CampComponent, SectorImprovementsComponent, WorkshopComponent,
 	SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, CampEventTimersComponent,
 	LogMessagesComponent,
@@ -351,13 +352,44 @@ define(['ash',
             if (this.playerActionsHelper.checkAvailability("scout", true)) {
                 var sector = this.playerLocationNodes.head.entity;                
                 var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+                var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
                 if (!sectorStatus.scouted) {
                     this.playerActionsHelper.deductCosts("scout");
                     sectorStatus.scouted = true;
                     this.gameState.unlockedFeatures.evidence = true;
                     
-                    // TODO add details to message base depending on the location
                     var logMsg = "Scouted the area.";
+                    var found = false;
+                    if (featuresComponent.hasSpring) {
+                        found = true;
+                        logMsg += "<br/>Found " + TextConstants.addArticle(TextConstants.getSpringName(featuresComponent)) + ".";
+                    }
+                    var workshopComponent = sector.get(WorkshopComponent);
+                    if (workshopComponent) {
+                        found = true;
+                        logMsg += "<br/>Found " + TextConstants.addArticle(TextConstants.getWorkshopName(workshopComponent.resource));
+                    }
+                    
+                    var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
+                    if (passagesComponent.passageUp) {
+                        found = true;
+                        logMsg += "<br/>There used to be " + TextConstants.addArticle(passagesComponent.passageUp.name.toLowerCase()) + " here.";
+                    }
+                    
+                    if (passagesComponent.passageDown) {
+                        found = true;
+                        logMsg += "<br/>There used to be " + TextConstants.addArticle(passagesComponent.passageDown.name.toLowerCase()) + " here.";
+                    }
+                    
+                    var sectorLocalesComponent = sector.get(SectorLocalesComponent);
+                    if (sectorLocalesComponent.locales.length > 0) {
+                        found = true;
+                        var locale = sectorLocalesComponent.locales[0];
+                        if (sectorLocalesComponent.locales.length > 1)
+                            logMsg += "<br/>There are some interesting buildings here.";
+                        else
+                            logMsg += "<br/>There is a " + TextConstants.getLocaleName(locale, featuresComponent.stateOfRepair).toLowerCase() + " here that seems worth investigating.";
+                    }
                     
                     var playerActionFunctions = this;
                     var successCallback = function () {
@@ -366,7 +398,8 @@ define(['ash',
                         playerActionFunctions.save();
                     };
                     
-                    this.handleOutActionResults("scout", LogConstants.MSG_ID_SCOUT, logMsg, logMsg, logMsg, successCallback);
+                    var logMsgId = found ? LogConstants.MSG_ID_SCOUT_FOUND_SOMETHING : LogConstants.MSG_ID_SCOUT;
+                    this.handleOutActionResults("scout", logMsgId, logMsg, logMsg, logMsg, successCallback);
                 }                
             }
         },

@@ -14,6 +14,7 @@ function (Ash, LogConstants, LogMessageVO) {
 		},
 			
 		addMessage: function (logMsgID, message, replacements, values, visibleLevel, visibleSector, visibleInCamp) {
+            message = message.replace(/<br\s*[\/]?>/gi, " ");
 			var isPending = Boolean(visibleLevel || visibleSector || visibleInCamp);
 			var newMsg = new LogMessageVO(logMsgID, message, replacements, values);
 			
