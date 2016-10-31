@@ -116,6 +116,7 @@ define([
             if (loseInventoryProbability > Math.random()) {
                 resultVO.lostItems = this.getLostItems(action);
             }
+            resultVO.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability(action, playerVision));
             
             return resultVO;
         },
@@ -150,7 +151,6 @@ define([
             var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
            
             rewards.gainedEvidence = 1;
-            rewards.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability("scout", playerVision));
             if (rewards.gainedInjuries.length === 0) {
                 rewards.gainedResources = this.getRewardResources(0.5, efficiency * 2, sectorResources);
             }
@@ -182,7 +182,6 @@ define([
                 rewards.gainedRumours = Math.random() < 0.3 ? Math.ceil(Math.random() * levelOrdinal * levelOrdinal) : 0;
             }
 
-            rewards.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability("scavenge", playerVision));
             if (rewards.gainedInjuries.length === 0) {
                 if (localeCategory === "u") {
                     rewards.gainedResources = this.getRewardResources(1, efficiency * localeDifficulty / 25, availableResources);
@@ -501,6 +500,10 @@ define([
             if (rewards.lostItems && rewards.lostItems.length > 0) {
                 var messageTemplate = LogConstants.getLostItemMessage(rewards);
                 logComponent.addMessage(LogConstants.MSG_ID_LOST_ITEM, messageTemplate.msg, messageTemplate.replacements, messageTemplate.values);
+            }
+            
+            if (rewards.gainedInjuries.length > 0) {
+                logComponent.addMessage(LogConstants.MSG_ID_GOT_INJURED, LogConstants.getInjuredMessage(rewards));
             }
 		},
 		

@@ -29,7 +29,9 @@ define(['ash', 'game/constants/TextConstants'], function (Ash, TextConstants) {
         MSG_ID_FOUND_BLUEPRINT_FIRST: "MSG_ID_FOUND_BLUEPRINT_FIRST",
         MSG_ID_FOUND_ITEM_FIRST: "MSG_ID_FOUND_ITEM_FIRST",
         MSG_ID_LOST_ITEM: "MSG_ID_LOST_ITEM",
-        MSG_ID_FAINTED: "FAINTED",
+        MSG_ID_GOT_INJURED: "MSG_ID_GOT_INJURED",
+        MSG_ID_FAINTED: "MSG_ID_FAINTED",
+        MSG_ID_DESPAIR_AVAILABLE: "MSG_ID_DESPAIR_AVAILABLE",
         
         // in atmospheric and results
         MSG_ID_POPULATION_NATURAL: "POPULATION_NATURAL",
@@ -122,6 +124,20 @@ define(['ash', 'game/constants/TextConstants'], function (Ash, TextConstants) {
             template.msg = intro + template.msg;
             
             return { msg: template.msg, replacements: template.replacements, values: template.values };
+        },
+        
+        getInjuredMessage: function (resultVO) {
+            return "Got injured.";
+        },
+        
+        getDespairMessage: function (isValidDespairHunger, isValidDespairThirst, isValidDespairStamina, isValidDespairMove) {
+            if (isValidDespairThirst) {
+                return "Too thirsty to go on.";
+            }     
+            if (isValidDespairHunger) {
+                return "Too hungry to go on.";
+            }
+            return "Too tired to go on.";
         },
 		
     }

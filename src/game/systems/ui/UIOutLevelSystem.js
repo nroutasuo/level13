@@ -3,12 +3,12 @@ define([
     'game/constants/PlayerActionConstants',
     'game/constants/PlayerStatConstants',
     'game/constants/TextConstants',
+    'game/constants/LogConstants',
     'game/constants/UIConstants',
     'game/constants/PositionConstants',
     'game/constants/LocaleConstants',
     'game/constants/LevelConstants',
     'game/constants/MovementConstants',
-    'game/constants/ItemConstants',
     'game/constants/WorldCreatorConstants',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
@@ -22,15 +22,16 @@ define([
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/MovementOptionsComponent',
     'game/components/common/PositionComponent',
+    'game/components/common/LogMessagesComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/improvements/WorkshopComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/EnemiesComponent'
 ], function (
-    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, ItemConstants, WorldCreatorConstants,
+    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, WorldCreatorConstants,
     PlayerPositionNode, PlayerLocationNode, CampNode,
     VisionComponent, StaminaComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
-    MovementOptionsComponent, PositionComponent,
+    MovementOptionsComponent, PositionComponent, LogMessagesComponent,
     SectorImprovementsComponent, WorkshopComponent, SectorStatusComponent, EnemiesComponent
 ) {
     var UIOutLevelSystem = Ash.System.extend({
@@ -106,16 +107,10 @@ define([
 		},
 		
 		updateLevelPage: function () {
-			var posComponent = this.playerLocationNodes.head.position;
 			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
-			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
-            var movementOptionsComponent = this.playerLocationNodes.head.entity.get(MovementOptionsComponent);
-            
+			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);            
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-			var workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
 			
 			var vision = this.playerPosNodes.head.entity.get(VisionComponent).value;
 			var hasVision = vision > PlayerStatConstants.VISION_BASE;
@@ -176,51 +171,69 @@ define([
 			$("#header-out-improvements").toggle(hasAvailableImprovements);
 			$("#header-out-projects").toggle(hasAvailableProjects);
 			
-			// Actions
-			var passageUpBuilt = improvements.getCount(improvementNames.passageUpStairs) +
-				improvements.getCount(improvementNames.passageUpElevator) +
-				improvements.getCount(improvementNames.passageUpHole) > 0;
-			var passageDownBuilt = improvements.getCount(improvementNames.passageDownStairs) +
-				improvements.getCount(improvementNames.passageDownElevator) +
-				improvements.getCount(improvementNames.passageDownHole) > 0;
-			$("#out-action-move-up").toggle((isScouted && passagesComponent.passageUp != null) || passageUpBuilt);
-			$("#out-action-move-down").toggle((isScouted && passagesComponent.passageDown != null) || passageDownBuilt);
-			$("#out-action-move-camp").toggle(hasCamp && !hasCampHere);
-			
-			var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
-            var isValidDespairRes = 
-                (discoveredResources.indexOf(resourceNames.food) < 0 || discoveredResources.indexOf(resourceNames.water) < 0) &&
-                this.gameState.unlockedFeatures.resources.food &&
-                this.gameState.unlockedFeatures.resources.water &&
-                (this.resourcesHelper.getCurrentStorage().resources.water < 0.5 || this.resourcesHelper.getCurrentStorage().resources.food < 0.5);
+			this.updateLevelPageActions(isScouted, hasCamp, hasCampHere);
+
+            $("#minimap").toggle(hasVision);            
+		},
+        
+        updateLevelPageActions: function (isScouted, hasCamp, hasCampHere) {
+            var logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
+            
+            var posComponent = this.playerLocationNodes.head.position;
+            var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
+            var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
+            var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+            var movementOptionsComponent = this.playerLocationNodes.head.entity.get(MovementOptionsComponent);
+            var workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
+            var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+            var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
+            
+            var passageUpBuilt = improvements.getCount(improvementNames.passageUpStairs) +
+                improvements.getCount(improvementNames.passageUpElevator) +
+                improvements.getCount(improvementNames.passageUpHole) > 0;
+            var passageDownBuilt = improvements.getCount(improvementNames.passageDownStairs) +
+                improvements.getCount(improvementNames.passageDownElevator) +
+                improvements.getCount(improvementNames.passageDownHole) > 0;
+            $("#out-action-move-up").toggle((isScouted && passagesComponent.passageUp != null) || passageUpBuilt);
+            $("#out-action-move-down").toggle((isScouted && passagesComponent.passageDown != null) || passageDownBuilt);
+            $("#out-action-move-camp").toggle(hasCamp && !hasCampHere);
+
+            var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
+            var isValidDespairHunger = discoveredResources.indexOf(resourceNames.food) < 0 && this.gameState.unlockedFeatures.resources.food && this.resourcesHelper.getCurrentStorage().resources.food < 0.5;
+            var isValidDespairThirst = discoveredResources.indexOf(resourceNames.water) < 0 && this.gameState.unlockedFeatures.resources.water && this.resourcesHelper.getCurrentStorage().resources.water < 0.5;
             var isValidDespairStamina = this.playerPosNodes.head.entity.get(StaminaComponent).stamina < PlayerActionConstants.costs.move_sector_east.stamina;
             var isValidDespairMove = !movementOptionsComponent.canMove(); // conceivably happens in hazard sectors if you lose equipment
             var isFirstPosition = posComponent.level === 13 && posComponent.sectorX === WorldCreatorConstants.FIRST_CAMP_X && posComponent.sectorY === WorldCreatorConstants.FIRST_CAMP_Y;
-			var showDespair = !hasCampHere && !isFirstPosition && (isValidDespairRes || isValidDespairStamina) || isValidDespairMove;
-			$("#out-action-enter").toggle(hasCampHere);
-			$("#out-action-scout").toggle(this.gameState.unlockedFeatures.vision);
-			$("#out-action-use-spring").toggle(isScouted && featuresComponent.hasSpring);
-			$("#out-action-investigate").toggle(this.gameState.unlockedFeatures.investigate);
-			$("#out-action-fight-gang").toggle(this.gameState.unlockedFeatures.fight);
-			$("#out-action-despair").toggle(showDespair);
-            
-			$("#out-action-clear-workshop").toggle(isScouted && workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP));
+            var showDespair = !hasCampHere && !isFirstPosition && (isValidDespairHunger || isValidDespairThirst || isValidDespairStamina) || isValidDespairMove;
+            $("#out-action-enter").toggle(hasCampHere);
+            $("#out-action-scout").toggle(this.gameState.unlockedFeatures.vision);
+            $("#out-action-use-spring").toggle(isScouted && featuresComponent.hasSpring);
+            $("#out-action-investigate").toggle(this.gameState.unlockedFeatures.investigate);
+            $("#out-action-fight-gang").toggle(this.gameState.unlockedFeatures.fight);
+            $("#out-action-despair").toggle(showDespair);
+
+            // TODO do this somewhere other than UI system - maybe a global detection if despair is available
+            if (showDespair && !this.isDespairVisible) {
+                logComponent.addMessage(LogConstants.MSG_ID_DESPAIR_AVAILABLE, LogConstants.getDespairMessage(isValidDespairHunger, isValidDespairThirst, isValidDespairStamina, isValidDespairMove));
+            }
+            this.isDespairVisible = showDespair;
+
+            $("#out-action-clear-workshop").toggle(isScouted && workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP));
             if (workshopComponent) {
                 var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
                 $("#out-action-clear-workshop").text("scout " + workshopName);
             }
-			
-			this.uiFunctions.slideToggleIf("#out-locales", null, isScouted && sectorLocalesComponent.locales.length > 0, 200, 0);
-			this.uiFunctions.slideToggleIf("#table-out-actions-movement-related", null, isScouted > 0, 200, 0);
-			
+
+            this.uiFunctions.slideToggleIf("#out-locales", null, isScouted && sectorLocalesComponent.locales.length > 0, 200, 0);
+            this.uiFunctions.slideToggleIf("#table-out-actions-movement-related", null, isScouted > 0, 200, 0);
+
             // hide movement until the player makes a light
             $("#container-tab-two-out-actions table").toggle(this.gameState.numCamps > 0);
             $("#container-tab-two-out-actions h3").toggle(this.gameState.numCamps > 0);
             $("#out-improvements").toggle(this.gameState.unlockedFeatures.vision);
             $("#out-improvements table").toggle(this.gameState.unlockedFeatures.vision);
-
-            $("#minimap").toggle(hasVision);            
-		},
+            
+        },
 		
 		getDescription: function (entity, hasCampHere, hasCampOnLevel, hasVision, isScouted) {
 			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
