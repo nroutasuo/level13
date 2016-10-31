@@ -122,7 +122,6 @@ define([
 
 			this.updateItems(uniqueItems);
             this.updateUseItems();
-            this.updateStats();
 		},
         
         updateBubble: function () {
@@ -249,35 +248,6 @@ define([
             this.uiFunctions.registerActionButtonListeners("#self-use-items");
             this.uiFunctions.generateButtonOverlays("#self-use-items");
             this.uiFunctions.generateCallouts("#self-use-items");
-        },
-        
-        updateStats: function () {
-            var itemsComponent = this.itemNodes.head.items;
-            var playerStamina = this.itemNodes.head.entity.get(StaminaComponent);
-            var playerVision = this.itemNodes.head.entity.get(VisionComponent);
-            for (var bonusKey in ItemConstants.itemBonusTypes) {
-                var bonusType = ItemConstants.itemBonusTypes[bonusKey];
-                var bonus = itemsComponent.getCurrentBonus(bonusType);
-                var value = bonus;
-                var detail = bonus + " from items";
-                switch (bonusType) {
-                    case ItemConstants.itemBonusTypes.fight_att:
-                        value = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
-                        detail = FightConstants.getPlayerAttDesc(playerStamina, itemsComponent);
-                        break;
-                        
-                    case ItemConstants.itemBonusTypes.fight_def:
-                        value = FightConstants.getPlayerDef(playerStamina, itemsComponent);
-                        detail = FightConstants.getPlayerDefDesc(playerStamina, itemsComponent);
-                        break;
-                        
-                    case ItemConstants.itemBonusTypes.light:
-                        value = playerVision.maximum;
-                        break;
-                }
-                $("#stats-equipment-" + bonusKey + " .value").text(UIConstants.roundValue(value, true, true) + " (" + detail + ")");
-                $("#stats-equipment-" + bonusKey).toggle(value > 0);
-            }
         },
 
         updateItemCounts: function (isActive) {

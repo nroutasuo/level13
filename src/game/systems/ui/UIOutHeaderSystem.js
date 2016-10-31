@@ -121,7 +121,7 @@ define([
 			this.updateItems(false, isInCamp);
 			this.updatePerks();
 			this.updateResources(isInCamp);
-            this.updateHazards(isInCamp);
+            this.updateItemStats(isInCamp);
 			this.lastUpdateTimeStamp = new Date().getTime();
 		},
 		
@@ -378,8 +378,41 @@ define([
 			}
 		},
         
-        updateHazards: function (inCamp) {
-            
+        updateItemStats: function (inCamp) {
+            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+            var playerStamina = this.playerStatsNodes.head.stamina;
+            var playerVision = this.playerStatsNodes.head.vision;
+            for (var bonusKey in ItemConstants.itemBonusTypes) {
+                var bonusType = ItemConstants.itemBonusTypes[bonusKey];
+                var bonus = itemsComponent.getCurrentBonus(bonusType);
+                var value = bonus;
+                var detail = bonus + " from items";
+                var isVisible = true;
+                switch (bonusType) {
+                    case ItemConstants.itemBonusTypes.fight_att:
+                        value = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
+                        detail = FightConstants.getPlayerAttDesc(playerStamina, itemsComponent);
+                        isVisible = this.gameState.unlockedFeatures.fight;
+                        break;
+                    case ItemConstants.itemBonusTypes.fight_def:
+                        value = FightConstants.getPlayerDef(playerStamina, itemsComponent);
+                        detail = FightConstants.getPlayerDefDesc(playerStamina, itemsComponent);
+                        isVisible = this.gameState.unlockedFeatures.fight;
+                        break;
+                    case ItemConstants.itemBonusTypes.light:
+                    case ItemConstants.itemBonusTypes.bag:
+                        isVisible = false;
+                        //value = playerVision.maximum;
+                        break;
+                        
+                    default:                        
+                        isVisible = true;
+                        break;
+                }
+                $("#stats-equipment-" + bonusKey + " .value").text(UIConstants.roundValue(value, true, true));
+                $("#stats-equipment-" + bonusKey).toggle(isVisible && value > 0);
+                UIConstants.updateCalloutContent("#stats-equipment-" + bonusKey, detail);
+            }
         },
 		
 		updateGameMsg: function () {

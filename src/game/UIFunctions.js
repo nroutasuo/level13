@@ -320,6 +320,7 @@ function (Ash, UIConstants, ItemConstants, PlayerActionConstants, PositionConsta
                 var bonusType = ItemConstants.itemBonusTypes[bonusKey];
                 var div = "<div id='stats-equipment-" + bonusKey + "' class='stats-indicator stats-indicator-secondary'>";
                 div += "<span class='label'/>" + UIConstants.getItemBonusName(bonusType);
+                div += "<br/>";
                 div += "<span class='value'/></div>";
                 $("#container-equipment-stats").append(div);
             }

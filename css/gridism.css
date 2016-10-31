@@ -99,7 +99,7 @@
   
 	#grid-main > .unit, .sticky-footer > .unit {
 		width: 100% !important;
-        padding-left: 65px;
+        padding-left: 80px;
 	}
   
 	#footer {
@@ -204,7 +204,7 @@
 	}
   
 	#log {
-		max-width: 295px !important;
+        max-width: 280px !important;
 	}
 	
 	#log-overlay {

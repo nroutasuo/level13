@@ -550,16 +550,21 @@ input {
 }
  
 #footer {
-	padding: 5px;
+    padding: 5px;
+    padding-left: 25px; /* for the self-bar */
+ }
+ 
+ #unit-main {
+     padding-left: 25px; /* for the self-bar */
  }
  
 #header-self-bar {
      position: fixed; 
-     width: 50px;
+     width: 60px;
      z-index: 5;
      text-align: center; 
      padding: 3px; 
-     margin-left: -70px; 
+     margin-left: -80px; 
      font-size: 85%;
  }
  
@@ -571,7 +576,7 @@ input {
 #header-self-bar .stats-indicator {
     margin: 5px 0px 0px 0px;
     width: 100%;
-} 
+}
 
 #header-self-bar .callout-container {
     width: 100%;
@@ -1219,17 +1224,12 @@ button .cooldown-action, button .cooldown-duration {
 	opacity: 0.25;
 }
 
-p.notification {
-    padding: 2px;
-    margin: 0;
-    text-align: center;
-}
-
 #notification-player {
     padding: 0px;
     border-width: 1px;
     border-style: solid;
     margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 #notification-player .progress {
