@@ -446,7 +446,7 @@ define(['ash',
                     playerActionFunctions.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
                     playerActionFunctions.uiFunctions.completeAction(action);
                     playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
-                    playerActionFunctions.playerActionResultsHelper.logSpecialFinds(rewards);
+                    playerActionFunctions.playerActionResultsHelper.logResults(rewards);
                     playerActionFunctions.forceResourceBarUpdate();
                     playerActionFunctions.forceTabUpdate();
                     if (successCallback) successCallback();

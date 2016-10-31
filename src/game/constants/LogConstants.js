@@ -1,25 +1,42 @@
-define(['ash'], function (Ash) {
+define(['ash', 'game/constants/TextConstants'], function (Ash, TextConstants) {
 
     var LogConstants = {
         
+        // story
         MSG_ID_START: "START",
-        MSG_ID_FAINTED: "FAINTED",
-        MSG_ID_POPULATION_NATURAL: "POPULATION_NATURAL",
-        MSG_ID_WORKER_STATUS: "WORKER_STATUS",
-        MSG_ID_CAMP_EVENT: "CAMP_EVENT",
-        MSG_ID_ENTER_CAMP: "ENTER_CAMP",
-        MSG_ID_LEAVE_CAMP: "LEAVE_CAMP",
-        
+       
+        // out actions
         MSG_ID_SCAVENGE: "SCAVENGE",
         MSG_ID_SCOUT: "SCOUT",
         MSG_ID_USE_SPRING: "MSG_ID_USE_SPRING",
         MSG_ID_SCOUT_LOCALE: "SCOUT_LOCALE",
         MSG_ID_WORKSHOP_CLEARED: "WORKSHOP_CLEARED",
         MSG_ID_GANG_DEFEATED: "GANG_DEFEATED",
+
+        // in actions
+        MSG_ID_ENTER_CAMP: "ENTER_CAMP",
+        MSG_ID_LEAVE_CAMP: "LEAVE_CAMP",
+        MSG_ID_USE_CAMPFIRE_SUCC: "USE_CAMPFIRE_SUCC",
+        MSG_ID_USE_CAMPFIRE_FAIL: "USE_CAMPFIRE_FAIL",
+        MSG_ID_USE_HOSPITAL: "USE_HOSPITAL",
+        MSG_ID_USE_HOSPITAL2: "USE_HOSPITAL2",
+        MSG_ID_USE_COLLECTOR_FAIL: "USE_COLLECTOR_FAIL",
+        
+        // out atmospheric and results
         MSG_ID_ADD_HAZARD_PERK: "MSG_ID_ADD_HAZARD_PERK",
         MSG_ID_TIME_HAZARD_PERK: "MSG_ID_TIME_HAZARD_PERK",
         MSG_ID_REMOVE_HAZARD_PERK: "MSG_ID_REMOVE_HAZARD_PERK",
+        MSG_ID_FOUND_BLUEPRINT_FIRST: "MSG_ID_FOUND_BLUEPRINT_FIRST",
+        MSG_ID_FOUND_ITEM_FIRST: "MSG_ID_FOUND_ITEM_FIRST",
+        MSG_ID_LOST_ITEM: "MSG_ID_LOST_ITEM",
+        MSG_ID_FAINTED: "FAINTED",
         
+        // in atmospheric and results
+        MSG_ID_POPULATION_NATURAL: "POPULATION_NATURAL",
+        MSG_ID_WORKER_STATUS: "WORKER_STATUS",
+        MSG_ID_CAMP_EVENT: "CAMP_EVENT",
+        
+        // in buildings
         MSG_ID_BUILT_CAMP: "BUILT_CAMP",
         MSG_ID_BUILT_HOUSE: "BUILT_HOUSE",
         MSG_ID_BUILT_LIGHTS: "BUILT_LIGHTS",
@@ -40,19 +57,12 @@ define(['ash'], function (Ash) {
         MSG_ID_BUILT_TRADING_POST: "BUILT_TRADING_POST",
         MSG_ID_BUILT_INN: "BUILT_INN",
         
+        // out buildings
         MSG_ID_BUILT_PASSAGE: "BUILT_PASSAGE",
         MSG_ID_BUILT_TRAP: "BUILT_TRAP",
         MSG_ID_BUILT_BUCKET: "BUILT_BUCKET",
-        
-        MSG_ID_USE_CAMPFIRE_SUCC: "USE_CAMPFIRE_SUCC",
-        MSG_ID_USE_CAMPFIRE_FAIL: "USE_CAMPFIRE_FAIL",
-        MSG_ID_USE_HOSPITAL: "USE_HOSPITAL",
-        MSG_ID_USE_HOSPITAL2: "USE_HOSPITAL2",
-        MSG_ID_USE_COLLECTOR_FAIL: "USE_COLLECTOR_FAIL",
-        
-        MSG_ID_FOUND_BLUEPRINT_FIRST: "MSG_ID_FOUND_BLUEPRINT_FIRST",
-        MSG_ID_FOUND_ITEM_FIRST: "MSG_ID_FOUND_ITEM_FIRST",
-        
+
+        // items
         MSG_ID_ADD_FOLLOWER: "ADD_FOLLOWER",
         MSG_ID_CRAFT_ITEM: "CRAFT_ITEM",
 	
@@ -93,6 +103,25 @@ define(['ash'], function (Ash) {
                     console.log("WARN: text not defined for merged log message: " + mergedId);
                     return String(mergedId);
             }
+        },
+        
+        getLostItemMessage: function (resultVO) {
+            var template = TextConstants.getLogItemsText(resultVO.lostItems);
+            template.msg = "Lost " + template.msg + ". ";
+            
+            var intros = [ 
+                "Almost fell into a crack in the street", 
+                "Fell through a rotten floor", 
+                "Dropped bag while climbing a fence", 
+                "Stumbled on some wrecked pipes", 
+                "Left a bag pocket open and some items fell out",
+                "Got scared of shadows and ran, leaving some items behind"
+            ];
+            var intro = intros[Math.floor(Math.random() * intros.length)];            
+            intro = intro + ". ";
+            template.msg = intro + template.msg;
+            
+            return { msg: template.msg, replacements: template.replacements, values: template.values };
         },
 		
     }

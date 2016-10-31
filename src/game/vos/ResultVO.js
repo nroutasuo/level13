@@ -2,6 +2,8 @@
 define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
     
     var ResultVO = Ash.Class.extend({
+        
+        action: null,
 		
 		// rewards
 		gainedResources: null,
@@ -24,7 +26,9 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
         discardedItems: [],
         discardedResources: null,
 	
-        constructor: function () {
+        constructor: function (action) {
+            this.action = action;
+            
 			this.gainedResources = new ResourcesVO();
             this.gainedItems = [];
             this.gainedFollowers = [];
@@ -45,7 +49,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		},
         
         clone: function () {
-            var result = new ResultVO();
+            var result = new ResultVO(this.action);
             result.gainedResources = this.gainedResources.clone();
             result.lostResources = this.lostResources.clone();
             result.gainedItems = this.gainedItems.concat();

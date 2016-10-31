@@ -59,6 +59,30 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
 			msg = msg.slice(0, -2);
 			return { msg: msg, replacements: replacements, values: values };
 		},
+        
+        getLogItemsText: function (items) {
+            var msg = "";
+            var replacements = [];
+            var values = [];
+            var loggedItems = {};
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                if (typeof loggedItems[item.id] === 'undefined') {
+                    msg += "$" + replacements.length + ", ";
+                    replacements.push("#" + replacements.length + " " + item.name.toLowerCase());
+                    values.push(1);
+                    loggedItems[item.id] = replacements.length - 1;
+                } else {
+                    values[loggedItems[item.id]]++;
+                }
+            }
+            msg = msg.slice(0, -2);
+            if (Object.keys(loggedItems).length > 1) {
+                var lastCommaIndex = msg.lastIndexOf(",");
+                msg = msg.substring(0, lastCommaIndex) + " and" + msg.substring(lastCommaIndex + 1);
+            }
+            return {msg: msg, replacements: replacements, values: values};            
+        },
 		
 		getLocaleName: function (locale, sectorRepair) {
 			var repairBracket = this.getRepairBracket(sectorRepair);
@@ -294,7 +318,16 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
 		},
 		
 		addArticle: function (s) {
-			return "a " + s;
+            switch (s.trim().charAt(0).toLowerCase()) {
+                case "a":
+                case "i":
+                case "e":
+                case "o":
+                // u is often ambiguous use "a" until adding a fancier rule
+                    return "an " + s;
+                default:
+                    return "a " + s;
+            }
 		},
 		
 		capitalize: function (string) {

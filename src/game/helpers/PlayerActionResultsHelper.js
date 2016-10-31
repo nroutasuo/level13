@@ -121,7 +121,7 @@ define([
         },
 
         getScavengeRewards: function () {
-            var rewards = new ResultVO();
+            var rewards = new ResultVO("scavenge");
 
             var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
@@ -143,7 +143,7 @@ define([
         },
 
         getScoutRewards: function () {
-            var rewards = new ResultVO();
+            var rewards = new ResultVO("scout");
 
             var playerVision = this.playerStatsNodes.head.vision.value;
             var efficiency = this.getScavengeEfficiency();
@@ -159,7 +159,7 @@ define([
         },
 
         getScoutLocaleRewards: function (localeVO) {
-            var rewards = new ResultVO();
+            var rewards = new ResultVO("scout");
             var localeCategory = localeVO.getCategory();
             
             var playerVision = this.playerStatsNodes.head.vision.value;
@@ -196,7 +196,7 @@ define([
         },
 		
 		getUseSpringRewards: function () {
-			var rewards = new ResultVO();
+			var rewards = new ResultVO("use_spring");
             var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
 			rewards.gainedResources = new ResourcesVO();
 			rewards.gainedResources.water = bagComponent.totalCapacity -  bagComponent.usedCapacity;
@@ -204,12 +204,12 @@ define([
 		},
         
         getClearWorkshopRewards: function () {
-            var rewards = new ResultVO();
+            var rewards = new ResultVO("clear_workshop");
             return rewards;
         },
 		
 		getFightRewards: function (won) {
-			var rewards = new ResultVO();
+			var rewards = new ResultVO("fight");
             if (won) {
 				// TODO make fight rewards dependent on enemy difficulty (amount) and type
 				var availableResources = new ResourcesVO();
@@ -229,7 +229,7 @@ define([
 		},
 
         getFadeOutResults: function (loseInventoryProbability, injuryProbability) {
-            var resultVO = new ResultVO();
+            var resultVO = new ResultVO("despair");
             if (loseInventoryProbability > Math.random()) {
                 resultVO.lostResources = this.playerResourcesNodes.head.resources.resources.clone();
                 resultVO.lostItems = this.getLostItems("despair");
@@ -478,7 +478,7 @@ define([
 			return div;
 		},
 		
-		logSpecialFinds: function (rewards) {
+		logResults: function (rewards) {
             var logComponent = this.playerStatsNodes.head.entity.get(LogMessagesComponent);
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			
@@ -497,6 +497,11 @@ define([
 					}
 				}
 			}
+            
+            if (rewards.lostItems && rewards.lostItems.length > 0) {
+                var messageTemplate = LogConstants.getLostItemMessage(rewards);
+                logComponent.addMessage(LogConstants.MSG_ID_LOST_ITEM, messageTemplate.msg, messageTemplate.replacements, messageTemplate.values);
+            }
 		},
 		
 		getScavengeEfficiency: function () {
