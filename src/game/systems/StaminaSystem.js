@@ -1,13 +1,21 @@
 define([
-    'ash', 'game/constants/GameConstants', 'game/constants/PlayerStatConstants', 'game/nodes/player/StaminaNode', 'game/constants/PerkConstants'
-], function (Ash, GameConstants, PlayerStatConstants, StaminaNode, PerkConstants) {
+    'ash', 
+    'game/constants/GameConstants', 
+    'game/constants/LogConstants', 
+    'game/constants/PlayerStatConstants', 
+    'game/constants/PerkConstants',
+    'game/nodes/player/StaminaNode', 
+    'game/components/common/LogMessagesComponent'
+], function (Ash, GameConstants, LogConstants, PlayerStatConstants, PerkConstants, StaminaNode, LogMessagesComponent) {
     var StaminaSystem = Ash.System.extend({
         
         gameState: null,
         nodeList: null,
+        isWarning: true, // skip warning log on first update
 
-        constructor: function (gameState) {
+        constructor: function (gameState, playerActionsHelper) {
             this.gameState = gameState;
+            this.playerActionsHelper = playerActionsHelper;
         },
 
         addToEngine: function (engine) {
@@ -61,6 +69,18 @@ define([
 			if (staminaComponent.stamina < 0) {
 				staminaComponent.stamina = 0;
 			}
+            
+            var staminaWarningLimit = PlayerStatConstants.getStaminaWarningLimit(this.playerActionsHelper, staminaComponent);
+            var isWarning = staminaComponent.stamina <= staminaWarningLimit;
+            if (isWarning && !this.isWarning) {
+                var logComponent = node.entity.get(LogMessagesComponent);
+                var hasCamp = this.gameState.unlockedFeatures.camp;
+                if (hasCamp)
+                    logComponent.addMessage(LogConstants.MSG_ID_STAMINA_WARNING, "Getting tired. Should head back to camp soon.");
+                else
+                    logComponent.addMessage(LogConstants.MSG_ID_STAMINA_WARNING, "Getting tired. Should find a place to rest soon.");
+            }
+            this.isWarning = isWarning;
         }
     });
 

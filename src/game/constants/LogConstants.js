@@ -1,4 +1,4 @@
-define(['ash', 'game/constants/TextConstants'], function (Ash, TextConstants) {
+define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], function (Ash, TextConstants, ItemConstants) {
 
     var LogConstants = {
         
@@ -32,6 +32,7 @@ define(['ash', 'game/constants/TextConstants'], function (Ash, TextConstants) {
         MSG_ID_GOT_INJURED: "MSG_ID_GOT_INJURED",
         MSG_ID_FAINTED: "MSG_ID_FAINTED",
         MSG_ID_DESPAIR_AVAILABLE: "MSG_ID_DESPAIR_AVAILABLE",
+        MSG_ID_STAMINA_WARNING: "MSG_ID_STAMINA_WARNING",
         
         // in atmospheric and results
         MSG_ID_POPULATION_NATURAL: "POPULATION_NATURAL",
@@ -138,6 +139,16 @@ define(['ash', 'game/constants/TextConstants'], function (Ash, TextConstants) {
                 return "Too hungry to go on.";
             }
             return "Too tired to go on.";
+        },
+        
+        getCraftItemMessage: function (itemVO) {
+            itemDetails = "";
+            switch (itemVO.id) {
+                case ItemConstants.itemDefinitions.light[0].id:
+                    itemDetails = " Light will make scavenging safer.";
+                    break;
+            }
+            return "Crafted " + itemVO.name + "." + itemDetails;
         },
 		
     }

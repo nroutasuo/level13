@@ -206,7 +206,7 @@ define([
 			
 			this.engine.addSystem(new GlobalResourcesResetSystem(), SystemPriorities.update);
 			this.engine.addSystem(new VisionSystem(this.gameState), SystemPriorities.update);
-			this.engine.addSystem(new StaminaSystem(this.gameState), SystemPriorities.update);
+			this.engine.addSystem(new StaminaSystem(this.gameState, this.playerActionsHelper), SystemPriorities.update);
 			this.engine.addSystem(new BagSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new HazardSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CollectorSystem(this.gameState), SystemPriorities.update);

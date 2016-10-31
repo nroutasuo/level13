@@ -511,6 +511,8 @@ define(['ash',
                 var improvementsComponent = sector.get(SectorImprovementsComponent);
                 improvementsComponent.add(improvementNames.home);
                 
+                this.gameState.unlockedFeatures.camp = true;
+                
                 this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "Built a camp.");
                 this.forceResourceBarUpdate();
                 this.save();
@@ -850,8 +852,8 @@ define(['ash',
                     this.gameState.unlockedFeatures.fight = true;
                 
 				this.gameState.unlockedFeatures.vision = true;
-                           
-                this.addLogMessage(LogConstants.MSG_ID_CRAFT_ITEM, "Crafted " + item.name);
+
+                this.addLogMessage(LogConstants.MSG_ID_CRAFT_ITEM, LogConstants.getCraftItemMessage(item));
                 this.forceResourceBarUpdate();
                 this.save();
             }
