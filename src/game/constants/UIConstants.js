@@ -101,10 +101,10 @@ define(['ash',
 			return "<li class='item-slot item-slot-small lvl13-box-1 " + (isLost ? "item-slot-lost" : "") + "'>" + imageDiv + "</li>";
 		},
 		
-		getBlueprintPieceLI: function (blueprintVO) {
-			var upgradeDefinition = UpgradeConstants.upgradeDefinitions[blueprintVO.upgradeId];
+		getBlueprintPieceLI: function (upgradeId) {
+			var upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeId];
 			var name = upgradeDefinition.name;
-			return "<li><div class='info-callout-target info-callout-target-small' description='A piece of forgotten technology (" + name + ")'>" + this.getBlueprintPieceIcon(blueprintVO) + " blueprint</li>";
+			return "<li><div class='info-callout-target info-callout-target-small' description='A piece of forgotten technology (" + name + ")'>" + this.getBlueprintPieceIcon(upgradeId) + " blueprint</li>";
 		},
 		
 		getResourceList: function (resourceVO) {
@@ -366,8 +366,8 @@ define(['ash',
 				$(targetElementId).parents(".info-callout-target").siblings(".info-callout").children(".info-callout-content").html(content);
 		},
 		
-		getBlueprintPieceIcon: function (blueprintVO) {
-            var costs = PlayerActionConstants.costs[blueprintVO.upgradeId];
+		getBlueprintPieceIcon: function (upgradeId) {
+            var costs = PlayerActionConstants.costs[upgradeId];
 			var type = "rumours";
 			if (costs.favour > 0) type = "favour";
 			else if (costs.evidence > 0) type = "evidence";

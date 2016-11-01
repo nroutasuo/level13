@@ -427,8 +427,7 @@ define([
 				gainedhtml += "<li>" + resultVO.gainedPopulation + " population</li>";
 			}
 			if (resultVO.gainedBlueprintPiece) {
-				var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(resultVO.gainedBlueprintPiece);
-				if (blueprintVO) gainedhtml += UIConstants.getBlueprintPieceLI(blueprintVO);
+				gainedhtml += UIConstants.getBlueprintPieceLI(resultVO.gainedBlueprintPiece);
 			}
 			gainedhtml += "</ul>";
 			var hasGainedStuff = gainedhtml.indexOf("<li") > 0;
@@ -466,6 +465,7 @@ define([
 			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.gainedInjuries.length > 0;
 			if (!hasGainedStuff && !hasLostStuff) {
 				if (isFight) div += "<p>Nothing left behind.</p>"
+                else if (resultVO.action === "despair") div += "";
 				else div += "<p>Didn't find anything useful.</p>";
 			}
 			

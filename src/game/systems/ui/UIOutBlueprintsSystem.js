@@ -77,7 +77,7 @@ define([
                 var nameTD = "<td class='item-name'>" + upgradeDefinition.name + "</td>";
                 var piecesTD = "<td style='text-align:left'>";
                 for (var j = 0; j < blueprintVO.maxPieces; j++) {
-                    var icon = j < blueprintVO.currentPieces ? UIConstants.getBlueprintPieceIcon(blueprintVO) : "";
+                    var icon = j < blueprintVO.currentPieces ? UIConstants.getBlueprintPieceIcon(blueprintVO.upgradeId) : "";
                     var classes = "blueprint-piece-box" + (j < blueprintVO.currentPieces ? " blueprint-piece-box-found" : " blueprint-piece-box-missing");
                     piecesTD += "<div class='" + classes + "'>" + icon + "</div>";
                 }

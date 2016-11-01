@@ -84,51 +84,60 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
             return {msg: msg, replacements: replacements, values: values};            
         },
 		
-		getLocaleName: function (locale, sectorRepair) {
+		getLocaleName: function (locale, sectorRepair, isShort) {
 			var repairBracket = this.getRepairBracket(sectorRepair);
 			switch (locale.type) {
 			case localeTypes.factory:
-				if (repairBracket === this.repairBrackets[0][0]) return "Ruined factory";
+                if (isShort) return "Factory";
+				if (repairBracket === this.repairBrackets[0][0]) return "Ruined factory" ;
 				if (repairBracket === this.repairBrackets[1][0]) return "Abandoned factory";
 				if (repairBracket === this.repairBrackets[2][0]) return "Abandoned factory";
 				return "Empty factory";
 			case localeTypes.house:
+                if (isShort) return "House";
 				if (repairBracket === this.repairBrackets[0][0]) return "Ruined house";
 				if (repairBracket === this.repairBrackets[1][0]) return "Decaying house";
 				if (repairBracket === this.repairBrackets[2][0]) return "Neglected house";
 				return "Empty house";
 			case localeTypes.lab:
-				if (repairBracket < this.repairBrackets[0][2]) return "Ruined lab";
+                if (isShort) return "Facility";
+				if (repairBracket < this.repairBrackets[0][2]) return "Ruined Laborathory";
 				return "Abandoned lab";
 			case localeTypes.grove:
+                if (isShort) return "Grove";
 				return "Flourishing grove";
 			case localeTypes.market:
+                if (isShort) return "Building";
 				if (repairBracket === this.repairBrackets[0][0]) return "Ruined market";
 				if (repairBracket === this.repairBrackets[1][0]) return "Abandoned shop";
 				if (repairBracket === this.repairBrackets[2][0]) return "Abandoned mall";
 				return "Silent shopping tower";
 			case localeTypes.maintenance:
-				if (repairBracket === this.repairBrackets[0][0]) return "Ruined market";
-				if (repairBracket === this.repairBrackets[1][0]) return "Abandoned shop";
-				if (repairBracket === this.repairBrackets[2][0]) return "Abandoned mall";
-				return "Silent shopping tower";
+                if (isShort) return "Facility";
+				if (repairBracket === this.repairBrackets[0][0]) return "Old water tower";
+				if (repairBracket === this.repairBrackets[1][0]) return "Defunct control unit";
+				if (repairBracket === this.repairBrackets[2][0]) return "Ancient network switch";
+				return "Electric box";
 			case localeTypes.transport:
+                if (isShort) return "Station";
 				if (repairBracket === this.repairBrackets[0][0]) return "Ruined train depot";
 				if (repairBracket === this.repairBrackets[1][0]) return "Rotting cable car station";
 				if (repairBracket === this.repairBrackets[2][0]) return "Abandoned train station";
 				return "Empty tram depot";
 			case localeTypes.sewer:
+                if (isShort) return "Sewer";
 				if (repairBracket === this.repairBrackets[0][0]) return "Wrecked sewer";
 				return "Quiet sewer";
 			case localeTypes.warehouse:
+                if (isShort) return "Warehouse";
 				if (repairBracket === this.repairBrackets[0][0]) return "Warehouse ruin";
 				if (repairBracket === this.repairBrackets[1][0]) return "Decaying warehouse";
 				if (repairBracket === this.repairBrackets[2][0]) return "Abandoned warehouse";
 				return "Sturdy warehouse";
-			case localeTypes.camp: return "Foreign camp";
-			case localeTypes.hut: return "Lone hut";
-			case localeTypes.hermit: return "Lone hut";
-			case localeTypes.caravan: return "Trade caravan";
+			case localeTypes.camp: return isShort ? "Camp" : "Foreign camp";
+			case localeTypes.hut: return isShort ? "Hut"  : "Lone hut";
+			case localeTypes.hermit: return isShort ? "Hut" : "Lone hut";
+			case localeTypes.caravan: return isShort ? "Caravan" : "Trade caravan";
 			default: return "Building";
 			}
 		},

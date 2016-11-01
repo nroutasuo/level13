@@ -388,7 +388,7 @@ define(['ash',
                         if (sectorLocalesComponent.locales.length > 1)
                             logMsg += "<br/>There are some interesting buildings here.";
                         else
-                            logMsg += "<br/>There is a " + TextConstants.getLocaleName(locale, featuresComponent.stateOfRepair).toLowerCase() + " here that seems worth investigating.";
+                            logMsg += "<br/>There is a " + TextConstants.getLocaleName(locale, featuresComponent.stateOfRepair, true).toLowerCase() + " here that seems worth investigating.";
                     }
                     
                     var playerActionFunctions = this;
@@ -800,6 +800,8 @@ define(['ash',
                 
                 var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
                 perksComponent.removeItemsByType(PerkConstants.perkTypes.injury);
+                
+                this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
                 this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL, "Healed all injuries.");
             }
             this.uiFunctions.completeAction("use_in_hospital");
