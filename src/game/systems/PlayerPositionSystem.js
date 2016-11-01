@@ -8,6 +8,7 @@ define([
     'game/nodes/LevelNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/sector/SectorNode',
+    'game/nodes/sector/CampNode',
     'game/components/common/CurrentPlayerLocationComponent',
     'game/components/sector/CurrentNearestCampComponent',
     'game/components/common/PositionComponent',
@@ -15,7 +16,7 @@ define([
     'game/components/common/RevealedComponent',
     'game/components/common/CampComponent',
 ], function (Ash, UIConstants, WorldCreatorConstants,
-    PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode,
+    PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode, CampNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, PositionComponent,
 	VisitedComponent, RevealedComponent, CampComponent) {
     
@@ -46,9 +47,13 @@ define([
 			this.levelNodes = engine.getNodeList(LevelNode);
 			this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
+            this.campNodes = engine.getNodeList(CampNode);
             
             var sys = this;
             this.playerPositionNodes.nodeAdded.addOnce(function(node) {
+                sys.lastUpdatePosition = null;
+            });
+            this.campNodes.nodeAdded.addOnce(function (node) {
                 sys.lastUpdatePosition = null;
             });
             this.playerLocationNodes.nodeAdded.addOnce(function (node) {
