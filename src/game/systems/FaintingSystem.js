@@ -11,7 +11,6 @@ define([
     'game/nodes/PlayerLocationNode',
     'game/nodes/NearestCampNode',
     'game/nodes/LastVisitedCampNode',
-    'game/components/common/ResourcesComponent',
     'game/components/common/PositionComponent',
     'game/components/common/VisitedComponent',
     'game/components/common/CampComponent',
@@ -20,7 +19,8 @@ define([
     'game/components/sector/MovementOptionsComponent',
 	'game/components/player/DeityComponent',
 	'game/components/player/PlayerActionResultComponent',
-    'game/components/common/LogMessagesComponent'
+    'game/components/common/LogMessagesComponent',
+    'game/systems/PlayerPositionSystem'
 ], function (Ash,
     SaveSystem,
     PlayerActionConstants,
@@ -32,7 +32,6 @@ define([
 	PlayerLocationNode,
 	NearestCampNode,
 	LastVisitedCampNode,
-	ResourcesComponent,
 	PositionComponent,
 	VisitedComponent,
 	CampComponent,
@@ -41,7 +40,8 @@ define([
     MovementOptionsComponent,
 	DeityComponent,
     PlayerActionResultComponent,
-	LogMessagesComponent
+	LogMessagesComponent,
+    PlayerPositionSystem
 ) {
     var FaintingSystem = Ash.System.extend({
 		
@@ -217,10 +217,15 @@ define([
 			playerPosition.level = sectorPosition.level;
 			playerPosition.sectorX = sectorPosition.sectorX;
 			playerPosition.sectorY = sectorPosition.sectorY;
+            
+            // TODO make neater way to request position update - needs to happen before enterCamp which relies on nearest camp node
+            this.engine.getSystem(PlayerPositionSystem).updateSectors();
+            
 			if (sector.has(CampComponent)) {
                 this.uiFunctions.playerActions.enterCamp(false);
                 this.uiFunctions.showTab(this.uiFunctions.elementIDs.tabs.in);
             }
+            
 			this.log(msgLog);
 			this.save();
 		},
