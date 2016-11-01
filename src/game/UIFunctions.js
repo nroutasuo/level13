@@ -406,10 +406,10 @@ function (Ash, UIConstants, ItemConstants, PlayerActionConstants, PositionConsta
             var func = this.actionToFunctionMap[baseId];
             if (func) {
                 var param = null;
-                var isProject = $(button).hasClass("action-level-project");
-                if (isProject) param = $(button).attr("sector");
                 var actionIDParam = this.playerActions.playerActionsHelper.getActionIDParam(action);
-                if (actionIDParam) param = actionIDParam;
+                if (actionIDParam) param = actionIDParam;                
+                var isProject = $(button).hasClass("action-level-project");
+                if (isProject)  param = $(button).attr("sector");
                 func.call(this.playerActions, param);
             } else {
                 switch (action) {

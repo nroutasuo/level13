@@ -93,7 +93,10 @@ define(['ash',
                     break;
 
                 case CheatConstants.CHEAT_NAME_EVIDENCE:
-                    this.playerStatsNodes.head.evidence.value = parseInt(inputParts[1]);
+                    if (inputParts.length > 1)
+                        this.playerStatsNodes.head.evidence.value = parseInt(inputParts[1]);
+                    else
+                        this.playerStatsNodes.head.evidence.value *= 2;
                     break;
 
 
