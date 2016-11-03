@@ -1,6 +1,7 @@
 define(['ash'], function (Ash) {
     
     var EvidenceComponent = Ash.Class.extend({
+        
         constructor: function () {
             this.value = 0;
             this.cap = 100;

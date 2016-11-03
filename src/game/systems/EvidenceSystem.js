@@ -41,7 +41,6 @@ define([
 			
 			evidenceComponent.accSources = [];
 			evidenceComponent.accumulation = 0;
-			var cap = 100;
 			var libraryUpgradeLevel = this.getLibraryUpgradeLevel();
 			
 			if (this.campNodes.head) {
@@ -54,7 +53,6 @@ define([
 					var accLibrary = 0.0005 * libraryCount * libraryUpgradeLevel * GameConstants.gameSpeedCamp;
 					var accSpeedCamp = accLibrary;
 					accSpeed += accSpeedCamp;
-					cap += libraryCount * 100;
 					
 					evidenceComponent.addChange("Libraries", accSpeedCamp);
 					evidenceComponent.accumulation += accSpeed;
@@ -63,8 +61,6 @@ define([
 				evidenceComponent.value += (time + this.engine.extraUpdateTime) * accSpeed;
 				evidenceComponent.isAccumulating = true;
 			}
-			
-			evidenceComponent.cap = cap;
         },
 		
 		getLibraryUpgradeLevel: function () {
