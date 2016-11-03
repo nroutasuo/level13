@@ -592,7 +592,7 @@ function (Ash, GameConstants, CampConstants) {
                     }
                 },
 
-                clothing_head_1: {
+                craft_clothing_head_1: {
                     upgrades: {
                         unlock_clothing_warm: true,
                     }
@@ -613,6 +613,12 @@ function (Ash, GameConstants, CampConstants) {
                 craft_clothing_hands_1: {
                     upgrades: {
                         unlock_clothing_warm: true,
+                    }
+                },
+                
+                clothing_hands_2: {
+                    upgrades: {
+                        unlock_item_clothing2: true,                        
                     }
                 },
                 
@@ -1075,7 +1081,7 @@ function (Ash, GameConstants, CampConstants) {
             
                 build_in_house: {
                     resource_metal: 30,
-                    cost_factor: 2,
+                    cost_factor: 2.25,
                 },
             
                 build_in_house2: {
@@ -1641,7 +1647,7 @@ function (Ash, GameConstants, CampConstants) {
             
             injuryProbabilities: {
                 scout: 0.005,
-                scavenge: 0.05,
+                scavenge: 0.01,
                 despair: 0.7, // TODO make dynamic and link to cases in FaintingSystem
             },
             

@@ -130,7 +130,7 @@ define([
             var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
             var efficiency = this.getScavengeEfficiency();
 
-            rewards.gainedResources = this.getRewardResources(1, efficiency, sectorResources);
+            rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
             rewards.gainedItems = this.getRewardItems(0.007, 0.05, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
 
             // should never be needed, but as a fallback
@@ -146,13 +146,12 @@ define([
         getScoutRewards: function () {
             var rewards = new ResultVO("scout");
 
-            var playerVision = this.playerStatsNodes.head.vision.value;
             var efficiency = this.getScavengeEfficiency();
             var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
            
             rewards.gainedEvidence = 1;
             if (rewards.gainedInjuries.length === 0) {
-                rewards.gainedResources = this.getRewardResources(0.5, efficiency * 2, sectorResources);
+                rewards.gainedResources = this.getRewardResources(0.5, 3, efficiency, sectorResources);
             }
 
             return rewards;
@@ -170,7 +169,7 @@ define([
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var playerPos = this.playerLocationNodes.head.position;
             var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
-            var localeDifficulty = localeVO.requirements.vision[0] + localeVO.costs.stamina;
+            var localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
 
             rewards.gainedBlueprintPiece = this.getResultBlueprint(localeVO);
             if (localeCategory === "u") {
@@ -184,7 +183,7 @@ define([
 
             if (rewards.gainedInjuries.length === 0) {
                 if (localeCategory === "u") {
-                    rewards.gainedResources = this.getRewardResources(1, efficiency * localeDifficulty / 25, availableResources);
+                    rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
                     rewards.gainedItems = this.getRewardItems(0.2, 0, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
                 } else {
                     rewards.gainedItems = this.getRewardItems(0.2, 0, this.itemResultTypes.meet, itemsComponent, levelOrdinal);
@@ -217,7 +216,7 @@ define([
 				var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
 				availableResources.setResource(resourceNames.food, 10);
 				availableResources.setResource(resourceNames.metal, 3);
-				rewards.gainedResources = this.getRewardResources(0.3, 1, availableResources);
+				rewards.gainedResources = this.getRewardResources(0.3, 2, this.getScavengeEfficiency(), availableResources);
                 rewards.gainedItems = this.getRewardItems(0.2, 0.2, this.itemResultTypes.fight, itemsComponent, levelOrdinal);
 				rewards.gainedReputation = 1;
             } else {
@@ -513,7 +512,8 @@ define([
             return (playerHealth / 100) * (playerVision / 100);
         },
 
-		getRewardResources: function (probabilityFactor, amountFactor, availableResources) {
+        // probabilityFactor & efficiency as % factors (0-1), amountFactor as a factor relative to scavenge which is 1
+		getRewardResources: function (probabilityFactor, amountFactor, efficiency, availableResources) {
 			var results = new ResourcesVO();
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
@@ -534,8 +534,9 @@ define([
 				}
 				probability = probability * probabilityFactor;
 				var resultAmount = Math.random() < probability ?
-					Math.ceil(amountFactor * resAmountFactor * resAmount * Math.random()) :
+					Math.ceil(amountFactor * resAmountFactor * resAmount * Math.random() * efficiency) :
 					0;
+                resultAmount = Math.min(resultAmount, 10);
 				
 				if (resultAmount > 0 && resRoundTo > 1) {
 					resultAmount = Math.ceil(resultAmount / resRoundTo) * resRoundTo;
@@ -671,7 +672,13 @@ define([
         },
 
 		getResultInjuries: function (injuryProbability) {
+            var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
 			var injuries = [];
+            
+            // limit possible injuries
+            if (perksComponent.getTotalEffect(PerkConstants.perkTypes.injury) < 0.35)
+                return injuries;
+            
 			if (injuryProbability > Math.random()) {
 				var injuryi = parseInt(Math.random() * PerkConstants.perkDefinitions.injury.length);
 				var injury = PerkConstants.perkDefinitions.injury[injuryi];
