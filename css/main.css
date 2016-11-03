@@ -1345,6 +1345,7 @@ span.time {
 
 span#out-position-indicator {
     font-size: 80%;
+    line-height: 0.75em;
 }
 
 span.icon {

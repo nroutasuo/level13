@@ -450,7 +450,7 @@ define([
             
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var hasMap = itemsComponent.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
-            $("#out-position-indicator").text(hasMap ? this.currentLocationNodes.head.entity.get(PositionComponent).getPosition().getInGameFormat(false) : "");
+            $("#out-position-indicator").text(hasMap ? this.currentLocationNodes.head.entity.get(PositionComponent).getPosition().getInGameFormat(false) : "??");
         },
         
         roundStatValue: function (value) {
