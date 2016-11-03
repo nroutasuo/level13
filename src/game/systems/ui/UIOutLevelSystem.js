@@ -423,13 +423,13 @@ define([
             var hazardDesc = "";
             if (hasHazards) {
                 if (featuresComponent.hazards.radiation > 0) {
-                    hazardDesc += "This place is radioactive. ";
+                    hazardDesc += "This place is radioactive (" + featuresComponent.hazards.radiation + "). ";
                 }
                 if (featuresComponent.hazards.poison > 0) {
-                    hazardDesc += "This place is dangerously polluted. ";
+                    hazardDesc += "This place is dangerously polluted (" + featuresComponent.hazards.poison + "). ";
                 }
                 if (featuresComponent.hazards.cold > 0) {
-                    hazardDesc += "It's very cold here. ";
+                    hazardDesc += "It's very cold here (" + featuresComponent.hazards.cold + "). ";
                 }
             }
 			

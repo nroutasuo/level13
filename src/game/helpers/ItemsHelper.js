@@ -125,7 +125,7 @@ define([
             for (var i = 0; i < defaultClothing.length; i++) {
                 coldProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_cold);
             }
-            return coldProtection;          
+            return (coldProtection - 5);
         },
         
     });

@@ -1032,42 +1032,42 @@ function (Ash, GameConstants, CampConstants) {
                 build_out_passage_up_hole: {
                     resource_metal: 200,
                     resource_concrete: 10,
-                    cost_factor: 1.5,
+                    cost_factor: 2,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_up_stairs: {
                     resource_metal: 200,
                     resource_rope: 10,
-                    cost_factor: 1.5,
+                    cost_factor: 2,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_up_elevator: {
                     resource_metal: 200,
                     resource_fuel: 10,
-                    cost_factor: 1.5,
+                    cost_factor: 2,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_down_hole: {
                     resource_metal: 200,
                     resource_concrete: 10,
-                    cost_factor: 1.5,
+                    cost_factor: 2,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_down_stairs: {
                     resource_metal: 200,
                     resource_rope: 10,
-                    cost_factor: 1.5,
+                    cost_factor: 2,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_down_elevator: {
                     resource_metal: 200,
                     resource_fuel: 10,
-                    cost_factor: 1.5,
+                    cost_factor: 2,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
@@ -1603,7 +1603,7 @@ function (Ash, GameConstants, CampConstants) {
                     rumours: 21,
                 },
                 unlock_building_passage_staircase: {
-                    evidence: 21,
+                    evidence: 13,
                 },
                 unlock_building_hospital: {
                     evidence: 25,

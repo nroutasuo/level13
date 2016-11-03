@@ -131,7 +131,7 @@ define([
             var efficiency = this.getScavengeEfficiency();
 
             rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
-            rewards.gainedItems = this.getRewardItems(0.007, 0.05, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
+            rewards.gainedItems = this.getRewardItems(0.007, 0.08, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
 
             // should never be needed, but as a fallback
             var unscoutedLocales = this.levelHelper.getLevelLocales(playerPos.level, false, false).length;

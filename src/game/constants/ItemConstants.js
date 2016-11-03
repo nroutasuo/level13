@@ -117,7 +117,7 @@ define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/ItemVO'], funct
             clothing_hands: [
                 new ItemVO("clothing_hands_1", "Mittens", "Hands", {"warmth": 10}, true, true, false, "img/items/clothing-hand-0.png",
                     "Nothing keeps hands warm like fluffy mittens."),
-                new ItemVO("clothing_hands_2", "Work gloves", "Hands", {"warmth": 5, "radiation protection": 3, "poison protection": 3}, true, true, false, "img/items/clothing-hand-0.png",
+                new ItemVO("clothing_hands_2", "Work gloves", "Hands", {"warmth": 5, "radiation protection": 2, "poison protection": 2}, true, true, false, "img/items/clothing-hand-0.png",
                     "Basic protection for hands."),
                 new ItemVO("clothing_hands_3", "Quality gloves", "Hands", {"warmth": 5, "radiation protection": 5, "poison protection": 10}, true, true, false, "img/items/clothing-hand-0.png",
                     "No scavenger ever regretted having good gloves."),
