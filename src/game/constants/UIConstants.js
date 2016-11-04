@@ -45,7 +45,10 @@ define(['ash',
                 if (detail.length < 5) detail = "";
                 var weight = BagConstants.getItemCapacity(item);
 				
-				var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + item.type + " " + detail + "</br>Weight: " + weight + "</br>" + item.description;
+				var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + item.type + " " + detail;
+                if (item.type !== ItemConstants.itemTypes.follower) 
+                    itemCalloutContent += "</br>Weight: " + weight;
+                itemCalloutContent += "</br>" + item.description;
 				if (smallCallout) itemCalloutContent = item.name + (detail.length > 0 ? " " + detail : "");
 				
 				div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(itemCalloutContent) + "'>";

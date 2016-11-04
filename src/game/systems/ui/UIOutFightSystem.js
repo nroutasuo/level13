@@ -1,7 +1,9 @@
 define([
     'ash',
     'game/constants/FightConstants',
+    'game/constants/ItemConstants',
     'game/constants/TextConstants',
+    'game/constants/UIConstants',
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/FightNode',
@@ -10,7 +12,7 @@ define([
     'game/components/sector/FightEncounterComponent',
     'game/components/sector/EnemiesComponent',
     'game/components/sector/SectorControlComponent',
-], function (Ash, FightConstants, TextConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightComponent, FightEncounterComponent, EnemiesComponent, SectorControlComponent) {
+], function (Ash, FightConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightComponent, FightEncounterComponent, EnemiesComponent, SectorControlComponent) {
     var UIOutFightSystem = Ash.System.extend({
 	
 		uiFunctions: null,
@@ -23,6 +25,8 @@ define([
 		
 		lastProgressBarUpdateTimeStamp: 0,
 		lastProgressBarUpdateFreq: 300,
+        
+        wasFightActive: false,
 	
         constructor: function (uiFunctions, playerActionResultsHelper, playerActionsHelper) {
 			this.uiFunctions = uiFunctions;
@@ -53,17 +57,23 @@ define([
 			$("#out-action-fight-close").toggle(fightFinished && !fightWon);
 			$("#out-action-fight-next").toggle(fightFinished && fightWon);
             $("#out-action-fight-cancel").toggle(!fightFinished && !fightActive);
+            $("#fight-buttons-main").toggle(!fightActive);
             $("#fight-buttons-infightactions").toggle(fightActive);
 			
 			$("#fight-popup-control-info").toggle(!fightActive);
 			$("#fight-popup-bars").toggle(fightActive);
 			$("#fight-popup-self-info").toggle(fightActive);
+			$("#list-fight-followers").toggle(fightActive);
 			$("#fight-popup-results").toggle(fightFinished);
             
 			$("#fight-desc").toggle(!fightActive);
 			
 			$("#fight-popup-enemy-info").toggleClass("strike-through", fightFinished && fightWon);
 			
+            if (fightActive && !this.wasFightActive) {
+                this.initializeFightActive();
+            }
+            
 			this.updateFightCommon(!fightActive && !fightFinished);
 			
 			if (fightActive && !fightFinished) {
@@ -73,7 +83,24 @@ define([
 			} else {
                 this.updateFightPending();
 			}
+            
+            this.wasFightActive = fightActive;
 		},
+        
+        initializeFightActive: function () {
+            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+            $("ul#list-fight-followers").empty();
+            this.numFollowers = 0;
+            var items = itemsComponent.getUnique(true);
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                if (item.type !== ItemConstants.itemTypes.follower)
+                    continue;
+                this.numFollowers++;
+                $("ul#list-fight-followers").append("<li>" + UIConstants.getItemDiv(item, -1, true, false) + "</li>");
+            }
+            this.uiFunctions.generateCallouts("ul#list-fight-followers");
+        },
 	
 		updateFightCommon: function (fightPending) {
 			var sector = this.playerLocationNodes.head.entity;
@@ -125,7 +152,7 @@ define([
 					
 				var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
 				var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent);
-				var playerText = "Wanderer";
+				var playerText = this.numFollowers > 0 ? "Party" : "Wanderer";
 				playerText += "<br/>";
 				playerText += "att: " + playerAtt + " | def: " + playerDef;
 				$("#fight-popup-self-info").html(playerText);

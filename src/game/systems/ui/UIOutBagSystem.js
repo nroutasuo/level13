@@ -328,7 +328,7 @@ define([
         
         updateItemCount: function (isActive, item) {
             if (this.gameState.uiBagStatus.itemsOwnedSeen.indexOf(item.id) < 0) {
-                if (item.id !== "equipment_map") {
+                if (item.id !== "equipment_map" && item.type !== ItemConstants.itemTypes.follower) {
                     if (isActive) {
                         this.gameState.uiBagStatus.itemsOwnedSeen.push(item.id);
                     } else {

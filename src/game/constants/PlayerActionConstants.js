@@ -1114,7 +1114,7 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_darkfarm: {
                     resource_metal: 50,
                     resource_water: 20,
-                    resource_rope: 5,
+                    resource_fuel: 5,
                     cost_factor: 2,
                 },
             

@@ -253,7 +253,7 @@ define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/ItemVO'], funct
             // TODO more varied follower descriptions
             var description = "A fellow traveller who has agreed to travel together.";
 
-            return new ItemVO(id, name, type, {"fight attack": strength}, true, false, icon, description);
+            return new ItemVO(id, name, type, {"fight attack": strength}, true, false, false, icon, description);
         },
         
         getBag: function (levelOrdinal) {

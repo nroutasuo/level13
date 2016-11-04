@@ -2,11 +2,9 @@ define([
     'ash',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
+    'game/constants/FightConstants',
     'game/nodes/player/ItemsNode',
-    'game/components/common/ResourcesComponent',
-    'game/components/player/StaminaComponent',
-    'game/components/player/VisionComponent',
-], function (Ash, UIConstants, ItemConstants, ItemsNode, ResourcesComponent, StaminaComponent, VisionComponent) {
+], function (Ash, UIConstants, ItemConstants, FightConstants, ItemsNode) {
     var UIOutFollowersSystem = Ash.System.extend({
 
 		uiFunctions : null,
@@ -24,11 +22,6 @@ define([
 			this.gameState = gameState;
 			this.uiFunctions = uiFunctions;
 			this.tabChangedSignal = tabChangedSignal;
-
-			var system = this;
-			$("#container-tab-two-followers .whole").mouseleave(function (e) {
-				system.setSelectedItemLI(null);
-			});
 
 			return this;
 		},
@@ -88,6 +81,7 @@ define([
 			var isActive = this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.followers;
 			var itemsComponent = this.itemNodes.head.items;
             
+            this.followerCount = itemsComponent.getCountByType(ItemConstants.itemTypes.follower);
 			this.updateBubble();
 			
 			if (!isActive) return;
@@ -95,10 +89,10 @@ define([
 			// Header
 			$("#tab-header h2").text("Party");
 
-            this.followerCount = itemsComponent.getCountByType(ItemConstants.itemTypes.follower);
             if (this.followerCount !== this.lastShownFollowerCount) {
                 this.updateItems();
             }
+            $("#followers-max").text("Maximum followers: " + FightConstants.getMaxFollowers(this.gameState.numCamps));
 		},
         
         updateBubble: function () {
@@ -114,9 +108,7 @@ define([
 			$("#list-followers").empty();
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
-				if (item.type !== ItemConstants.itemTypes.follower) continue;
-				
-				var count = itemsComponent.getCount(item, true);
+				if (item.type !== ItemConstants.itemTypes.follower || !item.equipped) continue;
 				var li = "<li>" + UIConstants.getItemDiv(item, -1, false, false) + "</li>";
 				$("#list-followers").append(li);
 			}

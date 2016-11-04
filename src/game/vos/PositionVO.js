@@ -15,7 +15,7 @@ define(['ash'], function (Ash) {
         
         getInGameFormat: function (includeLevel) {
             var sectorXS = this.sectorX < 0 ? -this.sectorX + "W" : this.sectorX + "E";
-            var sectorYS = this.sectorY < 0 ? -this.sectorY + "S" : this.sectorX + "N";
+            var sectorYS = this.sectorY < 0 ? -this.sectorY + "N" : this.sectorY + "S";
             return sectorXS + " " + sectorYS + (includeLevel ? " " + "level " + this.level : "");
         },
         

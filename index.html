@@ -162,7 +162,7 @@
                                 <tr id="in-improvements-home">
                                     <td><button class="action action-build action-location" action="build_in_home">Tent</button></td>
                                     <td class="list-amount">0</td>
-                                    <td><button class="action action-use action-location" action="use_in_home">Rest</button></td>
+                                    <td><button class="action action-use" action="use_in_home">Rest</button></td>
                                 </tr><tr id="in-improvements-house">
 									<td><button class="action action-build action-location" action="build_in_house">Hut</button></td>
 									<td class="list-amount">0</td>
@@ -474,10 +474,11 @@
                     
                     <div class="grid" id="container-tab-two-followers" style="display:none;">
 						<div class="unit whole">							
-							<div class="subheader" id="header-followers"><h3>Followers</h3></div>
+                            <div class="subheader" id="header-followers"><h3>Followers</h3></div>
 							<div class="infobox">
 								<ul id="list-followers" class="itemlist"></ul>
-								<p id="followers-empty" class="p-meta">You don't have any followers</p>
+                                <p id="followers-empty" class="p-meta">You don't have any followers</p>
+                                <p id="followers-max" class="p-meta">Maximum followers</p>
 							</div>
 						</div>
                     </div>
@@ -588,6 +589,7 @@
             </div>
         </div>
         <p id="fight-popup-self-info">Own strength</p>
+        <ul class="itemlist" id="list-fight-followers" style="margin-top: -10px;"></ul>
         <div id="fight-popup-results">                                    
         </div>
         <div class="buttonbox" id="fight-buttons-infightactions">
