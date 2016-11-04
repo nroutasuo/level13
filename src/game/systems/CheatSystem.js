@@ -99,6 +99,13 @@ define(['ash',
                         this.playerStatsNodes.head.evidence.value *= 2;
                     break;
 
+                case CheatConstants.CHEAT_NAME_RUMOURS:
+                    if (inputParts.length > 1)
+                        this.playerStatsNodes.head.rumours.value = parseInt(inputParts[1]);
+                    else
+                        this.playerStatsNodes.head.rumours.value *= 2;
+                    break;
+
 
                 case CheatConstants.CHEAT_NAME_POPULATION:
                     var amount = 1;
@@ -113,7 +120,11 @@ define(['ash',
                     break;
 
                 case CheatConstants.CHEAT_NAME_POS:
-                    this.setPlayerPosition(parseInt(inputParts[1]), parseInt(inputParts[2]), parseInt(inputParts[3]));
+                    if (inputParts.length > 1) {
+                        this.setPlayerPosition(parseInt(inputParts[1]), parseInt(inputParts[2]), parseInt(inputParts[3]));
+                    } else {
+                        console.log(this.playerPositionNodes.head.position.toString());
+                    }
                     break;
                     
                 case CheatConstants.CHEAT_NAME_HEAL:

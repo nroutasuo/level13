@@ -8,6 +8,7 @@ define(function () {
         CHEAT_NAME_SUPPLIES: "supplies",
         CHEAT_NAME_VISION: "vision",
         CHEAT_NAME_EVIDENCE: "evidence",
+        CHEAT_NAME_RUMOURS: "rumours",
         CHEAT_NAME_POPULATION: "pop",
         CHEAT_NAME_STAMINA: "stamina",
         CHEAT_NAME_POS: "pos",
