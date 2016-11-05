@@ -42,27 +42,37 @@ define([
 			rumoursComponent.accSources = [];
 			rumoursComponent.accumulation = 0;
 			
-			var campfireUpgradeLevel = this.getCampfireUpgradeLevel();
+			var campfireUpgradeLevel = this.getImprovementUpgradeLevel(improvementNames.campfire);
+			var innUpgradeLevel = this.getImprovementUpgradeLevel(improvementNames.inn);
 			
 			if (this.campNodes.head) {
 				var accSpeed = 0;
 				
+                var improvementsComponent;
+                var campfireCount = 0;
 				var campfireFactor = 1;
-				var improvementsComponent;
-				var campfireCount = 0;
+                var innCount = 0;
+                var innFactor = 1;
 				for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 					improvementsComponent = campNode.entity.get(SectorImprovementsComponent);
 					
 					campfireCount = improvementsComponent.getCount(improvementNames.campfire);
 					campfireFactor = 1 + (campfireCount > 0 ? (campfireCount/10) : 0);
 					campfireFactor = campfireFactor * campfireUpgradeLevel;
+                    
+                    innCount = improvementsComponent.getCount(improvementNames.inn);
+                    innFactor = 1 + (innCount > 0 ? (innCount / 3) : 0);
+                    campfireFactor = campfireFactor * innUpgradeLevel;
+                    
 					var accSpeedPopulation = 0.00005 * (Math.floor(campNode.camp.population)+1) * GameConstants.gameSpeedCamp;
 					var accSpeedCampfire = (accSpeedPopulation * campfireFactor - accSpeedPopulation) * GameConstants.gameSpeedCamp;
-					var accSpeedCamp = accSpeedPopulation + accSpeedCampfire;
+					var accSpeedInn = (accSpeedPopulation * innFactor - accSpeedPopulation) * GameConstants.gameSpeedCamp;
+					var accSpeedCamp = accSpeedPopulation + accSpeedCampfire + accSpeedInn;
 					accSpeed += accSpeedCamp;
 					
 					rumoursComponent.addChange("Population", accSpeedPopulation);
 					rumoursComponent.addChange("Campfire", accSpeedCampfire);
+					if (innFactor > 1) rumoursComponent.addChange("Inn", accSpeedInn);
 					rumoursComponent.accumulation += accSpeed;
 				}
 				
@@ -71,9 +81,9 @@ define([
 			}
         },
 		
-		getCampfireUpgradeLevel: function () {
+		getImprovementUpgradeLevel: function (improvementName) {
 			var upgradeLevel = 1;
-			var campfireUpgrades = this.upgradeEffectsHelper.getUpgradeIdsForImprovement(improvementNames.campfire);
+			var campfireUpgrades = this.upgradeEffectsHelper.getUpgradeIdsForImprovement(improvementName);
 			var campfireUpgrade;
 			for (var i in campfireUpgrades) {
 				campfireUpgrade = campfireUpgrades[i];

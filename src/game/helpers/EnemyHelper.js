@@ -116,8 +116,16 @@ define([
 
             var enemy;
             var enemyDifficulty;
-            for (var i = 0; i < EnemyConstants.enemyDefinitions[type].length; i++) {
-                enemy = EnemyConstants.enemyDefinitions[type][i];
+            var enemyList = [];
+            if (type) {
+                enemyList = EnemyConstants.enemyDefinitions[type];
+            } else {
+                for (var type in EnemyConstants.enemyTypes)
+                    enemyList = enemyList.concat(EnemyConstants.enemyDefinitions[type]);
+            }
+            
+            for (var i = 0; i < enemyList.length; i++) {
+                enemy = enemyList[i];
                 if (enemy && typeof enemy !== "undefined") {
                     enemyDifficulty = Math.max(EnemyConstants.enemyDifficulties[enemy.id], 1);
                     if (enemyDifficulty === difficulty)
