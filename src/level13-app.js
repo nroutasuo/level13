@@ -8,8 +8,11 @@ require([
     function Level13App() {
         
         this.initialise = function () {
+            
+            // TODO define when cheats are enabled neater
             var isLocal = document.URL.indexOf("file:///") >= 0;
-            GameConstants.isCheatsEnabled = isLocal;
+            var isGithub = document.URL.indexOf("github.com/nroutasuo") >= 0;
+            GameConstants.isCheatsEnabled = isLocal || isGithub;
             GameConstants.isDebugOutputEnabled = isLocal;
                         
             GameConstants.STARTTimeStart = new Date().getTime();

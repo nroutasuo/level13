@@ -180,7 +180,8 @@ define([
 				this.playerMovedSignal,
 				this.tabChangedSignal,
 				this.improvementBuiltSignal);
-			this.uiFunctions = new UIFunctions(this.playerActionFunctions, this.gameState, this.saveSystem, this.calloutsGeneratedSignal);
+            this.cheatSystem = new CheatSystem(this.gameState, this.playerActionFunctions, this.resourcesHelper, this.uiMapHelper);
+			this.uiFunctions = new UIFunctions(this.playerActionFunctions, this.gameState, this.saveSystem, this.cheatSystem, this.calloutsGeneratedSignal);
 			this.occurrenceFunctions = new OccurrenceFunctions(this.gameState, this.uiFunctions, this.resourcesHelper);
 			
 			this.playerActionFunctions.occurrenceFunctions = this.occurrenceFunctions;
@@ -197,7 +198,6 @@ define([
 			this.gameManager = new GameManager(this.tickProvider, this.gameState, creator, this.uiFunctions, this.playerActionFunctions, this.saveHelper, this.enemyHelper, this.itemsHelper);
 			this.engine.addSystem(this.gameManager, SystemPriorities.preUpdate);
             
-            this.cheatSystem = new CheatSystem(this.gameState, this.playerActionFunctions, this.resourcesHelper, this.uiMapHelper);
             this.engine.addSystem(this.cheatSystem, SystemPriorities.update);
 			
 			if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t initializing systems");

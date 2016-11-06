@@ -1,5 +1,6 @@
 // A class that checks raw user input from the DOM and passes game-related actions to PlayerActionFunctions
 define(['ash',
+        'game/constants/GameConstants',
         'game/constants/UIConstants',
         'game/constants/ItemConstants',
         'game/constants/PlayerActionConstants',
@@ -7,12 +8,13 @@ define(['ash',
         'game/helpers/ui/UIPopupManager',
         'game/helpers/ui/ChangeLogHelper',
         'game/vos/ResourcesVO'],
-function (Ash, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ChangeLogHelper, ResourcesVO) {
+function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ChangeLogHelper, ResourcesVO) {
     var UIFunctions = Ash.Class.extend({
         
         playerActions: null,
         gameState: null,
         saveSystem: null,
+        cheatSystem: null,
         
         popupManager: null,
         changeLogHelper: null,
@@ -51,10 +53,11 @@ function (Ash, UIConstants, ItemConstants, PlayerActionConstants, PositionConsta
         actionToFunctionMap: {
         },
         
-        constructor: function (playerActions, gameState, saveSystem, calloutsGeneratedSignal) {
+        constructor: function (playerActions, gameState, saveSystem, cheatSystem, calloutsGeneratedSignal) {
             this.playerActions = playerActions;
             this.gameState = gameState;
             this.saveSystem = saveSystem;
+            this.cheatSystem = cheatSystem;
             this.calloutsGeneratedSignal = calloutsGeneratedSignal;
 
             this.mapActions();
@@ -206,6 +209,15 @@ function (Ash, UIConstants, ItemConstants, PlayerActionConstants, PositionConsta
                         playerActions.setNearestCampName(input);
                     });
             });
+            
+            // Cheats
+            if (GameConstants.isCheatsEnabled) {
+                $("#btn-cheats").click(function (e) {
+                    uiFunctions.showInput("Enter cheat", "", function (input) {
+                        uiFunctions.cheatSystem.applyCheat(input)
+                    });
+                });
+            }
         },
         
         registerActionButtonListeners: function (scope) {
@@ -326,6 +338,11 @@ function (Ash, UIConstants, ItemConstants, PlayerActionConstants, PositionConsta
                 div += "<br/>";
                 div += "<span class='value'/></div>";
                 $("#container-equipment-stats").append(div);
+            }
+            
+            // cheats
+            if (GameConstants.isCheatsEnabled) {
+                $("#game-options-extended").append("<li><button class='btn-meta' id='btn-cheats'>Cheats</button></li>")
             }
         },
         
