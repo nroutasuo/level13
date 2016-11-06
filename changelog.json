@@ -31,7 +31,7 @@
                 {
                     "type": "GD",
                     "summary": "Improve sector generation to create more intersections and generally more interesting level shapes."
-                },
+                }
             ]
         },
         {
