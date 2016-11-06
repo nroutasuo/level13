@@ -424,9 +424,9 @@ define([
                 } else {
                     this.generateSectorsPaths(seed, attempts, levelVO, forceCentralStart);
                 }
-                
-                this.generateSectorsFillSingleGaps(levelVO);
             }
+            
+            this.generateSectorsFillSingleGaps(levelVO);
 			
 			// WorldCreatorDebug.printLevel(this.world, levelVO);
         },
