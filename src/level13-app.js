@@ -11,7 +11,7 @@ require([
             
             // TODO define when cheats are enabled neater
             var isLocal = document.URL.indexOf("file:///") >= 0;
-            var isGithub = document.URL.indexOf("github.com/nroutasuo") >= 0;
+            var isGithub = document.URL.indexOf("nroutasuo.github") >= 0;
             GameConstants.isCheatsEnabled = isLocal || isGithub;
             GameConstants.isDebugOutputEnabled = isLocal;
                         
