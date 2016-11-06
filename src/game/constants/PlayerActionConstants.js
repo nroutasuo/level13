@@ -379,6 +379,10 @@ function (Ash, GameConstants, CampConstants) {
                     },
                     busy: false,
                 },
+                
+                use_in_inn_select: {
+                    max_followers_reached: false,
+                },
             
                 build_in_market: {
                     improvements: {
@@ -1144,9 +1148,12 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 use_in_inn: {
-                    resource_food: 50,
-                    resource_water: 50,
-                    cost_factor: 1.5,
+                },
+                
+                use_in_inn_select: {
+                    resource_food: 15,
+                    resource_water: 15,
+                    cost_factor: 1.5,                    
                 },
             
                 build_in_market: {
@@ -1678,6 +1685,7 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_library: "Accumulate and store more evidence.",
                 build_in_hospital: "Enables healing injuries.",
                 build_in_hospital2: "Improve your general health.",
+                build_in_inn: "Increases rumours and enables recruitment.",
                 build_in_darkfarm: "Produces food",
                 build_in_tradingPost: "Connect camps to a trade network.",
                 build_in_market: "Enables foreign traders to visit.",

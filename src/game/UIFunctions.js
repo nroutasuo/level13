@@ -234,27 +234,30 @@ function (Ash, UIConstants, ItemConstants, PlayerActionConstants, PositionConsta
             $(scope + " button.action-move").click(function (e) {
                 onMoveButtonClicked(this, playerActions);
             });
-            $(scope + " #out-action-move-up").click(function (e) {
+            $("#out-action-move-up").click(function (e) {
                 onMoveButtonClicked(this, playerActions);
             });
-            $(scope + " #out-action-move-down").click(function (e) {
+            $("#out-action-move-down").click(function (e) {
                 onMoveButtonClicked(this, playerActions);
             });
-            $(scope + " #out-action-move-camp").click(function (e) {
+            $("#out-action-move-camp").click(function (e) {
                 onMoveButtonClicked(this, playerActions);
             });
-            $(scope + " #out-action-fight-confirm").click(function (e) {
+            $("#out-action-fight-confirm").click(function (e) {
                 playerActions.fightHelper.startFight();
             });
-            $(scope + " #out-action-fight-close").click(function (e) {
+            $("#out-action-fight-close").click(function (e) {
                 playerActions.fightHelper.endFight();
             });
-            $(scope + " #out-action-fight-next").click(function (e) {
+            $("#out-action-fight-next").click(function (e) {
                 playerActions.fightHelper.endFight();
             });
-            $(scope + " #out-action-fight-cancel").click(function (e) {
+            $("#out-action-fight-cancel").click(function (e) {
                 playerActions.flee();
                 playerActions.fightHelper.endFight();
+            });
+            $("#inn-popup-btn-cancel").click(function (e) {                
+                uiFunctions.popupManager.closePopup("inn-popup");
             });
             $(scope + " button[action='leave_camp']").click(function (e) {
                 gameState.uiStatus.leaveCampItems = {};
@@ -881,13 +884,38 @@ function (Ash, UIConstants, ItemConstants, PlayerActionConstants, PositionConsta
         },
         
         showFight: function () {
-            if ($("#fight-popup").is(":visible")) return;
-            $("#fight-popup").wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");
+            this.showSpecialPopup("fight-popup");
+        },
+        
+        showInnPopup: function (availableFollowers) {
+            $("table#inn-popup-options-followers").empty();
+            $("table#inn-popup-options-followers").append("<tr></tr>");
+            for (var i = 0; i < availableFollowers.length; i++) {
+                var td = "<td id='td-item-use_in_inn_select-" + availableFollowers[i].id + "'>";
+                td += UIConstants.getItemDiv(availableFollowers[i], false);
+                td += "</td>";
+                $("table#inn-popup-options-followers tr").append(td);
+            }
+            $("table#inn-popup-options-followers").append("<tr></tr>");
+            for (var j = 0; j < availableFollowers.length; j++) {
+                var td = "<td>";
+                td += "<button class='action btn-narrow' action='use_in_inn_select_" + availableFollowers[j].id + "' followerID='" + availableFollowers[j].id + "'>Recruit</button>";
+                td += "</td>";
+                $($("table#inn-popup-options-followers tr")[1]).append(td);
+            }
+			this.generateButtonOverlays("#inn-popup-options-followers");
+            this.showSpecialPopup("inn-popup");
+        },
+        
+        showSpecialPopup: function (popupID) {
+            if ($("#" + popupID).is(":visible")) return;
+            $("#" + popupID).wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");
             var uiFunctions = this;
             $(".popup-overlay").fadeIn(200, function () {
                 uiFunctions.popupManager.onResize();
-                $("#fight-popup").fadeIn(200, uiFunctions.popupManager.onResize);
+                $("#" + popupID).fadeIn(200, uiFunctions.popupManager.onResize);
             });
+            this.generateCallouts("#" + popupID); 
         },
         
         showInfoPopup: function (title, msg, buttonLabel, resultVO) {

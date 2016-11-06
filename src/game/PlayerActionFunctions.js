@@ -822,41 +822,34 @@ define(['ash',
         
         useInn: function (auto) {
             if (this.playerActionsHelper.checkAvailability("use_in_inn", true)) {
-                // TODO add varied results depending on follower
                 var sector = this.playerLocationNodes.head.entity;
                 var positionComponent = sector.get(PositionComponent);
                 var campCount = this.gameState.numCamps;
-                var follower = ItemConstants.getFollower(positionComponent.level, campCount);
+                var availableFollowers = [];
+                for (var i = 0; i < 3; i++) {
+                    availableFollowers.push(ItemConstants.getFollower(positionComponent.level, campCount));
+                }
                 var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-                var currentFollowers = itemsComponent.getCountByType(ItemConstants.itemTypes.follower);
-                if (currentFollowers < FightConstants.getMaxFollowers(this.gameState.numCamps)) {
-                    this.playerActionsHelper.deductCosts("use_in_inn");
-                    this.addFollower(follower);
-                    return true;
-                } else {
-                    var oldFollower = itemsComponent.getWeakestByType(ItemConstants.itemTypes.follower);
-                    if (auto) {
-                        if (oldFollower.getBonusTotalBonus() < follower.getTotalBonus()) {
-                            itemsComponent.discardItem(oldFollower);
-                            this.addFollower(follower);
-                            return true;
-                        }
+                var currentFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower);
+                if (auto) {
+                    if (currentFollowers.length === 0 && availableFollowers.length > 0) {
+                        this.addFollower(availableFollowers[0]);
+                        return true;                        
                     } else {
-                        var oldFollowerLi = UIConstants.getItemDiv(oldFollower, -1, true, false);
-                        var newFollowerLi = UIConstants.getItemDiv(follower, -1, true, false);
-                        var playerActions = this;
-                        this.uiFunctions.showConfirmation(
-                            "<p>Do you want to invite this new follower to join your party? Someone else will have to leave to make room.</p>" +
-                            "Joining:<br/>" +
-                            "<ul class='resultlist' id='inn-follower-list-join'>" + newFollowerLi + "</ul><br/>" +
-                            "Leaving:<br/>" +
-                            "<ul class='resultlist' id='inn-follower-list-leave'>" + oldFollowerLi + "</ul><br/>",
-                            function () {
-                                playerActions.playerActionsHelper.deductCosts("use_in_inn");
-                                itemsComponent.discardItem(oldFollower);
-                                playerActions.addFollower(follower);
-                        });
+                        for (var a1 = 0; a1 < availableFollowers.length; a1++) {
+                            var follower = availableFollowers[a1];
+                            for (var a2 = 0; a2 < currentFollowers.length; a2++) {
+                                var oldFollower = currentFollowers[a2];
+                                if (oldFollower.getBonusTotalBonus() < follower.getTotalBonus()) {
+                                    itemsComponent.discardItem(oldFollower);
+                                    this.addFollower(follower);
+                                    return true;
+                                }
+                            }
+                        }
                     }
+                } else {
+                    this.uiFunctions.showInnPopup(availableFollowers);
                 }
                 this.uiFunctions.completeAction("use_in_inn");
             }

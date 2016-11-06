@@ -9,6 +9,18 @@
             "changes": [
                 {
                     "type": "GD",
+                    "summary": "Improved followers and inn functionality."
+                },
+                {
+                    "type": "GD",
+                    "summary": "Add lots of new log messages for results of player actions when exploring."
+                },
+                {
+                    "type": "UI",
+                    "summary": "Improve header appearance and show item stats more clearly."
+                },
+                {
+                    "type": "GD",
                     "summary": "Improve sector generation to create more intersections and generally more interesting level shapes."
                 },
             ]

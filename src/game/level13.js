@@ -18,6 +18,7 @@ define([
     'game/systems/ui/UIOutBlueprintsSystem',
     'game/systems/ui/UIOutFightSystem',
     'game/systems/ui/UIOutLogSystem',
+    'game/systems/ui/UIOutPopupInnSystem',
     'game/systems/ui/UIOutPopupInventorySystem',
     'game/systems/CheatSystem',
     'game/systems/VisionSystem',
@@ -80,6 +81,7 @@ define([
     UIOutBlueprintsSystem,
     UIOutFightSystem,
     UIOutLogSystem,
+    UIOutPopupInnSystem,
     UIOutPopupInventorySystem,
     CheatSystem,
     VisionSystem,
@@ -240,6 +242,7 @@ define([
 			this.engine.addSystem(new UIOutFightSystem(this.uiFunctions, this.playerActionResultsHelper, this.playerActionsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLogSystem(this.playerMovedSignal), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupInventorySystem(this.uiFunctions), SystemPriorities.render);
+			this.engine.addSystem(new UIOutPopupInnSystem(this.uiFunctions, this.gameState), SystemPriorities.render);
 		},
 	
 		start: function () {

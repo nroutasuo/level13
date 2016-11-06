@@ -577,7 +577,7 @@
 	</div><!-- sticky footer -->
                         
     <div id="fight-popup" class="popup fill-on-mobiles" style="display:none">
-        <h3 id="fight-title">a</h3>
+        <h3 id="fight-title"></h3>
         <p id="fight-desc"></p>
         <p id="fight-popup-enemy-info">Enemy name & strength</p>
         <div id="fight-popup-bars">
@@ -600,6 +600,24 @@
             <button id="out-action-fight-confirm" class="action" action="fight">Fight</button>
             <button id="out-action-fight-close">Close</button>
             <button id="out-action-fight-next" action="fightcheck">Continue</button>
+        </div>
+    </div>
+    
+    <div id="inn-popup" class="popup fill-on-mobiles" style="display:none">
+        <h3>Inn</h3>
+        <div id="inn-popup-state-recruit">
+            <p id="inn-popup-desc">Some travellers staying at the inn are willing to join your party.</p>
+        </div>
+        <div class="infobox">
+            <span id="inn-popup-current-desc">Current followers:</span><br/>
+            <table id="inn-popup-current-followers" class="centered"></table>
+        </div>
+        <div class="infobox">
+            <span id="inn-popup-options-desc">Available followers:</span><br/>
+            <table id="inn-popup-options-followers" class="centered"></table>
+        </div>
+        <div class="buttonbox" id="inn-buttons-main">
+            <button id="inn-popup-btn-cancel" class="action" action="use_in_inn_cancel">Cancel</button>
         </div>
     </div>
     

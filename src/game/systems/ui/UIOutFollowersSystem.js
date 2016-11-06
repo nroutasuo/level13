@@ -84,15 +84,20 @@ define([
             this.followerCount = itemsComponent.getCountByType(ItemConstants.itemTypes.follower);
 			this.updateBubble();
 			
-			if (!isActive) return;
+			if (!isActive) {
+                this.wasActive = false;
+                return;
+            }
 
 			// Header
 			$("#tab-header h2").text("Party");
 
-            if (this.followerCount !== this.lastShownFollowerCount) {
+            if (this.followerCount !== this.lastShownFollowerCount || !this.wasActive) {
                 this.updateItems();
             }
             $("#followers-max").text("Maximum followers: " + FightConstants.getMaxFollowers(this.gameState.numCamps));
+            
+            this.wasActive = true;
 		},
         
         updateBubble: function () {

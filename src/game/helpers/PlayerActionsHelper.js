@@ -8,6 +8,7 @@ define([
 	'game/constants/HazardConstants',
 	'game/constants/BagConstants',
 	'game/constants/UpgradeConstants',
+	'game/constants/FightConstants',
 	'game/constants/UIConstants',
 	'game/constants/TextConstants',
     'game/nodes/player/PlayerStatsNode',
@@ -33,7 +34,7 @@ define([
     'game/components/common/CampComponent',
     'game/vos/ResourcesVO'
 ], function (
-	Ash, PositionConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, UIConstants, TextConstants,
+	Ash, PositionConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	PositionComponent, PlayerActionComponent, BagComponent, ItemsComponent, PerksComponent, DeityComponent,
 	PassagesComponent, EnemiesComponent, MovementOptionsComponent,
@@ -403,6 +404,18 @@ define([
                         return { value: 0, reason: reason };
                     }
 				}
+                if (typeof requirements.max_followers_reached !== "undefined") {
+                    var numCurrentFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower).length;
+                    var numMaxFollowers = FightConstants.getMaxFollowers(this.gameState.numCamps);
+                    var currentValue = numCurrentFollowers >= numMaxFollowers;
+                    var requiredValue = requirements.max_followers_reached;
+                    if (currentValue !== requiredValue) {
+                        if (currentValue) reason = "Max followers reached.";
+                        else reason = "Must have max followers to do this.";
+                        if (log) console.log("WARN: " + reason);
+                        return { value: 0, reason: reason };
+                    }
+                }
                 
                 if (typeof requirements.bag !== "undefined") {
                     if (requirements.bag.validSelection) {
@@ -728,6 +741,7 @@ define([
                 case "build_out_passage_down_stairs":
                 case "build_out_passage_down_elevator":
                 case "build_out_passage_down_hole":
+                case "use_in_inn_select":
                     return PlayerActionConstants.requirements[baseActionID];
 				default:
 					return PlayerActionConstants.requirements[action];
@@ -829,6 +843,7 @@ define([
 			if (action.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
 			if (action.indexOf("create_blueprint_") >= 0) return "create_blueprint";
 			if (action.indexOf("fight_gang_") >= 0) return "fight_gang";
+            if (action.indexOf("use_in_inn_select_") >= 0) return "use_in_inn_select";
             if (action.indexOf("build_out_passage") >= 0) {
                 return action.substring(0, action.lastIndexOf("_"));
             }

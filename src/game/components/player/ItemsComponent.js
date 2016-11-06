@@ -188,6 +188,10 @@ function (Ash, ItemVO, ItemConstants) {
             return all.sort(this.itemSortFunction);
         },
         
+        getAllByType: function (type) {
+            return this.items[type] ? this.items[type] : [];
+        },
+        
         getUnique: function (includeNotCarried) {
             var all = {};
             var allList = [];

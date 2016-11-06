@@ -1076,6 +1076,9 @@ button.context {
 button.btn-wide {
 	width: 110pt;
 }
+button.btn-narrow {
+    width: 65pt;
+}
 
 button.btn-glyph {
   font-weight: bold;
@@ -1444,6 +1447,11 @@ input.amount {
 	font-size: 85%;
 	text-align: center;
     vertical-align: text-top;
+}
+
+.centered {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .checkbox {
