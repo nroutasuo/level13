@@ -1,6 +1,7 @@
 define(function () {
     var CheatConstants = {
         
+        CHEAT_NAME_CHEATLIST: "cheatlist",
         CHEAT_NAME_SPEED: "speed",
         CHEAT_NAME_AUTOPLAY: "autoplay",
         CHEAT_NAME_TIME: "time",

@@ -36,6 +36,8 @@ define(['ash',
 ) {
     var CheatSystem = Ash.System.extend({
         
+        cheatDefinitions: {},
+        
         constructor: function (gameState, playerActionFunctions, resourcesHelper, uiMapHelper) {
             this.gameState = gameState;
             this.playerActionFunctions = playerActionFunctions;
@@ -49,122 +51,111 @@ define(['ash',
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
+            
+            this.registerCheats();
+        },
+        
+        registerCheats: function () {
+            this.registerCheat(CheatConstants.CHEAT_NAME_CHEATLIST, "Print all available cheats to console.", [], function () {
+                this.printCheats();
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_SPEED, "Sets the speed of the game.", ["speed (1 = normal, >1 faster, <1 slower)"], function (params) {
+                var spd = parseFloat(params[0]);
+                this.setGameSpeed(spd);                
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_TIME, "Immediately passes in-game time.", ["time to pass in minutes"], function (params) {
+                var mins = parseFloat(params[0]);
+                this.passTime(mins);
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_RES, "Set a resource to a given value.", ["resource name", "amount"], function (params) {
+                var name = params[0];
+                var amount = parseInt(params[1]);
+                this.setResource(name, amount);
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_SUPPLIES, "Refill supplies (water and food).", [], function () {
+                this.addSupplies();
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_VISION, "Set vision.", ["value"], function (params) {
+                this.playerStatsNodes.head.vision.value = Math.min(200, Math.max(0, parseInt(params[0])));
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_EVIDENCE, "Set evidence.", ["value"], function (params) {
+                this.playerStatsNodes.head.evidence.value = Math.max(0, parseInt(params[0]));
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_RUMOURS, "Set rumours.", ["value"], function (params) {
+                this.playerStatsNodes.head.rumours.value = Math.max(0, parseInt(params[0]));
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_POPULATION, "Add population to nearest camp.", ["value (1-n)"], function (params) {
+                this.addPopulation(Math.max(1, parseInt(params[0])));
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_STAMINA, "Refill stamina for free.", [], function () {
+                this.refillStamina();
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_POS, "Set position of the player. Must be an existing sector.", ["level", "x", "y"], function (params) {
+                this.setPlayerPosition(parseInt(params[0]), parseInt(params[1]), parseInt(params[2]));
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_HEAL, "Heal injuries.", [], function () {
+                this.heal();
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_INJURY, "Add a random injury.", [], function () {
+                this.addInjury();
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_BUILDING, "Add buildings to the current camp.", ["building id", "amount"], function (params) {
+                var buildingName = params[0];
+                var buildingAmount = parseInt(params[1]);
+                this.addBuilding(buildingName, buildingAmount);
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_TECH, "Immediately unlock the given upgrade.", ["upgrade id"], function (params) {
+                this.addTech(params[0]);
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_ITEM, "Add the given item to inventory.", ["item id"], function (params) {
+                this.addItem(params[0]);
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_PERK, "Add the given perk to the player.", ["perk id"], function (params) {
+                this.addPerk(params[0]);
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_FOLLOWER, "Add random follower.", [], function (params) {
+                this.addFollower();
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_REVEAL_MAP, "Reveal the map (show important locations without scouting).", ["true/false"], function (params) {
+                this.revealMap(params[0]);
+            });
+        },
+        
+        registerCheat: function(cmd, desc, params, func) {
+            this.cheatDefinitions[cmd] = {};
+            this.cheatDefinitions[cmd].desc = desc;
+            this.cheatDefinitions[cmd].params = params;
+            this.cheatDefinitions[cmd].func = func;
         },
 
         applyCheat: function (input) {
             if (!GameConstants.isCheatsEnabled) return; 
             
-            var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
-
             var inputParts = input.split(" ");
-            var name = inputParts[0];
+            var name = inputParts[0]; 
+            
+            if (this.cheatDefinitions[name]) {
+                var func = this.cheatDefinitions[name].func;
+                var numParams = this.cheatDefinitions[name].params.length;
+                if (inputParts.length === numParams + 1) {                    
+                    func.call(this, inputParts.slice(1));
+                } else {
+                    console.log("Wrong number of parameters. Expected " + numParams + " got " + (inputParts.length -1));
+                }
+                return;
+            } else {
+                console.log("cheat not found: " + name);
+            }
+            
+            // TODO fix autoplay & reimplement print cheats if used
+            /*
+            var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             switch (name) {
-                case CheatConstants.CHEAT_NAME_SPEED:
-                    var spd = parseFloat(inputParts[1]);
-                    this.setGameSpeed(spd);
-                    break;
-
                 case CheatConstants.CHEAT_NAME_AUTOPLAY:
                     var param1 = inputParts[1];
                     var param2 = parseInt(inputParts[2]);
                     this.setAutoPlay(param1, param2);
                     break;
-                    
-                case CheatConstants.CHEAT_NAME_TIME:
-                    var mins = parseFloat(inputParts[1]);
-                    this.passTime(mins);
-                    break;
-
-                case CheatConstants.CHEAT_NAME_RES:
-                    var name = inputParts[1];
-                    var amount = 0;
-                    if (inputParts.length > 2) {
-                        amount = parseInt(inputParts[2]);
-                    } else {
-                        amount = this.resourcesHelper.getCurrentStorageCap() / 3;
-                    }
-                    this.setResource(name, amount);
-                    break;
-
-                case CheatConstants.CHEAT_NAME_SUPPLIES:
-                    this.addSupplies();
-                    break;
-
-                case CheatConstants.CHEAT_NAME_VISION:
-                    this.playerStatsNodes.head.vision.value = parseInt(inputParts[1]);
-                    break;
-
-                case CheatConstants.CHEAT_NAME_EVIDENCE:
-                    if (inputParts.length > 1)
-                        this.playerStatsNodes.head.evidence.value = parseInt(inputParts[1]);
-                    else
-                        this.playerStatsNodes.head.evidence.value *= 2;
-                    break;
-
-                case CheatConstants.CHEAT_NAME_RUMOURS:
-                    if (inputParts.length > 1)
-                        this.playerStatsNodes.head.rumours.value = parseInt(inputParts[1]);
-                    else
-                        this.playerStatsNodes.head.rumours.value *= 2;
-                    break;
-
-
-                case CheatConstants.CHEAT_NAME_POPULATION:
-                    var amount = 1;
-                    if (inputParts.length > 1) {
-                        amount = parseInt(inputParts[1]);
-                    }
-                    this.addPopulation(amount);
-                    break;
-                    
-                case CheatConstants.CHEAT_NAME_STAMINA:
-                    this.refillStamina();
-                    break;
-
-                case CheatConstants.CHEAT_NAME_POS:
-                    if (inputParts.length > 1) {
-                        this.setPlayerPosition(parseInt(inputParts[1]), parseInt(inputParts[2]), parseInt(inputParts[3]));
-                    } else {
-                        console.log(this.playerPositionNodes.head.position.toString());
-                    }
-                    break;
-                    
-                case CheatConstants.CHEAT_NAME_HEAL:
-                    this.heal();
-                    break;
-
-                case CheatConstants.CHEAT_NAME_INJURY:
-                    this.addInjury();
-                    break;
-
-                case CheatConstants.CHEAT_NAME_BUILDING:
-                    var buildingName = inputParts[1];
-                    var buildingAmount = parseInt(inputParts[2]);
-                    this.addBuilding(buildingName, buildingAmount);
-                    break;
-
-                case CheatConstants.CHEAT_NAME_TECH:
-                    this.addTech(inputParts[1]);
-                    break;
-
-                case CheatConstants.CHEAT_NAME_ITEM:
-                    var itemID = inputParts[1];
-                    this.addItem(itemID);
-                    break;
-
-                case CheatConstants.CHEAT_NAME_FOLLOWER:
-                    this.addFollower();
-                    break;
-
-                case CheatConstants.CHEAT_NAME_PERK:
-                    var perkID = inputParts[1];
-                    this.addPerk(perkID);
-                    break;
-                    
-                case CheatConstants.CHEAT_NAME_REVEAL_MAP:
-                    this.revealMap(inputParts[1]);
-                    break;
-
                 case "printSector":
                     console.log(currentSector.get(SectorFeaturesComponent));
                     break;
@@ -183,11 +174,36 @@ define(['ash',
                             FightConstants.getFightChances(enemy, playerStamina, itemsComponent));
                     }
                     break;
-
-                default:
-                    console.log("Unknown cheat.");
-                    break;
             }
+            */
+        },
+        
+        printCheats: function () {
+            for (var cmd in this.cheatDefinitions) {
+                var hasParams = this.cheatDefinitions[cmd].params.length > 0;
+                var params = "";
+                for (var i = 0; i < this.cheatDefinitions[cmd].params.length; i++) {
+                    params += "[" + this.cheatDefinitions[cmd].params[i] + "] ";
+                }
+                console.log(cmd + " " + params + "- " + this.cheatDefinitions[cmd].desc);
+            }
+        },
+        
+        getCheatListDiv: function() {
+            var div = "<div>";
+            div += "<h4 class='infobox-scrollable-header'>Cheat List</h4>";
+            div += "<div id='cheatlist' class='infobox infobox-scrollable'>";
+            for (var cmd in this.cheatDefinitions) {
+                var hasParams = this.cheatDefinitions[cmd].params.length > 0;
+                var params = "";
+                for (var i = 0; i < this.cheatDefinitions[cmd].params.length; i++) {
+                    params += "[" + this.cheatDefinitions[cmd].params[i] + "] ";
+                }
+                div += ("<b>" + cmd + "</b>" + " " + params + "- " + this.cheatDefinitions[cmd].desc) + "<br/>";
+            }            
+            div += "</div>";
+            div += "</div>";
+            return div;
         },
         
         setGameSpeed: function (speed) {            

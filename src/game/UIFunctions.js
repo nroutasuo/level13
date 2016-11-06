@@ -213,7 +213,8 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             // Cheats
             if (GameConstants.isCheatsEnabled) {
                 $("#btn-cheats").click(function (e) {
-                    uiFunctions.showInput("Enter cheat", "", function (input) {
+                    var cheatListDiv = uiFunctions.cheatSystem.getCheatListDiv();
+                    uiFunctions.showInput("Enter cheat<br/>" + cheatListDiv, "", function (input) {
                         uiFunctions.cheatSystem.applyCheat(input)
                     });
                 });
