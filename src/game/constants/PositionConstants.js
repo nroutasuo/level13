@@ -161,7 +161,7 @@ define(['ash'], function (Ash) {
         },
         
         getLevelDirections: function (excludeDiagonals) {
-            if (excludeDiagonals)
+            if (!excludeDiagonals)
                 return [this.DIRECTION_NORTH, this.DIRECTION_EAST, this.DIRECTION_SOUTH, this.DIRECTION_WEST,
                     this.DIRECTION_NE, this.DIRECTION_SE, this.DIRECTION_SW, this.DIRECTION_NW];
             else
