@@ -323,6 +323,12 @@ function (Ash, GameConstants, CampConstants) {
                     }
                 },
                 
+                build_in_campfire: {
+                    improvements: {
+                        campfire: [0, 5]
+                    }
+                },
+                
                 build_in_hospital: {
                     improvements: {
                         camp: [1, -1],
@@ -1111,8 +1117,8 @@ function (Ash, GameConstants, CampConstants) {
                 
                 build_in_campfire: {
                     resource_metal: 5,
-                    resource_food: 15,
-                    cost_factor: 2,
+                    resource_food: 10,
+                    cost_factor: 3,
                 },
                 
                 build_in_darkfarm: {

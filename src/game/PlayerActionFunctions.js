@@ -693,8 +693,15 @@ define(['ash',
         },
         
         buildCampfire: function () {
-            this.buildImprovement("build_in_campfire", this.playerActionsHelper.getImprovementNameForAction("build_in_campfire"));
-            this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMPFIRE, "Built a campfire. Here, ideas are shared and discussed.");
+            var improvementName = this.playerActionsHelper.getImprovementNameForAction("build_in_campfire");
+            var improvementsComponent = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+            var count = improvementsComponent.getCount(improvementName);
+            
+            this.buildImprovement("build_in_campfire", improvementName);
+            if (count === 0)
+                this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMPFIRE, "Built a campfire. Here, ideas are shared and discussed.");
+            else 
+                this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMPFIRE, "Improved campfire. It will attract more rumours.");
         },
         
         buildDarkFarm: function () {

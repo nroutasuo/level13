@@ -57,7 +57,7 @@ define([
 					improvementsComponent = campNode.entity.get(SectorImprovementsComponent);
 					
 					campfireCount = improvementsComponent.getCount(improvementNames.campfire);
-					campfireFactor = 1 + (campfireCount > 0 ? (campfireCount/10) : 0);
+					campfireFactor = 1 + (campfireCount > 0 ? (campfireCount/10*campfireCount*campfireCount) : 0);
 					campfireFactor = campfireFactor * campfireUpgradeLevel;
                     
                     innCount = improvementsComponent.getCount(improvementNames.inn);
