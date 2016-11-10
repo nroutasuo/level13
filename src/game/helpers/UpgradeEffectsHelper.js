@@ -1,4 +1,4 @@
-// Singleton with helper methods for movement, blockers etc
+// Helper to check effects of upgrades on workers and buildings
 define([
     'ash',
     'game/constants/UpgradeConstants',
@@ -216,6 +216,17 @@ define([
 		getImprovingUpgradeIdsForOccurrence: function (occurrence) {
 			return this.improvingUpgradesByEvent[occurrence];
 		},
+        
+        getBuildingUpgradeLevel: function (building, upgradesComponent) {
+			var upgradeLevel = 1;
+			var buildingUpgrades = this.getUpgradeIdsForImprovement(building);
+			var buildingUpgrade;
+			for (var i in buildingUpgrades) {
+				buildingUpgrade = buildingUpgrades[i];
+				if (upgradesComponent.hasUpgrade(buildingUpgrade)) upgradeLevel++;
+			}
+			return upgradeLevel;
+        },
 		
     });
     

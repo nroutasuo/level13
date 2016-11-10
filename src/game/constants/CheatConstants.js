@@ -17,6 +17,7 @@ define(function () {
         CHEAT_NAME_INJURY: "injury",
         CHEAT_NAME_BUILDING: "building",
         CHEAT_NAME_TECH: "tech",
+        CHEAT_NAME_BLUEPRINT: "blueprint",
         CHEAT_NAME_ITEM: "item",
         CHEAT_NAME_FOLLOWER: "follower",
         CHEAT_NAME_PERK: "perk",

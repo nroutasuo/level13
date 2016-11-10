@@ -26,10 +26,6 @@ define(['ash', 'game/constants/ItemConstants'], function (Ash) {
         PRODUCTION_CONCRETE_PER_WORKER_PER_S: 0.03,
         
         // Workers per building
-        SOLDIERS_PER_BARRACKS: 10,
-        SMIHTS_PER_SMITHY: 2,
-        CONCRETE_WORKERS_PER_MILL: 2,
-        APOTECARIES_PER_SHOP: 2,
         CHEMISTS_PER_WORKSHOP: 5,
         
         WORKER_TYPES: {
@@ -43,6 +39,22 @@ define(['ash', 'game/constants/ItemConstants'], function (Ash) {
             concrete: "concrete",
             soldier: "soldier",
         },
+        
+        getSmithsPerSmithy: function (upgradeLevel) {
+            return 2 + (upgradeLevel - 1) * 2;
+        },
+        
+        getApothecariesPerShop: function (upgradeLevel) {
+            return 2 + (upgradeLevel - 1) * 2;
+        },
+        
+        getWorkersPerMill: function (upgradeLevel) {
+            return 2 + (upgradeLevel - 1) * 2;            
+        },
+        
+        getSoldiersPerBarracks: function (upgradeLevel) {
+            return 5 + Math.floor((upgradeLevel - 1) * 2.5);
+        }
     
     };
     

@@ -181,10 +181,10 @@ define([
             var smithiesInCamp = improvements.getCount(improvementNames.smithy);
             var barracksInCamp = improvements.getCount(improvementNames.barracks);
             
-            var maxApothecaries = apothecariesInCamp * CampConstants.APOTECARIES_PER_SHOP;
-            var maxConcrete = cementMillsInCamp * CampConstants.CONCRETE_WORKERS_PER_MILL;
-            var maxSmiths = smithiesInCamp * CampConstants.SMIHTS_PER_SMITHY;
-            var maxSoldiers = barracksInCamp * CampConstants.SOLDIERS_PER_BARRACKS;
+            var maxApothecaries = apothecariesInCamp * CampConstants.getApothecariesPerShop(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.apothecary, this.tribeUpgradesNodes.head.upgrades));
+            var maxConcrete = cementMillsInCamp * CampConstants.getWorkersPerMill(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.cementmill, this.tribeUpgradesNodes.head.upgrades));
+            var maxSmiths = smithiesInCamp * CampConstants.getSmithsPerSmithy(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.smithy, this.tribeUpgradesNodes.head.upgrades));
+            var maxSoldiers = barracksInCamp * CampConstants.getSoldiersPerBarracks(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.barracks, this.tribeUpgradesNodes.head.upgrades));
             var maxChemists = refineriesOnLevel * CampConstants.CHEMISTS_PER_WORKSHOP;
             this.updateWorkerStepper(campComponent, "#stepper-scavenger", "scavenger", maxPopulation, false);
             this.updateWorkerStepper(campComponent, "#stepper-trapper", "trapper", maxPopulation, false);

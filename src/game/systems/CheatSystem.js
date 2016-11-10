@@ -14,6 +14,7 @@ define(['ash',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/nodes/player/PlayerStatsNode',
+    'game/nodes/tribe/TribeUpgradesNode',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode'
 ], function (Ash,
@@ -31,6 +32,7 @@ define(['ash',
     SectorImprovementsComponent,
     SectorFeaturesComponent,
     PlayerStatsNode,
+    TribeUpgradesNode,
     PlayerPositionNode,
     PlayerLocationNode
 ) {
@@ -51,6 +53,7 @@ define(['ash',
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
+            this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
             
             this.registerCheats();
         },
@@ -106,6 +109,9 @@ define(['ash',
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_TECH, "Immediately unlock the given upgrade.", ["upgrade id"], function (params) {
                 this.addTech(params[0]);
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_BLUEPRINT, "Adds blueprints for the given upgrade.", ["upgrade id", "amount (1-total)"], function (params) {
+                this.addBlueprints(params[0], parseInt(params[1]));
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_ITEM, "Add the given item to inventory.", ["item id"], function (params) {
                 this.addItem(params[0]);
@@ -313,6 +319,16 @@ define(['ash',
                 for (var id in UpgradeConstants.upgradeDefinitions) {
                     this.playerActionFunctions.buyUpgrade(id, true);
                 }            
+        },
+        
+        addBlueprints: function (name, amount) {
+            var maxPieces = UpgradeConstants.getMaxPiecesForBlueprint(name);
+            amount = Math.max(1, amount);
+            amount = Math.min(amount, maxPieces);
+            for (var i = 0; i < amount; i++) {
+                this.tribeUpgradesNodes.head.upgrades.addNewBlueprintPiece(name);
+            }
+            this.gameState.unlockedFeatures.blueprints = true;
         },
         
         addItem: function (itemID) {            

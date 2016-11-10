@@ -64,14 +64,7 @@ define([
         },
 		
 		getLibraryUpgradeLevel: function () {
-			var upgradeLevel = 1;
-			var libraryUpgrades = this.upgradeEffectsHelper.getUpgradeIdsForImprovement(improvementNames.library);
-			var libraryUpgrade;
-			for (var i in libraryUpgrades) {
-				libraryUpgrade = libraryUpgrades[i];
-				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(libraryUpgrade)) upgradeLevel++;
-			}
-			return upgradeLevel;
+            return this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.library, this.tribeUpgradesNodes.head.upgrades);
 		},
     });
 

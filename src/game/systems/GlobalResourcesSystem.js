@@ -144,15 +144,7 @@ define([
 		},
 		
 		getStorageUpgradeLevel: function () {
-			var upgradeLevel = 1;
-			var upgradeComponent = this.tribeNodes.head.entity.get(UpgradesComponent);
-			var storageUpgrades = this.upgradeEffectsHelper.getUpgradeIdsForImprovement(improvementNames.storage);
-			var storageUpgrade;
-			for (var i in storageUpgrades) {
-				storageUpgrade = storageUpgrades[i];
-				if (upgradeComponent.hasUpgrade(storageUpgrade)) upgradeLevel++;
-			}
-			return upgradeLevel;
+            return this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.storage, this.tribeNodes.head.entity.get(UpgradesComponent));
 		},
         
     });

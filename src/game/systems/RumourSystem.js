@@ -82,14 +82,7 @@ define([
         },
 		
 		getImprovementUpgradeLevel: function (improvementName) {
-			var upgradeLevel = 1;
-			var campfireUpgrades = this.upgradeEffectsHelper.getUpgradeIdsForImprovement(improvementName);
-			var campfireUpgrade;
-			for (var i in campfireUpgrades) {
-				campfireUpgrade = campfireUpgrades[i];
-				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(campfireUpgrade)) upgradeLevel++;
-			}
-			return upgradeLevel;
+            return this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
 		},
     });
 

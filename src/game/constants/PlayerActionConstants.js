@@ -1691,6 +1691,7 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_market: "Enables foreign traders to visit.",
                 build_in_barracks: "Allows 10 soldiers.",
                 build_in_lights: "Keep darkness at for good.",
+                build_in_smithy: "Workspace for toolsmiths.",
                 build_in_aqueduct: "Water infrastructure to improve collecting efficiency.",
                 use_in_home: "Recover stamina.",
                 use_in_campfire: "Collect rumours from the population.",

@@ -190,7 +190,7 @@ define([
 				var improvedBuildings = this.upgradeEffectsHelper.getImprovedBuildings(upgradeId);
 				if (improvedBuildings.length > 0) {
 					for (var i in improvedBuildings) {
-						effects += "improved " + improvedBuildings[i];
+						effects += "improved " + improvedBuildings[i].toLowerCase();
 					}
 					effects += ", ";
 				}
@@ -216,7 +216,7 @@ define([
 				if (unlockedItems.length > 0) {
 					effects += "items: ";
 					for (var i in unlockedItems) {
-						effects += unlockedItems[i];
+						effects += unlockedItems[i].toLowerCase();
 						effects += ", ";
 					}
 				}

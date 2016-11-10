@@ -412,10 +412,12 @@ define(['ash',
                     var maxStorage = currentStorage.storageCapacity;
                     
                     var canRope = this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("rope-maker"));
-                    var maxApothecaries = improvementsComponent.getCount(improvementNames.apothecary) * CampConstants.APOTECARIES_PER_SHOP;
-                    var maxConcrete = improvementsComponent.getCount(improvementNames.cementmill) * CampConstants.CONCRETE_WORKERS_PER_MILL;
-                    var maxSmiths = improvementsComponent.getCount(improvementNames.smithy) * CampConstants.SMIHTS_PER_SMITHY;
-                    var maxSoldiers = improvementsComponent.getCount(improvementNames.barracks) * CampConstants.SOLDIERS_PER_BARRACKS;
+                    var upgradesComponent = this.playerActionFunctions.tribeUpgradesNodes.head.upgrades;
+                    
+                    var maxApothecaries = improvementsComponent.getCount(improvementNames.apothecary) * CampConstants.getApothecariesPerShop(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.apothecary, upgradesComponent));
+                    var maxConcrete = improvementsComponent.getCount(improvementNames.cementmill) * CampConstants.getWorkersPerMill(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.cementmill, upgradesComponent));
+                    var maxSmiths = improvementsComponent.getCount(improvementNames.smithy) * CampConstants.getSmithsPerSmithy(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.smithy, upgradesComponent));
+                    var maxSoldiers = improvementsComponent.getCount(improvementNames.barracks) * CampConstants.getSoldiersPerBarracks(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.barracks, upgradesComponent));
                     var maxChemists = this.levelHelper.getLevelClearedWorkshopCount(playerPosition.level, resourceNames.fuel) * CampConstants.CHEMISTS_PER_WORKSHOP;
                     
                     var pop = campComponent.population;
