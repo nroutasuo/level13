@@ -8,6 +8,12 @@ define(['ash', 'game/constants/ItemConstants'], function (Ash) {
         POPULATION_COOLDOWN_SECONDS: 30,
         BASE_STORAGE: 50,
         
+        RUMOURS_PER_POP_PER_SEC_BASE: 0.0001,
+        RUMOUR_BONUS_PER_CAMPFIRE_BASE: 1.1,
+        RUMOURS_BONUS_PER_CAMPFIRE_PER_UPGRADE: 1.02,
+        RUMOUR_BONUS_PER_INN_BASE: 1.03,
+        RUMOURS_BONUS_PER_INN_PER_UPGRADE: 1.02,
+        
         // Cost of workers
         CONSUMPTION_WATER_PER_WORKER_PER_S: 0.02,
         CONSUMPTION_FOOD_PER_WORKER_PER_S: 0.01,

@@ -1,11 +1,12 @@
 define([
     'ash',
 	'game/constants/GameConstants',
+	'game/constants/CampConstants',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/sector/CampNode',
 	'game/nodes/tribe/TribeUpgradesNode',
     'game/components/sector/improvements/SectorImprovementsComponent',
-], function (Ash, GameConstants, PlayerStatsNode, CampNode, TribeUpgradesNode, SectorImprovementsComponent) {
+], function (Ash, GameConstants, CampConstants, PlayerStatsNode, CampNode, TribeUpgradesNode, SectorImprovementsComponent) {
     var RumourSystem = Ash.System.extend({
 	
         gameState: null,
@@ -57,22 +58,23 @@ define([
 					improvementsComponent = campNode.entity.get(SectorImprovementsComponent);
 					
 					campfireCount = improvementsComponent.getCount(improvementNames.campfire);
-					campfireFactor = 1 + (campfireCount > 0 ? (campfireCount/10*campfireCount*campfireCount) : 0);
-					campfireFactor = campfireFactor * campfireUpgradeLevel;
+					campfireFactor = CampConstants.RUMOUR_BONUS_PER_CAMPFIRE_BASE;
+					campfireFactor += campfireUpgradeLevel > 1 ? (campfireUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_CAMPFIRE_PER_UPGRADE : 0;
                     
                     innCount = improvementsComponent.getCount(improvementNames.inn);
-                    innFactor = 1 + (innCount > 0 ? (innCount / 3) : 0);
-                    campfireFactor = campfireFactor * innUpgradeLevel;
+                    innFactor = CampConstants.RUMOUR_BONUS_PER_INN_BASE;
+					innFactor += innUpgradeLevel > 1 ? (innUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_INN_PER_UPGRADE : 0;
                     
-					var accSpeedPopulation = 0.00005 * (Math.floor(campNode.camp.population)+1) * GameConstants.gameSpeedCamp;
-					var accSpeedCampfire = (accSpeedPopulation * campfireFactor - accSpeedPopulation) * GameConstants.gameSpeedCamp;
-					var accSpeedInn = (accSpeedPopulation * innFactor - accSpeedPopulation) * GameConstants.gameSpeedCamp;
+					var accSpeedPopulation = CampConstants.RUMOURS_PER_POP_PER_SEC_BASE * Math.floor(campNode.camp.population) * GameConstants.gameSpeedCamp;
+					var accSpeedCampfire = campfireCount > 0 ? Math.pow(campfireFactor, campfireCount) * accSpeedPopulation - accSpeedPopulation : 0;
+					var accSpeedInn = innCount > 0 ? Math.pow(innFactor, innCount) * accSpeedPopulation - accSpeedPopulation : 0;
+                    
 					var accSpeedCamp = accSpeedPopulation + accSpeedCampfire + accSpeedInn;
 					accSpeed += accSpeedCamp;
 					
 					rumoursComponent.addChange("Population", accSpeedPopulation);
-					rumoursComponent.addChange("Campfire", accSpeedCampfire);
-					if (innFactor > 1) rumoursComponent.addChange("Inn", accSpeedInn);
+					rumoursComponent.addChange("Campfires", accSpeedCampfire);
+					if (innFactor > 1) rumoursComponent.addChange("Inns", accSpeedInn);
 					rumoursComponent.accumulation += accSpeed;
 				}
 				

@@ -178,15 +178,15 @@ define([
             $("#stats-vision .value").toggleClass("warning", playerVision <= 25);
             $("#stats-stamina .value").toggleClass("warning", playerStamina <= staminaWarningLimit);
 			
-			$("#stats-rumours .value").text(this.roundStatValue(playerStatsNode.rumours.value));
+			$("#stats-rumours .value").text(UIConstants.roundValue(playerStatsNode.rumours.value, true, false));
 			$("#stats-rumours").toggle(playerStatsNode.rumours.isAccumulating);
 			this.updateStatsCallout("stats-rumours", playerStatsNode.rumours.accSources);
 			
-			$("#stats-evidence .value").text(this.roundStatValue(playerStatsNode.evidence.value));
+			$("#stats-evidence .value").text(UIConstants.roundValue(playerStatsNode.evidence.value, true, false));
 			$("#stats-evidence").toggle(this.gameState.unlockedFeatures.evidence);
 			this.updateStatsCallout("stats-evidence", playerStatsNode.evidence.accSources);
 
-            $("#header-camp-reputation .value").text(this.roundStatValue(playerStatsNode.reputation.value) + " / " + playerStatsNode.reputation.limit);
+            $("#header-camp-reputation .value").text(UIConstants.roundValue(playerStatsNode.reputation.value, true, false) + " / " + playerStatsNode.reputation.limit);
             $("#header-camp-reputation").toggle(playerStatsNode.reputation.isAccumulating);
             this.updateStatsCallout("header-camp-reputation", playerStatsNode.reputation.accSources);
             
@@ -451,12 +451,6 @@ define([
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var hasMap = itemsComponent.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
             $("#out-position-indicator").text(hasMap ? this.currentLocationNodes.head.entity.get(PositionComponent).getPosition().getInGameFormat(false) : "??");
-        },
-        
-        roundStatValue: function (value) {
-            if (value < 10) return Math.floor(value * 100) / 100;
-            if (value < 100) return Math.floor(value * 10) / 10;
-            return Math.floor(value);
         },
 		
 		getShowResources: function () {

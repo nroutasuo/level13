@@ -453,7 +453,7 @@ define(['ash',
 		
         roundValue: function (value, showDecimalsWhenSmall, showDecimalsAlways) {
             var decimalDivisor = 0;
-            if (showDecimalsWhenSmall && value <= 10) decimalDivisor = 10;
+            if (showDecimalsWhenSmall && value <= 10) decimalDivisor = 100;
             if (showDecimalsAlways) decimalDivisor = 100;
             
             if (value % 1 === 0 || decimalDivisor <= 0) return Math.floor(value);
