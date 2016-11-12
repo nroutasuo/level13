@@ -205,7 +205,7 @@ define([
             $("#stats-scavenge").toggle(this.gameState.unlockedFeatures.scavenge && !isInCamp);
 			var scavengeEfficiency = Math.round(this.uiFunctions.playerActions.playerActionResultsHelper.getScavengeEfficiency() * 200) / 2;
 			$("#stats-scavenge .value").text(scavengeEfficiency + "%");
-			UIConstants.updateCalloutContent("#stats-scavenge", "health: " + Math.round(maxStamina) + "<br/>vision: " + Math.round(playerVision));
+			UIConstants.updateCalloutContent("#stats-scavenge", "health: " + Math.round(maxStamina/10) + "<br/>vision: " + Math.round(playerVision));
 		},
 		
 		updateStatsCallout: function (indicatorID, changeSources) {
