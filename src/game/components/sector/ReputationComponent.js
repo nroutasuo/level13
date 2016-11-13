@@ -3,7 +3,6 @@ define(['ash'], function (Ash) {
         
         constructor: function () {
             this.value = 0;
-            this.limit = 0;
             this.isAccumulating = false;
             this.accumulation = 0;
             this.accSources = [];
@@ -12,7 +11,7 @@ define(['ash'], function (Ash) {
         addChange: function(source, amount) {
             if (amount == 0) return;
             
-	    for (var i = 0; i < this.accSources.length; i++) {
+            for (var i = 0; i < this.accSources.length; i++) {
                 var change = this.accSources[i];
                 if (change.source == source) {
                     change.amount += amount;

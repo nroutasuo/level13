@@ -21,7 +21,7 @@ define([
     'game/components/common/PositionComponent',
     'game/components/common/CampComponent',
     'game/components/sector/SectorFeaturesComponent',
-    'game/components/tribe/UpgradesComponent',
+    'game/components/sector/ReputationComponent'
 ], function (Ash,
     GameConstants, UIConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
     WorldCreatorHelper, SaveSystem,
@@ -34,7 +34,7 @@ define([
 	PositionComponent,
     CampComponent,
 	SectorFeaturesComponent,
-	UpgradesComponent
+    ReputationComponent
 ) {
     var UIOutHeaderSystem = Ash.System.extend({
 	
@@ -86,8 +86,12 @@ define([
 			$.each($("#header-self-bar .stats-indicator"), function () {
 				$(this).wrap("<div class='info-callout-target'></div>");
 			});
+			$.each($("#header-camp-reputation"), function () {
+				$(this).wrap("<div class='info-callout-target'></div>");
+			});
 			this.uiFunctions.generateCallouts("#statsbar-self");
 			this.uiFunctions.generateCallouts("#header-self-bar");
+			this.uiFunctions.generateCallouts("#header-camp-container");
 		},
 	
 		update: function (time) {
@@ -186,9 +190,14 @@ define([
 			$("#stats-evidence").toggle(this.gameState.unlockedFeatures.evidence);
 			this.updateStatsCallout("stats-evidence", playerStatsNode.evidence.accSources);
 
-            $("#header-camp-reputation .value").text(UIConstants.roundValue(playerStatsNode.reputation.value, true, false) + " / " + playerStatsNode.reputation.limit);
-            $("#header-camp-reputation").toggle(playerStatsNode.reputation.isAccumulating);
-            this.updateStatsCallout("header-camp-reputation", playerStatsNode.reputation.accSources);
+			var reputationComponent = this.currentLocationNodes.head.entity.get(ReputationComponent);
+            if (reputationComponent) {
+                $("#header-camp-reputation .value").text(UIConstants.roundValue(reputationComponent.value, true, false) + "%");
+                $("#header-camp-reputation").toggle(reputationComponent.isAccumulating);
+                this.updateStatsCallout("header-camp-reputation", reputationComponent.accSources);
+            } else {
+                $("#header-camp-reputation").toggle(false);                
+            }
             
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var fightAtt = FightConstants.getPlayerAtt(playerStatsNode.stamina, itemsComponent);

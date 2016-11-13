@@ -2,11 +2,12 @@
 define([
     'ash',
     'game/components/common/CampComponent',
+    'game/components/sector/ReputationComponent',
     'game/components/common/VisitedComponent',
     'game/components/common/RevealedComponent',
 	'game/components/sector/LastVisitedCampComponent',
     'game/components/sector/events/CampEventTimersComponent',
-], function (Ash, CampComponent, VisitedComponent, RevealedComponent, LastVisitedCampComponent, CampEventTimersComponent) {
+], function (Ash, CampComponent, ReputationComponent, VisitedComponent, RevealedComponent, LastVisitedCampComponent, CampEventTimersComponent) {
 
     var SaveHelper = Ash.Class.extend({
 	
@@ -17,7 +18,7 @@ define([
 			level: "level-",
 		},
 		
-		optionalComponents: [ CampComponent, VisitedComponent, RevealedComponent, LastVisitedCampComponent, CampEventTimersComponent ],
+		optionalComponents: [ CampComponent, ReputationComponent, VisitedComponent, RevealedComponent, LastVisitedCampComponent, CampEventTimersComponent ],
 		
 		constructor: function () {
 		},

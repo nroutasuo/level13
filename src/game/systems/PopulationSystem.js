@@ -41,7 +41,7 @@ define([
 
         updateNode: function (node, time) {
 			var camp = node.camp;
-			var reputation = this.playerNodes.head.reputation.value;
+			var reputation = node.reputation.value;
 			var improvements = node.entity.get(SectorImprovementsComponent);
 			var campPosition = node.entity.get(PositionComponent);
 			var level = campPosition.level;

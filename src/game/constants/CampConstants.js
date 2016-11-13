@@ -31,6 +31,9 @@ define(['ash', 'game/constants/ItemConstants'], function (Ash) {
         PRODUCTION_TOOLS_PER_WORKER_PER_S: 0.02,
         PRODUCTION_CONCRETE_PER_WORKER_PER_S: 0.03,
         
+        // reputation
+        REPUTATION_PER_RADIO_PER_SEC: 0.1,
+        
         // Workers per building
         CHEMISTS_PER_WORKSHOP: 5,
         

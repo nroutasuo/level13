@@ -33,6 +33,7 @@ define(['ash',
     'game/components/common/CampComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
+	'game/components/sector/ReputationComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/SectorStatusComponent',
@@ -54,7 +55,7 @@ define(['ash',
 	PositionComponent, ResourcesComponent,
 	BagComponent, ItemsComponent, PerksComponent, DeityComponent, PlayerActionComponent, PlayerActionResultComponent,
 	CampComponent, SectorImprovementsComponent, WorkshopComponent,
-	SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
+	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, CampEventTimersComponent,
 	LogMessagesComponent,
 	UIOutHeaderSystem, UIOutElementsSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem, SaveSystem
@@ -537,6 +538,7 @@ define(['ash',
                 campComponent.foundedTimeStamp = this.gameState.gamePlayedSeconds;
                 sector.add(campComponent);
                 sector.add(new CampEventTimersComponent());
+                sector.add(new ReputationComponent());
 				
 				var level = this.levelHelper.getLevelEntityForSector(sector);
 				level.add(campComponent);

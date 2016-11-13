@@ -8,7 +8,7 @@ define([
     'game/components/player/BagComponent',
     'game/components/player/VisionComponent',
     'game/components/player/StaminaComponent',
-    'game/components/player/ReputationComponent',
+    'game/components/sector/ReputationComponent',
     'game/components/player/RumoursComponent',
     'game/components/player/EvidenceComponent',
     'game/components/player/DeityComponent',
@@ -39,8 +39,7 @@ define([
     'game/components/sector/LastVisitedCampComponent',
     'game/components/common/CampComponent',
     'game/components/tribe/UpgradesComponent',
-	'game/components/level/LevelPassagesComponent',
-    'game/vos/PerkVO',
+	'game/components/level/LevelPassagesComponent'
 ], function (
     Ash,
     LogConstants,
@@ -82,8 +81,7 @@ define([
     LastVisitedCampComponent,
     CampComponent,
     UpgradesComponent,
-	LevelPassagesComponent,
-    PerkVO
+	LevelPassagesComponent
 ) {
     var EntityCreator = Ash.Class.extend({
 	
@@ -107,7 +105,6 @@ define([
 			.add(new StaminaComponent(100))
 			.add(new ResourcesComponent(ItemConstants.PLAYER_DEFAULT_STORAGE))
 			.add(new ResourceAccumulationComponent(saveKey))
-			.add(new ReputationComponent())
 			.add(new RumoursComponent())
 			.add(new EvidenceComponent())
 			.add(new PositionComponent(13, WorldCreatorConstants.FIRST_CAMP_X, WorldCreatorConstants.FIRST_CAMP_Y, false))
@@ -120,7 +117,6 @@ define([
 					PerksComponent,
 					StaminaComponent,
 					PositionComponent,
-					ReputationComponent,
 					RumoursComponent,
 					EvidenceComponent,
 					LogMessagesComponent,
@@ -174,6 +170,7 @@ define([
 			.add(new SaveComponent(saveKey, [
 				ResourcesComponent,
 				CampComponent,
+                ReputationComponent,
 				CampEventTimersComponent,
 				SectorImprovementsComponent,
 				SectorStatusComponent,
@@ -214,6 +211,9 @@ define([
 		syncSector: function (entity) {
 			if (entity.has(CampComponent) && !entity.has(CampEventTimersComponent)) {
 				entity.add(new CampEventTimersComponent());
+			}
+			if (entity.has(CampComponent) && !entity.has(ReputationComponent)) {
+				entity.add(new ReputationComponent());
 			}
 		},
     });
