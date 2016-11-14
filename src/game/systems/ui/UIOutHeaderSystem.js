@@ -192,7 +192,7 @@ define([
 
 			var reputationComponent = this.currentLocationNodes.head.entity.get(ReputationComponent);
             if (reputationComponent) {
-                $("#header-camp-reputation .value").text(UIConstants.roundValue(reputationComponent.value, true, false) + "%");
+                $("#header-camp-reputation .value").text(UIConstants.roundValue(reputationComponent.value, true, false) + " / " + reputationComponent.targetValue + " %");
                 $("#header-camp-reputation").toggle(reputationComponent.isAccumulating);
                 this.updateStatsCallout("header-camp-reputation", reputationComponent.accSources);
             } else {

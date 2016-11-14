@@ -3,6 +3,7 @@ define(['ash'], function (Ash) {
         
         constructor: function () {
             this.value = 0;
+            this.targetValue = 0;
             this.isAccumulating = false;
             this.accumulation = 0;
             this.accSources = [];

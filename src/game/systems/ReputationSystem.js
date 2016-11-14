@@ -2,17 +2,20 @@ define([
     'ash',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
+	'game/constants/OccurrenceConstants',
 	'game/nodes/sector/CampNode',
     'game/components/sector/improvements/SectorImprovementsComponent'
-], function (Ash, GameConstants, CampConstants, CampNode, SectorImprovementsComponent) {
+], function (Ash, GameConstants, CampConstants, OccurrenceConstants, CampNode, SectorImprovementsComponent) {
     var ReputationSystem = Ash.System.extend({
 	
         gameState: null,
+        resourcesHelper: null,
 	
 		campNodes: null,
 
-        constructor: function (gameState) {
+        constructor: function (gameState, resourcesHelper) {
             this.gameState = gameState;
+            this.resourcesHelper = resourcesHelper;
         },
 
         addToEngine: function (engine) {
@@ -30,29 +33,78 @@ define([
 			
 			if (this.campNodes.head) {
 				var accSpeed = 0;
+                var accTarget;
 				var accRadio;
-				var accImprovements;
 				
 				for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
                     var reputationComponent = campNode.reputation;
+                    var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
+                    
                     reputationComponent.accSources = [];
                     reputationComponent.accumulation = 0;
-            
-					var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
-					accImprovements = 0;//0.001 * (sectorImprovements.getTotal(improvementTypes.camp)) * GameConstants.gameSpeedCamp;
-					accRadio = accImprovements * sectorImprovements.getCount(improvementNames.radio) * CampConstants.REPUTATION_PER_RADIO_PER_SEC * GameConstants.gameSpeedCamp;
-					accSpeed = Math.max(0, accImprovements + accRadio);
                     
-					reputationComponent.addChange("Buildings", accImprovements);
+                    reputationComponent.targetValue = this.getTargetReputation(campNode);
+                    
+					accRadio = sectorImprovements.getCount(improvementNames.radio) * CampConstants.REPUTATION_PER_RADIO_PER_SEC * GameConstants.gameSpeedCamp;
+                    var accTargetDiff = reputationComponent.targetValue - reputationComponent.value;
+                    if (Math.abs(accTargetDiff) < 0.01) accTargetDiff = 0;
+                    if (accTargetDiff > 0) accTargetDiff = Math.min(10, Math.max(1, accTargetDiff));
+                    if (accTargetDiff < 0) accTargetDiff = Math.max(-10, Math.min(-1, accTargetDiff));
+                    accTarget = (accTargetDiff < 0 ? accTargetDiff * 0.05 : accTargetDiff * 0.01) * GameConstants.gameSpeedCamp;
+					accSpeed = accTarget + accRadio;
+                    
+					reputationComponent.addChange("Base", accTarget);
 					reputationComponent.addChange("Radio", accRadio);
 					reputationComponent.accumulation += accSpeed;
 				
                     reputationComponent.value += (time + this.engine.extraUpdateTime) * accSpeed;
+                    if (accTargetDiff === 0) {
+                        reputationComponent.value = reputationComponent.targetValue;
+                    } else if (reputationComponent.value > reputationComponent.targetValue && accTargetDiff > 0) {
+                        reputationComponent.value = reputationComponent.targetValue;
+                    }
+                    else if (reputationComponent.value < reputationComponent.targetValue && accTargetDiff < 0) {
+                        reputationComponent.value = reputationComponent.targetValue;
+                    }
                     reputationComponent.value = Math.max(0, Math.min(100, reputationComponent.value));
+                    
                     reputationComponent.isAccumulating = campNode.camp.population > 0 || sectorImprovements.getTotal(improvementTypes.camp) > 0;
 				}
 			}
         },
+        
+        getTargetReputation: function (campNode) {
+            var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
+            
+			var resources = this.resourcesHelper.getCurrentStorage().resources;
+            var noFood = resources.getResource(resourceNames.food) <= 0;
+            var noWater = resources.getResource(resourceNames.water) <= 0;
+            var soldiers = campNode.camp.assignedWorkers.soldier;
+            var badDefences = OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers) > 25;
+            
+            var targetReputation = 0;            
+            var allImprovements = sectorImprovements.getAll(improvementTypes.camp);
+            for (var i in allImprovements) {
+                var improvementVO = allImprovements[i];
+                switch (improvementVO.name) {
+                    case improvementNames.home:
+                        break;
+                    case improvementNames.radio:
+                        targetReputation += improvementVO.count;
+                        break;
+                    default:
+                        targetReputation += improvementVO.count;
+                        break;
+                }
+            }
+            console.log(targetReputation)
+            targetReputation = Math.max(0, Math.min(100, targetReputation));
+            if (noFood) targetReputation -= 50;
+            if (noWater) targetReputation -= 50;
+            if (badDefences) targetReputation -= 10;
+            targetReputation = Math.max(0, Math.min(100, targetReputation));
+            return targetReputation;
+        }
     });
 
     return ReputationSystem;

@@ -216,7 +216,7 @@ define([
 			this.engine.addSystem(new PopulationSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new WorkerSystem(this.gameState, this.resourcesHelper, this.campHelper), SystemPriorities.update);
 			this.engine.addSystem(new FaintingSystem(this.uiFunctions, this.playerActionFunctions, this.playerActionResultsHelper), SystemPriorities.update);
-			this.engine.addSystem(new ReputationSystem(this.gameState), SystemPriorities.update);
+			this.engine.addSystem(new ReputationSystem(this.gameState, this.resourcesHelper), SystemPriorities.update);
 			this.engine.addSystem(new RumourSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new EvidenceSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new PlayerPositionSystem(this.gameState, this.levelHelper, this.uiFunctions, this.occurrenceFunctions, this.playerMovedSignal), SystemPriorities.preupdate);

@@ -333,7 +333,7 @@ define([
 			
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var soldiers = this.playerLocationNodes.head.entity.get(CampComponent).assignedWorkers.soldier;
-			var raidDanger = Math.round(OccurrenceConstants.getRaidDanger(improvements, soldiers));
+			var raidDanger = Math.round(OccurrenceConstants.getRaidDanger(improvements, soldiers)) > 25;
             
             var inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
             var showCalendar = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(this.upgradesHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
