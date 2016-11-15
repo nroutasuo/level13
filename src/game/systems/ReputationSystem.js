@@ -41,6 +41,7 @@ define([
                     var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
                     
                     reputationComponent.accSources = [];
+                    reputationComponent.targetValueSources = [];
                     reputationComponent.accumulation = 0;
                     
                     reputationComponent.targetValue = this.getTargetReputation(campNode);
@@ -87,21 +88,29 @@ define([
             for (var i in allImprovements) {
                 var improvementVO = allImprovements[i];
                 switch (improvementVO.name) {
-                    case improvementNames.home:
-                        break;
                     case improvementNames.radio:
                         targetReputation += improvementVO.count;
+                        campNode.reputation.addTargetValueSource("Radio", improvementVO.count);
                         break;
                     default:
                         targetReputation += improvementVO.count;
+                        campNode.reputation.addTargetValueSource("Buildings", improvementVO.count);
                         break;
                 }
             }
-            console.log(targetReputation)
             targetReputation = Math.max(0, Math.min(100, targetReputation));
-            if (noFood) targetReputation -= 50;
-            if (noWater) targetReputation -= 50;
-            if (badDefences) targetReputation -= 10;
+            if (noFood) {
+                targetReputation -= 50;
+                campNode.reputation.addTargetValueSource("No food", -50);
+            }
+            if (noWater) {
+                targetReputation -= 50;
+                campNode.reputation.addTargetValueSource("No water", -50);
+            }
+            if (badDefences) {
+                targetReputation -= 10;
+                campNode.reputation.addTargetValueSource("No defences", -10);
+            }
             targetReputation = Math.max(0, Math.min(100, targetReputation));
             return targetReputation;
         }

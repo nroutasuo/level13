@@ -7,14 +7,15 @@ define(['ash'], function (Ash) {
             this.isAccumulating = false;
             this.accumulation = 0;
             this.accSources = [];
+            this.targetValueSources = [];
         },
         
-        addChange: function(source, amount) {
-            if (amount == 0) return;
+        addChange: function (source, amount) {
+            if (amount === 0) return;
             
             for (var i = 0; i < this.accSources.length; i++) {
                 var change = this.accSources[i];
-                if (change.source == source) {
+                if (change.source === source) {
                     change.amount += amount;
                     return;
                 }
@@ -22,6 +23,30 @@ define(['ash'], function (Ash) {
             
             this.accSources.push({ source: source, amount: amount });
         },
+        
+        addTargetValueSource: function (source, amount) {
+            if (amount === 0) return;
+            
+            for (var i = 0; i < this.targetValueSources.length; i++) {
+                var change = this.targetValueSources[i];
+                if (change.source === source) {
+                    change.amount += amount;
+                    return;
+                }
+            }
+            
+            this.targetValueSources.push({ source: source, amount: amount });            
+        },
+        
+        getTotalChange: function () {
+            var total = 0;
+            var source;
+			for (var i in this.accSources) {
+				source = this.accSources[i];
+                total += source.amount;
+			}
+            return total;
+        }
         
     });
 

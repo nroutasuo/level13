@@ -194,7 +194,18 @@ define([
             if (reputationComponent) {
                 $("#header-camp-reputation .value").text(UIConstants.roundValue(reputationComponent.value, true, false) + " / " + reputationComponent.targetValue + " %");
                 $("#header-camp-reputation").toggle(reputationComponent.isAccumulating);
-                this.updateStatsCallout("header-camp-reputation", reputationComponent.accSources);
+                var reputationCalloutContent = "";
+                for (var i in reputationComponent.targetValueSources) {
+                    var source = reputationComponent.targetValueSources[i];
+                    if (source.amount !== 0) {
+                        var amount = Math.round(source.amount * 10000)/10000;
+                        if (amount === 0 && source.amount > 0) {
+                            amount = "< 0.0001";
+                        }
+                        reputationCalloutContent += source.source + ": " + amount + "<br/>";
+                    }
+                }
+                UIConstants.updateCalloutContent("#header-camp-reputation", reputationCalloutContent);
             } else {
                 $("#header-camp-reputation").toggle(false);                
             }

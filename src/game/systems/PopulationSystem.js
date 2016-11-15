@@ -43,19 +43,27 @@ define([
 			var camp = node.camp;
 			var reputation = node.reputation.value;
 			var improvements = node.entity.get(SectorImprovementsComponent);
-			var campPosition = node.entity.get(PositionComponent);
-			var level = campPosition.level;
 			
-			var changePerSec = (reputation / (camp.population * camp.population * camp.population * camp.population * camp.population + 1) / 25);
-			var change = time * changePerSec * GameConstants.gameSpeedCamp;
-            camp.populationChangePerSec = changePerSec;
-			
-			var timeStamp = new Date().getTime();
-            var cooldownMillis = CampConstants.POPULATION_COOLDOWN_SECONDS * 1000 / GameConstants.gameSpeedCamp;
-			var lastIncreaseTimeStamp = this.lastPopulationIncreaseTimestamps[level] ? this.lastPopulationIncreaseTimestamps[level] : 0;
-            camp.populationCooldownSec = Math.max(0, (cooldownMillis - (timeStamp - lastIncreaseTimeStamp)) / 1000);
+			this.updatePopulationCooldown(node);
 			
 			if (camp.populationCooldownSec === 0) {
+                var reqRepCurPop = CampConstants.getRequiredReputation(Math.floor(camp.population));
+                var reqRepNextPop = CampConstants.getRequiredReputation(Math.floor(camp.population) + 1);
+                
+                var changePerSec;
+                if (reputation >= reqRepCurPop && reputation < reqRepNextPop) {
+                    changePerSec = 0;
+                } else if (reputation >= reqRepNextPop) {
+                    var repDiffValue = (reputation - reqRepNextPop) / 100 / 50;
+                    var popValue = 1 / Math.floor(camp.population) / 50;
+                    changePerSec = repDiffValue + popValue;
+                } else {
+                    changePerSec = (reputation - reqRepCurPop) / 100 / 25;
+                }
+                
+                var change = time * changePerSec * GameConstants.gameSpeedCamp;
+                camp.populationChangePerSec = changePerSec;
+            
 				var oldPopulation = camp.population;
 				var housingCap = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
 				housingCap += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
@@ -66,16 +74,53 @@ define([
 					camp.addPopulation(housingCap - oldPopulation);
 				}
 			
-				// Log new arrivals in current location
-				var playerPosition = this.playerNodes.head.entity.get(PositionComponent);
-				if (Math.floor(camp.population) > Math.floor(oldPopulation)) {
-					this.lastPopulationIncreaseTimestamps[level] = new Date().getTime();
-					camp.rumourpoolchecked = false;
-					if (playerPosition.level === campPosition.level && playerPosition.sectorId() === campPosition.sectorId()) {
-						var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
-						logComponent.addMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "A stranger shows up.");
-					}
+				if (Math.floor(camp.population) !== Math.floor(oldPopulation)) {
+					this.handlePopulationChange(node, camp.population > oldPopulation);
 				}
+            } else {
+                camp.populationChangePerSec = 0;
+            }
+        },
+        
+        updatePopulationCooldown: function (node) {
+			var campPosition = node.entity.get(PositionComponent);
+			var level = campPosition.level;
+            var timeStamp = new Date().getTime();
+            var cooldownMillis = CampConstants.POPULATION_COOLDOWN_SECONDS * 1000 / GameConstants.gameSpeedCamp;
+			var lastIncreaseTimeStamp = this.lastPopulationIncreaseTimestamps[level] ? this.lastPopulationIncreaseTimestamps[level] : 0;
+            node.camp.populationCooldownSec = Math.max(0, (cooldownMillis - (timeStamp - lastIncreaseTimeStamp)) / 1000);
+        },
+        
+        handlePopulationChange: function (node, isIncrease) {
+			var campPosition = node.entity.get(PositionComponent);
+			var level = campPosition.level;
+            
+            if (isIncrease) {
+                this.lastPopulationIncreaseTimestamps[level] = new Date().getTime();
+                node.camp.rumourpoolchecked = false;
+            } else {
+                if (node.camp.getAssignedPopulation() > node.camp.population) {                
+                    for(var key in node.camp.assignedWorkers) {
+                        var count = node.camp.assignedWorkers[key];
+                        if (count > 0) {
+                            node.camp.assignedWorkers[key]--;
+                            break;
+                        }
+                    }
+                }
+            }
+            this.logChangePopulation(campPosition, isIncrease);
+        },
+        
+        logChangePopulation: function (campPosition, isIncrease) {
+            var playerPosition = this.playerNodes.head.entity.get(PositionComponent);
+            if (playerPosition.level === campPosition.level && playerPosition.sectorId() === campPosition.sectorId()) {
+                var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
+                if (isIncrease) {
+                    logComponent.addMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "A stranger shows up.");
+                } else {
+                    logComponent.addMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "An inhabitant packs their things and heads out into the City alone.");
+                }
             }
         }
     });

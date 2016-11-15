@@ -453,8 +453,16 @@ hr {
 	border-color: #4a4a4a;
 }
 
-.lvl13-warning, .warning, .warning span, li.li-item-negative, .item-slot-lost .item-count {
+.warning, .warning span, li.li-item-negative, .item-slot-lost .item-count {
 	color: rgb(230, 70, 70) !important;
+}
+
+.warning.progress-wrap {
+	background: rgb(230, 70, 70) !important;
+}
+
+.warning .progress-label {
+	color: #fdfdfd !important;
 }
 
 .inventorybox-negative, .item-slot-lost .item-count {
@@ -466,8 +474,16 @@ hr {
 	background: rgba(230, 70, 70, 0.15) !important;
 }
 
-.sunlit .lvl13-warning, .sunlit .warning, .sunlit .warning span, .sunlit .li-item-negative {
+.sunlit .warning, .sunlit .warning span, .sunlit .li-item-negative {
 	color: rgb(245, 0, 0) !important;
+}
+
+.sunlit .warning.progress-wrap {
+	background: rgb(245, 0, 0) !important;
+}
+
+.sunlit .warning .progress-label {
+	color: #202200 !important;
 }
 
 .sunlit .li-item-negative {

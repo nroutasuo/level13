@@ -129,7 +129,6 @@ define([
             if (!isActive) return;
             
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-            var posComponent = this.playerPosNodes.head.position;
             
             var showPopulation = campComponent.population > 0 || this.gameState.numCamps > 1;
             $("#in-population").toggle(showPopulation);
@@ -137,24 +136,61 @@ define([
             
             var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
             maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
+            this.updatePopulationChangeDisplay(campComponent, maxPopulation);
+            this.updateAssignedWorkers(campComponent, maxPopulation);
+        },
+        
+        updateWorkerStepper: function (campComponent, id, workerType, maxWorkers, showMax) {
+            var freePopulation = campComponent.getFreePopulation();
+            var assignedWorkers = campComponent.assignedWorkers[workerType];
+            $(id + " input").attr("max", Math.min(assignedWorkers + freePopulation, maxWorkers));
+            $(id + " input").val(assignedWorkers);
+			$(id).parent().siblings(".in-assign-worker-limit").children(".callout-container").children(".info-callout-target").html(showMax ? "<span>/ " + maxWorkers + "</span>" : "");
+        },
+        
+        updatePopulationChangeDisplay: function (campComponent, maxPopulation) {
             var freePopulation = campComponent.getFreePopulation();
             var isPopulationMaxed = campComponent.population >= maxPopulation;
+            var isPopulationChanging = isPopulationMaxed && populationChangePerSec !== 0;
+            var populationChangePerSec = campComponent.populationChangePerSec;
+            
+            var reqRepCur = CampConstants.getRequiredReputation(Math.floor(campComponent.population));
+            var reqRepNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
 
+            $("#in-population-next").text(campComponent.populationChangePerSec >= 0 ? "Next worker:" : "Worker leaving:");
+            $("#in-population-reputation").text("Reputation required: " + reqRepCur + " (current) " + reqRepNext + " (next)");
             $("#in-population h3").text("Population: " + Math.floor(campComponent.population) + " / " + (maxPopulation));
             $("#in-population p#in-population-status").text("Free workers: " + freePopulation);
-            if (!isPopulationMaxed) {
-                var populationToNextWorker = 1 - (campComponent.population - Math.floor(campComponent.population));
-                var populationChangePerSec = campComponent.populationChangePerSec;
-                var secondsToNextWorker = populationToNextWorker / populationChangePerSec + campComponent.populationCooldownSec;
-                var nextWorkerProgress = (1 - populationToNextWorker) * 100;
-                $("#in-population-bar-next").data("progress-percent", nextWorkerProgress);
-                $("#in-population-bar-next .progress-label").text(UIConstants.getTimeToNum(secondsToNextWorker));
+            
+            if (!isPopulationChanging) {
+                var secondsToChange = 0;
+                var progress = 0;
+                if (populationChangePerSec > 0) {
+                    progress = (campComponent.population - Math.floor(campComponent.population));
+                    secondsToChange = (1 - progress) / populationChangePerSec;
+                } else if(populationChangePerSec < 0) {
+                    progress = (campComponent.population - Math.floor(campComponent.population));
+                    secondsToChange = progress / populationChangePerSec;
+                } else {
+                    progress = 0;
+                }
+                
+                $("#in-population-bar-next").toggleClass("warning", populationChangePerSec < 0);
+                $("#in-population-bar-next").data("progress-percent", progress * 100);
+                $("#in-population-bar-next .progress-label").text(populationChangePerSec !== 0 ? UIConstants.getTimeToNum(secondsToChange) : "no change");
                 $("#in-population-bar-next").data("animation-length", 500);
             }
-            this.uiFunctions.slideToggleIf("#in-population-bar-next", null, campComponent.population > 0 && !isPopulationMaxed, 200, 200);
-            this.uiFunctions.slideToggleIf("#in-population-next", null, campComponent.population > 0 && !isPopulationMaxed, 200, 200);
+            
+            this.uiFunctions.slideToggleIf("#in-population-reputation", null, campComponent.population > 0 && !isPopulationChanging, 200, 200);
+            this.uiFunctions.slideToggleIf("#in-population-bar-next", null, campComponent.population > 0 && !isPopulationChanging, 200, 200);
+            this.uiFunctions.slideToggleIf("#in-population-next", null, campComponent.population > 0 && !isPopulationChanging, 200, 200);
             this.uiFunctions.slideToggleIf("#in-population-status", null, campComponent.population >= 1, 200, 200);
             this.uiFunctions.slideToggleIf("#in-assign-workers", null, campComponent.population >= 1, 200, 200);
+        },
+        
+        updateAssignedWorkers: function (campComponent, maxPopulation) {    
+            var posComponent = this.playerPosNodes.head.position;
+            var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             
             $("#in-assign-weaver").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("rope-maker")));
             $("#in-assign-chemist").toggle(this.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel) > 0);
@@ -203,18 +239,10 @@ define([
             UIConstants.updateCalloutContent("#in-assign-soldier .in-assign-worker-limit .info-callout-target", barracksInCamp + " barracks built", true);
         },
         
-        updateWorkerStepper: function (campComponent, id, workerType, maxWorkers, showMax) {
-            var freePopulation = campComponent.getFreePopulation();
-            var assignedWorkers = campComponent.assignedWorkers[workerType];
-            $(id + " input").attr("max", Math.min(assignedWorkers + freePopulation, maxWorkers));
-            $(id + " input").val(assignedWorkers);
-			$(id).parent().siblings(".in-assign-worker-limit").children(".callout-container").children(".info-callout-target").html(showMax ? "<span>/ " + maxWorkers + "</span>" : "");
-        },
-        
         updateImprovements: function (isActive, campCount) {
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
-            var hasDeity = this.deityNodes.head != null;
+            var hasDeity = this.deityNodes.head !== null;
             
             var availableBuildingCount = 0;
             var visibleBuildingCount = 0;
