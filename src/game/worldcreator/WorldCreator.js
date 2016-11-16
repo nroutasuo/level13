@@ -55,7 +55,9 @@ define([
                 var isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, l);
                 var notCampableReason = isCampableLevel ? null : WorldCreatorHelper.getNotCampableReason(seed, l);
 				var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
-                var levelVO = new LevelVO(l, levelOrdinal, isCampableLevel, notCampableReason);
+                var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
+                var populationGrowthFactor = isCampableLevel ? WorldCreatorConstants.getPopulationGrowthFactor(campOrdinal) : 0;
+                var levelVO = new LevelVO(l, levelOrdinal, isCampableLevel, notCampableReason, populationGrowthFactor);
 				this.world.addLevel(levelVO);
 
                 this.generateSectors(seed, levelVO, passageDownPositions);

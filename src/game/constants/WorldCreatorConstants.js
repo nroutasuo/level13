@@ -71,6 +71,32 @@ define(['ash'], function (Ash) {
                 return this.BAG_BONUS_3;
             }
             return this.BAG_BONUS_4;
+        },
+        
+        getPopulationGrowthFactor: function (campOrdinal) {
+            if (campOrdinal <= 0) return 0;
+            switch (campOrdinal) {
+                case 3:
+                case 4:
+                case 14:
+                    return 0.5;
+                    
+                case 5:
+                case 6:
+                    return 0.25;
+                
+                case 7:
+                case 8:
+                case 15:
+                    return 0.1;
+                
+                case 10:
+                case 13:
+                    return 2;                    
+                    
+                default:
+                    return 1;
+            }
         }
     };
     

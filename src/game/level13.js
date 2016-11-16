@@ -213,7 +213,7 @@ define([
 			this.engine.addSystem(new HazardSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CollectorSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new FightSystem(this.gameState, this.resourcesHelper, this.levelHelper, this.playerActionResultsHelper, this.playerActionsHelper, this.occurrenceFunctions), SystemPriorities.update);
-			this.engine.addSystem(new PopulationSystem(this.gameState), SystemPriorities.update);
+			this.engine.addSystem(new PopulationSystem(this.gameState, this.levelHelper), SystemPriorities.update);
 			this.engine.addSystem(new WorkerSystem(this.gameState, this.resourcesHelper, this.campHelper), SystemPriorities.update);
 			this.engine.addSystem(new FaintingSystem(this.uiFunctions, this.playerActionFunctions, this.playerActionResultsHelper), SystemPriorities.update);
 			this.engine.addSystem(new ReputationSystem(this.gameState, this.resourcesHelper), SystemPriorities.update);
@@ -238,7 +238,7 @@ define([
 			this.engine.addSystem(new UIOutMapSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.uiMapHelper, this.levelHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutUpgradesSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionFunctions, this.upgradeEffectsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutBlueprintsSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionFunctions, this.upgradeEffectsHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.tabChangedSignal, this.resourcesHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.tabChangedSignal, this.resourcesHelper, this.levelHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutFightSystem(this.uiFunctions, this.playerActionResultsHelper, this.playerActionsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLogSystem(this.playerMovedSignal), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupInventorySystem(this.uiFunctions), SystemPriorities.render);

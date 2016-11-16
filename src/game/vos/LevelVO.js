@@ -1,11 +1,16 @@
 define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], function (Ash, PositionConstants, PositionVO) {
 
+    // TODO separate LevelVO used in WorldConstructor and LevelVO in LevelComponent / used during play - same for SectorVO
+
     var LevelVO = Ash.Class.extend({
 	
 		level: -1,
 		levelOrdinal: -1,
+        
 		isCampable: false,
         notCampableReason: null,
+        populationGrowthFactor: 0, // 1 = normal
+        
         bagSize: 0,
 		centralAreaSize: 0,
 		
@@ -18,11 +23,12 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 		minY: 0,
 		maxY: 0,
 	
-        constructor: function (level, levelOrdinal, isCampable, notCampableReason) {
+        constructor: function (level, levelOrdinal, isCampable, notCampableReason, populationGrowthFactor) {
 			this.level = level;
 			this.levelOrdinal = levelOrdinal;
 			this.isCampable = isCampable;
             this.notCampableReason = notCampableReason;
+            this.populationGrowthFactor = populationGrowthFactor;
 			
 			this.sectors = [];
 			this.centralSectors = [];

@@ -5,7 +5,7 @@ define([
     'game/constants/PositionConstants',
     'game/constants/MovementConstants',
     'game/constants/SectorConstants',
-    'game/nodes/LevelNode',
+    'game/nodes/level/LevelNode',
     'game/nodes/sector/SectorNode',
     'game/components/common/PositionComponent',
     'game/components/common/RevealedComponent',

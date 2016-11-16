@@ -31,6 +31,7 @@ define(['ash',
 	'game/components/player/PlayerActionComponent',
 	'game/components/player/PlayerActionResultComponent',
     'game/components/common/CampComponent',
+	'game/components/type/LevelComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/components/sector/ReputationComponent',
@@ -54,7 +55,7 @@ define(['ash',
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
 	BagComponent, ItemsComponent, PerksComponent, DeityComponent, PlayerActionComponent, PlayerActionResultComponent,
-	CampComponent, SectorImprovementsComponent, WorkshopComponent,
+	CampComponent, LevelComponent, SectorImprovementsComponent, WorkshopComponent,
 	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, CampEventTimersComponent,
 	LogMessagesComponent,
@@ -549,6 +550,9 @@ define(['ash',
                 this.gameState.unlockedFeatures.camp = true;
                 
                 this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "Built a camp.");
+                if (level.get(LevelComponent).levelVO.populationGrowthFactor < 1) {
+                    this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP_LEVEL_POPULATION, "There are very few signs of human life on this level.");                    
+                }
                 this.forceResourceBarUpdate();
                 this.save();
             }

@@ -2,7 +2,7 @@
 define([
     'ash',
 	'game/constants/WorldCreatorConstants',
-    'game/nodes/LevelNode',
+    'game/nodes/level/LevelNode',
     'game/nodes/sector/SectorNode',
     'game/components/common/PositionComponent',
     'game/components/level/LevelPassagesComponent',

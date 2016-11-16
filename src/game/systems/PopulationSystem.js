@@ -5,10 +5,11 @@ define([
 	'game/constants/CampConstants',
     'game/nodes/sector/CampNode',
     'game/nodes/player/PlayerStatsNode',
+    'game/components/type/LevelComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/PositionComponent',
     'game/components/common/LogMessagesComponent',
-], function (Ash, GameConstants, LogConstants, CampConstants, CampNode, PlayerStatsNode, SectorImprovementsComponent, PositionComponent, LogMessagesComponent) {
+], function (Ash, GameConstants, LogConstants, CampConstants, CampNode, PlayerStatsNode, LevelComponent, SectorImprovementsComponent, PositionComponent, LogMessagesComponent) {
     var PopulationSystem = Ash.System.extend({
 	
         campNodes: null,
@@ -16,8 +17,9 @@ define([
 		
 		lastPopulationIncreaseTimestamps: [],
 
-        constructor: function (gameState) {
+        constructor: function (gameState, levelHelper) {
             this.gameState = gameState;
+            this.levelHelper = levelHelper;
         },
 
         addToEngine: function (engine) {
@@ -47,6 +49,7 @@ define([
 			this.updatePopulationCooldown(node);
 			
 			if (camp.populationCooldownSec === 0) {
+                var levelVO = this.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent).levelVO;
                 var reqRepCurPop = CampConstants.getRequiredReputation(Math.floor(camp.population));
                 var reqRepNextPop = CampConstants.getRequiredReputation(Math.floor(camp.population) + 1);
                 
@@ -60,6 +63,8 @@ define([
                 } else {
                     changePerSec = (reputation - reqRepCurPop) / 100 / 25;
                 }
+                
+                changePerSec *= levelVO.populationGrowthFactor;
                 
                 var change = time * changePerSec * GameConstants.gameSpeedCamp;
                 camp.populationChangePerSec = changePerSec;

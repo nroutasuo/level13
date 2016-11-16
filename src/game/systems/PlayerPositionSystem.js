@@ -5,7 +5,7 @@ define([
     'game/constants/UIConstants',
     'game/constants/WorldCreatorConstants',
     'game/nodes/PlayerPositionNode',
-    'game/nodes/LevelNode',
+    'game/nodes/level/LevelNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/sector/SectorNode',
     'game/nodes/sector/CampNode',

@@ -5,6 +5,7 @@ define([
     'game/constants/OccurrenceConstants',
     'game/constants/CampConstants',
     'game/constants/PerkConstants',
+    'game/nodes/level/PlayerLevelNode',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/sector/CampNode',
@@ -12,7 +13,6 @@ define([
     'game/nodes/tribe/TribeUpgradesNode',
     'game/components/player/PerksComponent',
     'game/components/sector/SectorFeaturesComponent',
-    'game/components/common/PositionComponent',
     'game/components/common/CampComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/SectorControlComponent',
@@ -21,9 +21,9 @@ define([
     'game/components/sector/events/RaidComponent',
 ], function (
     Ash, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants,
-    PlayerPositionNode, PlayerLocationNode, CampNode, DeityNode, TribeUpgradesNode,
+    PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, CampNode, DeityNode, TribeUpgradesNode,
     PerksComponent,
-	SectorFeaturesComponent, PositionComponent,
+	SectorFeaturesComponent,
     CampComponent, SectorImprovementsComponent, SectorControlComponent, CampEventTimersComponent,
     TraderComponent, RaidComponent
 ) {
@@ -38,6 +38,7 @@ define([
 	
         playerPosNodes: null,
         playerLocationNodes: null,
+        playerLevelNodes: null,
         deityNodes: null,
         tribeUpgradesNodes: null,
         
@@ -65,6 +66,7 @@ define([
             this.engine  = engine;
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
+            this.playerLevelNodes = engine.getNodeList(PlayerLevelNode);
             this.deityNodes = engine.getNodeList(DeityNode);
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
         },
@@ -73,6 +75,7 @@ define([
             this.engine = null;
             this.playerLocationNodes = null;
             this.playerPosNodes = null;
+            this.playerLevelNodes = null;
             this.deityNodes = null;
             this.tribeUpgradesNodes = null;
         },
@@ -376,7 +379,14 @@ define([
 			}
 			$("#in-demographics-raid").toggle(showRaid);
             
-            $("#in-demographics").toggle(showCalendar || showRaid);
+            var showLevelStats = this.gameState.numCamps > 1;
+            if (showLevelStats) {
+                var levelVO = this.playerLevelNodes.head.level.levelVO;
+				$("#in-demographics-level-population .value").text(levelVO.populationGrowthFactor * 100 + "%");
+            }
+            $("#in-demographics-level").toggle(showLevelStats);
+            
+            $("#in-demographics").toggle(showCalendar || showRaid || showLevelStats);
         },
         
         hasUpgrade: function (upgradeId) {

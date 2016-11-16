@@ -39,6 +39,7 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
         MSG_ID_POPULATION_NATURAL: "POPULATION_NATURAL",
         MSG_ID_WORKER_STATUS: "WORKER_STATUS",
         MSG_ID_CAMP_EVENT: "CAMP_EVENT",
+        MSG_ID_BUILT_CAMP_LEVEL_POPULATION: "MSG_ID_BUILT_CAMP_LEVEL_POPULATION",
         
         // in buildings
         MSG_ID_BUILT_CAMP: "BUILT_CAMP",

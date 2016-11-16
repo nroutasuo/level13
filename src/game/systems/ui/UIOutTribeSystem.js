@@ -2,17 +2,17 @@ define([
     'ash',
     'game/constants/UIConstants',
     'game/constants/CampConstants',
-    'game/helpers/ResourcesHelper',
     'game/nodes/sector/CampNode',
     'game/nodes/PlayerPositionNode',
     'game/components/common/PositionComponent',
     'game/components/common/ResourcesComponent',
     'game/components/common/ResourceAccumulationComponent',
+    'game/components/type/LevelComponent',
     'game/components/sector/improvements/SectorImprovementsComponent'
 ], function (
-    Ash, UIConstants, CampConstants, ResourcesHelper,
+    Ash, UIConstants, CampConstants,
     CampNode, PlayerPositionNode,
-    PositionComponent, ResourcesComponent, ResourceAccumulationComponent, SectorImprovementsComponent
+    PositionComponent, ResourcesComponent, ResourceAccumulationComponent, LevelComponent, SectorImprovementsComponent
 ) {
     var UIOutTribeSystem = Ash.System.extend({
 	
@@ -26,10 +26,11 @@ define([
         campNodes: null,
 		playerPosNodes: null,
 
-        constructor: function (uiFunctions, tabChangedSignal, resourcesHelper) {
+        constructor: function (uiFunctions, tabChangedSignal, resourcesHelper, levelHelper) {
 			this.uiFunctions = uiFunctions;
 			this.tabChangedSignal = tabChangedSignal;
 			this.resourcesHelper = resourcesHelper;
+            this.levelHelper = levelHelper;
             return this;
         },
 
@@ -76,6 +77,7 @@ define([
 				rowHTML += "<td class='camp-overview-level'>" + level + "</td>";
 				rowHTML += "<td class='camp-overview-name'>" + camp.campName + "</td>";
 				rowHTML += "<td class='camp-overview-population list-amount'></td>";
+				rowHTML += "<td class='camp-overview-levelpop list-amount'></td>";
 				rowHTML += "<td class='camp-overview-improvements'>";
 				rowHTML += "</span></td>";
 				rowHTML += "<td class='camp-overview-storage list-amount'></td>";
@@ -105,6 +107,9 @@ define([
 			var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
 			maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
 			$("#camp-overview tr#" + rowID + " .camp-overview-population").text(Math.floor(camp.population) + " / " + maxPopulation);
+            
+            var levelVO = this.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent).levelVO;
+			$("#camp-overview tr#" + rowID + " .camp-overview-levelpop").text(levelVO.populationGrowthFactor * 100 + "%");
 			
 			var improvementsText = "";
 			var improvementList = improvements.getAll();
@@ -126,6 +131,7 @@ define([
 					name != improvementNames.lights &&
 					name != improvementNames.barracks &&
 					name != improvementNames.apothecary &&
+					name != improvementNames.home &&
 					name != improvementNames.fortification &&
 					name != improvementNames.darkfarm &&
 					name != improvementNames.storage) {

@@ -6,7 +6,7 @@ define([
     'game/worldcreator/WorldCreatorRandom',
     'game/helpers/SaveHelper',
     'game/nodes/sector/SectorNode',
-    'game/nodes/LevelNode',
+    'game/nodes/level/LevelNode',
     'game/components/common/PositionComponent'
 ], function (Ash, GameConstants, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SaveHelper, SectorNode, LevelNode, PositionComponent) {
 
