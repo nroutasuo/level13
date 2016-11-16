@@ -66,8 +66,7 @@ define(['ash', 'game/constants/ItemConstants'], function (Ash) {
         },
         
         getRequiredReputation: function (pop) {
-            var adjustedPop = Math.max(0, pop - 2.5);
-            var rawValue = pop/(pop+100)*50 + adjustedPop/(adjustedPop+10)*50;
+            var rawValue = pop/(pop+100)*100;
             return Math.floor(rawValue * 100) / 100;
         },
     

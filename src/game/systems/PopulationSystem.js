@@ -55,7 +55,7 @@ define([
                     changePerSec = 0;
                 } else if (reputation >= reqRepNextPop) {
                     var repDiffValue = (reputation - reqRepNextPop) / 100 / 50;
-                    var popValue = 1 / Math.floor(camp.population) / 50;
+                    var popValue = 1 / Math.floor(camp.population+1) / 100;
                     changePerSec = repDiffValue + popValue;
                 } else {
                     changePerSec = (reputation - reqRepCurPop) / 100 / 25;
