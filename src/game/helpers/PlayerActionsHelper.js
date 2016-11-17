@@ -3,6 +3,7 @@ define([
     'ash',
 	'game/constants/PositionConstants',
 	'game/constants/PlayerActionConstants',
+	'game/constants/PlayerActionsHelperConstants',
 	'game/constants/PlayerStatConstants',
 	'game/constants/ItemConstants',
 	'game/constants/HazardConstants',
@@ -17,6 +18,7 @@ define([
     'game/nodes/tribe/TribeUpgradesNode',
     'game/nodes/sector/CampNode',
     'game/nodes/NearestCampNode',
+    'game/components/type/LevelComponent',
     'game/components/common/PositionComponent',
     'game/components/player/PlayerActionComponent',
     'game/components/player/BagComponent',
@@ -34,9 +36,9 @@ define([
     'game/components/common/CampComponent',
     'game/vos/ResourcesVO'
 ], function (
-	Ash, PositionConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, UIConstants, TextConstants,
+	Ash, PositionConstants, PlayerActionConstants, PlayerActionsHelperConstants, PlayerStatConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
-	PositionComponent, PlayerActionComponent, BagComponent, ItemsComponent, PerksComponent, DeityComponent,
+	LevelComponent, PositionComponent, PlayerActionComponent, BagComponent, ItemsComponent, PerksComponent, DeityComponent,
 	PassagesComponent, EnemiesComponent, MovementOptionsComponent,
 	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, SectorImprovementsComponent,
 	CampComponent,
@@ -550,6 +552,31 @@ define([
                             if (log) console.log("WARN: Not enough stored resources in collectors.");
                             lowestFraction = Math.min(lowestFraction, currentStorage / requiredStorage);
                         }
+                    }
+                }
+                
+                if (requirements.level) {
+                    var level = sector.get(PositionComponent).level;
+                    var levelVO = this.levelHelper.getLevelEntityForPosition(level).get(LevelComponent).levelVO;
+                    if (requirements.level.population) {
+                        var levelPopReqDef = requirements.level.population;
+                        var min = levelPopReqDef[0];
+                        var max = levelPopReqDef[1];
+                        if (max < 0) max = 9999999;
+                        var value = levelVO.populationGrowthFactor;
+                        if (min > value || max <= value) {
+                            if (min > amount) {
+								reason = PlayerActionsHelperConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP;
+								if (min > 1) reason += ": " + min + "x " + improvName;
+							} else {
+								reason = "Too many people on this level.";
+								if (max > 1) reason += ": " + max + "x " + improvName;
+							}
+                            if (log) console.log("WARN: " + reason);
+                            if (min > amount) return { value: amount/min, reason: reason };
+                            else return { value: 0, reason: reason };
+                        }
+                        
                     }
                 }
                 

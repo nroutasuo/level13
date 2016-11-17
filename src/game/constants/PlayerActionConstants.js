@@ -40,7 +40,7 @@ function (Ash, GameConstants, CampConstants) {
                     },
                     busy: false,
                 },
-                    
+                
                 fight: {
                     busy: false,
                 },
@@ -374,6 +374,9 @@ function (Ash, GameConstants, CampConstants) {
                     upgrades: {
                         unlock_building_inn: true,
                     },
+                    level: {
+                        population: [1, -1]
+                    }
                 },
             
                 use_in_inn: {
@@ -397,6 +400,9 @@ function (Ash, GameConstants, CampConstants) {
                     },
                     upgrades: {
                         unlock_building_market: true,
+                    },
+                    level: {
+                        population: [1, -1]
                     }
                 },
             
@@ -470,6 +476,9 @@ function (Ash, GameConstants, CampConstants) {
                     improvements: {},
                     upgrades: {
                         unlock_building_radio: true,
+                    },
+                    level: {
+                        population: [1.1, -1]
                     }
                 },
             

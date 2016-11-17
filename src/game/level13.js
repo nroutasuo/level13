@@ -187,6 +187,7 @@ define([
 			this.playerActionFunctions.occurrenceFunctions = this.occurrenceFunctions;
 			this.playerActionFunctions.uiFunctions = this.uiFunctions;
 			this.fightHelper.uiFunctions = this.uiFunctions;
+            this.playerActionsHelper.levelHelper = this.levelHelper;
             
             this.enemyHelper.createEnemies();
 			

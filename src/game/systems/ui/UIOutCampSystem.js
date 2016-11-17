@@ -2,6 +2,7 @@ define([
     'ash',
     'game/constants/UIConstants',
     'game/constants/UpgradeConstants',
+    'game/constants/PlayerActionsHelperConstants',
     'game/constants/OccurrenceConstants',
     'game/constants/CampConstants',
     'game/constants/PerkConstants',
@@ -20,7 +21,7 @@ define([
     'game/components/sector/events/TraderComponent',
     'game/components/sector/events/RaidComponent',
 ], function (
-    Ash, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants,
+    Ash, UIConstants, UpgradeConstants, PlayerActionsHelperConstants, OccurrenceConstants, CampConstants, PerkConstants,
     PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, CampNode, DeityNode, TribeUpgradesNode,
     PerksComponent,
 	SectorFeaturesComponent,
@@ -259,6 +260,13 @@ define([
                     if (improvementName) {
 						var requirementCheck = playerActionsHelper.checkRequirements(actionName, false, null);
                         var actionEnabled = requirementCheck.value >= 1;
+                        var showActionDisabledReason = false;
+                        if (!actionEnabled) {
+                            switch (requirementCheck.reason) {
+                                case PlayerActionsHelperConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP:
+                                    showActionDisabledReason = true;
+                            }
+                        }
                         var actionAvailable = playerActionsHelper.checkAvailability(actionName, false);
                         var existingImprovements = improvements.getCount(improvementName);
                         if (isActive) {
@@ -266,7 +274,7 @@ define([
                             $(this).find(".action-use").toggle(existingImprovements > 0);
                         }
                         
-                        var commonVisibilityRule = (actionEnabled || existingImprovements > 0);
+                        var commonVisibilityRule = (actionEnabled || existingImprovements > 0 || showActionDisabledReason);
                         var specialVisibilityRule = true;
                         if (id === "in-improvements-shrine") specialVisibilityRule = hasDeity;
                         if (id === "in-improvements-trading") specialVisibilityRule = campCount > 1;
