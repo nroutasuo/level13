@@ -14,7 +14,7 @@ define([
 ], function (
     Ash, UIConstants, CampConstants,
     CampNode, PlayerPositionNode,
-    PositionComponent, ResourcesComponent, ResourceAccumulationComponent, LevelComponent, SectorImprovementsComponent, TraderComponent
+    PositionComponent, ResourcesComponent, ResourceAccumulationComponent, LevelComponent, SectorImprovementsComponent, TraderComponent, RaidComponent
 ) {
     var UIOutTribeSystem = Ash.System.extend({
 	
@@ -78,7 +78,7 @@ define([
             // TODO also so alert for raids that are over until camp is visited again; new CampAlertComponent? Event components should stay simple and only show current event
             var unAssignedPopulation = camp.getFreePopulation();
             var hasTrader = node.entity.has(TraderComponent);
-            var hasRaid = node.entity.has(RaidComponent);;
+            var hasRaid = node.entity.has(RaidComponent);
             
             var isAlert = false;
             
