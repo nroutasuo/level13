@@ -148,6 +148,10 @@ function (Ash, GameConstants, CampConstants) {
                     busy: false,
                 },
                 
+                move_camp_global: {
+                    busy: false
+                },
+                
                 leave_camp: {
                     busy: false,
                     bag: {
@@ -1143,7 +1147,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 use_in_hospital: {
-                    resource_water: 50,
+                    resource_water: 30,
                     resource_food: 15,
                 },
             
@@ -1688,6 +1692,7 @@ function (Ash, GameConstants, CampConstants) {
                 use_spring: "Get water.",
                 fight_gang: "Clear the enemies blocking passage.",
                 move_camp_level: "Shortcut back to the nearest camp.",
+                move_camp_global: "Shortcut to the camp on this level.",
                 create_blueprint: "Combine pieces to a blueprint.",
                 despair: "Give up. Stop moving. Rest.",
                 build_out_collector_food: "Accumulates food.",

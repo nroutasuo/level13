@@ -189,15 +189,15 @@ define([
 			
 			var logMsg;
 			switch (event) {
-			case OccurrenceConstants.campOccurrenceTypes.trader:
-				campNode.entity.add(new TraderComponent());
-				logMsg = "A trader arrives.";
-				break;
-			
-			case OccurrenceConstants.campOccurrenceTypes.raid:
-				campNode.entity.add(new RaidComponent());
-				logMsg = "A raid!";
-				break;
+                case OccurrenceConstants.campOccurrenceTypes.trader:
+                    campNode.entity.add(new TraderComponent());
+                    logMsg = "A trader arrives.";
+                    break;
+
+                case OccurrenceConstants.campOccurrenceTypes.raid:
+                    campNode.entity.add(new RaidComponent());
+                    logMsg = "A raid!";
+                    break;
 			}
 			
 			if (this.isPlayerInCamp(campNode) && logMsg) {

@@ -8,11 +8,13 @@ define([
     'game/components/common/ResourcesComponent',
     'game/components/common/ResourceAccumulationComponent',
     'game/components/type/LevelComponent',
-    'game/components/sector/improvements/SectorImprovementsComponent'
+    'game/components/sector/improvements/SectorImprovementsComponent',
+    'game/components/sector/events/TraderComponent',
+    'game/components/sector/events/RaidComponent'
 ], function (
     Ash, UIConstants, CampConstants,
     CampNode, PlayerPositionNode,
-    PositionComponent, ResourcesComponent, ResourceAccumulationComponent, LevelComponent, SectorImprovementsComponent
+    PositionComponent, ResourcesComponent, ResourceAccumulationComponent, LevelComponent, SectorImprovementsComponent, TraderComponent
 ) {
     var UIOutTribeSystem = Ash.System.extend({
 	
@@ -72,10 +74,15 @@ define([
 			var level = node.entity.get(PositionComponent).level;
 			var playerPosComponent = this.playerPosNodes.head.position;
             var isPlayerInCampLevel = level === playerPosComponent.level;
+            
+            // TODO also so alert for raids that are over until camp is visited again; new CampAlertComponent? Event components should stay simple and only show current event
             var unAssignedPopulation = camp.getFreePopulation();
+            var hasTrader = node.entity.has(TraderComponent);
+            var hasRaid = node.entity.has(RaidComponent);;
+            
             var isAlert = false;
             
-            if (unAssignedPopulation > 0 && !isPlayerInCampLevel) {
+            if ((unAssignedPopulation > 0 || hasTrader || hasRaid) && !isPlayerInCampLevel) {
                 this.campsWithAlert++;
                 isAlert = true;
             }
