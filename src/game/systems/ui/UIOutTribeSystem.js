@@ -47,25 +47,42 @@ define([
         },
 
         update: function (time) {
-            $("#switch-world .bubble").toggle(false);
-			if (this.uiFunctions.gameState.uiStatus.currentTab != this.uiFunctions.elementIDs.tabs.world) {
+            var isActive = this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.world;
+			
+            this.campsWithAlert = 0;
+            for (var node = this.campNodes.head; node; node = node.next) {
+                this.updateNode(node, isActive);
+            }
+            this.updateBubble();
+            
+			if (!isActive) {
 				return;
 			}
 	    
-			// Header
 			$("#tab-header h2").text("Tribe");
-			
-			// Camp overview
-            for (var node = this.campNodes.head; node; node = node.next) {
-                this.updateNode(node, time);
-            }
+        },
+        
+        updateBubble: function () {
+            this.bubbleNumber = this.campsWithAlert;
+            $("#switch-world .bubble").toggle(this.bubbleNumber > 0);
         },
 	
-		updateNode: function (node, time) {
+		updateNode: function (node, isActive) {
 			var camp = node.camp;
 			var level = node.entity.get(PositionComponent).level;
-			var improvements = node.entity.get(SectorImprovementsComponent);
 			var playerPosComponent = this.playerPosNodes.head.position;
+            var isPlayerInCampLevel = level === playerPosComponent.level;
+            var unAssignedPopulation = camp.getFreePopulation();
+            var isAlert = false;
+            
+            if (unAssignedPopulation > 0 && !isPlayerInCampLevel) {
+                this.campsWithAlert++;
+                isAlert = true;
+            }
+            
+            if (!isActive) return;
+            
+			var improvements = node.entity.get(SectorImprovementsComponent);
 			var rowID = "summary-camp-" + level;
 			var row = $("#camp-overview tr#" + rowID);
 			
@@ -89,6 +106,7 @@ define([
 				rowHTML += "</td>";
 				
 				rowHTML += "<td class='camp-overview-btn'><button class='btn-mini action action-move' id='" + btnID + "' action='move_camp_global'>Go</button></td>";
+                rowHTML += "<td class='camp-overview-camp-bubble'><div class='bubble'>!</div></td>";
 				rowHTML += "</tr>";
 				$("#camp-overview").append(rowHTML);
 				var uiFunctions = this.uiFunctions;
@@ -100,13 +118,14 @@ define([
 			}
 			
 			// Update row
-			$("#camp-overview tr#" + rowID).toggleClass("current", level == playerPosComponent.level);
-			$("#camp-overview tr#" + rowID + " .camp-overview-btn button").toggle(level != playerPosComponent.level);
+			$("#camp-overview tr#" + rowID).toggleClass("current", isPlayerInCampLevel);
+			$("#camp-overview tr#" + rowID + " .camp-overview-btn button").toggle(!isPlayerInCampLevel);
 			$("#camp-overview tr#" + rowID + " .camp-overview-name").text(camp.campName);
+			$("#camp-overview tr#" + rowID + " .camp-overview-camp-bubble .bubble").toggle(isAlert);
 			
 			var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
 			maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
-			$("#camp-overview tr#" + rowID + " .camp-overview-population").text(Math.floor(camp.population) + " / " + maxPopulation);
+			$("#camp-overview tr#" + rowID + " .camp-overview-population").text(Math.floor(camp.population) + "/" + maxPopulation + (unAssignedPopulation > 0 ? " (" + unAssignedPopulation + ")" : ""));
             
             var levelVO = this.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent).levelVO;
 			$("#camp-overview tr#" + rowID + " .camp-overview-levelpop").text(levelVO.populationGrowthFactor * 100 + "%");
