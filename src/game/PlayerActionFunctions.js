@@ -838,8 +838,10 @@ define(['ash',
                 var sector = this.playerLocationNodes.head.entity;
                 var positionComponent = sector.get(PositionComponent);
                 var campCount = this.gameState.numCamps;
+                var maxAvailableFollowers = Math.max(0, Math.min(4, Math.floor(sector.get(CampComponent).population / 10))) + 1;
+                var numAvailableFollowers = Math.floor(Math.random() * maxAvailableFollowers) + 1;
                 var availableFollowers = [];
-                for (var i = 0; i < 3; i++) {
+                for (var i = 0; i < numAvailableFollowers; i++) {
                     availableFollowers.push(ItemConstants.getFollower(positionComponent.level, campCount));
                 }
                 var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
