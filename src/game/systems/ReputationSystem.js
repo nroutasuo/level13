@@ -75,13 +75,14 @@ define([
         },
         
         getTargetReputation: function (campNode) {
+            var defenceLimit = 25;
             var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
             
-			var resources = this.resourcesHelper.getCurrentStorage().resources;
-            var noFood = resources.getResource(resourceNames.food) <= 0;
-            var noWater = resources.getResource(resourceNames.water) <= 0;
+			var resources = this.resourcesHelper.getCurrentStorage(true).resources;
+            var noFood = resources && resources.getResource(resourceNames.food) <= 0;
+            var noWater = resources && resources.getResource(resourceNames.water) <= 0;
             var soldiers = campNode.camp.assignedWorkers.soldier;
-            var badDefences = OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers) > 25;
+            var badDefences = OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers) > defenceLimit;
             
             var targetReputation = 0;            
             var allImprovements = sectorImprovements.getAll(improvementTypes.camp);
@@ -108,8 +109,9 @@ define([
                 campNode.reputation.addTargetValueSource("No water", -50);
             }
             if (badDefences) {
-                targetReputation -= 10;
-                campNode.reputation.addTargetValueSource("No defences", -10);
+                var defencePenalty = (OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers) - defenceLimit) / 10;
+                targetReputation -= defencePenalty;
+                campNode.reputation.addTargetValueSource("No defences", -defencePenalty);
             }
             targetReputation = Math.max(0, Math.min(100, targetReputation));
             return targetReputation;

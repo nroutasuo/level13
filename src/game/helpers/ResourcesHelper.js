@@ -24,12 +24,12 @@ define([
 			this.globalResourcesNodes = engine.getNodeList(TribeResourcesNode);
 		},
 		
-		getCurrentStorage: function () {
+		getCurrentStorage: function (excludePlayer) {
 			var playerResources = this.getPlayerStorage();
 			var campResources = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity.get(ResourcesComponent) : null;
 			var globalResources = this.globalResourcesNodes.head.resources;
 			
-			var currentResources = playerResources;
+			var currentResources = excludePlayer ? null : playerResources;
 			
 			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
 			if (playerPosition.inCamp && this.hasCampStorage()) {

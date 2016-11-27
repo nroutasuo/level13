@@ -372,7 +372,7 @@ define([
 			
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var soldiers = this.playerLocationNodes.head.entity.get(CampComponent).assignedWorkers.soldier;
-			var raidDanger = Math.round(OccurrenceConstants.getRaidDanger(improvements, soldiers)) > 25;
+			var raidDanger = Math.round(OccurrenceConstants.getRaidDanger(improvements, soldiers));
             
             var inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
             var showCalendar = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(this.upgradesHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
@@ -392,7 +392,8 @@ define([
                 var levelVO = this.playerLevelNodes.head.level.levelVO;
 				$("#in-demographics-level-population .value").text(levelVO.populationGrowthFactor * 100 + "%");
             }
-            $("#in-demographics-level").toggle(showLevelStats);
+            
+            $("#id-demographics-level").toggle(showLevelStats);
             
             $("#in-demographics").toggle(showCalendar || showRaid || showLevelStats);
         },
