@@ -78,7 +78,8 @@ define([
             var defenceLimit = 25;
             var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
             
-			var resources = this.resourcesHelper.getCurrentStorage(true).resources;
+            var storage = this.resourcesHelper.getCurrentStorage(true);
+			var resources = storage ? storage.resources : null;
             var noFood = resources && resources.getResource(resourceNames.food) <= 0;
             var noWater = resources && resources.getResource(resourceNames.water) <= 0;
             var soldiers = campNode.camp.assignedWorkers.soldier;

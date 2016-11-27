@@ -305,7 +305,7 @@ function (Ash,
                 var isSectorSunlit = sector.get(SectorFeaturesComponent).sunlit;
                 var hasSectorHazard = sector.get(SectorFeaturesComponent).hazards.hasHazards();
                 if (isSectorSunlit || hasSectorHazard) {
-                    ctx.strokeStyle = isSectorSunlit ? (isLocationSunlit ? "#ffee11" : "#ddee66") : "#ee4444";
+                    ctx.strokeStyle = hasSectorHazard ? "#ee4444" : isLocationSunlit ? "#ffee11" : "#ddee66";
                     ctx.lineWidth = Math.ceil(sectorSize / 8);
                     ctx.beginPath();
                     ctx.moveTo(sectorXpx - 1, sectorYpx - 1);
