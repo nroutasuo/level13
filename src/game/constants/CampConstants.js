@@ -33,6 +33,7 @@ define(['ash', 'game/constants/ItemConstants'], function (Ash) {
         
         // reputation
         REPUTATION_PER_RADIO_PER_SEC: 0.1,
+        REPUTATION_PER_HOUSE_FROM_GENERATOR: 0.3,
         
         // Workers per building
         CHEMISTS_PER_WORKSHOP: 5,

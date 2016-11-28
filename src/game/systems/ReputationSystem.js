@@ -31,11 +31,7 @@ define([
         update: function (time) {
             if (this.gameState.isPaused) return;
 			
-			if (this.campNodes.head) {
-				var accSpeed = 0;
-                var accTarget;
-				var accRadio;
-				
+			if (this.campNodes.head) {				
 				for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
                     var reputationComponent = campNode.reputation;
                     var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
@@ -46,27 +42,8 @@ define([
                     
                     reputationComponent.targetValue = this.getTargetReputation(campNode);
                     
-					accRadio = sectorImprovements.getCount(improvementNames.radio) * CampConstants.REPUTATION_PER_RADIO_PER_SEC * GameConstants.gameSpeedCamp;
-                    var accTargetDiff = reputationComponent.targetValue - reputationComponent.value;
-                    if (Math.abs(accTargetDiff) < 0.01) accTargetDiff = 0;
-                    if (accTargetDiff > 0) accTargetDiff = Math.min(10, Math.max(1, accTargetDiff));
-                    if (accTargetDiff < 0) accTargetDiff = Math.max(-10, Math.min(-1, accTargetDiff));
-                    accTarget = (accTargetDiff < 0 ? accTargetDiff * 0.05 : accTargetDiff * 0.01) * GameConstants.gameSpeedCamp;
-					accSpeed = accTarget + accRadio;
+					this.applyReputationAccumulation(campNode, time);
                     
-					reputationComponent.addChange("Base", accTarget);
-					reputationComponent.addChange("Radio", accRadio);
-					reputationComponent.accumulation += accSpeed;
-				
-                    reputationComponent.value += (time + this.engine.extraUpdateTime) * accSpeed;
-                    if (accTargetDiff === 0) {
-                        reputationComponent.value = reputationComponent.targetValue;
-                    } else if (reputationComponent.value > reputationComponent.targetValue && accTargetDiff > 0) {
-                        reputationComponent.value = reputationComponent.targetValue;
-                    }
-                    else if (reputationComponent.value < reputationComponent.targetValue && accTargetDiff < 0) {
-                        reputationComponent.value = reputationComponent.targetValue;
-                    }
                     reputationComponent.value = Math.max(0, Math.min(100, reputationComponent.value));
                     
                     reputationComponent.isAccumulating = campNode.camp.population > 0 || sectorImprovements.getTotal(improvementTypes.camp) > 0;
@@ -90,6 +67,12 @@ define([
             for (var i in allImprovements) {
                 var improvementVO = allImprovements[i];
                 switch (improvementVO.name) {
+                    case improvementNames.generator:
+                        var numHouses = sectorImprovements.getCount(improvementNames.house) + sectorImprovements.getCount(improvementNames.house2);
+                        var generatorBonus = numHouses * CampConstants.REPUTATION_PER_HOUSE_FROM_GENERATOR;
+                        targetReputation += generatorBonus;
+                        campNode.reputation.addTargetValueSource("Generator", generatorBonus);
+                        break;
                     case improvementNames.radio:
                         targetReputation += improvementVO.count;
                         campNode.reputation.addTargetValueSource("Radio", improvementVO.count);
@@ -116,7 +99,34 @@ define([
             }
             targetReputation = Math.max(0, Math.min(100, targetReputation));
             return targetReputation;
-        }
+        },
+        
+        applyReputationAccumulation: function (campNode, time) {
+            var reputationComponent = campNode.reputation;
+            var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
+            
+            var accRadio = sectorImprovements.getCount(improvementNames.radio) * CampConstants.REPUTATION_PER_RADIO_PER_SEC * GameConstants.gameSpeedCamp;
+            var accTargetDiff = reputationComponent.targetValue - reputationComponent.value;
+            if (Math.abs(accTargetDiff) < 0.01) accTargetDiff = 0;
+            if (accTargetDiff > 0) accTargetDiff = Math.min(10, Math.max(1, accTargetDiff));
+            if (accTargetDiff < 0) accTargetDiff = Math.max(-10, Math.min(-1, accTargetDiff));
+            var accTarget = (accTargetDiff < 0 ? accTargetDiff * 0.05 : accTargetDiff * 0.01) * GameConstants.gameSpeedCamp;
+            var accSpeed = accTarget + accRadio;
+                    
+            reputationComponent.addChange("Base", accTarget);
+            reputationComponent.addChange("Radio", accRadio);
+            reputationComponent.accumulation += accSpeed;
+				
+            reputationComponent.value += (time + this.engine.extraUpdateTime) * accSpeed;
+            if (accTargetDiff === 0) {
+                reputationComponent.value = reputationComponent.targetValue;
+            } else if (reputationComponent.value > reputationComponent.targetValue && accTargetDiff > 0) {
+                reputationComponent.value = reputationComponent.targetValue;
+            }
+            else if (reputationComponent.value < reputationComponent.targetValue && accTargetDiff < 0) {
+                reputationComponent.value = reputationComponent.targetValue;
+            }
+        },
     });
 
     return ReputationSystem;

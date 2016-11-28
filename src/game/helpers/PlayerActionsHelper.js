@@ -897,6 +897,7 @@ define([
                 case "build_in_campfire": return improvementNames.campfire;
                 case "build_in_darkfarm": return improvementNames.darkfarm;
                 case "build_in_house2": return improvementNames.house2;
+                case "build_in_generator": return improvementNames.generator;
                 case "build_in_lights": return improvementNames.lights;
                 case "build_in_ceiling": return improvementNames.ceiling;
                 case "build_in_apothecary": return improvementNames.apothecary;

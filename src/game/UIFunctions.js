@@ -89,6 +89,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             this.actionToFunctionMap["build_in_house"] = this.playerActions.buildHouse;
             this.actionToFunctionMap["build_in_house2"] = this.playerActions.buildHouse2;
             this.actionToFunctionMap["build_in_storage"] = this.playerActions.buildStorage;
+            this.actionToFunctionMap["build_in_generator"] = this.playerActions.buildGenerator;
             this.actionToFunctionMap["build_in_darkfarm"] = this.playerActions.buildDarkFarm;
             this.actionToFunctionMap["build_in_hospital"] = this.playerActions.buildHospital;
             this.actionToFunctionMap["build_in_ceiling"] = this.playerActions.buildCeiling;
@@ -247,29 +248,29 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             $(scope + " button.action-move").click(function (e) {
                 onMoveButtonClicked(this, playerActions);
             });
-            $("#out-action-move-up").click(function (e) {
+            $(scope + "#out-action-move-up").click(function (e) {
                 onMoveButtonClicked(this, playerActions);
             });
-            $("#out-action-move-down").click(function (e) {
+            $(scope + "#out-action-move-down").click(function (e) {
                 onMoveButtonClicked(this, playerActions);
             });
-            $("#out-action-move-camp").click(function (e) {
+            $(scope + "#out-action-move-camp").click(function (e) {
                 onMoveButtonClicked(this, playerActions);
             });
-            $("#out-action-fight-confirm").click(function (e) {
+            $(scope + "#out-action-fight-confirm").click(function (e) {
                 playerActions.fightHelper.startFight();
             });
-            $("#out-action-fight-close").click(function (e) {
+            $(scope + "#out-action-fight-close").click(function (e) {
                 playerActions.fightHelper.endFight();
             });
-            $("#out-action-fight-next").click(function (e) {
+            $(scope + "#out-action-fight-next").click(function (e) {
                 playerActions.fightHelper.endFight();
             });
-            $("#out-action-fight-cancel").click(function (e) {
+            $(scope + "#out-action-fight-cancel").click(function (e) {
                 playerActions.flee();
                 playerActions.fightHelper.endFight();
             });
-            $("#inn-popup-btn-cancel").click(function (e) {                
+            $(scope + "#inn-popup-btn-cancel").click(function (e) {                
                 uiFunctions.popupManager.closePopup("inn-popup");
             });
             $(scope + " button[action='leave_camp']").click(function (e) {

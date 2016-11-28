@@ -640,6 +640,14 @@ define(['ash',
             }
         },
         
+        buildGenerator: function () {
+            this.buildImprovement("build_in_generator", this.playerActionsHelper.getImprovementNameForAction("build_in_generator"));
+            if (this.playerActionsHelper.checkAvailability("build_in_generator")) {
+                var msg = "Set up a generator.";
+                this.addLogMessage(LogConstants.MSG_ID_BUILT_GENERATOR, msg);
+            }            
+        },
+        
         buildLights: function () {
             this.buildImprovement("build_in_lights", this.playerActionsHelper.getImprovementNameForAction("build_in_lights"));
             if (this.playerActionsHelper.checkAvailability("build_in_lights")) {

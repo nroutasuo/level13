@@ -20,6 +20,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		campfire: "Campfire",
 		darkfarm: "Snail farm",
 		hospital: "Hospital",
+        generator: "Generator",
 		tradepost: "Trading post",
 		inn: "Inn",
 		apothecary: "Apothecary shop",

@@ -421,6 +421,12 @@ function (Ash, GameConstants, CampConstants) {
                         unlock_building_house2: true,
                     }
                 },
+                
+                build_in_generator: {
+                    improvements: {
+                        generator: [0, 1],
+                    }
+                },
             
                 build_in_lights: {
                     upgrades: {
@@ -1112,6 +1118,11 @@ function (Ash, GameConstants, CampConstants) {
                     resource_rope: 25,
                     cost_factor: 1.5,
                 },
+                
+                build_in_generator: {
+                    resource_metal: 50,
+                    resource_fuel: 100
+                },
             
                 build_in_lights: {
                     resource_metal: 100,
@@ -1701,6 +1712,7 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_house: "A place for " + CampConstants.POPULATION_PER_HOUSE + " people to stay.",
                 build_in_house2: "Houses " + CampConstants.POPULATION_PER_HOUSE2 + " people.",
                 build_in_storage: "Increases resource storage.",
+                build_in_generator: "Increases reputation bonus from housing (" + CampConstants.REPUTATION_PER_HOUSE_FROM_GENERATOR + "% per house)",
                 build_in_campfire: "Increases rumour generation and unlocks upgrades.",
                 build_in_library: "Accumulate and store more evidence.",
                 build_in_hospital: "Enables healing injuries.",

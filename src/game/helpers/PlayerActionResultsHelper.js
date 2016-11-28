@@ -303,6 +303,7 @@ define([
 			
 			if (rewards.gainedPopulation > 0) {
 				var nearestCampNode = this.nearestCampNodes.head;
+                console.log(nearestCampNode);
 				if (nearestCampNode) {
 					console.log(nearestCampNode.position);
 					nearestCampNode.camp.population += 1;

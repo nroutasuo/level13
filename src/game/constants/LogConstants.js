@@ -44,6 +44,7 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
         // in buildings
         MSG_ID_BUILT_CAMP: "BUILT_CAMP",
         MSG_ID_BUILT_HOUSE: "BUILT_HOUSE",
+        MSG_ID_BUILT_GENERATOR: "BUILT_GENERATOR",
         MSG_ID_BUILT_LIGHTS: "BUILT_LIGHTS",
         MSG_ID_BUILT_CEILING: "BUILT_CEILING",
         MSG_ID_BUILT_STORAGE: "BUILT_STORAGE",
