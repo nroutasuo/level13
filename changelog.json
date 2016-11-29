@@ -4,9 +4,13 @@
             "version": "0.1.5",
             "phase": "alpha",
             "final": false,
-            "updated": "2016-11-06",
+            "updated": "2016-11-29",
             "released": "",
             "changes": [
+                {
+                    "type": "UI",
+                    "summary": "Lots of small UI fixes and additions."
+                },
             ]
         },
         {
