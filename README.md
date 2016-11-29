@@ -38,7 +38,7 @@ User input is detected and mapped to PlayerActions by [UIFunctions](https://gith
 
 At the start of a new game, a seed value is assigned. The world is randomly generated based on this seed and only the seed needs to be saved between sessions.
 
-![samplelevel2](https://i.imgsafe.org/dc1caf07b7.png)
+![samplelevel2](http://i.imgsafe.org/dc1caf07b7.png)
 
 (Sample level structure)
 
@@ -68,7 +68,7 @@ The game consists of several systems but here are some important ones:
 
 Level 13 is heavily inspired by [A Dark Room]( http://adarkroom.doublespeakgames.com/). Other great text-based incremental games that I owe much inspiration to include:
 
-* [Kittens Game](bloodrizer.ru/games/kittens/)
+* [Kittens Game](http://bloodrizer.ru/games/kittens/)
 * [Shark Game](http://cirri.al/sharks/)
 * [Crank](https://faedine.com/games/crank/b39/)
 * [Junction Gate](http://www.junctiongate.com/)
