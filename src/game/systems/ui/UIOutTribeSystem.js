@@ -101,6 +101,7 @@ define([
 				rowHTML += "<td class='camp-overview-level'>" + level + "</td>";
 				rowHTML += "<td class='camp-overview-name'>" + camp.campName + "</td>";
 				rowHTML += "<td class='camp-overview-population list-amount'></td>";
+				rowHTML += "<td class='camp-overview-reputation list-amount'></td>";
 				rowHTML += "<td class='camp-overview-levelpop list-amount'></td>";
 				rowHTML += "<td class='camp-overview-improvements'>";
 				rowHTML += "</span></td>";
@@ -133,6 +134,10 @@ define([
 			var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
 			maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
 			$("#camp-overview tr#" + rowID + " .camp-overview-population").text(Math.floor(camp.population) + "/" + maxPopulation + (unAssignedPopulation > 0 ? " (" + unAssignedPopulation + ")" : ""));
+			
+            var reputationComponent = node.reputation;
+            $("#camp-overview tr#" + rowID + " .camp-overview-reputation").text(UIConstants.roundValue(reputationComponent.value, true, false) + "/" + reputationComponent.targetValue + "%");
+            $("#camp-overview tr#" + rowID + " .camp-overview-reputation").toggleClass("warning", reputationComponent.targetValue < 1);
             
             var levelVO = this.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent).levelVO;
 			$("#camp-overview tr#" + rowID + " .camp-overview-levelpop").text(levelVO.populationGrowthFactor * 100 + "%");
@@ -149,7 +154,6 @@ define([
 					name != improvementNames.bridge &&
 					name != improvementNames.house &&
 					name != improvementNames.house2 &&
-					name != improvementNames.library &&
 					name != improvementNames.campfire &&
 					name != improvementNames.smithy &&
 					name != improvementNames.cementmill &&
@@ -161,7 +165,7 @@ define([
 					name != improvementNames.fortification &&
 					name != improvementNames.darkfarm &&
 					name != improvementNames.storage) {
-					improvementsText += count + "x" + name + " ";
+					improvementsText += count + "x" + name.substring(0,1) + " ";
 				}
 			}
 			$("#camp-overview tr#" + rowID + " .camp-overview-improvements").text(improvementsText);
