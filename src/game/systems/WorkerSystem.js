@@ -217,18 +217,11 @@ define([
 		logAmbient: function () {
 			if (!this.playerLocationNodes.head || !this.playerLocationNodes.head.position) return;
 			
-			var playerSource = this.playerNodes.head.entity;
-			var playerFoodSource = playerSource.get(ResourcesComponent).resources;
+			var playerFoodSource = this.resourcesHelper.getCurrentStorage().resources;
 			
 			var playerLevelCamp = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity : null;
-			var campFoodSource = playerLevelCamp !=null ? playerLevelCamp.get(ResourcesComponent) : null;
-			var campFoodSourceAcc = playerLevelCamp != null ? playerLevelCamp.get(ResourceAccumulationComponent) : null;
-			var inCamp = playerLevelCamp != null;
-			inCamp = inCamp && playerLevelCamp.get(PositionComponent).sector == this.playerLocationNodes.head.position.sector;
-			
-			if (inCamp) {
-				playerFoodSource = campFoodSource;
-			}
+			var inCamp = playerLevelCamp !== null;
+			inCamp = inCamp && playerLevelCamp.get(PositionComponent).sector === this.playerLocationNodes.head.position.sector;
 			
 			var timeStamp = new Date().getTime();
 			var log = timeStamp - this.lastMsgTimeStamp > this.msgFrequency;
@@ -241,15 +234,15 @@ define([
 					msg = "People are thirsty.";
 				}
 				
-				if (inCamp && msg == null && isHungry && Math.random() < 0.1) {
+				if (inCamp && msg === null && isHungry && Math.random() < 0.1) {
 					msg = "Workers are hungry.";
 				}
 				
-				if (isThirsty && Math.random() < 0.1) {
+				if (!inCamp && isThirsty && Math.random() < 0.1) {
 					msg = "Your throat is dry.";
 				}
 				
-				if (msg == null && isHungry && Math.random() < 0.1) {
+				if (!inCamp && msg === null && isHungry && Math.random() < 0.1) {
 					msg = "Your stomach is grumbling.";
 				}
 				
