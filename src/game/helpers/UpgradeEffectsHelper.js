@@ -15,6 +15,7 @@ define([
 			"concrete": UpgradeConstants.upgradeIds.unlock_building_cementmill,
 			"smith": UpgradeConstants.upgradeIds.unlock_building_smithy,
 			"soldier": UpgradeConstants.upgradeIds.unlock_building_barracks,
+            "scientist": UpgradeConstants.upgradeIds.upgrade_building_library2
 		},
         
         upgradesByUIEffects: {
@@ -39,20 +40,23 @@ define([
 			
 			this.improvingUpgradesByImprovement[improvementNames.storage] = ["upgrade_building_storage1", "upgrade_building_storage2" ];
 			this.improvingUpgradesByImprovement[improvementNames.smithy] = ["unlock_item_weapon4"];
-			this.improvingUpgradesByImprovement[improvementNames.market] = ["upgrade_building_market", "upgrade_building_market2"];
-			this.improvingUpgradesByImprovement[improvementNames.library] = ["upgrade_building_library"];
-			this.improvingUpgradesByImprovement[improvementNames.inn] = ["upgrade_building_inn"];
+			this.improvingUpgradesByImprovement[improvementNames.market] = ["upgrade_building_market", "upgrade_building_market2", "improve_building_market3"];
+			this.improvingUpgradesByImprovement[improvementNames.library] = ["upgrade_building_library", "upgrade_building_library2", "unlock_building_researchcenter", "improve_building_market3"];
+			this.improvingUpgradesByImprovement[improvementNames.inn] = ["upgrade_building_inn", "unlock_building_radio"];
 			this.improvingUpgradesByImprovement[improvementNames.hospital] = ["upgrade_building_hospital"];
 			this.improvingUpgradesByImprovement[improvementNames.cementmill] = ["upgrade_building_cementmill"];
 			this.improvingUpgradesByImprovement[improvementNames.campfire] = ["upgrade_building_campfire"];
 			this.improvingUpgradesByImprovement[improvementNames.barracks] = ["unlock_item_weapon5", "unlock_item_weapon7"];
 			this.improvingUpgradesByImprovement[improvementNames.apothecary] = ["upgrade_building_apothecary"];
+			this.improvingUpgradesByImprovement[improvementNames.radiotower] = ["improve_building_market3"];
+			this.improvingUpgradesByImprovement[improvementNames.shrine] = ["upgrade_building_shrine"];
+			this.improvingUpgradesByImprovement[improvementNames.fortification] = ["upgrade_building_fortifications"];
 			
 			this.improvingUpgradesByWorker["scavenger"] = ["upgrade_worker_scavenger"];
 			this.improvingUpgradesByWorker["trapper"] = ["upgrade_worker_trapper"];
 			this.improvingUpgradesByWorker["soldier"] = ["unlock_item_weapon5", "unlock_item_weapon7"];
 			this.improvingUpgradesByWorker["smith"] = ["unlock_item_weapon4"];
-			this.improvingUpgradesByWorker["weaver"] = ["unlock_item_clothing4"];
+			this.improvingUpgradesByWorker["weaver"] = ["unlock_item_clothing4h"];
 			this.improvingUpgradesByWorker["concrete"] = ["upgrade_building_cementmill"];
 			this.improvingUpgradesByWorker["collector"] = ["upgrade_worker_collector1"];
 			this.improvingUpgradesByWorker["chemist"] = ["upgrade_worker_chemist"];
