@@ -1,42 +1,46 @@
 // A class responds to player actions parsed by the UIFunctions
 define(['ash',
     'game/constants/OccurrenceConstants',
-    'game/constants/EnemyConstants',
-    'game/constants/TextConstants',
     'game/nodes/sector/CampNode',
+    'game/nodes/tribe/TribeUpgradesNode',
     'game/components/common/PositionComponent',
     'game/components/common/ResourcesComponent',
     'game/components/sector/events/RaidComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
-    'game/components/sector/improvements/WorkshopComponent',
     'game/components/common/CampComponent',
-], function (Ash, OccurrenceConstants, EnemyConstants, TextConstants, CampNode,
+], function (Ash, OccurrenceConstants, 
+    CampNode, TribeUpgradesNode,
     PositionComponent, ResourcesComponent, RaidComponent,
-    SectorImprovementsComponent, WorkshopComponent, CampComponent) {
+    SectorImprovementsComponent, CampComponent) {
     
     var OccurrenceFunctions = Ash.System.extend({
         
 		gameState: null,
 		uiFunctions: null,
 		resourcesHelper: null,
+		upgradeEffectsHelper: null,
 		
 		engine: null,
 		campNodes: null,
+        tribeUpgradeNodes: null,
 	
-        constructor: function (gameState, uiFunctions, resourcesHelper) {
+        constructor: function (gameState, uiFunctions, resourcesHelper, upgradeEffectsHelper) {
 			this.gameState = gameState;
 			this.uiFunctions = uiFunctions;
 			this.resourcesHelper = resourcesHelper;
+            this.upgradeEffectsHelper = upgradeEffectsHelper;
         },
 
         addToEngine: function (engine) {
             this.engine = engine;
 			this.campNodes = engine.getNodeList(CampNode);
+            this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
         },
 
         removeFromEngine: function (engine) {
             this.engine = null;
 			this.campNodes = null;
+            this.tribeUpgradeNodes = null;
         },
 	
 		onEnterNewSector: function (sectorEntity) {
@@ -54,7 +58,8 @@ define(['ash',
 			var raidComponent = sectorEntity.get(RaidComponent);
 			var campResources = sectorEntity.get(ResourcesComponent).resources;
 			var soldiers = sectorEntity.get(CampComponent).assignedWorkers.soldier;
-			raidComponent.victory = OccurrenceConstants.getRaidDanger(improvements, soldiers) < Math.random()*100;
+            var fortificationUpgradeLevel = this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradeNodes.head.upgrades);
+			raidComponent.victory = OccurrenceConstants.getRaidDanger(improvements, soldiers, fortificationUpgradeLevel) < Math.random()*100;
 			if (!raidComponent.victory) {
 				var selectedResources = [];
 				var maxSelectedResources = 3;

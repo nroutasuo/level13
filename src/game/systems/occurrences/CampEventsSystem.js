@@ -107,7 +107,8 @@ define([
 				
 				case OccurrenceConstants.campOccurrenceTypes.raid:
 					var soldiers = campNode.camp.assignedWorkers.soldier;
-					return OccurrenceConstants.getRaidDanger(improvements, soldiers) > 0;
+                    var fortificationUpgradeLevel = this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradesNodes.head.upgrades);
+					return OccurrenceConstants.getRaidDanger(improvements, soldiers, fortificationUpgradeLevel) > 0;
 			
 				default:
 					return true;

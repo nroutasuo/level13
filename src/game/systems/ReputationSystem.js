@@ -4,28 +4,34 @@ define([
 	'game/constants/CampConstants',
 	'game/constants/OccurrenceConstants',
 	'game/nodes/sector/CampNode',
+	'game/nodes/tribe/TribeUpgradesNode',
     'game/components/sector/improvements/SectorImprovementsComponent'
-], function (Ash, GameConstants, CampConstants, OccurrenceConstants, CampNode, SectorImprovementsComponent) {
+], function (Ash, GameConstants, CampConstants, OccurrenceConstants, CampNode, TribeUpgradesNode, SectorImprovementsComponent) {
     var ReputationSystem = Ash.System.extend({
 	
         gameState: null,
         resourcesHelper: null,
+        upgradeEffectsHelper: null,
 	
 		campNodes: null,
+        tribeUpgradeNodes: null,
 
-        constructor: function (gameState, resourcesHelper) {
+        constructor: function (gameState, resourcesHelper, upgradeEffectsHelper) {
             this.gameState = gameState;
             this.resourcesHelper = resourcesHelper;
+            this.upgradeEffectsHelper = upgradeEffectsHelper;
         },
 
         addToEngine: function (engine) {
             this.engine = engine;
             this.campNodes = engine.getNodeList(CampNode);
+            this.tribeUpgradeNodes = engine.getNodeList(TribeUpgradesNode);
         },
 
         removeFromEngine: function (engine) {
             this.campNodes = null;
             this.engine = null;
+            this.tribeUpgradeNodes = null;
         },
 
         update: function (time) {
@@ -60,7 +66,8 @@ define([
             var noFood = resources && resources.getResource(resourceNames.food) <= 0;
             var noWater = resources && resources.getResource(resourceNames.water) <= 0;
             var soldiers = campNode.camp.assignedWorkers.soldier;
-            var badDefences = OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers) > defenceLimit;
+            var fortificationUpgradeLevel = this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradeNodes.head.upgrades);
+            var badDefences = OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers, fortificationUpgradeLevel) > defenceLimit;
             
             var targetReputation = 0;            
             var allImprovements = sectorImprovements.getAll(improvementTypes.camp);
@@ -93,7 +100,7 @@ define([
                 campNode.reputation.addTargetValueSource("No water", -50);
             }
             if (badDefences) {
-                var defencePenalty = (OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers) - defenceLimit) / 10;
+                var defencePenalty = (OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers, fortificationUpgradeLevel) - defenceLimit) / 10;
                 targetReputation -= defencePenalty;
                 campNode.reputation.addTargetValueSource("No defences", -defencePenalty);
             }

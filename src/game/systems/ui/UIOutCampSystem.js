@@ -53,7 +53,7 @@ define([
         currentPopulation: 0,
         lastShownPopulation: 0,
 
-        constructor: function (uiFunctions, tabChangedSignal, gameState, levelHelper, upgradesHelper, campHelper) {
+        constructor: function (uiFunctions, tabChangedSignal, gameState, levelHelper, upgradesHelper, campHelper, upgradeEffectsHelper) {
             this.uiFunctions = uiFunctions;
 			this.tabChangedSignal = tabChangedSignal;
             this.gameState = gameState;
@@ -372,16 +372,17 @@ define([
 			
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var soldiers = this.playerLocationNodes.head.entity.get(CampComponent).assignedWorkers.soldier;
-			var raidDanger = Math.round(OccurrenceConstants.getRaidDanger(improvements, soldiers));
+            var fortificationUpgradeLevel = this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradesNodes.head.upgrades);
+			var raidDanger = Math.round(OccurrenceConstants.getRaidDanger(improvements, soldiers, fortificationUpgradeLevel));
+            var raidDefence = OccurrenceConstants.getRaidDefence(improvements, soldiers, fortificationUpgradeLevel);
             
             var inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
             var showCalendar = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(this.upgradesHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
             $("#in-demographics-general-age .value").text(inGameFoundingDate);
             $("#in-demographics-general-age").toggle(showCalendar);
 			
-			var showRaid = raidDanger > 0;
+			var showRaid = raidDanger > 0 || raidDefence > 0;
 			if (showRaid) {
-				var raidDefence = OccurrenceConstants.getRaidDefence(improvements, soldiers);
 				$("#in-demographics-raid-danger .value").text(raidDanger + "%");
 				$("#in-demographics-raid-defence .value").text(raidDefence);
 			}

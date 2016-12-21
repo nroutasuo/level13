@@ -1338,7 +1338,6 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_fortification: {
                     resource_metal: 500,
                     resource_rope: 100,
-                    resource_concrete: 10,
                     cost_factor: 1.75,
                 },
                 
