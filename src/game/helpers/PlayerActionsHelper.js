@@ -725,9 +725,13 @@ define([
                 case "move_sector_east":
                 case "move_sector_west":
                 case "move_sector_south":
+                case "move_sector_ne":
+                case "move_sector_se":
+                case "move_sector_sw":
+                case "move_sector_nw":
                 case "move_camp_level":
                 case "move_camp_global":
-                    factor *= shoeBonus;                    
+                    factor *= shoeBonus;
                     break;
             }
             
