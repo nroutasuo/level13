@@ -212,7 +212,7 @@ define(['ash', 'game/constants/LevelConstants', 'game/constants/PlayerActionCons
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_clothing3h]
     = new UpgradeVO("unlock_item_clothing3h", "Glove-making", "Good gloves to keep explorers safe");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_cementmill]
-    = new UpgradeVO("unlock_building_cementmill", "Cement", ""Unlocks the production of concrete");
+    = new UpgradeVO("unlock_building_cementmill", "Cement", "Unlocks the production of concrete, a strong and versatile building material.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_weapon5]
     = new UpgradeVO("unlock_item_weapon5", "Revolvers", "A gun that allows the user to fire multiple rounds without reloading.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_storage2]
@@ -230,9 +230,9 @@ define(['ash', 'game/constants/LevelConstants', 'game/constants/PlayerActionCons
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_barracks]
     = new UpgradeVO("unlock_building_barracks", "Military", "A dedicated and trained class of workers for protecting and fighting.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_worker_trapper]
-    = new UpgradeVO("upgrade_worker_trapper", "Food preservation", ""Salting");
+    = new UpgradeVO("upgrade_worker_trapper", "Food preservation", "Salting, smoking and pickling food to make it last longer.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_campfire]
-    = new UpgradeVO("upgrade_building_campfire", "Brewing", ""Production of beer");
+    = new UpgradeVO("upgrade_building_campfire", "Brewing", "Production of beer, which helps bring people together.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_inn]
     = new UpgradeVO("upgrade_building_inn", "Music", "Another useful way to raise spirits and bond groups.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_market2]
@@ -250,7 +250,7 @@ define(['ash', 'game/constants/LevelConstants', 'game/constants/PlayerActionCons
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_firstaid]
     = new UpgradeVO("unlock_item_firstaid", "First Aid", "Heal injuries on the go.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_clothing4h]
-    = new UpgradeVO("unlock_item_clothing4h", "Synthetic Fibers", ""Create and manipulate new");
+    = new UpgradeVO("unlock_item_clothing4h", "Synthetic Fibers", "Create and manipulate new, stronger fibers for better protection and easier manufacturing.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_market]
     = new UpgradeVO("upgrade_building_market", "Currency", "Common medium of exchange makes trading more efficient.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_smithy]
@@ -268,7 +268,7 @@ define(['ash', 'game/constants/LevelConstants', 'game/constants/PlayerActionCons
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_weapon2]
     = new UpgradeVO("unlock_item_weapon2", "Spear", "An ancient but effective weapon.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_passage_hole]
-    = new UpgradeVO("unlock_building_passage_hole", "Engineering", ""Enables building huge structures to bridge levels when there is no existing staircase or elevator");
+    = new UpgradeVO("unlock_building_passage_hole", "Engineering", "Enables building huge structures to bridge levels when there is no existing staircase or elevator, and lays the foundation for more construction projects.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_worker_scavenger]
     = new UpgradeVO("upgrade_worker_scavenger", "Smelting", "Processing technique that allows more metal left behind by previous inhabitants to be salvaged.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_library]
@@ -286,7 +286,7 @@ define(['ash', 'game/constants/LevelConstants', 'game/constants/PlayerActionCons
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_darkfarm]
     = new UpgradeVO("unlock_building_darkfarm", "Urban Heliculture", "Alternative source of food.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_tradingpost]
-    = new UpgradeVO("unlock_building_tradingpost", "Compass", ""A tool for reliable navigation in the vast city");
+    = new UpgradeVO("unlock_building_tradingpost", "Compass", "A tool for reliable navigation in the vast city, enabling the establishment of basic trade routes.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_clothing2]
     = new UpgradeVO("unlock_item_clothing2", "Sewing", "The craft of making clothes out of fabric.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_passage_staircase]
@@ -294,7 +294,7 @@ define(['ash', 'game/constants/LevelConstants', 'game/constants/PlayerActionCons
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_hospital]
     = new UpgradeVO("unlock_building_hospital", "Field medicine", "Treating basic injuries.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_worker_rope]
-    = new UpgradeVO("unlock_worker_rope", "Rope-making", ""Using scavenged fiber and cloth to make rope");
+    = new UpgradeVO("unlock_worker_rope", "Rope-making", "Using scavenged fiber and cloth to make rope, a useful building and crafting material.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_shoe1]
     = new UpgradeVO("unlock_item_shoe1", "Crafting", "The varied skill of making useful things out of whatever happens to be available");
     

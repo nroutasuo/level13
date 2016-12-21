@@ -690,7 +690,7 @@ function (Ash, GameConstants, CampConstants) {
                     }
                 },
                 
-                craft_shoe: {
+                craft_shoe_1: {
                     upgrades: {
                         unlock_item_shoe1: true
                     }
@@ -1587,6 +1587,10 @@ function (Ash, GameConstants, CampConstants) {
                     resource_rope: 5,
                     resource_medicine: 10,
                     item_res_silk: 20
+                },
+                
+                craft_shoe_1: {
+                    resource_rope: 10,
                 },
                 
                 craft_bag_0: {
