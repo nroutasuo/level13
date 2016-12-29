@@ -8,6 +8,18 @@
             "released": "",
             "changes": [
                 {
+                    "type": "GD",
+                    "summary": "Changed how reputation works. It's now camp-dependent and takes some time to grow / decrease."
+                },
+                {
+                    "type": "GD",
+                    "summary": "New building: generator (increases reputation)"
+                },
+                {
+                    "type": "GB",
+                    "summary": "Rebalanced upgrades and a few new ones. Several buildings can now be upgraded."
+                },
+                {
                     "type": "UI",
                     "summary": "Lots of small UI fixes and additions."
                 },
