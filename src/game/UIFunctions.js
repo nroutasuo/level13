@@ -204,6 +204,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             $("#btn-header-rename").click(function(e) {
                 var prevCampName = playerActions.getNearestCampName();
                 uiFunctions.showInput(
+                    "Rename Camp",
                     "Give your camp a new name",
                     prevCampName,
                     function (input) {
@@ -215,7 +216,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             if (GameConstants.isCheatsEnabled) {
                 $("#btn-cheats").click(function (e) {
                     var cheatListDiv = uiFunctions.cheatSystem.getCheatListDiv();
-                    uiFunctions.showInput("Enter cheat<br/>" + cheatListDiv, "", function (input) {
+                    uiFunctions.showInput("Cheats", "Enter cheat<br/>" + cheatListDiv, "", function (input) {
                         uiFunctions.cheatSystem.applyCheat(input)
                     });
                 });
@@ -961,12 +962,12 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             this.generateCallouts(".popup");
         },
         
-        showInput: function(msg, defaultValue, callback) {
+        showInput: function(title, msg, defaultValue, callback) {
             var okCallback = function () {
                 var input = $("#common-popup input").val();
                 callback(input);
             };
-            this.popupManager.showPopup("Input", msg, "Confirm", true, null, okCallback);
+            this.popupManager.showPopup(title, msg, "Confirm", true, null, okCallback);
             this.generateCallouts(".popup");
             
             var uiFunctions = this;

@@ -39,8 +39,8 @@ function (Ash, UIConstants) {
             // results and rewards
             var hasResult = resultVO && typeof resultVO !== 'undefined';
             $("#info-results").toggle(hasResult);
+            $("#info-results").empty();
             if (hasResult) {
-                $("#info-results").empty();
                 var rewardDiv = this.playerActionResultsHelper.getRewardDiv(resultVO, false);
                 $("#info-results").append(rewardDiv);
             }

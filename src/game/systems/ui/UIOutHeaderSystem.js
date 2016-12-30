@@ -465,7 +465,8 @@ define([
             var featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
             var sunlit = featuresComponent.sunlit;
             var imgName = "img/ui-" + (inCamp ? "camp" : "explore") + (sunlit ? "" : "-dark") + ".png";
-            $("#header-self-inout img").attr("src", imgName);
+            if ($("#header-self-inout img").attr("src") !== imgName)
+                $("#header-self-inout img").attr("src", imgName);
             $("#header-self-inout img").attr("alt", (inCamp ? "camp" : "explore"));
             
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);

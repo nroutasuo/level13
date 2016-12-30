@@ -44,9 +44,12 @@ define([
         
         updateButtons: function() {
             var resultNode = this.playerActionResultNodes.head;
-            var rewards = resultNode.result.pendingResultVO;
-            var hasPickedSomething = rewards.selectedItems.length > 0 || rewards.selectedResources.getTotal() > 0 || rewards.discardedItems.length > 0 || rewards.discardedResources.getTotal() > 0;
-            $("#info-ok").text(hasPickedSomething ? "Continue" : "Leave all");
+            if (resultNode) {
+                var rewards = resultNode.result.pendingResultVO;
+                var hasPickedSomething = rewards.selectedItems.length > 0 || rewards.selectedResources.getTotal() > 0 || rewards.discardedItems.length > 0 || rewards.discardedResources.getTotal() > 0;
+                var canPickSomething = rewards.gainedResources.getTotal() > 0 || rewards.gainedItems.length > 0;
+                $("#info-ok").text(hasPickedSomething || !canPickSomething ? "Continue" : "Leave all");
+            }
         },
         
         updateLists: function () {            
