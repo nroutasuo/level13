@@ -35,9 +35,18 @@ define([
             if (!($(".popup").is(":visible")) || $(".popup").data("fading") == true)
                 return;
             
+            this.updateButtons();
+            
             if (this.pendingListUpdate) {
                 this.updateLists();
             }
+        },
+        
+        updateButtons: function() {
+            var resultNode = this.playerActionResultNodes.head;
+            var rewards = resultNode.result.pendingResultVO;
+            var hasPickedSomething = rewards.selectedItems.length > 0 || rewards.selectedResources.getTotal() > 0 || rewards.discardedItems.length > 0 || rewards.discardedResources.getTotal() > 0;
+            $("#info-ok").text(hasPickedSomething ? "Continue" : "Leave all");
         },
         
         updateLists: function () {            
