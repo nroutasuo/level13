@@ -822,7 +822,7 @@ define(['ash',
                 var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
                 perksComponent.removeItemsByType(PerkConstants.perkTypes.injury);
                 
-                this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
+                this.playerStatsNodes.head.stamina.stamina = 1000;
                 this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL, "Healed all injuries.");
             }
             this.uiFunctions.completeAction("use_in_hospital");
