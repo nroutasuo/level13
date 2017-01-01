@@ -509,14 +509,11 @@ function (Ash, GameConstants, CampConstants) {
                 },
                 
                 craft_light1: {
-                    upgrades: {
-                        unlock_building_lights: true
-                    }
                 },
                 
                 craft_light2: {
                     upgrades: {
-                        unlock_building_lights: true,
+                        unlock_building_lights: true
                     }
                 },
                 
