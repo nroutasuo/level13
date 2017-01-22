@@ -20,6 +20,10 @@ h1, h2, h3, h4, h5, h6 {
 	text-transform: uppercase;
 }
 
+h3 {
+    margin: 1em 0 0.5em 0;
+}
+
 div.grid-content {
 	margin: 0px 0px 15px 0px !important;
 	padding: 15px;
@@ -174,6 +178,10 @@ dd p.p-meta {
 #out-container-compass canvas, #out-container-compass-actions table {
     margin-left: auto;
     margin-right: auto;
+}
+
+#out-desc {
+    padding: 0px;
 }
 
 #table-out-actions-movement {
@@ -544,7 +552,7 @@ input {
 
 #tab-header { margin: 5px 0px }
 #tab-header h2 { margin: 2px 0px; }
-#grid-location-header { padding: 15px 0px 0px 0px; }
+#grid-location-header { padding: 10px 0px 0px 0px; }
 
 .page-overlay {
 	position:fixed;
@@ -581,7 +589,7 @@ input {
      text-align: center; 
      padding: 3px; 
      margin-left: -80px; 
-     font-size: 85%;
+     font-size: 80%;
  }
  
 #header-self-bar ul {
@@ -631,8 +639,8 @@ ul.itemlist, ul.resultlist {
 }
 
 .item {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
 }
 
 .res {
@@ -643,7 +651,7 @@ ul.itemlist, ul.resultlist {
 }
 
 .item img, .li-item-negative img, .li-item-positive img {
-	margin: -2px 0px 2px 0px;
+	margin: -3px 0px 3px 0px;
 	vertical-align: middle;
 	height: 16px;
 	width: 16px;
@@ -762,6 +770,10 @@ div.item-slot > div, div.item-slot > span {
 #statsbar-resources .callout-container {
     width: 33%;
     border: 0px;
+}
+
+#bag-resources > .callout-container {
+    max-width: 49%;
 }
 
 #header-tribe-container {
@@ -910,7 +922,7 @@ div.info-callout {
 }
 
 div.info-callout-target {
-    border-width: 1px;
+    border-width: 0px;
     border-style: solid;
     padding: 1px;
     margin: 1px;
@@ -1368,7 +1380,7 @@ span.time {
 	vertical-align: middle;
 }
 
-span#out-position-indicator {
+span#out-position-indicator, span#out-position-indicator-header {
     font-size: 80%;
     line-height: 0.75em;
 }
