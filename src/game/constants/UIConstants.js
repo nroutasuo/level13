@@ -25,7 +25,8 @@ define(['ash',
 		FEATURE_MISSING_TITLE: "Missing feature",
 		FEATURE_MISSING_COPY: "This feature is not yet implemented. Come back later!",
 		
-		MAP_MINIMAP_SIZE: 5,
+		MAP_MINIMAP_SIZE: 5,        
+        SCROLL_INDICATOR_SIZE: 5,
 		
 		resourceImages: {
 			metal: "img/res-metal.png",

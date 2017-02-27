@@ -60,6 +60,7 @@ define([
     'game/helpers/SaveHelper',
     'game/helpers/UpgradeEffectsHelper',
     'game/helpers/ui/UIMapHelper',
+    'game/helpers/ui/UITechTreeHelper',
     'brejep/tickprovider',
 ], function (
     Ash,
@@ -123,6 +124,7 @@ define([
     SaveHelper,
     UpgradeEffectsHelper,
     UIMapHelper,
+    UITechTreeHelper,
     TickProvider
 ) {
     var Level13 = Ash.Class.extend({
@@ -165,6 +167,7 @@ define([
 			this.movementHelper = new MovementHelper(this.engine);
 			this.saveHelper = new SaveHelper();
             this.uiMapHelper = new UIMapHelper(this.engine, this.levelHelper, this.sectorHelper, this.movementHelper);
+            this.uiTechTreeHelper = new UITechTreeHelper(this.engine, this.playerActionsHelper);
             this.buttonHelper = new ButtonHelper(this.levelHelper);
 			
 			// Basic building blocks & special systems
@@ -237,7 +240,7 @@ define([
 			this.engine.addSystem(new UIOutBagSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionsHelper, this.gameState), SystemPriorities.render);
 			this.engine.addSystem(new UIOutFollowersSystem(this.uiFunctions, this.tabChangedSignal, this.gameState), SystemPriorities.render);
 			this.engine.addSystem(new UIOutMapSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.uiMapHelper, this.levelHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutUpgradesSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionFunctions, this.upgradeEffectsHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutUpgradesSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionFunctions, this.upgradeEffectsHelper, this.uiTechTreeHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutBlueprintsSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionFunctions, this.upgradeEffectsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.tabChangedSignal, this.resourcesHelper, this.levelHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutFightSystem(this.uiFunctions, this.playerActionResultsHelper, this.playerActionsHelper), SystemPriorities.render);

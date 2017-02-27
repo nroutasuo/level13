@@ -159,16 +159,17 @@ dd p.p-meta {
     overflow: hidden;
 }
 
-#minimap-container {
-    width: 198px;
-    height: 198px;
-    margin: 0px auto;
+#mainmap, #mainmap-fallback-container, #researched-upgrades-vis {
+    overflow: hidden;
 }
 
 #mainmap-container {
-    max-height: 450px;
-    overflow: hidden;
-    position: relative;
+    max-height: 200px; /*450px;*/
+}
+
+
+#researched-upgrades-vis-container {
+    max-height: 200px;    
 }
 
 #out-container-compass, #out-container-compass-actions {
@@ -190,6 +191,8 @@ dd p.p-meta {
 
 .canvas-container {
     text-align: center;
+    overflow: hidden;
+    position: relative;
 }
 
 .scroll-position-container {

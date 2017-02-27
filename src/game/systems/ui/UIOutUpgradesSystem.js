@@ -23,11 +23,14 @@ define([
 		currentUpgrades: 0,
 		lastShownUpgrades: 0,
 	
-		constructor: function (uiFunctions, tabChangedSignal, playerActions, upgradeEffectsHelper) {
+		constructor: function (uiFunctions, tabChangedSignal, playerActions, upgradeEffectsHelper, techTreeHelper) {
 			this.uiFunctions = uiFunctions;
 			this.tabChangedSignal = tabChangedSignal;
 			this.playerActions = playerActions;
 			this.upgradeEffectsHelper = upgradeEffectsHelper;
+            this.techTreeHelper = techTreeHelper;
+            
+            this.techTreeHelper.enableScrolling("researched-upgrades-vis");
 			return this;
 		},
 	
@@ -46,8 +49,6 @@ define([
 		update: function (time) {
 			var isActive = this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.upgrades;
 			
-			var blueprintsShown = $("#blueprints-list tr").length;
-			var listsEmpty = $("#upgrades-list button").length + $("#researched-upgrades-list button").length <= 0;
 			var resetLists = $("#upgrades-list tr").length < 1 && $("#researched-upgrades-list tr").length < 1;
 			resetLists = resetLists || this.lastUpdateUpgradeCount !== this.tribeNodes.head.upgrades.boughtUpgrades.length;
 			resetLists = resetLists || $("#blueprints-list tr").length !== this.tribeNodes.head.upgrades.getNewBlueprints().length - this.tribeNodes.head.upgrades.getUnfinishedBlueprints().length;
@@ -63,6 +64,8 @@ define([
 			} else {
 				this.hasNeverBeenOpened = false;
 			}
+            
+            this.updateTechTree(resetLists);
 			
 			$("#tab-header h2").text("Upgrades");
 			$("#world-upgrades-count").toggle(this.lastUpdateUpgradeCount > 0);
@@ -147,6 +150,12 @@ define([
 			if (isActive) this.lastShownBlueprints = this.currentBlueprints;
 			if (isActive) this.lastShownUpgrades = this.currentUpgrades;
 		},
+        
+        updateTechTree: function (resetLists) {
+            if (!resetLists)
+                return;
+            this.techTreeHelper.drawTechTree("researched-upgrades-vis");
+        },
 		
 		getUpgradeTR: function (upgradeDefinition, isAvailable, hasBlueprintUnlocked, hasBlueprintNew) {
 			var nameTD = "<td class='item-name'>" + upgradeDefinition.name + "</td>";

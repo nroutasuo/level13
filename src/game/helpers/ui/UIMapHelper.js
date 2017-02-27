@@ -1,6 +1,7 @@
 // Creates and updates maps (mini-map and main)
 define(['ash',
     'game/constants/UIConstants',
+    'game/constants/CanvasConstants',
     'game/constants/PositionConstants',
     'game/constants/SectorConstants',
     'game/nodes/PlayerPositionNode',
@@ -13,7 +14,7 @@ define(['ash',
     'game/components/sector/improvements/WorkshopComponent',
     'game/vos/PositionVO'],
 function (Ash,
-    UIConstants, PositionConstants, SectorConstants,
+    UIConstants, CanvasConstants, PositionConstants, SectorConstants,
     PlayerPositionNode,
     LevelComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, WorkshopComponent,
     PositionVO) {
@@ -26,8 +27,6 @@ function (Ash,
         playerPosNodes: null,
         
         icons: [],
-        
-        SCROLL_INDICATOR_SIZE: 5,
         
         isMapRevealed: false,
         
@@ -70,18 +69,8 @@ function (Ash,
         },
         
         enableScrollingForMap: function (canvasId) {
-            $("#" + canvasId).mousedown({ helper: this }, this.onScrollableMapMouseDown);
-            $("#" + canvasId).mouseup({ helper: this }, this.onScrollableMapMouseUp);
-            $("#" + canvasId).mouseleave({ helper: this }, this.onScrollableMapMouseLeave);
-            $("#" + canvasId).mousemove({ helper: this }, this.onScrollableMapMouseMove);
-            
-            $("#" + canvasId).addClass("scrollable");
-            
-            $("#" + canvasId).parent().wrap("<div class='scroll-position-container lvl13-box-2'></div>");
-            $("#" + canvasId).parent().before("<div class='scroll-position-indicator scroll-position-indicator-vertical'/>");
-            $("#" + canvasId).parent().before("<div class='scroll-position-indicator scroll-position-indicator-horizontal'/>");
-            
-            this.updateScrollEnable(canvasId);
+            CanvasConstants.makeCanvasScrollable(canvasId);
+            CanvasConstants.updateScrollEnable(canvasId);
         },
         
         disableScrollingForMap: function (canvasId) {
@@ -94,76 +83,6 @@ function (Ash,
             $("#" + canvasId).parent().unwrap();
         },
         
-        onScrollableMapMouseDown: function (e) {
-            $(this).attr("scrolling", "true");
-            $(this).attr("scrollStartX", Math.floor(e.pageX));
-            $(this).attr("scrollStartY", Math.floor(e.pageY));
-            $(this).attr("scrollStartXScrollLeft", Math.floor($(this).parent().scrollLeft()));
-            $(this).attr("scrollStartXScrollTop", Math.floor($(this).parent().scrollTop()));
-        },
-        
-        onScrollableMapMouseUp: function (e) {
-            e.data.helper.snapScrollPositionToGrid($(this).attr("id"));
-            $(this).attr("scrolling", "false");
-        },
-        
-        onScrollableMapMouseLeave: function (e) {
-            e.data.helper.snapScrollPositionToGrid($(this).attr("id"));
-            $(this).attr("scrolling", "false");
-        },
-        
-        onScrollableMapMouseMove: function (e) {
-            var isScrolling = $(this).attr("scrolling") === "true";
-            if (isScrolling) {
-                var currentX = Math.floor(e.pageX);
-                var currentY = Math.floor(e.pageY);
-                var posX = currentX - parseInt($(this).attr("scrollStartX")) - parseInt($(this).attr("scrollStartXScrollLeft"));
-                var posY = currentY - parseInt($(this).attr("scrollStartY")) - parseInt($(this).attr("scrollStartXScrollTop"));
-                $(this).parent().scrollLeft(-posX);
-                $(this).parent().scrollTop(-posY);
-                e.data.helper.updateScrollIndicators($(this).attr("id"));
-            }
-        },
-        
-        snapScrollPositionToGrid: function (canvasId) {
-            var scrollContainer = $("#" + canvasId).parent();
-            scrollContainer.scrollLeft(Math.round(scrollContainer.scrollLeft() / 20) * 20);
-            scrollContainer.scrollTop(Math.round(scrollContainer.scrollTop() / 20) * 20);
-        },
-        
-        updateScrollIndicators: function (canvasId) {
-            var scrollContainer = $("#" + canvasId).parent();
-            var scrollIndicatorVertical = scrollContainer.siblings(".scroll-position-indicator-vertical")[0];
-            var scrollIndicatorHorizontal = scrollContainer.siblings(".scroll-position-indicator-horizontal")[0];
-            
-            var verticalScrollHeight = Math.min(1, scrollContainer.height() / $("#" + canvasId).height());
-            var verticalScrollWidth = Math.min(1, scrollContainer.width() / $("#" + canvasId).width());
-            var scrollIndicatorVerticalHeight = $(scrollIndicatorVertical).parent().height() * verticalScrollHeight;
-            var scrollIndicatorHorizontalWidth = $(scrollIndicatorHorizontal).parent().width() * verticalScrollWidth;
-            $(scrollIndicatorVertical).css("height", scrollIndicatorVerticalHeight + "px");
-            $(scrollIndicatorHorizontal).css("width", scrollIndicatorHorizontalWidth + "px");
-            
-            var scrollPosX = scrollContainer.scrollLeft();
-            var maxScrollPosX = Math.max(0, -(scrollContainer.width() - $("#" + canvasId).width()));
-            var scrollPosY = scrollContainer.scrollTop();
-            var maxScrollPosY = Math.max(0, -(scrollContainer.height() - $("#" + canvasId).height()));
-            var maxIndicatorTop = scrollContainer.height() - scrollIndicatorVerticalHeight;
-            var maxIndicatorLeft = scrollContainer.width() - scrollIndicatorHorizontalWidth;
-            $(scrollIndicatorVertical).css("top", this.SCROLL_INDICATOR_SIZE + (maxScrollPosY > 0 ? (scrollPosY / maxScrollPosY) * maxIndicatorTop : 0) + "px");
-            $(scrollIndicatorHorizontal).css("left", this.SCROLL_INDICATOR_SIZE + (maxScrollPosX > 0 ? (scrollPosX / maxScrollPosX) * maxIndicatorLeft : 0) + "px");
-        },
-        
-        updateScrollEnable: function (canvasId) {
-            var scrollContainer = $("#" + canvasId).parent();
-            var maxScrollPosX = Math.max(0, -(scrollContainer.width() - $("#" + canvasId).width()));
-            var maxScrollPosY = Math.max(0, -(scrollContainer.height() - $("#" + canvasId).height()));
-            var isScrollEnabled = maxScrollPosY > 0 || maxScrollPosX > 0;
-            if (!isScrollEnabled && $("#" + canvasId).hasClass("scroll-enabled"))
-                $("#" + canvasId).removeClass("scroll-enabled");
-            if (isScrollEnabled && !$("#" + canvasId).hasClass("scroll-enabled"))
-                $("#" + canvasId).addClass("scroll-enabled");
-        },
-        
         centerMapToPlayer: function (canvasId, mapPosition) {
             var sectorSize = this.getSectorSize(false);
             var mapDimensions = this.getMapSectorDimensions(canvasId, -1, false, mapPosition);
@@ -171,8 +90,8 @@ function (Ash,
             var playerPosY = sectorSize + (mapPosition.sectorY - mapDimensions.minVisibleY) * sectorSize * 2;
             $("#" + canvasId).parent().scrollLeft(playerPosX - $("#" + canvasId).parent().width() * 0.5);
             $("#" + canvasId).parent().scrollTop(playerPosY - $("#" + canvasId).parent().height() * 0.5);
-            this.snapScrollPositionToGrid(canvasId);
-            this.updateScrollIndicators(canvasId);
+            CanvasConstants.snapScrollPositionToGrid(canvasId);
+            CanvasConstants.updateScrollIndicators(canvasId);
         },
         
         rebuildMap: function (canvasId, fallbackTableId, mapPosition, mapSize, centered) {
@@ -260,7 +179,7 @@ function (Ash,
                 ctx.stroke();
             }
             
-            this.updateScrollEnable($(canvas).attr("id"));
+            CanvasConstants.updateScrollEnable($(canvas).attr("id"));
         },
             
         getSectorPixelPos: function (dimensions, centered, sectorSize, x, y) {
