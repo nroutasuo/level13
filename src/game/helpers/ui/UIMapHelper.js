@@ -117,7 +117,7 @@ function (Ash,
             ctx.canvas.width = dimensions.canvasWidth;
             ctx.canvas.height = dimensions.canvasHeight;
             ctx.clearRect(0, 0, canvas.scrollWidth, canvas.scrollWidth);
-            ctx.fillStyle = sunlit ? "#fdfdfd" : "#202220";
+            ctx.fillStyle = CanvasConstants.getBackgroundColor(sunlit);
             ctx.fillRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
             
             // city background

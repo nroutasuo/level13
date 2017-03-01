@@ -86,6 +86,10 @@ define(['ash', 'game/constants/UIConstants'
             scrollContainer.scrollLeft(Math.round(scrollContainer.scrollLeft() / 20) * 20);
             scrollContainer.scrollTop(Math.round(scrollContainer.scrollTop() / 20) * 20);
         },
+        
+        getBackgroundColor: function (sunlit) {
+            return sunlit ? "#fdfdfd" : "#202220";
+        }
     };
     
     return CanvasConstants;

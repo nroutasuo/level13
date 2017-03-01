@@ -82,14 +82,17 @@ function (Ash,
                 node = this.nodesById[id];
                 if (tribeNodes.head.upgrades.hasUpgrade(node.definition.id))
                     continue;
+                
                 var isAvailable = playerActionsHelper.checkRequirements(node.definition.id, false).value > 0;
                 if (isAvailable)
                     continue;
+                
                 for (var i = 0; i < node.requires.length; i++) {
                     isAvailable = isAvailable || playerActionsHelper.checkRequirements(node.requires[i].definition.id, false).value > 0;
                 }
                 if (isAvailable)
                     continue;
+                
                 this.removeNode(this.nodesById[id]);
             }
         },
@@ -129,7 +132,7 @@ function (Ash,
         ctx: null,
         
         cellW: 85,
-        cellH: 25,
+        cellH: 20,
         cellPX: 20,
         cellPY: 10,
         treePX: 20,
@@ -153,6 +156,7 @@ function (Ash,
                 return;
             
             var tree = this.makeTechTree();
+            var sunlit = $("body").hasClass("sunlit");
             
             // TODO extend to several required tech per tech; currently drawing assumes max 1
             
@@ -165,11 +169,11 @@ function (Ash,
             this.ctx.canvas.width = dimensions.canvasWidth;
             this.ctx.canvas.height = dimensions.canvasHeight;            
             this.ctx.clearRect(0, 0, this.canvas.scrollWidth, this.canvas.scrollWidth);
-            this.ctx.fillStyle = "#202220";
+            this.ctx.fillStyle = CanvasConstants.getBackgroundColor(sunlit);
             this.ctx.fillRect(0, 0, this.canvas.scrollWidth, this.canvas.scrollWidth);
 
 			for (var i = 0; i < tree.roots.length; i++) {
-                this.drawRoot(tree.roots[i]);
+                this.drawRoot(tree.roots[i], sunlit);
             }
         },
         
@@ -209,16 +213,16 @@ function (Ash,
             return yHeight;            
         },
         
-        drawRoot: function (root) {
+        drawRoot: function (root, sunlit) {
             this.drawNode(root);            
             for (var level in root.requiredByByLevel) {
                 for (var i = 0; i < root.requiredByByLevel[level].length; i++) {
-                    this.drawNode(root.requiredByByLevel[level][i]);
+                    this.drawNode(root.requiredByByLevel[level][i], sunlit);
                 }
             }
         },
         
-        drawNode: function (node) {
+        drawNode: function (node, sunlit) {
             var pixelX = this.getPixelPosX(node.x);
             var pixelY = this.getPixelPosY(node.y);
             
@@ -227,20 +231,40 @@ function (Ash,
                 this.drawArrow(
                     pixelX + this.cellW, 
                     pixelY + this.cellH / 2, 
-                    this.getPixelPosX(node.requiredBy[i].x) - this.cellPX / 4, 
+                    this.getPixelPosX(node.requiredBy[i].x) - this.cellPX / 5, 
                     this.getPixelPosY(node.requiredBy[i].y) + this.cellH / 2
                 );
             }
             
             // node
-            this.ctx.fillStyle = this.getFillColor(node);
+            this.ctx.fillStyle = this.getFillColor(node, sunlit);
             this.ctx.fillRect(pixelX, pixelY, this.cellW, this.cellH);
+            
+            var hasUpgrade =  this.tribeNodes.head.upgrades.hasUpgrade(node.definition.id);
+            var isAvailable = this.playerActionsHelper.checkRequirements(node.definition.id, false).value > 0;
+            if (hasUpgrade || isAvailable) {
+                this.ctx.lineWidth = 3;
+                this.ctx.strokeStyle = hasUpgrade ? "#666" : "#fdfdfd";
+                this.ctx.beginPath();
+                this.ctx.moveTo(pixelX, pixelY);
+                this.ctx.lineTo(pixelX + this.cellW, pixelY);
+                this.ctx.lineTo(pixelX + this.cellW, pixelY + this.cellH);
+                this.ctx.lineTo(pixelX, pixelY + this.cellH);
+                this.ctx.lineTo(pixelX, pixelY);
+                this.ctx.stroke();
+                this.ctx.closePath();
+            }
 
             // details
+            var lacksBlueprint = 
+                this.playerActionsHelper.checkRequirements(node.definition.id, false).value <= 0 &&
+                this.playerActionsHelper.getReqs(node.definition.id).blueprint && 
+                !this.tribeNodes.head.upgrades.hasAvailableBlueprint(this.playerActionsHelper.getReqs(node.definition.id).blueprint);
             this.ctx.font = "11px Arial";
-            this.ctx.fillStyle = "#202220";
+            this.ctx.fillStyle = sunlit ? "#fdfdfd" : "#202220";
             this.ctx.textAlign = "center";
-            this.ctx.fillText(node.definition.name, pixelX + this.cellW / 2, pixelY + this.cellH / 2);
+            var text = lacksBlueprint ? "???" : node.definition.name;
+            this.ctx.fillText(text, pixelX + this.cellW / 2, pixelY + this.cellH / 3 * 2);
         },
         
         getPixelPosX: function (x) {
@@ -255,16 +279,25 @@ function (Ash,
             if (fromx < 0 || fromy < 0 || tox < 0 || toy < 0)
                 return;
             
-            var headlen = 8;
+            var headlen = 7;
             var angle = Math.atan2(toy-fromy,tox-fromx);
-            this.ctx.strokeStyle = "#bbb";
+            this.ctx.strokeStyle = "#444";
+            
             this.ctx.beginPath();
             this.ctx.moveTo(fromx, fromy);
             this.ctx.lineTo(tox, toy);
+            this.ctx.stroke();
+            
+            this.ctx.fillStyle = "#444";
+            this.ctx.lineWidth = 1;
+            this.ctx.beginPath();
+            this.ctx.moveTo(tox, toy);
             this.ctx.lineTo(tox-headlen*Math.cos(angle-Math.PI/6),toy-headlen*Math.sin(angle-Math.PI/6));
             this.ctx.moveTo(tox, toy);
             this.ctx.lineTo(tox-headlen*Math.cos(angle+Math.PI/6),toy-headlen*Math.sin(angle+Math.PI/6));
-            this.ctx.stroke();
+            this.ctx.lineTo(tox-headlen*Math.cos(angle-Math.PI/6),toy-headlen*Math.sin(angle-Math.PI/6));
+            this.ctx.fill();
+            this.ctx.closePath();
         },
         
         makeTechTree: function () {
@@ -302,18 +335,18 @@ function (Ash,
             return dimensions;
         },
         
-        getFillColor: function (node) {
+        getFillColor: function (node, sunlit) {
             var definition = node.definition;
             if (this.tribeNodes.head.upgrades.hasUpgrade(definition.id)) {
-                return "#ccc";
+                return sunlit ? "#3a3a3a" : "#aaa";
             }
             var isAvailable = this.playerActionsHelper.checkRequirements(definition.id, false).value > 0;
             if (isAvailable) {
-                return "#aaa";
+                return sunlit ? "#444" : "#ccc";
             }
             var isNext = true;
             if (isNext) {
-                return "#666";
+                return sunlit ? "#cdcdcd" : "#444";
             }
             return null;
         }
