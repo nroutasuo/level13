@@ -282,6 +282,7 @@ define([
             if (!this.playerStatsNodes.head) return;
             var isInCamp = this.playerStatsNodes.head && this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
             var hasMap = this.playerStatsNodes.head.entity.get(ItemsComponent).getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
+            var hasProjects = this.gameState.unlockedFeatures.projects;
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-in", null, isInCamp, 200, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-upgrades", null, isInCamp && this.gameState.unlockedFeatures.upgrades, 200, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-blueprints", null, this.gameState.unlockedFeatures.blueprints, 200, 0);
@@ -290,6 +291,7 @@ define([
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-followers", null, this.gameState.unlockedFeatures.followers, 200, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-out", null, true, 0, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-map", null, hasMap, 200, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-projects", null, hasProjects, 200, 0);
         },
         
         updateTabs: function () {

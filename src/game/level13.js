@@ -9,6 +9,7 @@ define([
     'game/systems/ui/UIOutElementsSystem',
     'game/systems/ui/UIOutLevelSystem',
     'game/systems/ui/UIOutCampSystem',
+    'game/systems/ui/UIOutProjectsSystem',
     'game/systems/ui/UIOutEmbarkSystem',
     'game/systems/ui/UIOutBagSystem',
     'game/systems/ui/UIOutFollowersSystem',
@@ -73,6 +74,7 @@ define([
     UIOutElementsSystem,
     UIOutLevelSystem,
     UIOutCampSystem,
+    UIOutProjectsSystem,
     UIOutEmbarkSystem,
     UIOutBagSystem,
     UIOutFollowersSystem,
@@ -236,6 +238,7 @@ define([
 			this.engine.addSystem(new UIOutElementsSystem(this.uiFunctions, this.gameState, this.playerActionFunctions, this.resourcesHelper, this.fightHelper, this.buttonHelper, this.calloutsGeneratedSignal), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLevelSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.movementHelper, this.resourcesHelper, this.sectorHelper, this.uiMapHelper, this.playerMovedSignal), SystemPriorities.render);
 			this.engine.addSystem(new UIOutCampSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.levelHelper, this.upgradeEffectsHelper, this.campHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutProjectsSystem(this.uiFunctions, this.gameState, this.levelHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutEmbarkSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.resourcesHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutBagSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionsHelper, this.gameState), SystemPriorities.render);
 			this.engine.addSystem(new UIOutFollowersSystem(this.uiFunctions, this.tabChangedSignal, this.gameState), SystemPriorities.render);

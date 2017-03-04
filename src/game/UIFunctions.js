@@ -23,6 +23,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             tabs: {
                 bag: "switch-bag",
                 followers: "switch-followers",
+                projects: "switch-projects",
                 map: "switch-map",
                 in: "switch-in",
                 out: "switch-out",
@@ -514,6 +515,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
                     $("#container-tab-two-bag").slideUp(transitionTime);
                     $("#container-tab-two-followers").slideUp(transitionTime);
                     $("#container-tab-two-map").slideUp(transitionTime);
+                    $("#container-tab-two-projects").slideUp(transitionTime);
                     $("#container-tab-two-blueprints").slideUp(transitionTime);
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
@@ -534,6 +536,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
                     $("#container-tab-two-bag").slideUp(transitionTime);
                     $("#container-tab-two-followers").slideUp(transitionTime);
                     $("#container-tab-two-map").slideUp(transitionTime);
+                    $("#container-tab-two-projects").slideUp(transitionTime);
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
                     $("#container-tab-two-blueprints").slideUp(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
@@ -552,6 +555,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
                     $("#container-tab-two-bag").slideUp(transitionTime);
                     $("#container-tab-two-followers").slideUp(transitionTime);
                     $("#container-tab-two-map").slideUp(transitionTime);
+                    $("#container-tab-two-projects").slideUp(transitionTime);
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
                     $("#container-tab-two-blueprints").slideUp(transitionTime);
                     $("#container-tab-two-world").slideDown(transitionTime);
@@ -569,6 +573,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
                     $("#container-tab-two-bag").slideUp(transitionTime);
                     $("#container-tab-two-followers").slideUp(transitionTime);
                     $("#container-tab-two-map").slideUp(transitionTime);
+                    $("#container-tab-two-projects").slideUp(transitionTime);
                     $("#container-tab-two-upgrades").slideDown(transitionTime);
                     $("#container-tab-two-blueprints").slideUp(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
@@ -586,6 +591,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
                     $("#container-tab-two-bag").slideUp(transitionTime);
                     $("#container-tab-two-followers").slideUp(transitionTime);
                     $("#container-tab-two-map").slideUp(transitionTime);
+                    $("#container-tab-two-projects").slideUp(transitionTime);
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
                     $("#container-tab-two-blueprints").slideDown(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
@@ -603,6 +609,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
                     $("#container-tab-two-bag").slideDown(transitionTime);
                     $("#container-tab-two-followers").slideUp(transitionTime);
                     $("#container-tab-two-map").slideUp(transitionTime);
+                    $("#container-tab-two-projects").slideUp(transitionTime);
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
                     $("#container-tab-two-blueprints").slideUp(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
@@ -620,6 +627,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
                     $("#container-tab-two-bag").slideUp(transitionTime);
                     $("#container-tab-two-followers").slideDown(transitionTime);
                     $("#container-tab-two-map").slideUp(transitionTime);
+                    $("#container-tab-two-projects").slideUp(transitionTime);
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
                     $("#container-tab-two-blueprints").slideUp(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);
@@ -637,6 +645,25 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
                     $("#container-tab-two-bag").slideUp(transitionTime);
                     $("#container-tab-two-followers").slideUp(transitionTime);
                     $("#container-tab-two-map").slideDown(transitionTime);
+                    $("#container-tab-two-projects").slideUp(transitionTime);
+                    $("#container-tab-two-upgrades").slideUp(transitionTime);
+                    $("#container-tab-two-blueprints").slideUp(transitionTime);
+                    $("#container-tab-two-world").slideUp(transitionTime);
+                    $("#container-tab-footer").slideUp(transitionTime);
+                    break;
+                
+                case elementIDs.tabs.projects:
+                    $("#switch-tabs li#switch-projects").addClass("selected");
+                    $("#btn-header-rename").slideUp(transitionTime);
+                    $("#container-tab-vis-in").slideUp(transitionTime);
+                    $("#container-tab-enter-out").slideUp(transitionTime);
+                    $("#container-tab-two-in").slideUp(transitionTime);
+                    $("#container-tab-two-out").slideUp(transitionTime);
+                    $("#container-tab-two-out-actions").slideUp(transitionTime);
+                    $("#container-tab-two-bag").slideUp(transitionTime);
+                    $("#container-tab-two-followers").slideUp(transitionTime);
+                    $("#container-tab-two-map").slideUp(transitionTime);
+                    $("#container-tab-two-projects").slideDown(transitionTime);
                     $("#container-tab-two-upgrades").slideUp(transitionTime);
                     $("#container-tab-two-blueprints").slideUp(transitionTime);
                     $("#container-tab-two-world").slideUp(transitionTime);

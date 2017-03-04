@@ -1,11 +1,12 @@
 define([
     'ash',
 	'game/constants/GameConstants',
+	'game/constants/UpgradeConstants',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/nodes/sector/CampNode',
     'game/components/sector/improvements/SectorImprovementsComponent',
-], function (Ash, GameConstants, PlayerStatsNode, TribeUpgradesNode, CampNode, SectorImprovementsComponent) {
+], function (Ash, GameConstants, UpgradeConstants, PlayerStatsNode, TribeUpgradesNode, CampNode, SectorImprovementsComponent) {
     var EvidenceSystem = Ash.System.extend({
 	
         gameState: null,
@@ -61,6 +62,8 @@ define([
 				evidenceComponent.value += (time + this.engine.extraUpdateTime) * accSpeed;
 				evidenceComponent.isAccumulating = true;
 			}
+            
+            this.gameState.unlockedFeatures.projects = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(UpgradeConstants.upgradeIds.unlock_building_passage_staircase);
         },
 		
 		getLibraryUpgradeLevel: function () {

@@ -9,23 +9,19 @@ define([
     'game/nodes/level/PlayerLevelNode',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
-    'game/nodes/sector/CampNode',
     'game/nodes/player/DeityNode',
     'game/nodes/tribe/TribeUpgradesNode',
     'game/components/player/PerksComponent',
-    'game/components/sector/SectorFeaturesComponent',
     'game/components/common/CampComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
-    'game/components/sector/SectorControlComponent',
     'game/components/sector/events/CampEventTimersComponent',
     'game/components/sector/events/TraderComponent',
-    'game/components/sector/events/RaidComponent',
+    'game/components/sector/events/RaidComponent'
 ], function (
     Ash, UIConstants, UpgradeConstants, PlayerActionsHelperConstants, OccurrenceConstants, CampConstants, PerkConstants,
-    PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, CampNode, DeityNode, TribeUpgradesNode,
+    PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, DeityNode, TribeUpgradesNode,
     PerksComponent,
-	SectorFeaturesComponent,
-    CampComponent, SectorImprovementsComponent, SectorControlComponent, CampEventTimersComponent,
+    CampComponent, SectorImprovementsComponent, CampEventTimersComponent,
     TraderComponent, RaidComponent
 ) {
     var UIOutCampSystem = Ash.System.extend({
@@ -297,34 +293,6 @@ define([
 			$("#btn-use_in_hospital").toggle(hasHospital && (isInjured || isAugmented || !isAugmentAvailable));
 			$("#btn-use_in_hospital2").toggle(hasHospital && !isInjured && !isAugmented && isAugmentAvailable);
             
-            var numProjectsTR = $("#in-improvements-level table tr").length;
-            var projects = this.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity, this.uiFunctions.playerActions);
-            var showLevel = this.gameState.unlockedFeatures.level;
-            var updateTable = isActive && numProjectsTR !== projects.length;
-            if (updateTable) $("#in-improvements-level table").empty();
-            for (var i = 0; i < projects.length; i++) {
-                var project = projects[i];
-                var action = project.action;
-                var sectorEntity = this.levelHelper.getSectorByPosition(project.level, project.position.sectorX, project.position.sectorY);
-                var actionAvailable = playerActionsHelper.checkAvailability(action, false, sectorEntity);
-                if (updateTable) {
-                    var sector = project.level + "." + project.sector + "." + project.direction;
-                    var name = project.name;
-                    var info = "at " + project.position.getPosition().getInGameFormat() + (showLevel ? " level " + project.level : "");
-                    var classes = "action action-build action-level-project";
-                    var tr = "<tr><td><button class='" + classes + "' action='" + action + "' sector='" + sector + "' + id='btn-" + action + "-" + sector + "'>" + name + "</button></td><td class='list-description'>" + info + "</td></tr>";
-                    $("#in-improvements-level table").append(tr);
-                }
-                visibleBuildingCount++;
-                if (actionAvailable) availableBuildingCount++;
-            }
-            if (updateTable) {
-                this.uiFunctions.registerActionButtonListeners("#in-improvements-level");
-                this.uiFunctions.generateButtonOverlays("#in-improvements-level");
-                this.uiFunctions.generateCallouts("#in-improvements-level");
-            }
-            $("#header-in-improvements-level").toggle(projects.length > 0);
-            
             this.availableBuildingCount = availableBuildingCount;
             if (isActive) this.lastShownAvailableBuildingCount = this.availableBuildingCount;
             this.visibleBuildingCount = visibleBuildingCount;
@@ -401,7 +369,7 @@ define([
         
         hasUpgrade: function (upgradeId) {
             return this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeId);
-        },
+        }
         
     });
 

@@ -130,6 +130,7 @@
 							<li id="switch-bag"><span class="name">Bag</span></li>
 							<li id="switch-followers"><span class="name">Party</span></li>
 							<li id="switch-map"><span class="name">Map</span></li>
+							<li id="switch-projects"><span class="name">Projects</span></li>
 							<li id="switch-blueprints"><span class="name">Blueprints</span></li>
 							<li id="switch-upgrades"><span class="name">Upgrades</span></li>
 							<li id="switch-world"><span class="name">Tribe</span></li>
@@ -236,11 +237,6 @@
 									<td class="list-amount">0</td>
 									<td><button class="action action-use action-location">Select</button></td>
 								</tr>
-								</table>
-							</div>
-							<h3 id="header-in-improvements-level">Building projects</h3>
-							<div id="in-improvements-level" class="actionbox">
-								<table>								
 								</table>
 							</div>
 						</div>
@@ -491,11 +487,24 @@
                     </div>
 					
                     <div class="grid" id="container-tab-two-map" style="display:none">
-                        <p id="map-completion-hint">There are still places to explore on this level.</p>
-                        <div id="mainmap-container" class="canvas-container lvl13-box-1">
-                        <canvas id="mainmap" width="500" height="500">
-                            <div id="mainmap-fallback-container"><table class="vis lvl13-box-2" id="mainmap-fallback"></table></div>
-                        </canvas>
+                        <div class="unit whole">
+                            <p id="map-completion-hint">There are still places to explore on this level.</p>
+                            <div id="mainmap-container" class="canvas-container lvl13-box-1">
+                            <canvas id="mainmap" width="500" height="500">
+                                <div id="mainmap-fallback-container"><table class="vis lvl13-box-2" id="mainmap-fallback"></table></div>
+                            </canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid" id="container-tab-two-projects" style="display:none">
+                        <div class="unit whole">
+                            <div class="subheader"><h3 id="header-in-improvements-level">Building projects</h3></div>
+							<div id="in-improvements-level" class="actionbox">
+								<table>								
+								</table>
+							</div>
+                            <p id="in-improvements-level-empty-message">There are no building projects available.</p>
                         </div>
                     </div>
                     
