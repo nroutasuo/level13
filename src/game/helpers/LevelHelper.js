@@ -14,6 +14,7 @@ define([
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/PassagesComponent',
+    'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/improvements/WorkshopComponent',
     'game/components/level/LevelPassagesComponent',
     'game/vos/LevelProjectVO',
@@ -32,6 +33,7 @@ define([
 	SectorFeaturesComponent,
 	SectorControlComponent,
 	PassagesComponent,
+	SectorImprovementsComponent,
 	WorkshopComponent,
 	LevelPassagesComponent,
 	LevelProjectVO,
@@ -109,37 +111,56 @@ define([
 			
 			// get all levels
 			for (var node = this.levelNodes.head; node; node = node.next) {
-				projects = projects.concat(this.getAvailableProjectsForLevel(node.entity));
+				projects = projects.concat(this.getProjectsForLevel(node.entity));
 			}
 			
-			// sort by level ordinal
-			var gameState = this.gameState;
-			projects.sort(function (a, b) {
-				var levelOrdinalA = gameState.getLevelOrdinal(a.level);
-				var levelOrdinalB = gameState.getLevelOrdinal(b.level);
-				return levelOrdinalA - levelOrdinalB;
-			});
+			return this.filterProjects(projects);
+		},
+        
+        getBuiltProjectsForCamp: function (sectorEntity) {
+			var projects = [];            
 			
-			// filter duplicates (corresponding up and down)
-			var projectsFiltered = [];
+			// use to get projects only for that level: (now displaying all projects in all camps)
+			// var campLevelEntity = this.getLevelEntityForSector(sectorEntity);            
+			
+			// get all levels
+			for (var node = this.levelNodes.head; node; node = node.next) {
+				projects = projects.concat(this.getProjectsForLevel(node.entity, true));
+			}
+            
+			return this.filterProjects(projects);
+        },
+        
+        filterProjects: function (projects) {
+            var result = [];
 			var project;
 			var projectExists;
 			var existingProject;
+            
+			// filter duplicates (corresponding up and down)
 			for (var i = 0; i < projects.length; i++) {
 				project = projects[i];
 				projectExists = false;
-				for (var j = 0; j < projectsFiltered.length; j++) {
-					existingProject = projectsFiltered[j];
+				for (var j = 0; j < result.length; j++) {
+					existingProject = result[j];
 					if (existingProject.sector === project.sector && (existingProject.level - 1 === project.level || existingProject.level + 1 === project.level)) {
 						projectExists = true;
 						break;
 					}
 				}
-				if (!projectExists) projectsFiltered.push(project);
+				if (!projectExists) result.push(project);
 			}
 			
-			return projectsFiltered;
-		},
+			// sort by level ordinal
+			var gameState = this.gameState;
+			result.sort(function (a, b) {
+				var levelOrdinalA = gameState.getLevelOrdinal(a.level);
+				var levelOrdinalB = gameState.getLevelOrdinal(b.level);
+				return levelOrdinalA - levelOrdinalB;
+			});
+            
+            return result;
+        },
         
         getLevelStats: function (level) {
             var levelStats = {};
@@ -170,7 +191,7 @@ define([
             return levelStats;
         },
 		
-		getAvailableProjectsForLevel: function (levelEntity) {
+		getProjectsForLevel: function (levelEntity, getBuilt) {
 			var projects = [];
 			var level = levelEntity.get(PositionComponent).level;
 			var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
@@ -181,7 +202,11 @@ define([
 			for (var i = 0; i < this.sectorEntitiesByLevel[level].length; i++) {
 				sectorPosition = this.sectorEntitiesByLevel[level][i].get(PositionComponent);
 				if (sectorPosition.level !== level) continue;
-				projects = projects.concat(this.getAvailableProjectsForSector(this.sectorEntitiesByLevel[level][i], levelPassagesComponent));
+				projects = projects.concat(
+                    getBuilt ?
+                    this.getBuiltProjectsForSector(this.sectorEntitiesByLevel[level][i]) :
+                    this.getAvailableProjectsForSector(this.sectorEntitiesByLevel[level][i], levelPassagesComponent)
+                );
 			}
 			
 			return projects;
@@ -223,6 +248,7 @@ define([
                     projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, sectorPosition, PositionConstants.DIRECTION_UP));
                 }
             }
+            
             if (levelPassagesComponent.passagesDown[sectorPosition.sectorId()] && !levelPassagesComponent.passagesDownBuilt[sectorPosition.sectorId()]) {
                 switch (levelPassagesComponent.passagesDown[sectorPosition.sectorId()].type) {
                 case MovementConstants.PASSAGE_TYPE_HOLE:
@@ -253,6 +279,25 @@ define([
                     actionName = actionName + "_" + levelOrdinal;
                     projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.bridge), "build_out_bridge", sectorPosition, direction));
                 }
+            }
+            
+            return projects;
+        },
+        
+        getBuiltProjectsForSector: function (sectorEntity) {
+            var projects = [];
+            var statusComponent = sectorEntity.get(SectorStatusComponent);
+            var scouted = statusComponent && statusComponent.scouted;
+            if (!scouted) return projects;
+            
+			var sectorPosition = sectorEntity.get(PositionComponent);
+            var sectorImprovements = sectorEntity.get(SectorImprovementsComponent);            
+			var improvementList = sectorImprovements.getAll(improvementTypes.level);
+            for (var i = 0; i < improvementList.length; i++) {
+                var improvement = improvementList[i];
+                if (improvement.name === improvementNames.collector_food) continue;
+                if (improvement.name === improvementNames.collector_water) continue;
+                projects.push(new LevelProjectVO(improvement, "", sectorPosition));
             }
             
             return projects;
