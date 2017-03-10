@@ -122,7 +122,8 @@ define([
 					uiFunctions.onTabClicked(uiFunctions.elementIDs.tabs.in, uiFunctions.elementIDs, uiFunctions.gameState, uiFunctions.playerActions);
 					uiFunctions.onMoveButtonClicked(this, uiFunctions.playerActions);
 				});
-				this.uiFunctions.generateCallouts("#camp-overview");
+                this.uiFunctions.generateButtonOverlays("#" + rowID);
+                this.uiFunctions.generateCallouts("#" + rowID);
 			}
 			
 			// Update row
