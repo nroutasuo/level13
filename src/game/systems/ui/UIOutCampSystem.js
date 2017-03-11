@@ -13,6 +13,7 @@ define([
     'game/nodes/tribe/TribeUpgradesNode',
     'game/components/player/PerksComponent',
     'game/components/common/CampComponent',
+    'game/components/sector/ReputationComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/events/CampEventTimersComponent',
     'game/components/sector/events/TraderComponent',
@@ -21,7 +22,7 @@ define([
     Ash, UIConstants, UpgradeConstants, PlayerActionsHelperConstants, OccurrenceConstants, CampConstants, PerkConstants,
     PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, DeityNode, TribeUpgradesNode,
     PerksComponent,
-    CampComponent, SectorImprovementsComponent, CampEventTimersComponent,
+    CampComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
     TraderComponent, RaidComponent
 ) {
     var UIOutCampSystem = Ash.System.extend({
@@ -134,9 +135,10 @@ define([
             $("#in-population").toggle(showPopulation);
             if (!showPopulation) return;
             
+            var reputation = this.playerLocationNodes.head.entity.get(ReputationComponent).value;
             var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
             maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
-            this.updatePopulationChangeDisplay(campComponent, maxPopulation);
+            this.updatePopulationChangeDisplay(campComponent, maxPopulation, reputation);
             this.updateAssignedWorkers(campComponent, maxPopulation);
         },
         
@@ -148,21 +150,22 @@ define([
 			$(id).parent().siblings(".in-assign-worker-limit").children(".callout-container").children(".info-callout-target").html(showMax ? "<span>/ " + maxWorkers + "</span>" : "");
         },
         
-        updatePopulationChangeDisplay: function (campComponent, maxPopulation) {
+        updatePopulationChangeDisplay: function (campComponent, maxPopulation, reputation) {
             var freePopulation = campComponent.getFreePopulation();
             var isPopulationMaxed = campComponent.population >= maxPopulation;
-            var isPopulationChanging = isPopulationMaxed && populationChangePerSec !== 0;
             var populationChangePerSec = campComponent.populationChangePerSec;
+            var isPopulationStill = isPopulationMaxed && populationChangePerSec !== 0;
             
             var reqRepCur = CampConstants.getRequiredReputation(Math.floor(campComponent.population));
             var reqRepNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
+            var isReputationBlocking = reqRepNext < reputation;
 
             $("#in-population-next").text(campComponent.populationChangePerSec >= 0 ? "Next worker:" : "Worker leaving:");
             $("#in-population-reputation").text("Reputation required: " + reqRepCur + " (current) " + reqRepNext + " (next)");
             $("#in-population h3").text("Population: " + Math.floor(campComponent.population) + " / " + (maxPopulation));
             $("#in-population p#in-population-status").text("Free workers: " + freePopulation);
             
-            if (!isPopulationChanging) {
+            if (!isPopulationStill) {
                 var secondsToChange = 0;
                 var progress = 0;
                 if (populationChangePerSec > 0) {
@@ -175,15 +178,20 @@ define([
                     progress = 0;
                 }
                 
+                var progressLabel = 
+                    populationChangePerSec !== 0 ? UIConstants.getTimeToNum(secondsToChange) : 
+                    !isPopulationMaxed && !isReputationBlocking && campComponent.populationCooldownSec > 0 ? "cooldown " + UIConstants.getTimeToNum(campComponent.populationCooldownSec) :
+                    "no change";
+                
                 $("#in-population-bar-next").toggleClass("warning", populationChangePerSec < 0);
                 $("#in-population-bar-next").data("progress-percent", progress * 100);
-                $("#in-population-bar-next .progress-label").text(populationChangePerSec !== 0 ? UIConstants.getTimeToNum(secondsToChange) : "no change");
+                $("#in-population-bar-next .progress-label").text(progressLabel);
                 $("#in-population-bar-next").data("animation-length", 500);
             }
             
-            this.uiFunctions.slideToggleIf("#in-population-reputation", null, campComponent.population > 0 && !isPopulationChanging, 200, 200);
-            this.uiFunctions.slideToggleIf("#in-population-bar-next", null, campComponent.population > 0 && !isPopulationChanging, 200, 200);
-            this.uiFunctions.slideToggleIf("#in-population-next", null, campComponent.population > 0 && !isPopulationChanging, 200, 200);
+            this.uiFunctions.slideToggleIf("#in-population-reputation", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
+            this.uiFunctions.slideToggleIf("#in-population-bar-next", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
+            this.uiFunctions.slideToggleIf("#in-population-next", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
             this.uiFunctions.slideToggleIf("#in-population-status", null, campComponent.population >= 1, 200, 200);
             this.uiFunctions.slideToggleIf("#in-assign-workers", null, campComponent.population >= 1, 200, 200);
         },

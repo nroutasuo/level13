@@ -219,8 +219,9 @@ define([
 			
 			var playerFoodSource = this.resourcesHelper.getCurrentStorage().resources;
 			
-			var playerLevelCamp = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity : null;
+			var playerLevelCamp = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.entity : null;
 			var inCamp = playerLevelCamp !== null;
+            var hasPopulation = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.camp.population >= 1 : false;
 			inCamp = inCamp && playerLevelCamp.get(PositionComponent).sector === this.playerLocationNodes.head.position.sector;
 			
 			var timeStamp = new Date().getTime();
@@ -231,11 +232,17 @@ define([
 				var msg = null;
 				
 				if (inCamp && isThirsty && Math.random() < 0.1) {
-					msg = "People are thirsty.";
+                    if (hasPopulation)
+                        msg = "People are thirsty.";
+                    else
+                        msg = "There is no more water.";
 				}
 				
 				if (inCamp && msg === null && isHungry && Math.random() < 0.1) {
-					msg = "Workers are hungry.";
+                    if (hasPopulation)
+                        msg = "Workers are hungry.";
+                    else
+                        msg = "There is no more food.";
 				}
 				
 				if (!inCamp && isThirsty && Math.random() < 0.1) {
