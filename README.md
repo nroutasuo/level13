@@ -1,6 +1,6 @@
 # Level 13
 
-Level 13 is an text-based incremental science fiction browser adventure where the player must survive in a dark, decayed City, discover old and new technologies, and rebuilt a civilization that has collapsed.
+Level 13 is an text-based incremental science fiction browser adventure where the player must survive in a dark, decayed City, (re)discover old and new technologies, and rebuild a civilization that has collapsed.
 
 Currently in early development. See [changelog.json](https://github.com/nroutasuo/level13/blob/master/changelog.json) for version details.
 
