@@ -145,7 +145,7 @@ define([
             $("#header-sector").text(header);
 			
 			// Description
-            if (this.pendingUpdateDescription) {
+            if (this.pendingUpdateDescription || isScouted !== this.wasScouted) {
                 $("#out-desc").html(this.getDescription(
                     this.playerLocationNodes.head.entity,
                     hasCampHere,
@@ -154,6 +154,7 @@ define([
                     isScouted
                 ));
                 this.pendingUpdateDescription = false;
+                this.wasScouted = isScouted;
             }
 			            
 			this.updateOutImprovements(improvements);

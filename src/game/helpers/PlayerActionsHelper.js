@@ -435,6 +435,16 @@ define([
                             return {value: 0, reason: "Everything already selected."};
                         }
                     }
+                    if (typeof requirements.bag.full !== "undefined") {
+                        var requiredValue = requirements.bag.full;
+                        var currentValue = bagComponent.usedCapacity >= bagComponent.totalCapacity;
+                        if (requiredValue !== currentValue) {
+                            if (requiredValue)
+                                return {value: 0, reason: "Bag must be full."};
+                            else
+                                return {value: 0, reason: "Bag is full."};
+                        }
+                    }
                 }
                 
                 if (requirements.sector) {

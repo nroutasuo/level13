@@ -6,10 +6,11 @@ function (Ash, UIConstants) {
         popupQueue: null,
         playerActionResultsHelper: null,
         
-        constructor: function (gameState, playerActionResultsHelper) {
+        constructor: function (gameState, playerActionResultsHelper, uiFunctions) {
             $(window).resize(this.onResize);
             this.gameState = gameState;
             this.playerActionResultsHelper = playerActionResultsHelper;
+            this.uiFunctions = uiFunctions;
             this.popupQueue = [];
         },
         
@@ -74,6 +75,9 @@ function (Ash, UIConstants) {
             $(".popup-overlay").toggle(true);
             popUpManager.onResize();
             $("#common-popup").slideDown(200, popUpManager.onResize);
+            
+            this.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");
+            this.uiFunctions.generateCallouts("#common-popup .buttonbox");
             
             // pause the game while a popup is open
             this.gameState.isPaused = this.hasOpenPopup();

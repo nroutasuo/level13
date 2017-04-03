@@ -58,6 +58,9 @@ function (Ash, GameConstants, CampConstants) {
                     sector: {
                         scouted: true,
                     },
+                    bag: {
+                        full: false,
+                    }
                 },
                 
                 fight_gang: {

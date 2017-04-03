@@ -65,7 +65,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             this.generateElements();
             this.registerListeners();
             
-            this.popupManager = new UIPopupManager(this.gameState, this.playerActions.playerActionResultsHelper);
+            this.popupManager = new UIPopupManager(this.gameState, this.playerActions.playerActionResultsHelper, this);
             this.changeLogHelper = new ChangeLogHelper();
         },
         
