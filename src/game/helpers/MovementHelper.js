@@ -47,10 +47,10 @@ define([
 				
 				var blocker = passagesComponent.getBlocker(direction);
 					
-				var notBridged = blocker != null && blocker.bridgeable && !isBridged;
-				var notBridged = blocker != null && blocker.bridgeable && !isBridged;
-				var notDefeated = blocker != null && blocker.defeatable && !isDefeated;
-				var notCleaned = blocker != null && blocker.cleanable && !isCleaned;
+				var notBridged = blocker !== null && blocker.bridgeable && !isBridged;
+				var notBridged = blocker !== null && blocker.bridgeable && !isBridged;
+				var notDefeated = blocker !== null && blocker.defeatable && !isDefeated;
+				var notCleaned = blocker !== null && blocker.cleanable && !isCleaned;
 				
 				blocked = Boolean(blocker && (notBridged || notDefeated || notCleaned));
 				if (notBridged) reason = "Bridge needed.";

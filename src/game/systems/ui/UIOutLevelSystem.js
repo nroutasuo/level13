@@ -51,8 +51,11 @@ define([
 		
 		tabChangedSignal: null,
 		playerMovedSignal: null,
+		improvementBuiltSignal: null,
+        
+        pendingUpdateDescription: true,
 	
-		constructor: function (uiFunctions, tabChangedSignal, gameState, movementHelper, resourceHelper, sectorHelper, uiMapHelper, playerMovedSignal) {
+		constructor: function (uiFunctions, tabChangedSignal, gameState, movementHelper, resourceHelper, sectorHelper, uiMapHelper, playerMovedSignal, improvementBuiltSignal) {
 			this.uiFunctions = uiFunctions;
 			this.gameState = gameState;
 			this.movementHelper = movementHelper;
@@ -61,6 +64,7 @@ define([
             this.uiMapHelper = uiMapHelper;
 			this.tabChangedSignal = tabChangedSignal;
 			this.playerMovedSignal = playerMovedSignal;
+            this.improvementBuiltSignal = improvementBuiltSignal;
 			return this;
 		},
 	
@@ -87,7 +91,11 @@ define([
 				sys.rebuildVis(uiMapHelper);
 				sys.updateLocales();
 				sys.updateMovementRelatedActions();
+                sys.pendingUpdateDescription = true;
 			});
+            this.improvementBuiltSignal.add(function () {
+                sys.pendingUpdateDescription = true;
+            });
 			this.rebuildVis(uiMapHelper);
 		},
 		
@@ -119,6 +127,8 @@ define([
 			var passageDownAvailable = passagesComponent.passageDown !== null;
 			var hasCamp = false;
 			var hasCampHere = false;
+            var isScouted = sectorStatusComponent.scouted;
+            
 			for (var node = this.engine.getNodeList(CampNode).head; node; node = node.next) {
 				var campPosition = node.entity.get(PositionComponent);
 				if (campPosition.level === this.playerPosNodes.head.position.level) {
@@ -135,14 +145,16 @@ define([
             $("#header-sector").text(header);
 			
 			// Description
-			var isScouted = sectorStatusComponent.scouted;
-			$("#out-desc").html(this.getDescription(
-				this.playerLocationNodes.head.entity,
-				hasCampHere,
-				hasCamp,
-				hasVision,
-				isScouted
-			));
+            if (this.pendingUpdateDescription) {
+                $("#out-desc").html(this.getDescription(
+                    this.playerLocationNodes.head.entity,
+                    hasCampHere,
+                    hasCamp,
+                    hasVision,
+                    isScouted
+                ));
+                this.pendingUpdateDescription = false;
+            }
 			            
 			this.updateOutImprovements(improvements);
             
@@ -359,12 +371,14 @@ define([
 			// Blockers n/s/w/e
 			for (var i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
+                var directionName = PositionConstants.getDirectionName(direction);
 				var blocker = passagesComponent.getBlocker(direction);
+                
 				if (blocker) {
                     if (this.movementHelper.isBlocked(entity, direction)) {
-                        description += "Passage to the " + PositionConstants.getDirectionName(direction) + " is blocked by a " + blocker.name + ". ";
+                        description += "Passage to the " + directionName + " is blocked by a " + blocker.name + ". ";
                     } else {
-                        description += "A " + blocker.name.toLowerCase() + " on the " + PositionConstants.getDirectionName(direction) + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
+                        description += "A " + blocker.name.toLowerCase() + " on the " + directionName + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
                     }
                 }
 			}
