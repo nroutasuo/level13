@@ -58,6 +58,20 @@ function (Ash, ItemVO, ItemConstants) {
             }
             this.uniqueItemsCarried = {};
             this.uniqueItemsAll = {};
+            
+            switch (item.type) {
+                case ItemConstants.itemTypes.clothing_hands:
+                case ItemConstants.itemTypes.clothing_head:
+                case ItemConstants.itemTypes.clothing_lower:
+                case ItemConstants.itemTypes.clothing_over:
+                case ItemConstants.itemTypes.clothing_upper:
+                case ItemConstants.itemTypes.bag:
+                case ItemConstants.itemTypes.light:
+                case ItemConstants.itemTypes.weapon:
+                case ItemConstants.itemTypes.shoes:
+                    this.autoEquipByType(item.type);
+                    break;
+            }
         },
         
         discardItems: function (item) {
@@ -67,7 +81,7 @@ function (Ash, ItemVO, ItemConstants) {
             do {
                 this.discardItem(item);
                 count = this.getCount(item, true);
-            } while (count > target);
+            } while (count > target);            
         },
         
         isItemDiscardable: function (item) {
@@ -89,7 +103,6 @@ function (Ash, ItemVO, ItemConstants) {
         // Equips the given item if it's better than the previous equipment
         autoEquip: function (item) {
             var shouldEquip = item.equippable;
-            
             if (shouldEquip) {
                 for (var i = 0; i < this.items[item.type].length; i++) {
                     var existingItem = this.items[item.type][i];
@@ -105,12 +118,25 @@ function (Ash, ItemVO, ItemConstants) {
                     }
                 }
             }
-            
+
             if (shouldEquip) this.equip(item);
             else item.equipped = false;
             
             this.uniqueItemsCarried = {};
             this.uniqueItemsAll = {};
+        },
+        
+        autoEquipByType: function (itemType) {
+            var best = null;
+            for (var i = 0; i < this.items[itemType].length; i++) {
+                var item = this.items[itemType][i];
+                if (!item.equippable) continue;
+                if (best === null || best.getTotalBonus() < item.getTotalBonus()) {
+                     best = item;
+                }
+            }
+            
+            if (best!== null) this.autoEquip(best);
         },
         
         isItemMultiEquippable: function (item) {

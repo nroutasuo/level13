@@ -11,7 +11,11 @@ define(['ash'], function (Ash) {
         getTotal: function () {
             var total = 0;
             for (var key in this.bonuses) {
-                total += this.bonuses[key];
+                if (this.bonuses[key] > 0 && this.bonuses[key] < 1)
+                    total += 1 - this.bonuses[key];
+                else
+                    total += this.bonuses[key];
+
             }
             return total;
         },
