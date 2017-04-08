@@ -57,6 +57,11 @@ define([
 			this.levelNodes = engine.getNodeList(LevelNode);
 			this.sectorNodes = engine.getNodeList(SectorNode);
 		},
+        
+        reset: function () {
+            this.sectorEntitiesByPosition = {};
+            this.sectorEntitiesByLevel = {};
+        },
 		
 		getLevelEntityForSector: function (sectorEntity) {
 			var levelPosition;

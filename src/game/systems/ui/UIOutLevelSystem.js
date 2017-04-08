@@ -54,6 +54,7 @@ define([
 		improvementBuiltSignal: null,
         
         pendingUpdateDescription: true,
+        pendingUpdateMap: true,
 	
 		constructor: function (uiFunctions, tabChangedSignal, gameState, movementHelper, resourceHelper, sectorHelper, uiMapHelper, playerMovedSignal, improvementBuiltSignal, inventoryChangedSignal) {
 			this.uiFunctions = uiFunctions;
@@ -115,6 +116,8 @@ define([
 			
 			if (!posComponent.inCamp) {
 				this.updateLevelPage();
+                if (this.pendingUpdateMap) 
+                    this.rebuildVis();
 			}
 		},
 		
@@ -535,6 +538,7 @@ define([
 		rebuildVis: function (uiMapHelper) {
             if (!this.playerLocationNodes.head) return;
             if (!uiMapHelper) uiMapHelper = this.uiMapHelper;
+            this.pendingUpdateMap = false;
             uiMapHelper.rebuildMap("minimap", "minimap-fallback", this.playerLocationNodes.head.position.getPosition(), UIConstants.MAP_MINIMAP_SIZE, true);
 		},
     });

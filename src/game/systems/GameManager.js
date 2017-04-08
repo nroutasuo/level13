@@ -4,11 +4,11 @@ define([
     'game/worldcreator/WorldCreator',
     'game/worldcreator/WorldCreatorHelper',
     'game/worldcreator/WorldCreatorRandom',
-    'game/helpers/SaveHelper',
     'game/nodes/sector/SectorNode',
     'game/nodes/level/LevelNode',
-    'game/components/common/PositionComponent'
-], function (Ash, GameConstants, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SaveHelper, SectorNode, LevelNode, PositionComponent) {
+    'game/components/common/PositionComponent',
+    'game/systems/ui/UIOutLevelSystem'
+], function (Ash, GameConstants, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, LevelNode, PositionComponent, UIOutLevelSystem) {
 
     var GameManager = Ash.System.extend({
 	
@@ -27,7 +27,7 @@ define([
 		player: null,
 		tribe: null,
 	
-		constructor: function (tickProvider, gameState, creator, uiFunctions, playerActions, saveHelper, enemyHelper, itemsHelper) {
+		constructor: function (tickProvider, gameState, creator, uiFunctions, playerActions, saveHelper, enemyHelper, itemsHelper, levelHelper) {
 			this.tickProvider = tickProvider;
 			this.gameState = gameState;
 			this.creator = creator;
@@ -36,6 +36,7 @@ define([
 			this.saveHelper = saveHelper;
             this.enemyHelper = enemyHelper;
             this.itemsHelper = itemsHelper;
+            this.levelHelper = levelHelper;
 		},
 	
 		addToEngine: function (engine) {
@@ -65,6 +66,11 @@ define([
 			var startTab = this.uiFunctions.elementIDs.tabs.out;
 			var playerPos = this.playerActions.playerPositionNodes.head.position;
 			if (playerPos.inCamp) startTab = this.uiFunctions.elementIDs.tabs.in;
+            
+            // for restart:
+            this.engine.getSystem(UIOutLevelSystem).pendingUpdateDescription = true;
+            this.engine.getSystem(UIOutLevelSystem).pendingUpdateMap = true;
+            
 			this.uiFunctions.showTab(startTab);
 			this.uiFunctions.showGame();
 		},
@@ -72,6 +78,7 @@ define([
 		restartGame: function () {
 			this.uiFunctions.hideGame();
 			this.engine.removeAllEntities();
+            this.levelHelper.reset();
 			this.gameState.reset();
 			this.setupGame();
 			this.startGame();

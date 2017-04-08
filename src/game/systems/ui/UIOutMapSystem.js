@@ -3,6 +3,7 @@ define([
     'game/constants/GameConstants',
     'game/nodes/PlayerPositionNode'
 ], function (Ash, GameConstants, PlayerPositionNode) {
+    
     var UIOutMapSystem = Ash.System.extend({
 
 		uiFunctions: null,

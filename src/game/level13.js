@@ -203,7 +203,7 @@ define([
         },
 	
 		addSystems: function (creator) {
-			this.gameManager = new GameManager(this.tickProvider, this.gameState, creator, this.uiFunctions, this.playerActionFunctions, this.saveHelper, this.enemyHelper, this.itemsHelper);
+			this.gameManager = new GameManager(this.tickProvider, this.gameState, creator, this.uiFunctions, this.playerActionFunctions, this.saveHelper, this.enemyHelper, this.itemsHelper, this.levelHelper);
 			this.engine.addSystem(this.gameManager, SystemPriorities.preUpdate);
             
             this.engine.addSystem(this.cheatSystem, SystemPriorities.update);
