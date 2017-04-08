@@ -86,7 +86,7 @@ define(['ash',
         resourcesHelper: null,
 		levelHelper: null,
         
-        constructor: function (gameState, resourcesHelper, levelHelper, playerActionsHelper, fightHelper, playerActionResultsHelper, playerMovedSignal, tabChangedSignal, improvementBuiltSignal) {
+        constructor: function (gameState, resourcesHelper, levelHelper, playerActionsHelper, fightHelper, playerActionResultsHelper, playerMovedSignal, tabChangedSignal, improvementBuiltSignal, inventoryChangedSignal) {
             this.gameState = gameState;
             this.resourcesHelper = resourcesHelper;
 			this.levelHelper = levelHelper;
@@ -96,6 +96,7 @@ define(['ash',
             this.playerMovedSignal = playerMovedSignal;
             this.tabChangedSignal = tabChangedSignal;
             this.improvementBuiltSignal = improvementBuiltSignal;
+            this.inventoryChangedSignal = inventoryChangedSignal;
         },
 
         addToEngine: function (engine) {
@@ -484,6 +485,7 @@ define(['ash',
                     playerActionFunctions.playerActionResultsHelper.logResults(rewards);
                     playerActionFunctions.forceResourceBarUpdate();
                     playerActionFunctions.forceTabUpdate();
+                    playerActionFunctions.inventoryChangedSignal.dispatch();
                     if (successCallback) successCallback();
                 };
                 playerActionFunctions.uiFunctions.showResultPopup(TextConstants.getActionName(baseActionID), logMsgSuccess, rewards, resultPopupCallback);
@@ -905,6 +907,7 @@ define(['ash',
 
                 this.addLogMessage(LogConstants.MSG_ID_CRAFT_ITEM, LogConstants.getCraftItemMessage(item));
                 this.forceResourceBarUpdate();
+                this.inventoryChangedSignal.dispatch();
                 this.save();
             }
         },

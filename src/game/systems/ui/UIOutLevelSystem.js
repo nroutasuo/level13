@@ -55,7 +55,7 @@ define([
         
         pendingUpdateDescription: true,
 	
-		constructor: function (uiFunctions, tabChangedSignal, gameState, movementHelper, resourceHelper, sectorHelper, uiMapHelper, playerMovedSignal, improvementBuiltSignal) {
+		constructor: function (uiFunctions, tabChangedSignal, gameState, movementHelper, resourceHelper, sectorHelper, uiMapHelper, playerMovedSignal, improvementBuiltSignal, inventoryChangedSignal) {
 			this.uiFunctions = uiFunctions;
 			this.gameState = gameState;
 			this.movementHelper = movementHelper;
@@ -65,6 +65,7 @@ define([
 			this.tabChangedSignal = tabChangedSignal;
 			this.playerMovedSignal = playerMovedSignal;
             this.improvementBuiltSignal = improvementBuiltSignal;
+            this.inventoryChangedSignal = inventoryChangedSignal;
 			return this;
 		},
 	
@@ -94,6 +95,9 @@ define([
                 sys.pendingUpdateDescription = true;
 			});
             this.improvementBuiltSignal.add(function () {
+                sys.pendingUpdateDescription = true;
+            });
+            this.inventoryChangedSignal.add(function () {
                 sys.pendingUpdateDescription = true;
             });
 			this.rebuildVis(uiMapHelper);
