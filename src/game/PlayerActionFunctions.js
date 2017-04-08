@@ -360,6 +360,7 @@ define(['ash',
                     this.playerActionsHelper.deductCosts("scout");
                     sectorStatus.scouted = true;
                     this.gameState.unlockedFeatures.evidence = true;
+                    this.gameState.unlockedFeatures.scout = true;
                     
                     var logMsg = "Scouted the area.";
                     var found = false;

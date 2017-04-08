@@ -190,7 +190,7 @@ define([
 			
 			this.updateLevelPageActions(isScouted, hasCamp, hasCampHere);
 
-            $("#minimap").toggle(hasVision);            
+            $("#minimap").toggle(this.gameState.unlockedFeatures.scout);            
 		},
         
         updateLevelPageActions: function (isScouted, hasCamp, hasCampHere) {
