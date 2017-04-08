@@ -1384,6 +1384,10 @@ span.time {
 	vertical-align: middle;
 }
 
+.hidden {
+    visibility: hidden;
+}
+
 span#out-position-indicator, span#out-position-indicator-header {
     font-size: 80%;
     line-height: 0.75em;

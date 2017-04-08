@@ -338,6 +338,7 @@ define([
 		},
 		
 		updateResources: function (inCamp) {
+            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			var showResources = this.getShowResources();
 			var showResourceAcc = this.getShowResourceAcc();
 			var storageCap = this.resourcesHelper.getCurrentStorageCap();
@@ -348,6 +349,7 @@ define([
             $("#statsbar-resources").toggle(inCamp);
             $("#header-bag-storage").toggle(!inCamp && this.gameState.unlockedFeatures.bag);
             $("#bag-resources").toggle(!inCamp);
+            $("#header-camp-container").toggleClass("hidden", !inCamp && !this.gameState.unlockedFeatures.bag && itemsComponent.getAll().length == 0 && showResources.getTotal() === 0);
 	
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
