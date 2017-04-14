@@ -439,7 +439,10 @@ define([
 				var gameMsg = "";
 				var saveSystem = this.engine.getSystem(SaveSystem);
 				var timeStamp = new Date().getTime();
-				if (saveSystem.lastSaveTimeStamp > 0 && timeStamp - saveSystem.lastSaveTimeStamp < 3 * 1000)
+                
+                if (saveSystem.error)
+                    gameMsg = saveSystem.error;
+				else if (saveSystem.lastSaveTimeStamp > 0 && timeStamp - saveSystem.lastSaveTimeStamp < 3 * 1000)
 					gameMsg = "Game saved ";
 					
 				if (this.autoPlayNodes.head) gameMsg += "Autoplaying";

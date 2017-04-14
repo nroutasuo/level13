@@ -12,6 +12,8 @@ define([
 		
 		lastSaveTimeStamp: 0,
 		saveFrequency: 1000 * 60 * 2,
+        
+        error: null,
 
         constructor: function (gameState) {
 			this.gameState = gameState;
@@ -36,6 +38,7 @@ define([
         },
 	
 		save: function () {
+            this.error = null;
 			if (typeof(Storage) !== "undefined") {
 				var entitiesObject = {};
                 var nodes = 0;
@@ -46,12 +49,16 @@ define([
                 
                 console.log("Total save size: " +  JSON.stringify(entitiesObject).length + " " + JSON.stringify(this.gameState).length + ", " + nodes + " nodes");
                 
-				localStorage.entitiesObject = JSON.stringify(entitiesObject);
-				localStorage.gameState = JSON.stringify(this.gameState);
-				localStorage.timeStamp = new Date();
+                try {
+                    localStorage.entitiesObject = JSON.stringify(entitiesObject);
+                    localStorage.gameState = JSON.stringify(this.gameState);
+                    localStorage.timeStamp = new Date();
+                } catch (ex) {
+                    this.error = "Failed to save.";
+                }
 				this.lastSaveTimeStamp = new Date().getTime();
 			} else {
-				// No Web Storage support..
+                this.error = "Can't save (incompatible browser).";
 			}
 		},
 	
