@@ -174,7 +174,10 @@ define([
             this.buttonHelper = new ButtonHelper(this.levelHelper);
 			
 			// Basic building blocks & special systems
-			this.tickProvider = new TickProvider(null);
+            var self = this;
+			this.tickProvider = new TickProvider(null, function (ex) {
+                self.handleException(ex);
+            });
 			this.saveSystem = new SaveSystem(this.gameState);
 			this.playerActionFunctions = new PlayerActionFunctions(
 				this.gameState,
@@ -259,6 +262,28 @@ define([
 			this.tickProvider.start();
             this.gameManager.startGame();
 		},
+        
+        handleException: function (ex) {
+			this.uiFunctions.hideGame();
+            this.tickProvider.stop();
+            var exshortdesc = (ex.name ? ex.name : "Unknown") + ": " + (ex.message ? ex.message.replace(/\'/g, "%27") : "No message");
+            var stack = (ex.stack ? ex.stack.replace(/\n/g, "%0A").replace(/\'/g, "%27") : "Not available");
+            var bugTitle = "[JS Error] " + exshortdesc;
+            var bugBody = 
+               "Details:%0A[Fill in any details here that you think will help tracking down this bug, such as what you did in the game just before it happened.]" +
+               "%0A%0AStacktrace:%0A" + stack;
+            var url = "https://github.com/nroutasuo/level13/issues/new?title=" + bugTitle + "&body=" + bugBody + "&labels=exception";
+            this.uiFunctions.showInfoPopup(
+                "Error", 
+                "You've found a bug! Please reload the page to continue playing.<br\><br\>" + 
+                "You can also help the developer by <a href='" +
+                url +
+                "' target='_blank'>reporting</a> the problem on Github.", 
+                "ok", 
+                null
+            );
+            throw ex;
+        },
 		
 		cheat: function (input) {
 			this.cheatSystem.applyCheat(input);
