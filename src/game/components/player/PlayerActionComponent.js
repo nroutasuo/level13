@@ -1,4 +1,4 @@
-define(['ash'], function (Ash) {
+define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
 
     var PlayerActionComponent = Ash.Class.extend({
         
@@ -11,10 +11,10 @@ define(['ash'], function (Ash) {
             this.endTimeStampList = [];
         },
         
-        addAction: function (action, duration) {
+        addAction: function (action, duration, param) {
             if (!this.isBusy()) this.startTime = new Date().getTime();
             var endTimeStamp = new Date().getTime() + duration * 1000;
-            this.endTimeStampToActionDict[endTimeStamp] = action;
+            this.endTimeStampToActionDict[endTimeStamp] = new PlayerActionVO(action, param);
             this.endTimeStampList.push(endTimeStamp);
             this.sortTimeStamps();
         },
@@ -53,7 +53,7 @@ define(['ash'], function (Ash) {
         },
         
         getDescription: function () {
-            switch (this.getLastAction()) {
+            switch (this.getLastAction().action) {
                 case "use_in_home": return "resting";
                 case "use_in_campfire": return "discussing";
                 case "use_in_hospital": return "recovering";

@@ -8,11 +8,11 @@ define([
         playerActionNodes: null,
 		
         gameState: null,
-		uiFunctions: null,
+		playerActionFunctions: null,
 
-        constructor: function (gameState, uiFunctions) {
+        constructor: function (gameState, playerActionFunctions) {
             this.gameState = gameState;
-			this.uiFunctions = uiFunctions;
+			this.playerActionFunctions = playerActionFunctions;
         },
 
         addToEngine: function (engine) {
@@ -48,7 +48,7 @@ define([
                     newDict[timeStamp] = action;
                     newList.push(timeStamp);
                 } else {
-					this.uiFunctions.performAction(action);
+					this.playerActionFunctions.performAction(action.action, action.param);
 				}
             }
             

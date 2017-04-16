@@ -51,9 +51,6 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             }
         },
         
-        actionToFunctionMap: {
-        },
-        
         constructor: function (playerActions, gameState, saveSystem, cheatSystem, calloutsGeneratedSignal) {
             this.playerActions = playerActions;
             this.gameState = gameState;
@@ -61,72 +58,11 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             this.cheatSystem = cheatSystem;
             this.calloutsGeneratedSignal = calloutsGeneratedSignal;
 
-            this.mapActions();
             this.generateElements();
             this.registerListeners();
             
             this.popupManager = new UIPopupManager(this.gameState, this.playerActions.playerActionResultsHelper, this);
             this.changeLogHelper = new ChangeLogHelper();
-        },
-        
-        mapActions: function () {
-            var playerActions = this.playerActions;
-            // Out improvements
-            this.actionToFunctionMap["build_out_collector_water"] = this.playerActions.buildBucket;
-            this.actionToFunctionMap["build_out_collector_food"] = this.playerActions.buildTrap;
-            this.actionToFunctionMap["use_out_collector_water"] = this.playerActions.collectWater;
-            this.actionToFunctionMap["use_out_collector_food"] = this.playerActions.collectFood;
-            this.actionToFunctionMap["build_out_camp"] = this.playerActions.buildCamp;
-            this.actionToFunctionMap["build_out_bridge"] = this.playerActions.buildBridge;
-            this.actionToFunctionMap["build_out_bridge"] = this.playerActions.buildBridge;
-            this.actionToFunctionMap["build_out_passage_down_stairs"] = this.playerActions.buildPassageDownStairs;
-            this.actionToFunctionMap["build_out_passage_down_elevator"] = this.playerActions.buildPassageDownElevator;
-            this.actionToFunctionMap["build_out_passage_down_hole"] = this.playerActions.buildPassageDownHole;
-            this.actionToFunctionMap["build_out_passage_up_stairs"] = this.playerActions.buildPassageUpStairs;
-            this.actionToFunctionMap["build_out_passage_up_elevator"] = this.playerActions.buildPassageUpElevator;
-            this.actionToFunctionMap["build_out_passage_up_hole"] = this.playerActions.buildPassageUpHole;
-            // In improvements
-            this.actionToFunctionMap["build_in_campfire"] = this.playerActions.buildCampfire;
-            this.actionToFunctionMap["build_in_house"] = this.playerActions.buildHouse;
-            this.actionToFunctionMap["build_in_house2"] = this.playerActions.buildHouse2;
-            this.actionToFunctionMap["build_in_storage"] = this.playerActions.buildStorage;
-            this.actionToFunctionMap["build_in_generator"] = this.playerActions.buildGenerator;
-            this.actionToFunctionMap["build_in_darkfarm"] = this.playerActions.buildDarkFarm;
-            this.actionToFunctionMap["build_in_hospital"] = this.playerActions.buildHospital;
-            this.actionToFunctionMap["build_in_ceiling"] = this.playerActions.buildCeiling;
-            this.actionToFunctionMap["build_in_inn"] = this.playerActions.buildInn;
-            this.actionToFunctionMap["build_in_tradingPost"] = this.playerActions.buildTradingPost;
-            this.actionToFunctionMap["build_in_library"] = this.playerActions.buildLibrary;
-            this.actionToFunctionMap["build_in_market"] = this.playerActions.buildMarket;
-            this.actionToFunctionMap["build_in_fortification"] = this.playerActions.buildFortification;
-            this.actionToFunctionMap["build_in_aqueduct"] = this.playerActions.buildAqueduct;
-            this.actionToFunctionMap["build_in_barracks"] = this.playerActions.buildBarracks;
-            this.actionToFunctionMap["build_in_apothecary"] = this.playerActions.buildApothecary;
-            this.actionToFunctionMap["build_in_smithy"] = this.playerActions.buildSmithy;
-            this.actionToFunctionMap["build_in_cementmill"] = this.playerActions.buildCementMill;
-            this.actionToFunctionMap["build_in_radio"] = this.playerActions.buildRadioTower;
-            this.actionToFunctionMap["build_in_lights"] = this.playerActions.buildLights;
-            this.actionToFunctionMap["use_in_home"] = this.playerActions.useHome;
-            this.actionToFunctionMap["use_in_campfire"] = this.playerActions.useCampfire;
-            this.actionToFunctionMap["use_in_hospital"] = this.playerActions.useHospital;
-            this.actionToFunctionMap["use_in_hospital2"] = this.playerActions.useHospital2;
-            this.actionToFunctionMap["use_in_inn"] = this.playerActions.useInn;
-            // Crafting
-            this.actionToFunctionMap["craft"] = this.playerActions.craftItem;
-            this.actionToFunctionMap["use_item"] = this.playerActions.useItem;
-            this.actionToFunctionMap["use_item_fight"] = this.playerActions.useItemFight;
-            // Non-improvement actions
-            this.actionToFunctionMap["enter_camp"] = this.playerActions.enterCamp;
-            this.actionToFunctionMap["scavenge"] = this.playerActions.scavenge;
-            this.actionToFunctionMap["scout"] = this.playerActions.scout;
-            this.actionToFunctionMap["scout_locale_i"] = playerActions.scoutLocale;
-            this.actionToFunctionMap["scout_locale_u"] = playerActions.scoutLocale;
-            this.actionToFunctionMap["clear_workshop"] = playerActions.clearWorkshop;
-            this.actionToFunctionMap["use_spring"] = playerActions.useSpring;
-            this.actionToFunctionMap["fight_gang"] = playerActions.fightGang;
-            this.actionToFunctionMap["despair"] = playerActions.despair;
-            this.actionToFunctionMap["unlock_upgrade"] = playerActions.unlockUpgrade;
-            this.actionToFunctionMap["create_blueprint"] = playerActions.createBlueprint;
         },
         
         registerListeners: function () {
@@ -232,16 +168,26 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             // All action buttons
             $(scope + " button.action").click(function (e) {
                 var action = $(this).attr("action");
-                if (action) {
-                    var duration = PlayerActionConstants.getDuration(action);
-                    if (duration > 0) {
-                        var locationKey = uiFunctions.getLocationKey($(this));
-                        playerActions.startBusy(action);
-                        uiFunctions.gameState.setActionDuration(action, locationKey, duration);
-                        uiFunctions.startButtonDuration($(this), duration);
-                    } else {
-                        uiFunctions.performAction(action);
-                    }
+                if (!action) {
+                    console.log("No action mapped for button.");
+                    return;   
+                }
+                
+                var param = null;
+                var actionIDParam = this.playerActions.playerActionsHelper.getActionIDParam(action);
+                if (actionIDParam) param = actionIDParam;                
+                var isProject = $(this).hasClass("action-level-project");
+                if (isProject) param = $(this).attr("sector");
+                
+                var locationKey = uiFunctions.getLocationKey($(this));
+                var isStarted = uiFunctions.playerActions.startAction(action, param);
+                if (!isStarted)
+                    return;
+                
+                var duration = PlayerActionConstants.getDuration(action);
+                if (duration > 0) {
+                    uiFunctions.gameState.setActionDuration(action, locationKey, duration);
+                    uiFunctions.startButtonDuration($(this), duration);
                 }
             });
             
@@ -423,37 +369,6 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             $(scope + " button.action").append("<div class='cooldown-duration' style='display:none' />");
             $(scope + " button.action").wrap("<div class='container-btn-action' />");
             $(scope + " div.container-btn-action").append("<div class='cooldown-reqs' />");
-        },
-        
-        performAction: function (action) {
-            var button = $("button[action='" + action + "']");
-            var baseId = this.playerActions.playerActionsHelper.getBaseActionID(action);
-            var func = this.actionToFunctionMap[baseId];
-            if (func) {
-                var param = null;
-                var actionIDParam = this.playerActions.playerActionsHelper.getActionIDParam(action);
-                if (actionIDParam) param = actionIDParam;                
-                var isProject = $(button).hasClass("action-level-project");
-                if (isProject)  param = $(button).attr("sector");
-                func.call(this.playerActions, param);
-            } else {
-                switch (action) {
-                    case "move_sector_north": break;
-                    case "move_sector_west": break;
-                    case "move_sector_east": break;
-                    case "move_sector_south": break;
-                    case "move_sector_ne": break;
-                    case "move_sector_se": break;
-                    case "move_sector_sw": break;
-                    case "move_sector_nw": break;
-                    case "move_camp_level": break;
-                    case "leave_camp": break;
-                    case "flee": break;
-                    default:
-                        console.log("WARN: No function found for button with action " + action);
-                        break;
-                }
-            }
         },
         
         /**
@@ -807,8 +722,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
                 playerActions.moveToCamp(level);    
             } else {
                 playerActions.moveTo(direction);
-            }
-            
+            }            
         },
         
         onPlayerMoved: function() {

@@ -82,6 +82,7 @@ define([
         },
         
         startFight: function () {
+            // TODO move to PlayerActionFunctions
             if (this.playerActionsHelper.checkAvailability("fight", true)) {
                 this.playerActionsHelper.deductCosts("fight");
                 var sector = this.playerLocationNodes.head.entity;

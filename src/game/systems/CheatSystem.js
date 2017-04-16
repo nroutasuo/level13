@@ -359,7 +359,7 @@ define(['ash',
         },
         
         heal: function() {  
-            this.playerActionFunctions.useHospital(true);
+            this.playerActionFunctions.useHospital();
         },
         
         addInjury: function () {       
