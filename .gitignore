@@ -5,3 +5,5 @@
 /img/open-iconic/*.db
 /nbproject/private/
 /nbproject
+*.xcf
+*.komodoproject
