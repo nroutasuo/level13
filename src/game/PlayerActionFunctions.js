@@ -134,11 +134,11 @@ define(['ash',
         },
         
         startAction: function (action, param) {
-            var otherSector = getActionSector(action, param);
-            if (!this.checkAvailability(action, true, otherSector))
+            var otherSector = this.getActionSector(action, param);
+            if (!this.playerActionsHelper.checkAvailability(action, true, otherSector))
                 return false;
             
-            this.deductCosts(action);
+            this.playerActionsHelper.deductCosts(action);
             this.forceResourceBarUpdate();
             
             var duration = PlayerActionConstants.getDuration(action);
@@ -216,6 +216,16 @@ define(['ash',
                 case "despair": this.despair(param); break;
                 case "unlock_upgrade": this.unlockUpgrade(param); break;
                 case "create_blueprint": this.createBlueprint(param); break;
+                // Mapped directly in UIFunctions
+                case "leave_camp": break;
+                case "move_sector_north": break;
+                case "move_sector_east": break;
+                case "move_sector_south": break;
+                case "move_sector_west": break;
+                case "move_sector_ne": break;
+                case "move_sector_se": break;
+                case "move_sector_sw": break;
+                case "move_sector_nw": break;
                 default:
                     console.log("WARN: No function mapped for action " + action + " in PlayerActionFunctions.performAction");
                     break;

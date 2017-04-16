@@ -174,13 +174,13 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
                 }
                 
                 var param = null;
-                var actionIDParam = this.playerActions.playerActionsHelper.getActionIDParam(action);
+                var actionIDParam = playerActions.playerActionsHelper.getActionIDParam(action);
                 if (actionIDParam) param = actionIDParam;                
                 var isProject = $(this).hasClass("action-level-project");
                 if (isProject) param = $(this).attr("sector");
                 
                 var locationKey = uiFunctions.getLocationKey($(this));
-                var isStarted = uiFunctions.playerActions.startAction(action, param);
+                var isStarted = playerActions.startAction(action, param);
                 if (!isStarted)
                     return;
                 
