@@ -1385,7 +1385,7 @@ span.time {
 }
 
 .hidden {
-    visibility: hidden;
+    display: none;
 }
 
 span#out-position-indicator, span#out-position-indicator-header {

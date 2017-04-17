@@ -7,10 +7,11 @@ define([
     'game/nodes/PlayerLocationNode',
     'game/components/player/BagComponent',
     'game/components/player/ItemsComponent',
+    'game/components/common/CampComponent',
 ], function (
     Ash, UIConstants, ItemConstants, BagConstants,
     PlayerPositionNode, PlayerLocationNode,
-    BagComponent, ItemsComponent
+    BagComponent, ItemsComponent, CampComponent
 ) {
     var UIOutEmbarkSystem = Ash.System.extend({
 	
@@ -117,9 +118,13 @@ define([
 			$("#tab-header h2").text("Leave camp");
             
 			var campResources = this.resourcesHelper.getCurrentStorage();
+            var campResourcesAcc = this.resourcesHelper.getCurrentStorageAccumulation(false);
             var bagComponent = this.playerPosNodes.head.entity.get(BagComponent);
             var selectedCapacity = 0;
 			var selectedAmount;
+            
+            var selectedWater = 0;
+            var selectedFood = 0;
             
 			// Resource steppers
 			$.each($("#embark-resources tr"), function () {
@@ -131,6 +136,11 @@ define([
 				$(this).children("td").children(".stepper").children("input").attr("max", inputMax);
                 selectedAmount = Math.max(0, $(this).children("td").children(".stepper").children("input").val());
                 selectedCapacity += selectedAmount * BagConstants.getResourceCapacity(resourceName);
+                
+                if (resourceName === resourceNames.water)
+                    selectedWater = selectedAmount;
+                if (resourceName === resourceNames.food)
+                    selectedFood = selectedAmount;
 			});
             
             // Items steppers
@@ -157,6 +167,23 @@ define([
             bagComponent.selectedCapacity = selectedCapacity;
 			$("#embark-bag .value").text(UIConstants.roundValue(bagComponent.selectedCapacity), true, true);
 			$("#embark-bag .value-total").text(bagComponent.totalCapacity);
+            
+            var warning = "";
+            var campPopulation = Math.floor(this.playerLocationNodes.head.entity.get(CampComponent).population);
+            if (campPopulation > 1) {
+                var remainingWater = campResources.resources.getResource(resourceNames.water) - selectedWater;
+                var remainingFood = campResources.resources.getResource(resourceNames.food) - selectedFood;
+                var isWaterDecreasing = campResourcesAcc.resourceChange.getResource(resourceNames.water) < 0;
+                var isFoodDecreasing = campResourcesAcc.resourceChange.getResource(resourceNames.food) < 0;
+                if (isWaterDecreasing && selectedWater > 0 && remainingWater <= campPopulation) {
+                    warning = "There won't be much water left in the camp.";
+                }
+                else if (isFoodDecreasing && selectedFood > 0 && remainingFood <= campPopulation) {
+                    warning = "There won't be much food left in the camp.";
+                }
+            }
+            $("#embark-warning").text(warning);
+            $("#embark-warning").toggle(warning.length > 0);
 		},
         
         regenrateEmbarkItems: function () {
