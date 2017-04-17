@@ -44,11 +44,15 @@ define([
             for (var i = 0; i < node.playerActions.endTimeStampList.length; i++) {
                 timeStamp = node.playerActions.endTimeStampList[i];
                 action = node.playerActions.endTimeStampToActionDict[timeStamp];
+                if (!action)
+                    continue;
                 if (timeStamp > now) {
                     newDict[timeStamp] = action;
                     newList.push(timeStamp);
                 } else {
-					this.playerActionFunctions.performAction(action.action, action.param);
+                    if (action.action) {
+                        this.playerActionFunctions.performAction(action.action, action.param);
+                    }
 				}
             }
             
