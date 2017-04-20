@@ -9,6 +9,8 @@ define(['ash',
     'game/nodes/FightNode',
 	'game/components/common/PositionComponent',
 	'game/components/common/CampComponent',
+	'game/components/player/PlayerActionResultComponent',
+	'game/components/player/BagComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorLocalesComponent',
@@ -23,7 +25,8 @@ define(['ash',
 ], function (Ash,
     ItemConstants, PlayerActionConstants, WorldCreatorConstants,
 	AutoPlayNode, PlayerStatsNode, ItemsNode, FightNode,
-    PositionComponent, CampComponent, SectorStatusComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorImprovementsComponent,
+    PositionComponent, CampComponent, PlayerActionResultComponent, BagComponent, 
+    SectorStatusComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorImprovementsComponent,
 	LevelComponent,
     CampConstants, UpgradeConstants, EnemyConstants, FightConstants, ResourcesVO, PositionVO) {
     
@@ -120,6 +123,10 @@ define(['ash',
 		},
 		
 		resetTurn: function (isExpress, isFight) {
+            if (this.playerStatsNodes.head.entity.has(PlayerActionResultComponent)) {
+                this.handleInventory();
+                $("#info-ok").click();
+            }
             if (!isFight) this.playerActionFunctions.uiFunctions.popupManager.closeAllPopups();
             if (isExpress) {
                 this.playerActionFunctions.cheatFunctions("stamina");
@@ -173,7 +180,7 @@ define(['ash',
 			var checkSector = function (testL, testSX, testSY) {
 				var sector = levelHelper.getSectorByPosition(testL, testSX, testSY);
                 var levelOrdinal = playerActionFunctions.gameState.getLevelOrdinal(testL);
-                var levelSafe = fightStrength >= EnemyConstants.getRequiredStrength(levelOrdinal, groundLevelOrdinal, totalLevels);
+                var levelSafe = true;//fightStrength >= EnemyConstants.getRequiredStrength(levelOrdinal, groundLevelOrdinal, totalLevels);
                 var latestCampLevelOrdinal = playerActionFunctions.gameState.getLevelOrdinal(latestCampLevel);
 				if (sector) {
 					var sectorCamp = sector.has(CampComponent);
@@ -309,9 +316,6 @@ define(['ash',
             var levelOrdinal = this.playerActionFunctions.gameState.getLevelOrdinal(positionComponent.level);
             var totalLevels = this.playerActionFunctions.gameState.getTotalLevels();
             var groundLevelOrdinal = this.playerActionFunctions.gameState.getGroundLevelOrdinal();
-            if (fightStrength < EnemyConstants.getRequiredStrength(levelOrdinal, groundLevelOrdinal, totalLevels)) {
-				return false;
-			}
 			
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("scout")) {
                 this.printStep("scout");
@@ -341,7 +345,7 @@ define(['ash',
                 var bagFull = this.isBagFull();
                 if (!bagFull) {
                     this.printStep("scavenge");
-    				this.playerActionFunctions.scavenge();
+    				this.playerActionFunctions.startAction("scavenge");
                     return true;
                 }
             }
@@ -612,6 +616,13 @@ define(['ash',
         
         idleIn: function (isExpress) {
             return Math.random() > 0.8;
+        },
+        
+        handleInventory: function () {
+            var bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
+            var resultVO = this.playerStatsNodes.head.entity.get(PlayerActionResultComponent).pendingResultVO;
+            resultVO.selectedItems = resultVO.gainedItems;
+            resultVO.selectedResources = resultVO.gainedResources;
         },
         
         printStep: function (message) {

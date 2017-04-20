@@ -125,13 +125,20 @@ define(['ash',
             this.registerCheat(CheatConstants.CHEAT_NAME_REVEAL_MAP, "Reveal the map (show important locations without scouting).", ["true/false"], function (params) {
                 this.revealMap(params[0]);
             });
+            this.registerCheat(CheatConstants.CHEAT_NAME_AUTOPLAY, "Autoplay.", ["on/off/camp", "(optional) camp ordinal"], function (params) {
+                this.setAutoPlay(params[0], parseInt(params[1]));
+            });
         },
         
-        registerCheat: function(cmd, desc, params, func) {
+        registerCheat: function (cmd, desc, params, func) {
             this.cheatDefinitions[cmd] = {};
             this.cheatDefinitions[cmd].desc = desc;
             this.cheatDefinitions[cmd].params = params;
             this.cheatDefinitions[cmd].func = func;
+        },
+        
+        isHidden: function (cmd) {
+            return cmd === CheatConstants.CHEAT_NAME_AUTOPLAY;
         },
 
         applyCheat: function (input) {
@@ -153,15 +160,9 @@ define(['ash',
                 console.log("cheat not found: " + name);
             }
             
-            // TODO fix autoplay & reimplement print cheats if used
             /*
             var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             switch (name) {
-                case CheatConstants.CHEAT_NAME_AUTOPLAY:
-                    var param1 = inputParts[1];
-                    var param2 = parseInt(inputParts[2]);
-                    this.setAutoPlay(param1, param2);
-                    break;
                 case "printSector":
                     console.log(currentSector.get(SectorFeaturesComponent));
                     break;
@@ -186,6 +187,8 @@ define(['ash',
         
         printCheats: function () {
             for (var cmd in this.cheatDefinitions) {
+                if (this.isHidden(cmd))
+                    continue;
                 var hasParams = this.cheatDefinitions[cmd].params.length > 0;
                 var params = "";
                 for (var i = 0; i < this.cheatDefinitions[cmd].params.length; i++) {
@@ -200,6 +203,8 @@ define(['ash',
             div += "<h4 class='infobox-scrollable-header'>Cheat List</h4>";
             div += "<div id='cheatlist' class='infobox infobox-scrollable'>";
             for (var cmd in this.cheatDefinitions) {
+                if (this.isHidden(cmd))
+                    continue;
                 var hasParams = this.cheatDefinitions[cmd].params.length > 0;
                 var params = "";
                 for (var i = 0; i < this.cheatDefinitions[cmd].params.length; i++) {
@@ -247,7 +252,6 @@ define(['ash',
                     break;
                     
                 case "camp":
-                    this.cheat("item " + ItemConstants.itemDefinitions.bag[0].id);
                     if (!numCampsTarget || numCampsTarget < 1) numCampsTarget = 1;
                     endConditionUpdateFunction = function () {
                         if (this.gameState.numCamps >= numCampsTarget) {

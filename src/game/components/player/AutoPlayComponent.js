@@ -8,7 +8,7 @@ define(['ash'], function (Ash) {
         isManagingCamps: false,
         
         constructor: function (express) {
-            this.express = express;
+            this.express = express ? express : false;
         }
         
     });
