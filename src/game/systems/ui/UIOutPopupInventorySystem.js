@@ -151,29 +151,12 @@ define([
         updateCapacity: function (rewards, resultNode, playerAllItems) {
             var bagComponent = this.playerActionResultNodes.head.entity.get(BagComponent);
             
-            var originalResC = this.getResourcesCapacity(resultNode.resources.resources);
-            var discardedResC = this.getResourcesCapacity(rewards.discardedResources);
-            var lostResC = this.getResourcesCapacity(rewards.lostResources);
-            var selectedResC = this.getResourcesCapacity(rewards.selectedResources);
-            var gainedResC = this.getResourcesCapacity(rewards.gainedResources);
+            BagConstants.updateCapacity(bagComponent, rewards, resultNode.resources, playerAllItems);
             
-            var originalItemC = this.getItemsCapacity(playerAllItems);
-            var discardedItemC = this.getItemsCapacity(rewards.discardedItems);
-            var lostItemC = this.getItemsCapacity(rewards.lostItems);
-            var selectedItemC = this.getItemsCapacity(rewards.selectedItems);
-            var gainedItemC = this.getItemsCapacity(rewards.gainedItems);
+            $("#inventory-popup-bar").data("progress-percent",  bagComponent.selectedCapacity/bagComponent.totalCapacity*100);
+            $("#inventory-popup-bar .progress-label").text((Math.ceil( bagComponent.selectedCapacity * 10) / 10) + " / " + bagComponent.totalCapacity);
             
-            var originalCapacity = originalResC + originalItemC;
-            var selectedCapacity = originalResC - discardedResC - lostResC + selectedResC + originalItemC - discardedItemC - lostItemC + selectedItemC;
-            var selectableCapacity = originalResC - lostResC + gainedResC + originalItemC - lostItemC + gainedItemC;
-            
-            $("#inventory-popup-bar").data("progress-percent", selectedCapacity/bagComponent.totalCapacity*100);
-            $("#inventory-popup-bar .progress-label").text((Math.ceil(selectedCapacity * 10) / 10) + " / " + bagComponent.totalCapacity);
-            
-            $("#confirmation-takeall").toggle(selectableCapacity > originalCapacity);
-
-            bagComponent.selectedCapacity = selectedCapacity;
-            bagComponent.selectableCapacity = selectableCapacity;
+            $("#confirmation-takeall").toggle(bagComponent.selectableCapacity > bagComponent.selectionStartCapacity);
         },
         
         addItemsToLists: function (rewards, playerAllItems) {
@@ -263,7 +246,7 @@ define([
         addResourcesToLists: function (rewards, resultNode) {            
             // bag resources: non-discarded to kept, discarded to found
             // gained resources: non-selected to found, selected to kept
-            for ( var key in resourceNames ) {
+            for (var key in resourceNames) {
                 var name = resourceNames[key];
                 var amountOriginal = resultNode.resources.resources.getResource(name);
                 var amountGained = rewards.gainedResources.getResource(name);
@@ -283,20 +266,7 @@ define([
                 }
             }
         },
-        
-        getResourcesCapacity: function (resourcesVO) {
-            return BagConstants.getResourcesCapacity(resourcesVO);
-        },
-        
-        getItemsCapacity: function (itemList) {
-            var capacity = 0;
-            for(var i = 0; i < itemList.length; i++) {
-                if (itemList[i].equipped) continue;
-                capacity += BagConstants.getItemCapacity(itemList[i]);
-            }
-            return capacity;
-        }
-    
+            
 	});
 
     return UIOutPopupInventorySystem;

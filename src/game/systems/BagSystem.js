@@ -28,14 +28,20 @@ define([
         },
 
         update: function (time) {
-			var playerResources = this.playerNodes.head.resources;
             var playerBag = this.playerNodes.head.entity.get(BagComponent);
+			var playerResources = this.playerNodes.head.resources;
 			var playerItems = this.playerNodes.head.entity.get(ItemsComponent);
             
 			var playerBagBonus = playerItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag, null, true);
 			playerResources.storageCapacity = Math.max(playerBagBonus, ItemConstants.PLAYER_DEFAULT_STORAGE);
 			playerBag.totalCapacity = Math.max(playerBagBonus, ItemConstants.PLAYER_DEFAULT_STORAGE);
             
+            this.updateUsedCapacity(playerBag, playerResources, playerItems);
+			
+			this.gameState.unlockedFeatures.bag = playerBagBonus > 0;
+		},
+        
+        updateUsedCapacity: function (playerBag, playerResources, playerItems) {
             var usedCapacity = 0;
             var carriedItems = playerItems.getAll(false);
             usedCapacity += BagConstants.getResourcesCapacity(playerResources.resources);
@@ -44,9 +50,7 @@ define([
                  usedCapacity += BagConstants.getItemCapacity(carriedItems[i]);
             }
             playerBag.usedCapacity = usedCapacity;
-			
-			this.gameState.unlockedFeatures.bag = playerBagBonus > 0;
-		}
+        },
         
     });
 

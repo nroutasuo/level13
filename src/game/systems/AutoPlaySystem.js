@@ -3,13 +3,16 @@ define(['ash',
 	'game/constants/ItemConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/WorldCreatorConstants',
+	'game/constants/BagConstants',
 	'game/nodes/player/AutoPlayNode',
 	'game/nodes/player/PlayerStatsNode',
     'game/nodes/player/ItemsNode',
     'game/nodes/FightNode',
 	'game/components/common/PositionComponent',
 	'game/components/common/CampComponent',
+	'game/components/common/ResourcesComponent',
 	'game/components/player/PlayerActionResultComponent',
+	'game/components/player/ItemsComponent',
 	'game/components/player/BagComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorFeaturesComponent',
@@ -23,9 +26,9 @@ define(['ash',
     'game/vos/ResourcesVO',
     'game/vos/PositionVO'
 ], function (Ash,
-    ItemConstants, PlayerActionConstants, WorldCreatorConstants,
+    ItemConstants, PlayerActionConstants, WorldCreatorConstants, BagConstants,
 	AutoPlayNode, PlayerStatsNode, ItemsNode, FightNode,
-    PositionComponent, CampComponent, PlayerActionResultComponent, BagComponent, 
+    PositionComponent, CampComponent, ResourcesComponent, PlayerActionResultComponent, ItemsComponent, BagComponent, 
     SectorStatusComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorImprovementsComponent,
 	LevelComponent,
     CampConstants, UpgradeConstants, EnemyConstants, FightConstants, ResourcesVO, PositionVO) {
@@ -619,10 +622,43 @@ define(['ash',
         },
         
         handleInventory: function () {
+            var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
             var bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
             var resultVO = this.playerStatsNodes.head.entity.get(PlayerActionResultComponent).pendingResultVO;
+            var playerAllItems = this.playerStatsNodes.head.entity.get(ItemsComponent).getAll(inCamp);
+            var playerResources = this.playerStatsNodes.head.entity.get(ResourcesComponent);
+            
+            // pick everything
             resultVO.selectedItems = resultVO.gainedItems;
             resultVO.selectedResources = resultVO.gainedResources;
+            BagConstants.updateCapacity(bagComponent, resultVO, playerResources, playerAllItems);
+            
+            // drop stuff if needed
+            // TODO prioritize item types to discard
+            var prioritizedResources = [ resourceNames.metal, resourceNames.concrete, resourceNames.tools, resourceNames.medicine, resourceNames.rope, resourceNames.herbs, resourceNames.fuel, resourceNames.food, resourceNames.water];
+            while (bagComponent.selectedCapacity > bagComponent.totalCapacity) {
+                var discarded = false;
+                for (var i = 0; i < prioritizedResources.length; i++) {
+                    var name = prioritizedResources[i];
+                    if (resultVO.selectedResources.getResource(name) > 0) {
+                        resultVO.selectedResources.addResource(name, -1);
+                        discarded = true;
+                        break;
+                    }
+                    if (playerResources.resources.getResource(name) > 0) {
+                        resultVO.discardedResources .addResource(name, 1);
+                        discarded = true;
+                        break;
+                    }
+                }
+                if (!discarded && resultVO.selectedItems.length > 0) {
+                    resultVO.selectedItems.splice(0, 1);
+                    discarded = true;
+                }
+                BagConstants.updateCapacity(bagComponent, resultVO, playerResources, playerAllItems);
+                if (!discarded)
+                    break;
+            }
         },
         
         printStep: function (message) {
