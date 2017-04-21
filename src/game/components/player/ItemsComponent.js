@@ -13,19 +13,25 @@ function (Ash, ItemVO, ItemConstants) {
         },
         
         addItem: function (item, isCarried) {
-            if (item) {
-                if (typeof this.items[item.type] === 'undefined') {
-                    this.items[item.type] = [];
-                }
-                
-                this.items[item.type].push(item);
-                if (item.equippable) this.autoEquip(item);
-                item.carried = isCarried;
-                this.uniqueItemsCarried = {};
-                this.uniqueItemsAll = {};
-            } else {
+            if (!item) {
                 console.log("WARN: Trying to add undefined item.");
+                return;
             }
+            
+            if (this.getItem(item.id, item.itemID)) {
+                console.log("WARN: Trying to add duplicate item.");
+                return;
+            }
+            
+            if (typeof this.items[item.type] === 'undefined') {
+                this.items[item.type] = [];
+            }
+
+            this.items[item.type].push(item);
+            if (item.equippable) this.autoEquip(item);
+            item.carried = isCarried;
+            this.uniqueItemsCarried = {};
+            this.uniqueItemsAll = {};
         },
         
         discardItem: function (item) {
@@ -150,11 +156,10 @@ function (Ash, ItemVO, ItemConstants) {
         // Equips the given item regardless of whether it's better than the previous equipment
         equip: function (item) {
             if (item.equippable) {
-                var previousItems = this.getEquipped(item.type);
-            
+                var previousItems = this.getEquipped(item.type);            
                 for (var i = 0; i < previousItems.length; i++) {
                     var previousItem = previousItems[i];
-                    if (previousItem && previousItem !== item) {
+                    if (previousItem && previousItem.itemID !== item.itemID) {
                         if (!(this.isItemMultiEquippable(item) && this.isItemMultiEquippable(previousItem))) {
                             this.unequip(previousItem);
                         }
@@ -287,7 +292,7 @@ function (Ash, ItemVO, ItemConstants) {
             for (var key in this.items) {
                 for( var i = 0; i < this.items[key].length; i++) {
                     var item = this.items[key][i];
-                    if(id == item.id && (!instanceId || instanceId == item.itemID)) return item;
+                    if (id == item.id && (!instanceId || instanceId == item.itemID)) return item;
                 }
             }
             return null;

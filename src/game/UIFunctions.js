@@ -340,7 +340,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
                     var content = '<div class="arrow-up"></div><div class="btn-callout-content">' + "" + "</div>";
                     return '<div class="btn-callout">' + content + '</div>'
                 } else {
-                    if (!(action === "take_all" || action === "accept_inventory"))
+                    if (!(action === "take_all" || action === "accept_inventory" || action === "use_in_inn_cancel" || action === "fight"))
                         console.log("WARN: No callout could be created for action button with action " + action + ". Description and costs both missing.");
                     return "";
                 }

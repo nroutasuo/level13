@@ -628,7 +628,7 @@ define([
 			var visitedSectors = this.gameState.numVisitedSectors;
             var numSectorsRequiredForMap = 4;
 			if (currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) <= 0) {
-				return ItemConstants.getBag(levelOrdinal);
+				return ItemConstants.getBag(levelOrdinal).clone();
 			}
 			if (visitedSectors > numSectorsRequiredForMap && currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) <= 0) {
 				return ItemConstants.itemDefinitions.uniqueEquipment[0].clone();
