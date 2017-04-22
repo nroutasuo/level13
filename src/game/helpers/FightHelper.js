@@ -62,7 +62,9 @@ define([
 			winCallback();
 		},
         
-        hasEnemiesCurrentLocation: function(action) {  
+        hasEnemiesCurrentLocation: function(action) {
+            if (!this.playerLocationNodes.head)
+                return false;
             var baseActionID = this.playerActionsHelper.getBaseActionID(action); 
             var localeId = FightConstants.getEnemyLocaleId(baseActionID, action);    
             var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);     

@@ -11,6 +11,7 @@ define(['ash',
 	'game/components/common/PositionComponent',
 	'game/components/common/CampComponent',
 	'game/components/common/ResourcesComponent',
+	'game/components/player/PlayerActionComponent',
 	'game/components/player/PlayerActionResultComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/BagComponent',
@@ -28,7 +29,7 @@ define(['ash',
 ], function (Ash,
     ItemConstants, PlayerActionConstants, WorldCreatorConstants, BagConstants,
 	AutoPlayNode, PlayerStatsNode, ItemsNode, FightNode,
-    PositionComponent, CampComponent, ResourcesComponent, PlayerActionResultComponent, ItemsComponent, BagComponent, 
+    PositionComponent, CampComponent, ResourcesComponent, PlayerActionComponent, PlayerActionResultComponent, ItemsComponent, BagComponent, 
     SectorStatusComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorImprovementsComponent,
 	LevelComponent,
     CampConstants, UpgradeConstants, EnemyConstants, FightConstants, ResourcesVO, PositionVO) {
@@ -77,52 +78,58 @@ define(['ash',
 		},
         
         onAutoPlayNodeAdded: function (node) {
-            node.autoPlay.isExploring = false;
-            node.autoPlay.isManagingCamps = true;
+            var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
+            node.autoPlay.isExploring = !inCamp;
+            node.autoPlay.isManagingCamps = inCamp;
 			this.latestCampLevel = this.playerActionFunctions.nearestCampNodes.head ? this.playerActionFunctions.nearestCampNodes.head.entity.get(PositionComponent).level : -100;
             if (node.autoPlay.express) this.cheatFunctions.cheat("speed 25");
         },
         
         onAutoPlayNodeRemoved: function (node) {
-            node.autoPlay.isExploring = false;
-            node.autoPlay.isManagingCamps = false;
             if (node.autoPlay.express) this.cheatFunctions.cheat("speed 1");
         },
 
         update: function (time) {
-			if (this.autoPlayNodes.head) {
-				var isExpress = this.autoPlayNodes.head.autoPlay.express;
-                var fightNode = this.fightNodes.head;
-				
-				this.resetTurn(isExpress, fightNode !== null);
+			if (!this.autoPlayNodes.head)
+                return;
+            
+            var isExpress = this.autoPlayNodes.head.autoPlay.express;
+            var fightNode = this.fightNodes.head;
 
-                var didSomething = false;
-				
-				// TODO make more realistic movement & expeditions
+            var didSomething = false;
+
+            // TODO make more realistic movement & expeditions
+
+            if (this.autoPlayNodes.head.autoPlay.isExploring) {
+                var minStamina = this.playerActionFunctions.nearestCampNodes.head ? Math.min(100, this.playerStatsNodes.head.stamina.health / 2) : 10;
+                var hasStamina = minStamina < this.playerStatsNodes.head.stamina.stamina;
                 
-                if (this.autoPlayNodes.head.autoPlay.isExploring) {
-                    didSomething = didSomething || this.buildCamp(isExpress);
-                    didSomething = didSomething || this.buildOutImprovements(isExpress);
-                    didSomething = didSomething || this.scout(isExpress);
+                didSomething = didSomething || this.buildCamp(isExpress);
+                didSomething = didSomething || this.buildOutImprovements(isExpress);
+                didSomething = didSomething || this.scout(isExpress);
+                if (hasStamina) {
+                    didSomething = didSomething || this.craftItems(isExpress);
                     didSomething = didSomething || this.scavenge(isExpress);
                     didSomething = didSomething || this.move(isExpress);
-                    didSomething = didSomething || this.idleOut(isExpress);
                 }
-                
-                if (this.autoPlayNodes.head.autoPlay.isManagingCamps && !fightNode) {
-                    didSomething = didSomething || this.manageCamp(isExpress);
-                    didSomething = didSomething || this.buildPassages(isExpress);
-                    didSomething = didSomething || this.buildInImprovements(isExpress);
-                    didSomething = didSomething || this.unlockUpgrades(isExpress);
-                    didSomething = didSomething || this.craftItems(isExpress);
-                    didSomething = didSomething || this.idleIn(isExpress);
-                    didSomething = didSomething || this.switchCamps(isExpress);
-                }
-                
-                if (!didSomething) {
-                    this.switchMode();
-                }
-			}
+                didSomething = didSomething || this.idleOut(isExpress);
+            }
+
+            if (this.autoPlayNodes.head.autoPlay.isManagingCamps && !fightNode) {
+                didSomething = didSomething || this.useInImprovements(isExpress);
+                didSomething = didSomething || this.manageWorkers(isExpress);
+                didSomething = didSomething || this.buildPassages(isExpress);
+                didSomething = didSomething || this.buildInImprovements(isExpress);
+                didSomething = didSomething || this.unlockUpgrades(isExpress);
+                didSomething = didSomething || this.craftItems(isExpress);
+                didSomething = didSomething || this.idleIn(isExpress);
+                didSomething = didSomething || this.switchCamps(isExpress);
+            }
+
+            this.resetTurn(isExpress, fightNode !== null);
+            if (!didSomething) {
+                this.switchMode();
+            }
 		},
 		
 		resetTurn: function (isExpress, isFight) {
@@ -137,6 +144,13 @@ define(['ash',
 		},
         
         switchMode: function () {
+            if (!this.playerActionFunctions.gameState.unlockedFeatures.camp)
+                return;
+            
+            var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
+            if (busyComponent && busyComponent.isBusy())
+                return;
+            
             var wasExploring = this.autoPlayNodes.head.autoPlay.isExploring;
             if (wasExploring && this.latestCampLevel > -100) {
                 // this.printStep("enter camp " + this.latestCampLevel);
@@ -275,10 +289,7 @@ define(['ash',
 		},
 		
 		buildCamp: function (isExpress) {
-            var currentStorage = this.playerActionFunctions.resourcesHelper.getCurrentStorage();
-            var hasFood = currentStorage.resources.getResource(resourceNames.water) > 20;
-            var hasWater = currentStorage.resources.getResource(resourceNames.food) > 20;
-			if (hasFood && hasWater && this.playerActionFunctions.playerActionsHelper.checkAvailability("build_out_camp", false)) {
+			if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_out_camp", false)) {
                 this.printStep("build camp");
 				this.playerActionFunctions.buildCamp();
                 return true;
@@ -335,7 +346,7 @@ define(['ash',
                     if (this.playerActionFunctions.playerActionsHelper.checkAvailability(action)) {
                         this.playerActionFunctions.scoutLocale(i);
                         this.printStep("scout locale " + locale.type);
-                        return;
+                        return true;
                     }
                 }
             }
@@ -356,6 +367,9 @@ define(['ash',
 		},
         
         idleOut: function (isExpress) {
+            if (this.playerActionFunctions.nearestCampNodes.head && this.playerStatsNodes.head.stamina.stamina < 10)
+                return false;
+            
             var hasVision = this.playerStatsNodes.head.vision.value >= this.playerStatsNodes.head.vision.maximum;
             if (!hasVision) {
                 if (isExpress) this.playerStatsNodes.head.vision.value = this.playerStatsNodes.head.vision.maximum;
@@ -398,75 +412,87 @@ define(['ash',
             return false;
         },
         
-        manageCamp: function (isExpress) {
+        useInImprovements: function (isExpress) { 
             var campComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(CampComponent);
-            if (campComponent) {
-                var improvementsComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-                var playerPosition = this.playerActionFunctions.playerPositionNodes.head.position;
-                var currentStorage = this.playerActionFunctions.resourcesHelper.getCurrentStorage();
-                
-                // cheat population
-                var maxPopulation = improvementsComponent.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
-                maxPopulation += improvementsComponent.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
-                if (isExpress && campComponent.population < maxPopulation) this.playerActionFunctions.cheatFunctions("pop");
-                
-                // assign workers
-                if (campComponent.getFreePopulation() > 0 || this.refreshWorkers) {
-                    var currentFood = currentStorage.resources.getResource(resourceNames.food);
-                    var currentWater = currentStorage.resources.getResource(resourceNames.water);
-                    var currentRope = currentStorage.resources.getResource(resourceNames.rope);
-                    var currentTools = currentStorage.resources.getResource(resourceNames.tools);
-                    var maxStorage = currentStorage.storageCapacity;
-                    
-                    var canRope = this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("rope-maker"));
-                    var upgradesComponent = this.playerActionFunctions.tribeUpgradesNodes.head.upgrades;
-                    
-                    var maxApothecaries = improvementsComponent.getCount(improvementNames.apothecary) * CampConstants.getApothecariesPerShop(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.apothecary, upgradesComponent));
-                    var maxConcrete = improvementsComponent.getCount(improvementNames.cementmill) * CampConstants.getWorkersPerMill(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.cementmill, upgradesComponent));
-                    var maxSmiths = improvementsComponent.getCount(improvementNames.smithy) * CampConstants.getSmithsPerSmithy(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.smithy, upgradesComponent));
-                    var maxSoldiers = improvementsComponent.getCount(improvementNames.barracks) * CampConstants.getSoldiersPerBarracks(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.barracks, upgradesComponent));
-                    var maxChemists = this.levelHelper.getLevelClearedWorkshopCount(playerPosition.level, resourceNames.fuel) * CampConstants.CHEMISTS_PER_WORKSHOP;
-                    
-                    var pop = campComponent.population;
-                    
-                    var trappers = Math.floor(pop / (currentFood > maxStorage * 0.5 ? 3 : 2));
-                    var waters = Math.floor(pop / (currentWater > maxStorage * 0.5 ? 5 : 4));
-                    var specialistPop = Math.floor(pop - trappers - waters);
-                    
-                    var ropers = canRope && currentRope < maxStorage ? Math.min(specialistPop, (currentRope < 30 ? 2 : 1)) : 0;
-                    var chemists = Math.min(1, specialistPop - ropers, maxChemists);
-                    var smiths = Math.min((currentTools > maxSmiths * 0.9 ? 0 : 1), specialistPop - ropers - chemists, maxSmiths);
-                    var apothecaries = Math.min(1, specialistPop - ropers - chemists - smiths, maxApothecaries);
-                    var concrete = Math.min(1, specialistPop - ropers - chemists - smiths - apothecaries, maxConcrete);
-                    var soldiers = Math.min(1, specialistPop - ropers - chemists - smiths - apothecaries - concrete, maxSoldiers);
-                    var scavengers = Math.floor(pop - trappers - waters - ropers - chemists - apothecaries - smiths - concrete - soldiers);
-                    
-                    this.playerActionFunctions.assignWorkers(scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers);
-                    this.printStep("assigned workers (" + scavengers + ", " + trappers + ", " + waters + ", " + ropers + ", " + chemists + ", " + apothecaries + ", " + smiths + ", " + concrete + ", " + soldiers + ")");
-                    this.refreshWorkers = false;
+            if (!campComponent)
+                return false;
+            
+            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("use_in_home")) {
+                this.playerActionFunctions.useHome();
+                this.printStep("rested");
+                return true;
+            }
+            
+            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("use_in_campfire")) {
+                this.playerActionFunctions.useCampfire();
+                this.printStep("used campfire");
+                return true;
+            }
+
+            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("use_in_hospital")) {
+                this.playerActionFunctions.useHospital();
+                this.printStep("used hospital");
+                return true;
+            }
+
+            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("use_in_inn") && Math.random() < 0.05) {
+                var newFollower = this.playerActionFunctions.useInn(true);
+                if (newFollower) {
+                    this.printStep("used inn");
                     return true;
                 }
-                
-                // use improvements
-                if (this.playerActionFunctions.playerActionsHelper.checkAvailability("use_in_campfire")) {
-                    this.playerActionFunctions.useCampfire();
-                    this.printStep("used campfire");
-                    return true;
-                }
-                
-                if (this.playerActionFunctions.playerActionsHelper.checkAvailability("use_in_hospital")) {
-                    this.playerActionFunctions.useHospital();
-                    this.printStep("used hospital");
-                    return true;
-                }
-                
-                if (this.playerActionFunctions.playerActionsHelper.checkAvailability("use_in_inn") && Math.random() < 0.05) {
-                    var newFollower = this.playerActionFunctions.useInn(true);
-                    if (newFollower) {
-                        this.printStep("used inn");
-                        return true;
-                    }
-                }
+            }
+        },
+        
+        manageWorkers: function (isExpress) {
+            var campComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(CampComponent);
+            if (!campComponent)
+                return false;
+            
+            var improvementsComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+            var playerPosition = this.playerActionFunctions.playerPositionNodes.head.position;
+            var currentStorage = this.playerActionFunctions.resourcesHelper.getCurrentStorage();
+
+            // cheat population
+            var maxPopulation = improvementsComponent.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
+            maxPopulation += improvementsComponent.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
+            if (isExpress && campComponent.population < maxPopulation) this.playerActionFunctions.cheatFunctions("pop");
+
+            // assign workers
+            if (campComponent.getFreePopulation() > 0 || this.refreshWorkers) {
+                var currentFood = currentStorage.resources.getResource(resourceNames.food);
+                var currentWater = currentStorage.resources.getResource(resourceNames.water);
+                var currentRope = currentStorage.resources.getResource(resourceNames.rope);
+                var currentTools = currentStorage.resources.getResource(resourceNames.tools);
+                var maxStorage = currentStorage.storageCapacity;
+
+                var canRope = this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("rope-maker"));
+                var upgradesComponent = this.playerActionFunctions.tribeUpgradesNodes.head.upgrades;
+
+                var maxApothecaries = improvementsComponent.getCount(improvementNames.apothecary) * CampConstants.getApothecariesPerShop(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.apothecary, upgradesComponent));
+                var maxConcrete = improvementsComponent.getCount(improvementNames.cementmill) * CampConstants.getWorkersPerMill(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.cementmill, upgradesComponent));
+                var maxSmiths = improvementsComponent.getCount(improvementNames.smithy) * CampConstants.getSmithsPerSmithy(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.smithy, upgradesComponent));
+                var maxSoldiers = improvementsComponent.getCount(improvementNames.barracks) * CampConstants.getSoldiersPerBarracks(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.barracks, upgradesComponent));
+                var maxChemists = this.levelHelper.getLevelClearedWorkshopCount(playerPosition.level, resourceNames.fuel) * CampConstants.CHEMISTS_PER_WORKSHOP;
+
+                var pop = campComponent.population;
+
+                var trappers = Math.floor(pop / (currentFood > maxStorage * 0.5 ? 3 : 2));
+                var waters = Math.floor(pop / (currentWater > maxStorage * 0.5 ? 5 : 4));
+                var specialistPop = Math.floor(pop - trappers - waters);
+
+                var ropers = canRope && currentRope < maxStorage ? Math.min(specialistPop, (currentRope < 30 ? 2 : 1)) : 0;
+                var chemists = Math.min(1, specialistPop - ropers, maxChemists);
+                var smiths = Math.min((currentTools > maxSmiths * 0.9 ? 0 : 1), specialistPop - ropers - chemists, maxSmiths);
+                var apothecaries = Math.min(1, specialistPop - ropers - chemists - smiths, maxApothecaries);
+                var concrete = Math.min(1, specialistPop - ropers - chemists - smiths - apothecaries, maxConcrete);
+                var soldiers = Math.min(1, specialistPop - ropers - chemists - smiths - apothecaries - concrete, maxSoldiers);
+                var scavengers = Math.floor(pop - trappers - waters - ropers - chemists - apothecaries - smiths - concrete - soldiers);
+
+                this.playerActionFunctions.assignWorkers(scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers);
+                this.printStep("assigned workers (" + scavengers + ", " + trappers + ", " + waters + ", " + ropers + ", " + chemists + ", " + apothecaries + ", " + smiths + ", " + concrete + ", " + soldiers + ")");
+                this.refreshWorkers = false;
+                return true;
             }
             return false;
         },
@@ -635,17 +661,31 @@ define(['ash',
             
             // drop stuff if needed
             // TODO prioritize item types to discard
-            var prioritizedResources = [ resourceNames.metal, resourceNames.concrete, resourceNames.tools, resourceNames.medicine, resourceNames.rope, resourceNames.herbs, resourceNames.fuel, resourceNames.food, resourceNames.water];
+            var prioritizedResources = [ 
+                { name: resourceNames.metal, value: 10 }, 
+                { name: resourceNames.concrete, value: 0 },
+                { name: resourceNames.tools, value: 0 },
+                { name: resourceNames.medicine, value: 0 },
+                { name: resourceNames.rope, value: 0 },
+                { name: resourceNames.herbs, value: 0 },
+                { name: resourceNames.fuel, value: 0 },
+                { name: resourceNames.food, value: 5 },
+                { name: resourceNames.water, value: 8 }, 
+                { name: resourceNames.metal, value: 0 },
+                { name: resourceNames.food, value: 0 },
+                { name: resourceNames.water, value: 0 }, 
+            ];
             while (bagComponent.selectedCapacity > bagComponent.totalCapacity) {
                 var discarded = false;
                 for (var i = 0; i < prioritizedResources.length; i++) {
-                    var name = prioritizedResources[i];
-                    if (resultVO.selectedResources.getResource(name) > 0) {
+                    var resourceCheck = prioritizedResources[i];
+                    var name = resourceCheck.name;
+                    if (resultVO.selectedResources.getResource(name) > resourceCheck.value) {
                         resultVO.selectedResources.addResource(name, -1);
                         discarded = true;
                         break;
                     }
-                    if (playerResources.resources.getResource(name) > 0) {
+                    if (playerResources.resources.getResource(name) > resourceCheck.value) {
                         resultVO.discardedResources .addResource(name, 1);
                         discarded = true;
                         break;

@@ -47,7 +47,7 @@ define([
 					entitiesObject[node.save.entityKey] = this.prepareNode(node);
 				}
                 
-                console.log("Total save size: " +  JSON.stringify(entitiesObject).length + " " + JSON.stringify(this.gameState).length + ", " + nodes + " nodes");
+                // console.log("Total save size: " +  JSON.stringify(entitiesObject).length + " " + JSON.stringify(this.gameState).length + ", " + nodes + " nodes");
                 
                 try {
                     localStorage.entitiesObject = JSON.stringify(entitiesObject);
