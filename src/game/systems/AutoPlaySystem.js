@@ -298,22 +298,18 @@ define(['ash',
 		},
         
         buildOutImprovements: function (isExpress) {
-            var featuresComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var improvementsComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-            var currentStorage = this.playerActionFunctions.resourcesHelper.getCurrentStorage();
             
             // traps & buckets
-            var hasMetal = currentStorage.resources.getResource(resourceNames.metal) > 20;
-            var hasVision = this.playerStatsNodes.head.vision.value >= PlayerActionConstants.requirements.build_out_collector_water.vision;
-            if (hasMetal && hasVision) {
-                var hasFoundFood = featuresComponent.resourcesCollectable.food > 0;
-                var hasFoundWater = featuresComponent.resourcesCollectable.water > 0;
-                if (hasFoundWater && improvementsComponent.getCount(improvementNames.collector_water) < 1) {
+            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_out_collector_water")) {
+                if (improvementsComponent.getCount(improvementNames.collector_water) < 1) {
                     this.playerActionFunctions.buildBucket();
                     return true;
                 }
-                
-                if (hasFoundFood && improvementsComponent.getCount(improvementNames.collector_food) < 1) {
+            }
+
+            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_out_collector_food")) {
+                if (improvementsComponent.getCount(improvementNames.collector_food) < 1) {
                     this.playerActionFunctions.buildTrap();
                     return true;
                 }
@@ -478,7 +474,7 @@ define(['ash',
                 var pop = campComponent.population;
 
                 var trappers = Math.floor(pop / (currentFood > maxStorage * 0.5 ? 3 : 2));
-                var waters = Math.floor(pop / (currentWater > maxStorage * 0.5 ? 5 : 4));
+                var waters = Math.max(1, Math.floor(pop / (currentWater > maxStorage * 0.5 ? 5 : 4)));
                 var specialistPop = Math.floor(pop - trappers - waters);
 
                 var ropers = canRope && currentRope < maxStorage ? Math.min(specialistPop, (currentRope < 30 ? 2 : 1)) : 0;
