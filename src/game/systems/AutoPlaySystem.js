@@ -2,6 +2,7 @@
 define(['ash',
 	'game/constants/ItemConstants',
 	'game/constants/PlayerActionConstants',
+	'game/constants/PlayerStatConstants',
 	'game/constants/WorldCreatorConstants',
 	'game/constants/BagConstants',
 	'game/nodes/player/AutoPlayNode',
@@ -16,7 +17,6 @@ define(['ash',
 	'game/components/player/ItemsComponent',
 	'game/components/player/BagComponent',
 	'game/components/sector/SectorStatusComponent',
-	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/type/LevelComponent',
@@ -27,10 +27,10 @@ define(['ash',
     'game/vos/ResourcesVO',
     'game/vos/PositionVO'
 ], function (Ash,
-    ItemConstants, PlayerActionConstants, WorldCreatorConstants, BagConstants,
+    ItemConstants, PlayerActionConstants, PlayerStatConstants, WorldCreatorConstants, BagConstants,
 	AutoPlayNode, PlayerStatsNode, ItemsNode, FightNode,
     PositionComponent, CampComponent, ResourcesComponent, PlayerActionComponent, PlayerActionResultComponent, ItemsComponent, BagComponent, 
-    SectorStatusComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorImprovementsComponent,
+    SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent,
 	LevelComponent,
     CampConstants, UpgradeConstants, EnemyConstants, FightConstants, ResourcesVO, PositionVO) {
     
@@ -101,18 +101,20 @@ define(['ash',
             // TODO make more realistic movement & expeditions
 
             if (this.autoPlayNodes.head.autoPlay.isExploring) {
-                var minStamina = this.playerActionFunctions.nearestCampNodes.head ? Math.min(100, this.playerStatsNodes.head.stamina.health / 2) : 10;
+                var maxStamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
+                var minStamina = this.playerActionFunctions.nearestCampNodes.head ? Math.min(100, maxStamina / 2) : 10;
                 var hasStamina = minStamina < this.playerStatsNodes.head.stamina.stamina;
                 
                 didSomething = didSomething || this.buildCamp(isExpress);
                 didSomething = didSomething || this.buildOutImprovements(isExpress);
                 didSomething = didSomething || this.scout(isExpress);
+                didSomething = didSomething || this.useOutImprovements(isExpress);
                 if (hasStamina) {
                     didSomething = didSomething || this.craftItems(isExpress);
                     didSomething = didSomething || this.scavenge(isExpress);
+                    didSomething = didSomething || this.idleOut(isExpress);
                     didSomething = didSomething || this.move(isExpress);
                 }
-                didSomething = didSomething || this.idleOut(isExpress);
             }
 
             if (this.autoPlayNodes.head.autoPlay.isManagingCamps && !fightNode) {
@@ -128,8 +130,11 @@ define(['ash',
 
             this.resetTurn(isExpress, fightNode !== null);
             if (!didSomething) {
-                this.switchMode();
+                didSomething = this.switchMode();
             }
+            
+            if (!didSomething)
+                this.printStep("idle");
 		},
 		
 		resetTurn: function (isExpress, isFight) {
@@ -145,11 +150,13 @@ define(['ash',
         
         switchMode: function () {
             if (!this.playerActionFunctions.gameState.unlockedFeatures.camp)
-                return;
+                return false;
             
             var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
             if (busyComponent && busyComponent.isBusy())
-                return;
+                return false;
+            
+            this.printStep("switch mode");
             
             var wasExploring = this.autoPlayNodes.head.autoPlay.isExploring;
             if (wasExploring && this.latestCampLevel > -100) {
@@ -171,6 +178,8 @@ define(['ash',
             
             this.autoPlayNodes.head.autoPlay.isExploring = !this.autoPlayNodes.head.autoPlay.isExploring;
             this.autoPlayNodes.head.autoPlay.isManagingCamps = !this.autoPlayNodes.head.autoPlay.isExploring;
+            
+            return true;
         },
 
 		move: function (isExpress) {
@@ -303,6 +312,7 @@ define(['ash',
             // traps & buckets
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_out_collector_water")) {
                 if (improvementsComponent.getCount(improvementNames.collector_water) < 1) {
+                    this.printStep("build bucket");
                     this.playerActionFunctions.buildBucket();
                     return true;
                 }
@@ -310,11 +320,27 @@ define(['ash',
 
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_out_collector_food")) {
                 if (improvementsComponent.getCount(improvementNames.collector_food) < 1) {
+                    this.printStep("build trap");
                     this.playerActionFunctions.buildTrap();
                     return true;
                 }
             }
             
+            return false;
+        },
+        
+        useOutImprovements: function (isExpress) {
+            var bagFull = this.isBagFull();
+            if (!bagFull && this.playerActionFunctions.playerActionsHelper.checkAvailability("use_out_collector_food")) {
+                this.printStep("collect food");
+                this.playerActionFunctions.collectFood();
+                return true;
+            }
+            if (!bagFull && this.playerActionFunctions.playerActionsHelper.checkAvailability("use_out_collector_water")) {
+                this.printStep("collect water");
+                this.playerActionFunctions.collectWater();
+                return true;
+            }
             return false;
         },
 		
@@ -366,6 +392,9 @@ define(['ash',
             if (this.playerActionFunctions.nearestCampNodes.head && this.playerStatsNodes.head.stamina.stamina < 10)
                 return false;
             
+            if (this.isBagFull())
+                return false;
+            
             var hasVision = this.playerStatsNodes.head.vision.value >= this.playerStatsNodes.head.vision.maximum;
             if (!hasVision) {
                 if (isExpress) this.playerStatsNodes.head.vision.value = this.playerStatsNodes.head.vision.maximum;
@@ -414,9 +443,12 @@ define(['ash',
                 return false;
             
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("use_in_home")) {
-                this.playerActionFunctions.useHome();
-                this.printStep("rested");
-                return true;
+                var maxStamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
+                if (this.playerStatsNodes.head.stamina.stamina < maxStamina / 3 * 2) {
+                    this.playerActionFunctions.useHome();
+                    this.printStep("rested");
+                    return true;
+                }
             }
             
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("use_in_campfire")) {
@@ -676,18 +708,22 @@ define(['ash',
                 for (var i = 0; i < prioritizedResources.length; i++) {
                     var resourceCheck = prioritizedResources[i];
                     var name = resourceCheck.name;
-                    if (resultVO.selectedResources.getResource(name) > resourceCheck.value) {
+                    var totalValue = resultVO.selectedResources.getResource(name) + playerResources.resources.getResource(name);
+                    if (resultVO.selectedResources.getResource(name) > 0 && totalValue > resourceCheck.value) {
                         resultVO.selectedResources.addResource(name, -1);
+                        console.log("leave 1 " + name);
                         discarded = true;
                         break;
                     }
-                    if (playerResources.resources.getResource(name) > resourceCheck.value) {
+                    if (playerResources.resources.getResource(name) > 0 && totalValue > resourceCheck.value) {
                         resultVO.discardedResources .addResource(name, 1);
+                        console.log("discard 1 " + name);
                         discarded = true;
                         break;
                     }
                 }
                 if (!discarded && resultVO.selectedItems.length > 0) {
+                    console.log("leave 1 item");
                     resultVO.selectedItems.splice(0, 1);
                     discarded = true;
                 }
@@ -711,15 +747,8 @@ define(['ash',
         },
 		
 		isBagFull: function () {
-			var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
-            var currentStorage = this.playerActionFunctions.resourcesHelper.getCurrentStorage();
-			var bagFull = discoveredResources.length > 0;
-			for (var key in discoveredResources) {
-				var name = discoveredResources[key];
-				if (name !== resourceNames.fuel)
-					bagFull = bagFull && currentStorage.resources.getResource(name) >= currentStorage.storageCapacity * 0.9;
-			}
-			return bagFull;
+            var bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
+            return bagComponent.totalCapacity - bagComponent.usedCapacity < 2;
 		}
         
     });
