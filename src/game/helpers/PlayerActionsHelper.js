@@ -109,6 +109,16 @@ define([
 		
 		// Check both costs and requirements - everything that is needed for the player action
         checkAvailability: function (action, log, otherSector) {
+            var isLocationAction = PlayerActionConstants.isLocationAction(action);
+            var playerPos = this.playerStatsNodes.head.entity.get(PositionComponent);
+            var locationKey = this.gameState.getActionLocationKey(isLocationAction, playerPos);
+            var cooldownTotal = PlayerActionConstants.getCooldown(action);
+            var cooldownLeft = Math.min(cooldownTotal, this.gameState.getActionCooldown(action, locationKey) / 1000);
+            if (cooldownLeft) {
+                if (log) console.log("WARN: Action blocked by cooldown [" + action + "]");
+                return false;
+            }
+                    
             if (this.checkRequirements(action, log, otherSector).value < 1) return false;
             if (this.checkCosts(action, log, otherSector) < 1) return false;
             

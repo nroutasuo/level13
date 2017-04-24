@@ -2018,7 +2018,15 @@ function (Ash, GameConstants, CampConstants) {
                     default:
                         return false;
                 }
-            }
+            },
+            
+            isLocationAction: function (action) {
+                // TODO define location actions here rather than in html
+                var btn = $("button[action='" + action + "']");
+                if (btn)
+                    return btn.hasClass("action-location");
+                return false;
+            },
 
         };
     

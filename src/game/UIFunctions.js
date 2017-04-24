@@ -818,9 +818,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
         },
         
         startButtonDuration: function (button, duration, durationLeft) {
-            var action = $(button).attr("action");
             if (!durationLeft) durationLeft = duration;
-
             var uiFunctions = this;
             var startingWidth = (1-durationLeft/duration) * 100;
             $(button).attr("data-isInProgress", "true");
@@ -835,11 +833,10 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
         },
         
         getLocationKey: function(button) {
-            var isLocationAction = $(button).hasClass("action-location");
+            var action = $(button).attr("action");
+            var isLocationAction = PlayerActionConstants.isLocationAction(action);
             var playerPos = this.playerActions.playerPositionNodes.head.position;
-            var locationKey = ""
-            if (isLocationAction) locationKey = playerPos.level + "-" + playerPos.sectorId();
-            return locationKey;
+            return this.gameState.getActionLocationKey(isLocationAction, playerPos);
         },
         
         showTab: function (tabID) {

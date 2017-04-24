@@ -384,7 +384,8 @@ define(['ash',
         
 		scavenge: function (isExpress) {
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("scavenge")) {
-                var bagFull = this.isBagFull();
+                var bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
+                var bagFull = this.isBagFull() && bagComponent.totalCapacity > ItemConstants.PLAYER_DEFAULT_STORAGE;
                 if (!bagFull) {
                     this.printStep("scavenge");
     				this.playerActionFunctions.startAction("scavenge");
@@ -401,11 +402,13 @@ define(['ash',
             if (this.isBagFull())
                 return false;
             
-            var hasVision = this.playerStatsNodes.head.vision.value >= this.playerStatsNodes.head.vision.maximum;
+            var hasVision = this.playerStatsNodes.head.vision.value >= this.playerStatsNodes.head.vision.maximum / 2;
             if (!hasVision) {
                 if (isExpress) this.playerStatsNodes.head.vision.value = this.playerStatsNodes.head.vision.maximum;
-                else this.printStep("waiting for vision");
-                return true;
+                else {
+                    this.printStep("waiting for vision");
+                    return true;
+                }
             }
             return false;
         },

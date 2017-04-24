@@ -121,6 +121,13 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
             }
             return 0;
         },
+        
+        getActionLocationKey: function (isLocationAction, playerPos) {
+            var locationKey = "";
+            if (isLocationAction) locationKey = playerPos.level + "-" + playerPos.sectorId();
+            return locationKey;
+        }
+        
     });
 
     return GameState;
