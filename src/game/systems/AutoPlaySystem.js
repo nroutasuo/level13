@@ -268,8 +268,9 @@ define(['ash',
 				console.log("set latest camp level: " + latestCampLevel);
 			}
 			
-			if (this.isBagFull()) return false;
-			
+			var isBagFull = this.isBagFull();
+            var hasStamina = this.playerStatsNodes.head.stamina.stamina > 50;
+            
 			if (nearestCampableSector) {
 				return this.moveToSector(nearestCampableSector, "campable sector");
 			} else if (nearestUnscoutedSector && Math.random() > 0.25) {
@@ -339,6 +340,11 @@ define(['ash',
             if (!bagFull && this.playerActionFunctions.playerActionsHelper.checkAvailability("use_out_collector_water")) {
                 this.printStep("collect water");
                 this.playerActionFunctions.collectWater();
+                return true;
+            }
+            if (!bagFull && this.playerActionFunctions.playerActionsHelper.checkAvailability("use_spring")) {
+                this.printStep("stop by a spring");
+                this.playerActionFunctions.useSpring();
                 return true;
             }
             return false;
