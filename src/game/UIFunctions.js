@@ -192,19 +192,6 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             });
             
             // Special actions
-            var onMoveButtonClicked = this.onMoveButtonClicked;
-            $(scope + " button.action-move").click(function (e) {
-                onMoveButtonClicked(this, playerActions);
-            });
-            $(scope + "#out-action-move-up").click(function (e) {
-                onMoveButtonClicked(this, playerActions);
-            });
-            $(scope + "#out-action-move-down").click(function (e) {
-                onMoveButtonClicked(this, playerActions);
-            });
-            $(scope + "#out-action-move-camp").click(function (e) {
-                onMoveButtonClicked(this, playerActions);
-            });
             $(scope + "#out-action-fight-confirm").click(function (e) {
                 playerActions.fightHelper.startFight();
             });
@@ -675,54 +662,6 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             var value = $(e.target).val();
             value = value.replace(/[&\/\\#,+()$~%.'":*?<>{}\[\]=]/g,'_');
             $(e.target).val(value)
-        },
-        
-        onMoveButtonClicked: function(target, playerActions) {
-            var direction = null;
-            var id = $(target).attr("id");
-            
-            switch (id) {
-                case "out-action-move-north":
-                    direction = PositionConstants.DIRECTION_NORTH;
-                    break;
-                case "out-action-move-south":
-                    direction = PositionConstants.DIRECTION_SOUTH;
-                    break;
-                case "out-action-move-west":
-                    direction = PositionConstants.DIRECTION_WEST;
-                    break;
-                case "out-action-move-east":
-                    direction = PositionConstants.DIRECTION_EAST;
-                    break;
-                case "out-action-move-ne":
-                    direction = PositionConstants.DIRECTION_NE;
-                    break;
-                case "out-action-move-se":
-                    direction = PositionConstants.DIRECTION_SE;
-                    break;
-                case "out-action-move-sw":
-                    direction = PositionConstants.DIRECTION_SW;
-                    break;
-                case "out-action-move-nw":
-                    direction = PositionConstants.DIRECTION_NW;
-                    break;
-                case "out-action-move-up":
-                    direction = PositionConstants.DIRECTION_UP;
-                    break;
-                case "out-action-move-down":
-                    direction = PositionConstants.DIRECTION_DOWN;
-                    break;
-                case "out-action-move-camp":
-                    direction = PositionConstants.DIRECTION_CAMP;
-                    break;
-            }
-            
-            if (id.indexOf("out-action-move-camp-") >= 0) {
-                var level = id.split("-")[4];
-                playerActions.moveToCamp(level);    
-            } else {
-                playerActions.moveTo(direction);
-            }            
         },
         
         onPlayerMoved: function() {

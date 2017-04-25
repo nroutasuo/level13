@@ -218,14 +218,18 @@ define(['ash',
                 case "create_blueprint": this.createBlueprint(param); break;
                 // Mapped directly in UIFunctions
                 case "leave_camp": break;
-                case "move_sector_north": break;
-                case "move_sector_east": break;
-                case "move_sector_south": break;
-                case "move_sector_west": break;
-                case "move_sector_ne": break;
-                case "move_sector_se": break;
-                case "move_sector_sw": break;
-                case "move_sector_nw": break;
+                case "move_level_up": this.moveTo(PositionConstants.DIRECTION_UP); break;
+                case "move_level_down": this.moveTo(PositionConstants.DIRECTION_DOWN); break;
+                case "move_camp_level": this.moveTo(PositionConstants.DIRECTION_CAMP); break;
+                case "move_sector_north": this.moveTo(PositionConstants.DIRECTION_NORTH); break;
+                case "move_sector_east": this.moveTo(PositionConstants.DIRECTION_EAST); break;
+                case "move_sector_south": this.moveTo(PositionConstants.DIRECTION_SOUTH); break;
+                case "move_sector_west": this.moveTo(PositionConstants.DIRECTION_WEST); break;
+                case "move_sector_ne": this.moveTo(PositionConstants.DIRECTION_NE); break;
+                case "move_sector_se": this.moveTo(PositionConstants.DIRECTION_SE); break;
+                case "move_sector_sw": this.moveTo(PositionConstants.DIRECTION_SW); break;
+                case "move_sector_nw": this.moveTo(PositionConstants.DIRECTION_NW); break;
+                case "move_camp_global": this.moveToCamp(param); break;
                 default:
                     console.log("WARN: No function mapped for action " + action + " in PlayerActionFunctions.performAction");
                     break;
@@ -254,52 +258,41 @@ define(['ash',
             var playerPos = this.playerPositionNodes.head.position;
             switch (direction) {
                 case PositionConstants.DIRECTION_WEST:
-                    this.playerActionsHelper.deductCosts("move_sector_west");
                     playerPos.sectorX--;
                     break;
                 case PositionConstants.DIRECTION_NORTH:
-                    this.playerActionsHelper.deductCosts("move_sector_north");
                     playerPos.sectorY--;
                     break;
                 case PositionConstants.DIRECTION_SOUTH:
-                    this.playerActionsHelper.deductCosts("move_sector_south");
                     playerPos.sectorY++;
                     break;
                 case PositionConstants.DIRECTION_EAST:
-                    this.playerActionsHelper.deductCosts("move_sector_east");
                     playerPos.sectorX++;
                     break;
                 case PositionConstants.DIRECTION_NE:
-                    this.playerActionsHelper.deductCosts("move_sector_ne");
                     playerPos.sectorX++;
                     playerPos.sectorY--;
                     break;
                 case PositionConstants.DIRECTION_SE:
-                    this.playerActionsHelper.deductCosts("move_sector_se");
                     playerPos.sectorX++;
                     playerPos.sectorY++;
                     break;
                 case PositionConstants.DIRECTION_SW:
-                    this.playerActionsHelper.deductCosts("move_sector_sw");
                     playerPos.sectorX--;
                     playerPos.sectorY++;
                     break;
                 case PositionConstants.DIRECTION_NW:
-                    this.playerActionsHelper.deductCosts("move_sector_nw");
                     playerPos.sectorX--;
                     playerPos.sectorY--;
                     break;
                 case PositionConstants.DIRECTION_UP:
-                    this.playerActionsHelper.deductCosts("move_level_up");
                     playerPos.level++;
                     break;
                 case PositionConstants.DIRECTION_DOWN:
-                    this.playerActionsHelper.deductCosts("move_level_down");
                     playerPos.level--;
                     break;
                 case PositionConstants.DIRECTION_CAMP:
                     if (this.nearestCampNodes.head) {
-                        this.playerActionsHelper.deductCosts("move_camp_level");
                         var campSector = this.nearestCampNodes.head.entity;
                         var campPosition = campSector.get(PositionComponent);
                         playerPos.level = campPosition.level;
@@ -330,7 +323,6 @@ define(['ash',
             
             var playerPos = this.playerPositionNodes.head.position;
             if (campSector) {
-                this.playerActionsHelper.deductCosts("move_camp_global");
                 campPosition = campSector.get(PositionComponent);
                 playerPos.level = campPosition.level;
                 playerPos.sectorX = campPosition.sectorX;

@@ -895,13 +895,14 @@ define([
 			if (action.indexOf("create_blueprint_") >= 0) return "create_blueprint";
 			if (action.indexOf("fight_gang_") >= 0) return "fight_gang";
             if (action.indexOf("use_in_inn_select_") >= 0) return "use_in_inn_select";
+            if (action.indexOf("move_camp_global_") >= 0) return "move_camp_global";
             if (action.indexOf("build_out_passage") >= 0) {
                 return action.substring(0, action.lastIndexOf("_"));
             }
 			return action;
 		},
         
-        getActionIDParam: function(action) {
+        getActionIDParam: function (action) {
             var remainder = action.replace(this.getBaseActionID(action) + "_", "");
             if (remainder && remainder !== action) return remainder;
             return "";

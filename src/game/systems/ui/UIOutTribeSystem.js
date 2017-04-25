@@ -98,6 +98,7 @@ define([
 			if (row.length < 1) {
 				var rowHTML = "<tr id='" + rowID + "'>";
 				var btnID = "out-action-move-camp-" + level;
+                var btnAction = "move_camp_global_" + level;
 				rowHTML += "<td class='camp-overview-level'>" + level + "</td>";
 				rowHTML += "<td class='camp-overview-name'>" + camp.campName + "</td>";
 				rowHTML += "<td class='camp-overview-population list-amount'></td>";
@@ -113,15 +114,15 @@ define([
 				}
 				rowHTML += "</td>";
 				
-				rowHTML += "<td class='camp-overview-btn'><button class='btn-mini action action-move' id='" + btnID + "' action='move_camp_global'>Go</button></td>";
+				rowHTML += "<td class='camp-overview-btn'><button class='btn-mini action action-move' id='" + btnID + "' action='" + btnAction + "'>Go</button></td>";
                 rowHTML += "<td class='camp-overview-camp-bubble'><div class='bubble'>!</div></td>";
 				rowHTML += "</tr>";
 				$("#camp-overview").append(rowHTML);
 				var uiFunctions = this.uiFunctions;
 				$("#" + btnID).click(function(e) {
 					uiFunctions.onTabClicked(uiFunctions.elementIDs.tabs.in, uiFunctions.elementIDs, uiFunctions.gameState, uiFunctions.playerActions);
-					uiFunctions.onMoveButtonClicked(this, uiFunctions.playerActions);
 				});
+                this.uiFunctions.registerActionButtonListeners("#" + rowID);
                 this.uiFunctions.generateButtonOverlays("#" + rowID);
                 this.uiFunctions.generateCallouts("#" + rowID);
 			}
