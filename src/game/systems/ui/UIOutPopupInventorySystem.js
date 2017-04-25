@@ -5,7 +5,7 @@ define([
     'game/constants/BagConstants',
     'game/nodes/player/PlayerActionResultNode',
     'game/components/common/PositionComponent',
-    'game/components/player/BagComponent',
+    'game/components/player/BagComponent'
 ], function (Ash, UIConstants, ItemConstants, BagConstants, PlayerActionResultNode, PositionComponent, BagComponent) {
     var UIOutPopupInventorySystem = Ash.System.extend({
 

@@ -3,10 +3,22 @@
         {
             "version": "0.1.6",
             "phase": "alpha",
-            "final": false,
-            "updated": "2017-01-22",
-            "released": "",
+            "final": true,
+            "updated": "2017-04-25",
+            "released": "2017-04-25",
             "changes": [
+                {
+                    "type": "DEV",
+                    "summary": "Lots of small bugfixes."
+                },
+                {
+                    "type": "UI",
+                    "summary": "A friendly popup when the game crashes."
+                },
+                {
+                    "type": "UI",
+                    "summary": "Visualization of the tech tree."
+                }
             ]
         },
         {
