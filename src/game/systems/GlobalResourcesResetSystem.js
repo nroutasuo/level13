@@ -4,10 +4,9 @@ define([
     'game/nodes/sector/CampNode',
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/tribe/TribeResourcesNode',
-    'game/components/common/ResourcesComponent',
     'game/components/common/ResourceAccumulationComponent',
 ], function (Ash,
-	CampNode, PlayerResourcesNode, TribeResourcesNode, ResourcesComponent, ResourceAccumulationComponent) {
+	CampNode, PlayerResourcesNode, TribeResourcesNode, ResourceAccumulationComponent) {
     var GlobalResourcesResetSystem = Ash.System.extend({
 	    
 		playerNodes: null,

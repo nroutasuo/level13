@@ -7,7 +7,7 @@ define([
     'game/nodes/sector/SectorResourcesNode',
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/tribe/TribeResourcesNode',
-    'game/components/common/ResourcesComponent',
+    'game/components/common/CurrencyComponent',
     'game/components/tribe/UpgradesComponent',
     'game/components/common/CampComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
@@ -15,7 +15,7 @@ define([
     'game/vos/ResourcesVO'
 ], function (Ash,
 	SectorResourcesNode, PlayerResourcesNode, TribeResourcesNode,
-	ResourcesComponent, UpgradesComponent, CampComponent, SectorImprovementsComponent,
+	CurrencyComponent, UpgradesComponent, CampComponent, SectorImprovementsComponent,
 	CampConstants, ResourcesVO) {
     var GlobalResourcesSystem = Ash.System.extend({
 	    
@@ -74,6 +74,7 @@ define([
 			var globalResourcesComponent = this.tribeNodes.head.resources;
 			var globalResources = globalResourcesComponent.resources;
 			var globalResourceAccumulationComponent = this.tribeNodes.head.resourceAccumulation;
+            var globalCurrency = this.tribeNodes.head.entity.get(CurrencyComponent);
 			
 			var updateSectorResource = function (node, name) {
 				var amount = node.resources.resources.getResource(name);
@@ -89,7 +90,14 @@ define([
 						globalResourceAccumulationComponent.addChange(name, source.amount, source.source);
 					}
 				}
-			}
+			};
+            
+            var updateSectorCurrency = function (node) {
+                var currency = node.entity.get(CurrencyComponent);
+				var amount = currency.currency;
+				globalCurrency.currency += amount;
+				currency.currency = 0;
+            };
 			
 			var campImprovements;
 			var hasTradePost;
@@ -103,6 +111,7 @@ define([
 							updateSectorResource(node, name);
 							updateSectorResAcc(node, name);
 						}
+                        updateSectorCurrency(node);
 						globalResourcesComponent.storageCapacity += node.resources.storageCapacity;
 					}
 				}

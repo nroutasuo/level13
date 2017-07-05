@@ -20,6 +20,7 @@ define([
     'game/components/player/PlayerActionComponent',
     'game/components/common/PositionComponent',
     'game/components/common/CampComponent',
+    'game/components/common/CurrencyComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/ReputationComponent'
 ], function (Ash,
@@ -33,6 +34,7 @@ define([
 	PlayerActionComponent,
 	PositionComponent,
     CampComponent,
+    CurrencyComponent,
 	SectorFeaturesComponent,
     ReputationComponent
 ) {
@@ -346,11 +348,15 @@ define([
 			var inventoryUnlocked = false;
             
             $("#header-camp-storage").toggle(inCamp);
+            $("#header-camp-currency").toggle(inCamp);
             $("#statsbar-resources").toggle(inCamp);
             $("#header-bag-storage").toggle(!inCamp && this.gameState.unlockedFeatures.bag);
             $("#bag-resources").toggle(!inCamp);
             $("#header-camp-container").toggleClass("hidden", !inCamp && !this.gameState.unlockedFeatures.bag && itemsComponent.getAll().length == 0 && showResources.getTotal() === 0);
 	
+			var currencyComponent = this.currentLocationNodes.head.entity.get(CurrencyComponent);
+            $("#header-camp-currency .value").text(currencyComponent ? currencyComponent.currency : "??");
+    
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
 				var resourceUnlocked = this.gameState.unlockedFeatures.resources[name] === true;

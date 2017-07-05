@@ -21,6 +21,7 @@ define([
     'game/components/common/PositionComponent',
     'game/components/player/PlayerActionComponent',
     'game/components/common/ResourcesComponent',
+    'game/components/common/CurrencyComponent',
     'game/components/common/ResourceAccumulationComponent',
     'game/components/common/VisitedComponent',
     'game/components/common/RevealedComponent',
@@ -63,6 +64,7 @@ define([
     PositionComponent,
     PlayerActionComponent,
     ResourcesComponent,
+    CurrencyComponent,
     ResourceAccumulationComponent,
     VisitedComponent,
     RevealedComponent,
@@ -104,6 +106,7 @@ define([
 			.add(new PerksComponent())
 			.add(new StaminaComponent(100))
 			.add(new ResourcesComponent(ItemConstants.PLAYER_DEFAULT_STORAGE))
+            .add(new CurrencyComponent(0))
 			.add(new ResourceAccumulationComponent(saveKey))
 			.add(new RumoursComponent())
 			.add(new EvidenceComponent())
@@ -112,6 +115,7 @@ define([
 			.add(new PlayerActionComponent())
 			.add(new SaveComponent(saveKey, [
 					ResourcesComponent,
+                    CurrencyComponent,
 					VisionComponent,
 					ItemsComponent,
 					PerksComponent,
@@ -170,6 +174,7 @@ define([
 			.add(new SaveComponent(saveKey, [
 				ResourcesComponent,
 				CampComponent,
+                CurrencyComponent,
                 ReputationComponent,
 				CampEventTimersComponent,
 				SectorImprovementsComponent,
@@ -192,9 +197,10 @@ define([
 			var tribe = new Ash.Entity()
 			.add(new TribeComponent())
 			.add(new ResourcesComponent(0))
+            .add(new CurrencyComponent(0))
 			.add(new UpgradesComponent())
 			.add(new ResourceAccumulationComponent(saveKey))
-			.add(new SaveComponent(saveKey, [ UpgradesComponent, ResourcesComponent ]));
+			.add(new SaveComponent(saveKey, [ UpgradesComponent, ResourcesComponent, CurrencyComponent ]));
 			this.engine.addEntity(tribe);
 			return tribe;
 		},
@@ -214,6 +220,9 @@ define([
 			}
 			if (entity.has(CampComponent) && !entity.has(ReputationComponent)) {
 				entity.add(new ReputationComponent());
+			}
+			if (entity.has(CampComponent) && !entity.has(CurrencyComponent)) {
+				entity.add(new CurrencyComponent(0));
 			}
 		},
     });

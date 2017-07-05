@@ -31,6 +31,7 @@ define(['ash',
 	'game/components/player/PlayerActionComponent',
 	'game/components/player/PlayerActionResultComponent',
     'game/components/common/CampComponent',
+    'game/components/common/CurrencyComponent',
 	'game/components/type/LevelComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
@@ -55,7 +56,7 @@ define(['ash',
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
 	BagComponent, ItemsComponent, PerksComponent, DeityComponent, PlayerActionComponent, PlayerActionResultComponent,
-	CampComponent, LevelComponent, SectorImprovementsComponent, WorkshopComponent,
+	CampComponent, CurrencyComponent, LevelComponent, SectorImprovementsComponent, WorkshopComponent,
 	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, CampEventTimersComponent,
 	LogMessagesComponent,
@@ -350,6 +351,14 @@ define(['ash',
             this.moveResourcesFromVOToVO( playerResources, playerResources, campResourcesSource);
         },
         
+        moveCurrencyFromBagToCamp: function () {
+            var playerLevelCamp = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.entity : null;
+            var playerCurrency = this.playerResourcesNodes.head.entity.get(CurrencyComponent);
+            var campCurrency = playerLevelCamp.get(CurrencyComponent);
+            campCurrency.currency += playerCurrency.currency;
+            playerCurrency.currency = 0;
+        },
+        
         moveResourcesFromVOToVO: function (amountsVO, fromResVO, toResVO) {
             for (var key in resourceNames) {
 				var name = resourceNames[key];
@@ -393,6 +402,7 @@ define(['ash',
                     if (this.resourcesHelper.hasCampStorage()) {
                         this.moveResFromBagToCamp();
                     }
+                    this.moveCurrencyFromBagToCamp();
                     
 					if (this.lastVisitedCamps.head) this.lastVisitedCamps.head.entity.remove(LastVisitedCampComponent);
                     campNode.entity.add(new LastVisitedCampComponent());
@@ -622,6 +632,7 @@ define(['ash',
             sector.add(campComponent);
             sector.add(new CampEventTimersComponent());
             sector.add(new ReputationComponent());
+            sector.add(new CurrencyComponet());
 
             var level = this.levelHelper.getLevelEntityForSector(sector);
             level.add(campComponent);
