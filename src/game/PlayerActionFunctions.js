@@ -534,6 +534,12 @@ define(['ash',
             var playerActionFunctions = this;
             var successCallback = function () {
                 sectorStatus.localesScouted[i] = true;
+                if (localeVO.type === localeTypes.tradingpartner) {
+                    var playerPos = this.playerPositionNodes.head.position;
+                    var level = 
+                    var campOrdinal = playerActionFunctions.gameState.getCampOrdinal(level);
+                    playerActionFunctions.gameState.foundTradingPartners.push(campOrdinal);
+                }
                 playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
                 playerActionFunctions.save();
             };

@@ -57,6 +57,8 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
                 itemsCraftableUnlockedSeen: [],
                 itemsCraftableAvailableSeen: []
             },
+                
+            this.foundTradingPartners = []; // camp ordinals
             
             this.actionCooldownEndTimestamps = {};
             this.actionDurationEndTimestamps = {};
