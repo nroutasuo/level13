@@ -1,4 +1,4 @@
-define(['ash'], function (Ash) {
+define(['ash', 'game/vos/TradingPartnerVO'], function (Ash, TradingPartnerVO) {
     
     var WorldCreatorConstants = {
         
@@ -45,6 +45,17 @@ define(['ash'], function (Ash) {
         BAG_BONUS_2: 50,
         BAG_BONUS_3: 80,
         BAG_BONUS_4: 150,
+        
+        TRADING_PARTNERS: [
+            new TradingPartnerVO(3, "Bone Crossing", [resourceNames.rope], [resourceNames.metal], false),
+            new TradingPartnerVO(4, "Slugger Town", [resourceNames.metal], [], false),
+            new TradingPartnerVO(6, "Old Waterworks", [resourceNames.fuel], [], true),
+            new TradingPartnerVO(7, "Mill Road Academy", [resourceNames.food, resourceNames.water], [resourceNames.metal], true),
+            new TradingPartnerVO(9, "Bleaksey", [resourceNames.herbs], [resourceNames.medicine], false),
+            new TradingPartnerVO(10, "Pinewood", [resourceNames.medicine], [], true),
+            new TradingPartnerVO(12, "Highgate", [resourceNames.tools], [resourceNames.metal], true),
+            new TradingPartnerVO(14, "Factory 32", [resourceNames.concrete], [resourceNames.metal], true),
+        ],
         
         getNumSectors: function (levelOrdinal) {
             return this.getNumSectorsCentral(levelOrdinal) * 1.1;

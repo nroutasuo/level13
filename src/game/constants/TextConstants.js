@@ -134,9 +134,12 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
 				if (repairBracket === this.repairBrackets[1][0]) return "Decaying warehouse";
 				if (repairBracket === this.repairBrackets[2][0]) return "Abandoned warehouse";
 				return "Sturdy warehouse";
-			case localeTypes.camp: return isShort ? "Camp" : "Foreign camp";
-			case localeTypes.hut: return isShort ? "Hut"  : "Lone hut";
-			case localeTypes.hermit: return isShort ? "Hut" : "Lone hut";
+			case localeTypes.camp: 
+            case localeTypes.tradingpartner:
+                return isShort ? "Camp" : "Foreign camp";
+			case localeTypes.hut:
+			case localeTypes.hermit: 
+                return isShort ? "Hut" : "Lone hut";
 			case localeTypes.caravan: return isShort ? "Caravan" : "Trade caravan";
 			default: return "Building";
 			}

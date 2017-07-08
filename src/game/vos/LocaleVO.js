@@ -16,6 +16,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		hut: 51,
 		hermit: 52,
 		caravan: 53,
+        tradingpartner: 54
 	};
     
     var LocaleVO = Ash.Class.extend({
@@ -45,9 +46,12 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
                 case localeTypes.transport: return 50;
                 case localeTypes.sewer: return this.isEasy ? 50 : 80;
                 case localeTypes.warehouse: return this.isEasy ? 50 : 60;
-                case localeTypes.camp: return 20;
-                case localeTypes.hut: return 30;
-                case localeTypes.hermit: return 30;
+                case localeTypes.camp: 
+                case localeTypes.tradingpartner: 
+                    return 20;
+                case localeTypes.hut:
+                case localeTypes.hermit: 
+                    return 30;
                 case localeTypes.caravan: return 30;
                 default: return 30;
             }
@@ -64,7 +68,9 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
                 case localeTypes.transport: return 400;
                 case localeTypes.sewer: return 700;
                 case localeTypes.warehouse: return 100;
-                case localeTypes.camp: return 200;
+                case localeTypes.camp: 
+                case localeTypes.tradingpartner:
+                    return 200;
                 case localeTypes.hut: return 300;
                 case localeTypes.hermit: return 400;
                 case localeTypes.caravan: return 400;
@@ -120,6 +126,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
                 case localeTypes.hut:
                 case localeTypes.hermit:
                 case localeTypes.caravan:
+                case localeTypes.tradingpartner:
 					return "i";
 				
 				default:

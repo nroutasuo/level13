@@ -271,6 +271,16 @@ define([
 		
 		// locales
 		prepareWorldLocales: function (seed, topLevel, bottomLevel) {
+            // 1) spawn trading partners
+            for (var i = 0; i < WorldCreatorConstants.TRADING_PARTNERS.length; i++) {
+                var partner = WorldCreatorConstants.TRADING_PARTNERS[i];
+                var level = WorldCreatorHelper.getLevelOrdinalForCampOrdinal(seed, partner.campOrdinal);
+                var levelVO = this.world.getLevel(level);
+                var sectorVO = WorldCreatorRandom.randomSector(seed - 9393 + i * i, levelVO, false);
+                var locale = new LocaleVO(localeTypes.tradingpartner, true);
+                sectorVO.locales.push(locale);
+            }
+                
 			var getLocaleType = function (sectorType, level, levelOrdinal, localeRandom) {
 				var localeType = localeTypes.house;
 				
@@ -332,7 +342,10 @@ define([
 				}
 				return localeType;
 			};
-			for (var l = topLevel; l >= bottomLevel; l--) {
+			
+            // 2) spawn random ones
+            for (var l = topLevel; l >= bottomLevel; l--) {
+
                 var levelVO = this.world.getLevel(l);
 				var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
 				var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
@@ -352,7 +365,7 @@ define([
 			}
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World locales ready.");
-			// WorldCreatorDebug.printWorld(this.world, [ "locales.length" ]);
+            WorldCreatorDebug.printWorld(this.world, [ "locales.length" ]);
 		},
 		
 		// enemies
