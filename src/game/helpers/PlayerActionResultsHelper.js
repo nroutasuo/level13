@@ -14,6 +14,7 @@ define([
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/tribe/TribeUpgradesNode',
     'game/nodes/NearestCampNode',
+    'game/components/common/CurrencyComponent',
     'game/components/common/LogMessagesComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorStatusComponent',
@@ -38,6 +39,7 @@ define([
     PlayerResourcesNode,
     TribeUpgradesNode,
     NearestCampNode,
+    CurrencyComponent,
     LogMessagesComponent,
     SectorFeaturesComponent,
     SectorStatusComponent,
@@ -132,6 +134,7 @@ define([
 
             rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
             rewards.gainedItems = this.getRewardItems(0.007, 0.08, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
+            rewards.gainedCurrency = this.getRewardCurrency(efficiency);
 
             // should never be needed, but as a fallback
             var unscoutedLocales = this.levelHelper.getLevelLocales(playerPos.level, false, false).length;
@@ -160,8 +163,6 @@ define([
         getScoutLocaleRewards: function (localeVO) {
             var rewards = new ResultVO("scout");
             var localeCategory = localeVO.getCategory();
-            
-            var playerVision = this.playerStatsNodes.head.vision.value;
 
             var availableResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable.clone();
             availableResources.addAll(localeVO.getResourceBonus(this.gameState.unlockedFeatures.resources));
@@ -230,6 +231,7 @@ define([
             var resultVO = new ResultVO("despair");
             if (loseInventoryProbability > Math.random()) {
                 resultVO.lostResources = this.playerResourcesNodes.head.resources.resources.clone();
+                resultVO.lostCurrency = this.playerResourcesNodes.head.entity.get(CurrencyComponent).currency;
                 resultVO.lostItems = this.getLostItems("despair");
             }
 
@@ -263,6 +265,10 @@ define([
 					sectorStatus.addDiscoveredResource(name);
 				}
 			}
+            
+            var currencyComponent = this.playerStatsNodes.head.entity.get(CurrencyComponent);
+            currencyComponent.currency += rewards.gainedCurrency;
+            currencyComponent.currency -= rewards.lostCurrency;
 
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			if (rewards.selectedItems) {
@@ -329,6 +335,14 @@ define([
 			msg += "Found " + resourceTemplate.msg;
 			replacements = replacements.concat(resourceTemplate.replacements);
 			values = values.concat(resourceTemplate.values);
+            
+            if (rewards.gainedCurrency) {
+                msg += ", ";
+                foundSomething = true;
+				msg += "$" + replacements.length + ", ";
+				replacements.push("#" + replacements.length + " currency");
+				values.push(rewards.gainedCurrency);
+            }
 
 			if (rewards.selectedItems && rewards.selectedItems.length > 0) {
 				msg += ", ";
@@ -431,11 +445,14 @@ define([
 			if (resultVO.gainedBlueprintPiece) {
 				gainedhtml += UIConstants.getBlueprintPieceLI(resultVO.gainedBlueprintPiece);
 			}
+            if (resultVO.gainedCurrency) {
+                gainedhtml += "<li>" + resultVO.gainedCurrency + " silver</li>";
+            }
 			gainedhtml += "</ul>";
 			var hasGainedStuff = gainedhtml.indexOf("<li") > 0;
 			if (hasGainedStuff) div += gainedhtml;
 			
-			if (resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0) {
+			if (resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.lostCurrency > 0) {
 				var losthtml = "<div id='resultlist-loststuff' class='infobox'>";
 				losthtml += "<div id='resultlist-loststuff-lost' class='infobox inventorybox inventorybox-negative'>";
                 losthtml += "<ul></ul>";
@@ -464,7 +481,7 @@ define([
 			}
 			
 			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0;
-			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.gainedInjuries.length > 0;
+			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.gainedInjuries.length > 0 || resultVO.lostCurrency > 0;
 			if (!hasGainedStuff && !hasLostStuff) {
 				if (isFight) div += "<p>Nothing left behind.</p>"
                 else if (resultVO.action === "despair") div += "";
@@ -473,6 +490,10 @@ define([
 			
 			if (resultVO.gainedInjuries.length > 0) {
 				div += "<p class='warning'>You got injured.</p>";
+			}
+			
+			if (resultVO.lostCurrency > 0) {
+				div += "<p class='warning'>You lost " + resultVO.lostCurrency + " silver.</p>";
 			}
                 
 			div += "</div>";
@@ -559,6 +580,16 @@ define([
 
 			return results;
 		},
+        
+        getRewardCurrency: function (efficiency) {
+            if (efficiency < 0.5)
+                return 0;
+            
+            if (Math.random() > 0.001)
+                return 0;
+            
+            return Math.ceil(Math.random() * 3);
+        },
 		
 		// probability of getting something: 0-1 for one item / some ingredients
 		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, currentItems, levelOrdinal) {

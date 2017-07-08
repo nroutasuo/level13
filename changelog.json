@@ -1,6 +1,18 @@
 {
     "versions": [
         {
+            "version": "0.1.7",
+            "phase": "alpha",
+            "final": false,
+            "updated": "2017-07-08",
+            "changes": [
+                {
+                    "type": "GD",
+                    "summary": "Add currency."
+                }
+            ]
+        },
+        {
             "version": "0.1.6",
             "phase": "alpha",
             "final": true,

@@ -7,6 +7,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		
 		// rewards
 		gainedResources: null,
+        gainedCurrency: null,
 		gainedItems: [],
 		gainedFollowers: [],
 		gainedBlueprintPiece: null,
@@ -17,6 +18,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		
 		// penalties
 		lostResources: null,
+        lostCurrency: null,
 		lostItems: [],
 		gainedInjuries: [],
         
@@ -30,6 +32,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             this.action = action;
             
 			this.gainedResources = new ResourcesVO();
+            this.gainedCurrency = 0;
             this.gainedItems = [];
             this.gainedFollowers = [];
             this.gainedBlueprintPiece = null;
@@ -39,6 +42,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             this.gainedPopulation = 0;
             
 			this.lostResources = new ResourcesVO();
+            this.lostCurrency = 0;
             this.lostItems = [];
             this.gainedInjuries = [];
             
@@ -51,7 +55,9 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
         clone: function () {
             var result = new ResultVO(this.action);
             result.gainedResources = this.gainedResources.clone();
+            result.gainedCurrency = this.gainedCurrency;
             result.lostResources = this.lostResources.clone();
+            result.lostCurrency = this.lostCurrency;
             result.gainedItems = this.gainedItems.concat();
             result.gainedFollowers = this.gainedFollowers.concat();
             result.lostItems = this.lostItems.concat();
