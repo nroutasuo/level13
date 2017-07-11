@@ -250,7 +250,7 @@ define([
 			this.engine.addSystem(new UIOutBagSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionsHelper, this.gameState), SystemPriorities.render);
 			this.engine.addSystem(new UIOutFollowersSystem(this.uiFunctions, this.tabChangedSignal, this.gameState), SystemPriorities.render);
 			this.engine.addSystem(new UIOutMapSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.uiMapHelper, this.levelHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutTradeSystem(this.uiFunctions, this.tabChangedSignal, this.gameState), SystemPriorities.render);
+			this.engine.addSystem(new UIOutTradeSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.resourcesHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutUpgradesSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionFunctions, this.upgradeEffectsHelper, this.uiTechTreeHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutBlueprintsSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionFunctions, this.upgradeEffectsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.tabChangedSignal, this.resourcesHelper, this.levelHelper), SystemPriorities.render);

@@ -214,6 +214,7 @@ define(['ash',
                 case "clear_workshop": this.clearWorkshop(param); break;
                 case "use_spring": this.useSpring(param); break;
                 case "fight_gang": this.fightGang(param); break;
+                case "send_caravan": this.sendCaravan(param); break;
                 case "despair": this.despair(param); break;
                 case "unlock_upgrade": this.unlockUpgrade(param); break;
                 case "create_blueprint": this.createBlueprint(param); break;

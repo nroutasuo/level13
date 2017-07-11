@@ -894,6 +894,7 @@ define([
 			if (action.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
 			if (action.indexOf("create_blueprint_") >= 0) return "create_blueprint";
 			if (action.indexOf("fight_gang_") >= 0) return "fight_gang";
+			if (action.indexOf("send_caravan_") >= 0) return "send_caravan";
             if (action.indexOf("use_in_inn_select_") >= 0) return "use_in_inn_select";
             if (action.indexOf("move_camp_global_") >= 0) return "move_camp_global";
             if (action.indexOf("build_out_passage") >= 0) {

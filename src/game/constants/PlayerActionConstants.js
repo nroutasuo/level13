@@ -66,6 +66,13 @@ function (Ash, GameConstants, CampConstants) {
                 fight_gang: {
                     health: 70,
                 },
+                
+                send_caravan: {
+                    free_caravans: [1, -1],
+                    caravan: {
+                        validSelection: true,
+                    }
+                },
                         
                 move_sector_north: {
                     vision: [10, -1],
@@ -1124,6 +1131,10 @@ function (Ash, GameConstants, CampConstants) {
                     stamina: 10,
                 },
                 
+                send_caravan: {
+                    
+                },
+                
                 move_level_up: {
                     stamina: 100,
                     resource_food: 1,
@@ -1884,6 +1895,7 @@ function (Ash, GameConstants, CampConstants) {
                 scout_locale_u: 60,
                 clear_workshop: 60,
                 fight_gang: 60,
+                send_caravan: 60 * 10,
                 use_in_inn: 60 * 30,
                 despair: 60,
             },
@@ -1923,6 +1935,7 @@ function (Ash, GameConstants, CampConstants) {
                 clear_workshop: "Scout the workshop to see if it can be used.",
                 use_spring: "Get water.",
                 fight_gang: "Clear the enemies blocking passage.",
+                send_caravan: "Send caravan out.",
                 move_camp_level: "Shortcut back to the nearest camp.",
                 move_camp_global: "Shortcut to the camp on this level.",
                 create_blueprint: "Combine pieces to a blueprint.",

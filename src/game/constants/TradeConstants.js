@@ -3,6 +3,11 @@ function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO) {
     
     var TradeConstants = {
         
+        MIN_OUTGOING_CARAVAN_RES: 50,
+        MAX_OUTGOING_CARAVAN_RES: 1000,
+        
+        VALUE_INGREDIENTS: 0.05,
+        
         TRADING_PARTNERS: [
             new TradingPartnerVO(3, "Bone Crossing", [resourceNames.rope], [resourceNames.metal], false),
             new TradingPartnerVO(4, "Slugger Town", [resourceNames.metal], [], false),
@@ -54,7 +59,7 @@ function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO) {
                 case ItemConstants.itemTypes.follower:
                     return 0;
                 case ItemConstants.itemTypes.ingredient:
-                    return 0.1;
+                    return VALUE_INGREDIENTS;
                 case ItemConstants.itemTypes.exploration:
                     return 1;
                 case ItemConstants.itemTypes.uniqueEquipment:
