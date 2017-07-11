@@ -291,6 +291,7 @@ define([
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-followers", null, this.gameState.unlockedFeatures.followers, 200, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-out", null, true, 0, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-map", null, hasMap, 200, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-trade", null, isInCamp, 200, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-projects", null, isInCamp && hasProjects, 200, 0);
         },
         

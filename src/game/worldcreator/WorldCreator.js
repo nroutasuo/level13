@@ -281,8 +281,6 @@ define([
                 var sectorVO = WorldCreatorRandom.randomSector(seed - 9393 + i * i, levelVO, false);
                 var locale = new LocaleVO(localeTypes.tradingpartner, true);
                 sectorVO.locales.push(locale);
-                console.log("Add trading partner for camp ordinal: " + partner.campOrdinal);
-                console.log(sectorVO.position);
             }
                 
 			var getLocaleType = function (sectorType, level, levelOrdinal, localeRandom) {

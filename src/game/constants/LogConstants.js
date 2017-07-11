@@ -13,6 +13,7 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
         MSG_ID_SCOUT_LOCALE: "SCOUT_LOCALE",
         MSG_ID_WORKSHOP_CLEARED: "WORKSHOP_CLEARED",
         MSG_ID_GANG_DEFEATED: "GANG_DEFEATED",
+        MSG_ID_USE_COLLECTOR_FAIL: "USE_COLLECTOR_FAIL",
 
         // in actions
         MSG_ID_ENTER_CAMP: "ENTER_CAMP",
@@ -21,7 +22,7 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
         MSG_ID_USE_CAMPFIRE_FAIL: "USE_CAMPFIRE_FAIL",
         MSG_ID_USE_HOSPITAL: "USE_HOSPITAL",
         MSG_ID_USE_HOSPITAL2: "USE_HOSPITAL2",
-        MSG_ID_USE_COLLECTOR_FAIL: "USE_COLLECTOR_FAIL",
+        MSG_ID_BOUGHT_UPGRADE: "MSG_ID_BOUGHT_UPGRADE",
         
         // out atmospheric and results
         MSG_ID_ADD_HAZARD_PERK: "MSG_ID_ADD_HAZARD_PERK",

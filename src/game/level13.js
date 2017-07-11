@@ -14,6 +14,7 @@ define([
     'game/systems/ui/UIOutBagSystem',
     'game/systems/ui/UIOutFollowersSystem',
     'game/systems/ui/UIOutMapSystem',
+    'game/systems/ui/UIOutTradeSystem',
     'game/systems/ui/UIOutUpgradesSystem',
     'game/systems/ui/UIOutTribeSystem',
     'game/systems/ui/UIOutBlueprintsSystem',
@@ -79,6 +80,7 @@ define([
     UIOutBagSystem,
     UIOutFollowersSystem,
     UIOutMapSystem,
+    UIOutTradeSystem,
     UIOutUpgradesSystem,
     UIOutTribeSystem,
     UIOutBlueprintsSystem,
@@ -248,6 +250,7 @@ define([
 			this.engine.addSystem(new UIOutBagSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionsHelper, this.gameState), SystemPriorities.render);
 			this.engine.addSystem(new UIOutFollowersSystem(this.uiFunctions, this.tabChangedSignal, this.gameState), SystemPriorities.render);
 			this.engine.addSystem(new UIOutMapSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.uiMapHelper, this.levelHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutTradeSystem(this.uiFunctions, this.tabChangedSignal, this.gameState), SystemPriorities.render);
 			this.engine.addSystem(new UIOutUpgradesSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionFunctions, this.upgradeEffectsHelper, this.uiTechTreeHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutBlueprintsSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionFunctions, this.upgradeEffectsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.tabChangedSignal, this.resourcesHelper, this.levelHelper), SystemPriorities.render);

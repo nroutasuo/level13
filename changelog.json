@@ -4,11 +4,11 @@
             "version": "0.1.7",
             "phase": "alpha",
             "final": false,
-            "updated": "2017-07-08",
+            "updated": "2017-07-11",
             "changes": [
                 {
                     "type": "GD",
-                    "summary": "Add currency."
+                    "summary": "Add currency, trade partners, and outgoing trade caravans."
                 }
             ]
         },

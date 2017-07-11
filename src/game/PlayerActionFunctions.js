@@ -9,6 +9,7 @@ define(['ash',
 	'game/constants/PerkConstants',
 	'game/constants/FightConstants',
 	'game/constants/TradeConstants',
+	'game/constants/UpgradeConstants',
 	'game/constants/TextConstants',
 	'game/vos/PositionVO',
 	'game/vos/LocaleVO',
@@ -49,7 +50,7 @@ define(['ash',
 	'game/systems/PlayerPositionSystem',
 	'game/systems/SaveSystem',
 ], function (Ash,
-	LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, TextConstants,
+	LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
 	PositionVO, LocaleVO,
     PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
@@ -1049,7 +1050,9 @@ define(['ash',
         
         buyUpgrade: function (upgradeId, automatic) {
             if (automatic || this.playerActionsHelper.checkAvailability(upgradeId, true)) {
+				var upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeId];
                 this.playerActionsHelper.deductCosts(upgradeId);
+                this.addLogMessage(LogConstants.MSG_ID_BOUGHT_UPGRADE, "Researched " + upgradeDefinition.name);
                 this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeId);
                 this.save();
             }

@@ -25,6 +25,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
                 followers: "switch-followers",
                 projects: "switch-projects",
                 map: "switch-map",
+                trade: "switch-trade",
                 in: "switch-in",
                 out: "switch-out",
                 upgrades: "switch-upgrades",
@@ -78,7 +79,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             $.each($("#switch-tabs li"), function () {
                 $(this).click(function () {
                     if (!($(this).hasClass("disabled"))) {
-                        onTabClicked(this.id, elementIDs, gameState, playerActions);
+                        onTabClicked(this.id, gameState, playerActions);
                     }
                 });
             });
@@ -109,7 +110,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
                     "Do you want to restart the game? Your progress will be lost.",
                     function () {
                         $("#log ul").empty();
-                        onTabClicked(elementIDs.tabs.out, elementIDs, gameState, playerActions);
+                        onTabClicked(elementIDs.tabs.out, gameState, playerActions);
                         saveSystem.restart(false);
                     });
             });
@@ -398,181 +399,22 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             return html;
         },
         
-        onTabClicked: function (tabID, elementIDs, gameState, playerActions, noAction) {
+        onTabClicked: function (tabID, gameState, playerActions) {
             $("#switch-tabs li").removeClass("selected");
+            $("#switch-tabs li#" + tabID).addClass("selected");
             $("#tab-header h2").text(tabID);
             
-            var transition = !(gameState.uiStatus.currentTab == tabID);
+            var transition = !(gameState.uiStatus.currentTab === tabID);
             var transitionTime = transition ? 200 : 0;
             gameState.uiStatus.currentTab = tabID;
             
-            switch (tabID) {
-                case elementIDs.tabs.out:
-                    $("#switch-tabs li#switch-out").addClass("selected");
-                    $("#btn-header-rename").slideUp(transitionTime);
-                    $("#container-tab-vis-in").slideUp(transitionTime);
-                    $("#container-tab-enter-out").slideDown(transitionTime);
-                    $("#container-tab-two-in").slideUp(transitionTime);
-                    $("#container-tab-two-out").slideUp(transitionTime);
-                    $("#container-tab-two-out-actions").slideUp(transitionTime);
-                    $("#container-tab-two-bag").slideUp(transitionTime);
-                    $("#container-tab-two-followers").slideUp(transitionTime);
-                    $("#container-tab-two-map").slideUp(transitionTime);
-                    $("#container-tab-two-projects").slideUp(transitionTime);
-                    $("#container-tab-two-blueprints").slideUp(transitionTime);
-                    $("#container-tab-two-upgrades").slideUp(transitionTime);
-                    $("#container-tab-two-world").slideUp(transitionTime);
-                    $("#container-tab-footer").slideUp(transitionTime);
-                    if (!noAction) playerActions.enterOutTab();
-                    break;
-                
-                case elementIDs.tabs.in:
-                    $("#switch-tabs li#switch-in").addClass("selected");
-                    $("#btn-header-rename").slideDown(transitionTime);
-                    $("#container-tab-vis-in").slideDown(transitionTime);
-                    $("#container-tab-enter-out").slideUp(transitionTime);
-                    $("#container-tab-5-4").slideDown(transitionTime);
-                    $("#container-tab-1-8").slideUp(transitionTime);
-                    $("#container-tab-two-in").slideDown(transitionTime);
-                    $("#container-tab-two-out").slideUp(transitionTime);
-                    $("#container-tab-two-out-actions").slideUp(transitionTime);
-                    $("#container-tab-two-bag").slideUp(transitionTime);
-                    $("#container-tab-two-followers").slideUp(transitionTime);
-                    $("#container-tab-two-map").slideUp(transitionTime);
-                    $("#container-tab-two-projects").slideUp(transitionTime);
-                    $("#container-tab-two-upgrades").slideUp(transitionTime);
-                    $("#container-tab-two-blueprints").slideUp(transitionTime);
-                    $("#container-tab-two-world").slideUp(transitionTime);
-                    $("#container-tab-footer").slideUp(transitionTime);
-                    if (!noAction) playerActions.enterCamp(true);
-                    break;
-                
-                case elementIDs.tabs.world:
-                    $("#switch-tabs li#switch-world").addClass("selected");
-                    $("#btn-header-rename").slideUp(transitionTime);
-                    $("#container-tab-vis-in").slideUp(transitionTime);
-                    $("#container-tab-enter-out").slideUp(transitionTime);
-                    $("#container-tab-two-in").slideUp(transitionTime);
-                    $("#container-tab-two-out").slideUp(transitionTime);
-                    $("#container-tab-two-out-actions").slideUp(transitionTime);
-                    $("#container-tab-two-bag").slideUp(transitionTime);
-                    $("#container-tab-two-followers").slideUp(transitionTime);
-                    $("#container-tab-two-map").slideUp(transitionTime);
-                    $("#container-tab-two-projects").slideUp(transitionTime);
-                    $("#container-tab-two-upgrades").slideUp(transitionTime);
-                    $("#container-tab-two-blueprints").slideUp(transitionTime);
-                    $("#container-tab-two-world").slideDown(transitionTime);
-                    $("#container-tab-footer").slideUp(transitionTime);
-                    break;
-                
-                case elementIDs.tabs.upgrades:
-                    $("#switch-tabs li#switch-upgrades").addClass("selected");
-                    $("#btn-header-rename").slideUp(transitionTime);
-                    $("#container-tab-vis-in").slideUp(transitionTime);
-                    $("#container-tab-enter-out").slideUp(transitionTime);
-                    $("#container-tab-two-in").slideUp(transitionTime);
-                    $("#container-tab-two-out").slideUp(transitionTime);
-                    $("#container-tab-two-out-actions").slideUp(transitionTime);
-                    $("#container-tab-two-bag").slideUp(transitionTime);
-                    $("#container-tab-two-followers").slideUp(transitionTime);
-                    $("#container-tab-two-map").slideUp(transitionTime);
-                    $("#container-tab-two-projects").slideUp(transitionTime);
-                    $("#container-tab-two-upgrades").slideDown(transitionTime);
-                    $("#container-tab-two-blueprints").slideUp(transitionTime);
-                    $("#container-tab-two-world").slideUp(transitionTime);
-                    $("#container-tab-footer").slideUp(transitionTime);
-                    break;
-                
-                case elementIDs.tabs.blueprints:
-                    $("#switch-tabs li#switch-blueprints").addClass("selected");
-                    $("#btn-header-rename").slideUp(transitionTime);
-                    $("#container-tab-vis-in").slideUp(transitionTime);
-                    $("#container-tab-enter-out").slideUp(transitionTime);
-                    $("#container-tab-two-in").slideUp(transitionTime);
-                    $("#container-tab-two-out").slideUp(transitionTime);
-                    $("#container-tab-two-out-actions").slideUp(transitionTime);
-                    $("#container-tab-two-bag").slideUp(transitionTime);
-                    $("#container-tab-two-followers").slideUp(transitionTime);
-                    $("#container-tab-two-map").slideUp(transitionTime);
-                    $("#container-tab-two-projects").slideUp(transitionTime);
-                    $("#container-tab-two-upgrades").slideUp(transitionTime);
-                    $("#container-tab-two-blueprints").slideDown(transitionTime);
-                    $("#container-tab-two-world").slideUp(transitionTime);
-                    $("#container-tab-footer").slideUp(transitionTime);
-                    break;
-                
-                case elementIDs.tabs.bag:
-                    $("#switch-tabs li#switch-bag").addClass("selected");
-                    $("#btn-header-rename").slideUp(transitionTime);
-                    $("#container-tab-vis-in").slideUp(transitionTime);
-                    $("#container-tab-enter-out").slideUp(transitionTime);
-                    $("#container-tab-two-in").slideUp(transitionTime);
-                    $("#container-tab-two-out").slideUp(transitionTime);
-                    $("#container-tab-two-out-actions").slideUp(transitionTime);
-                    $("#container-tab-two-bag").slideDown(transitionTime);
-                    $("#container-tab-two-followers").slideUp(transitionTime);
-                    $("#container-tab-two-map").slideUp(transitionTime);
-                    $("#container-tab-two-projects").slideUp(transitionTime);
-                    $("#container-tab-two-upgrades").slideUp(transitionTime);
-                    $("#container-tab-two-blueprints").slideUp(transitionTime);
-                    $("#container-tab-two-world").slideUp(transitionTime);
-                    $("#container-tab-footer").slideUp(transitionTime);
-                    break;
-                
-                case elementIDs.tabs.followers:
-                    $("#switch-tabs li#switch-followers").addClass("selected");
-                    $("#btn-header-rename").slideUp(transitionTime);
-                    $("#container-tab-vis-in").slideUp(transitionTime);
-                    $("#container-tab-enter-out").slideUp(transitionTime);
-                    $("#container-tab-two-in").slideUp(transitionTime);
-                    $("#container-tab-two-out").slideUp(transitionTime);
-                    $("#container-tab-two-out-actions").slideUp(transitionTime);
-                    $("#container-tab-two-bag").slideUp(transitionTime);
-                    $("#container-tab-two-followers").slideDown(transitionTime);
-                    $("#container-tab-two-map").slideUp(transitionTime);
-                    $("#container-tab-two-projects").slideUp(transitionTime);
-                    $("#container-tab-two-upgrades").slideUp(transitionTime);
-                    $("#container-tab-two-blueprints").slideUp(transitionTime);
-                    $("#container-tab-two-world").slideUp(transitionTime);
-                    $("#container-tab-footer").slideUp(transitionTime);
-                    break;
-                
-                case elementIDs.tabs.map:
-                    $("#switch-tabs li#switch-map").addClass("selected");
-                    $("#btn-header-rename").slideUp(transitionTime);
-                    $("#container-tab-vis-in").slideUp(transitionTime);
-                    $("#container-tab-enter-out").slideUp(transitionTime);
-                    $("#container-tab-two-in").slideUp(transitionTime);
-                    $("#container-tab-two-out").slideUp(transitionTime);
-                    $("#container-tab-two-out-actions").slideUp(transitionTime);
-                    $("#container-tab-two-bag").slideUp(transitionTime);
-                    $("#container-tab-two-followers").slideUp(transitionTime);
-                    $("#container-tab-two-map").slideDown(transitionTime);
-                    $("#container-tab-two-projects").slideUp(transitionTime);
-                    $("#container-tab-two-upgrades").slideUp(transitionTime);
-                    $("#container-tab-two-blueprints").slideUp(transitionTime);
-                    $("#container-tab-two-world").slideUp(transitionTime);
-                    $("#container-tab-footer").slideUp(transitionTime);
-                    break;
-                
-                case elementIDs.tabs.projects:
-                    $("#switch-tabs li#switch-projects").addClass("selected");
-                    $("#btn-header-rename").slideUp(transitionTime);
-                    $("#container-tab-vis-in").slideUp(transitionTime);
-                    $("#container-tab-enter-out").slideUp(transitionTime);
-                    $("#container-tab-two-in").slideUp(transitionTime);
-                    $("#container-tab-two-out").slideUp(transitionTime);
-                    $("#container-tab-two-out-actions").slideUp(transitionTime);
-                    $("#container-tab-two-bag").slideUp(transitionTime);
-                    $("#container-tab-two-followers").slideUp(transitionTime);
-                    $("#container-tab-two-map").slideUp(transitionTime);
-                    $("#container-tab-two-projects").slideDown(transitionTime);
-                    $("#container-tab-two-upgrades").slideUp(transitionTime);
-                    $("#container-tab-two-blueprints").slideUp(transitionTime);
-                    $("#container-tab-two-world").slideUp(transitionTime);
-                    $("#container-tab-footer").slideUp(transitionTime);
-                    break;
-            }
+            $.each($(".tabelement"), function () {
+                if ($(this).attr("data-tab") === tabID) {
+                    $(this).slideDown(transitionTime);
+                } else {
+                    $(this).slideUp(transitionTime);
+                }
+            });
             
             playerActions.tabChangedSignal.dispatch(tabID);
         },
@@ -779,7 +621,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
         },
         
         showTab: function (tabID) {
-            this.onTabClicked(tabID, this.elementIDs, this.gameState, this.playerActions, true);
+            this.onTabClicked(tabID, this.gameState, this.playerActions);
         },
         
         showFight: function () {
