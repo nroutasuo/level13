@@ -34,6 +34,8 @@ define([
             this.updateOutgoingCaravansList(isActive);
             
             if (!isActive) {
+                $(".btn-trade-caravans-outgoing-toggle").text("Prepare Caravan");
+                $(".trade-caravans-outgoing-plan").toggle(false);                
                 return;
             }
             
@@ -119,6 +121,7 @@ define([
             
             this.uiFunctions.generateButtonOverlays("#trade-caravans-outgoing-container table");
             this.uiFunctions.generateCallouts("#trade-caravans-outgoing-container table");
+            this.uiFunctions.registerActionButtonListeners("#trade-caravans-outgoing-container table");
             
             this.lastShownTradingPartnersCount = this.availableTradingPartnersCount;
         },
@@ -129,7 +132,6 @@ define([
                 return;
             var tr = selectedCaravanTR[0];
             var trID = "#" + $(tr).attr("id");
-            var campOrdinal = trID.split("-")[4];
             
             var selectedSell = $(trID + " .trade-caravans-outgoing-select-sell").val();
             var selectedBuy = $(trID + " .trade-caravans-outgoing-select-buy").val();
@@ -139,19 +141,19 @@ define([
             var amountSell = 0;
             var ownedStorage = this.resourcesHelper.getCurrentStorage();
             var ownedSellAmount = ownedStorage.resources.getResource(selectedSell);
-            if (ownedSellAmount < TradeConstants.MIN_OUTGOING_CARAVAN_RES) {
-                $(sellSlider).toggle(false);
-                $(trID + " .trade-sell-value-invalid").toggle(true); 
-                $(trID + " .trade-sell-value-invalid").text("Not enough " + selectedSell);
-                $(trID + " .trade-sell-value").toggle(false);
-            } else {
-                amountSell = $(sellSlider).val();
-                
+            var hasEnoughSellRes = ownedSellAmount >= TradeConstants.MIN_OUTGOING_CARAVAN_RES;
+            if (hasEnoughSellRes) {
+                amountSell = Math.min(ownedSellAmount, $(sellSlider).val()); 
                 $(sellSlider).toggle(true);
                 $(sellSlider).attr("max", Math.min(TradeConstants.MAX_OUTGOING_CARAVAN_RES, Math.floor(ownedSellAmount / 10) * 10));
                 $(trID + " .trade-sell-value-invalid").toggle(false);
                 $(trID + " .trade-sell-value").toggle(true);
                 $(trID + " .trade-sell-value").text(amountSell);
+            } else {
+                $(sellSlider).toggle(false);
+                $(trID + " .trade-sell-value-invalid").toggle(true); 
+                $(trID + " .trade-sell-value-invalid").text("Not enough " + selectedSell);
+                $(trID + " .trade-sell-value").toggle(false);
             }
             
             // set get value
@@ -170,6 +172,8 @@ define([
             $(trID + " .trade-buy-value").text(amountGet);
             
             // set valid selection
+            var isValid = hasEnoughSellRes && amountSell > 0 && amountGet > 0;
+            $(trID + " button.action").attr("data-isselectionvalid", isValid);
         }
         
     });

@@ -410,7 +410,7 @@ define([
                     var currentValue = playerActionComponent.isBusy();
                     var requiredValue = requirements.busy;
                     if (currentValue !== requiredValue) {
-                        if (currentValue) reason = "Busy " + playerActionComponent.getDescription();
+                        if (currentValue) reason = "Busy " + playerActionComponent.getBusyDescription();
                         else reason = "Need to be busy to do this.";
                         if (log) console.log("WARN: " + reason);
                         return { value: 0, reason: reason };
@@ -453,6 +453,19 @@ define([
                                 return {value: 0, reason: "Bag must be full."};
                             else
                                 return {value: 0, reason: "Bag is full."};
+                        }
+                    }
+                }
+                
+                if (requirements.caravan) {
+                    if (typeof requirements.caravan.validSelection !== "undefined") {
+                        var requiredValue = requirements.caravan.validSelection;
+                        var currentValue = $("button[action='" + action + "']").attr("data-isselectionvalid") == "true";
+                        if (requiredValue != currentValue) {
+                            if (requiredValue)
+                                return {value: 0, reason: "Invalid selection."};
+                            else
+                                return {value: 0, reason: "Valid selection."};
                         }
                     }
                 }
@@ -793,6 +806,7 @@ define([
                 case "build_out_passage_down_elevator":
                 case "build_out_passage_down_hole":
                 case "use_in_inn_select":
+                case "send_caravan":
                     return PlayerActionConstants.requirements[baseActionID];
 				default:
 					return PlayerActionConstants.requirements[action];

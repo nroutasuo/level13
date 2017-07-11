@@ -1131,10 +1131,6 @@ function (Ash, GameConstants, CampConstants) {
                     stamina: 10,
                 },
                 
-                send_caravan: {
-                    
-                },
-                
                 move_level_up: {
                     stamina: 100,
                     resource_food: 1,
@@ -1904,6 +1900,7 @@ function (Ash, GameConstants, CampConstants) {
                 use_in_hospital: 60 * 3,
                 use_in_campfire: 5,
                 use_in_home: 60,
+                send_caravan: 60 * 10
             },
             
             randomEncounterProbabilities: {
@@ -1983,10 +1980,11 @@ function (Ash, GameConstants, CampConstants) {
                 return 0;
             },
                    
-            getDuration: function (action) {
-                var speed = this.isExplorationAction(action) ? GameConstants.gameSpeedExploration : GameConstants.gameSpeedCamp;
-                if (this.durations[action]) {
-                    return this.durations[action] / speed;
+            getDuration: function (baseActionID) {
+                var speed = this.isExplorationAction(baseActionID) ? GameConstants.gameSpeedExploration : GameConstants.gameSpeedCamp;
+                // TODO make send_caravan duration dependent on the trade partner's location
+                if (this.durations[baseActionID]) {
+                    return this.durations[baseActionID] / speed;
                 }
                 return 0;
             },
@@ -2040,6 +2038,16 @@ function (Ash, GameConstants, CampConstants) {
                     return btn.hasClass("action-location");
                 return false;
             },
+            
+            // defines if the action (with duration) marks the player as "busy" or if it can happen in the background
+            isBusyAction: function (baseActionID) {
+                switch (baseActionID) {
+                    case "send_caravan": 
+                        return false;
+                    default: 
+                        return true;
+                }
+            }
 
         };
     

@@ -4,10 +4,12 @@ define(['ash'], function (Ash) {
 	
         action: "",
         param: "",
+        isBusy: false,
 	
-        constructor: function (action, param) {
+        constructor: function (action, param, isBusy) {
             this.action = action;
             this.param = param;
+            this.isBusy = isBusy;
         },
         
     });

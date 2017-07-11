@@ -142,7 +142,8 @@ define(['ash',
             this.playerActionsHelper.deductCosts(action);
             this.forceResourceBarUpdate();
             
-            var duration = PlayerActionConstants.getDuration(action);
+            var baseId = this.playerActionsHelper.getBaseActionID(action);
+            var duration = PlayerActionConstants.getDuration(baseId);
             if (duration > 0) {
                 this.startBusy(action, param);
             } else {
@@ -153,9 +154,17 @@ define(['ash',
         },
         
         startBusy: function (action, param) {
-            var duration = PlayerActionConstants.getDuration(action);
+            var baseId = this.playerActionsHelper.getBaseActionID(action);
+            var duration = PlayerActionConstants.getDuration(baseId);
             if (duration > 0) {
-                this.playerStatsNodes.head.entity.get(PlayerActionComponent).addAction(action, duration, param);
+                var isBusy = PlayerActionConstants.isBusyAction(baseId);
+                this.playerStatsNodes.head.entity.get(PlayerActionComponent).addAction(action, duration, param, isBusy);
+                
+                switch (baseId) {
+                    case "send_caravan":
+                        this.addLogMessage(LogConstants.MSG_ID_START_SEND_CAMP, "A trade caravan heads out.");
+                        break;
+                }
             }
         },
         
@@ -610,6 +619,11 @@ define(['ash',
                 playerActionFunctions.uiFunctions.completeAction(action);
                 playerActionFunctions.addLogMessage(logMsgId, logMsgDefeat);
             });
+        },
+        
+        sendCaravan: function (campOrdinal) {
+            this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, "A trade caravan returns from ?? with ??.");
+            console.log("SEND CARAVAN FINISHED: " + campOrdinal);
         },
         
         fightGang: function (direction) {

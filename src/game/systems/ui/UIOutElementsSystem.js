@@ -190,7 +190,7 @@ define([
                     var ordinal = playerActionsHelper.getOrdinal(action);
                     var costFactor = playerActionsHelper.getCostFactor(action);
                     var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);
-					var duration = PlayerActionConstants.getDuration(action);
+					var duration = PlayerActionConstants.getDuration(baseActionId);
                     var hasEnemies = fightHelper.hasEnemiesCurrentLocation(action);
 					var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
                     var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);

@@ -4,24 +4,39 @@ define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
         
         endTimeStampToActionDict: {},
         endTimeStampList: [],
-        startTime: -1,
+        busyStartTime: -1,
         
         constructor: function () {
             this.endTimeStampToActionDict = {};
             this.endTimeStampList = [];
         },
         
-        addAction: function (action, duration, param) {
-            if (!this.isBusy()) this.startTime = new Date().getTime();
+        addAction: function (action, duration, param, isBusyAction) {
+            if (!this.isBusy() && isBusyAction) this.busyStartTime = new Date().getTime();
             var endTimeStamp = new Date().getTime() + duration * 1000;
-            this.endTimeStampToActionDict[endTimeStamp] = new PlayerActionVO(action, param);
+            this.endTimeStampToActionDict[endTimeStamp] = new PlayerActionVO(action, param, isBusyAction);
             this.endTimeStampList.push(endTimeStamp);
             this.sortTimeStamps();
         },
         
-        getLastAction: function () {
-            var lastTimeStamp = this.endTimeStampList[this.endTimeStampList.length - 1];
-            return this.endTimeStampToActionDict[lastTimeStamp];
+        getLastAction: function (requireBusy) {
+            return this.endTimeStampToActionDict[this.getLastTimeStamp(requireBusy)];
+        },
+        
+        getLastTimeStamp: function (requireBusy) {
+            var lastTimeStamp = -1;
+            if (requireBusy) {
+                for (var i = this.endTimeStampList.length - 1; i >= 0; i--) {
+                    var action = this.endTimeStampToActionDict[this.endTimeStampList[i]];
+                    if (action.isBusy) {
+                        lastTimeStamp = this.endTimeStampList[i];
+                        break;
+                    }
+                }
+            } else {
+                lastTimeStamp = this.endTimeStampList[this.endTimeStampList.length - 1];
+            }
+            return lastTimeStamp;
         },
         
         applyExtraTime: function (extraTime) {
@@ -47,13 +62,13 @@ define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
         isBusy: function () {
             if (this.endTimeStampList.length < 1) return false;
             var now = new Date().getTime();
-            var lastTimeStamp = this.endTimeStampList[this.endTimeStampList.length - 1];
+            var lastTimeStamp = this.getLastTimeStamp(true);
             var diff = lastTimeStamp - now;
             return diff > 0;
         },
         
-        getDescription: function () {
-            switch (this.getLastAction().action) {
+        getBusyDescription: function () {
+            switch (this.getLastAction(true).action) {
                 case "use_in_home": return "resting";
                 case "use_in_campfire": return "discussing";
                 case "use_in_hospital": return "recovering";
@@ -61,11 +76,11 @@ define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
             }
         },
         
-        getPercentage: function () {
+        getBusyPercentage: function () {
             if (!this.isBusy()) return 100;
-            var lastTimeStamp = this.endTimeStampList[this.endTimeStampList.length - 1];
-            var totalTime = lastTimeStamp - this.startTime;
-            var timePassed = new Date().getTime() - this.startTime;
+            var lastTimeStamp = this.getLastTimeStamp(true);
+            var totalTime = lastTimeStamp - this.busyStartTime;
+            var timePassed = new Date().getTime() - this.busyStartTime;
             return timePassed / totalTime * 100;
         },
     });

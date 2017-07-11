@@ -465,8 +465,8 @@ define([
                 var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
                 var isBusy = this.playerStatsNodes.head.entity.has(PlayerActionComponent) && busyComponent.isBusy();
                 if (isBusy) {
-                    $("#notification-player-bar").data("progress-percent", busyComponent.getPercentage());
-                    $("#notification-player-bar .progress-label").text(busyComponent.getDescription());
+                    $("#notification-player-bar").data("progress-percent", busyComponent.getBusyPercentage());
+                    $("#notification-player-bar .progress-label").text(busyComponent.getBusyDescription());
                 }
                 $("#notification-player").css("opacity", isBusy ? 1 : 0);
             }

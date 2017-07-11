@@ -23,6 +23,8 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
         MSG_ID_USE_HOSPITAL: "USE_HOSPITAL",
         MSG_ID_USE_HOSPITAL2: "USE_HOSPITAL2",
         MSG_ID_BOUGHT_UPGRADE: "MSG_ID_BOUGHT_UPGRADE",
+        MSG_ID_START_SEND_CAMP: "MSG_ID_START_SEND_CAMP",
+        MSG_ID_FINISH_SEND_CAMP: "MSG_ID_FINISH_SEND_CAMP",
         
         // out atmospheric and results
         MSG_ID_ADD_HAZARD_PERK: "MSG_ID_ADD_HAZARD_PERK",

@@ -185,7 +185,8 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
                 if (!isStarted)
                     return;
                 
-                var duration = PlayerActionConstants.getDuration(action);
+                var baseId = playerActions.playerActionsHelper.getBaseActionID(action);
+                var duration = PlayerActionConstants.getDuration(baseId);
                 if (duration > 0) {
                     uiFunctions.gameState.setActionDuration(action, locationKey, duration);
                     uiFunctions.startButtonDuration($(this), duration);
@@ -514,11 +515,12 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             var durationTotal;
             $.each($("button.action-location"), function() {
                 var action = $(this).attr("action");
+                var baseId = uiFunctions.playerActions.playerActionsHelper.getBaseActionID(action);
                 if (action) {
                     var locationKey = uiFunctions.getLocationKey($(this));
                     cooldownTotal = PlayerActionConstants.getCooldown(action);
                     cooldownLeft = Math.min(cooldownTotal, uiFunctions.gameState.getActionCooldown(action, locationKey) / 1000);
-                    durationTotal = PlayerActionConstants.getDuration(action);
+                    durationTotal = PlayerActionConstants.getDuration(baseId);
                     durationLeft = Math.min(durationTotal, uiFunctions.gameState.getActionDuration(action, locationKey) / 1000);
                     if (cooldownLeft > 0) uiFunctions.startButtonCooldown($(this), cooldownTotal, cooldownLeft);
                     else uiFunctions.stopButtonCooldown($(this));
