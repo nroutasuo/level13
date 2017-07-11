@@ -8,11 +8,10 @@ define(['ash',
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
 	'game/constants/FightConstants',
-	'game/constants/EnemyConstants',
-	'game/constants/UpgradeConstants',
-	'game/constants/UIConstants',
+	'game/constants/TradeConstants',
 	'game/constants/TextConstants',
 	'game/vos/PositionVO',
+	'game/vos/LocaleVO',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/FightNode',
 	'game/nodes/player/PlayerStatsNode',
@@ -50,8 +49,8 @@ define(['ash',
 	'game/systems/PlayerPositionSystem',
 	'game/systems/SaveSystem',
 ], function (Ash,
-	LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, EnemyConstants, UpgradeConstants, UIConstants, TextConstants,
-	PositionVO,
+	LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, TextConstants,
+	PositionVO, LocaleVO,
     PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
@@ -523,11 +522,19 @@ define(['ash',
             var localeVO = sectorLocalesComponent.locales[i];
             var action = "scout_locale_" + localeVO.getCategory() + "_" + i;
                 
-            // TODO add more interesting log messages
+            // TODO add more interesting log messages - especially for trade partners
             var localeName = TextConstants.getLocaleName(localeVO, sectorFeaturesComponent.stateOfRepair);
             localeName = localeName.split(" ")[localeName.split(" ").length - 1];
             var baseMsg = "Scouted the " + localeName +  ". ";
             var logMsgSuccess = baseMsg;
+            if (localeVO.type === localeTypes.tradingpartner) {
+                var playerPos = this.playerPositionNodes.head.position;
+                var level = playerPos.level;
+                var campOrdinal = this.gameState.getCampOrdinal(level);
+                console.log(campOrdinal);
+                var partnerName = TradeConstants.getTradePartner(campOrdinal).name;
+                logMsgSuccess += "<br/>Found a new <span class='text-highlight-functionality'>trading partner</span>. They call this place " + partnerName + ".";
+            }
             var logMsgFlee = baseMsg + " Got surprised and fled.";
             var logMsgDefeat = baseMsg + " Got surprised and beaten.";
 
@@ -535,8 +542,8 @@ define(['ash',
             var successCallback = function () {
                 sectorStatus.localesScouted[i] = true;
                 if (localeVO.type === localeTypes.tradingpartner) {
-                    var playerPos = this.playerPositionNodes.head.position;
-                    var level = 
+                    var playerPos = playerActionFunctions.playerPositionNodes.head.position;
+                    var level = playerPos.level;
                     var campOrdinal = playerActionFunctions.gameState.getCampOrdinal(level);
                     playerActionFunctions.gameState.foundTradingPartners.push(campOrdinal);
                 }

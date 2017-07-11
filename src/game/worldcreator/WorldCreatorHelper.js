@@ -200,7 +200,8 @@ define([
             var levelOrdinal = campOrdinal;
             var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
             for (var i = 0; i < camplessLevelOrdinals.length; i++) {
-                if (camplessLevelOrdinals[i] <= campOrdinal) levelOrdinal++;
+                if (camplessLevelOrdinals[i] <= campOrdinal) 
+                    levelOrdinal++;
             }
             return levelOrdinal;
         },

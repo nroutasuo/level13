@@ -172,8 +172,12 @@ define([
             var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
             var localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
 
+            // TODO no blueprints from trading partners?
             rewards.gainedBlueprintPiece = this.getResultBlueprint(localeVO);
-            if (localeCategory === "u") {
+            
+            if (localeVO.type === localeTypes.tradingpartner) {
+                rewards.gainedRumours = Math.random() < 0.3 ? Math.ceil(Math.random() * levelOrdinal * levelOrdinal) : 0;
+            } else if (localeCategory === "u") {
                 rewards.gainedEvidence = 1;
                 rewards.gainedPopulation = Math.random() < 0.05 ? 1 : 0;
             } else {
@@ -182,7 +186,7 @@ define([
                 rewards.gainedRumours = Math.random() < 0.3 ? Math.ceil(Math.random() * levelOrdinal * levelOrdinal) : 0;
             }
 
-            if (rewards.gainedInjuries.length === 0) {
+            if (rewards.gainedInjuries.length === 0 && localeVO.type !== localeTypes.tradingpartner) {
                 if (localeCategory === "u") {
                     rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
                     rewards.gainedItems = this.getRewardItems(0.2, 0, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);

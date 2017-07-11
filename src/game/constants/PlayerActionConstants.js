@@ -1979,7 +1979,7 @@ function (Ash, GameConstants, CampConstants) {
             },
             
             getRandomEncounterProbability: function (baseActionID, vision) {
-                // TODO for locales get probability based on locale type
+                // TODO for locales get probability based on locale type - for trading partners no encounters!
                 if (this.randomEncounterProbabilities[baseActionID]) {
                     var visionFactor = 1 - vision / 100;
                     var baseProbability = this.randomEncounterProbabilities[baseActionID];

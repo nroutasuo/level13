@@ -3,6 +3,7 @@ define([
 	'ash',
 	'game/constants/GameConstants',
 	'game/constants/LevelConstants',
+	'game/constants/TradeConstants',
     'game/worldcreator/WorldCreatorHelper',
     'game/worldcreator/WorldCreatorRandom',
     'game/worldcreator/WorldCreatorDebug',
@@ -19,7 +20,7 @@ define([
 	'game/constants/UpgradeConstants',
 	'game/constants/LocaleConstants',
 ], function (
-    Ash, GameConstants, LevelConstants,
+    Ash, GameConstants, LevelConstants, TradeConstants,
     WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug,
     WorldVO, LevelVO, SectorVO, ResourcesVO, LocaleVO, PositionVO,
     WorldCreatorConstants, PositionConstants, MovementConstants, EnemyConstants, UpgradeConstants, LocaleConstants
@@ -272,13 +273,16 @@ define([
 		// locales
 		prepareWorldLocales: function (seed, topLevel, bottomLevel) {
             // 1) spawn trading partners
-            for (var i = 0; i < WorldCreatorConstants.TRADING_PARTNERS.length; i++) {
-                var partner = WorldCreatorConstants.TRADING_PARTNERS[i];
-                var level = WorldCreatorHelper.getLevelOrdinalForCampOrdinal(seed, partner.campOrdinal);
+            for (var i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
+                var partner = TradeConstants.TRADING_PARTNERS[i];
+                var levelOrdinal = WorldCreatorHelper.getLevelOrdinalForCampOrdinal(seed, partner.campOrdinal);
+                var level = WorldCreatorHelper.getLevelOrdinal(seed, levelOrdinal);
                 var levelVO = this.world.getLevel(level);
                 var sectorVO = WorldCreatorRandom.randomSector(seed - 9393 + i * i, levelVO, false);
                 var locale = new LocaleVO(localeTypes.tradingpartner, true);
                 sectorVO.locales.push(locale);
+                console.log("Add trading partner for camp ordinal: " + partner.campOrdinal);
+                console.log(sectorVO.position);
             }
                 
 			var getLocaleType = function (sectorType, level, levelOrdinal, localeRandom) {
@@ -365,7 +369,7 @@ define([
 			}
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World locales ready.");
-            WorldCreatorDebug.printWorld(this.world, [ "locales.length" ]);
+            // WorldCreatorDebug.printWorld(this.world, [ "locales.length" ]);
 		},
 		
 		// enemies

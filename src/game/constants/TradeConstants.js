@@ -1,6 +1,26 @@
-define(['ash', 'game/constants/ItemConstants', 'game/constants/UpgradeConstants'], function (Ash, ItemConstants, UpgradeConstants) {
+define(['ash', 'game/constants/ItemConstants', 'game/constants/UpgradeConstants', 'game/vos/TradingPartnerVO'], 
+function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO) {
     
     var TradeConstants = {
+        
+        TRADING_PARTNERS: [
+            new TradingPartnerVO(3, "Bone Crossing", [resourceNames.rope], [resourceNames.metal], false),
+            new TradingPartnerVO(4, "Slugger Town", [resourceNames.metal], [], false),
+            new TradingPartnerVO(6, "Old Waterworks", [resourceNames.fuel], [], true),
+            new TradingPartnerVO(7, "Mill Road Academy", [resourceNames.food, resourceNames.water], [resourceNames.metal], true),
+            new TradingPartnerVO(9, "Bleaksey", [resourceNames.herbs], [resourceNames.medicine], false),
+            new TradingPartnerVO(10, "Pinewood", [resourceNames.medicine], [], true),
+            new TradingPartnerVO(12, "Highgate", [resourceNames.tools], [resourceNames.metal], true),
+            new TradingPartnerVO(14, "Factory 32", [resourceNames.concrete], [resourceNames.metal], true),
+        ],
+        
+        getTradePartner: function (campOrdinal) {
+            for (var i = 0; i < this.TRADING_PARTNERS.length; i++) {
+                if (this.TRADING_PARTNERS[i].campOrdinal === campOrdinal)
+                    return this.TRADING_PARTNERS[i];
+            }
+            return null;
+        },
         
         getResourceValue: function (name) {
             switch (name) {
