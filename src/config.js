@@ -11,7 +11,7 @@ require.config({
         game: "game",
 
         // Libraries
-        ash: "../lib/ash/ash",
+        ash: "../lib/ash/ash.min",
         jquery: "../lib/jquery/"
     },
     
