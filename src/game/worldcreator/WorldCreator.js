@@ -276,7 +276,7 @@ define([
             for (var i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
                 var partner = TradeConstants.TRADING_PARTNERS[i];
                 var levelOrdinal = WorldCreatorHelper.getLevelOrdinalForCampOrdinal(seed, partner.campOrdinal);
-                var level = WorldCreatorHelper.getLevelOrdinal(seed, levelOrdinal);
+                var level = WorldCreatorHelper.getLevelForOrdinal(seed, levelOrdinal);
                 var levelVO = this.world.getLevel(level);
                 var sectorVO = WorldCreatorRandom.randomSector(seed - 9393 + i * i, levelVO, false);
                 var locale = new LocaleVO(localeTypes.tradingpartner, true);

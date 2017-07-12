@@ -185,6 +185,15 @@ define([
                 return -level + 14;
             }
 		},
+        
+        getLevelForOrdinal: function (seed, levelOrdinal) {
+            var bottomLevel = this.getBottomLevel(seed);
+            var bottomLevelOrdinal = this.getLevelOrdinal(seed, bottomLevel);
+            if (levelOrdinal <= bottomLevelOrdinal)
+                return 13 - (levelOrdinal - 1);
+            else
+                return 13 + (levelOrdinal - bottomLevelOrdinal);
+        },
 		
 		getCampOrdinal: function (seed, level) {
             var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
