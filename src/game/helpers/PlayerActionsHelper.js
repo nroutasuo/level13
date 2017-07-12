@@ -25,6 +25,7 @@ define([
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
     'game/components/player/DeityComponent',
+    'game/components/sector/OutgoingCaravansComponent',
     'game/components/sector/PassagesComponent',
     'game/components/sector/EnemiesComponent',
     'game/components/sector/MovementOptionsComponent',
@@ -39,7 +40,7 @@ define([
 	Ash, PositionConstants, PlayerActionConstants, PlayerActionsHelperConstants, PlayerStatConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	LevelComponent, PositionComponent, PlayerActionComponent, BagComponent, ItemsComponent, PerksComponent, DeityComponent,
-	PassagesComponent, EnemiesComponent, MovementOptionsComponent,
+	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
 	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, SectorImprovementsComponent,
 	CampComponent,
     ResourcesVO
@@ -874,6 +875,17 @@ define([
 
                     case "unlock_upgrade":
                         return { blueprint: 1 };
+                        
+                    case "send_caravan":
+                        var campOrdinal = parseInt(action.replace(baseActionID + "_", ""));
+                        var caravansComponent = sector.get(OutgoingCaravansComponent);
+                        var costs = {};
+                        if (caravansComponent && caravansComponent.pendingCaravan && caravansComponent.pendingCaravan.campOrdinal == campOrdinal) {
+                            costs["resource_" + caravansComponent.pendingCaravan.sellGood] = caravansComponent.pendingCaravan.sellAmount;
+                        } else if (caravansComponent && caravansComponent.outgoingCaravans[campOrdinal]) {
+                            costs["resource_" + caravansComponent.outgoingCaravans[campOrdinal].sellGood] = caravansComponent.outgoingCaravans[campOrdinal].sellAmount;
+                        }
+                        return costs;
 				}
 			}
 		

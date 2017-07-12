@@ -336,7 +336,7 @@ define([
 			var foundSomething = rewards.gainedResources.getTotal() > 0;
 
 			var resourceTemplate = TextConstants.getLogResourceText(rewards.gainedResources);
-			msg += "Found " + resourceTemplate.msg;
+			msg += "Gained " + resourceTemplate.msg;
 			replacements = replacements.concat(resourceTemplate.replacements);
 			values = values.concat(resourceTemplate.values);
             

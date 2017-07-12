@@ -33,6 +33,7 @@ define([
     'game/components/sector/SectorControlComponent',
     'game/components/sector/EnemiesComponent',
     'game/components/sector/events/CampEventTimersComponent',
+    'game/components/sector/OutgoingCaravansComponent',
     'game/components/sector/MovementOptionsComponent',
     'game/components/sector/PassagesComponent',
     'game/components/sector/SectorFeaturesComponent',
@@ -76,6 +77,7 @@ define([
     SectorControlComponent,
     EnemiesComponent,
     CampEventTimersComponent,
+    OutgoingCaravansComponent,
     MovementOptionsComponent,
     PassagesComponent,
     SectorFeaturesComponent,
@@ -176,6 +178,7 @@ define([
 				CampComponent,
                 CurrencyComponent,
                 ReputationComponent,
+                OutgoingCaravansComponent,
 				CampEventTimersComponent,
 				SectorImprovementsComponent,
 				SectorStatusComponent,
@@ -223,6 +226,9 @@ define([
 			}
 			if (entity.has(CampComponent) && !entity.has(CurrencyComponent)) {
 				entity.add(new CurrencyComponent(0));
+			}
+			if (entity.has(CampComponent) && !entity.has(OutgoingCaravansComponent)) {
+				entity.add(new OutgoingCaravansComponent());
 			}
 		},
     });

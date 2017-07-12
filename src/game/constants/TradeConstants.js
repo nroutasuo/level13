@@ -1,10 +1,13 @@
-define(['ash', 'game/constants/ItemConstants', 'game/constants/UpgradeConstants', 'game/vos/TradingPartnerVO'], 
-function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO) {
+define(['ash', 'game/constants/ItemConstants', 'game/constants/UpgradeConstants', 'game/vos/TradingPartnerVO', 'game/vos/ResourcesVO', 'game/vos/ResultVO'], 
+function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO, ResourcesVO, ResultVO) {
     
     var TradeConstants = {
         
         MIN_OUTGOING_CARAVAN_RES: 50,
         MAX_OUTGOING_CARAVAN_RES: 1000,
+        
+        GOOD_TYPE_NAME_CURRENCY: "currency",
+        GOOD_TYPE_NAME_INGREDIENTS: "ingredients",
         
         VALUE_INGREDIENTS: 0.05,
         
@@ -25,6 +28,50 @@ function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO) {
                     return this.TRADING_PARTNERS[i];
             }
             return null;
+        },
+        
+        makeResultVO: function (outgoingCaravan) {
+            var result = new ResultVO("send_camp");
+            var amountTraded = TradeConstants.getAmountTraded(outgoingCaravan.buyGood, outgoingCaravan.sellGood, outgoingCaravan.sellAmount);
+            if (isResource(outgoingCaravan.buyGood)) {
+                result.gainedResources.setResource(outgoingCaravan.buyGood, amountTraded);
+            } else if (outgoingCaravan.buyGood === TradeConstants.GOOD_TYPE_NAME_CURRENCY) {
+                result.gainedCurrency = amountTraded;
+            } else if (outgoingCaravan.buyGood === TradeConstants.GOOD_TYPE_NAME_INGREDIENTS) {
+                var numIngredients = Math.min(amountTraded, Math.floor(Math.random() * 3) + 1);
+                var amountLeft = amountTraded;
+                for (var i = 0; i < numIngredients; i++) {
+                    var ingredient = ItemConstants.getIngredient();
+                    var max = amountLeft;
+                    var min = Math.min(amountLeft, 1);
+                    var amount = Math.floor(Math.random() * max) + min;
+                    for (var j = 0; j < amount; j++) {
+                        result.gainedItems.push(ingredient.clone());
+                    }
+                    amountLeft -= amount;
+                }
+            } else {
+                console.log("WARN: Unknown buy good: " + outgoingCaravan.buyGood);
+            }
+            result.selectedItems = result.gainedItems;
+            result.selectedResources = result.gainedResources;
+            return result;
+        },
+        
+        getAmountTraded: function (buyGood, sellGood, sellAmount) {
+            var amountGet = 0;
+            var valueSell = TradeConstants.getResourceValue(sellGood) * sellAmount;
+            if (isResource(buyGood)) {
+                amountGet = valueSell / TradeConstants.getResourceValue(buyGood);
+            } else if (buyGood === TradeConstants.GOOD_TYPE_NAME_CURRENCY) {
+                amountGet = valueSell;
+            } else if (buyGood === TradeConstants.GOOD_TYPE_NAME_INGREDIENTS) {
+                amountGet = valueSell / TradeConstants.VALUE_INGREDIENTS;
+            } else {
+                console.log("WARN: Unknown buy good: " + buyGood);
+            }
+            amountGet = Math.floor(amountGet+0.001);
+            return amountGet;
         },
         
         getResourceValue: function (name) {

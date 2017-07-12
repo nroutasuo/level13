@@ -41,6 +41,7 @@ define(['ash',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/LastVisitedCampComponent',
 	'game/components/sector/PassagesComponent',
+	'game/components/sector/OutgoingCaravansComponent',
 	'game/components/sector/events/CampEventTimersComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/systems/ui/UIOutHeaderSystem',
@@ -58,7 +59,7 @@ define(['ash',
 	BagComponent, ItemsComponent, PerksComponent, DeityComponent, PlayerActionComponent, PlayerActionResultComponent,
 	CampComponent, CurrencyComponent, LevelComponent, SectorImprovementsComponent, WorkshopComponent,
 	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
-	PassagesComponent, CampEventTimersComponent,
+	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, 
 	LogMessagesComponent,
 	UIOutHeaderSystem, UIOutElementsSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem, SaveSystem
 ) {
@@ -135,6 +136,7 @@ define(['ash',
         },
         
         startAction: function (action, param) {
+            console.log("start action: " + action + " | " + param);
             var otherSector = this.getActionSector(action, param);
             if (!this.playerActionsHelper.checkAvailability(action, true, otherSector))
                 return false;
@@ -622,8 +624,38 @@ define(['ash',
         },
         
         sendCaravan: function (campOrdinal) {
-            this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, "A trade caravan returns from ?? with ??.");
-            console.log("SEND CARAVAN FINISHED: " + campOrdinal);
+            var campSector;
+            var campOutgoingCaravansComponent;
+            var caravan;
+            for (var node = this.campNodes.head; node; node = node.next) {
+                campOutgoingCaravansComponent = node.entity.get(OutgoingCaravansComponent);
+                for (var caravanOrdinal in campOutgoingCaravansComponent.outgoingCaravans) {
+                    if (caravanOrdinal == campOrdinal) {
+                        campSector = node.entity;
+                        caravan = campOutgoingCaravansComponent.outgoingCaravans[caravanOrdinal];
+                        break;
+                    }
+                }
+                
+                if (campSector && caravan)
+                    break;
+            }
+            
+            if (!campSector || !caravan) {
+                console.log("WARN: No matching returning caravan found.");
+                return;
+            }
+            
+            var tradePartner = TradeConstants.getTradePartner(parseInt(campOrdinal));
+            var result = TradeConstants.makeResultVO(caravan);
+            var logMsg = this.playerActionResultsHelper.getRewardsMessage(result, "A trade caravan returns from " + tradePartner.name + ". ");
+            
+            this.playerActionResultsHelper.collectRewards(true, result);
+            this.uiFunctions.completeAction("send_caravan");
+            this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, logMsg.msg, logMsg.replacements, logMsg.values);
+            this.playerActionResultsHelper.logResults(result);
+            
+            this.forceResourceBarUpdate();
         },
         
         fightGang: function (direction) {
@@ -660,6 +692,7 @@ define(['ash',
             campComponent.foundedTimeStamp = this.gameState.gamePlayedSeconds;
             sector.add(campComponent);
             sector.add(new CampEventTimersComponent());
+            sector.add(new OutgoingCaravansComponent());
             sector.add(new ReputationComponent());
             sector.add(new CurrencyComponet());
 

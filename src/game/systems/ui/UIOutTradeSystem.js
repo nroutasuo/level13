@@ -1,15 +1,20 @@
 define([
     'ash',
     'game/constants/TradeConstants',
-    'game/vos/ResourcesVO'
+    'game/nodes/PlayerLocationNode',
+    'game/components/sector/OutgoingCaravansComponent',
+    'game/vos/ResourcesVO',
+    'game/vos/OutgoingCaravanVO'
 ], function (
-    Ash, TradeConstants, ResourcesVO
+    Ash, TradeConstants, PlayerLocationNode, OutgoingCaravansComponent, ResourcesVO, OutgoingCaravanVO
 ) {
     var UIOutTradeSystem = Ash.System.extend({
         
         bubbleNumber: 0,
         availableTradingPartnersCount: 0,
         lastShownTradingPartnersCount: -1,
+        
+        playerLocationNodes: null,
         
         constructor: function (uiFunctions, tabChangedSignal, gameState, resourcesHelper) {
             this.uiFunctions = uiFunctions;
@@ -21,13 +26,16 @@ define([
 
         addToEngine: function (engine) {
             this.engine  = engine;
+            this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
         },
 
         removeFromEngine: function (engine) {
             this.engine = null;
+            this.playerLocationNodes = null;
         },
 
         update: function (time) {
+            if (!this.playerLocationNodes.head) return;
             var isActive = this.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.trade;
             
             this.updateBubble();
@@ -90,19 +98,20 @@ define([
                     sendTR += "<option value='" + partner.sellsResources[k] + "'>" + partner.sellsResources[k] + "</option>";
                 }
                 if (partner.usesCurrency) {
-                    sendTR += "<option value='currency'>silver</option>";
+                    sendTR += "<option value='" + TradeConstants.GOOD_TYPE_NAME_CURRENCY + "'>silver</option>";
                 }
                 else if (partner.sellsResources.length === 0) {
-                    sendTR += "<option value='ingredients'>crafting ingredients</option>";                    
+                    sendTR += "<option value='" + TradeConstants.GOOD_TYPE_NAME_INGREDIENTS + "'>crafting ingredients</option>";                    
                 }
                 sendTR += "</select>";
                 sendTR += " <span class='trade-buy-value'>0</span>";
                 sendTR += "</td>";
-                sendTR += "<td class='minwidth'><button class='action' action='send_caravan_" + partner.campOrdinal + "'>Send</button></td></tr>";
+                sendTR += "<td class='minwidth'><button class='action btn-trade-caravans-outgoing-send' action='send_caravan_" + partner.campOrdinal + "'>Send</button></td></tr>";
                 $("#trade-caravans-outgoing-container table").append(sendTR);
             }
             
             // TODO animate transitions
+            var sys = this;
             $(".btn-trade-caravans-outgoing-toggle").click(function() {
                 var ordinal = $(this).attr("id").split("_")[3];
                 var tr = $("#trade-caravans-outgoing-plan-" + ordinal);
@@ -116,7 +125,14 @@ define([
                 if (!wasVisible) {
                     $(this).text("Cancel");
                     $(tr).toggle(true);
-                }                
+                    sys.initPendingCaravan(ordinal);
+                } else {
+                    sys.resetPendingCaravan();
+                }
+            });
+            $(".btn-trade-caravans-outgoing-send").click(function() {
+                var ordinal = $(this).attr("action").split("_")[2];
+                sys.confirmPendingCaravan(ordinal);
             });
             
             this.uiFunctions.generateButtonOverlays("#trade-caravans-outgoing-container table");
@@ -127,6 +143,8 @@ define([
         },
         
         updateOutgoingCaravanPrepare: function () {
+            var caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
+            
             var selectedCaravanTR = $(".trade-caravans-outgoing-plan:visible");
             if (selectedCaravanTR.length < 1)
                 return;
@@ -156,24 +174,44 @@ define([
                 $(trID + " .trade-sell-value").toggle(false);
             }
             
-            // set get value
-            var valueSell = TradeConstants.getResourceValue(selectedSell) * amountSell;
-            var amountGet = 0;
-            if (isResource(selectedBuy)) {
-                amountGet = valueSell / TradeConstants.getResourceValue(selectedBuy);
-            } else if (selectedBuy === "currency") {
-                amountGet = valueSell;
-            } else if (selectedBuy === "ingredients") {
-                amountGet = valueSell / TradeConstants.VALUE_INGREDIENTS;
-            } else {
-                console.log("WARN: Unknown buy good: " + selectedBuy);
-            }
-            amountGet = Math.floor(amountGet+0.001);
+            // set get amount
+            var amountGet = TradeConstants.getAmountTraded(selectedBuy, selectedSell, amountSell);
             $(trID + " .trade-buy-value").text(amountGet);
             
             // set valid selection
             var isValid = hasEnoughSellRes && amountSell > 0 && amountGet > 0;
             $(trID + " button.action").attr("data-isselectionvalid", isValid);
+            
+            if (caravansComponent.pendingCaravan) {
+                caravansComponent.pendingCaravan.sellGood = selectedSell;
+                caravansComponent.pendingCaravan.sellAmount = amountSell;
+                caravansComponent.pendingCaravan.buyGood = selectedBuy;
+            }
+        },
+        
+        confirmPendingCaravan: function (campOrdinal) {
+            campOrdinal = parseInt(campOrdinal);
+            var caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
+            if (!caravansComponent.pendingCaravan || caravansComponent.pendingCaravan.campOrdinal != campOrdinal) {
+                console.log("WARN: Can't start caravan. No valid pending caravans found.");
+                return;
+            }
+            if (caravansComponent.outgoingCaravans[campOrdinal]) {
+                console.log("WARN: Can't start caravan. Camp ordinal already occupied.");
+                return;
+            }
+            caravansComponent.outgoingCaravans[campOrdinal] = caravansComponent.pendingCaravan;
+            caravansComponent.pendingCaravan = null;
+        },
+        
+        initPendingCaravan: function (campOrdinal) {
+            var caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
+            caravansComponent.pendingCaravan = new OutgoingCaravanVO(campOrdinal);
+        },
+        
+        resetPendingCaravan: function () {
+            var caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
+            caravansComponent.pendingCaravan = null;
         }
         
     });
