@@ -649,11 +649,12 @@ define(['ash',
             var tradePartner = TradeConstants.getTradePartner(parseInt(campOrdinal));
             var result = TradeConstants.makeResultVO(caravan);
             var logMsg = this.playerActionResultsHelper.getRewardsMessage(result, "A trade caravan returns from " + tradePartner.name + ". ");
+            var pendingPosition = campSector.get(PositionComponent).clone();
+            pendingPosition.inCamp = true;
             
-            this.playerActionResultsHelper.collectRewards(true, result);
+            this.playerActionResultsHelper.collectRewards(true, result, campSector);
             this.uiFunctions.completeAction("send_caravan");
-            this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, logMsg.msg, logMsg.replacements, logMsg.values);
-            this.playerActionResultsHelper.logResults(result);
+            this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, logMsg.msg, logMsg.replacements, logMsg.values, pendingPosition);
             
             this.forceResourceBarUpdate();
         },

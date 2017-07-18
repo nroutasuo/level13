@@ -21,6 +21,7 @@ define(['ash'], function (Ash) {
 		},
 	
 		setPendingOver: function () {
+            this.loadedFromSave = false;
 			this.time = new Date();
 		},
 		

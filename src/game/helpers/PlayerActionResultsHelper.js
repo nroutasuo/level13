@@ -14,6 +14,7 @@ define([
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/tribe/TribeUpgradesNode',
     'game/nodes/NearestCampNode',
+    'game/components/common/ResourcesComponent',
     'game/components/common/CurrencyComponent',
     'game/components/common/LogMessagesComponent',
     'game/components/sector/SectorFeaturesComponent',
@@ -39,6 +40,7 @@ define([
     PlayerResourcesNode,
     TribeUpgradesNode,
     NearestCampNode,
+    ResourcesComponent,
     CurrencyComponent,
     LogMessagesComponent,
     SectorFeaturesComponent,
@@ -244,8 +246,8 @@ define([
             return resultVO;
         },
 
-		collectRewards: function (isTakeAll, rewards) {
-			var currentStorage = this.resourcesHelper.getCurrentStorage();
+		collectRewards: function (isTakeAll, rewards, campSector) {
+			var currentStorage = campSector ? campSector.get(ResourcesComponent) : this.resourcesHelper.getCurrentStorage();
 			var playerPos = this.playerLocationNodes.head.position;
             
             if (isTakeAll) {
@@ -259,16 +261,18 @@ define([
 			currentStorage.substractResources(rewards.discardedResources);
 			currentStorage.substractResources(rewards.lostResources);
 
-			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
-			for (var key in resourceNames) {
-				var name = resourceNames[key];
-				var amount = rewards.gainedResources.getResource(name);
-				var inSector = sectorResources.getResource(name) > 0;
-				if (amount > 0 && inSector) {
-					sectorStatus.addDiscoveredResource(name);
-				}
-			}
+            if (!campSector) {
+                var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+                var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
+                for (var key in resourceNames) {
+                    var name = resourceNames[key];
+                    var amount = rewards.gainedResources.getResource(name);
+                    var inSector = sectorResources.getResource(name) > 0;
+                    if (amount > 0 && inSector) {
+                        sectorStatus.addDiscoveredResource(name);
+                    }
+                }
+            }
             
             var currencyComponent = this.playerStatsNodes.head.entity.get(CurrencyComponent);
             currencyComponent.currency += rewards.gainedCurrency;
@@ -277,7 +281,7 @@ define([
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			if (rewards.selectedItems) {
 				for (var i = 0; i < rewards.selectedItems.length; i++) {
-					itemsComponent.addItem(rewards.selectedItems[i], !playerPos.inCamp);
+					itemsComponent.addItem(rewards.selectedItems[i], !playerPos.inCamp && !campSector);
 				}
 			}
 			

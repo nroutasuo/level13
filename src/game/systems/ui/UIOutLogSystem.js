@@ -55,13 +55,13 @@ define([
 			var validInCamp;
 			for (var node = this.logNodes.head; node; node = node.next) {
 				var pendingMessages = node.logMessages.messagesPendingMovement;
-				for(var i in pendingMessages) {
+				for (var i in pendingMessages) {
 					var msg = node.logMessages.messagesPendingMovement[i];
 					validLevel = !msg.pendingLevel || msg.pendingLevel == playerPosition.level;
 					validSector = !msg.pendingSector || msg.pendingSector == playerPosition.sectorId();
-					validInCamp = (typeof msg.pendingInCamp === "undefined") || msg.pendingInCamp == playerPosition.inCamp;
+					validInCamp = (typeof msg.pendingInCamp === "undefined") || msg.pendingInCamp === playerPosition.inCamp;
 					if (validLevel && validSector && validInCamp) {
-					node.logMessages.showPendingMessage(msg);
+                        node.logMessages.showPendingMessage(msg);
 					}
 				}
             }

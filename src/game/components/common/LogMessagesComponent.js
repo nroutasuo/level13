@@ -40,7 +40,8 @@ function (Ash, LogConstants, LogMessageVO) {
 		},
 		
 		showPendingMessage: function (message) {
-			// TODO why no work? message.setPendingOver();
+            // TODO this doesn't work for some reason
+            // message.setPendingOver();
 			this.messagesPendingMovement.splice(this.messagesPendingMovement.indexOf(message), 1);
 			this.addMessageImmediate(message);
 		},
