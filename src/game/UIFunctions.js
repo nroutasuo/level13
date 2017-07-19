@@ -650,6 +650,10 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             this.showSpecialPopup("inn-popup");
         },
         
+        showIncomingCaravanPopup: function () {
+            this.showSpecialPopup("incoming-caravan-popup");
+        },
+        
         showSpecialPopup: function (popupID) {
             if ($("#" + popupID).is(":visible")) return;
             $("#" + popupID).wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");

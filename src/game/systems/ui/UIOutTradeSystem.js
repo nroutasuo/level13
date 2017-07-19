@@ -1,18 +1,22 @@
 define([
     'ash',
     'game/constants/TradeConstants',
+    'game/constants/UIConstants',
     'game/nodes/PlayerLocationNode',
     'game/components/sector/OutgoingCaravansComponent',
+    'game/components/sector/events/TraderComponent',
     'game/vos/ResourcesVO',
     'game/vos/OutgoingCaravanVO'
 ], function (
-    Ash, TradeConstants, PlayerLocationNode, OutgoingCaravansComponent, ResourcesVO, OutgoingCaravanVO
+    Ash, TradeConstants, UIConstants, PlayerLocationNode, OutgoingCaravansComponent, TraderComponent, ResourcesVO, OutgoingCaravanVO
 ) {
     var UIOutTradeSystem = Ash.System.extend({
         
         bubbleNumber: 0,
         availableTradingPartnersCount: 0,
         lastShownTradingPartnersCount: -1,
+        currentIncomingTraders: 0,
+        lastShownIncomingTraders: 0,
         
         playerLocationNodes: null,
         
@@ -40,6 +44,7 @@ define([
             
             this.updateBubble();
             this.updateOutgoingCaravansList(isActive);
+            this.updateIncomingCaravan(isActive);
             
             if (!isActive) {
                 $(".btn-trade-caravans-outgoing-toggle").text("Prepare Caravan");
@@ -50,6 +55,7 @@ define([
             this.updateOutgoingCaravanPrepare();
             
             $("#trade-caravans-outgoing-empty-message").toggle(this.availableTradingPartnersCount === 0);
+            $("#trade-caravans-incoming-empty-message").toggle(this.currentIncomingTraders === 0);
             $("#tab-header h2").text("Trade");
         },
         
@@ -57,6 +63,7 @@ define([
             this.bubbleNumber = this.availableTradingPartnersCount - this.lastShownTradingPartnersCount;
             if (this.lastShownTradingPartnersCount === -1)
                 this.bubbleNumber = 0;
+            this.bubbleNumber += (this.currentIncomingTraders - this.lastShownIncomingTraders);
             $("#switch-trade .bubble").text(this.bubbleNumber);
             $("#switch-trade .bubble").toggle(this.bubbleNumber > 0);  
         },
@@ -140,6 +147,59 @@ define([
             this.uiFunctions.registerActionButtonListeners("#trade-caravans-outgoing-container table");
             
             this.lastShownTradingPartnersCount = this.availableTradingPartnersCount;
+        },
+        
+        updateIncomingCaravan: function (isActive) {
+            this.currentIncomingTraders = 0;
+            
+            var traderComponent = this.playerLocationNodes.head.entity.get(TraderComponent);
+            if (traderComponent) this.currentIncomingTraders++;
+            
+            if (!isActive)
+                return;
+            
+            if (!traderComponent)
+                return;
+            
+            var caravan = traderComponent.caravan;
+            
+            if (this.lastShownIncomingCaravan === caravan)
+                return;
+            
+            // TODO show currency / more information about the trader
+            // TODO combine items
+            
+            $("#trade-caravans-incoming-container table").empty();
+            var nameTD = "<td>" + caravan.name + "</td>";
+            var inventoryUL = "<ul>";
+            for (var i = 0; i < caravan.sellItems.length; i++) {
+                inventoryUL += UIConstants.getItemSlot(caravan.sellItems[i], 1, false);
+            }
+            for (var key in resourceNames) {
+                var name = resourceNames[key];
+                var amount = caravan.sellResources.getResource(name);
+                if (amount > 0) {
+                    inventoryUL += UIConstants.getResourceLi(name, amount);
+                }
+            }
+            if (caravan.currency > 0) {
+                inventoryUL += UIConstants.getCurrencyLi(caravan.currency);
+            }
+            inventoryUL += "</ul>";
+            var inventoryTD = "<td class='maxwidth'><div class='inventorybox'>" + inventoryUL + "</div></td>";
+            var buttonsTD = "<td><button id='trade-caravans-incoming-trade'>Trade</button></td>";
+            var tr = "<tr>" + nameTD + inventoryTD + buttonsTD + "</tr>";
+            $("#trade-caravans-incoming-container table").append(tr);
+            
+            var uiFunctions = this.uiFunctions;
+            $("#trade-caravans-incoming-trade").click(function () {
+                uiFunctions.showIncomingCaravanPopup();
+            });
+            
+            this.uiFunctions.generateCallouts("#trade-caravans-incoming-container table");
+            
+            this.lastShownIncomingTraders = this.currentIncomingTraders;
+            this.lastShownIncomingCaravan = caravan;
         },
         
         updateOutgoingCaravanPrepare: function () {

@@ -8,14 +8,16 @@ define(['ash'], function (Ash) {
         buyItemTypes:[],
         buyResources: [],
         usesCurrency: false,
+        currency: 0,
 	
-        constructor: function (name, sellItems, sellResources, buyItemTypes, buyResources, usesCurrency) {
+        constructor: function (name, sellItems, sellResources, buyItemTypes, buyResources, usesCurrency, currency) {
             this.name = name;
             this.sellItems = sellItems;
             this.sellResources = sellResources;
             this.buyItemTypes = buyItemTypes;
             this.buyResources = buyResources;
             this.usesCurrency = usesCurrency;
+            this.currency = currency;
 		},
     });
 

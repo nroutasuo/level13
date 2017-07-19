@@ -232,7 +232,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
         getRequiredLevelToCraft: function (item, gameState) {
             var level = 0;
             var reqs = PlayerActionConstants.requirements["craft_" + item.id];
-            if (reqs) {
+            if (reqs && reqs.upgrades) {
                 var requiredTech = Object.keys(reqs.upgrades);
                 for (var k = 0; k < requiredTech.length; k++) {
                     var requiredTechCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredTech[k]);

@@ -944,7 +944,7 @@ div.info-callout-target {
 }
 
 .info-callout-target-small + div.info-callout {
-	width: auto; !important;
+	width: auto !important;
 	max-width: none;
 	white-space: nowrap;
 }
@@ -1200,7 +1200,7 @@ button .cooldown-action, button .cooldown-duration {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	padding: 0
+	padding: 0;
 	transition: all 0.1s;
 }
 
@@ -1323,8 +1323,16 @@ button .cooldown-action, button .cooldown-duration {
     min-height: 1em;
 }
 
-.inventorybox ul {
+.inventorydivision {
+    width: 49%;
+    display: inline-block;
+}
+
+.popup .inventorybox ul {
     width: 560px; /* 12 * 46px (li width) + padding */
+}
+
+.inventorybox ul {
     padding: 0px;
     margin: 0px;
 }

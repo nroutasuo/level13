@@ -103,7 +103,7 @@ function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO, IncomingCarava
                     if (Math.random() <= 0.75) categories.push("exploration");
                     if (Math.random() <= 0.1) categories.push("artefact");
                 }
-                var prob = 0.25;
+                var prob = 0.10;
                 while (sellItems.length < 5 && prob < 1) {
                     addSellItemsFromCategories(categories, prob, 1);
                     prob += 0.05;
@@ -173,7 +173,8 @@ function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO, IncomingCarava
                 usesCurrency = partner.usesCurrency;
             }
             
-            return new IncomingCaravanVO(name, sellItems, sellResources, buyItemTypes, buyResources, usesCurrency);
+            var currency = usesCurrency ? 2 + Math.floor(Math.random() * levelOrdinal) : 0;
+            return new IncomingCaravanVO(name, sellItems, sellResources, buyItemTypes, buyResources, usesCurrency, currency);
         },
         
         getTradePartner: function (campOrdinal) {

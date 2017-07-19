@@ -100,10 +100,22 @@ define(['ash',
 			div += this.getResourceImg(name);
 			div += "<div class='item-count lvl13-box-3'>" + Math.floor(amount) + "x </div>";
 			div += "</div>";
-			div += "</div>"
+			div += "</div>";
 			var imageDiv = "<div class='item-slot-image'>" + div + "</div>";
 			return "<li class='item-slot item-slot-small lvl13-box-1 " + (isLost ? "item-slot-lost" : "") + "'>" + imageDiv + "</li>";
 		},
+        
+        getCurrencyLi: function (amount) {
+			var classes = "res item-with-count";
+			var div = "<div class='" + classes + "' data-resourcename='currency'>";
+			div += "<div class='info-callout-target info-callout-target-small' description='silver'>";
+			div += this.getResourceImg("currency");
+			div += "<div class='item-count lvl13-box-3'>" + Math.floor(amount) + "x </div>";
+			div += "</div>";
+			div += "</div>";
+			var imageDiv = "<div class='item-slot-image'>" + div + "</div>";
+			return "<li class='item-slot item-slot-small lvl13-box-1'>" + imageDiv + "</li>";
+        },
 		
 		getBlueprintPieceLI: function (upgradeId) {
 			var upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeId];

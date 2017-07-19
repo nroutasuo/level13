@@ -335,7 +335,6 @@ define([
             }
             
             if (hasRaid) this.currentEvents++;
-            if (hasTrader) this.currentEvents++;
             if (isActive) this.lastShownEvents = this.currentEvents;
             
             hasEvents = hasEvents || hasRaid;
