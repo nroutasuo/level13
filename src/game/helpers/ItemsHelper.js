@@ -57,18 +57,7 @@ define([
                     
                     // only craftable items are considered default (no reliable source especially when possible to lose once acquired)
                     if (clothingItem.craftable) {
-                        var reqs = PlayerActionConstants.requirements["craft_" + clothingItem.id];
-                        if (reqs) {
-                            var requiredTech = Object.keys(reqs.upgrades);
-                            isAvailable = requiredTech.length > 0;
-                            for (var k = 0; k < requiredTech.length; k++) {
-                                var requiredTechCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredTech[k]);
-                                var requiredTechLevelOrdinal = this.gameState.getLevelOrdinalForCampOrdinal(requiredTechCampOrdinal);
-                                isAvailable = isAvailable && levelOrdinal >= requiredTechLevelOrdinal;
-                            }
-                        } else {
-                            isAvailable = true;
-                        }
+                        isAvailable = ItemConstants.getRequiredLevelToCraft(clothingItem, this.gameState) <= levelOrdinal;
                     }
 
                     // non-craftable items added for scavenging results

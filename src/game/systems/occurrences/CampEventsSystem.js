@@ -4,6 +4,7 @@ define([
     'game/constants/GameConstants',
     'game/constants/LogConstants',
     'game/constants/OccurrenceConstants',
+    'game/constants/TradeConstants',
     'game/constants/TextConstants',
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/sector/CampNode',
@@ -16,7 +17,7 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
 ], function (
 	Ash,
-	GameConstants, LogConstants, OccurrenceConstants, TextConstants,
+	GameConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	PositionComponent, LogMessagesComponent,
 	TraderComponent, RaidComponent, CampEventTimersComponent,
@@ -185,13 +186,16 @@ define([
 		startEvent: function (campNode, event) {
 			var campTimers = campNode.entity.get(CampEventTimersComponent);
 			var duration = OccurrenceConstants.getDuration(event);
+            var campPos = campNode.entity.get(PositionComponent);
+            var campOrdinal = this.gameState.getCampOrdinal(campPos.level);
 			campTimers.onEventStarted(event, duration);
 			console.log("Start " + event + " at " + campNode.camp.campName + " (" + duration + "s)");
 			
 			var logMsg;
 			switch (event) {
                 case OccurrenceConstants.campOccurrenceTypes.trader:
-                    campNode.entity.add(new TraderComponent());
+                    var caravan = TradeConstants.getRandomIncomingCaravan(campOrdinal, this.gameState.level, this.gameState.unlockedFeatures.resources, this.gameState);
+                    campNode.entity.add(new TraderComponent(caravan));
                     logMsg = "A trader arrives.";
                     break;
 

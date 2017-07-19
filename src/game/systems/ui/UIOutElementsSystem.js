@@ -3,7 +3,6 @@ define([
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/PlayerStatConstants',
-    'game/worldcreator/WorldCreator',
     'game/constants/PlayerActionConstants',
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/PlayerStatsNode',
@@ -12,12 +11,12 @@ define([
     'game/nodes/NearestCampNode',
     'game/components/common/CampComponent',
     'game/components/common/PositionComponent',
-    'game/components/player/ItemsComponent'
+    'game/components/player/ItemsComponent',
+    'game/components/sector/improvements/SectorImprovementsComponent'
 ], function (Ash,
     UIConstants,
     ItemConstants,
     PlayerStatConstants,
-	WorldCreator,
 	PlayerActionConstants,
 	PlayerLocationNode,
 	PlayerStatsNode,
@@ -26,7 +25,8 @@ define([
 	NearestCampNode,
 	CampComponent,
 	PositionComponent,
-	ItemsComponent
+	ItemsComponent,
+    SectorImprovementsComponent
 ) {
     var UIOutElementsSystem = Ash.System.extend({
 	
@@ -280,9 +280,12 @@ define([
         
         updateTabVisibility: function () {
             if (!this.playerStatsNodes.head) return;
+            var levelCamp = this.nearestCampNodes.head;
+            var currentCamp = levelCamp ? levelCamp.entity : null;
             var isInCamp = this.playerStatsNodes.head && this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
             var hasMap = this.playerStatsNodes.head.entity.get(ItemsComponent).getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
             var hasProjects = this.gameState.unlockedFeatures.projects;
+            var hasTradingPost = currentCamp.get(SectorImprovementsComponent).getCount(improvementNames.tradepost) > 0;
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-in", null, isInCamp, 200, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-upgrades", null, isInCamp && this.gameState.unlockedFeatures.upgrades, 200, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-blueprints", null, this.gameState.unlockedFeatures.blueprints, 200, 0);
@@ -291,7 +294,7 @@ define([
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-followers", null, this.gameState.unlockedFeatures.followers, 200, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-out", null, true, 0, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-map", null, hasMap, 200, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-trade", null, isInCamp, 200, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-trade", null, isInCamp && hasTradingPost, 200, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-projects", null, isInCamp && hasProjects, 200, 0);
         },
         

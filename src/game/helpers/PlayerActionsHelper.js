@@ -153,6 +153,9 @@ define([
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
             
+            var baseActionID = this.getBaseActionID(action);
+            var actionIDParam = this.getActionIDParam(action);
+            
             var lowestFraction = 1;
             var reason = "";
 					
@@ -338,11 +341,12 @@ define([
             
                         if (min > amount || max <= amount) {
                             var improvementName = this.getImprovementNameForAction(action, true);
+                            if (!improvementName) improvementName = "Improvement";
                             if (min > amount) {
-								reason = "Improvement required";
+								reason = improvementName + " required";
 								if (min > 1) reason += ": " + min + "x " + improvName;
 							} else {
-								reason = "Improvement already exists";
+								reason = improvementName + " already exists";
 								if (max > 1) reason += ": " + max + "x " + improvName;
 							}
                             if (log) console.log("WARN: " + reason);
@@ -467,6 +471,23 @@ define([
                                 return {value: 0, reason: "Invalid selection."};
                             else
                                 return {value: 0, reason: "Valid selection."};
+                        }
+                    }
+                    if (typeof requirements.caravan.available !== "undefined") {
+                        var requiredValue = requirements.caravan.available;
+                        var currentValue = true;
+                        var campOrdinal = actionIDParam;
+                        var caravansComponent = sector.get(OutgoingCaravansComponent);
+                        for (var caravanOrdinal in caravansComponent.outgoingCaravans) {
+                            if (caravanOrdinal == campOrdinal) {
+                                currentValue = false;
+                            }
+                        }
+                        if (requiredValue !== currentValue) {
+                            if (requiredValue)
+                                return {value: 0, reason: "Caravan occupied."};
+                            else
+                                return {value: 0, reason: "Caravan is available."};
                         }
                     }
                 }
@@ -969,6 +990,7 @@ define([
                 case "build_out_passage_down_stairs": return improvementNames.passageDownStairs;
                 case "build_out_passage_down_elevator": return improvementNames.passageDownElevator;
                 case "build_out_passage_down_hole": return improvementNames.passageDownHole;
+                case "send_caravan": return improvementNames.tradepost;
                 case "build_out_camp": return "";
                 
                 default:

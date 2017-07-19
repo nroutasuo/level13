@@ -1,4 +1,5 @@
-define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/ItemVO'], function (Ash, WorldCreatorConstants, ItemVO) {
+define(['ash', 'game/constants/WorldCreatorConstants', 'game/constants/PlayerActionConstants', 'game/constants/UpgradeConstants', 'game/vos/ItemVO'], 
+function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, ItemVO) {
 
     var ItemConstants = {
         
@@ -130,7 +131,7 @@ define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/ItemVO'], funct
                 new ItemVO("shoe_2", "Worn trainers", "Shoes", {"movement": 0.8}, true, false, false, "img/items/shoe-2.png",
                     "Decent, reasonable shoes for walking in most places."),
                 new ItemVO("shoe_3", "Hiking boots", "Shoes", {"movement": 0.5}, true, false, false, "img/items/shoe-3.png",
-                    "Good shoes like these can make travelling much easier."),
+                    "Good shoes like these can make travelling much easier.", 5),
             ],
             follower: [
             ],
@@ -140,9 +141,9 @@ define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/ItemVO'], funct
                 new ItemVO("bag_1", "Backpack", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_2}, true, true, false, "img/items/bag-1.png",
                     "A more spacious bag with lots of pockets."),
                 new ItemVO("bag_2", "Hiker's Rucksack", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_3}, true, true, false, "img/items/bag-1.png",
-                    "With this bag, weight is starting to be more of a problem than space."),
+                    "With this bag, weight is starting to be more of a problem than space.", 5),
                 new ItemVO("bag_3", "Automatic luggage", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_4}, true, true, false, "img/items/bag-3.png",
-                    "Mechanical chest that automatically follows its owner around. No more worrying about carrying all that stuff yourself."),
+                    "Mechanical chest that automatically follows its owner around. No more worrying about carrying all that stuff yourself.", 10),
             ],
             artefact: [
                 new ItemVO("artefact_ground_1", "Runestone", "Artefact", null, false, false, false, "img/items/artefact-test.png",
@@ -183,8 +184,8 @@ define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/ItemVO'], funct
             ],
             exploration: [
                 new ItemVO("exploration_1", "Lock pick", "Exploration", null, false, true, false, "img/items/exploration-1.png", "Useful tool when exploring and scouting."),
-                new ItemVO("first_aid_kit_1", "Basic First Aid Kit", "Exploration", null, false, true, true, "img/items/firstaid-1.png", "Heal light injuries on the go."),
-                new ItemVO("first_aid_kit_2", "Full First Aid Kit", "Exploration", null, false, true, true, "img/items/firstaid-2.png", "Heal all injuries on the go."),
+                new ItemVO("first_aid_kit_1", "Basic First Aid Kit", "Exploration", null, false, true, true, "img/items/firstaid-1.png", "Heal light injuries on the go.", 2),
+                new ItemVO("first_aid_kit_2", "Full First Aid Kit", "Exploration", null, false, true, true, "img/items/firstaid-2.png", "Heal all injuries on the go.", 5),
                 new ItemVO("glowstick_1", "Glowstick", "Exploration", null, false, true, true, "img/items/glowstick-1.png", "Temporary light. Can be used as a distraction.")
             ],
             uniqueEquipment: [
@@ -226,6 +227,20 @@ define(['ash', 'game/constants/WorldCreatorConstants', 'game/vos/ItemVO'], funct
                 default:
                     return null;
             }
+        },
+        
+        getRequiredLevelToCraft: function (item, gameState) {
+            var level = 0;
+            var reqs = PlayerActionConstants.requirements["craft_" + item.id];
+            if (reqs) {
+                var requiredTech = Object.keys(reqs.upgrades);
+                for (var k = 0; k < requiredTech.length; k++) {
+                    var requiredTechCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredTech[k]);
+                    var requiredTechLevelOrdinal = gameState.getLevelOrdinalForCampOrdinal(requiredTechCampOrdinal);
+                    level = Math.max(level, requiredTechLevelOrdinal);
+                }
+            }
+            return level;
         },
         
         getFollower: function (level, campCount) {

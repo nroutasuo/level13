@@ -6,7 +6,7 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
         },
         
         reset: function () {
-            this.stage = 1;
+            this.level = 0;
             this.worldSeed = 0;
             this.gameStartTimeStamp = 0;
             this.gamePlayedSeconds = 0;

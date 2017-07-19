@@ -217,7 +217,7 @@ define([
 
             var itemList;
             var itemDefinition;
-            for ( var type in ItemConstants.itemDefinitions ) {
+            for (var type in ItemConstants.itemDefinitions) {
                 itemList = ItemConstants.itemDefinitions[type];
                 for (var i in itemList) {
                     itemDefinition = itemList[i];

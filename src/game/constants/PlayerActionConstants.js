@@ -68,10 +68,13 @@ function (Ash, GameConstants, CampConstants) {
                 },
                 
                 send_caravan: {
-                    free_caravans: [1, -1],
                     caravan: {
+                        available: true,
                         validSelection: true,
-                    }
+                    },
+                    improvements: {
+                        tradepost: [1, -1],
+                    },
                 },
                         
                 move_sector_north: {

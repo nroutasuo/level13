@@ -3,8 +3,10 @@ define(['ash'], function (Ash) {
     
     var TraderComponent = Ash.Class.extend({
         
-        constructor: function () {
-            
+        caravan: null,
+        
+        constructor: function (caravan) {
+            this.caravan = caravan;
         },
     });
 

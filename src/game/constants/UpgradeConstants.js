@@ -1,4 +1,4 @@
-define(['ash', 'game/constants/LevelConstants', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], function (Ash, LevelConstants, PlayerActionConstants, UpgradeVO) {
+define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], function (Ash, PlayerActionConstants, UpgradeVO) {
     
     var UpgradeConstants = {
         
