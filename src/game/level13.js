@@ -21,6 +21,7 @@ define([
     'game/systems/ui/UIOutFightSystem',
     'game/systems/ui/UIOutLogSystem',
     'game/systems/ui/UIOutPopupInnSystem',
+    'game/systems/ui/UIOutPopupTradeSystem',
     'game/systems/ui/UIOutPopupInventorySystem',
     'game/systems/CheatSystem',
     'game/systems/VisionSystem',
@@ -87,6 +88,7 @@ define([
     UIOutFightSystem,
     UIOutLogSystem,
     UIOutPopupInnSystem,
+    UIOutPopupTradeSystem,
     UIOutPopupInventorySystem,
     CheatSystem,
     VisionSystem,
@@ -152,10 +154,12 @@ define([
 			this.gameState = new GameState();
 			
 			// Global signals
+            // TODO make global singletons
 			this.playerMovedSignal = new Ash.Signals.Signal();
 			this.improvementBuiltSignal = new Ash.Signals.Signal();
             this.inventoryChangedSignal = new Ash.Signals.Signal();
             this.tabChangedSignal = new Ash.Signals.Signal();
+            this.popupOpenedSignal = new Ash.Signals.Signal();
             this.calloutsGeneratedSignal = new Ash.Signals.Signal();
 	    
 			// Singleton helper modules to be passed to systems that need them
@@ -193,7 +197,7 @@ define([
 				this.improvementBuiltSignal,
                 this.inventoryChangedSignal);
             this.cheatSystem = new CheatSystem(this.gameState, this.playerActionFunctions, this.resourcesHelper, this.uiMapHelper);
-			this.uiFunctions = new UIFunctions(this.playerActionFunctions, this.gameState, this.saveSystem, this.cheatSystem, this.calloutsGeneratedSignal);
+			this.uiFunctions = new UIFunctions(this.playerActionFunctions, this.gameState, this.saveSystem, this.cheatSystem, this.calloutsGeneratedSignal, this.popupOpenedSignal);
 			this.occurrenceFunctions = new OccurrenceFunctions(this.gameState, this.uiFunctions, this.resourcesHelper, this.upgradeEffectsHelper);
 			
 			this.playerActionFunctions.occurrenceFunctions = this.occurrenceFunctions;
@@ -257,6 +261,7 @@ define([
 			this.engine.addSystem(new UIOutFightSystem(this.uiFunctions, this.playerActionResultsHelper, this.playerActionsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLogSystem(this.playerMovedSignal), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupInventorySystem(this.uiFunctions), SystemPriorities.render);
+			this.engine.addSystem(new UIOutPopupTradeSystem(this.uiFunctions, this.resourcesHelper, this.popupOpenedSignal), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupInnSystem(this.uiFunctions, this.gameState), SystemPriorities.render);
 		},
 	

@@ -6,11 +6,12 @@ define([
     'game/nodes/tribe/TribeResourcesNode',
     'game/components/common/PositionComponent',
     'game/components/common/ResourcesComponent',
+    'game/components/common/CurrencyComponent',
     'game/components/common/ResourceAccumulationComponent',
     'game/components/sector/improvements/SectorImprovementsComponent'
-], function (Ash, PlayerResourcesNode, NearestCampNode, TribeResourcesNode,
-	PositionComponent, ResourcesComponent, ResourceAccumulationComponent,
-	SectorImprovementsComponent) {
+], function (Ash, 
+    PlayerResourcesNode, NearestCampNode, TribeResourcesNode,
+	PositionComponent, ResourcesComponent, CurrencyComponent, ResourceAccumulationComponent, SectorImprovementsComponent) {
     
     var ResourceHelper = Ash.Class.extend({
         
@@ -41,6 +42,24 @@ define([
 				
 			return currentResources;
 		},
+        
+        getCurrentCurrency: function () {
+			var playerCurrencys = this.getPlayerCurrency();
+			var campCurrencys = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity.get(CurrencyComponent) : null;
+			var globalCurrencys = this.globalResourcesNodes.head.currency;
+			
+			var currentCurrencys = playerCurrencys;
+			
+			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
+			if (playerPosition.inCamp && this.hasCampStorage()) {
+				currentCurrencys = campCurrencys;
+				if (this.hasAccessToTradeNetwork()) {
+					currentCurrencys = globalCurrencys;
+				}
+			}
+				
+			return currentCurrencys;
+        },
 		
 		getCurrentStorageCap: function () {
 			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
@@ -113,6 +132,11 @@ define([
 		getPlayerStorage: function () {
 			return this.playerResourcesNodes.head.resources;
 		},
+        
+        getPlayerCurrency: function () {
+			return this.playerResourcesNodes.head.currency;
+        }
+        
     });
     
     return ResourceHelper;

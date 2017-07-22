@@ -74,6 +74,7 @@ function (Ash, UIConstants) {
             $("#common-popup").wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");
             $(".popup-overlay").toggle(true);
             popUpManager.onResize();
+            this.uiFunctions.popupOpenedSignal.dispatch("common-popup");
             $("#common-popup").slideDown(200, popUpManager.onResize);
             
             this.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");

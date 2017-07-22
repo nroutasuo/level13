@@ -52,7 +52,7 @@ define([
             }
         },
         
-        updateLists: function () {            
+        updateLists: function () {
             $("#resultlist-inventorymanagement-found ul").empty();
             $("#resultlist-inventorymanagement-kept ul").empty();
             $("#resultlist-loststuff-lost ul").empty();

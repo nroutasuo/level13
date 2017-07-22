@@ -271,7 +271,7 @@ function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO, IncomingCarava
                 case ItemConstants.itemTypes.follower:
                     return 0;
                 case ItemConstants.itemTypes.ingredient:
-                    return VALUE_INGREDIENTS;
+                    return TradeConstants.VALUE_INGREDIENTS;
                 case ItemConstants.itemTypes.exploration:
                     return 1;
                 case ItemConstants.itemTypes.uniqueEquipment:

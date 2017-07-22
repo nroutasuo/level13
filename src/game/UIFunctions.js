@@ -52,12 +52,13 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             }
         },
         
-        constructor: function (playerActions, gameState, saveSystem, cheatSystem, calloutsGeneratedSignal) {
+        constructor: function (playerActions, gameState, saveSystem, cheatSystem, calloutsGeneratedSignal, popupOpenedSignal) {
             this.playerActions = playerActions;
             this.gameState = gameState;
             this.saveSystem = saveSystem;
             this.cheatSystem = cheatSystem;
             this.calloutsGeneratedSignal = calloutsGeneratedSignal;
+            this.popupOpenedSignal = popupOpenedSignal;
 
             this.generateElements();
             this.registerListeners();
@@ -209,6 +210,9 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             });
             $(scope + "#inn-popup-btn-cancel").click(function (e) {                
                 uiFunctions.popupManager.closePopup("inn-popup");
+            });
+            $(scope + "#incoming-caravan-popup-cancel").click(function (e) {                
+                uiFunctions.popupManager.closePopup("incoming-caravan-popup");
             });
             $(scope + " button[action='leave_camp']").click(function (e) {
                 gameState.uiStatus.leaveCampItems = {};
@@ -660,6 +664,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             var uiFunctions = this;
             $(".popup-overlay").fadeIn(200, function () {
                 uiFunctions.popupManager.onResize();
+                uiFunctions.popupOpenedSignal.dispatch(popupID);
                 $("#" + popupID).fadeIn(200, uiFunctions.popupManager.onResize);
             });
             this.generateCallouts("#" + popupID); 
