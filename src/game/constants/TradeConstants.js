@@ -13,6 +13,7 @@ function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO, IncomingCarava
         GOOD_TYPE_NAME_INGREDIENTS: "ingredients",
         
         VALUE_INGREDIENTS: 0.05,
+        VALUE_MARKUP_INCOMING_CARAVANS: 0.1,
         
         TRADING_PARTNERS: [
             new TradingPartnerVO(3, "Bone Crossing", [resourceNames.rope], [resourceNames.metal], false),
@@ -239,24 +240,28 @@ function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO, IncomingCarava
             return amountGet;
         },
         
-        getResourceValue: function (name) {
+        getResourceValue: function (name, isTrader) {
+            var value = 0;
             switch (name) {
-                case resourceNames.water: return 0.01;
-                case resourceNames.food: return 0.005;
-                case resourceNames.metal: return 0.001;
-                case resourceNames.rope: return 0.01;
+                case resourceNames.water: value = 0.01; break;
+                case resourceNames.food: value = 0.005; break;
+                case resourceNames.metal: value = 0.001; break;
+                case resourceNames.rope: value = 0.01; break;
 
-                case resourceNames.herbs: return 0.01;
-                case resourceNames.fuel: return 0.01;
+                case resourceNames.herbs: value = 0.01; break;
+                case resourceNames.fuel: value = 0.01; break;
 
-                case resourceNames.medicine: return 0.02;
-                case resourceNames.tools: return 0.02;
-                case resourceNames.concrete: return 0.02;
-            }            
-            return 0;
+                case resourceNames.medicine: value = 0.02; break;
+                case resourceNames.tools: value = 0.02; break;
+                case resourceNames.concrete: value = 0.02; break;
+            }
+            if (isTrader)
+                value = value + value * TradeConstants.VALUE_MARKUP_INCOMING_CARAVANS;
+            return value;
         },
         
-        getItemValue: function (item) {            
+        getItemValue: function (item, isTrader) {
+            var value = 0;
             switch (item.type) {
                 case ItemConstants.itemTypes.light:
                 case ItemConstants.itemTypes.weapon:
@@ -267,21 +272,30 @@ function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO, IncomingCarava
                 case ItemConstants.itemTypes.clothing_head:
                 case ItemConstants.itemTypes.shoes:
                 case ItemConstants.itemTypes.bag:
-                    return Math.ceil(item.getTotalBonus() / 5);
+                    value = Math.ceil(item.getTotalBonus() / 5);
+                    break;
                 case ItemConstants.itemTypes.follower:
-                    return 0;
+                    value = 0;
+                    break;
                 case ItemConstants.itemTypes.ingredient:
-                    return TradeConstants.VALUE_INGREDIENTS;
+                    value = TradeConstants.VALUE_INGREDIENTS;
+                    break;
                 case ItemConstants.itemTypes.exploration:
-                    return 1;
+                    value = 1;
+                    break;
                 case ItemConstants.itemTypes.uniqueEquipment:
-                    return 2;
+                    value = 2;
+                    break;
                 case ItemConstants.itemTypes.artefact:
-                    return 2;
+                    value = 2;
+                    break;
                 case ItemConstants.itemTypes.note:
-                    return 0;
+                    value = 0;
+                    break;
             }
-            return 0;
+            if (isTrader)
+                value = value + value * TradeConstants.VALUE_MARKUP_INCOMING_CARAVANS;
+            return value;
         },
         
         getBlueprintValue: function (upgradeID) {

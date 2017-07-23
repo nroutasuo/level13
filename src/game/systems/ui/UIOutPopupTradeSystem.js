@@ -49,6 +49,7 @@ define([
         },
         
         updateLists: function () {
+            
             $("#inventorylist-incoming-caravan-trader-inventory ul").empty();
             $("#inventorylist-incoming-caravan-trader-offer ul").empty();
             $("#inventorylist-incoming-caravan-camp-inventory ul").empty();
@@ -58,6 +59,8 @@ define([
             var caravan = traderComponent.caravan;
             var campStorage = this.resourcesHelper.getCurrentStorage();
 			var currencyComponent = this.resourcesHelper.getCurrentCurrency();
+
+            $("#incoming-caravan-popup h3").text(caravan.name);
             
             var sys = this;
             
@@ -132,7 +135,7 @@ define([
                     $("#inventorylist-incoming-caravan-trader-inventory ul").append(UIConstants.getItemSlot(item, inventoryAmount, false));
                 if (selectedAmount > 0)
                     $("#inventorylist-incoming-caravan-trader-offer ul").append(UIConstants.getItemSlot(item, selectedAmount, false));
-                traderOfferValue += selectedAmount * TradeConstants.getItemValue(item);
+                traderOfferValue += selectedAmount * TradeConstants.getItemValue(item, true);
             }
             
             // camp items
@@ -175,7 +178,7 @@ define([
                 if (traderOfferAmount > 0) {
                     $("#inventorylist-incoming-caravan-trader-offer ul").append(UIConstants.getResourceLi(name, traderOfferAmount));
                 }
-                traderOfferValue += traderOfferAmount * TradeConstants.getResourceValue(name);
+                traderOfferValue += traderOfferAmount * TradeConstants.getResourceValue(name, true);
                 
                 if (caravan.buyResources.indexOf(name) >= 0) {
                     var campOfferAmount = caravan.campSelectedResources.getResource(name);
@@ -211,7 +214,7 @@ define([
             campOfferValue = Math.round(campOfferValue * 100) / 100;
             caravan.traderOfferValue = traderOfferValue;
             caravan.campOfferValue = campOfferValue;
-            $("#inventorylist-incoming-caravan-trader-offer .value").text("Value: " + traderOfferValue);
+            $("#inventorylist-incoming-caravan-trader-offer .value").text("Value: " + traderOfferValue + " (" + (TradeConstants.VALUE_MARKUP_INCOMING_CARAVANS * 100) + "% markup)");
             $("#inventorylist-incoming-caravan-camp-offer .value").text("Value: " + campOfferValue);
             
             $("#inventorylist-incoming-caravan-trader-inventory li").click(onLiClicked);
