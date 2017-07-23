@@ -141,9 +141,7 @@ define([
             // camp items
             for (var j in caravan.buyItemTypes) {
                 var category = caravan.buyItemTypes[j];
-                if (category == ItemConstants.itemTypes.uniqueEquipment)
-                    continue;
-                if (category == ItemConstants.itemTypes.follower)
+                if (category == "uniqueEquipment" || category == "follower")
                     continue;
                 var itemList = this.itemNodes.head.items.getAllByType(ItemConstants.itemTypes[category]);
                 for (var k in itemList) {
@@ -221,6 +219,11 @@ define([
             $("#inventorylist-incoming-caravan-trader-offer li").click(onLiClicked);
             $("#inventorylist-incoming-caravan-camp-inventory li").click(onLiClicked);
             $("#inventorylist-incoming-caravan-camp-offer li").click(onLiClicked);
+            
+            $("#inventorylist-incoming-caravan-trader-inventory .msg-empty").toggle($("#inventorylist-incoming-caravan-trader-inventory li").length === 0);
+            $("#inventorylist-incoming-caravan-trader-offer .msg-empty").toggle($("#inventorylist-incoming-caravan-trader-offer li").length === 0);
+            $("#inventorylist-incoming-caravan-camp-inventory .msg-empty").toggle($("#inventorylist-incoming-caravan-camp-inventory li").length === 0);
+            $("#inventorylist-incoming-caravan-camp-offer .msg-empty").toggle($("#inventorylist-incoming-caravan-camp-offer li").length === 0);
             
             this.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-trader-inventory");
             this.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-trader-offer");

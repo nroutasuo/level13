@@ -325,11 +325,11 @@ ul.tabs li.selected {
     background: #aaa;
 }
 
-.collapsible-header, .item-focused .item-count, .progress-bar, .highlightbox {
+.collapsible-header, .item-focused .item-count, .progress-bar, .highlightbox, .inventorybox-header {
 	background: #2f322f;
 }
 
-.sunlit .collapsible-header, .sunlit .item-focused .item-count, .sunlit .progress-bar, .sunlit .highlightbox {
+.sunlit .collapsible-header, .sunlit .item-focused .item-count, .sunlit .progress-bar, .sunlit .highlightbox, .sunlit .inventorybox-header {
 	background: #e6e6e6;
 }
 
@@ -1321,14 +1321,26 @@ button .cooldown-action, button .cooldown-duration {
     padding: 2px 0px 0px 7px !important;
     margin: 5px 0px;
     min-height: 1em;
+    vertical-align: top;
 }
 
 .inventorydivision {
     width: 49%;
     display: inline-block;
+    position: relative;
+    vertical-align: top;
+    padding-top: 2em;
 }
 
-.popup .inventorybox ul {
+.inventorydivision .inventorybox-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    width: 100%;
+}
+
+#common-popup .inventorybox ul {
     width: 560px; /* 12 * 46px (li width) + padding */
 }
 
