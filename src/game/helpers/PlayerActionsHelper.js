@@ -34,6 +34,7 @@ define([
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
+    'game/components/sector/events/TraderComponent',
     'game/components/common/CampComponent',
     'game/vos/ResourcesVO'
 ], function (
@@ -41,7 +42,7 @@ define([
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	LevelComponent, PositionComponent, PlayerActionComponent, BagComponent, ItemsComponent, PerksComponent, DeityComponent,
 	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
-	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, SectorImprovementsComponent,
+	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, SectorImprovementsComponent, TraderComponent,
 	CampComponent,
     ResourcesVO
 ) {
@@ -462,9 +463,9 @@ define([
                     }
                 }
                 
-                if (requirements.caravan) {
-                    if (typeof requirements.caravan.validSelection !== "undefined") {
-                        var requiredValue = requirements.caravan.validSelection;
+                if (requirements.outgoingcaravan) {
+                    if (typeof requirements.outgoingcaravan.validSelection !== "undefined") {
+                        var requiredValue = requirements.outgoingcaravan.validSelection;
                         var currentValue = $("button[action='" + action + "']").attr("data-isselectionvalid") == "true";
                         if (requiredValue != currentValue) {
                             if (requiredValue)
@@ -473,8 +474,8 @@ define([
                                 return {value: 0, reason: "Valid selection."};
                         }
                     }
-                    if (typeof requirements.caravan.available !== "undefined") {
-                        var requiredValue = requirements.caravan.available;
+                    if (typeof requirements.outgoingcaravan.available !== "undefined") {
+                        var requiredValue = requirements.outgoingcaravan.available;
                         var currentValue = true;
                         var campOrdinal = actionIDParam;
                         var caravansComponent = sector.get(OutgoingCaravansComponent);
@@ -488,6 +489,21 @@ define([
                                 return {value: 0, reason: "Caravan occupied."};
                             else
                                 return {value: 0, reason: "Caravan is available."};
+                        }
+                    }
+                }
+                
+                if (requirements.incomingcaravan) {
+                    if (typeof requirements.incomingcaravan.validSelection !== "undefined") {
+                        var requiredValue = requirements.incomingcaravan.validSelection;
+                        var traderComponent = sector.get(TraderComponent);
+                        var caravan = traderComponent.caravan;
+                        var currentValue = caravan.traderOfferValue > 0 && caravan.traderOfferValue <= caravan.campOfferValue;
+                        if (requiredValue != currentValue) {
+                            if (requiredValue)
+                                return {value: 0, reason: "Invalid selection."};
+                            else
+                                return {value: 0, reason: "Valid selection."};
                         }
                     }
                 }

@@ -15,13 +15,6 @@ define([
         popupOpenedSignal: null,
         
         itemNodes: null,
-        
-        traderSelectedItems: {}, // id -> amount
-        traderSelectedResources: null,
-        traderSelectedCurrency: 0,
-        campSelectedItems: {}, // id -> amount
-        campSelectedResources: null,
-        campSelectedCurrency: 0,
     
         constructor: function (uiFunctions, resourcesHelper, popupOpenedSignal) {
             this.uiFunctions = uiFunctions;
@@ -82,37 +75,37 @@ define([
                 
                 if (isCurrency) {
                     if (isTraderInventory) {
-                        sys.traderSelectedCurrency++;
+                        caravan.traderSelectedCurrency++;
                     } else if (isTraderOffer) {
-                        sys.traderSelectedCurrency--;
+                        caravan.traderSelectedCurrency--;
                     } else if (isCampInventory) {
-                        sys.campSelectedCurrency++;
+                        caravan.campSelectedCurrency++;
                     } else if (isCampOffer) {
-                        sys.campSelectedCurrency--;
+                        caravan.campSelectedCurrency--;
                     }
                 } else if (resourceName) {
                     if (isTraderInventory) {
-                        sys.traderSelectedResources.addResource(resourceName, 1);
+                        caravan.traderSelectedResources.addResource(resourceName, 1);
                     } else if (isTraderOffer) {
-                        sys.traderSelectedResources.addResource(resourceName, -1);
+                        caravan.traderSelectedResources.addResource(resourceName, -1);
                     } else if (isCampInventory) {
-                        sys.campSelectedResources.addResource(resourceName, 1);
+                        caravan.campSelectedResources.addResource(resourceName, 1);
                     } else if (isCampOffer) {
-                        sys.campSelectedResources.addResource(resourceName, -1);
+                        caravan.campSelectedResources.addResource(resourceName, -1);
                     }
                 } else if (itemId) {
                     if (isTraderInventory) {
-                        if (!sys.traderSelectedItems[itemId])
-                            sys.traderSelectedItems[itemId] = 0;
-                        sys.traderSelectedItems[itemId]++;
+                        if (!caravan.traderSelectedItems[itemId])
+                            caravan.traderSelectedItems[itemId] = 0;
+                        caravan.traderSelectedItems[itemId]++;
                     } else if (isTraderOffer) {
-                        sys.traderSelectedItems[itemId]--;
+                        caravan.traderSelectedItems[itemId]--;
                     } else if (isCampInventory) {
-                        if (!sys.campSelectedItems[itemId])
-                            sys.campSelectedItems[itemId] = 0;
-                        sys.campSelectedItems[itemId]++;
+                        if (!caravan.campSelectedItems[itemId])
+                            caravan.campSelectedItems[itemId] = 0;
+                        caravan.campSelectedItems[itemId]++;
                     } else if (isCampOffer) {
-                        sys.campSelectedItems[itemId]--;
+                        caravan.campSelectedItems[itemId]--;
                     }
                 }
                 
@@ -121,8 +114,8 @@ define([
             
             var traderTotalItems = {};
             var campTotalItems = {};
-            var traderOfferValue = this.traderSelectedCurrency;
-            var campOfferValue = this.campSelectedCurrency;
+            var traderOfferValue = caravan.traderSelectedCurrency;
+            var campOfferValue = caravan.campSelectedCurrency;
             
             // trader items
             for (var i = 0; i < caravan.sellItems.length; i++) {
@@ -133,7 +126,7 @@ define([
             
             for (var itemID in traderTotalItems) {
                 var item = ItemConstants.getItemByID(itemID);
-                var selectedAmount = (this.traderSelectedItems[itemID] ? this.traderSelectedItems[itemID] : 0);
+                var selectedAmount = (caravan.traderSelectedItems[itemID] ? caravan.traderSelectedItems[itemID] : 0);
                 var inventoryAmount = traderTotalItems[itemID] - selectedAmount;
                 if (inventoryAmount > 0)
                     $("#inventorylist-incoming-caravan-trader-inventory ul").append(UIConstants.getItemSlot(item, inventoryAmount, false));
@@ -145,8 +138,14 @@ define([
             // camp items
             for (var j in caravan.buyItemTypes) {
                 var category = caravan.buyItemTypes[j];
+                if (category == ItemConstants.itemTypes.uniqueEquipment)
+                    continue;
+                if (category == ItemConstants.itemTypes.follower)
+                    continue;
                 var itemList = this.itemNodes.head.items.getAllByType(ItemConstants.itemTypes[category]);
                 for (var k in itemList) {
+                    if (itemList[k].equipped)
+                        continue;
                     if (!campTotalItems[itemList[k].id])
                         campTotalItems[itemList[k].id] = 0;
                     campTotalItems[itemList[k].id]++;
@@ -155,7 +154,7 @@ define([
             
             for (var itemID in campTotalItems) {
                 var item = ItemConstants.getItemByID(itemID);
-                var selectedAmount = (this.campSelectedItems[itemID] ? this.campSelectedItems[itemID] : 0);
+                var selectedAmount = (caravan.campSelectedItems[itemID] ? caravan.campSelectedItems[itemID] : 0);
                 var inventoryAmount = campTotalItems[itemID] - selectedAmount;
                 if (inventoryAmount > 0)
                     $("#inventorylist-incoming-caravan-camp-inventory ul").append(UIConstants.getItemSlot(item, inventoryAmount, false));
@@ -168,7 +167,7 @@ define([
             // trader and camp resources
             for (var key in resourceNames) {
                 var name = resourceNames[key];
-                var traderOfferAmount = this.traderSelectedResources.getResource(name);
+                var traderOfferAmount = caravan.traderSelectedResources.getResource(name);
                 var traderInventoryAmount = caravan.sellResources.getResource(name) - traderOfferAmount;
                 if (traderInventoryAmount > 0) {
                     $("#inventorylist-incoming-caravan-trader-inventory ul").append(UIConstants.getResourceLi(name, traderInventoryAmount));
@@ -179,7 +178,7 @@ define([
                 traderOfferValue += traderOfferAmount * TradeConstants.getResourceValue(name);
                 
                 if (caravan.buyResources.indexOf(name) >= 0) {
-                    var campOfferAmount = this.campSelectedResources.getResource(name);
+                    var campOfferAmount = caravan.campSelectedResources.getResource(name);
                     var campInventoryAmount = campStorage.resources.getResource(name) - campOfferAmount;
                     if (campInventoryAmount > 0) {
                         $("#inventorylist-incoming-caravan-camp-inventory ul").append(UIConstants.getResourceLi(name, campInventoryAmount));
@@ -193,9 +192,9 @@ define([
             
             // trader and camp currency
             if (caravan.usesCurrency > 0) {
-                var traderOfferAmount = this.traderSelectedCurrency;
+                var traderOfferAmount = caravan.traderSelectedCurrency;
                 var traderInventoryAmount = caravan.currency - traderOfferAmount;
-                var campOfferAmount = this.campSelectedCurrency;
+                var campOfferAmount = caravan.campSelectedCurrency;
                 var campInventoryAmount = currencyComponent.currency - campOfferAmount;
                 if (traderOfferAmount > 0)
                     $("#inventorylist-incoming-caravan-trader-offer ul").append(UIConstants.getCurrencyLi(traderOfferAmount));
@@ -210,6 +209,8 @@ define([
             // selection value
             traderOfferValue = Math.round(traderOfferValue * 100) / 100;
             campOfferValue = Math.round(campOfferValue * 100) / 100;
+            caravan.traderOfferValue = traderOfferValue;
+            caravan.campOfferValue = campOfferValue;
             $("#inventorylist-incoming-caravan-trader-offer .value").text("Value: " + traderOfferValue);
             $("#inventorylist-incoming-caravan-camp-offer .value").text("Value: " + campOfferValue);
             
@@ -225,12 +226,9 @@ define([
         },
         
         clearSelection: function () {
-            this.traderSelectedItems = {};
-            this.traderSelectedResources = new ResourcesVO();
-            this.traderSelectedCurrency = 0;
-            this.campSelectedItems = {};
-            this.campSelectedResources = new ResourcesVO();
-            this.campSelectedCurrency = 0;
+            var traderComponent = this.playerLocationNodes.head.entity.get(TraderComponent);
+            var caravan = traderComponent.caravan;
+            caravan.clearSelection();
         }
             
 	});

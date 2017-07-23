@@ -68,13 +68,19 @@ function (Ash, GameConstants, CampConstants) {
                 },
                 
                 send_caravan: {
-                    caravan: {
+                    outgoingcaravan: {
                         available: true,
                         validSelection: true,
                     },
                     improvements: {
                         tradepost: [1, -1],
                     },
+                },
+                
+                trade_with_caravan: {
+                    incomingcaravan: {
+                        validSelection: true,
+                    }
                 },
                         
                 move_sector_north: {
@@ -1936,6 +1942,7 @@ function (Ash, GameConstants, CampConstants) {
                 use_spring: "Get water.",
                 fight_gang: "Clear the enemies blocking passage.",
                 send_caravan: "Send caravan out.",
+                trade_with_caravan: "Confirm trade.",
                 move_camp_level: "Shortcut back to the nearest camp.",
                 move_camp_global: "Shortcut to the camp on this level.",
                 create_blueprint: "Combine pieces to a blueprint.",

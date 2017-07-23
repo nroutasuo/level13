@@ -43,6 +43,7 @@ define(['ash',
 	'game/components/sector/PassagesComponent',
 	'game/components/sector/OutgoingCaravansComponent',
 	'game/components/sector/events/CampEventTimersComponent',
+	'game/components/sector/events/TraderComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/systems/ui/UIOutHeaderSystem',
 	'game/systems/ui/UIOutElementsSystem',
@@ -59,7 +60,7 @@ define(['ash',
 	BagComponent, ItemsComponent, PerksComponent, DeityComponent, PlayerActionComponent, PlayerActionResultComponent,
 	CampComponent, CurrencyComponent, LevelComponent, SectorImprovementsComponent, WorkshopComponent,
 	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
-	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, 
+	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, TraderComponent,
 	LogMessagesComponent,
 	UIOutHeaderSystem, UIOutElementsSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem, SaveSystem
 ) {
@@ -226,6 +227,7 @@ define(['ash',
                 case "use_spring": this.useSpring(param); break;
                 case "fight_gang": this.fightGang(param); break;
                 case "send_caravan": this.sendCaravan(param); break;
+                case "trade_with_caravan": this.tradeWithCaravan(); break;
                 case "despair": this.despair(param); break;
                 case "unlock_upgrade": this.unlockUpgrade(param); break;
                 case "create_blueprint": this.createBlueprint(param); break;
@@ -657,6 +659,66 @@ define(['ash',
             this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, logMsg.msg, logMsg.replacements, logMsg.values, pendingPosition);
             
             this.forceResourceBarUpdate();
+        },
+        
+        tradeWithCaravan: function () {
+            this.uiFunctions.popupManager.closePopup("incoming-caravan-popup");
+            
+            var traderComponent = this.playerLocationNodes.head.entity.get(TraderComponent);
+            var caravan = traderComponent.caravan;
+            
+            // items
+            var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+            for (var itemID in caravan.traderSelectedItems) {
+                var amount = caravan.traderSelectedItems[itemID];
+                for (var i = 0; i < amount; i++) {
+                    for (var j = 0; j < caravan.sellItems.length; j++) {
+                        if (caravan.sellItems[j].id == itemID) {
+                            caravan.sellItems.splice(j, 1);
+                            break;
+                        }
+                    }
+                    itemsComponent.addItem(ItemConstants.getItemByID(itemID).clone());
+                }
+            }
+            
+            for (var itemID in caravan.campSelectedItems) {
+                var amount = caravan.campSelectedItems[itemID];
+                for (var i = 0; i < amount; i++) {
+                    caravan.sellItems.push(ItemConstants.getItemByID(itemID));
+                    itemsComponent.discardItem(itemsComponent.getItem(itemID));
+                }
+            }
+            
+            // resources
+            var campStorage = this.resourcesHelper.getCurrentStorage();
+            for (var key in resourceNames) {
+                var name = resourceNames[key];
+                var traderSelectedAmount = caravan.traderSelectedResources.getResource(name);
+                if (traderSelectedAmount > 0) {
+                    caravan.sellResources.addResource(name, -traderSelectedAmount);
+                    campStorage.resources.addResource(name, traderSelectedAmount);
+                }
+                var campSelectedAmount = caravan.campSelectedResources.getResource(name);
+                if (campSelectedAmount > 0) {
+                    caravan.sellResources.addResource(name, campSelectedAmount);
+                    campStorage.resources.addResource(name, -campSelectedAmount);
+                }
+            }
+            
+            // currency
+			var currencyComponent = this.resourcesHelper.getCurrentCurrency();
+            if (caravan.traderSelectedCurrency > 0) {
+                caravan.currency -= caravan.traderSelectedCurrency;
+                currencyComponent.currency += caravan.traderSelectedCurrency;
+            }
+            
+            if (caravan.campSelectedCurrency) {
+                caravan.currency += caravan.campSelectedCurrency;
+                currencyComponent.currency -= caravan.campSelectedCurrency;
+            }
+            
+            caravan.clearSelection();
         },
         
         fightGang: function (direction) {
