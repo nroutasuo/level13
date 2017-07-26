@@ -719,6 +719,7 @@ define(['ash',
             }
             
             caravan.clearSelection();
+            caravan.tradesMade++;
         },
         
         fightGang: function (direction) {

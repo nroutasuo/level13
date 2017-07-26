@@ -10,6 +10,8 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
         usesCurrency: false,
         currency: 0,
         
+        tradesMade: 0,
+        
         traderSelectedItems: {}, // id -> amount
         traderSelectedResources: null,
         traderSelectedCurrency: 0,
@@ -28,6 +30,8 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             this.buyResources = buyResources;
             this.usesCurrency = usesCurrency;
             this.currency = currency;
+            
+            this.tradesMade = 0;
             
             this.clearSelection();
 		},

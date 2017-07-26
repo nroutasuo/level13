@@ -533,13 +533,13 @@ div.arrow-up {
 	border-bottom-color: #aaa !important;
 }
 
-input {
+input, select {
    background-color: #151615;
    color: #fdfdfd;
    border: 1px solid #333;
 }
 
-.sunlit input {
+.sunlit input, .sunlit select {
    background-color: #fff;
    color: #202220;
    border: 1px solid #bbb;
@@ -1475,6 +1475,11 @@ input.amount {
 	padding: 1px;
 	text-align: center;
 	border-width: 1px 0px;
+}
+
+select {
+    margin: 0px 5px;
+    padding: 1px 3px;
 }
 
 .stepper button {

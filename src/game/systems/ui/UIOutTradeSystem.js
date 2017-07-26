@@ -1,6 +1,7 @@
 define([
     'ash',
     'game/constants/TradeConstants',
+    'game/constants/ItemConstants',
     'game/constants/UIConstants',
     'game/nodes/PlayerLocationNode',
     'game/components/sector/OutgoingCaravansComponent',
@@ -8,7 +9,7 @@ define([
     'game/vos/ResourcesVO',
     'game/vos/OutgoingCaravanVO'
 ], function (
-    Ash, TradeConstants, UIConstants, PlayerLocationNode, OutgoingCaravansComponent, TraderComponent, ResourcesVO, OutgoingCaravanVO
+    Ash, TradeConstants, ItemConstants, UIConstants, PlayerLocationNode, OutgoingCaravansComponent, TraderComponent, ResourcesVO, OutgoingCaravanVO
 ) {
     var UIOutTradeSystem = Ash.System.extend({
         
@@ -99,7 +100,7 @@ define([
                 sendTR += "<input type='range' class='trade-caravans-outgoing-range-sell' min='" + TradeConstants.MIN_OUTGOING_CARAVAN_RES + "' max='" + TradeConstants.MAX_OUTGOING_CARAVAN_RES + "' step='10' />";
                 sendTR += " <span class='trade-sell-value-invalid'></span>";
                 sendTR += " <span class='trade-sell-value'>0</span>";
-                sendTR += "&nbsp;&nbsp;"
+                sendTR += "&nbsp;&nbsp;&nbsp;"
                 sendTR += " Get: <select class='trade-caravans-outgoing-select-buy'>";
                 for (var k = 0; k < partner.sellsResources.length; k++) {
                     sendTR += "<option value='" + partner.sellsResources[k] + "'>" + partner.sellsResources[k] + "</option>";
@@ -163,7 +164,7 @@ define([
             
             var caravan = traderComponent.caravan;
             
-            if (this.lastShownIncomingCaravan === caravan)
+            if (this.lastShownIncomingCaravan === caravan && this.lastShownIncomingCaravanTrades === caravan.tradesMade)
                 return;
             
             // TODO show currency / more information about the trader
@@ -171,10 +172,22 @@ define([
             
             $("#trade-caravans-incoming-container table").empty();
             var nameTD = "<td>" + caravan.name + "</td>";
+
             var inventoryUL = "<ul>";
+            
+            var itemCounts = {};
             for (var i = 0; i < caravan.sellItems.length; i++) {
-                inventoryUL += UIConstants.getItemSlot(caravan.sellItems[i], 1, false);
+                if (!itemCounts[caravan.sellItems[i].id])
+                    itemCounts[caravan.sellItems[i].id] = 0;
+                itemCounts[caravan.sellItems[i].id]++;
             }
+            
+            for (var itemID in itemCounts) {
+                var item = ItemConstants.getItemByID(itemID);
+                var amount = itemCounts[itemID];
+                inventoryUL += UIConstants.getItemSlot(item, amount, false);
+            }
+            
             for (var key in resourceNames) {
                 var name = resourceNames[key];
                 var amount = caravan.sellResources.getResource(name);
@@ -200,6 +213,7 @@ define([
             
             this.lastShownIncomingTraders = this.currentIncomingTraders;
             this.lastShownIncomingCaravan = caravan;
+            this.lastShownIncomingCaravanTrades = caravan.tradesMade;
         },
         
         updateOutgoingCaravanPrepare: function () {
