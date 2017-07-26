@@ -343,17 +343,19 @@ define([
 			var showResourceAcc = this.getShowResourceAcc();
 			var storageCap = this.resourcesHelper.getCurrentStorageCap();
 			var showStorageName = this.resourcesHelper.getCurrentStorageName();
+			var currencyComponent = this.resourcesHelper.getCurrentCurrency();
 			var inventoryUnlocked = false;
             
             $("#header-camp-storage").toggle(inCamp);
             $("#header-camp-currency").toggle(inCamp);
             $("#statsbar-resources").toggle(inCamp);
             $("#header-bag-storage").toggle(!inCamp && this.gameState.unlockedFeatures.bag);
+            $("#header-bag-currency").toggle(!inCamp && currencyComponent.currency > 0);
             $("#bag-resources").toggle(!inCamp);
             $("#header-camp-container").toggleClass("hidden", !inCamp && !this.gameState.unlockedFeatures.bag && itemsComponent.getAll().length == 0 && showResources.getTotal() === 0);
 	
-			var currencyComponent = this.resourcesHelper.getCurrentCurrency();
             $("#header-camp-currency .value").text(currencyComponent ? currencyComponent.currency : "??");
+            $("#header-bag-currency .value").text(currencyComponent ? currencyComponent.currency : "??");
     
 			for (var key in resourceNames) {
 				var name = resourceNames[key];

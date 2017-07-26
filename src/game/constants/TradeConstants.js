@@ -271,8 +271,10 @@ function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO, IncomingCarava
                 case ItemConstants.itemTypes.clothing_hands:
                 case ItemConstants.itemTypes.clothing_head:
                 case ItemConstants.itemTypes.shoes:
-                case ItemConstants.itemTypes.bag:
                     value = Math.ceil(item.getTotalBonus() / 5);
+                    break;
+                case ItemConstants.itemTypes.bag:
+                    value = Math.ceil(item.getTotalBonus() / 10);
                     break;
                 case ItemConstants.itemTypes.follower:
                     value = 0;
