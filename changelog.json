@@ -4,11 +4,15 @@
             "version": "0.1.7",
             "phase": "alpha",
             "final": false,
-            "updated": "2017-07-11",
+            "updated": "2017-07-27",
             "changes": [
                 {
                     "type": "GD",
-                    "summary": "Add currency, trade partners, and outgoing trade caravans."
+                    "summary": "Add currency, trade partners on the map, outgoing trade caravans and incoming traders."
+                }
+                {
+                    "type": "GB",
+                    "summary": "More varied resources found when scavenging."
                 }
             ]
         },

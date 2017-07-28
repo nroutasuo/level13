@@ -344,7 +344,7 @@ define([
 			if (featuresComponent.resourcesScavengable.getTotal() > 0) {
 				var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
 				if (discoveredResources.length > 0) {
-					description += "Resources scavenged here: " + featuresComponent.getScaResourcesString(discoveredResources) + ". ";
+					description += "Resources found scavenging here: " + featuresComponent.getScaResourcesString(discoveredResources) + ". ";
 				}
 			}
             if (isScouted) {

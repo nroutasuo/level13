@@ -553,17 +553,21 @@ define([
 				var resRoundTo = 1;
 				var probability = 0.2;
 				var resAmountFactor = 1;
-				if (name === "metal") {
-					probability = 0.98;
-					resAmountFactor = 2;
-				} else if (name === "water") {
-					probability = 1;
-					resAmountFactor = 3;
-				} else if (name === "food") {
-					probability = this.gameState.unlockedFeatures.resources[name] === true ? 0.3 : 0.75;
-					resAmountFactor = 3;
-					resRoundTo = 2;
-				}
+                switch (name) {
+                    case resourceNames.metal:
+                        probability = 0.98;
+                        resAmountFactor = 2;
+                        break;
+                    case resourceNames.water:
+    					probability = 1;
+        				resAmountFactor = 1;
+                        break;
+                    case resourceNames.food:
+    					probability = this.gameState.unlockedFeatures.resources[name] === true ? 0.3 : 0.75;
+        				resAmountFactor = 3;
+            			resRoundTo = 2;
+                        break;
+                }
 				probability = probability * probabilityFactor;
 				var resultAmount = Math.random() < probability ?
 					Math.ceil(amountFactor * resAmountFactor * resAmount * Math.random() * efficiency) :

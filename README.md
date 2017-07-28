@@ -66,7 +66,7 @@ The game consists of several systems but here are some important ones:
 
 ## Links
 
-Level 13 is heavily inspired by [A Dark Room]( http://adarkroom.doublespeakgames.com/). Other great text-based incremental games that I owe much inspiration to include:
+Level 13 is heavily inspired by [A Dark Room]( http://adarkroom.doublespeakgames.com/). Other great text-based and / or incremental games that the game owes much inspiration to include:
 
 * [Kittens Game](http://bloodrizer.ru/games/kittens/)
 * [Shark Game](http://cirri.al/sharks/)
