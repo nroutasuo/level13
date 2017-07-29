@@ -642,7 +642,6 @@ define([
 				if (item) items.push(item);
 			}
 			
-			// TODO get parts / ingredients depending on the sector
 			// Parts / ingredients
 			var hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
 			if (hasBag && Math.random() < ingredientProbability) {
@@ -683,38 +682,55 @@ define([
             var lostItems = [];
             var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAll(false);
 
-            // TODO choose more random item to lose when losing just one item
             var isSingle = action === "despair" ? false : true;
-            var loseFollowerProbability = action === "despair" ? 1 : 0;
             
-            var itemLoseProbability;
-            for (var i = 0; i < playerItems.length; i++) {
-                itemLoseProbability = 1;
-                switch (playerItems[i].type) {
-                    case ItemConstants.itemTypes.bag:
-                    case ItemConstants.itemTypes.uniqueEquipment:
-                        itemLoseProbability = 0;
-                        break;
-                    case ItemConstants.itemTypes.follower:
-                        itemLoseProbability = loseFollowerProbability;
-                        break;
-                    case ItemConstants.itemTypes.clothing_over:
-                    case ItemConstants.itemTypes.clothing_upper:
-                    case ItemConstants.itemTypes.clothing_lower:
-                    case ItemConstants.itemTypes.clothing_head:
-                    case ItemConstants.itemTypes.clothing_hands:
-                    case ItemConstants.itemTypes.shoes:
-                    case ItemConstants.itemTypes.light:
-                        itemLoseProbability = 0.55;
-                        break;
-                    default:
-                        itemLoseProbability = 0.95;
-                        break;
+            if (isSingle) {
+                var itemList = [];                
+                for (var i = 0; i < playerItems.length; i++) {
+                    var loseProbability = this.getItemLoseProbability(action, playerItems[i]);
+                    var count = Math.round(loseProbability * 10);
+                    for (var j = 0; j < count; j++) {
+                        itemList.push(playerItems[i]);
+                    }
                 }
-                if (itemLoseProbability > Math.random()) lostItems.push(playerItems[i]);
-                if (lostItems.length > 0 && isSingle) break;
+                lostItems.push(itemList[Math.floor(Math.random() * itemList.length)]);
+            } else {
+                var itemLoseProbability;
+                for (var i = 0; i < playerItems.length; i++) {
+                    var itemLoseProbability = this.getItemLoseProbability(action, playerItems[i]);
+                    if (itemLoseProbability > Math.random()) lostItems.push(playerItems[i]);
+                }
             }
             return lostItems;
+        },
+        
+        getItemLoseProbability: function (action, item) {
+            var loseFollowerProbability = action === "despair" ? 1 : 0;
+            var itemLoseProbability = 1;
+            switch (item.type) {
+                case ItemConstants.itemTypes.bag:
+                case ItemConstants.itemTypes.uniqueEquipment:
+                    itemLoseProbability = 0;
+                    break;
+                case ItemConstants.itemTypes.follower:
+                    itemLoseProbability = loseFollowerProbability;
+                    break;
+                case ItemConstants.itemTypes.clothing_over:
+                case ItemConstants.itemTypes.clothing_upper:
+                case ItemConstants.itemTypes.clothing_lower:
+                case ItemConstants.itemTypes.clothing_head:
+                case ItemConstants.itemTypes.clothing_hands:
+                case ItemConstants.itemTypes.shoes:
+                case ItemConstants.itemTypes.light:
+                    itemLoseProbability = 0.55;
+                    break;
+                default:
+                    itemLoseProbability = 0.95;
+                    break;
+            }
+            if (item.equipped)
+                itemLoseProbability = itemLoseProbability / 2;
+            return itemLoseProbability;
         },
 
 		getResultInjuries: function (injuryProbability) {
