@@ -116,10 +116,10 @@ define([
 			
             // Effects of moving from different light environments
 			if (oldMaximum > 0 && maxValue < oldMaximum) {
-				vision.value = vision.value - Math.abs(oldMaximum - maxValue);
+				vision.value = Math.min(vision.value, Math.min(vision.value, maxValue) - Math.abs(oldMaximum - maxValue));
 			}
 			if (oldMaximum > 0 && maxValue > oldMaximum && sunlit) {
-				vision.value = vision.value - Math.abs(oldMaximum - maxValue);
+				vision.value = Math.min(vision.value, vision.value - Math.abs(oldMaximum - maxValue));
 			}
 			
             // Limit to min / max

@@ -730,7 +730,7 @@ function (Ash, GameConstants, CampConstants) {
                     }
                 },
                 
-                craft_bag_3: {
+                craft_bag_5: {
                     upgraders: {
                         unlock_item_clothing8: true                        
                     }
@@ -1621,7 +1621,7 @@ function (Ash, GameConstants, CampConstants) {
                     resource_herbs: 10,
                 },
                 
-                craft_bag_3: {
+                craft_bag_5: {
                     resource_rope: 100,
                     resource_herbs: 10,
                     resource_fuel: 10,

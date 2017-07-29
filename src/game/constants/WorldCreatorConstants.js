@@ -37,14 +37,18 @@ define(['ash'], function (Ash) {
         MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 5,
         MIN_LEVEL_HAZARD_POISON: 15,
         
-        LEVEL_ORDINAL_BAG_2: 5,
-        LEVEL_ORDINAL_BAG_3: 10,
-        LEVEL_ORDINAL_BAG_4: 15,
+        LEVEL_ORDINAL_BAG_2: 2,
+        LEVEL_ORDINAL_BAG_3: 6,
+        LEVEL_ORDINAL_BAG_4: 10,
+        LEVEL_ORDINAL_BAG_5: 14,
+        LEVEL_ORDINAL_BAG_6: 18,
         
         BAG_BONUS_1: 30,
-        BAG_BONUS_2: 50,
-        BAG_BONUS_3: 80,
-        BAG_BONUS_4: 150,
+        BAG_BONUS_2: 40,
+        BAG_BONUS_3: 50,
+        BAG_BONUS_4: 80,
+        BAG_BONUS_5: 100,
+        BAG_BONUS_6: 150,
         
         getNumSectors: function (levelOrdinal) {
             return this.getNumSectorsCentral(levelOrdinal) * 1.1;
@@ -70,7 +74,13 @@ define(['ash'], function (Ash) {
             if (levelOrdinal < this.LEVEL_ORDINAL_BAG_4) {
                 return this.BAG_BONUS_3;
             }
-            return this.BAG_BONUS_4;
+            if (levelOrdinal < this.LEVEL_ORDINAL_BAG_5) {
+                return this.BAG_BONUS_4;
+            }
+            if (levelOrdinal < this.LEVEL_ORDINAL_BAG_6) {
+                return this.BAG_BONUS_5;
+            }
+            return this.BAG_BONUS_6;
         },
         
         getPopulationGrowthFactor: function (campOrdinal) {

@@ -166,8 +166,6 @@ define([
 			var maxVision = playerStatsNode.vision.maximum;
 			var maxStamina = Math.round(playerStatsNode.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
 			
-			$("#stats-vision").toggle(!isInCamp);
-			
 			$("#stats-vision .value").text(UIConstants.roundValue(playerVision, true, false) + " / " + maxVision);
 			this.updateStatsCallout("stats-vision", playerStatsNode.vision.accSources);
 			

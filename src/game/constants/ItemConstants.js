@@ -136,14 +136,18 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             follower: [
             ],
             bag: [
-                new ItemVO("bag_0", "Sack", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_1}, true, true, false, "img/items/bag-0.png",
+                new ItemVO("bag_0", "Plastic bag", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_1}, true, true, false, "img/items/bag-0.png",
                     "It's not fancy, but allows one to carry around more stuff than their hands and pockets can hold."),
-                new ItemVO("bag_1", "Backpack", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_2}, true, true, false, "img/items/bag-1.png",
-                    "A more spacious bag with lots of pockets."),
-                new ItemVO("bag_2", "Hiker's Rucksack", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_3}, true, true, false, "img/items/bag-1.png",
-                    "With this bag, weight is starting to be more of a problem than space.", 5),
-                new ItemVO("bag_3", "Automatic luggage", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_4}, true, true, false, "img/items/bag-3.png",
-                    "Mechanical chest that automatically follows its owner around. No more worrying about carrying all that stuff yourself.", 10),
+                new ItemVO("bag_1", "Basic backpack", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_2}, true, true, false, "img/items/bag-1.png",
+                    "A more spacious bag with lots of pockets.", WorldCreatorConstants.LEVEL_ORDINAL_BAG_2),
+                new ItemVO("bag_2", "Jumbo backpack", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_3}, true, true, false, "img/items/bag-1.png",
+                    "A huge backpack with plenty of space.", 5, WorldCreatorConstants.LEVEL_ORDINAL_BAG_3),
+                new ItemVO("bag_3", "Hicker's rucksack", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_4}, true, false, false, "img/items/bag-1.png",
+                    "With this bag, weight is starting to be more of a problem than space.", WorldCreatorConstants.LEVEL_ORDINAL_BAG_4),
+                new ItemVO("bag_4", "Scavenger bag", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_5}, true, false, false, "img/items/bag-1.png",
+                    "A really practical backpack with lots of pockets.", WorldCreatorConstants.LEVEL_ORDINAL_BAG_5),
+                new ItemVO("bag_5", "Automatic luggage", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_6}, true, true, false, "img/items/bag-3.png",
+                    "Mechanical chest that automatically follows its owner around. No more worrying about carrying all that stuff yourself.", WorldCreatorConstants.LEVEL_ORDINAL_BAG_6),
             ],
             artefact: [
                 new ItemVO("artefact_ground_1", "Runestone", "Artefact", null, false, false, false, "img/items/artefact-test.png",
@@ -281,7 +285,13 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             if (levelOrdinal < WorldCreatorConstants.LEVEL_ORDINAL_BAG_4) {
                 return this.itemDefinitions.bag[2];
             }
-            return this.itemDefinitions.bag[3];
+            if (levelOrdinal < WorldCreatorConstants.LEVEL_ORDINAL_BAG_5) {
+                return this.itemDefinitions.bag[3];
+            }
+            if (levelOrdinal < WorldCreatorConstants.LEVEL_ORDINAL_BAG_6) {
+                return this.itemDefinitions.bag[4];
+            }
+            return this.itemDefinitions.bag[5];
         },
         
         getLight: function (levelOrdinal) {
