@@ -25,9 +25,11 @@ define(['ash'], function (Ash) {
         
         DIAGONAL_PATH_PROBABILITY: 0.1,
         
+        MIN_CENTRAL_AREA_SIZE: 10,
         MAX_CENTRAL_AREA_SIZE: 25,
-        SECTOR_PATH_LENGTH_MIN: 10,
-        SECTOR_PATH_LENGTH_MAX: 20,
+        SECTOR_PATH_LENGTH_MIN: 6,
+        SECTOR_PATH_LENGTH_MAX: 15,
+        SECTOR_RECT_EDGE_LENGTH_MAX: 20,
         
         FIRST_CAMP_X: 1,
         FIRST_CAMP_Y: 0,
@@ -51,7 +53,7 @@ define(['ash'], function (Ash) {
         BAG_BONUS_6: 150,
         
         getNumSectors: function (levelOrdinal) {
-            return this.getNumSectorsCentral(levelOrdinal) * 1.1;
+            return this.getNumSectorsCentral(levelOrdinal) * 1.15;
         },
         
         getNumSectorsCentral: function (levelOrdinal) {
