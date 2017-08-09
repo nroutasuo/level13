@@ -321,7 +321,7 @@ define([
                     var li =
                         "<li class='" + liClass + "' id='perk-header-" + perk.id + "'>" +
                         "<div class='info-callout-target info-callout-target-small' description='" + desc + "'>" +
-                        "<img src='" + url + "'/>" +
+                        "<img src='" + url + "' alt='" + perk.name + "'/>" +
                         "</div></li>";
                 } else {
                     $("#perk-header-" + perk.id + " .info-callout-target").attr("description", desc);

@@ -72,7 +72,10 @@ define([
             this.engine.getSystem(UIOutLevelSystem).pendingUpdateMap = true;
             
 			this.uiFunctions.showTab(startTab);
-			this.uiFunctions.showGame();
+            var sys = this;
+            setTimeout(function () {
+                sys.uiFunctions.showGame();
+            }, 250);
 		},
 		
 		restartGame: function () {
@@ -161,6 +164,7 @@ define([
 			// Create other entities and fill components
 			if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t loading entities");
 			this.createLevelEntities(worldSeed);
+            WorldCreator.discardWorld();
 			if (hasSave) {
 				var entitiesObject = JSON.parse(localStorage.entitiesObject);
 				var failedComponents = 0;

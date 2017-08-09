@@ -46,6 +46,11 @@ define([
 			// enemies
 			this.prepareWorldEnemies(seed, topLevel, bottomLevel, enemyHelper);
 		},
+        
+        discardWorld: function () {
+            this.world.levels = [];
+            this.world = null;
+        },
 		
 		// campable sectors and levels, movement blockers, passages, sunlight
 		prepareWorldStructure: function (seed, topLevel, bottomLevel) {
