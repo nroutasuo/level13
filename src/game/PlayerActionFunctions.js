@@ -1,5 +1,6 @@
 // Functions to respond to player actions parsed by the UIFunctions
 define(['ash',
+    'game/GlobalSignals',
 	'game/constants/LogConstants',
 	'game/constants/PositionConstants',
 	'game/constants/MovementConstants',
@@ -51,7 +52,7 @@ define(['ash',
 	'game/systems/FaintingSystem',
 	'game/systems/PlayerPositionSystem',
 	'game/systems/SaveSystem',
-], function (Ash,
+], function (Ash, GlobalSignals,
 	LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
 	PositionVO, LocaleVO,
     PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
@@ -80,8 +81,6 @@ define(['ash',
         engine: null,
         gameState: null,
         occurrenceFunctions: null,
-        playerMovedSignal: null,
-        improvementBuiltSignal: null,
 		
 		playerActionsHelper: null,
 		playerActionResultsHelper: null,
@@ -89,17 +88,13 @@ define(['ash',
         resourcesHelper: null,
 		levelHelper: null,
         
-        constructor: function (gameState, resourcesHelper, levelHelper, playerActionsHelper, fightHelper, playerActionResultsHelper, playerMovedSignal, tabChangedSignal, improvementBuiltSignal, inventoryChangedSignal) {
+        constructor: function (gameState, resourcesHelper, levelHelper, playerActionsHelper, fightHelper, playerActionResultsHelper) {
             this.gameState = gameState;
             this.resourcesHelper = resourcesHelper;
 			this.levelHelper = levelHelper;
 			this.playerActionsHelper = playerActionsHelper;
             this.fightHelper = fightHelper;
 			this.playerActionResultsHelper = playerActionResultsHelper;
-            this.playerMovedSignal = playerMovedSignal;
-            this.tabChangedSignal = tabChangedSignal;
-            this.improvementBuiltSignal = improvementBuiltSignal;
-            this.inventoryChangedSignal = inventoryChangedSignal;
         },
 
         addToEngine: function (engine) {
@@ -423,8 +418,9 @@ define(['ash',
                     
                     if (log) this.addLogMessage(LogConstants.MSG_ID_ENTER_CAMP, "Entered camp.");
                     this.uiFunctions.showTab(this.uiFunctions.elementIDs.tabs.in);
-                    this.playerMovedSignal.dispatch(playerPos);
+                    GlobalSignals.playerMovedSignal.dispatch(playerPos);
                     this.forceResourceBarUpdate();
+                    this.forceTabUpdate();
                     this.save();
                 }
             } else {
@@ -446,8 +442,9 @@ define(['ash',
                 playerPos.inCamp = false;
                 var msg = "Left camp. " + (sunlit ? "Sunlight is sharp and merciless." : " Darkess of the city envelops you.");
                 this.addLogMessage(LogConstants.MSG_ID_LEAVE_CAMP, msg);
-                this.playerMovedSignal.dispatch(playerPos);
+                GlobalSignals.playerMovedSignal.dispatch(playerPos);
                 this.forceResourceBarUpdate();
+                this.forceTabUpdate();
                 this.save();
             } else {
                 console.log("WARN: No valid camp found. (player pos: " + playerPos + ")");
@@ -612,7 +609,7 @@ define(['ash',
                     playerActionFunctions.playerActionResultsHelper.logResults(rewards);
                     playerActionFunctions.forceResourceBarUpdate();
                     playerActionFunctions.forceTabUpdate();
-                    playerActionFunctions.inventoryChangedSignal.dispatch();
+                    GlobalSignals.inventoryChangedSignal.dispatch();
                     if (successCallback) successCallback();
                 };
                 playerActionFunctions.uiFunctions.showResultPopup(TextConstants.getActionName(baseActionID), logMsgSuccess, rewards, resultPopupCallback);
@@ -1097,7 +1094,7 @@ define(['ash',
 
             this.addLogMessage(LogConstants.MSG_ID_CRAFT_ITEM, LogConstants.getCraftItemMessage(item));
             this.forceResourceBarUpdate();
-            this.inventoryChangedSignal.dispatch();
+            GlobalSignals.inventoryChangedSignal.dispatch();
             this.save();
         },
         
@@ -1204,7 +1201,7 @@ define(['ash',
             var improvementsComponent = sector.get(SectorImprovementsComponent);
             improvementsComponent.add(improvementName);
 
-            this.improvementBuiltSignal.dispatch();
+            GlobalSignals.improvementBuiltSignal.dispatch();
             this.forceResourceBarUpdate();                
             this.save();
         },

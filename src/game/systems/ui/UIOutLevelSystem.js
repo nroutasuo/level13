@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GlobalSignals',
     'game/constants/PlayerActionConstants',
     'game/constants/PlayerStatConstants',
     'game/constants/TextConstants',
@@ -28,7 +29,7 @@ define([
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/EnemiesComponent'
 ], function (
-    Ash, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, WorldCreatorConstants,
+    Ash, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, WorldCreatorConstants,
     PlayerPositionNode, PlayerLocationNode, CampNode,
     VisionComponent, StaminaComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
     MovementOptionsComponent, PositionComponent, LogMessagesComponent,
@@ -48,25 +49,17 @@ define([
 		
 		playerPosNodes: null,
 		playerLocationNodes: null,
-		
-		tabChangedSignal: null,
-		playerMovedSignal: null,
-		improvementBuiltSignal: null,
         
         pendingUpdateDescription: true,
         pendingUpdateMap: true,
 	
-		constructor: function (uiFunctions, tabChangedSignal, gameState, movementHelper, resourceHelper, sectorHelper, uiMapHelper, playerMovedSignal, improvementBuiltSignal, inventoryChangedSignal) {
+		constructor: function (uiFunctions, gameState, movementHelper, resourceHelper, sectorHelper, uiMapHelper) {
 			this.uiFunctions = uiFunctions;
 			this.gameState = gameState;
 			this.movementHelper = movementHelper;
 			this.resourcesHelper = resourceHelper;
 			this.sectorHelper = sectorHelper;
             this.uiMapHelper = uiMapHelper;
-			this.tabChangedSignal = tabChangedSignal;
-			this.playerMovedSignal = playerMovedSignal;
-            this.improvementBuiltSignal = improvementBuiltSignal;
-            this.inventoryChangedSignal = inventoryChangedSignal;
 			return this;
 		},
 	
@@ -89,16 +82,16 @@ define([
 		initListeners: function () {
 			var uiMapHelper = this.uiMapHelper;
 			var sys = this;
-			this.playerMovedSignal.add(function () {
+			GlobalSignals.playerMovedSignal.add(function () {
 				sys.rebuildVis(uiMapHelper);
 				sys.updateLocales();
 				sys.updateMovementRelatedActions();
                 sys.pendingUpdateDescription = true;
 			});
-            this.improvementBuiltSignal.add(function () {
+            GlobalSignals.improvementBuiltSignal.add(function () {
                 sys.pendingUpdateDescription = true;
             });
-            this.inventoryChangedSignal.add(function () {
+            GlobalSignals.inventoryChangedSignal.add(function () {
                 sys.pendingUpdateDescription = true;
             });
 			this.rebuildVis(uiMapHelper);

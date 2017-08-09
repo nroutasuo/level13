@@ -1,6 +1,7 @@
 // A system that updates a Sector's MovementOptionsComponent based on its neighbours and improvements
 define([
     'ash',
+    'game/GlobalSignals',
     'game/constants/PositionConstants',
     'game/constants/LocaleConstants',
     'game/constants/HazardConstants',
@@ -18,6 +19,7 @@ define([
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
 ], function (Ash,
+    GlobalSignals,
 	PositionConstants,
 	LocaleConstants,
 	HazardConstants,
@@ -44,14 +46,11 @@ define([
 		movementHelper: null,
 		levelHelper: null,
 		
-		playerMovedSignal: null,
-		
 		neighboursDict: {},
 		
-		constructor: function (movementHelper, levelHelper, playerMovedSignal) {
+		constructor: function (movementHelper, levelHelper) {
 			this.movementHelper = movementHelper;
 			this.levelHelper = levelHelper;
-			this.playerMovedSignal = playerMovedSignal;
 		},
 	
 		addToEngine: function (engine) {
@@ -60,7 +59,7 @@ define([
             this.itemsNodes = engine.getNodeList(ItemsNode);
 
 			var sys = this;
-			this.playerMovedSignal.add(function () {
+			GlobalSignals.playerMovedSignal.add(function () {
 				sys.update();
 			});
 		},

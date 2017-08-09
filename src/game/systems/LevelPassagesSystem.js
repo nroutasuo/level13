@@ -1,6 +1,7 @@
 // A system that updates a Levels's LevelPassagesComponent based on sectors on the level
 define([
     'ash',
+    'game/GlobalSignals',
 	'game/constants/WorldCreatorConstants',
     'game/nodes/level/LevelNode',
     'game/nodes/sector/SectorNode',
@@ -9,6 +10,7 @@ define([
     'game/components/sector/PassagesComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
 ], function (Ash,
+        GlobalSignals,
 		WorldCreatorConstants,
 		LevelNode,
 		SectorNode,
@@ -21,9 +23,8 @@ define([
 		levelNodes: null,
 		sectorNodes: null,
 		
-		constructor: function (levelHelper, improvementBuiltSignal) {
+		constructor: function (levelHelper) {
 			this.levelHelper = levelHelper;
-			this.improvementBuiltSignal = improvementBuiltSignal;
 		},
 		
 		// TODO also check when sector node improved, or passage appears (due to occurrence?)
@@ -38,7 +39,7 @@ define([
 			this.sectorNodes.nodeAdded.add(function (node) {
 				sys.updateSector(node.entity);
 			});
-			this.improvementBuiltSignal.add(function () {
+			GlobalSignals.improvementBuiltSignal.add(function () {
 				sys.updateAllSectors();
 			})
 			this.updateAllLevels();

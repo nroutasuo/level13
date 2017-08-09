@@ -22,15 +22,12 @@ define([
 		resourcesHelper: null,
 		
 		engine: null,
-		
-		tabChangedSignal: null,
 	
         campNodes: null,
 		playerPosNodes: null,
 
-        constructor: function (uiFunctions, tabChangedSignal, resourcesHelper, levelHelper) {
+        constructor: function (uiFunctions, resourcesHelper, levelHelper) {
 			this.uiFunctions = uiFunctions;
-			this.tabChangedSignal = tabChangedSignal;
 			this.resourcesHelper = resourcesHelper;
             this.levelHelper = levelHelper;
             return this;

@@ -2,20 +2,15 @@ define([
     'ash',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
-    'game/constants/FightConstants',
     'game/nodes/player/ItemsNode',
-    'game/components/common/ResourcesComponent',
     'game/components/common/PositionComponent',
-    'game/components/player/StaminaComponent',
-    'game/components/player/VisionComponent',
-], function (Ash, UIConstants, ItemConstants, FightConstants, ItemsNode, ResourcesComponent, PositionComponent, StaminaComponent, VisionComponent) {
+], function (Ash, UIConstants, ItemConstants, ItemsNode, PositionComponent) {
+    
     var UIOutBagSystem = Ash.System.extend({
 
 		uiFunctions : null,
 		playerActionsHelper: null,
 		gameState: null,
-
-		tabChangedSignal: null,
 
 		itemNodes: null,
         
@@ -29,11 +24,10 @@ define([
 		numCraftableUnlockedUnseen: -1,
 		numCraftableAvailableUnseen: -1,
 
-		constructor: function (uiFunctions, tabChangedSignal, playerActionsHelper, gameState) {
+		constructor: function (uiFunctions, playerActionsHelper, gameState) {
 			this.gameState = gameState;
 			this.uiFunctions = uiFunctions;
 			this.playerActionsHelper = playerActionsHelper;
-			this.tabChangedSignal = tabChangedSignal;
 			return this;
 		},
 
@@ -98,7 +92,6 @@ define([
 		
 		removeFromEngine: function (engine) {
 			this.itemNodes = null;
-			this.tabChangedSignal.remove(this.onTabChanged);
 			$("button[action='discard_item']").click(null);
 		},
 

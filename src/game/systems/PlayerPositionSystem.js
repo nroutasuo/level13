@@ -2,6 +2,7 @@
 // and handles updating sector components related to the player's position
 define([
     'ash',
+    'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/WorldCreatorConstants',
     'game/nodes/PlayerPositionNode',
@@ -15,7 +16,7 @@ define([
     'game/components/common/VisitedComponent',
     'game/components/common/RevealedComponent',
     'game/components/common/CampComponent',
-], function (Ash, UIConstants, WorldCreatorConstants,
+], function (Ash, GlobalSignals, UIConstants, WorldCreatorConstants,
     PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode, CampNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, PositionComponent,
 	VisitedComponent, RevealedComponent, CampComponent) {
@@ -34,12 +35,11 @@ define([
         
         lastUpdatePosition: null,
 		
-		constructor: function (gameState, levelHelper, uiFunctions, occurrenceFunctions, playerMovedSignal) {
+		constructor: function (gameState, levelHelper, uiFunctions, occurrenceFunctions) {
 			this.gameState = gameState;
             this.levelHelper = levelHelper;
 			this.uiFunctions = uiFunctions;
 			this.occurrenceFunctions = occurrenceFunctions;
-			this.playerMovedSignal = playerMovedSignal;
 		},
 	
 		addToEngine: function (engine) {
@@ -124,7 +124,7 @@ define([
                     if (!sectorNode.entity.has(VisitedComponent)) {
                         this.handleNewSector(sectorNode, sectorPos);
                     }
-                    this.playerMovedSignal.dispatch(playerPos);
+                    GlobalSignals.playerMovedSignal.dispatch(playerPos);
                     this.uiFunctions.onPlayerMoved();
                 } else if ((levelpos !== playerPos.level || sectorPos !== playerPos.sectorId()) && hasLocationComponent) {
                     sectorNode.entity.remove(CurrentPlayerLocationComponent);

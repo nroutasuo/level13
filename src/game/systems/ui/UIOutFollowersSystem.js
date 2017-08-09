@@ -10,18 +10,15 @@ define([
 		uiFunctions : null,
 		gameState: null,
 
-		tabChangedSignal: null,
-
 		itemNodes: null,
 		
 		bubbleNumber: 0,
 		followerCount: -1,
 		lastShownFollowerCount: -1,
 
-		constructor: function (uiFunctions, tabChangedSignal, gameState) {
+		constructor: function (uiFunctions, gameState) {
 			this.gameState = gameState;
 			this.uiFunctions = uiFunctions;
-			this.tabChangedSignal = tabChangedSignal;
 
 			return this;
 		},
@@ -73,7 +70,6 @@ define([
 
 		removeFromEngine: function (engine) {
 			this.itemNodes = null;
-			this.tabChangedSignal.remove(this.onTabChanged);
 			$("button[action='discard_item']").click(null);
 		},
 

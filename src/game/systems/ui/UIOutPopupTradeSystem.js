@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GlobalSignals',
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/ItemsNode',
     'game/components/sector/events/TraderComponent',
@@ -7,22 +8,20 @@ define([
     'game/constants/ItemConstants',
     'game/constants/TradeConstants',
     'game/vos/ResourcesVO'
-], function (Ash, PlayerLocationNode, ItemsNode, TraderComponent, UIConstants, ItemConstants, TradeConstants, ResourcesVO) {
+], function (Ash, GlobalSignals, PlayerLocationNode, ItemsNode, TraderComponent, UIConstants, ItemConstants, TradeConstants, ResourcesVO) {
     var UIOutPopupTradeSystem = Ash.System.extend({
 
         uiFunctions: null,
         resourcesHelper: null,
-        popupOpenedSignal: null,
         
         itemNodes: null,
     
-        constructor: function (uiFunctions, resourcesHelper, popupOpenedSignal) {
+        constructor: function (uiFunctions, resourcesHelper) {
             this.uiFunctions = uiFunctions;
             this.resourcesHelper = resourcesHelper;
-            this.popupOpenedSignal = popupOpenedSignal;
             
             var sys = this;
-            this.popupOpenedSignal.add(function (popupID) {
+            GlobalSignals.popupOpenedSignal.add(function (popupID) {
                 if (popupID === "incoming-caravan-popup") {
                     sys.clearSelection();
                     sys.updateLists();

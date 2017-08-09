@@ -1,9 +1,10 @@
 define([
     'ash',
+    'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/UpgradeConstants',
     'game/nodes/tribe/TribeUpgradesNode',
-], function (Ash, UIConstants, UpgradeConstants, TribeUpgradesNode) {
+], function (Ash, GlobalSignals, UIConstants, UpgradeConstants, TribeUpgradesNode) {
     var UIOutBlueprintsSystem = Ash.System.extend({
 	
 		uiFunctions : null,
@@ -12,15 +13,12 @@ define([
 		
 		engine: null,
 		
-		tabChangedSignal: null,
-		
 		tribeNodes: null,
         
         lastShownPieceCount: 0,
 	
-		constructor: function (uiFunctions, tabChangedSignal, playerActions, upgradeEffectsHelper) {
+		constructor: function (uiFunctions, playerActions, upgradeEffectsHelper) {
 			this.uiFunctions = uiFunctions;
-			this.tabChangedSignal = tabChangedSignal;
 			this.playerActions = playerActions;
 			this.upgradeEffectsHelper = upgradeEffectsHelper;
 
@@ -39,12 +37,12 @@ define([
 			this.engine = engine;
 			this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
 			this.hasNeverBeenOpened = !this.uiFunctions.gameState.unlockedFeatures.blueprints;
-			this.tabChangedSignal.add(this.onTabChanged);
+			GlobalSignals.tabChangedSignal.add(this.onTabChanged);
             this.lastShownPieceCount = this.getCurrentPieceCount();
 		},
 	
 		removeFromEngine: function (engine) {
-			this.tabChangedSignal.remove(this.onTabChanged);
+			GlobalSignals.tabChangedSignal.remove(this.onTabChanged);
 			this.engine = null;
 			this.tribeNodes = null;
 		},

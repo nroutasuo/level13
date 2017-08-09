@@ -152,15 +152,6 @@ define([
         constructor: function () {
             this.engine = new Ash.Engine();
 			this.gameState = new GameState();
-			
-			// Global signals
-            // TODO make global singletons
-			this.playerMovedSignal = new Ash.Signals.Signal();
-			this.improvementBuiltSignal = new Ash.Signals.Signal();
-            this.inventoryChangedSignal = new Ash.Signals.Signal();
-            this.tabChangedSignal = new Ash.Signals.Signal();
-            this.popupOpenedSignal = new Ash.Signals.Signal();
-            this.calloutsGeneratedSignal = new Ash.Signals.Signal();
 	    
 			// Singleton helper modules to be passed to systems that need them
             this.itemsHelper = new ItemsHelper(this.gameState);
@@ -191,13 +182,9 @@ define([
 				this.levelHelper,
 				this.playerActionsHelper,
 				this.fightHelper,
-				this.playerActionResultsHelper,
-				this.playerMovedSignal,
-				this.tabChangedSignal,
-				this.improvementBuiltSignal,
-                this.inventoryChangedSignal);
+				this.playerActionResultsHelper);
             this.cheatSystem = new CheatSystem(this.gameState, this.playerActionFunctions, this.resourcesHelper, this.uiMapHelper);
-			this.uiFunctions = new UIFunctions(this.playerActionFunctions, this.gameState, this.saveSystem, this.cheatSystem, this.calloutsGeneratedSignal, this.popupOpenedSignal);
+			this.uiFunctions = new UIFunctions(this.playerActionFunctions, this.gameState, this.saveSystem, this.cheatSystem);
 			this.occurrenceFunctions = new OccurrenceFunctions(this.gameState, this.uiFunctions, this.resourcesHelper, this.upgradeEffectsHelper);
 			
 			this.playerActionFunctions.occurrenceFunctions = this.occurrenceFunctions;
@@ -236,32 +223,32 @@ define([
 			this.engine.addSystem(new ReputationSystem(this.gameState, this.resourcesHelper, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new RumourSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new EvidenceSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
-			this.engine.addSystem(new PlayerPositionSystem(this.gameState, this.levelHelper, this.uiFunctions, this.occurrenceFunctions, this.playerMovedSignal), SystemPriorities.preupdate);
+			this.engine.addSystem(new PlayerPositionSystem(this.gameState, this.levelHelper, this.uiFunctions, this.occurrenceFunctions), SystemPriorities.preupdate);
 			this.engine.addSystem(new PlayerActionSystem(this.gameState, this.playerActionFunctions), SystemPriorities.update);
-			this.engine.addSystem(new SectorStatusSystem(this.movementHelper, this.levelHelper, this.playerMovedSignal), SystemPriorities.update);
-			this.engine.addSystem(new LevelPassagesSystem(this.levelHelper, this.improvementBuiltSignal), SystemPriorities.update);
+			this.engine.addSystem(new SectorStatusSystem(this.movementHelper, this.levelHelper), SystemPriorities.update);
+			this.engine.addSystem(new LevelPassagesSystem(this.levelHelper), SystemPriorities.update);
 			this.engine.addSystem(new UnlockedFeaturesSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new GlobalResourcesSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new CampEventsSystem(this.occurrenceFunctions, this.upgradeEffectsHelper, this.gameState, this.saveSystem), SystemPriorities.update);
 			this.engine.addSystem(new AutoPlaySystem(this.playerActionFunctions, this.cheatSystem, this.levelHelper, this.sectorHelper, this.upgradeEffectsHelper), SystemPriorities.postUpdate);
 			
 			this.engine.addSystem(new UIOutHeaderSystem(this.uiFunctions, this.gameState, this.resourcesHelper, this.upgradeEffectsHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutElementsSystem(this.uiFunctions, this.gameState, this.playerActionFunctions, this.resourcesHelper, this.fightHelper, this.buttonHelper, this.calloutsGeneratedSignal), SystemPriorities.render);
-			this.engine.addSystem(new UIOutLevelSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.movementHelper, this.resourcesHelper, this.sectorHelper, this.uiMapHelper, this.playerMovedSignal, this.improvementBuiltSignal, this.inventoryChangedSignal), SystemPriorities.render);
-			this.engine.addSystem(new UIOutCampSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.levelHelper, this.upgradeEffectsHelper, this.campHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutElementsSystem(this.uiFunctions, this.gameState, this.playerActionFunctions, this.resourcesHelper, this.fightHelper, this.buttonHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutLevelSystem(this.uiFunctions, this.gameState, this.movementHelper, this.resourcesHelper, this.sectorHelper, this.uiMapHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutCampSystem(this.uiFunctions, this.gameState, this.levelHelper, this.upgradeEffectsHelper, this.campHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutProjectsSystem(this.uiFunctions, this.gameState, this.levelHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutEmbarkSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.resourcesHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutBagSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionsHelper, this.gameState), SystemPriorities.render);
-			this.engine.addSystem(new UIOutFollowersSystem(this.uiFunctions, this.tabChangedSignal, this.gameState), SystemPriorities.render);
-			this.engine.addSystem(new UIOutMapSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.uiMapHelper, this.levelHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutTradeSystem(this.uiFunctions, this.tabChangedSignal, this.gameState, this.resourcesHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutUpgradesSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionFunctions, this.upgradeEffectsHelper, this.uiTechTreeHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutBlueprintsSystem(this.uiFunctions, this.tabChangedSignal, this.playerActionFunctions, this.upgradeEffectsHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.tabChangedSignal, this.resourcesHelper, this.levelHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutEmbarkSystem(this.uiFunctions, this.gameState, this.resourcesHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutBagSystem(this.uiFunctions, this.playerActionsHelper, this.gameState), SystemPriorities.render);
+			this.engine.addSystem(new UIOutFollowersSystem(this.uiFunctions, this.gameState), SystemPriorities.render);
+			this.engine.addSystem(new UIOutMapSystem(this.uiFunctions, this.gameState, this.uiMapHelper, this.levelHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutTradeSystem(this.uiFunctions, this.gameState, this.resourcesHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutUpgradesSystem(this.uiFunctions, this.playerActionFunctions, this.upgradeEffectsHelper, this.uiTechTreeHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutBlueprintsSystem(this.uiFunctions, this.playerActionFunctions, this.upgradeEffectsHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.resourcesHelper, this.levelHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutFightSystem(this.uiFunctions, this.playerActionResultsHelper, this.playerActionsHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutLogSystem(this.playerMovedSignal), SystemPriorities.render);
+			this.engine.addSystem(new UIOutLogSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupInventorySystem(this.uiFunctions), SystemPriorities.render);
-			this.engine.addSystem(new UIOutPopupTradeSystem(this.uiFunctions, this.resourcesHelper, this.popupOpenedSignal), SystemPriorities.render);
+			this.engine.addSystem(new UIOutPopupTradeSystem(this.uiFunctions, this.resourcesHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupInnSystem(this.uiFunctions, this.gameState), SystemPriorities.render);
 		},
 	

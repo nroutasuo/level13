@@ -1,6 +1,6 @@
 // Manages showing and hiding pop-ups
-define(['ash', 'game/constants/UIConstants'],
-function (Ash, UIConstants) {
+define(['ash', 'game/GlobalSignals'],
+function (Ash, GlobalSignals) {
     var UIPopupManager = Ash.Class.extend({
         
         popupQueue: null,
@@ -74,7 +74,7 @@ function (Ash, UIConstants) {
             $("#common-popup").wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");
             $(".popup-overlay").toggle(true);
             popUpManager.onResize();
-            this.uiFunctions.popupOpenedSignal.dispatch("common-popup");
+            GlobalSignals.popupOpenedSignal.dispatch("common-popup");
             $("#common-popup").slideDown(200, popUpManager.onResize);
             
             this.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");

@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/BagConstants',
@@ -9,7 +10,7 @@ define([
     'game/components/player/ItemsComponent',
     'game/components/common/CampComponent',
 ], function (
-    Ash, UIConstants, ItemConstants, BagConstants,
+    Ash, GlobalSignals, UIConstants, ItemConstants, BagConstants,
     PlayerPositionNode, PlayerLocationNode,
     BagComponent, ItemsComponent, CampComponent
 ) {
@@ -24,14 +25,11 @@ define([
 		
 		playerPosNodes: null,
 		playerLocationNodes: null,
-		
-		tabChangedSignal: null,
 	
-		constructor: function (uiFunctions, tabChangedSignal, gameState, resourceHelper) {
+		constructor: function (uiFunctions, gameState, resourceHelper) {
 			this.uiFunctions = uiFunctions;
 			this.gameState = gameState;
 			this.resourcesHelper = resourceHelper;
-			this.tabChangedSignal = tabChangedSignal;
 			return this;
 		},
 	
@@ -52,7 +50,7 @@ define([
 	
 		initListeners: function () {
 			var sys = this;
-            this.tabChangedSignal.add(function () {
+            GlobalSignals.tabChangedSignal.add(function () {
                 sys.regenrateEmbarkItems();
             });
 		},

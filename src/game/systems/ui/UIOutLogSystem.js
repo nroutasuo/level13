@@ -1,17 +1,14 @@
 define([
-    'ash', 'game/nodes/LogNode', 'game/constants/UIConstants',
-], function (Ash, LogNode, UIConstants) {
+    'ash', 'game/GlobalSignals', 'game/nodes/LogNode', 'game/constants/UIConstants',
+], function (Ash, GlobalSignals, LogNode, UIConstants) {
     var UIOutLogSystem = Ash.System.extend({
 	
 		logNodes: null,
 		
-		playerMovedSignal: null,
-		
 		lastUpdateTimeStamp: 0,
 		updateFrequency: 1000 * 15,
 
-        constructor: function (playerMovedSignal) {
-			this.playerMovedSignal = playerMovedSignal;
+        constructor: function () {
         },
 
         addToEngine: function (engine) {
@@ -20,13 +17,13 @@ define([
 			this.onPlayerMoved = function(playerPosition) {
 				logSystem.checkPendingMessages(playerPosition);
 			};
-			this.playerMovedSignal.add(this.onPlayerMoved);
+			GlobalSignals.playerMovedSignal.add(this.onPlayerMoved);
 			this.update();
         },
 
         removeFromEngine: function (engine) {
             this.logNodes = null;
-			this.playerMovedSignal.remove(this.onPlayerMoved);
+			GlobalSignals.playerMovedSignal.remove(this.onPlayerMoved);
         },
 
         update: function (time) {

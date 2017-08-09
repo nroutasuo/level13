@@ -12,8 +12,6 @@ define([
 		
 		engine: null,
 		
-		tabChangedSignal: null,
-		
 		tribeNodes: null,
 		
 		lastUpdateUpgradeCount: 0,
@@ -23,9 +21,8 @@ define([
 		currentUpgrades: 0,
 		lastShownUpgrades: 0,
 	
-		constructor: function (uiFunctions, tabChangedSignal, playerActions, upgradeEffectsHelper, techTreeHelper) {
+		constructor: function (uiFunctions, playerActions, upgradeEffectsHelper, techTreeHelper) {
 			this.uiFunctions = uiFunctions;
-			this.tabChangedSignal = tabChangedSignal;
 			this.playerActions = playerActions;
 			this.upgradeEffectsHelper = upgradeEffectsHelper;
             this.techTreeHelper = techTreeHelper;

@@ -1,5 +1,6 @@
 // A class that checks raw user input from the DOM and passes game-related actions to PlayerActionFunctions
 define(['ash',
+        'game/GlobalSignals',
         'game/constants/GameConstants',
         'game/constants/UIConstants',
         'game/constants/ItemConstants',
@@ -8,7 +9,7 @@ define(['ash',
         'game/helpers/ui/UIPopupManager',
         'game/helpers/ui/ChangeLogHelper',
         'game/vos/ResourcesVO'],
-function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ChangeLogHelper, ResourcesVO) {
+function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ChangeLogHelper, ResourcesVO) {
     var UIFunctions = Ash.Class.extend({
         
         playerActions: null,
@@ -52,13 +53,11 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             }
         },
         
-        constructor: function (playerActions, gameState, saveSystem, cheatSystem, calloutsGeneratedSignal, popupOpenedSignal) {
+        constructor: function (playerActions, gameState, saveSystem, cheatSystem) {
             this.playerActions = playerActions;
             this.gameState = gameState;
             this.saveSystem = saveSystem;
             this.cheatSystem = cheatSystem;
-            this.calloutsGeneratedSignal = calloutsGeneratedSignal;
-            this.popupOpenedSignal = popupOpenedSignal;
 
             this.generateElements();
             this.registerListeners();
@@ -339,7 +338,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
                 }
             });
             
-            this.calloutsGeneratedSignal.dispatch();
+            GlobalSignals.calloutsGeneratedSignal.dispatch();
         },
         
         generateSteppers: function (scope) {
@@ -423,7 +422,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
                 }
             });
             
-            playerActions.tabChangedSignal.dispatch(tabID);
+            GlobalSignals.tabChangedSignal.dispatch(tabID);
         },
         
         onStepperButtonClicked: function(e) {
@@ -666,7 +665,7 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             var uiFunctions = this;
             $(".popup-overlay").fadeIn(200, function () {
                 uiFunctions.popupManager.onResize();
-                uiFunctions.popupOpenedSignal.dispatch(popupID);
+                GlobalSignals.popupOpenedSignal.dispatch(popupID);
                 $("#" + popupID).fadeIn(200, uiFunctions.popupManager.onResize);
             });
             this.generateCallouts("#" + popupID); 

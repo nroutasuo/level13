@@ -31,8 +31,6 @@ define([
         gameState : null,
         
         engine: null,
-		
-		tabChangedSignal: null,
 	
         playerPosNodes: null,
         playerLocationNodes: null,
@@ -50,9 +48,8 @@ define([
         currentPopulation: 0,
         lastShownPopulation: 0,
 
-        constructor: function (uiFunctions, tabChangedSignal, gameState, levelHelper, upgradesHelper, campHelper, upgradeEffectsHelper) {
+        constructor: function (uiFunctions, gameState, levelHelper, upgradesHelper, campHelper, upgradeEffectsHelper) {
             this.uiFunctions = uiFunctions;
-			this.tabChangedSignal = tabChangedSignal;
             this.gameState = gameState;
             this.levelHelper = levelHelper;
 			this.upgradesHelper = upgradesHelper;

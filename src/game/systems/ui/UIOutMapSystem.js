@@ -1,23 +1,22 @@
 define([
     'ash',
+    'game/GlobalSignals',
     'game/constants/GameConstants',
     'game/nodes/PlayerPositionNode'
-], function (Ash, GameConstants, PlayerPositionNode) {
+], function (Ash, GlobalSignals, GameConstants, PlayerPositionNode) {
     
     var UIOutMapSystem = Ash.System.extend({
 
 		uiFunctions: null,
 		gameState: null,
-		tabChangedSignal: null,
         
         playerPositionNodes: null,
 
-		constructor: function (uiFunctions, tabChangedSignal, gameState, uiMapHelper, levelHelper) {
+		constructor: function (uiFunctions, gameState, uiMapHelper, levelHelper) {
             this.uiFunctions = uiFunctions;
 			this.gameState = gameState;
             this.uiMapHelper = uiMapHelper;
             this.levelHelper = levelHelper;
-			this.tabChangedSignal = tabChangedSignal;
 
 			var system = this;
 
@@ -33,13 +32,13 @@ define([
 		},
 
 		addToEngine: function (engine) {
-			this.tabChangedSignal.add(this.onTabChanged);
+			GlobalSignals.tabChangedSignal.add(this.onTabChanged);
             this.uiMapHelper.enableScrollingForMap("mainmap");
             this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
 		},
 
 		removeFromEngine: function (engine) {
-			this.tabChangedSignal.remove(this.onTabChanged);
+			GlobalSignals.tabChangedSignal.remove(this.onTabChanged);
             this.uiMapHelper.disableScrollingForMap("mainmap");
             this.playerPosNodes = null;
 		},

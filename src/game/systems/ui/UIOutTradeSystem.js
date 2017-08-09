@@ -21,9 +21,8 @@ define([
         
         playerLocationNodes: null,
         
-        constructor: function (uiFunctions, tabChangedSignal, gameState, resourcesHelper) {
+        constructor: function (uiFunctions, gameState, resourcesHelper) {
             this.uiFunctions = uiFunctions;
-            this.tabChangedSignal = tabChangedSignal;
             this.gameState = gameState;
             this.resourcesHelper = resourcesHelper;
             return this;
