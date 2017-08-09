@@ -77,11 +77,14 @@ define([
 		
 		restartGame: function () {
 			this.uiFunctions.hideGame();
-			this.engine.removeAllEntities();
-            this.levelHelper.reset();
-			this.gameState.reset();
-			this.setupGame();
-			this.startGame();
+            var sys = this;
+            setTimeout(function () {
+                sys.engine.removeAllEntities();
+                sys.levelHelper.reset();
+                sys.gameState.reset();
+                sys.setupGame();
+                sys.startGame();
+            }, 250);
 		},
 		
 		initializeEntities: function () {

@@ -383,9 +383,11 @@ function (Ash, GameConstants, UIConstants, ItemConstants, PlayerActionConstants,
             $(".sticky-footer").css("display", "block");
             $("#grid-main").css("display", "block");
             $("#unit-main").css("display", "block");
+            $(".loading-content").css("display", "none");
         },
         
         hideGame: function () {
+            $(".loading-content").css("display", "block");
             $("#unit-main").css("display", "none");
             $(".sticky-footer").css("display", "none");
             $("#grid-main").css("display", "none");

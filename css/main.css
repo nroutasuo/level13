@@ -1,95 +1,5 @@
 
-/* -- Appearance: General and defaults -- */
-
-html {
-	height: 100%;
-}
-
-body {
-	font-family: Arial, sans-serif;
-	font-size: 11pt;
-	height: 100%;
-	line-height: 1.3em;
-	margin: 0;
-    border-width: 0px !important;
-}
-
-h1, h2, h3, h4, h5, h6 {
-	font-family: "Arial Narrow", Arial, sans-serif;
-	letter-spacing: 0.1pt;
-	text-transform: uppercase;
-}
-
-h3 {
-    margin: 1em 0 0.5em 0;
-}
-
-div.grid-content {
-	margin: 0px 0px 15px 0px !important;
-	padding: 15px;
-}
-
-div.grid-content .grid .unit {
-	padding-top: 0;
-	padding-bottom: 0;
-}
-
-table.fullwidth {
-	width: 100%;
-}
-
-td.minwidth {
-	width: 5%;
-}
-
-td.maxwidth {
-	width: 95%;
-}
-
-table td {
-	padding: 0px 2px;
-}
-
-table button, table div.container-btn-action {
-	margin-left: 0px;
-}
-
-hr {
-	margin: 3px 1px;
-}
-
-a:link {
-    border: none !important;
-}
-
-a:visited {
-    border: none !important;
-}
-
-a:hover {
-    border: none !important;
-}
-
-a:active {
-    border: none !important;
-}
-
-img {
-	margin: 0px 2px;
-}
-
 /* -- Layout: General -- */
-
-#grid-main {
-	height: 100%; 
-}
-
-#log {
-	background: none;
-	max-width: 244px;
-	width: 25%;
-	padding-right: 50px;
-}
 
 dl {
 	margin: 5em 0;
@@ -137,16 +47,6 @@ dd p.p-meta {
 }
 
 #log .msg { display: block; }
-
-#switch, #switch-content {
-	padding: 0;
-}
-
-#grid-switch {
-	margin: 0px !important;
-	border: 0;
-	padding: 0;
-}
 
 #switch-context-indicator {
     float: right;
@@ -226,28 +126,6 @@ dd p.p-meta {
 
 .scrollable.scroll-enabled {
     cursor: all-scroll;
-}
-
-.sticky-footer-wrapper {
-	min-height: 100%;	
-	height: auto !important;
-	margin: 0 auto -70px;
-}
-
-.sticky-footer-push {
-	margin:  0;
-	height: 70px;
-}
-
-.sticky-footer {
-	height: 70px;
-	padding: 15px 0;
-    display: none;
-}
-
-.sticky-footer .one-quarter {
-	height: 2px; 
-	padding: 0px;
 }
 
 
@@ -1206,6 +1084,31 @@ button .cooldown-action, button .cooldown-duration {
 
 
 /* -- Appearance: All-purpose elements -- */
+
+
+table.fullwidth {
+	width: 100%;
+}
+
+td.minwidth {
+	width: 5%;
+}
+
+td.maxwidth {
+	width: 95%;
+}
+
+table td {
+	padding: 0px 2px;
+}
+
+table button, table div.container-btn-action {
+	margin-left: 0px;
+}
+
+hr {
+	margin: 3px 1px;
+}
 
 .stats-indicator {
 	display: block;
