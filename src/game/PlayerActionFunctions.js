@@ -515,6 +515,7 @@ define(['ash',
 
                 var playerActionFunctions = this;
                 var successCallback = function () {
+                    GlobalSignals.sectorScoutedSignal.dispatch();
                     playerActionFunctions.occurrenceFunctions.onScoutSector(sector);
                     playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
                     playerActionFunctions.save();
@@ -1163,6 +1164,7 @@ define(['ash',
                 this.playerActionsHelper.deductCosts(upgradeId);
                 this.addLogMessage(LogConstants.MSG_ID_BOUGHT_UPGRADE, "Researched " + upgradeDefinition.name);
                 this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeId);
+                GlobalSignals.upgradeUnlockedSignal.dispatch(upgradeId);
                 this.save();
             }
         },

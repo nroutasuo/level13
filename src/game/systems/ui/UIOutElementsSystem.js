@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/PlayerStatConstants',
@@ -14,6 +15,7 @@ define([
     'game/components/player/ItemsComponent',
     'game/components/sector/improvements/SectorImprovementsComponent'
 ], function (Ash,
+    GlobalSignals,
     UIConstants,
     ItemConstants,
     PlayerStatConstants,
@@ -45,14 +47,13 @@ define([
         buttonHelper: null,
         engine: null,
     
-        constructor: function (uiFunctions, gameState, playerActions, resourcesHelper, fightHelper, buttonHelper, calloutsGeneratedSignal) {
+        constructor: function (uiFunctions, gameState, playerActions, resourcesHelper, fightHelper, buttonHelper) {
             this.gameState = gameState;
             this.playerActions = playerActions;
             this.uiFunctions = uiFunctions;
             this.resourcesHelper = resourcesHelper;
             this.fightHelper = fightHelper;
             this.buttonHelper = buttonHelper;
-            this.calloutsGeneratedSignal = calloutsGeneratedSignal;
             return this;
         },
     
@@ -68,7 +69,15 @@ define([
             this.campNodes.nodeRemoved.add(this.onCampNodeRemoved, this);
             
             this.refreshSavedElements();
-            this.calloutsGeneratedSignal.add(this.refreshSavedElements);
+            GlobalSignals.calloutsGeneratedSignal.add(this.refreshSavedElements);
+            this.updateTabVisibility();
+            
+            var sys = this;
+            GlobalSignals.calloutsGeneratedSignal.add(function () { sys.updateTabVisibility(); });
+            GlobalSignals.improvementBuiltSignal.add(function () { sys.updateTabVisibility(); });
+            GlobalSignals.featureUnlockedSignal.add(function () { sys.updateTabVisibility(); });
+            GlobalSignals.playerMovedSignal.add(function () { sys.updateTabVisibility(); });
+            GlobalSignals.gameShownSignal.add(function () { sys.updateTabVisibility(); });
         },
     
         removeFromEngine: function (engine) {
@@ -86,11 +95,18 @@ define([
         onCampNodeRemoved: function (node) {
             this.updateTabVisibility();
         },
+        
+        onFeatureUnlocked: function () {
+            this.updateTabVisibility();
+        },
+        
+        onImprovementBuilt: function () {
+            this.updateTabVisibility();
+        },
     
         update: function (time) {
             this.updateButtons();
             this.updateProgressbars();
-            this.updateTabVisibility();
             this.updateTabs();
             this.updateInfoCallouts();
         },
@@ -152,111 +168,108 @@ define([
                 var action = $(button).attr("action");
                 return playerActionsHelper.checkCosts(action, false) < 1;
             };
-            
-			// TODO performance bottleneck - cache buttons? -> figure out when to update the lists (all/action buttons)
 			
             var showStorage = this.resourcesHelper.getCurrentStorageCap();
-            $.each($("button"), function () {
-                // Update disabled status
+            
+            $.each($("button.action"), function () {
                 var isVisible = ($(this).is(":visible"));
-				
-                if (isVisible) {
-                    var disabledVision = isButtonDisabledVision($(this));
-                    var disabledBasic = !disabledVision && isButtonDisabled($(this));
-                    var disabledResources = !disabledVision && !disabledBasic && isButtonDisabledResources($(this));
-                    var disabledCooldown = !disabledVision && !disabledBasic && !disabledResources && hasButtonCooldown($(this));
-                    var disabledDuration = !disabledVision && !disabledBasic && !disabledResources && !disabledCooldown && hasButtonDuration($(this));
-                    var isDisabled = disabledBasic || disabledVision || disabledResources || disabledCooldown || disabledDuration;
-                    $(this).toggleClass("btn-disabled", isDisabled);
-                    $(this).toggleClass("btn-disabled-basic", disabledBasic);
-                    $(this).toggleClass("btn-disabled-vision", disabledVision);
-                    $(this).parent(".container-btn-action").toggleClass("btn-disabled-vision", disabledVision);
-                    $(this).toggleClass("btn-disabled-resources", disabledResources);
-                    $(this).toggleClass("btn-disabled-cooldown", disabledCooldown || disabledDuration);
-                    $(this).attr("disabled", isDisabled || isAutoPlaying);
-                }
                 
-                // Update button callouts and cooldowns
                 $(this).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");
                 $(this).parent(".container-btn-action").css("display", $(this).css("display"));
-                var action = $(this).attr("action");
-				var baseActionId = playerActionsHelper.getBaseActionID(action);
-                if (!action) {
-                    // console.log("WARN: Action button w unknown action: " + $(this).attr("id"));
-                    // skip updating
-                } else if (!isVisible) {
-                    // skip updating
-                } else {
-                    var ordinal = playerActionsHelper.getOrdinal(action);
-                    var costFactor = playerActionsHelper.getCostFactor(action);
-                    var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);
-					var duration = PlayerActionConstants.getDuration(baseActionId);
-                    var hasEnemies = fightHelper.hasEnemiesCurrentLocation(action);
-					var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
-                    var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
-					var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision) : 0;
-					var description = playerActionsHelper.getDescription(action);
-                    var hasCosts = action && costs && Object.keys(costs).length > 0;
-                    var hasCostBlockers = false;
-                    var isHardDisabled = isButtonDisabled($(this)) || isButtonDisabledVision($(this));
-
-                    // Update callout content
-                    var content = description;
-                    var bottleNeckCostFraction = 1;
-					var sectorEntity = buttonHelper.getButtonSectorEntity((this));
-                    var disabledReason = playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
-                    var isDisabledOnlyForCooldown = (!(disabledReason) && hasButtonCooldown($(this)));
-                    if (!isHardDisabled || isDisabledOnlyForCooldown) {
-                        if (hasCosts) {
-                            if (content.length > 0) content += "<hr/>";
-                            for (var key in costs) {
-                                var itemName = key.replace("item_", "");
-                                var item = ItemConstants.getItemByID(itemName);
-                                var name = (uiFunctions.names.resources[key] ? uiFunctions.names.resources[key] : item !== null ? item.name : key).toLowerCase();
-                                var value = costs[key];
-                                var classes = "action-cost";
-                                var costFraction = playerActionsHelper.checkCost(action, key);
-                                if (costFraction < 1) classes += " action-cost-blocker";
-                                if (isResource(key.split("_")[1]) && value > showStorage || key == "stamina" && value > playerHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR) {
-                                    classes += " action-cost-blocker-storage";
-                                    hasCostBlockers = true;
-                                }
-                                else if (costFraction < bottleNeckCostFraction) bottleNeckCostFraction = costFraction;
-                                
-								if (value > 0) content += "<span class='" + classes + "'>" + name + ": " + value + "</span><br/>";
-                            }
-                        }
-						
-						if (duration > 0) {
-                            if (content.length > 0) content += "<hr/>";
-							content += "<span class='action-duration'>duration: " + Math.round(duration * 100)/100 + "s</span>";
-						}
-						
-						if (injuryRisk > 0 || fightRisk > 0 || inventoryRisk > 0) {
-                            var inventoryRiskLabel = action === "despair" ? "lose items" : "lose item";
-                            if (content.length > 0) content += "<hr/>";
-							if (injuryRisk > 0) content += "<span class='action-risk warning'>risk of injury: " + Math.round(injuryRisk * 100 * 100) / 100 + "%</span><br/>";
-							if (fightRisk > 0) content += "<span class='action-risk warning'>risk of fight: " + Math.round(fightRisk * 100 * 100) / 100 + "%</span><br/>";
-							if (inventoryRisk > 0) content += "<span class='action-risk warning'>" + inventoryRiskLabel + ": " + Math.round(inventoryRisk * 100 * 100) / 100 + "%</span>";
-						}
-                    } else {
-                        if (content.length > 0) content += "<hr/>";
-                        content += "<span class='btn-disabled-reason action-cost-blocker'>" + disabledReason + "</span>";
-                    }
-                    $(this).siblings(".btn-callout").children(".btn-callout-content").html(content);
-                    $(this).parent().siblings(".btn-callout").children(".btn-callout-content").html(content);
                 
-                    // Check requirements affecting req-cooldown
-                    bottleNeckCostFraction = Math.min(bottleNeckCostFraction, playerActionsHelper.checkRequirements(action, false, sectorEntity).value);
-					if (hasCostBlockers) bottleNeckCostFraction = 0;
-					if (isHardDisabled) bottleNeckCostFraction = 0;
-                    
-                    // Update cooldown overlays
-                    var hasReqsCooldown = ($(this).hasClass("btn-disabled-resources") && hasCosts && !hasCostBlockers);
-                    $(this).siblings(".cooldown-reqs").css("width", ((bottleNeckCostFraction) * 100) + "%");
-                    $(this).children(".cooldown-action").css("display", !isHardDisabled ? "inherit" : "none");
-                    $(this).children(".cooldown-duration").css("display", !isHardDisabled ? "inherit" : "none");
+                if (!isVisible)
+                    return;
+                
+                var action = $(this).attr("action");
+                
+                if (!action)
+                    return;
+
+                // Update disabled status
+                var disabledVision = isButtonDisabledVision($(this));
+                var disabledBasic = !disabledVision && isButtonDisabled($(this));
+                var disabledResources = !disabledVision && !disabledBasic && isButtonDisabledResources($(this));
+                var disabledCooldown = !disabledVision && !disabledBasic && !disabledResources && hasButtonCooldown($(this));
+                var disabledDuration = !disabledVision && !disabledBasic && !disabledResources && !disabledCooldown && hasButtonDuration($(this));
+                var isDisabled = disabledBasic || disabledVision || disabledResources || disabledCooldown || disabledDuration;
+                $(this).toggleClass("btn-disabled", isDisabled);
+                $(this).toggleClass("btn-disabled-basic", disabledBasic);
+                $(this).toggleClass("btn-disabled-vision", disabledVision);
+                $(this).parent(".container-btn-action").toggleClass("btn-disabled-vision", disabledVision);
+                $(this).toggleClass("btn-disabled-resources", disabledResources);
+                $(this).toggleClass("btn-disabled-cooldown", disabledCooldown || disabledDuration);
+                $(this).attr("disabled", isDisabled || isAutoPlaying);
+                
+                // Update button callouts and cooldowns
+				var baseActionId = playerActionsHelper.getBaseActionID(action);
+                var ordinal = playerActionsHelper.getOrdinal(action);
+                var costFactor = playerActionsHelper.getCostFactor(action);
+                var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);
+                var duration = PlayerActionConstants.getDuration(baseActionId);
+                var hasEnemies = fightHelper.hasEnemiesCurrentLocation(action);
+                var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
+                var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
+                var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision) : 0;
+                var description = playerActionsHelper.getDescription(action);
+                var hasCosts = action && costs && Object.keys(costs).length > 0;
+                var hasCostBlockers = false;
+                var isHardDisabled = isButtonDisabled($(this)) || isButtonDisabledVision($(this));
+
+                // Update callout content
+                var content = description;
+                var bottleNeckCostFraction = 1;
+                var sectorEntity = buttonHelper.getButtonSectorEntity((this));
+                var disabledReason = playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
+                var isDisabledOnlyForCooldown = (!(disabledReason) && hasButtonCooldown($(this)));
+                if (!isHardDisabled || isDisabledOnlyForCooldown) {
+                    if (hasCosts) {
+                        if (content.length > 0) content += "<hr/>";
+                        for (var key in costs) {
+                            var itemName = key.replace("item_", "");
+                            var item = ItemConstants.getItemByID(itemName);
+                            var name = (uiFunctions.names.resources[key] ? uiFunctions.names.resources[key] : item !== null ? item.name : key).toLowerCase();
+                            var value = costs[key];
+                            var classes = "action-cost";
+                            var costFraction = playerActionsHelper.checkCost(action, key);
+                            if (costFraction < 1) classes += " action-cost-blocker";
+                            if (isResource(key.split("_")[1]) && value > showStorage || key == "stamina" && value > playerHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR) {
+                                classes += " action-cost-blocker-storage";
+                                hasCostBlockers = true;
+                            }
+                            else if (costFraction < bottleNeckCostFraction) bottleNeckCostFraction = costFraction;
+
+                            if (value > 0) content += "<span class='" + classes + "'>" + name + ": " + value + "</span><br/>";
+                        }
+                    }
+
+                    if (duration > 0) {
+                        if (content.length > 0) content += "<hr/>";
+                        content += "<span class='action-duration'>duration: " + Math.round(duration * 100)/100 + "s</span>";
+                    }
+
+                    if (injuryRisk > 0 || fightRisk > 0 || inventoryRisk > 0) {
+                        var inventoryRiskLabel = action === "despair" ? "lose items" : "lose item";
+                        if (content.length > 0) content += "<hr/>";
+                        if (injuryRisk > 0) content += "<span class='action-risk warning'>risk of injury: " + Math.round(injuryRisk * 100 * 100) / 100 + "%</span><br/>";
+                        if (fightRisk > 0) content += "<span class='action-risk warning'>risk of fight: " + Math.round(fightRisk * 100 * 100) / 100 + "%</span><br/>";
+                        if (inventoryRisk > 0) content += "<span class='action-risk warning'>" + inventoryRiskLabel + ": " + Math.round(inventoryRisk * 100 * 100) / 100 + "%</span>";
+                    }
+                } else {
+                    if (content.length > 0) content += "<hr/>";
+                    content += "<span class='btn-disabled-reason action-cost-blocker'>" + disabledReason + "</span>";
                 }
+                $(this).siblings(".btn-callout").children(".btn-callout-content").html(content);
+                $(this).parent().siblings(".btn-callout").children(".btn-callout-content").html(content);
+
+                // Check requirements affecting req-cooldown
+                bottleNeckCostFraction = Math.min(bottleNeckCostFraction, playerActionsHelper.checkRequirements(action, false, sectorEntity).value);
+                if (hasCostBlockers) bottleNeckCostFraction = 0;
+                if (isHardDisabled) bottleNeckCostFraction = 0;
+
+                // Update cooldown overlays
+                $(this).siblings(".cooldown-reqs").css("width", ((bottleNeckCostFraction) * 100) + "%");
+                $(this).children(".cooldown-action").css("display", !isHardDisabled ? "inherit" : "none");
+                $(this).children(".cooldown-duration").css("display", !isHardDisabled ? "inherit" : "none");
             });
         },
         
@@ -286,16 +299,17 @@ define([
             var hasMap = this.playerStatsNodes.head.entity.get(ItemsComponent).getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
             var hasProjects = this.gameState.unlockedFeatures.projects;
             var hasTradingPost = currentCamp && currentCamp.get(SectorImprovementsComponent).getCount(improvementNames.tradepost) > 0;
+            
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-in", null, isInCamp, 200, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-upgrades", null, isInCamp && this.gameState.unlockedFeatures.upgrades, 200, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-blueprints", null, this.gameState.unlockedFeatures.blueprints, 200, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-world", null, isInCamp && this.gameState.numCamps > 1, 200, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-bag", null, this.gameState.unlockedFeatures.bag, 200, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-followers", null, this.gameState.unlockedFeatures.followers, 200, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-out", null, true, 0, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-map", null, hasMap, 200, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-trade", null, isInCamp && hasTradingPost, 200, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-projects", null, isInCamp && hasProjects, 200, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-upgrades", null, isInCamp && this.gameState.unlockedFeatures.upgrades, 100, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-blueprints", null, this.gameState.unlockedFeatures.blueprints, 100, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-world", null, isInCamp && this.gameState.numCamps > 1, 100, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-bag", null, this.gameState.unlockedFeatures.bag, 100, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-followers", null, this.gameState.unlockedFeatures.followers, 100, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-out", null, true, 100, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-map", null, hasMap, 100, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-trade", null, isInCamp && hasTradingPost, 100, 0);
+            this.uiFunctions.tabToggleIf("#switch-tabs #switch-projects", null, isInCamp && hasProjects, 100, 0);
         },
         
         updateTabs: function () {

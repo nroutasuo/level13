@@ -133,12 +133,15 @@ define([
 		},
 
 		updateCrafting: function (isActive) {
-			var checkBoxHidden = !($("#checkbox-crafting-show-obsolete").is(':visible')) && $("#self-craft").is(":visible");
-			var showObsolete = $("#checkbox-crafting-show-obsolete").is(':checked') || checkBoxHidden;
-			var requiresUpdate = $("#self-craft table tr").length !== this.craftableItems || showObsolete !== this.showObsolete;
-			this.showObsolete = showObsolete;
 			
 			var countObsolete = 0;
+            
+            if (isActive) {
+                var checkBoxHidden = !($("#checkbox-crafting-show-obsolete").is(':visible')) && $("#self-craft").is(":visible");
+                var showObsolete = $("#checkbox-crafting-show-obsolete").is(':checked') || checkBoxHidden;
+                var requiresUpdate = $("#self-craft table tr").length !== this.craftableItems || showObsolete !== this.showObsolete;
+                this.showObsolete = showObsolete;
+            }
 			if (requiresUpdate) $("#self-craft table").empty();
 			
             this.craftableItems = 0;

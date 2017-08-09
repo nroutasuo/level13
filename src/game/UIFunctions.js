@@ -383,6 +383,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             $("#grid-main").css("display", "block");
             $("#unit-main").css("display", "block");
             $(".loading-content").css("display", "none");
+            GlobalSignals.gameShownSignal.dispatch();
         },
         
         hideGame: function () {

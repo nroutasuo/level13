@@ -1,9 +1,10 @@
 define([
     'ash',
+    'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/nodes/PlayerLocationNode',
 ], function (
-    Ash, UIConstants, PlayerLocationNode
+    Ash, GlobalSignals, UIConstants, PlayerLocationNode
 ) {
     var UIOutProjectsSystem = Ash.System.extend({
         
@@ -25,6 +26,17 @@ define([
         addToEngine: function (engine) {
             this.engine  = engine;
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
+            
+            var sys = this;
+            GlobalSignals.upgradeUnlockedSignal.add(function () { 
+                sys.updateAvailableProjects(isActive); 
+            });
+            GlobalSignals.sectorScoutedSignal.add(function () { 
+                sys.updateAvailableProjects(isActive); 
+            });
+            GlobalSignals.improvementBuiltSignal.add(function () { 
+                sys.updateAvailableProjects(isActive); 
+            });
         },
 
         removeFromEngine: function (engine) {
@@ -37,7 +49,6 @@ define([
             if (!this.playerLocationNodes.head) return;
             
             this.updateBubble();
-            this.updateAvailableProjects(isActive);
             
             if (!isActive) {
                 return;

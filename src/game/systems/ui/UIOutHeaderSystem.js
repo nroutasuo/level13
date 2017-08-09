@@ -139,8 +139,6 @@ define([
 			
 			var bgColorVal = 0;
 			if (sunlit) bgColorVal = 255;
-			var textColorVal = 255;
-			if (sunlit) textColorVal = 0;
 			// TODO performance consider appending to stylesheet (https://learn.jquery.com/performance/use-stylesheets-for-changing-css/)
 			$("#page-overlay").css("background-color", "rgba(" + bgColorVal + "," + bgColorVal + "," + bgColorVal + "," + (alphaVal * 0.5) + ")");
 			$("body").toggleClass("sunlit", sunlit);

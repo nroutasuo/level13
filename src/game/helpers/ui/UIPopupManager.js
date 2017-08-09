@@ -92,12 +92,14 @@ function (Ash, GlobalSignals) {
                     $(".popup-overlay").toggle(false);
                     $("#" + id).unwrap();
                     $("#" + id).data("fading", false);
+                    GlobalSignals.popupClosedSignal.dispatch(id);
                     popupManager.showQueuedPopup();
                     popupManager.gameState.isPaused = popupManager.hasOpenPopup();
                 });
             } else {
                 $("#" + id).toggle(false);
                 $("#" + id).data("fading", false);
+                GlobalSignals.popupClosedSignal.dispatch(id);
                 popupManager.showQueuedPopup();
                 popupManager.gameState.isPaused = popupManager.hasOpenPopup();
             }

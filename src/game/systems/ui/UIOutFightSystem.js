@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GlobalSignals',
     'game/constants/FightConstants',
     'game/constants/ItemConstants',
     'game/constants/TextConstants',
@@ -12,7 +13,7 @@ define([
     'game/components/sector/FightEncounterComponent',
     'game/components/sector/EnemiesComponent',
     'game/components/sector/SectorControlComponent',
-], function (Ash, FightConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightComponent, FightEncounterComponent, EnemiesComponent, SectorControlComponent) {
+], function (Ash, GlobalSignals, FightConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightComponent, FightEncounterComponent, EnemiesComponent, SectorControlComponent) {
     var UIOutFightSystem = Ash.System.extend({
 	
 		uiFunctions: null,
@@ -27,6 +28,7 @@ define([
 		lastProgressBarUpdateFreq: 300,
         
         wasFightActive: false,
+        isFightPopupOpen: false,
 	
         constructor: function (uiFunctions, playerActionResultsHelper, playerActionsHelper) {
 			this.uiFunctions = uiFunctions;
@@ -38,6 +40,16 @@ define([
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.fightNodes = engine.getNodeList(FightNode);
+            
+            var sys = this;
+            GlobalSignals.popupOpenedSignal.add(function (popupID) {
+                if (popupID === "fight-popup")
+                    sys.isFightPopupOpen = true;
+            });
+            GlobalSignals.popupClosedSignal.add(function (popupID) {
+                if (popupID === "fight-popup")
+                    sys.isFightPopupOpen = false;
+            });
         },
 
         removeFromEngine: function (engine) {
@@ -47,8 +59,9 @@ define([
         },
 
         update: function (time) {
-			if (!($("#fight-popup").is(":visible")) || $("#fight-popup").data("fading") == true) return;
-			
+            if (!this.isFightPopupOpen)
+                return;
+            
 			var fightActive = this.fightNodes.head !== null && this.fightNodes.head.fight.finished !== true;
 			var fightFinished = this.fightNodes.head !== null && this.fightNodes.head.fight.finished === true;
 			var fightWon = fightFinished && this.fightNodes.head.fight.won;
