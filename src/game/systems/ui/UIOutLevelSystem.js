@@ -54,6 +54,9 @@ define([
         pendingUpdateMap: true,
 	
 		constructor: function (uiFunctions, gameState, movementHelper, resourceHelper, sectorHelper, uiMapHelper) {
+            
+            $("#switch-out .bubble").toggle(false);
+            
 			this.uiFunctions = uiFunctions;
 			this.gameState = gameState;
 			this.movementHelper = movementHelper;
@@ -97,8 +100,9 @@ define([
 			this.rebuildVis(uiMapHelper);
 		},
 		
-		update: function (time) {
-            $("#switch-out .bubble").toggle(false);
+		update: function (time) {            
+            if (this.uiFunctions.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.out)
+                return;
 			
 			var posComponent = this.playerPosNodes.head.position;
             
@@ -115,16 +119,12 @@ define([
 		},
 		
 		updateLevelPage: function () {
-			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);            
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			
 			var vision = this.playerPosNodes.head.entity.get(VisionComponent).value;
 			var hasVision = vision > PlayerStatConstants.VISION_BASE;
-			var hasBridgeableBlocker = this.movementHelper.hasBridgeableBlocker(this.playerLocationNodes.head.entity);
-			var passageUpAvailable = passagesComponent.passageUp !== null;
-			var passageDownAvailable = passagesComponent.passageDown !== null;
 			var hasCamp = false;
 			var hasCampHere = false;
             var isScouted = sectorStatusComponent.scouted;
@@ -157,27 +157,8 @@ define([
                 this.wasScouted = isScouted;
             }
 			            
-			this.updateOutImprovements(improvements);
-            
-			var collectorFood = improvements.getVO(improvementNames.collector_food);
-			var collectorWater = improvements.getVO(improvementNames.collector_water);
-			var hasFoundFood = isScouted && featuresComponent.resourcesCollectable.food > 0;
-			var hasFoundWater = isScouted && featuresComponent.resourcesCollectable.water > 0;
-			$("#out-improvements-collector-food").toggle(collectorFood.count > 0 || hasFoundFood);
-			$("#out-improvements-collector-water").toggle((collectorWater.count > 0 || hasFoundWater) && !featuresComponent.hasSpring);
-			$("#out-improvements-camp").toggle(sectorStatusComponent.canBuildCamp);
-			$("#out-improvements-bridge").toggle(hasBridgeableBlocker);
-			$("#out-improvements-passage-up").toggle(isScouted && passageUpAvailable);
-			$("#out-improvements-passage-down").toggle(isScouted && passageDownAvailable);
-			
-			var collectorFoodCapacity = collectorFood.storageCapacity.food * collectorFood.count;
-			var collectorWaterCapacity = collectorWater.storageCapacity.water * collectorWater.count;
-			$("#out-improvements-camp .list-amount").text(hasCamp ? "1" : "0");
-			$("#out-improvements-bridge .list-amount").text(improvements.getCount(improvementNames.bridge));
-			$("#out-improvements-collector-food .list-storage").text(
-				collectorFoodCapacity > 0 ? (Math.floor(collectorFood.storedResources.food * 10) / 10) + " / " + collectorFoodCapacity : "");
-			$("#out-improvements-collector-water .list-storage").text(
-				collectorWaterCapacity > 0 ? (Math.floor(collectorWater.storedResources.water * 10) / 10) + " / " + collectorWaterCapacity : "");
+			this.updateOutImprovementsList(improvements);
+			this.updateOutImprovements(hasCamp, improvements);
 			
 			var hasAvailableImprovements = $("#out-improvements table tr:visible").length > 0;
 			var hasAvailableProjects = $("#out-projects tr:visible").length > 0;
@@ -451,7 +432,7 @@ define([
 			return enemyDesc + (hasHazards ? hazardDesc : notCampableDesc);
 		},
 		
-        updateOutImprovements: function (improvements) {
+        updateOutImprovementsList: function (improvements) {
             var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;
             $.each(this.elementsOutImprovementsTR, function () {
                 var actionName = $(this).attr("btn-action");
@@ -478,6 +459,37 @@ define([
                     }
                 }
             });
+        },
+        
+        updateOutImprovements: function (hasCamp, improvements) {
+			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
+			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);      
+            
+            var isScouted = sectorStatusComponent.scouted;
+			var hasBridgeableBlocker = this.movementHelper.hasBridgeableBlocker(this.playerLocationNodes.head.entity);
+			var passageUpAvailable = passagesComponent.passageUp !== null;
+			var passageDownAvailable = passagesComponent.passageDown !== null;
+            
+			var collectorFood = improvements.getVO(improvementNames.collector_food);
+			var collectorWater = improvements.getVO(improvementNames.collector_water);
+			var hasFoundFood = isScouted && featuresComponent.resourcesCollectable.food > 0;
+			var hasFoundWater = isScouted && featuresComponent.resourcesCollectable.water > 0;
+			$("#out-improvements-collector-food").toggle(collectorFood.count > 0 || hasFoundFood);
+			$("#out-improvements-collector-water").toggle((collectorWater.count > 0 || hasFoundWater) && !featuresComponent.hasSpring);
+			$("#out-improvements-camp").toggle(sectorStatusComponent.canBuildCamp);
+			$("#out-improvements-bridge").toggle(hasBridgeableBlocker);
+			$("#out-improvements-passage-up").toggle(isScouted && passageUpAvailable);
+			$("#out-improvements-passage-down").toggle(isScouted && passageDownAvailable);
+			
+			var collectorFoodCapacity = collectorFood.storageCapacity.food * collectorFood.count;
+			var collectorWaterCapacity = collectorWater.storageCapacity.water * collectorWater.count;
+			$("#out-improvements-camp .list-amount").text(hasCamp ? "1" : "0");
+			$("#out-improvements-bridge .list-amount").text(improvements.getCount(improvementNames.bridge));
+			$("#out-improvements-collector-food .list-storage").text(
+				collectorFoodCapacity > 0 ? (Math.floor(collectorFood.storedResources.food * 10) / 10) + " / " + collectorFoodCapacity : "");
+			$("#out-improvements-collector-water .list-storage").text(
+				collectorWaterCapacity > 0 ? (Math.floor(collectorWater.storedResources.water * 10) / 10) + " / " + collectorWaterCapacity : "");
         },
         
 		updateLocales: function () {

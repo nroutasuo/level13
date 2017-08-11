@@ -10,7 +10,7 @@ define([
         
         playerLocationNodes: null,
 
-        bubbleNumber: 0,
+        bubbleNumber: -1,
         visibleBuildingCount: 0,
         availableBuildingCount: 0,
         lastShownVisibleBuildingCount: 0,
@@ -29,13 +29,13 @@ define([
             
             var sys = this;
             GlobalSignals.upgradeUnlockedSignal.add(function () { 
-                sys.updateAvailableProjects(isActive); 
+                sys.updateAvailableProjects(); 
             });
             GlobalSignals.sectorScoutedSignal.add(function () { 
-                sys.updateAvailableProjects(isActive); 
+                sys.updateAvailableProjects(); 
             });
             GlobalSignals.improvementBuiltSignal.add(function () { 
-                sys.updateAvailableProjects(isActive); 
+                sys.updateAvailableProjects(); 
             });
         },
 
@@ -61,12 +61,16 @@ define([
         },
         
         updateBubble: function () {
-            this.bubbleNumber = this.availableBuildingCount - this.lastShownAvailableBuildingCount + this.visibleBuildingCount - this.lastShownVisibleBuildingCount;
+            var newBubbleNumber = this.availableBuildingCount - this.lastShownAvailableBuildingCount + this.visibleBuildingCount - this.lastShownVisibleBuildingCount;
+            if (this.bubbleNumber === newBubbleNumber)
+                return;
+            this.bubbleNumber = newBubbleNumber;
             $("#switch-projects .bubble").text(this.bubbleNumber);
             $("#switch-projects .bubble").toggle(this.bubbleNumber > 0);  
         },
         
-        updateAvailableProjects: function (isActive) {
+        updateAvailableProjects: function () {
+            var isActive = this.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.projects;
             var availableBuildingCount = 0;
             var visibleBuildingCount = 0;
             var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;

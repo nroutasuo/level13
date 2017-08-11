@@ -497,13 +497,17 @@ define([
                     if (typeof requirements.incomingcaravan.validSelection !== "undefined") {
                         var requiredValue = requirements.incomingcaravan.validSelection;
                         var traderComponent = sector.get(TraderComponent);
-                        var caravan = traderComponent.caravan;
-                        var currentValue = caravan.traderOfferValue > 0 && caravan.traderOfferValue <= caravan.campOfferValue;
-                        if (requiredValue != currentValue) {
-                            if (requiredValue)
-                                return {value: 0, reason: "Invalid selection."};
-                            else
-                                return {value: 0, reason: "Valid selection."};
+                        if (traderComponent) {
+                            var caravan = traderComponent.caravan;
+                            var currentValue = caravan.traderOfferValue > 0 && caravan.traderOfferValue <= caravan.campOfferValue;
+                            if (requiredValue != currentValue) {
+                                if (requiredValue)
+                                    return {value: 0, reason: "Invalid selection."};
+                                else
+                                    return {value: 0, reason: "Valid selection."};
+                            }
+                        } else {
+                            return {value: 0, reason: "No caravan."};
                         }
                     }
                 }

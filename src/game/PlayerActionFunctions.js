@@ -756,7 +756,7 @@ define(['ash',
             sector.add(new CampEventTimersComponent());
             sector.add(new OutgoingCaravansComponent());
             sector.add(new ReputationComponent());
-            sector.add(new CurrencyComponet());
+            sector.add(new CurrencyComponent());
 
             var level = this.levelHelper.getLevelEntityForSector(sector);
             level.add(campComponent);

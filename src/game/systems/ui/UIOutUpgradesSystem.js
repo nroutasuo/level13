@@ -72,6 +72,9 @@ define([
         updateBubble: function () {
 			var blueprintsNum = this.currentBlueprints - this.lastShownBlueprints;
 			var upgradesNum = this.currentUpgrades - this.lastShownUpgrades;
+            var newBubbleNumber = blueprintsNum + upgradesNum;
+            if (this.bubbleNumber === newBubbleNumber)
+                return;
             this.bubbleNumber = blueprintsNum + upgradesNum;
 			if (this.hasNeverBeenOpened) this.bubbleNumber += this.availableUpgrades;
             $("#switch-upgrades .bubble").text(this.bubbleNumber);

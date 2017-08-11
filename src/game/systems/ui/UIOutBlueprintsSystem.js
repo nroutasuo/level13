@@ -60,7 +60,10 @@ define([
 		},
         
         updateBubble: function () {
-            this.bubbleNumber = Math.max(0, this.getCurrentPieceCount() - this.lastShownPieceCount);
+            var newBubbleNumber = Math.max(0, this.getCurrentPieceCount() - this.lastShownPieceCount);
+            if (this.bubbleNumber === newBubbleNumber)
+                return;
+            this.bubbleNumber = newBubbleNumber;
             $("#switch-blueprints .bubble").text(this.bubbleNumber);
             $("#switch-blueprints .bubble").toggle(this.bubbleNumber > 0);
         },

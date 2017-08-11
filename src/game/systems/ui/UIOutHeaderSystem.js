@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GlobalSignals',
     'game/constants/GameConstants',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
@@ -23,7 +24,7 @@ define([
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/ReputationComponent'
 ], function (Ash,
-    GameConstants, UIConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
+    GlobalSignals, GameConstants, UIConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
     WorldCreatorHelper, SaveSystem,
 	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
     BagComponent,
@@ -67,6 +68,9 @@ define([
             this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
 			this.currentLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.autoPlayNodes = engine.getNodeList(AutoPlayNode);
+            
+            var sys = this;
+            GlobalSignals.playerMovedSignal.add(function () { sys.onPlayerMoved(); });
 			
 			this.generateStatsCallouts();
 		},
@@ -100,11 +104,6 @@ define([
             var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
 			var campComponent = this.currentLocationNodes.head.entity.get(CampComponent);
 			var isInCamp = playerPosition.inCamp;
-
-            this.uiFunctions.slideToggleIf("#main-header-camp", null, isInCamp, 250, 50);
-            this.uiFunctions.slideToggleIf("#main-header-bag", null, !isInCamp, 250, 50);
-            this.uiFunctions.slideToggleIf("#main-header-equipment", null, !isInCamp, 250, 50);
-            this.uiFunctions.slideToggleIf("#main-header-items", null, !isInCamp, 250, 50);
 			
 			this.updateOverlay();
 			this.updateLevelColours();
@@ -128,6 +127,15 @@ define([
             this.updateItemStats(isInCamp);
 			this.lastUpdateTimeStamp = new Date().getTime();
 		},
+        
+        onPlayerMoved: function () {
+            var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
+			var isInCamp = playerPosition.inCamp;
+            this.uiFunctions.slideToggleIf("#main-header-camp", null, isInCamp, 250, 50);
+            this.uiFunctions.slideToggleIf("#main-header-bag", null, !isInCamp, 250, 50);
+            this.uiFunctions.slideToggleIf("#main-header-equipment", null, !isInCamp, 250, 50);
+            this.uiFunctions.slideToggleIf("#main-header-items", null, !isInCamp, 250, 50);
+        },
 		
 		updateOverlay: function () {
 			var featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);

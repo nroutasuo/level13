@@ -16,7 +16,7 @@ define([
         
         craftableItemDefinitionList: [],
 		
-		bubbleNumber: 0,
+		bubbleNumber: -1,
         craftableItems: -1,
         lastShownCraftableItems: -1,
         numOwned: -1,
@@ -97,9 +97,6 @@ define([
 
 		update: function (time) {
 			var isActive = this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.bag;
-			var itemsComponent = this.itemNodes.head.items;
-			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
-			var uniqueItems = itemsComponent.getUnique(inCamp);
 			
 			this.updateCrafting(isActive);
 			this.updateBubble();
@@ -113,12 +110,20 @@ define([
 			// Header
 			$("#tab-header h2").text("Bag");
 
+			var itemsComponent = this.itemNodes.head.items;
+			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
+			var uniqueItems = itemsComponent.getUnique(inCamp);
+            
 			this.updateItems(uniqueItems);
             this.updateUseItems();
 		},
         
         updateBubble: function () {
-            this.bubbleNumber = Math.max(0, this.numOwnedUnseen + this.numCraftableUnlockedUnseen + this.numCraftableAvailableUnseen);
+            var newBubbleNumber = Math.max(0, this.numOwnedUnseen + this.numCraftableUnlockedUnseen + this.numCraftableAvailableUnseen);
+            if (this.bubbleNumber === newBubbleNumber)
+                return;
+            
+            this.bubbleNumber = newBubbleNumber;
             $("#switch-bag .bubble").text(this.bubbleNumber);
             $("#switch-bag .bubble").toggle(this.bubbleNumber > 0);
         },
@@ -132,16 +137,14 @@ define([
 			}
 		},
 
-		updateCrafting: function (isActive) {
-			
-			var countObsolete = 0;
-            
+		updateCrafting: function (isActive) {            
             if (isActive) {
                 var checkBoxHidden = !($("#checkbox-crafting-show-obsolete").is(':visible')) && $("#self-craft").is(":visible");
                 var showObsolete = $("#checkbox-crafting-show-obsolete").is(':checked') || checkBoxHidden;
                 var requiresUpdate = $("#self-craft table tr").length !== this.craftableItems || showObsolete !== this.showObsolete;
                 this.showObsolete = showObsolete;
             }
+            
 			if (requiresUpdate) $("#self-craft table").empty();
 			
             this.craftableItems = 0;
@@ -150,6 +153,7 @@ define([
 			
 			var itemsComponent = this.itemNodes.head.items;
 			var itemDefinitionList = this.getCraftableItemDefinitionList();
+			var countObsolete = 0;
 			
 			var tr;
             var itemDefinition;
@@ -198,8 +202,10 @@ define([
 				}
 			}
 			
-			$("#checkbox-crafting-show-obsolete").toggle(countObsolete > 0);
-			$("#label-crafting-show-obsolete").toggle(countObsolete > 0);
+            if (isActive) {
+                $("#checkbox-crafting-show-obsolete").toggle(countObsolete > 0);
+                $("#label-crafting-show-obsolete").toggle(countObsolete > 0);
+            }
 
 			if (requiresUpdate) {
 				this.uiFunctions.registerActionButtonListeners("#self-craft");

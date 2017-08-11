@@ -12,7 +12,7 @@ define([
 
 		itemNodes: null,
 		
-		bubbleNumber: 0,
+		bubbleNumber: -1,
 		followerCount: -1,
 		lastShownFollowerCount: -1,
 
@@ -97,7 +97,10 @@ define([
 		},
         
         updateBubble: function () {
-            this.bubbleNumber = Math.max(0, this.followerCount - this.lastShownFollowerCount);
+            var newBubbleNumber = Math.max(0, this.followerCount - this.lastShownFollowerCount);
+            if (this.bubbleNumber === newBubbleNumber)
+                return;
+            this.bubbleNumber = newBubbleNumber;
             $("#switch-followers .bubble").text(this.bubbleNumber);
             $("#switch-followers .bubble").toggle(this.bubbleNumber > 0);
         },

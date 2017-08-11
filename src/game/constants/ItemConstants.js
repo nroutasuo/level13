@@ -200,8 +200,8 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
         getItemByID: function (id) {
             if (id.indexOf("follower-") >= 0)
                 return this.getFollowerByID(id);
-            for ( var type in this.itemDefinitions ) {
-                for ( var i in this.itemDefinitions[type] ) {
+            for (var type in this.itemDefinitions ) {
+                for (var i in this.itemDefinitions[type]) {
                     var item = this.itemDefinitions[type][i];
                     if (item.id === id) {
                         return item;

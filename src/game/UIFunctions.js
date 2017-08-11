@@ -536,10 +536,17 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         },
         
         slideToggleIf: function(element, replacement, show, durationIn, durationOut) {
-            var visible = $(element).is(":visible");
+            var visible = true;
+            var visibletag = ($(element).attr("data-visible"));
+            if (typeof visibletag !== typeof undefined)
+                visible = $(element).is(":visible");
+            else
+                visible = visibletag;
+            
             var toggling = ($(element).attr("data-toggling") == "true");
             
             if (show && !visible && !toggling) {
+                $(element).attr("data-visible", "true");
 				if(replacement) $(replacement).toggle(false);
                 $(element).attr("data-toggling", "true");
 				$(element).slideToggle(durationIn, function () {
@@ -547,6 +554,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                     $(element).attr("data-toggling", "false");
                 });
 			} else if (!show && visible && !toggling) {
+                $(element).attr("data-visible", "false");
                 $(element).attr("data-toggling", "true");
 				$(element).slideToggle(durationOut, function () {
 					if(replacement) $(replacement).toggle(true);

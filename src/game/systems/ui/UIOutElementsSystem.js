@@ -116,6 +116,7 @@ define([
         },
         
         updateButtons: function () {
+            var sys = this;
             var playerActionsHelper = this.playerActions.playerActionsHelper;
             var uiFunctions = this.uiFunctions;
             var fightHelper = this.fightHelper;
@@ -124,54 +125,11 @@ define([
             var playerVision = this.playerStatsNodes.head.vision.value;
             var playerHealth = this.playerStatsNodes.head.stamina.health;
 			var isAutoPlaying = this.autoPlayNodes.head;
-            
-            var hasButtonCooldown = function (button) {
-                return ($(button).attr("data-hasCooldown") === "true");
-            };
-			
-			var hasButtonDuration = function (button) {
-                return ($(button).attr("data-isInProgress") === "true");
-            };
-			
-			var isButtonDisabledVision = function (button) {
-                var action = $(button).attr("action");
-				if (action) {
-					var requirements = playerActionsHelper.getReqs(action);
-					if (requirements && requirements.vision) return (playerVision < requirements.vision[0]);
-				}
-				return false;
-			};
-            
-            var isButtonDisabled = function (button) {
-                if ($(button).hasClass("btn-meta")) return false;
-                
-                if ($(button).attr("data-type") === "minus") {
-                    var input = $(button).siblings("input");
-                    return parseInt(input.val()) <= parseInt(input.attr("min"));
-                }
-                
-                if ($(button).attr("data-type") === "plus") {
-                    var input = $(button).siblings("input");
-                    return parseInt(input.val()) >= parseInt(input.attr("max"));
-                }
-            
-                if (!($(button).hasClass("action"))) return false;
-                
-                var action = $(button).attr("action");
-                if (!action) return false;
-                
-				var sectorEntity = buttonHelper.getButtonSectorEntity(button);
-                return playerActionsHelper.checkRequirements(action, false, sectorEntity).value < 1;
-            };
-            
-            var isButtonDisabledResources = function (button) {
-                var action = $(button).attr("action");
-                return playerActionsHelper.checkCosts(action, false) < 1;
-            };
 			
             var showStorage = this.resourcesHelper.getCurrentStorageCap();
             
             $.each($("button.action"), function () {
+                // TODO smarter check for visible buttons (:visible is a performance bottleneck)
                 var isVisible = ($(this).is(":visible"));
                 
                 $(this).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");
@@ -186,11 +144,12 @@ define([
                     return;
 
                 // Update disabled status
-                var disabledVision = isButtonDisabledVision($(this));
-                var disabledBasic = !disabledVision && isButtonDisabled($(this));
-                var disabledResources = !disabledVision && !disabledBasic && isButtonDisabledResources($(this));
-                var disabledCooldown = !disabledVision && !disabledBasic && !disabledResources && hasButtonCooldown($(this));
-                var disabledDuration = !disabledVision && !disabledBasic && !disabledResources && !disabledCooldown && hasButtonDuration($(this));
+                var disabledBase = sys.isButtonDisabled($(this));
+                var disabledVision = sys.isButtonDisabledVision($(this));
+                var disabledBasic = !disabledVision && disabledBase;
+                var disabledResources = !disabledVision && !disabledBasic && sys.isButtonDisabledResources($(this));
+                var disabledCooldown = !disabledVision && !disabledBasic && !disabledResources && sys.hasButtonCooldown($(this));
+                var disabledDuration = !disabledVision && !disabledBasic && !disabledResources && !disabledCooldown && sys.hasButtonDuration($(this));
                 var isDisabled = disabledBasic || disabledVision || disabledResources || disabledCooldown || disabledDuration;
                 $(this).toggleClass("btn-disabled", isDisabled);
                 $(this).toggleClass("btn-disabled-basic", disabledBasic);
@@ -205,23 +164,22 @@ define([
                 var ordinal = playerActionsHelper.getOrdinal(action);
                 var costFactor = playerActionsHelper.getCostFactor(action);
                 var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);
-                var duration = PlayerActionConstants.getDuration(baseActionId);
                 var hasEnemies = fightHelper.hasEnemiesCurrentLocation(action);
                 var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
                 var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
                 var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision) : 0;
                 var description = playerActionsHelper.getDescription(action);
-                var hasCosts = action && costs && Object.keys(costs).length > 0;
                 var hasCostBlockers = false;
-                var isHardDisabled = isButtonDisabled($(this)) || isButtonDisabledVision($(this));
+                var isHardDisabled = disabledBase || disabledVision;
 
                 // Update callout content
                 var content = description;
                 var bottleNeckCostFraction = 1;
                 var sectorEntity = buttonHelper.getButtonSectorEntity((this));
                 var disabledReason = playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
-                var isDisabledOnlyForCooldown = (!(disabledReason) && hasButtonCooldown($(this)));
+                var isDisabledOnlyForCooldown = (!(disabledReason) && sys.hasButtonCooldown($(this)));
                 if (!isHardDisabled || isDisabledOnlyForCooldown) {
+                    var hasCosts = action && costs && Object.keys(costs).length > 0;
                     if (hasCosts) {
                         if (content.length > 0) content += "<hr/>";
                         for (var key in costs) {
@@ -242,6 +200,7 @@ define([
                         }
                     }
 
+                    var duration = PlayerActionConstants.getDuration(baseActionId);
                     if (duration > 0) {
                         if (content.length > 0) content += "<hr/>";
                         content += "<span class='action-duration'>duration: " + Math.round(duration * 100)/100 + "s</span>";
@@ -271,6 +230,51 @@ define([
                 $(this).children(".cooldown-action").css("display", !isHardDisabled ? "inherit" : "none");
                 $(this).children(".cooldown-duration").css("display", !isHardDisabled ? "inherit" : "none");
             });
+        },
+        
+        hasButtonCooldown: function (button) {
+            return ($(button).attr("data-hasCooldown") === "true");
+        },
+			
+        hasButtonDuration: function (button) {
+            return ($(button).attr("data-isInProgress") === "true");
+        },
+
+        isButtonDisabledVision: function (button) {
+            var action = $(button).attr("action");
+            if (action) {
+                var playerVision = this.playerStatsNodes.head.vision.value;
+                var requirements = this.playerActions.playerActionsHelper.getReqs(action);
+                if (requirements && requirements.vision) return (playerVision < requirements.vision[0]);
+            }
+            return false;
+        },
+            
+        isButtonDisabled: function (button) {
+            if ($(button).hasClass("btn-meta")) return false;
+
+            if ($(button).attr("data-type") === "minus") {
+                var input = $(button).siblings("input");
+                return parseInt(input.val()) <= parseInt(input.attr("min"));
+            }
+
+            if ($(button).attr("data-type") === "plus") {
+                var input = $(button).siblings("input");
+                return parseInt(input.val()) >= parseInt(input.attr("max"));
+            }
+
+            if (!($(button).hasClass("action"))) return false;
+
+            var action = $(button).attr("action");
+            if (!action) return false;
+
+            var sectorEntity = this.buttonHelper.getButtonSectorEntity(button);
+            return this.playerActions.playerActionsHelper.checkRequirements(action, false, sectorEntity).value < 1;
+        },
+
+        isButtonDisabledResources: function (button) {
+            var action = $(button).attr("action");
+            return this.playerActions.playerActionsHelper.checkCosts(action, false) < 1;
         },
         
         updateProgressbars: function () {

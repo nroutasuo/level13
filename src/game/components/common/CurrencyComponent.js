@@ -6,7 +6,7 @@ define(['ash'], function (Ash) {
         currency: 0,
         
         constructor: function (currency) {
-            this.currency = currency;
+            this.currency = currency ? currency : 0;
         },
     });
 

@@ -62,6 +62,8 @@ define([
         },
         
         updateBubble: function () {
+            if (this.campsWithAlert === this.bubbleNumber)
+                return;
             this.bubbleNumber = this.campsWithAlert;
             $("#switch-world .bubble").toggle(this.bubbleNumber > 0);
         },

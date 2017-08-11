@@ -38,7 +38,7 @@ define([
         deityNodes: null,
         tribeUpgradesNodes: null,
         
-        bubbleNumber: 0,
+        bubbleNumber: -1,
         visibleBuildingCount: 0,
         availableBuildingCount: 0,
         lastShownVisibleBuildingCount: 0,
@@ -112,7 +112,10 @@ define([
             var buildingNum = this.availableBuildingCount - this.lastShownAvailableBuildingCount + this.visibleBuildingCount - this.lastShownVisibleBuildingCount;
             var eventNum = this.currentEvents - this.lastShownEvents;
             var populationNum = this.currentPopulation - this.lastShownPopulation;
-            this.bubbleNumber = buildingNum + eventNum + populationNum;
+            var newBubbleNumber = buildingNum + eventNum + populationNum;
+            if (this.bubbleNumber === newBubbleNumber)
+                return;
+            this.bubbleNumber = newBubbleNumber;
             $("#switch-in .bubble").text(this.bubbleNumber);
             $("#switch-in .bubble").toggle(this.bubbleNumber > 0);
         },
