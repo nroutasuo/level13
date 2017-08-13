@@ -66,20 +66,20 @@ define([
 			var fightFinished = this.fightNodes.head !== null && this.fightNodes.head.fight.finished === true;
 			var fightWon = fightFinished && this.fightNodes.head.fight.won;
 			
-			$("#out-action-fight-confirm").toggle(!fightActive && !fightFinished);
-			$("#out-action-fight-close").toggle(fightFinished && !fightWon);
-			$("#out-action-fight-next").toggle(fightFinished && fightWon);
-            $("#out-action-fight-cancel").toggle(!fightFinished && !fightActive);
-            $("#fight-buttons-main").toggle(!fightActive);
-            $("#fight-buttons-infightactions").toggle(fightActive);
+			this.uiFunctions.toggle("#out-action-fight-confirm", !fightActive && !fightFinished);
+			this.uiFunctions.toggle("#out-action-fight-close", fightFinished && !fightWon);
+			this.uiFunctions.toggle("#out-action-fight-next", fightFinished && fightWon);
+            this.uiFunctions.toggle("#out-action-fight-cancel", !fightFinished && !fightActive);
+            this.uiFunctions.toggle("#fight-buttons-main", !fightActive);
+            this.uiFunctions.toggle("#fight-buttons-infightactions", fightActive);
 			
-			$("#fight-popup-control-info").toggle(!fightActive);
-			$("#fight-popup-bars").toggle(fightActive);
-			$("#fight-popup-self-info").toggle(fightActive);
-			$("#list-fight-followers").toggle(fightActive);
-			$("#fight-popup-results").toggle(fightFinished);
+			this.uiFunctions.toggle("#fight-popup-control-info", !fightActive);
+			this.uiFunctions.toggle("#fight-popup-bars", fightActive);
+			this.uiFunctions.toggle("#fight-popup-self-info", fightActive);
+			this.uiFunctions.toggle("#list-fight-followers", fightActive);
+			this.uiFunctions.toggle("#fight-popup-results", fightFinished);
             
-			$("#fight-desc").toggle(!fightActive);
+			this.uiFunctions.toggle("#fight-desc", !fightActive);
 			
 			$("#fight-popup-enemy-info").toggleClass("strike-through", fightFinished && fightWon);
 			
@@ -199,11 +199,11 @@ define([
 			var isWon = this.fightNodes.head.fight.won;
 			$("#fight-desc").text(isWon ? this.getWonDescriptionByContext(encounterComponent.context) : this.getLostDescriptionByContext(encounterComponent.context));
 			
-			$("#fight-results-win-header").toggle(isWon);
-			$("#fight-results-win-res").toggle(isWon);
-			$("#fight-results-win-items").toggle(isWon);
-			$("#fight-results-lose-header").toggle(!isWon && false);
-			$("#fight-results-lose-items").toggle(!isWon && false);
+			this.uiFunctions.toggle("#fight-results-win-header", isWon);
+			this.uiFunctions.toggle("#fight-results-win-res", isWon);
+			this.uiFunctions.toggle("#fight-results-win-items", isWon);
+			this.uiFunctions.toggle("#fight-results-lose-header", !isWon && false);
+			this.uiFunctions.toggle("#fight-results-lose-items", !isWon && false);
 			
 			if (this.displayedRewards !== this.fightNodes.head.fight.resultVO) {
 				$("#fight-popup-results").html(this.playerActionResultsHelper.getRewardDiv(this.fightNodes.head.fight.resultVO, true));

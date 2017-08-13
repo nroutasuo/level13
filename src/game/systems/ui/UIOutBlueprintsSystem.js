@@ -65,7 +65,7 @@ define([
                 return;
             this.bubbleNumber = newBubbleNumber;
             $("#switch-blueprints .bubble").text(this.bubbleNumber);
-            $("#switch-blueprints .bubble").toggle(this.bubbleNumber > 0);
+            this.uiFunctions.toggle("#switch-blueprints .bubble", this.bubbleNumber > 0);
         },
         
         updateBlueprintList: function () {
@@ -92,7 +92,7 @@ define([
 			this.uiFunctions.generateCallouts("#blueprints-pieces-list");
 			this.uiFunctions.registerActionButtonListeners("#blueprints-pieces-list");
             
-            $("#blueprints-list-empty-message").toggle($("#blueprints-pieces-list tr").length === 0);
+            this.uiFunctions.toggle("#blueprints-list-empty-message", $("#blueprints-pieces-list tr").length === 0);
         },
         
         getCurrentPieceCount: function () {

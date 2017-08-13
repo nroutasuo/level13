@@ -48,14 +48,14 @@ define([
             
             if (!isActive) {
                 $(".btn-trade-caravans-outgoing-toggle").text("Prepare Caravan");
-                $(".trade-caravans-outgoing-plan").toggle(false);                
+                this.uiFunctions.toggle(".trade-caravans-outgoing-plan", false);                
                 return;
             }
             
             this.updateOutgoingCaravanPrepare();
             
-            $("#trade-caravans-outgoing-empty-message").toggle(this.availableTradingPartnersCount === 0);
-            $("#trade-caravans-incoming-empty-message").toggle(this.currentIncomingTraders === 0);
+            this.uiFunctions.toggle("#trade-caravans-outgoing-empty-message", this.availableTradingPartnersCount === 0);
+            this.uiFunctions.toggle("#trade-caravans-incoming-empty-message", this.currentIncomingTraders === 0);
             $("#tab-header h2").text("Trade");
         },
         
@@ -68,7 +68,7 @@ define([
                 this.bubbleNumber = 0;
             this.bubbleNumber += (this.currentIncomingTraders - this.lastShownIncomingTraders);
             $("#switch-trade .bubble").text(this.bubbleNumber);
-            $("#switch-trade .bubble").toggle(this.bubbleNumber > 0);  
+            this.uiFunctions.toggle("#switch-trade .bubble", this.bubbleNumber > 0);  
         },
         
         updateOutgoingCaravansList: function (isActive) {
@@ -129,12 +129,12 @@ define([
                 
                 // hide all others
                 $(".btn-trade-caravans-outgoing-toggle").text("Prepare Caravan");
-                $(".trade-caravans-outgoing-plan").toggle(false);
+                this.uiFunctions.toggle(".trade-caravans-outgoing-plan", false);
                 
                 // set this button and tr to correct state
                 if (!wasVisible) {
                     $(this).text("Cancel");
-                    $(tr).toggle(true);
+                    this.uiFunctions.toggle(tr, true);
                     sys.initPendingCaravan(ordinal);
                 } else {
                     sys.resetPendingCaravan();
@@ -238,16 +238,16 @@ define([
             var hasEnoughSellRes = ownedSellAmount >= TradeConstants.MIN_OUTGOING_CARAVAN_RES;
             if (hasEnoughSellRes) {
                 amountSell = Math.min(ownedSellAmount, $(sellSlider).val()); 
-                $(sellSlider).toggle(true);
+                this.uiFunctions.toggle(sellSlider, true);
                 $(sellSlider).attr("max", Math.min(TradeConstants.MAX_OUTGOING_CARAVAN_RES, Math.floor(ownedSellAmount / 10) * 10));
-                $(trID + " .trade-sell-value-invalid").toggle(false);
-                $(trID + " .trade-sell-value").toggle(true);
+                this.uiFunctions.toggle(trID + " .trade-sell-value-invalid", false);
+                this.uiFunctions.toggle(trID + " .trade-sell-value", true);
                 $(trID + " .trade-sell-value").text(amountSell);
             } else {
-                $(sellSlider).toggle(false);
-                $(trID + " .trade-sell-value-invalid").toggle(true); 
+                this.uiFunctions.toggle(sellSlider, false);
+                this.uiFunctions.toggle(trID + " .trade-sell-value-invalid", true); 
                 $(trID + " .trade-sell-value-invalid").text("Not enough " + selectedSell);
-                $(trID + " .trade-sell-value").toggle(false);
+                this.uiFunctions.toggle(trID + " .trade-sell-value", false);
             }
             
             // set get amount

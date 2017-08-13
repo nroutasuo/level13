@@ -54,15 +54,15 @@ define([
         pendingUpdateMap: true,
 	
 		constructor: function (uiFunctions, gameState, movementHelper, resourceHelper, sectorHelper, uiMapHelper) {
-            
-            $("#switch-out .bubble").toggle(false);
-            
 			this.uiFunctions = uiFunctions;
 			this.gameState = gameState;
 			this.movementHelper = movementHelper;
 			this.resourcesHelper = resourceHelper;
 			this.sectorHelper = sectorHelper;
             this.uiMapHelper = uiMapHelper;
+            
+            this.uiFunctions.toggle("#switch-out .bubble", false);
+            
 			return this;
 		},
 	
@@ -162,12 +162,12 @@ define([
 			
 			var hasAvailableImprovements = $("#out-improvements table tr:visible").length > 0;
 			var hasAvailableProjects = $("#out-projects tr:visible").length > 0;
-			$("#header-out-improvements").toggle(hasAvailableImprovements);
-			$("#header-out-projects").toggle(hasAvailableProjects);
+			this.uiFunctions.toggle("#header-out-improvements", hasAvailableImprovements);
+			this.uiFunctions.toggle("#header-out-projects", hasAvailableProjects);
 			
 			this.updateLevelPageActions(isScouted, hasCamp, hasCampHere);
 
-            $("#minimap").toggle(this.gameState.unlockedFeatures.scout);            
+            this.uiFunctions.toggle("#minimap", this.gameState.unlockedFeatures.scout);            
 		},
         
         updateLevelPageActions: function (isScouted, hasCamp, hasCampHere) {
@@ -188,9 +188,9 @@ define([
             var passageDownBuilt = improvements.getCount(improvementNames.passageDownStairs) +
                 improvements.getCount(improvementNames.passageDownElevator) +
                 improvements.getCount(improvementNames.passageDownHole) > 0;
-            $("#out-action-move-up").toggle((isScouted && passagesComponent.passageUp != null) || passageUpBuilt);
-            $("#out-action-move-down").toggle((isScouted && passagesComponent.passageDown != null) || passageDownBuilt);
-            $("#out-action-move-camp").toggle(hasCamp && !hasCampHere);
+            this.uiFunctions.toggle("#out-action-move-up", (isScouted && passagesComponent.passageUp != null) || passageUpBuilt);
+            this.uiFunctions.toggle("#out-action-move-down", (isScouted && passagesComponent.passageDown != null) || passageDownBuilt);
+            this.uiFunctions.toggle("#out-action-move-camp", hasCamp && !hasCampHere);
 
             var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
             var isValidDespairHunger = discoveredResources.indexOf(resourceNames.food) < 0 && this.gameState.unlockedFeatures.resources.food && this.resourcesHelper.getCurrentStorage().resources.food < 0.5;
@@ -199,12 +199,12 @@ define([
             var isValidDespairMove = !movementOptionsComponent.canMove(); // conceivably happens in hazard sectors if you lose equipment
             var isFirstPosition = posComponent.level === 13 && posComponent.sectorX === WorldCreatorConstants.FIRST_CAMP_X && posComponent.sectorY === WorldCreatorConstants.FIRST_CAMP_Y;
             var showDespair = !hasCampHere && !isFirstPosition && (isValidDespairHunger || isValidDespairThirst || isValidDespairStamina) || isValidDespairMove;
-            $("#out-action-enter").toggle(hasCampHere);
-            $("#out-action-scout").toggle(this.gameState.unlockedFeatures.vision);
-            $("#out-action-use-spring").toggle(isScouted && featuresComponent.hasSpring);
-            $("#out-action-investigate").toggle(this.gameState.unlockedFeatures.investigate);
-            $("#out-action-fight-gang").toggle(this.gameState.unlockedFeatures.fight);
-            $("#out-action-despair").toggle(showDespair);
+            this.uiFunctions.toggle("#out-action-enter", hasCampHere);
+            this.uiFunctions.toggle("#out-action-scout", this.gameState.unlockedFeatures.vision);
+            this.uiFunctions.toggle("#out-action-use-spring", isScouted && featuresComponent.hasSpring);
+            this.uiFunctions.toggle("#out-action-investigate", this.gameState.unlockedFeatures.investigate);
+            this.uiFunctions.toggle("#out-action-fight-gang", this.gameState.unlockedFeatures.fight);
+            this.uiFunctions.toggle("#out-action-despair", showDespair);
 
             // TODO do this somewhere other than UI system - maybe a global detection if despair is available
             if (showDespair && !this.isDespairVisible) {
@@ -212,7 +212,7 @@ define([
             }
             this.isDespairVisible = showDespair;
 
-            $("#out-action-clear-workshop").toggle(isScouted && workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP));
+            this.uiFunctions.toggle("#out-action-clear-workshop", isScouted && workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP));
             if (workshopComponent) {
                 var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
                 $("#out-action-clear-workshop").text("scout " + workshopName);
@@ -222,10 +222,10 @@ define([
             this.uiFunctions.slideToggleIf("#table-out-actions-movement-related", null, isScouted > 0, 200, 0);
 
             // hide movement until the player makes a light
-            $("#container-tab-two-out-actions table").toggle(this.gameState.numCamps > 0);
-            $("#container-tab-two-out-actions h3").toggle(this.gameState.numCamps > 0);
-            $("#out-improvements").toggle(this.gameState.unlockedFeatures.vision);
-            $("#out-improvements table").toggle(this.gameState.unlockedFeatures.vision);
+            this.uiFunctions.toggle("#container-tab-two-out-actions table", this.gameState.numCamps > 0);
+            this.uiFunctions.toggle("#container-tab-two-out-actions h3", this.gameState.numCamps > 0);
+            this.uiFunctions.toggle("#out-improvements", this.gameState.unlockedFeatures.vision);
+            this.uiFunctions.toggle("#out-improvements table", this.gameState.unlockedFeatures.vision);
             
         },
 		
@@ -434,6 +434,7 @@ define([
 		
         updateOutImprovementsList: function (improvements) {
             var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;
+            var uiFunctions = this.uiFunctions;
             $.each(this.elementsOutImprovementsTR, function () {
                 var actionName = $(this).attr("btn-action");
                 
@@ -451,11 +452,11 @@ define([
                         var costSource = PlayerActionConstants.getCostSource(actionName);
                         var isProject = costSource === PlayerActionConstants.COST_SOURCE_CAMP;
                         $(this).find(".list-amount").text(existingImprovements);
-                        $(this).find(".action-use").toggle(existingImprovements > 0);
+                        uiFunctions.toggle($(this).find(".action-use"), existingImprovements > 0);
                         if (isProject) {
                             $(this).find(".list-description").text(actionEnabled ? "Available in camp" : "");
                         }
-                        $(this).toggle(actionEnabled || existingImprovements > 0);
+                        uiFunctions.toggle(this, actionEnabled || existingImprovements > 0);
                     }
                 }
             });
@@ -475,17 +476,13 @@ define([
 			var collectorWater = improvements.getVO(improvementNames.collector_water);
 			var hasFoundFood = isScouted && featuresComponent.resourcesCollectable.food > 0;
 			var hasFoundWater = isScouted && featuresComponent.resourcesCollectable.water > 0;
-			$("#out-improvements-collector-food").toggle(collectorFood.count > 0 || hasFoundFood);
-			$("#out-improvements-collector-water").toggle((collectorWater.count > 0 || hasFoundWater) && !featuresComponent.hasSpring);
-			$("#out-improvements-camp").toggle(sectorStatusComponent.canBuildCamp);
-			$("#out-improvements-bridge").toggle(hasBridgeableBlocker);
-			$("#out-improvements-passage-up").toggle(isScouted && passageUpAvailable);
-			$("#out-improvements-passage-down").toggle(isScouted && passageDownAvailable);
+			this.uiFunctions.toggle("#out-improvements-collector-food", collectorFood.count > 0 || hasFoundFood);
+			this.uiFunctions.toggle("#out-improvements-collector-water", (collectorWater.count > 0 || hasFoundWater) && !featuresComponent.hasSpring);
+			this.uiFunctions.toggle("#out-improvements-camp", sectorStatusComponent.canBuildCamp);
 			
 			var collectorFoodCapacity = collectorFood.storageCapacity.food * collectorFood.count;
 			var collectorWaterCapacity = collectorWater.storageCapacity.water * collectorWater.count;
 			$("#out-improvements-camp .list-amount").text(hasCamp ? "1" : "0");
-			$("#out-improvements-bridge .list-amount").text(improvements.getCount(improvementNames.bridge));
 			$("#out-improvements-collector-food .list-storage").text(
 				collectorFoodCapacity > 0 ? (Math.floor(collectorFood.storedResources.food * 10) / 10) + " / " + collectorFoodCapacity : "");
 			$("#out-improvements-collector-water .list-storage").text(

@@ -33,13 +33,13 @@ function (Ash, GlobalSignals) {
             if ($(popup).parent().hasClass("popup-overlay")) $(popup).unwrap();
             
             // text
-            $("#common-popup-input-container").toggle(false);
+            this.uiFunctions.toggle("#common-popup-input-container", false);
             $("#common-popup h3").text(title);
             $("#common-popup p#common-popup-desc").html(msg);
             
             // results and rewards
             var hasResult = resultVO && typeof resultVO !== 'undefined';
-            $("#info-results").toggle(hasResult);
+            this.uiFunctions.toggle("#info-results", hasResult);
             $("#info-results").empty();
             if (hasResult) {
                 var rewardDiv = this.playerActionResultsHelper.getRewardDiv(resultVO, false);
@@ -72,7 +72,7 @@ function (Ash, GlobalSignals) {
             
             // overlay
             $("#common-popup").wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");
-            $(".popup-overlay").toggle(true);
+            this.uiFunctions.toggle(".popup-overlay", true);
             popUpManager.onResize();
             GlobalSignals.popupOpenedSignal.dispatch("common-popup");
             $("#common-popup").slideDown(200, popUpManager.onResize);
@@ -89,7 +89,7 @@ function (Ash, GlobalSignals) {
             if (popupManager.popupQueue.length === 0) {
                 $("#" + id).data("fading", true);
                 $("#" + id).slideUp(200, function () {
-                    $(".popup-overlay").toggle(false);
+                    popupManager.uiFunctions.toggle(".popup-overlay", false);
                     $("#" + id).unwrap();
                     $("#" + id).data("fading", false);
                     GlobalSignals.popupClosedSignal.dispatch(id);
@@ -97,7 +97,7 @@ function (Ash, GlobalSignals) {
                     popupManager.gameState.isPaused = popupManager.hasOpenPopup();
                 });
             } else {
-                $("#" + id).toggle(false);
+                this.uiFunctions.toggle("#" + id, false);
                 $("#" + id).data("fading", false);
                 GlobalSignals.popupClosedSignal.dispatch(id);
                 popupManager.showQueuedPopup();

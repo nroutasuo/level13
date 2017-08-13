@@ -117,7 +117,7 @@ define([
                 return;
             this.bubbleNumber = newBubbleNumber;
             $("#switch-in .bubble").text(this.bubbleNumber);
-            $("#switch-in .bubble").toggle(this.bubbleNumber > 0);
+            this.uiFunctions.toggle("#switch-in .bubble", this.bubbleNumber > 0);
         },
 	
         updateWorkers: function (isActive) {
@@ -132,7 +132,7 @@ define([
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             
             var showPopulation = campComponent.population > 0 || this.gameState.numCamps > 1;
-            $("#in-population").toggle(showPopulation);
+            this.uiFunctions.toggle("#in-population", showPopulation);
             if (!showPopulation) return;
             
             var reputation = this.playerLocationNodes.head.entity.get(ReputationComponent).value;
@@ -200,12 +200,12 @@ define([
             var posComponent = this.playerPosNodes.head.position;
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             
-            $("#in-assign-weaver").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("rope-maker")));
-            $("#in-assign-chemist").toggle(this.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel) > 0);
-            $("#in-assign-apothecary").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("apothecary")));
-            $("#in-assign-concrete").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("concrete")));
-            $("#in-assign-smith").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("smith")));
-            $("#in-assign-soldier").toggle(this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("soldier")));
+            this.uiFunctions.toggle("#in-assign-weaver", this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("rope-maker")));
+            this.uiFunctions.toggle("#in-assign-chemist", this.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel) > 0);
+            this.uiFunctions.toggle("#in-assign-apothecary", this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("apothecary")));
+            this.uiFunctions.toggle("#in-assign-concrete", this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("concrete")));
+            this.uiFunctions.toggle("#in-assign-smith", this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("smith")));
+            this.uiFunctions.toggle("#in-assign-soldier", this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("soldier")));
             
             var workerConsumptionS = "<br/><span class='warning'>water -" + this.campHelper.getWaterConsumptionPerSecond(1) + "/s</span>" +
                 "<br/><span class='warning'>food -" + this.campHelper.getFoodConsumptionPerSecond(1) + "/s</span>";
@@ -256,6 +256,7 @@ define([
             var visibleBuildingCount = 0;
             
             var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;
+            var uiFunctions = this.uiFunctions;
             $.each($("#in-improvements tr"), function () {
                 var actionName = $(this).find("button.action-build").attr("action");
                 var id = $(this).attr("id");
@@ -275,7 +276,7 @@ define([
                         var existingImprovements = improvements.getCount(improvementName);
                         if (isActive) {
                             $(this).find(".list-amount").text(existingImprovements);
-                            $(this).find(".action-use").toggle(existingImprovements > 0);
+                            uiFunctions.toggle($(this).find(".action-use"), existingImprovements > 0);
                         }
                         
                         var commonVisibilityRule = (actionEnabled || existingImprovements > 0 || showActionDisabledReason);
@@ -286,7 +287,7 @@ define([
                         if (id === "in-improvements-market") specialVisibilityRule = hasTradePost;
                         if (id === "in-improvements-inn") specialVisibilityRule = hasTradePost;
                         var isVisible = specialVisibilityRule && commonVisibilityRule;
-                        $(this).toggle(isVisible);
+                        uiFunctions.toggle(this, isVisible);
                         if (isVisible) visibleBuildingCount++;
                         if (actionAvailable) availableBuildingCount++;
                     }
@@ -298,8 +299,8 @@ define([
 			var isInjured = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury) !== 1;
 			var isAugmented = perksComponent.hasPerk(PerkConstants.perkIds.healthAugment);
 			var isAugmentAvailable = this.hasUpgrade(this.upgradesHelper.getUpgradeIdsForImprovement(improvementNames.hospital)[0]);
-			$("#btn-use_in_hospital").toggle(hasHospital && (isInjured || isAugmented || !isAugmentAvailable));
-			$("#btn-use_in_hospital2").toggle(hasHospital && !isInjured && !isAugmented && isAugmentAvailable);
+			this.uiFunctions.toggle("#btn-use_in_hospital", hasHospital && (isInjured || isAugmented || !isAugmentAvailable));
+			this.uiFunctions.toggle("#btn-use_in_hospital2", hasHospital && !isInjured && !isAugmented && isAugmentAvailable);
             
             this.availableBuildingCount = availableBuildingCount;
             if (isActive) this.lastShownAvailableBuildingCount = this.availableBuildingCount;
@@ -316,21 +317,21 @@ define([
             this.currentEvents = 0;
             
             var showEvents = campComponent.population >= 1 || this.gameState.numCamps > 1;
-            $("#in-occurrences").toggle(showEvents);
+            this.uiFunctions.toggle("#in-occurrences", showEvents);
             
             // Traders
             var hasTrader = this.playerLocationNodes.head.entity.has(TraderComponent);
             if (isActive && showEvents) {
                 var isTraderLeaving = hasTrader && eventTimers.getEventTimeLeft(OccurrenceConstants.campOccurrenceTypes.trader) < 5;
                 hasEvents = hasEvents || hasTrader;
-                $("#in-occurrences-trader").toggle(hasTrader);
+                this.uiFunctions.toggle("#in-occurrences-trader", hasTrader);
                 $("#in-occurrences-trader").toggleClass("event-ending", isTraderLeaving);
             }
             
             // Raiders
             var hasRaid = this.playerLocationNodes.head.entity.has(RaidComponent);
             if (isActive && showEvents) {
-                $("#in-occurrences-raid").toggle(hasRaid);
+                this.uiFunctions.toggle("#in-occurrences-raid", hasRaid);
                 $("#in-occurrences-raid").toggleClass("event-ending", hasRaid);
             }
             
@@ -338,7 +339,7 @@ define([
             if (isActive) this.lastShownEvents = this.currentEvents;
             
             hasEvents = hasEvents || hasRaid;
-            $("#in-occurrences-empty").toggle(!hasEvents);
+            this.uiFunctions.toggle("#in-occurrences-empty", !hasEvents);
         },
         
         updateStats: function () {
@@ -354,14 +355,14 @@ define([
             var inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
             var showCalendar = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(this.upgradesHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
             $("#in-demographics-general-age .value").text(inGameFoundingDate);
-            $("#in-demographics-general-age").toggle(showCalendar);
+            this.uiFunctions.toggle("#in-demographics-general-age", showCalendar);
 			
 			var showRaid = raidDanger > 0 || raidDefence > 0;
 			if (showRaid) {
 				$("#in-demographics-raid-danger .value").text(raidDanger + "%");
 				$("#in-demographics-raid-defence .value").text(raidDefence);
 			}
-			$("#in-demographics-raid").toggle(showRaid);
+			this.uiFunctions.toggle("#in-demographics-raid", showRaid);
             
             var showLevelStats = this.gameState.numCamps > 1;
             if (showLevelStats) {
@@ -369,9 +370,9 @@ define([
 				$("#in-demographics-level-population .value").text(levelVO.populationGrowthFactor * 100 + "%");
             }
             
-            $("#id-demographics-level").toggle(showLevelStats);
+            this.uiFunctions.toggle("#id-demographics-level", showLevelStats);
             
-            $("#in-demographics").toggle(showCalendar || showRaid || showLevelStats);
+            this.uiFunctions.toggle("#in-demographics", showCalendar || showRaid || showLevelStats);
         },
         
         hasUpgrade: function (upgradeId) {

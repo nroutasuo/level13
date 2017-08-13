@@ -98,9 +98,9 @@ define([
             }
 			
             // TODO create nice transitions for leaving camp
-			$("#container-tab-enter-out").toggle(posComponent.inCamp);
-			$("#container-tab-two-out").toggle(!posComponent.inCamp);
-			$("#container-tab-two-out-actions").toggle(!posComponent.inCamp);
+			this.uiFunctions.toggle("#container-tab-enter-out", posComponent.inCamp);
+			this.uiFunctions.toggle("#container-tab-two-out", !posComponent.inCamp);
+			this.uiFunctions.toggle("#container-tab-two-out-actions", !posComponent.inCamp);
 			
 			if (posComponent.inCamp) {
 				if (!this.refreshedEmbark) {
@@ -124,13 +124,15 @@ define([
             var selectedWater = 0;
             var selectedFood = 0;
             
+            var uiFunctions = this.uiFunctions;
+            
 			// Resource steppers
 			$.each($("#embark-resources tr"), function () {
 				var resourceName = $(this).attr("id").split("-")[2];
 				var campVal = campResources.resources.getResource(resourceName);
 				var visible = campVal > 0;
 				var inputMax = Math.min(Math.floor(campVal));
-				$(this).toggle(visible);
+				uiFunctions.toggle(this, visible);
 				$(this).children("td").children(".stepper").children("input").attr("max", inputMax);
                 selectedAmount = Math.max(0, $(this).children("td").children(".stepper").children("input").val());
                 selectedCapacity += selectedAmount * BagConstants.getResourceCapacity(resourceName);
@@ -152,7 +154,7 @@ define([
 				var inputMax = Math.min(Math.floor(count));
                 var inputMin = 0;
                 var inputValue = $(this).children("td").children(".stepper").children("input").attr("value");
-				$(this).toggle(visible);
+				this.uiFunctions.toggle(this, visible);
 				$(this).children("td").children(".stepper").children("input").attr("max", inputMax);
 				$(this).children("td").children(".stepper").children("input").attr("min", inputMin);
 				$(this).children("td").children(".stepper").children("input").attr("value", Math.max(inputValue, inputMin));
@@ -160,7 +162,7 @@ define([
                 selectedCapacity += selectedAmount * BagConstants.getItemCapacity(itemsComponent.getItem(itemID));
 			});
 			
-            $("#embark-items-container").toggle(visibleItemTRs > 0);
+            this.uiFunctions.toggle("#embark-items-container", visibleItemTRs > 0);
             
             bagComponent.selectedCapacity = selectedCapacity;
 			$("#embark-bag .value").text(UIConstants.roundValue(bagComponent.selectedCapacity), true, true);
@@ -181,7 +183,7 @@ define([
                 }
             }
             $("#embark-warning").text(warning);
-            $("#embark-warning").toggle(warning.length > 0);
+            this.uiFunctions.toggle("#embark-warning", warning.length > 0);
 		},
         
         regenrateEmbarkItems: function () {

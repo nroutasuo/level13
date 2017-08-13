@@ -133,8 +133,8 @@ define([
             this.addItemsToLists(rewards, playerAllItems);
             this.addResourcesToLists(rewards, resultNode);
             
-            $("#resultlist-inventorymanagement-kept .msg-empty").toggle($("#resultlist-inventorymanagement-kept ul li").length === 0);
-            $("#resultlist-inventorymanagement-found .msg-empty").toggle($("#resultlist-inventorymanagement-found ul li").length === 0);
+            this.uiFunctions.toggle("#resultlist-inventorymanagement-kept .msg-empty", $("#resultlist-inventorymanagement-kept ul li").length === 0);
+            this.uiFunctions.toggle("#resultlist-inventorymanagement-found .msg-empty", $("#resultlist-inventorymanagement-found ul li").length === 0);
             
             $("#resultlist-inventorymanagement-kept li").click(onLiClicked);
             $("#resultlist-inventorymanagement-found li").click(onLiClicked);
@@ -156,7 +156,7 @@ define([
             $("#inventory-popup-bar").data("progress-percent",  bagComponent.selectedCapacity/bagComponent.totalCapacity*100);
             $("#inventory-popup-bar .progress-label").text((Math.ceil( bagComponent.selectedCapacity * 10) / 10) + " / " + bagComponent.totalCapacity);
             
-            $("#confirmation-takeall").toggle(bagComponent.selectableCapacity > bagComponent.selectionStartCapacity);
+            this.uiFunctions.toggle("#confirmation-takeall", bagComponent.selectableCapacity > bagComponent.selectionStartCapacity);
         },
         
         addItemsToLists: function (rewards, playerAllItems) {

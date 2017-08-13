@@ -536,29 +536,22 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         },
         
         slideToggleIf: function(element, replacement, show, durationIn, durationOut) {
-            var visible = true;
-            var visibletag = ($(element).attr("data-visible"));
-            if (typeof visibletag !== typeof undefined)
-                visible = $(element).is(":visible");
-            else
-                visible = visibletag;
-            
+            var visible = this.isElementVisible(element);            
             var toggling = ($(element).attr("data-toggling") == "true");
+            var sys = this;
             
             if (show && !visible && !toggling) {
-                $(element).attr("data-visible", "true");
-				if(replacement) $(replacement).toggle(false);
+				if(replacement) sys.toggle(replacement, false);
                 $(element).attr("data-toggling", "true");
 				$(element).slideToggle(durationIn, function () {
-                    $(element).toggle(true);
+                    sys.toggle(element, true);
                     $(element).attr("data-toggling", "false");
                 });
 			} else if (!show && visible && !toggling) {
-                $(element).attr("data-visible", "false");
                 $(element).attr("data-toggling", "true");
 				$(element).slideToggle(durationOut, function () {
-					if(replacement) $(replacement).toggle(true);
-                    $(element).toggle(false);
+					if(replacement) sys.toggle(replacement, true);
+                    sys.toggle(element, false);
                     $(element).attr("data-toggling", "false");
 				});
 			}
@@ -567,22 +560,50 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         tabToggleIf: function(element, replacement, show, durationIn, durationOut) {
             var visible = $(element).is(":visible");
             var toggling = ($(element).attr("data-toggling") == "true");
+            var sys = this;
             
             if (show && !visible && !toggling) {
-				if(replacement) $(replacement).toggle(false);
+				if(replacement) sys.toggle(replacement, false);
                 $(element).attr("data-toggling", "true");
 				$(element).fadeToggle(durationIn, function () {
-                    $(element).toggle(true);
+                    sys.toggle(element, true);
                     $(element).attr("data-toggling", "false");
                 });
 			} else if (!show && visible && !toggling) {
                 $(element).attr("data-toggling", "true");
 				$(element).fadeToggle(durationOut, function () {
-					if(replacement) $(replacement).toggle(true);
-                    $(element).toggle(false);
+					if(replacement) sys.toggle(replacement, true);
+                    sys.toggle(element, false);
                     $(element).attr("data-toggling", "false");
 				});
 			}
+        },
+        
+        toggle: function (element, show) {
+            if ($(element).length === 0)
+                return;
+            if (typeof(show) === "undefined")
+                show = false;
+            if (show === null)
+                show = false;
+            if (this.isElementVisible(element) === show)
+                return;
+            if (GameConstants.isDebugOutputEnabled)
+                console.log("toggle " + element + ": " + show);
+            $(element).attr("data-visible", show);
+            $(element).toggle(show);
+            GlobalSignals.elementToggled.dispatch(element, true);
+        },
+        
+        isElementVisible: function (element) {
+            var visible = true;
+            var visibletag = ($(element).attr("data-visible"));
+            if (typeof visibletag !== typeof undefined) {
+                visible = (visibletag == "true");
+            } else {
+                visible = null;
+            }
+            return visible;
         },
         
         stopButtonCooldown: function (button) {
@@ -714,7 +735,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             
             var uiFunctions = this;
             var maxChar = 40;
-            $("#common-popup-input-container").toggle(true);
+            this.toggle("#common-popup-input-container", true);
             $("#common-popup-input-container input").attr("maxlength", maxChar);
             
             $("#common-popup input").val(defaultValue);

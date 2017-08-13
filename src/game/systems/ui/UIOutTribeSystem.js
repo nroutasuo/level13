@@ -65,7 +65,7 @@ define([
             if (this.campsWithAlert === this.bubbleNumber)
                 return;
             this.bubbleNumber = this.campsWithAlert;
-            $("#switch-world .bubble").toggle(this.bubbleNumber > 0);
+            this.uiFunctions.toggle("#switch-world .bubble", this.bubbleNumber > 0);
         },
 	
 		updateNode: function (node, isActive) {
@@ -128,9 +128,9 @@ define([
 			
 			// Update row
 			$("#camp-overview tr#" + rowID).toggleClass("current", isPlayerInCampLevel);
-			$("#camp-overview tr#" + rowID + " .camp-overview-btn button").toggle(!isPlayerInCampLevel);
+			this.uiFunctions.toggle("#camp-overview tr#" + rowID + " .camp-overview-btn button", !isPlayerInCampLevel);
 			$("#camp-overview tr#" + rowID + " .camp-overview-name").text(camp.campName);
-			$("#camp-overview tr#" + rowID + " .camp-overview-camp-bubble .bubble").toggle(isAlert);
+			this.uiFunctions.toggle("#camp-overview tr#" + rowID + " .camp-overview-camp-bubble .bubble", isAlert);
 			
 			var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
 			maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
@@ -179,7 +179,7 @@ define([
 				var amount = Math.floor(resources.resources[name]);
 				var change = resourceAcc.resourceChange.getResource(name);
 				UIConstants.updateResourceIndicator(
-					name,
+					this.uiFunctions,
 					"#" + rowID + "-" + name,
 					amount,
 					change,

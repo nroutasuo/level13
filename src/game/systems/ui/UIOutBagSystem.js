@@ -125,7 +125,7 @@ define([
             
             this.bubbleNumber = newBubbleNumber;
             $("#switch-bag .bubble").text(this.bubbleNumber);
-            $("#switch-bag .bubble").toggle(this.bubbleNumber > 0);
+            this.uiFunctions.toggle("#switch-bag .bubble", this.bubbleNumber > 0);
         },
 
 		updateItems: function (uniqueItems) {
@@ -203,8 +203,8 @@ define([
 			}
 			
             if (isActive) {
-                $("#checkbox-crafting-show-obsolete").toggle(countObsolete > 0);
-                $("#label-crafting-show-obsolete").toggle(countObsolete > 0);
+                this.uiFunctions.toggle("#checkbox-crafting-show-obsolete", countObsolete > 0);
+                this.uiFunctions.toggle("#label-crafting-show-obsolete", countObsolete > 0);
             }
 
 			if (requiresUpdate) {
@@ -233,7 +233,7 @@ define([
                 }
             }
             
-            $("#header-self-use-items").toggle(itemDefinitionList.length > 0);
+            this.uiFunctions.toggle("#header-self-use-items", itemDefinitionList.length > 0);
             if ($("#self-use-items table tr").length === itemDefinitionList.length) return;            
             $("#self-use-items table").empty();
 
@@ -377,8 +377,8 @@ define([
 			$(slot).children(".item-slot-effect").html(itemVO ? UIConstants.getItemBonusDescription(itemVO, false, true) : "");
 			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemVO, 0, false, false) : "");
 			
-			$(slot).children(".item-slot-type").toggle(itemVO === null);
-			$(slot).children(".item-slot-effect").toggle(itemVO !== null);
+			this.uiFunctions.toggle($(slot).children(".item-slot-type"), itemVO === null);
+			this.uiFunctions.toggle($(slot).children(".item-slot-effect"), itemVO !== null);
 			$(slot).toggleClass("item-slot-equipped", itemVO !== null);
 		},
         

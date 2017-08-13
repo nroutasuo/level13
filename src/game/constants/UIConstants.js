@@ -319,16 +319,16 @@ define(['ash',
 			return div;
 		},
 		
-		updateResourceIndicator: function (name, id, value, change, storage, showStorage, showChangeIcon, showChange, showDetails, showWarning, visible) {
-			$(id).toggle(visible);
-			$(id).parent().toggle(visible);
+		updateResourceIndicator: function (uiFunctions, id, value, change, storage, showStorage, showChangeIcon, showChange, showDetails, showWarning, visible) {
+			uiFunctions.toggle(id, visible);
+			uiFunctions.toggle($(id).parent(), visible);
 			var roundedValue = this.roundValue(value, true, false);
 			if (visible) {
 				$(id).children(".value").text(showStorage ? roundedValue + " / " + storage : roundedValue);
 				$(id).children(".value").toggleClass("warning", showWarning && roundedValue < 5);
 				$(id).children(".change").toggleClass("warning", change < 0);
-				$(id).children(".change").toggle(showChange);
-				$(id).children(".forecast").toggle(showDetails);
+				uiFunctions.toggle($(id).children(".change"), showChange);
+				uiFunctions.toggle($(id).children(".forecast"), showDetails);
 				$(id).children(".forecast").toggleClass("warning", change < 0);
 				
 				var isCappedByStorage = change > 0 && value >= storage;
@@ -354,7 +354,7 @@ define(['ash',
 				$(id).children(".change-indicator").toggleClass("indicator-increase", change > 0 && !isCappedByStorage);
 				$(id).children(".change-indicator").toggleClass("indicator-decrease", change < 0);
 				$(id).children(".change-indicator").toggleClass("indicator-even", change === 0 || isCappedByStorage);
-				$(id).children(".change-indicator").toggle(showChangeIcon);
+				uiFunctions.toggle($(id).children(".change-indicator"), showChangeIcon);
 			}
 		},
 		

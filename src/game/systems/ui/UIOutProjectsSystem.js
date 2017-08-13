@@ -56,7 +56,7 @@ define([
             
             this.updateBuiltProjects();
             
-            $("#in-improvements-level-empty-message").toggle(this.visibleBuildingCount <= 0);
+            this.uiFunctions.toggle("#in-improvements-level-empty-message", this.visibleBuildingCount <= 0);
             $("#tab-header h2").text("Building projects");
         },
         
@@ -66,7 +66,7 @@ define([
                 return;
             this.bubbleNumber = newBubbleNumber;
             $("#switch-projects .bubble").text(this.bubbleNumber);
-            $("#switch-projects .bubble").toggle(this.bubbleNumber > 0);  
+            this.uiFunctions.toggle("#switch-projects .bubble", this.bubbleNumber > 0);  
         },
         
         updateAvailableProjects: function () {
@@ -118,7 +118,7 @@ define([
             var numProjectsTR = $("#in-improvements-level-built table tr").length;
             var updateTable = numProjectsTR !== projects.length;
             
-            $("#header-in-improvements-level-built").toggle(projects.length > 0);
+            this.uiFunctions.toggle("#header-in-improvements-level-built", projects.length > 0);
             
             if (!updateTable)
                 return;            

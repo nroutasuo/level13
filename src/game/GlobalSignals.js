@@ -7,6 +7,7 @@ define(['ash',], function (Ash) {
         calloutsGeneratedSignal: new Ash.Signals.Signal(),        
         popupOpenedSignal: new Ash.Signals.Signal(),
         popupClosedSignal: new Ash.Signals.Signal(),
+        elementToggled: new Ash.Signals.Signal(),
         
         playerMovedSignal: new Ash.Signals.Signal(),
         sectorScoutedSignal: new Ash.Signals.Signal(),

@@ -102,7 +102,7 @@ define([
                 return;
             this.bubbleNumber = newBubbleNumber;
             $("#switch-followers .bubble").text(this.bubbleNumber);
-            $("#switch-followers .bubble").toggle(this.bubbleNumber > 0);
+            this.uiFunctions.toggle("#switch-followers .bubble", this.bubbleNumber > 0);
         },
 
 		updateItems: function () {
@@ -119,9 +119,9 @@ define([
 
 			var hasFollowers = $("#list-followers li").length > 0;
 			var showFollowers = hasFollowers || this.gameState.unlockedFeatures.followers;
-			$("#list-followers").toggle(hasFollowers);
-			$("#header-followers").toggle(showFollowers);
-			$("#followers-empty").toggle(showFollowers && !hasFollowers);
+			this.uiFunctions.toggle("#list-followers", hasFollowers);
+			this.uiFunctions.toggle("#header-followers", showFollowers);
+			this.uiFunctions.toggle("#followers-empty", showFollowers && !hasFollowers);
 			this.uiFunctions.generateCallouts("#list-followers");
 		},
     

@@ -38,14 +38,15 @@ define([
 		playerStatsNodes: null,
 		autoPlayNodes: null,
         
-        elementsCalloutContainers: null,
-        
         gameState: null,
         playerActions: null,
         uiFunctions: null,
         resourcesHelper: null,
         buttonHelper: null,
         engine: null,
+        
+        elementsCalloutContainers: null,
+        elementsVisibleButtons: [],
     
         constructor: function (uiFunctions, gameState, playerActions, resourcesHelper, fightHelper, buttonHelper) {
             this.gameState = gameState;
@@ -53,7 +54,7 @@ define([
             this.uiFunctions = uiFunctions;
             this.resourcesHelper = resourcesHelper;
             this.fightHelper = fightHelper;
-            this.buttonHelper = buttonHelper;
+            this.buttonHelper = buttonHelper;            
             return this;
         },
     
@@ -129,7 +130,6 @@ define([
             var showStorage = this.resourcesHelper.getCurrentStorageCap();
             
             $.each($("button.action"), function () {
-                // TODO smarter check for visible buttons (:visible is a performance bottleneck)
                 var isVisible = ($(this).is(":visible"));
                 
                 $(this).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");
@@ -330,6 +330,7 @@ define([
         
         updateInfoCallouts: function () {
             var targets;
+            var uiFunctions = this.uiFunctions;
             $.each(this.elementsCalloutContainers, function () {
                 targets = $(this).children(".info-callout-target");
 				if (targets.length > 0) {
@@ -337,7 +338,7 @@ define([
 					$.each(targets.children(), function () {
 						visible = visible && $(this).css("display") !== "none";
 					});
-					$(this).toggle(visible);
+					uiFunctions.toggle(this, visible);
 				}
             });
         },

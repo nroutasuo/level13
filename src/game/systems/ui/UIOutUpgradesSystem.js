@@ -52,7 +52,7 @@ define([
 			resetLists = resetLists && isActive;
 			this.updateUpgradesLists(isActive, resetLists);
 			
-			$("#world-blueprints").toggle($("#blueprints-list tr").length > 0);
+			this.uiFunctions.toggle("#world-blueprints", $("#blueprints-list tr").length > 0);
 			
 			this.updateBubble();
 			
@@ -65,7 +65,7 @@ define([
             this.updateTechTree(resetLists);
 			
 			$("#tab-header h2").text("Upgrades");
-			$("#world-upgrades-count").toggle(this.lastUpdateUpgradeCount > 0);
+			this.uiFunctions.toggle("#world-upgrades-count", this.lastUpdateUpgradeCount > 0);
 			$("#world-upgrades-count").text("Upgrades researched: " + this.lastUpdateUpgradeCount);
 		},
         
@@ -78,7 +78,7 @@ define([
             this.bubbleNumber = blueprintsNum + upgradesNum;
 			if (this.hasNeverBeenOpened) this.bubbleNumber += this.availableUpgrades;
             $("#switch-upgrades .bubble").text(this.bubbleNumber);
-            $("#switch-upgrades .bubble").toggle(this.bubbleNumber > 0);
+            this.uiFunctions.toggle("#switch-upgrades .bubble", this.bubbleNumber > 0);
         },
 		
 		updateUpgradesLists: function (isActive, resetLists) {
@@ -130,7 +130,7 @@ define([
 			}
 			
 			if (resetLists) {
-				$("#world-upgrades-info").toggle($("#researched-upgrades-list tr").length > 0);
+				this.uiFunctions.toggle("#world-upgrades-info", $("#researched-upgrades-list tr").length > 0);
 			
 				var playerActions = this.playerActions;
 				$.each($("#upgrades-list button.action"), function () {
