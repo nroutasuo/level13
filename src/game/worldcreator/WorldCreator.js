@@ -142,7 +142,7 @@ define([
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World structure ready."
 				+ (GameConstants.isDebugOutputEnabled ? " (ground: " + bottomLevel + ", surface: " + topLevel + ", total sectors: " + this.totalSectors + ")" : ""));
-            WorldCreatorDebug.printWorld(this.world, [ "locales.length" ]);
+            // WorldCreatorDebug.printWorld(this.world, [ "locales.length" ]);
 		},
 		
 		// sector type, building density, state of repair, sunlight, hazards

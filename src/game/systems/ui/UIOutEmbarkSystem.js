@@ -154,7 +154,7 @@ define([
 				var inputMax = Math.min(Math.floor(count));
                 var inputMin = 0;
                 var inputValue = $(this).children("td").children(".stepper").children("input").attr("value");
-				this.uiFunctions.toggle(this, visible);
+				uiFunctions.toggle(this, visible);
 				$(this).children("td").children(".stepper").children("input").attr("max", inputMax);
 				$(this).children("td").children(".stepper").children("input").attr("min", inputMin);
 				$(this).children("td").children(".stepper").children("input").attr("value", Math.max(inputValue, inputMin));

@@ -536,7 +536,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         },
         
         slideToggleIf: function(element, replacement, show, durationIn, durationOut) {
-            var visible = this.isElementVisible(element);            
+            var visible = this.isElementToggled(element);            
             var toggling = ($(element).attr("data-toggling") == "true");
             var sys = this;
             
@@ -586,7 +586,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 show = false;
             if (show === null)
                 show = false;
-            if (this.isElementVisible(element) === show)
+            if (this.isElementToggled(element) === show)
                 return;
             if (GameConstants.isDebugOutputEnabled)
                 console.log("toggle " + element + ": " + show);
@@ -595,7 +595,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             GlobalSignals.elementToggled.dispatch(element, true);
         },
         
-        isElementVisible: function (element) {
+        isElementToggled: function (element) {
             var visible = true;
             var visibletag = ($(element).attr("data-visible"));
             if (typeof visibletag !== typeof undefined) {
@@ -604,6 +604,13 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 visible = null;
             }
             return visible;
+        },
+        
+        isElementVisible: function (element) {
+            var toggled = this.isElementToggled(element);
+            if (toggled === false)
+                return false;
+            return ($(element).is(":visible"));
         },
         
         stopButtonCooldown: function (button) {

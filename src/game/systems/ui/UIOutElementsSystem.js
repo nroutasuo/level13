@@ -118,23 +118,12 @@ define([
         
         updateButtons: function () {
             var sys = this;
-            var playerActionsHelper = this.playerActions.playerActionsHelper;
+            
             var uiFunctions = this.uiFunctions;
-            var fightHelper = this.fightHelper;
-            var buttonHelper = this.buttonHelper;
-			
-            var playerVision = this.playerStatsNodes.head.vision.value;
-            var playerHealth = this.playerStatsNodes.head.stamina.health;
-			var isAutoPlaying = this.autoPlayNodes.head;
-			
-            var showStorage = this.resourcesHelper.getCurrentStorageCap();
             
             $.each($("button.action"), function () {
-                var isVisible = ($(this).is(":visible"));
-                
-                $(this).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");
-                $(this).parent(".container-btn-action").css("display", $(this).css("display"));
-                
+                var isVisible = uiFunctions.isElementVisible(this);
+                sys.updateButtonContainer($(this), isVisible);                
                 if (!isVisible)
                     return;
                 
@@ -143,93 +132,116 @@ define([
                 if (!action)
                     return;
 
-                // Update disabled status
-                var disabledBase = sys.isButtonDisabled($(this));
-                var disabledVision = sys.isButtonDisabledVision($(this));
-                var disabledBasic = !disabledVision && disabledBase;
-                var disabledResources = !disabledVision && !disabledBasic && sys.isButtonDisabledResources($(this));
-                var disabledCooldown = !disabledVision && !disabledBasic && !disabledResources && sys.hasButtonCooldown($(this));
-                var disabledDuration = !disabledVision && !disabledBasic && !disabledResources && !disabledCooldown && sys.hasButtonDuration($(this));
-                var isDisabled = disabledBasic || disabledVision || disabledResources || disabledCooldown || disabledDuration;
-                $(this).toggleClass("btn-disabled", isDisabled);
-                $(this).toggleClass("btn-disabled-basic", disabledBasic);
-                $(this).toggleClass("btn-disabled-vision", disabledVision);
-                $(this).parent(".container-btn-action").toggleClass("btn-disabled-vision", disabledVision);
-                $(this).toggleClass("btn-disabled-resources", disabledResources);
-                $(this).toggleClass("btn-disabled-cooldown", disabledCooldown || disabledDuration);
-                $(this).attr("disabled", isDisabled || isAutoPlaying);
-                
-                // Update button callouts and cooldowns
-				var baseActionId = playerActionsHelper.getBaseActionID(action);
-                var ordinal = playerActionsHelper.getOrdinal(action);
-                var costFactor = playerActionsHelper.getCostFactor(action);
-                var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);
-                var hasEnemies = fightHelper.hasEnemiesCurrentLocation(action);
-                var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
-                var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
-                var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision) : 0;
-                var description = playerActionsHelper.getDescription(action);
-                var hasCostBlockers = false;
-                var isHardDisabled = disabledBase || disabledVision;
-
-                // Update callout content
-                var content = description;
-                var bottleNeckCostFraction = 1;
-                var sectorEntity = buttonHelper.getButtonSectorEntity((this));
-                var disabledReason = playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
-                var isDisabledOnlyForCooldown = (!(disabledReason) && sys.hasButtonCooldown($(this)));
-                if (!isHardDisabled || isDisabledOnlyForCooldown) {
-                    var hasCosts = action && costs && Object.keys(costs).length > 0;
-                    if (hasCosts) {
-                        if (content.length > 0) content += "<hr/>";
-                        for (var key in costs) {
-                            var itemName = key.replace("item_", "");
-                            var item = ItemConstants.getItemByID(itemName);
-                            var name = (uiFunctions.names.resources[key] ? uiFunctions.names.resources[key] : item !== null ? item.name : key).toLowerCase();
-                            var value = costs[key];
-                            var classes = "action-cost";
-                            var costFraction = playerActionsHelper.checkCost(action, key);
-                            if (costFraction < 1) classes += " action-cost-blocker";
-                            if (isResource(key.split("_")[1]) && value > showStorage || key == "stamina" && value > playerHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR) {
-                                classes += " action-cost-blocker-storage";
-                                hasCostBlockers = true;
-                            }
-                            else if (costFraction < bottleNeckCostFraction) bottleNeckCostFraction = costFraction;
-
-                            if (value > 0) content += "<span class='" + classes + "'>" + name + ": " + value + "</span><br/>";
-                        }
-                    }
-
-                    var duration = PlayerActionConstants.getDuration(baseActionId);
-                    if (duration > 0) {
-                        if (content.length > 0) content += "<hr/>";
-                        content += "<span class='action-duration'>duration: " + Math.round(duration * 100)/100 + "s</span>";
-                    }
-
-                    if (injuryRisk > 0 || fightRisk > 0 || inventoryRisk > 0) {
-                        var inventoryRiskLabel = action === "despair" ? "lose items" : "lose item";
-                        if (content.length > 0) content += "<hr/>";
-                        if (injuryRisk > 0) content += "<span class='action-risk warning'>risk of injury: " + Math.round(injuryRisk * 100 * 100) / 100 + "%</span><br/>";
-                        if (fightRisk > 0) content += "<span class='action-risk warning'>risk of fight: " + Math.round(fightRisk * 100 * 100) / 100 + "%</span><br/>";
-                        if (inventoryRisk > 0) content += "<span class='action-risk warning'>" + inventoryRiskLabel + ": " + Math.round(inventoryRisk * 100 * 100) / 100 + "%</span>";
-                    }
-                } else {
-                    if (content.length > 0) content += "<hr/>";
-                    content += "<span class='btn-disabled-reason action-cost-blocker'>" + disabledReason + "</span>";
-                }
-                $(this).siblings(".btn-callout").children(".btn-callout-content").html(content);
-                $(this).parent().siblings(".btn-callout").children(".btn-callout-content").html(content);
-
-                // Check requirements affecting req-cooldown
-                bottleNeckCostFraction = Math.min(bottleNeckCostFraction, playerActionsHelper.checkRequirements(action, false, sectorEntity).value);
-                if (hasCostBlockers) bottleNeckCostFraction = 0;
-                if (isHardDisabled) bottleNeckCostFraction = 0;
-
-                // Update cooldown overlays
-                $(this).siblings(".cooldown-reqs").css("width", ((bottleNeckCostFraction) * 100) + "%");
-                $(this).children(".cooldown-action").css("display", !isHardDisabled ? "inherit" : "none");
-                $(this).children(".cooldown-duration").css("display", !isHardDisabled ? "inherit" : "none");
+                var isHardDisabled = sys.updateButtonDisabledState(this, action);
+				sys.updateButtonCallout(this, action, isHardDisabled);
             });
+        },
+        
+        updateButtonContainer: function (button, isVisible) {
+            try {
+                $(button).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");
+                $(button).parent(".container-btn-action").css("display", $(this).css("display"));
+            } catch (ex) {
+            }
+        },
+        
+        updateButtonDisabledState: function (button, action) {
+			var isAutoPlaying = this.autoPlayNodes.head;
+            var disabledBase = this.isButtonDisabled($(button));
+            var disabledVision = this.isButtonDisabledVision($(button));
+            var disabledBasic = !disabledVision && disabledBase;
+            var disabledResources = !disabledVision && !disabledBasic && this.isButtonDisabledResources($(button));
+            var disabledCooldown = !disabledVision && !disabledBasic && !disabledResources && this.hasButtonCooldown($(button));
+            var disabledDuration = !disabledVision && !disabledBasic && !disabledResources && !disabledCooldown && this.hasButtonDuration($(button));
+            var isDisabled = disabledBasic || disabledVision || disabledResources || disabledCooldown || disabledDuration;
+            $(button).toggleClass("btn-disabled", isDisabled);
+            $(button).toggleClass("btn-disabled-basic", disabledBasic);
+            $(button).toggleClass("btn-disabled-vision", disabledVision);
+            $(button).parent(".container-btn-action").toggleClass("btn-disabled-vision", disabledVision);
+            $(button).toggleClass("btn-disabled-resources", disabledResources);
+            $(button).toggleClass("btn-disabled-cooldown", disabledCooldown || disabledDuration);
+            $(button).attr("disabled", isDisabled || isAutoPlaying);
+            return disabledBase || disabledVision;
+        },
+        
+        updateButtonCallout: function (button, action, isHardDisabled) {			
+            var playerActionsHelper = this.playerActions.playerActionsHelper;
+            var fightHelper = this.fightHelper;
+            var buttonHelper = this.buttonHelper;
+            
+            var playerVision = this.playerStatsNodes.head.vision.value;
+            var playerHealth = this.playerStatsNodes.head.stamina.health;
+            var showStorage = this.resourcesHelper.getCurrentStorageCap();
+            
+            var baseActionId = playerActionsHelper.getBaseActionID(action);
+            var ordinal = playerActionsHelper.getOrdinal(action);
+            var costFactor = playerActionsHelper.getCostFactor(action);
+            var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);
+            var hasEnemies = fightHelper.hasEnemiesCurrentLocation(action);
+            var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
+            var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
+            var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision) : 0;
+            var description = playerActionsHelper.getDescription(action);
+            var hasCostBlockers = false;
+
+            // Update callout content
+            var content = description;
+            var bottleNeckCostFraction = 1;
+            var sectorEntity = buttonHelper.getButtonSectorEntity((button));
+            var disabledReason = playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
+            var isDisabledOnlyForCooldown = (!(disabledReason) && this.hasButtonCooldown($(button)));
+            if (!isHardDisabled || isDisabledOnlyForCooldown) {
+                var hasCosts = action && costs && Object.keys(costs).length > 0;
+                if (hasCosts) {
+                    if (content.length > 0) content += "<hr/>";
+                    for (var key in costs) {
+                        var itemName = key.replace("item_", "");
+                        var item = ItemConstants.getItemByID(itemName);
+                        var name = (this.uiFunctions.names.resources[key] ? this.uiFunctions.names.resources[key] : item !== null ? item.name : key).toLowerCase();
+                        var value = costs[key];
+                        var classes = "action-cost";
+                        var costFraction = playerActionsHelper.checkCost(action, key);
+                        if (costFraction < 1) classes += " action-cost-blocker";
+                        if (isResource(key.split("_")[1]) && value > showStorage || key == "stamina" && value > playerHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR) {
+                            classes += " action-cost-blocker-storage";
+                            hasCostBlockers = true;
+                        }
+                        else if (costFraction < bottleNeckCostFraction) bottleNeckCostFraction = costFraction;
+
+                        if (value > 0) content += "<span class='" + classes + "'>" + name + ": " + value + "</span><br/>";
+                    }
+                }
+
+                var duration = PlayerActionConstants.getDuration(baseActionId);
+                if (duration > 0) {
+                    if (content.length > 0) content += "<hr/>";
+                    content += "<span class='action-duration'>duration: " + Math.round(duration * 100)/100 + "s</span>";
+                }
+
+                if (injuryRisk > 0 || fightRisk > 0 || inventoryRisk > 0) {
+                    var inventoryRiskLabel = action === "despair" ? "lose items" : "lose item";
+                    if (content.length > 0) content += "<hr/>";
+                    if (injuryRisk > 0) content += "<span class='action-risk warning'>risk of injury: " + Math.round(injuryRisk * 100 * 100) / 100 + "%</span><br/>";
+                    if (fightRisk > 0) content += "<span class='action-risk warning'>risk of fight: " + Math.round(fightRisk * 100 * 100) / 100 + "%</span><br/>";
+                    if (inventoryRisk > 0) content += "<span class='action-risk warning'>" + inventoryRiskLabel + ": " + Math.round(inventoryRisk * 100 * 100) / 100 + "%</span>";
+                }
+            } else {
+                if (content.length > 0) content += "<hr/>";
+                content += "<span class='btn-disabled-reason action-cost-blocker'>" + disabledReason + "</span>";
+            }
+            
+            $(button).siblings(".btn-callout").children(".btn-callout-content").html(content);
+            $(button).parent().siblings(".btn-callout").children(".btn-callout-content").html(content);
+
+            // Check requirements affecting req-cooldown
+            bottleNeckCostFraction = Math.min(bottleNeckCostFraction, playerActionsHelper.checkRequirements(action, false, sectorEntity).value);
+            if (hasCostBlockers) bottleNeckCostFraction = 0;
+            if (isHardDisabled) bottleNeckCostFraction = 0;
+
+            // Update cooldown overlays
+            $(button).siblings(".cooldown-reqs").css("width", ((bottleNeckCostFraction) * 100) + "%");
+            $(button).children(".cooldown-action").css("display", !isHardDisabled ? "inherit" : "none");
+            $(button).children(".cooldown-duration").css("display", !isHardDisabled ? "inherit" : "none");
         },
         
         hasButtonCooldown: function (button) {
