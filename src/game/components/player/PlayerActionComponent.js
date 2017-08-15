@@ -83,6 +83,12 @@ define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
             var timePassed = new Date().getTime() - this.busyStartTime;
             return timePassed / totalTime * 100;
         },
+        
+        customLoadFromSave: function (componentValues) {
+            this.endTimeStampToActionDict = componentValues.endTimeStampToActionDict;
+            this.endTimeStampList = componentValues.endTimeStampList;
+            this.busyStartTime = componentValues.busyStartTime;
+        }
     });
 
     return PlayerActionComponent;
