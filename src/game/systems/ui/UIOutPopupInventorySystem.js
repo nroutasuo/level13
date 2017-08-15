@@ -34,6 +34,8 @@ define([
         update: function (time) {
             if (!($(".popup").is(":visible")) || $(".popup").data("fading") == true)
                 return;
+            if (!($(".popup #info-results").is(":visible")))
+                return;
             
             this.updateButtons();
             
