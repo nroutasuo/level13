@@ -4,15 +4,23 @@
             "version": "0.1.7",
             "phase": "alpha",
             "final": false,
-            "updated": "2017-07-27",
+            "updated": "2017-08-16",
             "changes": [
                 {
                     "type": "GD",
                     "summary": "Add currency, trade partners on the map, outgoing trade caravans and incoming traders."
-                }
+                },
                 {
                     "type": "GB",
                     "summary": "More varied resources found when scavenging."
+                },
+                {
+                    "type": "GB",
+                    "summary": "Add more bag levels."
+                },
+                {
+                    "type": "DEV",
+                    "summary": "Bugfixes and performance improvements."
                 }
             ]
         },

@@ -626,7 +626,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             var startingWidth = (cooldownLeft/cooldown * 100);
             $(button).attr("data-hasCooldown", "true");
             $(button).children(".cooldown-action").stop(true, false).css("display", "inherit").css("width", startingWidth + "%").animate(
-                { width: '0%' },
+                { width: 0 },
                 cooldownLeft * 1000,
                 'linear',
                 function() {

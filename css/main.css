@@ -1074,7 +1074,6 @@ button.action.btn-disabled-basic:after {
 
 button .cooldown-action, button .cooldown-duration {
 	height: 100%;
-	width: 0%;
 	position: absolute;
 	top: 0px;
 	left: 0px;
