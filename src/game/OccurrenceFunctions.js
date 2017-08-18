@@ -34,7 +34,7 @@ define(['ash',
         addToEngine: function (engine) {
             this.engine = engine;
 			this.campNodes = engine.getNodeList(CampNode);
-            this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
+            this.tribeUpgradeNodes = engine.getNodeList(TribeUpgradesNode);
         },
 
         removeFromEngine: function (engine) {
