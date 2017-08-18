@@ -1,6 +1,7 @@
 // A system to autoplay the game - mostly useful for quickly cheating to a semi-realistic later state of the game
 define(['ash',
 	'game/constants/ItemConstants',
+	'game/constants/PerkConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/PlayerStatConstants',
 	'game/constants/WorldCreatorConstants',
@@ -15,6 +16,7 @@ define(['ash',
 	'game/components/player/PlayerActionComponent',
 	'game/components/player/PlayerActionResultComponent',
 	'game/components/player/ItemsComponent',
+	'game/components/player/PerksComponent',
 	'game/components/player/BagComponent',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorLocalesComponent',
@@ -27,9 +29,9 @@ define(['ash',
     'game/vos/ResourcesVO',
     'game/vos/PositionVO'
 ], function (Ash,
-    ItemConstants, PlayerActionConstants, PlayerStatConstants, WorldCreatorConstants, BagConstants,
+    ItemConstants, PerkConstants, PlayerActionConstants, PlayerStatConstants, WorldCreatorConstants, BagConstants,
 	AutoPlayNode, PlayerStatsNode, ItemsNode, FightNode,
-    PositionComponent, CampComponent, ResourcesComponent, PlayerActionComponent, PlayerActionResultComponent, ItemsComponent, BagComponent, 
+    PositionComponent, CampComponent, ResourcesComponent, PlayerActionComponent, PlayerActionResultComponent, ItemsComponent, PerksComponent, BagComponent, 
     SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent,
 	LevelComponent,
     CampConstants, UpgradeConstants, EnemyConstants, FightConstants, ResourcesVO, PositionVO) {
@@ -48,6 +50,7 @@ define(['ash',
         fightNodes: null,
         
         latestCampLevel: 0,
+        idleCounter : 0,
 	    
 		constructor: function (playerActionFunctions, cheatFunctions, levelHelper, sectorHelper, upgradesHelper) {
 			this.playerActionFunctions = playerActionFunctions;
@@ -109,6 +112,7 @@ define(['ash',
                 didSomething = didSomething || this.buildOutImprovements(isExpress);
                 didSomething = didSomething || this.scout(isExpress);
                 didSomething = didSomething || this.useOutImprovements(isExpress);
+                
                 if (hasStamina) {
                     didSomething = didSomething || this.craftItems(isExpress);
                     didSomething = didSomething || this.scavenge(isExpress);
@@ -133,8 +137,17 @@ define(['ash',
                 didSomething = this.switchMode();
             }
             
-            if (!didSomething)
+            if (!didSomething) {
+                this.idleCounter++;
                 this.printStep("idle");
+            } else {
+                this.idleCounter = 0;
+            }
+            
+            if (this.idleCounter > 5) {
+                this.printStep("skip 1 minute");
+                this.cheatFunctions.applyCheat("time 1");
+            }
 		},
 		
 		resetTurn: function (isExpress, isFight) {
@@ -154,6 +167,14 @@ define(['ash',
             
             var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
             if (busyComponent && busyComponent.isBusy())
+                return false;
+            
+            var currentStorage = this.playerActionFunctions.resourcesHelper.getCurrentStorage();
+            var currentFood = currentStorage.resources.getResource(resourceNames.food);
+            var currentWater = currentStorage.resources.getResource(resourceNames.water);
+            var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
+            var injuries = perksComponent.getItemsByType(PerkConstants.perkTypes.injury);
+            if (injuries.length > 2 && currentFood > 5 && currentWater > 5 && !this.autoPlayNodes.head.autoPlay.isExploring)
                 return false;
             
             this.printStep("switch mode");
@@ -273,10 +294,10 @@ define(['ash',
             
 			if (nearestCampableSector) {
 				return this.moveToSector(nearestCampableSector, "campable sector");
-			} else if (nearestUnscoutedSector && Math.random() > 0.25) {
-				return this.moveToSector(nearestUnscoutedSector, "unscouted sector");
 			} else if (nearestUnscoutedLocaleSector && Math.random() > 0.25) {
 				return this.moveToSector(nearestUnscoutedLocaleSector, "unscouted locale");
+            } else if (nearestUnscoutedSector && Math.random() > 0.25) {
+				return this.moveToSector(nearestUnscoutedSector, "unscouted sector");
             } else if (nearestUnclearedSector && Math.random() > 0.1) {
 				return this.moveToSector(nearestUnclearedSector, "uncleared sector");
 			} else if (nearestCampSector) {
@@ -502,6 +523,9 @@ define(['ash',
                 var currentRope = currentStorage.resources.getResource(resourceNames.rope);
                 var currentTools = currentStorage.resources.getResource(resourceNames.tools);
                 var maxStorage = currentStorage.storageCapacity;
+                
+                var currentFoodRatio = currentFood / maxStorage;
+                var currentWaterRatio = currentWater / maxStorage;
 
                 var canRope = this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("rope-maker"));
                 var upgradesComponent = this.playerActionFunctions.tribeUpgradesNodes.head.upgrades;
@@ -514,8 +538,8 @@ define(['ash',
 
                 var pop = campComponent.population;
 
-                var trappers = Math.floor(pop / (currentFood > maxStorage * 0.5 ? 3 : 2));
-                var waters = Math.max(1, Math.floor(pop / (currentWater > maxStorage * 0.5 ? 5 : 4)));
+                var waters = Math.max(1, Math.floor(pop / (currentWaterRatio > 0.5 ? 5 : 3)));
+                var trappers = Math.floor(pop / (currentFoodRatio > 0.5 ? 3 : 2));
                 var specialistPop = Math.floor(pop - trappers - waters);
 
                 var ropers = canRope && currentRope < maxStorage ? Math.min(specialistPop, (currentRope < 30 ? 2 : 1)) : 0;

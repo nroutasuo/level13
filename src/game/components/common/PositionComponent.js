@@ -30,7 +30,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
         },
         
         toString: function () {
-            return this.level + "." + this.sectorX + "." + this.sectorY + "(inCamp: " + this.inCamp + ")";
+            return this.level + "." + this.sectorX + "." + this.sectorY + " (inCamp: " + this.inCamp + ")";
         },
         
         clone: function () {
