@@ -540,14 +540,14 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             var toggling = ($(element).attr("data-toggling") == "true");
             var sys = this;
             
-            if (show && !visible && !toggling) {
+            if (show && (visible == false || visible == null) && !toggling) {
 				if(replacement) sys.toggle(replacement, false);
                 $(element).attr("data-toggling", "true");
 				$(element).slideToggle(durationIn, function () {
                     sys.toggle(element, true);
                     $(element).attr("data-toggling", "false");
                 });
-			} else if (!show && visible && !toggling) {
+			} else if (!show && (visible == true || visible == null) && !toggling) {
                 $(element).attr("data-toggling", "true");
 				$(element).slideToggle(durationOut, function () {
 					if(replacement) sys.toggle(replacement, true);

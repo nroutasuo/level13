@@ -513,6 +513,21 @@ define([
                 }
                 
                 if (requirements.sector) {
+                    if (requirements.sector.collectable_water) {
+                        var hasWater = featuresComponent.resourcesCollectable.water > 0;
+                        if (!hasWater) {
+                            if (log) console.log("WARN: No collectable water.");
+                            return { value: 0, reason: "No collectable water." };
+                        }
+                    }
+                    if (requirements.sector.collectable_food) {
+                        var hasFood = featuresComponent.resourcesCollectable.food > 0;
+                        if (!hasFood) {
+                            if (log) console.log("WARN: No collectable food.");
+                            return { value: 0, reason: "No collectable food." };                            
+                        }
+                    }
+                    
                     if (requirements.sector.canHaveCamp) {
                         if (!featuresComponent.canHaveCamp()) {
                             if (log) console.log("WARN: Location not suitabe for camp.");

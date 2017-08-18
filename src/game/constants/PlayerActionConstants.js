@@ -212,10 +212,18 @@ function (Ash, GameConstants, CampConstants) {
             
                 build_out_collector_food: {
                     vision: [30, -1],
+                    sector: {
+                        collectable_food: true,
+                        scouted: true,
+                    }
                 },
             
                 build_out_collector_water: {
                     vision: [30, -1],
+                    sector: {
+                        collectable_water: true,
+                        scouted: true,
+                    }
                 },
             
                 use_out_collector_food: {
