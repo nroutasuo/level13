@@ -226,13 +226,13 @@ ul.tabs li.selected {
 .lvl13-element, div.btn-callout-content, div.info-callout-content, button, a:link, a:visited {
 	background: #202220;
 	color: #fdfdfd;
-	border: 2px solid #555;
+	border: 1px solid #555;
 }
 
 .sunlit .lvl13-element, .sunlit div.btn-callout-content, .sunlit div.info-callout-content, .sunlit button, .sunlit a:link, .sunlit a:visited {
 	background: rgb(252, 252, 252);
 	color: #222222;
-	border: 2px solid #aaa;
+	border: 1px solid #aaa;
 }
 
 div.container-btn-action, .changelog-type, .notification, .item-slot-equipped, .inventorybox {
@@ -461,12 +461,11 @@ input[type=range] {
 }
  
 #footer {
-    padding: 5px;
-    padding-left: 25px; /* for the self-bar */
+    padding: 1px 5px;
  }
  
  #unit-main {
-     padding-left: 25px; /* for the self-bar */
+     padding-left: 28px; /* for the self-bar */
  }
  
 #header-self-bar {
@@ -474,14 +473,18 @@ input[type=range] {
      width: 60px;
      z-index: 5;
      text-align: center; 
-     padding: 3px; 
+     padding: 5px 3px; 
      margin-left: -80px; 
      font-size: 80%;
- }
+}
  
 #header-self-bar ul {
      margin-top: 10px;
      margin-bottom: 10px;
+}
+ 
+#header-self-bar > span {
+    display: block;
 }
 
 #header-self-bar .stats-indicator {
@@ -501,6 +504,19 @@ input[type=range] {
 #header-self-bar .info-callout {
     max-width: auto;
     min-width: 100%;
+}
+
+#header-self-inout img {
+    -webkit-transition: -webkit-transform 1s;
+    transition: all 1s; 
+}
+
+.location-outside #header-self-inout img:hover {
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);    
 }
 
 ul.itemlist, ul.resultlist {
@@ -770,16 +786,21 @@ ul#game-options, ul#game-options-extended {
 	padding: 0;
 	margin: 0 0 0 0px;
 	line-height: 1em;
-	display: inline-block;
+	display: table;
 	float: right;
 }
 
 ul#game-options li, ul#game-options-extended li {
 	list-style-type: none;
-	display: inline-block;
+	display: table-cell;
+    vertical-align: middle;
 }
 
-#game-version { text-transform: lowercase; }
+#game-version { 
+    text-transform: lowercase;
+    position: relative;
+    left: -55px;
+}
 
 
 /* Appearance: Specific elements: callouts and popups */
@@ -838,7 +859,7 @@ div.callout-container {
 }
 
 div.btn-callout-content, div.info-callout-content, div.popup {
-	padding: 4px;
+	padding: 3px;
 }
 
 div.btn-callout-content, div.info-callout-content {
@@ -848,6 +869,7 @@ div.btn-callout-content, div.info-callout-content {
 
 div.info-callout-content {
     width: 100%;
+    vertical-align: middle;
 }
 
 div.popup {
@@ -976,8 +998,7 @@ div.container-btn-action {
 	display: inline-block;
 	padding: -1px;
 	margin: 4px;
-	border-width: 1px;
-	border-style: solid;
+	border-width: 0px;
 }
 
 div.container-btn-action button {
@@ -1317,7 +1338,7 @@ span.time {
 
 span#out-position-indicator, span#out-position-indicator-header {
     font-size: 80%;
-    line-height: 0.75em;
+    line-height: 1.1em;
 }
 
 span.icon {

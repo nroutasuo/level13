@@ -240,7 +240,6 @@ define([
 
             // Update cooldown overlays
             $(button).siblings(".cooldown-reqs").css("width", ((bottleNeckCostFraction) * 100) + "%");
-            $(button).children(".cooldown-action").css("display", !isHardDisabled ? "inherit" : "none");
             $(button).children(".cooldown-duration").css("display", !isHardDisabled ? "inherit" : "none");
         },
         

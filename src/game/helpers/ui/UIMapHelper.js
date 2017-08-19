@@ -166,19 +166,6 @@ function (Ash,
             ctx.arc(sectorXpx + sectorSize * 0.5, sectorYpx + 0.5 * sectorSize, sectorSize, 0, 2 * Math.PI);
             ctx.stroke();
             
-            // border on map itself
-            if (centered) {
-                ctx.strokeStyle = sunlit ? "#aaa" : "#3a3a3a";
-                ctx.beginPath();
-                ctx.arc(
-                        canvas.scrollWidth * 0.5,
-                        canvas.scrollHeight * 0.5,
-                        Math.min(canvas.scrollWidth, canvas.scrollHeight) * 0.5 + sectorSize - 2,
-                        0,
-                        2 * Math.PI);
-                ctx.stroke();
-            }
-            
             CanvasConstants.updateScrollEnable($(canvas).attr("id"));
         },
             

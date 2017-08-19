@@ -99,7 +99,11 @@ define([
                 sys.pendingUpdateDescription = true;
                 sys.updateOutImprovementsVisibility();
             });
+            GlobalSignals.featureUnlockedSignal.add(function () {
+                sys.updateUnlockedFeatures();
+            });
 			this.rebuildVis(uiMapHelper);
+            this.updateUnlockedFeatures();
 		},
 		
 		update: function (time) {            
@@ -119,6 +123,12 @@ define([
                     this.rebuildVis();
 			}
 		},
+        
+        updateUnlockedFeatures: function () {
+            this.uiFunctions.toggle("#minimap", this.gameState.unlockedFeatures.scout);
+            this.uiFunctions.toggle("#out-container-compass", this.gameState.unlockedFeatures.scout);
+            this.uiFunctions.toggle("#out-container-compass-actions", this.gameState.unlockedFeatures.scout);
+        },
 		
 		updateLevelPage: function () {
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
@@ -168,7 +178,6 @@ define([
 			this.uiFunctions.toggle("#header-out-projects", hasAvailableProjects);
 			
 			this.updateLevelPageActions(isScouted, hasCamp, hasCampHere);
-            this.uiFunctions.toggle("#minimap", this.gameState.unlockedFeatures.scout);
 		},
         
         updateLevelPageActions: function (isScouted, hasCamp, hasCampHere) {
@@ -308,7 +317,7 @@ define([
 			
 			if (isScouted && hasVision && !hasCampHere && !hasCampOnLevel) {
 				if (featuresComponent.canHaveCamp() && !hasEnemies && !passagesComponent.passageUp && !passagesComponent.passageDown)
-					description += "This would be a good place for a camp. ";
+					description += "This would be a good place for a <span class='text-highlight-functionality'>camp</span>. ";
 			}
 			
 			return description;

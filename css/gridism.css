@@ -105,6 +105,10 @@
 	#footer {
 		border-width: 2px 0px !important;
 	}
+    
+    #game-version {
+        left: 10px !important;
+    }
   
 	div.grid-content {
 		border-width: 1px 0px !important;

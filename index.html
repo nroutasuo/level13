@@ -35,9 +35,9 @@
 			<div class="unit three-quarters" id="unit-main" style="display: none">
 
                 <div id="header-self-bar" class="lvl13-box-2">
-                    <div id="header-self-inout"><img src="img/ui-camp-dark.png" alt="camp" width="30" height="30" /></div>
-                    <span id="out-position-indicator-header">location</span><br/>
-                    <span id="out-position-indicator"></span><br/>
+                    <div id="header-self-inout"><img src="img/ui-camp-dark.png" alt="camp" title="camp" width="30" height="30" /></div>
+                    <span id="out-position-indicator-header">location</span>
+                    <span id="out-position-indicator"></span>
                     <div id="notification-player" class="unit whole notification">
                         <div id="notification-player-bar" class="progress-wrap progress">
                             <div class="progress-bar progress"></div>
@@ -360,7 +360,7 @@
 					<!-- level: minimap and header -->
 					<div class="grid tabelement" id="container-tab-two-out" data-tab="switch-out" style="display:none;">
                         <div class="unit unit-compass" id="out-container-compass">
-                            <div id="minimap-container" class="canvas-container">
+                            <div id="minimap-container" class="canvas-container" style="width: 198px; height: 198px">
                             <canvas id="minimap" width="198" height="198">
                                 <div id="minimap-fallback-container"><table class="vis lvl13-box-2" id="minimap-fallback"></table></div>
                             </canvas>
@@ -629,9 +629,10 @@
 				<li><button class="btn-meta" id="btn-restart">Restart</button></li>
 				<li><button class="btn-meta" id="btn-save">Save</button></li>
 			</ul>
-			<ul id="game-options-extended" class="infobox-temporary" style="display:none">
+			<ul id="game-options-extended" style="display:none">
 				<li><button class="btn-meta" id="btn-info">Info</button></li>
 				<li><button class="btn-meta" id="btn-importexport">Import/export</button></li>
+                <li><span>:</span></li>
 			</ul>
 		</div>
 	</div><!-- sticky footer -->

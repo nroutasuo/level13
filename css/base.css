@@ -38,17 +38,17 @@ body {
 .sticky-footer-wrapper {
 	min-height: 100%;	
 	height: auto !important;
-	margin: 0 auto -70px;
+	margin: 0 auto -50px;
 }
 
 .sticky-footer-push {
 	margin:  0;
-	height: 70px;
+	height: 50px;
 }
 
 .sticky-footer {
-	height: 70px;
-	padding: 15px 0;
+	height: 50px;
+	padding: 10px 0;
     display: none;
 }
 
@@ -71,6 +71,10 @@ h1, h2, h3, h4, h5, h6 {
 	font-family: "Arial Narrow", Arial, sans-serif;
 	letter-spacing: 0.1pt;
 	text-transform: uppercase;
+}
+
+h2:first-child {
+    margin-top: 0.5em;
 }
 
 h3 {
@@ -111,8 +115,11 @@ img {
 }
 
 .loading-spinner {
-  margin: 8em auto 0;
-  text-align: center;
+    text-align: center;
+    width: 100%;
+    position: relative;
+    top: 50%;
+    left: 0;
 }
 
 .loading-spinner .loading-dot {

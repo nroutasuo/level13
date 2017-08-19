@@ -477,8 +477,16 @@ define(['ash',
             var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
             if (!sectorStatus.scouted) {
                 sectorStatus.scouted = true;
-                this.gameState.unlockedFeatures.evidence = true;
-                this.gameState.unlockedFeatures.scout = true;
+                
+                if (!this.gameState.unlockedFeatures.evidence) {
+                    this.gameState.unlockedFeatures.evidence = true;
+                    GlobalSignals.featureUnlockedSignal.dispatch();
+                }
+                
+                if (!this.gameState.unlockedFeatures.scout) {
+                    this.gameState.unlockedFeatures.scout = true;
+                    GlobalSignals.featureUnlockedSignal.dispatch();
+                }
 
                 var logMsg = "Scouted the area.";
                 var found = false;

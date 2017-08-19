@@ -72,6 +72,8 @@ define([
             var sys = this;
             GlobalSignals.playerMovedSignal.add(function () { sys.onPlayerMoved(); });
 			
+			$("#game-version").text("v. " + this.uiFunctions.changeLogHelper.getCurrentVersionNumber());
+			
 			this.generateStatsCallouts();
 		},
 	
@@ -193,6 +195,8 @@ define([
 			$("#stats-evidence .value").text(UIConstants.roundValue(playerStatsNode.evidence.value, true, false));
 			this.uiFunctions.toggle("#stats-evidence", this.gameState.unlockedFeatures.evidence);
 			this.updateStatsCallout("stats-evidence", playerStatsNode.evidence.accSources);
+            
+            $("#header-tribe-container").toggle(this.gameState.unlockedFeatures.evidence || playerStatsNode.rumours.isAccumulating);
 
 			var reputationComponent = this.currentLocationNodes.head.entity.get(ReputationComponent);
             if (reputationComponent) {
@@ -238,9 +242,9 @@ define([
 			for (var i in changeSources) {
 				source = changeSources[i];
 				if (source.amount != 0) {
-					var amount = Math.round(source.amount * 10000)/10000;
+					var amount = Math.round(source.amount * 1000)/1000;
 					if (amount == 0 && source.amount > 0) {
-						amount = "< 0.0001";
+						amount = "< " + (1/1000);
 					}
 					content += source.source + ": " + amount + "/s<br/>";
 				}
@@ -410,7 +414,7 @@ define([
         updateItemStats: function (inCamp) {
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var playerStamina = this.playerStatsNodes.head.stamina;
-            var playerVision = this.playerStatsNodes.head.vision;
+            var visibleStats = 0;
             for (var bonusKey in ItemConstants.itemBonusTypes) {
                 var bonusType = ItemConstants.itemBonusTypes[bonusKey];
                 var bonus = itemsComponent.getCurrentBonus(bonusType);
@@ -441,7 +445,12 @@ define([
                 $("#stats-equipment-" + bonusKey + " .value").text(UIConstants.roundValue(value, true, true));
                 this.uiFunctions.toggle("#stats-equipment-" + bonusKey, isVisible && value > 0);
                 UIConstants.updateCalloutContent("#stats-equipment-" + bonusKey, detail);
+                
+                if (isVisible && value > 0)
+                    visibleStats++;
             }
+            
+            this.uiFunctions.toggle("#header-self-bar hr", visibleStats > 0)
         },
 		
 		updateGameMsg: function () {
@@ -459,8 +468,6 @@ define([
 				
 				$("#game-msg").text(gameMsg);
 			}
-			
-			$("#game-version").text("v. " + this.uiFunctions.changeLogHelper.getCurrentVersionNumber());
 		},
 		
 		updateNotifications: function (inCamp) {
@@ -477,12 +484,16 @@ define([
 		},
         
         updateLocation: function (inCamp) {
+			$("body").toggleClass("location-inside", inCamp);
+			$("body").toggleClass("location-outside", !inCamp);
+            
             var featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
             var sunlit = featuresComponent.sunlit;
             var imgName = "img/ui-" + (inCamp ? "camp" : "explore") + (sunlit ? "" : "-dark") + ".png";
             if ($("#header-self-inout img").attr("src") !== imgName)
                 $("#header-self-inout img").attr("src", imgName);
-            $("#header-self-inout img").attr("alt", (inCamp ? "camp" : "explore"));
+            $("#header-self-inout img").attr("alt", (inCamp ? "in camp" : "outside"));
+            $("#header-self-inout img").attr("title", (inCamp ? "in camp" : "outside"));
             
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var hasMap = itemsComponent.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;

@@ -284,7 +284,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             
             // cheats
             if (GameConstants.isCheatsEnabled) {
-                $("#game-options-extended").append("<li><button class='btn-meta' id='btn-cheats'>Cheats</button></li>")
+                $("#game-options-extended li:first-child").before("<li><button class='btn-meta' id='btn-cheats'>Cheats</button></li>")
             }
         },
         
@@ -617,6 +617,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             $(button).children(".cooldown-action").stop(true, true);
             $(button).attr("data-hasCooldown", "false");
             $(button).children(".cooldown-action").css("display", "none");
+            $(button).children(".cooldown-action").css("width", "100%");
         },
         
         startButtonCooldown: function (button, cooldown, cooldownLeft) {
