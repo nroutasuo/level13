@@ -268,17 +268,17 @@ define([
 				featuresComponent.stateOfRepair) + " ";
 			
 			if (featuresComponent.sunlit) {
-				if (hasVision) desc += "The area is swathed in relentless daylight. ";
-				else desc += "The area is swathed in blinding sunlight. ";
+				if (hasVision) desc += "The area is swathed in relentless <span class='text-highlight-functionality'>daylight</span>. ";
+				else desc += "The area is swathed in blinding <span class='text-highlight-functionality'>sunlight</span>. ";
 			} else {
                 if (statusComponent.glowStickSeconds > -5) {
                     if (statusComponent.glowStickSeconds < 5)
                         desc += "The glowstick fades out.";
                     else
-                        desc += "A glowstick casts a sickly light.";
+                        desc += "A glowstick casts a sickly <span class='text-highlight-functionality'>light</span>.";
                 } else {
                     if (hasVision) desc += "";
-                    else desc += "There is no light.";
+                    else desc += "There is no <span class='text-highlight-functionality'>light</span>.";
                 }
             }
 			
@@ -328,7 +328,7 @@ define([
 			if (featuresComponent.resourcesScavengable.getTotal() > 0) {
 				var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
 				if (discoveredResources.length > 0) {
-					description += "Resources found scavenging here: " + featuresComponent.getScaResourcesString(discoveredResources) + ". ";
+					description += "Resources found here: " + featuresComponent.getScaResourcesString(discoveredResources) + ". ";
 				}
 			}
             if (isScouted) {
@@ -429,13 +429,13 @@ define([
             var hazardDesc = "";
             if (hasHazards) {
                 if (featuresComponent.hazards.radiation > 0) {
-                    hazardDesc += "This place is radioactive (" + featuresComponent.hazards.radiation + "). ";
+                    hazardDesc += "This place is <span class='text-highlight-functionality'>radioactive</span> (" + featuresComponent.hazards.radiation + "). ";
                 }
                 if (featuresComponent.hazards.poison > 0) {
-                    hazardDesc += "This place is dangerously polluted (" + featuresComponent.hazards.poison + "). ";
+                    hazardDesc += "This place is dangerously <span class='text-highlight-functionality'>polluted</span> (" + featuresComponent.hazards.poison + "). ";
                 }
                 if (featuresComponent.hazards.cold > 0) {
-                    hazardDesc += "It's very cold here (" + featuresComponent.hazards.cold + "). ";
+                    hazardDesc += "It's very <span class='text-highlight-functionality'>cold</span> here (" + featuresComponent.hazards.cold + "). ";
                 }
             }
 			

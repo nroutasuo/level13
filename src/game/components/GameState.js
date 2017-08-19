@@ -43,6 +43,7 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
                 followers: false,
                 favour: false,
                 evidence: false,
+                currency: false,
             };
             
             this.uiStatus = {

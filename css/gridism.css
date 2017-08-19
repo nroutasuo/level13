@@ -106,7 +106,7 @@
 		border-width: 2px 0px !important;
 	}
     
-    #game-version {
+    #game-version, #game-msg {
         left: 10px !important;
     }
   

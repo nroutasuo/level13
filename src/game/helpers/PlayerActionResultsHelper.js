@@ -277,6 +277,8 @@ define([
             var currencyComponent = this.playerStatsNodes.head.entity.get(CurrencyComponent);
             currencyComponent.currency += rewards.gainedCurrency;
             currencyComponent.currency -= rewards.lostCurrency;
+            if (rewards.gainedCurrency > 0)
+                this.gameState.unlockedFeatures.currency = true;
 
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			if (rewards.selectedItems) {

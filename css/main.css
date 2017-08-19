@@ -796,7 +796,7 @@ ul#game-options li, ul#game-options-extended li {
     vertical-align: middle;
 }
 
-#game-version { 
+#game-version, #game-msg { 
     text-transform: lowercase;
     position: relative;
     left: -55px;

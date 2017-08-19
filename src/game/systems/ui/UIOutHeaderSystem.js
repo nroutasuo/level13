@@ -244,7 +244,7 @@ define([
 				if (source.amount != 0) {
 					var amount = Math.round(source.amount * 1000)/1000;
 					if (amount == 0 && source.amount > 0) {
-						amount = "< " + (1/1000);
+						amount = "<&nbsp;" + (1/1000);
 					}
 					content += source.source + ": " + amount + "/s<br/>";
 				}
@@ -355,7 +355,7 @@ define([
 			var inventoryUnlocked = false;
             
             this.uiFunctions.toggle("#header-camp-storage", inCamp);
-            this.uiFunctions.toggle("#header-camp-currency", inCamp);
+            this.uiFunctions.toggle("#header-camp-currency", inCamp && this.gameState.unlockedFeatures.currency);
             this.uiFunctions.toggle("#statsbar-resources", inCamp);
             this.uiFunctions.toggle("#header-bag-storage", !inCamp && this.gameState.unlockedFeatures.bag);
             this.uiFunctions.toggle("#header-bag-currency", !inCamp && currencyComponent.currency > 0);

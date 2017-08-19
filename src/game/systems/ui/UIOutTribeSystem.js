@@ -119,7 +119,7 @@ define([
 				$("#camp-overview").append(rowHTML);
 				var uiFunctions = this.uiFunctions;
 				$("#" + btnID).click(function(e) {
-					uiFunctions.onTabClicked(uiFunctions.elementIDs.tabs.in, uiFunctions.gameState, uiFunctions.playerActions);
+					uiFunctions.onTabClicked(uiFunctions.elementIDs.tabs.in, uiFunctions.gameState, uiFunctions);
 				});
                 this.uiFunctions.registerActionButtonListeners("#" + rowID);
                 this.uiFunctions.generateButtonOverlays("#" + rowID);

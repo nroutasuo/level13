@@ -46,7 +46,7 @@ function (Ash, GameConstants) {
 		
 		getRaidDanger: function (improvements, soldiers, fortificationUpgradeLevel) {
 			var dangerPoints = 0;
-			dangerPoints += Math.max(0, improvements.getTotal(improvementTypes.camp));
+			dangerPoints += Math.max(0, improvements.getTotal(improvementTypes.camp) - 1);
 			var defencePoints = this.getRaidDefence(improvements, soldiers, fortificationUpgradeLevel);
 			return dangerPoints / (defencePoints + 1);
 		},
