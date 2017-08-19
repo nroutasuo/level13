@@ -3,8 +3,9 @@
         {
             "version": "0.1.7",
             "phase": "alpha",
-            "final": false,
-            "updated": "2017-08-16",
+            "final": true,
+            "updated": "2017-08-19",
+            "released": "2017-08-19",
             "changes": [
                 {
                     "type": "GD",
