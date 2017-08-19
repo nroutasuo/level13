@@ -79,7 +79,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             $.each($("#switch-tabs li"), function () {
                 $(this).click(function () {
                     if (!($(this).hasClass("disabled"))) {
-                        onTabClicked(this.id, gameState, playerActions);
+                        onTabClicked(this.id, gameState, uiFunctions);
                     }
                 });
             });
@@ -110,7 +110,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                     "Do you want to restart the game? Your progress will be lost.",
                     function () {
                         $("#log ul").empty();
-                        onTabClicked(elementIDs.tabs.out, gameState, playerActions);
+                        onTabClicked(elementIDs.tabs.out, gameState, uiFunctions);
                         saveSystem.restart(false);
                     });
             });
@@ -406,7 +406,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             return html;
         },
         
-        onTabClicked: function (tabID, gameState, playerActions) {
+        onTabClicked: function (tabID, gameState, uiFunctions) {
             $("#switch-tabs li").removeClass("selected");
             $("#switch-tabs li#" + tabID).addClass("selected");
             $("#tab-header h2").text(tabID);
@@ -416,11 +416,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             gameState.uiStatus.currentTab = tabID;
             
             $.each($(".tabelement"), function () {
-                if ($(this).attr("data-tab") === tabID) {
-                    $(this).slideDown(transitionTime);
-                } else {
-                    $(this).slideUp(transitionTime);
-                }
+                uiFunctions.slideToggleIf($(this), null, $(this).attr("data-tab") === tabID, transitionTime, 200);
             });
             
             GlobalSignals.tabChangedSignal.dispatch(tabID);
@@ -586,6 +582,8 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 show = false;
             if (show === null)
                 show = false;
+            if (!show)
+                show = false;
             if (this.isElementToggled(element) === show)
                 return;
             if (GameConstants.isDebugOutputEnabled)
@@ -666,7 +664,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         },
         
         showTab: function (tabID) {
-            this.onTabClicked(tabID, this.gameState, this.playerActions);
+            this.onTabClicked(tabID, this.gameState, this);
         },
         
         showFight: function () {
