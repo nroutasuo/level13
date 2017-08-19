@@ -72,8 +72,6 @@ define([
             var sys = this;
             GlobalSignals.playerMovedSignal.add(function () { sys.onPlayerMoved(); });
 			
-			$("#game-version").text("v. " + this.uiFunctions.changeLogHelper.getCurrentVersionNumber());
-			
 			this.generateStatsCallouts();
 		},
 	
@@ -112,6 +110,8 @@ define([
 			this.updateGameMsg();
 			this.updateNotifications(isInCamp);
             this.updateLocation(isInCamp);
+			
+			$("#game-version").text("v. " + this.uiFunctions.changeLogHelper.getCurrentVersionNumber());
             
             var headerText = isInCamp ? campComponent.getName() + "  (level " + playerPosition.level + ")" : "level " + playerPosition.level;
             var showCalendar = this.tribeNodes.head.upgrades.hasUpgrade(this.upgradeEffectsHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
