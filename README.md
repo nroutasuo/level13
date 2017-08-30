@@ -38,7 +38,7 @@ User input is detected and mapped to PlayerActions by [UIFunctions](https://gith
 
 At the start of a new game, a seed value is assigned. The world is randomly generated based on this seed and only the seed needs to be saved between sessions.
 
-![samplelevel2](doc/samplelevel2)
+![samplelevel2](/doc/samplelevel2.PNG)
 
 (Sample level structure)
 
