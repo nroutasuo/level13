@@ -15,7 +15,7 @@ Play lastest (semi-) stable version [here](https://nroutasuo.github.io/level13/)
 * Items, equipment and environmental hazards
 * Technologies that slowly unlock new aspects of the game
 
-Main features still missing: story and rp-elements, gods, ending.
+Main features still missing: story and role-playing elements, gods, the ending.
 
 
 ## Code Overview
@@ -38,7 +38,7 @@ User input is detected and mapped to PlayerActions by [UIFunctions](https://gith
 
 At the start of a new game, a seed value is assigned. The world is randomly generated based on this seed and only the seed needs to be saved between sessions.
 
-![samplelevel2](http://i.imgsafe.org/dc1caf07b7.png)
+![samplelevel2](doc/samplelevel2)
 
 (Sample level structure)
 
