@@ -182,6 +182,9 @@ define(['ash',
                 case "build_out_passage_up_stairs": this.buildPassageUpStairs(param); break;
                 case "build_out_passage_up_elevator": this.buildPassageUpElevator(param); break;
                 case "build_out_passage_up_hole": this.buildPassageUpHole(param); break;
+                case "build_out_spaceship1": this.buildSpaceShip1(param); break;
+                case "build_out_spaceship2": this.buildSpaceShip2(param); break;
+                case "build_out_spaceship3": this.buildSpaceShip3(param); break;
                 // In improvements
                 case "build_in_campfire": this.buildCampfire(param); break;
                 case "build_in_house": this.buildHouse(param); break;
@@ -255,6 +258,9 @@ define(['ash',
                 case "build_out_passage_up_stairs":
                 case "build_out_passage_up_elevator":
                 case "build_out_passage_up_hole":
+                case "build_out_spaceship1":
+                case "build_out_spaceship2":
+                case "build_out_spaceship3":
                     var l = parseInt(param.split(".")[0]);
                     var sX = parseInt(param.split(".")[1]);
                     var sY = parseInt(param.split(".")[2]);
@@ -989,6 +995,39 @@ define(['ash',
 
             this.buildImprovement("build_out_bridge", this.playerActionsHelper.getImprovementNameForAction("build_out_bridge"), sector);
             this.buildImprovement("build_out_bridge", this.playerActionsHelper.getImprovementNameForAction("build_out_bridge"), neighbour, true);
+        },
+        
+        buildSpaceShip1: function(sectorPos) {
+            this.buildSpaceShip(sectorPos, "build_out_spaceship1");
+        },
+        
+        buildSpaceShip2: function(sectorPos) {
+            this.buildSpaceShip(sectorPos, "build_out_spaceship2");
+        },
+        
+        buildSpaceShip3: function(sectorPos) {
+            this.buildSpaceShip(sectorPos, "build_out_spaceship3");
+        },
+        
+        buildSpaceShip: function(sectorPos, action) {
+			var l = parseInt(sectorPos.split(".")[0]);
+			var sX = parseInt(sectorPos.split(".")[1]);
+			var sY = parseInt(sectorPos.split(".")[2]);
+			var sector = this.getActionSector(action, sectorPos);
+            
+            var sectorPosVO = new PositionVO(l, sX, sY);
+            var playerPos = this.playerPositionNodes.head.position;
+			
+			if (sector) {
+				var msg = "Colony construction project ready at " + sectorPosVO.getInGameFormat(playerPos.level === l);
+				this.buildImprovement(action, this.playerActionsHelper.getImprovementNameForAction(action), sector);
+				this.addLogMessage(LogConstants.MSG_ID_BUILT_SPACESHIP, msg);
+			} else {
+				console.log("WARN: Couldn't find sectors for building space ship.");
+				console.log(sector);
+				console.log(sectorPos);
+			}
+            
         },
         
         collectFood: function () {

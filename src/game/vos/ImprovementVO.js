@@ -12,6 +12,9 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		passageDownStairs: "Passage Down (S)",
 		passageDownElevator: "Passage Down (E)",
 		passageDownHole: "Passage Down (H)",
+        spaceship1: "Colony Hull",
+        spaceship2: "Colony Shield",
+        spaceship3: "Colony Life Support",
 		
         home: "Tent",
 		house: "Hut",
@@ -72,6 +75,9 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 				case improvementNames.collector_food:
 				case improvementNames.collector_water:
 				case improvementNames.bridge:
+                case improvementNames.spaceship1:
+                case improvementNames.spaceship2:
+                case improvementNames.spaceship3:
 				case improvementNames.passageUpStairs:
 				case improvementNames.passageUpElevator:
 				case improvementNames.passageUpHole:

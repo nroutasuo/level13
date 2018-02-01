@@ -209,6 +209,34 @@ function (Ash, GameConstants, CampConstants) {
                         unlock_building_bridge: true,
                     }
                 },
+                
+                build_out_spaceship1: {
+                    improvements: {
+                        spaceship1: [0, 1],
+                    },
+                    upgrades: {
+                        unlock_building_spaceship1: true,
+                    }
+                },
+                
+                build_out_spaceship2: {
+                    improvements: {
+                        spaceship1: [1, -1],
+                        spaceship2: [0, 1],
+                    },
+                    upgrades: {
+                        unlock_building_spaceship2: true,
+                    }
+                },
+                
+                build_out_spaceship3: {
+                    improvements: {
+                        spaceship3: [0, 1],
+                    },
+                    upgrades: {
+                        unlock_building_spaceship3: true,
+                    }
+                },
             
                 build_out_collector_food: {
                     vision: [30, -1],
@@ -972,6 +1000,27 @@ function (Ash, GameConstants, CampConstants) {
                         unlock_building_passage_hole: true,
                     }
                 },
+                
+                unlock_building_spaceship1: {
+                    blueprint: 15,
+                    upgrades: {
+                        unlock_building_bridge: true,
+                    }
+                },
+                
+                unlock_building_spaceship2: {
+                    blueprint: 15,
+                    upgrades: {
+                        unlock_building_bridge: true,
+                    }
+                },
+                
+                unlock_building_spaceship3s: {
+                    blueprint: 15,
+                    upgrades: {
+                        unlock_building_bridge: true,
+                    }
+                },
 
                 upgrade_building_storage1: {
                     blueprint: 7,
@@ -1216,6 +1265,32 @@ function (Ash, GameConstants, CampConstants) {
                 build_out_bridge: {
                     resource_metal: 150,
                     resource_rope: 150,
+                    cost_source: COST_SOURCE_CAMP,
+                },
+            
+                build_out_spaceship1: {
+                    resource_metal: 20000,
+                    resource_rope: 3000,
+                    resource_concrete: 10000,
+                    resouce_tools: 1000,
+                    cost_source: COST_SOURCE_CAMP,
+                },
+            
+                build_out_spaceship2: {
+                    resource_metal: 10000,
+                    resource_rope: 5000,
+                    resource_concrete: 1000,
+                    resouce_tools: 2000,
+                    cost_source: COST_SOURCE_CAMP,
+                },
+            
+                build_out_spaceship3: {
+                    resource_metal: 10000,
+                    resource_rope: 5000,
+                    resource_concrete: 1000,
+                    resource_fuel: 800,
+                    resource_medicine: 3000,
+                    resouce_tools: 1000,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
@@ -1783,6 +1858,22 @@ function (Ash, GameConstants, CampConstants) {
 
                 unlock_building_bridge: {
                     evidence: 93,
+                },
+
+                unlock_building_spaceship1: {
+                    evidence: 120,
+                    rumours: 120,
+                },
+
+                unlock_building_spaceship2: {
+                    evidence: 120,
+                    rumours: 120,
+                },
+
+                unlock_building_spaceship3: {
+                    evidence: 50,
+                    rumours: 50,
+                    favour: 100,
                 },
 
                 upgrade_building_storage1: {

@@ -37,6 +37,9 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], fu
             unlock_item_clothing3: "unlock_item_clothing3",
             unlock_item_clothing5: "unlock_item_clothing5",
             unlock_building_bridge: "unlock_building_bridge",
+            unlock_building_spaceship1: "unlock_building_spaceship1",
+            unlock_building_spaceship2: "unlock_building_spaceship2",
+            unlock_building_spaceship3: "unlock_building_spaceship3",
             upgrade_building_storage1: "upgrade_building_storage1",
             unlock_item_firstaid: "unlock_item_firstaid",
             unlock_item_clothing4h: "unlock_item_clothing4h",
@@ -86,7 +89,7 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], fu
             12: ["unlock_item_bag3", "upgrade_worker_chemist", "unlock_item_clothing6"],
             13: ["upgrade_building_hospital", "unlock_item_clothing7", "unlock_item_weapon6", "unlock_building_radio"],
             14: ["improve_building_market3", "upgrade_building_cementmill", "unlock_building_researchcenter", "unlock_item_weapon7"],
-            15: ["unlock_item_clothing5l", "upgrade_building_apothecary", "unlock_item_clothing8", "unlock_building_ceiling"],
+            15: ["unlock_item_clothing5l", "upgrade_building_apothecary", "unlock_item_clothing8", "unlock_building_ceiling", "unlock_building_spaceship1", "unlock_building_spaceship2s", "unlock_building_spaceship3"],
         },
         
         piecesByBlueprint: {
@@ -118,6 +121,9 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], fu
             unlock_item_clothing3: 3,
             unlock_item_clothing5: 5,
             unlock_building_bridge: 3,
+            unlock_building_spaceship1: 5,
+            unlock_building_spaceship2: 3,
+            unlock_building_spaceship3: 9,
             upgrade_building_storage1: 3,
             unlock_item_clothing4h: 3,
             upgrade_building_market: 3,
@@ -245,6 +251,12 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], fu
     = new UpgradeVO("unlock_item_clothing5", "Armour", "Adapting the new metal working techniques for protection.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_bridge]
     = new UpgradeVO("unlock_building_bridge", "Bridge-building", "Building bridges over collapsed sectors.");
+    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_spaceship1]
+    = new UpgradeVO("unlock_building_spaceship1", "Space Colony Hull", "Part of constructing a space colony.");
+    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_spaceship1]
+    = new UpgradeVO("unlock_building_spaceship2", "Space Colony Shield", "Part of constructing a space colony.");
+    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_spaceship1]
+    = new UpgradeVO("unlock_building_spaceship3", "Space Colony Life Support", "Part of constructing a space colony.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_storage1]
     = new UpgradeVO("upgrade_building_storage1", "Pest control", "Keeping other animals away from food and materials for more reliable storage.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_firstaid]

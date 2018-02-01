@@ -1002,6 +1002,9 @@ define([
                 case "build_in_tradingPost": return improvementNames.tradepost;
                 case "build_in_inn": return improvementNames.inn;
                 case "build_out_bridge": return improvementNames.bridge;
+                case "build_out_spaceship1": return improvementNames.spaceship1;
+                case "build_out_spaceship2": return improvementNames.spaceship2;
+                case "build_out_spaceship3": return improvementNames.spaceship3;
                 case "build_in_campfire": return improvementNames.campfire;
                 case "build_in_darkfarm": return improvementNames.darkfarm;
                 case "build_in_house2": return improvementNames.house2;
