@@ -10,6 +10,7 @@ define(['ash',
     'game/components/player/AutoPlayComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
+    'game/components/player/DeityComponent',
     'game/components/sector/EnemiesComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/SectorFeaturesComponent',
@@ -29,6 +30,7 @@ define(['ash',
     AutoPlayComponent,
     ItemsComponent,
     PerksComponent,
+    DeityComponent,
     EnemiesComponent,
     SectorImprovementsComponent,
     SectorFeaturesComponent,
@@ -89,6 +91,10 @@ define(['ash',
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_RUMOURS, "Set rumours.", ["value"], function (params) {
                 this.playerStatsNodes.head.rumours.value = Math.max(0, parseInt(params[0]));
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_FAVOUR, "Set favour.", ["value"], function (params) {
+                var value = parseInt(params[0]);
+                this.setFavour(value);
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_POPULATION, "Add population to nearest camp.", ["value (1-n)"], function (params) {
                 this.addPopulation(Math.max(1, parseInt(params[0])));
@@ -295,6 +301,17 @@ define(['ash',
             }
         },
         
+        setFavour: function (value) {            
+            if (value >  0) {
+                this.gameState.unlockedFeatures.favour = true;
+            }
+            if (!this.playerStatsNodes.head.entity.has(DeityComponent)) {
+                this.playerStatsNodes.head.entity.add(new DeityComponent("Hoodwinker"))
+            }
+            
+            this.playerStatsNodes.head.entity.get(DeityComponent).favour = Math.max(0, value);
+        }
+        ,
         addSupplies: function () {
             var playerResources = this.resourcesHelper.getCurrentStorage().resources;        
             playerResources.setResource("food", 15);
