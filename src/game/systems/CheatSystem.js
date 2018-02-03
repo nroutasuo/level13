@@ -107,8 +107,12 @@ define(['ash',
                 var buildingAmount = parseInt(params[1]);
                 this.addBuilding(buildingName, buildingAmount);
             });
-            this.registerCheat(CheatConstants.CHEAT_NAME_TECH, "Immediately unlock the given upgrade.", ["upgrade id"], function (params) {
+            this.registerCheat(CheatConstants.CHEAT_NAME_TECH, "Immediately unlock the given upgrade. \"all\" unlocks everything.", ["upgrade id"], function (params) {
                 this.addTech(params[0]);
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_TECHS, "Immediately unlock all tech up to and including a given camp ordinal.", ["camp ordinal"], function (params) {
+                var campOrdinal = parseInt(params[0]);
+                this.addTechs(campOrdinal);
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_BLUEPRINT, "Adds blueprints for the given upgrade.", ["upgrade id", "amount (1-total)"], function (params) {
                 this.addBlueprints(params[0], parseInt(params[1]));
@@ -160,6 +164,7 @@ define(['ash',
                 console.log("cheat not found: " + name);
             }
             
+            // TODO re-implement these cheats
             /*
             var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             switch (name) {
@@ -323,6 +328,16 @@ define(['ash',
                 for (var id in UpgradeConstants.upgradeDefinitions) {
                     this.playerActionFunctions.buyUpgrade(id, true);
                 }            
+        },
+        
+        addTechs: function (campOrdinal) {
+            var minOrdinal;
+			for (var id in UpgradeConstants.upgradeDefinitions) {
+                minOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(id);
+                if (minOrdinal <= campOrdinal) {
+                    this.addTech(id);
+                }
+            }
         },
         
         addBlueprints: function (name, amount) {
