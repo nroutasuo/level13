@@ -63,6 +63,9 @@ define([
 				evidenceComponent.isAccumulating = true;
 			}
             
+            if (evidenceComponent.value < 0 )
+                evidenceComponent.value = 0;
+            
             this.gameState.unlockedFeatures.projects = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(UpgradeConstants.upgradeIds.unlock_building_passage_staircase);
         },
 		

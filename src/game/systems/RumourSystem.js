@@ -81,6 +81,9 @@ define([
 				rumoursComponent.value += (time + this.engine.extraUpdateTime) * accSpeed;
 				rumoursComponent.isAccumulating = true;
 			}
+            
+            if (rumoursComponent.value < 0 )
+                rumoursComponent.value = 0;
         },
 		
 		getImprovementUpgradeLevel: function (improvementName) {
