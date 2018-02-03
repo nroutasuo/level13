@@ -43,6 +43,18 @@ define([
 			return currentResources;
 		},
         
+		getCurrentCampStorage: function (campEntity) {
+			var campResources = campEntity.get(ResourcesComponent);
+			var globalResources = this.globalResourcesNodes.head.resources;
+			
+			var currentResources = campResources;			
+            if (this.hasAccessToTradeNetwork()) {
+                currentResources = globalResources;
+            }
+				
+			return currentResources;
+        },
+        
         getCurrentCurrency: function () {
 			var playerCurrencys = this.getPlayerCurrency();
 			var campCurrencys = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity.get(CurrencyComponent) : null;

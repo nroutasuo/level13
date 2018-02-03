@@ -183,7 +183,7 @@ define([
 				this.playerActionsHelper,
 				this.fightHelper,
 				this.playerActionResultsHelper);
-            this.cheatSystem = new CheatSystem(this.gameState, this.playerActionFunctions, this.resourcesHelper, this.uiMapHelper);
+            this.cheatSystem = new CheatSystem(this.gameState, this.playerActionFunctions, this.resourcesHelper, this.uiMapHelper, this.levelHelper);
 			this.uiFunctions = new UIFunctions(this.playerActionFunctions, this.gameState, this.saveSystem, this.cheatSystem);
 			this.occurrenceFunctions = new OccurrenceFunctions(this.gameState, this.uiFunctions, this.resourcesHelper, this.upgradeEffectsHelper);
 			

@@ -81,42 +81,43 @@ define([
 		
 		updateWorkers: function (node, time) {
 			var camp = node.camp;
-			var resources = node.entity.get(ResourcesComponent).resources;
+			var campResources = node.entity.get(ResourcesComponent).resources;
+            var availableResources = this.resourcesHelper.getCurrentCampStorage(node.entity).resources;
 			var resourceAccComponent = node.entity.get(ResourceAccumulationComponent);
 			var improvementsComponent = node.entity.get(SectorImprovementsComponent);
 			
 			// Basic: Scavengers
 			var metal = time * this.campHelper.getMetalProductionPerSecond(camp.assignedWorkers.scavenger, improvementsComponent);
-			resources.addResource(resourceNames.metal, metal);
+			campResources.addResource(resourceNames.metal, metal);
 			resourceAccComponent.addChange(resourceNames.metal, metal / time, "Scavengers");
 			
 			// Basic: Trappers
 			var food = time * this.campHelper.getFoodProductionPerSecond(camp.assignedWorkers.trapper, improvementsComponent);
-			resources.addResource(resourceNames.food, food);
+			campResources.addResource(resourceNames.food, food);
 			resourceAccComponent.addChange(resourceNames.food, food / time, "Trappers");
 			
 			// Basic: Water collectors
 			var water = time * this.campHelper.getWaterProductionPerSecond(camp.assignedWorkers.water, improvementsComponent);
-			resources.addResource(resourceNames.water, water);
+			campResources.addResource(resourceNames.water, water);
 			resourceAccComponent.addChange(resourceNames.water, water / time, "Collectors");
 			
 			// Basic: Rope-makers
             var rope = time * this.campHelper.getRopeProductionPerSecond(camp.assignedWorkers.ropemaker, improvementsComponent);
-			resources.addResource(resourceNames.rope, rope);
+			campResources.addResource(resourceNames.rope, rope);
 			resourceAccComponent.addChange(resourceNames.rope, rope / time, "Rope-makers");
 			
 			// Workshop: Chemists
             var fuel = time * this.campHelper.getFuelProductionPerSecond(camp.assignedWorkers.chemist, improvementsComponent);
-			resources.addResource(resourceNames.fuel, fuel);
+			campResources.addResource(resourceNames.fuel, fuel);
 			resourceAccComponent.addChange(resourceNames.fuel, fuel / time, "Chemists");
 			
 			// Advanced: Apothecaries
 			var herbsRequired = time * this.campHelper.getHerbsConsumptionPerSecond(camp.assignedWorkers.apothecary);
 			if (herbsRequired > 0) {
-				var herbsUsed = Math.min(resources.getResource(resourceNames.herbs), herbsRequired);
+				var herbsUsed = Math.min(availableResources.getResource(resourceNames.herbs), herbsRequired);
 				var medicine = time * (herbsUsed / herbsRequired) * this.campHelper.getMedicineProductionPerSecond(camp.assignedWorkers.apothecary, improvementsComponent);
-				resources.addResource(resourceNames.medicine, medicine);
-				resources.addResource(resourceNames.herbs, -herbsUsed);
+				campResources.addResource(resourceNames.medicine, medicine);
+				campResources.addResource(resourceNames.herbs, -herbsUsed);
 				resourceAccComponent.addChange(resourceNames.medicine, medicine / time, "Apothecaries");
 				resourceAccComponent.addChange(resourceNames.herbs, -herbsUsed / time, "Apothecaries");
 			}
@@ -124,10 +125,10 @@ define([
 			// Advanced: Toolsmiths
 			var metalRequiredTools = time * this.campHelper.getMetalConsumptionPerSecondSmith(camp.assignedWorkers.toolsmith);
 			if (metalRequiredTools > 0) {
-				var metalUsedTools = Math.min(resources.getResource(resourceNames.metal), metalRequiredTools);
+				var metalUsedTools = Math.min(availableResources.getResource(resourceNames.metal), metalRequiredTools);
                 var tools = time * (metalUsedTools / metalRequiredTools) * this.campHelper.getToolsProductionPerSecond(camp.assignedWorkers.toolsmith, improvementsComponent);
-				resources.addResource(resourceNames.tools, tools);
-				resources.addResource(resourceNames.metal, -metalUsedTools);
+				campResources.addResource(resourceNames.tools, tools);
+				campResources.addResource(resourceNames.metal, -metalUsedTools);
 				resourceAccComponent.addChange(resourceNames.tools, tools / time, "Toolsmiths");
 				resourceAccComponent.addChange(resourceNames.metal, -metalUsedTools / time, "Toolsmiths");
 			}
@@ -135,10 +136,10 @@ define([
 			// Advanced: Concrete mixers
 			var metalRequiredConcrete = time * this.campHelper.getMetalConsumptionPerSecondConcrete(camp.assignedWorkers.concrete);
 			if (metalRequiredConcrete > 0) {
-				var metalUsedConcrete = Math.min(resources.getResource(resourceNames.metal), metalRequiredConcrete);
+				var metalUsedConcrete = Math.min(availableResources.getResource(resourceNames.metal), metalRequiredConcrete);
                 var concrete = time * (metalUsedConcrete / metalRequiredConcrete) * this.campHelper.getConcreteProductionPerSecond(camp.assignedWorkers.concrete);
-				resources.addResource(resourceNames.concrete, concrete);
-				resources.addResource(resourceNames.metal, -metalUsedConcrete);
+				campResources.addResource(resourceNames.concrete, concrete);
+				campResources.addResource(resourceNames.metal, -metalUsedConcrete);
 				resourceAccComponent.addChange(resourceNames.concrete, concrete / time, "Concrete mixers");
 				resourceAccComponent.addChange(resourceNames.metal, -metalUsedConcrete / time, "Concrete mixers");
 			}
