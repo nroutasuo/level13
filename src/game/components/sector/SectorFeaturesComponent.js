@@ -39,11 +39,15 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
         
         canHaveCamp: function () {
             var hasWater = (this.resourcesCollectable.water > 0 || this.resourcesScavengable.water > 0 || this.hasSpring);
+            var hasFood = (this.resourcesCollectable.food > 0 || this.resourcesScavengable.food > 0);
             return  this.campable &&
                     this.buildingDensity > 0 && this.buildingDensity < 9 &&
-                    hasWater && this.resourcesScavengable.food > 0 && this.resourcesScavengable.fuel <= 0 &&
+                    hasWater && 
+                    hasFood && 
+                    this.resourcesScavengable.fuel <= 0 &&
                     !this.hazards.hasHazards() &&
-                    this.stateOfRepair > 2;
+                    this.stateOfRepair > 0;
+                    true;
         },
         
         // Text functions
