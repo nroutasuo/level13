@@ -96,12 +96,17 @@ define([
 			var hasBlueprintUnlocked;
 			var hasBlueprintNew;
 			var isAvailable;
+            var numUnResearched = 0;
 			for (var id in UpgradeConstants.upgradeDefinitions) {
 				upgradeDefinition = UpgradeConstants.upgradeDefinitions[id];
 				hasBlueprintUnlocked = this.tribeNodes.head.upgrades.hasAvailableBlueprint(id);
 				hasBlueprintNew = this.tribeNodes.head.upgrades.hasNewBlueprint(id);
+                
 				if (!this.tribeNodes.head.upgrades.hasUpgrade(id)) {
-					isAvailable = this.playerActions.playerActionsHelper.checkRequirements(id, false).value > 0;
+                    numUnResearched++;
+                    var requirements = this.playerActions.playerActionsHelper.checkRequirements(id, false);
+					isAvailable = requirements.value > 0;
+                    
 					if (hasBlueprintNew || hasBlueprintUnlocked || isAvailable) {
 						if (isActive && resetLists) {
 							var tr = this.getUpgradeTR(upgradeDefinition, isAvailable, hasBlueprintUnlocked, hasBlueprintNew);
@@ -131,6 +136,13 @@ define([
 			
 			if (resetLists) {
 				this.uiFunctions.toggle("#world-upgrades-info", $("#researched-upgrades-list tr").length > 0);
+                var noUpgrades = $("#upgrades-list tr").length === 0;
+				this.uiFunctions.toggle("#world-upgrades-empty-message", noUpgrades);
+                if (noUpgrades) {
+                    var allResearched = numUnResearched === 0;
+                    $("#world-upgrades-empty-message").text(allResearched ?
+                        "All upgrades researched." : "No upgrades available at the moment.");
+                }
 			
 				var playerActions = this.playerActions;
 				$.each($("#upgrades-list button.action"), function () {
