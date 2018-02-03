@@ -130,6 +130,10 @@ define(['ash',
             this.registerCheat(CheatConstants.CHEAT_NAME_BLUEPRINT, "Adds blueprints for the given upgrade.", ["upgrade id", "amount (1-total)"], function (params) {
                 this.addBlueprints(params[0], parseInt(params[1]));
             });
+            this.registerCheat(CheatConstants.CHEAT_NAME_BLUEPRINTS, "Adds all blueprints found on a given camp ordinal.", ["camp ordinal"], function (params) {
+                var campOrdinal = parseInt(params[0]);
+                this.addBlueprintsForLevel(campOrdinal);
+            });
             this.registerCheat(CheatConstants.CHEAT_NAME_ITEM, "Add the given item to inventory.", ["item id"], function (params) {
                 this.addItem(params[0]);
             });
@@ -380,6 +384,14 @@ define(['ash',
                 this.tribeUpgradesNodes.head.upgrades.addNewBlueprintPiece(name);
             }
             this.gameState.unlockedFeatures.blueprints = true;
+        },
+        
+        addBlueprintsForLevel: function (campOrdinal) {
+            var id;
+			for (var i in UpgradeConstants.bluePrintsByCampOrdinal[campOrdinal]) {
+                id = UpgradeConstants.bluePrintsByCampOrdinal[campOrdinal][i];
+                this.addBlueprints(id, UpgradeConstants.piecesByBlueprint[id]);
+            }            
         },
         
         addItem: function (itemID) {            

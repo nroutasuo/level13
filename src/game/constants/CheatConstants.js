@@ -21,6 +21,7 @@ define(function () {
         CHEAT_NAME_TECH: "tech",
         CHEAT_NAME_TECHS: "techs",
         CHEAT_NAME_BLUEPRINT: "blueprint",
+        CHEAT_NAME_BLUEPRINTS: "blueprints",
         CHEAT_NAME_ITEM: "item",
         CHEAT_NAME_FOLLOWER: "follower",
         CHEAT_NAME_PERK: "perk",

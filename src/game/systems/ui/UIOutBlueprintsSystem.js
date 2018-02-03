@@ -1,10 +1,11 @@
 define([
     'ash',
     'game/GlobalSignals',
+    'game/constants/GameConstants',
     'game/constants/UIConstants',
     'game/constants/UpgradeConstants',
     'game/nodes/tribe/TribeUpgradesNode',
-], function (Ash, GlobalSignals, UIConstants, UpgradeConstants, TribeUpgradesNode) {
+], function (Ash, GlobalSignals, GameConstants, UIConstants, UpgradeConstants, TribeUpgradesNode) {
     var UIOutBlueprintsSystem = Ash.System.extend({
 	
 		uiFunctions : null,
@@ -75,6 +76,13 @@ define([
                 if (blueprintVO.completed) continue;
                 
                 var upgradeDefinition = UpgradeConstants.upgradeDefinitions[blueprintVO.upgradeId];
+                
+                if (!upgradeDefinition) {
+                    if (GameConstants.isDebugOutputEnabled)
+                        console.log("WARN: No definition found for upgrade: " + blueprintVO.upgradeId);
+                    continue;
+                }
+                
                 var nameTD = "<td class='item-name'>" + upgradeDefinition.name + "</td>";
                 var piecesTD = "<td style='text-align:left'>";
                 for (var j = 0; j < blueprintVO.maxPieces; j++) {
