@@ -252,8 +252,6 @@ function (Ash,
             
             if (!isScouted && !this.isMapRevealed)
                 ctx.drawImage(this.icons["unknown" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
-            else if (unScoutedLocales > 0)
-                ctx.drawImage(this.icons["interest" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sector.has(WorkshopComponent))
                 ctx.drawImage(this.icons["workshop" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sector.has(CampComponent))
@@ -262,6 +260,8 @@ function (Ash,
                 ctx.drawImage(this.icons["passage-up" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sectorPassages.passageDown)
                 ctx.drawImage(this.icons["passage-down" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
+            else if (unScoutedLocales > 0)
+                ctx.drawImage(this.icons["interest" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (hasWater)
                 ctx.drawImage(this.icons["water" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
         },
