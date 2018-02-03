@@ -122,7 +122,7 @@ define([
 				var numBlockers = WorldCreatorRandom.randomInt(88 + seed * 56 * l + seed % 7, levelOrdinal + 1, maxBlockers);
 				var blockerSectors = WorldCreatorRandom.randomSectors(seed * l * l + 1 * 22 * i, levelVO, numBlockers, numBlockers + 1, true, "camp");
 				for (var i = 0; i < blockerSectors.length; i++) {
-					var blockerType = WorldCreatorRandom.randomInt(seed * 5831 / l + seed % 2 + (i + 78) * 4, 1, 4);
+					var blockerType = WorldCreatorRandom.randomInt(seed * 831 / (l+5) + seed % 2 + (i + 78) * 4, 1, 4);
 					if (l < 14 && blockerType === MovementConstants.BLOCKER_TYPE_WASTE) blockerType = MovementConstants.BLOCKER_TYPE_GAP;
 					if (levelOrdinal < 7 && blockerType === MovementConstants.BLOCKER_TYPE_GAP) blockerType = MovementConstants.BLOCKER_TYPE_GANG;
                     

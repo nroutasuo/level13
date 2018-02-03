@@ -1,5 +1,6 @@
 // Random and seed related functions for the WorldCreator
-define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], function (Ash, PositionConstants, PositionVO) {
+define(['ash', 'game/constants/PositionConstants', 'game/constants/GameConstants', 'game/vos/PositionVO'], 
+function (Ash, PositionConstants, GameConstants, PositionVO) {
 
     var WorldCreatorRandom = {
 		
@@ -74,6 +75,9 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 		
 		// Pseudo-random int between min (inclusive) and max (exclusive)
 		randomInt: function (seed, min, max) {
+            if (!isFinite(seed) || isNaN(seed)) {
+                throw new Error("Invalid seed for WorldCreatorRandom.randomInt");
+            }
 			return Math.floor(Math.min(max - 1, Math.floor(this.random(seed) * (max - min + 1)) + min));
 		},
 		
