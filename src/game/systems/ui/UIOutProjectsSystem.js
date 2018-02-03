@@ -104,6 +104,7 @@ define([
                 visibleBuildingCount++;
                 if (actionAvailable) availableBuildingCount++;
             }
+            
             if (updateTable) {
                 this.uiFunctions.registerActionButtonListeners("#in-improvements-level");
                 this.uiFunctions.generateButtonOverlays("#in-improvements-level");

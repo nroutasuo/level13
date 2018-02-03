@@ -115,11 +115,15 @@ define([
 			// var campLevelEntity = this.getLevelEntityForSector(sectorEntity);
 			
 			// get all levels
+            var levelProjects;
 			for (var node = this.levelNodes.head; node; node = node.next) {
-				projects = projects.concat(this.getProjectsForLevel(node.entity));
+                levelProjects = this.getProjectsForLevel(node.entity, false);
+				projects = projects.concat(levelProjects);
 			}
+            
+            var result = this.filterProjects(projects);
 			
-			return this.filterProjects(projects);
+			return result;
 		},
         
         getBuiltProjectsForCamp: function (sectorEntity) {
@@ -129,11 +133,14 @@ define([
 			// var campLevelEntity = this.getLevelEntityForSector(sectorEntity);            
 			
 			// get all levels
+            var levelProjects;
 			for (var node = this.levelNodes.head; node; node = node.next) {
-				projects = projects.concat(this.getProjectsForLevel(node.entity, true));
+                levelProjects = this.getProjectsForLevel(node.entity, true);
+				projects = projects.concat(levelProjects);
 			}
             
-			return this.filterProjects(projects);
+            var result = this.filterProjects(projects);
+			return result;
         },
         
         filterProjects: function (projects) {
@@ -153,7 +160,8 @@ define([
 						break;
 					}
 				}
-				if (!projectExists) result.push(project);
+				//if (!projectExists) 
+                    result.push(project);
 			}
 			
 			// sort by level ordinal

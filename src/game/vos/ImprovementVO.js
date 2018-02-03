@@ -71,26 +71,30 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
         },
 		
 		getType: function() {
-			switch (this.name) {
-				case improvementNames.collector_food:
-				case improvementNames.collector_water:
-				case improvementNames.bridge:
-                case improvementNames.spaceship1:
-                case improvementNames.spaceship2:
-                case improvementNames.spaceship3:
-				case improvementNames.passageUpStairs:
-				case improvementNames.passageUpElevator:
-				case improvementNames.passageUpHole:
-				case improvementNames.passageDownStairs:
-				case improvementNames.passageDownElevator:
-				case improvementNames.passageDownHole:
-					return improvementTypes.level;
-				
-				default:
-					return improvementTypes.camp;
-			}
+            return getImprovementType(this.name);
 		},
     });
+    
+    getImprovementType = function (name) {
+        switch (name) {
+            case improvementNames.collector_food:
+            case improvementNames.collector_water:
+            case improvementNames.bridge:
+            case improvementNames.spaceship1:
+            case improvementNames.spaceship2:
+            case improvementNames.spaceship3:
+            case improvementNames.passageUpStairs:
+            case improvementNames.passageUpElevator:
+            case improvementNames.passageUpHole:
+            case improvementNames.passageDownStairs:
+            case improvementNames.passageDownElevator:
+            case improvementNames.passageDownHole:
+                return improvementTypes.level;
 
+            default:
+                return improvementTypes.camp;
+        }
+    };
+    
     return ImprovementVO;
 });

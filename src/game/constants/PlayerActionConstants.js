@@ -201,7 +201,6 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 build_out_bridge: {
-                    vision: [30, -1],
                     improvements: {
                         bridge: [0, 1],
                     },
@@ -273,7 +272,6 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 build_out_passage_up_stairs:  {
-                    vision: [30, -1],
                     sector: {
                         passageUp: 3,
                     },
@@ -286,7 +284,6 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 build_out_passage_up_elevator:  {
-                    vision: [30, -1],
                     sector: {
                         passageUp: 2,
                     },
@@ -299,7 +296,6 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 build_out_passage_up_hole:  {
-                    vision: [30, -1],
                     sector: {
                         passageUp: 1,
                     },
@@ -312,7 +308,6 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 build_out_passage_down_stairs:  {
-                    vision: [30, -1],
                     sector: {
                         passageDown: 3,
                     },
@@ -325,7 +320,6 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 build_out_passage_down_elevator:  {
-                    vision: [30, -1],
                     sector: {
                         passageDown: 2,
                     },
@@ -338,7 +332,6 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 build_out_passage_down_hole:  {
-                    vision: [30, -1],
                     sector: {
                         passageDown: 1,
                     },

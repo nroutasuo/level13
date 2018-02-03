@@ -980,6 +980,9 @@ define([
             if (action.indexOf("use_in_inn_select_") >= 0) return "use_in_inn_select";
             if (action.indexOf("move_camp_global_") >= 0) return "move_camp_global";
             if (action.indexOf("build_out_passage") >= 0) {
+                var parts = action.split("_");
+                if (isNaN(parts[parts.length-1]))
+                    return action;
                 return action.substring(0, action.lastIndexOf("_"));
             }
 			return action;
@@ -1048,6 +1051,13 @@ define([
         },
        
         isActionIndependentOfHazards: function (action) {
+            var improvement = this.getImprovementNameForAction(action);
+            if (improvement) {
+                if (getImprovementType(improvement) == improvementTypes.level) {
+                    return true;
+                }
+            }
+                
             var baseActionID = this.getBaseActionID(action);
             switch (baseActionID) {
                 case "craft": return true;
