@@ -46,7 +46,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			}
 			
 			if (this.hasSector(sectorVO.position.sectorX, sectorVO.position.sectorY)) {
-				console.log("WARN: Level aready contains sector " + sectorVO.position + " " + this.getSector(sectorVO.position.sectorX, sectorVO.position.sectorY).position);
+				console.log("WARN: Level already contains sector " + sectorVO.position + " " + this.getSector(sectorVO.position.sectorX, sectorVO.position.sectorY).position);
 			}
 			
 			this.sectors.push(sectorVO);

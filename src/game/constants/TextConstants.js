@@ -38,7 +38,7 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
 			var repairBracket = this.getRepairBracket(repair);
 			
 			var description = this.sectorDescriptions[sectorType][densityBracket][repairBracket];
-			if (sunlit) {
+			if (description && sunlit) {
 				description = description.replace("artificial light", "sunlight");
 				description = description.replace("vast darkness", "vast brightness");
 			}

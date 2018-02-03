@@ -13,6 +13,7 @@ define(['ash',
     'game/components/sector/EnemiesComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/SectorFeaturesComponent',
+    'game/components/type/LevelComponent',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/tribe/TribeUpgradesNode',
     'game/nodes/PlayerPositionNode',
@@ -31,6 +32,7 @@ define(['ash',
     EnemiesComponent,
     SectorImprovementsComponent,
     SectorFeaturesComponent,
+    LevelComponent,
     PlayerStatsNode,
     TribeUpgradesNode,
     PlayerPositionNode,
@@ -40,11 +42,12 @@ define(['ash',
         
         cheatDefinitions: {},
         
-        constructor: function (gameState, playerActionFunctions, resourcesHelper, uiMapHelper) {
+        constructor: function (gameState, playerActionFunctions, resourcesHelper, uiMapHelper, levelHelper) {
             this.gameState = gameState;
             this.playerActionFunctions = playerActionFunctions;
             this.resourcesHelper = resourcesHelper;
             this.uiMapHelper = uiMapHelper;
+            this.levelHelper = levelHelper;
         },
 
         addToEngine: function (engine) {
@@ -95,6 +98,10 @@ define(['ash',
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_POS, "Set position of the player. Must be an existing sector.", ["level", "x", "y"], function (params) {
                 this.setPlayerPosition(parseInt(params[0]), parseInt(params[1]), parseInt(params[2]));
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_LEVEL, "Go to a random valid sector on the given level.", ["level"], function (params) {
+                var level = parseInt(params[0]);
+                this.goToLevel(level);
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_HEAL, "Heal injuries.", [], function () {
                 this.heal();
@@ -313,6 +320,14 @@ define(['ash',
             playerPos.level = lvl;
             playerPos.sectorX = x;
             playerPos.sectorY = y;
+            playerPos.inCamp = false;
+        },
+        
+        goToLevel: function (level) {
+            var levelVO = this.levelHelper.getLevelEntityForPosition(level).get(LevelComponent).levelVO;
+            var i = Math.floor(Math.random() * levelVO.centralSectors.length);
+            var sector = levelVO.centralSectors[i];
+            this.setPlayerPosition(level, sector.position.sectorX, sector.position.sectorY);
         },
         
         addBuilding: function (name, amount) {

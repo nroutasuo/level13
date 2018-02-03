@@ -13,6 +13,7 @@ define(function () {
         CHEAT_NAME_POPULATION: "pop",
         CHEAT_NAME_STAMINA: "stamina",
         CHEAT_NAME_POS: "pos",
+        CHEAT_NAME_LEVEL: "gotolevel",
         CHEAT_NAME_HEAL: "heal",
         CHEAT_NAME_INJURY: "injury",
         CHEAT_NAME_BUILDING: "building",

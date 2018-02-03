@@ -110,6 +110,8 @@ define([
 			this.updateGameMsg();
 			this.updateNotifications(isInCamp);
             this.updateLocation(isInCamp);
+            
+            if (isInCamp && !campComponent) return;
 			
 			$("#game-version").text("v. " + this.uiFunctions.changeLogHelper.getCurrentVersionNumber());
             
