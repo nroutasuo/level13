@@ -9,6 +9,7 @@ define([
     'game/nodes/sector/SectorNode',
     'game/components/common/PositionComponent',
     'game/components/common/RevealedComponent',
+    'game/components/common/CampComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/SectorFeaturesComponent',
@@ -25,9 +26,11 @@ define([
 	PositionConstants,
 	MovementConstants,
 	SectorConstants,
-	LevelNode, SectorNode,
+	LevelNode, 
+    SectorNode,
 	PositionComponent,
     RevealedComponent,
+    CampComponent,
 	SectorStatusComponent,
 	SectorLocalesComponent,
 	SectorFeaturesComponent,
@@ -108,7 +111,7 @@ define([
 			return null;
 		},
 		
-		getAvailableProjectsForCamp: function (sectorEntity, playerActions) {
+		getAvailableProjectsForCamp: function (sectorEntity) {
 			var projects = [];
 			
 			// use to get projects only for that level: (now displaying all available projects in all camps)
@@ -291,6 +294,20 @@ define([
                 if (directionBlocker && directionBlocker.bridgeable) {
                     actionName = actionName + "_" + levelOrdinal;
                     projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.bridge), "build_out_bridge", sectorPosition, direction));
+                }
+            }
+            
+            // space ship
+            if (levelOrdinal === this.gameState.getSurfaceLevelOrdinal()) {
+                var camp = sectorEntity.get(CampComponent);
+                if (camp) {
+                    var actions = [ "build_out_spaceship1", "build_out_spaceship3", "build_out_spaceship3"];
+                    for (var i = 0; i < actions.length; i++) {
+                        if (this.playerActionsHelper.checkRequirements(actions[i])) {
+                            var improvement = this.playerActionsHelper.getImprovementNameForAction(actions[i]);
+                            projects.push(new LevelProjectVO(new ImprovementVO(improvement), actions[i], sectorPosition));
+                        }
+                    }
                 }
             }
             

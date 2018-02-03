@@ -559,7 +559,7 @@ define(['ash',
         },
         
         buildPassages: function (isExpress) {
-            var projects = this.levelHelper.getAvailableProjectsForCamp(this.playerActionFunctions.playerLocationNodes.head.entity, this.playerActionFunctions);
+            var projects = this.levelHelper.getAvailableProjectsForCamp(this.playerActionFunctions.playerLocationNodes.head.entity);
             for (var i = 0; i < projects.length; i++) {
                 var project = projects[i];
                 var action = project.action;

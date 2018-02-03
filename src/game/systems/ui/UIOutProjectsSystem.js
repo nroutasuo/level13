@@ -79,7 +79,7 @@ define([
             var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;
             
             var numProjectsTR = $("#in-improvements-level table tr").length;
-            var projects = this.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity, this.uiFunctions.playerActions);
+            var projects = this.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity);
             var showLevel = this.gameState.unlockedFeatures.levels;
             var updateTable = numProjectsTR !== projects.length;
             if (updateTable) $("#in-improvements-level table").empty();

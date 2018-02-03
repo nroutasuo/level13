@@ -89,6 +89,14 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
             return WorldCreatorHelper.getLevelOrdinal(this.worldSeed, WorldCreatorHelper.getBottomLevel(this.worldSeed));
         },
         
+        getSurfaceLevel: function () {
+            return WorldCreatorHelper.getHighestLevel(this.worldSeed);
+        },
+        
+        getSurfaceLevelOrdinal: function () {
+            return WorldCreatorHelper.getLevelOrdinal(this.worldSeed, WorldCreatorHelper.getHighestLevel(this.worldSeed));
+        },
+        
         setActionCooldown: function (action, key, cooldown) {
             var actionKey = action;
             if (key.length > 0) actionKey += "-" + key;

@@ -253,9 +253,9 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], fu
     = new UpgradeVO("unlock_building_bridge", "Bridge-building", "Building bridges over collapsed sectors.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_spaceship1]
     = new UpgradeVO("unlock_building_spaceship1", "Space Colony Hull", "Part of constructing a space colony.");
-    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_spaceship1]
+    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_spaceship2]
     = new UpgradeVO("unlock_building_spaceship2", "Space Colony Shield", "Part of constructing a space colony.");
-    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_spaceship1]
+    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_spaceship3]
     = new UpgradeVO("unlock_building_spaceship3", "Space Colony Life Support", "Part of constructing a space colony.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_storage1]
     = new UpgradeVO("upgrade_building_storage1", "Pest control", "Keeping other animals away from food and materials for more reliable storage.");

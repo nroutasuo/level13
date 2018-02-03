@@ -1265,7 +1265,7 @@ function (Ash, GameConstants, CampConstants) {
                     resource_metal: 20000,
                     resource_rope: 3000,
                     resource_concrete: 10000,
-                    resouce_tools: 1000,
+                    resource_tools: 1000,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
@@ -1273,7 +1273,7 @@ function (Ash, GameConstants, CampConstants) {
                     resource_metal: 10000,
                     resource_rope: 5000,
                     resource_concrete: 1000,
-                    resouce_tools: 2000,
+                    resource_tools: 2000,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
@@ -1283,7 +1283,7 @@ function (Ash, GameConstants, CampConstants) {
                     resource_concrete: 1000,
                     resource_fuel: 800,
                     resource_medicine: 3000,
-                    resouce_tools: 1000,
+                    resource_tools: 1000,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
