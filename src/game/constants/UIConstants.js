@@ -474,6 +474,10 @@ define(['ash',
             return Math.floor(value * decimalDivisor) / decimalDivisor;
         },
         
+        getDisplayValue: function(value) {
+            return value.toLocaleString();
+        },
+        
 		getResourceImg: function (name) {
 			return "<img src='img/res-" + name + ".png' alt='" + name + "'/>"
 		},

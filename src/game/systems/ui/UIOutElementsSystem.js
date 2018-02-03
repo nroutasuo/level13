@@ -208,7 +208,7 @@ define([
                         }
                         else if (costFraction < bottleNeckCostFraction) bottleNeckCostFraction = costFraction;
 
-                        if (value > 0) content += "<span class='" + classes + "'>" + name + ": " + value + "</span><br/>";
+                        if (value > 0) content += "<span class='" + classes + "'>" + name + ": " + UIConstants.getDisplayValue(value) + "</span><br/>";
                     }
                 }
 

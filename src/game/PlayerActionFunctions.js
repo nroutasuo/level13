@@ -250,7 +250,8 @@ define(['ash',
         },
         
         getActionSector: function (action, param) {
-            switch (action) {
+            var baseActionID = this.playerActionsHelper.getBaseActionID(action);
+            switch (baseActionID) {
                 case "build_out_bridge":
                 case "build_out_passage_down_stairs": 
                 case "build_out_passage_down_elevator":
@@ -816,9 +817,9 @@ define(['ash',
 			var l = parseInt(sectorPos.split(".")[0]);
 			var sX = parseInt(sectorPos.split(".")[1]);
 			var sY = parseInt(sectorPos.split(".")[2]);
-			var sector = this.getActionSector(action, sectorPos);
             var levelOrdinal = this.gameState.getLevelOrdinal(l);
             action = action + "_" + levelOrdinal;
+			var sector = this.getActionSector(action, sectorPos);
             neighbourAction = neighbourAction + "_" + levelOrdinal;
             
             var sectorPosVO = new PositionVO(l, sX, sY);
