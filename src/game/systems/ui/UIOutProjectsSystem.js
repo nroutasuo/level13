@@ -37,6 +37,9 @@ define([
             GlobalSignals.improvementBuiltSignal.add(function () { 
                 sys.updateAvailableProjects(); 
             });
+            GlobalSignals.playerMovedSignal.add(function () { 
+                sys.updateAvailableProjects(); 
+            });
         },
 
         removeFromEngine: function (engine) {
@@ -78,7 +81,7 @@ define([
             var numProjectsTR = $("#in-improvements-level table tr").length;
             var projects = this.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity, this.uiFunctions.playerActions);
             var showLevel = this.gameState.unlockedFeatures.level;
-            var updateTable = isActive && numProjectsTR !== projects.length;
+            var updateTable = numProjectsTR !== projects.length;
             if (updateTable) $("#in-improvements-level table").empty();
             for (var i = 0; i < projects.length; i++) {
                 var project = projects[i];
