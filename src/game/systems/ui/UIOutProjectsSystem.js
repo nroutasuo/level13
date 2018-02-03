@@ -80,7 +80,7 @@ define([
             
             var numProjectsTR = $("#in-improvements-level table tr").length;
             var projects = this.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity, this.uiFunctions.playerActions);
-            var showLevel = this.gameState.unlockedFeatures.level;
+            var showLevel = this.gameState.unlockedFeatures.levels;
             var updateTable = numProjectsTR !== projects.length;
             if (updateTable) $("#in-improvements-level table").empty();
             for (var i = 0; i < projects.length; i++) {
@@ -126,7 +126,7 @@ define([
             if (!updateTable)
                 return;            
             
-            var showLevel = this.gameState.unlockedFeatures.level;
+            var showLevel = this.gameState.unlockedFeatures.levels;
             if (updateTable) $("#in-improvements-level-built table").empty();
             for (var i = 0; i < projects.length; i++) {
                 var project = projects[i];
