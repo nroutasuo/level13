@@ -167,6 +167,15 @@ function (Ash, GameConstants, CampConstants) {
                     busy: false,
                 },
                 
+                launch: {
+                    improvements: {
+                        spaceship1: [1, -1],
+                        spaceship2: [1, -1],
+                        spaceship3: [1, -1],
+                    },
+                    busy: false,
+                },
+                
                 move_camp_global: {
                     busy: false
                 },
@@ -1008,7 +1017,7 @@ function (Ash, GameConstants, CampConstants) {
                     }
                 },
                 
-                unlock_building_spaceship3s: {
+                unlock_building_spaceship3: {
                     blueprint: 15,
                     upgrades: {
                         unlock_building_bridge: true,
@@ -1248,6 +1257,10 @@ function (Ash, GameConstants, CampConstants) {
                     stamina: 10,
                     resource_food: 1,
                     resource_water: 1,
+                },
+                
+                launch: {
+                    resource_fuel: 10000,
                 },
                 
                 build_out_camp: {
@@ -2066,6 +2079,7 @@ function (Ash, GameConstants, CampConstants) {
                 use_out_collector_food: "Collect accumulated food.",
                 use_out_collector_water: "Collect accumulated water.",
                 leave_camp: "Venture out into the corridors.",
+                launch: "Leave this planet and launch for the great unknown."
             },
         
             getCostSource: function (action) {

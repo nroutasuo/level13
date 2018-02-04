@@ -89,7 +89,7 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], fu
             12: ["unlock_item_bag3", "upgrade_worker_chemist", "unlock_item_clothing6"],
             13: ["upgrade_building_hospital", "unlock_item_clothing7", "unlock_item_weapon6", "unlock_building_radio"],
             14: ["improve_building_market3", "upgrade_building_cementmill", "unlock_building_researchcenter", "unlock_item_weapon7"],
-            15: ["unlock_item_clothing5l", "upgrade_building_apothecary", "unlock_item_clothing8", "unlock_building_ceiling", "unlock_building_spaceship1", "unlock_building_spaceship2s", "unlock_building_spaceship3"],
+            15: ["unlock_item_clothing5l", "upgrade_building_apothecary", "unlock_item_clothing8", "unlock_building_ceiling", "unlock_building_spaceship1", "unlock_building_spaceship2", "unlock_building_spaceship3"],
         },
         
         piecesByBlueprint: {

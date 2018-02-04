@@ -301,7 +301,7 @@ define([
             if (levelOrdinal === this.gameState.getSurfaceLevelOrdinal()) {
                 var camp = sectorEntity.get(CampComponent);
                 if (camp) {
-                    var actions = [ "build_out_spaceship1", "build_out_spaceship3", "build_out_spaceship3"];
+                    var actions = [ "build_out_spaceship1", "build_out_spaceship2", "build_out_spaceship3"];
                     for (var i = 0; i < actions.length; i++) {
                         if (this.playerActionsHelper.checkRequirements(actions[i])) {
                             var improvement = this.playerActionsHelper.getImprovementNameForAction(actions[i]);

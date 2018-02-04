@@ -14,10 +14,11 @@ define([
         bubbleNumber: -1,
         tabCounts: null,
         
-        constructor: function (uiFunctions, gameState, levelHelper) {
+        constructor: function (uiFunctions, gameState, levelHelper, endingHelper) {
             this.uiFunctions = uiFunctions;
             this.gameState = gameState;
             this.levelHelper = levelHelper;
+            this.endingHelper = endingHelper;
             this.tabCounts = new TabCountsVO();
             return this;
         },
@@ -56,6 +57,7 @@ define([
                 return;
             }
             
+            this.uiFunctions.toggle("#container-in-improvements-colony", this.endingHelper.hasUnlockedEndProject());
             this.updateBuiltProjects();
             
             this.uiFunctions.toggle("#in-improvements-level-empty-message", this.tabCounts.lastShown.visible.regular <= 0);
@@ -68,6 +70,8 @@ define([
                 (this.tabCounts.current.visible.regular - this.tabCounts.lastShown.visible.regular) +
                 (this.tabCounts.current.available.colony - this.tabCounts.lastShown.available.colony) + 
                 (this.tabCounts.current.visible.colony - this.tabCounts.lastShown.visible.colony);
+            if (this.endingHelper.isReadyForLaunch())
+                newBubbleNumber = 1;
             if (this.bubbleNumber === newBubbleNumber)
                 return;
             this.bubbleNumber = newBubbleNumber;
@@ -126,6 +130,9 @@ define([
                 this.uiFunctions.registerActionButtonListeners("#in-improvements-level");
                 this.uiFunctions.generateButtonOverlays("#in-improvements-level");
                 this.uiFunctions.generateCallouts("#in-improvements-level");
+                this.uiFunctions.registerActionButtonListeners("#in-improvements-colony");
+                this.uiFunctions.generateButtonOverlays("#in-improvements-colony");
+                this.uiFunctions.generateCallouts("#in-improvements-colony");
             }
             
             this.tabCounts.current.visible.regular = visibleRegular;

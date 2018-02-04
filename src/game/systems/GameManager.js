@@ -79,7 +79,7 @@ define([
 		},
 		
 		restartGame: function () {
-			this.uiFunctions.hideGame();
+			this.uiFunctions.hideGame(true);
             var sys = this;
             setTimeout(function () {
                 sys.engine.removeAllEntities();
@@ -89,6 +89,11 @@ define([
                 sys.startGame();
             }, 250);
 		},
+        
+        pauseGame: function () {            
+			this.uiFunctions.hideGame(false);
+            this.tickProvider.stop();
+        },
 		
 		initializeEntities: function () {
 			this.player = this.creator.createPlayer(this.saveHelper.saveKeys.player);

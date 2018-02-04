@@ -38,6 +38,7 @@ define([
     'game/systems/ReputationSystem',
     'game/systems/RumourSystem',
     'game/systems/EvidenceSystem',
+    'game/systems/EndingSystem',
     'game/systems/GlobalResourcesSystem',
     'game/systems/GlobalResourcesResetSystem',
     'game/systems/BagSystem',
@@ -53,6 +54,7 @@ define([
     'game/helpers/PlayerActionResultsHelper',
     'game/helpers/ItemsHelper',
     'game/helpers/EnemyHelper',
+    'game/helpers/EndingHelper',
     'game/helpers/ResourcesHelper',
     'game/helpers/MovementHelper',
     'game/helpers/FightHelper',
@@ -105,6 +107,7 @@ define([
     ReputationSystem,
     RumourSystem,
     EvidenceSystem,
+    EndingSystem,
     GlobalResourcesSystem,
     GlobalResourcesResetSystem,
     BagSystem,
@@ -120,6 +123,7 @@ define([
     PlayerActionResultsHelper,
     ItemsHelper,
     EnemyHelper,
+    EndingHelper,
     ResourcesHelper,
     MovementHelper,
     FightHelper,
@@ -169,6 +173,7 @@ define([
             this.uiMapHelper = new UIMapHelper(this.engine, this.levelHelper, this.sectorHelper, this.movementHelper);
             this.uiTechTreeHelper = new UITechTreeHelper(this.engine, this.playerActionsHelper);
             this.buttonHelper = new ButtonHelper(this.levelHelper);
+            this.endingHelper = new EndingHelper(this.engine, this.gameState, this.playerActionsHelper, this.levelHelper);
 			
 			// Basic building blocks & special systems
             var self = this;
@@ -230,13 +235,14 @@ define([
 			this.engine.addSystem(new UnlockedFeaturesSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new GlobalResourcesSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new CampEventsSystem(this.occurrenceFunctions, this.upgradeEffectsHelper, this.gameState, this.saveSystem), SystemPriorities.update);
+            this.engine.addSystem(new EndingSystem(this.gameState, this.gameManager, this.uiFunctions), SystemPriorities.update);
 			this.engine.addSystem(new AutoPlaySystem(this.playerActionFunctions, this.cheatSystem, this.levelHelper, this.sectorHelper, this.upgradeEffectsHelper), SystemPriorities.postUpdate);
 			
 			this.engine.addSystem(new UIOutHeaderSystem(this.uiFunctions, this.gameState, this.resourcesHelper, this.upgradeEffectsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutElementsSystem(this.uiFunctions, this.gameState, this.playerActionFunctions, this.resourcesHelper, this.fightHelper, this.buttonHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLevelSystem(this.uiFunctions, this.gameState, this.movementHelper, this.resourcesHelper, this.sectorHelper, this.uiMapHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutCampSystem(this.uiFunctions, this.gameState, this.levelHelper, this.upgradeEffectsHelper, this.campHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutProjectsSystem(this.uiFunctions, this.gameState, this.levelHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutProjectsSystem(this.uiFunctions, this.gameState, this.levelHelper, this.endingHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutEmbarkSystem(this.uiFunctions, this.gameState, this.resourcesHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutBagSystem(this.uiFunctions, this.playerActionsHelper, this.gameState), SystemPriorities.render);
 			this.engine.addSystem(new UIOutFollowersSystem(this.uiFunctions, this.gameState), SystemPriorities.render);
@@ -259,8 +265,7 @@ define([
 		},
         
         handleException: function (ex) {
-			this.uiFunctions.hideGame();
-            this.tickProvider.stop();
+            this.gameManager.pauseGame();
             var exshortdesc = (ex.name ? ex.name : "Unknown") + ": " + (ex.message ? ex.message.replace(/\'/g, "%27") : "No message");
             var stack = (ex.stack ? ex.stack.replace(/\n/g, "%0A").replace(/\'/g, "%27") : "Not available");
             var bugTitle = "[JS Error] " + exshortdesc;

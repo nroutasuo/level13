@@ -229,6 +229,7 @@ define(['ash',
                 case "despair": this.despair(param); break;
                 case "unlock_upgrade": this.unlockUpgrade(param); break;
                 case "create_blueprint": this.createBlueprint(param); break;
+                case "launch": this.launch(param); break;
                 // Mapped directly in UIFunctions
                 case "leave_camp": break;
                 case "move_level_up": this.moveTo(PositionConstants.DIRECTION_UP); break;
@@ -1278,6 +1279,11 @@ define(['ash',
             else {
                 console.log("WARN: No camp found for worker assignment.");
             }
+        },
+        
+        launch: function () {
+            this.gameState.isFinished = true;
+            GlobalSignals.launcedSignal.dispatch();
         },
         
         getNearestCampName: function () {

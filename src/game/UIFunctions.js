@@ -109,9 +109,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 uiFunctions.showConfirmation(
                     "Do you want to restart the game? Your progress will be lost.",
                     function () {
-                        $("#log ul").empty();
-                        onTabClicked(elementIDs.tabs.out, gameState, uiFunctions);
-                        saveSystem.restart(false);
+                        uiFunctions.restart();
                     });
             });
             $("#btn-more").click(function (e) {
@@ -386,11 +384,18 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             GlobalSignals.gameShownSignal.dispatch();
         },
         
-        hideGame: function () {
-            $(".loading-content").css("display", "block");
+        hideGame: function (showLoading) {
+            if (showLoading)
+                $(".loading-content").css("display", "block");
             $("#unit-main").css("display", "none");
             $(".sticky-footer").css("display", "none");
             $("#grid-main").css("display", "none");
+        },
+        
+        restart: function () {            
+            $("#log ul").empty();
+            this.onTabClicked(this.elementIDs.tabs.out, this.gameState, this);
+            this.saveSystem.restart(false);
         },
         
         onResize: function () {
@@ -586,8 +591,8 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 show = false;
             if (this.isElementToggled(element) === show)
                 return;
-            if (GameConstants.isDebugOutputEnabled)
-                console.log("toggle " + element + ": " + show);
+            //if (GameConstants.isDebugOutputEnabled)
+            //    console.log("toggle " + element + ": " + show);
             $(element).attr("data-visible", show);
             $(element).toggle(show);
             GlobalSignals.elementToggled.dispatch(element, true);
@@ -728,6 +733,20 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 uiFunctions.popupManager.closePopup("common-popup");
             };
             this.popupManager.showPopup("Confirmation", msg, "Confirm", true, null, okCallback, cancelCallback);
+            this.generateCallouts(".popup");
+        },
+        
+        showQuestionPopup: function (title, msg, buttonLabel, callbackOK, callbackNo) {
+            var uiFunctions = this;
+            var okCallback = function(e) {
+                uiFunctions.popupManager.closePopup("common-popup");
+                callbackOK();
+            };
+            var cancelCallback = function() {
+                uiFunctions.popupManager.closePopup("common-popup");
+                callbackNo();
+            };
+            this.popupManager.showPopup(title, msg, buttonLabel, true, null, okCallback, cancelCallback);
             this.generateCallouts(".popup");
         },
         
