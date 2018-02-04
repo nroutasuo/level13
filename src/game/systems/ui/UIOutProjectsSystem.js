@@ -3,23 +3,22 @@ define([
     'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/nodes/PlayerLocationNode',
+    'game/vos/TabCountsVO',
 ], function (
-    Ash, GlobalSignals, UIConstants, PlayerLocationNode
+    Ash, GlobalSignals, UIConstants, PlayerLocationNode, TabCountsVO
 ) {
     var UIOutProjectsSystem = Ash.System.extend({
         
         playerLocationNodes: null,
 
         bubbleNumber: -1,
-        visibleBuildingCount: 0,
-        availableBuildingCount: 0,
-        lastShownVisibleBuildingCount: 0,
-        lastShownAvailableBuildingCount: 0,
+        tabCounts: null,
         
         constructor: function (uiFunctions, gameState, levelHelper) {
             this.uiFunctions = uiFunctions;
             this.gameState = gameState;
             this.levelHelper = levelHelper;
+            this.tabCounts = new TabCountsVO();
             return this;
         },
 
@@ -59,12 +58,16 @@ define([
             
             this.updateBuiltProjects();
             
-            this.uiFunctions.toggle("#in-improvements-level-empty-message", this.visibleBuildingCount <= 0);
+            this.uiFunctions.toggle("#in-improvements-level-empty-message", this.tabCounts.lastShown.visible.regular <= 0);
             $("#tab-header h2").text("Building projects");
         },
         
         updateBubble: function () {
-            var newBubbleNumber = this.availableBuildingCount - this.lastShownAvailableBuildingCount + this.visibleBuildingCount - this.lastShownVisibleBuildingCount;
+            var newBubbleNumber = 
+                (this.tabCounts.current.available.regular - this.tabCounts.lastShown.available.regular) + 
+                (this.tabCounts.current.visible.regular - this.tabCounts.lastShown.visible.regular) +
+                (this.tabCounts.current.available.colony - this.tabCounts.lastShown.available.colony) + 
+                (this.tabCounts.current.visible.colony - this.tabCounts.lastShown.visible.colony);
             if (this.bubbleNumber === newBubbleNumber)
                 return;
             this.bubbleNumber = newBubbleNumber;
@@ -74,21 +77,26 @@ define([
         
         updateAvailableProjects: function () {
             var isActive = this.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.projects;
-            var availableBuildingCount = 0;
-            var visibleBuildingCount = 0;
+            var availableRegular = 0;
+            var visibleRegular = 0;
+            var availableColony = 0;
+            var visibleColony = 0;
             var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;
             
-            var numProjectsTR = $("#in-improvements-level table tr").length;
             var projects = this.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity);
+            var numProjectsTR = $("#in-improvements-level table tr").length + $("#in-improvements-colony table tr");
+            var updateTables = numProjectsTR !== projects.length;
+            if (updateTables) $("#in-improvements-level table").empty();
+            if (updateTables) $("#in-improvements-colony table").empty();
+            
             var showLevel = this.gameState.unlockedFeatures.levels;
-            var updateTable = numProjectsTR !== projects.length;
-            if (updateTable) $("#in-improvements-level table").empty();
             for (var i = 0; i < projects.length; i++) {
                 var project = projects[i];
                 var action = project.action;
                 var sectorEntity = this.levelHelper.getSectorByPosition(project.level, project.position.sectorX, project.position.sectorY);
                 var actionAvailable = playerActionsHelper.checkAvailability(action, false, sectorEntity);
-                if (updateTable) {
+                var isColonyProject = project.isColonyProject();
+                if (updateTables) {
                     var sector = project.level + "." + project.sector + "." + project.direction;
                     var name = project.name;
                     var info = "at " + project.position.getPosition().getInGameFormat() + (showLevel ? " level " + project.level : "");
@@ -99,22 +107,36 @@ define([
                         "<td>" + name + "</td>" +
                         "<td class='list-description'>" + info + "</td>" + 
                         "</tr>";
-                    $("#in-improvements-level table").append(tr);
+                    if (isColonyProject)
+                        $("#in-improvements-colony table").append(tr);
+                    else
+                        $("#in-improvements-level table").append(tr);
                 }
-                visibleBuildingCount++;
-                if (actionAvailable) availableBuildingCount++;
+                
+                if (isColonyProject) {
+                    visibleColony++;
+                    if (actionAvailable) availableColony++;
+                } else {
+                    visibleRegular++;
+                    if (actionAvailable) availableRegular++;
+                }
             }
             
-            if (updateTable) {
+            if (updateTables) {
                 this.uiFunctions.registerActionButtonListeners("#in-improvements-level");
                 this.uiFunctions.generateButtonOverlays("#in-improvements-level");
                 this.uiFunctions.generateCallouts("#in-improvements-level");
             }
             
-            this.availableBuildingCount = availableBuildingCount;
-            if (isActive) this.lastShownAvailableBuildingCount = this.availableBuildingCount;
-            this.visibleBuildingCount = visibleBuildingCount;
-            if (isActive) this.lastShownVisibleBuildingCount = this.visibleBuildingCount;
+            this.tabCounts.current.visible.regular = visibleRegular;
+            if (isActive) this.tabCounts.lastShown.visible.regular = visibleRegular;
+            this.tabCounts.current.available.regular = availableRegular;
+            if (isActive) this.tabCounts.lastShown.available.regular = availableRegular;
+            
+            this.tabCounts.current.visible.regular = visibleColony;
+            if (isActive) this.tabCounts.lastShown.visible.regular = visibleColony;
+            this.tabCounts.current.available.regular = availableColony;
+            if (isActive) this.tabCounts.lastShown.available.regular = availableColony;
         },
         
         updateBuiltProjects: function() {
