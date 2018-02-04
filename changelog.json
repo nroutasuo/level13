@@ -1,6 +1,26 @@
 {
     "versions": [
         {
+            "version": "0.1.8",
+            "phase": "alpha",
+            "final": false,
+            "updated": "2018-02-04",
+            "changes": [
+                {
+                    "type": "GD",
+                    "summary": "Add an simple ending to the game."
+                },
+                {
+                    "type": "UI",
+                    "summary": "Improve UI for building projects."
+                },
+                {
+                    "type": "DEV",
+                    "summary": "Lots of bugfixes, especially for late-game."
+                }
+            ]
+        },
+        {
             "version": "0.1.7",
             "phase": "alpha",
             "final": true,
