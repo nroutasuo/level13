@@ -1,7 +1,4 @@
-define([
-    'ash'
-], function (
-    Ash) {
+define(['ash'], function (Ash) {
     
     var ButtonHelper = Ash.Class.extend({
 

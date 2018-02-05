@@ -247,6 +247,9 @@ define([
         },
 
 		collectRewards: function (isTakeAll, rewards, campSector) {
+            if (rewards == null)
+                return;
+            
 			var currentStorage = campSector ? campSector.get(ResourcesComponent) : this.resourcesHelper.getCurrentStorage();
 			var playerPos = this.playerLocationNodes.head.position;
             
@@ -254,7 +257,7 @@ define([
                 rewards.selectedItems = rewards.gainedItems;
                 rewards.selectedResources = rewards.gainedResources;
                 rewards.discardedItems = [];
-                rewards.discardedResources = null;
+                rewards.discardedResources = new ResourcesVO();
             }
 			
 			currentStorage.addResources(rewards.selectedResources);
@@ -514,29 +517,31 @@ define([
             var logComponent = this.playerStatsNodes.head.entity.get(LogMessagesComponent);
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			
-			if (rewards.gainedBlueprintPiece) {
-				var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(rewards.gainedBlueprintPiece);
-				if (blueprintVO.currentPieces === 1)
-					logComponent.addMessage(LogConstants.MSG_ID_FOUND_BLUEPRINT_FIRST, "Found a piece of forgotten technology.");
-			}
-			
-			if (rewards.selectedItems) {
-				for (var i = 0; i < rewards.selectedItems.length; i++) {
-					var item = rewards.selectedItems[i];
-					if (itemsComponent.getCountById(item.id, true) === 1) {
-						if (item.equippable && !item.equipped) continue;
-						logComponent.addMessage(LogConstants.MSG_ID_FOUND_ITEM_FIRST, "Found a " + item.name + ".");
-					}
-				}
-			}
-            
-            if (rewards.lostItems && rewards.lostItems.length > 0) {
-                var messageTemplate = LogConstants.getLostItemMessage(rewards);
-                logComponent.addMessage(LogConstants.MSG_ID_LOST_ITEM, messageTemplate.msg, messageTemplate.replacements, messageTemplate.values);
-            }
-            
-            if (rewards.gainedInjuries.length > 0) {
-                logComponent.addMessage(LogConstants.MSG_ID_GOT_INJURED, LogConstants.getInjuredMessage(rewards));
+            if (rewards) {
+                if (rewards.gainedBlueprintPiece) {
+                    var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(rewards.gainedBlueprintPiece);
+                    if (blueprintVO.currentPieces === 1)
+                        logComponent.addMessage(LogConstants.MSG_ID_FOUND_BLUEPRINT_FIRST, "Found a piece of forgotten technology.");
+                }
+
+                if (rewards.selectedItems) {
+                    for (var i = 0; i < rewards.selectedItems.length; i++) {
+                        var item = rewards.selectedItems[i];
+                        if (itemsComponent.getCountById(item.id, true) === 1) {
+                            if (item.equippable && !item.equipped) continue;
+                            logComponent.addMessage(LogConstants.MSG_ID_FOUND_ITEM_FIRST, "Found a " + item.name + ".");
+                        }
+                    }
+                }
+
+                if (rewards.lostItems && rewards.lostItems.length > 0) {
+                    var messageTemplate = LogConstants.getLostItemMessage(rewards);
+                    logComponent.addMessage(LogConstants.MSG_ID_LOST_ITEM, messageTemplate.msg, messageTemplate.replacements, messageTemplate.values);
+                }
+
+                if (rewards.gainedInjuries.length > 0) {
+                    logComponent.addMessage(LogConstants.MSG_ID_GOT_INJURED, LogConstants.getInjuredMessage(rewards));
+                }
             }
 		},
 		
@@ -670,7 +675,7 @@ define([
 
 		getNecessityItem: function (currentItems, levelOrdinal) {
 			var visitedSectors = this.gameState.numVisitedSectors;
-            var numSectorsRequiredForMap = 4;
+            var numSectorsRequiredForMap = 5;
 			if (currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) <= 0) {
 				return ItemConstants.getBag(levelOrdinal).clone();
 			}

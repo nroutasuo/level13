@@ -53,6 +53,14 @@ function (Ash, GameConstants, CampConstants) {
                     },
                 },
                 
+                clear_waste: {
+                    vision: [50, -1],
+                    health: 80,
+                    sector: {
+                        scouted: true,
+                    },
+                },
+                
                 use_spring: {
                     vision: [10, -1],
                     sector: {
@@ -1191,6 +1199,10 @@ function (Ash, GameConstants, CampConstants) {
                     stamina: 10,
                 },
                 
+                clear_waste: {
+                    stamina: 100,
+                },
+                
                 use_spring: {
                     stamina: 1,
                 },
@@ -2023,6 +2035,7 @@ function (Ash, GameConstants, CampConstants) {
                 scout_locale_u: 0.1,
                 use_spring: 0.1,
                 clear_workshop: 1,
+                clear_waste: 0.1,
                 fight_gang: 1,
             },
             
@@ -2044,6 +2057,7 @@ function (Ash, GameConstants, CampConstants) {
                 scout_locale_u: "Scout for additional resources and evidence.",
                 scavenge: "Look for resources.",
                 clear_workshop: "Scout the workshop to see if it can be used.",
+                clear_waste: "Clear the pollution.",
                 use_spring: "Get water.",
                 fight_gang: "Clear the enemies blocking passage.",
                 send_caravan: "Send caravan out.",
@@ -2140,6 +2154,7 @@ function (Ash, GameConstants, CampConstants) {
                     case "scout_locale_i":
                     case "scout_locale_u":
                     case "clear_workshop":
+                    case "clear_waste":
                     case "fight_gang":
                         return true;
                     default:

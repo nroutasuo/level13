@@ -572,6 +572,7 @@ define([
 					for (var i in PositionConstants.getLevelDirections()) {
 						var direction = PositionConstants.getLevelDirections()[i];
 						var directionName = PositionConstants.getDirectionName(direction);
+                        
 						var blockerKey = "blocker" + TextConstants.capitalize(directionName);
 						if (typeof requirements.sector[blockerKey] !== 'undefined') {
 							var requiredValue = requirements.sector[blockerKey];
@@ -584,6 +585,22 @@ define([
 								} else {
 									if (log) console.log("WARN: Nothing blocking movement to " + directionName + "." );
 									return { value: 0, reason: "Nothing blocking movement to " + directionName + "." };
+								}
+							}
+						}
+                        
+                        var clearedKey = "isCleared_" + direction;
+						if (typeof requirements.sector[clearedKey] !== 'undefined') {
+							var requiredValue = requirements.sector[clearedKey];
+							var currentValue = statusComponent.isCleared(direction);
+				
+							if (requiredValue !== currentValue) {
+								if (currentValue) {
+									if (log) console.log("WARN: Waste in " + directionName + " cleared.");
+									return { value: 0, reason: "Waste cleared. " };
+								} else {
+									if (log) console.log("WARN: Waste hasn't been cleared " + directionName + "." );
+									return { value: 0, reason: "Waste not cleared " + directionName + "." };
 								}
 							}
 						}
@@ -849,9 +866,16 @@ define([
 					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
 					var direction = parseInt(action.split("_")[2]);
 					if (!requirements.sector) requirements.sector = {};
-					requirements.sector.blockerLeft = (direction === 0) ? true : undefined;
-					requirements.sector.blockerRight = (direction === 1) ? true : undefined;
+                    var directionName = PositionConstants.getDirectionName(direction);
+                    var blockerKey = "blocker" + TextConstants.capitalize(directionName);
+                    requirements.sector[blockerKey] = true;
 					return requirements;
+                case "clear_waste":
+					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
+					var direction = parseInt(action.split("_")[2]);
+					if (!requirements.sector) requirements.sector = {};
+                    requirements.sector["isCleared_" + direction] = false;
+                    return requirements;
                 case "create_blueprint":
                     requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
                     requirements.blueprintpieces = action.replace(baseActionID + "_", "");
@@ -975,6 +999,7 @@ define([
             if (action.indexOf("use_item") >= 0) return "use_item";
 			if (action.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
 			if (action.indexOf("create_blueprint_") >= 0) return "create_blueprint";
+			if (action.indexOf("clear_waste_") >= 0) return "clear_waste";
 			if (action.indexOf("fight_gang_") >= 0) return "fight_gang";
 			if (action.indexOf("send_caravan_") >= 0) return "send_caravan";
             if (action.indexOf("use_in_inn_select_") >= 0) return "use_in_inn_select";

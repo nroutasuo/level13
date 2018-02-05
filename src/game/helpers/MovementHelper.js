@@ -8,8 +8,9 @@ define([
     'game/components/common/PositionComponent',
     'game/components/sector/PassagesComponent',
     'game/components/sector/SectorControlComponent',
+    'game/components/sector/SectorStatusComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
-], function (Ash, ItemConstants, LocaleConstants, PositionConstants, ItemsNode, PositionComponent, PassagesComponent, SectorControlComponent, SectorImprovementsComponent) {
+], function (Ash, ItemConstants, LocaleConstants, PositionConstants, ItemsNode, PositionComponent, PassagesComponent, SectorControlComponent, SectorStatusComponent, SectorImprovementsComponent) {
     
     var MovementHelper = Ash.Class.extend({
         
@@ -43,7 +44,7 @@ define([
 			if (PositionConstants.isLevelDirection(direction)) {
 				var isBridged = this.isBridged(sectorEntity, direction);
 				var isDefeated = this.isDefeated(sectorEntity, direction);
-				var isCleaned = false;
+				var isCleaned = this.isCleaned(sectorEntity, direction);
 				
 				var blocker = passagesComponent.getBlocker(direction);
 					
@@ -87,6 +88,11 @@ define([
 			var localeId = LocaleConstants.getPassageLocaleId(direction);
 			return this.hasDefeatableBlocker(sectorEntity, direction) && controlComponent.hasControlOfLocale(localeId);
 		},
+        
+        isCleaned: function (sectorEntity, direction) {
+            var statusComponent = sectorEntity.get(SectorStatusComponent);
+            return this.hasClearableBlocker(sectorEntity, direction) && statusComponent.isCleared(direction);
+        },
 		
 		hasBridgeableBlocker: function (sectorEntity, direction) {
 			var passagesComponent = sectorEntity.get(PassagesComponent);
@@ -96,6 +102,11 @@ define([
 		hasDefeatableBlocker: function (sectorEntity, direction) {
 			var passagesComponent = sectorEntity.get(PassagesComponent);
 			return passagesComponent.isDefeatable(direction);
+		},
+		
+		hasClearableBlocker: function (sectorEntity, direction) {
+			var passagesComponent = sectorEntity.get(PassagesComponent);
+			return passagesComponent.isClearable(direction);
 		},
     });
     

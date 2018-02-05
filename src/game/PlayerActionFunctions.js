@@ -222,6 +222,7 @@ define(['ash',
                 case "scout_locale_i": this.scoutLocale(param); break;
                 case "scout_locale_u": this.scoutLocale(param); break;
                 case "clear_workshop": this.clearWorkshop(param); break;
+                case "clear_waste": this.clearWaste(param); break;
                 case "use_spring": this.useSpring(param); break;
                 case "fight_gang": this.fightGang(param); break;
                 case "send_caravan": this.sendCaravan(param); break;
@@ -609,6 +610,23 @@ define(['ash',
 
             this.handleOutActionResults(action, LogConstants.MSG_ID_WORKSHOP_CLEARED, logMsgSuccess, logMsgFlee, logMsgDefeat, successCallback);
 		},
+        
+        clearWaste: function (direction) {
+            console.log("clear waste " + direction);
+            var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+            
+            var logMsgSuccess = "Cleared the pollution. The area is now safe to pass through.";
+            var logMsgFailBase = "Attempted to clear the pollution but got attacked. ";
+            var logMsgFlee = logMsgFailBase + "Feld before completing the operation.";
+            var logMsgDefeat = logMsgFailBase + "Lost the fight.";
+            
+            var successCallback = function () {
+                console.log("clear waste callback " + direction);
+                sectorStatus.setCleared(direction);
+            };            
+
+            this.handleOutActionResults("clear_waste", LogConstants.MSG_ID_CLEAR_WASTE, logMsgSuccess, logMsgFlee, logMsgDefeat, successCallback);
+        },
         
         handleOutActionResults: function (action, logMsgId, logMsgSuccess, logMsgFlee, logMsgDefeat, successCallback) {
             var playerActionFunctions = this;

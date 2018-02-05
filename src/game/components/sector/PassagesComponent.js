@@ -48,6 +48,21 @@ function (Ash, PositionConstants, PassageVO, MovementBlockerVO) {
             var blocker = this.getBlocker(direction);
             return blocker !== null && blocker.defeatable;
         },
+        
+        isClearable: function (direction) {
+            if (direction === null) {
+                return this.isClearable(PositionConstants.DIRECTION_NORTH) ||
+                    this.isClearable(PositionConstants.DIRECTION_SOUTH) ||
+                    this.isClearable(PositionConstants.DIRECTION_WEST) ||
+                    this.isClearable(PositionConstants.DIRECTION_EAST) ||
+                    this.isClearable(PositionConstants.DIRECTION_NE) ||
+                    this.isClearable(PositionConstants.DIRECTION_SE) ||
+                    this.isClearable(PositionConstants.DIRECTION_SW) ||
+                    this.isClearable(PositionConstants.DIRECTION_NW);
+            }
+            var blocker = this.getBlocker(direction);
+            return blocker !== null && blocker.cleanable;
+        },
     });
 
     return PassagesComponent;

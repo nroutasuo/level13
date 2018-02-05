@@ -7,6 +7,7 @@ define(['ash'], function (Ash) {
         scouted: false,
         localesScouted: [],
         glowStickSeconds: -100, // not saved
+        wasteClearedDirections: [],
         
         constructor: function () {
             this.discoveredResources = [];
@@ -33,6 +34,16 @@ define(['ash'], function (Ash) {
             return scouted;
         },
         
+        isCleared: function (direction) {
+            return this.wasteClearedDirections && this.wasteClearedDirections.indexOf(parseInt(direction)) >= 0;
+        },
+        
+        setCleared: function (direction) {
+            if (this.isCleared(direction))
+                return;
+            this.wasteClearedDirections.push(parseInt(direction));
+        },
+        
         getSaveKey: function () {
             return "SectorStatus";
         },
@@ -42,6 +53,7 @@ define(['ash'], function (Ash) {
             copy.dR = this.discoveredResources;
             copy.s = this.scouted;
             copy.lS = this.localesScouted;
+            copy.wd = this.wasteClearedDirections ? this.wasteClearedDirections  : [];
             return copy;
         },
         
@@ -52,6 +64,7 @@ define(['ash'], function (Ash) {
                 this.localesScouted = componentValues.lS;
             else
                 this.localesScouted = componentValues.localesScouted;
+            this.wasteClearedDirections = componentValues.wd ? componentValues.wd : [];
         }
         
     });
