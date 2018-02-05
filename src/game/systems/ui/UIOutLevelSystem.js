@@ -229,10 +229,10 @@ define([
             }
 
             this.uiFunctions.slideToggleIf("#out-locales", null, isScouted && sectorLocalesComponent.locales.length > 0, 200, 0);
-            this.uiFunctions.slideToggleIf("#table-out-actions-movement-related", null, isScouted > 0, 200, 0);
+            this.uiFunctions.slideToggleIf("#table-out-actions-movement-related", null, isScouted, 200, 0);
 
             // hide movement until the player makes a light
-            this.uiFunctions.toggle("#container-tab-two-out-actions table", this.gameState.numCamps > 0);
+            this.uiFunctions.toggle("#table-out-actions-movement", this.gameState.numCamps > 0);
             this.uiFunctions.toggle("#container-tab-two-out-actions h3", this.gameState.numCamps > 0);
             this.uiFunctions.toggle("#out-improvements", this.gameState.unlockedFeatures.vision);
             this.uiFunctions.toggle("#out-improvements table", this.gameState.unlockedFeatures.vision);
