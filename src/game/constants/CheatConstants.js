@@ -26,6 +26,7 @@ define(function () {
         CHEAT_NAME_FOLLOWER: "follower",
         CHEAT_NAME_PERK: "perk",
         CHEAT_NAME_REVEAL_MAP: "revealMap",
+        CHEAT_NAME_SCOUT_LEVEL: "scoutLevel",
         
     };
     return CheatConstants;

@@ -146,6 +146,9 @@ define(['ash',
             this.registerCheat(CheatConstants.CHEAT_NAME_REVEAL_MAP, "Reveal the map (show important locations without scouting).", ["true/false"], function (params) {
                 this.revealMap(params[0]);
             });
+            this.registerCheat(CheatConstants.CHEAT_NAME_SCOUT_LEVEL, "Scout all the sectors in the current level.", [], function (params) {
+                this.scoutLevel();
+            });
             this.registerCheat(CheatConstants.CHEAT_NAME_AUTOPLAY, "Autoplay.", ["on/off/camp", "(optional) camp ordinal"], function (params) {
                 this.setAutoPlay(params[0], parseInt(params[1]));
             });
@@ -336,7 +339,7 @@ define(['ash',
             this.playerStatsNodes.head.stamina.stamina = 1000;        
         },
         
-        setPlayerPosition: function (lvl, x, y) {            
+        setPlayerPosition: function (lvl, x, y) {
             var playerPos = this.playerPositionNodes.head.position;
             playerPos.level = lvl;
             playerPos.sectorX = x;
@@ -434,6 +437,26 @@ define(['ash',
         
         revealMap: function (value) {            
             this.uiMapHelper.isMapRevealed = value ? true : false;
+        },
+        
+        scoutLevel: function () {
+            var originalPos = this.playerPositionNodes.head.position.getPosition();
+            var levelVO = this.levelHelper.getLevelEntityForPosition(originalPos.level).get(LevelComponent).levelVO;
+            var sectorVO;
+            var i = 0;
+            var updateFunction = function () {
+                if (i < levelVO.sectors.length) {
+                    sectorVO = levelVO.sectors[i];
+                    this.setPlayerPosition(levelVO.level, sectorVO.position.sectorX, sectorVO.position.sectorY);
+                    this.playerActionFunctions.scout();
+                    i++;
+                } else {
+                    this.setPlayerPosition(originalPos.level, originalPos.sectorX, originalPos.sectorY);
+                    this.playerActionFunctions.uiFunctions.popupManager.closeAllPopups();
+                    this.engine.updateComplete.remove(updateFunction);
+                }
+            };
+            this.engine.updateComplete.add(updateFunction, this);
         }
     
     });
