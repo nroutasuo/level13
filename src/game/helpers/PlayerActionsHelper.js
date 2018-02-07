@@ -1060,7 +1060,8 @@ define([
                 case "build_out_camp": return "";
                 
                 default:
-                    if(!disableWarnings) console.log("WARN: No improvement name found for action " + action);
+                    if(!disableWarnings) 
+                        console.log("WARN: No improvement name found for action " + action);
                     return "";
             }
         },
@@ -1076,7 +1077,7 @@ define([
         },
        
         isActionIndependentOfHazards: function (action) {
-            var improvement = this.getImprovementNameForAction(action);
+            var improvement = this.getImprovementNameForAction(action, true);
             if (improvement) {
                 if (getImprovementType(improvement) == improvementTypes.level) {
                     return true;
