@@ -137,8 +137,9 @@ define(['ash',
             this.resetTurn(fightNode !== null);
 
             this.lastSwitchCounter++;
-            if (!didSomething) {
+            if (!didSomething && this.lastSwitchCounter > 10) {
                 didSomething = this.switchMode();
+                this.lastSwitchCounter = 0;
             }
             
             if (!didSomething) {
@@ -169,9 +170,6 @@ define(['ash',
             if (!this.playerActionFunctions.gameState.unlockedFeatures.camp)
                 return false;
             
-            if (this.lastSwitchCounter < 5)
-                return false;
-            
             var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
             if (busyComponent && busyComponent.isBusy())
                 return false;
@@ -181,6 +179,7 @@ define(['ash',
             var currentWater = currentStorage.resources.getResource(resourceNames.water);
             var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
             var injuries = perksComponent.getItemsByType(PerkConstants.perkTypes.injury);
+            var itemsComponent = this.itemsNodes.head.items;
             if (injuries.length > 2 && currentFood > 5 && currentWater > 5 && !this.autoPlayNodes.head.autoPlay.isExploring)
                 return false;
             
@@ -194,11 +193,17 @@ define(['ash',
             } else {
                 // this.printStep("leave camp");
                 if (this.playerActionFunctions.nearestCampNodes.head) {
-                    var currentStorage = this.playerActionFunctions.resourcesHelper.getCurrentStorage();
                     var selectedResVO = new ResourcesVO();
                     selectedResVO.setResource(resourceNames.food, Math.min(10, currentStorage.resources.getResource(resourceNames.food)));
                     selectedResVO.setResource(resourceNames.water, Math.min(10, currentStorage.resources.getResource(resourceNames.water)));
                     this.playerActionFunctions.moveResFromCampToBag(selectedResVO);
+                    
+                    var selectedItems = {};
+                    var itemID = ItemConstants.itemDefinitions.exploration[0].id;
+                    if (itemsComponent.getCountById(itemID) > 0) {
+                        selectedItems[itemID] = 1;
+                    }
+                    this.playerActionFunctions.updateCarriedItems(selectedItems);
                     this.playerActionFunctions.leaveCamp();
                 }
                 this.playerActionFunctions.uiFunctions.showTab(this.playerActionFunctions.uiFunctions.elementIDs.tabs.out);
@@ -297,21 +302,33 @@ define(['ash',
 			}
 			
 			var isBagFull = this.isBagFull();
-            var hasStamina = this.playerStatsNodes.head.stamina.stamina > 50;
+            var stamina = this.playerStatsNodes.head.stamina.stamina;
+            var options = [];
+            var reasons = [];
             
 			if (nearestCampableSector) {
-				return this.moveToSector(nearestCampableSector, "campable sector");
-			} else if (nearestUnscoutedLocaleSector && Math.random() > 0.25) {
-				return this.moveToSector(nearestUnscoutedLocaleSector, "unscouted locale");
-            } else if (nearestUnscoutedSector && Math.random() > 0.25) {
-				return this.moveToSector(nearestUnscoutedSector, "unscouted sector");
-            } else if (nearestUnclearedSector && Math.random() > 0.1) {
-				return this.moveToSector(nearestUnclearedSector, "uncleared sector");
-			} else if (nearestCampSector) {
-				return this.moveToSector(nearestCampSector, "nearest camp sector");
-			} else {
-				return false;
-			}
+				options.push(nearestCampableSector);
+                reasons.push("campable sector");
+			} else if (nearestUnscoutedLocaleSector && stamina > 100) {
+				options.push(nearestUnscoutedLocaleSector);
+                reasons.push("unscouted locale");
+            } else if (nearestUnscoutedSector && stamina > 50) {
+				options.push(nearestUnscoutedSector);
+                reasons.push("unscouted sector");
+            } else if (nearestUnclearedSector && stamina > 50) {
+				options.push(nearestUnclearedSector);
+                reasons.push("uncleared sector");
+			} /*else if (nearestCampSector) {
+				options.push(nearestCampSector);
+                reasons.push("nearest camp sector");
+			}*/
+            
+            if (options.length > 0) {
+                var i = Math.floor(Math.random() * options.length);
+                return this.moveToSector(options[i], reasons[i]);
+            } else {
+                return false;
+            }
 		},
 			
         moveToSector: function (sectorEntity, reason) {
@@ -414,7 +431,7 @@ define(['ash',
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("scavenge")) {
                 var bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
                 var bagFull = this.isBagFull() && bagComponent.totalCapacity > ItemConstants.PLAYER_DEFAULT_STORAGE;
-                if (!bagFull) {
+                if (!bagFull || Math.random() < 0.5) {
                     this.printStep("scavenge");
     				this.playerActionFunctions.startAction("scavenge");
                     return true;

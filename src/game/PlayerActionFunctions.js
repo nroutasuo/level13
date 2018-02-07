@@ -636,7 +636,8 @@ define(['ash',
             if (!logMsgDefeat) logMsgDefeat = logMsgSuccess;
             this.fightHelper.handleRandomEncounter(action, function () {
                 var rewards = playerActionFunctions.playerActionResultsHelper.getResultVOByAction(action);
-                playerActionFunctions.playerStatsNodes.head.entity.add(new PlayerActionResultComponent(rewards));
+                var sector = playerActionFunctions.playerStatsNodes.head.entity;
+                sector.add(new PlayerActionResultComponent(rewards));
                 var resultPopupCallback = function (isTakeAll) {
                     playerActionFunctions.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
                     playerActionFunctions.uiFunctions.completeAction(action);
@@ -644,6 +645,7 @@ define(['ash',
                     playerActionFunctions.playerActionResultsHelper.logResults(rewards);
                     playerActionFunctions.forceResourceBarUpdate();
                     playerActionFunctions.forceTabUpdate();
+                    sector.remove(PlayerActionResultComponent);
                     GlobalSignals.inventoryChangedSignal.dispatch();
                     if (successCallback) successCallback();
                 };

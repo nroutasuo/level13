@@ -87,6 +87,11 @@ define([
                 this.initializeFightActive();
             }
             
+            // NOTE: can happen in AutoPlay
+			var encounterComponent = sector.get(FightEncounterComponent);
+            if (encounterComponent == null)
+                return;
+            
 			this.updateFightCommon(!fightActive && !fightFinished);
 			
 			if (fightActive && !fightFinished) {
@@ -118,6 +123,7 @@ define([
 		updateFightCommon: function (fightPending) {
 			var sector = this.playerLocationNodes.head.entity;
 			var encounterComponent = sector.get(FightEncounterComponent);
+            
 			$("#fight-title").text(this.getTitleByContext(encounterComponent.context));
 			
 			// Enemy info

@@ -36,6 +36,8 @@ define([
                 return;
             if (!($(".popup #info-results").is(":visible")) && !($(".popup #fight-popup-results").is(":visible")))
                 return;
+            if (!this.playerActionResultNodes.head)
+                return;
             
             this.updateButtons();
             
