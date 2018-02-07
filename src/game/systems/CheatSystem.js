@@ -174,10 +174,11 @@ define(['ash',
             if (this.cheatDefinitions[name]) {
                 var func = this.cheatDefinitions[name].func;
                 var numParams = this.cheatDefinitions[name].params.length;
-                if (inputParts.length === numParams + 1) {                    
+                var numOptional = ((this.cheatDefinitions[name].params.join().match(/optional/g)) || []).length;
+                if (Math.abs(inputParts.length - 1 - numParams) <= numOptional) {
                     func.call(this, inputParts.slice(1));
                 } else {
-                    console.log("Wrong number of parameters. Expected " + numParams + " got " + (inputParts.length -1));
+                    console.log("Wrong number of parameters. Expected " + numParams + " (" + numOptional + ") got " + (inputParts.length -1));
                 }
                 return;
             } else {
