@@ -198,8 +198,7 @@ dd p.p-meta {
   overflow: hidden;
 }
 #mainmap-container {
-  max-height: 200px;
-  /*450px;*/
+  max-height: 250px;
 }
 #researched-upgrades-vis-container {
   max-height: 200px;
