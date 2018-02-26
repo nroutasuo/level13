@@ -149,7 +149,7 @@ define(['ash',
             this.registerCheat(CheatConstants.CHEAT_NAME_SCOUT_LEVEL, "Scout all the sectors in the current level.", [], function (params) {
                 this.scoutLevel();
             });
-            this.registerCheat(CheatConstants.CHEAT_NAME_AUTOPLAY, "Autoplay.", ["on/off/camp", "(optional) camp ordinal"], function (params) {
+            this.registerCheat(CheatConstants.CHEAT_NAME_AUTOPLAY, "Autoplay.", ["on/off/camp/expedition", "(optional) camp ordinal"], function (params) {
                 this.setAutoPlay(params[0], parseInt(params[1]));
             });
         },
@@ -263,9 +263,10 @@ define(['ash',
         },
         
         setAutoPlay: function (type, numCampsTarget) {
-            var endConditionUpdateFunction;
             var start = false;
             var stop = false;
+            var setExploring = false;
+            var endConditionUpdateFunction;
             switch (type) {
                 case "false":
                 case "off":
@@ -278,11 +279,26 @@ define(['ash',
                     break;
                     
                 case "camp":
+                    start = true;
                     if (!numCampsTarget || numCampsTarget < 1) numCampsTarget = 1;
                     endConditionUpdateFunction = function () {
                         if (this.gameState.numCamps >= numCampsTarget) {
                             this.engine.updateComplete.remove(endConditionUpdateFunction, this);
-                            this.cheat("autoplay off");
+                            this.applyCheat("autoplay off");
+                        }
+                    };
+                    break;
+                    
+                case "expedition":
+                    start = true;
+                    setExploring = true;
+                    endConditionUpdateFunction = function () {
+                        var autoplayComponent = this.playerStatsNodes.head.entity.get(AutoPlayComponent);
+                        if (autoplayComponent.isPendingExploring)
+                            return;
+                        if (!autoplayComponent || !autoplayComponent.isExploring) {
+                            this.engine.updateComplete.remove(endConditionUpdateFunction, this);
+                            this.applyCheat("autoplay off");
                         }
                     };
                     break;
@@ -294,7 +310,10 @@ define(['ash',
                 this.playerStatsNodes.head.entity.remove(AutoPlayComponent);
             } else if (start) {                
                 if (!this.playerStatsNodes.head.entity.has(AutoPlayComponent)) {
-                    this.playerStatsNodes.head.entity.add(new AutoPlayComponent());
+                    var component = new AutoPlayComponent();
+                    if (setExploring)
+                        component.isPendingExploring = true;
+                    this.playerStatsNodes.head.entity.add(component);
                 }
             }
         },

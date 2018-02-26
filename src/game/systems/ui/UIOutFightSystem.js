@@ -88,6 +88,9 @@ define([
             }
             
             // NOTE: can happen in AutoPlay
+			var sector = this.playerLocationNodes.head.entity;
+            if (sector == null)
+                return;
 			var encounterComponent = sector.get(FightEncounterComponent);
             if (encounterComponent == null)
                 return;

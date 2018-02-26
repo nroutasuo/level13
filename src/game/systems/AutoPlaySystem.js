@@ -99,45 +99,23 @@ define(['ash',
 			if (!this.autoPlayNodes.head)
                 return;
             
+            var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
             var fightNode = this.fightNodes.head;
-
             var didSomething = false;
 
-            // TODO make more realistic movement & expeditions
-
-            if (this.autoPlayNodes.head.autoPlay.isExploring) {
-                var maxStamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
-                var minStamina = this.playerActionFunctions.nearestCampNodes.head ? Math.min(100, maxStamina / 2) : 10;
-                var hasStamina = minStamina < this.playerStatsNodes.head.stamina.stamina;
-                
-                didSomething = didSomething || this.buildCamp();
-                didSomething = didSomething || this.buildOutImprovements();
-                didSomething = didSomething || this.scout();
-                didSomething = didSomething || this.useOutImprovements();
-                
-                if (hasStamina) {
-                    didSomething = didSomething || this.craftItems();
-                    didSomething = didSomething || this.scavenge();
-                    didSomething = didSomething || this.idleOut();
-                    didSomething = didSomething || this.move();
-                }
+            if (autoPlayComponent.isExploring) {
+                autoPlayComponent.isPendingExploring = false;
+                didSomething = didSomething || this.updateExploring();
             }
 
-            if (this.autoPlayNodes.head.autoPlay.isManagingCamps && !fightNode) {
-                didSomething = didSomething || this.useInImprovements();
-                didSomething = didSomething || this.manageWorkers();
-                didSomething = didSomething || this.buildPassages();
-                didSomething = didSomething || this.buildInImprovements();
-                didSomething = didSomething || this.unlockUpgrades();
-                didSomething = didSomething || this.craftItems();
-                didSomething = didSomething || this.idleIn();
-                didSomething = didSomething || this.switchCamps();
+            if (autoPlayComponent.isManagingCamps && !fightNode) {
+                didSomething = didSomething || this.updateCamping();
             }
 
             this.resetTurn(fightNode !== null);
 
             this.lastSwitchCounter++;
-            if (!didSomething && this.lastSwitchCounter > 10) {
+            if ((!didSomething && this.lastSwitchCounter > 10) || autoPlayComponent.isPendingExploring) {
                 didSomething = this.switchMode();
                 this.lastSwitchCounter = 0;
             }
@@ -154,6 +132,39 @@ define(['ash',
                 this.cheatFunctions.applyCheat("time 1");
             }
 		},
+            
+        updateExploring: function () {
+            var didSomething = false;
+            var maxStamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
+            var minStamina = this.playerActionFunctions.nearestCampNodes.head ? Math.min(100, maxStamina / 2) : 10;
+            var hasStamina = minStamina < this.playerStatsNodes.head.stamina.stamina;
+
+            didSomething = didSomething || this.buildCamp();
+            didSomething = didSomething || this.buildOutImprovements();
+            didSomething = didSomething || this.scout();
+            didSomething = didSomething || this.useOutImprovements();
+
+            if (hasStamina) {
+                didSomething = didSomething || this.craftItems();
+                didSomething = didSomething || this.scavenge();
+                didSomething = didSomething || this.idleOut();
+                didSomething = didSomething || this.move();
+            }
+            return didSomething;
+        },
+        
+        updateCamping: function () {
+            var didSomething = false;
+            didSomething = didSomething || this.useInImprovements();
+            didSomething = didSomething || this.manageWorkers();
+            didSomething = didSomething || this.buildPassages();
+            didSomething = didSomething || this.buildInImprovements();
+            didSomething = didSomething || this.unlockUpgrades();
+            didSomething = didSomething || this.craftItems();
+            didSomething = didSomething || this.idleIn();
+            didSomething = didSomething || this.switchCamps();
+            return didSomething;
+        },
 		
 		resetTurn: function (isFight) {
             if (this.playerStatsNodes.head.entity.has(PlayerActionResultComponent)) {
@@ -170,6 +181,7 @@ define(['ash',
             if (!this.playerActionFunctions.gameState.unlockedFeatures.camp)
                 return false;
             
+            var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
             var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
             if (busyComponent && busyComponent.isBusy())
                 return false;
@@ -180,12 +192,12 @@ define(['ash',
             var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
             var injuries = perksComponent.getItemsByType(PerkConstants.perkTypes.injury);
             var itemsComponent = this.itemsNodes.head.items;
-            if (injuries.length > 2 && currentFood > 5 && currentWater > 5 && !this.autoPlayNodes.head.autoPlay.isExploring)
+            if (injuries.length > 2 && currentFood > 5 && currentWater > 5 && !autoPlayComponent.isExploring)
                 return false;
             
             this.printStep("switch mode");
             
-            var wasExploring = this.autoPlayNodes.head.autoPlay.isExploring;
+            var wasExploring = autoPlayComponent.isExploring;
             if (wasExploring && this.latestCampLevel > -100) {
                 // this.printStep("enter camp " + this.latestCampLevel);
                 this.playerActionFunctions.moveToCamp(this.latestCampLevel);
@@ -209,8 +221,8 @@ define(['ash',
                 this.playerActionFunctions.uiFunctions.showTab(this.playerActionFunctions.uiFunctions.elementIDs.tabs.out);
             }
             
-            this.autoPlayNodes.head.autoPlay.isExploring = !this.autoPlayNodes.head.autoPlay.isExploring;
-            this.autoPlayNodes.head.autoPlay.isManagingCamps = !this.autoPlayNodes.head.autoPlay.isExploring;
+            autoPlayComponent.isExploring = !autoPlayComponent.isExploring;
+            autoPlayComponent.isManagingCamps = !autoPlayComponent.isExploring;
             
             this.lastSwitchCounter = 0;
             
