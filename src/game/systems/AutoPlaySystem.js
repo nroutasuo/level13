@@ -232,6 +232,62 @@ define(['ash',
             return true;
         },
 
+        findPathTo: function (goalSector) {
+            var startSector = this.playerActionFunctions.playerPositionNodes.head.entity;
+            
+            if (startSector === goalSector)
+                return [];
+            
+            // Breadth-first search
+            var frontier = [];
+            var visited = [];
+            var cameFrom = {};
+            
+            var getKey = function (sector) {
+                return sector.get(PositionComponent).getPosition().toString();
+            }
+            
+            visited.push(getKey(startSector));
+            frontier.push(startSector);
+            cameFrom[getKey(startSector)] = null;
+            
+            var pass = 0;
+            var current;
+            var neighbours;
+            var next;
+            mainLoop: while (frontier.length > 0) {
+                pass++;
+                current = frontier.shift();
+                neighbours = this.levelHelper.getSectorNeighbours(current);
+                for (var i = 0; i < neighbours.length; i++) {
+                    var next = neighbours[i];
+                    var neighbourKey = getKey(next);
+                    if (visited.indexOf(neighbourKey) >= 0)
+                        continue;
+                    visited.push(neighbourKey);
+                    frontier.push(next);
+                    cameFrom[neighbourKey] = current;
+                    
+                    if (next === goalSector) {
+                        break mainLoop;
+                    }
+                }
+            }
+            
+            var result = [];
+            var current = goalSector;
+            while (current !== startSector) {
+                result.push(current);
+                current = cameFrom[getKey(current)];
+                
+                if (!current || result.length > 500) {
+                    console.log("WARN: Failed to find path.");
+                    break;
+                }
+            }
+            return result.reverse();
+        },
+
 		move: function () {
             var playerPosition = this.playerActionFunctions.playerPositionNodes.head.position;
 			var l = playerPosition.level;
