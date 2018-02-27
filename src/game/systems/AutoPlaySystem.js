@@ -38,6 +38,7 @@ define(['ash',
 	var AutoPlaySystem = Ash.System.extend({
 		
         speed: 1,
+        stepInterval: 750,
         isExpress: false,
         
 		playerActionFunctions: null,
@@ -52,6 +53,7 @@ define(['ash',
         fightNodes: null,
         
         latestCampLevel: 0,
+        lastStepTimeStamp: 0,
         idleCounter: 0,
         lastSwitchCounter: 0,
 	    
@@ -71,6 +73,8 @@ define(['ash',
             
             this.autoPlayNodes.nodeAdded.add(this.onAutoPlayNodeAdded, this);
             this.autoPlayNodes.nodeRemoved.add(this.onAutoPlayNodeRemoved, this);
+            
+            this.lastStepTimeStamp = new Date().getTime();
         },
 
         removeFromEngine: function (engine) {
@@ -84,6 +88,7 @@ define(['ash',
 		},
         
         onAutoPlayNodeAdded: function (node) {
+            this.lastStepTimeStamp = new Date().getTime();
             var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
             node.autoPlay.isExploring = !inCamp;
             node.autoPlay.isManagingCamps = inCamp;
@@ -98,6 +103,11 @@ define(['ash',
         update: function (time) {
 			if (!this.autoPlayNodes.head)
                 return;
+            
+			var timeStamp = new Date().getTime();
+			if (timeStamp - this.lastStepTimeStamp < this.stepInterval) {
+                return;
+            }
             
             var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
             var fightNode = this.fightNodes.head;
@@ -131,6 +141,7 @@ define(['ash',
                 this.printStep("skip 1 minute");
                 this.cheatFunctions.applyCheat("time 1");
             }
+            this.lastStepTimeStamp = timeStamp;
 		},
             
         updateExploring: function () {
