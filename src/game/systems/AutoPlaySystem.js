@@ -25,7 +25,6 @@ define(['ash',
 	'game/components/type/LevelComponent',
     'game/constants/CampConstants',
     'game/constants/UpgradeConstants',
-    'game/constants/FightConstants',
     'game/vos/ResourcesVO',
     'game/vos/PositionVO'
 ], function (Ash,
@@ -34,7 +33,7 @@ define(['ash',
     PositionComponent, CampComponent, ResourcesComponent, PlayerActionComponent, PlayerActionResultComponent, ItemsComponent, PerksComponent, BagComponent, 
     SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent,
 	LevelComponent,
-    CampConstants, UpgradeConstants, FightConstants, ResourcesVO, PositionVO) {
+    CampConstants, UpgradeConstants, ResourcesVO, PositionVO) {
     
 	var AutoPlaySystem = Ash.System.extend({
 		
@@ -150,10 +149,7 @@ define(['ash',
         updateExploring: function () {
             var didSomething = false;
             
-            var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
-            if (!autoPlayComponent.isExploreObjectiveSet()) {
-                this.setExploreObjective();
-            }
+            this.checkExploreObjective();
             
             var maxStamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
             var minStamina = this.playerActionFunctions.nearestCampNodes.head ? Math.min(100, maxStamina / 2) : 0;
@@ -253,6 +249,28 @@ define(['ash',
             this.lastSwitchCounter = 0;
             
             return true;
+        },
+        
+        checkExploreObjective: function() {
+            // if no objective, set one
+            var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
+            if (!autoPlayComponent.isExploreObjectiveSet()) {
+                this.setExploreObjective();
+                return;
+            }
+            
+            // if completed, reset / return
+            if (autoPlayComponent.isExploreGoalComplete) {
+                switch (autoPlayComponent.exploreGoal) {
+                    case AutoPlayConstants.GOALTYPES.SCOUT_SECTORS:
+                        this.setExploreObjective();
+                        return;
+                    case AutoPlayConstants.GOALTYPES.SCAVENGE_RESOURCES:
+                    case AutoPlayConstants.GOALTYPES.SCOUT_LOCALE:
+                    case AutoPlayConstants.GOALTYPES.CLEAR_WORKSHOP:
+                        return;
+                }
+            }
         },
 
         setExploreObjective: function () {
@@ -433,6 +451,10 @@ define(['ash',
                 return false;
             }
             
+            if (autoPlayComponent.isExploreGoalComplete) {
+                return false;
+            }
+            
             if (targetSector) {
                 // move towards target
                 var nextSector = autoPlayComponent.explorePath.shift();
@@ -513,17 +535,13 @@ define(['ash',
         },
 		
 		scout: function () {
-            var sector = this.playerActionFunctions.playerLocationNodes.head.entity;
-            var itemsComponent = this.itemsNodes.head.items;
-			var fightStrength = FightConstants.getPlayerStrength(this.playerStatsNodes.head.stamina, itemsComponent);
-            var positionComponent = sector.get(PositionComponent);
-            var levelOrdinal = this.playerActionFunctions.gameState.getLevelOrdinal(positionComponent.level);
-            var totalLevels = this.playerActionFunctions.gameState.getTotalLevels();
-            var groundLevelOrdinal = this.playerActionFunctions.gameState.getGroundLevelOrdinal();
-			
+            var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
+            
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("scout")) {
                 this.printStep("scout");
 				this.playerActionFunctions.scout();
+                if (autoPlayComponent.exploreGoal === AutoPlayConstants.GOALTYPES.SCOUT_SECTORS)
+                    autoPlayComponent.isExploreGoalComplete = true;
                 return true;
             }
             
@@ -536,6 +554,8 @@ define(['ash',
                     if (this.playerActionFunctions.playerActionsHelper.checkAvailability(action)) {
                         this.playerActionFunctions.scoutLocale(i);
                         this.printStep("scout locale " + locale.type);
+                        if (autoPlayComponent.exploreGoal === AutoPlayConstants.GOALTYPES.SCOUT_LOCALE)
+                            autoPlayComponent.isExploreGoalComplete = true;
                         return true;
                     }
                 }
@@ -924,7 +944,7 @@ define(['ash',
                 result += improvements.getCount(name);
             }
             return result;
-		}
+        }
         
     });
 

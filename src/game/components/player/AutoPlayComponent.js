@@ -11,6 +11,7 @@ define(['ash'], function (Ash) {
         exploreGoal: null,
         exploreSector: null,
         explorePath: null,
+        isExploreGoalComplete: false,
         
         constructor: function () {
         },
@@ -23,6 +24,7 @@ define(['ash'], function (Ash) {
             this.exploreGoal = goal;
             this.exploreSector = sector;
             this.explorePath = path;
+            this.isExploreGoalComplete = false;
         }
         
     });
