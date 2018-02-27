@@ -110,6 +110,23 @@ define([
             
 			return null;
 		},
+        
+        getSectorNeighbours: function (sector) {    
+            if (!sector)
+                return null;
+			var result = [];
+            var sectorPos = sector.get(PositionComponent);
+			var startingPos = sectorPos.getPosition();
+			for (var i in PositionConstants.getLevelDirections()) {
+				var direction = PositionConstants.getLevelDirections()[i];
+				var neighbourPos = PositionConstants.getPositionOnPath(startingPos, direction, 1);
+                var neighbour = this.getSectorByPosition(neighbourPos.level, neighbourPos.sectorX, neighbourPos.sectorY);
+				if (neighbour) {
+					result.push(neighbour);
+				}
+			}
+			return result;
+        },
 		
 		getAvailableProjectsForCamp: function (sectorEntity) {
 			var projects = [];

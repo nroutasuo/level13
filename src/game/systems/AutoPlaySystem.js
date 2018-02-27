@@ -1,5 +1,6 @@
 // A system to autoplay the game - mostly useful for quickly cheating to a semi-realistic later state of the game
 define(['ash',
+	'game/constants/AutoPlayConstants',
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
 	'game/constants/PlayerStatConstants',
@@ -23,17 +24,16 @@ define(['ash',
 	'game/components/type/LevelComponent',
     'game/constants/CampConstants',
     'game/constants/UpgradeConstants',
-    'game/constants/EnemyConstants',
     'game/constants/FightConstants',
     'game/vos/ResourcesVO',
     'game/vos/PositionVO'
 ], function (Ash,
-    ItemConstants, PerkConstants, PlayerStatConstants, WorldCreatorConstants, BagConstants,
+    AutoPlayConstants, ItemConstants, PerkConstants, PlayerStatConstants, WorldCreatorConstants, BagConstants,
 	AutoPlayNode, PlayerStatsNode, ItemsNode, FightNode,
     PositionComponent, CampComponent, ResourcesComponent, PlayerActionComponent, PlayerActionResultComponent, ItemsComponent, PerksComponent, BagComponent, 
     SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent,
 	LevelComponent,
-    CampConstants, UpgradeConstants, EnemyConstants, FightConstants, ResourcesVO, PositionVO) {
+    CampConstants, UpgradeConstants, FightConstants, ResourcesVO, PositionVO) {
     
 	var AutoPlaySystem = Ash.System.extend({
 		
@@ -52,7 +52,6 @@ define(['ash',
 		itemsNodes: null,
         fightNodes: null,
         
-        latestCampLevel: 0,
         lastStepTimeStamp: 0,
         idleCounter: 0,
         lastSwitchCounter: 0,
@@ -92,7 +91,6 @@ define(['ash',
             var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
             node.autoPlay.isExploring = !inCamp;
             node.autoPlay.isManagingCamps = inCamp;
-			this.latestCampLevel = this.playerActionFunctions.nearestCampNodes.head ? this.playerActionFunctions.nearestCampNodes.head.entity.get(PositionComponent).level : -100;
             this.cheatFunctions.applyCheat("speed " + this.speed);
         },
         
@@ -141,22 +139,29 @@ define(['ash',
                 this.printStep("skip 1 minute");
                 this.cheatFunctions.applyCheat("time 1");
             }
+            
             this.lastStepTimeStamp = timeStamp;
 		},
             
         updateExploring: function () {
             var didSomething = false;
+            
+            var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
+            if (!autoPlayComponent.isExploreObjectiveSet()) {
+                this.setExploreObjective();
+            }
+            
             var maxStamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
-            var minStamina = this.playerActionFunctions.nearestCampNodes.head ? Math.min(100, maxStamina / 2) : 10;
+            var minStamina = this.playerActionFunctions.nearestCampNodes.head ? Math.min(100, maxStamina / 2) : 0;
             var hasStamina = minStamina < this.playerStatsNodes.head.stamina.stamina;
 
             didSomething = didSomething || this.buildCamp();
             didSomething = didSomething || this.buildOutImprovements();
-            didSomething = didSomething || this.scout();
             didSomething = didSomething || this.useOutImprovements();
 
             if (hasStamina) {
                 didSomething = didSomething || this.craftItems();
+                didSomething = didSomething || this.scout();
                 didSomething = didSomething || this.scavenge();
                 didSomething = didSomething || this.idleOut();
                 didSomething = didSomething || this.move();
@@ -212,9 +217,11 @@ define(['ash',
             this.printStep("switch mode");
             
             var wasExploring = autoPlayComponent.isExploring;
-            if (wasExploring && this.latestCampLevel > -100) {
-                // this.printStep("enter camp " + this.latestCampLevel);
-                this.playerActionFunctions.moveToCamp(this.latestCampLevel);
+            var nearestCampLevel = this.playerActionFunctions.nearestCampNodes.head ? this.playerActionFunctions.nearestCampNodes.head.entity.get(PositionComponent).level : -100;
+            if (wasExploring && nearestCampLevel > -100) {
+                // this.printStep("enter camp " + nearestCampLevel);
+                autoPlayComponent.setExploreObjective(null, null, null);
+                this.playerActionFunctions.moveToCamp(nearestCampLevel);
                 this.playerActionFunctions.uiFunctions.showTab(this.playerActionFunctions.uiFunctions.elementIDs.tabs.in);
             } else {
                 // this.printStep("leave camp");
@@ -243,13 +250,110 @@ define(['ash',
             return true;
         },
 
+        setExploreObjective: function () {
+            var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
+            
+			var levelHelper = this.levelHelper;
+            var playerActionFunctions = this.playerActionFunctions;
+            
+            var playerPosition = this.playerActionFunctions.playerPositionNodes.head.position;
+			var currentLevel = playerPosition.level;
+            
+            // 2. check sectors
+            
+            var numAccessibleSectors = 0;
+            var numUnscoutedSectors = 0;
+            var nearestUnscoutedSector = null;
+            var nearestUnscoutedLocaleSector = null;
+            var nearestUnclearedWorkshopSector = null;
+			
+			var checkSector = function (level, sector) {
+                var isScouted = sector.get(SectorStatusComponent).scouted;
+                var hasUnscoutedLocales = levelHelper.getSectorLocalesForPlayer(sector).length > 0;
+                var hasUnclearedWorkshops = levelHelper.getSectorUnclearedWorkshopCount(sector) > 0;
+
+                if (!nearestUnscoutedSector && !isScouted) nearestUnscoutedSector = sector;
+                if (!nearestUnscoutedLocaleSector && hasUnscoutedLocales) nearestUnscoutedLocaleSector = sector;
+                if (!nearestUnclearedWorkshopSector && hasUnclearedWorkshops) nearestUnclearedWorkshopSector = sector;
+                
+                numAccessibleSectors++;
+                if (!isScouted)
+                    numUnscoutedSectors++;
+			};
+			
+			var checkLevel = function (level) {
+                if (!levelHelper.isLevelUnlocked(level))
+                    return;
+                // spiralling search: find sectors closest to current position first
+                var levelComponent = levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
+                var levelVO = levelComponent.levelVO;
+                var checkPos = playerPosition.clone();
+                var spiralRadius = 0
+                var spiralEdgeLength;
+                while ((checkPos.sectorX >= levelVO.minX && checkPos.sectorX <= levelVO.maxX) || (checkPos.sectorY >= levelVO.minY && checkPos.sectorY <= levelVO.maxY)) {
+                    spiralEdgeLength = spiralRadius * 2 + 1;
+                    checkPos = new PositionVO(playerPosition.level, playerPosition.sectorX - spiralRadius, playerPosition.sectorY - spiralRadius);
+                    for (var spiralEdge = 0; spiralEdge < 4; spiralEdge++) {
+                        for (var spiralEdgeI = 0; spiralEdgeI < spiralEdgeLength; spiralEdgeI++) {
+                            if (spiralEdgeI > 0) {
+                                if (spiralEdge === 0) checkPos.sectorX++;
+                                if (spiralEdge === 1) checkPos.sectorY++;
+                                if (spiralEdge === 2) checkPos.sectorX--;
+                                if (spiralEdge === 3) checkPos.sectorY--;
+
+                                var sector = levelHelper.getSectorByPosition(level, checkPos.sectorX, checkPos.sectorY);
+                                if (sector) {
+                                    checkSector(level, sector);
+                                }
+                            }
+                        }
+                        spiralRadius++;
+                    }
+                }
+            };
+			
+			for (var ld = 0; ld < WorldCreatorConstants.LEVEL_NUMBER_MAX; ld++) {
+                if (ld === 0) {
+                    checkLevel(currentLevel);
+                } else {
+    				checkLevel(currentLevel + ld);
+        			checkLevel(currentLevel - ld);
+                }
+			}
+            
+            // 3. set goal
+            
+            var goal = AutoPlayConstants.GOALTYPES.SCAVENGE_RESOURCES;
+            var sector = this.playerActionFunctions.playerLocationNodes.head.entity;
+            var path = this.findPathTo(sector);
+            
+            var ratioUnscoutedSectors = numUnscoutedSectors / numAccessibleSectors;
+            
+            if (nearestUnclearedWorkshopSector) {
+                goal = AutoPlayConstants.GOALTYPES.CLEAR_WORKSHOP;   
+                sector = nearestUnclearedWorkshopSector;
+                path = this.findPathTo(sector);
+            }
+            else if (nearestUnscoutedLocaleSector) {
+                goal = AutoPlayConstants.GOALTYPES.SCOUT_LOCALE;
+                sector = nearestUnscoutedLocaleSector;
+                path = this.findPathTo(sector);
+            }
+            else if (numUnscoutedSectors > 0) {
+                goal = AutoPlayConstants.GOALTYPES.SCOUT_SECTORS;
+                sector = nearestUnscoutedSector;
+                path = this.findPathTo(sector);
+            }
+            
+            this.printStep("set expore objective: " + goal + " " + sector.get(PositionComponent).getPosition() + " " + (path ? path.length : "[-]"));
+            autoPlayComponent.setExploreObjective(goal, sector, path);
+        },
+        
         findPathTo: function (goalSector) {
             var startSector = this.playerActionFunctions.playerPositionNodes.head.entity;
             
-            if (startSector === goalSector)
-                return [];
+            // Simple breadth-first search (implement A* if movement cost needs to be considered)
             
-            // Breadth-first search
             var frontier = [];
             var visited = [];
             var cameFrom = {};
@@ -257,6 +361,9 @@ define(['ash',
             var getKey = function (sector) {
                 return sector.get(PositionComponent).getPosition().toString();
             }
+            
+            if (getKey(startSector) === getKey(goalSector))
+                return [];
             
             visited.push(getKey(startSector));
             frontier.push(startSector);
@@ -292,7 +399,7 @@ define(['ash',
                 current = cameFrom[getKey(current)];
                 
                 if (!current || result.length > 500) {
-                    console.log("WARN: Failed to find path.");
+                    console.log("WARN: Failed to find path from " + getKey(startSector) + " to " + getKey(goalSector));
                     break;
                 }
             }
@@ -300,117 +407,40 @@ define(['ash',
         },
 
 		move: function () {
+            if (!this.playerActionFunctions.gameState.unlockedFeatures.camp)
+                return false;
+            
+            var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
+            var playerSector = this.playerActionFunctions.playerPositionNodes.head.entity;
             var playerPosition = this.playerActionFunctions.playerPositionNodes.head.position;
-			var l = playerPosition.level;
-			var levelHelper = this.levelHelper;
-            var playerActionFunctions = this.playerActionFunctions;
+            var targetSector = autoPlayComponent.exploreSector;
+            var targetPosition = targetSector ? targetSector.get(PositionComponent) : null;
             
-            var itemsComponent = this.itemsNodes.head.items;
-            var fightStrength = FightConstants.getPlayerStrength(this.playerStatsNodes.head.stamina, itemsComponent);
-            var groundLevelOrdinal = this.playerActionFunctions.gameState.getGroundLevelOrdinal();
-            var totalLevels = this.playerActionFunctions.gameState.getTotalLevels();
-			
-			var nearestCampableSector = null;
-			var nearestUnscoutedLocaleSector = null;
-			var nearestUnscoutedSector = null;
-            var nearestUnclearedSector = null;
-			var nearestCampSector = null;
+            /*
+            var isTimeToRetreat = false;
+            if (isTimeToRetreat) {
+                // retreat towards food/water
+                return true;
+            }
+            */
             
-            var latestCampLevel = -100;
-			
-			// TODO make realistic expeditions instead of jumping directly to sectors of interest
-			
-			var checkSector = function (testL, testSX, testSY) {
-				var sector = levelHelper.getSectorByPosition(testL, testSX, testSY);
-                var levelOrdinal = playerActionFunctions.gameState.getLevelOrdinal(testL);
-                var levelSafe = true;//fightStrength >= EnemyConstants.getRequiredStrength(levelOrdinal, groundLevelOrdinal, totalLevels);
-                var latestCampLevelOrdinal = playerActionFunctions.gameState.getLevelOrdinal(latestCampLevel);
-				if (sector) {
-					var sectorCamp = sector.has(CampComponent);
-					if (!nearestCampSector && sectorCamp) nearestCampSector = sector;
-                    
-                    if (sectorCamp && latestCampLevelOrdinal < levelOrdinal) latestCampLevel = testL;
-                    
-                    if (levelSafe) {
-                        var sectorUncleared = levelHelper.getSectorUnclearedWorkshopCount(sector) > 0;
-                        var sectorUnscouted = !sector.get(SectorStatusComponent).scouted;
-                        var sectorUnscoutedLocales = levelHelper.getSectorLocalesForPlayer(sector).length > 0;
-                        var sectorCampable = sector.get(SectorStatusComponent).canBuildCamp && !sectorCamp;
-                        var canScoutSector = playerActionFunctions.playerActionsHelper.checkAvailability("scout", false, sector);
-					
-                        if (!nearestCampableSector && sectorCampable) nearestCampableSector = sector;
-                        if (!nearestUnscoutedLocaleSector && sectorUnscoutedLocales) nearestUnscoutedLocaleSector = sector;
-                        if (!nearestUnscoutedSector && sectorUnscouted && canScoutSector) nearestUnscoutedSector = sector;
-                        if (!nearestUnclearedSector && sectorUncleared) nearestUnclearedSector = sector;
-                    }
-				}
-			}
-			
-			var checkLevel = function (testL) {
-                if (levelHelper.isLevelUnlocked(testL)) {
-					var levelComponent = levelHelper.getLevelEntityForPosition(testL).get(LevelComponent);
-					var levelVO = levelComponent.levelVO;
-					// spiralling search:
-					var checkPos = playerPosition.clone();
-					var spiralRadius = 0
-					var spiralEdgeLength;
-					while ((checkPos.sectorX >= levelVO.minX && checkPos.sectorX <= levelVO.maxX) || (checkPos.sectorY >= levelVO.minY && checkPos.sectorY <= levelVO.maxY)) {
-						spiralEdgeLength = spiralRadius * 2 + 1;
-						checkPos = new PositionVO(playerPosition.level, playerPosition.sectorX - spiralRadius, playerPosition.sectorY - spiralRadius);
-						for (var spiralEdge = 0; spiralEdge < 4; spiralEdge++) {
-							for (var spiralEdgeI = 0; spiralEdgeI < spiralEdgeLength; spiralEdgeI++) {
-								if (spiralEdgeI > 0) {
-									if (spiralEdge === 0) checkPos.sectorX++;
-									if (spiralEdge === 1) checkPos.sectorY++;
-									if (spiralEdge === 2) checkPos.sectorX--;
-									if (spiralEdge === 3) checkPos.sectorY--;
-								}
-								checkSector(testL, checkPos.sectorX, checkPos.sectorY);
-							}
-						}
-						spiralRadius++;
-					}
-                }
-			}
-			
-			for (var ld = 0; ld < WorldCreatorConstants.LEVEL_NUMBER_MAX; ld++) {
-				checkLevel(l + ld);
-				if (ld > 0) checkLevel(l - ld);
-			}
-            
-            if (latestCampLevel > -100) {
-				this.latestCampLevel = latestCampLevel;
-				console.log("set latest camp level: " + latestCampLevel);
-			}
-			
-			var isBagFull = this.isBagFull();
-            var stamina = this.playerStatsNodes.head.stamina.stamina;
-            var options = [];
-            var reasons = [];
-            
-			if (nearestCampableSector) {
-				options.push(nearestCampableSector);
-                reasons.push("campable sector");
-			} else if (nearestUnscoutedLocaleSector && stamina > 100) {
-				options.push(nearestUnscoutedLocaleSector);
-                reasons.push("unscouted locale");
-            } else if (nearestUnscoutedSector && stamina > 50) {
-				options.push(nearestUnscoutedSector);
-                reasons.push("unscouted sector");
-            } else if (nearestUnclearedSector && stamina > 50) {
-				options.push(nearestUnclearedSector);
-                reasons.push("uncleared sector");
-			} /*else if (nearestCampSector) {
-				options.push(nearestCampSector);
-                reasons.push("nearest camp sector");
-			}*/
-            
-            if (options.length > 0) {
-                var i = Math.floor(Math.random() * options.length);
-                return this.moveToSector(options[i], reasons[i]);
-            } else {
+            if (playerPosition.equals(targetPosition)) {
                 return false;
             }
+            
+            if (targetSector) {
+                // move towards target
+                var nextSector = autoPlayComponent.explorePath.shift();
+                return this.moveToSector(nextSector, "path");
+            } else {
+                // move to random sector
+                var neighbours = this.levelHelper.getSectorNeighbours(playerSector);
+                var i = Math.floor(Math.random() * neighbours.length);
+                var randomNeighbour = neighbours[i];
+                return this.moveToSector(randomNeighbour, "random");
+            }
+            
+            return false;
 		},
 			
         moveToSector: function (sectorEntity, reason) {
@@ -561,10 +591,6 @@ define(['ash',
                 this.playerActionFunctions.moveToCamp(nextCamp.position.level);
                 return true;
             }
-            
-            if (this.latestCampLevel > -100) {
-                this.playerActionFunctions.moveToCamp(this.latestCampLevel);
-			}
             
             return false;
         },

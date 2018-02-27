@@ -294,7 +294,7 @@ define(['ash',
                     setExploring = true;
                     endConditionUpdateFunction = function () {
                         var autoplayComponent = this.playerStatsNodes.head.entity.get(AutoPlayComponent);
-                        if (autoplayComponent.isPendingExploring)
+                        if (autoplayComponent && autoplayComponent.isPendingExploring)
                             return;
                         if (!autoplayComponent || !autoplayComponent.isExploring) {
                             this.engine.updateComplete.remove(endConditionUpdateFunction, this);
