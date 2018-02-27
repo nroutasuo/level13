@@ -155,6 +155,9 @@ define(['ash',
         
         updateCamping: function () {
             var didSomething = false;
+            var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
+            if (autoPlayComponent.isPendingExploring)
+                return didSomething;
             didSomething = didSomething || this.useInImprovements();
             didSomething = didSomething || this.manageWorkers();
             didSomething = didSomething || this.buildPassages();
