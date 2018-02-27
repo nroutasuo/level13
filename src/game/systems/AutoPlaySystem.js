@@ -10,6 +10,7 @@ define(['ash',
 	'game/nodes/player/PlayerStatsNode',
     'game/nodes/player/ItemsNode',
     'game/nodes/FightNode',
+    'game/nodes/sector/CampNode',
 	'game/components/common/PositionComponent',
 	'game/components/common/CampComponent',
 	'game/components/common/ResourcesComponent',
@@ -29,7 +30,7 @@ define(['ash',
     'game/vos/PositionVO'
 ], function (Ash,
     AutoPlayConstants, ItemConstants, PerkConstants, PlayerStatConstants, WorldCreatorConstants, BagConstants,
-	AutoPlayNode, PlayerStatsNode, ItemsNode, FightNode,
+	AutoPlayNode, PlayerStatsNode, ItemsNode, FightNode, CampNode,
     PositionComponent, CampComponent, ResourcesComponent, PlayerActionComponent, PlayerActionResultComponent, ItemsComponent, PerksComponent, BagComponent, 
     SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent,
 	LevelComponent,
@@ -51,6 +52,7 @@ define(['ash',
 		playerStatsNodes: null,
 		itemsNodes: null,
         fightNodes: null,
+        campNodes: null,
         
         lastStepTimeStamp: 0,
         idleCounter: 0,
@@ -69,6 +71,7 @@ define(['ash',
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			this.itemsNodes = engine.getNodeList(ItemsNode);
             this.fightNodes = engine.getNodeList(FightNode);
+            this.campNodes = engine.getNodeList(CampNode);
             
             this.autoPlayNodes.nodeAdded.add(this.onAutoPlayNodeAdded, this);
             this.autoPlayNodes.nodeRemoved.add(this.onAutoPlayNodeRemoved, this);
@@ -84,6 +87,7 @@ define(['ash',
 			this.playerStatsNodes = null;
 			this.itemsNodes = null;
             this.fightNodes = null;
+            this.campNodes = null;
 		},
         
         onAutoPlayNodeAdded: function (node) {
@@ -211,7 +215,8 @@ define(['ash',
             var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
             var injuries = perksComponent.getItemsByType(PerkConstants.perkTypes.injury);
             var itemsComponent = this.itemsNodes.head.items;
-            if (injuries.length > 2 && currentFood > 5 && currentWater > 5 && !autoPlayComponent.isExploring)
+            var hasHospital = this.getTotalImprovementsCount(improvementNames.hospital) > 0;
+            if (injuries.length > 2 && hasHospital && currentFood > 5 && currentWater > 5 && !autoPlayComponent.isExploring)
                 return false;
             
             this.printStep("switch mode");
@@ -910,6 +915,15 @@ define(['ash',
 		isBagFull: function () {
             var bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
             return bagComponent.totalCapacity - bagComponent.usedCapacity < 2;
+		},
+        
+        getTotalImprovementsCount: function (name) {
+            var result = 0;
+            for (var node = this.campNodes.head; node; node = node.next) {
+                var improvements = node.entity.get(SectorImprovementsComponent);
+                result += improvements.getCount(name);
+            }
+            return result;
 		}
         
     });
