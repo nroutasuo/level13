@@ -376,6 +376,30 @@ define(['ash',
             this.printStep("set expore objective: " + goal + " " + sector.get(PositionComponent).getPosition() + " " + (path ? path.length : "[-]"));
             autoPlayComponent.setExploreObjective(goal, sector, path);
         },
+        
+        getNearestSectorsByRes: function () {
+            var result = {};
+			var checkSector = function (sector) {
+                if (Object.keys(result).length === resourceNames.length) {
+                    console.log("[getNearestSectorsByRes] all found.");
+                    return true;
+                }
+                var featuresComponent = sector.get(SectorFeaturesComponent);
+				for (var key in resourceNames) {
+					var name = resourceNames[key];
+                    if (result[name])
+                        continue;
+                    if (featuresComponent.resourcesScavengable.getResource(name) > 0 || featuresComponent.resourcesCollectable.getResource(name) > 0) {
+                        console.log("[getNearestSectorsByRes] found " + name + " -> " + sector.get(PositionComponent).getPosition());
+                        result[name] = sector;
+                    }
+                }
+                return false;
+			};
+            var playerPosition = this.playerActionFunctions.playerPositionNodes.head.position;
+            this.levelHelper.forEverySectorFromLocation(playerPosition, checkSector);
+            return result;
+        },
 
 		move: function () {
             if (!this.playerActionFunctions.gameState.unlockedFeatures.camp)
