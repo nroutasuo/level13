@@ -346,87 +346,35 @@ define(['ash',
             
             // 3. set goal
             
-            var goal = AutoPlayConstants.GOALTYPES.SCAVENGE_RESOURCES;
-            var sector = this.playerActionFunctions.playerLocationNodes.head.entity;
-            var path = this.findPathTo(sector);
+            var goal = null
+            var sector = null;
+            var path = null;
             
             var ratioUnscoutedSectors = numUnscoutedSectors / numAccessibleSectors;
+            var startSector = this.playerActionFunctions.playerPositionNodes.head.entity;
             
             if (nearestUnclearedWorkshopSector) {
                 goal = AutoPlayConstants.GOALTYPES.CLEAR_WORKSHOP;   
                 sector = nearestUnclearedWorkshopSector;
-                path = this.findPathTo(sector);
+                path = this.levelHelper.findPathTo(startSector, sector);
             }
             else if (nearestUnscoutedLocaleSector) {
                 goal = AutoPlayConstants.GOALTYPES.SCOUT_LOCALE;
                 sector = nearestUnscoutedLocaleSector;
-                path = this.findPathTo(sector);
+                path = this.levelHelper.findPathTo(startSector, sector);
             }
             else if (numUnscoutedSectors > 0) {
                 goal = AutoPlayConstants.GOALTYPES.SCOUT_SECTORS;
                 sector = nearestUnscoutedSector;
-                path = this.findPathTo(sector);
+                path = this.levelHelper.findPathTo(startSector, sector);
+            } else {
+                goal = AutoPlayConstants.GOALTYPES.SCAVENGE_RESOURCES;
+                sector = this.playerActionFunctions.playerLocationNodes.head.entity;
+                path = this.levelHelper.findPathTo(startSector, sector);
             }
             
             this.printStep("set expore objective: " + goal + " " + sector.get(PositionComponent).getPosition() + " " + (path ? path.length : "[-]"));
             autoPlayComponent.setExploreObjective(goal, sector, path);
-        },
-        
-        findPathTo: function (goalSector) {
-            var startSector = this.playerActionFunctions.playerPositionNodes.head.entity;
-            
-            // Simple breadth-first search (implement A* if movement cost needs to be considered)
-            
-            var frontier = [];
-            var visited = [];
-            var cameFrom = {};
-            
-            var getKey = function (sector) {
-                return sector.get(PositionComponent).getPosition().toString();
-            }
-            
-            if (getKey(startSector) === getKey(goalSector))
-                return [];
-            
-            visited.push(getKey(startSector));
-            frontier.push(startSector);
-            cameFrom[getKey(startSector)] = null;
-            
-            var pass = 0;
-            var current;
-            var neighbours;
-            var next;
-            mainLoop: while (frontier.length > 0) {
-                pass++;
-                current = frontier.shift();
-                neighbours = this.levelHelper.getSectorNeighbours(current);
-                for (var i = 0; i < neighbours.length; i++) {
-                    var next = neighbours[i];
-                    var neighbourKey = getKey(next);
-                    if (visited.indexOf(neighbourKey) >= 0)
-                        continue;
-                    visited.push(neighbourKey);
-                    frontier.push(next);
-                    cameFrom[neighbourKey] = current;
-                    
-                    if (next === goalSector) {
-                        break mainLoop;
-                    }
-                }
-            }
-            
-            var result = [];
-            var current = goalSector;
-            while (current !== startSector) {
-                result.push(current);
-                current = cameFrom[getKey(current)];
-                
-                if (!current || result.length > 500) {
-                    console.log("WARN: Failed to find path from " + getKey(startSector) + " to " + getKey(goalSector));
-                    break;
-                }
-            }
-            return result.reverse();
         },
 
 		move: function () {
