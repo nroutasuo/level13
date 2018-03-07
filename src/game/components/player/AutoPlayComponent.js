@@ -11,6 +11,7 @@ define(['ash'], function (Ash) {
         exploreGoal: null,
         exploreSector: null,
         explorePath: null,
+        exploreResource: null,
         isExploreGoalComplete: false,
         
         constructor: function () {
@@ -20,10 +21,11 @@ define(['ash'], function (Ash) {
             return this.exploreGoal;
         },
         
-        setExploreObjective: function (goal, sector, path) {
+        setExploreObjective: function (goal, sector, path, resource) {
             this.exploreGoal = goal;
             this.exploreSector = sector;
             this.explorePath = path;
+            this.exploreResource = resource;
             this.isExploreGoalComplete = false;
         }
         

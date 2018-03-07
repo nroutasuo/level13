@@ -1074,6 +1074,23 @@ define([
                     return "";
             }
         },
+        
+        getActionNameForImprovement: function (improvementName) {
+            // TODO make this nicer - list action names somewhere outside of html?
+            var helper = this;
+            var result = null;
+            $.each($("#in-improvements tr"), function () {
+                var actionName = $(this).find("button.action-build").attr("action");
+                var improvement = helper.getImprovementNameForAction(actionName);
+                if ((improvement == improvementName)) {
+                    result = actionName;
+                    return false; // breaks each
+                }
+            });
+            if (result == null)
+                console.log("WARN: No action name found for improvement: " + improvementName);
+            return result;
+        },
 		
         getItemForCraftAction: function (actionName) {
 			var baseActionName = this.getBaseActionID(actionName);

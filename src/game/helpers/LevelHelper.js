@@ -5,11 +5,13 @@ define([
     'game/constants/PositionConstants',
     'game/constants/MovementConstants',
     'game/constants/SectorConstants',
+    'game/constants/WorldCreatorConstants',
     'game/nodes/level/LevelNode',
     'game/nodes/sector/SectorNode',
     'game/components/common/PositionComponent',
     'game/components/common/RevealedComponent',
     'game/components/common/CampComponent',
+    'game/components/type/LevelComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/SectorFeaturesComponent',
@@ -20,17 +22,20 @@ define([
     'game/components/level/LevelPassagesComponent',
     'game/vos/LevelProjectVO',
     'game/vos/ImprovementVO',
+    'game/vos/PositionVO'
 ], function (
 	Ash,
 	LocaleConstants,
 	PositionConstants,
 	MovementConstants,
 	SectorConstants,
+    WorldCreatorConstants,
 	LevelNode, 
     SectorNode,
 	PositionComponent,
     RevealedComponent,
     CampComponent,
+    LevelComponent,
 	SectorStatusComponent,
 	SectorLocalesComponent,
 	SectorFeaturesComponent,
@@ -40,7 +45,8 @@ define([
 	WorkshopComponent,
 	LevelPassagesComponent,
 	LevelProjectVO,
-	ImprovementVO
+	ImprovementVO,
+    PositionVO
 ) {
     var LevelHelper = Ash.Class.extend({
         
@@ -181,6 +187,61 @@ define([
                 }
             }
             return result.reverse();
+        },
+        
+        forEverySectorFromLocation: function (playerPosition, func) {
+            
+            // TODO go by path distance, not distance in coordinates
+            
+			var doLevel = function (level) {
+                if (!this.isLevelUnlocked(level))
+                    return;
+                // spiralling search: find sectors closest to current position first
+                var levelComponent = this.getLevelEntityForPosition(level).get(LevelComponent);
+                var levelVO = levelComponent.levelVO;
+                var checkPos = playerPosition.clone();
+                var spiralRadius = 0;
+                var spiralEdgeLength;
+                while ((checkPos.sectorX >= levelVO.minX && checkPos.sectorX <= levelVO.maxX) || (checkPos.sectorY >= levelVO.minY && checkPos.sectorY <= levelVO.maxY)) {
+                    spiralEdgeLength = spiralRadius * 2 + 1;
+                    checkPos = new PositionVO(playerPosition.level, playerPosition.sectorX - spiralRadius, playerPosition.sectorY - spiralRadius);
+                    for (var spiralEdge = 0; spiralEdge < 4; spiralEdge++) {
+                        for (var spiralEdgeI = 0; spiralEdgeI < spiralEdgeLength; spiralEdgeI++) {
+                            if (spiralEdgeI > 0) {
+                                if (spiralEdge === 0) checkPos.sectorX++;
+                                if (spiralEdge === 1) checkPos.sectorY++;
+                                if (spiralEdge === 2) checkPos.sectorX--;
+                                if (spiralEdge === 3) checkPos.sectorY--;
+
+                                var sector = this.getSectorByPosition(level, checkPos.sectorX, checkPos.sectorY);
+                                if (sector) {
+                                    var isDone = func(sector);
+                                    if (isDone) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                        spiralRadius++;
+                    }
+                }
+                
+                return false;
+            };
+            
+			var currentLevel = playerPosition.level;
+            var isDone;
+			for (var ld = 0; ld < WorldCreatorConstants.LEVEL_NUMBER_MAX; ld++) {
+                if (ld === 0) {
+                    isDone = doLevel.call(this, currentLevel);
+                } else {
+    				isDone = doLevel.call(this, currentLevel + ld);
+        			isDone = isDone || doLevel.call(this, currentLevel - ld);
+                }
+                
+                if (isDone)
+                    break;
+			}
         },
         
 		getAvailableProjectsForCamp: function (sectorEntity) {

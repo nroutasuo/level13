@@ -4,7 +4,6 @@ define(['ash',
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
 	'game/constants/PlayerStatConstants',
-	'game/constants/WorldCreatorConstants',
 	'game/constants/BagConstants',
 	'game/nodes/player/AutoPlayNode',
 	'game/nodes/player/PlayerStatsNode',
@@ -20,20 +19,18 @@ define(['ash',
 	'game/components/player/PerksComponent',
 	'game/components/player/BagComponent',
 	'game/components/sector/SectorStatusComponent',
+	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
-	'game/components/type/LevelComponent',
     'game/constants/CampConstants',
     'game/constants/UpgradeConstants',
-    'game/vos/ResourcesVO',
-    'game/vos/PositionVO'
+    'game/vos/ResourcesVO'
 ], function (Ash,
-    AutoPlayConstants, ItemConstants, PerkConstants, PlayerStatConstants, WorldCreatorConstants, BagConstants,
+    AutoPlayConstants, ItemConstants, PerkConstants, PlayerStatConstants, BagConstants,
 	AutoPlayNode, PlayerStatsNode, ItemsNode, FightNode, CampNode,
     PositionComponent, CampComponent, ResourcesComponent, PlayerActionComponent, PlayerActionResultComponent, ItemsComponent, PerksComponent, BagComponent, 
-    SectorStatusComponent, SectorLocalesComponent, SectorImprovementsComponent,
-	LevelComponent,
-    CampConstants, UpgradeConstants, ResourcesVO, PositionVO) {
+    SectorStatusComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorImprovementsComponent,
+    CampConstants, UpgradeConstants, ResourcesVO) {
     
 	var AutoPlaySystem = Ash.System.extend({
 		
@@ -263,7 +260,7 @@ define(['ash',
             if (autoPlayComponent.isExploreGoalComplete) {
                 switch (autoPlayComponent.exploreGoal) {
                     case AutoPlayConstants.GOALTYPES.SCOUT_SECTORS:
-                        this.setExploreObjective();
+                        //this.setExploreObjective();
                         return;
                     case AutoPlayConstants.GOALTYPES.SCAVENGE_RESOURCES:
                     case AutoPlayConstants.GOALTYPES.SCOUT_LOCALE:
@@ -280,7 +277,6 @@ define(['ash',
             var playerActionFunctions = this.playerActionFunctions;
             
             var playerPosition = this.playerActionFunctions.playerPositionNodes.head.position;
-			var currentLevel = playerPosition.level;
             
             // 2. check sectors
             
@@ -290,7 +286,7 @@ define(['ash',
             var nearestUnscoutedLocaleSector = null;
             var nearestUnclearedWorkshopSector = null;
 			
-			var checkSector = function (level, sector) {
+			var checkSector = function (sector) {
                 var isScouted = sector.get(SectorStatusComponent).scouted;
                 var hasUnscoutedLocales = levelHelper.getSectorLocalesForPlayer(sector).length > 0;
                 var hasUnclearedWorkshops = levelHelper.getSectorUnclearedWorkshopCount(sector) > 0;
@@ -302,68 +298,34 @@ define(['ash',
                 numAccessibleSectors++;
                 if (!isScouted)
                     numUnscoutedSectors++;
+
+                return false;
 			};
 			
-			var checkLevel = function (level) {
-                if (!levelHelper.isLevelUnlocked(level))
-                    return;
-                // spiralling search: find sectors closest to current position first
-                var levelComponent = levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
-                var levelVO = levelComponent.levelVO;
-                var checkPos = playerPosition.clone();
-                var spiralRadius = 0
-                var spiralEdgeLength;
-                while ((checkPos.sectorX >= levelVO.minX && checkPos.sectorX <= levelVO.maxX) || (checkPos.sectorY >= levelVO.minY && checkPos.sectorY <= levelVO.maxY)) {
-                    spiralEdgeLength = spiralRadius * 2 + 1;
-                    checkPos = new PositionVO(playerPosition.level, playerPosition.sectorX - spiralRadius, playerPosition.sectorY - spiralRadius);
-                    for (var spiralEdge = 0; spiralEdge < 4; spiralEdge++) {
-                        for (var spiralEdgeI = 0; spiralEdgeI < spiralEdgeLength; spiralEdgeI++) {
-                            if (spiralEdgeI > 0) {
-                                if (spiralEdge === 0) checkPos.sectorX++;
-                                if (spiralEdge === 1) checkPos.sectorY++;
-                                if (spiralEdge === 2) checkPos.sectorX--;
-                                if (spiralEdge === 3) checkPos.sectorY--;
-
-                                var sector = levelHelper.getSectorByPosition(level, checkPos.sectorX, checkPos.sectorY);
-                                if (sector) {
-                                    checkSector(level, sector);
-                                }
-                            }
-                        }
-                        spiralRadius++;
-                    }
-                }
-            };
-			
-			for (var ld = 0; ld < WorldCreatorConstants.LEVEL_NUMBER_MAX; ld++) {
-                if (ld === 0) {
-                    checkLevel(currentLevel);
-                } else {
-    				checkLevel(currentLevel + ld);
-        			checkLevel(currentLevel - ld);
-                }
-			}
+            this.levelHelper.forEverySectorFromLocation(playerPosition, checkSector);
             
             // 3. set goal
             
             var goal = null
             var sector = null;
             var path = null;
+            var resource = null;
             
             var ratioUnscoutedSectors = numUnscoutedSectors / numAccessibleSectors;
             var startSector = this.playerActionFunctions.playerPositionNodes.head.entity;
+            var hasCamp = this.playerActionFunctions.nearestCampNodes.head;
             
-            if (nearestUnclearedWorkshopSector) {
+            if (hasCamp && nearestUnclearedWorkshopSector) {
                 goal = AutoPlayConstants.GOALTYPES.CLEAR_WORKSHOP;   
                 sector = nearestUnclearedWorkshopSector;
                 path = this.levelHelper.findPathTo(startSector, sector);
             }
-            else if (nearestUnscoutedLocaleSector) {
+            else if (hasCamp && nearestUnscoutedLocaleSector) {
                 goal = AutoPlayConstants.GOALTYPES.SCOUT_LOCALE;
                 sector = nearestUnscoutedLocaleSector;
                 path = this.levelHelper.findPathTo(startSector, sector);
             }
-            else if (numUnscoutedSectors > 0) {
+            else if (hasCamp && numUnscoutedSectors > 0 && Math.random() < 0.5) {
                 goal = AutoPlayConstants.GOALTYPES.SCOUT_SECTORS;
                 sector = nearestUnscoutedSector;
                 path = this.levelHelper.findPathTo(startSector, sector);
@@ -371,10 +333,107 @@ define(['ash',
                 goal = AutoPlayConstants.GOALTYPES.SCAVENGE_RESOURCES;
                 sector = this.playerActionFunctions.playerLocationNodes.head.entity;
                 path = this.levelHelper.findPathTo(startSector, sector);
+                resource = this.getExploreResource();
             }
             
-            this.printStep("set expore objective: " + goal + " " + sector.get(PositionComponent).getPosition() + " " + (path ? path.length : "[-]"));
-            autoPlayComponent.setExploreObjective(goal, sector, path);
+            this.printStep("set expore objective: " + goal + " " + sector.get(PositionComponent).getPosition() + " " + (path ? path.length : "[-]") + " " + resource);
+            autoPlayComponent.setExploreObjective(goal, sector, path, resource);
+        },
+        
+        getExploreResource: function () {
+            if (!this.playerActionFunctions.gameState.unlockedFeatures.camp)
+                return resourceNames.metal;
+            
+            var nearestSectorsByRes = this.getNearestSectorsByRes(); 
+            var campStorage = this.playerActionFunctions.resourcesHelper.getCurrentCampStorage(this.playerActionFunctions.nearestCampNodes.head.entity).resources;
+            var campPopulation = this.playerActionFunctions.nearestCampNodes.head.camp.population;
+            
+            var isWaterLow = campStorage.getResource(resourceNames.water) < (10 + campPopulation * 2.5);
+            if (isWaterLow)
+                if (nearestSectorsByRes[resourceNames.water])
+                    return resourceNames.water;
+            
+            var isFoodLow = campStorage.getResource(resourceNames.food) < (10 + campPopulation * 2.5);
+            if (isFoodLow)
+                if (nearestSectorsByRes[resourceNames.food])
+                    return resourceNames.food;
+            
+            var action = this.getNextImprovementAction() || this.getNextProjectAction();
+            if (action) {
+                var missingResource = action.costFactorRes;
+                if (missingResource && nearestSectorsByRes[missingResource])
+                    return missingResource;
+            }
+            
+            return resourceNames.metal;
+        },
+        
+        getNextImprovementAction: function () {
+            var campStorage = this.playerActionFunctions.resourcesHelper.getCurrentCampStorage(this.playerActionFunctions.nearestCampNodes.head.entity).resources;
+            
+            // get all available improvements in camp
+            var improvements = [];
+            for (var key in improvementNames) {
+                var improvementName = improvementNames[key];
+                var actionName = this.playerActionFunctions.playerActionsHelper.getActionNameForImprovement(improvementName);
+                if (!actionName)
+                    continue;
+                
+                var requirementCheck =  this.playerActionFunctions.playerActionsHelper.checkRequirements(actionName, false, null);
+                var actionEnabled = requirementCheck.value >= 1;
+                if (!actionEnabled)
+                    continue;
+                
+                var actionAvailable = this.playerActionFunctions.playerActionsHelper.checkAvailability(actionName, false, null);
+                if (actionAvailable)
+                    continue;
+                
+                var ordinal = this.playerActionFunctions.playerActionsHelper.getOrdinal(actionName);
+                var costFactor =  this.playerActionFunctions.playerActionsHelper.getCostFactor(actionName);
+                var costs = this.playerActionFunctions.playerActionsHelper.getCosts(actionName, ordinal, costFactor);
+
+                var costFactor = 1;
+                var costFactorRes = null;                
+                for (var costName in costs) {
+                    var costNameParts = costName.split("_");
+                    var costAmount = costs[costName];
+                    if (costNameParts[0] !== "resource")
+                        continue;
+                    var resourceName = costNameParts[1];
+                    var factor = campStorage.getResource(resourceName) / costAmount;
+                    if (factor < costFactor) {
+                        costFactor = factor;
+                        costFactorRes = resourceName;
+                    }
+                    
+                }
+                if (costFactor < 1) {
+                    improvements.push({improvementName: improvementName, actionName: actionName, costFactor: costFactor, costFactorRes: costFactorRes});
+                }
+            }
+            
+            if (improvements.length === 0)
+                return null;
+            
+            // sort by a) hasn't built any yet b) resource cost
+            var campImprovements = this.playerActionFunctions.nearestCampNodes.head.entity.get(SectorImprovementsComponent);
+            improvements = improvements.sort(function(a,b) {
+                var counta = campImprovements.getCount(a.improvementName);
+                var countb = campImprovements.getCount(b.improvementName);
+                if (counta === 0 && countb !== 0)
+                    return -1;
+                if (countb === 0 && counta !== 0)
+                    return 1;
+                return a.costFactor - b.costFactor;
+                
+            });
+            
+            return improvements[0];
+        },
+        
+        getNextProjectAction: function () {
+            // TODO implement
+            return null;
         },
         
         getNearestSectorsByRes: function () {
@@ -512,8 +571,10 @@ define(['ash',
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("scout")) {
                 this.printStep("scout");
 				this.playerActionFunctions.scout();
-                if (autoPlayComponent.exploreGoal === AutoPlayConstants.GOALTYPES.SCOUT_SECTORS)
+                if (autoPlayComponent.exploreGoal === AutoPlayConstants.GOALTYPES.SCOUT_SECTORS) {
                     autoPlayComponent.isExploreGoalComplete = true;
+                    this.printStep("complete scout goal");
+                }
                 return true;
             }
             
@@ -526,8 +587,10 @@ define(['ash',
                     if (this.playerActionFunctions.playerActionsHelper.checkAvailability(action)) {
                         this.playerActionFunctions.scoutLocale(i);
                         this.printStep("scout locale " + locale.type);
-                        if (autoPlayComponent.exploreGoal === AutoPlayConstants.GOALTYPES.SCOUT_LOCALE)
+                        if (autoPlayComponent.exploreGoal === AutoPlayConstants.GOALTYPES.SCOUT_LOCALE) {
                             autoPlayComponent.isExploreGoalComplete = true;
+                            this.printStep("complete scout goal");
+                        }
                         return true;
                     }
                 }
@@ -704,7 +767,10 @@ define(['ash',
         },
         
         buildInImprovements: function () {
+            var campComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(CampComponent);
 			var improvementsComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+            var maxPopulation = improvementsComponent.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
+            maxPopulation += improvementsComponent.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
             
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_tradingPost")) {
                 this.printStep("build trading post");
@@ -718,16 +784,18 @@ define(['ash',
                 return true;
             }
             
-            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_house2")) {
-                this.printStep("build house2");
-                this.playerActionFunctions.buildHouse2();
-                return true;
-            }
-            
-            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_house")) {
-                this.printStep("build house");
-                this.playerActionFunctions.buildHouse();
-                return true;
+            if (campComponent.population >= maxPopulation - 1) {
+                if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_house2")) {
+                    this.printStep("build house2");
+                    this.playerActionFunctions.buildHouse2();
+                    return true;
+                }
+
+                if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_house")) {
+                    this.printStep("build house");
+                    this.playerActionFunctions.buildHouse();
+                    return true;
+                }
             }
             
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_storage")) {
@@ -840,6 +908,10 @@ define(['ash',
             var resultVO = this.playerStatsNodes.head.entity.get(PlayerActionResultComponent).pendingResultVO;
             var playerAllItems = this.playerStatsNodes.head.entity.get(ItemsComponent).getAll(inCamp);
             var playerResources = this.playerStatsNodes.head.entity.get(ResourcesComponent);
+
+            var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
+            var goalres = autoPlayComponent.exploreResource ? autoPlayComponent.exploreResource : resourceNames.metal;
+            var goalamount = bagComponent.totalCapacity / 2;
             
             // pick everything
             resultVO.selectedItems = resultVO.gainedItems;
@@ -848,47 +920,63 @@ define(['ash',
             
             // drop stuff if needed
             // TODO prioritize item types to discard
-            var prioritizedResources = [ 
-                { name: resourceNames.metal, value: 10 }, 
-                { name: resourceNames.concrete, value: 0 },
-                { name: resourceNames.tools, value: 0 },
-                { name: resourceNames.medicine, value: 0 },
-                { name: resourceNames.rope, value: 0 },
-                { name: resourceNames.herbs, value: 0 },
-                { name: resourceNames.fuel, value: 0 },
-                { name: resourceNames.food, value: 5 },
-                { name: resourceNames.water, value: 8 }, 
-                { name: resourceNames.metal, value: 0 },
-                { name: resourceNames.food, value: 0 },
-                { name: resourceNames.water, value: 0 }, 
+            
+            var prioritizedResources = [
+                { name: resourceNames.metal, min: 8 }, 
+                { name: resourceNames.concrete, min: 0 },
+                { name: resourceNames.tools, min: 0 },
+                { name: resourceNames.medicine, min: 0 },
+                { name: resourceNames.rope, min: 0 },
+                { name: resourceNames.herbs, min: 0 },
+                { name: resourceNames.fuel, min: 0 },
+                { name: resourceNames.food, min: 5 },
+                { name: resourceNames.water, min: 8 }, 
+                { name: resourceNames.metal, min: 0 },
+                { name: resourceNames.food, min: 0 },
+                { name: resourceNames.water, min: 0 },
             ];
+            
             while (bagComponent.selectedCapacity > bagComponent.totalCapacity) {
                 var discarded = false;
                 for (var i = 0; i < prioritizedResources.length; i++) {
                     var resourceCheck = prioritizedResources[i];
                     var name = resourceCheck.name;
-                    var totalValue = resultVO.selectedResources.getResource(name) + playerResources.resources.getResource(name);
-                    if (resultVO.selectedResources.getResource(name) > 0 && totalValue > resourceCheck.value) {
+                    var totalAmount = resultVO.selectedResources.getResource(name) + playerResources.resources.getResource(name);
+                    var min = resourceCheck.min + (goalres == name ? goalamount : 0);
+                    
+                    // leave from selected resources
+                    if (resultVO.selectedResources.getResource(name) > 0 && totalAmount > min) {
                         resultVO.selectedResources.addResource(name, -1);
                         // this.printStep("leave 1 " + name);
                         discarded = true;
                         break;
                     }
-                    if (playerResources.resources.getResource(name) > 0 && totalValue > resourceCheck.value) {
-                        resultVO.discardedResources .addResource(name, 1);
+                    
+                    // discard from already carried resources
+                    if (playerResources.resources.getResource(name) > 0 && totalAmount > min) {
+                        resultVO.discardedResources.addResource(name, 1);
                         // this.printStep("discard 1 " + name);
                         discarded = true;
                         break;
                     }
                 }
+                
                 if (!discarded && resultVO.selectedItems.length > 0) {
                     // this.printStep("leave 1 item");
                     resultVO.selectedItems.splice(0, 1);
                     discarded = true;
                 }
+                
                 BagConstants.updateCapacity(bagComponent, resultVO, playerResources, playerAllItems);
                 if (!discarded)
                     break;
+            }
+            
+            if (autoPlayComponent.exploreGoal === AutoPlayConstants.GOALTYPES.SCAVENGE_RESOURCES) {
+                var totalAmount = resultVO.selectedResources.getResource(goalres) + playerResources.resources.getResource(goalres);
+                autoPlayComponent.isExploreGoalComplete = totalAmount >= goalamount;
+                if (autoPlayComponent.isExploreGoalComplete)
+                    this.printStep("complete resource goal");
             }
         },
         
