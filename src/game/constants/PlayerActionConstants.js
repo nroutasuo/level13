@@ -65,10 +65,11 @@ function (Ash, GameConstants, CampConstants) {
                     vision: [10, -1],
                     sector: {
                         scouted: true,
+                        spring: true,
                     },
                     bag: {
                         full: false,
-                    }
+                    },
                 },
                 
                 fight_gang: {

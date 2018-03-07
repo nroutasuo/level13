@@ -109,7 +109,7 @@ define([
             }
         },
 		
-		// Check both costs and requirements - everything that is needed for the player action
+		// Check costs, requirements and cooldown - everything that is needed for the player action
         checkAvailability: function (action, log, otherSector) {
             var isLocationAction = PlayerActionConstants.isLocationAction(action);
             var playerPos = this.playerStatsNodes.head.entity.get(PositionComponent);
@@ -552,6 +552,15 @@ define([
                         if (statusComponent.scouted != requirements.sector.scouted) {
                             if (statusComponent.scouted)    reason = "Area already scouted.";
                             else                            reason = "Area not scouted yet.";
+                            if (log) console.log("WARN: " + reason);
+                            return { value: 0, reason: reason };
+                        }
+                    }
+                    
+                    if (typeof requirements.sector.spring != "undefined") {
+                        if (featuresComponent.hasSpring != requirements.sector.spring) {
+                            if (featuresComponent.hasSpring)    reason = "There is a spring.";
+                            else                                reason = "There is no spring.";
                             if (log) console.log("WARN: " + reason);
                             return { value: 0, reason: reason };
                         }
