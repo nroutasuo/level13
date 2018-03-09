@@ -34,8 +34,8 @@ define(['ash',
     
 	var AutoPlaySystem = Ash.System.extend({
 		
-        speed: 1,
-        stepInterval: 750,
+        speed: 5,
+        stepInterval: 250,
         isExpress: false,
         
 		playerActionFunctions: null,
@@ -231,7 +231,7 @@ define(['ash',
                     
                     var selectedItems = {};
                     var itemID = ItemConstants.itemDefinitions.exploration[0].id;
-                    if (itemsComponent.getCountById(itemID) > 0) {
+                    if (itemsComponent.getCountById(itemID, true) > 0) {
                         selectedItems[itemID] = 1;
                     }
                     this.playerActionFunctions.updateCarriedItems(selectedItems);
@@ -278,6 +278,11 @@ define(['ash',
             
             var playerPosition = this.playerActionFunctions.playerPositionNodes.head.position;
             
+            // 1. set requirements
+            if (this.playerStatsNodes.head.vision.value < this.playerStatsNodes.head.vision.maximum) {
+                this.playerStatsNodes.head.vision.value = this.playerStatsNodes.head.vision.maximum;
+            }
+            
             // 2. check sectors
             
             var numAccessibleSectors = 0;
@@ -290,8 +295,12 @@ define(['ash',
                 var isScouted = sector.get(SectorStatusComponent).scouted;
                 var hasUnscoutedLocales = levelHelper.getSectorLocalesForPlayer(sector).length > 0;
                 var hasUnclearedWorkshops = levelHelper.getSectorUnclearedWorkshopCount(sector) > 0;
-
-                if (!nearestUnscoutedSector && !isScouted) nearestUnscoutedSector = sector;
+                                
+                if (!nearestUnscoutedSector && !isScouted) {
+                    if (playerActionFunctions.playerActionsHelper.checkAvailability("scout", false, sector)) {
+                        nearestUnscoutedSector = sector;
+                    }
+                }
                 if (!nearestUnscoutedLocaleSector && hasUnscoutedLocales) nearestUnscoutedLocaleSector = sector;
                 if (!nearestUnclearedWorkshopSector && hasUnclearedWorkshops) nearestUnclearedWorkshopSector = sector;
                 
@@ -336,7 +345,7 @@ define(['ash',
                 resource = this.getExploreResource();
             }
             
-            this.printStep("set expore objective: " + goal + " " + sector.get(PositionComponent).getPosition() + " " + (path ? path.length : "[-]") + " " + resource);
+            this.printStep("set explore objective: " + goal + " " + sector.get(PositionComponent).getPosition() + " " + (path ? path.length : "[-]") + " " + resource);
             autoPlayComponent.setExploreObjective(goal, sector, path, resource);
         },
         
@@ -449,7 +458,6 @@ define(['ash',
                     if (result[name])
                         continue;
                     if (featuresComponent.resourcesScavengable.getResource(name) > 0 || featuresComponent.resourcesCollectable.getResource(name) > 0) {
-                        console.log("[getNearestSectorsByRes] found " + name + " -> " + sector.get(PositionComponent).getPosition());
                         result[name] = sector;
                     }
                 }
@@ -567,7 +575,6 @@ define(['ash',
 		
 		scout: function () {
             var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
-            
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("scout")) {
                 this.printStep("scout");
 				this.playerActionFunctions.scout();
@@ -584,7 +591,7 @@ define(['ash',
 				var locale = sectorLocalesComponent.locales[i];
                 if (!sectorStatusComponent.isLocaleScouted(i)) {
                     var action = "scout_locale_" + locale.getCategory() + "_" + i;
-                    if (this.playerActionFunctions.playerActionsHelper.checkAvailability(action)) {
+                    if (this.playerActionFunctions.playerActionsHelper.checkAvailability(action, true)) {
                         this.playerActionFunctions.scoutLocale(i);
                         this.printStep("scout locale " + locale.type);
                         if (autoPlayComponent.exploreGoal === AutoPlayConstants.GOALTYPES.SCOUT_LOCALE) {
@@ -600,6 +607,9 @@ define(['ash',
 		},
         
 		scavenge: function () {
+            var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
+            if (autoPlayComponent.exploreGoal === AutoPlayConstants.GOALTYPES.SCOUT_LOCALE)
+                return;
             if (this.playerActionFunctions.playerActionsHelper.checkAvailability("scavenge")) {
                 var bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
                 var bagFull = this.isBagFull() && bagComponent.totalCapacity > ItemConstants.PLAYER_DEFAULT_STORAGE;
@@ -616,13 +626,6 @@ define(['ash',
             if (this.playerActionFunctions.nearestCampNodes.head && this.playerStatsNodes.head.stamina.stamina < 10)
                 return false;
             
-            if (this.isBagFull())
-                return false;
-            
-            var hasVision = this.playerStatsNodes.head.vision.value >= this.playerStatsNodes.head.vision.maximum / 2;
-            if (!hasVision) {
-                this.playerStatsNodes.head.vision.value = this.playerStatsNodes.head.vision.maximum;
-            }
             return false;
         },
         
@@ -727,11 +730,11 @@ define(['ash',
 
                 var pop = campComponent.population;
 
-                var waters = Math.max(1, Math.floor(pop / (currentWaterRatio > 0.5 ? 5 : 3)));
+                var waters = Math.max(1, Math.floor(pop / (currentWaterRatio > 0.5 ? 5 : 2.25)));
                 var trappers = Math.floor(pop / (currentFoodRatio > 0.5 ? 3 : 2));
                 var specialistPop = Math.floor(pop - trappers - waters);
 
-                var ropers = canRope && currentRope < maxStorage ? Math.min(specialistPop, (currentRope < 30 ? 2 : 1)) : 0;
+                var ropers = canRope && currentRope < maxStorage / 2 ? 1 : 0;
                 var chemists = Math.min(1, specialistPop - ropers, maxChemists);
                 var smiths = Math.min((currentTools > maxSmiths * 0.9 ? 0 : 1), specialistPop - ropers - chemists, maxSmiths);
                 var apothecaries = Math.min(1, specialistPop - ropers - chemists - smiths, maxApothecaries);
