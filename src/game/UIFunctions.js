@@ -470,12 +470,12 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             }
             
             if(valueCurrent >= minValue) {
-                $(".btn-number[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
+                $(".btn-glyph[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
             } else {
                 $(this).val(minValue);
             }
             if(valueCurrent <= maxValue) {
-                $(".btn-number[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
+                $(".btn-glyph[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
             } else {
                 $(this).val(maxValue);
             }
