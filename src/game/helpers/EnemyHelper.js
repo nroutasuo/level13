@@ -192,7 +192,7 @@ define([
 
             var typicalItems = new ItemsComponent();
             var typicalWeapon = ItemConstants.getDefaultWeapon(levelOrdinal, totalLevels);
-            var typicalClothing = this.itemsHelper.getDefaultClothing(levelOrdinal, totalLevels);
+            var typicalClothing = this.itemsHelper.getDefaultClothing(levelOrdinal);
 
             if (typicalWeapon)
                 typicalItems.addItem(typicalWeapon, false);

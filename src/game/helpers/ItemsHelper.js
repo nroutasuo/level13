@@ -23,8 +23,8 @@ define([
         availableClothing: {            
         },
         
-        getDefaultClothing: function (levelOrdinal, totalLevels) {
-            return this.getAvailableClothingList(levelOrdinal, totalLevels, false, false);
+        getDefaultClothing: function (levelOrdinal) {
+            return this.getAvailableClothingList(levelOrdinal, false, false);
         },
         
         getScavengeRewardClothing: function (levelOrdinal, totalLevels) {
@@ -32,7 +32,7 @@ define([
             return possibleItems[Math.floor(Math.random() * possibleItems.length)];
         },
         
-        getAvailableClothingList: function (levelOrdinal, totalLevels, includeNonCraftable, includeMultiplePerType) {
+        getAvailableClothingList: function (levelOrdinal, includeNonCraftable, includeMultiplePerType) {
             if (!includeNonCraftable && !includeMultiplePerType && this.defaultClothing[levelOrdinal]) return this.defaultClothing[levelOrdinal];
             if (includeNonCraftable && includeMultiplePerType && this.availableClothing[levelOrdinal]) return this.availableClothing[levelOrdinal];
             
@@ -90,7 +90,7 @@ define([
             return result;
         },
         
-        getMaxHazardRadiationForLevel: function (levelOrdinal) {
+        getMaxHazardRadiationForLevel: function (levelOrdinal, totalLevels) {
             var defaultClothing = this.getDefaultClothing(levelOrdinal);
             var radiationProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {

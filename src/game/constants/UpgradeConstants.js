@@ -178,7 +178,15 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], fu
             // blueprint
             var blueprintCampOrdinal = this.getBlueprintCampOrdinal(upgrade);
             
-            return Math.max(blueprintCampOrdinal, requiredTechCampOrdinal);
+            // costs
+            var costCampOrdinal = 0;
+            var costs = PlayerActionConstants.costs[upgrade];
+            if (costs.evidence) {
+                // TODO remove magic numbers
+                costCampOrdinal = Math.max(1, Math.min(10, Math.floor(Math.pow(costs.evidence, 0.25))));
+            }
+            
+            return Math.max(1, blueprintCampOrdinal, requiredTechCampOrdinal, costCampOrdinal);
         },
     };
     
