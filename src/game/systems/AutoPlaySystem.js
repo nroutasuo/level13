@@ -334,7 +334,7 @@ define(['ash',
                 sector = nearestUnscoutedLocaleSector;
                 path = this.levelHelper.findPathTo(startSector, sector);
             }
-            else if (hasCamp && numUnscoutedSectors > 0 && Math.random() < 0.5) {
+            else if (hasCamp && nearestUnscoutedSector && numUnscoutedSectors > 0 && Math.random() < 0.5) {
                 goal = AutoPlayConstants.GOALTYPES.SCOUT_SECTORS;
                 sector = nearestUnscoutedSector;
                 path = this.levelHelper.findPathTo(startSector, sector);
@@ -758,10 +758,8 @@ define(['ash',
                 var sectorEntity = this.levelHelper.getSectorByPosition(project.level, project.position.sectorX, project.position.sectorY);
                 var available = this.playerActionFunctions.playerActionsHelper.checkAvailability(action, false, sectorEntity);
                 if (available) {
-                    var sectorId = project.level + "." + project.sector;
-                    var baseId = this.playerActionFunctions.playerActionsHelper.getBaseActionID(action);
-                    var func = this.playerActionFunctions.uiFunctions.actionToFunctionMap[baseId];
-                    func.call(this.playerActionFunctions, sectorId);
+                    var sector = project.level + "." + project.sector + "." + project.direction;
+                    this.playerActionFunctions.startAction(action, sector);
                     this.printStep("build project: " + project.name);
                     return true;
                 }
@@ -771,6 +769,9 @@ define(['ash',
         
         buildInImprovements: function () {
             var campComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(CampComponent);
+            if (!campComponent)
+                return;
+            
 			var improvementsComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var maxPopulation = improvementsComponent.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
             maxPopulation += improvementsComponent.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
@@ -855,15 +856,25 @@ define(['ash',
         
         unlockUpgrades: function () {
             var unlocked = false;
+            var upgradesComponent = this.playerActionFunctions.tribeUpgradesNodes.head.upgrades;
+            
+            var unfinishedBlueprints = upgradesComponent.getUnfinishedBlueprints();
+            if (unfinishedBlueprints.length > 0) {           
+                var id = unfinishedBlueprints[0].upgradeId;
+                this.playerActionFunctions.createBlueprint(id);
+                this.printStep("created blueprint " + id);
+                unlocked = true;
+            }
+            
             var upgradeDefinition;
             var hasBlueprintUnlocked;
             var hasBlueprintNew;
             var isAvailable;
 			for (var id in UpgradeConstants.upgradeDefinitions) {
 				upgradeDefinition = UpgradeConstants.upgradeDefinitions[id];
-				if (!this.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasUpgrade(id)) {
-					hasBlueprintUnlocked = this.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasAvailableBlueprint(id);
-					hasBlueprintNew = this.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasNewBlueprint(id);
+				if (!upgradesComponent.hasUpgrade(id)) {
+					hasBlueprintUnlocked = upgradesComponent.hasAvailableBlueprint(id);
+					hasBlueprintNew = upgradesComponent.hasNewBlueprint(id);
 					isAvailable = this.playerActionFunctions.playerActionsHelper.checkAvailability(id);
                     if (hasBlueprintNew) {
                         this.playerActionFunctions.unlockUpgrade(upgradeDefinition.id);
