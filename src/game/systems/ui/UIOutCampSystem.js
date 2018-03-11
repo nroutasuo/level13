@@ -281,6 +281,7 @@ define([
                         
                         var commonVisibilityRule = (actionEnabled || existingImprovements > 0 || showActionDisabledReason);
                         var specialVisibilityRule = true;
+                        // TODO get rid of these & move to requirements
                         if (id === "in-improvements-shrine") specialVisibilityRule = hasDeity;
                         if (id === "in-improvements-trading") specialVisibilityRule = campCount > 1;
                         if (id === "in-improvements-research") specialVisibilityRule = campCount > 1;

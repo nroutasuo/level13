@@ -134,8 +134,16 @@ define([
 			return result;
         },
 		
-        findPathTo: function (startSector, goalSector) {            
+        findPathTo: function (startSector, goalSector) {     
             // Simple breadth-first search (implement A* if movement cost needs to be considered)
+            
+            if (!startSector) {
+                console.log("WARN: No start sector defined.");
+            }
+            
+            if (!goalSector) {
+                console.log("WARN: No goal sector defined.");
+            }
             
             var frontier = [];
             var visited = [];
