@@ -145,6 +145,23 @@ define([
                 console.log("WARN: No goal sector defined.");
             }
             
+            var startLevel = startSector.get(PositionComponent).level;
+            var goalLevel = goalSector.get(PositionComponent).level;
+            
+            if (startLevel > goalLevel) {
+                var passageDown = this.findPassageDown(startLevel);
+                var passageDownPos = passageDown.get(PositionComponent);
+                var passageUp = this.getSectorByPosition(passageDownPos.level - 1, passageDownPos.sectorX, passageDownPos.sectorY);
+                var combined = this.findPathTo(startSector, passageDown).concat([passageUp]).concat(this.findPathTo(passageUp, goalSector));
+                return combined;
+            } else if (startLevel < goalLevel) {
+                var passageUp = this.findPassageUp(startLevel);
+                var passageUpPos = passageUp.get(PositionComponent);
+                var passageDown = this.getSectorByPosition(passageUpPos.level + 1, passageUpPos.sectorX, passageUpPos.sectorY);
+                var combined = this.findPathTo(startSector, passageUp).concat([passageDown]).concat(this.findPathTo(passageDown, goalSector));
+                return combined;
+            }
+            
             var frontier = [];
             var visited = [];
             var cameFrom = {};
@@ -188,13 +205,42 @@ define([
             while (current !== startSector) {
                 result.push(current);
                 current = cameFrom[getKey(current)];
-                
                 if (!current || result.length > 500) {
                     console.log("WARN: Failed to find path from " + getKey(startSector) + " to " + getKey(goalSector));
                     break;
                 }
             }
             return result.reverse();
+        },
+        
+        findPassageUp: function (level) {
+            var levelEntity = this.getLevelEntityForPosition(level);
+			var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);            
+			var passageSectors = Object.keys(levelPassagesComponent.passagesUpBuilt);
+            var level = levelEntity.get(PositionComponent).level;
+            var sectorId;
+            for (var iu = 0; iu < passageSectors.length; iu++) {
+                sectorId = passageSectors[iu];
+                if (levelPassagesComponent.passagesUpBuilt[sectorId]) {
+                    return this.getSectorByPosition(level, sectorId.split(".")[0], sectorId.split(".")[1]);
+                }
+            }
+            return null;
+        },
+        
+        findPassageDown: function (level) {
+            var levelEntity = this.getLevelEntityForPosition(level);
+			var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);         
+			var passageSectors = Object.keys(levelPassagesComponent.passagesDownBuilt);
+            var level = levelEntity.get(PositionComponent).level;
+            var sectorId;
+            for (var iu = 0; iu < passageSectors.length; iu++) {
+                sectorId = passageSectors[iu];
+                if (levelPassagesComponent.passagesDownBuilt[sectorId]) {
+                    return this.getSectorByPosition(level, sectorId.split(".")[0], sectorId.split(".")[1]);
+                }
+            }
+            return null;
         },
         
         forEverySectorFromLocation: function (playerPosition, func) {
