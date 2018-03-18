@@ -994,6 +994,9 @@ define([
 						case "craft":
 							var item = this.getItemForCraftAction(action);
 							return item.description + (item.getTotalBonus() === 0 ? "" : "<hr/>" + UIConstants.getItemBonusDescription(item, true, true));
+                        case "use_item":
+                            var item = this.getItemForCraftAction(action);
+                            return item.description;
                     }
                 }
 			}
@@ -1097,6 +1100,8 @@ define([
 			var baseActionName = this.getBaseActionID(actionName);
             switch (baseActionName) {
 				case "craft":
+					return ItemConstants.getItemByID(this.getActionIDParam(actionName));
+                case "use_item":
 					return ItemConstants.getItemByID(this.getActionIDParam(actionName));
 				
 				default: return null;
