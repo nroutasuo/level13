@@ -318,12 +318,6 @@ define([
 						break;
 				}
 			}
-			
-			var rowItemCount = Math.floor($("#bag-items").width() / 46);
-			var rowsToShow = 1 + Math.ceil($("#bag-items li").length / rowItemCount);
-			for (var j = items.length; j <= rowsToShow * rowItemCount; j++) {
-				$("#bag-items").append(UIConstants.getItemSlot(null));
-			}
 
             this.uiFunctions.generateCallouts("#container-tab-two-bag .three-quarters");
 		},
