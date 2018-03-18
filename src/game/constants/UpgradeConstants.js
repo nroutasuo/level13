@@ -179,11 +179,20 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], fu
             var blueprintCampOrdinal = this.getBlueprintCampOrdinal(upgrade);
             
             // costs
-            var costCampOrdinal = 0;
+            var costCampOrdinal = 1;
             var costs = PlayerActionConstants.costs[upgrade];
+            // TODO remove magic numbers (now roughly based on real upgrade costs)
             if (costs.evidence) {
-                // TODO remove magic numbers
-                costCampOrdinal = Math.max(1, Math.min(10, Math.floor(Math.pow(costs.evidence, 0.25))));
+                var evidenceOrdinal = Math.floor(Math.pow(costs.evidence, 0.25));
+                evidenceOrdinal = Math.max(1, Math.min(10, evidenceOrdinal));
+                if (evidenceOrdinal > costCampOrdinal)
+                    costCampOrdinal = evidenceOrdinal;
+            }
+            if (costs.rumours) {
+                var rumoursOrdinal = Math.floor(Math.pow(costs.rumours, 0.265));
+                rumoursOrdinal = Math.max(1, Math.min(10, rumoursOrdinal));
+                if (rumoursOrdinal > costCampOrdinal)
+                    costCampOrdinal = rumoursOrdinal;
             }
             
             return Math.max(1, blueprintCampOrdinal, requiredTechCampOrdinal, costCampOrdinal);

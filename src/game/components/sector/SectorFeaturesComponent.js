@@ -47,7 +47,6 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
                     this.resourcesScavengable.fuel <= 0 &&
                     !this.hazards.hasHazards() &&
                     this.stateOfRepair > 0;
-                    true;
         },
         
         // Text functions
