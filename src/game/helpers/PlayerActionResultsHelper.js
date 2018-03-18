@@ -135,7 +135,7 @@ define([
             var efficiency = this.getScavengeEfficiency();
 
             rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
-            rewards.gainedItems = this.getRewardItems(0.007, 0.08, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
+            rewards.gainedItems = this.getRewardItems(0.05, 0.08, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
 
             // should never be needed, but as a fallback
@@ -612,17 +612,21 @@ define([
 		
 		// probability of getting something: 0-1 for one item / some ingredients
 		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, currentItems, levelOrdinal) {
-			var items = [];
+			var result = [];
 			var totalLevels = this.gameState.getTotalLevels();
 
-			// Neccessity items that the player should find quickly if missing
+			// Neccessity items (map, bag) that the player should find quickly if missing
 			var necessityItem = this.getNecessityItem(currentItems, levelOrdinal);
 			if (necessityItem && Math.random() < itemProbability * 40) {
-				items.push(necessityItem);
+				result.push(necessityItem);
 			}
 
 			// Normal items
-			if (Math.random() < itemProbability) {
+            // TODO add variety within categories: items you find often (basic clothing), rare finds (first aid kits, craftables)
+            var maxItems = 3;
+			while (result.length <= maxItems) {
+                if (Math.random() > itemProbability)
+                    break;
 				var item;
 				var i;
 				var pendingItem;
@@ -646,7 +650,8 @@ define([
 				}
 				if (!item && pendingItem)
 					if (currentItems.getCount(pendingItem, true) <= 0) item = pendingItem;
-				if (item) items.push(item);
+                
+				if (item) result.push(item);
 			}
 			
 			// Parts / ingredients
@@ -655,11 +660,11 @@ define([
 				var amount = parseInt(Math.random() * ingredientProbability * 5) + 1;
 				var ingredient = ItemConstants.getIngredient();
 				for (var i = 0; i <= amount; i++) {
-					items.push(ingredient.clone());
+					result.push(ingredient.clone());
 				}
 			}
 			
-			return items;
+			return result;
 		},
 		
 		getRewardFollowers: function (probability) {
@@ -674,14 +679,30 @@ define([
 		},
 
 		getNecessityItem: function (currentItems, levelOrdinal) {
-			var visitedSectors = this.gameState.numVisitedSectors;
-            var numSectorsRequiredForMap = 5;
-			if (currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) <= 0) {
+			// first bag
+            if (currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) <= 0) {
 				return ItemConstants.getBag(levelOrdinal).clone();
 			}
+			
+            // map
+            var visitedSectors = this.gameState.numVisitedSectors;
+            var numSectorsRequiredForMap = 5;
 			if (visitedSectors > numSectorsRequiredForMap && currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) <= 0) {
 				return ItemConstants.itemDefinitions.uniqueEquipment[0].clone();
 			}
+            
+            // non-craftable level clothing
+            if (Math.random() > 0.5) {
+                var clothing = this.itemsHelper.getAvailableClothingList(levelOrdinal, false, true, false);
+                for (var i = 0; i < clothing.length; i++) {
+                    if (currentItems.getCountById(clothing[i].id, true) <= 0) {                        
+                        if (Math.random() > 0.5) {
+                            return clothing[i];
+                        }
+                    }
+                }
+            }
+            
 			return null;
 		},
 

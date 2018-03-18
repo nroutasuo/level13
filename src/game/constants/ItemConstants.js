@@ -179,7 +179,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("artefact_doom_4", "Pamphlet", "Artefact", null, false, false, false, "img/items/artefact-test.png",
                     "Bold political leaflet printed on thick paper urging residents of the 'sewers' to rebel against segregation."),
                 new ItemVO("artefact_doom_5", "Starchart", "Artefact", null, false, false, false, "img/items/artefact-test.png",
-                    "Complicated astrological map with calculations indicating an event occurring on year 783."),
+                    "Complicated astrological map with calculations indicating an event occurring on year 783.", 15),
             ],
             ingredient: [
                 new ItemVO("res_matches", "Matches", "Ingredient", null, false, false, false, "img/items/res-matches.png", "Used for crafting."),

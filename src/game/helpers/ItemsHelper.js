@@ -24,16 +24,16 @@ define([
         },
         
         getDefaultClothing: function (levelOrdinal) {
-            return this.getAvailableClothingList(levelOrdinal, false, false);
+            return this.getAvailableClothingList(levelOrdinal, true, true, false);
         },
         
         getScavengeRewardClothing: function (levelOrdinal, totalLevels) {
-            var possibleItems = this.getAvailableClothingList(levelOrdinal, totalLevels, true, true);
+            var possibleItems = this.getAvailableClothingList(levelOrdinal, totalLevels, true, true, true);
             return possibleItems[Math.floor(Math.random() * possibleItems.length)].clone();
         },
         
-        getAvailableClothingList: function (levelOrdinal, includeNonCraftable, includeMultiplePerType) {
-            if (!includeNonCraftable && !includeMultiplePerType && this.defaultClothing[levelOrdinal]) return this.defaultClothing[levelOrdinal];
+        getAvailableClothingList: function (levelOrdinal, includeCraftable, includeNonCraftable, includeMultiplePerType) {
+            if (includeNonCraftable && !includeMultiplePerType && this.defaultClothing[levelOrdinal]) return this.defaultClothing[levelOrdinal];
             if (includeNonCraftable && includeMultiplePerType && this.availableClothing[levelOrdinal]) return this.availableClothing[levelOrdinal];
             
             var result = [];
@@ -56,7 +56,7 @@ define([
                     isAvailable = false;
                     
                     // only craftable items are considered default (no reliable source especially when possible to lose once acquired)
-                    if (clothingItem.craftable) {
+                    if (clothingItem.craftable && includeCraftable) {
                         isAvailable = ItemConstants.getRequiredLevelToCraft(clothingItem, this.gameState) <= levelOrdinal;
                     }
 
@@ -114,7 +114,7 @@ define([
             for (var i = 0; i < defaultClothing.length; i++) {
                 coldProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_cold);
             }
-            return (coldProtection - 5);
+            return coldProtection;
         },
         
     });
