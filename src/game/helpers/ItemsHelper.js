@@ -29,7 +29,7 @@ define([
         
         getScavengeRewardClothing: function (levelOrdinal, totalLevels) {
             var possibleItems = this.getAvailableClothingList(levelOrdinal, totalLevels, true, true);
-            return possibleItems[Math.floor(Math.random() * possibleItems.length)];
+            return possibleItems[Math.floor(Math.random() * possibleItems.length)].clone();
         },
         
         getAvailableClothingList: function (levelOrdinal, includeNonCraftable, includeMultiplePerType) {
