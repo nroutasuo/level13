@@ -403,7 +403,10 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         
         getGameInfoDiv: function () {
             var html = "";
-            html += "<span id='changelog-version'>version " + this.changeLogHelper.getCurrentVersionNumber() + "<br/>updated " + this.changeLogHelper.getCurrentVersionDate() + "</span>";
+            html += "<span id='changelog-version'>version " + this.changeLogHelper.getCurrentVersionNumber();
+            html += "<br/>updated " + this.changeLogHelper.getCurrentVersionDate();
+            html += "<br/>world seed: " + this.gameState.worldSeed;
+            html += "</span>";
             html += "<p>Please note that this game is still in development and many features are incomplete and unbalanced. Updates might break your save. Feedback and bug reports are very much appreciated!</p>";
             html += "<p><a href='https://github.com/nroutasuo/level13' target='github'>github</a></p>";
             html += "<h4 class='infobox-scrollable-header'>Changelog</h4>";
