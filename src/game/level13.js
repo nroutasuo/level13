@@ -20,6 +20,7 @@ define([
     'game/systems/ui/UIOutBlueprintsSystem',
     'game/systems/ui/UIOutFightSystem',
     'game/systems/ui/UIOutLogSystem',
+    'game/systems/ui/UIOutManageSaveSystem',
     'game/systems/ui/UIOutPopupInnSystem',
     'game/systems/ui/UIOutPopupTradeSystem',
     'game/systems/ui/UIOutPopupInventorySystem',
@@ -52,6 +53,7 @@ define([
     'game/UIFunctions',
     'game/helpers/PlayerActionsHelper',
     'game/helpers/PlayerActionResultsHelper',
+    'game/helpers/ui/ChangeLogHelper',
     'game/helpers/ItemsHelper',
     'game/helpers/EnemyHelper',
     'game/helpers/EndingHelper',
@@ -89,6 +91,7 @@ define([
     UIOutBlueprintsSystem,
     UIOutFightSystem,
     UIOutLogSystem,
+    UIOutManageSaveSystem,
     UIOutPopupInnSystem,
     UIOutPopupTradeSystem,
     UIOutPopupInventorySystem,
@@ -121,6 +124,7 @@ define([
     UIFunctions,
     PlayerActionsHelper,
     PlayerActionResultsHelper,
+    ChangeLogHelper,
     ItemsHelper,
     EnemyHelper,
     EndingHelper,
@@ -173,6 +177,7 @@ define([
             this.uiMapHelper = new UIMapHelper(this.engine, this.levelHelper, this.sectorHelper, this.movementHelper);
             this.uiTechTreeHelper = new UITechTreeHelper(this.engine, this.playerActionsHelper);
             this.buttonHelper = new ButtonHelper(this.levelHelper);
+            this.changeLogHelper = new ChangeLogHelper();
             this.endingHelper = new EndingHelper(this.engine, this.gameState, this.playerActionsHelper, this.levelHelper);
 			
 			// Basic building blocks & special systems
@@ -180,7 +185,7 @@ define([
 			this.tickProvider = new TickProvider(null, function (ex) {
                 self.handleException(ex);
             });
-			this.saveSystem = new SaveSystem(this.gameState);
+			this.saveSystem = new SaveSystem(this.gameState, this.changeLogHelper);
 			this.playerActionFunctions = new PlayerActionFunctions(
 				this.gameState,
 				this.resourcesHelper,
@@ -189,7 +194,7 @@ define([
 				this.fightHelper,
 				this.playerActionResultsHelper);
             this.cheatSystem = new CheatSystem(this.gameState, this.playerActionFunctions, this.resourcesHelper, this.uiMapHelper, this.levelHelper);
-			this.uiFunctions = new UIFunctions(this.playerActionFunctions, this.gameState, this.saveSystem, this.cheatSystem);
+			this.uiFunctions = new UIFunctions(this.playerActionFunctions, this.gameState, this.saveSystem, this.cheatSystem, this.changeLogHelper);
 			this.occurrenceFunctions = new OccurrenceFunctions(this.gameState, this.uiFunctions, this.resourcesHelper, this.upgradeEffectsHelper);
 			
 			this.playerActionFunctions.occurrenceFunctions = this.occurrenceFunctions;
@@ -253,6 +258,7 @@ define([
 			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.resourcesHelper, this.levelHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutFightSystem(this.uiFunctions, this.playerActionResultsHelper, this.playerActionsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLogSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutManageSaveSystem(this.gameState, this.saveSystem, this.changeLogHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupInventorySystem(this.uiFunctions), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupTradeSystem(this.uiFunctions, this.resourcesHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupInnSystem(this.uiFunctions, this.gameState), SystemPriorities.render);

@@ -609,13 +609,15 @@ div.arrow-up {
   border-bottom-color: #aaa !important;
 }
 input,
-select {
+select,
+textarea {
   background-color: #151615;
   color: #fdfdfd;
   border: 1px solid #333;
 }
 .sunlit input,
-.sunlit select {
+.sunlit select,
+.sunlit textarea {
   background-color: #fff;
   color: #202220;
   border: 1px solid #bbb;

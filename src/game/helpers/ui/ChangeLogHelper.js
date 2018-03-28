@@ -25,7 +25,7 @@ define(['ash'], function (Ash) {
 			if (currentVersion) {
 				return this.getVersionNumber(currentVersion);
 			}
-			return "unknown version";
+			return "unknown";
 		},
         
         getCurrentVersionDate: function () {

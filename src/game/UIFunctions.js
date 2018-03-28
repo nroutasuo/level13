@@ -7,9 +7,8 @@ define(['ash',
         'game/constants/PlayerActionConstants',
         'game/constants/PositionConstants',
         'game/helpers/ui/UIPopupManager',
-        'game/helpers/ui/ChangeLogHelper',
         'game/vos/ResourcesVO'],
-function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ChangeLogHelper, ResourcesVO) {
+function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ResourcesVO) {
     var UIFunctions = Ash.Class.extend({
         
         playerActions: null,
@@ -53,7 +52,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             }
         },
         
-        constructor: function (playerActions, gameState, saveSystem, cheatSystem) {
+        constructor: function (playerActions, gameState, saveSystem, cheatSystem, changeLogHelper) {
             this.playerActions = playerActions;
             this.gameState = gameState;
             this.saveSystem = saveSystem;
@@ -63,7 +62,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             this.registerListeners();
             
             this.popupManager = new UIPopupManager(this.gameState, this.playerActions.playerActionResultsHelper, this);
-            this.changeLogHelper = new ChangeLogHelper();
+            this.changeLogHelper = changeLogHelper;
         },
         
         registerListeners: function () {
@@ -117,7 +116,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 $(this).text($("#game-options-extended").is(":visible") ? "less" : "more");
             });
             $("#btn-importexport").click(function (e) {
-                uiFunctions.showInfoPopup(UIConstants.FEATURE_MISSING_TITLE, UIConstants.FEATURE_MISSING_COPY);
+                uiFunctions.showManageSave();
             });
             $("#btn-info").click(function (e) {
                 uiFunctions.showInfoPopup("Level 13", uiFunctions.getGameInfoDiv());
@@ -210,6 +209,9 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             });
             $(scope + "#incoming-caravan-popup-cancel").click(function (e) {
                 uiFunctions.popupManager.closePopup("incoming-caravan-popup");
+            });
+            $(scope + "#close-manage-save-popup").click(function (e) {
+                uiFunctions.popupManager.closePopup("manage-save-popup");
             });
             $(scope + " button[action='leave_camp']").click(function (e) {
                 gameState.uiStatus.leaveCampItems = {};
@@ -698,6 +700,10 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         
         showIncomingCaravanPopup: function () {
             this.showSpecialPopup("incoming-caravan-popup");
+        },
+        
+        showManageSave: function () {
+            this.showSpecialPopup("manage-save-popup");
         },
         
         showSpecialPopup: function (popupID) {
