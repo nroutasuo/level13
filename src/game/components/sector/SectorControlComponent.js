@@ -54,9 +54,9 @@ define(['ash'], function (Ash) {
                 this.currentLocaleEnemies[localeId]--;
             }
         },
-        
+         
         getSaveKey: function () {
-            return "SectorControl";
+            return "SectorCtrl";
         },
         
         getCustomSaveObject: function () {

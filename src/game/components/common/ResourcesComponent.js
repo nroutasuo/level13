@@ -73,6 +73,10 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             }
         },
         
+        getSaveKey: function () {
+            return "Res";
+        },
+        
         // resources component needs to be saved only if there is storage (player/camp), otherwise the resources are defined by the WorldCreator
         getCustomSaveObject: function () {
             if (this.storageCapacity > 0)

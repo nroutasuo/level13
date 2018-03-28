@@ -66,14 +66,24 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
 			return count;
 		},
         
+        getSaveKey: function () {
+            return "SectorImpr";
+        },
+        
+        getCustomSaveObject: function () {
+            var copy = {};
+            copy.i = this.improvements;
+            return copy;
+        },
+        
         customLoadFromSave: function(componentValues) {
-            for(var key in componentValues.improvements) {
+            for(var key in componentValues.i) {
                 if (key == "undefined") continue;
                 this.improvements[key] = new ImprovementVO(key);
-                this.improvements[key].count = componentValues.improvements[key].count;
-                if (componentValues.improvements[key].storedResources) {
-                    for (var res in componentValues.improvements[key].storedResources) {
-                        this.improvements[key].storedResources[res] = componentValues.improvements[key].storedResources[res];
+                this.improvements[key].count = componentValues.i[key].count;
+                if (componentValues.i[key].storedResources) {
+                    for (var res in componentValues.i[key].storedResources) {
+                        this.improvements[key].storedResources[res] = componentValues.i[key].storedResources[res];
                     }
                 }
             }
