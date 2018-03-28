@@ -142,70 +142,73 @@ define([
 		// Returns a boolean indicating whether a save was found
 		loadGameState: function () {
             var hasSave = false;
+            var save = null;
             try {
-                hasSave = localStorage && localStorage.timeStamp && localStorage.entitiesObject && localStorage.gameState;
+                save = JSON.parse(localStorage.save);
+                hasSave = save != null;
             } catch (exception) {
                 // TODO show no save found to user?
+                console.log("Error loading save: " + exception);
             }
 			
-			// Load game state
-			if (hasSave) {
-				var loadedGameState = JSON.parse(localStorage.gameState);
-				for (key in loadedGameState) {
-					this.gameState[key] = loadedGameState[key];
-				}
-			}
+            // Load game state
+            if (hasSave) {
+                var loadedGameState = save.gameState;
+                for (key in loadedGameState) {
+                    this.gameState[key] = loadedGameState[key];
+                }
+            }
             this.gameState.isPaused = false;
-			
-			// Create world
-			if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t creating world");
-			var worldSeed;
-			if (hasSave) worldSeed = parseInt(loadedGameState.worldSeed);
-			else worldSeed = WorldCreatorRandom.getNewSeed();
-			
-			WorldCreator.prepareWorld(worldSeed, this.enemyHelper, this.itemsHelper);
-			this.gameState.worldSeed = worldSeed;
 
-			// Create other entities and fill components
-			if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t loading entities");
-			this.createLevelEntities(worldSeed);
+            // Create world
+            if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t creating world");
+            var worldSeed;
+            if (hasSave) worldSeed = parseInt(loadedGameState.worldSeed);
+            else worldSeed = WorldCreatorRandom.getNewSeed();
+
+            WorldCreator.prepareWorld(worldSeed, this.enemyHelper, this.itemsHelper);
+            this.gameState.worldSeed = worldSeed;
+
+            // Create other entities and fill components
+            if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t loading entities");
+            this.createLevelEntities(worldSeed);
             WorldCreator.discardWorld();
-			if (hasSave) {
-				var entitiesObject = JSON.parse(localStorage.entitiesObject);
-				var failedComponents = 0;
-				
-				failedComponents += this.saveHelper.loadEntity(entitiesObject, this.saveHelper.saveKeys.player, this.player);
-				failedComponents += this.saveHelper.loadEntity(entitiesObject, this.saveHelper.saveKeys.tribe, this.tribe);
-				
-				var sectorNodes = this.creator.engine.getNodeList(SectorNode);
-				var positionComponent;
-				var saveKey;
-				for (var sectorNode = sectorNodes.head; sectorNode; sectorNode = sectorNode.next) {
-					positionComponent = sectorNode.entity.get(PositionComponent);
-					saveKey = this.saveHelper.saveKeys.sector + positionComponent.level + "." + positionComponent.sectorX + "." + positionComponent.sectorY;
-					failedComponents += this.saveHelper.loadEntity(entitiesObject, saveKey, sectorNode.entity);
-				}
-				
-				var levelNodes = this.creator.engine.getNodeList(LevelNode);
-				for (var levelNode = levelNodes.head; levelNode; levelNode = levelNode.next) {
-					positionComponent = levelNode.entity.get(PositionComponent);
-					saveKey = this.saveHelper.saveKeys.level + positionComponent.level;
-					failedComponents += this.saveHelper.loadEntity(entitiesObject, saveKey, levelNode.entity);
-				}
-				
-				console.log("Loaded from " + localStorage.timeStamp);
-				
-				if (failedComponents > 0) {
-					console.log(failedComponents + " components failed to load.");
-				}
-				
-				return true;
-			}
-			else
-			{
-				console.log("No save found.");
-				return false;
-			}
+            if (hasSave) {
+                var entitiesObject = save.entitiesObject;
+                var failedComponents = 0;
+
+                failedComponents += this.saveHelper.loadEntity(entitiesObject, this.saveHelper.saveKeys.player, this.player);
+                failedComponents += this.saveHelper.loadEntity(entitiesObject, this.saveHelper.saveKeys.tribe, this.tribe);
+
+                var sectorNodes = this.creator.engine.getNodeList(SectorNode);
+                var positionComponent;
+                var saveKey;
+                for (var sectorNode = sectorNodes.head; sectorNode; sectorNode = sectorNode.next) {
+                    positionComponent = sectorNode.entity.get(PositionComponent);
+                    saveKey = this.saveHelper.saveKeys.sector + positionComponent.level + "." + positionComponent.sectorX + "." + positionComponent.sectorY;
+                    failedComponents += this.saveHelper.loadEntity(entitiesObject, saveKey, sectorNode.entity);
+                }
+
+                var levelNodes = this.creator.engine.getNodeList(LevelNode);
+                for (var levelNode = levelNodes.head; levelNode; levelNode = levelNode.next) {
+                    positionComponent = levelNode.entity.get(PositionComponent);
+                    saveKey = this.saveHelper.saveKeys.level + positionComponent.level;
+                    failedComponents += this.saveHelper.loadEntity(entitiesObject, saveKey, levelNode.entity);
+                }
+
+                console.log("Loaded from " + save.timeStamp);
+
+                if (failedComponents > 0) {
+                    console.log(failedComponents + " components failed to load.");
+                }
+
+                return true;
+            }
+            else
+            {
+                console.log("No save found.");
+                return false;
+            }
 		},
 		
 		// Clean up a loaded game state, mostly used to ensure backwards compatibility

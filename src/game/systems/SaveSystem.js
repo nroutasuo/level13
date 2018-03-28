@@ -15,8 +15,9 @@ define([
         
         error: null,
 
-        constructor: function (gameState) {
+        constructor: function (gameState, changeLogHelper) {
 			this.gameState = gameState;
+            this.changeLogHelper = changeLogHelper;
         },
 
         addToEngine: function (engine) {
@@ -40,19 +41,9 @@ define([
 		save: function () {
             this.error = null;
 			if (typeof(Storage) !== "undefined") {
-				var entitiesObject = {};
-                var nodes = 0;
-				for (var node = this.saveNodes.head; node; node = node.next) {
-                    nodes++;
-					entitiesObject[node.save.entityKey] = this.prepareNode(node);
-				}
-                
-                // console.log("Total save size: " +  JSON.stringify(entitiesObject).length + " " + JSON.stringify(this.gameState).length + ", " + nodes + " nodes");
-                
                 try {
-                    localStorage.entitiesObject = JSON.stringify(entitiesObject);
-                    localStorage.gameState = JSON.stringify(this.gameState);
-                    localStorage.timeStamp = new Date();
+                    localStorage.save = this.getSaveJSON();
+                    console.log("Saved");
                 } catch (ex) {
                     this.error = "Failed to save.";
                 }
@@ -61,8 +52,28 @@ define([
                 this.error = "Can't save (incompatible browser).";
 			}
 		},
+        
+        getSaveJSON: function () {
+            var version = this.changeLogHelper.getCurrentVersionNumber();
+            var entitiesObject = {};
+            var nodes = 0;
+            for (var node = this.saveNodes.head; node; node = node.next) {
+                nodes++;
+                entitiesObject[node.save.entityKey] = this.getEntityJSON(node);
+            }
+                
+            var save = {};
+            save.entitiesObject = entitiesObject;
+            save.gameState = this.gameState;
+            save.timeStamp = new Date();
+            save.version = version;
+            
+            // console.log("Total save size: " + JSON.stringify(save).length + ", " + nodes + " nodes");
+            
+            return JSON.stringify(save);
+        },
 	
-		prepareNode: function (node) {
+		getEntityJSON: function (node) {
 			var entityObject = {};
 			
 			var biggestComponent = null;
@@ -98,13 +109,14 @@ define([
 		
 		restart: function () {
 			if(typeof(Storage) !== "undefined") {
+                // note: backwards compatibility; remove this code eventually
 				localStorage.removeItem("entitiesObject");
 				localStorage.removeItem("gameState");
 				localStorage.removeItem("timeStamp");
+                
+				localStorage.removeItem("save");
 				this.engine.getSystem(GameManager).restartGame();
 				console.log("Restarted.");
-			} else {
-			// Sorry! No Web Storage support..
 			}
 		},
 	
