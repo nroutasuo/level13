@@ -15,7 +15,7 @@ Play lastest (semi-) stable version [here](https://nroutasuo.github.io/level13/)
 * Items, equipment and environmental hazards
 * Technologies that slowly unlock new aspects of the game
 
-Main features still missing: story and role-playing elements, gods, the ending.
+Main features still missing: story and role-playing elements, gods, magic & the ending.
 
 
 ## Code Overview
@@ -30,7 +30,7 @@ All actual game data is stored in various [Components](https://github.com/nrouta
 
 ### Player Actions 
 
-Everything that the player can do in the game - mainly button clicks - are "player actions". Each action has a name, costs, requirements and so on defined in the [PlayerActionConstants](https://github.com/nroutasuo/level13/blob/master/src/game/constants/PlayerActionConstants.js). The [PlayerActionFunctions](https://github.com/nroutasuo/level13/blob/master/src/game/PlayerActionFunctions.js) class contains a function for each action and handles their results. Various helper classes take care of checking those requirements, deducting costs, unifying random encounters etc.  
+Everything that the player can do in the game - mainly button clicks - are "player actions". Each action has a name, costs, requirements and so on defined in the [PlayerActionConstants](https://github.com/nroutasuo/level13/blob/master/src/game/constants/PlayerActionConstants.js). The [PlayerActionFunctions](https://github.com/nroutasuo/level13/blob/master/src/game/PlayerActionFunctions.js) class contains a function for each action and handles their results. Various helper classes take care of checking those requirements, deducting costs, unifying random encounters etc.
 
 User input is detected and mapped to PlayerActions by [UIFunctions](https://github.com/nroutasuo/level13/blob/master/src/game/UIFunctions.js).
 
@@ -38,7 +38,7 @@ User input is detected and mapped to PlayerActions by [UIFunctions](https://gith
 
 At the start of a new game, a seed value is assigned. The world is randomly generated based on this seed and only the seed needs to be saved between sessions.
 
-![samplelevel2](/doc/samplelevel2.PNG)  ![samplelevel3](/doc/samplelevel3.PNG)
+![samplelevel2](/docs/samplelevel2.PNG)  ![samplelevel3](/docs/samplelevel3.PNG)
 
 (Sample level structure)
 
@@ -63,6 +63,9 @@ The game consists of several systems but here are some important ones:
 * [SaveSystem](https://github.com/nroutasuo/level13/blob/master/src/game/systems/SaveSystem.js) saves the game state periodically by simply saving certain components that have been marked with the SaveComponent.
 * [PlayerPositionSystem](https://github.com/nroutasuo/level13/blob/master/src/game/systems/PlayerPositionSystem.js) keeps track of the current sector and level the player is in.
 
+## Contributing
+
+If you want to report bugs or suggest new features please check the [contributing guidelines](docs/CONTRIBUTING.md) first.
 
 ## Links
 

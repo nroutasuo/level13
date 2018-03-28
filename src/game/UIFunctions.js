@@ -341,7 +341,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         
         generateSteppers: function (scope) {
             $(scope + " .stepper").append("<button type='button' class='btn-glyph' data-type='minus' data-field=''>-</button>");
-            $(scope + " .stepper").append("<input class='amount' type='text' min='0' max='100' autocomplete='false' value='0' name=''></input>");  
+            $(scope + " .stepper").append("<input class='amount' type='text' min='0' max='100' autocomplete='false' value='0' name='' tabindex='1'></input>");
             $(scope + " .stepper").append("<button type='button' class='btn-glyph' data-type='plus' data-field=''>+</button>");
             $(scope + " .stepper button").attr("data-field", function (i, val) {
                 return $(this).parent().attr("id") + "-input";
