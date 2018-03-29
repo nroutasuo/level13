@@ -11,9 +11,8 @@ define([
     'game/components/player/ItemsComponent',
     'game/components/sector/FightComponent',
     'game/components/sector/FightEncounterComponent',
-    'game/components/sector/EnemiesComponent',
-    'game/components/sector/SectorControlComponent',
-], function (Ash, GlobalSignals, FightConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightComponent, FightEncounterComponent, EnemiesComponent, SectorControlComponent) {
+    'game/components/sector/EnemiesComponent'
+], function (Ash, GlobalSignals, FightConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightComponent, FightEncounterComponent, EnemiesComponent) {
     var UIOutFightSystem = Ash.System.extend({
 	
 		uiFunctions: null,

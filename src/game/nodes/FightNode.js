@@ -2,8 +2,7 @@ define([
     'ash',
     'game/components/sector/FightComponent',
     'game/components/sector/EnemiesComponent',
-    'game/components/sector/SectorControlComponent',
-], function (Ash, FightComponent, EnemiesComponent, SectorControlComponent) {
+], function (Ash, FightComponent, EnemiesComponent) {
     
     var FightNode = Ash.Node.create({
         fight : FightComponent

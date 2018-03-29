@@ -49,9 +49,6 @@ define(['ash',
 	
 		onScoutSector: function (sectorEntity) {
 		},
-		
-		onGainSectorControl: function (sectorEntity) {
-		},
 	
 		onEndRaid: function (sectorEntity) {
 			var improvements = sectorEntity.get(SectorImprovementsComponent);

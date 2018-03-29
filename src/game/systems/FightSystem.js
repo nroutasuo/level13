@@ -117,11 +117,6 @@ define([
 					var relatedSectorLocaleId = FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context, true);
 					relatedSectorControlComponent.addWin(relatedSectorLocaleId);
 				}
-				
-                cleared = sectorControlComponent.hasControl();
-                if (cleared) {
-                    this.occurrenceFunctions.onGainSectorControl(sector);
-                }
             }
             
             this.addFightRewardsAndPenalties(won, cleared, enemy);

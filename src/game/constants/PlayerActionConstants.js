@@ -31,7 +31,6 @@ function (Ash, GameConstants, CampConstants) {
                     health: 70,
                     stamina: 20,
                     sector: {
-                        control: false,
                         enemies: true,
                         scouted: true,
                     },

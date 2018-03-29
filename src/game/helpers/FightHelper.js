@@ -40,17 +40,14 @@ define([
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 		},
 
-		handleRandomEncounter: function (action, winCallback, fleeCallback, loseCallback) {
-			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
-			
+		handleRandomEncounter: function (action, winCallback, fleeCallback, loseCallback) {			
 			var baseActionID = this.playerActionsHelper.getBaseActionID(action);
-			var localeId = FightConstants.getEnemyLocaleId(baseActionID, action);
 			var hasEnemies = this.hasEnemiesCurrentLocation(action);
 			if (hasEnemies) {
                 var vision = this.playerStatsNodes.head.vision.value;
-				var encounterProbability =  PlayerActionConstants.getRandomEncounterProbability(baseActionID, vision);
+				var encounterProbability = PlayerActionConstants.getRandomEncounterProbability(baseActionID, vision);
 				if (Math.random() < encounterProbability) {
-					this.pendingEnemies = Math.min(this.getEnemyCount(action), sectorControlComponent.getCurrentEnemies(localeId));
+					this.pendingEnemies = this.getEnemyCount(action);
 					this.pendingWinCallback = winCallback;
 					this.pendingFleeCallback = fleeCallback;
 					this.pendingLoseCallback = loseCallback;

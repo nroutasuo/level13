@@ -534,13 +534,6 @@ define([
                             return { value: 0, reason: "Location not suitable for camp" };
                         }
                     }
-                    if (typeof requirements.sector.control != "undefined") {
-                        var sectionControl = sector.get(SectorControlComponent).hasControl();
-                        if (sectionControl != requirements.sector.control) {
-                            if (log) console.log("WARN: Sector control required / not allowed");
-                            return { value: 0, reason: "Sector control required / not allowed" };
-                        }
-                    }
                     if (typeof requirements.sector.enemies != "undefined") {
                         var enemiesComponent = sector.get(EnemiesComponent);
                         if ((enemiesComponent.possibleEnemies.length > 0) != requirements.sector.enemies) {

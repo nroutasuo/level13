@@ -177,17 +177,11 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
 		
 		getEnemyText: function (enemyList, sectorControlComponent, defeatableBlockerNorth, defeatableBlockerSouth, defeatableBlockerWest, defeatableBlockerEast) {
 			var enemyActiveV = this.getEnemyActiveVerb(enemyList);
-			var enemyDefeatedV = this.getEnemeyDefeatedVerb(enemyList);
 			
 			var sectorPart = "";
-			var sectorDefeated = sectorControlComponent.hasControl();
-			var enemyNounSector = this.getEnemyNoun(enemyList, !sectorDefeated);
+			var enemyNounSector = this.getEnemyNoun(enemyList);
 			
-			if (sectorDefeated) {
-				sectorPart += "All " + enemyNounSector + " here have been " + enemyDefeatedV + ". ";
-			} else {
-				sectorPart += "This area is " + enemyActiveV + " " + enemyNounSector + ". ";
-			}
+            sectorPart += "This area is " + enemyActiveV + " " + enemyNounSector + ". ";
 			
 			var gangPart = "";
 			if (defeatableBlockerNorth) {

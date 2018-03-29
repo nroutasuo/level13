@@ -1,22 +1,15 @@
-// Current sector control status & wins needed for sector contorl (no more random encounters)
+// Status of enemies in a sector including locales 
 define(['ash'], function (Ash) {
     
     var SectorControlComponent = Ash.Class.extend({
         
         maxSectorEnemies: 0,
-        currentSectorEnemies: 0,
         
         maxLocaleEnemies: {},
         currentLocaleEnemies: {},
         
         constructor: function (enemies, localeEnemies) {
-            this.maxSectorEnemies = enemies;
-            this.currentSectorEnemies = enemies;
-            
-            this.initLocaleEnemies(localeEnemies);
-        },
-        
-        initLocaleEnemies: function (localeEnemies) {
+            this.maxSectorEnemies = enemies;         
             this.maxLocaleEnemies = {};
             this.currentLocaleEnemies = {};
             
@@ -26,12 +19,8 @@ define(['ash'], function (Ash) {
             }
         },
         
-        hasControl: function () {
-            return this.currentSectorEnemies <= 0;
-        },
-        
         hasControlOfLocale: function (localeId) {
-            if (!localeId) return this.hasControl();
+            if (!localeId) false;
             return this.currentLocaleEnemies[localeId] <= 0;
         },
         
@@ -41,18 +30,14 @@ define(['ash'], function (Ash) {
         },
         
         getCurrentEnemies: function (localeId) {
-            if (!localeId) return this.currentSectorEnemies;
+            if (!localeId) return 25;
             return this.currentLocaleEnemies[localeId] ? this.currentLocaleEnemies[localeId] : 0;
         },
         
         addWin: function (localeId) {
-            if (!localeId) {
-                console.log("add win " + localeId + " " + this.currentSectorEnemies);
-                this.currentSectorEnemies--;
-            } else {
-                console.log("add win " + localeId + " " + this.currentLocaleEnemies[localeId]);
-                this.currentLocaleEnemies[localeId]--;
-            }
+            if (!localeId) return;
+            console.log("add win " + localeId + " " + this.currentLocaleEnemies[localeId]);
+            this.currentLocaleEnemies[localeId]--;
         },
          
         getSaveKey: function () {
