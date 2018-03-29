@@ -1,8 +1,9 @@
 define([
     'ash', 
+    'webtoolkit/base64',
     'game/systems/GameManager', 
     'game/nodes/common/SaveNode'
-], function (Ash, GameManager, SaveNode) {
+], function (Ash, Base64, GameManager, SaveNode) {
     var SaveSystem = Ash.System.extend({
 	
         engine: null,
@@ -68,9 +69,9 @@ define([
             save.timeStamp = new Date();
             save.version = version;
             
-            // console.log("Total save size: " + JSON.stringify(save).length + ", " + nodes + " nodes");
-            
-            return JSON.stringify(save);
+            var result = JSON.stringify(save);            
+            // console.log("Total save size: " + result.length + ", " + nodes + " nodes");            
+            return result;
         },
 	
 		getEntityJSON: function (node) {
@@ -101,11 +102,21 @@ define([
 			}
 			
             //console.log(JSON.stringify(biggestComponent));
-			//console.log(biggestComponentSize + " / " + totalSize + " " + JSON.stringify(entityObject).length);
+			//console.log(biggestComponentSize + " / " + totalSize + " " + JSON.stringify(entityObject).length);            
             //console.log(entityObject);
 			
 			return entityObject;
 		},
+        
+        getObfuscatedSaveJSON: function () {
+            var json = this.getSaveJSON();
+            return Base64.encode(json);
+        },
+        
+        getSaveJSONfromObfuscated: function (save) {
+            var json = Base64.decode(save);
+            return json;
+        },
 		
 		restart: function () {
 			if(typeof(Storage) !== "undefined") {

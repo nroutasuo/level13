@@ -141,15 +141,8 @@ define([
 		// Loads a game if a save can be found, otherwise initializes world seed & levels
 		// Returns a boolean indicating whether a save was found
 		loadGameState: function () {
-            var hasSave = false;
-            var save = null;
-            try {
-                save = JSON.parse(localStorage.save);
-                hasSave = save != null;
-            } catch (exception) {
-                // TODO show no save found to user?
-                console.log("Error loading save: " + exception);
-            }
+            var save = this.getSaveObject();
+            var hasSave = save != null;
 			
             // Load game state
             if (hasSave) {
@@ -210,6 +203,18 @@ define([
                 return false;
             }
 		},
+        
+        getSaveObject: function () { 
+            try {
+                var json = localStorage.save;
+                var object = this.saveHelper.parseSaveJSON(json);
+                return object;
+            } catch (exception) {
+                // TODO show no save found to user?
+                console.log("Error loading save: " + exception);
+            }
+            return null;
+        },
 		
 		// Clean up a loaded game state, mostly used to ensure backwards compatibility
 		syncLoadedGameState: function () {

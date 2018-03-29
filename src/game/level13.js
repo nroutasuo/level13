@@ -258,7 +258,7 @@ define([
 			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.resourcesHelper, this.levelHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutFightSystem(this.uiFunctions, this.playerActionResultsHelper, this.playerActionsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLogSystem(), SystemPriorities.render);
-			this.engine.addSystem(new UIOutManageSaveSystem(this.gameState, this.saveSystem, this.changeLogHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutManageSaveSystem(this.gameState, this.saveSystem, this.saveHelper, this.changeLogHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupInventorySystem(this.uiFunctions), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupTradeSystem(this.uiFunctions, this.resourcesHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupInnSystem(this.uiFunctions, this.gameState), SystemPriorities.render);

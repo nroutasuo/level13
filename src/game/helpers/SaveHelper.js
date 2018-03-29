@@ -24,6 +24,31 @@ define([
 		
 		constructor: function () {
 		},
+        
+        // returns null if invalid, a parsed save object if valid
+        parseSaveJSON: function (json) {
+            if (!json) return null;
+            
+            var result = null;
+            try {
+                result = JSON.parse(json);
+            } catch (ex) {
+                console.log("WARN: Error parsin save JSON. " + ex);
+                return null;
+            }
+            
+            if (!result.gameState) {
+                console.log("WARN: Save JSON is missing a GameState.");
+                return null;
+            }
+            
+            if (!result.entitiesObject) {
+                console.log("WARN: Save JSON is missing an entities object.");
+                return null;
+            }
+            
+            return result;
+        },
 		
 		loadEntity: function (entitiesObject, saveKey, entity) {
 			var failedComponents = 0;

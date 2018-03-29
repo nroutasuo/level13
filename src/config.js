@@ -5,14 +5,12 @@ require.config({
     deps: ["level13-app"],
 
     paths: {
-        // JavaScript folders
         brejep: "../lib/brejep",
         utils: "../lib/utils",
-        game: "game",
-
-        // Libraries
+        webtoolkit: "../lib/webtoolkit",
         ash: "../lib/ash/ash.min",
-        jquery: "../lib/jquery/"
+        jquery: "../lib/jquery/",
+        game: "game"
     },
     
 });
