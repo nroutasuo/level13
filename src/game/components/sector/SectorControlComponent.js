@@ -46,17 +46,12 @@ define(['ash'], function (Ash) {
         
         getCustomSaveObject: function () {
             var copy = {};
-            copy.cSE = this.currentSectorEnemies;
-            copy.cLE = this.currentLocaleEnemies;
-            return copy;
+            if (this.currentLocaleEnemies && Object.keys(this.currentLocaleEnemies).length > 0)
+                copy.cLE = this.currentLocaleEnemies;
+            return Object.keys(copy).length > 0 ? copy : null;
         },
         
-        customLoadFromSave: function (componentValues) {
-            if (componentValues.cSE)
-                this.currentSectorEnemies = componentValues.cSE;
-            else
-                this.currentSectorEnemies = componentValues.currentSectorEnemies;
-            
+        customLoadFromSave: function (componentValues) {            
             var localeEnemies = componentValues.currentLocaleEnemies;
             if (componentValues.cLE)
                 localeEnemies = componentValues.cLE;

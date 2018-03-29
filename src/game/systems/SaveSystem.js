@@ -57,10 +57,14 @@ define([
         getSaveJSON: function () {
             var version = this.changeLogHelper.getCurrentVersionNumber();
             var entitiesObject = {};
+            var entityObject;
             var nodes = 0;
             for (var node = this.saveNodes.head; node; node = node.next) {
-                nodes++;
-                entitiesObject[node.save.entityKey] = this.getEntityJSON(node);
+                entityObject = this.getEntitySaveObject(node);
+                if (entityObject && Object.keys(entityObject).length > 0) {
+                    nodes++;
+                    entitiesObject[node.save.entityKey] = entityObject;
+                }
             }
                 
             var save = {};
@@ -74,7 +78,7 @@ define([
             return result;
         },
 	
-		getEntityJSON: function (node) {
+		getEntitySaveObject: function (node) {
 			var entityObject = {};
 			
 			var biggestComponent = null;
