@@ -56,7 +56,7 @@ define(['ash'], function (Ash) {
         },
          
         getSaveKey: function () {
-            return "SectorCtrl";
+            return "ScCtrl";
         },
         
         getCustomSaveObject: function () {

@@ -90,7 +90,9 @@ define([
 					if (component.getCustomSaveObject) {
 						saveObject = component.getCustomSaveObject();
 					}
-					entityObject[componentKey] = saveObject;
+                    if (saveObject) {
+                        entityObject[componentKey] = saveObject;
+                    }
 					
 					var size = JSON.stringify(saveObject).length;
 					if (size > biggestComponentSize) {

@@ -47,6 +47,10 @@ define(['ash', 'game/constants/CampConstants'], function (Ash, CampConstants) {
             return "Camp";
         },
         
+        getSaveKey: function () {
+            return "Camp";
+        },
+        
         getName: function () {
             if (this.campName) {
                 return this.getType() + " " + this.campName;

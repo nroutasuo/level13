@@ -45,25 +45,29 @@ define(['ash'], function (Ash) {
         },
         
         getSaveKey: function () {
-            return "SectorStatus";
+            return "ScStatus";
         },
         
         getCustomSaveObject: function () {
             var copy = {};
-            copy.dR = this.discoveredResources;
-            copy.s = this.scouted;
-            copy.lS = this.localesScouted;
-            copy.wd = this.wasteClearedDirections ? this.wasteClearedDirections  : [];
-            return copy;
+            if (this.discoveredResources.length > 0)
+                copy.dR = this.discoveredResources;
+            if (this.scouted)
+                copy.s = this.scouted;
+            if (this.localesScouted.length > 0)
+                copy.lS = this.localesScouted;
+            if (this.wasteClearedDirections && this.wasteClearedDirections.length > 0)
+                copy.wd = this.wasteClearedDirections ? this.wasteClearedDirections  : [];
+            return Object.keys(copy).length > 0 ? copy : null;
         },
         
         customLoadFromSave: function (componentValues) {
-            this.discoveredResources = componentValues.dR ? componentValues.dR : componentValues.discoveredResources;
-            this.scouted = typeof componentValues.s !== "undefined" ? componentValues.s : componentValues.scouted;
-            if (componentValues.lS)
+            this.discoveredResources = componentValues.dR ? componentValues.dR : [];
+            this.scouted = typeof componentValues.s !== "undefined" ? componentValues.s : false;
+            if (componentValues.lS && componentValues.lS.length > 0)
                 this.localesScouted = componentValues.lS;
             else
-                this.localesScouted = componentValues.localesScouted;
+                this.localesScouted = [];
             this.wasteClearedDirections = componentValues.wd ? componentValues.wd : [];
         }
         

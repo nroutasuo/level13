@@ -71,6 +71,7 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
         },
         
         getCustomSaveObject: function () {
+            if (Object.keys(this.improvements).length === 0) return null;
             var copy = {};
             copy.i = this.improvements;
             return copy;

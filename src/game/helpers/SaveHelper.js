@@ -16,7 +16,7 @@ define([
 		saveKeys: {
 			player: "player",
 			tribe: "tribe",
-			sector: "sector-",
+			sector: "s-",
 			level: "level-",
 		},
 		
@@ -33,7 +33,7 @@ define([
             try {
                 result = JSON.parse(json);
             } catch (ex) {
-                console.log("WARN: Error parsin save JSON. " + ex);
+                console.log("WARN: Error parsing save JSON. " + ex);
                 return null;
             }
             
