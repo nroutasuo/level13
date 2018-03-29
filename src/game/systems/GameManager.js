@@ -169,9 +169,15 @@ define([
             if (hasSave) {
                 var entitiesObject = save.entitiesObject;
                 var failedComponents = 0;
+                var saveWarningShown = false;
 
                 failedComponents += this.saveHelper.loadEntity(entitiesObject, this.saveHelper.saveKeys.player, this.player);
                 failedComponents += this.saveHelper.loadEntity(entitiesObject, this.saveHelper.saveKeys.tribe, this.tribe);
+                
+                if (!saveWarningShown && failedComponents > 0) {
+                    saveWarningShown = true;
+                    this.showSaveWarning();
+                }
 
                 var sectorNodes = this.creator.engine.getNodeList(SectorNode);
                 var positionComponent;
@@ -180,6 +186,11 @@ define([
                     positionComponent = sectorNode.entity.get(PositionComponent);
                     saveKey = this.saveHelper.saveKeys.sector + positionComponent.level + "." + positionComponent.sectorX + "." + positionComponent.sectorY;
                     failedComponents += this.saveHelper.loadEntity(entitiesObject, saveKey, sectorNode.entity);
+                
+                    if (!saveWarningShown && failedComponents > 0) {
+                        saveWarningShown = true;
+                        this.showSaveWarning();
+                    }
                 }
 
                 var levelNodes = this.creator.engine.getNodeList(LevelNode);
@@ -187,6 +198,11 @@ define([
                     positionComponent = levelNode.entity.get(PositionComponent);
                     saveKey = this.saveHelper.saveKeys.level + positionComponent.level;
                     failedComponents += this.saveHelper.loadEntity(entitiesObject, saveKey, levelNode.entity);
+                
+                    if (!saveWarningShown && failedComponents > 0) {
+                        saveWarningShown = true;
+                        this.showSaveWarning();
+                    }
                 }
 
                 console.log("Loaded from " + save.timeStamp);
@@ -222,7 +238,20 @@ define([
 			for (var node = sectorNodes.head; node; node = node.next) {
 				this.creator.syncSector(node.entity);
 			}
-		}
+		},
+        
+        showSaveWarning: function () {
+            var uiFunctions = this.uiFunctions;
+            this.uiFunctions.showQuestionPopup(
+                "Warning", 
+                "Part of the save could not be loaded. Most likely your save is old and incompatible with the current version. Restart the game or continue at your own risk.",
+                "Restart",                
+                function () {
+                    uiFunctions.restart();
+                },
+                function () {}
+            );
+        }
     });
 
     return GameManager;
