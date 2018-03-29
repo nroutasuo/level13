@@ -1,6 +1,18 @@
 {
     "versions": [
         {
+            "version": "0.2.2,
+            "phase": "alpha",
+            "final": false,
+            "updated": "2017-03-19",
+            "changes": [
+                {
+                    "type": "DEV",
+                    "summary": "Add option to export/import save. (Breaks old saves)"
+                }
+            ]
+        },
+        {
             "version": "0.2.1",
             "phase": "alpha",
             "final": true,

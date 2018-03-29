@@ -58,7 +58,7 @@ define([
                 var componentDefinition = componentKey;
                 var component = entity.get(componentDefinition);
                 
-                // if the component has a shortened save key, we have to compare to existing components to find the instance
+                // if the component has a shortened save key, compare to existing components to find the instance
                 if (!component) {
                     for (var i in existingComponents) {
                         var existingComponent = existingComponents[i];
@@ -70,10 +70,9 @@ define([
                     }
                 }
                 
-                var componentValues = savedComponents[componentKey];
-                
+                // if still not found, it could be an optional component
 				if (!component) {
-					for(var i=0; i< this.optionalComponents.length; i++) {
+					for (var i=0; i< this.optionalComponents.length; i++) {
 						var optionalComponent = this.optionalComponents[i];
 						if (componentKey == optionalComponent) {
 							component = new optionalComponent();
@@ -82,6 +81,20 @@ define([
 						}
 					}
 				}
+                
+                // or an optional component with a shortened save key
+                if (!component) {
+					for (var i=0; i< this.optionalComponents.length; i++) {
+						var optionalComponent = this.optionalComponents[i];
+                        if (optionalComponent.prototype.getSaveKey) {
+                            if (optionalComponent.prototype.getSaveKey() === componentKey) {
+                                component = new optionalComponent();
+                                entity.add(component);
+                                break;
+                            }
+                        }
+                    }
+                }
 				
 				if (!component) {
 					console.log("WARN: Component not found while loading:");
@@ -89,7 +102,8 @@ define([
 					failedComponents++;
 					continue;
 				}
-				
+                
+                var componentValues = savedComponents[componentKey];				
 				if (component.customLoadFromSave) {
 					component.customLoadFromSave(componentValues);
 				} else {

@@ -30,6 +30,10 @@ var UIOutManageSaveSystem = Ash.System.extend({
             $("#load-import").click(function () {
                 system.loadImport();
             });
+            $("#close-manage-save-popup").click(function (e) {
+                system.textField.text("");
+                system.uiFunctions.popupManager.closePopup("manage-save-popup");
+            });
             
             return this;
         },
@@ -92,6 +96,7 @@ var UIOutManageSaveSystem = Ash.System.extend({
             var isOk = this.saveHelper.parseSaveJSON(importJSON);
             if (isOk) {            
                 var sys = this;
+                this.textField.text("");
                 this.uiFunctions.popupManager.closePopup("manage-save-popup");
                 this.uiFunctions.showConfirmation(
                     "Are you sure you want to load the game? Your current progress will be lost.<br/><br/>" + 

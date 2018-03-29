@@ -210,9 +210,6 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             $(scope + "#incoming-caravan-popup-cancel").click(function (e) {
                 uiFunctions.popupManager.closePopup("incoming-caravan-popup");
             });
-            $(scope + "#close-manage-save-popup").click(function (e) {
-                uiFunctions.popupManager.closePopup("manage-save-popup");
-            });
             $(scope + " button[action='leave_camp']").click(function (e) {
                 gameState.uiStatus.leaveCampItems = {};
                 gameState.uiStatus.leaveCampRes = {};
@@ -407,7 +404,8 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             var html = "";
             html += "<span id='changelog-version'>version " + this.changeLogHelper.getCurrentVersionNumber() + "<br/>updated " + this.changeLogHelper.getCurrentVersionDate() + "</span>";
             html += "<p>Please note that this game is still in development and many features are incomplete and unbalanced. Updates might break your save. Feedback and bug reports are very much appreciated!</p>";
-            html += "<p><a href='https://github.com/nroutasuo/level13' target='github'>github</a></p>";
+            html += "<p><a href='https://github.com/nroutasuo/level13' target='github'>github</a> | ";
+            html += "<a href='https://www.reddit.com/r/level13' target='reddit'>reddit</a></p>";
             html += "<h4 class='infobox-scrollable-header'>Changelog</h4>";
             html += "<div id='changelog' class='infobox infobox-scrollable'>" + this.changeLogHelper.getChangeLogHTML() + "</div>";
             return html;
