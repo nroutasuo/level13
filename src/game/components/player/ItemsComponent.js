@@ -312,7 +312,7 @@ function (Ash, ItemVO, ItemConstants) {
         
         contains: function (name) {
             for (var key in this.items) {
-                for( var i = 0; i < this.items[key].length; i++) {
+                for (var i = 0; i < this.items[key].length; i++) {
                     if(this.items[key][i].name == name) return true;
                 }
             }
@@ -356,14 +356,28 @@ function (Ash, ItemVO, ItemConstants) {
             return b.getTotalBonus() - a.getTotalBonus();
         },
         
+        getCustomSaveObject: function () {
+            var copy = {};
+            for(var key in this.items) {
+                copy[key] = [];
+                for (var i = 0; i < this.items[key].length; i++) {
+                    var item = this.items[key][i];
+                    copy[key][i] = item.getCustomSaveObject();
+                }
+            }
+            return copy;
+        },
+        
         customLoadFromSave: function (componentValues) {
             for(var key in componentValues.items) {
                 for (var i in componentValues.items[key]) {
                     var itemID = componentValues.items[key][i].id;
-                    var item = ItemConstants.getItemByID(itemID);
+                    var carried = componentValues.items[key][i].carried;
+                    var item = ItemConstants.getItemByID(itemID).clone();
                     if (item) {
-                        item.carried = componentValues.items[key][i].carried;
-                        this.addItem(item.clone(), item.carried);
+                        item.equipped = componentValues.items[key][i].equipped;
+                        item.itemID = componentValues.items[key][i].itemID;
+                        this.addItem(item, carried);
                     }
                 }
             }

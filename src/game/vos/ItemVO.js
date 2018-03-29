@@ -14,6 +14,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		craftable: false,
         useable: false,
 		
+        itemID: -1,
 		equipped: false,
 		carried: false,
 	
@@ -40,6 +41,26 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
         
         getBonus: function (bonusType) {
             return this.bonus ? this.bonus.getBonus(bonusType) : 0;
+        },
+        
+        getCustomSaveObject: function () {
+            var clone = this.clone();
+            
+            // add instance data
+            clone.itemID = this.itemID;
+            clone.equipped = this.equipped;
+            clone.carried = this.carried;
+            
+            // delete static data
+            delete clone.name;
+            delete clone.bonus;
+            delete clone.icon;
+            delete clone.description;
+            delete clone.requiredLevel;
+            delete clone.craftable;
+            delete clone.useable;
+            
+            return clone;
         },
 	
 		clone: function () {
