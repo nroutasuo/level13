@@ -57,6 +57,8 @@ define([
         },
         
         updateLists: function () {
+            console.log("updateLists");
+            
             $("#resultlist-inventorymanagement-found ul").empty();
             $("#resultlist-inventorymanagement-kept ul").empty();
             $("#resultlist-loststuff-lost ul").empty();
@@ -137,8 +139,11 @@ define([
             this.addItemsToLists(rewards, playerAllItems);
             this.addResourcesToLists(rewards, resultNode);
             
-            this.uiFunctions.toggle("#resultlist-inventorymanagement-kept .msg-empty", $("#resultlist-inventorymanagement-kept ul li").length === 0);
-            this.uiFunctions.toggle("#resultlist-inventorymanagement-found .msg-empty", $("#resultlist-inventorymanagement-found ul li").length === 0);
+            console.log("update inventorymanagement-kept " + $("#resultlist-inventorymanagement-kept ul li").length)
+            console.log("update inventorymanagement-found " + $("#resultlist-inventorymanagement-found ul li").length)
+            
+            this.uiFunctions.toggle("#resultlist-inventorymanagement-kept .msg-empty", $("#resultlist-inventorymanagement-kept ul li").length <= 0);
+            this.uiFunctions.toggle("#resultlist-inventorymanagement-found .msg-empty", $("#resultlist-inventorymanagement-found ul li").length <= 0);
             
             $("#resultlist-inventorymanagement-kept li").click(onLiClicked);
             $("#resultlist-inventorymanagement-found li").click(onLiClicked);
