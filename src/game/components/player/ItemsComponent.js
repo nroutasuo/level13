@@ -358,11 +358,12 @@ function (Ash, ItemVO, ItemConstants) {
         
         getCustomSaveObject: function () {
             var copy = {};
+            copy.items = {};
             for(var key in this.items) {
-                copy[key] = [];
+                copy.items[key] = [];
                 for (var i = 0; i < this.items[key].length; i++) {
                     var item = this.items[key][i];
-                    copy[key][i] = item.getCustomSaveObject();
+                    copy.items[key][i] = item.getCustomSaveObject();
                 }
             }
             return copy;
