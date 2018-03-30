@@ -233,6 +233,7 @@ define(['ash',
                 case "launch": this.launch(param); break;
                 // Mapped directly in UIFunctions
                 case "leave_camp": break;
+                // Movement
                 case "move_level_up": this.moveTo(PositionConstants.DIRECTION_UP); break;
                 case "move_level_down": this.moveTo(PositionConstants.DIRECTION_DOWN); break;
                 case "move_camp_level": this.moveTo(PositionConstants.DIRECTION_CAMP); break;
@@ -499,6 +500,7 @@ define(['ash',
 
                 var logMsg = "Scouted the area.";
                 var found = false;
+                var sunlit = featuresComponent.sunlit;
                 if (featuresComponent.hasSpring) {
                     found = true;
                     logMsg += "<br/>Found " + TextConstants.addArticle(TextConstants.getSpringName(featuresComponent)) + ".";
@@ -512,12 +514,12 @@ define(['ash',
                 var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
                 if (passagesComponent.passageUp) {
                     found = true;
-                    logMsg += "<br/>There used to be " + TextConstants.addArticle(passagesComponent.passageUp.name.toLowerCase()) + " here.";
+                    logMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, sunlit) + " ";
                 }
 
                 if (passagesComponent.passageDown) {
                     found = true;
-                    logMsg += "<br/>There used to be " + TextConstants.addArticle(passagesComponent.passageDown.name.toLowerCase()) + " here.";
+                    logMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageDown, PositionConstants.DIRECTION_DOWN, sunlit) + " ";
                 }
 
                 var sectorLocalesComponent = sector.get(SectorLocalesComponent);
@@ -811,30 +813,30 @@ define(['ash',
         },
 		
 		buildPassageUpStairs: function (sectorPos) {
-            this.buildPassage(sectorPos, true, "build_out_passage_up_stairs", "build_out_passage_down_stairs");
+            this.buildPassage(sectorPos, true, MovementConstants.PASSAGE_TYPE_STAIRWELL, "build_out_passage_up_stairs", "build_out_passage_down_stairs");
         },
         
         buildPassageDownStairs: function (sectorPos) {
-            this.buildPassage(sectorPos, false, "build_out_passage_down_stairs", "build_out_passage_up_stairs");
+            this.buildPassage(sectorPos, false, MovementConstants.PASSAGE_TYPE_STAIRWELL, "build_out_passage_down_stairs", "build_out_passage_up_stairs");
         },
 		
 		buildPassageUpElevator: function (sectorPos) {
-            this.buildPassage(sectorPos, true, "build_out_passage_up_elevator", "build_out_passage_down_elevator");
+            this.buildPassage(sectorPos, true, MovementConstants.PASSAGE_TYPE_ELEVATOR, "build_out_passage_up_elevator", "build_out_passage_down_elevator");
         },
         
         buildPassageDownElevator: function (sectorPos) {
-            this.buildPassage(sectorPos, false, "build_out_passage_down_elevator", "build_out_passage_up_elevator");
+            this.buildPassage(sectorPos, false, MovementConstants.PASSAGE_TYPE_ELEVATOR, "build_out_passage_down_elevator", "build_out_passage_up_elevator");
         },
 		
 		buildPassageUpHole: function (sectorPos) {
-            this.buildPassage(sectorPos, true, "build_out_passage_up_hole", "build_out_passage_down_hole");
+            this.buildPassage(sectorPos, true, MovementConstants.PASSAGE_TYPE_HOLE, "build_out_passage_up_hole", "build_out_passage_down_hole");
         },
         
         buildPassageDownHole: function (sectorPos) {
-            this.buildPassage(sectorPos, false, "build_out_passage_down_hole", "build_out_passage_up_hole");
+            this.buildPassage(sectorPos, false, MovementConstants.PASSAGE_TYPE_HOLE, "build_out_passage_down_hole", "build_out_passage_up_hole");
         },
         
-        buildPassage: function (sectorPos, up, action, neighbourAction) {
+        buildPassage: function (sectorPos, up, passageType, action, neighbourAction) {
 			var l = parseInt(sectorPos.split(".")[0]);
 			var sX = parseInt(sectorPos.split(".")[1]);
 			var sY = parseInt(sectorPos.split(".")[2]);
@@ -844,11 +846,11 @@ define(['ash',
             neighbourAction = neighbourAction + "_" + levelOrdinal;
             
             var sectorPosVO = new PositionVO(l, sX, sY);
-            var playerPos = this.playerPositionNodes.head.position;
 			var neighbour = this.levelHelper.getSectorByPosition(up ? l + 1 : l - 1, sX, sY);
 			
 			if (sector && neighbour) {
-				var msg = "Passage " + (up ? " up" : " down") + " ready at " + sectorPosVO.getInGameFormat(playerPos.level === l);
+                var direction = up ? PositionConstants.DIRECTION_UP : PositionConstants.DIRECTION_DOWN;
+				var msg = TextConstants.getPassageRepairedMessage(passageType, direction, sectorPosVO);
 				this.buildImprovement(action, this.playerActionsHelper.getImprovementNameForAction(action), sector);
 				this.buildImprovement(neighbourAction, this.playerActionsHelper.getImprovementNameForAction(neighbourAction), neighbour, true);
 				this.addLogMessage(LogConstants.MSG_ID_BUILT_PASSAGE, msg);

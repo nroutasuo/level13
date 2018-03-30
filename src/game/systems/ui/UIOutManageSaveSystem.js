@@ -99,7 +99,7 @@ var UIOutManageSaveSystem = Ash.System.extend({
                 this.textField.text("");
                 this.uiFunctions.popupManager.closePopup("manage-save-popup");
                 this.uiFunctions.showConfirmation(
-                    "Are you sure you want to load the game? Your current progress will be lost.<br/><br/>" + 
+                    "Are you sure you want to load this save? Your current progress will be lost.<br/><br/>" + 
                     "Loaded data:<br/>Save version: " + isOk.version + "<br/>" + 
                     "Save timestamp: " + isOk.timeStamp + "<br/>" +
                     "Save world seed: " + isOk.gameState.worldSeed,

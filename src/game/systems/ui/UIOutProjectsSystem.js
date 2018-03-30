@@ -20,6 +20,9 @@ define([
             this.levelHelper = levelHelper;
             this.endingHelper = endingHelper;
             this.tabCounts = new TabCountsVO();
+            this.elements = {};
+            this.elements.tabHeader = $("#tab-header h2");
+            this.elements.bubble = $("#switch-projects .bubble");
             return this;
         },
 
@@ -61,7 +64,7 @@ define([
             this.updateBuiltProjects();
             
             this.uiFunctions.toggle("#in-improvements-level-empty-message", this.tabCounts.lastShown.visible.regular <= 0);
-            $("#tab-header h2").text("Building projects");
+            this.elements.tabHeader.text("Building projects");
         },
         
         updateBubble: function () {
@@ -75,7 +78,7 @@ define([
             if (this.bubbleNumber === newBubbleNumber)
                 return;
             this.bubbleNumber = newBubbleNumber;
-            $("#switch-projects .bubble").text(this.bubbleNumber);
+            this.elements.bubble.text(this.bubbleNumber);
             this.uiFunctions.toggle("#switch-projects .bubble", this.bubbleNumber > 0);  
         },
         
@@ -87,11 +90,14 @@ define([
             var visibleColony = 0;
             var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;
             
+            this.elements.levelImprovementsTable = $("#in-improvements-level table");
+            this.elements.colonyImprovementsTable = $("#in-improvements-colony table");
+            
             var projects = this.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity);
-            var numProjectsTR = $("#in-improvements-level table tr").length + $("#in-improvements-colony table tr");
+            var numProjectsTR = $("tr", this.elements.levelImprovementsTable).length + $("tr", this.elements.colonyImprovementsTable);
             var updateTables = numProjectsTR !== projects.length;
-            if (updateTables) $("#in-improvements-level table").empty();
-            if (updateTables) $("#in-improvements-colony table").empty();
+            if (updateTables) this.elements.levelImprovementsTable.empty();
+            if (updateTables) this.elements.colonyImprovementsTable.empty();
             
             var showLevel = this.gameState.unlockedFeatures.levels;
             for (var i = 0; i < projects.length; i++) {
@@ -105,16 +111,17 @@ define([
                     var name = project.name;
                     var info = "at " + project.position.getPosition().getInGameFormat() + (showLevel ? " level " + project.level : "");
                     var classes = "action action-build action-level-project";
+                    var actionLabel = project.actionLabel;
                     var tr = 
                         "<tr>" + 
-                        "<td><button class='" + classes + "' action='" + action + "' sector='" + sector + "' + id='btn-" + action + "-" + sector + "'>build</button></td>" + 
+                        "<td><button class='" + classes + "' action='" + action + "' sector='" + sector + "' + id='btn-" + action + "-" + sector + "'>" + actionLabel + "</button></td>" + 
                         "<td>" + name + "</td>" +
                         "<td class='list-description'>" + info + "</td>" + 
                         "</tr>";
                     if (isColonyProject)
-                        $("#in-improvements-colony table").append(tr);
+                        this.elements.colonyImprovementsTable.append(tr);
                     else
-                        $("#in-improvements-level table").append(tr);
+                        this.elements.levelImprovementsTable.append(tr);
                 }
                 
                 if (isColonyProject) {

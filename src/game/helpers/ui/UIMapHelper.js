@@ -320,7 +320,7 @@ function (Ash,
                 $("#" + fallbackTableId).append("<tr id=" + trID + "></tr>");
                 for (var x = minDrawX; x <= maxDrawX; x++) {
                     sector = visibleSectors[x + "." + y];
-                    $("#" + fallbackTableId + " tr#" + trID).append(UIConstants.getSectorTD(playerPosition, sector, this.levelHelper));
+                    $("#" + fallbackTableId + " tr#" + trID).append(UIConstants.getSectorMapTD(playerPosition, sector, this.levelHelper));
                 }
             }
         },

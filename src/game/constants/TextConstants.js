@@ -45,6 +45,70 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
 			return description;
 		},
 		
+        getPassageFoundMessage: function (passageVO, direction, sunlit) {
+            switch (passageVO.type) {
+                case MovementConstants.PASSAGE_TYPE_HOLE:
+                    if (direction === PositionConstants.DIRECTION_UP) {
+                        if (sunlit)
+                            return "Far above in the ceiling there is a hole. Blinding sunlight streams in from it.";
+                        else
+                            return "Far above in the ceiling there is a hole, a mouth leading into blackness.";
+                    } else {
+                        if (sunlit)
+                            return "There is a massive sinkhole here. A street is visible below, dizzyingly far away.";
+                        else
+                            return "There is a massive sinkhole here. Only vast emptiness is visible below.";
+                    }
+                default:
+                    return "There used to be " + TextConstants.addArticle(passageVO.name.toLowerCase()) + " here.";
+            }
+        },
+        
+        getPassageRepairedMessage: function (passageType, direction, sectorPosVO) {
+            var directionName = (direction === PositionConstants.DIRECTION_UP ? " up" : " down");
+            switch (passageType) {
+                case MovementConstants.PASSAGE_TYPE_HOLE:
+                    return "Elevator " + directionName + " built at " + sectorPosVO.getInGameFormat(true);
+                case MovementConstants.PASSAGE_TYPE_ELEVATOR:
+                    return "Elevator " + directionName + " repaired at " + sectorPosVO.getInGameFormat(true);
+                case MovementConstants.PASSAGE_TYPE_STAIRWELL:
+                    return "Stairwell " + directionName + " repaired at " + sectorPosVO.getInGameFormat(true);
+                default:
+                    console.log("WARN: Unknown passage type: [" + passageType + "]")
+                    return "Passage " + directionName + " ready at " + sectorPosVO.getInGameFormat(true);
+            }
+        },
+        
+        /*
+        There is a hole in the level ceiling here. An elevator has been built, 
+        /**/
+        
+        getPassageDescription: function (passageVO, direction, isBuilt) {
+            var makeHighlight = function (content) { return "<span class='text-highlight-functionality'>" + content + "</span>"; };
+            var directionName = (direction === PositionConstants.DIRECTION_UP ? " up" : " down");
+            switch (passageVO.type) {
+                case MovementConstants.PASSAGE_TYPE_HOLE:
+                    if (isBuilt) {
+                        return "A brand new " + makeHighlight("elevator " + directionName) + " has been built here.";
+                    } else {
+                        return "There is a " + makeHighlight("hole") + " in the level " + (direction === PositionConstants.DIRECTION_UP ? "ceiling" : "floor") + " here.";
+                    }
+                default:
+                    var name = passageVO.name.toLowerCase() + " " + directionName;
+                    var article = TextConstants.getArticle(name);
+                    var span = article + makeHighlight(name);
+                    var state;
+                    if (isBuilt) {
+                        state = "and it has been repaired";
+                    } else if (passageVO.type === MovementConstants.PASSAGE_TYPE_ELEVATOR) {
+                        state = "but it is broken";
+                    } else {
+                        state = "but it needs to be repaired";
+                    }
+                    return "There is " + span + " here, " + state + ".";
+            }
+        },
+        
 		getLogResourceText: function (resourcesVO) {
 			var msg = "";
 			var replacements = [];
@@ -324,17 +388,21 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
 		},
 		
 		addArticle: function (s) {
+            return this.getArticle(s) + " " + s;
+		},
+        
+        getArticle: function (s) {
             switch (s.trim().charAt(0).toLowerCase()) {
                 case "a":
                 case "i":
                 case "e":
                 case "o":
                 // u is often ambiguous use "a" until adding a fancier rule
-                    return "an " + s;
+                    return "an";
                 default:
-                    return "a " + s;
+                    return "a";
             }
-		},
+        },
 		
 		capitalize: function (string) {
 			return string.charAt(0).toUpperCase() + string.slice(1);
@@ -484,6 +552,7 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
 		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_SLUM][d4][r3] = "A filthy corridor packed so full of abandoned dark-dweller shacks that there is barely enough space to pass through.";
 		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_SLUM][d4][r4] = "A recently inhabited slum so packed with shacks that there is barely enough space to pass through.";
     }
+    
     initSectorTexts();
     
     return TextConstants;

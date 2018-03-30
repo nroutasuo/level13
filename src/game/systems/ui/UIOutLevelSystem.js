@@ -44,8 +44,6 @@ define([
 		sectorHelper: null,
 		
 		engine: null,
-        
-        elementsOutImprovementsTR: null,
 		
 		playerPosNodes: null,
 		playerLocationNodes: null,
@@ -63,6 +61,13 @@ define([
             
             this.uiFunctions.toggle("#switch-out .bubble", false);
             
+            this.elements = {};
+            this.elements.sectorHeader = $("#header-sector");
+            this.elements.description = $("#out-desc");
+            this.elements.btnClearWorkshop = $("#out-action-clear-workshop");            
+            this.elements.outImprovementsTR = $("#out-improvements tr");
+            this.elements.outProjectsTR = $("#out-projects tr");
+            
 			return this;
 		},
 	
@@ -73,7 +78,6 @@ define([
 			this.initListeners();
 			
 			this.engine  = engine;
-            this.elementsOutImprovementsTR = $("#out-improvements tr");
 		},
 
 		removeFromEngine: function (engine) {
@@ -154,11 +158,11 @@ define([
 			var header = "";
 			var name = featuresComponent.getSectorTypeName(hasVision || featuresComponent.sunlit);
 			header = name;
-            $("#header-sector").text(header);
+            this.elements.sectorHeader.text(header);
 			
 			// Description
             if (this.pendingUpdateDescription || isScouted !== this.wasScouted) {
-                $("#out-desc").html(this.getDescription(
+                this.elements.description.html(this.getDescription(
                     this.playerLocationNodes.head.entity,
                     hasCampHere,
                     hasCamp,
@@ -172,8 +176,8 @@ define([
 			this.updateOutImprovementsList(improvements);
 			this.updateOutImprovementsStatus(hasCamp, improvements);
 			
-			var hasAvailableImprovements = $("#out-improvements table tr:visible").length > 0;
-			var hasAvailableProjects = $("#out-projects tr:visible").length > 0;
+			var hasAvailableImprovements = this.elements.outImprovementsTR.filter(":visible").length > 0;
+			var hasAvailableProjects = this.elements.outProjectsTR.filter(":visible").length > 0;
 			this.uiFunctions.toggle("#header-out-improvements", hasAvailableImprovements);
 			this.uiFunctions.toggle("#header-out-projects", hasAvailableProjects);
 			
@@ -225,7 +229,7 @@ define([
             this.uiFunctions.toggle("#out-action-clear-workshop", isScouted && workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP));
             if (workshopComponent) {
                 var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
-                $("#out-action-clear-workshop").text("scout " + workshopName);
+                this.elemenets.btnClearWorkshop.text("scout " + workshopName);
             }
 
             this.uiFunctions.slideToggleIf("#out-locales", null, isScouted && sectorLocalesComponent.locales.length > 0, 200, 0);
@@ -285,7 +289,7 @@ define([
 			return desc;
 		},
 		
-		// Existing improvements. Workshops. Passages. Potential improvements (camp).
+		// Existing improvements. Workshops. Potential improvements (camp).
 		getFunctionalDescription: function (hasVision, isScouted, featuresComponent, workshopComponent, hasCampHere, hasCampOnLevel) {
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
             
@@ -349,16 +353,13 @@ define([
 			var passageDownBuilt = improvements.getCount(improvementNames.passageDownStairs) +
 				improvements.getCount(improvementNames.passageDownElevator) +
 				improvements.getCount(improvementNames.passageDownHole) > 0;
-			if (isScouted && passagesComponent.passageUp) {
-				description += "There is a <span class='text-highlight-functionality'>passage up</span> here (" + passagesComponent.passageUp.name.toLowerCase() + ")";
-				if (!passageUpBuilt) description += ", but it requires repair";
-				description += ". ";
-			}
-			if (isScouted && passagesComponent.passageDown) {
-				description += "There is a <span class='text-highlight-functionality'>passage down</span> here (" + passagesComponent.passageDown.name.toLowerCase() + ")";
-				if (!passageDownBuilt) description += ", but it requires repair";
-				description += ". ";
-			}
+
+            if (isScouted) {
+                if (passagesComponent.passageUp) 
+                    description += TextConstants.getPassageDescription(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, passageUpBuilt);
+                if (passagesComponent.passageDown)
+                    description += TextConstants.getPassageDescription(passagesComponent.passageDown, PositionConstants.DIRECTION_DOWN, passageDownBuilt);
+            }
 			
 			// Blockers n/s/w/e
 			for (var i in PositionConstants.getLevelDirections()) {
@@ -445,7 +446,7 @@ define([
         updateOutImprovementsList: function (improvements) {
             var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;
             var uiFunctions = this.uiFunctions;
-            $.each(this.elementsOutImprovementsTR, function () {
+            $.each(this.elements.outImprovementsTR, function () {
                 var actionName = $(this).attr("btn-action");
                 
                 if (!actionName) {

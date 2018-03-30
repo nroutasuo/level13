@@ -319,7 +319,7 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], fu
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_clothing2]
     = new UpgradeVO("unlock_item_clothing2", "Sewing", "The craft of making clothes out of fabric.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_passage_staircase]
-    = new UpgradeVO("unlock_building_passage_staircase", "Building projects", "Managing large building projects and building structures that allow passage to different levels.");
+    = new UpgradeVO("unlock_building_passage_staircase", "Building projects", "Manage large building projects and repair staircases between levels.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_hospital]
     = new UpgradeVO("unlock_building_hospital", "Field medicine", "Treating basic injuries.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_worker_rope]

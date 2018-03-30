@@ -429,6 +429,7 @@ define([
             
             var improvementName = "";
             var actionName = "";
+            var actionLabel;
             
             // passages
             if (levelPassagesComponent.passagesUp[sectorPosition.sectorId()] && !levelPassagesComponent.passagesUpBuilt[sectorPosition.sectorId()]) {
@@ -436,41 +437,47 @@ define([
                     case 1:
                         improvementName = improvementNames.passageUpHole;
                         actionName = "build_out_passage_up_hole";
+                        actionLabel = "build";
                         break;
                     case 2:
                         improvementName = improvementNames.passageUpElevator;
                         actionName = "build_out_passage_up_elevator";
+                        actionLabel = "repair";
                         break;
                     case 3:
                         improvementName = improvementNames.passageUpStairs;
                         actionName = "build_out_passage_up_stairs";
+                        actionLabel = "repair";
                         break;
                 }
                 if (this.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0) {
                     actionName = actionName + "_" + levelOrdinal;
-                    projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, sectorPosition, PositionConstants.DIRECTION_UP));
+                    projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, sectorPosition, PositionConstants.DIRECTION_UP, null, actionLabel));
                 }
             }
             
             if (levelPassagesComponent.passagesDown[sectorPosition.sectorId()] && !levelPassagesComponent.passagesDownBuilt[sectorPosition.sectorId()]) {
                 switch (levelPassagesComponent.passagesDown[sectorPosition.sectorId()].type) {
-                case MovementConstants.PASSAGE_TYPE_HOLE:
-                    improvementName = improvementNames.passageDownHole;
-                    actionName = "build_out_passage_down_hole";
-                    break;
-                case MovementConstants.PASSAGE_TYPE_ELEVATOR:
-                    improvementName = improvementNames.passageDownElevator;
-                    actionName = "build_out_passage_down_elevator";
-                    break;
-                case MovementConstants.PASSAGE_TYPE_STAIRWELL:
-                    improvementName = improvementNames.passageDownStairs;
-                    actionName = "build_out_passage_down_stairs";
-                    break;
+                    case MovementConstants.PASSAGE_TYPE_HOLE:
+                        improvementName = improvementNames.passageDownHole;
+                        actionName = "build_out_passage_down_hole";
+                        actionLabel = "repair";
+                        break;
+                    case MovementConstants.PASSAGE_TYPE_ELEVATOR:
+                        improvementName = improvementNames.passageDownElevator;
+                        actionName = "build_out_passage_down_elevator";
+                        actionLabel = "repair";
+                        break;
+                    case MovementConstants.PASSAGE_TYPE_STAIRWELL:
+                        improvementName = improvementNames.passageDownStairs;
+                        actionName = "build_out_passage_down_stairs";
+                        actionLabel = "repair";
+                        break;
                 }
                 
                 if (this.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0) {
                     actionName = actionName + "_" + levelOrdinal;
-                    projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, sectorPosition, PositionConstants.DIRECTION_DOWN));
+                    projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, sectorPosition, PositionConstants.DIRECTION_DOWN, null, actionLabel));
                 }
             }
             

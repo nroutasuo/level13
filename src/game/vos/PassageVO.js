@@ -1,9 +1,9 @@
 define(['ash'], function (Ash) {
 	
     var passageTypes = {
-        1: [ "Hole" ],
-		2: [ "Elevator" ],
-		3: [ "Stairwell" ],
+        1: [ "Hole", "Elevator" ],
+		2: [ "Elevator", "Elevator" ],
+		3: [ "Stairwell", "Stairwell" ],
     };
     
     var PassageVO = Ash.Class.extend({
@@ -14,6 +14,7 @@ define(['ash'], function (Ash) {
 			if (!passageTypes[type]) console.log("WARN: No such passage type: " + type);
 			
 			this.name = passageTypes[type][0];
+            this.nameRepaired = passageTypes[type][1];
 			
 			this.crossable = type === 3;
 			this.climbable = type === 2;

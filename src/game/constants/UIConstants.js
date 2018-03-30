@@ -136,7 +136,7 @@ define(['ash',
 			return html;
 		},
 		
-		getSectorTD: function (playerPosition, sector, levelHelper) {
+		getSectorMapTD: function (playerPosition, sector, levelHelper) {
 			var content = "";
             var sectorStatus = SectorConstants.getSectorStatus(sector, levelHelper);
 			var classes = "vis-out-sector";

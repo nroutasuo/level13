@@ -203,9 +203,9 @@ define([
 				if (unlockedBuildings.length > 0) {
 					effects += "buildings: ";
 					for (var i in unlockedBuildings) {
-						effects += unlockedBuildings[i];
+						effects += unlockedBuildings[i].toLowerCase();
+                        effects += ", ";
 					}
-					effects += ", ";
 				}
 				
 				var improvedBuildings = this.upgradeEffectsHelper.getImprovedBuildings(upgradeId);
