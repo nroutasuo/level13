@@ -1265,7 +1265,8 @@ define(['ash',
             if (totalCollected === 0) {
                 this.addLogMessage(LogConstants.MSG_ID_USE_COLLECTOR_FAIL, "Nothing to collect yet.");
             }
-
+            
+            GlobalSignals.inventoryChangedSignal.dispatch();
             this.forceResourceBarUpdate();
         },
         

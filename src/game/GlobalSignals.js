@@ -19,6 +19,20 @@ define(['ash',], function (Ash) {
         inventoryChangedSignal: new Ash.Signals.Signal(),
         launcedSignal: new Ash.Signals.Signal(),
         
+        add: function (system, signal, listener) {
+            if (!system.signalBindings)
+                system.signalBindings = [];
+            var binding = signal.add(listener);
+            system.signalBindings.push(binding);
+        },
+        
+        removeAll: function (system) {
+            if (!system.signalBindings) return;
+            for (var i = 0; i < system.signalBindings.length; i++)
+                system.signalBindings[i].detach();
+            system.signalBindings = [];
+        }
+        
     };
 
     return GlobalSignals;

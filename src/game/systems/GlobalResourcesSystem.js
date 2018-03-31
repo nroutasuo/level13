@@ -4,29 +4,25 @@
 //  - player/worker in camp with trading post: moved to tribe resources
 define([
     'ash',
-    'game/nodes/sector/SectorResourcesNode',
+    'game/GlobalSignals',
+    'game/nodes/sector/CampResourcesNode',
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/tribe/TribeResourcesNode',
     'game/components/common/CurrencyComponent',
     'game/components/tribe/UpgradesComponent',
-    'game/components/common/CampComponent',
-    'game/components/sector/improvements/SectorImprovementsComponent',
-    'game/constants/CampConstants',
-    'game/vos/ResourcesVO'
-], function (Ash,
-	SectorResourcesNode, PlayerResourcesNode, TribeResourcesNode,
-	CurrencyComponent, UpgradesComponent, CampComponent, SectorImprovementsComponent,
-	CampConstants, ResourcesVO) {
+    'game/constants/CampConstants'
+], function (Ash, GlobalSignals,
+	CampResourcesNode, PlayerResourcesNode, TribeResourcesNode,
+	CurrencyComponent, UpgradesComponent,
+	CampConstants) {
     var GlobalResourcesSystem = Ash.System.extend({
 	    
 		playerNodes: null,
-		sectorNodes: null,
+		campNodes: null,
 		tribeNodes: null,
 		
 		gameState: null,
 		upgradeEffectsHelper: null,
-		
-		// TODO use camp nodes instead of sector nodes for loops
 		
 		constructor: function (gameState, upgradeEffectsHelper) {
 			this.gameState = gameState;
@@ -35,21 +31,27 @@ define([
 
 		addToEngine: function (engine) {
 			this.playerNodes = engine.getNodeList(PlayerResourcesNode);
-			this.sectorNodes = engine.getNodeList(SectorResourcesNode);
+			this.campNodes = engine.getNodeList(CampResourcesNode);
 			this.tribeNodes = engine.getNodeList(TribeResourcesNode);
+
+            var sys = this;
+            this.onInventoryChanged = function () {
+                sys.updateUnlockedResources();
+            };
+            GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.onInventoryChanged);
 		},
 
 		removeFromEngine: function (engine) {
 			this.playerNodes = null;
-			this.sectorNodes = null;
+			this.campNodes = null;
 			this.tribeNodes = null;
+            GlobalSignals.removeAll(this);
 		},
 
 		update: function (time) {
 			this.updateCampsResources();
 			this.updateTribeResources();
 			this.updatePlayerResources();
-			this.updateGameState();
 		},
 		
 		updateCampsResources: function () {
@@ -60,13 +62,11 @@ define([
 			
 			var campImprovements;
 			var hasTradePost;
-			for (var node = this.sectorNodes.head; node; node = node.next) {
-				if (node.entity.has(CampComponent)) {
-					campImprovements = node.entity.get(SectorImprovementsComponent);
-					hasTradePost = campImprovements.getCount(improvementNames.tradepost) > 0;
-					node.resources.storageCapacity = CampConstants.BASE_STORAGE + campImprovements.getCount(improvementNames.storage) * storagePerImprovement;
-					node.resources.limitToStorage(!hasTradePost);
-				}
+			for (var node = this.campNodes.head; node; node = node.next) {
+                campImprovements = node.improvements;
+                hasTradePost = campImprovements.getCount(improvementNames.tradepost) > 0;
+                node.resources.storageCapacity = CampConstants.BASE_STORAGE + campImprovements.getCount(improvementNames.storage) * storagePerImprovement;
+                node.resources.limitToStorage(!hasTradePost);
 			}
 		},
 		
@@ -93,7 +93,7 @@ define([
 			};
             
             var updateSectorCurrency = function (node) {
-                var currency = node.entity.get(CurrencyComponent);
+                var currency = node.currency;
 				var amount = currency.currency;
 				globalCurrency.currency += amount;
 				currency.currency = 0;
@@ -101,20 +101,18 @@ define([
 			
 			var campImprovements;
 			var hasTradePost;
-			for (var node = this.sectorNodes.head; node; node = node.next) {
-				if (node.entity.has(CampComponent)) {
-					campImprovements = node.entity.get(SectorImprovementsComponent);
-					hasTradePost = campImprovements.getCount(improvementNames.tradepost) > 0;
-					if (hasTradePost) {
-						for (var key in resourceNames) {
-							var name = resourceNames[key];
-							updateSectorResource(node, name);
-							updateSectorResAcc(node, name);
-						}
-                        updateSectorCurrency(node);
-						globalResourcesComponent.storageCapacity += node.resources.storageCapacity;
-					}
-				}
+			for (var node = this.campNodes.head; node; node = node.next) {
+                campImprovements = node.improvements;
+                hasTradePost = campImprovements.getCount(improvementNames.tradepost) > 0;
+                if (hasTradePost) {
+                    for (var key in resourceNames) {
+                        var name = resourceNames[key];
+                        updateSectorResource(node, name);
+                        updateSectorResAcc(node, name);
+                    }
+                    updateSectorCurrency(node);
+                    globalResourcesComponent.storageCapacity += node.resources.storageCapacity;
+                }
 			}
 			
 			globalResourcesComponent.limitToStorage(true);
@@ -124,17 +122,17 @@ define([
 			this.playerNodes.head.resources.limitToStorage(true);
 		},
 		
-		updateGameState: function () {
+		updateUnlockedResources: function () {
 			var playerResources = this.playerNodes.head.resources.resources;
 			var globalResourcesComponent = this.tribeNodes.head.resources;
 			var globalResources = globalResourcesComponent.resources;
 			
 			var gameState = this.gameState;
-			var sectorNodes = this.sectorNodes;
+			var campNodes = this.campNodes;
 			var checkUnlockedResource = function (name) {
 				if (gameState.unlockedFeatures.resources[name]) return true;
 				if (playerResources[name] > 0) return true;
-				for (var node = sectorNodes.head; node; node = node.next) {
+				for (var node = campNodes.head; node; node = node.next) {
 					if (node.resources.resources[name] > 0) return true;
 				}
 				if (globalResources[name] > 0) return true;
