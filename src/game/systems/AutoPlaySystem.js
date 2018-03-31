@@ -274,7 +274,7 @@ define(['ash',
             var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
             var playerPosition = this.playerActionFunctions.playerPositionNodes.head.position;
             var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
-            var campResources = this.playerActionFunctions.resourcesHelper.getCurrentCampStorage(this.playerActionFunctions.nearestCampNodes.head.entity);
+            var campResources = this.playerActionFunctions.nearestCampNodes.head ? this.playerActionFunctions.resourcesHelper.getCurrentCampStorage(this.playerActionFunctions.nearestCampNodes.head.entity) : null;
             
 			var levelHelper = this.levelHelper;
             var playerActionFunctions = this.playerActionFunctions;
@@ -282,7 +282,7 @@ define(['ash',
             var injuries = perksComponent.getItemsByType(PerkConstants.perkTypes.injury);
             var hasHospital = this.getTotalImprovementsCount(improvementNames.hospital) > 0;
             var prioritizeHeal = injuries.length > 0 && hasHospital;
-            var prioritizeScouting = campResources.isStocked(this.playerActionFunctions.gameState);
+            var prioritizeScouting = campResources ? campResources.isStocked(this.playerActionFunctions.gameState) : false;
             
             // 1. set requirements
             if (this.playerStatsNodes.head.vision.value < this.playerStatsNodes.head.vision.maximum) {
