@@ -58,6 +58,19 @@ define([
 			this.uiFunctions = uiFunctions;
 			this.resourcesHelper = resourcesHelper;
             this.upgradeEffectsHelper = upgradeEffectsHelper;
+
+            this.elements = {};
+            this.elements.body = $("body");
+            this.elements.overlay = $("#page-overlay");
+            this.elements.locationHeader = $("#grid-location-header h1");
+            this.elements.date = $("#in-game-date");
+            this.elements.gameVersion = $("#game-version");            
+            this.elements.valVision = $("#stats-vision .value");
+            this.elements.valStamina = $("#stats-stamina .value");
+            this.elements.valHealth = $("#stats-health .value");
+            this.elements.valRumours = $("#stats-rumours .value");
+            this.elements.valEvidence = $("#stats-evidence .value");
+            
 			return this;
 		},
 	
@@ -113,12 +126,12 @@ define([
             
             if (isInCamp && !campComponent) return;
 			
-			$("#game-version").text("v. " + this.uiFunctions.changeLogHelper.getCurrentVersionNumber());
+			this.elements.gameVersion.text("v. " + this.uiFunctions.changeLogHelper.getCurrentVersionNumber());
             
             var headerText = isInCamp ? campComponent.getName() + "  (level " + playerPosition.level + ")" : "level " + playerPosition.level;
             var showCalendar = this.tribeNodes.head.upgrades.hasUpgrade(this.upgradeEffectsHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
-            $("#grid-location-header h1").text(headerText);
-            $("#in-game-date").text(UIConstants.getInGameDate(this.gameState.gamePlayedSeconds));
+            this.elements.locationHeader.text(headerText);
+            this.elements.date.text(UIConstants.getInGameDate(this.gameState.gamePlayedSeconds));
             this.uiFunctions.toggle("#in-game-date", showCalendar);
             this.uiFunctions.toggle("#grid-tab-header", this.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.out || isInCamp);
 			
@@ -152,9 +165,9 @@ define([
 			var bgColorVal = 0;
 			if (sunlit) bgColorVal = 255;
 			// TODO performance consider appending to stylesheet (https://learn.jquery.com/performance/use-stylesheets-for-changing-css/)
-			$("#page-overlay").css("background-color", "rgba(" + bgColorVal + "," + bgColorVal + "," + bgColorVal + "," + (alphaVal * 0.5) + ")");
-			$("body").toggleClass("sunlit", sunlit);
-			$("body").toggleClass("dark", !sunlit);
+			this.elements.overlay.css("background-color", "rgba(" + bgColorVal + "," + bgColorVal + "," + bgColorVal + "," + (alphaVal * 0.5) + ")");
+			this.elements.body.toggleClass("sunlit", sunlit);
+			this.elements.body.toggleClass("dark", !sunlit);
 			$("img").css("opacity", (1 - alphaVal));
 		},
 		
@@ -176,27 +189,27 @@ define([
 			var maxVision = playerStatsNode.vision.maximum;
 			var maxStamina = Math.round(playerStatsNode.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
 			
-			$("#stats-vision .value").text(UIConstants.roundValue(playerVision, true, false) + " / " + maxVision);
-			this.updateStatsCallout("stats-vision", playerStatsNode.vision.accSources);
+			this.elements.valVision.text(UIConstants.roundValue(playerVision, true, false) + " / " + maxVision);
+			this.updateStatsCallout("Makes exploration safer", "stats-vision", playerStatsNode.vision.accSources);
 			
-			$("#stats-stamina .value").text(UIConstants.roundValue(playerStamina, true, false) + " / " + maxStamina);
-			this.updateStatsCallout("stats-stamina", playerStatsNode.stamina.accSources);
+            this.elements.valHealth.text(playerStatsNode.stamina.health);
+            this.updateStatsCallout("Determines maximum stamina", "stats-health", null);
 
-            $("#stats-health .value").text(playerStatsNode.stamina.health);
-            this.updateStatsCallout("stats-health", null);
+			this.elements.valStamina.text(UIConstants.roundValue(playerStamina, true, false) + " / " + maxStamina);
+			this.updateStatsCallout("Required for exploration", "stats-stamina", playerStatsNode.stamina.accSources);
 
             var staminaWarningLimit = PlayerStatConstants.getStaminaWarningLimit(this.uiFunctions.playerActions.playerActionsHelper, playerStatsNode.stamina);
-            $("#stats-health .value").toggleClass("warning", playerStatsNode.stamina.health <= 25);
-            $("#stats-vision .value").toggleClass("warning", playerVision <= 25);
-            $("#stats-stamina .value").toggleClass("warning", playerStamina <= staminaWarningLimit);
+            this.elements.valVision.toggleClass("warning", playerVision <= 25);
+            this.elements.valStamina.toggleClass("warning", playerStamina <= staminaWarningLimit);
+            this.elements.valHealth.toggleClass("warning", playerStatsNode.stamina.health <= 25);
 			
-			$("#stats-rumours .value").text(UIConstants.roundValue(playerStatsNode.rumours.value, true, false));
+			this.elements.valRumours.text(UIConstants.roundValue(playerStatsNode.rumours.value, true, false));
 			this.uiFunctions.toggle("#stats-rumours", playerStatsNode.rumours.isAccumulating);
-			this.updateStatsCallout("stats-rumours", playerStatsNode.rumours.accSources);
+			this.updateStatsCallout(null, "stats-rumours", playerStatsNode.rumours.accSources);
 			
-			$("#stats-evidence .value").text(UIConstants.roundValue(playerStatsNode.evidence.value, true, false));
+			this.elements.valEvidence.text(UIConstants.roundValue(playerStatsNode.evidence.value, true, false));
 			this.uiFunctions.toggle("#stats-evidence", this.gameState.unlockedFeatures.evidence);
-			this.updateStatsCallout("stats-evidence", playerStatsNode.evidence.accSources);
+			this.updateStatsCallout(null, "stats-evidence", playerStatsNode.evidence.accSources);
             
             $("#header-tribe-container").toggle(this.gameState.unlockedFeatures.evidence || playerStatsNode.rumours.isAccumulating);
 
@@ -238,8 +251,8 @@ define([
 			UIConstants.updateCalloutContent("#stats-scavenge", "health: " + Math.round(maxStamina/10) + "<br/>vision: " + Math.round(playerVision));
 		},
 		
-		updateStatsCallout: function (indicatorID, changeSources) {
-			var content = "";
+		updateStatsCallout: function (description, indicatorID, changeSources) {
+            var sources = "";
 			var source;
 			for (var i in changeSources) {
 				source = changeSources[i];
@@ -248,13 +261,14 @@ define([
 					if (amount == 0 && source.amount > 0) {
 						amount = "<&nbsp;" + (1/1000);
 					}
-					content += source.source + ": " + amount + "/s<br/>";
+					sources += source.source + ": " + amount + "/s<br/>";
 				}
 			}
 			
-			if (content.length <= 0) {
-				content = "(no change)";
+			if (sources.length <= 0) {
+				sources = "(no change)";
 			}
+            var content = description + (description && sources ? "<hr/>" :  "") + sources;
 			UIConstants.updateCalloutContent("#" + indicatorID, content);
 		},
 		
