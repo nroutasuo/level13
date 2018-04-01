@@ -1,7 +1,7 @@
 define([
     'ash',
 	'game/constants/GameConstants',
-    'game/components/GameState',
+    'game/GameState',
     'game/systems/GameManager',
     'game/systems/SaveSystem',
     'game/systems/AutoPlaySystem',
