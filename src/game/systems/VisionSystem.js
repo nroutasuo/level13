@@ -77,7 +77,7 @@ define([
             
             var maxValue = 0;
             var visionPerSec = 0;
-            var accSpeedFactor = Math.max(100 - oldValue, 10) / 2500;
+            var accSpeedFactor = Math.max(100 - oldValue, 10) / 250;
             
             vision.accSources = [];
             var addAccumulation = function (sourceName, value) {

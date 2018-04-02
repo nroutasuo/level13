@@ -87,6 +87,7 @@ define([
             var sys = this;
             GlobalSignals.playerMovedSignal.add(function () { sys.onPlayerMoved(); });
             GlobalSignals.visionChangedSignal.add(function () { sys.onVisionChanged(); });
+            GlobalSignals.tabChangedSignal.add(function () { sys.onVisionChanged(); });
 			
 			this.generateStatsCallouts();
 		},
@@ -156,10 +157,42 @@ define([
         },
 		
 		onVisionChanged: function () {
+            if (!this.currentLocationNodes.head) return;
 			var featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var sunlit = featuresComponent.sunlit;            
 			this.elements.body.toggleClass("sunlit", sunlit);
 			this.elements.body.toggleClass("dark", !sunlit);
+            
+            var visionPercentage = (this.playerStatsNodes.head.vision.value / 100);
+			var alphaVal = 0.25 + visionPercentage;
+            var alphaVal2 = 0.75 + visionPercentage * 0.25;
+            alphaVal = Math.max(alphaVal, 0.25);
+			alphaVal = Math.min(alphaVal, 1);
+            alphaVal2 = Math.max(alphaVal2, 0.5);
+			alphaVal2 = Math.min(alphaVal2, 1);
+            var alphaHex = (alphaVal * 255).toString(16).split(".")[0];
+            var alphaHex2 = (alphaVal2 * 255).toString(16).split(".")[0];            
+            
+            var box3bg = (sunlit ? "#efefef" : "#262826") + alphaHex;
+            var box3border = (sunlit ? "#aaaaaa" : "#555555") + alphaHex;
+            $(".lvl13-box-3").css("background-color", box3bg);
+            $(".lvl13-box-3").css("border-color", box3border);
+            
+            var box1bg = (sunlit ? "#efefef" : "#282a28") + alphaHex;
+            var box1border = (sunlit ? "#d0d0d0" : "#3a3a3a") + alphaHex;
+            $("div.grid-content").css("background-color", box1bg);
+            $("div.grid-content").css("border-color", box1border);
+            $(".lvl13-box-2").css("border-color", box1border);
+            $("ul.tabs li").css("border-color", "");
+            $("ul.tabs li").css("border-bottom-color", "");
+            $("ul.tabs li.selected").css("border-color", box1border);
+            $("ul.tabs li.selected").css("border-bottom-color", box1bg);
+            
+            var defaultText = (sunlit ? "#202220" : "#fdfdfd") + alphaHex2;
+            $("body").css("color", defaultText);
+            $("#switch").css("color", defaultText);
+            
+			$("img").css("opacity", alphaVal2);
 		},
 		
 		updatePlayerStats: function (isInCamp) {
