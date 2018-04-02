@@ -38,6 +38,7 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
         MSG_ID_FAINTED: "MSG_ID_FAINTED",
         MSG_ID_DESPAIR_AVAILABLE: "MSG_ID_DESPAIR_AVAILABLE",
         MSG_ID_STAMINA_WARNING: "MSG_ID_STAMINA_WARNING",
+        MSG_ID_VISION_RESET: "MSG_ID_VISION_RESET",
         
         // in atmospheric and results
         MSG_ID_POPULATION_NATURAL: "POPULATION_NATURAL",

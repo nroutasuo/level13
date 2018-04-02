@@ -3,19 +3,36 @@ define([
 	'game/constants/GameConstants',
     'game/constants/ItemConstants',
     'game/constants/PlayerStatConstants',
+    'game/constants/LogConstants',
     'game/nodes/player/VisionNode',
     'game/nodes/PlayerLocationNode',
     'game/components/common/PositionComponent',
+    'game/components/common/LogMessagesComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/SectorFeaturesComponent',
-    'game/components/sector/SectorStatusComponent',
-], function (Ash, GameConstants, ItemConstants, PlayerStatConstants, VisionNode, PlayerLocationNode, PositionComponent, SectorImprovementsComponent, SectorFeaturesComponent, SectorStatusComponent) {
+    'game/components/sector/SectorStatusComponent'
+], function (
+    Ash, 
+    GameConstants, 
+    ItemConstants, 
+    PlayerStatConstants, 
+    LogConstants,
+    VisionNode, 
+    PlayerLocationNode, 
+    PositionComponent, 
+    LogMessagesComponent,
+    SectorImprovementsComponent, 
+    SectorFeaturesComponent, 
+    SectorStatusComponent
+) {
     var VisionSystem = Ash.System.extend({
 	
         gameState: null,
     
         visionNodes: null,
         locationNodes: null,
+        
+        wasSunlit: null,
 
         constructor: function (gameState) {
             this.gameState = gameState;
@@ -57,7 +74,7 @@ define([
             
             var maxValue = 0;
             var visionPerSec = 0;
-            var accSpeedFactor = Math.max(100 - oldValue, 10) / 200;
+            var accSpeedFactor = Math.max(100 - oldValue, 10) / 250;
             
             vision.accSources = [];
             var addAccumulation = function (sourceName, value) {
@@ -93,7 +110,7 @@ define([
 				var shadeBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_sunlight);
 				if (shadeBonus + maxValueBase > maxValue) {
 					maxValue = shadeBonus + maxValueBase;
-					addAccumulation("Equipment", shadeBonus / maxValueBase);
+					addAccumulation("Sunglasses", shadeBonus / maxValueBase);
 				}
 			} else {
 				var lightItem = itemsComponent.getEquipped(ItemConstants.itemTypes.light)[0];
@@ -109,18 +126,33 @@ define([
                 statusComponent.glowStickSeconds -= time * GameConstants.gameSpeedExploration;
 			}
 			
-			// Increase
+			// Set final values
 			vision.value += time * visionPerSec;
 			vision.accumulation = visionPerSec;
 			vision.maximum = maxValue;
 			
             // Effects of moving from different light environments
-			if (oldMaximum > 0 && maxValue < oldMaximum) {
-				vision.value = Math.min(vision.value, Math.min(vision.value, maxValue) - Math.abs(oldMaximum - maxValue));
-			}
-			if (oldMaximum > 0 && maxValue > oldMaximum && sunlit) {
-				vision.value = Math.min(vision.value, vision.value - Math.abs(oldMaximum - maxValue));
-			}
+            var logComponent = node.entity.get(LogMessagesComponent);
+            if (oldMaximum > 0 && this.wasSunlit !== null) {
+                if (this.wasSunlit !== sunlit) {
+                    // switching between darkness and sunlight
+                    vision.value = 0;
+                    if (sunlit) {
+                        logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Blinded by sunlight.");
+                    } else {
+                        logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "The darkness is like a wall.");
+                    }
+                } else if (oldMaximum > maxValue && oldValue - 10 > maxValue && maxValue == maxValueBase) {
+                    // being reset back to base value (losing equipment, not having equipment and leaving camp)
+                    vision.value = 0;
+                    if (sunlit) {
+                        logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Blinded by sunlight.");
+                    } else {
+                        logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "The darkness is like a wall.");
+                    }
+                }
+            }
+            this.wasSunlit = sunlit;
 			
             // Limit to min / max
 			if (vision.value > maxValue) {

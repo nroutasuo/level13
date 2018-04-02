@@ -92,7 +92,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
                         
                 move_sector_north: {
-                    vision: [10, -1],
+                    vision: [15, -1],
                     sector: {
                         blockerNorth: false,
                     },
@@ -100,7 +100,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
                         
                 move_sector_south: {
-                    vision: [10, -1],
+                    vision: [15, -1],
                     sector: {
                         blockerSouth: false,
                     },
@@ -108,7 +108,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
                         
                 move_sector_east: {
-                    vision: [10, -1],
+                    vision: [15, -1],
                     sector: {
                         blockerEast: false,
                     },
@@ -116,7 +116,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
                         
                 move_sector_west: {
-                    vision: [10, -1],
+                    vision: [15, -1],
                     sector: {
                         blockerWest: false,
                     },
@@ -124,7 +124,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
                         
                 move_sector_ne: {
-                    vision: [10, -1],
+                    vision: [15, -1],
                     sector: {
                         blockerNE: false,
                     },
@@ -132,7 +132,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
                         
                 move_sector_se: {
-                    vision: [10, -1],
+                    vision: [15, -1],
                     sector: {
                         blockerSE: false,
                     },
@@ -140,7 +140,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
                         
                 move_sector_sw: {
-                    vision: [10, -1],
+                    vision: [15, -1],
                     sector: {
                         blockerSW: false,
                     },
@@ -148,7 +148,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
                         
                 move_sector_nw: {
-                    vision: [10, -1],
+                    vision: [15, -1],
                     sector: {
                         blockerNW: false,
                     },
@@ -156,6 +156,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
                     
                 move_level_up: {
+                    vision: [25, -1],
                     sector: {
                         passageUp: true,
                     },
@@ -166,6 +167,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
                     
                 move_level_down: {
+                    vision: [25, -1],
                     sector: {
                         passageDown: true,
                     },
@@ -271,6 +273,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 use_out_collector_food: {
+                    vision: [10, -1],
                     improvements: {
                         collector_food: [1, -1],
                     },
@@ -280,6 +283,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 use_out_collector_water: {
+                    vision: [10, -1],
                     improvements: {
                         collector_water: [1, -1],
                     },

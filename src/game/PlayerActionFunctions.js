@@ -450,7 +450,7 @@ define(['ash',
             if (campNode && campNode.position.level === playerPos.level && campNode.position.sectorId() === playerPos.sectorId()) {
                 var sunlit = campNode.entity.get(SectorFeaturesComponent).sunlit;
                 playerPos.inCamp = false;
-                var msg = "Left camp. " + (sunlit ? "Sunlight is sharp and merciless." : " Darkness of the city envelops you.");
+                var msg = "Left camp. " + (sunlit ? "Sunlight is sharp and merciless." : "The darkness of the city envelops you.");
                 this.addLogMessage(LogConstants.MSG_ID_LEAVE_CAMP, msg);
                 GlobalSignals.playerMovedSignal.dispatch(playerPos);
                 this.forceResourceBarUpdate();

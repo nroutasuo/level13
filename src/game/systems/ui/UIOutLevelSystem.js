@@ -282,7 +282,7 @@ define([
                         desc += "A glowstick casts a sickly <span class='text-highlight-functionality'>light</span>.";
                 } else {
                     if (hasVision) desc += "";
-                    else desc += "There is no <span class='text-highlight-functionality'>light</span>.";
+                    else desc += "There is no <span class='text-highlight-functionality'>light</span>. ";
                 }
             }
 			
