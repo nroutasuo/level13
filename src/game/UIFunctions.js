@@ -706,7 +706,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         
         showSpecialPopup: function (popupID) {
             if ($("#" + popupID).is(":visible")) return;
-            $("#" + popupID).wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");
+            $("#" + popupID).wrap("<div class='popup-overlay' style='display:none'></div>");
             var uiFunctions = this;
             $(".popup-overlay").fadeIn(200, function () {
                 uiFunctions.popupManager.onResize();

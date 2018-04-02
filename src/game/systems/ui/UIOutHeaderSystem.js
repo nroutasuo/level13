@@ -61,7 +61,6 @@ define([
 
             this.elements = {};
             this.elements.body = $("body");
-            this.elements.overlay = $("#page-overlay");
             this.elements.locationHeader = $("#grid-location-header h1");
             this.elements.date = $("#in-game-date");
             this.elements.gameVersion = $("#game-version");            
@@ -87,6 +86,7 @@ define([
             
             var sys = this;
             GlobalSignals.playerMovedSignal.add(function () { sys.onPlayerMoved(); });
+            GlobalSignals.visionChangedSignal.add(function () { sys.onVisionChanged(); });
 			
 			this.generateStatsCallouts();
 		},
@@ -121,8 +121,6 @@ define([
 			var campComponent = this.currentLocationNodes.head.entity.get(CampComponent);
 			var isInCamp = playerPosition.inCamp;
 			
-			this.updateOverlay();
-			this.updateLevelColours();
 			this.updateGameMsg();
 			this.updateNotifications(isInCamp);
             this.updateLocation(isInCamp);
@@ -157,32 +155,11 @@ define([
             this.uiFunctions.slideToggleIf("#main-header-items", null, !isInCamp, 250, 50);
         },
 		
-		updateOverlay: function () {
+		onVisionChanged: function () {
 			var featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var sunlit = featuresComponent.sunlit;
-            var visionPercentage = (this.playerStatsNodes.head.vision.value / 100);
-			var alphaVal = (0.5 - visionPercentage * 0.5);
-            alphaVal = Math.min(alphaVal, 1);
-			alphaVal = Math.max(alphaVal, 0);
-			
-			var bgColorVal = 0;
-			if (sunlit) bgColorVal = 255;
-			// TODO performance consider appending to stylesheet (https://learn.jquery.com/performance/use-stylesheets-for-changing-css/)
-			this.elements.overlay.css("background-color", "rgba(" + bgColorVal + "," + bgColorVal + "," + bgColorVal + "," + (alphaVal * 0.5) + ")");
+			var sunlit = featuresComponent.sunlit;            
 			this.elements.body.toggleClass("sunlit", sunlit);
 			this.elements.body.toggleClass("dark", !sunlit);
-			$("img").css("opacity", (1 - alphaVal));
-		},
-		
-		updateLevelColours: function () {
-			var levelColour = this.getLevelColour();
-			var levelColourS = "rgba(" + levelColour.r + ", " + levelColour.g + ", " + levelColour.b + ", 0.85)";
-			$.each($(".level-bg-colour"), function () {
-				$(this).css("background-color", levelColourS);
-			});
-			$.each($(".level-text-colour"), function () {
-				$(this).css("color", levelColourS);
-			});
 		},
 		
 		updatePlayerStats: function (isInCamp) {
@@ -476,7 +453,7 @@ define([
                     visibleStats++;
             }
             
-            this.uiFunctions.toggle("#header-self-bar hr", visibleStats > 0)
+            this.uiFunctions.toggle("#header-self-bar > hr", visibleStats > 0)
         },
 		
 		updateGameMsg: function () {
@@ -532,37 +509,6 @@ define([
 		
 		getShowResourceAcc: function () {
 			return this.resourcesHelper.getCurrentStorageAccumulation(false);
-		},
-		
-		getLevelColour: function () {
-			var featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var level = this.currentLocationNodes.head.entity.get(PositionComponent).level;
-			var maxLevel = WorldCreatorHelper.getHighestLevel(this.gameState.worldSeed);
-			var minLevel = WorldCreatorHelper.getBottomLevel(this.gameState.worldSeed);
-			var sunlit = featuresComponent.sunlit;
-			
-			var c = new Object();
-			if (sunlit) {
-				c.r = 255;
-				c.g = 255;
-				c.b = 255;
-			} else {
-				if (level > 3) {
-					c.r = Math.pow(level/maxLevel,10)*420;
-					c.g = Math.pow(level/maxLevel,8)*335;
-					c.b = Math.pow(level/maxLevel,8)*345;
-				} else {
-					c.r = Math.pow((level-20)/(minLevel-20),8)*2;
-					c.g = Math.pow((level-20)/(minLevel-20),9)*120;
-					c.b = Math.pow((level-20)/(minLevel-20),8)*80;
-				}
-			}
-			
-			c.r = Math.max( Math.min( Math.round(c.r), 255), 0);
-			c.g = Math.max( Math.min( Math.round(c.g), 255), 0);
-			c.b = Math.max( Math.min( Math.round(c.b), 255), 0);
-			
-			return c;
 		},
     });
 

@@ -71,7 +71,7 @@ function (Ash, GlobalSignals) {
             }
             
             // overlay
-            $("#common-popup").wrap("<div class='popup-overlay level-bg-colour' style='display:none'></div>");
+            $("#common-popup").wrap("<div class='popup-overlay' style='display:none'></div>");
             this.uiFunctions.toggle(".popup-overlay", true);
             popUpManager.onResize();
             GlobalSignals.popupOpenedSignal.dispatch("common-popup");

@@ -19,6 +19,9 @@ define(['ash',], function (Ash) {
         inventoryChangedSignal: new Ash.Signals.Signal(),
         launcedSignal: new Ash.Signals.Signal(),
         
+        // stats changes
+        visionChangedSignal: new Ash.Signals.Signal(),
+        
         add: function (system, signal, listener) {
             if (!system.signalBindings)
                 system.signalBindings = [];

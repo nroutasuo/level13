@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GlobalSignals',
 	'game/constants/GameConstants',
     'game/constants/ItemConstants',
     'game/constants/PlayerStatConstants',
@@ -13,6 +14,7 @@ define([
     'game/components/sector/SectorStatusComponent'
 ], function (
     Ash, 
+    GlobalSignals,
     GameConstants, 
     ItemConstants, 
     PlayerStatConstants, 
@@ -33,6 +35,7 @@ define([
         locationNodes: null,
         
         wasSunlit: null,
+        lastSignalValue: -1,
 
         constructor: function (gameState) {
             this.gameState = gameState;
@@ -74,7 +77,7 @@ define([
             
             var maxValue = 0;
             var visionPerSec = 0;
-            var accSpeedFactor = Math.max(100 - oldValue, 10) / 250;
+            var accSpeedFactor = Math.max(100 - oldValue, 10) / 2500;
             
             vision.accSources = [];
             var addAccumulation = function (sourceName, value) {
@@ -161,6 +164,12 @@ define([
 			if (vision.value < 0) {
 				vision.value = 0;
 			}
+            
+            // dispatch update
+            if (Math.abs(vision.value - this.lastSignalValue) >= 1) {
+                this.lastSignalValue = vision.value;
+                GlobalSignals.visionChangedSignal.dispatch();
+            }
         },
     });
 
