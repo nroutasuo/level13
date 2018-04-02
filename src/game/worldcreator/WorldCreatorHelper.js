@@ -12,6 +12,9 @@ define([
 		getSectorType: function (seed, level, x, y) {
             var sector = x + y + 2000;
 			var topLevel = this.getHighestLevel(seed);
+            if (level === 13 && x === WorldCreatorConstants.FIRST_CAMP_X && y === WorldCreatorConstants.FIRST_CAMP_Y)
+                return WorldCreatorConstants.SECTOR_TYPE_SLUM;
+            
 			var sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
 			if (level > topLevel - 5) {
 				// Recent mostly residential and commercial area
@@ -63,25 +66,25 @@ define([
                 break;
             case WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL:
                 result.water = waterRandomPart > 0.9 ? 1 : 0;
-                result.metal = 7;
+                result.metal = 8;
                 result.tools = (l > 13) ? WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.95 ? 1 : 0 : 0;
                 result.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.90 ? 1 : 0;
                 result.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.90 ? 1 : 0;
                 break;
             case WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE:
-                result.metal = 7;
+                result.metal = 10;
                 result.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.90 ? 1 : 0;
                 result.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.90 ? 1 : 0;
                 result.tools = (l > 13) ? WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.90 ? 1 : 0 : 0;
                 break;
             case WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL:
                 result.water = waterRandomPart > 0.85 ? 2 : 0;
-                result.metal = 3;
+                result.metal = 2;
                 result.food = Math.round(sectorAbundanceFactor * 10);
                 result.medicine = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.99 ? 1 : 0;
                 break;
             case WorldCreatorConstants.SECTOR_TYPE_SLUM:
-                result.metal = 5;
+                result.metal = 7;
                 result.food = WorldCreatorRandom.random(seed / (l+10) + x * y * 63) > 0.75 ? Math.round(sectorAbundanceFactor * 5 + stateOfRepair / 2) : 0;
                 result.water = waterRandomPart > 0.75 ? 1 : 0;
                 result.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.85 ? 1 : 0;

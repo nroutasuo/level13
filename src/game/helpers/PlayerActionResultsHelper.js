@@ -1,6 +1,7 @@
 // Helper methods related to rewards from player actions such as scavenging and scouting
 define([
     'ash',
+    'utils/MathUtils',
     'game/constants/GameConstants',
     'game/constants/PlayerActionConstants',
     'game/constants/LogConstants',
@@ -27,6 +28,7 @@ define([
     'game/vos/ResourcesVO'
 ], function (
     Ash,
+    MathUtils,
     GameConstants,
     PlayerActionConstants,
     LogConstants,
@@ -134,16 +136,9 @@ define([
             var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
             var efficiency = this.getScavengeEfficiency();
 
-            rewards.gainedResources = this.getRewardResources(1, 1, efficiency, sectorResources);
-            rewards.gainedItems = this.getRewardItems(0.05, 0.08, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
+            rewards.gainedResources = this.getRewardResources(0.95 + efficiency * 0.05, 1, efficiency, sectorResources);
+            rewards.gainedItems = this.getRewardItems(0.02, 0.08, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
-
-            // should never be needed, but as a fallback
-            var unscoutedLocales = this.levelHelper.getLevelLocales(playerPos.level, false, false).length;
-            var levelBlueprintPieces = this.getPendingBlueprintPiecesCount();
-            if (unscoutedLocales === 0 && levelBlueprintPieces > 0 && Math.random() < 0.07) {
-                rewards.gainedBlueprintPiece = this.getResultBlueprint(null);
-            }
 
             return rewards;
         },
@@ -168,6 +163,7 @@ define([
 
             var availableResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable.clone();
             availableResources.addAll(localeVO.getResourceBonus(this.gameState.unlockedFeatures.resources));
+            availableResources.limitAll(0, 10);
             var efficiency = this.getScavengeEfficiency();
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var playerPos = this.playerLocationNodes.head.position;
@@ -216,7 +212,7 @@ define([
 		getFightRewards: function (won) {
 			var rewards = new ResultVO("fight");
             if (won) {
-				// TODO make fight rewards dependent on enemy difficulty (amount) and type
+				// TODO make fight rewards dependent on enemy difficulty (amount) and type (no metal drops from rats)
 				var availableResources = new ResourcesVO();
 				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 				var playerPos = this.playerLocationNodes.head.position;
@@ -545,55 +541,66 @@ define([
             }
 		},
 		
+        // typically between 0-1 (can be boosted past 1)
 		getScavengeEfficiency: function () {
 			var playerVision = this.playerStatsNodes.head.vision.value;
 			var playerHealth = this.playerStatsNodes.head.stamina.health;
             return (playerHealth / 100) * (playerVision / 100);
         },
 
-        // probabilityFactor & efficiency as % factors (0-1), amountFactor as a factor relative to scavenge which is 1
+        // probabilityFactor (action-specific): change to get any resources at all (0-1)
+        // amountFactor (action-specific): relative amount of resources found if found any, where regular scavenge is 1
+        // efficiency: 0-1 current scavenge efficiency of the player, affects chance to find something
+        // available resources: name -> relative amount where regular scavenge is 0-10 depending on sector, affects both chance and amount
+        // NOTE: Even if probabilityFactor and efficiency are 1 you can still get no results if availableResources are very scarce
 		getRewardResources: function (probabilityFactor, amountFactor, efficiency, availableResources) {
 			var results = new ResourcesVO();
+            if (Math.random() > probabilityFactor)
+                return results;
+            
+            if (availableResources.getTotal() <= 0)
+                return results;
+            
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
-				var resAmount = availableResources.getResource(name);
-				var resRoundTo = 1;
-				var probability = 0.2;
+				var resQuantity = availableResources.getResource(name);
+                if (resQuantity <= 0)
+                    continue;
+				var probability = resQuantity / 2.5;
+                if (efficiency * probability < Math.random())
+                    continue;
+				var resMin = 1;
 				var resAmountFactor = 1;
                 switch (name) {
                     case resourceNames.metal:
-                        probability = 0.98;
                         resAmountFactor = 2;
                         break;
-                    case resourceNames.water:
-    					probability = 1;
-        				resAmountFactor = 1;
-                        break;
                     case resourceNames.food:
-    					probability = this.gameState.unlockedFeatures.resources[name] === true ? 0.3 : 0.75;
-        				resAmountFactor = 3;
-            			resRoundTo = 2;
+        				resAmountFactor = 2;
+            			resMin = 3;
                         break;
                 }
-				probability = probability * probabilityFactor;
-				var resultAmount = Math.random() < probability ?
-					Math.ceil(amountFactor * resAmountFactor * resAmount * Math.random() * efficiency) :
-					0;
-                resultAmount = Math.min(resultAmount, 10);
-				
-				if (resultAmount > 0 && resRoundTo > 1) {
-					resultAmount = Math.ceil(resultAmount / resRoundTo) * resRoundTo;
+				var resultAmount = resQuantity * amountFactor * resAmountFactor * efficiency * Math.random();
+                if (resultAmount === 0)
+                    continue;
+                resultAmount = MathUtils.clamp(resultAmount, resMin, 10);
+				results.setResource(name, resultAmount);
 				}
 
-				results.setResource(name, resultAmount);
+            // consolation prize: if found nothing at this point & sector contains plenty of metal, add 1 metal
+            if (results.getTotal() === 0) {
+                if (availableResources.getResource(resourceNames.metal) >= 5) {
+                    results.setResource(resourceNames.metal, 1);
+                }
 			}
             
-            // if result only consists of metal, for convenience limit to free space -> can always use "take all"
-            if (results.getTotal() === results.getResource(resourceNames.metal)) {
+            // if result only consists of one resource, for convenience limit to free space -> can always use "take all"
+            var names = results.getNames();
+            if (names.length === 1) {
                 var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
                 var freeSpace = Math.floor(bagComponent.totalCapacity - bagComponent.usedCapacity);
                 if (freeSpace > 0) {
-                    results.setResource(resourceNames.metal, Math.floor(Math.min(results.getResource(resourceNames.metal), freeSpace)));
+                    results.setResource(names[0], Math.floor(Math.min(results.getResource(names[0]), freeSpace)));
                 }
             }
 

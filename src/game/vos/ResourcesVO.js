@@ -74,13 +74,6 @@ define(['ash'], function (Ash) {
                     console.log("WARN: Unknown resource name: " + res);
             }
         },
-		
-		addAll: function (resourceVO) {
-			for(var key in resourceNames) {
-				var name = resourceNames[key];
-				this.addResource(name, resourceVO.getResource(name));
-			}
-		},
         
         setResource: function(res, amount) {
             switch(res) {
@@ -117,6 +110,24 @@ define(['ash'], function (Ash) {
             }	    
 			return 0;
 		},
+		
+		addAll: function (resourceVO) {
+			for(var key in resourceNames) {
+				var name = resourceNames[key];
+				this.addResource(name, resourceVO.getResource(name));
+			}
+		},
+        
+        limitAll: function (min, max) {
+			for(var key in resourceNames) {
+				var name = resourceNames[key];
+				var amount = this.getResource(name);
+                if (amount < min)
+                    this.setResource(name, min);
+                if (amount > max)
+                    this.setResource(name, max);
+			}
+        },
 	
 		cleanUp: function() {
 			for(var key in resourceNames) {
@@ -137,6 +148,17 @@ define(['ash'], function (Ash) {
 			}
 			return total;
 		},
+        
+        getNames: function () {
+            var result = [];
+			 for(var key in resourceNames) {
+				var name = resourceNames[key];
+				var amount = this.getResource(name);
+				if (amount > 0)
+                    result.push(name);
+			}
+            return result;
+        },
 		
 		clone: function() {
 			var c = new ResourcesVO();

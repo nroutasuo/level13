@@ -6,10 +6,10 @@ require.config({
 
     paths: {
         brejep: "../lib/brejep",
-        utils: "../lib/utils",
         webtoolkit: "../lib/webtoolkit",
         ash: "../lib/ash/ash.min",
         jquery: "../lib/jquery/",
+        utils: "utils",
         game: "game"
     },
     
