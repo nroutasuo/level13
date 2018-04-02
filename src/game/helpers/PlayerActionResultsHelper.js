@@ -67,11 +67,11 @@ define([
         playerLocationNodes: null,
         tribeUpgradesNodes: null,
 
-        // probabilities of getting item of that type, Math.random() < prob, else artefact
+        // probabilities of getting item of that type (relative, will be scaled to add up to 1)
         itemResultTypes: {
-            scavenge: { bag: 0.1, light: 0.20, shoes: 0.35, weapon: 0.55, clothing: 0.85, exploration: 0.998 },
-            fight: { bag: 0, light: 0, shoes: 0.2, weapon: 0.4, clothing: 0.55, exploration: 0.6 },
-            meet: { bag: 0.1, light: 0.2, shoes: 0.3, weapon: 0.5, clothing: 0.7, exploration: 0.8 }
+            scavenge: { bag: 0.1, light: 0.2, shoes: 0.15, weapon: 0.05, clothing: 0.3, exploration: 0.2, artefact: 0.01 },
+            fight: { bag: 0, light: 0, shoes: 0.1, weapon: 0.5, clothing: 0.5, exploration: 0.25, artefact: 0.02 },
+            meet: { bag: 0.1, light: 0.1, shoes: 0.1, weapon: 0.5, clothing: 0.5, exploration: 0.5, artefact: 0 }
         },
 
         constructor: function (engine, gameState, playerActionsHelper, resourcesHelper, levelHelper, itemsHelper) {
@@ -120,7 +120,7 @@ define([
             var playerVision = this.playerStatsNodes.head.vision.value;
             var loseInventoryProbability = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
             if (loseInventoryProbability > Math.random()) {
-                resultVO.lostItems = this.getLostItems(action);
+                resultVO.lostItems = this.getLostItems(action, true);
             }
             resultVO.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability(action, playerVision));
             
@@ -137,7 +137,7 @@ define([
             var efficiency = this.getScavengeEfficiency();
 
             rewards.gainedResources = this.getRewardResources(0.95 + efficiency * 0.05, 1, efficiency, sectorResources);
-            rewards.gainedItems = this.getRewardItems(0.02, 0.08, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
+            rewards.gainedItems = this.getRewardItems(0.01 + efficiency * 0.04, efficiency * 0.075, this.itemResultTypes.scavenge, efficiency, itemsComponent, levelOrdinal);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
 
             return rewards;
@@ -187,9 +187,9 @@ define([
             if (rewards.gainedInjuries.length === 0 && localeVO.type !== localeTypes.tradingpartner) {
                 if (localeCategory === "u") {
                     rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
-                    rewards.gainedItems = this.getRewardItems(0.2, 0, this.itemResultTypes.scavenge, itemsComponent, levelOrdinal);
+                    rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.scavenge, 1, itemsComponent, levelOrdinal);
                 } else {
-                    rewards.gainedItems = this.getRewardItems(0.2, 0, this.itemResultTypes.meet, itemsComponent, levelOrdinal);
+                    rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.meet, 1, itemsComponent, levelOrdinal);
                 }
             }
 
@@ -220,7 +220,7 @@ define([
 				availableResources.setResource(resourceNames.food, 10);
 				availableResources.setResource(resourceNames.metal, 3);
 				rewards.gainedResources = this.getRewardResources(0.3, 2, this.getScavengeEfficiency(), availableResources);
-                rewards.gainedItems = this.getRewardItems(0.2, 0.2, this.itemResultTypes.fight, itemsComponent, levelOrdinal);
+                rewards.gainedItems = this.getRewardItems(0.1, 0.2, this.itemResultTypes.fight, 1, itemsComponent, levelOrdinal);
 				rewards.gainedReputation = 1;
             } else {
 				// TODO lost followers
@@ -234,7 +234,7 @@ define([
             if (loseInventoryProbability > Math.random()) {
                 resultVO.lostResources = this.playerResourcesNodes.head.resources.resources.clone();
                 resultVO.lostCurrency = this.playerResourcesNodes.head.entity.get(CurrencyComponent).currency;
-                resultVO.lostItems = this.getLostItems("despair");
+                resultVO.lostItems = this.getLostItems("despair", false);
             }
 
             resultVO.gainedInjuries = this.getResultInjuries(injuryProbability);
@@ -585,14 +585,14 @@ define([
                     continue;
                 resultAmount = MathUtils.clamp(resultAmount, resMin, 10);
 				results.setResource(name, resultAmount);
-				}
-
+			}
+            
             // consolation prize: if found nothing at this point & sector contains plenty of metal, add 1 metal
             if (results.getTotal() === 0) {
                 if (availableResources.getResource(resourceNames.metal) >= 5) {
                     results.setResource(resourceNames.metal, 1);
                 }
-			}
+            }
             
             // if result only consists of one resource, for convenience limit to free space -> can always use "take all"
             var names = results.getNames();
@@ -617,54 +617,31 @@ define([
             return Math.ceil(Math.random() * 3);
         },
 		
-		// probability of getting something: 0-1 for one item / some ingredients
-		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, currentItems, levelOrdinal) {
+		// itemProbability: 0-1 probability of finding one item 
+        // ingredientProbability: 0-1 probability of finding some ingredients
+        // itemTypeLimits: list of item types and their probabilities ([ type: relative_probability ])
+        // efficiency: 0-1 current scavenge efficiency of the player, affects chance to find something
+        // currentItems: ItemsComponent
+        // level ordinal: current location level ordinal
+		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, efficiency, currentItems, levelOrdinal) {
 			var result = [];
-			var totalLevels = this.gameState.getTotalLevels();
 
 			// Neccessity items (map, bag) that the player should find quickly if missing
-			var necessityItem = this.getNecessityItem(currentItems, levelOrdinal);
-			if (necessityItem && Math.random() < itemProbability * 40) {
+			var necessityItem = this.getNecessityItem(itemProbability, itemTypeLimits, efficiency, currentItems, levelOrdinal);
+			if (necessityItem) {
 				result.push(necessityItem);
 			}
 
 			// Normal items
-            // TODO add variety within categories: items you find often (basic clothing), rare finds (first aid kits, craftables)
-            var maxItems = 3;
-			while (result.length <= maxItems) {
-                if (Math.random() > itemProbability)
-                    break;
-				var item;
-				var i;
-				var pendingItem;
-				var itemTypeRand = Math.random();
-				if (itemTypeRand < itemTypeLimits.bag) {
-					pendingItem = ItemConstants.getBag(levelOrdinal);
-				}  else if (itemTypeRand < itemTypeLimits.light) {
-					pendingItem = ItemConstants.getLight(levelOrdinal);
-				} else if (itemTypeRand < itemTypeLimits.shoes) {
-					item = ItemConstants.getShoes(levelOrdinal);
-				} else if (itemTypeRand < itemTypeLimits.weapon) {
-					item = ItemConstants.getDefaultWeapon(levelOrdinal, totalLevels);
-                } else if (itemTypeRand < itemTypeLimits.clothing) {
-                    item = this.itemsHelper.getScavengeRewardClothing(levelOrdinal, totalLevels);
-				} else if (itemTypeRand < itemTypeLimits.exploration) {
-					i = Math.floor(Math.random() * ItemConstants.itemDefinitions.exploration.length);
-					item = ItemConstants.itemDefinitions.exploration[i].clone();
-				} else {
-					i = Math.floor(Math.random() * ItemConstants.itemDefinitions.artefact.length);
-					item = ItemConstants.itemDefinitions.artefact[i].clone();
-				}
-				if (!item && pendingItem)
-					if (currentItems.getCount(pendingItem, true) <= 0) item = pendingItem;
-                
-				if (item) result.push(item);
-			}
+            if (!necessityItem && Math.random() < itemProbability) {
+                var item = this.getRewardItem(itemTypeLimits, efficiency, levelOrdinal);
+                if (item) result.push(item);
+            }
 			
-			// Parts / ingredients
+			// Ingredients
 			var hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
 			if (hasBag && Math.random() < ingredientProbability) {
-				var amount = parseInt(Math.random() * ingredientProbability * 5) + 1;
+				var amount = Math.floor(Math.random() * efficiency * 5) + 1;
 				var ingredient = ItemConstants.getIngredient();
 				for (var i = 0; i <= amount; i++) {
 					result.push(ingredient.clone());
@@ -685,26 +662,118 @@ define([
 			return followers;
 		},
 
-		getNecessityItem: function (currentItems, levelOrdinal) {
+        getRewardItem: function (itemTypeLimits, efficiency, levelOrdinal) {
+            // add limits to choose type
+            var sum = 0;
+            var limitsMin = {};
+            var limitsMax = {};
+            for (var type in itemTypeLimits) {
+                limitsMin[type] = sum;
+                limitsMax[type] = sum + itemTypeLimits[type];
+                sum += itemTypeLimits[type];
+            }
+            
+            // select item type
+            var itemTypeRand = Math.random() * sum;
+            var itemType;
+            for (var type in itemTypeLimits) {
+                if (itemTypeRand >= limitsMin[type] && itemTypeRand < limitsMax[type]) {
+                    itemType = type;
+                    break;
+                }
+            }
+            
+            if (!itemType) {
+                console.log("WARN: Could not determine reward item type.");
+                console.log(itemTypeLimits);
+            }
+            
+            // list possible items
+            var items = [];
+			var totalLevels = this.gameState.getTotalLevels();
+            switch (itemType) {
+                case "bag":
+                    items = ItemConstants.itemDefinitions.bag.slice(0);
+                    break;
+                case "light":
+                    items = ItemConstants.itemDefinitions.light.slice(0);
+                    break;
+                case "shoes":
+                    items = ItemConstants.itemDefinitions.shoes.slice(0);
+                    break;
+                case "weapon":
+                    items = ItemConstants.itemDefinitions.weapon.slice(0);
+                    break;
+                case "clothing":
+                    items = this.itemsHelper.getScavengeRewardClothing(levelOrdinal, totalLevels);
+                    break;
+                case "exploration":
+                    items = ItemConstants.itemDefinitions.exploration.slice(0);
+                    break;
+                case "artefact":
+                    items = ItemConstants.itemDefinitions.artefact.slice(0);
+                    break;
+                    
+                default:
+                    console.log("WARN: No reward items defined for type: [" + itemType + "]");
+                    break;
+            }
+            
+            var validItems = [];
+            var rarityThreshold = 3 + 7 * efficiency * Math.random();
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].scavengeRarity < 0)
+                    continue;
+                if (items[i].scavengeRarity > rarityThreshold)
+                    continue;
+                if (items[i].requiredLevel > levelOrdinal)
+                    continue;
+                validItems.push(items[i]);
+            }
+            
+            if (validItems.length === 0) {
+                console.log("WARN: No valid reward items found for type: [" + itemType + "]");
+                return null;
+            }
+            
+            return validItems[Math.floor(Math.random() * validItems.length)].clone();;
+        },
+        
+		getNecessityItem: function (itemProbability, itemTypeLimits, efficiency, currentItems, levelOrdinal) {
+            var adjustedProbability = MathUtils.clamp(itemProbability * 5, 0.15, 0.35);
+            
 			// first bag
-            if (currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) <= 0) {
-				return ItemConstants.getBag(levelOrdinal).clone();
-			}
+            if (itemTypeLimits.bag > 0) {
+                if (currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) <= 0) {
+                    var res = this.playerResourcesNodes.head.resources;
+                    if (res.resources.getTotal() > 2) {
+                        if (Math.random() < 0.5) {
+                            return ItemConstants.getBag(1).clone();
+                        }
+                    }
+                }
+            }
 			
             // map
-            var visitedSectors = this.gameState.numVisitedSectors;
-            var numSectorsRequiredForMap = 5;
-			if (visitedSectors > numSectorsRequiredForMap && currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) <= 0) {
-				return ItemConstants.itemDefinitions.uniqueEquipment[0].clone();
-			}
+            if (itemTypeLimits.exploration > 0) {
+                var visitedSectors = this.gameState.numVisitedSectors;
+                var numSectorsRequiredForMap = 5;
+                if (visitedSectors > numSectorsRequiredForMap && currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) <= 0) {
+                    if (Math.random() < adjustedProbability) {
+                        return ItemConstants.itemDefinitions.uniqueEquipment[0].clone();
+                    }
+                }
+            }
             
             // non-craftable level clothing
-            if (Math.random() > 0.5) {
-                var clothing = this.itemsHelper.getAvailableClothingList(levelOrdinal, false, true, false);
-                for (var i = 0; i < clothing.length; i++) {
-                    if (currentItems.getCountById(clothing[i].id, true) <= 0) {                        
-                        if (Math.random() > 0.5) {
-                            return clothing[i];
+            if (itemTypeLimits.clothing > 0) {
+                if (Math.random() < adjustedProbability * efficiency) {
+                    var clothing = this.itemsHelper.getAvailableClothingList(levelOrdinal, false, true, false);
+                    for (var i = 0; i < clothing.length; i++) {
+                        if (currentItems.getCountById(clothing[i].id, true) <= 0) {                        
+                            if (Math.random() < 0.25) {
+                                return clothing[i];
+                            }
                         }
                     }
                 }
@@ -713,13 +782,14 @@ define([
 			return null;
 		},
 
-        getLostItems: function(action) {
+        getLostItems: function(action, loseSingleItem) {
             var lostItems = [];
             var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAll(false);
-
-            var isSingle = action === "despair" ? false : true;
             
-            if (isSingle) {
+            if (playerItems.length <= 0)
+                return lostItems;
+            
+            if (loseSingleItem) {
                 var itemList = [];                
                 for (var i = 0; i < playerItems.length; i++) {
                     var loseProbability = this.getItemLoseProbability(action, playerItems[i]);
