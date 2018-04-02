@@ -70,6 +70,9 @@ define([
             this.elements.valHealth = $("#stats-health .value");
             this.elements.valRumours = $("#stats-rumours .value");
             this.elements.valEvidence = $("#stats-evidence .value");
+            this.elements.valScavenge = $("#stats-scavenge .value");
+            this.elements.changeIndicatorVision = $("#vision-change-indicator");
+            this.elements.changeIndicatorScavenge = $("#scavenge-change-indicator");
             
 			return this;
 		},
@@ -187,14 +190,18 @@ define([
             var playerStamina = playerStatsNode.stamina.stamina;
 			var playerVision = playerStatsNode.vision.value;
 			var maxVision = playerStatsNode.vision.maximum;
+            var shownVision = UIConstants.roundValue(playerVision, true, false);
 			var maxStamina = Math.round(playerStatsNode.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
 			
-			this.elements.valVision.text(UIConstants.roundValue(playerVision, true, false) + " / " + maxVision);
+			this.elements.valVision.text(shownVision + " / " + maxVision);
 			this.updateStatsCallout("Makes exploration safer", "stats-vision", playerStatsNode.vision.accSources);
-			
+            this.elements.changeIndicatorVision.toggleClass("indicator-increase", shownVision < maxVision);
+            this.elements.changeIndicatorVision.toggleClass("indicator-even", shownVision == maxVision);
+            this.elements.changeIndicatorVision.toggleClass("indicator-decrease", shownVision > maxVision);
+
             this.elements.valHealth.text(playerStatsNode.stamina.health);
             this.updateStatsCallout("Determines maximum stamina", "stats-health", null);
-
+			
 			this.elements.valStamina.text(UIConstants.roundValue(playerStamina, true, false) + " / " + maxStamina);
 			this.updateStatsCallout("Required for exploration", "stats-stamina", playerStatsNode.stamina.accSources);
 
@@ -246,9 +253,12 @@ define([
 			this.uiFunctions.toggle("#stats-fight-def", this.gameState.unlockedFeatures.fight);
             
             this.uiFunctions.toggle("#stats-scavenge", this.gameState.unlockedFeatures.scavenge && !isInCamp);
-			var scavengeEfficiency = Math.round(this.uiFunctions.playerActions.playerActionResultsHelper.getScavengeEfficiency() * 200) / 2;
-			$("#stats-scavenge .value").text(scavengeEfficiency + "%");
-			UIConstants.updateCalloutContent("#stats-scavenge", "health: " + Math.round(maxStamina/10) + "<br/>vision: " + Math.round(playerVision));
+			var scavengeEfficiency = Math.round(this.uiFunctions.playerActions.playerActionResultsHelper.getScavengeEfficiency() * 100);
+			this.elements.valScavenge.text(scavengeEfficiency + "%");
+			UIConstants.updateCalloutContent("#stats-scavenge", "Increases scavenge loot<hr/>health: " + Math.round(maxStamina/10) + "<br/>vision: " + Math.round(playerVision));
+            this.elements.changeIndicatorScavenge.toggleClass("indicator-increase", shownVision < maxVision);
+            this.elements.changeIndicatorScavenge.toggleClass("indicator-even", shownVision == maxVision);
+            this.elements.changeIndicatorScavenge.toggleClass("indicator-decrease", shownVision > maxVision);
 		},
 		
 		updateStatsCallout: function (description, indicatorID, changeSources) {
