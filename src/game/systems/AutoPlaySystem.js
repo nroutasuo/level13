@@ -522,7 +522,7 @@ define(['ash',
                 return this.moveToSector(nextSector, "path");
             } else {
                 // move to random sector
-                var neighbours = this.levelHelper.getSectorNeighbours(playerSector);
+                var neighbours = this.levelHelper.getSectorNeighboursList(playerSector);
                 var i = Math.floor(Math.random() * neighbours.length);
                 var randomNeighbour = neighbours[i];
                 return this.moveToSector(randomNeighbour, "random");

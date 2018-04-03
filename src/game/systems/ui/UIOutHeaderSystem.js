@@ -88,6 +88,7 @@ define([
             GlobalSignals.playerMovedSignal.add(function () { sys.onPlayerMoved(); });
             GlobalSignals.visionChangedSignal.add(function () { sys.onVisionChanged(); });
             GlobalSignals.tabChangedSignal.add(function () { sys.onVisionChanged(); });
+            GlobalSignals.healthChangedSignal.add(function () { sys.onHealthChanged(); });
 			
 			this.generateStatsCallouts();
 		},
@@ -148,51 +149,16 @@ define([
 		},
         
         onPlayerMoved: function () {
-            var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
-			var isInCamp = playerPosition.inCamp;
-            this.uiFunctions.slideToggleIf("#main-header-camp", null, isInCamp, 250, 50);
-            this.uiFunctions.slideToggleIf("#main-header-bag", null, !isInCamp, 250, 50);
-            this.uiFunctions.slideToggleIf("#main-header-equipment", null, !isInCamp, 250, 50);
-            this.uiFunctions.slideToggleIf("#main-header-items", null, !isInCamp, 250, 50);
+            this.updateTabVisibility();
+            this.updateStaminaWarningLimit();
+        },
+        
+        onHealthChanged: function () {
+            this.updateStaminaWarningLimit();
         },
 		
 		onVisionChanged: function () {
-            if (!this.currentLocationNodes.head) return;
-			var featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var sunlit = featuresComponent.sunlit;            
-			this.elements.body.toggleClass("sunlit", sunlit);
-			this.elements.body.toggleClass("dark", !sunlit);
-            
-            var visionPercentage = (this.playerStatsNodes.head.vision.value / 100);
-			var alphaVal = 0.25 + visionPercentage;
-            var alphaVal2 = 0.75 + visionPercentage * 0.25;
-            alphaVal = Math.max(alphaVal, 0.25);
-			alphaVal = Math.min(alphaVal, 1);
-            alphaVal2 = Math.max(alphaVal2, 0.5);
-			alphaVal2 = Math.min(alphaVal2, 1);
-            var alphaHex = (alphaVal * 255).toString(16).split(".")[0];
-            var alphaHex2 = (alphaVal2 * 255).toString(16).split(".")[0];            
-            
-            var box3bg = (sunlit ? "#efefef" : "#262826") + alphaHex;
-            var box3border = (sunlit ? "#aaaaaa" : "#555555") + alphaHex;
-            $(".lvl13-box-3").css("background-color", box3bg);
-            $(".lvl13-box-3").css("border-color", box3border);
-            
-            var box1bg = (sunlit ? "#efefef" : "#282a28") + alphaHex;
-            var box1border = (sunlit ? "#d0d0d0" : "#3a3a3a") + alphaHex;
-            $("div.grid-content").css("background-color", box1bg);
-            $("div.grid-content").css("border-color", box1border);
-            $(".lvl13-box-2").css("border-color", box1border);
-            $("ul.tabs li").css("border-color", "");
-            $("ul.tabs li").css("border-bottom-color", "");
-            $("ul.tabs li.selected").css("border-color", box1border);
-            $("ul.tabs li.selected").css("border-bottom-color", box1bg);
-            
-            var defaultText = (sunlit ? "#202220" : "#fdfdfd") + alphaHex2;
-            $("body").css("color", defaultText);
-            $("#switch").css("color", defaultText);
-            
-			$("img").css("opacity", alphaVal2);
+            this.updateVisionOverlay();
 		},
 		
 		updatePlayerStats: function (isInCamp) {
@@ -215,9 +181,8 @@ define([
 			this.elements.valStamina.text(UIConstants.roundValue(playerStamina, true, false) + " / " + maxStamina);
 			this.updateStatsCallout("Required for exploration", "stats-stamina", playerStatsNode.stamina.accSources);
 
-            var staminaWarningLimit = PlayerStatConstants.getStaminaWarningLimit(this.uiFunctions.playerActions.playerActionsHelper, playerStatsNode.stamina);
             this.elements.valVision.toggleClass("warning", playerVision <= 25);
-            this.elements.valStamina.toggleClass("warning", playerStamina <= staminaWarningLimit);
+            this.elements.valStamina.toggleClass("warning", playerStamina <= this.staminaWarningLimit);
             this.elements.valHealth.toggleClass("warning", playerStatsNode.stamina.health <= 25);
 			
 			this.elements.valRumours.text(UIConstants.roundValue(playerStatsNode.rumours.value, true, false));
@@ -534,6 +499,58 @@ define([
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var hasMap = itemsComponent.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
             $("#out-position-indicator").text(hasMap ? this.currentLocationNodes.head.entity.get(PositionComponent).getPosition().getInGameFormat(false) : "??");
+        },
+        
+        updateTabVisibility: function () {            
+            var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
+			var isInCamp = playerPosition.inCamp;
+            this.uiFunctions.slideToggleIf("#main-header-camp", null, isInCamp, 250, 50);
+            this.uiFunctions.slideToggleIf("#main-header-bag", null, !isInCamp, 250, 50);
+            this.uiFunctions.slideToggleIf("#main-header-equipment", null, !isInCamp, 250, 50);
+            this.uiFunctions.slideToggleIf("#main-header-items", null, !isInCamp, 250, 50);
+        },
+        
+        updateStaminaWarningLimit: function () {
+            this.staminaWarningLimit = PlayerStatConstants.getStaminaWarningLimit(this.uiFunctions.playerActions.playerActionsHelper, this.playerStatsNodes.head.stamina);
+        },
+        
+        updateVisionOverlay: function () {            
+            if (!this.currentLocationNodes.head) return;
+			var featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
+			var sunlit = featuresComponent.sunlit;            
+			this.elements.body.toggleClass("sunlit", sunlit);
+			this.elements.body.toggleClass("dark", !sunlit);
+            
+            var visionPercentage = (this.playerStatsNodes.head.vision.value / 100);
+			var alphaVal = 0.25 + visionPercentage;
+            var alphaVal2 = 0.75 + visionPercentage * 0.25;
+            alphaVal = Math.max(alphaVal, 0.25);
+			alphaVal = Math.min(alphaVal, 1);
+            alphaVal2 = Math.max(alphaVal2, 0.5);
+			alphaVal2 = Math.min(alphaVal2, 1);
+            var alphaHex = (alphaVal * 255).toString(16).split(".")[0];
+            var alphaHex2 = (alphaVal2 * 255).toString(16).split(".")[0];            
+            
+            var box3bg = (sunlit ? "#efefef" : "#262826") + alphaHex;
+            var box3border = (sunlit ? "#aaaaaa" : "#555555") + alphaHex;
+            $(".lvl13-box-3").css("background-color", box3bg);
+            $(".lvl13-box-3").css("border-color", box3border);
+            
+            var box1bg = (sunlit ? "#efefef" : "#282a28") + alphaHex;
+            var box1border = (sunlit ? "#d0d0d0" : "#3a3a3a") + alphaHex;
+            $("div.grid-content").css("background-color", box1bg);
+            $("div.grid-content").css("border-color", box1border);
+            $(".lvl13-box-2").css("border-color", box1border);
+            $("ul.tabs li").css("border-color", "");
+            $("ul.tabs li").css("border-bottom-color", "");
+            $("ul.tabs li.selected").css("border-color", box1border);
+            $("ul.tabs li.selected").css("border-bottom-color", box1bg);
+            
+            var defaultText = (sunlit ? "#202220" : "#fdfdfd") + alphaHex2;
+            $("body").css("color", defaultText);
+            $("#switch").css("color", defaultText);
+            
+			$("img").css("opacity", alphaVal2);
         },
 		
 		getShowResources: function () {

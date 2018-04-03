@@ -21,6 +21,7 @@ define(['ash',], function (Ash) {
         
         // stats changes
         visionChangedSignal: new Ash.Signals.Signal(),
+        healthChangedSignal: new Ash.Signals.Signal(),
         
         add: function (system, signal, listener) {
             if (!system.signalBindings)

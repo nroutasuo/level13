@@ -894,7 +894,7 @@ define([
 				default:
 					return PlayerActionConstants.requirements[action];
 			}
-		},		
+		},
         
 		getCosts: function (action, ordinal, statusCostFactor, sector) {
 			var result = {};
@@ -932,10 +932,10 @@ define([
 				switch (baseActionID) {
 					case "move_camp_level":
                         if (!this.nearestCampNodes.head) return this.getCosts("move_sector_west", 1, 100);
-                        // TODO calculate back to camp costs on actual required steps instead of raw distance?
                         var campSector = this.nearestCampNodes.head.entity;
-                        var sectorsToMove = Math.ceil(PositionConstants.getDistanceTo(sector.get(PositionComponent).getPosition(), campSector.get(PositionComponent).getPosition()));
-                        return this.getCosts("move_sector_west", 1, sectorsToMove);
+                        var path = this.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true });
+                        var sectorsToMove = path.length;
+                        return this.getCosts("move_sector_west", 1, sectorsToMove * statusCostFactor);
                     
 					case "move_camp_global":
 						result.stamina = 5 * PlayerActionConstants.costs.move_sector_west.stamina * statusCostFactor;
