@@ -11,6 +11,7 @@ define([
     'game/components/common/PositionComponent',
     'game/components/common/RevealedComponent',
     'game/components/common/CampComponent',
+    'game/components/common/VisitedComponent',
     'game/components/type/LevelComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/SectorLocalesComponent',
@@ -35,6 +36,7 @@ define([
 	PositionComponent,
     RevealedComponent,
     CampComponent,
+    VisitedComponent,
     LevelComponent,
 	SectorStatusComponent,
 	SectorLocalesComponent,
@@ -59,10 +61,11 @@ define([
 		
 		playerActionsHelper: null,
 		
-		constructor: function (engine, gameState, playerActionsHelper) {
+		constructor: function (engine, gameState, playerActionsHelper, movementHelper) {
 			this.engine = engine;
 			this.gameState = gameState;
 			this.playerActionsHelper = playerActionsHelper;
+            this.movementHelper = movementHelper;
 			this.levelNodes = engine.getNodeList(LevelNode);
 			this.sectorNodes = engine.getNodeList(SectorNode);
 		},
@@ -117,7 +120,7 @@ define([
 			return null;
 		},
         
-        getSectorNeighbours: function (sector) {    
+        getSectorNeighboursList: function (sector) {
             if (!sector)
                 return null;
 			var result = [];
@@ -133,8 +136,23 @@ define([
 			}
 			return result;
         },
+        
+        getSectorNeighboursMap: function (sector) {
+            if (!sector)
+                return null;
+			var result = {};
+            var sectorPos = sector.get(PositionComponent);
+			var startingPos = sectorPos.getPosition();
+			for (var i in PositionConstants.getLevelDirections()) {
+				var direction = PositionConstants.getLevelDirections()[i];
+				var neighbourPos = PositionConstants.getPositionOnPath(startingPos, direction, 1);
+                var neighbour = this.getSectorByPosition(neighbourPos.level, neighbourPos.sectorX, neighbourPos.sectorY);
+                result[direction] = neighbour;
+			}
+			return result;
+        },
 		
-        findPathTo: function (startSector, goalSector) {     
+        findPathTo: function (startSector, goalSector, settings) {     
             // Simple breadth-first search (implement A* if movement cost needs to be considered)
             
             if (!startSector) {
@@ -152,13 +170,13 @@ define([
                 var passageDown = this.findPassageDown(startLevel);
                 var passageDownPos = passageDown.get(PositionComponent);
                 var passageUp = this.getSectorByPosition(passageDownPos.level - 1, passageDownPos.sectorX, passageDownPos.sectorY);
-                var combined = this.findPathTo(startSector, passageDown).concat([passageUp]).concat(this.findPathTo(passageUp, goalSector));
+                var combined = this.findPathTo(startSector, passageDown, settings).concat([passageUp]).concat(this.findPathTo(passageUp, goalSector, settings));
                 return combined;
             } else if (startLevel < goalLevel) {
                 var passageUp = this.findPassageUp(startLevel);
                 var passageUpPos = passageUp.get(PositionComponent);
                 var passageDown = this.getSectorByPosition(passageUpPos.level + 1, passageUpPos.sectorX, passageUpPos.sectorY);
-                var combined = this.findPathTo(startSector, passageUp).concat([passageDown]).concat(this.findPathTo(passageDown, goalSector));
+                var combined = this.findPathTo(startSector, passageUp, settings).concat([passageDown]).concat(this.findPathTo(passageDown, goalSector, settings));
                 return combined;
             }
             
@@ -168,7 +186,17 @@ define([
             
             var getKey = function (sector) {
                 return sector.get(PositionComponent).getPosition().toString();
-            }
+            };
+            
+            var movementHelper = this.movementHelper;
+            var isValid = function (sector, startSector, direction) {
+                if (settings && settings.skipUnvisited && !sector.has(VisitedComponent))
+                    return false;
+                if (settings && settings.skipBlockers && movementHelper.isBlocked(startSector, direction)) {
+                    return false;
+                }
+                return true;
+            };
             
             if (getKey(startSector) === getKey(goalSector))
                 return [];
@@ -184,11 +212,15 @@ define([
             mainLoop: while (frontier.length > 0) {
                 pass++;
                 current = frontier.shift();
-                neighbours = this.getSectorNeighbours(current);
-                for (var i = 0; i < neighbours.length; i++) {
-                    var next = neighbours[i];
+                neighbours = this.getSectorNeighboursMap(current);
+                for (var direction in neighbours) {
+                    var next = neighbours[direction];
+                    if (!next)
+                        continue;
                     var neighbourKey = getKey(next);
                     if (visited.indexOf(neighbourKey) >= 0)
+                        continue;
+                    if (!isValid(next, current, parseInt(direction)))
                         continue;
                     visited.push(neighbourKey);
                     frontier.push(next);
