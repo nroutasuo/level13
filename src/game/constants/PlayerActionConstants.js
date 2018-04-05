@@ -2034,25 +2034,26 @@ function (Ash, GameConstants, CampConstants) {
             },
             
             randomEncounterProbabilities: {
-                scavenge: 0.03,
-                scout_locale_i: 0.2,
-                scout_locale_u: 0.1,
-                use_spring: 0.1,
-                clear_workshop: 1,
-                clear_waste: 0.1,
-                fight_gang: 1,
+                scavenge: [0.01, 0.01],
+                scout_locale_i: [0.2, 0.1],
+                scout_locale_u: [0.1, 0.1],
+                use_spring: [0.1, 0.1],
+                clear_workshop: [1, 0],
+                clear_waste: [0.1, 0.1],
+                fight_gang: [1, 0],
             },
             
+            // [ base-value, vision-dependent-value ]
             injuryProbabilities: {
-                scout: 0.005,
-                scavenge: 0.01,
-                despair: 0.7, // TODO make dynamic and link to cases in FaintingSystem
+                scout: [0,005, 0.01],
+                scavenge: [0.005, 0.01],
+                despair: [0.75, 0], // TODO make dynamic and link to cases in FaintingSystem
             },
             
             loseInventoryProbabilities: {
-                scout: 0.001,
-                scavenge: 0.001,
-                despair: 0.75, // TODO make dynamic and link to cases in FaintingSystem
+                scout: [0, 0.01],
+                scavenge: [0, 0.01],
+                despair: [0.75, 0], // TODO make dynamic and link to cases in FaintingSystem
             },
         
             descriptions: {
@@ -2126,27 +2127,30 @@ function (Ash, GameConstants, CampConstants) {
             getRandomEncounterProbability: function (baseActionID, vision) {
                 // TODO for locales get probability based on locale type - for trading partners no encounters!
                 if (this.randomEncounterProbabilities[baseActionID]) {
-                    var visionFactor = 1 - vision / 100;
-                    var baseProbability = this.randomEncounterProbabilities[baseActionID];
-                    return baseProbability + (Math.min(baseProbability, 1-baseProbability) * visionFactor);
+                    var baseProbability = this.randomEncounterProbabilities[baseActionID][0];
+                    var visionFactor = Math.pow(1 - (vision / 100), 2);
+                    var visionProbability = this.randomEncounterProbabilities[baseActionID][1] * visionFactor;
+                    return baseProbability + visionProbability;
                 }
                 return 0;
             },
             
             getInjuryProbability: function (action, vision) {
                 if (this.injuryProbabilities[action]) {
-                    var visionFactor = 1 - vision / 100;
-                    var baseProbability = this.injuryProbabilities[action];
-                    return baseProbability + (Math.min(baseProbability, 1 - baseProbability) * visionFactor);
+                    var baseProbability = this.injuryProbabilities[action][0];
+                    var visionFactor = Math.pow(1 - (vision / 100), 2);
+                    var visionProbability = this.injuryProbabilities[action][1] * visionFactor;
+                    return baseProbability + visionProbability;
                 }
                 return 0;
             },
             
             getLoseInventoryProbability: function (action, vision) {
                 if (this.loseInventoryProbabilities[action]) {
-                    var visionFactor = 1 - vision / 100;
-                    var baseProbability = this.loseInventoryProbabilities[action];
-                    return baseProbability + (Math.min(baseProbability, 1 - baseProbability) * visionFactor);
+                    var baseProbability = this.loseInventoryProbabilities[action][0];
+                    var visionFactor = Math.pow(1 - (vision / 100), 2);
+                    var visionProbability = this.loseInventoryProbabilities[action][1] * visionFactor;
+                    return baseProbability + visionProbability;
                 }
                 return 0;
             },

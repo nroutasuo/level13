@@ -28,6 +28,8 @@ define([
 			this.gameState = gameState;
 			this.uiFunctions = uiFunctions;
 			this.playerActionsHelper = playerActionsHelper;
+            this.elements = {};
+            this.elements.tabHeader = $("#tab-header h2");
 			return this;
 		},
 
@@ -108,7 +110,7 @@ define([
             }
 
 			// Header
-			$("#tab-header h2").text("Bag");
+			this.elements.tabHeader.text("Bag");
 
 			var itemsComponent = this.itemNodes.head.items;
 			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;

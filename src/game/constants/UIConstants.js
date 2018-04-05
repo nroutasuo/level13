@@ -469,9 +469,9 @@ define(['ash',
             if (showDecimalsWhenSmall && value <= 10) decimalDivisor = 100;
             if (showDecimalsAlways) decimalDivisor = 100;
             
-            if (value % 1 === 0 || decimalDivisor <= 0) return Math.floor(value);
+            if (value % 1 === 0 || decimalDivisor <= 0) return Math.round(value);
             
-            return Math.floor(value * decimalDivisor) / decimalDivisor;
+            return Math.round(value * decimalDivisor) / decimalDivisor;
         },
         
         getDisplayValue: function(value) {
