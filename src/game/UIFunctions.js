@@ -294,7 +294,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 var name = resourceNames[key];
                 var isSupplies = name === resourceNames.food || name === resourceNames.water;
                 $("#statsbar-resources").append(UIConstants.createResourceIndicator(name, false, "resources-" + name, true, true));
-                $("#bag-resources").append(UIConstants.createResourceIndicator(name, false, "resources-bag-" + name, true, true, isSupplies));
+                $("#bag-resources").append(UIConstants.createResourceIndicator(name, false, "resources-bag-" + name, true, true));
                 
                 var indicatorEmbark = UIConstants.createResourceIndicator(name, true, "embark-resources-" + name, true, false);
                 $("#embark-resources").append(

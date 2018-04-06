@@ -182,16 +182,13 @@ define([
 			this.uiFunctions.toggle("#header-out-projects", hasAvailableProjects);
 			
 			this.updateLevelPageActions(isScouted, hasCamp, hasCampHere);
+            this.updateDespair(hasCampHere);
 		},
         
         updateLevelPageActions: function (isScouted, hasCamp, hasCampHere) {
-            var logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
-            
-            var posComponent = this.playerLocationNodes.head.position;
             var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
             var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
             var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-            var movementOptionsComponent = this.playerLocationNodes.head.entity.get(MovementOptionsComponent);
             var workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
@@ -206,25 +203,11 @@ define([
             this.uiFunctions.toggle("#out-action-move-down", (isScouted && passagesComponent.passageDown != null) || passageDownBuilt);
             this.uiFunctions.toggle("#out-action-move-camp", hasCamp && !hasCampHere);
 
-            var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
-            var isValidDespairHunger = discoveredResources.indexOf(resourceNames.food) < 0 && this.gameState.unlockedFeatures.resources.food && this.resourcesHelper.getCurrentStorage().resources.food < 0.5;
-            var isValidDespairThirst = discoveredResources.indexOf(resourceNames.water) < 0 && this.gameState.unlockedFeatures.resources.water && this.resourcesHelper.getCurrentStorage().resources.water < 0.5;
-            var isValidDespairStamina = this.playerPosNodes.head.entity.get(StaminaComponent).stamina < PlayerActionConstants.costs.move_sector_east.stamina;
-            var isValidDespairMove = !movementOptionsComponent.canMove(); // conceivably happens in hazard sectors if you lose equipment
-            var isFirstPosition = posComponent.level === 13 && posComponent.sectorX === WorldCreatorConstants.FIRST_CAMP_X && posComponent.sectorY === WorldCreatorConstants.FIRST_CAMP_Y;
-            var showDespair = !hasCampHere && !isFirstPosition && (isValidDespairHunger || isValidDespairThirst || isValidDespairStamina) || isValidDespairMove;
             this.uiFunctions.toggle("#out-action-enter", hasCampHere);
             this.uiFunctions.toggle("#out-action-scout", this.gameState.unlockedFeatures.vision);
             this.uiFunctions.toggle("#out-action-use-spring", isScouted && featuresComponent.hasSpring);
             this.uiFunctions.toggle("#out-action-investigate", this.gameState.unlockedFeatures.investigate);
             this.uiFunctions.toggle("#out-action-fight-gang", this.gameState.unlockedFeatures.fight);
-            this.uiFunctions.toggle("#out-action-despair", showDespair);
-
-            // TODO do this somewhere other than UI system - maybe a global detection if despair is available
-            if (showDespair && !this.isDespairVisible) {
-                logComponent.addMessage(LogConstants.MSG_ID_DESPAIR_AVAILABLE, LogConstants.getDespairMessage(isValidDespairHunger, isValidDespairThirst, isValidDespairStamina, isValidDespairMove));
-            }
-            this.isDespairVisible = showDespair;
 
             this.uiFunctions.toggle("#out-action-clear-workshop", isScouted && workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP));
             if (workshopComponent) {
@@ -241,6 +224,34 @@ define([
             this.uiFunctions.toggle("#out-improvements", this.gameState.unlockedFeatures.vision);
             this.uiFunctions.toggle("#out-improvements table", this.gameState.unlockedFeatures.vision);
             
+        },
+        
+        updateDespair: function (hasCampHere) {
+            var logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
+            var posComponent = this.playerLocationNodes.head.position;
+            var movementOptionsComponent = this.playerLocationNodes.head.entity.get(MovementOptionsComponent);
+            var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
+            var isValidDespairHunger = discoveredResources.indexOf(resourceNames.food) < 0 && this.gameState.unlockedFeatures.resources.food && this.resourcesHelper.getCurrentStorage().resources.food < 0.5;
+            var isValidDespairThirst = discoveredResources.indexOf(resourceNames.water) < 0 && this.gameState.unlockedFeatures.resources.water && this.resourcesHelper.getCurrentStorage().resources.water < 0.5;
+            var isValidDespairStamina = this.playerPosNodes.head.entity.get(StaminaComponent).stamina < PlayerActionConstants.costs.move_sector_east.stamina;
+            var isValidDespairMove = !movementOptionsComponent.canMove(); // conceivably happens in hazard sectors if you lose equipment
+            var isFirstPosition = posComponent.level === 13 && posComponent.sectorX === WorldCreatorConstants.FIRST_CAMP_X && posComponent.sectorY === WorldCreatorConstants.FIRST_CAMP_Y;
+            var showDespair = !hasCampHere && !isFirstPosition && (isValidDespairHunger || isValidDespairThirst || isValidDespairStamina) || isValidDespairMove;
+            
+            if (this.isDespairShown !== showDespair) {
+                if (showDespair) {
+                    var uiFunctions = this.uiFunctions;
+                    this.showDespairTimeoutID = window.setTimeout(function () {
+                        logComponent.addMessage(LogConstants.MSG_ID_DESPAIR_AVAILABLE, LogConstants.getDespairMessage(isValidDespairHunger, isValidDespairThirst, isValidDespairStamina, isValidDespairMove));
+                        uiFunctions.toggle("#out-action-despair", true);
+                    }, 1250);
+                    // TODO do this somewhere other than UI system - maybe a global detection if despair is available
+                } else {
+                    if (this.showDespairTimeoutID) window.clearTimeout(this.showDespairTimeoutID);
+                    this.uiFunctions.toggle("#out-action-despair", false);
+                }
+                this.isDespairShown = showDespair;
+            }
         },
 		
 		getDescription: function (entity, hasCampHere, hasCampOnLevel, hasVision, isScouted) {
