@@ -112,6 +112,9 @@ define([
                 case "clear_workshop":
                     resultVO = this.getClearWorkshopRewards();
                     break;
+                case "nap":
+                    resultVO = this.getNapRewards();
+                    break;
                 default:
                     if (GameConstants.isDebugOutputEnabled) console.log("WARN: Unknown action: " + baseActionID + ". Can't create result vo.");
                     return null;
@@ -206,6 +209,11 @@ define([
         
         getClearWorkshopRewards: function () {
             var rewards = new ResultVO("clear_workshop");
+            return rewards;
+        },
+        
+        getNapRewards: function () {
+            var rewards = new ResultVO("nap");
             return rewards;
         },
 		

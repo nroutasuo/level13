@@ -2024,6 +2024,7 @@ function (Ash, GameConstants, CampConstants) {
                 send_caravan: 60 * 10,
                 use_in_inn: 60 * 30,
                 despair: 60,
+                nap: 120,
             },
             
             durations: {
@@ -2041,6 +2042,7 @@ function (Ash, GameConstants, CampConstants) {
                 clear_workshop: [1, 0],
                 clear_waste: [0.1, 0.1],
                 fight_gang: [1, 0],
+                nap: [0.1, 0]
             },
             
             // [ base-value, vision-dependent-value ]
@@ -2070,6 +2072,7 @@ function (Ash, GameConstants, CampConstants) {
                 move_camp_level: "Shortcut back to the nearest camp.",
                 move_camp_global: "Shortcut to the camp on this level.",
                 create_blueprint: "Combine pieces to a blueprint.",
+                nap: "Sleep rough and regain a bit of stamina.",
                 despair: "Give up. Stop moving. Rest.",
                 build_out_collector_food: "Accumulates food.",
                 build_out_collector_water: "Accumulates water.",

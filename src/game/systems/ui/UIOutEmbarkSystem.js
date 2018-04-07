@@ -132,7 +132,7 @@ define([
 				var campVal = campResources.resources.getResource(resourceName);
 				var visible = campVal > 0;
 				var inputMax = Math.min(Math.floor(campVal));
-				uiFunctions.toggle(this, visible);
+				uiFunctions.toggle($(this), visible);
 				$(this).children("td").children(".stepper").children("input").attr("max", inputMax);
                 selectedAmount = Math.max(0, $(this).children("td").children(".stepper").children("input").val());
                 selectedCapacity += selectedAmount * BagConstants.getResourceCapacity(resourceName);
@@ -154,7 +154,7 @@ define([
 				var inputMax = Math.min(Math.floor(count));
                 var inputMin = 0;
                 var inputValue = $(this).children("td").children(".stepper").children("input").attr("value");
-				uiFunctions.toggle(this, visible);
+				uiFunctions.toggle($(this), visible);
 				$(this).children("td").children(".stepper").children("input").attr("max", inputMax);
 				$(this).children("td").children(".stepper").children("input").attr("min", inputMin);
 				$(this).children("td").children(".stepper").children("input").attr("value", Math.max(inputValue, inputMin));

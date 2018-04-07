@@ -6,8 +6,8 @@ define(['ash'], function (Ash) {
             this.levelHelper = levelHelper;
         },
 
-        getButtonSectorEntity: function (button) {
-            var sector = $(button).attr("sector");
+        getButtonSectorEntity: function ($button) {
+            var sector = $button.attr("sector");
             var sectorEntity = null;
             if (sector) {
                 var l = parseInt(sector.split(".")[0]);

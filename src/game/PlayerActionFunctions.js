@@ -227,6 +227,7 @@ define(['ash',
                 case "fight_gang": this.fightGang(param); break;
                 case "send_caravan": this.sendCaravan(param); break;
                 case "trade_with_caravan": this.tradeWithCaravan(); break;
+                case "nap": this.nap(param); break;
                 case "despair": this.despair(param); break;
                 case "unlock_upgrade": this.unlockUpgrade(param); break;
                 case "create_blueprint": this.createBlueprint(param); break;
@@ -478,7 +479,7 @@ define(['ash',
             var logMsgSuccess = logMsg;
             var logMsgFlee = logMsg + "Fled empty-handed.";
             var logMsgDefeat = logMsg + "Got into a fight and was defeated.";
-            this.handleOutActionResults("scavenge", LogConstants.MSG_ID_SCAVENGE, logMsgSuccess, logMsgFlee, logMsgDefeat);
+            this.handleOutActionResults("scavenge", LogConstants.MSG_ID_SCAVENGE, logMsgSuccess, logMsgFlee, logMsgDefeat, true);
         },
         
         scout: function () {
@@ -541,7 +542,7 @@ define(['ash',
                 };
 
                 var logMsgId = found ? LogConstants.MSG_ID_SCOUT_FOUND_SOMETHING : LogConstants.MSG_ID_SCOUT;
-                this.handleOutActionResults("scout", logMsgId, logMsg, logMsg, logMsg, successCallback);
+                this.handleOutActionResults("scout", logMsgId, logMsg, logMsg, logMsg, true, successCallback);
             } else {
                 console.log("WARN: Sector already scouted.");
             }
@@ -583,7 +584,7 @@ define(['ash',
                 playerActionFunctions.save();
             };
 
-            this.handleOutActionResults(action, LogConstants.MSG_ID_SCOUT_LOCALE, logMsgSuccess, logMsgFlee, logMsgDefeat, successCallback);
+            this.handleOutActionResults(action, LogConstants.MSG_ID_SCOUT_LOCALE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, successCallback);
         },
         
         useSpring: function () {
@@ -596,7 +597,7 @@ define(['ash',
             var logMsgFlee = logMsgFailBase + "Fled empty-handed.";
             var logMsgDefeat = logMsgFailBase + "Lost the fight.";
 
-            this.handleOutActionResults("use_spring", LogConstants.MSG_ID_USE_SPRING, logMsgSuccess, logMsgFlee, logMsgDefeat);
+            this.handleOutActionResults("use_spring", LogConstants.MSG_ID_USE_SPRING, logMsgSuccess, logMsgFlee, true, logMsgDefeat);
         },
 		
 		clearWorkshop: function () {
@@ -610,7 +611,7 @@ define(['ash',
                 playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
             };
 
-            this.handleOutActionResults(action, LogConstants.MSG_ID_WORKSHOP_CLEARED, logMsgSuccess, logMsgFlee, logMsgDefeat, successCallback);
+            this.handleOutActionResults(action, LogConstants.MSG_ID_WORKSHOP_CLEARED, logMsgSuccess, logMsgFlee, logMsgDefeat, true, successCallback);
 		},
         
         clearWaste: function (direction) {
@@ -627,10 +628,32 @@ define(['ash',
                 sectorStatus.setCleared(direction);
             };            
 
-            this.handleOutActionResults("clear_waste", LogConstants.MSG_ID_CLEAR_WASTE, logMsgSuccess, logMsgFlee, logMsgDefeat, successCallback);
+            this.handleOutActionResults("clear_waste", LogConstants.MSG_ID_CLEAR_WASTE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, successCallback);
+        },
+
+        nap: function () {
+            this.uiFunctions.hideGame(false);
+            var sys = this;
+            this.passTime(60, function () {                
+                setTimeout(function () {
+                    sys.playerStatsNodes.head.vision.value = Math.min(sys.playerStatsNodes.head.vision.value, PlayerStatConstants.VISION_BASE);
+                    var logMsgSuccess = "Found a park bench to sleep on. Barely feel rested.";
+                    var logMsgFlee = "Tried to rest but got attacked.";
+                    var logMsgDefeat = logMsgFlee;
+                    sys.handleOutActionResults("nap", LogConstants.MSG_ID_NAP, logMsgSuccess, logMsgFlee, logMsgDefeat, false, 
+                        function() {
+                            sys.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_NAP;
+                            sys.uiFunctions.showGame();
+                        },
+                        function () {
+                            sys.uiFunctions.showGame();
+                        }
+                    );
+                }, 300);
+            });
         },
         
-        handleOutActionResults: function (action, logMsgId, logMsgSuccess, logMsgFlee, logMsgDefeat, successCallback) {
+        handleOutActionResults: function (action, logMsgId, logMsgSuccess, logMsgFlee, logMsgDefeat, showResultPopup, successCallback, failCallback) {
             var playerActionFunctions = this;
             var baseActionID = this.playerActionsHelper.getBaseActionID(action);
             if (!logMsgSuccess) logMsgSuccess = action;
@@ -651,13 +674,19 @@ define(['ash',
                     GlobalSignals.inventoryChangedSignal.dispatch();
                     if (successCallback) successCallback();
                 };
-                playerActionFunctions.uiFunctions.showResultPopup(TextConstants.getActionName(baseActionID), logMsgSuccess, rewards, resultPopupCallback);
+                if (showResultPopup) {
+                    playerActionFunctions.uiFunctions.showResultPopup(TextConstants.getActionName(baseActionID), logMsgSuccess, rewards, resultPopupCallback);
+                } else {
+                    resultPopupCallback();
+                }
             }, function () {
                 playerActionFunctions.uiFunctions.completeAction(action);
                 playerActionFunctions.addLogMessage(logMsgId, logMsgFlee);
+                if (failCallback) failCallback();
             }, function () {
                 playerActionFunctions.uiFunctions.completeAction(action);
                 playerActionFunctions.addLogMessage(logMsgId, logMsgDefeat);
+                if (failCallback) failCallback();
             });
         },
         
@@ -1324,6 +1353,19 @@ define(['ash',
                 campSector.get(CampComponent).campName = newName;
                 this.save();
             }
+        },
+        
+        // TODO util function - move somewhere else
+        passTime: function (seconds, callback) {
+            this.engine.updateComplete.addOnce(function () {
+                this.engine.extraUpdateTime = seconds;
+                this.gameState.passTime(seconds);
+                this.uiFunctions.onPlayerMoved(); // reset cooldowns for buttons
+                this.engine.updateComplete.addOnce(function () {
+                    this.engine.extraUpdateTime = 0;
+                    if (callback) callback();
+                }, this);
+            }, this);
         },
         		
         forceResourceBarUpdate: function () {

@@ -66,6 +66,13 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
             this.actionDurationEndTimestamps = {};
         },
         
+        passTime: function (seconds) {
+            var cooldownkeys = Object.keys(this.actionCooldownEndTimestamps);                
+            for (var i = 0; i < cooldownkeys.length; i++) {
+                this.actionCooldownEndTimestamps[cooldownkeys[i]] = this.actionCooldownEndTimestamps[cooldownkeys[i]] - seconds * 1000;
+            }
+        },
+        
         getLevelOrdinal: function (level) {
             return WorldCreatorHelper.getLevelOrdinal(this.worldSeed, level);
         },

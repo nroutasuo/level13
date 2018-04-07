@@ -65,6 +65,7 @@ define([
             this.elements.sectorHeader = $("#header-sector");
             this.elements.description = $("#out-desc");
             this.elements.btnClearWorkshop = $("#out-action-clear-workshop");            
+            this.elements.btnNap = $("#out-action-nap");
             this.elements.outImprovementsTR = $("#out-improvements tr");
             this.elements.outProjectsTR = $("#out-projects tr");
             
@@ -182,6 +183,7 @@ define([
 			this.uiFunctions.toggle("#header-out-projects", hasAvailableProjects);
 			
 			this.updateLevelPageActions(isScouted, hasCamp, hasCampHere);
+            this.updateNap(isScouted, hasCampHere);
             this.updateDespair(hasCampHere);
 		},
         
@@ -224,6 +226,45 @@ define([
             this.uiFunctions.toggle("#out-improvements", this.gameState.unlockedFeatures.vision);
             this.uiFunctions.toggle("#out-improvements table", this.gameState.unlockedFeatures.vision);
             
+        },
+        
+        updateNap: function (isScouted, hasCampHere) {
+            if (hasCampHere) {
+                this.uiFunctions.toggle(this.elements.btnNap, false);
+                return;
+            }
+            
+            var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+            
+			var hasCollectibleFood = isScouted && featuresComponent.resourcesCollectable.food > 0;
+			var hasCollectibleWater = isScouted && (featuresComponent.resourcesCollectable.water > 0 || featuresComponent.hasSpring);
+            var waterAvailable = this.resourcesHelper.getCurrentStorage().resources.water > 1 || hasCollectibleWater;
+            var foodAvailable = this.resourcesHelper.getCurrentStorage().resources.food > 1 || hasCollectibleFood;
+            var suppliesAvailable = waterAvailable && foodAvailable;
+            
+            if (!suppliesAvailable) {
+                this.uiFunctions.toggle(this.elements.btnNap, false);
+                return;
+            }
+            
+            var costToCamp = playerActionsHelper.getCosts("move_camp_level", 1);
+            var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;   
+            var staminaComponent = this.playerPosNodes.head.entity.get(StaminaComponent);
+            var improvementsComponent = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent); 
+
+            var staminaCostToMoveOneSector = costToCamp.stamina;
+            var lowStamina = staminaComponent.stamina < staminaCostToMoveOneSector;
+
+            var collectorFood = improvementsComponent.getVO(improvementNames.collector_food);
+            var collectorWater = improvementsComponent.getVO(improvementNames.collector_water);
+            var storedFood = collectorFood.storedResources.getResource(resourceNames.food);
+            var storedWater = collectorWater.storedResources.getResource(resourceNames.water);
+            var lowFood = this.resourcesHelper.getCurrentStorage().resources.food + storedFood < Math.min(costToCamp.resources_food, 5);
+            var lowWater = this.resourcesHelper.getCurrentStorage().resources.water + storedWater < Math.min(costToCamp.resources_water, 5);;
+            var lowSupplies = lowFood || lowWater;
+
+            var showNap = (lowStamina || lowSupplies) && suppliesAvailable;
+            this.uiFunctions.toggle(this.elements.btnNap, showNap);
         },
         
         updateDespair: function (hasCampHere) {
@@ -477,7 +518,7 @@ define([
                         if (isProject) {
                             $(this).find(".list-description").text(actionEnabled ? "Available in camp" : "");
                         }
-                        uiFunctions.toggle(this, actionEnabled || existingImprovements > 0);
+                        uiFunctions.toggle($(this), actionEnabled || existingImprovements > 0);
                     }
                 }
             });

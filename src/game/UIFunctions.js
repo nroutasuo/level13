@@ -581,7 +581,8 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         },
         
         toggle: function (element, show) {
-            if ($(element).length === 0)
+            var $element = typeof(element) === "string" ? $(element) : element;
+            if (($element).length === 0)
                 return;
             if (typeof(show) === "undefined")
                 show = false;
@@ -589,18 +590,19 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 show = false;
             if (!show)
                 show = false;
-            if (this.isElementToggled(element) === show)
+            if (this.isElementToggled($element) === show)
                 return;
             //if (GameConstants.isDebugOutputEnabled)
             //    console.log("toggle " + element + ": " + show);
-            $(element).attr("data-visible", show);
-            $(element).toggle(show);
+            $element.attr("data-visible", show);
+            $element.toggle(show);
             GlobalSignals.elementToggled.dispatch(element, true);
         },
         
         isElementToggled: function (element) {
+            var $element = typeof(element) === "string" ? $(element) : element;
             var visible = true;
-            var visibletag = ($(element).attr("data-visible"));
+            var visibletag = ($element.attr("data-visible"));
             if (typeof visibletag !== typeof undefined) {
                 visible = (visibletag == "true");
             } else {
@@ -610,10 +612,11 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         },
         
         isElementVisible: function (element) {
+            var $element = typeof(element) === "string" ? $(element) : element;
             var toggled = this.isElementToggled(element);
             if (toggled === false)
                 return false;
-            return ($(element).is(":visible"));
+            return (($element).is(":visible"));
         },
         
         stopButtonCooldown: function (button) {

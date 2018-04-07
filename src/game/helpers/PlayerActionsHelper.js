@@ -969,6 +969,13 @@ define([
                             costs["resource_" + caravansComponent.outgoingCaravans[campOrdinal].sellGood] = caravansComponent.outgoingCaravans[campOrdinal].sellAmount;
                         }
                         return costs;
+                        
+                    case "nap":
+                        var costs = {};
+                        var currentResources = this.resourcesHelper.getCurrentStorage().resources;
+                        costs["resource_food"] = Math.min(3, Math.floor(currentResources.getResource(resourceNames.food)));
+                        costs["resource_water"] = Math.min(3, Math.floor(currentResources.getResource(resourceNames.water)));
+                        return costs;
 				}
 			}
 		

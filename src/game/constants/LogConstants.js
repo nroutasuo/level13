@@ -15,6 +15,7 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
         MSG_ID_WORKSHOP_CLEARED: "WORKSHOP_CLEARED",
         MSG_ID_GANG_DEFEATED: "GANG_DEFEATED",
         MSG_ID_USE_COLLECTOR_FAIL: "USE_COLLECTOR_FAIL",
+        MSG_ID_NAP: "MSG_ID_NAP",
 
         // in actions
         MSG_ID_ENTER_CAMP: "ENTER_CAMP",
@@ -121,14 +122,17 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
             var template = TextConstants.getLogItemsText(resultVO.lostItems);
             template.msg = "Lost " + template.msg + ". ";
             
-            var intros = [ 
-                "Almost fell into a crack in the street", 
-                "Fell through a rotten floor", 
-                "Dropped bag while climbing a fence", 
-                "Stumbled on some wrecked pipes", 
-                "Left a bag pocket open and some items fell out",
-                "Got scared of shadows and ran, leaving some items behind"
-            ];
+            var intros = [];
+            switch (resultVO.action) {
+                default:
+                    intros.push("Almost fell into a crack in the street");
+                    intros.push("Fell through a rotten floor");
+                    intros.push("Dropped bag while climbing a fence");
+                    intros.push("Stumbled on some wrecked pipes");
+                    intros.push("Left a bag pocket open and some items fell out");
+                    intros.push("Got scared of the shadows and ran, leaving some items behind");
+                    break;
+            }
             var intro = intros[Math.floor(Math.random() * intros.length)];            
             intro = intro + ". ";
             template.msg = intro + template.msg;

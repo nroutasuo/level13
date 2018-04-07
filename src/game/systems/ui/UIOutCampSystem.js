@@ -288,7 +288,7 @@ define([
                         if (id === "in-improvements-market") specialVisibilityRule = hasTradePost;
                         if (id === "in-improvements-inn") specialVisibilityRule = hasTradePost;
                         var isVisible = specialVisibilityRule && commonVisibilityRule;
-                        uiFunctions.toggle(this, isVisible);
+                        uiFunctions.toggle($(this), isVisible);
                         if (isVisible) visibleBuildingCount++;
                         if (actionAvailable) availableBuildingCount++;
                     }
