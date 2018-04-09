@@ -247,8 +247,8 @@ define([
                 return;
             }
             
-            var costToCamp = playerActionsHelper.getCosts("move_camp_level", 1);
             var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;   
+            var costToCamp = playerActionsHelper.getCosts("move_camp_level", 1);
             var staminaComponent = this.playerPosNodes.head.entity.get(StaminaComponent);
             var improvementsComponent = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent); 
 

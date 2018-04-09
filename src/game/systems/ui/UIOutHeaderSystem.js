@@ -72,6 +72,7 @@ define([
             this.elements.valScavenge = $("#stats-scavenge .value");
             this.elements.changeIndicatorVision = $("#vision-change-indicator");
             this.elements.changeIndicatorScavenge = $("#scavenge-change-indicator");
+            this.elements.changeIndicatorStamina = $("#stamina-change-indicator");
             
 			return this;
 		},
@@ -180,6 +181,9 @@ define([
 			
 			this.elements.valStamina.text(UIConstants.roundValue(playerStamina, true, false) + " / " + maxStamina);
 			this.updateStatsCallout("Required for exploration", "stats-stamina", playerStatsNode.stamina.accSources);
+            this.elements.changeIndicatorStamina.toggleClass("indicator-increase", playerStatsNode.stamina.accumulation > 0);
+            this.elements.changeIndicatorStamina.toggleClass("indicator-even", playerStatsNode.stamina.accumulation === 0);
+            this.elements.changeIndicatorStamina.toggleClass("indicator-decrease", playerStatsNode.stamina.accumulation < 0);
 
             this.elements.valVision.toggleClass("warning", playerVision <= 25);
             this.elements.valStamina.toggleClass("warning", playerStamina <= this.staminaWarningLimit);

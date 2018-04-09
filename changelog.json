@@ -4,11 +4,19 @@
             "version": "0.2.2,
             "phase": "alpha",
             "final": false,
-            "updated": "2017-04-02",
+            "updated": "2017-04-09",
             "changes": [
                 {
-                    "type": "DEV",
-                    "summary": "Adjust scavenge results to depend more on current health, vision and level"
+                    "type": "GD",
+                    "summary": "Remove time-based food/water consumption and time-based stamina recovery while exploring."
+                },
+                {
+                    "type": "GB",
+                    "summary": "Adjust scavenge results and risks to depend more on current health, vision and level."
+                },
+                {
+                    "type": "GB",
+                    "summary": "Use pathfinding for determining costs to return to camp."
                 },
                 {
                     "type": "DEV",
