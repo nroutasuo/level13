@@ -259,8 +259,8 @@ define([
             var collectorWater = improvementsComponent.getVO(improvementNames.collector_water);
             var storedFood = collectorFood.storedResources.getResource(resourceNames.food);
             var storedWater = collectorWater.storedResources.getResource(resourceNames.water);
-            var lowFood = this.resourcesHelper.getCurrentStorage().resources.food + storedFood < Math.min(costToCamp.resources_food, 5);
-            var lowWater = this.resourcesHelper.getCurrentStorage().resources.water + storedWater < Math.min(costToCamp.resources_water, 5);;
+            var lowFood = this.resourcesHelper.getCurrentStorage().resources.food + storedFood < Math.min(costToCamp.resource_food, 5);
+            var lowWater = this.resourcesHelper.getCurrentStorage().resources.water + storedWater < Math.min(costToCamp.resource_water, 5);;
             var lowSupplies = lowFood || lowWater;
 
             var showNap = (lowStamina || lowSupplies) && suppliesAvailable;
