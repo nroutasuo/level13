@@ -86,8 +86,8 @@ function (Ash,
         centerMapToPlayer: function (canvasId, mapPosition) {
             var sectorSize = this.getSectorSize(false);
             var mapDimensions = this.getMapSectorDimensions(canvasId, -1, false, mapPosition);
-            var playerPosX = sectorSize + (mapPosition.sectorX - mapDimensions.minVisibleX) * sectorSize * 2;
-            var playerPosY = sectorSize + (mapPosition.sectorY - mapDimensions.minVisibleY) * sectorSize * 2;
+            var playerPosX = sectorSize + (mapPosition.sectorX - mapDimensions.minVisibleX) * sectorSize * (1 + this.getSectorPadding(centered));
+            var playerPosY = sectorSize + (mapPosition.sectorY - mapDimensions.minVisibleY) * sectorSize * (1 + this.getSectorPadding(centered));
             $("#" + canvasId).parent().scrollLeft(playerPosX - $("#" + canvasId).parent().width() * 0.5);
             $("#" + canvasId).parent().scrollTop(playerPosY - $("#" + canvasId).parent().height() * 0.5);
             CanvasConstants.snapScrollPositionToGrid(canvasId);
@@ -139,6 +139,7 @@ function (Ash,
             var sectorXpx;
             var sectorYpx;
             var sectorPos;
+            var sectorPadding = this.getSectorPadding(centered);
             
             // sectors and paths
             for (var y = dimensions.minVisibleY; y <= dimensions.maxVisibleY; y++) {
@@ -151,7 +152,7 @@ function (Ash,
                     if (this.showSectorOnMap(centered, sector, sectorStatus)) {
                         sectorPos = new PositionVO(mapPosition.level, x, y);
                         this.drawSectorOnCanvas(ctx, sector, sectorStatus, sectorXpx, sectorYpx, sectorSize);
-                        this.drawMovementLinesOnCanvas(ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize);
+                        this.drawMovementLinesOnCanvas(ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding);
                     }
                 }
             }
@@ -171,9 +172,10 @@ function (Ash,
             
         getSectorPixelPos: function (dimensions, centered, sectorSize, x, y) {
             var smallMapOffsetX = Math.max(0, (dimensions.canvasWidth - dimensions.mapWidth) / 2);
+            var padding = this.getSectorPadding(centered);
             return {
-                x: sectorSize + (x - dimensions.minVisibleX) * sectorSize * 2 + smallMapOffsetX,
-                y: sectorSize + (y - dimensions.minVisibleY) * sectorSize * 2
+                x: sectorSize * padding + (x - dimensions.minVisibleX) * sectorSize * (1 + padding) + smallMapOffsetX,
+                y: sectorSize * padding + (y - dimensions.minVisibleY) * sectorSize * (1 + padding)
             };
         },
         
@@ -266,9 +268,11 @@ function (Ash,
                 ctx.drawImage(this.icons["water" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
         },
         
-        drawMovementLinesOnCanvas: function (ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize) {
+        drawMovementLinesOnCanvas: function (ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding) {
             var sunlit = $("body").hasClass("sunlit");
             var sectorPassages = sector.get(PassagesComponent);
+            var sectorMiddleX = sectorXpx + sectorSize * 0.5;
+            var sectorMiddleY = sectorYpx + sectorSize * 0.5;
             for (var i in PositionConstants.getLevelDirections()) {
                 var direction = PositionConstants.getLevelDirections()[i];
                 var neighbourPos = PositionConstants.getPositionOnPath(sectorPos, direction, 1);
@@ -278,11 +282,11 @@ function (Ash,
                     var distY = neighbourPos.sectorY - sectorPos.sectorY;
                     ctx.strokeStyle = sunlit ? "#b0b0b0" : "#3a3a3a";
                     ctx.lineWidth = Math.ceil(sectorSize / 6);
-                    ctx.beginPath();
-                    ctx.moveTo(sectorXpx + sectorSize * 0.5 + 0.5 * sectorSize * distX, sectorYpx + sectorSize * 0.5 + 0.5 * sectorSize * distY);
-                    ctx.lineTo(sectorXpx + sectorSize * 0.5 + 1.5 * sectorSize * distX, sectorYpx + sectorSize * 0.5 + 1.5 * sectorSize * distY);
+                    ctx.beginPath();                    
+                    ctx.moveTo(sectorMiddleX + 0.5 * sectorSize * distX, sectorMiddleY + 0.5 * sectorSize * distY);
+                    ctx.lineTo(sectorMiddleX + (0.5 + sectorPadding) * sectorSize * distX, sectorMiddleY + (0.5 + sectorPadding) * sectorSize * distY);
+
                     ctx.stroke();
-                    
                     
                     var blocker = sectorPassages.getBlocker(direction);
                     var blockerType = blocker ? blocker.type : "null";
@@ -292,8 +296,8 @@ function (Ash,
                         ctx.lineWidth = Math.ceil(sectorSize / 9);
                         ctx.beginPath();
                         ctx.arc(
-                                sectorXpx + sectorSize * 0.5 + sectorSize * distX,
-                                sectorYpx + sectorSize * 0.5 + sectorSize * distY,
+                                sectorMiddleX + sectorSize * (1 + sectorPadding)/2 * distX,
+                                sectorMiddleY + sectorSize * (1 + sectorPadding)/2 * distY,
                                 sectorSize * 0.2,
                                 0,
                                 2 * Math.PI);
@@ -332,7 +336,7 @@ function (Ash,
         getCanvasMinimumWidth: function (canvas) {
             switch ($(canvas).attr("id")) {
                 case "mainmap": return $(canvas).parent().width();
-                case "minimap": return 198;
+                case "minimap": return 208;
                 default: return 0;
             }
         },
@@ -340,7 +344,7 @@ function (Ash,
         getCanvasMinimumHeight: function (canvas) {
             switch ($(canvas).attr("id")) {
                 case "mainmap": return 45;
-                case "minimap": return 198;
+                case "minimap": return 208;
                 default: return 0;
             }
         },
@@ -401,8 +405,8 @@ function (Ash,
             dimensions.maxVisibleY = Math.min(dimensions.maxVisibleY, dimensions.canvasMaxY);
             
             var canvas = $("#" + canvasId);
-            dimensions.mapWidth = (dimensions.maxVisibleX - dimensions.minVisibleX + (centered ? 1.5 : 1.5)) * sectorSize * 2;
-            dimensions.mapHeight = (dimensions.maxVisibleY - dimensions.minVisibleY + (centered ? 1.5 : 1.5)) * sectorSize * 2;
+            dimensions.mapWidth = (dimensions.maxVisibleX - dimensions.minVisibleX + (centered ? 1.5 : 1.5)) * sectorSize * (1 + this.getSectorPadding(centered));
+            dimensions.mapHeight = (dimensions.maxVisibleY - dimensions.minVisibleY + (centered ? 1.5 : 1.5)) * sectorSize * (1 + this.getSectorPadding(centered));
             dimensions.canvasWidth = Math.max(dimensions.mapWidth, this.getCanvasMinimumWidth(canvas));
             dimensions.canvasHeight = Math.max(dimensions.mapHeight, this.getCanvasMinimumHeight(canvas));
             dimensions.sectorSize = sectorSize;
@@ -411,7 +415,11 @@ function (Ash,
         },
         
         getSectorSize: function (centered) {
-            return centered ? 18 : 10;
+            return centered ? 16 : 10;
+        },
+        
+        getSectorPadding: function (centered) {
+            return 0.75;
         },
         
         getSectorFill: function (sectorStatus) {

@@ -57,7 +57,7 @@ define([
 
 		centerMap: function () {
             var mapPosition = this.playerPosNodes.head.position.getPosition();
-            this.uiMapHelper.centerMapToPlayer("mainmap", mapPosition);
+            this.uiMapHelper.centerMapToPlayer("mainmap", mapPosition, false);
         },
         
         updateMapCompletionHint: function () {
