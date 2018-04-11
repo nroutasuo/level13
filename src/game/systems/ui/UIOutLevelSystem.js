@@ -13,6 +13,7 @@ define([
     'game/constants/WorldCreatorConstants',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
+    'game/nodes/NearestCampNode',
     'game/nodes/sector/CampNode',
     'game/components/player/VisionComponent',
     'game/components/player/StaminaComponent',
@@ -30,7 +31,7 @@ define([
     'game/components/sector/EnemiesComponent'
 ], function (
     Ash, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, WorldCreatorConstants,
-    PlayerPositionNode, PlayerLocationNode, CampNode,
+    PlayerPositionNode, PlayerLocationNode, NearestCampNode, CampNode,
     VisionComponent, StaminaComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
     MovementOptionsComponent, PositionComponent, LogMessagesComponent,
     SectorImprovementsComponent, WorkshopComponent, SectorStatusComponent, EnemiesComponent
@@ -47,13 +48,15 @@ define([
 		
 		playerPosNodes: null,
 		playerLocationNodes: null,
+        nearestCampNodes: null,
         
         pendingUpdateDescription: true,
         pendingUpdateMap: true,
 	
-		constructor: function (uiFunctions, gameState, movementHelper, resourceHelper, sectorHelper, uiMapHelper) {
+		constructor: function (uiFunctions, gameState, levelHelper, movementHelper, resourceHelper, sectorHelper, uiMapHelper) {
 			this.uiFunctions = uiFunctions;
 			this.gameState = gameState;
+            this.levelHelper = levelHelper;
 			this.movementHelper = movementHelper;
 			this.resourcesHelper = resourceHelper;
 			this.sectorHelper = sectorHelper;
@@ -75,6 +78,7 @@ define([
 		addToEngine: function (engine) {
 			this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
+            this.nearestCampNodes = engine.getNodeList(NearestCampNode);
 			
 			this.initListeners();
 			
@@ -95,6 +99,7 @@ define([
 				sys.updateLocales();
                 sys.updateOutImprovementsVisibility();
 				sys.updateMovementRelatedActions();
+                sys.updateStaticSectorElements();
                 sys.pendingUpdateDescription = true;
 			});
             GlobalSignals.improvementBuiltSignal.add(function () {
@@ -204,6 +209,7 @@ define([
             this.uiFunctions.toggle("#out-action-move-up", (isScouted && passagesComponent.passageUp != null) || passageUpBuilt);
             this.uiFunctions.toggle("#out-action-move-down", (isScouted && passagesComponent.passageDown != null) || passageDownBuilt);
             this.uiFunctions.toggle("#out-action-move-camp", hasCamp && !hasCampHere);
+            this.uiFunctions.toggle("#out-action-move-camp-details", hasCamp && !hasCampHere);
 
             this.uiFunctions.toggle("#out-action-enter", hasCampHere);
             this.uiFunctions.toggle("#out-action-scout", this.gameState.unlockedFeatures.vision);
@@ -599,6 +605,12 @@ define([
             this.uiFunctions.generateButtonOverlays("#table-out-actions-movement-related");
             this.uiFunctions.generateCallouts("#table-out-actions-movement-related");
 		},
+        
+        updateStaticSectorElements: function () {
+            var campSector = this.nearestCampNodes.head.entity;
+            var path = this.levelHelper.findPathTo(this.playerLocationNodes.head.entity, campSector, { skipBlockers: true, skipUnvisited: true });
+            $("#out-action-move-camp-details").text("(" + path.length + " blocks)");
+        },
 		
 		rebuildVis: function (uiMapHelper) {
             if (!this.playerLocationNodes.head) return;

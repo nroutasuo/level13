@@ -245,7 +245,7 @@ define([
 			
 			this.engine.addSystem(new UIOutHeaderSystem(this.uiFunctions, this.gameState, this.resourcesHelper, this.upgradeEffectsHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutElementsSystem(this.uiFunctions, this.gameState, this.playerActionFunctions, this.resourcesHelper, this.fightHelper, this.buttonHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutLevelSystem(this.uiFunctions, this.gameState, this.movementHelper, this.resourcesHelper, this.sectorHelper, this.uiMapHelper), SystemPriorities.render);
+			this.engine.addSystem(new UIOutLevelSystem(this.uiFunctions, this.gameState, this.levelHelper, this.movementHelper, this.resourcesHelper, this.sectorHelper, this.uiMapHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutCampSystem(this.uiFunctions, this.gameState, this.levelHelper, this.upgradeEffectsHelper, this.campHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutProjectsSystem(this.uiFunctions, this.gameState, this.levelHelper, this.endingHelper), SystemPriorities.render);
 			this.engine.addSystem(new UIOutEmbarkSystem(this.uiFunctions, this.gameState, this.resourcesHelper), SystemPriorities.render);
