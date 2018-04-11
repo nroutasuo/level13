@@ -1367,10 +1367,9 @@ hr {
   max-width: 25%;
 }
 #main-header-equipment {
-  width: 122px;
   max-height: 122px;
-  min-height: 81px;
   text-align: center;
+  padding: 2px;
 }
 #main-header-items {
   min-width: 35px;
