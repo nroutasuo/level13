@@ -99,25 +99,14 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
                 var name = resourceNames[key];
                 var amount = this.resourcesScavengable.getResource(name);
                 if (amount > 0 && discoveredResources.indexOf(name) >= 0) {
-                    s += key + ", ";
+                    var amountDesc = "scarce";
+                    if (amount > 3) amountDesc = "common" 
+                    if (amount > 7) amountDesc = "abundant" 
+                    s += key + " (" + amountDesc + "), ";
                 }
             }
             if (s.length > 0) return s.substring(0, s.length - 2);
             else if (this.resourcesScavengable.getTotal() > 0) return "Unknown";
-            else return "None";
-        },
-        
-        getColResourcesString: function () {
-            var s = "";
-             for(var key in resourceNames) {
-                var name = resourceNames[key];
-                var amount = this.resourcesCollectable.getResource(name);
-                if (amount > 0) {
-                    s += key + ", ";
-                }
-            }
-            if (s.length > 0) return s.substring(0, s.length - 2);
-            else if (this.resourcesCollectable.getTotal() > 0) return "Unknown";
             else return "None";
         },
         

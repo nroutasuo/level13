@@ -220,7 +220,7 @@ define([
             this.uiFunctions.toggle("#out-action-clear-workshop", isScouted && workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP));
             if (workshopComponent) {
                 var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
-                this.elemenets.btnClearWorkshop.text("scout " + workshopName);
+                this.elements.btnClearWorkshop.text("scout " + workshopName);
             }
 
             this.uiFunctions.slideToggleIf("#out-locales", null, isScouted && sectorLocalesComponent.locales.length > 0, 200, 0);
@@ -357,6 +357,22 @@ define([
                 description += "There is a <span class='text-highlight-functionality'>" + TextConstants.getSpringName(featuresComponent) + "</span> here. ";
             }
             
+            if (isScouted) {
+                var canBucket = featuresComponent.resourcesCollectable.water > 0;
+                var canTrap = featuresComponent.resourcesCollectable.food > 0;
+                if (canBucket && canTrap) {
+                    description += "Both <span class='text-highlight-functionality'>water</span> and <span class='text-highlight-functionality'>food</span> can be collected here. ";
+                } else if (canBucket) {
+                    if (featuresComponent.sunlit) {
+                        description += "It looks like <span class='text-highlight-functionality'>rainwater</span> could be collected here. ";
+                    } else {
+                        description += "There is a bit of <span class='text-highlight-functionality'>water</span> leaking here that could be collected. ";
+                    }
+                } else if (canTrap) {
+                    description += "It might be worthwhile to install <span class='text-highlight-functionality'>traps</span> here. ";
+                }
+            }
+            
 			if (hasCampHere) description += "There is a <span class='text-highlight-functionality'>camp</span> here. ";
 			
 			if (isScouted && workshopComponent) {
@@ -390,13 +406,9 @@ define([
 			if (featuresComponent.resourcesScavengable.getTotal() > 0) {
 				var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
 				if (discoveredResources.length > 0) {
-					description += "Resources found here: " + featuresComponent.getScaResourcesString(discoveredResources) + ". ";
+					description += "Resources found by scavenging: " + featuresComponent.getScaResourcesString(discoveredResources);
 				}
 			}
-            if (isScouted) {
-                if (description.length > 0) description += "<br />";
-				description += "Resources naturally occurring here: " + featuresComponent.getColResourcesString() + ". ";
-            }
 			return description;
         },
 		
@@ -465,20 +477,28 @@ define([
                     var inhabited = featuresComponent.level > 10;
                     switch (featuresComponent.notCampableReason) {
                         case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
-                            if (inhabited && featuresComponent.stateOfRepair > 6) notCampableDesc = "Many entrances have big yellow warning signs on them, with the text 'KEEP OUT' and a radiation sign. ";
-                            else if (inhabited && featuresComponent.buildingDensity > 5) notCampableDesc = "Walls are covered in graffiti warning about radiation. ";
-                            else notCampableDesc = "There is an eerie air as if the place has been abandoned in a hurry.";
+                            if (inhabited && featuresComponent.stateOfRepair > 6) 
+                                notCampableDesc = "Many entrances have big yellow warning signs on them, with the text 'KEEP OUT' and a <span class='text-highlight-functionality'>radiation</span> sign. ";
+                            else if (inhabited && featuresComponent.buildingDensity > 5) 
+                                notCampableDesc = "Walls are covered in graffiti warning about <span class='text-highlight-functionality'>radiation</span>. ";
+                            else 
+                                notCampableDesc = "There is an eerie air as if the place has been <span class='text-highlight-functionality'>abandoned</span> in a hurry.";
                             break;
                 
                         case LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION:
-                            if (inhabited && featuresComponent.stateOfRepair > 6) notCampableDesc = "Many entrances have big red warning signs on them with a skull sign and the text 'KEEP OUT'. ";
-                            else if (inhabited && featuresComponent.buildingDensity > 5) notCampableDesc = "Walls are covered in graffiti warning about some kind of pollution.";
-                            else notCampableDesc = "A noxious smell hangs in the air.";
+                            if (inhabited && featuresComponent.stateOfRepair > 6) 
+                                notCampableDesc = "Many entrances have big red warning signs on them with a <span class='text-highlight-functionality'>skull sign</span> and the text 'KEEP OUT'. ";
+                            else if (inhabited && featuresComponent.buildingDensity > 5) 
+                                notCampableDesc = "Walls are covered in graffiti warning about some kind of <span class='text-highlight-functionality'>pollution</span>.";
+                            else 
+                                notCampableDesc = "A <span class='text-highlight-functionality'>noxious smell</span> hangs in the air.";
                             break;
                         
                         case LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION:
-                            if (inhabited) notCampableDesc = "There aren't any signs of recent human habitation. ";
-                            else notCampableDesc = "An unnerving silence blankets the streets. ";
+                            if (inhabited) 
+                                notCampableDesc = "There aren't any signs of recent human <span class='text-highlight-functionality'>habitation</span>. ";
+                            else 
+                                notCampableDesc = "An unnerving <span class='text-highlight-functionality'>silence</span> blankets the streets. ";
                             break;
                     }
                 }
@@ -608,9 +628,9 @@ define([
         
         updateStaticSectorElements: function () {
             if (this.nearestCampNodes.head) {
-            var campSector = this.nearestCampNodes.head.entity;
-            var path = this.levelHelper.findPathTo(this.playerLocationNodes.head.entity, campSector, { skipBlockers: true, skipUnvisited: true });
-            $("#out-action-move-camp-details").text("(" + path.length + " blocks)");
+                var campSector = this.nearestCampNodes.head.entity;
+                var path = this.levelHelper.findPathTo(this.playerLocationNodes.head.entity, campSector, { skipBlockers: true, skipUnvisited: true });
+                $("#out-action-move-camp-details").text("(" + path.length + " blocks)");
             }
         },
 		

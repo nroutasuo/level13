@@ -86,6 +86,8 @@ define([
                     levelNode.entity.add(new CurrentPlayerLocationComponent());
                     if (!levelNode.entity.has(VisitedComponent)) {
                         this.handleNewLevel(levelNode, levelpos);
+                    } else {
+                        this.handleEnterLevel(levelNode, levelpos);
                     }
                 } else if (levelpos != playerPos.level && levelNode.entity.has(CurrentPlayerLocationComponent)) {
                     levelNode.entity.remove(CurrentPlayerLocationComponent);
@@ -144,16 +146,18 @@ define([
 			if (levelPos !== 13) this.gameState.unlockedFeatures.levels = true;
 			if (levelPos === this.gameState.getGroundLevel()) this.gameState.unlockedFeatures.favour = true;
 		},
+        
+        handleEnterLevel: function (levelNode, levelPos) {
+			this.occurrenceFunctions.onEnterLevel(levelNode.entity);
+        },
 		
 		handleNewSector: function (sectorNode) {
-			this.occurrenceFunctions.onEnterNewSector(sectorNode.entity);
 			
 			sectorNode.entity.add(new VisitedComponent());
 			sectorNode.entity.add(new RevealedComponent());
             
             var sectorPosition = sectorNode.entity.get(PositionComponent);
-            var revealedRange = UIConstants.MAP_MINIMAP_SIZE - 2;
-            var revealDiameter = Math.ceil(revealedRange - 1) / 2;
+            var revealDiameter = 1;
             
             var revealedNeighbour;
             for (var dx = -revealDiameter; dx <= revealDiameter; dx++) {
@@ -166,7 +170,8 @@ define([
             }
             
             this.gameState.numVisitedSectors++;
-			this.gameState.unlockedFeatures.sectors = true;
+			this.gameState.unlockedFeatures.sectors = true;            
+			this.occurrenceFunctions.onEnterNewSector(sectorNode.entity);
 		},
         
         handleInvalidPosition: function () {

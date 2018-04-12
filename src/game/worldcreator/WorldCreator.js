@@ -69,16 +69,17 @@ define([
                 this.generateSectors(seed, levelVO, passageDownPositions);
 					
 				// camp: 3-10 guaranteed spots for every campable level
+                var numCamps = 1;
 				if (l === 13) {
 					levelVO.getSector(WorldCreatorConstants.FIRST_CAMP_X, WorldCreatorConstants.FIRST_CAMP_Y).camp = true;
 				} else {
-					var numCamps = isCampableLevel ? WorldCreatorRandom.randomInt(seed / 3 * l, 3, 11) : 0;
+					numCamps = isCampableLevel ? WorldCreatorRandom.randomInt(seed / 3 * l, 3, 11) : 0;
 					for (var i = 0; i < numCamps; i++) {
 						var campPosition = WorldCreatorRandom.randomSector(seed * l * 534 * (i + 7), levelVO, true).position;
 						levelVO.getSector(campPosition.sectorX, campPosition.sectorY).camp = true;
 					}
 				}
-				
+                
 				// passages: up according to previous level
                 var previousLevelVO = this.world.levels[l + 1];
                 var passagePosition;

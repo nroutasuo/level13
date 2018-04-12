@@ -96,7 +96,7 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
                 default:
                     var name = passageVO.name.toLowerCase() + " " + directionName;
                     var article = TextConstants.getArticle(name);
-                    var span = article + makeHighlight(name);
+                    var span = article + " " + makeHighlight(name);
                     var state;
                     if (isBuilt) {
                         state = "and it has been repaired";

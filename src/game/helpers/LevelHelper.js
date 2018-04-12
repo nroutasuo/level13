@@ -168,16 +168,20 @@ define([
             
             if (startLevel > goalLevel) {
                 var passageDown = this.findPassageDown(startLevel);
-                var passageDownPos = passageDown.get(PositionComponent);
-                var passageUp = this.getSectorByPosition(passageDownPos.level - 1, passageDownPos.sectorX, passageDownPos.sectorY);
-                var combined = this.findPathTo(startSector, passageDown, settings).concat([passageUp]).concat(this.findPathTo(passageUp, goalSector, settings));
-                return combined;
+                if (passageDown) {
+                    var passageDownPos = passageDown.get(PositionComponent);
+                    var passageUp = this.getSectorByPosition(passageDownPos.level - 1, passageDownPos.sectorX, passageDownPos.sectorY);
+                    var combined = this.findPathTo(startSector, passageDown, settings).concat([passageUp]).concat(this.findPathTo(passageUp, goalSector, settings));
+                    return combined;
+                }
             } else if (startLevel < goalLevel) {
                 var passageUp = this.findPassageUp(startLevel);
-                var passageUpPos = passageUp.get(PositionComponent);
-                var passageDown = this.getSectorByPosition(passageUpPos.level + 1, passageUpPos.sectorX, passageUpPos.sectorY);
-                var combined = this.findPathTo(startSector, passageUp, settings).concat([passageDown]).concat(this.findPathTo(passageDown, goalSector, settings));
-                return combined;
+                if (passageUp) {
+                    var passageUpPos = passageUp.get(PositionComponent);
+                    var passageDown = this.getSectorByPosition(passageUpPos.level + 1, passageUpPos.sectorX, passageUpPos.sectorY);
+                    var combined = this.findPathTo(startSector, passageUp, settings).concat([passageDown]).concat(this.findPathTo(passageDown, goalSector, settings));
+                    return combined;
+                }
             }
             
             var frontier = [];

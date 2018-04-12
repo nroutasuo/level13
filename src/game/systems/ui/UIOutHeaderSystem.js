@@ -191,11 +191,11 @@ define([
 			
 			this.elements.valRumours.text(UIConstants.roundValue(playerStatsNode.rumours.value, true, false));
 			this.uiFunctions.toggle("#stats-rumours", playerStatsNode.rumours.isAccumulating);
-			this.updateStatsCallout(null, "stats-rumours", playerStatsNode.rumours.accSources);
+			this.updateStatsCallout("", "stats-rumours", playerStatsNode.rumours.accSources);
 			
 			this.elements.valEvidence.text(UIConstants.roundValue(playerStatsNode.evidence.value, true, false));
 			this.uiFunctions.toggle("#stats-evidence", this.gameState.unlockedFeatures.evidence);
-			this.updateStatsCallout(null, "stats-evidence", playerStatsNode.evidence.accSources);
+			this.updateStatsCallout("", "stats-evidence", playerStatsNode.evidence.accSources);
             
             $("#header-tribe-container").toggle(this.gameState.unlockedFeatures.evidence || playerStatsNode.rumours.isAccumulating);
 

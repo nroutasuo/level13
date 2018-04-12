@@ -1,16 +1,19 @@
 // A class responds to player actions parsed by the UIFunctions
 define(['ash',
     'game/constants/OccurrenceConstants',
+    'game/constants/LogConstants',
+    'game/nodes/LogNode',
     'game/nodes/sector/CampNode',
     'game/nodes/tribe/TribeUpgradesNode',
     'game/components/common/PositionComponent',
     'game/components/common/ResourcesComponent',
+    'game/components/type/LevelComponent',
     'game/components/sector/events/RaidComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/CampComponent',
-], function (Ash, OccurrenceConstants, 
+], function (Ash, OccurrenceConstants, LogConstants, LogNode,
     CampNode, TribeUpgradesNode,
-    PositionComponent, ResourcesComponent, RaidComponent,
+    PositionComponent, ResourcesComponent, LevelComponent, RaidComponent,
     SectorImprovementsComponent, CampComponent) {
     
     var OccurrenceFunctions = Ash.System.extend({
@@ -21,6 +24,7 @@ define(['ash',
 		upgradeEffectsHelper: null,
 		
 		engine: null,
+        logNodes: null,
 		campNodes: null,
         tribeUpgradeNodes: null,
 	
@@ -33,6 +37,7 @@ define(['ash',
 
         addToEngine: function (engine) {
             this.engine = engine;
+            this.logNodes = engine.getNodeList(LogNode),
 			this.campNodes = engine.getNodeList(CampNode);
             this.tribeUpgradeNodes = engine.getNodeList(TribeUpgradesNode);
         },
@@ -42,9 +47,17 @@ define(['ash',
 			this.campNodes = null;
             this.tribeUpgradeNodes = null;
         },
+        
+        onEnterLevel: function (levelEntity) {
+            var levelComponent = levelEntity.get(LevelComponent);
+            var levelVO = levelComponent.levelVO;
+            if (!levelVO.isCampable) {
+                var msg = "This level seems eerily devoid of any signs of recent human activity.";
+                this.addLogMessage(LogConstants.MSG_ID_ENTER_LEVEL, msg);
+            }
+        },
 	
 		onEnterNewSector: function (sectorEntity) {
-            
 		},
 	
 		onScoutSector: function (sectorEntity) {
@@ -85,22 +98,11 @@ define(['ash',
 				}
 			}
 		},
-		
-		hasCampOnLevel: function (sectorEntity) {
-			var sectorPosition = sectorEntity.get(PositionComponent);
-			var campPosition;
-			for (var node = this.campNodes.head; node; node = node.next) {
-				campPosition = node.entity.get(PositionComponent);
-				if (sectorPosition.level === campPosition.level) {
-					return true;
-				}
-			}
-			return false;
-		},
-		
-		showClickOccurrence: function (text) {
-			this.uiFunctions.showInfoPopup("Occurrence!", text);
-		},
+        
+        addLogMessage: function (msgID, msg, replacements, values) {
+            var logComponent = this.logNodes.head.logMessages;
+            logComponent.addMessage(msgID, msg, replacements, values);
+        },
 	
     });
 

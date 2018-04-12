@@ -44,7 +44,7 @@ define([
         resourcesHelper: null,
         buttonHelper: null,
         engine: null,
-        
+		
         elementsCalloutContainers: null,
         elementsVisibleButtons: [],
     
@@ -179,10 +179,6 @@ define([
             var ordinal = playerActionsHelper.getOrdinal(action);
             var costFactor = playerActionsHelper.getCostFactor(action);
             var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);
-            var hasEnemies = fightHelper.hasEnemiesCurrentLocation(action);
-            var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
-            var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
-            var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision) : 0;
             var description = playerActionsHelper.getDescription(action);
             var hasCostBlockers = false;
 
@@ -220,12 +216,28 @@ define([
                     content += "<span class='action-duration'>duration: " + Math.round(duration * 100)/100 + "s</span>";
                 }
 
+                var hasEnemies = fightHelper.hasEnemiesCurrentLocation(action);
+                var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
+                var injuryRiskBase = injuryRisk > 0 ? PlayerActionConstants.getInjuryProbability(action, 100) : 0;
+                var injuryRiskVision = injuryRisk - injuryRiskBase;
+                var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
+                var inventoryRiskBase = inventoryRisk > 0 ? PlayerActionConstants.getLoseInventoryProbability(action, 100) : 0;
+                var inventoryRiskVision = inventoryRisk - inventoryRiskBase;
+                var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision) : 0;
+                var fightRiskBase = fightRisk > 0 ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, 100) : 0;
+                var fightRiskVision = fightRisk - fightRiskBase;
                 if (injuryRisk > 0 || fightRisk > 0 || inventoryRisk > 0) {
                     var inventoryRiskLabel = action === "despair" ? "lose items" : "lose item";
                     if (content.length > 0) content += "<hr/>";
-                    if (injuryRisk > 0) content += "<span class='action-risk warning'>risk of injury: " + Math.round(injuryRisk * 100 * 100) / 100 + "%</span><br/>";
-                    if (fightRisk > 0) content += "<span class='action-risk warning'>risk of fight: " + Math.round(fightRisk * 100 * 100) / 100 + "%</span><br/>";
-                    if (inventoryRisk > 0) content += "<span class='action-risk warning'>" + inventoryRiskLabel + ": " + Math.round(inventoryRisk * 100 * 100) / 100 + "%</span>";
+                    if (injuryRisk > 0) 
+                        content += "<span class='action-risk warning'>injury: " + 
+                            UIConstants.roundValue((injuryRiskBase + injuryRiskVision) * 100, true, true) + "%</span><br/>";
+                    if (fightRisk > 0) 
+                        content += "<span class='action-risk warning'>risk of fight: " + 
+                            UIConstants.roundValue((fightRiskBase + fightRiskVision) * 100, true, true) + " %</span><br/>";
+                    if (inventoryRisk > 0) 
+                        content += "<span class='action-risk warning'>" + inventoryRiskLabel + ": " + 
+                            UIConstants.roundValue((inventoryRiskBase + inventoryRiskVision) * 100, true, true) + " %</span>";
                 }
             } else {
                 if (content.length > 0) content += "<hr/>";

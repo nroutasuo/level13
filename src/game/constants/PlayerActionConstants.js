@@ -2047,7 +2047,7 @@ function (Ash, GameConstants, CampConstants) {
             
             // [ base-value, vision-dependent-value ]
             injuryProbabilities: {
-                scout: [0,005, 0.01],
+                scout: [0.005, 0.01],
                 scavenge: [0.005, 0.01],
                 despair: [0.75, 0], // TODO make dynamic and link to cases in FaintingSystem
             },

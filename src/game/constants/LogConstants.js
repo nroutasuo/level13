@@ -46,6 +46,7 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
         MSG_ID_WORKER_STATUS: "WORKER_STATUS",
         MSG_ID_CAMP_EVENT: "CAMP_EVENT",
         MSG_ID_BUILT_CAMP_LEVEL_POPULATION: "MSG_ID_BUILT_CAMP_LEVEL_POPULATION",
+        MSG_ID_ENTER_LEVEL: "MSG_ID_ENTER_LEVEL",
         
         // in buildings
         MSG_ID_BUILT_CAMP: "BUILT_CAMP",
@@ -155,13 +156,13 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
         },
         
         getCraftItemMessage: function (itemVO) {
-            itemDetails = "";
+            var itemDetails = "";
             switch (itemVO.id) {
                 case ItemConstants.itemDefinitions.light[0].id:
                     itemDetails = " Light will make scavenging safer.";
                     break;
             }
-            return "Crafted " + itemVO.name + "." + itemDetails;
+            return "Made " + TextConstants.addArticle(itemVO.name) + "." + itemDetails;
         },
 		
     }

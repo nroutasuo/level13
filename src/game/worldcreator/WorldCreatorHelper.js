@@ -238,11 +238,12 @@ define([
         
         getNotCampableReason: function (seed, level) {
             if (this.isCampableLevel(seed, level)) return null;
+            if (level === 14) return LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
             var levelOrdinal = this.getLevelOrdinal(seed, level);
             var rand = WorldCreatorRandom.random(seed % 4 + level + level * 8 + 88);
-            if (rand < 0.33 && levelOrdinal < WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION) 
+            if (rand < 0.33 && levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION) 
                 return LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
-            if (rand < 0.66 && WorldCreatorConstants.MIN_LEVEL_HAZARD_POISON) 
+            if (rand < 0.66 && levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_HAZARD_POISON) 
                 return LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
             return LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION;
         },

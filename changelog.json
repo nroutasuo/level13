@@ -15,6 +15,10 @@
                     "summary": "Adjust scavenge results and risks to depend more on current health, vision and level."
                 },
                 {
+                    "type": "UI",
+                    "summary": "Improve sector descriptions for passages, resources and special level conditions."
+                },
+                {
                     "type": "GB",
                     "summary": "Use pathfinding for determining costs to return to camp."
                 },
