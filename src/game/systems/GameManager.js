@@ -1,6 +1,7 @@
 define([
     'ash',
 	'game/constants/GameConstants',
+    'game/EntityCreator',
     'game/worldcreator/WorldCreator',
     'game/worldcreator/WorldCreatorHelper',
     'game/worldcreator/WorldCreatorRandom',
@@ -8,7 +9,7 @@ define([
     'game/nodes/level/LevelNode',
     'game/components/common/PositionComponent',
     'game/systems/ui/UIOutLevelSystem'
-], function (Ash, GameConstants, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, LevelNode, PositionComponent, UIOutLevelSystem) {
+], function (Ash, GameConstants, EntityCreator, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, LevelNode, PositionComponent, UIOutLevelSystem) {
 
     var GameManager = Ash.System.extend({
 	
@@ -27,10 +28,9 @@ define([
 		player: null,
 		tribe: null,
 	
-		constructor: function (tickProvider, gameState, creator, uiFunctions, playerActions, saveHelper, enemyHelper, itemsHelper, levelHelper) {
+		constructor: function (tickProvider, gameState, uiFunctions, playerActions, saveHelper, enemyHelper, itemsHelper, levelHelper) {
 			this.tickProvider = tickProvider;
 			this.gameState = gameState;
-			this.creator = creator;
 			this.uiFunctions = uiFunctions;
 			this.playerActions = playerActions;
 			this.saveHelper = saveHelper;
@@ -41,6 +41,7 @@ define([
 	
 		addToEngine: function (engine) {
 			this.engine = engine;
+			this.creator = new EntityCreator(this.engine);
 			this.setupGame();
 		},
 	

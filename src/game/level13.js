@@ -47,7 +47,6 @@ define([
     'game/systems/UnlockedFeaturesSystem',
     'game/systems/occurrences/CampEventsSystem',
     'game/constants/SystemPriorities',
-    'game/EntityCreator',
     'game/PlayerActionFunctions',
     'game/OccurrenceFunctions',
     'game/UIFunctions',
@@ -118,7 +117,6 @@ define([
     UnlockedFeaturesSystem,
     CampEventsSystem,
     SystemPriorities,
-    EntityCreator,
     PlayerActionFunctions,
     OccurrenceFunctions,
     UIFunctions,
@@ -157,34 +155,19 @@ define([
 	
         tickProvider: null,
 
-        constructor: function () {
+        constructor: function (plugins) {
             this.engine = new Ash.Engine();
 			this.gameState = new GameState();
 	    
-			// Singleton helper modules to be passed to systems that need them
-            this.itemsHelper = new ItemsHelper(this.gameState);
-            this.enemyHelper = new EnemyHelper(this.itemsHelper);
-			this.resourcesHelper = new ResourcesHelper(this.engine);
-			this.playerActionsHelper = new PlayerActionsHelper(this.engine, this.gameState, this.resourcesHelper);
-			this.upgradeEffectsHelper = new UpgradeEffectsHelper(this.playerActionsHelper);
-			this.movementHelper = new MovementHelper(this.engine);
-			this.levelHelper = new LevelHelper(this.engine, this.gameState, this.playerActionsHelper, this.movementHelper);
-			this.sectorHelper = new SectorHelper(this.engine);
-			this.campHelper = new CampHelper(this.engine, this.upgradeEffectsHelper);
-			this.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine, this.gameState, this.playerActionsHelper, this.resourcesHelper, this.levelHelper, this.itemsHelper);
-            this.fightHelper = new FightHelper(this.engine, this.playerActionsHelper, this.playerActionResultsHelper);
-			this.saveHelper = new SaveHelper();
-            this.uiMapHelper = new UIMapHelper(this.engine, this.levelHelper, this.sectorHelper, this.movementHelper);
-            this.uiTechTreeHelper = new UITechTreeHelper(this.engine, this.playerActionsHelper);
-            this.buttonHelper = new ButtonHelper(this.levelHelper);
-            this.changeLogHelper = new ChangeLogHelper();
-            this.endingHelper = new EndingHelper(this.engine, this.gameState, this.playerActionsHelper, this.levelHelper);
+			this.initializeHelpers();
+            this.initializePlugins(plugins);
+
+            var game = this;
+			this.tickProvider = new TickProvider(null, function (ex) {
+                game.handleException(ex);
+            });
 			
 			// Basic building blocks & special systems
-            var self = this;
-			this.tickProvider = new TickProvider(null, function (ex) {
-                self.handleException(ex);
-            });
 			this.saveSystem = new SaveSystem(this.gameState, this.changeLogHelper);
 			this.playerActionFunctions = new PlayerActionFunctions(
 				this.gameState,
@@ -204,12 +187,40 @@ define([
             
             this.enemyHelper.createEnemies();
 			
-			// Systems
-			this.addSystems(new EntityCreator(this.engine));
+			this.addSystems();
+        },
+        
+        initializeHelpers: function () {
+            // TODO make singletons / have some nice dependency injection
+            this.itemsHelper = new ItemsHelper(this.gameState);
+            this.enemyHelper = new EnemyHelper(this.itemsHelper);
+			this.resourcesHelper = new ResourcesHelper(this.engine);
+			this.playerActionsHelper = new PlayerActionsHelper(this.engine, this.gameState, this.resourcesHelper);
+			this.upgradeEffectsHelper = new UpgradeEffectsHelper(this.playerActionsHelper);
+			this.movementHelper = new MovementHelper(this.engine);
+			this.levelHelper = new LevelHelper(this.engine, this.gameState, this.playerActionsHelper, this.movementHelper);
+			this.sectorHelper = new SectorHelper(this.engine);
+			this.campHelper = new CampHelper(this.engine, this.upgradeEffectsHelper);
+			this.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine, this.gameState, this.playerActionsHelper, this.resourcesHelper, this.levelHelper, this.itemsHelper);
+            this.fightHelper = new FightHelper(this.engine, this.playerActionsHelper, this.playerActionResultsHelper);
+			this.saveHelper = new SaveHelper();
+            this.uiMapHelper = new UIMapHelper(this.engine, this.levelHelper, this.sectorHelper, this.movementHelper);
+            this.uiTechTreeHelper = new UITechTreeHelper(this.engine, this.playerActionsHelper);
+            this.buttonHelper = new ButtonHelper(this.levelHelper);
+            this.changeLogHelper = new ChangeLogHelper();
+            this.endingHelper = new EndingHelper(this.engine, this.gameState, this.playerActionsHelper, this.levelHelper);
+        },
+        
+        initializePlugins: function (plugins) {
+            if (!plugins) return;
+            var game = this;
+            require(plugins, function (plugin) {
+                game.engine.addSystem(new plugin(), SystemPriorities.update);
+            });
         },
 	
-		addSystems: function (creator) {
-			this.gameManager = new GameManager(this.tickProvider, this.gameState, creator, this.uiFunctions, this.playerActionFunctions, this.saveHelper, this.enemyHelper, this.itemsHelper, this.levelHelper);
+		addSystems: function () {
+			this.gameManager = new GameManager(this.tickProvider, this.gameState, this.uiFunctions, this.playerActionFunctions, this.saveHelper, this.enemyHelper, this.itemsHelper, this.levelHelper);
 			this.engine.addSystem(this.gameManager, SystemPriorities.preUpdate);
             
             this.engine.addSystem(this.cheatSystem, SystemPriorities.update);
@@ -292,6 +303,7 @@ define([
         },
 		
 		cheat: function (input) {
+            if (!GameConstants.isCheatsEnabled) return; 
 			this.cheatSystem.applyCheat(input);
 		}
 	

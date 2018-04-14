@@ -1,26 +1,24 @@
-require([
+define([
+    'module',
     'jquery/jquery-1.11.1.min',
     'game/level13',
     'game/constants/GameConstants',
-], function (jQuery, Level13, GameConstants) {
+], function (module, jQuery, Level13, GameConstants) {
     'use strict';
         
     function Level13App() {
         
-        this.initialise = function () {
+        this.initialise = function (config) {
             
-            // TODO define when cheats are enabled neater
-            var isLocal = document.URL.indexOf("file:///") >= 0;
-            var isGithub = document.URL.indexOf("nroutasuo.github") >= 0;
-            GameConstants.isCheatsEnabled = isLocal;
-            GameConstants.isDebugOutputEnabled = isLocal;
+            GameConstants.isCheatsEnabled = config.isCheatsEnabled;
+            GameConstants.isDebugOutputEnabled = config.isDebugOutputEnabled;
                         
             GameConstants.STARTTimeStart = new Date().getTime();
             GameConstants.STARTTimeNow = function () {
                 return new Date().getTime() - this.STARTTimeStart;
             }
                         
-            var level13 = new Level13();
+            var level13 = new Level13(config.plugins);
             level13.start();
                         
             if (GameConstants.isCheatsEnabled) {
@@ -30,6 +28,6 @@ require([
         
     }
 
-    new Level13App().initialise();
+    new Level13App().initialise(module.config());
 }
 );

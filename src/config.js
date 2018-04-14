@@ -1,8 +1,8 @@
-// Set the require.js configuration for your application.
 require.config({
 
-    // Initialize the application with the main application file
     deps: ["level13-app"],
+    
+    baseUrl: 'src',
 
     paths: {
         brejep: "../lib/brejep",
@@ -12,5 +12,12 @@ require.config({
         utils: "utils",
         game: "game"
     },
+    
+    config: {
+        'level13-app': {
+            'isCheatsEnabled': false,
+            'isDebugOutputEnabled': false,
+        }
+    }
     
 });
