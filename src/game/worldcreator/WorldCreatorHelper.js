@@ -8,6 +8,8 @@ define([
 ], function (Ash, ResourcesVO, WorldCreatorRandom, WorldCreatorConstants, LevelConstants) {
 
     var WorldCreatorHelper = {
+        
+        camplessLevelOrdinals: {},
 		
 		getSectorType: function (seed, level, x, y) {
             var sector = x + y + 2000;
@@ -221,10 +223,11 @@ define([
 		},
         
         getLevelOrdinalForCampOrdinal: function (seed, campOrdinal) {
+            // this assumes camplessLevelOrdinals are sorted from smallest to biggest
             var levelOrdinal = campOrdinal;
             var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
             for (var i = 0; i < camplessLevelOrdinals.length; i++) {
-                if (camplessLevelOrdinals[i] <= campOrdinal) 
+                if (camplessLevelOrdinals[i] <= levelOrdinal) 
                     levelOrdinal++;
             }
             return levelOrdinal;
@@ -249,45 +252,48 @@ define([
         },
 		
 		getCamplessLevelOrdinals: function (seed) {
-            var camplessLevelOrdinals = [];
-            
-            var camplessLvlFreq;
-            var camplessLvlFreqSmall;
-            var camplessLvlFreqBig;
-            var numCamplessLvls;
-            var groundLvlOrdinal = this.getLevelOrdinal(seed, this.getBottomLevel(seed));
-			var totalLevels = this.getHighestLevel(seed) - this.getBottomLevel(seed) + 1;
-			
-			// before ground
-			numCamplessLvls = groundLvlOrdinal - WorldCreatorConstants.CAMPS_BEFORE_GROUND;
-			camplessLvlFreq = (groundLvlOrdinal-3)/(numCamplessLvls);
-			camplessLvlFreqSmall = camplessLvlFreq < 2 ? 1 : camplessLvlFreq;
-			camplessLvlFreqBig = Math.max(2, camplessLvlFreq);
-			for (var i = 1; i <= numCamplessLvls; i++) {
-				 if(i == 1)
-					camplessLevelOrdinals.push(groundLvlOrdinal - Math.floor(camplessLvlFreqSmall));
-				 else if(i == 2)
-					camplessLevelOrdinals.push(Math.ceil(groundLvlOrdinal - camplessLvlFreqSmall * 2));
-				 else
-					camplessLevelOrdinals.push(Math.ceil(camplessLevelOrdinals[camplessLevelOrdinals.length-1] - camplessLvlFreqBig));
-			}
-			
-			// after ground	
-			var numLevelsAfterGround = totalLevels - groundLvlOrdinal;
-			numCamplessLvls = numLevelsAfterGround - WorldCreatorConstants.CAMPS_AFTER_GROUND;
-			camplessLvlFreq = (numLevelsAfterGround-1)/(numCamplessLvls);
-			camplessLvlFreqSmall = camplessLvlFreq < 2 ? 1 : camplessLvlFreq;
-			camplessLvlFreqBig = Math.max(2, camplessLvlFreq);
-			for (var i = 1; i <= numCamplessLvls; i++) {
-				 if(i == 1)
-					camplessLevelOrdinals.push(groundLvlOrdinal + 1);
-				 else if(i == 2)
-					camplessLevelOrdinals.push(Math.ceil(groundLvlOrdinal + camplessLvlFreqSmall));
-				 else
-					camplessLevelOrdinals.push(Math.floor(camplessLevelOrdinals[camplessLevelOrdinals.length-1] + camplessLvlFreqBig));
-			}
-			
-			return camplessLevelOrdinals;
+            if (!this.camplessLevelOrdinals[seed]) {
+                var camplessLevelOrdinals = [];
+
+                var camplessLvlFreq;
+                var camplessLvlFreqSmall;
+                var camplessLvlFreqBig;
+                var numCamplessLvls;
+                var groundLvlOrdinal = this.getLevelOrdinal(seed, this.getBottomLevel(seed));
+                var totalLevels = this.getHighestLevel(seed) - this.getBottomLevel(seed) + 1;
+
+                // before ground
+                numCamplessLvls = groundLvlOrdinal - WorldCreatorConstants.CAMPS_BEFORE_GROUND;
+                camplessLvlFreq = (groundLvlOrdinal-3)/(numCamplessLvls);
+                camplessLvlFreqSmall = camplessLvlFreq < 2 ? 1 : camplessLvlFreq;
+                camplessLvlFreqBig = Math.max(2, camplessLvlFreq);
+                for (var i = 1; i <= numCamplessLvls; i++) {
+                     if(i == 1)
+                        camplessLevelOrdinals.push(groundLvlOrdinal - Math.floor(camplessLvlFreqSmall));
+                     else if(i == 2)
+                        camplessLevelOrdinals.push(Math.ceil(groundLvlOrdinal - camplessLvlFreqSmall * 2));
+                     else
+                        camplessLevelOrdinals.push(Math.ceil(camplessLevelOrdinals[camplessLevelOrdinals.length-1] - camplessLvlFreqBig));
+                }
+
+                // after ground	
+                var numLevelsAfterGround = totalLevels - groundLvlOrdinal;
+                numCamplessLvls = numLevelsAfterGround - WorldCreatorConstants.CAMPS_AFTER_GROUND;
+                camplessLvlFreq = (numLevelsAfterGround-1)/(numCamplessLvls);
+                camplessLvlFreqSmall = camplessLvlFreq < 2 ? 1 : camplessLvlFreq;
+                camplessLvlFreqBig = Math.max(2, camplessLvlFreq);
+                for (var i = 1; i <= numCamplessLvls; i++) {
+                     if(i == 1)
+                        camplessLevelOrdinals.push(groundLvlOrdinal + 1);
+                     else if(i == 2)
+                        camplessLevelOrdinals.push(Math.ceil(groundLvlOrdinal + camplessLvlFreqSmall));
+                     else
+                        camplessLevelOrdinals.push(Math.floor(camplessLevelOrdinals[camplessLevelOrdinals.length-1] + camplessLvlFreqBig));
+                }
+
+                this.camplessLevelOrdinals[seed] = camplessLevelOrdinals.sort(function (a, b) { return a - b; });
+            }
+			return this.camplessLevelOrdinals[seed];
 		},
 		
 		isDarkLevel: function (seed, level) {
