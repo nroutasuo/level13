@@ -33,13 +33,23 @@ define([
         },
 
         update: function (time) {
+            if (this.paused) return;
 			var timeStamp = new Date().getTime();
 			if (timeStamp - this.lastSaveTimeStamp > this.saveFrequency) {
 				this.save();
 			}
         },
+        
+        pause: function () {
+            this.paused = true;
+        },
+        
+        resume: function () {
+            this.paused = false;
+        },
 	
 		save: function () {
+            if (this.paused) return;
             this.error = null;
 			if (typeof(Storage) !== "undefined") {
                 try {

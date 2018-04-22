@@ -167,20 +167,24 @@ define([
             var goalLevel = goalSector.get(PositionComponent).level;
             
             if (startLevel > goalLevel) {
-                var passageDown = this.findPassageDown(startLevel);
+                var passageDown = this.findPassageDown(startLevel, settings.includeUnbuiltPassages);
                 if (passageDown) {
                     var passageDownPos = passageDown.get(PositionComponent);
                     var passageUp = this.getSectorByPosition(passageDownPos.level - 1, passageDownPos.sectorX, passageDownPos.sectorY);
                     var combined = this.findPathTo(startSector, passageDown, settings).concat([passageUp]).concat(this.findPathTo(passageUp, goalSector, settings));
                     return combined;
+                } else {
+                    console.log("Can't find path because there is no passage from level " + startLevel + " to level " + goalLevel)
                 }
             } else if (startLevel < goalLevel) {
-                var passageUp = this.findPassageUp(startLevel);
+                var passageUp = this.findPassageUp(startLevel, settings.includeUnbuiltPassages);
                 if (passageUp) {
                     var passageUpPos = passageUp.get(PositionComponent);
                     var passageDown = this.getSectorByPosition(passageUpPos.level + 1, passageUpPos.sectorX, passageUpPos.sectorY);
                     var combined = this.findPathTo(startSector, passageUp, settings).concat([passageDown]).concat(this.findPathTo(passageDown, goalSector, settings));
                     return combined;
+                } else {
+                    console.log("Can't find path because there is no passage from level " + startLevel + " to level " + goalLevel)
                 }
             }
             
@@ -249,7 +253,7 @@ define([
             return result.reverse();
         },
         
-        findPassageUp: function (level) {
+        findPassageUp: function (level, includeUnbuiltPassages) {
             var levelEntity = this.getLevelEntityForPosition(level);
 			var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);            
 			var passageSectors = Object.keys(levelPassagesComponent.passagesUpBuilt);
@@ -257,14 +261,14 @@ define([
             var sectorId;
             for (var iu = 0; iu < passageSectors.length; iu++) {
                 sectorId = passageSectors[iu];
-                if (levelPassagesComponent.passagesUpBuilt[sectorId]) {
+                if (includeUnbuiltPassages || levelPassagesComponent.passagesUpBuilt[sectorId]) {
                     return this.getSectorByPosition(level, sectorId.split(".")[0], sectorId.split(".")[1]);
                 }
             }
             return null;
         },
         
-        findPassageDown: function (level) {
+        findPassageDown: function (level, includeUnbuiltPassages) {
             var levelEntity = this.getLevelEntityForPosition(level);
 			var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);         
 			var passageSectors = Object.keys(levelPassagesComponent.passagesDownBuilt);
@@ -272,7 +276,7 @@ define([
             var sectorId;
             for (var iu = 0; iu < passageSectors.length; iu++) {
                 sectorId = passageSectors[iu];
-                if (levelPassagesComponent.passagesDownBuilt[sectorId]) {
+                if (includeUnbuiltPassages || levelPassagesComponent.passagesDownBuilt[sectorId]) {
                     return this.getSectorByPosition(level, sectorId.split(".")[0], sectorId.split(".")[1]);
                 }
             }

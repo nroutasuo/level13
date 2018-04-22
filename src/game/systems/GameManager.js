@@ -1,5 +1,6 @@
 define([
     'ash',
+	'game/GlobalSignals',
 	'game/constants/GameConstants',
     'game/EntityCreator',
     'game/worldcreator/WorldCreator',
@@ -9,7 +10,7 @@ define([
     'game/nodes/level/LevelNode',
     'game/components/common/PositionComponent',
     'game/systems/ui/UIOutLevelSystem'
-], function (Ash, GameConstants, EntityCreator, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, LevelNode, PositionComponent, UIOutLevelSystem) {
+], function (Ash, GlobalSignals, GameConstants, EntityCreator, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, LevelNode, PositionComponent, UIOutLevelSystem) {
 
     var GameManager = Ash.System.extend({
 	
@@ -76,6 +77,7 @@ define([
             var sys = this;
             setTimeout(function () {
                 sys.uiFunctions.showGame();
+                GlobalSignals.gameStartedSignal.dispatch();
             }, 250);
 		},
 		
@@ -162,6 +164,8 @@ define([
 
             WorldCreator.prepareWorld(worldSeed, this.enemyHelper, this.itemsHelper);
             this.gameState.worldSeed = worldSeed;
+            
+            if (GameConstants.isDebugOutputEnabled) console.log("Prepared world (seed: " + worldSeed + ")");
 
             // Create other entities and fill components
             if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t loading entities");

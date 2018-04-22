@@ -394,7 +394,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         restart: function () {            
             $("#log ul").empty();
             this.onTabClicked(this.elementIDs.tabs.out, this.gameState, this);
-            this.saveSystem.restart(false);
+            this.saveSystem.restart();
         },
         
         onResize: function () {
