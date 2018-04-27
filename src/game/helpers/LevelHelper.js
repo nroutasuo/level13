@@ -163,6 +163,8 @@ define([
                 console.log("WARN: No goal sector defined.");
             }
             
+            if (!settings) settings = {};
+            
             var startLevel = startSector.get(PositionComponent).level;
             var goalLevel = goalSector.get(PositionComponent).level;
             

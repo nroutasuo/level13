@@ -938,7 +938,7 @@ define([
                         return this.getCosts("move_sector_west", 1, sectorsToMove * statusCostFactor);
                     
 					case "move_camp_global":
-						result.stamina = 5 * PlayerActionConstants.costs.move_sector_west.stamina * statusCostFactor;
+						result.stamina = 10 * PlayerActionConstants.costs.move_sector_west.stamina * statusCostFactor;
 						break;
 					
 					case "scout_locale_i":
