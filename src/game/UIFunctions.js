@@ -439,18 +439,22 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                     if(currentVal > min) {
                         input.val(currentVal - 1).change();
                     } 
-                    if(parseInt(input.val()) == input.attr('min')) {
-                        $(this).attr('disabled', true);
-                    }
+		    // Temporary disable the disable logic to resolve a UI issue
+		    // TODO(https://github.com/nroutasuo/level13/issues/10): fix this thoroughly 
+                    //if(parseInt(input.val()) == input.attr('min')) {
+                    //    $(this).attr('disabled', true);
+                    //}
         
                 } else if(type == 'plus') {
                     var max = input.attr('max');
                     if(currentVal < max) {
                         input.val(currentVal + 1).change();
                     }
-                    if(parseInt(input.val()) == input.attr('max')) {
-                        $(this).attr('disabled', true);
-                    }        
+		    // Temporary disable the disable logic to resolve a UI issue
+		    // TODO(https://github.com/nroutasuo/level13/issues/10): fix this thoroughly 
+                    //if(parseInt(input.val()) == input.attr('max')) {
+                    //    $(this).attr('disabled', true);
+                    //}        
                 }
             } else {
                 input.val(0);
