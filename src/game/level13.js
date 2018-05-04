@@ -238,7 +238,7 @@ define([
 			this.engine.addSystem(new HazardSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CollectorSystem(this.gameState), SystemPriorities.update);
 			this.engine.addSystem(new FightSystem(this.gameState, this.resourcesHelper, this.levelHelper, this.playerActionResultsHelper, this.playerActionsHelper, this.occurrenceFunctions), SystemPriorities.update);
-			this.engine.addSystem(new PopulationSystem(this.gameState, this.levelHelper), SystemPriorities.update);
+			this.engine.addSystem(new PopulationSystem(this.gameState, this.levelHelper, this.campHelper), SystemPriorities.update);
 			this.engine.addSystem(new WorkerSystem(this.gameState, this.resourcesHelper, this.campHelper), SystemPriorities.update);
 			this.engine.addSystem(new FaintingSystem(this.uiFunctions, this.playerActionFunctions, this.playerActionResultsHelper), SystemPriorities.update);
 			this.engine.addSystem(new ReputationSystem(this.gameState, this.resourcesHelper, this.upgradeEffectsHelper), SystemPriorities.update);
