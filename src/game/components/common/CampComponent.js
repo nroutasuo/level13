@@ -4,6 +4,7 @@ define(['ash', 'game/constants/CampConstants'], function (Ash, CampConstants) {
         
         
         population: 0,
+        populationChangePerSec: 0,
         rumourpool: 0,
         rumourpoolchecked: false,
         assignedWorkers: {},
@@ -35,12 +36,6 @@ define(['ash', 'game/constants/CampConstants'], function (Ash, CampConstants) {
         addPopulation: function (value) {
             this.population += value;
             this.rumourpool += value * CampConstants.POOL_RUMOURS_PER_POPULATION;
-        },
-        
-        setPopulation: function (value) {
-            var rumourpoolchange = (value - this.population) * CampConstants.POOL_RUMOURS_PER_POPULATION;
-            this.population = value;
-            this.rumourpool += rumourpoolchange;
         },
         
         getType: function () {

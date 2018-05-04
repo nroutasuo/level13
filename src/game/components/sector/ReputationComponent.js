@@ -1,3 +1,4 @@
+// Reputation aka happiness level in a particular camp
 define(['ash'], function (Ash) {
     var ReputationComponent = Ash.Class.extend({
         
