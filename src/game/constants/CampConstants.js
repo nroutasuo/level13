@@ -67,8 +67,9 @@ define(['ash'], function (Ash) {
         },
         
         getRequiredReputation: function (pop) {
-            var rawValue = pop/(pop+100)*100;
-            return Math.floor(rawValue * 100) / 100;
+            if (pop < 1) return 0;
+            var rawValue = Math.max(0, pop)/(pop+100)*100;
+            return Math.max(1, Math.floor(rawValue * 100) / 100);
         },
     
     };

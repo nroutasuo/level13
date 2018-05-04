@@ -69,7 +69,6 @@ define([
 
             var changePerSec = this.getPopulationChangePerSec(node);
             var change = time * changePerSec * GameConstants.gameSpeedCamp;
-            
             var oldPopulation = camp.population;
             var newPopulation = oldPopulation + change;
 
@@ -77,7 +76,7 @@ define([
             var housingCap = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
             housingCap += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
             
-            newPopulation = MathUtils.clamp(newPopulation, 0, housingCap);
+            newPopulation = Math.max(newPopulation, 0);
             change = newPopulation - oldPopulation;
             changePerSec = change / time / GameConstants.gameSpeedCamp;
             

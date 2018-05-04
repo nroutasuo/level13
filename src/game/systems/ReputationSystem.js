@@ -58,54 +58,77 @@ define([
         },
         
         getTargetReputation: function (campNode) {
-            var defenceLimit = 25;
             var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
+            var targetReputation = 0;
             
-            var storage = this.resourcesHelper.getCurrentStorage(true);
-			var resources = storage ? storage.resources : null;
-            var noFood = resources && resources.getResource(resourceNames.food) <= 0;
-            var noWater = resources && resources.getResource(resourceNames.water) <= 0;
-            var soldiers = campNode.camp.assignedWorkers.soldier;
-            var fortificationUpgradeLevel = this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradeNodes.head.upgrades);
-            var badDefences = OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers, fortificationUpgradeLevel) > defenceLimit;
+            var addValue = function (value, name) {
+                targetReputation += value;
+                campNode.reputation.addTargetValueSource(name, value);                
+            };
             
-            var targetReputation = 0;            
+            // base: building happiness values
             var allImprovements = sectorImprovements.getAll(improvementTypes.camp);
             for (var i in allImprovements) {
                 var improvementVO = allImprovements[i];
+                var defaultBonus = improvementVO.getImprovementReputationBonus();
                 switch (improvementVO.name) {
                     case improvementNames.generator:
                         var numHouses = sectorImprovements.getCount(improvementNames.house) + sectorImprovements.getCount(improvementNames.house2);
                         var generatorBonus = numHouses * CampConstants.REPUTATION_PER_HOUSE_FROM_GENERATOR;
-                        targetReputation += generatorBonus;
-                        campNode.reputation.addTargetValueSource("Generator", generatorBonus);
+                        addValue(generatorBonus, "Generator");
                         break;
                     case improvementNames.radio:
-                        targetReputation += improvementVO.count;
-                        campNode.reputation.addTargetValueSource("Radio", improvementVO.count);
+                        addValue(improvementVO.count * defaultBonus, "Radio");
                         break;
                     default:
-                        targetReputation += improvementVO.count;
-                        campNode.reputation.addTargetValueSource("Buildings", improvementVO.count);
+                        addValue(improvementVO.count * defaultBonus, "Buildings");
                         break;
                 }
             }
-            targetReputation = Math.max(0, Math.min(100, targetReputation));
+            
+            var targetReputationWithoutPenalties = targetReputation;
+            
+            // penalties: food and water            
+            var storage = this.resourcesHelper.getCurrentStorage(true);
+			var resources = storage ? storage.resources : null;
+            var noFood = resources && resources.getResource(resourceNames.food) <= 0;
+            var noWater = resources && resources.getResource(resourceNames.water) <= 0;
+            var penalty = Math.max(5, Math.ceil(targetReputationWithoutPenalties));
             if (noFood) {
-                targetReputation -= 50;
-                campNode.reputation.addTargetValueSource("No food", -50);
+                addValue(-penalty, "No food");
             }
             if (noWater) {
-                targetReputation -= 50;
-                campNode.reputation.addTargetValueSource("No water", -50);
+                addValue(-penalty, "No water");
             }
-            if (badDefences) {
-                var defencePenalty = (OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers, fortificationUpgradeLevel) - defenceLimit) / 10;
-                targetReputation -= defencePenalty;
-                campNode.reputation.addTargetValueSource("No defences", -defencePenalty);
+            
+            // penalties: defences            
+            var defenceLimit = 25;
+            var soldiers = campNode.camp.assignedWorkers.soldier;
+            var fortificationUpgradeLevel = this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradeNodes.head.upgrades);
+            var danger = OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers, fortificationUpgradeLevel);
+            if (danger > defenceLimit) {
+                var steppedDanger = Math.ceil(danger / 5) * 5;
+                var penaltyRatio = (steppedDanger - defenceLimit) / 200;
+                var defencePenalty = Math.ceil(targetReputationWithoutPenalties * penaltyRatio);
+                if (steppedDanger >= 75) {
+                    addValue(-defencePenalty, "Terrible defences");
+                } else if (steppedDanger >= 0) {
+                    addValue(-defencePenalty, "Poor defences");
+                } else {
+                    addValue(-defencePenalty, "Inadequate defences");
+                }
             }
-            targetReputation = Math.max(0, Math.min(100, targetReputation));
-            return targetReputation;
+            
+            // penalties: over-crowding
+            var housingCap = sectorImprovements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
+            housingCap += sectorImprovements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
+            var population = Math.floor(campNode.camp.population);
+            if (population > housingCap) {
+                var housingPenaltyRatio = Math.ceil((population - housingCap) / population * 20) / 20;
+                var housingPenalty = Math.ceil(targetReputationWithoutPenalties * housingPenaltyRatio);
+                addValue(-housingPenalty, "Overcrowding");
+            }
+            return Math.max(0, targetReputation);
         },
         
         applyReputationAccumulation: function (campNode, time) {
