@@ -75,35 +75,16 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		getType: function() {
             return getImprovementType(this.name);
 		},
-    
-        getImprovementReputationBonus: function () {
-            if (this.getType() == improvementTypes.level) return 0;
-            switch (this.name) {
-                case improvementNames.home:
-                case improvementNames.apothecary:
-                case improvementNames.smithy:
-                case improvementNames.cementmill:
-                case improvementNames.barracks:
-                case improvementNames.fortification:
-                    return 0;
-                case improvementNames.darkfarm:
-                case improvementNames.inn:
-                case improvementNames.market:
-                case improvementNames.tradepost:
-                case improvementNames.campfire:
-                    return 2;
-                case improvementNames.shrine:
-                    return 3;
-                case improvementNames.square:
-                case improvementNames.mossgarden:
-                    return 5;
-                default:
-                    return 1;
-            }
+        
+        getReputationBonus: function () {
+            return getImprovementReputationBonus(this.name);
         },
     });
     
+    // TODO make ImprovementConstants
+    
     getImprovementType = function (name) {
+        if (!name) return null;
         switch (name) {
             case improvementNames.collector_food:
             case improvementNames.collector_water:
@@ -121,6 +102,32 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 
             default:
                 return improvementTypes.camp;
+        }
+    };
+    
+    getImprovementReputationBonus = function (name) {
+        if (getImprovementType(name) == improvementTypes.level) return 0;
+        switch (name) {
+            case improvementNames.home:
+            case improvementNames.apothecary:
+            case improvementNames.smithy:
+            case improvementNames.cementmill:
+            case improvementNames.barracks:
+            case improvementNames.fortification:
+                return 0;
+            case improvementNames.darkfarm:
+            case improvementNames.inn:
+            case improvementNames.market:
+            case improvementNames.tradepost:
+            case improvementNames.campfire:
+                return 2;
+            case improvementNames.shrine:
+                return 3;
+            case improvementNames.square:
+            case improvementNames.mossgarden:
+                return 5;
+            default:
+                return 1;
         }
     };
     

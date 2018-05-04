@@ -36,7 +36,8 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/events/TraderComponent',
     'game/components/common/CampComponent',
-    'game/vos/ResourcesVO'
+    'game/vos/ResourcesVO',
+    'game/vos/ImprovementVO'
 ], function (
 	Ash, PositionConstants, PlayerActionConstants, PlayerActionsHelperConstants, PlayerStatConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
@@ -44,7 +45,7 @@ define([
 	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
 	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, SectorImprovementsComponent, TraderComponent,
 	CampComponent,
-    ResourcesVO
+    ResourcesVO, ImprovementVO
 ) {
     var PlayerActionsHelper = Ash.Class.extend({
 		
@@ -985,7 +986,15 @@ define([
 		getDescription: function (action) {
 			if (action) {
 				var baseAction = this.getBaseActionID(action);
-                if (PlayerActionConstants.descriptions[action]) {
+                var improvementName = this.getImprovementNameForAction(action, true);
+                if (improvementName) {
+                    var reputation = getImprovementReputationBonus(improvementName);
+                    if (reputation > 0) {
+                        return (PlayerActionConstants.descriptions[action] || "") + "<hr/>Reputation: +" + reputation;
+                    } else {
+                        return PlayerActionConstants.descriptions[action] || "";
+                    }
+                } else if (PlayerActionConstants.descriptions[action]) {
                     return PlayerActionConstants.descriptions[action];
                 } else if (PlayerActionConstants.descriptions[baseAction]) {
 					return PlayerActionConstants.descriptions[baseAction];

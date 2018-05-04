@@ -70,7 +70,7 @@ define([
             var allImprovements = sectorImprovements.getAll(improvementTypes.camp);
             for (var i in allImprovements) {
                 var improvementVO = allImprovements[i];
-                var defaultBonus = improvementVO.getImprovementReputationBonus();
+                var defaultBonus = improvementVO.getReputationBonus();
                 switch (improvementVO.name) {
                     case improvementNames.generator:
                         var numHouses = sectorImprovements.getCount(improvementNames.house) + sectorImprovements.getCount(improvementNames.house2);
