@@ -69,6 +69,8 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
         MSG_ID_BUILT_MARKET: "BUILT_MARKET",
         MSG_ID_BUILT_TRADING_POST: "BUILT_TRADING_POST",
         MSG_ID_BUILT_INN: "BUILT_INN",
+        MSG_ID_BUILT_SQUARE: "MSG_ID_BUILT_SQUARE",
+        MSG_ID_BUILT_GARDEN: "MSG_ID_BUILT_GARDEN",
         
         // out buildings
         MSG_ID_BUILT_PASSAGE: "BUILT_PASSAGE",

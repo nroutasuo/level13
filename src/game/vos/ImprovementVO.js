@@ -40,7 +40,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		lights: "Lights",
 		ceiling: "Ceiling",
         square: "Square",
-        mossgarden: "Moss garden",
+        garden: "Moss garden",
     };
 	
 	improvementTypes = {
@@ -124,7 +124,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             case improvementNames.shrine:
                 return 3;
             case improvementNames.square:
-            case improvementNames.mossgarden:
+            case improvementNames.garden:
                 return 5;
             default:
                 return 1;

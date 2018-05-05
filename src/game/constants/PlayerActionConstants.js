@@ -380,6 +380,7 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_campfire: {
                     improvements: {
                         camp: [1, -1],
+                        campfire: [0, 5],
                     },
                 },
             
@@ -399,9 +400,22 @@ function (Ash, GameConstants, CampConstants) {
                     }
                 },
                 
-                build_in_campfire: {
+                build_in_square: {
                     improvements: {
-                        campfire: [0, -1]
+                        camp: [1, -1],
+                        campfire: [1, -1],
+                        storage: [2, -1],
+                        tradepost: [1, -1],
+                        square: [0, 1],
+                    },
+                    upgrades: {
+                        unlock_building_passage_staircase: true,
+                    }
+                },
+                
+                build_in_garden: {
+                    upgrades: {
+                        upgrade_building_inn: true,
                     }
                 },
                 
@@ -1409,6 +1423,18 @@ function (Ash, GameConstants, CampConstants) {
                     resource_fuel: 5,
                     cost_factor: 2,
                 },
+                
+                build_in_square: {
+                    resource_metal: 500,
+                    resource_rope: 100,
+                },
+                
+                build_in_garden: {
+                    resource_metal: 100,
+                    resource_water: 50,
+                    resource_rope: 50,
+                    cost_factor: 3,
+                },
             
                 build_in_hospital: {
                     resource_metal: 150,
@@ -2087,6 +2113,8 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_hospital2: "Improve your general health.",
                 build_in_inn: "Increases rumours and enables recruitment.",
                 build_in_darkfarm: "Produces food",
+                build_in_square: "A place to relax and socialize.",
+                build_in_garden: "A dash of beauty in the concrete desert.",
                 build_in_tradingPost: "Connect camps to a trade network.",
                 build_in_market: "Enables foreign traders to visit.",
                 build_in_barracks: "Allows 10 soldiers.",

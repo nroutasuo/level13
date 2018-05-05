@@ -165,6 +165,8 @@ define([
 					name != improvementNames.home &&
 					name != improvementNames.fortification &&
 					name != improvementNames.darkfarm &&
+					name != improvementNames.square &&
+					name != improvementNames.garden &&
 					name != improvementNames.storage) {
 					improvementsText += count + "x" + name.substring(0,1) + " ";
 				}

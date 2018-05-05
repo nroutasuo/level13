@@ -206,6 +206,8 @@ define(['ash',
                 case "build_in_cementmill": this.buildCementMill(param); break;
                 case "build_in_radio": this.buildRadioTower(param); break;
                 case "build_in_lights": this.buildLights(param); break;
+                case "build_in_square": this.buildSquare(param); break;
+                case "build_in_garden": this.buildGarden(param); break;
                 case "use_in_home": this.useHome(param); break;
                 case "use_in_campfire": this.useCampfire(param); break;
                 case "use_in_hospital": this.useHospital(param); break;
@@ -1013,12 +1015,22 @@ define(['ash',
         
         buildTradingPost: function () {
             this.buildImprovement("build_in_tradingPost", this.playerActionsHelper.getImprovementNameForAction("build_in_tradingPost"));
-            this.addLogMessage(LogConstants.MSG_ID_BUILT_TRADING_POST, "Build a trading post.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_TRADING_POST, "Built a trading post.");
         },
         
         buildInn: function () {
             this.buildImprovement("build_in_inn", this.playerActionsHelper.getImprovementNameForAction("build_in_inn"));
-            this.addLogMessage(LogConstants.MSG_ID_BUILT_INN, "Build an inn. Maybe it will attract adventurers.");
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_INN, "Built an inn. Maybe it will attract adventurers.");
+        },
+        
+        buildSquare: function () {
+            this.buildImprovement("build_in_square", this.playerActionsHelper.getImprovementNameForAction("build_in_square"));
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_SQUARE, "Built a square. The camp feels more like a town withing the City already.");
+        },
+        
+        buildGarden: function () {
+            this.buildImprovement("build_in_garden", this.playerActionsHelper.getImprovementNameForAction("build_in_garden"));
+            this.addLogMessage(LogConstants.MSG_ID_BUILT_GARDEN, "Built a garden.");
         },
         
         buildBridge: function (sectorPos) {

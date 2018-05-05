@@ -4,8 +4,16 @@
             "version": "0.2.2",
             "phase": "alpha",
             "final": false,
-            "updated": "2017-04-09",
+            "updated": "2017-05-05",
             "changes": [
+                {
+                    "type": "GD",
+                    "summary": "Two new building that increase reputation: garden and square."
+                },
+                {
+                    "type": "GD",
+                    "summary": "Polish reputation: adjust things affecting it and improve the UI."
+                },
                 {
                     "type": "GD",
                     "summary": "Remove time-based food/water consumption and time-based stamina recovery while exploring."

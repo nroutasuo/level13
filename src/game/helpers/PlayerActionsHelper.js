@@ -1057,6 +1057,8 @@ define([
                 case "build_out_spaceship3": return improvementNames.spaceship3;
                 case "build_in_campfire": return improvementNames.campfire;
                 case "build_in_darkfarm": return improvementNames.darkfarm;
+                case "build_in_garden": return improvementNames.garden;
+                case "build_in_square": return improvementNames.square;
                 case "build_in_house2": return improvementNames.house2;
                 case "build_in_generator": return improvementNames.generator;
                 case "build_in_lights": return improvementNames.lights;

@@ -876,6 +876,18 @@ define(['ash',
                 return true;
             }
             
+            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_square")) {
+                this.printStep("build square");
+                this.playerActionFunctions.buildSquare();
+                return true;
+            }
+            
+            if (this.playerActionFunctions.playerActionsHelper.checkAvailability("build_in_garden")) {
+                this.printStep("build garden");
+                this.playerActionFunctions.buildGarden();
+                return true;
+            }
+            
             return false;
         },
         
