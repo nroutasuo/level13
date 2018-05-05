@@ -29,7 +29,7 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
         getCount: function(type) {
             var vo = this.improvements[type];
             if (vo) {
-                return vo.count;
+                return vo.count || 0;
             } else {
                 return 0;
             }

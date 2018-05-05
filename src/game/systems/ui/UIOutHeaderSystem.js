@@ -2,6 +2,7 @@ define([
     'ash',
     'game/GlobalSignals',
     'game/constants/GameConstants',
+    'game/constants/CampConstants',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/FightConstants',
@@ -22,9 +23,10 @@ define([
     'game/components/common/PositionComponent',
     'game/components/common/CampComponent',
     'game/components/sector/SectorFeaturesComponent',
+    'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/ReputationComponent'
 ], function (Ash,
-    GlobalSignals, GameConstants, UIConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
+    GlobalSignals, GameConstants, CampConstants, UIConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
     WorldCreatorHelper, SaveSystem,
 	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
     BagComponent,
@@ -35,6 +37,7 @@ define([
 	PositionComponent,
     CampComponent,
 	SectorFeaturesComponent,
+    SectorImprovementsComponent,
     ReputationComponent
 ) {
     var UIOutHeaderSystem = Ash.System.extend({
@@ -73,6 +76,8 @@ define([
             this.elements.changeIndicatorVision = $("#vision-change-indicator");
             this.elements.changeIndicatorScavenge = $("#scavenge-change-indicator");
             this.elements.changeIndicatorStamina = $("#stamina-change-indicator");
+            this.elements.changeIndicatorReputation = $("#reputation-change-indicator");
+            this.elements.changeIndicatorPopulation = $("#population-change-indicator");
             
 			return this;
 		},
@@ -110,6 +115,9 @@ define([
 				$(this).wrap("<div class='info-callout-target'></div>");
 			});
 			$.each($("#header-camp-reputation"), function () {
+				$(this).wrap("<div class='info-callout-target'></div>");
+			});
+			$.each($("#header-camp-population"), function () {
 				$(this).wrap("<div class='info-callout-target'></div>");
 			});
 			this.uiFunctions.generateCallouts("#statsbar-self");
@@ -163,6 +171,7 @@ define([
 		},
 		
 		updatePlayerStats: function (isInCamp) {
+			var campComponent = this.currentLocationNodes.head.entity.get(CampComponent);
 			var playerStatsNode = this.playerStatsNodes.head;
             var playerStamina = playerStatsNode.stamina.stamina;
 			var playerVision = playerStatsNode.vision.value;
@@ -172,18 +181,14 @@ define([
 			
 			this.elements.valVision.text(shownVision + " / " + maxVision);
 			this.updateStatsCallout("Makes exploration safer", "stats-vision", playerStatsNode.vision.accSources);
-            this.elements.changeIndicatorVision.toggleClass("indicator-increase", shownVision < maxVision);
-            this.elements.changeIndicatorVision.toggleClass("indicator-even", shownVision == maxVision);
-            this.elements.changeIndicatorVision.toggleClass("indicator-decrease", shownVision > maxVision);
+            this.updateChangeIndicator(this.elements.changeIndicatorVision, maxVision - shownVision);
 
             this.elements.valHealth.text(playerStatsNode.stamina.health);
             this.updateStatsCallout("Determines maximum stamina", "stats-health", null);
 			
 			this.elements.valStamina.text(UIConstants.roundValue(playerStamina, true, false) + " / " + maxStamina);
 			this.updateStatsCallout("Required for exploration", "stats-stamina", playerStatsNode.stamina.accSources);
-            this.elements.changeIndicatorStamina.toggleClass("indicator-increase", playerStatsNode.stamina.accumulation > 0);
-            this.elements.changeIndicatorStamina.toggleClass("indicator-even", playerStatsNode.stamina.accumulation === 0);
-            this.elements.changeIndicatorStamina.toggleClass("indicator-decrease", playerStatsNode.stamina.accumulation < 0);
+            this.updateChangeIndicator(this.elements.changeIndicatorStamina, playerStatsNode.stamina.accumulation);
 
             this.elements.valVision.toggleClass("warning", playerVision <= 25);
             this.elements.valStamina.toggleClass("warning", playerStamina <= this.staminaWarningLimit);
@@ -201,8 +206,8 @@ define([
 
 			var reputationComponent = this.currentLocationNodes.head.entity.get(ReputationComponent);
             if (reputationComponent) {
-                $("#header-camp-reputation .value").text(UIConstants.roundValue(reputationComponent.value, true, false) + " / " + reputationComponent.targetValue + " %");
-                this.uiFunctions.toggle("#header-camp-reputation", reputationComponent.isAccumulating);
+                $("#header-camp-reputation .value").text(UIConstants.roundValue(reputationComponent.value, true, false) + " / " + reputationComponent.targetValue);
+                this.updateChangeIndicator(this.elements.changeIndicatorReputation, reputationComponent.accumulation);
                 var reputationCalloutContent = "";
                 for (var i in reputationComponent.targetValueSources) {
                     var source = reputationComponent.targetValueSources[i];
@@ -217,6 +222,18 @@ define([
                 UIConstants.updateCalloutContent("#header-camp-reputation", reputationCalloutContent);
             } else {
                 this.uiFunctions.toggle("#header-camp-reputation", false);                
+            }
+            
+            if (campComponent) {
+                var improvements = this.currentLocationNodes.head.entity.get(SectorImprovementsComponent);
+                var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
+                maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
+                $("#header-camp-population .value").text(Math.floor(campComponent.population) + " / " + maxPopulation);
+                this.updateChangeIndicator(this.elements.changeIndicatorPopulation, campComponent.populationChangePerSec);
+                var populationCalloutContent = "Required repuatation:<br/>";
+                populationCalloutContent += "current: " + CampConstants.getRequiredReputation(Math.floor(campComponent.population)) + "<br/>";
+                populationCalloutContent += "next: " + CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
+                UIConstants.updateCalloutContent("#header-camp-population", populationCalloutContent);
             }
             
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
@@ -235,10 +252,14 @@ define([
 			var scavengeEfficiency = Math.round(this.uiFunctions.playerActions.playerActionResultsHelper.getScavengeEfficiency() * 100);
 			this.elements.valScavenge.text(scavengeEfficiency + "%");
 			UIConstants.updateCalloutContent("#stats-scavenge", "Increases scavenge loot<hr/>health: " + Math.round(maxStamina/10) + "<br/>vision: " + Math.round(playerVision));
-            this.elements.changeIndicatorScavenge.toggleClass("indicator-increase", shownVision < maxVision);
-            this.elements.changeIndicatorScavenge.toggleClass("indicator-even", shownVision == maxVision);
-            this.elements.changeIndicatorScavenge.toggleClass("indicator-decrease", shownVision > maxVision);
+            this.updateChangeIndicator(this.elements.changeIndicatorScavenge, maxVision - shownVision);
 		},
+        
+        updateChangeIndicator: function (indicator, accumulation) {
+            indicator.toggleClass("indicator-increase", accumulation > 0);
+            indicator.toggleClass("indicator-even", accumulation === 0);
+            indicator.toggleClass("indicator-decrease", accumulation < 0);
+        },
 		
 		updateStatsCallout: function (description, indicatorID, changeSources) {
             var sources = "";
