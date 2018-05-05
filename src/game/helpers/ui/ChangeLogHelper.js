@@ -11,12 +11,19 @@ define(['ash'], function (Ash) {
             $.getJSON('changelog.json', function (json) {
 				helper.loadingSuccessfull = true;
 				helper.versions = json.versions;
+                var version = helper.getCurrentVersionNumber();
+                console.log("Loaded version: " + version);
+                gtag('set', {
+                    'version': version
+                });
+                gtag('event', 'screen_view', { screen_name : 'start'})
 			})
 			.fail(function (jqxhr, textStatus, error) {
 				helper.loadingSuccessfull = false;
-				var err = textStatus;
+				var err = "";
+                if (jqxhr && jqxhr.status) err += "[" + jqxhr.status + "] ";
+                err += textStatus;
 				if (error) err += ", " + error;
-				console.log("WARN: Change log request failed: " + err);
 			});
 		},
 		

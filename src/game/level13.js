@@ -285,6 +285,12 @@ define([
             this.gameManager.pauseGame();
             var exshortdesc = (ex.name ? ex.name : "Unknown") + ": " + (ex.message ? ex.message.replace(/\'/g, "%27") : "No message");
             var stack = (ex.stack ? ex.stack.replace(/\n/g, "%0A").replace(/\'/g, "%27") : "Not available");
+            
+            // track to ga
+            gtag('event', 'exception', {
+              'description': exshortdesc
+            });
+            // show popup
             var bugTitle = "[JS Error] " + exshortdesc;
             var bugBody = 
                "Details:%0A[Fill in any details here that you think will help tracking down this bug, such as what you did in the game just before it happened.]" +
