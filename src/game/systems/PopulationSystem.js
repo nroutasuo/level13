@@ -15,8 +15,6 @@ define([
 	
         campNodes: null,
         playerNodes: null,
-		
-		lastPopulationIncreaseTimestamps: [],
 
         constructor: function (gameState, levelHelper, campHelper) {
             this.gameState = gameState;
@@ -44,24 +42,7 @@ define([
         },
 
         updateNode: function (node, time) {
-			var camp = node.camp;
-			
-			this.updatePopulationCooldown(node);
-			
-			if (camp.populationCooldownSec === 0) {
-                this.updatePopulation(node, time);
-            } else {
-                camp.populationChangePerSec = 0;
-            }
-        },
-        
-        updatePopulationCooldown: function (node) {
-			var campPosition = node.entity.get(PositionComponent);
-			var level = campPosition.level;
-            var timeStamp = new Date().getTime();
-            var cooldownMillis = CampConstants.POPULATION_COOLDOWN_SECONDS * 1000 / GameConstants.gameSpeedCamp;
-			var lastIncreaseTimeStamp = this.lastPopulationIncreaseTimestamps[level] ? this.lastPopulationIncreaseTimestamps[level] : 0;
-            node.camp.populationCooldownSec = Math.max(0, (cooldownMillis - (timeStamp - lastIncreaseTimeStamp)) / 1000);
+            this.updatePopulation(node, time);
         },
         
         updatePopulation: function (node, time) {
@@ -112,10 +93,7 @@ define([
         
         handlePopulationChange: function (node, isIncrease) {
 			var campPosition = node.entity.get(PositionComponent);
-			var level = campPosition.level;
-            
             if (isIncrease) {
-                this.lastPopulationIncreaseTimestamps[level] = new Date().getTime();
                 node.camp.rumourpoolchecked = false;
             } else {
                 this.reassignWorkers(node);

@@ -5,7 +5,6 @@ define(['ash'], function (Ash) {
         POPULATION_PER_HOUSE: 4,
         POPULATION_PER_HOUSE2: 10,
         POOL_RUMOURS_PER_POPULATION: 2,
-        POPULATION_COOLDOWN_SECONDS: 60,
         BASE_STORAGE: 50,
         
         RUMOURS_PER_POP_PER_SEC_BASE: 0.0001,

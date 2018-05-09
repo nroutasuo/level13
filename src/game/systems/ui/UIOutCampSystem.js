@@ -178,10 +178,7 @@ define([
                     progress = 0;
                 }
                 
-                var progressLabel = 
-                    populationChangePerSec !== 0 ? UIConstants.getTimeToNum(secondsToChange) : 
-                    !isPopulationMaxed && !isReputationBlocking && campComponent.populationCooldownSec > 0 ? "cooldown " + UIConstants.getTimeToNum(campComponent.populationCooldownSec) :
-                    "no change";
+                var progressLabel = populationChangePerSec !== 0 ? UIConstants.getTimeToNum(secondsToChange) : "no change";
                 
                 $("#in-population-bar-next").toggleClass("warning", populationChangePerSec < 0);
                 $("#in-population-bar-next").data("progress-percent", progress * 100);
