@@ -2,7 +2,6 @@
 define(['ash', 'game/constants/CampConstants'], function (Ash, CampConstants) {
     var CampComponent = Ash.Class.extend({
         
-        
         population: 0,
         populationChangePerSec: 0,
         rumourpool: 0,
@@ -10,7 +9,8 @@ define(['ash', 'game/constants/CampConstants'], function (Ash, CampConstants) {
         assignedWorkers: {},
         campName: "",
         
-        constructor: function () {
+        constructor: function (id) {
+            this.id = id;
             this.population = 0;
             this.rumourpool = 0;
             this.rumourpoolchecked = false;

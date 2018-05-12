@@ -2,19 +2,26 @@ define([
     'ash',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
+	'game/constants/LogConstants',
 	'game/constants/OccurrenceConstants',
 	'game/nodes/sector/CampNode',
+    'game/nodes/PlayerPositionNode',
 	'game/nodes/tribe/TribeUpgradesNode',
-    'game/components/sector/improvements/SectorImprovementsComponent'
-], function (Ash, GameConstants, CampConstants, OccurrenceConstants, CampNode, TribeUpgradesNode, SectorImprovementsComponent) {
+    'game/components/sector/improvements/SectorImprovementsComponent',
+    'game/components/common/LogMessagesComponent',
+], function (Ash, GameConstants, CampConstants, LogConstants, OccurrenceConstants, CampNode, PlayerPositionNode, TribeUpgradesNode, 
+    SectorImprovementsComponent, LogMessagesComponent) {
     var ReputationSystem = Ash.System.extend({
 	
         gameState: null,
         resourcesHelper: null,
         upgradeEffectsHelper: null,
 	
+        playerNodes: null,
 		campNodes: null,
         tribeUpgradeNodes: null,
+        
+        lastUpdatePenalties: {},
 
         constructor: function (gameState, resourcesHelper, upgradeEffectsHelper) {
             this.gameState = gameState;
@@ -24,14 +31,16 @@ define([
 
         addToEngine: function (engine) {
             this.engine = engine;
+            this.playerNodes = engine.getNodeList(PlayerPositionNode);
             this.campNodes = engine.getNodeList(CampNode);
             this.tribeUpgradeNodes = engine.getNodeList(TribeUpgradesNode);
         },
 
         removeFromEngine: function (engine) {
+            this.playerNodes = null;
             this.campNodes = null;
-            this.engine = null;
             this.tribeUpgradeNodes = null;
+            this.engine = null;
         },
 
         update: function (time) {
@@ -100,13 +109,16 @@ define([
             if (noWater) {
                 addValue(-penalty, "No water");
             }
+            this.logReputationPenalty(campNode, CampConstants.REPUTATION_PENALTY_TYPE_FOOD, noFood);
+            this.logReputationPenalty(campNode, CampConstants.REPUTATION_PENALTY_TYPE_WATER, noWater);
             
             // penalties: defences            
             var defenceLimit = 25;
             var soldiers = campNode.camp.assignedWorkers.soldier;
             var fortificationUpgradeLevel = this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradeNodes.head.upgrades);
             var danger = OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers, fortificationUpgradeLevel);
-            if (danger > defenceLimit) {
+            var noDefences = danger > defenceLimit;
+            if (noDefences) {
                 var steppedDanger = Math.ceil(danger / 5) * 5;
                 var penaltyRatio = (steppedDanger - defenceLimit) / 200;
                 var defencePenalty = Math.ceil(targetReputationWithoutPenalties * penaltyRatio);
@@ -118,16 +130,20 @@ define([
                     addValue(-defencePenalty, "Inadequate defences");
                 }
             }
+            this.logReputationPenalty(campNode, CampConstants.REPUTATION_PENALTY_TYPE_DEFENCES, noDefences);
             
             // penalties: over-crowding
             var housingCap = sectorImprovements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
             housingCap += sectorImprovements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
             var population = Math.floor(campNode.camp.population);
-            if (population > housingCap) {
+            var noHousing = population > housingCap;
+            if (noHousing) {
                 var housingPenaltyRatio = Math.ceil((population - housingCap) / population * 20) / 20;
                 var housingPenalty = Math.ceil(targetReputationWithoutPenalties * housingPenaltyRatio);
                 addValue(-housingPenalty, "Overcrowding");
             }
+            this.logReputationPenalty(campNode, CampConstants.REPUTATION_PENALTY_TYPE_HOUSING, noHousing);
+            
             return Math.max(0, targetReputation);
         },
         
@@ -156,6 +172,34 @@ define([
             else if (reputationComponent.value < reputationComponent.targetValue && accTargetDiff < 0) {
                 reputationComponent.value = reputationComponent.targetValue;
             }
+        },
+        
+        logReputationPenalty: function (campNode, penaltyType, hasPenalty) {
+            var campID = campNode.position.getPosition().toString();
+            if (!(this.lastUpdatePenalties[campID])) {
+                this.lastUpdatePenalties[campID] = {};
+            }
+            var hadPenalty = this.lastUpdatePenalties[campID][penaltyType];
+            if (hasPenalty === hadPenalty) return;
+            
+            if (hasPenalty && !hadPenalty) {
+                var playerPosition = this.playerNodes.head.position;
+                var campPosition = campNode.position;
+                if (playerPosition.level === campNode.position.level && playerPosition.sectorId() === campPosition.sectorId()) {
+                    var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
+                    switch (penaltyType) {
+                        case CampConstants.REPUTATION_PENALTY_TYPE_DEFENCES:
+                            logComponent.addMessage(LogConstants.MSG_ID_REPUTATION_PENALTY_DEFENCES, "People are anxious. They say the camp needs better defences.");
+                            break;
+                        case CampConstants.REPUTATION_PENALTY_TYPE_HOUSING:
+                            logComponent.addMessage(LogConstants.MSG_ID_REPUTATION_PENALTY_HOUSING, "People are unhappy because the camp is over-crowded.");
+                            break;
+                    }
+                }
+            }
+            if (penaltyType === CampConstants.REPUTATION_PENALTY_TYPE_HOUSING)
+                console.log(hadPenalty + ", " + hasPenalty)
+            this.lastUpdatePenalties[campID][penaltyType] = hasPenalty;
         },
     });
 

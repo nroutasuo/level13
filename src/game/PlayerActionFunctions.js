@@ -819,7 +819,8 @@ define(['ash',
         
         buildCamp: function () {                
             var sector = this.playerLocationNodes.head.entity;
-            var campComponent = new CampComponent();
+            var position = sector.get(PositionComponent).getPosition();
+            var campComponent = new CampComponent(position.toString());
             campComponent.foundedTimeStamp = this.gameState.gamePlayedSeconds;
             sector.add(campComponent);
             sector.add(new CampEventTimersComponent());

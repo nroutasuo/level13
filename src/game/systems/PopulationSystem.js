@@ -138,7 +138,7 @@ define([
                 if (isIncrease) {
                     logComponent.addMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "A stranger shows up.");
                 } else {
-                    logComponent.addMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "An inhabitant packs their things and heads out into the City alone.");
+                    logComponent.addMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "An inhabitant packs their belongings and leaves.");
                 }
             }
         }
