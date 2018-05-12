@@ -73,6 +73,7 @@ define([
             this.elements.valRumours = $("#stats-rumours .value");
             this.elements.valEvidence = $("#stats-evidence .value");
             this.elements.valScavenge = $("#stats-scavenge .value");
+            this.elements.valReputation = $("#header-camp-reputation .value");
             this.elements.changeIndicatorVision = $("#vision-change-indicator");
             this.elements.changeIndicatorScavenge = $("#scavenge-change-indicator");
             this.elements.changeIndicatorStamina = $("#stamina-change-indicator");
@@ -205,8 +206,11 @@ define([
             $("#header-tribe-container").toggle(this.gameState.unlockedFeatures.evidence || playerStatsNode.rumours.isAccumulating);
 
 			var reputationComponent = this.currentLocationNodes.head.entity.get(ReputationComponent);
-            if (reputationComponent) {
-                $("#header-camp-reputation .value").text(UIConstants.roundValue(reputationComponent.value, true, false) + " / " + reputationComponent.targetValue);
+            if (campComponent && reputationComponent) {
+                var reqReputationCurrent = CampConstants.getRequiredReputation(Math.floor(campComponent.population));
+                var reqReputationNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
+
+                this.elements.valReputation.text(UIConstants.roundValue(reputationComponent.value, true, false) + " / " + reputationComponent.targetValue);
                 this.updateChangeIndicator(this.elements.changeIndicatorReputation, reputationComponent.accumulation);
                 var reputationCalloutContent = "";
                 for (var i in reputationComponent.targetValueSources) {
@@ -219,21 +223,20 @@ define([
                         reputationCalloutContent += source.source + ": " + amount + "<br/>";
                     }
                 }
+                this.elements.valReputation.toggleClass("warning", reputationComponent.value < reqReputationCurrent);
                 UIConstants.updateCalloutContent("#header-camp-reputation", reputationCalloutContent);
-            } else {
-                this.uiFunctions.toggle("#header-camp-reputation", false);                
-            }
             
-            if (campComponent) {
                 var improvements = this.currentLocationNodes.head.entity.get(SectorImprovementsComponent);
                 var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
                 maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
                 $("#header-camp-population .value").text(Math.floor(campComponent.population) + " / " + maxPopulation);
                 this.updateChangeIndicator(this.elements.changeIndicatorPopulation, campComponent.populationChangePerSec);
                 var populationCalloutContent = "Required repuatation:<br/>";
-                populationCalloutContent += "current: " + CampConstants.getRequiredReputation(Math.floor(campComponent.population)) + "<br/>";
-                populationCalloutContent += "next: " + CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
+                populationCalloutContent += "current: " + reqReputationCurrent + "<br/>";
+                populationCalloutContent += "next: " + reqReputationNext;
                 UIConstants.updateCalloutContent("#header-camp-population", populationCalloutContent);
+            } else {
+                this.uiFunctions.toggle("#header-camp-reputation", false);                
             }
             
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
