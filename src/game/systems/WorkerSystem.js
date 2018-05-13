@@ -227,18 +227,12 @@ define([
 				var isHungry = playerFoodSource.food <= 0;
 				var msg = null;
 				
-				if (inCamp && isThirsty && Math.random() < 0.05) {
-                    if (hasPopulation)
-                        msg = "People are thirsty.";
-                    else
-                        msg = "There is no more water.";
+				if (inCamp && hasPopulation && isThirsty && Math.random() < 0.05) {
+                    msg = "There is no more water.";
 				}
 				
-				if (inCamp && msg === null && isHungry && Math.random() < 0.05) {
-                    if (hasPopulation)
-                        msg = "Workers are hungry.";
-                    else
-                        msg = "There is no more food.";
+				if (inCamp && hasPopulation && msg === null && isHungry && Math.random() < 0.05) {
+                    msg = "There is no more food.";
 				}
 				
 				if (!inCamp && isThirsty && Math.random() < 0.05) {

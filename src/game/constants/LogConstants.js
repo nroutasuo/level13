@@ -117,7 +117,7 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
         getMergedMsgText: function (mergedId) {
             switch (mergedId) {
                 case "SCAVENGE-SCOUT-SCOUT":
-                    return "Continued exporing.";
+                    return "Continued exploring.";
                 
                 default:
                     console.log("WARN: text not defined for merged log message: " + mergedId);

@@ -197,8 +197,6 @@ define([
                     }
                 }
             }
-            if (penaltyType === CampConstants.REPUTATION_PENALTY_TYPE_HOUSING)
-                console.log(hadPenalty + ", " + hasPenalty)
             this.lastUpdatePenalties[campID][penaltyType] = hasPenalty;
         },
     });
