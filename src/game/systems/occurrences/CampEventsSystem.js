@@ -134,7 +134,8 @@ define([
             var eventUpgradeFactor = this.getEventUpgradeFactor(event);
 			var timeToNext = OccurrenceConstants.scheduleNext(event, eventUpgradeFactor);
 			campTimers.onEventEnded(event, timeToNext);
-			if (GameConstants.isDebugOutputEnabled) console.log("End " + event + " at " + campNode.camp.campName + "(" + campNode.position.level + ")" + ". Next in " + timeToNext + "s.");
+			if (GameConstants.isDebugOutputEnabled) 
+                console.log("End " + event + " at " + campNode.camp.campName + "(" + campNode.position.level + ")" + ". Next in " + timeToNext + "s.");
 			
 			if (!this.hasCampEvent(campNode, event)) return;
 			
@@ -189,7 +190,8 @@ define([
             var campPos = campNode.entity.get(PositionComponent);
             var campOrdinal = this.gameState.getCampOrdinal(campPos.level);
 			campTimers.onEventStarted(event, duration);
-			console.log("Start " + event + " at " + campNode.camp.campName + " (" + duration + "s)");
+            if (GameConstants.isDebugOutputEnabled)
+                console.log("Start " + event + " at " + campNode.camp.campName + " (" + duration + "s)");
 			
 			var logMsg;
 			switch (event) {

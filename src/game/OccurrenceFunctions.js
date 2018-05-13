@@ -90,10 +90,10 @@ define(['ash',
 				for(var i in selectedResources) {
 					var name = selectedResources[i];
 					var campAmount = campResources.getResource(name);
-					var lostAmount = campAmount * 0.5;
+					var lostAmount = campAmount * (0.25 + 0.25 * Math.random());
 					if (lostAmount >= 5) {
-					campResources.setResource(name, campAmount - lostAmount);
-					raidComponent.resourcesLost.addResource(name, lostAmount);
+                        campResources.setResource(name, campAmount - lostAmount);
+                        raidComponent.resourcesLost.addResource(name, lostAmount);
 					}
 				}
 			}

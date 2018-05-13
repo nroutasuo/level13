@@ -13,7 +13,7 @@ function (Ash, GameConstants) {
 		OCCURRENCE_CAMP_TRADER_RANDOMNESS: 3,
 		
 		OCCURRENCE_CAMP_RAID_LENGTH: 5,
-		OCCURRENCE_CAMP_RAID_COOLDOWN: 60 * 30,
+		OCCURRENCE_CAMP_RAID_COOLDOWN: 60 * 20,
 		OCCURRENCE_CAMP_RAID_RANDOMNESS: 5,
 		
 		scheduleNext: function (occurrenceType, upgradeTimeFactor) {
