@@ -11,6 +11,10 @@ define(['ash'], function (Ash) {
             this.eventStartTimestamps = {};
         },
         
+        isEventScheduled: function (event) {
+            return this.eventStartTimestamps[event];
+        },
+        
         onEventEnded: function(event, timeToNext) {
             if (timeToNext) {
                 var startTimestamp = new Date().getTime() + timeToNext * 1000;
@@ -21,6 +25,11 @@ define(['ash'], function (Ash) {
         onEventStarted: function(event, durationSec) {
             var endTimeStamp = new Date().getTime() + durationSec * 1000;
             this.eventEndTimestamps[event] = endTimeStamp;
+        },
+        
+        removeTimer: function(event) {
+            this.eventStartTimestamps[event] = null;
+            this.eventEndTimestamps[event] = null;
         },
         
         hasTimeEnded: function(event) {
