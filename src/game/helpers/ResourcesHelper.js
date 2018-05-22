@@ -48,7 +48,7 @@ define([
 			var globalResources = this.globalResourcesNodes.head.resources;
 			
 			var currentResources = campResources;			
-            if (this.hasAccessToTradeNetwork()) {
+            if (this.hasAccessToTradeNetwork(campEntity)) {
                 currentResources = globalResources;
             }
 				
@@ -124,15 +124,21 @@ define([
 			return showResourceAcc;
 		},
 		
-		hasAccessToTradeNetwork: function () {
-			if (this.nearestCampNodes.head) {
-				var improvements = this.nearestCampNodes.head.entity.get(SectorImprovementsComponent);
-				if (improvements.getCount(improvementNames.tradepost) > 0) {
-					return true;
-				}
-			}
+		hasAccessToTradeNetwork: function (campEntity) {
+            if (!campEntity && !this.nearestCampNodes.head) return false;
+            var entity = campEntity || this.nearestCampNodes.head.entity;
+            var improvements = entity.get(SectorImprovementsComponent);
+            if (improvements.getCount(improvementNames.tradepost) > 0) {
+                return true;
+            }
 			return false;
 		},
+        
+        getNumCampsInTradeNetwork: function (sectorEntity) {
+            if (!this.hasAccessToTradeNetwork(sectorEntity))
+                return 1;
+            return this.globalResourcesNodes.head.tribe.numCampsInTradeNetwork;
+        },
 		
 		hasCampStorage: function () {
 			if (this.nearestCampNodes.head) {

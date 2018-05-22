@@ -66,13 +66,16 @@ define(['ash',
 		onEndRaid: function (sectorEntity) {
 			var improvements = sectorEntity.get(SectorImprovementsComponent);
 			var raidComponent = sectorEntity.get(RaidComponent);
-			var campResources = sectorEntity.get(ResourcesComponent).resources;
 			var soldiers = sectorEntity.get(CampComponent).assignedWorkers.soldier;
             var fortificationUpgradeLevel = this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradeNodes.head.upgrades);
-			raidComponent.victory = OccurrenceConstants.getRaidDanger(improvements, soldiers, fortificationUpgradeLevel) < Math.random()*100;
+			raidComponent.victory = OccurrenceConstants.getRaidDanger(improvements, soldiers, fortificationUpgradeLevel) < 0;//Math.random()*100;
 			if (!raidComponent.victory) {
+                var campResources = this.resourcesHelper.getCurrentCampStorage(sectorEntity).resources;
+                var amountFactor = 1 / this.resourcesHelper.getNumCampsInTradeNetwork(sectorEntity);
+                
+                // select resources (names)
 				var selectedResources = [];
-				var maxSelectedResources = 3;
+				var maxSelectedResources = 1 + Math.floor(Math.random() * 3);
 				var largestSelectedAmount = 0;
 				for (var key in resourceNames) {
 					var name = resourceNames[key];
@@ -87,9 +90,10 @@ define(['ash',
 					}
 				}
 			
+                // select amounts
 				for(var i in selectedResources) {
 					var name = selectedResources[i];
-					var campAmount = campResources.getResource(name);
+					var campAmount = campResources.getResource(name) * amountFactor;
 					var lostAmount = campAmount * (0.25 + 0.25 * Math.random());
 					if (lostAmount >= 5) {
                         campResources.setResource(name, campAmount - lostAmount);

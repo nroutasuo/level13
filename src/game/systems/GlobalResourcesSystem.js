@@ -101,6 +101,8 @@ define([
 			
 			var campImprovements;
 			var hasTradePost;
+            var numCamps = 0;
+            var numCampsInTradeNetwork = 0;
 			for (var node = this.campNodes.head; node; node = node.next) {
                 campImprovements = node.improvements;
                 hasTradePost = campImprovements.getCount(improvementNames.tradepost) > 0;
@@ -112,8 +114,14 @@ define([
                     }
                     updateSectorCurrency(node);
                     globalResourcesComponent.storageCapacity += node.resources.storageCapacity;
+                    numCampsInTradeNetwork++;
                 }
+                
+                numCamps++;
 			}
+            
+            this.tribeNodes.head.tribe.numCamps = numCamps;
+            this.tribeNodes.head.tribe.numCampsInTradeNetwork = numCampsInTradeNetwork;
 			
 			globalResourcesComponent.limitToStorage(true);
 		},
