@@ -50,6 +50,15 @@ define(['ash'], function (Ash) {
             return this.getTimeLeft(timestamp) / 1000; 
         },
         
+        getEventTimePercentage: function (event) {
+            var startTime = this.eventStartTimestamps[event];
+            var endTime = this.eventEndTimestamps[event];
+            if (!startTime || !endTime || this.getEventStartTimeLeft(event) > 0)
+                return 0;
+            var now = new Date().getTime();
+            return (1 - (endTime - now) / (endTime - startTime)) * 100;
+        },
+        
         getTimeLeft: function(timestamp) {
             if (timestamp) {
                 var now = new Date().getTime();
@@ -58,7 +67,7 @@ define(['ash'], function (Ash) {
             } else {
                 return 0;
             }
-        }
+        },
         
     });
 

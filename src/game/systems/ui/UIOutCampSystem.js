@@ -323,14 +323,16 @@ define([
                 var isTraderLeaving = hasTrader && eventTimers.getEventTimeLeft(OccurrenceConstants.campOccurrenceTypes.trader) < 5;
                 hasEvents = hasEvents || hasTrader;
                 this.uiFunctions.toggle("#in-occurrences-trader", hasTrader);
-                $("#in-occurrences-trader").toggleClass("event-ending", isTraderLeaving);
+                $("#in-occurrences-trader .progress-label").toggleClass("event-ending", isTraderLeaving);
+                $("#in-occurrences-trader").data("progress-percent", eventTimers.getEventTimePercentage(OccurrenceConstants.campOccurrenceTypes.trader));
             }
             
             // Raiders
             var hasRaid = this.playerLocationNodes.head.entity.has(RaidComponent);
             if (isActive && showEvents) {
                 this.uiFunctions.toggle("#in-occurrences-raid", hasRaid);
-                $("#in-occurrences-raid").toggleClass("event-ending", hasRaid);
+                $("#in-occurrences-raid .progress-label").toggleClass("event-ending", hasRaid);
+                $("#in-occurrences-raid").data("progress-percent", eventTimers.getEventTimePercentage(OccurrenceConstants.campOccurrenceTypes.raid));
             }
             
             if (hasRaid) this.currentEvents++;

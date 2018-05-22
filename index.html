@@ -313,12 +313,14 @@
 							</div>
 							<div id="in-occurrences" class="infobox">
 								<h3>Events</h3>
-								<div id="in-occurrences-trader">
-									<p>Trader!</p>
-								</div>
-								<div id="in-occurrences-raid">
-									<p>Raid! Under attack!</p>
-								</div>
+								<div id="in-occurrences-trader" class="progress-wrap progress">
+                                    <div class="progress-bar progress"></div>
+                                    <span class="progress progress-label">Trader</span>
+                                </div>
+								<div id="in-occurrences-raid" class="progress-wrap progress warning" data-animation-length="50">
+                                    <div class="progress-bar progress"></div>
+                                    <span class="progress progress-label">Raid!</span>
+                                </div>
 								<p class="p-meta" id="in-occurrences-empty">All is quiet in the camp.</p>
 							</div>
 							<div id="in-demographics" class="infobox">
@@ -770,7 +772,7 @@
             <div class="loading-dot loading-dot3"></div>
         </div>
     </div>
-
+    
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118652515-1"></script>
     <script>
