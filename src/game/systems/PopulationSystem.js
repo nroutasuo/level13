@@ -52,10 +52,6 @@ define([
             var change = time * changePerSec * GameConstants.gameSpeedCamp;
             var oldPopulation = camp.population;
             var newPopulation = oldPopulation + change;
-
-			var improvements = node.entity.get(SectorImprovementsComponent);
-            var housingCap = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
-            housingCap += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
             
             newPopulation = Math.max(newPopulation, 0);
             change = newPopulation - oldPopulation;
@@ -88,6 +84,14 @@ define([
             }
 
             changePerSec *= levelVO.populationGrowthFactor;
+
+			var improvements = node.entity.get(SectorImprovementsComponent);
+            var housingCap = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
+            housingCap += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
+            if (camp.population >= housingCap) {
+                changePerSec = Math.min(changePerSec, 0);
+            }
+            
             return changePerSec;
         },
         
