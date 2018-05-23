@@ -231,7 +231,7 @@ define([
                 maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
                 $("#header-camp-population .value").text(Math.floor(campComponent.population) + " / " + maxPopulation);
                 this.updateChangeIndicator(this.elements.changeIndicatorPopulation, campComponent.populationChangePerSec);
-                var populationCalloutContent = "Required repuatation:<br/>";
+                var populationCalloutContent = "Required reputation:<br/>";
                 populationCalloutContent += "current: " + reqReputationCurrent + "<br/>";
                 populationCalloutContent += "next: " + reqReputationNext;
                 UIConstants.updateCalloutContent("#header-camp-population", populationCalloutContent);

@@ -1,5 +1,5 @@
 // Marks that given entity (should be a Sector) contains a Camp
-define(['ash', 'game/constants/CampConstants'], function (Ash, CampConstants) {
+define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash, CampConstants, RaidVO) {
     var CampComponent = Ash.Class.extend({
         
         population: 0,
@@ -8,6 +8,7 @@ define(['ash', 'game/constants/CampConstants'], function (Ash, CampConstants) {
         rumourpoolchecked: false,
         assignedWorkers: {},
         campName: "",
+        lastRaid: null,
         
         constructor: function (id) {
             this.id = id;
@@ -19,6 +20,7 @@ define(['ash', 'game/constants/CampConstants'], function (Ash, CampConstants) {
                 this.assignedWorkers[worker] = 0;
             }
             this.campName = "";
+            this.lastRaid = new RaidVO(null);
         },
         
         getFreePopulation: function () {

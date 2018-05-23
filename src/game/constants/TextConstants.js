@@ -147,6 +147,36 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
             }
             return {msg: msg, replacements: replacements, values: values};            
         },
+        
+        createTextFromLogMessage: function (msg, replacements, values, includePeriod) {
+            var text = msg;
+			var value = 0;
+			var useValues = values.length > 0;
+			for (var i = 0; i < replacements.length; i++) {
+				if (useValues) {
+					value = values[i];
+				}
+				if (value > 0 || value.length > 0 || !useValues) {
+					text = text.replace("$" + i, replacements[i]);
+				} else {
+					text = text.replace("$" + i, "");
+				}
+				
+				if (useValues) {
+					text = text.replace("#" + i, values[i]);
+				}
+			}
+			
+            text = text.trim();
+			text = text.replace(/ ,/g, "");
+			text = text.replace(/^,/g, "");
+			text = text.replace(/,$/g, "");
+			text = text.replace(/\, \./g, ".");
+			if (includePeriod && text.substr(text.length - 1) !== "." && text.substr(text.length - 1) !== "!")
+                text += ".";
+            text = text.trim();
+            return text;
+        },
 		
 		getLocaleName: function (locale, sectorRepair, isShort) {
 			var repairBracket = this.getRepairBracket(sectorRepair);

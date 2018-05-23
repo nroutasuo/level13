@@ -1,4 +1,4 @@
-define(['ash'], function (Ash) {
+define(['ash', 'game/constants/TextConstants'], function (Ash, TextConstants) {
     
     var LogMessageVO = Ash.Class.extend({
         
@@ -26,30 +26,7 @@ define(['ash'], function (Ash) {
 		},
 		
 		createText: function () {
-			this.text = this.message;
-			
-			var value = 0;
-			var useValues = this.values.length > 0;
-			for (var i = 0; i < this.replacements.length; i++) {
-				if (useValues) {
-					value = this.values[i];
-				}
-				if (value > 0 || value.length > 0 || !useValues) {
-					this.text = this.text.replace("$" + i, this.replacements[i]);
-				} else {
-					this.text = this.text.replace("$" + i, "");
-				}
-				
-				if (useValues) {
-					this.text = this.text.replace("#" + i, this.values[i]);
-				}
-			}
-			
-            this.text = this.text.trim();
-			this.text = this.text.replace(/ ,/g, "");
-			if (this.text.substr(this.text.length - 1) !== "." && this.text.substr(this.text.length - 1) !== "!")
-                this.text += ".";
-			this.text = this.text.replace(/\, \./g, ".");
+			this.text = TextConstants.createTextFromLogMessage(this.message, this.replacements, this.values, true);
 			
 			return this.text;
 		},

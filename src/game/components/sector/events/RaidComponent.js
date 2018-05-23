@@ -3,6 +3,8 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
     
     var RaidComponent = Ash.Class.extend({
         
+        victory: false,
+        
         constructor: function () {
             this.resourcesLost = new ResourcesVO();
         },

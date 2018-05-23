@@ -15,13 +15,14 @@ define([
     'game/components/sector/events/RaidComponent',
     'game/components/sector/events/CampEventTimersComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
+    'game/vos/RaidVO',
 ], function (
     Ash,
     GameConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants,
     PlayerResourcesNode, CampNode, TribeUpgradesNode,
     PositionComponent, LogMessagesComponent,
     TraderComponent, RaidComponent, CampEventTimersComponent,
-    SectorImprovementsComponent) {
+    SectorImprovementsComponent, RaidVO) {
 
     var CampEventsSystem = Ash.System.extend({
 	    
@@ -98,7 +99,7 @@ define([
             for (var key in OccurrenceConstants.campOccurrenceTypes) {
                 var event = OccurrenceConstants.campOccurrenceTypes[key];
                 var scheduledEventStart = campTimers.getEventStartTimeLeft(event);
-                if (scheduledEventStart <= 0) {
+                if (scheduledEventStart <= 0 || true) {
                     this.endEvent(campNode, event);
                 }
             }
@@ -168,6 +169,7 @@ define([
                     this.occurrenceFunctions.onEndRaid(campNode.entity);
                     var raidComponent = campNode.entity.get(RaidComponent);
                     var lostResources = raidComponent.resourcesLost;
+                    var raidVO = new RaidVO(raidComponent);
                     if (raidComponent.victory) {
                         logMsg = "Raid over. We drove the attackers away.";
                         awayLogMsg = "There has been a raid, but the camp was defended.";
@@ -186,6 +188,7 @@ define([
                         }
                     }
                     campNode.entity.remove(RaidComponent);
+                    campNode.camp.lastRaid = raidVO;
                     break;
             }
 

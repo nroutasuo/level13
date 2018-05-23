@@ -6,6 +6,7 @@ define([
     'game/constants/OccurrenceConstants',
     'game/constants/CampConstants',
     'game/constants/PerkConstants',
+    'game/constants/TextConstants',
     'game/nodes/level/PlayerLevelNode',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
@@ -19,7 +20,7 @@ define([
     'game/components/sector/events/TraderComponent',
     'game/components/sector/events/RaidComponent'
 ], function (
-    Ash, UIConstants, UpgradeConstants, PlayerActionsHelperConstants, OccurrenceConstants, CampConstants, PerkConstants,
+    Ash, UIConstants, UpgradeConstants, PlayerActionsHelperConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants,
     PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, DeityNode, TribeUpgradesNode,
     PerksComponent,
     CampComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
@@ -361,6 +362,23 @@ define([
 			if (showRaid) {
 				$("#in-demographics-raid-danger .value").text(raidDanger + "%");
 				$("#in-demographics-raid-defence .value").text(raidDefence);
+                var lastRaidS = "(none)";
+                if (campComponent.lastRaid && campComponent.lastRaid.isValid()) {
+                    if (campComponent.lastRaid.wasVictory) {
+                        lastRaidS = "Camp defended";
+                    } else {
+                        var resourcesLost = campComponent.lastRaid.resourcesLost;
+                        if (resourcesLost && resourcesLost.getTotal() > 0) {
+                            var resLog = TextConstants.getLogResourceText(resourcesLost);
+                            var resS = TextConstants.createTextFromLogMessage(resLog.msg, resLog.replacements, resLog.values);
+                            lastRaidS = "Camp pillaged, lost: " + resS + ".";
+                        } else {
+                            lastRaidS = "Camp pillaged, nothing left to steal.";
+                        }
+                    }
+                    lastRaidS += " (" + UIConstants.getTimeSinceText(campComponent.lastRaid.timestamp) + " ago)";
+                }
+				$("#in-demographics-raid-last .value").text(lastRaidS);
 			}
 			this.uiFunctions.toggle("#in-demographics-raid", showRaid);
             
