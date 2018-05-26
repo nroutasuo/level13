@@ -192,9 +192,9 @@ define([
                     break;
             }
 
-            var playerInCamp = this.isPlayerInCamp(campNode);
+            var playerInCamp = this.isPlayerInCamp(null);
             if (playerInCamp && logMsg) {
-                this.addLogMessage(logMsg, replacements, values);
+                this.addLogMessage(logMsg, replacements, values, campNode);
             } else if (!playerInCamp && awayLogMsg) {
                 this.addLogMessage(awayLogMsg, replacements, values, campNode);
             }
@@ -226,12 +226,13 @@ define([
             }
 
             if (this.isPlayerInCamp(campNode) && logMsg) {
-                this.addLogMessage(logMsg);
+                this.addLogMessage(logMsg, null, null, campNode);
             }
         },
         
         isPlayerInCamp: function (campNode) {
             var playerPosition = this.playerNodes.head.entity.get(PositionComponent);
+            if (!campNode) return playerPosition.inCamp;
             var campPosition = campNode.entity.get(PositionComponent);
             return playerPosition.level == campPosition.level && playerPosition.sectorId() == campPosition.sectorId() && playerPosition.inCamp;
         },
@@ -247,14 +248,11 @@ define([
             return (upgradeLevel * 0.05) + 1;
         },
         
-        addLogMessage: function (msg, replacements, values, forCamp) {
+        addLogMessage: function (msg, replacements, values, camp) {
             var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
-            if (!forCamp) {
-                logComponent.addMessage(LogConstants.MSG_ID_CAMP_EVENT, msg, replacements, values);
-            } else {
-                var campPos = forCamp.entity.get(PositionComponent);
-                logComponent.addMessage(LogConstants.MSG_ID_CAMP_EVENT, msg, replacements, values, campPos.level, campPos.sectorId(), true);
-            }
+            var campPos = camp.entity.get(PositionComponent);
+            var playerPosition = this.playerNodes.head.entity.get(PositionComponent);
+            logComponent.addMessage(LogConstants.MSG_ID_CAMP_EVENT, msg, replacements, values, null, null, !playerPosition.inCamp, campPos.level);
         }
 
     });

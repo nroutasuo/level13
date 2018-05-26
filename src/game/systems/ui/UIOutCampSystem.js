@@ -365,15 +365,15 @@ define([
                 var lastRaidS = "(none)";
                 if (campComponent.lastRaid && campComponent.lastRaid.isValid()) {
                     if (campComponent.lastRaid.wasVictory) {
-                        lastRaidS = "Camp defended";
+                        lastRaidS = "Camp was defended";
                     } else {
                         var resourcesLost = campComponent.lastRaid.resourcesLost;
                         if (resourcesLost && resourcesLost.getTotal() > 0) {
                             var resLog = TextConstants.getLogResourceText(resourcesLost);
                             var resS = TextConstants.createTextFromLogMessage(resLog.msg, resLog.replacements, resLog.values);
-                            lastRaidS = "Camp pillaged, lost: " + resS + ".";
+                            lastRaidS = "Camp attacked, lost: " + resS;
                         } else {
-                            lastRaidS = "Camp pillaged, nothing left to steal.";
+                            lastRaidS = "Camp attacked, nothing left to steal";
                         }
                     }
                     lastRaidS += " (" + UIConstants.getTimeSinceText(campComponent.lastRaid.timestamp) + " ago)";

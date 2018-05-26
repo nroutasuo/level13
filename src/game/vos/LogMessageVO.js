@@ -2,11 +2,12 @@ define(['ash', 'game/constants/TextConstants'], function (Ash, TextConstants) {
     
     var LogMessageVO = Ash.Class.extend({
         
-		constructor: function (logMsgID, message, replacements, values) {
+		constructor: function (logMsgID, message, replacements, values, campLevel) {
             this.logMsgID = logMsgID;
 			this.message = message;
 			this.replacements = replacements ? replacements : [];
 			this.values = values ? values : [];
+            this.campLevel = campLevel;
 			
 			this.time = new Date();
 			this.loadedFromSave = false;

@@ -118,6 +118,10 @@ img {
   -webkit-animation-delay: -0.16s;
   animation-delay: -0.16s;
 }
+.loading-spinner .loading-dot3 {
+  -webkit-animation-delay: 0s;
+  animation-delay: 0s;
+}
 @-webkit-keyframes sk-bouncedelay {
   0%,
   80%,
@@ -462,7 +466,8 @@ li.disabled {
 .stats-indicator .change,
 .stats-indicator .forecast,
 span.msg-count,
-span.time {
+span.time,
+span.msg-camp-level {
   color: #bbb;
 }
 .sunlit .lvl13-element-secondary,
@@ -471,7 +476,8 @@ span.time {
 .sunlit .stats-indicator .change,
 .sunlit .stats-indicator .forecast,
 .sunlit span.msg-count,
-.sunlit span.time {
+.sunlit span.time,
+.sunlit msg-camp-level {
   color: #777;
 }
 .lvl13-text-disabled,
@@ -496,12 +502,12 @@ hr {
 }
 .lvl13-text-fade,
 #log ul li.log-loaded,
-#log ul li.log-loaded .time {
+#log ul li.log-loaded span {
   color: #888;
 }
 .sunlit .lvl13-text-fade,
 .sunlit #log ul li.log-loaded,
-.sunlit #log ul li.log-loaded .time {
+.sunlit #log ul li.log-loaded span {
   color: #aaa;
 }
 .p-meta {
@@ -1396,7 +1402,8 @@ hr {
   width: 10px;
   height: 10px;
 }
-span.time {
+span.time,
+span.msg-camp-level {
   font-size: 75%;
   vertical-align: middle;
 }

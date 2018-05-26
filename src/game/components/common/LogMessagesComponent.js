@@ -13,10 +13,10 @@ function (Ash, LogConstants, LogMessageVO) {
 			this.hasNewMessages = true;
 		},
 			
-		addMessage: function (logMsgID, message, replacements, values, visibleLevel, visibleSector, visibleInCamp) {
+		addMessage: function (logMsgID, message, replacements, values, visibleLevel, visibleSector, visibleInCamp, campLevel) {
             message = message.replace(/<br\s*[\/]?>/gi, " ");
 			var isPending = Boolean(visibleLevel || visibleSector || visibleInCamp);
-			var newMsg = new LogMessageVO(logMsgID, message, replacements, values);
+			var newMsg = new LogMessageVO(logMsgID, message, replacements, values, campLevel);
 			
 			if (!isPending) {
 				this.addMessageImmediate(newMsg);
@@ -49,30 +49,36 @@ function (Ash, LogConstants, LogMessageVO) {
 		combineMessagesCheck: function (newMsg) {
 			var prevMsg = this.messages[this.messages.length-1];
 			if (!prevMsg) return false;
-			
-			var isCombineTime = newMsg.time.getTime() - prevMsg.time.getTime() < 1000 * 60 * 5;
-			if (isCombineTime) {
-				// Combine with previous single message?
-				if (!prevMsg.loadedFromSave && newMsg.message === prevMsg.message) {
-					this.combineMessages(prevMsg, newMsg);
-					return true;
-				}
-				
-				// Combine with previous pair of messages?
-				var prev2Msg = this.messages[this.messages.length - 2];
-				if (prev2Msg && !prev2Msg.loadedFromSave && newMsg.message === prev2Msg.message && newMsg.replacements.length === 0) {
-					var prev3Msg = this.messages[this.messages.length-3];
-					if (!prev3Msg.loadedFromSave && prevMsg.message === prev3Msg.message) {
-						this.combineMessages(prev2Msg, newMsg);
-						this.combineMessages(prev3Msg, prevMsg);
-						this.removeMessage(prevMsg);
-						return true;
-					}
-				}
-			}
+			if (newMsg.time.getTime() - prevMsg.time.getTime() > 1000 * 60 * 5) return false
+            
+            // Combine with previous single message?
+            if (this.canCombineMessages(prevMsg, newMsg)) {
+                this.combineMessages(prevMsg, newMsg);
+                return true;
+            }
+
+            // Combine with previous pair of messages?
+            var prev2Msg = this.messages[this.messages.length - 2];
+            if (this.canCombineMessages(prev2Msg, newMsg) && newMsg.replacements.length === 0) {
+                var prev3Msg = this.messages[this.messages.length-3];
+                if (!prev3Msg.loadedFromSave && prevMsg.message === prev3Msg.message) {
+                    this.combineMessages(prev2Msg, newMsg);
+                    this.combineMessages(prev3Msg, prevMsg);
+                    this.removeMessage(prevMsg);
+                    return true;
+                }
+            }
 			
 			return false;
 		},
+        
+        canCombineMessages: function (prevMsg, newMsg) {
+            if (!prevMsg) return false;
+            if (prevMsg.loadedFromSave) return false;
+            if (newMsg.message !== prevMsg.message) return false;
+            if (newMsg.campLevel !== prevMsg.campLevel) return false;
+            return true;
+        },
 		
 		combineMessages: function (oldMsg, newMsg) {
 			this.mergeReplacements(oldMsg, newMsg);
