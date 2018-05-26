@@ -13,7 +13,7 @@ define([
 ) {
     var UIOutTradeSystem = Ash.System.extend({
         
-        bubbleNumber: -1,
+        bubbleNumber: null,
         availableTradingPartnersCount: 0,
         lastShownTradingPartnersCount: -1,
         currentIncomingTraders: 0,
@@ -61,12 +61,12 @@ define([
         
         updateBubble: function () {
             var newBubbleNumber = this.availableTradingPartnersCount - this.lastShownTradingPartnersCount;
+            if (this.lastShownTradingPartnersCount === -1)
+                newBubbleNumber = 0;
+            newBubbleNumber += (this.currentIncomingTraders - this.lastShownIncomingTraders);
             if (this.bubbleNumber === newBubbleNumber)
                 return;
             this.bubbleNumber = newBubbleNumber;
-            if (this.lastShownTradingPartnersCount === -1)
-                this.bubbleNumber = 0;
-            this.bubbleNumber += (this.currentIncomingTraders - this.lastShownIncomingTraders);
             $("#switch-trade .bubble").text(this.bubbleNumber);
             this.uiFunctions.toggle("#switch-trade .bubble", this.bubbleNumber > 0);  
         },
