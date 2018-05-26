@@ -714,6 +714,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             $(".popup-overlay").fadeIn(200, function () {
                 uiFunctions.popupManager.onResize();
                 GlobalSignals.popupOpenedSignal.dispatch(popupID);
+                uiFunctions.gameState.isPaused = true;
                 $("#" + popupID).fadeIn(200, uiFunctions.popupManager.onResize);
             });
             this.generateCallouts("#" + popupID); 
