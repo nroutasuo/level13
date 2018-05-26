@@ -494,6 +494,7 @@ define([
 					gameMsg = "Game saved ";
 					
 				if (this.autoPlayNodes.head) gameMsg += "Autoplaying";
+                if (this.gameState.isPaused) gameMsg += "Paused";
 				
 				$("#game-msg").text(gameMsg);
 			}
