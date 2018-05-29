@@ -70,7 +70,7 @@ define([
                     var event = OccurrenceConstants.campOccurrenceTypes[key];
                     if (this.isCampValidForEvent(campNode, event)) {
                         if (this.hasCampEvent(campNode, event)) {
-                            if (campTimers.hasTimeEnded(event)) {
+                            if (this.isEventEnded(campNode, event)) {
                                 this.endEvent(campNode, event);
                             }
                         } else if (!this.isScheduled(campNode, event)) {
@@ -87,6 +87,18 @@ define([
             }
         },
         
+        isEventEnded: function (campNode, event) {
+            var campTimers = campNode.entity.get(CampEventTimersComponent);
+            if (campTimers.hasTimeEnded(event)) return true;
+            switch (event) {
+                case OccurrenceConstants.campOccurrenceTypes.trader:
+                    var tradeComponent = campNode.entity.get(TraderComponent)
+                    if (tradeComponent.isDismissed) return true;
+                    break;
+            }
+            return false;
+        },
+        
         // Re-schedule events where the next time has passed while offline
         resetAllTimers: function () {
             for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
@@ -99,7 +111,7 @@ define([
             for (var key in OccurrenceConstants.campOccurrenceTypes) {
                 var event = OccurrenceConstants.campOccurrenceTypes[key];
                 var scheduledEventStart = campTimers.getEventStartTimeLeft(event);
-                if (scheduledEventStart <= 0 || true) {
+                if (scheduledEventStart <= 0) {
                     this.endEvent(campNode, event);
                 }
             }

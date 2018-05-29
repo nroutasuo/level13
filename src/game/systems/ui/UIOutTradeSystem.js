@@ -161,61 +161,65 @@ define([
             if (!isActive)
                 return;
             
-            if (!traderComponent)
-                return;
+            var caravan = traderComponent ? traderComponent.caravan : null;
+            var tradesMade = caravan ? caravan.tradesMade : null;
             
-            var caravan = traderComponent.caravan;
-            
-            if (this.lastShownIncomingCaravan === caravan && this.lastShownIncomingCaravanTrades === caravan.tradesMade)
+            if (this.lastShownIncomingCaravan === caravan && this.lastShownIncomingCaravanTrades === tradesMade)
                 return;
             
             // TODO show currency / more information about the trader
             // TODO combine items
             
             $("#trade-caravans-incoming-container table").empty();
-            var nameTD = "<td>" + caravan.name + "</td>";
+            if (caravan) {
+                var nameTD = "<td class='item-name'>" + caravan.name + "</td>";
 
-            var inventoryUL = "<ul>";
-            
-            var itemCounts = {};
-            for (var i = 0; i < caravan.sellItems.length; i++) {
-                if (!itemCounts[caravan.sellItems[i].id])
-                    itemCounts[caravan.sellItems[i].id] = 0;
-                itemCounts[caravan.sellItems[i].id]++;
-            }
-            
-            for (var itemID in itemCounts) {
-                var item = ItemConstants.getItemByID(itemID);
-                var amount = itemCounts[itemID];
-                inventoryUL += UIConstants.getItemSlot(item, amount, false);
-            }
-            
-            for (var key in resourceNames) {
-                var name = resourceNames[key];
-                var amount = caravan.sellResources.getResource(name);
-                if (amount > 0) {
-                    inventoryUL += UIConstants.getResourceLi(name, amount);
+                var inventoryUL = "<ul>";
+
+                var itemCounts = {};
+                for (var i = 0; i < caravan.sellItems.length; i++) {
+                    if (!itemCounts[caravan.sellItems[i].id])
+                        itemCounts[caravan.sellItems[i].id] = 0;
+                    itemCounts[caravan.sellItems[i].id]++;
                 }
+
+                for (var itemID in itemCounts) {
+                    var item = ItemConstants.getItemByID(itemID);
+                    var amount = itemCounts[itemID];
+                    inventoryUL += UIConstants.getItemSlot(item, amount, false);
+                }
+
+                for (var key in resourceNames) {
+                    var name = resourceNames[key];
+                    var amount = caravan.sellResources.getResource(name);
+                    if (amount > 0) {
+                        inventoryUL += UIConstants.getResourceLi(name, amount);
+                    }
+                }
+                if (caravan.currency > 0) {
+                    inventoryUL += UIConstants.getCurrencyLi(caravan.currency);
+                }
+                inventoryUL += "</ul>";
+                var inventoryTD = "<td><div class='inventorybox' style='margin-right: 5px'>" + inventoryUL + "</div></td>";
+                var buttonsTD = "<td><button class='trade-caravans-incoming-trade'>Trade</button>";
+                buttonsTD += "<button class='trade-caravans-incoming-dismiss btn-secondary'>Dismiss</button></td>";
+                var tr = "<tr>" + nameTD + inventoryTD + buttonsTD + "</tr>";
+                $("#trade-caravans-incoming-container table").append(tr);
+
+                var uiFunctions = this.uiFunctions;
+                $(".trade-caravans-incoming-trade").click(function () {
+                    uiFunctions.showIncomingCaravanPopup();
+                });
+                $(".trade-caravans-incoming-dismiss").click(function () {
+                    traderComponent.isDismissed = true;
+                });
+
+                this.uiFunctions.generateCallouts("#trade-caravans-incoming-container table");
             }
-            if (caravan.currency > 0) {
-                inventoryUL += UIConstants.getCurrencyLi(caravan.currency);
-            }
-            inventoryUL += "</ul>";
-            var inventoryTD = "<td class='maxwidth'><div class='inventorybox'>" + inventoryUL + "</div></td>";
-            var buttonsTD = "<td><button id='trade-caravans-incoming-trade'>Trade</button></td>";
-            var tr = "<tr>" + nameTD + inventoryTD + buttonsTD + "</tr>";
-            $("#trade-caravans-incoming-container table").append(tr);
-            
-            var uiFunctions = this.uiFunctions;
-            $("#trade-caravans-incoming-trade").click(function () {
-                uiFunctions.showIncomingCaravanPopup();
-            });
-            
-            this.uiFunctions.generateCallouts("#trade-caravans-incoming-container table");
             
             this.lastShownIncomingTraders = this.currentIncomingTraders;
             this.lastShownIncomingCaravan = caravan;
-            this.lastShownIncomingCaravanTrades = caravan.tradesMade;
+            this.lastShownIncomingCaravanTrades = caravan ? caravan.tradesMade : 0;
         },
         
         updateOutgoingCaravanPrepare: function () {
