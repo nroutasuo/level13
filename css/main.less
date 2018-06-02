@@ -11,6 +11,7 @@
 @color-dark-tex-box-3: #999;
 @color-dark-border-box-3: #555;	
 @color-dark-bg-element: #2f322f;
+@color-dark-bg-input: #151615;
 
 // Sunlit
 @color-light-bg: #fdfdfd;
@@ -21,10 +22,17 @@
 @color-light-bg-box-3: #efefef;	
 @color-light-text-box-3: #333;
 @color-light-bg-element: #e6e6e6;
+@color-light-bg-input: #fff;
 
 @color-global-warning: rgb(230, 70, 70);
 
+
+
+// GLOBAL SIZES
+
 @font-size-small: 85%;
+@size-input-range-thumb: 15px;
+
 
 
 // Base layout & elements
@@ -334,7 +342,7 @@ dd p.p-meta {
 	color: @color-light-text;
 }
 
-.lvl13-box-1, div.grid-content, div.popup, ul.tabs li.selected , .item, .res, .li-item-negative, .li-item-positive, .info-callout-target, .blueprint-piece-box-missing {
+.lvl13-box-1, div.grid-content, div.popup, ul.tabs li.selected , .item, .res, .li-item-negative, .li-item-positive, .blueprint-piece-box-missing {
 	background: @color-dark-bg-box-1;
 	border: 2px solid @color-dark-border-box-1;
 }
@@ -395,11 +403,12 @@ ul.tabs li.selected {
     background: #aaa;
 }
 
-.collapsible-header, .item-focused .item-count, .progress-bar, .highlightbox, .inventorybox-header {
+.collapsible-header, .item-focused .item-count, .progress-bar, .highlightbox, .inventorybox-header, .inventorybox-footer {
 	background: @color-dark-bg-element;
+    border-color: @color-dark-bg-element; 
 }
 
-.sunlit .collapsible-header, .sunlit .item-focused .item-count, .sunlit .progress-bar, .sunlit .highlightbox, .sunlit .inventorybox-header {
+.sunlit .collapsible-header, .sunlit .item-focused .item-count, .sunlit .progress-bar, .sunlit .highlightbox, .sunlit .inventorybox-header, .sunlit .inventorybox-footer {
 	background: @color-light-bg-element;
 }
 
@@ -493,11 +502,11 @@ hr {
 	height: 1px;
 }
 
-.lvl13-text-fade, #log ul li.log-loaded, #log ul li.log-loaded span {
+.lvl13-text-fade, #log ul li.log-loaded, #log ul li.log-loaded span, .row-detail-indicator {
 	color: #888;
 }
 
-.sunlit .lvl13-text-fade, .sunlit #log ul li.log-loaded, .sunlit #log ul li.log-loaded span {
+.sunlit .lvl13-text-fade, .sunlit #log ul li.log-loaded, .sunlit #log ul li.log-loaded span, .sunlit .row-detail-indicator {
 	color: #aaa;
 }
 
@@ -604,13 +613,13 @@ div.arrow-up {
 }
 
 input, select, textarea {
-   background-color: #151615;
+   background-color: @color-dark-bg-input;
    color: @color-dark-text;
    border: 1px solid #333;
 }
 
 .sunlit input, .sunlit select, .sunlit textarea {
-   background-color: #fff;
+   background-color: @color-light-bg-input;
    color: @color-dark-bg;
    border: 1px solid #bbb;
 }
@@ -721,9 +730,6 @@ ul.itemlist, ul.resultlist {
 	border-width: 2px;
 	border-style: solid;
     border-radius: 50%;
-}
-
-.item {
     width: 18px;
     height: 18px;
 }
@@ -743,7 +749,7 @@ ul.itemlist, ul.resultlist {
 }
 
 .res img {
-	margin: -2px 2px 6px 2px;
+    margin: -2px 1px 8px 1px;
 	vertical-align: middle;
 	height: 12px;
 	width: 12px;
@@ -779,6 +785,7 @@ ul.resultlist-positive li:before {
 }
 
 .item-slot, .inventorybox ul li {
+    background: inherit !important;
     margin: 0px 2px 2px 0px;
     padding: 0;
     border-width: 1px;
@@ -840,6 +847,10 @@ div.item-slot > div, div.item-slot > span {
     height: 2em;
     line-height: 1em;
     padding: 0.25em 0;
+}
+
+.item-slot-simple {
+    border-width: 0px !important;
 }
 
 .listheader { 
@@ -1162,7 +1173,7 @@ button, ul.tabs li {
 
 button {
 	width: 95pt;
-	padding: 8px;
+	padding: 8px 16px;
 	margin: 4px;
 	z-index: 2;
 	font-weight: 500;
@@ -1174,6 +1185,12 @@ button.action {
 	border-width: 2px;
 	margin: 0px;
 	margin-bottom: 0px;
+}
+
+button.btn-secondary {
+    width: auto;
+    max-width: 95px;
+    min-width: 50px;
 }
 
 button.action-move {
@@ -1436,15 +1453,20 @@ hr {
     padding: 2px 0px 0px 7px !important;
     margin: 5px 0px;
     min-height: 1em;
+    min-width: 1em;
     vertical-align: top;
 }
 
 .inventorydivision {
     width: 49%;
-    display: inline-block;
+    display: table-cell;
     position: relative;
     vertical-align: top;
     padding-top: 2em;
+}
+
+.inventorydivision-with-footer {
+    padding-bottom: 2em;
 }
 
 .inventorydivision .inventorybox-header {
@@ -1455,13 +1477,45 @@ hr {
     width: 100%;
 }
 
+.inventorydivision .inventorybox-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin: 0;
+    width: 100%;
+    
+}
+
 #common-popup .inventorybox ul {
     width: 560px; /* 12 * 46px (li width) + padding */
 }
 
-.inventorybox ul {
+.inventorybox ul, .ul-horizontal {
     padding: 0px;
     margin: 0px;
+}
+
+#trade-caravans-outgoing-container tr {
+    border-width: 3px;
+    border-bottom-width: 0px;
+    border-style: solid;
+    border-color: transparent;
+}
+
+#trade-caravans-outgoing-container tr.selected {
+    border-color: @color-dark-bg-element; 
+}
+
+.trade-caravans-outgoing-plan {
+    border-width: 3px;
+    border-top-width: 0px;
+}
+
+.row-detail-indicator {    
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    text-align: center;
 }
 
 .header-section {
@@ -1578,9 +1632,84 @@ th.th-text {
 }
 
 input[type=range] {
-    margin: 3px;
+    margin: 3px 5px;
     vertical-align: middle;
     cursor: pointer;
+    height: 20px;
+    -webkit-appearance: none;
+}
+
+input[type=range]:focus {
+  outline: none;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  height: 5px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: @color-dark-bg-input;
+}
+input[type=range]::-webkit-slider-thumb {
+  border: 1px solid @color-dark-tex-box-3;
+  height: @size-input-range-thumb;
+  width: @size-input-range-thumb;
+  border-radius: @size-input-range-thumb;
+  background: @color-dark-text;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -5px;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: @color-dark-bg-input;
+}
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: @color-dark-bg-input;
+}
+input[type=range]::-moz-range-thumb {
+  border: 1px solid @color-dark-tex-box-3;
+  height: @size-input-range-thumb;
+  width: @size-input-range-thumb;
+  border-radius: @size-input-range-thumb;
+  background: @color-dark-text;
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+  background: @color-dark-text;
+  border: 0px solid #000000;
+  border-radius: 2px;
+}
+input[type=range]::-ms-fill-upper {
+  background: @color-dark-text;
+  border: 0px solid #000000;
+  border-radius: 2px;
+}
+input[type=range]::-ms-thumb {
+  margin-top: 1px;
+  border: 1px solid @color-dark-tex-box-3;
+  height: @size-input-range-thumb;
+  width: @size-input-range-thumb;
+  border-radius: @size-input-range-thumb;
+  background: @color-dark-text;
+  cursor: pointer;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: @color-dark-text;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: @color-dark-text;
 }
 
 input.amount {

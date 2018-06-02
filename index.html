@@ -531,8 +531,8 @@
 							<div id="trade-caravans-incoming-container" class="actionbox">
                                 <table></table>
 							</div>
-                            <div class="subheader"><h3>Outgoing caravans</h3></div>
-                            <p id="trade-caravans-outgoing-empty-message">You haven't found any trading partners yet.</p>
+                            <div class="subheader"><h3>Trade partners</h3></div>
+                            <p id="trade-caravans-outgoing-empty-message">No trade partners discovered yet.</p>
 							<div id="trade-caravans-outgoing-container" class="actionbox">
 								<table></table>
 							</div>
@@ -706,32 +706,31 @@
         </div>
     </div>
     
-    <div id="incoming-caravan-popup" class="popup fill-on-mobiles" style="display:none">
+    <div id="incoming-caravan-popup" class="popup popup-wide fill-on-mobiles" style="display:none">
         <h3>Trader</h3>
-        <div class="inventorybox">
-            <div id="inventorylist-incoming-caravan-trader-inventory" class="inventorydivision">
-                <p class="inventorybox-header">Trader inventory</p>
-                <ul></ul>
-                <p class="msg-empty">Nothing left in the caravan.</p>
-            </div>
-            <div id="inventorylist-incoming-caravan-trader-offer" class="inventorydivision">
-                <p class="inventorybox-header">Trader offer</p>
-                <ul></ul>
-                <p class="msg-empty">-</p>
-                <p class="value inventorybox-footer">0</span>
-            </div>
-        </div>
-        <div class="inventorybox">
-            <div id="inventorylist-incoming-caravan-camp-inventory" class="inventorydivision">
+        <p id="incoming-caravan-popup-markup"></p>
+        <div class="inventorybox" style="display:flex">
+            <div id="inventorylist-incoming-caravan-camp-inventory" class="inventorydivision" style="width: 170px">
                 <p class="inventorybox-header">Camp inventory</p>
                 <ul></ul>
-                <p class="msg-empty">Nothing left in camp.</p>
+                <p class="msg-empty">(empty)</p>
             </div>
-            <div id="inventorylist-incoming-caravan-camp-offer" class="inventorydivision">
+            <div id="inventorylist-incoming-caravan-camp-offer" class="inventorydivision inventorydivision-with-footer highlightbox" style="width: 130px">
                 <p class="inventorybox-header">Camp offer</p>
                 <ul></ul>
-                <p class="msg-empty">-</p>
+                <p class="msg-empty">(empty)</p>
                 <p class="value inventorybox-footer">0</span>
+            </div>
+            <div id="inventorylist-incoming-caravan-trader-offer" class="inventorydivision inventorydivision-with-footer highlightbox" style="width: 130px">
+                <p class="inventorybox-header">Trader offer</p>
+                <ul></ul>
+                <p class="msg-empty">(empty)</p>
+                <p class="value inventorybox-footer">0</span>
+            </div>
+            <div id="inventorylist-incoming-caravan-trader-inventory" class="inventorydivision" style="width: 170px">
+                <p class="inventorybox-header">Trader inventory</p>
+                <ul></ul>
+                <p class="msg-empty">(empty)</p>
             </div>
         </div>
         <div class="buttonbox" id="incoming-caravan-buttons-main">

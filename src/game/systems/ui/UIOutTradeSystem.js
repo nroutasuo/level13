@@ -47,8 +47,9 @@ define([
             this.updateIncomingCaravan(isActive);
             
             if (!isActive) {
-                $(".btn-trade-caravans-outgoing-toggle").text("Prepare Caravan");
-                this.uiFunctions.toggle(".trade-caravans-outgoing-plan", false);                
+                $(".btn-trade-caravans-outgoing-toggle").text("Send caravan");
+                this.uiFunctions.toggle(".trade-caravans-outgoing-plan", false);     
+                $(".trade-caravans-outgoing").toggleClass("selected", false);           
                 return;
             }
             
@@ -83,17 +84,19 @@ define([
             $("#trade-caravans-outgoing-container table").empty();
             for (var i = 0; i < this.gameState.foundTradingPartners.length; i++) {
                 var partner = TradeConstants.getTradePartner(this.gameState.foundTradingPartners[i]);
-                var tdName = "<td>" + partner.name + "</td>";
+                var tdName = "<td class='item-name'>" + partner.name + "</td>";
                 var buysS = partner.buysResources.join(", ");
                 var sellsS = partner.sellsResources.join(", ");
+                if (sellsS.length <= 0) sellsS = "-";
                 var tdTrades = "<td>Buys: " + buysS + "<br/>Sells: " + sellsS + "</td>";
                 var toggleBtnID = "btn_send_caravan_" + partner.campOrdinal + "_toggle";
-                var tdButton = "<td class='minwidth'><button id='" + toggleBtnID + "' class='btn-trade-caravans-outgoing-toggle'>Prepare Caravan</button></td>";
-                var tr = "<tr>" + tdName + tdTrades + tdButton + "</tr>";
+                var tdButton = "<td class='minwidth'><button id='" + toggleBtnID + "' class='btn-trade-caravans-outgoing-toggle'>Send caravan</button></td>";
+                var tr = "<tr class='trade-caravans-outgoing' id='trade-caravans-outgoing-" + partner.campOrdinal + "'>" + tdName + tdTrades + tdButton + "</tr>";
                 $("#trade-caravans-outgoing-container table").append(tr);
                 
                 var sendTR = "<tr style='display:none;' class='trade-caravans-outgoing-plan highlightbox' id='trade-caravans-outgoing-plan-" + partner.campOrdinal + "'>";
                 sendTR += "<td colspan='2'>";
+                sendTR += "<div class='row-detail-indicator'>></div>";
                 sendTR += "Sell: <select class='trade-caravans-outgoing-select-sell'>";
                 for (var j = 0; j < partner.buysResources.length; j++) {
                     sendTR += "<option value='" + partner.buysResources[j] + "'>" + partner.buysResources[j] + "</option>";
@@ -102,8 +105,8 @@ define([
                 sendTR += "<input type='range' class='trade-caravans-outgoing-range-sell' min='" + TradeConstants.MIN_OUTGOING_CARAVAN_RES + "' max='" + TradeConstants.MAX_OUTGOING_CARAVAN_RES + "' step='10' />";
                 sendTR += " <span class='trade-sell-value-invalid'></span>";
                 sendTR += " <span class='trade-sell-value'>0</span>";
-                sendTR += "&nbsp;&nbsp;&nbsp;"
-                sendTR += " Get: <select class='trade-caravans-outgoing-select-buy'>";
+                sendTR += "&nbsp;&nbsp;|&nbsp;&nbsp;"
+                sendTR += "Get: <select class='trade-caravans-outgoing-select-buy'>";
                 for (var k = 0; k < partner.sellsResources.length; k++) {
                     sendTR += "<option value='" + partner.sellsResources[k] + "'>" + partner.sellsResources[k] + "</option>";
                 }
@@ -124,17 +127,20 @@ define([
             var sys = this;
             $(".btn-trade-caravans-outgoing-toggle").click(function() {
                 var ordinal = $(this).attr("id").split("_")[3];
+                console.log("click: " + ordinal);
                 var tr = $("#trade-caravans-outgoing-plan-" + ordinal);
                 var wasVisible = $(tr).is(":visible");
                 
                 // hide all others
-                $(".btn-trade-caravans-outgoing-toggle").text("Prepare Caravan");
-                this.uiFunctions.toggle(".trade-caravans-outgoing-plan", false);
+                $(".btn-trade-caravans-outgoing-toggle").text("Send caravan");
+                sys.uiFunctions.toggle(".trade-caravans-outgoing-plan", false);
+                $(".trade-caravans-outgoing").toggleClass("selected", false);
                 
                 // set this button and tr to correct state
                 if (!wasVisible) {
-                    $(this).text("Cancel");
-                    this.uiFunctions.toggle(tr, true);
+                    $(this).text("cancel");
+                    $("#trade-caravans-outgoing-" + ordinal).toggleClass("selected", true);
+                    sys.uiFunctions.toggle(tr, true);
                     sys.initPendingCaravan(ordinal);
                 } else {
                     sys.resetPendingCaravan();
@@ -174,7 +180,9 @@ define([
             if (caravan) {
                 var nameTD = "<td class='item-name'>" + caravan.name + "</td>";
 
-                var inventoryUL = "<ul>";
+                var inventoryUL = "<ul class='ul-horizontal'>";
+                var numLis = 0;
+                var skippedLis = 0;
 
                 var itemCounts = {};
                 for (var i = 0; i < caravan.sellItems.length; i++) {
@@ -186,21 +194,38 @@ define([
                 for (var itemID in itemCounts) {
                     var item = ItemConstants.getItemByID(itemID);
                     var amount = itemCounts[itemID];
-                    inventoryUL += UIConstants.getItemSlot(item, amount, false);
+                    if (numLis < 6) {
+                        inventoryUL += UIConstants.getItemSlot(item, amount, false, true);
+                        numLis++;
+                    } else {
+                        skippedLis++;
+                    }
                 }
 
                 for (var key in resourceNames) {
                     var name = resourceNames[key];
                     var amount = caravan.sellResources.getResource(name);
                     if (amount > 0) {
-                        inventoryUL += UIConstants.getResourceLi(name, amount);
+                        if (numLis < 9) {
+                            inventoryUL += UIConstants.getResourceLi(name, amount, false, true);
+                            numLis++;
+                        } else {
+                            skippedLis++;
+                        }
                     }
                 }
+                
                 if (caravan.currency > 0) {
-                    inventoryUL += UIConstants.getCurrencyLi(caravan.currency);
+                    inventoryUL += UIConstants.getCurrencyLi(caravan.currency, true);
+                    numLis++;
                 }
+                
+                if (skippedLis > 0) {
+                    inventoryUL += "<li class='item-slot item-slot-simple item-slot-small' style='vertical-align: bottom;text-align: center;width: 10px;font-weight: bold;'><div class'item-slot-image' style='padding-top: 5px'>+</div></li>";
+                }
+                
                 inventoryUL += "</ul>";
-                var inventoryTD = "<td><div class='inventorybox' style='margin-right: 5px'>" + inventoryUL + "</div></td>";
+                var inventoryTD = "<td><div style='margin-right: 5px'>" + inventoryUL + "</div></td>";
                 var buttonsTD = "<td><button class='trade-caravans-incoming-trade'>Trade</button>";
                 buttonsTD += "<button class='trade-caravans-incoming-dismiss btn-secondary'>Dismiss</button></td>";
                 var tr = "<tr>" + nameTD + inventoryTD + buttonsTD + "</tr>";
@@ -246,7 +271,7 @@ define([
                 $(sellSlider).attr("max", Math.min(TradeConstants.MAX_OUTGOING_CARAVAN_RES, Math.floor(ownedSellAmount / 10) * 10));
                 this.uiFunctions.toggle(trID + " .trade-sell-value-invalid", false);
                 this.uiFunctions.toggle(trID + " .trade-sell-value", true);
-                $(trID + " .trade-sell-value").text(amountSell);
+                $(trID + " .trade-sell-value").text("x" + amountSell);
             } else {
                 this.uiFunctions.toggle(sellSlider, false);
                 this.uiFunctions.toggle(trID + " .trade-sell-value-invalid", true); 
@@ -256,7 +281,7 @@ define([
             
             // set get amount
             var amountGet = TradeConstants.getAmountTraded(selectedBuy, selectedSell, amountSell);
-            $(trID + " .trade-buy-value").text(amountGet);
+            $(trID + " .trade-buy-value").text("x" + amountGet);
             
             // set valid selection
             var isValid = hasEnoughSellRes && amountSell > 0 && amountGet > 0;

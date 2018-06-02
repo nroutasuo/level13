@@ -282,7 +282,6 @@ ul.tabs li.selected,
 .res,
 .li-item-negative,
 .li-item-positive,
-.info-callout-target,
 .blueprint-piece-box-missing {
   background: #282a28;
   border: 2px solid #3a3a3a;
@@ -356,14 +355,17 @@ ul.resultlist li,
 .item-focused .item-count,
 .progress-bar,
 .highlightbox,
-.inventorybox-header {
+.inventorybox-header,
+.inventorybox-footer {
   background: #2f322f;
+  border-color: #2f322f;
 }
 .sunlit .collapsible-header,
 .sunlit .item-focused .item-count,
 .sunlit .progress-bar,
 .sunlit .highlightbox,
-.sunlit .inventorybox-header {
+.sunlit .inventorybox-header,
+.sunlit .inventorybox-footer {
   background: #e6e6e6;
 }
 .lvl13-box-3,
@@ -502,12 +504,14 @@ hr {
 }
 .lvl13-text-fade,
 #log ul li.log-loaded,
-#log ul li.log-loaded span {
+#log ul li.log-loaded span,
+.row-detail-indicator {
   color: #888;
 }
 .sunlit .lvl13-text-fade,
 .sunlit #log ul li.log-loaded,
-.sunlit #log ul li.log-loaded span {
+.sunlit #log ul li.log-loaded span,
+.sunlit .row-detail-indicator {
   color: #aaa;
 }
 .p-meta {
@@ -719,8 +723,6 @@ ul.resultlist {
   border-width: 2px;
   border-style: solid;
   border-radius: 50%;
-}
-.item {
   width: 18px;
   height: 18px;
 }
@@ -739,7 +741,7 @@ ul.resultlist {
   width: 16px;
 }
 .res img {
-  margin: -2px 2px 6px 2px;
+  margin: -2px 1px 8px 1px;
   vertical-align: middle;
   height: 12px;
   width: 12px;
@@ -772,6 +774,7 @@ ul.resultlist-positive li:before {
 }
 .item-slot,
 .inventorybox ul li {
+  background: inherit !important;
   margin: 0px 2px 2px 0px;
   padding: 0;
   border-width: 1px;
@@ -823,6 +826,9 @@ div.item-slot > span {
   height: 2em;
   line-height: 1em;
   padding: 0.25em 0;
+}
+.item-slot-simple {
+  border-width: 0px !important;
 }
 .listheader {
   margin: 6px 0px 2px 0px;
@@ -1102,7 +1108,7 @@ ul.tabs li {
 }
 button {
   width: 95pt;
-  padding: 8px;
+  padding: 8px 16px;
   margin: 4px;
   z-index: 2;
   font-weight: 500;
@@ -1113,6 +1119,11 @@ button.action {
   border-width: 2px;
   margin: 0px;
   margin-bottom: 0px;
+}
+button.btn-secondary {
+  width: auto;
+  max-width: 95px;
+  min-width: 50px;
 }
 button.action-move {
   width: 55px;
@@ -1334,14 +1345,18 @@ hr {
   padding: 2px 0px 0px 7px !important;
   margin: 5px 0px;
   min-height: 1em;
+  min-width: 1em;
   vertical-align: top;
 }
 .inventorydivision {
   width: 49%;
-  display: inline-block;
+  display: table-cell;
   position: relative;
   vertical-align: top;
   padding-top: 2em;
+}
+.inventorydivision-with-footer {
+  padding-bottom: 2em;
 }
 .inventorydivision .inventorybox-header {
   position: absolute;
@@ -1350,13 +1365,40 @@ hr {
   margin: 0;
   width: 100%;
 }
+.inventorydivision .inventorybox-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  width: 100%;
+}
 #common-popup .inventorybox ul {
   width: 560px;
   /* 12 * 46px (li width) + padding */
 }
-.inventorybox ul {
+.inventorybox ul,
+.ul-horizontal {
   padding: 0px;
   margin: 0px;
+}
+#trade-caravans-outgoing-container tr {
+  border-width: 3px;
+  border-bottom-width: 0px;
+  border-style: solid;
+  border-color: transparent;
+}
+#trade-caravans-outgoing-container tr.selected {
+  border-color: #2f322f;
+}
+.trade-caravans-outgoing-plan {
+  border-width: 3px;
+  border-top-width: 0px;
+}
+.row-detail-indicator {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  text-align: center;
 }
 .header-section {
   display: inline-block;
@@ -1453,9 +1495,82 @@ th.th-text {
   white-space: nowrap;
 }
 input[type=range] {
-  margin: 3px;
+  margin: 3px 5px;
   vertical-align: middle;
   cursor: pointer;
+  height: 20px;
+  -webkit-appearance: none;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  height: 5px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: #151615;
+}
+input[type=range]::-webkit-slider-thumb {
+  border: 1px solid #999;
+  height: 15px;
+  width: 15px;
+  border-radius: 15px;
+  background: #fdfdfd;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -5px;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #151615;
+}
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: #151615;
+}
+input[type=range]::-moz-range-thumb {
+  border: 1px solid #999;
+  height: 15px;
+  width: 15px;
+  border-radius: 15px;
+  background: #fdfdfd;
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+  background: #fdfdfd;
+  border: 0px solid #000000;
+  border-radius: 2px;
+}
+input[type=range]::-ms-fill-upper {
+  background: #fdfdfd;
+  border: 0px solid #000000;
+  border-radius: 2px;
+}
+input[type=range]::-ms-thumb {
+  margin-top: 1px;
+  border: 1px solid #999;
+  height: 15px;
+  width: 15px;
+  border-radius: 15px;
+  background: #fdfdfd;
+  cursor: pointer;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: #fdfdfd;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #fdfdfd;
 }
 input.amount {
   width: 30pt;

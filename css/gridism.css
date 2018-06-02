@@ -216,4 +216,5 @@
 	}
 	
 	div.popup { max-width: 40% !important }
+    div.popup-wide { max-width: 70% !important }
 }

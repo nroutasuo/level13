@@ -67,9 +67,12 @@ define(['ash',
 			return div;
 		},
 		
-		getItemSlot: function (item, count, isLost) {
+		getItemSlot: function (item, count, isLost, simple) {
 			var imageDiv = "<div class='item-slot-image'>" + this.getItemDiv(item, count, false, false) + "</div>";
-			return "<li class='item-slot item-slot-small lvl13-box-1 " + (isLost ? "item-slot-lost" : "") + "'>" + imageDiv + "</li>"
+            var liclasses = "item-slot item-slot-small lvl13-box-1 ";
+            if (simple) liclasses += "item-slot-simple";
+            if (isLost) liclasses += "item-slot-lost";
+			return "<li class='" + liclasses + "'>" + imageDiv + "</li>"
 		},
 		
 		getItemList: function (items) {
@@ -93,19 +96,22 @@ define(['ash',
 			return html;
 		},
 		
-		getResourceLi: function (name, amount, isLost) {
-			var classes = "res item-with-count";
-			var div = "<div class='" + classes + "' data-resourcename='" + name + "'>";
+		getResourceLi: function (name, amount, isLost, simple) {
+			var divclasses = "res item-with-count";
+			var div = "<div class='" + divclasses + "' data-resourcename='" + name + "'>";
 			div += "<div class='info-callout-target info-callout-target-small' description='" + name + "'>";
 			div += this.getResourceImg(name);
 			div += "<div class='item-count lvl13-box-3'>" + Math.floor(amount) + "x </div>";
 			div += "</div>";
 			div += "</div>";
+            var liclasses = "item-slot item-slot-small lvl13-box-1 ";
+            if (simple) liclasses += "item-slot-simple";
+            if (isLost) liclasses += "item-slot-lost";
 			var imageDiv = "<div class='item-slot-image'>" + div + "</div>";
-			return "<li class='item-slot item-slot-small lvl13-box-1 " + (isLost ? "item-slot-lost" : "") + "'>" + imageDiv + "</li>";
+			return "<li class='" + liclasses + "'>" + imageDiv + "</li>";
 		},
         
-        getCurrencyLi: function (amount) {
+        getCurrencyLi: function (amount, simple) {
 			var classes = "res item-with-count";
 			var div = "<div class='" + classes + "' data-resourcename='currency'>";
 			div += "<div class='info-callout-target info-callout-target-small' description='silver'>";
@@ -113,8 +119,10 @@ define(['ash',
 			div += "<div class='item-count lvl13-box-3'>" + Math.floor(amount) + "x </div>";
 			div += "</div>";
 			div += "</div>";
+            var liclasses = "item-slot item-slot-small lvl13-box-1 ";
+            if (simple) liclasses += "item-slot-simple";
 			var imageDiv = "<div class='item-slot-image'>" + div + "</div>";
-			return "<li class='item-slot item-slot-small lvl13-box-1'>" + imageDiv + "</li>";
+			return "<li class='" + liclasses + "'>" + imageDiv + "</li>";
         },
 		
 		getBlueprintPieceLI: function (upgradeId) {

@@ -566,7 +566,6 @@ define(['ash',
                 var playerPos = this.playerPositionNodes.head.position;
                 var level = playerPos.level;
                 var campOrdinal = this.gameState.getCampOrdinal(level);
-                console.log(campOrdinal);
                 var partnerName = TradeConstants.getTradePartner(campOrdinal).name;
                 logMsgSuccess += "<br/>Found a new <span class='text-highlight-functionality'>trading partner</span>. They call this place " + partnerName + ".";
             }
