@@ -5,6 +5,7 @@ define(['ash',
     'game/constants/ItemConstants',
     'game/constants/PerkConstants',
     'game/constants/FightConstants',
+    'game/constants/TradeConstants',
     'game/constants/UpgradeConstants',
     'game/components/common/CampComponent',
     'game/components/player/AutoPlayComponent',
@@ -25,6 +26,7 @@ define(['ash',
     ItemConstants,
     PerkConstants,
     FightConstants,
+    TradeConstants,
     UpgradeConstants,
     CampComponent,
     AutoPlayComponent,
@@ -133,6 +135,10 @@ define(['ash',
             this.registerCheat(CheatConstants.CHEAT_NAME_BLUEPRINTS, "Adds all blueprints found on a given camp ordinal.", ["camp ordinal"], function (params) {
                 var campOrdinal = parseInt(params[0]);
                 this.addBlueprintsForLevel(campOrdinal);
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_TRADE_PARTNERS, "Adds all trading partners found up to a given camp ordinal.", ["camp ordinal"], function (params) {
+                var campOrdinal = parseInt(params[0]);
+                this.addTradePartners(campOrdinal);
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_ITEM, "Add the given item to inventory.", ["item id"], function (params) {
                 this.addItem(params[0]);
@@ -405,6 +411,19 @@ define(['ash',
                 id = UpgradeConstants.bluePrintsByCampOrdinal[campOrdinal][i];
                 this.addBlueprints(id, UpgradeConstants.piecesByBlueprint[id]);
             }            
+        },
+        
+        addTradePartners: function (campOrdinal) {
+            var partner;
+			for (var i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
+                partner = TradeConstants.TRADING_PARTNERS[i];
+                if (partner.campOrdinal < campOrdinal) {
+                    if (this.gameState.foundTradingPartners.indexOf(partner.campOrdinal) >= 0) 
+                        continue;
+               
+                    this.gameState.foundTradingPartners.push(partner.campOrdinal);
+                }
+            }
         },
         
         addItem: function (itemID) {            
