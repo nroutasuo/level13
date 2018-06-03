@@ -95,15 +95,15 @@ define([
 			// Create row
 			var globalStorageCapacity = this.resourcesHelper.getCurrentStorageCap();
 			if (row.length < 1) {
-				var rowHTML = "<tr id='" + rowID + "'>";
+				var rowHTML = "<tr id='" + rowID + "' class='lvl13-box-1'>";
 				var btnID = "out-action-move-camp-" + level;
                 var btnAction = "move_camp_global_" + level;
-				rowHTML += "<td class='camp-overview-level'>" + level + "</td>";
+				rowHTML += "<td class='camp-overview-level'><div class='camp-overview-level-container lvl13-box-1'>" + level + "</div></td>";
 				rowHTML += "<td class='camp-overview-name'>" + camp.campName + "</td>";
-				rowHTML += "<td class='camp-overview-population list-amount'></td>";
-				rowHTML += "<td class='camp-overview-reputation list-amount'></td>";
+				rowHTML += "<td class='camp-overview-population list-amount'><span class='value'></span><span class='change-indicator'></span></td>";
+				rowHTML += "<td class='camp-overview-reputation list-amount'><span class='value'></span><span class='change-indicator'></span></td>";
 				rowHTML += "<td class='camp-overview-levelpop list-amount'></td>";
-				rowHTML += "<td class='camp-overview-improvements'>";
+				rowHTML += "<td class='camp-overview-improvements list-amount'>";
 				rowHTML += "</span></td>";
 				rowHTML += "<td class='camp-overview-storage list-amount'></td>";
 				rowHTML += "<td class='camp-overview-production'>";
@@ -134,44 +134,21 @@ define([
 			
 			var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
 			maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
-			$("#camp-overview tr#" + rowID + " .camp-overview-population").text(Math.floor(camp.population) + "/" + maxPopulation + (unAssignedPopulation > 0 ? " (" + unAssignedPopulation + ")" : ""));
-			
+			$("#camp-overview tr#" + rowID + " .camp-overview-population .value").text(Math.floor(camp.population) + "/" + maxPopulation + (unAssignedPopulation > 0 ? " (" + unAssignedPopulation + ")" : ""));
+			$("#camp-overview tr#" + rowID + " .camp-overview-population .value").toggleClass("warning", camp.populationChangePerSec < 0);
+            this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-population .change-indicator"), camp.populationChangePerSec);
+            
             var reputationComponent = node.reputation;
-            $("#camp-overview tr#" + rowID + " .camp-overview-reputation").text(UIConstants.roundValue(reputationComponent.value, true, false) + "/" + reputationComponent.targetValue + "%");
-            $("#camp-overview tr#" + rowID + " .camp-overview-reputation").toggleClass("warning", reputationComponent.targetValue < 1);
+            $("#camp-overview tr#" + rowID + " .camp-overview-reputation .value").text(UIConstants.roundValue(reputationComponent.value, true, false) + "/" + reputationComponent.targetValue);
+            $("#camp-overview tr#" + rowID + " .camp-overview-reputation .value").toggleClass("warning", reputationComponent.targetValue < 1);
+            this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-reputation .change-indicator"), reputationComponent.accumulation);
             
             var levelVO = this.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent).levelVO;
 			$("#camp-overview tr#" + rowID + " .camp-overview-levelpop").text(levelVO.populationGrowthFactor * 100 + "%");
 			
 			var improvementsText = "";
-			var improvementList = improvements.getAll();
-			for(var i = 0; i < improvementList.length; i++) {
-				var improvement = improvementList[i];
-				var count = improvement.count;
-				var name = improvement.name;
-				if (count > 0 &&
-					name != improvementNames.collector_food &&
-					name != improvementNames.collector_water &&
-					name != improvementNames.bridge &&
-					name != improvementNames.house &&
-					name != improvementNames.house2 &&
-					name != improvementNames.campfire &&
-					name != improvementNames.smithy &&
-					name != improvementNames.cementmill &&
-					name != improvementNames.radio &&
-					name != improvementNames.lights &&
-					name != improvementNames.barracks &&
-					name != improvementNames.apothecary &&
-					name != improvementNames.home &&
-					name != improvementNames.fortification &&
-					name != improvementNames.darkfarm &&
-					name != improvementNames.square &&
-					name != improvementNames.garden &&
-					name != improvementNames.storage) {
-					improvementsText += count + "x" + name.substring(0,1) + " ";
-				}
-			}
-			$("#camp-overview tr#" + rowID + " .camp-overview-improvements").text(improvementsText);
+			var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
+			$("#camp-overview tr#" + rowID + " .camp-overview-improvements").text(hasTradePost ? "X" : "-");
 			
 			var productionText = "";
 			var resources = node.entity.get(ResourcesComponent);
@@ -188,7 +165,7 @@ define([
 					globalStorageCapacity,
 					false,
                     true,
-					true,
+					false,
 					false,
                     name === resourceNames.food || name === resourceNames.water,
 					amount > 0 || Math.abs(change) > 0.001);
@@ -196,7 +173,13 @@ define([
 			}
 			
 			$("#camp-overview tr#" + rowID + " .camp-overview-storage").text(resources.storageCapacity);
-		}
+		},
+        
+        updateChangeIndicator: function (indicator, accumulation, showWarning) {
+            indicator.toggleClass("indicator-increase", accumulation > 0);
+            indicator.toggleClass("indicator-even", accumulation === 0);
+            indicator.toggleClass("indicator-decrease", !showWarning && accumulation < 0);
+        },
 	
     });
 

@@ -356,7 +356,8 @@ ul.resultlist li,
 .progress-bar,
 .highlightbox,
 .inventorybox-header,
-.inventorybox-footer {
+.inventorybox-footer,
+tr.current {
   background: #2f322f;
   border-color: #2f322f;
 }
@@ -365,7 +366,8 @@ ul.resultlist li,
 .sunlit .progress-bar,
 .sunlit .highlightbox,
 .sunlit .inventorybox-header,
-.sunlit .inventorybox-footer {
+.sunlit .inventorybox-footer,
+.sunlit tr.current {
   background: #e6e6e6;
 }
 .lvl13-box-3,
@@ -922,9 +924,19 @@ div.vis-out-blocker-1 {
 div.vis-out-sector-current {
   border-width: 2px;
 }
-tr.current .camp-overview-level,
-tr.current .camp-overview-name {
+.camp-overview-level-container {
+  border-radius: 1.75em;
+  text-align: center;
+  font-size: 80%;
+  width: 1.75em;
+  margin: 2px;
+  vertical-align: middle;
+  background: inherit;
   font-weight: bold;
+}
+#camp-overview tr {
+  border-style: solid;
+  border-width: 1px;
 }
 ul#game-options,
 ul#game-options-extended {
@@ -1275,6 +1287,7 @@ hr {
   background-size: 100%;
   margin: 0px 2px;
   opacity: 0.75;
+  vertical-align: middle;
 }
 #header-self-bar .change-indicator {
   vertical-align: top;

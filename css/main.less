@@ -403,12 +403,12 @@ ul.tabs li.selected {
     background: #aaa;
 }
 
-.collapsible-header, .item-focused .item-count, .progress-bar, .highlightbox, .inventorybox-header, .inventorybox-footer {
+.collapsible-header, .item-focused .item-count, .progress-bar, .highlightbox, .inventorybox-header, .inventorybox-footer, tr.current {
 	background: @color-dark-bg-element;
     border-color: @color-dark-bg-element; 
 }
 
-.sunlit .collapsible-header, .sunlit .item-focused .item-count, .sunlit .progress-bar, .sunlit .highlightbox, .sunlit .inventorybox-header, .sunlit .inventorybox-footer {
+.sunlit .collapsible-header, .sunlit .item-focused .item-count, .sunlit .progress-bar, .sunlit .highlightbox, .sunlit .inventorybox-header, .sunlit .inventorybox-footer, .sunlit tr.current {
 	background: @color-light-bg-element;
 }
 
@@ -970,8 +970,20 @@ div.vis-out-sector-current {
     border-width: 2px;
 }
 
-tr.current .camp-overview-level, tr.current .camp-overview-name {
-	font-weight: bold;
+.camp-overview-level-container {
+    border-radius: 1.75em;
+    text-align: center;
+    font-size: 80%;
+    width: 1.75em;
+    margin: 2px;
+    vertical-align: middle;
+    background: inherit;
+    font-weight: bold;
+}
+
+#camp-overview tr {
+    border-style: solid;
+    border-width: 1px;
 }
 
 ul#game-options, ul#game-options-extended {
@@ -1369,6 +1381,7 @@ hr {
 	background-size: 100%;
 	margin: 0px 2px;
 	opacity: 0.75;
+    vertical-align: middle;
 }
 
 #header-self-bar .change-indicator {

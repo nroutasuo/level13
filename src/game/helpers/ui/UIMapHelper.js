@@ -83,7 +83,7 @@ function (Ash,
             $("#" + canvasId).parent().unwrap();
         },
         
-        centerMapToPlayer: function (canvasId, mapPosition) {
+        centerMapToPlayer: function (canvasId, mapPosition, centered) {
             var sectorSize = this.getSectorSize(false);
             var mapDimensions = this.getMapSectorDimensions(canvasId, -1, false, mapPosition);
             var playerPosX = sectorSize + (mapPosition.sectorX - mapDimensions.minVisibleX) * sectorSize * (1 + this.getSectorPadding(centered));
