@@ -592,8 +592,6 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 show = false;
             if (this.isElementToggled($element) === show)
                 return;
-            //if (GameConstants.isDebugOutputEnabled)
-            //    console.log("toggle " + element + ": " + show);
             $element.attr("data-visible", show);
             $element.toggle(show);
             GlobalSignals.elementToggled.dispatch(element, true);
@@ -601,8 +599,24 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         
         isElementToggled: function (element) {
             var $element = typeof(element) === "string" ? $(element) : element;
+            if (($element).length === 0)
+                return false;
+            
+            // if several elements, return their value if all agree, otherwise null
+            if (($element).length > 1) {
+                var previousIsToggled = null;
+                var currentIsToggled = null;
+                for (var i = 0; i < ($element).length; i++) {
+                    previousIsToggled = currentIsToggled;
+                    currentIsToggled = this.isElementToggled($(($element)[i]));
+                    if (i > 0 && previousIsToggled !== currentIsToggled) return null;
+                }
+                return currentIsToggled;
+            }
+            
             var visible = true;
             var visibletag = ($element.attr("data-visible"));
+            
             if (typeof visibletag !== typeof undefined) {
                 visible = (visibletag == "true");
             } else {
