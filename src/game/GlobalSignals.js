@@ -29,7 +29,9 @@ define(['ash',], function (Ash) {
         add: function (system, signal, listener) {
             if (!system.signalBindings)
                 system.signalBindings = [];
-            var binding = signal.add(listener);
+            var binding = signal.add(function () {
+                listener.apply(system);
+            });
             system.signalBindings.push(binding);
         },
         

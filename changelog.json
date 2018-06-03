@@ -4,15 +4,15 @@
             "version": "0.2.2",
             "phase": "alpha",
             "final": false,
-            "updated": "2017-05-05",
+            "updated": "2017-06-03",
             "changes": [
                 {
                     "type": "GD",
                     "summary": "Two new building that increase reputation: garden and square."
                 },
                 {
-                    "type": "GD",
-                    "summary": "Polish reputation: adjust things affecting it and improve the UI."
+                    "type": "UI",
+                    "summary": "Polish reputation, raids and trade."
                 },
                 {
                     "type": "GD",

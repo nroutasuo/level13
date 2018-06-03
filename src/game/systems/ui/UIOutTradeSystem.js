@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GlobalSignals',
     'game/constants/TradeConstants',
     'game/constants/ItemConstants',
     'game/constants/UIConstants',
@@ -9,7 +10,7 @@ define([
     'game/vos/ResourcesVO',
     'game/vos/OutgoingCaravanVO'
 ], function (
-    Ash, TradeConstants, ItemConstants, UIConstants, PlayerLocationNode, OutgoingCaravansComponent, TraderComponent, ResourcesVO, OutgoingCaravanVO
+    Ash, GlobalSignals, TradeConstants, ItemConstants, UIConstants, PlayerLocationNode, OutgoingCaravansComponent, TraderComponent, ResourcesVO, OutgoingCaravanVO
 ) {
     var UIOutTradeSystem = Ash.System.extend({
         
@@ -31,11 +32,13 @@ define([
         addToEngine: function (engine) {
             this.engine  = engine;
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
+            GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
         },
 
         removeFromEngine: function (engine) {
             this.engine = null;
             this.playerLocationNodes = null;
+            GlobalSignals.removeAll(this);
         },
 
         update: function (time) {
@@ -46,18 +49,17 @@ define([
             this.updateOutgoingCaravansList(isActive);
             this.updateIncomingCaravan(isActive);
             
-            if (!isActive) {
-                $(".btn-trade-caravans-outgoing-toggle").text("Send caravan");
-                this.uiFunctions.toggle(".trade-caravans-outgoing-plan", false);     
-                $(".trade-caravans-outgoing").toggleClass("selected", false);           
-                return;
-            }
+            if (!isActive) return;
             
             this.updateOutgoingCaravanPrepare();
             
             this.uiFunctions.toggle("#trade-caravans-outgoing-empty-message", this.availableTradingPartnersCount === 0);
             this.uiFunctions.toggle("#trade-caravans-incoming-empty-message", this.currentIncomingTraders === 0);
             $("#tab-header h2").text("Trade");
+        },
+        
+        onTabChanged: function () {
+            this.hideOutgoingPlanRows();
         },
         
         updateBubble: function () {
@@ -105,6 +107,7 @@ define([
                 sendTR += "<input type='range' class='trade-caravans-outgoing-range-sell' min='" + TradeConstants.MIN_OUTGOING_CARAVAN_RES + "' max='" + TradeConstants.MAX_OUTGOING_CARAVAN_RES + "' step='10' />";
                 sendTR += " <span class='trade-sell-value-invalid'></span>";
                 sendTR += " <span class='trade-sell-value'>0</span>";
+                sendTR += "<span class='trade-caravans-outgoing-buy'>";
                 sendTR += "&nbsp;&nbsp;|&nbsp;&nbsp;"
                 sendTR += "Get: <select class='trade-caravans-outgoing-select-buy'>";
                 for (var k = 0; k < partner.sellsResources.length; k++) {
@@ -118,6 +121,7 @@ define([
                 }
                 sendTR += "</select>";
                 sendTR += " <span class='trade-buy-value'>0</span>";
+                sendTR += "</span>";
                 sendTR += "</td>";
                 sendTR += "<td class='minwidth'><button class='action btn-trade-caravans-outgoing-send' action='send_caravan_" + partner.campOrdinal + "'>Send</button></td></tr>";
                 $("#trade-caravans-outgoing-container table").append(sendTR);
@@ -127,25 +131,19 @@ define([
             var sys = this;
             $(".btn-trade-caravans-outgoing-toggle").click(function() {
                 var ordinal = $(this).attr("id").split("_")[3];
-                console.log("click: " + ordinal);
                 var tr = $("#trade-caravans-outgoing-plan-" + ordinal);
                 var wasVisible = $(tr).is(":visible");
                 
-                // hide all others
-                $(".btn-trade-caravans-outgoing-toggle").text("Send caravan");
-                sys.uiFunctions.toggle(".trade-caravans-outgoing-plan", false);
-                $(".trade-caravans-outgoing").toggleClass("selected", false);
+                sys.hideOutgoingPlanRows();
                 
                 // set this button and tr to correct state
                 if (!wasVisible) {
-                    $(this).text("cancel");
-                    $("#trade-caravans-outgoing-" + ordinal).toggleClass("selected", true);
-                    sys.uiFunctions.toggle(tr, true);
-                    sys.initPendingCaravan(ordinal);
+                    sys.showOutgoingPlanRow(ordinal);
                 } else {
                     sys.resetPendingCaravan();
                 }
             });
+            
             $(".btn-trade-caravans-outgoing-send").click(function() {
                 var ordinal = $(this).attr("action").split("_")[2];
                 sys.confirmPendingCaravan(ordinal);
@@ -156,6 +154,20 @@ define([
             this.uiFunctions.registerActionButtonListeners("#trade-caravans-outgoing-container table");
             
             this.lastShownTradingPartnersCount = this.availableTradingPartnersCount;
+        },
+        
+        hideOutgoingPlanRows: function () {
+            $(".btn-trade-caravans-outgoing-toggle").text("Send caravan");
+            this.uiFunctions.toggle(".trade-caravans-outgoing-plan", false, true);
+            $(".trade-caravans-outgoing").toggleClass("selected", false);
+        },
+        
+        showOutgoingPlanRow: function(campOrdinal) {
+            var tr = $("#trade-caravans-outgoing-plan-" + campOrdinal);
+            $("#trade-caravans-outgoing-" + campOrdinal + " button").text("cancel");
+            $("#trade-caravans-outgoing-" + campOrdinal).toggleClass("selected", true);
+            this.uiFunctions.toggle(tr, true);
+            this.initPendingCaravan(campOrdinal);
         },
         
         updateIncomingCaravan: function (isActive) {
@@ -281,7 +293,13 @@ define([
             
             // set get amount
             var amountGet = TradeConstants.getAmountTraded(selectedBuy, selectedSell, amountSell);
-            $(trID + " .trade-buy-value").text("x" + amountGet);
+            if (hasEnoughSellRes) {
+                $(trID + " .trade-caravans-outgoing-buy").toggle(true);
+                $(trID + " .trade-buy-value").text("x" + amountGet);
+            } else {
+                $(trID + " .trade-caravans-outgoing-buy").toggle(false);         
+                $(trID + " .trade-buy-value").text("");                
+            }
             
             // set valid selection
             var isValid = hasEnoughSellRes && amountSell > 0 && amountGet > 0;
