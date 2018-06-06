@@ -59,8 +59,7 @@ define([
                     
 					this.applyReputationAccumulation(campNode, time);
                     
-                    reputationComponent.value = Math.max(0, Math.min(100, reputationComponent.value));
-                    
+                    reputationComponent.value = Math.max(0, reputationComponent.value);
                     reputationComponent.isAccumulating = campNode.camp.population > 0 || sectorImprovements.getTotal(improvementTypes.camp) > 0;
 				}
 			}
@@ -158,6 +157,8 @@ define([
             if (accTargetDiff < 0) accTargetDiff = Math.max(-10, Math.min(-1, accTargetDiff));
             var accTarget = (accTargetDiff < 0 ? accTargetDiff * 0.05 : accTargetDiff * 0.01) * GameConstants.gameSpeedCamp;
             var accSpeed = accTarget + accRadio;
+            accSpeed = Math.max(-0.05, accSpeed);
+            accSpeed = Math.min(0.05, accSpeed);
                     
             reputationComponent.addChange("Base", accTarget);
             reputationComponent.addChange("Radio", accRadio);
