@@ -26,6 +26,15 @@ define([
         campNodes: null,
 		playerPosNodes: null,
 
+        campNotificationTypes: {
+            NONE: "none",
+            EVENT_RAID: "event_raid",
+            EVENT_TRADER: "event_trader",
+            POP_UNASSIGNED: "population-unassigned",
+            POP_DECREASING: "population-decreasing",
+            POP_INCREASING: "population-increasing"
+        },
+
         constructor: function (uiFunctions, resourcesHelper, levelHelper) {
 			this.uiFunctions = uiFunctions;
 			this.resourcesHelper = resourcesHelper;
@@ -73,18 +82,22 @@ define([
 			var level = node.entity.get(PositionComponent).level;
 			var playerPosComponent = this.playerPosNodes.head.position;
             var isPlayerInCampLevel = level === playerPosComponent.level;
-            
-            // TODO also so alert for raids that are over until camp is visited again; new CampAlertComponent? Event components should stay simple and only show current event
             var unAssignedPopulation = camp.getFreePopulation();
+            
+            // determine alert
+            var alerts = [];
             var hasTrader = node.entity.has(TraderComponent);
             var hasRaid = node.entity.has(RaidComponent);
             
-            var isAlert = false;
-            
-            if ((unAssignedPopulation > 0 || hasTrader || hasRaid) && !isPlayerInCampLevel) {
-                this.campsWithAlert++;
-                isAlert = true;
+            if (!isPlayerInCampLevel) {
+                if (hasRaid) alerts.push(this.campNotificationTypes.EVENT_RAID);
+                if (hasTrader) alerts.push(this.campNotificationTypes.EVENT_TRADER);
+                if (unAssignedPopulation > 0) alerts.push(this.campNotificationTypes.POP_UNASSIGNED);
+                if (camp.populationChangePerSec < 0) alerts.push(this.campNotificationTypes.POP_DECREASING);
             }
+            
+            var isAlert = alerts.length > 0;
+            if (isAlert) this.campsWithAlert++;
             
             if (!isActive) return;
             
@@ -114,7 +127,8 @@ define([
 				rowHTML += "</td>";
 				
 				rowHTML += "<td class='camp-overview-btn'><button class='btn-mini action action-move' id='" + btnID + "' action='" + btnAction + "'>Go</button></td>";
-                rowHTML += "<td class='camp-overview-camp-bubble'><div class='bubble'>!</div></td>";
+                rowHTML += "<td class='camp-overview-camp-bubble'><div class='bubble info-callout-target info-callout-target-small' description=''>!</div></td>";
+				
 				rowHTML += "</tr>";
 				$("#camp-overview").append(rowHTML);
 				var uiFunctions = this.uiFunctions;
@@ -132,6 +146,13 @@ define([
 			$("#camp-overview tr#" + rowID + " .camp-overview-name").text(camp.campName);
 			this.uiFunctions.toggle("#camp-overview tr#" + rowID + " .camp-overview-camp-bubble .bubble", isAlert);
 			
+            var alertDesc = "";
+            for (var i = 0; i < alerts.length; i++) {
+                alertDesc += this.getAlertDescription(alerts[i]);
+                if (i !== alerts.length - 1) alertDesc += "<br/>";
+            }
+            UIConstants.updateCalloutContent("#camp-overview tr#" + rowID + " .camp-overview-camp-bubble .bubble", alertDesc, true)
+			
 			var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
 			maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
 			$("#camp-overview tr#" + rowID + " .camp-overview-population .value").text(Math.floor(camp.population) + "/" + maxPopulation + (unAssignedPopulation > 0 ? " (" + unAssignedPopulation + ")" : ""));
@@ -146,11 +167,9 @@ define([
             var levelVO = this.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent).levelVO;
 			$("#camp-overview tr#" + rowID + " .camp-overview-levelpop").text(levelVO.populationGrowthFactor * 100 + "%");
 			
-			var improvementsText = "";
 			var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
 			$("#camp-overview tr#" + rowID + " .camp-overview-improvements").text(hasTradePost ? "X" : "-");
 			
-			var productionText = "";
 			var resources = node.entity.get(ResourcesComponent);
 			var resourceAcc = node.entity.get(ResourceAccumulationComponent);
 			for (var key in resourceNames) {
@@ -174,6 +193,16 @@ define([
 			
 			$("#camp-overview tr#" + rowID + " .camp-overview-storage").text(resources.storageCapacity);
 		},
+        
+        getAlertDescription: function (notificationType) {
+            switch (notificationType) {
+                case this.campNotificationTypes.EVENT_RAID: return "raid";
+                case this.campNotificationTypes.EVENT_TRADER: return "trader";
+                case this.campNotificationTypes.POP_UNASSIGNED: return "unassigned workers";
+                case this.campNotificationTypes.POP_DECREASING: return "population decreasing";
+                default: return "";
+            }
+        },
         
         updateChangeIndicator: function (indicator, accumulation, showWarning) {
             indicator.toggleClass("indicator-increase", accumulation > 0);
