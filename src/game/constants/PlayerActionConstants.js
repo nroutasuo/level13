@@ -416,7 +416,10 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_garden: {
                     upgrades: {
                         upgrade_building_inn: true,
-                    }
+                    },
+                    improvements: {
+                        house: [1, -1],
+                    },
                 },
                 
                 build_in_hospital: {
@@ -451,6 +454,7 @@ function (Ash, GameConstants, CampConstants) {
                     numCamps: 2,
                     improvements: {
                         tradepost: [0, 1],
+                        house: [1, -1],
                     },
                     upgrades: {
                         unlock_building_tradingpost: true,
@@ -499,12 +503,18 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_library: {
                     upgrades: {
                         unlock_building_library: true,
-                    }
+                    },
+                    improvements: {
+                        house: [1, -1],
+                    },
                 },
             
                 build_in_house2: {
                     upgrades: {
                         unlock_building_house2: true,
+                    },
+                    improvements: {
+                        house: [3, -1],
                     }
                 },
                 
@@ -532,6 +542,9 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 build_in_fortification: {
+                    improvements: {
+                        house: [1, -1],
+                    },
                     upgrades: {
                         unlock_building_fortifications: true,
                     }
@@ -551,21 +564,27 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 build_in_apothecary: {
-                    improvements: {},
+                    improvements: {
+                        house: [2, -1],
+                    },
                     upgrades: {
                         unlock_building_apothecary: true,
                     }
                 },
             
                 build_in_smithy: {
-                    improvements: {},
+                    improvements: {
+                        house: [2, -1],
+                    },
                     upgrades: {
                         unlock_building_smithy: true,
                     }
                 },
             
                 build_in_cementmill: {
-                    improvements: {},
+                    improvements: {
+                        house: [2, -1],
+                    },
                     upgrades: {
                         unlock_building_cementmill: true,
                     }
@@ -586,6 +605,9 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 build_in_researchcenter: {
+                    improvements: {
+                        library: [1, -1],
+                    },
                     upgrades: {
                         unlock_building_researchcenter: true,
                     }
@@ -1529,6 +1551,12 @@ function (Ash, GameConstants, CampConstants) {
                     resource_metal: 200,
                 },
                 
+                build_in_researchcenter: {
+                    resource_water: 200,
+                    resource_metal: 1200,
+                    resource_rope: 100,
+                },
+                
                 craft_light1: {
                     resource_metal: 8,
                 },
@@ -2118,7 +2146,7 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_tradingPost: "Connect camps to a trade network.",
                 build_in_market: "Enables foreign traders to visit.",
                 build_in_barracks: "Allows 10 soldiers.",
-                build_in_lights: "Keep darkness at for good.",
+                build_in_lights: "Keep the darkness at bay for good.",
                 build_in_smithy: "Workspace for toolsmiths.",
                 build_in_aqueduct: "Water infrastructure to improve collecting efficiency.",
                 use_in_home: "Recover stamina.",

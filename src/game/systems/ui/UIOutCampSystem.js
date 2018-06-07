@@ -61,8 +61,6 @@ define([
 			this.upgradesHelper = upgradesHelper;
             this.campHelper = campHelper;
             
-            
-            
             return this;
         },
 
@@ -75,6 +73,9 @@ define([
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
             GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onImprovementBuilt);
+            GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onPlayerMoved);
+            
+            this.refresh();
         },
 
         removeFromEngine: function (engine) {
@@ -117,6 +118,7 @@ define([
         
         refresh: function () {
             if (!this.playerLocationNodes.head) return;
+            if (!this.playerPosNodes.head.position.inCamp) return;
             
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
             var campCount = this.gameState.numCamps;
@@ -427,6 +429,10 @@ define([
         
         onImprovementBuilt: function () {
             this.updateWorkerMaxDescriptions();
+        },
+        
+        onPlayerMoved: function () {
+            this.refresh();
         },
         
         hasUpgrade: function (upgradeId) {
