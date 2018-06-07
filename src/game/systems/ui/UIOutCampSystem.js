@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/UpgradeConstants',
     'game/constants/PlayerActionsHelperConstants',
@@ -20,7 +21,7 @@ define([
     'game/components/sector/events/TraderComponent',
     'game/components/sector/events/RaidComponent'
 ], function (
-    Ash, UIConstants, UpgradeConstants, PlayerActionsHelperConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants,
+    Ash, GlobalSignals, UIConstants, UpgradeConstants, PlayerActionsHelperConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants,
     PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, DeityNode, TribeUpgradesNode,
     PerksComponent,
     CampComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
@@ -48,6 +49,10 @@ define([
         lastShownEvents: 0,
         currentPopulation: 0,
         lastShownPopulation: 0,
+        
+        elements: {
+            steppers: {},
+        },
 
         constructor: function (uiFunctions, gameState, levelHelper, upgradesHelper, campHelper, upgradeEffectsHelper) {
             this.uiFunctions = uiFunctions;
@@ -55,6 +60,9 @@ define([
             this.levelHelper = levelHelper;
 			this.upgradesHelper = upgradesHelper;
             this.campHelper = campHelper;
+            
+            
+            
             return this;
         },
 
@@ -65,6 +73,8 @@ define([
             this.playerLevelNodes = engine.getNodeList(PlayerLevelNode);
             this.deityNodes = engine.getNodeList(DeityNode);
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
+            GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
+            GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onImprovementBuilt);
         },
 
         removeFromEngine: function (engine) {
@@ -74,6 +84,7 @@ define([
             this.playerLevelNodes = null;
             this.deityNodes = null;
             this.tribeUpgradesNodes = null;
+            GlobalSignals.removeAll(this);
         },
 
         update: function (time) {
@@ -98,15 +109,22 @@ define([
                 return;
             }
             
-            // Header
-            var header = campComponent.getName();
-            if (campCount > 1) header += " (" + this.playerPosNodes.head.position.getPosition().getInGameFormat(true) + ")";
-            $("#tab-header h2").text(header);
-            
             // Vis
             // TODO camp vis
                
             this.updateStats();
+        },
+        
+        refresh: function () {
+            if (!this.playerLocationNodes.head) return;
+            
+            var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+            var campCount = this.gameState.numCamps;
+            
+            // Header
+            var header = campComponent.getName();
+            if (campCount > 1) header += " (" + this.playerPosNodes.head.position.getPosition().getInGameFormat(true) + ")";
+            $("#tab-header h2").text(header);
         },
         
         updateBubble: function () {
@@ -144,6 +162,10 @@ define([
         },
         
         updateWorkerStepper: function (campComponent, id, workerType, maxWorkers, showMax) {
+            this.uiFunctions.toggle($(id).closest("tr"), maxWorkers > 0);
+            
+            if (maxWorkers === 0) return;
+            
             var freePopulation = campComponent.getFreePopulation();
             var assignedWorkers = campComponent.assignedWorkers[workerType];
             $(id + " input").attr("max", Math.min(assignedWorkers + freePopulation, maxWorkers));
@@ -194,16 +216,9 @@ define([
             this.uiFunctions.slideToggleIf("#in-assign-workers", null, campComponent.population >= 1, 200, 200);
         },
         
-        updateAssignedWorkers: function (campComponent, maxPopulation) {    
+        updateAssignedWorkers: function (campComponent, maxPopulation) {
             var posComponent = this.playerPosNodes.head.position;
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-            
-            this.uiFunctions.toggle("#in-assign-weaver", this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("rope-maker")));
-            this.uiFunctions.toggle("#in-assign-chemist", this.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel) > 0);
-            this.uiFunctions.toggle("#in-assign-apothecary", this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("apothecary")));
-            this.uiFunctions.toggle("#in-assign-concrete", this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("concrete")));
-            this.uiFunctions.toggle("#in-assign-smith", this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("smith")));
-            this.uiFunctions.toggle("#in-assign-soldier", this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("soldier")));
             
             var workerConsumptionS = "<br/><span class='warning'>water -" + this.campHelper.getWaterConsumptionPerSecond(1) + "/s</span>" +
                 "<br/><span class='warning'>food -" + this.campHelper.getFoodConsumptionPerSecond(1) + "/s</span>";
@@ -228,6 +243,7 @@ define([
             var maxSmiths = smithiesInCamp * CampConstants.getSmithsPerSmithy(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.smithy, this.tribeUpgradesNodes.head.upgrades));
             var maxSoldiers = barracksInCamp * CampConstants.getSoldiersPerBarracks(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.barracks, this.tribeUpgradesNodes.head.upgrades));
             var maxChemists = refineriesOnLevel * CampConstants.CHEMISTS_PER_WORKSHOP;
+            
             this.updateWorkerStepper(campComponent, "#stepper-scavenger", "scavenger", maxPopulation, false);
             this.updateWorkerStepper(campComponent, "#stepper-trapper", "trapper", maxPopulation, false);
             this.updateWorkerStepper(campComponent, "#stepper-water", "water", maxPopulation, false);
@@ -237,6 +253,17 @@ define([
             this.updateWorkerStepper(campComponent, "#stepper-concrete", "concrete", maxConcrete, true);
             this.updateWorkerStepper(campComponent, "#stepper-smith", "toolsmith", maxSmiths, true);
             this.updateWorkerStepper(campComponent, "#stepper-soldier", "soldier", maxSoldiers, true);
+        },
+        
+        updateWorkerMaxDescriptions: function () {
+            var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+            var posComponent = this.playerPosNodes.head.position;
+            
+            var refineriesOnLevel = this.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel);
+            var apothecariesInCamp = improvements.getCount(improvementNames.apothecary);
+            var cementMillsInCamp = improvements.getCount(improvementNames.cementmill);
+            var smithiesInCamp = improvements.getCount(improvementNames.smithy);
+            var barracksInCamp = improvements.getCount(improvementNames.barracks);
             
             UIConstants.updateCalloutContent("#in-assign-chemist .in-assign-worker-limit .info-callout-target", refineriesOnLevel + " refineries found", true);
             UIConstants.updateCalloutContent("#in-assign-apothecary .in-assign-worker-limit .info-callout-target", apothecariesInCamp + " apothecaries built", true);
@@ -389,8 +416,17 @@ define([
             }
             
             this.uiFunctions.toggle("#id-demographics-level", showLevelStats);
-            
             this.uiFunctions.toggle("#in-demographics", showCalendar || showRaid || showLevelStats);
+        },
+        
+        onTabChanged: function () {
+            if (this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.in) {
+                this.refresh();
+            }
+        },
+        
+        onImprovementBuilt: function () {
+            this.updateWorkerMaxDescriptions();
         },
         
         hasUpgrade: function (upgradeId) {
