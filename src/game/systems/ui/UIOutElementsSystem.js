@@ -79,6 +79,7 @@ define([
             GlobalSignals.featureUnlockedSignal.add(function () { sys.updateTabVisibility(); });
             GlobalSignals.playerMovedSignal.add(function () { sys.updateTabVisibility(); });
             GlobalSignals.gameShownSignal.add(function () { sys.updateTabVisibility(); });
+            GlobalSignals.elementToggledSignal.add(function () { sys.elementsVisibilityChanged = true; });
         },
     
         removeFromEngine: function (engine) {
@@ -96,16 +97,13 @@ define([
         onCampNodeRemoved: function (node) {
             this.updateTabVisibility();
         },
-        
-        onFeatureUnlocked: function () {
-            this.updateTabVisibility();
-        },
-        
-        onImprovementBuilt: function () {
-            this.updateTabVisibility();
-        },
     
         update: function (time) {
+            if (this.elementsVisibilityChanged) {
+                this.updateVisibleButtonsList();
+                this.elementsVisibilityChanged = false;
+            }
+            
             this.updateButtons();
             this.updateProgressbars();
             this.updateTabs();
@@ -117,25 +115,18 @@ define([
         },
         
         updateButtons: function () {
-            var sys = this;
-            
+            var sys = this;            
             var uiFunctions = this.uiFunctions;
             
-            $.each($("button.action"), function () {
-                var $button = $(this);
-                var isVisible = (uiFunctions.isElementToggled($button) !== false) && uiFunctions.isElementVisible($button);
-                sys.updateButtonContainer($button, isVisible);                
-                if (!isVisible)
-                    return;
-                
+            for (var i = 0; i < this.elementsVisibleButtons.length; i++) {
+                var $button = $(this.elementsVisibleButtons[i]);                
                 var action = $button.attr("action");
-                
                 if (!action)
                     return;
 
-                var isHardDisabled = sys.updateButtonDisabledState(this, action);
+                var isHardDisabled = sys.updateButtonDisabledState($button, action);
 				sys.updateButtonCallout($button, action, isHardDisabled);
-            });
+            }
         },
         
         updateButtonContainer: function (button, isVisible) {
@@ -340,6 +331,19 @@ define([
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-map", null, hasMap, 100, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-trade", null, isInCamp && hasTradingPost, 100, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-projects", null, isInCamp && hasProjects, 100, 0);
+        },
+        
+        updateVisibleButtonsList: function () {
+            this.elementsVisibleButtons = [];
+            var sys = this;
+            $.each($("button.action"), function () {
+                var $button = $(this);
+                var isVisible = (sys.uiFunctions.isElementToggled($button) !== false) && sys.uiFunctions.isElementVisible($button);
+                sys.updateButtonContainer($button, isVisible);
+                if (isVisible) {
+                    sys.elementsVisibleButtons.push($button);
+                }
+            });
         },
         
         updateTabs: function () {
