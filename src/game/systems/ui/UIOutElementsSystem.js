@@ -47,6 +47,7 @@ define([
 		
         elementsCalloutContainers: null,
         elementsVisibleButtons: [],
+        elementsVisibleProgressbars: [],
     
         constructor: function (uiFunctions, gameState, playerActions, resourcesHelper, fightHelper, buttonHelper) {
             this.gameState = gameState;
@@ -101,6 +102,7 @@ define([
         update: function (time) {
             if (this.elementsVisibilityChanged) {
                 this.updateVisibleButtonsList();
+                this.updateVisibleProgressbarsList();
                 this.elementsVisibilityChanged = false;
             }
             
@@ -295,21 +297,23 @@ define([
         },
         
         updateProgressbars: function () {
-            $.each($(".progress-wrap"), function () {
-                if ($(this).is(":visible") && !($(this).data("animated") === true)) {
-                    $(this).data("animated", true);
-                    var percent = ($(this).data('progress-percent') / 100);
-                    var animationLength = $(this).data("animation-counter") > 0 ? ($(this).data('animation-length')) : 0;
-                    var progressWrapWidth = $(this).width();
+            for (var i = 0; i < this.elementsVisibleProgressbars.length; i++) {
+                var $progressbar = $(this.elementsVisibleProgressbars[i]);
+                var isAnimated = $progressbar.data("animated") === true;
+                if (!isAnimated) {
+                    $progressbar.data("animated", true);
+                    var percent = ($progressbar.data('progress-percent') / 100);
+                    var animationLength = $progressbar.data("animation-counter") > 0 ? ($progressbar.data('animation-length')) : 0;
+                    var progressWrapWidth = $progressbar.width();
                     var progressWidth = percent * progressWrapWidth;
-                    $(this).children(".progress-bar").stop().animate({ left: progressWidth}, animationLength, function() {
-                    $(this).parent().data("animated", false);
-                    $(this).parent().data("animation-counter", $(this).parent().data("animation-counter") + 1);
+                    $progressbar.children(".progress-bar").stop().animate({ left: progressWidth}, animationLength, function() {
+                        $(this).parent().data("animated", false);
+                        $(this).parent().data("animation-counter", $progressbar.parent().data("animation-counter") + 1);
                     });
                 } else {
-                    $(this).data("animation-counter", 0);
+                    $progressbar.data("animation-counter", 0);
                 }
-            });
+            }
         },
         
         updateTabVisibility: function () {
@@ -342,6 +346,19 @@ define([
                 sys.updateButtonContainer($button, isVisible);
                 if (isVisible) {
                     sys.elementsVisibleButtons.push($button);
+                }
+            });
+        },
+        
+        updateVisibleProgressbarsList: function () {
+            this.elementsVisibleProgressbars = [];
+            var sys = this;
+            $.each($(".progress-wrap"), function () {
+                var $progressbar = $(this);
+                if ($progressbar.is(":visible")) {
+                    sys.elementsVisibleProgressbars.push($progressbar);
+                } else {
+                    $progressbar.data("animation-counter", 0);
                 }
             });
         },
