@@ -193,11 +193,15 @@ define([
 			uniqueItems = uniqueItems.sort(UIConstants.sortItemsByType);
             for (var i = 0; i < uniqueItems.length; i++) {
                 var item = uniqueItems[i];
-                var count = itemsComponent.getCountById(item.id, true);
-                var showCount = item.equipped ? count - 1 : count;
                 if (item.type === ItemConstants.itemTypes.uniqueEquipment) continue;
                 if (item.type === ItemConstants.itemTypes.follower) continue;
+                if (item.type === ItemConstants.itemTypes.artefact) continue;
+                if (item.type === ItemConstants.itemTypes.note) continue;
+                
+                var count = itemsComponent.getCountById(item.id, true);
+                var showCount = item.equipped ? count - 1 : count;
                 if (item.equipped && count === 1) continue;
+                
                 $("#embark-items").append(
                     "<tr id='embark-assign-" + item.id + "'>" +
                     "<td><img src='" + item.icon + "'/>" + item.name + "</td>" +
