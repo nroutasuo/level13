@@ -85,14 +85,16 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             
             // Collapsible divs
             $(".collapsible-header").click(function () {
-                $(this).toggleClass("collapsible-collapsed", $(this).next(".collapsible-content").is(":visible"));
-                $(this).toggleClass("collapsible-open", !($(this).next(".collapsible-content").is(":visible")));
+                var vasVisible = $(this).next(".collapsible-content").is(":visible");
+                $(this).toggleClass("collapsible-collapsed", vasVisible);
+                $(this).toggleClass("collapsible-open", !vasVisible);
                 $(this).next(".collapsible-content").slideToggle(300);
+                GlobalSignals.elementToggledSignal.dispatch($(this), !vasVisible);
             });
             $.each($(".collapsible-header"), function () {
                 $(this).next(".collapsible-content").slideToggle(300);
-                $(this).toggleClass("collapsible-collapsed", !($(this).next(".collapsible-content").is(":visible")));
-                $(this).toggleClass("collapsible-open", $(this).next(".collapsible-content").is(":visible"));
+                $(this).toggleClass("collapsible-collapsed", true);
+                $(this).toggleClass("collapsible-open", false);
             });
             
             // Steppers and stepper buttons
@@ -112,8 +114,10 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                     });
             });
             $("#btn-more").click(function (e) {
+                var wasVisible = $("#game-options-extended").is(":visible");
                 $("#game-options-extended").toggle();
-                $(this).text($("#game-options-extended").is(":visible") ? "less" : "more");
+                $(this).text(wasVisible ? "less" : "more");
+                GlobalSignals.elementToggledSignal.dispatch($(this), !wasVisible);
             });
             $("#btn-importexport").click(function (e) {
                 uiFunctions.showManageSave();
@@ -594,7 +598,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 return;
             $element.attr("data-visible", show);
             $element.toggle(show);
-            GlobalSignals.elementToggled.dispatch(element, true);
+            GlobalSignals.elementToggledSignal.dispatch(element, show);
         },
         
         isElementToggled: function (element) {

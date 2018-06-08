@@ -63,31 +63,31 @@ var UIOutManageSaveSystem = Ash.System.extend({
             this.spanSaveSeed.text(this.gameState.worldSeed);
             this.spanSaveVersion.text(this.changeLogHelper.getCurrentVersionNumber());
             this.textField.toggle(false);
-            this.loadImportcontainer.toggle(false);
-            this.spanMsg.toggle(false);
+            this.uiFunctions.toggle(this.loadImportcontainer, false);
+            this.uiFunctions.toggle(this.spanMsg, false);
         },
         
         openExport: function () {
-            this.loadImportcontainer.toggle(false);
+            this.uiFunctions.toggle(this.loadImportcontainer, false);
             var saveString = this.saveSystem.getObfuscatedSaveJSON();
             var saveJSON = this.saveSystem.getSaveJSONfromObfuscated(saveString);
             var isOk = this.saveHelper.parseSaveJSON(saveJSON);
             if (isOk) {
-                this.spanMsg.toggle(false);
+                this.uiFunctions.toggle(this.spanMsg, false);
                 this.textField.text(saveString);
-                this.textField.toggle(true);
+                this.uiFunctions.toggle(this.textField, true);
                 this.textField.select();
             } else {
-                this.spanMsg.toggle(true);
+                this.uiFunctions.toggle(this.spanMsg, true);
                 this.spanMsg.text("Error exporting save.");
             }
         },
         
         openImport: function () {
             this.textField.text("");
-            this.textField.toggle(true);
-            this.loadImportcontainer.toggle(true);
-            this.spanMsg.toggle(false);
+            this.uiFunctions.toggle(this.textField, true);
+            this.uiFunctions.toggle(this.loadImportcontainer, true);
+            this.uiFunctions.toggle(this.spanMsg, false);
         },
         
         loadImport: function () {
@@ -107,7 +107,7 @@ var UIOutManageSaveSystem = Ash.System.extend({
                         sys.loadState(importJSON);
                     });
             } else {                
-                this.spanMsg.toggle(true);
+                this.uiFunctions.toggle(this.spanMsg, true);
                 this.spanMsg.text("Failed to import save.");
             }
         },

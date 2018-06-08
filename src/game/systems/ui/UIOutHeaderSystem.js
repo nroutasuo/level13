@@ -203,7 +203,7 @@ define([
 			this.uiFunctions.toggle("#stats-evidence", this.gameState.unlockedFeatures.evidence);
 			this.updateStatsCallout("", "stats-evidence", playerStatsNode.evidence.accSources);
             
-            $("#header-tribe-container").toggle(this.gameState.unlockedFeatures.evidence || playerStatsNode.rumours.isAccumulating);
+            this.uiFunctions.toggle($("#header-tribe-container"), this.gameState.unlockedFeatures.evidence || playerStatsNode.rumours.isAccumulating);
 
 			var reputationComponent = this.currentLocationNodes.head.entity.get(ReputationComponent);
             if (campComponent && reputationComponent) {
