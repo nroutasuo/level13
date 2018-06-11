@@ -9,6 +9,7 @@ define(['ash',], function (Ash) {
         popupOpenedSignal: new Ash.Signals.Signal(),
         popupClosedSignal: new Ash.Signals.Signal(),
         elementToggledSignal: new Ash.Signals.Signal(),
+        elementCreatedSignal: new Ash.Signals.Signal(),
         
         // player actions
         playerMovedSignal: new Ash.Signals.Signal(),

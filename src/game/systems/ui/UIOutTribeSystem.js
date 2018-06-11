@@ -204,6 +204,7 @@ define([
             this.uiFunctions.registerActionButtonListeners("#" + rowID);
             this.uiFunctions.generateButtonOverlays("#" + rowID);
             this.uiFunctions.generateCallouts("#" + rowID);
+            GlobalSignals.elementCreatedSignal.dispatch();
         },
         
         updateCampRow: function (node, rowID, isAlert, alerts) {

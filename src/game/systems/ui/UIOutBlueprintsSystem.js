@@ -99,6 +99,7 @@ define([
 			this.uiFunctions.generateButtonOverlays("#blueprints-pieces-list");
 			this.uiFunctions.generateCallouts("#blueprints-pieces-list");
 			this.uiFunctions.registerActionButtonListeners("#blueprints-pieces-list");
+            GlobalSignals.elementCreatedSignal.dispatch();
             
             this.uiFunctions.toggle("#blueprints-list-empty-message", $("#blueprints-pieces-list tr").length === 0);
         },

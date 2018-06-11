@@ -81,6 +81,7 @@ define([
             GlobalSignals.playerMovedSignal.add(function () { sys.updateTabVisibility(); });
             GlobalSignals.gameShownSignal.add(function () { sys.updateTabVisibility(); });
             GlobalSignals.elementToggledSignal.add(function () { sys.elementsVisibilityChanged = true; });
+            GlobalSignals.elementCreatedSignal.add(function () { sys.elementsVisibilityChanged = true; });
         },
     
         removeFromEngine: function (engine) {

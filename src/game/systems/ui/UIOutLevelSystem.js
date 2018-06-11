@@ -182,6 +182,7 @@ define([
 			this.updateOutImprovementsList(improvements);
 			this.updateOutImprovementsStatus(hasCamp, improvements);
 			
+            // TODO performance bottleneck
 			var hasAvailableImprovements = this.elements.outImprovementsTR.filter(":visible").length > 0;
 			var hasAvailableProjects = this.elements.outProjectsTR.filter(":visible").length > 0;
 			this.uiFunctions.toggle("#header-out-improvements", hasAvailableImprovements);
@@ -595,6 +596,7 @@ define([
             this.uiFunctions.registerActionButtonListeners("#table-out-actions-locales");
             this.uiFunctions.generateButtonOverlays("#table-out-actions-locales");
             this.uiFunctions.generateCallouts("#table-out-actions-locales");
+            GlobalSignals.elementCreatedSignal.dispatch();
 		},
 		
 		updateMovementRelatedActions: function () {
@@ -624,6 +626,7 @@ define([
             this.uiFunctions.registerActionButtonListeners("#table-out-actions-movement-related");
             this.uiFunctions.generateButtonOverlays("#table-out-actions-movement-related");
             this.uiFunctions.generateCallouts("#table-out-actions-movement-related");
+            GlobalSignals.elementCreatedSignal.dispatch();
 		},
         
         updateStaticSectorElements: function () {

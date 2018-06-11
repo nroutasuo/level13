@@ -198,6 +198,7 @@ define([
                 this.uiFunctions.registerActionButtonListeners("#fight-buttons-infightactions");
                 this.uiFunctions.generateButtonOverlays("#fight-buttons-infightactions");
                 this.uiFunctions.generateCallouts("#fight-buttons-infightactions");
+                GlobalSignals.elementCreatedSignal.dispatch();
             }
 		},
 		

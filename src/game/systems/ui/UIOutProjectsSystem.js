@@ -140,6 +140,7 @@ define([
                 this.uiFunctions.registerActionButtonListeners("#in-improvements-colony");
                 this.uiFunctions.generateButtonOverlays("#in-improvements-colony");
                 this.uiFunctions.generateCallouts("#in-improvements-colony");
+                GlobalSignals.elementCreatedSignal.dispatch();
             }
             
             this.tabCounts.current.visible.regular = visibleRegular;

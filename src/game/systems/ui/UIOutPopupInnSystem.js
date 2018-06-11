@@ -70,6 +70,7 @@ var UIOutPopupInnSystem = Ash.System.extend({
             }
 			this.uiFunctions.generateCallouts("#inn-popup-current-followers");
 			this.uiFunctions.generateButtonOverlays("#inn-popup-current-followers");
+            GlobalSignals.elementCreatedSignal.dispatch();
             
             var sys = this;
             $("table#inn-popup-current-followers button").click(function (e) {

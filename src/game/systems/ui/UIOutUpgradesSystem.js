@@ -1,9 +1,10 @@
 define([
     'ash',
+    'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/UpgradeConstants',
     'game/nodes/tribe/TribeUpgradesNode',
-], function (Ash, UIConstants, UpgradeConstants, TribeUpgradesNode) {
+], function (Ash, GlobalSignals, UIConstants, UpgradeConstants, TribeUpgradesNode) {
     var UIOutUpgradesSystem = Ash.System.extend({
 	
 		uiFunctions : null,
@@ -156,6 +157,7 @@ define([
 				this.uiFunctions.generateButtonOverlays("#blueprints-list");
 				this.uiFunctions.generateCallouts("#blueprints-list");
 				this.uiFunctions.registerActionButtonListeners("#blueprints-list");
+                GlobalSignals.elementCreatedSignal.dispatch();
 				this.lastUpdateUpgradeCount = this.tribeNodes.head.upgrades.boughtUpgrades.length;
 			}
 			

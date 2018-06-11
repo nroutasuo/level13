@@ -126,6 +126,7 @@ define([
                 sendTR += "<td class='minwidth'><button class='action btn-trade-caravans-outgoing-send' action='send_caravan_" + partner.campOrdinal + "'>Send</button></td></tr>";
                 $("#trade-caravans-outgoing-container table").append(sendTR);
             }
+            GlobalSignals.elementCreatedSignal.dispatch();
             
             // TODO animate transitions
             var sys = this;
@@ -252,6 +253,7 @@ define([
                 });
 
                 this.uiFunctions.generateCallouts("#trade-caravans-incoming-container table");
+                GlobalSignals.elementCreatedSignal.dispatch();
             }
             
             this.lastShownIncomingTraders = this.currentIncomingTraders;
