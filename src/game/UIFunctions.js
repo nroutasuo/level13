@@ -84,18 +84,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             });
             
             // Collapsible divs
-            $(".collapsible-header").click(function () {
-                var vasVisible = $(this).next(".collapsible-content").is(":visible");
-                $(this).toggleClass("collapsible-collapsed", vasVisible);
-                $(this).toggleClass("collapsible-open", !vasVisible);
-                $(this).next(".collapsible-content").slideToggle(300);
-                GlobalSignals.elementToggledSignal.dispatch($(this), !vasVisible);
-            });
-            $.each($(".collapsible-header"), function () {
-                $(this).next(".collapsible-content").slideToggle(300);
-                $(this).toggleClass("collapsible-collapsed", true);
-                $(this).toggleClass("collapsible-open", false);
-            });
+            this.registerCollapsibleContainerListeners("");
             
             // Steppers and stepper buttons
             this.registerStepperListeners("");
@@ -249,6 +238,21 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             
             // Buttons: Bag: Item details
             // some in UIOoutBagSystem
+        },
+        
+        registerCollapsibleContainerListeners: function (scope) {
+            $(scope + " .collapsible-header").click(function () {
+                var vasVisible = $(this).next(".collapsible-content").is(":visible");
+                $(this).toggleClass("collapsible-collapsed", vasVisible);
+                $(this).toggleClass("collapsible-open", !vasVisible);
+                $(this).next(".collapsible-content").slideToggle(300);
+                GlobalSignals.elementToggledSignal.dispatch($(this), !vasVisible);
+            });
+            $.each($(scope + " .collapsible-header"), function () {
+                $(this).next(".collapsible-content").slideToggle(300);
+                $(this).toggleClass("collapsible-collapsed", true);
+                $(this).toggleClass("collapsible-open", false);
+            });
         },
         
         registerStepperListeners: function (scope) {

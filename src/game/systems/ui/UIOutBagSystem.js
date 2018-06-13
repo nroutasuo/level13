@@ -15,7 +15,7 @@ define([
 
 		itemNodes: null,
         
-        craftableItemDefinitionList: [],
+        craftableItemDefinitions: {},
 		
 		bubbleNumber: -1,
         craftableItems: -1,
@@ -44,6 +44,7 @@ define([
 			this.itemNodes = engine.getNodeList(ItemsNode);
 			this.initButtonListeners();
 			this.initItemSlots();
+            this.initCraftingButtons();
 		},
 
 		initButtonListeners: function () {
@@ -99,6 +100,34 @@ define([
 			});
 		},
 		
+        initCraftingButtons: function () {
+			var itemDefinitions = this.getCraftableItemDefinitions();
+            var itemList;
+            var itemDefinition;
+            for (var type in itemDefinitions) {
+                itemList = itemDefinitions[type];
+                if (itemList.length === 0) continue;
+                var tbl = "<table id='self-craft-" + type + "'>";
+                for (var i in itemList) {
+                    itemDefinition = itemList[i];
+                    var trID = this.getItemCraftTRID(itemDefinition);
+                    tbl += "<tr id='" + trID + "'><td> " + this.makeCraftingButton(itemDefinition) + " </td></tr>";
+                }
+                tbl += "</table>";
+                var header = "<p id='world-upgrades-count' class='collapsible-header'>" + ItemConstants.itemTypes[type] + "<span class='header-count'>0</span></p>"
+                var content = "<div class='collapsible-content'>" + tbl + "</div>"
+                var containerID = this.getItemCraftContainerID(type);
+                var container = "<div class='collapsible-container' id='" + containerID + "'>" + header + content + "</div>";
+                $("#self-craft").append(container);
+            }
+            
+            this.uiFunctions.registerActionButtonListeners("#self-craft");
+            this.uiFunctions.registerCollapsibleContainerListeners("#self-craft");
+            this.uiFunctions.generateButtonOverlays("#self-craft");
+            this.uiFunctions.generateCallouts("#self-craft");
+            GlobalSignals.elementCreatedSignal.dispatch();
+        },
+        
 		removeFromEngine: function (engine) {
 			this.itemNodes = null;
 			$("button[action='discard_item']").click(null);
@@ -112,7 +141,7 @@ define([
 			
 			if (!isActive) {
                 this.updateItemCounts(isActive);
-                this.craftableItemDefinitionList = [];
+                this.craftableItemDefinitions = {};
                 return;
             }
 
@@ -146,85 +175,94 @@ define([
 			}
 		},
 
-		updateCrafting: function (isActive) { 
-            var requiresUpdate = false;
-            
-            if (isActive) {
-                var checkBoxHidden = !($("#checkbox-crafting-show-obsolete").is(':visible')) && $("#self-craft").is(":visible");
-                var showObsolete = this.isShowObsoleteChecked || checkBoxHidden;
-                requiresUpdate = $("#self-craft table tr").length !== this.craftableItems || showObsolete !== this.showObsolete;
-                this.showObsolete = showObsolete;
-            }
+		updateCrafting: function (isActive) {
+            var checkBoxHidden = !($("#checkbox-crafting-show-obsolete").is(':visible')) && $("#self-craft").is(":visible");
+            var showObsolete = this.isShowObsoleteChecked || checkBoxHidden;
 			
             this.craftableItems = 0;
 			this.numCraftableUnlockedUnseen = 0;
             this.numCraftableAvailableUnseen = 0;
 			
 			var itemsComponent = this.itemNodes.head.items;
-			var itemDefinitionList = this.getCraftableItemDefinitionList();
+			var itemDefinitions = this.getCraftableItemDefinitions();
 			var countObsolete = 0;
-            
-            if (requiresUpdate) $("#self-craft table").empty();
 			
 			var tr;
+            var itemList;
             var itemDefinition;
-			for (var j = 0; j < itemDefinitionList.length; j++) {
-				itemDefinition = itemDefinitionList[j];
-				var actionName = "craft_" + itemDefinition.id;         
-				var reqsCheck = this.playerActionsHelper.checkRequirements(actionName, false);
-                var ordinal = this.playerActionsHelper.getOrdinal(actionName);
-                var costFactor = this.playerActionsHelper.getCostFactor(actionName);
-                var hasCosts = Object.keys(this.playerActionsHelper.getCosts(actionName, ordinal, costFactor)).length > 0;
-                if (isActive && !hasCosts) {
-                    console.log("WARN: Craftable item has no costs: " + itemDefinition.id);
-                }
-				if (reqsCheck.value >= 1 || reqsCheck.reason === "Bag full.") {
+            for (var type in itemDefinitions) {
+                itemList = itemDefinitions[type];
+                var containerID = this.getItemCraftContainerID(type);
+                var numVisible = 0;
+                for (var i in itemList) {
+                    itemDefinition = itemList[i];
+                    var actionName = "craft_" + itemDefinition.id;         
+                    var reqsCheck = this.playerActionsHelper.checkRequirements(actionName, false);
+                    var ordinal = this.playerActionsHelper.getOrdinal(actionName);
+                    var costFactor = this.playerActionsHelper.getCostFactor(actionName);
+                    var hasCosts = Object.keys(this.playerActionsHelper.getCosts(actionName, ordinal, costFactor)).length > 0;
+                    
+                    if (isActive && !hasCosts) {
+                        console.log("WARN: Craftable item has no costs: " + itemDefinition.id);
+                    }
+                    
+                    var trID = this.getItemCraftTRID(itemDefinition);
+                    var tr = $("#" + trID);
+                    var isUnlocked = reqsCheck.value >= 1 || reqsCheck.reason === "Bag full.";
                     var isObsolete = this.isObsolete(itemDefinition);
-					if (isObsolete) countObsolete++;
-                    if (!isObsolete) {
-                        if (this.gameState.uiBagStatus.itemsCraftableUnlockedSeen.indexOf(itemDefinition.id) < 0) {
-                            if (isActive) {
-                                this.gameState.uiBagStatus.itemsCraftableUnlockedSeen.push(itemDefinition.id);
-                            } else {
-                                this.numCraftableUnlockedUnseen++;
+                    var isAvailable = isUnlocked && this.playerActionsHelper.checkAvailability(actionName, false);
+                    var isVisible = isUnlocked && (!isObsolete || showObsolete);
+                    
+                    if (isUnlocked && isObsolete) countObsolete++;
+                    
+                    if (isUnlocked) {
+                        if (!isObsolete) {
+                            if (this.gameState.uiBagStatus.itemsCraftableUnlockedSeen.indexOf(itemDefinition.id) < 0) {
+                                if (isActive) {
+                                    this.gameState.uiBagStatus.itemsCraftableUnlockedSeen.push(itemDefinition.id);
+                                } else {
+                                    this.numCraftableUnlockedUnseen++;
+                                }
+                            }
+                        }
+
+                        if (isVisible) {
+                            this.craftableItems++;
+
+                            if (isAvailable && !itemsComponent.contains(itemDefinition.name) && !isObsolete) {
+                                if (this.gameState.uiBagStatus.itemsCraftableAvailableSeen.indexOf(itemDefinition.id) < 0) {
+                                    if (isActive) {
+                                        this.gameState.uiBagStatus.itemsCraftableAvailableSeen.push(itemDefinition.id);
+                                    } else {
+                                        this.numCraftableAvailableUnseen++;
+                                    }
+                                }
                             }
                         }
                     }
                     
-					if (!isObsolete || showObsolete) {
-						var isAvailable = this.playerActionsHelper.checkAvailability(actionName, false);
-						if (requiresUpdate) {
-							tr = "<tr><td><button class='action' action='" + actionName + "'>" + itemDefinition.name + "</button></td></tr>";
-							$("#self-craft table").append(tr);
-						}
-                        
-                        this.craftableItems++;
-					
-						if (isAvailable && !itemsComponent.contains(itemDefinition.name) && !this.isObsolete(itemDefinition)) {
-                            if (this.gameState.uiBagStatus.itemsCraftableAvailableSeen.indexOf(itemDefinition.id) < 0) {
-                                if (isActive) {
-                                    this.gameState.uiBagStatus.itemsCraftableAvailableSeen.push(itemDefinition.id);
-                                } else {
-                                    this.numCraftableAvailableUnseen++;
-                                }
-                            }
-                        }
-					}
-				}
-			}
+                    if (isActive) {
+                        this.uiFunctions.toggle(tr, isVisible);
+                        if (isVisible) numVisible++;
+                    }
+                }
+                    
+                if (isActive) {
+                    this.uiFunctions.toggle($("#" + containerID), numVisible > 0);
+                    $("#" + containerID + " .header-count").text(" (" + numVisible + ")");
+                }
+            }
 			
             if (isActive) {
                 this.uiFunctions.toggle("#checkbox-crafting-show-obsolete", countObsolete > 0);
                 this.uiFunctions.toggle("#label-crafting-show-obsolete", countObsolete > 0);
             }
-
-			if (requiresUpdate) {
-				this.uiFunctions.registerActionButtonListeners("#self-craft");
-				this.uiFunctions.generateButtonOverlays("#self-craft");
-				this.uiFunctions.generateCallouts("#self-craft");
-                GlobalSignals.elementCreatedSignal.dispatch();
-			}
 		},
+        
+        makeCraftingButton: function(itemDefinition) {
+            var actionName = "craft_" + itemDefinition.id;    
+            return "<button class='action' action='" + actionName + "'>" + itemDefinition.name + "</button>";
+        },
         
         updateUseItems: function () {
             var itemDefinitionList = [];
@@ -423,24 +461,32 @@ define([
             return true;
         },
         
-        getCraftableItemDefinitionList: function () {
-            if (this.craftableItemDefinitionList && this.craftableItemDefinitionList.length > 0) return this.craftableItemDefinitionList;
+        getCraftableItemDefinitions: function () {
+            if (this.craftableItemDefinitions && this.craftableItemDefinitions.length > 0) return this.craftableItemDefinitions;
             
-            this.craftableItemDefinitionList = [];
+            this.craftableItemDefinitions = {};
             var itemList;
             var itemDefinition;
             for (var type in ItemConstants.itemDefinitions) {
                 itemList = ItemConstants.itemDefinitions[type];
+                this.craftableItemDefinitions[type] = []
                 for (var i in itemList) {
                     itemDefinition = itemList[i];
                     if (itemDefinition.craftable)
-                        this.craftableItemDefinitionList.push(itemDefinition);
+                        this.craftableItemDefinitions[type].push(itemDefinition);
                 }
             }
 
-            this.craftableItemDefinitionList = this.craftableItemDefinitionList.sort(UIConstants.sortItemsByType);
-            return this.craftableItemDefinitionList;
+            return this.craftableItemDefinitions;
         },
+        
+        getItemCraftTRID: function (itemDefinition) {
+            return "tr-craft-item-" + itemDefinition.id;
+        },
+        
+        getItemCraftContainerID: function (type) {
+            return "container-craft-items-" + type;
+        }
     
 	});
 
