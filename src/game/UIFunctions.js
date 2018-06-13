@@ -168,30 +168,38 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             var playerActions = this.playerActions;
             
             // All action buttons
-            $(scope + " button.action").click(function (e) {
-                var action = $(this).attr("action");
-                if (!action) {
-                    console.log("No action mapped for button.");
-                    return;   
-                }
-                
-                var param = null;
-                var actionIDParam = playerActions.playerActionsHelper.getActionIDParam(action);
-                if (actionIDParam) param = actionIDParam;                
-                var isProject = $(this).hasClass("action-level-project");
-                if (isProject) param = $(this).attr("sector");
-                
-                var locationKey = uiFunctions.getLocationKey($(this));
-                var isStarted = playerActions.startAction(action, param);
-                if (!isStarted)
+            $.each($(scope + " button.action"), function () {
+                var $element = $(this);
+                if ($element.hasClass("click-bound")) {
+                    console.log("WARN: trying to bind click twice! id: " + $element.attr("id"));
                     return;
-                
-                var baseId = playerActions.playerActionsHelper.getBaseActionID(action);
-                var duration = PlayerActionConstants.getDuration(baseId);
-                if (duration > 0) {
-                    uiFunctions.gameState.setActionDuration(action, locationKey, duration);
-                    uiFunctions.startButtonDuration($(this), duration);
                 }
+                $element.addClass("click-bound");
+                $element.click(function (e) {
+                    var action = $(this).attr("action");
+                    if (!action) {
+                        console.log("WARN: No action mapped for button.");
+                        return;   
+                    }
+
+                    var param = null;
+                    var actionIDParam = playerActions.playerActionsHelper.getActionIDParam(action);
+                    if (actionIDParam) param = actionIDParam;                
+                    var isProject = $(this).hasClass("action-level-project");
+                    if (isProject) param = $(this).attr("sector");
+
+                    var locationKey = uiFunctions.getLocationKey($(this));
+                    var isStarted = playerActions.startAction(action, param);
+                    if (!isStarted)
+                        return;
+
+                    var baseId = playerActions.playerActionsHelper.getBaseActionID(action);
+                    var duration = PlayerActionConstants.getDuration(baseId);
+                    if (duration > 0) {
+                        uiFunctions.gameState.setActionDuration(action, locationKey, duration);
+                        uiFunctions.startButtonDuration($(this), duration);
+                    }
+                });
             });
             
             // Special actions
