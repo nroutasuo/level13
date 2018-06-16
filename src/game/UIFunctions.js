@@ -241,17 +241,13 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         },
         
         registerCollapsibleContainerListeners: function (scope) {
+            var sys = this;
             $(scope + " .collapsible-header").click(function () {
-                var vasVisible = $(this).next(".collapsible-content").is(":visible");
-                $(this).toggleClass("collapsible-collapsed", vasVisible);
-                $(this).toggleClass("collapsible-open", !vasVisible);
-                $(this).next(".collapsible-content").slideToggle(300);
-                GlobalSignals.elementToggledSignal.dispatch($(this), !vasVisible);
+                var wasVisible = $(this).next(".collapsible-content").is(":visible");
+                sys.toggleCollapsibleContainer($(this), !wasVisible);
             });
             $.each($(scope + " .collapsible-header"), function () {
-                $(this).next(".collapsible-content").slideToggle(300);
-                $(this).toggleClass("collapsible-collapsed", true);
-                $(this).toggleClass("collapsible-open", false);
+                sys.toggleCollapsibleContainer($(this), false);
             });
         },
         
@@ -572,6 +568,26 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                     $(element).attr("data-toggling", "false");
 				});
 			}
+        },
+        
+        toggleCollapsibleContainer: function (element, show) {
+            var $element = typeof(element) === "string" ? $(element) : element;
+            if (show) {
+                var group = $element.parents(".collapsible-container-group");
+                if (group.length > 0) {
+                    var sys = this;
+                    $.each($(group).find(".collapsible-header"), function () {
+                        var $child = $(this);
+                        if ($child[0] !== $element[0]) {
+                            sys.toggleCollapsibleContainer($child, false);
+                        }
+                    });
+                }
+            }
+            $element.toggleClass("collapsible-collapsed", !show);
+            $element.toggleClass("collapsible-open", show);
+            this.slideToggleIf($element.next(".collapsible-content"), null, show, 300, 200);
+            GlobalSignals.elementToggledSignal.dispatch($element, show);
         },
         
         tabToggleIf: function(element, replacement, show, durationIn, durationOut) {

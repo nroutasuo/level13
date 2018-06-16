@@ -45,6 +45,7 @@ define([
 			this.initButtonListeners();
 			this.initItemSlots();
             this.initCraftingButtons();
+            GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 		},
 
 		initButtonListeners: function () {
@@ -104,6 +105,7 @@ define([
 			var itemDefinitions = this.getCraftableItemDefinitions();
             var itemList;
             var itemDefinition;
+            var div = "<div class='collapsible-container-group'>";
             for (var type in itemDefinitions) {
                 itemList = itemDefinitions[type];
                 if (itemList.length === 0) continue;
@@ -114,13 +116,14 @@ define([
                     tbl += "<tr id='" + trID + "'><td> " + this.makeCraftingButton(itemDefinition) + " </td></tr>";
                 }
                 tbl += "</table>";
-                var header = "<p id='world-upgrades-count' class='collapsible-header'>" + ItemConstants.itemTypes[type] + "<span class='header-count'>0</span></p>"
+                var header = "<p class='collapsible-header'>" + ItemConstants.itemTypes[type] + "<span class='header-count'>0</span></p>"
                 var content = "<div class='collapsible-content'>" + tbl + "</div>"
                 var containerID = this.getItemCraftContainerID(type);
                 var container = "<div class='collapsible-container' id='" + containerID + "'>" + header + content + "</div>";
-                $("#self-craft").append(container);
+                div = div + container;
             }
-            
+            div = div + "</div>";
+            $("#self-craft").append(div);
             this.uiFunctions.registerActionButtonListeners("#self-craft");
             this.uiFunctions.registerCollapsibleContainerListeners("#self-craft");
             this.uiFunctions.generateButtonOverlays("#self-craft");
@@ -131,6 +134,7 @@ define([
 		removeFromEngine: function (engine) {
 			this.itemNodes = null;
 			$("button[action='discard_item']").click(null);
+            GlobalSignals.removeAll(this);
 		},
 
 		update: function (time) {
@@ -145,9 +149,6 @@ define([
                 return;
             }
 
-			// Header
-			this.elements.tabHeader.text("Bag");
-
 			var itemsComponent = this.itemNodes.head.items;
 			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
 			var uniqueItems = itemsComponent.getUnique(inCamp);
@@ -155,6 +156,31 @@ define([
 			this.updateItems(uniqueItems);
             this.updateUseItems();
 		},
+        
+        refresh: function () {
+			this.elements.tabHeader.text("Bag");
+            
+            var showObsolete = this.showObsolete();
+			var itemDefinitions = this.getCraftableItemDefinitions();
+            var itemList;
+            var itemDefinition;
+            // close all but first
+            var firstFound = false;
+            for (var type in itemDefinitions) {
+                itemList = itemDefinitions[type];
+                var containerID = this.getItemCraftContainerID(type);
+                var numVisible = 0;     
+                for (var i in itemList) {                    
+                    itemDefinition = itemList[i];
+                    var isUnlocked = this.isItemUnlocked(itemDefinition);
+                    var isObsolete = this.isObsolete(itemDefinition);
+                    var isVisible = isUnlocked && (!isObsolete || showObsolete);
+                    if (isVisible) numVisible++;
+                }
+                this.uiFunctions.toggleCollapsibleContainer("#" + containerID + " .collapsible-header", !firstFound && numVisible > 0);
+                if (numVisible > 0) firstFound = true;
+            }
+        },
         
         updateBubble: function () {
             var newBubbleNumber = Math.max(0, this.numOwnedUnseen + this.numCraftableUnlockedUnseen + this.numCraftableAvailableUnseen);
@@ -176,8 +202,7 @@ define([
 		},
 
 		updateCrafting: function (isActive) {
-            var checkBoxHidden = !($("#checkbox-crafting-show-obsolete").is(':visible')) && $("#self-craft").is(":visible");
-            var showObsolete = this.isShowObsoleteChecked || checkBoxHidden;
+            var showObsolete = this.showObsolete();
 			
             this.craftableItems = 0;
 			this.numCraftableUnlockedUnseen = 0;
@@ -197,7 +222,6 @@ define([
                 for (var i in itemList) {
                     itemDefinition = itemList[i];
                     var actionName = "craft_" + itemDefinition.id;         
-                    var reqsCheck = this.playerActionsHelper.checkRequirements(actionName, false);
                     var ordinal = this.playerActionsHelper.getOrdinal(actionName);
                     var costFactor = this.playerActionsHelper.getCostFactor(actionName);
                     var hasCosts = Object.keys(this.playerActionsHelper.getCosts(actionName, ordinal, costFactor)).length > 0;
@@ -208,7 +232,7 @@ define([
                     
                     var trID = this.getItemCraftTRID(itemDefinition);
                     var tr = $("#" + trID);
-                    var isUnlocked = reqsCheck.value >= 1 || reqsCheck.reason === "Bag full.";
+                    var isUnlocked = this.isItemUnlocked(itemDefinition);
                     var isObsolete = this.isObsolete(itemDefinition);
                     var isAvailable = isUnlocked && this.playerActionsHelper.checkAvailability(actionName, false);
                     var isVisible = isUnlocked && (!isObsolete || showObsolete);
@@ -429,6 +453,23 @@ define([
         
         onObsoleteToggled: function () {
             this.isShowObsoleteChecked = $("#checkbox-crafting-show-obsolete").is(':checked');
+        },
+        
+        onTabChanged: function () {
+            if (this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.bag) {
+                this.refresh();
+            }
+        },
+        
+        showObsolete: function () {
+            var checkBoxHidden = !($("#checkbox-crafting-show-obsolete").is(':visible')) && $("#self-craft").is(":visible");
+            return this.isShowObsoleteChecked || checkBoxHidden;
+        },
+        
+        isItemUnlocked: function (itemDefinition) {
+            var actionName = "craft_" + itemDefinition.id;      
+            var reqsCheck = this.playerActionsHelper.checkRequirements(actionName, false);
+            return reqsCheck.value >= 1 || reqsCheck.reason === "Bag full.";
         },
         
         isObsolete: function (itemVO) {
