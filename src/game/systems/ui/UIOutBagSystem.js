@@ -109,11 +109,11 @@ define([
             for (var type in itemDefinitions) {
                 itemList = itemDefinitions[type];
                 if (itemList.length === 0) continue;
-                var tbl = "<table id='self-craft-" + type + "'>";
+                var tbl = "<table id='self-craft-" + type + "' class='fullwidth'>";
                 for (var i in itemList) {
                     itemDefinition = itemList[i];
                     var trID = this.getItemCraftTRID(itemDefinition);
-                    tbl += "<tr id='" + trID + "'><td> " + this.makeCraftingButton(itemDefinition) + " </td></tr>";
+                    tbl += "<tr id='" + trID + "'><td class='list-main'> " + this.makeCraftingButton(itemDefinition) + " </td></tr>";
                 }
                 tbl += "</table>";
                 var header = "<p class='collapsible-header'>" + ItemConstants.itemTypes[type] + "<span class='header-count'>0</span></p>"
