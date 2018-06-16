@@ -95,8 +95,9 @@ define([
 			$.each($("#container-equipment-slots .item-slot"), function () {
 				var rawType = $(this).attr("id").split("-")[2];
                 var typeDisplay = ItemConstants.itemTypes[rawType].toLowerCase();
-				$(this).append("<span class='item-slot-type'>" + typeDisplay + "</span>");
-				$(this).append("<span class='item-slot-effect'></span>");
+				$(this).append("<span class='item-slot-type-empty'>" + typeDisplay + "</span>");
+				$(this).append("<span class='item-slot-type-equipped'>" + typeDisplay + "</span>");
+				$(this).append("<span class='item-slot-name'></span>");
 				$(this).append("<div class='item-slot-image'></div>");
 			});
 		},
@@ -442,12 +443,13 @@ define([
                     slot = $("#item-slot-clothing_hands");
                     break;                    
             }
-                
-			$(slot).children(".item-slot-effect").html(itemVO ? UIConstants.getItemBonusDescription(itemVO, false, true) : "");
+            
 			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemVO, 0, false, false) : "");
+			$(slot).children(".item-slot-name").html(itemVO ? itemVO.name.toLowerCase() : "");
 			
-			this.uiFunctions.toggle($(slot).children(".item-slot-type"), itemVO === null);
-			this.uiFunctions.toggle($(slot).children(".item-slot-effect"), itemVO !== null);
+			this.uiFunctions.toggle($(slot).children(".item-slot-type-empty"), itemVO === null);
+			this.uiFunctions.toggle($(slot).children(".item-slot-type-equipped"), itemVO !== null);
+			this.uiFunctions.toggle($(slot).children(".item-slot-name"), itemVO !== null);
 			$(slot).toggleClass("item-slot-equipped", itemVO !== null);
 		},
         

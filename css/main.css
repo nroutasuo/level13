@@ -592,10 +592,14 @@ li.li-item-negative,
   border: 1px solid #ee1111 !important;
   background: rgba(245, 0, 0, 0.1) !important;
 }
-.item-slot-effect {
+.item-slot-effect,
+.item-slot-name,
+.item-slot-type-equipped {
   background-color: #333;
 }
-.sunlit .item-slot-effect {
+.sunlit .item-slot-effect,
+.sunlit .item-slot-name,
+.sunlit .item-slot-type-equipped {
   background-color: #ccc;
 }
 .lvl13-fade-down {
@@ -792,8 +796,8 @@ ul.resultlist-positive li:before {
   opacity: 80%;
 }
 .item-slot-big {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
 }
 .item-slot-small {
   width: 37px;
@@ -804,30 +808,48 @@ div.item-slot > span {
   position: absolute;
   font-size: 85%;
 }
-.item-slot-type {
+.item-slot-type-empty {
   text-align: center;
-  width: 80px;
-  height: 80px;
-  line-height: 80px;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
   display: inline-block;
   opacity: 0.25;
   font-style: oblique;
+}
+.item-slot-type-equipped {
+  text-align: center;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
+  display: inline-block;
 }
 .item-slot-image {
   position: absolute;
 }
 .item-slot-big .item-slot-image {
-  left: 22px;
-  top: 3px;
+  left: 32px;
+  top: 30px;
 }
-.item-slot-effect {
+.item-slot-effect,
+.item-slot-name,
+.item-slot-type-equipped {
   width: 100%;
-  bottom: 0px;
   text-align: center;
   overflow: hidden;
-  height: 2em;
   line-height: 1em;
-  padding: 0.25em 0;
+  height: 1em;
+  padding: 0.35em 0;
+}
+.item-slot-effect,
+.item-slot-name {
+  bottom: 0px;
+}
+.item-slot-effect {
+  display: none;
+}
+.item-slot-type-equipped {
+  top: 0px;
 }
 .item-slot-simple {
   border-width: 0px !important;
