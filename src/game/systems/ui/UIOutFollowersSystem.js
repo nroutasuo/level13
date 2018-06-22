@@ -113,7 +113,7 @@ define([
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
 				if (item.type !== ItemConstants.itemTypes.follower || !item.equipped) continue;
-				var li = "<li>" + UIConstants.getItemDiv(item, -1, false, false) + "</li>";
+				var li = "<li>" + UIConstants.getItemDiv(item, -1, UIConstants.getItemCallout(item)) + "</li>";
 				$("#list-followers").append(li);
 			}
 

@@ -730,7 +730,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             $("table#inn-popup-options-followers").append("<tr></tr>");
             for (var i = 0; i < availableFollowers.length; i++) {
                 var td = "<td id='td-item-use_in_inn_select-" + availableFollowers[i].id + "'>";
-                td += UIConstants.getItemDiv(availableFollowers[i], false);
+                td += UIConstants.getItemDiv(availableFollowers[i], false, UIConstants.getItemCallout(item));
                 td += "</td>";
                 $("table#inn-popup-options-followers tr").append(td);
             }

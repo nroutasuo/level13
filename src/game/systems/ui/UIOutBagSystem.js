@@ -20,7 +20,6 @@ define([
 		bubbleNumber: -1,
         craftableItems: -1,
         lastShownCraftableItems: -1,
-        numOwned: -1,
         numOwnedUnseen: 0,
 		numCraftableUnlockedUnseen: -1,
 		numCraftableAvailableUnseen: -1,
@@ -46,6 +45,8 @@ define([
 			this.initItemSlots();
             this.initCraftingButtons();
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
+            GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.onInventoryChanged);
+            GlobalSignals.add(this, GlobalSignals.equipmentChangedSignal, this.onEquipmentChanged);
 		},
 
 		initButtonListeners: function () {
@@ -82,12 +83,6 @@ define([
 						system.updateItemLists();
 					}
 				);
-			});
-			$("button[action='equip_item']").click(function (e) {
-				var item = itemsComponent.selectedItem;
-				if (item.equipped) itemsComponent.unequip(item);
-				else itemsComponent.equip(item);
-				system.updateItemLists();
 			});
 		},
 
@@ -149,12 +144,7 @@ define([
                 this.craftableItemDefinitions = {};
                 return;
             }
-
-			var itemsComponent = this.itemNodes.head.items;
-			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
-			var uniqueItems = itemsComponent.getUnique(inCamp);
             
-			this.updateItems(uniqueItems);
             this.updateUseItems();
 		},
         
@@ -181,6 +171,8 @@ define([
                 this.uiFunctions.toggleCollapsibleContainer("#" + containerID + " .collapsible-header", !firstFound && numVisible > 0);
                 if (numVisible > 0) firstFound = true;
             }
+            
+            this.updateItems();
         },
         
         updateBubble: function () {
@@ -193,13 +185,8 @@ define([
             this.uiFunctions.toggle("#switch-bag .bubble", this.bubbleNumber > 0);
         },
 
-		updateItems: function (uniqueItems) {
-			if (uniqueItems.length !== this.numOwned) {
-				this.numOwned = uniqueItems.length;
-				this.updateItemLists();
-			} else {
-				this.refreshItemLists();
-			}
+		updateItems: function () {
+            this.updateItemLists();
 		},
 
 		updateCrafting: function (isActive) {
@@ -363,7 +350,6 @@ define([
 				var item = items[i];
                 this.updateItemCount(isActive, item);
 				var count = itemsComponent.getCount(item, inCamp);
-				var smallSlot = UIConstants.getItemSlot(item, count);
 				switch (item.type) {
 					case ItemConstants.itemTypes.light:
 					case ItemConstants.itemTypes.weapon:
@@ -374,15 +360,17 @@ define([
                     case ItemConstants.itemTypes.clothing_hands:
 					case ItemConstants.itemTypes.shoes:
 					case ItemConstants.itemTypes.bag:
+                        var showCount = count;
+                        var canEquip = !item.equipped;
 						if (item.equipped) {
 							this.updateItemSlot(item.type, item);
-							if (count > 1) {
-								smallSlot = UIConstants.getItemSlot(item, count - 1);
-								$("#bag-items").append(smallSlot);
-							}
-						} else {
-							$("#bag-items").append(smallSlot);
+							showCount = count - 1;
 						}
+                        if (showCount > 0) {
+                            var options = { canEquip: canEquip, isEquipped: item.equipped };
+                            var smallSlot = UIConstants.getItemSlot(item, showCount, false, false, true, options);
+                            $("#bag-items").append(smallSlot);
+                        }
 						break;
 					
 					case ItemConstants.itemTypes.follower:
@@ -390,12 +378,14 @@ define([
 						break;
 					
 					default:
+                        var smallSlot = UIConstants.getItemSlot(item, count);
 						$("#bag-items").append(smallSlot);
 						break;
 				}
 			}
 
             this.uiFunctions.generateCallouts("#container-tab-two-bag .three-quarters");
+            this.uiFunctions.registerActionButtonListeners("#bag-items");
 		},
         
         updateItemCount: function (isActive, item) {
@@ -409,20 +399,6 @@ define([
                 }
             }
         },
-
-		refreshItemLists: function () {
-			var itemsComponent = this.itemNodes.head.items;
-			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
-			$.each($("#bag-items li .item"), function () {
-				var id = $(this).attr("data-itemid");
-				var count = itemsComponent.getCountById(id, inCamp);
-                var item = itemsComponent.getItem(id);
-                if (item) {
-                    var showCount = item.equipped ? count - 1 : count;
-                    $(this).find(".item-count").text(showCount + "x");
-                }
-			});
-		},
 		
 		updateItemSlot: function (itemType, itemVO) {
 			var slot = $("#item-slot-" + itemType.toLowerCase());
@@ -444,7 +420,7 @@ define([
                     break;                    
             }
             
-			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemVO, 0, false, false) : "");
+			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemVO, 0, UIConstants.getItemCallout(itemVO)) : "");
 			$(slot).children(".item-slot-name").html(itemVO ? itemVO.name.toLowerCase() : "");
 			
 			this.uiFunctions.toggle($(slot).children(".item-slot-type-empty"), itemVO === null);
@@ -461,6 +437,14 @@ define([
             if (this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.bag) {
                 this.refresh();
             }
+        },
+        
+        onInventoryChanged: function () {
+            this.updateItems();
+        },
+        
+        onEquipmentChanged: function () {
+            this.updateItems();
         },
         
         showObsolete: function () {

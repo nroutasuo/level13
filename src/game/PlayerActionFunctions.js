@@ -213,8 +213,9 @@ define(['ash',
                 case "use_in_hospital": this.useHospital(param); break;
                 case "use_in_hospital2": this.useHospital2(param); break;
                 case "use_in_inn": this.useInn(param); break;
-                // Crafting
+                // Item actions
                 case "craft": this.craftItem(param); break;
+                case "equip": this.equipItem(param); break;
                 case "use_item": this.useItem(param); break;
                 case "use_item_fight": this.useItemFight(param); break;
                 // Non-improvement actions
@@ -1209,6 +1210,13 @@ define(['ash',
             this.forceResourceBarUpdate();
             GlobalSignals.inventoryChangedSignal.dispatch();
             this.save();
+        },
+        
+        equipItem: function (itemID) {
+            var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+            var item = itemsComponent.getItem(itemID);
+            itemsComponent.equip(item);
+            GlobalSignals.equipmentChangedSignal.dispatch();
         },
         
         useItem: function (itemId) {

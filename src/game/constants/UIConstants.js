@@ -32,7 +32,7 @@ define(['ash',
 			metal: "img/res-metal.png",
 		},
         
-		getItemDiv: function (item, count, smallCallout, hideCallout) {
+		getItemDiv: function (item, count, calloutContent) {
 			var url = item ? item.icon : null;
 			var hasCount = count && count > 0;
 			
@@ -41,18 +41,8 @@ define(['ash',
 			if (hasCount) classes += " item-with-count";
 			var div = "<div class='" + classes + (item ? "' data-itemid='" + item.id + "' data-iteminstanceid='" + item.itemID + "'>" : ">");
 			
-			if (item && !hideCallout) {
-				var detail = " (" + this.getItemBonusDescription(item, true, false) + ")";
-                if (detail.length < 5) detail = "";
-                var weight = BagConstants.getItemCapacity(item);
-				
-				var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + item.type + " " + detail;
-                if (item.type !== ItemConstants.itemTypes.follower) 
-                    itemCalloutContent += "</br>Weight: " + weight;
-                itemCalloutContent += "</br>" + item.description;
-				if (smallCallout) itemCalloutContent = item.name + (detail.length > 0 ? " " + detail : "");
-				
-				div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(itemCalloutContent) + "'>";
+			if (item && calloutContent) {
+				div += "<div class='info-callout-target info-callout-target-small' description='" + this.cleanupText(calloutContent) + "'>";
 			}
 			
 			if (item) div += "<img src='" + url + "'/>";
@@ -60,20 +50,45 @@ define(['ash',
 			if (hasCount)
 				div += "<div class='item-count lvl13-box-3'>" + count + "x </div>";
 			
-			if (!hideCallout) div += "</div>";
+			if (calloutContent) div += "</div>";
 			
 			div += "</div>"
 			
 			return div;
 		},
 		
-		getItemSlot: function (item, count, isLost, simple) {
-			var imageDiv = "<div class='item-slot-image'>" + this.getItemDiv(item, count, false, false) + "</div>";
+		getItemSlot: function (item, count, isLost, simple, showBagOptions, bagOptions) {
+			var imageDiv = "<div class='item-slot-image'>" + this.getItemDiv(item, count, this.getItemCallout(item, false, showBagOptions, bagOptions)) + "</div>";
             var liclasses = "item-slot item-slot-small lvl13-box-1 ";
             if (simple) liclasses += "item-slot-simple";
             if (isLost) liclasses += "item-slot-lost";
 			return "<li class='" + liclasses + "'>" + imageDiv + "</li>"
 		},
+        
+        getItemCallout: function (item, smallCallout, showBagOptions, bagOptions) {
+            var detail = " (" + this.getItemBonusDescription(item, true, false) + ")";
+            if (detail.length < 5) detail = "";
+            var weight = BagConstants.getItemCapacity(item);
+            var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + item.type + " " + detail;
+            if (item.type !== ItemConstants.itemTypes.follower) 
+                itemCalloutContent += "</br>Weight: " + weight;
+            itemCalloutContent += "</br>" + item.description;
+            if (smallCallout) itemCalloutContent = item.name + (detail.length > 0 ? " " + detail : "");
+            
+            if (showBagOptions) {
+                var options = "<div class='item-bag-options'>";
+                if (bagOptions.canEquip) {
+                    var action = "equip_" + item.id;
+                    options += "<button class='action btn-narrow' action='" + action + "'>Equip</button>";
+                } else if (bagOptions.isEquipped) {
+                    options += "Equipped";
+                }
+                options += "</div>";
+                itemCalloutContent += options;
+            }
+            
+            return itemCalloutContent;
+        },
 		
 		getItemList: function (items) {
 			var html = "";
@@ -91,7 +106,7 @@ define(['ash',
 			for (var key in itemsById) {
 				var item = itemsById[key];
 				var amount = itemsCounted[key];
-				html += "<li>" + this.getItemDiv(item, amount, true, false) + "</li>";
+				html += "<li>" + this.getItemDiv(item, amount, this.getItemCallout(item, true)) + "</li>";
 			}
 			return html;
 		},

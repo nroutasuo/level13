@@ -592,12 +592,10 @@ li.li-item-negative,
   border: 1px solid #ee1111 !important;
   background: rgba(245, 0, 0, 0.1) !important;
 }
-.item-slot-effect,
-.item-slot-name,
+item-slot-name,
 .item-slot-type-equipped {
   background-color: #333;
 }
-.sunlit .item-slot-effect,
 .sunlit .item-slot-name,
 .sunlit .item-slot-type-equipped {
   background-color: #ccc;
@@ -831,17 +829,16 @@ div.item-slot > span {
   left: 32px;
   top: 30px;
 }
-.item-slot-effect,
 .item-slot-name,
 .item-slot-type-equipped {
   width: 100%;
   text-align: center;
   overflow: hidden;
   line-height: 1em;
-  height: 1em;
+  height: auto;
+  max-height: 1.9em;
   padding: 0.35em 0;
 }
-.item-slot-effect,
 .item-slot-name {
   bottom: 0px;
 }
@@ -853,6 +850,9 @@ div.item-slot > span {
 }
 .item-slot-simple {
   border-width: 0px !important;
+}
+.item-bag-options {
+  margin-top: 5px;
 }
 .listheader {
   margin: 6px 0px 2px 0px;
@@ -1202,6 +1202,9 @@ button.btn-glyph {
 }
 button.btn-mini {
   width: auto;
+  padding: 4px 8px;
+}
+.info-callout button {
   padding: 4px 8px;
 }
 button.btn-meta {

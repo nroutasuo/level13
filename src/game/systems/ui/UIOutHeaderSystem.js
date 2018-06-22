@@ -310,7 +310,7 @@ define([
                     var count = itemsComponent.getCount(item, inCamp);
                     switch (item.type) {                        
                         case ItemConstants.itemTypes.follower:
-                            $("ul#list-items-followers").append("<li>" + UIConstants.getItemDiv(item, -1, true, false) + "</li>");
+                            $("ul#list-items-followers").append("<li>" + UIConstants.getItemDiv(item, -1, UIConstants.getItemCallout(item, true)) + "</li>");
                             break;
                             
                         case ItemConstants.itemTypes.bag:
@@ -323,11 +323,11 @@ define([
                         case ItemConstants.itemTypes.light:
                         case ItemConstants.itemTypes.weapon:
                             if (item.equipped)
-                                $("ul#list-header-equipment").append("<li>" + UIConstants.getItemDiv(item, -1, true, false) + "</li>");
+                                $("ul#list-header-equipment").append("<li>" + UIConstants.getItemDiv(item, -1, UIConstants.getItemCallout(item, true)) + "</li>");
                             break;
                         
                         case ItemConstants.itemTypes.exploration:
-                            $("ul#list-header-items").append("<li>" + UIConstants.getItemDiv(item, count, true, false) + "</li>");
+                            $("ul#list-header-items").append("<li>" + UIConstants.getItemDiv(item, count, UIConstants.getItemCallout(item, true)) + "</li>");
                             break;
                     }
                 }

@@ -1017,6 +1017,7 @@ define([
 			if (action.indexOf("scout_locale_i") >= 0) return "scout_locale_i";
 			if (action.indexOf("scout_locale_u") >= 0) return "scout_locale_u";
 			if (action.indexOf("craft_") >= 0) return "craft";
+			if (action.indexOf("equip_") >= 0) return "equip";
             if (action.indexOf("use_item_fight") >= 0) return "use_item_fight";
             if (action.indexOf("use_item") >= 0) return "use_item";
 			if (action.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
@@ -1130,6 +1131,7 @@ define([
             var baseActionID = this.getBaseActionID(action);
             switch (baseActionID) {
                 case "craft": return true;
+                case "equip": return true;
                 case "move_camp_level": return true;
                 case "despair": return true;
                 case "accept_inventory": return true;
