@@ -1017,6 +1017,7 @@ define([
 			if (action.indexOf("scout_locale_i") >= 0) return "scout_locale_i";
 			if (action.indexOf("scout_locale_u") >= 0) return "scout_locale_u";
 			if (action.indexOf("craft_") >= 0) return "craft";
+			if (action.indexOf("discard_") >= 0) return "discard";
 			if (action.indexOf("unequip_") >= 0) return "unequip";
 			if (action.indexOf("equip_") >= 0) return "equip";
             if (action.indexOf("use_item_fight") >= 0) return "use_item_fight";

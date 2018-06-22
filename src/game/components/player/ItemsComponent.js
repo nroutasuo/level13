@@ -361,9 +361,11 @@ function (Ash, ItemVO, ItemConstants) {
                     var carried = componentValues.items[key][i].carried;
                     var item = ItemConstants.getItemByID(itemID).clone();
                     if (item) {
-                        item.equipped = componentValues.items[key][i].equipped;
                         item.itemID = componentValues.items[key][i].itemID;
                         this.addItem(item, carried);
+                        if (componentValues.items[key][i].equipped) {
+                            this.equip(item);
+                        }
                     }
                 }
             }

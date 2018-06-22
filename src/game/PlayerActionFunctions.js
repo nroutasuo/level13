@@ -217,6 +217,7 @@ define(['ash',
                 case "craft": this.craftItem(param); break;
                 case "equip": this.equipItem(param); break;
                 case "unequip": this.unequipItem(param); break;
+                case "discard": this.discardItem(param); break;
                 case "use_item": this.useItem(param); break;
                 case "use_item_fight": this.useItemFight(param); break;
                 // Non-improvement actions
@@ -1225,6 +1226,18 @@ define(['ash',
             var item = itemsComponent.getItem(itemID);
             itemsComponent.unequip(item);
             GlobalSignals.equipmentChangedSignal.dispatch();
+        },
+        
+        discardItem: function (itemID) {
+            var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+            var item = itemsComponent.getItem(itemID);
+            uiFunctions.showConfirmation(
+                "Are you sure you want to discard this item?",
+                function () {
+                    itemsComponent.discardItem(item);
+                    GlobalSignals.equipmentChangedSignal.dispatch();
+                }
+            );
         },
         
         useItem: function (itemId) {

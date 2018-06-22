@@ -41,49 +41,11 @@ define([
 
 		addToEngine: function (engine) {
 			this.itemNodes = engine.getNodeList(ItemsNode);
-			this.initButtonListeners();
 			this.initItemSlots();
             this.initCraftingButtons();
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
             GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.onInventoryChanged);
             GlobalSignals.add(this, GlobalSignals.equipmentChangedSignal, this.onEquipmentChanged);
-		},
-
-		initButtonListeners: function () {
-			var itemsComponent = this.itemNodes.head.items;
-			var uiFunctions = this.uiFunctions;
-			var system = this;
-			$("button[action='discard_item']").click(function (e) {
-				var item = itemsComponent.selectedItem;
-				var isDiscardable = itemsComponent.isItemDiscardable(item);
-				if (!isDiscardable) {
-					uiFunctions.showInfoPopup("Warning", "This item can't be discarded.");
-					return;
-				}
-				var questionS = item.type === ItemConstants.itemTypes.follower ?
-					"Are you sure you want to disband this follower?" : "Are you sure you want to discard this item?";
-				uiFunctions.showConfirmation(
-					questionS,
-					function () {
-						itemsComponent.discardItem(item);
-						itemsComponent.selectedItem = null;
-						system.updateItemLists();
-					}
-				);
-			});
-			$("button[action='discard_item_all']").click(function (e) {
-				var item = itemsComponent.selectedItem;
-				var isDiscardable = itemsComponent.isItemsDiscardable(item);
-				var msg = isDiscardable ? "Are you sure you want to discard all of these items?" : "Are you sure you want to discard all but one of these items?";
-				uiFunctions.showConfirmation(
-					msg,
-					function () {
-						itemsComponent.discardItems(item);
-						itemsComponent.selectedItem = null;
-						system.updateItemLists();
-					}
-				);
-			});
 		},
 
 		initItemSlots: function () {
@@ -362,12 +324,13 @@ define([
 					case ItemConstants.itemTypes.bag:
                         var showCount = count;
                         var canEquip = !item.equipped;
+                        var canDiscard = itemsComponent.isItemDiscardable(item);
 						if (item.equipped) {
 							this.updateItemSlot(item.type, item);
 							showCount = count - 1;
 						}
                         if (showCount > 0) {
-                            var options = { canEquip: canEquip, isEquipped: item.equipped, canUnequip: false };
+                            var options = { canEquip: canEquip, isEquipped: item.equipped, canUnequip: false, canDiscard: canDiscard };
                             var smallSlot = UIConstants.getItemSlot(item, showCount, false, false, true, options);
                             $("#bag-items").append(smallSlot);
                         }
@@ -385,6 +348,7 @@ define([
 			}
 
             this.uiFunctions.generateCallouts("#container-tab-two-bag .three-quarters");
+            this.uiFunctions.generateButtonOverlays("#container-tab-two-bag .three-quarters");
             this.uiFunctions.registerActionButtonListeners("#bag-items");
             this.uiFunctions.registerActionButtonListeners("#container-equipment-slots");
 		},

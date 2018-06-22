@@ -80,11 +80,13 @@ define(['ash',
                 if (bagOptions.canEquip) {
                     var action = "equip_" + item.id;
                     options += "<button class='action btn-narrow' action='" + action + "'>Equip</button>";
-                }   else if (bagOptions.canUnequip) {
+                } else if (bagOptions.canUnequip) {
                     var action = "unequip_" + item.id;
                     options += "<button class='action btn-narrow' action='" + action + "'>Unequip</button>";
-                } else if (bagOptions.isEquipped) {
-                    options += "Equipped";
+                }
+                if (bagOptions.canDiscard) {
+                    var action = "discard_" + item.id;
+                    options += "<button class='action btn-narrow' action='" + action + "'>Discard</button>";
                 }
                 options += "</div>";
                 itemCalloutContent += options;
