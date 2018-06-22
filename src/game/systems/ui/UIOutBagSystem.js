@@ -367,7 +367,7 @@ define([
 							showCount = count - 1;
 						}
                         if (showCount > 0) {
-                            var options = { canEquip: canEquip, isEquipped: item.equipped };
+                            var options = { canEquip: canEquip, isEquipped: item.equipped, canUnequip: false };
                             var smallSlot = UIConstants.getItemSlot(item, showCount, false, false, true, options);
                             $("#bag-items").append(smallSlot);
                         }
@@ -386,6 +386,7 @@ define([
 
             this.uiFunctions.generateCallouts("#container-tab-two-bag .three-quarters");
             this.uiFunctions.registerActionButtonListeners("#bag-items");
+            this.uiFunctions.registerActionButtonListeners("#container-equipment-slots");
 		},
         
         updateItemCount: function (isActive, item) {
@@ -401,7 +402,8 @@ define([
         },
 		
 		updateItemSlot: function (itemType, itemVO) {
-			var slot = $("#item-slot-" + itemType.toLowerCase());
+            var slotID = "#item-slot-" + itemType.toLowerCase();
+			var slot = $(slotID);
             switch (itemType) {
                 case ItemConstants.itemTypes.clothing_over:
                     slot = $("#item-slot-clothing_over");
@@ -420,7 +422,8 @@ define([
                     break;                    
             }
             
-			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemVO, 0, UIConstants.getItemCallout(itemVO)) : "");
+            var options = { canEquip: false, isEquipped: true, canUnequip: true };
+			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemVO, 0, UIConstants.getItemCallout(itemVO, false, true, options)) : "");
 			$(slot).children(".item-slot-name").html(itemVO ? itemVO.name.toLowerCase() : "");
 			
 			this.uiFunctions.toggle($(slot).children(".item-slot-type-empty"), itemVO === null);

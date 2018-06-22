@@ -80,6 +80,9 @@ define(['ash',
                 if (bagOptions.canEquip) {
                     var action = "equip_" + item.id;
                     options += "<button class='action btn-narrow' action='" + action + "'>Equip</button>";
+                }   else if (bagOptions.canUnequip) {
+                    var action = "unequip_" + item.id;
+                    options += "<button class='action btn-narrow' action='" + action + "'>Unequip</button>";
                 } else if (bagOptions.isEquipped) {
                     options += "Equipped";
                 }
