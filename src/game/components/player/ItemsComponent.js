@@ -28,7 +28,6 @@ function (Ash, ItemVO, ItemConstants) {
             }
 
             this.items[item.type].push(item);
-            if (item.equippable) this.autoEquip(item);
             item.carried = isCarried;
             this.uniqueItemsCarried = {};
             this.uniqueItemsAll = {};
@@ -64,20 +63,6 @@ function (Ash, ItemVO, ItemConstants) {
             }
             this.uniqueItemsCarried = {};
             this.uniqueItemsAll = {};
-            
-            switch (item.type) {
-                case ItemConstants.itemTypes.clothing_hands:
-                case ItemConstants.itemTypes.clothing_head:
-                case ItemConstants.itemTypes.clothing_lower:
-                case ItemConstants.itemTypes.clothing_over:
-                case ItemConstants.itemTypes.clothing_upper:
-                case ItemConstants.itemTypes.bag:
-                case ItemConstants.itemTypes.light:
-                case ItemConstants.itemTypes.weapon:
-                case ItemConstants.itemTypes.shoes:
-                    this.autoEquipByType(item.type);
-                    break;
-            }
         },
         
         discardItems: function (item) {

@@ -38,7 +38,7 @@ define([
             
             this.updateUsedCapacity(playerBag, playerResources, playerItems);
 			
-			this.gameState.unlockedFeatures.bag = playerBagBonus > 0;
+			this.gameState.unlockedFeatures.bag = this.gameState.unlockedFeatures.bag || playerItems.getAll().length > 0;
 		},
         
         updateUsedCapacity: function (playerBag, playerResources, playerItems) {
