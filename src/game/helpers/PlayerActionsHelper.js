@@ -179,7 +179,7 @@ define([
 					(costs.resource_herbs > 0 && !this.gameState.unlockedFeatures.resources.herbs) ||
 					(costs.resource_tools > 0 && !this.gameState.unlockedFeatures.resources.tools) ||
 					(costs.resource_concrete > 0 && !this.gameState.unlockedFeatures.resources.concrete)) {
-					reason = "Locked resources.";
+					reason = PlayerActionConstants.UNAVAILABLR_REASON_LOCKED_RESOURCES;
 					return { value: 0, reason: reason };
 				}
 			}
@@ -191,7 +191,7 @@ define([
                     var spaceRequired = BagConstants.getItemCapacity(item);
                     var spaceFreed = BagConstants.getResourcesCapacity(this.getCostResourcesVO(action));
                     if (spaceNow - spaceRequired + spaceFreed < 0) {
-                        return { value: 0, reason: "Bag full." };
+                        return { value: 0, reason: PlayerActionConstants.UNAVAILABLR_REASON_BAG_FULL };
                     }
                 }
             }

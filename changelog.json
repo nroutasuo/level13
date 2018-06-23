@@ -4,8 +4,16 @@
             "version": "0.2.2",
             "phase": "alpha",
             "final": false,
-            "updated": "2017-06-03",
+            "updated": "2017-06-23",
             "changes": [
+                {
+                    "type": "GD",
+                    "summary": "Enable manually equipping items."
+                },
+                {
+                    "type": "UI",
+                    "summary": "Improve camp list."
+                },
                 {
                     "type": "GD",
                     "summary": "Two new building that increase reputation: garden and square."

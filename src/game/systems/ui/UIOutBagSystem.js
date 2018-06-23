@@ -3,9 +3,10 @@ define([
     'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
+    'game/constants/PlayerActionConstants',
     'game/nodes/player/ItemsNode',
     'game/components/common/PositionComponent',
-], function (Ash, GlobalSignals, UIConstants, ItemConstants, ItemsNode, PositionComponent) {
+], function (Ash, GlobalSignals, UIConstants, ItemConstants, PlayerActionConstants, ItemsNode, PositionComponent) {
     
     var UIOutBagSystem = Ash.System.extend({
 
@@ -446,7 +447,7 @@ define([
         isItemUnlocked: function (itemDefinition) {
             var actionName = "craft_" + itemDefinition.id;      
             var reqsCheck = this.playerActionsHelper.checkRequirements(actionName, false);
-            return reqsCheck.value >= 1 || reqsCheck.reason === "Bag full.";
+            return reqsCheck.value >= 1 || reqsCheck.reason === PlayerActionConstants.UNAVAILABLR_REASON_BAG_FULL || reqsCheck.reason === PlayerActionConstants.UNAVAILABLR_REASON_LOCKED_RESOURCES;
         },
         
         isObsolete: function (itemVO) {
