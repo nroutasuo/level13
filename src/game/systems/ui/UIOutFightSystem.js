@@ -117,7 +117,7 @@ define([
                 if (item.type !== ItemConstants.itemTypes.follower)
                     continue;
                 this.numFollowers++;
-                $("ul#list-fight-followers").append("<li>" + UIConstants.getItemDiv(item, -1, UIConstants.getItemCallout(item, true)) + "</li>");
+                $("ul#list-fight-followers").append("<li>" + UIConstants.getItemDiv(null, item, -1, UIConstants.getItemCallout(item, true), true) + "</li>");
             }
             this.uiFunctions.generateCallouts("ul#list-fight-followers");
         },

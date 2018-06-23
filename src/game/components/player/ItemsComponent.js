@@ -91,7 +91,30 @@ function (Ash, ItemVO, ItemConstants) {
             }
         },
         
-        // Equips the given item if it's better than the previous equipment
+        // returns 1 if given item is better than current equipment, 0 if the same or depends on bonus type, -1 if worse
+        getEquipmentComparison: function (item) {
+            if (!item) return -1;
+            if (item.equipped) return 0;
+            if (!item.equippable) return -1;
+            var currentItem = this.getEquipped(item.type)[0];
+            
+            var result = 0;
+            for (var bonusKey in ItemConstants.itemBonusTypes) {
+                var bonusType = ItemConstants.itemBonusTypes[bonusKey];
+                var currentBonus = currentItem ? currentItem.getBonus(bonusType) : 0;
+                var newBonus = item.getBonus(bonusType);
+                if (newBonus < currentBonus) {
+                    if (result > 0) return 0;
+                    result = -1;
+                } else if (newBonus > currentBonus) {
+                    if (result < 0) return 0;
+                    result = 1;
+                }
+            }
+            return result;
+        },
+        
+        // Equips the given item if it's better than the previous equipment (based on total bonus)
         autoEquip: function (item) {
             var shouldEquip = item.equippable;
             if (shouldEquip) {

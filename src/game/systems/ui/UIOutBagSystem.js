@@ -16,6 +16,8 @@ define([
 		itemNodes: null,
         
         craftableItemDefinitions: {},
+        inventoryItemsAll: [],
+        inventoryItemsBag: [],
 		
 		bubbleNumber: -1,
         craftableItems: -1,
@@ -54,7 +56,7 @@ define([
                 var typeDisplay = ItemConstants.itemTypes[rawType].toLowerCase();
 				$(this).append("<span class='item-slot-type-empty'>" + typeDisplay + "</span>");
 				$(this).append("<span class='item-slot-type-equipped'>" + typeDisplay + "</span>");
-				$(this).append("<span class='item-slot-name'></span>");
+				$(this).append("<span class='item-slot-name '></span>");
 				$(this).append("<div class='item-slot-image'></div>");
 			});
 		},
@@ -91,7 +93,6 @@ define([
         
 		removeFromEngine: function (engine) {
 			this.itemNodes = null;
-			$("button[action='discard_item']").click(null);
             GlobalSignals.removeAll(this);
 		},
 
@@ -117,6 +118,7 @@ define([
 			var itemDefinitions = this.getCraftableItemDefinitions();
             var itemList;
             var itemDefinition;
+            
             // close all but first
             var firstFound = false;
             for (var type in itemDefinitions) {
@@ -149,6 +151,7 @@ define([
 
 		updateItems: function () {
             this.updateItemLists();
+            this.updateItemComparisonIndicators();
 		},
 
 		updateCrafting: function (isActive) {
@@ -286,6 +289,21 @@ define([
                 this.updateItemCount(isActive, items[i]);
             }
         },
+        
+        updateItemComparisonIndicators: function () {
+            var itemsComponent = this.itemNodes.head.items;
+			for (var i = 0; i < this.inventoryItemsBag.length; i++) {
+                var item = this.inventoryItemsBag[i];
+                if (!item.equippable) continue;
+                var slot = $("#bag-items div[data-itemid='" + item.id + "']");
+                var indicator = $(slot[0]).find(".item-comparison-indicator");
+                
+                var comparison = itemsComponent.getEquipmentComparison(item);
+                $(indicator).toggleClass("indicator-increase", comparison > 0);
+                $(indicator).toggleClass("indicator-even", comparison == 0);
+                $(indicator).toggleClass("indicator-decrease", comparison < 0);
+            }
+        },
 
 		updateItemLists: function () {
             var isActive = this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.bag;
@@ -303,13 +321,14 @@ define([
 			this.updateItemSlot(ItemConstants.itemTypes.shoes, null);
 			this.updateItemSlot(ItemConstants.itemTypes.bag, null);
 			
-			items = items.sort(UIConstants.sortItemsByType);
+			this.inventoryItemsAll = items.sort(UIConstants.sortItemsByType);
+            this.inventoryItemsBag = [];
             
             this.numOwnedUnseen = 0;
 
 			$("#bag-items").empty();
-			for (var i = 0; i < items.length; i++) {
-				var item = items[i];
+			for (var i = 0; i < this.inventoryItemsAll.length; i++) {
+				var item = this.inventoryItemsAll[i];
                 this.updateItemCount(isActive, item);
 				var count = itemsComponent.getCount(item, inCamp);
 				switch (item.type) {
@@ -331,8 +350,9 @@ define([
 						}
                         if (showCount > 0) {
                             var options = { canEquip: canEquip, isEquipped: item.equipped, canUnequip: false, canDiscard: canDiscard };
-                            var smallSlot = UIConstants.getItemSlot(item, showCount, false, false, true, options);
+                            var smallSlot = UIConstants.getItemSlot(itemsComponent, item, showCount, false, false, true, options);
                             $("#bag-items").append(smallSlot);
+                            this.inventoryItemsBag.push(item);
                         }
 						break;
 					
@@ -341,11 +361,14 @@ define([
 						break;
 					
 					default:
-                        var smallSlot = UIConstants.getItemSlot(item, count);
+                        var smallSlot = UIConstants.getItemSlot(itemsComponent, item, count);
 						$("#bag-items").append(smallSlot);
+                        this.inventoryItemsBag.push(item);
 						break;
 				}
 			}
+            
+            this.uiFunctions.toggle($("#bag-items-empty"), this.inventoryItemsBag.length === 0);
 
             this.uiFunctions.generateCallouts("#container-tab-two-bag .three-quarters");
             this.uiFunctions.generateButtonOverlays("#container-tab-two-bag .three-quarters");
@@ -366,6 +389,7 @@ define([
         },
 		
 		updateItemSlot: function (itemType, itemVO) {
+			var itemsComponent = this.itemNodes.head.items;
             var slotID = "#item-slot-" + itemType.toLowerCase();
 			var slot = $(slotID);
             switch (itemType) {
@@ -387,7 +411,7 @@ define([
             }
             
             var options = { canEquip: false, isEquipped: true, canUnequip: true };
-			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemVO, 0, UIConstants.getItemCallout(itemVO, false, true, options)) : "");
+			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemsComponent, itemVO, 0, UIConstants.getItemCallout(itemVO, false, true, options), true) : "");
 			$(slot).children(".item-slot-name").html(itemVO ? itemVO.name.toLowerCase() : "");
 			
 			this.uiFunctions.toggle($(slot).children(".item-slot-type-empty"), itemVO === null);

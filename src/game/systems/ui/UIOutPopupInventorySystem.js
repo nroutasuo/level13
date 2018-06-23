@@ -3,10 +3,11 @@ define([
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/BagConstants',
+    'game/nodes/player/ItemsNode',
     'game/nodes/player/PlayerActionResultNode',
     'game/components/common/PositionComponent',
     'game/components/player/BagComponent'
-], function (Ash, UIConstants, ItemConstants, BagConstants, PlayerActionResultNode, PositionComponent, BagComponent) {
+], function (Ash, UIConstants, ItemConstants, BagConstants, ItemsNode, PlayerActionResultNode, PositionComponent, BagComponent) {
     var UIOutPopupInventorySystem = Ash.System.extend({
 
         uiFunctions: null,
@@ -18,6 +19,7 @@ define([
         },
 
         addToEngine: function (engine) {
+			this.itemNodes = engine.getNodeList(ItemsNode);
             this.playerActionResultNodes = engine.getNodeList(PlayerActionResultNode);
             this.playerActionResultNodes.nodeAdded.add(this.onNodeAdded, this);
         },
@@ -25,6 +27,7 @@ define([
         removeFromEngine: function (engine) {
             this.playerActionResultNodes.nodeAdded.remove(this.onNodeAdded, this);
             this.playerActionResultNodes = null;
+            this.itemNodes = null;
         },
         
         onNodeAdded: function (node) {
@@ -169,6 +172,8 @@ define([
         },
         
         addItemsToLists: function (rewards, playerAllItems) {
+			var itemsComponent = this.itemNodes.head.items;
+            
             var lostItemCounts = {};
             var lostItemVOs = {};
             var foundItemCounts = {};
@@ -211,7 +216,7 @@ define([
             // gained items: non-selected to found, selected to kept
             for ( var i = 0; i < rewards.gainedItems.length; i++ ) {
                 item = rewards.gainedItems[i];
-                li = UIConstants.getItemSlot(item, 1);
+                li = UIConstants.getItemSlot(itemsComponent, item, 1);
                 if (rewards.selectedItems.indexOf(item) < 0) {
                     countFoundItem(item);
                 } else {
@@ -235,19 +240,19 @@ define([
             
             for (var itemId in lostItemCounts ) {
                 item = lostItemVOs[itemId];
-                li = UIConstants.getItemSlot(item, lostItemCounts[itemId], true);
+                li = UIConstants.getItemSlot(itemsComponent, item, lostItemCounts[itemId], true);
                 $("#resultlist-loststuff-lost ul").append(li);
             }
             
             for (var itemId in foundItemCounts) {
                 item = foundItemVOs[itemId];
-                li = UIConstants.getItemSlot(item, foundItemCounts[itemId]);
+                li = UIConstants.getItemSlot(itemsComponent, item, foundItemCounts[itemId]);
                 $("#resultlist-inventorymanagement-found ul").append(li);
             }
 
             for (var itemId in keptItemCounts ) {
                 item = keptItemVOs[itemId];
-                li = UIConstants.getItemSlot(item, keptItemCounts[itemId]);
+                li = UIConstants.getItemSlot(itemsComponent, item, keptItemCounts[itemId]);
                 $("#resultlist-inventorymanagement-kept ul").append(li);
             }
         },

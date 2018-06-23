@@ -57,7 +57,7 @@ var UIOutPopupInnSystem = Ash.System.extend({
             $("table#inn-popup-current-followers").append("<tr></tr>");
             for (var i = 0; i < currentFollowers.length; i++) {
                 var td = "<td id='td-item-use_in_inn_select-" + currentFollowers[i].id + "'>";
-                td += UIConstants.getItemDiv(currentFollowers[i], false, UIConstants.getItemCallout(item, true));
+                td += UIConstants.getItemDiv(null, currentFollowers[i], false, UIConstants.getItemCallout(item, true));
                 td += "</td>";
                 $("table#inn-popup-current-followers tr").append(td);
             }

@@ -5,12 +5,13 @@ define([
     'game/constants/ItemConstants',
     'game/constants/UIConstants',
     'game/nodes/PlayerLocationNode',
+    'game/nodes/player/ItemsNode',
     'game/components/sector/OutgoingCaravansComponent',
     'game/components/sector/events/TraderComponent',
     'game/vos/ResourcesVO',
     'game/vos/OutgoingCaravanVO'
 ], function (
-    Ash, GlobalSignals, TradeConstants, ItemConstants, UIConstants, PlayerLocationNode, OutgoingCaravansComponent, TraderComponent, ResourcesVO, OutgoingCaravanVO
+    Ash, GlobalSignals, TradeConstants, ItemConstants, UIConstants, PlayerLocationNode, ItemsNode, OutgoingCaravansComponent, TraderComponent, ResourcesVO, OutgoingCaravanVO
 ) {
     var UIOutTradeSystem = Ash.System.extend({
         
@@ -32,12 +33,14 @@ define([
         addToEngine: function (engine) {
             this.engine  = engine;
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
+			this.itemNodes = engine.getNodeList(ItemsNode);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
         },
 
         removeFromEngine: function (engine) {
             this.engine = null;
             this.playerLocationNodes = null;
+            this.itemNodes = null;
             GlobalSignals.removeAll(this);
         },
 
@@ -186,6 +189,8 @@ define([
             if (this.lastShownIncomingCaravan === caravan && this.lastShownIncomingCaravanTrades === tradesMade)
                 return;
             
+			var itemsComponent = this.itemNodes.head.items;
+            
             // TODO show currency / more information about the trader
             // TODO combine items
             
@@ -208,7 +213,7 @@ define([
                     var item = ItemConstants.getItemByID(itemID);
                     var amount = itemCounts[itemID];
                     if (numLis < 6) {
-                        inventoryUL += UIConstants.getItemSlot(item, amount, false, true);
+                        inventoryUL += UIConstants.getItemSlot(itemsComponent, item, amount, false, true);
                         numLis++;
                     } else {
                         skippedLis++;

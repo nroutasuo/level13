@@ -61,7 +61,8 @@ define([
 
             $("#incoming-caravan-popup h3").text(caravan.name);
             
-            var sys = this;
+            var sys = this; 
+            var itemsComponent = this.itemNodes.head.items;
             
             var onLiClicked = function (e) {
                 var divRes = $(this).find(".res");
@@ -131,9 +132,9 @@ define([
                 var selectedAmount = (caravan.traderSelectedItems[itemID] ? caravan.traderSelectedItems[itemID] : 0);
                 var inventoryAmount = traderTotalItems[itemID] - selectedAmount;
                 if (inventoryAmount > 0)
-                    $("#inventorylist-incoming-caravan-trader-inventory ul").append(UIConstants.getItemSlot(item, inventoryAmount, false, true));
+                    $("#inventorylist-incoming-caravan-trader-inventory ul").append(UIConstants.getItemSlot(itemsComponent, item, inventoryAmount, false, true));
                 if (selectedAmount > 0)
-                    $("#inventorylist-incoming-caravan-trader-offer ul").append(UIConstants.getItemSlot(item, selectedAmount, false, true));
+                    $("#inventorylist-incoming-caravan-trader-offer ul").append(UIConstants.getItemSlot(itemsComponent, item, selectedAmount, false, true));
                 traderOfferValue += selectedAmount * TradeConstants.getItemValue(item, true);
             }
             
@@ -142,7 +143,7 @@ define([
                 var category = caravan.buyItemTypes[j];
                 if (category == "uniqueEquipment" || category == "follower")
                     continue;
-                var itemList = this.itemNodes.head.items.getAllByType(ItemConstants.itemTypes[category]);
+                var itemList = itemsComponent.getAllByType(ItemConstants.itemTypes[category]);
                 for (var k in itemList) {
                     if (itemList[k].equipped)
                         continue;
@@ -157,9 +158,9 @@ define([
                 var selectedAmount = (caravan.campSelectedItems[itemID] ? caravan.campSelectedItems[itemID] : 0);
                 var inventoryAmount = campTotalItems[itemID] - selectedAmount;
                 if (inventoryAmount > 0)
-                    $("#inventorylist-incoming-caravan-camp-inventory ul").append(UIConstants.getItemSlot(item, inventoryAmount, false, true));
+                    $("#inventorylist-incoming-caravan-camp-inventory ul").append(UIConstants.getItemSlot(itemsComponent, item, inventoryAmount, false, true));
                 if (selectedAmount > 0)
-                    $("#inventorylist-incoming-caravan-camp-offer ul").append(UIConstants.getItemSlot(item, selectedAmount, false, true));
+                    $("#inventorylist-incoming-caravan-camp-offer ul").append(UIConstants.getItemSlot(itemsComponent, item, selectedAmount, false, true));
                 campOfferValue += selectedAmount * TradeConstants.getItemValue(item);
             }
             

@@ -592,7 +592,7 @@ li.li-item-negative,
   border: 1px solid #ee1111 !important;
   background: rgba(245, 0, 0, 0.1) !important;
 }
-item-slot-name,
+.item-slot-name,
 .item-slot-type-equipped {
   background-color: #333;
 }
@@ -785,6 +785,29 @@ ul.resultlist-positive li:before {
   border-style: solid;
   display: inline-block;
   position: relative;
+}
+.item-comparison-indicator {
+  background-size: 100%;
+  border: none;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 10px;
+  height: 10px;
+}
+.item-comparison-badge {
+  top: -10px;
+  right: -10px;
+  position: absolute;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #555;
+  padding: 2px;
+  border-radius: 6px;
+  background: #282a28;
+}
+.sunlit .item-comparison-badge {
+  border-color: #aaa;
+  background: #efefef;
 }
 #resultlist-inventorymanagement-found ul li,
 #resultlist-loststuff-lost ul li {
@@ -1339,6 +1362,9 @@ hr {
 }
 .sunlit .indicator-even {
   background-image: url('../img/eldorado/icon-even.png');
+  opacity: 0.25;
+}
+.item .indicator-decrease {
   opacity: 0.25;
 }
 #notification-player {

@@ -32,7 +32,7 @@ define(['ash',
 			metal: "img/res-metal.png",
 		},
         
-		getItemDiv: function (item, count, calloutContent) {
+		getItemDiv: function (itemsComponent, item, count, calloutContent, hideComparisonIndicator) {
 			var url = item ? item.icon : null;
 			var hasCount = count && count > 0;
 			
@@ -49,6 +49,17 @@ define(['ash',
 			
 			if (hasCount)
 				div += "<div class='item-count lvl13-box-3'>" + count + "x </div>";
+            
+            if (!hideComparisonIndicator && item.equippable) {
+                var comparison = itemsComponent.getEquipmentComparison(item);
+                var comparisonClass = "indicator-even";
+                if (comparison > 0) {
+                    comparisonClass = "indicator-increase";
+                } else if (comparison < 0) {
+                    comparisonClass = "indicator-decrease";
+                }
+                div += "<div class='item-comparison-badge'><div class='item-comparison-indicator " + comparisonClass + "'/></div>";
+            }
 			
 			if (calloutContent) div += "</div>";
 			
@@ -57,8 +68,8 @@ define(['ash',
 			return div;
 		},
 		
-		getItemSlot: function (item, count, isLost, simple, showBagOptions, bagOptions) {
-			var imageDiv = "<div class='item-slot-image'>" + this.getItemDiv(item, count, this.getItemCallout(item, false, showBagOptions, bagOptions)) + "</div>";
+		getItemSlot: function (itemsComponent, item, count, isLost, simple, showBagOptions, bagOptions) {
+			var imageDiv = "<div class='item-slot-image'>" + this.getItemDiv(itemsComponent, item, count, this.getItemCallout(item, false, showBagOptions, bagOptions)) + "</div>";
             var liclasses = "item-slot item-slot-small lvl13-box-1 ";
             if (simple) liclasses += "item-slot-simple";
             if (isLost) liclasses += "item-slot-lost";
@@ -111,7 +122,7 @@ define(['ash',
 			for (var key in itemsById) {
 				var item = itemsById[key];
 				var amount = itemsCounted[key];
-				html += "<li>" + this.getItemDiv(item, amount, this.getItemCallout(item, true)) + "</li>";
+				html += "<li>" + this.getItemDiv(itemsComponent, item, amount, this.getItemCallout(item, true)) + "</li>";
 			}
 			return html;
 		},
