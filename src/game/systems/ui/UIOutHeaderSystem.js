@@ -182,14 +182,14 @@ define([
 			
 			this.elements.valVision.text(shownVision + " / " + maxVision);
 			this.updateStatsCallout("Makes exploration safer", "stats-vision", playerStatsNode.vision.accSources);
-            this.updateChangeIndicator(this.elements.changeIndicatorVision, maxVision - shownVision);
+            this.updateChangeIndicator(this.elements.changeIndicatorVision, maxVision - shownVision, shownVision < maxVision);
 
             this.elements.valHealth.text(playerStatsNode.stamina.health);
             this.updateStatsCallout("Determines maximum stamina", "stats-health", null);
 			
 			this.elements.valStamina.text(UIConstants.roundValue(playerStamina, true, false) + " / " + maxStamina);
 			this.updateStatsCallout("Required for exploration", "stats-stamina", playerStatsNode.stamina.accSources);
-            this.updateChangeIndicator(this.elements.changeIndicatorStamina, playerStatsNode.stamina.accumulation);
+            this.updateChangeIndicator(this.elements.changeIndicatorStamina, playerStatsNode.stamina.accumulation, playerStamina < maxStamina);
 
             this.elements.valVision.toggleClass("warning", playerVision <= 25);
             this.elements.valStamina.toggleClass("warning", playerStamina <= this.staminaWarningLimit);
@@ -211,7 +211,7 @@ define([
                 var reqReputationNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
 
                 this.elements.valReputation.text(UIConstants.roundValue(reputationComponent.value, true, false) + " / " + reputationComponent.targetValue);
-                this.updateChangeIndicator(this.elements.changeIndicatorReputation, reputationComponent.accumulation);
+                this.updateChangeIndicator(this.elements.changeIndicatorReputation, reputationComponent.accumulation, true);
                 var reputationCalloutContent = "";
                 for (var i in reputationComponent.targetValueSources) {
                     var source = reputationComponent.targetValueSources[i];
@@ -230,7 +230,7 @@ define([
                 var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
                 maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
                 $("#header-camp-population .value").text(Math.floor(campComponent.population) + " / " + maxPopulation);
-                this.updateChangeIndicator(this.elements.changeIndicatorPopulation, campComponent.populationChangePerSec);
+                this.updateChangeIndicator(this.elements.changeIndicatorPopulation, campComponent.populationChangePerSec, true);
                 var populationCalloutContent = "Required reputation:<br/>";
                 populationCalloutContent += "current: " + reqReputationCurrent + "<br/>";
                 populationCalloutContent += "next: " + reqReputationNext;
@@ -255,13 +255,18 @@ define([
 			var scavengeEfficiency = Math.round(this.uiFunctions.playerActions.playerActionResultsHelper.getScavengeEfficiency() * 100);
 			this.elements.valScavenge.text(scavengeEfficiency + "%");
 			UIConstants.updateCalloutContent("#stats-scavenge", "Increases scavenge loot<hr/>health: " + Math.round(maxStamina/10) + "<br/>vision: " + Math.round(playerVision));
-            this.updateChangeIndicator(this.elements.changeIndicatorScavenge, maxVision - shownVision);
+            this.updateChangeIndicator(this.elements.changeIndicatorScavenge, maxVision - shownVision, shownVision < maxVision);
 		},
         
-        updateChangeIndicator: function (indicator, accumulation) {
-            indicator.toggleClass("indicator-increase", accumulation > 0);
-            indicator.toggleClass("indicator-even", accumulation === 0);
-            indicator.toggleClass("indicator-decrease", accumulation < 0);
+        updateChangeIndicator: function (indicator, accumulation, show) {
+            if (show) {
+                indicator.toggleClass("indicator-increase", accumulation > 0);
+                indicator.toggleClass("indicator-even", accumulation === 0);
+                indicator.toggleClass("indicator-decrease", accumulation < 0);
+                this.uiFunctions.toggle(indicator, true);
+            } else {
+                this.uiFunctions.toggle(indicator, false);
+            }
         },
 		
 		updateStatsCallout: function (description, indicatorID, changeSources) {
