@@ -105,6 +105,8 @@ function (Ash, PerkVO, PerkConstants) {
 			switch (perk.type) {
 				case PerkConstants.perkTypes.injury:
 					return true;
+                case PerkConstants.perkTypes.movement:
+                    return perk.effect > 1;
 				default:
 					return perk.effect < 1;
 			}

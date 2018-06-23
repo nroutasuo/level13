@@ -286,16 +286,19 @@ define(['ash',
             }
         },
 		
-		getPerkBonusText: function (perk) {
+		getPerkBonusText: function (perk) {            
 			var value = 0;
 			if (perk.effect < 1) {
 				value = "-" + Math.round(100 - perk.effect * 100) + "%";
 			} else {
-				value = Math.round((perk.effect - 1) * 100) + "%";
+				value = "+" + Math.round((perk.effect - 1) * 100) + "%";
 			}
 			
 			var effect = perk.type;
 			switch (perk.type) {
+				case PerkConstants.perkTypes.movement:
+                    effect = "movement cost";
+                    break;
 				case PerkConstants.perkTypes.injury:
 				case PerkConstants.perkTypes.health:
 					effect = "health";

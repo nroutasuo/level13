@@ -3,11 +3,13 @@ define([
     'ash',
     'game/constants/ItemConstants',
     'game/constants/BagConstants',
+    'game/constants/PerkConstants',
     'game/nodes/player/PlayerResourcesNode',
     'game/components/player/ItemsComponent',
     'game/components/player/BagComponent',
+    'game/components/player/PerksComponent',
     'game/vos/ResourcesVO'
-], function (Ash, ItemConstants, BagConstants, PlayerResourcesNode, ItemsComponent, BagComponent, ResourcesVO) {
+], function (Ash, ItemConstants, BagConstants, PerkConstants, PlayerResourcesNode, ItemsComponent, BagComponent, PerksComponent, ResourcesVO) {
     var BagSystem = Ash.System.extend({	
 	    
 		gameState: null,
@@ -37,7 +39,16 @@ define([
 			playerBag.totalCapacity = Math.max(playerBagBonus, ItemConstants.PLAYER_DEFAULT_STORAGE);
             
             this.updateUsedCapacity(playerBag, playerResources, playerItems);
-			
+            
+			var perksComponent = this.playerNodes.head.entity.get(PerksComponent);
+			var hasWeightPerk = perksComponent.hasPerk(PerkConstants.perkIds.encumbered);
+            var isEncumbered = playerBag.usedCapacity > playerBag.totalCapacity;
+            if (isEncumbered && !hasWeightPerk) {
+                perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.encumbered));
+            } else if (!isEncumbered && hasWeightPerk) {
+                perksComponent.removeItemsById(PerkConstants.perkIds.encumbered);
+            }
+            
 			this.gameState.unlockedFeatures.bag = this.gameState.unlockedFeatures.bag || playerItems.getAll().length > 0;
 		},
         

@@ -1319,7 +1319,7 @@ define(['ash',
             var improvementVO = improvementsComponent.getVO(improvementNames[improvementName]);
             var resourcesVO = improvementVO.storedResources;
 
-            var maxToCollect = bagComponent.totalCapacity - bagComponent.usedCapacity;
+            var maxToCollect = Math.max(0, bagComponent.totalCapacity - bagComponent.usedCapacity);
             var totalCollected = 0;
             for (var key in resourceNames) {
                 var name = resourceNames[key];

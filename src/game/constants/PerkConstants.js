@@ -16,6 +16,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 			hazardRadiation: "hazard-radiation",
 			hazardPoison: "hazard-poison",
 			hazardCold: "hazard-cold",
+            encumbered: "encumbered",
 		},
 		
 		perkDefinitions: {
@@ -49,6 +50,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.hazardRadiation, "Radiation sickness", "Health", 0.25, "img/items/health-negative.png"));
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.hazardPoison, "Poisoned", "Health", 0.5, "img/items/health-negative.png"));
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.hazardCold, "Cold", "Health", 0.75, "img/items/health-negative.png"));
+    PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.encumbered, "Encumbered", "Movement", 1.5, "img/items/weight.png"));
     
     var lightInjuryEffect = 0.9;
     var medInjuryEffect = 0.7;

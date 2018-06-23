@@ -10,6 +10,7 @@ define([
 	'game/constants/BagConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/FightConstants',
+	'game/constants/PerkConstants',
 	'game/constants/UIConstants',
 	'game/constants/TextConstants',
     'game/nodes/player/PlayerStatsNode',
@@ -39,7 +40,7 @@ define([
     'game/vos/ResourcesVO',
     'game/vos/ImprovementVO'
 ], function (
-	Ash, PositionConstants, PlayerActionConstants, PlayerActionsHelperConstants, PlayerStatConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, UIConstants, TextConstants,
+	Ash, PositionConstants, PlayerActionConstants, PlayerActionsHelperConstants, PlayerStatConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	LevelComponent, PositionComponent, PlayerActionComponent, BagComponent, ItemsComponent, PerksComponent, DeityComponent,
 	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
@@ -818,17 +819,22 @@ define([
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var shoeBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.movement);
             if (shoeBonus === 0) shoeBonus = 1;
+            var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
+            var perkBonus = perksComponent.getTotalEffect(PerkConstants.perkTypes.movement);
+            if (perkBonus === 0) perkBonus = 1;
             
             var factor = 1;
             switch(action) {
                 case "move_level_down":
                     factor += passageComponent.passageDown && passageComponent.passageDown.climbable ? 2 : 0;
                     factor *= shoeBonus;
+                    factor *= perkBonus;
                     break;
                 
                 case "move_level_up":
                     factor += passageComponent.passageUp && passageComponent.passageUp.climbable ? 2 : 0;
                     factor *= shoeBonus;
+                    factor *= perkBonus;
                     break;
                 
                 case "move_sector_north":
@@ -842,6 +848,7 @@ define([
                 case "move_camp_level":
                 case "move_camp_global":
                     factor *= shoeBonus;
+                    factor *= perkBonus;
                     break;
             }
             
