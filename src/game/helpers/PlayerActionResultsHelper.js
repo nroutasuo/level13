@@ -441,6 +441,8 @@ define([
 		getRewardDiv: function (resultVO, isFight) {
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var hasBag = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
+            var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
+            var isInitialSelectionValid = bagComponent.usedCapacity <= bagComponent.totalCapacity;
             
 			var div = "<div>";
 			
@@ -448,7 +450,6 @@ define([
             gainedhtml += "<ul class='resultlist resultlist-positive'>";
 			if (resultVO.gainedFollowers && resultVO.gainedFollowers.length > 0) {
 				gainedhtml += "<li>" + resultVO.gainedFollowers.length + " follower" + (resultVO.gainedFollowers.length > 1 ? "s" : "");
-				// gainedhtml += UIConstants.getItemList(resultVO.gainedFollowers);
 			}
 			if (resultVO.gainedEvidence) {
 				gainedhtml += "<li>" + resultVO.gainedEvidence + " evidence</li>";
@@ -465,6 +466,7 @@ define([
             if (resultVO.gainedCurrency) {
                 gainedhtml += "<li>" + resultVO.gainedCurrency + " silver</li>";
             }
+            
 			gainedhtml += "</ul>";
 			var hasGainedStuff = gainedhtml.indexOf("<li") > 0;
 			if (hasGainedStuff) div += gainedhtml;
@@ -478,7 +480,7 @@ define([
                 div += losthtml;
 			}
 			
-			if (resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0) {
+			if (resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0 || !isInitialSelectionValid) {
 				var baghtml = "<div id='resultlist-inventorymanagement'>";
 				
 				baghtml += "<div id='resultlist-inventorymanagement-found' class='infobox inventorybox'>";
