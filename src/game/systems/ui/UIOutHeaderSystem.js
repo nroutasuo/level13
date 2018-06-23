@@ -113,7 +113,7 @@ define([
 				$(this).wrap("<div class='info-callout-target'></div>");
 			});
 			$.each($("#header-self-bar .stats-indicator"), function () {
-				$(this).wrap("<div class='info-callout-target'></div>");
+				$(this).wrap("<div class='info-callout-target info-callout-target-small'></div>");
 			});
 			$.each($("#header-camp-reputation"), function () {
 				$(this).wrap("<div class='info-callout-target'></div>");
@@ -448,7 +448,7 @@ define([
                 var bonusType = ItemConstants.itemBonusTypes[bonusKey];
                 var bonus = itemsComponent.getCurrentBonus(bonusType);
                 var value = bonus;
-                var detail = bonus + " from items";
+                var detail = itemsComponent.getCurrentBonusDesc(bonusType);
                 var isVisible = true;
                 switch (bonusType) {
                     case ItemConstants.itemBonusTypes.fight_att:
@@ -456,18 +456,19 @@ define([
                         detail = FightConstants.getPlayerAttDesc(playerStamina, itemsComponent);
                         isVisible = this.gameState.unlockedFeatures.fight;
                         break;
+                        
                     case ItemConstants.itemBonusTypes.fight_def:
                         value = FightConstants.getPlayerDef(playerStamina, itemsComponent);
                         detail = FightConstants.getPlayerDefDesc(playerStamina, itemsComponent);
                         isVisible = this.gameState.unlockedFeatures.fight;
                         break;
+                        
                     case ItemConstants.itemBonusTypes.light:
                     case ItemConstants.itemBonusTypes.bag:
                         isVisible = false;
-                        //value = playerVision.maximum;
                         break;
                         
-                    default:                        
+                    default:
                         isVisible = true;
                         break;
                 }

@@ -682,15 +682,16 @@ input[type=range] {
   display: block;
 }
 #header-self-bar .stats-indicator {
-  margin: 5px 0px 0px 0px;
+  margin: 0px;
   width: 100%;
+  line-height: 1em;
 }
 #header-self-bar .callout-container {
   width: 100%;
 }
 #header-self-bar .stats-indicator .value {
   font-size: 85%;
-  margin: 0;
+  margin: 3px 0;
 }
 #header-self-bar .info-callout {
   width: 75px;
@@ -1308,7 +1309,10 @@ table div.container-btn-action {
   margin-left: 0px;
 }
 hr {
-  margin: 3px 1px;
+  margin: 1em 5px;
+}
+.callout-container hr {
+  margin: 0.25em 3px;
 }
 .stats-indicator {
   display: block;

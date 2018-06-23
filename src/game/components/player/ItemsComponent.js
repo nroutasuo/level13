@@ -215,6 +215,26 @@ function (Ash, ItemVO, ItemConstants) {
             return bonus;
         },
         
+        getCurrentBonusDesc: function (bonusType, itemType) {
+            var desc = "";
+            var itemBonus;
+            for (var key in this.items) {
+                if (!itemType || itemType === key) {
+                    for (var i = 0; i < this.items[key].length; i++) {
+                        var item = this.items[key][i];
+                        if (item.equipped) {
+                            itemBonus = item.getBonus(bonusType);
+                            if (itemBonus > 0) {
+                                if (desc.length > 0) desc += "<br/>";
+                                desc += item.name + ": " + itemBonus;
+                            }
+                        }
+                    }
+                }
+            }
+            return desc;
+        },
+        
         getAll: function (includeNotCarried) {
             var all = [];
             var item;
