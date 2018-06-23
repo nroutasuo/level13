@@ -15,6 +15,7 @@ define(['ash',
     'game/components/sector/EnemiesComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/SectorFeaturesComponent',
+    'game/components/sector/events/CampEventTimersComponent',
     'game/components/type/LevelComponent',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/tribe/TribeUpgradesNode',
@@ -36,6 +37,7 @@ define(['ash',
     EnemiesComponent,
     SectorImprovementsComponent,
     SectorFeaturesComponent,
+    CampEventTimersComponent,
     LevelComponent,
     PlayerStatsNode,
     TribeUpgradesNode,
@@ -154,6 +156,9 @@ define(['ash',
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_SCOUT_LEVEL, "Scout all the sectors in the current level.", [], function (params) {
                 this.scoutLevel();
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_TRADER, "Trigger an incoming trader immediately.", [], function (params) {
+                this.triggerTrader();
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_AUTOPLAY, "Autoplay.", ["on/off/camp/expedition", "(optional) camp ordinal"], function (params) {
                 this.setAutoPlay(params[0], parseInt(params[1]));
@@ -486,7 +491,15 @@ define(['ash',
                 }
             };
             this.engine.updateComplete.add(updateFunction, this);
-        }
+        },
+        
+        triggerTrader: function () {
+            var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
+            var campTimers = currentSector.get(CampEventTimersComponent);
+            if (campTimers) {
+                campTimers.eventStartTimestamps["trader"] = new Date().getTime() + 1;
+            }
+        },
     
     });
 
