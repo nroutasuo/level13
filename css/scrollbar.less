@@ -1,0 +1,87 @@
+@import "colors";
+
+@scrollbar-width: 11px;
+
+@scrollbar-dark-bg: @color-dark-bg-element;
+@scrollbar-dark-thumb: @color-dark-highlight-element;
+@scrollbar-dark-thumb-hover: @color-dark-highlight-element-hover;
+@scrollbar-dark-corner: fade(@color-dark-highlight-element, 75%);
+@scrollbar-dark-corner-hover: fade(@color-dark-highlight-element-hover, 75%);
+
+@scrollbar-light-bg: @color-light-bg-element;
+@scrollbar-light-thumb: @color-light-highlight-element;
+@scrollbar-light-thumb-hover: @color-light-highlight-element-hover;
+@scrollbar-light-corner: fade(@color-light-highlight-element, 75%);
+@scrollbar-light-corner-hover: fade(@color-light-highlight-element-hover, 75%);
+
+
+/* WEBKIT BROWSERS */
+
+div ::-webkit-scrollbar {
+    width: @scrollbar-width;
+    background: @scrollbar-dark-bg;
+}
+
+.sunlit div ::-webkit-scrollbar {
+    width: @scrollbar-width;
+    background: @scrollbar-light-bg;
+}
+
+div ::-webkit-scrollbar-track {
+    background: @scrollbar-dark-bg;
+}
+.sunlit div ::-webkit-scrollbar-track {
+    background: @scrollbar-light-bg;
+}
+
+div ::-webkit-scrollbar-button {
+    background: @scrollbar-dark-thumb;
+    display: none;
+}
+.sunlit div ::-webkit-scrollbar-button {
+    background: @scrollbar-light-thumb;
+}
+
+div ::-webkit-scrollbar-thumb {
+    background: @scrollbar-dark-thumb;
+    border-radius: @scrollbar-width / 2;
+}
+.sunlit div ::-webkit-scrollbar-thumb {
+    background: @scrollbar-light-thumb;
+}
+
+div ::-webkit-scrollbar-thumb:hover {
+    background: @scrollbar-dark-thumb-hover;
+}
+.sunlit div ::-webkit-scrollbar-thumb:hover {
+    background: @scrollbar-light-thumb-hover;
+}
+
+div ::-webkit-scrollbar-thumb:window-inactive {
+    background: @scrollbar-dark-thumb;
+}
+
+.sunlit div ::-webkit-scrollbar-thumb:window-inactive {
+    background: @scrollbar-light-thumb;
+}
+
+div ::-webkit-scrollbar-corner, div ::-webkit-resizer {
+    background: @scrollbar-dark-corner !important;
+    border: 0px solid @scrollbar-dark-corner;
+    box-shadow: none;
+}
+.sunlit div ::-webkit-scrollbar-corner, .sunlit div ::-webkit-resizer {
+    background: @scrollbar-light-corner !important;
+    border: 0px solid @scrollbar-light-corner;
+}
+
+div ::-webkit-scrollbar-corner:hover, div ::-webkit-resizer:hover {
+    background: @scrollbar-dark-corner-hover !important;
+    border: 0px solid @scrollbar-dark-corner;
+    box-shadow: none;
+}
+.sunlit div ::-webkit-scrollbar-corner:hover, .sunlit div ::-webkit-resizer:hover {
+    background: @scrollbar-light-corner-hover !important;
+    border: 0px solid @scrollbar-light-corner;
+}
+

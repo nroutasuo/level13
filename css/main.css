@@ -682,7 +682,7 @@ input[type=range] {
   display: block;
 }
 #header-self-bar .stats-indicator {
-  margin: 0px;
+  margin: 1px 0px;
   width: 100%;
   line-height: 1em;
 }

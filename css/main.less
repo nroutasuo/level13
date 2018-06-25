@@ -1,39 +1,10 @@
-
-// GLOBAL COLOURS
-
-// - Dark
-@color-dark-bg: #202220;
-@color-dark-text: #fdfdfd;
-@color-dark-bg-box-1: #282a28;
-@color-dark-border-box-1: #3a3a3a;
-@color-dark-border-box-2: #3a3a3a;
-@color-dark-bg-box-3: #262826;
-@color-dark-tex-box-3: #999;
-@color-dark-border-box-3: #555;
-@color-dark-bg-element: #2f322f;
-@color-dark-bg-input: #151615;
-
-// Sunlit
-@color-light-bg: #fdfdfd;
-@color-light-text: #202220;
-@color-light-bg-box-1: #efefef;
-@color-light-border-box-1: #d0d0d0;
-@color-light-border-box-3: #aaa;	
-@color-light-bg-box-3: #efefef;	
-@color-light-text-box-3: #333;
-@color-light-bg-element: #e6e6e6;
-@color-light-bg-input: #fff;
-
-@color-global-warning: rgb(230, 70, 70);
-
-
+@import "colors";
 
 // GLOBAL SIZES
 
 @font-size-small: 85%;
 @size-input-range-thumb: 15px;
 @item-slot-big-size: 100px;
-
 
 
 // Base layout & elements
@@ -416,7 +387,7 @@ ul.tabs li.selected {
 .lvl13-box-3, .vis-out-sector {
 	border: 1px solid @color-dark-border-box-3;
 	background: @color-dark-bg-box-3;
-	color: @color-dark-tex-box-3;
+	color: @color-dark-text-box-3;
 }
 
 .sunlit .lvl13-box-3, .sunlit .vis-out-sector {
@@ -631,7 +602,7 @@ input[type=range] {
 }
 
 .bubble {
-    background-color: #ccc;
+    background-color: @color-dark-bg-alternative;
     color: @color-dark-bg;
 }
 
@@ -1735,7 +1706,7 @@ input[type=range]::-webkit-slider-runnable-track {
   background: @color-dark-bg-input;
 }
 input[type=range]::-webkit-slider-thumb {
-  border: 1px solid @color-dark-tex-box-3;
+  border: 1px solid @color-dark-text-box-3;
   height: @size-input-range-thumb;
   width: @size-input-range-thumb;
   border-radius: @size-input-range-thumb;
@@ -1755,7 +1726,7 @@ input[type=range]::-moz-range-track {
   background: @color-dark-bg-input;
 }
 input[type=range]::-moz-range-thumb {
-  border: 1px solid @color-dark-tex-box-3;
+  border: 1px solid @color-dark-text-box-3;
   height: @size-input-range-thumb;
   width: @size-input-range-thumb;
   border-radius: @size-input-range-thumb;
@@ -1783,7 +1754,7 @@ input[type=range]::-ms-fill-upper {
 }
 input[type=range]::-ms-thumb {
   margin-top: 1px;
-  border: 1px solid @color-dark-tex-box-3;
+  border: 1px solid @color-dark-text-box-3;
   height: @size-input-range-thumb;
   width: @size-input-range-thumb;
   border-radius: @size-input-range-thumb;
@@ -1953,4 +1924,3 @@ select {
 
 #changelog li {
 }
-
