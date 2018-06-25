@@ -678,6 +678,7 @@ define([
             var limitsMin = {};
             var limitsMax = {};
             for (var type in itemTypeLimits) {
+                if (this.isRewardItemTypeLocked(type)) continue;
                 limitsMin[type] = sum;
                 limitsMax[type] = sum + itemTypeLimits[type];
                 sum += itemTypeLimits[type];
@@ -746,7 +747,7 @@ define([
                 return null;
             }
             
-            return validItems[Math.floor(Math.random() * validItems.length)].clone();;
+            return validItems[Math.floor(Math.random() * validItems.length)].clone();
         },
         
 		getNecessityItem: function (itemProbability, itemTypeLimits, efficiency, currentItems, levelOrdinal) {
@@ -791,6 +792,13 @@ define([
             
 			return null;
 		},
+        
+        isRewardItemTypeLocked: function (itemType) {
+            if (itemType === ItemConstants.itemBonusTypes.light) {
+                return !this.gameState.unlockedFeatures.vision;
+            }
+            return false;
+        },
 
         getLostItems: function(action, loseSingleItem) {
             var lostItems = [];

@@ -165,6 +165,11 @@ define([
 				vision.value = 0;
 			}
             
+            // check unlocked features
+            if (vision > maxValueBase) {
+                this.gameState.unlockedFeatures.vision = true;
+            }
+            
             // dispatch update
             if (Math.abs(vision.value - this.lastSignalValue) >= 1) {
                 this.lastSignalValue = vision.value;
