@@ -2159,7 +2159,10 @@ function (Ash, GameConstants, CampConstants) {
                 leave_camp: "Venture out into the corridors.",
                 launch: "Leave this planet and launch for the great unknown."
             },
-        
+            
+            UNAVAILABLR_REASON_LOCKED_RESOURCES: "Requires undiscovered resources.",
+            UNAVAILABLR_REASON_BAG_FULL: "Bag full.",
+            
             getCostSource: function (action) {
                 var rawSource = this.costs[action].cost_source;
                 if (rawSource) return rawSource;
@@ -2230,7 +2233,7 @@ function (Ash, GameConstants, CampConstants) {
             },
             
             isLocationAction: function (action) {
-                // TODO define location actions here rather than in html
+                // TODO define location actions here rather than in html (this jquery is also a perofrmance issue)
                 var btn = $("button[action='" + action + "']");
                 if (btn)
                     return btn.hasClass("action-location");
