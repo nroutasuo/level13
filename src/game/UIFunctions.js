@@ -415,7 +415,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         getGameInfoDiv: function () {
             var html = "";
             html += "<span id='changelog-version'>version " + this.changeLogHelper.getCurrentVersionNumber() + "<br/>updated " + this.changeLogHelper.getCurrentVersionDate() + "</span>";
-            html += "<p>Please note that this game is still in development and many features are incomplete and unbalanced. Updates might break your save. Feedback and bug reports are very much appreciated!</p>";
+            html += "<p>Note that this game is still in development and many features are incomplete and unbalanced. Updates might break saves. Feedback and bug reports are appreciated!</p>";
             html += "<p><a href='https://github.com/nroutasuo/level13' target='github'>github</a> | ";
             html += "<a href='https://www.reddit.com/r/level13' target='reddit'>reddit</a></p>";
             html += "<h4 class='infobox-scrollable-header'>Changelog</h4>";

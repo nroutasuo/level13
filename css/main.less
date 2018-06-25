@@ -1109,7 +1109,7 @@ div.popup {
 	position: fixed;
 	top: 50%;
 	left: 50%;
-	margin: 20px;
+	margin: 0;
 	min-width: 30%;
 	max-width: 60%; 
 	z-index: 7;
@@ -1920,7 +1920,22 @@ select {
 #changelog ul {    
     padding: 0 0 0 2em;
     margin: 0.5em 0 1em 0;
+    list-style-type: none;
 }
 
 #changelog li {
+    position: relative;
+}
+
+#changelog li:before{
+    width: 7px;
+    height: 7px;
+    background: @color-dark-text-box-3;
+    color: @color-dark-text-box-3;
+    content: ".";
+    position: absolute;
+    left: -1em;
+    top: 0.375em;
+    display: inline-block;
+    overflow: hidden;
 }

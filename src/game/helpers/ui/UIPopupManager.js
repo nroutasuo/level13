@@ -15,9 +15,14 @@ function (Ash, GlobalSignals) {
         },
         
         onResize: function () {
+            var winh = $(window).height();
+            var winw = $(window).width();
+            var padding = 20;
             $.each($(".popup"), function () {
-                $(this).css("top", ($(window).height() - $(this).height()) / 2);
-                $(this).css("left", ($(window).width() - $(this).width()) / 2);
+                var popuph = $(this).height();
+                var popupw = $(this).width();
+                $(this).css("top", Math.max(0, (winh - popuph) / 2 - padding));
+                $(this).css("left", (winw - popupw) / 2);
             });
         },
         

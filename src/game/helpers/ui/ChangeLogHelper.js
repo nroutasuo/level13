@@ -50,15 +50,16 @@ define(['ash'], function (Ash) {
 				v = this.versions[i];
 				if (v.changes.length === 0) continue;
 				html += "<div class='changelog-version'>";
-				html += "version " + this.getVersionNumber(v);
-				if (!v.final) html += " (work in progress)";
+				html += "<b>version " + this.getVersionNumber(v);
+				if (v.final) html += " released: " + v.released + "";
+                else html += " (work in progress)";
+                html += "</b>";
 				html += "<ul>";
 				for (var j in v.changes) {
 					var change = v.changes[j];
-                    if (change.type === "UI") continue;
-					html += "<li>";
-					// html += "<span class='changelog-type changelog-type-" + change.type + "'>" + change.type + "</span>";
-					html += "<span class='changelog-summary'>" + change.summary + "</span>";
+                    var summary = change.summary.trim().replace(/\.$/, "");
+					html += "<li class='changelog-" + change.type + "'>";
+					html += "<span class='changelog-summary'>" + summary + "</span>";
 					html += "</li>";
 				}
 				html += "</ul>";
