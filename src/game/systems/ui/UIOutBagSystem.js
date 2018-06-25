@@ -447,7 +447,7 @@ define([
         isItemUnlocked: function (itemDefinition) {
             var actionName = "craft_" + itemDefinition.id;      
             var reqsCheck = this.playerActionsHelper.checkRequirements(actionName, false);
-            return reqsCheck.value >= 1 || reqsCheck.reason === PlayerActionConstants.UNAVAILABLR_REASON_BAG_FULL || reqsCheck.reason === PlayerActionConstants.UNAVAILABLR_REASON_LOCKED_RESOURCES;
+            return reqsCheck.value >= 1 || reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_BAG_FULL || reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES;
         },
         
         isObsolete: function (itemVO) {

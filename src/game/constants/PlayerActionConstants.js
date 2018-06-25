@@ -817,7 +817,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
                 
                 craft_bag_5: {
-                    upgraders: {
+                    upgrades: {
                         unlock_item_clothing8: true                        
                     }
                 },
@@ -2160,8 +2160,8 @@ function (Ash, GameConstants, CampConstants) {
                 launch: "Leave this planet and launch for the great unknown."
             },
             
-            UNAVAILABLR_REASON_LOCKED_RESOURCES: "Requires undiscovered resources.",
-            UNAVAILABLR_REASON_BAG_FULL: "Bag full.",
+            UNAVAILABLE_REASON_LOCKED_RESOURCES: "Requires undiscovered resources.",
+            UNAVAILABLE_REASON_BAG_FULL: "Bag full.",
             
             getCostSource: function (action) {
                 var rawSource = this.costs[action].cost_source;
