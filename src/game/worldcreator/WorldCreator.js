@@ -455,8 +455,8 @@ define([
             }
             
             this.generateSectorsFillSingleGaps(levelVO);
-			
-			// WorldCreatorDebug.printLevel(this.world, levelVO);
+            
+            // WorldCreatorDebug.printLevel(this.world, levelVO);
         },
         
         generateSectorsForExistingPoints: function (seed, levelVO, existingPoints) {
@@ -618,10 +618,11 @@ define([
 
                 this.stepsTillSupplies.water--;
                 this.stepsTillSupplies.food--;
+                
+                var sectorExists = levelVO.hasSector(sectorPos.sectorX, sectorPos.sectorY);
 
                 // stop path when intersecting existing paths
                 if (!forceComplete) {
-                    var sectorExists = levelVO.hasSector(sectorPos.sectorX, sectorPos.sectorY);
                     var sectorHasUnmatchingNeighbours = false;
                     var neighbours = levelVO.getNeighbours(sectorPos.sectorX, sectorPos.sectorY);
                     if (neighbours[PositionConstants.DIRECTION_EAST] && neighbours[PositionConstants.DIRECTION_SOUTH]) sectorHasUnmatchingNeighbours = true;
@@ -636,6 +637,8 @@ define([
                         }
                     }
                 }
+                
+                if (sectorExists) continue;
                 
                 requiresWater = this.stepsTillSupplies.water <= 0;
                 requiresFood = this.stepsTillSupplies.food <= 0;
