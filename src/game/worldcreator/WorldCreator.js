@@ -425,11 +425,12 @@ define([
             var numSectors = WorldCreatorConstants.getNumSectors(levelVO.levelOrdinal);
             var numSectorsCentral = WorldCreatorConstants.getNumSectorsCentral(levelVO.levelOrdinal);
             
-            // then create central structure
+            //  create central structure
             this.generateSectorRectangle(levelVO, 0, new PositionVO(levelVO.level, 5, 5), PositionConstants.DIRECTION_WEST, 10, 10);
 
-            // first connect existing positions (passages from the level above & initial starting & camp position)
+            // connect existing positions (passages from the level above & initial starting & camp position)
             var existingPointsToConnect = [];
+            if (levelVO.sectors.length > 0) existingPointsToConnect.push(levelVO.sectors[0].position);
             existingPointsToConnect = existingPointsToConnect.concat(passagesUpPositions);
             if (l === 13) {
                 existingPointsToConnect.push(new PositionVO(13, WorldCreatorConstants.FIRST_CAMP_X, WorldCreatorConstants.FIRST_CAMP_Y));
