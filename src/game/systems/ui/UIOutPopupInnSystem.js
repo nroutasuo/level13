@@ -1,10 +1,11 @@
 define([
     'ash',
+    'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/FightConstants',
     'game/nodes/player/ItemsNode',
-    ], function (Ash, UIConstants, ItemConstants, FightConstants, ItemsNode) {
+    ], function (Ash, GlobalSignals, UIConstants, ItemConstants, FightConstants, ItemsNode) {
 var UIOutPopupInnSystem = Ash.System.extend({
 
         uiFunctions: null,       
@@ -26,7 +27,7 @@ var UIOutPopupInnSystem = Ash.System.extend({
 		},
         
         update: function (time) {
-            if (!($("#inn-popup").is(":visible")) || $("inn-popup").data("fading") == true) {
+            if (!($("#inn-popup").is(":visible")) || $("#inn-popup").data("fading") == true) {
                 this.wasVisible = false;
                 return;
             }
