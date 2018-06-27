@@ -43,6 +43,9 @@ define([
             GlobalSignals.playerMovedSignal.add(function () { 
                 sys.updateAvailableProjects(); 
             });
+            GlobalSignals.improvementBuiltSignal.add(function () { 
+                sys.updateAvailableProjects(); 
+            });
         },
 
         removeFromEngine: function (engine) {
@@ -148,10 +151,10 @@ define([
             this.tabCounts.current.available.regular = availableRegular;
             if (isActive) this.tabCounts.lastShown.available.regular = availableRegular;
             
-            this.tabCounts.current.visible.regular = visibleColony;
-            if (isActive) this.tabCounts.lastShown.visible.regular = visibleColony;
-            this.tabCounts.current.available.regular = availableColony;
-            if (isActive) this.tabCounts.lastShown.available.regular = availableColony;
+            this.tabCounts.current.visible.colony = visibleColony;
+            if (isActive) this.tabCounts.lastShown.visible.colony = visibleColony;
+            this.tabCounts.current.available.colony = availableColony;
+            if (isActive) this.tabCounts.lastShown.available.colony = availableColony;
         },
         
         updateBuiltProjects: function() {
