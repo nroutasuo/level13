@@ -192,6 +192,7 @@ define([
         
         initializeHelpers: function () {
             // TODO make singletons / have some nice dependency injection
+            this.changeLogHelper = new ChangeLogHelper();
             this.itemsHelper = new ItemsHelper(this.gameState);
             this.enemyHelper = new EnemyHelper(this.itemsHelper);
 			this.resourcesHelper = new ResourcesHelper(this.engine);
@@ -207,7 +208,6 @@ define([
             this.uiMapHelper = new UIMapHelper(this.engine, this.levelHelper, this.sectorHelper, this.movementHelper);
             this.uiTechTreeHelper = new UITechTreeHelper(this.engine, this.playerActionsHelper);
             this.buttonHelper = new ButtonHelper(this.levelHelper);
-            this.changeLogHelper = new ChangeLogHelper();
             this.endingHelper = new EndingHelper(this.engine, this.gameState, this.playerActionsHelper, this.levelHelper);
         },
         

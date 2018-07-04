@@ -184,18 +184,6 @@ define([
 				}
 			}
             
-            var item = this.getItemForCraftAction(action);
-            if (item) {
-                if (!inCamp) {
-                    var spaceNow = bagComponent.totalCapacity - bagComponent.usedCapacity;
-                    var spaceRequired = BagConstants.getItemCapacity(item);
-                    var spaceFreed = BagConstants.getResourcesCapacity(this.getCostResourcesVO(action));
-                    if (spaceNow - spaceRequired + spaceFreed < 0) {
-                        return { value: 0, reason: PlayerActionConstants.UNAVAILABLE_REASON_BAG_FULL };
-                    }
-                }
-            }
-            
             if (HazardConstants.isAffectedByHazard(featuresComponent, itemsComponent) && !this.isActionIndependentOfHazards(action)) {
                 return { value: 0, reason: HazardConstants.getHazardDisabledReason(featuresComponent, itemsComponent) };
             }
@@ -692,6 +680,18 @@ define([
                 }
                 
                 return { value: lowestFraction, reason: reason };
+            }
+            
+            var item = this.getItemForCraftAction(action);
+            if (item) {
+                if (!inCamp) {
+                    var spaceNow = bagComponent.totalCapacity - bagComponent.usedCapacity;
+                    var spaceRequired = BagConstants.getItemCapacity(item);
+                    var spaceFreed = BagConstants.getResourcesCapacity(this.getCostResourcesVO(action));
+                    if (spaceNow - spaceRequired + spaceFreed < 0) {
+                        return { value: 0, reason: PlayerActionConstants.UNAVAILABLE_REASON_BAG_FULL };
+                    }
+                }
             }
             
             return { value: 1 };
