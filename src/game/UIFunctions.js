@@ -761,7 +761,11 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 uiFunctions.popupManager.onResize();
                 GlobalSignals.popupOpenedSignal.dispatch(popupID);
                 uiFunctions.gameState.isPaused = true;
-                $("#" + popupID).fadeIn(200, uiFunctions.popupManager.onResize);
+                $("#" + popupID).fadeIn(200, function () {
+                    uiFunctions.toggle("#" + popupID, true);
+                    uiFunctions.popupManager.onResize();
+                });
+                GlobalSignals.elementToggledSignal.dispatch(("#" + popupID), true);
             });
             this.generateCallouts("#" + popupID); 
         },

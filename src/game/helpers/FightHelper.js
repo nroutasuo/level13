@@ -97,8 +97,8 @@ define([
         endFight: function () {
             var sector = this.playerLocationNodes.head.entity;
 			var encounterComponent = sector.get(FightEncounterComponent);
-            if (sector.has(FightComponent)) {
-                var fightComponent = sector.get(FightComponent);
+            var fightComponent = sector.get(FightComponent);
+            if (fightComponent) {
 				if (fightComponent.won) {
 					sector.get(EnemiesComponent).resetNextEnemy();
 					this.pendingEnemies--;
@@ -117,7 +117,6 @@ define([
             } else {
 				if (this.pendingFleeCallback) this.pendingFleeCallback();
 			}
-			
             this.uiFunctions.popupManager.closePopup("fight-popup");
             sector.remove(FightComponent);
 			this.pendingWinCallback = null;

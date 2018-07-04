@@ -102,8 +102,8 @@ function (Ash, GlobalSignals) {
                     popupManager.gameState.isPaused = popupManager.hasOpenPopup();
                 });
             } else {
-                this.uiFunctions.toggle("#" + id, false);
                 $("#" + id).data("fading", false);
+                popupManager.uiFunctions.toggle("#" + id, false);
                 GlobalSignals.popupClosedSignal.dispatch(id);
                 popupManager.showQueuedPopup();
                 popupManager.gameState.isPaused = popupManager.hasOpenPopup();

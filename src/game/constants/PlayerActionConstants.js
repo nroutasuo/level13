@@ -26,19 +26,6 @@ function (Ash, GameConstants, CampConstants) {
                 scavenge: {
                     vision: [10, -1],
                 },
-                    
-                fightcheck: {
-                    health: 70,
-                    stamina: 20,
-                    sector: {
-                        enemies: true,
-                        scouted: true,
-                    },
-                    perks: {
-                        Injury: [1, -1],
-                    },
-                    busy: false,
-                },
                 
                 fight: {
                     busy: false,
@@ -2088,6 +2075,7 @@ function (Ash, GameConstants, CampConstants) {
                 send_caravan: 60 * 10
             },
             
+            // [ base-value, vision-dependent-value ]
             randomEncounterProbabilities: {
                 scavenge: [0.01, 0.01],
                 scout_locale_i: [0.2, 0.1],
@@ -2126,6 +2114,7 @@ function (Ash, GameConstants, CampConstants) {
                 move_camp_level: "Shortcut back to the nearest camp.",
                 move_camp_global: "Shortcut to the camp on this level.",
                 create_blueprint: "Combine pieces to a blueprint.",
+                flee: "Abandon what you were doing and run.",
                 nap: "Sleep rough and regain a bit of stamina.",
                 despair: "Give up. Stop moving. Rest.",
                 build_out_collector_food: "Accumulates food.",

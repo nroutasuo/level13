@@ -142,9 +142,6 @@ define([
             this.addItemsToLists(rewards, playerAllItems);
             this.addResourcesToLists(rewards, resultNode);
             
-            console.log("update inventorymanagement-kept " + $("#resultlist-inventorymanagement-kept ul li").length)
-            console.log("update inventorymanagement-found " + $("#resultlist-inventorymanagement-found ul li").length)
-            
             this.uiFunctions.toggle("#resultlist-inventorymanagement-kept .msg-empty", $("#resultlist-inventorymanagement-kept ul li").length <= 0);
             this.uiFunctions.toggle("#resultlist-inventorymanagement-found .msg-empty", $("#resultlist-inventorymanagement-found ul li").length <= 0);
             
