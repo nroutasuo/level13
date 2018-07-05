@@ -132,14 +132,6 @@ define([
             }
         },
         
-        updateButtonContainer: function (button, isVisible) {
-            try {
-                $(button).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");
-                $(button).parent(".container-btn-action").css("display", $(this).css("display"));
-            } catch (ex) {
-            }
-        },
-        
         updateButtonDisabledState: function (button, action) {
             var $button = $(button);
 			var isAutoPlaying = this.autoPlayNodes.head;
@@ -344,7 +336,6 @@ define([
             $.each($("button.action"), function () {
                 var $button = $(this);
                 var isVisible = (sys.uiFunctions.isElementToggled($button) !== false) && sys.uiFunctions.isElementVisible($button);
-                sys.updateButtonContainer($button, isVisible);
                 if (isVisible) {
                     sys.elementsVisibleButtons.push($button);
                 }

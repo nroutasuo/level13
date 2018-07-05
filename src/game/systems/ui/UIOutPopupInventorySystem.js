@@ -60,8 +60,6 @@ define([
         },
         
         updateLists: function () {
-            console.log("updateLists");
-            
             $("#resultlist-inventorymanagement-found ul").empty();
             $("#resultlist-inventorymanagement-kept ul").empty();
             $("#resultlist-loststuff-lost ul").empty();
