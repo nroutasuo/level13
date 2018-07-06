@@ -53,7 +53,7 @@ define(['ash'], function (Ash) {
         BAG_BONUS_6: 150,
         
         getNumSectors: function (levelOrdinal) {
-            return this.getNumSectorsCentral(levelOrdinal) * 1.15;
+            return Math.round(this.getNumSectorsCentral(levelOrdinal) * 1.15);
         },
         
         getNumSectorsCentral: function (levelOrdinal) {

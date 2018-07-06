@@ -118,26 +118,23 @@ define([
 					}
 				}
 				
-				// movement blockers: a few per level
-				var maxBlockers = Math.round(WorldCreatorConstants.getNumSectors(levelOrdinal) / (28 - levelOrdinal)) + levelOrdinal + 5;
-				var numBlockers = WorldCreatorRandom.randomInt(88 + seed * 56 * l + seed % 7, levelOrdinal + 1, maxBlockers);
-				var blockerSectors = WorldCreatorRandom.randomSectors(seed * l * l + 1 * 22 * i, levelVO, numBlockers, numBlockers + 1, true, "camp");
-				for (var i = 0; i < blockerSectors.length; i++) {
-					var blockerType = WorldCreatorRandom.randomInt(seed * 831 / (l+5) + seed % 2 + (i + 78) * 4, 1, 4);
-					if (l < 14 && blockerType === MovementConstants.BLOCKER_TYPE_WASTE) blockerType = MovementConstants.BLOCKER_TYPE_GAP;
-					if (levelOrdinal < 7 && blockerType === MovementConstants.BLOCKER_TYPE_GAP) blockerType = MovementConstants.BLOCKER_TYPE_GANG;
-                    
-					var blockedSector = blockerSectors[i];
-					var blockedNeighbour = WorldCreatorRandom.getRandomSectorNeighbour(seed * 101 + (i + 70) * (l + 900), levelVO, blockedSector, true);
-					var direction = PositionConstants.getDirectionFrom(blockedSector.position, blockedNeighbour.position);
-					
-                    if (levelOrdinal === 1 && (Math.abs(blockedSector.position.sectorX) < 2 || Math.abs(blockedSector.position.sectorY < 2))) {
-                        console.log("skip blocker at " + blockedSector.position);
-                        continue;
-                    }
-					blockedSector.addBlocker(direction, blockerType);
-					blockedNeighbour.addBlocker(PositionConstants.getOppositeDirection(direction), blockerType);
-				}
+				// movement blockers: non-combat (a few per level)
+                var numSectors = WorldCreatorConstants.getNumSectors(levelOrdinal);
+                var minBlockersRatio = 0.055;
+                var maxBlockersRatio = 0.1;
+                var minBlockers = Math.max(Math.round(numSectors * minBlockersRatio), 2);
+				var maxBlockers = Math.round(numSectors * maxBlockersRatio);
+                var blockerTypes = [];
+                if (l >= 14) blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE);
+                if (levelOrdinal >= 5) blockerTypes.push(MovementConstants.BLOCKER_TYPE_GAP);
+                this.addMovementBlockers(seed, l, levelVO, blockerTypes, minBlockers, maxBlockers);
+                
+				// movement blockers: gangs (a few per level)
+                var minGangsRatio = 0.1;
+                var maxGangsRatio = 0.3;
+                var minGangs = Math.max(Math.round(numSectors * minGangsRatio), 3);
+				var maxGangs = Math.round(numSectors * maxGangsRatio);
+                this.addMovementBlockers(seed, l, levelVO, [ MovementConstants.BLOCKER_TYPE_GANG ], minGangs, maxGangs);
 			}
 			
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
@@ -668,6 +665,30 @@ define([
 			levelVO.addSector(sectorVO);
 		},
 		
+        addMovementBlockers: function(seed, l, levelVO, blockerTypes, min, max) {
+            if (blockerTypes.length < 1) return;
+            var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
+            var numSectors = WorldCreatorConstants.getNumSectors(levelOrdinal);
+            var num = WorldCreatorRandom.randomInt(88 + seed * 56 * (l + 100) + seed % 7, min, max);
+            
+            var sectors = WorldCreatorRandom.randomSectors(seed * l * l + (1 + 303) * 22, levelVO, num, num + 1, true, "camp");
+            for (var i = 0; i < sectors.length; i++) {
+                var typeix = WorldCreatorRandom.randomInt(seed * 831 / (l+5) + seed % 2 + (i + 78) * 4, 0, blockerTypes.length);
+                var blockerType = blockerTypes[typeix];
+                var blockedSector = sectors[i];
+
+                if (levelOrdinal === 1 && (Math.abs(blockedSector.position.sectorX) < 3 || Math.abs(blockedSector.position.sectorY < 3))) {
+                    continue;
+                }
+
+                var blockedNeighbour = WorldCreatorRandom.getRandomSectorNeighbour(seed * 101 + (i + 70) * (l + 900), levelVO, blockedSector, true);
+                var direction = PositionConstants.getDirectionFrom(blockedSector.position, blockedNeighbour.position);
+
+                blockedSector.addBlocker(direction, blockerType);
+                blockedNeighbour.addBlocker(PositionConstants.getOppositeDirection(direction), blockerType);
+            }
+        },
+        
         generateHazardClusters: function (seed, levelVO, itemsHelper) {
             var levelOrdinal = levelVO.levelOrdinal;
 
