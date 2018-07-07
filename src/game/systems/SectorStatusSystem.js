@@ -67,8 +67,8 @@ define([
 		},
 	
 		update: function () {
-			if (this.playerLocationNodes.head)
-				this.updateSector(this.playerLocationNodes.head.entity);
+			if (!this.playerLocationNodes.head) return;
+            this.updateSector(this.playerLocationNodes.head.entity);
 		},
 		
 		updateSector: function (entity) {
@@ -103,14 +103,15 @@ define([
 			var sys = this;
 			
 			function checkNeighbour(direction) {
-				var localeId = LocaleConstants.getPassageLocaleId(direction === 0 ? 0 : 1);
+				var localeId = LocaleConstants.getPassageLocaleId(direction);
 				var currentEnemies = sectorControlComponent.getCurrentEnemies(localeId);
+                if (currentEnemies <= 0) return;
 				
 				var neighbour = sys.getNeighbour(sectorKey, direction);
 				
 				if (neighbour) {
 					var neighbourSectorControlComponent = neighbour.get(SectorControlComponent);
-					var neighbourLocaleID = LocaleConstants.getPassageLocaleId(direction === 0 ? 1 : 0);
+					var neighbourLocaleID = LocaleConstants.getPassageLocaleId(PositionConstants.getOppositeDirection(direction));
 					var neighbourEnemies = neighbourSectorControlComponent.getCurrentEnemies(neighbourLocaleID);
 					var targetEnemies = Math.min(currentEnemies, neighbourEnemies);
 					

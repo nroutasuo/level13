@@ -9,7 +9,7 @@ define(['ash'], function (Ash) {
         currentLocaleEnemies: {},
         
         constructor: function (enemies, localeEnemies) {
-            this.maxSectorEnemies = enemies;         
+            this.maxSectorEnemies = enemies;
             this.maxLocaleEnemies = {};
             this.currentLocaleEnemies = {};
             
@@ -51,13 +51,14 @@ define(['ash'], function (Ash) {
             return Object.keys(copy).length > 0 ? copy : null;
         },
         
-        customLoadFromSave: function (componentValues) {            
-            var localeEnemies = componentValues.currentLocaleEnemies;
-            if (componentValues.cLE)
-                localeEnemies = componentValues.cLE;
+        customLoadFromSave: function (componentValues) {
+            var cLE = componentValues.currentLocaleEnemies;
             
-            for (var locale in localeEnemies) {
-                this.currentLocaleEnemies[locale] = localeEnemies[locale];
+            if (componentValues.cLE)
+                cLE = componentValues.cLE;
+            
+            for (var locale in cLE) {
+                this.currentLocaleEnemies[locale] = cLE[locale];
             }
         }
         
