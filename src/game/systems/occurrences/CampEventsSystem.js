@@ -124,6 +124,7 @@ define([
                     return improvements.getCount(this.upgradeEffectsHelper.getImprovementForOccurrence(event)) > 0;
 
                 case OccurrenceConstants.campOccurrenceTypes.raid:
+                    if (campNode.camp.population < 1) return false;
                     var soldiers = campNode.camp.assignedWorkers.soldier;
                     var fortificationUpgradeLevel = this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradesNodes.head.upgrades);
                     return OccurrenceConstants.getRaidDanger(improvements, soldiers, fortificationUpgradeLevel) > 0;

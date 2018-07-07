@@ -8,12 +8,9 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
         timestamp: null, // end time
 	
         constructor: function (raidComponent) {
-            if (raidComponent) {
-                this.wasVictory = raidComponent.victory;
-                this.resourcesLost = raidComponent.resourcesLost;
-                this.timestamp = new Date().getTime();
-            }
-            this.resourcesLost = new ResourcesVO();
+            this.wasVictory = raidComponent ? raidComponent.victory : false;
+            this.resourcesLost = raidComponent ? raidComponent.resourcesLost : new ResourcesVO();
+            this.timestamp = raidComponent ? new Date().getTime() : -1;
         },
         
         isValid: function() {

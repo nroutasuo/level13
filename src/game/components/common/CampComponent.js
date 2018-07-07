@@ -1,7 +1,9 @@
 // Marks that given entity (should be a Sector) contains a Camp
 define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash, CampConstants, RaidVO) {
+    
     var CampComponent = Ash.Class.extend({
         
+        id: "",
         population: 0,
         populationChangePerSec: 0,
         rumourpool: 0,
@@ -54,7 +56,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
             } else {
                 return this.getType();
             }
-        }
+        },
     });
 
     return CampComponent;

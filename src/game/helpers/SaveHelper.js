@@ -106,7 +106,7 @@ define([
                 
                 var componentValues = savedComponents[componentKey];				
 				if (component.customLoadFromSave) {
-					component.customLoadFromSave(componentValues);
+					component.customLoadFromSave(componentValues, saveKey);
 				} else {
 					this.loadComponent(component, componentValues, saveKey);
 				}
