@@ -668,7 +668,6 @@ define([
         addMovementBlockers: function(seed, l, levelVO, blockerTypes, min, max) {
             if (blockerTypes.length < 1) return;
             var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
-            var numSectors = WorldCreatorConstants.getNumSectors(levelOrdinal);
             var num = WorldCreatorRandom.randomInt(88 + seed * 56 * (l + 100) + seed % 7, min, max);
             
             var sectors = WorldCreatorRandom.randomSectors(seed * l * l + (1 + 303) * 22, levelVO, num, num + 1, true, "camp");
@@ -677,7 +676,7 @@ define([
                 var blockerType = blockerTypes[typeix];
                 var blockedSector = sectors[i];
 
-                if (levelOrdinal === 1 && (Math.abs(blockedSector.position.sectorX) < 3 || Math.abs(blockedSector.position.sectorY < 3))) {
+                if (levelOrdinal === 1 && (Math.abs(blockedSector.position.sectorX) < 2 || Math.abs(blockedSector.position.sectorY < 2))) {
                     continue;
                 }
 

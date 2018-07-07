@@ -112,6 +112,9 @@ define([
             GlobalSignals.featureUnlockedSignal.add(function () {
                 sys.updateUnlockedFeatures();
             });
+            GlobalSignals.fightEndedSignal.add(function () { 
+				sys.updateMovementRelatedActions();
+            });
 			this.rebuildVis(uiMapHelper);
             this.updateUnlockedFeatures();
 		},
@@ -225,7 +228,7 @@ define([
             }
 
             this.uiFunctions.slideToggleIf("#out-locales", null, isScouted && sectorLocalesComponent.locales.length > 0, 200, 0);
-            this.uiFunctions.slideToggleIf("#table-out-actions-movement-related", null, isScouted, 200, 0);
+            this.uiFunctions.slideToggleIf("#container-out-actions-movement-related", null, isScouted, 200, 0);
 
             // hide movement until the player makes a light
             this.uiFunctions.toggle("#table-out-actions-movement", this.gameState.numCamps > 0);
@@ -441,10 +444,12 @@ define([
 				var blocker = passagesComponent.getBlocker(direction);
                 
 				if (blocker) {
+                	var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
+                    var blockerName = TextConstants.getMovementBlockerName(blocker, enemiesComponent).toLowerCase();
                     if (this.movementHelper.isBlocked(entity, direction)) {
-                        description += "Passage to the " + directionName + " is blocked by a " + blocker.name + ". ";
+                        description += "Passage to the " + directionName + " is blocked by a " + blockerName + ". ";
                     } else {
-                        description += "A " + blocker.name.toLowerCase() + " on the " + directionName + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
+                        description += "A " + blockerName + " on the " + directionName + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
                     }
                 }
 			}
@@ -463,12 +468,8 @@ define([
 			}
 			
 			if (hasEnemies) {
-				var defeatableBlockerN = passagesComponent.isDefeatable(PositionConstants.DIRECTION_NORTH);
-				var defeatableBlockerS = passagesComponent.isDefeatable(PositionConstants.DIRECTION_SOUTH);
-				var defeatableBlockerW = passagesComponent.isDefeatable(PositionConstants.DIRECTION_WEST);
-				var defeatableBlockerE = passagesComponent.isDefeatable(PositionConstants.DIRECTION_EAST);
 				if (isScouted) {
-					enemyDesc = TextConstants.getEnemyText(enemiesComponent.possibleEnemies, sectorControlComponent, defeatableBlockerN, defeatableBlockerS, defeatableBlockerW, defeatableBlockerE);
+					enemyDesc = TextConstants.getEnemyText(enemiesComponent.possibleEnemies, sectorControlComponent);
 				}
 			} else if (isScouted) {
 				enemyDesc += "There doesn't seem to be anything hostile around. ";
@@ -606,15 +607,16 @@ define([
             
 			var currentSector = this.playerLocationNodes.head.entity;
 			var movementOptionsComponent = currentSector.get(MovementOptionsComponent);
-			$("#table-out-actions-movement-related").empty();
+            var enemiesComponent = currentSector.get(EnemiesComponent);
+			$("#container-out-actions-movement-related").empty();
 			
 			function addBlockerActionButton(blocker, direction) {
                 if (blocker.type !== MovementConstants.BLOCKER_TYPE_GAP) {
                     if (!movementOptionsComponent.canMoveToDirection(direction)) {
                         var action = blocker.actionBaseID + "_" + direction;
-                        var description = blocker.actionDescription;
+                        var description = TextConstants.getMovementBlockerAction(blocker, enemiesComponent) + " (" +  PositionConstants.getDirectionName(direction, true) + ")";
                         var button = "<button class='action' action='" + action + "'>" + description + "</button>";
-                        $("#table-out-actions-movement-related").append("<tr><td>" + button + "</td></tr>");
+                        $("#container-out-actions-movement-related").append(button);
                     }
                 }
 			}
@@ -625,9 +627,9 @@ define([
 				if (directionBlocker) addBlockerActionButton(directionBlocker, direction);
 			}
 			
-            this.uiFunctions.registerActionButtonListeners("#table-out-actions-movement-related");
-            this.uiFunctions.generateButtonOverlays("#table-out-actions-movement-related");
-            this.uiFunctions.generateCallouts("#table-out-actions-movement-related");
+            this.uiFunctions.registerActionButtonListeners("#container-out-actions-movement-related");
+            this.uiFunctions.generateButtonOverlays("#container-out-actions-movement-related");
+            this.uiFunctions.generateCallouts("#container-out-actions-movement-related");
             GlobalSignals.elementCreatedSignal.dispatch();
 		},
         

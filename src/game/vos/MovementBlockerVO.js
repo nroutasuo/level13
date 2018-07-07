@@ -10,7 +10,6 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.defeatable = type === MovementConstants.BLOCKER_TYPE_GANG;
 			this.flyable = type === MovementConstants.BLOCKER_TYPE_GAP || type === MovementConstants.BLOCKER_TYPE_WASTE;
 			
-			this.actionDescription = this.getActionDescription();
 			this.actionBaseID = this.getActionBaseId();
         },
 		
@@ -19,14 +18,6 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				case MovementConstants.BLOCKER_TYPE_GAP: return "Gap";
 				case MovementConstants.BLOCKER_TYPE_WASTE: return "Toxic waste";
 				case MovementConstants.BLOCKER_TYPE_GANG: return "Gang";
-	 	 	}
-		},
-		
-		getActionDescription: function () {
-			switch (this.type) {
-				case MovementConstants.BLOCKER_TYPE_GAP: return "Bridge gap";
-				case MovementConstants.BLOCKER_TYPE_WASTE: return "Clear waste";
-				case MovementConstants.BLOCKER_TYPE_GANG: return "Fight gang";
 	 	 	}
 		},
 		

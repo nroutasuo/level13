@@ -6,9 +6,11 @@ define(['ash'], function (Ash) {
         enemy: null,
         context: null,
         
-        constructor: function (enemy, context) {
+        constructor: function (enemy, context, pendingEnemies, totalEnemies) {
             this.enemy = enemy;
             this.context = context;
+            this.pendingEnemies = pendingEnemies;
+            this.totalEnemies = totalEnemies;
         },
     });
 

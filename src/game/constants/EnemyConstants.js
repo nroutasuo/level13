@@ -32,10 +32,20 @@ function (Ash, WorldCreatorConstants, EnemyVO) {
         nAnimal: "aggressive animals",
         nGangster: "bandits",
         nBot: "bots",
+        
+        gPack: "pack",
+        gGang: "gang",
+        gSwarm: "swarm",
+        gMob: "mob",
+        gFlock: "flock",
+        gHorde: "horde",
+        gCluster: "cluster",
+        
         aPatrol: "patrolled by",
         aGuard: "guarded by",
         aInfest: "infested with",
         aCover: "covered in",
+        
         dCleared: "cleared",
         dDisabled: "disabled",
         dKilled: "killed",

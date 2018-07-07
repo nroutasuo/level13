@@ -142,19 +142,19 @@ define(['ash'], function (Ash) {
                 this.getNextClockWise(direction2, false) == direction1 || this.getNextClockWise(direction2, true) == direction1;
         },
         
-        getDirectionName: function (direction) {
+        getDirectionName: function (direction, short) {
             switch (direction) {
-                case this.DIRECTION_WEST: return "west";
-                case this.DIRECTION_NORTH: return "north";
-                case this.DIRECTION_SOUTH: return "south";
-                case this.DIRECTION_EAST: return "east";
+                case this.DIRECTION_WEST: return short ? "W" : "west";
+                case this.DIRECTION_NORTH: return short ? "N" : "north";
+                case this.DIRECTION_SOUTH: return short ? "S" : "south";
+                case this.DIRECTION_EAST: return short ? "E" : "east";
                 case this.DIRECTION_NE: return "NE";
                 case this.DIRECTION_SE: return "SE";
                 case this.DIRECTION_SW: return "SW";
                 case this.DIRECTION_NW: return "NW";
-                case this.DIRECTION_UP: return "up";
-                case this.DIRECTION_DOWN: "down";
-                case this.DIRECTION_CAMP: "camp";
+                case this.DIRECTION_UP: return short ? "U" : "up";
+                case this.DIRECTION_DOWN: short ? "D" : "down";
+                case this.DIRECTION_CAMP: short ? "C" : "camp";
                 case this.DIRECTION_NONE: "none";
             }
             return "unknown";

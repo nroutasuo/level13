@@ -126,7 +126,7 @@ define([
 			var sector = this.playerLocationNodes.head.entity;
 			var encounterComponent = sector.get(FightEncounterComponent);
             
-			$("#fight-title").text(this.getTitleByContext(encounterComponent.context));
+			$("#fight-title").text(this.getTitleByContext(encounterComponent));
 			
 			// Enemy info
 			var enemiesComponent = sector.get(EnemiesComponent);
@@ -221,8 +221,11 @@ define([
 			}
         },
         
-        getTitleByContext: function (context) {
-			var baseActionID = this.playerActionsHelper.getBaseActionID(context);
+        getTitleByContext: function (encounterComponent) {
+			var baseActionID = this.playerActionsHelper.getBaseActionID(encounterComponent.context);
+            if (baseActionID === "fight_gang") {
+                return "Fight " + (encounterComponent.totalEnemies - encounterComponent.pendingEnemies + 1) + " / " + encounterComponent.totalEnemies;
+            }
             return baseActionID.replace(/_/g, " ");
         },
 		

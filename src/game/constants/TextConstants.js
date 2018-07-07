@@ -1,8 +1,7 @@
 define(
 ['ash',
- 'game/constants/WorldCreatorConstants', 'game/constants/PositionConstants', 'game/constants/MovementConstants',
- 'game/constants/LocaleConstants', 'game/vos/LocaleVO'],
-function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, LocaleConstants, LocaleVO) {
+    'game/constants/GameConstants', 'game/constants/WorldCreatorConstants', 'game/constants/PositionConstants', 'game/constants/MovementConstants'],
+function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, MovementConstants) {
 
     SECTOR_TYPE_NOLIGHT = -1;
     
@@ -269,35 +268,15 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
 			}
 		},
 		
-		getEnemyText: function (enemyList, sectorControlComponent, defeatableBlockerNorth, defeatableBlockerSouth, defeatableBlockerWest, defeatableBlockerEast) {
-			var enemyActiveV = this.getEnemyActiveVerb(enemyList);
-			
+		getEnemyText: function (enemyList, sectorControlComponent) {			
 			var sectorPart = "";
-			var enemyNounSector = this.getEnemyNoun(enemyList);
-			
+			var enemyActiveV = this.getEnemyActiveVerb(enemyList);
+			var enemyNounSector = this.getEnemyNoun(enemyList, true);			
             sectorPart += "This area is " + enemyActiveV + " " + enemyNounSector + ". ";
-			
-			var gangPart = "";
-			if (defeatableBlockerNorth) {
-				var gangLeftDefeated = sectorControlComponent.hasControlOfLocale(LocaleConstants.getPassageLocaleId(PositionConstants.DIRECTION_NORTH));
-				if (!gangLeftDefeated) gangPart += "There is a gang of " + enemyNounSector + " blocking passage to the north. ";
-			}
-			if (defeatableBlockerSouth) {
-				var gangLeftDefeated = sectorControlComponent.hasControlOfLocale(LocaleConstants.getPassageLocaleId(PositionConstants.DIRECTION_SOUTH));
-				if (!gangLeftDefeated) gangPart += "There is a gang of " + enemyNounSector + " blocking passage to the south. ";
-			}
-			if (defeatableBlockerWest) {
-				var gangLeftDefeated = sectorControlComponent.hasControlOfLocale(LocaleConstants.getPassageLocaleId(PositionConstants.DIRECTION_WEST));
-				if (!gangLeftDefeated) gangPart += "There is a gang of " + enemyNounSector + " blocking passage to the west. ";
-			}
-			if (defeatableBlockerEast) {
-				var gangLeftDefeated = sectorControlComponent.hasControlOfLocale(LocaleConstants.getPassageLocaleId(PositionConstants.DIRECTION_EAST));
-				if (!gangLeftDefeated) gangPart += "There is a gang of " + enemyNounSector + " blocking passage to the east. ";
-			}
-			
+            
 			var workshopPart = "";
 			
-			return sectorPart + workshopPart + gangPart;
+			return sectorPart + workshopPart;
 		},
 		
 		getEnemyNoun: function (enemyList, detailed) {
@@ -309,6 +288,10 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
 				return parts[parts.length - 1];
 			}
 		},
+        
+        getEnemyGroupNoun: function (enemyList) {
+            return this.getCommonText(enemyList, "groupN", "", "group", false)
+        },
 		
 		getEnemyActiveVerb: function(enemyList) {
 			return this.getCommonText(enemyList, "activeV", "", "occupied by", false);    
@@ -317,6 +300,25 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
 		getEnemeyDefeatedVerb: function(enemyList) {
 			return this.getCommonText(enemyList, "defeatedV", "", "defeated", false);
 		},
+        
+        getMovementBlockerName: function(blockerVO, enemiesComponent) {
+			switch (blockerVO.type) {
+                case MovementConstants.BLOCKER_TYPE_GANG:
+                    var groupNoun = this.getEnemyGroupNoun(enemiesComponent.possibleEnemies);
+                    var enemyNoun = this.getEnemyNoun(enemiesComponent.possibleEnemies);
+                    return groupNoun + " of " + enemyNoun;
+                default: 
+                    return blockerVO.name;
+            }
+        },
+        
+        getMovementBlockerAction: function (blockerVO, enemiesComponent) {
+			switch (blockerVO.type) {
+				case MovementConstants.BLOCKER_TYPE_GAP: return "Bridge gap";
+				case MovementConstants.BLOCKER_TYPE_WASTE: return "Clear waste";
+				case MovementConstants.BLOCKER_TYPE_GANG: return "Fight " + this.getEnemyNoun(enemiesComponent.possibleEnemies);
+	 	 	}
+        },
 		
 		getUnblockedVerb: function (blockerType) {
 			switch (blockerType) {
@@ -392,6 +394,9 @@ function (Ash, WorldCreatorConstants, PositionConstants, MovementConstants, Loca
 				}
 			}
 			
+            // console.log("getCommonText " + objectAttribute + " | " + validDetail + " | " + validWords.join(",") + " | " + minimumWords.join(",") + " | " + defaultWord);
+            // console.log(objectList)
+            
 			if (validDetail.length > 0) {
 				return this.pluralify(validDetail);
 			} else if (validWords.length > 0) {

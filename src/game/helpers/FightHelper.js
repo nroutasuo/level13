@@ -1,6 +1,7 @@
 // Helper methods related to player actions (costs, requirements, descriptions) - common definitions for all actions
 define([
     'ash',
+    'game/GlobalSignals',
     'game/constants/PlayerActionConstants',
     'game/constants/LocaleConstants',
     'game/constants/FightConstants',
@@ -13,7 +14,7 @@ define([
     'game/systems/FaintingSystem',
     'game/systems/SaveSystem'
 ], function (
-	Ash, PlayerActionConstants, LocaleConstants, FightConstants, 
+	Ash, GlobalSignals, PlayerActionConstants, LocaleConstants, FightConstants, 
     EnemiesComponent, SectorControlComponent, FightComponent, FightEncounterComponent, 
     PlayerLocationNode, PlayerStatsNode, 
     FaintingSystem, SaveSystem
@@ -28,6 +29,7 @@ define([
         playerStatsNodes: null,
 		
 		pendingEnemies: 0,
+        totalEnemies: 0,
 		pendingWinCallback: null,
 		pendingFleeCallback: null,
 		pendingLoseCallback: null,
@@ -48,6 +50,7 @@ define([
 				var encounterProbability = PlayerActionConstants.getRandomEncounterProbability(baseActionID, vision);
 				if (Math.random() < encounterProbability) {
 					this.pendingEnemies = this.getEnemyCount(action);
+                    this.totalEnemies = this.pendingEnemies;
 					this.pendingWinCallback = winCallback;
 					this.pendingFleeCallback = fleeCallback;
 					this.pendingLoseCallback = loseCallback;
@@ -76,7 +79,7 @@ define([
 			
             var enemiesComponent = sector.get(EnemiesComponent);
             enemiesComponent.selectNextEnemy();
-			sector.add(new FightEncounterComponent(enemiesComponent.getNextEnemy(), action));
+			sector.add(new FightEncounterComponent(enemiesComponent.getNextEnemy(), action, this.pendingEnemies, this.totalEnemies));
 			this.uiFunctions.showFight();
         },
         
@@ -122,6 +125,7 @@ define([
 			this.pendingWinCallback = null;
 			this.pendingFleeCallback = null;
 			this.pendingLoseCallback = null;
+            GlobalSignals.fightEndedSignal.dispatch();
             this.save();
         },
 		

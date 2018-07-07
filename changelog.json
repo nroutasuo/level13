@@ -4,8 +4,12 @@
             "version": "0.2.2",
             "phase": "alpha",
             "final": false,
-            "updated": "2017-06-23",
+            "updated": "2017-07-07",
             "changes": [
+                {
+                    "type": "DEV",
+                    "summary": "Lots of bug-fixes.",
+                },
                 {
                     "type": "GD",
                     "summary": "Enable manually equipping items."

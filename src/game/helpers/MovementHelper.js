@@ -55,7 +55,7 @@ define([
 				
 				blocked = Boolean(blocker && (notBridged || notDefeated || notCleaned));
 				if (notBridged) reason = "Bridge needed.";
-				if (notDefeated) reason = "Blocked by a gang.";
+				if (notDefeated) reason = "Blocked by a fight.";
 				if (notCleaned) reason = "Blocked by toxic waste.";
 				
 				return { value: blocked, reason: reason };
