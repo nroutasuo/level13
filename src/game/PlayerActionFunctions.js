@@ -1392,6 +1392,7 @@ define(['ash',
             var campSector = this.nearestCampNodes.head.entity;
             if (campSector) {
                 campSector.get(CampComponent).campName = newName;
+                GlobalSignals.campRenamedSignal.dispatch();
                 this.save();
             }
         },

@@ -74,6 +74,7 @@ define([
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
             GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onImprovementBuilt);
             GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onPlayerMoved);
+            GlobalSignals.add(this, GlobalSignals.campRenamedSignal, this.onCampRenamed);
             
             this.refresh();
         },
@@ -432,6 +433,10 @@ define([
         },
         
         onPlayerMoved: function () {
+            this.refresh();
+        },
+        
+        onCampRenamed: function () {
             this.refresh();
         },
         
