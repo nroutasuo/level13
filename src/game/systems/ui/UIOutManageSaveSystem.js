@@ -31,7 +31,7 @@ var UIOutManageSaveSystem = Ash.System.extend({
                 system.loadImport();
             });
             $("#close-manage-save-popup").click(function (e) {
-                system.textField.text("");
+                system.resetElements();
                 system.uiFunctions.popupManager.closePopup("manage-save-popup");
             });
             
@@ -65,6 +65,14 @@ var UIOutManageSaveSystem = Ash.System.extend({
             this.textField.toggle(false);
             this.uiFunctions.toggle(this.loadImportcontainer, false);
             this.uiFunctions.toggle(this.spanMsg, false);
+        },
+        
+        resetElements: function () {
+            this.textField.text("");
+            this.uiFunctions.toggle(this.spanMsg, false);
+            this.uiFunctions.toggle(this.textField, false);
+            this.uiFunctions.toggle(this.loadImportcontainer, false);
+            
         },
         
         openExport: function () {
