@@ -41,13 +41,19 @@ define(['ash'], function (Ash) {
         },
          
         getSaveKey: function () {
-            return "ScCtrl";
+            return "SCtrl";
         },
         
         getCustomSaveObject: function () {
             var copy = {};
-            if (this.currentLocaleEnemies && Object.keys(this.currentLocaleEnemies).length > 0)
-                copy.cLE = this.currentLocaleEnemies;
+            var cLE = {};
+            if (this.currentLocaleEnemies && Object.keys(this.currentLocaleEnemies).length > 0) {
+                for (var locale in this.currentLocaleEnemies) {
+                    if (this.currentLocaleEnemies[locale] != this.maxLocaleEnemies[locale]) {
+                        cLE[locale] = this.currentLocaleEnemies[locale];
+                    }
+                }                
+            }
             return Object.keys(copy).length > 0 ? copy : null;
         },
         
