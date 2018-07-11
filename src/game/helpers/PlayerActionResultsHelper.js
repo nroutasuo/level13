@@ -90,10 +90,11 @@ define([
         
         getResultVOByAction: function (action) {
             var baseActionID = this.playerActionsHelper.getBaseActionID(action);
+            
             var resultVO;
             switch (baseActionID) {
                 case "scavenge":
-                    resultVO = this.getScavengeRewards();                    
+                    resultVO = this.getScavengeRewards();   
                     break;
                 case "scout":
                     resultVO = this.getScoutRewards();
@@ -121,7 +122,7 @@ define([
             }
             
             var playerVision = this.playerStatsNodes.head.vision.value;
-            var loseInventoryProbability = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
+            var loseInventoryProbability = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);            
             if (loseInventoryProbability > Math.random()) {
                 resultVO.lostItems = this.getLostItems(action, true);
             }
@@ -828,7 +829,7 @@ define([
         },
         
         getItemLoseProbability: function (action, item) {
-            var loseFollowerProbability = action === "despair" ? 1 : 0;
+            var campCount = this.gameState.numCamps;
             var itemLoseProbability = 1;
             switch (item.type) {
                 case ItemConstants.itemTypes.bag:
@@ -836,7 +837,7 @@ define([
                     itemLoseProbability = 0;
                     break;
                 case ItemConstants.itemTypes.follower:
-                    itemLoseProbability = loseFollowerProbability;
+                    itemLoseProbability = action === "despair" ? 1 : 0;
                     break;
                 case ItemConstants.itemTypes.clothing_over:
                 case ItemConstants.itemTypes.clothing_upper:
@@ -844,8 +845,10 @@ define([
                 case ItemConstants.itemTypes.clothing_head:
                 case ItemConstants.itemTypes.clothing_hands:
                 case ItemConstants.itemTypes.shoes:
-                case ItemConstants.itemTypes.light:
                     itemLoseProbability = 0.55;
+                    break;
+                case ItemConstants.itemTypes.light:
+                    itemLoseProbability = campCount > 0 ? 0.55 : 0;
                     break;
                 default:
                     itemLoseProbability = 0.95;
