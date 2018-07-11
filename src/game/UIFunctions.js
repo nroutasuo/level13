@@ -517,7 +517,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             var cooldownTotal;
             var durationLeft;
             var durationTotal;
-            $.each($("button.action-location"), function() {
+            $.each($("button.action"), function() {
                 var action = $(this).attr("action");
                 var baseId = uiFunctions.playerActions.playerActionsHelper.getBaseActionID(action);
                 if (action) {
