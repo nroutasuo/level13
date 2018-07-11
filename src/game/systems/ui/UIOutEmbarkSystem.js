@@ -133,14 +133,19 @@ define([
 				var visible = campVal > 0;
 				var inputMax = Math.min(Math.floor(campVal));
 				uiFunctions.toggle($(this), visible);
-				$(this).children("td").children(".stepper").children("input").attr("max", inputMax);
-                selectedAmount = Math.max(0, $(this).children("td").children(".stepper").children("input").val());
-                selectedCapacity += selectedAmount * BagConstants.getResourceCapacity(resourceName);
-                
-                if (resourceName === resourceNames.water)
-                    selectedWater = selectedAmount;
-                if (resourceName === resourceNames.food)
-                    selectedFood = selectedAmount;
+                if (visible) {
+                    var stepper = $(this).children("td").children(".stepper");
+                    var inputMin = 0;
+                    var val = $(this).children("td").children(".stepper").children("input").val();
+                    uiFunctions.updateStepper($(stepper).attr("id"), val, inputMin, inputMax)
+                    selectedAmount = Math.max(0, val);
+                    selectedCapacity += selectedAmount * BagConstants.getResourceCapacity(resourceName);
+                    
+                    if (resourceName === resourceNames.water)
+                        selectedWater = selectedAmount;
+                    if (resourceName === resourceNames.food)
+                        selectedFood = selectedAmount;
+                }
 			});
             
             // Items steppers
@@ -151,15 +156,17 @@ define([
                 var count = itemsComponent.getCountById(itemID, true);
 				var visible = count > 0;
                 if (visible) visibleItemTRs++;
-				var inputMax = Math.min(Math.floor(count));
-                var inputMin = 0;
-                var inputValue = $(this).children("td").children(".stepper").children("input").attr("value");
 				uiFunctions.toggle($(this), visible);
-				$(this).children("td").children(".stepper").children("input").attr("max", inputMax);
-				$(this).children("td").children(".stepper").children("input").attr("min", inputMin);
-				$(this).children("td").children(".stepper").children("input").attr("value", Math.max(inputValue, inputMin));
-                selectedAmount = Math.max(0, $(this).children("td").children(".stepper").children("input").val());
-                selectedCapacity += selectedAmount * BagConstants.getItemCapacity(itemsComponent.getItem(itemID));
+                if (visible) {
+                    var stepper = $(this).children("td").children(".stepper");
+                    var inputMin = 0;
+                    var inputMax = Math.min(Math.floor(count));
+                    var inputValue = $(stepper).children("input").attr("value");
+                    var val = Math.max(inputValue, inputMin);
+                    uiFunctions.updateStepper($(stepper).attr("id"), val, inputMin, inputMax)
+                    selectedAmount = Math.max(0, $(stepper).children("input").val());
+                    selectedCapacity += selectedAmount * BagConstants.getItemCapacity(itemsComponent.getItem(itemID));
+                }
 			});
 			
             this.uiFunctions.toggle("#embark-items-container", visibleItemTRs > 0);

@@ -1,6 +1,7 @@
 define([
     'ash',
     'utils/MathUtils',
+    'game/GlobalSignals',
 	'game/constants/GameConstants',
 	'game/constants/LogConstants',
 	'game/constants/CampConstants',
@@ -10,7 +11,7 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/PositionComponent',
     'game/components/common/LogMessagesComponent',
-], function (Ash, MathUtils, GameConstants, LogConstants, CampConstants, CampNode, PlayerStatsNode, LevelComponent, SectorImprovementsComponent, PositionComponent, LogMessagesComponent) {
+], function (Ash, MathUtils, GlobalSignals, GameConstants, LogConstants, CampConstants, CampNode, PlayerStatsNode, LevelComponent, SectorImprovementsComponent, PositionComponent, LogMessagesComponent) {
     var PopulationSystem = Ash.System.extend({
 	
         campNodes: null,
@@ -102,6 +103,7 @@ define([
             } else {
                 this.reassignWorkers(node);
             }
+            GlobalSignals.populationChangedSignal.dispatch(node.entity);
             this.logChangePopulation(campPosition, isIncrease);
         },
         
@@ -133,6 +135,7 @@ define([
                     }
                 }
             }
+            GlobalSignals.workersAssignedSignal.dispatch(node.entity);
         },
         
         logChangePopulation: function (campPosition, isIncrease) {

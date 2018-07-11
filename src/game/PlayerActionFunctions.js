@@ -1351,12 +1351,8 @@ define(['ash',
         },
         
         assignWorkers: function(scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers) {
-            var camp = null;
-			for (var node = this.engine.getNodeList(CampNode).head; node; node = node.next) {
-                if (node.entity.get(PositionComponent).level == this.playerPositionNodes.head.position.level) {
-                    camp = node.camp;
-                }
-            }
+            var sector = this.playerLocationNodes.head.entity;
+            var camp = sector ? sector.get(CampComponent) : null;
             
             if (camp) {
                 camp.assignedWorkers.scavenger = Math.max(0, Math.floor(scavengers));
@@ -1368,6 +1364,7 @@ define(['ash',
                 camp.assignedWorkers.toolsmith = Math.max(0, Math.floor(smiths));
                 camp.assignedWorkers.concrete = Math.max(0, Math.floor(concrete));
                 camp.assignedWorkers.soldier = Math.max(0, Math.floor(soldiers));
+                GlobalSignals.workersAssignedSignal.dispatch(sector);
             }
             else {
                 console.log("WARN: No camp found for worker assignment.");

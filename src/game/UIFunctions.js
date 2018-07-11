@@ -115,7 +115,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 uiFunctions.showInfoPopup("Level 13", uiFunctions.getGameInfoDiv());
             });
             
-            $("#in-assign-workers button").click( function (e) {
+            $("#in-assign-workers input.amount").change(function (e) {
                 var scavengers = parseInt($("#stepper-scavenger input").val());
                 var trappers = parseInt($("#stepper-trapper input").val());
                 var waters = parseInt($("#stepper-water input").val());
@@ -252,11 +252,13 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         },
         
         registerStepperListeners: function (scope) {
-            $(scope + " .stepper button").click(this.onStepperButtonClicked);
+            var sys = this;
+            $(scope + " .stepper button").click(function (e) { sys.onStepperButtonClicked(this, e);});
+            $(scope + ' .stepper input.amount').change(function () { sys.onStepperInputChanged(this) });
             $(scope + " .stepper input.amount").focusin(function () {
                 $(this).data('oldValue', $(this).val());
             });
-            $(scope + ' .stepper input.amount').change(this.onStepperInputChanged);
+            $(scope + ' .stepper input.amount').trigger("change");
             
             // All number inputs
             $(scope + " input.amount").keydown(this.onNumberInputKeyDown);
@@ -439,10 +441,10 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             GlobalSignals.tabChangedSignal.dispatch(tabID);
         },
         
-        onStepperButtonClicked: function(e) {
+        onStepperButtonClicked: function(button, e) {
             e.preventDefault();    
-            var fieldName = $(this).attr('data-field');
-            var type = $(this).attr('data-type');
+            var fieldName = $(button).attr('data-field');
+            var type = $(button).attr('data-type');
             var input = $("input[name='"+fieldName+"']");
             var currentVal = parseInt(input.val());
             if (!isNaN(currentVal)) {
@@ -450,47 +452,30 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                     var min = input.attr('min');
                     if(currentVal > min) {
                         input.val(currentVal - 1).change();
-                    } 
-                    if(parseInt(input.val()) == input.attr('min')) {
-                        $(this).attr('disabled', true);
                     }
-        
                 } else if(type == 'plus') {
                     var max = input.attr('max');
                     if(currentVal < max) {
                         input.val(currentVal + 1).change();
                     }
-                    if(parseInt(input.val()) == input.attr('max')) {
-                        $(this).attr('disabled', true);
-                    }        
                 }
             } else {
                 input.val(0);
             }
         },
         
-        onStepperInputChanged: function() {    
-            minValue =  parseInt($(this).attr('min'));
-            maxValue =  parseInt($(this).attr('max'));
-            valueCurrent = parseInt($(this).val());            
-            name = $(this).attr('name');
-            
+        onStepperInputChanged: function(input) {
+            var minValue =  parseInt($(input).attr('min'));
+            var maxValue =  parseInt($(input).attr('max'));
+            var valueCurrent = parseInt($(input).val());
+            var name = $(input).attr('name');
             
             if (isNaN(valueCurrent)) {
                 $(this).val($(this).data('oldValue'));
                 return;
             }
             
-            if(valueCurrent >= minValue) {
-                $(".btn-glyph[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
-            } else {
-                $(this).val(minValue);
-            }
-            if(valueCurrent <= maxValue) {
-                $(".btn-glyph[data-type='plus'][data-field='"+name+"']").removeAttr('disabled')
-            } else {
-                $(this).val(maxValue);
-            }
+            this.updateStepperButtons("#" + $(input).parent().attr("id"));
         },
         
         onNumberInputKeyDown: function (e) {
@@ -715,6 +700,48 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             var isLocationAction = PlayerActionConstants.isLocationAction(action);
             var playerPos = this.playerActions.playerPositionNodes.head.position;
             return this.gameState.getActionLocationKey(isLocationAction, playerPos);
+        },
+        
+        updateStepper: function (id, val, min, max) {
+            var $input = $(id + " input");
+            var oldVal = parseInt($input.val());
+            var oldMin =  parseInt($input.attr('min'));
+            var oldMax =  parseInt($input.attr('max'));
+            if (oldVal === val && oldMin === min && oldMax === max) return;
+            $input.attr("min", min);
+            $input.attr("max", max);
+            $input.val(val)
+            this.updateStepperButtons(id);
+        },
+        
+        updateStepperButtons: function (id) {
+            var $input = $(id + " input");
+            var name = $input.attr('name');
+            var minValue =  parseInt($input.attr('min'));
+            var maxValue =  parseInt($input.attr('max'));
+            var valueCurrent = parseInt($input.val());
+            
+            var decEnabled = false;
+            var incEnabled = false;
+            if(valueCurrent > minValue) {
+                decEnabled = true;
+            } else {
+                $input.val(minValue);
+            }
+            if(valueCurrent < maxValue) {
+                incEnabled = true;
+            } else {
+                $input.val(maxValue);
+            }
+            
+            var decBtn = $(".btn-glyph[data-type='minus'][data-field='" + name + "']");
+            decBtn.toggleClass("btn-disabled", !decEnabled);
+            decBtn.toggleClass("btn-disabled-basic", !decEnabled);
+            decBtn.attr("disabled", !decEnabled);
+            var incBtn = $(".btn-glyph[data-type='plus'][data-field='" + name + "']");
+            incBtn.toggleClass("btn-disabled", !incEnabled);
+            incBtn.toggleClass("btn-disabled-basic", !incEnabled);
+            incBtn.attr("disabled", !incEnabled);
         },
         
         showTab: function (tabID) {

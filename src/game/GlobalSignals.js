@@ -16,16 +16,18 @@ define(['ash',], function (Ash) {
         sectorScoutedSignal: new Ash.Signals.Signal(),
         improvementBuiltSignal: new Ash.Signals.Signal(),
         upgradeUnlockedSignal: new Ash.Signals.Signal(),
-        featureUnlockedSignal: new Ash.Signals.Signal(),
         inventoryChangedSignal: new Ash.Signals.Signal(),
         equipmentChangedSignal: new Ash.Signals.Signal(),
         fightEndedSignal: new Ash.Signals.Signal(),
+        workersAssignedSignal: new Ash.Signals.Signal(),
+        featureUnlockedSignal: new Ash.Signals.Signal(),
         campRenamedSignal: new Ash.Signals.Signal(),
         launcedSignal: new Ash.Signals.Signal(),
         
         // stats changes
         visionChangedSignal: new Ash.Signals.Signal(),
         healthChangedSignal: new Ash.Signals.Signal(),
+        populationChangedSignal: new Ash.Signals.Signal(),
         
         // game events
         gameStartedSignal: new Ash.Signals.Signal(),
@@ -34,7 +36,7 @@ define(['ash',], function (Ash) {
             if (!system.signalBindings)
                 system.signalBindings = [];
             var binding = signal.add(function () {
-                listener.apply(system);
+                listener.apply(system, arguments);
             });
             system.signalBindings.push(binding);
         },

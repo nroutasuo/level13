@@ -75,6 +75,8 @@ define([
             GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onImprovementBuilt);
             GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onPlayerMoved);
             GlobalSignals.add(this, GlobalSignals.campRenamedSignal, this.onCampRenamed);
+            GlobalSignals.add(this, GlobalSignals.populationChangedSignal, this.onPopulationChanged);
+            GlobalSignals.add(this, GlobalSignals.workersAssignedSignal, this.onWorkersAssigned);
             
             this.refresh();
         },
@@ -128,6 +130,9 @@ define([
             var header = campComponent.getName();
             if (campCount > 1) header += " (" + this.playerPosNodes.head.position.getPosition().getInGameFormat(true) + ")";
             $("#tab-header h2").text(header);
+            
+            this.updateAssignedWorkers();
+            this.updateWorkerMaxDescriptions();
         },
         
         updateBubble: function () {
@@ -151,17 +156,21 @@ define([
             
             if (!isActive) return;
             
-            var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-            
             var showPopulation = campComponent.population > 0 || this.gameState.numCamps > 1;
             this.uiFunctions.toggle("#in-population", showPopulation);
             if (!showPopulation) return;
             
             var reputation = this.playerLocationNodes.head.entity.get(ReputationComponent).value;
+            var maxPopulation = this.getCampMaxPopulation();
+            this.updatePopulationChangeDisplay(campComponent, maxPopulation, reputation);
+        },
+        
+        getCampMaxPopulation: function () {
+            if (!this.playerLocationNodes.head) return;
+            var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);            
             var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
             maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
-            this.updatePopulationChangeDisplay(campComponent, maxPopulation, reputation);
-            this.updateAssignedWorkers(campComponent, maxPopulation);
+            return maxPopulation;
         },
         
         updateWorkerStepper: function (campComponent, id, workerType, maxWorkers, showMax) {
@@ -171,8 +180,8 @@ define([
             
             var freePopulation = campComponent.getFreePopulation();
             var assignedWorkers = campComponent.assignedWorkers[workerType];
-            $(id + " input").attr("max", Math.min(assignedWorkers + freePopulation, maxWorkers));
-            $(id + " input").val(assignedWorkers);
+            var maxAssigned = Math.min(assignedWorkers + freePopulation, maxWorkers);
+            this.uiFunctions.updateStepper(id, assignedWorkers, 0, maxAssigned);
 			$(id).parent().siblings(".in-assign-worker-limit").children(".callout-container").children(".info-callout-target").html(showMax ? "<span>/ " + maxWorkers + "</span>" : "");
         },
         
@@ -219,7 +228,11 @@ define([
             this.uiFunctions.slideToggleIf("#in-assign-workers", null, campComponent.population >= 1, 200, 200);
         },
         
-        updateAssignedWorkers: function (campComponent, maxPopulation) {
+        updateAssignedWorkers: function (campComponent) {
+            var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+			if (!campComponent) return;
+
+            var maxPopulation = this.getCampMaxPopulation();
             var posComponent = this.playerPosNodes.head.position;
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             
@@ -429,7 +442,7 @@ define([
         },
         
         onImprovementBuilt: function () {
-            this.updateWorkerMaxDescriptions();
+            this.refresh();
         },
         
         onPlayerMoved: function () {
@@ -438,6 +451,18 @@ define([
         
         onCampRenamed: function () {
             this.refresh();
+        },
+        
+        onPopulationChanged: function (entity) {
+            if (this.playerLocationNodes.head.entity === entity) {
+                this.refresh();
+            }
+        },
+        
+        onWorkersAssigned: function (entity) {
+            if (this.playerLocationNodes.head.entity === entity) {
+                this.refresh();
+            }
         },
         
         hasUpgrade: function (upgradeId) {
