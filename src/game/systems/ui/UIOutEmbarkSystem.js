@@ -30,14 +30,16 @@ define([
 			this.uiFunctions = uiFunctions;
 			this.gameState = gameState;
 			this.resourcesHelper = resourceHelper;
+            
+            this.registerStepperListeners("#embark-resources");
+            
 			return this;
 		},
 	
 		addToEngine: function (engine) {
 			this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
-			
-			this.initListeners();
+            GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged)
 			
 			this.engine  = engine;
 		},
@@ -46,13 +48,7 @@ define([
 			this.playerPosNodes = null;
 			this.playerLocationNodes = null;
 			this.engine = null;
-		},
-	
-		initListeners: function () {
-			var sys = this;
-            GlobalSignals.tabChangedSignal.add(function () {
-                sys.regenrateEmbarkItems();
-            });
+            GlobalSignals.removeAll(this);
 		},
 		
 		initLeaveCampRes: function () {
@@ -86,35 +82,23 @@ define([
         },
 		
 		update: function (time) {
-			if (this.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.out) {
-				this.refreshedEmbark = false;
-				return;
-			}
+			if (this.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.out) return;			
+            if (!this.playerLocationNodes.head) return;
 			
 			var posComponent = this.playerPosNodes.head.position;
-            
-            if (!this.playerLocationNodes.head) {
-                return;
-            }
-			
             // TODO create nice transitions for leaving camp
 			this.uiFunctions.toggle("#container-tab-enter-out", posComponent.inCamp);
 			this.uiFunctions.toggle("#container-tab-two-out", !posComponent.inCamp);
 			this.uiFunctions.toggle("#container-tab-two-out-actions", !posComponent.inCamp);
-			
-			if (posComponent.inCamp) {
-				if (!this.refreshedEmbark) {
-					this.initLeaveCampRes();
-                    this.initLeaveCampItems();
-				}
-				this.updateEmbarkPage();
-				this.refreshedEmbark = true;
-			}
 		},
+        
+        refresh: function () {
+			$("#tab-header h2").text("Leave camp");            
+            if (!this.playerLocationNodes.head) return;
+            this.updateSteppers();
+        },
 		
-		updateEmbarkPage: function () {
-			$("#tab-header h2").text("Leave camp");
-            
+		updateSteppers: function () {
 			var campResources = this.resourcesHelper.getCurrentStorage();
             var campResourcesAcc = this.resourcesHelper.getCurrentStorageAccumulation(false);
             var bagComponent = this.playerPosNodes.head.entity.get(BagComponent);
@@ -137,7 +121,7 @@ define([
                     var stepper = $(this).children("td").children(".stepper");
                     var inputMin = 0;
                     var val = $(this).children("td").children(".stepper").children("input").val();
-                    uiFunctions.updateStepper($(stepper).attr("id"), val, inputMin, inputMax)
+                    uiFunctions.updateStepper("#" + $(stepper).attr("id"), val, inputMin, inputMax)
                     selectedAmount = Math.max(0, val);
                     selectedCapacity += selectedAmount * BagConstants.getResourceCapacity(resourceName);
                     
@@ -163,7 +147,7 @@ define([
                     var inputMax = Math.min(Math.floor(count));
                     var inputValue = $(stepper).children("input").attr("value");
                     var val = Math.max(inputValue, inputMin);
-                    uiFunctions.updateStepper($(stepper).attr("id"), val, inputMin, inputMax)
+                    uiFunctions.updateStepper("#" + $(stepper).attr("id"), val, inputMin, inputMax)
                     selectedAmount = Math.max(0, $(stepper).children("input").val());
                     selectedCapacity += selectedAmount * BagConstants.getItemCapacity(itemsComponent.getItem(itemID));
                 }
@@ -219,7 +203,27 @@ define([
             }
             this.uiFunctions.generateSteppers("#embark-items");
             this.uiFunctions.registerStepperListeners("#embark-items");
+            this.registerStepperListeners("#embark-items");
         },
+        
+        registerStepperListeners: function (scope) {
+            var sys = this;
+            $(scope + " input.amount").change(function (e) {
+                sys.updateSteppers();
+            });
+        },
+        
+        onTabChanged: function () {
+			if (this.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.out) return;
+            var posComponent = this.playerPosNodes.head.position;
+            if (!posComponent.inCamp) return;
+            
+            this.initLeaveCampRes();
+            this.initLeaveCampItems();
+            this.regenrateEmbarkItems();
+            this.refresh();
+        },
+        
 		
     });
 
