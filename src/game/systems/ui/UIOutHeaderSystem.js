@@ -235,6 +235,7 @@ define([
                 populationCalloutContent += "current: " + reqReputationCurrent + "<br/>";
                 populationCalloutContent += "next: " + reqReputationNext;
                 UIConstants.updateCalloutContent("#header-camp-population", populationCalloutContent);
+                this.uiFunctions.toggle("#header-camp-reputation", true);    
             } else {
                 this.uiFunctions.toggle("#header-camp-reputation", false);                
             }
