@@ -367,7 +367,7 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_campfire: {
                     improvements: {
                         camp: [1, -1],
-                        campfire: [0, 5],
+                        campfire: [-1, 1],
                     },
                 },
             
@@ -2090,7 +2090,7 @@ function (Ash, GameConstants, CampConstants) {
             // [ base-value, vision-dependent-value ]
             injuryProbabilities: {
                 scout: [0.005, 0.01],
-                scavenge: [0.005, 0.01],
+                scavenge: [0.001, 0.005],
                 despair: [0.75, 0], // TODO make dynamic and link to cases in FaintingSystem
             },
             
