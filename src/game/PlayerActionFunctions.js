@@ -1332,7 +1332,7 @@ define(['ash',
                 }
             }
 
-            if (totalCollected === 0) {
+            if (totalCollected < 1 && maxToCollect >= 1) {
                 this.addLogMessage(LogConstants.MSG_ID_USE_COLLECTOR_FAIL, "Nothing to collect yet.");
             }
             
