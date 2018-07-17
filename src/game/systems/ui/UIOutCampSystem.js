@@ -124,6 +124,7 @@ define([
             if (!this.playerPosNodes.head.position.inCamp) return;
             
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+            if (!campComponent) return;
             var campCount = this.gameState.numCamps;
             
             // Header

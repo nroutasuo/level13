@@ -460,6 +460,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                     }
                 }
             } else {
+                console.log("WARN: invalid stepper input value [" + fieldName + "]");
                 input.val(0);
             }
         },

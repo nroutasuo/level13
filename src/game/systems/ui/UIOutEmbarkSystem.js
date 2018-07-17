@@ -145,7 +145,7 @@ define([
                     var stepper = $(this).children("td").children(".stepper");
                     var inputMin = 0;
                     var inputMax = Math.min(Math.floor(count));
-                    var inputValue = $(stepper).children("input").attr("value");
+                    var inputValue = $(stepper).children("input").val();
                     var val = Math.max(inputValue, inputMin);
                     uiFunctions.updateStepper("#" + $(stepper).attr("id"), val, inputMin, inputMax)
                     selectedAmount = Math.max(0, $(stepper).children("input").val());
