@@ -141,7 +141,7 @@ define([
             var efficiency = this.getScavengeEfficiency();
 
             rewards.gainedResources = this.getRewardResources(0.95 + efficiency * 0.05, 1, efficiency, sectorResources);
-            rewards.gainedItems = this.getRewardItems(0.01 + efficiency * 0.04, efficiency * 0.075, this.itemResultTypes.scavenge, efficiency, itemsComponent, levelOrdinal);
+            rewards.gainedItems = this.getRewardItems(0.01 + efficiency * 0.04, efficiency * 0.08, this.itemResultTypes.scavenge, efficiency, itemsComponent, levelOrdinal);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
 
             return rewards;
@@ -486,7 +486,7 @@ define([
 				
 				baghtml += "<div id='resultlist-inventorymanagement-found' class='infobox inventorybox'>";
 				baghtml += "<ul></ul>";
-				baghtml += "<p class='msg-empty'>" + (isFight ? "Nothing left of the enemy." : "Nothing left here.") + "<p>";
+				baghtml += "<p class='msg-empty'>" + (isFight ? "Nothing left of the enemy." : "Nothing left here.") + "</p>";
 				baghtml += "</div>"
 				
 				baghtml += "<div id='resultlist-inventorymanagement-kept' class='infobox inventorybox'>";
@@ -861,18 +861,21 @@ define([
 
 		getResultInjuries: function (injuryProbability) {
             var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
-			var injuries = [];
+			var result = [];
+            
+            var currentEffect = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury);
+            var injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
             
             // limit possible injuries
-            if (perksComponent.getTotalEffect(PerkConstants.perkTypes.injury) < 0.35)
-                return injuries;
+            if (currentEffect < 0.35 || injuries.length >= 5)
+                return result;
             
-			if (injuryProbability > Math.random()) {
+			if (injuryProbability * currentEffect > Math.random()) {
 				var injuryi = parseInt(Math.random() * PerkConstants.perkDefinitions.injury.length);
 				var injury = PerkConstants.perkDefinitions.injury[injuryi];
-                injuries.push(injury.clone());
+                result.push(injury.clone());
             }
-			return injuries;
+			return result;
 		},
 		
 		getResultBlueprint: function (localeVO) {

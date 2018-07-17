@@ -206,7 +206,7 @@ define(['ash',
             var currentFood = currentStorage.resources.getResource(resourceNames.food);
             var currentWater = currentStorage.resources.getResource(resourceNames.water);
             var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
-            var injuries = perksComponent.getItemsByType(PerkConstants.perkTypes.injury);
+            var injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
             var itemsComponent = this.itemsNodes.head.items;
             var hasHospital = this.getTotalImprovementsCount(improvementNames.hospital) > 0;
             if (injuries.length > 2 && hasHospital && currentFood > 5 && currentWater > 5 && !autoPlayComponent.isExploring)
@@ -279,7 +279,7 @@ define(['ash',
 			var levelHelper = this.levelHelper;
             var playerActionFunctions = this.playerActionFunctions;
             
-            var injuries = perksComponent.getItemsByType(PerkConstants.perkTypes.injury);
+            var injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
             var hasHospital = this.getTotalImprovementsCount(improvementNames.hospital) > 0;
             var prioritizeHeal = injuries.length > 0 && hasHospital;
             var prioritizeScouting = campResources ? campResources.isStocked(this.playerActionFunctions.gameState) : false;

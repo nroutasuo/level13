@@ -80,7 +80,7 @@ function (Ash, PerkVO, PerkConstants) {
             return null;
         },
         
-        getItemsByType: function (type) {
+        getPerksByType: function (type) {
             return this.perks[type] ? this.perks[type] : [];
         },
         

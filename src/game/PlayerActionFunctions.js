@@ -1248,7 +1248,7 @@ define(['ash',
                 case "first_aid_kit_1":
                 case "first_aid_kit_2":
                     var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
-                    var injuries = perksComponent.getItemsByType(PerkConstants.perkTypes.injury);
+                    var injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
                     var minValue = reqs.perks.Injury[0];
                     var injuryToHeal = null;
                     for (var i = 0; i < injuries.length; i++) {
