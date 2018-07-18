@@ -406,7 +406,8 @@ define([
                     var currentValue = playerActionComponent.isBusy();
                     var requiredValue = requirements.busy;
                     if (currentValue !== requiredValue) {
-                        if (currentValue) reason = "Busy " + playerActionComponent.getBusyDescription();
+                        var timeLeft = Math.ceil(playerActionComponent.getBusyTimeLeft());
+                        if (currentValue) reason = "Busy " + playerActionComponent.getBusyDescription() + " (" + timeLeft + "s)";
                         else reason = "Need to be busy to do this.";
                         if (log) console.log("WARN: " + reason);
                         return { value: 0, reason: reason };
