@@ -239,7 +239,7 @@ define([
         
         makeCraftingButton: function(itemDefinition) {
             var actionName = "craft_" + itemDefinition.id;    
-            return "<button class='action' action='" + actionName + "'>" + itemDefinition.name + "</button>";
+            return "<button class='action multiline' action='" + actionName + "'>" + itemDefinition.name + "</button>";
         },
         
         updateUseItems: function () {
@@ -271,7 +271,7 @@ define([
             for (var j = 0; j < itemDefinitionList.length; j++) {
                 var itemDefinition = itemDefinitionList[j];
                 var actionName = "use_item_" + itemDefinition.id;
-                tr = "<tr><td><button class='action' action='" + actionName + "'>Use " + itemDefinition.name + "</button></td></tr>";
+                tr = "<tr><td><button class='action multiline' action='" + actionName + "'>Use " + itemDefinition.name + "</button></td></tr>";
                 $("#self-use-items table").append(tr);
             }
             

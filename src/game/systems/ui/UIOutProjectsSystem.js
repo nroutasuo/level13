@@ -113,7 +113,7 @@ define([
                     var sector = project.level + "." + project.sector + "." + project.direction;
                     var name = project.name;
                     var info = "at " + project.position.getPosition().getInGameFormat() + (showLevel ? " level " + project.level : "");
-                    var classes = "action action-build action-level-project";
+                    var classes = "action action-build action-level-project multiline";
                     var actionLabel = project.actionLabel;
                     var tr = 
                         "<tr>" + 

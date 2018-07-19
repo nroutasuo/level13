@@ -92,7 +92,7 @@ define([
                 }
                 piecesTD += "</td>";
                 var numbersTD = "<td class='hide-on-mobiles list-amount'>" + blueprintVO.currentPieces + " / " + blueprintVO.maxPieces + "</td>";
-                var unlockTD = "<td class='list-action'><button class='action' action='create_blueprint_" + upgradeDefinition.id + "'>Unlock</button></td>";
+                var unlockTD = "<td class='list-action'><button class='action multiline' action='create_blueprint_" + upgradeDefinition.id + "'>Unlock</button></td>";
                 var tr = "<tr>" + nameTD + piecesTD + numbersTD + unlockTD + "</tr>";
 				$("#blueprints-pieces-list").append(tr);
             }

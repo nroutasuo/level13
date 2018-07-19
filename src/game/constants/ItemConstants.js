@@ -264,7 +264,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
         getFollowerByID: function (id) {
             var name = "Follower";
             var type = this.itemTypes.follower;
-            var strength = Number.parseInt(id.split("-")[1]);
+            var strength = parseInt(id.split("-")[1]);
 
             // TODO persist image depending on id
             var icon = "img/items/follower-" + Math.floor(Math.random() * 4 + 1) + ".png";

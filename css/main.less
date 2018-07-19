@@ -304,12 +304,12 @@ dd p.p-meta {
 
 /* -- Appearance: Base colours -- */
 
-.lvl3-bg, body, div.dark, ul#tabs, #switch, #mainmap-container {
+.lvl3-bg, body, div.dark, ul#tabs, #switch, #mainmap-container, #header-self-bar {
 	background: @color-dark-bg;
 	color: @color-dark-text;
 }
 
-.sunlit .lvl-13-bg, body.sunlit, div.sunlit, .sunlit ul#tabs, .sunlit #switch, .sunlit #mainmap-container {
+.sunlit .lvl-13-bg, body.sunlit, div.sunlit, .sunlit ul#tabs, .sunlit #switch, .sunlit #mainmap-container, .sunlit #header-self-bar {
 	background: @color-light-bg;
 	color: @color-light-text;
 }
@@ -1090,7 +1090,7 @@ div.callout-container {
 }
 
 div.btn-callout-content, div.info-callout-content, div.popup {
-	padding: 3px;
+	padding: 4px;
 }
 
 div.btn-callout-content, div.info-callout-content {
@@ -1224,6 +1224,11 @@ button.action {
 	border-width: 2px;
 	margin: 0px;
 	margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+button.action.multiline {
+    white-space: normal;
 }
 
 button.btn-secondary {
@@ -1502,6 +1507,7 @@ hr {
 .inventorybox {
     border-width: 1px;
     border-style: solid;
+    border-radius: 10px;
     padding: 2px 0px 0px 7px !important;
     margin: 5px 0px;
     min-height: 1em;
