@@ -79,6 +79,9 @@ define([
             this.elements.changeIndicatorStamina = $("#stamina-change-indicator");
             this.elements.changeIndicatorReputation = $("#reputation-change-indicator");
             this.elements.changeIndicatorPopulation = $("#population-change-indicator");
+            this.elements.changeIndicatorEvidence = $("#evidence-change-indicator");
+            this.elements.changeIndicatorRumours = $("#rumours-change-indicator");
+            this.elements.changeIndicatorFavour = $("#favour-change-indicator");
             
 			return this;
 		},
@@ -198,10 +201,12 @@ define([
 			this.elements.valRumours.text(UIConstants.roundValue(playerStatsNode.rumours.value, true, false));
 			this.uiFunctions.toggle("#stats-rumours", playerStatsNode.rumours.isAccumulating);
 			this.updateStatsCallout("", "stats-rumours", playerStatsNode.rumours.accSources);
+            this.updateChangeIndicator(this.elements.changeIndicatorRumours, playerStatsNode.rumours.accumulation, playerStatsNode.rumours.isAccumulating);
 			
 			this.elements.valEvidence.text(UIConstants.roundValue(playerStatsNode.evidence.value, true, false));
 			this.uiFunctions.toggle("#stats-evidence", this.gameState.unlockedFeatures.evidence);
 			this.updateStatsCallout("", "stats-evidence", playerStatsNode.evidence.accSources);
+            this.updateChangeIndicator(this.elements.changeIndicatorEvidence, playerStatsNode.evidence.accumulation, this.gameState.unlockedFeatures.evidence);
             
             this.uiFunctions.toggle($("#header-tribe-container"), this.gameState.unlockedFeatures.evidence || playerStatsNode.rumours.isAccumulating);
 
