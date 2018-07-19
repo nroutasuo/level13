@@ -30,25 +30,16 @@ define([
             this.engine  = engine;
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             
-            var sys = this;
-            GlobalSignals.upgradeUnlockedSignal.add(function () { 
-                sys.updateAvailableProjects(); 
-            });
-            GlobalSignals.sectorScoutedSignal.add(function () { 
-                sys.updateAvailableProjects(); 
-            });
-            GlobalSignals.improvementBuiltSignal.add(function () { 
-                sys.updateAvailableProjects(); 
-            });
-            GlobalSignals.playerMovedSignal.add(function () { 
-                sys.updateAvailableProjects(); 
-            });
-            GlobalSignals.improvementBuiltSignal.add(function () { 
-                sys.updateAvailableProjects(); 
-            });
+            GlobalSignals.add(this, GlobalSignals.upgradeUnlockedSignal, this.refresh);
+            GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, this.refresh);
+            GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.refresh);
+            GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.refresh);
+            GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.refresh);
+            GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.refresh);
         },
 
         removeFromEngine: function (engine) {
+            GlobalSignals.removeAll(this);
             this.engine = null;
             this.playerLocationNodes = null;
         },
@@ -70,6 +61,10 @@ define([
             this.elements.tabHeader.text("Building projects");
         },
         
+        refresh: function () {
+            this.updateAvailableProjects();
+        },
+        
         updateBubble: function () {
             var newBubbleNumber = 
                 (this.tabCounts.current.available.regular - this.tabCounts.lastShown.available.regular) + 
@@ -86,6 +81,7 @@ define([
         },
         
         updateAvailableProjects: function () {
+            if (!this.playerLocationNodes.head) return;
             var isActive = this.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.projects;
             var availableRegular = 0;
             var visibleRegular = 0;
@@ -146,15 +142,7 @@ define([
                 GlobalSignals.elementCreatedSignal.dispatch();
             }
             
-            this.tabCounts.current.visible.regular = visibleRegular;
-            if (isActive) this.tabCounts.lastShown.visible.regular = visibleRegular;
-            this.tabCounts.current.available.regular = availableRegular;
-            if (isActive) this.tabCounts.lastShown.available.regular = availableRegular;
-            
-            this.tabCounts.current.visible.colony = visibleColony;
-            if (isActive) this.tabCounts.lastShown.visible.colony = visibleColony;
-            this.tabCounts.current.available.colony = availableColony;
-            if (isActive) this.tabCounts.lastShown.available.colony = availableColony;
+            this.tabCounts.updateCounts({ regular: visibleRegular, colony: visibleColony }, { regular: availableRegular, colony: availableColony }, isActive);
         },
         
         updateBuiltProjects: function() {
