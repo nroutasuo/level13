@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Something is missing
+about: Suggest an idea or an improvement
 
 ---
 
