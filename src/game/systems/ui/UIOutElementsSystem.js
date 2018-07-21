@@ -330,12 +330,21 @@ define([
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-projects", null, isInCamp && hasProjects, 100, 0);
         },
         
+        updateButtonContainer: function (button, isVisible) {
+            $(button).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");
+            var container = $(button).parent().parent(".callout-container");
+            if (container) {
+                $(container).css("display", $(button).css("display"));
+            }
+        },
+        
         updateVisibleButtonsList: function () {
             this.elementsVisibleButtons = [];
             var sys = this;
             $.each($("button.action"), function () {
                 var $button = $(this);
                 var isVisible = (sys.uiFunctions.isElementToggled($button) !== false) && sys.uiFunctions.isElementVisible($button);
+                sys.updateButtonContainer($button, isVisible);
                 if (isVisible) {
                     sys.elementsVisibleButtons.push($button);
                 }
