@@ -69,17 +69,9 @@ h2:first-child {
 h3 {
   margin: 1em 0 0.5em 0;
 }
-a:link {
+a {
   border: none !important;
-}
-a:visited {
-  border: none !important;
-}
-a:hover {
-  border: none !important;
-}
-a:active {
-  border: none !important;
+  background: inherit !important;
 }
 img {
   margin: 0px 2px;

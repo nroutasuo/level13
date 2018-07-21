@@ -250,7 +250,8 @@ define([
             this.uiFunctions.showQuestionPopup(
                 "Warning", 
                 "Part of the save could not be loaded. Most likely your save is old and incompatible with the current version. Restart the game or continue at your own risk.",
-                "Restart",                
+                "Restart",   
+                "Continue",
                 function () {
                     uiFunctions.restart();
                 },

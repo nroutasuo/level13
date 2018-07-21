@@ -41,6 +41,7 @@ var EndingSystem = Ash.System.extend({
                 "The End", 
                 "Congratulations! You've completed Level 13. Thank you for playing!<br/></br>Do you want to restart?",
                 "Restart",
+                "Cancel",
                 function () {
                     uiFunctions.restart();
                 },

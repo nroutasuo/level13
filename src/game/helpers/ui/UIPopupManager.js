@@ -26,9 +26,9 @@ function (Ash, GlobalSignals) {
             });
         },
         
-        showPopup: function (title, msg, okButtonLabel, showCancel, resultVO, okCallback, cancelCallback) {
+        showPopup: function (title, msg, okButtonLabel, cancelButtonLabel, resultVO, okCallback, cancelCallback) {
             if (this.hasOpenPopup()) {
-                this.popupQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, showCancel: showCancel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback });
+                this.popupQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback });
                 return;
             }
             
@@ -67,8 +67,8 @@ function (Ash, GlobalSignals) {
                 popUpManager.closePopup("common-popup");
                 if (okCallback) okCallback(false);
             });            
-            if (showCancel) {
-                $("#common-popup .buttonbox").append("<button id='confirmation-cancel'>Cancel</button>");
+            if (cancelButtonLabel) {
+                $("#common-popup .buttonbox").append("<button id='confirmation-cancel'>" + cancelButtonLabel + "</button>");
                 $("#confirmation-cancel").click(function (e) {
                     popUpManager.closePopup("common-popup");
                     if (cancelCallback) cancelCallback();
@@ -97,6 +97,7 @@ function (Ash, GlobalSignals) {
                     popupManager.uiFunctions.toggle(".popup-overlay", false);
                     $("#" + id).unwrap();
                     $("#" + id).data("fading", false);
+                    $("#" + id + "p#common-popup-desc");
                     GlobalSignals.popupClosedSignal.dispatch(id);
                     popupManager.showQueuedPopup();
                     popupManager.gameState.isPaused = popupManager.hasOpenPopup();
@@ -121,7 +122,7 @@ function (Ash, GlobalSignals) {
         showQueuedPopup: function () {
             if (this.popupQueue.length > 0) {
                 var queued = this.popupQueue.pop();
-                this.showPopup(queued.title, queued.msg, queued.okButtonLabel, queued.showCancel, queued.resultVO, queued.okCallback, queued.cancelCallback);
+                this.showPopup(queued.title, queued.msg, queued.okButtonLabel, queued.cancelButtonLabel, queued.resultVO, queued.okCallback, queued.cancelCallback);
             }
         },
         

@@ -105,7 +105,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             $("#btn-more").click(function (e) {
                 var wasVisible = $("#game-options-extended").is(":visible");
                 $("#game-options-extended").toggle();
-                $(this).text(wasVisible ? "less" : "more");
+                $(this).text(wasVisible ? "more" : "less");
                 GlobalSignals.elementToggledSignal.dispatch($(this), !wasVisible);
             });
             $("#btn-importexport").click(function (e) {
@@ -419,7 +419,8 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             html += "<span id='changelog-version'>version " + this.changeLogHelper.getCurrentVersionNumber() + "<br/>updated " + this.changeLogHelper.getCurrentVersionDate() + "</span>";
             html += "<p>Note that this game is still in development and many features are incomplete and unbalanced. Updates might break saves. Feedback and bug reports are appreciated!</p>";
             html += "<p><a href='https://github.com/nroutasuo/level13' target='github'>github</a> | ";
-            html += "<a href='https://www.reddit.com/r/level13' target='reddit'>reddit</a></p>";
+            html += "<a href='https://www.reddit.com/r/level13' target='reddit'>reddit</a> | ";
+            html += "<a href='https://sayat.me/level13' target='sayatme'>sayat.me</a></p>";
             html += "<h4 class='infobox-scrollable-header'>Changelog</h4>";
             html += "<div id='changelog' class='infobox infobox-scrollable'>" + this.changeLogHelper.getChangeLogHTML() + "</div>";
             return html;
@@ -818,11 +819,11 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             var cancelCallback = function() {
                 uiFunctions.popupManager.closePopup("common-popup");
             };
-            this.popupManager.showPopup("Confirmation", msg, "Confirm", true, null, okCallback, cancelCallback);
+            this.popupManager.showPopup("Confirmation", msg, "Confirm", "Cancel", null, okCallback, cancelCallback);
             this.generateCallouts(".popup");
         },
         
-        showQuestionPopup: function (title, msg, buttonLabel, callbackOK, callbackNo) {
+        showQuestionPopup: function (title, msg, buttonLabel, cancelButtonLabel, callbackOK, callbackNo) {
             var uiFunctions = this;
             var okCallback = function(e) {
                 uiFunctions.popupManager.closePopup("common-popup");
@@ -830,9 +831,9 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             };
             var cancelCallback = function() {
                 uiFunctions.popupManager.closePopup("common-popup");
-                callbackNo();
+                if (callbackNo) callbackNo();
             };
-            this.popupManager.showPopup(title, msg, buttonLabel, true, null, okCallback, cancelCallback);
+            this.popupManager.showPopup(title, msg, buttonLabel, "Cancel", null, okCallback, cancelCallback);
             this.generateCallouts(".popup");
         },
         
@@ -841,7 +842,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 var input = $("#common-popup input").val();
                 callback(input);
             };
-            this.popupManager.showPopup(title, msg, "Confirm", true, null, okCallback);
+            this.popupManager.showPopup(title, msg, "Confirm", "Cancel", null, okCallback);
             this.generateCallouts(".popup");
             
             var uiFunctions = this;
