@@ -57,7 +57,10 @@ define([
                 }
 				numCamps++;
 			}
-			this.gameState.numCamps = numCamps;
+            if (this.gameState.numCamps !== numCamps) {
+                this.gameState.numCamps = numCamps;
+                gtag('set', { 'max_camp': this.gameState.numCamps });
+            }
 			this.gameState.numTradePostCamps = numTradePostCamps;
 		}
         

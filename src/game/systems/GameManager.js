@@ -58,6 +58,8 @@ define([
 			var loaded = this.loadGameState();
             GameConstants.gameSpeedCamp = 1;
             GameConstants.gameSpeedExploration = 1;
+            gtag('set', { 'max_level': this.gameState.level });
+            gtag('set', { 'max_camp': this.gameState.numCamps });
 			if (loaded) this.syncLoadedGameState();
 			if (!loaded) this.setupNewGame();
 		},
@@ -82,6 +84,7 @@ define([
 		},
 		
 		restartGame: function () {
+            gtag('event', 'game_restart');
 			this.uiFunctions.hideGame(true);
             var sys = this;
             setTimeout(function () {
@@ -105,6 +108,7 @@ define([
 		
 		// Called if there is no save to load
 		setupNewGame: function () {
+            gtag('event', 'game_start_new');
             this.gameState.gameStartTimeStamp = new Date().getTime();
 			this.creator.initPlayer(this.player);
 		},
@@ -164,6 +168,7 @@ define([
 
             WorldCreator.prepareWorld(worldSeed, this.enemyHelper, this.itemsHelper);
             this.gameState.worldSeed = worldSeed;
+            gtag('set', { 'world_seed': worldSeed });
             
             if (GameConstants.isDebugOutputEnabled) console.log("Prepared world (seed: " + worldSeed + ")");
 

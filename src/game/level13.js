@@ -288,7 +288,8 @@ define([
             
             // track to ga
             gtag('event', 'exception', {
-              'description': exshortdesc
+                'description': exshortdesc,
+                'fatal': true,
             });
             // show popup
             var bugTitle = "[JS Error] " + exshortdesc;

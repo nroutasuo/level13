@@ -143,6 +143,7 @@ define([
 			levelNode.entity.add(new RevealedComponent());
             var levelOrdinal = this.gameState.getLevelOrdinal(levelPos);
             this.gameState.level = Math.max(this.gameState.level, levelOrdinal);
+            gtag('set', { 'max_level': this.gameState.level });
 			if (levelPos !== 13) this.gameState.unlockedFeatures.levels = true;
 			if (levelPos === this.gameState.getGroundLevel()) this.gameState.unlockedFeatures.favour = true;
 		},
@@ -151,8 +152,7 @@ define([
 			this.occurrenceFunctions.onEnterLevel(levelNode.entity);
         },
 		
-		handleNewSector: function (sectorNode) {
-			
+		handleNewSector: function (sectorNode) {			
 			sectorNode.entity.add(new VisitedComponent());
 			sectorNode.entity.add(new RevealedComponent());
             

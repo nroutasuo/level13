@@ -13,10 +13,7 @@ define(['ash'], function (Ash) {
 				helper.versions = json.versions;
                 var version = helper.getCurrentVersionNumber();
                 console.log("Loaded version: " + version);
-                gtag('set', {
-                    'version': version
-                });
-                gtag('event', 'screen_view', { screen_name : 'start'})
+                gtag('set', { 'app_version': version });
 			})
 			.fail(function (jqxhr, textStatus, error) {
 				helper.loadingSuccessfull = false;

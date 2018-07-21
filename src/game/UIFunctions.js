@@ -109,9 +109,11 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 GlobalSignals.elementToggledSignal.dispatch($(this), !wasVisible);
             });
             $("#btn-importexport").click(function (e) {
+                gtag('event', 'screen_view', { 'screen_name' : "popup-manage-save" });
                 uiFunctions.showManageSave();
             });
             $("#btn-info").click(function (e) {
+                gtag('event', 'screen_view', { 'screen_name' : "popup-game-info" });
                 uiFunctions.showInfoPopup("Level 13", uiFunctions.getGameInfoDiv());
             });
             
@@ -143,6 +145,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             // Cheats
             if (GameConstants.isCheatsEnabled) {
                 $("#btn-cheats").click(function (e) {
+                    gtag('event', 'screen_view', { 'screen_name' : "popup-cheats" });
                     var cheatListDiv = uiFunctions.cheatSystem.getCheatListDiv();
                     uiFunctions.showInput("Cheats", "Enter cheat<br/>" + cheatListDiv, "", function (input) {
                         uiFunctions.cheatSystem.applyCheat(input)
@@ -430,6 +433,8 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             $("#switch-tabs li").removeClass("selected");
             $("#switch-tabs li#" + tabID).addClass("selected");
             $("#tab-header h2").text(tabID);
+            
+            gtag('event', 'screen_view', { 'screen_name' : tabID });
             
             var transition = !(gameState.uiStatus.currentTab === tabID);
             var transitionTime = transition ? 200 : 0;
@@ -778,7 +783,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             this.showSpecialPopup("incoming-caravan-popup");
         },
         
-        showManageSave: function () {
+        showManageSave: function () {            
             this.showSpecialPopup("manage-save-popup");
         },
         

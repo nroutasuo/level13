@@ -785,7 +785,10 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'UA-118652515-1');
+        gtag('config', 'UA-118652515-1', { 
+            'app_name': 'Level13',
+            'custom_map': { 'dimension1': 'world_seed', 'dimension2': 'max_level', 'dimension3': 'max_camp' },
+        });
     </script>
 
 	<!-- RequireJS -->    
