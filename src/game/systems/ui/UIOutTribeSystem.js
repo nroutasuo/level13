@@ -213,7 +213,6 @@ define([
 			var playerPosComponent = this.playerPosNodes.head.position;
             var isPlayerInCampLevel = level === playerPosComponent.level;            
             var unAssignedPopulation = camp.getFreePopulation();
-			var globalStorageCapacity = this.resourcesHelper.getCurrentStorageCap();
 			var improvements = node.entity.get(SectorImprovementsComponent);
             
             $("#camp-overview tr#" + rowID).toggleClass("current", isPlayerInCampLevel);
@@ -251,12 +250,14 @@ define([
 				var name = resourceNames[key];
 				var amount = Math.floor(resources.resources[name]);
 				var change = resourceAcc.resourceChange.getResource(name);
+                var storage = this.resourcesHelper.getCurrentCampStorage(node.entity);
+                var indicatorID = "#" + rowID + "-" + name;
 				UIConstants.updateResourceIndicator(
 					this.uiFunctions,
-					"#" + rowID + "-" + name,
+					indicatorID,
 					amount,
 					change,
-					globalStorageCapacity,
+					storage,
 					false,
                     true,
 					false,
