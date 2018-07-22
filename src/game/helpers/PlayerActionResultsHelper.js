@@ -486,7 +486,7 @@ define([
 				
 				baghtml += "<div id='resultlist-inventorymanagement-found' class='infobox inventorybox'>";
 				baghtml += "<ul></ul>";
-				baghtml += "<p class='msg-empty'>" + (isFight ? "Nothing left of the enemy." : "Nothing left here.") + "</p>";
+				baghtml += "<p class='msg-empty'>" + (isFight ? "Nothing left of the opponent." : "Nothing left here.") + "</p>";
 				baghtml += "</div>"
 				
 				baghtml += "<div id='resultlist-inventorymanagement-kept' class='infobox inventorybox'>";

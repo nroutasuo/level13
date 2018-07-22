@@ -46,15 +46,15 @@ define(['ash'], function (Ash) {
         
         getCustomSaveObject: function () {
             var copy = {};
-            var cLE = {};
+            copy.cLE = {};
             if (this.currentLocaleEnemies && Object.keys(this.currentLocaleEnemies).length > 0) {
                 for (var locale in this.currentLocaleEnemies) {
                     if (this.currentLocaleEnemies[locale] != this.maxLocaleEnemies[locale]) {
-                        cLE[locale] = this.currentLocaleEnemies[locale];
+                        copy.cLE[locale] = this.currentLocaleEnemies[locale];
                     }
                 }                
             }
-            return Object.keys(copy).length > 0 ? copy : null;
+            return Object.keys(copy.cLE).length > 0 ? copy : null;
         },
         
         customLoadFromSave: function (componentValues) {
