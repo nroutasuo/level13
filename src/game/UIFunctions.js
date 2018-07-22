@@ -390,16 +390,18 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
                 var inventoryRiskLabel = action === "despair" ? "lose items" : "lose an item";
                 if (injuryRiskMax > 0) 
-                    enabledContent += "<span class='action-risk action-risk-injury warning'>injury: <span class='action-risk-value'></span>%</span><br/>";
+                    enabledContent += "<span class='action-risk action-risk-injury warning'>injury: <span class='action-risk-value'></span>%</span>";
                 if (inventoryRiskMax > 0) 
-                    enabledContent += "<span class='action-risk action-risk-inventory warning'>" + inventoryRiskLabel + ": <span class='action-risk-value'></span>%</span><br/>";
+                    enabledContent += "<span class='action-risk action-risk-inventory warning'>" + inventoryRiskLabel + ": <span class='action-risk-value'></span>%</span>";
                 if (fightRiskMax > 0)
-                    enabledContent += "<span class='action-risk action-risk-fight warning'>fight: <span class='action-risk-value'></span>%</span><br/>";
+                    enabledContent += "<span class='action-risk action-risk-fight warning'>fight: <span class='action-risk-value'></span>%</span>";
             }
             
             // visible if button is disabled: disabled reason
-            if (content.length > 0) disabledContent += "<hr/>";
-            disabledContent += "<span class='btn-disabled-reason action-cost-blocker'>disabled reason</span>";
+            if (content.length > 0 || enabledContent.length > 0) {
+                if (content.length > 0) disabledContent += "<hr/>";
+                disabledContent += "<span class='btn-disabled-reason action-cost-blocker'></span>";
+            }
             
             if (enabledContent.length > 0) {
                 content += "<span class='btn-callout-content-enabled'>" + enabledContent + "</span>";

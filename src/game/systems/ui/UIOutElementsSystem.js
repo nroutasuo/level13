@@ -48,6 +48,9 @@ define([
         elementsCalloutContainers: null,
         elementsVisibleButtons: [],
         elementsVisibleProgressbars: [],
+        
+        buttonStatuses: [], // same indices as visible buttons
+        buttonElements: [], // same indices as visible buttons
     
         constructor: function (uiFunctions, gameState, playerActions, resourcesHelper, fightHelper, buttonHelper) {
             this.gameState = gameState;
@@ -70,8 +73,8 @@ define([
             this.campNodes.nodeAdded.add(this.onCampNodeAdded, this);
             this.campNodes.nodeRemoved.add(this.onCampNodeRemoved, this);
             
-            this.refreshSavedElements();
-            GlobalSignals.calloutsGeneratedSignal.add(this.refreshSavedElements);
+            this.refreshGlobalSavedElements();
+            GlobalSignals.calloutsGeneratedSignal.add(this.refreshGlobalSavedElements);
             this.updateTabVisibility();
             
             var sys = this;
@@ -113,7 +116,7 @@ define([
             this.updateInfoCallouts();
         },
         
-        refreshSavedElements: function () {            
+        refreshGlobalSavedElements: function () {            
             this.elementsCalloutContainers = $(".callout-container");
         },
         
@@ -127,52 +130,50 @@ define([
                 if (!action)
                     return;
 
-                var isHardDisabled = sys.updateButtonDisabledState($button, action);
-				sys.updateButtonCallout($button, action, isHardDisabled);
+                var buttonStatus = sys.buttonStatuses[i];
+                var buttonElements = sys.buttonElements[i];
+                var isHardDisabled = sys.updateButtonDisabledState($button, action, buttonStatus, buttonElements);
+				sys.updateButtonCallout($button, action, buttonStatus, buttonElements, isHardDisabled);
             }
         },
         
-        updateButtonDisabledState: function (button, action) {
-            var $button = $(button);
+        updateButtonDisabledState: function ($button, action, buttonStatus, buttonElements) {
 			var isAutoPlaying = this.autoPlayNodes.head;
-            var disabledBase = this.isButtonDisabled($(button));
-            var disabledVision = this.isButtonDisabledVision($(button));
+            var disabledBase = this.isButtonDisabled($button);
+            var disabledVision = this.isButtonDisabledVision($button);
             var disabledBasic = !disabledVision && disabledBase;
             var disabledResources = !disabledVision && !disabledBasic && this.isButtonDisabledResources($button);
             var disabledCooldown = !disabledVision && !disabledBasic && !disabledResources && this.hasButtonCooldown($button);
             var disabledDuration = !disabledVision && !disabledBasic && !disabledResources && !disabledCooldown && this.hasButtonDuration($button);
             var isDisabled = disabledBasic || disabledVision || disabledResources || disabledCooldown || disabledDuration;
-            $(button).toggleClass("btn-disabled", isDisabled);
-            $(button).toggleClass("btn-disabled-basic", disabledBasic);
-            $(button).toggleClass("btn-disabled-vision", disabledVision);
-            $(button).parent(".container-btn-action").toggleClass("btn-disabled-vision", disabledVision);
-            $(button).toggleClass("btn-disabled-resources", disabledResources);
-            $(button).toggleClass("btn-disabled-cooldown", disabledCooldown || disabledDuration);
-            $(button).attr("disabled", isDisabled || isAutoPlaying);
+
+            $button.toggleClass("btn-disabled", isDisabled);
+            $button.toggleClass("btn-disabled-basic", disabledBasic);
+            $button.toggleClass("btn-disabled-vision", disabledVision);
+            buttonElements.container.toggleClass("btn-disabled-vision", disabledVision);
+            $button.toggleClass("btn-disabled-resources", disabledResources);
+            $button.toggleClass("btn-disabled-cooldown", disabledCooldown || disabledDuration);
+            $button.attr("disabled", isDisabled || isAutoPlaying);
             return disabledBase || disabledVision;
         },
         
-        updateButtonCallout: function ($button, action, isHardDisabled) {
-            var $callout = $($button.parent().siblings(".btn-callout").children(".btn-callout-content"));
-            var $enabledContent = $($callout.children(".btn-callout-content-enabled"));
-            var $disabledContent = $($callout.children(".btn-callout-content-disabled"));
+        updateButtonCallout: function ($button, action, buttonStatus, buttonElements, isHardDisabled) {
+            var $callout = buttonElements.calloutContent;
+            var $enabledContent = buttonElements.calloutContentEnabled;
+            var $disabledContent = buttonElements.calloutContentDisabled;
 
             var playerActionsHelper = this.playerActions.playerActionsHelper;
-            var fightHelper = this.fightHelper;
             var buttonHelper = this.buttonHelper;
             
-            var playerVision = this.playerStatsNodes.head.vision.value;
-            var playerHealth = this.playerStatsNodes.head.stamina.health;
-            var showStorage = this.resourcesHelper.getCurrentStorageCap();
-            
-            var baseActionId = playerActionsHelper.getBaseActionID(action);
             var ordinal = playerActionsHelper.getOrdinal(action);
             var costFactor = playerActionsHelper.getCostFactor(action);
             var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);
-            var hasCostBlockers = false;
+            
+            var costsStatus = {};
+            costsStatus.hasCostBlockers = false;
+            costsStatus.bottleneckCostFraction = 1;
 
-            // Update callout content
-            var bottleNeckCostFraction = 1;
+            // callout content
             var sectorEntity = buttonHelper.getButtonSectorEntity($button);
             var disabledReason = playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
             var isDisabledOnlyForCooldown = (!(disabledReason) && this.hasButtonCooldown($button));
@@ -181,59 +182,88 @@ define([
                 this.uiFunctions.toggle($disabledContent, false);
                 var hasCosts = action && costs && Object.keys(costs).length > 0;
                 if (hasCosts) {
-                    for (var key in costs) {
-                        var $costSpan = $($enabledContent.children(".action-cost-" + key));
-                        var value = costs[key];
-                        var costFraction = playerActionsHelper.checkCost(action, key);
-                        var isFullCostBlocker = (isResource(key.split("_")[1]) && value > showStorage) || (key == "stamina" && value > playerHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
-                        if (isFullCostBlocker) {
-                            hasCostBlockers = true;
-                        }
-                        else if (costFraction < bottleNeckCostFraction)  {
-                            bottleNeckCostFraction = costFraction;
-                        }
-                        $costSpan.toggleClass("action-cost-blocker", costFraction < 1);
-                        $costSpan.toggleClass("action-cost-blocker-storage", isFullCostBlocker);
-                    }
+                    this.updateButtonCalloutCosts($button, action, buttonElements, $enabledContent, costs, costsStatus);
                 }
-
-                var hasEnemies = fightHelper.hasEnemiesCurrentLocation(action);
-                var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
-                var injuryRiskBase = injuryRisk > 0 ? PlayerActionConstants.getInjuryProbability(action) : 0;
-                var injuryRiskVision = injuryRisk - injuryRiskBase;
-                var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
-                var inventoryRiskBase = inventoryRisk > 0 ? PlayerActionConstants.getLoseInventoryProbability(action) : 0;
-                var inventoryRiskVision = inventoryRisk - inventoryRiskBase;
-                var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision) : 0;
-                var fightRiskBase = fightRisk > 0 ? PlayerActionConstants.getRandomEncounterProbability(baseActionId) : 0;
-                var fightRiskVision = fightRisk - fightRiskBase;
-                if (injuryRisk > 0 || fightRisk > 0 || inventoryRisk > 0) {
-                    this.uiFunctions.toggle($enabledContent.children(".action-risk-injury"), injuryRisk > 0);
-                    if (injuryRisk > 0) 
-                        $enabledContent.children(".action-risk-injury").children(".action-risk-value").text(UIConstants.roundValue((injuryRiskBase + injuryRiskVision) * 100, true, true));
-                    
-                    this.uiFunctions.toggle($enabledContent.children(".action-risk-inventory"), inventoryRisk > 0);
-                    if (inventoryRisk > 0) 
-                        $enabledContent.children(".action-risk-inventory").children(".action-risk-value").text(UIConstants.roundValue((inventoryRiskBase + inventoryRiskVision) * 100, true, true));
-                    
-                    this.uiFunctions.toggle($enabledContent.children(".action-risk-fight"), fightRisk > 0);
-                    if (fightRisk > 0) 
-                        $enabledContent.children(".action-risk-fight").children(".action-risk-value").text(UIConstants.roundValue((fightRiskBase + fightRiskVision) * 100, true, true));
-                }
+                this.updateButtonCalloutRisks($button, action, buttonElements);
             } else {
-                this.uiFunctions.toggle($enabledContent, false);
-                this.uiFunctions.toggle($disabledContent, true);
-                $disabledContent.children(".btn-disabled-reason").html(disabledReason);
+                var lastReason = buttonStatus.disabledReason;
+                if (lastReason !== disabledReason) {
+                    this.uiFunctions.toggle($enabledContent, false);
+                    this.uiFunctions.toggle($disabledContent, true);
+                    buttonElements.calloutSpanDisabledReason.html(disabledReason);
+                    buttonStatus.disabledReason = disabledReason;
+                }
             }
 
-            // Check requirements affecting req-cooldown
-            bottleNeckCostFraction = Math.min(bottleNeckCostFraction, playerActionsHelper.checkRequirements(action, false, sectorEntity).value);
-            if (hasCostBlockers) bottleNeckCostFraction = 0;
-            if (isHardDisabled) bottleNeckCostFraction = 0;
+            // overlays
+            this.updateButtonCooldownOverlays($button, action, buttonStatus, buttonElements, sectorEntity, isHardDisabled, costsStatus);
+        },
+        
+        updateButtonCalloutCosts: function($button, action, buttonElements, $enabledContent, costs, costsStatus) {
+            var playerHealth = this.playerStatsNodes.head.stamina.health;
+            var showStorage = this.resourcesHelper.getCurrentStorageCap();
+            
+            for (var key in costs) {
+                var $costSpan = buttonElements.costSpans[key];
+                var value = costs[key];
+                var costFraction = this.playerActions.playerActionsHelper.checkCost(action, key);
+                var isFullCostBlocker = (isResource(key.split("_")[1]) && value > showStorage) || (key == "stamina" && value > playerHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
+                if (isFullCostBlocker) {
+                    costsStatus.hasCostBlockers = true;
+                }
+                else if (costFraction < costsStatus.bottleneckCostFraction)  {
+                    costsStatus.bottleneckCostFraction = costFraction;
+                }
+                $costSpan.toggleClass("action-cost-blocker", costFraction < 1);
+                $costSpan.toggleClass("action-cost-blocker-storage", isFullCostBlocker);
+            }
+        },
+        
+        updateButtonCalloutRisks: function ($button, action, buttonElements) {
+            var $enabledContent = buttonElements.calloutContentEnabled;
+            
+            var playerVision = this.playerStatsNodes.head.vision.value;
+            var hasEnemies = this.fightHelper.hasEnemiesCurrentLocation(action);
+            var baseActionId = this.playerActions.playerActionsHelper.getBaseActionID(action);
+            
+            var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
+            var injuryRiskBase = injuryRisk > 0 ? PlayerActionConstants.getInjuryProbability(action) : 0;
+            var injuryRiskVision = injuryRisk - injuryRiskBase;
+            var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
+            var inventoryRiskBase = inventoryRisk > 0 ? PlayerActionConstants.getLoseInventoryProbability(action) : 0;
+            var inventoryRiskVision = inventoryRisk - inventoryRiskBase;
+            var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision) : 0;
+            var fightRiskBase = fightRisk > 0 ? PlayerActionConstants.getRandomEncounterProbability(baseActionId) : 0;
+            var fightRiskVision = fightRisk - fightRiskBase;
+            
+            if (injuryRisk > 0 || fightRisk > 0 || inventoryRisk > 0) {
+                this.uiFunctions.toggle(buttonElements.calloutRiskInjury, injuryRisk > 0);
+                if (injuryRisk > 0) 
+                    buttonElements.calloutRiskInjuryValue.text(UIConstants.roundValue((injuryRiskBase + injuryRiskVision) * 100, true, true));
 
-            // Update cooldown overlays
-            $button.siblings(".cooldown-reqs").css("width", ((bottleNeckCostFraction) * 100) + "%");
-            $button.children(".cooldown-duration").css("display", !isHardDisabled ? "inherit" : "none");
+                this.uiFunctions.toggle(buttonElements.calloutRiskInventory, inventoryRisk > 0);
+                if (inventoryRisk > 0) 
+                    buttonElements.calloutRiskInventoryValue.text(UIConstants.roundValue((inventoryRiskBase + inventoryRiskVision) * 100, true, true));
+
+                this.uiFunctions.toggle(buttonElements.calloutRiskFight, fightRisk > 0);
+                if (fightRisk > 0) 
+                    buttonElements.calloutRiskFightValue.text(UIConstants.roundValue((fightRiskBase + fightRiskVision) * 100, true, true));
+            }
+        },
+        
+        updateButtonCooldownOverlays: function($button, action, buttonStatus, buttonElements, sectorEntity, isHardDisabled, costsStatus) {
+            costsStatus.bottleneckCostFraction = Math.min(costsStatus.bottleneckCostFraction, this.playerActions.playerActionsHelper.checkRequirements(action, false, sectorEntity).value);
+            if (costsStatus.hasCostBlockers) costsStatus.bottleneckCostFraction = 0;
+            if (isHardDisabled) costsStatus.bottleneckCostFraction = 0;
+                
+            if (buttonStatus.bottleneckCostFraction !== costsStatus.bottleneckCostFraction) {
+                buttonElements.cooldownReqs.css("width", ((costsStatus.bottleneckCostFraction) * 100) + "%");
+                buttonStatus.bottleneckCostFraction = costsStatus.bottleneckCostFraction;
+            }
+            if (buttonStatus.isHardDisabled !== isHardDisabled) {
+                buttonElements.cooldownDuration.css("display", !isHardDisabled ? "inherit" : "none");
+                buttonStatus.isHardDisabled = isHardDisabled;
+            }
         },
         
         hasButtonCooldown: function ($button) {
@@ -244,8 +274,8 @@ define([
             return ($(button).attr("data-isInProgress") === "true");
         },
 
-        isButtonDisabledVision: function (button) {
-            var action = $(button).attr("action");
+        isButtonDisabledVision: function ($button) {
+            var action = $button.attr("action");
             if (action) {
                 var playerVision = this.playerStatsNodes.head.vision.value;
                 var requirements = this.playerActions.playerActionsHelper.getReqs(action);
@@ -254,8 +284,7 @@ define([
             return false;
         },
             
-        isButtonDisabled: function (button) {
-            var $button = $(button);
+        isButtonDisabled: function ($button) {
             if ($button.hasClass("btn-meta")) return false;
 
             if ($button.attr("data-type") === "minus") {
@@ -332,14 +361,43 @@ define([
         },
         
         updateVisibleButtonsList: function () {
+            var playerActionsHelper = this.playerActions.playerActionsHelper;
             this.elementsVisibleButtons = [];
+            this.buttonStatuses = [];
+            this.buttonElements = [];
             var sys = this;
             $.each($("button.action"), function () {
-                var $button = $(this);
+                var $button = $(this);          
+                var action = $button.attr("action");
                 var isVisible = (sys.uiFunctions.isElementToggled($button) !== false) && sys.uiFunctions.isElementVisible($button);
                 sys.updateButtonContainer($button, isVisible);
                 if (isVisible) {
                     sys.elementsVisibleButtons.push($button);
+                    sys.buttonStatuses.push({});
+                    
+                    var elements = {};
+                    elements.container = $button.parent(".container-btn-action");
+                    elements.calloutContent = $($button.parent().siblings(".btn-callout").children(".btn-callout-content"));
+                    elements.calloutContentEnabled = $(elements.calloutContent.children(".btn-callout-content-enabled"));
+                    elements.calloutContentDisabled = $(elements.calloutContent.children(".btn-callout-content-disabled"));
+                    elements.calloutSpanDisabledReason = elements.calloutContentDisabled.children(".btn-disabled-reason");
+                    elements.calloutRiskInjury = elements.calloutContentEnabled.children(".action-risk-injury");
+                    elements.calloutRiskInjuryValue = elements.calloutRiskInjury.children(".action-risk-value");
+                    elements.calloutRiskInventory = elements.calloutContentEnabled.children(".action-risk-inventory");
+                    elements.calloutRiskInventoryValue = elements.calloutRiskInventory.children(".action-risk-value");
+                    elements.calloutRiskFight = elements.calloutContentEnabled.children(".action-risk-fight");
+                    elements.calloutRiskFightValue = elements.calloutRiskFight.children(".action-risk-value");
+                    elements.cooldownReqs = $button.siblings(".cooldown-reqs");
+                    elements.cooldownDuration = $button.children(".cooldown-duration");
+            
+                    var ordinal = playerActionsHelper.getOrdinal(action);
+                    var costFactor = playerActionsHelper.getCostFactor(action);
+                    var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);            
+                    elements.costSpans = {};
+                    for (var key in costs) {
+                        elements.costSpans[key] = elements.calloutContentEnabled.children(".action-cost-" + key);
+                    }
+                    sys.buttonElements.push(elements);
                 }
             });
         },

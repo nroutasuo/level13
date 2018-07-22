@@ -640,7 +640,10 @@ define([
                         var currentStorage = collector.storedResources.getResource(resourceNames.food);
                         if (currentStorage < requiredStorage) {
                             if (log) console.log("WARN: Not enough stored resources in collectors.");
-                            lowestFraction = Math.min(lowestFraction, currentStorage / requiredStorage);
+                            if (lowestFraction > currentStorage / requiredStorage) {
+                                lowestFraction = currentStorage / requiredStorage;
+                                reason = "Nothing to collect";
+                            }
                         }
                     }
                     
@@ -650,7 +653,10 @@ define([
                         var currentStorage = collector.storedResources.getResource(resourceNames.water);
                         if (currentStorage < requiredStorage) {
                             if (log) console.log("WARN: Not enough stored resources in collectors.");
-                            lowestFraction = Math.min(lowestFraction, currentStorage / requiredStorage);
+                            if (lowestFraction > currentStorage / requiredStorage) {
+                                lowestFraction = currentStorage / requiredStorage;
+                                reason = "Nothing to collect";
+                            }
                         }
                     }
                 }

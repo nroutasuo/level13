@@ -1064,6 +1064,9 @@ div.info-callout-content {
   font-size: 85%;
   overflow-wrap: break-word;
 }
+span.action-risk {
+  display: block;
+}
 div.info-callout-content {
   width: 100%;
   vertical-align: middle;
