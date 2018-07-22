@@ -606,10 +606,10 @@ li.li-item-negative,
   background: -o-linear-gradient(rgba(253, 253, 253, 0) 0%, rgba(253, 253, 253, 0) 75%, #fdfdfd 100%);
   background: -moz-linear-gradient(rgba(253, 253, 253, 0) 0%, rgba(253, 253, 253, 0) 75%, #fdfdfd 100%);
 }
-div.arrow-up {
+div.callout-arrow-up {
   border-bottom-color: #666 !important;
 }
-.sunlit div.arrow-up {
+.sunlit div.callout-arrow-up {
   border-bottom-color: #aaa !important;
 }
 input,
@@ -1091,7 +1091,7 @@ div.popup-overlay {
 .sunlit div.popup-overlay {
   background-color: rgba(255, 255, 255, 0.85);
 }
-div.arrow-up {
+div.callout-arrow-up {
   width: 0;
   height: 0;
   z-index: 40;

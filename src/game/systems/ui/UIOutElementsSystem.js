@@ -153,6 +153,10 @@ define([
         },
         
         updateButtonCallout: function ($button, action, isHardDisabled) {
+            var $callout = $($button.parent().siblings(".btn-callout").children(".btn-callout-content"));
+            var $enabledContent = $($callout.children(".btn-callout-content-enabled"));
+            var $disabledContent = $($callout.children(".btn-callout-content-disabled"));
+
             var playerActionsHelper = this.playerActions.playerActionsHelper;
             var fightHelper = this.fightHelper;
             var buttonHelper = this.buttonHelper;
@@ -165,73 +169,62 @@ define([
             var ordinal = playerActionsHelper.getOrdinal(action);
             var costFactor = playerActionsHelper.getCostFactor(action);
             var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);
-            var description = playerActionsHelper.getDescription(action);
             var hasCostBlockers = false;
 
             // Update callout content
-            var content = description;
             var bottleNeckCostFraction = 1;
             var sectorEntity = buttonHelper.getButtonSectorEntity($button);
             var disabledReason = playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
             var isDisabledOnlyForCooldown = (!(disabledReason) && this.hasButtonCooldown($button));
             if (!isHardDisabled || isDisabledOnlyForCooldown) {
+                this.uiFunctions.toggle($enabledContent, true);
+                this.uiFunctions.toggle($disabledContent, false);
                 var hasCosts = action && costs && Object.keys(costs).length > 0;
                 if (hasCosts) {
-                    if (content.length > 0) content += "<hr/>";
                     for (var key in costs) {
-                        var itemName = key.replace("item_", "");
-                        var item = ItemConstants.getItemByID(itemName);
-                        var name = (this.uiFunctions.names.resources[key] ? this.uiFunctions.names.resources[key] : item !== null ? item.name : key).toLowerCase();
+                        var $costSpan = $($enabledContent.children(".action-cost-" + key));
                         var value = costs[key];
-                        var classes = "action-cost";
                         var costFraction = playerActionsHelper.checkCost(action, key);
-                        if (costFraction < 1) classes += " action-cost-blocker";
-                        if (isResource(key.split("_")[1]) && value > showStorage || key == "stamina" && value > playerHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR) {
-                            classes += " action-cost-blocker-storage";
+                        var isFullCostBlocker = (isResource(key.split("_")[1]) && value > showStorage) || (key == "stamina" && value > playerHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
+                        if (isFullCostBlocker) {
                             hasCostBlockers = true;
                         }
-                        else if (costFraction < bottleNeckCostFraction) bottleNeckCostFraction = costFraction;
-
-                        if (value > 0) content += "<span class='" + classes + "'>" + name + ": " + UIConstants.getDisplayValue(value) + "</span><br/>";
+                        else if (costFraction < bottleNeckCostFraction)  {
+                            bottleNeckCostFraction = costFraction;
+                        }
+                        $costSpan.toggleClass("action-cost-blocker", costFraction < 1);
+                        $costSpan.toggleClass("action-cost-blocker-storage", isFullCostBlocker);
                     }
-                }
-
-                var duration = PlayerActionConstants.getDuration(baseActionId);
-                if (duration > 0) {
-                    if (content.length > 0) content += "<hr/>";
-                    content += "<span class='action-duration'>duration: " + Math.round(duration * 100)/100 + "s</span>";
                 }
 
                 var hasEnemies = fightHelper.hasEnemiesCurrentLocation(action);
                 var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
-                var injuryRiskBase = injuryRisk > 0 ? PlayerActionConstants.getInjuryProbability(action, 100) : 0;
+                var injuryRiskBase = injuryRisk > 0 ? PlayerActionConstants.getInjuryProbability(action) : 0;
                 var injuryRiskVision = injuryRisk - injuryRiskBase;
                 var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
-                var inventoryRiskBase = inventoryRisk > 0 ? PlayerActionConstants.getLoseInventoryProbability(action, 100) : 0;
+                var inventoryRiskBase = inventoryRisk > 0 ? PlayerActionConstants.getLoseInventoryProbability(action) : 0;
                 var inventoryRiskVision = inventoryRisk - inventoryRiskBase;
                 var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision) : 0;
-                var fightRiskBase = fightRisk > 0 ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, 100) : 0;
+                var fightRiskBase = fightRisk > 0 ? PlayerActionConstants.getRandomEncounterProbability(baseActionId) : 0;
                 var fightRiskVision = fightRisk - fightRiskBase;
                 if (injuryRisk > 0 || fightRisk > 0 || inventoryRisk > 0) {
-                    var inventoryRiskLabel = action === "despair" ? "lose items" : "lose item";
-                    if (content.length > 0) content += "<hr/>";
+                    this.uiFunctions.toggle($enabledContent.children(".action-risk-injury"), injuryRisk > 0);
                     if (injuryRisk > 0) 
-                        content += "<span class='action-risk warning'>injury: " + 
-                            UIConstants.roundValue((injuryRiskBase + injuryRiskVision) * 100, true, true) + "%</span><br/>";
-                    if (fightRisk > 0) 
-                        content += "<span class='action-risk warning'>risk of fight: " + 
-                            UIConstants.roundValue((fightRiskBase + fightRiskVision) * 100, true, true) + " %</span><br/>";
+                        $enabledContent.children(".action-risk-injury").children(".action-risk-value").text(UIConstants.roundValue((injuryRiskBase + injuryRiskVision) * 100, true, true));
+                    
+                    this.uiFunctions.toggle($enabledContent.children(".action-risk-inventory"), inventoryRisk > 0);
                     if (inventoryRisk > 0) 
-                        content += "<span class='action-risk warning'>" + inventoryRiskLabel + ": " + 
-                            UIConstants.roundValue((inventoryRiskBase + inventoryRiskVision) * 100, true, true) + " %</span>";
+                        $enabledContent.children(".action-risk-inventory").children(".action-risk-value").text(UIConstants.roundValue((inventoryRiskBase + inventoryRiskVision) * 100, true, true));
+                    
+                    this.uiFunctions.toggle($enabledContent.children(".action-risk-fight"), fightRisk > 0);
+                    if (fightRisk > 0) 
+                        $enabledContent.children(".action-risk-fight").children(".action-risk-value").text(UIConstants.roundValue((fightRiskBase + fightRiskVision) * 100, true, true));
                 }
             } else {
-                if (content.length > 0) content += "<hr/>";
-                content += "<span class='btn-disabled-reason action-cost-blocker'>" + disabledReason + "</span>";
+                this.uiFunctions.toggle($enabledContent, false);
+                this.uiFunctions.toggle($disabledContent, true);
+                $disabledContent.children(".btn-disabled-reason").html(disabledReason);
             }
-            
-            $button.siblings(".btn-callout").children(".btn-callout-content").html(content);
-            $button.parent().siblings(".btn-callout").children(".btn-callout-content").html(content);
 
             // Check requirements affecting req-cooldown
             bottleNeckCostFraction = Math.min(bottleNeckCostFraction, playerActionsHelper.checkRequirements(action, false, sectorEntity).value);
@@ -328,7 +321,7 @@ define([
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-map", null, hasMap, 100, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-trade", null, isInCamp && hasTradingPost, 100, 0);
             this.uiFunctions.tabToggleIf("#switch-tabs #switch-projects", null, isInCamp && hasProjects, 100, 0);
-        },
+        },        
         
         updateButtonContainer: function (button, isVisible) {
             $(button).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");

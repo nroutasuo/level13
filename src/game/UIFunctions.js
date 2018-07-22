@@ -329,30 +329,92 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             $(scope + " .info-callout-target").after(function () {
                 var description = $(this).attr("description");
                 var content = description;
-                content = '<div class="arrow-up"></div><div class="info-callout-content">' + content + "</div>";
+                content = '<div class="callout-arrow-up"></div><div class="info-callout-content">' + content + "</div>";
                 return '<div class="info-callout">' + content + '</div>'
             });
             
             // Button callouts
-            var playerActions = this.playerActions;
+            var uiFunctions = this;
             $(scope + " div.container-btn-action").wrap('<div class="callout-container"></div>');
             $(scope + " div.container-btn-action").after(function () {
                 var action = $($(this).children("button")[0]).attr("action");
-                var ordinal = playerActions.playerActionsHelper.getOrdinal(action);
-                var costFactor =  playerActions.playerActionsHelper.getCostFactor(action);
-                var costs = playerActions.playerActionsHelper.getCosts(action, ordinal, costFactor);
-                var description = playerActions.playerActionsHelper.getDescription(action);
-                if ((costs && Object.keys(costs).length > 0) || description) {
-                    var content = '<div class="arrow-up"></div><div class="btn-callout-content">' + "" + "</div>";
-                    return '<div class="btn-callout">' + content + '</div>'
-                } else {
-                    if (!(action === "take_all" || action === "accept_inventory" || action === "use_in_inn_cancel" || action === "fight"))
-                        console.log("WARN: No callout could be created for action button with action " + action + ". Description and costs both missing.");
+                if (action === "take_all" || action === "accept_inventory" || action === "use_in_inn_cancel" || action === "fight")
                     return "";
-                }
+                return uiFunctions.generateActionButtonCallout(action);
             });
             
             GlobalSignals.calloutsGeneratedSignal.dispatch();
+        },
+        
+        generateActionButtonCallout: function (action) {
+            var playerActionsHelper = this.playerActions.playerActionsHelper;
+            var baseActionId = playerActionsHelper.getBaseActionID(action);
+            var ordinal = playerActionsHelper.getOrdinal(action);
+            var costFactor =  playerActionsHelper.getCostFactor(action);
+
+            var content = "";
+            var enabledContent = "";
+            var disabledContent = "";
+
+            // always visible: description
+            var description = playerActionsHelper.getDescription(action);
+            if (description) {
+                content += "<span>" + description + "</span>";
+            }
+
+            // visible if button is enabled: costs & risks
+            var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);
+            var hasCosts = action && costs && Object.keys(costs).length > 0;
+            if (hasCosts) {
+                if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
+                for (var key in costs) {
+                    var itemName = key.replace("item_", "");
+                    var item = ItemConstants.getItemByID(itemName);
+                    var name = (this.names.resources[key] ? this.names.resources[key] : item !== null ? item.name : key).toLowerCase();
+                    var value = costs[key];
+                    enabledContent += "<span class='action-cost action-cost-" + key + "'>" + name + ": " + UIConstants.getDisplayValue(value) + "</span><br/>";
+                }
+            }
+
+            var duration = PlayerActionConstants.getDuration(baseActionId);
+            if (duration > 0) {
+                if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
+                enabledContent += "<span class='action-duration'>duration: " + Math.round(duration * 100)/100 + "s</span>";
+            }
+            
+            var injuryRiskMax = PlayerActionConstants.getInjuryProbability(action, 0);
+            var inventoryRiskMax = PlayerActionConstants.getLoseInventoryProbability(action, 0);
+            var fightRiskMax = PlayerActionConstants.getRandomEncounterProbability(baseActionId, 0);
+            var fightRiskMin = PlayerActionConstants.getRandomEncounterProbability(baseActionId, 100);
+            if (injuryRiskMax > 0 || inventoryRiskMax > 0 || fightRiskMax > 0) {
+                if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
+                var inventoryRiskLabel = action === "despair" ? "lose items" : "lose an item";
+                if (injuryRiskMax > 0) 
+                    enabledContent += "<span class='action-risk action-risk-injury warning'>injury: <span class='action-risk-value'></span>%</span><br/>";
+                if (inventoryRiskMax > 0) 
+                    enabledContent += "<span class='action-risk action-risk-inventory warning'>" + inventoryRiskLabel + ": <span class='action-risk-value'></span>%</span><br/>";
+                if (fightRiskMax > 0)
+                    enabledContent += "<span class='action-risk action-risk-fight warning'>fight: <span class='action-risk-value'></span>%</span><br/>";
+            }
+            
+            // visible if button is disabled: disabled reason
+            if (content.length > 0) disabledContent += "<hr/>";
+            disabledContent += "<span class='btn-disabled-reason action-cost-blocker'>disabled reason</span>";
+            
+            if (enabledContent.length > 0) {
+                content += "<span class='btn-callout-content-enabled'>" + enabledContent + "</span>";
+            }
+            
+            if (disabledContent.length > 0) {
+                content += "<span class='btn-callout-content-disabled' style='display:none'>" + disabledContent + "</span>";
+            }
+
+            if (content.length > 0) {
+                return '<div class="btn-callout"><div class="callout-arrow-up"></div><div class="btn-callout-content">' + content + '</div></div>';
+            } else {
+                console.log("WARN: No callout could be created for action button with action " + action + ". No content for callout.");
+                return "";
+            }
         },
         
         generateSteppers: function (scope) {

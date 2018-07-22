@@ -2189,6 +2189,7 @@ function (Ash, GameConstants, CampConstants) {
             },
             
             getRandomEncounterProbability: function (baseActionID, vision) {
+                if (vision === undefined) vision = 100;
                 // TODO for locales get probability based on locale type - for trading partners no encounters!
                 if (this.randomEncounterProbabilities[baseActionID]) {
                     var baseProbability = this.randomEncounterProbabilities[baseActionID][0];
@@ -2200,6 +2201,7 @@ function (Ash, GameConstants, CampConstants) {
             },
             
             getInjuryProbability: function (action, vision) {
+                if (vision === undefined) vision = 100;
                 if (this.injuryProbabilities[action]) {
                     var baseProbability = this.injuryProbabilities[action][0];
                     var visionFactor = Math.pow(1 - (vision / 100), 2);
@@ -2210,6 +2212,7 @@ function (Ash, GameConstants, CampConstants) {
             },
             
             getLoseInventoryProbability: function (action, vision) {
+                if (vision === undefined) vision = 100;
                 if (this.loseInventoryProbabilities[action]) {
                     var baseProbability = this.loseInventoryProbabilities[action][0];
                     var visionFactor = Math.pow(1 - (vision / 100), 2);
