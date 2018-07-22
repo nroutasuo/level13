@@ -2148,6 +2148,19 @@ function (Ash, GameConstants, CampConstants) {
                 leave_camp: "Venture out into the corridors.",
                 launch: "Leave this planet and launch for the great unknown."
             },
+
+            // overrides for rules defined in isLocationAction
+            location_actions: {
+                use_in_hospital: false,
+                use_in_hospital2: false,
+                use_in_home: false,
+                use_in_inn_cancel: false,
+                scavenge: true,
+                scout: true,
+                investigate: true,
+                clear_workshop: true,
+                despair: true,
+            },
             
             UNAVAILABLE_REASON_LOCKED_RESOURCES: "Requires undiscovered resources.",
             UNAVAILABLE_REASON_BAG_FULL: "Bag full.",
@@ -2222,10 +2235,14 @@ function (Ash, GameConstants, CampConstants) {
             },
             
             isLocationAction: function (action) {
-                // TODO define location actions here rather than in html (this jquery is also a perofrmance issue)
-                var btn = $("button[action='" + action + "']");
-                if (btn)
-                    return btn.hasClass("action-location");
+                if (!action) return false;
+                if (typeof this.location_actions[action] !== "undefined") {
+                    return this.location_actions[action];
+                }
+                if (action.indexOf("build_in_") === 0) return true;
+                if (action.indexOf("build_out_") === 0) return true;
+                if (action.indexOf("use_in_") === 0) return true;
+                if (action.indexOf("use_out_") === 0) return true;
                 return false;
             },
             
