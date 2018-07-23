@@ -3,12 +3,14 @@ define([
 ], function (Ash, GlobalSignals, LogNode, UIConstants) {
     var UIOutLogSystem = Ash.System.extend({
 	
+        gameState: null,
 		logNodes: null,
 		
 		lastUpdateTimeStamp: 0,
 		updateFrequency: 1000 * 15,
 
-        constructor: function () {
+        constructor: function (gameState) {
+            this.gameState = gameState;
         },
 
         addToEngine: function (engine) {
