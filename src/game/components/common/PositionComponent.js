@@ -13,6 +13,10 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
             return this.sectorX + "." + this.sectorY;
         },
         
+        positionId: function () {
+            return this.level + "." + this.sectorX + "." + this.sectorY;
+        },
+        
         getPosition: function () {
             return new PositionVO(this.level, this.sectorX, this.sectorY);
         },
