@@ -28,6 +28,7 @@ define([
     'game/components/common/LogMessagesComponent',
     'game/components/common/SaveComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
+    'game/components/sector/improvements/SectorCollectorsComponent',
     'game/components/sector/improvements/WorkshopComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/SectorControlComponent',
@@ -72,6 +73,7 @@ define([
     LogMessagesComponent,
     SaveComponent,
     SectorImprovementsComponent,
+    SectorCollectorsComponent,
     WorkshopComponent,
     SectorStatusComponent,
     SectorControlComponent,
@@ -230,6 +232,9 @@ define([
 			if (entity.has(CampComponent) && !entity.has(OutgoingCaravansComponent)) {
 				entity.add(new OutgoingCaravansComponent());
 			}
+            if (entity.get(SectorImprovementsComponent).hasCollectors()) {
+				entity.add(new SectorCollectorsComponent());
+            }
 		},
     });
 

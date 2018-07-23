@@ -66,6 +66,10 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
 			return count;
 		},
         
+        hasCollectors: function () {
+            return this.getCount(improvementNames.collector_food) > 0 || this.getCount(improvementNames.collector_water) > 0;
+        },
+        
         getSaveKey: function () {
             return "SectorImpr";
         },

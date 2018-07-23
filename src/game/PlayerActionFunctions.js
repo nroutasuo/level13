@@ -35,6 +35,7 @@ define(['ash',
     'game/components/common/CurrencyComponent',
 	'game/components/type/LevelComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
+	'game/components/sector/improvements/SectorCollectorsComponent',
 	'game/components/sector/improvements/WorkshopComponent',
 	'game/components/sector/ReputationComponent',
 	'game/components/sector/SectorFeaturesComponent',
@@ -59,7 +60,7 @@ define(['ash',
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
 	BagComponent, ItemsComponent, PerksComponent, DeityComponent, PlayerActionComponent, PlayerActionResultComponent,
-	CampComponent, CurrencyComponent, LevelComponent, SectorImprovementsComponent, WorkshopComponent,
+	CampComponent, CurrencyComponent, LevelComponent, SectorImprovementsComponent, SectorCollectorsComponent, WorkshopComponent,
 	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, TraderComponent,
 	LogMessagesComponent,
@@ -899,11 +900,15 @@ define(['ash',
         buildTrap: function () {
             this.buildImprovement("build_out_collector_food", this.playerActionsHelper.getImprovementNameForAction("build_out_collector_food"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_TRAP, "Built a trap. It will catch food.");
+            if (!this.playerLocationNodes.head.entity.has(SectorCollectorsComponent))
+                this.playerLocationNodes.head.entity.add(new SectorCollectorsComponent());
         },
         
         buildBucket: function () {
             this.buildImprovement("build_out_collector_water", this.playerActionsHelper.getImprovementNameForAction("build_out_collector_water"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_BUCKET, "Made a bucket. It will collect water.");
+            if (!this.playerLocationNodes.head.entity.has(SectorCollectorsComponent))
+                this.playerLocationNodes.head.entity.add(new SectorCollectorsComponent());
         },
         
         buildHouse: function () {
