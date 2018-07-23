@@ -14,7 +14,6 @@ define([
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/NearestCampNode',
-    'game/nodes/sector/CampNode',
     'game/components/player/VisionComponent',
     'game/components/player/StaminaComponent',
     'game/components/player/ItemsComponent',
@@ -23,17 +22,17 @@ define([
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/MovementOptionsComponent',
-    'game/components/common/PositionComponent',
     'game/components/common/LogMessagesComponent',
+    'game/components/common/CampComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/improvements/WorkshopComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/EnemiesComponent'
 ], function (
     Ash, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, WorldCreatorConstants,
-    PlayerPositionNode, PlayerLocationNode, NearestCampNode, CampNode,
+    PlayerPositionNode, PlayerLocationNode, NearestCampNode,
     VisionComponent, StaminaComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
-    MovementOptionsComponent, PositionComponent, LogMessagesComponent,
+    MovementOptionsComponent, LogMessagesComponent, CampComponent,
     SectorImprovementsComponent, WorkshopComponent, SectorStatusComponent, EnemiesComponent
 ) {
     var UIOutLevelSystem = Ash.System.extend({
@@ -50,7 +49,6 @@ define([
 		playerLocationNodes: null,
         nearestCampNodes: null,
         
-        pendingUpdateDescription: true,
         pendingUpdateMap: true,
 	
 		constructor: function (uiFunctions, gameState, levelHelper, movementHelper, resourceHelper, sectorHelper, uiMapHelper) {
@@ -70,7 +68,6 @@ define([
             this.elements.btnClearWorkshop = $("#out-action-clear-workshop");            
             this.elements.btnNap = $("#out-action-nap");
             this.elements.outImprovementsTR = $("#out-improvements tr");
-            this.elements.outProjectsTR = $("#out-projects tr");
             
 			return this;
 		},
@@ -82,7 +79,7 @@ define([
 			
 			this.initListeners();
 			
-			this.engine  = engine;
+			this.engine = engine;
 		},
 
 		removeFromEngine: function (engine) {
@@ -100,13 +97,13 @@ define([
                 sys.updateOutImprovementsVisibility();
 				sys.updateMovementRelatedActions();
                 sys.updateStaticSectorElements();
-                sys.pendingUpdateDescription = true;
+                sys.updateSectorDescription();
 			});
             GlobalSignals.improvementBuiltSignal.add(function () {
-                sys.pendingUpdateDescription = true;
+                sys.updateSectorDescription();
             });
             GlobalSignals.inventoryChangedSignal.add(function () {
-                sys.pendingUpdateDescription = true;
+                sys.updateSectorDescription();
                 sys.updateOutImprovementsVisibility();
             });
             GlobalSignals.featureUnlockedSignal.add(function () {
@@ -144,52 +141,15 @@ define([
         },
 		
 		updateLevelPage: function () {
-			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);            
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			
-			var vision = this.playerPosNodes.head.entity.get(VisionComponent).value;
-			var hasVision = vision > PlayerStatConstants.VISION_BASE;
-			var hasCamp = false;
-			var hasCampHere = false;
+			var hasCamp = this.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
+			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
             var isScouted = sectorStatusComponent.scouted;
-            
-			for (var node = this.engine.getNodeList(CampNode).head; node; node = node.next) {
-				var campPosition = node.entity.get(PositionComponent);
-				if (campPosition.level === this.playerPosNodes.head.position.level) {
-					hasCamp = true;
-					if (campPosition.sectorId() === this.playerPosNodes.head.position.sectorId()) hasCampHere = true;
-					break;
-				}
-			}
-			
-			// Header
-			var header = "";
-			var name = featuresComponent.getSectorTypeName(hasVision || featuresComponent.sunlit);
-			header = name;
-            this.elements.sectorHeader.text(header);
-			
-			// Description
-            if (this.pendingUpdateDescription || isScouted !== this.wasScouted) {
-                this.elements.description.html(this.getDescription(
-                    this.playerLocationNodes.head.entity,
-                    hasCampHere,
-                    hasCamp,
-                    hasVision,
-                    isScouted
-                ));
-                this.pendingUpdateDescription = false;
-                this.wasScouted = isScouted;
-            }
 			
 			this.updateOutImprovementsList(improvements);
 			this.updateOutImprovementsStatus(hasCamp, improvements);
-			
-            // TODO performance bottleneck
-			var hasAvailableImprovements = this.elements.outImprovementsTR.filter(":visible").length > 0;
-			var hasAvailableProjects = this.elements.outProjectsTR.filter(":visible").length > 0;
-			this.uiFunctions.toggle("#header-out-improvements", hasAvailableImprovements);
-			this.uiFunctions.toggle("#header-out-projects", hasAvailableProjects);
 			
 			this.updateLevelPageActions(isScouted, hasCamp, hasCampHere);
             this.updateNap(isScouted, hasCampHere);
@@ -453,6 +413,7 @@ define([
                     }
                 }
 			}
+            
 			return description;
 		},
 		
@@ -528,6 +489,7 @@ define([
         updateOutImprovementsList: function (improvements) {
             var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;
             var uiFunctions = this.uiFunctions;
+            var numVisible = 0;
             $.each(this.elements.outImprovementsTR, function () {
                 var actionName = $(this).attr("btn-action");
                 
@@ -548,10 +510,14 @@ define([
                         if (isProject) {
                             $(this).find(".list-description").text(actionEnabled ? "Available in camp" : "");
                         }
-                        uiFunctions.toggle($(this), actionEnabled || existingImprovements > 0);
+                        
+                        var isVisible = actionEnabled || existingImprovements > 0;
+                        uiFunctions.toggle($(this), isVisible);
+                        if (isVisible) numVisible++;
                     }
                 }
             });
+			this.uiFunctions.toggle("#header-out-improvements", numVisible > 0);
         },
         
         updateOutImprovementsVisibility: function () {
@@ -632,6 +598,36 @@ define([
             this.uiFunctions.generateCallouts("#container-out-actions-movement-related");
             GlobalSignals.elementCreatedSignal.dispatch();
 		},
+        
+        updateSectorDescription: function () {
+			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			
+			var vision = this.playerPosNodes.head.entity.get(VisionComponent).value;
+			var hasVision = vision > PlayerStatConstants.VISION_BASE;
+			var hasCamp = this.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
+			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
+            var isScouted = sectorStatusComponent.scouted;
+            
+			// Header
+			var header = "";
+			var name = featuresComponent.getSectorTypeName(hasVision || featuresComponent.sunlit);
+			header = name;
+            this.elements.sectorHeader.text(header);
+			
+			// Description
+            if (this.pendingUpdateDescription || isScouted !== this.wasScouted) {
+                this.elements.description.html(this.getDescription(
+                    this.playerLocationNodes.head.entity,
+                    hasCampHere,
+                    hasCamp,
+                    hasVision,
+                    isScouted
+                ));
+                this.pendingUpdateDescription = false;
+                this.wasScouted = isScouted;
+            }
+        },
         
         updateStaticSectorElements: function () {
             if (this.nearestCampNodes.head) {
