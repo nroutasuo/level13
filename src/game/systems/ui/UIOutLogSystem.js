@@ -27,7 +27,7 @@ define([
         },
 
         update: function (time) {
-            if ($(".popup:visible").length > 0) return;
+            if (this.gameState.isPaused) return;
 			var timeStamp = new Date().getTime();
 			var isTime = timeStamp - this.lastUpdateTimeStamp > this.updateFrequency;
 			var hasNewMessages = false;
