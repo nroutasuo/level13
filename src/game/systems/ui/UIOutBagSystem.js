@@ -232,6 +232,7 @@ define([
             }
 			
             if (isActive) {
+                this.isShowObsoleteHidden = countObsolete <= 0;
                 this.uiFunctions.toggle("#checkbox-crafting-show-obsolete", countObsolete > 0);
                 this.uiFunctions.toggle("#label-crafting-show-obsolete", countObsolete > 0);
             }
@@ -440,8 +441,7 @@ define([
         },
         
         showObsolete: function () {
-            var checkBoxHidden = !($("#checkbox-crafting-show-obsolete").is(':visible')) && $("#self-craft").is(":visible");
-            return this.isShowObsoleteChecked || checkBoxHidden;
+            return this.isShowObsoleteChecked || this.isShowObsoleteHidden;
         },
         
         isItemUnlocked: function (itemDefinition) {
