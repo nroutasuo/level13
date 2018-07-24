@@ -66,6 +66,7 @@ define([
             this.elements.body = $("body");
             this.elements.locationHeader = $("#grid-location-header h1");
             this.elements.date = $("#in-game-date");
+            this.elements.gameMsg = $("#game-msg")
             this.elements.gameVersion = $("#game-version");            
             this.elements.valVision = $("#stats-vision .value");
             this.elements.valStamina = $("#stats-stamina .value");
@@ -138,7 +139,6 @@ define([
 			
 			this.updateGameMsg();
 			this.updateNotifications(isInCamp);
-            this.updateLocation(isInCamp);
             
             if (isInCamp && !campComponent) return;
 			
@@ -164,6 +164,7 @@ define([
         onPlayerMoved: function () {
             this.updateTabVisibility();
             this.updateStaminaWarningLimit();
+            this.updateLocation();
         },
         
         onHealthChanged: function () {
@@ -508,7 +509,10 @@ define([
 				if (this.autoPlayNodes.head) gameMsg += "Autoplaying";
                 if (this.gameState.isPaused) gameMsg += "Paused";
 				
-				$("#game-msg").text(gameMsg);
+                if (this.lastGameMsg !== gameMsg) {
+                    this.elements.gameMsg.text(gameMsg);
+                    this.lastGameMsg = gameMsg;
+                }
 			}
 		},
 		
@@ -525,9 +529,12 @@ define([
             }
 		},
         
-        updateLocation: function (inCamp) {
-			$("body").toggleClass("location-inside", inCamp);
-			$("body").toggleClass("location-outside", !inCamp);
+        updateLocation: function () {
+            var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
+			var inCamp = playerPosition.inCamp;
+            
+			this.elements.body.toggleClass("location-inside", inCamp);
+			this.elements.body.toggleClass("location-outside", !inCamp);
             
             var featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
             var sunlit = featuresComponent.sunlit;

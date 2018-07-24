@@ -1,4 +1,4 @@
-define(['ash','game/systems/GameManager'], function (Ash, GameManager) {
+define(['ash', 'game/GlobalSignals', 'game/systems/GameManager'], function (Ash, GlobalSignals, GameManager) {
 var UIOutManageSaveSystem = Ash.System.extend({
     
         spanSaveSeed: null,
@@ -40,23 +40,19 @@ var UIOutManageSaveSystem = Ash.System.extend({
 
 		addToEngine: function (engine) {
             this.engine = engine;
+            GlobalSignals.add(this, GlobalSignals.popupOpenedSignal, function (popupID) {
+                if (popupID === "manage-save-popup") {
+                    this.initialize();
+                }
+            });
 		},
 		
 		removeFromEngine: function (engine) {
             this.engine = null;
+            GlobalSignals.removeAll(this);
 		},
         
         update: function (time) {
-            if (!($("#manage-save-popup").is(":visible")) || $("#manage-save-popup").data("fading") == true) {
-                this.wasVisible = false;
-                return;
-            }
-            
-            if (!this.wasVisible) {
-                this.initialize();
-            }
-            
-            this.wasVisible = true;
         },
         
         initialize: function () {
