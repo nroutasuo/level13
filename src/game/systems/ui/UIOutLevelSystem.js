@@ -616,17 +616,13 @@ define([
             this.elements.sectorHeader.text(header);
 			
 			// Description
-            if (this.pendingUpdateDescription || isScouted !== this.wasScouted) {
-                this.elements.description.html(this.getDescription(
-                    this.playerLocationNodes.head.entity,
-                    hasCampHere,
-                    hasCamp,
-                    hasVision,
-                    isScouted
-                ));
-                this.pendingUpdateDescription = false;
-                this.wasScouted = isScouted;
-            }
+            this.elements.description.html(this.getDescription(
+                this.playerLocationNodes.head.entity,
+                hasCampHere,
+                hasCamp,
+                hasVision,
+                isScouted
+            ));
         },
         
         updateStaticSectorElements: function () {
