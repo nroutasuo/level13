@@ -26,9 +26,11 @@ define([
 		},
 		
 		getCurrentStorage: function (excludePlayer) {
+            if (!this.playerResourcesNodes.head) return null;
+            
 			var playerResources = this.getPlayerStorage();
 			var campResources = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity.get(ResourcesComponent) : null;
-			var globalResources = this.globalResourcesNodes.head.resources;
+			var globalResources = this.globalResourcesNodes.head ? this.globalResourcesNodes.head.resources : null;
 			
 			var currentResources = excludePlayer ? null : playerResources;
 			
@@ -148,11 +150,11 @@ define([
 		},
 		
 		getPlayerStorage: function () {
-			return this.playerResourcesNodes.head.resources;
+			return this.playerResourcesNodes.head ? this.playerResourcesNodes.head.resources : null;
 		},
         
         getPlayerCurrency: function () {
-			return this.playerResourcesNodes.head.currency;
+			return this.playerResourcesNodes.head ? this.playerResourcesNodes.head.currency : null;
         }
         
     });

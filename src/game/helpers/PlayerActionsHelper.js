@@ -933,6 +933,7 @@ define([
 			}
 		},
         
+        // NOTE: this should always return all possible costs as keys (even if value currently is 0)
 		getCosts: function (action, ordinal, statusCostFactor, sector) {
 			var result = {};
 			var baseActionID = this.getBaseActionID(action);
@@ -968,14 +969,11 @@ define([
                             costValue = value;
                         }
                         
-                        if (costValue > 0) {
-                            result[key] = Math.round((costBaseValue + costValue * ordinalCostFactor) * statusCostFactor);
-                        }
+                        result[key] = Math.round((costBaseValue + costValue * ordinalCostFactor) * statusCostFactor);
 					}
 				}
 			} else {
-                if (!this.playerLocationNodes.head) return result;
-				var sector = sector || this.playerLocationNodes.head.entity;
+				var sector = sector || this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
 				switch (baseActionID) {
 					case "move_camp_level":
                         if (!this.nearestCampNodes.head) return this.getCosts("move_sector_west", 1, 100);
@@ -1019,9 +1017,10 @@ define([
                         
                     case "nap":
                         var costs = {};
-                        var currentResources = this.resourcesHelper.getCurrentStorage().resources;
-                        costs["resource_food"] = Math.min(3, Math.floor(currentResources.getResource(resourceNames.food)));
-                        costs["resource_water"] = Math.min(3, Math.floor(currentResources.getResource(resourceNames.water)));
+                        var currentStorage = this.resourcesHelper.getCurrentStorage();
+                        var currentResources = currentStorage ? currentStorage.resources : null;
+                        costs["resource_food"] = currentResources ? Math.min(3, Math.floor(currentResources.getResource(resourceNames.food))) : 3;
+                        costs["resource_water"] = currentResources ? Math.min(3, Math.floor(currentResources.getResource(resourceNames.water))) : 3;
                         return costs;
 				}
 			}

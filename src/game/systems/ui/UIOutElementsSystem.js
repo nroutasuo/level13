@@ -158,7 +158,6 @@ define([
         },
         
         updateButtonCallout: function ($button, action, buttonStatus, buttonElements, isHardDisabled) {
-            var $callout = buttonElements.calloutContent;
             var $enabledContent = buttonElements.calloutContentEnabled;
             var $disabledContent = buttonElements.calloutContentDisabled;
 
@@ -182,7 +181,7 @@ define([
                 this.uiFunctions.toggle($disabledContent, false);
                 var hasCosts = action && costs && Object.keys(costs).length > 0;
                 if (hasCosts) {
-                    this.updateButtonCalloutCosts($button, action, buttonElements, $enabledContent, costs, costsStatus);
+                    this.updateButtonCalloutCosts($button, action, buttonStatus, buttonElements, costs, costsStatus);
                 }
                 this.updateButtonCalloutRisks($button, action, buttonElements);
             } else {
@@ -199,10 +198,10 @@ define([
             this.updateButtonCooldownOverlays($button, action, buttonStatus, buttonElements, sectorEntity, isHardDisabled, costsStatus);
         },
         
-        updateButtonCalloutCosts: function($button, action, buttonElements, $enabledContent, costs, costsStatus) {
+        updateButtonCalloutCosts: function($button, action, buttonStatus, buttonElements, costs, costsStatus) {
             var playerHealth = this.playerStatsNodes.head.stamina.health;
             var showStorage = this.resourcesHelper.getCurrentStorageCap();
-            
+            if (!buttonStatus.displayedCosts) buttonStatus.displayedCosts = {};
             for (var key in costs) {
                 var $costSpan = buttonElements.costSpans[key];
                 var value = costs[key];
@@ -216,12 +215,16 @@ define([
                 }
                 $costSpan.toggleClass("action-cost-blocker", costFraction < 1);
                 $costSpan.toggleClass("action-cost-blocker-storage", isFullCostBlocker);
+                
+                if (value !== buttonStatus.displayedCosts[key]) {
+                    var $costSpanValue = buttonElements.costSpanValues[key];
+                    $costSpanValue.html(UIConstants.getDisplayValue(value));
+                    buttonStatus.displayedCosts[key] = value;
+                }
             }
         },
         
         updateButtonCalloutRisks: function ($button, action, buttonElements) {
-            var $enabledContent = buttonElements.calloutContentEnabled;
-            
             var playerVision = this.playerStatsNodes.head.vision.value;
             var hasEnemies = this.fightHelper.hasEnemiesCurrentLocation(action);
             var baseActionId = this.playerActions.playerActionsHelper.getBaseActionID(action);
@@ -303,7 +306,9 @@ define([
             if (!action) return false;
 
             var sectorEntity = this.buttonHelper.getButtonSectorEntity($button);
-            return this.playerActions.playerActionsHelper.checkRequirements(action, false, sectorEntity).value < 1;
+            var reqsCheck = this.playerActions.playerActionsHelper.checkRequirements(action, false, sectorEntity);
+            
+            return reqsCheck.value < 1 && reqsCheck.reason !== PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES;
         },
 
         isButtonDisabledResources: function (button) {
@@ -394,8 +399,10 @@ define([
                     var costFactor = playerActionsHelper.getCostFactor(action);
                     var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);            
                     elements.costSpans = {};
+                    elements.costSpanValues = {};
                     for (var key in costs) {
                         elements.costSpans[key] = elements.calloutContentEnabled.children(".action-cost-" + key);
+                        elements.costSpanValues[key] = elements.costSpans[key].children(".action-cost-value");
                     }
                     sys.buttonElements.push(elements);
                 }

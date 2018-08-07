@@ -372,7 +372,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                     var item = ItemConstants.getItemByID(itemName);
                     var name = (this.names.resources[key] ? this.names.resources[key] : item !== null ? item.name : key).toLowerCase();
                     var value = costs[key];
-                    enabledContent += "<span class='action-cost action-cost-" + key + "'>" + name + ": " + UIConstants.getDisplayValue(value) + "</span><br/>";
+                    enabledContent += "<span class='action-cost action-cost-" + key + "'>" + name + ": <span class='action-cost-value'>" + UIConstants.getDisplayValue(value) + "</span></span><br/>";
                 }
             }
 
