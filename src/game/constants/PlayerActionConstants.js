@@ -1340,44 +1340,44 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 build_out_passage_up_hole: {
-                    resource_metal: 200,
+                    resource_metal: [50, 0, 150],
                     resource_concrete: 10,
-                    cost_factor: 2,
+                    cost_factor: 1.65,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_up_stairs: {
-                    resource_metal: 200,
+                    resource_metal: [50, 0, 150],
                     resource_rope: 10,
-                    cost_factor: 2,
+                    cost_factor: 1.65,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_up_elevator: {
-                    resource_metal: 200,
+                    resource_metal: [50, 0, 150],
                     resource_fuel: 10,
-                    cost_factor: 2,
+                    cost_factor: 1.65,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_down_hole: {
-                    resource_metal: 200,
+                    resource_metal: [50, 0, 150],
                     resource_concrete: 10,
-                    cost_factor: 2,
+                    cost_factor: 1.65,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_down_stairs: {
-                    resource_metal: 200,
+                    resource_metal: [50, 0, 150],
                     resource_rope: 10,
-                    cost_factor: 2,
+                    cost_factor: 1.65,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_down_elevator: {
-                    resource_metal: 200,
+                    resource_metal: [50, 0, 150],
                     resource_fuel: 10,
-                    cost_factor: 2,
+                    cost_factor: 1.65,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
@@ -1417,7 +1417,7 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_storage: {
                     resource_metal: 50,
                     resource_rope: [8, 2],
-                    cost_factor: 1.8,
+                    cost_factor: 1.75,
                 },
                 
                 build_in_campfire: {

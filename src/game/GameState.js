@@ -77,6 +77,10 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
             return WorldCreatorHelper.getLevelOrdinal(this.worldSeed, level);
         },
         
+        getLevelForOrdinal: function (levelOrdinal) {
+            return WorldCreatorHelper.getLevelForOrdinal(this.worldSeed, levelOrdinal);
+        },
+        
         getCampOrdinal: function (level) {
             return WorldCreatorHelper.getCampOrdinal(this.worldSeed, level);
         },

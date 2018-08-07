@@ -216,7 +216,7 @@ define([
             var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
 			var levelOrdinal = this.getLevelOrdinal(seed, level);
 			var ordinal = 0;
-			for (var i = 0; i < levelOrdinal; i++) {
+			for (var i = 1; i <= levelOrdinal; i++) {
 				if (camplessLevelOrdinals.indexOf(i) < 0) ordinal++;
 			}
 			return ordinal;

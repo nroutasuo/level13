@@ -5,8 +5,14 @@ define(['ash'], function (Ash) {
         POPULATION_PER_HOUSE: 4,
         POPULATION_PER_HOUSE2: 10,
         POOL_RUMOURS_PER_POPULATION: 2,
-        BASE_STORAGE: 50,
         
+        // Storage
+        BASE_STORAGE: 50,
+        STORAGE_PER_IMPROVEMENT: 100,
+        STORAGE_PER_IMPROVEMENT_LEVEL_2: 300,
+        STORAGE_PER_IMPROVEMENT_LEVEL_3: 800,
+        
+        // Rumours
         RUMOURS_PER_POP_PER_SEC_BASE: 0.0001,
         RUMOUR_BONUS_PER_CAMPFIRE_BASE: 1.1,
         RUMOURS_BONUS_PER_CAMPFIRE_PER_UPGRADE: 1.02,
@@ -51,6 +57,13 @@ define(['ash'], function (Ash) {
             toolsmith: "toolsmith",
             concrete: "concrete",
             soldier: "soldier",
+        },
+        
+        getStorageCapacity: function (storageCount, storageUpgradeLevel) {
+			var storagePerImprovement = CampConstants.STORAGE_PER_IMPROVEMENT;
+			if (storageUpgradeLevel > 1) storagePerImprovement = CampConstants.STORAGE_PER_IMPROVEMENT_LEVEL_2;
+			if (storageUpgradeLevel > 2) storagePerImprovement = CampConstants.STORAGE_PER_IMPROVEMENT_LEVEL_3;
+            return CampConstants.BASE_STORAGE + storageCount * storagePerImprovement;
         },
         
         getSmithsPerSmithy: function (upgradeLevel) {

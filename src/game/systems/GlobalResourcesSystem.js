@@ -56,16 +56,15 @@ define([
 		
 		updateCampsResources: function () {
 			var storageUpgradeLevel = this.getStorageUpgradeLevel();
-			var storagePerImprovement = 100;
-			if (storageUpgradeLevel > 1) storagePerImprovement = 500;
-			if (storageUpgradeLevel > 2) storagePerImprovement = 1200;
 			
 			var campImprovements;
+			var storageCount;
 			var hasTradePost;
 			for (var node = this.campNodes.head; node; node = node.next) {
                 campImprovements = node.improvements;
+                storageCount = campImprovements.getCount(improvementNames.storage);
                 hasTradePost = campImprovements.getCount(improvementNames.tradepost) > 0;
-                node.resources.storageCapacity = CampConstants.BASE_STORAGE + campImprovements.getCount(improvementNames.storage) * storagePerImprovement;
+                node.resources.storageCapacity = CampConstants.getStorageCapacity(storageCount, storageUpgradeLevel);
                 node.resources.limitToStorage(!hasTradePost);
 			}
 		},

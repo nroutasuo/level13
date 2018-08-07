@@ -172,14 +172,16 @@ define([
 
                 var lowestFraction = 1;
                 var reason = "";
-
+                
                 if (action === "move_level_up" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_UP])
                     return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_UP] };
                 if (action === "move_level_down" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_DOWN])
                     return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_DOWN] };
 
+                
                 if (costs) {
-                    if (requirements && costs.stamina > 0) {
+                    if (costs.stamina > 0) {
+                        if (!requirements) requirements = {};
                         requirements.health = costs.stamina / PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
                     }
                     if (costs.favour && !this.gameState.unlockedFeatures.favour) {
@@ -217,6 +219,7 @@ define([
                     if (requirements.stamina) {
                         if (playerStamina < requirements.stamina) {
                             if (log) console.log("WARN: Not enough stamina to perform action [" + action + "]");
+                            reason = "Not enough stamina";
                             lowestFraction = Math.min(lowestFraction, playerStamina / requirements.stamina);
                         }
                     }
@@ -948,15 +951,25 @@ define([
 				for(var key in costs) {
 					if (key != "cost_factor" && key != "cost_source") {
                         var value = costs[key];
+                        var costBaseValue = 0;
                         var costValue = 0;
+                        
                         if (typeof value === "object") {
-                            if (value[1] <= ordinal) costValue = value[0];
+                            if (value[1] <= ordinal) {
+                                if (value.length > 2) {
+                                    costBaseValue = value[0];
+                                    costValue = value[2];
+                                } else {
+                                    costValue = value[0];
+                                }
+                            }
                         }
                         if (typeof value === "number") {
                             costValue = value;
                         }
+                        
                         if (costValue > 0) {
-                            result[key] = Math.round(costValue * ordinalCostFactor * statusCostFactor);
+                            result[key] = Math.round((costBaseValue + costValue * ordinalCostFactor) * statusCostFactor);
                         }
 					}
 				}
