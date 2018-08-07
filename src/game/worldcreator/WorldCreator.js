@@ -830,6 +830,7 @@ define([
 		
 		getSectorFeatures: function (level, sectorX, sectorY) {
 			var sectorVO = this.world.getLevel(level).getSector(sectorX, sectorY);
+            var campOrdinal = WorldCreatorHelper.getCampOrdinal(this.seed, level);
 			var sectorFeatures = {};
 			sectorFeatures.buildingDensity = sectorVO.buildingDensity;
 			sectorFeatures.stateOfRepair = sectorVO.stateOfRepair;
@@ -840,7 +841,7 @@ define([
 			sectorFeatures.resourcesScavengable = sectorVO.resourcesScavengable;
 			sectorFeatures.resourcesCollectable = sectorVO.resourcesCollectable;
 			sectorFeatures.workshopResource = sectorVO.workshopResource;
-            sectorFeatures.campable = sectorVO.campableLevel;
+            sectorFeatures.campable = sectorVO.campableLevel && campOrdinal <= PositionConstants.CAMP_ORDINAL_LIMIT;
             sectorFeatures.notCampableReason = sectorVO.notCampableReason;
 			return sectorFeatures;
 		},
