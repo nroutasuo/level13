@@ -98,6 +98,7 @@ define([
 				sys.updateMovementRelatedActions();
                 sys.updateStaticSectorElements();
                 sys.updateSectorDescription();
+                sys.updateLevelPageActions();
 			});
             GlobalSignals.improvementBuiltSignal.add(function () {
                 sys.updateSectorDescription();
@@ -195,7 +196,6 @@ define([
             this.uiFunctions.toggle("#container-tab-two-out-actions h3", this.gameState.numCamps > 0);
             this.uiFunctions.toggle("#out-improvements", this.gameState.unlockedFeatures.vision);
             this.uiFunctions.toggle("#out-improvements table", this.gameState.unlockedFeatures.vision);
-            
         },
         
         updateNap: function (isScouted, hasCampHere) {

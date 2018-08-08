@@ -167,7 +167,10 @@ define([
             
             // check unlocked features
             if (vision > maxValueBase) {
-                this.gameState.unlockedFeatures.vision = true;
+                if (!this.gameState.unlockedFeatures.vision) {
+                    this.gameState.unlockedFeatures.vision = true;
+                    GlobalSignals.featureUnlockedSignal.dispatch();
+                }
             }
             
             // dispatch update

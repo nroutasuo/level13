@@ -1209,9 +1209,17 @@ define(['ash',
             itemsComponent.addItem(item.clone(), !this.playerPositionNodes.head.position.inCamp);
 
             if (item.type === ItemConstants.itemTypes.weapon)
-                this.gameState.unlockedFeatures.fight = true;
+                if (!this.gameState.unlockedFeatures.fight) {
+                    this.gameState.unlockedFeatures.fight = true;
+                    GlobalSignals.featureUnlockedSignal.dispatch();
+                }
 
-            this.gameState.unlockedFeatures.vision = true;
+            if (item.type == ItemConstants.itemTypes.light) {
+                if (!this.gameState.unlockedFeatures.vision) {
+                    this.gameState.unlockedFeatures.vision = true;
+                    GlobalSignals.featureUnlockedSignal.dispatch();
+                }
+            }
 
             this.addLogMessage(LogConstants.MSG_ID_CRAFT_ITEM, LogConstants.getCraftItemMessage(item));
             this.forceResourceBarUpdate();

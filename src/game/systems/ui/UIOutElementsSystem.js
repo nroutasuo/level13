@@ -80,8 +80,15 @@ define([
             var sys = this;
             GlobalSignals.calloutsGeneratedSignal.add(function () { sys.updateTabVisibility(); });
             GlobalSignals.improvementBuiltSignal.add(function () { sys.updateTabVisibility(); });
-            GlobalSignals.featureUnlockedSignal.add(function () { sys.updateTabVisibility(); });
-            GlobalSignals.playerMovedSignal.add(function () { sys.updateTabVisibility(); });
+            GlobalSignals.featureUnlockedSignal.add(function () { 
+                console.log("feature unlocked");
+                sys.updateTabVisibility(); 
+                sys.elementsVisibilityChanged = true;
+            });
+            GlobalSignals.playerMovedSignal.add(function () { 
+                sys.updateTabVisibility(); 
+                sys.elementsVisibilityChanged = true;
+            });
             GlobalSignals.gameShownSignal.add(function () { sys.updateTabVisibility(); });
             GlobalSignals.elementToggledSignal.add(function () { sys.elementsVisibilityChanged = true; });
             GlobalSignals.elementCreatedSignal.add(function () { sys.elementsVisibilityChanged = true; });
