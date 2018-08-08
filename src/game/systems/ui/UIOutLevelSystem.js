@@ -244,8 +244,8 @@ define([
             var posComponent = this.playerLocationNodes.head.position;
             var movementOptionsComponent = this.playerLocationNodes.head.entity.get(MovementOptionsComponent);
             var discoveredResources = this.sectorHelper.getLocationDiscoveredResources();
-            var isValidDespairHunger = discoveredResources.indexOf(resourceNames.food) < 0 && this.gameState.unlockedFeatures.resources.food && this.resourcesHelper.getCurrentStorage().resources.food < 0.5;
-            var isValidDespairThirst = discoveredResources.indexOf(resourceNames.water) < 0 && this.gameState.unlockedFeatures.resources.water && this.resourcesHelper.getCurrentStorage().resources.water < 0.5;
+            var isValidDespairHunger = discoveredResources.indexOf(resourceNames.food) < 0 && this.gameState.unlockedFeatures.resources.food && this.resourcesHelper.getCurrentStorage().resources.food < 1;
+            var isValidDespairThirst = discoveredResources.indexOf(resourceNames.water) < 0 && this.gameState.unlockedFeatures.resources.water && this.resourcesHelper.getCurrentStorage().resources.water < 1;
             var isValidDespairStamina = this.playerPosNodes.head.entity.get(StaminaComponent).stamina < PlayerActionConstants.costs.move_sector_east.stamina;
             var isValidDespairMove = !movementOptionsComponent.canMove(); // conceivably happens in hazard sectors if you lose equipment
             var isFirstPosition = posComponent.level === 13 && posComponent.sectorX === WorldCreatorConstants.FIRST_CAMP_X && posComponent.sectorY === WorldCreatorConstants.FIRST_CAMP_Y;
