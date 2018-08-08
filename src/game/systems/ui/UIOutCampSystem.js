@@ -177,12 +177,12 @@ define([
         updateWorkerStepper: function (campComponent, id, workerType, maxWorkers, showMax) {
             this.uiFunctions.toggle($(id).closest("tr"), maxWorkers > 0);
             
-            if (maxWorkers === 0) return;
-            
             var freePopulation = campComponent.getFreePopulation();
             var assignedWorkers = campComponent.assignedWorkers[workerType];
             var maxAssigned = Math.min(assignedWorkers + freePopulation, maxWorkers);
             this.uiFunctions.updateStepper(id, assignedWorkers, 0, maxAssigned);
+            
+            if (maxWorkers === 0) return;
 			$(id).parent().siblings(".in-assign-worker-limit").children(".callout-container").children(".info-callout-target").html(showMax ? "<span>/ " + maxWorkers + "</span>" : "");
         },
         
