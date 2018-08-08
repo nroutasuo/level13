@@ -172,12 +172,11 @@ define([
 
                 var lowestFraction = 1;
                 var reason = "";
-                
+            
                 if (action === "move_level_up" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_UP])
                     return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_UP] };
                 if (action === "move_level_down" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_DOWN])
                     return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_DOWN] };
-
                 
                 if (costs) {
                     if (costs.stamina > 0) {
@@ -200,7 +199,7 @@ define([
                 if (HazardConstants.isAffectedByHazard(featuresComponent, itemsComponent) && !this.isActionIndependentOfHazards(action)) {
                     return { value: 0, reason: HazardConstants.getHazardDisabledReason(featuresComponent, itemsComponent) };
                 }
-
+                
                 if (requirements) {
                     if (requirements.vision) {
                         var min = requirements.vision[0];
@@ -925,6 +924,7 @@ define([
                 case "build_out_passage_down_stairs":
                 case "build_out_passage_down_elevator":
                 case "build_out_passage_down_hole":
+                case "move_camp_global":
                 case "use_in_inn_select":
                 case "send_caravan":
                     return PlayerActionConstants.requirements[baseActionID];
