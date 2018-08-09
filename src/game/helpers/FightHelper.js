@@ -103,6 +103,7 @@ define([
             var fightComponent = sector.get(FightComponent);
             if (fightComponent) {
 				if (fightComponent.won) {
+                    this.playerActionResultsHelper.collectRewards(false, fightComponent.resultVO);
 					sector.get(EnemiesComponent).resetNextEnemy();
 					this.pendingEnemies--;
 					if (this.pendingEnemies > 0) {
@@ -110,7 +111,6 @@ define([
 						return;
 					}
 					if (this.pendingWinCallback) {
-                        this.playerActionResultsHelper.collectRewards(false, fightComponent.resultVO);
                         this.pendingWinCallback();
                     }
 				} else {
