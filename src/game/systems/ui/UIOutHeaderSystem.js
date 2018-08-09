@@ -216,7 +216,7 @@ define([
                 var reqReputationCurrent = CampConstants.getRequiredReputation(Math.floor(campComponent.population));
                 var reqReputationNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
 
-                this.elements.valReputation.text(UIConstants.roundValue(reputationComponent.value, true, false) + " / " + reputationComponent.targetValue);
+                this.elements.valReputation.text(UIConstants.roundValue(reputationComponent.value, true, true) + " / " + reputationComponent.targetValue);
                 this.updateChangeIndicator(this.elements.changeIndicatorReputation, reputationComponent.accumulation, true);
                 var reputationCalloutContent = "";
                 for (var i in reputationComponent.targetValueSources) {
