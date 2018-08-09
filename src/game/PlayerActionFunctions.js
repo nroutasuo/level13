@@ -356,6 +356,7 @@ define(['ash',
                 playerPos.sectorY = campPosition.sectorY;
                 this.engine.getSystem(PlayerPositionSystem).update();
                 this.enterCamp(true);
+                GlobalSignals.playerMovedSignal.dispatch(playerPos);
             } else {
                 console.log("WARN: No camp found for level " + level);
             }

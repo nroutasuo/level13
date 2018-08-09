@@ -317,8 +317,10 @@ define([
                         var actionAvailable = playerActionsHelper.checkAvailability(actionName, false);
                         var existingImprovements = improvements.getCount(improvementName);
                         if (isActive) {
+                            if (improvementName !== improvementNames.hospital) {
                             $(this).find(".list-amount").text(existingImprovements);
-                            uiFunctions.toggle($(this).find(".action-use"), existingImprovements > 0);
+                                uiFunctions.toggle($(this).find(".action-use"), existingImprovements > 0);
+                            }
                         }
                         
                         var commonVisibilityRule = (actionEnabled || existingImprovements > 0 || showActionDisabledReason);
@@ -342,8 +344,8 @@ define([
 			var isInjured = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury) !== 1;
 			var isAugmented = perksComponent.hasPerk(PerkConstants.perkIds.healthAugment);
 			var isAugmentAvailable = this.hasUpgrade(this.upgradesHelper.getUpgradeIdsForImprovement(improvementNames.hospital)[0]);
-			this.uiFunctions.toggle("#btn-use_in_hospital", hasHospital && (isInjured || isAugmented || !isAugmentAvailable));
-			this.uiFunctions.toggle("#btn-use_in_hospital2", hasHospital && !isInjured && !isAugmented && isAugmentAvailable);
+			this.uiFunctions.toggle("#btn-use_in_hospital1", hasHospital && (isInjured || isAugmented || !isAugmentAvailable));
+            this.uiFunctions.toggle("#btn-use_in_hospital2", hasHospital && !isInjured && !isAugmented && isAugmentAvailable);
             
             this.availableBuildingCount = availableBuildingCount;
             if (isActive) this.lastShownAvailableBuildingCount = this.availableBuildingCount;

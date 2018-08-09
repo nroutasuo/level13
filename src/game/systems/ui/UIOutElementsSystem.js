@@ -1,6 +1,7 @@
 define([
     'ash',
     'game/GlobalSignals',
+    'game/constants/GameConstants',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/PlayerStatConstants',
@@ -16,6 +17,7 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent'
 ], function (Ash,
     GlobalSignals,
+    GameConstants,
     UIConstants,
     ItemConstants,
     PlayerStatConstants,
@@ -115,6 +117,15 @@ define([
                 this.updateVisibleButtonsList();
                 this.updateVisibleProgressbarsList();
                 this.elementsVisibilityChanged = false;
+                this.elementsVisibilityChangedFrames++;
+            } else {
+                this.elementsVisibilityChangedFrames = 0;
+            }
+            
+            if (GameConstants.isDebugOutputEnabled) {
+                if (this.elementsVisibilityChangedFrames > 5) {
+                    console.log("WARN: element visibility updated too often");
+                }
             }
             
             this.updateButtons();
