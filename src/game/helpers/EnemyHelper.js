@@ -168,10 +168,9 @@ define([
             var levelDifficulty;
             for (var i = 1; i < totalLevels; i++) {
                 levelDifficulty = this.getRequiredStrength(i, groundLevelOrdinal, totalLevels);
-                if (levelDifficulty > stats) return level;
-                level = i;
+                if (levelDifficulty > stats) return i;
             }
-            return WorldCreatorConstants.LEVEL_NUMBER_MAX;
+            return totalLevels;
         },
         
         getRequiredStrength: function (levelOrdinal, groundLevelOrdinal, totalLevels) {
@@ -214,6 +213,8 @@ define([
             var numFollowers = FightConstants.getMaxFollowers(numCamps);
             for ( var f = 0; f < numFollowers; f++ )
                 typicalItems.addItem(ItemConstants.getFollower(13, numCamps));
+            
+            typicalItems.autoEquipAll();
 
             var typicalStamina = {};
             typicalStamina.health = typicalHealth;

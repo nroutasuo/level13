@@ -140,6 +140,12 @@ function (Ash, ItemVO, ItemConstants) {
             this.uniqueItemsAll = {};
         },
         
+        autoEquipAll: function () {
+            for (var key in this.items) {
+                this.autoEquipByType(key);
+            }
+        },
+        
         autoEquipByType: function (itemType) {
             var best = null;
             for (var i = 0; i < this.items[itemType].length; i++) {
