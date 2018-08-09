@@ -79,6 +79,20 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
         getReputationBonus: function () {
             return getImprovementReputationBonus(this.name);
         },
+        
+        isPassage: function () {
+            switch (this.name) {
+                case improvementNames.passageUpStairs:
+                case improvementNames.passageUpElevator:
+                case improvementNames.passageUpHole:
+                case improvementNames.passageDownStairs:
+                case improvementNames.passageDownElevator:
+                case improvementNames.passageDownHole:
+                    return true;
+                default:
+                    return false;
+            }
+        }
     });
     
     // TODO make ImprovementConstants

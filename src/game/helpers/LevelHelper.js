@@ -380,6 +380,14 @@ define([
 			var project;
 			var projectExists;
 			var existingProject;
+			
+			// sort by level ordinal
+			var gameState = this.gameState;
+			result.sort(function (a, b) {
+				var levelOrdinalA = gameState.getLevelOrdinal(a.level);
+				var levelOrdinalB = gameState.getLevelOrdinal(b.level);
+				return levelOrdinalB - levelOrdinalA;
+			});
             
 			// filter duplicates (corresponding up and down)
 			for (var i = 0; i < projects.length; i++) {
@@ -392,17 +400,9 @@ define([
 						break;
 					}
 				}
-				//if (!projectExists) 
+				if (!projectExists) 
                     result.push(project);
 			}
-			
-			// sort by level ordinal
-			var gameState = this.gameState;
-			result.sort(function (a, b) {
-				var levelOrdinalA = gameState.getLevelOrdinal(a.level);
-				var levelOrdinalB = gameState.getLevelOrdinal(b.level);
-				return levelOrdinalA - levelOrdinalB;
-			});
             
             return result;
         },

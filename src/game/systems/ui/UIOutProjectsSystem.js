@@ -2,10 +2,11 @@ define([
     'ash',
     'game/GlobalSignals',
     'game/constants/UIConstants',
+    'game/constants/PositionConstants',
     'game/nodes/PlayerLocationNode',
     'game/vos/TabCountsVO',
 ], function (
-    Ash, GlobalSignals, UIConstants, PlayerLocationNode, TabCountsVO
+    Ash, GlobalSignals, UIConstants, PositionConstants, PlayerLocationNode, TabCountsVO
 ) {
     var UIOutProjectsSystem = Ash.System.extend({
         
@@ -55,7 +56,6 @@ define([
             }
             
             this.uiFunctions.toggle("#container-in-improvements-colony", this.endingHelper.hasUnlockedEndProject());
-            this.updateBuiltProjects();
             
             this.uiFunctions.toggle("#in-improvements-level-empty-message", this.tabCounts.lastShown.visible.regular <= 0);
             this.elements.tabHeader.text("Building projects");
@@ -63,6 +63,7 @@ define([
         
         refresh: function () {
             this.updateAvailableProjects();
+            this.updateBuiltProjects();
         },
         
         updateBubble: function () {
@@ -146,6 +147,7 @@ define([
         },
         
         updateBuiltProjects: function() {
+            if (!this.playerLocationNodes.head) return;
             var projects = this.levelHelper.getBuiltProjectsForCamp(this.playerLocationNodes.head.entity);
             var numProjectsTR = $("#in-improvements-level-built table tr").length;
             var updateTable = numProjectsTR !== projects.length;
@@ -153,7 +155,7 @@ define([
             this.uiFunctions.toggle("#header-in-improvements-level-built", projects.length > 0);
             
             if (!updateTable)
-                return;            
+                return;
             
             var showLevel = this.gameState.unlockedFeatures.levels;
             if (updateTable) $("#in-improvements-level-built table").empty();
@@ -162,6 +164,19 @@ define([
                 var sector = project.level + "." + project.sector + "." + project.direction;
                 var name = project.name;
                 var info = "at " + project.position.getPosition().getInGameFormat() + (showLevel ? " level " + project.level : "");
+                var isPassage = project.improvement.isPassage();
+                if (isPassage) {
+                    // TODO define building projects directions/links better and don't rely on improvement names
+                    name = name.replace(" Up", "");
+                    name = name.replace(" Down", "");
+                    var level = project.level;
+                    var otherLevel = project.level + 1;
+                    if (project.improvement.name.indexOf("Down") > 0) {
+                        level = project.level - 1;
+                        otherLevel = project.level;
+                    }
+                    info = " connecting levels " + level + " and " + otherLevel + " at " + project.position.getPosition().getInGameFormat();
+                }
                 var tr = 
                     "<tr>" +
                     "<td>" + name + "</td>" +
