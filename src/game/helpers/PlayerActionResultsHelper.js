@@ -808,23 +808,25 @@ define([
             if (playerItems.length <= 0)
                 return lostItems;
             
-            if (loseSingleItem) {
-                var itemList = [];                
-                for (var i = 0; i < playerItems.length; i++) {
-                    var loseProbability = this.getItemLoseProbability(action, playerItems[i]);
-                    var count = Math.round(loseProbability * 10);
-                    for (var j = 0; j < count; j++) {
-                        itemList.push(playerItems[i]);
-                    }
-                }
-                lostItems.push(itemList[Math.floor(Math.random() * itemList.length)]);
-            } else {
-                var itemLoseProbability;
-                for (var i = 0; i < playerItems.length; i++) {
-                    var itemLoseProbability = this.getItemLoseProbability(action, playerItems[i]);
-                    if (itemLoseProbability > Math.random()) lostItems.push(playerItems[i]);
+            
+            var itemList = [];                
+            for (var i = 0; i < playerItems.length; i++) {
+                var loseProbability = this.getItemLoseProbability(action, playerItems[i]);
+                var count = Math.round(loseProbability * 10);
+                for (var j = 0; j < count; j++) {
+                    itemList.push(playerItems[i]);
                 }
             }
+            
+            var numItems = loseSingleItem ? 1 : Math.ceil(Math.random() * 3);
+            numItems = Math.min(itemList.length, numItems);
+            
+            for (var i = 0; i < numItems; i++) {
+                var itemi = Math.floor(Math.random() * itemList.length);
+                lostItems.push(itemList[itemi]);
+                itemList.splice(itemi, 1);
+            }
+                
             return lostItems;
         },
         
