@@ -1,8 +1,6 @@
 define(['ash'], function (Ash) {
 
     var PositionConstants = {
-        
-        CAMP_ORDINAL_LIMIT: 6,
     
         DIRECTION_NONE: -1,
         DIRECTION_CAMP: 0,

@@ -841,7 +841,7 @@ define([
 			sectorFeatures.resourcesScavengable = sectorVO.resourcesScavengable;
 			sectorFeatures.resourcesCollectable = sectorVO.resourcesCollectable;
 			sectorFeatures.workshopResource = sectorVO.workshopResource;
-            sectorFeatures.campable = sectorVO.campableLevel && campOrdinal <= PositionConstants.CAMP_ORDINAL_LIMIT;
+            sectorFeatures.campable = sectorVO.campableLevel;
             sectorFeatures.notCampableReason = sectorVO.notCampableReason;
 			return sectorFeatures;
 		},

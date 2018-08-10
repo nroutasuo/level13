@@ -35,8 +35,9 @@ define(['ash'], function (Ash) {
         FIRST_CAMP_Y: 0,
         LVL_13_PASSAGE_UP_X: 10,
         LVL_13_PASSAGE_UP_Y: 10,
+        CAMP_ORDINAL_LIMIT: 6,
         
-        MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 5,
+        MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 10,
         MIN_LEVEL_HAZARD_POISON: 15,
         
         LEVEL_ORDINAL_BAG_2: 2,

@@ -236,12 +236,19 @@ define([
         isCampableLevel: function (seed, level) {
             var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);            
             var levelOrdinal = this.getLevelOrdinal(seed, level);
-            return camplessLevelOrdinals.indexOf(levelOrdinal) < 0;
+            var campOrdinal = this.getCampOrdinal(seed, level);
+            return camplessLevelOrdinals.indexOf(levelOrdinal) < 0 && campOrdinal <= WorldCreatorConstants.CAMP_ORDINAL_LIMIT;
         },
         
         getNotCampableReason: function (seed, level) {
             if (this.isCampableLevel(seed, level)) return null;
+            
             if (level === 14) return LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
+            
+            var campOrdinal = this.getCampOrdinal(seed, level);
+            if (campOrdinal > WorldCreatorConstants.CAMP_ORDINAL_LIMIT)
+                return LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT;
+            
             var levelOrdinal = this.getLevelOrdinal(seed, level);
             var rand = WorldCreatorRandom.random(seed % 4 + level + level * 8 + 88);
             if (rand < 0.33 && levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION) 

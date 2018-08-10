@@ -465,6 +465,9 @@ define([
                             else 
                                 notCampableDesc = "An unnerving <span class='text-highlight-functionality'>silence</span> blankets the streets. ";
                             break;
+                            
+                        case LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT:
+                            notCampableDesc = "There are no more humans living this far down in the City.";
                     }
                 }
             }

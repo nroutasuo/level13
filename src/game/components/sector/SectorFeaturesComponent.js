@@ -40,7 +40,7 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
         canHaveCamp: function () {
             var hasWater = (this.resourcesCollectable.water > 0 || this.resourcesScavengable.water > 0 || this.hasSpring);
             var hasFood = (this.resourcesCollectable.food > 0 || this.resourcesScavengable.food > 0);
-            return  this.campable &&
+            return this.campable &&
                     this.buildingDensity > 0 && this.buildingDensity < 9 &&
                     hasWater && 
                     hasFood && 
@@ -84,10 +84,15 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
             else if (this.buildingDensity > 4)  genericNoun = "street";
             else if (this.buildingDensity > 0)  genericNoun = "square";
             else genericNoun = "sector";
+           
+            var wholeNoun = typeNoun + " " + genericNoun;
+            if (this.sectorType === WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL && this.buildingDensity > 8) {
+                    wholeNoun = "back alley";
+            }
             
             if (hasLight) {
                 if (this.sectorType == WorldCreatorConstants.SECTOR_TYPE_SLUM) genericNoun = "";
-                return repairAdj + " " + typeNoun + " " + genericNoun;
+                return repairAdj + " " + wholeNoun;
             } else {
                 return "dark" + " " + repairAdj + " " + densityAdj + " " + genericNoun;
             }

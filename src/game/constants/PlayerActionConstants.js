@@ -1340,42 +1340,42 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 build_out_passage_up_hole: {
-                    resource_metal: [50, 0, 150],
+                    resource_metal: [75, 0, 125],
                     resource_concrete: 10,
                     cost_factor: 1.65,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_up_stairs: {
-                    resource_metal: [50, 0, 150],
+                    resource_metal: [75, 0, 125],
                     resource_rope: 10,
                     cost_factor: 1.65,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_up_elevator: {
-                    resource_metal: [50, 0, 150],
+                    resource_metal: [75, 0, 125],
                     resource_fuel: 10,
                     cost_factor: 1.65,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_down_hole: {
-                    resource_metal: [50, 0, 150],
+                    resource_metal: [75, 0, 125],
                     resource_concrete: 10,
                     cost_factor: 1.65,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_down_stairs: {
-                    resource_metal: [50, 0, 150],
+                    resource_metal: [75, 0, 125],
                     resource_rope: 10,
                     cost_factor: 1.65,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_down_elevator: {
-                    resource_metal: [50, 0, 150],
+                    resource_metal: [75, 0, 125],
                     resource_fuel: 10,
                     cost_factor: 1.65,
                     cost_source: COST_SOURCE_CAMP,
