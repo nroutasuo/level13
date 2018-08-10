@@ -1,305 +1,283 @@
 {
-    "versions": [
-        {
-            "version": "0.2.2",
-            "phase": "alpha",
-            "final": false,
-            "updated": "2017-07-07",
-            "changes": [
-                {
-                    "type": "DEV",
-                    "summary": "Lots of bug-fixes.",
-                },
-                {
-                    "type": "GD",
-                    "summary": "Enable manually equipping items."
-                },
-                {
-                    "type": "UI",
-                    "summary": "Improve camp list."
-                },
-                {
-                    "type": "GD",
-                    "summary": "Two new building that increase reputation: garden and square."
-                },
-                {
-                    "type": "UI",
-                    "summary": "Polish reputation, raids and trade."
-                },
-                {
-                    "type": "GD",
-                    "summary": "Remove time-based food/water consumption and time-based stamina recovery while exploring."
-                },
-                {
-                    "type": "GB",
-                    "summary": "Adjust scavenge results and risks to depend more on current health, vision and level."
-                },
-                {
-                    "type": "UI",
-                    "summary": "Improve sector descriptions for passages, resources and special level conditions."
-                },
-                {
-                    "type": "GB",
-                    "summary": "Use pathfinding for determining costs to return to camp."
-                },
-                {
-                    "type": "DEV",
-                    "summary": "Add option to export/import save. (Breaks old saves)"
-                }
-            ]
-        },
-        {
-            "version": "0.2.1",
-            "phase": "alpha",
-            "final": true,
-            "updated": "2018-03-19",
-            "released": "2018-03-19",
-            "changes": [
-                {
-                    "type": "GD",
-                    "summary": "Add a simple ending to the game."
-                },
-                {
-                    "type": "UI",
-                    "summary": "Improve UI for building projects."
-                },
-                {
-                    "type": "DEV",
-                    "summary": "Lots of bugfixes, especially for late-game."
-                }
-            ]
-        },
-        {
-            "version": "0.1.7",
-            "phase": "alpha",
-            "final": true,
-            "updated": "2017-08-19",
-            "released": "2017-08-19",
-            "changes": [
-                {
-                    "type": "GD",
-                    "summary": "Add currency, trade partners on the map, outgoing trade caravans and incoming traders."
-                },
-                {
-                    "type": "GB",
-                    "summary": "More varied resources found when scavenging."
-                },
-                {
-                    "type": "GB",
-                    "summary": "Add more bag levels."
-                },
-                {
-                    "type": "DEV",
-                    "summary": "Bugfixes and performance improvements."
-                }
-            ]
-        },
-        {
-            "version": "0.1.6",
-            "phase": "alpha",
-            "final": true,
-            "updated": "2017-04-25",
-            "released": "2017-04-25",
-            "changes": [
-                {
-                    "type": "DEV",
-                    "summary": "Lots of small bugfixes."
-                },
-                {
-                    "type": "UI",
-                    "summary": "A friendly popup when the game crashes."
-                },
-                {
-                    "type": "UI",
-                    "summary": "Visualization of the tech tree."
-                }
-            ]
-        },
-        {
-            "version": "0.1.5",
-            "phase": "alpha",
-            "final": true,
-            "updated": "2017-01-01",
-            "released": "2017-01-01",
-            "changes": [
-                {
-                    "type": "GD",
-                    "summary": "Changed how reputation works. It's now camp-dependent and takes some time to grow / decrease."
-                },
-                {
-                    "type": "GD",
-                    "summary": "New building: generator (increases reputation)"
-                },
-                {
-                    "type": "GB",
-                    "summary": "Rebalanced upgrades and a few new ones. Several buildings can now be upgraded."
-                },
-                {
-                    "type": "UI",
-                    "summary": "Lots of small UI fixes and additions."
-                }
-            ]
-        },
-        {
-            "version": "0.1.4",
-            "phase": "alpha",
-            "final": true,
-            "updated": "2016-11-06",
-            "released": "2016-11-06",
-            "changes": [
-                {
-                    "type": "GD",
-                    "summary": "Improved followers and inn functionality."
-                },
-                {
-                    "type": "GD",
-                    "summary": "Add lots of new log messages for results of player actions when exploring."
-                },
-                {
-                    "type": "UI",
-                    "summary": "Improve header appearance and show item stats more clearly."
-                },
-                {
-                    "type": "GD",
-                    "summary": "Improve sector generation to create more intersections and generally more interesting level shapes."
-                }
-            ]
-        },
-        {
-            "version": "0.1.3",
-            "phase": "alpha",
-            "final": true,
-            "updated": "2016-10-16",
-            "released": "2016-10-16",
-            "changes": [
-                {
-                    "type": "GD",
-                    "summary": "Rework how food and water work while exploring & add springs"
-                },
-                {
-                    "type": "GD",
-                    "summary": "Add proper inventory management, add weights for items, and enforce carry limit"
-                },
-                {
-                    "type": "GD",
-                    "summary": "Make stamina regenerate much slower while exploring, and add option to recover it in camp"
-                },
-                {
-                    "type": "GD",
-                    "summary": "New items: first aid kits and glowsticks."
-                },
-                {
-                    "type": "GD",
-                    "summary": "Environmental hazards: cold, radiation and poison."
-                },
-                {
-                    "type": "GD",
-                    "summary": "More clothing slots & items."
-                }
-            ]
-        },
-        {
-            "version": "0.1.2",
-            "phase": "alpha",
-            "final": true,
-            "released": "2016-03-20",
-            "updated": "2016-03-20",
-            "changes": [
-                {
-                    "type": "GD",
-                    "summary": "Some items can be left in the camp (and not lost them when fainting)."
-                },
-                {
-                    "type": "GD",
-                    "summary": "Blueprints are made of pieces which must be separately collected."
-                },
-                {
-                    "type": "UI",
-                    "summary": "Notifications for new content in tabs like available buildigs or items."
-                },
-                {
-                    "type": "UI",
-                    "summary": "Improved exploration UI."
-                },
-                {
-                    "type": "GD",
-                    "summary": "Levels are composed of randomly generated paths and have intersections."
-                },
-                {
-                    "type": "GD",
-                    "summary": "Fight is no longer an independent action. Other actions can lead to random encounters."
-                },
-                {
-                    "type": "GD",
-                    "summary": "Exploration in general is more risky, but also has more rewards."
-                },
-                {
-                    "type": "GD",
-                    "summary": "Healing injuries is no longer instant."
-                },
-                {
-                    "type": "GD",
-                    "summary": "New improvement: aqueduct."
-                },
-                {
-                    "type": "UI",
-                    "summary": "Timer for next worker."
-                },
-                {
-                    "type": "GB",
-                    "summary": "There are levels where no camp can be built."
-                }
-            ]
-        },
-        {
-            "version": "0.1.1",
-            "phase": "alpha",
-            "final": true,
-            "released": "2015-09-02",
-            "updated": "2015-09-02",
-            "changes": [
-                {
-                    "type": "GD",
-                    "summary": "Initial list of upgrades, upgrades balancing & blueprint mechanic."
-                },
-                {
-                    "type": "GD",
-                    "summary": "Working crafting system and all basic items. Secondary resources (parts) that can be scavenged and used for crafting."
-                },
-                {
-                    "type": "GD",
-                    "summary": "Exploration now requires food and water."
-                },
-                {
-                    "type": "GD",
-                    "summary": "Locales: new scouting opportunities that appear on some sectors."
-                },
-                {
-                    "type": "UI",
-                    "summary": "Black skin for dark levels/sectors."
-                }
-            ]
-        },
-        {
-            "version": "0.1.0",
-            "phase": "alpha",
-            "final": true,
-            "released": "2015-07-08",
-            "updated": "2015-07-08",
-            "changes": [
-                {
-                    "type": "GB",
-                    "summary": "Initial building list"
-                },
-                {
-                    "type": "GD",
-                    "summary": "Basic camp game play"
-                },
-                {
-                    "type": "GD",
-                    "summary": "Basic exploration"
-                }
-            ]
-        }
-    ]
+	"versions": [{
+			"version": "0.2.2",
+			"phase": "alpha",
+			"final": true,
+			"updated": "2017-08-10",
+			"released": "2018-08-10",
+			"changes": [{
+					"type": "DEV",
+					"summary": "Add option to export/import save. (Breaks old saves)"
+				},
+				{
+					"type": "GD",
+					"summary": "Enable manually choosing equipped items."
+				},
+				{
+					"type": "GD",
+					"summary": "Remove time-based food/water consumption and time-based stamina recovery while exploring."
+				},
+				{
+					"type": "UI",
+					"summary": "Polish reputation, raids and trade."
+				},
+				{
+					"type": "GD",
+					"summary": "Add two new buildings that increase reputation: garden and square."
+				},
+				{
+					"type": "DEV",
+					"summary": "Improve performance"
+				},
+				{
+					"type": "DEV",
+					"summary": "Lots of bug-fixes and polish."
+				}
+			]
+		},
+		{
+			"version": "0.2.1",
+			"phase": "alpha",
+			"final": true,
+			"updated": "2018-03-19",
+			"released": "2018-03-19",
+			"changes": [{
+					"type": "GD",
+					"summary": "Add a simple ending to the game."
+				},
+				{
+					"type": "UI",
+					"summary": "Improve UI for building projects."
+				},
+				{
+					"type": "DEV",
+					"summary": "Lots of bugfixes, especially for late-game."
+				}
+			]
+		},
+		{
+			"version": "0.1.7",
+			"phase": "alpha",
+			"final": true,
+			"updated": "2017-08-19",
+			"released": "2017-08-19",
+			"changes": [{
+					"type": "GD",
+					"summary": "Add currency, trade partners on the map, outgoing trade caravans and incoming traders."
+				},
+				{
+					"type": "GB",
+					"summary": "More varied resources found when scavenging."
+				},
+				{
+					"type": "GB",
+					"summary": "Add more bag levels."
+				},
+				{
+					"type": "DEV",
+					"summary": "Bugfixes and performance improvements."
+				}
+			]
+		},
+		{
+			"version": "0.1.6",
+			"phase": "alpha",
+			"final": true,
+			"updated": "2017-04-25",
+			"released": "2017-04-25",
+			"changes": [{
+					"type": "DEV",
+					"summary": "Lots of small bugfixes."
+				},
+				{
+					"type": "UI",
+					"summary": "A friendly popup when the game crashes."
+				},
+				{
+					"type": "UI",
+					"summary": "Visualization of the tech tree."
+				}
+			]
+		},
+		{
+			"version": "0.1.5",
+			"phase": "alpha",
+			"final": true,
+			"updated": "2017-01-01",
+			"released": "2017-01-01",
+			"changes": [{
+					"type": "GD",
+					"summary": "Changed how reputation works. It's now camp-dependent and takes some time to grow / decrease."
+				},
+				{
+					"type": "GD",
+					"summary": "New building: generator (increases reputation)"
+				},
+				{
+					"type": "GB",
+					"summary": "Rebalanced upgrades and a few new ones. Several buildings can now be upgraded."
+				},
+				{
+					"type": "UI",
+					"summary": "Lots of small UI fixes and additions."
+				}
+			]
+		},
+		{
+			"version": "0.1.4",
+			"phase": "alpha",
+			"final": true,
+			"updated": "2016-11-06",
+			"released": "2016-11-06",
+			"changes": [{
+					"type": "GD",
+					"summary": "Improved followers and inn functionality."
+				},
+				{
+					"type": "GD",
+					"summary": "Add lots of new log messages for results of player actions when exploring."
+				},
+				{
+					"type": "UI",
+					"summary": "Improve header appearance and show item stats more clearly."
+				},
+				{
+					"type": "GD",
+					"summary": "Improve sector generation to create more intersections and generally more interesting level shapes."
+				}
+			]
+		},
+		{
+			"version": "0.1.3",
+			"phase": "alpha",
+			"final": true,
+			"updated": "2016-10-16",
+			"released": "2016-10-16",
+			"changes": [{
+					"type": "GD",
+					"summary": "Rework how food and water work while exploring & add springs"
+				},
+				{
+					"type": "GD",
+					"summary": "Add proper inventory management, add weights for items, and enforce carry limit"
+				},
+				{
+					"type": "GD",
+					"summary": "Make stamina regenerate much slower while exploring, and add option to recover it in camp"
+				},
+				{
+					"type": "GD",
+					"summary": "New items: first aid kits and glowsticks."
+				},
+				{
+					"type": "GD",
+					"summary": "Environmental hazards: cold, radiation and poison."
+				},
+				{
+					"type": "GD",
+					"summary": "More clothing slots & items."
+				}
+			]
+		},
+		{
+			"version": "0.1.2",
+			"phase": "alpha",
+			"final": true,
+			"released": "2016-03-20",
+			"updated": "2016-03-20",
+			"changes": [{
+					"type": "GD",
+					"summary": "Some items can be left in the camp (and not lost them when fainting)."
+				},
+				{
+					"type": "GD",
+					"summary": "Blueprints are made of pieces which must be separately collected."
+				},
+				{
+					"type": "UI",
+					"summary": "Notifications for new content in tabs like available buildigs or items."
+				},
+				{
+					"type": "UI",
+					"summary": "Improved exploration UI."
+				},
+				{
+					"type": "GD",
+					"summary": "Levels are composed of randomly generated paths and have intersections."
+				},
+				{
+					"type": "GD",
+					"summary": "Fight is no longer an independent action. Other actions can lead to random encounters."
+				},
+				{
+					"type": "GD",
+					"summary": "Exploration in general is more risky, but also has more rewards."
+				},
+				{
+					"type": "GD",
+					"summary": "Healing injuries is no longer instant."
+				},
+				{
+					"type": "GD",
+					"summary": "New improvement: aqueduct."
+				},
+				{
+					"type": "UI",
+					"summary": "Timer for next worker."
+				},
+				{
+					"type": "GB",
+					"summary": "There are levels where no camp can be built."
+				}
+			]
+		},
+		{
+			"version": "0.1.1",
+			"phase": "alpha",
+			"final": true,
+			"released": "2015-09-02",
+			"updated": "2015-09-02",
+			"changes": [{
+					"type": "GD",
+					"summary": "Initial list of upgrades, upgrades balancing & blueprint mechanic."
+				},
+				{
+					"type": "GD",
+					"summary": "Working crafting system and all basic items. Secondary resources (parts) that can be scavenged and used for crafting."
+				},
+				{
+					"type": "GD",
+					"summary": "Exploration now requires food and water."
+				},
+				{
+					"type": "GD",
+					"summary": "Locales: new scouting opportunities that appear on some sectors."
+				},
+				{
+					"type": "UI",
+					"summary": "Black skin for dark levels/sectors."
+				}
+			]
+		},
+		{
+			"version": "0.1.0",
+			"phase": "alpha",
+			"final": true,
+			"released": "2015-07-08",
+			"updated": "2015-07-08",
+			"changes": [{
+					"type": "GB",
+					"summary": "Initial building list"
+				},
+				{
+					"type": "GD",
+					"summary": "Basic camp game play"
+				},
+				{
+					"type": "GD",
+					"summary": "Basic exploration"
+				}
+			]
+		}
+	]
 }
