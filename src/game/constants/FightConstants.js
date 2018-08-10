@@ -110,7 +110,7 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             var totalDamageMax = avgPlayerDamage + randomDamageMax;
             var damageRatioMin = avgEnemyDamage / totalDamageMin;
             var damageRatioMax = avgEnemyDamage / totalDamageMax;
-            return 1 - ((Math.min(1, damageRatioMax) - Math.min(1, damageRatioMin)) / (damageRatioMax - damageRatioMin));
+            return 0.9 - ((Math.min(1, damageRatioMax) - Math.min(1, damageRatioMin)) / (damageRatioMax - damageRatioMin));
         },
 		
 		getEnemyLocaleId: function (baseActionID, action, isNeighbour) {

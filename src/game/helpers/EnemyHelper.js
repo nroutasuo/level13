@@ -163,7 +163,7 @@ define([
         },
 
         getEnemyDifficultyLevel: function (enemy, groundLevelOrdinal, totalLevels) {
-            var stats = enemy.att + enemy.def;
+            var stats = enemy.att + enemy.def + 1;
             var level = 0;
             var levelDifficulty;
             for (var i = 1; i < totalLevels; i++) {
