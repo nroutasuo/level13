@@ -1,10 +1,11 @@
 define([
     'ash',
+    'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/FightConstants',
     'game/nodes/player/ItemsNode',
-], function (Ash, UIConstants, ItemConstants, FightConstants, ItemsNode) {
+], function (Ash, GlobalSignals, UIConstants, ItemConstants, FightConstants, ItemsNode) {
     var UIOutFollowersSystem = Ash.System.extend({
 
 		uiFunctions : null,
@@ -25,76 +26,32 @@ define([
 
 		addToEngine: function (engine) {
 			this.itemNodes = engine.getNodeList(ItemsNode);
-			this.initButtonListeners();
 			var itemsComponent = this.itemNodes.head.items;
             this.followerCount = itemsComponent.getCountByType(ItemConstants.itemTypes.follower);
-            this.updateItems();
-		},
-
-		initButtonListeners: function () {
-			var itemsComponent = this.itemNodes.head.items;
-			var uiFunctions = this.uiFunctions;
-			var system = this;
-			$("button[action='discard_item']").click(function (e) {
-				var item = itemsComponent.selectedItem;
-				var isDiscardable = itemsComponent.isItemDiscardable(item);
-				if (!isDiscardable) {
-					uiFunctions.showInfoPopup("Warning", "This item can't be discarded.");
-					return;
-				}
-				var questionS = item.type === ItemConstants.itemTypes.follower ?
-					"Are you sure you want to disband this follower?" : "Are you sure you want to discard this item?";
-				uiFunctions.showConfirmation(
-					questionS,
-					function () {
-						itemsComponent.discardItem(item);
-						itemsComponent.selectedItem = null;
-						system.updateItemLists();
-					}
-				);
-			});
-			$("button[action='discard_item_all']").click(function (e) {
-				var item = itemsComponent.selectedItem;
-				var isDiscardable = itemsComponent.isItemsDiscardable(item);
-				var msg = isDiscardable ? "Are you sure you want to discard all of these items?" : "Are you sure you want to discard all but one of these items?";
-				uiFunctions.showConfirmation(
-					msg,
-					function () {
-						itemsComponent.discardItems(item);
-						itemsComponent.selectedItem = null;
-						system.updateItemLists();
-					}
-				);
-			});
+            this.lastShownFollowerCount = this.followerCount;
+            
+            GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
+            GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.onInventoryChanged);
+            GlobalSignals.add(this, GlobalSignals.equipmentChangedSignal, this.onEquipmentChanged);
 		},
 
 		removeFromEngine: function (engine) {
 			this.itemNodes = null;
-			$("button[action='discard_item']").click(null);
+            GlobalSignals.removeAll(this);
 		},
 
 		update: function (time) {
-			var isActive = this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.followers;
 			var itemsComponent = this.itemNodes.head.items;
             
             this.followerCount = itemsComponent.getCountByType(ItemConstants.itemTypes.follower);
 			this.updateBubble();
-			
-			if (!isActive) {
-                this.wasActive = false;
-                return;
-            }
-
-			// Header
-			$("#tab-header h2").text("Party");
-
-            if (this.followerCount !== this.lastShownFollowerCount || !this.wasActive) {
-                this.updateItems();
-            }
-            $("#followers-max").text("Maximum followers: " + FightConstants.getMaxFollowers(this.gameState.numCamps));
-            
-            this.wasActive = true;
 		},
+        
+        refresh: function () {
+			$("#tab-header h2").text("Exploration party");
+            $("#followers-max").text("Maximum followers: " + FightConstants.getMaxFollowers(this.gameState.numCamps));
+            this.updateItems();
+        },
         
         updateBubble: function () {
             var newBubbleNumber = Math.max(0, this.followerCount - this.lastShownFollowerCount);
@@ -106,14 +63,13 @@ define([
         },
 
 		updateItems: function () {
-            this.lastShownFollowerCount = this.followerCount;
 			var itemsComponent = this.itemNodes.head.items;
-			var items = itemsComponent.getUnique(true);
+			var items = itemsComponent.getAllByType(ItemConstants.itemTypes.follower);
+            console.log("update followers items: "+ items.length)
 			$("#list-followers").empty();
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
-				if (item.type !== ItemConstants.itemTypes.follower || !item.equipped) continue;
-				var li = "<li>" + UIConstants.getItemDiv(itemsComponent, item, -1, UIConstants.getItemCallout(item)) + "</li>";
+				var li = "<li>" + UIConstants.getItemDiv(itemsComponent, item, -1, UIConstants.getItemCallout(item), true) + "</li>";
 				$("#list-followers").append(li);
 			}
 
@@ -123,7 +79,22 @@ define([
 			this.uiFunctions.toggle("#header-followers", showFollowers);
 			this.uiFunctions.toggle("#followers-empty", showFollowers && !hasFollowers);
 			this.uiFunctions.generateCallouts("#list-followers");
+            this.lastShownFollowerCount = this.followerCount;
 		},
+        
+        onTabChanged: function () {
+            if (this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.followers) {
+                this.refresh();
+            }
+        },
+        
+        onInventoryChanged: function () {
+            this.updateItems();
+        },
+        
+        onEquipmentChanged: function () {
+            this.updateItems();
+        },
     
 	});
 
