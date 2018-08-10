@@ -5,6 +5,7 @@ define(['ash',], function (Ash) {
         // ui events
         gameShownSignal: new Ash.Signals.Signal(),
         tabChangedSignal: new Ash.Signals.Signal(),        
+        actionButtonClickedSignal: new Ash.Signals.Signal(),
         calloutsGeneratedSignal: new Ash.Signals.Signal(),        
         popupOpenedSignal: new Ash.Signals.Signal(),
         popupClosedSignal: new Ash.Signals.Signal(),

@@ -173,10 +173,12 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                         console.log("WARN: No action mapped for button.");
                         return;   
                     }
+                    
+                    GlobalSignals.actionButtonClickedSignal.dispatch(action);
 
                     var param = null;
                     var actionIDParam = playerActions.playerActionsHelper.getActionIDParam(action);
-                    if (actionIDParam) param = actionIDParam;                
+                    if (actionIDParam) param = actionIDParam;
                     var isProject = $(this).hasClass("action-level-project");
                     if (isProject) param = $(this).attr("sector");
 

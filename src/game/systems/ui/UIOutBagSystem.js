@@ -108,8 +108,6 @@ define([
                 this.craftableItemDefinitions = {};
                 return;
             }
-            
-            this.updateUseItems();
 		},
         
         refresh: function () {
@@ -138,6 +136,7 @@ define([
             }
             
             this.updateItems();
+            this.updateUseItems();
         },
         
         updateBubble: function () {
@@ -434,10 +433,12 @@ define([
         
         onInventoryChanged: function () {
             this.updateItems();
+            this.updateUseItems();
         },
         
         onEquipmentChanged: function () {
             this.updateItems();
+            this.updateUseItems();
         },
         
         showObsolete: function () {

@@ -82,8 +82,7 @@ define([
             var sys = this;
             GlobalSignals.calloutsGeneratedSignal.add(function () { sys.updateTabVisibility(); });
             GlobalSignals.improvementBuiltSignal.add(function () { sys.updateTabVisibility(); });
-            GlobalSignals.featureUnlockedSignal.add(function () { 
-                console.log("feature unlocked");
+            GlobalSignals.featureUnlockedSignal.add(function () {
                 sys.updateTabVisibility(); 
                 sys.elementsVisibilityChanged = true;
             });
@@ -93,7 +92,11 @@ define([
             });
             GlobalSignals.gameShownSignal.add(function () { sys.updateTabVisibility(); });
             GlobalSignals.elementToggledSignal.add(function () { sys.elementsVisibilityChanged = true; });
+            GlobalSignals.tabChangedSignal.add(function () { sys.elementsVisibilityChanged = true; });
             GlobalSignals.elementCreatedSignal.add(function () { sys.elementsVisibilityChanged = true; });
+            GlobalSignals.actionButtonClickedSignal.add(function () { sys.elementsVisibilityChanged = true; });
+            
+            this.elementsVisibilityChanged = true;
         },
     
         removeFromEngine: function (engine) {
