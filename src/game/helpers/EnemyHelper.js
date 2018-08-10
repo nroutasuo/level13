@@ -31,7 +31,7 @@ define([
             var c = EnemyConstants;
             var definitions = EnemyConstants.enemyDefinitions;
             definitions.global.push(this.createEnemy("huge rat", "global", [c.nPest, c.nAnimal], [c.gPack, c.gMob, c.gHorde], [c.aInfest], [c.dCleared], 1, 5, 0.75));
-            definitions.global.push(this.createEnemy("poisonous centipede", "global", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [c.dCleared], 1, 4, 0.4, 50));
+            definitions.global.push(this.createEnemy("poisonous centipede", "global", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [c.dCleared], 1, 3, 0.4, 50));
             definitions.global.push(this.createEnemy("giant centipede", "global", [c.nPest, c.nAnimal],  [c.gSwarm],[c.aInfest], [c.dCleared], 2, 2, 0.4, 30));
             definitions.global.push(this.createEnemy("radioactive cockroach", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover], [c.dCleared], 2, 3, 0.1));
             definitions.global.push(this.createEnemy("cave bat", "global", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 3, 5, 0.6, 20));
@@ -163,7 +163,7 @@ define([
         },
 
         getEnemyDifficultyLevel: function (enemy, groundLevelOrdinal, totalLevels) {
-            var stats = enemy.att + enemy.def + 1;
+            var stats = enemy.att + enemy.def;
             var level = 0;
             var levelDifficulty;
             for (var i = 1; i < totalLevels; i++) {

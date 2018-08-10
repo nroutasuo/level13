@@ -65,7 +65,6 @@ define([
 		updateItems: function () {
 			var itemsComponent = this.itemNodes.head.items;
 			var items = itemsComponent.getAllByType(ItemConstants.itemTypes.follower);
-            console.log("update followers items: "+ items.length)
 			$("#list-followers").empty();
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];

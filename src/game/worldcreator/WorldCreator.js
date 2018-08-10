@@ -805,7 +805,7 @@ define([
                 if (globalE.length > 0) {
                     enemies.push(globalE[0]);
                 } else {
-                    console.log("WARN: No valid enemies defined for sector " + sectorVO.position);
+                    console.log("WARN: No valid enemies defined for sector " + sectorVO.position + " difficulty " + enemyDifficulty);
                 }
             }
 			
