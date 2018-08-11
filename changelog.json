@@ -1,5 +1,12 @@
 {
 	"versions": [{
+			"version": "0.2.3",
+			"phase": "alpha",
+			"final": false,
+			"updated": "2017-08-10",
+			"changes": [
+			]
+		},{
 			"version": "0.2.2",
 			"phase": "alpha",
 			"final": true,
