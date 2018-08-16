@@ -7,11 +7,12 @@ function (Ash, GlobalSignals) {
         playerActionResultsHelper: null,
         
         constructor: function (gameState, playerActionResultsHelper, uiFunctions) {
-            $(window).resize(this.onResize);
             this.gameState = gameState;
             this.playerActionResultsHelper = playerActionResultsHelper;
             this.uiFunctions = uiFunctions;
             this.popupQueue = [];
+            
+            GlobalSignals.windowResizedSignal.add(this.onResize);
         },
         
         onResize: function () {

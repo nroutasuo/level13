@@ -71,7 +71,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             var playerActions = this.playerActions;
             var uiFunctions = this;
             
-            $(window).resize(this.onResize());
+            $(window).resize(this.onResize);
             
             // Switch tabs
             var onTabClicked = this.onTabClicked;
@@ -481,6 +481,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         },
         
         onResize: function () {
+            GlobalSignals.windowResizedSignal.dispatch();
         },
         
         getGameInfoDiv: function () {
