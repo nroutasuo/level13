@@ -1,0 +1,77 @@
+@import "colors";
+
+/* MAPS */
+
+#minimap, #minimap-fallback-container {
+    overflow: hidden;
+}
+
+#mainmap, #mainmap-fallback-container {
+    overflow: hidden;
+}
+
+#mainmap, #mainmap-fallback-container, #researched-upgrades-vis {
+    overflow: hidden;
+}
+
+
+/* CAMP VIS */
+
+#tab-vis-in {
+    border: 2px solid @color-dark-border-box-1;
+    padding: 10px;
+}
+
+#tab-vis-in-container {
+    position: relative;
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
+}
+
+.vis-camp-layer {
+    position: absolute;
+}
+
+.vis-camp-building {
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    opacity: 1;
+}
+
+.vis-camp-building:hover {
+    opacity: 0.75;
+}
+
+.vis-camp-building-heavy {
+    background: @color-dark-highlight-element-3;
+}
+
+.vis-camp-building-medium {
+    background: @color-dark-highlight-element;
+    
+}
+
+.vis-camp-building-thin {
+    background: @color-dark-highlight-element-2;
+}
+
+.vis-camp-building-star {
+    transform: rotate(45deg);
+}
+
+.vis-camp-building-round {
+    border-radius: 4px;
+}
+
+.vis-camp-building-square {
+    
+}
+
+.vis-camp-point {
+    width: 2px;
+    height: 2px;
+    background: red;// @color-dark-border-box-1;
+    position: absolute;
+}

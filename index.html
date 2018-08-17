@@ -22,6 +22,7 @@
 	<link rel="stylesheet" type="text/css" href="css/normalize.css" />
 	<link rel="stylesheet" type="text/css" href="css/gridism.css" />
 	<link rel="stylesheet" type="text/css" href="css/main.css" />
+	<link rel="stylesheet" type="text/css" href="css/vis.css" />
 	<link rel="stylesheet" type="text/css" href="css/scrollbar.css" />
 	<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
 	<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
@@ -167,9 +168,13 @@
 					</div><!-- grid for the header" -->
 			
 					<!-- vis for camp -->
-					<div class="grid tabelement" id="container-tab-vis-in" data-tab="switch-in" style="display:none">
+					<div class="grid tabelement" id="container-tab-vis-in" data-tab="switch-in">
 						<div class="unit whole" id="tab-vis-in">
-							<table class="vis"><tr></tr></table>
+                            <div id="tab-vis-in-container">
+                                <div id="vis-camp-layer-grid" class="vis-camp-layer"></div>
+                                <div id="vis-camp-layer-spots" class="vis-camp-layer"></div>
+                                <div id="vis-camp-layer-buildings" class="vis-camp-layer"></div>
+                            </div>
 						</div>
 					</div>
 					
