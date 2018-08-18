@@ -19,7 +19,7 @@
 
 #tab-vis-in {
     border: 2px solid @color-dark-border-box-1;
-    padding: 10px;
+    padding: 0;
 }
 
 #tab-vis-in-container {
@@ -33,11 +33,38 @@
     position: absolute;
 }
 
+.vis-camp-building-container {
+    background: transparent;
+    border-radius: 3px;
+    border: 2px dotted transparent;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.vis-camp-building-container.drag-over {
+    border-color: #999 !important;
+}
+
+.vis-camp-building-container.drag-active {
+    border-color: #444;
+}
+
+.vis-camp-building-container.filled {
+    display: none;
+}
+
 .vis-camp-building {
-    width: 12px;
-    height: 12px;
     position: absolute;
     opacity: 1;
+    width: 12px;
+    height: 12px;
+    z-index: 3;
+    cursor: move;
 }
 
 .vis-camp-building:hover {
@@ -65,7 +92,7 @@
 }
 
 .vis-camp-building-round {
-    border-radius: 4px;
+    border-radius: 6px;
 }
 
 .vis-camp-building-square {
@@ -75,6 +102,7 @@
 .vis-camp-point {
     width: 2px;
     height: 2px;
-    background: red;// @color-dark-border-box-1;
+    background: red;
     position: absolute;
+    z-index: 100;
 }

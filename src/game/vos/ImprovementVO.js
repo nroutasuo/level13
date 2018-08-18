@@ -80,15 +80,14 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             return getImprovementReputationBonus(this.name);
         },
         
-        getCampCoords: function (i) {
-            if (!this.campCoords) return null;
-            if (this.campCoords.length < i) return null;
-            return this.campCoords[i];
+        getSelectedCampVisSpot: function (i) {
+            if (!this.campVisSpots) return null;
+            return this.campVisSpots[i];
         },
         
-        setCampCoords: function (i, coords) {
-            if (!this.campCoords) this.campCoords = [];
-            this.campCoords[i] = coords;
+        setSelectedCampVisSpot: function (i, spot) {
+            if (!this.campVisSpots) this.campVisSpots = {};
+            this.campVisSpots[i] = spot;
         },
         
         isPassage: function () {

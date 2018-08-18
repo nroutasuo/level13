@@ -1763,6 +1763,16 @@ input.amount {
 	border-width: 1px 0px;
 }
 
+[draggable] {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* Required to make elements draggable in old WebKit */
+  -khtml-user-drag: element;
+  -webkit-user-drag: element;
+}
+
 select {
     margin: 0px 5px;
     padding: 1px 3px;
