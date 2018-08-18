@@ -32,7 +32,14 @@ define([
             this.elements.layerBuildings = $("#vis-camp-layer-buildings");
             
             this.containerDefaultHeight = 100;
+            this.containerExpandedHeight = 300;
             this.buildingContainerSize = 14;
+            
+            var sys = this;
+            $("#expand-vis-camp").click(function(e) {
+                sys.elements.container.toggleClass("expanded");
+                sys.onResize();
+            });
             
             return this;
         },
@@ -61,8 +68,11 @@ define([
         
         onResize: function () {
             this.previousContainerWidth = this.containerWidth;
+            this.previousContainerHeight = this.containerHeight;
             this.refreshGrid();
-            if (Math.abs(this.containerWidth - this.previousContainerWidth) > 10) {
+            var diffWidth = Math.abs(this.containerWidth - this.previousContainerWidth);
+            var diffHeight = Math.abs(this.containerHeight - this.previousContainerHeight);
+            if (diffWidth > 10 || diffHeight > 10) {
                 this.refreshBuildingSpots();
                 this.refreshBuildings();
             }
@@ -79,9 +89,10 @@ define([
         refreshGrid: function () {
             var parentWidth = this.elements.container.parent().width();
             this.containerWidth = Math.max(100, parentWidth);
-            this.containerHeight = this.containerDefaultHeight;
             this.elements.container.css("width", this.containerWidth + "px");
-            this.elements.container.css("height", this.containerHeight + "px");
+            
+            this.containerHeight = this.elements.container.hasClass("expanded") ? this.containerExpandedHeight : this.containerDefaultHeight;
+            console.log("container height: "+ this.containerHeight)
             
             this.pointDist = 6; // distance of points (possible positions) on the grid in px
             
@@ -199,11 +210,7 @@ define([
         
         registerBuildingSpotDivListeners: function ($elem) {
             var sys = this;
-            $elem.on('dragstart', function (e) {
-                console.log("drag start spot ");
-            });
             $elem.on('dragenter', function (e) {
-                console.log("drag enter spot " + e.target);
                 $(this).addClass("drag-over");
             });
             $elem.on('dragover', function (e) {
@@ -215,7 +222,6 @@ define([
                 $(this).removeClass("drag-over");
             });
             $elem.on('drop', function (e) {
-                console.log("drop spot");
                 if (e.stopPropagation) {
                     e.stopPropagation();
                 }
@@ -232,7 +238,6 @@ define([
                 return false;
             });
             $elem.on('dragend', function (e) {
-                console.log("drag end spot");
                 $(this).removeClass("drag-over");
             });
         },
@@ -240,12 +245,10 @@ define([
         registerBuildingDivListeners: function ($elem) {
             var sys = this;
             $elem.on('dragstart', function (e) {
-                console.log("drag start building " + e.target);
                 sys.draggedBuilding = $elem;
                 $(".vis-camp-building-container").addClass("drag-active");
             });
             $elem.on('dragend', function (e) {
-                console.log("drag end building");
                 sys.draggedBuilding = null;
                 $(".vis-camp-building-container").removeClass("drag-over");
                 $(".vis-camp-building-container").removeClass("drag-active");
