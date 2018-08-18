@@ -36,13 +36,16 @@
   opacity: 0.75;
 }
 .vis-camp-building-heavy {
-  background: #999;
+  background: #aaa;
+  border-color: #aaa;
 }
 .vis-camp-building-medium {
   background: #666;
+  border-color: #666;
 }
 .vis-camp-building-thin {
   background: #333;
+  border-color: #333;
 }
 .vis-camp-building-star {
   transform: rotate(45deg);

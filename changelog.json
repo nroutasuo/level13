@@ -4,7 +4,10 @@
 			"phase": "alpha",
 			"final": false,
 			"updated": "2017-08-10",
-			"changes": [
+			"changes": [{
+					"type": "UI",
+					"summary": "Add a visual view of the current camp and its buildings."
+				},
 			]
 		},{
 			"version": "0.2.2",

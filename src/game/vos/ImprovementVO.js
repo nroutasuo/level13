@@ -80,6 +80,17 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             return getImprovementReputationBonus(this.name);
         },
         
+        getCampCoords: function (i) {
+            if (!this.campCoords) return null;
+            if (this.campCoords.length < i) return null;
+            return this.campCoords[i];
+        },
+        
+        setCampCoords: function (i, coords) {
+            if (!this.campCoords) this.campCoords = [];
+            this.campCoords[i] = coords;
+        },
+        
         isPassage: function () {
             switch (this.name) {
                 case improvementNames.passageUpStairs:
