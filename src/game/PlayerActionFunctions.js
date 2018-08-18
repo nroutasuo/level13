@@ -839,6 +839,7 @@ define(['ash',
             improvementsComponent.add(improvementNames.home);
 
             this.gameState.unlockedFeatures.camp = true;
+            gtag('event', 'build_camp', { event_category: 'progression' })
 
             this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "Built a camp.");
             if (level.get(LevelComponent).levelVO.populationGrowthFactor < 1) {

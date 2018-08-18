@@ -35,7 +35,7 @@ var EndingSystem = Ash.System.extend({
         },
         
         showPopup: function () {
-            gtag('event', 'game_complete');
+            gtag('event', 'game_complete', { event_category: 'progression' })
             var uiFunctions = this.uiFunctions;
             this.gameManager.pauseGame();
             this.uiFunctions.showQuestionPopup(

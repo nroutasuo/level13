@@ -117,6 +117,7 @@ var UIOutManageSaveSystem = Ash.System.extend({
         },
         
         loadState: function (importJSON) {
+            gtag('event', 'game_load_import', { event_category: 'game_data' });
 			this.uiFunctions.hideGame(true);            
 			if (typeof(Storage) !== "undefined") {
                 try {

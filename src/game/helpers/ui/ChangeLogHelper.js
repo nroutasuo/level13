@@ -21,6 +21,7 @@ define(['ash'], function (Ash) {
                 if (jqxhr && jqxhr.status) err += "[" + jqxhr.status + "] ";
                 err += textStatus;
 				if (error) err += ", " + error;
+                gtag('set', { 'app_version': 'unknown' });
 			});
 		},
 		

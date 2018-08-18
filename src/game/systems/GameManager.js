@@ -84,7 +84,7 @@ define([
 		},
 		
 		restartGame: function () {
-            gtag('event', 'game_restart');
+            gtag('event', 'game_restart', { event_category: 'game_data' });
 			this.uiFunctions.hideGame(true);
             var sys = this;
             setTimeout(function () {
@@ -108,7 +108,7 @@ define([
 		
 		// Called if there is no save to load
 		setupNewGame: function () {
-            gtag('event', 'game_start_new');
+            gtag('event', 'game_start_new', { event_category: 'game_data' });
             this.gameState.gameStartTimeStamp = new Date().getTime();
 			this.creator.initPlayer(this.player);
 		},
@@ -244,6 +244,7 @@ define([
 		
 		// Clean up a loaded game state, mostly used to ensure backwards compatibility
 		syncLoadedGameState: function () {
+            gtag('event', 'game_load_save', { event_category: 'game_data' });
 			var sectorNodes = this.creator.engine.getNodeList(SectorNode);
 			for (var node = sectorNodes.head; node; node = node.next) {
 				this.creator.syncSector(node.entity);
