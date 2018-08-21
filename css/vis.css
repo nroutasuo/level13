@@ -42,12 +42,15 @@
   align-items: center;
   justify-content: center;
   z-index: 2;
+  font-size: 75%;
+  color: transparent;
 }
 .vis-camp-building-container.drag-over {
   border-color: #999 !important;
 }
 .vis-camp-building-container.drag-active {
   border-color: #444;
+  color: #777;
 }
 .vis-camp-building-container.filled {
   display: none;

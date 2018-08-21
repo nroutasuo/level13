@@ -92,7 +92,6 @@ define([
             this.elements.container.css("width", this.containerWidth + "px");
             
             this.containerHeight = this.elements.container.hasClass("expanded") ? this.containerExpandedHeight : this.containerDefaultHeight;
-            console.log("container height: "+ this.containerHeight)
             
             this.pointDist = 6; // distance of points (possible positions) on the grid in px
             
@@ -127,10 +126,9 @@ define([
             
             this.reservedPos = [];
             this.buildingSpots = [];
-            
+
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-            var numBuildings = improvements.getTotal(improvementTypes.camp);
-            var numSpots = Math.max(20, numBuildings * 3) + 5;
+            var numSpots = improvements.getNumCampBuildingSpots();
             
             for (var i = 0; i < numSpots; i++) {
                 var coords = this.getBuildingSpotCoords(i);
@@ -147,8 +145,6 @@ define([
                 $elem.css("top", this.getYpx(coords.r, coords.angle, this.buildingContainerSize) + "px");
             }
             
-            console.log("total spots: " + this.buildingSpots.length)
-            
             this.buildingSpotsLevel = level;
         },
         
@@ -156,12 +152,12 @@ define([
             var level = this.playerLocationNodes.head.position.level;
             var reset = this.buildingsLevel !== level;
             
-            console.log("refresh buildings: " + reset);
-            
             if (reset) {
                 if (this.elements.buildings) {
-                    for (var i = 0; i < this.elements.buildings.length; i++) {
-                        this.elements.buildings[i].remove();
+                    for (var name in this.elements.buildings) {
+                        for (var n = 0; n < this.elements.buildings[name].length; n++) {
+                            this.elements.buildings[name][n].remove();
+                        }
                     }
                 }
                 this.elements.buildings = {};
@@ -169,7 +165,6 @@ define([
             
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var all = improvements.getAll(improvementTypes.camp);
-            all = all.sort(this.sortBuildings);
             
             var pointDist = this.pointDist;
             
@@ -180,7 +175,7 @@ define([
                 var count = building.count;
                 if (!this.elements.buildings[building.name]) this.elements.buildings[building.name] = [];
                 for (var n = 0; n < count; n++) {
-                    var coords = this.getBuildingCoords(building, n, size);
+                    var coords = this.getBuildingCoords(improvements, building, n);
                     if (!coords) {
                         console.log("WARN: No coordinates found for building " + building.name + " " + n);
                         continue;
@@ -194,6 +189,7 @@ define([
                         this.elements.layerBuildings.append($elem);
                         this.elements.buildings[building.name][n] = $elem;
                         if (!reset) {
+                            // animate newly built buildings
                             $elem.hide();
                             $elem.show("scale");
                         }
@@ -231,7 +227,7 @@ define([
                     var buildingIndex = sys.draggedBuilding.attr("data-building-index");
                     var improvements = sys.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
                     var vo = improvements.getVO(buildingName);
-                    vo.setSelectedCampVisSpot(buildingIndex, spotIndex);
+                    improvements.setSelectedCampBuildingSpot(vo, buildingIndex, spotIndex);
                     sys.refreshBuildingSpots();
                     sys.refreshBuildings();
                 }
@@ -269,8 +265,7 @@ define([
                 for (var j = 0; j < 200; j++ ) {
                     r = this.pointDist * WorldCreatorRandom.randomInt(seed + i + j * 7, 1, maxR);
                     var dAngle = this.getGridDAngle(r);
-                    angle = Math.floor(WorldCreatorRandom.random(seed + i * 2 - j * 3 - 5000) * (360/dAngle) * dAngle);
-                    // console.log("- " + i + ": r: " + r + " angle: " + angle + " -> " + this.isReserved(r, angle, size) + " | " + maxR);
+                    angle = Math.floor(WorldCreatorRandom.random(seed + i * 2 - j * 333) * (360/dAngle) * dAngle);
                     if (!this.isReserved(r, angle, size)) break;
                     if (j % 4 === 0 && maxR < capR) maxR++;
                 }
@@ -285,18 +280,13 @@ define([
             return coords;
         },
         
-        getBuildingCoords: function (building, n, size) {
-            var index = building.getSelectedCampVisSpot(n);
+        getBuildingCoords: function (improvements, building, n) {
+            var index = improvements.getSelectedCampBuildingSpot(building, n, true);
             
-            if (!index) {
-                for (var i = 0; i < this.buildingSpots.length; i++) {
-                    if (this.buildingSpots[i].building) continue;
-                    index = i;
-                    building.setSelectedCampVisSpot(n, index);
-                }
+            if (index < 0 || !this.buildingSpots[index]) {
+                console.log("WARN: No building spot defined for " + building.name + " " + n);
+                return null;
             }
-            
-            if (index < 0 || !this.buildingSpots[index]) return null;
 
             this.buildingSpots[index].building = building;
             $("#vis-camp-building-container-" + index).addClass("filled");
@@ -304,7 +294,7 @@ define([
         },
         
         getBuildingSpotDiv: function (i) {
-            return "<div id='vis-camp-building-container-" + i + "' class='vis-camp-building-container' draggable='true' data-spot-index='" + i + "'></div>";
+            return "<div id='vis-camp-building-container-" + i + "' class='vis-camp-building-container' draggable='true' data-spot-index='" + i + "'>" + i + "</div>";
         },
         
         getBuildingDiv: function (i, building, size, n) {
@@ -315,7 +305,7 @@ define([
         },
         
         getBuildingDivID: function (building, n) {
-            return "vis-building-" + building.name.toLowerCase() + "-" + n;
+            return "vis-building-" + building.getKey() + "-" + n;
         },
             
         isReserved: function (r, angle, size) {
@@ -340,15 +330,6 @@ define([
             if (!this.reservedPos[r]) this.reservedPos[r] = [];
             this.reservedPos[r][angle] = size;
         },
-        
-        sortBuildings: function (a, b) {
-			var getSortVal = function (building) {
-                return building.name.length + building.name.charCodeAt(0);
-			};
-			var aVal = getSortVal(a);
-			var bVal = getSortVal(b);
-			return aVal - bVal;
-		},
         
         getBuildingSize: function (building) {
             switch (building.name) {

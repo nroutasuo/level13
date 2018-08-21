@@ -3,6 +3,7 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
     var SectorImprovementsComponent = Ash.Class.extend({
         
         improvements: {},
+        buildingSpots: [],
         
         constructor: function () {
             this.initImprovements();
@@ -10,6 +11,7 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
         
         initImprovements: function() {
             this.improvements = {};
+            this.buildingSpots = [];
         },
         
         add: function(type, amount) {
@@ -18,12 +20,13 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
                 this.improvements[type] = new ImprovementVO(type);
                 vo = this.improvements[type];
             }
-            if (!amount) {
+            
+            if (!amount) amount = 1;
+            for (var i = 0; i < amount; i++) {
+                var spotIndex = this.getRandomFreeCampBuildingSpot();
+                this.setSelectedCampBuildingSpot(vo, vo.count, spotIndex);
                 vo.count++;
-            } else {
-                vo.count += amount;
             }
-            vo.count = parseInt(vo.count);
         },
         
         getCount: function(type) {
@@ -70,6 +73,60 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
             return this.getCount(improvementNames.collector_food) > 0 || this.getCount(improvementNames.collector_water) > 0;
         },
         
+        getNumCampBuildingSpots: function () {
+            var numBuildings = this.getTotal(improvementTypes.camp);
+            return Math.max(this.getMaxSelectedCampBuildingSpot(), Math.max(20, numBuildings * 3) + 5);
+        },
+        
+        getSelectedCampBuildingSpot: function (building, i, assignIfNotSet) {
+            for (var spotIndex = 0; spotIndex < this.buildingSpots.length; spotIndex++) {
+                if (this.buildingSpots[spotIndex] === building.getKey() + "-" + i) {
+                    return spotIndex;
+                }
+            }
+
+            if (assignIfNotSet) {
+                var nextAvailable = this.getNextFreeCampBuildingSpot();
+                this.setSelectedCampBuildingSpot(building, i, nextAvailable);
+                return this.getSelectedCampBuildingSpot(building, i);
+            } else {
+                return -1;
+            }
+        },
+        
+        setSelectedCampBuildingSpot: function (building, i, spotIndex) {
+            var previous = this.getSelectedCampBuildingSpot(building, i);
+            this.buildingSpots[spotIndex] = building.getKey() + "-" + i;
+            if (previous >= 0) {
+                this.buildingSpots[previous] = null;
+            }
+        },
+        
+        getMaxSelectedCampBuildingSpot: function () {
+            var result = 0;
+            for (var spotIndex = 0; spotIndex < this.buildingSpots.length; spotIndex++) {
+                if (this.buildingSpots[spotIndex]) result = spotIndex;
+            }
+            return result;
+        },
+        
+        getNextFreeCampBuildingSpot: function () {
+            for (var spotIndex = 0; spotIndex < this.buildingSpots.length; spotIndex++) {
+                if (!this.buildingSpots[spotIndex]) return spotIndex;
+            }
+            return this.getMaxSelectedCampBuildingSpot() + 1;
+        },
+        
+        getRandomFreeCampBuildingSpot: function () {
+            var options = [];
+            var spotIndex = 0;
+            while (options.length < 5) {
+                if (!this.buildingSpots[spotIndex]) options.push(spotIndex);
+                spotIndex += Math.ceil(Math.random()*3);
+            }
+            return options[Math.floor(Math.random()*options.length)];
+        },
+        
         getSaveKey: function () {
             return "SectorImpr";
         },
@@ -78,11 +135,12 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
             if (Object.keys(this.improvements).length === 0) return null;
             var copy = {};
             copy.i = this.improvements;
+            if (this.buildingSpots.length > 0) copy.s = this.buildingSpots;
             return copy;
         },
         
         customLoadFromSave: function(componentValues) {
-            for(var key in componentValues.i) {
+            for (var key in componentValues.i) {
                 if (key == "undefined") continue;
                 this.improvements[key] = new ImprovementVO(key);
                 this.improvements[key].count = componentValues.i[key].count;
@@ -91,6 +149,9 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
                         this.improvements[key].storedResources[res] = componentValues.i[key].storedResources[res];
                     }
                 }
+            }
+            if (componentValues.s) {
+                this.buildingSpots = componentValues.s;
             }
         }
         
