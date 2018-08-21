@@ -289,7 +289,7 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], fu
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_house2]
     = new UpgradeVO("unlock_building_house2", "Tower blocks", "Reclaiming tower blocks that can house more people.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_passage_elevator]
-    = new UpgradeVO("unlock_building_passage_elevator", "Elevator machanics", "Repairing elevators that allow passage to new levels.");
+    = new UpgradeVO("unlock_building_passage_elevator", "Elevator mechanics", "Repairing elevators that allow passage to new levels.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_bag2]
     = new UpgradeVO("unlock_item_bag2", "Bag-making 1", "The art of crafting durable bags.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_library]
