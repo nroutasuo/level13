@@ -23,8 +23,11 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
             
             if (!amount) amount = 1;
             for (var i = 0; i < amount; i++) {
-                var spotIndex = this.getRandomFreeCampBuildingSpot();
-                this.setSelectedCampBuildingSpot(vo, vo.count, spotIndex);
+                var visCount = vo.getVisCount();
+                for (var j = 0; j < visCount; j++) {
+                    var spotIndex = this.getRandomFreeCampBuildingSpot();
+                    this.setSelectedCampBuildingSpot(vo, vo.count, spotIndex, j);
+                }
                 vo.count++;
             }
         },
@@ -78,25 +81,25 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
             return Math.max(this.getMaxSelectedCampBuildingSpot(), Math.max(20, numBuildings * 3) + 5);
         },
         
-        getSelectedCampBuildingSpot: function (building, i, assignIfNotSet) {
+        getSelectedCampBuildingSpot: function (building, i, j, assignIfNotSet) {
             for (var spotIndex = 0; spotIndex < this.buildingSpots.length; spotIndex++) {
-                if (this.buildingSpots[spotIndex] === building.getKey() + "-" + i) {
+                if (this.buildingSpots[spotIndex] === building.getKey() + "-" + i + "-" + j) {
                     return spotIndex;
                 }
             }
-
+            
             if (assignIfNotSet) {
                 var nextAvailable = this.getNextFreeCampBuildingSpot();
-                this.setSelectedCampBuildingSpot(building, i, nextAvailable);
-                return this.getSelectedCampBuildingSpot(building, i);
+                this.setSelectedCampBuildingSpot(building, i, j, nextAvailable);
+                return this.getSelectedCampBuildingSpot(building, i, j);
             } else {
                 return -1;
             }
         },
         
-        setSelectedCampBuildingSpot: function (building, i, spotIndex) {
-            var previous = this.getSelectedCampBuildingSpot(building, i);
-            this.buildingSpots[spotIndex] = building.getKey() + "-" + i;
+        setSelectedCampBuildingSpot: function (building, i, j, spotIndex) {
+            var previous = this.getSelectedCampBuildingSpot(building, i, j);
+            this.buildingSpots[spotIndex] = building.getKey() + "-" + i + "-" + j;
             if (previous >= 0) {
                 this.buildingSpots[previous] = null;
             }
@@ -112,7 +115,10 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
         
         getNextFreeCampBuildingSpot: function () {
             for (var spotIndex = 0; spotIndex < this.buildingSpots.length; spotIndex++) {
-                if (!this.buildingSpots[spotIndex]) return spotIndex;
+                var value = this.buildingSpots[spotIndex];
+                if (!value) {
+                    return spotIndex;
+                }
             }
             return this.getMaxSelectedCampBuildingSpot() + 1;
         },

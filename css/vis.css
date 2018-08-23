@@ -62,6 +62,7 @@
   height: 12px;
   z-index: 3;
   cursor: move;
+  font-size: 75%;
 }
 .vis-camp-building:hover {
   opacity: 0.75;

@@ -156,7 +156,9 @@ define([
                 if (this.elements.buildings) {
                     for (var name in this.elements.buildings) {
                         for (var n = 0; n < this.elements.buildings[name].length; n++) {
-                            this.elements.buildings[name][n].remove();
+                            for (var j = 0; j < this.elements.buildings[name][n].length; j++) {
+                                this.elements.buildings[name][n][j].remove();
+                            }
                         }
                     }
                 }
@@ -173,31 +175,35 @@ define([
                 building = all[i];
                 var size = this.getBuildingSize(building);
                 var count = building.count;
+                var visualCount = building.getVisCount();
                 if (!this.elements.buildings[building.name]) this.elements.buildings[building.name] = [];
                 for (var n = 0; n < count; n++) {
-                    var coords = this.getBuildingCoords(improvements, building, n);
-                    if (!coords) {
-                        console.log("WARN: No coordinates found for building " + building.name + " " + n);
-                        continue;
-                    }
-                    
-                    // add missing buildings
-                    var $elem = this.elements.buildings[building.name][n];
-                    if (!$elem) {
-                        $elem = $(this.getBuildingDiv(i, building, size, n));
-                        this.registerBuildingDivListeners($elem);
-                        this.elements.layerBuildings.append($elem);
-                        this.elements.buildings[building.name][n] = $elem;
-                        if (!reset) {
-                            // animate newly built buildings
-                            $elem.hide();
-                            $elem.show("scale");
+                    if (!this.elements.buildings[building.name][n]) this.elements.buildings[building.name][n] = [];
+                    for (var j = 0; j < visualCount; j++) {
+                        var coords = this.getBuildingCoords(improvements, building, n, j);
+                        if (!coords) {
+                            console.log("WARN: No coordinates found for building " + building.name + " " + n + " " + j);
+                            continue;
                         }
+
+                        // add missing buildings
+                        var $elem = this.elements.buildings[building.name][n][j];
+                        if (!$elem) {
+                            $elem = $(this.getBuildingDiv(i, building, size, n, j));
+                            this.registerBuildingDivListeners($elem);
+                            this.elements.layerBuildings.append($elem);
+                            this.elements.buildings[building.name][n][j] = $elem;
+                            if (!reset) {
+                                // animate newly built buildings
+                                $elem.hide();
+                                $elem.show("scale");
+                            }
+                        }
+
+                        // position all buildings
+                        $elem.css("left", this.getXpx(coords.r, coords.angle, size) + "px");
+                        $elem.css("top", this.getYpx(coords.r, coords.angle, size) + "px");
                     }
-                    
-                    // position all buildings
-                    $elem.css("left", this.getXpx(coords.r, coords.angle, size) + "px");
-                    $elem.css("top", this.getYpx(coords.r, coords.angle, size) + "px");
                 }
             }
             
@@ -225,9 +231,10 @@ define([
                     var spotIndex = $(e.target).attr("data-spot-index");
                     var buildingName = sys.draggedBuilding.attr("data-building-name");
                     var buildingIndex = sys.draggedBuilding.attr("data-building-index");
+                    var buildingVisIndex = sys.draggedBuilding.attr("data-building-vis-index");
                     var improvements = sys.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
                     var vo = improvements.getVO(buildingName);
-                    improvements.setSelectedCampBuildingSpot(vo, buildingIndex, spotIndex);
+                    improvements.setSelectedCampBuildingSpot(vo, buildingIndex, buildingVisIndex, spotIndex);
                     sys.refreshBuildingSpots();
                     sys.refreshBuildings();
                 }
@@ -280,11 +287,11 @@ define([
             return coords;
         },
         
-        getBuildingCoords: function (improvements, building, n) {
-            var index = improvements.getSelectedCampBuildingSpot(building, n, true);
+        getBuildingCoords: function (improvements, building, n, j) {
+            var index = improvements.getSelectedCampBuildingSpot(building, n, j, true);
             
             if (index < 0 || !this.buildingSpots[index]) {
-                console.log("WARN: No building spot defined for " + building.name + " " + n);
+                console.log("WARN: No building spot defined for " + building.name + " " + n + " " + j);
                 return null;
             }
 
@@ -294,17 +301,18 @@ define([
         },
         
         getBuildingSpotDiv: function (i) {
-            return "<div id='vis-camp-building-container-" + i + "' class='vis-camp-building-container' draggable='true' data-spot-index='" + i + "'>" + i + "</div>";
+            return "<div id='vis-camp-building-container-" + i + "' class='vis-camp-building-container' draggable='true' data-spot-index='" + i + "'></div>";
         },
         
-        getBuildingDiv: function (i, building, size, n) {
+        getBuildingDiv: function (i, building, size, n, j) {
             var style = "width: " + size + "px; height: " + size + "px;";
             var classes = "vis-camp-building " + this.getBuildingColorClass(building) + " " + this.getBuildingShapeClass(building);
-            var data = "data-building-name='" + building.name + "' data-building-index='" + n + "'"; 
-            return "<div class='" + classes + "' style='" + style + "' id='" + this.getBuildingDivID(building, n) + "' " + data + " draggable='true'></div>";
+            var data = "data-building-name='" + building.name + "' data-building-index='" + n + "' data-building-vis-index='" + j + "'"; 
+            var id = this.getBuildingDivID(building, n, j);
+            return "<div class='" + classes + "' style='" + style + "' id='" + id + "' " + data + " draggable='true'></div>";
         },
         
-        getBuildingDivID: function (building, n) {
+        getBuildingDivID: function (building, n, j) {
             return "vis-building-" + building.getKey() + "-" + n;
         },
             
@@ -339,7 +347,7 @@ define([
                 case improvementNames.lights: 
                     return Math.round(this.pointDist * 0.75);
                 case improvementNames.storage:
-                    return Math.round(this.pointDist * 2.5);
+                    return Math.round(this.pointDist * 2.75);
             }
             return Math.round(this.pointDist * 2);
         },

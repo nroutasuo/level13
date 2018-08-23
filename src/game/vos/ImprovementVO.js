@@ -96,6 +96,16 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
                 default:
                     return false;
             }
+        },
+        
+        getVisCount: function () {
+            switch (this.name) {
+                case improvementNames.lights:
+                    return 4;
+                default:
+                    return 1;
+            }
+            
         }
     });
     
