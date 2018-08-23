@@ -33,11 +33,12 @@ define([
             definitions.global.push(this.createEnemy("huge rat", "global", [c.nPest, c.nAnimal], [c.gPack, c.gMob, c.gHorde], [c.aInfest], [c.dCleared], 1, 5, 0.75));
             definitions.global.push(this.createEnemy("poisonous centipede", "global", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [c.dCleared], 1, 3, 0.4, 50));
             definitions.global.push(this.createEnemy("giant centipede", "global", [c.nPest, c.nAnimal],  [c.gSwarm],[c.aInfest], [c.dCleared], 2, 2, 0.4, 30));
-            definitions.global.push(this.createEnemy("radioactive cockroach", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover], [c.dCleared], 2, 3, 0.1));
+            definitions.global.push(this.createEnemy("radioactive cockroach", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover, c.aOverrun], [c.dCleared], 2, 3, 0.1));
             definitions.global.push(this.createEnemy("cave bat", "global", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 3, 5, 0.6, 20));
             definitions.global.push(this.createEnemy("vampire bat", "global", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 4, 5, 0.7, 70));
             definitions.global.push(this.createEnemy("poisonous spider", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled], 5, 5, 0.8, 20));
             definitions.global.push(this.createEnemy("gigantic spider", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled], 6, 5, 0.8, 20));
+            definitions.global.push(this.createEnemy("ratsnake", "global", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gCluster], [c.aInfest, c.aOverrun], [c.dKilled, c.dCleared], 7, 5, 0.6, 50));
             definitions.global.push(this.createEnemy("albino salamander", "global", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gMob, c.gHorde], [c.aInfest], [c.dKilled], 7, 5, 0.6, 50));
             definitions.global.push(this.createEnemy("fire salamander", "global", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gMob, c.gHorde], [c.aInfest], [c.dKilled], 8, 5, 0.6, 50));
             definitions.global.push(this.createEnemy("duskboar", "global", [c.nAnimal], [c.gPack], [c.aInfest, c.aGuard], [c.dCleared], 9, 4, 0.4, 50));

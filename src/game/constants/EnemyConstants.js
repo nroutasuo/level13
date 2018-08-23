@@ -44,7 +44,7 @@ function (Ash, WorldCreatorConstants, EnemyVO) {
         aPatrol: "patrolled by",
         aGuard: "guarded by",
         aInfest: "infested with",
-        aCover: "covered in",
+        aOverrun: "overrun with",
         
         dCleared: "cleared",
         dDisabled: "disabled",
