@@ -1417,7 +1417,7 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_storage: {
                     resource_metal: 50,
                     resource_rope: [8, 2],
-                    cost_factor: 1.75,
+                    cost_factor: 1.65,
                 },
                 
                 build_in_campfire: {

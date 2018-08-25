@@ -8,9 +8,9 @@ define(['ash'], function (Ash) {
         
         // Storage
         BASE_STORAGE: 50,
-        STORAGE_PER_IMPROVEMENT: 100,
-        STORAGE_PER_IMPROVEMENT_LEVEL_2: 300,
-        STORAGE_PER_IMPROVEMENT_LEVEL_3: 800,
+        STORAGE_PER_IMPROVEMENT: 50,
+        STORAGE_PER_IMPROVEMENT_LEVEL_2: 150,
+        STORAGE_PER_IMPROVEMENT_LEVEL_3: 450,
         
         // Rumours
         RUMOURS_PER_POP_PER_SEC_BASE: 0.0001,
@@ -59,6 +59,7 @@ define(['ash'], function (Ash) {
             soldier: "soldier",
         },
         
+        // storage capacity of one camp
         getStorageCapacity: function (storageCount, storageUpgradeLevel) {
 			var storagePerImprovement = CampConstants.STORAGE_PER_IMPROVEMENT;
 			if (storageUpgradeLevel > 1) storagePerImprovement = CampConstants.STORAGE_PER_IMPROVEMENT_LEVEL_2;
