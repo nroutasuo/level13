@@ -729,6 +729,7 @@ define([
         // Check the costs of an action; returns lowest fraction of the cost player can cover; >1 means the action is available
         checkCosts: function(action, log, otherSector) {
             var costs = this.getCosts(action, this.getCostFactor(action));
+
             if (costs) {
                 var currentFraction = 1;
                 var lowestFraction = currentFraction;
@@ -980,7 +981,7 @@ define([
                     var linearScale = 0;
                     var e1Scale = hasE1 ? 1 : 0;
                     var e2Scale = hasE2 ? 1 : 0;
-                    var requiredOrdinal = 1;
+                    var requiredOrdinal = 0;
 
                     if (typeof value === "number") {
                         baseCost = hasE1 || hasE2 ? 0 : value;
