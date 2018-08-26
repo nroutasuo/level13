@@ -62,10 +62,11 @@ define([
         
         cache: { reqs: {} },
 		
-		constructor: function (engine, gameState, resourcesHelper) {
+		constructor: function (engine, gameState, resourcesHelper, upgradeEffectsHelper) {
 			this.engine = engine;
 			this.gameState = gameState;
 			this.resourcesHelper = resourcesHelper;
+			this.upgradeEffectsHelper = upgradeEffectsHelper;
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);

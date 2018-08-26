@@ -198,8 +198,8 @@ define([
             this.itemsHelper = new ItemsHelper(this.gameState);
             this.enemyHelper = new EnemyHelper(this.itemsHelper);
 			this.resourcesHelper = new ResourcesHelper(this.engine);
-			this.playerActionsHelper = new PlayerActionsHelper(this.engine, this.gameState, this.resourcesHelper);
 			this.upgradeEffectsHelper = new UpgradeEffectsHelper(this.playerActionsHelper);
+			this.playerActionsHelper = new PlayerActionsHelper(this.engine, this.gameState, this.resourcesHelper, this.upgradeEffectsHelper);
 			this.movementHelper = new MovementHelper(this.engine);
 			this.levelHelper = new LevelHelper(this.engine, this.gameState, this.playerActionsHelper, this.movementHelper);
 			this.sectorHelper = new SectorHelper(this.engine);
@@ -243,7 +243,7 @@ define([
 			this.engine.addSystem(new PopulationSystem(this.gameState, this.levelHelper, this.campHelper), SystemPriorities.update);
 			this.engine.addSystem(new WorkerSystem(this.gameState, this.resourcesHelper, this.campHelper), SystemPriorities.update);
 			this.engine.addSystem(new FaintingSystem(this.uiFunctions, this.playerActionFunctions, this.playerActionResultsHelper), SystemPriorities.update);
-			this.engine.addSystem(new ReputationSystem(this.gameState, this.resourcesHelper, this.upgradeEffectsHelper), SystemPriorities.update);
+			this.engine.addSystem(new ReputationSystem(this.gameState, this.levelHelper, this.resourcesHelper, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new RumourSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new EvidenceSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
 			this.engine.addSystem(new PlayerPositionSystem(this.gameState, this.levelHelper, this.uiFunctions, this.occurrenceFunctions), SystemPriorities.preupdate);

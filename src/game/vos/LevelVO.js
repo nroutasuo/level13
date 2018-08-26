@@ -9,7 +9,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
         
 		isCampable: false,
         notCampableReason: null,
-        populationGrowthFactor: 0, // 1 = normal
+        populationGrowthFactor: 0, // 1 = normal, 0.25 = outpost, 0 = not campable
         
         bagSize: 0,
 		centralAreaSize: 0,

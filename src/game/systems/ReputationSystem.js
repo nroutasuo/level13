@@ -9,8 +9,9 @@ define([
 	'game/nodes/tribe/TribeUpgradesNode',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/LogMessagesComponent',
+    'game/components/type/LevelComponent',
 ], function (Ash, GameConstants, CampConstants, LogConstants, OccurrenceConstants, CampNode, PlayerPositionNode, TribeUpgradesNode, 
-    SectorImprovementsComponent, LogMessagesComponent) {
+    SectorImprovementsComponent, LogMessagesComponent, LevelComponent) {
     var ReputationSystem = Ash.System.extend({
 	
         gameState: null,
@@ -23,8 +24,9 @@ define([
         
         lastUpdatePenalties: {},
 
-        constructor: function (gameState, resourcesHelper, upgradeEffectsHelper) {
+        constructor: function (gameState, levelHelper, resourcesHelper, upgradeEffectsHelper) {
             this.gameState = gameState;
+            this.levelHelper = levelHelper;
             this.resourcesHelper = resourcesHelper;
             this.upgradeEffectsHelper = upgradeEffectsHelper;
         },
@@ -143,27 +145,55 @@ define([
             }
             this.logReputationPenalty(campNode, CampConstants.REPUTATION_PENALTY_TYPE_HOUSING, noHousing);
             
+            // penalties: level population
+            var levelVO = this.levelHelper.getLevelEntityForSector(campNode.entity).get(LevelComponent).levelVO;
+            if (levelVO.populationGrowthFactor < 1) {
+                var levelPopPenalty = targetReputationWithoutPenalties * (1 - levelVO.populationGrowthFactor) * 0.5;
+                addValue(-levelPopPenalty, "Level population");
+            }
+            this.logReputationPenalty(campNode, CampConstants.REPUTATION_PENALTY_TYPE_LEVEL_POP, levelVO.populationGrowthFactor < 1);
+            
             return Math.max(0, targetReputation);
         },
         
         applyReputationAccumulation: function (campNode, time) {
             var reputationComponent = campNode.reputation;
             var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
+            var levelVO = this.levelHelper.getLevelEntityForSector(campNode.entity).get(LevelComponent).levelVO;
             
+            // improvements
             var accRadio = sectorImprovements.getCount(improvementNames.radio) * CampConstants.REPUTATION_PER_RADIO_PER_SEC * GameConstants.gameSpeedCamp;
             var accTargetDiff = reputationComponent.targetValue - reputationComponent.value;
             if (Math.abs(accTargetDiff) < 0.01) accTargetDiff = 0;
             if (accTargetDiff > 0) accTargetDiff = Math.min(10, Math.max(1, accTargetDiff));
             if (accTargetDiff < 0) accTargetDiff = Math.max(-10, Math.min(-1, accTargetDiff));
             var accTarget = (accTargetDiff < 0 ? accTargetDiff * 0.05 : accTargetDiff * 0.01) * GameConstants.gameSpeedCamp;
+            
+            // level population factor
+            var accLevelPop = 0;
+            if (accTarget > 0) {
+                accLevelPop += accTarget * levelVO.populationGrowthFactor - accTarget;
+                accTarget *= levelVO.populationGrowthFactor;
+            }
+            if (accRadio > 0) {
+                accLevelPop += accRadio * levelVO.populationGrowthFactor - accRadio;
+                accRadio *= levelVO.populationGrowthFactor;
+            }
+            
+            // limits
             var accSpeed = accTarget + accRadio;
             accSpeed = Math.max(-0.05, accSpeed);
             accSpeed = Math.min(0.05, accSpeed);
                     
+            // set accumulation
             reputationComponent.addChange("Base", accTarget);
             reputationComponent.addChange("Radio", accRadio);
+            if (accLevelPop) {
+                reputationComponent.addChange("Level population", accLevelPop)
+            }
             reputationComponent.accumulation += accSpeed;
-				
+            
+            // apply accumulation
             reputationComponent.value += (time + this.engine.extraUpdateTime) * accSpeed;
             if (accTargetDiff === 0) {
                 reputationComponent.value = reputationComponent.targetValue;

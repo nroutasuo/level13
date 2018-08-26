@@ -84,7 +84,9 @@ define([
                 changePerSec = MathUtils.clamp((reputation - reqRepCurPop)/60/60, -1/60/5, -1/60/30);
             }
 
-            changePerSec *= levelVO.populationGrowthFactor;
+            if (changePerSec > 0) {
+                changePerSec *= levelVO.populationGrowthFactor;
+            }
 
 			var improvements = node.entity.get(SectorImprovementsComponent);
             var housingCap = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;

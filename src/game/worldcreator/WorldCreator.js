@@ -57,7 +57,9 @@ define([
 			var passageDownSectors = [];
 			var passageDownPositions = [];
             this.totalSectors = 0;
+            
 			for (var l = topLevel; l >= bottomLevel; l--) {
+                // prepare level vo
                 var isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, l);
                 var notCampableReason = isCampableLevel ? null : WorldCreatorHelper.getNotCampableReason(seed, l);
 				var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
@@ -66,9 +68,10 @@ define([
                 var levelVO = new LevelVO(l, levelOrdinal, isCampableLevel, notCampableReason, populationGrowthFactor);
 				this.world.addLevel(levelVO);
 
+                // basic structure (sectors)
                 this.generateSectors(seed, levelVO, passageDownPositions);
 					
-				// camp: 3-10 guaranteed spots for every campable level
+				// camp: 3-10 guaranteed campable spots for every campable level
                 var numCamps = 1;
 				if (l === 13) {
 					levelVO.getSector(WorldCreatorConstants.FIRST_CAMP_X, WorldCreatorConstants.FIRST_CAMP_Y).camp = true;

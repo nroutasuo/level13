@@ -341,7 +341,7 @@ define([
                         break;
                 }
                 
-                this.camplessLevelOrdinals[seed] = camplessLevelOrdinals;
+                this.camplessLevelOrdinals[seed] = camplessLevelOrdinals.sort();
             }
 			return this.camplessLevelOrdinals[seed];
 		},

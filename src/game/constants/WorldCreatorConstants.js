@@ -89,24 +89,21 @@ define(['ash'], function (Ash) {
         getPopulationGrowthFactor: function (campOrdinal) {
             if (campOrdinal <= 0) return 0;
             switch (campOrdinal) {
+                // outposts
                 case 3:
-                case 4:
-                case 14:
-                    return 0.75;
-                    
                 case 5:
-                case 6:
-                    return 0.5;
-                
                 case 7:
                 case 8:
-                case 15:
-                    return 0.25;
-                
                 case 10:
+                case 11:
+                case 14:
+                    return 0.5;
+                    
+                // capital
                 case 13:
                     return 1.5;
                     
+                // regular camps
                 default:
                     return 1;
             }

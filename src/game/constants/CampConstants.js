@@ -43,6 +43,7 @@ define(['ash'], function (Ash) {
         REPUTATION_PENALTY_TYPE_WATER: "WATER",
         REPUTATION_PENALTY_TYPE_DEFENCES: "DEFENCES",
         REPUTATION_PENALTY_TYPE_HOUSING: "HOUSING",
+        REPUTATION_PENALTY_TYPE_LEVEL_POP: "LEVEL_POPULATION",
         
         // Workers per building
         CHEMISTS_PER_WORKSHOP: 5,
