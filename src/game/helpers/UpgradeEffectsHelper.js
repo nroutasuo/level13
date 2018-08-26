@@ -33,8 +33,7 @@ define([
 		improvingUpgradesByEvent: {
 		},
 		
-		constructor: function (playerActionsHelper) {
-			this.playerActionsHelper = playerActionsHelper;
+		constructor: function () {
 			
 			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.trader] = improvementNames.market;
 			
@@ -67,7 +66,7 @@ define([
             this.upgradesByUIEffects[UpgradeConstants.upgradeUIEffects.calendar] = UpgradeConstants.upgradeIds.unlock_building_library;
 		},
 		
-		getUnlockedBuildings: function (upgradeId) {
+		getUnlockedBuildings: function (upgradeId, playerActionsHelper) {
 			// TODO separate in and out improvements
 			// TODO performance
 			var buildings = [];
@@ -78,7 +77,7 @@ define([
 				if (reqsDefinition.upgrades) {
 					for (var requiredUpgradeId in reqsDefinition.upgrades) {
 						if (requiredUpgradeId === upgradeId) {
-							improvementName = this.playerActionsHelper.getImprovementNameForAction(action, true);
+							improvementName = playerActionsHelper.getImprovementNameForAction(action, true);
 							if (improvementName) buildings.push(improvementName);
 						}
 					}
@@ -87,7 +86,7 @@ define([
 			return buildings;
 		},
 		
-		getUnlockedItems: function (upgradeId) {
+		getUnlockedItems: function (upgradeId, playerActionsHelper) {
 			// TODO performance
 			var items = [];
 			var reqsDefinition;
@@ -97,7 +96,7 @@ define([
 				if (reqsDefinition.upgrades) {
 					for (var requiredUpgradeId in reqsDefinition.upgrades) {
 						if (requiredUpgradeId === upgradeId) {
-							item = this.playerActionsHelper.getItemForCraftAction(action);
+							item = playerActionsHelper.getItemForCraftAction(action);
 							if (item) items.push(item.name);
 						}
 					}
@@ -119,7 +118,7 @@ define([
 		},
 		
 		getUnlockedOccurrences: function (upgradeId) {
-			var unlockedBuildings = this.getUnlockedBuildings(upgradeId);
+			var unlockedBuildings = this.getUnlockedBuildings(upgradeId, playerActionsHelper);
 			var occurrences = [];
 			if(unlockedBuildings.length > 0) {
 				var occurrenceBuilding;

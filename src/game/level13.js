@@ -198,7 +198,7 @@ define([
             this.itemsHelper = new ItemsHelper(this.gameState);
             this.enemyHelper = new EnemyHelper(this.itemsHelper);
 			this.resourcesHelper = new ResourcesHelper(this.engine);
-			this.upgradeEffectsHelper = new UpgradeEffectsHelper(this.playerActionsHelper);
+			this.upgradeEffectsHelper = new UpgradeEffectsHelper();
 			this.playerActionsHelper = new PlayerActionsHelper(this.engine, this.gameState, this.resourcesHelper, this.upgradeEffectsHelper);
 			this.movementHelper = new MovementHelper(this.engine);
 			this.levelHelper = new LevelHelper(this.engine, this.gameState, this.playerActionsHelper, this.movementHelper);

@@ -201,7 +201,7 @@ define([
 			if(isUnlockable) {
 				effects = "";
 			} else {
-				var unlockedBuildings = this.upgradeEffectsHelper.getUnlockedBuildings(upgradeId);
+				var unlockedBuildings = this.upgradeEffectsHelper.getUnlockedBuildings(upgradeId, this.playerActions.playerActionsHelper);
 				if (unlockedBuildings.length > 0) {
 					effects += "buildings: ";
 					for (var i in unlockedBuildings) {
@@ -235,7 +235,7 @@ define([
 					effects += ", ";
 				}
 				
-				var unlockedItems = this.upgradeEffectsHelper.getUnlockedItems(upgradeId);
+				var unlockedItems = this.upgradeEffectsHelper.getUnlockedItems(upgradeId, this.playerActions.playerActionsHelper);
 				if (unlockedItems.length > 0) {
 					effects += "items: ";
 					for (var i in unlockedItems) {
@@ -244,7 +244,7 @@ define([
 					}
 				}
 				
-				var unlockedOccurrences = this.upgradeEffectsHelper.getUnlockedOccurrences(upgradeId);
+				var unlockedOccurrences = this.upgradeEffectsHelper.getUnlockedOccurrences(upgradeId, this.playerActions.playerActionsHelper);
 				if (unlockedOccurrences.length > 0) {
 					effects += "events: ";
 					for (var i in unlockedOccurrences) {
