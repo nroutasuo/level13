@@ -117,7 +117,7 @@ define([
 			return workers;
 		},
 		
-		getUnlockedOccurrences: function (upgradeId) {
+		getUnlockedOccurrences: function (upgradeId, playerActionsHelper) {
 			var unlockedBuildings = this.getUnlockedBuildings(upgradeId, playerActionsHelper);
 			var occurrences = [];
 			if(unlockedBuildings.length > 0) {

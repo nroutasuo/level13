@@ -211,8 +211,11 @@ define([
             
             this.uiFunctions.toggle($("#header-tribe-container"), this.gameState.unlockedFeatures.evidence || playerStatsNode.rumours.isAccumulating);
 
+            var improvements = this.currentLocationNodes.head.entity.get(SectorImprovementsComponent);
+            var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
+            maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
 			var reputationComponent = this.currentLocationNodes.head.entity.get(ReputationComponent);
-            if (campComponent && reputationComponent) {
+            if (campComponent && reputationComponent && maxPopulation > 0) {
                 var reqReputationCurrent = CampConstants.getRequiredReputation(Math.floor(campComponent.population));
                 var reqReputationNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
 
@@ -232,17 +235,16 @@ define([
                 this.elements.valReputation.toggleClass("warning", reputationComponent.value < reqReputationCurrent);
                 UIConstants.updateCalloutContent("#header-camp-reputation", reputationCalloutContent);
             
-                var improvements = this.currentLocationNodes.head.entity.get(SectorImprovementsComponent);
-                var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
-                maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
                 $("#header-camp-population .value").text(Math.floor(campComponent.population) + " / " + maxPopulation);
-                this.updateChangeIndicator(this.elements.changeIndicatorPopulation, campComponent.populationChangePerSec, true);
+                this.updateChangeIndicator(this.elements.changeIndicatorPopulation, campComponent.populationChangePerSec, maxPopulation > 0);
                 var populationCalloutContent = "Required reputation:<br/>";
                 populationCalloutContent += "current: " + reqReputationCurrent + "<br/>";
                 populationCalloutContent += "next: " + reqReputationNext;
                 UIConstants.updateCalloutContent("#header-camp-population", populationCalloutContent);
+                this.uiFunctions.toggle("#header-camp-population", true);    
                 this.uiFunctions.toggle("#header-camp-reputation", true);    
             } else {
+                this.uiFunctions.toggle("#header-camp-population", false);                
                 this.uiFunctions.toggle("#header-camp-reputation", false);                
             }
             
