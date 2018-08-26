@@ -106,25 +106,25 @@ define([
             }
         },
         
-        resetTimers: function (campNode) {
+        resetTimers: function (campNode, forced) {
             var campTimers = campNode.entity.get(CampEventTimersComponent);
             for (var key in OccurrenceConstants.campOccurrenceTypes) {
                 var event = OccurrenceConstants.campOccurrenceTypes[key];
                 var scheduledEventStart = campTimers.getEventStartTimeLeft(event);
-                if (scheduledEventStart <= 0) {
+                if (scheduledEventStart <= 0 || forced) {
                     this.endEvent(campNode, event);
                 }
             }
         },
         
         isCampValidForEvent: function (campNode, event) {
+            if (campNode.camp.population < 1) return false;
             var improvements = campNode.entity.get(SectorImprovementsComponent);
             switch (event) {
                 case OccurrenceConstants.campOccurrenceTypes.trader:
                     return improvements.getCount(this.upgradeEffectsHelper.getImprovementForOccurrence(event)) > 0;
 
                 case OccurrenceConstants.campOccurrenceTypes.raid:
-                    if (campNode.camp.population < 1) return false;
                     var soldiers = campNode.camp.assignedWorkers.soldier;
                     var fortificationUpgradeLevel = this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradesNodes.head.upgrades);
                     return OccurrenceConstants.getRaidDanger(improvements, soldiers, fortificationUpgradeLevel) > 0;
@@ -160,9 +160,9 @@ define([
         endEvent: function (campNode, event) {
             if (!this.isCampValidForEvent(campNode, event)) return;
             var campTimers = campNode.entity.get(CampEventTimersComponent);
-            var eventUpgradeFactor = this.getEventUpgradeFactor(event);
-            var timeToNext = OccurrenceConstants.scheduleNext(event, eventUpgradeFactor);
+            var timeToNext = this.getTimeToNext(campNode, event);
             campTimers.onEventEnded(event, timeToNext);
+            
             if (GameConstants.isDebugOutputEnabled)
                 console.log("End " + event + " at " + campNode.camp.campName + "(" + campNode.position.level + ")" + ". Next in " + timeToNext + "s.");
 
@@ -248,6 +248,10 @@ define([
             if (!campNode) return playerPosition.inCamp;
             var campPosition = campNode.entity.get(PositionComponent);
             return playerPosition.level == campPosition.level && playerPosition.sectorId() == campPosition.sectorId() && playerPosition.inCamp;
+        },
+        
+        getTimeToNext: function (campNode, event) {
+            return OccurrenceConstants.scheduleNext(event, this.getEventUpgradeFactor(event), campNode.camp.population, campNode.camp.maxPopulation);
         },
         
         getEventUpgradeFactor: function (event) {

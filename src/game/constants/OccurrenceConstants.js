@@ -1,5 +1,5 @@
-define(['ash', 'game/constants/GameConstants'],
-function (Ash, GameConstants) {
+define(['ash', 'utils/MathUtils', 'game/constants/GameConstants'],
+function (Ash, MathUtils, GameConstants) {
 
     var OccurrenceConstants = {
 	
@@ -10,27 +10,35 @@ function (Ash, GameConstants) {
 		
 		OCCURRENCE_CAMP_TRADER_LENGTH: 60 * 5,
 		OCCURRENCE_CAMP_TRADER_COOLDOWN: 60 * 10,
-		OCCURRENCE_CAMP_TRADER_RANDOMNESS: 3,
+		OCCURRENCE_CAMP_TRADER_VARIATION: 60 * 20,
 		
 		OCCURRENCE_CAMP_RAID_LENGTH: 5,
-		OCCURRENCE_CAMP_RAID_COOLDOWN: 60 * 20,
-		OCCURRENCE_CAMP_RAID_RANDOMNESS: 5,
+		OCCURRENCE_CAMP_RAID_COOLDOWN: 60 * 15,
+		OCCURRENCE_CAMP_RAID_VARIATION: 60 * 45,
 		
-		scheduleNext: function (occurrenceType, upgradeTimeFactor) {
+		scheduleNext: function (occurrenceType, upgradeFactor, campPopulation, campMaxPopulation) {
 			var minimumTime = 1;
-			var randomFactor = 1;
-			switch (occurrenceType) {
+            var baseTime = 1;
+			var randomFactor = Math.random();
+
+            var pop = (campPopulation + campMaxPopulation)/2;
+            var populationFactor = MathUtils.clamp(2.25-Math.log(pop+1)/2.5, 0.5, 2);
+			
+            switch (occurrenceType) {
 				case this.campOccurrenceTypes.trader:
 					minimumTime = this.OCCURRENCE_CAMP_TRADER_COOLDOWN;
-					randomFactor = 1 + (Math.random() * this.OCCURRENCE_CAMP_TRADER_RANDOMNESS);
+					baseTime = this.OCCURRENCE_CAMP_TRADER_VARIATION;
 					break;
 				
 				case this.campOccurrenceTypes.raid:
 					minimumTime = this.OCCURRENCE_CAMP_RAID_COOLDOWN;
-					randomFactor = 1 + (Math.random() * this.OCCURRENCE_CAMP_RAID_RANDOMNESS);
+					baseTime = this.OCCURRENCE_CAMP_RAID_VARIATION;
 					break;
 			}
-			return Math.floor(minimumTime * randomFactor * upgradeTimeFactor) / GameConstants.gameSpeedCamp;
+            
+            minimumTime *= Math.max(1, populationFactor);
+            
+            return Math.floor(minimumTime + baseTime * randomFactor * upgradeFactor * populationFactor) / GameConstants.gameSpeedCamp;
 		},
 		
 		getDuration: function(occurrenceType) {

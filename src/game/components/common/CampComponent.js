@@ -5,6 +5,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
         
         id: "",
         population: 0,
+        maxPopulation: 0, // maximum population ever reached in this camp
         populationChangePerSec: 0,
         rumourpool: 0,
         rumourpoolchecked: false,
@@ -15,6 +16,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
         constructor: function (id) {
             this.id = id;
             this.population = 0;
+            this.maxPopulation = 0;
             this.rumourpool = 0;
             this.rumourpoolchecked = false;
             this.assignedWorkers = {};
@@ -39,6 +41,7 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
         
         addPopulation: function (value) {
             this.population += value;
+            this.maxPopulation = Math.max(this.population, this.maxPopulation);
             this.rumourpool += value * CampConstants.POOL_RUMOURS_PER_POPULATION;
         },
         
