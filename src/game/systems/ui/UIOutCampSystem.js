@@ -190,7 +190,7 @@ define([
             var freePopulation = campComponent.getFreePopulation();
             var isPopulationMaxed = campComponent.population >= maxPopulation;
             var populationChangePerSec = campComponent.populationChangePerSec;
-            var isPopulationStill = isPopulationMaxed && populationChangePerSec !== 0;
+            var isPopulationStill = isPopulationMaxed && populationChangePerSec === 0;
             
             var reqRepCur = CampConstants.getRequiredReputation(Math.floor(campComponent.population));
             var reqRepNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
