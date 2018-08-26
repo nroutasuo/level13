@@ -1208,6 +1208,12 @@ function (Ash, GameConstants, CampConstants) {
 
             },
             
+            // structure: resource: cost
+            // cost can be a simple number (baseCost) or a table with the following values 
+            // [baseCost, linearScale, e1Scale, e2Scale, requiredOrdinal]
+            // additional keys: cost_source, cost_factor_e1_base, cost_factor_e2_exp
+            // cost = baseCost + (linearScale * ordinal1) + (e1Scale * pow(e1Base, ordinal1-1)) + (e2Scale * (pow(ordinal2, e2Exp)))
+            
             costs: {
                     
                 scout: {
@@ -1340,44 +1346,50 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 build_out_passage_up_hole: {
-                    resource_metal: [75, 0, 125],
+                    resource_metal: [50, 100, 50, 5500, 0],
                     resource_concrete: 10,
-                    cost_factor: 1.65,
+                    cost_factor_e1_base: 1.295,
+                    cost_factor_e2_exp: 2.3,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_up_stairs: {
-                    resource_metal: [75, 0, 125],
+                    resource_metal: [50, 100, 50, 5500, 0],
                     resource_rope: 10,
-                    cost_factor: 1.65,
+                    cost_factor_e1_base: 1.295,
+                    cost_factor_e2_exp: 2.3,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_up_elevator: {
-                    resource_metal: [75, 0, 125],
+                    resource_metal: [50, 100, 50, 5500, 0],
                     resource_fuel: 10,
-                    cost_factor: 1.65,
+                    cost_factor_e1_base: 1.295,
+                    cost_factor_e2_exp: 2.3,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_down_hole: {
-                    resource_metal: [75, 0, 125],
+                    resource_metal: [50, 100, 50, 5500, 0],
                     resource_concrete: 10,
-                    cost_factor: 1.65,
+                    cost_factor_e1_base: 1.295,
+                    cost_factor_e2_exp: 2.3,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_down_stairs: {
-                    resource_metal: [75, 0, 125],
+                    resource_metal: [50, 100, 50, 5500, 0],
                     resource_rope: 10,
-                    cost_factor: 1.65,
+                    cost_factor_e1_base: 1.295,
+                    cost_factor_e2_exp: 2.3,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
                 build_out_passage_down_elevator: {
-                    resource_metal: [75, 0, 125],
+                    resource_metal: [50, 100, 50, 5500, 0],
                     resource_fuel: 10,
-                    cost_factor: 1.65,
+                    cost_factor_e1_base: 1.295,
+                    cost_factor_e2_exp: 2.3,
                     cost_source: COST_SOURCE_CAMP,
                 },
             
@@ -1391,13 +1403,13 @@ function (Ash, GameConstants, CampConstants) {
             
                 build_in_house: {
                     resource_metal: 30,
-                    cost_factor: 2.25,
+                    cost_factor_e1_base: 2.25,
                 },
             
                 build_in_house2: {
                     resource_metal: 300,
                     resource_rope: 25,
-                    cost_factor: 1.5,
+                    cost_factor_e1_base: 1.5,
                 },
                 
                 build_in_generator: {
@@ -1415,22 +1427,23 @@ function (Ash, GameConstants, CampConstants) {
                 },
                 
                 build_in_storage: {
-                    resource_metal: 50,
-                    resource_rope: [8, 2],
-                    cost_factor: 1.65,
+                    // 50*pow(1.65, $B3)
+                    resource_metal: [0, 0, 50, 0, 0],
+                    resource_rope: [10, 2, 2, 0, 2],
+                    cost_factor_e1_base: 1.65,
                 },
                 
                 build_in_campfire: {
                     resource_metal: 5,
                     resource_food: 10,
-                    cost_factor: 2,
+                    cost_factor_e1_base: 2,
                 },
                 
                 build_in_darkfarm: {
                     resource_metal: 50,
                     resource_water: 20,
                     resource_fuel: 5,
-                    cost_factor: 2,
+                    cost_factor_e1_base: 2,
                 },
                 
                 build_in_square: {
@@ -1442,7 +1455,7 @@ function (Ash, GameConstants, CampConstants) {
                     resource_metal: 100,
                     resource_water: 50,
                     resource_rope: 50,
-                    cost_factor: 3,
+                    cost_factor_e1_base: 3,
                 },
             
                 build_in_hospital: {
@@ -1476,61 +1489,61 @@ function (Ash, GameConstants, CampConstants) {
                 use_in_inn_select: {
                     resource_food: 15,
                     resource_water: 15,
-                    cost_factor: 1.5,                    
+                    cost_factor_e1_base: 1.5,                    
                 },
             
                 build_in_market: {
                     resource_metal: 50,
                     resource_rope: 100,
-                    cost_factor: 1.5,
+                    cost_factor_e1_base: 1.5,
                 },
             
                 build_in_library: {
                     resource_metal: 100,
                     resource_rope: 100,
-                    cost_factor: 2,
+                    cost_factor_e1_base: 2,
                 },
             
                 build_in_fortification: {
                     resource_metal: 500,
                     resource_rope: 100,
-                    cost_factor: 1.75,
+                    cost_factor_e1_base: 1.75,
                 },
                 
                 build_in_aqueduct: {
                     resource_metal: 300,
-                    cost_factor: 2,
+                    cost_factor_e1_base: 2,
                 },
             
                 build_in_barracks: {
                     resource_metal: 100,
                     resource_rope: 50,
                     resource_concrete: 50,
-                    cost_factor: 1.2,
+                    cost_factor_e1_base: 1.2,
                 },
             
                 build_in_apothecary: {
                     resource_metal: 100,
                     resource_rope: 50,
-                    cost_factor: 1.5,
+                    cost_factor_e1_base: 1.5,
                 },
             
                 build_in_smithy: {
                     resource_metal: 100,
                     resource_rope: 50,
-                    cost_factor: 1.5,
+                    cost_factor_e1_base: 1.5,
                 },
             
                 build_in_cementmill: {
                     resource_metal: 500,
                     resource_rope: 50,
-                    cost_factor: 1.5,
+                    cost_factor_e1_base: 1.5,
                 },
             
                 build_in_radio: {
                     resource_metal: 500,
                     resource_rope: 50,
-                    cost_factor: 1.5,
+                    cost_factor_e1_base: 1.5,
                 },
             
                 build_in_shrine: {

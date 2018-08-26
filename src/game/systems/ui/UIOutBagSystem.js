@@ -175,9 +175,8 @@ define([
                 for (var i in itemList) {
                     itemDefinition = itemList[i];
                     var actionName = "craft_" + itemDefinition.id;         
-                    var ordinal = this.playerActionsHelper.getOrdinal(actionName);
                     var costFactor = this.playerActionsHelper.getCostFactor(actionName);
-                    var hasCosts = Object.keys(this.playerActionsHelper.getCosts(actionName, ordinal, costFactor)).length > 0;
+                    var hasCosts = Object.keys(this.playerActionsHelper.getCosts(actionName, costFactor)).length > 0;
                     
                     if (isActive && !hasCosts) {
                         console.log("WARN: Craftable item has no costs: " + itemDefinition.id);

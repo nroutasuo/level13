@@ -185,9 +185,8 @@ define([
             var playerActionsHelper = this.playerActions.playerActionsHelper;
             var buttonHelper = this.buttonHelper;
             
-            var ordinal = playerActionsHelper.getOrdinal(action);
             var costFactor = playerActionsHelper.getCostFactor(action);
-            var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);
+            var costs = playerActionsHelper.getCosts(action, costFactor);
             
             var costsStatus = {};
             costsStatus.hasCostBlockers = false;
@@ -416,9 +415,8 @@ define([
                     elements.cooldownReqs = $button.siblings(".cooldown-reqs");
                     elements.cooldownDuration = $button.children(".cooldown-duration");
             
-                    var ordinal = playerActionsHelper.getOrdinal(action);
                     var costFactor = playerActionsHelper.getCostFactor(action);
-                    var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);            
+                    var costs = playerActionsHelper.getCosts(action, costFactor);            
                     elements.costSpans = {};
                     elements.costSpanValues = {};
                     for (var key in costs) {

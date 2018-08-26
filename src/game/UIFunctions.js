@@ -351,7 +351,6 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         generateActionButtonCallout: function (action) {
             var playerActionsHelper = this.playerActions.playerActionsHelper;
             var baseActionId = playerActionsHelper.getBaseActionID(action);
-            var ordinal = playerActionsHelper.getOrdinal(action);
             var costFactor =  playerActionsHelper.getCostFactor(action);
 
             var content = "";
@@ -365,7 +364,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             }
 
             // visible if button is enabled: costs & risks
-            var costs = playerActionsHelper.getCosts(action, ordinal, costFactor);
+            var costs = playerActionsHelper.getCosts(action, costFactor);
             var hasCosts = action && costs && Object.keys(costs).length > 0;
             if (hasCosts) {
                 if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";

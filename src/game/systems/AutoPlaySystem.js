@@ -419,9 +419,8 @@ define(['ash',
                 if (actionAvailable)
                     continue;
                 
-                var ordinal = this.playerActionFunctions.playerActionsHelper.getOrdinal(actionName);
                 var costFactor =  this.playerActionFunctions.playerActionsHelper.getCostFactor(actionName);
-                var costs = this.playerActionFunctions.playerActionsHelper.getCosts(actionName, ordinal, costFactor);
+                var costs = this.playerActionFunctions.playerActionsHelper.getCosts(actionName, costFactor);
 
                 var costFactor = 1;
                 var costFactorRes = null;                

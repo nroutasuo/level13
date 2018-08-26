@@ -79,7 +79,7 @@ define([
 		},
 
 		deductCosts: function (action) {
-            var costs = this.getCosts(action, this.getOrdinal(action), this.getCostFactor(action));
+            var costs = this.getCosts(action, this.getCostFactor(action));
             
             if (!costs) {
                 return;
@@ -155,7 +155,7 @@ define([
                 var deityComponent = this.playerResourcesNodes.head.entity.get(DeityComponent);
 
                 var requirements = this.getReqs(action, sector);
-                var costs = this.getCosts(action, this.getOrdinal(action), this.getCostFactor(action));
+                var costs = this.getCosts(action, this.getCostFactor(action));
                 var improvementComponent = sector.get(SectorImprovementsComponent);
                 var movementOptionsComponent = sector.get(MovementOptionsComponent);
                 var passagesComponent = sector.get(PassagesComponent);
@@ -727,7 +727,7 @@ define([
 		
         // Check the costs of an action; returns lowest fraction of the cost player can cover; >1 means the action is available
         checkCosts: function(action, log, otherSector) {
-            var costs = this.getCosts(action, this.getOrdinal(action), this.getCostFactor(action));
+            var costs = this.getCosts(action, this.getCostFactor(action));
             if (costs) {
                 var currentFraction = 1;
                 var lowestFraction = currentFraction;
@@ -754,7 +754,7 @@ define([
             var sector = otherSector || (this.playerLocationNodes.head && this.playerLocationNodes.head.entity);
             if (!sector) return false;
             
-            var costs = this.getCosts(action, this.getOrdinal(action), this.getCostFactor(action));
+            var costs = this.getCosts(action, this.getCostFactor(action));
             
             var costNameParts = name.split("_");
             var costAmount = costs[name];
@@ -790,7 +790,7 @@ define([
         },
         
         getCostResourcesVO: function (action) {
-            var costs = this.getCosts(action, this.getOrdinal(action), this.getCostFactor(action));
+            var costs = this.getCosts(action, this.getCostFactor(action));
             var resourcesVO = new ResourcesVO();
             if (costs) {
                 for (var key in costs) {                    
@@ -804,21 +804,22 @@ define([
             return resourcesVO;            
         },
         
-		// Return the ordinal of the action (for example, if the player has 2 houses and wants to build another one, it's 3)
-        getOrdinal: function (action) {
+		// Return the current ordinal of an action (depending on action, level ordinal / camp ordinal / num of existing buildings)
+        getActionOrdinal: function (action) {
             if (!this.playerLocationNodes || !this.playerLocationNodes.head) {
 				return 1;
 			}
             if (!action) return 1;
             
             var sector = this.playerLocationNodes.head.entity;
-            var playerPos = sector.get(PositionComponent);
             var baseActionID = this.getBaseActionID(action);
             
             if (action.indexOf("build_in") >= 0) {
                 var improvementName = this.getImprovementNameForAction(action);
                 var improvementsComponent = sector.get(SectorImprovementsComponent);
-                return improvementsComponent.getCount(improvementName) + 1;
+                var result = improvementsComponent.getCount(improvementName) + 1;
+				if (action === "build_in_house" && result === 1) result = 0.5;
+                return result;
             }
                 
             switch (baseActionID) {
@@ -834,6 +835,21 @@ define([
                 case "build_out_passage_up_hole":
                     return action.substring(action.lastIndexOf("_") + 1);
                 
+                default: return 1;
+            }
+        },
+        
+        getActionSecondaryOrdinal: function (action) {
+            var baseActionID = this.getBaseActionID(action);
+            switch (baseActionID) {
+                case "build_out_passage_down_stairs":
+                case "build_out_passage_down_elevator":
+                case "build_out_passage_down_hole":
+                case "build_out_passage_up_stairs":
+                case "build_out_passage_up_elevator":
+                case "build_out_passage_up_hole":
+                    return this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.storage, this.tribeUpgradesNodes.head.upgrades);
+                    
                 default: return 1;
             }
         },
@@ -934,53 +950,66 @@ define([
 		},
         
         // NOTE: this should always return all possible costs as keys (even if value currently is 0)
-		getCosts: function (action, ordinal, statusCostFactor, sector) {
+        // statusCostFactor = a factor based on current status such as equipped items (default 1)
+		getCosts: function (action, statusCostFactor) {
 			var result = {};
+            var skipRounding = false;
+            
+            var ordinal1 = this.getActionOrdinal(action);
+            var ordinal2 = this.getActionSecondaryOrdinal(action);
+            
 			var baseActionID = this.getBaseActionID(action);
 			var costs = PlayerActionConstants.costs[action];
             if (!costs) {
                 costs = PlayerActionConstants.costs[baseActionID];
             }
+            
 			if (costs) {
-				var costFactor = costs.cost_factor;
-				if (!costFactor) costFactor = 1;
-				if (!ordinal) ordinal = 1;
-                if (!statusCostFactor) statusCostFactor = 1;
-				if (action === "build_in_house" && ordinal === 1) ordinal = 0.5;
-				var ordinalCostFactor = Math.pow(costFactor, ordinal-1);
+				var e1Base = costs.cost_factor_e1_base || 1;
+                var e2Exp = costs.coast_factor_e2_exp || 0;
+                var hasE1 = e1Base !== 1;
+                var hasE2 = e2Exp !== 0;
 				
 				for(var key in costs) {
-					if (key != "cost_factor" && key != "cost_source") {
-                        var value = costs[key];
-                        var costBaseValue = 0;
-                        var costValue = 0;
+					if (key.indexOf("cost_factor") >= 0 || key === "cost_source") continue;
+                    
+                    var value = costs[key];
+                    var baseCost = 0;
+                    
+                    var linearScale = 0;
+                    var e1Scale = hasE1 ? 1 : 0;
+                    var e2Scale = hasE2 ? 1 : 0;
+                    var requiredOrdinal = 1;
+
+                    if (typeof value === "number") {
+                        baseCost = hasE1 || hasE2 ? 0 : value;
+                        e1Scale = hasE1 ? value : 0;
+                        e2Scale = hasE2 ? value : 0;
+                    } else if (typeof value === "object") {
+                        baseCost = value[0];
+                        if (value.length > 1) linearScale = value[1];
+                        if (value.length > 2) e1Scale = value[2];
+                        if (value.length > 3) e2Scale = value[3];
+                        if (value.length > 4) requiredOrdinal = value[4];
+                    }
+                    
+                    if (ordinal1 >= requiredOrdinal) {
+                        var linearIncrease = linearScale * ordinal1;
+                        var expIncrease1 = e1Scale * Math.pow(e1Base, ordinal1-1);
+                        var expIncrease2 = e2Scale * Math.pow(ordinal2-1, e2Exp);
                         
-                        if (typeof value === "object") {
-                            if (value[1] <= ordinal) {
-                                if (value.length > 2) {
-                                    costBaseValue = value[0];
-                                    costValue = value[2];
-                                } else {
-                                    costValue = value[0];
-                                }
-                            }
-                        }
-                        if (typeof value === "number") {
-                            costValue = value;
-                        }
-                        
-                        result[key] = Math.round((costBaseValue + costValue * ordinalCostFactor) * statusCostFactor);
-					}
+                        result[key] = (baseCost + linearIncrease + expIncrease1 + expIncrease2) * statusCostFactor;
+                    }
 				}
 			} else {
 				var sector = sector || this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
 				switch (baseActionID) {
 					case "move_camp_level":
-                        if (!this.nearestCampNodes.head) return this.getCosts("move_sector_west", 1, 100);
+                        if (!this.nearestCampNodes.head) return this.getCosts("move_sector_west", 100);
                         var campSector = this.nearestCampNodes.head.entity;
                         var path = this.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true });
                         var sectorsToMove = path.length;
-                        return this.getCosts("move_sector_west", 1, sectorsToMove * statusCostFactor);
+                        return this.getCosts("move_sector_west", sectorsToMove * statusCostFactor);
                     
 					case "move_camp_global":
 						result.stamina = 10 * PlayerActionConstants.costs.move_sector_west.stamina * statusCostFactor;
@@ -991,7 +1020,7 @@ define([
 						var localei = parseInt(action.split("_")[3]);
 						var sectorLocalesComponent = sector.get(SectorLocalesComponent);
 						var localeVO = sectorLocalesComponent.locales[localei];
-						if (localeVO) return localeVO.costs;
+						if (localeVO) result = localeVO.costs;
                         break;
                         
                     case "use_item":
@@ -999,10 +1028,12 @@ define([
                         var itemName = action.replace(baseActionID + "_", "item_");
                         var itemCost = {};
                         itemCost[itemName] = 1;
-                        return itemCost;
+                        result = itemCost;
+                        break;
 
                     case "unlock_upgrade":
-                        return { blueprint: 1 };
+                        result = { blueprint: 1 };
+                        break;
                         
                     case "send_caravan":
                         var campOrdinal = parseInt(action.replace(baseActionID + "_", ""));
@@ -1013,7 +1044,9 @@ define([
                         } else if (caravansComponent && caravansComponent.outgoingCaravans[campOrdinal]) {
                             costs["resource_" + caravansComponent.outgoingCaravans[campOrdinal].sellGood] = caravansComponent.outgoingCaravans[campOrdinal].sellAmount;
                         }
-                        return costs;
+                        result = costs;
+                        skipRounding = true;
+                        break;
                         
                     case "nap":
                         var costs = {};
@@ -1021,9 +1054,22 @@ define([
                         var currentResources = currentStorage ? currentStorage.resources : null;
                         costs["resource_food"] = currentResources ? Math.min(3, Math.floor(currentResources.getResource(resourceNames.food))) : 3;
                         costs["resource_water"] = currentResources ? Math.min(3, Math.floor(currentResources.getResource(resourceNames.water))) : 3;
-                        return costs;
+                        result = costs;
+                        skipRounding = true;
+                        break;
 				}
 			}
+            
+            // round all costs, big ones to 5 and the rest to int
+            for(var key in result) {
+                if (result[key] > 1000) {
+                    if (!skipRounding) {
+                        result[key] = Math.round(result[key] / 5) * 5;
+                    }
+                } else {
+                    result[key] = Math.round(result[key]);
+                }
+            }
 		
 			return result;
 		},
