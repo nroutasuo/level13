@@ -821,8 +821,9 @@ define(['ash',
             this.uiFunctions.completeAction("despair");
         },
         
-        buildCamp: function () {                
+        buildCamp: function () {
             var sector = this.playerLocationNodes.head.entity;
+            var level = this.levelHelper.getLevelEntityForSector(sector);
             var position = sector.get(PositionComponent).getPosition();
             var campComponent = new CampComponent(position.toString());
             campComponent.foundedTimeStamp = this.gameState.gamePlayedSeconds;
@@ -832,7 +833,6 @@ define(['ash',
             sector.add(new ReputationComponent());
             sector.add(new CurrencyComponent());
 
-            var level = this.levelHelper.getLevelEntityForSector(sector);
             level.add(campComponent);
 
             var improvementsComponent = sector.get(SectorImprovementsComponent);

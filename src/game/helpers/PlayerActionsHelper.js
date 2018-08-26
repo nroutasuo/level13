@@ -677,7 +677,7 @@ define([
 
                     if (requirements.level) {
                         var level = sector.get(PositionComponent).level;
-                        var levelVO = this.levelHelper.getLevelEntityForPosition(level).get(LevelComponent).levelVO;
+                        var levelVO = this.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
                         if (requirements.level.population) {
                             var levelPopReqDef = requirements.level.population;
                             var min = levelPopReqDef[0];
@@ -951,14 +951,28 @@ define([
 			}
 		},
         
+        getCost: function (baseCost, linearScale, e1Scale, e1Base, e2Scale, e2Exp, ordinal1, ordinal2, statusFactor) {
+            var linearIncrease = linearScale * ordinal1;
+            var expIncrease1 = e1Scale * Math.pow(e1Base, ordinal1-1);
+            var expIncrease2 = e2Scale * Math.pow(ordinal2-1, e2Exp);
+            return (baseCost + linearIncrease + expIncrease1 + expIncrease2) * statusFactor;
+        },
+        
         // NOTE: this should always return all possible costs as keys (even if value currently is 0)
-        // statusCostFactor = a factor based on current status such as equipped items (default 1)
-		getCosts: function (action, statusCostFactor) {
+        // statusFactor = a factor based on current status such as equipped items (default 1)
+		getCosts: function (action, statusFactor) {
+            if (!action) return null;
+            
 			var result = {};
             var skipRounding = false;
             
+            var sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
+            var level = sector ? this.levelHelper.getLevelEntityForSector(sector).get(LevelComponent).levelVO : null;
+            
             var ordinal1 = this.getActionOrdinal(action);
             var ordinal2 = this.getActionSecondaryOrdinal(action);
+            var isOutpost = level ? level.populationGrowthFactor < 1 : false;
+            var isCampBuildAction = action.indexOf("build_in_") >= 0;
             
 			var baseActionID = this.getBaseActionID(action);
 			var costs = PlayerActionConstants.costs[action];
@@ -968,7 +982,10 @@ define([
             
 			if (costs) {
 				var e1Base = costs.cost_factor_e1_base || 1;
-                var e2Exp = costs.coast_factor_e2_exp || 0;
+                var e1BaseOutpost = costs.cost_factor_e1_base_outpost || e1Base;
+                var e2Exp = costs.cost_factor_e2_exp || 0;
+                var e2ExpOutpost = costs.cost_factor_e2_exp_outpost || e2Exp;
+                
                 var hasE1 = e1Base !== 1;
                 var hasE2 = e2Exp !== 0;
 				
@@ -996,11 +1013,19 @@ define([
                     }
                     
                     if (ordinal1 >= requiredOrdinal) {
-                        var linearIncrease = linearScale * ordinal1;
-                        var expIncrease1 = e1Scale * Math.pow(e1Base, ordinal1-1);
-                        var expIncrease2 = e2Scale * Math.pow(ordinal2-1, e2Exp);
-                        
-                        result[key] = (baseCost + linearIncrease + expIncrease1 + expIncrease2) * statusCostFactor;
+                        var cost = this.getCost(baseCost, linearScale, e1Scale, e1Base, e2Scale, e2Exp, ordinal1, ordinal2, statusFactor);
+                        if (!isOutpost || !isCampBuildAction) {
+                            result[key] = cost;
+                        } else {
+                            var costOutpost = this.getCost(baseCost, linearScale, e1Scale, e1BaseOutpost, e2Scale, e2ExpOutpost, ordinal1, ordinal2, statusFactor);
+                            if (cost === costOutpost && e1Base === e1BaseOutpost && e2Exp === e2ExpOutpost) {
+                                // default: unless outpost cost otherwise defined, just scale
+                                costOutpost *= 1.25;
+                            }
+                            result[key] = costOutpost;
+                        }
+                    } else {
+                        result[key] = 0;
                     }
 				}
 			} else {
@@ -1011,10 +1036,10 @@ define([
                         var campSector = this.nearestCampNodes.head.entity;
                         var path = this.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true });
                         var sectorsToMove = path.length;
-                        return this.getCosts("move_sector_west", sectorsToMove * statusCostFactor);
+                        return this.getCosts("move_sector_west", sectorsToMove * statusFactor);
                     
 					case "move_camp_global":
-						result.stamina = 10 * PlayerActionConstants.costs.move_sector_west.stamina * statusCostFactor;
+						result.stamina = 10 * PlayerActionConstants.costs.move_sector_west.stamina * statusFactor;
 						break;
 					
 					case "scout_locale_i":

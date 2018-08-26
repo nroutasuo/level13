@@ -1427,10 +1427,10 @@ function (Ash, GameConstants, CampConstants) {
                 },
                 
                 build_in_storage: {
-                    // 50*pow(1.65, $B3)
                     resource_metal: [0, 0, 50, 0, 0],
-                    resource_rope: [10, 2, 2, 0, 2],
+                    resource_rope: [5, 2, 2, 0, 2],
                     cost_factor_e1_base: 1.65,
+                    cost_factor_e1_base_outpost: 2.5,
                 },
                 
                 build_in_campfire: {
@@ -1474,7 +1474,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
             
                 build_in_tradingPost: {
-                    resource_metal: 100,
+                    resource_metal: 78,
                 },
             
                 build_in_inn: {
