@@ -780,7 +780,7 @@ define([
             // non-craftable level clothing
             if (itemTypeLimits.clothing > 0) {
                 if (Math.random() < adjustedProbability * efficiency) {
-                    var clothing = this.itemsHelper.getAvailableClothingList(levelOrdinal, false, true, false);
+                    var clothing = this.itemsHelper.getScavengeNecessityClothing(levelOrdinal);
                     for (var i = 0; i < clothing.length; i++) {
                         if (currentItems.getCountById(clothing[i].id, true) <= 0) {                        
                             if (Math.random() < 0.25) {

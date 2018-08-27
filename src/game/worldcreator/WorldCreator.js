@@ -717,7 +717,7 @@ define([
                     var hr = Math.round(hrRandom * 8) + 2;
                     var isRadiation = WorldCreatorRandom.random(seed / 3381 + levelOrdinal * 777 + (h+44)*(h+11)) > 0.5;
                     var maxHazardValue = isRadiation ? maxHazardRadiation : maxHazardPoison;
-                    var minHazardValue = maxHazardValue / 3 * 2;
+                    var minHazardValue = Math.min(20, maxHazardValue / 3 * 2);
                     var hazardValueRand = WorldCreatorRandom.random(levelOrdinal * (h+11) / seed * 2 + seed/(h+99+levelOrdinal) - h*h);
                     var hazardValue = Math.ceil((minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue)) / 5) * 5;
                     for (var hx = hs.position.sectorX - hr; hx <= hs.position.sectorX + hr; hx++) {

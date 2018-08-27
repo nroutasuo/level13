@@ -35,6 +35,7 @@ define([
             definitions.global.push(this.createEnemy("giant centipede", "global", [c.nPest, c.nAnimal],  [c.gSwarm],[c.aInfest], [c.dCleared], 2, 2, 0.4, 30));
             definitions.global.push(this.createEnemy("radioactive cockroach", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover, c.aOverrun], [c.dCleared], 2, 3, 0.1));
             definitions.global.push(this.createEnemy("cave bat", "global", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 3, 5, 0.6, 20));
+            definitions.global.push(this.createEnemy("ghost bat", "global", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 3, 6, 0.8, 50));
             definitions.global.push(this.createEnemy("vampire bat", "global", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 4, 5, 0.7, 70));
             definitions.global.push(this.createEnemy("poisonous spider", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled], 5, 5, 0.8, 20));
             definitions.global.push(this.createEnemy("gigantic spider", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled], 6, 5, 0.8, 20));
@@ -194,7 +195,7 @@ define([
 
             var typicalItems = new ItemsComponent();
             var typicalWeapon = ItemConstants.getDefaultWeapon(levelOrdinal, totalLevels);
-            var typicalClothing = this.itemsHelper.getDefaultClothing(levelOrdinal);
+            var typicalClothing = this.itemsHelper.getBestClothing(levelOrdinal, ItemConstants.itemBonusTypes.fight_def);
 
             if (typicalWeapon)
                 typicalItems.addItem(typicalWeapon, false);
@@ -207,8 +208,7 @@ define([
                     // console.log("- " + typicalClothing[i].name)
                     typicalItems.addItem(typicalClothing[i], false);
                 }
-            } else
-                console.log("WARN: No typical clothing for level ordinal " + levelOrdinal);
+            }
 
             var numCamps = Math.floor(15 / 20 * levelOrdinal);
             var numFollowers = FightConstants.getMaxFollowers(numCamps);

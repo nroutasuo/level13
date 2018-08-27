@@ -23,18 +23,19 @@ define([
         availableClothing: {            
         },
         
-        getDefaultClothing: function (levelOrdinal) {
-            return this.getAvailableClothingList(levelOrdinal, true, true, false);
+        getBestClothing: function (levelOrdinal, itemBonusType) {
+            return this.getAvailableClothingList(levelOrdinal, true, true, false, itemBonusType);
         },
         
         getScavengeRewardClothing: function (levelOrdinal, totalLevels) {
             return this.getAvailableClothingList(levelOrdinal, totalLevels, true, true, true);
         },
         
-        getAvailableClothingList: function (levelOrdinal, includeCraftable, includeNonCraftable, includeMultiplePerType) {
-            if (includeNonCraftable && !includeMultiplePerType && this.defaultClothing[levelOrdinal]) return this.defaultClothing[levelOrdinal];
-            if (includeNonCraftable && includeMultiplePerType && this.availableClothing[levelOrdinal]) return this.availableClothing[levelOrdinal];
-            
+        getScavengeNecessityClothing: function (levelOrdinal) {
+            return this.itemsHelper.getAvailableClothingList(levelOrdinal, false, true, false);
+        },
+        
+        getAvailableClothingList: function (levelOrdinal, includeCraftable, includeNonCraftable, includeMultiplePerType, preferredItemBonus) {
             var result = [];
             var clothingLists = [
                 ItemConstants.itemDefinitions.clothing_over,
@@ -43,12 +44,15 @@ define([
                 ItemConstants.itemDefinitions.clothing_hands,
                 ItemConstants.itemDefinitions.clothing_head
             ];
+            
             var bestAvailableItem;
+            var bestAvailableItemBonus;
             var clothingList;
             var clothingItem;
             var isAvailable;
             for (var i = 0; i < clothingLists.length; i++) {
                 bestAvailableItem = null;
+                bestAvailableItemBonus = 0;
                 clothingList = clothingLists[i];
                 for (var j = 0; j < clothingList.length; j++) {
                     clothingItem = clothingList[j];
@@ -64,8 +68,10 @@ define([
                         isAvailable = clothingItem.requiredLevel >= 0 && clothingItem.requiredLevel <= levelOrdinal;
                     }
 
-                    if (isAvailable && (!bestAvailableItem || bestAvailableItem.getTotalBonus() < clothingItem.getTotalBonus())) {
+                    var bonus = preferredItemBonus ? clothingItem.getBonus(preferredItemBonus) : clothingItem.getTotalBonus();
+                    if (isAvailable && bonus > 0 && (!bestAvailableItem || bestAvailableItemBonus < bonus)) {
                         bestAvailableItem = clothingItem;
+                        bestAvailableItemBonus = bonus;
                     }
                     
                     if (isAvailable && includeMultiplePerType) {
@@ -80,17 +86,13 @@ define([
                     result.push(bestAvailableItem);
                 }
             }
-
-            if (!includeNonCraftable && !includeMultiplePerType)
-                this.defaultClothing[levelOrdinal] = result;
-            else if (includeNonCraftable && includeMultiplePerType)
-                this.availableClothing[levelOrdinal] = result;
             
             return result;
         },
         
+        // max radiation level at the END of the given level ordinal
         getMaxHazardRadiationForLevel: function (levelOrdinal, totalLevels) {
-            var defaultClothing = this.getDefaultClothing(levelOrdinal);
+            var defaultClothing = this.getBestClothing(levelOrdinal, ItemConstants.itemBonusTypes.res_radiation);
             var radiationProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 radiationProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_radiation);
@@ -98,8 +100,9 @@ define([
             return radiationProtection;
         },
         
+         // max radiation level at the END of the given level ordinal
         getMaxHazardPoisonForLevel: function (levelOrdinal) {
-            var defaultClothing = this.getDefaultClothing(levelOrdinal);
+            var defaultClothing = this.getBestClothing(levelOrdinal, ItemConstants.itemBonusTypes.res_poison);
             var poisonProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 poisonProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_poison);
@@ -107,8 +110,9 @@ define([
             return poisonProtection;        
         },
         
+         // max radiation level at the END of the given level ordinal
         getMaxHazardColdForLevel: function (levelOrdinal) {
-            var defaultClothing = this.getDefaultClothing(levelOrdinal);
+            var defaultClothing = this.getBestClothing(levelOrdinal, ItemConstants.itemBonusTypes.res_cold);
             var coldProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 coldProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_cold);

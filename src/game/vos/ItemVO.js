@@ -34,7 +34,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
             
 			this.equipped = false;
 			this.carried = false;
-			this.itemID = Math.floor(Math.random() * 1000000);
+			this.itemID = Math.floor(Math.random() * 100000);
         },
         
         getTotalBonus: function () {
