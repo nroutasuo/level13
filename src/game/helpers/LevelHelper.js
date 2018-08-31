@@ -1,6 +1,7 @@
 // Singleton with helper methods for level entities
 define([
     'ash',
+    'utils/PathFinding',
     'game/constants/LocaleConstants',
     'game/constants/PositionConstants',
     'game/constants/MovementConstants',
@@ -26,6 +27,7 @@ define([
     'game/vos/PositionVO'
 ], function (
 	Ash,
+    PathFinding,
 	LocaleConstants,
 	PositionConstants,
 	MovementConstants,
@@ -137,7 +139,7 @@ define([
 			return result;
         },
         
-        getSectorNeighboursMap: function (sector) {
+        getSectorNeighboursMap: function (sector, neighbourWrapFunc) {
             if (!sector)
                 return null;
 			var result = {};
@@ -147,112 +149,46 @@ define([
 				var direction = PositionConstants.getLevelDirections()[i];
 				var neighbourPos = PositionConstants.getPositionOnPath(startingPos, direction, 1);
                 var neighbour = this.getSectorByPosition(neighbourPos.level, neighbourPos.sectorX, neighbourPos.sectorY);
-                result[direction] = neighbour;
+                result[direction] = neighbourWrapFunc(neighbour);
 			}
 			return result;
         },
 		
-        findPathTo: function (startSector, goalSector, settings) {     
-            // Simple breadth-first search (implement A* if movement cost needs to be considered)
-            
-            if (!startSector) {
-                console.log("WARN: No start sector defined.");
-            }
-            
-            if (!goalSector) {
-                console.log("WARN: No goal sector defined.");
-            }
-            
-            if (!settings) settings = {};
-            
-            var startLevel = startSector.get(PositionComponent).level;
-            var goalLevel = goalSector.get(PositionComponent).level;
-            
-            if (startLevel > goalLevel) {
-                var passageDown = this.findPassageDown(startLevel, settings.includeUnbuiltPassages);
-                if (passageDown) {
-                    var passageDownPos = passageDown.get(PositionComponent);
-                    var passageUp = this.getSectorByPosition(passageDownPos.level - 1, passageDownPos.sectorX, passageDownPos.sectorY);
-                    var combined = this.findPathTo(startSector, passageDown, settings).concat([passageUp]).concat(this.findPathTo(passageUp, goalSector, settings));
-                    return combined;
-                } else {
-                    console.log("Can't find path because there is no passage from level " + startLevel + " to level " + goalLevel)
-                }
-            } else if (startLevel < goalLevel) {
-                var passageUp = this.findPassageUp(startLevel, settings.includeUnbuiltPassages);
-                if (passageUp) {
-                    var passageUpPos = passageUp.get(PositionComponent);
-                    var passageDown = this.getSectorByPosition(passageUpPos.level + 1, passageUpPos.sectorX, passageUpPos.sectorY);
-                    var combined = this.findPathTo(startSector, passageUp, settings).concat([passageDown]).concat(this.findPathTo(passageDown, goalSector, settings));
-                    return combined;
-                } else {
-                    console.log("Can't find path because there is no passage from level " + startLevel + " to level " + goalLevel)
-                }
-            }
-            
-            var frontier = [];
-            var visited = [];
-            var cameFrom = {};
-            
-            var getKey = function (sector) {
-                return sector.get(PositionComponent).getPosition().toString();
-            };
-            
+        findPathTo: function (startSector, goalSector, settings) {            
             var movementHelper = this.movementHelper;
-            var isValid = function (sector, startSector, direction) {
-                if (settings && settings.skipUnvisited && !sector.has(VisitedComponent))
-                    return false;
-                if (settings && settings.skipBlockers && movementHelper.isBlocked(startSector, direction)) {
-                    return false;
-                }
-                return true;
+            var levelHelper = this;
+            
+            var makePathSectorVO = function (entity) {
+                if (!entity) return null;
+                return {
+                    position: entity.get(PositionComponent).getPosition(),
+                    isVisited: entity.has(VisitedComponent),
+                    result: entity
+                };
             };
             
-            if (getKey(startSector) === getKey(goalSector))
-                return [];
+            var startVO = makePathSectorVO(startSector);
+            var goalVO = makePathSectorVO(goalSector);
             
-            visited.push(getKey(startSector));
-            frontier.push(startSector);
-            cameFrom[getKey(startSector)] = null;
-            
-            var pass = 0;
-            var current;
-            var neighbours;
-            var next;
-            mainLoop: while (frontier.length > 0) {
-                pass++;
-                current = frontier.shift();
-                neighbours = this.getSectorNeighboursMap(current);
-                for (var direction in neighbours) {
-                    var next = neighbours[direction];
-                    if (!next)
-                        continue;
-                    var neighbourKey = getKey(next);
-                    if (visited.indexOf(neighbourKey) >= 0)
-                        continue;
-                    if (!isValid(next, current, parseInt(direction)))
-                        continue;
-                    visited.push(neighbourKey);
-                    frontier.push(next);
-                    cameFrom[neighbourKey] = current;
-                    
-                    if (next === goalSector) {
-                        break mainLoop;
-                    }
+            var utilities = {
+                findPassageDown: function (level, includeUnbuilt) {
+                    return makePathSectorVO(levelHelper.findPassageDown(level, includeUnbuilt));
+                },
+                findPassageUp: function (level, includeUnbuilt) {
+                    return makePathSectorVO(levelHelper.findPassageUp(level, includeUnbuilt));
+                },
+                getSectorByPosition: function (level, sectorX, sectorY) {
+                    return makePathSectorVO(levelHelper.getSectorByPosition(level, sectorX, sectorY));
+                },
+                getSectorNeighboursMap: function (pathSectorVO) {
+                    return levelHelper.getSectorNeighboursMap(pathSectorVO.result, makePathSectorVO);
+                },
+                isBlocked: function (pathSectorVO, direction) {
+                    return makePathSectorVO(movementHelper.isBlocked(pathSectorVO.result, direction));
                 }
-            }
+            };
             
-            var result = [];
-            var current = goalSector;
-            while (current !== startSector) {
-                result.push(current);
-                current = cameFrom[getKey(current)];
-                if (!current || result.length > 500) {
-                    console.log("WARN: Failed to find path from " + getKey(startSector) + " to " + getKey(goalSector));
-                    break;
-                }
-            }
-            return result.reverse();
+            return PathFinding.findPath(startVO, goalVO, utilities, settings);
         },
         
         findPassageUp: function (level, includeUnbuiltPassages) {
