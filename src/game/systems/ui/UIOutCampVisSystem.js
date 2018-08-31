@@ -110,6 +110,7 @@ define([
         },
         
         refreshBuildingSpots: function () {
+            if (!this.playerLocationNodes.head) return;
             var level = this.playerLocationNodes.head.position.level;
             var reset = this.buildingSpotsLevel !== level;
             

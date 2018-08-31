@@ -32,7 +32,7 @@ define([
         },
         
         getScavengeNecessityClothing: function (levelOrdinal) {
-            return this.itemsHelper.getAvailableClothingList(levelOrdinal, false, true, false);
+            return this.getAvailableClothingList(levelOrdinal, false, true, false);
         },
         
         getAvailableClothingList: function (levelOrdinal, includeCraftable, includeNonCraftable, includeMultiplePerType, preferredItemBonus) {
