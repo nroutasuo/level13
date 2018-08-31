@@ -39,8 +39,6 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         
         FIRST_CAMP_X: 1,
         FIRST_CAMP_Y: 0,
-        LVL_13_PASSAGE_UP_X: 10,
-        LVL_13_PASSAGE_UP_Y: 10,
         CAMP_ORDINAL_LIMIT: 6,
         
         MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 10,

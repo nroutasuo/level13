@@ -66,11 +66,25 @@ function (Ash, PathFinding, PositionConstants, GameConstants, PositionVO) {
 		},
 		
 		// Pseudo-random existing sector on the given level
-		randomSector: function (seed, levelVO, isCentral) {
-			if (isCentral)
-				return levelVO.centralSectors[Math.floor(this.random(seed * 76) * levelVO.centralSectors.length)];
-			else
-				return levelVO.sectors[Math.floor(this.random(seed * 76) * levelVO.sectors.length)];
+		randomSector: function (seed, levelVO, isCentral, pathStartPos, pathMaxLen) {
+            var sectors = isCentral ? levelVO.centralSectors : levelVO.sectors;
+            
+            if (!pathStartPos || !pathMaxLen) {
+                return sectors[Math.floor(this.random(seed) * sectors.length)];
+            }
+            
+            var sector;
+            for (var i = 0; i < 100; i++) {
+                sector = sectors[Math.floor(this.random(seed + (i + 1) * 3) * sectors.length)];
+                // todo get path len
+                var pathLen = this.findPath(levelVO, pathStartPos, sector.position).length;
+                if (pathLen > pathMaxLen) continue;
+                if (pathLen <= 0) continue;
+                return sector;
+            }
+            
+            console.log("WARN: Failed to find random sector that fulfills requirements (pathMaxLen: " + pathMaxLen + "). Returning random sector.");
+            return sector;
 		},
 		
 		// Pseudo-random int between min (inclusive) and max (exclusive)
@@ -94,10 +108,18 @@ function (Ash, PathFinding, PositionConstants, GameConstants, PositionVO) {
 		},
         
         findPath: function (levelVO, startPos, endPos) {
+            if (!startPos) {
+                console.log("WARN: No start pos defined.");
+            }
+            
+            if (!endPos) {
+                console.log("WARN: No goal pos defined.");
+            }
+            
             if (startPos.level !== levelVO.level || endPos.level !== levelVO.level) {
                 console.log("findPath only supports positions on the same level!")
-		}
-        
+            }
+            
             var makePathSectorVO = function (position) {
                 if (!position) return null;
                 return {

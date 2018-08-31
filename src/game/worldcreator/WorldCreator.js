@@ -54,8 +54,8 @@ define([
 		
 		// campable sectors and levels, movement blockers, passages, sunlight
 		prepareWorldStructure: function (seed, topLevel, bottomLevel) {
-			var passageDownSectors = [];
 			var passageDownPositions = [];
+			var passageDownSectors = [];
             this.totalSectors = 0;
             
 			for (var l = topLevel; l >= bottomLevel; l--) {
@@ -67,10 +67,12 @@ define([
                 var populationGrowthFactor = isCampableLevel ? WorldCreatorConstants.getPopulationGrowthFactor(campOrdinal) : 0;
                 var levelVO = new LevelVO(l, levelOrdinal, isCampableLevel, notCampableReason, populationGrowthFactor);
 				this.world.addLevel(levelVO);
+                
+                var passageUpPositions = passageDownPositions;
 
-                // basic structure (sectors)
-                this.generateSectors(seed, levelVO, passageDownPositions);
-					
+                // basic structure (sectors and paths)
+                this.generateSectors(seed, levelVO, passageUpPositions);
+
 				// camp: 3-10 guaranteed campable spots for every campable level
                 var numCamps = 1;
 				if (l === 13) {
@@ -86,30 +88,45 @@ define([
 				// passages: up according to previous level
                 var previousLevelVO = this.world.levels[l + 1];
                 var passagePosition;
-				for (var i = 0; i < passageDownSectors.length; i++) {
-                    passagePosition = passageDownSectors[i].position;
+				for (var i = 0; i < passageUpPositions.length; i++) {
+                    passagePosition = passageUpPositions[i];
 					levelVO.getSector(passagePosition.sectorX, passagePosition.sectorY).passageUp =
                         previousLevelVO.getSector(passagePosition.sectorX, passagePosition.sectorY).passageDown;
 				}
 				
 				// passages: down 1-2 per level
 				if (l > bottomLevel) {
+                    // number of passages
 					var numPassages = WorldCreatorRandom.random(seed * l / 7 + l + l * l + seed) > 0.65 ? 2 : 1;
 					if (l === 14) numPassages = 1;
 					if (l === 13) numPassages = 1;
-					passageDownSectors = WorldCreatorRandom.randomSectors(seed * l * 654 * (i + 2), levelVO, numPassages, numPassages + 1, true, "camp");
-                    if (l === 14) {
-                        var passageDownSector = levelVO.getSector(WorldCreatorConstants.LVL_13_PASSAGE_UP_X, WorldCreatorConstants.LVL_13_PASSAGE_UP_Y);
-                        if (passageDownSector) passageDownSectors = [ passageDownSector ];
-                        else console.log("WARN: Default passage from lvl 13 to 14 not created.");
+                    
+                    // passage positions (at least one must be within reach from passages up)
+                    passageDownPositions = [];
+                    passageDownSectors = [];
+                    for (var i = 0; i < numPassages; i++) {
+                        // get a random sector that a) exists on the level b) is within path distance from corresponding passage up
+                        var passageUpPos = passageUpPositions.length > i ? passageUpPositions[i] : passageUpPositions[0];
+                        if (passageUpPos) {
+                            passageUpPos.level = l;
+                            var maxPathLen = WorldCreatorConstants.getMaxPathLength(levelOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
+                            passageDownSectors[i] = WorldCreatorRandom.randomSector(seed * l * 654 * (i + 2), levelVO, true, passageUpPos, maxPathLen);
+                            var path = WorldCreatorRandom.findPath(levelVO, passageUpPos, passageDownSectors[i].position);
+                            for (var j = 0; j < path.length; j++) {
+                                levelVO.getSector(path[j].sectorX, path[j].sectorY).addToCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
+                            }
+                        } else {
+                            passageDownSectors[i] = WorldCreatorRandom.randomSector(seed * l * 654 * (i + 2), levelVO, true);
+                        }
+                        passageDownPositions.push(passageDownSectors[i].position);
                     }
-					passageDownPositions = [];
+                    
+                    // passage types
 					for (var i = 0; i < passageDownSectors.length; i++) {
-						passageDownPositions.push(passageDownSectors[i].position);
 						if (l === 13) {
-							passageDownSectors[i].passageDown = 3;
+							passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_STAIRWELL;
 						} else if (l === 14) {
-							passageDownSectors[i].passageDown = 1;
+							passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_HOLE;
 						} else {
 							var availablePassageTypes = [MovementConstants.PASSAGE_TYPE_STAIRWELL];
 							if (l < 6 || l > 13) availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_HOLE);
@@ -143,6 +160,7 @@ define([
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World structure ready."
 				+ (GameConstants.isDebugOutputEnabled ? " (ground: " + bottomLevel + ", surface: " + topLevel + ", total sectors: " + this.totalSectors + ")" : ""));
+            WorldCreatorDebug.printWorld(this.world, [ "criticalPaths.length" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "locales.length" ]);
 		},
 		
@@ -428,15 +446,12 @@ define([
             //  create central structure
             this.generateSectorRectangle(levelVO, 0, new PositionVO(levelVO.level, 5, 5), PositionConstants.DIRECTION_WEST, 10, 10);
 
-            // connect existing positions (passages from the level above & initial starting & camp position)
+            // connect existing positions (passages from the level above & initial starting camp position & central structure)
             var existingPointsToConnect = [];
-            if (levelVO.sectors.length > 0) existingPointsToConnect.push(levelVO.sectors[0].position);
+            existingPointsToConnect.push(levelVO.sectors[0].position);
             existingPointsToConnect = existingPointsToConnect.concat(passagesUpPositions);
             if (l === 13) {
                 existingPointsToConnect.push(new PositionVO(13, WorldCreatorConstants.FIRST_CAMP_X, WorldCreatorConstants.FIRST_CAMP_Y));
-            }
-            if (l === 14) {
-                existingPointsToConnect.push(new PositionVO(14, WorldCreatorConstants.LVL_13_PASSAGE_UP_X, WorldCreatorConstants.LVL_13_PASSAGE_UP_Y));                
             }
             this.generateSectorsForExistingPoints(seed, levelVO, existingPointsToConnect);
             
