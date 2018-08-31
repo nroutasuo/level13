@@ -55,7 +55,6 @@ define([
 		// campable sectors and levels, movement blockers, passages, sunlight
 		prepareWorldStructure: function (seed, topLevel, bottomLevel) {
 			var passageDownPositions = [];
-			var passageDownSectors = [];
             this.totalSectors = 0;
             
 			for (var l = topLevel; l >= bottomLevel; l--) {
@@ -71,7 +70,7 @@ define([
                 var passageUpPositions = passageDownPositions;
 
                 // basic structure (sectors and paths)
-                this.generateSectors(seed, levelVO, passageUpPositions);
+                this.generateSectors(seed, levelVO, passageUpPositions, bottomLevel);
 
 				// camp: 3-10 guaranteed campable spots for every campable level
                 var numCamps = 1;
@@ -85,58 +84,8 @@ define([
 					}
 				}
                 
-				// passages: up according to previous level
-                var previousLevelVO = this.world.levels[l + 1];
-                var passagePosition;
-				for (var i = 0; i < passageUpPositions.length; i++) {
-                    passagePosition = passageUpPositions[i];
-					levelVO.getSector(passagePosition.sectorX, passagePosition.sectorY).passageUp =
-                        previousLevelVO.getSector(passagePosition.sectorX, passagePosition.sectorY).passageDown;
-				}
-				
-				// passages: down 1-2 per level
-				if (l > bottomLevel) {
-                    // number of passages
-					var numPassages = WorldCreatorRandom.random(seed * l / 7 + l + l * l + seed) > 0.65 ? 2 : 1;
-					if (l === 14) numPassages = 1;
-					if (l === 13) numPassages = 1;
-                    
-                    // passage positions (at least one must be within reach from passages up)
-                    passageDownPositions = [];
-                    passageDownSectors = [];
-                    for (var i = 0; i < numPassages; i++) {
-                        // get a random sector that a) exists on the level b) is within path distance from corresponding passage up
-                        var passageUpPos = passageUpPositions.length > i ? passageUpPositions[i] : passageUpPositions[0];
-                        if (passageUpPos) {
-                            passageUpPos.level = l;
-                            var maxPathLen = WorldCreatorConstants.getMaxPathLength(levelOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
-                            passageDownSectors[i] = WorldCreatorRandom.randomSector(seed * l * 654 * (i + 2), levelVO, true, passageUpPos, maxPathLen);
-                            var path = WorldCreatorRandom.findPath(levelVO, passageUpPos, passageDownSectors[i].position);
-                            for (var j = 0; j < path.length; j++) {
-                                levelVO.getSector(path[j].sectorX, path[j].sectorY).addToCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
-                            }
-                        } else {
-                            passageDownSectors[i] = WorldCreatorRandom.randomSector(seed * l * 654 * (i + 2), levelVO, true);
-                        }
-                        passageDownPositions.push(passageDownSectors[i].position);
-                    }
-                    
-                    // passage types
-					for (var i = 0; i < passageDownSectors.length; i++) {
-						if (l === 13) {
-							passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_STAIRWELL;
-						} else if (l === 14) {
-							passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_HOLE;
-						} else {
-							var availablePassageTypes = [MovementConstants.PASSAGE_TYPE_STAIRWELL];
-							if (l < 6 || l > 13) availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_HOLE);
-							if (l > 15) availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_ELEVATOR);
-							var passageTypeIndex = WorldCreatorRandom.randomInt(9 * seed + l * i * 7 + i + l * seed, 0, availablePassageTypes.length);
-							var passageType = availablePassageTypes[passageTypeIndex];
-							passageDownSectors[i].passageDown = passageType;
-						}
-					}
-				}
+				// passages: up based on previous level and down based on path length
+                passageDownPositions = this.generatePassages(seed, levelVO, passageUpPositions, bottomLevel);
 				
 				// movement blockers: non-combat (a few per level)
                 var numSectors = WorldCreatorConstants.getNumSectors(levelOrdinal);
@@ -682,6 +631,67 @@ define([
 			var sectorVO = new SectorVO(sectorPos, levelVO.isCampable, levelVO.notCampableReason, requiredResources);
 			levelVO.addSector(sectorVO);
 		},
+        
+        generatePassages: function (seed, levelVO, passageUpPositions, bottomLevel) {
+            var l = levelVO.level;
+            var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
+            
+            // passages: up according to previous level
+            var previousLevelVO = this.world.levels[l + 1];
+            var passagePosition;
+            for (var i = 0; i < passageUpPositions.length; i++) {
+                passagePosition = passageUpPositions[i];
+                levelVO.getSector(passagePosition.sectorX, passagePosition.sectorY).passageUp =
+                    previousLevelVO.getSector(passagePosition.sectorX, passagePosition.sectorY).passageDown;
+            }
+            
+            var passageDownPositions = [];
+            var passageDownSectors = [];
+
+            // passages: down 1-2 per level
+            if (l > bottomLevel) {
+                // number of passages
+                var numPassages = WorldCreatorRandom.random(seed * l / 7 + l + l * l + seed) > 0.65 ? 2 : 1;
+                if (l === 14) numPassages = 1;
+                if (l === 13) numPassages = 1;
+
+                // passage positions (at least one must be within reach from passages up)
+                for (var i = 0; i < numPassages; i++) {
+                    // get a random sector that a) exists on the level b) is within path distance from corresponding passage up
+                    var passageUpPos = passageUpPositions.length > i ? passageUpPositions[i] : passageUpPositions[0];
+                    if (passageUpPos) {
+                        passageUpPos.level = l;
+                        var maxPathLen = WorldCreatorConstants.getMaxPathLength(levelOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
+                        passageDownSectors[i] = WorldCreatorRandom.randomSector(seed * l * 654 * (i + 2), levelVO, true, passageUpPos, maxPathLen);
+                        var path = WorldCreatorRandom.findPath(levelVO, passageUpPos, passageDownSectors[i].position);
+                        for (var j = 0; j < path.length; j++) {
+                            levelVO.getSector(path[j].sectorX, path[j].sectorY).addToCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
+                        }
+                    } else {
+                        passageDownSectors[i] = WorldCreatorRandom.randomSector(seed * l * 654 * (i + 2), levelVO, true);
+                    }
+                    passageDownPositions.push(passageDownSectors[i].position);
+                }
+
+                // passage types
+                for (var i = 0; i < passageDownSectors.length; i++) {
+                    if (l === 13) {
+                        passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_STAIRWELL;
+                    } else if (l === 14) {
+                        passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_HOLE;
+                    } else {
+                        var availablePassageTypes = [MovementConstants.PASSAGE_TYPE_STAIRWELL];
+                        if (l < 6 || l > 13) availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_HOLE);
+                        if (l > 15) availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_ELEVATOR);
+                        var passageTypeIndex = WorldCreatorRandom.randomInt(9 * seed + l * i * 7 + i + l * seed, 0, availablePassageTypes.length);
+                        var passageType = availablePassageTypes[passageTypeIndex];
+                        passageDownSectors[i].passageDown = passageType;
+                    }
+                }
+            }
+            
+            return passageDownPositions;
+        },
 		
         addMovementBlockers: function(seed, l, levelVO, blockerTypes, min, max) {
             if (blockerTypes.length < 1) return;
