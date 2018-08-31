@@ -1,6 +1,6 @@
 // Random and seed related functions for the WorldCreator
-define(['ash', 'game/constants/PositionConstants', 'game/constants/GameConstants', 'game/vos/PositionVO'], 
-function (Ash, PositionConstants, GameConstants, PositionVO) {
+define(['ash', 'utils/PathFinding', 'game/constants/PositionConstants', 'game/constants/GameConstants', 'game/vos/PositionVO'], 
+function (Ash, PathFinding, PositionConstants, GameConstants, PositionVO) {
 
     var WorldCreatorRandom = {
 		
@@ -91,7 +91,51 @@ function (Ash, PositionConstants, GameConstants, PositionVO) {
 		
 		getNewSeed: function() {
 			return Math.round(Math.random() * 10000);
+		},
+        
+        findPath: function (levelVO, startPos, endPos) {
+            if (startPos.level !== levelVO.level || endPos.level !== levelVO.level) {
+                console.log("findPath only supports positions on the same level!")
 		}
+        
+            var makePathSectorVO = function (position) {
+                if (!position) return null;
+                return {
+                    position: position,
+                    isVisited: false,
+                    result: position
+                };
+            };
+            
+            var startVO = makePathSectorVO(startPos);
+            var goalVO = makePathSectorVO(endPos);
+            
+            var utilities = {
+                findPassageDown: function (level, includeUnbuilt) {
+                    // todo implement
+                    return makePathSectorVO(null);
+                },
+                findPassageUp: function (level, includeUnbuilt) {
+                    // todo implement
+                    return makePathSectorVO(null);
+                },
+                getSectorByPosition: function (level, sectorX, sectorY) {
+                    return makePathSectorVO(new PositionVO(level, sectorX, sectorY));
+                },
+                getSectorNeighboursMap: function (pathSectorVO) {
+                    return levelVO.getNeighbours(pathSectorVO.result.sectorX, pathSectorVO.result.sectorY, 
+                        function (sector) { return makePathSectorVO(sector.position); 
+                    });
+                },
+                isBlocked: function (pathSectorVO, direction) {
+                    return levelVO.getNeighbours(pathSectorVO.result.sectorX, pathSectorVO.result.sectorY)[direction];
+                }
+            };
+            
+            var settings = { includeUnbuiltPassages: true, skipUnvisited: false, skipBlockers: false };
+            
+            return PathFinding.findPath(startVO, goalVO, utilities, settings);
+        },
         
     };
 

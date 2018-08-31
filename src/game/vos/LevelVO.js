@@ -78,14 +78,17 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			return false;
 		},
 		
-		getNeighbours: function (sectorX, sectorY) {
+		getNeighbours: function (sectorX, sectorY, neighbourWrapFunc) {
+            if (!neighbourWrapFunc) {
+                neighbourWrapFunc = function (n) { return n; };
+            }
 			var neighbours = {};
 			var startingPos = new PositionVO(this.level, sectorX, sectorY);
 			for (var i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var neighbourPos = PositionConstants.getPositionOnPath(startingPos, direction, 1);
 				if (this.hasSector(neighbourPos.sectorX, neighbourPos.sectorY)) {
-					neighbours[direction] = this.getSector(neighbourPos.sectorX, neighbourPos.sectorY);
+					neighbours[direction] = neighbourWrapFunc(this.getSector(neighbourPos.sectorX, neighbourPos.sectorY));
 				}
 			}
 			return neighbours;
