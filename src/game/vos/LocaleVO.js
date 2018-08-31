@@ -1,5 +1,5 @@
 // Locale / point of interest: an additional scoutable location in a sector
-define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
+define(['ash', 'game/vos/ResourcesVO', 'game/constants/WorldCreatorConstants'], function (Ash, ResourcesVO, WorldCreatorConstants) {
 
 	localeTypes = {
 		factory: 0,
@@ -58,24 +58,27 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
         },
         
         getStaminaRequirement: function () {
+            var maxCost = WorldCreatorConstants.MAX_SCOUT_LOCALE_STAMINA_COST;
+            var minCost = 100;
+            var difficulty = 0.5;
             switch (this.type) {
-                case localeTypes.factory: return 800;
-                case localeTypes.house: return 200;
-                case localeTypes.lab: return 600;
-                case localeTypes.grove: return 100;
-                case localeTypes.market: return 200;
-                case localeTypes.maintenance: return 750;
-                case localeTypes.transport: return 400;
-                case localeTypes.sewer: return 700;
-                case localeTypes.warehouse: return 100;
-                case localeTypes.camp: 
-                case localeTypes.tradingpartner:
-                    return 200;
-                case localeTypes.hut: return 300;
-                case localeTypes.hermit: return 400;
-                case localeTypes.caravan: return 400;
+                case localeTypes.factory: difficulty = 1; break;
+                case localeTypes.house: difficulty = 0.15; break;
+                case localeTypes.lab: difficulty = 0.85; break;
+                case localeTypes.grove: difficulty = 0; break;
+                case localeTypes.market: difficulty = 0.15; break;
+                case localeTypes.maintenance: difficulty = 1; break;
+                case localeTypes.transport: difficulty = 0.5; break;
+                case localeTypes.sewer: difficulty = 1; break;
+                case localeTypes.warehouse: difficulty = 0; break;
+                case localeTypes.camp: difficulty = 0.15; break;
+                case localeTypes.tradingpartner: difficulty = 0.15; break;
+                case localeTypes.hut: difficulty = 0.35; break;
+                case localeTypes.hermit: difficulty = 0.5; break;
+                case localeTypes.caravan: difficulty = 0.4; break;
                 default: return 20;
             }
+            return Math.floor((minCost + (maxCost - minCost) * difficulty) / 100) * 100;
         },
         
         getResourceBonus: function (unlockedResources) {

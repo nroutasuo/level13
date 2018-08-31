@@ -1,6 +1,12 @@
-define(['ash'], function (Ash) {
+define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
     
     var WorldCreatorConstants = {
+        
+        CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP: "camp_to_workshop",
+        CRITICAL_PATH_TYPE_CAMP_TO_LOCALE: "camp_to_locale",
+        CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE: "camp_to_passage",
+        CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE: "passage_to_passage",
+        CRITICAL_PATH_TYPE_CAMP_TO_CAMP: "camp_to_camp",
         
         // Sector features
         SECTOR_TYPE_RESIDENTIAL: "residential",
@@ -40,6 +46,8 @@ define(['ash'], function (Ash) {
         MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 10,
         MIN_LEVEL_HAZARD_POISON: 15,
         
+        MAX_SCOUT_LOCALE_STAMINA_COST: 700,
+        
         LEVEL_ORDINAL_BAG_2: 2,
         LEVEL_ORDINAL_BAG_3: 6,
         LEVEL_ORDINAL_BAG_4: 10,
@@ -65,6 +73,52 @@ define(['ash'], function (Ash) {
             if (levelOrdinal < 15)
                 return 200;
             return 300;
+        },
+        
+        // max length of a path (limited by stamina) on the given level ordinal
+        // if a path spans several levels, lowest ordinal should be used
+        getMaxPathLength: function (levelOrdinal, pathType) {
+            // todo take movement cost reductions into account
+            // todo take health upgrades into account
+            var movementCost = 10;
+            var maxStamina = 1000;
+            var maxLength = maxStamina / movementCost;
+
+            switch (pathType) {
+                case this.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE:
+                    // there, scout and back
+                    var maxScoutCost = WorldCreatorConstants.MAX_SCOUT_LOCALE_STAMINA_COST;
+                    maxLength = maxLength / 2 - maxScoutCost / movementCost;
+                    break;
+                case this.CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP:
+                case this.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE:
+                    // there and back
+                    maxLength = maxLength / 2; 
+                    break;
+                case this.CRITICAL_PATH_TYPE_CAMP_TO_CAMP:
+                    // only need to make it there
+                    break;
+                case this.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE: 
+                    // must be smaller than CAMP_TO_CAMP because is often a part of the CAMP_TO_CAMP path
+                    maxLength = maxLength / 2;
+                    break;
+                default: 
+                    console.log("WARN: Unknown path type: " + pathType);
+                    break;
+            }
+            
+            var scoutCost = 5;
+            var numScouts = MathUtils.clamp(Math.round(maxLength / 5), 1, 10);
+            maxLength = maxLength - numScouts * scoutCost / movementCost;
+            
+            var scavengeCost = 3;
+            var numScavenges = MathUtils.clamp(Math.round(maxLength / 5), 1, 10);
+            maxLength = maxLength - numScavenges * scavengeCost / movementCost;
+            
+            var ordinalFactor = levelOrdinal === 1 ? 0.85 : 1;
+            maxLength = maxLength * ordinalFactor;
+            
+            return Math.floor(maxLength);
         },
         
         getBagBonus: function (levelOrdinal) {

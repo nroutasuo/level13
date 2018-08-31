@@ -9,6 +9,7 @@ define(['ash', 'game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'], funct
 			this.position = position;
             this.campableLevel = isCampableLevel;
             this.notCampableReason = notCampableReason;
+            this.criticalPaths = [];
             this.requiredResources = requiredResources ? requiredResources : new ResourcesVO();
             
             this.id = Math.floor(Math.random() * 100000);
@@ -23,6 +24,11 @@ define(['ash', 'game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'], funct
             this.resourcesRequired = new ResourcesVO();
             this.resourcesScavengable = new ResourcesVO();
             this.resourcesCollectable = new ResourcesVO();
+        },
+        
+        addToCriticalPath: function (type) {
+            if (this.criticalPaths.indexOf(type) >= 0) return;
+            this.criticalPaths.push(type);
         },
 		
 		addBlocker: function (direction, blockerType) {
