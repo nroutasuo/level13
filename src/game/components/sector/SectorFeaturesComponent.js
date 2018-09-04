@@ -38,15 +38,7 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
         // Secondary attributes
         
         canHaveCamp: function () {
-            var hasWater = (this.resourcesCollectable.water > 0 || this.resourcesScavengable.water > 0 || this.hasSpring);
-            var hasFood = (this.resourcesCollectable.food > 0 || this.resourcesScavengable.food > 0);
-            return this.campable &&
-                    this.buildingDensity > 0 && this.buildingDensity < 9 &&
-                    hasWater && 
-                    hasFood && 
-                    this.resourcesScavengable.fuel <= 0 &&
-                    !this.hazards.hasHazards() &&
-                    this.stateOfRepair > 0;
+            return this.campable;
         },
         
         // Text functions

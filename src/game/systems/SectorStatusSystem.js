@@ -89,7 +89,7 @@ define([
 			this.updateGangs(entity);
 			this.updateMovementOptions(entity);
 			
-			sectorStatusComponent.canBuildCamp = isScouted && !hasCampLevel && featuresComponent.canHaveCamp() && !passagesComponent.passageUp && !passagesComponent.passageDown && !hasEnemies;
+			sectorStatusComponent.canBuildCamp = isScouted && !hasCampLevel && featuresComponent.canHaveCamp();
 			
 			if (hasCampSector && !hasCampLevel) levelEntity.add(entity.get(CampComponent));
 		},
