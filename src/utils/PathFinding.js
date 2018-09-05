@@ -26,7 +26,7 @@ define(function () {
             
             if (!settings) settings = {};
             
-            // build paths spanning multiple levels from several piecess
+            // build paths spanning multiple levels from several pieces
             
             var startLevel = startVO.position.level;
             var goalLevel = goalVO.position.level;
@@ -36,7 +36,7 @@ define(function () {
                 if (passageDown) {
                     var passageDownPos = passageDown.position;
                     var passageUp = utilities.getSectorByPosition(passageDownPos.level - 1, passageDownPos.sectorX, passageDownPos.sectorY);
-                    var combined = this.findPathTo(startVO, passageDown, settings).concat([passageUp]).concat(this.findPathTo(passageUp, goalVO, settings));
+                    var combined = this.findPath(startVO, passageDown, utilities, settings).concat([passageUp.result]).concat(this.findPath(passageUp, goalVO, utilities, settings));
                     return combined;
                 } else {
                     console.log("Can't find path because there is no passage from level " + startLevel + " to level " + goalLevel);
@@ -46,7 +46,7 @@ define(function () {
                 if (passageUp) {
                     var passageUpPos = passageUp.position;
                     var passageDown = utilities.getSectorByPosition(passageUpPos.level + 1, passageUpPos.sectorX, passageUpPos.sectorY);
-                    var combined = this.findPathTo(startVO, passageUp, settings).concat([passageDown]).concat(this.findPathTo(passageDown, goalVO, settings));
+                    var combined = this.findPath(startVO, passageUp, utilities, settings).concat([passageDown.result]).concat(this.findPath(passageDown, goalVO, utilities, settings));
                     return combined;
                 } else {
                     console.log("Can't find path because there is no passage from level " + startLevel + " to level " + goalLevel);
@@ -83,6 +83,7 @@ define(function () {
             var current;
             var neighbours;
             var next;
+            
             mainLoop: while (frontier.length > 0) {
                 pass++;
                 current = frontier.shift();
@@ -112,7 +113,7 @@ define(function () {
                 result.push(current.result);
                 current = cameFrom[getKey(current)];
                 if (!current || result.length > 500) {
-                    console.log("WARN: Failed to find path from " + getKey(startVO) + " to " + getKey(goalVO));
+                    console.log("WARN: failed to find path");
                     break;
                 }
             }

@@ -20,7 +20,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, PositionVO) {
 				var sector;
 				var additionalRandom = 0;
 				do {
-					sector = this.randomSector(seed * 7 * i % 3 + additionalRandom + seed, levelVO, requireCentral);
+					sector = this.randomSector(seed * 7 * i % 3 + additionalRandom + seed, this.world, levelVO, requireCentral);
 					additionalRandom++;
 				} while (sectors.indexOf(sector) >= 0 || !checkExclusion(sector));
 				sectors.push(sector);
@@ -66,25 +66,31 @@ function (Ash, PathFinding, PositionConstants, GameConstants, PositionVO) {
 		},
 		
 		// Pseudo-random existing sector on the given level
-		randomSector: function (seed, levelVO, isCentral, pathStartPos, pathMaxLen) {
+        // pathStartPos and pathMaxLen are arrays and all paths must be satisfied if present
+		randomSector: function (seed, worldVO, levelVO, isCentral, pathStartPos, pathMaxLen) {
             var sectors = isCentral ? levelVO.centralSectors : levelVO.sectors;
             
-            if (!pathStartPos || !pathMaxLen) {
+            if (!pathStartPos || !pathMaxLen || pathStartPos.length === 0) {
                 return sectors[Math.floor(this.random(seed) * sectors.length)];
+            }
+            
+            if (pathStartPos.length !== pathMaxLen.length) {
+                console.log("WARN: paths for randomSector incorrectly configured");
             }
             
             var sector;
             for (var i = 0; i < 100; i++) {
                 sector = sectors[Math.floor(this.random(seed + (i + 1) * 3) * sectors.length)];
-                // todo get path len
-                var pathLen = this.findPath(levelVO, pathStartPos, sector.position).length;
-                if (pathLen > pathMaxLen) continue;
-                if (pathLen <= 0) continue;
-                return sector;
+                for (var j = 0; j < pathStartPos.length; j++) {
+                    var pathLen = this.findPath(worldVO, pathStartPos[j], sector.position).length;
+                    if (pathLen > pathMaxLen[j]) break;
+                    if (pathLen <= 0) break;
+                    return sector;
+                }
             }
             
-            console.log("WARN: Failed to find random sector that fulfills requirements (pathMaxLen: " + pathMaxLen + "). Returning random sector.");
-            return sector;
+            console.log("WARN: Failed to find random sector that fulfills requirements. Returning random sector.");
+            return null;
 		},
 		
 		// Pseudo-random int between min (inclusive) and max (exclusive)
@@ -107,17 +113,13 @@ function (Ash, PathFinding, PositionConstants, GameConstants, PositionVO) {
 			return Math.round(Math.random() * 10000);
 		},
         
-        findPath: function (levelVO, startPos, endPos) {
+        findPath: function (worldVO, startPos, endPos) {
             if (!startPos) {
                 console.log("WARN: No start pos defined.");
             }
             
             if (!endPos) {
                 console.log("WARN: No goal pos defined.");
-            }
-            
-            if (startPos.level !== levelVO.level || endPos.level !== levelVO.level) {
-                console.log("findPath only supports positions on the same level!")
             }
             
             var makePathSectorVO = function (position) {
@@ -133,27 +135,28 @@ function (Ash, PathFinding, PositionConstants, GameConstants, PositionVO) {
             var goalVO = makePathSectorVO(endPos);
             
             var utilities = {
-                findPassageDown: function (level, includeUnbuilt) {
-                    // todo implement
-                    return makePathSectorVO(null);
+                findPassageDown: function (level) {
+                    var levelVO = worldVO.getLevel(level);
+                    return makePathSectorVO(levelVO.findPassageOown().position);
                 },
-                findPassageUp: function (level, includeUnbuilt) {
-                    // todo implement
-                    return makePathSectorVO(null);
+                findPassageUp: function (level) {
+                    var levelVO = worldVO.getLevel(level);
+                    return makePathSectorVO(levelVO.findPassageUp().position);
                 },
                 getSectorByPosition: function (level, sectorX, sectorY) {
                     return makePathSectorVO(new PositionVO(level, sectorX, sectorY));
                 },
                 getSectorNeighboursMap: function (pathSectorVO) {
+                    var levelVO = worldVO.getLevel(pathSectorVO.position.level);
                     return levelVO.getNeighbours(pathSectorVO.result.sectorX, pathSectorVO.result.sectorY, 
                         function (sector) { return makePathSectorVO(sector.position); 
                     });
                 },
                 isBlocked: function (pathSectorVO, direction) {
+                    var levelVO = worldVO.getLevel(pathSectorVO.position.level);
                     return levelVO.getNeighbours(pathSectorVO.result.sectorX, pathSectorVO.result.sectorY)[direction];
                 }
             };
-            
             var settings = { includeUnbuiltPassages: true, skipUnvisited: false, skipBlockers: false };
             
             return PathFinding.findPath(startVO, goalVO, utilities, settings);

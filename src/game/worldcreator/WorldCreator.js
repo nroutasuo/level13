@@ -55,6 +55,7 @@ define([
 		// campable sectors and levels, movement blockers, passages, sunlight
 		prepareWorldStructure: function (seed, topLevel, bottomLevel) {
 			var passageDownPositions = [];
+            var previousCampPositions = null;
             this.totalSectors = 0;
             
 			for (var l = topLevel; l >= bottomLevel; l--) {
@@ -72,20 +73,51 @@ define([
                 // basic structure (sectors and paths)
                 this.generateSectors(seed, levelVO, passageUpPositions, bottomLevel);
 
-				// camp: 3-10 guaranteed campable spots for every campable level
-                var numCamps = 1;
+				// passages: up based on previous level and down based on path length
+                passageDownPositions = this.generatePassages(seed, levelVO, passageUpPositions, bottomLevel);
+
+				// camps: a few guaranteed campable spots for every campable level
 				if (l === 13) {
 					levelVO.getSector(WorldCreatorConstants.FIRST_CAMP_X, WorldCreatorConstants.FIRST_CAMP_Y).camp = true;
 				} else {
-					numCamps = isCampableLevel ? WorldCreatorRandom.randomInt(seed / 3 * l, 3, 11) : 0;
+					var numCamps = isCampableLevel ? WorldCreatorRandom.randomInt(seed / 3 * l, 3, 7) : 0;
+                    if (numCamps > 0) {
+                        var pathStartPos = [];
+                        var pathLen = [];
+                        var pathType = [];
+                        // critical paths: to passages up
+                        for (var pu = 0; pu < passageUpPositions.length; pu++) {
+                            pathStartPos.push(passageUpPositions[pu]);
+                            pathLen.push(WorldCreatorConstants.getMaxPathLength(levelOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE));
+                            pathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+                        }
+                        // critical paths: to passages down
+                        for (var pd = 0; pd < passageDownPositions.length; pd++) {
+                            pathStartPos.push(passageDownPositions[pd]);
+                            pathLen.push(WorldCreatorConstants.getMaxPathLength(levelOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE));
+                            pathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+                        }
+                        // critical paths: to previous camp positions
+                        if (previousCampPositions) {
+                            for (var c = 0; c < previousCampPositions.length; c++) {
+                                pathStartPos.push(previousCampPositions[c]);
+                                pathLen.push(WorldCreatorConstants.getMaxPathLength(levelOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_CAMP));
+                                pathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_CAMP;
+                            }
+                        }
+                        previousCampPositions = [];
 					for (var i = 0; i < numCamps; i++) {
-						var campPosition = WorldCreatorRandom.randomSector(seed * l * 534 * (i + 7), levelVO, true).position;
-						levelVO.getSector(campPosition.sectorX, campPosition.sectorY).camp = true;
+                            var campSector = WorldCreatorRandom.randomSector(seed * l * 534 * (i + 7), this.world, levelVO, true, pathStartPos, pathLen);
+                            if (campSector) {
+                                campSector.camp = true;
+                                previousCampPositions.push(campSector.position);
+                                for (var j = 0; j < pathStartPos.length; j++) {
+                                    WorldCreatorHelper.addCriticalPath(this.world, campSector.position, pathStartPos[j], pathType[j]);
+                                }
+                            }
+                        }
 					}
 				}
-                
-				// passages: up based on previous level and down based on path length
-                passageDownPositions = this.generatePassages(seed, levelVO, passageUpPositions, bottomLevel);
 				
 				// movement blockers: non-combat (a few per level)
                 var numSectors = WorldCreatorConstants.getNumSectors(levelOrdinal);
@@ -251,7 +283,7 @@ define([
                 var levelOrdinal = WorldCreatorHelper.getLevelOrdinalForCampOrdinal(seed, partner.campOrdinal);
                 var level = WorldCreatorHelper.getLevelForOrdinal(seed, levelOrdinal);
                 var levelVO = this.world.getLevel(level);
-                var sectorVO = WorldCreatorRandom.randomSector(seed - 9393 + i * i, levelVO, false);
+                var sectorVO = WorldCreatorRandom.randomSector(seed - 9393 + i * i, this.world, levelVO, false);
                 var locale = new LocaleVO(localeTypes.tradingpartner, true);
                 sectorVO.locales.push(locale);
             }
@@ -662,13 +694,10 @@ define([
                     if (passageUpPos) {
                         passageUpPos.level = l;
                         var maxPathLen = WorldCreatorConstants.getMaxPathLength(levelOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
-                        passageDownSectors[i] = WorldCreatorRandom.randomSector(seed * l * 654 * (i + 2), levelVO, true, passageUpPos, maxPathLen);
-                        var path = WorldCreatorRandom.findPath(levelVO, passageUpPos, passageDownSectors[i].position);
-                        for (var j = 0; j < path.length; j++) {
-                            levelVO.getSector(path[j].sectorX, path[j].sectorY).addToCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
-                        }
+                        passageDownSectors[i] = WorldCreatorRandom.randomSector(seed * l * 654 * (i + 2), this.world, levelVO, true, [passageUpPos], [maxPathLen]);
+                        WorldCreatorHelper.addCriticalPath(this.world, passageUpPos, passageDownSectors[i].position, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
                     } else {
-                        passageDownSectors[i] = WorldCreatorRandom.randomSector(seed * l * 654 * (i + 2), levelVO, true);
+                        passageDownSectors[i] = WorldCreatorRandom.randomSector(seed * l * 654 * (i + 2), this.world, levelVO, true);
                     }
                     passageDownPositions.push(passageDownSectors[i].position);
                 }

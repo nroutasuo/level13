@@ -93,6 +93,22 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			}
 			return neighbours;
 		},
+        
+        findPassageOown: function () {
+            // todo save in levelVO instead of searching?
+            for (var i = 0; i < this.sectors.length; i++) {
+                if (this.sectors[i].passageDown > 0) return this.sectors[i];
+            }
+            return null;
+        },
+        
+        findPassageUp: function () {
+            // todo save in levelVO instead of searching?
+            for (var i = 0; i < this.sectors.length; i++) {
+                if (this.sectors[i].passageUp > 0) return this.sectors[i];
+            }
+            return null;
+        },
 		
 		getSector: function (sectorX, sectorY) {
 			return this.hasSector(sectorX, sectorY) ? this.sectorsByPos[sectorX][sectorY] : null;

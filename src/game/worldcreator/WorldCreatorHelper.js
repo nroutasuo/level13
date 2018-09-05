@@ -10,6 +10,14 @@ define([
     var WorldCreatorHelper = {
         
         camplessLevelOrdinals: {},
+        
+        addCriticalPath: function (worldVO, pathStartPos, pathEndPos, pathType) {
+            var path = WorldCreatorRandom.findPath(worldVO, pathStartPos, pathEndPos);
+            for (var j = 0; j < path.length; j++) {
+                var levelVO = worldVO.getLevel(path[j].level);
+                levelVO.getSector(path[j].sectorX, path[j].sectorY).addToCriticalPath(pathType);
+            }
+        },
 		
 		getSectorType: function (seed, level, x, y) {
             var sector = x + y + 2000;
