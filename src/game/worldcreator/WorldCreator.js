@@ -89,20 +89,20 @@ define([
                         for (var pu = 0; pu < passageUpPositions.length; pu++) {
                             pathStartPos.push(passageUpPositions[pu]);
                             pathLen.push(WorldCreatorConstants.getMaxPathLength(levelOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE));
-                            pathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+                            pathType.push(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
                         }
                         // critical paths: to passages down
                         for (var pd = 0; pd < passageDownPositions.length; pd++) {
                             pathStartPos.push(passageDownPositions[pd]);
                             pathLen.push(WorldCreatorConstants.getMaxPathLength(levelOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE));
-                            pathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+                            pathType.push(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
                         }
                         // critical paths: to previous camp positions
                         if (previousCampPositions) {
                             for (var c = 0; c < previousCampPositions.length; c++) {
                                 pathStartPos.push(previousCampPositions[c]);
                                 pathLen.push(WorldCreatorConstants.getMaxPathLength(levelOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_CAMP));
-                                pathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_CAMP;
+                                pathType.push(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_CAMP);
                             }
                         }
                         previousCampPositions = [];

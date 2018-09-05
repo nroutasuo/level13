@@ -89,16 +89,21 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
                     maxLength = maxLength / 2 - maxScoutCost / movementCost;
                     break;
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP:
+                    // there, fight and back
+                    var fightCost = 10 * 3;
+                    maxLength = maxLength / 2 - fightCost / movementCost;
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE:
                     // there and back
-                    maxLength = maxLength / 2; 
+                    // must be smaller than CAMP_TO_CAMP because that one can me CAMP_TO_PASSAGE + PASSAGE_TO_PASSAGE + CAMP_TO_PASSAGE
+                    maxLength = maxLength / 3; 
                     break;
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_CAMP:
                     // only need to make it there
                     break;
                 case this.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE: 
-                    // must be smaller than CAMP_TO_CAMP because is often a part of the CAMP_TO_CAMP path
-                    maxLength = maxLength / 2;
+                    // there and back
+                    // must be smaller than CAMP_TO_CAMP because that one can me CAMP_TO_PASSAGE + PASSAGE_TO_PASSAGE + CAMP_TO_PASSAGE
+                    maxLength = maxLength / 3;
                     break;
                 default: 
                     console.log("WARN: Unknown path type: " + pathType);
