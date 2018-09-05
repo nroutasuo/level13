@@ -16,6 +16,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 		
 		sectors: [],
 		centralSectors: [],
+        campSectors: [],
 		sectorsByPos: {},
         possibleSpringSectors: [],
 		minX: 0,
@@ -32,6 +33,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			
 			this.sectors = [];
 			this.centralSectors = [];
+            this.campSectors = [];
 			this.sectorsByPos = [];
             this.possibleSpringSectors = [];
 			this.minX = 0;
@@ -66,6 +68,10 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
             
             return true;
 		},
+        
+        addCampSector: function(campSector) {
+            this.campSectors.push(campSector);
+        },
 		
 		hasSector: function (sectorX, sectorY) {
 			var colList = this.sectorsByPos[sectorX];

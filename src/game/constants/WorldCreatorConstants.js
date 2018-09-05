@@ -3,7 +3,8 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
     var WorldCreatorConstants = {
         
         CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP: "camp_to_workshop",
-        CRITICAL_PATH_TYPE_CAMP_TO_LOCALE: "camp_to_locale",
+        CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1: "camp_to_locale_1",
+        CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2: "camp_to_locale_2",
         CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE: "camp_to_passage",
         CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE: "passage_to_passage",
         CRITICAL_PATH_TYPE_CAMP_TO_CAMP: "camp_to_camp",
@@ -83,7 +84,8 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
             var maxLength = maxStamina / movementCost;
 
             switch (pathType) {
-                case this.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE:
+                case this.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1:
+                case this.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2:
                     // there, scout and back
                     var maxScoutCost = WorldCreatorConstants.MAX_SCOUT_LOCALE_STAMINA_COST;
                     maxLength = maxLength / 2 - maxScoutCost / movementCost;

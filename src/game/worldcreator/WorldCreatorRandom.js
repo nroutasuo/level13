@@ -5,10 +5,12 @@ function (Ash, PathFinding, PositionConstants, GameConstants, PositionVO) {
     var WorldCreatorRandom = {
 		
 		// Pseudo-random array of min (inclusive) to max (exclusive) existing sectors, optionally excluding sectors with the given feature
-		randomSectors: function (seed, levelVO, min, max, requireCentral, excludingFeature) {
+        // pathStartPos and pathMaxLen are optional arrays and all paths must be satisfied if present
+		randomSectors: function (seed, worldVO, levelVO, min, max, requireCentral, excludingFeature, pathStartPos, pathMaxLen) {
 			var sectors = [];
 			var numSectors = this.randomInt(seed, min, max);
 			var checkExclusion = function (sectorVO) {
+                if (!sectorVO) return false;
 				if (excludingFeature) {
 					return !sectorVO[excludingFeature];
 				}
@@ -20,7 +22,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, PositionVO) {
 				var sector;
 				var additionalRandom = 0;
 				do {
-					sector = this.randomSector(seed * 7 * i % 3 + additionalRandom + seed, this.world, levelVO, requireCentral);
+					sector = this.randomSector(seed * 7 * i % 3 + additionalRandom + seed, worldVO, levelVO, requireCentral, pathStartPos, pathMaxLen);
 					additionalRandom++;
 				} while (sectors.indexOf(sector) >= 0 || !checkExclusion(sector));
 				sectors.push(sector);

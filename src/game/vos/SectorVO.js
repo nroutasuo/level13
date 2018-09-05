@@ -24,11 +24,22 @@ define(['ash', 'game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'], funct
             this.resourcesRequired = new ResourcesVO();
             this.resourcesScavengable = new ResourcesVO();
             this.resourcesCollectable = new ResourcesVO();
+        },        
+        
+        updateCriticalPath: function () {
+            this.criticalPath = "-";
+            for (var i = 0; i < this.criticalPaths.length; i++) {
+                if (this.getCriticalPathPriority(this.criticalPaths[i] < this.getCriticalPathPriority(this.criticalPath))) {
+                    var split = this.criticalPaths[i].split("_");
+                    this.criticalPath = split[split.length - 1][0];
+                }
+            }
         },
         
         addToCriticalPath: function (type) {
             if (this.criticalPaths.indexOf(type) >= 0) return;
             this.criticalPaths.push(type);
+            this.updateCriticalPath();
         },
 		
 		addBlocker: function (direction, blockerType) {
@@ -45,6 +56,19 @@ define(['ash', 'game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'], funct
 			}
 			return false;
 		},
+        
+        getCriticalPathPriority: function (pathType) {
+            if (!pathType) return 99;
+            switch (pathType) {
+                case this.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1: return 3;
+                case this.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2: return 4;
+                case this.CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP: return 2;
+                case this.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE: return 1;
+                case this.CRITICAL_PATH_TYPE_CAMP_TO_CAMP: return 5;
+                case this.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE: return 10;
+                default: return 50;
+            }
+        }
 		
     });
 
