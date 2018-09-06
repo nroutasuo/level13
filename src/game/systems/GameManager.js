@@ -43,7 +43,6 @@ define([
 		addToEngine: function (engine) {
 			this.engine = engine;
 			this.creator = new EntityCreator(this.engine);
-			this.setupGame();
 		},
 	
 		removeFromEngine: function (engine) {
@@ -51,7 +50,7 @@ define([
 			this.engine = null;
 		},
 		
-		// Called on add to engine
+		// Called on page load
 		setupGame: function () {
             if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t loading and setting up game");
 			this.initializeEntities();			
@@ -62,6 +61,9 @@ define([
             gtag('set', { 'max_camp': this.gameState.numCamps });
 			if (loaded) this.syncLoadedGameState();
 			if (!loaded) this.setupNewGame();
+            
+            if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t world ready");
+            GlobalSignals.worldReadySignal.dispatch();
 		},
 		
 		// Called after all other systems are ready

@@ -105,6 +105,7 @@ define([
         },
         
         getCurrentPieceCount: function () {
+            if (!this.tribeNodes.head) return 0;
             var count = 0;
 			for (var i = 0; i < this.tribeNodes.head.upgrades.newBlueprints.length; i++) {
                 var blueprintVO = this.tribeNodes.head.upgrades.newBlueprints[i];

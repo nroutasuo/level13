@@ -19,7 +19,6 @@ define([
             }
                         
             var level13 = new Level13(config.plugins);
-            level13.start();
                         
             if (GameConstants.isCheatsEnabled) {
                 window.app = level13;

@@ -26,10 +26,8 @@ define([
 
 		addToEngine: function (engine) {
 			this.itemNodes = engine.getNodeList(ItemsNode);
-			var itemsComponent = this.itemNodes.head.items;
-            this.followerCount = itemsComponent.getCountByType(ItemConstants.itemTypes.follower);
-            this.lastShownFollowerCount = this.followerCount;
             
+            GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
             GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.onInventoryChanged);
             GlobalSignals.add(this, GlobalSignals.equipmentChangedSignal, this.onEquipmentChanged);
@@ -41,8 +39,7 @@ define([
 		},
 
 		update: function (time) {
-			var itemsComponent = this.itemNodes.head.items;
-            
+            var itemsComponent = this.itemNodes.head.items;
             this.followerCount = itemsComponent.getCountByType(ItemConstants.itemTypes.follower);
 			this.updateBubble();
 		},
@@ -80,6 +77,12 @@ define([
 			this.uiFunctions.generateCallouts("#list-followers");
             this.lastShownFollowerCount = this.followerCount;
 		},
+        
+        onGameStarted: function () {
+            var itemsComponent = this.itemNodes.head.items;
+            this.followerCount = itemsComponent.getCountByType(ItemConstants.itemTypes.follower);
+            this.lastShownFollowerCount = this.followerCount;
+        },
         
         onTabChanged: function () {
             if (this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.followers) {

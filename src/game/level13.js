@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GlobalSignals',
 	'game/constants/GameConstants',
     'game/GameState',
     'game/systems/GameManager',
@@ -71,6 +72,7 @@ define([
     'brejep/tickprovider',
 ], function (
     Ash,
+    GlobalSignals,
 	GameConstants,
     GameState,
     GameManager,
@@ -190,6 +192,14 @@ define([
             this.enemyHelper.createEnemies();
 			
 			this.addSystems();
+            
+            var sys = this;
+            GlobalSignals.worldReadySignal.addOnce(function () {
+                sys.start();
+            });
+            
+            var gameManager = this.gameManager;
+                gameManager.setupGame();
         },
         
         initializeHelpers: function () {

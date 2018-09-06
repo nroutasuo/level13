@@ -32,6 +32,7 @@ define(['ash',], function (Ash) {
         populationChangedSignal: new Ash.Signals.Signal(),
         
         // game events
+        worldReadySignal: new Ash.Signals.Signal(),
         gameStartedSignal: new Ash.Signals.Signal(),
         
         add: function (system, signal, listener) {
