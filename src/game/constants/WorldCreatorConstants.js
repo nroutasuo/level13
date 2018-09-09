@@ -45,7 +45,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 10,
         MIN_LEVEL_HAZARD_POISON: 15,
         
-        MAX_SCOUT_LOCALE_STAMINA_COST: 700,
+        MAX_SCOUT_LOCALE_STAMINA_COST: 600,
         
         LEVEL_ORDINAL_BAG_2: 2,
         LEVEL_ORDINAL_BAG_3: 6,
@@ -88,12 +88,12 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2:
                     // there, scout and back
                     var maxScoutCost = WorldCreatorConstants.MAX_SCOUT_LOCALE_STAMINA_COST;
-                    maxLength = maxLength / 2 - maxScoutCost / movementCost;
+                    maxLength = (maxLength - maxScoutCost / movementCost) / 2;
                     break;
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP:
                     // there, fight and back
                     var fightCost = 10 * 3;
-                    maxLength = maxLength / 2 - fightCost / movementCost;
+                    maxLength = (maxLength - fightCost / movementCost) / 2;
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE:
                     // there and back
                     // must be smaller than CAMP_TO_CAMP because that one can me CAMP_TO_PASSAGE + PASSAGE_TO_PASSAGE + CAMP_TO_PASSAGE
