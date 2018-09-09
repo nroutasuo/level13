@@ -7,6 +7,7 @@ define(['ash', 'game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'], funct
 	
         constructor: function (position, isCampableLevel, notCampableReason, requiredResources) {
 			this.position = position;
+            this.level = position.level;
             this.campableLevel = isCampableLevel;
             this.notCampableReason = notCampableReason;
             this.criticalPaths = [];
@@ -68,7 +69,7 @@ define(['ash', 'game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'], funct
                 case this.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE: return 10;
                 default: return 50;
             }
-        }
+        },
 		
     });
 

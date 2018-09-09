@@ -82,6 +82,8 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
             var movementCost = 10;
             var maxStamina = 1000;
             var maxLength = maxStamina / movementCost;
+            
+            var deductScouts = true;
 
             switch (pathType) {
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1:
@@ -89,11 +91,14 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
                     // there, scout and back
                     var maxScoutCost = WorldCreatorConstants.MAX_SCOUT_LOCALE_STAMINA_COST;
                     maxLength = (maxLength - maxScoutCost / movementCost) / 2;
+                    deductScouts = false;
                     break;
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP:
                     // there, fight and back
                     var fightCost = 10 * 3;
                     maxLength = (maxLength - fightCost / movementCost) / 2;
+                    deductScouts = false;
+                    break;
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE:
                     // there and back
                     // must be smaller than CAMP_TO_CAMP because that one can me CAMP_TO_PASSAGE + PASSAGE_TO_PASSAGE + CAMP_TO_PASSAGE
@@ -102,7 +107,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_CAMP:
                     // only need to make it there
                     break;
-                case this.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE: 
+                case this.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE:
                     // there and back
                     // must be smaller than CAMP_TO_CAMP because that one can me CAMP_TO_PASSAGE + PASSAGE_TO_PASSAGE + CAMP_TO_PASSAGE
                     maxLength = maxLength / 3;
@@ -112,9 +117,11 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
                     break;
             }
             
-            var scoutCost = 5;
-            var numScouts = MathUtils.clamp(Math.round(maxLength / 5), 1, 10);
-            maxLength = maxLength - numScouts * scoutCost / movementCost;
+            if (deductScouts) {
+                var scoutCost = 5;
+                var numScouts = MathUtils.clamp(Math.round(maxLength / 5), 1, 10);
+                maxLength = maxLength - numScouts * scoutCost / movementCost;
+            }
             
             var scavengeCost = 3;
             var numScavenges = MathUtils.clamp(Math.round(maxLength / 5), 1, 10);
