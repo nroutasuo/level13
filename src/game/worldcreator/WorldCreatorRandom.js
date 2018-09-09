@@ -223,6 +223,9 @@ function (Ash, PathFinding, PositionConstants, GameConstants, PositionVO, PathCo
                 console.log("WARN: No goal pos defined.");
             }
             
+            var cachedPath = worldVO.getPath(startPos, endPos);
+            if (cachedPath) return worldVO.getPath(startPos, endPos);
+             
             var makePathSectorVO = function (position) {
                 if (!position) return null;
                 return {
@@ -262,7 +265,11 @@ function (Ash, PathFinding, PositionConstants, GameConstants, PositionVO, PathCo
             };
             var settings = { includeUnbuiltPassages: true, skipUnvisited: false, skipBlockers: false };
             
-            return PathFinding.findPath(startVO, goalVO, utilities, settings);
+            var result = PathFinding.findPath(startVO, goalVO, utilities, settings);
+            
+            worldVO.addPath(startPos, endPos, result);
+            
+            return result;
         },
         
     };
