@@ -174,8 +174,9 @@ define([
             var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
             var localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
 
-            // TODO no blueprints from trading partners?
-            rewards.gainedBlueprintPiece = this.getResultBlueprint(localeVO);
+            if (localeVO.type !== localeTypes.tradingpartner) {
+                rewards.gainedBlueprintPiece = this.getResultBlueprint(localeVO);
+            }
             
             if (localeVO.type === localeTypes.tradingpartner) {
                 rewards.gainedRumours = Math.random() < 0.3 ? Math.ceil(Math.random() * levelOrdinal * levelOrdinal) : 0;
@@ -883,49 +884,32 @@ define([
 		getResultBlueprint: function (localeVO) {
 			var playerPos = this.playerLocationNodes.head.position;
 			var campOrdinal = this.gameState.getCampOrdinal(playerPos.level);
-			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
-			var levelBlueprints = UpgradeConstants.bluePrintsByCampOrdinal[campOrdinal];
+            var blueprintType = localeVO.isEarly ? UpgradeConstants.BLUEPRINT_TYPE_EARLY : UpgradeConstants.BLUEPRINT_TYPE_LATE;
+			var levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, blueprintType);
 			
+			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
 			var blueprintsToFind = [];
-			var blueprintPiecesToFind = this.getPendingBlueprintPiecesCount();
+			var blueprintPiecesToFind = 0;
 			for (var i = 0; i < levelBlueprints.length; i++) {
 				var blueprintId = levelBlueprints[i];
 				if (!upgradesComponent.hasUpgrade(blueprintId) && !upgradesComponent.hasAvailableBlueprint(blueprintId)) {
 					blueprintsToFind.push(blueprintId);
+					var blueprintVO = upgradesComponent.getBlueprint(blueprintId);
+					blueprintPiecesToFind += blueprintVO ? blueprintVO.maxPieces - blueprintVO.currentPieces : UpgradeConstants.getMaxPiecesForBlueprint(blueprintId);
 				}
 			}
 			
 			var unscoutedLocales = this.levelHelper.getLevelLocales(playerPos.level, false, false, localeVO).length + 1;
-			
+			var blueprintPiecesToFind = this.getPendingBlueprintPiecesCount(campOrdinal, blueprintType);
 			var levelBlueprintProbability = blueprintPiecesToFind / unscoutedLocales;
 			if (GameConstants.isDebugOutputEnabled)
 				console.log(blueprintPiecesToFind + " / " + unscoutedLocales + " -> " + levelBlueprintProbability);
 				
 			if (Math.random() < levelBlueprintProbability) {
 				return blueprintsToFind[Math.floor(Math.random() * blueprintsToFind.length)];
-			} else {
-				// TODO a change to get unfound upgrades from previous levels
 			}
 			
 			return null;
-		},
-		
-		getPendingBlueprintPiecesCount: function () {
-			var playerPos = this.playerLocationNodes.head.position;
-			var campOrdinal = this.gameState.getCampOrdinal(playerPos.level);
-			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
-			var levelBlueprints = UpgradeConstants.bluePrintsByCampOrdinal[campOrdinal];
-			
-			var blueprintPiecesToFind = 0;
-			
-			for (var i = 0; i < levelBlueprints.length; i++) {
-				var blueprintId = levelBlueprints[i];
-				if (!upgradesComponent.hasUpgrade(blueprintId) && !upgradesComponent.hasAvailableBlueprint(blueprintId)) {
-					var blueprintVO = upgradesComponent.getBlueprint(blueprintId);
-					blueprintPiecesToFind += blueprintVO ? blueprintVO.maxPieces - blueprintVO.currentPieces : UpgradeConstants.getMaxPiecesForBlueprint(blueprintId);
-				}
-			}
-			return blueprintPiecesToFind;
 		},
 
     });

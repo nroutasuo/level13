@@ -315,7 +315,8 @@ define([
                 sectorVO.locales.push(locale);
             }
                 
-			var getLocaleType = function (sectorType, level, levelOrdinal, localeRandom) {
+            // 2) spawn other types (for blueprints)
+			var getLocaleType = function (localeRandom, sectorType, l, isEarly) {
 				var localeType = localeTypes.house;
 				
 				// level-based
@@ -331,7 +332,7 @@ define([
                         else if (localeRandom > 0.45) localeType = localeTypes.warehouse;
                         else if (localeRandom > 0.4) localeType = localeTypes.camp;
                         else if (localeRandom > 0.3) localeType = localeTypes.hut;
-                        else if (localeRandom > 0.2) localeType = localeTypes.hermit;
+                        else if (localeRandom > 0.2 && !isEarly) localeType = localeTypes.hermit;
                         else if (localeRandom > 0.1) localeType = localeTypes.caravan;
                         else localeType = localeTypes.market;
 						break;
@@ -347,7 +348,7 @@ define([
                     case WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE:
                         if (localeRandom > 0.6) localeType = localeTypes.maintenance;
                         else if (localeRandom > 0.4) localeType = localeTypes.transport;
-                        else if (localeRandom > 0.3) localeType = localeTypes.hermit;
+                        else if (localeRandom > 0.3 && !isEarly) localeType = localeTypes.hermit;
                         else if (localeRandom > 0.2) localeType = localeTypes.caravan;
                         else localeType = localeTypes.sewer;
                         break;
@@ -357,8 +358,8 @@ define([
                         else if (localeRandom > 0.4) localeType = localeTypes.warehouse;
                         else if (localeRandom > 0.3) localeType = localeTypes.transport;
                         else if (localeRandom > 0.25) localeType = localeTypes.hut;
-                        else if (localeRandom > 0.2) localeType = localeTypes.hermit;
-                        else if (localeRandom > 0.15) localeType = localeTypes.caravan;
+                        else if (localeRandom > 0.2 && !isEarly) localeType = localeTypes.hermit;
+                        else if (localeRandom > 0.15 && !isEarly) localeType = localeTypes.caravan;
                         else localeType = localeTypes.house;
                         break;
 						
@@ -366,7 +367,7 @@ define([
                         if (localeRandom > 0.4) localeType = localeTypes.house;
                         else if (localeRandom > 0.35) localeType = localeTypes.camp;
                         else if (localeRandom > 0.3) localeType = localeTypes.hut;
-                        else if (localeRandom > 0.25) localeType = localeTypes.hermit;
+                        else if (localeRandom > 0.25 && !isEarly) localeType = localeTypes.hermit;
                         else localeType = localeTypes.sewer;
                         break;
 						
@@ -376,22 +377,7 @@ define([
 				}
 				return localeType;
 			};
-			
-            // 2) spawn random ones
-            for (var l = topLevel; l >= bottomLevel; l--) {
-
-                var levelVO = this.world.getLevel(l);
-				var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
-				var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
-                
-				// min number of (easy) locales ensures that player can get all upgrades intended for that level
-                // two "levels" of locales for critical paths, those on path 2 can require tech from path 1 to reach but not the other way around
-				var minLocales = Math.max(1, UpgradeConstants.getPiecesByCampOrdinal(campOrdinal)) * 2;
-                var maxLocales = minLocales * 2;
-				var levelLocaleCount = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minLocales, maxLocales);
-                
-				for (var i = 0; i < levelLocaleCount; i++) {
-                    var isEarly = i % 2 === 0;
+			var createLocales = function (worldVO, levelVO, levelOrdinal, isEarly, count, countEasy) {
                     var pathConstraints = [];
                     for (var j = 0; j < levelVO.campSectors.length; j++) {
                         var pathType = isEarly ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1 : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2;
@@ -400,18 +386,38 @@ define([
                         pathConstraints.push(new PathConstraintVO(pos, length, pathType));
                     }
                     var options = { requireCentral: isEarly, excludingFeature: "camp", pathConstraints: pathConstraints, numDuplicates: 2 };
-					var localePos = WorldCreatorRandom.randomSectors(seed + i * l + i * 7394 * seed + i * i * l + i, this.world, levelVO, 1, 2, options);
+                var l = levelVO.level;
+                var sseed = seed - (isEarly ? 5555 : 0) + (l + 50) * 2;
+				for (var i = 0; i < count; i++) {
+					var localePos = WorldCreatorRandom.randomSectors(sseed + i + i * 7394 * sseed + i * i * l + i, worldVO, levelVO, 1, 2, options);
                     var sectorVO = localePos[0];
-                    if (sectorVO) {
-                        var localeType = getLocaleType(sectorVO.sectorType, l, levelOrdinal, WorldCreatorRandom.random(seed + seed + l * i * seed + localePos));
-                        var isEasy = i <= minLocales;
-                        var locale = new LocaleVO(localeType, isEasy);
+                    if (!sectorVO) continue;
+                    var localeType = getLocaleType(WorldCreatorRandom.random(sseed + sseed + i * seed + localePos), sectorVO.sectorType, l, isEarly);
+                    var isEasy = i <= countEasy;
+                    var locale = new LocaleVO(localeType, isEasy, isEarly);
                         sectorVO.locales.push(locale);
                         for (var j = 0; j < pathConstraints.length; j++) {
-                            WorldCreatorHelper.addCriticalPath(this.world, sectorVO.position, pathConstraints[j].startPosition, pathConstraints[j].pathType);
-                        }
+                        WorldCreatorHelper.addCriticalPath(worldVO, sectorVO.position, pathConstraints[j].startPosition, pathConstraints[j].pathType);
                     }
 				}
+            };
+                
+            for (var l = topLevel; l >= bottomLevel; l--) {
+                var levelVO = this.world.getLevel(l);
+				var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
+				var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
+                
+				// min number of (easy) locales ensures that player can get all upgrades intended for that level
+                // two "levels" of locales for critical paths, those on path 2 can require tech from path 1 to reach but not the other way around
+				var minEarly = Math.max(1, UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_EARLY));
+                var maxEarly = minEarly * 2;
+				var countEarly = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minEarly, maxEarly);                
+                createLocales(this.world, levelVO, levelOrdinal, true, countEarly, minEarly);
+                
+                var minLate = Math.max(1, UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_LATE));
+                var maxLate = minLate * 2;
+				var countLate = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minLate, maxLate);                
+                createLocales(this.world, levelVO, levelOrdinal, false, countLate, minLate);
 			}
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World locales ready.");

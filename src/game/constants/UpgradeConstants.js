@@ -2,6 +2,9 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], fu
     
     var UpgradeConstants = {
         
+        BLUEPRINT_TYPE_EARLY: "b-early",
+        BLUEPRINT_TYPE_LATE: "b-late",
+        
         upgradeIds: {
             unlock_item_clothing5l: "unlock_item_clothing5l",
             upgrade_building_apothecary: "upgrade_building_apothecary",
@@ -74,18 +77,19 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], fu
             calendar: "calendar",
         },
         
+        // camp ordinal > a list of blueprints, order matters (first half (ceil) is found in more accessible locales)
         bluePrintsByCampOrdinal: {
             1: ["unlock_building_passage_staircase"],
-            2: ["unlock_building_darkfarm", "unlock_building_tradingpost"],
+            2: ["unlock_building_tradingpost", "unlock_building_darkfarm"],
             3: ["unlock_building_library", "unlock_building_inn", "unlock_building_lights", "unlock_building_market"],
             4: ["unlock_item_weapon2", "unlock_building_passage_hole", "upgrade_worker_scavenger"],
             5: ["unlock_building_passage_elevator"],
             6: ["upgrade_building_market", "unlock_building_smithy"],
-            7: ["unlock_item_clothing5", "unlock_building_bridge", "upgrade_building_storage1", "unlock_item_clothing4h"],
+            7: ["unlock_item_clothing5", "upgrade_building_storage1", "unlock_item_clothing4h", "unlock_building_bridge"],
             8: ["upgrade_building_market2", "unlock_item_weapon4", "unlock_item_clothing3"],
             9: ["upgrade_worker_trapper"],
             10: ["unlock_building_apothecary", "unlock_building_aqueduct", "unlock_item_clothing4", "upgrade_building_library2"],
-            11: ["unlock_building_cementmill", "unlock_item_weapon5", "upgrade_building_storage2"],
+            11: ["unlock_item_weapon5", "upgrade_building_storage2", "unlock_building_cementmill"],
             12: ["unlock_item_bag3", "upgrade_worker_chemist", "unlock_item_clothing6"],
             13: ["upgrade_building_hospital", "unlock_item_clothing7", "unlock_item_weapon6", "unlock_building_radio"],
             14: ["improve_building_market3", "upgrade_building_cementmill", "unlock_building_researchcenter", "unlock_item_weapon7"],
@@ -109,7 +113,7 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], fu
             upgrade_worker_chemist: 5,
             unlock_item_clothing6: 3,
             unlock_building_cementmill: 3,
-            unlock_item_weapon5: 9,
+            unlock_item_weapon5: 8,
             upgrade_building_storage2: 3,
             unlock_building_apothecary: 3,
             unlock_building_aqueduct: 3,
@@ -123,7 +127,7 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], fu
             unlock_building_bridge: 3,
             unlock_building_spaceship1: 5,
             unlock_building_spaceship2: 3,
-            unlock_building_spaceship3: 9,
+            unlock_building_spaceship3: 6,
             upgrade_building_storage1: 3,
             unlock_item_clothing4h: 3,
             upgrade_building_market: 3,
@@ -154,13 +158,27 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/UpgradeVO'], fu
             return 3;
         },
         
-        getPiecesByCampOrdinal: function (campOrdinal) {
-            var pieceCount = 0;
+        getBlueprintsByCampOrdinal: function (campOrdinal, blueprintType) {
             var blueprintsByCampOrdinal = this.bluePrintsByCampOrdinal[campOrdinal];
-            if (blueprintsByCampOrdinal) {
-                for (var i = 0; i < blueprintsByCampOrdinal.length; i++) {
-                    pieceCount += this.getMaxPiecesForBlueprint(blueprintsByCampOrdinal[i]);
-                }
+            if (!blueprintsByCampOrdinal) return [];
+            var numTech = blueprintsByCampOrdinal.length;
+            var numEarly = Math.ceil(numTech / 2);
+
+            var start = 0;
+            var end = numEarly;
+            if (blueprintType === this.BLUEPRINT_TYPE_LATE) {
+                start = numEarly;
+                end = numTech;
+            }
+            
+            return blueprintsByCampOrdinal.slice(start, end);
+        },
+        
+        getPiecesByCampOrdinal: function (campOrdinal, blueprintType) {
+            var pieceCount = 0;
+            var blueprints = this.getBlueprintsByCampOrdinal(campOrdinal, blueprintType);
+            for (var i = 0; i < blueprints.length; i++) {
+                pieceCount += this.getMaxPiecesForBlueprint(blueprints[i]);
             }
             return pieceCount;
         },

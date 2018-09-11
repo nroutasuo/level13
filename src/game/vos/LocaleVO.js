@@ -23,12 +23,14 @@ define(['ash', 'game/vos/ResourcesVO', 'game/constants/WorldCreatorConstants'], 
 		
 		type: -1,
 		isEasy: false,
+        isEarly: true,
 		requirements: {},
         costs: {},
 	
-        constructor: function (type, isEasy) {
+        constructor: function (type, isEasy, isEarly) {
 			this.type = type;
 			this.isEasy = isEasy;
+            this.isEarly = isEarly;
 			this.requirements.vision = [this.getVisionRequirement(), -1];
 			this.costs = {};
 			this.costs.stamina = this.getStaminaRequirement();
