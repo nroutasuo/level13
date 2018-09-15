@@ -3,13 +3,10 @@ define(['ash'], function (Ash) {
     
     var SectorControlComponent = Ash.Class.extend({
         
-        maxSectorEnemies: 0,
-        
         maxLocaleEnemies: {},
         currentLocaleEnemies: {},
         
-        constructor: function (enemies, localeEnemies) {
-            this.maxSectorEnemies = enemies;
+        constructor: function (localeEnemies) {
             this.maxLocaleEnemies = {};
             this.currentLocaleEnemies = {};
             
@@ -25,7 +22,6 @@ define(['ash'], function (Ash) {
         },
         
         getMaxEnemies: function (localeId) {
-            if (!localeId) return this.maxSectorEnemies;
             return this.maxLocaleEnemies[localeId] ? this.maxLocaleEnemies[localeId] : 0;
         },
         

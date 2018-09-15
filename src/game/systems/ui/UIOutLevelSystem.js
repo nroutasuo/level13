@@ -272,7 +272,8 @@ define([
 			var workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var statusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var hasEnemies = this.playerLocationNodes.head.entity.get(SectorControlComponent).maxSectorEnemies > 0;
+            var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
+			var hasEnemies = enemiesComponent.hasEnemies;
 			
 			var description = "<p>";
 			description += this.getTextureDescription(hasVision, featuresComponent, statusComponent);
@@ -422,7 +423,7 @@ define([
 			
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
 			var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
-			var hasEnemies = enemiesComponent.hasEnemies() && sectorControlComponent.maxSectorEnemies > 0;
+			var hasEnemies = enemiesComponent.hasEnemies;
 			
 			if (!isScouted) {
 				enemyDesc += "You have not scouted this sector yet. ";

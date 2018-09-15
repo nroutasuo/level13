@@ -63,13 +63,12 @@ define([
 		},
         
         hasEnemiesCurrentLocation: function(action) {
-            if (!this.playerLocationNodes.head)
-                return false;
+            if (!this.playerLocationNodes.head) return false;
             var baseActionID = this.playerActionsHelper.getBaseActionID(action); 
             var localeId = FightConstants.getEnemyLocaleId(baseActionID, action);    
             var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);     
             var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
-            return enemiesComponent.hasEnemies() && !sectorControlComponent.hasControlOfLocale(localeId);
+            return enemiesComponent.hasEnemies && !sectorControlComponent.hasControlOfLocale(localeId);
         },
         
         initFight: function (action) {

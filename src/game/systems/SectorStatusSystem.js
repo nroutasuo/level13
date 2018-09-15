@@ -75,8 +75,6 @@ define([
 			var positionComponent = entity.get(PositionComponent);
 			var sectorStatusComponent = entity.get(SectorStatusComponent);
 			var featuresComponent = entity.get(SectorFeaturesComponent);
-			var passagesComponent = entity.get(PassagesComponent);
-			var hasEnemies = entity.get(SectorControlComponent).maxSectorEnemies > 0;
 			
 			if (!positionComponent) return;
 			

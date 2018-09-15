@@ -378,14 +378,14 @@ define([
 				return localeType;
 			};
 			var createLocales = function (worldVO, levelVO, levelOrdinal, isEarly, count, countEasy) {
-                    var pathConstraints = [];
-                    for (var j = 0; j < levelVO.campSectors.length; j++) {
-                        var pathType = isEarly ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1 : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2;
-                        var pos = levelVO.campSectors[j].position;
-                        var length = WorldCreatorConstants.getMaxPathLength(levelOrdinal, pathType);
-                        pathConstraints.push(new PathConstraintVO(pos, length, pathType));
-                    }
-                    var options = { requireCentral: isEarly, excludingFeature: "camp", pathConstraints: pathConstraints, numDuplicates: 2 };
+                var pathConstraints = [];
+                for (var j = 0; j < levelVO.campSectors.length; j++) {
+                    var pathType = isEarly ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1 : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2;
+                    var pos = levelVO.campSectors[j].position;
+                    var length = WorldCreatorConstants.getMaxPathLength(levelOrdinal, pathType);
+                    pathConstraints.push(new PathConstraintVO(pos, length, pathType));
+                }
+                var options = { requireCentral: isEarly, excludingFeature: "camp", pathConstraints: pathConstraints, numDuplicates: 2 };
                 var l = levelVO.level;
                 var sseed = seed - (isEarly ? 5555 : 0) + (l + 50) * 2;
 				for (var i = 0; i < count; i++) {
@@ -395,8 +395,8 @@ define([
                     var localeType = getLocaleType(WorldCreatorRandom.random(sseed + sseed + i * seed + localePos), sectorVO.sectorType, l, isEarly);
                     var isEasy = i <= countEasy;
                     var locale = new LocaleVO(localeType, isEasy, isEarly);
-                        sectorVO.locales.push(locale);
-                        for (var j = 0; j < pathConstraints.length; j++) {
+                    sectorVO.locales.push(locale);
+                    for (var j = 0; j < pathConstraints.length; j++) {
                         WorldCreatorHelper.addCriticalPath(worldVO, sectorVO.position, pathConstraints[j].startPosition, pathConstraints[j].pathType);
                     }
 				}
@@ -406,6 +406,9 @@ define([
                 var levelVO = this.world.getLevel(l);
 				var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
 				var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
+                
+                // TODO have some blueprints on campless levels too
+                if (!levelVO.isCampable) continue;
                 
 				// min number of (easy) locales ensures that player can get all upgrades intended for that level
                 // two "levels" of locales for critical paths, those on path 2 can require tech from path 1 to reach but not the other way around
@@ -429,37 +432,35 @@ define([
 		prepareWorldEnemies: function (seed, topLevel, bottomLevel, enemyHelper) {
 			for (var l = topLevel; l >= bottomLevel; l--) {
                 var levelVO = this.world.getLevel(l);
-				for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
-					for (var x = levelVO.minX; x <= levelVO.maxX; x++) {
-                        var sectorVO = levelVO.getSector(x, y);
-                        if (!sectorVO) continue;
-                        sectorVO.enemies = [];
-                        sectorVO.localeEnemies = {};
-                        
-                        // regular enemies & enemy definitions
-                        var hasSectorEnemies = !sectorVO.camp && WorldCreatorRandom.random(l * x * seed + y * seed + 4848) > 0.2;
-                        var hasLocaleEnemies = sectorVO.hasBlockerOfType(MovementConstants.BLOCKER_TYPE_GANG) || sectorVO.workshop;
-                        if (hasSectorEnemies || hasLocaleEnemies) {
-							sectorVO.enemies = this.generateEnemies(seed, topLevel, bottomLevel, sectorVO, enemyHelper);
-						}
-                        
-                        // workshop and locale enemies (counts)
-                        if (sectorVO.workshop) {
-                            sectorVO.localeEnemies[LocaleConstants.LOCALE_ID_WORKSHOP] = 3;
+                for (var s = 0; s <levelVO.sectors.length; s++) {
+                    var sectorVO = levelVO.sectors[s];
+                    sectorVO.possibleEnemies = [];
+                    sectorVO.hasRegularEnemies = 0;
+                    sectorVO.numLocaleEnemies = {};
+                    
+                    // possible enemy definitions
+                    sectorVO.possibleEnemies = this.generateEnemies(seed, topLevel, bottomLevel, sectorVO, enemyHelper);
+
+                    // regular enemies (random encounters not tied to locales / gangs)
+                    sectorVO.hasRegularEnemies = !sectorVO.camp && WorldCreatorRandom.random(l * sectorVO.position.sectorX * seed + sectorVO.position.sectorY * seed + 4848) > 0.2;
+
+                    // workshop and locale enemies (counts)
+                    if (sectorVO.workshop) {
+                        sectorVO.numLocaleEnemies[LocaleConstants.LOCALE_ID_WORKSHOP] = 3;
+                    }
+
+                    // gangs
+                    for (var i in PositionConstants.getLevelDirections()) {
+                        var direction = PositionConstants.getLevelDirections()[i];
+                        if (sectorVO.getBlockerByDirection(direction) === MovementConstants.BLOCKER_TYPE_GANG) {
+                            sectorVO.numLocaleEnemies[LocaleConstants.getPassageLocaleId(direction)] = 3;
                         }
-                        
-						for (var i in PositionConstants.getLevelDirections()) {
-							var direction = PositionConstants.getLevelDirections()[i];
-							if (sectorVO.getBlockerByDirection(direction) === MovementConstants.BLOCKER_TYPE_GANG) {
-								sectorVO.localeEnemies[LocaleConstants.getPassageLocaleId(direction)] = 3;
-							}
-						}
                     }
 				}
 			}
 			
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "") + "World enemies ready.");
-			// WorldCreatorDebug.printWorld(this.world, [ "enemies.length" ]);
+            // WorldCreatorDebug.printWorld(this.world, [ "enemies.length" ]);
 		},
         
         generateSectors: function (seed, levelVO, passagesUpPositions) {
@@ -865,7 +866,7 @@ define([
 			var bottomLevelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, bottomLevel);
 			var totalLevels = topLevel - bottomLevel + 1;
 			
-			var enemies = sectorVO.enemies;
+			var enemies = sectorVO.possibleEnemies;
 			var enemyDifficulty = WorldCreatorHelper.getLevelOrdinal(seed, l);
 			var randomEnemyCheck = function (typeSeed, enemy) {
 				var threshold = (enemy.rarity + 5) / 110;
@@ -960,17 +961,17 @@ define([
 		getLocales: function (level, sectorX, sectorY) {
 			return this.world.getLevel(level).getSector(sectorX, sectorY).locales;
 		},
-		
+        
 		getSectorEnemies: function (level, sectorX, sectorY) {
-			return this.world.getLevel(level).getSector(sectorX, sectorY).enemies;
+			return this.world.getLevel(level).getSector(sectorX, sectorY).possibleEnemies;
 		},
 		
-		getSectorEnemyCount: function (level, sectorX, sectorY) {
-			return this.world.getLevel(level).getSector(sectorX, sectorY).enemies.length > 0 ? 25 : 0;
+		getHasSectorRegularEnemies: function (level, sectorX, sectorY) {
+			return this.world.getLevel(level).getSector(sectorX, sectorY).hasRegularEnemies;
 		},
 		
 		getSectorLocaleEnemyCount: function (level, sectorX, sectorY) {
-			return this.world.getLevel(level).getSector(sectorX, sectorY).localeEnemies;
+			return this.world.getLevel(level).getSector(sectorX, sectorY).numLocaleEnemies;
 		},
         
     };

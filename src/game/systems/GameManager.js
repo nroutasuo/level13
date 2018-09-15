@@ -139,7 +139,7 @@ define([
                             WorldCreator.getSectorFeatures(i, x, y),
                             WorldCreator.getLocales(i, x, y),
                             WorldCreator.getSectorEnemies(i, x, y),
-                            WorldCreator.getSectorEnemyCount(i, x, y),
+                            WorldCreator.getHasSectorRegularEnemies(i, x, y),
                             WorldCreator.getSectorLocaleEnemyCount(i, x, y)
                         );
                     }

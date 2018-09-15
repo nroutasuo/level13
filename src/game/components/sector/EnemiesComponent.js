@@ -3,15 +3,13 @@ define(['ash'], function (Ash) {
     
     var EnemiesComponent = Ash.Class.extend({
         
+        hasEnemies: false,
         nextEnemy: null,
         possibleEnemies: [],
         
-        constructor: function (possibleEnemies) {
+        constructor: function (hasEnemies, possibleEnemies) {
+            this.hasEnemies = hasEnemies;
             this.possibleEnemies = possibleEnemies;
-        },
-        
-        hasEnemies: function () {
-            return this.possibleEnemies.length > 0;
         },
         
         selectNextEnemy: function () {
