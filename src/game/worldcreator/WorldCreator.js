@@ -461,7 +461,8 @@ define([
 			}
 			
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "") + "World enemies ready.");
-            // WorldCreatorDebug.printWorld(this.world, [ "enemies.length" ]);
+            // WorldCreatorDebug.printWorld(this.world, [ "possibleEnemies.length" ]);
+            // WorldCreatorDebug.printWorld(this.world, [ "enemyDifficulty" ]);
 		},
         
         generateSectors: function (seed, levelVO, passagesUpPositions) {
@@ -865,9 +866,6 @@ define([
 			var x = sectorVO.position.sectorX;
 			var y = sectorVO.position.sectorY;
 			
-			var bottomLevelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, bottomLevel);
-			var totalLevels = topLevel - bottomLevel + 1;
-			
 			var randomEnemyCheck = function (typeSeed, enemy) {
 				var threshold = (enemy.rarity + 5) / 110;
 				var r = WorldCreatorRandom.random(typeSeed * l * seed + x * l + y + typeSeed + typeSeed * x - y * typeSeed * x);
@@ -875,6 +873,10 @@ define([
 			};
 		
 			var enemyDifficulty = WorldCreatorHelper.getCampOrdinal(seed, l);
+            if (sectorVO.isOnEarlyCriticalPath() && enemyDifficulty > 1) enemyDifficulty -= 1;
+            
+            sectorVO.enemyDifficulty = enemyDifficulty;
+            
 			var enemies = sectorVO.possibleEnemies;
             var enemy;
 

@@ -1,4 +1,5 @@
-define(['ash', 'game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'], function (Ash, ResourcesVO, EnvironmentalHazardsVO) {
+define(['ash', 'game/constants/WorldCreatorConstants','game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'], 
+function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
 
     var SectorVO = Ash.Class.extend({
 	
@@ -25,7 +26,15 @@ define(['ash', 'game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'], funct
             this.resourcesRequired = new ResourcesVO();
             this.resourcesScavengable = new ResourcesVO();
             this.resourcesCollectable = new ResourcesVO();
-        },        
+        },
+        
+        isOnEarlyCriticalPath: function () {
+            if (this.criticalPaths.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1) >= 0) return true;
+            if (this.criticalPaths.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE) >= 0) return true;
+            if (this.criticalPaths.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_CAMP) >= 0) return true;
+            if (this.criticalPaths.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE) >= 0) return true;
+            return false;
+        },
         
         updateCriticalPath: function () {
             this.criticalPath = "-";

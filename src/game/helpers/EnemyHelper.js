@@ -153,21 +153,6 @@ define([
                     EnemyConstants.enemyDifficulties[enemy.id] = enemyDifficulty;
                 }
             }
-            
-            console.log("saved enemy difficulties:");
-            for (var c = 1; c <= WorldCreatorConstants.CAMPS_TOTAL; c++) {
-                var enemiesByCamp = [];
-                for (var type in EnemyConstants.enemyTypes) {
-                    for (var i = 0; i < EnemyConstants.enemyDefinitions[type].length; i++) {
-                        enemy = EnemyConstants.enemyDefinitions[type][i];
-                        enemyDifficulty = this.getEnemyDifficultyLevel(enemy);
-                        if (enemyDifficulty === c) {
-                            enemiesByCamp.push(enemy.name);
-                        } 
-                    }
-                }
-                console.log(c + " " + enemiesByCamp.join(","));
-            }
         },
 
         // get the difficulty level (1-15, corresponding to camp ordinal) of a given enemy
