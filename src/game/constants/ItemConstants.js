@@ -233,18 +233,17 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             }
         },
         
-        getRequiredLevelToCraft: function (item, gameState) {
-            var level = 0;
+        getRequiredCampOrdinalToCraft: function (item, gameState) {
+            var campOrdinal = 0;
             var reqs = PlayerActionConstants.requirements["craft_" + item.id];
             if (reqs && reqs.upgrades) {
                 var requiredTech = Object.keys(reqs.upgrades);
                 for (var k = 0; k < requiredTech.length; k++) {
                     var requiredTechCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredTech[k]);
-                    var requiredTechLevelOrdinal = gameState.getLevelOrdinalForCampOrdinal(requiredTechCampOrdinal);
-                    level = Math.max(level, requiredTechLevelOrdinal);
+                    campOrdinal = Math.max(campOrdinal, requiredTechCampOrdinal);
                 }
             }
-            return level;
+            return campOrdinal;
         },
         
         getFollower: function (level, campCount) {
@@ -294,19 +293,19 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             return this.itemDefinitions.bag[5];
         },
         
-        getShoes: function (levelOrdinal) {
-            if (levelOrdinal < this.itemDefinitions.shoes[1].requiredLevel) {
+        getShoes: function (campOrdinal) {
+            if (levelOrdinal < this.itemDefinitions.shoes[1].requiredCampOrdinal) {
                 return this.itemDefinitions.shoes[0];
             }
-            if (levelOrdinal < this.itemDefinitions.shoes[2].requiredLevel) {
+            if (levelOrdinal < this.itemDefinitions.shoes[2].requiredCampOrdinal) {
                 return this.itemDefinitions.shoes[Math.floor(2 * Math.random())];
             }
             return this.itemDefinitions.shoes[Math.floor(3 * Math.random())];
         },
         
-        getDefaultWeapon: function (levelOrdinal, totalLevels) {
+        getDefaultWeapon: function (campOrdinal) {
             var totalWeapons = this.itemDefinitions.weapon.length;
-            var weapon = Math.max(1, Math.floor(levelOrdinal / totalLevels * totalWeapons));
+            var weapon = Math.max(1, Math.floor(campOrdinal / WorldCreatorConstants.CAMPS_TOTAL * totalWeapons));
             return this.itemDefinitions.weapon[weapon - 1];
         },
         

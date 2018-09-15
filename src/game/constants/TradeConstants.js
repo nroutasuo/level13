@@ -45,11 +45,11 @@ function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO, IncomingCarava
                     var itemList = ItemConstants.itemDefinitions[category];
                     for (var i in itemList) {
                         var itemDefinition = itemList[i];
-                        if (itemDefinition.requiredLevel > levelOrdinal + 1)
+                        if (itemDefinition.requiredCampOrdinal > campOrdinal + 1)
                             continue;
                         if (Math.random() > probability)
                             continue;
-                        if (ItemConstants.getRequiredLevelToCraft(itemDefinition, gameState) > levelOrdinal + 1)
+                        if (ItemConstants.getRequiredCampOrdinalToCraft(itemDefinition, gameState) > campOrdinal + 1)
                             continue;
                         var amount = Math.ceil(Math.random() * maxAmount);
                         for (var j = 0; j < amount; j++)

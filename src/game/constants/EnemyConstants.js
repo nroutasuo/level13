@@ -22,10 +22,7 @@ function (Ash, WorldCreatorConstants, EnemyVO) {
 		},
 		
 		// saved for convenience & startup speed
-		enemyDifficultiesGroundLevelOrdinal: 0,
-		enemyDifficultiesTotalLevels: 0,
-		enemyDifficulties: {
-		},
+		enemyDifficulties: null,
         
         // For TextConstants: nouns and verbs to describe enemies
         nPest: "urban pests",

@@ -639,7 +639,7 @@ define([
 			var result = [];
 
 			// Neccessity items (map, bag) that the player should find quickly if missing
-			var necessityItem = this.getNecessityItem(itemProbability, itemTypeLimits, efficiency, currentItems, levelOrdinal);
+			var necessityItem = this.getNecessityItem(itemProbability, itemTypeLimits, efficiency, currentItems, campOrdinal);
 			if (necessityItem) {
 				result.push(necessityItem);
 			}
@@ -675,6 +675,9 @@ define([
 		},
 
         getRewardItem: function (itemTypeLimits, efficiency, levelOrdinal) {
+            var level = this.gameState.getLevelForOrdinal(levelOrdinal);
+            var campOrdinal = this.gameState.getCampOrdinal(level);
+                
             // add limits to choose type
             var sum = 0;
             var limitsMin = {};
@@ -718,7 +721,7 @@ define([
                     items = ItemConstants.itemDefinitions.weapon.slice(0);
                     break;
                 case "clothing":
-                    items = this.itemsHelper.getScavengeRewardClothing(levelOrdinal, totalLevels);
+                    items = this.itemsHelper.getScavengeRewardClothing(campOrdinal, totalLevels);
                     break;
                 case "exploration":
                     items = ItemConstants.itemDefinitions.exploration.slice(0);
@@ -739,7 +742,7 @@ define([
                     continue;
                 if (items[i].scavengeRarity > rarityThreshold)
                     continue;
-                if (items[i].requiredLevel > levelOrdinal)
+                if (items[i].requiredCampOrdinal > campOrdinal)
                     continue;
                 validItems.push(items[i]);
             }
@@ -752,7 +755,7 @@ define([
             return validItems[Math.floor(Math.random() * validItems.length)].clone();
         },
         
-		getNecessityItem: function (itemProbability, itemTypeLimits, efficiency, currentItems, levelOrdinal) {
+		getNecessityItem: function (itemProbability, itemTypeLimits, efficiency, currentItems, campOrdinal) {
             var adjustedProbability = MathUtils.clamp(itemProbability * 5, 0.15, 0.35);
             
 			// first bag
@@ -781,7 +784,7 @@ define([
             // non-craftable level clothing
             if (itemTypeLimits.clothing > 0) {
                 if (Math.random() < adjustedProbability * efficiency) {
-                    var clothing = this.itemsHelper.getScavengeNecessityClothing(levelOrdinal);
+                    var clothing = this.itemsHelper.getScavengeNecessityClothing(campOrdinal);
                     for (var i = 0; i < clothing.length; i++) {
                         if (currentItems.getCountById(clothing[i].id, true) <= 0) {                        
                             if (Math.random() < 0.25) {

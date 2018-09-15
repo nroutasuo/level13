@@ -163,6 +163,7 @@ define([
 			for (var i = topLevel; i >= bottomLevel; i--) {
 				var l = i === 0 ? 1342 : i;
                 var levelVO = this.world.getLevel(i);
+				var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, i);
                 var previousLevelVO = this.world.getLevel(i + 1);
 				
 				var levelDensity = Math.min(Math.max(2, i % 2 * 4 + WorldCreatorRandom.random(seed * 7 * l / 3 + 62) * 7), 8);
@@ -171,7 +172,7 @@ define([
 				if (i <= 5) levelRepair = levelRepair - 2;
                 
                 // hazards: level-wide values
-                var maxHazardCold = Math.min(100, itemsHelper.getMaxHazardColdForLevel(levelVO.levelOrdinal));
+                var maxHazardCold = Math.min(100, itemsHelper.getMaxHazardColdForLevel(campOrdinal));
                 this.generateHazardClusters(seed, levelVO, itemsHelper);
 				
 				for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
@@ -801,13 +802,14 @@ define([
         
         generateHazardClusters: function (seed, levelVO, itemsHelper) {
             var levelOrdinal = levelVO.levelOrdinal;
+            var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, levelVO.level);
 
             if (levelOrdinal < WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION && levelVO.level < WorldCreatorConstants.MIN_LEVEL_HAZARD_POISON) {
                 return;
             }
             
-            var maxHazardRadiation = Math.min(100, itemsHelper.getMaxHazardRadiationForLevel(levelOrdinal));
-            var maxHazardPoison = Math.min(100, itemsHelper.getMaxHazardPoisonForLevel(levelOrdinal));
+            var maxHazardRadiation = Math.min(100, itemsHelper.getMaxHazardRadiationForLevel(campOrdinal));
+            var maxHazardPoison = Math.min(100, itemsHelper.getMaxHazardPoisonForLevel(campOrdinal));
             
             if (maxHazardRadiation <= 0 && maxHazardPoison <= 0) return;
             var isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
@@ -866,23 +868,24 @@ define([
 			var bottomLevelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, bottomLevel);
 			var totalLevels = topLevel - bottomLevel + 1;
 			
-			var enemies = sectorVO.possibleEnemies;
-			var enemyDifficulty = WorldCreatorHelper.getLevelOrdinal(seed, l);
 			var randomEnemyCheck = function (typeSeed, enemy) {
 				var threshold = (enemy.rarity + 5) / 110;
 				var r = WorldCreatorRandom.random(typeSeed * l * seed + x * l + y + typeSeed + typeSeed * x - y * typeSeed * x);
 				return r > threshold;
 			};
 		
-			var globalE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.global, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
-			var enemy;
+			var enemyDifficulty = WorldCreatorHelper.getCampOrdinal(seed, l);
+			var enemies = sectorVO.possibleEnemies;
+            var enemy;
+
+            var globalE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.global, enemyDifficulty, false);
 			for (var e in globalE) {
 				enemy = globalE[e];
 				if (randomEnemyCheck(11 * (e + 1), enemy)) enemies.push(enemy);
 			}
 			
 			if (l <= bottomLevel + 1) {
-				var earthE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.earth, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+				var earthE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.earth, enemyDifficulty, false);
 				for (var e in earthE) {
 					enemy = earthE[e];
 					if (randomEnemyCheck(333 * (e + 1), enemy)) enemies.push(enemy);
@@ -890,7 +893,7 @@ define([
 			}
 			
 			if (sectorVO.sunlit) {
-				var sunE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.sunlit, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+				var sunE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.sunlit, enemyDifficulty, false);
 				for (var e in sunE) {
 					enemy = sunE[e];
 					if (randomEnemyCheck(6666 * (e + 4) + 2, enemy)) enemies.push(enemy);
@@ -898,7 +901,7 @@ define([
 			}
 			
 			if (l >= topLevel - 10) {
-				var inhabitedE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.inhabited, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+				var inhabitedE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.inhabited, enemyDifficulty, false);
 				for (var e in inhabitedE) {
 					enemy = inhabitedE[e];
 					if (randomEnemyCheck(777 * (e + 2) ^ 2, enemy)) enemies.push(enemy);
@@ -906,7 +909,7 @@ define([
 			}
 			
 			if (l >= topLevel - 5) {
-				var urbanE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.urban, enemyDifficulty, false, bottomLevelOrdinal, totalLevels);
+				var urbanE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.urban, enemyDifficulty, false);
 				for (var e in urbanE) {
 					enemy = urbanE[e];
 					if (randomEnemyCheck(99 * (e + 1), enemy)) enemies.push(enemy);
