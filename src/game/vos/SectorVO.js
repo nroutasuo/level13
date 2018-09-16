@@ -28,6 +28,10 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
             this.resourcesCollectable = new ResourcesVO();
         },
         
+        isOnCriticalPath: function (type) {
+            return this.criticalPaths.indexOf(type) >= 0;
+        },
+        
         isOnEarlyCriticalPath: function () {
             if (this.criticalPaths.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1) >= 0) return true;
             if (this.criticalPaths.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE) >= 0) return true;

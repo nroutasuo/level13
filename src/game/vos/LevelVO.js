@@ -124,6 +124,11 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 		getSector: function (sectorX, sectorY) {
 			return this.hasSector(sectorX, sectorY) ? this.sectorsByPos[sectorX][sectorY] : null;
 		},
+        
+        isEdgeSector: function (sectorX, sectorY) {
+            return (sectorY === this.minY || sectorY === this.maxY || sectorX === this.minX || sectorX === this.maxX) 
+                && Math.abs(sectorX) > 1 && Math.abs(sectorY) > 1;
+        },
 		
 		isCentral: function (sectorX, sectorY) {
 			return PositionConstants.isPositionInArea(new PositionVO(this.level, sectorX, sectorY), this.centralAreaSize);
