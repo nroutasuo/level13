@@ -138,6 +138,7 @@ define([
 							blockers,
                             WorldCreator.getSectorFeatures(i, x, y),
                             WorldCreator.getLocales(i, x, y),
+                            WorldCreator.getCriticalPaths(i, x, y),
                             WorldCreator.getSectorEnemies(i, x, y),
                             WorldCreator.getHasSectorRegularEnemies(i, x, y),
                             WorldCreator.getSectorLocaleEnemyCount(i, x, y)

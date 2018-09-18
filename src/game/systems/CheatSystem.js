@@ -154,6 +154,9 @@ define(['ash',
             this.registerCheat(CheatConstants.CHEAT_NAME_REVEAL_MAP, "Reveal the map (show important locations without scouting).", ["true/false"], function (params) {
                 this.revealMap(params[0]);
             });
+            this.registerCheat(CheatConstants.CHEAT_NAME_DEBUG_MAP, "Debug map generation (reveal map and show extra information).", ["true/false"], function (params) {
+                this.debugMap(params[0]);
+            });
             this.registerCheat(CheatConstants.CHEAT_NAME_SCOUT_LEVEL, "Scout all the sectors in the current level.", [], function (params) {
                 this.scoutLevel();
             });
@@ -431,12 +434,14 @@ define(['ash',
             }
         },
         
-        addItem: function (itemID) {            
+        addItem: function (itemID, onlyIfMissing) {            
             var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
             var playerPos = this.playerPositionNodes.head.position;
             var item = ItemConstants.getItemByID(itemID);
             if (item) {
-                itemsComponent.addItem(item.clone(), !playerPos.inCamp);
+                if (!onlyIfMissing || !itemsComponent.contains(item.name)) {
+                    itemsComponent.addItem(item.clone(), !playerPos.inCamp);
+                }
             } else {
                 console.log("WARN: No such item: " + itemID);
             }
@@ -471,6 +476,13 @@ define(['ash',
         
         revealMap: function (value) {            
             this.uiMapHelper.isMapRevealed = value ? true : false;
+        },
+        
+        debugMap: function (value) {
+            if (value) {
+                this.addItem("equipment_map", true);
+            }
+            this.revealMap(value);
         },
         
         scoutLevel: function () {

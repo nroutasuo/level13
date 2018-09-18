@@ -57,7 +57,7 @@ define([
             var groundLevel = this.gameState.getGroundLevel();
             var countVisible = 0;
             for (var i = surfaceLevel; i >= groundLevel; i--) {
-                var isVisible = this.levelHelper.getLevelEntityForPosition(i).has(VisitedComponent);
+                var isVisible = this.uiMapHelper.isMapRevealed || this.levelHelper.getLevelEntityForPosition(i).has(VisitedComponent);
                 this.uiFunctions.toggle($("#map-level-selector-level-" + i), isVisible);
                 if (isVisible) countVisible++;
             }

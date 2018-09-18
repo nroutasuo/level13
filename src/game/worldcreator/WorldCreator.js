@@ -1002,6 +1002,10 @@ define([
 		getLocales: function (level, sectorX, sectorY) {
 			return this.world.getLevel(level).getSector(sectorX, sectorY).locales;
 		},
+		
+		getCriticalPaths: function (level, sectorX, sectorY) {
+			return this.world.getLevel(level).getSector(sectorX, sectorY).criticalPaths;
+		},
         
 		getSectorEnemies: function (level, sectorX, sectorY) {
 			return this.world.getLevel(level).getSector(sectorX, sectorY).possibleEnemies;

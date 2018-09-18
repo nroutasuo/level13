@@ -4,6 +4,7 @@ define(['ash',
     'game/constants/CanvasConstants',
     'game/constants/PositionConstants',
     'game/constants/SectorConstants',
+    'game/constants/WorldCreatorConstants',
     'game/nodes/PlayerPositionNode',
     'game/components/type/LevelComponent',
     'game/components/common/CampComponent',
@@ -12,11 +13,12 @@ define(['ash',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/PassagesComponent',
     'game/components/sector/improvements/WorkshopComponent',
+    'game/components/type/SectorComponent',
     'game/vos/PositionVO'],
 function (Ash,
-    UIConstants, CanvasConstants, PositionConstants, SectorConstants,
+    UIConstants, CanvasConstants, PositionConstants, SectorConstants, WorldCreatorConstants,
     PlayerPositionNode,
-    LevelComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, WorkshopComponent,
+    LevelComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, WorkshopComponent, SectorComponent,
     PositionVO) {
     
     var UIMapHelper = Ash.Class.extend({
@@ -266,6 +268,25 @@ function (Ash,
                 ctx.drawImage(this.icons["interest" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (hasWater)
                 ctx.drawImage(this.icons["water" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
+            
+            // sector contents: debug info
+            if (this.isMapRevealed) {
+                var sectorComponent = sector.get(SectorComponent);
+                if (sectorComponent.criticalPaths.length > 0) {
+                    var text = "C";
+                    if (sectorComponent.isOnCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP)) {
+                        text = "W";
+                    } else if (sectorComponent.isOnCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1)) {
+                        text = "L1";
+                    } else if (sectorComponent.isOnCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2)) {
+                        text = "L2";
+                    }
+                    ctx.font = "10px Arial";
+                    ctx.fillStyle = "red";
+                    ctx.textAlign = "center";
+                    ctx.fillText(text, sectorXpx + sectorSize * 0.5, sectorYpx + sectorSize * 0.75); 
+                }
+            }
         },
         
         drawMovementLinesOnCanvas: function (ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding) {
