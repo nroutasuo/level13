@@ -99,6 +99,7 @@ define([
                 sys.updateStaticSectorElements();
                 sys.updateSectorDescription();
                 sys.updateLevelPageActions();
+                sys.updateUnlockedFeatures();
 			});
             GlobalSignals.improvementBuiltSignal.add(function () {
                 sys.updateSectorDescription();

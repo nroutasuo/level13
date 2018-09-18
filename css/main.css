@@ -1191,6 +1191,9 @@ button.context {
   display: inline;
   float: right;
 }
+.tab-options {
+  float: right;
+}
 #in-game-date {
   float: right;
 }
