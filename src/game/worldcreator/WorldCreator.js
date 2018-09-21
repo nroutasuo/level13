@@ -500,7 +500,13 @@ define([
             var numSectorsCentral = WorldCreatorConstants.getNumSectorsCentral(levelVO.levelOrdinal);
             
             //  create central structure
-            this.generateSectorRectangle(levelVO, 0, new PositionVO(levelVO.level, 5, 5), PositionConstants.DIRECTION_WEST, 10, 10);
+			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
+			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
+            var centerSize = 5;
+            if (l < 8) centerSize = 3;
+            if (l === bottomLevel) centerSize = 7;
+            if (l === topLevel) centerSize = 3;
+            this.generateSectorRectangle(levelVO, 0, new PositionVO(levelVO.level, centerSize, centerSize), PositionConstants.DIRECTION_WEST, centerSize * 2, centerSize * 2);
 
             // connect existing positions (passages from the level above & initial starting camp position & central structure)
             var existingPointsToConnect = [];
@@ -508,6 +514,13 @@ define([
             existingPointsToConnect = existingPointsToConnect.concat(passagesUpPositions);
             if (l === 13) {
                 existingPointsToConnect.push(new PositionVO(13, WorldCreatorConstants.FIRST_CAMP_X, WorldCreatorConstants.FIRST_CAMP_Y));
+                if (seed % 2 === 0) {
+                    existingPointsToConnect.push(new PositionVO(13, WorldCreatorConstants.FIRST_CAMP_X - 3, WorldCreatorConstants.FIRST_CAMP_Y));
+                    existingPointsToConnect.push(new PositionVO(13, WorldCreatorConstants.FIRST_CAMP_X + 3, WorldCreatorConstants.FIRST_CAMP_Y));
+                } else {
+                    existingPointsToConnect.push(new PositionVO(13, WorldCreatorConstants.FIRST_CAMP_X, WorldCreatorConstants.FIRST_CAMP_Y - 3));
+                    existingPointsToConnect.push(new PositionVO(13, WorldCreatorConstants.FIRST_CAMP_X, WorldCreatorConstants.FIRST_CAMP_Y + 3));
+                }
             }
             this.generateSectorsForExistingPoints(seed, levelVO, existingPointsToConnect);
             

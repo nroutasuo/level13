@@ -153,7 +153,7 @@ function (Ash,
                     
                     if (this.showSectorOnMap(centered, sector, sectorStatus)) {
                         sectorPos = new PositionVO(mapPosition.level, x, y);
-                        this.drawSectorOnCanvas(ctx, sector, sectorStatus, sectorXpx, sectorYpx, sectorSize);
+                        this.drawSectorOnCanvas(ctx, x, y, sector, sectorStatus, sectorXpx, sectorYpx, sectorSize);
                         this.drawMovementLinesOnCanvas(ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding);
                     }
                 }
@@ -200,7 +200,7 @@ function (Ash,
             }
         },
         
-        drawSectorOnCanvas: function (ctx, sector, sectorStatus, sectorXpx, sectorYpx, sectorSize) {
+        drawSectorOnCanvas: function (ctx, x, y, sector, sectorStatus, sectorXpx, sectorYpx, sectorSize) {
             var isLocationSunlit = $("body").hasClass("sunlit");
             ctx.fillStyle = this.getSectorFill(sectorStatus);
             ctx.fillRect(sectorXpx, sectorYpx, sectorSize, sectorSize);
@@ -285,6 +285,11 @@ function (Ash,
                     ctx.fillStyle = "red";
                     ctx.textAlign = "center";
                     ctx.fillText(text, sectorXpx + sectorSize * 0.5, sectorYpx + sectorSize * 0.75); 
+                } else {
+                    ctx.font = "8px Arial";
+                    ctx.fillStyle = "white";
+                    ctx.textAlign = "center";
+                    ctx.fillText(x + "." + y, sectorXpx + sectorSize * 0.5, sectorYpx + sectorSize * 0.75); 
                 }
             }
         },
