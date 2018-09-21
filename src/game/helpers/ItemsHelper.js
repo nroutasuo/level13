@@ -27,8 +27,8 @@ define([
             return this.getAvailableClothingList(campOrdinal, true, true, false, itemBonusType);
         },
         
-        getScavengeRewardClothing: function (campOrdinal, totalLevels) {
-            return this.getAvailableClothingList(campOrdinal, totalLevels, true, true, true);
+        getScavengeRewardClothing: function (campOrdinal) {
+            return this.getAvailableClothingList(campOrdinal, true, true, true);
         },
         
         getScavengeNecessityClothing: function (campOrdinal) {

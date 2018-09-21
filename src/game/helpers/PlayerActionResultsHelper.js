@@ -635,7 +635,7 @@ define([
         // efficiency: 0-1 current scavenge efficiency of the player, affects chance to find something
         // currentItems: ItemsComponent
         // level ordinal: current location level ordinal
-		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, efficiency, currentItems, levelOrdinal) {
+		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, efficiency, currentItems, campOrdinal) {
 			var result = [];
 
 			// Neccessity items (map, bag) that the player should find quickly if missing
@@ -646,7 +646,7 @@ define([
 
 			// Normal items
             if (!necessityItem && Math.random() < itemProbability) {
-                var item = this.getRewardItem(itemTypeLimits, efficiency, levelOrdinal);
+                var item = this.getRewardItem(itemTypeLimits, efficiency, campOrdinal);
                 if (item) result.push(item);
             }
 			
@@ -674,10 +674,7 @@ define([
 			return followers;
 		},
 
-        getRewardItem: function (itemTypeLimits, efficiency, levelOrdinal) {
-            var level = this.gameState.getLevelForOrdinal(levelOrdinal);
-            var campOrdinal = this.gameState.getCampOrdinal(level);
-                
+        getRewardItem: function (itemTypeLimits, efficiency, campOrdinal) {
             // add limits to choose type
             var sum = 0;
             var limitsMin = {};
@@ -721,7 +718,7 @@ define([
                     items = ItemConstants.itemDefinitions.weapon.slice(0);
                     break;
                 case "clothing":
-                    items = this.itemsHelper.getScavengeRewardClothing(campOrdinal, totalLevels);
+                    items = this.itemsHelper.getScavengeRewardClothing(campOrdinal);
                     break;
                 case "exploration":
                     items = ItemConstants.itemDefinitions.exploration.slice(0);
