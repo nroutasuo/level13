@@ -97,7 +97,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			var startingPos = new PositionVO(this.level, sectorX, sectorY);
 			for (var i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
-				var neighbourPos = PositionConstants.getPositionOnPath(startingPos, direction, 1);
+				var neighbourPos = PositionConstants.getNeighbourPosition(startingPos, direction);
 				if (this.hasSector(neighbourPos.sectorX, neighbourPos.sectorY)) {
 					neighbours[direction] = neighbourWrapFunc(this.getSector(neighbourPos.sectorX, neighbourPos.sectorY));
 				}

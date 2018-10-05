@@ -18,6 +18,10 @@ define(['ash'], function (Ash) {
         DIRECTION_UP: 9,
         DIRECTION_DOWN: 10,
         
+        getNeighbourPosition: function (sectorPos, direction) {
+            return this.getPositionOnPath(sectorPos, direction, 1);
+        },
+        
         getPositionOnPath: function (pathStartingPos, pathDirection, pathStep) {
             var resultPos = pathStartingPos.clone();
             

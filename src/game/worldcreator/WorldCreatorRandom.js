@@ -1,6 +1,13 @@
 // Random and seed related functions for the WorldCreator
-define(['ash', 'utils/PathFinding', 'game/constants/PositionConstants', 'game/constants/GameConstants', 'game/vos/PositionVO', 'game/vos/PathConstraintVO'], 
-function (Ash, PathFinding, PositionConstants, GameConstants, PositionVO, PathConstraintVO) {
+define([
+    'ash', 
+    'utils/PathFinding', 
+    'game/constants/PositionConstants', 
+    'game/constants/GameConstants', 
+    'game/constants/MovementConstants', 
+    'game/vos/PositionVO', 
+    'game/vos/PathConstraintVO'], 
+function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants, PositionVO, PathConstraintVO) {
 
     var WorldCreatorRandom = {
 		
@@ -176,7 +183,6 @@ function (Ash, PathFinding, PositionConstants, GameConstants, PositionVO, PathCo
                 }
                 console.log("- " + pathConstraints[j].pathType + " max len " + pathConstraints[j].maxLength + ", start pos " + pathConstraints[j].startPosition + ": " + fails[j] + "/" + sectors.length + " fails");
             }
-            
             return null;
 		},
         
@@ -214,7 +220,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, PositionVO, PathCo
 			return Math.round(Math.random() * 10000);
 		},
         
-        findPath: function (worldVO, startPos, endPos) {
+        findPath: function (worldVO, startPos, endPos, blockByGangs, omitLog) {
             if (!startPos) {
                 console.log("WARN: No start pos defined.");
             }
@@ -224,7 +230,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, PositionVO, PathCo
             }
             
             var cachedPath = worldVO.getPath(startPos, endPos);
-            if (cachedPath) return worldVO.getPath(startPos, endPos);
+            if (cachedPath && !blockByGangs) return worldVO.getPath(startPos, endPos);
              
             var makePathSectorVO = function (position) {
                 if (!position) return null;
@@ -260,10 +266,12 @@ function (Ash, PathFinding, PositionConstants, GameConstants, PositionVO, PathCo
                 },
                 isBlocked: function (pathSectorVO, direction) {
                     var levelVO = worldVO.getLevel(pathSectorVO.position.level);
-                    return levelVO.getNeighbours(pathSectorVO.result.sectorX, pathSectorVO.result.sectorY)[direction];
+                    var sectorVO = levelVO.getSector(pathSectorVO.position.sectorX, pathSectorVO.position.sectorY);
+                    if (blockByGangs && sectorVO.getBlockerByDirection(direction) === MovementConstants.BLOCKER_TYPE_GANG) return true;
+                    return false;
                 }
             };
-            var settings = { includeUnbuiltPassages: true, skipUnvisited: false, skipBlockers: false };
+            var settings = { includeUnbuiltPassages: true, skipUnvisited: false, skipBlockers: blockByGangs, omitLog: omitLog };
             
             var result = PathFinding.findPath(startVO, goalVO, utilities, settings);
             

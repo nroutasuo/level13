@@ -15,6 +15,7 @@ define(function () {
         // - includeUnbuiltPassages (bool)
         // - skipUnvisited (bool)
         // - skipBlockers (bool)
+        // - omitLog (bool)
         findPath: function (startVO, goalVO, utilities, settings) {  
             if (!startVO) {
                 console.log("WARN: No start sector defined.");
@@ -112,8 +113,9 @@ define(function () {
             while (current !== startVO) {
                 result.push(current.result);
                 current = cameFrom[getKey(current)];
+                // TODO check (pass?) reasonable max length
                 if (!current || result.length > 500) {
-                    console.log("WARN: failed to find path");
+                    if (!settings.omitLog) console.log("WARN: failed to find path (res len: " + result.length + ")");
                     break;
                 }
             }
