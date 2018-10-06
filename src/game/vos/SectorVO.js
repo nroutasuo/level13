@@ -26,6 +26,7 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
             this.resourcesRequired = new ResourcesVO();
             this.resourcesScavengable = new ResourcesVO();
             this.resourcesCollectable = new ResourcesVO();
+            this.numLocaleEnemies = {};
         },
         
         isOnCriticalPath: function (type) {
@@ -70,6 +71,10 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
 			}
 			return false;
 		},
+        
+        hasPassage: function () {
+            return this.passageUp > 0 || this.passageDown > 0;
+        },
         
         getCriticalPathPriority: function (pathType) {
             if (!pathType) return 99;

@@ -46,7 +46,7 @@ define([
             this.prepareWorldLocales(seed, topLevel, bottomLevel);
             // hazards
             this.prepareHazards(seed, topLevel, bottomLevel, itemsHelper);
-			// enemies
+			// enemies (and gangs)
 			this.prepareWorldEnemies(seed, topLevel, bottomLevel, enemyHelper);
 		},
         
@@ -143,13 +143,6 @@ define([
                 if (l >= 14) blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE);
                 if (levelOrdinal >= 5) blockerTypes.push(MovementConstants.BLOCKER_TYPE_GAP);
                 this.addMovementBlockers(seed, l, levelVO, blockerTypes, minBlockers, maxBlockers);
-                
-				// movement blockers: gangs (a few per level)
-                var minGangsRatio = 0.1;
-                var maxGangsRatio = 0.3;
-                var minGangs = Math.max(Math.round(numSectors * minGangsRatio), 3);
-				var maxGangs = Math.round(numSectors * maxGangsRatio);
-                this.addMovementBlockers(seed, l, levelVO, [ MovementConstants.BLOCKER_TYPE_GANG ], minGangs, maxGangs);
 			}
 			
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
@@ -453,10 +446,43 @@ define([
         
 		// enemies
 		prepareWorldEnemies: function (seed, topLevel, bottomLevel, enemyHelper) {
+            var worldVO = this.world;
 			for (var l = topLevel; l >= bottomLevel; l--) {
                 var levelVO = this.world.getLevel(l);
-                for (var s = 0; s < levelVO.sectors.length; s++) {
-                    var sectorVO = levelVO.sectors[s];
+                var numLocales = 0;
+                var numGangs = 0;
+                var randomGangFreq = 45;
+                
+                var addGang = function (sectorVO, neighbourVO, direction) {
+                    sectorVO.addBlocker(direction, MovementConstants.BLOCKER_TYPE_GANG);
+                    sectorVO.numLocaleEnemies[LocaleConstants.getPassageLocaleId(direction)] = 3;
+                    neighbourVO.addBlocker(PositionConstants.getOppositeDirection(direction), MovementConstants.BLOCKER_TYPE_GANG);
+                    neighbourVO.numLocaleEnemies[LocaleConstants.getPassageLocaleId(direction)] = 3;
+                };
+                
+                var addGangs = function (seed, reason, levelVO, pointA, pointB, maxPaths) {
+                    var num = 0;
+                    var path;
+                    var index;
+                    for (var i = 0; i < maxPaths; i++) { 
+                        path = WorldCreatorRandom.findPath(worldVO, pointA, pointB, true, true);
+                        if (!path || path.length < 3) break;
+                        var min = Math.round(path.length / 4) + 1;
+                        var max = path.length - 2;
+                        var finalSeed = Math.abs(seed + (i+1) * 231);
+                        index = WorldCreatorRandom.randomInt(finalSeed, min, max);
+                        var sectorVO = levelVO.getSector(path[index].sectorX, path[index].sectorY);
+                        var neighbourVO = levelVO.getSector(path[index + 1].sectorX, path[index + 1].sectorY);
+                        var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
+                        addGang(sectorVO, neighbourVO, direction);
+                        num++;
+                    }
+                    return num;
+                };
+                
+                // sector-based: possible enemies, random encounters and locales
+                for (var i = 0; i < levelVO.sectors.length; i++) {
+                    var sectorVO = levelVO.sectors[i];
                     sectorVO.possibleEnemies = [];
                     sectorVO.hasRegularEnemies = 0;
                     sectorVO.numLocaleEnemies = {};
@@ -471,12 +497,42 @@ define([
                     if (sectorVO.workshop) {
                         sectorVO.numLocaleEnemies[LocaleConstants.LOCALE_ID_WORKSHOP] = 3;
                     }
-
-                    // gangs
-                    for (var i in PositionConstants.getLevelDirections()) {
-                        var direction = PositionConstants.getLevelDirections()[i];
-                        if (sectorVO.getBlockerByDirection(direction) === MovementConstants.BLOCKER_TYPE_GANG) {
-                            sectorVO.numLocaleEnemies[LocaleConstants.getPassageLocaleId(direction)] = 3;
+                    
+                    // gangs: critical paths
+                    for (var s = 0; s < levelVO.campSectors.length; s++) {
+                        var campSector = levelVO.campSectors[s];
+                        if (sectorVO.workshop) {
+                            // camps to workshops (all paths)
+                            var rand = Math.round(1000 + seed + (l+21) * 11 + (s + 2) * 31 + (i + 1) * 51);
+                            numGangs += addGangs(rand, "workshop", levelVO, campSector.position, sectorVO.position, 100);
+                        } else if (sectorVO.locales.length > 0) {
+                            // camps to locales (some paths)
+                            var rand = Math.round(50 + seed + (l+11) * 11 + (s + 41) * 3 + (i + 1) * 42);
+                            if (numLocales % 2 === 0) {
+                                numGangs += addGangs(rand, "locale", levelVO, campSector.position, sectorVO.position, 1);
+                            }
+                            numLocales++;
+                        }
+                    }
+                    
+                    // gangs: some random gangs regardless of camps
+                    if (i % randomGangFreq === 0) {
+                        var neighbour = WorldCreatorRandom.getRandomSectorNeighbour(seed * 20 - l * 11 + i * 32, levelVO, sectorVO, true);
+                        var neighbours = levelVO.getNeighbours(sectorVO.position.sectorX, sectorVO.position.sectorY);
+                        var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbour.position);
+                        addGang(sectorVO, neighbour, direction);
+                        numGangs++;
+                        if (i % (randomGangFreq * 2) === 0) {
+                            var bonusDirections = [ PositionConstants.getNextCounterClockWise(direction, true), PositionConstants.getNextClockWise(direction, true)];
+                            var num = 0;
+                            for (var j = 0; j < bonusDirections.length; j++) {
+                                var bonusNeighbour = neighbours[bonusDirections[j]];
+                                if (bonusNeighbour) {
+                                    addGang(sectorVO, bonusNeighbour, bonusDirections[j]);
+                                    numGangs++;
+                                    num++;
+                                }
+                            }
                         }
                     }
 				}
