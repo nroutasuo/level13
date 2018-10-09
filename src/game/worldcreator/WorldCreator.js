@@ -96,7 +96,7 @@ define([
                             if (previousCampPositions.length > 0) {
                                 var ci = Math.min(i, previousCampPositions.length-1);
                                 var startPos = previousCampPositions[ci];
-                                var maxLength = WorldCreatorConstants.getMaxPathLength(levelOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_CAMP);
+                                var maxLength = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_CAMP);
                                 var pathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_CAMP;
                                 pathConstraints.push(new PathConstraintVO(startPos, maxLength, pathType));
                             }
@@ -105,7 +105,7 @@ define([
                             // each camp pos on this level should have at least one passage down within reach
                             var pd = Math.min(i, passageDownPositions.length-1);
                             var startPos = passageDownPositions[pd];
-                            var maxLength = WorldCreatorConstants.getMaxPathLength(levelOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
+                            var maxLength = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
                             var pathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
                             pathConstraints.push(new PathConstraintVO(startPos, maxLength, pathType));
                             
@@ -115,7 +115,7 @@ define([
                                 var pu =  Math.min(i, passageUpPositions.length-1);
                                 var startPos = passageUpPositions[pu].clone();
                                 startPos.level = l;
-                                var maxLength = WorldCreatorConstants.getMaxPathLength(levelOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
+                                var maxLength = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
                                 var pathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
                                 pathConstraints.push(new PathConstraintVO(startPos, maxLength, pathType));
                             }
@@ -259,7 +259,7 @@ define([
                     var pathConstraints = [];
                     for (var i = 0; i < levelVO.campSectors.length; i++) {
                         var startPos = levelVO.campSectors[i].position;
-                        var maxLength = WorldCreatorConstants.getMaxPathLength(levelOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP);
+                        var maxLength = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP);
                         pathConstraints.push(new PathConstraintVO(startPos, maxLength, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP));
                     }
                     var options = { requireCentral: true, excludingFeature: "camp", pathConstraints: pathConstraints };
@@ -358,15 +358,15 @@ define([
 				}
 				return localeType;
 			};
-			var createLocales = function (worldVO, levelVO, levelOrdinal, isEarly, count, countEasy) {
+			var createLocales = function (worldVO, levelVO, campOrdinal, isEarly, count, countEasy) {
                 var pathConstraints = [];
                 for (var j = 0; j < levelVO.campSectors.length; j++) {
                     var pathType = isEarly ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1 : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2;
                     var pos = levelVO.campSectors[j].position;
-                    var length = WorldCreatorConstants.getMaxPathLength(levelOrdinal, pathType);
+                    var length = WorldCreatorConstants.getMaxPathLength(campOrdinal, pathType);
                     pathConstraints.push(new PathConstraintVO(pos, length, pathType));
                 }
-                var options = { requireCentral: isEarly, excludingFeature: "camp", pathConstraints: pathConstraints, numDuplicates: 2 };
+                var options = { requireCentral: false, excludingFeature: "camp", pathConstraints: pathConstraints, numDuplicates: 2 };
                 var l = levelVO.level;
                 var sseed = seed - (isEarly ? 5555 : 0) + (l + 50) * 2;
 				for (var i = 0; i < count; i++) {
@@ -385,7 +385,6 @@ define([
                 
             for (var l = topLevel; l >= bottomLevel; l--) {
                 var levelVO = this.world.getLevel(l);
-				var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
 				var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
                 
                 // TODO have some blueprints on campless levels too
@@ -396,12 +395,12 @@ define([
 				var minEarly = Math.max(1, UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_EARLY));
                 var maxEarly = minEarly * 2;
 				var countEarly = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minEarly, maxEarly);                
-                createLocales(this.world, levelVO, levelOrdinal, true, countEarly, minEarly);
+                createLocales(this.world, levelVO, campOrdinal, true, countEarly, minEarly);
                 
                 var minLate = Math.max(1, UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_LATE));
                 var maxLate = minLate * 2;
 				var countLate = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minLate, maxLate);                
-                createLocales(this.world, levelVO, levelOrdinal, false, countLate, minLate);
+                createLocales(this.world, levelVO, campOrdinal, false, countLate, minLate);
 			}
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World locales ready.");
@@ -810,7 +809,7 @@ define([
         
         generatePassages: function (seed, levelVO, passageUpPositions, bottomLevel) {
             var l = levelVO.level;
-            var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
+            var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
             
             // passages: up according to previous level
             var previousLevelVO = this.world.levels[l + 1];
@@ -838,7 +837,7 @@ define([
                     if (passageUpPos) {
                         passageUpPos = passageUpPos.clone();
                         passageUpPos.level = l;
-                        var maxPathLen = WorldCreatorConstants.getMaxPathLength(levelOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
+                        var maxPathLen = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
                         var pathConstraints = [ new PathConstraintVO(passageUpPos, maxPathLen, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE)];
                         passageDownSectors[i] = WorldCreatorRandom.randomSector(seed * l * 654 * (i + 2), this.world, levelVO, true, pathConstraints);
                         WorldCreatorHelper.addCriticalPath(this.world, passageUpPos, passageDownSectors[i].position, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
@@ -872,7 +871,7 @@ define([
             if (blockerTypes.length < 1) return;
             var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
             var num = WorldCreatorRandom.randomInt(88 + seed * 56 * (l + 100) + seed % 7, min, max);
-            
+                
             var options = { requireCentral: true, excludingFeature: "camp" };
             var sectors = WorldCreatorRandom.randomSectors(seed * l * l + (1 + 303) * 22, this.world, levelVO, num, num + 1, options);
             for (var i = 0; i < sectors.length; i++) {
@@ -882,7 +881,7 @@ define([
 
                 if (levelOrdinal === 1 && (Math.abs(blockedSector.position.sectorX) < 2 || Math.abs(blockedSector.position.sectorY < 2))) {
                     continue;
-                }
+            }
 
                 var blockedNeighbour = WorldCreatorRandom.getRandomSectorNeighbour(seed * 101 + (i + 70) * (l + 900), levelVO, blockedSector, true);
                 var direction = PositionConstants.getDirectionFrom(blockedSector.position, blockedNeighbour.position);

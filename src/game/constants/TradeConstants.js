@@ -49,7 +49,7 @@ function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO, IncomingCarava
                             continue;
                         if (Math.random() > probability)
                             continue;
-                        if (ItemConstants.getRequiredCampOrdinalToCraft(itemDefinition, gameState) > campOrdinal + 1)
+                        if (ItemConstants.getRequiredCampOrdinalToCraft(itemDefinition) > campOrdinal + 1)
                             continue;
                         var amount = Math.ceil(Math.random() * maxAmount);
                         for (var j = 0; j < amount; j++)

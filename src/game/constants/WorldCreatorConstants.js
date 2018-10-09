@@ -74,13 +74,15 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
             return 300;
         },
         
-        // max length of a path (limited by stamina) on the given level ordinal
+        // max length of a path (limited by stamina) on the given camp ordinal
         // if a path spans several levels, lowest ordinal should be used
-        getMaxPathLength: function (levelOrdinal, pathType) {
-            // todo take movement cost reductions into account
-            // todo take health upgrades into account
+        getMaxPathLength: function (campOrdinal, pathType) {
+            // TODO get rid of hard-coded values 
             var movementCost = 10;
+            if (campOrdinal > 1) movementCost = 9;
+            if (campOrdinal > 7) movementCost = 8;
             var maxStamina = 1000;
+            if (campOrdinal > 12) maxStamina = 1250;
             var maxLength = maxStamina / movementCost;
             
             var deductScouts = true;
@@ -127,7 +129,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
             var numScavenges = MathUtils.clamp(Math.round(maxLength / 5), 1, 10);
             maxLength = maxLength - numScavenges * scavengeCost / movementCost;
             
-            var ordinalFactor = levelOrdinal === 1 ? 0.85 : 1;
+            var ordinalFactor = campOrdinal === 1 ? 0.85 : 1;
             maxLength = maxLength * ordinalFactor;
             
             return Math.floor(maxLength);

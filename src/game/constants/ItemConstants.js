@@ -233,7 +233,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             }
         },
         
-        getRequiredCampOrdinalToCraft: function (item, gameState) {
+        getRequiredCampOrdinalToCraft: function (item) {
             var campOrdinal = 0;
             var reqs = PlayerActionConstants.requirements["craft_" + item.id];
             if (reqs && reqs.upgrades) {
@@ -294,10 +294,10 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
         },
         
         getShoes: function (campOrdinal) {
-            if (levelOrdinal < this.itemDefinitions.shoes[1].requiredCampOrdinal) {
+            if (campOrdinal < this.itemDefinitions.shoes[1].requiredCampOrdinal) {
                 return this.itemDefinitions.shoes[0];
             }
-            if (levelOrdinal < this.itemDefinitions.shoes[2].requiredCampOrdinal) {
+            if (campOrdinal < this.itemDefinitions.shoes[2].requiredCampOrdinal) {
                 return this.itemDefinitions.shoes[Math.floor(2 * Math.random())];
             }
             return this.itemDefinitions.shoes[Math.floor(3 * Math.random())];

@@ -60,7 +60,7 @@ define([
                     
                     // only craftable items are considered default (no reliable source especially when possible to lose once acquired)
                     if (clothingItem.craftable && includeCraftable) {
-                        isAvailable = ItemConstants.getRequiredCampOrdinalToCraft(clothingItem, this.gameState) <= campOrdinal;
+                        isAvailable = ItemConstants.getRequiredCampOrdinalToCraft(clothingItem) <= campOrdinal;
                     }
 
                     // non-craftable items added for scavenging results

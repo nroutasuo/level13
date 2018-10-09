@@ -2114,6 +2114,7 @@ function (Ash, GameConstants, CampConstants) {
             },
         
             descriptions: {
+                build_in_home: "",
                 scout: "Scout the area for evidence.",
                 scout_locale_i: "Find out if there is anyone living here.",
                 scout_locale_u: "Scout for additional resources and evidence.",
