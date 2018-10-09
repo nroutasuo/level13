@@ -57,7 +57,15 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
             this.updateCriticalPath();
         },
 		
-		addBlocker: function (direction, blockerType) {
+		addBlocker: function (direction, blockerType, canOverride) {
+            var existingType = this.movementBlockers[direction];
+            if (existingType === blockerType) return;
+            if (existingType) {
+                console.log("WARN: movement blocker already exists:" + this.movementBlockers[direction] + " (trying to add: " + blockerType + ")");
+                console.log(this);
+                ds();
+                return;
+            }
 			this.movementBlockers[direction] = blockerType;
 		},
 		

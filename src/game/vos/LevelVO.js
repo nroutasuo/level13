@@ -17,6 +17,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 		sectors: [],
 		centralSectors: [],
         campSectors: [],
+        passageSectors: [],
 		sectorsByPos: {},
         possibleSpringSectors: [],
 		minX: 0,
@@ -34,6 +35,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			this.sectors = [];
 			this.centralSectors = [];
             this.campSectors = [];
+            this.passageSectors = [];
 			this.sectorsByPos = [];
             this.possibleSpringSectors = [];
 			this.minX = 0;
@@ -74,8 +76,12 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
             return true;
 		},
         
-        addCampSector: function(campSector) {
-            this.campSectors.push(campSector);
+        addCampSector: function (sectorVO) {
+            this.campSectors.push(sectorVO);
+        },
+        
+        addPassageSector: function (sectorVO) {
+            this.passageSectors.push(sectorVO);
         },
 		
 		hasSector: function (sectorX, sectorY) {
@@ -104,6 +110,19 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			}
 			return neighbours;
 		},
+        
+        getNextNeighbours: function (sectorVO, direction) {
+            var result = [];
+            var neighbours = this.getNeighbours(sectorVO.position.sectorX, sectorVO.position.sectorY);
+            var nextDirections = [ PositionConstants.getNextCounterClockWise(direction, true), PositionConstants.getNextClockWise(direction, true)];
+            for (var j = 0; j < nextDirections.length; j++) {
+                var bonusNeighbour = neighbours[nextDirections[j]];
+                if (bonusNeighbour) {
+                    result.push(bonusNeighbour);
+                }
+            }
+            return result;
+        },
         
         findPassageOown: function () {
             // todo save in levelVO instead of searching?

@@ -133,16 +133,11 @@ define([
                     previousCampPositions = campPositions;
 				}
 				
-				// movement blockers: non-combat (a few per level)
-                var numSectors = levelVO.sectors.length;
-                var minBlockersRatio = 0.055;
-                var maxBlockersRatio = 0.1;
-                var minBlockers = Math.max(Math.round(numSectors * minBlockersRatio), 2);
-				var maxBlockers = Math.round(numSectors * maxBlockersRatio);
+				// movement blockers: non-combat (depending on level)
                 var blockerTypes = [];
                 if (l >= 14) blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE);
-                if (levelOrdinal >= 5) blockerTypes.push(MovementConstants.BLOCKER_TYPE_GAP);
-                this.addMovementBlockers(seed, l, levelVO, blockerTypes, minBlockers, maxBlockers);
+                if (levelOrdinal >= 4 && l !== 14) blockerTypes.push(MovementConstants.BLOCKER_TYPE_GAP);
+                this.addMovementBlockers(seed, l, levelVO, blockerTypes);
 			}
 			
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
@@ -446,17 +441,18 @@ define([
 		// enemies
 		prepareWorldEnemies: function (seed, topLevel, bottomLevel, enemyHelper) {
             var worldVO = this.world;
+            var creator = this;
 			for (var l = topLevel; l >= bottomLevel; l--) {
                 var levelVO = this.world.getLevel(l);
                 var numLocales = 0;
-                var numGangs = 0;
                 var randomGangFreq = 45;
+                var blockerType = MovementConstants.BLOCKER_TYPE_GANG;
                 
-                var addGang = function (sectorVO, neighbourVO, direction) {
-                    sectorVO.addBlocker(direction, MovementConstants.BLOCKER_TYPE_GANG);
-                    sectorVO.numLocaleEnemies[LocaleConstants.getPassageLocaleId(direction)] = 3;
-                    neighbourVO.addBlocker(PositionConstants.getOppositeDirection(direction), MovementConstants.BLOCKER_TYPE_GANG);
-                    neighbourVO.numLocaleEnemies[LocaleConstants.getPassageLocaleId(direction)] = 3;
+                var addGang = function (sectorVO, neighbourVO, addDiagonals) {
+                    if (!neighbourVO) neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
+                    creator.addMovementBlocker(levelVO, sectorVO, neighbourVO, blockerType, addDiagonals, function (s, direction) {
+                        s.numLocaleEnemies[LocaleConstants.getPassageLocaleId(direction)] = 3;
+                    });
                 };
                 
                 var addGangs = function (seed, reason, levelVO, pointA, pointB, maxPaths) {
@@ -472,14 +468,14 @@ define([
                         index = WorldCreatorRandom.randomInt(finalSeed, min, max);
                         var sectorVO = levelVO.getSector(path[index].sectorX, path[index].sectorY);
                         var neighbourVO = levelVO.getSector(path[index + 1].sectorX, path[index + 1].sectorY);
-                        var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
-                        addGang(sectorVO, neighbourVO, direction);
+                        addGang(sectorVO, neighbourVO, false);
                         num++;
                     }
                     return num;
                 };
                 
                 // sector-based: possible enemies, random encounters and locales
+                var randomGangIndex = 0;
                 for (var i = 0; i < levelVO.sectors.length; i++) {
                     var sectorVO = levelVO.sectors[i];
                     sectorVO.possibleEnemies = [];
@@ -503,37 +499,29 @@ define([
                         if (sectorVO.workshop) {
                             // camps to workshops (all paths)
                             var rand = Math.round(1000 + seed + (l+21) * 11 + (s + 2) * 31 + (i + 1) * 51);
-                            numGangs += addGangs(rand, "workshop", levelVO, campSector.position, sectorVO.position, 100);
+                            addGangs(rand, "workshop", levelVO, campSector.position, sectorVO.position, 100);
                         } else if (sectorVO.locales.length > 0) {
                             // camps to locales (some paths)
                             var rand = Math.round(50 + seed + (l+11) * 11 + (s + 41) * 3 + (i + 1) * 42);
                             if (numLocales % 2 === 0) {
-                                numGangs += addGangs(rand, "locale", levelVO, campSector.position, sectorVO.position, 1);
+                                addGangs(rand, "locale", levelVO, campSector.position, sectorVO.position, 1);
                             }
                             numLocales++;
                         }
                     }
                     
                     // gangs: some random gangs regardless of camps
-                    if (i % randomGangFreq === 0) {
-                        var neighbour = WorldCreatorRandom.getRandomSectorNeighbour(seed * 20 - l * 11 + i * 32, levelVO, sectorVO, true);
-                        var neighbours = levelVO.getNeighbours(sectorVO.position.sectorX, sectorVO.position.sectorY);
-                        var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbour.position);
-                        addGang(sectorVO, neighbour, direction);
-                        numGangs++;
-                        if (i % (randomGangFreq * 2) === 0) {
-                            var bonusDirections = [ PositionConstants.getNextCounterClockWise(direction, true), PositionConstants.getNextClockWise(direction, true)];
-                            var num = 0;
-                            for (var j = 0; j < bonusDirections.length; j++) {
-                                var bonusNeighbour = neighbours[bonusDirections[j]];
-                                if (bonusNeighbour) {
-                                    addGang(sectorVO, bonusNeighbour, bonusDirections[j]);
-                                    numGangs++;
-                                    num++;
-                                }
-                            }
+                    if (randomGangIndex >= randomGangFreq) {
+                        var neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
+                        var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
+                        if (!sectorVO.movementBlockers[direction]) {
+                            var addDiagonals = i % (randomGangFreq * 2) === 0;
+                            addGang(sectorVO, neighbourVO, addDiagonals);
+                            randomGangIndex = 0;
                         }
                     }
+                    
+                    randomGangIndex++;
 				}
 			}
 			
@@ -814,10 +802,12 @@ define([
             // passages: up according to previous level
             var previousLevelVO = this.world.levels[l + 1];
             var passagePosition;
+            var passageSector;
             for (var i = 0; i < passageUpPositions.length; i++) {
                 passagePosition = passageUpPositions[i];
-                levelVO.getSector(passagePosition.sectorX, passagePosition.sectorY).passageUp =
-                    previousLevelVO.getSector(passagePosition.sectorX, passagePosition.sectorY).passageDown;
+                passageSector = levelVO.getSector(passagePosition.sectorX, passagePosition.sectorY);
+                passageSector.passageUp = previousLevelVO.getSector(passagePosition.sectorX, passagePosition.sectorY).passageDown;
+                levelVO.addPassageSector(passageSector);
             }
             
             var passageDownPositions = [];
@@ -861,33 +851,73 @@ define([
                         var passageType = availablePassageTypes[passageTypeIndex];
                         passageDownSectors[i].passageDown = passageType;
                     }
+                    levelVO.addPassageSector(passageDownSectors[i]);
                 }
             }
             
             return passageDownPositions;
         },
-		
-        addMovementBlockers: function(seed, l, levelVO, blockerTypes, min, max) {
-            if (blockerTypes.length < 1) return;
-            var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
-            var num = WorldCreatorRandom.randomInt(88 + seed * 56 * (l + 100) + seed % 7, min, max);
-                
-            var options = { requireCentral: true, excludingFeature: "camp" };
-            var sectors = WorldCreatorRandom.randomSectors(seed * l * l + (1 + 303) * 22, this.world, levelVO, num, num + 1, options);
-            for (var i = 0; i < sectors.length; i++) {
-                var typeix = WorldCreatorRandom.randomInt(seed * 831 / (l+5) + seed % 2 + (i + 78) * 4, 0, blockerTypes.length);
-                var blockerType = blockerTypes[typeix];
-                var blockedSector = sectors[i];
-
-                if (levelOrdinal === 1 && (Math.abs(blockedSector.position.sectorX) < 2 || Math.abs(blockedSector.position.sectorY < 2))) {
-                    continue;
+        
+        addMovementBlocker: function(levelVO, sectorVO, neighbourVO, blockerType, addDiagonals, cb) {            
+            var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
+            var neighbourDirection = PositionConstants.getDirectionFrom(neighbourVO.position, sectorVO.position);
+            
+            if (sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection]) {
+                return;
             }
+            
+            sectorVO.addBlocker(direction, blockerType);
+            neighbourVO.addBlocker(neighbourDirection, blockerType);
+            
+            if (cb) {
+                cb(sectorVO, direction);
+                cb(neighbourVO, neighbourDirection);
+            }
+            
+            // add blockers to adjacent paths too (if present) so player can't just walk around the blocker
+            if (addDiagonals) {
+                var nextNeighbours = levelVO.getNextNeighbours(sectorVO, direction);
+                for (var j = 0; j < nextNeighbours.length; j++) {
+                    this.addMovementBlocker(levelVO, sectorVO, nextNeighbours[j], blockerType, false, cb);
+                }
+                nextNeighbours = levelVO.getNextNeighbours(neighbourVO, neighbourDirection);
+                for (var j = 0; j < nextNeighbours.length; j++) {
+                    this.addMovementBlocker(levelVO, neighbourVO, nextNeighbours[j], blockerType, false, cb);
+                }
+            }
+        },
+		
+        addMovementBlockers: function(seed, l, levelVO, blockerTypes) {
+            if (blockerTypes.length < 1) return;
+            var worldVO = this.world;
+			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
+            var creator = this;
+            
+            var getBlockerType = function (seed) {
+                var typeix = blockerTypes.length > 1 ? WorldCreatorRandom.randomInt(seed, 0, blockerTypes.length) : 0;
+                return blockerTypes[typeix];
+            };
+                
+            var addBlocker = function (seed, sectorVO, neighbourVO, addDiagonals) {
+                if (!neighbourVO) neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
+                var blockerType = getBlockerType(seed);
+                creator.addMovementBlocker(levelVO, sectorVO, neighbourVO, blockerType, addDiagonals);
+            };
 
-                var blockedNeighbour = WorldCreatorRandom.getRandomSectorNeighbour(seed * 101 + (i + 70) * (l + 900), levelVO, blockedSector, true);
-                var direction = PositionConstants.getDirectionFrom(blockedSector.position, blockedNeighbour.position);
-
-                blockedSector.addBlocker(direction, blockerType);
-                blockedNeighbour.addBlocker(PositionConstants.getOppositeDirection(direction), blockerType);
+            // random ones
+            var numRandom = 0;
+            if (l === 14) numRandom = 2;
+            if (l === 15) numRandom = 1;
+            if (l === topLevel - 1) numRandom = 4;
+            if (l === topLevel) numRandom = 8;
+            if (numRandom > 0) {
+                var randomSeed = seed % 8 * 1751 + 1000 + (l + 5) * 291;
+                var options = { excludingFeature: "camp" };
+                var sectors = WorldCreatorRandom.randomSectors(randomSeed, worldVO, levelVO, numRandom, numRandom+1, options);
+                for (var i = 0; i < sectors.length; i++) {
+                    var addDiagonals = (l + i + 9) % 3 !== 0;
+                    addBlocker(randomSeed - (i + 1) * 321, sectors[i], null, addDiagonals);
+                }
             }
         },
         
