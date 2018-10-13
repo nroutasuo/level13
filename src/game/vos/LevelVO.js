@@ -144,9 +144,18 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			return this.hasSector(sectorX, sectorY) ? this.sectorsByPos[sectorX][sectorY] : null;
 		},
         
-        isEdgeSector: function (sectorX, sectorY) {
-            return (sectorY === this.minY || sectorY === this.maxY || sectorX === this.minX || sectorX === this.maxX) 
-                && Math.abs(sectorX) > 1 && Math.abs(sectorY) > 1;
+        isEdgeSector: function (sectorX, sectorY, padding) {
+            return this.getEdgeDirection(sectorX, sectorY, padding) >= 0;
+        },
+        
+        getEdgeDirection: function (sectorX, sectorY, padding) {
+            if (!this.minY || !this.maxY || !this.minX || !this.maxX) return -1;
+            if (!padding) padding = 0;
+            if (sectorY <= this.minY + padding) return PositionConstants.DIRECTION_NORTH;
+            if (sectorY >= this.maxY - padding) return PositionConstants.DIRECTION_SOUTH;
+            if (sectorX <= this.minX + padding) return PositionConstants.DIRECTION_WEST;
+            if (sectorX >= this.maxX - padding) return PositionConstants.DIRECTION_EAST;
+            return -1;
         },
 		
 		isCentral: function (sectorX, sectorY) {

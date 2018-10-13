@@ -32,6 +32,11 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         
         DIAGONAL_PATH_PROBABILITY: 0.1,
         
+        SURFACE_BLAST_RADIUS: 10,
+        BELOW_SURFACE_BLAST_RADIUS: 6,
+        CENTRAL_CORRIDOR_RADIUS: 5,
+        TOWER_RADIUS: 20,
+        
         MIN_CENTRAL_AREA_SIZE: 10,
         MAX_CENTRAL_AREA_SIZE: 25,
         SECTOR_PATH_LENGTH_MIN: 6,

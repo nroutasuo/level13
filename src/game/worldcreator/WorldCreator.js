@@ -146,10 +146,17 @@ define([
 		
 		// sector type, building density, state of repair, sunlight, hazards
 		prepareWorldTexture: function (seed, topLevel, bottomLevel) {
+            var brokenEdgeLevels = [ 10, 8, 4, topLevel - 5 ];
+            var openEdgeLevels = [ topLevel - 1, topLevel - 2, topLevel - 3 ];
 			for (var i = topLevel; i >= bottomLevel; i--) {
-				var l = i === 0 ? 1342 : i;
+				var l = i === 0 ? 35 : i;
                 var levelVO = this.world.getLevel(i);
-                var previousLevelVO = this.world.getLevel(i + 1);
+                var origo = new PositionVO(i, 0, 0);
+                
+                var hasBrokenEdge = brokenEdgeLevels.indexOf(i) >= 0;
+                var hasOpenEdge = openEdgeLevels.indexOf(i) >= 0;
+                var numEdges = hasBrokenEdge && hasOpenEdge ? 2 : (hasBrokenEdge || hasOpenEdge) ? 1 : 0;
+                var sunlitEdgeDirections = WorldCreatorRandom.randomDirections(seed + i * 222, numEdges, false);
 				
 				var levelDensity = Math.min(Math.max(2, i % 2 * 4 + WorldCreatorRandom.random(seed * 7 * l / 3 + 62) * 7), 8);
 				if (Math.abs(i - 15) < 2) levelDensity = 10;
@@ -161,17 +168,51 @@ define([
                     var x = sectorVO.position.sectorX;
                     var y = sectorVO.position.sectorY;
 
-                    var ceilingSector = previousLevelVO ? previousLevelVO.getSector(x, y) : null;
-
                     var distanceToCenter = PositionConstants.getDistanceTo(sectorVO.position, new PositionVO(l, 0, 0));
-                    var edgeSector = levelVO.isEdgeSector(x, y);
-                    var ceilingStateOfRepair = l === topLevel ? 0 : !ceilingSector ? sectorVO.stateOfRepair : ceilingSector.stateOfRepair;
-                    var ceilingSunlit = l === topLevel || !ceilingSector ? true : ceilingSector.sunlit;
+
+                    // sunlight 
+                    var isOutsideTower = Math.abs(y) > WorldCreatorConstants.TOWER_RADIUS || Math.abs(x) > WorldCreatorConstants.TOWER_RADIUS;
+                    var isEdgeSector = levelVO.isEdgeSector(x, y, 1);
+                    var isOpenEdge = false;
+                    var isBrokenEdge = false;
+                    if (l === topLevel) {
+                        // surface: all lit
+                        sectorVO.sunlit = 1;
+                    } else if (l === 13 || l === 12) {
+                        // start levels: no sunlight
+                        sectorVO.sunlit = 0;
+                    } else {
+                        sectorVO.sunlit = 0;
+                        
+                        // one level below surface: center has broken "ceiling"
+                        if (l === topLevel - 1 && distanceToCenter <= 6) {
+                            sectorVO.sunlit = 1;
+                        }
+                        
+                        // all levels except surface: some broken or open edges
+                        if (isEdgeSector || isOutsideTower) {
+                            var dir = levelVO.getEdgeDirection(x, y, 1);
+                            var dirIndex = sunlitEdgeDirections.indexOf(dir);
+                            if (dirIndex >= 0) {
+                                sectorVO.sunlit = 2;
+                                if (hasBrokenEdge && hasOpenEdge) {
+                                    isBrokenEdge = dirIndex === 0;
+                                    isOpenEdge = dirIndex > 1;
+                                } else if(hasBrokenEdge) {
+                                    isBrokenEdge = true;
+                                } else {
+                                    isOpenEdge = true;
+                                }
+                            }
+                        }
+                    }
 
                     // state of repair
                     var explosionStrength = i - topLevel >= -3 && distanceToCenter <= 10 ? distanceToCenter * 2 : 0;
                     var stateOfRepair = Math.min(10, Math.max(0, Math.ceil(levelRepair + (WorldCreatorRandom.random(seed * l * (x + 100) * (y + 100)) * 5)) - explosionStrength));
                     if (sectorVO.camp) stateOfRepair = Math.max(3, stateOfRepair);
+                    if (isOpenEdge) stateOfRepair = Math.min(7, stateOfRepair);
+                    if (isBrokenEdge) stateOfRepair = Math.min(3, stateOfRepair);
                     sectorVO.stateOfRepair = stateOfRepair;
 
                     // sector type
@@ -186,24 +227,12 @@ define([
                         buildingDensity = Math.min(1, Math.max(8, buildingDensity));
                     }
                     sectorVO.buildingDensity = buildingDensity;
-
-                    // sunlight
-                    sectorVO.sunlit = l === topLevel || (ceilingSunlit && ceilingStateOfRepair < 3) || (edgeSector && stateOfRepair < 5);
-                    if (!sectorVO.sunlit && (buildingDensity < 5 || stateOfRepair < 5)) {
-                        var neighbours = levelVO.getNeighbours(x, y);
-                        for (var neighbourDirection in neighbours) {
-                            var sunlitRandVal = WorldCreatorRandom.random(seed / 3 + l + x + y * l * l + x * x + y * 7 - ceilingStateOfRepair);
-                            if (neighbours[neighbourDirection].sunlit && sunlitRandVal > 0.15) {
-                                sectorVO.sunlit = true;
-                            }
-                        }
-                    }
 				}
 			}
 			
 			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World texture ready.");
-            //WorldCreatorDebug.printWorld(this.world, [ "sunlit" ]);
+            // WorldCreatorDebug.printWorld(this.world, [ "sunlit" ]);
 		},
 		
 		// resources
@@ -433,7 +462,7 @@ define([
                         
                     if (Math.abs(y) > 2 && Math.abs(x) > 2 && !sectorVO.camp) {
                         var hazardValueRand = WorldCreatorRandom.random(seed / (l + 40) + x * y / 6 + seed + y * 2 + l * l * 959);
-                        if (edgeSector || l === topLevel || distanceToEdge < 5 || Math.abs(y) > 50 || Math.abs(x) > 50) {
+                        if (edgeSector || l === topLevel || distanceToEdge < 5 || Math.abs(y) > WorldCreatorConstants.TOWER_RADIUS || Math.abs(x) > WorldCreatorConstants.TOWER_RADIUS) {
                             var maxValue = sectorVO.isOnEarlyCriticalPath() ? maxHazardColdEasy : maxHazardCold;
                             sectorVO.hazards.cold = Math.min(maxValue, Math.ceil(hazardValueRand * 10) * 10);
                         }
@@ -1192,7 +1221,7 @@ define([
 			var sectorFeatures = {};
 			sectorFeatures.buildingDensity = sectorVO.buildingDensity;
 			sectorFeatures.stateOfRepair = sectorVO.stateOfRepair;
-			sectorFeatures.sunlit = sectorVO.sunlit;
+			sectorFeatures.sunlit = sectorVO.sunlit > 0;
             sectorFeatures.hazards = sectorVO.hazards;
 			sectorFeatures.sectorType = sectorVO.sectorType;
 			sectorFeatures.hasSpring = sectorVO.hasSpring;

@@ -117,6 +117,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 		
 		randomDirections: function (seed, num, includeDiagonals) {
 			var directions = [];
+            if (!num || num === 0) return directions;
             var options = PositionConstants.getLevelDirections(!includeDiagonals);
 			
 			for (var i = 0; i < num; i++) {
