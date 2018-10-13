@@ -139,13 +139,22 @@ define([
             if (oldMaximum > 0 && this.wasSunlit !== null) {
                 if (this.wasSunlit !== sunlit) {
                     // switching between darkness and sunlight
-                    vision.value = 0;
+                    var isTotalReset = maxValue === maxValueBase;
+                    vision.value = isTotalReset ? 0 : maxValueBase;
                     if (sunlit) {
-                        logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Blinded by sunlight.");
+                        if (isTotalReset) {
+                            logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Blinded by sunlight.");
+                        } else {
+                            logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Engulfed sunlight.");
+                        }
                     } else {
-                        logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "The darkness is like a wall.");
+                        if (isTotalReset) {
+                            logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "The darkness is like a wall.");
+                        } else {
+                            logComponent.addMessage(LogConstants.MSG_ID_VISION_RESET, "Back into the darkness.");
+                        }
                     }
-                } else if (oldMaximum > maxValue && oldValue - 10 > maxValue && maxValue == maxValueBase) {
+                } else if (oldMaximum > maxValue && oldValue - 10 > maxValue && maxValue === maxValueBase) {
                     // being reset back to base value (losing equipment, not having equipment and leaving camp)
                     vision.value = 0;
                     if (sunlit) {
