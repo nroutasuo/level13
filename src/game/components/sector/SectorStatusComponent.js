@@ -4,6 +4,7 @@ define(['ash'], function (Ash) {
     var SectorStatusComponent = Ash.Class.extend({
         
         discoveredResources: [],
+        scavenged: false,
         scouted: false,
         localesScouted: [],
         glowStickSeconds: -100, // not saved
@@ -11,6 +12,7 @@ define(['ash'], function (Ash) {
         
         constructor: function () {
             this.discoveredResources = [];
+            this.scavenged = false;
             this.scouted = false;
             this.localesScouted = [];
         },
@@ -52,6 +54,8 @@ define(['ash'], function (Ash) {
             var copy = {};
             if (this.discoveredResources.length > 0)
                 copy.dR = this.discoveredResources;
+            if (this.scavenged)
+                copy.sc = this.scavenged;
             if (this.scouted)
                 copy.s = this.scouted;
             if (this.localesScouted.length > 0)
@@ -63,6 +67,7 @@ define(['ash'], function (Ash) {
         
         customLoadFromSave: function (componentValues) {
             this.discoveredResources = componentValues.dR ? componentValues.dR : [];
+            this.scavenged = typeof componentValues.sc !== "undefined" ? componentValues.sc : false;
             this.scouted = typeof componentValues.s !== "undefined" ? componentValues.s : false;
             if (componentValues.lS && componentValues.lS.length > 0)
                 this.localesScouted = componentValues.lS;

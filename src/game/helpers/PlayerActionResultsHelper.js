@@ -25,7 +25,8 @@ define([
     'game/components/player/PerksComponent',
     'game/components/player/BagComponent',
     'game/vos/ResultVO',
-    'game/vos/ResourcesVO'
+    'game/vos/ResourcesVO',
+	'game/vos/StashVO',
 ], function (
     Ash,
     MathUtils,
@@ -52,7 +53,8 @@ define([
     PerksComponent,
     BagComponent,
     ResultVO,
-    ResourcesVO
+    ResourcesVO,
+    StashVO
 ) {
     var PlayerActionResultsHelper = Ash.Class.extend({
 
@@ -134,7 +136,8 @@ define([
         getScavengeRewards: function () {
             var rewards = new ResultVO("scavenge");
 
-            var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
+            var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+            var sectorResources = sectorFeatures.resourcesScavengable;
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var playerPos = this.playerLocationNodes.head.position;
             var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
@@ -143,6 +146,8 @@ define([
             rewards.gainedResources = this.getRewardResources(0.95 + efficiency * 0.05, 1, efficiency, sectorResources);
             rewards.gainedItems = this.getRewardItems(0.01 + efficiency * 0.04, efficiency * 0.08, this.itemResultTypes.scavenge, efficiency, itemsComponent, levelOrdinal);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
+            
+            this.addStash(rewards, sectorFeatures.stash);
 
             return rewards;
         },
@@ -794,6 +799,22 @@ define([
             
 			return null;
 		},
+        
+        addStash: function (rewardsVO, stashVO) {
+            if (!stashVO) return;
+            var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+            if (sectorStatus.scavenged) return;
+            switch (stashVO.stashType) {
+                case StashVO.STASH_TYPE_ITEM:
+                    for (var i = 0; i < stashVO.amount; i++) {
+                        rewardsVO.gainedItems.push(ItemConstants.getItemByID(stashVO.itemID).clone());
+                    }
+                    break;
+                case StashVO.STASH_TYPE_SILVER:
+                    rewardsVO.gainedCurrency += stashVO.amount;
+                    break;
+            }
+        },
         
         isRewardItemTypeLocked: function (itemType) {
             if (itemType === ItemConstants.itemBonusTypes.light) {

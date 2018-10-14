@@ -470,6 +470,7 @@ define(['ash',
         },
         
         scavenge: function () {
+            var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
             this.gameState.unlockedFeatures.scavenge = true;
 
             var logMsg = "";
@@ -486,16 +487,17 @@ define(['ash',
             var logMsgSuccess = logMsg;
             var logMsgFlee = logMsg + "Fled empty-handed.";
             var logMsgDefeat = logMsg + "Got into a fight and was defeated.";
-            this.handleOutActionResults("scavenge", LogConstants.MSG_ID_SCAVENGE, logMsgSuccess, logMsgFlee, logMsgDefeat, true);
+            var successCallback = function () {
+                sectorStatus.scavenged = true;
+            };
+            this.handleOutActionResults("scavenge", LogConstants.MSG_ID_SCAVENGE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, successCallback);
         },
         
         scout: function () {
             var sector = this.playerLocationNodes.head.entity;
             var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
             var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-            if (!sectorStatus.scouted) {
-                sectorStatus.scouted = true;
-                
+            if (!sectorStatus.scouted) {                
                 if (!this.gameState.unlockedFeatures.evidence) {
                     this.gameState.unlockedFeatures.evidence = true;
                     GlobalSignals.featureUnlockedSignal.dispatch();
@@ -542,6 +544,7 @@ define(['ash',
 
                 var playerActionFunctions = this;
                 var successCallback = function () {
+                    sectorStatus.scouted = true;
                     GlobalSignals.sectorScoutedSignal.dispatch();
                     playerActionFunctions.occurrenceFunctions.onScoutSector(sector);
                     playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();

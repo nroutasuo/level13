@@ -173,7 +173,8 @@ define([
                 sectorFeatures.notCampableReason,
 				sectorFeatures.resourcesScavengable,
                 sectorFeatures.resourcesCollectable,
-                sectorFeatures.hasSpring))
+                sectorFeatures.hasSpring,
+                sectorFeatures.stash))
 			.add(new SectorLocalesComponent(locales))
 			.add(new SaveComponent(saveKey, [
 				ResourcesComponent,

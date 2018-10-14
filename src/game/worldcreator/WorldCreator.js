@@ -257,11 +257,11 @@ define([
                 var amountSilk = levelVO.numLocales || minSilkPerStash;
                 var numSilkStashes = Math.ceil(amountSilk / maxSilkPerStash);
                 var numSilkPerStash = Math.ceil(amountSilk / numSilkStashes);
-                addStashes(seed * l * 8 / 3 + (l+100)*14, WorldCreatorConstants.STASH_TYPE_ITEM, "res_silk", numSilkStashes, numSilkPerStash);
+                addStashes(seed * l * 8 / 3 + (l+100)*14, StashVO.STASH_TYPE_ITEM, "res_silk", numSilkStashes, numSilkPerStash);
                 
                 var newEquipment = itemsHelper.getNewEquipment(campOrdinal);
                 for (var i = 0; i < newEquipment.length; i++) {
-                    addStashes(seed / 3 + (l+551)*8 + (i+103)*18, WorldCreatorConstants.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1);
+                    addStashes(seed / 3 + (l+551)*8 + (i+103)*18, StashVO.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1);
                 }
                 
                 // TODO add currency stashes just for fun
@@ -1242,7 +1242,6 @@ define([
 		
 		getSectorFeatures: function (level, sectorX, sectorY) {
 			var sectorVO = this.world.getLevel(level).getSector(sectorX, sectorY);
-            var campOrdinal = WorldCreatorHelper.getCampOrdinal(this.seed, level);
 			var sectorFeatures = {};
 			sectorFeatures.buildingDensity = sectorVO.buildingDensity;
 			sectorFeatures.stateOfRepair = sectorVO.stateOfRepair;
@@ -1255,6 +1254,7 @@ define([
 			sectorFeatures.workshopResource = sectorVO.workshopResource;
             sectorFeatures.campable = sectorVO.camp;
             sectorFeatures.notCampableReason = sectorVO.notCampableReason;
+            sectorFeatures.stash = sectorVO.stash || null;
 			return sectorFeatures;
 		},
 		
