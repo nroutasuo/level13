@@ -13,6 +13,7 @@ define([
 	'game/vos/ResourcesVO',
 	'game/vos/LocaleVO',
 	'game/vos/PositionVO',
+	'game/vos/StashVO',
 	'game/vos/PathConstraintVO',
 	'game/constants/WorldCreatorConstants',
 	'game/constants/PositionConstants',
@@ -23,7 +24,7 @@ define([
 ], function (
     Ash, GameConstants, LevelConstants, TradeConstants,
     WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug,
-    WorldVO, LevelVO, SectorVO, ResourcesVO, LocaleVO, PositionVO, PathConstraintVO,
+    WorldVO, LevelVO, SectorVO, ResourcesVO, LocaleVO, PositionVO, StashVO, PathConstraintVO,
     WorldCreatorConstants, PositionConstants, MovementConstants, EnemyConstants, UpgradeConstants, LocaleConstants
 ) {
 
@@ -40,14 +41,14 @@ define([
 			this.prepareWorldStructure(seed, topLevel, bottomLevel);
 			// building density, state of repair
 			this.prepareWorldTexture(seed, topLevel, bottomLevel);
-			// resources (and workshops)
-			this.prepareWorldResources(seed, topLevel, bottomLevel);
 			// locales
             this.prepareWorldLocales(seed, topLevel, bottomLevel);
             // movement blockers
             this.prepareWorldMovementBlockers(seed, topLevel, bottomLevel);
             // hazards
             this.prepareHazards(seed, topLevel, bottomLevel, itemsHelper);
+			// resources, workshops and stashes
+			this.prepareWorldResources(seed, topLevel, bottomLevel, itemsHelper);
 			// enemies (and gangs)
 			this.prepareWorldEnemies(seed, topLevel, bottomLevel, enemyHelper);
 		},
@@ -235,14 +236,38 @@ define([
             // WorldCreatorDebug.printWorld(this.world, [ "sunlit" ]);
 		},
 		
-		// resources
-		prepareWorldResources: function (seed, topLevel, bottomLevel) {
+		// resources and stashes
+		prepareWorldResources: function (seed, topLevel, bottomLevel, itemsHelper) {
 			for (var l = topLevel; l >= bottomLevel; l--) {
+                var ll = l === 0 ? l : 50;
                 var levelVO = this.world.getLevel(l);
-				var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
 				var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
-                var springSectors = [];
                 
+                // stashes
+                var addStashes = function (sectorSeed, stashType, itemID, num, numItemsPerStash) {
+                    var options = { requireCentral: false, excludingFeature: "camp" };
+                    var stashSectors = WorldCreatorRandom.randomSectors(sectorSeed, this.world, levelVO, num, num + 1, options);
+                    for (var i = 0; i < stashSectors.length; i++) {
+                        stashSectors[i].stashItem = itemID;
+                        stashSectors[i].stash = new StashVO(stashType, numItemsPerStash, itemID);
+                    }
+                };
+                var minSilkPerStash = 3;
+                var maxSilkPerStash = 6;
+                var amountSilk = levelVO.numLocales || minSilkPerStash;
+                var numSilkStashes = Math.ceil(amountSilk / maxSilkPerStash);
+                var numSilkPerStash = Math.ceil(amountSilk / numSilkStashes);
+                addStashes(seed * l * 8 / 3 + (l+100)*14, WorldCreatorConstants.STASH_TYPE_ITEM, "res_silk", numSilkStashes, numSilkPerStash);
+                
+                var newEquipment = itemsHelper.getNewEquipment(campOrdinal);
+                for (var i = 0; i < newEquipment.length; i++) {
+                    addStashes(seed / 3 + (l+551)*8 + (i+103)*18, WorldCreatorConstants.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1);
+                }
+                
+                // TODO add currency stashes just for fun
+                
+                // springs                
+                var springSectors = [];                
                 var maxSprings = 5;
                 var minSprings = 2;
                 if (l === bottomLevel) {
@@ -252,8 +277,7 @@ define([
                 if (l > topLevel - 3) {
                     maxSprings = 10;
                     minSprings = 3;
-                }
-                
+                }                
                 var numSprings = WorldCreatorRandom.randomInt(seed * (l + 1000) / 11, minSprings, maxSprings);
                 var shuffledPossibleSprings = levelVO.possibleSpringSectors.sort(function (a, b) {
                     return .5 - WorldCreatorRandom.random(seed + a.sectorX + b.sectorY);
@@ -300,7 +324,6 @@ define([
             // WorldCreatorDebug.printWorld(this.world, [ "resourcesScavengable.food" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "hasSpring" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "criticalPaths.length" ]);
-            // WorldCreatorDebug.printWorld(this.world, [ "workshop" ]);
 		},
 		
 		// locales
@@ -314,6 +337,7 @@ define([
                 var sectorVO = WorldCreatorRandom.randomSector(seed - 9393 + i * i, this.world, levelVO, false);
                 var locale = new LocaleVO(localeTypes.tradingpartner, true);
                 sectorVO.locales.push(locale);
+                levelVO.numLocales++;
             }
                 
             // 2) spawn other types (for blueprints)
@@ -397,6 +421,7 @@ define([
                     var isEasy = i <= countEasy;
                     var locale = new LocaleVO(localeType, isEasy, isEarly);
                     sectorVO.locales.push(locale);
+                    levelVO.numLocales++;
                     for (var j = 0; j < pathConstraints.length; j++) {
                         WorldCreatorHelper.addCriticalPath(worldVO, sectorVO.position, pathConstraints[j].startPosition, pathConstraints[j].pathType);
                     }

@@ -52,6 +52,9 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         
         MAX_SCOUT_LOCALE_STAMINA_COST: 600,
         
+        STASH_TYPE_ITEM: "item",
+        STASH_TYPE_SILVER: "silver",
+        
         LEVEL_ORDINAL_BAG_2: 2,
         LEVEL_ORDINAL_BAG_3: 6,
         LEVEL_ORDINAL_BAG_4: 10,

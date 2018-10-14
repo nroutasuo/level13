@@ -90,6 +90,26 @@ define([
             return result;
         },
         
+        getNewEquipment: function (campOrdinal) {
+            var result = [];
+            var prevNecessityClothing = this.getScavengeNecessityClothing(campOrdinal - 1);
+            var necessityClothing = this.getScavengeNecessityClothing(campOrdinal);
+            for (var i = 0; i < necessityClothing.length; i++) {
+                var notNew = false;
+                for (var j = 0; j < prevNecessityClothing.length; j++) {
+                    if (necessityClothing[i].id === prevNecessityClothing[j].id) {
+                        notNew = true;
+                    }
+                }
+                if (notNew) continue;
+                result.push(necessityClothing[i]);
+            }
+            var prevWeapon = ItemConstants.getDefaultWeapon(campOrdinal - 1);
+            var weapon = ItemConstants.getDefaultWeapon(campOrdinal);
+            if (weapon && (!prevWeapon || weapon.id !== prevWeapon.id)) result.push(weapon);
+            return result;
+        },
+        
         // max radiation level at the END of the given camp ordinal (all tech and items etc)
         getMaxHazardRadiationForLevel: function (campOrdinal) {
             var defaultClothing = this.getBestClothing(campOrdinal, ItemConstants.itemBonusTypes.res_radiation);

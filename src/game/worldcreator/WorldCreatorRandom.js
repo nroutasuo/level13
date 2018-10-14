@@ -54,7 +54,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 				var sector;
 				var additionalRandom = 0;
 				do {
-					sector = this.randomSector(seed * 7 % 4 + (i + 1) * 369 + additionalRandom * 55, worldVO, levelVO, options.requireCentral, options.pathConstraints);
+					sector = this.randomSector(seed + (i + 1) * 369 + additionalRandom * 55, worldVO, levelVO, options.requireCentral, options.pathConstraints);
 					additionalRandom++;
                     if (additionalRandom > 50) {
                         console.log("WARN: getRandomSectorsSmall: Couldn't find random sector " + i + "/" + numSectors + "(level: " + levelVO.level + ")");

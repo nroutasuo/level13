@@ -13,6 +13,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
         
         bagSize: 0,
 		centralAreaSize: 0,
+        numLocales: 0,
 		
 		sectors: [],
 		centralSectors: [],
@@ -31,6 +32,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			this.isCampable = isCampable;
             this.notCampableReason = notCampableReason;
             this.populationGrowthFactor = populationGrowthFactor;
+            this.numLocales = 0;
 			
 			this.sectors = [];
 			this.centralSectors = [];
