@@ -20,20 +20,22 @@ define(['ash'], function (Ash) {
 			return this.levels[l];
 		},
         
-        getPath: function (pos1, pos2) {
-            var start = this.getPathStart(pos1, pos2);
-            var end = this.getPathEnd(pos1, pos2);
+        getPath: function (pos1, pos2, blockedByBlockers) {
             if (!this.paths) return null;
-            if (!this.paths[start.toString()]) return null;
-            return this.paths[start.toString()][end.toString()];
+            var key = this.getPathKey(pos1, pos2, blockedByBlockers);
+            return this.paths[key];
         },
         
-        addPath: function (pos1, pos2, path) {
+        addPath: function (pos1, pos2, blockedByBlockers, path) {
+            var key = this.getPathKey(pos1, pos2, blockedByBlockers);
+            if (!this.paths) this.paths = {};
+            this.paths[key] = path;
+        },
+        
+        getPathKey: function (pos1, pos2, blockedByBlockers) {
             var start = this.getPathStart(pos1, pos2);
             var end = this.getPathEnd(pos1, pos2);
-            if (!this.paths) this.paths = {};
-            if (!this.paths[start.toString()]) this.paths[start.toString()] = {};
-            this.paths[start.toString()][end.toString()] = path;
+            return start.toString() + "-" + end.toString() + (blockedByBlockers ? "-1" : "-0");
         },
         
         getPathStart: function (pos1, pos2) {

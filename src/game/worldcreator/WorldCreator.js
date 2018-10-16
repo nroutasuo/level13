@@ -89,7 +89,7 @@ define([
                     levelVO.addCampSector(campSector);
                     previousCampPositions = [ campSector.position ];
 				} else {
-					var numCamps = isCampableLevel ? 3 : 0;
+					var numCamps = isCampableLevel ? 2 : 0;
                     var campPositions = [];
                     if (numCamps > 0) {
                         for (var i = 0; i < numCamps; i++) {
@@ -936,7 +936,7 @@ define([
                     if (options.allowedCriticalPaths && options.allowedCriticalPaths.indexOf(pathType) >= 0) continue;
                     for (var j = 0; j < neighbourVO.criticalPaths.length; j++) {
                         if (pathType === neighbourVO.criticalPaths[j]) {
-                            console.log("WARN: Skipping blocker on critical path: " + pathType + " (type: " + blockerType + ")");
+                            console.log("WARN: (level " + levelVO.level + ") Skipping blocker on critical path: " + pathType + " (type: " + blockerType + ")");
                             return;
                         }
                     }
@@ -1007,7 +1007,7 @@ define([
             var numBetweenPassages = 0;
             if (l === 14) numBetweenPassages = 1;
             if (numBetweenPassages > 0) {
-                var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE];
+                var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2 ];
                 for (var i = 0; i < levelVO.passageSectors.length; i++) {
                     for (var j = i + 1; j < levelVO.passageSectors.length; j++) {
                         var rand = Math.round(2222 + seed + (i+21) * 41 + (j + 2) * 33);

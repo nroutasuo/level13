@@ -90,9 +90,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			var colList = this.sectorsByPos[sectorX];
 			if (colList) {
 				var sector = this.sectorsByPos[sectorX][sectorY];
-				if (sector != null && typeof sector !== 'undefined') {
-					return true;
-				}
+				if (sector) return true;
 			}
 			return false;
 		},

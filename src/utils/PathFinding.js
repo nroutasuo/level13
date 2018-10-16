@@ -25,6 +25,8 @@ define(function () {
                 console.log("WARN: No goal sector defined.");
             }
             
+            if (this.getKey(startVO) === this.getKey(goalVO)) return [];
+            
             if (!settings) settings = {};
             
             // build paths spanning multiple levels from several pieces
@@ -56,13 +58,25 @@ define(function () {
             
             // Simple breadth-first search (implement A* if movement cost needs to be considered)
             
-            var frontier = [];
-            var visited = [];
-            var cameFrom = {};
+            var cameFrom = this.mapPaths(startVO, goalVO, utilities, settings);
+            var result = this.findShortest(startVO, goalVO, settings, cameFrom);
             
-            var getKey = function (sector) {
-                return sector.position.toString();
-            };
+            return result;
+        },
+        
+        mapPaths: function (startVO, goalVO, utilities, settings, cameFrom) {
+            var cameFrom = {};
+            var frontier = [];
+            var visited = [];    
+            
+            visited.push(this.getKey(startVO));
+            frontier.push(startVO);
+            cameFrom[this.getKey(startVO)] = null;
+            
+            var pass = 0;
+            var current;
+            var neighbours;
+            var next;
             
             var isValid = function (sector, startSector, direction) {
                 if (settings && settings.skipUnvisited && !sector.isVisited)
@@ -73,18 +87,6 @@ define(function () {
                 return true;
             };
             
-            if (getKey(startVO) === getKey(goalVO))
-                return [];
-            
-            visited.push(getKey(startVO));
-            frontier.push(startVO);
-            cameFrom[getKey(startVO)] = null;
-            
-            var pass = 0;
-            var current;
-            var neighbours;
-            var next;
-            
             mainLoop: while (frontier.length > 0) {
                 pass++;
                 current = frontier.shift();
@@ -93,7 +95,7 @@ define(function () {
                     var next = neighbours[direction];
                     if (!next)
                         continue;
-                    var neighbourKey = getKey(next);
+                    var neighbourKey = this.getKey(next);
                     if (visited.indexOf(neighbourKey) >= 0)
                         continue;
                     if (!isValid(next, current, parseInt(direction)))
@@ -108,20 +110,28 @@ define(function () {
                 }
             }
             
+            return cameFrom;
+        },
+        
+        findShortest: function (startVO, goalVO, settings, cameFrom) {
             var result = [];
             var current = goalVO;
             while (current !== startVO) {
                 result.push(current.result);
-                current = cameFrom[getKey(current)];
+                current = cameFrom[this.getKey(current)];
                 // TODO check (pass?) reasonable max length
                 if (!current || result.length > 500) {
                     if (!settings.omitLog) console.log("WARN: failed to find path (res len: " + result.length + ")");
                     break;
                 }
             }
-            
             return result.reverse();
-        }
+        },
+            
+        getKey: function (sector) {
+            return sector.position.toString();
+        },
+        
     };
 
     return PathFinding;

@@ -3,7 +3,7 @@
 			"version": "0.2.3",
 			"phase": "alpha",
 			"final": false,
-			"updated": "2018-10-10",
+			"updated": "2018-10-16",
 			"changes": [
                 {
 					"type": "GB",
@@ -19,7 +19,7 @@
 				},
                 {
 					"type": "GB",
-					"summary": "Improve world generation."
+					"summary": "Improve world generation and level progression."
 				}
 			]
 		},{

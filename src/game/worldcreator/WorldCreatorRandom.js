@@ -232,10 +232,9 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
                 console.log("WARN: No goal pos defined.");
             }
             
-            // TODO extend cache to paths blocked by blockers
-            if (!blockByBlockers) {
-                var cachedPath = worldVO.getPath(startPos, endPos);
-                if (cachedPath) cachedPath;
+            var cachedPath = worldVO.getPath(startPos, endPos, blockByBlockers);
+            if (cachedPath) {
+                return cachedPath;
             }
              
             var makePathSectorVO = function (position) {
@@ -282,7 +281,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
             
             var result = PathFinding.findPath(startVO, goalVO, utilities, settings);
             
-            if (!blockByBlockers) worldVO.addPath(startPos, endPos, result);
+            worldVO.addPath(startPos, endPos, blockByBlockers, result);
             
             return result;
         },

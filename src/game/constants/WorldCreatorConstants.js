@@ -50,7 +50,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 10,
         MIN_LEVEL_HAZARD_POISON: 15,
         
-        MAX_SCOUT_LOCALE_STAMINA_COST: 600,
+        MAX_SCOUT_LOCALE_STAMINA_COST: 500,
         
         LEVEL_ORDINAL_BAG_2: 2,
         LEVEL_ORDINAL_BAG_3: 6,
@@ -91,14 +91,16 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
             var maxLength = maxStamina / movementCost;
             
             var deductScouts = true;
+            var deductScavenges = true;
 
             switch (pathType) {
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1:
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2:
-                    // there, scout and back
+                    // there, scout and back (these paths have a lot of points so less strict -> faster world creation)
                     var maxScoutCost = WorldCreatorConstants.MAX_SCOUT_LOCALE_STAMINA_COST;
                     maxLength = (maxLength - maxScoutCost / movementCost) / 2;
                     deductScouts = false;
+                    deductScavenges = false;
                     break;
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP:
                     // there, fight and back
@@ -130,9 +132,11 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
                 maxLength = maxLength - numScouts * scoutCost / movementCost;
             }
             
+            if (deductScavenges) {
             var scavengeCost = 3;
             var numScavenges = MathUtils.clamp(Math.round(maxLength / 5), 1, 10);
             maxLength = maxLength - numScavenges * scavengeCost / movementCost;
+            }
             
             var ordinalFactor = campOrdinal === 1 ? 0.85 : 1;
             maxLength = maxLength * ordinalFactor;
