@@ -1,18 +1,15 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/PlayerActionConstants',
     'game/nodes/player/ItemsNode',
     'game/components/common/PositionComponent',
-], function (Ash, GlobalSignals, UIConstants, ItemConstants, PlayerActionConstants, ItemsNode, PositionComponent) {
+], function (Ash, GameGlobals, GlobalSignals, UIConstants, ItemConstants, PlayerActionConstants, ItemsNode, PositionComponent) {
     
     var UIOutBagSystem = Ash.System.extend({
-
-		uiFunctions : null,
-		playerActionsHelper: null,
-		gameState: null,
 
 		itemNodes: null,
         
@@ -27,10 +24,7 @@ define([
 		numCraftableUnlockedUnseen: -1,
 		numCraftableAvailableUnseen: -1,
 
-		constructor: function (uiFunctions, playerActionsHelper, gameState) {
-			this.gameState = gameState;
-			this.uiFunctions = uiFunctions;
-			this.playerActionsHelper = playerActionsHelper;
+		constructor: function () {            
             this.elements = {};
             this.elements.tabHeader = $("#tab-header h2");
             
@@ -85,10 +79,10 @@ define([
             }
             div = div + "</div>";
             $("#self-craft").append(div);
-            this.uiFunctions.registerActionButtonListeners("#self-craft");
-            this.uiFunctions.registerCollapsibleContainerListeners("#self-craft");
-            this.uiFunctions.generateButtonOverlays("#self-craft");
-            this.uiFunctions.generateCallouts("#self-craft");
+            GameGlobals.uiFunctions.registerActionButtonListeners("#self-craft");
+            GameGlobals.uiFunctions.registerCollapsibleContainerListeners("#self-craft");
+            GameGlobals.uiFunctions.generateButtonOverlays("#self-craft");
+            GameGlobals.uiFunctions.generateCallouts("#self-craft");
             GlobalSignals.elementCreatedSignal.dispatch();
         },
         
@@ -98,7 +92,7 @@ define([
 		},
 
 		update: function (time) {
-			var isActive = this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.bag;
+			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.bag;
 			
 			this.updateCrafting(isActive);
 			this.updateBubble();
@@ -131,7 +125,7 @@ define([
                     var isVisible = isUnlocked && (!isObsolete || showObsolete);
                     if (isVisible) numVisible++;
                 }
-                this.uiFunctions.toggleCollapsibleContainer("#" + containerID + " .collapsible-header", !firstFound && numVisible > 0);
+                GameGlobals.uiFunctions.toggleCollapsibleContainer("#" + containerID + " .collapsible-header", !firstFound && numVisible > 0);
                 if (numVisible > 0) firstFound = true;
             }
             
@@ -146,7 +140,7 @@ define([
             
             this.bubbleNumber = newBubbleNumber;
             $("#switch-bag .bubble").text(this.bubbleNumber);
-            this.uiFunctions.toggle("#switch-bag .bubble", this.bubbleNumber > 0);
+            GameGlobals.uiFunctions.toggle("#switch-bag .bubble", this.bubbleNumber > 0);
         },
 
 		updateItems: function () {
@@ -175,8 +169,8 @@ define([
                 for (var i in itemList) {
                     itemDefinition = itemList[i];
                     var actionName = "craft_" + itemDefinition.id;         
-                    var costFactor = this.playerActionsHelper.getCostFactor(actionName);
-                    var hasCosts = Object.keys(this.playerActionsHelper.getCosts(actionName, costFactor)).length > 0;
+                    var costFactor = GameGlobals.playerActionsHelper.getCostFactor(actionName);
+                    var hasCosts = Object.keys(GameGlobals.playerActionsHelper.getCosts(actionName, costFactor)).length > 0;
                     
                     if (isActive && !hasCosts) {
                         console.log("WARN: Craftable item has no costs: " + itemDefinition.id);
@@ -186,16 +180,16 @@ define([
                     var tr = $("#" + trID);
                     var isUnlocked = this.isItemUnlocked(itemDefinition);
                     var isObsolete = this.isObsolete(itemDefinition);
-                    var isAvailable = isUnlocked && this.playerActionsHelper.checkAvailability(actionName, false);
+                    var isAvailable = isUnlocked && GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
                     var isVisible = isUnlocked && (!isObsolete || showObsolete);
                     
                     if (isUnlocked && isObsolete) countObsolete++;
                     
                     if (isUnlocked) {
                         if (!isObsolete) {
-                            if (this.gameState.uiBagStatus.itemsCraftableUnlockedSeen.indexOf(itemDefinition.id) < 0) {
+                            if (GameGlobals.gameState.uiBagStatus.itemsCraftableUnlockedSeen.indexOf(itemDefinition.id) < 0) {
                                 if (isActive) {
-                                    this.gameState.uiBagStatus.itemsCraftableUnlockedSeen.push(itemDefinition.id);
+                                    GameGlobals.gameState.uiBagStatus.itemsCraftableUnlockedSeen.push(itemDefinition.id);
                                 } else {
                                     this.numCraftableUnlockedUnseen++;
                                 }
@@ -206,9 +200,9 @@ define([
                             this.craftableItems++;
 
                             if (isAvailable && !itemsComponent.contains(itemDefinition.name) && !isObsolete) {
-                                if (this.gameState.uiBagStatus.itemsCraftableAvailableSeen.indexOf(itemDefinition.id) < 0) {
+                                if (GameGlobals.gameState.uiBagStatus.itemsCraftableAvailableSeen.indexOf(itemDefinition.id) < 0) {
                                     if (isActive) {
-                                        this.gameState.uiBagStatus.itemsCraftableAvailableSeen.push(itemDefinition.id);
+                                        GameGlobals.gameState.uiBagStatus.itemsCraftableAvailableSeen.push(itemDefinition.id);
                                     } else {
                                         this.numCraftableAvailableUnseen++;
                                     }
@@ -218,21 +212,21 @@ define([
                     }
                     
                     if (isActive) {
-                        this.uiFunctions.toggle(tr, isVisible);
+                        GameGlobals.uiFunctions.toggle(tr, isVisible);
                         if (isVisible) numVisible++;
                     }
                 }
                     
                 if (isActive) {
-                    this.uiFunctions.toggle($("#" + containerID), numVisible > 0);
+                    GameGlobals.uiFunctions.toggle($("#" + containerID), numVisible > 0);
                     $("#" + containerID + " .header-count").text(" (" + numVisible + ")");
                 }
             }
 			
             if (isActive) {
                 this.isShowObsoleteHidden = countObsolete <= 0;
-                this.uiFunctions.toggle("#checkbox-crafting-show-obsolete", countObsolete > 0);
-                this.uiFunctions.toggle("#label-crafting-show-obsolete", countObsolete > 0);
+                GameGlobals.uiFunctions.toggle("#checkbox-crafting-show-obsolete", countObsolete > 0);
+                GameGlobals.uiFunctions.toggle("#label-crafting-show-obsolete", countObsolete > 0);
             }
 		},
         
@@ -252,7 +246,7 @@ define([
                     itemDefinition = itemList[i];
                     if (itemDefinition.useable) {
                         var actionName = "use_item_" + itemDefinition.id;
-                        var reqsCheck = this.playerActionsHelper.checkAvailability(actionName, false);
+                        var reqsCheck = GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
                         if (reqsCheck) {                
                             itemDefinitionList.push(itemDefinition);
                         }
@@ -260,7 +254,7 @@ define([
                 }
             }
             
-            this.uiFunctions.toggle("#header-self-use-items", itemDefinitionList.length > 0);
+            GameGlobals.uiFunctions.toggle("#header-self-use-items", itemDefinitionList.length > 0);
             if ($("#self-use-items table tr").length === itemDefinitionList.length) return;            
             $("#self-use-items table").empty();
 
@@ -274,9 +268,9 @@ define([
                 $("#self-use-items table").append(tr);
             }
             
-            this.uiFunctions.registerActionButtonListeners("#self-use-items");
-            this.uiFunctions.generateButtonOverlays("#self-use-items");
-            this.uiFunctions.generateCallouts("#self-use-items");
+            GameGlobals.uiFunctions.registerActionButtonListeners("#self-use-items");
+            GameGlobals.uiFunctions.generateButtonOverlays("#self-use-items");
+            GameGlobals.uiFunctions.generateCallouts("#self-use-items");
             GlobalSignals.elementCreatedSignal.dispatch();
         },
 
@@ -306,7 +300,7 @@ define([
         },
 
 		updateItemLists: function () {
-            var isActive = this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.bag;
+            var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.bag;
 			var itemsComponent = this.itemNodes.head.items;
 			var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
 			var items = itemsComponent.getUnique(inCamp);
@@ -368,19 +362,19 @@ define([
 				}
 			}
             
-            this.uiFunctions.toggle($("#bag-items-empty"), this.inventoryItemsBag.length === 0);
+            GameGlobals.uiFunctions.toggle($("#bag-items-empty"), this.inventoryItemsBag.length === 0);
 
-            this.uiFunctions.generateCallouts("#container-tab-two-bag .three-quarters");
-            this.uiFunctions.generateButtonOverlays("#container-tab-two-bag .three-quarters");
-            this.uiFunctions.registerActionButtonListeners("#bag-items");
-            this.uiFunctions.registerActionButtonListeners("#container-equipment-slots");
+            GameGlobals.uiFunctions.generateCallouts("#container-tab-two-bag .three-quarters");
+            GameGlobals.uiFunctions.generateButtonOverlays("#container-tab-two-bag .three-quarters");
+            GameGlobals.uiFunctions.registerActionButtonListeners("#bag-items");
+            GameGlobals.uiFunctions.registerActionButtonListeners("#container-equipment-slots");
 		},
         
         updateItemCount: function (isActive, item) {
-            if (this.gameState.uiBagStatus.itemsOwnedSeen.indexOf(item.id) < 0) {
+            if (GameGlobals.gameState.uiBagStatus.itemsOwnedSeen.indexOf(item.id) < 0) {
                 if (item.id !== "equipment_map" && item.type !== ItemConstants.itemTypes.follower) {
                     if (isActive) {
-                        this.gameState.uiBagStatus.itemsOwnedSeen.push(item.id);
+                        GameGlobals.gameState.uiBagStatus.itemsOwnedSeen.push(item.id);
                     } else {
                         this.numOwnedUnseen++;
                     }
@@ -414,9 +408,9 @@ define([
 			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemsComponent, itemVO, 0, UIConstants.getItemCallout(itemVO, false, true, options), true) : "");
 			$(slot).children(".item-slot-name").html(itemVO ? itemVO.name.toLowerCase() : "");
 			
-			this.uiFunctions.toggle($(slot).children(".item-slot-type-empty"), itemVO === null);
-			this.uiFunctions.toggle($(slot).children(".item-slot-type-equipped"), itemVO !== null);
-			this.uiFunctions.toggle($(slot).children(".item-slot-name"), itemVO !== null);
+			GameGlobals.uiFunctions.toggle($(slot).children(".item-slot-type-empty"), itemVO === null);
+			GameGlobals.uiFunctions.toggle($(slot).children(".item-slot-type-equipped"), itemVO !== null);
+			GameGlobals.uiFunctions.toggle($(slot).children(".item-slot-name"), itemVO !== null);
 			$(slot).toggleClass("item-slot-equipped", itemVO !== null);
 		},
         
@@ -425,7 +419,7 @@ define([
         },
         
         onTabChanged: function () {
-            if (this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.bag) {
+            if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.bag) {
                 this.refresh();
             }
         },
@@ -446,7 +440,7 @@ define([
         
         isItemUnlocked: function (itemDefinition) {
             var actionName = "craft_" + itemDefinition.id;      
-            var reqsCheck = this.playerActionsHelper.checkRequirements(actionName, false);
+            var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
             return reqsCheck.value >= 1 || reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_BAG_FULL || reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES;
         },
         

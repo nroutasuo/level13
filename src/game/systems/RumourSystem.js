@@ -1,24 +1,20 @@
 define([
     'ash',
+    'game/GameGlobals',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/sector/CampNode',
 	'game/nodes/tribe/TribeUpgradesNode',
     'game/components/sector/improvements/SectorImprovementsComponent',
-], function (Ash, GameConstants, CampConstants, PlayerStatsNode, CampNode, TribeUpgradesNode, SectorImprovementsComponent) {
+], function (Ash, GameGlobals, GameConstants, CampConstants, PlayerStatsNode, CampNode, TribeUpgradesNode, SectorImprovementsComponent) {
     var RumourSystem = Ash.System.extend({
-	
-        gameState: null,
-		upgradeEffectsHelper: null,
 	
         playerStatsNodes: null,
 		campNodes: null,
         tribeUpgradesNodes: null,
 
-        constructor: function (gameState, upgradeEffectsHelper) {
-			this.gameState = gameState;
-			this.upgradeEffectsHelper = upgradeEffectsHelper;
+        constructor: function () {
         },
 
         addToEngine: function (engine) {
@@ -36,7 +32,7 @@ define([
         },
 
         update: function (time) {
-            if (this.gameState.isPaused) return;
+            if (GameGlobals.gameState.isPaused) return;
             
 			var rumoursComponent = this.playerStatsNodes.head.rumours;
 			
@@ -87,7 +83,7 @@ define([
         },
 		
 		getImprovementUpgradeLevel: function (improvementName) {
-            return this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
+            return GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
 		},
     });
 

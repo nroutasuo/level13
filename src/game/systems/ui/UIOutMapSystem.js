@@ -1,51 +1,44 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/GameConstants',
     'game/nodes/PlayerPositionNode',
     'game/components/common/VisitedComponent'
-], function (Ash, GlobalSignals, GameConstants, PlayerPositionNode, VisitedComponent) {
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, PlayerPositionNode, VisitedComponent) {
     
     var UIOutMapSystem = Ash.System.extend({
-
-		uiFunctions: null,
-		gameState: null,
         
         playerPositionNodes: null,
-
-		constructor: function (uiFunctions, gameState, uiMapHelper, levelHelper) {
-            this.uiFunctions = uiFunctions;
-			this.gameState = gameState;
-            this.uiMapHelper = uiMapHelper;
-            this.levelHelper = levelHelper;
-		},
+        
+        constructor: function () {},
 
 		addToEngine: function (engine) {
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
             GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
             $("#select-header-level").bind("change", $.proxy(this.onLevelSelectorChanged, this));
-            this.uiMapHelper.enableScrollingForMap("mainmap");
+            GameGlobals.uiMapHelper.enableScrollingForMap("mainmap");
             this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
 		},
 
 		removeFromEngine: function (engine) {
             GlobalSignals.removeAll(this);
             $("#select-header-level").unbind("change", $.proxy(this.onLevelSelectorChanged, this));
-            this.uiMapHelper.disableScrollingForMap("mainmap");
+            GameGlobals.uiMapHelper.disableScrollingForMap("mainmap");
             this.playerPosNodes = null;
 		},
 
 		update: function (time) {
-            this.uiFunctions.toggle("#switch-map .bubble", !this.gameState.uiStatus.mapVisited);
-			if (this.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.map) return;
-            this.gameState.uiStatus.mapVisited = true;
+            GameGlobals.uiFunctions.toggle("#switch-map .bubble", !GameGlobals.gameState.uiStatus.mapVisited);
+			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.map) return;
+            GameGlobals.gameState.uiStatus.mapVisited = true;
 		},
         
         initLevelSelector: function () {
             $("#select-header-level").empty();
             var html = "";
-            var surfaceLevel = this.gameState.getSurfaceLevel();
-            var groundLevel = this.gameState.getGroundLevel();
+            var surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
+            var groundLevel = GameGlobals.gameState.getGroundLevel();
             for (var i = surfaceLevel; i >= groundLevel; i--) {
                 html += "<option value='" + i + "' id='map-level-selector-level-" + i + "'>Level " + i + "</option>"
             }
@@ -53,15 +46,15 @@ define([
         },
         
         updateLevelSelector: function () {
-            var surfaceLevel = this.gameState.getSurfaceLevel();
-            var groundLevel = this.gameState.getGroundLevel();
+            var surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
+            var groundLevel = GameGlobals.gameState.getGroundLevel();
             var countVisible = 0;
             for (var i = surfaceLevel; i >= groundLevel; i--) {
-                var isVisible = this.uiMapHelper.isMapRevealed || this.levelHelper.getLevelEntityForPosition(i).has(VisitedComponent);
-                this.uiFunctions.toggle($("#map-level-selector-level-" + i), isVisible);
+                var isVisible = GameGlobals.uiMapHelper.isMapRevealed || GameGlobals.levelHelper.getLevelEntityForPosition(i).has(VisitedComponent);
+                GameGlobals.uiFunctions.toggle($("#map-level-selector-level-" + i), isVisible);
                 if (isVisible) countVisible++;
             }
-            this.uiFunctions.toggle($("#select-header-level"), countVisible > 1);
+            GameGlobals.uiFunctions.toggle($("#select-header-level"), countVisible > 1);
         },
         
         selectLevel: function (level) {
@@ -77,7 +70,7 @@ define([
                 mapPosition.sectorX = 0;
                 mapPosition.sectorY = 0;
             }
-            this.uiMapHelper.rebuildMap("mainmap", "mainmap-fallback", mapPosition, -1, false);
+            GameGlobals.uiMapHelper.rebuildMap("mainmap", "mainmap-fallback", mapPosition, -1, false);
         },
 
 		centerMap: function () {
@@ -87,11 +80,11 @@ define([
                 mapPosition.sectorX = 0;
                 mapPosition.sectorY = 0;
             }
-            this.uiMapHelper.centerMapToPlayer("mainmap", mapPosition, false);
+            GameGlobals.uiMapHelper.centerMapToPlayer("mainmap", mapPosition, false);
         },
         
         updateMapCompletionHint: function () {
-            var mapStatus = this.levelHelper.getLevelStats(this.playerPosNodes.head.position.level);
+            var mapStatus = GameGlobals.levelHelper.getLevelStats(this.playerPosNodes.head.position.level);
             if (GameConstants.isDebugOutputEnabled) console.log(mapStatus);
             var mapStatusText = "There are still many unvisited streets on this level.";
             if (mapStatus.percentClearedSectors >= 1)
@@ -112,7 +105,7 @@ define([
         },
 
 		onTabChanged: function (tabID) {
-            if (tabID === this.uiFunctions.elementIDs.tabs.map) {
+            if (tabID === GameGlobals.uiFunctions.elementIDs.tabs.map) {
                 $("#tab-header h2").text("Map");
                 this.updateLevelSelector();
                 this.selectLevel(this.playerPosNodes.head.position.level);

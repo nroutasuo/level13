@@ -2,6 +2,7 @@
 define([
     'ash',
     'utils/MathUtils',
+    'game/GameGlobals',
     'game/constants/GameConstants',
     'game/constants/PlayerActionConstants',
     'game/constants/LogConstants',
@@ -30,6 +31,7 @@ define([
 ], function (
     Ash,
     MathUtils,
+    GameGlobals,
     GameConstants,
     PlayerActionConstants,
     LogConstants,
@@ -58,12 +60,6 @@ define([
 ) {
     var PlayerActionResultsHelper = Ash.Class.extend({
 
-        gameState: null,
-        playerActionsHelper: null,
-        resourcesHelper: null,
-        levelHelper: null,
-        itemsHelper: null,
-
         playerStatsNodes: null,
         playerResourcesNodes: null,
         playerLocationNodes: null,
@@ -76,13 +72,9 @@ define([
             meet: { bag: 0.1, light: 0.1, shoes: 0.1, weapon: 0.5, clothing: 0.5, exploration: 0.5, artefact: 0 }
         },
 
-        constructor: function (engine, gameState, playerActionsHelper, resourcesHelper, levelHelper, itemsHelper) {
+        constructor: function (engine) {
             this.engine = engine;
-            this.gameState = gameState;
-            this.playerActionsHelper = playerActionsHelper;
-            this.resourcesHelper = resourcesHelper;
-            this.levelHelper = levelHelper;
-            this.itemsHelper = itemsHelper;
+            
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
@@ -91,7 +83,7 @@ define([
         },
         
         getResultVOByAction: function (action) {
-            var baseActionID = this.playerActionsHelper.getBaseActionID(action);
+            var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
             
             var resultVO;
             switch (baseActionID) {
@@ -140,7 +132,7 @@ define([
             var sectorResources = sectorFeatures.resourcesScavengable;
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var playerPos = this.playerLocationNodes.head.position;
-            var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
+            var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
             var efficiency = this.getScavengeEfficiency();
 
             rewards.gainedResources = this.getRewardResources(0.95 + efficiency * 0.05, 1, efficiency, sectorResources);
@@ -171,12 +163,12 @@ define([
             var localeCategory = localeVO.getCategory();
 
             var availableResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable.clone();
-            availableResources.addAll(localeVO.getResourceBonus(this.gameState.unlockedFeatures.resources));
+            availableResources.addAll(localeVO.getResourceBonus(GameGlobals.gameState.unlockedFeatures.resources));
             availableResources.limitAll(0, 10);
             var efficiency = this.getScavengeEfficiency();
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var playerPos = this.playerLocationNodes.head.position;
-            var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
+            var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
             var localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
 
             if (localeVO.type !== localeTypes.tradingpartner) {
@@ -231,7 +223,7 @@ define([
 				var availableResources = new ResourcesVO();
 				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 				var playerPos = this.playerLocationNodes.head.position;
-				var levelOrdinal = this.gameState.getLevelOrdinal(playerPos.level);
+				var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
 				availableResources.setResource(resourceNames.food, 10);
 				availableResources.setResource(resourceNames.metal, 3);
 				rewards.gainedResources = this.getRewardResources(0.3, 2, this.getScavengeEfficiency(), availableResources);
@@ -261,7 +253,7 @@ define([
             if (rewards == null)
                 return;
             
-			var currentStorage = campSector ? campSector.get(ResourcesComponent) : this.resourcesHelper.getCurrentStorage();
+			var currentStorage = campSector ? campSector.get(ResourcesComponent) : GameGlobals.resourcesHelper.getCurrentStorage();
 			var playerPos = this.playerLocationNodes.head.position;
             
             if (isTakeAll) {
@@ -292,7 +284,7 @@ define([
             currencyComponent.currency += rewards.gainedCurrency;
             currencyComponent.currency -= rewards.lostCurrency;
             if (rewards.gainedCurrency > 0)
-                this.gameState.unlockedFeatures.currency = true;
+                GameGlobals.gameState.unlockedFeatures.currency = true;
 
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			if (rewards.selectedItems) {
@@ -309,7 +301,7 @@ define([
 			
 			if (rewards.gainedBlueprintPiece) {
 				this.tribeUpgradesNodes.head.upgrades.addNewBlueprintPiece(rewards.gainedBlueprintPiece);
-				this.gameState.unlockedFeatures.blueprints = true;
+				GameGlobals.gameState.unlockedFeatures.blueprints = true;
 			}
 
 			if (rewards.lostItems) {
@@ -672,7 +664,7 @@ define([
 			var followers = [];
 			if (Math.random() < probability) {
 				var playerPos = this.playerLocationNodes.head.position;
-				var campCount = this.gameState.numCamps;
+				var campCount = GameGlobals.gameState.numCamps;
 				var follower = ItemConstants.getFollower(playerPos.level, campCount);
 				followers.push(follower);
 			}
@@ -708,7 +700,7 @@ define([
             
             // list possible items
             var items = [];
-			var totalLevels = this.gameState.getTotalLevels();
+			var totalLevels = GameGlobals.gameState.getTotalLevels();
             switch (itemType) {
                 case "bag":
                     items = ItemConstants.itemDefinitions.bag.slice(0);
@@ -723,7 +715,7 @@ define([
                     items = ItemConstants.itemDefinitions.weapon.slice(0);
                     break;
                 case "clothing":
-                    items = this.itemsHelper.getScavengeRewardClothing(campOrdinal);
+                    items = GameGlobals.itemsHelper.getScavengeRewardClothing(campOrdinal);
                     break;
                 case "exploration":
                     items = ItemConstants.itemDefinitions.exploration.slice(0);
@@ -774,7 +766,7 @@ define([
 			
             // map
             if (itemTypeLimits.exploration > 0) {
-                var visitedSectors = this.gameState.numVisitedSectors;
+                var visitedSectors = GameGlobals.gameState.numVisitedSectors;
                 var numSectorsRequiredForMap = 5;
                 if (visitedSectors > numSectorsRequiredForMap && currentItems.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) <= 0) {
                     if (Math.random() < adjustedProbability) {
@@ -786,7 +778,7 @@ define([
             // non-craftable level clothing
             if (itemTypeLimits.clothing > 0) {
                 if (Math.random() < adjustedProbability * efficiency) {
-                    var clothing = this.itemsHelper.getScavengeNecessityClothing(campOrdinal);
+                    var clothing = GameGlobals.itemsHelper.getScavengeNecessityClothing(campOrdinal);
                     for (var i = 0; i < clothing.length; i++) {
                         if (currentItems.getCountById(clothing[i].id, true) <= 0) {                        
                             if (Math.random() < 0.25) {
@@ -818,7 +810,7 @@ define([
         
         isRewardItemTypeLocked: function (itemType) {
             if (itemType === ItemConstants.itemBonusTypes.light) {
-                return !this.gameState.unlockedFeatures.vision;
+                return !GameGlobals.gameState.unlockedFeatures.vision;
             }
             return false;
         },
@@ -853,7 +845,7 @@ define([
         },
         
         getItemLoseProbability: function (action, item) {
-            var campCount = this.gameState.numCamps;
+            var campCount = GameGlobals.gameState.numCamps;
             var itemLoseProbability = 1;
             switch (item.type) {
                 case ItemConstants.itemTypes.bag:
@@ -904,7 +896,7 @@ define([
 		
 		getResultBlueprint: function (localeVO) {
 			var playerPos = this.playerLocationNodes.head.position;
-			var campOrdinal = this.gameState.getCampOrdinal(playerPos.level);
+			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
             var blueprintType = localeVO.isEarly ? UpgradeConstants.BLUEPRINT_TYPE_EARLY : UpgradeConstants.BLUEPRINT_TYPE_LATE;
 			var levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, blueprintType);
 			
@@ -920,7 +912,7 @@ define([
 				}
 			}
 			
-			var unscoutedLocales = this.levelHelper.getLevelLocales(playerPos.level, false, false, localeVO).length + 1;
+			var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, false, false, localeVO).length + 1;
 			var blueprintPiecesToFind = this.getPendingBlueprintPiecesCount(campOrdinal, blueprintType);
 			var levelBlueprintProbability = blueprintPiecesToFind / unscoutedLocales;
 			if (GameConstants.isDebugOutputEnabled)

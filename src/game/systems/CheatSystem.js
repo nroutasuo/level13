@@ -1,5 +1,6 @@
 // Functions to handle cheats, either from the console or UI
 define(['ash',
+    'game/GameGlobals',
     'game/constants/GameConstants',
     'game/constants/CheatConstants',
     'game/constants/ItemConstants',
@@ -22,6 +23,7 @@ define(['ash',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode'
 ], function (Ash,
+    GameGlobals,
     GameConstants,
     CheatConstants,
     ItemConstants,
@@ -48,13 +50,7 @@ define(['ash',
         
         cheatDefinitions: {},
         
-        constructor: function (gameState, playerActionFunctions, resourcesHelper, uiMapHelper, levelHelper) {
-            this.gameState = gameState;
-            this.playerActionFunctions = playerActionFunctions;
-            this.resourcesHelper = resourcesHelper;
-            this.uiMapHelper = uiMapHelper;
-            this.levelHelper = levelHelper;
-        },
+        constructor: function () {},
 
         addToEngine: function (engine) {
             this.engine = engine;
@@ -263,7 +259,7 @@ define(['ash',
         },
         
         passTime: function (mins) {
-            this.playerActionFunctions.passTime(mins * 60);
+            GameGlobals.playerActionFunctions.passTime(mins * 60);
         },
         
         setAutoPlay: function (type, numCampsTarget) {
@@ -286,7 +282,7 @@ define(['ash',
                     start = true;
                     if (!numCampsTarget || numCampsTarget < 1) numCampsTarget = 1;
                     endConditionUpdateFunction = function () {
-                        if (this.gameState.numCamps >= numCampsTarget) {
+                        if (GameGlobals.gameState.numCamps >= numCampsTarget) {
                             this.engine.updateComplete.remove(endConditionUpdateFunction, this);
                             this.applyCheat("autoplay off");
                         }
@@ -324,7 +320,7 @@ define(['ash',
         
         setResource: function (name, amount) {
             if (resourceNames[name]) {
-                var playerResources = this.resourcesHelper.getCurrentStorage().resources;
+                var playerResources = GameGlobals.resourcesHelper.getCurrentStorage().resources;
                 playerResources.setResource(name, amount);
             } else {
                 console.log(name + " is not a valid resource. Possible names are:");
@@ -334,7 +330,7 @@ define(['ash',
         
         setFavour: function (value) {            
             if (value >  0) {
-                this.gameState.unlockedFeatures.favour = true;
+                GameGlobals.gameState.unlockedFeatures.favour = true;
             }
             if (!this.playerStatsNodes.head.entity.has(DeityComponent)) {
                 this.playerStatsNodes.head.entity.add(new DeityComponent("Hoodwinker"))
@@ -344,7 +340,7 @@ define(['ash',
         }
         ,
         addSupplies: function () {
-            var playerResources = this.resourcesHelper.getCurrentStorage().resources;        
+            var playerResources = GameGlobals.resourcesHelper.getCurrentStorage().resources;        
             playerResources.setResource("food", 15);
             playerResources.setResource("water", 15);
         },
@@ -372,7 +368,7 @@ define(['ash',
         },
         
         goToLevel: function (level) {
-            var levelVO = this.levelHelper.getLevelEntityForPosition(level).get(LevelComponent).levelVO;
+            var levelVO = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent).levelVO;
             var i = Math.floor(Math.random() * levelVO.centralSectors.length);
             var sector = levelVO.centralSectors[i];
             this.setPlayerPosition(level, sector.position.sectorX, sector.position.sectorY);
@@ -386,10 +382,10 @@ define(['ash',
         
         addTech: function (name) {
             if (name !== "all")
-                this.playerActionFunctions.buyUpgrade(name, true);
+                GameGlobals.playerActionFunctions.buyUpgrade(name, true);
             else
                 for (var id in UpgradeConstants.upgradeDefinitions) {
-                    this.playerActionFunctions.buyUpgrade(id, true);
+                    GameGlobals.playerActionFunctions.buyUpgrade(id, true);
                 }            
         },
         
@@ -410,7 +406,7 @@ define(['ash',
             for (var i = 0; i < amount; i++) {
                 this.tribeUpgradesNodes.head.upgrades.addNewBlueprintPiece(name);
             }
-            this.gameState.unlockedFeatures.blueprints = true;
+            GameGlobals.gameState.unlockedFeatures.blueprints = true;
         },
         
         addBlueprintsForLevel: function (campOrdinal) {
@@ -426,10 +422,10 @@ define(['ash',
 			for (var i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
                 partner = TradeConstants.TRADING_PARTNERS[i];
                 if (partner.campOrdinal < campOrdinal) {
-                    if (this.gameState.foundTradingPartners.indexOf(partner.campOrdinal) >= 0) 
+                    if (GameGlobals.gameState.foundTradingPartners.indexOf(partner.campOrdinal) >= 0) 
                         continue;
                
-                    this.gameState.foundTradingPartners.push(partner.campOrdinal);
+                    GameGlobals.gameState.foundTradingPartners.push(partner.campOrdinal);
                 }
             }
         },
@@ -448,9 +444,9 @@ define(['ash',
         },
         
         addFollower: function() {    
-            var campCount = this.gameState.numCamps;        
+            var campCount = GameGlobals.gameState.numCamps;        
             var follower = ItemConstants.getFollower(this.playerPositionNodes.head.position.level, campCount);
-            this.playerActionFunctions.addFollower(follower);
+            GameGlobals.playerActionFunctions.addFollower(follower);
         },
         
         addPerk: function () {            
@@ -464,7 +460,7 @@ define(['ash',
         },
         
         heal: function() {  
-            this.playerActionFunctions.useHospital();
+            GameGlobals.playerActionFunctions.useHospital();
         },
         
         addInjury: function () {       
@@ -475,7 +471,7 @@ define(['ash',
         },
         
         revealMap: function (value) {            
-            this.uiMapHelper.isMapRevealed = value ? true : false;
+            GameGlobals.uiMapHelper.isMapRevealed = value ? true : false;
         },
         
         debugMap: function (value) {
@@ -487,18 +483,18 @@ define(['ash',
         
         scoutLevel: function () {
             var originalPos = this.playerPositionNodes.head.position.getPosition();
-            var levelVO = this.levelHelper.getLevelEntityForPosition(originalPos.level).get(LevelComponent).levelVO;
+            var levelVO = GameGlobals.levelHelper.getLevelEntityForPosition(originalPos.level).get(LevelComponent).levelVO;
             var sectorVO;
             var i = 0;
             var updateFunction = function () {
                 if (i < levelVO.sectors.length) {
                     sectorVO = levelVO.sectors[i];
                     this.setPlayerPosition(levelVO.level, sectorVO.position.sectorX, sectorVO.position.sectorY);
-                    this.playerActionFunctions.scout();
+                    GameGlobals.playerActionFunctions.scout();
                     i++;
                 } else {
                     this.setPlayerPosition(originalPos.level, originalPos.sectorX, originalPos.sectorY);
-                    this.playerActionFunctions.uiFunctions.popupManager.closeAllPopups();
+                    GameGlobals.playerActionFunctions.uiFunctions.popupManager.closeAllPopups();
                     this.engine.updateComplete.remove(updateFunction);
                 }
             };

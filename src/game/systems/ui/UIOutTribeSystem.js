@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/CampConstants',
@@ -13,14 +14,11 @@ define([
     'game/components/sector/events/TraderComponent',
     'game/components/sector/events/RaidComponent'
 ], function (
-    Ash, GlobalSignals, UIConstants, CampConstants,
+    Ash, GameGlobals, GlobalSignals, UIConstants, CampConstants,
     CampNode, PlayerPositionNode,
     PositionComponent, ResourcesComponent, ResourceAccumulationComponent, LevelComponent, SectorImprovementsComponent, TraderComponent, RaidComponent
 ) {
     var UIOutTribeSystem = Ash.System.extend({
-	
-		uiFunctions : null,
-		resourcesHelper: null,
 		
 		engine: null,
 	
@@ -37,10 +35,7 @@ define([
             POP_INCREASING: "population-increasing"
         },
 
-        constructor: function (uiFunctions, resourcesHelper, levelHelper) {
-			this.uiFunctions = uiFunctions;
-			this.resourcesHelper = resourcesHelper;
-            this.levelHelper = levelHelper;
+        constructor: function () {
             return this;
         },
 
@@ -59,7 +54,7 @@ define([
         },
 
         update: function (time) {
-            var isActive = this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.world;
+            var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.world;
 			
             this.alerts = {};
             this.notifications = {};
@@ -80,7 +75,7 @@ define([
                 return;
             this.updateMessages();
             this.bubbleNumber = this.campsWithAlert;
-            this.uiFunctions.toggle("#switch-world .bubble", this.bubbleNumber > 0);
+            GameGlobals.uiFunctions.toggle("#switch-world .bubble", this.bubbleNumber > 0);
         },
         
         updateMessages: function () {
@@ -197,13 +192,12 @@ define([
 
             rowHTML += "</tr>";
             $("#camp-overview").append(rowHTML);
-            var uiFunctions = this.uiFunctions;
             $("#" + btnID).click(function(e) {
-                uiFunctions.onTabClicked(uiFunctions.elementIDs.tabs.in, uiFunctions.gameState, uiFunctions);
+                GameGlobals.uiFunctions.onTabClicked(uiFunctions.elementIDs.tabs.in, GameGlobals.gameState, GameGlobals.uiFunctions);
             });
-            this.uiFunctions.registerActionButtonListeners("#" + rowID);
-            this.uiFunctions.generateButtonOverlays("#" + rowID);
-            this.uiFunctions.generateCallouts("#" + rowID);
+            GameGlobals.uiFunctions.registerActionButtonListeners("#" + rowID);
+            GameGlobals.uiFunctions.generateButtonOverlays("#" + rowID);
+            GameGlobals.uiFunctions.generateCallouts("#" + rowID);
             GlobalSignals.elementCreatedSignal.dispatch();
         },
         
@@ -216,9 +210,9 @@ define([
 			var improvements = node.entity.get(SectorImprovementsComponent);
             
             $("#camp-overview tr#" + rowID).toggleClass("current", isPlayerInCampLevel);
-			this.uiFunctions.toggle("#camp-overview tr#" + rowID + " .camp-overview-btn button", !isPlayerInCampLevel);
+			GameGlobals.uiFunctions.toggle("#camp-overview tr#" + rowID + " .camp-overview-btn button", !isPlayerInCampLevel);
 			$("#camp-overview tr#" + rowID + " .camp-overview-name").text(camp.campName);
-			this.uiFunctions.toggle("#camp-overview tr#" + rowID + " .camp-overview-camp-bubble .bubble", isAlert);
+			GameGlobals.uiFunctions.toggle("#camp-overview tr#" + rowID + " .camp-overview-camp-bubble .bubble", isAlert);
             
             var alertDesc = "";
             for (var i = 0; i < alerts.length; i++) {
@@ -238,7 +232,7 @@ define([
             $("#camp-overview tr#" + rowID + " .camp-overview-reputation .value").toggleClass("warning", reputationComponent.targetValue < 1);
             this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-reputation .change-indicator"), reputationComponent.accumulation);
             
-            var levelVO = this.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent).levelVO;
+            var levelVO = GameGlobals.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent).levelVO;
 			$("#camp-overview tr#" + rowID + " .camp-overview-levelpop").text(levelVO.populationGrowthFactor * 100 + "%");
 			
 			var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
@@ -250,10 +244,9 @@ define([
 				var name = resourceNames[key];
 				var amount = Math.floor(resources.resources[name]);
 				var change = resourceAcc.resourceChange.getResource(name);
-                var storage = this.resourcesHelper.getCurrentCampStorage(node.entity);
+                var storage = GameGlobals.resourcesHelper.getCurrentCampStorage(node.entity);
                 var indicatorID = "#" + rowID + "-" + name;
 				UIConstants.updateResourceIndicator(
-					this.uiFunctions,
 					indicatorID,
 					amount,
 					change,
@@ -271,7 +264,7 @@ define([
         },
         
         onTabChanged: function () {
-            if (this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.world) {
+            if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.world) {
                 this.refresh();
             }
         },

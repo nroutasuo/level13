@@ -7,6 +7,7 @@ define([
     'game/worldcreator/WorldCreatorHelper',
     'game/worldcreator/WorldCreatorRandom',
     'game/worldcreator/WorldCreatorDebug',
+    'game/worldcreator/EnemyCreator',
 	'game/vos/WorldVO',
 	'game/vos/LevelVO',
 	'game/vos/SectorVO',
@@ -23,7 +24,7 @@ define([
 	'game/constants/LocaleConstants',
 ], function (
     Ash, GameConstants, LevelConstants, TradeConstants,
-    WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug,
+    WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, EnemyCreator,
     WorldVO, LevelVO, SectorVO, ResourcesVO, LocaleVO, PositionVO, StashVO, PathConstraintVO,
     WorldCreatorConstants, PositionConstants, MovementConstants, EnemyConstants, UpgradeConstants, LocaleConstants
 ) {
@@ -32,7 +33,11 @@ define([
         
 		world: null,
 		
-		prepareWorld: function (seed, enemyHelper, itemsHelper) {
+		prepareWorld: function (seed, itemsHelper) {
+            
+            this.enemyCreator = new EnemyCreator();
+            this.enemyCreator.createEnemies();
+            
 			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
             this.world = new WorldVO(seed, topLevel, bottomLevel);
@@ -50,7 +55,7 @@ define([
 			// resources, workshops and stashes
 			this.prepareWorldResources(seed, topLevel, bottomLevel, itemsHelper);
 			// enemies (and gangs)
-			this.prepareWorldEnemies(seed, topLevel, bottomLevel, enemyHelper);
+			this.prepareWorldEnemies(seed, topLevel, bottomLevel);
 		},
         
         discardWorld: function () {
@@ -501,7 +506,7 @@ define([
         },
         
 		// enemies
-		prepareWorldEnemies: function (seed, topLevel, bottomLevel, enemyHelper) {
+		prepareWorldEnemies: function (seed, topLevel, bottomLevel) {
             var worldVO = this.world;
             var creator = this;
 			for (var l = topLevel; l >= bottomLevel; l--) {
@@ -545,7 +550,7 @@ define([
                     sectorVO.numLocaleEnemies = {};
                     
                     // possible enemy definitions
-                    sectorVO.possibleEnemies = this.generateEnemies(seed, topLevel, bottomLevel, sectorVO, enemyHelper);
+                    sectorVO.possibleEnemies = this.generateEnemies(seed, topLevel, bottomLevel, sectorVO);
 
                     // regular enemies (random encounters not tied to locales / gangs)
                     sectorVO.hasRegularEnemies = !sectorVO.camp && WorldCreatorRandom.random(l * sectorVO.position.sectorX * seed + sectorVO.position.sectorY * seed + 4848) > 0.2;
@@ -1156,7 +1161,7 @@ define([
             }
         },
         
-		generateEnemies: function (seed, topLevel, bottomLevel, sectorVO, enemyHelper) {
+		generateEnemies: function (seed, topLevel, bottomLevel, sectorVO) {
 			var l = sectorVO.position.level;
 			var x = sectorVO.position.sectorX;
 			var y = sectorVO.position.sectorY;
@@ -1175,14 +1180,14 @@ define([
 			var enemies = sectorVO.possibleEnemies;
             var enemy;
 
-            var globalE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.global, enemyDifficulty, false);
+            var globalE = this.enemyCreator.getEnemies(EnemyConstants.enemyTypes.global, enemyDifficulty, false);
 			for (var e in globalE) {
 				enemy = globalE[e];
 				if (randomEnemyCheck(11 * (e + 1), enemy)) enemies.push(enemy);
 			}
 			
 			if (l <= bottomLevel + 1) {
-				var earthE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.earth, enemyDifficulty, false);
+				var earthE = this.enemyCreator.getEnemies(EnemyConstants.enemyTypes.earth, enemyDifficulty, false);
 				for (var e in earthE) {
 					enemy = earthE[e];
 					if (randomEnemyCheck(333 * (e + 1), enemy)) enemies.push(enemy);
@@ -1190,7 +1195,7 @@ define([
 			}
 			
 			if (sectorVO.sunlit) {
-				var sunE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.sunlit, enemyDifficulty, false);
+				var sunE = this.enemyCreator.getEnemies(EnemyConstants.enemyTypes.sunlit, enemyDifficulty, false);
 				for (var e in sunE) {
 					enemy = sunE[e];
 					if (randomEnemyCheck(6666 * (e + 4) + 2, enemy)) enemies.push(enemy);
@@ -1198,7 +1203,7 @@ define([
 			}
 			
 			if (l >= topLevel - 10) {
-				var inhabitedE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.inhabited, enemyDifficulty, false);
+				var inhabitedE = this.enemyCreator.getEnemies(EnemyConstants.enemyTypes.inhabited, enemyDifficulty, false);
 				for (var e in inhabitedE) {
 					enemy = inhabitedE[e];
 					if (randomEnemyCheck(777 * (e + 2) ^ 2, enemy)) enemies.push(enemy);
@@ -1206,7 +1211,7 @@ define([
 			}
 			
 			if (l >= topLevel - 5) {
-				var urbanE = enemyHelper.getEnemies(EnemyConstants.enemyTypes.urban, enemyDifficulty, false);
+				var urbanE = this.enemyCreator.getEnemies(EnemyConstants.enemyTypes.urban, enemyDifficulty, false);
 				for (var e in urbanE) {
 					enemy = urbanE[e];
 					if (randomEnemyCheck(99 * (e + 1), enemy)) enemies.push(enemy);

@@ -1,15 +1,11 @@
 // Manages showing and hiding pop-ups
-define(['ash', 'game/GlobalSignals'],
-function (Ash, GlobalSignals) {
+define(['ash', 'game/GameGlobals', 'game/GlobalSignals'],
+function (Ash, GameGlobals, GlobalSignals) {
     var UIPopupManager = Ash.Class.extend({
         
         popupQueue: null,
-        playerActionResultsHelper: null,
         
-        constructor: function (gameState, playerActionResultsHelper, uiFunctions) {
-            this.gameState = gameState;
-            this.playerActionResultsHelper = playerActionResultsHelper;
-            this.uiFunctions = uiFunctions;
+        constructor: function () {
             this.popupQueue = [];
             
             GlobalSignals.windowResizedSignal.add(this.onResize);
@@ -39,16 +35,16 @@ function (Ash, GlobalSignals) {
             if ($(popup).parent().hasClass("popup-overlay")) $(popup).unwrap();
             
             // text
-            this.uiFunctions.toggle("#common-popup-input-container", false);
+            GameGlobals.uiFunctions.toggle("#common-popup-input-container", false);
             $("#common-popup h3").text(title);
             $("#common-popup p#common-popup-desc").html(msg);
             
             // results and rewards
             var hasResult = resultVO && typeof resultVO !== 'undefined';
-            this.uiFunctions.toggle("#info-results", hasResult);
+            GameGlobals.uiFunctions.toggle("#info-results", hasResult);
             $("#info-results").empty();
             if (hasResult) {
-                var rewardDiv = this.playerActionResultsHelper.getRewardDiv(resultVO, false);
+                var rewardDiv = GameGlobals.playerActionResultsHelper.getRewardDiv(resultVO, false);
                 $("#info-results").append(rewardDiv);
             }
             
@@ -78,16 +74,16 @@ function (Ash, GlobalSignals) {
             
             // overlay
             $("#common-popup").wrap("<div class='popup-overlay' style='display:none'></div>");
-            this.uiFunctions.toggle(".popup-overlay", true);
+            GameGlobals.uiFunctions.toggle(".popup-overlay", true);
             popUpManager.onResize();
             GlobalSignals.popupOpenedSignal.dispatch("common-popup");
             $("#common-popup").slideDown(200, popUpManager.onResize);
             
-            this.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");
-            this.uiFunctions.generateCallouts("#common-popup .buttonbox");
+            GameGlobals.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");
+            GameGlobals.uiFunctions.generateCallouts("#common-popup .buttonbox");
             
             // pause the game while a popup is open
-            this.gameState.isPaused = this.hasOpenPopup();
+            GameGlobals.gameState.isPaused = this.hasOpenPopup();
         },
         
         closePopup: function (id) {
@@ -95,17 +91,17 @@ function (Ash, GlobalSignals) {
             if (popupManager.popupQueue.length === 0) {
                 $("#" + id).data("fading", true);
                 $("#" + id).slideUp(200, function () {
-                    popupManager.uiFunctions.toggle(".popup-overlay", false);
+                    GameGlobals.uiFunctions.toggle(".popup-overlay", false);
                     $("#" + id).unwrap();
                     $("#" + id).data("fading", false);
                     $("#" + id + "p#common-popup-desc");
                     GlobalSignals.popupClosedSignal.dispatch(id);
                     popupManager.showQueuedPopup();
-                    popupManager.gameState.isPaused = popupManager.hasOpenPopup();
+                    GameGlobals.gameState.isPaused = popupManager.hasOpenPopup();
                 });
             } else {
                 $("#" + id).data("fading", false);
-                popupManager.uiFunctions.toggle("#" + id, false);
+                GameGlobals.uiFunctions.toggle("#" + id, false);
                 GlobalSignals.popupClosedSignal.dispatch(id);
                 popupManager.showQueuedPopup();
                 popupManager.gameState.isPaused = popupManager.hasOpenPopup();

@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GameGlobals',
 	'game/constants/GameConstants',
 	'game/constants/CampConstants',
 	'game/constants/LogConstants',
@@ -10,13 +11,9 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/LogMessagesComponent',
     'game/components/type/LevelComponent',
-], function (Ash, GameConstants, CampConstants, LogConstants, OccurrenceConstants, CampNode, PlayerPositionNode, TribeUpgradesNode, 
+], function (Ash, GameGlobals, GameConstants, CampConstants, LogConstants, OccurrenceConstants, CampNode, PlayerPositionNode, TribeUpgradesNode, 
     SectorImprovementsComponent, LogMessagesComponent, LevelComponent) {
     var ReputationSystem = Ash.System.extend({
-	
-        gameState: null,
-        resourcesHelper: null,
-        upgradeEffectsHelper: null,
 	
         playerNodes: null,
 		campNodes: null,
@@ -24,11 +21,7 @@ define([
         
         lastUpdatePenalties: {},
 
-        constructor: function (gameState, levelHelper, resourcesHelper, upgradeEffectsHelper) {
-            this.gameState = gameState;
-            this.levelHelper = levelHelper;
-            this.resourcesHelper = resourcesHelper;
-            this.upgradeEffectsHelper = upgradeEffectsHelper;
+        constructor: function () {
         },
 
         addToEngine: function (engine) {
@@ -46,7 +39,7 @@ define([
         },
 
         update: function (time) {
-            if (this.gameState.isPaused) return;
+            if (GameGlobals.gameState.isPaused) return;
 			
 			if (this.campNodes.head) {				
 				for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
@@ -99,7 +92,7 @@ define([
             var targetReputationWithoutPenalties = targetReputation;
             
             // penalties: food and water            
-            var storage = this.resourcesHelper.getCurrentStorage(true);
+            var storage = GameGlobals.resourcesHelper.getCurrentStorage(true);
 			var resources = storage ? storage.resources : null;
             var noFood = resources && resources.getResource(resourceNames.food) <= 0;
             var noWater = resources && resources.getResource(resourceNames.water) <= 0;
@@ -116,7 +109,7 @@ define([
             // penalties: defences            
             var defenceLimit = 25;
             var soldiers = campNode.camp.assignedWorkers.soldier;
-            var fortificationUpgradeLevel = this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradeNodes.head.upgrades);
+            var fortificationUpgradeLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradeNodes.head.upgrades);
             var danger = OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers, fortificationUpgradeLevel);
             var noDefences = danger > defenceLimit;
             if (noDefences) {
@@ -146,7 +139,7 @@ define([
             this.logReputationPenalty(campNode, CampConstants.REPUTATION_PENALTY_TYPE_HOUSING, noHousing);
             
             // penalties: level population
-            var levelVO = this.levelHelper.getLevelEntityForSector(campNode.entity).get(LevelComponent).levelVO;
+            var levelVO = GameGlobals.levelHelper.getLevelEntityForSector(campNode.entity).get(LevelComponent).levelVO;
             if (levelVO.populationGrowthFactor < 1) {
                 var levelPopPenalty = targetReputationWithoutPenalties * (1 - levelVO.populationGrowthFactor) * 0.5;
                 addValue(-levelPopPenalty, "Level population");
@@ -159,7 +152,7 @@ define([
         applyReputationAccumulation: function (campNode, time) {
             var reputationComponent = campNode.reputation;
             var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
-            var levelVO = this.levelHelper.getLevelEntityForSector(campNode.entity).get(LevelComponent).levelVO;
+            var levelVO = GameGlobals.levelHelper.getLevelEntityForSector(campNode.entity).get(LevelComponent).levelVO;
             
             // improvements
             var accRadio = sectorImprovements.getCount(improvementNames.radio) * CampConstants.REPUTATION_PER_RADIO_PER_SEC * GameConstants.gameSpeedCamp;

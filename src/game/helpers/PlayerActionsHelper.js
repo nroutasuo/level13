@@ -1,6 +1,7 @@
 // Helper methods related to player actions (costs, requirements, descriptions) - common definitions for all actions
 define([
     'ash',
+    'game/GameGlobals',
 	'game/constants/PositionConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/PlayerActionsHelperConstants',
@@ -40,7 +41,7 @@ define([
     'game/vos/ResourcesVO',
     'game/vos/ImprovementVO'
 ], function (
-	Ash, PositionConstants, PlayerActionConstants, PlayerActionsHelperConstants, PlayerStatConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
+	Ash, GameGlobals, PositionConstants, PlayerActionConstants, PlayerActionsHelperConstants, PlayerStatConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	LevelComponent, PositionComponent, PlayerActionComponent, BagComponent, ItemsComponent, PerksComponent, DeityComponent,
 	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
@@ -49,10 +50,6 @@ define([
     ResourcesVO, ImprovementVO
 ) {
     var PlayerActionsHelper = Ash.Class.extend({
-		
-		resourcesHelper: null,
-		
-		gameState: null,
 
         playerStatsNodes: null,
 		playerResourcesNodes: null,
@@ -62,11 +59,9 @@ define([
         
         cache: { reqs: {} },
 		
-		constructor: function (engine, gameState, resourcesHelper, upgradeEffectsHelper) {
+		constructor: function (engine) {
 			this.engine = engine;
-			this.gameState = gameState;
-			this.resourcesHelper = resourcesHelper;
-			this.upgradeEffectsHelper = upgradeEffectsHelper;
+            
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
@@ -86,7 +81,7 @@ define([
                 return;
             }
             
-			var currentStorage = this.resourcesHelper.getCurrentStorage();
+			var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             
             var costNameParts;
@@ -123,9 +118,9 @@ define([
         checkAvailability: function (action, log, otherSector) {
             var isLocationAction = PlayerActionConstants.isLocationAction(action);
             var playerPos = this.playerStatsNodes.head.entity.get(PositionComponent);
-            var locationKey = this.gameState.getActionLocationKey(isLocationAction, playerPos);
+            var locationKey = GameGlobals.gameState.getActionLocationKey(isLocationAction, playerPos);
             var cooldownTotal = PlayerActionConstants.getCooldown(action);
-            var cooldownLeft = Math.min(cooldownTotal, this.gameState.getActionCooldown(action, locationKey) / 1000);
+            var cooldownLeft = Math.min(cooldownTotal, GameGlobals.gameState.getActionCooldown(action, locationKey) / 1000);
             if (cooldownLeft) {
                 if (log) console.log("WARN: Action blocked by cooldown [" + action + "]");
                 return false;
@@ -184,14 +179,14 @@ define([
                         if (!requirements) requirements = {};
                         requirements.health = costs.stamina / PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
                     }
-                    if (costs.favour && !this.gameState.unlockedFeatures.favour) {
+                    if (costs.favour && !GameGlobals.gameState.unlockedFeatures.favour) {
                         reason = "Locked stats.";
                         return { value: 0, reason: reason };
                     }
-                    if ((costs.resource_fuel > 0 && !this.gameState.unlockedFeatures.resources.fuel) ||
-                        (costs.resource_herbs > 0 && !this.gameState.unlockedFeatures.resources.herbs) ||
-                        (costs.resource_tools > 0 && !this.gameState.unlockedFeatures.resources.tools) ||
-                        (costs.resource_concrete > 0 && !this.gameState.unlockedFeatures.resources.concrete)) {
+                    if ((costs.resource_fuel > 0 && !GameGlobals.gameState.unlockedFeatures.resources.fuel) ||
+                        (costs.resource_herbs > 0 && !GameGlobals.gameState.unlockedFeatures.resources.herbs) ||
+                        (costs.resource_tools > 0 && !GameGlobals.gameState.unlockedFeatures.resources.tools) ||
+                        (costs.resource_concrete > 0 && !GameGlobals.gameState.unlockedFeatures.resources.concrete)) {
                         reason = PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES;
                         lowestFraction = 0;
                     }
@@ -285,7 +280,7 @@ define([
                     }
 
                     if (requirements.numCamps) {
-                        var currentCamps = this.gameState.numCamps;
+                        var currentCamps = GameGlobals.gameState.numCamps;
                         if (requirements.numCamps > currentCamps) {
                             reason = requirements.numCamps + " camps required.";
                             return { value: currentCamps / requirements.numCamps, reason: reason };
@@ -429,7 +424,7 @@ define([
                     }
                     if (typeof requirements.max_followers_reached !== "undefined") {
                         var numCurrentFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower).length;
-                        var numMaxFollowers = FightConstants.getMaxFollowers(this.gameState.numCamps);
+                        var numMaxFollowers = FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps);
                         var currentValue = numCurrentFollowers >= numMaxFollowers;
                         var requiredValue = requirements.max_followers_reached;
                         if (currentValue !== requiredValue) {
@@ -677,7 +672,7 @@ define([
 
                     if (requirements.level) {
                         var level = sector.get(PositionComponent).level;
-                        var levelVO = this.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
+                        var levelVO = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
                         if (requirements.level.population) {
                             var levelPopReqDef = requirements.level.population;
                             var min = levelPopReqDef[0];
@@ -749,7 +744,7 @@ define([
         // Check if player can afford a cost; returns fraction of the cost the player can cover; >1 means ok
         checkCost: function (action, name, otherSector) {
             var playerStamina = this.playerStatsNodes.head.stamina.stamina;
-            var playerResources = this.resourcesHelper.getCurrentStorage();
+            var playerResources = GameGlobals.resourcesHelper.getCurrentStorage();
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
             
@@ -850,7 +845,7 @@ define([
                 case "build_out_passage_up_stairs":
                 case "build_out_passage_up_elevator":
                 case "build_out_passage_up_hole":
-                    return this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.storage, this.tribeUpgradesNodes.head.upgrades);
+                    return GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.storage, this.tribeUpgradesNodes.head.upgrades);
                     
                 default: return 1;
             }
@@ -967,7 +962,7 @@ define([
             var skipRounding = false;
             
             var sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
-            var level = sector ? this.levelHelper.getLevelEntityForSector(sector).get(LevelComponent).levelVO : null;
+            var level = sector ? GameGlobals.levelHelper.getLevelEntityForSector(sector).get(LevelComponent).levelVO : null;
             
             var ordinal1 = this.getActionOrdinal(action);
             var ordinal2 = this.getActionSecondaryOrdinal(action);
@@ -1034,7 +1029,7 @@ define([
 					case "move_camp_level":
                         if (!this.nearestCampNodes.head) return this.getCosts("move_sector_west", 100);
                         var campSector = this.nearestCampNodes.head.entity;
-                        var path = this.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true });
+                        var path = GameGlobals.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true });
                         var sectorsToMove = path.length;
                         return this.getCosts("move_sector_west", sectorsToMove * statusFactor);
                     
@@ -1077,7 +1072,7 @@ define([
                         
                     case "nap":
                         var costs = {};
-                        var currentStorage = this.resourcesHelper.getCurrentStorage();
+                        var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
                         var currentResources = currentStorage ? currentStorage.resources : null;
                         costs["resource_food"] = currentResources ? Math.min(3, Math.floor(currentResources.getResource(resourceNames.food))) : 3;
                         costs["resource_water"] = currentResources ? Math.min(3, Math.floor(currentResources.getResource(resourceNames.water))) : 3;

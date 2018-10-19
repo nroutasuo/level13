@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
@@ -10,29 +11,19 @@ define([
     'game/components/player/ItemsComponent',
     'game/components/common/CampComponent',
 ], function (
-    Ash, GlobalSignals, UIConstants, ItemConstants, BagConstants,
+    Ash, GameGlobals, GlobalSignals, UIConstants, ItemConstants, BagConstants,
     PlayerPositionNode, PlayerLocationNode,
     BagComponent, ItemsComponent, CampComponent
 ) {
     var UIOutEmbarkSystem = Ash.System.extend({
-	
-		uiFunctions : null,
-		gameState : null,
-		resourcesHelper: null,
-        levelHelper: null,
 		
 		engine: null,
 		
 		playerPosNodes: null,
 		playerLocationNodes: null,
 	
-		constructor: function (uiFunctions, gameState, resourceHelper) {
-			this.uiFunctions = uiFunctions;
-			this.gameState = gameState;
-			this.resourcesHelper = resourceHelper;
-            
-            this.registerStepperListeners("#embark-resources");
-            
+		constructor: function (resourceHelper) {            
+            this.registerStepperListeners("#embark-resources");            
 			return this;
 		},
 	
@@ -52,11 +43,11 @@ define([
 		},
 		
 		initLeaveCampRes: function () {
-			if (this.gameState.uiStatus.leaveCampRes) {
-				var campResources = this.resourcesHelper.getCurrentStorage();
+			if (GameGlobals.gameState.uiStatus.leaveCampRes) {
+				var campResources = GameGlobals.resourcesHelper.getCurrentStorage();
 				for (var key in resourceNames) {
 					var name = resourceNames[key];
-					var oldVal = this.gameState.uiStatus.leaveCampRes[name];
+					var oldVal = GameGlobals.gameState.uiStatus.leaveCampRes[name];
 					var campVal = campResources.resources.getResource(name);
 					if (oldVal && oldVal > 0) {
 						var value = Math.floor(Math.min(oldVal, campVal));
@@ -67,11 +58,11 @@ define([
 		},
         
         initLeaveCampItems: function () {
-			if (this.gameState.uiStatus.leaveCampItems) {
+			if (GameGlobals.gameState.uiStatus.leaveCampItems) {
                 var itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
-				for (var key in this.gameState.uiStatus.leaveCampItems) {
+				for (var key in GameGlobals.gameState.uiStatus.leaveCampItems) {
 					var itemID = key;
-					var oldVal = this.gameState.uiStatus.leaveCampItems[itemID];
+					var oldVal = GameGlobals.gameState.uiStatus.leaveCampItems[itemID];
 					var ownedCount = itemsComponent.getCountById(itemID, true);
 					if (oldVal && oldVal > 0) {
 						var value = Math.floor(Math.min(oldVal, ownedCount));
@@ -82,14 +73,14 @@ define([
         },
 		
 		update: function (time) {
-			if (this.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.out) return;			
+			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.out) return;			
             if (!this.playerLocationNodes.head) return;
 			
 			var posComponent = this.playerPosNodes.head.position;
             // TODO create nice transitions for leaving camp
-			this.uiFunctions.toggle("#container-tab-enter-out", posComponent.inCamp);
-			this.uiFunctions.toggle("#container-tab-two-out", !posComponent.inCamp);
-			this.uiFunctions.toggle("#container-tab-two-out-actions", !posComponent.inCamp);
+			GameGlobals.uiFunctions.toggle("#container-tab-enter-out", posComponent.inCamp);
+			GameGlobals.uiFunctions.toggle("#container-tab-two-out", !posComponent.inCamp);
+			GameGlobals.uiFunctions.toggle("#container-tab-two-out-actions", !posComponent.inCamp);
 		},
         
         refresh: function () {
@@ -99,8 +90,8 @@ define([
         },
 		
 		updateSteppers: function () {
-			var campResources = this.resourcesHelper.getCurrentStorage();
-            var campResourcesAcc = this.resourcesHelper.getCurrentStorageAccumulation(false);
+			var campResources = GameGlobals.resourcesHelper.getCurrentStorage();
+            var campResourcesAcc = GameGlobals.resourcesHelper.getCurrentStorageAccumulation(false);
             var bagComponent = this.playerPosNodes.head.entity.get(BagComponent);
             var selectedCapacity = 0;
 			var selectedAmount;
@@ -108,20 +99,18 @@ define([
             var selectedWater = 0;
             var selectedFood = 0;
             
-            var uiFunctions = this.uiFunctions;
-            
 			// Resource steppers
 			$.each($("#embark-resources tr"), function () {
 				var resourceName = $(this).attr("id").split("-")[2];
 				var campVal = campResources.resources.getResource(resourceName);
 				var visible = campVal > 0;
 				var inputMax = Math.min(Math.floor(campVal));
-				uiFunctions.toggle($(this), visible);
+				GameGlobals.uiFunctions.toggle($(this), visible);
                 if (visible) {
                     var stepper = $(this).children("td").children(".stepper");
                     var inputMin = 0;
                     var val = $(this).children("td").children(".stepper").children("input").val();
-                    uiFunctions.updateStepper("#" + $(stepper).attr("id"), val, inputMin, inputMax)
+                    GameGlobals.uiFunctions.updateStepper("#" + $(stepper).attr("id"), val, inputMin, inputMax)
                     selectedAmount = Math.max(0, val);
                     selectedCapacity += selectedAmount * BagConstants.getResourceCapacity(resourceName);
                     
@@ -140,20 +129,20 @@ define([
                 var count = itemsComponent.getCountById(itemID, true);
 				var visible = count > 0;
                 if (visible) visibleItemTRs++;
-				uiFunctions.toggle($(this), visible);
+				GameGlobals.uiFunctions.toggle($(this), visible);
                 if (visible) {
                     var stepper = $(this).children("td").children(".stepper");
                     var inputMin = 0;
                     var inputMax = Math.min(Math.floor(count));
                     var inputValue = $(stepper).children("input").val();
                     var val = Math.max(inputValue, inputMin);
-                    uiFunctions.updateStepper("#" + $(stepper).attr("id"), val, inputMin, inputMax)
+                    GameGlobals.uiFunctions.updateStepper("#" + $(stepper).attr("id"), val, inputMin, inputMax)
                     selectedAmount = Math.max(0, $(stepper).children("input").val());
                     selectedCapacity += selectedAmount * BagConstants.getItemCapacity(itemsComponent.getItem(itemID));
                 }
 			});
 			
-            this.uiFunctions.toggle("#embark-items-container", visibleItemTRs > 0);
+            GameGlobals.uiFunctions.toggle("#embark-items-container", visibleItemTRs > 0);
             
             bagComponent.selectedCapacity = selectedCapacity;
 			$("#embark-bag .value").text(UIConstants.roundValue(bagComponent.selectedCapacity), true, true);
@@ -174,7 +163,7 @@ define([
                 }
             }
             $("#embark-warning").text(warning);
-            this.uiFunctions.toggle("#embark-warning", warning.length > 0);
+            GameGlobals.uiFunctions.toggle("#embark-warning", warning.length > 0);
 		},
         
         regenrateEmbarkItems: function () {
@@ -201,8 +190,8 @@ define([
                     "</tr>"
                 );
             }
-            this.uiFunctions.generateSteppers("#embark-items");
-            this.uiFunctions.registerStepperListeners("#embark-items");
+            GameGlobals.uiFunctions.generateSteppers("#embark-items");
+            GameGlobals.uiFunctions.registerStepperListeners("#embark-items");
             this.registerStepperListeners("#embark-items");
         },
         
@@ -214,7 +203,7 @@ define([
         },
         
         onTabChanged: function () {
-			if (this.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.out) return;
+			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.out) return;
             var posComponent = this.playerPosNodes.head.position;
             if (!posComponent.inCamp) return;
             

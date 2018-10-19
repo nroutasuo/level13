@@ -1,5 +1,6 @@
 // Singleton with helper methods for UI elements used throughout the game
 define(['ash',
+    'game/GameGlobals',
 	'game/constants/StoryConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
@@ -15,7 +16,7 @@ define(['ash',
     'game/components/sector/PassagesComponent',
     'game/components/common/VisitedComponent',
     'game/components/sector/improvements/WorkshopComponent',
-], function (Ash,
+], function (Ash, GameGlobals,
 	StoryConstants, PositionConstants, SectorConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
 	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
 	PassagesComponent, VisitedComponent, WorkshopComponent) {
@@ -175,9 +176,9 @@ define(['ash',
 			return html;
 		},
 		
-		getSectorMapTD: function (playerPosition, sector, levelHelper) {
+		getSectorMapTD: function (playerPosition, sector) {
 			var content = "";
-            var sectorStatus = SectorConstants.getSectorStatus(sector, levelHelper);
+            var sectorStatus = SectorConstants.getSectorStatus(sector);
 			var classes = "vis-out-sector";
 			if (sector && sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE) {
 				var sectorPos = sector.get(PositionComponent);
@@ -359,16 +360,16 @@ define(['ash',
 			return div;
 		},
 		
-		updateResourceIndicator: function (uiFunctions, id, value, change, storage, showStorage, showChangeIcon, showChange, showDetails, showWarning, visible) {
-			uiFunctions.toggle(id, visible);
-			uiFunctions.toggle($(id).parent(), visible);
+		updateResourceIndicator: function (id, value, change, storage, showStorage, showChangeIcon, showChange, showDetails, showWarning, visible) {
+			GameGlobals.uiFunctions.toggle(id, visible);
+			GameGlobals.uiFunctions.toggle($(id).parent(), visible);
 			var roundedValue = this.roundValue(value, true, false);
 			if (visible) {
 				$(id).children(".value").text(showStorage ? roundedValue + " / " + storage : roundedValue);
 				$(id).children(".value").toggleClass("warning", showWarning && roundedValue < 5);
 				$(id).children(".change").toggleClass("warning", change < 0);
-				uiFunctions.toggle($(id).children(".change"), showChange);
-				uiFunctions.toggle($(id).children(".forecast"), showDetails);
+				GameGlobals.uiFunctions.toggle($(id).children(".change"), showChange);
+				GameGlobals.uiFunctions.toggle($(id).children(".forecast"), showDetails);
 				$(id).children(".forecast").toggleClass("warning", change < 0);
 				
 				var isCappedByStorage = change > 0 && value >= storage;
@@ -392,7 +393,7 @@ define(['ash',
 				$(id).children(".change-indicator").toggleClass("indicator-increase", change > 0 && !isCappedByStorage);
 				$(id).children(".change-indicator").toggleClass("indicator-decrease", change < 0);
 				$(id).children(".change-indicator").toggleClass("indicator-even", change === 0 || isCappedByStorage);
-				uiFunctions.toggle($(id).children(".change-indicator"), showChangeIcon);
+				GameGlobals.uiFunctions.toggle($(id).children(".change-indicator"), showChangeIcon);
 			}
 		},
 		

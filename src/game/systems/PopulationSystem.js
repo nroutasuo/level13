@@ -1,6 +1,7 @@
 define([
     'ash',
     'utils/MathUtils',
+    'game/GameGlobals',
     'game/GlobalSignals',
 	'game/constants/GameConstants',
 	'game/constants/LogConstants',
@@ -11,17 +12,13 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/PositionComponent',
     'game/components/common/LogMessagesComponent',
-], function (Ash, MathUtils, GlobalSignals, GameConstants, LogConstants, CampConstants, CampNode, PlayerStatsNode, LevelComponent, SectorImprovementsComponent, PositionComponent, LogMessagesComponent) {
+], function (Ash, MathUtils, GameGlobals, GlobalSignals, GameConstants, LogConstants, CampConstants, CampNode, PlayerStatsNode, LevelComponent, SectorImprovementsComponent, PositionComponent, LogMessagesComponent) {
     var PopulationSystem = Ash.System.extend({
 	
         campNodes: null,
         playerNodes: null,
-
-        constructor: function (gameState, levelHelper, campHelper) {
-            this.gameState = gameState;
-            this.levelHelper = levelHelper;
-            this.campHelper = campHelper;
-        },
+        
+        constructor: function () {},
 
         addToEngine: function (engine) {
             this.engine = engine;
@@ -36,7 +33,7 @@ define([
         },
 
         update: function (time) {
-            if (this.gameState.isPaused) return;
+            if (GameGlobals.gameState.isPaused) return;
             for (var node = this.campNodes.head; node; node = node.next) {
                 this.updateNode(node, time + this.engine.extraUpdateTime);
             }
@@ -69,7 +66,7 @@ define([
         getPopulationChangePerSec: function (node) {
 			var camp = node.camp;
 			var reputation = node.reputation.value;
-            var levelVO = this.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent).levelVO;
+            var levelVO = GameGlobals.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent).levelVO;
             var reqRepCurPop = CampConstants.getRequiredReputation(Math.floor(camp.population));
             var reqRepNextPop = CampConstants.getRequiredReputation(Math.floor(camp.population) + 1);
             
@@ -112,10 +109,10 @@ define([
         reassignWorkers: function (node) {
 			var improvements = node.entity.get(SectorImprovementsComponent);
             var reservedWorkers = {};
-            var foodConsumption = this.campHelper.getFoodConsumptionPerSecond(node.camp.population);
-            var foodProduction = this.campHelper.getFoodProductionPerSecond(1, improvements);
-            var waterConsumption = this.campHelper.getWaterConsumptionPerSecond(node.camp.population);
-            var waterProduction = this.campHelper.getWaterProductionPerSecond(1, improvements);
+            var foodConsumption = GameGlobals.campHelper.getFoodConsumptionPerSecond(node.camp.population);
+            var foodProduction = GameGlobals.campHelper.getFoodProductionPerSecond(1, improvements);
+            var waterConsumption = GameGlobals.campHelper.getWaterConsumptionPerSecond(node.camp.population);
+            var waterProduction = GameGlobals.campHelper.getWaterProductionPerSecond(1, improvements);
             reservedWorkers[CampConstants.WORKER_TYPES.scavenger] = 1;
             reservedWorkers[CampConstants.WORKER_TYPES.trapper] = Math.ceil(foodConsumption / foodProduction);
             reservedWorkers[CampConstants.WORKER_TYPES.water] = Math.ceil(waterConsumption / waterProduction);

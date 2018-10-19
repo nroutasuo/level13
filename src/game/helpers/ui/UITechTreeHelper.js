@@ -1,14 +1,14 @@
 // Creates and updates maps (mini-map and main)
 define(['ash',
-    'game/constants/UIConstants',
+    'game/GameGlobals',
     'game/constants/CanvasConstants',
     'game/constants/PlayerActionConstants',
     'game/constants/UpgradeConstants',
     'game/nodes/tribe/TribeUpgradesNode'],
-function (Ash,
-    UIConstants, CanvasConstants, PlayerActionConstants, UpgradeConstants, TribeUpgradesNode) {
+function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConstants, TribeUpgradesNode) {
     
     var TechTreeNode = Ash.Class.extend({
+        
         definition: null,
         level: 0,
         requiresIDs: [],
@@ -27,6 +27,7 @@ function (Ash,
     });
     
     var TechTree = Ash.Class.extend({
+        
         roots: [],
         nodesById: {},
         
@@ -76,19 +77,19 @@ function (Ash,
             }
         },
         
-        pruneNodes: function (tribeNodes, playerActionsHelper) {
+        pruneNodes: function (tribeNodes) {
             var node;
             for (var id in this.nodesById) {
                 node = this.nodesById[id];
                 if (tribeNodes.head.upgrades.hasUpgrade(node.definition.id))
                     continue;
                 
-                var isAvailable = playerActionsHelper.checkRequirements(node.definition.id, false).value > 0;
+                var isAvailable = GameGlobals.playerActionsHelper.checkRequirements(node.definition.id, false).value > 0;
                 if (isAvailable)
                     continue;
                 
                 for (var i = 0; i < node.requires.length; i++) {
-                    isAvailable = isAvailable || playerActionsHelper.checkRequirements(node.requires[i].definition.id, false).value > 0;
+                    isAvailable = isAvailable || GameGlobals.playerActionsHelper.checkRequirements(node.requires[i].definition.id, false).value > 0;
                 }
                 if (isAvailable)
                     continue;
@@ -138,9 +139,8 @@ function (Ash,
         treePX: 20,
         treePY: 40,
         
-        constructor: function (engine, playerActionsHelper) {            
+        constructor: function (engine) {            
 			this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
-            this.playerActionsHelper = playerActionsHelper;
         },
         
         enableScrolling: function (canvasId) {
@@ -241,7 +241,7 @@ function (Ash,
             this.ctx.fillRect(pixelX, pixelY, this.cellW, this.cellH);
             
             var hasUpgrade =  this.tribeNodes.head.upgrades.hasUpgrade(node.definition.id);
-            var isAvailable = this.playerActionsHelper.checkRequirements(node.definition.id, false).value > 0;
+            var isAvailable = GameGlobals.playerActionsHelper.checkRequirements(node.definition.id, false).value > 0;
             if (hasUpgrade || isAvailable) {
                 this.ctx.lineWidth = 3;
                 this.ctx.strokeStyle = hasUpgrade ? "#666" : "#fdfdfd";
@@ -257,9 +257,9 @@ function (Ash,
 
             // details
             var lacksBlueprint = 
-                this.playerActionsHelper.checkRequirements(node.definition.id, false).value <= 0 &&
-                this.playerActionsHelper.getReqs(node.definition.id).blueprint && 
-                !this.tribeNodes.head.upgrades.hasAvailableBlueprint(this.playerActionsHelper.getReqs(node.definition.id).blueprint);
+                GameGlobals.playerActionsHelper.checkRequirements(node.definition.id, false).value <= 0 &&
+                GameGlobals.playerActionsHelper.getReqs(node.definition.id).blueprint && 
+                !this.tribeNodes.head.upgrades.hasAvailableBlueprint(GameGlobals.playerActionsHelper.getReqs(node.definition.id).blueprint);
             this.ctx.font = "11px Arial";
             this.ctx.fillStyle = sunlit ? "#fdfdfd" : "#202220";
             this.ctx.textAlign = "center";
@@ -320,7 +320,7 @@ function (Ash,
                 tree.addNode(node);
             }
             tree.connectNodes();
-            tree.pruneNodes(this.tribeNodes, this.playerActionsHelper);
+            tree.pruneNodes(this.tribeNodes, GameGlobals.playerActionsHelper);
             return tree;
         },
         
@@ -340,7 +340,7 @@ function (Ash,
             if (this.tribeNodes.head.upgrades.hasUpgrade(definition.id)) {
                 return sunlit ? "#3a3a3a" : "#aaa";
             }
-            var isAvailable = this.playerActionsHelper.checkRequirements(definition.id, false).value > 0;
+            var isAvailable = GameGlobals.playerActionsHelper.checkRequirements(definition.id, false).value > 0;
             if (isAvailable) {
                 return sunlit ? "#444" : "#ccc";
             }

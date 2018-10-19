@@ -1,6 +1,7 @@
 // Triggers in-occurrences (camp events)
 define([
     'ash',
+    'game/GameGlobals',
     'game/constants/GameConstants',
     'game/constants/LogConstants',
     'game/constants/OccurrenceConstants',
@@ -17,8 +18,7 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/vos/RaidVO',
 ], function (
-    Ash,
-    GameConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants,
+    Ash, GameGlobals, GameConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants,
     PlayerResourcesNode, CampNode, TribeUpgradesNode,
     PositionComponent, LogMessagesComponent,
     TraderComponent, RaidComponent, CampEventTimersComponent,
@@ -27,18 +27,14 @@ define([
     var CampEventsSystem = Ash.System.extend({
 	    
         occurrenceFunctions: null,
-        upgradeEffectsHelper: null,
-        gameState: null,
         saveSystem: null,
 		
         playerNodes: null,
         campNodes: null,
         tribeUpgradesNodes: null,
         
-        constructor: function (occurrenceFunctions, upgradeEffectsHelper, gameState, saveSystem) {
+        constructor: function (occurrenceFunctions, saveSystem) {
             this.occurrenceFunctions = occurrenceFunctions;
-            this.upgradeEffectsHelper = upgradeEffectsHelper;
-            this.gameState = gameState;
             this.saveSystem = saveSystem;
         },
         
@@ -60,7 +56,7 @@ define([
         },
         
         update: function (time) {
-            if (this.gameState.isPaused) return;
+            if (GameGlobals.gameState.isPaused) return;
 
             // TODO take this.engine.extraUpdateTime into account
 
@@ -122,11 +118,11 @@ define([
             var improvements = campNode.entity.get(SectorImprovementsComponent);
             switch (event) {
                 case OccurrenceConstants.campOccurrenceTypes.trader:
-                    return improvements.getCount(this.upgradeEffectsHelper.getImprovementForOccurrence(event)) > 0;
+                    return improvements.getCount(GameGlobals.upgradeEffectsHelper.getImprovementForOccurrence(event)) > 0;
 
                 case OccurrenceConstants.campOccurrenceTypes.raid:
                     var soldiers = campNode.camp.assignedWorkers.soldier;
-                    var fortificationUpgradeLevel = this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradesNodes.head.upgrades);
+                    var fortificationUpgradeLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradesNodes.head.upgrades);
                     return OccurrenceConstants.getRaidDanger(improvements, soldiers, fortificationUpgradeLevel) > 0;
 
                 default:
@@ -219,7 +215,7 @@ define([
             var campTimers = campNode.entity.get(CampEventTimersComponent);
             var duration = OccurrenceConstants.getDuration(event);
             var campPos = campNode.entity.get(PositionComponent);
-            var campOrdinal = this.gameState.getCampOrdinal(campPos.level);
+            var campOrdinal = GameGlobals.gameState.getCampOrdinal(campPos.level);
             campTimers.onEventStarted(event, duration);
             if (GameConstants.isDebugOutputEnabled)
                 console.log("Start " + event + " at " + campNode.camp.campName + " (" + duration + "s)");
@@ -227,7 +223,7 @@ define([
             var logMsg;
             switch (event) {
                 case OccurrenceConstants.campOccurrenceTypes.trader:
-                    var caravan = TradeConstants.getRandomIncomingCaravan(campOrdinal, this.gameState.level, this.gameState.unlockedFeatures.resources, this.gameState);
+                    var caravan = TradeConstants.getRandomIncomingCaravan(campOrdinal, GameGlobals.gameState.level, GameGlobals.gameState.unlockedFeatures.resources, GameGlobals.gameState);
                     campNode.entity.add(new TraderComponent(caravan));
                     logMsg = "A trader arrives.";
                     break;
@@ -256,7 +252,7 @@ define([
         
         getEventUpgradeFactor: function (event) {
             var upgradeLevel = 0;
-            var eventUpgrades = this.upgradeEffectsHelper.getImprovingUpgradeIdsForOccurrence(event);
+            var eventUpgrades = GameGlobals.upgradeEffectsHelper.getImprovingUpgradeIdsForOccurrence(event);
             var eventUpgrade;
             for (var i in eventUpgrades) {
                 eventUpgrade = eventUpgrades[i];

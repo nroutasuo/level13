@@ -1,6 +1,7 @@
 // Checks hunger & thirst when exploring and determines when, and how, the player faints
 define([
     'ash',
+    'game/GameGlobals',
     'game/systems/SaveSystem',
     'game/constants/PlayerActionConstants',
     'game/constants/LogConstants',
@@ -22,6 +23,7 @@ define([
     'game/components/common/LogMessagesComponent',
     'game/systems/PlayerPositionSystem'
 ], function (Ash,
+    GameGlobals,
     SaveSystem,
     PlayerActionConstants,
 	LogConstants,
@@ -52,10 +54,7 @@ define([
         nearestCampNodes: null,
 		sectorNodes: null,
 
-        constructor: function (uiFunctions, playerActionFunctions, playerActionResultsHelper) {
-			this.uiFunctions = uiFunctions;
-			this.playerActionFunctions = playerActionFunctions;
-            this.playerActionResultsHelper = playerActionResultsHelper;
+        constructor: function () {
         },
 
         addToEngine: function (engine) {
@@ -198,14 +197,14 @@ define([
 		
 		fadeOut: function (msg, msgLog, handleResults, sector, loseInventoryProbability, injuryProbability) {
 			if (handleResults) {
-				var resultVO = this.playerActionResultsHelper.getFadeOutResults(loseInventoryProbability, injuryProbability);
+				var resultVO = GameGlobals.playerActionResultsHelper.getFadeOutResults(loseInventoryProbability, injuryProbability);
                 var sys = this;
                 this.playerResourcesNodes.head.entity.add(new PlayerActionResultComponent(resultVO));
                 var resultPopUpCallback = function (isTakeAll) {
-                    sys.playerActionResultsHelper.collectRewards(isTakeAll, resultVO);  
+                    GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, resultVO);  
                     sys.teleport(msgLog, sector);                  
                 };
-				if (msg) this.uiFunctions.showResultPopup("Exhaustion", msg, resultVO, resultPopUpCallback);
+				if (msg) GameGlobals.uiFunctions.showResultPopup("Exhaustion", msg, resultVO, resultPopUpCallback);
 			} else {
                 this.teleport(msgLog, sector);
             }
@@ -222,8 +221,8 @@ define([
             this.engine.getSystem(PlayerPositionSystem).updateSectors();
             
 			if (sector.has(CampComponent)) {
-                this.uiFunctions.playerActions.enterCamp(false);
-                this.uiFunctions.showTab(this.uiFunctions.elementIDs.tabs.in);
+                GameGlobals.playerActionFunctions.enterCamp(false);
+                GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in);
             }
             
 			this.log(msgLog);

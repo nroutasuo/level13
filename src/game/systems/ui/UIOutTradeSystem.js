@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/TradeConstants',
     'game/constants/ItemConstants',
@@ -11,7 +12,7 @@ define([
     'game/vos/ResourcesVO',
     'game/vos/OutgoingCaravanVO'
 ], function (
-    Ash, GlobalSignals, TradeConstants, ItemConstants, UIConstants, PlayerLocationNode, ItemsNode, OutgoingCaravansComponent, TraderComponent, ResourcesVO, OutgoingCaravanVO
+    Ash, GameGlobals, GlobalSignals, TradeConstants, ItemConstants, UIConstants, PlayerLocationNode, ItemsNode, OutgoingCaravansComponent, TraderComponent, ResourcesVO, OutgoingCaravanVO
 ) {
     var UIOutTradeSystem = Ash.System.extend({
         
@@ -23,10 +24,7 @@ define([
         
         playerLocationNodes: null,
         
-        constructor: function (uiFunctions, gameState, resourcesHelper) {
-            this.uiFunctions = uiFunctions;
-            this.gameState = gameState;
-            this.resourcesHelper = resourcesHelper;
+        constructor: function () {
             return this;
         },
 
@@ -46,7 +44,7 @@ define([
 
         update: function (time) {
             if (!this.playerLocationNodes.head) return;
-            var isActive = this.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.trade;
+            var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.trade;
             
             this.updateBubble();
             this.updateOutgoingCaravansList(isActive);
@@ -56,8 +54,8 @@ define([
             
             this.updateOutgoingCaravanPrepare();
             
-            this.uiFunctions.toggle("#trade-caravans-outgoing-empty-message", this.availableTradingPartnersCount === 0);
-            this.uiFunctions.toggle("#trade-caravans-incoming-empty-message", this.currentIncomingTraders === 0);
+            GameGlobals.uiFunctions.toggle("#trade-caravans-outgoing-empty-message", this.availableTradingPartnersCount === 0);
+            GameGlobals.uiFunctions.toggle("#trade-caravans-incoming-empty-message", this.currentIncomingTraders === 0);
             $("#tab-header h2").text("Trade");
         },
         
@@ -74,11 +72,11 @@ define([
                 return;
             this.bubbleNumber = newBubbleNumber;
             $("#switch-trade .bubble").text(this.bubbleNumber);
-            this.uiFunctions.toggle("#switch-trade .bubble", this.bubbleNumber > 0);  
+            GameGlobals.uiFunctions.toggle("#switch-trade .bubble", this.bubbleNumber > 0);  
         },
         
         updateOutgoingCaravansList: function (isActive) {
-            this.availableTradingPartnersCount = this.gameState.foundTradingPartners.length;
+            this.availableTradingPartnersCount = GameGlobals.gameState.foundTradingPartners.length;
             
             if (!isActive)
                 return;
@@ -87,8 +85,8 @@ define([
                 return;
             
             $("#trade-caravans-outgoing-container table").empty();
-            for (var i = 0; i < this.gameState.foundTradingPartners.length; i++) {
-                var partner = TradeConstants.getTradePartner(this.gameState.foundTradingPartners[i]);
+            for (var i = 0; i < GameGlobals.gameState.foundTradingPartners.length; i++) {
+                var partner = TradeConstants.getTradePartner(GameGlobals.gameState.foundTradingPartners[i]);
                 var tdName = "<td class='item-name'>" + partner.name + "</td>";
                 var buysS = partner.buysResources.join(", ");
                 var sellsS = partner.sellsResources.join(", ");
@@ -153,16 +151,16 @@ define([
                 sys.confirmPendingCaravan(ordinal);
             });
             
-            this.uiFunctions.generateButtonOverlays("#trade-caravans-outgoing-container table");
-            this.uiFunctions.generateCallouts("#trade-caravans-outgoing-container table");
-            this.uiFunctions.registerActionButtonListeners("#trade-caravans-outgoing-container table");
+            GameGlobals.uiFunctions.generateButtonOverlays("#trade-caravans-outgoing-container table");
+            GameGlobals.uiFunctions.generateCallouts("#trade-caravans-outgoing-container table");
+            GameGlobals.uiFunctions.registerActionButtonListeners("#trade-caravans-outgoing-container table");
             
             this.lastShownTradingPartnersCount = this.availableTradingPartnersCount;
         },
         
         hideOutgoingPlanRows: function () {
             $(".btn-trade-caravans-outgoing-toggle").text("Send caravan");
-            this.uiFunctions.toggle(".trade-caravans-outgoing-plan", false, true);
+            GameGlobals.uiFunctions.toggle(".trade-caravans-outgoing-plan", false, true);
             $(".trade-caravans-outgoing").toggleClass("selected", false);
         },
         
@@ -170,7 +168,7 @@ define([
             var tr = $("#trade-caravans-outgoing-plan-" + campOrdinal);
             $("#trade-caravans-outgoing-" + campOrdinal + " button").text("cancel");
             $("#trade-caravans-outgoing-" + campOrdinal).toggleClass("selected", true);
-            this.uiFunctions.toggle(tr, true);
+            GameGlobals.uiFunctions.toggle(tr, true);
             this.initPendingCaravan(campOrdinal);
         },
         
@@ -249,7 +247,7 @@ define([
                 var tr = "<tr>" + nameTD + inventoryTD + buttonsTD + "</tr>";
                 $("#trade-caravans-incoming-container table").append(tr);
 
-                var uiFunctions = this.uiFunctions;
+                var uiFunctions = GameGlobals.uiFunctions;
                 $(".trade-caravans-incoming-trade").click(function () {
                     uiFunctions.showIncomingCaravanPopup();
                 });
@@ -257,7 +255,7 @@ define([
                     traderComponent.isDismissed = true;
                 });
 
-                this.uiFunctions.generateCallouts("#trade-caravans-incoming-container table");
+                GameGlobals.uiFunctions.generateCallouts("#trade-caravans-incoming-container table");
                 GlobalSignals.elementCreatedSignal.dispatch();
             }
             
@@ -281,21 +279,21 @@ define([
             
             // set sell slider min max steps & sell value
             var amountSell = 0;
-            var ownedStorage = this.resourcesHelper.getCurrentStorage();
+            var ownedStorage = GameGlobals.resourcesHelper.getCurrentStorage();
             var ownedSellAmount = ownedStorage.resources.getResource(selectedSell);
             var hasEnoughSellRes = ownedSellAmount >= TradeConstants.MIN_OUTGOING_CARAVAN_RES;
             if (hasEnoughSellRes) {
                 amountSell = Math.min(ownedSellAmount, $(sellSlider).val()); 
-                this.uiFunctions.toggle(sellSlider, true);
+                GameGlobals.uiFunctions.toggle(sellSlider, true);
                 $(sellSlider).attr("max", Math.min(TradeConstants.MAX_OUTGOING_CARAVAN_RES, Math.floor(ownedSellAmount / 10) * 10));
-                this.uiFunctions.toggle(trID + " .trade-sell-value-invalid", false);
-                this.uiFunctions.toggle(trID + " .trade-sell-value", true);
+                GameGlobals.uiFunctions.toggle(trID + " .trade-sell-value-invalid", false);
+                GameGlobals.uiFunctions.toggle(trID + " .trade-sell-value", true);
                 $(trID + " .trade-sell-value").text("x" + amountSell);
             } else {
-                this.uiFunctions.toggle(sellSlider, false);
-                this.uiFunctions.toggle(trID + " .trade-sell-value-invalid", true); 
+                GameGlobals.uiFunctions.toggle(sellSlider, false);
+                GameGlobals.uiFunctions.toggle(trID + " .trade-sell-value-invalid", true); 
                 $(trID + " .trade-sell-value-invalid").text("Not enough " + selectedSell);
-                this.uiFunctions.toggle(trID + " .trade-sell-value", false);
+                GameGlobals.uiFunctions.toggle(trID + " .trade-sell-value", false);
             }
             
             // set get amount

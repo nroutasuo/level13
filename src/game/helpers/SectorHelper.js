@@ -3,17 +3,13 @@ define([
     'ash',
     'game/nodes/sector/SectorNode',
     'game/nodes/PlayerLocationNode',
-    'game/components/common/PositionComponent',
     'game/components/sector/SectorStatusComponent',
-    'game/components/sector/SectorLocalesComponent',
     'game/components/sector/SectorFeaturesComponent',
 ], function (
 	Ash,
 	SectorNode,
 	PlayerLocationNode,
-	PositionComponent,
 	SectorStatusComponent,
-	SectorLocalesComponent,
 	SectorFeaturesComponent
 ) {
     var SectorHelper = Ash.Class.extend({

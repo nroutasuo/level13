@@ -1,19 +1,13 @@
 define([
     'ash',
-], function (Ash) {
+    'game/GameGlobals',
+], function (Ash, GameGlobals) {
     
 var EndingSystem = Ash.System.extend({
-    
-        gameState: null,
-        gameManager: null,
-        uiFunctions: null,
         
         isPopupShown: false,
 
-        constructor: function (gameState, gameManager, uiFunctions) {
-            this.gameState = gameState;
-            this.gameManager = gameManager;
-            this.uiFunctions = uiFunctions;
+        constructor: function () {
         },
 
         addToEngine: function (engine) {
@@ -28,7 +22,7 @@ var EndingSystem = Ash.System.extend({
             if (this.isPopupShown)
                 return;
             
-            if (!this.gameState.isFinished)
+            if (!GameGlobals.gameState.isFinished)
                 return;
             
             this.showPopup();
@@ -36,15 +30,14 @@ var EndingSystem = Ash.System.extend({
         
         showPopup: function () {
             gtag('event', 'game_complete', { event_category: 'progression' })
-            var uiFunctions = this.uiFunctions;
             this.gameManager.pauseGame();
-            this.uiFunctions.showQuestionPopup(
+            GameGlobals.uiFunctions.showQuestionPopup(
                 "The End", 
                 "Congratulations! You've completed Level 13. Thank you for playing!<br/></br>Do you want to restart?",
                 "Restart",
                 "Cancel",
                 function () {
-                    uiFunctions.restart();
+                    GameGlobals.uiFunctions.restart();
                 },
                 function () {}
             );

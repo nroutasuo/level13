@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
 	'game/constants/GameConstants',
     'game/constants/ItemConstants',
@@ -14,6 +15,7 @@ define([
     'game/components/sector/SectorStatusComponent'
 ], function (
     Ash, 
+    GameGlobals,
     GlobalSignals,
     GameConstants, 
     ItemConstants, 
@@ -37,8 +39,7 @@ define([
         wasSunlit: null,
         lastSignalValue: -1,
 
-        constructor: function (gameState) {
-            this.gameState = gameState;
+        constructor: function () {
         },
 
         addToEngine: function (engine) {
@@ -60,7 +61,7 @@ define([
         },
 
         updateNode: function (node, time) {
-            if (this.gameState.isPaused) return;
+            if (GameGlobals.gameState.isPaused) return;
             
 			var vision = node.vision;
 			var oldMaximum = vision.maximum;
@@ -176,8 +177,8 @@ define([
             
             // check unlocked features
             if (vision > maxValueBase) {
-                if (!this.gameState.unlockedFeatures.vision) {
-                    this.gameState.unlockedFeatures.vision = true;
+                if (!GameGlobals.gameState.unlockedFeatures.vision) {
+                    GameGlobals.gameState.unlockedFeatures.vision = true;
                     GlobalSignals.featureUnlockedSignal.dispatch();
                 }
             }

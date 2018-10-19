@@ -2,8 +2,8 @@
 // and handles updating sector components related to the player's position
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
-    'game/constants/UIConstants',
     'game/constants/WorldCreatorConstants',
     'game/nodes/PlayerPositionNode',
     'game/nodes/level/LevelNode',
@@ -16,16 +16,13 @@ define([
     'game/components/common/VisitedComponent',
     'game/components/common/RevealedComponent',
     'game/components/common/CampComponent',
-], function (Ash, GlobalSignals, UIConstants, WorldCreatorConstants,
+], function (Ash, GameGlobals, GlobalSignals, WorldCreatorConstants,
     PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode, CampNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, PositionComponent,
 	VisitedComponent, RevealedComponent, CampComponent) {
     
     var PlayerPositionSystem = Ash.System.extend({
 	    
-		gameState: null,
-		levelHelper: null,
-		uiFunctions: null,
 		occurrenceFunctions: null,
 		
 		sectorNodes: null,
@@ -35,10 +32,7 @@ define([
         
         lastUpdatePosition: null,
 		
-		constructor: function (gameState, levelHelper, uiFunctions, occurrenceFunctions) {
-			this.gameState = gameState;
-            this.levelHelper = levelHelper;
-			this.uiFunctions = uiFunctions;
+		constructor: function (occurrenceFunctions) {
 			this.occurrenceFunctions = occurrenceFunctions;
 		},
 	
@@ -127,7 +121,7 @@ define([
                         this.handleNewSector(sectorNode, sectorPos);
                     }
                     GlobalSignals.playerMovedSignal.dispatch(playerPos);
-                    this.uiFunctions.onPlayerMoved();
+                    GameGlobals.uiFunctions.onPlayerMoved();
                 } else if ((levelpos !== playerPos.level || sectorPos !== playerPos.sectorId()) && hasLocationComponent) {
                     sectorNode.entity.remove(CurrentPlayerLocationComponent);
                 }
@@ -141,12 +135,12 @@ define([
 		handleNewLevel: function (levelNode, levelPos) {
 			levelNode.entity.add(new VisitedComponent());
 			levelNode.entity.add(new RevealedComponent());
-            var levelOrdinal = this.gameState.getLevelOrdinal(levelPos);
-            this.gameState.level = Math.max(this.gameState.level, levelOrdinal);
+            var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(levelPos);
+            GameGlobals.gameState.level = Math.max(GameGlobals.gameState.level, levelOrdinal);
             gtag('set', { 'max_level': levelOrdinal });
             gtag('event', 'reach_new_level', { event_category: 'progression', value: levelOrdinal})
-			if (levelPos !== 13) this.gameState.unlockedFeatures.levels = true;
-			if (levelPos === this.gameState.getGroundLevel()) this.gameState.unlockedFeatures.favour = true;
+			if (levelPos !== 13) GameGlobals.gameState.unlockedFeatures.levels = true;
+			if (levelPos === GameGlobals.gameState.getGroundLevel()) GameGlobals.gameState.unlockedFeatures.favour = true;
 		},
         
         handleEnterLevel: function (levelNode, levelPos) {
@@ -163,15 +157,15 @@ define([
             var revealedNeighbour;
             for (var dx = -revealDiameter; dx <= revealDiameter; dx++) {
                 for (var dy = -revealDiameter; dy <= revealDiameter; dy++) {
-                    revealedNeighbour = this.levelHelper.getSectorByPosition(sectorPosition.level, sectorPosition.sectorX + dx, sectorPosition.sectorY + dy);
+                    revealedNeighbour = GameGlobals.levelHelper.getSectorByPosition(sectorPosition.level, sectorPosition.sectorX + dx, sectorPosition.sectorY + dy);
                     if (revealedNeighbour && !revealedNeighbour.has(RevealedComponent)) {
                         revealedNeighbour.add(new RevealedComponent());
                     }
                 }
             }
             
-            this.gameState.numVisitedSectors++;
-			this.gameState.unlockedFeatures.sectors = true;            
+            GameGlobals.gameState.numVisitedSectors++;
+			GameGlobals.gameState.unlockedFeatures.sectors = true;            
 			this.occurrenceFunctions.onEnterNewSector(sectorNode.entity);
 		},
         

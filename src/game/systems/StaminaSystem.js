@@ -1,5 +1,6 @@
 define([
     'ash', 
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/GameConstants', 
     'game/constants/LogConstants', 
@@ -7,7 +8,7 @@ define([
     'game/constants/PerkConstants',
     'game/nodes/player/StaminaNode', 
     'game/components/common/LogMessagesComponent'
-], function (Ash, GlobalSignals, GameConstants, LogConstants, PlayerStatConstants, PerkConstants, StaminaNode, LogMessagesComponent) {
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, PlayerStatConstants, PerkConstants, StaminaNode, LogMessagesComponent) {
     var StaminaSystem = Ash.System.extend({
         
         gameState: null,
@@ -16,9 +17,7 @@ define([
         warningLimit: -1,
         isWarning: true, // skip warning log on first update
 
-        constructor: function (gameState, playerActionsHelper) {
-            this.gameState = gameState;
-            this.playerActionsHelper = playerActionsHelper;
+        constructor: function () {
         },
 
         addToEngine: function (engine) {
@@ -36,7 +35,7 @@ define([
         },
 
         update: function (time) {
-            if (this.gameState.isPaused) return;
+            if (GameGlobals.gameState.isPaused) return;
             for (var node = this.nodeList.head; node; node = node.next) {
                 this.updateNode(node, time + this.engine.extraUpdateTime);
             }
@@ -80,7 +79,7 @@ define([
             var isWarning = staminaComponent.stamina <= this.warningLimit;
             if (isWarning && !this.isWarning) {
                 var logComponent = node.entity.get(LogMessagesComponent);
-                var hasCamp = this.gameState.unlockedFeatures.camp;
+                var hasCamp = GameGlobals.gameState.unlockedFeatures.camp;
                 if (node.position.inCamp)
                     logComponent.addMessage(LogConstants.MSG_ID_STAMINA_WARNING, "Getting tired. Should have a rest soon.");
                 else if (hasCamp)
@@ -92,7 +91,7 @@ define([
         },
         
         updateWarningLimit: function () {
-            this.warningLimit = PlayerStatConstants.getStaminaWarningLimit(this.playerActionsHelper, this.nodeList.head.stamina);
+            this.warningLimit = PlayerStatConstants.getStaminaWarningLimit(this.nodeList.head.stamina);
         }
     });
 

@@ -1,19 +1,13 @@
-define(['ash', 'game/constants/UpgradeConstants', 'game/nodes/tribe/TribeUpgradesNode'], 
-function (Ash, UpgradeConstants, TribeUpgradesNode) {
+define(['ash', 'game/GameGlobals', 'game/constants/UpgradeConstants', 'game/nodes/tribe/TribeUpgradesNode'], 
+function (Ash, GameGlobals, UpgradeConstants, TribeUpgradesNode) {
     
     var EndingHelper = Ash.Class.extend({
         
-        gameState: null,
-        playerActionsHelper: null,
-        levelHelper: null,
         tribeNodes: null,
         
         endProjectUpgrades: [],
 
-        constructor: function (engine, gameState, playerActionsHelper, levelHelper) {
-            this.gameState = gameState;
-            this.playerActionsHelper = playerActionsHelper;
-            this.levelHelper = levelHelper;
+        constructor: function (engine) {
 			this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
             
             this.endProjectUpgrades.push(UpgradeConstants.upgradeIds.unlock_building_spaceship1);
@@ -31,11 +25,11 @@ function (Ash, UpgradeConstants, TribeUpgradesNode) {
         },
         
         isReadyForLaunch: function () {
-            return this.playerActionsHelper.checkAvailability("launch");
+            return GameGlobals.playerActionsHelper.checkAvailability("launch");
         },
         
         isFinished: function () {
-            return this.gameState.isFinished;
+            return GameGlobals.gameState.isFinished;
         },
         
     });

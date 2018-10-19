@@ -1,13 +1,13 @@
 define([
     'ash', 
+    'game/GameGlobals',
     'webtoolkit/base64',
     'game/systems/GameManager', 
     'game/nodes/common/SaveNode'
-], function (Ash, Base64, GameManager, SaveNode) {
+], function (Ash, GameGlobals, Base64, GameManager, SaveNode) {
     var SaveSystem = Ash.System.extend({
 	
         engine: null,
-		gameState: null,
 		
 		saveNodes:null,
 		
@@ -15,11 +15,8 @@ define([
 		saveFrequency: 1000 * 60 * 2,
         
         error: null,
-
-        constructor: function (gameState, changeLogHelper) {
-			this.gameState = gameState;
-            this.changeLogHelper = changeLogHelper;
-        },
+        
+        constructor: function () {},
 
         addToEngine: function (engine) {
             this.engine = engine;
@@ -65,7 +62,7 @@ define([
 		},
         
         getSaveJSON: function () {
-            var version = this.changeLogHelper.getCurrentVersionNumber();
+            var version = GameGlobals.changeLogHelper.getCurrentVersionNumber();
             var entitiesObject = {};
             var entityObject;
             var nodes = 0;
@@ -79,7 +76,7 @@ define([
                 
             var save = {};
             save.entitiesObject = entitiesObject;
-            save.gameState = this.gameState;
+            save.gameState = GameGlobals.gameState;
             save.timeStamp = new Date();
             save.version = version;
             
@@ -126,7 +123,10 @@ define([
         
         getObfuscatedSaveJSON: function () {
             var json = this.getSaveJSON();
-            return Base64.encode(json);
+            console.log("basic json: " + json.length);
+            var obfuscated = Base64.encode(json);
+            console.log("obfuscated: " + obfuscated.length);
+            return obfuscated;
         },
         
         getSaveJSONfromObfuscated: function (save) {

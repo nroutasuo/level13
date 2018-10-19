@@ -1,15 +1,12 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/UpgradeConstants',
     'game/nodes/tribe/TribeUpgradesNode',
-], function (Ash, GlobalSignals, UIConstants, UpgradeConstants, TribeUpgradesNode) {
+], function (Ash, GameGlobals, GlobalSignals, UIConstants, UpgradeConstants, TribeUpgradesNode) {
     var UIOutUpgradesSystem = Ash.System.extend({
-	
-		uiFunctions : null,
-		playerActions : null,
-		upgradeEffectsHelper: null,
 		
 		engine: null,
 		
@@ -22,21 +19,14 @@ define([
 		currentUpgrades: 0,
 		lastShownUpgrades: 0,
 	
-		constructor: function (uiFunctions, playerActions, upgradeEffectsHelper, techTreeHelper) {
-			this.uiFunctions = uiFunctions;
-			this.playerActions = playerActions;
-			this.upgradeEffectsHelper = upgradeEffectsHelper;
-            this.techTreeHelper = techTreeHelper;
-            
-            this.techTreeHelper.enableScrolling("researched-upgrades-vis");
-			return this;
-		},
+		constructor: function () {},
 	
 		addToEngine: function (engine) {
 			this.engine = engine;
 			this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
 			this.lastUpdateUpgradeCount = 0;
-			this.hasNeverBeenOpened = !this.uiFunctions.gameState.unlockedFeatures.upgrades;
+			this.hasNeverBeenOpened = !GameGlobals.gameState.unlockedFeatures.upgrades;
+            GameGlobals.uiTechTreeHelper.enableScrolling("researched-upgrades-vis");
 		},
 	
 		removeFromEngine: function (engine) {
@@ -45,7 +35,7 @@ define([
 		},
 	
 		update: function (time) {
-			var isActive = this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.upgrades;
+			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.upgrades;
 			
 			var resetLists = $("#upgrades-list tr").length < 1 && $("#researched-upgrades-list tr").length < 1;
 			resetLists = resetLists || this.lastUpdateUpgradeCount !== this.tribeNodes.head.upgrades.boughtUpgrades.length;
@@ -53,7 +43,7 @@ define([
 			resetLists = resetLists && isActive;
 			this.updateUpgradesLists(isActive, resetLists);
 			
-			this.uiFunctions.toggle("#world-blueprints", $("#blueprints-list tr").length > 0);
+			GameGlobals.uiFunctions.toggle("#world-blueprints", $("#blueprints-list tr").length > 0);
 			
 			this.updateBubble();
 			
@@ -66,7 +56,7 @@ define([
             this.updateTechTree(resetLists);
 			
 			$("#tab-header h2").text("Upgrades");
-			this.uiFunctions.toggle("#world-upgrades-count", this.lastUpdateUpgradeCount > 0);
+			GameGlobals.uiFunctions.toggle("#world-upgrades-count", this.lastUpdateUpgradeCount > 0);
 			$("#world-upgrades-count").text("Upgrades researched: " + this.lastUpdateUpgradeCount);
 		},
         
@@ -79,7 +69,7 @@ define([
             this.bubbleNumber = blueprintsNum + upgradesNum;
 			if (this.hasNeverBeenOpened) this.bubbleNumber += this.availableUpgrades;
             $("#switch-upgrades .bubble").text(this.bubbleNumber);
-            this.uiFunctions.toggle("#switch-upgrades .bubble", this.bubbleNumber > 0);
+            GameGlobals.uiFunctions.toggle("#switch-upgrades .bubble", this.bubbleNumber > 0);
         },
 		
 		updateUpgradesLists: function (isActive, resetLists) {
@@ -105,7 +95,7 @@ define([
                 
 				if (!this.tribeNodes.head.upgrades.hasUpgrade(id)) {
                     numUnResearched++;
-                    var requirements = this.playerActions.playerActionsHelper.checkRequirements(id, false);
+                    var requirements = GameGlobals.playerActionsHelper.checkRequirements(id, false);
 					isAvailable = requirements.value > 0;
                     
 					if (hasBlueprintNew || hasBlueprintUnlocked || isAvailable) {
@@ -116,7 +106,7 @@ define([
 							else
 								$("#upgrades-list").append(tr);
 						}
-						var isResearchable = this.playerActions.playerActionsHelper.checkAvailability(id, false);
+						var isResearchable = GameGlobals.playerActionsHelper.checkAvailability(id, false);
 						if (hasBlueprintNew) this.currentBlueprints++;
 						else {
 							if (isResearchable) this.currentUpgrades++;
@@ -136,27 +126,26 @@ define([
 			}
 			
 			if (resetLists) {
-				this.uiFunctions.toggle("#world-upgrades-info", $("#researched-upgrades-list tr").length > 0);
+				GameGlobals.uiFunctions.toggle("#world-upgrades-info", $("#researched-upgrades-list tr").length > 0);
                 var noUpgrades = $("#upgrades-list tr").length === 0;
-				this.uiFunctions.toggle("#world-upgrades-empty-message", noUpgrades);
+				GameGlobals.uiFunctions.toggle("#world-upgrades-empty-message", noUpgrades);
                 if (noUpgrades) {
                     var allResearched = numUnResearched === 0;
                     $("#world-upgrades-empty-message").text(allResearched ?
                         "All upgrades researched." : "No upgrades available at the moment.");
                 }
 			
-				var playerActions = this.playerActions;
 				$.each($("#upgrades-list button.action"), function () {
 					$(this).click(function () {
-						playerActions.buyUpgrade($(this).attr("action"));
+						GameGlobals.playerActionFunctions.buyUpgrade($(this).attr("action"));
 					})
 				});
 				
-				this.uiFunctions.generateButtonOverlays("#upgrades-list");
-				this.uiFunctions.generateCallouts("#upgrades-list");
-				this.uiFunctions.generateButtonOverlays("#blueprints-list");
-				this.uiFunctions.generateCallouts("#blueprints-list");
-				this.uiFunctions.registerActionButtonListeners("#blueprints-list");
+				GameGlobals.uiFunctions.generateButtonOverlays("#upgrades-list");
+				GameGlobals.uiFunctions.generateCallouts("#upgrades-list");
+				GameGlobals.uiFunctions.generateButtonOverlays("#blueprints-list");
+				GameGlobals.uiFunctions.generateCallouts("#blueprints-list");
+				GameGlobals.uiFunctions.registerActionButtonListeners("#blueprints-list");
                 GlobalSignals.elementCreatedSignal.dispatch();
 				this.lastUpdateUpgradeCount = this.tribeNodes.head.upgrades.boughtUpgrades.length;
 			}
@@ -168,7 +157,7 @@ define([
         updateTechTree: function (resetLists) {
             if (!resetLists)
                 return;
-            this.techTreeHelper.drawTechTree("researched-upgrades-vis");
+            GameGlobals.uiTechTreeHelper.drawTechTree("researched-upgrades-vis");
         },
 		
 		getUpgradeTR: function (upgradeDefinition, isAvailable, hasBlueprintUnlocked, hasBlueprintNew) {
@@ -201,7 +190,7 @@ define([
 			if(isUnlockable) {
 				effects = "";
 			} else {
-				var unlockedBuildings = this.upgradeEffectsHelper.getUnlockedBuildings(upgradeId, this.playerActions.playerActionsHelper);
+				var unlockedBuildings = GameGlobals.upgradeEffectsHelper.getUnlockedBuildings(upgradeId);
 				if (unlockedBuildings.length > 0) {
 					effects += "buildings: ";
 					for (var i in unlockedBuildings) {
@@ -210,7 +199,7 @@ define([
 					}
 				}
 				
-				var improvedBuildings = this.upgradeEffectsHelper.getImprovedBuildings(upgradeId);
+				var improvedBuildings = GameGlobals.upgradeEffectsHelper.getImprovedBuildings(upgradeId);
 				if (improvedBuildings.length > 0) {
 					for (var i in improvedBuildings) {
 						effects += "improved " + improvedBuildings[i].toLowerCase();
@@ -218,7 +207,7 @@ define([
 					effects += ", ";
 				}
 				
-				var unlockedWorkers = this.upgradeEffectsHelper.getUnlockedWorkers(upgradeId);
+				var unlockedWorkers = GameGlobals.upgradeEffectsHelper.getUnlockedWorkers(upgradeId);
 				if (unlockedWorkers.length > 0) {
 					effects += "workers: ";
 					for (var i in unlockedWorkers) {
@@ -227,7 +216,7 @@ define([
 					effects += ", ";
 				}
 				
-				var improvedWorkers = this.upgradeEffectsHelper.getImprovedWorkers(upgradeId);
+				var improvedWorkers = GameGlobals.upgradeEffectsHelper.getImprovedWorkers(upgradeId);
 				if (improvedWorkers.length > 0) {
 					for (var i in improvedWorkers) {
 						effects += "improved " + improvedWorkers[i];
@@ -235,7 +224,7 @@ define([
 					effects += ", ";
 				}
 				
-				var unlockedItems = this.upgradeEffectsHelper.getUnlockedItems(upgradeId, this.playerActions.playerActionsHelper);
+				var unlockedItems = GameGlobals.upgradeEffectsHelper.getUnlockedItems(upgradeId);
 				if (unlockedItems.length > 0) {
 					effects += "items: ";
 					for (var i in unlockedItems) {
@@ -244,7 +233,7 @@ define([
 					}
 				}
 				
-				var unlockedOccurrences = this.upgradeEffectsHelper.getUnlockedOccurrences(upgradeId, this.playerActions.playerActionsHelper);
+				var unlockedOccurrences = GameGlobals.upgradeEffectsHelper.getUnlockedOccurrences(upgradeId);
 				if (unlockedOccurrences.length > 0) {
 					effects += "events: ";
 					for (var i in unlockedOccurrences) {
@@ -253,7 +242,7 @@ define([
 					effects += ", ";
 				}
 				
-				var improvedOccurrences = this.upgradeEffectsHelper.getImprovedOccurrences(upgradeId);
+				var improvedOccurrences = GameGlobals.upgradeEffectsHelper.getImprovedOccurrences(upgradeId);
 				if (improvedOccurrences.length > 0) {
 					for (var i in improvedOccurrences) {
 						effects += "improved " + improvedOccurrences[i];
@@ -261,7 +250,7 @@ define([
 					effects += ", ";
 				}
 				
-				var unlockedUI = this.upgradeEffectsHelper.getUnlockedUI(upgradeId);
+				var unlockedUI = GameGlobals.upgradeEffectsHelper.getUnlockedUI(upgradeId);
 				if (unlockedUI.length > 0) {
 					for (var i in unlockedUI) {
 						effects += "show " + unlockedUI[i];

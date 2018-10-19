@@ -1,15 +1,13 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/FightConstants',
     'game/nodes/player/ItemsNode',
-], function (Ash, GlobalSignals, UIConstants, ItemConstants, FightConstants, ItemsNode) {
+], function (Ash, GameGlobals, GlobalSignals, UIConstants, ItemConstants, FightConstants, ItemsNode) {
     var UIOutFollowersSystem = Ash.System.extend({
-
-		uiFunctions : null,
-		gameState: null,
 
 		itemNodes: null,
 		
@@ -17,10 +15,7 @@ define([
 		followerCount: -1,
 		lastShownFollowerCount: -1,
 
-		constructor: function (uiFunctions, gameState) {
-			this.gameState = gameState;
-			this.uiFunctions = uiFunctions;
-
+		constructor: function () {
 			return this;
 		},
 
@@ -46,7 +41,7 @@ define([
         
         refresh: function () {
 			$("#tab-header h2").text("Exploration party");
-            $("#followers-max").text("Maximum followers: " + FightConstants.getMaxFollowers(this.gameState.numCamps));
+            $("#followers-max").text("Maximum followers: " + FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps));
             this.updateItems();
         },
         
@@ -56,7 +51,7 @@ define([
                 return;
             this.bubbleNumber = newBubbleNumber;
             $("#switch-followers .bubble").text(this.bubbleNumber);
-            this.uiFunctions.toggle("#switch-followers .bubble", this.bubbleNumber > 0);
+            GameGlobals.uiFunctions.toggle("#switch-followers .bubble", this.bubbleNumber > 0);
         },
 
 		updateItems: function () {
@@ -70,11 +65,11 @@ define([
 			}
 
 			var hasFollowers = $("#list-followers li").length > 0;
-			var showFollowers = hasFollowers || this.gameState.unlockedFeatures.followers;
-			this.uiFunctions.toggle("#list-followers", hasFollowers);
-			this.uiFunctions.toggle("#header-followers", showFollowers);
-			this.uiFunctions.toggle("#followers-empty", showFollowers && !hasFollowers);
-			this.uiFunctions.generateCallouts("#list-followers");
+			var showFollowers = hasFollowers || GameGlobals.gameState.unlockedFeatures.followers;
+			GameGlobals.uiFunctions.toggle("#list-followers", hasFollowers);
+			GameGlobals.uiFunctions.toggle("#header-followers", showFollowers);
+			GameGlobals.uiFunctions.toggle("#followers-empty", showFollowers && !hasFollowers);
+			GameGlobals.uiFunctions.generateCallouts("#list-followers");
             this.lastShownFollowerCount = this.followerCount;
 		},
         
@@ -85,7 +80,7 @@ define([
         },
         
         onTabChanged: function () {
-            if (this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.followers) {
+            if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.followers) {
                 this.refresh();
             }
         },

@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/GameConstants',
     'game/constants/UIConstants',
@@ -16,6 +17,7 @@ define([
     'game/components/player/ItemsComponent',
     'game/components/sector/improvements/SectorImprovementsComponent'
 ], function (Ash,
+    GameGlobals,
     GlobalSignals,
     GameConstants,
     UIConstants,
@@ -40,11 +42,6 @@ define([
 		playerStatsNodes: null,
 		autoPlayNodes: null,
         
-        gameState: null,
-        playerActions: null,
-        uiFunctions: null,
-        resourcesHelper: null,
-        buttonHelper: null,
         engine: null,
 		
         elementsCalloutContainers: null,
@@ -53,16 +50,8 @@ define([
         
         buttonStatuses: [], // same indices as visible buttons
         buttonElements: [], // same indices as visible buttons
-    
-        constructor: function (uiFunctions, gameState, playerActions, resourcesHelper, fightHelper, buttonHelper) {
-            this.gameState = gameState;
-            this.playerActions = playerActions;
-            this.uiFunctions = uiFunctions;
-            this.resourcesHelper = resourcesHelper;
-            this.fightHelper = fightHelper;
-            this.buttonHelper = buttonHelper;            
-            return this;
-        },
+   
+        constructor: function () {},
     
         addToEngine: function (engine) {
             this.engine = engine;
@@ -142,8 +131,7 @@ define([
         },
         
         updateButtons: function () {
-            var sys = this;            
-            var uiFunctions = this.uiFunctions;
+            var sys = this;
             
             for (var i = 0; i < this.elementsVisibleButtons.length; i++) {
                 var $button = $(this.elementsVisibleButtons[i]);                
@@ -181,24 +169,21 @@ define([
         updateButtonCallout: function ($button, action, buttonStatus, buttonElements, isHardDisabled) {
             var $enabledContent = buttonElements.calloutContentEnabled;
             var $disabledContent = buttonElements.calloutContentDisabled;
-
-            var playerActionsHelper = this.playerActions.playerActionsHelper;
-            var buttonHelper = this.buttonHelper;
             
-            var costFactor = playerActionsHelper.getCostFactor(action);
-            var costs = playerActionsHelper.getCosts(action, costFactor);
+            var costFactor = GameGlobals.playerActionsHelper.getCostFactor(action);
+            var costs = GameGlobals.playerActionsHelper.getCosts(action, costFactor);
             
             var costsStatus = {};
             costsStatus.hasCostBlockers = false;
             costsStatus.bottleneckCostFraction = 1;
 
             // callout content
-            var sectorEntity = buttonHelper.getButtonSectorEntity($button);
-            var disabledReason = playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
+            var sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button);
+            var disabledReason = GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
             var isDisabledOnlyForCooldown = (!(disabledReason) && this.hasButtonCooldown($button));
             if (!isHardDisabled || isDisabledOnlyForCooldown) {
-                this.uiFunctions.toggle($enabledContent, true);
-                this.uiFunctions.toggle($disabledContent, false);
+                GameGlobals.uiFunctions.toggle($enabledContent, true);
+                GameGlobals.uiFunctions.toggle($disabledContent, false);
                 var hasCosts = action && costs && Object.keys(costs).length > 0;
                 if (hasCosts) {
                     this.updateButtonCalloutCosts($button, action, buttonStatus, buttonElements, costs, costsStatus);
@@ -207,8 +192,8 @@ define([
             } else {
                 var lastReason = buttonStatus.disabledReason;
                 if (lastReason !== disabledReason) {
-                    this.uiFunctions.toggle($enabledContent, false);
-                    this.uiFunctions.toggle($disabledContent, true);
+                    GameGlobals.uiFunctions.toggle($enabledContent, false);
+                    GameGlobals.uiFunctions.toggle($disabledContent, true);
                     buttonElements.calloutSpanDisabledReason.html(disabledReason);
                     buttonStatus.disabledReason = disabledReason;
                 }
@@ -220,12 +205,12 @@ define([
         
         updateButtonCalloutCosts: function($button, action, buttonStatus, buttonElements, costs, costsStatus) {
             var playerHealth = this.playerStatsNodes.head.stamina.health;
-            var showStorage = this.resourcesHelper.getCurrentStorageCap();
+            var showStorage = GameGlobals.resourcesHelper.getCurrentStorageCap();
             if (!buttonStatus.displayedCosts) buttonStatus.displayedCosts = {};
             for (var key in costs) {
                 var $costSpan = buttonElements.costSpans[key];
                 var value = costs[key];
-                var costFraction = this.playerActions.playerActionsHelper.checkCost(action, key);
+                var costFraction = GameGlobals.playerActionsHelper.checkCost(action, key);
                 var isFullCostBlocker = (isResource(key.split("_")[1]) && value > showStorage) || (key == "stamina" && value > playerHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
                 if (isFullCostBlocker) {
                     costsStatus.hasCostBlockers = true;
@@ -246,8 +231,8 @@ define([
         
         updateButtonCalloutRisks: function ($button, action, buttonElements) {
             var playerVision = this.playerStatsNodes.head.vision.value;
-            var hasEnemies = this.fightHelper.hasEnemiesCurrentLocation(action);
-            var baseActionId = this.playerActions.playerActionsHelper.getBaseActionID(action);
+            var hasEnemies = GameGlobals.fightHelper.hasEnemiesCurrentLocation(action);
+            var baseActionId = GameGlobals.playerActionsHelper.getBaseActionID(action);
             
             var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
             var injuryRiskBase = injuryRisk > 0 ? PlayerActionConstants.getInjuryProbability(action) : 0;
@@ -260,22 +245,22 @@ define([
             var fightRiskVision = fightRisk - fightRiskBase;
             
             if (injuryRisk > 0 || fightRisk > 0 || inventoryRisk > 0) {
-                this.uiFunctions.toggle(buttonElements.calloutRiskInjury, injuryRisk > 0);
+                GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskInjury, injuryRisk > 0);
                 if (injuryRisk > 0) 
                     buttonElements.calloutRiskInjuryValue.text(UIConstants.roundValue((injuryRiskBase + injuryRiskVision) * 100, true, true));
 
-                this.uiFunctions.toggle(buttonElements.calloutRiskInventory, inventoryRisk > 0);
+                GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskInventory, inventoryRisk > 0);
                 if (inventoryRisk > 0) 
                     buttonElements.calloutRiskInventoryValue.text(UIConstants.roundValue((inventoryRiskBase + inventoryRiskVision) * 100, true, true));
 
-                this.uiFunctions.toggle(buttonElements.calloutRiskFight, fightRisk > 0);
+                GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskFight, fightRisk > 0);
                 if (fightRisk > 0) 
                     buttonElements.calloutRiskFightValue.text(UIConstants.roundValue((fightRiskBase + fightRiskVision) * 100, true, true));
             }
         },
         
         updateButtonCooldownOverlays: function($button, action, buttonStatus, buttonElements, sectorEntity, isHardDisabled, costsStatus) {
-            costsStatus.bottleneckCostFraction = Math.min(costsStatus.bottleneckCostFraction, this.playerActions.playerActionsHelper.checkRequirements(action, false, sectorEntity).value);
+            costsStatus.bottleneckCostFraction = Math.min(costsStatus.bottleneckCostFraction, GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity).value);
             if (costsStatus.hasCostBlockers) costsStatus.bottleneckCostFraction = 0;
             if (isHardDisabled) costsStatus.bottleneckCostFraction = 0;
                 
@@ -301,7 +286,7 @@ define([
             var action = $button.attr("action");
             if (action) {
                 var playerVision = this.playerStatsNodes.head.vision.value;
-                var requirements = this.playerActions.playerActionsHelper.getReqs(action);
+                var requirements = GameGlobals.playerActionsHelper.getReqs(action);
                 if (requirements && requirements.vision) return (playerVision < requirements.vision[0]);
             }
             return false;
@@ -325,15 +310,15 @@ define([
             var action = $button.attr("action");
             if (!action) return false;
 
-            var sectorEntity = this.buttonHelper.getButtonSectorEntity($button);
-            var reqsCheck = this.playerActions.playerActionsHelper.checkRequirements(action, false, sectorEntity);
+            var sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button);
+            var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity);
             
             return reqsCheck.value < 1 && reqsCheck.reason !== PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES;
         },
 
         isButtonDisabledResources: function (button) {
             var action = $(button).attr("action");
-            return this.playerActions.playerActionsHelper.checkCosts(action, false) < 1;
+            return GameGlobals.playerActionsHelper.checkCosts(action, false) < 1;
         },
         
         updateProgressbars: function () {
@@ -362,19 +347,19 @@ define([
             var currentCamp = levelCamp ? levelCamp.entity : null;
             var isInCamp = this.playerStatsNodes.head && this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
             var hasMap = this.playerStatsNodes.head.entity.get(ItemsComponent).getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
-            var hasProjects = this.gameState.unlockedFeatures.projects;
+            var hasProjects = GameGlobals.gameState.unlockedFeatures.projects;
             var hasTradingPost = currentCamp && currentCamp.get(SectorImprovementsComponent).getCount(improvementNames.tradepost) > 0;
             
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-in", null, isInCamp, 200, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-upgrades", null, isInCamp && this.gameState.unlockedFeatures.upgrades, 100, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-blueprints", null, this.gameState.unlockedFeatures.blueprints, 100, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-world", null, isInCamp && this.gameState.numCamps > 1, 100, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-bag", null, this.gameState.unlockedFeatures.bag, 100, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-followers", null, this.gameState.unlockedFeatures.followers, 100, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-out", null, true, 100, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-map", null, hasMap, 100, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-trade", null, isInCamp && hasTradingPost, 100, 0);
-            this.uiFunctions.tabToggleIf("#switch-tabs #switch-projects", null, isInCamp && hasProjects, 100, 0);
+            GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-in", null, isInCamp, 200, 0);
+            GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-upgrades", null, isInCamp && GameGlobals.gameState.unlockedFeatures.upgrades, 100, 0);
+            GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-blueprints", null, GameGlobals.gameState.unlockedFeatures.blueprints, 100, 0);
+            GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-world", null, isInCamp && GameGlobals.gameState.numCamps > 1, 100, 0);
+            GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-bag", null, GameGlobals.gameState.unlockedFeatures.bag, 100, 0);
+            GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-followers", null, GameGlobals.gameState.unlockedFeatures.followers, 100, 0);
+            GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-out", null, true, 100, 0);
+            GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-map", null, hasMap, 100, 0);
+            GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-trade", null, isInCamp && hasTradingPost, 100, 0);
+            GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-projects", null, isInCamp && hasProjects, 100, 0);
         },        
         
         updateButtonContainer: function (button, isVisible) {
@@ -386,7 +371,6 @@ define([
         },
         
         updateVisibleButtonsList: function () {
-            var playerActionsHelper = this.playerActions.playerActionsHelper;
             this.elementsVisibleButtons = [];
             this.buttonStatuses = [];
             this.buttonElements = [];
@@ -394,7 +378,7 @@ define([
             $.each($("button.action"), function () {
                 var $button = $(this);          
                 var action = $button.attr("action");
-                var isVisible = (sys.uiFunctions.isElementToggled($button) !== false) && sys.uiFunctions.isElementVisible($button);
+                var isVisible = (GameGlobals.uiFunctions.isElementToggled($button) !== false) && GameGlobals.uiFunctions.isElementVisible($button);
                 sys.updateButtonContainer($button, isVisible);
                 if (isVisible) {
                     sys.elementsVisibleButtons.push($button);
@@ -415,8 +399,8 @@ define([
                     elements.cooldownReqs = $button.siblings(".cooldown-reqs");
                     elements.cooldownDuration = $button.children(".cooldown-duration");
             
-                    var costFactor = playerActionsHelper.getCostFactor(action);
-                    var costs = playerActionsHelper.getCosts(action, costFactor);            
+                    var costFactor = GameGlobals.playerActionsHelper.getCostFactor(action);
+                    var costs = GameGlobals.playerActionsHelper.getCosts(action, costFactor);            
                     elements.costSpans = {};
                     elements.costSpanValues = {};
                     for (var key in costs) {
@@ -455,7 +439,6 @@ define([
         
         updateInfoCallouts: function () {
             var targets;
-            var uiFunctions = this.uiFunctions;
             $.each(this.elementsCalloutContainers, function () {
                 targets = $(this).children(".info-callout-target");
 				if (targets.length > 0) {
@@ -463,7 +446,7 @@ define([
 					$.each(targets.children(), function () {
 						visible = visible && $(this).css("display") !== "none";
 					});
-					uiFunctions.toggle($(this), visible);
+					GameGlobals.uiFunctions.toggle($(this), visible);
 				}
             });
         },

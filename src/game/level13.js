@@ -1,7 +1,9 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
 	'game/constants/GameConstants',
+    'game/constants/SystemPriorities',
     'game/GameState',
     'game/systems/GameManager',
     'game/systems/SaveSystem',
@@ -48,7 +50,6 @@ define([
     'game/systems/HazardSystem',
     'game/systems/UnlockedFeaturesSystem',
     'game/systems/occurrences/CampEventsSystem',
-    'game/constants/SystemPriorities',
     'game/PlayerActionFunctions',
     'game/OccurrenceFunctions',
     'game/UIFunctions',
@@ -56,7 +57,6 @@ define([
     'game/helpers/PlayerActionResultsHelper',
     'game/helpers/ui/ChangeLogHelper',
     'game/helpers/ItemsHelper',
-    'game/helpers/EnemyHelper',
     'game/helpers/EndingHelper',
     'game/helpers/ResourcesHelper',
     'game/helpers/MovementHelper',
@@ -72,8 +72,10 @@ define([
     'brejep/tickprovider',
 ], function (
     Ash,
+    GameGlobals,
     GlobalSignals,
 	GameConstants,
+    SystemPriorities,
     GameState,
     GameManager,
     SaveSystem,
@@ -120,7 +122,6 @@ define([
     HazardSystem,
     UnlockedFeaturesSystem,
     CampEventsSystem,
-    SystemPriorities,
     PlayerActionFunctions,
     OccurrenceFunctions,
     UIFunctions,
@@ -128,7 +129,6 @@ define([
     PlayerActionResultsHelper,
     ChangeLogHelper,
     ItemsHelper,
-    EnemyHelper,
     EndingHelper,
     ResourcesHelper,
     MovementHelper,
@@ -145,82 +145,56 @@ define([
 ) {
     var Level13 = Ash.Class.extend({
 	
-        engine: null,
-	
-        gameState: null,
-	
-		uiFunctions: null,
+        engine: null,	
 		occurrenceFunctions: null,
-		playerActionFunctions: null,
-        cheatSystem: null,
-		
-		gameManager: null,
-		saveSystem: null,
-	
+		gameManager: null,	
         tickProvider: null,
 
         constructor: function (plugins) {
-            this.engine = new Ash.Engine();
-			this.gameState = new GameState();
-	    
-			this.initializeHelpers();
-            this.initializePlugins(plugins);
-
             var game = this;
-			this.tickProvider = new TickProvider(null, function (ex) {
-                game.handleException(ex);
-            });
-			
-			// Basic building blocks & special systems
-			this.saveSystem = new SaveSystem(this.gameState, this.changeLogHelper);
-			this.playerActionFunctions = new PlayerActionFunctions(
-				this.gameState,
-				this.resourcesHelper,
-				this.levelHelper,
-				this.playerActionsHelper,
-				this.fightHelper,
-				this.playerActionResultsHelper);
-            this.cheatSystem = new CheatSystem(this.gameState, this.playerActionFunctions, this.resourcesHelper, this.uiMapHelper, this.levelHelper);
-			this.uiFunctions = new UIFunctions(this.playerActionFunctions, this.gameState, this.saveSystem, this.cheatSystem, this.changeLogHelper);
-			this.occurrenceFunctions = new OccurrenceFunctions(this.gameState, this.uiFunctions, this.resourcesHelper, this.upgradeEffectsHelper);
-			
-			this.playerActionFunctions.occurrenceFunctions = this.occurrenceFunctions;
-			this.playerActionFunctions.uiFunctions = this.uiFunctions;
-			this.fightHelper.uiFunctions = this.uiFunctions;
-            this.playerActionsHelper.levelHelper = this.levelHelper;
+            this.engine = new Ash.Engine();
+			this.tickProvider = new TickProvider(null, function (ex) { game.handleException(ex) });
             
-            this.enemyHelper.createEnemies();
+            this.initializeGameGlobals();
+			
+			this.occurrenceFunctions = new OccurrenceFunctions();
+            GameGlobals.playerActionFunctions.occurrenceFunctions = this.occurrenceFunctions;
 			
 			this.addSystems();
+            this.initializePlugins(plugins);
             
             var sys = this;
             GlobalSignals.worldReadySignal.addOnce(function () {
                 sys.start();
             });
             
-            var gameManager = this.gameManager;
-                gameManager.setupGame();
+            this.gameManager.setupGame();
         },
         
-        initializeHelpers: function () {
-            // TODO make singletons / have some nice dependency injection
-            this.changeLogHelper = new ChangeLogHelper();
-            this.itemsHelper = new ItemsHelper(this.gameState);
-            this.enemyHelper = new EnemyHelper(this.itemsHelper);
-			this.resourcesHelper = new ResourcesHelper(this.engine);
-			this.upgradeEffectsHelper = new UpgradeEffectsHelper();
-			this.playerActionsHelper = new PlayerActionsHelper(this.engine, this.gameState, this.resourcesHelper, this.upgradeEffectsHelper);
-			this.movementHelper = new MovementHelper(this.engine);
-			this.levelHelper = new LevelHelper(this.engine, this.gameState, this.playerActionsHelper, this.movementHelper);
-			this.sectorHelper = new SectorHelper(this.engine);
-			this.campHelper = new CampHelper(this.engine, this.upgradeEffectsHelper);
-			this.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine, this.gameState, this.playerActionsHelper, this.resourcesHelper, this.levelHelper, this.itemsHelper);
-            this.fightHelper = new FightHelper(this.engine, this.playerActionsHelper, this.playerActionResultsHelper);
-			this.saveHelper = new SaveHelper();
-            this.uiMapHelper = new UIMapHelper(this.engine, this.levelHelper, this.sectorHelper, this.movementHelper);
-            this.uiTechTreeHelper = new UITechTreeHelper(this.engine, this.playerActionsHelper);
-            this.buttonHelper = new ButtonHelper(this.levelHelper);
-            this.endingHelper = new EndingHelper(this.engine, this.gameState, this.playerActionsHelper, this.levelHelper);
+        initializeGameGlobals: function () {
+			GameGlobals.gameState = new GameState();
+            GameGlobals.playerActionsHelper = new PlayerActionsHelper(this.engine);
+			GameGlobals.playerActionFunctions = new PlayerActionFunctions(this.fightHelper);
+            
+            GameGlobals.resourcesHelper = new ResourcesHelper(this.engine);
+            GameGlobals.levelHelper = new LevelHelper(this.engine);
+			GameGlobals.movementHelper = new MovementHelper(this.engine);
+			GameGlobals.sectorHelper = new SectorHelper(this.engine);
+            GameGlobals.fightHelper = new FightHelper(this.engine);
+			GameGlobals.campHelper = new CampHelper(this.engine);
+            GameGlobals.endingHelper = new EndingHelper(this.engine);
+			GameGlobals.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine);
+            
+            GameGlobals.itemsHelper = new ItemsHelper();
+			GameGlobals.upgradeEffectsHelper = new UpgradeEffectsHelper();
+			GameGlobals.saveHelper = new SaveHelper();
+            GameGlobals.changeLogHelper = new ChangeLogHelper();
+            
+            GameGlobals.uiMapHelper = new UIMapHelper(this.engine);
+            GameGlobals.uiTechTreeHelper = new UITechTreeHelper(this.engine);
+            GameGlobals.buttonHelper = new ButtonHelper();
+            
+			GameGlobals.uiFunctions = new UIFunctions(this.saveSystem);
         },
         
         initializePlugins: function (plugins) {
@@ -232,60 +206,60 @@ define([
         },
 	
 		addSystems: function () {
-			this.gameManager = new GameManager(this.tickProvider, this.gameState, this.uiFunctions, this.playerActionFunctions, this.saveHelper, this.enemyHelper, this.itemsHelper, this.levelHelper);
+			this.gameManager = new GameManager(this.tickProvider);
 			this.engine.addSystem(this.gameManager, SystemPriorities.preUpdate);
             
-            this.engine.addSystem(this.cheatSystem, SystemPriorities.update);
+            this.engine.addSystem(new CheatSystem(), SystemPriorities.update);
 			
 			if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t initializing systems");
 			
-			this.engine.addSystem(this.playerActionFunctions, SystemPriorities.preUpdate);
+			this.engine.addSystem(GameGlobals.playerActionFunctions, SystemPriorities.preUpdate);
 			this.engine.addSystem(this.occurrenceFunctions, SystemPriorities.preUpdate);
-			this.engine.addSystem(this.saveSystem, SystemPriorities.preUpdate);
+			this.engine.addSystem(new SaveSystem(), SystemPriorities.preUpdate);
 			
 			this.engine.addSystem(new GlobalResourcesResetSystem(), SystemPriorities.update);
-			this.engine.addSystem(new VisionSystem(this.gameState), SystemPriorities.update);
-			this.engine.addSystem(new StaminaSystem(this.gameState, this.playerActionsHelper), SystemPriorities.update);
-			this.engine.addSystem(new BagSystem(this.gameState), SystemPriorities.update);
+			this.engine.addSystem(new VisionSystem(), SystemPriorities.update);
+			this.engine.addSystem(new StaminaSystem(), SystemPriorities.update);
+			this.engine.addSystem(new BagSystem(), SystemPriorities.update);
 			this.engine.addSystem(new HazardSystem(), SystemPriorities.update);
-			this.engine.addSystem(new CollectorSystem(this.gameState), SystemPriorities.update);
-			this.engine.addSystem(new FightSystem(this.gameState, this.resourcesHelper, this.levelHelper, this.playerActionResultsHelper, this.playerActionsHelper, this.occurrenceFunctions), SystemPriorities.update);
-			this.engine.addSystem(new PopulationSystem(this.gameState, this.levelHelper, this.campHelper), SystemPriorities.update);
-			this.engine.addSystem(new WorkerSystem(this.gameState, this.resourcesHelper, this.campHelper), SystemPriorities.update);
-			this.engine.addSystem(new FaintingSystem(this.uiFunctions, this.playerActionFunctions, this.playerActionResultsHelper), SystemPriorities.update);
-			this.engine.addSystem(new ReputationSystem(this.gameState, this.levelHelper, this.resourcesHelper, this.upgradeEffectsHelper), SystemPriorities.update);
-			this.engine.addSystem(new RumourSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
-			this.engine.addSystem(new EvidenceSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
-			this.engine.addSystem(new PlayerPositionSystem(this.gameState, this.levelHelper, this.uiFunctions, this.occurrenceFunctions), SystemPriorities.preupdate);
-			this.engine.addSystem(new PlayerActionSystem(this.gameState, this.playerActionFunctions), SystemPriorities.update);
-			this.engine.addSystem(new SectorStatusSystem(this.movementHelper, this.levelHelper), SystemPriorities.update);
-			this.engine.addSystem(new LevelPassagesSystem(this.levelHelper), SystemPriorities.update);
-			this.engine.addSystem(new UnlockedFeaturesSystem(this.gameState), SystemPriorities.update);
-			this.engine.addSystem(new GlobalResourcesSystem(this.gameState, this.upgradeEffectsHelper), SystemPriorities.update);
-			this.engine.addSystem(new CampEventsSystem(this.occurrenceFunctions, this.upgradeEffectsHelper, this.gameState, this.saveSystem), SystemPriorities.update);
-            this.engine.addSystem(new EndingSystem(this.gameState, this.gameManager, this.uiFunctions), SystemPriorities.update);
-			this.engine.addSystem(new AutoPlaySystem(this.playerActionFunctions, this.cheatSystem, this.levelHelper, this.sectorHelper, this.upgradeEffectsHelper), SystemPriorities.postUpdate);
+			this.engine.addSystem(new CollectorSystem(), SystemPriorities.update);
+			this.engine.addSystem(new FightSystem(this.occurrenceFunctions), SystemPriorities.update);
+			this.engine.addSystem(new PopulationSystem(), SystemPriorities.update);
+			this.engine.addSystem(new WorkerSystem(), SystemPriorities.update);
+			this.engine.addSystem(new FaintingSystem(), SystemPriorities.update);
+			this.engine.addSystem(new ReputationSystem(), SystemPriorities.update);
+			this.engine.addSystem(new RumourSystem(), SystemPriorities.update);
+			this.engine.addSystem(new EvidenceSystem(), SystemPriorities.update);
+			this.engine.addSystem(new PlayerPositionSystem(this.occurrenceFunctions), SystemPriorities.preupdate);
+			this.engine.addSystem(new PlayerActionSystem(), SystemPriorities.update);
+			this.engine.addSystem(new SectorStatusSystem(), SystemPriorities.update);
+			this.engine.addSystem(new LevelPassagesSystem(), SystemPriorities.update);
+			this.engine.addSystem(new UnlockedFeaturesSystem(), SystemPriorities.update);
+			this.engine.addSystem(new GlobalResourcesSystem(), SystemPriorities.update);
+			this.engine.addSystem(new CampEventsSystem(this.occurrenceFunctions, this.saveSystem), SystemPriorities.update);
+            this.engine.addSystem(new EndingSystem(this.gameManager), SystemPriorities.update);
+			this.engine.addSystem(new AutoPlaySystem(), SystemPriorities.postUpdate);
 			
-			this.engine.addSystem(new UIOutHeaderSystem(this.uiFunctions, this.gameState, this.resourcesHelper, this.upgradeEffectsHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutElementsSystem(this.uiFunctions, this.gameState, this.playerActionFunctions, this.resourcesHelper, this.fightHelper, this.buttonHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutLevelSystem(this.uiFunctions, this.gameState, this.levelHelper, this.movementHelper, this.resourcesHelper, this.sectorHelper, this.uiMapHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutCampSystem(this.uiFunctions, this.gameState, this.levelHelper, this.upgradeEffectsHelper, this.campHelper), SystemPriorities.render);
-            this.engine.addSystem(new UIOutCampVisSystem(this.uiFunctions, this.gameState), SystemPriorities.render);
-			this.engine.addSystem(new UIOutProjectsSystem(this.uiFunctions, this.gameState, this.levelHelper, this.endingHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutEmbarkSystem(this.uiFunctions, this.gameState, this.resourcesHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutBagSystem(this.uiFunctions, this.playerActionsHelper, this.gameState), SystemPriorities.render);
-			this.engine.addSystem(new UIOutFollowersSystem(this.uiFunctions, this.gameState), SystemPriorities.render);
-			this.engine.addSystem(new UIOutMapSystem(this.uiFunctions, this.gameState, this.uiMapHelper, this.levelHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutTradeSystem(this.uiFunctions, this.gameState, this.resourcesHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutUpgradesSystem(this.uiFunctions, this.playerActionFunctions, this.upgradeEffectsHelper, this.uiTechTreeHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutBlueprintsSystem(this.uiFunctions, this.playerActionFunctions, this.upgradeEffectsHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutTribeSystem(this.uiFunctions, this.resourcesHelper, this.levelHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutFightSystem(this.uiFunctions, this.playerActionResultsHelper, this.playerActionsHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutLogSystem(this.gameState), SystemPriorities.render);
-			this.engine.addSystem(new UIOutManageSaveSystem(this.uiFunctions, this.gameState, this.saveSystem, this.saveHelper, this.changeLogHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutPopupInventorySystem(this.uiFunctions), SystemPriorities.render);
-			this.engine.addSystem(new UIOutPopupTradeSystem(this.uiFunctions, this.resourcesHelper), SystemPriorities.render);
-			this.engine.addSystem(new UIOutPopupInnSystem(this.uiFunctions, this.gameState), SystemPriorities.render);
+			this.engine.addSystem(new UIOutHeaderSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutElementsSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutLevelSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutCampSystem(), SystemPriorities.render);
+            this.engine.addSystem(new UIOutCampVisSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutProjectsSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutEmbarkSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutBagSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutFollowersSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutMapSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutTradeSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutUpgradesSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutBlueprintsSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutTribeSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutFightSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutLogSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutManageSaveSystem(this.saveSystem), SystemPriorities.render);
+			this.engine.addSystem(new UIOutPopupInventorySystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutPopupTradeSystem(), SystemPriorities.render);
+			this.engine.addSystem(new UIOutPopupInnSystem(), SystemPriorities.render);
 		},
 	
 		start: function () {
@@ -310,7 +284,7 @@ define([
                "Details:%0A[Fill in any details here that you think will help tracking down this bug, such as what you did in the game just before it happened.]" +
                "%0A%0AStacktrace:%0A" + stack;
             var url = "https://github.com/nroutasuo/level13/issues/new?title=" + bugTitle + "&body=" + bugBody + "&labels=exception";
-            this.uiFunctions.showInfoPopup(
+            GameGlobals.uiFunctions.showInfoPopup(
                 "Error", 
                 "You've found a bug! Please reload the page to continue playing.<br\><br\>" + 
                 "You can also help the developer by <a href='" +
@@ -324,7 +298,7 @@ define([
 		
 		cheat: function (input) {
             if (!GameConstants.isCheatsEnabled) return; 
-			this.cheatSystem.applyCheat(input);
+			this.engine.getSystem(CheatSystem).applyCheat(input);
 		}
 	
     });

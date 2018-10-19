@@ -28,5 +28,4 @@ define([
     }
 
     new Level13App().initialise(module.config());
-}
-);
+});

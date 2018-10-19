@@ -1,31 +1,27 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/constants/EnemyConstants',
     'game/constants/PerkConstants',
     'game/constants/ItemConstants',
     'game/constants/FightConstants',
     'game/constants/WorldCreatorConstants',
-    'game/constants/PlayerActionConstants',
     'game/components/player/ItemsComponent',
     'game/vos/EnemyVO'
 ], function (
     Ash,
+    GameGlobals,
     EnemyConstants,
     PerkConstants,
     ItemConstants,
     FightConstants,
     WorldCreatorConstants,
-    PlayerActionConstants,
     ItemsComponent,
     EnemyVO
 ) {
-    var EnemyHelper = Ash.Class.extend({
+    var EnemyCreator = Ash.Class.extend({
         
-        itemsHelper: null,
-        
-        constructor: function (itemsHelper) {
-            this.itemsHelper = itemsHelper;
-        },
+        constructor: function () {},
         
         createEnemies: function () {
             var c = EnemyConstants;
@@ -186,7 +182,7 @@ define([
 
             var typicalItems = new ItemsComponent();
             var typicalWeapon = ItemConstants.getDefaultWeapon(campOrdinal);
-            var typicalClothing = this.itemsHelper.getBestClothing(campOrdinal, ItemConstants.itemBonusTypes.fight_def);
+            var typicalClothing = GameGlobals.itemsHelper.getBestClothing(campOrdinal, ItemConstants.itemBonusTypes.fight_def);
 
             if (typicalWeapon)
                 typicalItems.addItem(typicalWeapon, false);
@@ -211,5 +207,5 @@ define([
         },
     });
 
-    return EnemyHelper;
+    return EnemyCreator;
 });

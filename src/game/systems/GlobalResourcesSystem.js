@@ -4,6 +4,7 @@
 //  - player/worker in camp with trading post: moved to tribe resources
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/nodes/sector/CampResourcesNode',
     'game/nodes/player/PlayerResourcesNode',
@@ -11,7 +12,7 @@ define([
     'game/components/common/CurrencyComponent',
     'game/components/tribe/UpgradesComponent',
     'game/constants/CampConstants'
-], function (Ash, GlobalSignals,
+], function (Ash, GameGlobals, GlobalSignals,
 	CampResourcesNode, PlayerResourcesNode, TribeResourcesNode,
 	CurrencyComponent, UpgradesComponent,
 	CampConstants) {
@@ -21,12 +22,7 @@ define([
 		campNodes: null,
 		tribeNodes: null,
 		
-		gameState: null,
-		upgradeEffectsHelper: null,
-		
-		constructor: function (gameState, upgradeEffectsHelper) {
-			this.gameState = gameState;
-			this.upgradeEffectsHelper = upgradeEffectsHelper;
+		constructor: function () {
 		},
 
 		addToEngine: function (engine) {
@@ -134,7 +130,7 @@ define([
 			var globalResourcesComponent = this.tribeNodes.head.resources;
 			var globalResources = globalResourcesComponent.resources;
 			
-			var gameState = this.gameState;
+			var gameState = GameGlobals.gameState;
 			var campNodes = this.campNodes;
 			var checkUnlockedResource = function (name) {
 				if (gameState.unlockedFeatures.resources[name]) return true;
@@ -146,19 +142,19 @@ define([
 				return false;
 			};
 			
-			this.gameState.unlockedFeatures.resources.food = checkUnlockedResource("food");
-			this.gameState.unlockedFeatures.resources.water = checkUnlockedResource("water");
-			this.gameState.unlockedFeatures.resources.metal = checkUnlockedResource("metal");
-			this.gameState.unlockedFeatures.resources.rope = checkUnlockedResource("rope");
-			this.gameState.unlockedFeatures.resources.herbs = checkUnlockedResource("herbs");
-			this.gameState.unlockedFeatures.resources.fuel = checkUnlockedResource("fuel");
-			this.gameState.unlockedFeatures.resources.medicine = checkUnlockedResource("medicine");
-			this.gameState.unlockedFeatures.resources.concrete = checkUnlockedResource("concrete");
-			this.gameState.unlockedFeatures.resources.tools = checkUnlockedResource("tools");
+			GameGlobals.gameState.unlockedFeatures.resources.food = checkUnlockedResource("food");
+			GameGlobals.gameState.unlockedFeatures.resources.water = checkUnlockedResource("water");
+			GameGlobals.gameState.unlockedFeatures.resources.metal = checkUnlockedResource("metal");
+			GameGlobals.gameState.unlockedFeatures.resources.rope = checkUnlockedResource("rope");
+			GameGlobals.gameState.unlockedFeatures.resources.herbs = checkUnlockedResource("herbs");
+			GameGlobals.gameState.unlockedFeatures.resources.fuel = checkUnlockedResource("fuel");
+			GameGlobals.gameState.unlockedFeatures.resources.medicine = checkUnlockedResource("medicine");
+			GameGlobals.gameState.unlockedFeatures.resources.concrete = checkUnlockedResource("concrete");
+			GameGlobals.gameState.unlockedFeatures.resources.tools = checkUnlockedResource("tools");
 		},
 		
 		getStorageUpgradeLevel: function () {
-            return this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.storage, this.tribeNodes.head.entity.get(UpgradesComponent));
+            return GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.storage, this.tribeNodes.head.entity.get(UpgradesComponent));
 		},
         
     });

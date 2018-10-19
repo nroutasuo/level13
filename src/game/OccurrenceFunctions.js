@@ -1,5 +1,5 @@
-// A class responds to player actions parsed by the UIFunctions
 define(['ash',
+    'game/GameGlobals',
     'game/constants/OccurrenceConstants',
     'game/constants/LogConstants',
     'game/nodes/LogNode',
@@ -11,28 +11,19 @@ define(['ash',
     'game/components/sector/events/RaidComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/CampComponent',
-], function (Ash, OccurrenceConstants, LogConstants, LogNode,
+], function (Ash, GameGlobals, OccurrenceConstants, LogConstants, LogNode,
     CampNode, TribeUpgradesNode,
     PositionComponent, ResourcesComponent, LevelComponent, RaidComponent,
     SectorImprovementsComponent, CampComponent) {
     
     var OccurrenceFunctions = Ash.System.extend({
-        
-		gameState: null,
-		uiFunctions: null,
-		resourcesHelper: null,
-		upgradeEffectsHelper: null,
 		
 		engine: null,
         logNodes: null,
 		campNodes: null,
         tribeUpgradeNodes: null,
 	
-        constructor: function (gameState, uiFunctions, resourcesHelper, upgradeEffectsHelper) {
-			this.gameState = gameState;
-			this.uiFunctions = uiFunctions;
-			this.resourcesHelper = resourcesHelper;
-            this.upgradeEffectsHelper = upgradeEffectsHelper;
+        constructor: function () {
         },
 
         addToEngine: function (engine) {
@@ -67,11 +58,11 @@ define(['ash',
 			var improvements = sectorEntity.get(SectorImprovementsComponent);
 			var raidComponent = sectorEntity.get(RaidComponent);
 			var soldiers = sectorEntity.get(CampComponent).assignedWorkers.soldier;
-            var fortificationUpgradeLevel = this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradeNodes.head.upgrades);
+            var fortificationUpgradeLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradeNodes.head.upgrades);
 			raidComponent.victory = OccurrenceConstants.getRaidDanger(improvements, soldiers, fortificationUpgradeLevel) < 0;//Math.random()*100;
 			if (!raidComponent.victory) {
-                var campResources = this.resourcesHelper.getCurrentCampStorage(sectorEntity).resources;
-                var amountFactor = 1 / this.resourcesHelper.getNumCampsInTradeNetwork(sectorEntity);
+                var campResources = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).resources;
+                var amountFactor = 1 / GameGlobals.resourcesHelper.getNumCampsInTradeNetwork(sectorEntity);
                 
                 // select resources (names)
 				var selectedResources = [];

@@ -1,12 +1,13 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/PositionConstants',
     'game/nodes/PlayerLocationNode',
     'game/vos/TabCountsVO',
 ], function (
-    Ash, GlobalSignals, UIConstants, PositionConstants, PlayerLocationNode, TabCountsVO
+    Ash, GameGlobals, GlobalSignals, UIConstants, PositionConstants, PlayerLocationNode, TabCountsVO
 ) {
     var UIOutProjectsSystem = Ash.System.extend({
         
@@ -15,11 +16,7 @@ define([
         bubbleNumber: -1,
         tabCounts: null,
         
-        constructor: function (uiFunctions, gameState, levelHelper, endingHelper) {
-            this.uiFunctions = uiFunctions;
-            this.gameState = gameState;
-            this.levelHelper = levelHelper;
-            this.endingHelper = endingHelper;
+        constructor: function () {
             this.tabCounts = new TabCountsVO();
             this.elements = {};
             this.elements.tabHeader = $("#tab-header h2");
@@ -46,7 +43,7 @@ define([
         },
 
         update: function (time) {
-            var isActive = this.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.projects;
+            var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
             if (!this.playerLocationNodes.head) return;
             
             this.updateBubble();
@@ -55,9 +52,9 @@ define([
                 return;
             }
             
-            this.uiFunctions.toggle("#container-in-improvements-colony", this.endingHelper.hasUnlockedEndProject());
+            GameGlobals.uiFunctions.toggle("#container-in-improvements-colony", GameGlobals.endingHelper.hasUnlockedEndProject());
             
-            this.uiFunctions.toggle("#in-improvements-level-empty-message", this.tabCounts.lastShown.visible.regular <= 0);
+            GameGlobals.uiFunctions.toggle("#in-improvements-level-empty-message", this.tabCounts.lastShown.visible.regular <= 0);
             this.elements.tabHeader.text("Building projects");
         },
         
@@ -72,39 +69,38 @@ define([
                 (this.tabCounts.current.visible.regular - this.tabCounts.lastShown.visible.regular) +
                 (this.tabCounts.current.available.colony - this.tabCounts.lastShown.available.colony) + 
                 (this.tabCounts.current.visible.colony - this.tabCounts.lastShown.visible.colony);
-            if (this.endingHelper.isReadyForLaunch())
+            if (GameGlobals.endingHelper.isReadyForLaunch())
                 newBubbleNumber = 1;
             if (this.bubbleNumber === newBubbleNumber)
                 return;
             this.bubbleNumber = newBubbleNumber;
             this.elements.bubble.text(this.bubbleNumber);
-            this.uiFunctions.toggle("#switch-projects .bubble", this.bubbleNumber > 0);  
+            GameGlobals.uiFunctions.toggle("#switch-projects .bubble", this.bubbleNumber > 0);  
         },
         
         updateAvailableProjects: function () {
             if (!this.playerLocationNodes.head) return;
-            var isActive = this.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.projects;
+            var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
             var availableRegular = 0;
             var visibleRegular = 0;
             var availableColony = 0;
             var visibleColony = 0;
-            var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;
             
             this.elements.levelImprovementsTable = $("#in-improvements-level table");
             this.elements.colonyImprovementsTable = $("#in-improvements-colony table");
             
-            var projects = this.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity);
+            var projects = GameGlobals.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity);
             var numProjectsTR = $("tr", this.elements.levelImprovementsTable).length + $("tr", this.elements.colonyImprovementsTable);
             var updateTables = numProjectsTR !== projects.length;
             if (updateTables) this.elements.levelImprovementsTable.empty();
             if (updateTables) this.elements.colonyImprovementsTable.empty();
             
-            var showLevel = this.gameState.unlockedFeatures.levels;
+            var showLevel = GameGlobals.gameState.unlockedFeatures.levels;
             for (var i = 0; i < projects.length; i++) {
                 var project = projects[i];
                 var action = project.action;
-                var sectorEntity = this.levelHelper.getSectorByPosition(project.level, project.position.sectorX, project.position.sectorY);
-                var actionAvailable = playerActionsHelper.checkAvailability(action, false, sectorEntity);
+                var sectorEntity = GameGlobals.levelHelper.getSectorByPosition(project.level, project.position.sectorX, project.position.sectorY);
+                var actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(action, false, sectorEntity);
                 var isColonyProject = project.isColonyProject();
                 if (updateTables) {
                     var sector = project.level + "." + project.sector + "." + project.direction;
@@ -134,12 +130,12 @@ define([
             }
             
             if (updateTables) {
-                this.uiFunctions.registerActionButtonListeners("#in-improvements-level");
-                this.uiFunctions.generateButtonOverlays("#in-improvements-level");
-                this.uiFunctions.generateCallouts("#in-improvements-level");
-                this.uiFunctions.registerActionButtonListeners("#in-improvements-colony");
-                this.uiFunctions.generateButtonOverlays("#in-improvements-colony");
-                this.uiFunctions.generateCallouts("#in-improvements-colony");
+                GameGlobals.uiFunctions.registerActionButtonListeners("#in-improvements-level");
+                GameGlobals.uiFunctions.generateButtonOverlays("#in-improvements-level");
+                GameGlobals.uiFunctions.generateCallouts("#in-improvements-level");
+                GameGlobals.uiFunctions.registerActionButtonListeners("#in-improvements-colony");
+                GameGlobals.uiFunctions.generateButtonOverlays("#in-improvements-colony");
+                GameGlobals.uiFunctions.generateCallouts("#in-improvements-colony");
                 GlobalSignals.elementCreatedSignal.dispatch();
             }
             
@@ -148,16 +144,16 @@ define([
         
         updateBuiltProjects: function() {
             if (!this.playerLocationNodes.head) return;
-            var projects = this.levelHelper.getBuiltProjectsForCamp(this.playerLocationNodes.head.entity);
+            var projects = GameGlobals.levelHelper.getBuiltProjectsForCamp(this.playerLocationNodes.head.entity);
             var numProjectsTR = $("#in-improvements-level-built table tr").length;
             var updateTable = numProjectsTR !== projects.length;
             
-            this.uiFunctions.toggle("#header-in-improvements-level-built", projects.length > 0);
+            GameGlobals.uiFunctions.toggle("#header-in-improvements-level-built", projects.length > 0);
             
             if (!updateTable)
                 return;
             
-            var showLevel = this.gameState.unlockedFeatures.levels;
+            var showLevel = GameGlobals.gameState.unlockedFeatures.levels;
             if (updateTable) $("#in-improvements-level-built table").empty();
             for (var i = 0; i < projects.length; i++) {
                 var project = projects[i];

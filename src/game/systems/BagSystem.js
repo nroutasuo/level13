@@ -1,6 +1,7 @@
 // A system that updates the player's resource storage capacity based on their currently equipped bag
 define([
     'ash',
+    'game/GameGlobals',
     'game/constants/ItemConstants',
     'game/constants/BagConstants',
     'game/constants/PerkConstants',
@@ -9,15 +10,13 @@ define([
     'game/components/player/BagComponent',
     'game/components/player/PerksComponent',
     'game/vos/ResourcesVO'
-], function (Ash, ItemConstants, BagConstants, PerkConstants, PlayerResourcesNode, ItemsComponent, BagComponent, PerksComponent, ResourcesVO) {
-    var BagSystem = Ash.System.extend({	
-	    
-		gameState: null,
+], function (Ash, GameGlobals, ItemConstants, BagConstants, PerkConstants, PlayerResourcesNode, ItemsComponent, BagComponent, PerksComponent, ResourcesVO) {
+    
+    var BagSystem = Ash.System.extend({
 		
 		playerNodes: null,
 	
-        constructor: function (gameState) {
-			this.gameState = gameState;
+        constructor: function () {
         },
 
         addToEngine: function (engine) {
@@ -49,7 +48,7 @@ define([
                 perksComponent.removeItemsById(PerkConstants.perkIds.encumbered);
             }
             
-			this.gameState.unlockedFeatures.bag = this.gameState.unlockedFeatures.bag || playerItems.getAll().length > 0;
+			GameGlobals.gameState.unlockedFeatures.bag = GameGlobals.gameState.unlockedFeatures.bag || playerItems.getAll().length > 0;
 		},
         
         updateUsedCapacity: function (playerBag, playerResources, playerItems) {

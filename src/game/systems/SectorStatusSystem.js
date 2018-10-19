@@ -1,6 +1,7 @@
 // A system that updates a Sector's MovementOptionsComponent based on its neighbours and improvements
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/PositionConstants',
     'game/constants/LocaleConstants',
@@ -18,6 +19,7 @@ define([
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
 ], function (Ash,
+    GameGlobals,
     GlobalSignals,
 	PositionConstants,
 	LocaleConstants,
@@ -41,14 +43,9 @@ define([
 		playerLocationNodes: null,
         itemsNodes: null,
 		
-		movementHelper: null,
-		levelHelper: null,
-		
 		neighboursDict: {},
 		
-		constructor: function (movementHelper, levelHelper) {
-			this.movementHelper = movementHelper;
-			this.levelHelper = levelHelper;
+		constructor: function () {
 		},
 	
 		addToEngine: function (engine) {
@@ -78,7 +75,7 @@ define([
 			
 			if (!positionComponent) return;
 			
-			var levelEntity = this.levelHelper.getLevelEntityForSector(entity);
+			var levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(entity);
 			
 			var isScouted = sectorStatusComponent.scouted;
 			var hasCampLevel = levelEntity.has(CampComponent);
@@ -144,8 +141,8 @@ define([
                 var isBlockedByHazard = neighbour ? isAffectedByHazard && !(neighbour.has(VisitedComponent) && !HazardConstants.isAffectedByHazard(neighbour.get(SectorFeaturesComponent), this.itemsNodes.head.items)) : false;
 				movementOptions.canMoveTo[direction] = neighbour != null;
                 movementOptions.canMoveTo[direction] = movementOptions.canMoveTo[direction] && !isBlockedByHazard;
-				movementOptions.canMoveTo[direction] = movementOptions.canMoveTo[direction] && !this.movementHelper.isBlocked(entity, direction);
-				movementOptions.cantMoveToReason[direction] = this.movementHelper.getBlockedReason(entity, direction);
+				movementOptions.canMoveTo[direction] = movementOptions.canMoveTo[direction] && !GameGlobals.movementHelper.isBlocked(entity, direction);
+				movementOptions.cantMoveToReason[direction] = GameGlobals.movementHelper.getBlockedReason(entity, direction);
                 if (isBlockedByHazard) movementOptions.cantMoveToReason[direction] = HazardConstants.getHazardDisabledReason(featuresComponent, this.itemsNodes.head.items);
 				if (!neighbour) movementOptions.cantMoveToReason[direction] = "Nothing here.";
                 
@@ -153,10 +150,10 @@ define([
 			}
 			
 			// Allow up/down movement if passages exists AND no hazard
-			movementOptions.canMoveTo[PositionConstants.DIRECTION_UP] = passagesComponent != null && !this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_UP);
-			movementOptions.cantMoveToReason[PositionConstants.DIRECTION_UP] = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_UP);
-			movementOptions.canMoveTo[PositionConstants.DIRECTION_DOWN] = passagesComponent != null && !this.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_DOWN);
-			movementOptions.cantMoveToReason[PositionConstants.DIRECTION_DOWN] = this.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_DOWN);
+			movementOptions.canMoveTo[PositionConstants.DIRECTION_UP] = passagesComponent != null && !GameGlobals.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_UP);
+			movementOptions.cantMoveToReason[PositionConstants.DIRECTION_UP] = GameGlobals.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_UP);
+			movementOptions.canMoveTo[PositionConstants.DIRECTION_DOWN] = passagesComponent != null && !GameGlobals.movementHelper.isBlocked(entity, PositionConstants.DIRECTION_DOWN);
+			movementOptions.cantMoveToReason[PositionConstants.DIRECTION_DOWN] = GameGlobals.movementHelper.getBlockedReason(entity, PositionConstants.DIRECTION_DOWN);
 		},
 		
 		getNeighbour: function (sectorKey, direction) {

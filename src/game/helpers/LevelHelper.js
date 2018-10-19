@@ -1,6 +1,7 @@
 // Singleton with helper methods for level entities
 define([
     'ash',
+    'game/GameGlobals',
     'utils/PathFinding',
     'game/constants/LocaleConstants',
     'game/constants/PositionConstants',
@@ -27,6 +28,7 @@ define([
     'game/vos/PositionVO'
 ], function (
 	Ash,
+    GameGlobals,
     PathFinding,
 	LocaleConstants,
 	PositionConstants,
@@ -61,13 +63,9 @@ define([
         sectorEntitiesByPosition: {}, // int (level) -> int (x) -> int (y) -> entity
         sectorEntitiesByLevel: {}, // int (level) -> []
 		
-		playerActionsHelper: null,
-		
-		constructor: function (engine, gameState, playerActionsHelper, movementHelper) {
+		constructor: function (engine) {
 			this.engine = engine;
-			this.gameState = gameState;
-			this.playerActionsHelper = playerActionsHelper;
-            this.movementHelper = movementHelper;
+            
 			this.levelNodes = engine.getNodeList(LevelNode);
 			this.sectorNodes = engine.getNodeList(SectorNode);
 		},
@@ -154,8 +152,7 @@ define([
 			return result;
         },
 		
-        findPathTo: function (startSector, goalSector, settings) {            
-            var movementHelper = this.movementHelper;
+        findPathTo: function (startSector, goalSector, settings) {      
             var levelHelper = this;
             
             var makePathSectorVO = function (entity) {
@@ -184,7 +181,7 @@ define([
                     return levelHelper.getSectorNeighboursMap(pathSectorVO.result, makePathSectorVO);
                 },
                 isBlocked: function (pathSectorVO, direction) {
-                    return makePathSectorVO(movementHelper.isBlocked(pathSectorVO.result, direction));
+                    return makePathSectorVO(GameGlobals.movementHelper.isBlocked(pathSectorVO.result, direction));
                 }
             };
             
@@ -318,7 +315,7 @@ define([
 			var existingProject;
 			
 			// sort by level ordinal
-			var gameState = this.gameState;
+			var gameState = GameGlobals.gameState;
 			result.sort(function (a, b) {
 				var levelOrdinalA = gameState.getLevelOrdinal(a.level);
 				var levelOrdinalB = gameState.getLevelOrdinal(b.level);
@@ -355,7 +352,7 @@ define([
             var sectorStatus;
 			for (var node = this.sectorNodes.head; node; node = node.next) {
 				sectorPosition = node.entity.get(PositionComponent);
-                sectorStatus = SectorConstants.getSectorStatus(node.entity, this);
+                sectorStatus = SectorConstants.getSectorStatus(node.entity);
 				if (sectorPosition.level !== level) continue;
                 levelStats.totalSectors++;
                 
@@ -398,7 +395,7 @@ define([
 			var sectorPosition = sectorEntity.get(PositionComponent);
             var statusComponent = sectorEntity.get(SectorStatusComponent);
             var sectorPassagesComponent = sectorEntity.get(PassagesComponent);
-            var levelOrdinal = this.gameState.getLevelOrdinal(sectorPosition.level);
+            var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(sectorPosition.level);
             
             var scouted = statusComponent && statusComponent.scouted;
             if (!scouted) return projects;
@@ -428,7 +425,7 @@ define([
                         actionLabel = "repair";
                         break;
                 }
-                if (this.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0) {
+                if (GameGlobals.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0) {
                     actionName = actionName + "_" + levelOrdinal;
                     projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, sectorPosition, PositionConstants.DIRECTION_UP, null, actionLabel));
                 }
@@ -453,7 +450,7 @@ define([
                         break;
                 }
                 
-                if (this.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0) {
+                if (GameGlobals.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0) {
                     actionName = actionName + "_" + levelOrdinal;
                     projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, sectorPosition, PositionConstants.DIRECTION_DOWN, null, actionLabel));
                 }
@@ -470,13 +467,13 @@ define([
             }
             
             // space ship
-            if (levelOrdinal === this.gameState.getSurfaceLevelOrdinal()) {
+            if (levelOrdinal === GameGlobals.gameState.getSurfaceLevelOrdinal()) {
                 var camp = sectorEntity.get(CampComponent);
                 if (camp) {
                     var actions = [ "build_out_spaceship1", "build_out_spaceship2", "build_out_spaceship3"];
                     for (var i = 0; i < actions.length; i++) {
-                        if (this.playerActionsHelper.checkRequirements(actions[i])) {
-                            var improvement = this.playerActionsHelper.getImprovementNameForAction(actions[i]);
+                        if (GameGlobals.playerActionsHelper.checkRequirements(actions[i])) {
+                            var improvement = GameGlobals.playerActionsHelper.getImprovementNameForAction(actions[i]);
                             projects.push(new LevelProjectVO(new ImprovementVO(improvement), actions[i], sectorPosition));
                         }
                     }
@@ -598,7 +595,7 @@ define([
 				locale = sectorLocalesComponent.locales[i];
 				var action = "scout_locale_" + locale.getCategory() + "_" + i;
 				if (!sectorStatus.isLocaleScouted(i)) {
-					if (this.playerActionsHelper.checkAvailability(action, true, sectorEntity))
+					if (GameGlobals.playerActionsHelper.checkAvailability(action, true, sectorEntity))
 						locales.push(locale);
                 }
 			}

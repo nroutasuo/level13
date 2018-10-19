@@ -1,31 +1,22 @@
 define([
     'ash',
     'utils/MathUtils',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/nodes/PlayerLocationNode',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/worldcreator/WorldCreatorRandom',
 ], function (
-    Ash, 
-    MathUtils,
-    GlobalSignals,
-    PlayerLocationNode,
-    SectorImprovementsComponent,
-    WorldCreatorRandom
+    Ash, MathUtils, GameGlobals, GlobalSignals, PlayerLocationNode, SectorImprovementsComponent, WorldCreatorRandom
 ) {
 
     var UIOutCampVisSystem = Ash.System.extend({
-        
-        uiFunctions : null,
-        gameState: null,
         
         playerLocationNodes: null,
         
         elements: {},
         
-        constructor: function (uiFunctions, gameState) {
-            this.uiFunctions = uiFunctions;    
-            this.gameState = gameState;
+        constructor: function () {
             this.elements.container = $("#tab-vis-in-container");
             this.elements.layerGrid = $("#vis-camp-layer-grid");
             this.elements.layerSpots = $("#vis-camp-layer-spots");
@@ -80,7 +71,7 @@ define([
         
         refresh: function () {
             if (!this.playerLocationNodes.head) return;
-            if (this.uiFunctions.gameState.uiStatus.currentTab !== this.uiFunctions.elementIDs.tabs.in) return;
+            if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.in) return;
             
             this.refreshBuildingSpots();
             this.refreshBuildings();
@@ -262,7 +253,7 @@ define([
         
         getBuildingSpotCoords: function (i) {
             var level = this.playerLocationNodes.head.position.level;
-            var seed = Math.round(this.gameState.worldSeed / 3 * (level + 10) + i * i * level / 7);
+            var seed = Math.round(GameGlobals.gameState.worldSeed / 3 * (level + 10) + i * i * level / 7);
             var size = this.buildingContainerSize;
             
             // first spot is always origo

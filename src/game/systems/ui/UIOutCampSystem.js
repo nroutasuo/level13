@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/UpgradeConstants',
@@ -21,16 +22,13 @@ define([
     'game/components/sector/events/TraderComponent',
     'game/components/sector/events/RaidComponent'
 ], function (
-    Ash, GlobalSignals, UIConstants, UpgradeConstants, PlayerActionsHelperConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants,
+    Ash, GameGlobals, GlobalSignals, UIConstants, UpgradeConstants, PlayerActionsHelperConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants,
     PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, DeityNode, TribeUpgradesNode,
     PerksComponent,
     CampComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
     TraderComponent, RaidComponent
 ) {
     var UIOutCampSystem = Ash.System.extend({
-	
-        uiFunctions : null,
-        gameState : null,
         
         engine: null,
 	
@@ -54,12 +52,8 @@ define([
             steppers: {},
         },
 
-        constructor: function (uiFunctions, gameState, levelHelper, upgradesHelper, campHelper, upgradeEffectsHelper) {
-            this.uiFunctions = uiFunctions;
-            this.gameState = gameState;
-            this.levelHelper = levelHelper;
+        constructor: function (upgradesHelper) {
 			this.upgradesHelper = upgradesHelper;
-            this.campHelper = campHelper;
             
             return this;
         },
@@ -92,8 +86,8 @@ define([
         },
 
         update: function (time) {
-            var isActive = this.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.in;
-            var campCount = this.gameState.numCamps;
+            var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in;
+            var campCount = GameGlobals.gameState.numCamps;
             if (!this.playerLocationNodes.head) return;
             if (!this.playerPosNodes.head.position.inCamp) return;
             
@@ -109,7 +103,7 @@ define([
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
             if (!campComponent) {
                 console.log("WARN: Camp UI systen active but no camp found.");
-                this.uiFunctions.showTab(this.uiFunctions.elementIDs.tabs.out);
+                GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.out);
                 return;
             }
             
@@ -125,7 +119,7 @@ define([
             
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
             if (!campComponent) return;
-            var campCount = this.gameState.numCamps;
+            var campCount = GameGlobals.gameState.numCamps;
             
             // Header
             var header = campComponent.getName();
@@ -145,7 +139,7 @@ define([
                 return;
             this.bubbleNumber = newBubbleNumber;
             $("#switch-in .bubble").text(this.bubbleNumber);
-            this.uiFunctions.toggle("#switch-in .bubble", this.bubbleNumber > 0);
+            GameGlobals.uiFunctions.toggle("#switch-in .bubble", this.bubbleNumber > 0);
         },
 	
         updateWorkers: function (isActive) {
@@ -157,8 +151,8 @@ define([
             
             if (!isActive) return;
             
-            var showPopulation = campComponent.population > 0 || this.gameState.numCamps > 1;
-            this.uiFunctions.toggle("#in-population", showPopulation);
+            var showPopulation = campComponent.population > 0 || GameGlobals.gameState.numCamps > 1;
+            GameGlobals.uiFunctions.toggle("#in-population", showPopulation);
             if (!showPopulation) return;
             
             var reputation = this.playerLocationNodes.head.entity.get(ReputationComponent).value;
@@ -175,12 +169,12 @@ define([
         },
         
         updateWorkerStepper: function (campComponent, id, workerType, maxWorkers, showMax) {
-            this.uiFunctions.toggle($(id).closest("tr"), maxWorkers > 0);
+            GameGlobals.uiFunctions.toggle($(id).closest("tr"), maxWorkers > 0);
             
             var freePopulation = campComponent.getFreePopulation();
             var assignedWorkers = campComponent.assignedWorkers[workerType];
             var maxAssigned = Math.min(assignedWorkers + freePopulation, maxWorkers);
-            this.uiFunctions.updateStepper(id, assignedWorkers, 0, maxAssigned);
+            GameGlobals.uiFunctions.updateStepper(id, assignedWorkers, 0, maxAssigned);
             
             if (maxWorkers === 0) return;
 			$(id).parent().siblings(".in-assign-worker-limit").children(".callout-container").children(".info-callout-target").html(showMax ? "<span>/ " + maxWorkers + "</span>" : "");
@@ -222,11 +216,11 @@ define([
                 $("#in-population-bar-next").data("animation-length", 500);
             }
             
-            this.uiFunctions.slideToggleIf("#in-population-reputation", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
-            this.uiFunctions.slideToggleIf("#in-population-bar-next", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
-            this.uiFunctions.slideToggleIf("#in-population-next", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
-            this.uiFunctions.slideToggleIf("#in-population-status", null, campComponent.population >= 1, 200, 200);
-            this.uiFunctions.slideToggleIf("#in-assign-workers", null, campComponent.population >= 1, 200, 200);
+            GameGlobals.uiFunctions.slideToggleIf("#in-population-reputation", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
+            GameGlobals.uiFunctions.slideToggleIf("#in-population-bar-next", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
+            GameGlobals.uiFunctions.slideToggleIf("#in-population-next", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
+            GameGlobals.uiFunctions.slideToggleIf("#in-population-status", null, campComponent.population >= 1, 200, 200);
+            GameGlobals.uiFunctions.slideToggleIf("#in-assign-workers", null, campComponent.population >= 1, 200, 200);
         },
         
         updateAssignedWorkers: function (campComponent) {
@@ -237,19 +231,19 @@ define([
             var posComponent = this.playerPosNodes.head.position;
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             
-            var workerConsumptionS = "<br/><span class='warning'>water -" + this.campHelper.getWaterConsumptionPerSecond(1) + "/s</span>" +
-                "<br/><span class='warning'>food -" + this.campHelper.getFoodConsumptionPerSecond(1) + "/s</span>";
-            UIConstants.updateCalloutContent("#in-assign-water .in-assing-worker-desc .info-callout-target", "water +" + this.campHelper.getWaterProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-scavenger .in-assing-worker-desc .info-callout-target", "metal +" + this.campHelper.getMetalProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-trapper .in-assing-worker-desc .info-callout-target", "food +" + this.campHelper.getFoodProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-weaver .in-assing-worker-desc .info-callout-target", "rope +" + this.campHelper.getRopeProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-chemist .in-assing-worker-desc .info-callout-target", "fuel +" + this.campHelper.getFuelProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-apothecary .in-assing-worker-desc .info-callout-target", "medicine +" + this.campHelper.getMedicineProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>herbs -" + this.campHelper.getHerbsConsumptionPerSecond(1) + "/s</span>", true);
-            UIConstants.updateCalloutContent("#in-assign-concrete .in-assing-worker-desc .info-callout-target", "concrete +" + this.campHelper.getConcreteProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>metal -" + this.campHelper.getMetalConsumptionPerSecondConcrete(1) + "/s</span>", true);
-            UIConstants.updateCalloutContent("#in-assign-smith .in-assing-worker-desc .info-callout-target", "tools +" + this.campHelper.getToolsProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>metal -" + this.campHelper.getMetalConsumptionPerSecondSmith(1) + "/s</span>", true);
+            var workerConsumptionS = "<br/><span class='warning'>water -" + GameGlobals.campHelper.getWaterConsumptionPerSecond(1) + "/s</span>" +
+                "<br/><span class='warning'>food -" + GameGlobals.campHelper.getFoodConsumptionPerSecond(1) + "/s</span>";
+            UIConstants.updateCalloutContent("#in-assign-water .in-assing-worker-desc .info-callout-target", "water +" + GameGlobals.campHelper.getWaterProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-scavenger .in-assing-worker-desc .info-callout-target", "metal +" + GameGlobals.campHelper.getMetalProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-trapper .in-assing-worker-desc .info-callout-target", "food +" + GameGlobals.campHelper.getFoodProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-weaver .in-assing-worker-desc .info-callout-target", "rope +" + GameGlobals.campHelper.getRopeProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-chemist .in-assing-worker-desc .info-callout-target", "fuel +" + GameGlobals.campHelper.getFuelProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-apothecary .in-assing-worker-desc .info-callout-target", "medicine +" + GameGlobals.campHelper.getMedicineProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>herbs -" + GameGlobals.campHelper.getHerbsConsumptionPerSecond(1) + "/s</span>", true);
+            UIConstants.updateCalloutContent("#in-assign-concrete .in-assing-worker-desc .info-callout-target", "concrete +" + GameGlobals.campHelper.getConcreteProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>metal -" + GameGlobals.campHelper.getMetalConsumptionPerSecondConcrete(1) + "/s</span>", true);
+            UIConstants.updateCalloutContent("#in-assign-smith .in-assing-worker-desc .info-callout-target", "tools +" + GameGlobals.campHelper.getToolsProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>metal -" + GameGlobals.campHelper.getMetalConsumptionPerSecondSmith(1) + "/s</span>", true);
             UIConstants.updateCalloutContent("#in-assign-soldier .in-assing-worker-desc .info-callout-target", "camp defence +1" + workerConsumptionS, true);
             
-            var refineriesOnLevel = this.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel);
+            var refineriesOnLevel = GameGlobals.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel);
             var apothecariesInCamp = improvements.getCount(improvementNames.apothecary);
             var cementMillsInCamp = improvements.getCount(improvementNames.cementmill);
             var smithiesInCamp = improvements.getCount(improvementNames.smithy);
@@ -276,7 +270,7 @@ define([
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var posComponent = this.playerPosNodes.head.position;
             
-            var refineriesOnLevel = this.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel);
+            var refineriesOnLevel = GameGlobals.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel);
             var apothecariesInCamp = improvements.getCount(improvementNames.apothecary);
             var cementMillsInCamp = improvements.getCount(improvementNames.cementmill);
             var smithiesInCamp = improvements.getCount(improvementNames.smithy);
@@ -297,15 +291,13 @@ define([
             var availableBuildingCount = 0;
             var visibleBuildingCount = 0;
             
-            var playerActionsHelper = this.uiFunctions.playerActions.playerActionsHelper;
-            var uiFunctions = this.uiFunctions;
             $.each($("#in-improvements tr"), function () {
                 var actionName = $(this).find("button.action-build").attr("action");
                 var id = $(this).attr("id");
                 if (actionName) {
-                    var improvementName = playerActionsHelper.getImprovementNameForAction(actionName);
+                    var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(actionName);
                     if (improvementName) {
-						var requirementCheck = playerActionsHelper.checkRequirements(actionName, false, null);
+						var requirementCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false, null);
                         var actionEnabled = requirementCheck.value >= 1;
                         var showActionDisabledReason = false;
                         if (!actionEnabled) {
@@ -314,12 +306,12 @@ define([
                                     showActionDisabledReason = true;
                             }
                         }
-                        var actionAvailable = playerActionsHelper.checkAvailability(actionName, false);
+                        var actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
                         var existingImprovements = improvements.getCount(improvementName);
                         if (isActive) {
                             if (improvementName !== improvementNames.hospital) {
                             $(this).find(".list-amount").text(existingImprovements);
-                                uiFunctions.toggle($(this).find(".action-use"), existingImprovements > 0);
+                                GameGlobals.uiFunctions.toggle($(this).find(".action-use"), existingImprovements > 0);
                             }
                         }
                         
@@ -332,7 +324,7 @@ define([
                         if (id === "in-improvements-market") specialVisibilityRule = hasTradePost;
                         if (id === "in-improvements-inn") specialVisibilityRule = hasTradePost;
                         var isVisible = specialVisibilityRule && commonVisibilityRule;
-                        uiFunctions.toggle($(this), isVisible);
+                        GameGlobals.uiFunctions.toggle($(this), isVisible);
                         if (isVisible) visibleBuildingCount++;
                         if (actionAvailable) availableBuildingCount++;
                     }
@@ -344,8 +336,8 @@ define([
 			var isInjured = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury) !== 1;
 			var isAugmented = perksComponent.hasPerk(PerkConstants.perkIds.healthAugment);
 			var isAugmentAvailable = this.hasUpgrade(this.upgradesHelper.getUpgradeIdsForImprovement(improvementNames.hospital)[0]);
-			this.uiFunctions.toggle("#btn-use_in_hospital1", hasHospital && (isInjured || isAugmented || !isAugmentAvailable));
-            this.uiFunctions.toggle("#btn-use_in_hospital2", hasHospital && !isInjured && !isAugmented && isAugmentAvailable);
+			GameGlobals.uiFunctions.toggle("#btn-use_in_hospital1", hasHospital && (isInjured || isAugmented || !isAugmentAvailable));
+            GameGlobals.uiFunctions.toggle("#btn-use_in_hospital2", hasHospital && !isInjured && !isAugmented && isAugmentAvailable);
             
             this.availableBuildingCount = availableBuildingCount;
             if (isActive) this.lastShownAvailableBuildingCount = this.availableBuildingCount;
@@ -361,15 +353,15 @@ define([
             var eventTimers = this.playerLocationNodes.head.entity.get(CampEventTimersComponent);
             this.currentEvents = 0;
             
-            var showEvents = campComponent.population >= 1 || this.gameState.numCamps > 1;
-            this.uiFunctions.toggle("#in-occurrences", showEvents);
+            var showEvents = campComponent.population >= 1 || GameGlobals.gameState.numCamps > 1;
+            GameGlobals.uiFunctions.toggle("#in-occurrences", showEvents);
             
             // Traders
             var hasTrader = this.playerLocationNodes.head.entity.has(TraderComponent);
             if (isActive && showEvents) {
                 var isTraderLeaving = hasTrader && eventTimers.getEventTimeLeft(OccurrenceConstants.campOccurrenceTypes.trader) < 5;
                 hasEvents = hasEvents || hasTrader;
-                this.uiFunctions.toggle("#in-occurrences-trader", hasTrader);
+                GameGlobals.uiFunctions.toggle("#in-occurrences-trader", hasTrader);
                 $("#in-occurrences-trader .progress-label").toggleClass("event-ending", isTraderLeaving);
                 $("#in-occurrences-trader").data("progress-percent", eventTimers.getEventTimePercentage(OccurrenceConstants.campOccurrenceTypes.trader));
             }
@@ -377,7 +369,7 @@ define([
             // Raiders
             var hasRaid = this.playerLocationNodes.head.entity.has(RaidComponent);
             if (isActive && showEvents) {
-                this.uiFunctions.toggle("#in-occurrences-raid", hasRaid);
+                GameGlobals.uiFunctions.toggle("#in-occurrences-raid", hasRaid);
                 $("#in-occurrences-raid .progress-label").toggleClass("event-ending", hasRaid);
                 $("#in-occurrences-raid").data("progress-percent", eventTimers.getEventTimePercentage(OccurrenceConstants.campOccurrenceTypes.raid));
             }
@@ -386,7 +378,7 @@ define([
             if (isActive) this.lastShownEvents = this.currentEvents;
             
             hasEvents = hasEvents || hasRaid;
-            this.uiFunctions.toggle("#in-occurrences-empty", !hasEvents);
+            GameGlobals.uiFunctions.toggle("#in-occurrences-empty", !hasEvents);
         },
         
         updateStats: function () {
@@ -402,7 +394,7 @@ define([
             var inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
             var showCalendar = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(this.upgradesHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
             $("#in-demographics-general-age .value").text(inGameFoundingDate);
-            this.uiFunctions.toggle("#in-demographics-general-age", showCalendar);
+            GameGlobals.uiFunctions.toggle("#in-demographics-general-age", showCalendar);
 			
 			var showRaid = raidDanger > 0 || raidDefence > 0;
 			if (showRaid) {
@@ -426,20 +418,20 @@ define([
                 }
 				$("#in-demographics-raid-last .value").text(lastRaidS);
 			}
-			this.uiFunctions.toggle("#in-demographics-raid", showRaid);
+			GameGlobals.uiFunctions.toggle("#in-demographics-raid", showRaid);
             
-            var showLevelStats = this.gameState.numCamps > 1;
+            var showLevelStats = GameGlobals.gameState.numCamps > 1;
             if (showLevelStats) {
                 var levelVO = this.playerLevelNodes.head.level.levelVO;
 				$("#in-demographics-level-population .value").text(levelVO.populationGrowthFactor * 100 + "%");
             }
             
-            this.uiFunctions.toggle("#id-demographics-level", showLevelStats);
-            this.uiFunctions.toggle("#in-demographics", showCalendar || showRaid || showLevelStats);
+            GameGlobals.uiFunctions.toggle("#id-demographics-level", showLevelStats);
+            GameGlobals.uiFunctions.toggle("#in-demographics", showCalendar || showRaid || showLevelStats);
         },
         
         onTabChanged: function () {
-            if (this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.in) {
+            if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in) {
                 this.refresh();
             }
         },

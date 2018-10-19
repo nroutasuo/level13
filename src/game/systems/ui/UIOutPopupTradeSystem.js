@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/ItemsNode',
@@ -8,18 +9,12 @@ define([
     'game/constants/ItemConstants',
     'game/constants/TradeConstants',
     'game/vos/ResourcesVO'
-], function (Ash, GlobalSignals, PlayerLocationNode, ItemsNode, TraderComponent, UIConstants, ItemConstants, TradeConstants, ResourcesVO) {
+], function (Ash, GameGlobals, GlobalSignals, PlayerLocationNode, ItemsNode, TraderComponent, UIConstants, ItemConstants, TradeConstants, ResourcesVO) {
     var UIOutPopupTradeSystem = Ash.System.extend({
-
-        uiFunctions: null,
-        resourcesHelper: null,
         
         itemNodes: null,
     
-        constructor: function (uiFunctions, resourcesHelper) {
-            this.uiFunctions = uiFunctions;
-            this.resourcesHelper = resourcesHelper;
-            
+        constructor: function () {
             var sys = this;
             GlobalSignals.popupOpenedSignal.add(function (popupID) {
                 if (popupID === "incoming-caravan-popup") {
@@ -56,8 +51,8 @@ define([
             
             var traderComponent = this.playerLocationNodes.head.entity.get(TraderComponent);
             var caravan = traderComponent.caravan;
-            var campStorage = this.resourcesHelper.getCurrentStorage();
-			var currencyComponent = this.resourcesHelper.getCurrentCurrency();
+            var campStorage = GameGlobals.resourcesHelper.getCurrentStorage();
+			var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
 
             $("#incoming-caravan-popup h3").text(caravan.name);
             
@@ -221,15 +216,15 @@ define([
             $("#inventorylist-incoming-caravan-camp-inventory li").click(onLiClicked);
             $("#inventorylist-incoming-caravan-camp-offer li").click(onLiClicked);
             
-            this.uiFunctions.toggle("#inventorylist-incoming-caravan-trader-inventory .msg-empty", $("#inventorylist-incoming-caravan-trader-inventory li").length === 0);
-            this.uiFunctions.toggle("#inventorylist-incoming-caravan-trader-offer .msg-empty", $("#inventorylist-incoming-caravan-trader-offer li").length === 0);
-            this.uiFunctions.toggle("#inventorylist-incoming-caravan-camp-inventory .msg-empty", $("#inventorylist-incoming-caravan-camp-inventory li").length === 0);
-            this.uiFunctions.toggle("#inventorylist-incoming-caravan-camp-offer .msg-empty", $("#inventorylist-incoming-caravan-camp-offer li").length === 0);
+            GameGlobals.uiFunctions.toggle("#inventorylist-incoming-caravan-trader-inventory .msg-empty", $("#inventorylist-incoming-caravan-trader-inventory li").length === 0);
+            GameGlobals.uiFunctions.toggle("#inventorylist-incoming-caravan-trader-offer .msg-empty", $("#inventorylist-incoming-caravan-trader-offer li").length === 0);
+            GameGlobals.uiFunctions.toggle("#inventorylist-incoming-caravan-camp-inventory .msg-empty", $("#inventorylist-incoming-caravan-camp-inventory li").length === 0);
+            GameGlobals.uiFunctions.toggle("#inventorylist-incoming-caravan-camp-offer .msg-empty", $("#inventorylist-incoming-caravan-camp-offer li").length === 0);
             
-            this.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-trader-inventory");
-            this.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-trader-offer");
-            this.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-camp-inventory");
-            this.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-camp-offer");
+            GameGlobals.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-trader-inventory");
+            GameGlobals.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-trader-offer");
+            GameGlobals.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-camp-inventory");
+            GameGlobals.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-camp-offer");
         },
         
         clearSelection: function () {

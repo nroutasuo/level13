@@ -1,7 +1,9 @@
 // Creates and updates maps (mini-map and main)
 define(['ash',
+    'game/GameGlobals',
     'game/constants/UIConstants',
     'game/constants/CanvasConstants',
+    'game/constants/MovementConstants',
     'game/constants/PositionConstants',
     'game/constants/SectorConstants',
     'game/constants/WorldCreatorConstants',
@@ -16,26 +18,20 @@ define(['ash',
     'game/components/type/SectorComponent',
     'game/vos/PositionVO'],
 function (Ash,
-    UIConstants, CanvasConstants, PositionConstants, SectorConstants, WorldCreatorConstants,
+    GameGlobals, UIConstants, CanvasConstants, MovementConstants, PositionConstants, SectorConstants, WorldCreatorConstants,
     PlayerPositionNode,
     LevelComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, WorkshopComponent, SectorComponent,
     PositionVO) {
     
     var UIMapHelper = Ash.Class.extend({
         
-        levelHelper: null,
-        sectorHelper: null,
-        movementHelper: null,
         playerPosNodes: null,
         
         icons: [],
         
         isMapRevealed: false,
         
-        constructor: function (engine, levelHelper, sectorHelper, movementHelper) {
-            this.levelHelper = levelHelper;
-            this.sectorHelper = sectorHelper;
-            this.movementHelper = movementHelper;
+        constructor: function (engine) {
 			this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
             this.isMapRevealed = false;
             
@@ -147,7 +143,7 @@ function (Ash,
             for (var y = dimensions.minVisibleY; y <= dimensions.maxVisibleY; y++) {
                 for (var x = dimensions.minVisibleX; x <= dimensions.maxVisibleX; x++) {
                     sector = visibleSectors[x + "." + y];
-                    sectorStatus = SectorConstants.getSectorStatus(sector, this.levelHelper);
+                    sectorStatus = SectorConstants.getSectorStatus(sector);
                     sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).x;
                     sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
                     
@@ -229,7 +225,7 @@ function (Ash,
 
             // sector contents: resources
             var hasWater = false;
-            var discoveredResources = this.sectorHelper.getLocationDiscoveredResources(sector);
+            var discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources(sector);
             var resourcesCollectable = sector.get(SectorFeaturesComponent).resourcesCollectable;
             var r = 0;
             for (var key in resourceNames) {
@@ -271,25 +267,12 @@ function (Ash,
             
             // sector contents: debug info
             if (this.isMapRevealed) {
-                var sectorComponent = sector.get(SectorComponent);
-                if (sectorComponent.criticalPaths.length > 0) {
+                if (sector.get(SectorFeaturesComponent).campable) {
                     var text = "C";
-                    if (sectorComponent.isOnCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP)) {
-                        text = "W";
-                    } else if (sectorComponent.isOnCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1)) {
-                        text = "L1";
-                    } else if (sectorComponent.isOnCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2)) {
-                        text = "L2";
-                    }
-                    ctx.font = "10px Arial";
+                    ctx.font = "12px Arial";
                     ctx.fillStyle = "red";
                     ctx.textAlign = "center";
                     ctx.fillText(text, sectorXpx + sectorSize * 0.5, sectorYpx + sectorSize * 0.75); 
-                } else {
-                    ctx.font = "8px Arial";
-                    ctx.fillStyle = "white";
-                    ctx.textAlign = "center";
-                    ctx.fillText(x + "." + y, sectorXpx + sectorSize * 0.5, sectorYpx + sectorSize * 0.75); 
                 }
             }
         },
@@ -302,7 +285,7 @@ function (Ash,
             for (var i in PositionConstants.getLevelDirections()) {
                 var direction = PositionConstants.getLevelDirections()[i];
                 var neighbourPos = PositionConstants.getPositionOnPath(sectorPos, direction, 1);
-                var neighbour = this.levelHelper.getSectorByPosition(mapPosition.level, neighbourPos.sectorX, neighbourPos.sectorY);
+                var neighbour = GameGlobals.levelHelper.getSectorByPosition(mapPosition.level, neighbourPos.sectorX, neighbourPos.sectorY);
                 if (neighbour) {
                     var distX = neighbourPos.sectorX - sectorPos.sectorX;
                     var distY = neighbourPos.sectorY - sectorPos.sectorY;
@@ -317,16 +300,17 @@ function (Ash,
                     var blocker = sectorPassages.getBlocker(direction);
                     var blockerType = blocker ? blocker.type : "null";
                     if (blocker) {
-                        var isBlocked = this.movementHelper.isBlocked(sector, direction);
-                        ctx.strokeStyle = isBlocked ? "#dd0000" : (sunlit ? "#b0b0b0" : "#3a3a3a");
+                        var isBlocked = GameGlobals.movementHelper.isBlocked(sector, direction);
+                        var isGang = blockerType === MovementConstants.BLOCKER_TYPE_GANG;
+                        ctx.strokeStyle = !isGang ? "#dd0000" : (sunlit ? "#b0b0b0" : "#3a3a3a");
                         ctx.lineWidth = Math.ceil(sectorSize / 9);
                         ctx.beginPath();
                         ctx.arc(
-                                sectorMiddleX + sectorSize * (1 + sectorPadding)/2 * distX,
-                                sectorMiddleY + sectorSize * (1 + sectorPadding)/2 * distY,
-                                sectorSize * 0.2,
-                                0,
-                                2 * Math.PI);
+                            sectorMiddleX + sectorSize * (1 + sectorPadding)/2 * distX,
+                            sectorMiddleY + sectorSize * (1 + sectorPadding)/2 * distY,
+                            sectorSize * 0.2,
+                            0,
+                            2 * Math.PI);
                         ctx.stroke();
                     }
                 }
@@ -350,7 +334,7 @@ function (Ash,
                 $("#" + fallbackTableId).append("<tr id=" + trID + "></tr>");
                 for (var x = minDrawX; x <= maxDrawX; x++) {
                     sector = visibleSectors[x + "." + y];
-                    $("#" + fallbackTableId + " tr#" + trID).append(UIConstants.getSectorMapTD(playerPosition, sector, this.levelHelper));
+                    $("#" + fallbackTableId + " tr#" + trID).append(UIConstants.getSectorMapTD(playerPosition, sector));
                 }
             }
         },
@@ -377,7 +361,7 @@ function (Ash,
         
         getMapSectorDimensions: function (canvasId, mapSize, centered, mapPosition, visibleSectors, allSectors) {
             var level = mapPosition.level;
-            var levelVO = this.levelHelper.getLevelEntityForPosition(level).get(LevelComponent).levelVO;
+            var levelVO = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent).levelVO;
             var sectorSize = this.getSectorSize(centered);
             
             var dimensions = {};
@@ -411,8 +395,8 @@ function (Ash,
             dimensions.maxVisibleY = dimensions.mapMinY - 1;
             for (var y = dimensions.mapMinY; y <= dimensions.mapMaxY; y++) {
                 for (var x = dimensions.mapMinX; x <= dimensions.mapMaxX; x++) {
-                    sector = this.levelHelper.getSectorByPosition(mapPosition.level, x, y);
-                    sectorStatus = SectorConstants.getSectorStatus(sector, this.levelHelper);
+                    sector = GameGlobals.levelHelper.getSectorByPosition(mapPosition.level, x, y);
+                    sectorStatus = SectorConstants.getSectorStatus(sector);
                     if (allSectors && sector) allSectors[x + "." + y] = sector;
                     // if map is centered, make a tr+td / node for empty sectors too
                     if (centered || this.showSectorOnMap(centered, sector, sectorStatus)) {

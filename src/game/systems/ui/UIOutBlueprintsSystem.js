@@ -1,16 +1,13 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/GameConstants',
     'game/constants/UIConstants',
     'game/constants/UpgradeConstants',
     'game/nodes/tribe/TribeUpgradesNode',
-], function (Ash, GlobalSignals, GameConstants, UIConstants, UpgradeConstants, TribeUpgradesNode) {
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, UpgradeConstants, TribeUpgradesNode) {
     var UIOutBlueprintsSystem = Ash.System.extend({
-	
-		uiFunctions : null,
-		playerActions : null,
-		upgradeEffectsHelper: null,
 		
 		engine: null,
 		
@@ -18,15 +15,12 @@ define([
         
         lastShownPieceCount: 0,
 	
-		constructor: function (uiFunctions, playerActions, upgradeEffectsHelper) {
-			this.uiFunctions = uiFunctions;
-			this.playerActions = playerActions;
-			this.upgradeEffectsHelper = upgradeEffectsHelper;
+		constructor: function () {
 
 			var system = this;
 
 			this.onTabChanged = function (tabID) {
-				if (tabID === system.uiFunctions.elementIDs.tabs.blueprints) {
+				if (tabID === GameGlobals.uiFunctions.elementIDs.tabs.blueprints) {
                     system.updateBlueprintList();
                 }
 			};
@@ -37,7 +31,7 @@ define([
 		addToEngine: function (engine) {
 			this.engine = engine;
 			this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
-			this.hasNeverBeenOpened = !this.uiFunctions.gameState.unlockedFeatures.blueprints;
+			this.hasNeverBeenOpened = !GameGlobals.gameState.unlockedFeatures.blueprints;
 			GlobalSignals.tabChangedSignal.add(this.onTabChanged);
             this.lastShownPieceCount = this.getCurrentPieceCount();
 		},
@@ -49,7 +43,7 @@ define([
 		},
 	
 		update: function (time) {
-			var isActive = this.uiFunctions.gameState.uiStatus.currentTab === this.uiFunctions.elementIDs.tabs.blueprints;
+			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.blueprints;
 			this.updateBubble();
             
             if (isActive) {
@@ -66,7 +60,7 @@ define([
                 return;
             this.bubbleNumber = newBubbleNumber;
             $("#switch-blueprints .bubble").text(this.bubbleNumber);
-            this.uiFunctions.toggle("#switch-blueprints .bubble", this.bubbleNumber > 0);
+            GameGlobals.uiFunctions.toggle("#switch-blueprints .bubble", this.bubbleNumber > 0);
         },
         
         updateBlueprintList: function () {
@@ -96,12 +90,12 @@ define([
                 var tr = "<tr>" + nameTD + piecesTD + numbersTD + unlockTD + "</tr>";
 				$("#blueprints-pieces-list").append(tr);
             }
-			this.uiFunctions.generateButtonOverlays("#blueprints-pieces-list");
-			this.uiFunctions.generateCallouts("#blueprints-pieces-list");
-			this.uiFunctions.registerActionButtonListeners("#blueprints-pieces-list");
+			GameGlobals.uiFunctions.generateButtonOverlays("#blueprints-pieces-list");
+			GameGlobals.uiFunctions.generateCallouts("#blueprints-pieces-list");
+			GameGlobals.uiFunctions.registerActionButtonListeners("#blueprints-pieces-list");
             GlobalSignals.elementCreatedSignal.dispatch();
             
-            this.uiFunctions.toggle("#blueprints-list-empty-message", $("#blueprints-pieces-list tr").length === 0);
+            GameGlobals.uiFunctions.toggle("#blueprints-list-empty-message", $("#blueprints-pieces-list tr").length === 0);
         },
         
         getCurrentPieceCount: function () {

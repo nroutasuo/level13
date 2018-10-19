@@ -1,24 +1,22 @@
 define([
     'ash',
+    'game/GameGlobals',
 	'game/constants/GameConstants',
 	'game/constants/UpgradeConstants',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/tribe/TribeUpgradesNode',
 	'game/nodes/sector/CampNode',
     'game/components/sector/improvements/SectorImprovementsComponent',
-], function (Ash, GameConstants, UpgradeConstants, PlayerStatsNode, TribeUpgradesNode, CampNode, SectorImprovementsComponent) {
+], function (Ash, GameGlobals, GameConstants, UpgradeConstants, PlayerStatsNode, TribeUpgradesNode, CampNode, SectorImprovementsComponent) {
     var EvidenceSystem = Ash.System.extend({
 	
         gameState: null,
-		upgradeEffectsHelper: null,
 	
         playerStatsNodes: null,
 		campNodes: null,
         tribeUpgradesNodes: null,
 
-        constructor: function (gameState, upgradeEffectsHelper) {
-			this.gameState = gameState;
-			this.upgradeEffectsHelper = upgradeEffectsHelper;
+        constructor: function () {
         },
 
         addToEngine: function (engine) {
@@ -36,7 +34,7 @@ define([
         },
 
         update: function (time) {
-            if (this.gameState.isPaused) return;
+            if (GameGlobals.gameState.isPaused) return;
             
 			var evidenceComponent = this.playerStatsNodes.head.evidence;
 			
@@ -66,11 +64,11 @@ define([
             if (evidenceComponent.value < 0 )
                 evidenceComponent.value = 0;
             
-            this.gameState.unlockedFeatures.projects = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(UpgradeConstants.upgradeIds.unlock_building_passage_staircase);
+            GameGlobals.gameState.unlockedFeatures.projects = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(UpgradeConstants.upgradeIds.unlock_building_passage_staircase);
         },
 		
 		getLibraryUpgradeLevel: function () {
-            return this.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.library, this.tribeUpgradesNodes.head.upgrades);
+            return GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.library, this.tribeUpgradesNodes.head.upgrades);
 		},
     });
 

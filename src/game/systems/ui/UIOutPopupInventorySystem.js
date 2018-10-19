@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/BagConstants',
@@ -7,14 +8,12 @@ define([
     'game/nodes/player/PlayerActionResultNode',
     'game/components/common/PositionComponent',
     'game/components/player/BagComponent'
-], function (Ash, UIConstants, ItemConstants, BagConstants, ItemsNode, PlayerActionResultNode, PositionComponent, BagComponent) {
+], function (Ash, GameGlobals, UIConstants, ItemConstants, BagConstants, ItemsNode, PlayerActionResultNode, PositionComponent, BagComponent) {
     var UIOutPopupInventorySystem = Ash.System.extend({
 
-        uiFunctions: null,
         playerActionResultNodes: null,
     
-        constructor: function (uiFunctions) {
-            this.uiFunctions = uiFunctions;
+        constructor: function () {
 			return this;
         },
 
@@ -140,15 +139,15 @@ define([
             this.addItemsToLists(rewards, playerAllItems);
             this.addResourcesToLists(rewards, resultNode);
             
-            this.uiFunctions.toggle("#resultlist-inventorymanagement-kept .msg-empty", $("#resultlist-inventorymanagement-kept ul li").length <= 0);
-            this.uiFunctions.toggle("#resultlist-inventorymanagement-found .msg-empty", $("#resultlist-inventorymanagement-found ul li").length <= 0);
+            GameGlobals.uiFunctions.toggle("#resultlist-inventorymanagement-kept .msg-empty", $("#resultlist-inventorymanagement-kept ul li").length <= 0);
+            GameGlobals.uiFunctions.toggle("#resultlist-inventorymanagement-found .msg-empty", $("#resultlist-inventorymanagement-found ul li").length <= 0);
             
             $("#resultlist-inventorymanagement-kept li").click(onLiClicked);
             $("#resultlist-inventorymanagement-found li").click(onLiClicked);
             
-            this.uiFunctions.generateCallouts("#resultlist-inventorymanagement-kept");
-            this.uiFunctions.generateCallouts("#resultlist-inventorymanagement-found");
-            this.uiFunctions.generateCallouts("#resultlist-loststuff-lost");
+            GameGlobals.uiFunctions.generateCallouts("#resultlist-inventorymanagement-kept");
+            GameGlobals.uiFunctions.generateCallouts("#resultlist-inventorymanagement-found");
+            GameGlobals.uiFunctions.generateCallouts("#resultlist-loststuff-lost");
             
             this.updateCapacity(rewards, resultNode, playerAllItems);
             
@@ -163,7 +162,7 @@ define([
             $("#inventory-popup-bar").data("progress-percent",  bagComponent.selectedCapacity/bagComponent.totalCapacity*100);
             $("#inventory-popup-bar .progress-label").text((Math.ceil( bagComponent.selectedCapacity * 10) / 10) + " / " + bagComponent.totalCapacity);
             
-            this.uiFunctions.toggle("#confirmation-takeall", bagComponent.selectableCapacity > bagComponent.selectionStartCapacity);
+            GameGlobals.uiFunctions.toggle("#confirmation-takeall", bagComponent.selectableCapacity > bagComponent.selectionStartCapacity);
         },
         
         addItemsToLists: function (rewards, playerAllItems) {

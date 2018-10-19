@@ -66,7 +66,7 @@ define([
             this.upgradesByUIEffects[UpgradeConstants.upgradeUIEffects.calendar] = UpgradeConstants.upgradeIds.unlock_building_library;
 		},
 		
-		getUnlockedBuildings: function (upgradeId, playerActionsHelper) {
+		getUnlockedBuildings: function (upgradeId) {
 			// TODO separate in and out improvements
 			// TODO performance
 			var buildings = [];
@@ -77,7 +77,7 @@ define([
 				if (reqsDefinition.upgrades) {
 					for (var requiredUpgradeId in reqsDefinition.upgrades) {
 						if (requiredUpgradeId === upgradeId) {
-							improvementName = playerActionsHelper.getImprovementNameForAction(action, true);
+							improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action, true);
 							if (improvementName) buildings.push(improvementName);
 						}
 					}
@@ -86,7 +86,7 @@ define([
 			return buildings;
 		},
 		
-		getUnlockedItems: function (upgradeId, playerActionsHelper) {
+		getUnlockedItems: function (upgradeId) {
 			// TODO performance
 			var items = [];
 			var reqsDefinition;
@@ -96,7 +96,7 @@ define([
 				if (reqsDefinition.upgrades) {
 					for (var requiredUpgradeId in reqsDefinition.upgrades) {
 						if (requiredUpgradeId === upgradeId) {
-							item = playerActionsHelper.getItemForCraftAction(action);
+							item = GameGlobals.playerActionsHelper.getItemForCraftAction(action);
 							if (item) items.push(item.name);
 						}
 					}
@@ -117,8 +117,8 @@ define([
 			return workers;
 		},
 		
-		getUnlockedOccurrences: function (upgradeId, playerActionsHelper) {
-			var unlockedBuildings = this.getUnlockedBuildings(upgradeId, playerActionsHelper);
+		getUnlockedOccurrences: function (upgradeId) {
+			var unlockedBuildings = this.getUnlockedBuildings(upgradeId);
 			var occurrences = [];
 			if(unlockedBuildings.length > 0) {
 				var occurrenceBuilding;

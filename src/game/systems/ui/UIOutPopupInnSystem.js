@@ -1,20 +1,17 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/FightConstants',
     'game/nodes/player/ItemsNode',
-    ], function (Ash, GlobalSignals, UIConstants, ItemConstants, FightConstants, ItemsNode) {
-var UIOutPopupInnSystem = Ash.System.extend({
-
-        uiFunctions: null,       
+    ], function (Ash, GameGlobals, GlobalSignals, UIConstants, ItemConstants, FightConstants, ItemsNode) {
+var UIOutPopupInnSystem = Ash.System.extend({    
 
 		itemNodes: null,
         
-        constructor: function (uiFunctions, gameState) {
-            this.uiFunctions = uiFunctions;
-            this.gameState = gameState;
+        constructor: function () {
             return this;
         },
 
@@ -52,7 +49,7 @@ var UIOutPopupInnSystem = Ash.System.extend({
         refreshCurrent: function () {
             var currentFollowers = this.itemNodes.head.items.getAllByType(ItemConstants.itemTypes.follower);
             var numFollowers = currentFollowers.length;
-            $("#inn-popup-current-desc").text("Current followers: " + numFollowers + " / " + FightConstants.getMaxFollowers(this.gameState.numCamps));
+            $("#inn-popup-current-desc").text("Current followers: " + numFollowers + " / " + FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps));
             
             $("table#inn-popup-current-followers").empty();
             $("table#inn-popup-current-followers").append("<tr></tr>");
@@ -69,8 +66,8 @@ var UIOutPopupInnSystem = Ash.System.extend({
                 td += "</td>";
                 $($("table#inn-popup-current-followers tr")[1]).append(td);
             }
-			this.uiFunctions.generateCallouts("#inn-popup-current-followers");
-			this.uiFunctions.generateButtonOverlays("#inn-popup-current-followers");
+			GameGlobals.uiFunctions.generateCallouts("#inn-popup-current-followers");
+			GameGlobals.uiFunctions.generateButtonOverlays("#inn-popup-current-followers");
             GlobalSignals.elementCreatedSignal.dispatch();
             
             var sys = this;
@@ -82,9 +79,9 @@ var UIOutPopupInnSystem = Ash.System.extend({
         
         selectFollower: function (followerID) {
             var follower = ItemConstants.getFollowerByID(followerID);
-            this.uiFunctions.playerActions.playerActionsHelper.deductCosts("use_in_inn_select")
-            this.uiFunctions.playerActions.addFollower(follower);
-            this.uiFunctions.popupManager.closePopup("inn-popup");
+            GameGlobals.playerActionsHelper.deductCosts("use_in_inn_select")
+            GameGlobals.playerActionFunctions.addFollower(follower);
+            GameGlobals.uiFunctions.popupManager.closePopup("inn-popup");
         },
         
         disbandFollower: function (followerID) {

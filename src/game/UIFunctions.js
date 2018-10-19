@@ -1,23 +1,21 @@
 // A class that checks raw user input from the DOM and passes game-related actions to PlayerActionFunctions
 define(['ash',
-        'game/GlobalSignals',
-        'game/constants/GameConstants',
-        'game/constants/UIConstants',
-        'game/constants/ItemConstants',
-        'game/constants/PlayerActionConstants',
-        'game/constants/PositionConstants',
-        'game/helpers/ui/UIPopupManager',
-        'game/vos/ResourcesVO'],
-function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ResourcesVO) {
+    'game/GameGlobals',
+    'game/GlobalSignals',
+    'game/constants/GameConstants',
+    'game/constants/UIConstants',
+    'game/constants/ItemConstants',
+    'game/constants/PlayerActionConstants',
+    'game/constants/PositionConstants',
+    'game/helpers/ui/UIPopupManager',
+    'game/vos/ResourcesVO'],
+function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ResourcesVO) {
+    
     var UIFunctions = Ash.Class.extend({
         
-        playerActions: null,
-        gameState: null,
         saveSystem: null,
-        cheatSystem: null,
         
         popupManager: null,
-        changeLogHelper: null,
         
         elementIDs: {
             tabs: {
@@ -52,23 +50,20 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             }
         },
         
-        constructor: function (playerActions, gameState, saveSystem, cheatSystem, changeLogHelper) {
-            this.playerActions = playerActions;
-            this.gameState = gameState;
+        constructor: function (saveSystem) {
             this.saveSystem = saveSystem;
-            this.cheatSystem = cheatSystem;
+            
+			this.playerActionFunctions = GameGlobals.playerActionFunctions;
 
             this.generateElements();
             this.registerListeners();
             
-            this.popupManager = new UIPopupManager(this.gameState, this.playerActions.playerActionResultsHelper, this);
-            this.changeLogHelper = changeLogHelper;
+            this.popupManager = new UIPopupManager(this);
         },
         
         registerListeners: function () {
             var elementIDs = this.elementIDs;
-            var gameState = this.gameState;
-            var playerActions = this.playerActions;
+            var playerActions = this.playerActionFunctions;
             var uiFunctions = this;
             
             $(window).resize(this.onResize);
@@ -78,7 +73,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             $.each($("#switch-tabs li"), function () {
                 $(this).click(function () {
                     if (!($(this).hasClass("disabled"))) {
-                        onTabClicked(this.id, gameState, uiFunctions);
+                        onTabClicked(this.id, GameGlobals.gameState, uiFunctions);
                     }
                 });
             });
@@ -141,23 +136,12 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                         playerActions.setNearestCampName(input);
                     });
             });
-            
-            // Cheats
-            if (GameConstants.isCheatsEnabled) {
-                $("#btn-cheats").click(function (e) {
-                    gtag('event', 'screen_view', { 'screen_name' : "popup-cheats" });
-                    var cheatListDiv = uiFunctions.cheatSystem.getCheatListDiv();
-                    uiFunctions.showInput("Cheats", "Enter cheat<br/>" + cheatListDiv, "", function (input) {
-                        uiFunctions.cheatSystem.applyCheat(input)
-                    });
-                });
-            }
         },
         
         registerActionButtonListeners: function (scope) {
             var uiFunctions = this;
-            var gameState = this.gameState;
-            var playerActions = this.playerActions;
+            var gameState = GameGlobals.gameState;
+            var playerActions = this.playerActionFunctions;
             
             // All action buttons
             $.each($(scope + " button.action"), function () {
@@ -177,7 +161,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                     GlobalSignals.actionButtonClickedSignal.dispatch(action);
 
                     var param = null;
-                    var actionIDParam = playerActions.playerActionsHelper.getActionIDParam(action);
+                    var actionIDParam = GameGlobals.playerActionsHelper.getActionIDParam(action);
                     if (actionIDParam) param = actionIDParam;
                     var isProject = $(this).hasClass("action-level-project");
                     if (isProject) param = $(this).attr("sector");
@@ -187,10 +171,10 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                     if (!isStarted)
                         return;
 
-                    var baseId = playerActions.playerActionsHelper.getBaseActionID(action);
+                    var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
                     var duration = PlayerActionConstants.getDuration(baseId);
                     if (duration > 0) {
-                        uiFunctions.gameState.setActionDuration(action, locationKey, duration);
+                        GameGlobals.gameState.setActionDuration(action, locationKey, duration);
                         uiFunctions.startButtonDuration($(this), duration);
                     }
                 });
@@ -198,17 +182,17 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             
             // Special actions
             $(scope + "#out-action-fight-confirm").click(function (e) {
-                playerActions.fightHelper.startFight();
+                GameGlobals.fightHelper.startFight();
             });
             $(scope + "#out-action-fight-close").click(function (e) {
-                playerActions.fightHelper.endFight();
+                GameGlobals.fightHelper.endFight();
             });
             $(scope + "#out-action-fight-next").click(function (e) {
-                playerActions.fightHelper.endFight();
+                GameGlobals.fightHelper.endFight();
             });
             $(scope + "#out-action-fight-cancel").click(function (e) {
                 playerActions.flee();
-                playerActions.fightHelper.endFight();
+                GameGlobals.fightHelper.endFight();
             });
             $(scope + "#inn-popup-btn-cancel").click(function (e) {                
                 uiFunctions.popupManager.closePopup("inn-popup");
@@ -297,11 +281,6 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
                 div += "<span class='value'/></div>";
                 $("#container-equipment-stats").append(div);
             }
-            
-            // cheats
-            if (GameConstants.isCheatsEnabled) {
-                $("#game-options-extended li:first-child").before("<li><button class='btn-meta' id='btn-cheats'>Cheats</button></li>")
-            }
         },
         
         generateTabBubbles: function () {
@@ -349,22 +328,21 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         },
         
         generateActionButtonCallout: function (action) {
-            var playerActionsHelper = this.playerActions.playerActionsHelper;
-            var baseActionId = playerActionsHelper.getBaseActionID(action);
-            var costFactor =  playerActionsHelper.getCostFactor(action);
+            var baseActionId = GameGlobals.playerActionsHelper.getBaseActionID(action);
+            var costFactor =  GameGlobals.playerActionsHelper.getCostFactor(action);
 
             var content = "";
             var enabledContent = "";
             var disabledContent = "";
 
             // always visible: description
-            var description = playerActionsHelper.getDescription(action);
+            var description = GameGlobals.playerActionsHelper.getDescription(action);
             if (description) {
                 content += "<span>" + description + "</span>";
             }
 
             // visible if button is enabled: costs & risks
-            var costs = playerActionsHelper.getCosts(action, costFactor);
+            var costs = GameGlobals.playerActionsHelper.getCosts(action, costFactor);
             var hasCosts = action && costs && Object.keys(costs).length > 0;
             if (hasCosts) {
                 if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
@@ -442,17 +420,24 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             $(scope + " div.container-btn-action").append("<div class='cooldown-reqs' />");
         },
         
+        startGame: function () {
+			var startTab = this.elementIDs.tabs.out;
+            var playerPos = this.playerActionFunctions.playerPositionNodes.head.position;
+			if (playerPos.inCamp) startTab = this.elementIDs.tabs.in;
+			this.showTab(startTab);
+        },
+        
         /**
          * Resets cooldown for an action. Should be called directly after an action is completed and any relevant popup is closed.
          * @param {type} action action
          */
         completeAction: function (action) {
             var button = $("button[action='" + action + "']");
-            var baseId = this.playerActions.playerActionsHelper.getBaseActionID(action);
+            var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
             var cooldown = PlayerActionConstants.getCooldown(baseId);
             if (cooldown > 0) {
                 var locationKey = this.getLocationKey($(button));
-                this.gameState.setActionCooldown(action, locationKey, cooldown);
+                GameGlobals.gameState.setActionCooldown(action, locationKey, cooldown);
                 this.startButtonCooldown($(button), cooldown);
             }
         },
@@ -475,7 +460,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         
         restart: function () {            
             $("#log ul").empty();
-            this.onTabClicked(this.elementIDs.tabs.out, this.gameState, this);
+            this.onTabClicked(this.elementIDs.tabs.out, GameGlobals.gameState, this);
             this.saveSystem.restart();
         },
         
@@ -485,13 +470,13 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         
         getGameInfoDiv: function () {
             var html = "";
-            html += "<span id='changelog-version'>version " + this.changeLogHelper.getCurrentVersionNumber() + "<br/>updated " + this.changeLogHelper.getCurrentVersionDate() + "</span>";
+            html += "<span id='changelog-version'>version " + GameGlobals.changeLogHelper.getCurrentVersionNumber() + "<br/>updated " + GameGlobals.changeLogHelper.getCurrentVersionDate() + "</span>";
             html += "<p>Note that this game is still in development and many features are incomplete and unbalanced. Updates might break saves. Feedback and bug reports are appreciated!</p>";
             html += "<p><a href='https://github.com/nroutasuo/level13' target='github'>github</a> | ";
             html += "<a href='https://www.reddit.com/r/level13' target='reddit'>reddit</a> | ";
             html += "<a href='https://sayat.me/level13' target='sayatme'>sayat.me</a></p>";
             html += "<h4 class='infobox-scrollable-header'>Changelog</h4>";
-            html += "<div id='changelog' class='infobox infobox-scrollable'>" + this.changeLogHelper.getChangeLogHTML() + "</div>";
+            html += "<div id='changelog' class='infobox infobox-scrollable'>" + GameGlobals.changeLogHelper.getChangeLogHTML() + "</div>";
             return html;
         },
         
@@ -592,13 +577,13 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             var durationTotal;
             $.each($("button.action"), function() {
                 var action = $(this).attr("action");
-                var baseId = uiFunctions.playerActions.playerActionsHelper.getBaseActionID(action);
+                var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
                 if (action) {
                     var locationKey = uiFunctions.getLocationKey($(this));
                     cooldownTotal = PlayerActionConstants.getCooldown(action);
-                    cooldownLeft = Math.min(cooldownTotal, uiFunctions.gameState.getActionCooldown(action, locationKey) / 1000);
+                    cooldownLeft = Math.min(cooldownTotal, GameGlobals.gameState.getActionCooldown(action, locationKey) / 1000);
                     durationTotal = PlayerActionConstants.getDuration(baseId);
-                    durationLeft = Math.min(durationTotal, uiFunctions.gameState.getActionDuration(action, locationKey) / 1000);
+                    durationLeft = Math.min(durationTotal, GameGlobals.gameState.getActionDuration(action, locationKey) / 1000);
                     if (cooldownLeft > 0) uiFunctions.startButtonCooldown($(this), cooldownTotal, cooldownLeft);
                     else uiFunctions.stopButtonCooldown($(this));
                     if (durationLeft > 0) uiFunctions.startButtonDuration($(this), cooldownTotal, durationLeft);
@@ -771,8 +756,8 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         getLocationKey: function(button) {
             var action = $(button).attr("action");
             var isLocationAction = PlayerActionConstants.isLocationAction(action);
-            var playerPos = this.playerActions.playerPositionNodes.head.position;
-            return this.gameState.getActionLocationKey(isLocationAction, playerPos);
+            var playerPos = this.playerActionFunctions.playerPositionNodes.head.position;
+            return GameGlobals.gameState.getActionLocationKey(isLocationAction, playerPos);
         },
         
         updateStepper: function (id, val, min, max) {
@@ -818,7 +803,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
         },
         
         showTab: function (tabID) {
-            this.onTabClicked(tabID, this.gameState, this);
+            this.onTabClicked(tabID, GameGlobals.gameState, this);
         },
         
         showFight: function () {
@@ -860,7 +845,7 @@ function (Ash, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerA
             $(".popup-overlay").fadeIn(200, function () {
                 uiFunctions.popupManager.onResize();
                 GlobalSignals.popupOpenedSignal.dispatch(popupID);
-                uiFunctions.gameState.isPaused = true;
+                GameGlobals.gameState.isPaused = true;
                 $("#" + popupID).fadeIn(200, function () {
                     uiFunctions.toggle("#" + popupID, true);
                     uiFunctions.popupManager.onResize();

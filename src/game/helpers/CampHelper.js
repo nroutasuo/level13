@@ -5,11 +5,8 @@ define([
 ], function (Ash, GameConstants, CampConstants, TribeUpgradesNode) {
     
     var CampHelper = Ash.Class.extend({
-        
-		upgradeEffectsHelper: null,
 		
-		constructor: function (engine, upgradeEffectsHelper) {
-			this.upgradeEffectsHelper = upgradeEffectsHelper;
+		constructor: function (engine) {
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 		},
         
@@ -78,7 +75,7 @@ define([
 		
 		getUpgradeBonus: function (worker) {
 			var upgradeLevel = 1;
-			var workerUpgrades = this.upgradeEffectsHelper.getImprovingUpgradeIdsForWorker(worker);
+			var workerUpgrades = GameGlobals.upgradeEffectsHelper.getImprovingUpgradeIdsForWorker(worker);
 			var workerUpgrade;
 			for (var i in workerUpgrades) {
 				workerUpgrade = workerUpgrades[i];

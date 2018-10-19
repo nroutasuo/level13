@@ -1,5 +1,6 @@
 // Functions to respond to player actions parsed by the UIFunctions
 define(['ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
 	'game/constants/LogConstants',
 	'game/constants/PositionConstants',
@@ -53,7 +54,7 @@ define(['ash',
 	'game/systems/FaintingSystem',
 	'game/systems/PlayerPositionSystem',
 	'game/systems/SaveSystem',
-], function (Ash, GlobalSignals,
+], function (Ash, GameGlobals, GlobalSignals,
 	LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
 	PositionVO, LocaleVO,
     PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
@@ -80,23 +81,9 @@ define(['ash',
         tribeUpgradesNodes: null,
         
         engine: null,
-        gameState: null,
         occurrenceFunctions: null,
-		
-		playerActionsHelper: null,
-		playerActionResultsHelper: null,
-        fightHelper: null,
-        resourcesHelper: null,
-		levelHelper: null,
         
-        constructor: function (gameState, resourcesHelper, levelHelper, playerActionsHelper, fightHelper, playerActionResultsHelper) {
-            this.gameState = gameState;
-            this.resourcesHelper = resourcesHelper;
-			this.levelHelper = levelHelper;
-			this.playerActionsHelper = playerActionsHelper;
-            this.fightHelper = fightHelper;
-			this.playerActionResultsHelper = playerActionResultsHelper;
-        },
+        constructor: function () {},
 
         addToEngine: function (engine) {
             this.engine = engine;
@@ -135,13 +122,13 @@ define(['ash',
         startAction: function (action, param) {
             // console.log("start action: " + action + " | " + param);
             var otherSector = this.getActionSector(action, param);
-            if (!this.playerActionsHelper.checkAvailability(action, true, otherSector))
+            if (!GameGlobals.playerActionsHelper.checkAvailability(action, true, otherSector))
                 return false;
             
-            this.playerActionsHelper.deductCosts(action);
+            GameGlobals.playerActionsHelper.deductCosts(action);
             this.forceResourceBarUpdate();
             
-            var baseId = this.playerActionsHelper.getBaseActionID(action);
+            var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
             var duration = PlayerActionConstants.getDuration(baseId);
             if (duration > 0) {
                 this.startBusy(action, param);
@@ -153,7 +140,7 @@ define(['ash',
         },
         
         startBusy: function (action, param) {
-            var baseId = this.playerActionsHelper.getBaseActionID(action);
+            var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
             var duration = PlayerActionConstants.getDuration(baseId);
             if (duration > 0) {
                 var isBusy = PlayerActionConstants.isBusyAction(baseId);
@@ -168,7 +155,7 @@ define(['ash',
         },
         
         performAction: function (action, param) {
-            var baseId = this.playerActionsHelper.getBaseActionID(action);
+            var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
             switch (baseId) {
                 // Out improvements
                 case "build_out_collector_water": this.buildBucket(param); break;
@@ -260,7 +247,7 @@ define(['ash',
         },
         
         getActionSector: function (action, param) {
-            var baseActionID = this.playerActionsHelper.getBaseActionID(action);
+            var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
             switch (baseActionID) {
                 case "build_out_bridge":
                 case "build_out_passage_down_stairs": 
@@ -275,7 +262,7 @@ define(['ash',
                     var l = parseInt(param.split(".")[0]);
                     var sX = parseInt(param.split(".")[1]);
                     var sY = parseInt(param.split(".")[2]);
-                    return this.levelHelper.getSectorByPosition(l, sX, sY);
+                    return GameGlobals.levelHelper.getSectorByPosition(l, sX, sY);
                 default:
                     return null;
             }
@@ -366,7 +353,7 @@ define(['ash',
             var playerLevelCamp = this.nearestCampNodes.head !== null ? this.nearestCampNodes.head.entity : null;
             if (playerLevelCamp) {
                 var playerResources = this.playerResourcesNodes.head.resources.resources;
-                var campResourcesSource = this.resourcesHelper.getCurrentStorage().resources;
+                var campResourcesSource = GameGlobals.resourcesHelper.getCurrentStorage().resources;
                 this.moveResourcesFromVOToVO(resourcesVO, campResourcesSource, playerResources);
             }
         },
@@ -426,7 +413,7 @@ define(['ash',
             if (campNode && campNode.position.level === playerPos.level && campNode.position.sectorId() === playerPos.sectorId()) {
                 if (!playerPos.inCamp) {
                     playerPos.inCamp = true;
-                    if (this.resourcesHelper.hasCampStorage()) {
+                    if (GameGlobals.resourcesHelper.hasCampStorage()) {
                         this.moveResFromBagToCamp();
                     }
                     this.moveCurrencyFromBagToCamp();
@@ -435,7 +422,7 @@ define(['ash',
                     campNode.entity.add(new LastVisitedCampComponent());
                     
                     if (log) this.addLogMessage(LogConstants.MSG_ID_ENTER_CAMP, "Entered camp.");
-                    this.uiFunctions.showTab(this.uiFunctions.elementIDs.tabs.in);
+                    GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in);
                     GlobalSignals.playerMovedSignal.dispatch(playerPos);
                     this.forceResourceBarUpdate();
                     this.forceTabUpdate();
@@ -449,7 +436,7 @@ define(['ash',
         
         enterOutTab: function () {
             var playerPos = this.playerPositionNodes.head.position;
-            if (playerPos.inCamp && !this.resourcesHelper.hasCampStorage()) this.leaveCamp();
+            if (playerPos.inCamp && !GameGlobals.resourcesHelper.hasCampStorage()) this.leaveCamp();
         },
         
         leaveCamp: function () {
@@ -471,7 +458,7 @@ define(['ash',
         
         scavenge: function () {
             var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-            this.gameState.unlockedFeatures.scavenge = true;
+            GameGlobals.gameState.unlockedFeatures.scavenge = true;
 
             var logMsg = "";
             var playerMaxVision = this.playerStatsNodes.head.vision.maximum;				
@@ -498,13 +485,13 @@ define(['ash',
             var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
             var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
             if (!sectorStatus.scouted) {                
-                if (!this.gameState.unlockedFeatures.evidence) {
-                    this.gameState.unlockedFeatures.evidence = true;
+                if (!GameGlobals.gameState.unlockedFeatures.evidence) {
+                    GameGlobals.gameState.unlockedFeatures.evidence = true;
                     GlobalSignals.featureUnlockedSignal.dispatch();
                 }
                 
-                if (!this.gameState.unlockedFeatures.scout) {
-                    this.gameState.unlockedFeatures.scout = true;
+                if (!GameGlobals.gameState.unlockedFeatures.scout) {
+                    GameGlobals.gameState.unlockedFeatures.scout = true;
                     GlobalSignals.featureUnlockedSignal.dispatch();
                 }
 
@@ -573,7 +560,7 @@ define(['ash',
             if (localeVO.type === localeTypes.tradingpartner) {
                 var playerPos = this.playerPositionNodes.head.position;
                 var level = playerPos.level;
-                var campOrdinal = this.gameState.getCampOrdinal(level);
+                var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
                 var partnerName = TradeConstants.getTradePartner(campOrdinal).name;
                 logMsgSuccess += "<br/>Found a new <span class='text-highlight-functionality'>trading partner</span>. They call this place " + partnerName + ".";
             }
@@ -586,8 +573,8 @@ define(['ash',
                 if (localeVO.type === localeTypes.tradingpartner) {
                     var playerPos = playerActionFunctions.playerPositionNodes.head.position;
                     var level = playerPos.level;
-                    var campOrdinal = playerActionFunctions.gameState.getCampOrdinal(level);
-                    playerActionFunctions.gameState.foundTradingPartners.push(campOrdinal);
+                    var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+                    GameGlobals.gameState.foundTradingPartners.push(campOrdinal);
                 }
                 playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
                 playerActionFunctions.save();
@@ -641,7 +628,7 @@ define(['ash',
         },
 
         nap: function () {
-            this.uiFunctions.hideGame(false);
+            GameGlobals.uiFunctions.hideGame(false);
             var sys = this;
             this.passTime(60, function () {                
                 setTimeout(function () {
@@ -652,10 +639,10 @@ define(['ash',
                     sys.handleOutActionResults("nap", LogConstants.MSG_ID_NAP, logMsgSuccess, logMsgFlee, logMsgDefeat, false, 
                         function() {
                             sys.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_NAP;
-                            sys.uiFunctions.showGame();
+                            GameGlobals.uiFunctions.showGame();
                         },
                         function () {
-                            sys.uiFunctions.showGame();
+                            GameGlobals.uiFunctions.showGame();
                         }
                     );
                 }, 300);
@@ -664,19 +651,19 @@ define(['ash',
         
         handleOutActionResults: function (action, logMsgId, logMsgSuccess, logMsgFlee, logMsgDefeat, showResultPopup, successCallback, failCallback) {
             var playerActionFunctions = this;
-            var baseActionID = this.playerActionsHelper.getBaseActionID(action);
+            var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
             if (!logMsgSuccess) logMsgSuccess = action;
             if (!logMsgFlee) logMsgFlee = logMsgSuccess;
             if (!logMsgDefeat) logMsgDefeat = logMsgSuccess;
-            this.fightHelper.handleRandomEncounter(action, function () {
-                var rewards = playerActionFunctions.playerActionResultsHelper.getResultVOByAction(action);
+            GameGlobals.fightHelper.handleRandomEncounter(action, function () {
+                var rewards = GameGlobals.playerActionResultsHelper.getResultVOByAction(action);
                 var sector = playerActionFunctions.playerStatsNodes.head.entity;
                 sector.add(new PlayerActionResultComponent(rewards));
                 var resultPopupCallback = function (isTakeAll) {
-                    playerActionFunctions.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
-                    playerActionFunctions.uiFunctions.completeAction(action);
+                    GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
+                    GameGlobals.uiFunctions.completeAction(action);
                     playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
-                    playerActionFunctions.playerActionResultsHelper.logResults(rewards);
+                    GameGlobals.playerActionResultsHelper.logResults(rewards);
                     playerActionFunctions.forceResourceBarUpdate();
                     playerActionFunctions.forceTabUpdate();
                     sector.remove(PlayerActionResultComponent);
@@ -684,16 +671,16 @@ define(['ash',
                     if (successCallback) successCallback();
                 };
                 if (showResultPopup) {
-                    playerActionFunctions.uiFunctions.showResultPopup(TextConstants.getActionName(baseActionID), logMsgSuccess, rewards, resultPopupCallback);
+                    GameGlobals.uiFunctions.showResultPopup(TextConstants.getActionName(baseActionID), logMsgSuccess, rewards, resultPopupCallback);
                 } else {
                     resultPopupCallback();
                 }
             }, function () {
-                playerActionFunctions.uiFunctions.completeAction(action);
+                GameGlobals.uiFunctions.completeAction(action);
                 playerActionFunctions.addLogMessage(logMsgId, logMsgFlee);
                 if (failCallback) failCallback();
             }, function () {
-                playerActionFunctions.uiFunctions.completeAction(action);
+                GameGlobals.uiFunctions.completeAction(action);
                 playerActionFunctions.addLogMessage(logMsgId, logMsgDefeat);
                 if (failCallback) failCallback();
             });
@@ -724,19 +711,19 @@ define(['ash',
             
             var tradePartner = TradeConstants.getTradePartner(parseInt(campOrdinal));
             var result = TradeConstants.makeResultVO(caravan);
-            var logMsg = this.playerActionResultsHelper.getRewardsMessage(result, "A trade caravan returns from " + tradePartner.name + ". ");
+            var logMsg = GameGlobals.playerActionResultsHelper.getRewardsMessage(result, "A trade caravan returns from " + tradePartner.name + ". ");
             var pendingPosition = campSector.get(PositionComponent).clone();
             pendingPosition.inCamp = true;
             
-            this.playerActionResultsHelper.collectRewards(true, result, campSector);
-            this.uiFunctions.completeAction("send_caravan");
+            GameGlobals.playerActionResultsHelper.collectRewards(true, result, campSector);
+            GameGlobals.uiFunctions.completeAction("send_caravan");
             this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, logMsg.msg, logMsg.replacements, logMsg.values, pendingPosition);
             
             this.forceResourceBarUpdate();
         },
         
         tradeWithCaravan: function () {
-            this.uiFunctions.popupManager.closePopup("incoming-caravan-popup");
+            GameGlobals.uiFunctions.popupManager.closePopup("incoming-caravan-popup");
             
             var traderComponent = this.playerLocationNodes.head.entity.get(TraderComponent);
             var caravan = traderComponent.caravan;
@@ -765,7 +752,7 @@ define(['ash',
             }
             
             // resources
-            var campStorage = this.resourcesHelper.getCurrentStorage();
+            var campStorage = GameGlobals.resourcesHelper.getCurrentStorage();
             for (var key in resourceNames) {
                 var name = resourceNames[key];
                 var traderSelectedAmount = caravan.traderSelectedResources.getResource(name);
@@ -781,7 +768,7 @@ define(['ash',
             }
             
             // currency
-			var currencyComponent = this.resourcesHelper.getCurrentCurrency();
+			var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
             if (caravan.traderSelectedCurrency > 0) {
                 caravan.currency -= caravan.traderSelectedCurrency;
                 currencyComponent.currency += caravan.traderSelectedCurrency;
@@ -799,37 +786,37 @@ define(['ash',
         fightGang: function (direction) {
             var action = "fight_gang_" + direction;
             var playerActionFunctions = this;
-            this.fightHelper.handleRandomEncounter(action, function () {
+            GameGlobals.fightHelper.handleRandomEncounter(action, function () {
                 playerActionFunctions.addLogMessage(LogConstants.MSG_ID_GANG_DEFEATED, "The road is clear.");
-                playerActionFunctions.uiFunctions.completeAction(action);
+                GameGlobals.uiFunctions.completeAction(action);
                 playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
             }, function () {
                 // fled
-                playerActionFunctions.uiFunctions.completeAction(action);
+                GameGlobals.uiFunctions.completeAction(action);
             }, function () {
                 // lost
-                playerActionFunctions.uiFunctions.completeAction(action);
+                GameGlobals.uiFunctions.completeAction(action);
             });
         },
         
         flee: function () {
-            if (this.playerActionsHelper.checkAvailability("flee", true)) {
-                this.playerActionsHelper.deductCosts("flee");
-                this.uiFunctions.completeAction("flee");
+            if (GameGlobals.playerActionsHelper.checkAvailability("flee", true)) {
+                GameGlobals.playerActionsHelper.deductCosts("flee");
+                GameGlobals.uiFunctions.completeAction("flee");
             }
         },
         
         despair: function () {
             this.engine.getSystem(FaintingSystem).checkFainting();
-            this.uiFunctions.completeAction("despair");
+            GameGlobals.uiFunctions.completeAction("despair");
         },
         
         buildCamp: function () {
             var sector = this.playerLocationNodes.head.entity;
-            var level = this.levelHelper.getLevelEntityForSector(sector);
+            var level = GameGlobals.levelHelper.getLevelEntityForSector(sector);
             var position = sector.get(PositionComponent).getPosition();
             var campComponent = new CampComponent(position.toString());
-            campComponent.foundedTimeStamp = this.gameState.gamePlayedSeconds;
+            campComponent.foundedTimeStamp = GameGlobals.gameState.gamePlayedSeconds;
             sector.add(campComponent);
             sector.add(new CampEventTimersComponent());
             sector.add(new OutgoingCaravansComponent());
@@ -841,7 +828,7 @@ define(['ash',
             var improvementsComponent = sector.get(SectorImprovementsComponent);
             improvementsComponent.add(improvementNames.home);
 
-            this.gameState.unlockedFeatures.camp = true;
+            GameGlobals.gameState.unlockedFeatures.camp = true;
             gtag('event', 'build_camp', { event_category: 'progression' })
 
             this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "Built a camp.");
@@ -880,19 +867,19 @@ define(['ash',
 			var l = parseInt(sectorPos.split(".")[0]);
 			var sX = parseInt(sectorPos.split(".")[1]);
 			var sY = parseInt(sectorPos.split(".")[2]);
-            var levelOrdinal = this.gameState.getLevelOrdinal(l);
+            var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(l);
             action = action + "_" + levelOrdinal;
 			var sector = this.getActionSector(action, sectorPos);
             neighbourAction = neighbourAction + "_" + levelOrdinal;
             
             var sectorPosVO = new PositionVO(l, sX, sY);
-			var neighbour = this.levelHelper.getSectorByPosition(up ? l + 1 : l - 1, sX, sY);
+			var neighbour = GameGlobals.levelHelper.getSectorByPosition(up ? l + 1 : l - 1, sX, sY);
 			
 			if (sector && neighbour) {
                 var direction = up ? PositionConstants.DIRECTION_UP : PositionConstants.DIRECTION_DOWN;
 				var msg = TextConstants.getPassageRepairedMessage(passageType, direction, sectorPosVO);
-				this.buildImprovement(action, this.playerActionsHelper.getImprovementNameForAction(action), sector);
-				this.buildImprovement(neighbourAction, this.playerActionsHelper.getImprovementNameForAction(neighbourAction), neighbour, true);
+				this.buildImprovement(action, GameGlobals.playerActionsHelper.getImprovementNameForAction(action), sector);
+				this.buildImprovement(neighbourAction, GameGlobals.playerActionsHelper.getImprovementNameForAction(neighbourAction), neighbour, true);
 				this.addLogMessage(LogConstants.MSG_ID_BUILT_PASSAGE, msg);
 			} else {
 				console.log("WARN: Couldn't find sectors for building passage.");
@@ -903,21 +890,21 @@ define(['ash',
 		},
         
         buildTrap: function () {
-            this.buildImprovement("build_out_collector_food", this.playerActionsHelper.getImprovementNameForAction("build_out_collector_food"));
+            this.buildImprovement("build_out_collector_food", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_collector_food"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_TRAP, "Built a trap. It will catch food.");
             if (!this.playerLocationNodes.head.entity.has(SectorCollectorsComponent))
                 this.playerLocationNodes.head.entity.add(new SectorCollectorsComponent());
         },
         
         buildBucket: function () {
-            this.buildImprovement("build_out_collector_water", this.playerActionsHelper.getImprovementNameForAction("build_out_collector_water"));
+            this.buildImprovement("build_out_collector_water", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_collector_water"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_BUCKET, "Made a bucket. It will collect water.");
             if (!this.playerLocationNodes.head.entity.has(SectorCollectorsComponent))
                 this.playerLocationNodes.head.entity.add(new SectorCollectorsComponent());
         },
         
         buildHouse: function () {
-            this.buildImprovement("build_in_house", this.playerActionsHelper.getImprovementNameForAction("build_in_house"), null);
+            this.buildImprovement("build_in_house", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_house"), null);
             var msg = "Built a hut.";
             var totalHouses = 0;
             for (var node = this.engine.getNodeList(CampNode).head; node; node = node.next) {
@@ -929,73 +916,73 @@ define(['ash',
         },
         
         buildHouse2: function () {
-            this.buildImprovement("build_in_house2", this.playerActionsHelper.getImprovementNameForAction("build_in_house2"));
+            this.buildImprovement("build_in_house2", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_house2"));
             var msg = "Built a tower block.";
             this.addLogMessage(LogConstants.MSG_ID_BUILT_HOUSE, msg);
         },
         
         buildGenerator: function () {
-            this.buildImprovement("build_in_generator", this.playerActionsHelper.getImprovementNameForAction("build_in_generator"));
+            this.buildImprovement("build_in_generator", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_generator"));
             var msg = "Set up a generator.";
             this.addLogMessage(LogConstants.MSG_ID_BUILT_GENERATOR, msg);           
         },
         
         buildLights: function () {
-            this.buildImprovement("build_in_lights", this.playerActionsHelper.getImprovementNameForAction("build_in_lights"));
+            this.buildImprovement("build_in_lights", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_lights"));
             var msg = "Installed lights to the camp.";
             this.addLogMessage(LogConstants.MSG_ID_BUILT_LIGHTS, msg);
         },
         
         buildCeiling: function () {
-            this.buildImprovement("build_in_ceiling", this.playerActionsHelper.getImprovementNameForAction("build_in_ceiling"));
+            this.buildImprovement("build_in_ceiling", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_ceiling"));
             var msg = "Build a big tent to protect the camp from the sun.";
             this.addLogMessage(LogConstants.MSG_ID_BUILT_CEILING, msg);
         },
         
         buildStorage: function (automatic, sector) {
-            this.buildImprovement("build_in_storage", this.playerActionsHelper.getImprovementNameForAction("build_in_storage"), null, automatic);
+            this.buildImprovement("build_in_storage", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_storage"), null, automatic);
             if (!automatic) {
                 this.addLogMessage(LogConstants.MSG_ID_BUILT_STORAGE, "Built a storage.");
             }
         },
         
         buildFortification: function () {
-            this.buildImprovement("build_in_fortification", this.playerActionsHelper.getImprovementNameForAction("build_in_fortification"));
+            this.buildImprovement("build_in_fortification", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_fortification"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_FORTIFICATION, "Fortified the camp.");
         },
 		
 		buildAqueduct: function () {
-			this.buildImprovement("build_in_aqueduct", this.playerActionsHelper.getImprovementNameForAction("build_in_aqueduct"));
+			this.buildImprovement("build_in_aqueduct", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_aqueduct"));
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_AQUEDUCT, "Built an aqueduct.");
 		},
         
         buildBarracks: function () {
-            this.buildImprovement("build_in_barracks", this.playerActionsHelper.getImprovementNameForAction("build_in_barracks"));
+            this.buildImprovement("build_in_barracks", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_barracks"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_BARRACKS, "Built a barracks.");
         },
         
         buildSmithy: function () {
-            this.buildImprovement("build_in_smithy", this.playerActionsHelper.getImprovementNameForAction("build_in_smithy"));
+            this.buildImprovement("build_in_smithy", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_smithy"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_SMITHY, "Built a smithy.");
         },
         
         buildApothecary: function () {
-            this.buildImprovement("build_in_apothecary", this.playerActionsHelper.getImprovementNameForAction("build_in_apothecary"));
+            this.buildImprovement("build_in_apothecary", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_apothecary"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_APOTHECARY, "Built an apothecary.");
         },
         
         buildCementMill: function () {
-            this.buildImprovement("build_in_cementmill", this.playerActionsHelper.getImprovementNameForAction("build_in_cementmill"));
+            this.buildImprovement("build_in_cementmill", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_cementmill"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_CEMENT_MILL, "Built a cement mill for making concrete.");
         },
         
         buildRadioTower: function () {
-            this.buildImprovement("build_in_radio", this.playerActionsHelper.getImprovementNameForAction("build_in_radio"));
+            this.buildImprovement("build_in_radio", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_radio"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_RADIO, "Built a radio tower.");
         },
         
         buildCampfire: function () {
-            var improvementName = this.playerActionsHelper.getImprovementNameForAction("build_in_campfire");
+            var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_campfire");
             var improvementsComponent = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var count = improvementsComponent.getCount(improvementName);
             
@@ -1007,42 +994,42 @@ define(['ash',
         },
         
         buildDarkFarm: function () {
-            this.buildImprovement("build_in_darkfarm", this.playerActionsHelper.getImprovementNameForAction("build_in_darkfarm"));
+            this.buildImprovement("build_in_darkfarm", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_darkfarm"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_DARKFARM, "Built a snail farm.");
         },
         
         buildHospital: function () {
-            this.buildImprovement("build_in_hospital", this.playerActionsHelper.getImprovementNameForAction("build_in_hospital"));
+            this.buildImprovement("build_in_hospital", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_hospital"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_HOSPITAL, "Built a hospital.");
         },
         
         buildLibrary: function () {
-            this.buildImprovement("build_in_library", this.playerActionsHelper.getImprovementNameForAction("build_in_library"));
+            this.buildImprovement("build_in_library", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_library"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_LIBRARY, "Built a library.");
         },
         
         buildMarket: function () {
-            this.buildImprovement("build_in_market", this.playerActionsHelper.getImprovementNameForAction("build_in_market"));
+            this.buildImprovement("build_in_market", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_market"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_MARKET, "Built a market.");
         },
         
         buildTradingPost: function () {
-            this.buildImprovement("build_in_tradingPost", this.playerActionsHelper.getImprovementNameForAction("build_in_tradingPost"));
+            this.buildImprovement("build_in_tradingPost", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_tradingPost"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_TRADING_POST, "Built a trading post.");
         },
         
         buildInn: function () {
-            this.buildImprovement("build_in_inn", this.playerActionsHelper.getImprovementNameForAction("build_in_inn"));
+            this.buildImprovement("build_in_inn", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_inn"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_INN, "Built an inn. Maybe it will attract adventurers.");
         },
         
         buildSquare: function () {
-            this.buildImprovement("build_in_square", this.playerActionsHelper.getImprovementNameForAction("build_in_square"));
+            this.buildImprovement("build_in_square", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_square"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_SQUARE, "Built a square. The camp feels more like a town withing the City already.");
         },
         
         buildGarden: function () {
-            this.buildImprovement("build_in_garden", this.playerActionsHelper.getImprovementNameForAction("build_in_garden"));
+            this.buildImprovement("build_in_garden", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_garden"));
             this.addLogMessage(LogConstants.MSG_ID_BUILT_GARDEN, "Built a garden.");
         },
         
@@ -1061,7 +1048,7 @@ define(['ash',
 
             // Find neighbour
             var neighbourPos = PositionConstants.getPositionOnPath(positionComponent.getPosition(), direction, 1);
-            var neighbour = this.levelHelper.getSectorByPosition(neighbourPos.level, neighbourPos.sectorX, neighbourPos.sectorY);
+            var neighbour = GameGlobals.levelHelper.getSectorByPosition(neighbourPos.level, neighbourPos.sectorX, neighbourPos.sectorY);
             var neighbourPassagesComponent = neighbour.get(PassagesComponent);
             var neighbourBlocker = neighbourPassagesComponent.getBlocker(PositionConstants.getOppositeDirection(direction));
 
@@ -1071,8 +1058,8 @@ define(['ash',
                 return;
             }
 
-            this.buildImprovement("build_out_bridge", this.playerActionsHelper.getImprovementNameForAction("build_out_bridge"), sector);
-            this.buildImprovement("build_out_bridge", this.playerActionsHelper.getImprovementNameForAction("build_out_bridge"), neighbour, true);
+            this.buildImprovement("build_out_bridge", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_bridge"), sector);
+            this.buildImprovement("build_out_bridge", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_bridge"), neighbour, true);
         },
         
         buildSpaceShip1: function(sectorPos) {
@@ -1098,7 +1085,7 @@ define(['ash',
 			
 			if (sector) {
 				var msg = "Colony construction project ready at " + sectorPosVO.getInGameFormat(playerPos.level === l);
-				this.buildImprovement(action, this.playerActionsHelper.getImprovementNameForAction(action), sector);
+				this.buildImprovement(action, GameGlobals.playerActionsHelper.getImprovementNameForAction(action), sector);
 				this.addLogMessage(LogConstants.MSG_ID_BUILT_SPACESHIP, msg);
 			} else {
 				console.log("WARN: Couldn't find sectors for building space ship.");
@@ -1118,7 +1105,7 @@ define(['ash',
         
         useHome: function() {
             this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
-            this.uiFunctions.completeAction("use_in_home");
+            GameGlobals.uiFunctions.completeAction("use_in_home");
             this.forceStatsBarUpdate();
         },
         
@@ -1138,7 +1125,7 @@ define(['ash',
             } else {
                 console.log("WARN: No camp sector found.");
             }
-            this.uiFunctions.completeAction("use_in_campfire");
+            GameGlobals.uiFunctions.completeAction("use_in_campfire");
             this.forceResourceBarUpdate();
         },
         
@@ -1149,9 +1136,9 @@ define(['ash',
             this.playerStatsNodes.head.stamina.stamina = 1000;
             this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL, "Healed all injuries.");
                 
-            this.uiFunctions.completeAction("use_in_hospital");
+            GameGlobals.uiFunctions.completeAction("use_in_hospital");
             this.forceResourceBarUpdate();
-            this.gameState.unlockedFeatures.fight = true;
+            GameGlobals.gameState.unlockedFeatures.fight = true;
         },
         
         useHospital2: function () {                
@@ -1164,7 +1151,7 @@ define(['ash',
         useInn: function (auto) {
             var sector = this.playerLocationNodes.head.entity;
             var positionComponent = sector.get(PositionComponent);
-            var campCount = this.gameState.numCamps;
+            var campCount = GameGlobals.gameState.numCamps;
             var maxAvailableFollowers = Math.max(0, Math.min(4, Math.floor(sector.get(CampComponent).population / 10))) + 1;
             var numAvailableFollowers = Math.floor(Math.random() * maxAvailableFollowers) + 1;
             var availableFollowers = [];
@@ -1191,9 +1178,9 @@ define(['ash',
                     }
                 }
             } else {
-                this.uiFunctions.showInnPopup(availableFollowers);
+                GameGlobals.uiFunctions.showInnPopup(availableFollowers);
             }
-            this.uiFunctions.completeAction("use_in_inn");
+            GameGlobals.uiFunctions.completeAction("use_in_inn");
                         
             return false;
         },
@@ -1210,18 +1197,18 @@ define(['ash',
         craftItem: function (itemId) {
 			var actionName = "craft_" + itemId;
             var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-            var item = this.playerActionsHelper.getItemForCraftAction(actionName);
+            var item = GameGlobals.playerActionsHelper.getItemForCraftAction(actionName);
             itemsComponent.addItem(item.clone(), !this.playerPositionNodes.head.position.inCamp);
 
             if (item.type === ItemConstants.itemTypes.weapon)
-                if (!this.gameState.unlockedFeatures.fight) {
-                    this.gameState.unlockedFeatures.fight = true;
+                if (!GameGlobals.gameState.unlockedFeatures.fight) {
+                    GameGlobals.gameState.unlockedFeatures.fight = true;
                     GlobalSignals.featureUnlockedSignal.dispatch();
                 }
 
             if (item.type == ItemConstants.itemTypes.light) {
-                if (!this.gameState.unlockedFeatures.vision) {
-                    this.gameState.unlockedFeatures.vision = true;
+                if (!GameGlobals.gameState.unlockedFeatures.vision) {
+                    GameGlobals.gameState.unlockedFeatures.vision = true;
                     GlobalSignals.featureUnlockedSignal.dispatch();
                 }
             }
@@ -1249,7 +1236,7 @@ define(['ash',
         discardItem: function (itemID) {
             var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
             var item = itemsComponent.getItem(itemID);
-            uiFunctions.showConfirmation(
+            GameGlobals.uiFunctions.showConfirmation(
                 "Are you sure you want to discard this item?",
                 function () {
                     itemsComponent.discardItem(item);
@@ -1260,7 +1247,7 @@ define(['ash',
         
         useItem: function (itemId) {
             var actionName = "use_item_" + itemId;
-            var reqs = this.playerActionsHelper.getReqs(actionName);
+            var reqs = GameGlobals.playerActionsHelper.getReqs(actionName);
 
             switch (itemId) {
                 case "first_aid_kit_1":
@@ -1318,9 +1305,9 @@ define(['ash',
         },
         
         buyUpgrade: function (upgradeId, automatic) {
-            if (automatic || this.playerActionsHelper.checkAvailability(upgradeId, true)) {
+            if (automatic || GameGlobals.playerActionsHelper.checkAvailability(upgradeId, true)) {
 				var upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeId];
-                this.playerActionsHelper.deductCosts(upgradeId);
+                GameGlobals.playerActionsHelper.deductCosts(upgradeId);
                 this.addLogMessage(LogConstants.MSG_ID_BOUGHT_UPGRADE, "Researched " + upgradeDefinition.name);
                 this.tribeUpgradesNodes.head.upgrades.addUpgrade(upgradeId);
                 GlobalSignals.upgradeUnlockedSignal.dispatch(upgradeId);
@@ -1329,7 +1316,7 @@ define(['ash',
         },
         
         collectCollector: function (actionName, improvementName) {                
-            var currentStorage = this.resourcesHelper.getCurrentStorage();
+            var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
             var bagComponent = this.playerPositionNodes.head.entity.get(BagComponent);
 
             var sector = this.playerLocationNodes.head.entity;
@@ -1390,7 +1377,7 @@ define(['ash',
         },
         
         launch: function () {
-            this.gameState.isFinished = true;
+            GameGlobals.gameState.isFinished = true;
             GlobalSignals.launcedSignal.dispatch();
         },
         
@@ -1416,8 +1403,8 @@ define(['ash',
         passTime: function (seconds, callback) {
             this.engine.updateComplete.addOnce(function () {
                 this.engine.extraUpdateTime = seconds;
-                this.gameState.passTime(seconds);
-                this.uiFunctions.onPlayerMoved(); // reset cooldowns for buttons
+                GameGlobals.gameState.passTime(seconds);
+                GameGlobals.uiFunctions.onPlayerMoved(); // reset cooldowns for buttons
                 this.engine.updateComplete.addOnce(function () {
                     this.engine.extraUpdateTime = 0;
                     if (callback) callback();

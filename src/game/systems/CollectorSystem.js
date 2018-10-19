@@ -1,13 +1,12 @@
 // A system that updates accumulates resources in collectors
 define([
-    'ash', 'game/constants/GameConstants', 'game/nodes/sector/SectorCollectorsNode', 'game/vos/ResourcesVO'
-], function (Ash, GameConstants, SectorCollectorsNode, ResourcesVO) {
+    'ash', 'game/GameGlobals', 'game/constants/GameConstants', 'game/nodes/sector/SectorCollectorsNode', 'game/vos/ResourcesVO'
+], function (Ash, GameGlobals, GameConstants, SectorCollectorsNode, ResourcesVO) {
     var CollectorSystem = Ash.System.extend({
 
 		collectorNodes: null,
 
-        constructor: function (gameState) {
-            this.gameState = gameState;
+        constructor: function () {
         },
 
         addToEngine: function (engine) {
@@ -20,7 +19,7 @@ define([
         },
 
         update: function (time) {
-            if (this.gameState.isPaused) return;
+            if (GameGlobals.gameState.isPaused) return;
 			for (var node = this.collectorNodes.head; node; node = node.next) {
 				this.updateNode(time + this.engine.extraUpdateTime, node);
 			}

@@ -1,6 +1,7 @@
 // Helper methods related to player actions (costs, requirements, descriptions) - common definitions for all actions
 define([
     'ash',
+    'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/PlayerActionConstants',
     'game/constants/LocaleConstants',
@@ -14,16 +15,12 @@ define([
     'game/systems/FaintingSystem',
     'game/systems/SaveSystem'
 ], function (
-	Ash, GlobalSignals, PlayerActionConstants, LocaleConstants, FightConstants, 
+	Ash, GameGlobals, GlobalSignals, PlayerActionConstants, LocaleConstants, FightConstants, 
     EnemiesComponent, SectorControlComponent, FightComponent, FightEncounterComponent, 
     PlayerLocationNode, PlayerStatsNode, 
     FaintingSystem, SaveSystem
 ) {
     var FightHelper = Ash.Class.extend({
-		
-		uiFunctions: null,
-		playerActionsHelper: null,
-        playerActionResultsHelper: null,
 		
 		playerLocationNodes: null,
         playerStatsNodes: null,
@@ -34,16 +31,14 @@ define([
 		pendingFleeCallback: null,
 		pendingLoseCallback: null,
 		
-		constructor: function (engine, playerActionsHelper, playerActionResultsHelper) {
-			this.playerActionsHelper = playerActionsHelper;
-            this.playerActionResultsHelper = playerActionResultsHelper;
+		constructor: function (engine) {
 			this.engine = engine;
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 		},
 
 		handleRandomEncounter: function (action, winCallback, fleeCallback, loseCallback) {			
-			var baseActionID = this.playerActionsHelper.getBaseActionID(action);
+			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			var hasEnemies = this.hasEnemiesCurrentLocation(action);
 			if (hasEnemies) {
                 var vision = this.playerStatsNodes.head.vision.value;
@@ -64,7 +59,7 @@ define([
         
         hasEnemiesCurrentLocation: function(action) {
             if (!this.playerLocationNodes.head) return false;
-            var baseActionID = this.playerActionsHelper.getBaseActionID(action); 
+            var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action); 
             var localeId = FightConstants.getEnemyLocaleId(baseActionID, action);    
             var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);     
             var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
@@ -79,13 +74,13 @@ define([
             var enemiesComponent = sector.get(EnemiesComponent);
             enemiesComponent.selectNextEnemy();
 			sector.add(new FightEncounterComponent(enemiesComponent.getNextEnemy(), action, this.pendingEnemies, this.totalEnemies));
-			this.uiFunctions.showFight();
+			GameGlobals.uiFunctions.showFight();
         },
         
         startFight: function () {
             // TODO move to PlayerActionFunctions
-            if (this.playerActionsHelper.checkAvailability("fight", true)) {
-                this.playerActionsHelper.deductCosts("fight");
+            if (GameGlobals.playerActionsHelper.checkAvailability("fight", true)) {
+                GameGlobals.playerActionsHelper.deductCosts("fight");
                 var sector = this.playerLocationNodes.head.entity;
 				var encounterComponent = sector.get(FightEncounterComponent);
 				if (encounterComponent && encounterComponent.enemy) {
@@ -102,7 +97,7 @@ define([
             var fightComponent = sector.get(FightComponent);
             if (fightComponent) {
 				if (fightComponent.won) {
-                    this.playerActionResultsHelper.collectRewards(false, fightComponent.resultVO);
+                    GameGlobals.playerActionResultsHelper.collectRewards(false, fightComponent.resultVO);
 					sector.get(EnemiesComponent).resetNextEnemy();
 					this.pendingEnemies--;
 					if (this.pendingEnemies > 0) {
@@ -119,7 +114,7 @@ define([
             } else {
 				if (this.pendingFleeCallback) this.pendingFleeCallback();
 			}
-            this.uiFunctions.popupManager.closePopup("fight-popup");
+            GameGlobals.uiFunctions.popupManager.closePopup("fight-popup");
             sector.remove(FightComponent);
 			this.pendingWinCallback = null;
 			this.pendingFleeCallback = null;
@@ -130,7 +125,7 @@ define([
 		
 		getEnemyCount: function (action) {
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
-			var baseActionID = this.playerActionsHelper.getBaseActionID(action);
+			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			var localeId = FightConstants.getEnemyLocaleId(baseActionID, action);
 			switch (baseActionID) {
 				case "clear_workshop":

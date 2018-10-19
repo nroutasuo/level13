@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
     'game/EntityCreator',
@@ -10,34 +11,20 @@ define([
     'game/nodes/level/LevelNode',
     'game/components/common/PositionComponent',
     'game/systems/ui/UIOutLevelSystem'
-], function (Ash, GlobalSignals, GameConstants, EntityCreator, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, LevelNode, PositionComponent, UIOutLevelSystem) {
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, EntityCreator, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, LevelNode, PositionComponent, UIOutLevelSystem) {
 
     var GameManager = Ash.System.extend({
 	
         tickProvider: null,
-        gameState: null,
         creator: null,
-		saveHelper: null,
-        enemyHelper: null,
-        itemsHelper: null,
-		
-		uiFunctions: null,
-		playerActions: null,
 		
 		engine: null,
 		
 		player: null,
 		tribe: null,
 	
-		constructor: function (tickProvider, gameState, uiFunctions, playerActions, saveHelper, enemyHelper, itemsHelper, levelHelper) {
+		constructor: function (tickProvider) {
 			this.tickProvider = tickProvider;
-			this.gameState = gameState;
-			this.uiFunctions = uiFunctions;
-			this.playerActions = playerActions;
-			this.saveHelper = saveHelper;
-            this.enemyHelper = enemyHelper;
-            this.itemsHelper = itemsHelper;
-            this.levelHelper = levelHelper;
 		},
 	
 		addToEngine: function (engine) {
@@ -57,8 +44,8 @@ define([
 			var loaded = this.loadGameState();
             GameConstants.gameSpeedCamp = 1;
             GameConstants.gameSpeedExploration = 1;
-            gtag('set', { 'max_level': this.gameState.level });
-            gtag('set', { 'max_camp': this.gameState.numCamps });
+            gtag('set', { 'max_level': GameGlobals.gameState.level });
+            gtag('set', { 'max_camp': GameGlobals.gameState.numCamps });
 			if (loaded) this.syncLoadedGameState();
 			if (!loaded) this.setupNewGame();
             
@@ -69,49 +56,47 @@ define([
 		// Called after all other systems are ready
 		startGame: function () {
             if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t starting game");
-			var startTab = this.uiFunctions.elementIDs.tabs.out;
-			var playerPos = this.playerActions.playerPositionNodes.head.position;
-			if (playerPos.inCamp) startTab = this.uiFunctions.elementIDs.tabs.in;
             
             // for restart:
             this.engine.getSystem(UIOutLevelSystem).pendingUpdateDescription = true;
             this.engine.getSystem(UIOutLevelSystem).pendingUpdateMap = true;
             
-			this.uiFunctions.showTab(startTab);
+            GameGlobals.uiFunctions.startGame();
+            
             var sys = this;
             setTimeout(function () {
-                sys.uiFunctions.showGame();
+                GameGlobals.uiFunctions.showGame();
                 GlobalSignals.gameStartedSignal.dispatch();
             }, 250);
 		},
 		
 		restartGame: function () {
             gtag('event', 'game_restart', { event_category: 'game_data' });
-			this.uiFunctions.hideGame(true);
+			GameGlobals.uiFunctions.hideGame(true);
             var sys = this;
             setTimeout(function () {
                 sys.engine.removeAllEntities();
-                sys.levelHelper.reset();
-                sys.gameState.reset();
+                GameGlobals.levelHelper.reset();
+                GameGlobals.gameState.reset();
                 sys.setupGame();
                 sys.startGame();
             }, 250);
 		},
         
         pauseGame: function () {            
-			this.uiFunctions.hideGame(false);
+			GameGlobals.uiFunctions.hideGame(false);
             this.tickProvider.stop();
         },
 		
 		initializeEntities: function () {
-			this.player = this.creator.createPlayer(this.saveHelper.saveKeys.player);
-			this.tribe = this.creator.createTribe(this.saveHelper.saveKeys.tribe);
+			this.player = this.creator.createPlayer(GameGlobals.saveHelper.saveKeys.player);
+			this.tribe = this.creator.createTribe(GameGlobals.saveHelper.saveKeys.tribe);
 		},
 		
 		// Called if there is no save to load
 		setupNewGame: function () {
             gtag('event', 'game_start_new', { event_category: 'game_data' });
-            this.gameState.gameStartTimeStamp = new Date().getTime();
+            GameGlobals.gameState.gameStartTimeStamp = new Date().getTime();
 			this.creator.initPlayer(this.player);
 		},
 		
@@ -120,7 +105,7 @@ define([
             var sectorVO;
 			for (var i = WorldCreatorHelper.getBottomLevel(seed); i <= WorldCreatorHelper.getHighestLevel(seed); i++) {
                 levelVO = WorldCreator.world.getLevel(i);
-				this.creator.createLevel(this.saveHelper.saveKeys.level + i, i, levelVO);
+				this.creator.createLevel(GameGlobals.saveHelper.saveKeys.level + i, i, levelVO);
 				for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
 					for (var x = levelVO.minX; x <= levelVO.maxX; x++) {
                         sectorVO = levelVO.getSector(x, y);
@@ -130,7 +115,7 @@ define([
                         var passageOptions = { passageUp: up, passageDown: down };
 						var blockers = sectorVO.movementBlockers;
                         this.creator.createSector(
-                            this.saveHelper.saveKeys.sector + i + "." + x + "." + y,
+                            GameGlobals.saveHelper.saveKeys.sector + i + "." + x + "." + y,
                             i,
                             x,
                             y,
@@ -158,10 +143,10 @@ define([
             if (hasSave) {
                 var loadedGameState = save.gameState;
                 for (key in loadedGameState) {
-                    this.gameState[key] = loadedGameState[key];
+                    GameGlobals.gameState[key] = loadedGameState[key];
                 }
             }
-            this.gameState.isPaused = false;
+            GameGlobals.gameState.isPaused = false;
 
             // Create world
             if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t creating world");
@@ -169,8 +154,8 @@ define([
             if (hasSave) worldSeed = parseInt(loadedGameState.worldSeed);
             else worldSeed = WorldCreatorRandom.getNewSeed();
 
-            WorldCreator.prepareWorld(worldSeed, this.enemyHelper, this.itemsHelper);
-            this.gameState.worldSeed = worldSeed;
+            WorldCreator.prepareWorld(worldSeed, GameGlobals.itemsHelper);
+            GameGlobals.gameState.worldSeed = worldSeed;
             gtag('set', { 'world_seed': worldSeed });
             
             if (GameConstants.isDebugOutputEnabled) console.log("Prepared world (seed: " + worldSeed + ")");
@@ -184,8 +169,8 @@ define([
                 var failedComponents = 0;
                 var saveWarningShown = false;
 
-                failedComponents += this.saveHelper.loadEntity(entitiesObject, this.saveHelper.saveKeys.player, this.player);
-                failedComponents += this.saveHelper.loadEntity(entitiesObject, this.saveHelper.saveKeys.tribe, this.tribe);
+                failedComponents += GameGlobals.saveHelper.loadEntity(entitiesObject, GameGlobals.saveHelper.saveKeys.player, this.player);
+                failedComponents += GameGlobals.saveHelper.loadEntity(entitiesObject, GameGlobals.saveHelper.saveKeys.tribe, this.tribe);
                 
                 if (!saveWarningShown && failedComponents > 0) {
                     saveWarningShown = true;
@@ -197,8 +182,8 @@ define([
                 var saveKey;
                 for (var sectorNode = sectorNodes.head; sectorNode; sectorNode = sectorNode.next) {
                     positionComponent = sectorNode.entity.get(PositionComponent);
-                    saveKey = this.saveHelper.saveKeys.sector + positionComponent.level + "." + positionComponent.sectorX + "." + positionComponent.sectorY;
-                    failedComponents += this.saveHelper.loadEntity(entitiesObject, saveKey, sectorNode.entity);
+                    saveKey = GameGlobals.saveHelper.saveKeys.sector + positionComponent.level + "." + positionComponent.sectorX + "." + positionComponent.sectorY;
+                    failedComponents += GameGlobals.saveHelper.loadEntity(entitiesObject, saveKey, sectorNode.entity);
                 
                     if (!saveWarningShown && failedComponents > 0) {
                         saveWarningShown = true;
@@ -209,8 +194,8 @@ define([
                 var levelNodes = this.creator.engine.getNodeList(LevelNode);
                 for (var levelNode = levelNodes.head; levelNode; levelNode = levelNode.next) {
                     positionComponent = levelNode.entity.get(PositionComponent);
-                    saveKey = this.saveHelper.saveKeys.level + positionComponent.level;
-                    failedComponents += this.saveHelper.loadEntity(entitiesObject, saveKey, levelNode.entity);
+                    saveKey = GameGlobals.saveHelper.saveKeys.level + positionComponent.level;
+                    failedComponents += GameGlobals.saveHelper.loadEntity(entitiesObject, saveKey, levelNode.entity);
                 
                     if (!saveWarningShown && failedComponents > 0) {
                         saveWarningShown = true;
@@ -236,7 +221,7 @@ define([
         getSaveObject: function () { 
             try {
                 var json = localStorage.save;
-                var object = this.saveHelper.parseSaveJSON(json);
+                var object = GameGlobals.saveHelper.parseSaveJSON(json);
                 return object;
             } catch (exception) {
                 // TODO show no save found to user?
@@ -255,14 +240,13 @@ define([
 		},
         
         showSaveWarning: function () {
-            var uiFunctions = this.uiFunctions;
-            this.uiFunctions.showQuestionPopup(
+            GameGlobals.uiFunctions.showQuestionPopup(
                 "Warning", 
                 "Part of the save could not be loaded. Most likely your save is old and incompatible with the current version. Restart the game or continue at your own risk.",
                 "Restart",   
                 "Continue",
                 function () {
-                    uiFunctions.restart();
+                    GameGlobals.uiFunctions.restart();
                 },
                 function () {}
             );

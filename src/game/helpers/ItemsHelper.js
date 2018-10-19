@@ -13,8 +13,7 @@ define([
         
         gameState: null,
 
-        constructor: function (gameState) {
-            this.gameState = gameState;
+        constructor: function () {
         },
         
         defaultClothing: {

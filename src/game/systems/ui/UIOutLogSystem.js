@@ -1,6 +1,6 @@
 define([
-    'ash', 'game/GlobalSignals', 'game/nodes/LogNode', 'game/constants/UIConstants',
-], function (Ash, GlobalSignals, LogNode, UIConstants) {
+    'ash', 'game/GameGlobals', 'game/GlobalSignals', 'game/nodes/LogNode', 'game/constants/UIConstants',
+], function (Ash, GameGlobals, GlobalSignals, LogNode, UIConstants) {
     var UIOutLogSystem = Ash.System.extend({
 	
         gameState: null,
@@ -9,8 +9,7 @@ define([
 		lastUpdateTimeStamp: 0,
 		updateFrequency: 1000 * 15,
 
-        constructor: function (gameState) {
-            this.gameState = gameState;
+        constructor: function () {
         },
 
         addToEngine: function (engine) {
@@ -29,7 +28,7 @@ define([
         },
 
         update: function (time) {
-            if (this.gameState.isPaused) return;
+            if (GameGlobals.gameState.isPaused) return;
 			var timeStamp = new Date().getTime();
 			var isTime = timeStamp - this.lastUpdateTimeStamp > this.updateFrequency;
 			var hasNewMessages = false;
