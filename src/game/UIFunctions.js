@@ -13,8 +13,6 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
     
     var UIFunctions = Ash.Class.extend({
         
-        saveSystem: null,
-        
         popupManager: null,
         
         elementIDs: {
@@ -50,11 +48,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
             }
         },
         
-        constructor: function (saveSystem) {
-            this.saveSystem = saveSystem;
-            
-			this.playerActionFunctions = GameGlobals.playerActionFunctions;
-
+        constructor: function () {
             this.generateElements();
             this.registerListeners();
             
@@ -63,7 +57,6 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
         
         registerListeners: function () {
             var elementIDs = this.elementIDs;
-            var playerActions = this.playerActionFunctions;
             var uiFunctions = this;
             
             $(window).resize(this.onResize);
@@ -88,8 +81,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
             this.registerActionButtonListeners("");
             
             // Meta/non-action buttons
-            var saveSystem = this.saveSystem;
-            $("#btn-save").click(function (e) {saveSystem.save() });
+            $("#btn-save").click(function (e) { GlobalSignals.saveGameSignal.dispatch(); });
             $("#btn-restart").click(function (e) {
                 uiFunctions.showConfirmation(
                     "Do you want to restart the game? Your progress will be lost.",
@@ -122,18 +114,18 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
                 var smiths = parseInt($("#stepper-smith input").val());
                 var concrete = parseInt($("#stepper-concrete input").val());
                 var soldiers = parseInt($("#stepper-soldier input").val());
-                playerActions.assignWorkers(scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers);
+                GameGlobals.playerActionFunctions.assignWorkers(scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers);
             });
             
             // Buttons: In: Other
             $("#btn-header-rename").click(function(e) {
-                var prevCampName = playerActions.getNearestCampName();
+                var prevCampName = GameGlobals.playerActionFunctions.getNearestCampName();
                 uiFunctions.showInput(
                     "Rename Camp",
                     "Give your camp a new name",
                     prevCampName,
                     function (input) {
-                        playerActions.setNearestCampName(input);
+                        GameGlobals.playerActionFunctions.setNearestCampName(input);
                     });
             });
         },
@@ -141,7 +133,6 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
         registerActionButtonListeners: function (scope) {
             var uiFunctions = this;
             var gameState = GameGlobals.gameState;
-            var playerActions = this.playerActionFunctions;
             
             // All action buttons
             $.each($(scope + " button.action"), function () {
@@ -167,7 +158,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
                     if (isProject) param = $(this).attr("sector");
 
                     var locationKey = uiFunctions.getLocationKey($(this));
-                    var isStarted = playerActions.startAction(action, param);
+                    var isStarted = GameGlobals.playerActionFunctions.startAction(action, param);
                     if (!isStarted)
                         return;
 
@@ -191,7 +182,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
                 GameGlobals.fightHelper.endFight();
             });
             $(scope + "#out-action-fight-cancel").click(function (e) {
-                playerActions.flee();
+                GameGlobals.playerActionFunctions.flee();
                 GameGlobals.fightHelper.endFight();
             });
             $(scope + "#inn-popup-btn-cancel").click(function (e) {                
@@ -220,9 +211,9 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
                     selectedItems[itemID] = selectedVal;
                 });
                 
-                playerActions.updateCarriedItems(selectedItems);
-                playerActions.moveResFromCampToBag(selectedResVO);
-                playerActions.leaveCamp();
+                GameGlobals.playerActionFunctions.updateCarriedItems(selectedItems);
+                GameGlobals.playerActionFunctions.moveResFromCampToBag(selectedResVO);
+                GameGlobals.playerActionFunctions.leaveCamp();
             });
             
             // Buttons: Bag: Item details
@@ -422,7 +413,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
         
         startGame: function () {
 			var startTab = this.elementIDs.tabs.out;
-            var playerPos = this.playerActionFunctions.playerPositionNodes.head.position;
+            var playerPos = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
 			if (playerPos.inCamp) startTab = this.elementIDs.tabs.in;
 			this.showTab(startTab);
         },
@@ -461,7 +452,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
         restart: function () {            
             $("#log ul").empty();
             this.onTabClicked(this.elementIDs.tabs.out, GameGlobals.gameState, this);
-            this.saveSystem.restart();
+            GlobalSignals.restartGameSignal.dispatch();
         },
         
         onResize: function () {
@@ -756,7 +747,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
         getLocationKey: function(button) {
             var action = $(button).attr("action");
             var isLocationAction = PlayerActionConstants.isLocationAction(action);
-            var playerPos = this.playerActionFunctions.playerPositionNodes.head.position;
+            var playerPos = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
             return GameGlobals.gameState.getActionLocationKey(isLocationAction, playerPos);
         },
         

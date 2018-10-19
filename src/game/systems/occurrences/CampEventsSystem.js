@@ -2,6 +2,7 @@
 define([
     'ash',
     'game/GameGlobals',
+    'game/GlobalSignals',
     'game/constants/GameConstants',
     'game/constants/LogConstants',
     'game/constants/OccurrenceConstants',
@@ -18,7 +19,7 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/vos/RaidVO',
 ], function (
-    Ash, GameGlobals, GameConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants,
+    Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants,
     PlayerResourcesNode, CampNode, TribeUpgradesNode,
     PositionComponent, LogMessagesComponent,
     TraderComponent, RaidComponent, CampEventTimersComponent,
@@ -27,15 +28,13 @@ define([
     var CampEventsSystem = Ash.System.extend({
 	    
         occurrenceFunctions: null,
-        saveSystem: null,
 		
         playerNodes: null,
         campNodes: null,
         tribeUpgradesNodes: null,
         
-        constructor: function (occurrenceFunctions, saveSystem) {
+        constructor: function (occurrenceFunctions) {
             this.occurrenceFunctions = occurrenceFunctions;
-            this.saveSystem = saveSystem;
         },
         
         addToEngine: function (engine) {
@@ -207,8 +206,8 @@ define([
             } else if (!playerInCamp && awayLogMsg) {
                 this.addLogMessage(awayLogMsg, replacements, values, campNode);
             }
-
-            this.saveSystem.save();
+            
+            GlobalSignals.saveGameSignal.dispatch();
         },
         
         startEvent: function (campNode, event) {

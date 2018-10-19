@@ -9,7 +9,6 @@ define([
     'game/constants/FightConstants',
     'game/constants/UpgradeConstants',
     'game/constants/PlayerStatConstants',
-    'game/worldcreator/WorldCreatorHelper',
     'game/systems/SaveSystem',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/player/AutoPlayNode',
@@ -28,7 +27,7 @@ define([
     'game/components/sector/ReputationComponent'
 ], function (Ash,
     GameGlobals, GlobalSignals, GameConstants, CampConstants, UIConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
-    WorldCreatorHelper, SaveSystem,
+    SaveSystem,
 	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
     BagComponent,
 	DeityComponent,

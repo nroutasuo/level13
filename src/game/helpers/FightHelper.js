@@ -12,13 +12,12 @@ define([
     'game/components/sector/FightEncounterComponent',
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/PlayerStatsNode',
-    'game/systems/FaintingSystem',
-    'game/systems/SaveSystem'
+    'game/systems/FaintingSystem'
 ], function (
 	Ash, GameGlobals, GlobalSignals, PlayerActionConstants, LocaleConstants, FightConstants, 
     EnemiesComponent, SectorControlComponent, FightComponent, FightEncounterComponent, 
     PlayerLocationNode, PlayerStatsNode, 
-    FaintingSystem, SaveSystem
+    FaintingSystem
 ) {
     var FightHelper = Ash.Class.extend({
 		
@@ -136,8 +135,7 @@ define([
 		},
         
         save: function () {
-            var saveSystem = this.engine.getSystem(SaveSystem);
-            saveSystem.save();
+            GlobalSignals.saveGameSignal.dispatch();
         },
         
     });

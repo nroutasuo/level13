@@ -1,10 +1,11 @@
 define([
     'ash', 
     'game/GameGlobals',
+    'game/GlobalSignals',
     'webtoolkit/base64',
     'game/systems/GameManager', 
     'game/nodes/common/SaveNode'
-], function (Ash, GameGlobals, Base64, GameManager, SaveNode) {
+], function (Ash, GameGlobals, GlobalSignals, Base64, GameManager, SaveNode) {
     var SaveSystem = Ash.System.extend({
 	
         engine: null,
@@ -22,9 +23,12 @@ define([
             this.engine = engine;
 			this.saveNodes = engine.getNodeList(SaveNode);
 			this.lastSaveTimeStamp = new Date().getTime();
+            GlobalSignals.add(this, GlobalSignals.saveGameSignal, this.save);
+            GlobalSignals.add(this, GlobalSignals.restartGameSignal, this.restart);
         },
 
         removeFromEngine: function (engine) {
+            GlobalSignals.removeAll(this);
 			this.engine = null;
 			this.saveNodes = null;
         },

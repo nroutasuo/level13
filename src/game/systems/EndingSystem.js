@@ -7,8 +7,7 @@ var EndingSystem = Ash.System.extend({
         
         isPopupShown: false,
 
-        constructor: function () {
-        },
+        constructor: function () {},
 
         addToEngine: function (engine) {
             this.engine = engine;

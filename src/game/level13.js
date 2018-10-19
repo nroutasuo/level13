@@ -174,7 +174,7 @@ define([
         initializeGameGlobals: function () {
 			GameGlobals.gameState = new GameState();
             GameGlobals.playerActionsHelper = new PlayerActionsHelper(this.engine);
-			GameGlobals.playerActionFunctions = new PlayerActionFunctions(this.fightHelper);
+			GameGlobals.playerActionFunctions = new PlayerActionFunctions();
             
             GameGlobals.resourcesHelper = new ResourcesHelper(this.engine);
             GameGlobals.levelHelper = new LevelHelper(this.engine);
@@ -194,7 +194,7 @@ define([
             GameGlobals.uiTechTreeHelper = new UITechTreeHelper(this.engine);
             GameGlobals.buttonHelper = new ButtonHelper();
             
-			GameGlobals.uiFunctions = new UIFunctions(this.saveSystem);
+			GameGlobals.uiFunctions = new UIFunctions();
         },
         
         initializePlugins: function (plugins) {
@@ -236,8 +236,8 @@ define([
 			this.engine.addSystem(new LevelPassagesSystem(), SystemPriorities.update);
 			this.engine.addSystem(new UnlockedFeaturesSystem(), SystemPriorities.update);
 			this.engine.addSystem(new GlobalResourcesSystem(), SystemPriorities.update);
-			this.engine.addSystem(new CampEventsSystem(this.occurrenceFunctions, this.saveSystem), SystemPriorities.update);
-            this.engine.addSystem(new EndingSystem(this.gameManager), SystemPriorities.update);
+			this.engine.addSystem(new CampEventsSystem(this.occurrenceFunctions), SystemPriorities.update);
+            this.engine.addSystem(new EndingSystem(), SystemPriorities.update);
 			this.engine.addSystem(new AutoPlaySystem(), SystemPriorities.postUpdate);
 			
 			this.engine.addSystem(new UIOutHeaderSystem(), SystemPriorities.render);
@@ -256,7 +256,7 @@ define([
 			this.engine.addSystem(new UIOutTribeSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutFightSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLogSystem(), SystemPriorities.render);
-			this.engine.addSystem(new UIOutManageSaveSystem(this.saveSystem), SystemPriorities.render);
+			this.engine.addSystem(new UIOutManageSaveSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupInventorySystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupTradeSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupInnSystem(), SystemPriorities.render);

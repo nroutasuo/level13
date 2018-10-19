@@ -2,7 +2,7 @@
 define([
     'ash',
     'game/GameGlobals',
-    'game/systems/SaveSystem',
+    'game/GlobalSignals',
     'game/constants/PlayerActionConstants',
     'game/constants/LogConstants',
     'game/constants/PositionConstants',
@@ -24,7 +24,7 @@ define([
     'game/systems/PlayerPositionSystem'
 ], function (Ash,
     GameGlobals,
-    SaveSystem,
+    GlobalSignals,
     PlayerActionConstants,
 	LogConstants,
 	PositionConstants,
@@ -238,8 +238,7 @@ define([
 		},
         
         save: function () {
-            var saveSystem = this.engine.getSystem(SaveSystem);
-            saveSystem.save();
+            GlobalSignals.saveGameSignal.dispatch();
         }
 
     });

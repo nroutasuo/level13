@@ -1,5 +1,5 @@
-define(['ash', 'game/GameGlobals', 'game/GlobalSignals', 'game/systems/GameManager'], 
-function (Ash, GameGlobals, GlobalSignals, GameManager) {
+define(['ash', 'game/GameGlobals', 'game/GlobalSignals', 'game/systems/GameManager', 'game/systems/SaveSystem',], 
+function (Ash, GameGlobals, GlobalSignals, GameManager, SaveSystem) {
 var UIOutManageSaveSystem = Ash.System.extend({
     
         spanSaveSeed: null,
@@ -8,9 +8,7 @@ var UIOutManageSaveSystem = Ash.System.extend({
         loadImportcontainer: null,
         spanMsg: null,
         
-        constructor: function (saveSystem) {
-            this.saveSystem = saveSystem;
-            
+        constructor: function () {
             this.spanSaveSeed = $("#save-seed");
             this.spanSaveVersion = $("#save-version");
             this.textField = $("#manage-save-textarea");
@@ -69,9 +67,11 @@ var UIOutManageSaveSystem = Ash.System.extend({
         },
         
         openExport: function () {
+            var saveSystem = this.engine.getSystem(SaveSystem);
+                
             GameGlobals.uiFunctions.toggle(this.loadImportcontainer, false);
-            var saveString = this.saveSystem.getObfuscatedSaveJSON();
-            var saveJSON = this.saveSystem.getSaveJSONfromObfuscated(saveString);
+            var saveString = saveSystem.getObfuscatedSaveJSON();
+            var saveJSON = saveSystem.getSaveJSONfromObfuscated(saveString);
             var isOk = GameGlobals.saveHelper.parseSaveJSON(saveJSON);
             if (isOk) {
                 GameGlobals.uiFunctions.toggle(this.spanMsg, false);
@@ -92,8 +92,10 @@ var UIOutManageSaveSystem = Ash.System.extend({
         },
         
         loadImport: function () {
+            var saveSystem = this.engine.getSystem(SaveSystem);
+            
             var importString = this.textField.val();
-            var importJSON = this.saveSystem.getSaveJSONfromObfuscated(importString);
+            var importJSON = saveSystem.getSaveJSONfromObfuscated(importString);
             var isOk = GameGlobals.saveHelper.parseSaveJSON(importJSON);
             if (isOk) {            
                 var sys = this;

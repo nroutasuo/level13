@@ -52,8 +52,7 @@ define(['ash',
 	'game/systems/ui/UIOutElementsSystem',
 	'game/systems/ui/UIOutLevelSystem',
 	'game/systems/FaintingSystem',
-	'game/systems/PlayerPositionSystem',
-	'game/systems/SaveSystem',
+	'game/systems/PlayerPositionSystem'
 ], function (Ash, GameGlobals, GlobalSignals,
 	LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
 	PositionVO, LocaleVO,
@@ -65,7 +64,7 @@ define(['ash',
 	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, TraderComponent,
 	LogMessagesComponent,
-	UIOutHeaderSystem, UIOutElementsSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem, SaveSystem
+	UIOutHeaderSystem, UIOutElementsSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem
 ) {
     
     var PlayerActionFunctions = Ash.System.extend({
@@ -1431,8 +1430,7 @@ define(['ash',
         },
         
         save: function () {
-            var saveSystem = this.engine.getSystem(SaveSystem);
-            saveSystem.save();
+            GlobalSignals.saveGameSignal.dispatch();
         },
         
     });
