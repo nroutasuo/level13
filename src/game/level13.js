@@ -51,7 +51,6 @@ define([
     'game/systems/UnlockedFeaturesSystem',
     'game/systems/occurrences/CampEventsSystem',
     'game/PlayerActionFunctions',
-    'game/OccurrenceFunctions',
     'game/UIFunctions',
     'game/helpers/PlayerActionsHelper',
     'game/helpers/PlayerActionResultsHelper',
@@ -123,7 +122,6 @@ define([
     UnlockedFeaturesSystem,
     CampEventsSystem,
     PlayerActionFunctions,
-    OccurrenceFunctions,
     UIFunctions,
     PlayerActionsHelper,
     PlayerActionResultsHelper,
@@ -146,7 +144,6 @@ define([
     var Level13 = Ash.Class.extend({
 	
         engine: null,	
-		occurrenceFunctions: null,
 		gameManager: null,	
         tickProvider: null,
 
@@ -156,9 +153,6 @@ define([
 			this.tickProvider = new TickProvider(null, function (ex) { game.handleException(ex) });
             
             this.initializeGameGlobals();
-			
-			this.occurrenceFunctions = new OccurrenceFunctions();
-            GameGlobals.playerActionFunctions.occurrenceFunctions = this.occurrenceFunctions;
 			
 			this.addSystems();
             this.initializePlugins(plugins);
@@ -214,7 +208,6 @@ define([
 			if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t initializing systems");
 			
 			this.engine.addSystem(GameGlobals.playerActionFunctions, SystemPriorities.preUpdate);
-			this.engine.addSystem(this.occurrenceFunctions, SystemPriorities.preUpdate);
 			this.engine.addSystem(new SaveSystem(), SystemPriorities.preUpdate);
 			
 			this.engine.addSystem(new GlobalResourcesResetSystem(), SystemPriorities.update);
@@ -223,20 +216,20 @@ define([
 			this.engine.addSystem(new BagSystem(), SystemPriorities.update);
 			this.engine.addSystem(new HazardSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CollectorSystem(), SystemPriorities.update);
-			this.engine.addSystem(new FightSystem(this.occurrenceFunctions), SystemPriorities.update);
+			this.engine.addSystem(new FightSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PopulationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new WorkerSystem(), SystemPriorities.update);
 			this.engine.addSystem(new FaintingSystem(), SystemPriorities.update);
 			this.engine.addSystem(new ReputationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new RumourSystem(), SystemPriorities.update);
 			this.engine.addSystem(new EvidenceSystem(), SystemPriorities.update);
-			this.engine.addSystem(new PlayerPositionSystem(this.occurrenceFunctions), SystemPriorities.preupdate);
+			this.engine.addSystem(new PlayerPositionSystem(), SystemPriorities.preupdate);
 			this.engine.addSystem(new PlayerActionSystem(), SystemPriorities.update);
 			this.engine.addSystem(new SectorStatusSystem(), SystemPriorities.update);
 			this.engine.addSystem(new LevelPassagesSystem(), SystemPriorities.update);
 			this.engine.addSystem(new UnlockedFeaturesSystem(), SystemPriorities.update);
 			this.engine.addSystem(new GlobalResourcesSystem(), SystemPriorities.update);
-			this.engine.addSystem(new CampEventsSystem(this.occurrenceFunctions), SystemPriorities.update);
+			this.engine.addSystem(new CampEventsSystem(), SystemPriorities.update);
             this.engine.addSystem(new EndingSystem(), SystemPriorities.update);
 			this.engine.addSystem(new AutoPlaySystem(), SystemPriorities.postUpdate);
 			

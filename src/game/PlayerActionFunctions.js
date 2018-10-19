@@ -80,7 +80,6 @@ define(['ash',
         tribeUpgradesNodes: null,
         
         engine: null,
-        occurrenceFunctions: null,
         
         constructor: function () {},
 
@@ -532,7 +531,6 @@ define(['ash',
                 var successCallback = function () {
                     sectorStatus.scouted = true;
                     GlobalSignals.sectorScoutedSignal.dispatch();
-                    playerActionFunctions.occurrenceFunctions.onScoutSector(sector);
                     playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
                     playerActionFunctions.save();
                 };

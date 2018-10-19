@@ -16,14 +16,13 @@ define([
     'game/components/common/VisitedComponent',
     'game/components/common/RevealedComponent',
     'game/components/common/CampComponent',
+    'game/components/type/LevelComponent',
 ], function (Ash, GameGlobals, GlobalSignals, WorldCreatorConstants,
     PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode, CampNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, PositionComponent,
-	VisitedComponent, RevealedComponent, CampComponent) {
+	VisitedComponent, RevealedComponent, CampComponent, LevelComponent) {
     
     var PlayerPositionSystem = Ash.System.extend({
-	    
-		occurrenceFunctions: null,
 		
 		sectorNodes: null,
 		levelNodes: null,
@@ -31,10 +30,8 @@ define([
 		playerLocationNodes: null,
         
         lastUpdatePosition: null,
-		
-		constructor: function (occurrenceFunctions) {
-			this.occurrenceFunctions = occurrenceFunctions;
-		},
+        
+        constructor: function () { },
 	
 		addToEngine: function (engine) {
 			this.sectorNodes = engine.getNodeList(SectorNode);
@@ -143,8 +140,14 @@ define([
 			if (levelPos === GameGlobals.gameState.getGroundLevel()) GameGlobals.gameState.unlockedFeatures.favour = true;
 		},
         
-        handleEnterLevel: function (levelNode, levelPos) {
-			this.occurrenceFunctions.onEnterLevel(levelNode.entity);
+        handleEnterLevel: function (levelNode) {
+            var levelEntity = levelNode.entity;
+            var levelComponent = levelEntity.get(LevelComponent);
+            var levelVO = levelComponent.levelVO;
+            if (!levelVO.isCampable) {
+                var msg = "This level seems eerily devoid of any signs of recent human activity.";
+                this.addLogMessage(LogConstants.MSG_ID_ENTER_LEVEL, msg);
+            }
         },
 		
 		handleNewSector: function (sectorNode) {			
@@ -165,8 +168,7 @@ define([
             }
             
             GameGlobals.gameState.numVisitedSectors++;
-			GameGlobals.gameState.unlockedFeatures.sectors = true;            
-			this.occurrenceFunctions.onEnterNewSector(sectorNode.entity);
+			GameGlobals.gameState.unlockedFeatures.sectors = true;
 		},
         
         handleInvalidPosition: function () {
@@ -178,6 +180,11 @@ define([
             playerPos.sectorY = WorldCreatorConstants.FIRST_CAMP_Y;
             playerPos.inCamp = false;
             this.lastUpdatePosition = null;
+        },
+        
+        addLogMessage: function (msgID, msg, replacements, values) {
+            var logComponent = this.logNodes.head.logMessages;
+            logComponent.addMessage(msgID, msg, replacements, values);
         },
         
     });

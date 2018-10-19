@@ -26,16 +26,12 @@ define([
     SectorImprovementsComponent, RaidVO) {
 
     var CampEventsSystem = Ash.System.extend({
-	    
-        occurrenceFunctions: null,
 		
         playerNodes: null,
         campNodes: null,
         tribeUpgradesNodes: null,
         
-        constructor: function (occurrenceFunctions) {
-            this.occurrenceFunctions = occurrenceFunctions;
-        },
+        constructor: function () { },
         
         addToEngine: function (engine) {
             var sys = this;
@@ -174,7 +170,7 @@ define([
                     break;
 
                 case OccurrenceConstants.campOccurrenceTypes.raid:
-                    this.occurrenceFunctions.onEndRaid(campNode.entity);
+                    this.endRaid(campNode.entity);
                     var raidComponent = campNode.entity.get(RaidComponent);
                     var lostResources = raidComponent.resourcesLost;
                     var raidVO = new RaidVO(raidComponent);
@@ -236,6 +232,46 @@ define([
             if (this.isPlayerInCamp(campNode) && logMsg) {
                 this.addLogMessage(logMsg, null, null, campNode);
             }
+        },
+        
+        endRaid: function (sectorEntity) {
+			var improvements = sectorEntity.get(SectorImprovementsComponent);
+			var raidComponent = sectorEntity.get(RaidComponent);
+			var soldiers = sectorEntity.get(CampComponent).assignedWorkers.soldier;
+            var fortificationUpgradeLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradeNodes.head.upgrades);
+			raidComponent.victory = OccurrenceConstants.getRaidDanger(improvements, soldiers, fortificationUpgradeLevel) < 0;//Math.random()*100;
+			if (!raidComponent.victory) {
+                var campResources = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).resources;
+                var amountFactor = 1 / GameGlobals.resourcesHelper.getNumCampsInTradeNetwork(sectorEntity);
+                
+                // select resources (names)
+				var selectedResources = [];
+				var maxSelectedResources = 1 + Math.floor(Math.random() * 3);
+				var largestSelectedAmount = 0;
+				for (var key in resourceNames) {
+					var name = resourceNames[key];
+					var campAmount = campResources.getResource(name);
+					if (selectedResources.length < maxSelectedResources) {
+						selectedResources.push(name);
+						largestSelectedAmount = Math.max(largestSelectedAmount, campAmount);
+					} else if (campAmount > largestSelectedAmount) {
+						selectedResources.pop();
+						selectedResources.push(name);
+						largestSelectedAmount = Math.max(largestSelectedAmount, campAmount);
+					}
+				}
+			
+                // select amounts
+				for(var i in selectedResources) {
+					var name = selectedResources[i];
+					var campAmount = campResources.getResource(name) * amountFactor;
+					var lostAmount = campAmount * (0.25 + 0.25 * Math.random());
+					if (lostAmount >= 5) {
+                        campResources.setResource(name, campAmount - lostAmount);
+                        raidComponent.resourcesLost.addResource(name, lostAmount);
+					}
+				}
+			}
         },
         
         isPlayerInCamp: function (campNode) {

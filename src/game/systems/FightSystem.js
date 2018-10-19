@@ -21,14 +21,10 @@ define([
 	
     var FightSystem = Ash.System.extend({
         
-		occurrenceFunctions: null,
-        
 		fightNodes: null,
         playerStatsNodes: null,
         
-        constructor: function (occurrenceFunctions) {
-			this.occurrenceFunctions = occurrenceFunctions;
-        },
+        constructor: function () { },
 
         addToEngine: function (engine) {
 			this.engine = engine;
