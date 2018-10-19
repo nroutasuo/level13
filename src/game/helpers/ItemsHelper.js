@@ -10,11 +10,8 @@ define([
     PlayerActionConstants
 ) {
     var ItemsHelper = Ash.Class.extend({
-        
-        gameState: null,
 
-        constructor: function () {
-        },
+        constructor: function () { },
         
         defaultClothing: {
         },

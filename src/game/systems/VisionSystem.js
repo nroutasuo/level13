@@ -64,6 +64,7 @@ define([
             if (GameGlobals.gameState.isPaused) return;
             
 			var vision = node.vision;
+            if (!vision.value) vision.value = 0;
 			var oldMaximum = vision.maximum;
 			var oldValue = vision.value;
 			

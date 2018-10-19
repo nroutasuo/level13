@@ -81,9 +81,7 @@ define(['ash',
         
         engine: null,
         
-        constructor: function () {},
-
-        addToEngine: function (engine) {
+        constructor: function (engine) {
             this.engine = engine;
 			this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
@@ -94,18 +92,6 @@ define(['ash',
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
-        },
-
-        removeFromEngine: function (engine) {
-            this.playerPositionNodes = null;
-            this.playerLocationNodes = null;
-            this.nearestCampNodes = null;
-            this.lastVisitedCamps = null;
-            this.campNodes = null;
-            this.playerStatsNodes = null;
-            this.playerResourcesNodes = null;
-            this.tribeUpgradesNodes = null;
-            this.engine = null;
         },
         
         addLogMessage: function (msgID, msg, replacements, values, pendingPosition) {

@@ -1,8 +1,11 @@
 // Singleton with helper methods for movement, blockers etc
 define([
-    'ash', 'game/constants/GameConstants', 'game/constants/CampConstants',
+    'ash', 
+    'game/GameGlobals',
+    'game/constants/GameConstants', 
+    'game/constants/CampConstants',
     'game/nodes/tribe/TribeUpgradesNode',
-], function (Ash, GameConstants, CampConstants, TribeUpgradesNode) {
+], function (Ash, GameGlobals, GameConstants, CampConstants, TribeUpgradesNode) {
     
     var CampHelper = Ash.Class.extend({
 		

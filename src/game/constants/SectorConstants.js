@@ -1,4 +1,5 @@
 define(['ash',
+    'game/GameGlobals',
 	'game/constants/LocaleConstants',
     'game/components/common/VisitedComponent',
     'game/components/common/RevealedComponent',
@@ -6,7 +7,7 @@ define(['ash',
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/improvements/WorkshopComponent',
-], function (Ash, LocaleConstants, VisitedComponent, RevealedComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, WorkshopComponent) {
+], function (Ash, GameGlobals, LocaleConstants, VisitedComponent, RevealedComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, WorkshopComponent) {
     
     var SectorConstants = {
 		

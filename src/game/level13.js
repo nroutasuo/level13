@@ -150,10 +150,11 @@ define([
         constructor: function (plugins) {
             var game = this;
             this.engine = new Ash.Engine();
+            this.engine.extraUpdateTime = 0;
 			this.tickProvider = new TickProvider(null, function (ex) { game.handleException(ex) });
+			this.gameManager = new GameManager(this.tickProvider);
             
             this.initializeGameGlobals();
-			
 			this.addSystems();
             this.initializePlugins(plugins);
             
@@ -168,7 +169,7 @@ define([
         initializeGameGlobals: function () {
 			GameGlobals.gameState = new GameState();
             GameGlobals.playerActionsHelper = new PlayerActionsHelper(this.engine);
-			GameGlobals.playerActionFunctions = new PlayerActionFunctions();
+			GameGlobals.playerActionFunctions = new PlayerActionFunctions(this.engine);
             
             GameGlobals.resourcesHelper = new ResourcesHelper(this.engine);
             GameGlobals.levelHelper = new LevelHelper(this.engine);
@@ -200,16 +201,13 @@ define([
         },
 	
 		addSystems: function () {
-			this.gameManager = new GameManager(this.tickProvider);
 			this.engine.addSystem(this.gameManager, SystemPriorities.preUpdate);
-            
-            this.engine.addSystem(new CheatSystem(), SystemPriorities.update);
 			
 			if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t initializing systems");
 			
-			this.engine.addSystem(GameGlobals.playerActionFunctions, SystemPriorities.preUpdate);
 			this.engine.addSystem(new SaveSystem(), SystemPriorities.preUpdate);
-			
+			this.engine.addSystem(new PlayerPositionSystem(), SystemPriorities.preupdate);
+            
 			this.engine.addSystem(new GlobalResourcesResetSystem(), SystemPriorities.update);
 			this.engine.addSystem(new VisionSystem(), SystemPriorities.update);
 			this.engine.addSystem(new StaminaSystem(), SystemPriorities.update);
@@ -223,7 +221,6 @@ define([
 			this.engine.addSystem(new ReputationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new RumourSystem(), SystemPriorities.update);
 			this.engine.addSystem(new EvidenceSystem(), SystemPriorities.update);
-			this.engine.addSystem(new PlayerPositionSystem(), SystemPriorities.preupdate);
 			this.engine.addSystem(new PlayerActionSystem(), SystemPriorities.update);
 			this.engine.addSystem(new SectorStatusSystem(), SystemPriorities.update);
 			this.engine.addSystem(new LevelPassagesSystem(), SystemPriorities.update);
@@ -231,6 +228,7 @@ define([
 			this.engine.addSystem(new GlobalResourcesSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CampEventsSystem(), SystemPriorities.update);
             this.engine.addSystem(new EndingSystem(), SystemPriorities.update);
+            
 			this.engine.addSystem(new AutoPlaySystem(), SystemPriorities.postUpdate);
 			
 			this.engine.addSystem(new UIOutHeaderSystem(), SystemPriorities.render);
@@ -253,6 +251,10 @@ define([
 			this.engine.addSystem(new UIOutPopupInventorySystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupTradeSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupInnSystem(), SystemPriorities.render);
+            
+            if (GameConstants.isCheatsEnabled) { 
+                this.engine.addSystem(new CheatSystem(), SystemPriorities.update);
+            }
 		},
 	
 		start: function () {

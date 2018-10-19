@@ -8,6 +8,8 @@ define([
 ], function (Ash, UpgradeConstants, PlayerActionConstants, OccurrenceConstants, ImprovementVO) {
     
     var UpgradeEffectsHelper = Ash.Class.extend({
+        
+        constructor: function () {},
 		
 		upgradesByWorker: {
 			"rope-maker": UpgradeConstants.upgradeIds.unlock_worker_rope,

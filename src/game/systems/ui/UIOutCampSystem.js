@@ -52,11 +52,7 @@ define([
             steppers: {},
         },
 
-        constructor: function (upgradesHelper) {
-			this.upgradesHelper = upgradesHelper;
-            
-            return this;
-        },
+        constructor: function () { },
 
         addToEngine: function (engine) {
             this.engine  = engine;
@@ -249,10 +245,10 @@ define([
             var smithiesInCamp = improvements.getCount(improvementNames.smithy);
             var barracksInCamp = improvements.getCount(improvementNames.barracks);
             
-            var maxApothecaries = apothecariesInCamp * CampConstants.getApothecariesPerShop(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.apothecary, this.tribeUpgradesNodes.head.upgrades));
-            var maxConcrete = cementMillsInCamp * CampConstants.getWorkersPerMill(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.cementmill, this.tribeUpgradesNodes.head.upgrades));
-            var maxSmiths = smithiesInCamp * CampConstants.getSmithsPerSmithy(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.smithy, this.tribeUpgradesNodes.head.upgrades));
-            var maxSoldiers = barracksInCamp * CampConstants.getSoldiersPerBarracks(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.barracks, this.tribeUpgradesNodes.head.upgrades));
+            var maxApothecaries = apothecariesInCamp * CampConstants.getApothecariesPerShop(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.apothecary, this.tribeUpgradesNodes.head.upgrades));
+            var maxConcrete = cementMillsInCamp * CampConstants.getWorkersPerMill(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.cementmill, this.tribeUpgradesNodes.head.upgrades));
+            var maxSmiths = smithiesInCamp * CampConstants.getSmithsPerSmithy(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.smithy, this.tribeUpgradesNodes.head.upgrades));
+            var maxSoldiers = barracksInCamp * CampConstants.getSoldiersPerBarracks(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.barracks, this.tribeUpgradesNodes.head.upgrades));
             var maxChemists = refineriesOnLevel * CampConstants.CHEMISTS_PER_WORKSHOP;
             
             this.updateWorkerStepper(campComponent, "#stepper-scavenger", "scavenger", maxPopulation, false);
@@ -335,7 +331,7 @@ define([
 			var hasHospital = improvements.getCount(improvementNames.hospital) > 0;
 			var isInjured = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury) !== 1;
 			var isAugmented = perksComponent.hasPerk(PerkConstants.perkIds.healthAugment);
-			var isAugmentAvailable = this.hasUpgrade(this.upgradesHelper.getUpgradeIdsForImprovement(improvementNames.hospital)[0]);
+			var isAugmentAvailable = this.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdsForImprovement(improvementNames.hospital)[0]);
 			GameGlobals.uiFunctions.toggle("#btn-use_in_hospital1", hasHospital && (isInjured || isAugmented || !isAugmentAvailable));
             GameGlobals.uiFunctions.toggle("#btn-use_in_hospital2", hasHospital && !isInjured && !isAugmented && isAugmentAvailable);
             
@@ -387,12 +383,12 @@ define([
 			
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var soldiers = this.playerLocationNodes.head.entity.get(CampComponent).assignedWorkers.soldier;
-            var fortificationUpgradeLevel = this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradesNodes.head.upgrades);
+            var fortificationUpgradeLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradesNodes.head.upgrades);
 			var raidDanger = Math.round(OccurrenceConstants.getRaidDanger(improvements, soldiers, fortificationUpgradeLevel));
             var raidDefence = OccurrenceConstants.getRaidDefence(improvements, soldiers, fortificationUpgradeLevel);
             
             var inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
-            var showCalendar = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(this.upgradesHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
+            var showCalendar = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
             $("#in-demographics-general-age .value").text(inGameFoundingDate);
             GameGlobals.uiFunctions.toggle("#in-demographics-general-age", showCalendar);
 			

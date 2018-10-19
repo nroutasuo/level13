@@ -27,7 +27,7 @@ var UIOutManageSaveSystem = Ash.System.extend({
             });
             $("#close-manage-save-popup").click(function (e) {
                 system.resetElements();
-                system.uiFunctions.popupManager.closePopup("manage-save-popup");
+                GameGlobals.uiFunctions.popupManager.closePopup("manage-save-popup");
             });
             
             return this;

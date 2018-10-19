@@ -54,7 +54,6 @@ define(['ash',
 
         addToEngine: function (engine) {
             this.engine = engine;
-            this.engine.extraUpdateTime = 0;
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
