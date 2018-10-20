@@ -146,9 +146,9 @@ define([
 				localStorage.removeItem("timeStamp");
                 
 				localStorage.removeItem("save");
+                console.log("Removed save");
 			}
             this.engine.getSystem(GameManager).restartGame();
-            console.log("Restarted.");
 		},
 	
     });

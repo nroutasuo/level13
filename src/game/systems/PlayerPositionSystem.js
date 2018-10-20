@@ -50,6 +50,8 @@ define([
             this.playerLocationNodes.nodeAdded.addOnce(function (node) {
                 sys.handleNewSector(node, node.entity.get(PositionComponent).sectorId());
             });
+            
+            GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
 		},
 	
 		removeFromEngine: function (engine) {
@@ -57,7 +59,13 @@ define([
 			this.levelNodes = null;
 			this.playerPositionNodes = null;
 			this.playerLocationNodes = null;
+            
+            GlobalSignals.removeAll(this);
 		},
+        
+        onGameStarted: function () {
+            this.lastUpdatePosition = null;
+        },
 	
 		update: function (time) {
             var playerPos = this.playerPositionNodes.head.position;
