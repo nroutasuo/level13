@@ -11,6 +11,7 @@ define([
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/sector/CampNode',
     'game/nodes/tribe/TribeUpgradesNode',
+    'game/components/common/CampComponent',
     'game/components/common/PositionComponent',
     'game/components/common/LogMessagesComponent',
     'game/components/sector/events/TraderComponent',
@@ -21,7 +22,7 @@ define([
 ], function (
     Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants,
     PlayerResourcesNode, CampNode, TribeUpgradesNode,
-    PositionComponent, LogMessagesComponent,
+    CampComponent, PositionComponent, LogMessagesComponent,
     TraderComponent, RaidComponent, CampEventTimersComponent,
     SectorImprovementsComponent, RaidVO) {
 
@@ -238,7 +239,7 @@ define([
 			var improvements = sectorEntity.get(SectorImprovementsComponent);
 			var raidComponent = sectorEntity.get(RaidComponent);
 			var soldiers = sectorEntity.get(CampComponent).assignedWorkers.soldier;
-            var fortificationUpgradeLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradeNodes.head.upgrades);
+            var fortificationUpgradeLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradesNodes.head.upgrades);
 			raidComponent.victory = OccurrenceConstants.getRaidDanger(improvements, soldiers, fortificationUpgradeLevel) < 0;//Math.random()*100;
 			if (!raidComponent.victory) {
                 var campResources = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).resources;

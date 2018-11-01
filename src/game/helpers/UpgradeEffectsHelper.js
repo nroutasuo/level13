@@ -1,11 +1,12 @@
 // Helper to check effects of upgrades on workers and buildings
 define([
     'ash',
+    'game/GameGlobals',
     'game/constants/UpgradeConstants',
     'game/constants/PlayerActionConstants',
     'game/constants/OccurrenceConstants',
 	'game/vos/ImprovementVO',
-], function (Ash, UpgradeConstants, PlayerActionConstants, OccurrenceConstants, ImprovementVO) {
+], function (Ash, GameGlobals, UpgradeConstants, PlayerActionConstants, OccurrenceConstants, ImprovementVO) {
     
     var UpgradeEffectsHelper = Ash.Class.extend({
         

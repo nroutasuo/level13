@@ -99,13 +99,16 @@ define([
 			var sectorPosition;
             
             // TODO check if saving uses up too much memory / this is the neatest way, speeds up fps a lot (esp for map)
-            
             if (!this.sectorEntitiesByPosition[level]) this.sectorEntitiesByPosition[level] = {};
             if (!this.sectorEntitiesByPosition[level][sectorX]) this.sectorEntitiesByPosition[level][sectorX] = {};
             
-            if (this.sectorEntitiesByPosition[level][sectorX][sectorY]) return this.sectorEntitiesByPosition[level][sectorX][sectorY];
-            
-            if (this.sectorEntitiesByPosition[level][sectorX][sectorY] === null) return null;
+            if (this.sectorEntitiesByPosition[level][sectorX][sectorY]) {
+                return this.sectorEntitiesByPosition[level][sectorX][sectorY];
+            }
+
+            if (this.sectorEntitiesByPosition[level][sectorX][sectorY] === null)  {
+                return null;
+            }
             
 			for (var node = this.sectorNodes.head; node; node = node.next) {
 				sectorPosition = node.entity.get(PositionComponent);
@@ -114,7 +117,6 @@ define([
                     return node.entity;
                 }
 			}
-            
             this.sectorEntitiesByPosition[level][sectorX][sectorY] = null;
             
 			return null;
@@ -167,21 +169,26 @@ define([
             var startVO = makePathSectorVO(startSector);
             var goalVO = makePathSectorVO(goalSector);
             
+            if (startVO.position.equals(goalVO.position)) return [];
+            
+            // console.log("find path " + startVO.position + " -> " + goalVO.position);
+            
             var utilities = {
                 findPassageDown: function (level, includeUnbuilt) {
-                    return makePathSectorVO(levelHelper.findPassageDown(level, includeUnbuilt));
+                    var result = makePathSectorVO(levelHelper.findPassageDown(level, includeUnbuilt, true));
+                    return result;
                 },
                 findPassageUp: function (level, includeUnbuilt) {
                     return makePathSectorVO(levelHelper.findPassageUp(level, includeUnbuilt));
                 },
                 getSectorByPosition: function (level, sectorX, sectorY) {
-                    return makePathSectorVO(levelHelper.getSectorByPosition(level, sectorX, sectorY));
+                    return makePathSectorVO(levelHelper.getSectorByPosition(level, sectorX, sectorY, true));
                 },
                 getSectorNeighboursMap: function (pathSectorVO) {
                     return levelHelper.getSectorNeighboursMap(pathSectorVO.result, makePathSectorVO);
                 },
                 isBlocked: function (pathSectorVO, direction) {
-                    return makePathSectorVO(GameGlobals.movementHelper.isBlocked(pathSectorVO.result, direction));
+                    return GameGlobals.movementHelper.isBlocked(pathSectorVO.result, direction);
                 }
             };
             
@@ -191,27 +198,33 @@ define([
         findPassageUp: function (level, includeUnbuiltPassages) {
             var levelEntity = this.getLevelEntityForPosition(level);
 			var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);            
-			var passageSectors = Object.keys(levelPassagesComponent.passagesUpBuilt);
+			var passageSectors = Object.keys(levelPassagesComponent.passagesUp);
             var level = levelEntity.get(PositionComponent).level;
             var sectorId;
             for (var iu = 0; iu < passageSectors.length; iu++) {
                 sectorId = passageSectors[iu];
-                if (includeUnbuiltPassages || levelPassagesComponent.passagesUpBuilt[sectorId]) {
+                var passage = levelPassagesComponent.passagesUp[sectorId];
+                if (!passage) continue;
+                var passageBuilt = levelPassagesComponent.passagesUpBuilt[sectorId];
+                if (includeUnbuiltPassages || passageBuilt) {
                     return this.getSectorByPosition(level, sectorId.split(".")[0], sectorId.split(".")[1]);
                 }
             }
             return null;
         },
         
-        findPassageDown: function (level, includeUnbuiltPassages) {
+        findPassageDown: function (level, includeUnbuiltPassages, log) {
             var levelEntity = this.getLevelEntityForPosition(level);
 			var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);         
-			var passageSectors = Object.keys(levelPassagesComponent.passagesDownBuilt);
+			var passageSectors = Object.keys(levelPassagesComponent.passagesDown);
             var level = levelEntity.get(PositionComponent).level;
             var sectorId;
             for (var iu = 0; iu < passageSectors.length; iu++) {
                 sectorId = passageSectors[iu];
-                if (includeUnbuiltPassages || levelPassagesComponent.passagesDownBuilt[sectorId]) {
+                var passage = levelPassagesComponent.passagesDown[sectorId];
+                if (!passage) continue;
+                var passageBuilt = levelPassagesComponent.passagesDownBuilt[sectorId];
+                if (includeUnbuiltPassages || passageBuilt !== null) {
                     return this.getSectorByPosition(level, sectorId.split(".")[0], sectorId.split(".")[1]);
                 }
             }
@@ -219,7 +232,6 @@ define([
         },
         
         forEverySectorFromLocation: function (playerPosition, func) {
-            
             // TODO go by path distance, not distance in coordinates
             
 			var doLevel = function (level) {

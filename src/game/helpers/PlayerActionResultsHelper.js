@@ -325,9 +325,7 @@ define([
 			
 			if (rewards.gainedPopulation > 0) {
 				var nearestCampNode = this.nearestCampNodes.head;
-                console.log(nearestCampNode);
 				if (nearestCampNode) {
-					console.log(nearestCampNode.position);
 					nearestCampNode.camp.population += 1;
 				} else {
 					console.log("WARN: No nearest camp found.");
@@ -524,9 +522,12 @@ define([
 			
             if (rewards) {
                 if (rewards.gainedBlueprintPiece) {
-                    var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(rewards.gainedBlueprintPiece);
-                    if (blueprintVO.currentPieces === 1)
-                        logComponent.addMessage(LogConstants.MSG_ID_FOUND_BLUEPRINT_FIRST, "Found a piece of forgotten technology.");
+                    if (!this.tribeUpgradesNodes.head.upgrades.hasUpgrade(rewards.gainedBlueprintPiece)) {
+                        var blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(rewards.gainedBlueprintPiece);
+                        if (blueprintVO.currentPieces === 1) {
+                            logComponent.addMessage(LogConstants.MSG_ID_FOUND_BLUEPRINT_FIRST, "Found a piece of forgotten technology.");
+                        }
+                    }
                 }
 
                 if (rewards.selectedItems) {
@@ -567,7 +568,7 @@ define([
             if (Math.random() > probabilityFactor)
                 return results;
             
-            if (availableResources.getTotal() <= 0)
+            if (!availableResources || !availableResources.getTotal || availableResources.getTotal() <= 0)
                 return results;
             
 			for (var key in resourceNames) {
@@ -913,7 +914,6 @@ define([
 			}
 			
 			var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, false, false, localeVO).length + 1;
-			var blueprintPiecesToFind = this.getPendingBlueprintPiecesCount(campOrdinal, blueprintType);
 			var levelBlueprintProbability = blueprintPiecesToFind / unscoutedLocales;
 			if (GameConstants.isDebugOutputEnabled)
 				console.log(blueprintPiecesToFind + " / " + unscoutedLocales + " -> " + levelBlueprintProbability);

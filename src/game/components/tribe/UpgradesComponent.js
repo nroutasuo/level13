@@ -16,6 +16,7 @@ function (Ash, UpgradeConstants, UpgradeVO, BlueprintVO) {
         addUpgrade: function (upgradeId) {
             if (!this.hasUpgrade(upgradeId)) {
                 this.boughtUpgrades.push(upgradeId);
+                this.removeBlueprints(upgradeId);
             }
         },
         
@@ -81,6 +82,21 @@ function (Ash, UpgradeConstants, UpgradeVO, BlueprintVO) {
         
         getNewBlueprints: function () {
             return this.newBlueprints;
+        },
+        
+        removeBlueprints: function (upgradeID) {
+            for (var i = 0; i < this.newBlueprints.length; i++) {
+                if (this.newBlueprints[i].upgradeId === upgradeID) {
+                    this.newBlueprints.splice(i, 1);
+                    break;
+                }
+            }
+            for (var j = 0; j < this.availableBlueprints.length; j++) {
+                if (this.availableBlueprints[i].upgradeId === upgradeID) {
+                    this.availableBlueprints.splice(i, 1);
+                    break;
+                }
+            }
         }
         
     });

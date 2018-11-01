@@ -19,7 +19,7 @@ function (Ash, ItemVO, ItemConstants) {
             }
             
             if (this.getItem(item.id, item.itemID)) {
-                console.log("WARN: Trying to add duplicate item.");
+                console.log("WARN: Trying to add duplicate item: " + item.id);
                 return;
             }
             

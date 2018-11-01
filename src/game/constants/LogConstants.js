@@ -93,7 +93,9 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
         getMergedMsgID: function (messages) {
             var messageIDsToMatch = [];
             for (var m = 0; m < messages.length; m++) {
-                messageIDsToMatch = messageIDsToMatch.concat(messages[m].logMsgID.split("-"));
+                if (messages[m].logsgID) {
+                    messageIDsToMatch = messageIDsToMatch.concat(messages[m].logMsgID.split("-"));
+                }
             }
             
             var mergeIDs;

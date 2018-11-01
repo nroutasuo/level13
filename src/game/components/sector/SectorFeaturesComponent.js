@@ -1,6 +1,8 @@
 // A component that describes features of a sector, both functional (ability to build stuff)
 // and purely aesthetic (description)
-define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCreatorConstants) {
+define(
+    ['ash', 'game/constants/WorldCreatorConstants', 'game/vos/ResourcesVO'], 
+    function (Ash, WorldCreatorConstants, ResourcesVO) {
     
     var SectorFeaturesComponent = Ash.Class.extend({
         
@@ -30,8 +32,8 @@ define(['ash', 'game/constants/WorldCreatorConstants'], function (Ash, WorldCrea
             this.weather = weather;
             this.campable = campable;
             this.notCampableReason = notCampableReason;
-            this.resourcesScavengable = resourcesScavengable;
-            this.resourcesCollectable = resourcesCollectable;
+            this.resourcesScavengable = resourcesScavengable || new ResourcesVO();
+            this.resourcesCollectable = resourcesCollectable || new ResourcesVO();
             this.hasSpring = hasSpring;
             this.stash = stash || null;
         },

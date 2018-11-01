@@ -41,7 +41,7 @@ define([
 			});
 			GlobalSignals.improvementBuiltSignal.add(function () {
 				sys.updateAllSectors();
-			})
+			});
 			this.updateAllLevels();
 			this.updateAllSectors();
 		},

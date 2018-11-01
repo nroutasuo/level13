@@ -520,7 +520,7 @@ define(['ash',
                     playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
                     playerActionFunctions.save();
                 };
-
+                
                 var logMsgId = found ? LogConstants.MSG_ID_SCOUT_FOUND_SOMETHING : LogConstants.MSG_ID_SCOUT;
                 this.handleOutActionResults("scout", logMsgId, logMsg, logMsg, logMsg, true, successCallback);
             } else {
