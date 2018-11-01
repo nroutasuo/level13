@@ -24,6 +24,7 @@ var UIOutPopupInnSystem = Ash.System.extend({
 		},
         
         update: function (time) {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (!($("#inn-popup").is(":visible")) || $("#inn-popup").data("fading") == true) {
                 this.wasVisible = false;
                 return;

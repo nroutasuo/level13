@@ -43,6 +43,7 @@ define([
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
             GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.onInventoryChanged);
             GlobalSignals.add(this, GlobalSignals.equipmentChangedSignal, this.onEquipmentChanged);
+            GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.refresh);
 		},
 
 		initItemSlots: function () {
@@ -92,6 +93,7 @@ define([
 		},
 
 		update: function (time) {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.bag;
 			
 			this.updateCrafting(isActive);
@@ -425,11 +427,13 @@ define([
         },
         
         onInventoryChanged: function () {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.updateItems();
             this.updateUseItems();
         },
         
         onEquipmentChanged: function () {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.updateItems();
             this.updateUseItems();
         },

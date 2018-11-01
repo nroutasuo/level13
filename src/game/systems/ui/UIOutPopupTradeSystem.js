@@ -36,14 +36,8 @@ define([
             this.playerLocationNodes = null;
 			this.itemNodes = null;
         },
-
-        update: function (time) {
-            if (!($(".popup").is(":visible")) || $(".popup").data("fading") == true)
-                return;
-        },
         
         updateLists: function () {
-            
             $("#inventorylist-incoming-caravan-trader-inventory ul").empty();
             $("#inventorylist-incoming-caravan-trader-offer ul").empty();
             $("#inventorylist-incoming-caravan-camp-inventory ul").empty();

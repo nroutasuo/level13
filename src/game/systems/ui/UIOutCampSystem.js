@@ -1,4 +1,4 @@
-define([
+ define([
     'ash',
     'game/GameGlobals',
     'game/GlobalSignals',
@@ -445,12 +445,14 @@ define([
         },
         
         onPopulationChanged: function (entity) {
+            if (!this.playerLocationNodes.head) return;
             if (this.playerLocationNodes.head.entity === entity) {
                 this.refresh();
             }
         },
         
         onWorkersAssigned: function (entity) {
+            if (!this.playerLocationNodes.head) return;
             if (this.playerLocationNodes.head.entity === entity) {
                 this.refresh();
             }

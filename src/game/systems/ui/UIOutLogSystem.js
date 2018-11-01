@@ -28,6 +28,7 @@ define([
         },
 
         update: function (time) {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (GameGlobals.gameState.isPaused) return;
 			var timeStamp = new Date().getTime();
 			var isTime = timeStamp - this.lastUpdateTimeStamp > this.updateFrequency;

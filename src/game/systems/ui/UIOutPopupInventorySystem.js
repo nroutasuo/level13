@@ -34,6 +34,7 @@ define([
         },
 
         update: function (time) {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (!($(".popup").is(":visible")) || $(".popup").data("fading") == true)
                 return;
             if (!($(".popup #info-results").is(":visible")) && !($(".popup #fight-popup-results").is(":visible")))

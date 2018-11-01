@@ -55,6 +55,7 @@ define([
         },
 
 		updateItems: function () {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var itemsComponent = this.itemNodes.head.items;
 			var items = itemsComponent.getAllByType(ItemConstants.itemTypes.follower);
 			$("#list-followers").empty();

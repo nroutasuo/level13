@@ -27,6 +27,7 @@ define([
             var sys = this;
             GlobalSignals.playerMovedSignal.add(function () { sys.updateWarningLimit(); });
             GlobalSignals.healthChangedSignal.add(function () { sys.updateWarningLimit(); });
+            GlobalSignals.gameShownSignal.add(function () { sys.updateWarningLimit(); });
         },
 
         removeFromEngine: function (engine) {
@@ -91,9 +92,11 @@ define([
         },
         
         updateWarningLimit: function () {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.warningLimit = PlayerStatConstants.getStaminaWarningLimit(this.nodeList.head.stamina);
         }
     });
 
     return StaminaSystem;
 });
+

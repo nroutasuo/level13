@@ -52,6 +52,7 @@ define([
         },
 
         update: function (time) {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (!this.isFightPopupOpen)
                 return;
             

@@ -71,6 +71,7 @@ define([
 		},
 		
 		restartGame: function () {
+            console.log("Restarting game..");
             gtag('event', 'game_restart', { event_category: 'game_data' });
 			GameGlobals.uiFunctions.hideGame(true);
             var sys = this;
@@ -83,12 +84,13 @@ define([
             }, 250);
 		},
         
-        pauseGame: function () {            
+        pauseGame: function () {
 			GameGlobals.uiFunctions.hideGame(false);
             this.tickProvider.stop();
         },
 		
 		initializeEntities: function () {
+            console.log("Initializing entities..");
 			this.player = this.creator.createPlayer(GameGlobals.saveHelper.saveKeys.player);
 			this.tribe = this.creator.createTribe(GameGlobals.saveHelper.saveKeys.tribe);
 		},

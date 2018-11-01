@@ -50,6 +50,7 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
             this.uiStatus = {
                 currentTab: null,
                 mapVisited: false,
+                isHidden: false,
                 leaveCampRes: {},
                 leaveCampItems: {},
             };

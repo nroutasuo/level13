@@ -123,6 +123,7 @@ define([
 	
 		update: function (time) {
 			if (!this.currentLocationNodes.head) return;
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
 			
             var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
 			var campComponent = this.currentLocationNodes.head.entity.get(CampComponent);
@@ -153,16 +154,19 @@ define([
 		},
         
         onPlayerMoved: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.updateTabVisibility();
             this.updateStaminaWarningLimit();
             this.updateLocation();
         },
         
         onHealthChanged: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.updateStaminaWarningLimit();
         },
 		
 		onVisionChanged: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.updateVisionOverlay();
 		},
 		
@@ -550,6 +554,7 @@ define([
         },
         
         updateStaminaWarningLimit: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.staminaWarningLimit = PlayerStatConstants.getStaminaWarningLimit(this.playerStatsNodes.head.stamina);
         },
         

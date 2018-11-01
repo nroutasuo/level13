@@ -54,6 +54,7 @@ define([
         },
 
         update: function (time) {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.world;
 			
             this.alerts = {};
@@ -193,7 +194,7 @@ define([
             rowHTML += "</tr>";
             $("#camp-overview").append(rowHTML);
             $("#" + btnID).click(function(e) {
-                GameGlobals.uiFunctions.onTabClicked(uiFunctions.elementIDs.tabs.in, GameGlobals.gameState, GameGlobals.uiFunctions);
+                GameGlobals.uiFunctions.onTabClicked(GameGlobals.uiFunctions.elementIDs.tabs.in, GameGlobals.gameState, GameGlobals.uiFunctions);
             });
             GameGlobals.uiFunctions.registerActionButtonListeners("#" + rowID);
             GameGlobals.uiFunctions.generateButtonOverlays("#" + rowID);

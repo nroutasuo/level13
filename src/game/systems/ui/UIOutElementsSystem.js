@@ -79,7 +79,11 @@ define([
                 sys.updateTabVisibility(); 
                 sys.elementsVisibilityChanged = true;
             });
-            GlobalSignals.gameShownSignal.add(function () { sys.updateTabVisibility(); });
+            GlobalSignals.gameShownSignal.add(function () { 
+                sys.updateTabVisibility();
+                sys.refreshGlobalSavedElements();
+                sys.elementsVisibilityChanged = true;
+            });
             GlobalSignals.elementToggledSignal.add(function () { sys.elementsVisibilityChanged = true; });
             GlobalSignals.tabChangedSignal.add(function () { sys.elementsVisibilityChanged = true; });
             GlobalSignals.elementCreatedSignal.add(function () { sys.elementsVisibilityChanged = true; });
@@ -105,6 +109,7 @@ define([
         },
     
         update: function (time) {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (this.elementsVisibilityChanged) {
                 this.updateVisibleButtonsList();
                 this.updateVisibleProgressbarsList();
@@ -126,7 +131,8 @@ define([
             this.updateInfoCallouts();
         },
         
-        refreshGlobalSavedElements: function () {            
+        refreshGlobalSavedElements: function () {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.elementsCalloutContainers = $(".callout-container");
         },
         
@@ -342,6 +348,7 @@ define([
         },
         
         updateTabVisibility: function () {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (!this.playerStatsNodes.head) return;
             var levelCamp = this.nearestCampNodes.head;
             var currentCamp = levelCamp ? levelCamp.entity : null;

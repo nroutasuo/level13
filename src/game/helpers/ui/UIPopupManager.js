@@ -4,9 +4,11 @@ function (Ash, GameGlobals, GlobalSignals) {
     var UIPopupManager = Ash.Class.extend({
         
         popupQueue: null,
+        hiddenQueue: null,
         
         constructor: function () {
             this.popupQueue = [];
+            this.hiddenQueue = [];
             
             GlobalSignals.windowResizedSignal.add(this.onResize);
         },
@@ -24,6 +26,11 @@ function (Ash, GameGlobals, GlobalSignals) {
         },
         
         showPopup: function (title, msg, okButtonLabel, cancelButtonLabel, resultVO, okCallback, cancelCallback) {
+            if (GameGlobals.gameState.uiStatus.isHidden) {
+                this.hiddenQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback });
+                return;
+            }
+            
             if (this.hasOpenPopup()) {
                 this.popupQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback });
                 return;
@@ -104,7 +111,18 @@ function (Ash, GameGlobals, GlobalSignals) {
                 GameGlobals.uiFunctions.toggle("#" + id, false);
                 GlobalSignals.popupClosedSignal.dispatch(id);
                 popupManager.showQueuedPopup();
-                popupManager.gameState.isPaused = popupManager.hasOpenPopup();
+                GameGlobals.gameState.isPaused = popupManager.hasOpenPopup();
+            }
+        },
+        
+        closeHidden: function (ok) {
+            if (this.hiddenQueue.length > 0) {
+                var hidden = this.hiddenQueue.pop();
+                if (ok) {
+                    if (hidden.okCallback) hidden.okCallback();
+                } else {
+                    if (hidden.cancelCallback) hidden.cancelCallback();
+                }
             }
         },
         

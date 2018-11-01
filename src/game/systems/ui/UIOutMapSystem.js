@@ -29,6 +29,7 @@ define([
 		},
 
 		update: function (time) {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             GameGlobals.uiFunctions.toggle("#switch-map .bubble", !GameGlobals.gameState.uiStatus.mapVisited);
 			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.map) return;
             GameGlobals.gameState.uiStatus.mapVisited = true;

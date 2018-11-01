@@ -199,6 +199,7 @@ define([
         },
         
         logReputationPenalty: function (campNode, penaltyType, hasPenalty) {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             var campID = campNode.position.getPosition().toString();
             if (!(this.lastUpdatePenalties[campID])) {
                 this.lastUpdatePenalties[campID] = {};

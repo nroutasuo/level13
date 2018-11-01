@@ -78,14 +78,7 @@ define([
 		initListeners: function () {
 			var sys = this;
 			GlobalSignals.playerMovedSignal.add(function () {
-				sys.rebuildVis();
-				sys.updateLocales();
-                sys.updateOutImprovementsVisibility();
-				sys.updateMovementRelatedActions();
-                sys.updateStaticSectorElements();
-                sys.updateSectorDescription();
-                sys.updateLevelPageActions();
-                sys.updateUnlockedFeatures();
+                sys.updateAll();
 			});
             GlobalSignals.improvementBuiltSignal.add(function () {
                 sys.updateSectorDescription();
@@ -99,6 +92,9 @@ define([
             });
             GlobalSignals.fightEndedSignal.add(function () { 
 				sys.updateMovementRelatedActions();
+            });
+            GlobalSignals.gameShownSignal.add(function () {
+                sys.updateAll();
             });
 			this.rebuildVis();
             this.updateUnlockedFeatures();
@@ -121,6 +117,20 @@ define([
                     this.rebuildVis();
 			}
 		},
+		
+		updateAll: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
+            if (!this.playerLocationNodes.head) return;
+	
+			this.rebuildVis();
+			this.updateLocales();
+            this.updateOutImprovementsVisibility();
+			this.updateMovementRelatedActions();
+            this.updateStaticSectorElements();
+            this.updateSectorDescription();
+            this.updateLevelPageActions();
+            this.updateUnlockedFeatures();
+        },
         
         updateUnlockedFeatures: function () {
             GameGlobals.uiFunctions.toggle("#minimap", GameGlobals.gameState.unlockedFeatures.scout);
@@ -129,6 +139,7 @@ define([
         },
 		
 		updateLevelPage: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);            
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			
@@ -145,6 +156,7 @@ define([
 		},
         
         updateLevelPageActions: function (isScouted, hasCamp, hasCampHere) {
+			    if (GameGlobals.gameState.uiStatus.isHidden) return;
             var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
             var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
             var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
@@ -354,6 +366,7 @@ define([
 		},
         
         getResourcesDescription: function (isScouted, featuresComponent) {
+            if (!featuresComponent) return;
             var description = "";
 			if (featuresComponent.resourcesScavengable.getTotal() > 0) {
 				var discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources();
@@ -509,6 +522,7 @@ define([
         },
         
         updateOutImprovementsVisibility: function () {
+            if (!this.playerLocationNodes.head) return;
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);      
@@ -588,6 +602,7 @@ define([
 		},
         
         updateSectorDescription: function () {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			
@@ -622,6 +637,7 @@ define([
         },
 		
 		rebuildVis: function () {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (!this.playerLocationNodes.head) return;
             this.pendingUpdateMap = false;
             GameGlobals.uiMapHelper.rebuildMap("minimap", "minimap-fallback", this.playerLocationNodes.head.position.getPosition(), UIConstants.MAP_MINIMAP_SIZE, true);

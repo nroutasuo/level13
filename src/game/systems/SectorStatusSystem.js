@@ -57,6 +57,9 @@ define([
 			GlobalSignals.playerMovedSignal.add(function () {
 				sys.update();
 			});
+			GlobalSignals.gameShownSignal.add(function () {
+				sys.update();
+			});
 		},
 	
         removeFromEngine: function (engine) {
@@ -90,6 +93,7 @@ define([
 		},
 		
 		updateGangs: function (entity) {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var sectorControlComponent = entity.get(SectorControlComponent);
 			var positionComponent = entity.get(PositionComponent);
 			
@@ -124,6 +128,7 @@ define([
 		},
 		
 		updateMovementOptions: function (entity) {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var movementOptions = entity.get(MovementOptionsComponent);
 			var passagesComponent = entity.get(PassagesComponent);
 			var positionComponent = entity.get(PositionComponent);

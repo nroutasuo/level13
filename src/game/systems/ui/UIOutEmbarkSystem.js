@@ -73,6 +73,7 @@ define([
         },
 		
 		update: function (time) {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.out) return;			
             if (!this.playerLocationNodes.head) return;
 			

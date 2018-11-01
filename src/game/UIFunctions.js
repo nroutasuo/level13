@@ -412,6 +412,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
         },
         
         startGame: function () {
+            console.log("Starting game..");
 			var startTab = this.elementIDs.tabs.out;
             var playerPos = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
 			if (playerPos.inCamp) startTab = this.elementIDs.tabs.in;
@@ -438,6 +439,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
             $("#grid-main").css("display", "block");
             $("#unit-main").css("display", "block");
             $(".loading-content").css("display", "none");
+            GameGlobals.gameState.uiStatus.isHidden = false;
             GlobalSignals.gameShownSignal.dispatch();
         },
         
@@ -447,6 +449,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
             $("#unit-main").css("display", "none");
             $(".sticky-footer").css("display", "none");
             $("#grid-main").css("display", "none");
+            GameGlobals.gameState.uiStatus.isHidden = true;
         },
         
         restart: function () {            
@@ -561,6 +564,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
         },
         
         onPlayerMoved: function() {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             var uiFunctions = this;
             var cooldownLeft;
             var cooldownTotal;
@@ -707,6 +711,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
         },
         
         startButtonCooldown: function (button, cooldown, cooldownLeft) {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             var action = $(button).attr("action");
             if (!cooldownLeft) cooldownLeft = cooldown;
             var uiFunctions = this;
@@ -798,6 +803,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
         },
         
         showFight: function () {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.showSpecialPopup("fight-popup");
         },
         
@@ -849,11 +855,13 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
         showInfoPopup: function (title, msg, buttonLabel, resultVO) {
             if (!buttonLabel) buttonLabel = "Continue";
             this.popupManager.showPopup(title, msg, buttonLabel, false, resultVO);
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.generateCallouts(".popup");
         },
         
         showResultPopup: function (title, msg, resultVO, callback) {
             this.popupManager.showPopup(title, msg, "Continue", false, resultVO, callback);
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.generateCallouts(".popup");
         },
         
