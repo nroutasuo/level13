@@ -140,6 +140,9 @@ define(['ash',
             this.registerCheat(CheatConstants.CHEAT_NAME_ITEM, "Add the given item to inventory.", ["item id"], function (params) {
                 this.addItem(params[0]);
             });
+            this.registerCheat(CheatConstants.CHEAT_NAME_EQUIP_BEST, "Auto-equip best items available.", [], function (params) {
+                this.equipBest();
+            });
             this.registerCheat(CheatConstants.CHEAT_NAME_PERK, "Add the given perk to the player.", ["perk id"], function (params) {
                 this.addPerk(params[0]);
             });
@@ -358,12 +361,12 @@ define(['ash',
             this.playerStatsNodes.head.stamina.stamina = 1000;        
         },
         
-        setPlayerPosition: function (lvl, x, y) {
+        setPlayerPosition: function (lvl, x, y, inCamp) {
             var playerPos = this.playerPositionNodes.head.position;
             playerPos.level = lvl;
             playerPos.sectorX = x;
             playerPos.sectorY = y;
-            playerPos.inCamp = false;
+            playerPos.inCamp = inCamp || false;
         },
         
         goToLevel: function (level) {
@@ -440,6 +443,11 @@ define(['ash',
             } else {
                 console.log("WARN: No such item: " + itemID);
             }
+        },
+        
+        equipBest: function () {
+            var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+            itemsComponent.autoEquipAll();
         },
         
         addFollower: function() {    
