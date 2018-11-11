@@ -56,18 +56,18 @@ define([
 		playerLocationNodes: null,
         tribeUpgradesNodes: null,
         nearestCampNodes: null,
-        
+
         cache: { reqs: {} },
-		
+
 		constructor: function (engine) {
 			this.engine = engine;
-            
+
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
             this.nearestCampNodes = engine.getNodeList(NearestCampNode);
-            
+
             var sys = this;
             this.engine.updateComplete.add(function () {
                 sys.cache.reqs = {};
@@ -76,14 +76,14 @@ define([
 
 		deductCosts: function (action) {
             var costs = this.getCosts(action, this.getCostFactor(action));
-            
+
             if (!costs) {
                 return;
             }
-            
+
 			var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-            
+
             var costNameParts;
             var costAmount;
             for (var costName in costs) {
@@ -95,7 +95,7 @@ define([
                     this.playerStatsNodes.head.rumours.value -= costAmount;
                 } else if (costName === "favour") {
                     var deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
-                    if (deityComponent) 
+                    if (deityComponent)
                         deityComponent.favour -= costAmount;
                     else
                         console.log("WARN: Trying to deduct favour cost but there's no deity component!");
@@ -113,7 +113,7 @@ define([
                 }
             }
         },
-		
+
 		// Check costs, requirements and cooldown - everything that is needed for the player action
         checkAvailability: function (action, log, otherSector) {
             var isLocationAction = PlayerActionConstants.isLocationAction(action);
@@ -125,25 +125,25 @@ define([
                 if (log) console.log("WARN: Action blocked by cooldown [" + action + "]");
                 return false;
             }
-                    
+
             if (this.checkRequirements(action, log, otherSector).value < 1) return false;
             if (this.checkCosts(action, log, otherSector) < 1) return false;
-            
+
             return true;
         },
-		
+
 		// Check requirements (not costs) of an action
         // returns an object containing:
         // value: fraction the player has of requirements or 0 depending on req type (if 0, action is not available)
         // reason: string to describe the non-passed requirement (for button explanations)
-        checkRequirements: function (action, log, otherSector) {            
+        checkRequirements: function (action, log, otherSector) {
             var sector = otherSector;
 			if (!sector) sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             if (!sector) return { value: 0, reason: "No selected sector" };
-            
+
             var sectorID = sector.get(PositionComponent).positionId();
             var reqsID = action + "-" + sectorID;
-            
+
             var checkRequirementsInternal = function (action, log, sector) {
                 var playerVision = this.playerStatsNodes.head.vision.value;
                 var playerPerks = this.playerResourcesNodes.head.entity.get(PerksComponent);
@@ -168,12 +168,12 @@ define([
 
                 var lowestFraction = 1;
                 var reason = "";
-            
+
                 if (action === "move_level_up" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_UP])
                     return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_UP] };
                 if (action === "move_level_down" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_DOWN])
                     return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_DOWN] };
-                
+
                 if (costs) {
                     if (costs.stamina > 0) {
                         if (!requirements) requirements = {};
@@ -195,7 +195,7 @@ define([
                 if (HazardConstants.isAffectedByHazard(featuresComponent, itemsComponent) && !this.isActionIndependentOfHazards(action)) {
                     return { value: 0, reason: HazardConstants.getHazardDisabledReason(featuresComponent, itemsComponent) };
                 }
-                
+
                 if (requirements) {
                     if (requirements.vision) {
                         var min = requirements.vision[0];
@@ -207,7 +207,7 @@ define([
                         } else if (max > 0 && playerVision > max) {
                             if (log) console.log("WARN: Too much vision for action [" + action + "]");
                             reason = requirements.vision[1] + " vision max.";
-                            lowestFraction = 0;                        
+                            lowestFraction = 0;
                         }
                     }
 
@@ -226,7 +226,7 @@ define([
                             if (currentValue) reason = "Already fully rested.";
                             else reason = "Must be fully rested.";
                             if (log) console.log("WARN: " + reason);
-                            return {value: 0, reason: reason};                        
+                            return {value: 0, reason: reason};
                         }
                     }
 
@@ -524,7 +524,7 @@ define([
                             var hasFood = featuresComponent.resourcesCollectable.food > 0;
                             if (!hasFood) {
                                 if (log) console.log("WARN: No collectable food.");
-                                return { value: 0, reason: "No collectable food." };                            
+                                return { value: 0, reason: "No collectable food." };
                             }
                         }
 
@@ -712,15 +712,15 @@ define([
 
                 return { value: 1 };
             };
-            
-            if (!this.cache.reqs[reqsID]) {            
+
+            if (!this.cache.reqs[reqsID]) {
                 var result = checkRequirementsInternal.apply(this, [action, log, sector]);
                 this.cache.reqs[reqsID] = result;
             }
 
             return this.cache.reqs[reqsID];
         },
-		
+
         // Check the costs of an action; returns lowest fraction of the cost player can cover; >1 means the action is available
         checkCosts: function(action, log, otherSector) {
             var costs = this.getCosts(action, this.getCostFactor(action));
@@ -737,60 +737,60 @@ define([
                 }
                 return lowestFraction;
             }
-            
+
             return 1;
         },
-        
+
         // Check if player can afford a cost; returns fraction of the cost the player can cover; >1 means ok
         checkCost: function (action, name, otherSector) {
             var playerStamina = this.playerStatsNodes.head.stamina.stamina;
             var playerResources = GameGlobals.resourcesHelper.getCurrentStorage();
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
-            
+
             var sector = otherSector || (this.playerLocationNodes.head && this.playerLocationNodes.head.entity);
             if (!sector) return false;
-            
+
             var costs = this.getCosts(action, this.getCostFactor(action));
-            
+
             var costNameParts = name.split("_");
             var costAmount = costs[name];
-            
+
             if (costNameParts[0] === "resource") {
                 return (playerResources.resources.getResource(costNameParts[1]) / costAmount);
             } else if (costNameParts[0] === "item") {
                 var itemId = name.replace(costNameParts[0] + "_", "");
                 return itemsComponent.getCountById(itemId, inCamp) / costAmount;
-            } else {            
+            } else {
                 switch (name) {
                     case "stamina":
-                        return (playerStamina / costs.stamina);                    
-                    
+                        return (playerStamina / costs.stamina);
+
                     case "rumours":
                         return (this.playerStatsNodes.head.rumours.value / costs.rumours);
-                    
+
                     case "favour":
                         var favour = this.playerStatsNodes.head.entity.has(DeityComponent) ? this.playerStatsNodes.head.entity.get(DeityComponent).favour : 0;
                         return (favour / costs.favour);
-                    
+
                     case "evidence":
                         return (this.playerStatsNodes.head.evidence.value / costs.evidence);
-					
+
 					case "blueprint":
 						return 1;
-                        
+
                     default:
                         console.log("WARN: Unknown cost: " + name);
                         return 1;
                 }
             }
         },
-        
+
         getCostResourcesVO: function (action) {
             var costs = this.getCosts(action, this.getCostFactor(action));
             var resourcesVO = new ResourcesVO();
             if (costs) {
-                for (var key in costs) {                    
+                for (var key in costs) {
                     var costNameParts = key.split("_");
                     var costAmount = costs[key];
                     if (costNameParts[0] === "resource") {
@@ -798,19 +798,19 @@ define([
                     }
                 }
             }
-            return resourcesVO;            
+            return resourcesVO;
         },
-        
+
 		// Return the current ordinal of an action (depending on action, level ordinal / camp ordinal / num of existing buildings)
-        getActionOrdinal: function (action) {
-            if (!this.playerLocationNodes || !this.playerLocationNodes.head) {
+        getActionOrdinal: function (action, otherSector) {
+            if (!action) return 1;
+            if (!otherSector && (!this.playerLocationNodes || !this.playerLocationNodes.head)) {
 				return 1;
 			}
-            if (!action) return 1;
-            
-            var sector = this.playerLocationNodes.head.entity;
+
+            var sector = otherSector || this.playerLocationNodes.head.entity;
             var baseActionID = this.getBaseActionID(action);
-            
+
             if (action.indexOf("build_in") >= 0) {
                 var improvementName = this.getImprovementNameForAction(action);
                 var improvementsComponent = sector.get(SectorImprovementsComponent);
@@ -818,12 +818,12 @@ define([
 				if (action === "build_in_house" && result === 1) result = 0.5;
                 return result;
             }
-                
+
             switch (baseActionID) {
                 case "use_in_inn":
                     var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
                     return itemsComponent.getEquipped(ItemConstants.itemTypes.follower).length;
-                
+
                 case "build_out_passage_down_stairs":
                 case "build_out_passage_down_elevator":
                 case "build_out_passage_down_hole":
@@ -831,12 +831,12 @@ define([
                 case "build_out_passage_up_elevator":
                 case "build_out_passage_up_hole":
                     return action.substring(action.lastIndexOf("_") + 1);
-                
+
                 default: return 1;
             }
         },
-        
-        getActionSecondaryOrdinal: function (action) {
+
+        getActionSecondaryOrdinal: function (action, otherSector) {
             var baseActionID = this.getBaseActionID(action);
             switch (baseActionID) {
                 case "build_out_passage_down_stairs":
@@ -846,15 +846,15 @@ define([
                 case "build_out_passage_up_elevator":
                 case "build_out_passage_up_hole":
                     return GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.storage, this.tribeUpgradesNodes.head.upgrades);
-                    
+
                 default: return 1;
             }
         },
-        
+
         // Returns the cost factor of a given action, usually 1, but may depend on the current status for some actions
         getCostFactor: function(action) {
             if (!this.playerLocationNodes || !this.playerLocationNodes.head) return 1;
-            
+
             var sector = this.playerLocationNodes.head.entity;
             var passageComponent = sector.get(PassagesComponent);
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
@@ -863,7 +863,7 @@ define([
             var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
             var perkBonus = perksComponent.getTotalEffect(PerkConstants.perkTypes.movement);
             if (perkBonus === 0) perkBonus = 1;
-            
+
             var factor = 1;
             switch(action) {
                 case "move_level_down":
@@ -871,13 +871,13 @@ define([
                     factor *= shoeBonus;
                     factor *= perkBonus;
                     break;
-                
+
                 case "move_level_up":
                     factor += passageComponent.passageUp && passageComponent.passageUp.climbable ? 2 : 0;
                     factor *= shoeBonus;
                     factor *= perkBonus;
                     break;
-                
+
                 case "move_sector_north":
                 case "move_sector_east":
                 case "move_sector_west":
@@ -892,10 +892,10 @@ define([
                     factor *= perkBonus;
                     break;
             }
-            
+
             return factor;
         },
-        
+
 		getReqs: function (action, sector) {
             if (!this.playerLocationNodes.head) return;
             var sector = sector || this.playerLocationNodes.head.entity;
@@ -945,51 +945,51 @@ define([
 					return PlayerActionConstants.requirements[action];
 			}
 		},
-        
+
         getCost: function (baseCost, linearScale, e1Scale, e1Base, e2Scale, e2Exp, ordinal1, ordinal2, statusFactor) {
             var linearIncrease = linearScale * ordinal1;
             var expIncrease1 = e1Scale * Math.pow(e1Base, ordinal1-1);
             var expIncrease2 = e2Scale * Math.pow(ordinal2-1, e2Exp);
             return (baseCost + linearIncrease + expIncrease1 + expIncrease2) * statusFactor;
         },
-        
+
         // NOTE: this should always return all possible costs as keys (even if value currently is 0)
         // statusFactor = a factor based on current status such as equipped items (default 1)
-		getCosts: function (action, statusFactor) {
+		getCosts: function (action, statusFactor, otherSector) {
             if (!action) return null;
-            
+
 			var result = {};
             var skipRounding = false;
-            
-            var sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
+
+            var sector = otherSector ? otherSector : (this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
             var level = sector ? GameGlobals.levelHelper.getLevelEntityForSector(sector).get(LevelComponent).levelVO : null;
-            
-            var ordinal1 = this.getActionOrdinal(action);
-            var ordinal2 = this.getActionSecondaryOrdinal(action);
+
+            var ordinal1 = this.getActionOrdinal(action, sector);
+            var ordinal2 = this.getActionSecondaryOrdinal(action, sector);
             var isOutpost = level ? level.populationGrowthFactor < 1 : false;
             var isCampBuildAction = action.indexOf("build_in_") >= 0;
-            
+
 			var baseActionID = this.getBaseActionID(action);
 			var costs = PlayerActionConstants.costs[action];
             if (!costs) {
                 costs = PlayerActionConstants.costs[baseActionID];
             }
-            
+
 			if (costs) {
 				var e1Base = costs.cost_factor_e1_base || 1;
                 var e1BaseOutpost = costs.cost_factor_e1_base_outpost || e1Base;
                 var e2Exp = costs.cost_factor_e2_exp || 0;
                 var e2ExpOutpost = costs.cost_factor_e2_exp_outpost || e2Exp;
-                
+
                 var hasE1 = e1Base !== 1;
                 var hasE2 = e2Exp !== 0;
-				
+
 				for(var key in costs) {
 					if (key.indexOf("cost_factor") >= 0 || key === "cost_source") continue;
-                    
+
                     var value = costs[key];
                     var baseCost = 0;
-                    
+
                     var linearScale = 0;
                     var e1Scale = hasE1 ? 1 : 0;
                     var e2Scale = hasE2 ? 1 : 0;
@@ -1006,7 +1006,7 @@ define([
                         if (value.length > 3) e2Scale = value[3];
                         if (value.length > 4) requiredOrdinal = value[4];
                     }
-                    
+
                     if (ordinal1 >= requiredOrdinal) {
                         var cost = this.getCost(baseCost, linearScale, e1Scale, e1Base, e2Scale, e2Exp, ordinal1, ordinal2, statusFactor);
                         if (!isOutpost || !isCampBuildAction) {
@@ -1024,7 +1024,7 @@ define([
                     }
 				}
 			} else {
-				var sector = sector || this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
+				var sector = otherSector || this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
 				switch (baseActionID) {
 					case "move_camp_level":
                         if (!this.nearestCampNodes.head) return this.getCosts("move_sector_west", 100);
@@ -1032,11 +1032,11 @@ define([
                         var path = GameGlobals.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true });
                         var sectorsToMove = path.length;
                         return this.getCosts("move_sector_west", sectorsToMove * statusFactor);
-                    
+
 					case "move_camp_global":
 						result.stamina = 10 * PlayerActionConstants.costs.move_sector_west.stamina * statusFactor;
 						break;
-					
+
 					case "scout_locale_i":
 					case "scout_locale_u":
 						var localei = parseInt(action.split("_")[3]);
@@ -1044,7 +1044,7 @@ define([
 						var localeVO = sectorLocalesComponent.locales[localei];
 						if (localeVO) result = localeVO.costs;
                         break;
-                        
+
                     case "use_item":
                     case "use_item_fight":
                         var itemName = action.replace(baseActionID + "_", "item_");
@@ -1056,7 +1056,7 @@ define([
                     case "unlock_upgrade":
                         result = { blueprint: 1 };
                         break;
-                        
+
                     case "send_caravan":
                         var campOrdinal = parseInt(action.replace(baseActionID + "_", ""));
                         var caravansComponent = sector.get(OutgoingCaravansComponent);
@@ -1069,7 +1069,7 @@ define([
                         result = costs;
                         skipRounding = true;
                         break;
-                        
+
                     case "nap":
                         var costs = {};
                         var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
@@ -1081,7 +1081,7 @@ define([
                         break;
 				}
 			}
-            
+
             // round all costs, big ones to 5 and the rest to int
             for(var key in result) {
                 if (result[key] > 1000) {
@@ -1092,10 +1092,10 @@ define([
                     result[key] = Math.round(result[key]);
                 }
             }
-		
+
 			return result;
 		},
-		
+
 		getDescription: function (action) {
 			if (action) {
 				var baseAction = this.getBaseActionID(action);
@@ -1124,7 +1124,7 @@ define([
 			}
 			return "";
 		},
-		
+
 		getBaseActionID: function (action) {
 			if (!action) return action;
 			if (action.indexOf("scout_locale_i") >= 0) return "scout_locale_i";
@@ -1150,13 +1150,13 @@ define([
             }
 			return action;
 		},
-        
+
         getActionIDParam: function (action) {
             var remainder = action.replace(this.getBaseActionID(action) + "_", "");
             if (remainder && remainder !== action) return remainder;
             return "";
         },
-		
+
         getImprovementNameForAction: function(action, disableWarnings) {
             switch (this.getBaseActionID(action)) {
                 case "build_out_collector_food": return improvementNames.collector_food;
@@ -1198,14 +1198,14 @@ define([
                 case "build_out_passage_down_hole": return improvementNames.passageDownHole;
                 case "send_caravan": return improvementNames.tradepost;
                 case "build_out_camp": return "";
-                
+
                 default:
-                    if(!disableWarnings) 
+                    if(!disableWarnings)
                         console.log("WARN: No improvement name found for action " + action);
                     return "";
             }
         },
-        
+
         getActionNameForImprovement: function (improvementName) {
             // TODO make this nicer - list action names somewhere outside of html?
             var helper = this;
@@ -1222,7 +1222,7 @@ define([
                 console.log("WARN: No action name found for improvement: " + improvementName);
             return result;
         },
-		
+
         getItemForCraftAction: function (actionName) {
 			var baseActionName = this.getBaseActionID(actionName);
             switch (baseActionName) {
@@ -1230,11 +1230,11 @@ define([
 					return ItemConstants.getItemByID(this.getActionIDParam(actionName));
                 case "use_item":
 					return ItemConstants.getItemByID(this.getActionIDParam(actionName));
-				
+
 				default: return null;
             }
         },
-       
+
         isActionIndependentOfHazards: function (action) {
             var improvement = this.getImprovementNameForAction(action, true);
             if (improvement) {
@@ -1242,7 +1242,7 @@ define([
                     return true;
                 }
             }
-                
+
             var baseActionID = this.getBaseActionID(action);
             switch (baseActionID) {
                 case "craft": return true;
@@ -1251,7 +1251,7 @@ define([
                 case "move_camp_level": return true;
                 case "despair": return true;
                 case "accept_inventory": return true;
-                
+
                 case "move_sector_north":
                 case "move_sector_south":
                 case "move_sector_east":
@@ -1264,12 +1264,12 @@ define([
                 case "move_level_down":
                     // handled by the SectorStatusSystem / MovementOptionsComponent
                     return true;
-                
+
                 default: return false;
             }
         }
-    
+
     });
-    
+
     return PlayerActionsHelper;
 });
