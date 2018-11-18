@@ -14,29 +14,29 @@ define([
     'game/nodes/player/PlayerStatsNode',
     'game/systems/FaintingSystem'
 ], function (
-	Ash, GameGlobals, GlobalSignals, PlayerActionConstants, LocaleConstants, FightConstants, 
-    EnemiesComponent, SectorControlComponent, FightComponent, FightEncounterComponent, 
-    PlayerLocationNode, PlayerStatsNode, 
+	Ash, GameGlobals, GlobalSignals, PlayerActionConstants, LocaleConstants, FightConstants,
+    EnemiesComponent, SectorControlComponent, FightComponent, FightEncounterComponent,
+    PlayerLocationNode, PlayerStatsNode,
     FaintingSystem
 ) {
     var FightHelper = Ash.Class.extend({
-		
+
 		playerLocationNodes: null,
         playerStatsNodes: null,
-		
+
 		pendingEnemies: 0,
         totalEnemies: 0,
 		pendingWinCallback: null,
 		pendingFleeCallback: null,
 		pendingLoseCallback: null,
-		
+
 		constructor: function (engine) {
 			this.engine = engine;
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 		},
 
-		handleRandomEncounter: function (action, winCallback, fleeCallback, loseCallback) {			
+		handleRandomEncounter: function (action, winCallback, fleeCallback, loseCallback) {
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			var hasEnemies = this.hasEnemiesCurrentLocation(action);
 			if (hasEnemies) {
@@ -55,27 +55,26 @@ define([
 
 			winCallback();
 		},
-        
+
         hasEnemiesCurrentLocation: function(action) {
             if (!this.playerLocationNodes.head) return false;
-            var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action); 
-            var localeId = FightConstants.getEnemyLocaleId(baseActionID, action);    
-            var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);     
+            var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+            var localeId = FightConstants.getEnemyLocaleId(baseActionID, action);
+            var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
             var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
             return enemiesComponent.hasEnemies && !sectorControlComponent.hasControlOfLocale(localeId);
         },
-        
+
         initFight: function (action) {
-			console.log("init fight " + action + " " + this.pendingEnemies);
             var sector = this.playerLocationNodes.head.entity;
             sector.remove(FightComponent);
-			
+
             var enemiesComponent = sector.get(EnemiesComponent);
             enemiesComponent.selectNextEnemy();
 			sector.add(new FightEncounterComponent(enemiesComponent.getNextEnemy(), action, this.pendingEnemies, this.totalEnemies));
 			GameGlobals.uiFunctions.showFight();
         },
-        
+
         startFight: function () {
             // TODO move to PlayerActionFunctions
             if (GameGlobals.playerActionsHelper.checkAvailability("fight", true)) {
@@ -89,7 +88,7 @@ define([
 				}
             }
         },
-        
+
         endFight: function () {
             var sector = this.playerLocationNodes.head.entity;
 			var encounterComponent = sector.get(FightEncounterComponent);
@@ -121,7 +120,7 @@ define([
             GlobalSignals.fightEndedSignal.dispatch();
             this.save();
         },
-		
+
 		getEnemyCount: function (action) {
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
@@ -133,11 +132,11 @@ define([
 				default: return 1;
 			}
 		},
-        
+
         save: function () {
             GlobalSignals.saveGameSignal.dispatch();
         },
-        
+
     });
 
     return FightHelper;

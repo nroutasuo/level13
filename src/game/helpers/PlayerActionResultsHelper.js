@@ -74,21 +74,21 @@ define([
 
         constructor: function (engine) {
             this.engine = engine;
-            
+
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
             this.nearestCampNodes = engine.getNodeList(NearestCampNode);
         },
-        
+
         getResultVOByAction: function (action) {
             var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
-            
+
             var resultVO;
             switch (baseActionID) {
                 case "scavenge":
-                    resultVO = this.getScavengeRewards();   
+                    resultVO = this.getScavengeRewards();
                     break;
                 case "scout":
                     resultVO = this.getScoutRewards();
@@ -114,14 +114,14 @@ define([
                     if (GameConstants.isDebugOutputEnabled) console.log("WARN: Unknown action: " + baseActionID + ". Can't create result vo.");
                     return null;
             }
-            
+
             var playerVision = this.playerStatsNodes.head.vision.value;
-            var loseInventoryProbability = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);            
+            var loseInventoryProbability = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
             if (loseInventoryProbability > Math.random()) {
                 resultVO.lostItems = this.getLostItems(action, true);
             }
             resultVO.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability(action, playerVision));
-            
+
             return resultVO;
         },
 
@@ -138,7 +138,7 @@ define([
             rewards.gainedResources = this.getRewardResources(0.95 + efficiency * 0.05, 1, efficiency, sectorResources);
             rewards.gainedItems = this.getRewardItems(0.01 + efficiency * 0.04, efficiency * 0.08, this.itemResultTypes.scavenge, efficiency, itemsComponent, levelOrdinal);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
-            
+
             this.addStash(rewards, sectorFeatures.stash);
 
             return rewards;
@@ -149,7 +149,7 @@ define([
 
             var efficiency = this.getScavengeEfficiency();
             var sectorResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable;
-           
+
             rewards.gainedEvidence = 1;
             if (rewards.gainedInjuries.length === 0) {
                 rewards.gainedResources = this.getRewardResources(0.5, 3, efficiency, sectorResources);
@@ -174,7 +174,7 @@ define([
             if (localeVO.type !== localeTypes.tradingpartner) {
                 rewards.gainedBlueprintPiece = this.getResultBlueprint(localeVO);
             }
-            
+
             if (localeVO.type === localeTypes.tradingpartner) {
                 rewards.gainedRumours = Math.random() < 0.3 ? Math.ceil(Math.random() * levelOrdinal * levelOrdinal) : 0;
             } else if (localeCategory === "u") {
@@ -197,7 +197,7 @@ define([
 
             return rewards;
         },
-		
+
 		getUseSpringRewards: function () {
 			var rewards = new ResultVO("use_spring");
             var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
@@ -205,17 +205,17 @@ define([
 			rewards.gainedResources.water = bagComponent.totalCapacity -  bagComponent.usedCapacity;
 			return rewards;
 		},
-        
+
         getClearWorkshopRewards: function () {
             var rewards = new ResultVO("clear_workshop");
             return rewards;
         },
-        
+
         getNapRewards: function () {
             var rewards = new ResultVO("nap");
             return rewards;
         },
-		
+
 		getFightRewards: function (won) {
 			var rewards = new ResultVO("fight");
             if (won) {
@@ -252,17 +252,17 @@ define([
 		collectRewards: function (isTakeAll, rewards, campSector) {
             if (rewards == null)
                 return;
-            
+
 			var currentStorage = campSector ? campSector.get(ResourcesComponent) : GameGlobals.resourcesHelper.getCurrentStorage();
 			var playerPos = this.playerLocationNodes.head.position;
-            
+
             if (isTakeAll) {
                 rewards.selectedItems = rewards.gainedItems;
                 rewards.selectedResources = rewards.gainedResources;
                 rewards.discardedItems = [];
                 rewards.discardedResources = new ResourcesVO();
             }
-			
+
 			currentStorage.addResources(rewards.selectedResources);
 			currentStorage.substractResources(rewards.discardedResources);
 			currentStorage.substractResources(rewards.lostResources);
@@ -279,7 +279,7 @@ define([
                     }
                 }
             }
-            
+
             var currencyComponent = this.playerStatsNodes.head.entity.get(CurrencyComponent);
             currencyComponent.currency += rewards.gainedCurrency;
             currencyComponent.currency -= rewards.lostCurrency;
@@ -292,13 +292,13 @@ define([
 					itemsComponent.addItem(rewards.selectedItems[i], !playerPos.inCamp && !campSector);
 				}
 			}
-			
+
 			if (rewards.gainedFollowers) {
 				for (var i = 0; i < rewards.gainedFollowers.length; i++) {
 					itemsComponent.addItem(rewards.gainedFollowers[i], false);
 				}
 			}
-			
+
 			if (rewards.gainedBlueprintPiece) {
 				this.tribeUpgradesNodes.head.upgrades.addNewBlueprintPiece(rewards.gainedBlueprintPiece);
 				GameGlobals.gameState.unlockedFeatures.blueprints = true;
@@ -322,7 +322,7 @@ define([
 					perksComponent.addPerk(rewards.gainedInjuries[i].clone());
 				}
 			}
-			
+
 			if (rewards.gainedPopulation > 0) {
 				var nearestCampNode = this.nearestCampNodes.head;
 				if (nearestCampNode) {
@@ -331,7 +331,7 @@ define([
 					console.log("WARN: No nearest camp found.");
 				}
 			}
-            
+
             // TODO assign reputation to nearest camp
 
 			if (rewards.gainedEvidence) this.playerStatsNodes.head.evidence.value += rewards.gainedEvidence;
@@ -349,7 +349,7 @@ define([
 			msg += "Gained " + resourceTemplate.msg;
 			replacements = replacements.concat(resourceTemplate.replacements);
 			values = values.concat(resourceTemplate.values);
-            
+
             if (rewards.gainedCurrency) {
                 msg += ", ";
                 foundSomething = true;
@@ -361,7 +361,7 @@ define([
 			if (rewards.selectedItems && rewards.selectedItems.length > 0) {
 				msg += ", ";
 				foundSomething = true;
-				
+
 				var loggedItems = {};
 				for (var i = 0; i < rewards.selectedItems.length; i++) {
 					var item = rewards.selectedItems[i];
@@ -375,7 +375,7 @@ define([
 					}
 				}
 			}
-			
+
 			if (rewards.gainedFollowers && rewards.gainedFollowers.length > 0) {
 				msg += ", ";
 				foundSomething = true;
@@ -410,7 +410,7 @@ define([
 				replacements.push("#" + replacements.length + " piece of forgotten technology");
 				values.push(1);
 			}
-			
+
 			if (rewards.gainedPopulation) {
 				msg += ", ";
 				foundSomething = true;
@@ -425,24 +425,24 @@ define([
 			} else {
 				msg = "Didn't find anything.";
 			}
-			
+
 			// TODO more (varied?) messages for getting injured
-			
+
 			if (rewards.gainedInjuries.length > 0) {
 				msg += " Got injured.";
 			}
 
 			return { msg: msg, replacements: replacements, values: values };
 		},
-		
+
 		getRewardDiv: function (resultVO, isFight) {
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var hasBag = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
             var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
             var isInitialSelectionValid = bagComponent.usedCapacity <= bagComponent.totalCapacity;
-            
+
 			var div = "<div>";
-			
+
             var gainedhtml = "";
             gainedhtml += "<ul class='resultlist resultlist-positive'>";
 			if (resultVO.gainedFollowers && resultVO.gainedFollowers.length > 0) {
@@ -463,11 +463,11 @@ define([
             if (resultVO.gainedCurrency) {
                 gainedhtml += "<li>" + resultVO.gainedCurrency + " silver</li>";
             }
-            
+
 			gainedhtml += "</ul>";
 			var hasGainedStuff = gainedhtml.indexOf("<li") > 0;
 			if (hasGainedStuff) div += gainedhtml;
-			
+
 			if (resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.lostCurrency > 0) {
 				var losthtml = "<div id='resultlist-loststuff' class='infobox'>";
 				losthtml += "<div id='resultlist-loststuff-lost' class='infobox inventorybox inventorybox-negative'>";
@@ -476,26 +476,26 @@ define([
 				losthtml += "</div>";
                 div += losthtml;
 			}
-			
+
 			if (resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0 || !isInitialSelectionValid) {
 				var baghtml = "<div id='resultlist-inventorymanagement'>";
-				
+
 				baghtml += "<div id='resultlist-inventorymanagement-found' class='infobox inventorybox'>";
 				baghtml += "<ul></ul>";
 				baghtml += "<p class='msg-empty'>" + (isFight ? "Nothing left of the opponent." : "Nothing left here.") + "</p>";
 				baghtml += "</div>"
-				
+
 				baghtml += "<div id='resultlist-inventorymanagement-kept' class='infobox inventorybox'>";
 				baghtml += "<ul></ul>";
                 baghtml += "<p class='msg-empty'>Your " + (hasBag ? "bag is" : "pockets are") + " empty.<p>";
 				baghtml += "</div>"
-				
+
                 baghtml += "<div id='inventory-popup-bar' class='progress-wrap progress' style='margin-top: 10px'><div class='progress-bar progress'/><span class='progress-label progress'>?/?</span></div>";
 				baghtml += "</div>"
 				div += baghtml;
-                
+
 			}
-			
+
 			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0;
 			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.gainedInjuries.length > 0 || resultVO.lostCurrency > 0;
 			if (!hasGainedStuff && !hasLostStuff) {
@@ -503,23 +503,23 @@ define([
                 else if (resultVO.action === "despair") div += "";
 				else div += "<p>Didn't find anything useful.</p>";
 			}
-			
+
 			if (resultVO.gainedInjuries.length > 0) {
 				div += "<p class='warning'>You got injured.</p>";
 			}
-			
+
 			if (resultVO.lostCurrency > 0) {
 				div += "<p class='warning'>You lost " + resultVO.lostCurrency + " silver.</p>";
 			}
-                
+
 			div += "</div>";
 			return div;
 		},
-		
+
 		logResults: function (rewards) {
             var logComponent = this.playerStatsNodes.head.entity.get(LogMessagesComponent);
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-			
+
             if (rewards) {
                 if (rewards.gainedBlueprintPiece) {
                     if (!this.tribeUpgradesNodes.head.upgrades.hasUpgrade(rewards.gainedBlueprintPiece)) {
@@ -550,7 +550,7 @@ define([
                 }
             }
 		},
-		
+
         // typically between 0-1 (can be boosted past 1)
 		getScavengeEfficiency: function () {
 			var playerVision = this.playerStatsNodes.head.vision.value;
@@ -567,10 +567,10 @@ define([
 			var results = new ResourcesVO();
             if (Math.random() > probabilityFactor)
                 return results;
-            
+
             if (!availableResources || !availableResources.getTotal || availableResources.getTotal() <= 0)
                 return results;
-            
+
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
 				var resQuantity = availableResources.getResource(name);
@@ -596,14 +596,14 @@ define([
                 resultAmount = MathUtils.clamp(resultAmount, resMin, 10);
 				results.setResource(name, resultAmount);
 			}
-            
+
             // consolation prize: if found nothing at this point & sector contains plenty of metal, add 1 metal
             if (results.getTotal() === 0) {
                 if (availableResources.getResource(resourceNames.metal) >= 5) {
                     results.setResource(resourceNames.metal, 1);
                 }
             }
-            
+
             // if result only consists of one resource, for convenience limit to free space -> can always use "take all"
             var names = results.getNames();
             if (names.length === 1) {
@@ -616,18 +616,18 @@ define([
 
 			return results;
 		},
-        
+
         getRewardCurrency: function (efficiency) {
             if (efficiency < 0.5)
                 return 0;
-            
+
             if (Math.random() > 0.001)
                 return 0;
-            
+
             return Math.ceil(Math.random() * 3);
         },
-		
-		// itemProbability: 0-1 probability of finding one item 
+
+		// itemProbability: 0-1 probability of finding one item
         // ingredientProbability: 0-1 probability of finding some ingredients
         // itemTypeLimits: list of item types and their probabilities ([ type: relative_probability ])
         // efficiency: 0-1 current scavenge efficiency of the player, affects chance to find something
@@ -647,7 +647,7 @@ define([
                 var item = this.getRewardItem(itemTypeLimits, efficiency, campOrdinal);
                 if (item) result.push(item);
             }
-			
+
 			// Ingredients
 			var hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
 			if (hasBag && Math.random() < ingredientProbability) {
@@ -657,10 +657,10 @@ define([
 					result.push(ingredient.clone());
 				}
 			}
-			
+
 			return result;
 		},
-		
+
 		getRewardFollowers: function (probability) {
 			var followers = [];
 			if (Math.random() < probability) {
@@ -683,7 +683,7 @@ define([
                 limitsMax[type] = sum + itemTypeLimits[type];
                 sum += itemTypeLimits[type];
             }
-            
+
             // select item type
             var itemTypeRand = Math.random() * sum;
             var itemType;
@@ -693,12 +693,12 @@ define([
                     break;
                 }
             }
-            
+
             if (!itemType) {
                 console.log("WARN: Could not determine reward item type.");
                 console.log(itemTypeLimits);
             }
-            
+
             // list possible items
             var items = [];
 			var totalLevels = GameGlobals.gameState.getTotalLevels();
@@ -724,12 +724,12 @@ define([
                 case "artefact":
                     items = ItemConstants.itemDefinitions.artefact.slice(0);
                     break;
-                    
+
                 default:
                     console.log("WARN: No reward items defined for type: [" + itemType + "]");
                     break;
             }
-            
+
             var validItems = [];
             var rarityThreshold = 3 + 7 * efficiency * Math.random();
             for (var i = 0; i < items.length; i++) {
@@ -741,18 +741,18 @@ define([
                     continue;
                 validItems.push(items[i]);
             }
-            
+
             if (validItems.length === 0) {
                 console.log("WARN: No valid reward items found for type: [" + itemType + "]");
                 return null;
             }
-            
+
             return validItems[Math.floor(Math.random() * validItems.length)].clone();
         },
-        
+
 		getNecessityItem: function (itemProbability, itemTypeLimits, efficiency, currentItems, campOrdinal) {
             var adjustedProbability = MathUtils.clamp(itemProbability * 5, 0.15, 0.35);
-            
+
 			// first bag
             if (itemTypeLimits.bag > 0) {
                 if (currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) <= 0) {
@@ -764,7 +764,7 @@ define([
                     }
                 }
             }
-			
+
             // map
             if (itemTypeLimits.exploration > 0) {
                 var visitedSectors = GameGlobals.gameState.numVisitedSectors;
@@ -775,13 +775,13 @@ define([
                     }
                 }
             }
-            
+
             // non-craftable level clothing
             if (itemTypeLimits.clothing > 0) {
                 if (Math.random() < adjustedProbability * efficiency) {
                     var clothing = GameGlobals.itemsHelper.getScavengeNecessityClothing(campOrdinal);
                     for (var i = 0; i < clothing.length; i++) {
-                        if (currentItems.getCountById(clothing[i].id, true) <= 0) {                        
+                        if (currentItems.getCountById(clothing[i].id, true) <= 0) {
                             if (Math.random() < 0.25) {
                                 return clothing[i];
                             }
@@ -789,10 +789,10 @@ define([
                     }
                 }
             }
-            
+
 			return null;
 		},
-        
+
         addStash: function (rewardsVO, stashVO) {
             if (!stashVO) return;
             var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
@@ -808,7 +808,7 @@ define([
                     break;
             }
         },
-        
+
         isRewardItemTypeLocked: function (itemType) {
             if (itemType === ItemConstants.itemBonusTypes.light) {
                 return !GameGlobals.gameState.unlockedFeatures.vision;
@@ -819,12 +819,12 @@ define([
         getLostItems: function(action, loseSingleItem) {
             var lostItems = [];
             var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAll(false);
-            
+
             if (playerItems.length <= 0)
                 return lostItems;
-            
-            
-            var itemList = [];                
+
+
+            var itemList = [];
             for (var i = 0; i < playerItems.length; i++) {
                 var loseProbability = this.getItemLoseProbability(action, playerItems[i]);
                 var count = Math.round(loseProbability * 10);
@@ -832,19 +832,19 @@ define([
                     itemList.push(playerItems[i]);
                 }
             }
-            
+
             var numItems = loseSingleItem ? 1 : Math.ceil(Math.random() * 3);
             numItems = Math.min(itemList.length, numItems);
-            
+
             for (var i = 0; i < numItems; i++) {
                 var itemi = Math.floor(Math.random() * itemList.length);
                 lostItems.push(itemList[itemi]);
                 itemList.splice(itemi, 1);
             }
-                
+
             return lostItems;
         },
-        
+
         getItemLoseProbability: function (action, item) {
             var campCount = GameGlobals.gameState.numCamps;
             var itemLoseProbability = 1;
@@ -879,14 +879,14 @@ define([
 		getResultInjuries: function (injuryProbability) {
             var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
 			var result = [];
-            
+
             var currentEffect = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury);
             var injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
-            
+
             // limit possible injuries
             if (currentEffect < 0.35 || injuries.length >= 5)
                 return result;
-            
+
 			if (injuryProbability * currentEffect > Math.random()) {
 				var injuryi = parseInt(Math.random() * PerkConstants.perkDefinitions.injury.length);
 				var injury = PerkConstants.perkDefinitions.injury[injuryi];
@@ -894,13 +894,13 @@ define([
             }
 			return result;
 		},
-		
+
 		getResultBlueprint: function (localeVO) {
 			var playerPos = this.playerLocationNodes.head.position;
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
             var blueprintType = localeVO.isEarly ? UpgradeConstants.BLUEPRINT_TYPE_EARLY : UpgradeConstants.BLUEPRINT_TYPE_LATE;
 			var levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, blueprintType);
-			
+
 			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
 			var blueprintsToFind = [];
 			var blueprintPiecesToFind = 0;
@@ -912,16 +912,14 @@ define([
 					blueprintPiecesToFind += blueprintVO ? blueprintVO.maxPieces - blueprintVO.currentPieces : UpgradeConstants.getMaxPiecesForBlueprint(blueprintId);
 				}
 			}
-			
+
 			var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, false, false, localeVO).length + 1;
 			var levelBlueprintProbability = blueprintPiecesToFind / unscoutedLocales;
-			if (GameConstants.isDebugOutputEnabled)
-				console.log(blueprintPiecesToFind + " / " + unscoutedLocales + " -> " + levelBlueprintProbability);
-				
+
 			if (Math.random() < levelBlueprintProbability) {
 				return blueprintsToFind[Math.floor(Math.random() * blueprintsToFind.length)];
 			}
-			
+
 			return null;
 		},
 
