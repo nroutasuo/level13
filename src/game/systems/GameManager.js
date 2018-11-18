@@ -14,33 +14,33 @@ define([
 ], function (Ash, GameGlobals, GlobalSignals, GameConstants, EntityCreator, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, LevelNode, PositionComponent, UIOutLevelSystem) {
 
     var GameManager = Ash.System.extend({
-	
+
         tickProvider: null,
         creator: null,
-		
+
 		engine: null,
-		
+
 		player: null,
 		tribe: null,
-	
+
 		constructor: function (tickProvider) {
 			this.tickProvider = tickProvider;
 		},
-	
+
 		addToEngine: function (engine) {
 			this.engine = engine;
 			this.creator = new EntityCreator(this.engine);
 		},
-	
+
 		removeFromEngine: function (engine) {
 			this.player = null;
 			this.engine = null;
 		},
-		
+
 		// Called on page load
 		setupGame: function () {
             if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t loading and setting up game");
-			this.initializeEntities();			
+			this.initializeEntities();
 			var loaded = this.loadGameState();
             GameConstants.gameSpeedCamp = 1;
             GameConstants.gameSpeedExploration = 1;
@@ -48,28 +48,28 @@ define([
             gtag('set', { 'max_camp': GameGlobals.gameState.numCamps });
 			if (loaded) this.syncLoadedGameState();
 			if (!loaded) this.setupNewGame();
-            
+
             if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t world ready");
             GlobalSignals.worldReadySignal.dispatch();
 		},
-		
+
 		// Called after all other systems are ready
 		startGame: function () {
             if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t starting game");
-            
+
             // for restart:
             this.engine.getSystem(UIOutLevelSystem).pendingUpdateDescription = true;
             this.engine.getSystem(UIOutLevelSystem).pendingUpdateMap = true;
-            
+
             GameGlobals.uiFunctions.startGame();
-            
+
             var sys = this;
             setTimeout(function () {
                 GameGlobals.uiFunctions.showGame();
                 GlobalSignals.gameStartedSignal.dispatch();
             }, 250);
 		},
-		
+
 		restartGame: function () {
             console.log("Restarting game..");
             gtag('event', 'game_restart', { event_category: 'game_data' });
@@ -83,25 +83,24 @@ define([
                 sys.startGame();
             }, 250);
 		},
-        
+
         pauseGame: function () {
 			GameGlobals.uiFunctions.hideGame(false);
             this.tickProvider.stop();
         },
-		
+
 		initializeEntities: function () {
-            console.log("Initializing entities..");
 			this.player = this.creator.createPlayer(GameGlobals.saveHelper.saveKeys.player);
 			this.tribe = this.creator.createTribe(GameGlobals.saveHelper.saveKeys.tribe);
 		},
-		
+
 		// Called if there is no save to load
 		setupNewGame: function () {
             gtag('event', 'game_start_new', { event_category: 'game_data' });
             GameGlobals.gameState.gameStartTimeStamp = new Date().getTime();
 			this.creator.initPlayer(this.player);
 		},
-		
+
 		createLevelEntities: function (seed) {
             var levelVO;
             var sectorVO;
@@ -134,13 +133,13 @@ define([
 				}
 			}
 		},
-		
+
 		// Loads a game if a save can be found, otherwise initializes world seed & levels
 		// Returns a boolean indicating whether a save was found
 		loadGameState: function () {
             var save = this.getSaveObject();
             var hasSave = save != null;
-			
+
             // Load game state
             if (hasSave) {
                 var loadedGameState = save.gameState;
@@ -159,7 +158,7 @@ define([
             WorldCreator.prepareWorld(worldSeed, GameGlobals.itemsHelper);
             GameGlobals.gameState.worldSeed = worldSeed;
             gtag('set', { 'world_seed': worldSeed });
-            
+
             if (GameConstants.isDebugOutputEnabled) console.log("Prepared world (seed: " + worldSeed + ")");
 
             // Create other entities and fill components
@@ -173,7 +172,7 @@ define([
 
                 failedComponents += GameGlobals.saveHelper.loadEntity(entitiesObject, GameGlobals.saveHelper.saveKeys.player, this.player);
                 failedComponents += GameGlobals.saveHelper.loadEntity(entitiesObject, GameGlobals.saveHelper.saveKeys.tribe, this.tribe);
-                
+
                 if (!saveWarningShown && failedComponents > 0) {
                     saveWarningShown = true;
                     this.showSaveWarning();
@@ -186,7 +185,7 @@ define([
                     positionComponent = sectorNode.entity.get(PositionComponent);
                     saveKey = GameGlobals.saveHelper.saveKeys.sector + positionComponent.level + "." + positionComponent.sectorX + "." + positionComponent.sectorY;
                     failedComponents += GameGlobals.saveHelper.loadEntity(entitiesObject, saveKey, sectorNode.entity);
-                
+
                     if (!saveWarningShown && failedComponents > 0) {
                         saveWarningShown = true;
                         this.showSaveWarning();
@@ -198,7 +197,7 @@ define([
                     positionComponent = levelNode.entity.get(PositionComponent);
                     saveKey = GameGlobals.saveHelper.saveKeys.level + positionComponent.level;
                     failedComponents += GameGlobals.saveHelper.loadEntity(entitiesObject, saveKey, levelNode.entity);
-                
+
                     if (!saveWarningShown && failedComponents > 0) {
                         saveWarningShown = true;
                         this.showSaveWarning();
@@ -219,8 +218,8 @@ define([
                 return false;
             }
 		},
-        
-        getSaveObject: function () { 
+
+        getSaveObject: function () {
             try {
                 var json = localStorage.save;
                 var object = GameGlobals.saveHelper.parseSaveJSON(json);
@@ -231,7 +230,7 @@ define([
             }
             return null;
         },
-		
+
 		// Clean up a loaded game state, mostly used to ensure backwards compatibility
 		syncLoadedGameState: function () {
             gtag('event', 'game_load_save', { event_category: 'game_data' });
@@ -240,12 +239,12 @@ define([
 				this.creator.syncSector(node.entity);
 			}
 		},
-        
+
         showSaveWarning: function () {
             GameGlobals.uiFunctions.showQuestionPopup(
-                "Warning", 
+                "Warning",
                 "Part of the save could not be loaded. Most likely your save is old and incompatible with the current version. Restart the game or continue at your own risk.",
-                "Restart",   
+                "Restart",
                 "Continue",
                 function () {
                     GameGlobals.uiFunctions.restart();
