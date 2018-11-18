@@ -29,15 +29,15 @@
     TraderComponent, RaidComponent
 ) {
     var UIOutCampSystem = Ash.System.extend({
-        
+
         engine: null,
-	
+
         playerPosNodes: null,
         playerLocationNodes: null,
         playerLevelNodes: null,
         deityNodes: null,
         tribeUpgradesNodes: null,
-        
+
         bubbleNumber: -1,
         visibleBuildingCount: 0,
         availableBuildingCount: 0,
@@ -47,7 +47,7 @@
         lastShownEvents: 0,
         currentPopulation: 0,
         lastShownPopulation: 0,
-        
+
         elements: {
             steppers: {},
         },
@@ -67,7 +67,8 @@
             GlobalSignals.add(this, GlobalSignals.campRenamedSignal, this.onCampRenamed);
             GlobalSignals.add(this, GlobalSignals.populationChangedSignal, this.onPopulationChanged);
             GlobalSignals.add(this, GlobalSignals.workersAssignedSignal, this.onWorkersAssigned);
-            
+            GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
+
             this.refresh();
         },
 
@@ -86,46 +87,47 @@
             var campCount = GameGlobals.gameState.numCamps;
             if (!this.playerLocationNodes.head) return;
             if (!this.playerPosNodes.head.position.inCamp) return;
-            
+
             this.updateImprovements(isActive, campCount);
             this.updateWorkers(isActive);
             this.updateEvents(isActive);
             this.updateBubble();
-            
+
             if (!isActive) {
                 return;
             }
-	    
+
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
             if (!campComponent) {
                 console.log("WARN: Camp UI systen active but no camp found.");
                 GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.out);
                 return;
             }
-            
+
             // Vis
             // TODO camp vis
-               
+
             this.updateStats();
         },
-        
+
         refresh: function () {
             if (!this.playerLocationNodes.head) return;
             if (!this.playerPosNodes.head.position.inCamp) return;
-            
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
+
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
             if (!campComponent) return;
             var campCount = GameGlobals.gameState.numCamps;
-            
+
             // Header
             var header = campComponent.getName();
             if (campCount > 1) header += " (" + this.playerPosNodes.head.position.getPosition().getInGameFormat(true) + ")";
             $("#tab-header h2").text(header);
-            
+
             this.updateAssignedWorkers();
             this.updateWorkerMaxDescriptions();
         },
-        
+
         updateBubble: function () {
             var buildingNum = this.availableBuildingCount - this.lastShownAvailableBuildingCount + this.visibleBuildingCount - this.lastShownVisibleBuildingCount;
             var eventNum = this.currentEvents - this.lastShownEvents;
@@ -137,51 +139,51 @@
             $("#switch-in .bubble").text(this.bubbleNumber);
             GameGlobals.uiFunctions.toggle("#switch-in .bubble", this.bubbleNumber > 0);
         },
-	
+
         updateWorkers: function (isActive) {
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
-            
+
             this.currentPopulation = Math.floor(campComponent.population);
             if (isActive) this.lastShownPopulation = this.currentPopulation;
-            
+
             if (!isActive) return;
-            
+
             var showPopulation = campComponent.population > 0 || GameGlobals.gameState.numCamps > 1;
             GameGlobals.uiFunctions.toggle("#in-population", showPopulation);
             if (!showPopulation) return;
-            
+
             var reputation = this.playerLocationNodes.head.entity.get(ReputationComponent).value;
             var maxPopulation = this.getCampMaxPopulation();
             this.updatePopulationChangeDisplay(campComponent, maxPopulation, reputation);
         },
-        
+
         getCampMaxPopulation: function () {
             if (!this.playerLocationNodes.head) return;
-            var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);            
+            var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
             maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
             return maxPopulation;
         },
-        
+
         updateWorkerStepper: function (campComponent, id, workerType, maxWorkers, showMax) {
             GameGlobals.uiFunctions.toggle($(id).closest("tr"), maxWorkers > 0);
-            
+
             var freePopulation = campComponent.getFreePopulation();
             var assignedWorkers = campComponent.assignedWorkers[workerType];
             var maxAssigned = Math.min(assignedWorkers + freePopulation, maxWorkers);
             GameGlobals.uiFunctions.updateStepper(id, assignedWorkers, 0, maxAssigned);
-            
+
             if (maxWorkers === 0) return;
 			$(id).parent().siblings(".in-assign-worker-limit").children(".callout-container").children(".info-callout-target").html(showMax ? "<span>/ " + maxWorkers + "</span>" : "");
         },
-        
+
         updatePopulationChangeDisplay: function (campComponent, maxPopulation, reputation) {
             var freePopulation = campComponent.getFreePopulation();
             var isPopulationMaxed = campComponent.population >= maxPopulation;
             var populationChangePerSec = campComponent.populationChangePerSec;
             var isPopulationStill = isPopulationMaxed && populationChangePerSec === 0;
-            
+
             var reqRepCur = CampConstants.getRequiredReputation(Math.floor(campComponent.population));
             var reqRepNext = CampConstants.getRequiredReputation(Math.floor(campComponent.population) + 1);
             var isReputationBlocking = reqRepNext < reputation;
@@ -190,7 +192,7 @@
             $("#in-population-reputation").text("Reputation required: " + reqRepCur + " (current) " + reqRepNext + " (next)");
             $("#in-population h3").text("Population: " + Math.floor(campComponent.population) + " / " + (maxPopulation));
             $("#in-population p#in-population-status").text("Free workers: " + freePopulation);
-            
+
             if (!isPopulationStill) {
                 var secondsToChange = 0;
                 var progress = 0;
@@ -203,22 +205,22 @@
                 } else {
                     progress = 0;
                 }
-                
+
                 var progressLabel = populationChangePerSec !== 0 ? UIConstants.getTimeToNum(secondsToChange) : "no change";
-                
+
                 $("#in-population-bar-next").toggleClass("warning", populationChangePerSec < 0);
                 $("#in-population-bar-next").data("progress-percent", progress * 100);
                 $("#in-population-bar-next .progress-label").text(progressLabel);
                 $("#in-population-bar-next").data("animation-length", 500);
             }
-            
+
             GameGlobals.uiFunctions.slideToggleIf("#in-population-reputation", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
             GameGlobals.uiFunctions.slideToggleIf("#in-population-bar-next", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
             GameGlobals.uiFunctions.slideToggleIf("#in-population-next", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
             GameGlobals.uiFunctions.slideToggleIf("#in-population-status", null, campComponent.population >= 1, 200, 200);
             GameGlobals.uiFunctions.slideToggleIf("#in-assign-workers", null, campComponent.population >= 1, 200, 200);
         },
-        
+
         updateAssignedWorkers: function (campComponent) {
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
@@ -226,7 +228,7 @@
             var maxPopulation = this.getCampMaxPopulation();
             var posComponent = this.playerPosNodes.head.position;
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-            
+
             var workerConsumptionS = "<br/><span class='warning'>water -" + GameGlobals.campHelper.getWaterConsumptionPerSecond(1) + "/s</span>" +
                 "<br/><span class='warning'>food -" + GameGlobals.campHelper.getFoodConsumptionPerSecond(1) + "/s</span>";
             UIConstants.updateCalloutContent("#in-assign-water .in-assing-worker-desc .info-callout-target", "water +" + GameGlobals.campHelper.getWaterProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
@@ -238,19 +240,19 @@
             UIConstants.updateCalloutContent("#in-assign-concrete .in-assing-worker-desc .info-callout-target", "concrete +" + GameGlobals.campHelper.getConcreteProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>metal -" + GameGlobals.campHelper.getMetalConsumptionPerSecondConcrete(1) + "/s</span>", true);
             UIConstants.updateCalloutContent("#in-assign-smith .in-assing-worker-desc .info-callout-target", "tools +" + GameGlobals.campHelper.getToolsProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>metal -" + GameGlobals.campHelper.getMetalConsumptionPerSecondSmith(1) + "/s</span>", true);
             UIConstants.updateCalloutContent("#in-assign-soldier .in-assing-worker-desc .info-callout-target", "camp defence +1" + workerConsumptionS, true);
-            
+
             var refineriesOnLevel = GameGlobals.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel);
             var apothecariesInCamp = improvements.getCount(improvementNames.apothecary);
             var cementMillsInCamp = improvements.getCount(improvementNames.cementmill);
             var smithiesInCamp = improvements.getCount(improvementNames.smithy);
             var barracksInCamp = improvements.getCount(improvementNames.barracks);
-            
+
             var maxApothecaries = apothecariesInCamp * CampConstants.getApothecariesPerShop(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.apothecary, this.tribeUpgradesNodes.head.upgrades));
             var maxConcrete = cementMillsInCamp * CampConstants.getWorkersPerMill(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.cementmill, this.tribeUpgradesNodes.head.upgrades));
             var maxSmiths = smithiesInCamp * CampConstants.getSmithsPerSmithy(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.smithy, this.tribeUpgradesNodes.head.upgrades));
             var maxSoldiers = barracksInCamp * CampConstants.getSoldiersPerBarracks(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.barracks, this.tribeUpgradesNodes.head.upgrades));
             var maxChemists = refineriesOnLevel * CampConstants.CHEMISTS_PER_WORKSHOP;
-            
+
             this.updateWorkerStepper(campComponent, "#stepper-scavenger", "scavenger", maxPopulation, false);
             this.updateWorkerStepper(campComponent, "#stepper-trapper", "trapper", maxPopulation, false);
             this.updateWorkerStepper(campComponent, "#stepper-water", "water", maxPopulation, false);
@@ -261,32 +263,32 @@
             this.updateWorkerStepper(campComponent, "#stepper-smith", "toolsmith", maxSmiths, true);
             this.updateWorkerStepper(campComponent, "#stepper-soldier", "soldier", maxSoldiers, true);
         },
-        
+
         updateWorkerMaxDescriptions: function () {
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var posComponent = this.playerPosNodes.head.position;
-            
+
             var refineriesOnLevel = GameGlobals.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel);
             var apothecariesInCamp = improvements.getCount(improvementNames.apothecary);
             var cementMillsInCamp = improvements.getCount(improvementNames.cementmill);
             var smithiesInCamp = improvements.getCount(improvementNames.smithy);
             var barracksInCamp = improvements.getCount(improvementNames.barracks);
-            
+
             UIConstants.updateCalloutContent("#in-assign-chemist .in-assign-worker-limit .info-callout-target", refineriesOnLevel + " refineries found", true);
             UIConstants.updateCalloutContent("#in-assign-apothecary .in-assign-worker-limit .info-callout-target", apothecariesInCamp + " apothecaries built", true);
             UIConstants.updateCalloutContent("#in-assign-concrete .in-assign-worker-limit .info-callout-target", cementMillsInCamp + " cement mills built", true);
             UIConstants.updateCalloutContent("#in-assign-smith .in-assign-worker-limit .info-callout-target", smithiesInCamp + " smithies built", true);
             UIConstants.updateCalloutContent("#in-assign-soldier .in-assign-worker-limit .info-callout-target", barracksInCamp + " barracks built", true);
         },
-        
+
         updateImprovements: function (isActive, campCount) {
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
             var hasDeity = this.deityNodes.head !== null;
-            
+
             var availableBuildingCount = 0;
             var visibleBuildingCount = 0;
-            
+
             $.each($("#in-improvements tr"), function () {
                 var actionName = $(this).find("button.action-build").attr("action");
                 var id = $(this).attr("id");
@@ -310,7 +312,7 @@
                                 GameGlobals.uiFunctions.toggle($(this).find(".action-use"), existingImprovements > 0);
                             }
                         }
-                        
+
                         var commonVisibilityRule = (actionEnabled || existingImprovements > 0 || showActionDisabledReason);
                         var specialVisibilityRule = true;
                         // TODO get rid of these & move to requirements
@@ -326,7 +328,7 @@
                     }
                 }
             });
-			
+
             var perksComponent = this.playerPosNodes.head.entity.get(PerksComponent);
 			var hasHospital = improvements.getCount(improvementNames.hospital) > 0;
 			var isInjured = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury) !== 1;
@@ -334,24 +336,24 @@
 			var isAugmentAvailable = this.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdsForImprovement(improvementNames.hospital)[0]);
 			GameGlobals.uiFunctions.toggle("#btn-use_in_hospital1", hasHospital && (isInjured || isAugmented || !isAugmentAvailable));
             GameGlobals.uiFunctions.toggle("#btn-use_in_hospital2", hasHospital && !isInjured && !isAugmented && isAugmentAvailable);
-            
+
             this.availableBuildingCount = availableBuildingCount;
             if (isActive) this.lastShownAvailableBuildingCount = this.availableBuildingCount;
             this.visibleBuildingCount = visibleBuildingCount;
             if (isActive) this.lastShownVisibleBuildingCount = this.visibleBuildingCount;
         },
-    
+
         updateEvents: function (isActive) {
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
             if (!campComponent) return;
-            
+
             var hasEvents = false;
             var eventTimers = this.playerLocationNodes.head.entity.get(CampEventTimersComponent);
             this.currentEvents = 0;
-            
+
             var showEvents = campComponent.population >= 1 || GameGlobals.gameState.numCamps > 1;
             GameGlobals.uiFunctions.toggle("#in-occurrences", showEvents);
-            
+
             // Traders
             var hasTrader = this.playerLocationNodes.head.entity.has(TraderComponent);
             if (isActive && showEvents) {
@@ -361,7 +363,7 @@
                 $("#in-occurrences-trader .progress-label").toggleClass("event-ending", isTraderLeaving);
                 $("#in-occurrences-trader").data("progress-percent", eventTimers.getEventTimePercentage(OccurrenceConstants.campOccurrenceTypes.trader));
             }
-            
+
             // Raiders
             var hasRaid = this.playerLocationNodes.head.entity.has(RaidComponent);
             if (isActive && showEvents) {
@@ -369,29 +371,29 @@
                 $("#in-occurrences-raid .progress-label").toggleClass("event-ending", hasRaid);
                 $("#in-occurrences-raid").data("progress-percent", eventTimers.getEventTimePercentage(OccurrenceConstants.campOccurrenceTypes.raid));
             }
-            
+
             if (hasRaid) this.currentEvents++;
             if (isActive) this.lastShownEvents = this.currentEvents;
-            
+
             hasEvents = hasEvents || hasRaid;
             GameGlobals.uiFunctions.toggle("#in-occurrences-empty", !hasEvents);
         },
-        
+
         updateStats: function () {
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
-			
+
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var soldiers = this.playerLocationNodes.head.entity.get(CampComponent).assignedWorkers.soldier;
             var fortificationUpgradeLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradesNodes.head.upgrades);
 			var raidDanger = Math.round(OccurrenceConstants.getRaidDanger(improvements, soldiers, fortificationUpgradeLevel));
             var raidDefence = OccurrenceConstants.getRaidDefence(improvements, soldiers, fortificationUpgradeLevel);
-            
+
             var inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
             var showCalendar = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
             $("#in-demographics-general-age .value").text(inGameFoundingDate);
             GameGlobals.uiFunctions.toggle("#in-demographics-general-age", showCalendar);
-			
+
 			var showRaid = raidDanger > 0 || raidDefence > 0;
 			if (showRaid) {
 				$("#in-demographics-raid-danger .value").text(raidDanger + "%");
@@ -415,53 +417,60 @@
 				$("#in-demographics-raid-last .value").text(lastRaidS);
 			}
 			GameGlobals.uiFunctions.toggle("#in-demographics-raid", showRaid);
-            
+
             var showLevelStats = GameGlobals.gameState.numCamps > 1;
             if (showLevelStats) {
                 var levelVO = this.playerLevelNodes.head.level.levelVO;
 				$("#in-demographics-level-population .value").text(levelVO.populationGrowthFactor * 100 + "%");
             }
-            
+
             GameGlobals.uiFunctions.toggle("#id-demographics-level", showLevelStats);
             GameGlobals.uiFunctions.toggle("#in-demographics", showCalendar || showRaid || showLevelStats);
         },
-        
+
         onTabChanged: function () {
             if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in) {
                 this.refresh();
             }
         },
-        
+
         onImprovementBuilt: function () {
             this.refresh();
         },
-        
+
         onPlayerMoved: function () {
             this.refresh();
         },
-        
+
         onCampRenamed: function () {
             this.refresh();
         },
-        
+
         onPopulationChanged: function (entity) {
             if (!this.playerLocationNodes.head) return;
             if (this.playerLocationNodes.head.entity === entity) {
                 this.refresh();
             }
         },
-        
+
         onWorkersAssigned: function (entity) {
             if (!this.playerLocationNodes.head) return;
             if (this.playerLocationNodes.head.entity === entity) {
                 this.refresh();
             }
         },
-        
+
+        onGameShown: function (entity) {
+            if (!this.playerLocationNodes.head) return;
+            if (this.playerLocationNodes.head.entity === entity) {
+                this.refresh();
+            }
+        },
+
         hasUpgrade: function (upgradeId) {
             return this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeId);
         }
-        
+
     });
 
     return UIOutCampSystem;

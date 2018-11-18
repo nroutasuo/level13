@@ -886,8 +886,8 @@ define(['ash',
                 this.playerLocationNodes.head.entity.add(new SectorCollectorsComponent());
         },
 
-        buildHouse: function () {
-            this.buildImprovement("build_in_house", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_house"), null);
+        buildHouse: function (otherSector) {
+            this.buildImprovement("build_in_house", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_house"), otherSector);
             var msg = "Built a hut.";
             var totalHouses = 0;
             for (var node = this.engine.getNodeList(CampNode).head; node; node = node.next) {
@@ -898,8 +898,8 @@ define(['ash',
             this.addLogMessage(LogConstants.MSG_ID_BUILT_HOUSE, msg);
         },
 
-        buildHouse2: function () {
-            this.buildImprovement("build_in_house2", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_house2"));
+        buildHouse2: function (otherSector) {
+            this.buildImprovement("build_in_house2", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_house2"), otherSector);
             var msg = "Built a tower block.";
             this.addLogMessage(LogConstants.MSG_ID_BUILT_HOUSE, msg);
         },

@@ -35,24 +35,24 @@ define([
     SectorImprovementsComponent
 ) {
     var UIOutElementsSystem = Ash.System.extend({
-	
+
         currentLocationNodes: null,
         campNodes: null,
         nearestCampNodes: null,
 		playerStatsNodes: null,
 		autoPlayNodes: null,
-        
+
         engine: null,
-		
+
         elementsCalloutContainers: null,
         elementsVisibleButtons: [],
         elementsVisibleProgressbars: [],
-        
+
         buttonStatuses: [], // same indices as visible buttons
         buttonElements: [], // same indices as visible buttons
-   
+
         constructor: function () {},
-    
+
         addToEngine: function (engine) {
             this.engine = engine;
             this.currentLocationNodes = engine.getNodeList(PlayerLocationNode);
@@ -60,26 +60,26 @@ define([
             this.nearestCampNodes = engine.getNodeList(NearestCampNode);
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			this.autoPlayNodes = engine.getNodeList(AutoPlayNode);
-            
+
             this.campNodes.nodeAdded.add(this.onCampNodeAdded, this);
             this.campNodes.nodeRemoved.add(this.onCampNodeRemoved, this);
-            
+
             this.refreshGlobalSavedElements();
             GlobalSignals.calloutsGeneratedSignal.add(this.refreshGlobalSavedElements);
             this.updateTabVisibility();
-            
+
             var sys = this;
             GlobalSignals.calloutsGeneratedSignal.add(function () { sys.updateTabVisibility(); });
             GlobalSignals.improvementBuiltSignal.add(function () { sys.updateTabVisibility(); });
             GlobalSignals.featureUnlockedSignal.add(function () {
-                sys.updateTabVisibility(); 
+                sys.updateTabVisibility();
                 sys.elementsVisibilityChanged = true;
             });
-            GlobalSignals.playerMovedSignal.add(function () { 
-                sys.updateTabVisibility(); 
+            GlobalSignals.playerMovedSignal.add(function () {
+                sys.updateTabVisibility();
                 sys.elementsVisibilityChanged = true;
             });
-            GlobalSignals.gameShownSignal.add(function () { 
+            GlobalSignals.gameShownSignal.add(function () {
                 sys.updateTabVisibility();
                 sys.refreshGlobalSavedElements();
                 sys.elementsVisibilityChanged = true;
@@ -88,10 +88,10 @@ define([
             GlobalSignals.tabChangedSignal.add(function () { sys.elementsVisibilityChanged = true; });
             GlobalSignals.elementCreatedSignal.add(function () { sys.elementsVisibilityChanged = true; });
             GlobalSignals.actionButtonClickedSignal.add(function () { sys.elementsVisibilityChanged = true; });
-            
+
             this.elementsVisibilityChanged = true;
         },
-    
+
         removeFromEngine: function (engine) {
             this.engine = null;
             this.currentLocationNodes = null;
@@ -99,15 +99,15 @@ define([
             this.nearestCampNodes = null;
 			this.autoPlayNodes = null;
         },
-        
+
         onCampNodeAdded: function (node) {
             this.updateTabVisibility();
         },
-        
+
         onCampNodeRemoved: function (node) {
             this.updateTabVisibility();
         },
-    
+
         update: function (time) {
             if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (this.elementsVisibilityChanged) {
@@ -118,29 +118,30 @@ define([
             } else {
                 this.elementsVisibilityChangedFrames = 0;
             }
-            
+
             if (GameConstants.isDebugOutputEnabled) {
                 if (this.elementsVisibilityChangedFrames > 5) {
                     console.log("WARN: element visibility updated too often");
                 }
             }
-            
+
             this.updateButtons();
             this.updateProgressbars();
             this.updateTabs();
             this.updateInfoCallouts();
         },
-        
+
         refreshGlobalSavedElements: function () {
             if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.elementsCalloutContainers = $(".callout-container");
         },
-        
+
         updateButtons: function () {
+            if (GameGlobals.gameState.isPaused) return;
             var sys = this;
-            
+
             for (var i = 0; i < this.elementsVisibleButtons.length; i++) {
-                var $button = $(this.elementsVisibleButtons[i]);                
+                var $button = $(this.elementsVisibleButtons[i]);
                 var action = $button.attr("action");
                 if (!action)
                     return;
@@ -151,7 +152,7 @@ define([
 				sys.updateButtonCallout($button, action, buttonStatus, buttonElements, isHardDisabled);
             }
         },
-        
+
         updateButtonDisabledState: function ($button, action, buttonStatus, buttonElements) {
 			var isAutoPlaying = this.autoPlayNodes.head;
             var disabledBase = this.isButtonDisabled($button);
@@ -171,14 +172,14 @@ define([
             $button.attr("disabled", isDisabled || isAutoPlaying);
             return disabledBase || disabledVision;
         },
-        
+
         updateButtonCallout: function ($button, action, buttonStatus, buttonElements, isHardDisabled) {
             var $enabledContent = buttonElements.calloutContentEnabled;
             var $disabledContent = buttonElements.calloutContentDisabled;
-            
+
             var costFactor = GameGlobals.playerActionsHelper.getCostFactor(action);
             var costs = GameGlobals.playerActionsHelper.getCosts(action, costFactor);
-            
+
             var costsStatus = {};
             costsStatus.hasCostBlockers = false;
             costsStatus.bottleneckCostFraction = 1;
@@ -208,7 +209,7 @@ define([
             // overlays
             this.updateButtonCooldownOverlays($button, action, buttonStatus, buttonElements, sectorEntity, isHardDisabled, costsStatus);
         },
-        
+
         updateButtonCalloutCosts: function($button, action, buttonStatus, buttonElements, costs, costsStatus) {
             var playerHealth = this.playerStatsNodes.head.stamina.health;
             var showStorage = GameGlobals.resourcesHelper.getCurrentStorageCap();
@@ -226,7 +227,7 @@ define([
                 }
                 $costSpan.toggleClass("action-cost-blocker", costFraction < 1);
                 $costSpan.toggleClass("action-cost-blocker-storage", isFullCostBlocker);
-                
+
                 if (value !== buttonStatus.displayedCosts[key]) {
                     var $costSpanValue = buttonElements.costSpanValues[key];
                     $costSpanValue.html(UIConstants.getDisplayValue(value));
@@ -234,12 +235,12 @@ define([
                 }
             }
         },
-        
+
         updateButtonCalloutRisks: function ($button, action, buttonElements) {
             var playerVision = this.playerStatsNodes.head.vision.value;
             var hasEnemies = GameGlobals.fightHelper.hasEnemiesCurrentLocation(action);
             var baseActionId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-            
+
             var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
             var injuryRiskBase = injuryRisk > 0 ? PlayerActionConstants.getInjuryProbability(action) : 0;
             var injuryRiskVision = injuryRisk - injuryRiskBase;
@@ -249,27 +250,27 @@ define([
             var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision) : 0;
             var fightRiskBase = fightRisk > 0 ? PlayerActionConstants.getRandomEncounterProbability(baseActionId) : 0;
             var fightRiskVision = fightRisk - fightRiskBase;
-            
+
             if (injuryRisk > 0 || fightRisk > 0 || inventoryRisk > 0) {
                 GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskInjury, injuryRisk > 0);
-                if (injuryRisk > 0) 
+                if (injuryRisk > 0)
                     buttonElements.calloutRiskInjuryValue.text(UIConstants.roundValue((injuryRiskBase + injuryRiskVision) * 100, true, true));
 
                 GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskInventory, inventoryRisk > 0);
-                if (inventoryRisk > 0) 
+                if (inventoryRisk > 0)
                     buttonElements.calloutRiskInventoryValue.text(UIConstants.roundValue((inventoryRiskBase + inventoryRiskVision) * 100, true, true));
 
                 GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskFight, fightRisk > 0);
-                if (fightRisk > 0) 
+                if (fightRisk > 0)
                     buttonElements.calloutRiskFightValue.text(UIConstants.roundValue((fightRiskBase + fightRiskVision) * 100, true, true));
             }
         },
-        
+
         updateButtonCooldownOverlays: function($button, action, buttonStatus, buttonElements, sectorEntity, isHardDisabled, costsStatus) {
             costsStatus.bottleneckCostFraction = Math.min(costsStatus.bottleneckCostFraction, GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity).value);
             if (costsStatus.hasCostBlockers) costsStatus.bottleneckCostFraction = 0;
             if (isHardDisabled) costsStatus.bottleneckCostFraction = 0;
-                
+
             if (buttonStatus.bottleneckCostFraction !== costsStatus.bottleneckCostFraction) {
                 buttonElements.cooldownReqs.css("width", ((costsStatus.bottleneckCostFraction) * 100) + "%");
                 buttonStatus.bottleneckCostFraction = costsStatus.bottleneckCostFraction;
@@ -279,11 +280,11 @@ define([
                 buttonStatus.isHardDisabled = isHardDisabled;
             }
         },
-        
+
         hasButtonCooldown: function ($button) {
             return ($button.attr("data-hasCooldown") === "true");
         },
-			
+
         hasButtonDuration: function (button) {
             return ($(button).attr("data-isInProgress") === "true");
         },
@@ -297,7 +298,7 @@ define([
             }
             return false;
         },
-            
+
         isButtonDisabled: function ($button) {
             if ($button.hasClass("btn-meta")) return false;
 
@@ -318,7 +319,7 @@ define([
 
             var sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button);
             var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity);
-            
+
             return reqsCheck.value < 1 && reqsCheck.reason !== PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES;
         },
 
@@ -326,7 +327,7 @@ define([
             var action = $(button).attr("action");
             return GameGlobals.playerActionsHelper.checkCosts(action, false) < 1;
         },
-        
+
         updateProgressbars: function () {
             for (var i = 0; i < this.elementsVisibleProgressbars.length; i++) {
                 var $progressbar = $(this.elementsVisibleProgressbars[i]);
@@ -346,7 +347,7 @@ define([
                 }
             }
         },
-        
+
         updateTabVisibility: function () {
             if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (!this.playerStatsNodes.head) return;
@@ -356,7 +357,7 @@ define([
             var hasMap = this.playerStatsNodes.head.entity.get(ItemsComponent).getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
             var hasProjects = GameGlobals.gameState.unlockedFeatures.projects;
             var hasTradingPost = currentCamp && currentCamp.get(SectorImprovementsComponent).getCount(improvementNames.tradepost) > 0;
-            
+
             GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-in", null, isInCamp, 200, 0);
             GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-upgrades", null, isInCamp && GameGlobals.gameState.unlockedFeatures.upgrades, 100, 0);
             GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-blueprints", null, GameGlobals.gameState.unlockedFeatures.blueprints, 100, 0);
@@ -367,8 +368,8 @@ define([
             GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-map", null, hasMap, 100, 0);
             GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-trade", null, isInCamp && hasTradingPost, 100, 0);
             GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-projects", null, isInCamp && hasProjects, 100, 0);
-        },        
-        
+        },
+
         updateButtonContainer: function (button, isVisible) {
             $(button).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");
             var container = $(button).parent().parent(".callout-container");
@@ -376,21 +377,21 @@ define([
                 $(container).css("display", $(button).css("display"));
             }
         },
-        
+
         updateVisibleButtonsList: function () {
             this.elementsVisibleButtons = [];
             this.buttonStatuses = [];
             this.buttonElements = [];
             var sys = this;
             $.each($("button.action"), function () {
-                var $button = $(this);          
+                var $button = $(this);
                 var action = $button.attr("action");
                 var isVisible = (GameGlobals.uiFunctions.isElementToggled($button) !== false) && GameGlobals.uiFunctions.isElementVisible($button);
                 sys.updateButtonContainer($button, isVisible);
                 if (isVisible) {
                     sys.elementsVisibleButtons.push($button);
                     sys.buttonStatuses.push({});
-                    
+
                     var elements = {};
                     elements.container = $button.parent(".container-btn-action");
                     elements.calloutContent = $($button.parent().siblings(".btn-callout").children(".btn-callout-content"));
@@ -405,9 +406,9 @@ define([
                     elements.calloutRiskFightValue = elements.calloutRiskFight.children(".action-risk-value");
                     elements.cooldownReqs = $button.siblings(".cooldown-reqs");
                     elements.cooldownDuration = $button.children(".cooldown-duration");
-            
+
                     var costFactor = GameGlobals.playerActionsHelper.getCostFactor(action);
-                    var costs = GameGlobals.playerActionsHelper.getCosts(action, costFactor);            
+                    var costs = GameGlobals.playerActionsHelper.getCosts(action, costFactor);
                     elements.costSpans = {};
                     elements.costSpanValues = {};
                     for (var key in costs) {
@@ -418,7 +419,7 @@ define([
                 }
             });
         },
-        
+
         updateVisibleProgressbarsList: function () {
             this.elementsVisibleProgressbars = [];
             var sys = this;
@@ -431,7 +432,7 @@ define([
                 }
             });
         },
-        
+
         updateTabs: function () {
             var posHasCamp = this.currentLocationNodes.head != null && this.currentLocationNodes.head.entity.has(CampComponent);
             var levelCamp = this.nearestCampNodes.head;
@@ -443,7 +444,7 @@ define([
 				$("#switch-tabs #switch-world").toggleClass("disabled", !posHasCamp);
             }
         },
-        
+
         updateInfoCallouts: function () {
             var targets;
             $.each(this.elementsCalloutContainers, function () {
