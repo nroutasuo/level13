@@ -2,6 +2,8 @@ require.config({
 
     deps: ["level13-app"],
     
+    waitSeconds: 10,
+    
     baseUrl: 'src',
 
     paths: {

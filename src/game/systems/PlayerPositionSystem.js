@@ -23,26 +23,26 @@ define([
     PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode, CampNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, LogMessagesComponent, PositionComponent,
 	VisitedComponent, RevealedComponent, CampComponent, LevelComponent) {
-    
+
     var PlayerPositionSystem = Ash.System.extend({
-		
+
 		sectorNodes: null,
 		levelNodes: null,
 		playerPositionNodes: null,
 		playerLocationNodes: null,
 		campNodes: null,
-        
+
         lastUpdatePosition: null,
-        
+
         constructor: function () { },
-	
+
 		addToEngine: function (engine) {
 			this.sectorNodes = engine.getNodeList(SectorNode);
 			this.levelNodes = engine.getNodeList(LevelNode);
 			this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             this.campNodes = engine.getNodeList(CampNode);
-            
+
             var sys = this;
             this.playerPositionNodes.nodeAdded.addOnce(function(node) {
                 sys.lastUpdatePosition = null;
@@ -53,35 +53,35 @@ define([
             this.playerLocationNodes.nodeAdded.addOnce(function (node) {
                 sys.handleNewSector(node.entity);
             });
-            
+
             GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.ontabChanged);
 		},
-	
+
 		removeFromEngine: function (engine) {
 			this.sectorNodes = null;
 			this.levelNodes = null;
 			this.playerPositionNodes = null;
 			this.playerLocationNodes = null;
-            
+
             GlobalSignals.removeAll(this);
 		},
-        
+
         onGameStarted: function () {
             this.lastUpdatePosition = null;
         },
-        
+
         ontabChanged: function () {
             this.lastUpdatePosition = null;
         },
-	
+
 		update: function (time) {
             var playerPos = this.playerPositionNodes.head.position;
             if (!this.lastUpdatePosition || !this.lastUpdatePosition.equals(playerPos)) {
                 this.updateEntities(!this.lastUpdatePosition);
             }
 		},
-		
+
 		updateEntities: function (updateAll) {
             var playerPos = this.playerPositionNodes.head.position;
             this.updateLevelEntities(updateAll);
@@ -89,7 +89,7 @@ define([
             this.updateCamps();
             this.lastUpdatePosition = playerPos.clone();
         },
-        
+
         updateLevelEntities: function(updateAll) {
             var playerPos = this.playerPositionNodes.head.position;
             var levelpos;
@@ -107,12 +107,12 @@ define([
                 }
             }
         },
-        
+
         updateSectors: function (updateAll) {
             var playerPos = this.playerPositionNodes.head.position;
             var playerSector = GameGlobals.levelHelper.getSectorByPosition(playerPos.level, playerPos.sectorX, playerPos.sectorY);
             updateAll = updateAll && this.lastUpdatePosition;
-            
+
             if (updateAll) {
                 for (var sectorNode = this.sectorNodes.head; sectorNode; sectorNode = sectorNode.next) {
                     this.updateSector(sectorNode.entity);
@@ -129,13 +129,13 @@ define([
                 this.handleInvalidPosition();
             }
         },
-        
+
         updateSector: function (sector) {
             var playerPos = this.playerPositionNodes.head.position;
             var levelpos = sector.get(PositionComponent).level;
             var sectorPos = sector.get(PositionComponent).sectorId();
             var hasLocationComponent = sector.has(CurrentPlayerLocationComponent);
-            
+
             if (levelpos === playerPos.level && sectorPos === playerPos.sectorId() && !hasLocationComponent) {
                 if (this.playerLocationNodes.head)
                     this.playerLocationNodes.head.entity.remove(CurrentPlayerLocationComponent);
@@ -149,7 +149,7 @@ define([
                 sector.remove(CurrentPlayerLocationComponent);
             }
         },
-        
+
         updateCamps: function () {
             var playerPos = this.playerPositionNodes.head.position;
             var levelpos;
@@ -164,7 +164,7 @@ define([
                 }
             }
         },
-		
+
 		handleNewLevel: function (levelNode, levelPos) {
 			levelNode.entity.add(new VisitedComponent());
 			levelNode.entity.add(new RevealedComponent());
@@ -175,7 +175,7 @@ define([
 			if (levelPos !== 13) GameGlobals.gameState.unlockedFeatures.levels = true;
 			if (levelPos === GameGlobals.gameState.getGroundLevel()) GameGlobals.gameState.unlockedFeatures.favour = true;
 		},
-        
+
         handleEnterLevel: function (levelNode) {
             var levelEntity = levelNode.entity;
             var levelComponent = levelEntity.get(LevelComponent);
@@ -185,30 +185,28 @@ define([
                 this.addLogMessage(LogConstants.MSG_ID_ENTER_LEVEL, msg);
             }
         },
-		
-		handleNewSector: function (sectorEntity) {			
+
+		handleNewSector: function (sectorEntity) {
 			sectorEntity.add(new VisitedComponent());
 			sectorEntity.add(new RevealedComponent());
-            
+
             var sectorPosition = sectorEntity.get(PositionComponent);
             var revealDiameter = 1;
-            
-            var revealedNeighbour;
-            for (var dx = -revealDiameter; dx <= revealDiameter; dx++) {
-                for (var dy = -revealDiameter; dy <= revealDiameter; dy++) {
-                    revealedNeighbour = GameGlobals.levelHelper.getSectorByPosition(sectorPosition.level, sectorPosition.sectorX + dx, sectorPosition.sectorY + dy);
-                    if (revealedNeighbour && !revealedNeighbour.has(RevealedComponent)) {
-                        revealedNeighbour.add(new RevealedComponent());
-                    }
+
+            var neighbours = GameGlobals.levelHelper.getSectorNeighboursMap(sectorEntity);
+            for (var direction in neighbours) {
+                var revealedNeighbour = neighbours[direction];
+                if (revealedNeighbour && !revealedNeighbour.has(RevealedComponent)) {
+                    revealedNeighbour.add(new RevealedComponent());
                 }
             }
-            
+
             GameGlobals.gameState.numVisitedSectors++;
 			GameGlobals.gameState.unlockedFeatures.sectors = true;
 		},
-        
+
         handleInvalidPosition: function () {
-            var playerPos = this.playerPositionNodes.head.position; 
+            var playerPos = this.playerPositionNodes.head.position;
             console.log("WARN: Player location could not be found  (" + playerPos.level + "." + playerPos.sectorId() + ").");
             console.log("WARN: Moving to a known valid position.");
             playerPos.level = 13;
@@ -217,12 +215,12 @@ define([
             playerPos.inCamp = false;
             this.lastUpdatePosition = null;
         },
-        
+
         addLogMessage: function (msgID, msg, replacements, values) {
             var logComponent = this.playerPositionNodes.head.entity.get(LogMessagesComponent);
             logComponent.addMessage(msgID, msg, replacements, values);
         },
-        
+
     });
 
     return PlayerPositionSystem;
