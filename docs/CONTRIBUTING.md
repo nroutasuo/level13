@@ -2,7 +2,7 @@
 
 ## General
 
-Level 13 is a personal side project. Bug reports and suggestions are very welcome, but updates happen sporadically and it might take a while for your contributions to be reviewed.
+Level 13 is mainly a personal side project but it has also received some great bug reports and fixes from the community. Bug reports, suggestions and small fixes are very welcome, but please keep in mind that it might take a while for your contributions to be reviewed.
 
 ## Issues
 
@@ -15,4 +15,4 @@ You can use issues to submit bug reports or to suggest new features or enhanceme
 
 ## Pull requests
 
-If you want to contribute a small bug-fix then by all means do so. Please refrain from sending pull requests containing bigger refactoring or new behaviour.
+If you want to contribute a small bug-fix then by all means do so. For the time being please refrain from sending pull requests containing bigger refactoring or new behaviour.
