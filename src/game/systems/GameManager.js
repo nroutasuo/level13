@@ -10,8 +10,9 @@ define([
     'game/nodes/sector/SectorNode',
     'game/nodes/level/LevelNode',
     'game/components/common/PositionComponent',
-    'game/systems/ui/UIOutLevelSystem'
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, EntityCreator, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, LevelNode, PositionComponent, UIOutLevelSystem) {
+    'game/systems/ui/UIOutLevelSystem',
+    'game/systems/SaveSystem',
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, EntityCreator, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, LevelNode, PositionComponent, UIOutLevelSystem, SaveSystem) {
 
     var GameManager = Ash.System.extend({
 
@@ -220,8 +221,10 @@ define([
 		},
 
         getSaveObject: function () {
+            var saveSystem = this.engine.getSystem(SaveSystem);
             try {
-                var json = localStorage.save;
+                var compressed = localStorage.save;
+                var json = saveSystem.getSaveJSONfromCompressed(compressed);
                 var object = GameGlobals.saveHelper.parseSaveJSON(json);
                 return object;
             } catch (exception) {

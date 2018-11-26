@@ -54,7 +54,7 @@ define([
             this.error = null;
 			if (typeof(Storage) !== "undefined") {
                 try {
-                    localStorage.save = this.getSaveJSON();
+                    localStorage.save = this.getCompressedSaveJSON();
                     console.log("Saved");
                 } catch (ex) {
                     this.error = "Failed to save.";
@@ -125,26 +125,21 @@ define([
 			return entityObject;
 		},
 
-        getObfuscatedSaveJSON: function () {
-            var json = this.getSaveJSON();
+        getSaveJSONfromCompressed: function (compressed) {
+            var json = LZString.decompressFromBase64(compressed);
+            return json;
+        },
+
+        getCompressedSaveJSON: function (json) {
+            var json = json || this.getSaveJSON();
             console.log("basic json: " + json.length);
             var compressed = LZString.compressToBase64(json);
             console.log("compressed: " + compressed.length);
             return compressed;
         },
 
-        getSaveJSONfromObfuscated: function (save) {
-            var json = LZString.decompressFromBase64(save);
-            return json;
-        },
-
 		restart: function () {
 			if(typeof(Storage) !== "undefined") {
-                // note: backwards compatibility; remove this code eventually
-				localStorage.removeItem("entitiesObject");
-				localStorage.removeItem("gameState");
-				localStorage.removeItem("timeStamp");
-
 				localStorage.removeItem("save");
                 console.log("Removed save");
 			}

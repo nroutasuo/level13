@@ -13,23 +13,23 @@ define([
 ], function (Ash, CampComponent, CurrencyComponent, ReputationComponent, VisitedComponent, RevealedComponent, LastVisitedCampComponent, OutgoingCaravansComponent, CampEventTimersComponent, RaidComponent) {
 
     var SaveHelper = Ash.Class.extend({
-	
+
 		saveKeys: {
 			player: "player",
 			tribe: "tribe",
 			sector: "s-",
 			level: "level-",
 		},
-		
+
 		optionalComponents: [ CampComponent, CurrencyComponent, ReputationComponent, VisitedComponent, RevealedComponent, LastVisitedCampComponent, OutgoingCaravansComponent, CampEventTimersComponent, RaidComponent ],
-		
+
 		constructor: function () {
 		},
-        
+
         // returns null if invalid, a parsed save object if valid
         parseSaveJSON: function (json) {
             if (!json) return null;
-            
+
             var result = null;
             try {
                 result = JSON.parse(json);
@@ -37,20 +37,20 @@ define([
                 console.log("WARN: Error parsing save JSON. " + ex);
                 return null;
             }
-            
+
             if (!result.gameState) {
                 console.log("WARN: Save JSON is missing a GameState.");
                 return null;
             }
-            
+
             if (!result.entitiesObject) {
                 console.log("WARN: Save JSON is missing an entities object.");
                 return null;
             }
-            
+
             return result;
         },
-		
+
 		loadEntity: function (entitiesObject, saveKey, entity) {
 			var failedComponents = 0;
 			var savedComponents = entitiesObject[saveKey];
@@ -58,7 +58,7 @@ define([
 			for (var componentKey in savedComponents) {
                 var componentDefinition = componentKey;
                 var component = entity.get(componentDefinition);
-                
+
                 // if the component has a shortened save key, compare to existing components to find the instance
                 if (!component) {
                     for (var i in existingComponents) {
@@ -70,7 +70,7 @@ define([
                         }
                     }
                 }
-                
+
                 // if still not found, it could be an optional component
 				if (!component) {
 					for (var i=0; i< this.optionalComponents.length; i++) {
@@ -82,7 +82,7 @@ define([
 						}
 					}
 				}
-                
+
                 // or an optional component with a shortened save key
                 if (!component) {
 					for (var i=0; i< this.optionalComponents.length; i++) {
@@ -96,25 +96,25 @@ define([
                         }
                     }
                 }
-				
+
 				if (!component) {
 					console.log("WARN: Component not found while loading:");
 					console.log(componentKey);
 					failedComponents++;
 					continue;
 				}
-                
-                var componentValues = savedComponents[componentKey];				
+
+                var componentValues = savedComponents[componentKey];
 				if (component.customLoadFromSave) {
 					component.customLoadFromSave(componentValues, saveKey);
 				} else {
 					this.loadComponent(component, componentValues, saveKey);
 				}
 			}
-			
+
 			return failedComponents;
 		},
-			
+
 		loadComponent: function(component, componentValues, saveKey) {
 			// console.log(component);
 			for(var valueKey in componentValues) {
@@ -139,7 +139,7 @@ define([
 						} else if (parseInt(valueKey2) >= 0 && component[valueKey] instanceof Array) {
 							var valueKey2Int = parseInt(valueKey2);
 							if (!component[valueKey][valueKey2Int]) {
-								component[valueKey][valueKey2Int] = {};    
+								component[valueKey][valueKey2Int] = {};
 							}
 							this.loadObject(component[valueKey][valueKey2], componentValues[valueKey][valueKey2Int]);
 						} else {
@@ -153,11 +153,11 @@ define([
 				}
 			}
 		},
-		
+
 		loadObject: function(object, attrValues) {
 			for(var attr in attrValues) {
 			var value = attrValues[attr];
-			
+
 			if (value == null) {
 				continue;
 			} else if (typeof value != 'object') {
@@ -175,14 +175,14 @@ define([
 				if (!object[attr]) object[attr] = new Object();
 				this.loadObject(object[attr], attrValues[attr]);
 			}
-			}	    
+			}
 		},
-		
+
 		isDate: function(s) {
 			return ((new Date(s) !== "Invalid Date" && !isNaN(new Date(s)) ));
 		},
-	
+
     });
-    
+
     return SaveHelper;
 });
