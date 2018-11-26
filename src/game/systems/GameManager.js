@@ -31,11 +31,15 @@ define([
 		addToEngine: function (engine) {
 			this.engine = engine;
 			this.creator = new EntityCreator(this.engine);
+
+            GlobalSignals.add(this, GlobalSignals.restartGameSignal, this.onRestart);
 		},
 
 		removeFromEngine: function (engine) {
 			this.player = null;
 			this.engine = null;
+
+            GlobalSignals.removeAll(this);
 		},
 
 		// Called on page load
@@ -254,6 +258,10 @@ define([
                 },
                 function () {}
             );
+        },
+
+        onRestart: function () {
+            this.restartGame();
         }
     });
 

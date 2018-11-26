@@ -3,9 +3,8 @@ define([
     'game/GameGlobals',
     'game/GlobalSignals',
     'lzstring/lz-string',
-    'game/systems/GameManager',
     'game/nodes/common/SaveNode'
-], function (Ash, GameGlobals, GlobalSignals, LZString, GameManager, SaveNode) {
+], function (Ash, GameGlobals, GlobalSignals, LZString, SaveNode) {
     var SaveSystem = Ash.System.extend({
 
         engine: null,
@@ -24,7 +23,7 @@ define([
 			this.saveNodes = engine.getNodeList(SaveNode);
 			this.lastSaveTimeStamp = new Date().getTime();
             GlobalSignals.add(this, GlobalSignals.saveGameSignal, this.save);
-            GlobalSignals.add(this, GlobalSignals.restartGameSignal, this.restart);
+            GlobalSignals.add(this, GlobalSignals.restartGameSignal, this.onRestart);
         },
 
         removeFromEngine: function (engine) {
@@ -138,13 +137,12 @@ define([
             return compressed;
         },
 
-		restart: function () {
+        onRestart: function () {
 			if(typeof(Storage) !== "undefined") {
 				localStorage.removeItem("save");
                 console.log("Removed save");
 			}
-            this.engine.getSystem(GameManager).restartGame();
-		},
+        }
 
     });
 
