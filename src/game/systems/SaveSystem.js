@@ -1,22 +1,22 @@
 define([
-    'ash', 
+    'ash',
     'game/GameGlobals',
     'game/GlobalSignals',
-    'webtoolkit/base64',
-    'game/systems/GameManager', 
+    'lzstring/lz-string',
+    'game/systems/GameManager',
     'game/nodes/common/SaveNode'
-], function (Ash, GameGlobals, GlobalSignals, Base64, GameManager, SaveNode) {
+], function (Ash, GameGlobals, GlobalSignals, LZString, GameManager, SaveNode) {
     var SaveSystem = Ash.System.extend({
-	
+
         engine: null,
-		
+
 		saveNodes:null,
-		
+
 		lastSaveTimeStamp: 0,
 		saveFrequency: 1000 * 60 * 2,
-        
+
         error: null,
-        
+
         constructor: function () {},
 
         addToEngine: function (engine) {
@@ -40,15 +40,15 @@ define([
 				this.save();
 			}
         },
-        
+
         pause: function () {
             this.paused = true;
         },
-        
+
         resume: function () {
             this.paused = false;
         },
-	
+
 		save: function () {
             if (this.paused) return;
             this.error = null;
@@ -64,7 +64,7 @@ define([
                 this.error = "Can't save (incompatible browser).";
 			}
 		},
-        
+
         getSaveJSON: function () {
             var version = GameGlobals.changeLogHelper.getCurrentVersionNumber();
             var entitiesObject = {};
@@ -77,25 +77,25 @@ define([
                     entitiesObject[node.save.entityKey] = entityObject;
                 }
             }
-                
+
             var save = {};
             save.entitiesObject = entitiesObject;
             save.gameState = GameGlobals.gameState;
             save.timeStamp = new Date();
             save.version = version;
-            
-            var result = JSON.stringify(save);            
-            // console.log("Total save size: " + result.length + ", " + nodes + " nodes");            
+
+            var result = JSON.stringify(save);
+            // console.log("Total save size: " + result.length + ", " + nodes + " nodes");
             return result;
         },
-	
+
 		getEntitySaveObject: function (node) {
 			var entityObject = {};
-			
+
 			var biggestComponent = null;
 			var biggestComponentSize = 0;
 			var totalSize = 0;
-			
+
 			for (var i = 0; i < node.save.components.length; i++) {
 				var componentType = node.save.components[i];
 				var component = node.entity.get(componentType);
@@ -108,7 +108,7 @@ define([
                     if (saveObject) {
                         entityObject[componentKey] = saveObject;
                     }
-					
+
 					var size = JSON.stringify(saveObject).length;
 					if (size > biggestComponentSize) {
 						biggestComponent = saveObject;
@@ -117,40 +117,40 @@ define([
 					totalSize += size;
 				}
 			}
-			
+
             //console.log(JSON.stringify(biggestComponent));
-			//console.log(biggestComponentSize + " / " + totalSize + " " + JSON.stringify(entityObject).length);            
+			//console.log(biggestComponentSize + " / " + totalSize + " " + JSON.stringify(entityObject).length);
             //console.log(entityObject);
-			
+
 			return entityObject;
 		},
-        
+
         getObfuscatedSaveJSON: function () {
             var json = this.getSaveJSON();
             console.log("basic json: " + json.length);
-            var obfuscated = Base64.encode(json);
-            console.log("obfuscated: " + obfuscated.length);
-            return obfuscated;
+            var compressed = LZString.compressToBase64(json);
+            console.log("compressed: " + compressed.length);
+            return compressed;
         },
-        
+
         getSaveJSONfromObfuscated: function (save) {
-            var json = Base64.decode(save);
+            var json = LZString.decompressFromBase64(save);
             return json;
         },
-		
+
 		restart: function () {
 			if(typeof(Storage) !== "undefined") {
                 // note: backwards compatibility; remove this code eventually
 				localStorage.removeItem("entitiesObject");
 				localStorage.removeItem("gameState");
 				localStorage.removeItem("timeStamp");
-                
+
 				localStorage.removeItem("save");
                 console.log("Removed save");
 			}
             this.engine.getSystem(GameManager).restartGame();
 		},
-	
+
     });
 
     return SaveSystem;
