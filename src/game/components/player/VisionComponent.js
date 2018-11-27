@@ -5,7 +5,11 @@ define(['ash'], function (Ash) {
             this.maximum = 0;
             this.accumulation = 0;
             this.accSources = [];
-        }
+        },
+
+        getSaveKey: function () {
+            return "Vision";
+        },
     });
 
     return VisionComponent;

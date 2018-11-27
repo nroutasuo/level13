@@ -131,6 +131,7 @@ define([
         },
 
         updateSector: function (sector) {
+            if (!sector) return;
             var playerPos = this.playerPositionNodes.head.position;
             if (!playerPos) return;
             var levelpos = sector.get(PositionComponent).level;

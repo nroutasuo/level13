@@ -1,16 +1,16 @@
 define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
 
     var PlayerActionComponent = Ash.Class.extend({
-        
+
         endTimeStampToActionDict: {},
         endTimeStampList: [],
         busyStartTime: -1,
-        
+
         constructor: function () {
             this.endTimeStampToActionDict = {};
             this.endTimeStampList = [];
         },
-        
+
         addAction: function (action, duration, param, isBusyAction) {
             if (!this.isBusy() && isBusyAction) this.busyStartTime = new Date().getTime();
             var endTimeStamp = new Date().getTime() + duration * 1000;
@@ -18,11 +18,11 @@ define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
             this.endTimeStampList.push(endTimeStamp);
             this.sortTimeStamps();
         },
-        
+
         getLastAction: function (requireBusy) {
             return this.endTimeStampToActionDict[this.getLastTimeStamp(requireBusy)];
         },
-        
+
         getLastTimeStamp: function (requireBusy) {
             var lastTimeStamp = -1;
             if (requireBusy) {
@@ -38,7 +38,7 @@ define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
             }
             return lastTimeStamp;
         },
-        
+
         applyExtraTime: function (extraTime) {
             var oldTimeStamp;
             var newTimeStamp;
@@ -52,13 +52,13 @@ define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
                 this.endTimeStampToActionDict[newTimeStamp] = action;
             }
         },
-        
-        sortTimeStamps: function() {            
+
+        sortTimeStamps: function() {
             this.endTimeStampList.sort(function (a, b) {
                 return a - b;
             });
         },
-        
+
         isBusy: function () {
             if (this.endTimeStampList.length < 1) return false;
             var now = new Date().getTime();
@@ -66,7 +66,7 @@ define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
             var diff = lastTimeStamp - now;
             return diff > 0;
         },
-        
+
         getBusyDescription: function () {
             switch (this.getLastAction(true).action) {
                 case "use_in_home": return "resting";
@@ -75,7 +75,7 @@ define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
                 default: return this.action;
             }
         },
-        
+
         getBusyPercentage: function () {
             if (!this.isBusy()) return 100;
             var lastTimeStamp = this.getLastTimeStamp(true);
@@ -83,13 +83,17 @@ define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
             var timePassed = new Date().getTime() - this.busyStartTime;
             return timePassed / totalTime * 100;
         },
-        
+
         getBusyTimeLeft: function () {
             if (!this.isBusy()) return 0;
             var lastTimeStamp = this.getLastTimeStamp(true);
             return (lastTimeStamp - new Date().getTime()) / 1000;
         },
-        
+
+        getSaveKey: function () {
+            return "Actions";
+        },
+
         customLoadFromSave: function (componentValues) {
             this.endTimeStampToActionDict = componentValues.endTimeStampToActionDict;
             this.endTimeStampList = componentValues.endTimeStampList;

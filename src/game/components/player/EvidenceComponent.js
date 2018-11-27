@@ -1,7 +1,7 @@
 define(['ash'], function (Ash) {
-    
+
     var EvidenceComponent = Ash.Class.extend({
-        
+
         constructor: function () {
             this.value = 0;
             this.cap = 100;
@@ -10,10 +10,10 @@ define(['ash'], function (Ash) {
             this.accSources = [];
             this.evidence = [];
         },
-        
+
         addChange: function(source, amount) {
             if (amount == 0) return;
-            
+
 	    for (var i = 0; i < this.accSources.length; i++) {
                 var change = this.accSources[i];
                 if (change.source == source) {
@@ -21,8 +21,12 @@ define(['ash'], function (Ash) {
                     return;
                 }
             }
-            
+
             this.accSources.push({ source: source, amount: amount });
+        },
+
+        getSaveKey: function () {
+            return "Evidence";
         },
     });
 

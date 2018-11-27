@@ -6,7 +6,11 @@ define(['ash'], function (Ash) {
             this.hp = 100;
             this.accumulation = 0;
             this.accSources = [];
-        }
+        },
+
+        getSaveKey: function () {
+            return "Stamina";
+        },
     });
 
     return StaminaComponent;

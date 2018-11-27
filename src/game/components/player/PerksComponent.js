@@ -1,28 +1,28 @@
 define(['ash', 'game/vos/PerkVO', 'game/constants/PerkConstants'],
 function (Ash, PerkVO, PerkConstants) {
     var PerksComponent = Ash.Class.extend({
-        
+
         perks: {},
-        
+
         constructor: function () {
             this.perks = {};
 			this.initTypes();
 		},
-		
+
 		initTypes: function() {
             this.perks[PerkConstants.perkTypes.injury] = [];
             this.perks[PerkConstants.perkTypes.movement] = [];
             this.perks[PerkConstants.perkTypes.health] = [];
         },
-        
+
         addPerk: function (perk) {
             if (typeof this.perks[perk.type] == 'undefined') {
                 this.perks[perk.type] = [];
             }
-            
+
             this.perks[perk.type].push(perk);
         },
-        
+
         hasPerk: function (perkId) {
             for (var key in this.perks) {
                 for( var i = 0; i < this.perks[key].length; i++) {
@@ -31,7 +31,7 @@ function (Ash, PerkVO, PerkConstants) {
             }
             return false;
         },
-        
+
         getPerk: function (perkID) {
             for (var key in this.perks) {
                 for (var i = 0; i < this.perks[key].length; i++) {
@@ -41,7 +41,7 @@ function (Ash, PerkVO, PerkConstants) {
             }
             return null;
         },
-        
+
         getAll: function() {
             var all = [];
             for (var key in this.perks) {
@@ -51,7 +51,7 @@ function (Ash, PerkVO, PerkConstants) {
             }
             return all;
         },
-        
+
         getTotalEffect: function (type) {
             var effect = 0;
             var multiply = PerkConstants.isPercentageEffect(type);
@@ -66,8 +66,8 @@ function (Ash, PerkVO, PerkConstants) {
             }
             return effect;
         },
-        
-        getPerkWithEffect: function (type, min, max) {  
+
+        getPerkWithEffect: function (type, min, max) {
             var effect = 0;
             for (var key in this.perks) {
                 if (key === type) {
@@ -79,17 +79,17 @@ function (Ash, PerkVO, PerkConstants) {
             }
             return null;
         },
-        
+
         getPerksByType: function (type) {
             return this.perks[type] ? this.perks[type] : [];
         },
-        
+
         removeItemsByType: function (type) {
             if (typeof this.perks[type] !== 'undefined') {
                 this.perks[type] = [];
             }
         },
-        
+
         removeItemsById: function(perkId) {
             for (var key in this.perks) {
                 for( var i = 0; i < this.perks[key].length; i++) {
@@ -100,7 +100,7 @@ function (Ash, PerkVO, PerkConstants) {
                 }
             }
         },
-	
+
 		isNegative: function (perk) {
 			switch (perk.type) {
 				case PerkConstants.perkTypes.injury:
@@ -111,8 +111,8 @@ function (Ash, PerkVO, PerkConstants) {
 					return perk.effect < 1;
 			}
 		},
-        
-        contains: function(name) {            
+
+        contains: function(name) {
             for (var key in this.perks) {
                 for( var i = 0; i < this.perks[key].length; i++) {
                     if(this.perks[key][i].name == name) return true;
@@ -120,7 +120,11 @@ function (Ash, PerkVO, PerkConstants) {
             }
             return false;
         },
-        
+
+        getSaveKey: function () {
+            return "Perks";
+        },
+
         customLoadFromSave: function(componentValues) {
             for(var key in componentValues.perks) {
                 for (var i in componentValues.perks[key]) {
