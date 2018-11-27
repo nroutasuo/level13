@@ -3,8 +3,12 @@
 			"version": "0.2.3",
 			"phase": "alpha",
 			"final": false,
-			"updated": "2018-11-18",
+			"updated": "2018-11-27",
 			"changes": [
+                {
+					"type": "DEV",
+					"summary": "Compress saves to save localStorage space and make exports more manageable."
+				},
                 {
 					"type": "GB",
 					"summary": "Create a bigger difference between camps on different levels by restricting buildings, population and events on some levels."
