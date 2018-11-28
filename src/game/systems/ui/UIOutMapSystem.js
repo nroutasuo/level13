@@ -4,16 +4,24 @@ define([
     'game/GlobalSignals',
     'game/constants/GameConstants',
     'game/nodes/PlayerPositionNode',
-    'game/components/common/VisitedComponent'
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, PlayerPositionNode, VisitedComponent) {
+    'game/components/common/PositionComponent',
+    'game/components/common/VisitedComponent',
+    'game/systems/CheatSystem'
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, PlayerPositionNode, PositionComponent, VisitedComponent, CheatSystem) {
 
     var UIOutMapSystem = Ash.System.extend({
 
         playerPositionNodes: null,
 
-        constructor: function () {},
+        constructor: function () {
+            var sys = this;
+            $("#btn-cheat-teleport").click(function () {
+                sys.teleport();
+            });
+        },
 
 		addToEngine: function (engine) {
+            this.engine = engine;
             $("#select-header-level").bind("change", $.proxy(this.onLevelSelectorChanged, this));
             GameGlobals.uiMapHelper.enableScrollingForMap("mainmap");
             this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
@@ -23,6 +31,7 @@ define([
 		},
 
 		removeFromEngine: function (engine) {
+            this.engine = null;
             GlobalSignals.removeAll(this);
             $("#select-header-level").unbind("change", $.proxy(this.onLevelSelectorChanged, this));
             GameGlobals.uiMapHelper.disableScrollingForMap("mainmap");
@@ -62,7 +71,14 @@ define([
         selectLevel: function (level) {
             $("#select-header-level").val(level);
             this.selectedLevel = level;
+            this.selectedSector = null;
             this.updateMap();
+            this.updateSector();
+        },
+
+        selectSector: function (level, x, y) {
+            this.selectedSector = GameGlobals.levelHelper.getSectorByPosition(level, x, y);
+            this.updateSector();
         },
 
 		updateMap: function () {
@@ -72,7 +88,22 @@ define([
                 mapPosition.sectorX = 0;
                 mapPosition.sectorY = 0;
             }
-            GameGlobals.uiMapHelper.rebuildMap("mainmap", "mainmap-overlay", mapPosition, -1, false);
+            var sys = this;
+            GameGlobals.uiMapHelper.rebuildMap("mainmap", "mainmap-overlay", mapPosition, -1, false, function (level, x, y) {
+                sys.onSectorSelected(level, x, y)
+            });
+        },
+
+        updateSector: function () {
+            var hasSector = this.selectedSector !== null;
+            GameGlobals.uiFunctions.toggle($("#mainmap-sector-details-content-empty"), !hasSector);
+            GameGlobals.uiFunctions.toggle($("#mainmap-sector-details-content"), hasSector);
+            GameGlobals.uiFunctions.toggle($("#mainmap-sector-details-content-debug"), hasSector && GameConstants.isCheatsEnabled);
+
+            if (hasSector) {
+                var position = this.selectedSector.get(PositionComponent).getPosition();
+                $("#mainmap-sector-details-pos").text(position.getInGameFormat(true));
+            }
         },
 
 		centerMap: function () {
@@ -99,6 +130,17 @@ define([
                 mapStatusText = "There are still some unvisited streets on this level.";
 
             $("#map-completion-hint").text(mapStatusText);
+        },
+
+        teleport: function () {
+            if (!GameConstants.isCheatsEnabled) return;
+            if (!this.selectedSector) return;
+            var targetPosition = this.selectedSector.get(PositionComponent).getPosition();
+			this.engine.getSystem(CheatSystem).setPlayerPosition(targetPosition.level, targetPosition.sectorX, targetPosition.sectorY, false);
+        },
+
+        onSectorSelected: function (level, x, y) {
+            this.selectSector(level, x, y);
         },
 
         onGameStarted: function () {

@@ -92,7 +92,7 @@ function (Ash,
             CanvasConstants.updateScrollIndicators(canvasId);
         },
 
-        rebuildMap: function (canvasId, overlayId, mapPosition, mapSize, centered) {
+        rebuildMap: function (canvasId, overlayId, mapPosition, mapSize, centered, sectorSelectedCallback) {
             var canvas = $("#" + canvasId)[0];
             var ctx = canvas ? canvas.getContext && canvas.getContext('2d') : null;
 
@@ -105,7 +105,7 @@ function (Ash,
             }
 
             if (overlayId) {
-                this.rebuildOverlay(mapPosition, overlayId, centered, visibleSectors, mapDimensions);
+                this.rebuildOverlay(mapPosition, overlayId, centered, visibleSectors, mapDimensions, sectorSelectedCallback);
             }
         },
 
@@ -168,7 +168,7 @@ function (Ash,
             CanvasConstants.updateScrollEnable($(canvas).attr("id"));
         },
 
-        rebuildOverlay: function (mapPosition, overlayId, centered, visibleSectors, dimensions) {
+        rebuildOverlay: function (mapPosition, overlayId, centered, visibleSectors, dimensions, sectorSelectedCallback) {
             var $overlay = $("#" + overlayId);
             $overlay.empty();
             $overlay.css("width", dimensions.canvasWidth + "px");
@@ -189,7 +189,18 @@ function (Ash,
                         sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).x;
                         sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
                         sectorPos = new PositionVO(mapPosition.level, x, y);
-                        $overlay.append("<div class='map-overlay-cell' style='top: " + sectorYpx + "px; left: " + sectorXpx + "px'></div>");
+                        var data = "data-level='" + sectorPos.level + "' data-x='" + sectorPos.sectorX + "' data-y='" + sectorPos.sectorY + "'";
+                        var $div = $("<div class='map-overlay-cell' style='top: " + sectorYpx + "px; left: " + sectorXpx + "px' " + data +"></div>");
+                        if (sectorSelectedCallback) {
+                            $div.click(function (e) {
+                                var $target = $(e.target);
+                                var level = $target.attr("data-level");
+                                var x = $target.attr("data-x");
+                                var y = $target.attr("data-y");
+                                sectorSelectedCallback(level, x, y);
+                            });
+                        }
+                        $overlay.append($div);
                     }
                 }
             }
