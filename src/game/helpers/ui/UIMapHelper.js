@@ -35,35 +35,21 @@ function (Ash,
 			this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
             this.isMapRevealed = false;
 
-            this.icons["camp"] = new Image();
-            this.icons["camp"].src = "img/map-camp.png";
-            this.icons["camp-sunlit"] = new Image();
-            this.icons["camp-sunlit"].src = "img/map-camp-sunlit.png";
-            this.icons["passage-up"] = new Image();
-            this.icons["passage-up"].src = "img/map-passage-up.png";
-            this.icons["passage-up-sunlit"] = new Image();
-            this.icons["passage-up-sunlit"].src = "img/map-passage-up-sunlit.png";
-            this.icons["passage-down"] = new Image();
-            this.icons["passage-down"].src = "img/map-passage-down.png";
-            this.icons["passage-down-sunlit"] = new Image();
-            this.icons["passage-down-sunlit"].src = "img/map-passage-down-sunlit.png";
-            this.icons["interest"] = new Image();
-            this.icons["interest"].src = "img/map-interest.png";
-            this.icons["interest-sunlit"] = new Image();
-            this.icons["interest-sunlit"].src = "img/map-interest-sunlit.png";
-            this.icons["unknown"] = new Image();
-            this.icons["unknown"].src = "img/map-unvisited.png";
-            this.icons["unknown-sunlit"] = new Image();
-            this.icons["unknown-sunlit"].src = "img/map-unvisited-sunlit.png";
-            this.icons["workshop"] = new Image();
-            this.icons["workshop"].src = "img/map-workshop.png";
-            this.icons["workshop-sunlit"] = new Image();
-            this.icons["workshop-sunlit"].src = "img/map-workshop-sunlit.png";
-            this.icons["unknown-sunlit"].src = "img/map-unvisited-sunlit.png";
-            this.icons["water"] = new Image();
-            this.icons["water"].src = "img/map-water.png";
-            this.icons["water-sunlit"] = new Image();
-            this.icons["water-sunlit"].src = "img/map-water.png";
+            this.initIcon("camp", "map-camp");
+            this.initIcon("campable", "map-campable");
+            this.initIcon("passage-up", "map-passage-up");
+            this.initIcon("passage-down", "map-passage-down");
+            this.initIcon("interest", "map-interest");
+            this.initIcon("unknown", "map-unvisited");
+            this.initIcon("workshop", "map-workshop");
+            this.initIcon("water", "map-water");
+        },
+
+        initIcon: function(key, name) {
+            this.icons[key] = new Image();
+            this.icons[key].src = "img/" + name + ".png";
+            this.icons[key + "-sunlit"] = new Image();
+            this.icons[key + "-sunlit"].src = "img/" + name + "-sunlit.png";
         },
 
         enableScrollingForMap: function (canvasId) {
@@ -112,6 +98,7 @@ function (Ash,
         rebuildMapWithCanvas: function (mapPosition, canvas, ctx, centered, visibleSectors, allSectors, dimensions) {
             var sectorSize = this.getSectorSize(centered);
             var sunlit = $("body").hasClass("sunlit");
+            var levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(mapPosition.level);
 
             ctx.canvas.width = dimensions.canvasWidth;
             ctx.canvas.height = dimensions.canvasHeight;
@@ -149,7 +136,7 @@ function (Ash,
                         sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).x;
                         sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
                         sectorPos = new PositionVO(mapPosition.level, x, y);
-                        this.drawSectorOnCanvas(ctx, x, y, sector, sectorStatus, sectorXpx, sectorYpx, sectorSize);
+                        this.drawSectorOnCanvas(ctx, x, y, sector, levelEntity, sectorStatus, sectorXpx, sectorYpx, sectorSize);
                         this.drawMovementLinesOnCanvas(ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding);
                     }
                 }
@@ -235,7 +222,7 @@ function (Ash,
             }
         },
 
-        drawSectorOnCanvas: function (ctx, x, y, sector, sectorStatus, sectorXpx, sectorYpx, sectorSize) {
+        drawSectorOnCanvas: function (ctx, x, y, sector, levelEntity, sectorStatus, sectorXpx, sectorYpx, sectorSize) {
             var isLocationSunlit = $("body").hasClass("sunlit");
             ctx.fillStyle = this.getSectorFill(sectorStatus);
             ctx.fillRect(sectorXpx, sectorYpx, sectorSize, sectorSize);
@@ -281,9 +268,11 @@ function (Ash,
             }
 
             // sector contents: points of interest
+            var sectorFeatures = sector.get(SectorFeaturesComponent);
             var sectorPassages = sector.get(PassagesComponent);
             var localesComponent = sector.get(SectorLocalesComponent);
             var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
+            var hasCampOnLevel = levelEntity.get(CampComponent) !== null;
             var iconPosX = sectorXpx + (sectorSize - iconSize) / 2;
             var iconPosY = sectorSize > iconSize ? sectorYpx + 1 : sectorYpx;
 
@@ -295,6 +284,8 @@ function (Ash,
                 ctx.drawImage(this.icons["workshop" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sector.has(CampComponent))
                 ctx.drawImage(this.icons["camp" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
+            else if (!hasCampOnLevel && sectorFeatures.canHaveCamp())
+                ctx.drawImage(this.icons["campable" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sectorPassages.passageUp)
                 ctx.drawImage(this.icons["passage-up" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (sectorPassages.passageDown)
@@ -303,17 +294,6 @@ function (Ash,
                 ctx.drawImage(this.icons["interest" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             else if (hasWater)
                 ctx.drawImage(this.icons["water" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
-
-            // sector contents: debug info
-            if (this.isMapRevealed) {
-                if (sector.get(SectorFeaturesComponent).campable) {
-                    var text = "C";
-                    ctx.font = "12px Arial";
-                    ctx.fillStyle = "red";
-                    ctx.textAlign = "center";
-                    ctx.fillText(text, sectorXpx + sectorSize * 0.5, sectorYpx + sectorSize * 0.75);
-                }
-            }
         },
 
         drawMovementLinesOnCanvas: function (ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding) {
