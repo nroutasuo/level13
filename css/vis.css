@@ -1,16 +1,32 @@
 /* MAPS */
-#minimap,
-#minimap-fallback-container {
+#minimap {
+  overflow: hidden;
+}
+#mainmap {
   overflow: hidden;
 }
 #mainmap,
-#mainmap-fallback-container {
-  overflow: hidden;
-}
-#mainmap,
-#mainmap-fallback-container,
 #researched-upgrades-vis {
   overflow: hidden;
+}
+.map-overlay {
+  position: absolute;
+  top: 0;
+  pointer-events: none;
+}
+.map-overlay button {
+  pointer-events: auto;
+}
+.map-overlay-cell {
+  position: absolute;
+  font-size: 50%;
+  width: 10px;
+  height: 10px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+.map-overlay-cell:hover {
+  background: #fdfdfd;
 }
 /* CAMP VIS */
 #tab-vis-in {

@@ -389,7 +389,6 @@
                         <div class="unit unit-compass" id="out-container-compass">
                             <div id="minimap-container" class="canvas-container" style="width: 208px; height: 208px">
                             <canvas id="minimap" width="208" height="208">
-                                <div id="minimap-fallback-container"><table class="vis lvl13-box-2" id="minimap-fallback"></table></div>
                             </canvas>
                             </div>
                         </div>
@@ -524,9 +523,8 @@
                         <div class="unit whole">
                             <p id="map-completion-hint">There are still places to explore on this level.</p>
                             <div id="mainmap-container" class="canvas-container lvl13-box-1">
-                            <canvas id="mainmap" width="500" height="500">
-                                <div id="mainmap-fallback-container"><table class="vis lvl13-box-2" id="mainmap-fallback"></table></div>
-                            </canvas>
+                                <canvas id="mainmap" width="500" height="500"></canvas>
+                                <div id="mainmap-overlay" class="map-overlay"></div>
                             </div>
                         </div>
                     </div>
@@ -606,14 +604,6 @@
                                     </canvas>
                                 </div>
                                 </div>
-                                <!--
-                                
-                                <div id="mainmap-container" class="canvas-container lvl13-box-1">
-                                <canvas id="mainmap" width="500" height="500">
-                                    <div id="mainmap-fallback-container"><table class="vis lvl13-box-2" id="mainmap-fallback"></table></div>
-                                </canvas>
-                                </div>
-                                -->
 							</div>
 						</div>
 					</div>

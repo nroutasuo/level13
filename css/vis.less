@@ -1,17 +1,42 @@
+// out: vis.css, compress: false
+
 @import "colors";
 
 /* MAPS */
 
-#minimap, #minimap-fallback-container {
+#minimap {
     overflow: hidden;
 }
 
-#mainmap, #mainmap-fallback-container {
+#mainmap {
     overflow: hidden;
 }
 
-#mainmap, #mainmap-fallback-container, #researched-upgrades-vis {
+#mainmap, #researched-upgrades-vis {
     overflow: hidden;
+}
+
+.map-overlay {
+    position: absolute;
+    top: 0;
+    pointer-events: none;
+}
+
+.map-overlay button {
+    pointer-events: auto;
+}
+
+.map-overlay-cell {
+    position: absolute;
+    font-size: 50%;
+    width: 10px;
+    height: 10px;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.map-overlay-cell:hover {
+    background: @color-dark-text;
 }
 
 
@@ -89,7 +114,7 @@
 .vis-camp-building-medium {
     background: @color-dark-highlight-element;
     border-color: @color-dark-highlight-element;
-    
+
 }
 
 .vis-camp-building-thin {
@@ -106,7 +131,7 @@
 }
 
 .vis-camp-building-square {
-    
+
 }
 
 .vis-camp-point {

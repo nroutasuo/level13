@@ -642,7 +642,7 @@ define([
             if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (!this.playerLocationNodes.head) return;
             this.pendingUpdateMap = false;
-            GameGlobals.uiMapHelper.rebuildMap("minimap", "minimap-fallback", this.playerLocationNodes.head.position.getPosition(), UIConstants.MAP_MINIMAP_SIZE, true);
+            GameGlobals.uiMapHelper.rebuildMap("minimap", null, this.playerLocationNodes.head.position.getPosition(), UIConstants.MAP_MINIMAP_SIZE, true);
 		},
     });
 

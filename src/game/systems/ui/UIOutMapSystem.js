@@ -72,7 +72,7 @@ define([
                 mapPosition.sectorX = 0;
                 mapPosition.sectorY = 0;
             }
-            GameGlobals.uiMapHelper.rebuildMap("mainmap", "mainmap-fallback", mapPosition, -1, false);
+            GameGlobals.uiMapHelper.rebuildMap("mainmap", "mainmap-overlay", mapPosition, -1, false);
         },
 
 		centerMap: function () {
