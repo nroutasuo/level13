@@ -10,7 +10,8 @@ define(function () {
             if (!maxKeys) maxKeys = this.defaultMaxKeys;
             this.caches[context] = {
                 maxKeys: maxKeys,
-                items: {}
+                items: {},
+                lastPruneTime: null,
              };
         },
 
@@ -44,8 +45,13 @@ define(function () {
             var toDelete = [];
 
             var now = new Date().getTime();
+            if (cache.lastPruneTime && (now - cache.lastPruneTime) / 1000 < 1) {
+                console.log("WARN: VO Cache " + context + " is being pruned too often. keys: " + len + "/" + cache.maxKeys);
+                return;
+            }
+
             var thresholdSecs = 60 * 5;
-            while (toDelete.length < goalDeletions) {
+            while (toDelete.length < goalDeletions && thresholdSecs > 3) {
                 for (var key in cache.items) {
                     var item = cache.items[key];
                     var timeSince = 0;
@@ -62,8 +68,9 @@ define(function () {
                 var key = toDelete[i];
                 delete cache.items[key];
             }
-        }
 
+            cache.lastPruneTime = now;
+        }
     };
 
     return VOCache;

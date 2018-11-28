@@ -71,7 +71,7 @@ define([
 			this.levelNodes = engine.getNodeList(LevelNode);
 			this.sectorNodes = engine.getNodeList(SectorNode);
 
-            VOCache.create("LevelHelper-SectorNeighboursMap");
+            VOCache.create("LevelHelper-SectorNeighboursMap", 300);
 		},
 
         reset: function () {
