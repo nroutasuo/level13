@@ -23,6 +23,7 @@ define(['ash',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
+    'game/systems/CheatSystem',
     'game/constants/CampConstants',
     'game/constants/UpgradeConstants',
     'game/vos/ResourcesVO'
@@ -31,16 +32,13 @@ define(['ash',
 	AutoPlayNode, PlayerStatsNode, ItemsNode, FightNode, CampNode,
     PositionComponent, CampComponent, ResourcesComponent, PlayerActionComponent, PlayerActionResultComponent, ItemsComponent, PerksComponent, BagComponent,
     SectorStatusComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorImprovementsComponent,
-    CampConstants, UpgradeConstants, ResourcesVO) {
+    CheatSystem, CampConstants, UpgradeConstants, ResourcesVO) {
 
 	var AutoPlaySystem = Ash.System.extend({
 
         speed: 5,
         stepInterval: 250,
         isExpress: false,
-
-		cheatFunctions: null,
-        upgradesHelper: null,
 
 		autoPlayNodes: null,
 		playerStatsNodes: null,
@@ -52,12 +50,10 @@ define(['ash',
         idleCounter: 0,
         lastSwitchCounter: 0,
 
-		constructor: function (cheatFunctions, upgradesHelper) {
-            this.cheatFunctions = cheatFunctions;
-            this.upgradesHelper = upgradesHelper;
-        },
+		constructor: function () { },
 
         addToEngine: function (engine) {
+            this.engine = engine;
 			this.autoPlayNodes = engine.getNodeList(AutoPlayNode);
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			this.itemsNodes = engine.getNodeList(ItemsNode);
@@ -71,6 +67,7 @@ define(['ash',
         },
 
         removeFromEngine: function (engine) {
+            this.engine = null;
             this.autoPlayNodes.nodeAdded.remove(this.onAutoPlayNodeAdded, this);
             this.autoPlayNodes.nodeRemoved.remove(this.onAutoPlayNodeRemoved, this);
 
@@ -82,15 +79,17 @@ define(['ash',
 		},
 
         onAutoPlayNodeAdded: function (node) {
+            this.cheatSystem = this.engine.getSystem(CheatSystem);
+
             this.lastStepTimeStamp = new Date().getTime();
             var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
             node.autoPlay.isExploring = !inCamp;
             node.autoPlay.isManagingCamps = inCamp;
-            this.cheatFunctions.applyCheat("speed " + this.speed);
+            this.cheatSystem.applyCheat("speed " + this.speed);
         },
 
         onAutoPlayNodeRemoved: function (node) {
-            this.cheatFunctions.applyCheat("speed 1");
+            this.cheatSystem.applyCheat("speed 1");
         },
 
         update: function (time) {
@@ -132,7 +131,7 @@ define(['ash',
 
             if (this.idleCounter > 5) {
                 this.printStep("skip 1 minute");
-                this.cheatFunctions.applyCheat("time 1");
+                this.cheatSystem.applyCheat("time 1");
             }
 
             this.lastStepTimeStamp = timeStamp;
@@ -144,7 +143,7 @@ define(['ash',
             this.checkExploreObjective();
 
             var maxStamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
-            var minStamina = this.playerActionFunctions.nearestCampNodes.head ? Math.min(100, maxStamina / 2) : 0;
+            var minStamina = GameGlobals.playerActionFunctions.nearestCampNodes.head ? Math.min(100, maxStamina / 2) : 0;
             var hasStamina = minStamina < this.playerStatsNodes.head.stamina.stamina;
 
             didSomething = didSomething || this.buildCamp();
@@ -184,12 +183,12 @@ define(['ash',
             }
             if (!isFight) GameGlobals.uiFunctions.popupManager.closeAllPopups();
             if (this.isExpress) {
-                this.cheatFunctions.applyCheat("stamina");
+                this.cheatSystem.applyCheat("stamina");
             }
 		},
 
         switchMode: function () {
-            if (!this.playerActionFunctions.gameState.unlockedFeatures.camp)
+            if (!GameGlobals.gameState.unlockedFeatures.camp)
                 return false;
 
             var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
@@ -210,27 +209,27 @@ define(['ash',
             this.printStep("switch mode");
 
             var wasExploring = autoPlayComponent.isExploring;
-            var nearestCampLevel = this.playerActionFunctions.nearestCampNodes.head ? this.playerActionFunctions.nearestCampNodes.head.entity.get(PositionComponent).level : -100;
+            var nearestCampLevel = GameGlobals.playerActionFunctions.nearestCampNodes.head ? GameGlobals.playerActionFunctions.nearestCampNodes.head.entity.get(PositionComponent).level : -100;
             if (wasExploring && nearestCampLevel > -100) {
                 // this.printStep("enter camp " + nearestCampLevel);
                 autoPlayComponent.setExploreObjective(null, null, null);
-                this.playerActionFunctions.moveToCamp(nearestCampLevel);
+                GameGlobals.playerActionFunctions.moveToCamp(nearestCampLevel);
                 GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in);
             } else {
                 // this.printStep("leave camp");
-                if (this.playerActionFunctions.nearestCampNodes.head) {
+                if (GameGlobals.playerActionFunctions.nearestCampNodes.head) {
                     var selectedResVO = new ResourcesVO();
                     selectedResVO.setResource(resourceNames.food, Math.min(10, currentStorage.resources.getResource(resourceNames.food) / 2));
                     selectedResVO.setResource(resourceNames.water, Math.min(10, currentStorage.resources.getResource(resourceNames.water) / 2));
-                    this.playerActionFunctions.moveResFromCampToBag(selectedResVO);
+                    GameGlobals.playerActionFunctions.moveResFromCampToBag(selectedResVO);
 
                     var selectedItems = {};
                     var itemID = ItemConstants.itemDefinitions.exploration[0].id;
                     if (itemsComponent.getCountById(itemID, true) > 0) {
                         selectedItems[itemID] = 1;
                     }
-                    this.playerActionFunctions.updateCarriedItems(selectedItems);
-                    this.playerActionFunctions.leaveCamp();
+                    GameGlobals.playerActionFunctions.updateCarriedItems(selectedItems);
+                    GameGlobals.playerActionFunctions.leaveCamp();
                 }
                 GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.out);
             }
@@ -267,11 +266,11 @@ define(['ash',
 
         setExploreObjective: function () {
             var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
-            var playerPosition = this.playerActionFunctions.playerPositionNodes.head.position;
+            var playerPosition = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
             var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
-            var campResources = this.playerActionFunctions.nearestCampNodes.head ? GameGlobals.resourcesHelper.getCurrentCampStorage(this.playerActionFunctions.nearestCampNodes.head.entity) : null;
+            var campResources = GameGlobals.playerActionFunctions.nearestCampNodes.head ? GameGlobals.resourcesHelper.getCurrentCampStorage(GameGlobals.playerActionFunctions.nearestCampNodes.head.entity) : null;
 
-            var playerActionFunctions = this.playerActionFunctions;
+            var playerActionFunctions = GameGlobals.playerActionFunctions;
 
             var injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
             var hasHospital = this.getTotalImprovementsCount(improvementNames.hospital) > 0;
@@ -320,8 +319,8 @@ define(['ash',
             var resource = null;
 
             var ratioUnscoutedSectors = numUnscoutedSectors / numAccessibleSectors;
-            var startSector = this.playerActionFunctions.playerPositionNodes.head.entity;
-            var hasCamp = this.playerActionFunctions.nearestCampNodes.head;
+            var startSector = GameGlobals.playerActionFunctions.playerPositionNodes.head.entity;
+            var hasCamp = GameGlobals.playerActionFunctions.nearestCampNodes.head;
 
             if (hasCamp && !prioritizeHeal && nearestUnclearedWorkshopSector) {
                 goal = AutoPlayConstants.GOALTYPES.CLEAR_WORKSHOP;
@@ -350,12 +349,12 @@ define(['ash',
         },
 
         getExploreResource: function (nearestSectorsByRes) {
-            if (!this.playerActionFunctions.gameState.unlockedFeatures.camp || !this.playerActionFunctions.nearestCampNodes.head.entity)
+            if (!GameGlobals.gameState.unlockedFeatures.camp || !GameGlobals.playerActionFunctions.nearestCampNodes.head.entity)
                 return resourceNames.metal;
 
-            var campStorage = GameGlobals.resourcesHelper.getCurrentCampStorage(this.playerActionFunctions.nearestCampNodes.head.entity);
+            var campStorage = GameGlobals.resourcesHelper.getCurrentCampStorage(GameGlobals.playerActionFunctions.nearestCampNodes.head.entity);
             var campResources = campStorage.resources;
-            var campPopulation = this.playerActionFunctions.nearestCampNodes.head.camp.population;
+            var campPopulation = GameGlobals.playerActionFunctions.nearestCampNodes.head.camp.population;
 
             var healCosts = GameGlobals.playerActionsHelper.getCosts("use_in_hospital");
             var isWaterLow = campResources.getResource(resourceNames.water) < Math.max(10 + campPopulation * 2.5, healCosts.resource_water);
@@ -379,7 +378,7 @@ define(['ash',
             var leastRes = null;
             for (var key in resourceNames) {
                 var name = resourceNames[key];
-                if (!this.playerActionFunctions.gameState.unlockedFeatures.resources[name])
+                if (!GameGlobals.gameState.unlockedFeatures.resources[name])
                     continue;
                 if (!nearestSectorsByRes[name])
                     continue;
@@ -394,7 +393,7 @@ define(['ash',
         },
 
         getNextImprovementAction: function () {
-            var campStorage = GameGlobals.resourcesHelper.getCurrentCampStorage(this.playerActionFunctions.nearestCampNodes.head.entity).resources;
+            var campStorage = GameGlobals.resourcesHelper.getCurrentCampStorage(GameGlobals.playerActionFunctions.nearestCampNodes.head.entity).resources;
 
             // get all available improvements in camp
             var improvements = [];
@@ -440,7 +439,7 @@ define(['ash',
                 return null;
 
             // sort by a) hasn't built any yet b) resource cost
-            var campImprovements = this.playerActionFunctions.nearestCampNodes.head.entity.get(SectorImprovementsComponent);
+            var campImprovements = GameGlobals.playerActionFunctions.nearestCampNodes.head.entity.get(SectorImprovementsComponent);
             improvements = improvements.sort(function(a,b) {
                 var counta = campImprovements.getCount(a.improvementName);
                 var countb = campImprovements.getCount(b.improvementName);
@@ -478,18 +477,18 @@ define(['ash',
                 }
                 return false;
 			};
-            var playerPosition = this.playerActionFunctions.playerPositionNodes.head.position;
+            var playerPosition = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
             GameGlobals.levelHelper.forEverySectorFromLocation(playerPosition, checkSector);
             return result;
         },
 
 		move: function () {
-            if (!this.playerActionFunctions.gameState.unlockedFeatures.camp)
+            if (!GameGlobals.gameState.unlockedFeatures.camp)
                 return false;
 
             var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
-            var playerSector = this.playerActionFunctions.playerPositionNodes.head.entity;
-            var playerPosition = this.playerActionFunctions.playerPositionNodes.head.position;
+            var playerSector = GameGlobals.playerActionFunctions.playerPositionNodes.head.entity;
+            var playerPosition = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
             var targetSector = autoPlayComponent.exploreSector;
             var targetPosition = targetSector ? targetSector.get(PositionComponent) : null;
 
@@ -528,7 +527,7 @@ define(['ash',
             if (!sectorEntity)
                 return false;
 
-            var playerPosition = this.playerActionFunctions.playerPositionNodes.head.position;
+            var playerPosition = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
 			var sectorPosition = sectorEntity.get(PositionComponent);
 			if (playerPosition.level !== sectorPosition.level || playerPosition.sectorId() !== sectorPosition.sectorId()) {
                 this.printStep("move to " + sectorPosition + " (" + reason + ")");
@@ -542,20 +541,20 @@ define(['ash',
 		buildCamp: function () {
 			if (GameGlobals.playerActionsHelper.checkAvailability("build_out_camp", false)) {
                 this.printStep("build camp");
-				this.playerActionFunctions.buildCamp();
+				GameGlobals.playerActionFunctions.buildCamp();
                 return true;
 			}
             return false;
 		},
 
         buildOutImprovements: function () {
-			var improvementsComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			var improvementsComponent = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 
             // traps & buckets
             if (GameGlobals.playerActionsHelper.checkAvailability("build_out_collector_water")) {
                 if (improvementsComponent.getCount(improvementNames.collector_water) < 1) {
                     this.printStep("build bucket");
-                    this.playerActionFunctions.buildBucket();
+                    GameGlobals.playerActionFunctions.buildBucket();
                     return true;
                 }
             }
@@ -563,7 +562,7 @@ define(['ash',
             if (GameGlobals.playerActionsHelper.checkAvailability("build_out_collector_food")) {
                 if (improvementsComponent.getCount(improvementNames.collector_food) < 1) {
                     this.printStep("build trap");
-                    this.playerActionFunctions.buildTrap();
+                    GameGlobals.playerActionFunctions.buildTrap();
                     return true;
                 }
             }
@@ -575,17 +574,17 @@ define(['ash',
             var bagFull = this.isBagFull();
             if (!bagFull && GameGlobals.playerActionsHelper.checkAvailability("use_out_collector_food")) {
                 this.printStep("collect food");
-                this.playerActionFunctions.collectFood();
+                GameGlobals.playerActionFunctions.collectFood();
                 return true;
             }
             if (!bagFull && GameGlobals.playerActionsHelper.checkAvailability("use_out_collector_water")) {
                 this.printStep("collect water");
-                this.playerActionFunctions.collectWater();
+                GameGlobals.playerActionFunctions.collectWater();
                 return true;
             }
             if (!bagFull && GameGlobals.playerActionsHelper.checkAvailability("use_spring")) {
                 this.printStep("stop by a spring");
-                this.playerActionFunctions.useSpring();
+                GameGlobals.playerActionFunctions.useSpring();
                 return true;
             }
             return false;
@@ -595,7 +594,7 @@ define(['ash',
             var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
             if (GameGlobals.playerActionsHelper.checkAvailability("scout")) {
                 this.printStep("scout");
-				this.playerActionFunctions.scout();
+				GameGlobals.playerActionFunctions.scout();
                 if (autoPlayComponent.exploreGoal === AutoPlayConstants.GOALTYPES.SCOUT_SECTORS) {
                     autoPlayComponent.isExploreGoalComplete = true;
                     this.printStep("complete scout goal");
@@ -603,14 +602,14 @@ define(['ash',
                 return true;
             }
 
-			var sectorLocalesComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorLocalesComponent);
-			var sectorStatusComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			var sectorLocalesComponent = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity.get(SectorLocalesComponent);
+			var sectorStatusComponent = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			for (var i = 0; i < sectorLocalesComponent.locales.length; i++) {
 				var locale = sectorLocalesComponent.locales[i];
                 if (!sectorStatusComponent.isLocaleScouted(i)) {
                     var action = "scout_locale_" + locale.getCategory() + "_" + i;
                     if (GameGlobals.playerActionsHelper.checkAvailability(action, true)) {
-                        this.playerActionFunctions.scoutLocale(i);
+                        GameGlobals.playerActionFunctions.scoutLocale(i);
                         this.printStep("scout locale " + locale.type);
                         if (autoPlayComponent.exploreGoal === AutoPlayConstants.GOALTYPES.SCOUT_LOCALE) {
                             autoPlayComponent.isExploreGoalComplete = true;
@@ -633,7 +632,7 @@ define(['ash',
                 var bagFull = this.isBagFull() && bagComponent.totalCapacity > ItemConstants.PLAYER_DEFAULT_STORAGE;
                 if (!bagFull || Math.random() < 0.5) {
                     this.printStep("scavenge");
-    				this.playerActionFunctions.startAction("scavenge");
+    				GameGlobals.playerActionFunctions.startAction("scavenge");
                     return true;
                 }
             }
@@ -641,7 +640,7 @@ define(['ash',
 		},
 
         idleOut: function () {
-            if (this.playerActionFunctions.nearestCampNodes.head && this.playerStatsNodes.head.stamina.stamina < 10)
+            if (GameGlobals.playerActionFunctions.nearestCampNodes.head && this.playerStatsNodes.head.stamina.stamina < 10)
                 return false;
 
             return false;
@@ -656,7 +655,7 @@ define(['ash',
             var campOrdinalDiff = 100;
             var nextCampOrdinalDiff = 100;
             var nextCamp = null;
-            for (var node = this.playerActionFunctions.campNodes.head; node; node = node.next) {
+            for (var node = GameGlobals.playerActionFunctions.campNodes.head; node; node = node.next) {
                 campPosition = node.position;
                 campOrdinal = GameGlobals.gameState.getLevelOrdinal(campPosition.level);
                 if (campOrdinal < currentLevelOrdinal) {
@@ -669,7 +668,7 @@ define(['ash',
             }
 
             if (nextCamp) {
-                this.playerActionFunctions.moveToCamp(nextCamp.position.level);
+                GameGlobals.playerActionFunctions.moveToCamp(nextCamp.position.level);
                 return true;
             }
 
@@ -677,33 +676,33 @@ define(['ash',
         },
 
         useInImprovements: function () {
-            var campComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(CampComponent);
+            var campComponent = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity.get(CampComponent);
             if (!campComponent)
                 return false;
 
             if (GameGlobals.playerActionsHelper.checkAvailability("use_in_home")) {
                 var maxStamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
                 if (this.playerStatsNodes.head.stamina.stamina < maxStamina / 3 * 2) {
-                    this.playerActionFunctions.useHome();
+                    GameGlobals.playerActionFunctions.useHome();
                     this.printStep("rested");
                     return true;
                 }
             }
 
             if (GameGlobals.playerActionsHelper.checkAvailability("use_in_campfire")) {
-                this.playerActionFunctions.useCampfire();
+                GameGlobals.playerActionFunctions.useCampfire();
                 this.printStep("used campfire");
                 return true;
             }
 
             if (GameGlobals.playerActionsHelper.checkAvailability("use_in_hospital")) {
-                this.playerActionFunctions.useHospital();
+                GameGlobals.playerActionFunctions.useHospital();
                 this.printStep("used hospital");
                 return true;
             }
 
             if (GameGlobals.playerActionsHelper.checkAvailability("use_in_inn") && Math.random() < 0.05) {
-                var newFollower = this.playerActionFunctions.useInn(true);
+                var newFollower = GameGlobals.playerActionFunctions.useInn(true);
                 if (newFollower) {
                     this.printStep("used inn");
                     return true;
@@ -712,19 +711,19 @@ define(['ash',
         },
 
         manageWorkers: function () {
-            var campComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(CampComponent);
+            var campComponent = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity.get(CampComponent);
             if (!campComponent)
                 return false;
 
-            var improvementsComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-            var playerPosition = this.playerActionFunctions.playerPositionNodes.head.position;
+            var improvementsComponent = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+            var playerPosition = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
             var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 
             // cheat population
             var maxPopulation = improvementsComponent.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
             maxPopulation += improvementsComponent.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
             if (this.isExpress && campComponent.population < maxPopulation)
-                this.cheatFunctions.applyCheat("pop");
+                this.cheatSystem.applyCheat("pop");
 
             // assign workers
             if (campComponent.getFreePopulation() > 0 || this.refreshWorkers) {
@@ -737,13 +736,13 @@ define(['ash',
                 var currentFoodRatio = currentFood / maxStorage;
                 var currentWaterRatio = currentWater / maxStorage;
 
-                var canRope = this.hasUpgrade(this.upgradesHelper.getUpgradeIdForWorker("rope-maker"));
-                var upgradesComponent = this.playerActionFunctions.tribeUpgradesNodes.head.upgrades;
+                var canRope = this.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdForWorker("rope-maker"));
+                var upgradesComponent = GameGlobals.playerActionFunctions.tribeUpgradesNodes.head.upgrades;
 
-                var maxApothecaries = improvementsComponent.getCount(improvementNames.apothecary) * CampConstants.getApothecariesPerShop(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.apothecary, upgradesComponent));
-                var maxConcrete = improvementsComponent.getCount(improvementNames.cementmill) * CampConstants.getWorkersPerMill(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.cementmill, upgradesComponent));
-                var maxSmiths = improvementsComponent.getCount(improvementNames.smithy) * CampConstants.getSmithsPerSmithy(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.smithy, upgradesComponent));
-                var maxSoldiers = improvementsComponent.getCount(improvementNames.barracks) * CampConstants.getSoldiersPerBarracks(this.upgradesHelper.getBuildingUpgradeLevel(improvementNames.barracks, upgradesComponent));
+                var maxApothecaries = improvementsComponent.getCount(improvementNames.apothecary) * CampConstants.getApothecariesPerShop(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.apothecary, upgradesComponent));
+                var maxConcrete = improvementsComponent.getCount(improvementNames.cementmill) * CampConstants.getWorkersPerMill(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.cementmill, upgradesComponent));
+                var maxSmiths = improvementsComponent.getCount(improvementNames.smithy) * CampConstants.getSmithsPerSmithy(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.smithy, upgradesComponent));
+                var maxSoldiers = improvementsComponent.getCount(improvementNames.barracks) * CampConstants.getSoldiersPerBarracks(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.barracks, upgradesComponent));
                 var maxChemists = GameGlobals.levelHelper.getLevelClearedWorkshopCount(playerPosition.level, resourceNames.fuel) * CampConstants.CHEMISTS_PER_WORKSHOP;
 
                 var pop = campComponent.population;
@@ -760,7 +759,7 @@ define(['ash',
                 var soldiers = Math.min(1, specialistPop - ropers - chemists - smiths - apothecaries - concrete, maxSoldiers);
                 var scavengers = Math.floor(pop - trappers - waters - ropers - chemists - apothecaries - smiths - concrete - soldiers);
 
-                this.playerActionFunctions.assignWorkers(scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers);
+                GameGlobals.playerActionFunctions.assignWorkers(scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers);
                 this.printStep("assigned workers (" + scavengers + ", " + trappers + ", " + waters + ", " + ropers + ", " + chemists + ", " + apothecaries + ", " + smiths + ", " + concrete + ", " + soldiers + ")");
                 this.refreshWorkers = false;
                 return true;
@@ -769,7 +768,7 @@ define(['ash',
         },
 
         buildPassages: function () {
-            var projects = GameGlobals.levelHelper.getAvailableProjectsForCamp(this.playerActionFunctions.playerLocationNodes.head.entity);
+            var projects = GameGlobals.levelHelper.getAvailableProjectsForCamp(GameGlobals.playerActionFunctions.playerLocationNodes.head.entity);
             for (var i = 0; i < projects.length; i++) {
                 var project = projects[i];
                 var action = project.action;
@@ -786,98 +785,98 @@ define(['ash',
         },
 
         buildInImprovements: function () {
-            var campComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(CampComponent);
+            var campComponent = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity.get(CampComponent);
             if (!campComponent)
                 return;
 
-			var improvementsComponent = this.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			var improvementsComponent = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var maxPopulation = improvementsComponent.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
             maxPopulation += improvementsComponent.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
 
             if (GameGlobals.playerActionsHelper.checkAvailability("build_in_tradingPost")) {
                 this.printStep("build trading post");
-                this.playerActionFunctions.buildTradingPost();
+                GameGlobals.playerActionFunctions.buildTradingPost();
                 return true;
             }
 
             if (GameGlobals.playerActionsHelper.checkAvailability("build_in_hospital")) {
                 this.printStep("build hospital");
-                this.playerActionFunctions.buildHospital();
+                GameGlobals.playerActionFunctions.buildHospital();
                 return true;
             }
 
             if (campComponent.population >= maxPopulation - 1) {
                 if (GameGlobals.playerActionsHelper.checkAvailability("build_in_house2")) {
                     this.printStep("build house2");
-                    this.playerActionFunctions.buildHouse2();
+                    GameGlobals.playerActionFunctions.buildHouse2();
                     return true;
                 }
 
                 if (GameGlobals.playerActionsHelper.checkAvailability("build_in_house")) {
                     this.printStep("build house");
-                    this.playerActionFunctions.buildHouse();
+                    GameGlobals.playerActionFunctions.buildHouse();
                     return true;
                 }
             }
 
             if (GameGlobals.playerActionsHelper.checkAvailability("build_in_storage")) {
                 this.printStep("build storage");
-                this.playerActionFunctions.buildStorage();
+                GameGlobals.playerActionFunctions.buildStorage();
                 return true;
             }
 
             if (GameGlobals.playerActionsHelper.checkAvailability("build_in_darkfarm")) {
                 this.printStep("build darkfarm");
-                this.playerActionFunctions.buildDarkFarm();
+                GameGlobals.playerActionFunctions.buildDarkFarm();
                 return true;
             }
 
             if (GameGlobals.playerActionsHelper.checkAvailability("build_in_campfire")) {
                 this.printStep("build campfire");
-                this.playerActionFunctions.buildCampfire();
+                GameGlobals.playerActionFunctions.buildCampfire();
                 return true;
             }
 
             if (GameGlobals.playerActionsHelper.checkAvailability("build_in_lights")) {
                 this.printStep("build lights");
-                this.playerActionFunctions.buildLights();
+                GameGlobals.playerActionFunctions.buildLights();
                 return true;
             }
 
             if (GameGlobals.playerActionsHelper.checkAvailability("build_in_library")) {
                 this.printStep("build library");
-                this.playerActionFunctions.buildLibrary();
+                GameGlobals.playerActionFunctions.buildLibrary();
                 return true;
             }
 
             if (GameGlobals.playerActionsHelper.checkAvailability("build_in_market")) {
                 this.printStep("build market");
-                this.playerActionFunctions.buildMarket();
+                GameGlobals.playerActionFunctions.buildMarket();
                 return true;
             }
 
             if (GameGlobals.playerActionsHelper.checkAvailability("build_in_smithy")) {
                 this.printStep("build smithy");
-                this.playerActionFunctions.buildSmithy();
+                GameGlobals.playerActionFunctions.buildSmithy();
                 this.refreshWorkers = true;
                 return true;
             }
 
             if (GameGlobals.playerActionsHelper.checkAvailability("build_in_inn")) {
                 this.printStep("build inn");
-                this.playerActionFunctions.buildInn();
+                GameGlobals.playerActionFunctions.buildInn();
                 return true;
             }
 
             if (GameGlobals.playerActionsHelper.checkAvailability("build_in_square")) {
                 this.printStep("build square");
-                this.playerActionFunctions.buildSquare();
+                GameGlobals.playerActionFunctions.buildSquare();
                 return true;
             }
 
             if (GameGlobals.playerActionsHelper.checkAvailability("build_in_garden")) {
                 this.printStep("build garden");
-                this.playerActionFunctions.buildGarden();
+                GameGlobals.playerActionFunctions.buildGarden();
                 return true;
             }
 
@@ -886,12 +885,12 @@ define(['ash',
 
         unlockUpgrades: function () {
             var unlocked = false;
-            var upgradesComponent = this.playerActionFunctions.tribeUpgradesNodes.head.upgrades;
+            var upgradesComponent = GameGlobals.playerActionFunctions.tribeUpgradesNodes.head.upgrades;
 
             var unfinishedBlueprints = upgradesComponent.getUnfinishedBlueprints();
             if (unfinishedBlueprints.length > 0) {
                 var id = unfinishedBlueprints[0].upgradeId;
-                this.playerActionFunctions.createBlueprint(id);
+                GameGlobals.playerActionFunctions.createBlueprint(id);
                 this.printStep("created blueprint " + id);
                 unlocked = true;
             }
@@ -907,11 +906,11 @@ define(['ash',
 					hasBlueprintNew = upgradesComponent.hasNewBlueprint(id);
 					isAvailable = GameGlobals.playerActionsHelper.checkAvailability(id);
                     if (hasBlueprintNew) {
-                        this.playerActionFunctions.unlockUpgrade(upgradeDefinition.id);
+                        GameGlobals.playerActionFunctions.unlockUpgrade(upgradeDefinition.id);
                         this.printStep("unlocked upgrade with blueprint " + upgradeDefinition.name);
                         unlocked = true;
                     } else if (isAvailable) {
-                        this.playerActionFunctions.buyUpgrade(upgradeDefinition.id);
+                        GameGlobals.playerActionFunctions.buyUpgrade(upgradeDefinition.id);
                         this.printStep("bought upgrade " + upgradeDefinition.name);
                         this.refreshWorkers = true;
                         unlocked = true;
@@ -932,7 +931,7 @@ define(['ash',
                         if (this.itemsNodes.head.items.getCountById(itemDefinition.id, true) < 1) {
                             if (GameGlobals.playerActionsHelper.checkAvailability("craft_" + itemDefinition.id)) {
                                 this.printStep("craft " + itemDefinition.name);
-                                this.playerActionFunctions.craftItem(itemDefinition.id);
+                                GameGlobals.playerActionFunctions.craftItem(itemDefinition.id);
                                 return true;
                             }
                         }
@@ -1025,7 +1024,7 @@ define(['ash',
         },
 
         printStep: function (message) {
-            var playerPosition = this.playerActionFunctions.playerPositionNodes.head.position;
+            var playerPosition = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
             var status = "idle";
             if (this.autoPlayNodes.head.autoPlay.isExploring) status = "exploring";
             if (this.autoPlayNodes.head.autoPlay.isManagingCamps) status = "managing";
@@ -1033,7 +1032,7 @@ define(['ash',
         },
 
         hasUpgrade: function (upgradeId) {
-            return this.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeId);
+            return GameGlobals.playerActionFunctions.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeId);
         },
 
 		isBagFull: function () {
