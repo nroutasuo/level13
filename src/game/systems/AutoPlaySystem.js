@@ -179,6 +179,7 @@ define(['ash',
 		resetTurn: function (isFight) {
             if (this.playerStatsNodes.head.entity.has(PlayerActionResultComponent)) {
                 this.handleInventory();
+                this.equipBest();
                 $("#info-ok").click();
             }
             if (!isFight) GameGlobals.uiFunctions.popupManager.closeAllPopups();
@@ -267,15 +268,15 @@ define(['ash',
         setExploreObjective: function () {
             var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
             var playerPosition = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
+            var itemsComponent = this.itemsNodes.head.items;
             var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
             var campResources = GameGlobals.playerActionFunctions.nearestCampNodes.head ? GameGlobals.resourcesHelper.getCurrentCampStorage(GameGlobals.playerActionFunctions.nearestCampNodes.head.entity) : null;
-
-            var playerActionFunctions = GameGlobals.playerActionFunctions;
 
             var injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
             var hasHospital = this.getTotalImprovementsCount(improvementNames.hospital) > 0;
             var prioritizeHeal = injuries.length > 0 && hasHospital;
             var prioritizeScouting = campResources ? campResources.isStocked(GameGlobals.gameState) : false;
+            var hasLockPick = itemsComponent.getCountById("exploration_1", true);
 
             // 1. set requirements
             if (this.playerStatsNodes.head.vision.value < this.playerStatsNodes.head.vision.maximum) {
@@ -327,7 +328,7 @@ define(['ash',
                 sector = nearestUnclearedWorkshopSector;
                 path = GameGlobals.levelHelper.findPathTo(startSector, sector);
             }
-            else if (hasCamp && !prioritizeHeal && nearestUnscoutedLocaleSector) {
+            else if (hasCamp && !prioritizeHeal && hasLockPick && nearestUnscoutedLocaleSector) {
                 goal = AutoPlayConstants.GOALTYPES.SCOUT_LOCALE;
                 sector = nearestUnscoutedLocaleSector;
                 path = GameGlobals.levelHelper.findPathTo(startSector, sector);
@@ -932,6 +933,7 @@ define(['ash',
                             if (GameGlobals.playerActionsHelper.checkAvailability("craft_" + itemDefinition.id)) {
                                 this.printStep("craft " + itemDefinition.name);
                                 GameGlobals.playerActionFunctions.craftItem(itemDefinition.id);
+                                this.equipBest();
                                 return true;
                             }
                         }
@@ -943,6 +945,10 @@ define(['ash',
 
         idleIn: function () {
             return Math.random() > 0.8;
+        },
+
+        equipBest: function () {
+            this.cheatSystem.equipBest();
         },
 
         handleInventory: function () {

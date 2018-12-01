@@ -1,6 +1,6 @@
 define(function () {
     var PathFinding = {
-        
+
         // startVO and goalVO must contain:
         // - position (PositionVO)
         // - isVisited (bool)
@@ -16,31 +16,35 @@ define(function () {
         // - skipUnvisited (bool)
         // - skipBlockers (bool)
         // - omitLog (bool)
-        findPath: function (startVO, goalVO, utilities, settings) {  
+        findPath: function (startVO, goalVO, utilities, settings) {
             if (!startVO) {
                 console.log("WARN: No start sector defined.");
             }
-            
+
             if (!goalVO) {
                 console.log("WARN: No goal sector defined.");
             }
-            
+
             if (this.getKey(startVO) === this.getKey(goalVO)) return [];
-            
+
             if (!settings) settings = {};
-            
+
             // build paths spanning multiple levels from several pieces
-            
+
             var startLevel = startVO.position.level;
             var goalLevel = goalVO.position.level;
-            
+
             if (startLevel > goalLevel) {
                 var passageDown = utilities.findPassageDown(startLevel, settings.includeUnbuiltPassages);
                 if (passageDown) {
                     var passageDownPos = passageDown.position;
                     var passageUp = utilities.getSectorByPosition(passageDownPos.level - 1, passageDownPos.sectorX, passageDownPos.sectorY);
-                    var combined = this.findPath(startVO, passageDown, utilities, settings).concat([passageUp.result]).concat(this.findPath(passageUp, goalVO, utilities, settings));
-                    return combined;
+                    if (passageUp) {
+                        var combined = this.findPath(startVO, passageDown, utilities, settings).concat([passageUp.result]).concat(this.findPath(passageUp, goalVO, utilities, settings));
+                        return combined;
+                    } else {
+                        return null;
+                    }
                 } else {
                     console.log("Can't find path because there is no passage from level " + startLevel + " to level " + goalLevel);
                 }
@@ -49,35 +53,39 @@ define(function () {
                 if (passageUp) {
                     var passageUpPos = passageUp.position;
                     var passageDown = utilities.getSectorByPosition(passageUpPos.level + 1, passageUpPos.sectorX, passageUpPos.sectorY);
-                    var combined = this.findPath(startVO, passageUp, utilities, settings).concat([passageDown.result]).concat(this.findPath(passageDown, goalVO, utilities, settings));
-                    return combined;
+                    if (passageDown) {
+                        var combined = this.findPath(startVO, passageUp, utilities, settings).concat([passageDown.result]).concat(this.findPath(passageDown, goalVO, utilities, settings));
+                        return combined;
+                    } else {
+                        return null;
+                    }
                 } else {
                     console.log("Can't find path because there is no passage from level " + startLevel + " to level " + goalLevel);
                 }
             }
-            
+
             // Simple breadth-first search (implement A* if movement cost needs to be considered)
-            
+
             var cameFrom = this.mapPaths(startVO, goalVO, utilities, settings);
             var result = this.findShortest(startVO, goalVO, settings, cameFrom);
-            
+
             return result;
         },
-        
+
         mapPaths: function (startVO, goalVO, utilities, settings, cameFrom) {
             var cameFrom = {};
             var frontier = [];
-            var visited = [];    
-            
+            var visited = [];
+
             visited.push(this.getKey(startVO));
             frontier.push(startVO);
             cameFrom[this.getKey(startVO)] = null;
-            
+
             var pass = 0;
             var current;
             var neighbours;
             var next;
-            
+
             var isValid = function (sector, startSector, direction) {
                 if (settings && settings.skipUnvisited && !sector.isVisited)
                     return false;
@@ -86,7 +94,7 @@ define(function () {
                 }
                 return true;
             };
-            
+
             mainLoop: while (frontier.length > 0) {
                 pass++;
                 current = frontier.shift();
@@ -103,16 +111,16 @@ define(function () {
                     visited.push(neighbourKey);
                     frontier.push(next);
                     cameFrom[neighbourKey] = current;
-                    
+
                     if (next === goalVO) {
                         break mainLoop;
                     }
                 }
             }
-            
+
             return cameFrom;
         },
-        
+
         findShortest: function (startVO, goalVO, settings, cameFrom) {
             var result = [];
             var current = goalVO;
@@ -127,11 +135,11 @@ define(function () {
             }
             return result.reverse();
         },
-            
+
         getKey: function (sector) {
             return sector.position.toString();
         },
-        
+
     };
 
     return PathFinding;
