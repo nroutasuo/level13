@@ -310,7 +310,7 @@ define(['ash',
                 return false;
 			};
 
-            GameGlobals.levelHelper.forEverySectorFromLocation(playerPosition, checkSector);
+            GameGlobals.levelHelper.forEverySectorFromLocation(playerPosition, checkSector, autoPlayComponent.isExpedition);
 
             // 3. set goal
 
@@ -479,7 +479,8 @@ define(['ash',
                 return false;
 			};
             var playerPosition = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
-            GameGlobals.levelHelper.forEverySectorFromLocation(playerPosition, checkSector);
+            var autoPlayComponent = this.autoPlayNodes.head.autoPlay;
+            GameGlobals.levelHelper.forEverySectorFromLocation(playerPosition, checkSector, autoPlayComponent.isExpedition);
             return result;
         },
 

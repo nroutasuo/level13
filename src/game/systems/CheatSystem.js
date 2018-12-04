@@ -47,9 +47,9 @@ define(['ash',
     PlayerLocationNode
 ) {
     var CheatSystem = Ash.System.extend({
-        
+
         cheatDefinitions: {},
-        
+
         constructor: function () {},
 
         addToEngine: function (engine) {
@@ -58,17 +58,17 @@ define(['ash',
             this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
-            
+
             this.registerCheats();
         },
-        
+
         registerCheats: function () {
             this.registerCheat(CheatConstants.CHEAT_NAME_CHEATLIST, "Print all available cheats to console.", [], function () {
                 this.printCheats();
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_SPEED, "Sets the speed of the game.", ["speed (1 = normal, >1 faster, <1 slower)"], function (params) {
                 var spd = parseFloat(params[0]);
-                this.setGameSpeed(spd);                
+                this.setGameSpeed(spd);
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_TIME, "Immediately passes in-game time.", ["time to pass in minutes"], function (params) {
                 var mins = parseFloat(params[0]);
@@ -165,24 +165,24 @@ define(['ash',
                 this.setAutoPlay(params[0], parseInt(params[1]));
             });
         },
-        
+
         registerCheat: function (cmd, desc, params, func) {
             this.cheatDefinitions[cmd] = {};
             this.cheatDefinitions[cmd].desc = desc;
             this.cheatDefinitions[cmd].params = params;
             this.cheatDefinitions[cmd].func = func;
         },
-        
+
         isHidden: function (cmd) {
             return cmd === CheatConstants.CHEAT_NAME_AUTOPLAY;
         },
 
         applyCheat: function (input) {
-            if (!GameConstants.isCheatsEnabled) return; 
-            
+            if (!GameConstants.isCheatsEnabled) return;
+
             var inputParts = input.split(" ");
-            var name = inputParts[0]; 
-            
+            var name = inputParts[0];
+
             if (this.cheatDefinitions[name]) {
                 var func = this.cheatDefinitions[name].func;
                 var numParams = this.cheatDefinitions[name].params.length;
@@ -196,7 +196,7 @@ define(['ash',
             } else {
                 console.log("cheat not found: " + name);
             }
-            
+
             // TODO re-implement these cheats
             /*
             var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
@@ -222,7 +222,7 @@ define(['ash',
             }
             */
         },
-        
+
         printCheats: function () {
             for (var cmd in this.cheatDefinitions) {
                 if (this.isHidden(cmd))
@@ -235,7 +235,7 @@ define(['ash',
                 console.log(cmd + " " + params + "- " + this.cheatDefinitions[cmd].desc);
             }
         },
-        
+
         getCheatListDiv: function() {
             var div = "<div>";
             div += "<h4 class='infobox-scrollable-header'>Cheat List</h4>";
@@ -249,37 +249,37 @@ define(['ash',
                     params += "[" + this.cheatDefinitions[cmd].params[i] + "] ";
                 }
                 div += ("<b>" + cmd + "</b>" + " " + params + "- " + this.cheatDefinitions[cmd].desc) + "<br/>";
-            }            
+            }
             div += "</div>";
             div += "</div>";
             return div;
         },
-        
-        setGameSpeed: function (speed) {            
+
+        setGameSpeed: function (speed) {
             GameConstants.gameSpeedCamp = speed;
             GameConstants.gameSpeedExploration = speed;
         },
-        
+
         passTime: function (mins) {
             GameGlobals.playerActionFunctions.passTime(mins * 60);
         },
-        
+
         setAutoPlay: function (type, numCampsTarget) {
             var start = false;
             var stop = false;
-            var setExploring = false;
+            var isExpedition = false;
             var endConditionUpdateFunction;
             switch (type) {
                 case "false":
                 case "off":
                     stop = true;
                     break;
-                    
+
                 case "true":
                 case "on":
                     start = true;
                     break;
-                    
+
                 case "camp":
                     start = true;
                     if (!numCampsTarget || numCampsTarget < 1) numCampsTarget = 1;
@@ -290,10 +290,10 @@ define(['ash',
                         }
                     };
                     break;
-                    
+
                 case "expedition":
                     start = true;
-                    setExploring = true;
+                    isExpedition = true;
                     endConditionUpdateFunction = function () {
                         var autoplayComponent = this.playerStatsNodes.head.entity.get(AutoPlayComponent);
                         if (autoplayComponent && autoplayComponent.isPendingExploring)
@@ -305,21 +305,23 @@ define(['ash',
                     };
                     break;
             }
-            
+
             if (endConditionUpdateFunction) this.engine.updateComplete.add(endConditionUpdateFunction, this);
-            
+
             if (stop) {
                 this.playerStatsNodes.head.entity.remove(AutoPlayComponent);
-            } else if (start) {                
+            } else if (start) {
                 if (!this.playerStatsNodes.head.entity.has(AutoPlayComponent)) {
                     var component = new AutoPlayComponent();
-                    if (setExploring)
+                    if (isExpedition) {
                         component.isPendingExploring = true;
+                        component.isExpedition = true;
+                    }
                     this.playerStatsNodes.head.entity.add(component);
                 }
             }
         },
-        
+
         setResource: function (name, amount) {
             if (resourceNames[name]) {
                 var playerResources = GameGlobals.resourcesHelper.getCurrentStorage().resources;
@@ -329,38 +331,38 @@ define(['ash',
                 console.log(Object.keys(resourceNames));
             }
         },
-        
-        setFavour: function (value) {            
+
+        setFavour: function (value) {
             if (value >  0) {
                 GameGlobals.gameState.unlockedFeatures.favour = true;
             }
             if (!this.playerStatsNodes.head.entity.has(DeityComponent)) {
                 this.playerStatsNodes.head.entity.add(new DeityComponent("Hoodwinker"))
             }
-            
+
             this.playerStatsNodes.head.entity.get(DeityComponent).favour = Math.max(0, value);
-        }
-        ,
+        },
+        
         addSupplies: function () {
-            var playerResources = GameGlobals.resourcesHelper.getCurrentStorage().resources;        
+            var playerResources = GameGlobals.resourcesHelper.getCurrentStorage().resources;
             playerResources.setResource("food", 15);
             playerResources.setResource("water", 15);
         },
-        
+
         addPopulation: function (amount) {
             var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             var camp = currentSector.get(CampComponent);
-            if (camp) {                
+            if (camp) {
                 camp.addPopulation(amount);
             } else {
                 console.log("WARN: Camp not found.");
             }
         },
-        
+
         refillStamina: function () {
-            this.playerStatsNodes.head.stamina.stamina = 1000;        
+            this.playerStatsNodes.head.stamina.stamina = 1000;
         },
-        
+
         setPlayerPosition: function (lvl, x, y, inCamp) {
             var playerPos = this.playerPositionNodes.head.position;
             playerPos.level = lvl;
@@ -368,29 +370,29 @@ define(['ash',
             playerPos.sectorY = y;
             playerPos.inCamp = inCamp || false;
         },
-        
+
         goToLevel: function (level) {
             var levelVO = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent).levelVO;
             var i = Math.floor(Math.random() * levelVO.centralSectors.length);
             var sector = levelVO.centralSectors[i];
             this.setPlayerPosition(level, sector.position.sectorX, sector.position.sectorY);
         },
-        
+
         addBuilding: function (name, amount) {
             var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             var improvementsComponent = currentSector.get(SectorImprovementsComponent);
             improvementsComponent.add(name, amount);
         },
-        
+
         addTech: function (name) {
             if (name !== "all")
                 GameGlobals.playerActionFunctions.buyUpgrade(name, true);
             else
                 for (var id in UpgradeConstants.upgradeDefinitions) {
                     GameGlobals.playerActionFunctions.buyUpgrade(id, true);
-                }            
+                }
         },
-        
+
         addTechs: function (campOrdinal) {
             var minOrdinal;
 			for (var id in UpgradeConstants.upgradeDefinitions) {
@@ -400,7 +402,7 @@ define(['ash',
                 }
             }
         },
-        
+
         addBlueprints: function (name, amount) {
             var maxPieces = UpgradeConstants.getMaxPiecesForBlueprint(name);
             amount = Math.max(1, amount);
@@ -410,29 +412,29 @@ define(['ash',
             }
             GameGlobals.gameState.unlockedFeatures.blueprints = true;
         },
-        
+
         addBlueprintsForLevel: function (campOrdinal) {
             var id;
 			for (var i in UpgradeConstants.bluePrintsByCampOrdinal[campOrdinal]) {
                 id = UpgradeConstants.bluePrintsByCampOrdinal[campOrdinal][i];
                 this.addBlueprints(id, UpgradeConstants.piecesByBlueprint[id]);
-            }            
+            }
         },
-        
+
         addTradePartners: function (campOrdinal) {
             var partner;
 			for (var i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
                 partner = TradeConstants.TRADING_PARTNERS[i];
                 if (partner.campOrdinal < campOrdinal) {
-                    if (GameGlobals.gameState.foundTradingPartners.indexOf(partner.campOrdinal) >= 0) 
+                    if (GameGlobals.gameState.foundTradingPartners.indexOf(partner.campOrdinal) >= 0)
                         continue;
-               
+
                     GameGlobals.gameState.foundTradingPartners.push(partner.campOrdinal);
                 }
             }
         },
-        
-        addItem: function (itemID, onlyIfMissing) {            
+
+        addItem: function (itemID, onlyIfMissing) {
             var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
             var playerPos = this.playerPositionNodes.head.position;
             var item = ItemConstants.getItemByID(itemID);
@@ -444,19 +446,19 @@ define(['ash',
                 console.log("WARN: No such item: " + itemID);
             }
         },
-        
+
         equipBest: function () {
             var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
             itemsComponent.autoEquipAll();
         },
-        
-        addFollower: function() {    
-            var campCount = GameGlobals.gameState.numCamps;        
+
+        addFollower: function() {
+            var campCount = GameGlobals.gameState.numCamps;
             var follower = ItemConstants.getFollower(this.playerPositionNodes.head.position.level, campCount);
             GameGlobals.playerActionFunctions.addFollower(follower);
         },
-        
-        addPerk: function () {            
+
+        addPerk: function () {
             var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
             var perk = PerkConstants.getPerk(perkID);
             if (perk) {
@@ -465,29 +467,29 @@ define(['ash',
                 console.log("WARN: No such perk: " + perkID);
             }
         },
-        
-        heal: function() {  
+
+        heal: function() {
             GameGlobals.playerActionFunctions.useHospital();
         },
-        
-        addInjury: function () {       
+
+        addInjury: function () {
             var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
             var injuryi = Math.round(Math.random() * PerkConstants.perkDefinitions.injury.length);
             var defaultInjury = PerkConstants.perkDefinitions.injury[injuryi];
             perksComponent.addPerk(defaultInjury.clone());
         },
-        
-        revealMap: function (value) {            
+
+        revealMap: function (value) {
             GameGlobals.uiMapHelper.isMapRevealed = value ? true : false;
         },
-        
+
         debugMap: function (value) {
             if (value) {
                 this.addItem("equipment_map", true);
             }
             this.revealMap(value);
         },
-        
+
         scoutLevel: function () {
             var originalPos = this.playerPositionNodes.head.position.getPosition();
             var levelVO = GameGlobals.levelHelper.getLevelEntityForPosition(originalPos.level).get(LevelComponent).levelVO;
@@ -507,7 +509,7 @@ define(['ash',
             };
             this.engine.updateComplete.add(updateFunction, this);
         },
-        
+
         triggerTrader: function () {
             var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             var campTimers = currentSector.get(CampEventTimersComponent);
@@ -515,7 +517,7 @@ define(['ash',
                 campTimers.eventStartTimestamps["trader"] = new Date().getTime() + 1;
             }
         },
-    
+
     });
 
     return CheatSystem;
