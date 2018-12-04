@@ -81,7 +81,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
             this.registerActionButtonListeners("");
 
             // Meta/non-action buttons
-            $("#btn-save").click(function (e) { GlobalSignals.saveGameSignal.dispatch(); });
+            $("#btn-save").click(function (e) { GlobalSignals.saveGameSignal.dispatch(true); });
             $("#btn-restart").click(function (e) {
                 uiFunctions.showConfirmation(
                     "Do you want to restart the game? Your progress will be lost.",

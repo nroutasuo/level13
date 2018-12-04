@@ -2,9 +2,10 @@ define([
     'ash',
     'game/GameGlobals',
     'game/GlobalSignals',
+    'game/constants/GameConstants',
     'lzstring/lz-string',
     'game/nodes/common/SaveNode'
-], function (Ash, GameGlobals, GlobalSignals, LZString, SaveNode) {
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, LZString, SaveNode) {
     var SaveSystem = Ash.System.extend({
 
         engine: null,
@@ -34,6 +35,7 @@ define([
 
         update: function (time) {
             if (this.paused) return;
+            if (!GameConstants.isAutosaveEnabled) return;
 			var timeStamp = new Date().getTime();
 			if (timeStamp - this.lastSaveTimeStamp > this.saveFrequency) {
 				this.save();
@@ -48,8 +50,9 @@ define([
             this.paused = false;
         },
 
-		save: function () {
+		save: function (isPlayerInitiated) {
             if (this.paused) return;
+            if (!isPlayerInitiated && !GameConstants.isAutosaveEnabled) return;
             this.error = null;
 			if (typeof(Storage) !== "undefined") {
                 try {

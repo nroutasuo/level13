@@ -18,7 +18,8 @@ require.config({
     config: {
         'level13-app': {
             'isCheatsEnabled': false,
-            'isDebugOutputEnabled': false
+            'isDebugOutputEnabled': false,
+            'isAutosaveEnabled': true,
         }
     }
 

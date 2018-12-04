@@ -5,26 +5,27 @@ define([
     'game/constants/GameConstants',
 ], function (module, jQuery, Level13, GameConstants) {
     'use strict';
-        
+
     function Level13App() {
-        
+
         this.initialise = function (config) {
-            
+
             GameConstants.isCheatsEnabled = config.isCheatsEnabled;
             GameConstants.isDebugOutputEnabled = config.isDebugOutputEnabled;
-                        
+            GameConstants.isAutosaveEnabled = config.isAutosaveEnabled;
+
             GameConstants.STARTTimeStart = new Date().getTime();
             GameConstants.STARTTimeNow = function () {
                 return new Date().getTime() - this.STARTTimeStart;
             }
-                        
+
             var level13 = new Level13(config.plugins);
-                        
+
             if (GameConstants.isCheatsEnabled) {
                 window.app = level13;
             }
         };
-        
+
     }
 
     new Level13App().initialise(module.config());
