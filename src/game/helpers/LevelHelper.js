@@ -179,6 +179,8 @@ define([
         },
 
         findPathTo: function (startSector, goalSector, settings) {
+            if (!startSector || !goalSector) return null;
+
             var levelHelper = this;
 
             var makePathSectorVO = function (entity) {
@@ -255,12 +257,12 @@ define([
             return null;
         },
 
-        forEverySectorFromLocation: function (playerPosition, func) {
+        forEverySectorFromLocation: function (playerPosition, func, limitToCurrentLevel) {
             // TODO go by path distance, not distance in coordinates
 
 			var doLevel = function (level) {
                 if (!this.isLevelUnlocked(level))
-                    return;
+                    return false;
                 // spiralling search: find sectors closest to current position first
                 var levelComponent = this.getLevelEntityForPosition(level).get(LevelComponent);
                 var levelVO = levelComponent.levelVO;
@@ -296,16 +298,15 @@ define([
 
 			var currentLevel = playerPosition.level;
             var isDone;
-			for (var ld = 0; ld < WorldCreatorConstants.LEVEL_NUMBER_MAX; ld++) {
+            var dlimit  = limitToCurrentLevel ? 1 : WorldCreatorConstants.LEVEL_NUMBER_MAX;
+			for (var ld = 0; ld < dlimit; ld++) {
                 if (ld === 0) {
                     isDone = doLevel.call(this, currentLevel);
                 } else {
     				isDone = doLevel.call(this, currentLevel + ld);
         			isDone = isDone || doLevel.call(this, currentLevel - ld);
                 }
-
-                if (isDone)
-                    break;
+                if (isDone) break;
 			}
         },
 
@@ -574,7 +575,6 @@ define([
 
 		isLevelUnlocked: function (level) {
 			if (level === 13) return true;
-
 			var levelEntity = this.getLevelEntityForPosition(level);
 			if (levelEntity) {
 				var levelPassagesComponent = levelEntity.get(LevelPassagesComponent);
