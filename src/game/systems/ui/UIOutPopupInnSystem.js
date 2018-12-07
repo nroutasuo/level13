@@ -7,51 +7,45 @@ define([
     'game/constants/FightConstants',
     'game/nodes/player/ItemsNode',
     ], function (Ash, GameGlobals, GlobalSignals, UIConstants, ItemConstants, FightConstants, ItemsNode) {
-var UIOutPopupInnSystem = Ash.System.extend({    
+var UIOutPopupInnSystem = Ash.System.extend({
 
 		itemNodes: null,
-        
+
         constructor: function () {
             return this;
         },
 
 		addToEngine: function (engine) {
 			this.itemNodes = engine.getNodeList(ItemsNode);
+            GlobalSignals.add(this, GlobalSignals.popupOpenedSignal, this.onPopupOpened);
 		},
-		
+
 		removeFromEngine: function (engine) {
+            GlobalSignals.removeAll(this);
 			this.itemNodes = null;
 		},
-        
-        update: function (time) {
-            if (GameGlobals.gameState.uiStatus.isHidden) return;
-            if (!($("#inn-popup").is(":visible")) || $("#inn-popup").data("fading") == true) {
-                this.wasVisible = false;
-                return;
+
+        onPopupOpened: function (name) {
+            if (name === "inn-popup") {
+                initializePopup();
             }
-            
-            if (!this.wasVisible) {
-                this.initializePopup();
-            }
-            
-            this.wasVisible = true;
         },
-        
-        initializePopup: function () {            
+
+        initializePopup: function () {
             this.refreshCurrent();
-            
+
             var sys = this;
             $("table#inn-popup-options-followers button").click(function (e) {
                 var followerID = $(this).attr("followerID");
                 sys.selectFollower(followerID);
             });
         },
-        
+
         refreshCurrent: function () {
             var currentFollowers = this.itemNodes.head.items.getAllByType(ItemConstants.itemTypes.follower);
             var numFollowers = currentFollowers.length;
             $("#inn-popup-current-desc").text("Current followers: " + numFollowers + " / " + FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps));
-            
+
             $("table#inn-popup-current-followers").empty();
             $("table#inn-popup-current-followers").append("<tr></tr>");
             for (var i = 0; i < currentFollowers.length; i++) {
@@ -70,21 +64,21 @@ var UIOutPopupInnSystem = Ash.System.extend({
 			GameGlobals.uiFunctions.generateCallouts("#inn-popup-current-followers");
 			GameGlobals.uiFunctions.generateButtonOverlays("#inn-popup-current-followers");
             GlobalSignals.elementCreatedSignal.dispatch();
-            
+
             var sys = this;
             $("table#inn-popup-current-followers button").click(function (e) {
                 var followerID = $(this).attr("followerID");
                 sys.disbandFollower(followerID, sys);
             });
         },
-        
+
         selectFollower: function (followerID) {
             var follower = ItemConstants.getFollowerByID(followerID);
             GameGlobals.playerActionsHelper.deductCosts("use_in_inn_select")
             GameGlobals.playerActionFunctions.addFollower(follower);
             GameGlobals.uiFunctions.popupManager.closePopup("inn-popup");
         },
-        
+
         disbandFollower: function (followerID) {
             // TODO pass to player action functions & unify with UIOoutBagSystem
             var item = this.itemNodes.head.items.getItem(followerID);

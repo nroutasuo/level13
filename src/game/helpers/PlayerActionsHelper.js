@@ -728,7 +728,7 @@ define([
             if (costs) {
                 var currentFraction = 1;
                 var lowestFraction = currentFraction;
-                for(var key in costs) {
+                for (var key in costs) {
                     currentFraction = this.checkCost(action, key, otherSector);
                     if (currentFraction < lowestFraction) {
                         if(log) console.log("WARN: Not enough " + key + " to perform action [" + action + "]");
@@ -857,25 +857,34 @@ define([
 
             var sector = this.playerLocationNodes.head.entity;
             var passageComponent = sector.get(PassagesComponent);
-            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-            var shoeBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.movement);
-            if (shoeBonus === 0) shoeBonus = 1;
-            var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
-            var perkBonus = perksComponent.getTotalEffect(PerkConstants.perkTypes.movement);
-            if (perkBonus === 0) perkBonus = 1;
+            var playerEntity = this.playerStatsNodes.head.entity;
+
+            var getShoeBonus = function () {
+                var itemsComponent = playerEntity.get(ItemsComponent);
+                var shoeBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.movement);
+                if (shoeBonus === 0) shoeBonus = 1;
+                return shoeBonus;
+            }
+
+            var getPerkBonus = function () {
+                var perksComponent = playerEntity.get(PerksComponent);
+                var perkBonus = perksComponent.getTotalEffect(PerkConstants.perkTypes.movement);
+                if (perkBonus === 0) perkBonus = 1;
+                return perkBonus;
+            }
 
             var factor = 1;
             switch(action) {
                 case "move_level_down":
                     factor += passageComponent.passageDown && passageComponent.passageDown.climbable ? 2 : 0;
-                    factor *= shoeBonus;
-                    factor *= perkBonus;
+                    factor *= getShoeBonus();
+                    factor *= getPerkBonus();
                     break;
 
                 case "move_level_up":
                     factor += passageComponent.passageUp && passageComponent.passageUp.climbable ? 2 : 0;
-                    factor *= shoeBonus;
-                    factor *= perkBonus;
+                    factor *= getShoeBonus();
+                    factor *= getPerkBonus();
                     break;
 
                 case "move_sector_north":
@@ -888,8 +897,8 @@ define([
                 case "move_sector_nw":
                 case "move_camp_level":
                 case "move_camp_global":
-                    factor *= shoeBonus;
-                    factor *= perkBonus;
+                factor *= getShoeBonus();
+                factor *= getPerkBonus();
                     break;
             }
 

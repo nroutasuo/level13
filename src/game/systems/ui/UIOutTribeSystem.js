@@ -57,7 +57,7 @@ define([
         update: function (time) {
             if (GameGlobals.gameState.uiStatus.isHidden) return;
             var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.world;
-            if (isActive) this.updateNodes();
+            if (isActive) this.updateNodes(isActive);
             this.updateBubble();
         },
 
@@ -78,6 +78,7 @@ define([
         refresh: function () {
 			$("#tab-header h2").text("Tribe");
             this.updateMessages();
+            this.updateNodes();
         },
 
         updateBubble: function () {

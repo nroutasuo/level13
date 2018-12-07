@@ -12,7 +12,7 @@ define([
     var UIOutPopupInventorySystem = Ash.System.extend({
 
         playerActionResultNodes: null,
-    
+
         constructor: function () {
 			return this;
         },
@@ -22,33 +22,33 @@ define([
             this.playerActionResultNodes = engine.getNodeList(PlayerActionResultNode);
             this.playerActionResultNodes.nodeAdded.add(this.onNodeAdded, this);
         },
-		
+
         removeFromEngine: function (engine) {
             this.playerActionResultNodes.nodeAdded.remove(this.onNodeAdded, this);
             this.playerActionResultNodes = null;
             this.itemNodes = null;
         },
-        
+
         onNodeAdded: function (node) {
             this.pendingListUpdate = true;
         },
 
         update: function (time) {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
+            if (!this.playerActionResultNodes.head)
+                return;
             if (!($(".popup").is(":visible")) || $(".popup").data("fading") == true)
                 return;
             if (!($(".popup #info-results").is(":visible")) && !($(".popup #fight-popup-results").is(":visible")))
                 return;
-            if (!this.playerActionResultNodes.head)
-                return;
-            
+
             this.updateButtons();
-            
+
             if (this.pendingListUpdate) {
                 this.updateLists();
             }
         },
-        
+
         updateButtons: function() {
             var resultNode = this.playerActionResultNodes.head;
             if (resultNode) {
@@ -58,20 +58,20 @@ define([
                 $("#info-ok").text(hasPickedSomething ? "Take selected" : canPickSomething ? "Leave all" : "Continue");
             }
         },
-        
+
         updateLists: function () {
             $("#resultlist-inventorymanagement-found ul").empty();
             $("#resultlist-inventorymanagement-kept ul").empty();
             $("#resultlist-loststuff-lost ul").empty();
-            
+
             var sys = this;
-            
+
             var inCamp = this.playerActionResultNodes.head.entity.get(PositionComponent).inCamp;
             var resultNode = this.playerActionResultNodes.head;
             var rewards = resultNode.result.pendingResultVO;
-            
+
             var playerAllItems = resultNode.items.getAll(inCamp);
-            
+
             var findItemById = function (itemID, itemList, notInItemList) {
                 for (var i = 0; i < itemList.length; i++) {
                     var item = itemList[i];
@@ -90,15 +90,15 @@ define([
                 }
                 return null;
             };
-        
+
             var onLiClicked = function (e) {
                 var divRes = $(this).find(".res");
                 var divItem = $(this).find(".item");
                 var resourceName = $(divRes).attr("data-resourcename");
                 var itemId = $(divItem).attr("data-itemid");
-                
+
                 var isInKeptList = $(this).parents("#resultlist-inventorymanagement-kept").length > 0;
-                
+
                 if (resourceName) {
                     if (isInKeptList) {
                         rewards.discardedResources.addResource(resourceName, 1);
@@ -108,7 +108,7 @@ define([
                 } else if (itemId) {
                     var isInRewards = findItemById(itemId, rewards.gainedItems, null) !== null;
                     var isInSelected = findItemById(itemId, rewards.selectedItems, null) !== null;
-                    
+
                     if (isInKeptList) {
                         // player wants to discard an item; discard rewards first then own items
                         if (isInSelected) {
@@ -133,52 +133,52 @@ define([
                         }
                     }
                 }
-                
+
                 sys.updateLists();
             };
-            
+
             this.addItemsToLists(rewards, playerAllItems);
             this.addResourcesToLists(rewards, resultNode);
-            
+
             GameGlobals.uiFunctions.toggle("#resultlist-inventorymanagement-kept .msg-empty", $("#resultlist-inventorymanagement-kept ul li").length <= 0);
             GameGlobals.uiFunctions.toggle("#resultlist-inventorymanagement-found .msg-empty", $("#resultlist-inventorymanagement-found ul li").length <= 0);
-            
+
             $("#resultlist-inventorymanagement-kept li").click(onLiClicked);
             $("#resultlist-inventorymanagement-found li").click(onLiClicked);
-            
+
             GameGlobals.uiFunctions.generateCallouts("#resultlist-inventorymanagement-kept");
             GameGlobals.uiFunctions.generateCallouts("#resultlist-inventorymanagement-found");
             GameGlobals.uiFunctions.generateCallouts("#resultlist-loststuff-lost");
-            
+
             this.updateCapacity(rewards, resultNode, playerAllItems);
-            
+
             this.pendingListUpdate = false;
         },
-        
+
         updateCapacity: function (rewards, resultNode, playerAllItems) {
             var bagComponent = this.playerActionResultNodes.head.entity.get(BagComponent);
-            
+
             BagConstants.updateCapacity(bagComponent, rewards, resultNode.resources, playerAllItems);
-            
+
             $("#inventory-popup-bar").data("progress-percent",  bagComponent.selectedCapacity/bagComponent.totalCapacity*100);
             $("#inventory-popup-bar .progress-label").text((Math.ceil( bagComponent.selectedCapacity * 10) / 10) + " / " + bagComponent.totalCapacity);
-            
+
             GameGlobals.uiFunctions.toggle("#confirmation-takeall", bagComponent.selectableCapacity > bagComponent.selectionStartCapacity);
         },
-        
+
         addItemsToLists: function (rewards, playerAllItems) {
 			var itemsComponent = this.itemNodes.head.items;
-            
+
             var lostItemCounts = {};
             var lostItemVOs = {};
             var foundItemCounts = {};
             var foundItemVOs = {};
             var keptItemCounts = {};
             var keptItemVOs = {};
-            
+
             var item;
             var li;
-            
+
             var countLostItem = function (item) {
                 if (!lostItemCounts[item.id]) {
                     lostItemCounts[item.id] = 0;
@@ -186,7 +186,7 @@ define([
                 }
                 lostItemCounts[item.id]++;
             };
-            
+
             var countFoundItem = function (item) {
                 if (!foundItemCounts[item.id]) {
                     foundItemCounts[item.id] = 0;
@@ -194,15 +194,15 @@ define([
                 }
                 foundItemCounts[item.id]++;
             };
-            
-            var countKeptItem = function (item) {   
+
+            var countKeptItem = function (item) {
                 if (!keptItemCounts[item.id]) {
                     keptItemCounts[item.id] = 0;
                     keptItemVOs[item.id] = item;
                 }
                 keptItemCounts[item.id]++;
             };
-            
+
             // lost items: one list
             for (var j = 0; j < rewards.lostItems.length; j++) {
                 countLostItem(rewards.lostItems[j]);
@@ -225,20 +225,20 @@ define([
                 if (item.equipped) continue;
                 if (item.type === ItemConstants.itemTypes.bag) continue;
                 if (item.type === ItemConstants.itemTypes.uniqueEquipment) continue;
-                if (rewards.lostItems.indexOf(item) >= 0) continue; 
+                if (rewards.lostItems.indexOf(item) >= 0) continue;
                 if (rewards.discardedItems.indexOf(item) < 0) {
                     countKeptItem(item);
                 } else {
                     countFoundItem(item);
                 }
             }
-            
+
             for (var itemId in lostItemCounts ) {
                 item = lostItemVOs[itemId];
                 li = UIConstants.getItemSlot(itemsComponent, item, lostItemCounts[itemId], true);
                 $("#resultlist-loststuff-lost ul").append(li);
             }
-            
+
             for (var itemId in foundItemCounts) {
                 item = foundItemVOs[itemId];
                 li = UIConstants.getItemSlot(itemsComponent, item, foundItemCounts[itemId]);
@@ -251,8 +251,8 @@ define([
                 $("#resultlist-inventorymanagement-kept ul").append(li);
             }
         },
-        
-        addResourcesToLists: function (rewards, resultNode) {            
+
+        addResourcesToLists: function (rewards, resultNode) {
             // bag resources: non-discarded to kept, discarded to found
             // gained resources: non-selected to found, selected to kept
             for (var key in resourceNames) {
@@ -264,7 +264,7 @@ define([
                 var amountLost = rewards.lostResources.getResource(name);
                 var amountKept = amountOriginal - amountDiscarded - amountLost + amountSelected;
                 var amountFound = amountGained + amountDiscarded - amountSelected;
-                if (amountLost >= 1) {                    
+                if (amountLost >= 1) {
                     $("#resultlist-loststuff-lost ul").append(UIConstants.getResourceLi(name, amountLost, true));
                 }
                 if (amountKept >= 1) {
@@ -275,7 +275,7 @@ define([
                 }
             }
         },
-            
+
 	});
 
     return UIOutPopupInventorySystem;

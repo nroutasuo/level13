@@ -45,7 +45,8 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         
         FIRST_CAMP_X: 1,
         FIRST_CAMP_Y: 0,
-        CAMP_ORDINAL_LIMIT: 6,
+        
+        CAMP_ORDINAL_LIMIT: 15,
         
         MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 10,
         MIN_LEVEL_HAZARD_POISON: 15,
@@ -133,9 +134,9 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
             }
             
             if (deductScavenges) {
-            var scavengeCost = 3;
-            var numScavenges = MathUtils.clamp(Math.round(maxLength / 5), 1, 10);
-            maxLength = maxLength - numScavenges * scavengeCost / movementCost;
+                var scavengeCost = 3;
+                var numScavenges = MathUtils.clamp(Math.round(maxLength / 5), 1, 10);
+                maxLength = maxLength - numScavenges * scavengeCost / movementCost;
             }
             
             var ordinalFactor = campOrdinal === 1 ? 0.85 : 1;

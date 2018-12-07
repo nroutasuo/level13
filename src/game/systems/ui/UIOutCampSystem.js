@@ -49,10 +49,13 @@
         lastShownPopulation: 0,
 
         elements: {
+            improvementButtons: [],
             steppers: {},
         },
 
-        constructor: function () { },
+        constructor: function () {
+            this.initImprovements();
+        },
 
         addToEngine: function (engine) {
             this.engine  = engine;
@@ -68,6 +71,7 @@
             GlobalSignals.add(this, GlobalSignals.populationChangedSignal, this.onPopulationChanged);
             GlobalSignals.add(this, GlobalSignals.workersAssignedSignal, this.onWorkersAssigned);
             GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
+            GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 
             this.refresh();
         },
@@ -88,10 +92,8 @@
             if (!this.playerLocationNodes.head) return;
             if (!this.playerPosNodes.head.position.inCamp) return;
 
-            this.updateImprovements(isActive, campCount);
             this.updateWorkers(isActive);
             this.updateEvents(isActive);
-            this.updateBubble();
 
             if (!isActive) {
                 return;
@@ -104,10 +106,12 @@
                 return;
             }
 
-            // Vis
-            // TODO camp vis
-
             this.updateStats();
+        },
+
+        slowUpdate: function () {
+            this.updateImprovements();
+            this.updateBubble();
         },
 
         refresh: function () {
@@ -126,6 +130,7 @@
 
             this.updateAssignedWorkers();
             this.updateWorkerMaxDescriptions();
+            this.updateImprovements();
         },
 
         updateBubble: function () {
@@ -281,7 +286,29 @@
             UIConstants.updateCalloutContent("#in-assign-soldier .in-assign-worker-limit .info-callout-target", barracksInCamp + " barracks built", true);
         },
 
-        updateImprovements: function (isActive, campCount) {
+        initImprovements: function () {
+            var result = [];
+            $.each($("#in-improvements tr"), function () {
+                var id = $(this).attr("id");
+                var actionName = $(this).find("button.action-build").attr("action");
+                if (!actionName) {
+                    console.log("WARN: In improvement tr without action name: #" + id);
+                } else {
+                    var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(actionName);
+                    if (improvementName) {
+                        var btnUse = $(this).find(".action-use");
+                        var listAmount =  $(this).find(".list-amount")
+                        result.push({ elem: $(this), btnUse: btnUse, listAmount: listAmount, id: id, action: actionName, improvementName: improvementName });
+                    }
+                }
+            });
+            this.elements.improvementButtons = result;
+        },
+
+        updateImprovements: function () {
+            var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in;
+            var campCount = GameGlobals.gameState.numCamps;
+
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
             var hasDeity = this.deityNodes.head !== null;
@@ -289,45 +316,42 @@
             var availableBuildingCount = 0;
             var visibleBuildingCount = 0;
 
-            $.each($("#in-improvements tr"), function () {
-                var actionName = $(this).find("button.action-build").attr("action");
-                var id = $(this).attr("id");
-                if (actionName) {
-                    var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(actionName);
-                    if (improvementName) {
-						var requirementCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false, null);
-                        var actionEnabled = requirementCheck.value >= 1;
-                        var showActionDisabledReason = false;
-                        if (!actionEnabled) {
-                            switch (requirementCheck.reason) {
-                                case PlayerActionsHelperConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP:
-                                    showActionDisabledReason = true;
-                            }
-                        }
-                        var actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
-                        var existingImprovements = improvements.getCount(improvementName);
-                        if (isActive) {
-                            if (improvementName !== improvementNames.hospital) {
-                            $(this).find(".list-amount").text(existingImprovements);
-                                GameGlobals.uiFunctions.toggle($(this).find(".action-use"), existingImprovements > 0);
-                            }
-                        }
-
-                        var commonVisibilityRule = (actionEnabled || existingImprovements > 0 || showActionDisabledReason);
-                        var specialVisibilityRule = true;
-                        // TODO get rid of these & move to requirements
-                        if (id === "in-improvements-shrine") specialVisibilityRule = hasDeity;
-                        if (id === "in-improvements-trading") specialVisibilityRule = campCount > 1;
-                        if (id === "in-improvements-research") specialVisibilityRule = campCount > 1;
-                        if (id === "in-improvements-market") specialVisibilityRule = hasTradePost;
-                        if (id === "in-improvements-inn") specialVisibilityRule = hasTradePost;
-                        var isVisible = specialVisibilityRule && commonVisibilityRule;
-                        GameGlobals.uiFunctions.toggle($(this), isVisible);
-                        if (isVisible) visibleBuildingCount++;
-                        if (actionAvailable) availableBuildingCount++;
+            for (var i = 0; i < this.elements.improvementButtons.length; i++) {
+                var elem = this.elements.improvementButtons[i];
+                var actionName = elem.action;
+                var id = elem.id;
+                var improvementName = elem.improvementName;
+				var requirementCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false, null);
+                var actionEnabled = requirementCheck.value >= 1;
+                var showActionDisabledReason = false;
+                if (!actionEnabled) {
+                    switch (requirementCheck.reason) {
+                        case PlayerActionsHelperConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP:
+                            showActionDisabledReason = true;
                     }
                 }
-            });
+                var actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
+                var existingImprovements = improvements.getCount(improvementName);
+                if (isActive) {
+                    if (improvementName !== improvementNames.hospital) {
+                        elem.listAmount.text(existingImprovements);
+                        GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0);
+                    }
+                }
+
+                var commonVisibilityRule = (actionEnabled || existingImprovements > 0 || showActionDisabledReason);
+                var specialVisibilityRule = true;
+                // TODO get rid of these & move to requirements
+                if (id === "in-improvements-shrine") specialVisibilityRule = hasDeity;
+                if (id === "in-improvements-trading") specialVisibilityRule = campCount > 1;
+                if (id === "in-improvements-research") specialVisibilityRule = campCount > 1;
+                if (id === "in-improvements-market") specialVisibilityRule = hasTradePost;
+                if (id === "in-improvements-inn") specialVisibilityRule = hasTradePost;
+                var isVisible = specialVisibilityRule && commonVisibilityRule;
+                GameGlobals.uiFunctions.toggle(elem.elem, isVisible);
+                if (isVisible) visibleBuildingCount++;
+                if (actionAvailable) availableBuildingCount++;
+            }
 
             var perksComponent = this.playerPosNodes.head.entity.get(PerksComponent);
 			var hasHospital = improvements.getCount(improvementNames.hospital) > 0;
