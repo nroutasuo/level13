@@ -48,9 +48,6 @@ define([
 		currentLocationNodes: null,
 		engine: null,
 
-		lastUpdateTimeStamp: 0,
-		updateFrequency: 1000 * 1,
-
 		constructor: function () {
 
             this.elements = {};
@@ -89,10 +86,13 @@ define([
             var sys = this;
             GlobalSignals.playerMovedSignal.add(function () { sys.onPlayerMoved(); });
             GlobalSignals.visionChangedSignal.add(function () { sys.onVisionChanged(); });
-            GlobalSignals.tabChangedSignal.add(function () { sys.onVisionChanged(); });
+            GlobalSignals.tabChangedSignal.add(function () { sys.onTabChanged(); });
             GlobalSignals.healthChangedSignal.add(function () { sys.onHealthChanged(); });
+            GlobalSignals.slowUpdateSignal.add(function () { sys.slowUpdate(); });
 
 			this.generateStatsCallouts();
+
+			this.elements.gameVersion.text("v. " + GameGlobals.changeLogHelper.getCurrentVersionNumber());
 		},
 
 		removeFromEngine: function (engine) {
@@ -133,31 +133,28 @@ define([
 			this.updateNotifications(isInCamp);
 
             if (isInCamp && !campComponent) return;
+		},
 
-			this.elements.gameVersion.text("v. " + GameGlobals.changeLogHelper.getCurrentVersionNumber());
+        slowUpdate: function () {
+			if (!this.currentLocationNodes.head) return;
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
 
-            var headerText = isInCamp ? campComponent.getName() + "  (level " + playerPosition.level + ")" : "level " + playerPosition.level;
-            var showCalendar = this.tribeNodes.head.upgrades.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
-            this.elements.locationHeader.text(headerText);
-            this.elements.date.text(UIConstants.getInGameDate(GameGlobals.gameState.gamePlayedSeconds));
-            GameGlobals.uiFunctions.toggle("#in-game-date", showCalendar);
-            GameGlobals.uiFunctions.toggle("#grid-tab-header", GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.out || isInCamp);
-
-			if (new Date().getTime() - this.lastUpdateTimeStamp < this.updateFrequency) return;
+            var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
+            var isInCamp = playerPosition.inCamp;
 			this.updatePlayerStats(isInCamp);
 			this.updateDeity();
 			this.updateItems(false, isInCamp);
 			this.updatePerks();
 			this.updateResources(isInCamp);
             this.updateItemStats(isInCamp);
-			this.lastUpdateTimeStamp = new Date().getTime();
-		},
+        },
 
         onPlayerMoved: function () {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.updateTabVisibility();
             this.updateStaminaWarningLimit();
             this.updateLocation();
+            this.updateHeaderTexts();
         },
 
         onHealthChanged: function () {
@@ -168,6 +165,12 @@ define([
 		onVisionChanged: function () {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.updateVisionOverlay();
+		},
+
+		onTabChanged: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
+            this.updateVisionOverlay();
+            this.updateHeaderTexts();
 		},
 
 		updatePlayerStats: function (isInCamp) {
@@ -551,11 +554,27 @@ define([
             GameGlobals.uiFunctions.slideToggleIf("#main-header-bag", null, !isInCamp, 250, 50);
             GameGlobals.uiFunctions.slideToggleIf("#main-header-equipment", null, !isInCamp, 250, 50);
             GameGlobals.uiFunctions.slideToggleIf("#main-header-items", null, !isInCamp, 250, 50);
+            GameGlobals.gameState.uiStatus.isInCamp = isInCamp;
         },
 
         updateStaminaWarningLimit: function () {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.staminaWarningLimit = PlayerStatConstants.getStaminaWarningLimit(this.playerStatsNodes.head.stamina);
+        },
+
+        updateHeaderTexts: function () {
+            if (!this.currentLocationNodes.head) return;
+            var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
+			var campComponent = this.currentLocationNodes.head.entity.get(CampComponent);
+            var isInCamp = playerPosition.inCamp;
+            var headerText = isInCamp ? campComponent.getName() + "  (level " + playerPosition.level + ")" : "level " + playerPosition.level;
+            this.elements.locationHeader.text(headerText);
+
+            var showCalendar = this.tribeNodes.head.upgrades.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
+            GameGlobals.uiFunctions.toggle(this.elements.date, showCalendar);
+            GameGlobals.uiFunctions.toggle("#grid-tab-header", GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.out || isInCamp);
+
+            this.elements.date.text(UIConstants.getInGameDate(GameGlobals.gameState.gamePlayedSeconds));
         },
 
         updateVisionOverlay: function () {

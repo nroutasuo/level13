@@ -29,6 +29,7 @@ define([
     'game/systems/ui/UIOutPopupTradeSystem',
     'game/systems/ui/UIOutPopupInventorySystem',
     'game/systems/CheatSystem',
+    'game/systems/SlowUpdateSystem',
     'game/systems/VisionSystem',
     'game/systems/StaminaSystem',
     'game/systems/PlayerPositionSystem',
@@ -100,6 +101,7 @@ define([
     UIOutPopupTradeSystem,
     UIOutPopupInventorySystem,
     CheatSystem,
+    SlowUpdateSystem,
     VisionSystem,
     StaminaSystem,
     PlayerPositionSystem,
@@ -142,9 +144,9 @@ define([
     TickProvider
 ) {
     var Level13 = Ash.Class.extend({
-	
-        engine: null,	
-		gameManager: null,	
+
+        engine: null,
+		gameManager: null,
         tickProvider: null,
 
         constructor: function (plugins) {
@@ -153,24 +155,24 @@ define([
             this.engine.extraUpdateTime = 0;
 			this.tickProvider = new TickProvider(null, function (ex) { game.handleException(ex) });
 			this.gameManager = new GameManager(this.tickProvider);
-            
+
             this.initializeGameGlobals();
 			this.addSystems();
             this.initializePlugins(plugins);
-            
+
             var sys = this;
             GlobalSignals.worldReadySignal.addOnce(function () {
                 sys.start();
             });
-            
+
             this.gameManager.setupGame();
         },
-        
+
         initializeGameGlobals: function () {
 			GameGlobals.gameState = new GameState();
             GameGlobals.playerActionsHelper = new PlayerActionsHelper(this.engine);
 			GameGlobals.playerActionFunctions = new PlayerActionFunctions(this.engine);
-            
+
             GameGlobals.resourcesHelper = new ResourcesHelper(this.engine);
             GameGlobals.levelHelper = new LevelHelper(this.engine);
 			GameGlobals.movementHelper = new MovementHelper(this.engine);
@@ -179,19 +181,19 @@ define([
 			GameGlobals.campHelper = new CampHelper(this.engine);
             GameGlobals.endingHelper = new EndingHelper(this.engine);
 			GameGlobals.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine);
-            
+
             GameGlobals.itemsHelper = new ItemsHelper();
 			GameGlobals.upgradeEffectsHelper = new UpgradeEffectsHelper();
 			GameGlobals.saveHelper = new SaveHelper();
             GameGlobals.changeLogHelper = new ChangeLogHelper();
-            
+
             GameGlobals.uiMapHelper = new UIMapHelper(this.engine);
             GameGlobals.uiTechTreeHelper = new UITechTreeHelper(this.engine);
             GameGlobals.buttonHelper = new ButtonHelper();
-            
+
 			GameGlobals.uiFunctions = new UIFunctions();
         },
-        
+
         initializePlugins: function (plugins) {
             if (!plugins) return;
             var game = this;
@@ -199,15 +201,15 @@ define([
                 game.engine.addSystem(new plugin(), SystemPriorities.update);
             });
         },
-	
+
 		addSystems: function () {
 			this.engine.addSystem(this.gameManager, SystemPriorities.preUpdate);
-			
+
 			if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t initializing systems");
-			
+
 			this.engine.addSystem(new SaveSystem(), SystemPriorities.preUpdate);
 			this.engine.addSystem(new PlayerPositionSystem(), SystemPriorities.preupdate);
-            
+
 			this.engine.addSystem(new GlobalResourcesResetSystem(), SystemPriorities.update);
 			this.engine.addSystem(new VisionSystem(), SystemPriorities.update);
 			this.engine.addSystem(new StaminaSystem(), SystemPriorities.update);
@@ -228,9 +230,10 @@ define([
 			this.engine.addSystem(new GlobalResourcesSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CampEventsSystem(), SystemPriorities.update);
             this.engine.addSystem(new EndingSystem(), SystemPriorities.update);
-            
+
 			this.engine.addSystem(new AutoPlaySystem(), SystemPriorities.postUpdate);
-			
+			this.engine.addSystem(new SlowUpdateSystem(), SystemPriorities.postUpdate);
+
 			this.engine.addSystem(new UIOutHeaderSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutElementsSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutLevelSystem(), SystemPriorities.render);
@@ -251,23 +254,23 @@ define([
 			this.engine.addSystem(new UIOutPopupInventorySystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupTradeSystem(), SystemPriorities.render);
 			this.engine.addSystem(new UIOutPopupInnSystem(), SystemPriorities.render);
-            
-            if (GameConstants.isCheatsEnabled) { 
+
+            if (GameConstants.isCheatsEnabled) {
                 this.engine.addSystem(new CheatSystem(), SystemPriorities.update);
             }
 		},
-	
+
 		start: function () {
 			this.tickProvider.add(this.engine.update, this.engine);
 			this.tickProvider.start();
             this.gameManager.startGame();
 		},
-        
+
         handleException: function (ex) {
             this.gameManager.pauseGame();
             var exshortdesc = (ex.name ? ex.name : "Unknown") + ": " + (ex.message ? ex.message.replace(/\'/g, "%27") : "No message");
             var stack = (ex.stack ? ex.stack.replace(/\n/g, "%0A").replace(/\'/g, "%27") : "Not available");
-            
+
             // track to ga
             gtag('event', 'exception', {
                 'description': exshortdesc,
@@ -275,27 +278,27 @@ define([
             });
             // show popup
             var bugTitle = "[JS Error] " + exshortdesc;
-            var bugBody = 
+            var bugBody =
                "Details:%0A[Fill in any details here that you think will help tracking down this bug, such as what you did in the game just before it happened.]" +
                "%0A%0AStacktrace:%0A" + stack;
             var url = "https://github.com/nroutasuo/level13/issues/new?title=" + bugTitle + "&body=" + bugBody + "&labels=exception";
             GameGlobals.uiFunctions.showInfoPopup(
-                "Error", 
-                "You've found a bug! Please reload the page to continue playing.<br\><br\>" + 
+                "Error",
+                "You've found a bug! Please reload the page to continue playing.<br\><br\>" +
                 "You can also help the developer by <a href='" +
                 url +
-                "' target='_blank'>reporting</a> the problem on Github.", 
-                "ok", 
+                "' target='_blank'>reporting</a> the problem on Github.",
+                "ok",
                 null
             );
             throw ex;
         },
-		
+
 		cheat: function (input) {
-            if (!GameConstants.isCheatsEnabled) return; 
+            if (!GameConstants.isCheatsEnabled) return;
 			this.engine.getSystem(CheatSystem).applyCheat(input);
 		}
-	
+
     });
 
     return Level13;

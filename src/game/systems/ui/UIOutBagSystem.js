@@ -40,6 +40,7 @@ define([
 			this.itemNodes = engine.getNodeList(ItemsNode);
 			this.initItemSlots();
             this.initCraftingButtons();
+            GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
             GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.onInventoryChanged);
             GlobalSignals.add(this, GlobalSignals.equipmentChangedSignal, this.onEquipmentChanged);
@@ -97,7 +98,6 @@ define([
             if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.bag;
 
-			this.updateCrafting(isActive);
 			this.updateBubble();
 
 			if (!isActive) {
@@ -108,6 +108,11 @@ define([
 
             this.bubbleCleared = false;
 		},
+
+        slowUpdate: function () {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
+            this.updateCrafting();
+        },
 
         refresh: function () {
 			this.elements.tabHeader.text("Bag");
@@ -136,6 +141,7 @@ define([
 
             this.updateItems();
             this.updateUseItems();
+            this.updateCrafting();
         },
 
         updateBubble: function () {
@@ -153,7 +159,8 @@ define([
             this.updateItemComparisonIndicators();
 		},
 
-		updateCrafting: function (isActive) {
+		updateCrafting: function () {
+            var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.bag;
             var showObsolete = this.showObsolete();
 
             this.craftableItems = 0;
@@ -421,6 +428,7 @@ define([
 
         onObsoleteToggled: function () {
             this.isShowObsoleteChecked = $("#checkbox-crafting-show-obsolete").is(':checked');
+            this.updateCrafting();
         },
 
         onTabChanged: function () {
@@ -433,6 +441,7 @@ define([
             if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.updateItems();
             this.updateUseItems();
+            this.updateCrafting();
         },
 
         onEquipmentChanged: function () {

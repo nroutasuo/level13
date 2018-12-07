@@ -38,6 +38,9 @@ define(['ash',], function (Ash) {
         saveGameSignal: new Ash.Signals.Signal(),
         restartGameSignal: new Ash.Signals.Signal(),
 
+        // system events
+        slowUpdateSignal: new Ash.Signals.Signal(),
+
         add: function (system, signal, listener) {
             if (!system.signalBindings)
                 system.signalBindings = [];
