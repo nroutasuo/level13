@@ -107,7 +107,7 @@ define(['ash'], function (Ash) {
                 
                 default:
                     console.log("WARN: Unknown resource name: " + res);
-            }	    
+            }
 			return 0;
 		},
 		
@@ -121,12 +121,16 @@ define(['ash'], function (Ash) {
         limitAll: function (min, max) {
 			for(var key in resourceNames) {
 				var name = resourceNames[key];
-				var amount = this.getResource(name);
-                if (amount < min)
-                    this.setResource(name, min);
-                if (amount > max)
-                    this.setResource(name, max);
+                this.limit(name, min, max);
 			}
+        },
+        
+        limit: function (name, min, max) {
+            var amount = this.getResource(name);
+            if (amount < min)
+                this.setResource(name, min);
+            if (amount > max)
+                this.setResource(name, max);
         },
 	
 		cleanUp: function() {

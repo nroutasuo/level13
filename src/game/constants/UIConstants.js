@@ -26,7 +26,7 @@ define(['ash',
 		FEATURE_MISSING_TITLE: "Missing feature",
 		FEATURE_MISSING_COPY: "This feature is not yet implemented. Come back later!",
 		
-		MAP_MINIMAP_SIZE: 7,        
+		MAP_MINIMAP_SIZE: 7,
         SCROLL_INDICATOR_SIZE: 5,
 		
 		resourceImages: {
@@ -35,7 +35,7 @@ define(['ash',
         
 		getItemDiv: function (itemsComponent, item, count, calloutContent, hideComparisonIndicator) {
 			var url = item ? item.icon : null;
-			var hasCount = count && count > 0;
+			var hasCount = count || count === 0;
 			
 			var classes = "item";
 			if (item && item.equipped) classes += " item-equipped";
@@ -77,12 +77,19 @@ define(['ash',
 			return "<li class='" + liclasses + "'>" + imageDiv + "</li>"
 		},
         
+        updateItemSlot: function (slot, count) {
+            var $slot = typeof(slot) === "string" ? $(slot) : slot;
+            if (!$slot) return;
+            $slot.find(".item-count").text(count + "x");
+            GameGlobals.uiFunctions.toggle($slot, count > 0);
+        },
+        
         getItemCallout: function (item, smallCallout, showBagOptions, bagOptions) {
             var detail = " (" + this.getItemBonusDescription(item, true, false) + ")";
             if (detail.length < 5) detail = "";
             var weight = BagConstants.getItemCapacity(item);
             var itemCalloutContent = "<b>" + item.name + "</b><br/>Type: " + item.type + " " + detail;
-            if (item.type !== ItemConstants.itemTypes.follower) 
+            if (item.type !== ItemConstants.itemTypes.follower)
                 itemCalloutContent += "</br>Weight: " + weight;
             itemCalloutContent += "</br>" + item.description;
             if (smallCallout) itemCalloutContent = item.name + (detail.length > 0 ? " " + detail : "");
@@ -133,7 +140,7 @@ define(['ash',
 			var div = "<div class='" + divclasses + "' data-resourcename='" + name + "'>";
 			div += "<div class='info-callout-target info-callout-target-small' description='" + name + "'>";
 			div += this.getResourceImg(name);
-			div += "<div class='item-count lvl13-box-3'>" + Math.floor(amount) + "x </div>";
+			div += "<div class='item-count lvl13-box-3'>" + Math.floor(amount) + "x</div>";
 			div += "</div>";
 			div += "</div>";
             var liclasses = "item-slot item-slot-small lvl13-box-1 ";
@@ -142,6 +149,14 @@ define(['ash',
 			var imageDiv = "<div class='item-slot-image'>" + div + "</div>";
 			return "<li class='" + liclasses + "'>" + imageDiv + "</li>";
 		},
+        
+        updateResourceLi: function (li, amount) {
+            var $li = typeof(li) === "string" ? $(li) : li;
+            if (!$li) return;
+            var showAmount = Math.floor(amount);
+            $li.find(".item-count").text(showAmount + "x");
+            GameGlobals.uiFunctions.toggle($li, showAmount > 0);
+        },
         
         getCurrencyLi: function (amount, simple) {
 			var classes = "res item-with-count";
@@ -155,6 +170,14 @@ define(['ash',
             if (simple) liclasses += "item-slot-simple";
 			var imageDiv = "<div class='item-slot-image'>" + div + "</div>";
 			return "<li class='" + liclasses + "'>" + imageDiv + "</li>";
+        },
+        
+        updateCurrencyLi: function (li, amount) {
+            var $li = typeof(li) === "string" ? $(li) : li;
+            if (!$li) return;
+            var showAmount = Math.floor(amount);
+            $li.find(".item-count").text(showAmount + "x");
+            GameGlobals.uiFunctions.toggle($li, showAmount > 0);
         },
 		
 		getBlueprintPieceLI: function (upgradeId) {
@@ -276,7 +299,7 @@ define(['ash',
             } else if (bonusValue > -1) {
 				return " +" + Math.round((1-bonusValue)*100) + "%";
             } else
-				return " " + bonusValue; 
+				return " " + bonusValue;
 		},
         
         getPerkDetailText: function (perk) {
@@ -287,7 +310,7 @@ define(['ash',
             }
         },
 		
-		getPerkBonusText: function (perk) {            
+		getPerkBonusText: function (perk) {
 			var value = 0;
 			if (perk.effect < 1) {
 				value = "-" + Math.round(100 - perk.effect * 100) + "%";

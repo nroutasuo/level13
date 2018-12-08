@@ -51,6 +51,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
         constructor: function () {
             this.generateElements();
             this.registerListeners();
+            this.registerGlobalMouseEvents();
 
             this.popupManager = new UIPopupManager(this);
         },
@@ -127,6 +128,19 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
                     function (input) {
                         GameGlobals.playerActionFunctions.setNearestCampName(input);
                     });
+            });
+        },
+
+        registerGlobalMouseEvents: function () {
+            GameGlobals.gameState.uiStatus.mouseDown = false;
+            $(document).on('mouseleave', function(e){
+                GameGlobals.gameState.uiStatus.mouseDown = false;
+            });
+            $(document).on('mouseup', function(e){
+                GameGlobals.gameState.uiStatus.mouseDown = false;
+            });
+            $(document).on('mousedown', function(e){
+                GameGlobals.gameState.uiStatus.mouseDown = true;
             });
         },
 
@@ -796,6 +810,49 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConst
             incBtn.toggleClass("btn-disabled", !incEnabled);
             incBtn.toggleClass("btn-disabled-basic", !incEnabled);
             incBtn.attr("disabled", !incEnabled);
+        },
+
+        registerLongTap: function (element, callback) {
+            var $element = typeof(element) === "string" ? $(element) : element;
+            var minTime = 1250;
+            var intervalTime = 200;
+
+            var cancelLongTap = function (context) {
+                mouseDown = false;
+                var timer = $(this).attr("data-long-tap-timeout");
+                var interval = $(this).attr("data-long-tap-interval");
+                if (!timer && !interval) return;
+                clearTimeout(timer);
+                clearInterval(interval);
+                $(this).attr("data-long-tap-interval", 0);
+                $(this).attr("data-long-tap-timeout", 0);
+            };
+            $element.on('mousedown', function(e) {
+                var target = $(this);
+                var timer = setTimeout(function () {
+                    var interval = setInterval(function () {
+                        if (GameGlobals.gameState.uiStatus.mouseDown) {
+                            callback.apply(target, e);
+                        } else {
+                            cancelLongTap();
+                        }
+                    }, intervalTime);
+                    $(this).attr("data-long-tap-interval", interval);
+                }, minTime);
+                $(this).attr("data-long-tap-timeout", timer);
+            });
+            $element.on('mouseleave', function(e) {
+                cancelLongTap();
+            });
+            $element.on('mousemove', function(e) {
+                cancelLongTap();
+            });
+            $element.on('mouseout', function(e) {
+                cancelLongTap();
+            });
+            $element.on('mouseup', function(e) {
+                cancelLongTap();
+            });
         },
 
         showTab: function (tabID) {

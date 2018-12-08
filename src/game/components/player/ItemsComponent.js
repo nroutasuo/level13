@@ -80,6 +80,7 @@ function (Ash, ItemVO, ItemConstants) {
         },
 
         isItemsDiscardable: function (item) {
+            if (!item) return false;
             switch (item.type) {
                 case ItemConstants.itemTypes.bag:
                     return this.getStrongestByType(item.type).id !== item.id;
