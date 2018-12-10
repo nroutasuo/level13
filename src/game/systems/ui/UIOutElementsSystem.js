@@ -137,9 +137,7 @@ define([
         },
 
         updateButtons: function () {
-            if (GameGlobals.gameState.isPaused) return;
             var sys = this;
-
             for (var i = 0; i < this.elementsVisibleButtons.length; i++) {
                 var $button = $(this.elementsVisibleButtons[i]);
                 var action = $button.attr("action");
@@ -221,8 +219,7 @@ define([
                 var isFullCostBlocker = (isResource(key.split("_")[1]) && value > showStorage) || (key == "stamina" && value > playerHealth * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
                 if (isFullCostBlocker) {
                     costsStatus.hasCostBlockers = true;
-                }
-                else if (costFraction < costsStatus.bottleneckCostFraction)  {
+				} else if (costFraction < costsStatus.bottleneckCostFraction) {
                     costsStatus.bottleneckCostFraction = costFraction;
                 }
                 $costSpan.toggleClass("action-cost-blocker", costFraction < 1);
@@ -338,7 +335,9 @@ define([
                     var animationLength = $progressbar.data("animation-counter") > 0 ? ($progressbar.data('animation-length')) : 0;
                     var progressWrapWidth = $progressbar.width();
                     var progressWidth = percent * progressWrapWidth;
-                    $progressbar.children(".progress-bar").stop().animate({ left: progressWidth}, animationLength, function() {
+					$progressbar.children(".progress-bar").stop().animate({
+						left: progressWidth
+					}, animationLength, function () {
                         $(this).parent().data("animated", false);
                         $(this).parent().data("animation-counter", $progressbar.parent().data("animation-counter") + 1);
                     });
