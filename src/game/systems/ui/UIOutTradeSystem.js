@@ -147,7 +147,7 @@ define([
 
 			$(".btn-trade-caravans-outgoing-send").click(function () {
 				var ordinal = $(this).attr("action").split("_")[2];
-				sys.confirmPendingCaravan(ordinal);
+				sys.confirmPendingCaravan();
 			});
 
 			GameGlobals.uiFunctions.generateButtonOverlays("#trade-caravans-outgoing-container table");
@@ -315,19 +315,8 @@ define([
 			}
 		},
 
-		confirmPendingCaravan: function (campOrdinal) {
-			campOrdinal = parseInt(campOrdinal);
-			var caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
-			if (!caravansComponent.pendingCaravan || caravansComponent.pendingCaravan.campOrdinal != campOrdinal) {
-				console.log("WARN: Can't start caravan. No valid pending caravans found.");
-				return;
-			}
-			if (caravansComponent.outgoingCaravans[campOrdinal]) {
-				console.log("WARN: Can't start caravan. Camp ordinal already occupied.");
-				return;
-			}
-			caravansComponent.outgoingCaravans[campOrdinal] = caravansComponent.pendingCaravan;
-			caravansComponent.pendingCaravan = null;
+		confirmPendingCaravan: function () {
+			this.hideOutgoingPlanRows();
 		},
 
 		initPendingCaravan: function (campOrdinal) {

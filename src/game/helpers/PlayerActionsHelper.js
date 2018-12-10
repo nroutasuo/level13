@@ -126,8 +126,16 @@ define([
                 return false;
             }
 
-            if (this.checkRequirements(action, log, otherSector).value < 1) return false;
-            if (this.checkCosts(action, log, otherSector) < 1) return false;
+			var reqsResult = this.checkRequirements(action, log, otherSector);
+			if (reqsResult.value < 1) {
+				if (log) console.log("blocked by requirements: " + reqsResult.reason);
+				return false;
+			}
+			var costsResult = this.checkCosts(action, log, otherSector);
+			if (costsResult < 1) {
+				if (log) console.log("blocked by costs");
+				return false;
+			}
 
             return true;
         },
