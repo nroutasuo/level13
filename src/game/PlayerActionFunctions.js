@@ -95,8 +95,9 @@ define(['ash',
         },
 
         addLogMessage: function (msgID, msg, replacements, values, pendingPosition) {
+			var playerPosition = this.playerPositionNodes.head.position;
             var logComponent = this.playerPositionNodes.head.entity.get(LogMessagesComponent);
-            if (pendingPosition) {
+			if (pendingPosition && !pendingPosition.equals(playerPosition)) {
                 logComponent.addMessage(msgID, msg, replacements, values, pendingPosition.level, pendingPosition.sectorId(), pendingPosition.inCamp);
             } else {
                 logComponent.addMessage(msgID, msg, replacements, values);
