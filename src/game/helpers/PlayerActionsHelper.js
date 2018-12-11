@@ -472,6 +472,19 @@ define([
                     }
 
                     if (requirements.outgoingcaravan) {
+                        if (typeof requirements.outgoingcaravan.available !== "undefined") {
+                            var requiredValue = requirements.outgoingcaravan.available;
+                            var caravansComponent = sector.get(OutgoingCaravansComponent);
+                            var availableCaravans = caravansComponent.totalCaravans;
+                            var busyCaravans = caravansComponent.outgoingCaravans.length;
+                            var currentValue = busyCaravans < availableCaravans;
+                            if (requiredValue !== currentValue) {
+                                if (requiredValue)
+                                    return {value: 0, reason: "Caravan occupied."};
+                                else
+                                    return {value: 0, reason: "Caravan is available."};
+                            }
+                        }
                         if (typeof requirements.outgoingcaravan.validSelection !== "undefined") {
                             var requiredValue = requirements.outgoingcaravan.validSelection;
                             var currentValue = $("button[action='" + action + "']").attr("data-isselectionvalid") == "true";
@@ -480,23 +493,6 @@ define([
                                     return {value: 0, reason: "Invalid selection."};
                                 else
                                     return {value: 0, reason: "Valid selection."};
-                            }
-                        }
-                        if (typeof requirements.outgoingcaravan.available !== "undefined") {
-                            var requiredValue = requirements.outgoingcaravan.available;
-                            var currentValue = true;
-                            var campOrdinal = actionIDParam;
-                            var caravansComponent = sector.get(OutgoingCaravansComponent);
-                            for (var caravanOrdinal in caravansComponent.outgoingCaravans) {
-                                if (caravanOrdinal == campOrdinal) {
-                                    currentValue = false;
-                                }
-                            }
-                            if (requiredValue !== currentValue) {
-                                if (requiredValue)
-                                    return {value: 0, reason: "Caravan occupied."};
-                                else
-                                    return {value: 0, reason: "Caravan is available."};
                             }
                         }
                     }
@@ -1075,13 +1071,10 @@ define([
                         break;
 
                     case "send_caravan":
-                        var campOrdinal = parseInt(action.replace(baseActionID + "_", ""));
                         var caravansComponent = sector.get(OutgoingCaravansComponent);
                         var costs = {};
-                        if (caravansComponent && caravansComponent.pendingCaravan && caravansComponent.pendingCaravan.campOrdinal == campOrdinal) {
+                        if (caravansComponent && caravansComponent.pendingCaravan) {
                             costs["resource_" + caravansComponent.pendingCaravan.sellGood] = caravansComponent.pendingCaravan.sellAmount;
-                        } else if (caravansComponent && caravansComponent.outgoingCaravans[campOrdinal]) {
-                            costs["resource_" + caravansComponent.outgoingCaravans[campOrdinal].sellGood] = caravansComponent.outgoingCaravans[campOrdinal].sellAmount;
                         }
                         result = costs;
                         skipRounding = true;

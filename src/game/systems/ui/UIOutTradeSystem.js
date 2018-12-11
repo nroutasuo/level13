@@ -7,12 +7,13 @@ define([
 	'game/constants/UIConstants',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/ItemsNode',
+	'game/components/common/PositionComponent',
 	'game/components/sector/OutgoingCaravansComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/vos/ResourcesVO',
 	'game/vos/OutgoingCaravanVO'
 ], function (
-	Ash, GameGlobals, GlobalSignals, TradeConstants, ItemConstants, UIConstants, PlayerLocationNode, ItemsNode, OutgoingCaravansComponent, TraderComponent, ResourcesVO, OutgoingCaravanVO
+	Ash, GameGlobals, GlobalSignals, TradeConstants, ItemConstants, UIConstants, PlayerLocationNode, ItemsNode, PositionComponent, OutgoingCaravansComponent, TraderComponent, ResourcesVO, OutgoingCaravanVO
 ) {
 	var UIOutTradeSystem = Ash.System.extend({
 
@@ -83,6 +84,9 @@ define([
 
 			if ($("#trade-caravans-outgoing-container tr").length === (2 * this.availableTradingPartnersCount))
 				return;
+                
+            var level = this.playerLocationNodes.head.entity.get(PositionComponent).level;
+            var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
 
 			$("#trade-caravans-outgoing-container table").empty();
 			for (var i = 0; i < GameGlobals.gameState.foundTradingPartners.length; i++) {
@@ -163,12 +167,12 @@ define([
 			$(".trade-caravans-outgoing").toggleClass("selected", false);
 		},
 
-		showOutgoingPlanRow: function (campOrdinal) {
-			var tr = $("#trade-caravans-outgoing-plan-" + campOrdinal);
-			$("#trade-caravans-outgoing-" + campOrdinal + " button").text("cancel");
-			$("#trade-caravans-outgoing-" + campOrdinal).toggleClass("selected", true);
+		showOutgoingPlanRow: function (tradePartnerOrdinal) {
+			var tr = $("#trade-caravans-outgoing-plan-" + tradePartnerOrdinal);
+			$("#trade-caravans-outgoing-" + tradePartnerOrdinal + " button").text("cancel");
+			$("#trade-caravans-outgoing-" + tradePartnerOrdinal).toggleClass("selected", true);
 			GameGlobals.uiFunctions.toggle(tr, true);
-			this.initPendingCaravan(campOrdinal);
+			this.initPendingCaravan(tradePartnerOrdinal);
 		},
 
 		updateIncomingCaravan: function (isActive) {
@@ -319,9 +323,11 @@ define([
 			this.hideOutgoingPlanRows();
 		},
 
-		initPendingCaravan: function (campOrdinal) {
+		initPendingCaravan: function (tradePartnerOrdinal) {
+            var level = this.playerLocationNodes.head.entity.get(PositionComponent).level;
 			var caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
-			caravansComponent.pendingCaravan = new OutgoingCaravanVO(campOrdinal);
+            var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+			caravansComponent.pendingCaravan = new OutgoingCaravanVO(campOrdinal, tradePartnerOrdinal);
 		},
 
 		resetPendingCaravan: function () {

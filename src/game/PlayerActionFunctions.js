@@ -134,17 +134,14 @@ define(['ash',
 
 				switch (baseId) {
 					case "send_caravan":
-						var campOrdinal = parseInt(param);
+                        var tradePartnerOrdinal = parseInt(param);
 						var caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
-						if (!caravansComponent.pendingCaravan || caravansComponent.pendingCaravan.campOrdinal != campOrdinal) {
-							console.log("WARN: Can't start caravan. No valid pending caravans found.");
+						if (!caravansComponent.pendingCaravan) {
+							console.log("WARN: Can't start caravan. No valid pending caravan found.");
 							return;
 						}
-						if (caravansComponent.outgoingCaravans[campOrdinal]) {
-							console.log("WARN: Can't start caravan. Camp ordinal already occupied.");
-							return;
-						}
-						caravansComponent.outgoingCaravans[campOrdinal] = caravansComponent.pendingCaravan;
+                        
+						caravansComponent.outgoingCaravans.push(caravansComponent.pendingCaravan);
 						caravansComponent.pendingCaravan = null;
 						this.addLogMessage(LogConstants.MSG_ID_START_SEND_CAMP, "A trade caravan heads out.");
 						break;
@@ -683,38 +680,50 @@ define(['ash',
 			});
 		},
 
-		sendCaravan: function (campOrdinal) {
+		sendCaravan: function (tradePartnerOrdinal) {
+            var campOutgoingCaravansComponent;
 			var campSector;
-			var campOutgoingCaravansComponent;
-			var caravanOrdinal;
 			var caravan;
-			// TODO fix this madness with camp ordinals and do 1/n caravans per camp independently 
-			for (var node = this.campNodes.head; node; node = node.next) {
-				campOutgoingCaravansComponent = node.entity.get(OutgoingCaravansComponent);
-				for (var ordinal in campOutgoingCaravansComponent.outgoingCaravans) {
-					if (ordinal == campOrdinal) {
-						campSector = node.entity;
-						caravan = campOutgoingCaravansComponent.outgoingCaravans[ordinal];
-						caravanOrdinal = ordinal;
-						break;
-					}
-				}
-				if (campSector && caravan)
-					break;
-			}
+            var caravanI;
+            
+            // TODO fix this so that if several camps send a caravan to the same destination they don't get mixed
+            // make a proper system for outgoing caravans instead of relying on action duration & action params
+            for (var node = this.campNodes.head; node; node = node.next) {
+                campOutgoingCaravansComponent = node.entity.get(OutgoingCaravansComponent);
+                for (var i in campOutgoingCaravansComponent.outgoingCaravans) {
+                    var caravanVO = campOutgoingCaravansComponent.outgoingCaravans[i];
+                    if (caravanVO.tradePartnerOrdinal == tradePartnerOrdinal) {
+                        campSector = node.entity;
+                        caravan = caravanVO;
+                        caravanI = i;
+                        break;
+                    }
+                }
+                if (campSector && caravan) {
+                    break;
+                }
+            }
 
 			if (!campSector || !caravan) {
 				console.log("WARN: No matching returning caravan found.");
 				return;
 			}
 
-			var tradePartner = TradeConstants.getTradePartner(parseInt(campOrdinal));
+            var tradePartnerOrdinal = caravan.tradePartnerOrdinal;
+			var tradePartner = TradeConstants.getTradePartner(parseInt(tradePartnerOrdinal));
+
+			if (!tradePartner) {
+				console.log("WARN: No matching trade partner found.");
+                console.log(caravan);
+				return;
+			}
+            
 			var result = TradeConstants.makeResultVO(caravan);
 			var logMsg = GameGlobals.playerActionResultsHelper.getRewardsMessage(result, "A trade caravan returns from " + tradePartner.name + ". ");
 			var pendingPosition = campSector.get(PositionComponent).clone();
 			pendingPosition.inCamp = true;
 
-			campOutgoingCaravansComponent.outgoingCaravans[ordinal] = null;
+			campOutgoingCaravansComponent.outgoingCaravans.splice(caravanI, 1);
 
 			GameGlobals.playerActionResultsHelper.collectRewards(true, result, campSector);
 			GameGlobals.uiFunctions.completeAction("send_caravan");

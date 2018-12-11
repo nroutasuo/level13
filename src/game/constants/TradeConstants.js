@@ -1,7 +1,7 @@
 define([
-    'ash', 
-    'game/constants/ItemConstants', 'game/constants/UpgradeConstants', 
-    'game/vos/TradingPartnerVO', 'game/vos/IncomingCaravanVO', 'game/vos/ResourcesVO', 'game/vos/ResultVO'], 
+    'ash',
+    'game/constants/ItemConstants', 'game/constants/UpgradeConstants',
+    'game/vos/TradingPartnerVO', 'game/vos/IncomingCaravanVO', 'game/vos/ResourcesVO', 'game/vos/ResultVO'],
 function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO, IncomingCaravanVO, ResourcesVO, ResultVO) {
     
     var TradeConstants = {
