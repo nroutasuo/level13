@@ -303,6 +303,7 @@ define([
 			if (hasEnoughSellRes) {
 				$(trID + " .trade-caravans-outgoing-buy").toggle(true);
 				$(trID + " .trade-buy-value").text("x" + amountGet);
+                $(trID + " .trade-buy-value").toggleClass("warning", amountGet > ownedStorage.storageCapacity);
 			} else {
 				$(trID + " .trade-caravans-outgoing-buy").toggle(false);
 				$(trID + " .trade-buy-value").text("");
