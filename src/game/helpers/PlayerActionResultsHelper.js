@@ -252,8 +252,8 @@ define([
 		collectRewards: function (isTakeAll, rewards, campSector) {
             if (rewards == null)
                 return;
-
-			var currentStorage = campSector ? campSector.get(ResourcesComponent) : GameGlobals.resourcesHelper.getCurrentStorage();
+                
+			var currentStorage = campSector ? GameGlobals.resourcesHelper.getCurrentCampStorage(campSector) : GameGlobals.resourcesHelper.getCurrentStorage();
 			var playerPos = this.playerLocationNodes.head.position;
 
             if (isTakeAll) {
