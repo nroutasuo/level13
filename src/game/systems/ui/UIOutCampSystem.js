@@ -333,8 +333,8 @@
                 var actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
                 var existingImprovements = improvements.getCount(improvementName);
                 if (isActive) {
+                    elem.listAmount.text(existingImprovements);
                     if (improvementName !== improvementNames.hospital) {
-                        elem.listAmount.text(existingImprovements);
                         GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0);
                     }
                 }
