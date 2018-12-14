@@ -417,7 +417,7 @@ define([
             }
 
             var options = { canEquip: false, isEquipped: true, canUnequip: true };
-			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemsComponent, itemVO, -1, UIConstants.getItemCallout(itemVO, false, true, options), true) : "");
+			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemsComponent, itemVO, null, UIConstants.getItemCallout(itemVO, false, true, options), true) : "");
 			$(slot).children(".item-slot-name").html(itemVO ? itemVO.name.toLowerCase() : "");
 
 			GameGlobals.uiFunctions.toggle($(slot).children(".item-slot-type-empty"), itemVO === null);

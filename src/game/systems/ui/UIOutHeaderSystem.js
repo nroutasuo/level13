@@ -322,7 +322,7 @@ define([
                     var count = itemsComponent.getCount(item, inCamp);
                     switch (item.type) {
                         case ItemConstants.itemTypes.follower:
-                            $("ul#list-items-followers").append("<li>" + UIConstants.getItemDiv(itemsComponent, item, -1, UIConstants.getItemCallout(item, true), true) + "</li>");
+                            $("ul#list-items-followers").append("<li>" + UIConstants.getItemDiv(itemsComponent, item, null, UIConstants.getItemCallout(item, true), true) + "</li>");
                             break;
 
                         case ItemConstants.itemTypes.bag:
@@ -335,7 +335,7 @@ define([
                         case ItemConstants.itemTypes.light:
                         case ItemConstants.itemTypes.weapon:
                             if (item.equipped)
-                                $("ul#list-header-equipment").append("<li>" + UIConstants.getItemDiv(itemsComponent, item, -1, UIConstants.getItemCallout(item, true), true) + "</li>");
+                                $("ul#list-header-equipment").append("<li>" + UIConstants.getItemDiv(itemsComponent, item, null, UIConstants.getItemCallout(item, true), true) + "</li>");
                             break;
 
                         case ItemConstants.itemTypes.exploration:
@@ -567,7 +567,7 @@ define([
             var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
 			var campComponent = this.currentLocationNodes.head.entity.get(CampComponent);
             var isInCamp = playerPosition.inCamp;
-            var headerText = isInCamp ? campComponent.getName() + "  (level " + playerPosition.level + ")" : "level " + playerPosition.level;
+            var headerText = isInCamp && campComponent ? campComponent.getName() + "  (level " + playerPosition.level + ")" : "level " + playerPosition.level;
             this.elements.locationHeader.text(headerText);
 
             var showCalendar = this.tribeNodes.head.upgrades.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));

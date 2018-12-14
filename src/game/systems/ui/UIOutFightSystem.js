@@ -112,7 +112,7 @@ define([
                 if (item.type !== ItemConstants.itemTypes.follower)
                     continue;
                 this.numFollowers++;
-                $("ul#list-fight-followers").append("<li>" + UIConstants.getItemDiv(null, item, -1, UIConstants.getItemCallout(item, true), true) + "</li>");
+                $("ul#list-fight-followers").append("<li>" + UIConstants.getItemDiv(null, item, null, UIConstants.getItemCallout(item, true), true) + "</li>");
             }
             GameGlobals.uiFunctions.generateCallouts("ul#list-fight-followers");
         },
@@ -186,7 +186,7 @@ define([
                 $("#fight-buttons-infightactions").empty();
                 for(var i = 0; i < itemsToShow.length; i++) {
                     var item = itemsToShow[i];
-                    var action = "use_item_fight_" + item.id;                    
+                    var action = "use_item_fight_" + item.id;
                     $("#fight-buttons-infightactions").append("<button class='action' action='" + action + "'>" + item.name + "</button>");
                 }
                 
