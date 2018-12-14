@@ -374,6 +374,7 @@ function (Ash, GameConstants, CampConstants) {
                 use_in_campfire: {
                     rumourpoolchecked: false,
                     population: [1, -1],
+                    busy: false,
                 },
 
                 use_in_home: {
