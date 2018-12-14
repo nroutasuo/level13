@@ -106,6 +106,12 @@ define(['ash',
 
 		startAction: function (action, param) {
             // console.log("start action: " + action + " | " + param);
+            
+            if (this.currentAction) {
+                console.log("WARN: There is an incompleted action: " + this.currentAction);
+                return;
+            }
+            
 			var otherSector = this.getActionSector(action, param);
 			if (!GameGlobals.playerActionsHelper.checkAvailability(action, true, otherSector)) {
 				return false;
@@ -240,6 +246,12 @@ define(['ash',
 					break;
 			}
 		},
+        
+        completeAction: function (action) {
+            if (this.currentAction == action)
+                this.currentAction = null;
+            GameGlobals.uiFunctions.completeAction(action);
+        },
 
 		getActionSector: function (action, param) {
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
@@ -644,6 +656,7 @@ define(['ash',
 		},
 
 		handleOutActionResults: function (action, logMsgId, logMsgSuccess, logMsgFlee, logMsgDefeat, showResultPopup, successCallback, failCallback) {
+            this.currentAction = action;
 			var playerActionFunctions = this;
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			if (!logMsgSuccess) logMsgSuccess = action;
@@ -655,7 +668,7 @@ define(['ash',
 				sector.add(new PlayerActionResultComponent(rewards));
 				var resultPopupCallback = function (isTakeAll) {
 					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
-					GameGlobals.uiFunctions.completeAction(action);
+					playerActionFunctions.completeAction(action);
 					playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
 					GameGlobals.playerActionResultsHelper.logResults(rewards);
 					playerActionFunctions.forceResourceBarUpdate();
@@ -670,11 +683,11 @@ define(['ash',
 					resultPopupCallback();
 				}
 			}, function () {
-				GameGlobals.uiFunctions.completeAction(action);
+				playerActionFunctions.completeAction(action);
 				playerActionFunctions.addLogMessage(logMsgId, logMsgFlee);
 				if (failCallback) failCallback();
 			}, function () {
-				GameGlobals.uiFunctions.completeAction(action);
+				playerActionFunctions.completeAction(action);
 				playerActionFunctions.addLogMessage(logMsgId, logMsgDefeat);
 				if (failCallback) failCallback();
 			});
@@ -726,7 +739,7 @@ define(['ash',
 			campOutgoingCaravansComponent.outgoingCaravans.splice(caravanI, 1);
 
 			GameGlobals.playerActionResultsHelper.collectRewards(true, result, campSector);
-			GameGlobals.uiFunctions.completeAction("send_caravan");
+			this.completeAction("send_caravan");
 
 			this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, logMsg.msg, logMsg.replacements, logMsg.values, pendingPosition);
 
@@ -798,30 +811,31 @@ define(['ash',
 
 		fightGang: function (direction) {
 			var action = "fight_gang_" + direction;
+            this.currentAction = action;
 			var playerActionFunctions = this;
 			GameGlobals.fightHelper.handleRandomEncounter(action, function () {
 				playerActionFunctions.addLogMessage(LogConstants.MSG_ID_GANG_DEFEATED, "The road is clear.");
-				GameGlobals.uiFunctions.completeAction(action);
+				this.completeAction(action);
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 			}, function () {
 				// fled
-				GameGlobals.uiFunctions.completeAction(action);
+				this.completeAction(action);
 			}, function () {
 				// lost
-				GameGlobals.uiFunctions.completeAction(action);
+				this.completeAction(action);
 			});
 		},
 
 		flee: function () {
 			if (GameGlobals.playerActionsHelper.checkAvailability("flee", true)) {
 				GameGlobals.playerActionsHelper.deductCosts("flee");
-				GameGlobals.uiFunctions.completeAction("flee");
+				this.completeAction("flee");
 			}
 		},
 
 		despair: function () {
 			this.engine.getSystem(FaintingSystem).checkFainting();
-			GameGlobals.uiFunctions.completeAction("despair");
+			this.completeAction("despair");
 		},
 
 		buildCamp: function () {
@@ -1118,7 +1132,7 @@ define(['ash',
 
 		useHome: function () {
 			this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
-			GameGlobals.uiFunctions.completeAction("use_in_home");
+			this.completeAction("use_in_home");
 			this.forceStatsBarUpdate();
 		},
 
@@ -1138,7 +1152,7 @@ define(['ash',
 			} else {
 				console.log("WARN: No camp sector found.");
 			}
-			GameGlobals.uiFunctions.completeAction("use_in_campfire");
+			this.completeAction("use_in_campfire");
 			this.forceResourceBarUpdate();
 		},
 
@@ -1149,7 +1163,7 @@ define(['ash',
 			this.playerStatsNodes.head.stamina.stamina = 1000;
 			this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL, "Healed all injuries.");
 
-			GameGlobals.uiFunctions.completeAction("use_in_hospital");
+			this.completeAction("use_in_hospital");
 			this.forceResourceBarUpdate();
 			GameGlobals.gameState.unlockedFeatures.fight = true;
 		},
@@ -1162,6 +1176,7 @@ define(['ash',
 		},
 
 		useInn: function (auto) {
+            this.currentAction = "use_in_inn";
 			var sector = this.playerLocationNodes.head.entity;
 			var positionComponent = sector.get(PositionComponent);
 			var campCount = GameGlobals.gameState.numCamps;
@@ -1193,7 +1208,7 @@ define(['ash',
 			} else {
 				GameGlobals.uiFunctions.showInnPopup(availableFollowers);
 			}
-			GameGlobals.uiFunctions.completeAction("use_in_inn");
+			this.completeAction("use_in_inn");
 
 			return false;
 		},

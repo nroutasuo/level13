@@ -56,7 +56,16 @@ function (Ash, GameGlobals, GlobalSignals) {
             }
             
             // buttons and callbacks
+            var $defaultButton = null;
             $("#common-popup .buttonbox").empty();
+            $("#common-popup .buttonbox").append("<button id='info-ok' class='action'>" + okButtonLabel + "</button>");
+            if (hasResult) $("#info-ok").attr("action", "accept_inventory");
+            $("#info-ok").click(function (e) {
+                popUpManager.closePopup("common-popup");
+                if (okCallback) okCallback(false);
+            });
+            $defaultButton = $("#info-ok");
+            
             var showTakeAll = hasResult;
             if (showTakeAll) {
                 $("#common-popup .buttonbox").append("<button id='confirmation-takeall' class='action' action='take_all'>Take all</button>");
@@ -64,13 +73,9 @@ function (Ash, GameGlobals, GlobalSignals) {
                     popUpManager.closePopup("common-popup");
                     if (okCallback) okCallback(true);
                 });
+                $defaultButton = $("#confirmation-takeall");
             }
-            $("#common-popup .buttonbox").append("<button id='info-ok' class='action'>" + okButtonLabel + "</button>");
-            if (hasResult) $("#info-ok").attr("action", "accept_inventory");
-            $("#info-ok").click(function (e) {
-                popUpManager.closePopup("common-popup");
-                if (okCallback) okCallback(false);
-            });            
+            
             if (cancelButtonLabel) {
                 $("#common-popup .buttonbox").append("<button id='confirmation-cancel'>" + cancelButtonLabel + "</button>");
                 $("#confirmation-cancel").click(function (e) {
@@ -88,6 +93,10 @@ function (Ash, GameGlobals, GlobalSignals) {
             
             GameGlobals.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");
             GameGlobals.uiFunctions.generateCallouts("#common-popup .buttonbox");
+            
+            if ($defaultButton) {
+                $defaultButton.focus()
+            }
             
             // pause the game while a popup is open
             GameGlobals.gameState.isPaused = this.hasOpenPopup();
