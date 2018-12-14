@@ -37,7 +37,6 @@ define([
 		},
 		
 		constructor: function () {
-			
 			this.improvementsByOccurrence[OccurrenceConstants.campOccurrenceTypes.trader] = improvementNames.market;
 			
 			this.improvingUpgradesByImprovement[improvementNames.storage] = ["upgrade_building_storage1", "upgrade_building_storage2" ];
@@ -233,6 +232,30 @@ define([
 			}
 			return upgradeLevel;
         },
+        
+        getWorkerLevel: function (worker, upgradesComponent) {
+            var result = 0;
+            
+            var isUnlocked = true;
+            var unlockingUpgrade = this.upgradesByWorker[worker];
+            if (unlockingUpgrade) {
+                isUnlocked = upgradesComponent.hasUpgrade(unlockingUpgrade);
+            }
+            
+            if (isUnlocked) {
+                result = 1;
+				var improvingUpgrades = this.improvingUpgradesByWorker[worker];
+                if (improvingUpgrades) {
+    				for (var i = 0; i < improvingUpgrades.length; i++) {
+    					if (upgradesComponent.hasUpgrade(workerUpgradeList[i])) {
+                            result += 1;
+                        }
+    				}
+                }
+            }
+            
+            return result;
+        }
 		
     });
     

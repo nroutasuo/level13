@@ -233,6 +233,7 @@
             var maxPopulation = this.getCampMaxPopulation();
             var posComponent = this.playerPosNodes.head.position;
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+            var hasUnlockedRopers = GameGlobals.upgradeEffectsHelper.getWorkerLevel("rope-maker", this.tribeUpgradesNodes.head.upgrades) > 0;
 
             var workerConsumptionS = "<br/><span class='warning'>water -" + GameGlobals.campHelper.getWaterConsumptionPerSecond(1) + "/s</span>" +
                 "<br/><span class='warning'>food -" + GameGlobals.campHelper.getFoodConsumptionPerSecond(1) + "/s</span>";
@@ -252,6 +253,7 @@
             var smithiesInCamp = improvements.getCount(improvementNames.smithy);
             var barracksInCamp = improvements.getCount(improvementNames.barracks);
 
+            var maxRopers = hasUnlockedRopers ? maxPopulation : 0;
             var maxApothecaries = apothecariesInCamp * CampConstants.getApothecariesPerShop(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.apothecary, this.tribeUpgradesNodes.head.upgrades));
             var maxConcrete = cementMillsInCamp * CampConstants.getWorkersPerMill(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.cementmill, this.tribeUpgradesNodes.head.upgrades));
             var maxSmiths = smithiesInCamp * CampConstants.getSmithsPerSmithy(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.smithy, this.tribeUpgradesNodes.head.upgrades));
@@ -261,7 +263,7 @@
             this.updateWorkerStepper(campComponent, "#stepper-scavenger", "scavenger", maxPopulation, false);
             this.updateWorkerStepper(campComponent, "#stepper-trapper", "trapper", maxPopulation, false);
             this.updateWorkerStepper(campComponent, "#stepper-water", "water", maxPopulation, false);
-            this.updateWorkerStepper(campComponent, "#stepper-rope", "ropemaker", maxPopulation, false);
+            this.updateWorkerStepper(campComponent, "#stepper-rope", "ropemaker", maxRopers, false);
             this.updateWorkerStepper(campComponent, "#stepper-fuel", "chemist", maxChemists, true);
             this.updateWorkerStepper(campComponent, "#stepper-medicine", "apothecary", maxApothecaries, true);
             this.updateWorkerStepper(campComponent, "#stepper-concrete", "concrete", maxConcrete, true);
