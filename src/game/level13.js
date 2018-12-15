@@ -267,7 +267,6 @@ define([
 		},
 
         handleException: function (ex) {
-            this.gameManager.pauseGame();
             var exshortdesc = (ex.name ? ex.name : "Unknown") + ": " + (ex.message ? ex.message.replace(/\'/g, "%27") : "No message");
             var stack = (ex.stack ? ex.stack.replace(/\n/g, "%0A").replace(/\'/g, "%27") : "Not available");
 
@@ -291,6 +290,7 @@ define([
                 "ok",
                 null
             );
+            this.gameManager.pauseGame();
             throw ex;
         },
 
