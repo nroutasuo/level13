@@ -267,6 +267,9 @@ function (Ash, GameConstants, CampConstants) {
                     sector: {
                         collected_food: 1,
                     },
+                    bag: {
+                        full: false,
+                    },
                 },
 
                 use_out_collector_water: {
@@ -276,6 +279,9 @@ function (Ash, GameConstants, CampConstants) {
                     },
                     sector: {
                         collected_water: 1,
+                    },
+                    bag: {
+                        full: false,
                     },
                 },
 
