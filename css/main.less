@@ -1,3 +1,5 @@
+// out: main.css, compress: false
+
 @import "colors";
 
 // GLOBAL SIZES
@@ -23,7 +25,7 @@ body {
 }
 
 #grid-main {
-	height: 100%; 
+	height: 100%;
 }
 
 #log {
@@ -44,7 +46,7 @@ body {
 }
 
 .sticky-footer-wrapper {
-	min-height: 100%;	
+	min-height: 100%;
 	height: auto !important;
 	margin: 0 auto -50px;
 }
@@ -61,7 +63,7 @@ body {
 }
 
 .sticky-footer .one-quarter {
-	height: 2px; 
+	height: 2px;
 	padding: 0px;
 }
 
@@ -151,10 +153,10 @@ img {
 }
 
 @keyframes sk-bouncedelay {
-  0%, 80%, 100% { 
+  0%, 80%, 100% {
     -webkit-transform: scale(0);
     transform: scale(0);
-  } 40% { 
+  } 40% {
     -webkit-transform: scale(1.0);
     transform: scale(1.0);
   }
@@ -218,7 +220,7 @@ dd p.p-meta {
 }
 
 #researched-upgrades-vis-container {
-    max-height: 200px;    
+    max-height: 200px;
 }
 
 #out-container-compass, #out-container-compass-actions {
@@ -302,13 +304,13 @@ dd p.p-meta {
 }
 
 .item-equipped {
-    background: @color-dark-bg-element;    
+    background: @color-dark-bg-element;
 }
 
 .sunlit .item-equpped {
     background: #ececec;
 }
-  
+
 ul.tabs li.selected {
 	border-color: @color-dark-border-box-1;
 	border-bottom-color: @color-dark-bg-box-1;
@@ -354,7 +356,7 @@ ul.tabs li.selected {
 
 .collapsible-header, .item-focused .item-count, .progress-bar, .highlightbox, .inventorybox-header, .inventorybox-footer, tr.current {
 	background: @color-dark-bg-element;
-    border-color: @color-dark-bg-element; 
+    border-color: @color-dark-bg-element;
 }
 
 .sunlit .collapsible-header, .sunlit .item-focused .item-count, .sunlit .progress-bar, .sunlit .highlightbox, .sunlit .inventorybox-header, .sunlit .inventorybox-footer, .sunlit tr.current {
@@ -436,7 +438,7 @@ button {
 }
 
 hr {
-	border:none;	
+	border:none;
 	border-top:1px #666 solid;
 	height: 1px;
 }
@@ -446,7 +448,7 @@ hr {
 }
 
 .sunlit hr {
-	border:none;	
+	border:none;
 	border-top:1px #999 solid;
 	height: 1px;
 }
@@ -509,7 +511,7 @@ hr {
     border: 1px solid #E13232 !important;
 }
 
-.li-item-negative { 
+.li-item-negative {
 	border: 1px solid #E13232 !important;
 	background: rgba(230, 70, 70, 0.15) !important;
 }
@@ -599,30 +601,30 @@ input[type=range] {
 	pointer-events: none;
 	top: 0;
 }
- 
+
 #footer {
     padding: 1px 5px;
  }
- 
+
  #unit-main {
      padding-left: 28px; /* for the self-bar */
  }
- 
+
 #header-self-bar {
-     position: fixed; 
+     position: fixed;
      width: 60px;
      z-index: 5;
-     text-align: center; 
-     padding: 5px 3px; 
-     margin-left: -80px; 
+     text-align: center;
+     padding: 5px 3px;
+     margin-left: -80px;
      font-size: 80%;
 }
- 
+
 #header-self-bar ul {
      margin-top: 10px;
      margin-bottom: 10px;
 }
- 
+
 #header-self-bar > span {
     display: block;
 }
@@ -635,12 +637,12 @@ input[type=range] {
 
 #header-self-bar .callout-container {
     width: 100%;
-} 
+}
 
 #header-self-bar .stats-indicator .value {
     font-size: @font-size-small;
     margin: 3px 0;
-} 
+}
 
 #header-self-bar .info-callout {
     width: 75px;
@@ -649,7 +651,7 @@ input[type=range] {
 
 #header-self-inout img {
     -webkit-transition: -webkit-transform 1s;
-    transition: all 1s; 
+    transition: all 1s;
 }
 
 .location-outside #header-self-inout img:hover {
@@ -657,7 +659,7 @@ input[type=range] {
     -webkit-transform: rotate(360deg);
     -o-transform: rotate(360deg);
     -ms-transform: rotate(360deg);
-    transform: rotate(360deg);    
+    transform: rotate(360deg);
 }
 
 ul.itemlist, ul.resultlist {
@@ -668,12 +670,12 @@ ul.itemlist, ul.resultlist {
 }
 
 .itemlist li {
-	display: inline-flex;    
+	display: inline-flex;
 }
- 
+
 .item, .res {
 	vertical-align: middle;
-	display: inline-flex;    
+	display: inline-flex;
 	position: relative;
 	margin: 2px;
 	padding: 5px;
@@ -785,7 +787,7 @@ ul.resultlist-positive li:before {
 
 .item-slot-small {
     width: 37px;
-    height: 37px;       
+    height: 37px;
 }
 
 div.item-slot > div, div.item-slot > span {
@@ -842,7 +844,7 @@ div.item-slot > div, div.item-slot > span {
 }
 
 .item-slot-type-equipped {
-    top: 0px;    
+    top: 0px;
 }
 
 .item-slot-simple {
@@ -853,7 +855,7 @@ div.item-slot > div, div.item-slot > span {
     margin-top: 5px;
 }
 
-.listheader { 
+.listheader {
 	margin: 6px 0px 2px 0px;
 	display: block;
 }
@@ -1005,7 +1007,7 @@ ul#game-options li, ul#game-options-extended li {
     vertical-align: middle;
 }
 
-#game-version, #game-msg { 
+#game-version, #game-msg {
     text-transform: lowercase;
     position: relative;
     left: -55px;
@@ -1092,7 +1094,7 @@ div.popup {
 	left: 50%;
 	margin: 0;
 	min-width: 30%;
-	max-width: 60%; 
+	max-width: 60%;
 	z-index: 7;
 }
 
@@ -1110,15 +1112,15 @@ div.popup-overlay {
     background-color: rgba(255,255,255,0.85);
 }
 
-div.callout-arrow-up {	
-	width: 0; 
-	height: 0; 
+div.callout-arrow-up {
+	width: 0;
+	height: 0;
 	z-index: 40;
 	position: relative;
 	top: 1px;
 	margin: 0px auto;
 	border-left: 7px solid transparent;
-	border-right: 7px solid transparent;	
+	border-right: 7px solid transparent;
 	border-bottom: 7px solid;
 }
 
@@ -1522,11 +1524,11 @@ hr {
 
 .inventorydivision .inventorybox-footer {
     position: absolute;
-    bottom: 0;
+    bottom: 3px;
     left: 0;
     margin: 0;
     width: 100%;
-    
+
 }
 
 #common-popup .inventorybox ul {
@@ -1546,7 +1548,7 @@ hr {
 }
 
 #trade-caravans-outgoing-container tr.selected {
-    border-color: @color-dark-bg-element; 
+    border-color: @color-dark-bg-element;
 }
 
 .trade-caravans-outgoing-plan {
@@ -1554,7 +1556,7 @@ hr {
     border-top-width: 0px;
 }
 
-.row-detail-indicator {    
+.row-detail-indicator {
     display: inline-block;
     width: 1.5em;
     height: 1.5em;
@@ -1918,7 +1920,7 @@ select {
    margin: 0px 5px 0px 0px;
 }
 
-#changelog ul {    
+#changelog ul {
     padding: 0 0 0 2em;
     margin: 0.5em 0 1em 0;
     list-style-type: none;

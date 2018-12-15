@@ -1430,7 +1430,7 @@ hr {
 }
 .inventorydivision .inventorybox-footer {
   position: absolute;
-  bottom: 0;
+  bottom: 3px;
   left: 0;
   margin: 0;
   width: 100%;

@@ -14,9 +14,6 @@
   top: 0;
   pointer-events: none;
 }
-.map-overlay button {
-  pointer-events: auto;
-}
 .map-overlay-cell {
   position: absolute;
   font-size: 50%;
