@@ -2,9 +2,9 @@
     'ash',
     'game/GameGlobals',
     'game/GlobalSignals',
+	'game/constants/PlayerActionConstants',
     'game/constants/UIConstants',
     'game/constants/UpgradeConstants',
-    'game/constants/PlayerActionsHelperConstants',
     'game/constants/OccurrenceConstants',
     'game/constants/CampConstants',
     'game/constants/PerkConstants',
@@ -22,7 +22,7 @@
     'game/components/sector/events/TraderComponent',
     'game/components/sector/events/RaidComponent'
 ], function (
-    Ash, GameGlobals, GlobalSignals, UIConstants, UpgradeConstants, PlayerActionsHelperConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants,
+    Ash, GameGlobals, GlobalSignals, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants,
     PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, DeityNode, TribeUpgradesNode,
     PerksComponent,
     CampComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
@@ -328,7 +328,8 @@
                 var showActionDisabledReason = false;
                 if (!actionEnabled) {
                     switch (requirementCheck.reason) {
-                        case PlayerActionsHelperConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP:
+                        case PlayerActionConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP:
+                        case PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES:
                             showActionDisabledReason = true;
                     }
                 }

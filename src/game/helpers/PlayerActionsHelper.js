@@ -4,7 +4,6 @@ define([
     'game/GameGlobals',
 	'game/constants/PositionConstants',
 	'game/constants/PlayerActionConstants',
-	'game/constants/PlayerActionsHelperConstants',
 	'game/constants/PlayerStatConstants',
 	'game/constants/ItemConstants',
 	'game/constants/HazardConstants',
@@ -41,7 +40,7 @@ define([
     'game/vos/ResourcesVO',
     'game/vos/ImprovementVO'
 ], function (
-	Ash, GameGlobals, PositionConstants, PlayerActionConstants, PlayerActionsHelperConstants, PlayerStatConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
+	Ash, GameGlobals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	LevelComponent, PositionComponent, PlayerActionComponent, BagComponent, ItemsComponent, PerksComponent, DeityComponent,
 	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
@@ -685,7 +684,7 @@ define([
                             var value = levelVO.populationGrowthFactor;
                             if (min > value || max <= value) {
                                 if (min > amount) {
-                                    reason = PlayerActionsHelperConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP;
+                                    reason = PlayerActionConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP;
                                     if (min > 1) reason += ": " + min + "x " + improvName;
                                 } else {
                                     reason = "Too many people on this level.";

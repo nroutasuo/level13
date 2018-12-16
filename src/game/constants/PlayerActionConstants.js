@@ -2187,6 +2187,7 @@ function (Ash, GameConstants, CampConstants) {
 
             UNAVAILABLE_REASON_LOCKED_RESOURCES: "Requires undiscovered resources.",
             UNAVAILABLE_REASON_BAG_FULL: "Bag full.",
+            DISABLED_REASON_NOT_ENOUGH_LEVEL_POP: "Not enough people on this level.",
 
             getCostSource: function (action) {
                 var rawSource = this.costs[action].cost_source;
