@@ -61,7 +61,7 @@ define([
 			$("#list-followers").empty();
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
-				var li = "<li>" + UIConstants.getItemDiv(itemsComponent, item, -1, UIConstants.getItemCallout(item), true) + "</li>";
+				var li = "<li>" + UIConstants.getItemDiv(itemsComponent, item, null, UIConstants.getItemCallout(item), true) + "</li>";
 				$("#list-followers").append(li);
 			}
 

@@ -27,7 +27,7 @@ var UIOutPopupInnSystem = Ash.System.extend({
 
         onPopupOpened: function (name) {
             if (name === "inn-popup") {
-                initializePopup();
+                this.initializePopup();
             }
         },
 
@@ -49,8 +49,9 @@ var UIOutPopupInnSystem = Ash.System.extend({
             $("table#inn-popup-current-followers").empty();
             $("table#inn-popup-current-followers").append("<tr></tr>");
             for (var i = 0; i < currentFollowers.length; i++) {
+                var item = currentFollowers[i];
                 var td = "<td id='td-item-use_in_inn_select-" + currentFollowers[i].id + "'>";
-                td += UIConstants.getItemDiv(null, currentFollowers[i], false, UIConstants.getItemCallout(item, true));
+                td += UIConstants.getItemDiv(this.itemNodes.head.items, item, false, UIConstants.getItemCallout(item, true));
                 td += "</td>";
                 $("table#inn-popup-current-followers tr").append(td);
             }
