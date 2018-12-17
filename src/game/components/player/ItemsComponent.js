@@ -98,18 +98,18 @@ function (Ash, ItemVO, ItemConstants) {
             if (item.equipped) return 0;
             if (!item.equippable) return -1;
             var currentItem = this.getEquipped(item.type)[0];
-
             var result = 0;
             for (var bonusKey in ItemConstants.itemBonusTypes) {
                 var bonusType = ItemConstants.itemBonusTypes[bonusKey];
                 var currentBonus = currentItem ? currentItem.getBonus(bonusType) : 0;
                 var newBonus = item.getBonus(bonusType);
+                var preferNegative = bonusType == ItemConstants.itemBonusTypes.movement;
                 if (newBonus < currentBonus) {
                     if (result > 0) return 0;
-                    result = -1;
+                    result = preferNegative ? 1 : -1;
                 } else if (newBonus > currentBonus) {
                     if (result < 0) return 0;
-                    result = 1;
+                    result = preferNegative ? -1 : 1;
                 }
             }
             return result;
