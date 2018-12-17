@@ -605,8 +605,8 @@ define(['ash',
 		clearWorkshop: function () {
 			var action = "clear_workshop";
 			var logMsgSuccess = "Workshop cleared. Workers can now use it.";
-			var logMsgFlee = "";
-			var logMsgDefeat = "";
+			var logMsgFlee = "The workshop is too dangerous.";
+			var logMsgDefeat = "Got driven out of the workshop.";
 
 			var playerActionFunctions = this;
 			var successCallback = function () {
@@ -659,9 +659,6 @@ define(['ash',
             this.currentAction = action;
 			var playerActionFunctions = this;
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
-			if (!logMsgSuccess) logMsgSuccess = action;
-			if (!logMsgFlee) logMsgFlee = logMsgSuccess;
-			if (!logMsgDefeat) logMsgDefeat = logMsgSuccess;
 			GameGlobals.fightHelper.handleRandomEncounter(action, function () {
 				var rewards = GameGlobals.playerActionResultsHelper.getResultVOByAction(action);
 				var sector = playerActionFunctions.playerStatsNodes.head.entity;
@@ -669,7 +666,7 @@ define(['ash',
 				var resultPopupCallback = function (isTakeAll) {
 					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
 					playerActionFunctions.completeAction(action);
-					playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
+					if (logMsgSuccess) playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
 					GameGlobals.playerActionResultsHelper.logResults(rewards);
 					playerActionFunctions.forceResourceBarUpdate();
 					playerActionFunctions.forceTabUpdate();
@@ -684,11 +681,11 @@ define(['ash',
 				}
 			}, function () {
 				playerActionFunctions.completeAction(action);
-				playerActionFunctions.addLogMessage(logMsgId, logMsgFlee);
+				if (logMsgFlee) playerActionFunctions.addLogMessage(logMsgId, logMsgFlee);
 				if (failCallback) failCallback();
 			}, function () {
 				playerActionFunctions.completeAction(action);
-				playerActionFunctions.addLogMessage(logMsgId, logMsgDefeat);
+				if (logMsgDefeat) playerActionFunctions.addLogMessage(logMsgId, logMsgDefeat);
 				if (failCallback) failCallback();
 			});
 		},
