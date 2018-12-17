@@ -430,10 +430,16 @@ define(['ash',
 			},
 
 			generateButtonOverlays: function (scope) {
-				$(scope + " button.action").append("<div class='cooldown-action' style='display:none' />");
-				$(scope + " button.action").append("<div class='cooldown-duration' style='display:none' />");
-				$(scope + " button.action").wrap("<div class='container-btn-action' />");
-				$(scope + " div.container-btn-action").append("<div class='cooldown-reqs' />");
+                $.each($(scope + " button.action"), function () {
+                    $btn = $(this);
+                    var text = $btn.text();
+                    $btn.text("");
+    				$btn.append("<span class='btn-label'>" + text + "</span>");
+                });
+                $(scope + " button.action").append("<div class='cooldown-action' style='display:none' />");
+                $(scope + " button.action").append("<div class='cooldown-duration' style='display:none' />");
+                $(scope + " button.action").wrap("<div class='container-btn-action' />");
+                $(scope + " div.container-btn-action").append("<div class='cooldown-reqs' />");
 			},
 
 			startGame: function () {

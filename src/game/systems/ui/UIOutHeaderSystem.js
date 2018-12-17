@@ -88,6 +88,7 @@ define([
             GlobalSignals.visionChangedSignal.add(function () { sys.onVisionChanged(); });
             GlobalSignals.tabChangedSignal.add(function () { sys.onTabChanged(); });
             GlobalSignals.healthChangedSignal.add(function () { sys.onHealthChanged(); });
+            GlobalSignals.inventoryChangedSignal.add(function () { sys.onInventoryChanged(); });
             GlobalSignals.slowUpdateSignal.add(function () { sys.slowUpdate(); });
 
 			this.generateStatsCallouts();
@@ -160,6 +161,11 @@ define([
         onHealthChanged: function () {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.updateStaminaWarningLimit();
+        },
+
+        onInventoryChanged: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
+            this.updateResources();
         },
 
 		onVisionChanged: function () {

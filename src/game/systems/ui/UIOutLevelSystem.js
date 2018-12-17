@@ -82,7 +82,7 @@ define([
                 sys.updateAll();
 			});
             GlobalSignals.improvementBuiltSignal.add(function () {
-                sys.updateSectorDescription();
+                sys.updateAll();
             });
             GlobalSignals.inventoryChangedSignal.add(function () {
                 sys.updateSectorDescription();
@@ -93,6 +93,12 @@ define([
             });
             GlobalSignals.fightEndedSignal.add(function () {
 				sys.updateMovementRelatedActions();
+            });
+            GlobalSignals.sectorScoutedSignal.add(function () {
+                sys.updateAll();
+            });
+            GlobalSignals.visionChangedSignal.add(function () {
+                sys.updateAll();
             });
             GlobalSignals.gameShownSignal.add(function () {
                 sys.updateAll();
@@ -151,14 +157,18 @@ define([
 
 			this.updateOutImprovementsList(improvements);
 			this.updateOutImprovementsStatus(hasCamp, improvements);
-
-			this.updateLevelPageActions(isScouted, hasCamp, hasCampHere);
             this.updateNap(isScouted, hasCampHere);
             this.updateDespair(hasCampHere);
 		},
 
         updateLevelPageActions: function (isScouted, hasCamp, hasCampHere) {
-			    if (GameGlobals.gameState.uiStatus.isHidden) return;
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
+            
+            var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			var hasCamp = GameGlobals.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
+			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
+            var isScouted = sectorStatusComponent.scouted;
+            
             var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
             var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
             var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
@@ -183,10 +193,11 @@ define([
             GameGlobals.uiFunctions.toggle("#out-action-investigate", GameGlobals.gameState.unlockedFeatures.investigate);
             GameGlobals.uiFunctions.toggle("#out-action-fight-gang", GameGlobals.gameState.unlockedFeatures.fight);
 
-            GameGlobals.uiFunctions.toggle("#out-action-clear-workshop", isScouted && workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP));
+            var showWorkshop = isScouted && workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)
+            GameGlobals.uiFunctions.toggle("#out-action-clear-workshop", showWorkshop);
             if (workshopComponent) {
                 var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
-                this.elements.btnClearWorkshop.text("scout " + workshopName);
+                this.elements.btnClearWorkshop.find(".btn-label").text("scout " + workshopName);
             }
 
             GameGlobals.uiFunctions.slideToggleIf("#out-locales", null, isScouted && sectorLocalesComponent.locales.length > 0, 200, 0);

@@ -861,6 +861,7 @@ define(['ash',
 			if (level.get(LevelComponent).levelVO.populationGrowthFactor < 1) {
 				this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP_LEVEL_POPULATION, "There are few signs of human life on this level.");
 			}
+			GlobalSignals.improvementBuiltSignal.dispatch();
 			this.forceResourceBarUpdate();
 			this.save();
 		},
