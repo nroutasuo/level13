@@ -823,23 +823,32 @@ define([
             if (playerItems.length <= 0)
                 return lostItems;
 
-
             var itemList = [];
+            var maxItems = 0;
             for (var i = 0; i < playerItems.length; i++) {
                 var loseProbability = this.getItemLoseProbability(action, playerItems[i]);
+                if (loseProbability <= 0) continue;
                 var count = Math.round(loseProbability * 10);
                 for (var j = 0; j < count; j++) {
                     itemList.push(playerItems[i]);
                 }
+                maxItems++;
             }
 
             var numItems = loseSingleItem ? 1 : Math.ceil(Math.random() * 3);
-            numItems = Math.min(itemList.length, numItems);
+            numItems = Math.min(maxItems, numItems);
 
             for (var i = 0; i < numItems; i++) {
                 var itemi = Math.floor(Math.random() * itemList.length);
-                lostItems.push(itemList[itemi]);
-                itemList.splice(itemi, 1);
+                var selectedItem = itemList[itemi];
+                lostItems.push(selectedItem);
+                var optionsToRemove = [];
+                for (var j = 0; j < itemList.length; j++) {
+                    if (itemList[j] == selectedItem) {
+                        optionsToRemove.push(j);
+                    }
+                }
+                itemList.splice(optionsToRemove[0], optionsToRemove.length);
             }
 
             return lostItems;
