@@ -46,11 +46,12 @@ function (Ash, ItemVO, ItemConstants) {
                 var typeItems = this.items[item.type];
                 var splicei = -1;
                 for (var i = 0; i < typeItems.length; i++) {
-                    if (typeItems[i].id === item.id) {
+                    if (typeItems[i].id === item.id && typeItems[i].equipped == item.equipped) {
                         splicei = i;
                         break;
                     }
                 }
+                
                 if (splicei >= 0) {
                     typeItems.splice(splicei, 1);
                     if (item.equipped) {

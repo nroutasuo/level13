@@ -72,9 +72,10 @@ define([
 
             var playerAllItems = resultNode.items.getAll(inCamp);
 
-            var findItemById = function (itemID, itemList, notInItemList) {
+            var findItemById = function (itemID, itemList, notInItemList, skipEquipped) {
                 for (var i = 0; i < itemList.length; i++) {
                     var item = itemList[i];
+                    if (skipEquipped && item.equipped) continue;
                     if (item.id === itemID) {
                         var foundInOtherList = false;
                         if (notInItemList !== null) {
@@ -116,7 +117,8 @@ define([
                             console.log("leave: " + itemToLeave);
                             rewards.selectedItems.splice(itemToLeave);
                         } else {
-                            var itemToDiscard = findItemById(itemId, playerAllItems, rewards.discardedItems);
+                            var itemToDiscard = findItemById(itemId, playerAllItems, rewards.discardedItems, true);
+                            if (!itemToDiscard) return;
                             console.log("discard: " + itemToDiscard);
                             rewards.discardedItems.push(itemToDiscard);
                         }
