@@ -213,7 +213,7 @@ function (Ash, ItemVO, ItemConstants) {
                 if (!itemType || itemType === key) {
                     for (var i = 0; i < this.items[key].length; i++) {
                         var item = this.items[key][i];
-                        if (item.equipped) {
+                        if (item.equipped || itemType == ItemConstants.itemTypes.follower) {
                             bonus += item.getBonus(bonusType);
                         }
                     }

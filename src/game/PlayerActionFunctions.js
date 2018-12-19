@@ -812,14 +812,14 @@ define(['ash',
 			var playerActionFunctions = this;
 			GameGlobals.fightHelper.handleRandomEncounter(action, function () {
 				playerActionFunctions.addLogMessage(LogConstants.MSG_ID_GANG_DEFEATED, "The road is clear.");
-				this.completeAction(action);
+				playerActionFunctions.completeAction(action);
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 			}, function () {
 				// fled
-				this.completeAction(action);
+				playerActionFunctions.completeAction(action);
 			}, function () {
 				// lost
-				this.completeAction(action);
+				playerActionFunctions.completeAction(action);
 			});
 		},
 
