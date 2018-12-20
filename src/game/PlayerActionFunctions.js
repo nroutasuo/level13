@@ -108,7 +108,7 @@ define(['ash',
             // console.log("start action: " + action + " | " + param);
             
             if (this.currentAction) {
-                console.log("WARN: There is an incompleted action: " + this.currentAction);
+                console.log("WARN: There is an incompleted action: " + this.currentAction + " (tried to start: " + action + ")");
                 return;
             }
             

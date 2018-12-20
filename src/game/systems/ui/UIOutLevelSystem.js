@@ -645,7 +645,8 @@ define([
             if (this.nearestCampNodes.head) {
                 var campSector = this.nearestCampNodes.head.entity;
                 var path = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, campSector, { skipBlockers: true, skipUnvisited: true });
-                $("#out-action-move-camp-details").text("(" + path.length + " blocks)");
+                var len = path ? path.length : "?";
+                $("#out-action-move-camp-details").text("(" + len + " blocks)");
             }
         },
 

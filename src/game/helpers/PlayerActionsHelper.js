@@ -1041,8 +1041,8 @@ define([
 					case "move_camp_level":
                         if (!this.nearestCampNodes.head) return this.getCosts("move_sector_west", 100);
                         var campSector = this.nearestCampNodes.head.entity;
-                        var path = GameGlobals.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true });
-                        var sectorsToMove = path.length;
+                        var path = GameGlobals.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true, omitLog: true });
+                        var sectorsToMove = path ? path.length : 99;
                         return this.getCosts("move_sector_west", sectorsToMove * statusFactor);
 
 					case "move_camp_global":

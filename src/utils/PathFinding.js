@@ -130,7 +130,7 @@ define(function () {
                 // TODO check (pass?) reasonable max length
                 if (!current || result.length > 500) {
                     if (!settings.omitLog) console.log("WARN: failed to find path (res len: " + result.length + ")");
-                    break;
+                    return null;
                 }
             }
             return result.reverse();

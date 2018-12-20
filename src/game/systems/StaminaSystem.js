@@ -1,12 +1,12 @@
 define([
-    'ash', 
+    'ash',
     'game/GameGlobals',
     'game/GlobalSignals',
-    'game/constants/GameConstants', 
-    'game/constants/LogConstants', 
-    'game/constants/PlayerStatConstants', 
+    'game/constants/GameConstants',
+    'game/constants/LogConstants',
+    'game/constants/PlayerStatConstants',
     'game/constants/PerkConstants',
-    'game/nodes/player/StaminaNode', 
+    'game/nodes/player/StaminaNode',
     'game/components/common/LogMessagesComponent'
 ], function (Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, PlayerStatConstants, PerkConstants, StaminaNode, LogMessagesComponent) {
     var StaminaSystem = Ash.System.extend({
@@ -99,4 +99,3 @@ define([
 
     return StaminaSystem;
 });
-
