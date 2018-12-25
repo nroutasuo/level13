@@ -142,7 +142,7 @@ define([
 				.add(new LevelComponent(pos, levelVO))
 				.add(new PositionComponent(pos))
 				.add(new LevelPassagesComponent())
-				.add(new SaveComponent(saveKey, [CampComponent]));
+				.add(new SaveComponent(saveKey, [CampComponent, VisitedComponent]));
 			this.engine.addEntity(level);
 			return level;
 		},
