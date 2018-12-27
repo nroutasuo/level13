@@ -68,6 +68,13 @@ define(['ash'], function (Ash) {
             return CampConstants.BASE_STORAGE + storageCount * storagePerImprovement;
         },
         
+        // population cap of one camp
+        getHousingCap: function (improvementsComponent) {
+            var result = improvementsComponent.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
+            result += improvementsComponent.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
+            return result;
+        },
+        
         getSmithsPerSmithy: function (upgradeLevel) {
             return 2 + (upgradeLevel - 1) * 2;
         },
@@ -77,7 +84,7 @@ define(['ash'], function (Ash) {
         },
         
         getWorkersPerMill: function (upgradeLevel) {
-            return 2 + (upgradeLevel - 1) * 2;            
+            return 2 + (upgradeLevel - 1) * 2;
         },
         
         getSoldiersPerBarracks: function (upgradeLevel) {

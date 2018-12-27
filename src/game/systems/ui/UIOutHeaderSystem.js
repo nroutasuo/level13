@@ -216,8 +216,7 @@ define([
             GameGlobals.uiFunctions.toggle($("#header-tribe-container"), GameGlobals.gameState.unlockedFeatures.evidence || playerStatsNode.rumours.isAccumulating);
 
             var improvements = this.currentLocationNodes.head.entity.get(SectorImprovementsComponent);
-            var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
-            maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
+            var maxPopulation = CampConstants.getHousingCap(improvements);
 			var reputationComponent = this.currentLocationNodes.head.entity.get(ReputationComponent);
             if (campComponent && reputationComponent && maxPopulation > 0) {
                 var reqReputationCurrent = CampConstants.getRequiredReputation(Math.floor(campComponent.population));

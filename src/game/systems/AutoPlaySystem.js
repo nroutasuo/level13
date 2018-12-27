@@ -722,8 +722,7 @@ define(['ash',
             var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 
             // cheat population
-            var maxPopulation = improvementsComponent.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
-            maxPopulation += improvementsComponent.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
+            var maxPopulation = CampConstants.getHousingCap(improvementsComponent);
             if (this.isExpress && campComponent.population < maxPopulation)
                 this.cheatSystem.applyCheat("pop");
 
@@ -792,8 +791,7 @@ define(['ash',
                 return;
 
 			var improvementsComponent = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-            var maxPopulation = improvementsComponent.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
-            maxPopulation += improvementsComponent.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
+            var maxPopulation = CampConstants.getHousingCap(improvementsComponent);
 
             if (GameGlobals.playerActionsHelper.checkAvailability("build_in_tradingPost")) {
                 this.printStep("build trading post");

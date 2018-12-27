@@ -45,6 +45,9 @@ define([
         
         updatePopulation: function (node, time) {
 			var camp = node.camp;
+            
+			var improvements = node.entity.get(SectorImprovementsComponent);
+            var maxPopulation = CampConstants.getHousingCap(improvements);
 
             var changePerSec = this.getPopulationChangePerSec(node);
             var change = time * changePerSec * GameConstants.gameSpeedCamp;
@@ -52,6 +55,7 @@ define([
             var newPopulation = oldPopulation + change;
             
             newPopulation = Math.max(newPopulation, 0);
+            newPopulation = Math.min(newPopulation, maxPopulation);
             change = newPopulation - oldPopulation;
             changePerSec = change / time / GameConstants.gameSpeedCamp;
             
@@ -86,8 +90,7 @@ define([
             }
 
 			var improvements = node.entity.get(SectorImprovementsComponent);
-            var housingCap = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
-            housingCap += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
+            var housingCap = CampConstants.getHousingCap(improvements);
             if (camp.population >= housingCap) {
                 changePerSec = Math.min(changePerSec, 0);
             }

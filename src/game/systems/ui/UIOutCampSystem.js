@@ -166,9 +166,7 @@
         getCampMaxPopulation: function () {
             if (!this.playerLocationNodes.head) return;
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-            var maxPopulation = improvements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
-            maxPopulation += improvements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
-            return maxPopulation;
+            return CampConstants.getHousingCap(improvements);
         },
 
         updateWorkerStepper: function (campComponent, id, workerType, maxWorkers, showMax) {

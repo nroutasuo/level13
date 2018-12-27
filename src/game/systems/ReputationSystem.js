@@ -11,7 +11,7 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/common/LogMessagesComponent',
     'game/components/type/LevelComponent',
-], function (Ash, GameGlobals, GameConstants, CampConstants, LogConstants, OccurrenceConstants, CampNode, PlayerPositionNode, TribeUpgradesNode, 
+], function (Ash, GameGlobals, GameConstants, CampConstants, LogConstants, OccurrenceConstants, CampNode, PlayerPositionNode, TribeUpgradesNode,
     SectorImprovementsComponent, LogMessagesComponent, LevelComponent) {
     var ReputationSystem = Ash.System.extend({
 	
@@ -41,7 +41,7 @@ define([
         update: function (time) {
             if (GameGlobals.gameState.isPaused) return;
 			
-			if (this.campNodes.head) {				
+			if (this.campNodes.head) {
 				for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
                     var reputationComponent = campNode.reputation;
                     var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
@@ -66,7 +66,7 @@ define([
             
             var addValue = function (value, name) {
                 targetReputation += value;
-                campNode.reputation.addTargetValueSource(name, value);                
+                campNode.reputation.addTargetValueSource(name, value);
             };
             
             // base: building happiness values
@@ -91,7 +91,7 @@ define([
             
             var targetReputationWithoutPenalties = targetReputation;
             
-            // penalties: food and water            
+            // penalties: food and water
             var storage = GameGlobals.resourcesHelper.getCurrentStorage(true);
 			var resources = storage ? storage.resources : null;
             var noFood = resources && resources.getResource(resourceNames.food) <= 0;
@@ -106,7 +106,7 @@ define([
             this.logReputationPenalty(campNode, CampConstants.REPUTATION_PENALTY_TYPE_FOOD, noFood);
             this.logReputationPenalty(campNode, CampConstants.REPUTATION_PENALTY_TYPE_WATER, noWater);
             
-            // penalties: defences            
+            // penalties: defences
             var defenceLimit = 25;
             var soldiers = campNode.camp.assignedWorkers.soldier;
             var fortificationUpgradeLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.fortification, this.tribeUpgradeNodes.head.upgrades);
@@ -127,8 +127,7 @@ define([
             this.logReputationPenalty(campNode, CampConstants.REPUTATION_PENALTY_TYPE_DEFENCES, noDefences);
             
             // penalties: over-crowding
-            var housingCap = sectorImprovements.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
-            housingCap += sectorImprovements.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
+            var housingCap = CampConstants.getHousingCap(sectorImprovements);
             var population = Math.floor(campNode.camp.population);
             var noHousing = population > housingCap;
             if (noHousing) {

@@ -40,9 +40,11 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
         },
         
         addPopulation: function (value) {
+            var oldPopulation = this.population;
             this.population += value;
             this.maxPopulation = Math.max(this.population, this.maxPopulation);
-            this.rumourpool += value * CampConstants.POOL_RUMOURS_PER_POPULATION;
+            var change = this.population - oldPopulation;
+            this.rumourpool += change * CampConstants.POOL_RUMOURS_PER_POPULATION;
         },
         
         getType: function () {
