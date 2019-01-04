@@ -1086,14 +1086,20 @@ div.callout-arrow-up {
   height: 0;
   z-index: 40;
   position: relative;
-  top: 1px;
-  margin: 0px auto;
+  top: 0px;
+  margin: 0 0 0 3.5px;
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
   border-bottom: 7px solid;
 }
-div.info-callout div.arrow-up {
-  margin: 0px auto 0px 9px;
+div.btn-callout div.callout-arrow-up {
+  margin: 0px auto;
+}
+.item div.callout-arrow-up {
+  margin: 0 0 0 2px;
+}
+#header-self-bar div.callout-arrow-up {
+  margin: 0 0 0 23px;
 }
 /* Appearance: Specific elements: Buttons and tabs */
 ul.tabs {

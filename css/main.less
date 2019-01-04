@@ -7,6 +7,9 @@
 @font-size-small: 85%;
 @size-input-range-thumb: 15px;
 @item-slot-big-size: 100px;
+@item-div-size: 18px;
+@callout-arrow-size: 7px;
+@header-self-bar-width: 60px;
 
 
 // Base layout & elements
@@ -612,7 +615,7 @@ input[type=range] {
 
 #header-self-bar {
      position: fixed;
-     width: 60px;
+     width: @header-self-bar-width;
      z-index: 5;
      text-align: center;
      padding: 5px 3px;
@@ -682,8 +685,8 @@ ul.itemlist, ul.resultlist {
 	border-width: 2px;
 	border-style: solid;
     border-radius: 50%;
-    width: 18px;
-    height: 18px;
+    width: @item-div-size;
+    height: @item-div-size;
 }
 
 .res {
@@ -1117,15 +1120,23 @@ div.callout-arrow-up {
 	height: 0;
 	z-index: 40;
 	position: relative;
-	top: 1px;
-	margin: 0px auto;
-	border-left: 7px solid transparent;
-	border-right: 7px solid transparent;
-	border-bottom: 7px solid;
+	top: 0px;
+    margin: 0 0 0 @callout-arrow-size/2;
+	border-left: @callout-arrow-size solid transparent;
+	border-right: @callout-arrow-size solid transparent;
+	border-bottom: @callout-arrow-size solid;
 }
 
-div.info-callout div.arrow-up {
-	margin: 0px auto 0px 9px;
+div.btn-callout div.callout-arrow-up {
+	margin: 0px auto;
+}
+
+.item div.callout-arrow-up {
+	margin: 0 0 0 (@item-div-size/2 - @callout-arrow-size);
+}
+
+#header-self-bar div.callout-arrow-up {
+	margin: 0 0 0 (@header-self-bar-width/2 - @callout-arrow-size);
 }
 
 
