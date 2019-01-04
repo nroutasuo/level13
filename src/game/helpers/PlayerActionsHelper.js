@@ -429,6 +429,19 @@ define([
                             return { value: 0, reason: reason };
                         }
                     }
+                    
+                    if (typeof requirements.path_to_camp !== "undefined") {
+                        var path = this.getPathToNearestCamp(sector);
+                        var currentValue = path !== null;
+                        var requiredValue = requirements.path_to_camp;
+                        if (currentValue !== requiredValue) {
+                            if (currentValue) reason = "Path to camp exists";
+                            else reason = "No path to camp.";
+                            if (log) console.log("WARN: " + reason);
+                            return { value: 0, reason: reason };
+                        }
+                    }
+                    
                     if (typeof requirements.max_followers_reached !== "undefined") {
                         var numCurrentFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower).length;
                         var numMaxFollowers = FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps);
@@ -900,8 +913,8 @@ define([
                 case "move_sector_nw":
                 case "move_camp_level":
                 case "move_camp_global":
-                factor *= getShoeBonus();
-                factor *= getPerkBonus();
+                    factor *= getShoeBonus();
+                    factor *= getPerkBonus();
                     break;
             }
 
@@ -1039,9 +1052,7 @@ define([
 				var sector = otherSector || this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
 				switch (baseActionID) {
 					case "move_camp_level":
-                        if (!this.nearestCampNodes.head) return this.getCosts("move_sector_west", 100);
-                        var campSector = this.nearestCampNodes.head.entity;
-                        var path = GameGlobals.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true, omitLog: true });
+                        var path = this.getPathToNearestCamp(sector);
                         var sectorsToMove = path ? path.length : 99;
                         return this.getCosts("move_sector_west", sectorsToMove * statusFactor);
 
@@ -1276,6 +1287,12 @@ define([
 
                 default: return false;
             }
+        },
+        
+        getPathToNearestCamp: function (sector) {
+            if (!this.nearestCampNodes.head) return null;
+            var campSector = this.nearestCampNodes.head.entity;
+            return GameGlobals.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true, omitLog: true });
         }
 
     });

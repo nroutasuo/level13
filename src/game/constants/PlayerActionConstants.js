@@ -176,6 +176,10 @@ function (Ash, GameConstants, CampConstants) {
                 move_camp_global: {
                     busy: false
                 },
+                
+                move_camp_level: {
+                    path_to_camp: true,
+                },
 
                 leave_camp: {
                     busy: false,
