@@ -335,6 +335,11 @@ define(['ash',
 				$(scope + " div.container-btn-action").wrap('<div class="callout-container"></div>');
 				$(scope + " div.container-btn-action").after(function () {
 					var action = $($(this).children("button")[0]).attr("action");
+                    if (!action) {
+                        console.log("WARN: Action button with no action");
+                        console.log($(this))
+                        return "";
+                    }
 					if (action === "take_all" || action === "accept_inventory" || action === "use_in_inn_cancel" || action === "fight")
 						return "";
 					return uiFunctions.generateActionButtonCallout(action);

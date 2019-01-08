@@ -1292,6 +1292,10 @@ define([
         getPathToNearestCamp: function (sector) {
             if (!this.nearestCampNodes.head) return null;
             var campSector = this.nearestCampNodes.head.entity;
+            if (!campSector || !sector) return null;
+            var sectorLevel = sector.get(PositionComponent).level;
+            var campLevel = campSector.get(PositionComponent).level;
+            if (Math.abs(campLevel - sectorLevel) > 2) return null;
             return GameGlobals.levelHelper.findPathTo(sector, campSector, { skipBlockers: true, skipUnvisited: true, omitLog: true });
         }
 

@@ -155,16 +155,14 @@ define([
             GameGlobals.gameState.isPaused = false;
 
             // Create world
-            if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t creating world");
             var worldSeed;
             if (hasSave) worldSeed = parseInt(loadedGameState.worldSeed);
             else worldSeed = WorldCreatorRandom.getNewSeed();
+            if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t creating world (seed: " + worldSeed + ")");
 
             WorldCreator.prepareWorld(worldSeed, GameGlobals.itemsHelper);
             GameGlobals.gameState.worldSeed = worldSeed;
             gtag('set', { 'world_seed': worldSeed });
-
-            if (GameConstants.isDebugOutputEnabled) console.log("Prepared world (seed: " + worldSeed + ")");
 
             // Create other entities and fill components
             if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t loading entities");

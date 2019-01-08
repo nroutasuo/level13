@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
-<head>	
+<head>
     
-	<!--  
+	<!--
 	Level 13
 	
 	A text-based science fiction adventure by Noora Routasuo.
@@ -31,8 +31,8 @@
 <body class="wrap wider" style="height:100%">
 	
 	<div class="sticky-footer-wrapper">
-		<div class="grid" id="grid-main">	
-            <div class="unit one-quarter" style="visibility:hidden; padding:1px; height:1px"></div><!-- filler for log -->            
+		<div class="grid" id="grid-main">
+            <div class="unit one-quarter" style="visibility:hidden; padding:1px; height:1px"></div><!-- filler for log -->
 			<div class="unit three-quarters" id="unit-main" style="display: none">
 
                 <div id="header-self-bar" class="lvl13-box-2">
@@ -70,7 +70,7 @@
                         </div>
                         <div id="statsbar-deity" class="statsbar">
                             <button id="btn-deity-rename" class="context btn-meta">Rename</button>
-                            Deity: 
+                            Deity:
                             <span id="deity-name">Name</span>
                             <span id="deity-favour" class="stats-indicator">
                                 <span class="label">Favour</span><span class="value">0</span>
@@ -126,7 +126,7 @@
                         </div>
                         </div>
                         <div class="header-section" style="width: 75%; float: right;">
-						<div id="statsbar-resources" class="statsbar">	
+						<div id="statsbar-resources" class="statsbar">
                         </div>
                         </div>
                     </div>
@@ -222,7 +222,6 @@
 								</tr><tr id="in-improvements-shrine">
 									<td><button class="action action-build action-location" action="build_in_shrine">Shrine</button></td>
 									<td class="list-amount">0</td>
-									<td><button class="action action-use action-location">Worship</button></td>
 								</tr><tr id="in-improvements-barracks">
 									<td><button class="action action-build action-location" action="build_in_barracks">Barracks</button></td>
 									<td class="list-amount">0</td>
@@ -263,7 +262,6 @@
 								</tr><tr id="in-improvements-research">
 									<td><button class="action action-build action-location multiline" action="build_in_researchcenter">Research center</button></td>
 									<td class="list-amount">0</td>
-									<td><button class="action action-use action-location">Select</button></td>
 								</tr><tr id="in-improvements-square">
                                     <td><button class="action action-build action-location" action="build_in_square">Square</button></td>
 									<td class="list-amount">0</td>
@@ -429,7 +427,7 @@
                             </div>
                         </div>
                         
-                        <div class="unit unit-rest"> 
+                        <div class="unit unit-rest">
 							<div class="subheader" id="header-out-actions">
 								<h3>Search</h3>
 							</div>
@@ -462,7 +460,7 @@
 									<td><button class="action action-build action-location" action="build_out_camp" >Camp</button></td>
 									<td class="list-amount">0</td>
 								</tr>
-								</table>                                
+								</table>
 							</div>
 							<div class="actionbox" id="out-locales">
 								<div class="subheader">
@@ -472,7 +470,7 @@
 								</table>
 							</div>
                         </div>
-                    </div>                    
+                    </div>
                     
 					<!-- bag main div: item list & crafting -->
 					<div class="grid tabelement" id="container-tab-two-bag" data-tab="switch-bag" style="display:none">
@@ -509,7 +507,7 @@
                         </div>
                     
                     <div class="grid tabelement" id="container-tab-two-followers" data-tab="switch-followers" style="display:none;">
-						<div class="unit whole">							
+						<div class="unit whole">
                             <div class="subheader" id="header-followers"><h3>Followers</h3></div>
 							<div class="infobox">
 								<ul id="list-followers" class="itemlist"></ul>
@@ -653,7 +651,7 @@
 			
 		</div><!-- main grid -->
 	
-		<div class="grid sticky-footer-push"></div>		
+		<div class="grid sticky-footer-push"></div>
 		
 	</div><!-- sticky footer wrap -->
 	
@@ -689,7 +687,7 @@
         </div>
         <p id="fight-popup-self-info">Own strength</p>
         <ul class="itemlist" id="list-fight-followers" style="margin-top: -10px;"></ul>
-        <div id="fight-popup-results">                                    
+        <div id="fight-popup-results">
         </div>
         <div class="buttonbox" id="fight-buttons-infightactions">
             
@@ -753,7 +751,7 @@
         </div>
     </div>
     
-    <div id="manage-save-popup" class="popup fill-on-mobiles" style="display:none">        
+    <div id="manage-save-popup" class="popup fill-on-mobiles" style="display:none">
         <h3>Export / import save</h3>
         <p>Export / import your save data for backup or to continue playing on another computer.<br/>Note that the game is still in alpha and updates can break your save.</p>
         <p>Your world seed: <span id="save-seed">?</span><br>Current version: <span id="save-version">?</span></p>
@@ -793,14 +791,14 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'UA-118652515-1', { 
+        gtag('config', 'UA-118652515-1', {
             'app_name': 'Level13',
             'custom_map': { 'dimension1': 'world_seed', 'dimension2': 'max_level', 'dimension3': 'max_camp' },
         });
     </script>
 
-	<!-- RequireJS -->    
-    <script data-main="src/config" src="lib/requirejs/require.min.js"></script>
+	<!-- RequireJS -->
+    <script data-main="tools/config-dev" src="lib/requirejs/require.min.js"></script>
 
 </body>
 </html>

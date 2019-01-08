@@ -46,9 +46,13 @@ define(function () {
 
             var now = new Date().getTime();
             if (cache.lastPruneTime && (now - cache.lastPruneTime) / 1000 < 1) {
-                console.log("WARN: VO Cache " + context + " is being pruned too often. keys: " + len + "/" + cache.maxKeys);
+                if (!cache.pruneWarningLogged) {
+                    cache.pruneWarningLogged = true;
+                    console.log("WARN: VO Cache " + context + " is being pruned too often. keys: " + len + "/" + cache.maxKeys);
+                }
                 return;
             }
+            cache.pruneWarningLogged = false;
 
             var thresholdSecs = 60 * 5;
             while (toDelete.length < goalDeletions && thresholdSecs > 3) {

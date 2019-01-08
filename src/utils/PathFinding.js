@@ -46,7 +46,8 @@ define(function () {
                         return null;
                     }
                 } else {
-                    console.log("Can't find path because there is no passage from level " + startLevel + " to level " + goalLevel);
+                    console.log("Can't find path because there is no passage down from level " + startLevel);
+                    return null;
                 }
             } else if (startLevel < goalLevel) {
                 var passageUp = utilities.findPassageUp(startLevel, settings.includeUnbuiltPassages);
@@ -60,7 +61,8 @@ define(function () {
                         return null;
                     }
                 } else {
-                    console.log("Can't find path because there is no passage from level " + startLevel + " to level " + goalLevel);
+                    console.log("Can't find path because there is no passage up from level " + startLevel);
+                    return null;
                 }
             }
 

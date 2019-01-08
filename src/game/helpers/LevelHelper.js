@@ -101,6 +101,9 @@ define([
 
 		getSectorByPosition: function (level, sectorX, sectorY) {
 			var sectorPosition;
+            level = parseInt(level);
+            sectorX = parseInt(sectorX);
+            sectorY = parseInt(sectorY);
 
             // TODO check if saving uses up too much memory / this is the neatest way, speeds up fps a lot (esp for map)
             if (!this.sectorEntitiesByPosition[level]) this.sectorEntitiesByPosition[level] = {};
