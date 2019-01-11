@@ -3,33 +3,41 @@ define(['ash'], function (Ash) {
 
     var CampEventTimersComponent = Ash.Class.extend({
 
-        eventEndTimestamps: {},
-        eventStartTimestamps: {},
+        // event -> in-game seconds left
+        eventEndTimers: {},
+        eventStartTimers: {},
+        eventDurations: {},
 
         constructor: function () {
-            this.eventEndTimestamps = {};
-            this.eventStartTimestamps = {};
-        },
-
-        isEventScheduled: function (event) {
-            return this.eventStartTimestamps[event];
+            this.eventEndTimers = {};
+            this.eventStartTimers = {};
+            this.eventDurations = {};
         },
 
         onEventEnded: function(event, timeToNext) {
+            this.eventEndTimers[event] = null;
             if (timeToNext) {
-                var startTimestamp = new Date().getTime() + timeToNext * 1000;
-                this.eventStartTimestamps[event] = startTimestamp;
+                this.eventStartTimers[event] = timeToNext;
             }
         },
 
         onEventStarted: function(event, durationSec) {
-            var endTimeStamp = new Date().getTime() + durationSec * 1000;
-            this.eventEndTimestamps[event] = endTimeStamp;
+            this.eventEndTimers[event] = durationSec;
+            this.eventDurations[event] = durationSec;
         },
 
         removeTimer: function(event) {
-            this.eventStartTimestamps[event] = null;
-            this.eventEndTimestamps[event] = null;
+            this.eventStartTimers[event] = null;
+            this.eventEndTimers[event] = null;
+            this.eventDurations[event] = null;
+        },
+
+        isEventScheduled: function (event) {
+            return this.eventStartTimers[event];
+        },
+
+        isTimeToStart: function(event) {
+            return this.getEventStartTimeLeft(event) <= 0;
         },
 
         hasTimeEnded: function(event) {
@@ -37,36 +45,19 @@ define(['ash'], function (Ash) {
         },
 
         getEventTimeLeft: function(event) {
-            var timestamp = this.eventEndTimestamps[event];
-            return this.getTimeLeft(timestamp) / 1000;
-        },
-
-        isTimeToStart: function(event) {
-            return this.getEventStartTimeLeft(event) <= 0;
+            return this.eventEndTimers[event] || 0;
         },
 
         getEventStartTimeLeft: function(event) {
-            var timestamp = this.eventStartTimestamps[event];
-            return this.getTimeLeft(timestamp) / 1000;
+            return this.eventStartTimers[event];
         },
 
-        getEventTimePercentage: function (event) {
-            var startTime = this.eventStartTimestamps[event];
-            var endTime = this.eventEndTimestamps[event];
-            if (!startTime || !endTime || this.getEventStartTimeLeft(event) > 0)
+        getEventTimePercentage: function (event, log) {
+            var duration = this.eventDurations[event] || 0;
+            var timeLeft = this.eventEndTimers[event] || 0;
+            if (!duration || !timeLeft)
                 return 0;
-            var now = new Date().getTime();
-            return (1 - (endTime - now) / (endTime - startTime)) * 100;
-        },
-
-        getTimeLeft: function(timestamp) {
-            if (timestamp) {
-                var now = new Date().getTime();
-                var diff = timestamp - now;
-                return diff;
-            } else {
-                return 0;
-            }
+            return (1 - timeLeft / duration) * 100
         },
 
         getSaveKey: function () {

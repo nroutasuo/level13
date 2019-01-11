@@ -35,29 +35,38 @@ define([
 		constructor: function () {},
 
 		addToEngine: function (engine) {
+            this.engine = engine;
 			var sys = this;
 			this.playerNodes = engine.getNodeList(PlayerResourcesNode);
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 			this.campNodes = engine.getNodeList(CampNode);
-			this.campNodes.nodeAdded.add(function (node) {
-				sys.resetTimers(node);
-			});
-			this.resetAllTimers();
+            GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
 		},
 
 		removeFromEngine: function (engine) {
 			this.playerNodes = null;
 			this.tribeUpgradesNodes = null;
 			this.campNodes = null;
+            this.engine = null;
 		},
 
 		update: function (time) {
 			if (GameGlobals.gameState.isPaused) return;
 
-			// TODO take this.engine.extraUpdateTime into account
-
 			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
 				var campTimers = campNode.entity.get(CampEventTimersComponent);
+                
+                // update timers
+                var dt = time + this.engine.extraUpdateTime;
+				for (var key in OccurrenceConstants.campOccurrenceTypes) {
+					var event = OccurrenceConstants.campOccurrenceTypes[key];
+                    if (campTimers.eventEndTimers[event])
+                        campTimers.eventEndTimers[event] -= dt;
+                    if (campTimers.eventStartTimers[event])
+                        campTimers.eventStartTimers[event] -= dt;
+                }
+                
+                // check event changes
 				for (var key in OccurrenceConstants.campOccurrenceTypes) {
 					var event = OccurrenceConstants.campOccurrenceTypes[key];
 					if (this.isCampValidForEvent(campNode, event)) {
@@ -89,24 +98,6 @@ define([
 					break;
 			}
 			return false;
-		},
-
-		// Re-schedule events where the next time has passed while offline
-		resetAllTimers: function () {
-			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
-				this.resetTimers(campNode);
-			}
-		},
-
-		resetTimers: function (campNode, forced) {
-			var campTimers = campNode.entity.get(CampEventTimersComponent);
-			for (var key in OccurrenceConstants.campOccurrenceTypes) {
-				var event = OccurrenceConstants.campOccurrenceTypes[key];
-				var scheduledEventStart = campTimers.getEventStartTimeLeft(event);
-				if (scheduledEventStart <= 0 || forced) {
-					this.endEvent(campNode, event);
-				}
-			}
 		},
 
 		isCampValidForEvent: function (campNode, event) {
@@ -276,7 +267,25 @@ define([
 				}
 			}
 		},
-
+        
+        onGameStarted: function () {
+			for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+				var campTimers = campNode.entity.get(CampEventTimersComponent);
+				for (var key in OccurrenceConstants.campOccurrenceTypes) {
+					var event = OccurrenceConstants.campOccurrenceTypes[key];
+                    if (campTimers.eventStartTimers[event]) {
+                        campTimers.eventStartTimers[event] = Math.max(campTimers.eventStartTimers[event], 15);
+                        console.log("camp " + campNode.position.level + ":  next " + event + " in " + Math.round(campTimers.eventStartTimers[event]) + "s");
+                    }
+                    var minEndTime = Math.min(OccurrenceConstants.getDuration(event), 15);
+                    if (campTimers.eventEndTimers[event]) {
+                        campTimers.eventEndTimers[event] = Math.max(campTimers.eventEndTimers[event], minEndTime);
+                        console.log("camp " + campNode.position.level + ": " + event + " ends in " + Math.round(campTimers.eventEndTimers[event]) + "s");
+                    }
+                }
+            }
+        },
+        
 		isPlayerInCamp: function (campNode) {
 			var playerPosition = this.playerNodes.head.entity.get(PositionComponent);
 			if (!campNode) return playerPosition.inCamp;
@@ -298,7 +307,7 @@ define([
 			}
 			return (upgradeLevel * 0.05) + 1;
 		},
-
+        
 		addLogMessage: function (msg, replacements, values, camp) {
 			var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
 			var campPos = camp.entity.get(PositionComponent);

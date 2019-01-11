@@ -10,11 +10,11 @@ function (Ash, MathUtils, GameConstants) {
 		
 		OCCURRENCE_CAMP_TRADER_LENGTH: 60 * 5,
 		OCCURRENCE_CAMP_TRADER_COOLDOWN: 60 * 10,
-		OCCURRENCE_CAMP_TRADER_VARIATION: 60 * 20,
+		OCCURRENCE_CAMP_TRADER_VARIATION: 60 * 25,
 		
 		OCCURRENCE_CAMP_RAID_LENGTH: 5,
 		OCCURRENCE_CAMP_RAID_COOLDOWN: 60 * 15,
-		OCCURRENCE_CAMP_RAID_VARIATION: 60 * 45,
+		OCCURRENCE_CAMP_RAID_VARIATION: 60 * 60,
 		
 		scheduleNext: function (occurrenceType, upgradeFactor, campPopulation, campMaxPopulation) {
 			var minimumTime = 1;

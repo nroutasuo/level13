@@ -514,7 +514,7 @@ define(['ash',
             var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             var campTimers = currentSector.get(CampEventTimersComponent);
             if (campTimers) {
-                campTimers.eventStartTimestamps["trader"] = new Date().getTime() + 1;
+                campTimers.eventStartTimers["trader"] = 1;
             }
         },
 
