@@ -99,6 +99,7 @@ function (Ash,
             var sectorSize = this.getSectorSize(centered);
             var sunlit = $("body").hasClass("sunlit");
             var levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(mapPosition.level);
+            var levelVO = levelEntity.get(LevelComponent).levelVO;
 
             ctx.canvas.width = dimensions.canvasWidth;
             ctx.canvas.height = dimensions.canvasHeight;
@@ -106,26 +107,34 @@ function (Ash,
             ctx.fillStyle = CanvasConstants.getBackgroundColor(sunlit);
             ctx.fillRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
 
-            // city background
-            var cityBackgroundMinX = this.getSectorPixelPos(dimensions, centered, sectorSize, dimensions.mapMinX, dimensions.mapMinY).x - (centered ? sectorSize : sectorSize / 2);
-            var cityBackgroundMinY = this.getSectorPixelPos(dimensions, centered, sectorSize, dimensions.mapMinX, dimensions.mapMinY).y - (centered ? sectorSize : sectorSize / 2);
-            var cityBackgroundMaxX = cityBackgroundMinX + (dimensions.mapMaxX - dimensions.mapMinX) * sectorSize * 2 + (centered ? sectorSize * 3 : sectorSize * 2);
-            var cityBackgroundMaxY = cityBackgroundMinY + (dimensions.mapMaxY - dimensions.mapMinY) * sectorSize * 2 + (centered ? sectorSize * 3 : sectorSize * 2);
-            ctx.fillStyle = sunlit ? "#efefef" : "#282a28";
-            ctx.fillRect(
-                cityBackgroundMinX,
-                cityBackgroundMinY,
-                cityBackgroundMaxX - cityBackgroundMinX,
-                cityBackgroundMaxY - cityBackgroundMinY);
-
-            this.drawGridOnCanvas(ctx, sectorSize, dimensions, centered);
-
             var sector;
             var sectorStatus;
             var sectorXpx;
             var sectorYpx;
             var sectorPos;
             var sectorPadding = this.getSectorPadding(centered);
+            
+            // background
+            var bgPadding;
+            var radius;
+            ctx.fillStyle = sunlit ? "#efefef" : "#282a28";
+            ctx.strokeStyle = sunlit ? "#efefef" : "#282a28";
+            for (var y = dimensions.minVisibleY; y <= dimensions.maxVisibleY; y++) {
+                for (var x = dimensions.minVisibleX; x <= dimensions.maxVisibleX; x++) {
+                    sector = visibleSectors[x + "." + y];
+                    sectorStatus = SectorConstants.getSectorStatus(sector);
+                    if (this.showSectorOnMap(centered, sector, sectorStatus)) {
+                        bgPadding = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * 0.5 : sectorSize * 2.25;
+                        radius = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * 1.5 : sectorSize * 3;
+                        sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).x;
+                        sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
+                        sectorPos = new PositionVO(mapPosition.level, x, y);
+                        this.fillRoundedRect(ctx, sectorXpx - bgPadding, sectorYpx - bgPadding, sectorSize + bgPadding * 2, sectorSize + bgPadding * 2, radius);
+                    }
+                }
+            }
+            
+            this.drawGridOnCanvas(ctx, sectorSize, dimensions, centered);
 
             // sectors and paths
             for (var y = dimensions.minVisibleY; y <= dimensions.maxVisibleY; y++) {
@@ -137,20 +146,24 @@ function (Ash,
                         sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
                         sectorPos = new PositionVO(mapPosition.level, x, y);
                         this.drawSectorOnCanvas(ctx, x, y, sector, levelEntity, sectorStatus, sectorXpx, sectorYpx, sectorSize);
-                        this.drawMovementLinesOnCanvas(ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding);
+                        if (sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE) {
+                            this.drawMovementLinesOnCanvas(ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding);
+                        }
                     }
                 }
             }
 
             // border on current
             var playerPosVO = this.playerPosNodes.head.position.getPosition();
-            sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, playerPosVO.sectorX, playerPosVO.sectorY).x;
-            sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, playerPosVO.sectorX, playerPosVO.sectorY).y;
-            ctx.strokeStyle = sunlit ? "#bbb" : "#666";
-            ctx.lineWidth = centered ? 3 : 2;
-            ctx.beginPath();
-            ctx.arc(sectorXpx + sectorSize * 0.5, sectorYpx + 0.5 * sectorSize, sectorSize, 0, 2 * Math.PI);
-            ctx.stroke();
+            if (playerPosVO.level == levelVO.level) {
+                sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, playerPosVO.sectorX, playerPosVO.sectorY).x;
+                sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, playerPosVO.sectorX, playerPosVO.sectorY).y;
+                ctx.strokeStyle = sunlit ? "#bbb" : "#666";
+                ctx.lineWidth = centered ? 3 : 2;
+                ctx.beginPath();
+                ctx.arc(sectorXpx + sectorSize * 0.5, sectorYpx + 0.5 * sectorSize, sectorSize, 0, 2 * Math.PI);
+                ctx.stroke();
+            }
 
             CanvasConstants.updateScrollEnable($(canvas).attr("id"));
         },
@@ -196,9 +209,10 @@ function (Ash,
         getSectorPixelPos: function (dimensions, centered, sectorSize, x, y) {
             var smallMapOffsetX = Math.max(0, (dimensions.canvasWidth - dimensions.mapWidth) / 2);
             var padding = this.getSectorPadding(centered);
+            var margin = this.getSectorMargin(centered);
             return {
-                x: sectorSize * padding + (x - dimensions.minVisibleX) * sectorSize * (1 + padding) + smallMapOffsetX,
-                y: sectorSize * padding + (y - dimensions.minVisibleY) * sectorSize * (1 + padding)
+                x: sectorSize * margin + sectorSize * padding + (x - dimensions.minVisibleX) * sectorSize * (1 + padding) + smallMapOffsetX,
+                y: sectorSize * margin + sectorSize * padding + (y - dimensions.minVisibleY) * sectorSize * (1 + padding)
             };
         },
 
@@ -207,17 +221,19 @@ function (Ash,
             var sunlit = $("body").hasClass("sunlit");
             ctx.strokeStyle = sunlit ? "#d9d9d9" : "#343434";
             ctx.lineWidth = 1;
+            var startGridX = (Math.floor(dimensions.mapMinX / gridSize) - 1) * gridSize;
+            var endGridX = (Math.ceil(dimensions.mapMaxX / gridSize) + 2) * gridSize;
             var startGridY = (Math.floor(dimensions.mapMinY / gridSize) - 1) * gridSize;
             var endGridY = (Math.ceil(dimensions.mapMaxY / gridSize) + 1) * gridSize;
-            var startGridX = (Math.floor(dimensions.mapMinX / gridSize) - 1) * gridSize;
-            var endGridX = (Math.ceil(dimensions.mapMaxX / gridSize) + 1) * gridSize;
             for (var y = startGridY; y <= endGridY; y += gridSize) {
                 for (var x = startGridX; x <= endGridX; x += gridSize) {
+                    var gridX = x - (gridSize - 1 / 2);
+                    var gridY = y - (gridSize - 1 / 2);
                     ctx.strokeRect(
-                        this.getSectorPixelPos(dimensions, centered, sectorSize, x - (gridSize - 1 / 2), y - (gridSize - 1 / 2)).x - sectorSize * 0.5,
-                        this.getSectorPixelPos(dimensions, centered, sectorSize, x - (gridSize - 1 / 2), y - (gridSize - 1 / 2)).y - sectorSize * 0.5,
-                        sectorSize * gridSize * 2,
-                        sectorSize * gridSize * 2);
+                        this.getSectorPixelPos(dimensions, centered, sectorSize, gridX, gridY).x - sectorSize * 0.5 + 2,
+                        this.getSectorPixelPos(dimensions, centered, sectorSize, gridX, gridY).y - sectorSize * 0.5 + 2,
+                        sectorSize * (gridSize - 1) * 2 - sectorSize * 0.5,
+                         sectorSize * (gridSize - 1) * 2 - sectorSize * 0.5);
                 }
             }
         },
@@ -350,7 +366,7 @@ function (Ash,
 
         getCanvasMinimumHeight: function (canvas) {
             switch ($(canvas).attr("id")) {
-                case "mainmap": return 45;
+                case "mainmap": return 10;
                 case "minimap": return 208;
                 default: return 0;
             }
@@ -412,8 +428,8 @@ function (Ash,
             dimensions.maxVisibleY = Math.min(dimensions.maxVisibleY, dimensions.canvasMaxY);
 
             var canvas = $("#" + canvasId);
-            dimensions.mapWidth = (dimensions.maxVisibleX - dimensions.minVisibleX + (centered ? 1.5 : 1.5)) * sectorSize * (1 + this.getSectorPadding(centered));
-            dimensions.mapHeight = (dimensions.maxVisibleY - dimensions.minVisibleY + (centered ? 1.5 : 1.5)) * sectorSize * (1 + this.getSectorPadding(centered));
+            dimensions.mapWidth = (dimensions.maxVisibleX - dimensions.minVisibleX + (centered ? 1.5 : 1.5)) * sectorSize * (1 + this.getSectorPadding(centered)) + sectorSize * this.getSectorMargin(centered) * 2;
+            dimensions.mapHeight = (dimensions.maxVisibleY - dimensions.minVisibleY + (centered ? 1.5 : 1.5)) * sectorSize * (1 + this.getSectorPadding(centered)) + sectorSize * this.getSectorMargin(centered) * 2;
             dimensions.canvasWidth = Math.max(dimensions.mapWidth, this.getCanvasMinimumWidth(canvas));
             dimensions.canvasHeight = Math.max(dimensions.mapHeight, this.getCanvasMinimumHeight(canvas));
             dimensions.sectorSize = sectorSize;
@@ -431,6 +447,10 @@ function (Ash,
 
         getSectorPadding: function (centered) {
             return 0.75;
+        },
+        
+        getSectorMargin: function (centered) {
+            return centered ? 0 : 2;
         },
 
         getSectorFill: function (sectorStatus) {
@@ -459,6 +479,13 @@ function (Ash,
                 case resourceNames.fuel: return "#dd66cc";
             }
         },
+        
+        fillRoundedRect: function (ctx, x, y, w, h, radius) {
+            ctx.lineJoin = "round";
+            ctx.lineWidth = radius;
+            ctx.strokeRect(x+(radius/2), y+(radius/2), w-radius, h-radius);
+            ctx.fillRect(x+(radius/2), y+(radius/2), w-radius, h-radius);
+        }
 
     });
 
