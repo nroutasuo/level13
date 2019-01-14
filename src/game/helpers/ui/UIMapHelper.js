@@ -124,8 +124,8 @@ function (Ash,
                     sector = visibleSectors[x + "." + y];
                     sectorStatus = SectorConstants.getSectorStatus(sector);
                     if (this.showSectorOnMap(centered, sector, sectorStatus)) {
-                        bgPadding = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * 0.5 : sectorSize * 2.25;
-                        radius = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * 1.5 : sectorSize * 3;
+                        bgPadding = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * 0.35 : sectorSize * 2.15;
+                        radius = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * 0.75 : sectorSize * 2.5;
                         sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).x;
                         sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
                         sectorPos = new PositionVO(mapPosition.level, x, y);

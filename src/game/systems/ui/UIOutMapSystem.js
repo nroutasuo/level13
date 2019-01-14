@@ -18,6 +18,7 @@ define([
             $("#btn-cheat-teleport").click(function () {
                 sys.teleport();
             });
+            this.updateHeight();
         },
 
 		addToEngine: function (engine) {
@@ -27,6 +28,7 @@ define([
             this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
             GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
+            GlobalSignals.add(this, GlobalSignals.windowResizedSignal, this.onResize);
             GlobalSignals.add(this, GlobalSignals.clearBubblesSignal, this.clearBubble);
 		},
 
@@ -44,6 +46,11 @@ define([
 			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.map) return;
             GameGlobals.gameState.uiStatus.mapVisited = true;
 		},
+        
+        updateHeight: function () {
+            var maxHeight = Math.max(208, $(window).height() - 380);
+            $("#mainmap-container").css("maxHeight", maxHeight + "px");
+        },
 
         initLevelSelector: function () {
             $("#select-header-level").empty();
@@ -146,6 +153,10 @@ define([
         onGameStarted: function () {
             this.initLevelSelector();
             this.updateLevelSelector();
+        },
+        
+        onResize: function () {
+            this.updateHeight();
         },
 
 		onTabChanged: function (tabID) {
