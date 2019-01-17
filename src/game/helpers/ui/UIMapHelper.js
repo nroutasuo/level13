@@ -14,13 +14,14 @@ define(['ash',
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/PassagesComponent',
+    'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/improvements/WorkshopComponent',
     'game/components/type/SectorComponent',
     'game/vos/PositionVO'],
 function (Ash,
     GameGlobals, UIConstants, CanvasConstants, MovementConstants, PositionConstants, SectorConstants, WorldCreatorConstants,
     PlayerPositionNode,
-    LevelComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, WorkshopComponent, SectorComponent,
+    LevelComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, SectorImprovementsComponent, WorkshopComponent, SectorComponent,
     PositionVO) {
 
     var UIMapHelper = Ash.Class.extend({
@@ -124,8 +125,8 @@ function (Ash,
                     sector = visibleSectors[x + "." + y];
                     sectorStatus = SectorConstants.getSectorStatus(sector);
                     if (this.showSectorOnMap(centered, sector, sectorStatus)) {
-                        bgPadding = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * 0.35 : sectorSize * 2.15;
-                        radius = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * 0.75 : sectorSize * 2.5;
+                        bgPadding = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * 0.35 : sectorSize * 2.25;
+                        radius = sectorStatus == SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE ? sectorSize * 0.75 : sectorSize * 2.25;
                         sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).x;
                         sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
                         sectorPos = new PositionVO(mapPosition.level, x, y);
@@ -221,6 +222,7 @@ function (Ash,
             var sunlit = $("body").hasClass("sunlit");
             ctx.strokeStyle = sunlit ? "#d9d9d9" : "#343434";
             ctx.lineWidth = 1;
+            var sectorPadding = this.getSectorPadding(centered);
             var startGridX = (Math.floor(dimensions.mapMinX / gridSize) - 1) * gridSize;
             var endGridX = (Math.ceil(dimensions.mapMaxX / gridSize) + 2) * gridSize;
             var startGridY = (Math.floor(dimensions.mapMinY / gridSize) - 1) * gridSize;
@@ -232,29 +234,28 @@ function (Ash,
                     ctx.strokeRect(
                         this.getSectorPixelPos(dimensions, centered, sectorSize, gridX, gridY).x - sectorSize * 0.5 + 2,
                         this.getSectorPixelPos(dimensions, centered, sectorSize, gridX, gridY).y - sectorSize * 0.5 + 2,
-                        sectorSize * (gridSize - 1) * 2 - sectorSize * 0.5,
-                         sectorSize * (gridSize - 1) * 2 - sectorSize * 0.5);
+                        (sectorSize + sectorSize * sectorPadding) * gridSize,
+                        (sectorSize + sectorSize * sectorPadding) * gridSize);
                 }
             }
         },
 
         drawSectorOnCanvas: function (ctx, x, y, sector, levelEntity, sectorStatus, sectorXpx, sectorYpx, sectorSize) {
             var isLocationSunlit = $("body").hasClass("sunlit");
-            ctx.fillStyle = this.getSectorFill(sectorStatus);
-            ctx.fillRect(sectorXpx, sectorYpx, sectorSize, sectorSize);
+            var isBigSectorSize = sectorSize >= this.getSectorSize(true);
 
-            var iconSize = 10;
             var statusComponent = sector.get(SectorStatusComponent);
             var isScouted = statusComponent.scouted;
+            var isRevealed = isScouted || this.isMapRevealed;
 
             // border for sectors with hazards or sunlight
             var isVisited = sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE && sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE;
-            if (isVisited) {
+            if (isVisited || this.isMapRevealed) {
                 var isSectorSunlit = sector.get(SectorFeaturesComponent).sunlit;
                 var hasSectorHazard = sector.get(SectorFeaturesComponent).hazards.hasHazards();
                 if (isSectorSunlit || hasSectorHazard) {
                     ctx.strokeStyle = hasSectorHazard ? "#ee4444" : isLocationSunlit ? "#ffee11" : "#ddee66";
-                    ctx.lineWidth = Math.ceil(sectorSize / 8);
+                    ctx.lineWidth = Math.max(1, Math.round(sectorSize / 8));
                     ctx.beginPath();
                     ctx.moveTo(sectorXpx - 1, sectorYpx - 1);
                     ctx.lineTo(sectorXpx + sectorSize + 1, sectorYpx - 1);
@@ -264,52 +265,97 @@ function (Ash,
                     ctx.stroke();
                 }
             }
-
-            // sector contents: resources
-            var hasWater = false;
-            var discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources(sector);
-            var resourcesCollectable = sector.get(SectorFeaturesComponent).resourcesCollectable;
-            var r = 0;
-            for (var key in resourceNames) {
-                var name = resourceNames[key];
-                var colAmount = resourcesCollectable.getResource(name);
-                if (colAmount > 0 || discoveredResources.indexOf(name) >= 0) {
-                    if (name === "water") hasWater = true;
-                    if (sectorSize > iconSize && isScouted) {
-                        ctx.fillStyle = this.getResourceFill(name);
-                        ctx.fillRect(sectorXpx + 2 + r * 4, sectorYpx + sectorSize - 5, 3, 3);
-                        r++;
-                    }
-                }
-            }
+            
+            // background color
+            ctx.fillStyle = this.getSectorFill(sectorStatus);
+            ctx.fillRect(sectorXpx, sectorYpx, sectorSize, sectorSize);
 
             // sector contents: points of interest
+            var hasIcon = false;
+            var iconSize = 10;
+            var iconPosYCentered = sectorYpx + sectorSize / 2 - iconSize / 2;
+            var iconPosX = sectorXpx + (sectorSize - iconSize) / 2;
+            var iconPosY = isBigSectorSize ? sectorYpx : iconPosYCentered;
+            var useSunlitImage = isLocationSunlit;
+            
             var sectorFeatures = sector.get(SectorFeaturesComponent);
             var sectorPassages = sector.get(PassagesComponent);
             var localesComponent = sector.get(SectorLocalesComponent);
             var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
+            var sectorImprovements = sector.get(SectorImprovementsComponent);
             var hasCampOnLevel = levelEntity.get(CampComponent) !== null;
-            var iconPosX = sectorXpx + (sectorSize - iconSize) / 2;
-            var iconPosY = sectorSize > iconSize ? sectorYpx + 1 : sectorYpx;
 
-            var useSunlitImage = isLocationSunlit || (!isScouted && this.isMapRevealed);
-
-            if (!isScouted && !this.isMapRevealed)
-                ctx.drawImage(this.icons["unknown" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
-            else if (sector.has(WorkshopComponent))
+            if (!isRevealed && !this.isMapRevealed) {
+                hasIcon = true;
+                ctx.drawImage(this.icons["unknown" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosYCentered);
+            } else if (sector.has(WorkshopComponent)) {
+                hasIcon = true;
                 ctx.drawImage(this.icons["workshop" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
-            else if (sector.has(CampComponent))
+            } else if (sector.has(CampComponent)) {
+                hasIcon = true;
                 ctx.drawImage(this.icons["camp" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
-            else if (!hasCampOnLevel && sectorFeatures.canHaveCamp())
+            } else if (!hasCampOnLevel && sectorFeatures.canHaveCamp()) {
+                hasIcon = true;
                 ctx.drawImage(this.icons["campable" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
-            else if (sectorPassages.passageUp)
+            } else if (sectorPassages.passageUp) {
+                hasIcon = true;
                 ctx.drawImage(this.icons["passage-up" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
-            else if (sectorPassages.passageDown)
+            } else if (sectorPassages.passageDown) {
+                hasIcon = true;
                 ctx.drawImage(this.icons["passage-down" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
-            else if (unScoutedLocales > 0)
+            } else if (unScoutedLocales > 0) {
+                hasIcon = true;
                 ctx.drawImage(this.icons["interest" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
-            else if (hasWater)
-                ctx.drawImage(this.icons["water" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
+            }
+    
+            // sector contents: resources
+            if (isRevealed && (isBigSectorSize || !hasIcon)) {
+                var mapResources = [ resourceNames.water, resourceNames.food ];
+                var directResources = {};
+                directResources[resourceNames.water] = sectorImprovements.getCount(improvementNames.collector_water) > 0 || sectorFeatures.hasSpring;
+                directResources[resourceNames.food] = sectorImprovements.getCount(improvementNames.collector_food) > 0;
+                
+                var potentialResources = {};
+                var discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources(sector);
+                var resourcesCollectable = sectorFeatures.resourcesCollectable;
+                var totalWidth = 0;
+                var bigResSize = 5;
+                var smallResSize = 3;
+                var padding = 1;
+                for (var i in mapResources) {
+                    var name = mapResources[i];
+                    var colAmount = resourcesCollectable.getResource(name);
+                    if (colAmount > 0 || discoveredResources.indexOf(name) >= 0) {
+                        potentialResources[name] = true;
+                    }
+                    
+                    if (directResources[name]) totalWidth += bigResSize + padding;
+                    else if(potentialResources[name]) totalWidth += smallResSize + padding;
+                }
+            
+                if (totalWidth > 0) {
+                    totalWidth -= padding;
+                    var x = sectorXpx + sectorSize / 2 - totalWidth / 2;
+                    var y = isBigSectorSize ? sectorYpx + sectorSize - 5 : sectorYpx + sectorSize / 2 - 1;
+                    var drawSize = 0;
+                    var yOffset;
+                    for (var i in mapResources) {
+                        var name = mapResources[i];
+                        if (directResources[name]) {
+                            drawSize = bigResSize;
+                            yOffset = -1;
+                        } else if(potentialResources[name]) {
+                            drawSize = smallResSize;
+                            yOffset = 0;
+                        }
+                        if (drawSize > 0) {
+                            ctx.fillStyle = this.getResourceFill(name);
+                            ctx.fillRect(x, y + yOffset, drawSize, drawSize);
+                            x = x + drawSize + padding;
+                        }
+                    }
+                }
+            }
         },
 
         drawMovementLinesOnCanvas: function (ctx, mapPosition, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding) {
@@ -333,20 +379,31 @@ function (Ash,
                     ctx.stroke();
 
                     var blocker = sectorPassages.getBlocker(direction);
-                    var blockerType = blocker ? blocker.type : "null";
                     if (blocker) {
+                        var blockerType = blocker.type;
                         var isBlocked = GameGlobals.movementHelper.isBlocked(sector, direction);
                         var isGang = blockerType === MovementConstants.BLOCKER_TYPE_GANG;
-                        ctx.strokeStyle = !isGang ? "#dd0000" : (sunlit ? "#b0b0b0" : "#3a3a3a");
-                        ctx.lineWidth = Math.ceil(sectorSize / 9);
-                        ctx.beginPath();
-                        ctx.arc(
-                            sectorMiddleX + sectorSize * (1 + sectorPadding)/2 * distX,
-                            sectorMiddleY + sectorSize * (1 + sectorPadding)/2 * distY,
-                            sectorSize * 0.2,
-                            0,
-                            2 * Math.PI);
-                        ctx.stroke();
+                        var blockerX = sectorMiddleX + sectorSize * (1 + sectorPadding)/2 * distX;
+                        var blockerY = sectorMiddleY + sectorSize * (1 + sectorPadding)/2 * distY;
+                        if (isGang) {
+                            if (isBlocked) {
+                                ctx.strokeStyle = "#dd0000";
+                                ctx.lineWidth = Math.ceil(sectorSize / 9);
+                                ctx.beginPath();
+                                ctx.arc(blockerX, blockerY, sectorSize * 0.2, 0, 2 * Math.PI);
+                                ctx.stroke();
+                            }
+                        } else {
+                            var crossSize = Math.max(sectorSize / 5, 3);
+                            ctx.strokeStyle = isBlocked ? "#dd0000" : this.getSectorFill(SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED);
+                            ctx.lineWidth = Math.ceil(sectorSize / 9);
+                            ctx.beginPath();
+                            ctx.moveTo(blockerX - crossSize, blockerY - crossSize);
+                            ctx.lineTo(blockerX + crossSize, blockerY + crossSize);
+                            ctx.moveTo(blockerX + crossSize, blockerY - crossSize);
+                            ctx.lineTo(blockerX - crossSize, blockerY + crossSize);
+                            ctx.stroke();
+                        }
                     }
                 }
             }
@@ -438,7 +495,7 @@ function (Ash,
         },
 
         getSectorSize: function (centered) {
-            return centered ? 16 : 10;
+            return centered ? 16 : 11;
         },
 
         getGridSize: function () {
@@ -446,7 +503,7 @@ function (Ash,
         },
 
         getSectorPadding: function (centered) {
-            return 0.75;
+            return centered ? 0.75 : 0.85;
         },
         
         getSectorMargin: function (centered) {

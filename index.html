@@ -525,12 +525,20 @@
                                 <div id="mainmap-overlay" class="map-overlay"></div>
                             </div>
                             <div id="mainmap-sector-details" class="lvl13-box-1" style="margin: 5px; padding: 5px;">
-                                <h3>Sector details</h3>
                                 <div id="mainmap-sector-details-content-empty">
-                                    <p>Click on a sector to see details.</p>
+                                    <h3>Sector details</h3>
+                                    <p class="meta">Click on a sector to see details.</p>
                                 </div>
                                 <div id="mainmap-sector-details-content">
-                                    <p>Position: <span id="mainmap-sector-details-pos"></p>
+                                    <h3>Sector <span id="mainmap-sector-details-pos"/></h3>
+                                    <table class="table-loose">
+                                        <tr><td>Points of interest:</td><td><span id="mainmap-sector-details-poi"></span></td></tr>
+                                        <tr><td>Resources scavenged:</td><td><span id="mainmap-sector-details-res-sca"></span></td></tr>
+                                        <tr><td>Collectors:</td><td><span id="mainmap-sector-details-res-col"></span></td></tr>
+                                        <tr><td>Threats:</td><td><span id="mainmap-sector-details-threats"></span></td></tr>
+                                        <tr><td>Environment:</td><td><span id="mainmap-sector-details-env"></span></td></tr>
+                                        <tr><td>Distance:</td><td><span id="mainmap-sector-details-distance"></span></td></tr>
+                                    </table>
                                 </div>
                                 <div id="mainmap-sector-details-content-debug">
                                     <button id="btn-cheat-teleport" class="meta">Teleport</button>

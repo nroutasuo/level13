@@ -442,7 +442,7 @@ define([
 
 			if (hasEnemies) {
 				if (isScouted) {
-					enemyDesc = TextConstants.getEnemyText(enemiesComponent.possibleEnemies, sectorControlComponent);
+					enemyDesc = "This area is " + TextConstants.getEnemyText(enemiesComponent.possibleEnemies, sectorControlComponent) + ". ";
 				}
 			} else if (isScouted) {
 				enemyDesc += "There doesn't seem to be anything hostile around. ";

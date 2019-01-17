@@ -1289,6 +1289,12 @@ button .cooldown-duration {
 table.fullwidth {
   width: 100%;
 }
+table.table-loose {
+  margin: 5px 0px;
+}
+table.table-loose td {
+  padding: 2px 5px;
+}
 td.minwidth {
   width: 5%;
 }

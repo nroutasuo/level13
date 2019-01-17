@@ -79,7 +79,7 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
         },
         
         /*
-        There is a hole in the level ceiling here. An elevator has been built, 
+        There is a hole in the level ceiling here. An elevator has been built,
         /**/
         
         getPassageDescription: function (passageVO, direction, isBuilt) {
@@ -144,7 +144,7 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
                 var lastCommaIndex = msg.lastIndexOf(",");
                 msg = msg.substring(0, lastCommaIndex) + " and" + msg.substring(lastCommaIndex + 1);
             }
-            return {msg: msg, replacements: replacements, values: values};            
+            return {msg: msg, replacements: replacements, values: values};
         },
         
         createTextFromLogMessage: function (msg, replacements, values, includePeriod) {
@@ -227,11 +227,11 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
 				if (repairBracket === this.repairBrackets[1][0]) return "Decaying warehouse";
 				if (repairBracket === this.repairBrackets[2][0]) return "Abandoned warehouse";
 				return "Sturdy warehouse";
-			case localeTypes.camp: 
+			case localeTypes.camp:
             case localeTypes.tradingpartner:
                 return isShort ? "Camp" : "Foreign camp";
 			case localeTypes.hut:
-			case localeTypes.hermit: 
+			case localeTypes.hermit:
                 return isShort ? "Hut" : "Lone hut";
 			case localeTypes.caravan: return isShort ? "Caravan" : "Trade caravan";
 			default: return "Building";
@@ -268,15 +268,12 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
 			}
 		},
 		
-		getEnemyText: function (enemyList, sectorControlComponent) {			
-			var sectorPart = "";
+		getEnemyText: function (enemyList, sectorControlComponent) {
+			var result = "";
 			var enemyActiveV = this.getEnemyActiveVerb(enemyList);
-			var enemyNounSector = this.getEnemyNoun(enemyList, true);			
-            sectorPart += "This area is " + enemyActiveV + " " + enemyNounSector + ". ";
-            
-			var workshopPart = "";
-			
-			return sectorPart + workshopPart;
+			var enemyNounSector = this.getEnemyNoun(enemyList, true);
+            result += enemyActiveV + " " + enemyNounSector;
+			return result;
 		},
 		
 		getEnemyNoun: function (enemyList, detailed) {
@@ -294,7 +291,7 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
         },
 		
 		getEnemyActiveVerb: function(enemyList) {
-			return this.getCommonText(enemyList, "activeV", "", "occupied by", false);    
+			return this.getCommonText(enemyList, "activeV", "", "occupied by", false);
 		},
 		
 		getEnemeyDefeatedVerb: function(enemyList) {
@@ -307,7 +304,7 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
                     var groupNoun = this.getEnemyGroupNoun(enemiesComponent.possibleEnemies);
                     var enemyNoun = this.getEnemyNoun(enemiesComponent.possibleEnemies);
                     return groupNoun + " of " + enemyNoun;
-                default: 
+                default:
                     return blockerVO.name;
             }
         },
@@ -564,7 +561,7 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
 		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL][d4][r1] = "A dense corridor lined so closely with crumling ruins that there is barely enough space to walk.";
 		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL][d4][r2] = "A narrow corridor between two vast and decaying shopping towers with barely enough space to walk.";
 		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL][d4][r3] = "A narrow corridor between two massive shopping towers with barely enough space to walk.";
-		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL][d4][r4] = "A narrow but well-maintained corridor between two massive shopping towers with barely enough space to walk.";    
+		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL][d4][r4] = "A narrow but well-maintained corridor between two massive shopping towers with barely enough space to walk.";
 		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_SLUM] = {};
 		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_SLUM][d1] = {};
 		sectorDesc[WorldCreatorConstants.SECTOR_TYPE_SLUM][d1][r1] = sectorDesc[WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL][d1][r1];

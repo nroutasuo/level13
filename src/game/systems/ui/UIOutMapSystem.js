@@ -3,15 +3,30 @@ define([
     'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/GameConstants',
+    'game/constants/TextConstants',
+    'game/nodes/PlayerLocationNode',
     'game/nodes/PlayerPositionNode',
+    'game/components/common/CampComponent',
     'game/components/common/PositionComponent',
     'game/components/common/VisitedComponent',
+    'game/components/sector/EnemiesComponent',
+    'game/components/sector/PassagesComponent',
+    'game/components/sector/SectorControlComponent',
+    'game/components/sector/SectorFeaturesComponent',
+    'game/components/sector/SectorLocalesComponent',
+    'game/components/sector/SectorStatusComponent',
+    'game/components/sector/improvements/SectorImprovementsComponent',
+    'game/components/sector/improvements/WorkshopComponent',
     'game/systems/CheatSystem'
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, PlayerPositionNode, PositionComponent, VisitedComponent, CheatSystem) {
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, TextConstants,
+    PlayerLocationNode, PlayerPositionNode,
+    CampComponent, PositionComponent, VisitedComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent,
+    CheatSystem) {
 
     var UIOutMapSystem = Ash.System.extend({
 
         playerPositionNodes: null,
+		playerLocationNodes: null,
 
         constructor: function () {
             var sys = this;
@@ -25,7 +40,8 @@ define([
             this.engine = engine;
             $("#select-header-level").bind("change", $.proxy(this.onLevelSelectorChanged, this));
             GameGlobals.uiMapHelper.enableScrollingForMap("mainmap");
-            this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
+            this.playerPositionNodes = engine.getNodeList(PlayerPositionNode);
+            this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
             GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
             GlobalSignals.add(this, GlobalSignals.windowResizedSignal, this.onResize);
@@ -37,7 +53,8 @@ define([
             GlobalSignals.removeAll(this);
             $("#select-header-level").unbind("change", $.proxy(this.onLevelSelectorChanged, this));
             GameGlobals.uiMapHelper.disableScrollingForMap("mainmap");
-            this.playerPosNodes = null;
+            this.playerPositionNodes = null;
+            this.playerLocationNodes = null;
 		},
 
 		update: function (time) {
@@ -89,7 +106,7 @@ define([
         },
 
 		updateMap: function () {
-            var mapPosition = this.playerPosNodes.head.position.getPosition();
+            var mapPosition = this.playerPositionNodes.head.position.getPosition();
             if (this.selectedLevel) {
                 mapPosition.level = this.selectedLevel;
                 mapPosition.sectorX = 0;
@@ -109,12 +126,19 @@ define([
 
             if (hasSector) {
                 var position = this.selectedSector.get(PositionComponent).getPosition();
-                $("#mainmap-sector-details-pos").text(position.getInGameFormat(true));
+    			var isScouted = this.selectedSector.get(SectorStatusComponent).scouted;
+                $("#mainmap-sector-details-pos").text(position.getInGameFormat(false));
+                $("#mainmap-sector-details-poi").text(this.getPOIText(this.selectedSector, isScouted));
+                $("#mainmap-sector-details-res-sca").text(this.getResScaText(this.selectedSector, isScouted));
+                $("#mainmap-sector-details-res-col").text(this.getCollectorsText(this.selectedSector, isScouted));
+                $("#mainmap-sector-details-threats").text(this.getThreatsText(this.selectedSector, isScouted));
+                $("#mainmap-sector-details-env").text(this.getEnvironmentText(this.selectedSector, isScouted));
+                $("#mainmap-sector-details-distance").text(this.getDistanceText(this.selectedSector));
             }
         },
 
 		centerMap: function () {
-            var mapPosition = this.playerPosNodes.head.position.getPosition();
+            var mapPosition = this.playerPositionNodes.head.position.getPosition();
             if (this.selectedLevel) {
                 mapPosition.level = this.selectedLevel;
                 mapPosition.sectorX = 0;
@@ -124,7 +148,7 @@ define([
         },
 
         updateMapCompletionHint: function () {
-            var mapStatus = GameGlobals.levelHelper.getLevelStats(this.playerPosNodes.head.position.level);
+            var mapStatus = GameGlobals.levelHelper.getLevelStats(this.playerPositionNodes.head.position.level);
             if (GameConstants.isDebugOutputEnabled) console.log(mapStatus);
             var mapStatusText = "There are still many unvisited streets on this level.";
             if (mapStatus.percentClearedSectors >= 1)
@@ -137,6 +161,79 @@ define([
                 mapStatusText = "There are still some unvisited streets on this level.";
 
             $("#map-completion-hint").text(mapStatusText);
+        },
+        
+        getPOIText: function (sector, isScouted) {
+            if (!isScouted) return "?";
+            
+            var levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(sector.get(PositionComponent).level);
+            var hasCampOnLevel = levelEntity.get(CampComponent) !== null;
+			var sectorFeatures = sector.get(SectorFeaturesComponent);
+            var sectorPassages = sector.get(PassagesComponent);
+            var statusComponent = this.selectedSector.get(SectorStatusComponent);
+            var localesComponent = sector.get(SectorLocalesComponent);
+            var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
+            
+            var result = [];
+            if (sector.has(CampComponent)) result.push("camp");
+            if (sector.has(WorkshopComponent)) result.push("workshop");
+            if (!hasCampOnLevel && sectorFeatures.canHaveCamp()) result.push("good place for camp");
+            if (sectorPassages.passageUp) result.push("passage up");
+            if (sectorPassages.passageDown) result.push("passage down");
+            if (unScoutedLocales > 0) result.push("unscouted locales");
+            
+            if (result.length < 1) return "-";
+            else return result.join(", ");
+        },
+        
+        getResScaText: function (sector) {
+            var result = GameGlobals.sectorHelper.getLocationDiscoveredResources(sector);
+            if (result.length < 1) return "-";
+            else return result.join(", ");
+        },
+        
+        getCollectorsText: function (sector) {
+            var improvements = sector.get(SectorImprovementsComponent);
+			var collectorFood = improvements.getVO(improvementNames.collector_food);
+			var collectorWater = improvements.getVO(improvementNames.collector_water);
+            
+            var result = [];
+            if (collectorFood.count === 1) result.push("1 trap");
+            if (collectorFood.count > 1) result.push("traps");
+            if (collectorWater.count === 1) result.push("1 bucket");
+            if (collectorWater.count > 1) result.push("buckets");
+            
+            if (result.length < 1) return "-";
+            else return result.join(", ");
+        },
+        
+        getThreatsText: function (sector, isScouted) {
+            if (!isScouted) return "?";
+			var sectorControlComponent = sector.get(SectorControlComponent);
+			var enemiesComponent = sector.get(EnemiesComponent);
+			if (enemiesComponent.hasEnemies) {
+				return TextConstants.getEnemyText(enemiesComponent.possibleEnemies, sectorControlComponent);
+			} else {
+                return "-"
+			}
+        },
+        
+        getEnvironmentText: function (sector, isScouted) {
+            if (!isScouted) return "?";
+            var result = [];
+			var featuresComponent = sector.get(SectorFeaturesComponent);
+            if (featuresComponent.sunlit) result.push("sunlit");
+            if (featuresComponent.hazards.radiation > 0) result.push("radioactivity (" + featuresComponent.hazards.radiation + ")");
+            if (featuresComponent.hazards.poison > 0) result.push("pollution (" + featuresComponent.hazards.poison + ")");
+            if (featuresComponent.hazards.cold > 0) result.push("cold (" + featuresComponent.hazards.cold + ")");
+            if (result.length < 1) return "-";
+            else return result.join(", ");
+        },
+        
+        getDistanceText: function (sector) {
+            var path = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, sector, { skipBlockers: true, skipUnvisited: true });
+            var len = path ? path.length : "?";
+            return len + " blocks";
         },
 
         teleport: function () {
@@ -163,7 +260,7 @@ define([
             if (tabID === GameGlobals.uiFunctions.elementIDs.tabs.map) {
                 $("#tab-header h2").text("Map");
                 this.updateLevelSelector();
-                this.selectLevel(this.playerPosNodes.head.position.level);
+                this.selectLevel(this.playerPositionNodes.head.position.level);
                 this.updateMap();
                 this.centerMap();
                 this.updateMapCompletionHint();
