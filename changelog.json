@@ -3,8 +3,12 @@
 			"version": "0.2.3",
 			"phase": "alpha",
 			"final": false,
-			"updated": "2019-01-08",
+			"updated": "2019-01-18",
 			"changes": [
+                {
+                    "type": "UI",
+                    "summary": "Improved maps."
+                },
                 {
 					"type": "DEV",
 					"summary": "Compress saves to save localStorage space and make exports more manageable."
