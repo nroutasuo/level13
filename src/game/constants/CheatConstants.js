@@ -23,6 +23,7 @@ define(function () {
         CHEAT_NAME_BLUEPRINT: "blueprint",
         CHEAT_NAME_BLUEPRINTS: "blueprints",
         CHEAT_NAME_TRADE_PARTNERS: "tradepartners",
+        CHEAT_NAME_WORKSHOPS: "workshops",
         CHEAT_NAME_ITEM: "item",
         CHEAT_NAME_EQUIP_BEST: "equipBest",
         CHEAT_NAME_FOLLOWER: "follower",

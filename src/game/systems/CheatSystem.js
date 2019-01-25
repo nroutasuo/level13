@@ -4,6 +4,7 @@ define(['ash',
     'game/constants/GameConstants',
     'game/constants/CheatConstants',
     'game/constants/ItemConstants',
+    'game/constants/LocaleConstants',
     'game/constants/PerkConstants',
     'game/constants/FightConstants',
     'game/constants/TradeConstants',
@@ -15,6 +16,7 @@ define(['ash',
     'game/components/player/DeityComponent',
     'game/components/sector/EnemiesComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
+    'game/components/sector/SectorControlComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/events/CampEventTimersComponent',
     'game/components/type/LevelComponent',
@@ -27,6 +29,7 @@ define(['ash',
     GameConstants,
     CheatConstants,
     ItemConstants,
+    LocaleConstants,
     PerkConstants,
     FightConstants,
     TradeConstants,
@@ -38,6 +41,7 @@ define(['ash',
     DeityComponent,
     EnemiesComponent,
     SectorImprovementsComponent,
+    SectorControlComponent,
     SectorFeaturesComponent,
     CampEventTimersComponent,
     LevelComponent,
@@ -126,16 +130,20 @@ define(['ash',
                 var campOrdinal = parseInt(params[0]);
                 this.addTechs(campOrdinal);
             });
-            this.registerCheat(CheatConstants.CHEAT_NAME_BLUEPRINT, "Adds blueprints for the given upgrade.", ["upgrade id", "amount (1-total)"], function (params) {
+            this.registerCheat(CheatConstants.CHEAT_NAME_BLUEPRINT, "Add blueprints for the given upgrade.", ["upgrade id", "amount (1-total)"], function (params) {
                 this.addBlueprints(params[0], parseInt(params[1]));
             });
-            this.registerCheat(CheatConstants.CHEAT_NAME_BLUEPRINTS, "Adds all blueprints found on a given camp ordinal.", ["camp ordinal"], function (params) {
+            this.registerCheat(CheatConstants.CHEAT_NAME_BLUEPRINTS, "Add all blueprints found on a given camp ordinal.", ["camp ordinal"], function (params) {
                 var campOrdinal = parseInt(params[0]);
                 this.addBlueprintsForLevel(campOrdinal);
             });
-            this.registerCheat(CheatConstants.CHEAT_NAME_TRADE_PARTNERS, "Adds all trading partners found up to a given camp ordinal.", ["camp ordinal"], function (params) {
+            this.registerCheat(CheatConstants.CHEAT_NAME_TRADE_PARTNERS, "Add all trading partners found up to a given camp ordinal.", ["camp ordinal"], function (params) {
                 var campOrdinal = parseInt(params[0]);
                 this.addTradePartners(campOrdinal);
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_WORKSHOPS, "Clear all workshops on a given level.", ["level"], function (params) {
+                var level = parseInt(params[0]);
+                this.clearWorkshops(level);
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_ITEM, "Add the given item to inventory.", ["item id"], function (params) {
                 this.addItem(params[0]);
@@ -431,6 +439,18 @@ define(['ash',
 
                     GameGlobals.gameState.foundTradingPartners.push(partner.campOrdinal);
                 }
+            }
+        },
+        
+        clearWorkshops: function (level) {
+            var workshopEntities = GameGlobals.levelHelper.getWorkshopsSectorsForLevel(level);
+            var featuresComponent;
+            var sectorControlComponent;
+            for (var i = 0; i < workshopEntities.length; i++) {
+    			sectorControlComponent = workshopEntities[i].get(SectorControlComponent);
+				while (!sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)) {
+					sectorControlComponent.addWin(LocaleConstants.LOCALE_ID_WORKSHOP);
+				}
             }
         },
 

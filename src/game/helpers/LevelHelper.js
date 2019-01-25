@@ -408,6 +408,24 @@ define([
 
             return levelStats;
         },
+        
+        getWorkshopsSectorsForLevel: function (level) {
+			var result = [];
+
+            this.saveSectorsForLevel(level);
+
+            var sectorPosition;
+			for (var i = 0; i < this.sectorEntitiesByLevel[level].length; i++) {
+                var sectorEntity = this.sectorEntitiesByLevel[level][i];
+				sectorPosition = sectorEntity.get(PositionComponent);
+				if (sectorPosition.level !== level) continue;
+                if (sectorEntity.has(WorkshopComponent)) {
+	                result.push(sectorEntity);
+                }
+			}
+
+			return result;
+        },
 
 		getProjectsForLevel: function (levelEntity, getBuilt) {
 			var projects = [];
