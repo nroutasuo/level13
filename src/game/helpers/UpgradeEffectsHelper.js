@@ -18,7 +18,8 @@ define([
 			"concrete": UpgradeConstants.upgradeIds.unlock_building_cementmill,
 			"smith": UpgradeConstants.upgradeIds.unlock_building_smithy,
 			"soldier": UpgradeConstants.upgradeIds.unlock_building_barracks,
-            "scientist": UpgradeConstants.upgradeIds.upgrade_building_library2
+            "scientist": UpgradeConstants.upgradeIds.upgrade_building_library2,
+            "trader": UpgradeConstants.upgradeIds.unlock_outgoing_caravans,
 		},
         
         upgradesByUIEffects: {
@@ -52,6 +53,7 @@ define([
 			this.improvingUpgradesByImprovement[improvementNames.radiotower] = ["improve_building_market3"];
 			this.improvingUpgradesByImprovement[improvementNames.shrine] = ["upgrade_building_shrine"];
 			this.improvingUpgradesByImprovement[improvementNames.fortification] = ["upgrade_building_fortifications"];
+			this.improvingUpgradesByImprovement[improvementNames.caravanStable] = ["upgrade_outoing_caravans"];
 			
 			this.improvingUpgradesByWorker["scavenger"] = ["upgrade_worker_scavenger"];
 			this.improvingUpgradesByWorker["trapper"] = ["upgrade_worker_trapper"];

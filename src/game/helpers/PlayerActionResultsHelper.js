@@ -175,15 +175,12 @@ define([
                 rewards.gainedBlueprintPiece = this.getResultBlueprint(localeVO);
             }
 
-            if (localeVO.type === localeTypes.tradingpartner) {
-                rewards.gainedRumours = Math.random() < 0.3 ? Math.ceil(Math.random() * levelOrdinal * levelOrdinal) : 0;
-            } else if (localeCategory === "u") {
+            if (localeCategory === "u") {
                 rewards.gainedEvidence = 1;
                 rewards.gainedPopulation = Math.random() < 0.05 ? 1 : 0;
             } else {
                 rewards.gainedPopulation = Math.random() < 0.2 ? 1 : 0;
                 rewards.gainedFollowers = this.getRewardFollowers(0.1);
-                rewards.gainedRumours = Math.random() < 0.3 ? Math.ceil(Math.random() * levelOrdinal * levelOrdinal) : 0;
             }
 
             if (rewards.gainedInjuries.length === 0 && localeVO.type !== localeTypes.tradingpartner) {
@@ -908,7 +905,7 @@ define([
 			var playerPos = this.playerLocationNodes.head.position;
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
             var blueprintType = localeVO.isEarly ? UpgradeConstants.BLUEPRINT_TYPE_EARLY : UpgradeConstants.BLUEPRINT_TYPE_LATE;
-			var levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, blueprintType);
+			var levelBlueprints = UpgradeConstants.getblueprintsByCampOrdinal(campOrdinal, blueprintType);
 
 			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
 			var blueprintsToFind = [];
