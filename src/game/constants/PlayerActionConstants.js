@@ -557,7 +557,11 @@ function (Ash, GameConstants, CampConstants) {
                     }
                 },
                 
-                build_in_caravan_stable: {
+                build_in_stable: {
+                    improvements: {
+                        market: [1, -1],
+                        stable: [-1, 2],
+                    },
                 	upgrades: {
                 		unlock_outgoing_caravans: true
                 	}
@@ -1564,6 +1568,12 @@ function (Ash, GameConstants, CampConstants) {
                     cost_factor_e1_base: 2,
                 },
 
+                build_in_stable: {
+                    resource_metal: 100,
+                    resource_rope: 50,
+                    cost_factor_e1_base: 1.75,
+                },
+
                 build_in_barracks: {
                     resource_metal: 100,
                     resource_rope: 50,
@@ -2217,6 +2227,7 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_lights: "Keep the darkness at bay for good.",
                 build_in_smithy: "Workspace for toolsmiths.",
                 build_in_aqueduct: "Water infrastructure to improve collecting efficiency.",
+                build_in_stable: "Space to set up a trading caravan.",
                 use_in_home: "Recover stamina.",
                 use_in_campfire: "Collect rumours from the population.",
                 use_in_hospital: "Heal injuries.",

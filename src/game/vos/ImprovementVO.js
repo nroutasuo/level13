@@ -35,6 +35,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		radiotower: "Radio tower",
 		barracks: "Barracks",
 		fortification: "Fortification",
+        stable: "Caravan Stable",
 		aqueduct: "Aqueduct",
 		researchcenter: "Research center",
 		lights: "Lights",
