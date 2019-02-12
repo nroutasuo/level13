@@ -264,8 +264,8 @@ define([
                     }
 
                     if (typeof requirements.rumourpoolchecked != "undefined") {
-                        if (sector.has(CampComponent)) {
-                            var campValue = sector.get(CampComponent).rumourpoolchecked;
+                        if (campComponent) {
+                            var campValue = campComponent.rumourpoolchecked;
                             if (requirements.rumourpoolchecked != campValue) {
                                 if (!requirements.rumourpoolchecked) reason = "No new rumours at the moment.";
                                 if (requirements.rumourpoolchecked) reason = "There are new rumours.";
@@ -485,16 +485,13 @@ define([
 
                     if (requirements.outgoingcaravan) {
                         if (typeof requirements.outgoingcaravan.available !== "undefined") {
-                            var requiredValue = requirements.outgoingcaravan.available;
                             var caravansComponent = sector.get(OutgoingCaravansComponent);
-                            var availableCaravans = caravansComponent.totalCaravans;
+                            var requiredValue = requirements.outgoingcaravan.available ? 1 : 0;
+                            var totalCaravans = improvementComponent.getCount(improvementNames.stable);
                             var busyCaravans = caravansComponent.outgoingCaravans.length;
-                            var currentValue = busyCaravans < availableCaravans;
-                            if (requiredValue !== currentValue) {
-                                if (requiredValue)
-                                    return {value: 0, reason: "Caravan occupied."};
-                                else
-                                    return {value: 0, reason: "Caravan is available."};
+                            var currentValue =totalCaravans - busyCaravans;
+                            if (requiredValue > currentValue) {
+                                return {value: 0, reason: "No available caravans."};
                             }
                         }
                         if (typeof requirements.outgoingcaravan.validSelection !== "undefined") {
