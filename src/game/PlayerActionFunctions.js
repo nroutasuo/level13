@@ -150,6 +150,7 @@ define(['ash',
 						caravansComponent.outgoingCaravans.push(caravansComponent.pendingCaravan);
 						caravansComponent.pendingCaravan = null;
 						this.addLogMessage(LogConstants.MSG_ID_START_SEND_CAMP, "A trade caravan heads out.");
+                        GlobalSignals.caravanSentSignal.dispatch();
 						break;
 				}
 			}
@@ -740,7 +741,6 @@ define(['ash',
 			this.completeAction("send_caravan");
 
 			this.addLogMessage(LogConstants.MSG_ID_FINISH_SEND_CAMP, logMsg.msg, logMsg.replacements, logMsg.values, pendingPosition);
-
 			this.forceResourceBarUpdate();
 		},
 

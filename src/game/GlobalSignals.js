@@ -25,6 +25,7 @@ define(['ash',], function (Ash) {
         workersAssignedSignal: new Ash.Signals.Signal(),
         featureUnlockedSignal: new Ash.Signals.Signal(),
         campRenamedSignal: new Ash.Signals.Signal(),
+        caravanSentSignal: new Ash.Signals.Signal(),
         launcedSignal: new Ash.Signals.Signal(),
 
         // stats changes

@@ -10,10 +10,11 @@ define([
 	'game/components/common/PositionComponent',
 	'game/components/sector/OutgoingCaravansComponent',
 	'game/components/sector/events/TraderComponent',
+	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/vos/ResourcesVO',
 	'game/vos/OutgoingCaravanVO'
 ], function (
-	Ash, GameGlobals, GlobalSignals, TradeConstants, ItemConstants, UIConstants, PlayerLocationNode, ItemsNode, PositionComponent, OutgoingCaravansComponent, TraderComponent, ResourcesVO, OutgoingCaravanVO
+	Ash, GameGlobals, GlobalSignals, TradeConstants, ItemConstants, UIConstants, PlayerLocationNode, ItemsNode, PositionComponent, OutgoingCaravansComponent, TraderComponent, SectorImprovementsComponent, ResourcesVO, OutgoingCaravanVO
 ) {
 	var UIOutTradeSystem = Ash.System.extend({
 
@@ -34,6 +35,7 @@ define([
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.itemNodes = engine.getNodeList(ItemsNode);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
+			GlobalSignals.add(this, GlobalSignals.caravanSentSignal, this.refresh);
 		},
 
 		removeFromEngine: function (engine) {
@@ -46,22 +48,30 @@ define([
 		update: function (time) {
 			if (!this.playerLocationNodes.head) return;
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.trade;
+			this.availableTradingPartnersCount = GameGlobals.gameState.foundTradingPartners.length;
 
 			this.updateBubble();
-			this.updateOutgoingCaravansList(isActive);
 			this.updateIncomingCaravan(isActive);
 
 			if (!isActive) return;
 
 			this.updateOutgoingCaravanPrepare();
 
-			GameGlobals.uiFunctions.toggle("#trade-caravans-outgoing-empty-message", this.availableTradingPartnersCount === 0);
+			this.lastShownTradingPartnersCount = this.availableTradingPartnersCount;
+
 			GameGlobals.uiFunctions.toggle("#trade-caravans-incoming-empty-message", this.currentIncomingTraders === 0);
 			$("#tab-header h2").text("Trade");
 		},
+        
+        refresh: function () {
+			if (!this.playerLocationNodes.head) return;
+			this.updateOutgoingCaravansList();
+            this.updateOutgoingCaravansHints();
+        },
 
 		onTabChanged: function () {
 			this.hideOutgoingPlanRows();
+            this.refresh();
 		},
 
 		updateBubble: function () {
@@ -77,16 +87,10 @@ define([
 		},
 
 		updateOutgoingCaravansList: function (isActive) {
-			this.availableTradingPartnersCount = GameGlobals.gameState.foundTradingPartners.length;
-
-			if (!isActive)
-				return;
-
-			if ($("#trade-caravans-outgoing-container tr").length === (2 * this.availableTradingPartnersCount))
-				return;
-                
             var level = this.playerLocationNodes.head.entity.get(PositionComponent).level;
             var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+            var totalCaravans = this.getNumOutgoingCaravansTotal();
+            var availableCaravans = this.getNumOutgoingCaravansAvailable();
 
 			$("#trade-caravans-outgoing-container table").empty();
 			for (var i = 0; i < GameGlobals.gameState.foundTradingPartners.length; i++) {
@@ -97,7 +101,11 @@ define([
 				if (sellsS.length <= 0) sellsS = "-";
 				var tdTrades = "<td>Buys: " + buysS + "<br/>Sells: " + sellsS + "</td>";
 				var toggleBtnID = "btn_send_caravan_" + partner.campOrdinal + "_toggle";
-				var tdButton = "<td class='minwidth'><button id='" + toggleBtnID + "' class='btn-trade-caravans-outgoing-toggle'>Send caravan</button></td>";
+                var btn = "<button id='" + toggleBtnID + "' class='btn-trade-caravans-outgoing-toggle'>Send caravan</button>";
+                if (totalCaravans < 1) {
+                    btn = "";
+                }
+				var tdButton = "<td class='minwidth'>" + btn + "</td>";
 				var tr = "<tr class='trade-caravans-outgoing' id='trade-caravans-outgoing-" + partner.campOrdinal + "'>" + tdName + tdTrades + tdButton + "</tr>";
 				$("#trade-caravans-outgoing-container table").append(tr);
 
@@ -157,9 +165,22 @@ define([
 			GameGlobals.uiFunctions.generateButtonOverlays("#trade-caravans-outgoing-container table");
 			GameGlobals.uiFunctions.generateCallouts("#trade-caravans-outgoing-container table");
 			GameGlobals.uiFunctions.registerActionButtonListeners("#trade-caravans-outgoing-container table");
-
-			this.lastShownTradingPartnersCount = this.availableTradingPartnersCount;
 		},
+        
+        updateOutgoingCaravansHints: function () {            
+			GameGlobals.uiFunctions.toggle("#trade-caravans-outgoing-empty-message", this.availableTradingPartnersCount === 0);
+			GameGlobals.uiFunctions.toggle("#trade-caravans-outgoing-num", this.availableTradingPartnersCount > 0);
+            
+            if (this.availableTradingPartnersCount > 0) {
+                var totalCaravans = this.getNumOutgoingCaravansTotal();
+                if (totalCaravans > 0) {
+                    var availableCaravans = this.getNumOutgoingCaravansAvailable();
+        			$("#trade-caravans-outgoing-num").text("Available caravans: " + availableCaravans + "/" + totalCaravans);
+                } else {
+                    $("#trade-caravans-outgoing-num").text("Available caravans: 0 (build the stable to send caravans)");
+                }
+            }
+        }
 
 		hideOutgoingPlanRows: function () {
 			$(".btn-trade-caravans-outgoing-toggle").text("Send caravan");
@@ -334,7 +355,19 @@ define([
 		resetPendingCaravan: function () {
 			var caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
 			caravansComponent.pendingCaravan = null;
-		}
+		},
+        
+        getNumOutgoingCaravansTotal: function () {
+            var improvementsComponent = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+            return improvementsComponent.getCount(improvementNames.stable);
+        },
+        
+        getNumOutgoingCaravansAvailable: function () {
+            var totalCaravans = this.getNumOutgoingCaravansTotal();
+            var caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
+            var busyCaravans = caravansComponent.outgoingCaravans.length;
+            return totalCaravans - busyCaravans;
+        },
 
 	});
 
