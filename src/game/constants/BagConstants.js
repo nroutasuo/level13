@@ -2,6 +2,11 @@ define(['ash', 'game/constants/ItemConstants'], function (Ash, ItemConstants) {
 
     var BagConstants = {
         
+        CAPACITY_RESOURCE: 1,
+        CAPACITY_ITEM_INGREDIENT: 0.1,
+        CAPACITY_ITEM_DEFAULT: 1,
+        CAPACITY_CURRENCY: 0.05,
+        
         updateCapacity: function (bagComponent, rewards, playerResources, playerAllItems) {
             var originalResC = this.getResourcesCapacity(playerResources.resources);
             var discardedResC = this.getResourcesCapacity(rewards.discardedResources);
@@ -36,18 +41,18 @@ define(['ash', 'game/constants/ItemConstants'], function (Ash, ItemConstants) {
         getItemCapacity: function (itemVO) {
             if (itemVO.type === ItemConstants.itemTypes.bag) return 0;
             if (itemVO.type === ItemConstants.itemTypes.uniqueEquipment) return 0;
-            if (itemVO.type === ItemConstants.itemTypes.exploration) return 1;
-            if (itemVO.type === ItemConstants.itemTypes.ingredient) return 0.1;
-            if (itemVO.type === ItemConstants.itemTypes.shoes) return 1;
+            if (itemVO.type === ItemConstants.itemTypes.exploration) return BagConstants.CAPACITY_ITEM_DEFAULT;
+            if (itemVO.type === ItemConstants.itemTypes.ingredient) return BagConstants.CAPACITY_ITEM_INGREDIENT;
+            if (itemVO.type === ItemConstants.itemTypes.shoes) return BagConstants.CAPACITY_ITEM_DEFAULT;
             return 2;
         },
         
         getResourcesCapacity: function (resourcesVO) {
-            return resourcesVO.getTotal();
+            return resourcesVO.getTotal() * BagConstants.CAPACITY_RESOURCE;
         },
         
         getResourceCapacity: function (resourceName) {
-            return 1;
+            return BagConstants.CAPACITY_RESOURCE;
         }
 
     };

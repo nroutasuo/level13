@@ -117,7 +117,8 @@ define([
 					sendTR += "<option value='" + partner.buysResources[j] + "'>" + partner.buysResources[j] + "</option>";
 				}
 				sendTR += "</select>";
-				sendTR += "<input type='range' class='trade-caravans-outgoing-range-sell' min='" + TradeConstants.MIN_OUTGOING_CARAVAN_RES + "' max='" + TradeConstants.MAX_OUTGOING_CARAVAN_RES + "' step='10' />";
+                var maxSelection = this.getCaravanCapacity();
+				sendTR += "<input type='range' class='trade-caravans-outgoing-range-sell' min='" + TradeConstants.MIN_OUTGOING_CARAVAN_RES + "' max='" + maxSelection + "' step='10' />";
 				sendTR += " <span class='trade-sell-value-invalid'></span>";
 				sendTR += " <span class='trade-sell-value'>0</span>";
 				sendTR += "<span class='trade-caravans-outgoing-buy'>";
@@ -167,7 +168,7 @@ define([
 			GameGlobals.uiFunctions.registerActionButtonListeners("#trade-caravans-outgoing-container table");
 		},
         
-        updateOutgoingCaravansHints: function () {            
+        updateOutgoingCaravansHints: function () {
 			GameGlobals.uiFunctions.toggle("#trade-caravans-outgoing-empty-message", this.availableTradingPartnersCount === 0);
 			GameGlobals.uiFunctions.toggle("#trade-caravans-outgoing-num", this.availableTradingPartnersCount > 0);
             
@@ -175,12 +176,14 @@ define([
                 var totalCaravans = this.getNumOutgoingCaravansTotal();
                 if (totalCaravans > 0) {
                     var availableCaravans = this.getNumOutgoingCaravansAvailable();
-        			$("#trade-caravans-outgoing-num").text("Available caravans: " + availableCaravans + "/" + totalCaravans);
+        			$("#trade-caravans-outgoing-num").html(
+                        "Available caravans: <span class='text-highlight-functionality'>" + availableCaravans + "/" + totalCaravans + "</span>. " +
+                        "Capacity: <span class='text-highlight-functionality'>" + this.getCaravanCapacity() + "</span> per caravan.");
                 } else {
-                    $("#trade-caravans-outgoing-num").text("Available caravans: 0 (build the stable to send caravans)");
+                    $("#trade-caravans-outgoing-num").html("Available caravans: <span class='text-highlight-functionality'>0</span> (build the stable to send caravans)");
                 }
             }
-        }
+        },
 
 		hideOutgoingPlanRows: function () {
 			$(".btn-trade-caravans-outgoing-toggle").text("Send caravan");
@@ -308,7 +311,9 @@ define([
 			if (hasEnoughSellRes) {
 				amountSell = Math.min(ownedSellAmount, $(sellSlider).val());
 				GameGlobals.uiFunctions.toggle(sellSlider, true);
-				$(sellSlider).attr("max", Math.min(TradeConstants.MAX_OUTGOING_CARAVAN_RES, Math.floor(ownedSellAmount / 10) * 10));
+                var maxVal = Math.min(this.getCaravanCapacity(), Math.floor(ownedSellAmount / 10) * 10);
+				$(sellSlider).attr("max", maxVal);
+				$(sellSlider).attr("step", maxVal >= 100 ? 10 : 5);
 				GameGlobals.uiFunctions.toggle(trID + " .trade-sell-value-invalid", false);
 				GameGlobals.uiFunctions.toggle(trID + " .trade-sell-value", true);
 				$(trID + " .trade-sell-value").text("x" + amountSell);
@@ -320,7 +325,7 @@ define([
 			}
 
 			// set get amount
-			var amountGet = TradeConstants.getAmountTraded(selectedBuy, selectedSell, amountSell);
+			var amountGet = Math.min(TradeConstants.getAmountTraded(selectedBuy, selectedSell, amountSell), this.getCaravanCapacity());
 			if (hasEnoughSellRes) {
 				$(trID + " .trade-caravans-outgoing-buy").toggle(true);
 				$(trID + " .trade-buy-value").text("x" + amountGet);
@@ -329,9 +334,15 @@ define([
 				$(trID + " .trade-caravans-outgoing-buy").toggle(false);
 				$(trID + " .trade-buy-value").text("");
 			}
-
+            
+            var caravanCapacity = this.getCaravanCapacity();
+            var isWithinCaravanCapacity = true;
+            var capacityOutgoing = TradeConstants.getRequiredCapacity(selectedSell, amountSell);
+            var capacityIncoming = TradeConstants.getRequiredCapacity(selectedBuy, amountGet);
+            var isCapacityOK = capacityOutgoing <= caravanCapacity && capacityIncoming <= caravanCapacity;
+            
 			// set valid selection
-			var isValid = hasEnoughSellRes && amountSell > 0 && amountGet > 0;
+			var isValid = hasEnoughSellRes && amountSell > 0 && amountGet > 0 && isCapacityOK;
 			$(trID + " button.action").attr("data-isselectionvalid", isValid);
 
 			if (caravansComponent.pendingCaravan) {
@@ -368,6 +379,11 @@ define([
             var busyCaravans = caravansComponent.outgoingCaravans.length;
             return totalCaravans - busyCaravans;
         },
+        
+        getCaravanCapacity: function () {
+            // TODO define caravan capacity (dependent on upgrades)
+            return 750;
+        }
 
 	});
 

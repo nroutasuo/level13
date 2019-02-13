@@ -3,8 +3,12 @@
 			"version": "0.2.3",
 			"phase": "alpha",
 			"final": false,
-			"updated": "2019-01-18",
+			"updated": "2019-02-10",
 			"changes": [
+                {
+                    "type": "GD",
+                    "summary": "New building: caravan stable."
+                },
                 {
                     "type": "UI",
                     "summary": "Improved maps."

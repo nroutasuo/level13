@@ -1,13 +1,12 @@
 define([
     'ash',
-    'game/constants/ItemConstants', 'game/constants/UpgradeConstants',
+    'game/constants/ItemConstants', 'game/constants/UpgradeConstants', 'game/constants/BagConstants',
     'game/vos/TradingPartnerVO', 'game/vos/IncomingCaravanVO', 'game/vos/ResourcesVO', 'game/vos/ResultVO'],
-function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO, IncomingCaravanVO, ResourcesVO, ResultVO) {
+function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, IncomingCaravanVO, ResourcesVO, ResultVO) {
     
     var TradeConstants = {
         
         MIN_OUTGOING_CARAVAN_RES: 50,
-        MAX_OUTGOING_CARAVAN_RES: 1000,
         
         GOOD_TYPE_NAME_CURRENCY: "currency",
         GOOD_TYPE_NAME_INGREDIENTS: "ingredients",
@@ -238,6 +237,19 @@ function (Ash, ItemConstants, UpgradeConstants, TradingPartnerVO, IncomingCarava
             }
             amountGet = Math.floor(amountGet+0.001);
             return amountGet;
+        },
+        
+        getRequiredCapacity: function (good, amount) {
+            if (isResource(good)) {
+                return BagConstants.getResourceCapacity(good) * amount;
+            } else if (good === TradeConstants.GOOD_TYPE_NAME_CURRENCY) {
+                return BagConstants.CAPACITY_CURRENCY * amount;
+            } else if (good === TradeConstants.GOOD_TYPE_NAME_INGREDIENTS) {
+                return BagConstants.CAPACITY_ITEM_INGREDIENT * amount;
+            } else {
+                console.log("WARN: Unknown  good: " + good);
+                return 0;
+            }
         },
         
         getResourceValue: function (name, isTrader) {
