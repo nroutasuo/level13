@@ -1063,7 +1063,7 @@ function (Ash, GameConstants, CampConstants) {
                     }
                 },
 
-                upgrade_outoing_caravans: {
+                upgrade_outgoing_caravans: {
                 	upgrades: {
                 		unlock_outgoing_caravans: true,
                 	}
@@ -1993,7 +1993,7 @@ function (Ash, GameConstants, CampConstants) {
 					rumours: 912,
                 },
 
-				upgrade_outoing_caravans: {
+				upgrade_outgoing_caravans: {
 					rumours: 855,
 					favour: 78,
 				},

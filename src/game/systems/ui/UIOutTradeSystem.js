@@ -7,6 +7,7 @@ define([
 	'game/constants/UIConstants',
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/ItemsNode',
+	'game/nodes/tribe/TribeUpgradesNode',
 	'game/components/common/PositionComponent',
 	'game/components/sector/OutgoingCaravansComponent',
 	'game/components/sector/events/TraderComponent',
@@ -14,7 +15,7 @@ define([
 	'game/vos/ResourcesVO',
 	'game/vos/OutgoingCaravanVO'
 ], function (
-	Ash, GameGlobals, GlobalSignals, TradeConstants, ItemConstants, UIConstants, PlayerLocationNode, ItemsNode, PositionComponent, OutgoingCaravansComponent, TraderComponent, SectorImprovementsComponent, ResourcesVO, OutgoingCaravanVO
+	Ash, GameGlobals, GlobalSignals, TradeConstants, ItemConstants, UIConstants, PlayerLocationNode, ItemsNode, TribeUpgradesNode, PositionComponent, OutgoingCaravansComponent, TraderComponent, SectorImprovementsComponent, ResourcesVO, OutgoingCaravanVO
 ) {
 	var UIOutTradeSystem = Ash.System.extend({
 
@@ -25,6 +26,7 @@ define([
 		lastShownIncomingTraders: 0,
 
 		playerLocationNodes: null,
+		tribeUpgradesNodes: null,
 
 		constructor: function () {
 			return this;
@@ -33,6 +35,7 @@ define([
 		addToEngine: function (engine) {
 			this.engine = engine;
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
+			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 			this.itemNodes = engine.getNodeList(ItemsNode);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 			GlobalSignals.add(this, GlobalSignals.caravanSentSignal, this.refresh);
@@ -41,6 +44,7 @@ define([
 		removeFromEngine: function (engine) {
 			this.engine = null;
 			this.playerLocationNodes = null;
+			this.tribeUpgradesNodes = null;
 			this.itemNodes = null;
 			GlobalSignals.removeAll(this);
 		},
@@ -381,8 +385,8 @@ define([
         },
         
         getCaravanCapacity: function () {
-            // TODO define caravan capacity (dependent on upgrades)
-            return 750;
+            var stableLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.stable, this.tribeUpgradesNodes.head.upgrades);
+            return stableLevel * 750;
         }
 
 	});

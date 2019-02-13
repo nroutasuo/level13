@@ -43,7 +43,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
         	upgrade_building_market2: "upgrade_building_market2",
         	unlock_item_weapon4: "unlock_item_weapon4",
         	unlock_item_clothing3: "unlock_item_clothing3",
-        	upgrade_outoing_caravans: "upgrade_outoing_caravans",
+        	upgrade_outgoing_caravans: "upgrade_outgoing_caravans",
         	unlock_item_clothing5: "unlock_item_clothing5",
         	upgrade_building_storage1: "upgrade_building_storage1",
         	unlock_item_clothing4h: "unlock_item_clothing4h",
@@ -293,8 +293,8 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
     = new UpgradeVO("unlock_item_weapon4", "Metal working 2", "Better techniques for metal-working allow better weapons and more tools.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_clothing3]
     = new UpgradeVO("unlock_item_clothing3", "Guard Uniform", "A standardised outfit that offest basic protection.");
-    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_outoing_caravans]
-    = new UpgradeVO("upgrade_outoing_caravans", "Bigger caravans", "Managing bigger caravans that can carry more goods");
+    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_outgoing_caravans]
+    = new UpgradeVO("upgrade_outgoing_caravans", "Bigger caravans", "Managing bigger caravans that can carry more goods");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_clothing5]
     = new UpgradeVO("unlock_item_clothing5", "Armour", "Adapting the new metal working techniques for protection.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_storage1]
