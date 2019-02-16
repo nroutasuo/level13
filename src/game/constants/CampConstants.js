@@ -35,6 +35,7 @@ define(['ash'], function (Ash) {
         PRODUCTION_MEDICINE_PER_WORKER_PER_S: 0.01,
         PRODUCTION_TOOLS_PER_WORKER_PER_S: 0.02,
         PRODUCTION_CONCRETE_PER_WORKER_PER_S: 0.03,
+        PRODUCTION_EVIDENCE_PER_WORKER_PER_S: 0.000375,
         
         // reputation
         REPUTATION_PER_RADIO_PER_SEC: 0.1,
@@ -57,6 +58,7 @@ define(['ash'], function (Ash) {
             apothecary: "apothecary",
             toolsmith: "toolsmith",
             concrete: "concrete",
+            scientist: "scientist",
             soldier: "soldier",
         },
         
@@ -89,6 +91,10 @@ define(['ash'], function (Ash) {
         
         getSoldiersPerBarracks: function (upgradeLevel) {
             return 5 + Math.floor((upgradeLevel - 1) * 2.5);
+        },
+        
+        getScientistsPerLibrary: function (upgradeLevel) {
+            return 2;
         },
         
         getRequiredReputation: function (pop) {

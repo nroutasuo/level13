@@ -1,8 +1,8 @@
 // Singleton with helper methods for movement, blockers etc
 define([
-    'ash', 
+    'ash',
     'game/GameGlobals',
-    'game/constants/GameConstants', 
+    'game/constants/GameConstants',
     'game/constants/CampConstants',
     'game/nodes/tribe/TribeUpgradesNode',
 ], function (Ash, GameGlobals, GameConstants, CampConstants, TribeUpgradesNode) {
@@ -52,6 +52,11 @@ define([
         getConcreteProductionPerSecond: function (workers, improvementComponent) {
 			var concreteUpgradeBonus = this.getUpgradeBonus("concrete");
 			return workers * CampConstants.PRODUCTION_CONCRETE_PER_WORKER_PER_S * concreteUpgradeBonus * GameConstants.gameSpeedCamp;
+        },
+        
+        getEvidenceProductionPerSecond: function (workers, improvementComponent) {
+			var evidenceUpgradeBonus = this.getUpgradeBonus("scientist");
+			return workers * CampConstants.PRODUCTION_EVIDENCE_PER_WORKER_PER_S * evidenceUpgradeBonus * GameConstants.gameSpeedCamp;
         },
         
         getWaterConsumptionPerSecond: function (population, useExplorationSpeed) {

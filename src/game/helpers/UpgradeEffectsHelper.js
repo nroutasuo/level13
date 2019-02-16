@@ -63,6 +63,7 @@ define([
 			this.improvingUpgradesByWorker["collector"] = ["upgrade_worker_collector1"];
 			this.improvingUpgradesByWorker["chemist"] = ["upgrade_worker_chemist"];
 			this.improvingUpgradesByWorker["apothecary"] = ["upgrade_building_apothecary"];
+			this.improvingUpgradesByWorker["scientist"] = ["unlock_building_researchcenter", "improve_building_market3"];
 			
 			this.improvingUpgradesByEvent[OccurrenceConstants.campOccurrenceTypes.trader] = [ "upgrade_building_market", "upgrade_building_market2" ];
             

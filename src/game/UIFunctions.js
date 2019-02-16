@@ -122,7 +122,8 @@ define(['ash',
 					var smiths = parseInt($("#stepper-smith input").val());
 					var concrete = parseInt($("#stepper-concrete input").val());
 					var soldiers = parseInt($("#stepper-soldier input").val());
-					GameGlobals.playerActionFunctions.assignWorkers(scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers);
+					var scientists = parseInt($("#stepper-scientist input").val());
+					GameGlobals.playerActionFunctions.assignWorkers(scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers, scientists);
 				});
 
 				// Buttons: In: Other

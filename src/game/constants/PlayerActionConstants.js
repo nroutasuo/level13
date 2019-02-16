@@ -504,6 +504,7 @@ function (Ash, GameConstants, CampConstants) {
                     },
                     improvements: {
                         house: [1, -1],
+                        library: [-1, 1],
                     },
                 },
 
