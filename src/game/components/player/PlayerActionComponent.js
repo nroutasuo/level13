@@ -17,6 +17,7 @@ define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
             this.endTimeStampToActionDict[endTimeStamp] = new PlayerActionVO(action, param, isBusyAction);
             this.endTimeStampList.push(endTimeStamp);
             this.sortTimeStamps();
+            return endTimeStamp;
         },
 
         getLastAction: function (requireBusy) {

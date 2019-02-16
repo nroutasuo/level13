@@ -136,7 +136,7 @@ define(['ash',
 			var duration = PlayerActionConstants.getDuration(baseId);
 			if (duration > 0) {
 				var isBusy = PlayerActionConstants.isBusyAction(baseId);
-				this.playerStatsNodes.head.entity.get(PlayerActionComponent).addAction(action, duration, param, isBusy);
+				var endTimeStamp = this.playerStatsNodes.head.entity.get(PlayerActionComponent).addAction(action, duration, param, isBusy);
 
 				switch (baseId) {
 					case "send_caravan":
@@ -147,6 +147,8 @@ define(['ash',
 							return;
 						}
                         
+                        caravansComponent.pendingCaravan.returnTimeStamp = endTimeStamp;
+                        caravansComponent.pendingCaravan.returnDuration = duration;
 						caravansComponent.outgoingCaravans.push(caravansComponent.pendingCaravan);
 						caravansComponent.pendingCaravan = null;
 						this.addLogMessage(LogConstants.MSG_ID_START_SEND_CAMP, "A trade caravan heads out.");

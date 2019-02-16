@@ -8,6 +8,8 @@ define(['ash'], function (Ash) {
             this.sellGood = null;
             this.sellAmount = 0;
             this.buyGood = null;
+            this.returnTimeStamp = null;
+            this.returnDuration = 0;
 		},
     });
 

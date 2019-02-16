@@ -1,5 +1,6 @@
  define([
     'ash',
+    'utils/UIState',
     'game/GameGlobals',
     'game/GlobalSignals',
 	'game/constants/PlayerActionConstants',
@@ -16,16 +17,17 @@
     'game/nodes/tribe/TribeUpgradesNode',
     'game/components/player/PerksComponent',
     'game/components/common/CampComponent',
+	'game/components/sector/OutgoingCaravansComponent',
     'game/components/sector/ReputationComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/events/CampEventTimersComponent',
     'game/components/sector/events/TraderComponent',
-    'game/components/sector/events/RaidComponent'
+    'game/components/sector/events/RaidComponent',
 ], function (
-    Ash, GameGlobals, GlobalSignals, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants,
+    Ash, UIState, GameGlobals, GlobalSignals, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants,
     PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, DeityNode, TribeUpgradesNode,
     PerksComponent,
-    CampComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
+    CampComponent, OutgoingCaravansComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
     TraderComponent, RaidComponent
 ) {
     var UIOutCampSystem = Ash.System.extend({
@@ -371,19 +373,20 @@
         updateEvents: function (isActive) {
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
             if (!campComponent) return;
+            var eventTimers = this.playerLocationNodes.head.entity.get(CampEventTimersComponent);
+			var caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
 
             var hasEvents = false;
-            var eventTimers = this.playerLocationNodes.head.entity.get(CampEventTimersComponent);
-            this.currentEvents = 0;
+            var hasOther = false;
 
             var showEvents = campComponent.population >= 1 || GameGlobals.gameState.numCamps > 1;
             GameGlobals.uiFunctions.toggle("#in-occurrences", showEvents);
 
             // Traders
             var hasTrader = this.playerLocationNodes.head.entity.has(TraderComponent);
+            hasEvents = hasEvents || hasTrader;
             if (isActive && showEvents) {
                 var isTraderLeaving = hasTrader && eventTimers.getEventTimeLeft(OccurrenceConstants.campOccurrenceTypes.trader) < 5;
-                hasEvents = hasEvents || hasTrader;
                 GameGlobals.uiFunctions.toggle("#in-occurrences-trader", hasTrader);
                 $("#in-occurrences-trader .progress-label").toggleClass("event-ending", isTraderLeaving);
                 $("#in-occurrences-trader").data("progress-percent", eventTimers.getEventTimePercentage(OccurrenceConstants.campOccurrenceTypes.trader));
@@ -391,17 +394,43 @@
 
             // Raiders
             var hasRaid = this.playerLocationNodes.head.entity.has(RaidComponent);
+            hasEvents = hasEvents || hasRaid;
             if (isActive && showEvents) {
                 GameGlobals.uiFunctions.toggle("#in-occurrences-raid", hasRaid);
                 $("#in-occurrences-raid .progress-label").toggleClass("event-ending", hasRaid);
                 $("#in-occurrences-raid").data("progress-percent", eventTimers.getEventTimePercentage(OccurrenceConstants.campOccurrenceTypes.raid));
             }
+            
+            // Outgoing caravans
+            var numCaravans = caravansComponent.outgoingCaravans.length;
+            hasOther = hasOther || numCaravans > 0;
+            if (isActive && showEvents) {
+                GameGlobals.uiFunctions.toggle("#in-occurrences-outgoing-caravans-container", numCaravans > 0);
+                if (UIState.refreshState(this, "outgoing-caravans-num", numCaravans)) {
+                    $("#in-occurrences-outgoing-caravans-container").empty();
+                    for (var i = 0; i < numCaravans; i++) {
+                        var bar = '';
+                        bar += '<div id="in-occurrences-outgoing-caravans-' + i + '" class="progress-wrap progress">';
+                        bar += '<div class="progress-bar progress"></div>';
+                        bar += '<span class="progress progress-label">Outgoing caravan</span>';
+                        bar += '</div>';
+                        $("#in-occurrences-outgoing-caravans-container").append(bar)
+                    }
+                }
+                for (var i = 0; i < numCaravans; i++) {
+                    var caravan = caravansComponent.outgoingCaravans[i];
+                    var duration = caravan.returnDuration * 1000;
+                    var timeLeft = caravan.returnTimeStamp - new Date().getTime();
+                    $("#in-occurrences-outgoing-caravans-" + i).data("progress-percent",  (1 - timeLeft / duration) * 100);
+                }
+            }
 
+            GameGlobals.uiFunctions.toggle("#in-occurrences-empty", showEvents && !hasEvents && !hasOther);
+            
+            this.currentEvents = 0;
+            if (hasTrader) this.currentEvents++;
             if (hasRaid) this.currentEvents++;
             if (isActive) this.lastShownEvents = this.currentEvents;
-
-            hasEvents = hasEvents || hasRaid;
-            GameGlobals.uiFunctions.toggle("#in-occurrences-empty", !hasEvents);
         },
 
         updateStats: function () {
