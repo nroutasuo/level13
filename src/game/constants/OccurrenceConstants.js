@@ -52,15 +52,17 @@ function (Ash, MathUtils, GameConstants) {
 			return 0;
 		},
 		
-		getRaidDanger: function (improvements, soldiers, fortificationUpgradeLevel) {
+		getRaidDanger: function (improvements, soldiers) {
 			var dangerPoints = 0;
 			dangerPoints += Math.max(0, improvements.getTotal(improvementTypes.camp) - 1);
-			var defencePoints = this.getRaidDefence(improvements, soldiers, fortificationUpgradeLevel);
+			var defencePoints = this.getRaidDefence(improvements, soldiers);
 			return dangerPoints / (defencePoints + 1);
 		},
 		
-		getRaidDefence: function (improvements, soldiers, fortificationUpgradeLevel) {
-			return improvements.getCount(improvementNames.fortification) * (5 + fortificationUpgradeLevel * 5) + soldiers;
+		getRaidDefence: function (improvements, soldiers) {
+			var regularFortifications = improvements.getCount(improvementNames.fortification) * 8;
+            var improvedFortifications = improvements.getCount(improvementNames.fortification2) * 25;
+            return regularFortifications + improvedFortifications + soldiers;
 		}
 	
     };

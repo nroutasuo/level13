@@ -87,7 +87,7 @@ define([
             this.pointDist = 6; // distance of points (possible positions) on the grid in px
             
             /*
-            this.elements.layerGrid.empty(); 
+            this.elements.layerGrid.empty();
             var html = "";
             var size = 2;
             for (var r = 0; r <= this.containerDefaultHeight; r += this.pointDist) {
@@ -164,7 +164,7 @@ define([
             var pointDist = this.pointDist;
             
             var building;
-            for (var i = 0; i < all.length; i++) { 
+            for (var i = 0; i < all.length; i++) {
                 building = all[i];
                 var size = this.getBuildingSize(building);
                 var count = building.count;
@@ -300,7 +300,7 @@ define([
         getBuildingDiv: function (i, building, size, n, j) {
             var style = "width: " + size + "px; height: " + size + "px;";
             var classes = "vis-camp-building " + this.getBuildingColorClass(building) + " " + this.getBuildingShapeClass(building);
-            var data = "data-building-name='" + building.name + "' data-building-index='" + n + "' data-building-vis-index='" + j + "'"; 
+            var data = "data-building-name='" + building.name + "' data-building-index='" + n + "' data-building-vis-index='" + j + "'";
             var id = this.getBuildingDivID(building, n, j);
             return "<div class='" + classes + "' style='" + style + "' id='" + id + "' " + data + " draggable='true'></div>";
         },
@@ -337,7 +337,7 @@ define([
                 case improvementNames.campfire:
                 case improvementNames.home:
                     return Math.round(this.pointDist * 1.25);
-                case improvementNames.lights: 
+                case improvementNames.lights:
                     return Math.round(this.pointDist * 0.75);
                 case improvementNames.storage:
                     return Math.round(this.pointDist * 2.75);
@@ -347,10 +347,11 @@ define([
         
         getBuildingColorClass: function (building) {
             switch (building.name) {
-                case improvementNames.campfire: 
-                case improvementNames.lights: 
+                case improvementNames.campfire:
+                case improvementNames.lights:
                     return "vis-camp-building-heavy";
-                case improvementNames.fortification: 
+                case improvementNames.fortification:
+                case improvementNames.fortification2: 
                     return "vis-camp-building-thin";
             }
             return "vis-camp-building-medium";
@@ -358,12 +359,12 @@ define([
         
         getBuildingShapeClass: function (building) {
             switch (building.name) {
-                case improvementNames.campfire: 
-                case improvementNames.lights: 
+                case improvementNames.campfire:
+                case improvementNames.lights:
                     return "vis-camp-building-star";
 
-                case improvementNames.home: 
-                case improvementNames.house: 
+                case improvementNames.home:
+                case improvementNames.house:
                     return "vis-camp-building-round";
             }
             return "vis-camp-building-square";
@@ -375,8 +376,8 @@ define([
         
         getMaxDist: function (building) {
             switch (building.name) {
-                case improvementNames.campfire: 
-                case improvementNames.home: 
+                case improvementNames.campfire:
+                case improvementNames.home:
                     return 1;
                 case improvementNames.tradepost:
                     return 3;

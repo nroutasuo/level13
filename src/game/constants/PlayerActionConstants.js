@@ -1564,6 +1564,11 @@ function (Ash, GameConstants, CampConstants) {
                     cost_factor_e1_base: 1.75,
                 },
 
+                build_in_fortification2: {
+                    resource_concrete: 100,
+                    cost_factor_e1_base: 1.75,
+                },
+
                 build_in_aqueduct: {
                     resource_metal: 300,
                     cost_factor_e1_base: 2,

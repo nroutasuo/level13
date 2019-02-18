@@ -1203,6 +1203,7 @@ define([
                 case "build_in_shrine": return improvementNames.shrine;
                 case "build_in_barracks": return improvementNames.barracks;
                 case "build_in_fortification": return improvementNames.fortification;
+                case "build_in_fortification2": return improvementNames.fortification2;
                 case "build_in_aqueduct": return improvementNames.aqueduct;
                 case "build_in_stable": return improvementNames.stable;
                 case "build_in_market": return improvementNames.market;

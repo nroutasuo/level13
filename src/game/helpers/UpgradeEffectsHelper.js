@@ -51,7 +51,6 @@ define([
 			this.improvingUpgradesByImprovement[improvementNames.apothecary] = ["upgrade_building_apothecary"];
 			this.improvingUpgradesByImprovement[improvementNames.radiotower] = ["improve_building_market3"];
 			this.improvingUpgradesByImprovement[improvementNames.shrine] = ["upgrade_building_shrine"];
-			this.improvingUpgradesByImprovement[improvementNames.fortification] = ["upgrade_building_fortifications"];
 			this.improvingUpgradesByImprovement[improvementNames.stable] = ["upgrade_outgoing_caravans"];
 			
 			this.improvingUpgradesByWorker["scavenger"] = ["upgrade_worker_scavenger"];

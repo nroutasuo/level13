@@ -191,6 +191,7 @@ define(['ash',
                 case "build_in_library": this.buildLibrary(param); break;
                 case "build_in_market": this.buildMarket(param); break;
                 case "build_in_fortification": this.buildFortification(param); break;
+                case "build_in_fortification2": this.buildFortification2(param); break;
                 case "build_in_aqueduct": this.buildAqueduct(param); break;
                 case "build_in_stable": this.buildStable(param); break;
                 case "build_in_barracks": this.buildBarracks(param); break;
@@ -976,6 +977,11 @@ define(['ash',
 
 		buildFortification: function () {
 			this.buildImprovement("build_in_fortification", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_fortification"));
+			this.addLogMessage(LogConstants.MSG_ID_BUILT_FORTIFICATION, "Fortified the camp.");
+		},
+
+		buildFortification2: function () {
+			this.buildImprovement("build_in_fortification2", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_fortification2"));
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_FORTIFICATION, "Fortified the camp.");
 		},
 
