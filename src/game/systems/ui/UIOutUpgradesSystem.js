@@ -81,7 +81,6 @@ define([
 			if (isActive && resetLists) {
 				$("#blueprints-list").empty();
 				$("#upgrades-list").empty();
-				$("#researched-upgrades-list").empty();
 			}
 
 			var upgradeDefinition;
@@ -115,19 +114,12 @@ define([
 						}
 					}
 				} else {
-					if (isActive && resetLists) {
-						var nameTD = "<td class='item-name'><span class='upgrade'>" + upgradeDefinition.name + "</span></td>";
-						var descriptionTD = "<td>" + upgradeDefinition.description + "</td>";
-						var tr = "<tr>" + nameTD + "" + descriptionTD + "</tr>";
-						$("#researched-upgrades-list").append(tr);
-					}
-
 					if (hasBlueprintNew) this.tribeNodes.head.upgrades.useBlueprint(id);
 				}
 			}
 
 			if (resetLists) {
-				GameGlobals.uiFunctions.toggle("#world-upgrades-info", $("#researched-upgrades-list tr").length > 0);
+				GameGlobals.uiFunctions.toggle("#world-upgrades-info", this.tribeNodes.head.upgrades.boughtUpgrades.length > 0);
                 var noUpgrades = $("#upgrades-list tr").length === 0;
 				GameGlobals.uiFunctions.toggle("#world-upgrades-empty-message", noUpgrades);
                 if (noUpgrades) {
@@ -279,7 +271,6 @@ define([
         
         getLeadsToDescription: function (upgradeId, isUnlockable) {
             var leadsTo = [];
-            console.log(upgradeId)
             for (var id in UpgradeConstants.upgradeDefinitions) {
                 var reqs = PlayerActionConstants.requirements[id];
 				if (reqs && reqs.upgrades) {
@@ -292,7 +283,6 @@ define([
                     }
                 }
             }
-            console.log(leadsTo)
             if (leadsTo.length > 0)
                 return "<span class='p-meta'>leads to: " + leadsTo.join(", ") + " </span>";
             else
