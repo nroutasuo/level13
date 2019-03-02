@@ -69,6 +69,7 @@ define([
         
         refresh: function () {
 			if (!this.playerLocationNodes.head) return;
+            if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.trade) return;
 			this.updateOutgoingCaravansList();
             this.updateOutgoingCaravansHints();
         },
@@ -380,6 +381,7 @@ define([
         getNumOutgoingCaravansAvailable: function () {
             var totalCaravans = this.getNumOutgoingCaravansTotal();
             var caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
+            if (!caravansComponent) return 0;
             var busyCaravans = caravansComponent.outgoingCaravans.length;
             return totalCaravans - busyCaravans;
         },

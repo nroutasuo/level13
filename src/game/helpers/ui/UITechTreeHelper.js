@@ -33,6 +33,7 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
         
         constructor: function () {
             this.roots = [];
+            this.grid = [];
             this.nodesById = {};
             this.maxX = -1;
             this.maxY = -1;
@@ -49,7 +50,7 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             for (i; i <= this.roots.length; i++) {
                 if (i === this.roots.length)
                     break;
-                if (this.roots[i].level >= node.level)
+                if (this.roots[i].campOrdinal >= node.campOrdinal)
                     break;
             }
             this.roots.splice(i, 0, node);
@@ -142,7 +143,7 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
         canvas: null,
         ctx: null,
         
-        cellW: 80,
+        cellW: 100,
         cellH: 20,
         cellPX: 25,
         cellPY: 15,
@@ -168,9 +169,6 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             var tree = this.makeTechTree();
             var sunlit = $("body").hasClass("sunlit");
             
-            console.log("tech tree:");
-            console.log(tree);
-            
             // TODO extend to several required tech per tech; currently drawing assumes max 1
             
             var y = 0;
@@ -183,54 +181,83 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             this.ctx.canvas.height = dimensions.canvasHeight;
             this.ctx.clearRect(0, 0, this.canvas.scrollWidth, this.canvas.scrollWidth);
             this.ctx.fillStyle = CanvasConstants.getBackgroundColor(sunlit);
-            this.ctx.fillRect(0, 0, this.canvas.scrollWidth, this.canvas.scrollWidth);
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
 			for (var i = 0; i < tree.roots.length; i++) {
                 this.drawRoot(tree.roots[i], sunlit);
             }
         },
         
+        isOccupied: function (tree, x, y) {
+            var gridX = Math.round(x*4) / 4;
+            var gridY = Math.round(y*4) / 4;
+            if (gridX < 0 || gridY < 0) return true;
+            if (!tree.grid[gridY]) return false;
+            return tree.grid[gridY][gridX];
+        },
+        
+        isOccupiedArea: function (tree, x, y, p) {
+            return this.isOccupied(tree, x, y) || this.isOccupied(tree, x + p, y) || this.isOccupied(tree, Math.max(x - p, 0), y) || this.isOccupied(tree, x, y + p) || this.isOccupied(tree, x, Math.max(y - p, 0));
+        },
+        
+        positionNode: function (tree, node, x, y) {
+            node.x = Math.round(x * 10)/10;
+            node.y = Math.round(y * 10)/10;
+            if (node.x > tree.maxX) tree.maxX = node.x;
+            if (node.y > tree.maxY) tree.maxY = node.y;
+            var gridX = Math.round(x*4) / 4;
+            var gridY = Math.round(y*4) / 4;
+            if (!tree.grid[gridY]) tree.grid[gridY] = {};
+            if (tree.grid[gridY][gridX]) console.log("WARN: Overriding position: " + gridX + "," + gridY + " with " + node.definition.name);
+            tree.grid[gridY][gridX] = node;
+        },
+        
         positionChildren: function (tree, parent, yHeight, x, y) {
             var child;
-            var previousLevel = parent.level;
             var l = 0;
-            for (var level in parent.requiredByByLevel) {
-                var numperlevel = parent.requiredByByLevel[level].length;
-                if (numperlevel > yHeight) yHeight = numperlevel;
-                for (var i = 0; i < parent.requiredByByLevel[level].length; i++) {
-                    var ydiff = 0;
-                    if (numperlevel === 2) ydiff = -0.5 + i;
-                    else if (numperlevel === 3) ydiff = -1 + i;
-                    else if (numperlevel > 3) console.log("WARN: numperlevel > 3 - vis will not work!");
-                    child = parent.requiredByByLevel[level][i];
-                    console.log("- position node: " + child.definition.name)
-                    
-                    child.x = Math.max(x + 1, l);
-                    child.y = y + ydiff;
-                    if (child.x > tree.maxX) tree.maxX = child.x;
-                    if (child.y > tree.maxY) tree.maxY = child.y;
-                    
-                    this.positionChildren(tree, child, yHeight, child.x, child.y);
-                }
-                l++;
-                previousLevel = level;
-            }
+            var childYHeight = 0.825;
+            var numChildren = parent.requiredBy.length;
+            if (numChildren > yHeight) yHeight = numChildren * childYHeight;
             
-            return yHeight;
+            var maxYoffset = 0;
+            if (numChildren == 2) maxYoffset = childYHeight / 2;
+            if (numChildren > 2) maxYoffset = childYHeight;
+            
+            for (var i = 0; i < parent.requiredBy.length; i++) {
+                child = parent.requiredBy[i];
+                var ydiff = i * childYHeight;
+                var childX = Math.max(x + 1, child.level);
+                var childY = y + ydiff;
+                if (maxYoffset > 0) {
+                    var yOffset = 0;
+                    var isOccupied = this.isOccupiedArea(tree, childX, childY - maxYoffset, i == 0 ? 0.5 : 0.35);
+                    if (!isOccupied) {
+                        yOffset = -maxYoffset;
+                        childY += yOffset;
+                    } else {
+                        maxYoffset = 0;
+                    }
+                }
+                while (this.isOccupiedArea(tree, childX, childY, 0.4)) {
+                    if (childY < 0) break;
+                    if (childY > y + ydiff + numChildren * childYHeight) break;
+                    childY += 0.4;
+                }
+                this.positionNode(tree, child, childX, childY);
+                var childHeight = this.positionChildren(tree, child, yHeight, child.x, child.y);
+                yHeight = Math.max(yHeight, childHeight);
+            }
+            for (var i = 0; i < parent.requiredBy.length; i++) {
+                child = parent.requiredBy[i];
+            }
+            return Math.max(1, yHeight);
         },
         
         positionRoot: function (tree, root, y) {
-            console.log("positionRoot: " + root.definition.name);
-            var x = Math.max(0, root.level);
+            var x = Math.max(0, root.level - 1);
             var yHeight = 1;
-            
-            root.x = x;
-            root.y = y;
-            if (root.x > tree.maxX) tree.maxX = root.x;
-            if (root.y > tree.maxY) tree.maxY = root.y;
-            
+            this.positionNode(tree, root, x, y);
             yHeight = this.positionChildren(tree, root, yHeight, x, y);
-            
             return yHeight;
         },
         
@@ -246,8 +273,6 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
         drawNode: function (node, sunlit) {
             var pixelX = this.getPixelPosX(node.x);
             var pixelY = this.getPixelPosY(node.y);
-            
-            console.log("drawNode " + node.definition.name + " " + node.x + "." + node.y);
             
             // arrows
             for (var i = 0; i < node.requiredBy.length; i++) {
@@ -335,7 +360,8 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
                 var reqs = PlayerActionConstants.requirements[definition.id];
                 node = new UITechTreeNode();
                 node.definition = definition;
-                node.level = Math.floor(UpgradeConstants.getMinimumCampOrdinalForUpgrade(definition.id) / 3);
+                node.campOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(definition.id);
+                node.level = Math.floor(node.campOrdinal / 3);
                 node.requiresIDs = reqs && reqs.upgrades ? Object.keys(reqs.upgrades) : [];
                 tree.addNode(node);
             }
@@ -347,11 +373,10 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
         getTreeDimensions: function (canvasId, maxX, maxY) {
             var dimensions = {};
             var canvas = $("#" + canvasId);
-            dimensions.treeWidth = maxX * this.cellW + (maxX - 1) * this.cellPX + 2 * this.treePX;
-            dimensions.treeHeight = maxY * this.cellH + (maxY - 1) * this.cellPY + 2 * this.treePY;
+            dimensions.treeWidth = (maxX + 1) * this.cellW + maxX * this.cellPX + 2 * this.treePX;
+            dimensions.treeHeight = (maxY + 1) * this.cellH + maxY * this.cellPY + 2 * this.treePY;
             dimensions.canvasWidth = Math.max(dimensions.treeWidth, $(canvas).parent().width());
             dimensions.canvasHeight = Math.max(dimensions.treeHeight, 100);
-            console.log(dimensions)
             return dimensions;
         },
         
