@@ -16,23 +16,41 @@
     overflow: hidden;
 }
 
-.map-overlay {
+.canvas-overlay {
     position: absolute;
     top: 0;
     pointer-events: none;
 }
 
-.map-overlay-cell {
+.canvas-overlay-cell {
     position: absolute;
-    font-size: 50%;
-    width: 10px;
-    height: 10px;
     pointer-events: auto;
     cursor: pointer;
+    font-size: 75%;
+}
+
+.canvas-overlay-cell:hover {
+}
+
+.map-overlay-cell {
+    width: 10px;
+    height: 10px;
 }
 
 .map-overlay-cell:hover {
     background: @color-dark-text;
+}
+
+.upgrades-overlay-cell {
+    width: 100px;
+    height: 20px;
+    color: @color-dark-bg;
+}
+
+.upgrades-overlay-cell:hover {
+    width: 100px;
+    height: 20px;
+    background: fade(@color-dark-text, 10%)
 }
 
 

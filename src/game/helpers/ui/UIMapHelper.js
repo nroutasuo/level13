@@ -191,7 +191,7 @@ function (Ash,
                         sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, x, y).y;
                         sectorPos = new PositionVO(mapPosition.level, x, y);
                         var data = "data-level='" + sectorPos.level + "' data-x='" + sectorPos.sectorX + "' data-y='" + sectorPos.sectorY + "'";
-                        var $div = $("<div class='map-overlay-cell' style='top: " + sectorYpx + "px; left: " + sectorXpx + "px' " + data +"></div>");
+                        var $div = $("<div class='canvas-overlay-cell map-overlay-cell' style='top: " + sectorYpx + "px; left: " + sectorXpx + "px' " + data +"></div>");
                         if (sectorSelectedCallback) {
                             $div.click(function (e) {
                                 var $target = $(e.target);

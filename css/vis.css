@@ -9,21 +9,33 @@
 #researched-upgrades-vis {
   overflow: hidden;
 }
-.map-overlay {
+.canvas-overlay {
   position: absolute;
   top: 0;
   pointer-events: none;
 }
-.map-overlay-cell {
+.canvas-overlay-cell {
   position: absolute;
-  font-size: 50%;
-  width: 10px;
-  height: 10px;
   pointer-events: auto;
   cursor: pointer;
+  font-size: 75%;
+}
+.map-overlay-cell {
+  width: 10px;
+  height: 10px;
 }
 .map-overlay-cell:hover {
   background: #fdfdfd;
+}
+.upgrades-overlay-cell {
+  width: 100px;
+  height: 20px;
+  color: #202220;
+}
+.upgrades-overlay-cell:hover {
+  width: 100px;
+  height: 20px;
+  background: rgba(253, 253, 253, 0.1);
 }
 /* CAMP VIS */
 #tab-vis-in {

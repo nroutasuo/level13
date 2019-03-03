@@ -159,24 +159,30 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             CanvasConstants.updateScrollEnable(canvasId);
         },
         
-        drawTechTree: function (canvasId) {
+        drawTechTree: function (canvasId, overlayId) {
+            var tree = this.makeTechTree();
+            var y = 0;
+            for (var i = 0; i < tree.roots.length; i++) {
+                y = y + this.positionRoot(tree, tree.roots[i], y);
+            }
+            var dimensions = this.getTreeDimensions(canvasId, tree.maxX, tree.maxY);
+            var sunlit = $("body").hasClass("sunlit");
+            
+            // TODO extend to several required tech per tech; currently drawing assumes max 1
+            
+            this.drawCanvas(canvasId, tree, dimensions, sunlit);
+            this.rebuildOverlay(overlayId, tree, dimensions, sunlit);
+            CanvasConstants.updateScrollEnable(canvasId);
+            CanvasConstants.updateScrollIndicators(canvasId);
+        },
+        
+        drawCanvas: function (canvasId, tree, dimensions, sunlit) {
             this.canvas = $("#" + canvasId)[0];
             this.ctx = this.canvas ? this.canvas.getContext && this.canvas.getContext('2d') : null;
             
             if (!this.ctx)
                 return;
             
-            var tree = this.makeTechTree();
-            var sunlit = $("body").hasClass("sunlit");
-            
-            // TODO extend to several required tech per tech; currently drawing assumes max 1
-            
-            var y = 0;
-			for (var i = 0; i < tree.roots.length; i++) {
-                y = y + this.positionRoot(tree, tree.roots[i], y);
-            }
-            
-            var dimensions = this.getTreeDimensions(canvasId, tree.maxX, tree.maxY);
             this.ctx.canvas.width = dimensions.canvasWidth;
             this.ctx.canvas.height = dimensions.canvasHeight;
             this.ctx.clearRect(0, 0, this.canvas.scrollWidth, this.canvas.scrollWidth);
@@ -186,6 +192,41 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
 			for (var i = 0; i < tree.roots.length; i++) {
                 this.drawRoot(tree.roots[i], sunlit);
             }
+        },
+        
+        rebuildOverlay: function (overlayId, tree, dimensions, sunlit) {
+            var $overlay = $("#" + overlayId);
+            $overlay.empty();
+            $overlay.css("width", dimensions.canvasWidth + "px");
+            $overlay.css("height", dimensions.canvasHeight + "px");
+            
+			for (var i = 0; i < tree.roots.length; i++) {
+                var root = tree.roots[i];
+                this.addOverlayNodes($overlay, root);
+            }
+        },
+        
+        addOverlayNodes: function ($overlay, root) {
+            this.addOverlayNode($overlay, root);
+            for (var level in root.requiredByByLevel) {
+                for (var j = 0; j < root.requiredByByLevel[level].length; j++) {
+                    this.addOverlayNodes($overlay, root.requiredByByLevel[level][j]);
+                }
+            }
+        },
+        
+        addOverlayNode: function ($overlay, node) {
+            var xpx = this.getPixelPosX(node.x);
+            var ypx = this.getPixelPosY(node.y);
+            var data = "data-id='" + node.definition.id + "'";
+            var text = node.definition.name;
+            var $div = $("<div class='canvas-overlay-cell upgrades-overlay-cell' style='top: " + ypx + "px; left: " + xpx + "px' " + data +">" + text +"</div>");
+            $div.click(function (e) {
+                var $target = $(e.target);
+                var id = $target.attr("data-id");
+                console.log("tech selected: " + id);
+            });
+            $overlay.append($div);
         },
         
         isOccupied: function (tree, x, y) {
@@ -287,13 +328,6 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             // node
             this.ctx.fillStyle = this.getFillColor(node, sunlit);
             this.ctx.fillRect(pixelX, pixelY, this.cellW, this.cellH);
-
-            // details
-            this.ctx.font = "10px Arial";
-            this.ctx.fillStyle = sunlit ? "#fdfdfd" : "#202220";
-            this.ctx.textAlign = "center";
-            var text = node.definition.name;
-            this.ctx.fillText(text, pixelX + this.cellW / 2, pixelY + this.cellH / 3 * 2);
             
             // available border
             var hasUpgrade =  this.tribeNodes.head.upgrades.hasUpgrade(node.definition.id);

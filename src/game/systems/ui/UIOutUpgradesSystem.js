@@ -150,7 +150,7 @@ define([
         updateTechTree: function (resetLists) {
             if (!resetLists)
                 return;
-            GameGlobals.uiTechTreeHelper.drawTechTree("researched-upgrades-vis");
+            GameGlobals.uiTechTreeHelper.drawTechTree("researched-upgrades-vis", "upgrades-vis-overlay");
         },
             
         onTabChanged: function () {
