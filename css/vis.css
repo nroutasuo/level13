@@ -18,7 +18,14 @@
   position: absolute;
   pointer-events: auto;
   cursor: pointer;
-  font-size: 75%;
+  font-size: 70%;
+  display: table;
+  line-height: 0.85;
+}
+.canvas-overlay-cell p {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
 }
 .map-overlay-cell {
   width: 10px;
@@ -28,13 +35,11 @@
   background: #fdfdfd;
 }
 .upgrades-overlay-cell {
-  width: 100px;
-  height: 20px;
+  width: 85px;
+  height: 22px;
   color: #202220;
 }
 .upgrades-overlay-cell:hover {
-  width: 100px;
-  height: 20px;
   background: rgba(253, 253, 253, 0.1);
 }
 /* CAMP VIS */

@@ -26,10 +26,18 @@
     position: absolute;
     pointer-events: auto;
     cursor: pointer;
-    font-size: 75%;
+    font-size: 70%;
+    display: table;
+    line-height: 0.85;
 }
 
 .canvas-overlay-cell:hover {
+}
+
+.canvas-overlay-cell p {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
 }
 
 .map-overlay-cell {
@@ -42,14 +50,12 @@
 }
 
 .upgrades-overlay-cell {
-    width: 100px;
-    height: 20px;
+    width: 85px;
+    height: 22px;
     color: @color-dark-bg;
 }
 
 .upgrades-overlay-cell:hover {
-    width: 100px;
-    height: 20px;
     background: fade(@color-dark-text, 10%)
 }
 

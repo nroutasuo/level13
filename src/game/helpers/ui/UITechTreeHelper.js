@@ -143,9 +143,9 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
         canvas: null,
         ctx: null,
         
-        cellW: 100,
-        cellH: 20,
-        cellPX: 25,
+        cellW: 85,
+        cellH: 22,
+        cellPX: 20,
         cellPY: 15,
         treePX: 20,
         treePY: 20,
@@ -220,10 +220,10 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             var ypx = this.getPixelPosY(node.y);
             var data = "data-id='" + node.definition.id + "'";
             var text = node.definition.name;
-            var $div = $("<div class='canvas-overlay-cell upgrades-overlay-cell' style='top: " + ypx + "px; left: " + xpx + "px' " + data +">" + text +"</div>");
+            var $div = $("<div class='canvas-overlay-cell upgrades-overlay-cell' style='top: " + ypx + "px; left: " + xpx + "px' " + data +"><p>" + text +"</p></div>");
             $div.click(function (e) {
                 var $target = $(e.target);
-                var id = $target.attr("data-id");
+                var id =  node.definition.id;
                 console.log("tech selected: " + id);
             });
             $overlay.append($div);
@@ -317,11 +317,14 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             
             // arrows
             for (var i = 0; i < node.requiredBy.length; i++) {
+                var targetGridX = node.requiredBy[i].x;
+                var targetGridY = node.requiredBy[i].y;
+                var arrowstartxOffset = -Math.abs(node.y - targetGridY) * this.cellW / 16;
                 this.drawArrow(
-                    pixelX + this.cellW,
+                    pixelX + this.cellW + arrowstartxOffset,
                     pixelY + this.cellH / 2,
-                    this.getPixelPosX(node.requiredBy[i].x) - this.cellPX / 5,
-                    this.getPixelPosY(node.requiredBy[i].y) + this.cellH / 2
+                    this.getPixelPosX(targetGridX) - this.cellPX / 5,
+                    this.getPixelPosY(targetGridY) + this.cellH / 2
                 );
             }
             
@@ -357,18 +360,32 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
         drawArrow: function (fromx, fromy, tox, toy) {
             if (fromx < 0 || fromy < 0 || tox < 0 || toy < 0)
                 return;
-            
-            var headlen = 7;
+                
             var angle = Math.atan2(toy-fromy,tox-fromx);
-            this.ctx.strokeStyle = "#555";
             
+            // arrow line
+            this.ctx.strokeStyle = "#777";
+            this.ctx.lineWidth = 2;
             this.ctx.beginPath();
             this.ctx.moveTo(fromx, fromy);
-            this.ctx.lineTo(tox, toy);
+            var pointsAligned = fromy == toy || fromx == tox;
+            var pointsClose = Math.abs(fromy - toy) < this.cellH && Math.abs(fromx - tox) < this.cellW;
+            if (pointsAligned || pointsClose) {
+                this.ctx.lineTo(tox, toy);
+            } else {
+                var quadx = this.getCurveControlX(fromx, fromy, tox, toy);
+                var quady = this.getCurveControlY(fromx, fromy, tox, toy);
+                this.ctx.quadraticCurveTo(quadx, quady, tox, toy);
+                // uncomment to see control points
+                //this.ctx.fillRect(quadx,quady,4,4);
+                angle = Math.abs(fromx - tox) > Math.abs(fromy - toy) ? 0 : angle / 2;
+            }
             this.ctx.stroke();
             
-            this.ctx.fillStyle = "#555";
-            this.ctx.lineWidth = 1;
+            // arrowhead
+            var headlen = 8;
+            this.ctx.fillStyle = "#777";
+            this.ctx.lineWidth = 2;
             this.ctx.beginPath();
             this.ctx.moveTo(tox, toy);
             this.ctx.lineTo(tox-headlen*Math.cos(angle-Math.PI/6),toy-headlen*Math.sin(angle-Math.PI/6));
@@ -412,6 +429,31 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             dimensions.canvasWidth = Math.max(dimensions.treeWidth, $(canvas).parent().width());
             dimensions.canvasHeight = Math.max(dimensions.treeHeight, 100);
             return dimensions;
+        },
+        
+        getCurveControlX: function (fromx, fromy, tox, toy) {
+            // steeper curve (x control closer to fromx) when target is further away
+            var result = fromx + this.cellW / 4 * 3 - (tox - fromx);
+            result = Math.max(result, fromx );
+            result = Math.min(result, (fromx + tox) / 2);
+            return result;
+        },
+        
+        getCurveControlY: function (fromx, fromy, tox, toy) {
+            if (fromy == toy) return fromy;
+            
+            var xdist = Math.abs(fromx - tox);
+            if (xdist > this.cellW + this.cellPX * 2) {
+                // long distance, add some extra curviness to avoid overlaps
+                if (fromy < toy) {
+                    return toy + this.cellPY;
+                } else {
+                    return toy - this.cellPY;
+                }
+            } else {
+                // short (max 1 level) distance, basic curve
+                return toy;
+            }
         },
         
         getFillColor: function (node, sunlit) {
