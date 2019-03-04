@@ -870,7 +870,7 @@ function (Ash, GameConstants, CampConstants) {
                 unlock_item_clothing5l: {
                     blueprint: 15,
                     upgrades: {
-                        unlock_building_cementmill: true,
+                        unlock_item_clothing7: true,
                     }
                 },
 
@@ -933,7 +933,7 @@ function (Ash, GameConstants, CampConstants) {
                 unlock_item_clothing7: {
                     blueprint: 13,
                     upgrades: {
-                        unlock_building_apothecary: true,
+                        upgrade_worker_chemist: true,
                     }
                 },
 

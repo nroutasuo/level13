@@ -150,6 +150,8 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
         treePX: 20,
         treePY: 20,
         
+        minGridStep: 0.25,
+        
         constructor: function (engine) {
 			this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
         },
@@ -230,26 +232,35 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
         },
         
         isOccupied: function (tree, x, y) {
-            var gridX = Math.round(x*4) / 4;
-            var gridY = Math.round(y*4) / 4;
+            var grids = 1/this.minGridStep;
+            var gridX = Math.round(x*grids) / grids;
+            var gridY = Math.round(y*grids) / grids;
             if (gridX < 0 || gridY < 0) return true;
             if (!tree.grid[gridY]) return false;
             return tree.grid[gridY][gridX];
         },
         
-        isOccupiedArea: function (tree, x, y, p) {
-            return this.isOccupied(tree, x, y) || this.isOccupied(tree, x + p, y) || this.isOccupied(tree, Math.max(x - p, 0), y) || this.isOccupied(tree, x, y + p) || this.isOccupied(tree, x, Math.max(y - p, 0));
+        isOccupiedArea: function (tree, x, y, px, py) {
+            if (this.isOccupied(tree, x, y)) return true;
+            for (var tx = Math.max(0, x - px); tx <= x + px; tx += this.minGridStep) {
+                for (var ty = Math.max(0, y - py); ty <= y + py; ty += this.minGridStep) {
+                    if (this.isOccupied(tree, tx, ty)) return true;
+                }
+            }
+            return false;
         },
         
         positionNode: function (tree, node, x, y) {
-            node.x = Math.round(x * 10)/10;
-            node.y = Math.round(y * 10)/10;
+            node.x = x;
+            node.y = y;
             if (node.x > tree.maxX) tree.maxX = node.x;
             if (node.y > tree.maxY) tree.maxY = node.y;
-            var gridX = Math.round(x*4) / 4;
-            var gridY = Math.round(y*4) / 4;
+            
+            var grids = 1/this.minGridStep;
+            var gridX = Math.round(x*grids) / grids;
+            var gridY = Math.round(y*grids) / grids;
             if (!tree.grid[gridY]) tree.grid[gridY] = {};
-            if (tree.grid[gridY][gridX]) console.log("WARN: Overriding position: " + gridX + "," + gridY + " with " + node.definition.name);
+            if (this.isOccupiedArea(tree, gridX, gridY, 0.5, 0.5)) console.log("WARN: Overlapping position: " + gridX + "-" + gridY + " " + node.definition.name);
             tree.grid[gridY][gridX] = node;
         },
         
@@ -269,27 +280,30 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
                 var ydiff = i * childYHeight;
                 var childX = Math.max(x + 1, child.level);
                 var childY = y + ydiff;
+                /*
                 if (maxYoffset > 0) {
                     var yOffset = 0;
-                    var isOccupied = this.isOccupiedArea(tree, childX, childY - maxYoffset, i == 0 ? 0.5 : 0.35);
+                    var isOccupied = this.isOccupiedArea(tree, childX, 0.25, childY - maxYoffset, i == 0 ? 0.5 : 0.35);
                     if (!isOccupied) {
+                        console.log("offset " + child.definition.name)
                         yOffset = -maxYoffset;
                         childY += yOffset;
                     } else {
                         maxYoffset = 0;
                     }
                 }
-                while (this.isOccupiedArea(tree, childX, childY, 0.4)) {
-                    if (childY < 0) break;
-                    if (childY > y + ydiff + numChildren * childYHeight) break;
-                    childY += 0.4;
+                */
+                
+                var j = 0;
+                while (this.isOccupiedArea(tree, childX, childY, 0.25, childYHeight/2)) {
+                    if (childY < 0) { console.log("break push due to 0"); break; }
+                    if (j > 100) { console.log("break push due to j"); break; }
+                    childY += childYHeight / 2;
+                    j++;
                 }
                 this.positionNode(tree, child, childX, childY);
                 var childHeight = this.positionChildren(tree, child, yHeight, child.x, child.y);
                 yHeight = Math.max(yHeight, childHeight);
-            }
-            for (var i = 0; i < parent.requiredBy.length; i++) {
-                child = parent.requiredBy[i];
             }
             return Math.max(1, yHeight);
         },
