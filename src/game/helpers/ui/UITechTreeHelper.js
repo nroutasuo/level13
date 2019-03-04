@@ -280,19 +280,17 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
                 var ydiff = i * childYHeight;
                 var childX = Math.max(x + 1, child.level);
                 var childY = y + ydiff;
-                /*
                 if (maxYoffset > 0) {
                     var yOffset = 0;
-                    var isOccupied = this.isOccupiedArea(tree, childX, 0.25, childY - maxYoffset, i == 0 ? 0.5 : 0.35);
+                    var isOccupied = this.isOccupiedArea(tree, childX, childY - maxYoffset, 0.5, 0.5);
                     if (!isOccupied) {
-                        console.log("offset " + child.definition.name)
+                        console.log("offset " + child.definition.name + " | " + i)
                         yOffset = -maxYoffset;
                         childY += yOffset;
                     } else {
                         maxYoffset = 0;
                     }
                 }
-                */
                 
                 var j = 0;
                 while (this.isOccupiedArea(tree, childX, childY, 0.25, childYHeight/2)) {
