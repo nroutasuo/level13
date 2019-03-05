@@ -156,77 +156,90 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
 			this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
         },
         
-        enableScrolling: function (canvasId) {
-            CanvasConstants.makeCanvasScrollable(canvasId);
-            CanvasConstants.updateScrollEnable(canvasId);
+        init: function (canvasId, overlayId) {
+            var vis = { $canvas: $("#" + canvasId), canvasId: canvasId, $overlay: $("#" + overlayId), overlayId: overlayId };
+            return vis;
         },
         
-        drawTechTree: function (canvasId, overlayId) {
+        enableScrolling: function (vis) {
+            CanvasConstants.makeCanvasScrollable(vis.canvasId);
+            CanvasConstants.updateScrollEnable(vis.canvasId);
+        },
+        
+        drawTechTree: function (vis) {
             var tree = this.makeTechTree();
             var y = 0;
             for (var i = 0; i < tree.roots.length; i++) {
                 y = y + this.positionRoot(tree, tree.roots[i], y);
             }
-            var dimensions = this.getTreeDimensions(canvasId, tree.maxX, tree.maxY);
-            var sunlit = $("body").hasClass("sunlit");
+            vis.tree = tree;
+            vis.dimensions = this.getTreeDimensions(vis, tree.maxX, tree.maxY);
+            vis.sunlit = $("body").hasClass("sunlit");
             
             // TODO extend to several required tech per tech; currently drawing assumes max 1
             
-            this.drawCanvas(canvasId, tree, dimensions, sunlit);
-            this.rebuildOverlay(overlayId, tree, dimensions, sunlit);
-            CanvasConstants.updateScrollEnable(canvasId);
-            CanvasConstants.updateScrollIndicators(canvasId);
+            this.refreshCanvas(vis);
+            this.rebuildOverlay(vis);
+            CanvasConstants.updateScrollEnable(vis.canvasId);
+            CanvasConstants.updateScrollIndicators(vis.canvasId);
         },
         
-        drawCanvas: function (canvasId, tree, dimensions, sunlit) {
-            this.canvas = $("#" + canvasId)[0];
+        refreshCanvas: function (vis) {
+            this.canvas = vis.$canvas[0];
             this.ctx = this.canvas ? this.canvas.getContext && this.canvas.getContext('2d') : null;
             
             if (!this.ctx)
                 return;
             
-            this.ctx.canvas.width = dimensions.canvasWidth;
-            this.ctx.canvas.height = dimensions.canvasHeight;
+            this.ctx.canvas.width = vis.dimensions.canvasWidth;
+            this.ctx.canvas.height = vis.dimensions.canvasHeight;
             this.ctx.clearRect(0, 0, this.canvas.scrollWidth, this.canvas.scrollWidth);
-            this.ctx.fillStyle = CanvasConstants.getBackgroundColor(sunlit);
+            this.ctx.fillStyle = CanvasConstants.getBackgroundColor(vis.sunlit);
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-			for (var i = 0; i < tree.roots.length; i++) {
-                this.drawRoot(tree.roots[i], sunlit);
+			for (var i = 0; i < vis.tree.roots.length; i++) {
+                this.drawRoot(vis, vis.tree.roots[i], vis.sunlit);
             }
         },
         
-        rebuildOverlay: function (overlayId, tree, dimensions, sunlit) {
-            var $overlay = $("#" + overlayId);
+        rebuildOverlay: function (vis) {
+            var $overlay = vis.$overlay;
             $overlay.empty();
-            $overlay.css("width", dimensions.canvasWidth + "px");
-            $overlay.css("height", dimensions.canvasHeight + "px");
+            $overlay.css("width", vis.dimensions.canvasWidth + "px");
+            $overlay.css("height", vis.dimensions.canvasHeight + "px");
             
-			for (var i = 0; i < tree.roots.length; i++) {
-                var root = tree.roots[i];
-                this.addOverlayNodes($overlay, root);
+			for (var i = 0; i < vis.tree.roots.length; i++) {
+                var root = vis.tree.roots[i];
+                this.addOverlayNodes(vis, $overlay, root);
             }
         },
         
-        addOverlayNodes: function ($overlay, root) {
-            this.addOverlayNode($overlay, root);
+        addOverlayNodes: function (vis, $overlay, root) {
+            this.addOverlayNode(vis, $overlay, root);
             for (var level in root.requiredByByLevel) {
                 for (var j = 0; j < root.requiredByByLevel[level].length; j++) {
-                    this.addOverlayNodes($overlay, root.requiredByByLevel[level][j]);
+                    this.addOverlayNodes(vis, $overlay, root.requiredByByLevel[level][j]);
                 }
             }
         },
         
-        addOverlayNode: function ($overlay, node) {
+        addOverlayNode: function (vis, $overlay, node) {
             var xpx = this.getPixelPosX(node.x);
             var ypx = this.getPixelPosY(node.y);
             var data = "data-id='" + node.definition.id + "'";
             var text = node.definition.name;
             var $div = $("<div class='canvas-overlay-cell upgrades-overlay-cell' style='top: " + ypx + "px; left: " + xpx + "px' " + data +"><p>" + text +"</p></div>");
+            var helper = this;
             $div.click(function (e) {
-                var $target = $(e.target);
-                var id =  node.definition.id;
-                console.log("tech selected: " + id);
+                console.log("tech selected: " + node.definition.id);
+                vis.selectedID = node.definition.id;
+            });
+            $div.hover(function () {
+                vis.highlightedID = node.definition.id;
+                helper.refreshCanvas(vis);
+            }, function () {
+                vis.highlightedID = null;
+                helper.refreshCanvas(vis);
             });
             $overlay.append($div);
         },
@@ -314,16 +327,16 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             return yHeight;
         },
         
-        drawRoot: function (root, sunlit) {
-            this.drawNode(root);
+        drawRoot: function (vis, root, sunlit) {
+            this.drawNode(vis, root);
             for (var level in root.requiredByByLevel) {
                 for (var i = 0; i < root.requiredByByLevel[level].length; i++) {
-                    this.drawRoot(root.requiredByByLevel[level][i], sunlit);
+                    this.drawRoot(vis, root.requiredByByLevel[level][i], sunlit);
                 }
             }
         },
         
-        drawNode: function (node, sunlit) {
+        drawNode: function (vis, node, sunlit) {
             var pixelX = this.getPixelPosX(node.x);
             var pixelY = this.getPixelPosY(node.y);
             
@@ -341,7 +354,7 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             }
             
             // node
-            this.ctx.fillStyle = this.getFillColor(node, sunlit);
+            this.ctx.fillStyle = this.getFillColor(vis.tree, node, sunlit, vis.highlightedID);
             this.ctx.fillRect(pixelX, pixelY, this.cellW, this.cellH);
             
             // available border
@@ -433,14 +446,40 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             return tree;
         },
         
-        getTreeDimensions: function (canvasId, maxX, maxY) {
+        getTreeDimensions: function (vis, maxX, maxY) {
             var dimensions = {};
-            var canvas = $("#" + canvasId);
+            var canvas = vis.$canvas[0];
             dimensions.treeWidth = (maxX + 1) * this.cellW + maxX * this.cellPX + 2 * this.treePX;
             dimensions.treeHeight = (maxY + 1) * this.cellH + maxY * this.cellPY + 2 * this.treePY;
             dimensions.canvasWidth = Math.max(dimensions.treeWidth, $(canvas).parent().width());
             dimensions.canvasHeight = Math.max(dimensions.treeHeight, 100);
             return dimensions;
+        },
+        
+        isConnected: function (tree, id1, id2) {
+            if (id1 == id2) return true;
+            return this.isDescendantOf(tree, id1, id2) || this.isAncestorOf(tree, id1, id2);
+            return false;
+        },
+        
+        isAncestorOf: function (tree, id1, id2) {
+            if (id1 == id2) return true;
+            var node1 = tree.nodesById[id1];
+            for (var i = 0; i < node1.requiredBy.length; i++) {
+                var node3 = node1.requiredBy[i];
+                if (this.isAncestorOf(tree, node3.definition.id, id2)) return true;
+            }
+            return false;
+        },
+        
+        isDescendantOf: function (tree, id1, id2) {
+            if (id1 == id2) return true;
+            var node1 = tree.nodesById[id1];
+            for (var i = 0; i < node1.requires.length; i++) {
+                var node3 = node1.requires[i];
+                if (this.isDescendantOf(tree, node3.definition.id, id2)) return true;
+            }
+            return false;
         },
         
         getCurveControlX: function (fromx, fromy, tox, toy) {
@@ -468,16 +507,22 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             }
         },
         
-        getFillColor: function (node, sunlit) {
+        getFillColor: function (tree, node, sunlit, highlightedID) {
             var definition = node.definition;
-            if (this.tribeNodes.head.upgrades.hasUpgrade(definition.id)) {
-                return sunlit ? "#444" : "#ccc";
-            }
-            var isAvailable = GameGlobals.playerActionsHelper.checkRequirements(definition.id, false).value > 0;
-            if (isAvailable) {
+            var isUnlocked = this.tribeNodes.head.upgrades.hasUpgrade(definition.id);
+            var highlight = definition.id == highlightedID || this.isConnected(tree, definition.id, highlightedID);
+            if (!highlightedID || highlight) {
+                if (isUnlocked) {
+                    return sunlit ? "#444" : "#ccc";
+                }
+                var isAvailable = GameGlobals.playerActionsHelper.checkRequirements(definition.id, false).value > 0;
+                if (isAvailable) {
+                    return sunlit ? "#aaa" : "#777";
+                }
                 return sunlit ? "#aaa" : "#777";
+            } else {
+                return sunlit ? "#ccc" : "#555";
             }
-            return sunlit ? "#aaa" : "#777";
         }
         
     });

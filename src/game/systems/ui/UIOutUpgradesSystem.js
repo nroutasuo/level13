@@ -20,14 +20,16 @@ define([
 		currentUpgrades: 0,
 		lastShownUpgrades: 0,
 
-		constructor: function () {},
+		constructor: function () {
+            this.vis = GameGlobals.uiTechTreeHelper.init("researched-upgrades-vis", "upgrades-vis-overlay");
+        },
 
 		addToEngine: function (engine) {
 			this.engine = engine;
 			this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
 			this.lastUpdateUpgradeCount = 0;
 			this.hasNeverBeenOpened = !GameGlobals.gameState.unlockedFeatures.upgrades;
-            GameGlobals.uiTechTreeHelper.enableScrolling("researched-upgrades-vis");
+            GameGlobals.uiTechTreeHelper.enableScrolling(this.vis);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 			GlobalSignals.add(this, GlobalSignals.upgradeUnlockedSignal, this.onUpgradeUnlocked);
 		},
@@ -150,7 +152,7 @@ define([
         updateTechTree: function (resetLists) {
             if (!resetLists)
                 return;
-            GameGlobals.uiTechTreeHelper.drawTechTree("researched-upgrades-vis", "upgrades-vis-overlay");
+            GameGlobals.uiTechTreeHelper.drawTechTree(this.vis);
         },
             
         onTabChanged: function () {
