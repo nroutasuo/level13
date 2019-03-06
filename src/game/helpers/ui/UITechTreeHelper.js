@@ -156,8 +156,9 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
 			this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
         },
         
-        init: function (canvasId, overlayId) {
-            var vis = { $canvas: $("#" + canvasId), canvasId: canvasId, $overlay: $("#" + overlayId), overlayId: overlayId };
+        init: function (canvasId, overlayId, selectioncb) {
+            var vis = { $canvas: $("#" + canvasId), canvasId: canvasId, $overlay: $("#" + overlayId), overlayId: overlayId, selectioncb: selectioncb };
+            vis.selectedID = null;
             return vis;
         },
         
@@ -233,6 +234,7 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             $div.click(function (e) {
                 console.log("tech selected: " + node.definition.id);
                 vis.selectedID = node.definition.id;
+                vis.selectioncb();
             });
             $div.hover(function () {
                 vis.highlightedID = node.definition.id;

@@ -21,7 +21,10 @@ define([
 		lastShownUpgrades: 0,
 
 		constructor: function () {
-            this.vis = GameGlobals.uiTechTreeHelper.init("researched-upgrades-vis", "upgrades-vis-overlay");
+            var sys = this;
+            this.vis = GameGlobals.uiTechTreeHelper.init("researched-upgrades-vis", "upgrades-vis-overlay", function () {
+                sys.updateTechDetails();
+            });
         },
 
 		addToEngine: function (engine) {
@@ -58,6 +61,7 @@ define([
 			$("#tab-header h2").text("Upgrades");
 			this.updateUpgradesLists(true, true);
             this.updateTechTree(true);
+            this.updateTechDetails();
 			GameGlobals.uiFunctions.toggle("#world-blueprints", $("#blueprints-list tr").length > 0);
 			GameGlobals.uiFunctions.toggle("#world-upgrades-count", this.lastUpdateUpgradeCount > 0);
 			$("#world-upgrades-count").text("Upgrades researched: " + this.lastUpdateUpgradeCount);
@@ -154,10 +158,25 @@ define([
                 return;
             GameGlobals.uiTechTreeHelper.drawTechTree(this.vis);
         },
+
+        updateTechDetails: function () {
+            var hasSelection = this.vis.selectedID !== null;
+            GameGlobals.uiFunctions.toggle($("#upgrade-details-content-empty"), !hasSelection);
+            GameGlobals.uiFunctions.toggle($("#upgrade-details-content"), hasSelection);
+            if (hasSelection) {
+                var definition = UpgradeConstants.upgradeDefinitions[this.vis.selectedID];
+                $("#upgrade-details-name").text(definition.name);
+                $("#upgrade-details-desc").text(definition.description);
+                $("#upgrade-details-effect").text(this.getEffectDescription(this.vis.selectedID, false));
+            }
+        },
             
         onTabChanged: function () {
             var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.upgrades;
-            if (isActive) this.refresh();
+            if (isActive) {
+                this.vis.selectedID = null;
+                this.refresh();
+            }
         },
         
         onUpgradeUnlocked: function () {
@@ -173,7 +192,7 @@ define([
 				iconTD += "<span class='" + classes + "'><div class='info-callout-target info-callout-target-small' description='blueprint'><img src='img/items/blueprint.png'/></div></span>";
 			iconTD += "</td>";
 
-            var effectDesc = this.getEffectDescription(upgradeDefinition.id, hasBlueprintNew);
+            var effectDesc = "<span class='p-meta'>" + this.getEffectDescription(upgradeDefinition.id, hasBlueprintNew) + "</span>"
             var leadsToDesc = this.getLeadsToDescription(upgradeDefinition.id, hasBlueprintNew);
 			var descriptionTD = "<td class='maxwidth'>";
 			descriptionTD += upgradeDefinition.description + "<br/>" + effectDesc + "<br/>" + (leadsToDesc ? leadsToDesc : "") + "</td>";
@@ -268,7 +287,7 @@ define([
 				if (effects.length > 0) effects = effects.slice(0, -2);
 			}
 
-			return "<span class='p-meta'>" + effects + " </span>";
+			return effects;
 		},
         
         getLeadsToDescription: function (upgradeId, isUnlockable) {
