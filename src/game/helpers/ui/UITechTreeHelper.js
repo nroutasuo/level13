@@ -349,7 +349,8 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
                     pixelX + this.cellW + arrowstartxOffset,
                     pixelY + this.cellH / 2,
                     this.getPixelPosX(targetGridX) - this.cellPX / 5,
-                    this.getPixelPosY(targetGridY) + this.cellH / 2
+                    this.getPixelPosY(targetGridY) + this.cellH / 2,
+                    this.getArrowColor(vis.tree, node, node.requiredBy[i], sunlit, vis.highlightedID)
                 );
             }
             
@@ -382,14 +383,14 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             return this.treePY + y * this.cellH + y * this.cellPY;
         },
         
-        drawArrow: function (fromx, fromy, tox, toy) {
+        drawArrow: function (fromx, fromy, tox, toy, color) {
             if (fromx < 0 || fromy < 0 || tox < 0 || toy < 0)
                 return;
                 
             var angle = Math.atan2(toy-fromy,tox-fromx);
             
             // arrow line
-            this.ctx.strokeStyle = "#777";
+            this.ctx.strokeStyle = color;
             this.ctx.lineWidth = 2;
             this.ctx.beginPath();
             this.ctx.moveTo(fromx, fromy);
@@ -409,7 +410,7 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             
             // arrowhead
             var headlen = 8;
-            this.ctx.fillStyle = "#777";
+            this.ctx.fillStyle = color;
             this.ctx.lineWidth = 2;
             this.ctx.beginPath();
             this.ctx.moveTo(tox, toy);
@@ -504,6 +505,17 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             } else {
                 // short (max 1 level) distance, basic curve
                 return toy;
+            }
+        },
+        
+        getArrowColor: function (tree, fromNode, toNode, sunlit, highlightedID) {
+            var def1 = fromNode.definition;
+            var def2 = toNode.definition;
+            var highlight = this.isConnected(tree, fromNode.definition.id, highlightedID) && this.isConnected(tree, toNode.definition.id, highlightedID);
+            if (!highlightedID || highlight) {
+                return "#777";
+            } else {
+                return "#555";
             }
         },
         
