@@ -332,7 +332,7 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
         },
         
         drawRoot: function (vis, root, sunlit) {
-            this.drawNode(vis, root);
+            this.drawNode(vis, root, sunlit);
             for (var level in root.requiredByByLevel) {
                 for (var i = 0; i < root.requiredByByLevel[level].length; i++) {
                     this.drawRoot(vis, root.requiredByByLevel[level][i], sunlit);
@@ -367,7 +367,7 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             var isAvailable = GameGlobals.playerActionsHelper.checkRequirements(node.definition.id, false).value > 0;
             if (!hasUpgrade && isAvailable) {
                 this.ctx.lineWidth = 3;
-                this.ctx.strokeStyle = sunlit ? "#444" : "#ccc";
+                this.ctx.strokeStyle = sunlit ? "#aaa" : "#ccc";
                 this.ctx.beginPath();
                 this.ctx.moveTo(pixelX, pixelY);
                 this.ctx.lineTo(pixelX + this.cellW, pixelY);
@@ -517,9 +517,9 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             var def2 = toNode.definition;
             var highlight = this.isConnected(tree, fromNode.definition.id, highlightedID) && this.isConnected(tree, toNode.definition.id, highlightedID);
             if (!highlightedID || highlight) {
-                return "#777";
+                return sunlit ? "#999" : "#777";
             } else {
-                return "#555";
+                return sunlit ? "#ccc" : "#555";
             }
         },
         
@@ -529,15 +529,15 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             var highlight = definition.id == highlightedID || this.isConnected(tree, definition.id, highlightedID);
             if (!highlightedID || highlight) {
                 if (isUnlocked) {
-                    return sunlit ? "#444" : "#ccc";
+                    return sunlit ? "#aaa" : "#ccc";
                 }
                 var isAvailable = GameGlobals.playerActionsHelper.checkRequirements(definition.id, false).value > 0;
                 if (isAvailable) {
-                    return sunlit ? "#aaa" : "#777";
+                    return sunlit ? "#ccc" : "#777";
                 }
-                return sunlit ? "#aaa" : "#777";
+                return sunlit ? "#ccc" : "#ccc";
             } else {
-                return sunlit ? "#ccc" : "#555";
+                return sunlit ? "#eee" : "#555";
             }
         }
         
