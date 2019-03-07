@@ -1338,10 +1338,12 @@ define(['ash',
 
 		createBlueprint: function (upgradeId) {
 			this.tribeUpgradesNodes.head.upgrades.createBlueprint(upgradeId);
+            GlobalSignals.blueprintsChangedSignal.dispatch();
 		},
 
 		unlockUpgrade: function (upgradeId) {
 			this.tribeUpgradesNodes.head.upgrades.useBlueprint(upgradeId);
+            GlobalSignals.blueprintsChangedSignal.dispatch();
 		},
 
 		buyUpgrade: function (upgradeId, automatic) {

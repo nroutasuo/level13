@@ -100,6 +100,8 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
                     for (var i = 0; i < node.requires.length; i++) {
                         isVisible = isVisible || GameGlobals.playerActionsHelper.checkRequirements(node.requires[i].definition.id, false).value > 0;
                     }
+                } else {
+                    isVisible = tribeNodes.head.upgrades.hasNewBlueprint(node.definition.id);
                 }
                 if (isVisible)
                     continue;

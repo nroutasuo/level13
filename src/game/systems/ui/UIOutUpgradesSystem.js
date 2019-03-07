@@ -34,6 +34,7 @@ define([
 			this.hasNeverBeenOpened = !GameGlobals.gameState.unlockedFeatures.upgrades;
             GameGlobals.uiTechTreeHelper.enableScrolling(this.vis);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
+			GlobalSignals.add(this, GlobalSignals.blueprintsChangedSignal, this.onBlueprintsChanged);
 			GlobalSignals.add(this, GlobalSignals.upgradeUnlockedSignal, this.onUpgradeUnlocked);
 		},
 
@@ -184,6 +185,11 @@ define([
             if (isActive) this.refresh();
         },
         
+        onBlueprintsChanged: function () {
+            var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.upgrades;
+            if (isActive) this.refresh();
+        },
+        
 		getUpgradeTR: function (upgradeDefinition, isAvailable, hasBlueprintUnlocked, hasBlueprintNew) {
 			var nameTD = "<td class='item-name'>" + upgradeDefinition.name + "</td>";
 			var classes = hasBlueprintNew ? "item item-equipped" : "item";
@@ -193,9 +199,8 @@ define([
 			iconTD += "</td>";
 
             var effectDesc = "<span class='p-meta'>" + this.getEffectDescription(upgradeDefinition.id, hasBlueprintNew) + "</span>"
-            var leadsToDesc = this.getLeadsToDescription(upgradeDefinition.id, hasBlueprintNew);
 			var descriptionTD = "<td class='maxwidth'>";
-			descriptionTD += upgradeDefinition.description + "<br/>" + effectDesc + "<br/>" + (leadsToDesc ? leadsToDesc : "") + "</td>";
+			descriptionTD += upgradeDefinition.description + "<br/>" + effectDesc + "</td>";
 
 			if (isAvailable || hasBlueprintUnlocked)
 				buttonTD = "<td class='minwidth'><button class='action' action='" + upgradeDefinition.id + "'>research</button></td>";
@@ -289,26 +294,6 @@ define([
 
 			return effects;
 		},
-        
-        getLeadsToDescription: function (upgradeId, isUnlockable) {
-            var leadsTo = [];
-            for (var id in UpgradeConstants.upgradeDefinitions) {
-                var reqs = PlayerActionConstants.requirements[id];
-				if (reqs && reqs.upgrades) {
-					for (var requiredUpgradeId in reqs.upgrades) {
-						if (requiredUpgradeId === upgradeId) {
-                            if (!reqs.blueprint || this.tribeNodes.head.upgrades.hasBlueprint(id)) {
-                                leadsTo.push(UpgradeConstants.upgradeDefinitions[id].name);
-                            }
-                        }
-                    }
-                }
-            }
-            if (leadsTo.length > 0)
-                return "<span class='p-meta'>leads to: " + leadsTo.join(", ") + " </span>";
-            else
-                return null;
-        }
         
     });
 

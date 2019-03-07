@@ -69,6 +69,9 @@ h2:first-child {
 h3 {
   margin: 1em 0 0.5em 0;
 }
+h4 {
+  margin: 1em 0 0.5em 0;
+}
 a {
   border: none !important;
   background: inherit !important;

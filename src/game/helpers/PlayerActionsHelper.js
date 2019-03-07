@@ -107,8 +107,10 @@ define([
                     for (var i = 0; i < costAmount; i++) {
                         itemsComponent.discardItem(itemsComponent.getItem(itemId));
                     }
+                } else if (costName == "blueprint") {
                 } else {
-                    console.log("WARN: unknown cost: " + costName);
+                    console.log("WARN: unknown cost: " + costName + ", action: " + action);
+                    console.log(costs);
                 }
             }
         },
