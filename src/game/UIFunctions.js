@@ -1,5 +1,6 @@
 // A class that checks raw user input from the DOM and passes game-related actions to PlayerActionFunctions
 define(['ash',
+        'core/ExceptionHandler',
 		'game/GameGlobals',
 		'game/GlobalSignals',
 		'game/constants/GameConstants',
@@ -10,7 +11,7 @@ define(['ash',
 		'game/helpers/ui/UIPopupManager',
 		'game/vos/ResourcesVO'
 	],
-	function (Ash, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ResourcesVO) {
+	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ResourcesVO) {
 
 		var UIFunctions = Ash.Class.extend({
 
@@ -164,7 +165,7 @@ define(['ash',
 						return;
 					}
 					$element.addClass("click-bound");
-					$element.click(function (e) {
+					$element.click(ExceptionHandler.wrapClick(function (e) {
 						var action = $(this).attr("action");
 						if (!action) {
 							console.log("WARN: No action mapped for button.");
@@ -190,7 +191,7 @@ define(['ash',
 							GameGlobals.gameState.setActionDuration(action, locationKey, duration);
 							uiFunctions.startButtonDuration($(this), duration);
 						}
-					});
+					}));
 				});
 
 				// Special actions

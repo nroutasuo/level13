@@ -1,6 +1,8 @@
 define(['ash',], function (Ash) {
 
     var GlobalSignals = {
+        
+        exceptionCallback: null,
 
         // ui events
         gameShownSignal: new Ash.Signals.Signal(),
@@ -47,7 +49,15 @@ define(['ash',], function (Ash) {
             if (!system.signalBindings)
                 system.signalBindings = [];
             var binding = signal.add(function () {
-                listener.apply(system, arguments);
+                try {
+                    listener.apply(system, arguments);
+                } catch (ex) {
+                    if (GlobalSignals.exceptionCallback) {
+                        GlobalSignals.exceptionCallback(ex);
+                    } else {
+                        throw ex;
+                    }
+                }
             });
             system.signalBindings.push(binding);
         },

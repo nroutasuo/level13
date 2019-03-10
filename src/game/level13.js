@@ -1,5 +1,6 @@
 define([
     'ash',
+    'core/ExceptionHandler',
     'game/GameGlobals',
     'game/GlobalSignals',
 	'game/constants/GameConstants',
@@ -72,6 +73,7 @@ define([
     'brejep/tickprovider',
 ], function (
     Ash,
+    ExceptionHandler,
     GameGlobals,
     GlobalSignals,
 	GameConstants,
@@ -161,6 +163,8 @@ define([
             this.initializePlugins(plugins);
 
             var sys = this;
+            ExceptionHandler.exceptionCallback = function (ex) { game.handleException(ex) };
+            GlobalSignals.exceptionCallback = function (ex) { game.handleException(ex) };
             GlobalSignals.worldReadySignal.addOnce(function () {
                 sys.start();
             });
@@ -275,6 +279,7 @@ define([
                 'description': exshortdesc,
                 'fatal': true,
             });
+            
             // show popup
             var bugTitle = "[JS Error] " + exshortdesc;
             var bugBody =
@@ -290,6 +295,7 @@ define([
                 "ok",
                 null
             );
+            
             this.gameManager.pauseGame();
             throw ex;
         },

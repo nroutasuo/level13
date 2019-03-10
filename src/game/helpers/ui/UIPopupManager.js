@@ -1,6 +1,6 @@
 // Manages showing and hiding pop-ups
-define(['ash', 'game/GameGlobals', 'game/GlobalSignals'],
-function (Ash, GameGlobals, GlobalSignals) {
+define(['ash', 'core/ExceptionHandler', 'game/GameGlobals', 'game/GlobalSignals'],
+function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
     var UIPopupManager = Ash.Class.extend({
         
         popupQueue: null,
@@ -60,28 +60,28 @@ function (Ash, GameGlobals, GlobalSignals) {
             $("#common-popup .buttonbox").empty();
             $("#common-popup .buttonbox").append("<button id='info-ok' class='action'>" + okButtonLabel + "</button>");
             if (hasResult) $("#info-ok").attr("action", "accept_inventory");
-            $("#info-ok").click(function (e) {
+            $("#info-ok").click(ExceptionHandler.wrapClick(function (e) {
                 popUpManager.closePopup("common-popup");
                 if (okCallback) okCallback(false);
-            });
+            }));
             $defaultButton = $("#info-ok");
             
             var showTakeAll = hasResult;
             if (showTakeAll) {
                 $("#common-popup .buttonbox").append("<button id='confirmation-takeall' class='action' action='take_all'>Take all</button>");
-                $("#confirmation-takeall").click(function (e) {
+                $("#confirmation-takeall").click(ExceptionHandler.wrapClick(function (e) {
                     popUpManager.closePopup("common-popup");
                     if (okCallback) okCallback(true);
-                });
+                }));
                 $defaultButton = $("#confirmation-takeall");
             }
             
             if (cancelButtonLabel) {
                 $("#common-popup .buttonbox").append("<button id='confirmation-cancel'>" + cancelButtonLabel + "</button>");
-                $("#confirmation-cancel").click(function (e) {
+                $("#confirmation-cancel").click(ExceptionHandler.wrapClick(function (e) {
                     popUpManager.closePopup("common-popup");
                     if (cancelCallback) cancelCallback();
-                });
+                }));
             }
             
             // overlay
