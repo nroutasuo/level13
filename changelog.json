@@ -3,8 +3,12 @@
 			"version": "0.2.3",
 			"phase": "alpha",
 			"final": false,
-			"updated": "2019-02-10",
+			"updated": "2019-03-06",
 			"changes": [
+                {
+                    "type": "UI",
+                    "summary": "Better tech tree visualization."
+                },
                 {
                     "type": "GD",
                     "summary": "New building: caravan stable."
