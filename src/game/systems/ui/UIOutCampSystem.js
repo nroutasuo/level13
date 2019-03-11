@@ -447,6 +447,7 @@
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var soldiers = this.playerLocationNodes.head.entity.get(CampComponent).assignedWorkers.soldier;
 			var raidDanger = OccurrenceConstants.getRaidDanger(improvements, soldiers);
+            var raidAttack = OccurrenceConstants.getRaidDangerPoints(improvements);
             var raidDefence = OccurrenceConstants.getRaidDefencePoints(improvements, soldiers);
 
             var inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
@@ -454,10 +455,13 @@
             $("#in-demographics-general-age .value").text(inGameFoundingDate);
             GameGlobals.uiFunctions.toggle("#in-demographics-general-age", showCalendar);
 
-			var showRaid = raidDanger > 0 || raidDefence > CampConstants.CAMP_BASE_DEFENCE;
+			var showRaid = raidDanger > 0 || raidDefence > CampConstants.CAMP_BASE_DEFENCE || campComponent.population > 1;
 			if (showRaid) {
+                var defenceS = OccurrenceConstants.getRaidDefenceString(improvements, soldiers);
 				$("#in-demographics-raid-danger .value").text((raidDanger * 100) + "%");
 				$("#in-demographics-raid-defence .value").text(raidDefence);
+                UIConstants.updateCalloutContent("#in-demographics-raid-danger", "Probability that an incoming raid is successful. Increases with camp size and decreases with camp defences.");
+                UIConstants.updateCalloutContent("#in-demographics-raid-defence", defenceS);
                 var lastRaidS = "(none)";
                 if (campComponent.lastRaid && campComponent.lastRaid.isValid()) {
                     if (campComponent.lastRaid.wasVictory) {

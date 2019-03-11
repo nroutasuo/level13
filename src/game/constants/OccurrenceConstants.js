@@ -69,10 +69,27 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
         },
 		
 		getRaidDefencePoints: function (improvements, soldiers) {
+            return CampConstants.CAMP_BASE_DEFENCE + this.getFortificationsDefencePoints(improvements) + this.getSoldierDefencePoints(soldiers);
+		},
+        
+        getRaidDefenceString: function (improvements, soldiers) {
+            var result = "Base: " + CampConstants.CAMP_BASE_DEFENCE;
+            var fortificationsPoints = this.getFortificationsDefencePoints(improvements);
+            if (fortificationsPoints > 0) result += "<br/>Fortifications:" + fortificationsPoints;
+            var soldierPoints = this.getSoldierDefencePoints(soldiers);
+            if (soldierPoints > 0) result += "<br/>Soldiers:" + soldierPoints;
+            return result;
+		},
+        
+        getFortificationsDefencePoints: function (improvements) {
 			var regularFortifications = improvements.getCount(improvementNames.fortification);
-            var improvedFortifications = improvements.getCount(improvementNames.fortification2) * 25;
-            return CampConstants.CAMP_BASE_DEFENCE + regularFortifications * 6 + improvedFortifications * 10 + soldiers * 2;
-		}
+            var improvedFortifications = improvements.getCount(improvementNames.fortification2);
+            return regularFortifications * 6 + improvedFortifications * 10;
+        },
+        
+        getSoldierDefencePoints: function (soldiers) {
+            return soldiers * 2;
+        },
 	
     };
     

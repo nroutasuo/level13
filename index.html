@@ -346,14 +346,18 @@
                                 </div>
 								<p class="p-meta" id="in-occurrences-empty">All is quiet in the camp.</p>
 							</div>
-							<div id="in-demographics" class="infobox">
+							<div id="in-demographics" class="infobox p-dense">
 								<h3>Stats</h3>
                                 <div id="in-demographics-general">
                                     <p id="in-demographics-general-age">Founded: <span class="value">-</span></p>
                                 </div>
 								<div id="in-demographics-raid">
-									<p id="in-demographics-raid-danger">Danger from raids: <span class="value"></span></p>
-									<p id="in-demographics-raid-defence">Camp defences: <span class="value"></span></p>
+                                    <div class='info-callout-target'>
+    									<p id="in-demographics-raid-danger">Danger from raids: <span class="value"></span></p>
+                                    </div><br/>
+                                    <div class='info-callout-target'>
+    									<p id="in-demographics-raid-defence">Camp defences: <span class="value"></span></p>
+                                    </div>
 									<p id="in-demographics-raid-last">Last raid: <span class="value"></span></p>
 								</div>
                                 <div id="id-demographics-level">
@@ -395,7 +399,7 @@
 					</div>
 					
 					<!-- level: minimap and header -->
-					<div class="grid tabelement" id="container-tab-two-out" data-tab="switch-out" style="display:none;">
+					<div class="grid tabelement" id="container-tab-two-out" data-tab="switch-out">
                         <div class="unit unit-compass" id="out-container-compass">
                             <div id="minimap-container" class="canvas-container" style="width: 208px; height: 208px">
                             <canvas id="minimap" width="208" height="208">
