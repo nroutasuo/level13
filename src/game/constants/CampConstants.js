@@ -46,6 +46,9 @@ define(['ash'], function (Ash) {
         REPUTATION_PENALTY_TYPE_HOUSING: "HOUSING",
         REPUTATION_PENALTY_TYPE_LEVEL_POP: "LEVEL_POPULATION",
         
+        // raids
+        CAMP_BASE_DEFENCE: 5,
+        
         // Workers per building
         CHEMISTS_PER_WORKSHOP: 5,
         

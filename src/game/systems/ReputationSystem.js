@@ -107,12 +107,12 @@ define([
             this.logReputationPenalty(campNode, CampConstants.REPUTATION_PENALTY_TYPE_WATER, noWater);
             
             // penalties: defences
-            var defenceLimit = 25;
+            var defenceLimit = 0.25;
             var soldiers = campNode.camp.assignedWorkers.soldier;
             var danger = OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers);
             var noDefences = danger > defenceLimit;
             if (noDefences) {
-                var steppedDanger = Math.ceil(danger / 5) * 5;
+                var steppedDanger = Math.ceil(danger * 100 / 5) * 5;
                 var penaltyRatio = (steppedDanger - defenceLimit) / 200;
                 var defencePenalty = Math.ceil(targetReputationWithoutPenalties * penaltyRatio);
                 if (steppedDanger >= 75) {

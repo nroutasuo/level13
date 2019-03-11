@@ -229,7 +229,8 @@ define([
 			var improvements = sectorEntity.get(SectorImprovementsComponent);
 			var raidComponent = sectorEntity.get(RaidComponent);
 			var soldiers = sectorEntity.get(CampComponent).assignedWorkers.soldier;
-			raidComponent.victory = OccurrenceConstants.getRaidDanger(improvements, soldiers) < 0;
+            var danger =  OccurrenceConstants.getRaidDanger(improvements, soldiers) < 0;
+			raidComponent.victory = Math.random() < danger;
 			if (!raidComponent.victory) {
 				var campResources = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).resources;
 				var amountFactor = 1 / GameGlobals.resourcesHelper.getNumCampsInTradeNetwork(sectorEntity);

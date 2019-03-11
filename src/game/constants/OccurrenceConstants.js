@@ -1,5 +1,5 @@
-define(['ash', 'utils/MathUtils', 'game/constants/GameConstants'],
-function (Ash, MathUtils, GameConstants) {
+define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constants/GameConstants'],
+function (Ash, MathUtils, CampConstants, GameConstants) {
 
     var OccurrenceConstants = {
 	
@@ -53,16 +53,25 @@ function (Ash, MathUtils, GameConstants) {
 		},
 		
 		getRaidDanger: function (improvements, soldiers) {
-			var dangerPoints = 0;
-			dangerPoints += Math.max(0, improvements.getTotal(improvementTypes.camp) - 1);
-			var defencePoints = this.getRaidDefence(improvements, soldiers);
-			return dangerPoints / (defencePoints + 1);
+			var dangerPoints = this.getRaidDangerPoints(improvements)
+			var defencePoints = this.getRaidDefencePoints(improvements, soldiers);
+            var result = (dangerPoints - defencePoints)/20;
+			return Math.max(0, Math.min(1, result));
 		},
+        
+        getRaidDangerPoints: function (improvements) {
+			var dangerPoints = 0;
+			dangerPoints += improvements.getTotal(improvementTypes.camp);
+			dangerPoints -= improvements.getCount(improvementTypes.home);
+            dangerPoints -= improvements.getCount(improvementNames.fortification);
+            dangerPoints -= improvements.getCount(improvementNames.fortification2);
+            return dangerPoints;
+        },
 		
-		getRaidDefence: function (improvements, soldiers) {
-			var regularFortifications = improvements.getCount(improvementNames.fortification) * 8;
+		getRaidDefencePoints: function (improvements, soldiers) {
+			var regularFortifications = improvements.getCount(improvementNames.fortification);
             var improvedFortifications = improvements.getCount(improvementNames.fortification2) * 25;
-            return regularFortifications + improvedFortifications + soldiers;
+            return CampConstants.CAMP_BASE_DEFENCE + regularFortifications * 6 + improvedFortifications * 10 + soldiers * 2;
 		}
 	
     };
