@@ -48,6 +48,8 @@ define(['ash'], function (Ash) {
         
         // raids
         CAMP_BASE_DEFENCE: 5,
+        FORTIFICATION_1_DEFENCE: 6,
+        FORTIFICATION_2_DEFENCE: 10,
         
         // Workers per building
         CHEMISTS_PER_WORKSHOP: 5,

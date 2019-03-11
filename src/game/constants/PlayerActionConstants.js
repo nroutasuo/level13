@@ -2234,6 +2234,8 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_smithy: "Workspace for toolsmiths.",
                 build_in_aqueduct: "Water infrastructure to improve collecting efficiency.",
                 build_in_stable: "Space to set up a trading caravan.",
+                build_in_fortification: "Camp defences: +" + CampConstants.FORTIFICATION_1_DEFENCE,
+                build_in_fortification2: "Camp defences: +" + CampConstants.FORTIFICATION_2_DEFENCE,
                 use_in_home: "Recover stamina.",
                 use_in_campfire: "Collect rumours from the population.",
                 use_in_hospital: "Heal injuries.",

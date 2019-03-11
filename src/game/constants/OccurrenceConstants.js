@@ -84,7 +84,7 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
         getFortificationsDefencePoints: function (improvements) {
 			var regularFortifications = improvements.getCount(improvementNames.fortification);
             var improvedFortifications = improvements.getCount(improvementNames.fortification2);
-            return regularFortifications * 6 + improvedFortifications * 10;
+            return regularFortifications * CampConstants.FORTIFICATION_1_DEFENCE + improvedFortifications * CampConstants.FORTIFICATION_2_DEFENCE;
         },
         
         getSoldierDefencePoints: function (soldiers) {
