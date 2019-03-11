@@ -109,7 +109,8 @@ define([
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:
 					var soldiers = campNode.camp.assignedWorkers.soldier;
-					return OccurrenceConstants.getRaidDanger(improvements, soldiers) > 0;
+                    var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
+					return OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel) > 0;
 
 				default:
 					return true;
@@ -229,7 +230,8 @@ define([
 			var improvements = sectorEntity.get(SectorImprovementsComponent);
 			var raidComponent = sectorEntity.get(RaidComponent);
 			var soldiers = sectorEntity.get(CampComponent).assignedWorkers.soldier;
-            var danger =  OccurrenceConstants.getRaidDanger(improvements, soldiers) < 0;
+            var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
+            var danger =  OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel) < 0;
 			raidComponent.victory = Math.random() < danger;
 			if (!raidComponent.victory) {
 				var campResources = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).resources;

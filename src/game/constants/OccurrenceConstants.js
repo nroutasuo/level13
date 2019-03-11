@@ -52,9 +52,9 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 			return 0;
 		},
 		
-		getRaidDanger: function (improvements, soldiers) {
+		getRaidDanger: function (improvements, soldiers, soldierLevel) {
 			var dangerPoints = this.getRaidDangerPoints(improvements)
-			var defencePoints = this.getRaidDefencePoints(improvements, soldiers);
+			var defencePoints = this.getRaidDefencePoints(improvements, soldiers, soldierLevel);
             var result = (dangerPoints - defencePoints)/20;
 			return Math.max(0, Math.min(1, result));
 		},
@@ -68,15 +68,15 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
             return dangerPoints;
         },
 		
-		getRaidDefencePoints: function (improvements, soldiers) {
-            return CampConstants.CAMP_BASE_DEFENCE + this.getFortificationsDefencePoints(improvements) + this.getSoldierDefencePoints(soldiers);
+		getRaidDefencePoints: function (improvements, soldiers, soldierLevel) {
+            return CampConstants.CAMP_BASE_DEFENCE + this.getFortificationsDefencePoints(improvements) + this.getSoldierDefencePoints(soldiers, soldierLevel);
 		},
         
-        getRaidDefenceString: function (improvements, soldiers) {
+        getRaidDefenceString: function (improvements, soldiers, soldierLevel) {
             var result = "Base: " + CampConstants.CAMP_BASE_DEFENCE;
             var fortificationsPoints = this.getFortificationsDefencePoints(improvements);
             if (fortificationsPoints > 0) result += "<br/>Fortifications:" + fortificationsPoints;
-            var soldierPoints = this.getSoldierDefencePoints(soldiers);
+            var soldierPoints = this.getSoldierDefencePoints(soldiers, soldierLevel);
             if (soldierPoints > 0) result += "<br/>Soldiers:" + soldierPoints;
             return result;
 		},
@@ -87,8 +87,8 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
             return regularFortifications * CampConstants.FORTIFICATION_1_DEFENCE + improvedFortifications * CampConstants.FORTIFICATION_2_DEFENCE;
         },
         
-        getSoldierDefencePoints: function (soldiers) {
-            return soldiers * 2;
+        getSoldierDefencePoints: function (soldiers, soldierLevel) {
+            return soldiers * CampConstants.getSoldierDefence(soldierLevel);
         },
 	
     };

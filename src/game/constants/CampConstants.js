@@ -107,6 +107,10 @@ define(['ash'], function (Ash) {
             var rawValue = Math.max(0, pop)/(pop+100)*100;
             return Math.max(1, Math.floor(rawValue * 100) / 100);
         },
+        
+        getSoldierDefence: function (upgradeLevel) {
+            return (1 + upgradeLevel);
+        }
     
     };
     

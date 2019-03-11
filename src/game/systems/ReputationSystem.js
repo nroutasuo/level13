@@ -109,7 +109,8 @@ define([
             // penalties: defences
             var defenceLimit = 0.25;
             var soldiers = campNode.camp.assignedWorkers.soldier;
-            var danger = OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers);
+            var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradeNodes.head.upgrades);
+            var danger = OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers, soldierLevel);
             var noDefences = danger > defenceLimit;
             if (noDefences) {
                 var steppedDanger = Math.ceil(danger * 100 / 5) * 5;

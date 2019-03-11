@@ -235,6 +235,7 @@
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var hasUnlockedRopers = GameGlobals.upgradeEffectsHelper.getWorkerLevel("rope-maker", this.tribeUpgradesNodes.head.upgrades) > 0;
             var hasUnlockedScientists = GameGlobals.upgradeEffectsHelper.getWorkerLevel("scientist", this.tribeUpgradesNodes.head.upgrades) > 0;
+            var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
 
             var workerConsumptionS = "<br/><span class='warning'>water -" + GameGlobals.campHelper.getWaterConsumptionPerSecond(1) + "/s</span>" +
                 "<br/><span class='warning'>food -" + GameGlobals.campHelper.getFoodConsumptionPerSecond(1) + "/s</span>";
@@ -247,7 +248,7 @@
             UIConstants.updateCalloutContent("#in-assign-concrete .in-assing-worker-desc .info-callout-target", "concrete +" + GameGlobals.campHelper.getConcreteProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>metal -" + GameGlobals.campHelper.getMetalConsumptionPerSecondConcrete(1) + "/s</span>", true);
             UIConstants.updateCalloutContent("#in-assign-smith .in-assing-worker-desc .info-callout-target", "tools +" + GameGlobals.campHelper.getToolsProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>metal -" + GameGlobals.campHelper.getMetalConsumptionPerSecondSmith(1) + "/s</span>", true);
             UIConstants.updateCalloutContent("#in-assign-scientist .in-assing-worker-desc .info-callout-target", "evidence +" + GameGlobals.campHelper.getEvidenceProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-soldier .in-assing-worker-desc .info-callout-target", "camp defence +1" + workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-soldier .in-assing-worker-desc .info-callout-target", "camp defence +" + CampConstants.getSoldierDefence(soldierLevel) + workerConsumptionS, true);
 
             var refineriesOnLevel = GameGlobals.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel);
             var apothecariesInCamp = improvements.getCount(improvementNames.apothecary);
@@ -446,9 +447,10 @@
 
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var soldiers = this.playerLocationNodes.head.entity.get(CampComponent).assignedWorkers.soldier;
-			var raidDanger = OccurrenceConstants.getRaidDanger(improvements, soldiers);
+            var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
+			var raidDanger = OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel);
             var raidAttack = OccurrenceConstants.getRaidDangerPoints(improvements);
-            var raidDefence = OccurrenceConstants.getRaidDefencePoints(improvements, soldiers);
+            var raidDefence = OccurrenceConstants.getRaidDefencePoints(improvements, soldiers, soldierLevel);
 
             var inGameFoundingDate = UIConstants.getInGameDate(campComponent.foundedTimeStamp);
             var showCalendar = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));
@@ -457,7 +459,7 @@
 
 			var showRaid = raidDanger > 0 || raidDefence > CampConstants.CAMP_BASE_DEFENCE || campComponent.population > 1;
 			if (showRaid) {
-                var defenceS = OccurrenceConstants.getRaidDefenceString(improvements, soldiers);
+                var defenceS = OccurrenceConstants.getRaidDefenceString(improvements, soldiers, soldierLevel);
 				$("#in-demographics-raid-danger .value").text((raidDanger * 100) + "%");
 				$("#in-demographics-raid-defence .value").text(raidDefence);
                 UIConstants.updateCalloutContent("#in-demographics-raid-danger", "Probability that an incoming raid is successful. Increases with camp size and decreases with camp defences.");

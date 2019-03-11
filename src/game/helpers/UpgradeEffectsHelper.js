@@ -248,7 +248,7 @@ define([
 				var improvingUpgrades = this.improvingUpgradesByWorker[worker];
                 if (improvingUpgrades) {
     				for (var i = 0; i < improvingUpgrades.length; i++) {
-    					if (upgradesComponent.hasUpgrade(workerUpgradeList[i])) {
+    					if (upgradesComponent.hasUpgrade(improvingUpgrades[i])) {
                             result += 1;
                         }
     				}
