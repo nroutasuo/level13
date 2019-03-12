@@ -32,6 +32,7 @@ define(function () {
         CHEAT_NAME_DEBUG_MAP: "debugMap",
         CHEAT_NAME_SCOUT_LEVEL: "scoutLevel",
         CHEAT_NAME_TRADER: "trader",
+        CHEAT_NAME_RAID: "raid",
         
     };
     return CheatConstants;
