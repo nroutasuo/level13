@@ -149,7 +149,6 @@ define([
 
         updateMapCompletionHint: function () {
             var mapStatus = GameGlobals.levelHelper.getLevelStats(this.playerPositionNodes.head.position.level);
-            if (GameConstants.isDebugOutputEnabled) console.log(mapStatus);
             var mapStatusText = "There are still many unvisited streets on this level.";
             if (mapStatus.percentClearedSectors >= 1)
                 mapStatusText = "This level has been thoroughly mapped. All locations have been checked.";

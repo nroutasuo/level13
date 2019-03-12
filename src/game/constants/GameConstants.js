@@ -4,8 +4,11 @@ define( function () {
         gameSpeedCamp: 1,
         gameSpeedExploration: 1,
         isCheatsEnabled: false,
-        isDebugOutputEnabled: false,
         isAutosaveEnabled: true,
+        
+        logInfo: true,
+        logWarnings: true,
+        logErrors: true,
 
     };
     return GameConstants;

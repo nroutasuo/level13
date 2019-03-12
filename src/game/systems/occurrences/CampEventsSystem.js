@@ -36,7 +36,6 @@ define([
 
 		addToEngine: function (engine) {
             this.engine = engine;
-			var sys = this;
 			this.playerNodes = engine.getNodeList(PlayerResourcesNode);
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 			this.campNodes = engine.getNodeList(CampNode);
@@ -44,6 +43,7 @@ define([
 		},
 
 		removeFromEngine: function (engine) {
+            GlobalSignals.removeAll(this);
 			this.playerNodes = null;
 			this.tribeUpgradesNodes = null;
 			this.campNodes = null;
@@ -146,7 +146,7 @@ define([
 			var timeToNext = this.getTimeToNext(campNode, event);
 			campTimers.onEventEnded(event, timeToNext);
 
-			if (GameConstants.isDebugOutputEnabled)
+			if (GameConstants.logInfo)
 				console.log("End " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ")" + ". Next in " + timeToNext + "s.");
 
 			if (!this.hasCampEvent(campNode, event)) return;
@@ -204,8 +204,7 @@ define([
 			var campPos = campNode.entity.get(PositionComponent);
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(campPos.level);
 			campTimers.onEventStarted(event, duration);
-			if (GameConstants.isDebugOutputEnabled)
-				console.log("Start " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ") (" + duration + "s)");
+			if (GameConstants.logInfo) console.log("Start " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ") (" + duration + "s)");
 
 			var logMsg;
 			switch (event) {
@@ -276,12 +275,12 @@ define([
 					var event = OccurrenceConstants.campOccurrenceTypes[key];
                     if (campTimers.eventStartTimers[event]) {
                         campTimers.eventStartTimers[event] = Math.max(campTimers.eventStartTimers[event], 15);
-                        console.log("camp " + campNode.position.level + ":  next " + event + " in " + Math.round(campTimers.eventStartTimers[event]) + "s");
+                        if (GameConstants.logInfo) console.log("camp " + campNode.position.level + ":  next " + event + " in " + Math.round(campTimers.eventStartTimers[event]) + "s");
                     }
                     var minEndTime = Math.min(OccurrenceConstants.getDuration(event), 15);
                     if (campTimers.eventEndTimers[event]) {
                         campTimers.eventEndTimers[event] = Math.max(campTimers.eventEndTimers[event], minEndTime);
-                        console.log("camp " + campNode.position.level + ": " + event + " ends in " + Math.round(campTimers.eventEndTimers[event]) + "s");
+                        if (GameConstants.logInfo) console.log("camp " + campNode.position.level + ": " + event + " ends in " + Math.round(campTimers.eventEndTimers[event]) + "s");
                     }
                 }
             }

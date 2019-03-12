@@ -142,9 +142,9 @@ define([
 				}
 			}
 
-			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
+			console.log((GameConstants.logInfo ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World structure ready."
-				+ (GameConstants.isDebugOutputEnabled ? " (ground: " + bottomLevel + ", surface: " + topLevel + ", total sectors: " + this.totalSectors + ")" : ""));
+				+ (GameConstants.logInfo ? " (ground: " + bottomLevel + ", surface: " + topLevel + ", total sectors: " + this.totalSectors + ")" : ""));
             // WorldCreatorDebug.printWorld(this.world, [ "passageDown" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "criticalPaths.length" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "locales.length" ]);
@@ -236,7 +236,7 @@ define([
 				}
 			}
 
-			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
+			console.log((GameConstants.logInfo ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World texture ready.");
             // WorldCreatorDebug.printWorld(this.world, [ "sunlit" ]);
 		},
@@ -324,7 +324,7 @@ define([
                 }
 			}
 
-			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
+			console.log((GameConstants.logInfo ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World resources ready.");
             // WorldCreatorDebug.printWorld(this.world, [ "resourcesScavengable.food" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "hasSpring" ]);
@@ -453,7 +453,7 @@ define([
                 createLocales(this.world, levelVO, campOrdinal, false, countLate, minLate);
 			}
 
-			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
+			console.log((GameConstants.logInfo ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World locales ready.");
             // WorldCreatorDebug.printWorld(this.world, [ "locales.length" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "criticalPath" ]);
@@ -500,7 +500,7 @@ define([
                 }
             }
 
-			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
+			console.log((GameConstants.logInfo ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
 				+ "World hazards ready.");
             // WorldCreatorDebug.printWorld(this.world, [ "hazards.cold" ]);
         },
@@ -592,7 +592,7 @@ define([
 				}
 			}
 
-			console.log((GameConstants.isDebugOutputEnabled ? "START " + GameConstants.STARTTimeNow() + "\t " : "") + "World enemies ready.");
+			console.log((GameConstants.logInfo ? "START " + GameConstants.STARTTimeNow() + "\t " : "") + "World enemies ready.");
             // WorldCreatorDebug.printWorld(this.world, [ "possibleEnemies.length" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "enemyDifficulty" ]);
 		},

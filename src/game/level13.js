@@ -209,7 +209,7 @@ define([
 		addSystems: function () {
 			this.engine.addSystem(this.gameManager, SystemPriorities.preUpdate);
 
-			if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t initializing systems");
+			if (GameConstants.logInfo) console.log("START " + GameConstants.STARTTimeNow() + "\t initializing systems");
 
 			this.engine.addSystem(new SaveSystem(), SystemPriorities.preUpdate);
 			this.engine.addSystem(new PlayerPositionSystem(), SystemPriorities.preupdate);

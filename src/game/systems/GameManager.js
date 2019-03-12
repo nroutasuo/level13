@@ -44,7 +44,7 @@ define([
 
 		// Called on page load
 		setupGame: function () {
-            if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t loading and setting up game");
+            if (GameConstants.logInfo) console.log("START " + GameConstants.STARTTimeNow() + "\t loading and setting up game");
 			this.initializeEntities();
 			var loaded = this.loadGameState();
             GameConstants.gameSpeedCamp = 1;
@@ -54,13 +54,13 @@ define([
 			if (loaded) this.syncLoadedGameState();
 			if (!loaded) this.setupNewGame();
 
-            if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t world ready");
+            if (GameConstants.logInfo) console.log("START " + GameConstants.STARTTimeNow() + "\t world ready");
             GlobalSignals.worldReadySignal.dispatch();
 		},
 
 		// Called after all other systems are ready
 		startGame: function () {
-            if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t starting game");
+            if (GameConstants.logInfo) console.log("START " + GameConstants.STARTTimeNow() + "\t starting game");
 
             // for restart:
             this.engine.getSystem(UIOutLevelSystem).pendingUpdateDescription = true;
@@ -158,14 +158,14 @@ define([
             var worldSeed;
             if (hasSave) worldSeed = parseInt(loadedGameState.worldSeed);
             else worldSeed = WorldCreatorRandom.getNewSeed();
-            if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t creating world (seed: " + worldSeed + ")");
+            if (GameConstants.logInfo) console.log("START " + GameConstants.STARTTimeNow() + "\t creating world (seed: " + worldSeed + ")");
 
             WorldCreator.prepareWorld(worldSeed, GameGlobals.itemsHelper);
             GameGlobals.gameState.worldSeed = worldSeed;
             gtag('set', { 'world_seed': worldSeed });
 
             // Create other entities and fill components
-            if (GameConstants.isDebugOutputEnabled) console.log("START " + GameConstants.STARTTimeNow() + "\t loading entities");
+            if (GameConstants.logInfo) console.log("START " + GameConstants.STARTTimeNow() + "\t loading entities");
             this.createLevelEntities(worldSeed);
             WorldCreator.discardWorld();
             if (hasSave) {

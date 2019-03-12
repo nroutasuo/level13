@@ -11,8 +11,8 @@ define([
         this.initialise = function (config) {
 
             GameConstants.isCheatsEnabled = config.isCheatsEnabled;
-            GameConstants.isDebugOutputEnabled = config.isDebugOutputEnabled;
             GameConstants.isAutosaveEnabled = config.isAutosaveEnabled;
+            GameConstants.logInfo = config.isDebugOutputEnabled;
 
             GameConstants.STARTTimeStart = new Date().getTime();
             GameConstants.STARTTimeNow = function () {

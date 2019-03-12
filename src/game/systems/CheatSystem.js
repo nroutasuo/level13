@@ -524,7 +524,7 @@ define(['ash',
                     i++;
                 } else {
                     this.setPlayerPosition(originalPos.level, originalPos.sectorX, originalPos.sectorY);
-                    GameGlobals.playerActionFunctions.uiFunctions.popupManager.closeAllPopups();
+                    GameGlobals.uiFunctions.popupManager.closeAllPopups();
                     this.engine.updateComplete.remove(updateFunction);
                 }
             };

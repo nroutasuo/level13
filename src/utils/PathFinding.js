@@ -40,8 +40,9 @@ define(function () {
                     var passageDownPos = passageDown.position;
                     var passageUp = utilities.getSectorByPosition(passageDownPos.level - 1, passageDownPos.sectorX, passageDownPos.sectorY);
                     if (passageUp) {
-                        var combined = this.findPath(startVO, passageDown, utilities, settings).concat([passageUp.result]).concat(this.findPath(passageUp, goalVO, utilities, settings));
-                        return combined;
+                        var path1 = this.findPath(startVO, passageDown, utilities, settings);
+                        if (!path1) return null;
+                        return path1.concat([passageUp.result]).concat(this.findPath(passageUp, goalVO, utilities, settings));
                     } else {
                         return null;
                     }
@@ -55,8 +56,9 @@ define(function () {
                     var passageUpPos = passageUp.position;
                     var passageDown = utilities.getSectorByPosition(passageUpPos.level + 1, passageUpPos.sectorX, passageUpPos.sectorY);
                     if (passageDown) {
-                        var combined = this.findPath(startVO, passageUp, utilities, settings).concat([passageDown.result]).concat(this.findPath(passageDown, goalVO, utilities, settings));
-                        return combined;
+                        var path1 = this.findPath(startVO, passageUp, utilities, settings);
+                        if (!path1) return null;
+                        return path1.concat([passageDown.result]).concat(this.findPath(passageDown, goalVO, utilities, settings));
                     } else {
                         return null;
                     }

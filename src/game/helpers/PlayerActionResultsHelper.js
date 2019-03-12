@@ -111,7 +111,7 @@ define([
                     resultVO = this.getNapRewards();
                     break;
                 default:
-                    if (GameConstants.isDebugOutputEnabled) console.log("WARN: Unknown action: " + baseActionID + ". Can't create result vo.");
+                    if (GameConstants.logWarnings) console.log("WARN: Unknown action: " + baseActionID + ". Can't create result vo.");
                     return null;
             }
 

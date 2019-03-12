@@ -131,7 +131,7 @@ define([
 				this.elementsVisibilityChangedFrames = 0;
 			}
 
-			if (GameConstants.isDebugOutputEnabled) {
+			if (GameConstants.logWarnings) {
 				if (this.elementsVisibilityChangedFrames > 5) {
 					console.log("WARN: element visibility updated too often");
 				}
