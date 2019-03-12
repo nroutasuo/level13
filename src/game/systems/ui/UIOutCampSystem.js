@@ -462,7 +462,7 @@
                 var defenceS = OccurrenceConstants.getRaidDefenceString(improvements, soldiers, soldierLevel);
 				$("#in-demographics-raid-danger .value").text((raidDanger * 100) + "%");
 				$("#in-demographics-raid-defence .value").text(raidDefence);
-                UIConstants.updateCalloutContent("#in-demographics-raid-danger", "Probability that an incoming raid is successful. Increases with camp size and decreases with camp defences.");
+                UIConstants.updateCalloutContent("#in-demographics-raid-danger", "Increases with camp size and decreases with camp defences.");
                 UIConstants.updateCalloutContent("#in-demographics-raid-defence", defenceS);
                 var lastRaidS = "(none)";
                 if (campComponent.lastRaid && campComponent.lastRaid.isValid()) {

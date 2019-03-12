@@ -226,12 +226,17 @@ define([
 		},
 
 		endRaid: function (sectorEntity) {
+            // determine raid result
 			var improvements = sectorEntity.get(SectorImprovementsComponent);
 			var raidComponent = sectorEntity.get(RaidComponent);
 			var soldiers = sectorEntity.get(CampComponent).assignedWorkers.soldier;
             var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
-            var danger =  OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel) < 0;
-			raidComponent.victory = Math.random() < danger;
+            var danger =  OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel);
+            var raidRoll = Math.random();
+			raidComponent.victory = raidRoll > danger;
+            if (GameConstants.logInfo) console.log("end raid: danger: " + danger + ", raidRoll: " + UIConstants.roundValue(raidRoll) + " -> victory: " + raidComponent.victory);
+
+            // raiders won, deduct resources
 			if (!raidComponent.victory) {
 				var campResources = GameGlobals.resourcesHelper.getCurrentCampStorage(sectorEntity).resources;
 				var amountFactor = 1 / GameGlobals.resourcesHelper.getNumCampsInTradeNetwork(sectorEntity);
