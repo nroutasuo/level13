@@ -2,6 +2,7 @@ define([
     'ash',
     'game/GameGlobals',
     'game/GlobalSignals',
+    'game/constants/PlayerStatConstants',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/BagConstants',
@@ -9,11 +10,12 @@ define([
     'game/nodes/PlayerLocationNode',
     'game/components/player/BagComponent',
     'game/components/player/ItemsComponent',
+    'game/components/player/StaminaComponent',
     'game/components/common/CampComponent',
 ], function (
-    Ash, GameGlobals, GlobalSignals, UIConstants, ItemConstants, BagConstants,
+    Ash, GameGlobals, GlobalSignals, PlayerStatConstants, UIConstants, ItemConstants, BagConstants,
     PlayerPositionNode, PlayerLocationNode,
-    BagComponent, ItemsComponent, CampComponent
+    BagComponent, ItemsComponent, StaminaComponent, CampComponent
 ) {
     var UIOutEmbarkSystem = Ash.System.extend({
 		
@@ -169,9 +171,16 @@ define([
 			$("#embark-bag .value").text(UIConstants.roundValue(bagComponent.selectedCapacity), true, true);
 			$("#embark-bag .value-total").text(bagComponent.totalCapacity);
             
+            this.updateWarning(campResourcesAcc, campResources, selectedWater, selectedFood);
+		},
+        
+        updateWarning: function (campResourcesAcc, campResources, selectedWater, selectedFood) {
             var warning = "";
+            var staminaComponent = this.playerPosNodes.head.entity.get(StaminaComponent);
             var campPopulation = Math.floor(this.playerLocationNodes.head.entity.get(CampComponent).population);
-            if (campPopulation > 1) {
+            if (staminaComponent.stamina < PlayerStatConstants.getStaminaWarningLimit(staminaComponent)) {
+                warning = "Won't get far with low stamina.";
+            } else if (campPopulation > 1) {
                 var remainingWater = campResources.resources.getResource(resourceNames.water) - selectedWater;
                 var remainingFood = campResources.resources.getResource(resourceNames.food) - selectedFood;
                 var isWaterDecreasing = campResourcesAcc.resourceChange.getResource(resourceNames.water) < 0;
@@ -185,7 +194,7 @@ define([
             }
             $("#embark-warning").text(warning);
             GameGlobals.uiFunctions.toggle("#embark-warning", warning.length > 0);
-		},
+        },
         
         regenrateEmbarkItems: function () {
             $("#embark-items").empty();
