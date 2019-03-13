@@ -311,14 +311,6 @@ define(['ash',
 					var isSupplies = name === resourceNames.food || name === resourceNames.water;
 					$("#statsbar-resources").append(UIConstants.createResourceIndicator(name, false, "resources-" + name, true, true));
 					$("#bag-resources").append(UIConstants.createResourceIndicator(name, false, "resources-bag-" + name, true, true));
-
-					var indicatorEmbark = UIConstants.createResourceIndicator(name, true, "embark-resources-" + name, true, false);
-					$("#embark-resources").append(
-						"<tr id='embark-assign-" + name + "'>" +
-						"<td>" + indicatorEmbark + "</td>" +
-						"<td><div class='stepper' id='stepper-embark-" + name + "'></div></td>" +
-						"</tr>"
-					);
 				}
 			},
 

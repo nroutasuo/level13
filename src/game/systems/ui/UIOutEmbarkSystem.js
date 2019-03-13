@@ -22,8 +22,11 @@ define([
 		playerPosNodes: null,
 		playerLocationNodes: null,
 	
-		constructor: function (resourceHelper) {            
-            this.registerStepperListeners("#embark-resources");            
+		constructor: function (resourceHelper) {
+            this.initElements();
+            GameGlobals.uiFunctions.generateSteppers("#embark-resources");
+            GameGlobals.uiFunctions.registerStepperListeners("#embark-resources");
+            this.registerStepperListeners("#embark-resources");
 			return this;
 		},
 	
@@ -41,6 +44,19 @@ define([
 			this.engine = null;
             GlobalSignals.removeAll(this);
 		},
+        
+        initElements: function () {
+            for (var key in resourceNames) {
+                var name = resourceNames[key];
+                var indicatorEmbark = UIConstants.createResourceIndicator(name, true, "embark-resources-" + name, true, false);
+                $("#embark-resources").append(
+                    "<tr id='embark-assign-" + name + "'>" +
+                    "<td class='dimmable'>" + indicatorEmbark + "</td>" +
+                    "<td><div class='stepper' id='stepper-embark-" + name + "'></div></td>" +
+                    "</tr>"
+                );
+            }
+        },
 		
 		initLeaveCampRes: function () {
 			if (GameGlobals.gameState.uiStatus.leaveCampRes) {
@@ -74,7 +90,7 @@ define([
 		
 		update: function (time) {
             if (GameGlobals.gameState.uiStatus.isHidden) return;
-			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.out) return;			
+			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.out) return;
             if (!this.playerLocationNodes.head) return;
 			
 			var posComponent = this.playerPosNodes.head.position;
@@ -85,7 +101,7 @@ define([
 		},
         
         refresh: function () {
-			$("#tab-header h2").text("Leave camp");            
+			$("#tab-header h2").text("Leave camp");
             if (!this.playerLocationNodes.head) return;
             this.updateSteppers();
         },
@@ -115,6 +131,8 @@ define([
                     selectedAmount = Math.max(0, val);
                     selectedCapacity += selectedAmount * BagConstants.getResourceCapacity(resourceName);
                     
+                    $(this).toggleClass("list-option-dimmed", val <= 0 || inputMax <= 0);
+                    
                     if (resourceName === resourceNames.water)
                         selectedWater = selectedAmount;
                     if (resourceName === resourceNames.food)
@@ -140,6 +158,8 @@ define([
                     GameGlobals.uiFunctions.updateStepper("#" + $(stepper).attr("id"), val, inputMin, inputMax)
                     selectedAmount = Math.max(0, $(stepper).children("input").val());
                     selectedCapacity += selectedAmount * BagConstants.getItemCapacity(itemsComponent.getItem(itemID));
+                    
+                    $(this).toggleClass("list-option-dimmed", val <= 0 || inputMax <= 0);
                 }
 			});
 			
@@ -185,9 +205,9 @@ define([
                 
                 $("#embark-items").append(
                     "<tr id='embark-assign-" + item.id + "'>" +
-                    "<td><img src='" + item.icon + "'/>" + item.name + "</td>" +
+                    "<td class='dimmable'><img src='" + item.icon + "'/><span>" + item.name + "</span></td>" +
                     "<td><div class='stepper' id='stepper-embark-" + item.id + "'></div></td>" +
-                    "<td class='list-amount'> / " + showCount + "</div></td>" +
+                    "<td class='list-amount dimmable'><span> / " + showCount + "</span></div></td>" +
                     "</tr>"
                 );
             }
