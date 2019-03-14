@@ -25,6 +25,7 @@ define([
 					sys.updateLists();
 				}
 			});
+            this.initElements();
 			return this;
 		},
 
@@ -39,6 +40,15 @@ define([
 			this.playerLocationNodes = null;
 			this.itemNodes = null;
 		},
+            
+        initElements: function () {
+            var sys = this;
+            $("#incoming-caravan-popup-reset").click(function (e) {
+                console.log("reset");
+                sys.clearSelection();
+                sys.updateLists();
+            });
+        },
 
 		setupPopup: function () {
 			var traderComponent = this.playerLocationNodes.head.entity.get(TraderComponent);
@@ -312,6 +322,9 @@ define([
 			GameGlobals.uiFunctions.toggle("#inventorylist-incoming-caravan-trader-offer .msg-empty", visibleLisTraderOffer === 0);
 			GameGlobals.uiFunctions.toggle("#inventorylist-incoming-caravan-camp-inventory .msg-empty", visibleLisCampInventory === 0);
 			GameGlobals.uiFunctions.toggle("#inventorylist-incoming-caravan-camp-offer .msg-empty", visibleLisCampOffer === 0);
+            
+            $("#incoming-caravan-popup-reset").toggleClass("btn-disabled", traderOfferValue == 0 && campOfferValue == 0);
+            $("#incoming-caravan-popup-reset").attr("disabled", traderOfferValue == 0 && campOfferValue == 0);
 		},
 
 		clearSelection: function () {

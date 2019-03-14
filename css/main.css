@@ -80,6 +80,13 @@ a {
 img {
   margin: 0px 2px;
 }
+.layout-horizontal {
+  display: flex;
+  align-items: baseline;
+}
+.layout-item {
+  flex-grow: 0.5;
+}
 /* Loading elements */
 .loading-content {
   position: fixed;
