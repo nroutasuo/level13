@@ -56,6 +56,7 @@ define([
                 var hasPickedSomething = rewards.selectedItems.length > 0 || rewards.selectedResources.getTotal() > 0 || rewards.discardedItems.length > 0 || rewards.discardedResources.getTotal() > 0;
                 var canPickSomething = rewards.gainedResources.getTotal() > 0 || rewards.gainedItems.length > 0;
                 $("#info-ok .btn-label").text(hasPickedSomething ? "Take selected" : canPickSomething ? "Leave all" : "Continue");
+                $("#info-ok").toggleClass("btn-secondary", !hasPickedSomething && canPickSomething);
             }
         },
 
