@@ -6,11 +6,12 @@ define([
 	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/ItemsNode',
 	'game/components/sector/events/TraderComponent',
+    'game/elements/HorizontalSelect',
 	'game/constants/UIConstants',
 	'game/constants/ItemConstants',
 	'game/constants/TradeConstants',
 	'game/vos/ResourcesVO'
-], function (Ash, MathUtils, GameGlobals, GlobalSignals, PlayerLocationNode, ItemsNode, TraderComponent, UIConstants, ItemConstants, TradeConstants, ResourcesVO) {
+], function (Ash, MathUtils, GameGlobals, GlobalSignals, PlayerLocationNode, ItemsNode, TraderComponent, HorizontalSelect, UIConstants, ItemConstants, TradeConstants, ResourcesVO) {
 	var UIOutPopupTradeSystem = Ash.System.extend({
 
 		itemNodes: null,
@@ -48,6 +49,7 @@ define([
                 sys.clearSelection();
                 sys.updateLists();
             });
+            this.multiplierSelect = HorizontalSelect.init("incoming-caravan-popup-multiplier", "Selection");
         },
 
 		setupPopup: function () {
@@ -77,6 +79,7 @@ define([
 			this.campInventoryLis = {};
 
 			var sys = this;
+            var highestAmount = 0;
 
 			var addLis = function (li, key, section) {
 				var inventoryLi = $(li).clone();
@@ -125,15 +128,22 @@ define([
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
 				var traderInventoryAmount = caravan.sellResources.getResource(name);
-				if (traderInventoryAmount > 0) {
+				var campInventoryAmount = campStorage.resources.getResource(name);
+                var willBuy = caravan.buyResources.indexOf(name) >= 0;
+                
+                if (traderInventoryAmount || (campInventoryAmount && willBuy)) {
 					var li = UIConstants.getResourceLi(name, 0, false, true);
-					addLis(li, key, "trader")
+    				if (traderInventoryAmount > 0) {
+    					addLis(li, key, "trader")
+                    }
 
-					var campInventoryAmount = campStorage.resources.getResource(name);
-					if (campInventoryAmount > 0) {
-						addLis(li, key, "camp")
-					}
-				}
+    				if (campInventoryAmount > 0 && willBuy) {
+    					addLis(li, key, "camp")
+    				}
+                        
+                    console.log("create " + name + " " + traderInventoryAmount + " " + campInventoryAmount)
+                    highestAmount = Math.max(highestAmount, traderInventoryAmount, campInventoryAmount);
+                }
 			}
 
 			// trader and camp currency
@@ -147,6 +157,7 @@ define([
 				if (campInventoryAmount > 0) {
 					addLis(li, "currency", "camp");
 				}
+                highestAmount = Math.max(highestAmount, traderInventoryAmount, campInventoryAmount);
 			}
 
 			var moveItem = function ($li, source) {
@@ -160,28 +171,31 @@ define([
 				var isTraderOffer = $li.parents("#inventorylist-incoming-caravan-trader-offer").length > 0;
 				var isCampInventory = $li.parents("#inventorylist-incoming-caravan-camp-inventory").length > 0;
 				var isCampOffer = $li.parents("#inventorylist-incoming-caravan-camp-offer").length > 0;
+                
+                var amount = Math.max(1, HorizontalSelect.getSelection(sys.multiplierSelect).value);
+                console.log("moveItem " + amount);
 
 				if (isCurrency) {
 					if (isTraderInventory) {
-						caravan.traderSelectedCurrency++;
+						caravan.traderSelectedCurrency += amount;
 					} else if (isTraderOffer && caravan.traderSelectedCurrency > 0) {
-						caravan.traderSelectedCurrency--;
+						caravan.traderSelectedCurrency -= amount;
 					} else if (isCampInventory) {
-						caravan.campSelectedCurrency++;
+						caravan.campSelectedCurrency += amount;
 					} else if (isCampOffer) {
-						caravan.campSelectedCurrency--;
+						caravan.campSelectedCurrency -= amount;
 					}
 					caravan.traderSelectedCurrency = MathUtils.clamp(caravan.traderSelectedCurrency, 0, caravan.currency);
 					caravan.campSelectedCurrency = MathUtils.clamp(caravan.campSelectedCurrency, 0, currencyComponent.currency);
 				} else if (resourceName) {
 					if (isTraderInventory) {
-						caravan.traderSelectedResources.addResource(resourceName, 1);
+						caravan.traderSelectedResources.addResource(resourceName, amount);
 					} else if (isTraderOffer) {
-						caravan.traderSelectedResources.addResource(resourceName, -1);
+						caravan.traderSelectedResources.addResource(resourceName, -amount);
 					} else if (isCampInventory) {
-						caravan.campSelectedResources.addResource(resourceName, 1);
+						caravan.campSelectedResources.addResource(resourceName, amount);
 					} else if (isCampOffer) {
-						caravan.campSelectedResources.addResource(resourceName, -1);
+						caravan.campSelectedResources.addResource(resourceName, -amount);
 					}
 					caravan.traderSelectedResources.limit(resourceName, 0, caravan.sellResources.getResource(resourceName));
 					caravan.campSelectedResources.limit(resourceName, 0, campStorage.resources.getResource(resourceName));
@@ -191,13 +205,13 @@ define([
 					if (!caravan.campSelectedItems[itemID])
 						caravan.campSelectedItems[itemID] = 0;
 					if (isTraderInventory) {
-						caravan.traderSelectedItems[itemID]++;
+						caravan.traderSelectedItems[itemID] += amount;
 					} else if (isTraderOffer) {
-						caravan.traderSelectedItems[itemID]--;
+						caravan.traderSelectedItems[itemID] -= amount;
 					} else if (isCampInventory) {
-						caravan.campSelectedItems[itemID]++;
+						caravan.campSelectedItems[itemID] += amount;
 					} else if (isCampOffer) {
-						caravan.campSelectedItems[itemID]--;
+						caravan.campSelectedItems[itemID] -= amount;
 					}
 					caravan.traderSelectedItems[itemID] = MathUtils.clamp(caravan.traderSelectedItems[itemID], 0, sys.traderTotalItems[itemID] || 0);
 					caravan.campSelectedItems[itemID] = MathUtils.clamp(caravan.campSelectedItems[itemID], 0, sys.campTotalItems[itemID] || 0);
@@ -230,6 +244,12 @@ define([
 			GameGlobals.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-trader-offer");
 			GameGlobals.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-camp-inventory");
 			GameGlobals.uiFunctions.generateCallouts("#inventorylist-incoming-caravan-camp-offer");
+            
+            var selectionOptions = [{ value: 1, label: "1x" }];
+            if (highestAmount > 10) selectionOptions.push({ value: 10, label: "10x" });
+            if (highestAmount > 100) selectionOptions.push({ value: 100, label: "100x" });
+            if (highestAmount > 1000) selectionOptions.push({ value: 1000, label: "1000x" });
+            HorizontalSelect.setOptions(this.multiplierSelect, selectionOptions);
 		},
 
 		updateLists: function () {

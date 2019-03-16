@@ -1941,6 +1941,45 @@ select {
 	margin: 5px 10px;
 }
 
+#incoming-caravan-popup-multiplier {
+    justify-content: flex-end;
+    font-size: 85%;
+    margin-top: -2px;
+}
+
+.horizontal-select {
+    display: flex;
+    align-items: center;
+}
+
+.horizontal-select-title {
+    background: @color-dark-bg-box-1;
+    padding: 1px 8px;
+}
+
+.horizontal-select-list {
+    padding: 0;
+    margin: 0;
+}
+
+.horizontal-select-option {
+    border: 1px solid #444;
+    padding: 1px 5px;
+    margin: 0 2px;
+    display: inline-block;
+    background: @color-dark-bg;
+    cursor: pointer;
+}
+
+.horizontal-select-option:hover {
+    border-color: @color-dark-highlight-element;
+}
+
+.horizontal-select-option.selected {
+    background: @color-dark-bg-box-1;
+    font-weight: bold;
+}
+
 .event-ending {
 	animation: event-end 1.3s step-end infinite;
 	animation-timing-function: ease-in-out;
