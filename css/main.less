@@ -375,6 +375,14 @@ ul.tabs li.selected {
 	background: @color-light-bg-element;
 }
 
+td.bg-reset {
+    background: @color-dark-bg-box-1;
+}
+
+.sunlit td.bg-reset {
+    background: @color-light-bg-box-1;
+}
+
 .lvl13-box-3, .vis-out-sector {
 	border: 1px solid @color-dark-border-box-3;
 	background: @color-dark-bg-box-3;
@@ -1580,7 +1588,8 @@ hr {
 }
 
 #common-popup .inventorybox ul {
-    width: 380px;
+    min-width: 380px;
+    width: 100%;
 }
 
 .inventorybox ul, .ul-horizontal {
@@ -1682,7 +1691,7 @@ span#out-position-indicator, span#out-position-indicator-header {
 span.icon {
 	padding: 2px;
 }
-span.text-highlight-functionality {
+span.hl-functionality {
    font-weight: bold;
 }
 

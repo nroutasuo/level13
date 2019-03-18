@@ -359,6 +359,12 @@ tr.current {
 .sunlit tr.current {
   background: #e6e6e6;
 }
+td.bg-reset {
+  background: #282a28;
+}
+.sunlit td.bg-reset {
+  background: #efefef;
+}
 .lvl13-box-3,
 .vis-out-sector {
   border: 1px solid #555;
@@ -1475,7 +1481,8 @@ hr {
   width: 100%;
 }
 #common-popup .inventorybox ul {
-  width: 380px;
+  min-width: 380px;
+  width: 100%;
 }
 .inventorybox ul,
 .ul-horizontal {
@@ -1561,7 +1568,7 @@ span#out-position-indicator-header {
 span.icon {
   padding: 2px;
 }
-span.text-highlight-functionality {
+span.hl-functionality {
   font-weight: bold;
 }
 span.action-cost-blocker-storage {

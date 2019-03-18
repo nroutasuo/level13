@@ -61,15 +61,16 @@ define([
         
         refresh: function () {
             if (GameGlobals.gameState.uiStatus.isHidden) return;
-            this.updateAvailableProjects();
-            this.updateBuiltProjects();
+			var updateTables = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
+            this.updateAvailableProjects(updateTables);
+            this.updateBuiltProjects(updateTables);
         },
         
         updateBubble: function () {
-            var newBubbleNumber = 
-                (this.tabCounts.current.available.regular - this.tabCounts.lastShown.available.regular) + 
+            var newBubbleNumber =
+                (this.tabCounts.current.available.regular - this.tabCounts.lastShown.available.regular) +
                 (this.tabCounts.current.visible.regular - this.tabCounts.lastShown.visible.regular) +
-                (this.tabCounts.current.available.colony - this.tabCounts.lastShown.available.colony) + 
+                (this.tabCounts.current.available.colony - this.tabCounts.lastShown.available.colony) +
                 (this.tabCounts.current.visible.colony - this.tabCounts.lastShown.visible.colony);
             if (GameGlobals.endingHelper.isReadyForLaunch())
                 newBubbleNumber = 1;
@@ -77,10 +78,10 @@ define([
                 return;
             this.bubbleNumber = newBubbleNumber;
             this.elements.bubble.text(this.bubbleNumber);
-            GameGlobals.uiFunctions.toggle("#switch-projects .bubble", this.bubbleNumber > 0);  
+            GameGlobals.uiFunctions.toggle("#switch-projects .bubble", this.bubbleNumber > 0);
         },
         
-        updateAvailableProjects: function () {
+        updateAvailableProjects: function (updateTables) {
             if (!this.playerLocationNodes.head) return;
             var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
             var availableRegular = 0;
@@ -92,12 +93,9 @@ define([
             this.elements.colonyImprovementsTable = $("#in-improvements-colony table");
             
             var projects = GameGlobals.levelHelper.getAvailableProjectsForCamp(this.playerLocationNodes.head.entity);
-            var numProjectsTR = $("tr", this.elements.levelImprovementsTable).length + $("tr", this.elements.colonyImprovementsTable);
-            var updateTables = numProjectsTR !== projects.length;
             if (updateTables) this.elements.levelImprovementsTable.empty();
             if (updateTables) this.elements.colonyImprovementsTable.empty();
             
-            var showLevel = GameGlobals.gameState.unlockedFeatures.levels;
             for (var i = 0; i < projects.length; i++) {
                 var project = projects[i];
                 var action = project.action;
@@ -105,17 +103,7 @@ define([
                 var actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(action, false, sectorEntity);
                 var isColonyProject = project.isColonyProject();
                 if (updateTables) {
-                    var sector = project.level + "." + project.sector + "." + project.direction;
-                    var name = project.name;
-                    var info = "at " + project.position.getPosition().getInGameFormat() + (showLevel ? " level " + project.level : "");
-                    var classes = "action action-build action-level-project multiline";
-                    var actionLabel = project.actionLabel;
-                    var tr = 
-                        "<tr>" + 
-                        "<td><button class='" + classes + "' action='" + action + "' sector='" + sector + "' + id='btn-" + action + "-" + sector + "'>" + actionLabel + "</button></td>" + 
-                        "<td>" + name + "</td>" +
-                        "<td class='list-description'>" + info + "</td>" + 
-                        "</tr>";
+                    var tr = this.getProjectTR(project, true);
                     if (isColonyProject)
                         this.elements.colonyImprovementsTable.append(tr);
                     else
@@ -144,43 +132,76 @@ define([
             this.tabCounts.updateCounts({ regular: visibleRegular, colony: visibleColony }, { regular: availableRegular, colony: availableColony }, isActive);
         },
         
-        updateBuiltProjects: function() {
+        updateBuiltProjects: function (updateTables) {
             if (!this.playerLocationNodes.head) return;
             var projects = GameGlobals.levelHelper.getBuiltProjectsForCamp(this.playerLocationNodes.head.entity);
-            var numProjectsTR = $("#in-improvements-level-built table tr").length;
-            var updateTable = numProjectsTR !== projects.length;
             
             GameGlobals.uiFunctions.toggle("#header-in-improvements-level-built", projects.length > 0);
             
-            if (!updateTable)
-                return;
-            
-            var showLevel = GameGlobals.gameState.unlockedFeatures.levels;
-            if (updateTable) $("#in-improvements-level-built table").empty();
+            if (updateTables) $("#in-improvements-level-built table").empty();
             for (var i = 0; i < projects.length; i++) {
                 var project = projects[i];
-                var sector = project.level + "." + project.sector + "." + project.direction;
-                var name = project.name;
-                var info = "at " + project.position.getPosition().getInGameFormat() + (showLevel ? " level " + project.level : "");
-                var isPassage = project.improvement.isPassage();
-                if (isPassage) {
-                    // TODO define building projects directions/links better and don't rely on improvement names
-                    name = name.replace(" Up", "");
-                    name = name.replace(" Down", "");
-                    var level = project.level;
-                    var otherLevel = project.level + 1;
-                    if (project.improvement.name.indexOf("Down") > 0) {
-                        level = project.level - 1;
-                        otherLevel = project.level;
-                    }
-                    info = " connecting levels " + level + " and " + otherLevel + " at " + project.position.getPosition().getInGameFormat();
+                if (updateTables) {
+                    var tr = this.getProjectTR(project, false);
+                    $("#in-improvements-level-built table").append(tr);
                 }
-                var tr = 
-                    "<tr>" +
-                    "<td>" + name + "</td>" +
-                    "<td class='list-description'>" + info + "</td>" + 
-                    "</tr>";
-                $("#in-improvements-level-built table").append(tr);
+            }
+        },
+        
+        getProjectTR: function (project, isAvailable) {
+            var sector = project.level + "." + project.sector + "." + project.direction;
+            var location = project.position.getPosition().getInGameFormat();
+            
+            var name = project.name;
+            // TODO define building projects directions/links better and don't rely on improvement names
+            name = name.replace(" Up", "");
+            name = name.replace(" Down", "");
+            
+            var showLevel = GameGlobals.gameState.unlockedFeatures.levels;
+            var info = "at " + project.position.getPosition().getInGameFormat() + (showLevel ? " level " + project.level : "");
+            var isPassage = project.improvement.isPassage();
+            if (isPassage) {
+                var levels = this.getProjectLevels(project);
+                info = " connecting levels <span class='hl-functionality'>" + levels[0] + "</span> and <span class='hl-functionality'>" + levels[1] + "</span>";
+            }
+            
+            var classes = this.isCurrentLevel(project) ? "current" : "";
+            var result = "<tr class='" + classes + "'>";
+            result += "<td>" + name + "</td>";
+            result += "<td class='list-description'>" + info + " at " + location + "</td>";
+            if (isAvailable) {
+                var classes = "action action-build action-level-project multiline";
+                var actionLabel = project.actionLabel;
+                var action = project.action;
+                result += "<td style='width:138px;text-align:right;' class='bg-reset'><button class='" + classes + "' action='" + action + "' sector='" + sector + "' + id='btn-" + action + "-" + sector + "'>" + actionLabel + "</button></td>";
+            } else {
+                result += "<td style='width:138px'></td>";
+            }
+            result += "</tr>";
+            return result;
+        },
+        
+        isCurrentLevel: function (project) {
+            var levels = this.getProjectLevels(project);
+            var currentLevel = this.playerLocationNodes.head.position.level;
+            for (var i = 0; i < levels.length; i++) {
+                if (levels[i] == currentLevel) return true;
+            }
+            return false;
+        },
+        
+        getProjectLevels: function (project) {
+            var isPassage = project.improvement.isPassage();
+            var level = project.level;
+            if (isPassage) {
+                var otherLevel = project.level + 1;
+                if (project.improvement.name.indexOf("Down") > 0) {
+                    level = project.level - 1;
+                    otherLevel = project.level;
+                }
+                return [ level, otherLevel ];
+            } else {
+                return [ level ];
             }
         }
         

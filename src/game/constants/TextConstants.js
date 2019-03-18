@@ -83,7 +83,7 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
         /**/
         
         getPassageDescription: function (passageVO, direction, isBuilt) {
-            var makeHighlight = function (content) { return "<span class='text-highlight-functionality'>" + content + "</span>"; };
+            var makeHighlight = function (content) { return "<span class='hl-functionality'>" + content + "</span>"; };
             var directionName = (direction === PositionConstants.DIRECTION_UP ? " up" : " down");
             switch (passageVO.type) {
                 case MovementConstants.PASSAGE_TYPE_HOLE:

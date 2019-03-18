@@ -182,10 +182,10 @@ define([
                 if (totalCaravans > 0) {
                     var availableCaravans = this.getNumOutgoingCaravansAvailable();
         			$("#trade-caravans-outgoing-num").html(
-                        "Available caravans: <span class='text-highlight-functionality'>" + availableCaravans + "/" + totalCaravans + "</span>. " +
-                        "Capacity: <span class='text-highlight-functionality'>" + this.getCaravanCapacity() + "</span> per caravan.");
+                        "Available caravans: <span class='hl-functionality'>" + availableCaravans + "/" + totalCaravans + "</span>. " +
+                        "Capacity: <span class='hl-functionality'>" + this.getCaravanCapacity() + "</span> per caravan.");
                 } else {
-                    $("#trade-caravans-outgoing-num").html("Available caravans: <span class='text-highlight-functionality'>0</span> (build the stable to send caravans)");
+                    $("#trade-caravans-outgoing-num").html("Available caravans: <span class='hl-functionality'>0</span> (build the stable to send caravans)");
                 }
             }
         },

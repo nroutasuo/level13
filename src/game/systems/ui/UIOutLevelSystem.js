@@ -307,17 +307,17 @@ define([
 				featuresComponent.stateOfRepair) + " ";
 
 			if (featuresComponent.sunlit) {
-				if (hasVision) desc += "The area is swathed in relentless <span class='text-highlight-functionality'>daylight</span>. ";
-				else desc += "The area is swathed in blinding <span class='text-highlight-functionality'>sunlight</span>. ";
+				if (hasVision) desc += "The area is swathed in relentless <span class='hl-functionality'>daylight</span>. ";
+				else desc += "The area is swathed in blinding <span class='hl-functionality'>sunlight</span>. ";
 			} else {
                 if (statusComponent.glowStickSeconds > -5) {
                     if (statusComponent.glowStickSeconds < 5)
                         desc += "The glowstick fades out.";
                     else
-                        desc += "A glowstick casts a sickly <span class='text-highlight-functionality'>light</span>.";
+                        desc += "A glowstick casts a sickly <span class='hl-functionality'>light</span>.";
                 } else {
                     if (hasVision) desc += "";
-                    else desc += "There is no <span class='text-highlight-functionality'>light</span>. ";
+                    else desc += "There is no <span class='hl-functionality'>light</span>. ";
                 }
             }
 
@@ -331,26 +331,26 @@ define([
 			var description = "";
 
             if (isScouted && featuresComponent.hasSpring) {
-                description += "There is a <span class='text-highlight-functionality'>" + TextConstants.getSpringName(featuresComponent) + "</span> here. ";
+                description += "There is a <span class='hl-functionality'>" + TextConstants.getSpringName(featuresComponent) + "</span> here. ";
             }
 
             if (isScouted) {
                 var canBucket = featuresComponent.resourcesCollectable.water > 0;
                 var canTrap = featuresComponent.resourcesCollectable.food > 0;
                 if (canBucket && canTrap) {
-                    description += "Both <span class='text-highlight-functionality'>water</span> and <span class='text-highlight-functionality'>food</span> can be collected here. ";
+                    description += "Both <span class='hl-functionality'>water</span> and <span class='hl-functionality'>food</span> can be collected here. ";
                 } else if (canBucket) {
                     if (featuresComponent.sunlit) {
-                        description += "It looks like <span class='text-highlight-functionality'>rainwater</span> could be collected here. ";
+                        description += "It looks like <span class='hl-functionality'>rainwater</span> could be collected here. ";
                     } else {
-                        description += "There is a bit of <span class='text-highlight-functionality'>water</span> leaking here that could be collected. ";
+                        description += "There is a bit of <span class='hl-functionality'>water</span> leaking here that could be collected. ";
                     }
                 } else if (canTrap) {
-                    description += "It might be worthwhile to install <span class='text-highlight-functionality'>traps</span> here. ";
+                    description += "It might be worthwhile to install <span class='hl-functionality'>traps</span> here. ";
                 }
             }
 
-			if (hasCampHere) description += "There is a <span class='text-highlight-functionality'>camp</span> here. ";
+			if (hasCampHere) description += "There is a <span class='hl-functionality'>camp</span> here. ";
 
 			if (isScouted && workshopComponent) {
 				var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
@@ -372,7 +372,7 @@ define([
 
 			if (isScouted && hasVision && !hasCampHere && !hasCampOnLevel) {
 				if (featuresComponent.canHaveCamp() && !hasEnemies && !passagesComponent.passageUp && !passagesComponent.passageDown)
-					description += "This would be a good place for a <span class='text-highlight-functionality'>camp</span>. ";
+					description += "This would be a good place for a <span class='hl-functionality'>camp</span>. ";
 			}
 
 			return description;
@@ -455,27 +455,27 @@ define([
                     switch (featuresComponent.notCampableReason) {
                         case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
                             if (inhabited && featuresComponent.stateOfRepair > 6)
-                                notCampableDesc = "Many entrances have big yellow warning signs on them, with the text 'KEEP OUT' and a <span class='text-highlight-functionality'>radiation</span> sign. ";
+                                notCampableDesc = "Many entrances have big yellow warning signs on them, with the text 'KEEP OUT' and a <span class='hl-functionality'>radiation</span> sign. ";
                             else if (inhabited && featuresComponent.buildingDensity > 5)
-                                notCampableDesc = "Walls are covered in graffiti warning about <span class='text-highlight-functionality'>radiation</span>. ";
+                                notCampableDesc = "Walls are covered in graffiti warning about <span class='hl-functionality'>radiation</span>. ";
                             else
-                                notCampableDesc = "There is an eerie air as if the place has been <span class='text-highlight-functionality'>abandoned</span> in a hurry.";
+                                notCampableDesc = "There is an eerie air as if the place has been <span class='hl-functionality'>abandoned</span> in a hurry.";
                             break;
 
                         case LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION:
                             if (inhabited && featuresComponent.stateOfRepair > 6)
-                                notCampableDesc = "Many entrances have big red warning signs on them with a <span class='text-highlight-functionality'>skull sign</span> and the text 'KEEP OUT'. ";
+                                notCampableDesc = "Many entrances have big red warning signs on them with a <span class='hl-functionality'>skull sign</span> and the text 'KEEP OUT'. ";
                             else if (inhabited && featuresComponent.buildingDensity > 5)
-                                notCampableDesc = "Walls are covered in graffiti warning about some kind of <span class='text-highlight-functionality'>pollution</span>.";
+                                notCampableDesc = "Walls are covered in graffiti warning about some kind of <span class='hl-functionality'>pollution</span>.";
                             else
-                                notCampableDesc = "A <span class='text-highlight-functionality'>noxious smell</span> hangs in the air.";
+                                notCampableDesc = "A <span class='hl-functionality'>noxious smell</span> hangs in the air.";
                             break;
 
                         case LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION:
                             if (inhabited)
-                                notCampableDesc = "There aren't any signs of recent human <span class='text-highlight-functionality'>habitation</span>. ";
+                                notCampableDesc = "There aren't any signs of recent human <span class='hl-functionality'>habitation</span>. ";
                             else
-                                notCampableDesc = "An unnerving <span class='text-highlight-functionality'>silence</span> blankets the streets. ";
+                                notCampableDesc = "An unnerving <span class='hl-functionality'>silence</span> blankets the streets. ";
                             break;
 
                         case LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT:
@@ -488,13 +488,13 @@ define([
             var hazardDesc = "";
             if (hasHazards) {
                 if (featuresComponent.hazards.radiation > 0) {
-                    hazardDesc += "This place is <span class='text-highlight-functionality'>radioactive</span> (" + featuresComponent.hazards.radiation + "). ";
+                    hazardDesc += "This place is <span class='hl-functionality'>radioactive</span> (" + featuresComponent.hazards.radiation + "). ";
                 }
                 if (featuresComponent.hazards.poison > 0) {
-                    hazardDesc += "This place is dangerously <span class='text-highlight-functionality'>polluted</span> (" + featuresComponent.hazards.poison + "). ";
+                    hazardDesc += "This place is dangerously <span class='hl-functionality'>polluted</span> (" + featuresComponent.hazards.poison + "). ";
                 }
                 if (featuresComponent.hazards.cold > 0) {
-                    hazardDesc += "It's very <span class='text-highlight-functionality'>cold</span> here (" + featuresComponent.hazards.cold + "). ";
+                    hazardDesc += "It's very <span class='hl-functionality'>cold</span> here (" + featuresComponent.hazards.cold + "). ";
                 }
             }
 

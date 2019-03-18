@@ -573,7 +573,7 @@ define(['ash',
 				var level = playerPos.level;
 				var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
 				var partnerName = TradeConstants.getTradePartner(campOrdinal).name;
-				logMsgSuccess += "<br/>Found a new <span class='text-highlight-functionality'>trading partner</span>. They call this place " + partnerName + ".";
+				logMsgSuccess += "<br/>Found a new <span class='hl-functionality'>trading partner</span>. They call this place " + partnerName + ".";
 			}
 			var logMsgFlee = baseMsg + " Got surprised and fled.";
 			var logMsgDefeat = baseMsg + " Got surprised and beaten.";
