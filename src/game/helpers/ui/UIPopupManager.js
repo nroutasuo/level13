@@ -89,7 +89,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             GameGlobals.uiFunctions.toggle(".popup-overlay", true);
             popUpManager.onResize();
             GlobalSignals.popupOpenedSignal.dispatch("common-popup");
-            $("#common-popup").slideDown(200, popUpManager.onResize);
+            $("#common-popup").slideDown(150, popUpManager.onResize);
             
             GameGlobals.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");
             GameGlobals.uiFunctions.generateCallouts("#common-popup .buttonbox");
@@ -106,7 +106,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             var popupManager = this;
             if (popupManager.popupQueue.length === 0) {
                 $("#" + id).data("fading", true);
-                $("#" + id).slideUp(200, function () {
+                $("#" + id).slideUp(100, function () {
                     GameGlobals.uiFunctions.toggle(".popup-overlay", false);
                     $("#" + id).unwrap();
                     $("#" + id).data("fading", false);

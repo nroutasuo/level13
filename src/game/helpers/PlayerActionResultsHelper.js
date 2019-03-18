@@ -484,7 +484,7 @@ define([
 
 				baghtml += "<div id='resultlist-inventorymanagement-kept' class='infobox inventorybox'>";
 				baghtml += "<ul></ul>";
-                baghtml += "<p class='msg-empty'>Your " + (hasBag ? "bag is" : "pockets are") + " empty.<p>";
+                baghtml += "<p class='msg-empty'>Your " + (hasBag ? "bag is" : "pockets are") + " empty.</p>";
 				baghtml += "</div>"
 
                 baghtml += "<div id='inventory-popup-bar' class='progress-wrap progress' style='margin-top: 10px'><div class='progress-bar progress'/><span class='progress-label progress'>?/?</span></div>";

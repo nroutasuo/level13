@@ -1533,7 +1533,7 @@ hr {
     border-width: 1px;
     border-style: solid;
     border-radius: 10px;
-    padding: 2px 0px 0px 7px !important;
+    padding: 5px 0px 2px 0px;
     margin: 5px 0px;
     min-height: 1em;
     min-width: 1em;
@@ -1545,7 +1545,8 @@ hr {
     display: table-cell;
     position: relative;
     vertical-align: top;
-    padding-top: 2em;
+    padding-top: 2.5em;
+    margin-top: -5px;
 }
 
 .inventorydivision-with-footer {
@@ -1558,6 +1559,15 @@ hr {
     left: 0;
     margin: 0;
     width: 100%;
+    padding: 5px 0;
+}
+
+.inventorydivision:first-child .inventorybox-header {
+    border-radius: 10px 0 0 0;
+}
+
+.inventorydivision:last-child .inventorybox-header {
+    border-radius: 0 10px 0 0;
 }
 
 .inventorydivision .inventorybox-footer {
@@ -1570,7 +1580,7 @@ hr {
 }
 
 #common-popup .inventorybox ul {
-    width: 560px; /* 12 * 46px (li width) + padding */
+    width: 380px;
 }
 
 .inventorybox ul, .ul-horizontal {
@@ -1944,12 +1954,13 @@ select {
 #incoming-caravan-popup-multiplier {
     justify-content: flex-end;
     font-size: 85%;
-    margin-top: -2px;
+    margin-bottom: 1em;
 }
 
 .horizontal-select {
     display: flex;
     align-items: center;
+    margin: 2px 0;
 }
 
 .horizontal-select-title {
@@ -1969,15 +1980,16 @@ select {
     display: inline-block;
     background: @color-dark-bg;
     cursor: pointer;
+    border-radius: 3px;
 }
 
 .horizontal-select-option:hover {
-    border-color: @color-dark-highlight-element;
+    background: @color-dark-border-box-2;
+    border-color: #666;
 }
 
 .horizontal-select-option.selected {
-    background: @color-dark-bg-box-1;
-    font-weight: bold;
+    background: @color-dark-border-box-2;
 }
 
 .event-ending {
