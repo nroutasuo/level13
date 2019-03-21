@@ -84,6 +84,7 @@ define([
 			this.autoPlayNodes = engine.getNodeList(AutoPlayNode);
 
             var sys = this;
+            GlobalSignals.actionStartedSignal.add(function () { sys.onActionStartedMoved(); });
             GlobalSignals.playerMovedSignal.add(function () { sys.onPlayerMoved(); });
             GlobalSignals.visionChangedSignal.add(function () { sys.onVisionChanged(); });
             GlobalSignals.tabChangedSignal.add(function () { sys.onTabChanged(); });
@@ -149,6 +150,13 @@ define([
 			this.updateResources(isInCamp);
             this.updateItemStats(isInCamp);
         },
+        
+        onActionStartedMoved: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
+            var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
+            var isInCamp = playerPosition.inCamp;
+            this.updatePlayerStats(isInCamp);
+        },
 
         onPlayerMoved: function () {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
@@ -187,6 +195,8 @@ define([
 			var maxVision = playerStatsNode.vision.maximum;
             var shownVision = UIConstants.roundValue(playerVision, true, false);
 			var maxStamina = Math.round(playerStatsNode.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
+            var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
+            var isResting = busyComponent && busyComponent.getLastActionName() == "use_in_home";
 
 			this.elements.valVision.text(shownVision + " / " + maxVision);
 			this.updateStatsCallout("Makes exploration safer", "stats-vision", playerStatsNode.vision.accSources);
@@ -197,7 +207,8 @@ define([
 
 			this.elements.valStamina.text(UIConstants.roundValue(playerStamina, true, false) + " / " + maxStamina);
 			this.updateStatsCallout("Required for exploration", "stats-stamina", playerStatsNode.stamina.accSources);
-            this.updateChangeIndicator(this.elements.changeIndicatorStamina, playerStatsNode.stamina.accumulation, playerStamina < maxStamina);
+            var isResting = isResting;
+            this.updateChangeIndicator(this.elements.changeIndicatorStamina, playerStatsNode.stamina.accumulation, playerStamina < maxStamina, isResting);
 
             this.elements.valVision.toggleClass("warning", playerVision <= 25);
             this.elements.valStamina.toggleClass("warning", playerStamina <= this.staminaWarningLimit);
@@ -270,11 +281,12 @@ define([
             this.updateChangeIndicator(this.elements.changeIndicatorScavenge, maxVision - shownVision, shownVision < maxVision);
 		},
 
-        updateChangeIndicator: function (indicator, accumulation, show) {
+        updateChangeIndicator: function (indicator, accumulation, show, showFastIncrease) {
             if (show) {
-                indicator.toggleClass("indicator-increase", accumulation > 0);
-                indicator.toggleClass("indicator-even", accumulation === 0);
-                indicator.toggleClass("indicator-decrease", accumulation < 0);
+                indicator.toggleClass("indicator-fastincrease", showFastIncrease);
+                indicator.toggleClass("indicator-increase", !showFastIncrease && accumulation > 0);
+                indicator.toggleClass("indicator-even", !showFastIncrease && accumulation === 0);
+                indicator.toggleClass("indicator-decrease", !showFastIncrease && accumulation < 0);
                 GameGlobals.uiFunctions.toggle(indicator, true);
             } else {
                 GameGlobals.uiFunctions.toggle(indicator, false);

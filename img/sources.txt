@@ -20,6 +20,8 @@ Open-Iconic
 (c) 2014 Waybury
 see open-iconic/ICON-LICENCE
 
+Additional icons adapted from the above.
+
 --------------------------------------------------
 
 Items

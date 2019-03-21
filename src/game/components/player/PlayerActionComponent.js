@@ -23,6 +23,11 @@ define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
         getLastAction: function (requireBusy) {
             return this.endTimeStampToActionDict[this.getLastTimeStamp(requireBusy)];
         },
+        
+        getLastActionName: function (requireBusy) {
+            var lastAction = this.getLastAction(requireBusy);
+            return lastAction ? lastAction.action : null;
+        },
 
         getLastTimeStamp: function (requireBusy) {
             var lastTimeStamp = -1;

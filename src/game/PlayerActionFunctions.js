@@ -155,6 +155,8 @@ define(['ash',
                         GlobalSignals.caravanSentSignal.dispatch();
 						break;
 				}
+                
+                GlobalSignals.actionStartedSignal.dispatch(baseId);
 			}
 		},
 

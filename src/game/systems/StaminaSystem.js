@@ -7,8 +7,9 @@ define([
     'game/constants/PlayerStatConstants',
     'game/constants/PerkConstants',
     'game/nodes/player/StaminaNode',
-    'game/components/common/LogMessagesComponent'
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, PlayerStatConstants, PerkConstants, StaminaNode, LogMessagesComponent) {
+    'game/components/common/LogMessagesComponent',
+    'game/components/player/PlayerActionComponent'
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, PlayerStatConstants, PerkConstants, StaminaNode, LogMessagesComponent, PlayerActionComponent) {
     var StaminaSystem = Ash.System.extend({
         
         gameState: null,
@@ -45,7 +46,10 @@ define([
         updateNode: function (node, time) {
 			var staminaComponent = node.stamina;
 			var perksComponent = node.perks;
+            var busyComponent = node.entity.get(PlayerActionComponent);
+            var isResting = busyComponent && busyComponent.getLastActionName() == "use_in_home";
 			
+            // health
 			var injuryEffects = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury);
 			var healthEffects = perksComponent.getTotalEffect(PerkConstants.perkTypes.health);
 			healthEffects = healthEffects === 0 ? 1 : healthEffects;
@@ -56,27 +60,35 @@ define([
             if (newHealth !== oldHealth)
                 GlobalSignals.healthChangedSignal.dispatch();
 			
-			var healthVal = staminaComponent.health;
-            var staminaPerS = 2 * staminaComponent.health / 100 / 60 * GameConstants.gameSpeedExploration;
-			
-			if (node.position.inCamp) {
-                var staminaPerSCamp = staminaPerS * 9;
-				staminaComponent.stamina += time * staminaPerSCamp;
-				staminaComponent.accSources = [{ source: "Being in camp", amount: staminaPerSCamp }];
-				staminaComponent.accumulation = staminaPerS;
-			} else {
-				staminaComponent.accSources = [];
-                staminaComponent.accumulation = 0;
+            // stamina
+            var healthVal = staminaComponent.health;
+            var maxVal = healthVal * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
+            var staminaPerSec = 0;
+            staminaComponent.accSources = [];
+            var addAccumulation = function (sourceName, value) {
+                var staminaPerSecSource = Math.floor(value * GameConstants.gameSpeedCamp * 100) / 100;
+                staminaPerSec += staminaPerSecSource;
+                staminaComponent.accSources.push({ source: sourceName, amount: staminaPerSecSource });
+            };
+            if (node.position.inCamp) {
+                addAccumulation("Base",  2 * staminaComponent.health / 10 / 60);
             }
-				
-			if (staminaComponent.stamina > healthVal * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR) {
-				staminaComponent.stamina = healthVal * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
+            if (isResting) {
+                var timeLeft = busyComponent.getBusyTimeLeft();
+                addAccumulation("Resting",  Math.floor((maxVal - staminaComponent.stamina) / timeLeft * 4) / 4);
+            }
+			staminaComponent.stamina += time * staminaPerSec;
+			staminaComponent.accumulation = staminaPerSec;
+            
+			if (staminaComponent.stamina > maxVal) {
+				staminaComponent.stamina = maxVal;
 			}
 				
 			if (staminaComponent.stamina < 0) {
 				staminaComponent.stamina = 0;
 			}
             
+            // stamina warning
             var isWarning = staminaComponent.stamina <= this.warningLimit;
             if (isWarning && !this.isWarning) {
                 var logComponent = node.entity.get(LogMessagesComponent);

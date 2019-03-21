@@ -1175,7 +1175,7 @@ button.btn-meta:hover {
   text-decoration: underline;
 }
 .bubble {
-  background-size: 10px;
+  background-size: 12px;
   background-repeat: no-repeat;
   background-position: center;
   position: absolute;
@@ -1402,6 +1402,10 @@ hr {
 #header-self-bar .change-indicator {
   vertical-align: top;
   margin: 0.2em 0 0 0.25em;
+}
+.indicator-fastincrease,
+.sunlit .bubble-fastincrease {
+  background-image: url('../img/eldorado/icon-fastincrease-dark.png');
 }
 .indicator-increase,
 .sunlit .bubble-increase {
