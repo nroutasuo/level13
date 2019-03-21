@@ -411,6 +411,28 @@ div.container-btn-action,
 .sunlit .inventorybox {
   border-color: #aaa;
 }
+.item-slot.highlighted,
+.item.highlighted {
+  border-color: #888;
+}
+.sunlit .item-slot.highlighted,
+.sunlit .item.highlighted,
+.sunlit .item.highligted .item-count {
+  border-color: #888;
+}
+.item.highlighted {
+  background: #444;
+}
+.sunlit .item.highlighted {
+  background: #bbb;
+  border-color: #888;
+}
+.item-slot.highlighted .item-slot-type-equipped {
+  background: #444;
+}
+.sunlit .item-slot.highlighted .item-slot-type-equipped {
+  background: #bbb;
+}
 .lvl13-shadowed,
 div.btn-callout-content,
 div.info-callout-content,
@@ -795,18 +817,18 @@ ul.resultlist-positive li:before {
   height: 10px;
 }
 .item-comparison-badge {
-  top: -10px;
-  right: -10px;
+  top: -11px;
+  right: -11px;
   position: absolute;
   border-width: 1px;
   border-style: solid;
-  border-color: #555;
+  border-color: #666;
   padding: 2px;
   border-radius: 6px;
   background: #282a28;
 }
 .sunlit .item-comparison-badge {
-  border-color: #aaa;
+  border-color: #999;
   background: #efefef;
 }
 #resultlist-inventorymanagement-found ul li,
@@ -817,8 +839,8 @@ ul.resultlist-positive li:before {
   opacity: 80%;
 }
 .item-slot-big {
-  width: 100px;
-  height: 100px;
+  width: 55px;
+  height: 70px;
 }
 .item-slot-small {
   width: 37px;
@@ -828,42 +850,44 @@ div.item-slot > div,
 div.item-slot > span {
   position: absolute;
   font-size: 85%;
+  cursor: default;
 }
 .item-slot-type-empty {
   text-align: center;
-  width: 100px;
-  height: 100px;
-  line-height: 100px;
+  width: 55px;
+  height: 70px;
+  line-height: 70px;
   display: inline-block;
   opacity: 0.25;
   font-style: oblique;
 }
 .item-slot-type-equipped {
   text-align: center;
-  width: 100px;
-  height: 100px;
-  line-height: 100px;
+  width: 55px;
+  height: 70px;
+  line-height: 70px;
   display: inline-block;
 }
 .item-slot-image {
   position: absolute;
 }
 .item-slot-big .item-slot-image {
-  left: 32px;
-  top: 30px;
+  left: 9.5px;
+  top: 27px;
 }
 .item-slot-name,
 .item-slot-type-equipped {
   width: 100%;
   text-align: center;
   overflow: hidden;
-  line-height: 1em;
+  line-height: 1.05em;
   height: auto;
   max-height: 1.9em;
   padding: 0.35em 0;
 }
 .item-slot-name {
   bottom: 0px;
+  opacity: 0;
 }
 .item-slot-effect {
   display: none;

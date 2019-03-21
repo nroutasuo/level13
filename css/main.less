@@ -6,7 +6,8 @@
 
 @font-size-small: 85%;
 @size-input-range-thumb: 15px;
-@item-slot-big-size: 100px;
+@item-slot-big-width: 55px;
+@item-slot-big-height: 70px;
 @item-div-size: 18px;
 @callout-arrow-size: 7px;
 @header-self-bar-width: 60px;
@@ -415,6 +416,31 @@ div.container-btn-action, .changelog-type, .notification, .item-slot-equipped, .
 	border-color: #aaa;
 }
 
+.item-slot.highlighted, .item.highlighted {
+    border-color: #888;
+}
+
+.sunlit .item-slot.highlighted, .sunlit .item.highlighted, .sunlit .item.highligted .item-count {
+    border-color: #888;
+}
+
+.item.highlighted {
+    background: #444;
+}
+
+.sunlit .item.highlighted {
+    background: #bbb;
+    border-color: #888;
+}
+
+.item-slot.highlighted .item-slot-type-equipped {
+    background: #444;
+}
+
+.sunlit .item-slot.highlighted .item-slot-type-equipped {
+    background: #bbb;
+}
+
 .lvl13-shadowed, div.btn-callout-content, div.info-callout-content, div.popup {
 	-webkit-box-shadow: 1px 2px 7px 3px rgba(0, 0, 0, 0.25);
 	-moz-box-shadow:    1px 2px 7px 3px rgba(0, 0, 0, 0.25);
@@ -780,19 +806,19 @@ ul.resultlist-positive li:before {
 }
 
 .item-comparison-badge {
-    top: -10px;
-    right: -10px;
+    top: -11px;
+    right: -11px;
     position: absolute;
     border-width: 1px;
     border-style: solid;
-    border-color: @color-dark-border-box-3;
+    border-color: @color-dark-highlight-element;
     padding: 2px;
     border-radius: 6px;
     background: @color-dark-bg-box-1;
 }
 
 .sunlit .item-comparison-badge {
-    border-color: @color-light-border-box-3;
+    border-color: @color-light-highlight-element;
     background: @color-light-bg-box-1;
 }
 
@@ -805,8 +831,8 @@ ul.resultlist-positive li:before {
 }
 
 .item-slot-big {
-    width: @item-slot-big-size;
-    height: @item-slot-big-size;
+    width: @item-slot-big-width;
+    height: @item-slot-big-height;
 }
 
 .item-slot-small {
@@ -817,13 +843,14 @@ ul.resultlist-positive li:before {
 div.item-slot > div, div.item-slot > span {
     position: absolute;
     font-size: @font-size-small;
+    cursor: default;
 }
 
 .item-slot-type-empty {
     text-align: center;
-    width: @item-slot-big-size;
-    height: @item-slot-big-size;
-    line-height: @item-slot-big-size;
+    width: @item-slot-big-width;
+    height: @item-slot-big-height;
+    line-height: @item-slot-big-height;
     display: inline-block;
     opacity: 0.25;
     font-style: oblique;
@@ -831,9 +858,9 @@ div.item-slot > div, div.item-slot > span {
 
 .item-slot-type-equipped {
     text-align: center;
-    width: @item-slot-big-size;
-    height: @item-slot-big-size;
-    line-height: @item-slot-big-size;
+    width: @item-slot-big-width;
+    height: @item-slot-big-height;
+    line-height: @item-slot-big-height;
     display: inline-block;
 }
 
@@ -842,8 +869,8 @@ div.item-slot > div, div.item-slot > span {
 }
 
 .item-slot-big .item-slot-image {
-    left: 32px;
-    top: 30px;
+    left: @item-slot-big-width / 2 - @item-div-size;
+    top:  @item-slot-big-height / 2 - @item-div-size + 10px;
 }
 
 .item-slot-lost div {
@@ -853,7 +880,7 @@ div.item-slot > div, div.item-slot > span {
     width: 100%;
     text-align: center;
     overflow: hidden;
-    line-height: 1em;
+    line-height: 1.05em;
     height: auto;
     max-height: 1.9em;
     padding: 0.35em 0;
@@ -861,6 +888,7 @@ div.item-slot > div, div.item-slot > span {
 
 .item-slot-name {
     bottom: 0px;
+    opacity: 0;
 }
 
 .item-slot-effect {

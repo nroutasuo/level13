@@ -49,13 +49,20 @@ define([
 		},
 
 		initItemSlots: function () {
+            var sys = this;
 			$.each($("#container-equipment-slots .item-slot"), function () {
 				var rawType = $(this).attr("id").split("-")[2];
+                var itemTypeName = ItemConstants.itemTypes[rawType];
                 var typeDisplay = ItemConstants.itemTypes[rawType].toLowerCase();
 				$(this).append("<span class='item-slot-type-empty'>" + typeDisplay + "</span>");
 				$(this).append("<span class='item-slot-type-equipped'>" + typeDisplay + "</span>");
 				$(this).append("<span class='item-slot-name '></span>");
 				$(this).append("<div class='item-slot-image'></div>");
+                $(this).hover(function () {
+                    sys.highlightItemType(itemTypeName);
+                }, function () {
+                    sys.highlightItemType(null);
+                });
 			});
 		},
 
@@ -373,6 +380,17 @@ define([
 						break;
 				}
 			}
+            
+            var sys = this;
+            $("#bag-items .item").each(function () {
+                var id = $(this).attr("data-itemid");
+                var item = ItemConstants.getItemByID(id);
+                $(this).hover(function () {
+                    sys.highlightItemType(item.type);
+                }, function () {
+                    sys.highlightItemType(null);
+                });
+            });
 
             GameGlobals.uiFunctions.toggle($("#bag-items-empty"), this.inventoryItemsBag.length === 0);
 
@@ -425,6 +443,27 @@ define([
 			GameGlobals.uiFunctions.toggle($(slot).children(".item-slot-name"), itemVO !== null);
 			$(slot).toggleClass("item-slot-equipped", itemVO !== null);
 		},
+        
+        highlightItemType: function (itemType) {
+            $("#bag-items .item").each(function () {
+                var id = $(this).attr("data-itemid");
+                var item = ItemConstants.getItemByID(id);
+                if (itemType && item && item.equippable && item.type == itemType) {
+                    $(this).toggleClass("highlighted", true);
+                } else {
+                    $(this).toggleClass("highlighted", false);
+                }
+            });
+			$.each($("#container-equipment-slots .item-slot"), function () {
+				var rawType = $(this).attr("id").split("-")[2];
+                var slotType = ItemConstants.itemTypes[rawType];
+                if (itemType && slotType == itemType) {
+                    $(this).toggleClass("highlighted", true);
+                } else {
+                    $(this).toggleClass("highlighted", false);
+                }
+            });
+        },
 
         onObsoleteToggled: function () {
             this.isShowObsoleteChecked = $("#checkbox-crafting-show-obsolete").is(':checked');
