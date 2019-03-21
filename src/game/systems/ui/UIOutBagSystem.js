@@ -20,7 +20,6 @@ define([
 		bubbleNumber: -1,
         craftableItems: -1,
         lastShownCraftableItems: -1,
-        numOwnedUnseen: 0,
 		numCraftableUnlockedUnseen: -1,
 		numCraftableAvailableUnseen: -1,
 
@@ -152,13 +151,22 @@ define([
         },
 
         updateBubble: function () {
-            var newBubbleNumber = Math.max(0, this.numOwnedUnseen + this.numCraftableUnlockedUnseen + this.numCraftableAvailableUnseen);
-            if (this.bubbleNumber === newBubbleNumber)
+            var isStatIncreaseAvailable = this.isStatIncreaseAvailable();
+            var newBubbleNumber = Math.max(0, this.numCraftableUnlockedUnseen + this.numCraftableAvailableUnseen);
+            if (this.isStatIncreaseShown == isStatIncreaseAvailable && this.bubbleNumber === newBubbleNumber)
                 return;
-
+                
             this.bubbleNumber = newBubbleNumber;
-            $("#switch-bag .bubble").text(this.bubbleNumber);
-            GameGlobals.uiFunctions.toggle("#switch-bag .bubble", this.bubbleNumber > 0);
+            this.isStatIncreaseShown = isStatIncreaseAvailable;
+
+            if (this.isStatIncreaseShown) {
+                $("#switch-bag .bubble").text("");
+                $("#switch-bag .bubble").toggleClass("bubble-increase", true);
+            } else {
+                $("#switch-bag .bubble").text(this.bubbleNumber);
+                $("#switch-bag .bubble").toggleClass("bubble-increase", false);
+            }
+            GameGlobals.uiFunctions.toggle("#switch-bag .bubble", this.bubbleNumber > 0 || this.isStatIncreaseShown);
         },
 
 		updateItems: function () {
@@ -294,7 +302,6 @@ define([
         },
 
         updateItemCounts: function (isActive) {
-            this.numOwnedUnseen = 0;
             var itemsComponent = this.itemNodes.head.items;
             var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
             var items = itemsComponent.getUnique(inCamp);
@@ -336,8 +343,6 @@ define([
 
 			this.inventoryItemsAll = items.sort(UIConstants.sortItemsByType);
             this.inventoryItemsBag = [];
-
-            this.numOwnedUnseen = 0;
 
 			$("#bag-items").empty();
 			for (var i = 0; i < this.inventoryItemsAll.length; i++) {
@@ -405,8 +410,6 @@ define([
                 if (item.id !== "equipment_map" && item.type !== ItemConstants.itemTypes.follower) {
                     if (isActive || this.bubbleCleared) {
                         GameGlobals.gameState.uiBagStatus.itemsOwnedSeen.push(item.id);
-                    } else {
-                        this.numOwnedUnseen++;
                     }
                 }
             }
@@ -527,6 +530,17 @@ define([
 
             // has equipped item of type and no bonus is higher -> obsolete
             return true;
+        },
+        
+        isStatIncreaseAvailable: function () {
+            var itemsComponent = this.itemNodes.head.items;
+			for (var i = 0; i < this.inventoryItemsBag.length; i++) {
+                var item = this.inventoryItemsBag[i];
+                if (!item.equippable) continue;
+                var comparison = itemsComponent.getEquipmentComparison(item);
+                if (comparison > 0) return true;
+            }
+            return false;
         },
 
         getCraftableItemDefinitions: function () {

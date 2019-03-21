@@ -1175,6 +1175,9 @@ button.btn-meta:hover {
   text-decoration: underline;
 }
 .bubble {
+  background-size: 10px;
+  background-repeat: no-repeat;
+  background-position: center;
   position: absolute;
   top: -6px;
   right: -6px;
@@ -1400,23 +1403,29 @@ hr {
   vertical-align: top;
   margin: 0.2em 0 0 0.25em;
 }
-.indicator-increase {
+.indicator-increase,
+.sunlit .bubble-increase {
   background-image: url('../img/eldorado/icon-increase-dark.png');
 }
-.indicator-decrease {
+.indicator-decrease,
+.sunlit .bubble-decrease {
   background-image: url('../img/eldorado/icon-decrease-dark.png');
 }
-.indicator-even {
+.indicator-even,
+.sunlit .bubble-even {
   background-image: url('../img/eldorado/icon-even-dark.png');
   opacity: 0.25;
 }
-.sunlit .indicator-increase {
+.sunlit .indicator-increase,
+.bubble-increase {
   background-image: url('../img/eldorado/icon-increase.png');
 }
-.sunlit .indicator-decrease {
+.sunlit .indicator-decrease,
+.bubble-decrease {
   background-image: url('../img/eldorado/icon-decrease.png');
 }
-.sunlit .indicator-even {
+.sunlit .indicator-even,
+.bubble-even {
   background-image: url('../img/eldorado/icon-even.png');
   opacity: 0.25;
 }
