@@ -1041,7 +1041,7 @@ define(['ash',
 
 		buildHospital: function () {
 			this.buildImprovement("build_in_hospital", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_hospital"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_HOSPITAL, "Built a hospital.");
+			this.addLogMessage(LogConstants.MSG_ID_BUILT_HOSPITAL, "Built a clinic.");
 		},
 
 		buildLibrary: function () {
