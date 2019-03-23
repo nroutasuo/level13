@@ -2,6 +2,7 @@
 define(['ash',
 	'game/GameGlobals',
 	'game/GlobalSignals',
+	'game/constants/GameConstants',
 	'game/constants/LogConstants',
 	'game/constants/PositionConstants',
 	'game/constants/MovementConstants',
@@ -54,7 +55,7 @@ define(['ash',
 	'game/systems/FaintingSystem',
 	'game/systems/PlayerPositionSystem'
 ], function (Ash, GameGlobals, GlobalSignals,
-	LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
+	GameConstants, LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
 	PositionVO, LocaleVO,
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
@@ -845,6 +846,7 @@ define(['ash',
 			var sector = this.playerLocationNodes.head.entity;
 			var level = GameGlobals.levelHelper.getLevelEntityForSector(sector);
 			var position = sector.get(PositionComponent).getPosition();
+            if (GameConstants.logInfo) console.log("Build camp " + position);
 			var campComponent = new CampComponent(position.toString());
 			campComponent.foundedTimeStamp = GameGlobals.gameState.gamePlayedSeconds;
 			sector.add(campComponent);

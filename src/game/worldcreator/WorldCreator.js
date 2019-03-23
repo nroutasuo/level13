@@ -135,6 +135,8 @@ define([
                                 for (var j = 0; j < pathConstraints.length; j++) {
                                     WorldCreatorHelper.addCriticalPath(this.world, campSector.position, pathConstraints[j].startPosition, pathConstraints[j].pathType);
                                 }
+                            } else {
+                                console.log("WARN: Couldn't find camp sector " + i + "/" + numCamps + " on level " + l);
                             }
                         }
                     }

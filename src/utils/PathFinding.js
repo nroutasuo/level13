@@ -15,7 +15,7 @@ define(function () {
         // - includeUnbuiltPassages (bool)
         // - skipUnvisited (bool)
         // - skipBlockers (bool)
-        // - omitLog (bool)
+        // - omitWarnings (bool)
         findPath: function (startVO, goalVO, utilities, settings) {
             if (!startVO) {
                 console.log("WARN: No start sector defined.");
@@ -76,14 +76,17 @@ define(function () {
             return result;
         },
 
-        mapPaths: function (startVO, goalVO, utilities, settings, cameFrom) {
+        mapPaths: function (startVO, goalVO, utilities, settings) {
             var cameFrom = {};
             var frontier = [];
             var visited = [];
+            
+            var startKey = this.getKey(startVO);
+            var goalKey = this.getKey(goalVO);
 
-            visited.push(this.getKey(startVO));
+            visited.push(startKey);
             frontier.push(startVO);
-            cameFrom[this.getKey(startVO)] = null;
+            cameFrom[startKey] = null;
 
             var pass = 0;
             var current;
@@ -98,7 +101,8 @@ define(function () {
                 }
                 return true;
             };
-
+            
+            var foundGoal = false;
             mainLoop: while (frontier.length > 0) {
                 pass++;
                 current = frontier.shift();
@@ -116,10 +120,16 @@ define(function () {
                     frontier.push(next);
                     cameFrom[neighbourKey] = current;
 
-                    if (next === goalVO) {
+                    if (neighbourKey === goalKey) {
+                        foundGoal = true;
                         break mainLoop;
                     }
                 }
+            }
+            
+            if (!foundGoal && !settings.omitWarnings) {
+                console.log("WARN: Couldn't find goal (mapping paths " + startVO.position + " - " + goalVO.position + ") (pass: " + pass + ")");
+                this.printPaths(startVO, goalVO, cameFrom);
             }
 
             return cameFrom;
@@ -127,13 +137,19 @@ define(function () {
 
         findShortest: function (startVO, goalVO, settings, cameFrom) {
             var result = [];
+            var previous = null;
             var current = goalVO;
             while (current !== startVO) {
-                result.push(current.result);
-                current = cameFrom[this.getKey(current)];
+                previous = current;
+                result.push(previous.result);
+                current = cameFrom[this.getKey(previous)];
                 // TODO check (pass?) reasonable max length
                 if (!current || result.length > 500) {
-                    if (!settings.omitLog) console.log("WARN: failed to find path (res len: " + result.length + ")");
+                    if (!settings.omitWarnings) {
+                        console.log("WARN: failed to find path (res len: " + result.length + ", prev: " + this.getKey(previous) + ")");
+                        console.log(cameFrom);
+                        console.log(previous);
+                    }
                     return null;
                 }
             }
@@ -141,7 +157,61 @@ define(function () {
         },
 
         getKey: function (sector) {
+            if (!sector) return null;
             return sector.position.toString();
+        },
+        
+        printPaths: function (startVO, goalVO, cameFrom) {
+            var pathsByLastKey = {};
+            var frontier = [];
+
+            var startKey = this.getKey(startVO);
+            frontier.push(startKey);
+            pathsByLastKey[startKey] = [];
+            pathsByLastKey[startKey].push([startKey]);
+            
+            var sys = this;
+            var getLeaves = function (key) {
+                var result = [];
+                var parent;
+                for (var k in cameFrom) {
+                    parent = cameFrom[k];
+                    if (sys.getKey(parent) == key) {
+                        result.push(k);
+                    }
+                }
+                return result;
+            };
+            
+            var current;
+            var currentPaths;
+            var leaves;
+            var steps = 0;
+            while (frontier.length > 0) {
+                steps++;
+                current = frontier.shift();
+                currentPaths = pathsByLastKey[current];
+                leaves = getLeaves(current);
+                if (leaves.length > 0) {
+                    for (var i = 0; i < leaves.length; i++) {
+                        var leaf = leaves[i];
+                        frontier.push(leaf);
+                        for (var j = 0; j < currentPaths.length; j++) {
+                            var path = currentPaths[j].slice(0); // copy
+                            path.push(leaf);
+                            if (!pathsByLastKey[leaf]) pathsByLastKey[leaf] = [];
+                            pathsByLastKey[leaf].push(path);
+                        }
+                    }
+                    delete pathsByLastKey[current];
+                }
+            }
+            
+            for (var k in pathsByLastKey) {
+                for (var i = 0; i < pathsByLastKey[k].length; i++) {
+                    console.log(pathsByLastKey[k][i].join("|"));
+                }
+            }
         },
 
     };

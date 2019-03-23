@@ -1,12 +1,12 @@
 // Random and seed related functions for the WorldCreator
 define([
-    'ash', 
-    'utils/PathFinding', 
-    'game/constants/PositionConstants', 
-    'game/constants/GameConstants', 
-    'game/constants/MovementConstants', 
-    'game/vos/PositionVO', 
-    'game/vos/PathConstraintVO'], 
+    'ash',
+    'utils/PathFinding',
+    'game/constants/PositionConstants',
+    'game/constants/GameConstants',
+    'game/constants/MovementConstants',
+    'game/vos/PositionVO',
+    'game/vos/PathConstraintVO'],
 function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants, PositionVO, PathConstraintVO) {
 
     var WorldCreatorRandom = {
@@ -193,7 +193,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
                     console.log("WARN: Max path length is <= 0, skipping check.");
                     continue;
                 }
-                var pathLen = this.findPath(worldVO, pathConstraints[j].startPosition, sector.position).length;
+                var pathLen = this.findPath(worldVO, pathConstraints[j].startPosition, sector.position, false, true).length;
                 if (pathLen > pathConstraints[j].maxLength) {
                     if (logFails) console.log("path too long: " + pathLen + " / " + pathConstraints[j].maxLength + ", start: " + pathConstraints[j].startPosition + ", candidate " + sector.position);
                     return false;
@@ -223,7 +223,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 			return Math.round(Math.random() * 10000);
 		},
         
-        findPath: function (worldVO, startPos, endPos, blockByBlockers, omitLog) {
+        findPath: function (worldVO, startPos, endPos, blockByBlockers, omitWarnings) {
             if (!startPos) {
                 console.log("WARN: No start pos defined.");
             }
@@ -265,8 +265,8 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
                 },
                 getSectorNeighboursMap: function (pathSectorVO) {
                     var levelVO = worldVO.getLevel(pathSectorVO.position.level);
-                    return levelVO.getNeighbours(pathSectorVO.result.sectorX, pathSectorVO.result.sectorY, 
-                        function (sector) { return makePathSectorVO(sector.position); 
+                    return levelVO.getNeighbours(pathSectorVO.result.sectorX, pathSectorVO.result.sectorY,
+                        function (sector) { return makePathSectorVO(sector.position);
                     });
                 },
                 isBlocked: function (pathSectorVO, direction) {
@@ -277,7 +277,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
                     return false;
                 }
             };
-            var settings = { includeUnbuiltPassages: true, skipUnvisited: false, skipBlockers: blockByBlockers, omitLog: omitLog };
+            var settings = { includeUnbuiltPassages: true, skipUnvisited: false, skipBlockers: blockByBlockers, omitWarnings: omitWarnings };
             
             var result = PathFinding.findPath(startVO, goalVO, utilities, settings);
             

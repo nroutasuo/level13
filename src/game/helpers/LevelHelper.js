@@ -200,8 +200,6 @@ define([
 
             if (startVO.position.equals(goalVO.position)) return [];
 
-            // console.log("find path " + startVO.position + " -> " + goalVO.position);
-
             var utilities = {
                 findPassageDown: function (level, includeUnbuilt) {
                     var result = makePathSectorVO(levelHelper.findPassageDown(level, includeUnbuilt, true));
