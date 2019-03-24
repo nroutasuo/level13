@@ -201,9 +201,12 @@ define([
         initializePlugins: function (plugins) {
             if (!plugins) return;
             var game = this;
-            require(plugins, function (plugin) {
-                game.engine.addSystem(new plugin(), SystemPriorities.update);
-            });
+            for (var i = 0; i < plugins.length; i++) {
+                console.log("Add plugin " + (i+1) + "/" + plugins.length + ": " + plugins[i]);
+                require([plugins[i]], function (plugin) {
+                    game.engine.addSystem(new plugin(), SystemPriorities.update);
+                });
+            }
         },
 
 		addSystems: function () {

@@ -48,6 +48,9 @@
   border: 2px solid #3a3a3a;
   padding: 0;
 }
+.sunlit #tab-vis-in {
+  border: 2px solid #d0d0d0;
+}
 #tab-vis-in-container {
   position: relative;
   margin: 0 auto;

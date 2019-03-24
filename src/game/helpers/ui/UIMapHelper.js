@@ -521,10 +521,10 @@ function (Ash,
                     return sunlit ? "#bbb" : "#666";
 
                 case SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED:
-                    return sunlit ? "#999" : "#999";
+                    return sunlit ? "#888" : "#999";
 
                 case SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED:
-                    return sunlit ? "#333" : "#ccc";
+                    return sunlit ? "#555" : "#ccc";
             }
         },
 

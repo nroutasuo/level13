@@ -598,6 +598,8 @@ define([
             if (!this.currentLocationNodes.head) return;
 			var featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var sunlit = featuresComponent.sunlit;
+            if (GameGlobals.gameState.uiStatus.forceSunlit) sunlit = true;
+            if (GameGlobals.gameState.uiStatus.forceDark) sunlit = false;
 			this.elements.body.toggleClass("sunlit", sunlit);
 			this.elements.body.toggleClass("dark", !sunlit);
 

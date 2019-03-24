@@ -283,7 +283,6 @@ ul.tabs li.selected,
 .sunlit .res,
 .sunlit .li-item-negative,
 .sunlit .li-item-positive,
-.sunlit .info-callout-target,
 .sunlit .blueprint-piece-box-missing {
   background: #efefef;
   border: 1px solid #d0d0d0;
@@ -367,7 +366,7 @@ td.bg-reset {
 }
 .lvl13-box-3,
 .vis-out-sector {
-  border: 1px solid #555;
+  border: 1px solid #3a3a3a;
   background: #262826;
   color: #999;
 }
@@ -416,22 +415,21 @@ div.container-btn-action,
   border-color: #888;
 }
 .sunlit .item-slot.highlighted,
-.sunlit .item.highlighted,
-.sunlit .item.highligted .item-count {
-  border-color: #888;
+.sunlit .item.highlighted {
+  border-color: #ddd;
 }
 .item.highlighted {
   background: #444;
 }
 .sunlit .item.highlighted {
-  background: #bbb;
+  background: #fdfdfd;
   border-color: #888;
 }
 .item-slot.highlighted .item-slot-type-equipped {
   background: #444;
 }
 .sunlit .item-slot.highlighted .item-slot-type-equipped {
-  background: #bbb;
+  background: #ddd;
 }
 .lvl13-shadowed,
 div.btn-callout-content,
@@ -1181,7 +1179,6 @@ button.btn-meta:hover {
   position: absolute;
   top: -6px;
   right: -6px;
-  border: 1px solid;
   width: 16px;
   height: 16px;
   text-align: center;
@@ -1420,6 +1417,10 @@ hr {
   background-image: url('../img/eldorado/icon-even-dark.png');
   opacity: 0.25;
 }
+.sunlit .indicator-fastincrease,
+.bubble-fastincrease {
+  background-image: url('../img/eldorado/icon-fastincrease.png');
+}
 .sunlit .indicator-increase,
 .bubble-increase {
   background-image: url('../img/eldorado/icon-increase.png');
@@ -1534,6 +1535,9 @@ hr {
 }
 #trade-caravans-outgoing-container tr.selected {
   border-color: #2f322f;
+}
+.sunlit #trade-caravans-outgoing-container tr.selected {
+  border-color: #e6e6e6;
 }
 .trade-caravans-outgoing-plan {
   border-width: 3px;
@@ -1854,6 +1858,9 @@ select {
   background: #282a28;
   padding: 1px 8px;
 }
+.sunlit .horizontal-select-title {
+  background: #efefef;
+}
 .horizontal-select-list {
   padding: 0;
   margin: 0;
@@ -1867,12 +1874,22 @@ select {
   cursor: pointer;
   border-radius: 3px;
 }
+.sunlit .horizontal-select-option {
+  background: #fdfdfd;
+}
 .horizontal-select-option:hover {
   background: #3a3a3a;
   border-color: #666;
 }
+.sunlit .horizontal-select-option:hover {
+  background: #aaa;
+  border-color: #aaa;
+}
 .horizontal-select-option.selected {
   background: #3a3a3a;
+}
+.sunlit .horizontal-select-option.selected {
+  background: #aaa;
 }
 .event-ending {
   animation: event-end 1.3s step-end infinite;

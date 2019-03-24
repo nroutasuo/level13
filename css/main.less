@@ -311,7 +311,7 @@ dd p.p-meta {
 	border: 2px solid @color-dark-border-box-1;
 }
 
-.sunlit .lvl13-box-1, .sunlit div.grid-content, .sunlit .popup, .sunlit ul.tabs li.selected, .sunlit .item, .sunlit .res, .sunlit .li-item-negative, .sunlit .li-item-positive, .sunlit .info-callout-target, .sunlit .blueprint-piece-box-missing {
+.sunlit .lvl13-box-1, .sunlit div.grid-content, .sunlit .popup, .sunlit ul.tabs li.selected, .sunlit .item, .sunlit .res, .sunlit .li-item-negative, .sunlit .li-item-positive, .sunlit .blueprint-piece-box-missing {
 	background: @color-light-bg-box-1;
 	border: 1px solid @color-light-border-box-1;
 }
@@ -385,13 +385,13 @@ td.bg-reset {
 }
 
 .lvl13-box-3, .vis-out-sector {
-	border: 1px solid @color-dark-border-box-3;
+	border: 1px solid @color-dark-border-box-2;
 	background: @color-dark-bg-box-3;
 	color: @color-dark-text-box-3;
 }
 
 .sunlit .lvl13-box-3, .sunlit .vis-out-sector {
-	border: 1px solid @color-light-border-box-3;
+	border: 1px solid @color-light-border-box-2;
 	background: @color-light-bg-box-3;
 	color: @color-light-text-box-3;
 }
@@ -420,8 +420,8 @@ div.container-btn-action, .changelog-type, .notification, .item-slot-equipped, .
     border-color: #888;
 }
 
-.sunlit .item-slot.highlighted, .sunlit .item.highlighted, .sunlit .item.highligted .item-count {
-    border-color: #888;
+.sunlit .item-slot.highlighted, .sunlit .item.highlighted {
+    border-color: #ddd;
 }
 
 .item.highlighted {
@@ -429,7 +429,7 @@ div.container-btn-action, .changelog-type, .notification, .item-slot-equipped, .
 }
 
 .sunlit .item.highlighted {
-    background: #bbb;
+    background: #fdfdfd;
     border-color: #888;
 }
 
@@ -438,7 +438,7 @@ div.container-btn-action, .changelog-type, .notification, .item-slot-equipped, .
 }
 
 .sunlit .item-slot.highlighted .item-slot-type-equipped {
-    background: #bbb;
+    background: #ddd;
 }
 
 .lvl13-shadowed, div.btn-callout-content, div.info-callout-content, div.popup {
@@ -1232,7 +1232,6 @@ ul.tabs li:hover, button.btn-meta:hover {
     position: absolute;
     top: -6px;
     right: -6px;
-    border: 1px solid;
     width: 16px;
     height: 16px;
     text-align: center;
@@ -1647,6 +1646,10 @@ hr {
     border-color: @color-dark-bg-element;
 }
 
+.sunlit #trade-caravans-outgoing-container tr.selected {
+    border-color: @color-light-bg-element;
+}
+
 .trade-caravans-outgoing-plan {
     border-width: 3px;
     border-top-width: 0px;
@@ -2016,6 +2019,10 @@ select {
     padding: 1px 8px;
 }
 
+.sunlit .horizontal-select-title {
+    background: @color-light-bg-box-1;
+}
+
 .horizontal-select-list {
     padding: 0;
     margin: 0;
@@ -2031,13 +2038,26 @@ select {
     border-radius: 3px;
 }
 
+.sunlit .horizontal-select-option {
+    background: @color-light-bg;
+}
+
 .horizontal-select-option:hover {
     background: @color-dark-border-box-2;
     border-color: #666;
 }
 
+.sunlit .horizontal-select-option:hover {
+    background: @color-light-border-box-2;
+    border-color: #aaa;
+}
+
 .horizontal-select-option.selected {
     background: @color-dark-border-box-2;
+}
+
+.sunlit .horizontal-select-option.selected {
+    background: @color-light-border-box-2;
 }
 
 .event-ending {
