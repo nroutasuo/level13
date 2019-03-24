@@ -148,7 +148,7 @@ define([
         },
 
         updateMapCompletionHint: function () {
-            var mapStatus = GameGlobals.levelHelper.getLevelStats(this.playerPositionNodes.head.position.level);
+            var mapStatus = GameGlobals.levelHelper.getLevelStats(this.selectedLevel);
             var mapStatusText = "There are still many unvisited streets on this level.";
             if (mapStatus.percentClearedSectors >= 1)
                 mapStatusText = "This level has been thoroughly mapped. All locations have been checked.";
@@ -270,6 +270,7 @@ define([
             var level = parseInt($("#select-header-level").val());
             if (this.selectedLevel === level) return;
             this.selectLevel(level);
+            this.updateMapCompletionHint();
         },
 
         clearBubble: function () {
