@@ -490,6 +490,7 @@ define([
             if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.updateItems();
             this.updateUseItems();
+            this.highlightItemType(null);
         },
 
         showObsolete: function () {
