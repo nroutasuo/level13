@@ -94,7 +94,7 @@ function (Ash, UpgradeConstants, UpgradeVO, BlueprintVO) {
                 }
             }
             for (var j = 0; j < this.availableBlueprints.length; j++) {
-                if (this.availableBlueprints[i].upgradeId === upgradeID) {
+                if (this.availableBlueprints[j].upgradeId === upgradeID) {
                     this.availableBlueprints.splice(i, 1);
                     break;
                 }
