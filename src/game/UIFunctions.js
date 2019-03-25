@@ -476,6 +476,8 @@ define(['ash',
 			hideGame: function (showLoading) {
 				if (showLoading)
 					$(".loading-content").css("display", "block");
+                else
+					$(".loading-content").css("display", "none");
 				$("#unit-main").css("display", "none");
 				$(".sticky-footer").css("display", "none");
 				$("#grid-main").css("display", "none");

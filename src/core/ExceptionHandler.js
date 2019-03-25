@@ -19,6 +19,20 @@ define(function () {
                 }
             };
         },
+        
+        wrapCall: function (caller, func, msg) {
+            msg = msg || "ExceptionHandler exception";
+            try {
+                func.apply(caller);
+            } catch (ex) {
+                ex.message = ex.message || msg;
+                if (ExceptionHandler.exceptionCallback) {
+                    ExceptionHandler.exceptionCallback(ex);
+                } else {
+                    throw ex;
+                }
+            }
+        }
     };
 
     return ExceptionHandler;

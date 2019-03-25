@@ -162,14 +162,15 @@ define([
 			this.addSystems();
             this.initializePlugins(plugins);
 
-            var sys = this;
             ExceptionHandler.exceptionCallback = function (ex) { game.handleException(ex) };
             GlobalSignals.exceptionCallback = function (ex) { game.handleException(ex) };
             GlobalSignals.worldReadySignal.addOnce(function () {
-                sys.start();
+                game.start();
             });
 
-            this.gameManager.setupGame();
+            ExceptionHandler.wrapCall(this, function () {
+                this.gameManager.setupGame();
+            });
         },
 
         initializeGameGlobals: function () {
@@ -300,6 +301,7 @@ define([
             );
             
             this.gameManager.pauseGame();
+            GameGlobals.uiFunctions.hideGame(false);
             throw ex;
         },
 
