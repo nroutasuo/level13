@@ -109,8 +109,7 @@ define([
 
 		update: function (time) {
             if (GameGlobals.gameState.isPaused) return;
-            if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.out)
-                return;
+            if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.out) return;
 
 			var posComponent = this.playerPosNodes.head.position;
 

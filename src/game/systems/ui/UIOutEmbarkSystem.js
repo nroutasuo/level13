@@ -23,8 +23,11 @@ define([
 		
 		playerPosNodes: null,
 		playerLocationNodes: null,
+        
+        // TODO create nice transitions for leaving camp
 	
 		constructor: function (resourceHelper) {
+            GameGlobals.uiFunctions.toggle("#switch-embark .bubble", false);
             this.initElements();
             GameGlobals.uiFunctions.generateSteppers("#embark-resources");
             GameGlobals.uiFunctions.registerStepperListeners("#embark-resources");
@@ -89,18 +92,6 @@ define([
 				}
 			}
         },
-		
-		update: function (time) {
-            if (GameGlobals.gameState.uiStatus.isHidden) return;
-			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.out) return;
-            if (!this.playerLocationNodes.head) return;
-			
-			var posComponent = this.playerPosNodes.head.position;
-            // TODO create nice transitions for leaving camp
-			GameGlobals.uiFunctions.toggle("#container-tab-enter-out", posComponent.inCamp);
-			GameGlobals.uiFunctions.toggle("#container-tab-two-out", !posComponent.inCamp);
-			GameGlobals.uiFunctions.toggle("#container-tab-two-out-actions", !posComponent.inCamp);
-		},
         
         refresh: function () {
 			$("#tab-header h2").text("Leave camp");
@@ -233,7 +224,7 @@ define([
         },
         
         onTabChanged: function () {
-			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.out) return;
+			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.embark) return;
             var posComponent = this.playerPosNodes.head.position;
             if (!posComponent.inCamp) return;
             
