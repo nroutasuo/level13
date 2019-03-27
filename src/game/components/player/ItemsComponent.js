@@ -104,13 +104,12 @@ function (Ash, ItemVO, ItemConstants) {
                 var bonusType = ItemConstants.itemBonusTypes[bonusKey];
                 var currentBonus = currentItem ? currentItem.getBonus(bonusType) : 0;
                 var newBonus = item.getBonus(bonusType);
-                var preferNegative = bonusType == ItemConstants.itemBonusTypes.movement;
                 if (newBonus < currentBonus) {
                     if (result > 0) return 0;
-                    result = preferNegative ? 1 : -1;
+                    result = -1;
                 } else if (newBonus > currentBonus) {
                     if (result < 0) return 0;
-                    result = preferNegative ? -1 : 1;
+                    result = 1;
                 }
             }
             return result;

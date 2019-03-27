@@ -222,7 +222,7 @@ define([
 				if (unlockedBuildings.length > 0) {
 					effects += "buildings: ";
 					for (var i in unlockedBuildings) {
-						effects += unlockedBuildings[i].toLowerCase();
+						effects += this.getImprovementDisplayName(unlockedBuildings[i]).toLowerCase();
                         effects += ", ";
 					}
 				}
@@ -294,6 +294,10 @@ define([
 
 			return effects;
 		},
+        
+        getImprovementDisplayName: function (improvementName) {
+            return improvementName;
+        },
         
     });
 

@@ -1,4 +1,4 @@
-// Status of enemies in a sector including locales 
+// Status of enemies in a sector including locales
 define(['ash'], function (Ash) {
     
     var SectorControlComponent = Ash.Class.extend({
@@ -32,6 +32,7 @@ define(['ash'], function (Ash) {
         
         addWin: function (localeId) {
             if (!localeId) return;
+            if (!this.currentLocaleEnemies[localeId])  this.currentLocaleEnemies[localeId] = 0;
             console.log("add win " + localeId + " " + this.currentLocaleEnemies[localeId]);
             this.currentLocaleEnemies[localeId]--;
         },
@@ -48,7 +49,7 @@ define(['ash'], function (Ash) {
                     if (this.currentLocaleEnemies[locale] != this.maxLocaleEnemies[locale]) {
                         copy.cLE[locale] = this.currentLocaleEnemies[locale];
                     }
-                }                
+                }
             }
             return Object.keys(copy.cLE).length > 0 ? copy : null;
         },

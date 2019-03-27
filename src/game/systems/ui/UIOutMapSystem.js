@@ -240,6 +240,7 @@ define([
             if (!this.selectedSector) return;
             var targetPosition = this.selectedSector.get(PositionComponent).getPosition();
 			this.engine.getSystem(CheatSystem).setPlayerPosition(targetPosition.level, targetPosition.sectorX, targetPosition.sectorY, false);
+            GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.out);
         },
 
         onSectorSelected: function (level, x, y) {

@@ -164,6 +164,9 @@ define(['ash',
 						console.log("WARN: trying to bind click twice! id: " + $element.attr("id"));
 						return;
 					}
+                    if ($element.hasClass("action-manual-trigger")) {
+                        return;
+                    }
 					$element.addClass("click-bound");
 					$element.click(ExceptionHandler.wrapClick(function (e) {
 						var action = $(this).attr("action");
@@ -205,8 +208,8 @@ define(['ash',
 					GameGlobals.fightHelper.endFight();
 				});
 				$(scope + "#out-action-fight-cancel").click(function (e) {
+                    GameGlobals.fightHelper.endFight();
 					GameGlobals.playerActionFunctions.flee();
-					GameGlobals.fightHelper.endFight();
 				});
 				$(scope + "#inn-popup-btn-cancel").click(function (e) {
 					uiFunctions.popupManager.closePopup("inn-popup");

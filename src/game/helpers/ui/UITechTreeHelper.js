@@ -301,7 +301,6 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
                     var yOffset = 0;
                     var isOccupied = this.isOccupiedArea(tree, childX, childY - maxYoffset, 0.5, 0.5);
                     if (!isOccupied) {
-                        console.log("offset " + child.definition.name + " | " + i)
                         yOffset = -maxYoffset;
                         childY += yOffset;
                     } else {
