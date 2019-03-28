@@ -84,6 +84,7 @@ define([
                 sys.engine.removeAllEntities();
                 GameGlobals.levelHelper.reset();
                 GameGlobals.gameState.reset();
+                GlobalSignals.gameResetSignal.dispatch();
                 sys.setupGame();
                 sys.startGame();
             }, 250);

@@ -42,6 +42,7 @@ define(['ash',], function (Ash) {
         gameStartedSignal: new Ash.Signals.Signal(),
         saveGameSignal: new Ash.Signals.Signal(),
         restartGameSignal: new Ash.Signals.Signal(),
+        gameResetSignal: new Ash.Signals.Signal(),
 
         // system events
         slowUpdateSignal: new Ash.Signals.Signal(),

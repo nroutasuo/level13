@@ -60,6 +60,9 @@ define([
 			GlobalSignals.gameShownSignal.add(function () {
 				sys.update();
 			});
+			GlobalSignals.gameResetSignal.add(function () {
+				sys.reset();
+			});
 		},
 	
         removeFromEngine: function (engine) {
@@ -70,6 +73,10 @@ define([
 			if (!this.playerLocationNodes.head) return;
             this.updateSector(this.playerLocationNodes.head.entity);
 		},
+        
+        reset: function () {
+            this.neighboursDict = {};
+        },
 		
 		updateSector: function (entity) {
 			var positionComponent = entity.get(PositionComponent);
@@ -138,7 +145,7 @@ define([
 			if (!this.neighboursDict[sectorKey]) this.findNeighbours(entity);
             
             var isAffectedByHazard = HazardConstants.isAffectedByHazard(featuresComponent, this.itemsNodes.head.items);
-			
+            
 			// Allow n/s/w/e movement if neighbour exists and there is no active blocker AND no hazard
 			for (var i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
