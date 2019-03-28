@@ -14,19 +14,19 @@ define([
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorStatusComponent'
 ], function (
-    Ash, 
+    Ash,
     GameGlobals,
     GlobalSignals,
-    GameConstants, 
-    ItemConstants, 
-    PlayerStatConstants, 
+    GameConstants,
+    ItemConstants,
+    PlayerStatConstants,
     LogConstants,
-    VisionNode, 
-    PlayerLocationNode, 
-    PositionComponent, 
+    VisionNode,
+    PlayerLocationNode,
+    PositionComponent,
     LogMessagesComponent,
-    SectorImprovementsComponent, 
-    SectorFeaturesComponent, 
+    SectorImprovementsComponent,
+    SectorFeaturesComponent,
     SectorStatusComponent
 ) {
     var VisionSystem = Ash.System.extend({
@@ -177,7 +177,7 @@ define([
 			}
             
             // check unlocked features
-            if (vision > maxValueBase) {
+            if (vision.value > maxValueBase) {
                 if (!GameGlobals.gameState.unlockedFeatures.vision) {
                     GameGlobals.gameState.unlockedFeatures.vision = true;
                     GlobalSignals.featureUnlockedSignal.dispatch();
