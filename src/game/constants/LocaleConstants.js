@@ -1,7 +1,6 @@
 define(['ash'], function (Ash) {
 
     var LocaleConstants = {
-    
 
         LOCALE_ID_WORKSHOP: "w",
         LOCALE_ID_PASSAGE: "p",

@@ -92,6 +92,7 @@ define([
                 sys.updateUnlockedFeatures();
             });
             GlobalSignals.fightEndedSignal.add(function () {
+                sys.updateSectorDescription();
 				sys.updateMovementRelatedActions();
             });
             GlobalSignals.sectorScoutedSignal.add(function () {

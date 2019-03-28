@@ -549,7 +549,6 @@ define([
                     var sectorVO = levelVO.sectors[i];
                     sectorVO.possibleEnemies = [];
                     sectorVO.hasRegularEnemies = 0;
-                    sectorVO.numLocaleEnemies = {};
 
                     // possible enemy definitions
                     sectorVO.possibleEnemies = this.generateEnemies(seed, topLevel, bottomLevel, sectorVO);
