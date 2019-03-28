@@ -276,19 +276,26 @@ define([
 
         handleException: function (ex) {
             var exshortdesc = (ex.name ? ex.name : "Unknown") + ": " + (ex.message ? ex.message.replace(/\'/g, "%27") : "No message");
-            var stack = (ex.stack ? ex.stack.replace(/\n/g, "%0A").replace(/\'/g, "%27") : "Not available");
+            var stack = (ex.stack ? ex.stack : "Not available");
+            var stackParts = stack.split("\n");
 
             // track to ga
+            var gastack = stackParts[0];
+            if (stackParts.length > 0) gastack += " " + stackParts[1];
+            gastack = gastack.replace(/\s+/g, ' ');
+            gastack = gastack.replace(/\(.*:[\/\\]+.*[\/\\]/g, '(/../');
+            var gadesc = exshortdesc + " | " + gastack;
             gtag('event', 'exception', {
-                'description': exshortdesc,
+                'description': gadesc,
                 'fatal': true,
             });
             
             // show popup
+            var cleanedStack = stack.replace(/\n/g, "%0A").replace(/\'/g, "%27");
             var bugTitle = "[JS Error] " + exshortdesc;
             var bugBody =
                "Details:%0A[Fill in any details here that you think will help tracking down this bug, such as what you did in the game just before it happened.]" +
-               "%0A%0AStacktrace:%0A" + stack;
+               "%0A%0AStacktrace:%0A" + cleanedStack;
             var url = "https://github.com/nroutasuo/level13/issues/new?title=" + bugTitle + "&body=" + bugBody + "&labels=exception";
             GameGlobals.uiFunctions.showInfoPopup(
                 "Error",
