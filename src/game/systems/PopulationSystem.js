@@ -24,18 +24,25 @@ define([
             this.engine = engine;
             this.campNodes = engine.getNodeList(CampNode);
             this.playerNodes = engine.getNodeList(PlayerStatsNode);
+            GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
+            GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
         },
 
         removeFromEngine: function (engine) {
+            GlobalSignals.removeAll(this);
             this.campNodes = null;
             this.playerNodes = null;
             this.engine = null;
         },
 
-        update: function (time) {
+        slowUpdate: function (time, extraUpdateTime) {
             if (GameGlobals.gameState.isPaused) return;
+            this.updateNodes(time, extraUpdateTime);
+        },
+        
+        updateNodes: function (time, extraUpdateTime) {
             for (var node = this.campNodes.head; node; node = node.next) {
-                this.updateNode(node, time + this.engine.extraUpdateTime);
+                this.updateNode(node, time + extraUpdateTime);
             }
         },
 
@@ -45,10 +52,11 @@ define([
         
         updatePopulation: function (node, time) {
 			var camp = node.camp;
+            camp.population = camp.population || 0;
             
 			var improvements = node.entity.get(SectorImprovementsComponent);
             var maxPopulation = CampConstants.getHousingCap(improvements);
-
+            
             var changePerSec = this.getPopulationChangePerSec(node);
             var change = time * changePerSec * GameConstants.gameSpeedCamp;
             var oldPopulation = camp.population;
@@ -58,7 +66,6 @@ define([
             newPopulation = Math.min(newPopulation, maxPopulation);
             change = newPopulation - oldPopulation;
             changePerSec = change / time / GameConstants.gameSpeedCamp;
-            
             camp.addPopulation(change);
             camp.populationChangePerSec = changePerSec;
 
@@ -150,6 +157,10 @@ define([
                     logComponent.addMessage(LogConstants.MSG_ID_POPULATION_NATURAL, "An inhabitant packs their belongings and leaves.");
                 }
             }
+        },
+        
+        onGameStarted: function () {
+            this.updateNodes(0,0);
         }
     });
 

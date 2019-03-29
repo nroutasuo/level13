@@ -55,10 +55,10 @@ define([
 
 			var sys = this;
 			GlobalSignals.playerMovedSignal.add(function () {
-				sys.update();
+				sys.updateCurrentLocation();
 			});
 			GlobalSignals.gameShownSignal.add(function () {
-				sys.update();
+				sys.updateCurrentLocation();
 			});
 			GlobalSignals.gameResetSignal.add(function () {
 				sys.reset();
@@ -69,7 +69,7 @@ define([
 			this.sectorNodes = null;
 		},
 	
-		update: function () {
+		updateCurrentLocation: function () {
 			if (!this.playerLocationNodes.head) return;
             this.updateSector(this.playerLocationNodes.head.entity);
 		},
@@ -90,7 +90,7 @@ define([
 			var isScouted = sectorStatusComponent.scouted;
 			var hasCampLevel = levelEntity.has(CampComponent);
 			var hasCampSector = entity.has(CampComponent);
-			
+            
 			this.updateGangs(entity);
 			this.updateMovementOptions(entity);
 			

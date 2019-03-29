@@ -5,11 +5,13 @@ define(['ash', 'game/GlobalSignals',], function (Ash, GlobalSignals) {
 
         updateInterval: 3000,
         lastUpdateTimeStamp: null,
+        extraUpdateTime: 0,
 
         constructor: function () {},
 
         addToEngine: function (engine) {
             this.engine = engine;
+            this.extraUpdateTime = this.engine.extraUpdateTime;
             this.lastUpdateTimeStamp = new Date().getTime() - this.updateInterval;
         },
 
@@ -20,13 +22,15 @@ define(['ash', 'game/GlobalSignals',], function (Ash, GlobalSignals) {
         update: function (time) {
             var timeStamp = new Date().getTime();
             var delta = timeStamp - this.lastUpdateTimeStamp;
+            this.extraUpdateTime += (this.engine.extraUpdateTime || 0);
             if (delta >= this.updateInterval) {
-                this.doSlowUpdate(delta);
+                this.doSlowUpdate(delta / 1000, this.extraUpdateTime || 0);
+                this.extraUpdateTime = 0;
             }
         },
 
-        doSlowUpdate: function (time) {
-            GlobalSignals.slowUpdateSignal.dispatch(time);
+        doSlowUpdate: function (time, extraUpdateTime) {
+            GlobalSignals.slowUpdateSignal.dispatch(time, extraUpdateTime);
             this.lastUpdateTimeStamp = new Date().getTime();
         },
 

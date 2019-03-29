@@ -8,6 +8,7 @@ define([
 	'game/constants/OccurrenceConstants',
 	'game/constants/TradeConstants',
 	'game/constants/TextConstants',
+	'game/constants/UIConstants',
 	'game/nodes/player/PlayerResourcesNode',
 	'game/nodes/sector/CampNode',
 	'game/nodes/tribe/TribeUpgradesNode',
@@ -20,7 +21,7 @@ define([
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/vos/RaidVO',
 ], function (
-	Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants,
+	Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants, UIConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	CampComponent, PositionComponent, LogMessagesComponent,
 	TraderComponent, RaidComponent, CampEventTimersComponent,
@@ -145,6 +146,8 @@ define([
 			var campTimers = campNode.entity.get(CampEventTimersComponent);
 			var timeToNext = this.getTimeToNext(campNode, event);
 			campTimers.onEventEnded(event, timeToNext);
+            
+            if (!timeToNext) return;
 
 			if (GameConstants.logInfo)
 				console.log("End " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ")" + ". Next in " + timeToNext + "s.");
