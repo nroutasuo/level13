@@ -1,4 +1,4 @@
-define(['ash', 'game/constants/WorldCreatorConstants', 'game/constants/PlayerActionConstants', 'game/constants/UpgradeConstants', 'game/vos/ItemVO'], 
+define(['ash', 'game/constants/WorldCreatorConstants', 'game/constants/PlayerActionConstants', 'game/constants/UpgradeConstants', 'game/vos/ItemVO'],
 function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, ItemVO) {
 
     var ItemConstants = {
@@ -146,7 +146,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                     "With this bag, weight is starting to be more of a problem than space.", WorldCreatorConstants.LEVEL_ORDINAL_BAG_4, 6),
                 new ItemVO("bag_4", "Scavenger bag", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_5}, true, false, false, "img/items/bag-1.png",
                     "A really practical backpack with lots of pockets.", WorldCreatorConstants.LEVEL_ORDINAL_BAG_5, 8),
-                new ItemVO("bag_5", "Automatic luggage", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_6}, true, true, false, "img/items/bag-3.png",
+                new ItemVO("bag_5", "Automatic luggage", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_6}, true, false, false, "img/items/bag-3.png",
                     "Mechanical chest that automatically follows its owner around. No more worrying about carrying all that stuff yourself.", WorldCreatorConstants.LEVEL_ORDINAL_BAG_6, 10),
             ],
             artefact: [

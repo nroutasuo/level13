@@ -518,6 +518,9 @@ function (Ash, GameConstants, CampConstants) {
                 },
 
                 build_in_generator: {
+                    upgrades: {
+                        unlock_building_lights: true,
+                    },
                     improvements: {
                         generator: [0, 1],
                     }
