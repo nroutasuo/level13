@@ -204,6 +204,11 @@ dd p.p-meta {
 #researched-upgrades-vis-container {
   max-height: 300px;
 }
+.status-badge {
+  float: right;
+  padding: 0 0.75em;
+  border-radius: 1em;
+}
 #out-container-compass,
 #out-container-compass-actions {
   text-align: center;
@@ -297,10 +302,12 @@ ul.tabs li.selected,
   background: #efefef;
   border: 1px solid #d0d0d0;
 }
-.item-equipped {
+.item-equipped,
+.status-badge {
   background: #2f322f;
 }
-.sunlit .item-equpped {
+.sunlit .item-equpped,
+.sunlit .status-badge {
   background: #ececec;
 }
 ul.tabs li.selected {
@@ -1931,6 +1938,7 @@ select {
 }
 #changelog li {
   position: relative;
+  line-height: 1.35em;
 }
 #changelog li:before {
   width: 7px;

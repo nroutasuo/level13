@@ -248,6 +248,8 @@ dd p.p-meta {
     max-height: 300px;
 }
 
+.status-badge { float: right; padding: 0 0.75em; border-radius: 1em; height: 1em }
+
 #out-container-compass, #out-container-compass-actions {
     text-align: center;
     width: 208px;
@@ -328,11 +330,11 @@ dd p.p-meta {
 	border: 1px solid @color-light-border-box-1;
 }
 
-.item-equipped {
+.item-equipped, .status-badge {
     background: @color-dark-bg-element;
 }
 
-.sunlit .item-equpped {
+.sunlit .item-equpped, .sunlit .status-badge {
     background: #ececec;
 }
 

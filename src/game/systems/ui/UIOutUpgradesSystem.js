@@ -166,6 +166,10 @@ define([
             GameGlobals.uiFunctions.toggle($("#upgrade-details-content"), hasSelection);
             if (hasSelection) {
                 var definition = UpgradeConstants.upgradeDefinitions[this.vis.selectedID];
+                var isUnlocked = this.tribeNodes.head.upgrades.hasUpgrade(definition.id);
+                var isAvailable = GameGlobals.playerActionsHelper.checkRequirements(definition.id, false).value > 0;
+                var statusS = isUnlocked ? "researched" : isAvailable ? "available" : "locked";
+                $("#upgrade-details-status").text(statusS);
                 $("#upgrade-details-name").text(definition.name);
                 $("#upgrade-details-desc").text(definition.description);
                 $("#upgrade-details-effect").text(this.getEffectDescription(this.vis.selectedID, false));
