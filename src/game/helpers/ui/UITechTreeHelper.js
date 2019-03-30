@@ -366,7 +366,7 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             var isAvailable = GameGlobals.playerActionsHelper.checkRequirements(node.definition.id, false).value > 0;
             if (!hasUpgrade && isAvailable) {
                 this.ctx.lineWidth = 3;
-                this.ctx.strokeStyle = sunlit ? "#aaa" : "#ccc";
+                this.ctx.strokeStyle = this.getBorderColor(vis.tree, node, sunlit, vis.highlightedID);
                 this.ctx.beginPath();
                 this.ctx.moveTo(pixelX, pixelY);
                 this.ctx.lineTo(pixelX + this.cellW, pixelY);
@@ -527,15 +527,32 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             var highlight = definition.id == highlightedID || this.isConnected(tree, definition.id, highlightedID);
             if (!highlightedID || highlight) {
                 if (isUnlocked) {
-                    return sunlit ? "#aaa" : "#ccc";
+                    return sunlit ? "#999" : "#ccc";
                 }
                 var isAvailable = GameGlobals.playerActionsHelper.checkRequirements(definition.id, false).value > 0;
                 if (isAvailable) {
                     return sunlit ? "#ccc" : "#777";
                 }
-                return sunlit ? "#ccc" : "#ccc";
+                return sunlit ? "#ccc" : "#777";
             } else {
-                return sunlit ? "#eee" : "#555";
+                return sunlit ? "#eee" : "#444";
+                
+            }
+        },
+        
+        getBorderColor: function (tree, node, sunlit, highlightedID) {
+            var definition = node.definition;
+            var isUnlocked = this.tribeNodes.head.upgrades.hasUpgrade(definition.id);
+            var isAvailable = GameGlobals.playerActionsHelper.checkRequirements(node.definition.id, false).value > 0;
+            if (!isUnlocked && isAvailable) {
+                var highlight = definition.id == highlightedID || this.isConnected(tree, definition.id, highlightedID);
+                if (!highlightedID || highlight) {
+                    return sunlit ? "#999" : "#ccc";
+                } else {
+                    return sunlit ? "#ccc" : "#777";
+                }
+            } else {
+                return this.getFillColor(tree, node, sunlit, highlightedID);
             }
         }
         
