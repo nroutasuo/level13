@@ -465,8 +465,9 @@
 				$("#in-demographics-raid-defence .value").text(raidDefence);
                 UIConstants.updateCalloutContent("#in-demographics-raid-danger", "Increases with camp size and decreases with camp defences.");
                 UIConstants.updateCalloutContent("#in-demographics-raid-defence", defenceS);
-                var lastRaidS = "(none)";
-                if (campComponent.lastRaid && campComponent.lastRaid.isValid()) {
+                var hasLastRaid = campComponent.lastRaid && campComponent.lastRaid.isValid();
+                if (hasLastRaid) {
+                    var lastRaidS = "(none)";
                     if (campComponent.lastRaid.wasVictory) {
                         lastRaidS = "Camp was defended";
                     } else {
@@ -480,8 +481,9 @@
                         }
                     }
                     lastRaidS += " (" + UIConstants.getTimeSinceText(campComponent.lastRaid.timestamp) + " ago)";
+    				$("#in-demographics-raid-last .value").text(lastRaidS);
                 }
-				$("#in-demographics-raid-last .value").text(lastRaidS);
+    			GameGlobals.uiFunctions.toggle("#in-demographics-raid-last", hasLastRaid);
 			}
 			GameGlobals.uiFunctions.toggle("#in-demographics-raid", showRaid);
 
