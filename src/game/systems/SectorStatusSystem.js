@@ -60,6 +60,9 @@ define([
 			GlobalSignals.gameShownSignal.add(function () {
 				sys.updateCurrentLocation();
 			});
+			GlobalSignals.sectorScoutedSignal.add(function () {
+				sys.updateCurrentLocation();
+			});
 			GlobalSignals.gameResetSignal.add(function () {
 				sys.reset();
 			});

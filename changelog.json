@@ -7,19 +7,19 @@
 			"changes": [
                 {
                     "type": "UI",
-                    "summary": "Better tech tree visualization."
+                    "summary": "Add better tech tree visualization."
                 },
                 {
                     "type": "GD",
-                    "summary": "New building: caravan stable."
+                    "summary": "Add new building: caravan stable."
                 },
                 {
                     "type": "UI",
-                    "summary": "Improved maps."
+                    "summary": "Improve maps."
                 },
                 {
 					"type": "DEV",
-					"summary": "Compress saves to save localStorage space and make exports more manageable."
+					"summary": "Compress saves."
 				},
                 {
 					"type": "GB",
@@ -63,15 +63,11 @@
 				},
 				{
 					"type": "GD",
-					"summary": "Add two new buildings that increase reputation: garden and square."
+					"summary": "Add two new buildings that increase reputation: Garden and Square."
 				},
 				{
 					"type": "DEV",
 					"summary": "Improve performance"
-				},
-				{
-					"type": "DEV",
-					"summary": "Lots of bug-fixes and polish."
 				}
 			]
 		},

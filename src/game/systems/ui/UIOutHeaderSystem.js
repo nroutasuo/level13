@@ -91,10 +91,10 @@ define([
             GlobalSignals.healthChangedSignal.add(function () { sys.onHealthChanged(); });
             GlobalSignals.inventoryChangedSignal.add(function () { sys.onInventoryChanged(); });
             GlobalSignals.slowUpdateSignal.add(function () { sys.slowUpdate(); });
+            GlobalSignals.changelogLoadedSignal.add(function () { sys.updateGameVersion(); });
 
 			this.generateStatsCallouts();
-
-			this.elements.gameVersion.text("v. " + GameGlobals.changeLogHelper.getCurrentVersionNumber());
+            this.updateGameVersion();
 		},
 
 		removeFromEngine: function (engine) {
@@ -186,6 +186,10 @@ define([
             this.updateVisionOverlay();
             this.updateHeaderTexts();
 		},
+        
+        updateGameVersion: function () {
+			this.elements.gameVersion.text("v. " + GameGlobals.changeLogHelper.getCurrentVersionNumber());
+        },
 
 		updatePlayerStats: function (isInCamp) {
 			var campComponent = this.currentLocationNodes.head.entity.get(CampComponent);

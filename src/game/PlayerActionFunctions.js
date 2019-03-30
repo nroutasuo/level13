@@ -462,7 +462,7 @@ define(['ash',
 				playerPos.inCamp = false;
 				var msg = "Left camp. " + (sunlit ? "Sunlight is sharp and merciless." : "The darkness of the city envelops you.");
 				this.addLogMessage(LogConstants.MSG_ID_LEAVE_CAMP, msg);
-				GlobalSignals.playerMovedSignal.dispatch(playerPos);                
+				GlobalSignals.playerMovedSignal.dispatch(playerPos);
                 GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.out);
 				this.forceResourceBarUpdate();
 				this.forceTabUpdate();

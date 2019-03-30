@@ -79,6 +79,9 @@ define([
 				sys.updateTabVisibility();
 				sys.elementsVisibilityChanged = true;
 			});
+			GlobalSignals.inventoryChangedSignal.add(function () {
+				sys.updateTabVisibility();
+			});
 			GlobalSignals.playerMovedSignal.add(function () {
 				sys.updateTabVisibility();
 				sys.elementsVisibilityChanged = true;
@@ -172,7 +175,7 @@ define([
 			var disabledCooldown = !disabledVision && !disabledBasic && !disabledResources && this.hasButtonCooldown($button);
 			var disabledDuration = !disabledVision && !disabledBasic && !disabledResources && !disabledCooldown && this.hasButtonDuration($button);
 			var isDisabled = disabledBasic || disabledVision || disabledResources || disabledCooldown || disabledDuration;
-
+            
 			$button.toggleClass("btn-disabled", isDisabled);
 			$button.toggleClass("btn-disabled-basic", disabledBasic);
 			$button.toggleClass("btn-disabled-vision", disabledVision);

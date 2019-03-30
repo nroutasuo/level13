@@ -1,5 +1,5 @@
 // Loader for the changelog.json
-define(['ash'], function (Ash) {
+define(['ash', 'game/GlobalSignals'], function (Ash, GlobalSignals) {
 
     var ChangeLogHelper = Ash.Class.extend({
 		
@@ -14,6 +14,7 @@ define(['ash'], function (Ash) {
                 var version = helper.getCurrentVersionNumber();
                 console.log("Loaded version: " + version);
                 gtag('set', { 'app_version': version });
+                GlobalSignals.changelogLoadedSignal.dispatch();
 			})
 			.fail(function (jqxhr, textStatus, error) {
 				helper.loadingSuccessfull = false;

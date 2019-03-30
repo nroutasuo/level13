@@ -463,7 +463,6 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
         isConnected: function (tree, id1, id2) {
             if (id1 == id2) return true;
             return this.isDescendantOf(tree, id1, id2) || this.isAncestorOf(tree, id1, id2);
-            return false;
         },
         
         isAncestorOf: function (tree, id1, id2) {
