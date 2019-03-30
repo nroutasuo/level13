@@ -208,6 +208,7 @@ dd p.p-meta {
   float: right;
   padding: 0 0.75em;
   border-radius: 1em;
+  height: 1em;
 }
 #out-container-compass,
 #out-container-compass-actions {
@@ -1107,6 +1108,7 @@ div.btn-callout-content,
 div.info-callout-content {
   font-size: 85%;
   overflow-wrap: break-word;
+  line-height: 1.45em;
 }
 span.action-risk {
   display: block;

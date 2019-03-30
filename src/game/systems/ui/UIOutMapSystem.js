@@ -218,13 +218,15 @@ define([
         },
         
         getEnvironmentText: function (sector, isScouted) {
-            if (!isScouted) return "?";
+            var isVisited = sector.has(VisitedComponent);
+            if (!isVisited) return "?";
             var result = [];
 			var featuresComponent = sector.get(SectorFeaturesComponent);
             if (featuresComponent.sunlit) result.push("sunlit");
             if (featuresComponent.hazards.radiation > 0) result.push("radioactivity (" + featuresComponent.hazards.radiation + ")");
             if (featuresComponent.hazards.poison > 0) result.push("pollution (" + featuresComponent.hazards.poison + ")");
             if (featuresComponent.hazards.cold > 0) result.push("cold (" + featuresComponent.hazards.cold + ")");
+            
             if (result.length < 1) return "-";
             else return result.join(", ");
         },
