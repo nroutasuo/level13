@@ -211,7 +211,7 @@ define([
 			var sectorControlComponent = sector.get(SectorControlComponent);
 			var enemiesComponent = sector.get(EnemiesComponent);
 			if (enemiesComponent.hasEnemies) {
-				return TextConstants.getEnemyText(enemiesComponent.possibleEnemies, sectorControlComponent);
+				return TextConstants.getEnemyNoun(enemiesComponent.possibleEnemies, true);
 			} else {
                 return "-"
 			}
@@ -230,7 +230,7 @@ define([
         },
         
         getDistanceText: function (sector) {
-            var path = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, sector, { skipBlockers: true, skipUnvisited: true });
+            var path = GameGlobals.levelHelper.findPathTo(this.playerLocationNodes.head.entity, sector, { skipBlockers: true, skipUnvisited: false });
             var len = path ? path.length : "?";
             return len + " blocks";
         },
