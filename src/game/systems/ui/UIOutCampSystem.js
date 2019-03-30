@@ -74,6 +74,7 @@
             GlobalSignals.add(this, GlobalSignals.workersAssignedSignal, this.onWorkersAssigned);
             GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
             GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
+            GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.refresh);
 
             this.refresh();
         },

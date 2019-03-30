@@ -24,7 +24,6 @@ define([
             this.engine = engine;
             this.campNodes = engine.getNodeList(CampNode);
             this.playerNodes = engine.getNodeList(PlayerStatsNode);
-            GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
             GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
         },
 
@@ -35,9 +34,9 @@ define([
             this.engine = null;
         },
 
-        slowUpdate: function (time, extraUpdateTime) {
+        update: function (time) {
             if (GameGlobals.gameState.isPaused) return;
-            this.updateNodes(time, extraUpdateTime);
+            this.updateNodes(time, this.engine.extraUpdateTime);
         },
         
         updateNodes: function (time, extraUpdateTime) {
