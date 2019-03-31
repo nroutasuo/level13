@@ -201,6 +201,7 @@ define([
 			var maxStamina = Math.round(playerStatsNode.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
             var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
             var isResting = busyComponent && busyComponent.getLastActionName() == "use_in_home";
+            var isHealing = busyComponent && busyComponent.getLastActionName() == "use_in_hospital";
 
 			this.elements.valVision.text(shownVision + " / " + maxVision);
 			this.updateStatsCallout("Makes exploration safer", "stats-vision", playerStatsNode.vision.accSources);
@@ -212,7 +213,7 @@ define([
 			this.elements.valStamina.text(UIConstants.roundValue(playerStamina, true, false) + " / " + maxStamina);
 			this.updateStatsCallout("Required for exploration", "stats-stamina", playerStatsNode.stamina.accSources);
             var isResting = isResting;
-            this.updateChangeIndicator(this.elements.changeIndicatorStamina, playerStatsNode.stamina.accumulation, playerStamina < maxStamina, isResting);
+            this.updateChangeIndicator(this.elements.changeIndicatorStamina, playerStatsNode.stamina.accumulation, playerStamina < maxStamina, isResting || isHealing);
 
             this.elements.valVision.toggleClass("warning", playerVision <= 25);
             this.elements.valStamina.toggleClass("warning", playerStamina <= this.staminaWarningLimit);

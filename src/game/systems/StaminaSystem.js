@@ -48,6 +48,7 @@ define([
 			var perksComponent = node.perks;
             var busyComponent = node.entity.get(PlayerActionComponent);
             var isResting = busyComponent && busyComponent.getLastActionName() == "use_in_home";
+            var isHealing = busyComponent && busyComponent.getLastActionName() == "use_in_hospital";
 			
             // health
 			var injuryEffects = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury);
@@ -76,6 +77,10 @@ define([
             if (isResting) {
                 var timeLeft = busyComponent.getBusyTimeLeft();
                 addAccumulation("Resting",  Math.floor((maxVal - staminaComponent.stamina) / timeLeft * 4) / 4);
+            }
+            if (isHealing) {
+                var timeLeft = busyComponent.getBusyTimeLeft();
+                addAccumulation("Treatment",  Math.floor((maxVal - staminaComponent.stamina) / timeLeft * 4) / 4);
             }
 			staminaComponent.stamina += time * staminaPerSec;
 			staminaComponent.accumulation = staminaPerSec;
