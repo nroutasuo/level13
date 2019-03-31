@@ -57,6 +57,9 @@ define([
 			GlobalSignals.playerMovedSignal.add(function () {
 				sys.updateCurrentLocation();
 			});
+            GlobalSignals.fightEndedSignal.add(function () {
+				sys.updateCurrentLocation();
+            });
 			GlobalSignals.gameShownSignal.add(function () {
 				sys.updateCurrentLocation();
 			});
