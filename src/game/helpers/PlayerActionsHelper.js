@@ -105,7 +105,7 @@ define([
                 } else if (costNameParts[0] === "item") {
                     var itemId = costName.replace(costNameParts[0] + "_", "");
                     for (var i = 0; i < costAmount; i++) {
-                        itemsComponent.discardItem(itemsComponent.getItem(itemId));
+                        itemsComponent.discardItem(itemsComponent.getItem(itemId), false);
                     }
                 } else if (costName == "blueprint") {
                 } else {

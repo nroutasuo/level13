@@ -33,7 +33,7 @@ function (Ash, ItemVO, ItemConstants) {
             this.uniqueItemsAll = {};
         },
 
-        discardItem: function (item) {
+        discardItem: function (item, autoEquip) {
             if (!item) console.log("WARN: Trying to discard null item.");
             if (!this.isItemDiscardable(item)) {
                 console.log("WARN: Trying to discard un-discardable item.");
@@ -54,7 +54,7 @@ function (Ash, ItemVO, ItemConstants) {
                 
                 if (splicei >= 0) {
                     typeItems.splice(splicei, 1);
-                    if (item.equipped) {
+                    if (autoEquip && item.equipped) {
                         var nextItem = this.getSimilar(item);
                         if (nextItem) this.equip(nextItem);
                     }
@@ -66,12 +66,12 @@ function (Ash, ItemVO, ItemConstants) {
             this.uniqueItemsAll = {};
         },
 
-        discardItems: function (item) {
+        discardItems: function (item, autoEquip) {
             var count;
             var keepOne = !this.isItemsDiscardable(item);
             var target = keepOne ? 1 : 0;
             do {
-                this.discardItem(item);
+                this.discardItem(item, autoEquip);
                 count = this.getCount(item, true);
             } while (count > target);
         },

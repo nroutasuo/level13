@@ -303,13 +303,13 @@ define([
 
 			if (rewards.lostItems) {
 				for (var i = 0; i < rewards.lostItems.length; i++) {
-					itemsComponent.discardItem(rewards.lostItems[i]);
+					itemsComponent.discardItem(rewards.lostItems[i], false);
 				}
 			}
 
 			if (rewards.discardedItems) {
 				for (var i = 0; i < rewards.discardedItems.length; i++) {
-					itemsComponent.discardItem(rewards.discardedItems[i]);
+					itemsComponent.discardItem(rewards.discardedItems[i], false);
 				}
 			}
 
@@ -831,7 +831,7 @@ define([
                 }
                 maxItems++;
             }
-
+            
             var numItems = loseSingleItem ? 1 : Math.ceil(Math.random() * 3);
             numItems = Math.min(maxItems, numItems);
 
@@ -847,7 +847,7 @@ define([
                 }
                 itemList.splice(optionsToRemove[0], optionsToRemove.length);
             }
-
+            
             return lostItems;
         },
 

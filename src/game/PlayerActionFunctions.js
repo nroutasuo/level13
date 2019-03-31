@@ -776,7 +776,7 @@ define(['ash',
 				var amount = caravan.campSelectedItems[itemID];
 				for (var i = 0; i < amount; i++) {
 					caravan.sellItems.push(ItemConstants.getItemByID(itemID));
-					itemsComponent.discardItem(itemsComponent.getItem(itemID));
+					itemsComponent.discardItem(itemsComponent.getItem(itemID), false);
 				}
 			}
 
@@ -1215,7 +1215,7 @@ define(['ash',
 						for (var a2 = 0; a2 < currentFollowers.length; a2++) {
 							var oldFollower = currentFollowers[a2];
 							if (oldFollower.getBonusTotalBonus() < follower.getTotalBonus()) {
-								itemsComponent.discardItem(oldFollower);
+								itemsComponent.discardItem(oldFollower, false);
 								this.addFollower(follower);
 								return true;
 							}
@@ -1284,7 +1284,7 @@ define(['ash',
 			GameGlobals.uiFunctions.showConfirmation(
 				"Are you sure you want to discard this item?",
 				function () {
-					itemsComponent.discardItem(item);
+					itemsComponent.discardItem(item, false);
 					GlobalSignals.equipmentChangedSignal.dispatch();
 				}
 			);
