@@ -180,6 +180,7 @@ define([
             if (sectorPassages.passageUp) result.push("passage up");
             if (sectorPassages.passageDown) result.push("passage down");
             if (unScoutedLocales > 0) result.push("unscouted locales");
+            if (sectorFeatures.hasSpring) result.push(TextConstants.getSpringName(sectorFeatures));
             
             if (result.length < 1) return "-";
             else return result.join(", ");
