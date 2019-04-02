@@ -1,4 +1,4 @@
-// Singleton with helper methods for level entities
+// Singleton with helper methods for level entities;
 define([
     'ash',
     'game/GameGlobals',
@@ -400,9 +400,9 @@ define([
                 if (node.entity.has(RevealedComponent)) levelStats.countRevealedSectors++;
             }
 
-            levelStats.percentClearedSectors = levelStats.countClearedSectors / levelStats.totalSectors;
-            levelStats.percentScoutedSectors = levelStats.countScoutedSectors / levelStats.totalSectors;
-            levelStats.percentRevealedSectors = levelStats.countRevealedSectors / levelStats.totalSectors;
+            levelStats.percentClearedSectors = levelStats.countClearedSectors == levelStats.totalSectors ? 1 : levelStats.countClearedSectors / levelStats.totalSectors;
+            levelStats.percentScoutedSectors = levelStats.countScoutedSectors == levelStats.totalSectors ? 1 : levelStats.countScoutedSectors / levelStats.totalSectors;
+            levelStats.percentRevealedSectors = levelStats.countRevealedSectors == levelStats.totalSectors ? 1 : levelStats.countRevealedSectors / levelStats.totalSectors;
 
             return levelStats;
         },

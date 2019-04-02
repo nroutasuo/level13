@@ -30,8 +30,7 @@ define(['ash',
 					var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
 					var sectorControlComponent = sector.get(SectorControlComponent);
 					var hasUnclearedWorkshop = workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP);
-                    var hasUnbuiltProjects = GameGlobals.levelHelper.getAvailableProjectsForSector(sector).length > 0;
-					var isCleared = unScoutedLocales === 0 && !hasUnclearedWorkshop && !hasUnbuiltProjects;
+					var isCleared = unScoutedLocales === 0 && !hasUnclearedWorkshop;
 					if (isCleared) {
 						return this.MAP_SECTOR_STATUS_VISITED_CLEARED;
 					} else {

@@ -151,9 +151,9 @@ define([
             var mapStatus = GameGlobals.levelHelper.getLevelStats(this.selectedLevel);
             var mapStatusText = "There are still many unvisited streets on this level.";
             if (mapStatus.percentClearedSectors >= 1)
-                mapStatusText = "This level has been thoroughly mapped. All locations have been checked.";
-            else if (mapStatus.percentScoutedSectors >= 1)
-                mapStatusText = "This level has been thoroughly mapped. There are a few unexplored locations left.";
+                mapStatusText = "This level has been thoroughly explored.";
+            else if (mapStatus.percentScoutedSectors >= 0)
+                mapStatusText = "This level has been mapped, but there are a few unexplored locations left.";
             else if (mapStatus.percentRevealedSectors >= 1)
                 mapStatusText = "There are still unscouted streets on this level.";
             else if (mapStatus.percentRevealedSectors >= 0.5)
