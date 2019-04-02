@@ -2117,20 +2117,19 @@ function (Ash, GameConstants, CampConstants) {
                 },
 
                 unlock_building_darkfarm: {
-					rumours: 35,
+					rumours: 53,
                 },
 
                 unlock_building_tradingpost: {
-					rumours: 21,
+					rumours: 32,
 					evidence: 51,
                 },
 
                 unlock_item_clothing2: {
-					rumours: 28,
+					evidence: 15,
                 },
 
                 unlock_building_passage_staircase: {
-					rumours: 4,
 					evidence: 23,
                 },
 
