@@ -31,7 +31,6 @@ define([
 			this.engine = engine;
 			this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
 			this.lastUpdateUpgradeCount = 0;
-			this.hasNeverBeenOpened = !GameGlobals.gameState.unlockedFeatures.upgrades;
             GameGlobals.uiTechTreeHelper.enableScrolling(this.vis);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 			GlobalSignals.add(this, GlobalSignals.blueprintsChangedSignal, this.onBlueprintsChanged);
@@ -53,8 +52,6 @@ define([
 
 			if (!isActive) {
 				return;
-			} else {
-				this.hasNeverBeenOpened = false;
 			}
 		},
         
@@ -69,13 +66,12 @@ define([
         },
 
         updateBubble: function () {
-			var blueprintsNum = this.currentBlueprints - this.lastShownBlueprints;
+			var blueprintsNum = this.currentBlueprints;
 			var upgradesNum = this.currentUpgrades - this.lastShownUpgrades;
             var newBubbleNumber = blueprintsNum + upgradesNum;
             if (this.bubbleNumber === newBubbleNumber)
                 return;
             this.bubbleNumber = blueprintsNum + upgradesNum;
-			if (this.hasNeverBeenOpened) this.bubbleNumber += this.availableUpgrades;
             $("#switch-upgrades .bubble").text(this.bubbleNumber);
             GameGlobals.uiFunctions.toggle("#switch-upgrades .bubble", this.bubbleNumber > 0);
         },
@@ -150,7 +146,6 @@ define([
 				this.lastUpdateUpgradeCount = this.tribeNodes.head.upgrades.boughtUpgrades.length;
 			}
 
-			if (isActive) this.lastShownBlueprints = this.currentBlueprints;
 			if (isActive) this.lastShownUpgrades = this.currentUpgrades;
 		},
 
@@ -192,6 +187,7 @@ define([
         onBlueprintsChanged: function () {
             var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.upgrades;
             if (isActive) this.refresh();
+            else this.updateUpgradesLists(false, false);
         },
         
 		getUpgradeTR: function (upgradeDefinition, isAvailable, hasBlueprintUnlocked, hasBlueprintNew) {

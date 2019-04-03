@@ -12,8 +12,6 @@ define([
 		engine: null,
 		
 		tribeNodes: null,
-        
-        lastShownPieceCount: 0,
 	
 		constructor: function () {
 
@@ -33,7 +31,6 @@ define([
 			this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
 			this.hasNeverBeenOpened = !GameGlobals.gameState.unlockedFeatures.blueprints;
 			GlobalSignals.tabChangedSignal.add(this.onTabChanged);
-            this.lastShownPieceCount = this.getCurrentPieceCount();
 		},
 	
 		removeFromEngine: function (engine) {
@@ -50,12 +47,11 @@ define([
                 $("#tab-header h2").text("Blueprints pieces");
                 var resetList = this.tribeNodes.head.upgrades.getUnfinishedBlueprints().length !== $("#blueprints-pieces-list tr").length || $("#blueprints-pieces-list tr").length === 0;
                 if (resetList) this.updateBlueprintList();
-                this.lastShownPieceCount = this.getCurrentPieceCount();
             }
 		},
         
         updateBubble: function () {
-            var newBubbleNumber = Math.max(0, this.getCurrentPieceCount() - this.lastShownPieceCount);
+            var newBubbleNumber = Math.max(0, this.getCurrentCompletableCount());
             if (this.bubbleNumber === newBubbleNumber)
                 return;
             this.bubbleNumber = newBubbleNumber;
@@ -97,13 +93,13 @@ define([
             GameGlobals.uiFunctions.toggle("#blueprints-list-empty-message", $("#blueprints-pieces-list tr").length === 0);
         },
         
-        getCurrentPieceCount: function () {
+        getCurrentCompletableCount: function () {
             if (!this.tribeNodes.head) return 0;
             var count = 0;
 			for (var i = 0; i < this.tribeNodes.head.upgrades.newBlueprints.length; i++) {
                 var blueprintVO = this.tribeNodes.head.upgrades.newBlueprints[i];
                 if (blueprintVO.completed) continue;
-                count += blueprintVO.currentPieces;
+                if (blueprintVO.currentPieces === blueprintVO.maxPieces) count++;
             }
             return count;
         },
