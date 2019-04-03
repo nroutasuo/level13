@@ -23,14 +23,7 @@ define([
             this.elements.layerBuildings = $("#vis-camp-layer-buildings");
             
             this.containerDefaultHeight = 100;
-            this.containerExpandedHeight = 300;
             this.buildingContainerSize = 14;
-            
-            var sys = this;
-            $("#expand-vis-camp").click(function(e) {
-                sys.elements.container.toggleClass("expanded");
-                sys.onResize();
-            });
             
             return this;
         },
@@ -53,9 +46,7 @@ define([
             GlobalSignals.removeAll(this);
         },
         
-        update: function (time) {
-        
-        },
+        update: function (time) { },
         
         onResize: function () {
             this.previousContainerWidth = this.containerWidth;
@@ -80,9 +71,8 @@ define([
         refreshGrid: function () {
             var parentWidth = this.elements.container.parent().width();
             this.containerWidth = Math.max(100, parentWidth);
+            this.containerHeight = this.containerDefaultHeight;
             this.elements.container.css("width", this.containerWidth + "px");
-            
-            this.containerHeight = this.elements.container.hasClass("expanded") ? this.containerExpandedHeight : this.containerDefaultHeight;
             
             this.pointDist = 6; // distance of points (possible positions) on the grid in px
             
@@ -351,7 +341,7 @@ define([
                 case improvementNames.lights:
                     return "vis-camp-building-heavy";
                 case improvementNames.fortification:
-                case improvementNames.fortification2: 
+                case improvementNames.fortification2:
                     return "vis-camp-building-thin";
             }
             return "vis-camp-building-medium";
