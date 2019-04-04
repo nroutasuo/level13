@@ -24,7 +24,6 @@ define([
             this.elements.layerBuildings = $("#vis-camp-layer-buildings");
             
             this.containerDefaultHeight = 80;
-            this.gridX = 5;
             this.buildingContainerSizeX = 14;
             this.floorPos = 12;
             this.floorThickness = 12;
@@ -144,6 +143,7 @@ define([
                 this.elements.buildings = {};
             }
             
+            var buildingCoords = [];
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var all = improvements.getAll(improvementTypes.camp);
             
@@ -177,6 +177,8 @@ define([
                                 $elem.show("scale");
                             }
                         }
+                        
+                        buildingCoords.push({ building: building, n: n, j: j, coords: coords });
 
                         // position all buildings
                         $elem.css("left", this.getXpx(coords.x, coords.z, size) + "px");
@@ -185,7 +187,23 @@ define([
                 }
             }
             
+            this.checkOverlaps(buildingCoords);
+            
             this.buildingsLevel = level;
+        },
+        
+        checkOverlaps: function (buildingCoords) {
+            for (var i = 0; i < buildingCoords.length; i++) {
+                var coords1 = buildingCoords[i].coords;
+                var buildingType1 = buildingCoords[i].building.name;
+                for (var j = i + 1; j < buildingCoords.length; j++) {
+                    var coords2 = buildingCoords[j].coords;
+                    var buildingType2 = buildingCoords[j].building.name;
+                    if (GameGlobals.campVisHelper.isConflict(coords1, coords2, buildingType1, buildingType2)) {
+                        console.log("WARN: overlap " + buildingType1 + " and " + buildingType2);
+                    }
+                }
+            }
         },
         
         registerBuildingSpotDivListeners: function ($elem) {
@@ -236,31 +254,8 @@ define([
             });
         },
         
-        // camp vis coords: x (0 in the middle, infinite), z (0 in the front, 1, 2 in the background)
         getBuildingSpotCoords: function (i) {
-            var level = this.playerLocationNodes.head.position.level;
-            var seed = Math.round(GameGlobals.gameState.worldSeed / 3 * (level + 10) + i * i * level / 7);
-            var sizeX = this.buildingContainerSizeX;
-            
-            // TODO randomize with seed to make different camps look different
-            var mod2 = i % 2;
-            var mod9 = i % 9;
-            var x = mod2 == 0 ? Math.ceil(i/2) : -Math.ceil(i/2);
-            var z = 1;
-            
-            if (i > 8) {
-                z = mod9 < 6 ? 1 : mod9 < 8 ? 2 : 3;
-            }
-            
-            /*
-            if (this.isReserved(r, angle, size)) {
-                console.log("WARN: Overlapping building spots");
-            }
-            this.setReserved(r, angle, size);
-            */
-            
-            var coords = { x: x, z: z };
-            return coords;
+            return GameGlobals.campVisHelper.getCoords(i);
         },
         
         getBuildingCoords: function (improvements, building, n, j) {
@@ -295,42 +290,9 @@ define([
         getBuildingDivID: function (building, n, j) {
             return "vis-building-" + building.getKey() + "-" + n;
         },
-            
-        isReserved: function (x, z, size) {
-            var margin = 5;
-            var x = this.getXpx(x, z, size);
-            var y = this.getYpx(x, z, size);
-            for (var rr in this.reservedPos) {
-                for (var aangle in this.reservedPos[rr]) {
-                    var ssize = this.reservedPos[rr][aangle];
-                    var xx = this.getXpx(xx, zz, ssize);
-                    var yy = this.getYpx(xx, zz, ssize);
-                    var dist = Math.ceil(MathUtils.dist(x, y, xx, yy));
-                    if (dist < size / 2 + ssize / 2 + margin) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        },
-        
-        setReserved: function (r, angle, size) {
-            if (!this.reservedPos[r]) this.reservedPos[r] = [];
-            this.reservedPos[r][angle] = size;
-        },
         
         getBuildingSize: function (building) {
-            switch (building.name) {
-                case improvementNames.campfire:
-                    return { x: 4, y: 4 };
-                case improvementNames.lights:
-                    return { x: 2, y: 11 };
-                case improvementNames.storage:
-                    return { x: 15, y: 11 };
-                case improvementNames.hospital:
-                    return { x: 11, y: 15 };
-            }
-            return { x: 11, y: 11 };
+            return GameGlobals.campVisHelper.getBuildingSize(building.name);
         },
         
         getBuildingColorClass: function (building) {
@@ -353,23 +315,8 @@ define([
             return Math.min(1000, Math.max(maxSelected, Math.max(20, numBuildings * 3) + 5));
         },
         
-        getMinDist: function (building) {
-            return 0;
-        },
-        
-        getMaxDist: function (building) {
-            switch (building.name) {
-                case improvementNames.campfire:
-                case improvementNames.home:
-                    return 1;
-                case improvementNames.tradepost:
-                    return 3;
-            }
-            return Math.floor(this.containerDefaultHeight / this.pointDist / 2);
-        },
-        
         getXpx: function (x, z, size) {
-            return Math.round((this.containerWidth / 2) + x * size.x);
+            return Math.round((this.containerWidth / 2) + x * GameGlobals.campVisHelper.gridX + size.x / 2);
         },
         
         getYpx: function (x, z, size) {

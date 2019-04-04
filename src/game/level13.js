@@ -59,6 +59,7 @@ define([
     'game/helpers/ui/ChangeLogHelper',
     'game/helpers/ItemsHelper',
     'game/helpers/EndingHelper',
+    'game/helpers/CampVisHelper',
     'game/helpers/ResourcesHelper',
     'game/helpers/MovementHelper',
     'game/helpers/FightHelper',
@@ -132,6 +133,7 @@ define([
     ChangeLogHelper,
     ItemsHelper,
     EndingHelper,
+    CampVisHelper,
     ResourcesHelper,
     MovementHelper,
     FightHelper,
@@ -185,6 +187,7 @@ define([
             GameGlobals.fightHelper = new FightHelper(this.engine);
 			GameGlobals.campHelper = new CampHelper(this.engine);
             GameGlobals.endingHelper = new EndingHelper(this.engine);
+            GameGlobals.campVisHelper = new CampVisHelper();
 			GameGlobals.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine);
 
             GameGlobals.itemsHelper = new ItemsHelper();
