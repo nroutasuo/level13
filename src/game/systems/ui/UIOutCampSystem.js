@@ -415,7 +415,7 @@
             hasOther = hasOther || numCaravans > 0;
             if (isActive && showEvents) {
                 GameGlobals.uiFunctions.toggle("#in-occurrences-outgoing-caravans-container", numCaravans > 0);
-                if (UIState.refreshState(this, "outgoing-caravans-num", numCaravans)) {
+                UIState.refreshState(this, "outgoing-caravans-num", numCaravans, function () {
                     $("#in-occurrences-outgoing-caravans-container").empty();
                     for (var i = 0; i < numCaravans; i++) {
                         var bar = '';
@@ -425,7 +425,7 @@
                         bar += '</div>';
                         $("#in-occurrences-outgoing-caravans-container").append(bar)
                     }
-                }
+                });
                 for (var i = 0; i < numCaravans; i++) {
                     var caravan = caravansComponent.outgoingCaravans[i];
                     var duration = caravan.returnDuration * 1000;

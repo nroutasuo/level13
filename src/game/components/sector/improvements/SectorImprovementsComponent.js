@@ -76,11 +76,6 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
             return this.getCount(improvementNames.collector_food) > 0 || this.getCount(improvementNames.collector_water) > 0;
         },
 
-        getNumCampBuildingSpots: function () {
-            var numBuildings = this.getTotal(improvementTypes.camp);
-            return Math.min(1000, Math.max(this.getMaxSelectedCampBuildingSpot(), Math.max(20, numBuildings * 3) + 5));
-        },
-
         getSelectedCampBuildingSpot: function (building, i, j, assignIfNotSet) {
             for (var spotIndex = 0; spotIndex < this.buildingSpots.length; spotIndex++) {
                 if (this.buildingSpots[spotIndex] === building.getKey() + "-" + i + "-" + j) {

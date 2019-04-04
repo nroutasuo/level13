@@ -85,6 +85,15 @@
 .vis-camp-building-container.filled {
   display: none;
 }
+.vis-camp-floor {
+  background: #2f322f;
+  height: 5px;
+  position: absolute;
+  left: 0px;
+}
+.sunlit .vis-camp-floor {
+  background: #e6e6e6;
+}
 .vis-camp-building {
   position: absolute;
   opacity: 1;
@@ -108,12 +117,6 @@
 .vis-camp-building-thin {
   background: #333;
   border-color: #333;
-}
-.vis-camp-building-star {
-  transform: rotate(45deg);
-}
-.vis-camp-building-round {
-  border-radius: 6px;
 }
 .vis-camp-point {
   width: 2px;

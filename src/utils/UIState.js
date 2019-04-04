@@ -3,16 +3,19 @@ define(function () {
 
     var UIState = {
         
-        // Saves current state AND returns a boolean telling the caller if the UI dependent on sthat state should be updated (state has changed).
+        // Refresh UI state if needed based on a value the UI depends on.
+        // Saves current state AND calls the refresh function only if the state has changed since last refresh.
         // system: UIOut system responsible for displaying the state
-        // stateID: system-unique id for the state
+        // stateID: id for the state (must be unique for the system)
         // value: current value
-        // return: true if state has changed and UI requires an update, otherwise false
-        refreshState: function (system, stateID, value) {
+        // func: function to apply if state has changed since last refresh
+        refreshState: function (system, stateID, value, func) {
             if (!system.uiStates) system.uiStates = {};
             var oldVal = system.uiStates[stateID];
             system.uiStates[stateID] = value;
-            return value !== oldVal;
+            if (value !== oldVal) {
+                func.apply(system);
+            }
         }
         
     };
