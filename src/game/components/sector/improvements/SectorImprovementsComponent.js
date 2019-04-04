@@ -25,7 +25,7 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
             for (var i = 0; i < amount; i++) {
                 var visCount = vo.getVisCount();
                 for (var j = 0; j < visCount; j++) {
-                    var spotIndex = this.getNextFreeCampBuildingSpot(building);
+                    var spotIndex = this.getNextFreeCampBuildingSpot(vo);
                     this.setSelectedCampBuildingSpot(vo, vo.count, spotIndex, j);
                 }
                 vo.count++;

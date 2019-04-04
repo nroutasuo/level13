@@ -69,6 +69,7 @@ define([
             if (!this.playerLocationNodes.head) return;
             if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.in) return;
             
+            this.refreshFloor();
             this.refreshBuildings();
         },
         
@@ -190,7 +191,7 @@ define([
         getBuildingDiv: function (i, building, n, j, coords) {
             var size = this.getBuildingSize(building);
             var style = "width: " + size.x + "px; height: " + size.y + "px;";
-            var classes = "vis-camp-building " + this.getBuildingColorClass(building, coords);
+            var classes = "vis-camp-building " + this.getBuildingClasses(building, coords);
             var data = "data-building-name='" + building.name + "' data-building-index='" + n + "' data-building-vis-index='" + j + "'";
             var id = this.getBuildingDivID(building, n, j);
             return "<div class='" + classes + "' style='" + style + "' id='" + id + "' " + data + "'></div>";
@@ -202,6 +203,22 @@ define([
         
         getBuildingSize: function (building) {
             return GameGlobals.campVisHelper.getBuildingSize(building.name);
+        },
+        
+        getBuildingClasses: function (building, coords) {
+            var result = [];
+            result.push(this.getBuildingColorClass(building, coords));
+            switch (building.name) {
+                case improvementNames.home:
+                case improvementNames.house:
+                    result.push("vis-camp-building-rounded");
+                    break;
+                case improvementNames.campfire:
+                case improvementNames.lights:
+                    result.push("vis-camp-building-lit");
+                    break;
+            }
+            return result.join(" ");
         },
         
         getBuildingColorClass: function (building, coords) {

@@ -23,8 +23,8 @@ function (Ash) {
                 mod9limit1 = 9;
                 mod9limit2 = 9;
             } else if (i < 20) {
-                mod9limit1 = 5;
-                mod9limit2 = 7;
+                mod9limit1 = 2;
+                mod9limit2 = 4;
             }
             var z = mod9 < mod9limit1 ? 0 : mod9 < mod9limit2 ? 1 : 2;
             
@@ -84,7 +84,7 @@ function (Ash) {
             var xdist = Math.abs(x1 - x2);
             if (coords1.z == coords2.z) {
                 // same layer, no overlap allowed
-                var margin = 5;
+                var margin = 2;
                 var minDistance = Math.ceil(width1/2 + width2/2 + margin);
                 return xdist < minDistance;
             } else {
@@ -130,6 +130,9 @@ function (Ash) {
                 }
             }
             for (var x = 0; x < 1000; x++) {
+                // TODO skip certain coords by level to create variety
+                if (x % (z+2) == 0) x++;
+                if (x / 2 % 4 == 0) x++;
                 if (this.getSpotIndex(x, z) < 0) return x;
                 if (this.getSpotIndex(-x, z) < 0) return -x;
             }
