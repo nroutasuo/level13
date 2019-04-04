@@ -23,11 +23,12 @@ define([
             this.elements.layerSpots = $("#vis-camp-layer-spots");
             this.elements.layerBuildings = $("#vis-camp-layer-buildings");
             
-            this.containerDefaultHeight = 100;
+            this.containerDefaultHeight = 80;
+            this.gridX = 5;
             this.buildingContainerSizeX = 14;
-            this.floorHeight = 15;
-            this.floorThickness = 6; // match css
-            this.zStep = 8;
+            this.floorPos = 12;
+            this.floorThickness = 12;
+            this.zStep = 1;
             
             return this;
         },
@@ -79,6 +80,7 @@ define([
             this.containerWidth = Math.max(100, parentWidth);
             this.containerHeight = this.containerDefaultHeight;
             this.elements.container.css("width", this.containerWidth + "px");
+            this.elements.container.css("height", this.containerHeight + "px");
         },
         
         refreshFloor: function () {
@@ -88,7 +90,7 @@ define([
             }
             
             this.elements.floor.css("width", this.containerWidth + "px");
-            this.elements.floor.css("top", (this.containerHeight - this.floorHeight + this.floorThickness / 2) + "px");
+            this.elements.floor.css("top", (this.containerHeight - this.floorPos) + "px");
         },
         
         refreshBuildingSpots: function () {
@@ -165,7 +167,7 @@ define([
                         // add missing buildings
                         var $elem = this.elements.buildings[building.name][n][j];
                         if (!$elem) {
-                            $elem = $(this.getBuildingDiv(i, building, size, n, j));
+                            $elem = $(this.getBuildingDiv(i, building, n, j));
                             this.registerBuildingDivListeners($elem);
                             this.elements.layerBuildings.append($elem);
                             this.elements.buildings[building.name][n][j] = $elem;
@@ -243,8 +245,12 @@ define([
             // TODO randomize with seed to make different camps look different
             var mod2 = i % 2;
             var mod9 = i % 9;
-            var x = mod2 == 0 ? i : -i;
-            var z = mod9 < 6 ? 1 : mod9 < 8 ? 2 : 3;
+            var x = mod2 == 0 ? Math.ceil(i/2) : -Math.ceil(i/2);
+            var z = 1;
+            
+            if (i > 8) {
+                z = mod9 < 6 ? 1 : mod9 < 8 ? 2 : 3;
+            }
             
             /*
             if (this.isReserved(r, angle, size)) {
@@ -259,7 +265,6 @@ define([
         
         getBuildingCoords: function (improvements, building, n, j) {
             var index = improvements.getSelectedCampBuildingSpot(building, n, j, true);
-            
             if (index < 0 || !this.buildingSpots[index]) {
                 console.log("WARN: No building spot defined for " + building.name + " " + n + " " + j);
                 return null;
@@ -271,15 +276,16 @@ define([
         },
         
         getFloorDiv: function () {
-            return "<div id='vis-camp-floor' class='vis-camp-floor'></div>";
+            return "<div id='vis-camp-floor' class='vis-camp-floor' style='height:" + this.floorThickness + "px;'></div>";
         },
         
         getBuildingSpotDiv: function (i) {
             return "<div id='vis-camp-building-container-" + i + "' class='vis-camp-building-container' draggable='true' data-spot-index='" + i + "'></div>";
         },
         
-        getBuildingDiv: function (i, building, size, n, j) {
-            var style = "width: " + size + "px; height: " + size + "px;";
+        getBuildingDiv: function (i, building, n, j) {
+            var size = this.getBuildingSize(building);
+            var style = "width: " + size.x + "px; height: " + size.y + "px;";
             var classes = "vis-camp-building " + this.getBuildingColorClass(building);
             var data = "data-building-name='" + building.name + "' data-building-index='" + n + "' data-building-vis-index='" + j + "'";
             var id = this.getBuildingDivID(building, n, j);
@@ -316,14 +322,15 @@ define([
         getBuildingSize: function (building) {
             switch (building.name) {
                 case improvementNames.campfire:
-                case improvementNames.home:
-                    return 10;
+                    return { x: 4, y: 4 };
                 case improvementNames.lights:
-                    return 8;
+                    return { x: 2, y: 11 };
                 case improvementNames.storage:
-                    return 20;
+                    return { x: 15, y: 11 };
+                case improvementNames.hospital:
+                    return { x: 11, y: 15 };
             }
-            return 12;
+            return { x: 11, y: 11 };
         },
         
         getBuildingColorClass: function (building) {
@@ -362,11 +369,11 @@ define([
         },
         
         getXpx: function (x, z, size) {
-            return Math.round((this.containerWidth / 2) + x * size);
+            return Math.round((this.containerWidth / 2) + x * size.x);
         },
         
         getYpx: function (x, z, size) {
-            return Math.round(this.containerHeight - this.floorHeight - z * this.zStep - size / 2);
+            return Math.round(this.containerHeight - this.floorPos - z * this.zStep - size.y);
         }
         
     });
