@@ -11,7 +11,7 @@ function (Ash) {
         coordinates: {},
 
         constructor: function () {
-            this.gridX = 5;
+            this.gridX = 6;
         },
         
         initCoordinate: function (i) {
@@ -33,7 +33,7 @@ function (Ash) {
             
             var result = { x: x, z: z };
             this.coordinates[i] = result;
-            console.log("assigned coordinate: " + i + " { x: " + x + ", z: " + z +" }");
+            // console.log("assigned coordinate: " + i + " { x: " + x + ", z: " + z +" }");
         },
         
         initCoordinates: function (count) {
@@ -67,27 +67,59 @@ function (Ash) {
                 case improvementNames.campfire:
                     return { x: 4, y: 4 };
                 case improvementNames.lights:
-                    return { x: 2, y: 11 };
+                    return { x: 2, y: 24 };
                 case improvementNames.storage:
-                    return { x: 15, y: 11 };
+                    return { x: 16, y: 16 };
                 case improvementNames.hospital:
-                    return { x: 11, y: 15 };
+                    return { x: 16, y: 12 };
             }
-            return { x: 11, y: 11 };
+            return { x: 12, y: 12 };
         },
         
         isConflict: function (coords1, coords2, buildingType1, buildingType2) {
+            var width1 = this.getBuildingSize(buildingType1).x;
+            var width2 = this.getBuildingSize(buildingType2).x;
+            var x1 = coords1.x * this.gridX + width1 / 2;
+            var x2 = coords2.x * this.gridX + width2 / 2;
+            var xdist = Math.abs(x1 - x2);
             if (coords1.z == coords2.z) {
                 // same layer, no overlap allowed
-                var margin = 1;
-                var xdist = Math.abs(coords1.x - coords2.x);
-                var width1 = this.getBuildingSize(buildingType1).x;
-                var width2 = this.getBuildingSize(buildingType2).x;
-                return xdist > width1/2 + width2/2 + margin;
+                var margin = 5;
+                var minDistance = Math.ceil(width1/2 + width2/2 + margin);
+                return xdist < minDistance;
             } else {
                 // different layers, ok as long as they don't cover each other completely
-                return false;
+                var minDistance = Math.max(width1/2, width2/2) + 2;
+                return xdist < minDistance;
             }
+        },
+        
+        getNextValidCampBuildingSpot: function (sectorImprovements, building) {
+            var buildingType1 = building.name;
+            for (var i = 0; i < 1000; i++) {
+                var contents = sectorImprovements.buildingSpots[i];
+                // already occupied
+                if (contents) continue;
+                // conflicts with some existing
+                var j = 0;
+                var foundConflict = false;
+                var coords1 = this.getCoords(i);
+                for (var j = 0; j < sectorImprovements.buildingSpots.length; j++) {
+                    var contents2 = sectorImprovements.buildingSpots[j];
+                    if (contents2) {
+                        var coords2 = this.getCoords(j);
+                        var buildingType2 = contents2.buildingType;
+                        if (this.isConflict(coords1, coords2, buildingType1, buildingType2)) {
+                            foundConflict = true;
+                            break;
+                        }
+                    }
+                }
+                if (foundConflict) continue;
+                return i;
+            }
+            console.log("WARN: Couldn't find free valid buildings spot for " + building.name);
+            return 0;
         },
 
         findNextFreeX: function (targetI, z) {

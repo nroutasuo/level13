@@ -100,15 +100,6 @@
     color: transparent;
 }
 
-.vis-camp-building-container.drag-over {
-    border-color: #999 !important;
-}
-
-.vis-camp-building-container.drag-active {
-    border-color: #444;
-    color: #777;
-}
-
 .vis-camp-building-container.filled {
     display: none;
 }
@@ -129,28 +120,28 @@
     width: 12px;
     height: 12px;
     z-index: 3;
-    cursor: move;
     font-size: 75%;
+    border-style: solid;
+    border-width: 1px 1px 0px 1px;
 }
 
-.vis-camp-building:hover {
-    opacity: 0.75;
+.vis-camp-building-z0 {
+    background: #888;
+    border-color:lighten(@color-dark-highlight-element-3, 20%);
+    z-index: 2;
 }
 
-.vis-camp-building-heavy {
-    background: @color-dark-highlight-element-3;
-    border-color: @color-dark-highlight-element-3;
-}
-
-.vis-camp-building-medium {
+.vis-camp-building-z1 {
     background: @color-dark-highlight-element;
-    border-color: @color-dark-highlight-element;
+    border-color: lighten(@color-dark-highlight-element, 20%);
+    z-index: 1;
 
 }
 
-.vis-camp-building-thin {
+.vis-camp-building-z2 {
     background: @color-dark-highlight-element-2;
-    border-color: @color-dark-highlight-element-2;
+    border-color: lighten(@color-dark-highlight-element-2, 20%);
+    z-index: 0;
 }
 
 .vis-camp-point {

@@ -1,5 +1,5 @@
 // Lists miscellaneous improvements that the given entity (should be a Sector) contains
-define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
+define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, GameGlobals, ImprovementVO) {
     var SectorImprovementsComponent = Ash.Class.extend({
 
         improvements: {},
@@ -25,7 +25,7 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
             for (var i = 0; i < amount; i++) {
                 var visCount = vo.getVisCount();
                 for (var j = 0; j < visCount; j++) {
-                    var spotIndex = this.getRandomFreeCampBuildingSpot();
+                    var spotIndex = this.getNextFreeCampBuildingSpot(building);
                     this.setSelectedCampBuildingSpot(vo, vo.count, spotIndex, j);
                 }
                 vo.count++;
@@ -78,13 +78,14 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
 
         getSelectedCampBuildingSpot: function (building, i, j, assignIfNotSet) {
             for (var spotIndex = 0; spotIndex < this.buildingSpots.length; spotIndex++) {
-                if (this.buildingSpots[spotIndex] === building.getKey() + "-" + i + "-" + j) {
+                var contents = this.buildingSpots[spotIndex];
+                if (contents && contents.id === this.getBuildingID(building, i, j)) {
                     return spotIndex;
                 }
             }
 
             if (assignIfNotSet) {
-                var nextAvailable = this.getNextFreeCampBuildingSpot();
+                var nextAvailable = this.getNextFreeCampBuildingSpot(building);
                 this.setSelectedCampBuildingSpot(building, i, j, nextAvailable);
                 return this.getSelectedCampBuildingSpot(building, i, j);
             } else {
@@ -94,7 +95,10 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
 
         setSelectedCampBuildingSpot: function (building, i, j, spotIndex) {
             var previous = this.getSelectedCampBuildingSpot(building, i, j);
-            this.buildingSpots[spotIndex] = building.getKey() + "-" + i + "-" + j;
+            this.buildingSpots[spotIndex] = {
+                id: this.getBuildingID(building, i, j),
+                buildingType: building.name
+             };
             if (previous >= 0) {
                 this.buildingSpots[previous] = null;
             }
@@ -108,24 +112,17 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
             return result;
         },
 
-        getNextFreeCampBuildingSpot: function () {
-            for (var spotIndex = 0; spotIndex < this.buildingSpots.length; spotIndex++) {
-                var value = this.buildingSpots[spotIndex];
-                if (!value) {
-                    return spotIndex;
-                }
-            }
-            return this.getMaxSelectedCampBuildingSpot() + 1;
+        // TODO move this kind of logic out of the component
+        getNextFreeCampBuildingSpot: function (building) {
+            return GameGlobals.campVisHelper.getNextValidCampBuildingSpot(this, building);
         },
-
-        getRandomFreeCampBuildingSpot: function () {
-            var options = [];
-            var spotIndex = 0;
-            while (options.length < 5) {
-                if (!this.buildingSpots[spotIndex]) options.push(spotIndex);
-                spotIndex += Math.ceil(Math.random()*3);
-            }
-            return options[Math.floor(Math.random()*options.length)];
+        
+        resetBuildingSpots: function () {
+            this.buildingSpots = [];
+        },
+        
+        getBuildingID: function (building, i, j) {
+            return building.getKey() + "-" + i + "-" + j
         },
 
         getSaveKey: function () {

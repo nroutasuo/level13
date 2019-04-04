@@ -33,6 +33,7 @@ define(function () {
         CHEAT_NAME_SCOUT_LEVEL: "scoutLevel",
         CHEAT_NAME_TRADER: "trader",
         CHEAT_NAME_RAID: "raid",
+        CHEAT_NAME_RESET_BUILDING_SPOTS: "resetBuildingSpots",
         
     };
     return CheatConstants;

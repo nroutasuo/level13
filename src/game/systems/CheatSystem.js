@@ -172,6 +172,9 @@ define(['ash',
             this.registerCheat(CheatConstants.CHEAT_NAME_RAID, "Trigger a raid immediately.", [], function (params) {
                 this.triggerRaid();
             });
+            this.registerCheat(CheatConstants.CHEAT_NAME_RESET_BUILDING_SPOTS, "Reset building spots for buildings in the current camp.", [], function (params) {
+                this.resetBuildingSpots();
+            });
             this.registerCheat(CheatConstants.CHEAT_NAME_AUTOPLAY, "Autoplay.", ["on/off/camp/expedition", "(optional) camp ordinal"], function (params) {
                 this.setAutoPlay(params[0], parseInt(params[1]));
             });
@@ -549,6 +552,14 @@ define(['ash',
                 campTimers.eventStartTimers["raid"] = 10;
             }
         },
+        
+        resetBuildingSpots: function () {
+            var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
+            var improvements = currentSector ? currentSector.get(SectorImprovementsComponent) : null;
+            if (improvements) {
+                improvements.resetBuildingSpots();
+            }
+        }
 
     });
 

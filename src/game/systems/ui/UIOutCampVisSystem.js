@@ -27,7 +27,7 @@ define([
             this.buildingContainerSizeX = 14;
             this.floorPos = 12;
             this.floorThickness = 12;
-            this.zStep = 1;
+            this.zStep = 0;
             
             return this;
         },
@@ -114,7 +114,6 @@ define([
                 var $elem = this.elements.buildingSpots[i];
                 if (!$elem) {
                     $elem = $(this.getBuildingSpotDiv(i));
-                    this.registerBuildingSpotDivListeners($elem);
                     this.elements.layerSpots.append($elem);
                     this.elements.buildingSpots[i] = $elem;
                 }
@@ -167,8 +166,7 @@ define([
                         // add missing buildings
                         var $elem = this.elements.buildings[building.name][n][j];
                         if (!$elem) {
-                            $elem = $(this.getBuildingDiv(i, building, n, j));
-                            this.registerBuildingDivListeners($elem);
+                            $elem = $(this.getBuildingDiv(i, building, n, j, coords));
                             this.elements.layerBuildings.append($elem);
                             this.elements.buildings[building.name][n][j] = $elem;
                             if (!reset) {
@@ -206,54 +204,6 @@ define([
             }
         },
         
-        registerBuildingSpotDivListeners: function ($elem) {
-            var sys = this;
-            $elem.on('dragenter', function (e) {
-                $(this).addClass("drag-over");
-            });
-            $elem.on('dragover', function (e) {
-                if (e.preventDefault) {
-                    e.preventDefault();
-                }
-            });
-            $elem.on('dragleave', function (e) {
-                $(this).removeClass("drag-over");
-            });
-            $elem.on('drop', function (e) {
-                if (e.stopPropagation) {
-                    e.stopPropagation();
-                }
-                if (sys.draggedBuilding) {
-                    var spotIndex = $(e.target).attr("data-spot-index");
-                    var buildingName = sys.draggedBuilding.attr("data-building-name");
-                    var buildingIndex = sys.draggedBuilding.attr("data-building-index");
-                    var buildingVisIndex = sys.draggedBuilding.attr("data-building-vis-index");
-                    var improvements = sys.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-                    var vo = improvements.getVO(buildingName);
-                    improvements.setSelectedCampBuildingSpot(vo, buildingIndex, buildingVisIndex, spotIndex);
-                    sys.refreshBuildingSpots();
-                    sys.refreshBuildings();
-                }
-                return false;
-            });
-            $elem.on('dragend', function (e) {
-                $(this).removeClass("drag-over");
-            });
-        },
-        
-        registerBuildingDivListeners: function ($elem) {
-            var sys = this;
-            $elem.on('dragstart', function (e) {
-                sys.draggedBuilding = $elem;
-                $(".vis-camp-building-container").addClass("drag-active");
-            });
-            $elem.on('dragend', function (e) {
-                sys.draggedBuilding = null;
-                $(".vis-camp-building-container").removeClass("drag-over");
-                $(".vis-camp-building-container").removeClass("drag-active");
-            });
-        },
-        
         getBuildingSpotCoords: function (i) {
             return GameGlobals.campVisHelper.getCoords(i);
         },
@@ -261,7 +211,7 @@ define([
         getBuildingCoords: function (improvements, building, n, j) {
             var index = improvements.getSelectedCampBuildingSpot(building, n, j, true);
             if (index < 0 || !this.buildingSpots[index]) {
-                console.log("WARN: No building spot defined for " + building.name + " " + n + " " + j);
+                console.log("WARN: No building spot defined for " + building.name + " " + n + " " + j + " | " + index);
                 return null;
             }
 
@@ -275,16 +225,16 @@ define([
         },
         
         getBuildingSpotDiv: function (i) {
-            return "<div id='vis-camp-building-container-" + i + "' class='vis-camp-building-container' draggable='true' data-spot-index='" + i + "'></div>";
+            return "<div id='vis-camp-building-container-" + i + "' class='vis-camp-building-container' data-spot-index='" + i + "'></div>";
         },
         
-        getBuildingDiv: function (i, building, n, j) {
+        getBuildingDiv: function (i, building, n, j, coords) {
             var size = this.getBuildingSize(building);
             var style = "width: " + size.x + "px; height: " + size.y + "px;";
-            var classes = "vis-camp-building " + this.getBuildingColorClass(building);
+            var classes = "vis-camp-building " + this.getBuildingColorClass(building, coords);
             var data = "data-building-name='" + building.name + "' data-building-index='" + n + "' data-building-vis-index='" + j + "'";
             var id = this.getBuildingDivID(building, n, j);
-            return "<div class='" + classes + "' style='" + style + "' id='" + id + "' " + data + " draggable='true'></div>";
+            return "<div class='" + classes + "' style='" + style + "' id='" + id + "' " + data + "'></div>";
         },
         
         getBuildingDivID: function (building, n, j) {
@@ -295,16 +245,10 @@ define([
             return GameGlobals.campVisHelper.getBuildingSize(building.name);
         },
         
-        getBuildingColorClass: function (building) {
-            switch (building.name) {
-                case improvementNames.campfire:
-                case improvementNames.lights:
-                    return "vis-camp-building-heavy";
-                case improvementNames.fortification:
-                case improvementNames.fortification2:
-                    return "vis-camp-building-thin";
-            }
-            return "vis-camp-building-medium";
+        getBuildingColorClass: function (building, coords) {
+            if (coords.z == 0) return "vis-camp-building-z0";
+            if (coords.z == 1) return "vis-camp-building-z1";
+            return "vis-camp-building-z2";
         },
 
         getNumCampBuildingSpots: function () {
@@ -312,7 +256,7 @@ define([
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var numBuildings = improvements.getTotal(improvementTypes.camp);
             var maxSelected = improvements.getMaxSelectedCampBuildingSpot();
-            return Math.min(1000, Math.max(maxSelected, Math.max(20, numBuildings * 3) + 5));
+            return Math.min(1000, Math.max(maxSelected, Math.max(100, numBuildings * 3) + 5));
         },
         
         getXpx: function (x, z, size) {
