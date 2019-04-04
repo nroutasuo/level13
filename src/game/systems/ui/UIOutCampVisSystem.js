@@ -61,7 +61,6 @@ define([
             var diffWidth = Math.abs(this.containerWidth - this.previousContainerWidth);
             var diffHeight = Math.abs(this.containerHeight - this.previousContainerHeight);
             if (diffWidth > 10 || diffHeight > 10) {
-                this.refreshBuildingSpots();
                 this.refreshBuildings();
             }
         },
@@ -70,7 +69,6 @@ define([
             if (!this.playerLocationNodes.head) return;
             if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.in) return;
             
-            this.refreshBuildingSpots();
             this.refreshBuildings();
         },
         
@@ -90,38 +88,6 @@ define([
             
             this.elements.floor.css("width", this.containerWidth + "px");
             this.elements.floor.css("top", (this.containerHeight - this.floorPos) + "px");
-        },
-        
-        refreshBuildingSpots: function () {
-            if (!this.playerLocationNodes.head) return;
-            var level = this.playerLocationNodes.head.position.level;
-            
-            UIState.refreshState(this, "building-spots-level", level, function () {
-                if (this.elements.buildingSpots) {
-                    for (var i = 0; i < this.elements.buildingSpots.length; i++) {
-                        this.elements.buildingSpots[i].remove();
-                    }
-                }
-                this.elements.buildingSpots = {};
-            });
-            
-            this.reservedPos = [];
-            this.buildingSpots = [];
-
-            var numSpots = this.getNumCampBuildingSpots();
-            for (var i = 0; i < numSpots; i++) {
-                var coords = this.getBuildingSpotCoords(i);
-                var $elem = this.elements.buildingSpots[i];
-                if (!$elem) {
-                    $elem = $(this.getBuildingSpotDiv(i));
-                    this.elements.layerSpots.append($elem);
-                    this.elements.buildingSpots[i] = $elem;
-                }
-                $elem.removeClass("filled");
-                this.buildingSpots.push({ coords: coords, building: null });
-                $elem.css("left", this.getXpx(coords.x, coords.z, this.buildingContainerSizeX) + "px");
-                $elem.css("top", this.getYpx(coords.x, coords.z, this.buildingContainerSizeX) + "px");
-            }
         },
         
         refreshBuildings: function () {
@@ -210,24 +176,17 @@ define([
         
         getBuildingCoords: function (improvements, building, n, j) {
             var index = improvements.getSelectedCampBuildingSpot(building, n, j, true);
-            if (index < 0 || !this.buildingSpots[index]) {
+            if (index < 0) {
                 console.log("WARN: No building spot defined for " + building.name + " " + n + " " + j + " | " + index);
                 return null;
             }
-
-            this.buildingSpots[index].building = building;
-            $("#vis-camp-building-container-" + index).addClass("filled");
-            return this.buildingSpots[index].coords;
+            return this.getBuildingSpotCoords(index);
         },
         
         getFloorDiv: function () {
             return "<div id='vis-camp-floor' class='vis-camp-floor' style='height:" + this.floorThickness + "px;'></div>";
         },
-        
-        getBuildingSpotDiv: function (i) {
-            return "<div id='vis-camp-building-container-" + i + "' class='vis-camp-building-container' data-spot-index='" + i + "'></div>";
-        },
-        
+                
         getBuildingDiv: function (i, building, n, j, coords) {
             var size = this.getBuildingSize(building);
             var style = "width: " + size.x + "px; height: " + size.y + "px;";
@@ -249,14 +208,6 @@ define([
             if (coords.z == 0) return "vis-camp-building-z0";
             if (coords.z == 1) return "vis-camp-building-z1";
             return "vis-camp-building-z2";
-        },
-
-        getNumCampBuildingSpots: function () {
-            if (!this.playerLocationNodes.head) return 0;
-            var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-            var numBuildings = improvements.getTotal(improvementTypes.camp);
-            var maxSelected = improvements.getMaxSelectedCampBuildingSpot();
-            return Math.min(1000, Math.max(maxSelected, Math.max(100, numBuildings * 3) + 5));
         },
         
         getXpx: function (x, z, size) {
