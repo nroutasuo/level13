@@ -138,6 +138,7 @@ define([
             this.updateSectorDescription();
             this.updateLevelPageActions();
             this.updateUnlockedFeatures();
+			this.updateOutImprovementsList();
         },
 
         updateUnlockedFeatures: function () {
@@ -155,7 +156,6 @@ define([
 			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
             var isScouted = sectorStatusComponent.scouted;
 
-			this.updateOutImprovementsList(improvements);
 			this.updateOutImprovementsStatus(hasCamp, improvements);
             this.updateNap(isScouted, hasCampHere);
             this.updateDespair(hasCampHere);
@@ -502,6 +502,8 @@ define([
 		},
 
         updateOutImprovementsList: function (improvements) {
+            if (!this.playerLocationNodes.head) return;
+			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var uiFunctions = GameGlobals.uiFunctions;
             var numVisible = 0;
             $.each(this.elements.outImprovementsTR, function () {
