@@ -164,6 +164,7 @@ define([
             this.updateStaminaWarningLimit();
             this.updateLocation();
             this.updateHeaderTexts();
+            this.updateResources();
         },
 
         onHealthChanged: function () {
