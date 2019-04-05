@@ -152,7 +152,7 @@ define([
             var mapStatusText = "There are still many unvisited streets on this level.";
             if (mapStatus.percentClearedSectors >= 1)
                 mapStatusText = "This level has been thoroughly explored.";
-            else if (mapStatus.percentScoutedSectors >= 0)
+            else if (mapStatus.percentScoutedSectors >= 1)
                 mapStatusText = "This level has been mapped, but there are a few unexplored locations left.";
             else if (mapStatus.percentRevealedSectors >= 1)
                 mapStatusText = "There are still unscouted streets on this level.";
