@@ -14,15 +14,13 @@ define([
 		tribeNodes: null,
 	
 		constructor: function () {
-
 			var system = this;
-
 			this.onTabChanged = function (tabID) {
 				if (tabID === GameGlobals.uiFunctions.elementIDs.tabs.blueprints) {
+                    $("#tab-header h2").text("Blueprints pieces");
                     system.updateBlueprintList();
                 }
 			};
-            
 			return this;
 		},
 	
@@ -44,7 +42,6 @@ define([
 			this.updateBubble();
             
             if (isActive) {
-                $("#tab-header h2").text("Blueprints pieces");
                 var resetList = this.tribeNodes.head.upgrades.getUnfinishedBlueprints().length !== $("#blueprints-pieces-list tr").length || $("#blueprints-pieces-list tr").length === 0;
                 if (resetList) this.updateBlueprintList();
             }
