@@ -4,41 +4,22 @@ define([
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
 	'game/constants/UIConstants',
-	'game/constants/ItemConstants',
 	'game/constants/PlayerStatConstants',
 	'game/constants/PlayerActionConstants',
-	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/player/AutoPlayNode',
-	'game/nodes/sector/CampNode',
-	'game/nodes/NearestCampNode',
-	'game/components/common/CampComponent',
-	'game/components/common/PositionComponent',
-	'game/components/player/ItemsComponent',
-	'game/components/sector/improvements/SectorImprovementsComponent'
 ], function (Ash,
 	GameGlobals,
 	GlobalSignals,
 	GameConstants,
 	UIConstants,
-	ItemConstants,
 	PlayerStatConstants,
 	PlayerActionConstants,
-	PlayerLocationNode,
 	PlayerStatsNode,
 	AutoPlayNode,
-	CampNode,
-	NearestCampNode,
-	CampComponent,
-	PositionComponent,
-	ItemsComponent,
-	SectorImprovementsComponent
 ) {
 	var UIOutElementsSystem = Ash.System.extend({
 
-		currentLocationNodes: null,
-		campNodes: null,
-		nearestCampNodes: null,
 		playerStatsNodes: null,
 		autoPlayNodes: null,
 
@@ -55,39 +36,20 @@ define([
 
 		addToEngine: function (engine) {
 			this.engine = engine;
-			this.currentLocationNodes = engine.getNodeList(PlayerLocationNode);
-			this.campNodes = engine.getNodeList(CampNode);
-			this.nearestCampNodes = engine.getNodeList(NearestCampNode);
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			this.autoPlayNodes = engine.getNodeList(AutoPlayNode);
 
-			this.campNodes.nodeAdded.add(this.onCampNodeAdded, this);
-			this.campNodes.nodeRemoved.add(this.onCampNodeRemoved, this);
-
 			this.refreshGlobalSavedElements();
 			GlobalSignals.calloutsGeneratedSignal.add(this.refreshGlobalSavedElements);
-			this.updateTabVisibility();
 
 			var sys = this;
-			GlobalSignals.calloutsGeneratedSignal.add(function () {
-				sys.updateTabVisibility();
-			});
-			GlobalSignals.improvementBuiltSignal.add(function () {
-				sys.updateTabVisibility();
-			});
 			GlobalSignals.featureUnlockedSignal.add(function () {
-				sys.updateTabVisibility();
 				sys.elementsVisibilityChanged = true;
 			});
-			GlobalSignals.inventoryChangedSignal.add(function () {
-				sys.updateTabVisibility();
-			});
 			GlobalSignals.playerMovedSignal.add(function () {
-				sys.updateTabVisibility();
 				sys.elementsVisibilityChanged = true;
 			});
 			GlobalSignals.gameShownSignal.add(function () {
-				sys.updateTabVisibility();
 				sys.refreshGlobalSavedElements();
 				sys.elementsVisibilityChanged = true;
 			});
@@ -109,18 +71,8 @@ define([
 
 		removeFromEngine: function (engine) {
 			this.engine = null;
-			this.currentLocationNodes = null;
-			this.campNodes = null;
-			this.nearestCampNodes = null;
+            this.playerStatsNodes = null;
 			this.autoPlayNodes = null;
-		},
-
-		onCampNodeAdded: function (node) {
-			this.updateTabVisibility();
-		},
-
-		onCampNodeRemoved: function (node) {
-			this.updateTabVisibility();
 		},
 
 		update: function (time) {
@@ -142,7 +94,6 @@ define([
 
 			this.updateButtons();
 			this.updateProgressbars();
-			this.updateTabs();
 			this.updateInfoCallouts();
 		},
 
@@ -366,29 +317,6 @@ define([
 			}
 		},
 
-		updateTabVisibility: function () {
-			if (GameGlobals.gameState.uiStatus.isHidden) return;
-			if (!this.playerStatsNodes.head) return;
-			var levelCamp = this.nearestCampNodes.head;
-			var currentCamp = levelCamp ? levelCamp.entity : null;
-			var isInCamp = this.playerStatsNodes.head && this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
-			var hasMap = this.playerStatsNodes.head.entity.get(ItemsComponent).getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
-			var hasProjects = GameGlobals.gameState.unlockedFeatures.projects;
-			var hasTradingPost = currentCamp && currentCamp.get(SectorImprovementsComponent).getCount(improvementNames.tradepost) > 0;
-
-			GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-in", null, isInCamp, 200, 0);
-			GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-upgrades", null, isInCamp && GameGlobals.gameState.unlockedFeatures.upgrades, 100, 0);
-			GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-blueprints", null, GameGlobals.gameState.unlockedFeatures.blueprints, 100, 0);
-			GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-world", null, isInCamp && GameGlobals.gameState.numCamps > 1, 100, 0);
-			GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-bag", null, GameGlobals.gameState.unlockedFeatures.bag, 100, 0);
-			GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-followers", null, GameGlobals.gameState.unlockedFeatures.followers, 100, 0);
-			GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-out", null, !isInCamp, 100, 0);
-			GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-map", null, hasMap, 100, 0);
-			GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-trade", null, isInCamp && hasTradingPost, 100, 0);
-			GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-projects", null, isInCamp && hasProjects, 100, 0);
-			GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-embark", null, isInCamp, 0);
-		},
-
 		updateButtonContainer: function (button, isVisible) {
 			$(button).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");
 			var container = $(button).parent().parent(".callout-container");
@@ -450,18 +378,6 @@ define([
 					$progressbar.data("animation-counter", 0);
 				}
 			});
-		},
-
-		updateTabs: function () {
-			var posHasCamp = this.currentLocationNodes.head != null && this.currentLocationNodes.head.entity.has(CampComponent);
-			var levelCamp = this.nearestCampNodes.head;
-			var currentCamp = levelCamp ? levelCamp.entity : null;
-			if (currentCamp) {
-				var campComponent = currentCamp.get(CampComponent);
-				$("#switch-tabs #switch-in .name").text(campComponent.getType());
-				$("#switch-tabs #switch-in").toggleClass("disabled", !posHasCamp);
-				$("#switch-tabs #switch-world").toggleClass("disabled", !posHasCamp);
-			}
 		},
 
 		updateInfoCallouts: function () {

@@ -50,7 +50,7 @@ define(['ash',
 	'game/components/sector/events/TraderComponent',
 	'game/components/common/LogMessagesComponent',
 	'game/systems/ui/UIOutHeaderSystem',
-	'game/systems/ui/UIOutElementsSystem',
+	'game/systems/ui/UIOutTabBarSystem',
 	'game/systems/ui/UIOutLevelSystem',
 	'game/systems/FaintingSystem',
 	'game/systems/PlayerPositionSystem'
@@ -65,7 +65,7 @@ define(['ash',
 	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, TraderComponent,
 	LogMessagesComponent,
-	UIOutHeaderSystem, UIOutElementsSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem
+	UIOutHeaderSystem, UIOutTabBarSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem
 ) {
 
 	var PlayerActionFunctions = Ash.System.extend({
@@ -1473,7 +1473,7 @@ define(['ash',
 		},
 
 		forceTabUpdate: function () {
-			var system = this.engine.getSystem(UIOutElementsSystem);
+			var system = this.engine.getSystem(UIOutTabBarSystem);
 			system.updateTabVisibility();
 		},
 
