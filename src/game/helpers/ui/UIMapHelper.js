@@ -71,8 +71,10 @@ function (Ash,
         centerMapToPlayer: function (canvasId, mapPosition, centered) {
             var sectorSize = this.getSectorSize(false);
             var mapDimensions = this.getMapSectorDimensions(canvasId, -1, false, mapPosition);
-            var playerPosX = sectorSize + (mapPosition.sectorX - mapDimensions.minVisibleX) * sectorSize * (1 + this.getSectorPadding(centered));
-            var playerPosY = sectorSize + (mapPosition.sectorY - mapDimensions.minVisibleY) * sectorSize * (1 + this.getSectorPadding(centered));
+            var minVisibleX = mapDimensions.minVisibleX;
+            var minVisibleY = mapDimensions.minVisibleY;
+            var playerPosX = sectorSize + (mapPosition.sectorX - minVisibleX) * sectorSize * (1 + this.getSectorPadding(centered));
+            var playerPosY = sectorSize + (mapPosition.sectorY - minVisibleY) * sectorSize * (1 + this.getSectorPadding(centered));
             $("#" + canvasId).parent().scrollLeft(playerPosX - $("#" + canvasId).parent().width() * 0.5);
             $("#" + canvasId).parent().scrollTop(playerPosY - $("#" + canvasId).parent().height() * 0.5);
             CanvasConstants.snapScrollPositionToGrid(canvasId);
@@ -86,7 +88,7 @@ function (Ash,
             var visibleSectors = {};
             var allSectors = {};
             var mapDimensions = this.getMapSectorDimensions(canvasId, mapSize, centered, mapPosition, visibleSectors, allSectors);
-
+                
             if (ctx) {
                 this.rebuildMapWithCanvas(mapPosition, canvas, ctx, centered, visibleSectors, allSectors, mapDimensions);
             }
@@ -458,17 +460,16 @@ function (Ash,
 
             var sector;
             var sectorStatus;
-            dimensions.minVisibleX = dimensions.mapMaxX + 1;
-            dimensions.maxVisibleX = dimensions.mapMinX - 1;
-            dimensions.minVisibleY = dimensions.mapMaxY + 1;
-            dimensions.maxVisibleY = dimensions.mapMinY - 1;
-            dimensions.maxVisibleY = dimensions.mapMinY - 1;
+            dimensions.minVisibleX = dimensions.mapMinX + 1;
+            dimensions.maxVisibleX = dimensions.mapMaxX - 1;
+            dimensions.minVisibleY = dimensions.mapMinY + 1;
+            dimensions.maxVisibleY = dimensions.mapMaxY - 1;
             for (var y = dimensions.mapMinY; y <= dimensions.mapMaxY; y++) {
                 for (var x = dimensions.mapMinX; x <= dimensions.mapMaxX; x++) {
                     sector = GameGlobals.levelHelper.getSectorByPosition(mapPosition.level, x, y);
                     sectorStatus = SectorConstants.getSectorStatus(sector);
                     if (allSectors && sector) allSectors[x + "." + y] = sector;
-                    // if map is centered, make a tr+td / node for empty sectors too
+                    // if map is centered, make a node for empty sectors too
                     if (centered || this.showSectorOnMap(centered, sector, sectorStatus)) {
                         if (visibleSectors) visibleSectors[x + "." + y] = sector;
                         dimensions.minVisibleX = Math.min(dimensions.minVisibleX, x);
@@ -478,7 +479,15 @@ function (Ash,
                     }
                 }
             }
-
+            
+            // if centered map is on edge, allow visible "sectors" outside of map to be able to center on player
+            if (centered) {
+                dimensions.minVisibleX = Math.min(dimensions.minVisibleX, dimensions.canvasMinX);
+                dimensions.maxVisibleX = Math.max(dimensions.maxVisibleX, dimensions.canvasMaxX);
+                dimensions.minVisibleY = Math.min(dimensions.minVisibleY, dimensions.canvasMinY);
+                dimensions.maxVisibleY = Math.max(dimensions.maxVisibleY, dimensions.canvasMaxY);
+            }
+            
             dimensions.minVisibleX = Math.max(dimensions.minVisibleX, dimensions.canvasMinX);
             dimensions.maxVisibleX = Math.min(dimensions.maxVisibleX, dimensions.canvasMaxX);
             dimensions.minVisibleY = Math.max(dimensions.minVisibleY, dimensions.canvasMinY);
