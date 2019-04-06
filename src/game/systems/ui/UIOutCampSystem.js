@@ -108,13 +108,12 @@
                 GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.out);
                 return;
             }
-
-            this.updateStats();
         },
 
         slowUpdate: function () {
             this.updateImprovements();
             this.updateBubble();
+            this.updateStats();
         },
 
         refresh: function () {
@@ -134,6 +133,7 @@
             this.updateAssignedWorkers();
             this.updateWorkerMaxDescriptions();
             this.updateImprovements();
+            this.updateStats();
         },
 
         updateBubble: function () {
