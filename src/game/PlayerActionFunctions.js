@@ -108,7 +108,7 @@ define(['ash',
 		startAction: function (action, param) {
             // console.log("start action: " + action + " | " + param);
             
-            if (this.currentAction) {
+            if (this.currentAction && !this.isSubAction(action)) {
                 if (GameConstants.logWarnings) console.log("WARN: There is an incompleted action: " + this.currentAction + " (tried to start: " + action + ")");
                 return;
             }
@@ -1332,7 +1332,9 @@ define(['ash',
 				case "glowstick_1":
 					var fightComponent = this.fightNodes.head.fight;
 					if (fightComponent) {
-						fightComponent.itemEffects.enemyStunnedSeconds = FightConstants.FIGHT_LENGTH_SECONDS / 4;
+                        var stunTime = FightConstants.FIGHT_LENGTH_SECONDS / 2;
+                        if (GameConstants.logInfo) console.log("stun enemy for " + Math.round(stunTime * 100)/100 + "s")
+						fightComponent.itemEffects.enemyStunnedSeconds = stunTime;
 					}
 					break;
 				default:
@@ -1459,6 +1461,16 @@ define(['ash',
 				}, this);
 			}, this);
 		},
+        
+        // TODO find better fix for overlapping actions
+        isSubAction: function (action) {
+			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+            switch (baseActionID) {
+                case "fight": return true;
+                case "use_item_fight": return true;
+                default: return false;
+            }
+        },
 
 		forceResourceBarUpdate: function () {
 			var system = this.engine.getSystem(UIOutHeaderSystem);
