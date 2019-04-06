@@ -69,6 +69,7 @@ define([
             if (!this.playerLocationNodes.head) return;
             if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.in) return;
             
+            this.refreshGrid();
             this.refreshFloor();
             this.refreshBuildings();
         },
@@ -86,7 +87,6 @@ define([
                 this.elements.floor = $(this.getFloorDiv());
                 this.elements.layerBuildings.append(this.elements.floor);
             }
-            
             this.elements.floor.css("width", this.containerWidth + "px");
             this.elements.floor.css("top", (this.containerHeight - this.floorPos) + "px");
         },
