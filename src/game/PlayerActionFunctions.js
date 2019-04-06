@@ -871,6 +871,7 @@ define(['ash',
 				this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP_LEVEL_POPULATION, "There are few signs of human life on this level.");
 			}
 			GlobalSignals.improvementBuiltSignal.dispatch();
+			GlobalSignals.campBuiltSignal.dispatch();
 			this.forceResourceBarUpdate();
 			this.save();
 		},

@@ -56,6 +56,7 @@ define([
 
             GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.ontabChanged);
+            GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.updateCamps);
 		},
 
 		removeFromEngine: function (engine) {
