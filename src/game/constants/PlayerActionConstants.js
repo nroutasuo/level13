@@ -393,6 +393,9 @@ function (Ash, GameConstants, CampConstants) {
                 },
 
                 build_in_darkfarm: {
+                    improvements: {
+                        campfire: [1, -1],
+                    },
                     upgrades: {
                         unlock_building_darkfarm: true,
                     }
@@ -423,6 +426,7 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_hospital: {
                     improvements: {
                         camp: [1, -1],
+                        campfire: [1, -1],
                         hospital: [0, 1],
                     },
                     upgrades: {
@@ -523,6 +527,7 @@ function (Ash, GameConstants, CampConstants) {
                     },
                     improvements: {
                         generator: [0, 1],
+                        campfire: [1, -1],
                     }
                 },
 
@@ -1140,6 +1145,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
 
                 upgrade_worker_collector1: {
+                    blueprint: 2,
                     upgrades: {
                         unlock_item_shoe1: true,
                     }
