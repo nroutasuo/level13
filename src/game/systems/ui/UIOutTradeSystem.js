@@ -23,7 +23,6 @@ define([
 		availableTradingPartnersCount: 0,
 		lastShownTradingPartnersCount: -1,
 		currentIncomingTraders: 0,
-		lastShownIncomingTraders: 0,
 
 		playerLocationNodes: null,
 		tribeUpgradesNodes: null,
@@ -83,7 +82,7 @@ define([
 			var newBubbleNumber = this.availableTradingPartnersCount - this.lastShownTradingPartnersCount;
 			if (this.lastShownTradingPartnersCount === -1)
 				newBubbleNumber = 0;
-			newBubbleNumber += (this.currentIncomingTraders - this.lastShownIncomingTraders);
+			newBubbleNumber += this.currentIncomingTraders;
 			if (this.bubbleNumber === newBubbleNumber)
 				return;
 			this.bubbleNumber = newBubbleNumber;
@@ -290,7 +289,6 @@ define([
 				GlobalSignals.elementCreatedSignal.dispatch();
 			}
 
-			this.lastShownIncomingTraders = this.currentIncomingTraders;
 			this.lastShownIncomingCaravan = caravan;
 			this.lastShownIncomingCaravanTrades = caravan ? caravan.tradesMade : 0;
 		},
