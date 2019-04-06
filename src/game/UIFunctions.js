@@ -330,19 +330,31 @@ define(['ash',
 
 				// Button callouts
 				var uiFunctions = this;
-				$(scope + " div.container-btn-action").wrap('<div class="callout-container"></div>');
-				$(scope + " div.container-btn-action").after(function () {
-                    var button = $(this).children("button")[0];
-					var action = $(button).attr("action");
-                    if (!action) {
-                        console.log("WARN: Action button with no action " + uiFunctions.count);
-                        console.log($(button))
-                        return "";
+                $.each($(scope + " div.container-btn-action"), function () {
+                    var $container = $(this);
+                    var generated = $container.data("callout-generated");
+                    if (generated) {
+                        if (GameConstants.logWarnings) {
+                            console.log("WARN: Button callout already generated!");
+                            console.log($container);
+                        }
+                        return;
                     }
-					if (action === "take_all" || action === "accept_inventory" || action === "use_in_inn_cancel" || action === "fight")
-						return "";
-					return uiFunctions.generateActionButtonCallout(action);
-				});
+                    $container.data("callout-generated", true);
+    				$container.wrap('<div class="callout-container"></div>');
+    				$container.after(function () {
+                        var button = $(this).children("button")[0];
+    					var action = $(button).attr("action");
+                        if (!action) {
+                            console.log("WARN: Action button with no action " + uiFunctions.count);
+                            console.log($(button))
+                            return "";
+                        }
+    					if (action === "take_all" || action === "accept_inventory" || action === "use_in_inn_cancel" || action === "fight")
+    						return "";
+    					return uiFunctions.generateActionButtonCallout(action);
+    				});
+                });
 
 				GlobalSignals.calloutsGeneratedSignal.dispatch();
 			},
