@@ -80,6 +80,7 @@ define([
 			if (this.elementsVisibilityChanged) {
 				this.updateVisibleButtonsList();
 				this.updateVisibleProgressbarsList();
+    			this.updateInfoCallouts();
 				this.elementsVisibilityChanged = false;
 				this.elementsVisibilityChangedFrames++;
 			} else {
@@ -94,7 +95,6 @@ define([
 
 			this.updateButtons();
 			this.updateProgressbars();
-			this.updateInfoCallouts();
 		},
 
 		refreshGlobalSavedElements: function () {
@@ -317,6 +317,20 @@ define([
 			}
 		},
 
+		updateInfoCallouts: function () {
+			var targets;
+			$.each(this.elementsCalloutContainers, function () {
+				targets = $(this).children(".info-callout-target");
+				if (targets.length > 0) {
+					var visible = true;
+					$.each(targets.children(), function () {
+						visible = visible && $(this).css("display") !== "none";
+					});
+					GameGlobals.uiFunctions.toggle($(this), visible);
+				}
+			});
+		},
+
 		updateButtonContainer: function (button, isVisible) {
 			$(button).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");
 			var container = $(button).parent().parent(".callout-container");
@@ -379,20 +393,7 @@ define([
 				}
 			});
 		},
-
-		updateInfoCallouts: function () {
-			var targets;
-			$.each(this.elementsCalloutContainers, function () {
-				targets = $(this).children(".info-callout-target");
-				if (targets.length > 0) {
-					var visible = true;
-					$.each(targets.children(), function () {
-						visible = visible && $(this).css("display") !== "none";
-					});
-					GameGlobals.uiFunctions.toggle($(this), visible);
-				}
-			});
-		},
+        
 	});
 
 	return UIOutElementsSystem;
