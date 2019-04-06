@@ -3,6 +3,7 @@ define([
     'ash',
     'game/GameGlobals',
     'game/GlobalSignals',
+    'game/constants/GameConstants',
     'game/constants/PlayerActionConstants',
     'game/constants/LogConstants',
     'game/constants/PositionConstants',
@@ -25,6 +26,7 @@ define([
 ], function (Ash,
     GameGlobals,
     GlobalSignals,
+    GameConstants,
     PlayerActionConstants,
 	LogConstants,
 	PositionConstants,
@@ -138,7 +140,7 @@ define([
             var featuresComponent = sector.get(SectorFeaturesComponent);
 			var sectorResourcesSca = featuresComponent.resourcesScavengable;
 			var sectorResourcesCo = featuresComponent.resourcesCollectable;
-			return (sectorResourcesSca.getResource(resourceNames.food) > 0 || sectorResourcesCo.getResource(resourceNames.food) > 0) && 
+			return (sectorResourcesSca.getResource(resourceNames.food) > 0 || sectorResourcesCo.getResource(resourceNames.food) > 0) &&
                 (sectorResourcesSca.getResource(resourceNames.water) > 0 || sectorResourcesCo.getResource(resourceNames.water) > 0);
 		},
 		
@@ -191,7 +193,7 @@ define([
 			} else if (nearestVisitedSafeSector) {
 				this.fadeOut(msgMain, msgLog, true, nearestVisitedSafeSector, 1, 0);
 			} else {
-				console.log("WARN: Nowhere to fade out to.");
+				if (GameGlobals.logWarnings) console.log("WARN: Nowhere to fade out to.");
 			}
 		},
 		
@@ -201,8 +203,8 @@ define([
                 var sys = this;
                 this.playerResourcesNodes.head.entity.add(new PlayerActionResultComponent(resultVO));
                 var resultPopUpCallback = function (isTakeAll) {
-                    GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, resultVO);  
-                    sys.teleport(msgLog, sector);                  
+                    GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, resultVO);
+                    sys.teleport(msgLog, sector);
                 };
 				if (msg) GameGlobals.uiFunctions.showResultPopup("Exhaustion", msg, resultVO, resultPopUpCallback);
 			} else {
@@ -217,12 +219,16 @@ define([
 			playerPosition.sectorX = sectorPosition.sectorX;
 			playerPosition.sectorY = sectorPosition.sectorY;
             
+            if (GameGlobals.logInfo) console.log("faint teleport " + sectorPosition);
+            
             // TODO make neater way to request position update - needs to happen before enterCamp which relies on nearest camp node
             this.engine.getSystem(PlayerPositionSystem).updateSectors();
             
 			if (sector.has(CampComponent)) {
                 GameGlobals.playerActionFunctions.enterCamp(false);
                 GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in);
+            } else {
+                if (GameGlobals.logWarnings) console.log("WARN: Fainting target sector has no CampComponent");
             }
             
 			this.log(msgLog);

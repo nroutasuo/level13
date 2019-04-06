@@ -3,6 +3,7 @@ define([
     'ash',
     'game/GameGlobals',
     'game/GlobalSignals',
+    'game/constants/GameConstants',
     'game/constants/PlayerActionConstants',
     'game/constants/LocaleConstants',
     'game/constants/FightConstants',
@@ -14,7 +15,7 @@ define([
     'game/nodes/player/PlayerStatsNode',
     'game/systems/FaintingSystem'
 ], function (
-	Ash, GameGlobals, GlobalSignals, PlayerActionConstants, LocaleConstants, FightConstants,
+	Ash, GameGlobals, GlobalSignals, GameConstants, PlayerActionConstants, LocaleConstants, FightConstants,
     EnemiesComponent, SectorControlComponent, FightComponent, FightEncounterComponent,
     PlayerLocationNode, PlayerStatsNode,
     FaintingSystem
@@ -68,14 +69,15 @@ define([
         initFight: function (action) {
             var sector = this.playerLocationNodes.head.entity;
             sector.remove(FightComponent);
-
             var enemiesComponent = sector.get(EnemiesComponent);
             enemiesComponent.selectNextEnemy();
+            if (GameConstants.logInfo) console.log("init fight: " + action);
 			sector.add(new FightEncounterComponent(enemiesComponent.getNextEnemy(), action, this.pendingEnemies, this.totalEnemies));
 			GameGlobals.uiFunctions.showFight();
         },
 
         startFight: function () {
+            if (GameConstants.logInfo) console.log("start fight: " + action);
             // TODO move to PlayerActionFunctions
             if (GameGlobals.playerActionsHelper.checkAvailability("fight", true)) {
                 GameGlobals.playerActionsHelper.deductCosts("fight");
@@ -84,8 +86,10 @@ define([
 				if (encounterComponent && encounterComponent.enemy) {
 					sector.add(new FightComponent(encounterComponent.enemy));
 				} else {
-					console.log("WARN: Encounter or enemy not initialized - cannot start fight.");
+					if (GameGlobals.logWarnings) console.log("WARN: Encounter or enemy not initialized - cannot start fight.");
 				}
+            } else {
+                if (GameGlobals.logWarnings) console.log("WARN: Can't start fight- availability check failed");
             }
         },
 
