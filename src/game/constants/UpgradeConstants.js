@@ -86,10 +86,10 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
         	1: [[], ["unlock_building_passage_staircase"]],
         	2: [["unlock_building_tradingpost"], ["unlock_clothing_warm", "unlock_building_darkfarm"]],
         	3: [["unlock_building_library", "unlock_building_inn"], ["unlock_building_lights", "unlock_building_market", "unlock_building_fortifications"]],
-        	4: [["unlock_item_weapon2"], ["unlock_building_passage_hole", "upgrade_worker_scavenger"]],
+        	4: [["unlock_item_weapon2"], ["upgrade_worker_scavenger"]],
         	5: [[], ["unlock_building_bridge", "unlock_building_passage_elevator"]],
         	6: [["unlock_building_smithy"], ["upgrade_building_market", "upgrade_worker_collector1", "unlock_building_house2"]],
-        	7: [["unlock_item_clothing5", "upgrade_building_storage1"], ["unlock_item_clothing4h"]],
+        	7: [["unlock_item_clothing5", "upgrade_building_storage1"], ["unlock_item_clothing4h", "unlock_building_passage_hole"]],
         	8: [["unlock_item_weapon4"], ["upgrade_building_market2", "unlock_item_clothing3"]],
         	9: [[], ["upgrade_worker_trapper"]],
         	10: [["unlock_item_clothing4"], ["unlock_building_aqueduct", "upgrade_building_library2"]],
@@ -314,7 +314,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_bridge]
     = new UpgradeVO("unlock_building_bridge", "Bridge-building", "Building bridges over collapsed sectors.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_passage_elevator]
-    = new UpgradeVO("unlock_building_passage_elevator", "Elevator machanics", "Repairing elevators that allow passage to new levels.");
+    = new UpgradeVO("unlock_building_passage_elevator", "Elevator mechanics", "Repairing elevators that allow passage to new levels.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_bag2]
     = new UpgradeVO("unlock_item_bag2", "Bag-making 1", "The art of crafting durable bags.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_library]

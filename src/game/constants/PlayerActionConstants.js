@@ -1083,7 +1083,7 @@ function (Ash, GameConstants, CampConstants) {
                 unlock_building_bridge: {
                     blueprint: 5,
                     upgrades: {
-                        unlock_building_passage_hole: true,
+                        upgrade_worker_scavenger: true,
                     }
                 },
 
@@ -1147,7 +1147,7 @@ function (Ash, GameConstants, CampConstants) {
 
                 unlock_building_house2: {
                     upgrades: {
-                        unlock_building_passage_hole: true,
+                        unlock_building_passage_elevator: true,
                     }
                 },
 
@@ -2075,7 +2075,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
 
                 unlock_item_weapon2: {
-					rumours: 163,
+					evidence: 108,
                 },
 
                 unlock_building_passage_hole: {
@@ -2100,7 +2100,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
 
                 unlock_building_lights: {
-					evidence: 87,
+					evidence: 102,
                 },
 
                 unlock_building_market: {
@@ -2109,7 +2109,7 @@ function (Ash, GameConstants, CampConstants) {
 
                 unlock_building_fortifications: {
 					rumours: 36,
-					evidence: 52,
+					evidence: 92,
                 },
 
                 unlock_clothing_warm: {
