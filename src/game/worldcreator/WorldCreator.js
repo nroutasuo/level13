@@ -95,6 +95,7 @@ define([
                     previousCampPositions = [ campSector.position ];
 				} else {
 					var numCamps = isCampableLevel ? 2 : 0;
+                    if (levelOrdinal > WorldCreatorConstants.CAMP_ORDINAL_LIMIT) numCamps = 0;
                     var campPositions = [];
                     if (numCamps > 0) {
                         for (var i = 0; i < numCamps; i++) {
@@ -885,6 +886,7 @@ define([
             if (l > bottomLevel) {
                 // number of passages
                 var numPassages = WorldCreatorRandom.random(seed * l / 7 + l + l * l + seed) > 0.65 ? 2 : 1;
+                if (campOrdinal >= WorldCreatorConstants.CAMP_ORDINAL_LIMIT) numPassages = 0;
                 if (l === 14) numPassages = 1;
                 if (l === 13) numPassages = 1;
 
@@ -913,7 +915,7 @@ define([
                         passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_HOLE;
                     } else {
                         var availablePassageTypes = [MovementConstants.PASSAGE_TYPE_STAIRWELL];
-                        if (l < 6 || l > 13) availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_HOLE);
+                        if (l < 5 || l > 13) availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_HOLE);
                         if (l > 15) availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_ELEVATOR);
                         var passageTypeIndex = WorldCreatorRandom.randomInt(9 * seed + l * i * 7 + i + l * seed, 0, availablePassageTypes.length);
                         var passageType = availablePassageTypes[passageTypeIndex];

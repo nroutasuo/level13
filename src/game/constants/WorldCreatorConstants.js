@@ -46,7 +46,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         FIRST_CAMP_X: 1,
         FIRST_CAMP_Y: 0,
         
-        CAMP_ORDINAL_LIMIT: 15,
+        CAMP_ORDINAL_LIMIT: 7,
         
         MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 10,
         MIN_LEVEL_HAZARD_POISON: 15,
@@ -83,7 +83,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         // max length of a path (limited by stamina) on the given camp ordinal
         // if a path spans several levels, lowest ordinal should be used
         getMaxPathLength: function (campOrdinal, pathType) {
-            // TODO get rid of hard-coded values 
+            // TODO get rid of hard-coded values
             var movementCost = 10;
             if (campOrdinal > 1) movementCost = 9;
             if (campOrdinal > 7) movementCost = 8;
@@ -112,7 +112,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE:
                     // there and back
                     // must be smaller than CAMP_TO_CAMP because that one can me CAMP_TO_PASSAGE + PASSAGE_TO_PASSAGE + CAMP_TO_PASSAGE
-                    maxLength = maxLength / 3; 
+                    maxLength = maxLength / 3;
                     break;
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_CAMP:
                     // only need to make it there
@@ -122,7 +122,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
                     // must be smaller than CAMP_TO_CAMP because that one can me CAMP_TO_PASSAGE + PASSAGE_TO_PASSAGE + CAMP_TO_PASSAGE
                     maxLength = maxLength / 3;
                     break;
-                default: 
+                default:
                     console.log("WARN: Unknown path type: " + pathType);
                     break;
             }
