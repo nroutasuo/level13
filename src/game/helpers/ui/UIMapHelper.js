@@ -334,7 +334,7 @@ function (Ash,
                     if (directResources[name]) totalWidth += bigResSize + padding;
                     else if(potentialResources[name]) totalWidth += smallResSize + padding;
                 }
-            
+                
                 if (totalWidth > 0) {
                     totalWidth -= padding;
                     var x = sectorXpx + sectorSize / 2 - totalWidth / 2;
@@ -349,6 +349,8 @@ function (Ash,
                         } else if(potentialResources[name]) {
                             drawSize = smallResSize;
                             yOffset = 0;
+                        } else {
+                            drawSize = 0;
                         }
                         if (drawSize > 0) {
                             ctx.fillStyle = this.getResourceFill(name);
@@ -460,10 +462,10 @@ function (Ash,
 
             var sector;
             var sectorStatus;
-            dimensions.minVisibleX = dimensions.mapMinX + 1;
-            dimensions.maxVisibleX = dimensions.mapMaxX - 1;
-            dimensions.minVisibleY = dimensions.mapMinY + 1;
-            dimensions.maxVisibleY = dimensions.mapMaxY - 1;
+            dimensions.minVisibleX = dimensions.mapMaxX + 1;
+            dimensions.maxVisibleX = dimensions.mapMinX - 1;
+            dimensions.minVisibleY = dimensions.mapMaxY + 1;
+            dimensions.maxVisibleY = dimensions.mapMinY - 1;
             for (var y = dimensions.mapMinY; y <= dimensions.mapMaxY; y++) {
                 for (var x = dimensions.mapMinX; x <= dimensions.mapMaxX; x++) {
                     sector = GameGlobals.levelHelper.getSectorByPosition(mapPosition.level, x, y);
@@ -499,7 +501,7 @@ function (Ash,
             dimensions.canvasWidth = Math.max(dimensions.mapWidth, this.getCanvasMinimumWidth(canvas));
             dimensions.canvasHeight = Math.max(dimensions.mapHeight, this.getCanvasMinimumHeight(canvas));
             dimensions.sectorSize = sectorSize;
-
+            
             return dimensions;
         },
 
