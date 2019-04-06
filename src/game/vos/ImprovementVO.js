@@ -104,6 +104,9 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             switch (this.name) {
                 case improvementNames.lights:
                     return 4;
+                case improvementNames.fortification:
+                case improvementNames.fortification2:
+                    return 2;
                 default:
                     return 1;
             }

@@ -72,6 +72,9 @@ function (Ash) {
                     return { x: 16, y: 16 };
                 case improvementNames.hospital:
                     return { x: 16, y: 12 };
+                case improvementNames.fortification:
+                case improvementNames.fortification2:
+                    return { x: 4, y: 20 };
             }
             return { x: 12, y: 12 };
         },

@@ -77,7 +77,7 @@ define([
         },
 
         startFight: function () {
-            if (GameConstants.logInfo) console.log("start fight: " + action);
+            if (GameConstants.logInfo) console.log("start fight");
             // TODO move to PlayerActionFunctions
             if (GameGlobals.playerActionsHelper.checkAvailability("fight", true)) {
                 GameGlobals.playerActionsHelper.deductCosts("fight");
