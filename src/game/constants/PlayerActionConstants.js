@@ -2117,7 +2117,7 @@ function (Ash, GameConstants, CampConstants) {
                 },
 
                 unlock_building_darkfarm: {
-					rumours: 53,
+					rumours: 45,
                 },
 
                 unlock_building_tradingpost: {
