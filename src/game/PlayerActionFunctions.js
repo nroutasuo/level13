@@ -549,6 +549,7 @@ define(['ash',
 				var successCallback = function () {
 					sectorStatus.scouted = true;
 					GlobalSignals.sectorScoutedSignal.dispatch();
+        			playerActionFunctions.completeAction("scout");
 					playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 					playerActionFunctions.save();
 				};
@@ -556,7 +557,7 @@ define(['ash',
 				var logMsgId = found ? LogConstants.MSG_ID_SCOUT_FOUND_SOMETHING : LogConstants.MSG_ID_SCOUT;
 				this.handleOutActionResults("scout", logMsgId, logMsg, logMsg, logMsg, true, successCallback);
 			} else {
-				console.log("WARN: Sector already scouted.");
+				if (GameConstants.logWarnings) console.log("WARN: Sector already scouted.");
 			}
 		},
 
@@ -668,6 +669,7 @@ define(['ash',
             this.currentAction = action;
 			var playerActionFunctions = this;
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+            showResultPopup = showResultPopup && !GameGlobals.gameState.uiStatus.isHidden;
 			GameGlobals.fightHelper.handleRandomEncounter(action, function () {
 				var rewards = GameGlobals.playerActionResultsHelper.getResultVOByAction(action);
 				var sector = playerActionFunctions.playerStatsNodes.head.entity;

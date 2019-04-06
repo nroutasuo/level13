@@ -532,8 +532,10 @@ define(['ash',
                     this.setPlayerPosition(originalPos.level, originalPos.sectorX, originalPos.sectorY);
                     GameGlobals.uiFunctions.popupManager.closeAllPopups();
                     this.engine.updateComplete.remove(updateFunction);
+                    GameGlobals.uiFunctions.showGame();
                 }
             };
+			GameGlobals.uiFunctions.hideGame(false);
             this.engine.updateComplete.add(updateFunction, this);
         },
 
