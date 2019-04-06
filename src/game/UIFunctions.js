@@ -332,10 +332,11 @@ define(['ash',
 				var uiFunctions = this;
 				$(scope + " div.container-btn-action").wrap('<div class="callout-container"></div>');
 				$(scope + " div.container-btn-action").after(function () {
-					var action = $($(this).children("button")[0]).attr("action");
+                    var button = $(this).children("button")[0];
+					var action = $(button).attr("action");
                     if (!action) {
-                        console.log("WARN: Action button with no action");
-                        console.log($(this))
+                        console.log("WARN: Action button with no action " + uiFunctions.count);
+                        console.log($(button))
                         return "";
                     }
 					if (action === "take_all" || action === "accept_inventory" || action === "use_in_inn_cancel" || action === "fight")
@@ -941,13 +942,11 @@ define(['ash',
 				if (!buttonLabel) buttonLabel = "Continue";
 				this.popupManager.showPopup(title, msg, buttonLabel, false, resultVO);
 				if (GameGlobals.gameState.uiStatus.isHidden) return;
-				this.generateCallouts(".popup");
 			},
 
 			showResultPopup: function (title, msg, resultVO, callback) {
 				this.popupManager.showPopup(title, msg, "Continue", false, resultVO, callback);
 				if (GameGlobals.gameState.uiStatus.isHidden) return;
-				this.generateCallouts(".popup");
 			},
 
 			showConfirmation: function (msg, callback) {
@@ -960,7 +959,6 @@ define(['ash',
 					uiFunctions.popupManager.closePopup("common-popup");
 				};
 				this.popupManager.showPopup("Confirmation", msg, "Confirm", "Cancel", null, okCallback, cancelCallback);
-				this.generateCallouts(".popup");
 			},
 
 			showQuestionPopup: function (title, msg, buttonLabel, cancelButtonLabel, callbackOK, callbackNo) {
@@ -974,7 +972,6 @@ define(['ash',
 					if (callbackNo) callbackNo();
 				};
 				this.popupManager.showPopup(title, msg, buttonLabel, "Cancel", null, okCallback, cancelCallback);
-				this.generateCallouts(".popup");
 			},
 
 			showInput: function (title, msg, defaultValue, callback) {
@@ -983,7 +980,6 @@ define(['ash',
 					callback(input);
 				};
 				this.popupManager.showPopup(title, msg, "Confirm", "Cancel", null, okCallback);
-				this.generateCallouts(".popup");
 
 				var uiFunctions = this;
 				var maxChar = 40;

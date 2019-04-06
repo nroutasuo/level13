@@ -93,6 +93,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             
             GameGlobals.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");
             GameGlobals.uiFunctions.generateCallouts("#common-popup .buttonbox");
+            GameGlobals.uiFunctions.generateCallouts(".popup");
             
             if ($defaultButton) {
                 $defaultButton.focus()
