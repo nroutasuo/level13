@@ -439,7 +439,7 @@ define([
                 var levelVO = this.world.getLevel(l);
 				var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
 
-                // TODO have some blueprints on campless levels too
+                // TODO have some blueprints on campless levels too (but ensure not critical ones)
                 if (!levelVO.isCampable) continue;
 
 				// min number of (easy) locales ensures that player can get all upgrades intended for that level

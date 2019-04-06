@@ -81,7 +81,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
             calendar: "calendar",
         },
         
-        // camp ordinal > a list of blueprints, order matters (first half (ceil) is found in more accessible locales)
+        // camp ordinal > a list of blueprints, first array is early and second is late
         blueprintsByCampOrdinal: {
         	1: [[], ["unlock_building_passage_staircase"]],
         	2: [["unlock_building_tradingpost"], ["unlock_clothing_warm", "unlock_building_darkfarm"]],

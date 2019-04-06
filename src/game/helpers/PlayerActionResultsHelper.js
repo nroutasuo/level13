@@ -4,6 +4,7 @@ define([
     'utils/MathUtils',
     'game/GameGlobals',
     'game/constants/GameConstants',
+    'game/constants/LocaleConstants',
     'game/constants/PlayerActionConstants',
     'game/constants/LogConstants',
     'game/constants/TextConstants',
@@ -33,6 +34,7 @@ define([
     MathUtils,
     GameGlobals,
     GameConstants,
+    LocaleConstants,
     PlayerActionConstants,
     LogConstants,
     TextConstants,
@@ -918,9 +920,15 @@ define([
 					blueprintPiecesToFind += blueprintVO ? blueprintVO.maxPieces - blueprintVO.currentPieces : UpgradeConstants.getMaxPiecesForBlueprint(blueprintId);
 				}
 			}
-
-			var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, false, false, localeVO).length + 1;
+            
+            var bracket = localeVO.getBracket();
+			var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, false, bracket, localeVO).length + 1;
 			var levelBlueprintProbability = blueprintPiecesToFind / unscoutedLocales;
+            
+            if (GameConstants.logInfo) {
+                console.log("get result blueprint: " + blueprintType + " | pieces to find: " + blueprintPiecesToFind + " / unscouted locales: " + unscoutedLocales);
+                console.log(levelBlueprints);
+            }
 
 			if (Math.random() < levelBlueprintProbability) {
 				return blueprintsToFind[Math.floor(Math.random() * blueprintsToFind.length)];

@@ -1,5 +1,6 @@
 // Locale / point of interest: an additional scoutable location in a sector
-define(['ash', 'game/vos/ResourcesVO', 'game/constants/WorldCreatorConstants'], function (Ash, ResourcesVO, WorldCreatorConstants) {
+define(['ash', 'game/vos/ResourcesVO', 'game/constants/LocaleConstants', 'game/constants/WorldCreatorConstants'],
+function (Ash, ResourcesVO, LocaleConstants, WorldCreatorConstants) {
 
 	localeTypes = {
 		factory: 0,
@@ -48,11 +49,11 @@ define(['ash', 'game/vos/ResourcesVO', 'game/constants/WorldCreatorConstants'], 
                 case localeTypes.transport: return 50;
                 case localeTypes.sewer: return this.isEasy ? 50 : 80;
                 case localeTypes.warehouse: return this.isEasy ? 50 : 60;
-                case localeTypes.camp: 
-                case localeTypes.tradingpartner: 
+                case localeTypes.camp:
+                case localeTypes.tradingpartner:
                     return 20;
                 case localeTypes.hut:
-                case localeTypes.hermit: 
+                case localeTypes.hermit:
                     return 30;
                 case localeTypes.caravan: return 30;
                 default: return 30;
@@ -138,7 +139,10 @@ define(['ash', 'game/vos/ResourcesVO', 'game/constants/WorldCreatorConstants'], 
 					return "u";
 			}
 		},
-		
+        
+        getBracket: function () {
+            return this.isEarly ? LocaleConstants.LOCALE_BRACKET_EARLY : LocaleConstants.LOCALE_BRACKET_LATE;
+        },
     });
 
     return LocaleVO;
