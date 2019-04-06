@@ -248,6 +248,7 @@ define([
 			var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
 			$("#camp-overview tr#" + rowID + " .camp-overview-improvements").text(hasTradePost ? "X" : "-");
 
+            // TODO updateResourceIndicatorCallout is a performance bottleneck
 			var resources = node.entity.get(ResourcesComponent);
 			var resourceAcc = node.entity.get(ResourceAccumulationComponent);
 			for (var key in resourceNames) {

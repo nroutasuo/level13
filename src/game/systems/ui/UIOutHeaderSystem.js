@@ -147,8 +147,8 @@ define([
 			this.updateDeity();
 			this.updateItems(false, isInCamp);
 			this.updatePerks();
-			this.updateResources(isInCamp);
-            this.updateItemStats(isInCamp);
+			this.updateResources();
+            this.updateItemStats();
         },
         
         onActionStartedMoved: function () {
@@ -409,7 +409,10 @@ define([
             }
 		},
 
-		updateResources: function (inCamp) {
+		updateResources: function () {
+            if (!this.playerStatsNodes.head) return;
+            var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
+            var inCamp = playerPosition.inCamp;
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			var showResources = this.getShowResources();
 			var showResourceAcc = this.getShowResourceAcc();
