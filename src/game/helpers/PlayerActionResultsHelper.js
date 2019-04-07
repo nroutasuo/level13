@@ -138,7 +138,7 @@ define([
             var efficiency = this.getScavengeEfficiency();
 
             rewards.gainedResources = this.getRewardResources(0.95 + efficiency * 0.05, 1, efficiency, sectorResources);
-            rewards.gainedItems = this.getRewardItems(0.01 + efficiency * 0.04, efficiency * 0.08, this.itemResultTypes.scavenge, efficiency, itemsComponent, levelOrdinal);
+            rewards.gainedItems = this.getRewardItems(0.01 + efficiency * 0.03, efficiency * 0.05, this.itemResultTypes.scavenge, efficiency, itemsComponent, levelOrdinal);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
 
             this.addStash(rewards, sectorFeatures.stash);
@@ -226,7 +226,7 @@ define([
 				availableResources.setResource(resourceNames.food, 10);
 				availableResources.setResource(resourceNames.metal, 3);
 				rewards.gainedResources = this.getRewardResources(0.3, 2, this.getScavengeEfficiency(), availableResources);
-                rewards.gainedItems = this.getRewardItems(0.1, 0.2, this.itemResultTypes.fight, 1, itemsComponent, levelOrdinal);
+                rewards.gainedItems = this.getRewardItems(0.1, 0.1, this.itemResultTypes.fight, 1, itemsComponent, levelOrdinal);
 				rewards.gainedReputation = 1;
             } else {
 				// TODO lost followers
