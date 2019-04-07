@@ -2,40 +2,41 @@
 	"versions": [{
 			"version": "0.2.3",
 			"phase": "alpha",
-			"final": false,
-			"updated": "2019-03-30",
+			"final": true,
+			"updated": "2019-04-07",
+			"released": "2019-04-07",
 			"changes": [
                 {
                     "type": "UI",
-                    "summary": "Add better tech tree visualization."
-                },
-                {
-                    "type": "GD",
-                    "summary": "Add new building: caravan stable."
+                    "summary": "Improved tech tree visualization"
                 },
                 {
                     "type": "UI",
-                    "summary": "Improve maps."
+                    "summary": "Improved maps"
+                },
+                {
+                    "type": "GD",
+                    "summary": "New building: caravan stable"
                 },
                 {
 					"type": "DEV",
-					"summary": "Compress saves."
+					"summary": "Smaller saves"
 				},
                 {
 					"type": "GB",
-					"summary": "Create a bigger difference between camps on different levels by restricting buildings, population and events on some levels."
+					"summary": "Bigger difference between camps on different levels (population density)"
 				},
                 {
 					"type": "GB",
-					"summary": "Balance storage capacity and costs for key buildings."
+					"summary": "Balancing improvements (upgrades, storage capacity, building costs)"
 				},
                 {
 					"type": "UI",
-					"summary": "Add a visual view of the current camp and its buildings."
+					"summary": "Visual view of the current camp and its buildings"
 				},
                 {
 					"type": "GB",
-					"summary": "Improve world generation and level progression."
+					"summary": "Improved world generation and better level structure"
 				}
 			]
 		},{
@@ -47,27 +48,27 @@
 			"changes": [
                 {
 					"type": "DEV",
-					"summary": "Add option to export/import save. (Breaks old saves)"
+					"summary": "Option to export/import save. (Breaks old saves)"
 				},
 				{
 					"type": "GD",
-					"summary": "Enable manually choosing equipped items."
+					"summary": "Manually choosing equipped items"
 				},
 				{
 					"type": "GD",
-					"summary": "Remove time-based food/water consumption and time-based stamina recovery while exploring."
+					"summary": "Remove time-based food/water consumption and time-based stamina recovery while exploring"
 				},
 				{
 					"type": "UI",
-					"summary": "Polish reputation, raids and trade."
+					"summary": "Polished reputation, raids and trade"
 				},
 				{
 					"type": "GD",
-					"summary": "Add two new buildings that increase reputation: Garden and Square."
+					"summary": "Two new buildings that increase reputation: Garden and Square"
 				},
 				{
 					"type": "DEV",
-					"summary": "Improve performance"
+					"summary": "Improved performance"
 				}
 			]
 		},
@@ -79,15 +80,15 @@
 			"released": "2018-03-19",
 			"changes": [{
 					"type": "GD",
-					"summary": "Add a simple ending to the game."
+					"summary": "Simple ending to the game"
 				},
 				{
 					"type": "UI",
-					"summary": "Improve UI for building projects."
+					"summary": "Improved UI for building projects"
 				},
 				{
 					"type": "DEV",
-					"summary": "Lots of bugfixes, especially for late-game."
+					"summary": "Lots of bugfixes, especially for late-game"
 				}
 			]
 		},
@@ -99,19 +100,19 @@
 			"released": "2017-08-19",
 			"changes": [{
 					"type": "GD",
-					"summary": "Add currency, trade partners on the map, outgoing trade caravans and incoming traders."
+					"summary": "Currency, trade partners on the map, outgoing trade caravans and incoming traders"
 				},
 				{
 					"type": "GB",
-					"summary": "More varied resources found when scavenging."
+					"summary": "More varied resources found when scavenging"
 				},
 				{
 					"type": "GB",
-					"summary": "Add more bag levels."
+					"summary": "More bag levels"
 				},
 				{
 					"type": "DEV",
-					"summary": "Bugfixes and performance improvements."
+					"summary": "Bugfixes and performance improvements"
 				}
 			]
 		},
@@ -123,15 +124,15 @@
 			"released": "2017-04-25",
 			"changes": [{
 					"type": "DEV",
-					"summary": "Lots of small bugfixes."
+					"summary": "Lots of small bugfixes"
 				},
 				{
 					"type": "UI",
-					"summary": "A friendly popup when the game crashes."
+					"summary": "A friendly popup when the game crashes"
 				},
 				{
 					"type": "UI",
-					"summary": "Visualization of the tech tree."
+					"summary": "Visualization of the tech tree"
 				}
 			]
 		},
@@ -143,7 +144,7 @@
 			"released": "2017-01-01",
 			"changes": [{
 					"type": "GD",
-					"summary": "Changed how reputation works. It's now camp-dependent and takes some time to grow / decrease."
+					"summary": "Reputation logic changed (camp-dependent and changing over time)"
 				},
 				{
 					"type": "GD",
@@ -151,11 +152,11 @@
 				},
 				{
 					"type": "GB",
-					"summary": "Rebalanced upgrades and a few new ones. Several buildings can now be upgraded."
+					"summary": "Rebalanced upgrades and a few new ones. Several buildings can now be upgraded"
 				},
 				{
 					"type": "UI",
-					"summary": "Lots of small UI fixes and additions."
+					"summary": "Lots of small UI fixes and additions"
 				}
 			]
 		},
@@ -167,19 +168,19 @@
 			"released": "2016-11-06",
 			"changes": [{
 					"type": "GD",
-					"summary": "Improved followers and inn functionality."
+					"summary": "Improved followers and inn functionality"
 				},
 				{
 					"type": "GD",
-					"summary": "Add lots of new log messages for results of player actions when exploring."
+					"summary": "Lots of new log messages for results of player actions when exploring"
 				},
 				{
 					"type": "UI",
-					"summary": "Improve header appearance and show item stats more clearly."
+					"summary": "Improved header appearance and show item stats more clearly"
 				},
 				{
 					"type": "GD",
-					"summary": "Improve sector generation to create more intersections and generally more interesting level shapes."
+					"summary": "Improved sector generation  (more intersections and more interesting level shapes)"
 				}
 			]
 		},
@@ -195,23 +196,23 @@
 				},
 				{
 					"type": "GD",
-					"summary": "Add proper inventory management, add weights for items, and enforce carry limit"
+					"summary": "Proper inventory management and add weights for items"
 				},
 				{
 					"type": "GD",
-					"summary": "Make stamina regenerate much slower while exploring, and add option to recover it in camp"
+					"summary": "Stamina regeneration much slower while exploring and option to recover it in camp"
 				},
 				{
 					"type": "GD",
-					"summary": "New items: first aid kits and glowsticks."
+					"summary": "New items: first aid kits and glowsticks"
 				},
 				{
 					"type": "GD",
-					"summary": "Environmental hazards: cold, radiation and poison."
+					"summary": "Environmental hazards: cold, radiation and poison"
 				},
 				{
 					"type": "GD",
-					"summary": "More clothing slots & items."
+					"summary": "More clothing slots & items"
 				}
 			]
 		},
@@ -223,47 +224,47 @@
 			"updated": "2016-03-20",
 			"changes": [{
 					"type": "GD",
-					"summary": "Some items can be left in the camp (and not lost them when fainting)."
+					"summary": "Some items can be left in the camp (and not lost them when fainting)"
 				},
 				{
 					"type": "GD",
-					"summary": "Blueprints are made of pieces which must be separately collected."
+					"summary": "Blueprints are made of pieces which must be separately collected"
 				},
 				{
 					"type": "UI",
-					"summary": "Notifications for new content in tabs like available buildigs or items."
+					"summary": "Notifications for new content in tabs like available buildigs or items"
 				},
 				{
 					"type": "UI",
-					"summary": "Improved exploration UI."
+					"summary": "Improved exploration UI"
 				},
 				{
 					"type": "GD",
-					"summary": "Levels are composed of randomly generated paths and have intersections."
+					"summary": "Levels are composed of randomly generated paths and have intersections"
 				},
 				{
 					"type": "GD",
-					"summary": "Fight is no longer an independent action. Other actions can lead to random encounters."
+					"summary": "Fights changed from action to random encounters"
 				},
 				{
 					"type": "GD",
-					"summary": "Exploration in general is more risky, but also has more rewards."
+					"summary": "Exploration more risky, but also has more rewards"
 				},
 				{
 					"type": "GD",
-					"summary": "Healing injuries is no longer instant."
+					"summary": "Healing injuries is no longer instant"
 				},
 				{
 					"type": "GD",
-					"summary": "New improvement: aqueduct."
+					"summary": "New improvement: aqueduct"
 				},
 				{
 					"type": "UI",
-					"summary": "Timer for next worker."
+					"summary": "Timer for next worker"
 				},
 				{
 					"type": "GB",
-					"summary": "There are levels where no camp can be built."
+					"summary": "Levels where no camp can be built"
 				}
 			]
 		},
@@ -275,23 +276,23 @@
 			"updated": "2015-09-02",
 			"changes": [{
 					"type": "GD",
-					"summary": "Initial list of upgrades, upgrades balancing & blueprint mechanic."
+					"summary": "Initial list of upgrades, upgrades balancing & blueprint mechanic"
 				},
 				{
 					"type": "GD",
-					"summary": "Working crafting system and all basic items. Secondary resources (parts) that can be scavenged and used for crafting."
+					"summary": "Working crafting system and all basic items. Secondary resources (crafting ingredients)"
 				},
 				{
 					"type": "GD",
-					"summary": "Exploration now requires food and water."
+					"summary": "Exploration now requires food and water"
 				},
 				{
 					"type": "GD",
-					"summary": "Locales: new scouting opportunities that appear on some sectors."
+					"summary": "Locales: new scouting opportunities that appear on some sectors"
 				},
 				{
 					"type": "UI",
-					"summary": "Black skin for dark levels/sectors."
+					"summary": "Black skin for dark levels/sectors"
 				}
 			]
 		},
