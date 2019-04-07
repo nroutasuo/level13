@@ -516,13 +516,20 @@ define([
                 var levelVO = this.world.getLevel(l);
                 var numLocales = 0;
                 var randomGangFreq = 45;
+                
                 var blockerType = MovementConstants.BLOCKER_TYPE_GANG;
-
+                var blockerSettings = { addDiagonals: addDiagonals };
                 var addGang = function (sectorVO, neighbourVO, addDiagonals) {
                     if (!neighbourVO) neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
-                    creator.addMovementBlocker(levelVO, sectorVO, neighbourVO, blockerType, { addDiagonals: addDiagonals }, function (s, direction) {
-                        s.numLocaleEnemies[LocaleConstants.getPassageLocaleId(direction)] = 3;
-                    });
+                    if (creator.canHaveGang(sectorVO) && creator.canHaveGang(neighbourVO)) {
+                        creator.addMovementBlocker(levelVO, sectorVO, neighbourVO, blockerType, blockerSettings, function (s, direction) {
+                            s.numLocaleEnemies[LocaleConstants.getPassageLocaleId(direction)] = 3;
+                        });
+                        return true;
+                    } else {
+                        if (GameConstants.logWarnings) console.log("WARN: Skipped adding gang at " + sectorVO.position);
+                        return false;
+                    }
                 };
 
                 var addGangs = function (seed, reason, levelVO, pointA, pointB, maxPaths) {
@@ -538,8 +545,7 @@ define([
                         index = WorldCreatorRandom.randomInt(finalSeed, min, max);
                         var sectorVO = levelVO.getSector(path[index].sectorX, path[index].sectorY);
                         var neighbourVO = levelVO.getSector(path[index + 1].sectorX, path[index + 1].sectorY);
-                        addGang(sectorVO, neighbourVO, false);
-                        num++;
+                        if (addGang(sectorVO, neighbourVO, false)) num++;
                     }
                     return num;
                 };
@@ -1231,6 +1237,13 @@ define([
 
 			return enemies;
 		},
+        
+        canHaveGang: function (sectorVO) {
+            if (!sectorVO) return false;
+            var position = sectorVO.position;
+            if (position.level == 13 && position.sectorX == WorldCreatorConstants.FIRST_CAMP_X && position.sectorY == WorldCreatorConstants.FIRST_CAMP_Y) return false;
+            return true;
+        },
 
 
 
