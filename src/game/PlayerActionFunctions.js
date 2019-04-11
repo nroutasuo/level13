@@ -67,7 +67,6 @@ define(['ash',
 	LogMessagesComponent,
 	UIOutHeaderSystem, UIOutTabBarSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem
 ) {
-
 	var PlayerActionFunctions = Ash.System.extend({
 
 		playerPositionNodes: null,
