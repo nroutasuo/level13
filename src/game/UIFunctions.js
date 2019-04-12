@@ -983,7 +983,7 @@ define(['ash',
 					uiFunctions.popupManager.closePopup("common-popup");
 					if (callbackNo) callbackNo();
 				};
-				this.popupManager.showPopup(title, msg, buttonLabel, "Cancel", null, okCallback, cancelCallback);
+				this.popupManager.showPopup(title, msg, buttonLabel, cancelButtonLabel, null, okCallback, cancelCallback);
 			},
 
 			showInput: function (title, msg, defaultValue, callback) {
