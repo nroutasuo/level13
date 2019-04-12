@@ -138,7 +138,7 @@ define([
             var efficiency = this.getScavengeEfficiency();
 
             rewards.gainedResources = this.getRewardResources(0.95 + efficiency * 0.05, 1, efficiency, sectorResources);
-            rewards.gainedItems = this.getRewardItems(0.01 + efficiency * 0.03, efficiency * 0.05, this.itemResultTypes.scavenge, efficiency, itemsComponent, levelOrdinal);
+            rewards.gainedItems = this.getRewardItems(0.01 + efficiency * 0.03, efficiency * 0.06, this.itemResultTypes.scavenge, efficiency, itemsComponent, levelOrdinal);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
 
             this.addStash(rewards, sectorFeatures.stash);
