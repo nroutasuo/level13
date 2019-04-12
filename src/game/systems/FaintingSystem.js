@@ -151,6 +151,7 @@ define([
 		},
 		
 		fadeOutToLastVisitedCamp: function (showPopup, handleResults, msgAdjective) {
+            if (!this.lastVisitedCampNodes.head) return;
 			var msgMain = showPopup ? "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in camp." : null;
 			var msgLog = "The world fades. You wake up with no memory how you found your way back.";
 			this.fadeOut(msgMain, msgLog, handleResults, this.lastVisitedCampNodes.head.entity, 1, 1);
