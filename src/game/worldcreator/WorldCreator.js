@@ -95,7 +95,7 @@ define([
                     previousCampPositions = [ campSector.position ];
 				} else {
 					var numCamps = isCampableLevel ? 2 : 0;
-                    if (levelOrdinal > WorldCreatorConstants.CAMP_ORDINAL_LIMIT) numCamps = 0;
+                    if (campOrdinal > WorldCreatorConstants.CAMP_ORDINAL_LIMIT) numCamps = 0;
                     var campPositions = [];
                     if (numCamps > 0) {
                         for (var i = 0; i < numCamps; i++) {
@@ -114,19 +114,23 @@ define([
                             // each camp pos on this level should have at least one passage down within reach
                             var pd = Math.min(i, passageDownPositions.length-1);
                             var startPos = passageDownPositions[pd];
-                            var maxLength = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
-                            var pathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
-                            pathConstraints.push(new PathConstraintVO(startPos, maxLength, pathType));
+                            if (startPos) {
+                                var maxLength = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
+                                var pathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+                                pathConstraints.push(new PathConstraintVO(startPos, maxLength, pathType));
+                            }
 
                             // critical paths: to passages up
                             // at least one camp pos on this level should be within reach for each passage up
                             if (passageUpPositions.length > 0) {
                                 var pu =  Math.min(i, passageUpPositions.length-1);
                                 var startPos = passageUpPositions[pu].clone();
-                                startPos.level = l;
-                                var maxLength = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
-                                var pathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
-                                pathConstraints.push(new PathConstraintVO(startPos, maxLength, pathType));
+                                if (startPos) {
+                                    startPos.level = l;
+                                    var maxLength = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
+                                    var pathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+                                    pathConstraints.push(new PathConstraintVO(startPos, maxLength, pathType));
+                                }
                             }
                             var campSector = WorldCreatorRandom.randomSector(seed * l * 534 * (i + 7), this.world, levelVO, true, pathConstraints);
                             if (campSector) {
