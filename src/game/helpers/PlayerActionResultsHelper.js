@@ -593,6 +593,7 @@ define([
 				var resultAmount = resQuantity * amountFactor * resAmountFactor * efficiency * Math.random();
                 if (resultAmount === 0)
                     continue;
+                resultAmount = Math.floor(resultAmount);
                 resultAmount = MathUtils.clamp(resultAmount, resMin, 10);
 				results.setResource(name, resultAmount);
 			}
