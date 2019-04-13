@@ -1,5 +1,13 @@
 {
 	"versions": [{
+            "version": "0.2.5",
+            "phase": "alpha",
+            "final": false,
+            "updated": "2019-04-13",
+            "changes": [
+            ]
+        },
+        {
             "version": "0.2.4",
             "phase": "alpha",
             "final": true,
