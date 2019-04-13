@@ -2,9 +2,15 @@
 	"versions": [{
             "version": "0.2.4",
             "phase": "alpha",
-            "final": false,
-            "updated": "2019-04-11",
-            "changes": []
+            "final": true,
+            "updated": "2019-04-13",
+            "released": "2019-04-13",
+            "changes": [
+                {
+                    "type": "DEV",
+                    "summary": "Bugfixes"
+                }
+            ]
         },
         {
 			"version": "0.2.3",
