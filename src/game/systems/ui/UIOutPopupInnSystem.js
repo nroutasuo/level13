@@ -82,7 +82,7 @@ var UIOutPopupInnSystem = Ash.System.extend({
 
         disbandFollower: function (followerID) {
             // TODO pass to player action functions & unify with UIOoutBagSystem
-            var item = this.itemNodes.head.items.getItem(followerID);
+            var item = this.itemNodes.head.items.getItem(followerID, null, true);
             this.itemNodes.head.items.discardItem(item, false);
             this.itemNodes.head.items.selectedItem = null;
             this.refreshCurrent();

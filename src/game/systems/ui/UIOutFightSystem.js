@@ -180,7 +180,7 @@ define([
             // TODO remove hard-coding of items usable in fight, instead have fight effect desc in ItemVO (damage, heal, defend, stun)
             // TODO show fight effect of items in fight ui
             var itemsToShow = [];
-            if (itemsComponent.getCountById("glowstick_1") > 0) itemsToShow.push(itemsComponent.getItem("glowstick_1"));
+            if (itemsComponent.getCountById("glowstick_1") > 0) itemsToShow.push(itemsComponent.getItem("glowstick_1", null, false));
             var numItemsShown = $("#fight-buttons-infightactions button").length;
             if (numItemsShown !== itemsToShow.length) {
                 $("#fight-buttons-infightactions").empty();
