@@ -1379,7 +1379,7 @@ define(['ash',
 			var totalCollected = 0;
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
-				var amount = resourcesVO.getResource(name);
+				var amount = Math.floor(resourcesVO.getResource(name))
 				if (amount >= 1) {
 					var toCollect = Math.min(amount, maxToCollect - totalCollected);
 					currentStorage.resources.addResource(name, toCollect);
