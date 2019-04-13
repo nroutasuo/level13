@@ -250,7 +250,7 @@ define([
             var currentVersion = GameGlobals.changeLogHelper.getCurrentVersionNumber();
             GameGlobals.uiFunctions.showQuestionPopup(
                 "Warning",
-                "Part of the save could not be loaded. Most likely your save is old and incompatible with the current version. Restart the game or continue at your own risk.<br><br/>Save version: " + saveVersion + "<br/>Current version: " + currentVersion + ") ",
+                "Part of the save could not be loaded. Most likely your save is old and incompatible with the current version. Restart the game or continue at your own risk.<br><br/>Save version: " + saveVersion + "<br/>Current version: " + currentVersion,
                 "Restart",
                 "Continue",
                 function () {

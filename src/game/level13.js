@@ -2,6 +2,7 @@ define([
     'ash',
     'core/ExceptionHandler',
     'game/GameGlobals',
+    'game/GameFlowLogger',
     'game/GlobalSignals',
 	'game/constants/GameConstants',
     'game/constants/SystemPriorities',
@@ -77,6 +78,7 @@ define([
     Ash,
     ExceptionHandler,
     GameGlobals,
+    GameFlowLogger,
     GlobalSignals,
 	GameConstants,
     SystemPriorities,
@@ -165,7 +167,8 @@ define([
             this.initializeGameGlobals();
 			this.addSystems();
             this.initializePlugins(plugins);
-
+            
+            this.GameFlowLogger = new GameFlowLogger();
             ExceptionHandler.exceptionCallback = function (ex) { game.handleException(ex) };
             GlobalSignals.exceptionCallback = function (ex) { game.handleException(ex) };
             GlobalSignals.worldReadySignal.addOnce(function () {

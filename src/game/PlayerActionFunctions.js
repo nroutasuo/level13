@@ -127,7 +127,7 @@ define(['ash',
 			} else {
 				this.performAction(action, param);
 			}
-
+            GlobalSignals.actionStartedSignal.dispatch(action, param);
 			return true;
 		},
 
@@ -155,8 +155,6 @@ define(['ash',
                         GlobalSignals.caravanSentSignal.dispatch();
 						break;
 				}
-                
-                GlobalSignals.actionStartedSignal.dispatch(baseId);
 			}
 		},
 

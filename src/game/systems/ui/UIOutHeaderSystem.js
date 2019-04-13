@@ -84,7 +84,6 @@ define([
 			this.autoPlayNodes = engine.getNodeList(AutoPlayNode);
 
             var sys = this;
-            GlobalSignals.actionStartedSignal.add(function () { sys.onActionStartedMoved(); });
             GlobalSignals.playerMovedSignal.add(function () { sys.onPlayerMoved(); });
             GlobalSignals.visionChangedSignal.add(function () { sys.onVisionChanged(); });
             GlobalSignals.tabChangedSignal.add(function () { sys.onTabChanged(); });
@@ -150,13 +149,6 @@ define([
 			this.updateResources();
             this.updateItemStats();
         },
-        
-        onActionStartedMoved: function () {
-		    if (GameGlobals.gameState.uiStatus.isHidden) return;
-            var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
-            var isInCamp = playerPosition.inCamp;
-            this.updatePlayerStats(isInCamp);
-        },
 
         onPlayerMoved: function () {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
@@ -170,11 +162,13 @@ define([
         onHealthChanged: function () {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.updateStaminaWarningLimit();
+            this.updatePlayerStats();
         },
 
         onInventoryChanged: function () {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.updateResources();
+            this.updatePlayerStats();
         },
 
 		onVisionChanged: function () {
