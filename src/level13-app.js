@@ -10,6 +10,7 @@ define([
 
         this.initialise = function (config) {
 
+            GameConstants.isDebugVersion = config.isDebugVersion;
             GameConstants.isCheatsEnabled = config.isCheatsEnabled;
             GameConstants.isAutosaveEnabled = config.isAutosaveEnabled;
             GameConstants.logInfo = config.isDebugOutputEnabled;
