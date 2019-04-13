@@ -30,10 +30,6 @@ define([
 			this.campNodes = engine.getNodeList(CampResourcesNode);
 			this.tribeNodes = engine.getNodeList(TribeResourcesNode);
 
-            var sys = this;
-            this.onInventoryChanged = function () {
-                sys.updateUnlockedResources();
-            };
             GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.onInventoryChanged);
 		},
 
@@ -152,7 +148,11 @@ define([
 			GameGlobals.gameState.unlockedFeatures.resources.concrete = checkUnlockedResource("concrete");
 			GameGlobals.gameState.unlockedFeatures.resources.tools = checkUnlockedResource("tools");
 		},
-		
+        
+        onInventoryChanged: function () {
+            this.updateUnlockedResources();
+        },
+        
 		getStorageUpgradeLevel: function () {
             return GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.storage, this.tribeNodes.head.entity.get(UpgradesComponent));
 		},
