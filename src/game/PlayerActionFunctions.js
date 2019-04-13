@@ -777,7 +777,7 @@ define(['ash',
 				var amount = caravan.campSelectedItems[itemID];
 				for (var i = 0; i < amount; i++) {
 					caravan.sellItems.push(ItemConstants.getItemByID(itemID));
-					itemsComponent.discardItem(itemsComponent.getItem(itemID), false);
+					itemsComponent.discardItem(itemsComponent.getItem(itemID), false, true);
 				}
 			}
 
@@ -1267,22 +1267,25 @@ define(['ash',
 		},
 
 		equipItem: function (itemID) {
+			var playerPos = this.playerPositionNodes.head.position;
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-			var item = itemsComponent.getItem(itemID);
+			var item = itemsComponent.getItem(itemID, null, playerPos.inCamp);
 			itemsComponent.equip(item);
 			GlobalSignals.equipmentChangedSignal.dispatch();
 		},
 
 		unequipItem: function (itemID) {
+			var playerPos = this.playerPositionNodes.head.position;
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-			var item = itemsComponent.getItem(itemID);
+			var item = itemsComponent.getItem(itemID, null, playerPos.inCamp);
 			itemsComponent.unequip(item);
 			GlobalSignals.equipmentChangedSignal.dispatch();
 		},
 
 		discardItem: function (itemID) {
+			var playerPos = this.playerPositionNodes.head.position;
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-			var item = itemsComponent.getItem(itemID);
+			var item = itemsComponent.getItem(itemID, null, playerPos.inCamp);
 			GameGlobals.uiFunctions.showConfirmation(
 				"Are you sure you want to discard this item?",
 				function () {

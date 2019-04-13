@@ -82,6 +82,7 @@ define([
 
 			var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+            var inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
 
             var costNameParts;
             var costAmount;
@@ -105,7 +106,7 @@ define([
                 } else if (costNameParts[0] === "item") {
                     var itemId = costName.replace(costNameParts[0] + "_", "");
                     for (var i = 0; i < costAmount; i++) {
-                        itemsComponent.discardItem(itemsComponent.getItem(itemId), false);
+                        itemsComponent.discardItem(itemsComponent.getItem(itemId, null, inCamp), false);
                     }
                 } else if (costName == "blueprint") {
                 } else {
