@@ -549,7 +549,7 @@ define([
 			var hasFood = isScouted && featuresComponent.resourcesCollectable.food > 0;
 			var hasWater = isScouted && featuresComponent.resourcesCollectable.water > 0;
 			GameGlobals.uiFunctions.toggle("#out-improvements-collector-food", collectorFood.count > 0 || hasFood);
-			GameGlobals.uiFunctions.toggle("#out-improvements-collector-water", (collectorWater.count > 0 || hasWater) && !featuresComponent.hasSpring);
+			GameGlobals.uiFunctions.toggle("#out-improvements-collector-water", collectorWater.count > 0 || hasWater);
 			GameGlobals.uiFunctions.toggle("#out-improvements-camp", sectorStatusComponent.canBuildCamp);
         },
 
