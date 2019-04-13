@@ -211,20 +211,24 @@ define([
         },
 
         updateNap: function (isScouted, hasCampHere) {
+            // TODO move some of the requirements to PlayerActionConstants
+            
             if (hasCampHere) {
                 GameGlobals.uiFunctions.toggle(this.elements.btnNap, false);
                 return;
             }
-
+            
             var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-
+            
+            var hasFirstCamp = GameGlobals.gameState.numCamps > 0;
 			var hasCollectibleFood = isScouted && featuresComponent.resourcesCollectable.food > 0;
 			var hasCollectibleWater = isScouted && (featuresComponent.resourcesCollectable.water > 0 || featuresComponent.hasSpring);
             var waterAvailable = GameGlobals.resourcesHelper.getCurrentStorage().resources.water > 1 || hasCollectibleWater;
             var foodAvailable = GameGlobals.resourcesHelper.getCurrentStorage().resources.food > 1 || hasCollectibleFood;
             var suppliesAvailable = waterAvailable && foodAvailable;
-
-            if (!suppliesAvailable) {
+            var blockedBySupplies = hasFirstCamp && !suppliesAvailable;
+            
+            if (blockedBySupplies) {
                 GameGlobals.uiFunctions.toggle(this.elements.btnNap, false);
                 return;
             }
@@ -233,7 +237,7 @@ define([
             var staminaComponent = this.playerPosNodes.head.entity.get(StaminaComponent);
             var improvementsComponent = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 
-            var staminaCostToMoveOneSector = costToCamp.stamina;
+            var staminaCostToMoveOneSector = costToCamp.stamina || 10;
             var lowStamina = staminaComponent.stamina < staminaCostToMoveOneSector;
 
             var collectorFood = improvementsComponent.getVO(improvementNames.collector_food);
@@ -244,9 +248,9 @@ define([
             var lowWater = GameGlobals.resourcesHelper.getCurrentStorage().resources.water + storedWater < Math.min(costToCamp.resource_water, 5);
             var lowSupplies = (lowFood || lowWater);
 
-            var blockedByTutorial = GameGlobals.gameState.numCamps < 1 && staminaComponent.stamina > 15;
+            var blockedByTutorial = !hasFirstCamp && staminaComponent.stamina > 15;
 
-            var showNap = (lowStamina || lowSupplies) && suppliesAvailable && !blockedByTutorial;
+            var showNap = (lowStamina || lowSupplies) && !blockedBySupplies && !blockedByTutorial;
             GameGlobals.uiFunctions.toggle(this.elements.btnNap, showNap);
         },
 
@@ -549,7 +553,7 @@ define([
 			var hasFood = isScouted && featuresComponent.resourcesCollectable.food > 0;
 			var hasWater = isScouted && featuresComponent.resourcesCollectable.water > 0;
 			GameGlobals.uiFunctions.toggle("#out-improvements-collector-food", collectorFood.count > 0 || hasFood);
-			GameGlobals.uiFunctions.toggle("#out-improvements-collector-water", (collectorWater.count > 0 || hasWater) && !featuresComponent.hasSpring);
+			GameGlobals.uiFunctions.toggle("#out-improvements-collector-water", collectorWater.count > 0 || hasWater);
 			GameGlobals.uiFunctions.toggle("#out-improvements-camp", sectorStatusComponent.canBuildCamp);
         },
 

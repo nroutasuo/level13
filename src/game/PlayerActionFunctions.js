@@ -67,7 +67,6 @@ define(['ash',
 	LogMessagesComponent,
 	UIOutHeaderSystem, UIOutTabBarSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem
 ) {
-
 	var PlayerActionFunctions = Ash.System.extend({
 
 		playerPositionNodes: null,
@@ -620,6 +619,8 @@ define(['ash',
 
 			var playerActionFunctions = this;
 			var successCallback = function () {
+                // TODO check workshop resource
+                GameGlobals.gameState.unlockedFeatures.resources.fuel = true;
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 			};
 
@@ -778,7 +779,7 @@ define(['ash',
 				var amount = caravan.campSelectedItems[itemID];
 				for (var i = 0; i < amount; i++) {
 					caravan.sellItems.push(ItemConstants.getItemByID(itemID));
-					itemsComponent.discardItem(itemsComponent.getItem(itemID), false);
+					itemsComponent.discardItem(itemsComponent.getItem(itemID), false, true);
 				}
 			}
 
@@ -1268,22 +1269,25 @@ define(['ash',
 		},
 
 		equipItem: function (itemID) {
+			var playerPos = this.playerPositionNodes.head.position;
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-			var item = itemsComponent.getItem(itemID);
+			var item = itemsComponent.getItem(itemID, null, playerPos.inCamp);
 			itemsComponent.equip(item);
 			GlobalSignals.equipmentChangedSignal.dispatch();
 		},
 
 		unequipItem: function (itemID) {
+			var playerPos = this.playerPositionNodes.head.position;
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-			var item = itemsComponent.getItem(itemID);
+			var item = itemsComponent.getItem(itemID, null, playerPos.inCamp);
 			itemsComponent.unequip(item);
 			GlobalSignals.equipmentChangedSignal.dispatch();
 		},
 
 		discardItem: function (itemID) {
+			var playerPos = this.playerPositionNodes.head.position;
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-			var item = itemsComponent.getItem(itemID);
+			var item = itemsComponent.getItem(itemID, null, playerPos.inCamp);
 			GameGlobals.uiFunctions.showConfirmation(
 				"Are you sure you want to discard this item?",
 				function () {
@@ -1380,7 +1384,7 @@ define(['ash',
 			var totalCollected = 0;
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
-				var amount = resourcesVO.getResource(name);
+				var amount = Math.floor(resourcesVO.getResource(name))
 				if (amount >= 1) {
 					var toCollect = Math.min(amount, maxToCollect - totalCollected);
 					currentStorage.resources.addResource(name, toCollect);

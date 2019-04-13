@@ -18,7 +18,7 @@ function (Ash, ItemVO, ItemConstants) {
                 return;
             }
 
-            if (this.getItem(item.id, item.itemID)) {
+            if (this.getItem(item.id, item.itemID, true)) {
                 console.log("WARN: Trying to add duplicate item: " + item.id);
                 return;
             }
@@ -282,7 +282,7 @@ function (Ash, ItemVO, ItemConstants) {
             } else {
                 this.uniqueItemsCarried = all;
             }
-
+            
             return allList.sort(this.itemSortFunction);
         },
 
@@ -323,11 +323,14 @@ function (Ash, ItemVO, ItemConstants) {
             return strongest;
         },
 
-        getItem: function (id, instanceId) {
+        getItem: function (id, instanceId, includeNotCarried) {
             for (var key in this.items) {
                 for( var i = 0; i < this.items[key].length; i++) {
                     var item = this.items[key][i];
-                    if (id == item.id && (!instanceId || instanceId == item.itemID)) return item;
+                    if (id != item.id) continue;
+                    if (instanceId && instanceId != item.itemID) continue;
+                    if (!includeNotCarried && !item.carried) continue;
+                    return item;
                 }
             }
             return null;

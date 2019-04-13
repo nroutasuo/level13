@@ -179,7 +179,7 @@ define([
 
                 if (!saveWarningShown && failedComponents > 0) {
                     saveWarningShown = true;
-                    this.showSaveWarning();
+                    this.showSaveWarning(save.version);
                 }
 
                 var sectorNodes = this.creator.engine.getNodeList(SectorNode);
@@ -192,7 +192,7 @@ define([
 
                     if (!saveWarningShown && failedComponents > 0) {
                         saveWarningShown = true;
-                        this.showSaveWarning();
+                        this.showSaveWarning(save.version);
                     }
                 }
 
@@ -204,7 +204,7 @@ define([
 
                     if (!saveWarningShown && failedComponents > 0) {
                         saveWarningShown = true;
-                        this.showSaveWarning();
+                        this.showSaveWarning(save.version);
                     }
                 }
 
@@ -246,10 +246,11 @@ define([
 			}
 		},
 
-        showSaveWarning: function () {
+        showSaveWarning: function (saveVersion) {
+            var currentVersion = GameGlobals.changeLogHelper.getCurrentVersionNumber();
             GameGlobals.uiFunctions.showQuestionPopup(
                 "Warning",
-                "Part of the save could not be loaded. Most likely your save is old and incompatible with the current version. Restart the game or continue at your own risk.",
+                "Part of the save could not be loaded. Most likely your save is old and incompatible with the current version. Restart the game or continue at your own risk.<br><br/>Save version: " + saveVersion + "<br/>Current version: " + currentVersion + ") ",
                 "Restart",
                 "Continue",
                 function () {

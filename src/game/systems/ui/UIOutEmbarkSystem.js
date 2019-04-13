@@ -150,7 +150,7 @@ define([
                     var val = Math.max(inputValue, inputMin);
                     GameGlobals.uiFunctions.updateStepper("#" + $(stepper).attr("id"), val, inputMin, inputMax)
                     selectedAmount = Math.max(0, $(stepper).children("input").val());
-                    selectedCapacity += selectedAmount * BagConstants.getItemCapacity(itemsComponent.getItem(itemID));
+                    selectedCapacity += selectedAmount * BagConstants.getItemCapacity(itemsComponent.getItem(itemID, null, true));
                     
                     $(this).toggleClass("list-option-dimmed", val <= 0 || inputMax <= 0);
                 }

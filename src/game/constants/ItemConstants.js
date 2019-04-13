@@ -93,7 +93,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("clothing_lower_1", "Ragged pants", "Legs", {warmth: 1}, true, false, false, "img/items/clothing-rags.png",
                     "Barely counts for clothing, but for now it'll have to do.", 1, 2),
                 new ItemVO("clothing_lower_2", "Factory uniform pants", "Legs", {"fight defence": 1, warmth: 3}, true, false, false, "img/items/clothing-2.png",
-                    "Used to be the standard univorm in the dark levels of the City.", 5, 4),
+                    "Used to be the standard uniform in the dark levels of the City.", 5, 4),
                 new ItemVO("clothing_lower_3", "Guard uniform pants", "Legs", {"fight defence": 2, warmth: 3}, true, true, false, "img/items/clothing-2.png",
                     "Looks official, but not particularly protective.", 12, 4),
                 new ItemVO("clothing_lower_4", "Padded pants", "Legs", {"fight defence": 15, warmth: 5}, true, true, false, "img/items/clothing-3.png",
@@ -104,7 +104,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             clothing_head: [
                 new ItemVO("clothing_head_0", "Sunglasses", "Head", {"sunblindness protection": 30}, true, false, false, "img/items/clothing-hat-1.png",
                     "If there was any sunlight, these would probably be handy.", 2, 8),
-                new ItemVO("clothing_head_1", "Wollen hat", "Head", {"fight defence": 1, warmth: 10}, true, true, false, "img/items/clothing-hat-1.png",
+                new ItemVO("clothing_head_1", "Wool hat", "Head", {"fight defence": 1, warmth: 10}, true, true, false, "img/items/clothing-hat-1.png",
                     "Warm basic headwear.", 1, 5),
                 new ItemVO("clothing_head_2", "Pollution mask", "Head", {"poison protection": 15}, true, false, false, "img/items/clothing-hat-1.png",
                     "Meager protection against the effects of polluted air.", 4, 7),
@@ -187,9 +187,9 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("res_silk", "Spider silk", "Ingredient", null, false, false, false, "img/items/res-silk.png", "Used for crafting."),
             ],
             exploration: [
-                new ItemVO("exploration_1", "Lock pick", "Exploration", null, false, true, false, "img/items/exploration-1.png", "Useful tool when exploring and scouting."),
-                new ItemVO("first_aid_kit_1", "Basic First Aid Kit", "Exploration", null, false, true, true, "img/items/firstaid-1.png", "Heal light injuries on the go.", 3, 6),
-                new ItemVO("first_aid_kit_2", "Full First Aid Kit", "Exploration", null, false, true, true, "img/items/firstaid-2.png", "Heal all injuries on the go.", 10, 8),
+                new ItemVO("exploration_1", "Lockpick", "Exploration", null, false, true, false, "img/items/exploration-1.png", "Useful tool when exploring and scouting."),
+                new ItemVO("first_aid_kit_1", "Basic first aid kit", "Exploration", null, false, true, true, "img/items/firstaid-1.png", "Heal light injuries on the go.", 3, 6),
+                new ItemVO("first_aid_kit_2", "Full first aid kit", "Exploration", null, false, true, true, "img/items/firstaid-2.png", "Heal all injuries on the go.", 10, 8),
                 new ItemVO("glowstick_1", "Glowstick", "Exploration", null, false, true, true, "img/items/glowstick-1.png", "Temporary light. Can be used as a distraction.", 1, 8)
             ],
             uniqueEquipment: [

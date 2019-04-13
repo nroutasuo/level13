@@ -347,6 +347,9 @@ define([
 			$("#bag-items").empty();
 			for (var i = 0; i < this.inventoryItemsAll.length; i++) {
 				var item = this.inventoryItemsAll[i];
+                // TODO less hacky fix for the fact that getUnique doesn't prefer equipped items (could return unequipped instance even when an equipped one exists)
+                var equipped = itemsComponent.getEquipped(item.type);
+                var isEquipped = equipped && equipped.length > 0 && equipped[0].id == item.id;
                 this.updateItemCount(isActive, item);
 				var count = itemsComponent.getCount(item, inCamp);
 				switch (item.type) {
@@ -360,9 +363,9 @@ define([
 					case ItemConstants.itemTypes.shoes:
 					case ItemConstants.itemTypes.bag:
                         var showCount = count;
-                        var canEquip = !item.equipped;
+                        var canEquip = !isEquipped;
                         var canDiscard = itemsComponent.isItemDiscardable(item);
-						if (item.equipped) {
+						if (isEquipped) {
 							this.updateItemSlot(item.type, item);
 							showCount = count - 1;
 						}

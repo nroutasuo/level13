@@ -715,7 +715,10 @@ define(['ash',
 					return;
 				$element.attr("data-visible", show);
 				$element.toggle(show);
-				GlobalSignals.elementToggledSignal.dispatch(element, show);
+                // NOTE: For some reason the element isn't immediately :visible for checks in UIOutElementsSystem without the timeout
+                setTimeout(function () {
+                    GlobalSignals.elementToggledSignal.dispatch(element, show);
+                }, 1);
 			},
 
 			isElementToggled: function (element) {
@@ -983,7 +986,7 @@ define(['ash',
 					uiFunctions.popupManager.closePopup("common-popup");
 					if (callbackNo) callbackNo();
 				};
-				this.popupManager.showPopup(title, msg, buttonLabel, "Cancel", null, okCallback, cancelCallback);
+				this.popupManager.showPopup(title, msg, buttonLabel, cancelButtonLabel, null, okCallback, cancelCallback);
 			},
 
 			showInput: function (title, msg, defaultValue, callback) {

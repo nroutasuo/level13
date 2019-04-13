@@ -138,10 +138,11 @@ define([
             var efficiency = this.getScavengeEfficiency();
 
             rewards.gainedResources = this.getRewardResources(0.95 + efficiency * 0.05, 1, efficiency, sectorResources);
-            rewards.gainedItems = this.getRewardItems(0.01 + efficiency * 0.03, efficiency * 0.05, this.itemResultTypes.scavenge, efficiency, itemsComponent, levelOrdinal);
+            rewards.gainedItems = this.getRewardItems(0.01 + efficiency * 0.03, efficiency * 0.06, this.itemResultTypes.scavenge, efficiency, itemsComponent, levelOrdinal);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
 
             this.addStash(rewards, sectorFeatures.stash);
+            rewards.gainedBlueprintPiece = this.getFallbackBlueprint(0.05 + efficiency * 0.15);
 
             return rewards;
         },
@@ -936,6 +937,39 @@ define([
 
 			return null;
 		},
+        
+        getFallbackBlueprint: function (probability) {
+            var missedBlueprints = [];
+			var playerPos = this.playerLocationNodes.head.position;
+			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
+			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
+            for (var i = 1; i <= campOrdinal; i++) {
+                // NOTE: this assumes campable levels don't have blueprints
+                var levelOrdinal = GameGlobals.gameState.getLevelOrdinalForCampOrdinal(i);
+                var level = GameGlobals.gameState.getLevelForOrdinal(levelOrdinal);
+                var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(level, false, null).length;
+                if (unscoutedLocales === 0) {
+                    var levelBlueprints = UpgradeConstants.getblueprintsByCampOrdinal(i);
+                    var blueprintsToFind = [];
+        			for (var j = 0; j < levelBlueprints.length; j++) {
+		                var blueprintId = levelBlueprints[j];
+		                if (!upgradesComponent.hasUpgrade(blueprintId) && !upgradesComponent.hasAvailableBlueprint(blueprintId)) {
+		                   missedBlueprints.push(blueprintId);
+		               }
+                   }
+                }
+            }
+            
+            if (missedBlueprints.length > 0) {
+                if (GameConstants.logWarnings) {
+                    console.log("WARN: Found missed blueprints: " + missedBlueprints.join(","));
+                }
+                if (Math.random() < probability) {
+                    return missedBlueprints[0];
+                }
+            }
+            return null;
+        },
 
     });
 

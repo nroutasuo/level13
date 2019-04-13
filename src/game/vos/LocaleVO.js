@@ -39,25 +39,7 @@ function (Ash, ResourcesVO, LocaleConstants, WorldCreatorConstants) {
 		},
         
         getVisionRequirement: function () {
-            switch (this.type) {
-                case localeTypes.factory: return 50;
-                case localeTypes.house: return 30;
-                case localeTypes.lab: return this.isEasy ? 50 : 90;
-                case localeTypes.grove: return 20;
-                case localeTypes.market: return 40;
-                case localeTypes.maintenance: return 50;
-                case localeTypes.transport: return 50;
-                case localeTypes.sewer: return this.isEasy ? 50 : 80;
-                case localeTypes.warehouse: return this.isEasy ? 50 : 60;
-                case localeTypes.camp:
-                case localeTypes.tradingpartner:
-                    return 20;
-                case localeTypes.hut:
-                case localeTypes.hermit:
-                    return 30;
-                case localeTypes.caravan: return 30;
-                default: return 30;
-            }
+            return 50;
         },
         
         getStaminaRequirement: function () {
