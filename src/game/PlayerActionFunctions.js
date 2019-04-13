@@ -619,6 +619,8 @@ define(['ash',
 
 			var playerActionFunctions = this;
 			var successCallback = function () {
+                // TODO check workshop resource
+                GameGlobals.gameState.unlockedFeatures.resources.fuel = true;
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 			};
 
