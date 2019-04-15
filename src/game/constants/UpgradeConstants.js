@@ -166,6 +166,13 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
             return 3;
         },
         
+        getBlueprintType: function (upgradeId) {
+            var ordinal = this.getBlueprintCampOrdinal(upgradeId);
+            if (this.blueprintsByCampOrdinal[ordinal][0].indexOf(upgradeId) >= 0) return this.BLUEPRINT_TYPE_EARLY;
+            if (this.blueprintsByCampOrdinal[ordinal][1].indexOf(upgradeId) >= 0) return this.BLUEPRINT_TYPE_LATE;
+            return null;
+        },
+        
         getblueprintsByCampOrdinal: function (campOrdinal, blueprintType) {
             if (!this.blueprintsByCampOrdinal[campOrdinal]) return [];
             if (blueprintType == this.BLUEPRINT_TYPE_EARLY) {

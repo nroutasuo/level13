@@ -252,7 +252,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
             var utilities = {
                 findPassageDown: function (level) {
                     var levelVO = worldVO.getLevel(level);
-                    var result = levelVO.findPassageOown();
+                    var result = levelVO.findPassageDown();
                     return makePathSectorVO(result.position);
                 },
                 findPassageUp: function (level) {

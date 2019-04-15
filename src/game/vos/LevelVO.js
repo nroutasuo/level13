@@ -124,20 +124,32 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
             return result;
         },
         
-        findPassageOown: function () {
-            // todo save in levelVO instead of searching?
-            for (var i = 0; i < this.sectors.length; i++) {
-                if (this.sectors[i].passageDown > 0) return this.sectors[i];
-            }
+        findPassageUp: function () {
+            var all = this.getPassagesUp();
+            if (all.length > 0) return all[0];
             return null;
         },
         
-        findPassageUp: function () {
-            // todo save in levelVO instead of searching?
-            for (var i = 0; i < this.sectors.length; i++) {
-                if (this.sectors[i].passageUp > 0) return this.sectors[i];
-            }
+        findPassageDown: function () {
+            var all = this.getPassagesDown();
+            if (all.length > 0) return all[0];
             return null;
+        },
+        
+        getPassagesUp: function () {
+            var result = [];
+            for (var i = 0; i < this.sectors.length; i++) {
+                if (this.sectors[i].passageUp > 0) result.push(this.sectors[i]);
+            }
+            return result;
+        },
+        
+        getPassagesDown: function () {
+            var result = [];
+            for (var i = 0; i < this.sectors.length; i++) {
+                if (this.sectors[i].passageDown > 0) result.push(this.sectors[i]);
+            }
+            return result;
         },
 		
 		getSector: function (sectorX, sectorY) {
