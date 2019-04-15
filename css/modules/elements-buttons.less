@@ -1,0 +1,150 @@
+
+// GENERAL BUTTONS
+
+button:active {
+	position: relative;
+	top: 1px;
+}
+
+button, ul.tabs li {
+	transition: all 0.2s;
+}
+
+button {
+	width: 95pt;
+	padding: 8px 16px;
+	margin: 4px;
+	z-index: 2;
+	font-weight: 500;
+	position: relative;
+	text-transform: lowercase;
+}
+
+button.action {
+	border-width: 2px;
+	margin: 0px;
+	margin-bottom: 0px;
+    white-space: nowrap;
+}
+
+button.action.multiline {
+    white-space: normal;
+}
+
+button.btn-secondary {
+    border-width: 1px;
+}
+
+button.action-move {
+    width: 55px;
+}
+
+button.context {
+	width: auto;
+	display: inline;
+	float: right;
+}
+
+button.btn-wide {
+	width: 110pt;
+}
+button.btn-narrow {
+    width: 65pt;
+}
+
+button.btn-glyph {
+  font-weight: bold;
+  width: 1.5em;
+  height: 1.5em;
+  margin: 1px 2px;
+  padding: 1px;
+  font-size: 1em;
+  vertical-align: middle;
+  text-align: center;
+  border-width: 1px;
+  border-radius: 1px;
+}
+
+button.btn-mini {
+   width: auto;
+   padding: 4px 8px;
+}
+
+button.btn-meta {
+	width: auto;
+	padding: 2px 7px;
+	border-radius: 0px !important;
+	float: right;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	background: none;
+	border-width: 0px;
+	text-transform: lowercase;
+}
+
+// ACTION BUTTON CALLOUTS
+
+div.container-btn-action {
+	display: inline-block;
+	padding: -1px;
+	margin: 4px 6px;
+	border-width: 0px;
+}
+
+div.container-btn-action button {
+	margin: -1px;
+}
+
+// ACTION BUTTON COOLDOWNS
+
+.cooldown-reqs {
+	height: 5px;
+	width: 0%;
+	padding: 0;
+	border-width: 0px;
+	transition: all 0.1s;
+}
+
+button .cooldown-action, button .cooldown-duration {
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	padding: 0;
+}
+
+// DISABLED STATES
+
+button.btn-disabled, li.disabled {
+	opacity: 0.65;
+	cursor: default !important;
+}
+
+button.btn-disabled-vision {
+	opacity: 0.2;
+    color: rgba(0,0,0,0) !important;
+}
+
+button.btn-disabled-vision:hover {
+	opacity: 0.65;
+}
+
+button.btn-disabled-basic, button.btn-disabled-vision, button.btn-disabled-resources, li.disabled {
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	font-weight: normal !important;
+}
+
+button.action.btn-disabled-basic, button.btn-disabled-vision, li.disabled {
+	text-decoration: line-through !important;
+}
+
+button.action.btn-disabled-basic:before {
+    content: "\00a0";
+}
+
+button.action.btn-disabled-basic:after {
+    content: "\00a0";
+}

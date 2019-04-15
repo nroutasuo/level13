@@ -1,0 +1,113 @@
+
+// STEPPERS
+
+.stepper {
+	text-align: center;
+	min-width: 70px;
+	vertical-align: middle;
+	margin: 1px;
+    white-space: nowrap;
+}
+
+.stepper button {
+	margin: 0;
+}
+
+.stepper button[data-type="minus"] {
+	border-radius: 7px 0px 0px 7px;
+}
+
+.stepper button[data-type="plus"] {
+	border-radius: 0px 7px 7px 0px;
+}
+
+// HORIZONTAL SELECT
+
+.horizontal-select {
+    display: flex;
+    align-items: center;
+    margin: 2px 0;
+}
+
+.horizontal-select-title {
+    background: @color-dark-bg-box-1;
+    padding: 1px 8px;
+}
+
+.sunlit .horizontal-select-title {
+    background: @color-light-bg-box-1;
+}
+
+.horizontal-select-list {
+    padding: 0;
+    margin: 0;
+}
+
+.horizontal-select-option {
+    border: 1px solid #444;
+    padding: 1px 5px;
+    margin: 0 2px;
+    display: inline-block;
+    background: @color-dark-bg;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.sunlit .horizontal-select-option {
+    background: @color-light-bg;
+}
+
+.horizontal-select-option:hover {
+    background: @color-dark-border-box-2;
+    border-color: #666;
+}
+
+.sunlit .horizontal-select-option:hover {
+    background: @color-light-border-box-2;
+    border-color: #aaa;
+}
+
+.horizontal-select-option.selected {
+    background: @color-dark-border-box-2;
+}
+
+.sunlit .horizontal-select-option.selected {
+    background: @color-light-border-box-2;
+}
+
+// COLLAPSIBLE CONTAINERS
+
+.collapsible-container {
+    margin: 5px 0px;
+}
+
+.collapsible-header {
+	cursor: pointer;
+	margin: 0px;
+	padding: 5px 30px 5px 10px;
+	background-image: url('../img/open-iconic/arrow-circle-top-2x-dark.png');
+	background-repeat: no-repeat;
+	background-position: right 8px center;
+}
+
+.sunlit .collapsible-header {
+	background-image: url('../img/open-iconic/arrow-circle-top-2x.png');
+	background-repeat: no-repeat;
+	background-position: right 8px center;
+}
+
+.collapsible-header.collapsible-collapsed {
+	background-image: url('../img/open-iconic/arrow-circle-bottom-2x-dark.png');
+	background-repeat: no-repeat;
+	background-position: right 8px center;
+}
+
+.sunlit .collapsible-header.collapsible-collapsed {
+	background-image: url('../img/open-iconic/arrow-circle-bottom-2x.png');
+	background-repeat: no-repeat;
+	background-position: right 8px center;
+}
+
+.collapsible-content {
+	margin: 5px 10px;
+}

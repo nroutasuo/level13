@@ -1,0 +1,50 @@
+// Base layout including log, sticky footer etc
+
+@footer-height: 50px;
+
+html {
+	height: 100%;
+}
+
+body {
+	height: 100%;
+	margin: 0;
+    border-width: 0px !important;
+}
+
+#grid-main {
+	height: 100%;
+}
+
+#log {
+	max-width: 244px;
+	width: 25%;
+	padding-right: 50px;
+}
+
+#switch, #switch-content {
+	padding: 0;
+}
+
+#grid-switch {
+	margin: 0px !important;
+	border: 0;
+	padding: 0;
+}
+
+.sticky-footer {
+	height: @footer-height;
+	padding: 10px 0;
+    display: none;
+}
+
+.sticky-footer-push {
+	margin: 0;
+	height: @footer-height;
+}
+
+.sticky-footer-wrapper {
+	min-height: 100%;
+	height: auto !important;
+	margin: 0 auto -@footer-height;
+}

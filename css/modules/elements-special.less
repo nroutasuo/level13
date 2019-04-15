@@ -1,0 +1,159 @@
+
+// MAIN LOG
+
+#log {
+	background: none;
+}
+
+#log ul {
+	list-style-type: none;
+    padding-left:0;
+	margin: 0;
+}
+
+#log ul li {
+	margin: 0px 0px 0.8em 0px;
+}
+
+#log .msg { display: block; }
+
+#log-overlay {
+	height: 100%;
+	max-width: 214px;
+	width: 100%;
+	position: inherit;
+	pointer-events: none;
+	top: 0;
+}
+
+// "HEADER" SELF-BAR
+
+#header-self-bar {
+    position: fixed;
+    width: @header-self-bar-width;
+    z-index: 5;
+    text-align: center;
+    padding: 5px 3px;
+    margin-left: -80px;
+    font-size: 80%;
+}
+
+#header-self-bar ul {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#header-self-bar > span {
+   display: block;
+}
+
+#header-self-bar .stats-indicator {
+   margin: 1px 0px;
+   width: 100%;
+   line-height: 1em;
+}
+
+#header-self-bar .callout-container {
+   width: 100%;
+}
+
+#header-self-bar .stats-indicator .value {
+   font-size: @font-size-small;
+   margin: 3px 0;
+}
+
+#header-self-bar .info-callout {
+   width: 75px;
+   max-width: 75px;
+}
+
+#header-self-inout img {
+   -webkit-transition: -webkit-transform 1s;
+   transition: all 1s;
+}
+
+#header-self-bar .change-indicator {
+    vertical-align: top;
+    margin: 0.2em 0 0 0.25em;
+}
+
+#header-self-bar div.callout-arrow-up {
+	margin: 0 0 0 (@header-self-bar-width/2 - @callout-arrow-size);
+}
+
+// FOOTER
+
+#footer {
+    padding: 1px 5px;
+ }
+
+ul#game-options, ul#game-options-extended {
+	list-style-type: none;
+	padding: 0;
+	margin: 0 0 0 0px;
+	line-height: 1em;
+	display: table;
+	float: right;
+}
+
+ul#game-options li, ul#game-options-extended li {
+	list-style-type: none;
+	display: table-cell;
+    vertical-align: middle;
+}
+
+#game-version, #game-msg {
+    text-transform: lowercase;
+    position: relative;
+    left: -55px;
+}
+
+.sticky-footer .one-quarter {
+	height: 2px;
+	padding: 0px;
+}
+
+// CHANGELOG
+
+.changelog-type {
+   padding: 2px 5px;
+   border-width: 1px;
+   border-style: solid;
+   margin: 0px 5px 0px 0px;
+}
+
+#changelog {
+    font-size: 85%;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#changelog ul {
+    padding: 0 0 0 2em;
+    margin: 0.25em 0 1em 0;
+    list-style-type: none;
+}
+
+#changelog li {
+    position: relative;
+    line-height: 1.35em;
+}
+
+#changelog li:before{
+    width: 7px;
+    height: 7px;
+    background: @color-dark-text-box-3;
+    color: @color-dark-text-box-3;
+    content: ".";
+    position: absolute;
+    left: -1em;
+    top: 0.375em;
+    display: inline-block;
+    overflow: hidden;
+}
+
+// IN-GAME DATE
+
+#in-game-date {
+    float: right;
+}
