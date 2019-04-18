@@ -104,8 +104,6 @@ define([
             if (currentCamp) {
                 var campComponent = currentCamp.get(CampComponent);
                 $("#switch-tabs #switch-in .name").text(campComponent.getType());
-                $("#switch-tabs #switch-in").toggleClass("disabled", !posHasCamp);
-                $("#switch-tabs #switch-world").toggleClass("disabled", !posHasCamp);
             }
         },
     });

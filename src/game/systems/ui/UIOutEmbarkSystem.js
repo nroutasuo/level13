@@ -124,7 +124,7 @@ define([
                     selectedAmount = Math.max(0, val);
                     selectedCapacity += selectedAmount * BagConstants.getResourceCapacity(resourceName);
                     
-                    $(this).toggleClass("list-option-dimmed", val <= 0 || inputMax <= 0);
+                    $(this).toggleClass("container-dimmed", val <= 0 || inputMax <= 0);
                     
                     if (resourceName === resourceNames.water)
                         selectedWater = selectedAmount;
@@ -152,7 +152,7 @@ define([
                     selectedAmount = Math.max(0, $(stepper).children("input").val());
                     selectedCapacity += selectedAmount * BagConstants.getItemCapacity(itemsComponent.getItem(itemID, null, true));
                     
-                    $(this).toggleClass("list-option-dimmed", val <= 0 || inputMax <= 0);
+                    $(this).toggleClass("container-dimmed", val <= 0 || inputMax <= 0);
                 }
 			});
 			

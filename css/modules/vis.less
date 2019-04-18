@@ -1,8 +1,8 @@
-// out: vis.css, compress: false
+// Styles for visualizations (map, tech tree etc)
 
 @import "colors";
 
-/* MAPS */
+// MAPS
 
 #minimap {
     overflow: hidden;
@@ -49,7 +49,11 @@
     background: @color-dark-text;
 }
 
-/* TECH TREE */
+// TECH TREE
+
+#researched-upgrades-vis-container {
+    max-height: 300px;
+}
 
 .upgrades-overlay-cell {
     width: 85px;
@@ -62,7 +66,7 @@
 }
 
 
-/* CAMP VIS */
+// CAMP VIS
 
 #tab-vis-in {
     border: 2px solid @color-dark-border-box-1;

@@ -1,6 +1,24 @@
+// Basic styling for html input elements
 
+// UNSORTED INPUT RULES (TODO SORT)
+
+input, select, textarea {
+   background-color: @color-dark-bg-input;
+   color: @color-dark-text;
+   border: 1px solid #333;
+}
+
+.sunlit input, .sunlit select, .sunlit textarea {
+   background-color: @color-light-bg-input;
+   color: @color-dark-bg;
+   border: 1px solid #bbb;
+}
+
+// RANGE
 
 input[type=range] {
+    background: inherit;
+    border: none;
     margin: 3px 5px;
     vertical-align: middle;
     cursor: pointer;
@@ -18,6 +36,7 @@ input[type=range]::-webkit-slider-runnable-track {
   animate: 0.2s;
   background: @color-dark-bg-input;
 }
+
 input[type=range]::-webkit-slider-thumb {
   border: 1px solid @color-dark-text-box-3;
   height: @size-input-range-thumb;
@@ -28,9 +47,11 @@ input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
   margin-top: -5px;
 }
+
 input[type=range]:focus::-webkit-slider-runnable-track {
   background: @color-dark-bg-input;
 }
+
 input[type=range]::-moz-range-track {
   width: 100%;
   height: 5px;
@@ -38,6 +59,7 @@ input[type=range]::-moz-range-track {
   animate: 0.2s;
   background: @color-dark-bg-input;
 }
+
 input[type=range]::-moz-range-thumb {
   border: 1px solid @color-dark-text-box-3;
   height: @size-input-range-thumb;
@@ -46,6 +68,7 @@ input[type=range]::-moz-range-thumb {
   background: @color-dark-text;
   cursor: pointer;
 }
+
 input[type=range]::-ms-track {
   width: 100%;
   height: 5px;
@@ -55,16 +78,19 @@ input[type=range]::-ms-track {
   border-color: transparent;
   color: transparent;
 }
+
 input[type=range]::-ms-fill-lower {
   background: @color-dark-text;
   border: 0px solid #000000;
   border-radius: 2px;
 }
+
 input[type=range]::-ms-fill-upper {
   background: @color-dark-text;
   border: 0px solid #000000;
   border-radius: 2px;
 }
+
 input[type=range]::-ms-thumb {
   margin-top: 1px;
   border: 1px solid @color-dark-text-box-3;
@@ -74,12 +100,42 @@ input[type=range]::-ms-thumb {
   background: @color-dark-text;
   cursor: pointer;
 }
+
 input[type=range]:focus::-ms-fill-lower {
   background: @color-dark-text;
 }
+
 input[type=range]:focus::-ms-fill-upper {
   background: @color-dark-text;
 }
+
+// CHECKBOX
+
+.checkbox {
+    width: 1em;
+    height: 1em;
+    border-width: 1px;
+    border-style: solid;
+    display: inline-block;
+    margin: 1px 3px;
+    vertical-align: middle;
+	cursor: pointer;
+}
+
+.checkbox-label {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+}
+
+// SELECT
+
+select {
+    margin: 0px 5px;
+    padding: 1px 3px;
+}
+
+// AMOUNT
 
 input.amount {
 	width: 30pt;

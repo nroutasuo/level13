@@ -1,4 +1,4 @@
-// Base layout including log, sticky footer etc
+// Base page layout including log, sticky footer etc
 
 @footer-height: 50px;
 
@@ -32,6 +32,22 @@ body {
 	padding: 0;
 }
 
+#tab-header {
+    margin: 5px 0px
+}
+
+#tab-header h2 {
+     margin: 2px 0px;
+ }
+ 
+#grid-location-header {
+    padding: 10px 0px 0px 0px;
+}
+    
+ #unit-main {
+     padding-left: 28px; /* for the self-bar */
+ }
+
 .sticky-footer {
 	height: @footer-height;
 	padding: 10px 0;
@@ -47,4 +63,14 @@ body {
 	min-height: 100%;
 	height: auto !important;
 	margin: 0 auto -@footer-height;
+}
+
+div.grid-content {
+	margin: 0px 0px 15px 0px !important;
+	padding: 15px;
+}
+
+div.grid-content .grid .unit {
+	padding-top: 0;
+	padding-bottom: 0;
 }

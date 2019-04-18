@@ -1,3 +1,4 @@
+// Global rules for typography and links
 
 body {
 	font-family: Arial, sans-serif;
@@ -22,4 +23,27 @@ h4 {
 a {
     border: none !important;
     background: inherit !important;
+}
+
+a:hover {
+	color: #fff !important;
+}
+
+a:link, a:visited {
+	background: @color-dark-bg;
+	color: @color-dark-text;
+	border: 1px solid #555;
+}
+.sunlit a:link, .sunlit a:visited {
+    background: rgb(252, 252, 252);
+    color: #222222;
+    border: 1px solid #aaa;
+}
+
+.sunlit a:hover {
+	color: black !important;
+}
+
+.p-dense, .p-dense p {
+    margin: 0.25em 0;
 }

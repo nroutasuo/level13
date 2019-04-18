@@ -1,0 +1,164 @@
+// Reusable utility classes meant to be as generic as possible
+
+// GENERAL UTILITY CLASSES
+
+.centered {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hidden {
+    display: none;
+}
+
+.full-width {
+	width: 100%;
+}
+
+.strike-through {
+	text-decoration: line-through;
+	opacity: 0.9;
+}
+
+.container-dimmed .dimmable {
+    opacity: 0.5;
+}
+
+.rotate-on-hover {
+    &:hover {
+        -moz-transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+span.icon {
+	padding: 2px;
+}
+
+.shadowed-basic {
+	-webkit-box-shadow: 1px 2px 7px 3px rgba(0, 0, 0, 0.25);
+	-moz-box-shadow:    1px 2px 7px 3px rgba(0, 0, 0, 0.25);
+	box-shadow:         1px 2px 7px 3px rgba(0, 0, 0, 0.25);
+}
+
+.sunlit .shadowed-basic {
+	-webkit-box-shadow: 1px 2px 5px 2px rgba(96, 96, 96, 0.25);
+	-moz-box-shadow:    1px 2px 5px 2px rgba(96, 96, 96, 0.25);
+	box-shadow:         1px 2px 5px 2px rgba(96, 96, 96, 0.25);
+}
+
+// LEVEL 13 UTILITY CLASSES
+
+.lvl13-box-2 {
+	border: 1px solid @color-dark-border-box-2;
+}
+
+.sunlit .lvl13-box-2  {
+	border: 1px solid #aaa;
+}
+
+.lvl13-box-3 {
+	border: 1px solid @color-dark-border-box-2;
+	background: @color-dark-bg-box-3;
+	color: @color-dark-text-box-3;
+}
+
+.sunlit .lvl13-box-3 {
+	border: 1px solid @color-light-border-box-2;
+	background: @color-light-bg-box-3;
+	color: @color-light-text-box-3;
+}
+
+span.hl-functionality {
+   font-weight: bold;
+}
+
+.p-meta {
+	color: rgba(255,255,255,0.5);
+}
+
+.sunlit .p-meta {
+	color: rgba(0,0,0,0.5);
+}
+
+// TABLE UTILITY CLASSES
+
+table.fullwidth {
+	width: 100%;
+}
+
+table.spacious {
+    margin: 5px 0px;
+}
+
+table.spacious td {
+    padding: 2px 5px;
+}
+
+table.spacious td:last-child {
+    padding-right: 0px;
+}
+
+table.spacious td:first-child {
+    padding-left: 0px;
+}
+
+// TABLE CELL UTILITY CLASSES
+
+td.minwidth {
+	width: 5%;
+}
+
+td.maxwidth {
+	width: 95%;
+}
+
+td.list-amount, td.list-storage {
+	min-width: 35pt;
+	text-align: center;
+}
+
+td.list-description {
+    padding-left: 10px;
+}
+
+td.list-action {
+    text-align: center;
+    width: 100pt;
+}
+
+td.list-main {
+    text-align: center;
+}
+
+td.item-name {
+	min-width: 8em;
+}
+
+th.th-number {
+	text-align: center;
+}
+
+th.th-text {
+	text-align: left;
+}
+
+td.bg-reset {
+    background: @color-dark-bg-box-1;
+}
+
+.sunlit td.bg-reset {
+    background: @color-light-bg-box-1;
+}
+
+tr.current {
+	background: @color-dark-bg-element;
+    border-color: @color-dark-bg-element;
+}
+
+.sunlit tr.current {
+	background: @color-light-bg-element;
+}

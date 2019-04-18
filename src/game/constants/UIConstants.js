@@ -200,50 +200,6 @@ define(['ash',
 			return html;
 		},
 
-		getSectorMapTD: function (playerPosition, sector) {
-			var content = "";
-			var sectorStatus = SectorConstants.getSectorStatus(sector);
-			var classes = "vis-out-sector";
-			if (sector && sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE) {
-				var sectorPos = sector.get(PositionComponent);
-				var statusComponent = sector.get(SectorStatusComponent);
-				var localesComponent = sector.get(SectorLocalesComponent);
-				var sectorPassages = sector.get(PassagesComponent);
-				var isScouted = statusComponent.scouted;
-				if (sectorPos.sectorId() === playerPosition.sectorId()) {
-					classes += " vis-out-sector-current";
-				}
-
-				if (sector.has(VisitedComponent)) {
-					classes += " vis-out-sector-visited";
-				}
-
-				content = "?";
-				var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
-				if (isScouted) content = " ";
-				if (sector.has(CampComponent)) content = "c";
-				if (sector.has(WorkshopComponent)) content = "w";
-				if (sectorPassages.passageUp && isScouted) content = "U";
-				if (sectorPassages.passageDown && isScouted) content = "D";
-				if (unScoutedLocales > 0 && isScouted) content = "L";
-			} else {
-				classes += " vis-out-sector-null";
-			}
-
-			content = "<div class='" + classes + "'>" + content.trim() + "<div>";
-
-			if (sector && sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE) {
-				for (var i in PositionConstants.getLevelDirections()) {
-					var direction = PositionConstants.getLevelDirections()[i];
-					var blocker = sectorPassages.getBlocker(direction);
-					var blockerType = blocker ? blocker.type : "null";
-					content += "<div class='vis-out-blocker vis-out-blocker-" + PositionConstants.getDirectionName(direction) + " vis-out-blocker-" + blockerType + "'/>";
-				}
-			}
-
-			return "<td class='vis-out-sector-container'>" + content + "</td>";
-		},
-
 		getItemBonusDescription: function (item, showAllBonuses, useLineBreaks) {
 			var result = "";
 			var defaultType = ItemConstants.getItemDefaultBonus(item);

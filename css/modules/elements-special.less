@@ -1,3 +1,4 @@
+// Styles for special elements only used in one or two contexts
 
 // MAIN LOG
 
@@ -24,6 +25,87 @@
 	position: inherit;
 	pointer-events: none;
 	top: 0;
+}
+
+#log ul li.log-loaded, #log ul li.log-loaded span {
+	color: #888;
+}
+
+.sunlit #log ul li.log-loaded, .sunlit #log ul li.log-loaded span {
+	color: #aaa;
+}
+
+span.time, span.msg-camp-level {
+	font-size: 75%;
+	vertical-align: middle;
+}
+
+span.msg-count, span.time, span.msg-camp-level {
+	color: #bbb;
+}
+
+.sunlit span.msg-count, .sunlit span.time, .sunlit msg-camp-level {
+	color: #777;
+}
+
+// MAIN LOG FADEDOWN
+
+.lvl13-fade-down {
+	background: -webkit-linear-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 75%, rgba(32, 34, 32, 1) 100% );
+	background: linear-gradient( rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 75%, rgba(32, 34, 32, 1) 100% );
+	background: -o-linear-gradient( rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 75%, rgba(32, 34, 32, 1) 100% );
+	background: -moz-linear-gradient( rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 75%, rgba(32, 34, 32, 1) 100% );
+}
+
+.sunlit .lvl13-fade-down {
+	background: -webkit-linear-gradient(rgba(253, 253, 253, 0) 0%, rgba(253, 253, 253, 0) 75%, rgba(253, 253, 253, 1) 100% );
+	background: linear-gradient( rgba(253, 253, 253, 0) 0%, rgba(253, 253, 253, 0) 75%, rgba(253, 253, 253, 1) 100% );
+	background: -o-linear-gradient( rgba(253, 253, 253, 0) 0%, rgba(253, 253, 253, 0) 75%, rgba(253, 253, 253, 1) 100% );
+	background: -moz-linear-gradient( rgba(253, 253, 253, 0) 0%, rgba(253, 253, 253, 0) 75%, rgba(253, 253, 253, 1) 100% );
+}
+
+// MAIN HEADER (RESOURCE, STATS ETC)
+
+.header-section {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0px 5px 0px 0px;
+    float: left;
+    padding: 0px 2px;
+}
+
+#main-header-camp {
+    width: 100%;
+}
+
+#main-header-bag {
+    min-width: 20%;
+    max-width: 25%;
+}
+
+#main-header-equipment {
+    max-height: 122px;
+    text-align: center;
+    padding: 2px;
+}
+
+#main-header-items {
+    min-width: 35px;
+    max-width: 35%;
+}
+
+#header-tribe-container {
+    margin-bottom: 5px;
+}
+
+#grid-main-header .unit {
+    padding: 2px;
+    position: relative;
+}
+
+#statsbar-resources .callout-container {
+    width: 33%;
+    border: 0px;
 }
 
 // "HEADER" SELF-BAR
@@ -81,6 +163,39 @@
 	margin: 0 0 0 (@header-self-bar-width/2 - @callout-arrow-size);
 }
 
+// BAG SCREEN
+
+.item-bag-options {
+    margin-top: 5px;
+}
+
+#bag-resources > .callout-container {
+    max-width: 49%;
+}
+
+// PLAYER NOTIFICATION (BUSY INDICATOR)
+
+#notification-player {
+    padding: 0px;
+    border-width: 1px;
+    border-style: solid;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#notification-player .progress {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+}
+
+// PLAYER POSITION INDICATOR
+
+span#out-position-indicator, span#out-position-indicator-header {
+    font-size: 80%;
+    line-height: 1.1em;
+}
+
 // FOOTER
 
 #footer {
@@ -120,6 +235,11 @@ ul#game-options li, ul#game-options-extended li {
    border-width: 1px;
    border-style: solid;
    margin: 0px 5px 0px 0px;
+   	border-color: #555;
+}
+
+.sunlit .changelog-type {
+	border-color: #aaa;
 }
 
 #changelog {
@@ -152,8 +272,178 @@ ul#game-options li, ul#game-options-extended li {
     overflow: hidden;
 }
 
+// OUT MINIMAP AND MOVEMENT BUTTONS
+
+#out-container-compass, #out-container-compass-actions {
+    text-align: center;
+    width: 208px;
+}
+
+#out-container-compass canvas, #out-container-compass-actions table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#table-out-actions-movement {
+    margin-top: 10px;
+}
+
+// OUTGOING CARAVANS TABLE
+
+#trade-caravans-outgoing-container tr {
+    border-width: 3px;
+    border-bottom-width: 0px;
+    border-style: solid;
+    border-color: transparent;
+}
+
+#trade-caravans-outgoing-container tr.selected {
+    border-color: @color-dark-bg-element;
+}
+
+.sunlit #trade-caravans-outgoing-container tr.selected {
+    border-color: @color-light-bg-element;
+}
+
+.trade-caravans-outgoing-plan {
+    border-width: 3px;
+    border-top-width: 0px;
+}
+
+.row-detail-indicator {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    text-align: center;
+}
+
+ .row-detail-indicator {
+ 	color: #888;
+}
+
+.sunlit .row-detail-indicator {
+	color: #aaa;
+}
+
+// INCOMING CARAVAN POPUP
+
+#incoming-caravan-popup-multiplier {
+    justify-content: flex-end;
+    font-size: 85%;
+    margin-bottom: 1em;
+}
+
+// TRIBE OVERVIEW TABLE
+
+.camp-overview-level-container {
+    border-radius: 1.75em;
+    text-align: center;
+    font-size: 80%;
+    width: 1.75em;
+    margin: 2px;
+    vertical-align: middle;
+    background: inherit;
+    font-weight: bold;
+}
+
+#camp-overview tr {
+    border-style: solid;
+    border-width: 1px;
+}
+
+// RESULT LIST
+
+#resultlist-inventorymanagement-found ul li, #resultlist-loststuff-lost ul li {
+    border-width: 0px;
+}
+
+ul.resultlist li {
+	margin: 0px 3px;
+	background-color: transparent;
+}
+
+ul.resultlist-positive li:before {
+    content: "+ ";
+}
+
+ul.resultlist li {
+	background: rgba(200,200,200,0.1);
+	border-color: #666;
+}
+
+.sunlit ul.resultlist li {
+	background: #fff;
+	border-color: #bbb;
+}
+
+// CONTENT GRID
+
+div.grid-content {
+	background: @color-dark-bg-box-1;
+	border: 2px solid @color-dark-border-box-1;
+}
+
+.sunlit div.grid-content {
+	background: @color-light-bg-box-1;
+	border: 1px solid @color-light-border-box-1;
+}
+
 // IN-GAME DATE
 
 #in-game-date {
     float: right;
+}
+
+// BLUPRINT PIECES
+
+.blueprint:hover {
+	border-width: 2px !important;
+}
+
+.blueprint-piece-box {
+    width: 2em;
+    height: 2em;
+    display: inline-block;
+    margin: 0px 3px;
+    border-width: 2px;
+    border-style: solid;
+    position: relative;
+}
+
+.blueprint-piece-box-found {
+	background: rgba(200,200,200,0.1);
+	border-color: #666;
+}
+
+.sunlit .blueprint-piece-box-found {
+	background: #fff;
+	border-color: #bbb;
+}
+
+.blueprint-piece-box-missing {
+	background: @color-dark-bg-box-1;
+	border: 2px solid @color-dark-border-box-1;
+}
+
+.sunlit .blueprint-piece-box-missing {
+	background: @color-light-bg-box-1;
+	border: 1px solid @color-light-border-box-1;
+}
+
+.blueprint-piece-box img {
+    position: absolute;
+    top: 25%;
+    left: 12%;
+}
+
+// CAMP EVENTS
+
+.event-ending {
+	animation: event-end 1.3s step-end infinite;
+	animation-timing-function: ease-in-out;
+}
+
+@keyframes event-end {
+	0%	{opacity: inherit}
+	50%	{opacity: 0.4}
 }
