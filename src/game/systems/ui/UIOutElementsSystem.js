@@ -242,10 +242,6 @@ define([
 				buttonElements.cooldownReqs.css("width", ((costsStatus.bottleneckCostFraction) * 100) + "%");
 				buttonStatus.bottleneckCostFraction = costsStatus.bottleneckCostFraction;
 			}
-			if (buttonStatus.isHardDisabled !== isHardDisabled) {
-				buttonElements.cooldownDuration.css("display", !isHardDisabled ? "inherit" : "none");
-				buttonStatus.isHardDisabled = isHardDisabled;
-			}
 		},
 
 		hasButtonCooldown: function ($button) {
@@ -379,6 +375,7 @@ define([
 					sys.buttonElements.push(elements);
 				}
 			});
+            console.log("update visible buttons:" + this.elementsVisibleButtons.length);
 		},
 
 		updateVisibleProgressbarsList: function () {
