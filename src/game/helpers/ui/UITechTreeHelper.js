@@ -2,10 +2,11 @@
 define(['ash',
     'game/GameGlobals',
     'game/constants/CanvasConstants',
+    'game/constants/ColorConstants',
     'game/constants/PlayerActionConstants',
     'game/constants/UpgradeConstants',
     'game/nodes/tribe/TribeUpgradesNode'],
-function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConstants, TribeUpgradesNode) {
+function (Ash, GameGlobals, CanvasConstants, ColorConstants, PlayerActionConstants, UpgradeConstants, TribeUpgradesNode) {
     
     var UITechTreeNode = Ash.Class.extend({
         
@@ -197,7 +198,7 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             this.ctx.canvas.width = vis.dimensions.canvasWidth;
             this.ctx.canvas.height = vis.dimensions.canvasHeight;
             this.ctx.clearRect(0, 0, this.canvas.scrollWidth, this.canvas.scrollWidth);
-            this.ctx.fillStyle = CanvasConstants.getBackgroundColor(vis.sunlit);
+            this.ctx.fillStyle = ColorConstants.getColor(vis.sunlit, "bg");
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
 			for (var i = 0; i < vis.tree.roots.length; i++) {
@@ -515,9 +516,9 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             var def2 = toNode.definition;
             var highlight = this.isConnected(tree, fromNode.definition.id, highlightedID) && this.isConnected(tree, toNode.definition.id, highlightedID);
             if (!highlightedID || highlight) {
-                return sunlit ? "#999" : "#777";
+                return ColorConstants.getColor(sunlit, "techtree_arrow");
             } else {
-                return sunlit ? "#ccc" : "#555";
+                return ColorConstants.getColor(sunlit, "techtree_arrow_dimmed");
             }
         },
         
@@ -527,15 +528,15 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             var highlight = definition.id == highlightedID || this.isConnected(tree, definition.id, highlightedID);
             if (!highlightedID || highlight) {
                 if (isUnlocked) {
-                    return sunlit ? "#999" : "#ccc";
+                    return ColorConstants.getColor(sunlit, "techtree_node_unlocked");
                 }
                 var isAvailable = GameGlobals.playerActionsHelper.checkRequirements(definition.id, false).value > 0;
                 if (isAvailable) {
-                    return sunlit ? "#ccc" : "#777";
+                    return ColorConstants.getColor(sunlit, "techtree_node_available");
                 }
-                return sunlit ? "#ccc" : "#777";
+                return ColorConstants.getColor(sunlit, "techtree_node_default");
             } else {
-                return sunlit ? "#eee" : "#444";
+                return ColorConstants.getColor(sunlit, "techtree_node_dimmed");
                 
             }
         },
@@ -547,9 +548,9 @@ function (Ash, GameGlobals, CanvasConstants, PlayerActionConstants, UpgradeConst
             if (!isUnlocked && isAvailable) {
                 var highlight = definition.id == highlightedID || this.isConnected(tree, definition.id, highlightedID);
                 if (!highlightedID || highlight) {
-                    return sunlit ? "#999" : "#ccc";
+                    return ColorConstants.getColor(sunlit, "techtree_node_unlocked");
                 } else {
-                    return sunlit ? "#ccc" : "#777";
+                    return ColorConstants.getColor(sunlit, "techtree_node_default");
                 }
             } else {
                 return this.getFillColor(tree, node, sunlit, highlightedID);

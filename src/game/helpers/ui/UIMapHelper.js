@@ -1,6 +1,7 @@
 // Creates and updates maps (mini-map and main)
 define(['ash',
     'game/GameGlobals',
+    'game/constants/ColorConstants',
     'game/constants/UIConstants',
     'game/constants/CanvasConstants',
     'game/constants/MovementConstants',
@@ -19,7 +20,7 @@ define(['ash',
     'game/components/type/SectorComponent',
     'game/vos/PositionVO'],
 function (Ash,
-    GameGlobals, UIConstants, CanvasConstants, MovementConstants, PositionConstants, SectorConstants, WorldCreatorConstants,
+    GameGlobals, ColorConstants, UIConstants, CanvasConstants, MovementConstants, PositionConstants, SectorConstants, WorldCreatorConstants,
     PlayerPositionNode,
     LevelComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, SectorImprovementsComponent, WorkshopComponent, SectorComponent,
     PositionVO) {
@@ -107,7 +108,7 @@ function (Ash,
             ctx.canvas.width = dimensions.canvasWidth;
             ctx.canvas.height = dimensions.canvasHeight;
             ctx.clearRect(0, 0, canvas.scrollWidth, canvas.scrollWidth);
-            ctx.fillStyle = CanvasConstants.getBackgroundColor(sunlit);
+            ctx.fillStyle = ColorConstants.getColor(sunlit, "bg");
             ctx.fillRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
 
             var sector;
@@ -120,8 +121,8 @@ function (Ash,
             // background
             var bgPadding;
             var radius;
-            ctx.fillStyle = sunlit ? "#efefef" : "#282a28";
-            ctx.strokeStyle = sunlit ? "#efefef" : "#282a28";
+            ctx.fillStyle = ColorConstants.getColor(sunlit, "bg_box_1");
+            ctx.strokeStyle = ColorConstants.getColor(sunlit, "bg_box_1");
             for (var y = dimensions.minVisibleY; y <= dimensions.maxVisibleY; y++) {
                 for (var x = dimensions.minVisibleX; x <= dimensions.maxVisibleX; x++) {
                     sector = visibleSectors[x + "." + y];
@@ -161,7 +162,7 @@ function (Ash,
             if (playerPosVO.level == levelVO.level) {
                 sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, playerPosVO.sectorX, playerPosVO.sectorY).x;
                 sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, playerPosVO.sectorX, playerPosVO.sectorY).y;
-                ctx.strokeStyle = sunlit ? "#bbb" : "#666";
+                ctx.strokeStyle = ColorConstants.getColor(sunlit, "border_element");
                 ctx.lineWidth = centered ? 3 : 2;
                 ctx.beginPath();
                 ctx.arc(sectorXpx + sectorSize * 0.5, sectorYpx + 0.5 * sectorSize, sectorSize, 0, 2 * Math.PI);
@@ -222,7 +223,7 @@ function (Ash,
         drawGridOnCanvas: function (ctx, sectorSize, dimensions, centered) {
             var gridSize = this.getGridSize();
             var sunlit = $("body").hasClass("sunlit");
-            ctx.strokeStyle = sunlit ? "#d9d9d9" : "#343434";
+            ctx.strokeStyle = ColorConstants.getColor(sunlit, "map_stroke_grid");
             ctx.lineWidth = 1;
             var sectorPadding = this.getSectorPadding(centered);
             var startGridX = (Math.floor(dimensions.mapMinX / gridSize) - 1) * gridSize;
@@ -256,7 +257,9 @@ function (Ash,
                 var isSectorSunlit = sector.get(SectorFeaturesComponent).sunlit;
                 var hasSectorHazard = sector.get(SectorFeaturesComponent).hazards.hasHazards();
                 if (isSectorSunlit || hasSectorHazard) {
-                    ctx.strokeStyle = hasSectorHazard ? "#ee4444" : isLocationSunlit ? "#ffee11" : "#ddee66";
+                    ctx.strokeStyle = ColorConstants.getColor(isLocationSunlit, "map_stroke_sector");
+                    if (hasSectorHazard) ctx.strokeStyle = ColorConstants.getColor(isLocationSunlit, "map_stroke_sector_hazard");
+                    else if (isLocationSunlit) ctx.strokeStyle = ColorConstants.getColor(isLocationSunlit, "map_stroke_sector_sunlit");
                     ctx.lineWidth = Math.max(1, Math.round(sectorSize / 8));
                     ctx.beginPath();
                     ctx.moveTo(sectorXpx - 1, sectorYpx - 1);
@@ -374,7 +377,7 @@ function (Ash,
                 if (neighbour) {
                     var distX = neighbourPos.sectorX - sectorPos.sectorX;
                     var distY = neighbourPos.sectorY - sectorPos.sectorY;
-                    ctx.strokeStyle = sunlit ? "#b0b0b0" : "#3a3a3a";
+                    ctx.strokeStyle = ColorConstants.getColor(sunlit, "map_stroke_movementlines");
                     ctx.lineWidth = Math.ceil(sectorSize / 6);
                     ctx.beginPath();
                     ctx.moveTo(sectorMiddleX + 0.5 * sectorSize * distX, sectorMiddleY + 0.5 * sectorSize * distY);
@@ -391,7 +394,7 @@ function (Ash,
                         var blockerY = sectorMiddleY + sectorSize * (1 + sectorPadding)/2 * distY;
                         if (isGang) {
                             if (isBlocked) {
-                                ctx.strokeStyle = "#dd0000";
+                                ctx.strokeStyle = ColorConstants.getColor(sunlit, "map_stroke_gang");
                                 ctx.lineWidth = Math.ceil(sectorSize / 9);
                                 ctx.beginPath();
                                 ctx.arc(blockerX, blockerY, sectorSize * 0.2, 0, 2 * Math.PI);
@@ -399,7 +402,7 @@ function (Ash,
                             }
                         } else {
                             var crossSize = Math.max(sectorSize / 5, 3);
-                            ctx.strokeStyle = isBlocked ? "#dd0000" : this.getSectorFill(SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED);
+                            ctx.strokeStyle = isBlocked ? ColorConstants.getColor(sunlit, "map_stroke_blocker") : this.getSectorFill(SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED);
                             ctx.lineWidth = Math.ceil(sectorSize / 9);
                             ctx.beginPath();
                             ctx.moveTo(blockerX - crossSize, blockerY - crossSize);
@@ -526,25 +529,25 @@ function (Ash,
             switch (sectorStatus) {
                 case SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE:
                 case SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE:
-                    return sunlit ? "#d0d0d0" : "#3a3a3a";
+                    return ColorConstants.getColor(sunlit, "map_fill_sector_unvisited");
 
                 case SectorConstants.MAP_SECTOR_STATUS_VISITED_UNSCOUTED:
-                    return sunlit ? "#bbb" : "#666";
+                    return ColorConstants.getColor(sunlit, "map_fill_sector_unscouted");
 
                 case SectorConstants.MAP_SECTOR_STATUS_VISITED_SCOUTED:
-                    return sunlit ? "#888" : "#999";
+                    return ColorConstants.getColor(sunlit, "map_fill_sector_scouted");
 
                 case SectorConstants.MAP_SECTOR_STATUS_VISITED_CLEARED:
-                    return sunlit ? "#555" : "#ccc";
+                    return ColorConstants.getColor(sunlit, "map_fill_sector_cleared");
             }
         },
 
         getResourceFill: function (resourceName) {
             switch (resourceName) {
-                case resourceNames.metal: return "#202020";
-                case resourceNames.water: return "#2299ff";
-                case resourceNames.food: return "#ff6622";
-                case resourceNames.fuel: return "#dd66cc";
+                case resourceNames.metal: return ColorConstants.getGlobalColor("res_metal");
+                case resourceNames.water: return ColorConstants.getGlobalColor("res_water");
+                case resourceNames.food: return ColorConstants.getGlobalColor("res_food");
+                case resourceNames.fuel: return ColorConstants.getGlobalColor("res_fuel");
             }
         },
         
