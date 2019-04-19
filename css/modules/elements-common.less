@@ -2,6 +2,8 @@
 
 // CALLOUTS
 
+@callout-arrow-size: 7px;
+
 div.container-btn-action:hover + div.btn-callout, div.btn-callout:hover, .info-callout-target:hover + div.info-callout, div.info-callout:hover {
 	display: block;
 }
@@ -46,13 +48,13 @@ div.info-callout-content {
 div.btn-callout-content, div.info-callout-content {
 	background: @color-dark-bg;
 	color: @color-dark-text;
-	border: 1px solid #555;
+	border: 1px solid @color-dark-border-box-3;
 }
 
 .sunlit div.btn-callout-content, .sunlit div.info-callout-content {
-	background: rgb(252, 252, 252);
-	color: #222222;
-	border: 1px solid #aaa;
+	background: @color-light-bg;
+	color: @color-light-text;
+	border: 1px solid @color-light-border-box-3;
 }
 
 .item div.info-callout-target, .res div.info-callout-target, .resultlist li div.info-callout-target, .itemlist div.info-callout-target {
@@ -89,14 +91,10 @@ div.btn-callout-content, div.info-callout-content {
     .shadowed-basic();
 }
 
-.sunlit div.callout-arrow-up {
-	border-bottom-color: #aaa !important;
-}
-
 // CALLOUT ARROWS
 
 div.callout-arrow-up {
-	border-bottom-color: #666 !important;
+	border-bottom-color: @color-dark-border-box-3 !important;
 	width: 0;
 	height: 0;
 	z-index: 40;
@@ -108,8 +106,13 @@ div.callout-arrow-up {
 	border-bottom: @callout-arrow-size solid;
 }
 
-div.btn-callout div.callout-arrow-up {
+div.callout-arrow-up {
+    border-bottom-color: @color-dark-border-box-3, 15% !important;
 	margin: 0px auto;
+}
+
+.sunlit div.callout-arrow-up {
+    border-bottom-color: @color-light-border-box-3 !important;
 }
 
 .item div.callout-arrow-up {
@@ -127,11 +130,11 @@ span.action-cost-blocker-storage {
 }
 
 span.action-cost-blocker {
-	color: #666;
+	color: @color-dark-text-disabled;
 }
 
 .sunlit span.action-cost-blocker {
-	color: #999;
+	color: @color-light-text-disabled;
 }
 
 .action-separator {
@@ -160,11 +163,11 @@ ul.tabs li {
 	white-space: nowrap;
 	cursor: pointer;
 	text-transform: lowercase;
-    border-color: #333;
+    border-color: @color-dark-border-box-2;
 }
 
 .sunlit ul.tabs li {
-    border-color: #ddd;
+    border-color: @color-light-border-box-2;
 }
 
 ul.tabs li.selected {
@@ -219,11 +222,11 @@ div.popup-overlay {
     z-index:6;
     width:100%;
     height:100%;
-    background-color: rgba(0,0,0,0.85);
+    background-color: @color-dark-bg-popup-overlay;
 }
 
 .sunlit div.popup-overlay {
-    background-color: rgba(255,255,255,0.85);
+    background-color: @color-light-bg-popup-overlay;
 }
 
 div.popup {
@@ -291,27 +294,28 @@ div.popup {
 }
 
 .horizontal-select-option {
-    border: 1px solid #444;
+    background: @color-dark-bg;
+    border: 1px solid @color-dark-border-box-3;
     padding: 1px 5px;
     margin: 0 2px;
     display: inline-block;
-    background: @color-dark-bg;
     cursor: pointer;
     border-radius: 3px;
 }
 
 .sunlit .horizontal-select-option {
     background: @color-light-bg;
+    border-color: @color-light-border-box-3;
 }
 
 .horizontal-select-option:hover {
     background: @color-dark-border-box-2;
-    border-color: #666;
+    border-color: ligten(@color-dark-border-box-3, 10%);
 }
 
 .sunlit .horizontal-select-option:hover {
     background: @color-light-border-box-2;
-    border-color: #aaa;
+    border-color: ligten(@color-light-border-box-3, 10%);
 }
 
 .horizontal-select-option.selected {
@@ -345,11 +349,11 @@ div.popup {
 }
 
 .stats-indicator .value, .stats-indicator .value-total, .stats-indicator .change, .stats-indicator .forecast {
-	color: #bbb;
+	color: @color-dark-text-secondary;
 }
 
 .sunlit .stats-indicator .value, .sunlit .stats-indicator .value-total, .sunlit .stats-indicator .change, .sunlit .stats-indicator .forecast {
-	color: #777;
+	color: @color-light-text-secondary;
 }
 
 .stats-indicator .change, .stats-indicator .forecast {
@@ -427,7 +431,7 @@ div.popup {
 }
 
 .sunlit .collapsible-container {
-	border: 1px solid #aaa;
+	border: 1px solid @color-light-border-box-2;
 }
 
 .collapsible-header {
@@ -474,14 +478,15 @@ div.popup {
 }
 
 .progress-wrap {
-	background-color: #444;
+	background-color: @color-dark-highlight-element;
 	margin: 6px auto;
+    border: 0px;
 	overflow: hidden;
 	position: relative;
 }
 
 .sunlit .progress-wrap {
-	background-color: #b3b3b3;
+	background-color: @color-light-highlight-element;
 }
 
 .progress-bar {
@@ -511,6 +516,7 @@ div.popup {
     text-align: center;
     overflow: hidden;
     position: relative;
+    border-width: 1px !important;
 }
 
 .canvas-container {
@@ -518,7 +524,7 @@ div.popup {
 }
 
  .sunlit .canvas-container  {
-	border: 1px solid #aaa;
+	border: 1px solid @color-light-border-box-2;
 }
 
 .scroll-position-container {
@@ -554,7 +560,7 @@ div.popup {
 }
 
 .sunlit .scroll-position-indicator {
-    background: #aaa;
+    background: @color-light-border-box-1;
 }
 
 .scrollable.scroll-enabled {
@@ -611,7 +617,7 @@ table .bubble {
 }
 
 .sunlit .infobox-scrollable {
-   border: 1px solid #aaa;
+   border: 1px solid @color-light-border-box-2;
 }
 
 .infobox-scrollable-header {
@@ -638,11 +644,11 @@ table .bubble {
 }
 
 .inventorybox {
-    border-color: #555;
+    border-color: @color-dark-border-box-3;
 }
 
 .sunlit .inventorybox {
-	border-color: #aaa;
+	border-color: @color-light-border-box-3;
 }
 
 .inventorybox ul li {
@@ -708,13 +714,13 @@ table .bubble {
 }
 
 .li-item-negative {
-	border: 1px solid #E13232 !important;
-	background: rgba(230, 70, 70, 0.15) !important;
+    background: @color-dark-warning-bg !important;
+	border: 1px solid @color-dark-warning-border !important;
 }
 
 .sunlit .li-item-negative {
-	border: 1px solid #ee1111 !important;
-	background: rgba(245, 0, 0, 0.1) !important;
+    background: @color-light-warning-bg !important;
+	border: 1px solid @color-light-warning-border !important;
 }
 
 .highlightbox, .inventorybox-header, .inventorybox-footer {
@@ -727,6 +733,10 @@ table .bubble {
 }
 
 // ITEM SLOTS
+
+@item-slot-big-width: 55px;
+@item-slot-big-height: 70px;
+@item-div-size: 18px;
 
 .item-slot {
     background: inherit !important;
@@ -749,11 +759,11 @@ table .bubble {
 }
 
 .item-slot-equipped {
-    border-color: #555;
+    border-color: @color-dark-border-box-3;
 }
 
 .sunlit .item-slot-equipped {
-	border-color: #aaa;
+	border-color: @color-light-border-box-3;
 }
 
 .item-equipped {
@@ -761,7 +771,7 @@ table .bubble {
 }
 
 .sunlit .item-equpped {
-    background: #ececec;
+    background: @color-light-bg-element;
 }
 
 .item-slot-type-empty {
@@ -825,36 +835,27 @@ div.item-slot > div, div.item-slot > span {
 }
 
 .item-slot.highlighted, .item.highlighted {
-    border-color: #888;
+    border-color: @color-dark-element-border-highlighted;
 }
 
 .sunlit .item-slot.highlighted, .sunlit .item.highlighted {
-    border-color: #ddd;
-}
-
-.item.highlighted {
-    background: #444;
-}
-
-.sunlit .item.highlighted {
-    background: #fdfdfd;
-    border-color: #888;
+    border-color: @color-light-element-border-highlighted;
 }
 
 .item-slot.highlighted .item-slot-type-equipped {
-    background: #444;
+    background: @color-dark-bg-element-alternative;
 }
 
 .sunlit .item-slot.highlighted .item-slot-type-equipped {
-    background: #ddd;
+    background: @color-light-bg-element-alternative;
 }
 
 .item-slot-name, .item-slot-type-equipped {
-    background-color: #333;
+    background-color: @color-dark-highlight-element-2;
 }
 
 .sunlit .item-slot-name, .sunlit .item-slot-type-equipped {
-    background-color: #ccc;
+    background-color:@color-light-highlight-element-2;
 }
 
 // ITEM AND RESOURCE DIVS
@@ -891,6 +892,14 @@ ul.itemlist, ul.resultlist {
 .sunlit .item, .sunlit .res, .sunlit .li-item-negative, .sunlit .li-item-positive {
 	background: @color-light-bg-box-1;
 	border: 1px solid @color-light-border-box-1;
+}
+
+.item.highlighted {
+    background: lighten(@color-dark-bg-box-1, 10%);
+}
+
+.sunlit .item.highlighted {
+    background: lighten(@color-light-bg-box-1, 10%);
 }
 
 .res {
@@ -944,20 +953,12 @@ li.item-with-count {
 	color: @color-dark-text !important;
 }
 
-.inventorybox-negative, .item-slot-lost .item-count {
-    border: 1px solid #E13232 !important;
-}
-
-.sunlit .warning, .sunlit .warning span, .sunlit .li-item-negative {
-	color: rgb(245, 0, 0) !important;
-}
-
-.sunlit .warning.progress-wrap {
-	background: rgb(245, 0, 0) !important;
-}
-
 .sunlit .warning .progress-label {
-	color: #202200 !important;
+	color:  @color-light-text !important;
+}
+
+.inventorybox-negative, .item-slot-lost .item-count {
+    border: 1px solid @color-dark-warning-border !important;
 }
 
 // ITEM COMPARISON
@@ -992,7 +993,7 @@ li.item-with-count {
 
 .dev-hud {
     opacity: 0.75;
-    background: #aaa;
+    background: #999;
     padding: 1px;
     border-radius: 5px;
     z-index: 100;
@@ -1016,5 +1017,5 @@ li.item-with-count {
 }
 
 .sunlit .status-badge {
-    background: #ececec;
+    background: @color-light-bg-element;
 }

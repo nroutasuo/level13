@@ -1,7 +1,5 @@
 // Styles for visualizations (map, tech tree etc)
 
-@import "colors";
-
 // MAPS
 
 #minimap {
@@ -68,6 +66,9 @@
 
 // CAMP VIS
 
+@color-dark-vis-in-building-z0: #888;
+@color-dark-vis-in-building-lit: #ddd56c;
+
 #tab-vis-in {
     border: 2px solid @color-dark-border-box-1;
     padding: 0;
@@ -130,7 +131,7 @@
 }
 
 .vis-camp-building-z0 {
-    background: #888;
+    background: @color-dark-vis-in-building-z0;
     border-color:lighten(@color-dark-highlight-element-3, 20%);
     z-index: 2;
 }
@@ -153,7 +154,7 @@
 }
 
 .vis-camp-building-lit {
-    background: #ddd56c;
+    background: @color-dark-vis-in-building-lit;
 }
 
 .vis-camp-point {

@@ -3,27 +3,32 @@
 // GENERAL BUTTONS
 
 button {
+	width: 95pt;
+	padding: 8px 16px;
+	margin: 4px;
+	z-index: 2;
+	font-weight: 500;
+	position: relative;
+	text-transform: lowercase;
 	background: @color-dark-bg;
 	color: @color-dark-text;
-	border: 1px solid #555;
-	border-color: #777;
+	border: 1px solid @color-dark-button-border;
 }
 
 .sunlit button {
-	background: rgb(252, 252, 252);
-	color: #222222;
-	border: 1px solid #aaa;
-	border-color: #777;
+	background: @color-light-bg;
+	color: @color-light-text;
+	border: 1px solid @color-light-button-border;
 }
 
 button:hover {
-	color: #fff !important;
-	border-color: #aaa;
+	color: @color-dark-text-highlight !important;
+	border-color: @color-dark-button-border-highlight;
 }
 
 .sunlit button:hover {
-	color: black !important;
-	border-color: #4a4a4a;
+	color: @color-light-text-highlight !important;
+	border-color: @color-light-button-border-highlight;
 }
 
 button:active {
@@ -33,16 +38,6 @@ button:active {
 
 button, ul.tabs li {
 	transition: all 0.2s;
-}
-
-button {
-	width: 95pt;
-	padding: 8px 16px;
-	margin: 4px;
-	z-index: 2;
-	font-weight: 500;
-	position: relative;
-	text-transform: lowercase;
 }
 
 button.action {
@@ -139,24 +134,12 @@ div.container-btn-action button {
 	transition: all 0.1s;
 }
 
-.cooldown-reqs {
-	background: rgba(200,200,200,0.1);
-	border-color: #666;
-}
-
-.sunlit .cooldown-reqs {
-	background: #fff;
-	border-color: #bbb;
-}
-
 .cooldown-duration {
-	background: rgba(200,200,200,0.1);
-	border-color: #666;
+	background: @color-dark-button-cooldown-duration;
 }
 
 .sunlit .cooldown-duration {
-	background: #fff;
-	border-color: #bbb;
+	background: @color-light-button-cooldown-duration;
 }
 
 button .cooldown-action, button .cooldown-duration {
@@ -167,17 +150,20 @@ button .cooldown-action, button .cooldown-duration {
 	padding: 0;
 }
 
-.sunlit .cooldown-duration {
-	background: rgba(100,100,100,0.2);
-	border-color: #bbb;
+.cooldown-action {
+	background-color: @color-dark-button-cooldown-action;
 }
 
-button .cooldown-action, .cooldown-reqs {
-	background-color: rgba(68, 68, 68, 0.5);
+.sunlit .cooldown-action {
+	background-color: @color-light-button-cooldown-action;
 }
 
-.sunlit button .cooldown-action, .sunlit .cooldown-reqs {
-	background-color: rgba(136, 136, 136, 0.3);
+.cooldown-reqs {
+	background-color: @color-dark-button-cooldown-reqs;
+}
+
+.sunlit .cooldown-reqs {
+	background-color: @color-light-button-cooldown-reqs;
 }
 
 // DISABLED STATES
@@ -189,7 +175,7 @@ button.btn-disabled, li.disabled {
 
 button.btn-disabled-vision {
 	opacity: 0.2;
-    color: rgba(0,0,0,0) !important;
+    color: @color-global-invisible !important;
 }
 
 button.btn-disabled-vision:hover {
@@ -215,12 +201,12 @@ button.action.btn-disabled-basic:after {
     content: "\00a0";
 }
 
-button.btn-disabled-basic, button.btn-disabled-vision, button.btn-disabled-basic:hover, button.btn-disabled-vision:hover, button.btn-disabled-resources, button.btn-disabled-resources:hover, button.btn-disabled-cooldown, button.btn-disabled-cooldown:hover {
-	border-color: #444;
-	color: #999 !important;
+button.btn-disabled-basic, button.btn-disabled-vision, button.btn-disabled-resources, button.btn-disabled-cooldown {
+	border-color: @color-dark-button-disabled-border;
+	color: @color-dark-button-disabled-text !important;
 }
 
 .sunlit button.btn-disabled-basic, .sunlit button.btn-disabled-vision, .sunlit button.btn-disabled-vision:hover, .sunlit button.btn-disabled-basic:hover, .sunlit button.btn-disabled-resources, .sunlit button.btn-disabled-resources:hover, .sunlit button.btn-disabled-cooldown, .sunlit button.btn-disabled-cooldown:hover {
-	border-color: #999;
-	color: #666 !important;
+	border-color: @color-light-button-disabled-border;
+	color: @color-light-button-disabled-text !important;
 }

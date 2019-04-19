@@ -5,7 +5,6 @@
 @import "modules/base-classes";
 @import "modules/base-elements";
 @import "modules/base-typography";
-@import "modules/colors";
 @import "modules/elements-buttons";
 @import "modules/elements-common";
 @import "modules/elements-input";
@@ -18,12 +17,78 @@
 // GLOBAL SETTINGS
 
 @font-size-small: 85%;
-@size-input-range-thumb: 15px;
-@item-slot-big-width: 55px;
-@item-slot-big-height: 70px;
-@item-div-size: 18px;
-@callout-arrow-size: 7px;
-@header-self-bar-width: 60px;
+
+// GLOBAL COLOURS
+// dark
+@color-dark-shadow: rgba(0, 0, 0, 0.25);
+@color-dark-bg: #202220;
+@color-dark-bg-alternative: #ccc;
+@color-dark-bg-popup-overlay: rgba(0,0,0,0.85);
+@color-dark-text: #fdfdfd;
+@color-dark-text-secondary: #bbb;
+@color-dark-text-highlight: #fff;
+@color-dark-text-disabled: #666;
+@color-dark-text-meta: rgba(255,255,255,0.5);
+@color-dark-bg-box-1: #282a28;
+@color-dark-border-box-1: #3a3a3a;
+@color-dark-border-box-2: #3a3a3a;
+@color-dark-bg-box-3: #262826;
+@color-dark-text-box-3: #999;
+@color-dark-border-box-3: #555;
+@color-dark-bg-element: #2f322f;
+@color-dark-border-element: #666;
+@color-dark-element-border-highlighted: #888;
+@color-dark-bg-element-alternative:  #444;
+@color-dark-highlight-element: #666;
+@color-dark-highlight-element-2: #333;
+@color-dark-highlight-element-3: #aaa;
+@color-dark-highlight-element-hover: #888;
+@color-dark-bg-input: #151615;
+@color-dark-button-border: #777;
+@color-dark-button-border-highlight: #777;
+@color-dark-button-cooldown-duration: rgba(100,100,100,0.25);
+@color-dark-button-cooldown-action: rgba(68, 68, 68, 0.5);
+@color-dark-button-cooldown-reqs: rgba(68, 68, 68, 0.5);
+@color-dark-button-disabled-border: #444;
+@color-dark-button-disabled-text: #999;
+@color-dark-warning-border: #E13232;
+@color-dark-warning-bg: rgba(230, 70, 70, 0.15);
+// sunlit
+@color-light-shadow: rgba(96, 96, 96, 0.25);
+@color-light-bg: #fdfdfd;
+@color-light-bg-alternative: #333;
+@color-light-bg-popup-overlay: rgba(255,255,255,0.85);
+@color-light-text: #202220;
+@color-light-text-secondary: #777;
+@color-light-text-highlight: #000;
+@color-light-text-disabled: #999;
+@color-light-text-meta: rgba(0,0,0,0.5);
+@color-light-bg-box-1: #efefef;
+@color-light-border-box-1: #d0d0d0;
+@color-light-border-box-2: #aaa;
+@color-light-bg-box-3: #efefef;
+@color-light-text-box-3: #333;
+@color-light-border-box-3: #aaa;
+@color-light-bg-element: #e6e6e6;
+@color-light-border-element: #bbb;
+@color-light-element-border-highlighted: #ddd;
+@color-light-bg-element-alternative:  #ddd;
+@color-light-highlight-element: #999;
+@color-light-highlight-element-2: #ccc;
+@color-light-highlight-element-hover: #777;
+@color-light-bg-input: #fff;
+@color-light-button-border: #777;
+@color-light-button-border-highlight: #4a4a4a;
+@color-light-button-cooldown-duration: rgba(100,100,100,0.25);
+@color-light-button-cooldown-action: rgba(136, 136, 136, 0.3);
+@color-light-button-cooldown-reqs: rgba(136, 136, 136, 0.3);
+@color-light-button-disabled-border: #999;
+@color-light-button-disabled-text: #666;
+@color-light-warning-border: #ee1111;
+@color-light-warning-bg: rgba(245, 0, 0, 0.1);
+
+@color-global-warning: rgb(230, 70, 70);
+@color-global-invisible: rgba(0,0,0,0);
 
 // COLOR THEMES (dark and sunlit)
 

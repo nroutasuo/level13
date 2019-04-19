@@ -5,16 +5,18 @@
 input, select, textarea {
    background-color: @color-dark-bg-input;
    color: @color-dark-text;
-   border: 1px solid #333;
+   border: 1px solid @color-dark-highlight-element-2;
 }
 
 .sunlit input, .sunlit select, .sunlit textarea {
    background-color: @color-light-bg-input;
    color: @color-dark-bg;
-   border: 1px solid #bbb;
+   border: 1px solid @color-light-highlight-element-2;
 }
 
 // RANGE
+
+@size-input-range-thumb: 15px;
 
 input[type=range] {
     background: inherit;

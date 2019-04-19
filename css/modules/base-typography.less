@@ -26,22 +26,19 @@ a {
 }
 
 a:hover {
-	color: #fff !important;
-}
-
-a:link, a:visited {
-	background: @color-dark-bg;
-	color: @color-dark-text;
-	border: 1px solid #555;
-}
-.sunlit a:link, .sunlit a:visited {
-    background: rgb(252, 252, 252);
-    color: #222222;
-    border: 1px solid #aaa;
+	color: @color-dark-text-highlight !important;
 }
 
 .sunlit a:hover {
-	color: black !important;
+	color: @color-light-text-highlight !important;
+}
+
+a:link, a:visited {
+	color: @color-dark-text;
+}
+
+.sunlit a:link, .sunlit a:visited {
+    color: @color-light-text;
 }
 
 .p-dense, .p-dense p {
