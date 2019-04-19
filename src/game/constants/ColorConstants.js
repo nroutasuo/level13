@@ -6,9 +6,9 @@ define(function () {
         
         colors: {
             dark: {
-                bg: "#202220",
+                bg_page: "#202220",
                 bg_box_1: "#282a28",
-                border_element: "#bbb",
+                border_highlight: "#888",
                 map_stroke_grid: "#343434",
                 map_stroke_sector: "#ddee66",
                 map_stroke_sector_hazard: "#ee4444",
@@ -28,9 +28,9 @@ define(function () {
                 techtree_node_dimmed: "#444",
             },
             sunlit: {
-                bg: "#fdfdfd",
+                bg_page: "#fdfdfd",
                 bg_box_1: "#efefef",
-                border_element: "#666",
+                border_highlight: "#888",
                 map_stroke_grid: "#d9d9d9",
                 map_stroke_sector: "#ddee66",
                 map_stroke_sector_hazard: "#ee4444",

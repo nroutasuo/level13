@@ -108,7 +108,7 @@ function (Ash,
             ctx.canvas.width = dimensions.canvasWidth;
             ctx.canvas.height = dimensions.canvasHeight;
             ctx.clearRect(0, 0, canvas.scrollWidth, canvas.scrollWidth);
-            ctx.fillStyle = ColorConstants.getColor(sunlit, "bg");
+            ctx.fillStyle = ColorConstants.getColor(sunlit, "bg_page");
             ctx.fillRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
 
             var sector;
@@ -162,7 +162,7 @@ function (Ash,
             if (playerPosVO.level == levelVO.level) {
                 sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, playerPosVO.sectorX, playerPosVO.sectorY).x;
                 sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, playerPosVO.sectorX, playerPosVO.sectorY).y;
-                ctx.strokeStyle = ColorConstants.getColor(sunlit, "border_element");
+                ctx.strokeStyle = ColorConstants.getColor(sunlit, "border_highlight");
                 ctx.lineWidth = centered ? 3 : 2;
                 ctx.beginPath();
                 ctx.arc(sectorXpx + sectorSize * 0.5, sectorYpx + 0.5 * sectorSize, sectorSize, 0, 2 * Math.PI);

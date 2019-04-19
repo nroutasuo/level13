@@ -198,7 +198,7 @@ function (Ash, GameGlobals, CanvasConstants, ColorConstants, PlayerActionConstan
             this.ctx.canvas.width = vis.dimensions.canvasWidth;
             this.ctx.canvas.height = vis.dimensions.canvasHeight;
             this.ctx.clearRect(0, 0, this.canvas.scrollWidth, this.canvas.scrollWidth);
-            this.ctx.fillStyle = ColorConstants.getColor(vis.sunlit, "bg");
+            this.ctx.fillStyle = ColorConstants.getColor(vis.sunlit, "bg_page");
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
 			for (var i = 0; i < vis.tree.roots.length; i++) {

@@ -4,14 +4,14 @@
 
 input, select, textarea {
    background-color: @color-dark-bg-input;
-   color: @color-dark-text;
-   border: 1px solid @color-dark-highlight-element-2;
+   color: @color-dark-text-default;
+   border: 1px solid @color-dark-border-box-1;
 }
 
 .sunlit input, .sunlit select, .sunlit textarea {
    background-color: @color-light-bg-input;
-   color: @color-dark-bg;
-   border: 1px solid @color-light-highlight-element-2;
+   color: @color-light-text-default;
+   border: 1px solid @color-light-border-box-1;
 }
 
 // RANGE
@@ -40,11 +40,11 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 input[type=range]::-webkit-slider-thumb {
-  border: 1px solid @color-dark-text-box-3;
+  border: 1px solid @color-dark-border-highlight;
   height: @size-input-range-thumb;
   width: @size-input-range-thumb;
   border-radius: @size-input-range-thumb;
-  background: @color-dark-text;
+  background: @color-dark-text-default;
   cursor: pointer;
   -webkit-appearance: none;
   margin-top: -5px;
@@ -63,11 +63,11 @@ input[type=range]::-moz-range-track {
 }
 
 input[type=range]::-moz-range-thumb {
-  border: 1px solid @color-dark-text-box-3;
+  border: 1px solid @color-dark-border-highlight;
   height: @size-input-range-thumb;
   width: @size-input-range-thumb;
   border-radius: @size-input-range-thumb;
-  background: @color-dark-text;
+  background: @color-dark-text-default;
   cursor: pointer;
 }
 
@@ -82,33 +82,33 @@ input[type=range]::-ms-track {
 }
 
 input[type=range]::-ms-fill-lower {
-  background: @color-dark-text;
+  background: @color-dark-text-default;
   border: 0px solid #000000;
   border-radius: 2px;
 }
 
 input[type=range]::-ms-fill-upper {
-  background: @color-dark-text;
+  background: @color-dark-text-default;
   border: 0px solid #000000;
   border-radius: 2px;
 }
 
 input[type=range]::-ms-thumb {
   margin-top: 1px;
-  border: 1px solid @color-dark-text-box-3;
+  border: 1px solid @color-dark-border-highlight;
   height: @size-input-range-thumb;
   width: @size-input-range-thumb;
   border-radius: @size-input-range-thumb;
-  background: @color-dark-text;
+  background: @color-dark-text-default;
   cursor: pointer;
 }
 
 input[type=range]:focus::-ms-fill-lower {
-  background: @color-dark-text;
+  background: @color-dark-text-default;
 }
 
 input[type=range]:focus::-ms-fill-upper {
-  background: @color-dark-text;
+  background: @color-dark-text-default;
 }
 
 // CHECKBOX

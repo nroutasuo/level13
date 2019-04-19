@@ -10,25 +10,25 @@ button {
 	font-weight: 500;
 	position: relative;
 	text-transform: lowercase;
-	background: @color-dark-bg;
-	color: @color-dark-text;
-	border: 1px solid @color-dark-button-border;
+	background: @color-dark-bg-button;
+	color: @color-dark-text-default;
+	border: 1px solid @color-dark-border-button;
 }
 
 .sunlit button {
-	background: @color-light-bg;
-	color: @color-light-text;
-	border: 1px solid @color-light-button-border;
+	background: @color-light-bg-button;
+	color: @color-light-text-default;
+	border: 1px solid @color-light-border-button;
 }
 
 button:hover {
 	color: @color-dark-text-highlight !important;
-	border-color: @color-dark-button-border-highlight;
+	border-color: @color-dark-border-button-highlight;
 }
 
 .sunlit button:hover {
 	color: @color-light-text-highlight !important;
-	border-color: @color-light-button-border-highlight;
+	border-color: @color-light-border-button-highlight;
 }
 
 button:active {
@@ -135,11 +135,11 @@ div.container-btn-action button {
 }
 
 .cooldown-duration {
-	background: @color-dark-button-cooldown-duration;
+	background: @color-dark-bg-button-cooldown-duration;
 }
 
 .sunlit .cooldown-duration {
-	background: @color-light-button-cooldown-duration;
+	background: @color-light-bg-button-cooldown-duration;
 }
 
 button .cooldown-action, button .cooldown-duration {
@@ -151,19 +151,19 @@ button .cooldown-action, button .cooldown-duration {
 }
 
 .cooldown-action {
-	background-color: @color-dark-button-cooldown-action;
+	background-color: @color-dark-bg-button-cooldown-action;
 }
 
 .sunlit .cooldown-action {
-	background-color: @color-light-button-cooldown-action;
+	background-color: @color-light-bg-button-cooldown-action;
 }
 
 .cooldown-reqs {
-	background-color: @color-dark-button-cooldown-reqs;
+	background-color: @color-dark-bg-button-cooldown-reqs;
 }
 
 .sunlit .cooldown-reqs {
-	background-color: @color-light-button-cooldown-reqs;
+	background-color: @color-light-bg-button-cooldown-reqs;
 }
 
 // DISABLED STATES
@@ -202,11 +202,11 @@ button.action.btn-disabled-basic:after {
 }
 
 button.btn-disabled-basic, button.btn-disabled-vision, button.btn-disabled-resources, button.btn-disabled-cooldown {
-	border-color: @color-dark-button-disabled-border;
-	color: @color-dark-button-disabled-text !important;
+	border-color: @color-dark-border-button-disabled;
+	color: @color-dark-text-disabled !important;
 }
 
 .sunlit button.btn-disabled-basic, .sunlit button.btn-disabled-vision, .sunlit button.btn-disabled-vision:hover, .sunlit button.btn-disabled-basic:hover, .sunlit button.btn-disabled-resources, .sunlit button.btn-disabled-resources:hover, .sunlit button.btn-disabled-cooldown, .sunlit button.btn-disabled-cooldown:hover {
-	border-color: @color-light-button-disabled-border;
-	color: @color-light-button-disabled-text !important;
+	border-color: @color-light-border-button-disabled;
+	color: @color-light-text-disabled !important;
 }

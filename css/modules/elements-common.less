@@ -46,15 +46,15 @@ div.info-callout-content {
 }
 
 div.btn-callout-content, div.info-callout-content {
-	background: @color-dark-bg;
-	color: @color-dark-text;
-	border: 1px solid @color-dark-border-box-3;
+	background: @color-dark-bg-button;
+	color: @color-dark-text-default;
+	border: 1px solid @color-dark-border-strong;
 }
 
 .sunlit div.btn-callout-content, .sunlit div.info-callout-content {
-	background: @color-light-bg;
-	color: @color-light-text;
-	border: 1px solid @color-light-border-box-3;
+	background: @color-light-bg-button;
+	color: @color-light-text-default;
+	border: 1px solid @color-light-border-strong;
 }
 
 .item div.info-callout-target, .res div.info-callout-target, .resultlist li div.info-callout-target, .itemlist div.info-callout-target {
@@ -94,25 +94,21 @@ div.btn-callout-content, div.info-callout-content {
 // CALLOUT ARROWS
 
 div.callout-arrow-up {
-	border-bottom-color: @color-dark-border-box-3 !important;
+    border-bottom-color: @color-dark-border-strong !important;
 	width: 0;
 	height: 0;
 	z-index: 40;
 	position: relative;
 	top: 0px;
     margin: 0 0 0 @callout-arrow-size/2;
+	margin: 0px auto;
 	border-left: @callout-arrow-size solid transparent;
 	border-right: @callout-arrow-size solid transparent;
 	border-bottom: @callout-arrow-size solid;
 }
 
-div.callout-arrow-up {
-    border-bottom-color: @color-dark-border-box-3, 15% !important;
-	margin: 0px auto;
-}
-
 .sunlit div.callout-arrow-up {
-    border-bottom-color: @color-light-border-box-3 !important;
+    border-bottom-color: @color-light-border-strong !important;
 }
 
 .item div.callout-arrow-up {
@@ -130,11 +126,11 @@ span.action-cost-blocker-storage {
 }
 
 span.action-cost-blocker {
-	color: @color-dark-text-disabled;
+	color: @color-dark-text-dimmed;
 }
 
 .sunlit span.action-cost-blocker {
-	color: @color-light-text-disabled;
+	color: @color-light-text-dimmed;
 }
 
 .action-separator {
@@ -222,11 +218,11 @@ div.popup-overlay {
     z-index:6;
     width:100%;
     height:100%;
-    background-color: @color-dark-bg-popup-overlay;
+    background-color: @color-dark-popup-overlay;
 }
 
 .sunlit div.popup-overlay {
-    background-color: @color-light-bg-popup-overlay;
+    background-color: @color-light-popup-overlay;
 }
 
 div.popup {
@@ -294,8 +290,8 @@ div.popup {
 }
 
 .horizontal-select-option {
-    background: @color-dark-bg;
-    border: 1px solid @color-dark-border-box-3;
+    background: @color-dark-bg-button;
+    border: 1px solid @color-dark-border-strong;
     padding: 1px 5px;
     margin: 0 2px;
     display: inline-block;
@@ -304,26 +300,26 @@ div.popup {
 }
 
 .sunlit .horizontal-select-option {
-    background: @color-light-bg;
-    border-color: @color-light-border-box-3;
+    background: @color-light-bg-button;
+    border-color: @color-light-border-strong;
 }
 
 .horizontal-select-option:hover {
-    background: @color-dark-border-box-2;
-    border-color: ligten(@color-dark-border-box-3, 10%);
+    background: @color-dark-bg-element-2;
+    border-color: ligten(@color-dark-border-strong, 10%);
 }
 
 .sunlit .horizontal-select-option:hover {
-    background: @color-light-border-box-2;
-    border-color: ligten(@color-light-border-box-3, 10%);
+    background: @color-light-bg-element-2;
+    border-color: ligten(@color-light-border-strong, 10%);
 }
 
 .horizontal-select-option.selected {
-    background: @color-dark-border-box-2;
+    background: @color-dark-bg-element-2;
 }
 
 .sunlit .horizontal-select-option.selected {
-    background: @color-light-border-box-2;
+    background: @color-light-bg-element-2;
 }
 
 // STATS INDICATORS
@@ -382,7 +378,9 @@ div.popup {
 	margin: 0px 2px;
 	opacity: 0.75;
     vertical-align: middle;
-}.indicator-fastincrease, .sunlit .bubble-fastincrease {
+}
+
+.indicator-fastincrease, .sunlit .bubble-fastincrease {
 	background-image: url('../img/eldorado/icon-fastincrease-dark.png');
 }
 
@@ -435,7 +433,7 @@ div.popup {
 }
 
 .collapsible-header {
-    background: @color-dark-bg-element;
+    background: @color-dark-bg-element-1;
 	cursor: pointer;
 	margin: 0px;
 	padding: 5px 30px 5px 10px;
@@ -445,7 +443,7 @@ div.popup {
 }
 
 .sunlit .collapsible-header {
-	background: @color-light-bg-element;
+	background: @color-light-bg-element-1;
 	background-image: url('../img/open-iconic/arrow-circle-top-2x.png');
 	background-repeat: no-repeat;
 	background-position: right 8px center;
@@ -478,7 +476,7 @@ div.popup {
 }
 
 .progress-wrap {
-	background-color: @color-dark-highlight-element;
+	background-color: @color-dark-bg-element-3;
 	margin: 6px auto;
     border: 0px;
 	overflow: hidden;
@@ -486,18 +484,18 @@ div.popup {
 }
 
 .sunlit .progress-wrap {
-	background-color: @color-light-highlight-element;
+	background-color: @color-light-bg-element-3;
 }
 
 .progress-bar {
     left: 0;
     top: 0;
     position: absolute;
-	background: @color-dark-bg-element;
+	background: @color-dark-bg-element-1;
 }
 
 .sunlit .progress-bar {
-	background: @color-light-bg-element;
+	background: @color-light-bg-element-1;
 }
 
 .progress-label {
@@ -570,8 +568,8 @@ div.popup {
 // BUBBLES (content notifications)
 
 .bubble {
-    background-color: @color-dark-bg-alternative;
-    color: @color-dark-bg;
+    background-color: @color-dark-bg-contrast;
+    color: @color-dark-text-dark;
     background-size: 12px;
     background-repeat: no-repeat;
     background-position: center;
@@ -584,6 +582,11 @@ div.popup {
     border-radius: 8px;
 	font-weight: bold;
     font-size: 80%;
+}
+
+.sunlit .bubble {
+    background-color: @color-light-bg-contrast;
+    color: @color-light-text-dark;
 }
 
 table .bubble {
@@ -644,11 +647,11 @@ table .bubble {
 }
 
 .inventorybox {
-    border-color: @color-dark-border-box-3;
+    border-color: @color-dark-border-box-1;
 }
 
 .sunlit .inventorybox {
-	border-color: @color-light-border-box-3;
+	border-color: @color-light-border-box-1;
 }
 
 .inventorybox ul li {
@@ -714,22 +717,22 @@ table .bubble {
 }
 
 .li-item-negative {
-    background: @color-dark-warning-bg !important;
-	border: 1px solid @color-dark-warning-border !important;
+    background: @color-dark-bg-warning !important;
+	border: 1px solid @color-dark-border-warning !important;
 }
 
 .sunlit .li-item-negative {
-    background: @color-light-warning-bg !important;
-	border: 1px solid @color-light-warning-border !important;
+    background: @color-light-bg-warning !important;
+	border: 1px solid @color-light-border-warning !important;
 }
 
 .highlightbox, .inventorybox-header, .inventorybox-footer {
-	background: @color-dark-bg-element;
-    border-color: @color-dark-bg-element;
+	background: @color-dark-bg-element-1;
+    border-color: @color-dark-bg-element-1;
 }
 
 .sunlit .highlightbox, .sunlit .inventorybox-header, .sunlit .inventorybox-footer {
-	background: @color-light-bg-element;
+	background: @color-light-bg-element-1;
 }
 
 // ITEM SLOTS
@@ -759,19 +762,19 @@ table .bubble {
 }
 
 .item-slot-equipped {
-    border-color: @color-dark-border-box-3;
+    border-color: @color-dark-border-strong;
 }
 
 .sunlit .item-slot-equipped {
-	border-color: @color-light-border-box-3;
+	border-color: @color-light-border-strong;
 }
 
 .item-equipped {
-    background: @color-dark-bg-element;
+    background: @color-dark-bg-element-1;
 }
 
 .sunlit .item-equpped {
-    background: @color-light-bg-element;
+    background: @color-light-bg-element-1;
 }
 
 .item-slot-type-empty {
@@ -835,27 +838,27 @@ div.item-slot > div, div.item-slot > span {
 }
 
 .item-slot.highlighted, .item.highlighted {
-    border-color: @color-dark-element-border-highlighted;
+    border-color: @color-dark-border-highlight;
 }
 
 .sunlit .item-slot.highlighted, .sunlit .item.highlighted {
-    border-color: @color-light-element-border-highlighted;
+    border-color: @color-light-border-highlight;
 }
 
 .item-slot.highlighted .item-slot-type-equipped {
-    background: @color-dark-bg-element-alternative;
+    background: @color-dark-bg-element-2;
 }
 
 .sunlit .item-slot.highlighted .item-slot-type-equipped {
-    background: @color-light-bg-element-alternative;
+    background: @color-light-bg-element-2;
 }
 
 .item-slot-name, .item-slot-type-equipped {
-    background-color: @color-dark-highlight-element-2;
+    background-color: @color-dark-bg-element-1;
 }
 
 .sunlit .item-slot-name, .sunlit .item-slot-type-equipped {
-    background-color:@color-light-highlight-element-2;
+    background-color: @color-light-bg-element-1;
 }
 
 // ITEM AND RESOURCE DIVS
@@ -950,15 +953,15 @@ li.item-with-count {
 }
 
 .warning .progress-label {
-	color: @color-dark-text !important;
+	color: @color-dark-text-default !important;
 }
 
 .sunlit .warning .progress-label {
-	color:  @color-light-text !important;
+	color:  @color-light-text-default !important;
 }
 
 .inventorybox-negative, .item-slot-lost .item-count {
-    border: 1px solid @color-dark-warning-border !important;
+    border: 1px solid @color-dark-border-warning !important;
 }
 
 // ITEM COMPARISON
@@ -978,14 +981,14 @@ li.item-with-count {
     position: absolute;
     border-width: 1px;
     border-style: solid;
-    border-color: @color-dark-highlight-element;
+    border-color: @color-dark-border-strong;
     padding: 2px;
     border-radius: 6px;
     background: @color-dark-bg-box-1;
 }
 
 .sunlit .item-comparison-badge {
-    border-color: @color-light-highlight-element;
+    border-color: @color-light-border-strong;
     background: @color-light-bg-box-1;
 }
 
@@ -1013,9 +1016,9 @@ li.item-with-count {
 }
 
 .status-badge {
-    background: @color-dark-bg-element;
+    background: @color-dark-bg-element-1;
 }
 
 .sunlit .status-badge {
-    background: @color-light-bg-element;
+    background: @color-light-bg-element-1;
 }

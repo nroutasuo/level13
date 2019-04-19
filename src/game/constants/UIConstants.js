@@ -49,7 +49,7 @@ define(['ash',
 			if (item) div += "<img src='" + url + "'/>";
 
 			if (hasCount)
-				div += "<div class='item-count lvl13-box-3'>" + count + "x </div>";
+				div += "<div class='item-count lvl13-box-1'>" + count + "x </div>";
 
 			if (!hideComparisonIndicator && item.equippable) {
 				var comparison = itemsComponent.getEquipmentComparison(item);
@@ -141,7 +141,7 @@ define(['ash',
 			div += "<div class='info-callout-target info-callout-target-small' description='" + name + "'>";
 			div += this.getResourceImg(name);
 			if (amount || amount === 0)
-				div += "<div class='item-count lvl13-box-3'>" + Math.floor(amount) + "x</div>";
+				div += "<div class='item-count lvl13-box-1'>" + Math.floor(amount) + "x</div>";
 			div += "</div>";
 			div += "</div>";
 			var liclasses = "item-slot item-slot-small lvl13-box-1 ";
@@ -164,7 +164,7 @@ define(['ash',
 			var div = "<div class='" + classes + "' data-resourcename='currency'>";
 			div += "<div class='info-callout-target info-callout-target-small' description='silver'>";
 			div += this.getResourceImg("currency");
-			div += "<div class='item-count lvl13-box-3'>" + Math.floor(amount) + "x </div>";
+			div += "<div class='item-count lvl13-box-1'>" + Math.floor(amount) + "x </div>";
 			div += "</div>";
 			div += "</div>";
 			var liclasses = "item-slot item-slot-small lvl13-box-1 ";

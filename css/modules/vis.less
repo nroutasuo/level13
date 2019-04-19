@@ -44,7 +44,7 @@
 }
 
 .map-overlay-cell:hover {
-    background: @color-dark-text;
+    background: @color-dark-text-default;
 }
 
 // TECH TREE
@@ -56,11 +56,15 @@
 .upgrades-overlay-cell {
     width: 85px;
     height: 22px;
-    color: @color-dark-bg;
+    color: @color-dark-text-dark;
+}
+
+.sunlit .upgrades-overlay-cell {
+    color: @color-light-text-dark;
 }
 
 .upgrades-overlay-cell:hover {
-    background: fade(@color-dark-text, 10%)
+    background: fade(@color-dark-text-default, 10%)
 }
 
 
@@ -110,13 +114,13 @@
 }
 
 .vis-camp-floor {
-    background: @color-dark-bg-element;
+    background: @color-dark-bg-element-1;
     position: absolute;
     left: 0px;
 }
 
 .sunlit .vis-camp-floor {
-    background: @color-light-bg-element;
+    background: @color-light-bg-element-1;
 }
 
 .vis-camp-building {
@@ -132,20 +136,20 @@
 
 .vis-camp-building-z0 {
     background: @color-dark-vis-in-building-z0;
-    border-color:lighten(@color-dark-highlight-element-3, 20%);
+    border-color:lighten(@color-dark-vis-in-building-z0, 20%);
     z-index: 2;
 }
 
 .vis-camp-building-z1 {
-    background: @color-dark-highlight-element;
-    border-color: lighten(@color-dark-highlight-element, 20%);
+    background: @color-dark-bg-element-3;
+    border-color: lighten(@color-dark-bg-element-3, 20%);
     z-index: 1;
 
 }
 
 .vis-camp-building-z2 {
-    background: @color-dark-highlight-element-2;
-    border-color: lighten(@color-dark-highlight-element-2, 20%);
+    background: @color-dark-border-box-1;
+    border-color: lighten(@color-dark-border-box-1, 20%);
     z-index: 0;
 }
 
