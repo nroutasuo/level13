@@ -54,7 +54,7 @@ define([
                 var itemTypeName = ItemConstants.itemTypes[rawType];
                 var typeDisplay = ItemConstants.itemTypes[rawType].toLowerCase();
 				$(this).append("<span class='item-slot-type-empty'>" + typeDisplay + "</span>");
-				$(this).append("<span class='item-slot-type-equipped'>" + typeDisplay + "</span>");
+				$(this).append("<span class='item-slot-type-equipped vision-text'>" + typeDisplay + "</span>");
 				$(this).append("<span class='item-slot-name '></span>");
 				$(this).append("<div class='item-slot-image'></div>");
                 $(this).hover(function () {

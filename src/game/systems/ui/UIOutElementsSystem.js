@@ -375,7 +375,7 @@ define([
 					sys.buttonElements.push(elements);
 				}
 			});
-            console.log("update visible buttons:" + this.elementsVisibleButtons.length);
+            // console.log("update visible buttons:" + this.elementsVisibleButtons.length);
 		},
 
 		updateVisibleProgressbarsList: function () {

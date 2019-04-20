@@ -1,0 +1,28 @@
+
+.opacity-transition() {
+    -webkit-transition: opacity 2s ease-in-out;
+    -moz-transition: opacity 2s ease-in-out;
+    -ms-transition: opacity 2s ease-in-out;
+    -o-transition: opacity 2s ease-in-out;
+    transition: opacity 2s ease-in-out;
+}
+
+img, p, span, h1, h2, h3, div, span, canvas {
+    .opacity-transition();
+}
+
+.vision_steps(@counter) when (@counter >= 0) {
+    .vision_steps(@counter - 1);
+    .vision-step-@{counter} {
+        #grid-main {
+            img, .canvas-container canvas, .vision-image {
+                opacity: min(1, 0.15 + @counter * 0.17);
+            }
+            p, h1, h2, h3, .vision-text, .stats-indicator, .list-amount, .item-name, #mainmap-sector-details-content td {
+                opacity: min(1, 0.5 + @counter * 0.10);
+            }
+        }
+    }
+}
+
+.vision_steps(10);

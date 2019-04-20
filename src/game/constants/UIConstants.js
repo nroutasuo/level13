@@ -49,7 +49,7 @@ define(['ash',
 			if (item) div += "<img src='" + url + "'/>";
 
 			if (hasCount)
-				div += "<div class='item-count lvl13-box-1'>" + count + "x </div>";
+				div += "<div class='item-count lvl13-box-1 vision-text'>" + count + "x </div>";
 
 			if (!hideComparisonIndicator && item.equippable) {
 				var comparison = itemsComponent.getEquipmentComparison(item);

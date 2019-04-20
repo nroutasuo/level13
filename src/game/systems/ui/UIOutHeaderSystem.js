@@ -285,7 +285,7 @@ define([
 
         updateChangeIndicator: function (indicator, accumulation, show, showFastIncrease) {
             if (show) {
-                indicator.toggleClass("indicator-fastincrease", showFastIncrease);
+                indicator.toggleClass("indicator-fastincrease", showFastIncrease == true);
                 indicator.toggleClass("indicator-increase", !showFastIncrease && accumulation > 0);
                 indicator.toggleClass("indicator-even", !showFastIncrease && accumulation === 0);
                 indicator.toggleClass("indicator-decrease", !showFastIncrease && accumulation < 0);
@@ -617,7 +617,7 @@ define([
             var visionStep = Math.round(visionFactor / 10);
             UIState.refreshState(this, "vision-step", visionStep, function () {
                 console.log("vision class: " + visionStep);
-                for (var i = 0; i < 10; i++) {
+                for (var i = 0; i <= 10; i++) {
 		             this.elements.body.toggleClass("vision-step-" + i, i == visionStep);
                 }
             });
