@@ -1,114 +1,44 @@
 // out: main.css, compress: false
 
-// MODULES
+// MODULES THAT DON'T USE THEMES (colors)
 
-@import "modules/base-classes";
-@import "modules/base-elements";
-@import "modules/base-typography";
-@import "modules/elements-buttons";
-@import "modules/elements-common";
-@import "modules/elements-input";
-@import "modules/elements-special";
 @import "modules/layout";
-@import "modules/loader";
-@import "modules/scrollbar";
-@import "modules/vis";
 
 // GLOBAL SETTINGS
 
 @font-size-small: 85%;
 
 // GLOBAL COLOURS
-// dark
-@color-dark-bg-page: #202220;
-@color-dark-bg-button: #202220;
-@color-dark-bg-input: #202220;
-@color-dark-bg-contrast: #ccc;
-@color-dark-bg-element-1: #2f322f;
-@color-dark-bg-element-2: #444;
-@color-dark-bg-element-3: #666;
-@color-dark-bg-box-1: #282a28;
-@color-dark-bg-box-2: "inherit";
-@color-dark-bg-button-cooldown-duration: rgba(100,100,100,0.25);
-@color-dark-bg-button-cooldown-action: rgba(68, 68, 68, 0.5);
-@color-dark-bg-button-cooldown-reqs: rgba(68, 68, 68, 0.5);
-@color-dark-bg-warning: rgba(230, 70, 70, 0.15);
-@color-dark-text-default: #fdfdfd;
-@color-dark-text-dark: #202220;
-@color-dark-text-secondary: #bbb;
-@color-dark-text-highlight: #fff;
-@color-dark-text-dimmed: #666;
-@color-dark-text-disabled: #999;
-@color-dark-text-meta: rgba(255,255,255,0.5);
-@color-dark-border-box-1: #3a3a3a;
-@color-dark-border-box-2: #3a3a3a;
-@color-dark-border-strong: #555;
-@color-dark-border-highlight: #888;
-@color-dark-border-button: #777;
-@color-dark-border-button-highlight: #777;
-@color-dark-border-button-disabled: #444;
-@color-dark-border-warning: #E13232;
-@color-dark-popup-overlay: rgba(0,0,0,0.85);
-@color-dark-shadow: rgba(0, 0, 0, 0.25);
-// sunlit
-@color-light-bg-page: #fdfdfd;
-@color-light-bg-button: #fdfdfd;
-@color-light-bg-input: #fff;
-@color-light-bg-contrast: #ccc;
-@color-light-bg-element-1: #e6e6e6;
-@color-light-bg-element-2: #ddd;
-@color-light-bg-element-3: #999;
-@color-light-bg-box-1: #efefef;
-@color-light-bg-box-2: "inherit";
-@color-light-bg-button-cooldown-duration: rgba(100,100,100,0.25);
-@color-light-bg-button-cooldown-action: rgba(136, 136, 136, 0.3);
-@color-light-bg-button-cooldown-reqs: rgba(136, 136, 136, 0.3);
-@color-light-bg-warning: rgba(245, 0, 0, 0.1);
-@color-light-text-default: #202220;
-@color-light-text-dark: #202220;
-@color-light-text-secondary: #777;
-@color-light-text-highlight: #000;
-@color-light-text-dimmed: #999;
-@color-light-text-disabled: #666;
-@color-light-text-meta: rgba(0,0,0,0.5);
-@color-light-border-box-1: #aaa;
-@color-light-border-box-2: #aaa;
-@color-light-border-strong: #999;
-@color-light-border-highlight: #888;
-@color-light-border-button: #777;
-@color-light-border-button-highlight: #4a4a4a;
-@color-light-border-button-disabled: #999;
-@color-light-border-warning: #ee1111;
-@color-light-popup-overlay: rgba(255,255,255,0.85);
-@color-light-shadow: rgba(96, 96, 96, 0.25);
-// global (same regarless of theme)
+
 @color-global-warning: rgb(230, 70, 70);
 @color-global-invisible: rgba(0,0,0,0);
 
 // COLOR THEMES (dark and sunlit)
 
-body {
-    @color-bg-page: @color-dark-bg-page;
-    @color-text: @color-dark-text-default;
-    @color-bg-box-1: @color-dark-bg-box-1;
-    @color-border-box-1: @color-dark-border-box-1;
+body.dark {
+    @import "themes/theme-dark";
     background: @color-bg-page;
-    color: @color-text;
-    .color-theme();
+    color: @color-text-default;
+    .color-theme(dark);
 }
 
 body.sunlit {
-    @color-bg-page: @color-light-bg-page;
-    @color-text: @color-light-text-default;
-    @color-bg-box-1: @color-light-bg-box-1;
-    @color-border-box-1: @color-light-border-box-1;
-    background:@color-bg-page;
-    color: @color-text;
-    .color-theme();
+    @import "themes/theme-sunlit";
+    background: @color-bg-page;
+    color: @color-text-default;
+    .color-theme(sunlit);
 }
 
-.color-theme() {
-    #switch {
-        background-color: @color-bg-page;
-    }
+.color-theme(@theme) {
+    // MODULES USING THEMES
+    @import "modules/base-classes";
+    @import "modules/base-elements";
+    @import "modules/base-typography";
+    @import "modules/elements-buttons";
+    @import "modules/elements-common";
+    @import "modules/elements-input";
+    @import "modules/elements-special";
+    @import "modules/loader";
+    @import "modules/scrollbar";
+    @import "modules/vis";
 }

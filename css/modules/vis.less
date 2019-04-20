@@ -44,7 +44,7 @@
 }
 
 .map-overlay-cell:hover {
-    background: @color-dark-text-default;
+    background: @color-text-default;
 }
 
 // TECH TREE
@@ -56,30 +56,22 @@
 .upgrades-overlay-cell {
     width: 85px;
     height: 22px;
-    color: @color-dark-text-dark;
-}
-
-.sunlit .upgrades-overlay-cell {
-    color: @color-light-text-dark;
+    color: @color-text-dark;
 }
 
 .upgrades-overlay-cell:hover {
-    background: fade(@color-dark-text-default, 10%)
+    background: fade(@color-text-default, 10%)
 }
 
 
 // CAMP VIS
 
-@color-dark-vis-in-building-z0: #888;
-@color-dark-vis-in-building-lit: #ddd56c;
+@color-vis-in-building-z0: #888;
+@color-vis-in-building-lit: #ddd56c;
 
 #tab-vis-in {
-    border: 2px solid @color-dark-border-box-1;
+    border: 2px solid @color-border-box-1;
     padding: 0;
-}
-
-.sunlit #tab-vis-in {
-    border: 2px solid @color-light-border-box-1;
 }
 
 #tab-vis-in-container {
@@ -114,13 +106,9 @@
 }
 
 .vis-camp-floor {
-    background: @color-dark-bg-element-1;
+    background: @color-bg-element-1;
     position: absolute;
     left: 0px;
-}
-
-.sunlit .vis-camp-floor {
-    background: @color-light-bg-element-1;
 }
 
 .vis-camp-building {
@@ -135,21 +123,21 @@
 }
 
 .vis-camp-building-z0 {
-    background: @color-dark-vis-in-building-z0;
-    border-color:lighten(@color-dark-vis-in-building-z0, 20%);
+    background: @color-vis-in-building-z0;
+    border-color:lighten(@color-vis-in-building-z0, 20%);
     z-index: 2;
 }
 
 .vis-camp-building-z1 {
-    background: @color-dark-bg-element-3;
-    border-color: lighten(@color-dark-bg-element-3, 20%);
+    background: @color-bg-element-3;
+    border-color: lighten(@color-bg-element-3, 20%);
     z-index: 1;
 
 }
 
 .vis-camp-building-z2 {
-    background: @color-dark-border-box-1;
-    border-color: lighten(@color-dark-border-box-1, 20%);
+    background: @color-border-box-1;
+    border-color: lighten(@color-border-box-1, 20%);
     z-index: 0;
 }
 
@@ -158,7 +146,7 @@
 }
 
 .vis-camp-building-lit {
-    background: @color-dark-vis-in-building-lit;
+    background: @color-vis-in-building-lit;
 }
 
 .vis-camp-point {

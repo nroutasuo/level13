@@ -10,25 +10,14 @@ button {
 	font-weight: 500;
 	position: relative;
 	text-transform: lowercase;
-	background: @color-dark-bg-button;
-	color: @color-dark-text-default;
-	border: 1px solid @color-dark-border-button;
-}
-
-.sunlit button {
-	background: @color-light-bg-button;
-	color: @color-light-text-default;
-	border: 1px solid @color-light-border-button;
+	background: @color-bg-button;
+	color: @color-text-default;
+	border: 1px solid @color-border-button;
 }
 
 button:hover {
-	color: @color-dark-text-highlight !important;
-	border-color: @color-dark-border-button-highlight;
-}
-
-.sunlit button:hover {
-	color: @color-light-text-highlight !important;
-	border-color: @color-light-border-button-highlight;
+	color: @color-text-highlight !important;
+	border-color: @color-border-button-highlight;
 }
 
 button:active {
@@ -135,11 +124,7 @@ div.container-btn-action button {
 }
 
 .cooldown-duration {
-	background: @color-dark-bg-button-cooldown-duration;
-}
-
-.sunlit .cooldown-duration {
-	background: @color-light-bg-button-cooldown-duration;
+	background: @color-bg-button-cooldown-duration;
 }
 
 button .cooldown-action, button .cooldown-duration {
@@ -151,19 +136,11 @@ button .cooldown-action, button .cooldown-duration {
 }
 
 .cooldown-action {
-	background-color: @color-dark-bg-button-cooldown-action;
-}
-
-.sunlit .cooldown-action {
-	background-color: @color-light-bg-button-cooldown-action;
+	background-color: @color-bg-button-cooldown-action;
 }
 
 .cooldown-reqs {
-	background-color: @color-dark-bg-button-cooldown-reqs;
-}
-
-.sunlit .cooldown-reqs {
-	background-color: @color-light-bg-button-cooldown-reqs;
+	background-color: @color-bg-button-cooldown-reqs;
 }
 
 // DISABLED STATES
@@ -202,11 +179,6 @@ button.action.btn-disabled-basic:after {
 }
 
 button.btn-disabled-basic, button.btn-disabled-vision, button.btn-disabled-resources, button.btn-disabled-cooldown {
-	border-color: @color-dark-border-button-disabled;
-	color: @color-dark-text-disabled !important;
-}
-
-.sunlit button.btn-disabled-basic, .sunlit button.btn-disabled-vision, .sunlit button.btn-disabled-vision:hover, .sunlit button.btn-disabled-basic:hover, .sunlit button.btn-disabled-resources, .sunlit button.btn-disabled-resources:hover, .sunlit button.btn-disabled-cooldown, .sunlit button.btn-disabled-cooldown:hover {
-	border-color: @color-light-border-button-disabled;
-	color: @color-light-text-disabled !important;
+	border-color: @color-border-button-disabled;
+	color: @color-text-disabled !important;
 }

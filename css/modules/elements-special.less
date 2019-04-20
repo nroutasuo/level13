@@ -28,11 +28,7 @@
 }
 
 #log ul li.log-loaded, #log ul li.log-loaded span {
-	color: @color-dark-text-dimmed;
-}
-
-.sunlit #log ul li.log-loaded, .sunlit #log ul li.log-loaded span {
-	color: @color-light-text-dimmed;
+	color: @color-text-dimmed;
 }
 
 span.time, span.msg-camp-level {
@@ -41,27 +37,16 @@ span.time, span.msg-camp-level {
 }
 
 span.msg-count, span.time, span.msg-camp-level {
-	color: @color-dark-text-secondary;
-}
-
-.sunlit span.msg-count, .sunlit span.time, .sunlit msg-camp-level {
-	color: @color-light-text-secondary;
+	color: @color-text-secondary;
 }
 
 // MAIN LOG FADEDOWN
 
 .lvl13-fade-down {
-	background: -webkit-linear-gradient(@color-global-invisible 0%, @color-global-invisible 75%, @color-dark-bg-page 100% );
-	background: linear-gradient(@color-global-invisible 0%, @color-global-invisible 75%, @color-dark-bg-page 100% );
-	background: -o-linear-gradient(@color-global-invisible 0%, @color-global-invisible 75%, @color-dark-bg-page 100% );
-	background: -moz-linear-gradient( @color-global-invisible 0%, @color-global-invisible 75%, @color-dark-bg-page 100% );
-}
-
-.sunlit .lvl13-fade-down {
-	background: -webkit-linear-gradient(@color-global-invisible 0%, @color-global-invisible 75%, @color-light-bg-page 100% );
-	background: linear-gradient(@color-global-invisible 0%, @color-global-invisible 75%, @color-light-bg-page 100% );
-	background: -o-linear-gradient(@color-global-invisible 0%, @color-global-invisible 75%, @color-light-bg-page 100% );
-	background: -moz-linear-gradient(@color-global-invisible 0%, @color-global-invisible 75%, @color-light-bg-page 100% );
+	background: -webkit-linear-gradient(@color-global-invisible 0%, @color-global-invisible 75%, @color-bg-page 100% );
+	background: linear-gradient(@color-global-invisible 0%, @color-global-invisible 75%, @color-bg-page 100% );
+	background: -o-linear-gradient(@color-global-invisible 0%, @color-global-invisible 75%, @color-bg-page 100% );
+	background: -moz-linear-gradient( @color-global-invisible 0%, @color-global-invisible 75%, @color-bg-page 100% );
 }
 
 // MAIN HEADER (RESOURCE, STATS ETC)
@@ -183,11 +168,7 @@ span.msg-count, span.time, span.msg-camp-level {
 	border-style: solid;
 	margin-top: 5px;
 	margin-bottom: 5px;
-	border-color: @color-dark-border-strong;
-}
-
-.sunlit #notification-player {
-	border-color: @color-light-border-strong;
+	border-color: @color-border-strong;
 }
 
 #notification-player .progress {
@@ -242,11 +223,7 @@ ul#game-options li, ul#game-options-extended li {
    border-width: 1px;
    border-style: solid;
    margin: 0px 5px 0px 0px;
-   border-color: @color-dark-border-box-1;
-}
-
-.sunlit .changelog-type {
-	border-color: @color-light-border-box-1;
+   border-color: @color-border-box-1;
 }
 
 #changelog {
@@ -269,7 +246,7 @@ ul#game-options li, ul#game-options-extended li {
 #changelog li:before{
 	width: 7px;
 	height: 7px;
-	background: @color-dark-bg-contrast;
+	background: @color-bg-contrast;
 	content: ".";
 	position: absolute;
 	left: -1em;
@@ -304,11 +281,7 @@ ul#game-options li, ul#game-options-extended li {
 }
 
 #trade-caravans-outgoing-container tr.selected {
-	border-color: @color-dark-bg-element-1;
-}
-
-.sunlit #trade-caravans-outgoing-container tr.selected {
-	border-color: @color-light-bg-element-1;
+	border-color: @color-bg-element-1;
 }
 
 .trade-caravans-outgoing-plan {
@@ -324,11 +297,7 @@ ul#game-options li, ul#game-options-extended li {
 }
 
  .row-detail-indicator {
-	color: @color-dark-text-secondary;
-}
-
-.sunlit .row-detail-indicator {
-	color: @color-light-text-secondary;
+	color: @color-text-secondary;
 }
 
 // INCOMING CARAVAN POPUP
@@ -372,16 +341,17 @@ ul.resultlist-positive li:before {
 	content: "+ ";
 }
 
-// CONTENT GRID
+// MAIN SWITCH (TAB BAR)
 
-div.grid-content {
-	background: @color-dark-bg-box-1;
-	border: 2px solid @color-dark-border-box-1;
+#switch {
+    background-color: @color-bg-page;
 }
 
-.sunlit div.grid-content {
-	background: @color-light-bg-box-1;
-	border: 1px solid @color-light-border-box-1;
+// CONTENT GRID
+    
+div.grid-content {
+	background: @color-bg-box-1;
+	border: 2px solid @color-border-box-1;
 }
 
 // IN-GAME DATE
@@ -407,23 +377,13 @@ div.grid-content {
 }
 
 .blueprint-piece-box-found {
-	background: @color-dark-bg-element-2;
-	border-color: @color-dark-border-strong;
-}
-
-.sunlit .blueprint-piece-box-found {
-	background: @color-light-bg-element-2;
-	border-color: @color-light-border-strong;
+	background: @color-bg-element-2;
+	border-color: @color-border-strong;
 }
 
 .blueprint-piece-box-missing {
-	background: @color-dark-bg-box-1;
-	border: 2px solid @color-dark-border-box-1;
-}
-
-.sunlit .blueprint-piece-box-missing {
-	background: @color-light-bg-box-1;
-	border: 1px solid @color-light-border-box-1;
+	background: @color-bg-box-1;
+	border: 2px solid @color-border-box-1;
 }
 
 .blueprint-piece-box img {
