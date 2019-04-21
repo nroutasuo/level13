@@ -145,6 +145,7 @@ ul.tabs li {
 	white-space: nowrap;
 	cursor: pointer;
 	text-transform: lowercase;
+    background-color: @color-bg-page;
     border-color: @color-border-box-2;
 }
 
@@ -465,7 +466,7 @@ div.popup-overlay {
     text-align: center;
     border-radius: 8px;
 	font-weight: bold;
-    font-size: 80%;
+    font-size: 85%;
 }
 
 table .bubble {
@@ -624,6 +625,11 @@ table .bubble {
     position: relative;
 }
 
+.item-slot.highlighted {
+    border-color: lighten(@color-border-strong, 15%);
+    color: lighten(@color-text-default, 15%);
+}
+
 .item-slot-big {
     width: @item-slot-big-width;
     height: @item-slot-big-height;
@@ -670,6 +676,7 @@ table .bubble {
 }
 
 .item-slot-name, .item-slot-type-equipped {
+    background-color: @color-bg-element-1;
     width: 100%;
     text-align: center;
     overflow: hidden;
@@ -677,6 +684,10 @@ table .bubble {
     height: auto;
     max-height: 1.9em;
     padding: 0.35em 0;
+}
+
+.item-slot.highlighted .item-slot-type-equipped {
+    background: lighten( @color-bg-element-1, 8%);
 }
 
 .item-slot-effect {
@@ -700,18 +711,6 @@ div.item-slot > div, div.item-slot > span {
     position: absolute;
     font-size: @font-size-small;
     cursor: default;
-}
-
-.item-slot.highlighted, .item.highlighted {
-    border-color: @color-border-highlight;
-}
-
-.item-slot.highlighted .item-slot-type-equipped {
-    background: @color-bg-element-2;
-}
-
-.item-slot-name, .item-slot-type-equipped {
-    background-color: @color-bg-element-1;
 }
 
 // ITEM AND RESOURCE DIVS
@@ -747,6 +746,7 @@ ul.itemlist, ul.resultlist {
 
 .item.highlighted {
     background: lighten(@color-bg-box-1, 10%);
+    border-color: lighten(@color-border-box-1, 20%);
 }
 
 .res {
@@ -771,6 +771,8 @@ ul.itemlist, ul.resultlist {
 }
 
 .item div.item-count, .res div.item-count {
+    border-width: 1px;
+    color: @color-text-secondary;
 	font-size: 75%;
 	position: absolute;
 	bottom: -0.9em;

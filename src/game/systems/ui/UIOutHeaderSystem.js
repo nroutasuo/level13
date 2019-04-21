@@ -563,6 +563,7 @@ define([
                 $("#header-self-inout img").attr("src", imgName);
             $("#header-self-inout img").attr("alt", (inCamp ? "in camp" : "outside"));
             $("#header-self-inout img").attr("title", (inCamp ? "in camp" : "outside"));
+            $("#header-self-inout img").toggleClass("rotate-on-hover", !inCamp);
 
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var hasMap = itemsComponent.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
