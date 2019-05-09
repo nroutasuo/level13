@@ -611,6 +611,9 @@ define([
 
         generateSectors: function (seed, levelVO, passagesUpPositions) {
             var l = levelVO.level;
+            var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
+			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
+			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
 
             var bagSize = WorldCreatorConstants.getBagBonus(levelVO.levelOrdinal);
             var bagSizePrevious = WorldCreatorConstants.getBagBonus(levelVO.levelOrdinal - 1);
@@ -618,12 +621,11 @@ define([
             levelVO.centralAreaSize = Math.min(Math.max(Math.floor(bagSizeAvg / 6), WorldCreatorConstants.MIN_CENTRAL_AREA_SIZE), WorldCreatorConstants.MAX_CENTRAL_AREA_SIZE);
             levelVO.bagSize = bagSizeAvg;
 
-            var numSectors = WorldCreatorConstants.getNumSectors(levelVO.levelOrdinal);
-            var numSectorsCentral = WorldCreatorConstants.getNumSectorsCentral(levelVO.levelOrdinal);
+            var isSmallLevel = !levelVO.isCampable && l !== bottomLevel && l < topLevel - 1;
+            var numSectors = WorldCreatorConstants.getNumSectors(campOrdinal, isSmallLevel);
+            var numSectorsCentral = WorldCreatorConstants.getNumSectorsCentral(campOrdinal, isSmallLevel);
 
             //  create central structure
-			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
-			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
             var centerSize = 5;
             if (l < 8) centerSize = 3;
             if (l === bottomLevel) centerSize = 7;

@@ -66,18 +66,19 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         BAG_BONUS_5: 100,
         BAG_BONUS_6: 150,
         
-        getNumSectors: function (levelOrdinal) {
-            return Math.round(this.getNumSectorsCentral(levelOrdinal) * 1.15);
+        getNumSectors: function (campOrdinal, isSmall) {
+            return Math.round(this.getNumSectorsCentral(campOrdinal, isSmall) * 1.15);
         },
         
-        getNumSectorsCentral: function (levelOrdinal) {
-            if (levelOrdinal < 2)
+        getNumSectorsCentral: function (campOrdinal, isSmall) {
+            if (isSmall) return 80;
+            if (campOrdinal < 2)
                 return 100;
-            if (levelOrdinal < 10)
+            if (campOrdinal < WorldCreatorConstants.CAMPS_BEFORE_GROUND)
                 return 150;
-            if (levelOrdinal < 15)
-                return 200;
-            return 300;
+            if (campOrdinal < 12)
+                return 175;
+            return 200;
         },
         
         // max length of a path (limited by stamina) on the given camp ordinal
