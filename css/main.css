@@ -252,6 +252,9 @@ canvas {
 body.dark {
   background: #202220;
   color: #fdfdfd;
+  font-family: Arial, sans-serif;
+  font-size: 11pt;
+  line-height: 1.3em;
   /* WEBKIT BROWSERS */
 }
 body.dark .centered {
@@ -365,11 +368,6 @@ body.dark table td {
 body.dark table button,
 body.dark table div.container-btn-action {
   margin-left: 0px;
-}
-body.dark body {
-  font-family: Arial, sans-serif;
-  font-size: 11pt;
-  line-height: 1.3em;
 }
 body.dark h1,
 body.dark h2,
@@ -1213,9 +1211,6 @@ body.dark .res div.item-count {
   text-align: center;
   z-index: 3;
 }
-body.dark .highlighted .item-count {
-  opacity: 0.75;
-}
 body.dark li.item-with-count {
   margin-bottom: 1em;
 }
@@ -1917,6 +1912,9 @@ body.dark .vis-camp-point {
 body.sunlit {
   background: #fdfdfd;
   color: #202220;
+  font-family: Arial, sans-serif;
+  font-size: 11pt;
+  line-height: 1.3em;
   /* WEBKIT BROWSERS */
 }
 body.sunlit .centered {
@@ -2030,11 +2028,6 @@ body.sunlit table td {
 body.sunlit table button,
 body.sunlit table div.container-btn-action {
   margin-left: 0px;
-}
-body.sunlit body {
-  font-family: Arial, sans-serif;
-  font-size: 11pt;
-  line-height: 1.3em;
 }
 body.sunlit h1,
 body.sunlit h2,
@@ -2877,9 +2870,6 @@ body.sunlit .res div.item-count {
   line-height: 1em;
   text-align: center;
   z-index: 3;
-}
-body.sunlit .highlighted .item-count {
-  opacity: 0.75;
 }
 body.sunlit li.item-with-count {
   margin-bottom: 1em;
