@@ -111,6 +111,7 @@
         },
 
         slowUpdate: function () {
+            if (!this.playerLocationNodes.head) return;
             this.updateImprovements();
             this.updateBubble();
             this.updateStats();

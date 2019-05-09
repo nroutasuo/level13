@@ -189,6 +189,7 @@ define([
         },
 
 		updatePlayerStats: function (isInCamp) {
+            if (!this.currentLocationNodes.head) return;
 			var campComponent = this.currentLocationNodes.head.entity.get(CampComponent);
 			var playerStatsNode = this.playerStatsNodes.head;
             var playerStamina = playerStatsNode.stamina.stamina;
