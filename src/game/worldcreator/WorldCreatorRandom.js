@@ -193,7 +193,9 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
                     console.log("WARN: Max path length is <= 0, skipping check.");
                     continue;
                 }
-                var pathLen = this.findPath(worldVO, pathConstraints[j].startPosition, sector.position, false, true).length;
+                var path = this.findPath(worldVO, pathConstraints[j].startPosition, sector.position, false, true);
+                if (!path) return false;
+                var pathLen = path.length;
                 if (pathLen > pathConstraints[j].maxLength) {
                     if (logFails) console.log("path too long: " + pathLen + " / " + pathConstraints[j].maxLength + ", start: " + pathConstraints[j].startPosition + ", candidate " + sector.position);
                     return false;
@@ -253,12 +255,12 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
                 findPassageDown: function (level) {
                     var levelVO = worldVO.getLevel(level);
                     var result = levelVO.findPassageDown();
-                    return makePathSectorVO(result.position);
+                    return result ? makePathSectorVO(result.position) : null;
                 },
                 findPassageUp: function (level) {
                     var levelVO = worldVO.getLevel(level);
                     var result = levelVO.findPassageUp();
-                    return makePathSectorVO(result.position);
+                    return result ? makePathSectorVO(result.position) : null;
                 },
                 getSectorByPosition: function (level, sectorX, sectorY) {
                     return makePathSectorVO(new PositionVO(level, sectorX, sectorY));
