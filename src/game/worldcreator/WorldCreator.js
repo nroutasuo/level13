@@ -878,7 +878,10 @@ define([
 
         generatePassages: function (seed, levelVO, passageUpPositions, bottomLevel) {
             var l = levelVO.level;
+            var isCampable = levelVO.isCampable;
             var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
+            var unlockElevatorOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_passage_elevator");
+            var unlockHoleOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_passage_hole");
 
             // passages: up according to previous level
             var previousLevelVO = this.world.levels[l + 1];
@@ -925,10 +928,16 @@ define([
                         passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_STAIRWELL;
                     } else if (l === 14) {
                         passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_HOLE;
+                    } else if (isCampable && campOrdinal == unlockElevatorOrdinal) {
+                        passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_ELEVATOR;
+                    } else if (isCampable && campOrdinal == unlockHoleOrdinal) {
+                        passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_HOLE;
                     } else {
                         var availablePassageTypes = [MovementConstants.PASSAGE_TYPE_STAIRWELL];
-                        if (l < 5 || l > 13) availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_HOLE);
-                        if (l > 15) availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_ELEVATOR);
+                        if (campOrdinal >= unlockElevatorOrdinal)
+                            availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_ELEVATOR);
+                        if (campOrdinal >= unlockHoleOrdinal)
+                            availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_HOLE);
                         var passageTypeIndex = WorldCreatorRandom.randomInt(9 * seed + l * i * 7 + i + l * seed, 0, availablePassageTypes.length);
                         var passageType = availablePassageTypes[passageTypeIndex];
                         passageDownSectors[i].passageDown = passageType;
