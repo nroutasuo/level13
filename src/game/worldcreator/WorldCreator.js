@@ -881,7 +881,10 @@ define([
             var isCampable = levelVO.isCampable;
             var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
             var unlockElevatorOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_passage_elevator");
-            var unlockHoleOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_passage_hole");
+            var unlockHoleOrdinal = Math.max(
+                UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_passage_hole"),
+                UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_cementmill"),
+            );
 
             // passages: up according to previous level
             var previousLevelVO = this.world.levels[l + 1];
