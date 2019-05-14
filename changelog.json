@@ -3,8 +3,12 @@
             "version": "0.2.5",
             "phase": "alpha",
             "final": false,
-            "updated": "2019-04-13",
+            "updated": "2019-05-09",
             "changes": [
+                {
+                    "type": "GB",
+                    "summary": "Adjust level sizes"
+                }
             ]
         },
         {
