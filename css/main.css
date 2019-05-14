@@ -73,9 +73,13 @@ canvas {
   -o-transition: opacity 2s ease-in-out;
   transition: opacity 2s ease-in-out;
 }
+.vision-step-0 #grid-main {
+  opacity: 0.5;
+}
 .vision-step-0 #grid-main img,
 .vision-step-0 #grid-main .canvas-container canvas,
-.vision-step-0 #grid-main .vision-image {
+.vision-step-0 #grid-main .vision-image,
+.vision-step-0 #grid-main .vis-container {
   opacity: 0.15;
 }
 .vision-step-0 #grid-main p,
@@ -86,12 +90,17 @@ canvas {
 .vision-step-0 #grid-main .stats-indicator,
 .vision-step-0 #grid-main .list-amount,
 .vision-step-0 #grid-main .item-name,
-.vision-step-0 #grid-main #mainmap-sector-details-content td {
+.vision-step-0 #grid-main #mainmap-sector-details-content td,
+.vision-step-0 #grid-main #log span {
   opacity: 0.5;
+}
+.vision-step-1 #grid-main {
+  opacity: 0.6;
 }
 .vision-step-1 #grid-main img,
 .vision-step-1 #grid-main .canvas-container canvas,
-.vision-step-1 #grid-main .vision-image {
+.vision-step-1 #grid-main .vision-image,
+.vision-step-1 #grid-main .vis-container {
   opacity: 0.32;
 }
 .vision-step-1 #grid-main p,
@@ -102,12 +111,17 @@ canvas {
 .vision-step-1 #grid-main .stats-indicator,
 .vision-step-1 #grid-main .list-amount,
 .vision-step-1 #grid-main .item-name,
-.vision-step-1 #grid-main #mainmap-sector-details-content td {
+.vision-step-1 #grid-main #mainmap-sector-details-content td,
+.vision-step-1 #grid-main #log span {
   opacity: 0.6;
+}
+.vision-step-2 #grid-main {
+  opacity: 0.7;
 }
 .vision-step-2 #grid-main img,
 .vision-step-2 #grid-main .canvas-container canvas,
-.vision-step-2 #grid-main .vision-image {
+.vision-step-2 #grid-main .vision-image,
+.vision-step-2 #grid-main .vis-container {
   opacity: 0.49;
 }
 .vision-step-2 #grid-main p,
@@ -118,12 +132,17 @@ canvas {
 .vision-step-2 #grid-main .stats-indicator,
 .vision-step-2 #grid-main .list-amount,
 .vision-step-2 #grid-main .item-name,
-.vision-step-2 #grid-main #mainmap-sector-details-content td {
+.vision-step-2 #grid-main #mainmap-sector-details-content td,
+.vision-step-2 #grid-main #log span {
   opacity: 0.7;
+}
+.vision-step-3 #grid-main {
+  opacity: 0.8;
 }
 .vision-step-3 #grid-main img,
 .vision-step-3 #grid-main .canvas-container canvas,
-.vision-step-3 #grid-main .vision-image {
+.vision-step-3 #grid-main .vision-image,
+.vision-step-3 #grid-main .vis-container {
   opacity: 0.66;
 }
 .vision-step-3 #grid-main p,
@@ -134,12 +153,17 @@ canvas {
 .vision-step-3 #grid-main .stats-indicator,
 .vision-step-3 #grid-main .list-amount,
 .vision-step-3 #grid-main .item-name,
-.vision-step-3 #grid-main #mainmap-sector-details-content td {
+.vision-step-3 #grid-main #mainmap-sector-details-content td,
+.vision-step-3 #grid-main #log span {
   opacity: 0.8;
+}
+.vision-step-4 #grid-main {
+  opacity: 0.9;
 }
 .vision-step-4 #grid-main img,
 .vision-step-4 #grid-main .canvas-container canvas,
-.vision-step-4 #grid-main .vision-image {
+.vision-step-4 #grid-main .vision-image,
+.vision-step-4 #grid-main .vis-container {
   opacity: 0.83;
 }
 .vision-step-4 #grid-main p,
@@ -150,12 +174,17 @@ canvas {
 .vision-step-4 #grid-main .stats-indicator,
 .vision-step-4 #grid-main .list-amount,
 .vision-step-4 #grid-main .item-name,
-.vision-step-4 #grid-main #mainmap-sector-details-content td {
+.vision-step-4 #grid-main #mainmap-sector-details-content td,
+.vision-step-4 #grid-main #log span {
   opacity: 0.9;
+}
+.vision-step-5 #grid-main {
+  opacity: 1;
 }
 .vision-step-5 #grid-main img,
 .vision-step-5 #grid-main .canvas-container canvas,
-.vision-step-5 #grid-main .vision-image {
+.vision-step-5 #grid-main .vision-image,
+.vision-step-5 #grid-main .vis-container {
   opacity: 1;
 }
 .vision-step-5 #grid-main p,
@@ -166,12 +195,17 @@ canvas {
 .vision-step-5 #grid-main .stats-indicator,
 .vision-step-5 #grid-main .list-amount,
 .vision-step-5 #grid-main .item-name,
-.vision-step-5 #grid-main #mainmap-sector-details-content td {
+.vision-step-5 #grid-main #mainmap-sector-details-content td,
+.vision-step-5 #grid-main #log span {
+  opacity: 1;
+}
+.vision-step-6 #grid-main {
   opacity: 1;
 }
 .vision-step-6 #grid-main img,
 .vision-step-6 #grid-main .canvas-container canvas,
-.vision-step-6 #grid-main .vision-image {
+.vision-step-6 #grid-main .vision-image,
+.vision-step-6 #grid-main .vis-container {
   opacity: 1;
 }
 .vision-step-6 #grid-main p,
@@ -182,12 +216,17 @@ canvas {
 .vision-step-6 #grid-main .stats-indicator,
 .vision-step-6 #grid-main .list-amount,
 .vision-step-6 #grid-main .item-name,
-.vision-step-6 #grid-main #mainmap-sector-details-content td {
+.vision-step-6 #grid-main #mainmap-sector-details-content td,
+.vision-step-6 #grid-main #log span {
+  opacity: 1;
+}
+.vision-step-7 #grid-main {
   opacity: 1;
 }
 .vision-step-7 #grid-main img,
 .vision-step-7 #grid-main .canvas-container canvas,
-.vision-step-7 #grid-main .vision-image {
+.vision-step-7 #grid-main .vision-image,
+.vision-step-7 #grid-main .vis-container {
   opacity: 1;
 }
 .vision-step-7 #grid-main p,
@@ -198,12 +237,17 @@ canvas {
 .vision-step-7 #grid-main .stats-indicator,
 .vision-step-7 #grid-main .list-amount,
 .vision-step-7 #grid-main .item-name,
-.vision-step-7 #grid-main #mainmap-sector-details-content td {
+.vision-step-7 #grid-main #mainmap-sector-details-content td,
+.vision-step-7 #grid-main #log span {
+  opacity: 1;
+}
+.vision-step-8 #grid-main {
   opacity: 1;
 }
 .vision-step-8 #grid-main img,
 .vision-step-8 #grid-main .canvas-container canvas,
-.vision-step-8 #grid-main .vision-image {
+.vision-step-8 #grid-main .vision-image,
+.vision-step-8 #grid-main .vis-container {
   opacity: 1;
 }
 .vision-step-8 #grid-main p,
@@ -214,12 +258,17 @@ canvas {
 .vision-step-8 #grid-main .stats-indicator,
 .vision-step-8 #grid-main .list-amount,
 .vision-step-8 #grid-main .item-name,
-.vision-step-8 #grid-main #mainmap-sector-details-content td {
+.vision-step-8 #grid-main #mainmap-sector-details-content td,
+.vision-step-8 #grid-main #log span {
+  opacity: 1;
+}
+.vision-step-9 #grid-main {
   opacity: 1;
 }
 .vision-step-9 #grid-main img,
 .vision-step-9 #grid-main .canvas-container canvas,
-.vision-step-9 #grid-main .vision-image {
+.vision-step-9 #grid-main .vision-image,
+.vision-step-9 #grid-main .vis-container {
   opacity: 1;
 }
 .vision-step-9 #grid-main p,
@@ -230,12 +279,17 @@ canvas {
 .vision-step-9 #grid-main .stats-indicator,
 .vision-step-9 #grid-main .list-amount,
 .vision-step-9 #grid-main .item-name,
-.vision-step-9 #grid-main #mainmap-sector-details-content td {
+.vision-step-9 #grid-main #mainmap-sector-details-content td,
+.vision-step-9 #grid-main #log span {
+  opacity: 1;
+}
+.vision-step-10 #grid-main {
   opacity: 1;
 }
 .vision-step-10 #grid-main img,
 .vision-step-10 #grid-main .canvas-container canvas,
-.vision-step-10 #grid-main .vision-image {
+.vision-step-10 #grid-main .vision-image,
+.vision-step-10 #grid-main .vis-container {
   opacity: 1;
 }
 .vision-step-10 #grid-main p,
@@ -246,7 +300,8 @@ canvas {
 .vision-step-10 #grid-main .stats-indicator,
 .vision-step-10 #grid-main .list-amount,
 .vision-step-10 #grid-main .item-name,
-.vision-step-10 #grid-main #mainmap-sector-details-content td {
+.vision-step-10 #grid-main #mainmap-sector-details-content td,
+.vision-step-10 #grid-main #log span {
   opacity: 1;
 }
 body.dark {
@@ -368,6 +423,9 @@ body.dark table td {
 body.dark table button,
 body.dark table div.container-btn-action {
   margin-left: 0px;
+}
+body.dark button {
+  cursor: pointer;
 }
 body.dark h1,
 body.dark h2,
@@ -2028,6 +2086,9 @@ body.sunlit table td {
 body.sunlit table button,
 body.sunlit table div.container-btn-action {
   margin-left: 0px;
+}
+body.sunlit button {
+  cursor: pointer;
 }
 body.sunlit h1,
 body.sunlit h2,
