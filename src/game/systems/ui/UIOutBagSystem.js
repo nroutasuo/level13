@@ -527,7 +527,10 @@ define([
                 var bonusType = ItemConstants.itemBonusTypes[bonusKey];
                 var itemBonus = itemVO.getBonus(bonusType);
                 for (var i = 0; i < equipped.length; i++)
-                    if (itemBonus > equipped[i].getBonus(bonusType)) {
+                    if (itemBonus > equipped[i].getBonus(bonusType) && bonusType != ItemConstants.itemBonusTypes.movement) {
+                        return false;
+                    }
+                    else if (itemBonus < equipped[i].getBonus(bonusType) && bonusType == ItemConstants.itemBonusTypes.movement) {
                         return false;
                     }
             }
