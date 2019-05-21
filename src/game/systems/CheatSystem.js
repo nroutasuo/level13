@@ -86,6 +86,9 @@ define(['ash',
             this.registerCheat(CheatConstants.CHEAT_NAME_SUPPLIES, "Refill supplies (water and food).", [], function () {
                 this.addSupplies();
             });
+            this.registerCheat(CheatConstants.CHEAT_NAME_MATERIALS, "Refill materials (metal, rope).", [], function () {
+                this.addMaterials();
+            });
             this.registerCheat(CheatConstants.CHEAT_NAME_VISION, "Set vision.", ["value"], function (params) {
                 this.playerStatsNodes.head.vision.value = Math.min(200, Math.max(0, parseInt(params[0])));
             });
@@ -140,6 +143,9 @@ define(['ash',
             this.registerCheat(CheatConstants.CHEAT_NAME_TRADE_PARTNERS, "Add all trading partners found up to a given camp ordinal.", ["camp ordinal"], function (params) {
                 var campOrdinal = parseInt(params[0]);
                 this.addTradePartners(campOrdinal);
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_TRADE_PARTNER, "Add next trade partner, regardless of camp ordinal.", [], function (params) {
+                this.addTradePartner();
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_WORKSHOPS, "Clear all workshops on a given level.", ["level"], function (params) {
                 var level = parseInt(params[0]);
@@ -362,6 +368,13 @@ define(['ash',
             playerResources.setResource("food", 15);
             playerResources.setResource("water", 15);
         },
+        
+        addMaterials: function () {
+            var playerStorage = GameGlobals.resourcesHelper.getCurrentStorage();
+            var playerResources = playerStorage.resources;
+            playerResources.setResource("metal", playerStorage.storageCapacity);
+            playerResources.setResource("rope", playerStorage.storageCapacity / 2);
+        },
 
         addPopulation: function (amount) {
             var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
@@ -449,6 +462,18 @@ define(['ash',
             }
         },
         
+        addTradePartner: function () {
+            var partner;
+			for (var i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
+                partner = TradeConstants.TRADING_PARTNERS[i];
+                if (GameGlobals.gameState.foundTradingPartners.indexOf(partner.campOrdinal) >= 0)
+                    continue;
+
+                GameGlobals.gameState.foundTradingPartners.push(partner.campOrdinal);
+                return;
+            }
+        },
+        
         clearWorkshops: function (level) {
             var workshopEntities = GameGlobals.levelHelper.getWorkshopsSectorsForLevel(level);
             var featuresComponent;
@@ -507,7 +532,7 @@ define(['ash',
         },
 
         revealMap: function (value) {
-            GameGlobals.uiMapHelper.isMapRevealed = value ? true : false;
+            GameGlobals.uiMapHelper.isMapRevealed = value === true || value === "true" || value === 1 ? true : false;
         },
 
         debugMap: function (value) {
