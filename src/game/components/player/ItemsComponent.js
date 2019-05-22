@@ -104,6 +104,10 @@ function (Ash, ItemVO, ItemConstants) {
                 var bonusType = ItemConstants.itemBonusTypes[bonusKey];
                 var currentBonus = currentItem ? currentItem.getBonus(bonusType) : 0;
                 var newBonus = item.getBonus(bonusType);
+                if (bonusType == ItemConstants.itemBonusTypes.movement) {
+                    currentBonus = 1 / (currentBonus || 1);
+                    newBonus = 1 / (newBonus || 1);
+                }
                 if (newBonus < currentBonus) {
                     if (result > 0) return 0;
                     result = -1;

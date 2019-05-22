@@ -114,7 +114,7 @@ define([
             var noDefences = danger > defenceLimit;
             if (noDefences) {
                 var steppedDanger = Math.ceil(danger * 100 / 5) * 5;
-                var penaltyRatio = (steppedDanger - defenceLimit) / 200;
+                var penaltyRatio = (steppedDanger - defenceLimit * 100) / 200;
                 var defencePenalty = Math.ceil(targetReputationWithoutPenalties * penaltyRatio);
                 if (steppedDanger >= 75) {
                     addValue(-defencePenalty, "Terrible defences");
