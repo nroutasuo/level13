@@ -777,7 +777,7 @@ define(['ash',
 				var amount = caravan.campSelectedItems[itemID];
 				for (var i = 0; i < amount; i++) {
 					caravan.sellItems.push(ItemConstants.getItemByID(itemID));
-					itemsComponent.discardItem(itemsComponent.getItem(itemID), false, true);
+					itemsComponent.discardItem(itemsComponent.getItem(itemID, null, true), false);
 				}
 			}
 
