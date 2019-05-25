@@ -86,9 +86,11 @@ define(['ash',
             node.autoPlay.isExploring = !inCamp;
             node.autoPlay.isManagingCamps = inCamp;
             this.cheatSystem.applyCheat("speed " + this.speed);
+            GameGlobals.gameState.isAutoPlaying = true;
         },
 
         onAutoPlayNodeRemoved: function (node) {
+            GameGlobals.gameState.isAutoPlaying = false;
             this.cheatSystem.applyCheat("speed 1");
         },
 

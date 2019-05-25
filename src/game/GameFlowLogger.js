@@ -1,4 +1,4 @@
-define(['ash', 'game/GlobalSignals', 'game/constants/GameConstants'], function (Ash, GlobalSignals, GameConstants) {
+define(['ash', 'game/GlobalSignals', 'game/GameGlobals', 'game/constants/GameConstants'], function (Ash, GlobalSignals, GameGlobals, GameConstants) {
     
     var GameFlowLogger = Ash.Class.extend({
         
@@ -23,10 +23,14 @@ define(['ash', 'game/GlobalSignals', 'game/constants/GameConstants'], function (
         },
         
         onPopupOpened: function (id) {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
+            if (GameGlobals.gameState.isAutoPlaying) return;
             this.log("popup opened: " + id);
         },
         
         onPopupClosed: function (id) {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
+            if (GameGlobals.gameState.isAutoPlaying) return;
             this.log("popup closed: " + id);
         },
         
@@ -39,6 +43,7 @@ define(['ash', 'game/GlobalSignals', 'game/constants/GameConstants'], function (
         },
         
         onPlayerMoved: function (pos) {
+            if (GameGlobals.gameState.isAutoPlaying) return;
             this.log("player moved to " + pos);
         },
         

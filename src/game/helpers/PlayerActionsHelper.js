@@ -1230,14 +1230,35 @@ define([
 
         getActionNameForImprovement: function (improvementName) {
             // TODO make this nicer - list action names somewhere outside of html?
+            // TODO list action <-> improvement name mapping only once (now here and in getImprovementNameForAction)
             var helper = this;
             var result = null;
+            switch (improvementName) {
+                case improvementNames.bridge: return "build_out_bridge";
+                case improvementNames.passageUpStairs: return "build_out_passage_up_stairs";
+                case improvementNames.passageUpElevator: return "build_out_passage_up_elevator";
+                case improvementNames.passageUpHole: return "build_out_passage_up_hole";
+                case improvementNames.passageDownStairs: return "build_out_passage_down_stairs";
+                case improvementNames.passageDownElevator: return "build_out_passage_down_elevator";
+                case improvementNames.passageDownHole: return "build_out_passage_down_hole";
+                case improvementNames.spaceship1: return "build_out_spaceship1";
+                case improvementNames.spaceship2: return "build_out_spaceship2";
+                case improvementNames.spaceship3: return "build_out_spaceship3";
+            }
             $.each($("#in-improvements tr"), function () {
                 var actionName = $(this).find("button.action-build").attr("action");
                 var improvement = helper.getImprovementNameForAction(actionName);
                 if ((improvement == improvementName)) {
                     result = actionName;
                     return false; // breaks each
+                }
+            });
+            $.each($("#out-improvements tr"), function () {
+                var actionName = $(this).find("button.action-build").attr("action");
+                var improvement = helper.getImprovementNameForAction(actionName);
+                if ((improvement == improvementName)) {
+                    result = actionName;
+                    return false;
                 }
             });
             if (result == null)

@@ -798,6 +798,7 @@ define([
             if (!stashVO) return;
             var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
             if (sectorStatus.scavenged) return;
+            if (GameConstants.logInfo) console.log("found stash");
             switch (stashVO.stashType) {
                 case StashVO.STASH_TYPE_ITEM:
                     for (var i = 0; i < stashVO.amount; i++) {

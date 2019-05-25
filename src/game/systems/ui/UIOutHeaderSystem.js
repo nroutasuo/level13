@@ -618,7 +618,6 @@ define([
             visionFactor = Math.min(100, visionFactor);
             var visionStep = Math.round(visionFactor / 10);
             UIState.refreshState(this, "vision-step", visionStep, function () {
-                console.log("vision class: " + visionStep);
                 for (var i = 0; i <= 10; i++) {
 		             this.elements.body.toggleClass("vision-step-" + i, i == visionStep);
                 }
