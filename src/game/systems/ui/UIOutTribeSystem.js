@@ -54,7 +54,7 @@ define([
             GlobalSignals.removeAll(this);
         },
 
-        update: function (time) {
+        update: function () {
             if (GameGlobals.gameState.uiStatus.isHidden) return;
             var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.world;
             if (isActive) this.updateNodes(isActive);

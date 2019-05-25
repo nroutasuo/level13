@@ -58,6 +58,7 @@ define([
         },
         
         applyFightStep: function (time) {
+            var fightTime = Math.min(time, 1);
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var enemy = this.fightNodes.head.fight.enemy;
             var playerStamina = this.playerStatsNodes.head.stamina;
@@ -73,13 +74,13 @@ define([
             if (itemEffects.enemyStunnedSeconds > 0) {
                 playerDamage = 0;
             }
-            itemEffects.enemyStunnedSeconds -= time;
+            itemEffects.enemyStunnedSeconds -= fightTime;
             itemEffects.enemyStunnedSeconds = Math.max(itemEffects.enemyStunnedSeconds, 0);
 
             // apply effects
-            var timeFactor = secondsToComplete / FightConstants.FIGHT_LENGTH_SECONDS;            
-            enemy.hp -= (enemyDamage) * time * timeFactor;
-            playerStamina.hp -= (playerDamage + playerRandomDamage) * time * timeFactor;
+            var timeFactor = secondsToComplete / FightConstants.FIGHT_LENGTH_SECONDS;
+            enemy.hp -= (enemyDamage) * fightTime * timeFactor;
+            playerStamina.hp -= (playerDamage + playerRandomDamage) * fightTime * timeFactor;
         },
         
         endFight: function () {

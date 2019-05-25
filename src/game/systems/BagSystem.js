@@ -28,7 +28,7 @@ define([
 			this.playerNodes = null;
         },
 
-        update: function (time) {
+        update: function () {
             var playerBag = this.playerNodes.head.entity.get(BagComponent);
 			var playerResources = this.playerNodes.head.resources;
 			var playerItems = this.playerNodes.head.entity.get(ItemsComponent);

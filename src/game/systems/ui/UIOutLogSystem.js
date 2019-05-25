@@ -27,7 +27,7 @@ define([
 			GlobalSignals.playerMovedSignal.remove(this.onPlayerMoved);
         },
 
-        update: function (time) {
+        update: function () {
             if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (GameGlobals.gameState.isPaused) return;
 			var timeStamp = new Date().getTime();
@@ -41,7 +41,7 @@ define([
 				node.logMessages.hasNewMessages = false;
 			}
 		
-			if (!hasNewMessages && !isTime && time) return;
+			if (!hasNewMessages && !isTime) return;
 			
 			this.pruneMessages();
 			this.refreshMessages(messages);

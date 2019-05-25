@@ -33,7 +33,7 @@ define([
             this.pendingListUpdate = true;
         },
 
-        update: function (time) {
+        update: function () {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (!this.playerActionResultNodes.head)
                 return;

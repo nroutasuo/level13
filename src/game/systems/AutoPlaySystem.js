@@ -94,7 +94,7 @@ define(['ash',
             this.cheatSystem.applyCheat("speed 1");
         },
 
-        update: function (time) {
+        update: function () {
 			if (!this.autoPlayNodes.head)
                 return;
 

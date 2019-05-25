@@ -11,9 +11,9 @@ define([
     'game/components/sector/SectorFeaturesComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent'
-], function (Ash, 
-    HazardConstants, PerkConstants, GameConstants, LogConstants, 
-    PlayerPositionNode, PlayerLocationNode, 
+], function (Ash,
+    HazardConstants, PerkConstants, GameConstants, LogConstants,
+    PlayerPositionNode, PlayerLocationNode,
     LogMessagesComponent, SectorFeaturesComponent, ItemsComponent, PerksComponent) {
     
     var HazardSystem = Ash.System.extend({
@@ -39,10 +39,10 @@ define([
         update: function (time) {
             if (!this.locationNodes.head) return;
             this.addPerks();
-            this.updatePerks(time + this.engine.extraUpdateTime);
+            this.updatePerks(time);
         },
         
-        addPerks: function () {            
+        addPerks: function () {
             var featuresComponent = this.locationNodes.head.entity.get(SectorFeaturesComponent);
             var itemsComponent = this.playerNodes.head.entity.get(ItemsComponent);
             var isAffectedByHazard = HazardConstants.isAffectedByHazard(featuresComponent, itemsComponent);

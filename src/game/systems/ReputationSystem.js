@@ -186,7 +186,7 @@ define([
             reputationComponent.accumulation += accSpeed;
             
             // apply accumulation
-            reputationComponent.value += (time + this.engine.extraUpdateTime) * accSpeed;
+            reputationComponent.value += time * accSpeed;
             if (accTargetDiff === 0) {
                 reputationComponent.value = reputationComponent.targetValue;
             } else if (reputationComponent.value > reputationComponent.targetValue && accTargetDiff > 0) {

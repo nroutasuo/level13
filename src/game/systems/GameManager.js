@@ -14,33 +14,27 @@ define([
     'game/systems/SaveSystem',
 ], function (Ash, GameGlobals, GlobalSignals, GameConstants, EntityCreator, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, LevelNode, PositionComponent, UIOutLevelSystem, SaveSystem) {
 
-    var GameManager = Ash.System.extend({
+    var GameManager = Ash.Class.extend({
 
         tickProvider: null,
-        creator: null,
-
 		engine: null,
-
+        creator: null,
 		player: null,
 		tribe: null,
 
-		constructor: function (tickProvider) {
+		constructor: function (tickProvider, engine) {
 			this.tickProvider = tickProvider;
-		},
-
-		addToEngine: function (engine) {
 			this.engine = engine;
 			this.creator = new EntityCreator(this.engine);
-
             GlobalSignals.add(this, GlobalSignals.restartGameSignal, this.onRestart);
 		},
-
-		removeFromEngine: function (engine) {
-			this.player = null;
-			this.engine = null;
-
-            GlobalSignals.removeAll(this);
-		},
+        
+        update: function (time) {
+            var extraUpdateTime = GameGlobals.gameState.extraUpdateTime;
+            GameGlobals.gameState.extraUpdateTime = 0;
+            var gameTime = time + extraUpdateTime;
+            this.engine.update(gameTime);
+        },
 
 		// Called on page load
 		setupGame: function () {

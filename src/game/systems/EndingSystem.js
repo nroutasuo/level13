@@ -17,7 +17,7 @@ var EndingSystem = Ash.System.extend({
             this.engine = null;
         },
 
-        update: function (time) {
+        update: function () {
             if (this.isPopupShown)
                 return;
             
@@ -31,7 +31,7 @@ var EndingSystem = Ash.System.extend({
             gtag('event', 'game_complete', { event_category: 'progression' })
             this.gameManager.pauseGame();
             GameGlobals.uiFunctions.showQuestionPopup(
-                "The End", 
+                "The End",
                 "Congratulations! You've completed Level 13. Thank you for playing!<br/></br>Do you want to restart?",
                 "Restart",
                 "Cancel",

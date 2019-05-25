@@ -56,7 +56,7 @@ define([
 
         update: function (time) {
             for (var node = this.visionNodes.head; node; node = node.next) {
-                this.updateNode(node, time + this.engine.extraUpdateTime);
+                this.updateNode(node, time);
             }
         },
 

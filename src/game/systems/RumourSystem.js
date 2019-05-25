@@ -74,7 +74,7 @@ define([
 					rumoursComponent.accumulation += accSpeed;
 				}
 				
-				rumoursComponent.value += (time + this.engine.extraUpdateTime) * accSpeed;
+				rumoursComponent.value += time * accSpeed;
 				rumoursComponent.isAccumulating = true;
 			}
             

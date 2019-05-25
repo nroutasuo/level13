@@ -58,7 +58,7 @@ define([
 				var campTimers = campNode.entity.get(CampEventTimersComponent);
                 
                 // update timers
-                var dt = time + this.engine.extraUpdateTime;
+                var dt = time;
 				for (var key in OccurrenceConstants.campOccurrenceTypes) {
 					var event = OccurrenceConstants.campOccurrenceTypes[key];
                     if (campTimers.eventEndTimers[event])

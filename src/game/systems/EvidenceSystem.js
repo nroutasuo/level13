@@ -63,7 +63,7 @@ define([
 					evidenceComponent.accumulation += accSpeed;
 				}
 				
-				evidenceComponent.value += (time + this.engine.extraUpdateTime) * accSpeed;
+				evidenceComponent.value += time * accSpeed;
 				evidenceComponent.isAccumulating = true;
 			}
             

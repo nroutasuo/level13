@@ -1456,11 +1456,9 @@ define(['ash',
 		// TODO util function - move somewhere else
 		passTime: function (seconds, callback) {
 			this.engine.updateComplete.addOnce(function () {
-				this.engine.extraUpdateTime = seconds;
 				GameGlobals.gameState.passTime(seconds);
 				GameGlobals.uiFunctions.onPlayerMoved(); // reset cooldowns for buttons
 				this.engine.updateComplete.addOnce(function () {
-					this.engine.extraUpdateTime = 0;
 					if (callback) callback();
 				}, this);
 			}, this);

@@ -60,10 +60,10 @@ define([
             if (GameGlobals.gameState.isPaused) return;
             
             for (var node = this.campNodes.head; node; node = node.next) {
-                this.updateNode(node, time + this.engine.extraUpdateTime);
+                this.updateNode(node, time);
             }
 	    
-			this.updatePlayer(time + this.engine.extraUpdateTime);
+			this.updatePlayer(time);
 			this.logAmbient();
 		},
 	

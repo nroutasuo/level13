@@ -21,7 +21,7 @@ define([
         update: function (time) {
             if (GameGlobals.gameState.isPaused) return;
 			for (var node = this.collectorNodes.head; node; node = node.next) {
-				this.updateNode(time + this.engine.extraUpdateTime, node);
+				this.updateNode(time, node);
 			}
         },
 	

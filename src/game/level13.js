@@ -160,9 +160,8 @@ define([
         constructor: function (plugins) {
             var game = this;
             this.engine = new Ash.Engine();
-            this.engine.extraUpdateTime = 0;
 			this.tickProvider = new TickProvider(null, function (ex) { game.handleException(ex) });
-			this.gameManager = new GameManager(this.tickProvider);
+			this.gameManager = new GameManager(this.tickProvider, this.engine);
 
             this.initializeGameGlobals();
 			this.addSystems();
@@ -219,8 +218,6 @@ define([
         },
 
 		addSystems: function () {
-			this.engine.addSystem(this.gameManager, SystemPriorities.preUpdate);
-
 			if (GameConstants.logInfo) console.log("START " + GameConstants.STARTTimeNow() + "\t initializing systems");
 
 			this.engine.addSystem(new SaveSystem(), SystemPriorities.preUpdate);
@@ -278,7 +275,7 @@ define([
 		},
 
 		start: function () {
-			this.tickProvider.add(this.engine.update, this.engine);
+			this.tickProvider.add(this.gameManager.update, this.gameManager);
 			this.tickProvider.start();
             this.gameManager.startGame();
 		},

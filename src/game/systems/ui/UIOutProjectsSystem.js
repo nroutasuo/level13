@@ -42,7 +42,7 @@ define([
             this.playerLocationNodes = null;
         },
 
-        update: function (time) {
+        update: function () {
             if (GameGlobals.gameState.uiStatus.isHidden) return;
             var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.projects;
             if (!this.playerLocationNodes.head) return;

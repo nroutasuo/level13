@@ -89,7 +89,7 @@
             GlobalSignals.removeAll(this);
         },
 
-        update: function (time) {
+        update: function () {
             var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in;
             var campCount = GameGlobals.gameState.numCamps;
             if (!this.playerLocationNodes.head) return;

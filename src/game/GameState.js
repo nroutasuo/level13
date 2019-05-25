@@ -67,9 +67,12 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
 
             this.actionCooldownEndTimestamps = {};
             this.actionDurationEndTimestamps = {};
+            
+            this.extraUpdateTime = 0;
         },
 
         passTime: function (seconds) {
+            this.extraUpdateTime = seconds;
             var cooldownkeys = Object.keys(this.actionCooldownEndTimestamps);
             for (var i = 0; i < cooldownkeys.length; i++) {
                 this.actionCooldownEndTimestamps[cooldownkeys[i]] = this.actionCooldownEndTimestamps[cooldownkeys[i]] - seconds * 1000;

@@ -36,12 +36,12 @@ define([
 
         update: function (time) {
             if (GameGlobals.gameState.isPaused) return;
-            this.updateNodes(time, this.engine.extraUpdateTime);
+            this.updateNodes(time);
         },
         
-        updateNodes: function (time, extraUpdateTime) {
+        updateNodes: function (time) {
             for (var node = this.campNodes.head; node; node = node.next) {
-                this.updateNode(node, time + extraUpdateTime);
+                this.updateNode(node, time);
             }
         },
 

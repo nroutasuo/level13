@@ -31,7 +31,7 @@ define([
 			var numCamps = 0;
 			var numTradePostCamps = 0;
             
-            GameGlobals.gameState.gamePlayedSeconds += time + this.engine.extraUpdateTime;
+            GameGlobals.gameState.gamePlayedSeconds += time;
 			
 			// Global improvements
 			for (var node = this.campNodes.head; node; node = node.next) {

@@ -47,8 +47,7 @@ var UIOutManageSaveSystem = Ash.System.extend({
             GlobalSignals.removeAll(this);
 		},
 
-        update: function (time) {
-        },
+        update: function () { },
 
         initialize: function () {
             this.spanSaveSeed.text(GameGlobals.gameState.worldSeed);

@@ -51,7 +51,7 @@ define([
             GlobalSignals.removeAll(this);
         },
         
-        update: function (time) { },
+        update: function () { },
         
         onResize: function () {
             this.previousContainerWidth = this.containerWidth;

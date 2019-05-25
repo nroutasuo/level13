@@ -33,7 +33,7 @@ define([
 			this.saveNodes = null;
         },
 
-        update: function (time) {
+        update: function () {
             if (this.paused) return;
             if (!GameConstants.isAutosaveEnabled) return;
 			var timeStamp = new Date().getTime();
