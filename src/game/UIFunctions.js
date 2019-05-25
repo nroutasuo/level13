@@ -504,7 +504,7 @@ define(['ash',
 			restart: function () {
 				$("#log ul").empty();
 				this.onTabClicked(this.elementIDs.tabs.out, GameGlobals.gameState, this);
-				GlobalSignals.restartGameSignal.dispatch();
+				GlobalSignals.restartGameSignal.dispatch(true);
 			},
 
 			onResize: function () {

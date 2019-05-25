@@ -140,7 +140,8 @@ define([
             return compressed;
         },
 
-        onRestart: function () {
+        onRestart: function (resetSave) {
+            if (!resetSave) return;
 			if(typeof(Storage) !== "undefined") {
 				localStorage.removeItem("save");
                 console.log("Removed save");

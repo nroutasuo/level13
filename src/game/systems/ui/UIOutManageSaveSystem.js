@@ -128,7 +128,7 @@ var UIOutManageSaveSystem = Ash.System.extend({
 			} else {
                 console.log("Failed to replace save.");
 			}
-            this.engine.getSystem(GameManager).restartGame();
+            GlobalSignals.restartGameSignal.dispatch(false);
         }
 
     });

@@ -267,7 +267,7 @@ define([
             );
         },
 
-        onRestart: function () {
+        onRestart: function (resetSave) {
             this.restartGame();
         }
     });
