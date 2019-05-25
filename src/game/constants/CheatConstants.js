@@ -33,6 +33,7 @@ define(function () {
         CHEAT_NAME_REVEAL_MAP: "revealMap",
         CHEAT_NAME_DEBUG_MAP: "debugMap",
         CHEAT_NAME_SCOUT_LEVEL: "scoutLevel",
+        CHEAT_NAME_SCAVENGE: "scavenge",
         CHEAT_NAME_TRADER: "trader",
         CHEAT_NAME_RAID: "raid",
         CHEAT_NAME_RESET_BUILDING_SPOTS: "resetBuildingSpots",

@@ -312,7 +312,9 @@ define(['ash',
                 return false;
 			};
 
-            GameGlobals.levelHelper.forEverySectorFromLocation(playerPosition, checkSector, autoPlayComponent.isExpedition);
+            if (!autoPlayComponent.forcedExpeditionType) {
+                GameGlobals.levelHelper.forEverySectorFromLocation(playerPosition, checkSector, autoPlayComponent.isExpedition);
+            }
 
             // 3. set goal
 
@@ -324,18 +326,20 @@ define(['ash',
             var ratioUnscoutedSectors = numUnscoutedSectors / numAccessibleSectors;
             var startSector = GameGlobals.playerActionFunctions.playerPositionNodes.head.entity;
             var hasCamp = GameGlobals.playerActionFunctions.nearestCampNodes.head;
+            
+            var prioritizeScavenge = autoPlayComponent.forcedExpeditionType == AutoPlayConstants.GOALTYPES.SCAVENGE_RESOURCES;
 
-            if (hasCamp && !prioritizeHeal && nearestUnclearedWorkshopSector) {
+            if (hasCamp && !prioritizeHeal && !prioritizeScavenge && nearestUnclearedWorkshopSector) {
                 goal = AutoPlayConstants.GOALTYPES.CLEAR_WORKSHOP;
                 sector = nearestUnclearedWorkshopSector;
                 path = GameGlobals.levelHelper.findPathTo(startSector, sector);
             }
-            else if (hasCamp && !prioritizeHeal && hasLockPick && nearestUnscoutedLocaleSector) {
+            else if (hasCamp && !prioritizeHeal && !prioritizeScavenge && hasLockPick && nearestUnscoutedLocaleSector) {
                 goal = AutoPlayConstants.GOALTYPES.SCOUT_LOCALE;
                 sector = nearestUnscoutedLocaleSector;
                 path = GameGlobals.levelHelper.findPathTo(startSector, sector);
             }
-            else if (hasCamp && !prioritizeHeal && nearestUnscoutedSector && numUnscoutedSectors > 0 && Math.random() < (prioritizeScouting ? 0.75 : 0.5)) {
+            else if (hasCamp && !prioritizeHeal && !prioritizeScavenge && nearestUnscoutedSector && numUnscoutedSectors > 0 && Math.random() < (prioritizeScouting ? 0.75 : 0.5)) {
                 goal = AutoPlayConstants.GOALTYPES.SCOUT_SECTORS;
                 sector = nearestUnscoutedSector;
                 path = GameGlobals.levelHelper.findPathTo(startSector, sector);

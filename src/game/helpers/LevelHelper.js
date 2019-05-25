@@ -616,6 +616,12 @@ define([
 			return false;
 		},
 
+        isSectorReachable: function (startSector, goalSector) {
+            var settings = { skipUnvisited: false, skipBlockers: true, omitWarnings: false };
+            var path = this.findPathTo(startSector, goalSector, settings);
+            return path && path.length >= 0;
+        },
+        
 		getLevelLocales: function (level, includeScouted, localeBracket, excludeLocaleVO) {
 			var locales = [];
 			var sectorPosition;
@@ -658,6 +664,19 @@ define([
 			}
 			return locales;
 		},
+        
+        getLevelStashSectors:  function (level) {
+            var sectors = [];
+            this.saveSectorsForLevel(level);
+			for (var i = 0; i < this.sectorEntitiesByLevel[level].length; i++) {
+                var sectorEntity = this.sectorEntitiesByLevel[level][i];
+                var featuresComponent = sectorEntity.get(SectorFeaturesComponent);
+                if (featuresComponent.stash) {
+                    sectors.push(sectorEntity);
+                }
+			}
+            return sectors;
+        },
 
         saveSectorsForLevel: function (level) {
             if (this.sectorEntitiesByLevel[level] && this.sectorEntitiesByLevel[level] !== null && this.sectorEntitiesByLevel[level].length > 0) {

@@ -184,6 +184,9 @@ define(['ash',
             this.registerCheat(CheatConstants.CHEAT_NAME_AUTOPLAY, "Autoplay.", ["on/off/camp/expedition", "(optional) camp ordinal"], function (params) {
                 this.setAutoPlay(params[0], parseInt(params[1]));
             });
+            this.registerCheat(CheatConstants.CHEAT_NAME_SCAVENGE, "Do a scavenge expedition on the current level.", [], function (params) {
+                this.setAutoPlay("expedition", null, "scout");
+            });
         },
 
         registerCheat: function (cmd, desc, params, func) {
@@ -284,7 +287,7 @@ define(['ash',
             GameGlobals.playerActionFunctions.passTime(mins * 60);
         },
 
-        setAutoPlay: function (type, numCampsTarget) {
+        setAutoPlay: function (type, numCampsTarget, expeditionTarget) {
             var start = false;
             var stop = false;
             var isExpedition = false;
@@ -336,6 +339,7 @@ define(['ash',
                     if (isExpedition) {
                         component.isPendingExploring = true;
                         component.isExpedition = true;
+                        component.forcedExpeditionType = expeditionTarget;
                     }
                     this.playerStatsNodes.head.entity.add(component);
                 }
@@ -543,25 +547,33 @@ define(['ash',
         },
 
         scoutLevel: function () {
+            GameGlobals.playerActionFunctions.leaveCamp();
+            var startSector = this.playerLocationNodes.head.entity;
             var originalPos = this.playerPositionNodes.head.position.getPosition();
             var levelVO = GameGlobals.levelHelper.getLevelEntityForPosition(originalPos.level).get(LevelComponent).levelVO;
             var sectorVO;
             var i = 0;
+            var binding = null;
             var updateFunction = function () {
                 if (i < levelVO.sectors.length) {
                     sectorVO = levelVO.sectors[i];
-                    this.setPlayerPosition(levelVO.level, sectorVO.position.sectorX, sectorVO.position.sectorY);
-                    GameGlobals.playerActionFunctions.scout();
-                    i++;
-                } else {
+                    var goalSector = GameGlobals.levelHelper.getSectorByPosition(levelVO.level, sectorVO.position.sectorX, sectorVO.position.sectorY);
+                    if (GameGlobals.levelHelper.isSectorReachable(startSector, goalSector)) {
+                        this.setPlayerPosition(levelVO.level, sectorVO.position.sectorX, sectorVO.position.sectorY);
+                        GameGlobals.playerActionFunctions.scout();
+                    }
+                } else if (i == levelVO.sectors.length) {
                     this.setPlayerPosition(originalPos.level, originalPos.sectorX, originalPos.sectorY);
                     GameGlobals.uiFunctions.popupManager.closeAllPopups();
-                    this.engine.updateComplete.remove(updateFunction);
-                    GameGlobals.uiFunctions.showGame();
+                    binding.detach();
+                    this.engine.updateComplete.addOnce(function () {
+                        GameGlobals.uiFunctions.showGame();
+                    });
                 }
+                i++;
             };
 			GameGlobals.uiFunctions.hideGame(false);
-            this.engine.updateComplete.add(updateFunction, this);
+            binding = this.engine.updateComplete.add(updateFunction, this);
         },
 
         triggerTrader: function () {

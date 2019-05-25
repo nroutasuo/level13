@@ -4,6 +4,7 @@ define(['ash'], function (Ash) {
 
         // autoplay goal
         isExpedition: false,
+        forcedExpeditionType: null,
 
         // general status
         isPendingExploring: false,
