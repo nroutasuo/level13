@@ -68,6 +68,7 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
             this.actionCooldownEndTimestamps = {};
             this.actionDurationEndTimestamps = {};
             
+            this.pendingUpdateTime = 0;
             this.extraUpdateTime = 0;
         },
 

@@ -21,6 +21,8 @@ define([
         creator: null,
 		player: null,
 		tribe: null,
+        
+        maxGameTickTime: 30,
 
 		constructor: function (tickProvider, engine) {
 			this.tickProvider = tickProvider;
@@ -30,10 +32,21 @@ define([
 		},
         
         update: function (time) {
+            // add extra update time
             var extraUpdateTime = GameGlobals.gameState.extraUpdateTime;
             GameGlobals.gameState.extraUpdateTime = 0;
             var gameTime = time + extraUpdateTime;
-            this.engine.update(gameTime);
+            
+            // add pending time (time left over from previous ticks)
+            var pendingUpdateTime = GameGlobals.gameState.pendingUpdateTime;
+            var totalTime = gameTime + pendingUpdateTime;
+            
+            // limit tick length
+            var tickTime = Math.min(totalTime, this.maxGameTickTime);
+            var newPendingUpdateTime = totalTime - tickTime;
+            GameGlobals.gameState.pendingUpdateTime = newPendingUpdateTime;
+            
+            this.engine.update(tickTime);
         },
 
 		// Called on page load
