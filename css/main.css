@@ -1754,13 +1754,15 @@ body.dark .event-ending {
     opacity: 0.4;
   }
 }
-body.dark .loading-content {
+body.dark .loading-content,
+body.dark .thinking-content {
   position: fixed;
   top: 0;
   left: 0;
   z-index: 6;
   width: 100%;
   height: 100%;
+  background: rgba(32, 34, 32, 0.5);
 }
 body.dark .loading-spinner {
   text-align: center;
@@ -3417,13 +3419,15 @@ body.sunlit .event-ending {
     opacity: 0.4;
   }
 }
-body.sunlit .loading-content {
+body.sunlit .loading-content,
+body.sunlit .thinking-content {
   position: fixed;
   top: 0;
   left: 0;
   z-index: 6;
   width: 100%;
   height: 100%;
+  background: rgba(253, 253, 253, 0.5);
 }
 body.sunlit .loading-spinner {
   text-align: center;

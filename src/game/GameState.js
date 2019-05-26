@@ -52,6 +52,7 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
                 currentTab: null,
                 mapVisited: false,
                 isHidden: false,
+                isBlocked: false,
                 isInCamp: false,
                 leaveCampRes: {},
                 leaveCampItems: {},

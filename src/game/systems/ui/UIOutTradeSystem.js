@@ -79,6 +79,7 @@ define([
 		},
 
 		updateBubble: function () {
+            if (GameGlobals.gameState.uiStatus.isBlocked) return;
 			var newBubbleNumber = this.availableTradingPartnersCount - this.lastShownTradingPartnersCount;
 			if (this.lastShownTradingPartnersCount === -1)
 				newBubbleNumber = 0;

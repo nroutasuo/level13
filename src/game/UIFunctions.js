@@ -486,18 +486,20 @@ define(['ash',
 				$("#grid-main").css("display", "block");
 				$("#unit-main").css("display", "block");
 				$(".loading-content").css("display", "none");
+				$(".thinking-content").css("display", "none");
+				GameGlobals.gameState.uiStatus.isBlocked = false;
 				GameGlobals.gameState.uiStatus.isHidden = false;
 				GlobalSignals.gameShownSignal.dispatch();
 			},
 
-			hideGame: function (showLoading) {
-				if (showLoading)
-					$(".loading-content").css("display", "block");
-                else
-					$(".loading-content").css("display", "none");
-				$("#unit-main").css("display", "none");
-				$(".sticky-footer").css("display", "none");
-				$("#grid-main").css("display", "none");
+			hideGame: function (showLoading, showThinking) {
+                showThinking = showThinking && !showLoading;
+				$(".loading-content").css("display", showLoading ? "block" : "none");
+				$(".thinking-content").css("display", showThinking ? "block" : "none");
+				$("#unit-main").css("display", showThinking ? "block" : "none");
+				$(".sticky-footer").css("display", showThinking ? "block" : "none");
+				$("#grid-main").css("display", showThinking ? "block" : "none");
+				GameGlobals.gameState.uiStatus.isBlocked = true;
 				GameGlobals.gameState.uiStatus.isHidden = true;
 			},
 

@@ -22,7 +22,7 @@ define([
 		player: null,
 		tribe: null,
         
-        maxGameTickTime: 60,
+        maxGameTickTime: 90,
 
 		constructor: function (tickProvider, engine) {
 			this.tickProvider = tickProvider;
@@ -48,16 +48,21 @@ define([
             
             if (tickTime < totalTime) {
                 var remainingTicks = Math.ceil(totalTime / this.maxGameTickTime);
+                if (GameConstants.logInfo && !this.partialTickLogged) {
+                    console.log("tick: partial tick, estimated: " + remainingTicks);
+                    this.partialTickLogged = true;
+                }
                 if (remainingTicks > 10) {
                     if (!GameGlobals.gameState.uiStatus.isHidden) {
-                        if (GameConstants.logInfo) console.log("partial tick: " + tickTime + "/" + totalTime + " | " + remainingTicks);
-                        GameGlobals.uiFunctions.hideGame(true);
+                        GameGlobals.uiFunctions.hideGame(false, true);
                     }
                 }
             } else {
+                if (GameConstants.logInfo && this.partialTickLogged) console.log("tick: partial ticks complete");
                 if (GameGlobals.gameState.uiStatus.isHidden) {
                     GameGlobals.uiFunctions.showGame();
                 }
+                this.partialTickLogged = false;
             }
             
             this.engine.update(tickTime);
