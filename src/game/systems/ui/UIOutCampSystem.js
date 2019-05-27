@@ -150,6 +150,7 @@
         },
 
         updateWorkers: function (isActive) {
+            isActive = isActive && !GameGlobals.gameState.uiStatus.isBlocked;
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
 
@@ -382,6 +383,7 @@
         },
 
         updateEvents: function (isActive) {
+            isActive = isActive && !GameGlobals.gameState.uiStatus.isBlocked;
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
             if (!campComponent) return;
             var eventTimers = this.playerLocationNodes.head.entity.get(CampEventTimersComponent);

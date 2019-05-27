@@ -482,26 +482,36 @@ define(['ash',
 			},
 
 			showGame: function () {
-				$(".sticky-footer").css("display", "block");
-				$("#grid-main").css("display", "block");
-				$("#unit-main").css("display", "block");
-				$(".loading-content").css("display", "none");
-				$(".thinking-content").css("display", "none");
-				GameGlobals.gameState.uiStatus.isBlocked = false;
-				GameGlobals.gameState.uiStatus.isHidden = false;
+                this.setGameOverlay(false, false);
+                this.setGameElementsVisibility(true);
+                this.setUIStatus(false, false);
 				GlobalSignals.gameShownSignal.dispatch();
 			},
 
 			hideGame: function (showLoading, showThinking) {
                 showThinking = showThinking && !showLoading;
-				$(".loading-content").css("display", showLoading ? "block" : "none");
-				$(".thinking-content").css("display", showThinking ? "block" : "none");
-				$("#unit-main").css("display", showThinking ? "block" : "none");
-				$(".sticky-footer").css("display", showThinking ? "block" : "none");
-				$("#grid-main").css("display", showThinking ? "block" : "none");
-				GameGlobals.gameState.uiStatus.isBlocked = true;
-				GameGlobals.gameState.uiStatus.isHidden = true;
+                this.setGameOverlay(showLoading, showThinking);
+				this.setGameElementsVisibility(showThinking ? "block" : "none");
+                this.setUIStatus(true, true);
 			},
+            
+            setUIStatus: function (isHidden, isBlocked) {
+                isBlocked = isBlocked || isHidden;
+                GameGlobals.gameState.uiStatus.isHidden = isHidden;
+                GameGlobals.gameState.uiStatus.isBlocked = isBlocked;
+            },
+            
+            setGameOverlay: function (isLoading, isThinking) {
+                isThinking = isThinking && !isLoading;
+                $(".loading-content").css("display", isLoading ? "block" : "none");
+                $(".thinking-content").css("display", isThinking ? "block" : "none");
+            },
+            
+            setGameElementsVisibility: function (visible) {
+                $(".sticky-footer").css("display", visible ? "block" : "none");
+                $("#grid-main").css("display", visible ? "block" : "none");
+                $("#unit-main").css("display", visible ? "block" : "none");
+            },
 
 			restart: function () {
 				$("#log ul").empty();

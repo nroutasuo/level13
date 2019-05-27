@@ -47,22 +47,25 @@ define([
             GameGlobals.gameState.pendingUpdateTime = newPendingUpdateTime;
             
             if (tickTime < totalTime) {
-                var remainingTicks = Math.ceil(totalTime / this.maxGameTickTime);
-                if (GameConstants.logInfo && !this.partialTickLogged) {
-                    console.log("tick: partial tick, estimated: " + remainingTicks);
-                    this.partialTickLogged = true;
-                }
-                if (remainingTicks > 10) {
-                    if (!GameGlobals.gameState.uiStatus.isHidden) {
+                // partial tick
+                if (!this.partialTickModeStarted) {
+                    var remainingTicks = Math.ceil(totalTime / this.maxGameTickTime);
+                    var showThinking = remainingTicks >= 20;
+                    if (GameConstants.logInfo && !this.partialTickModeStarted) console.log("tick: partial tick, estimated remaining: " + remainingTicks + ", showThinking: " + showThinking);
+                    if (showThinking) {
                         GameGlobals.uiFunctions.hideGame(false, true);
+                    } else {
+                        GameGlobals.uiFunctions.setUIStatus(false, true);
                     }
+                    this.partialTickModeStarted = true;
                 }
             } else {
-                if (GameConstants.logInfo && this.partialTickLogged) console.log("tick: partial ticks complete");
-                if (GameGlobals.gameState.uiStatus.isHidden) {
+                // normal tick
+                if (this.partialTickModeStarted) {
+                    if (GameConstants.logInfo) console.log("tick: normal");
                     GameGlobals.uiFunctions.showGame();
+                    this.partialTickModeStarted = false;
                 }
-                this.partialTickLogged = false;
             }
             
             this.engine.update(tickTime);
