@@ -264,11 +264,9 @@ define([
                         stashSectors[i].stash = new StashVO(stashType, numItemsPerStash, itemID);
                     }
                 };
-                var minSilkPerStash = 3;
-                var maxSilkPerStash = 6;
-                var amountSilk = levelVO.numLocales || minSilkPerStash;
-                var numSilkStashes = Math.ceil(amountSilk / maxSilkPerStash);
-                var numSilkPerStash = Math.ceil(amountSilk / numSilkStashes);
+                var silkPerStash = 3;
+                var minAmountSilk = levelVO.numLocales;
+                var numSilkStashes = 3 + Math.ceil(minAmountSilk / silkPerStash);
                 addStashes(seed * l * 8 / 3 + (l+100)*14, StashVO.STASH_TYPE_ITEM, "res_silk", numSilkStashes, numSilkPerStash);
 
                 var newEquipment = itemsHelper.getNewEquipment(campOrdinal);
