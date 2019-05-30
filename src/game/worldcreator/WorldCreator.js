@@ -267,7 +267,7 @@ define([
                 var silkPerStash = 3;
                 var minAmountSilk = levelVO.numLocales;
                 var numSilkStashes = 3 + Math.ceil(minAmountSilk / silkPerStash);
-                addStashes(seed * l * 8 / 3 + (l+100)*14, StashVO.STASH_TYPE_ITEM, "res_silk", numSilkStashes, numSilkPerStash);
+                addStashes(seed * l * 8 / 3 + (l+100)*14, StashVO.STASH_TYPE_ITEM, "res_silk", numSilkStashes, silkPerStash);
 
                 var newEquipment = itemsHelper.getNewEquipment(campOrdinal);
                 for (var i = 0; i < newEquipment.length; i++) {

@@ -68,7 +68,7 @@ define([
                 }
             }
             
-            this.engine.update(tickTime);
+            this.engine.update(tickTime, extraUpdateTime);
         },
 
 		// Called on page load

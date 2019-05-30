@@ -24,19 +24,19 @@ define([
             this.engine = null;
         },
 
-        update: function () {
+        update: function (time, extraUpdateTime) {
             if (GameGlobals.gameState.isPaused) return;
             for (var node = this.playerActionNodes.head; node; node = node.next) {
-                this.updateNode(node);
+                this.updateNode(node, extraUpdateTime);
             }
         },
 
-        updateNode: function (node) {
+        updateNode: function (node, extraUpdateTime) {
             var now = new Date().getTime();
             var newDict = {};
             var newList = [];
             
-            node.playerActions.applyExtraTime(GameGlobals.gameState.extraUpdateTime);
+            node.playerActions.applyExtraTime(extraUpdateTime);
             
             var timeStamp;
 			var action;

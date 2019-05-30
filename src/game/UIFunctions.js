@@ -491,7 +491,7 @@ define(['ash',
 			hideGame: function (showLoading, showThinking) {
                 showThinking = showThinking && !showLoading;
                 this.setGameOverlay(showLoading, showThinking);
-				this.setGameElementsVisibility(showThinking ? "block" : "none");
+				this.setGameElementsVisibility(showThinking);
                 this.setUIStatus(true, true);
 			},
             
