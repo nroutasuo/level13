@@ -3,11 +3,23 @@
             "version": "0.2.5",
             "phase": "alpha",
             "final": false,
-            "updated": "2019-05-09",
+            "updated": "2019-05-30",
             "changes": [
                 {
                     "type": "GB",
                     "summary": "Adjust level sizes"
+                },
+                {
+                    "type": "GB",
+                    "summary": "Adjust balancing (raids)"
+                },
+                {
+                    "type": "DEV",
+                    "summary": " Refactor CSS styles and color themes for easier maintanability"
+                }
+                {
+                    "type": "DEV",
+                    "summary": "Bugfixes and testing tools"
                 }
             ]
         },

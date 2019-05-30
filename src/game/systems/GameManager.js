@@ -33,7 +33,7 @@ define([
         
         update: function (time) {
             // add extra update time
-            var extraUpdateTime = GameGlobals.gameState.extraUpdateTime;
+            var extraUpdateTime = GameGlobals.gameState.extraUpdateTime || 0;
             GameGlobals.gameState.extraUpdateTime = 0;
             var gameTime = time + extraUpdateTime;
             

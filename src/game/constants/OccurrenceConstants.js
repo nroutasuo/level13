@@ -55,14 +55,14 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 		getRaidDanger: function (improvements, soldiers, soldierLevel) {
 			var dangerPoints = this.getRaidDangerPoints(improvements)
 			var defencePoints = this.getRaidDefencePoints(improvements, soldiers, soldierLevel);
-            var result = (dangerPoints - defencePoints)/20;
+            var result = (dangerPoints - defencePoints) / 25;
 			return Math.max(0, Math.min(1, result));
 		},
         
         getRaidDangerPoints: function (improvements) {
 			var dangerPoints = 0;
 			dangerPoints += improvements.getTotal(improvementTypes.camp);
-			dangerPoints -= improvements.getCount(improvementTypes.home);
+			dangerPoints -= improvements.getCount(improvementNames.home);
             dangerPoints -= improvements.getCount(improvementNames.fortification);
             dangerPoints -= improvements.getCount(improvementNames.fortification2);
             return dangerPoints;
