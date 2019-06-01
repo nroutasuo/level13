@@ -3,7 +3,7 @@
             "version": "0.2.5",
             "phase": "alpha",
             "final": false,
-            "updated": "2019-05-30",
+            "updated": "2019-06-01",
             "changes": [
                 {
                     "type": "GB",
@@ -11,7 +11,7 @@
                 },
                 {
                     "type": "GB",
-                    "summary": "Adjust balancing (raids)"
+                    "summary": "Adjust balancing (raids, rumours)"
                 },
                 {
                     "type": "DEV",
