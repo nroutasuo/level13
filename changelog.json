@@ -3,8 +3,12 @@
             "version": "0.2.5",
             "phase": "alpha",
             "final": false,
-            "updated": "2019-06-01",
+            "updated": "2019-06-02",
             "changes": [
+                {
+                    "type": "GD",
+                    "summary": "Add active and passive rumour generation to markets"
+                },
                 {
                     "type": "GB",
                     "summary": "Adjust level sizes"
