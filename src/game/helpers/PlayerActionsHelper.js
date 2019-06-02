@@ -688,7 +688,7 @@ define([
 
                     if (requirements.level) {
                         var level = sector.get(PositionComponent).level;
-                        var levelVO = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
+                        var levelVO = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent).levelVO;
                         if (requirements.level.population) {
                             var levelPopReqDef = requirements.level.population;
                             var min = levelPopReqDef[0];
@@ -707,7 +707,6 @@ define([
                                 if (min > amount) return { value: amount/min, reason: reason };
                                 else return { value: 0, reason: reason };
                             }
-
                         }
                     }
 
