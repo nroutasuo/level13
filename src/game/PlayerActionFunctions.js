@@ -3,6 +3,7 @@ define(['ash',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
+	'game/constants/CampConstants',
 	'game/constants/LogConstants',
 	'game/constants/PositionConstants',
 	'game/constants/MovementConstants',
@@ -55,7 +56,7 @@ define(['ash',
 	'game/systems/FaintingSystem',
 	'game/systems/PlayerPositionSystem'
 ], function (Ash, GameGlobals, GlobalSignals,
-	GameConstants, LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
+	GameConstants, CampConstants, LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
 	PositionVO, LocaleVO,
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
@@ -204,6 +205,7 @@ define(['ash',
                 case "build_in_garden": this.buildGarden(param); break;
                 case "use_in_home": this.useHome(param); break;
                 case "use_in_campfire": this.useCampfire(param); break;
+                case "use_in_market": this.useMarket(param); break;
                 case "use_in_hospital": this.useHospital(param); break;
                 case "use_in_hospital2": this.useHospital2(param); break;
                 case "use_in_inn": this.useInn(param); break;
@@ -1174,6 +1176,21 @@ define(['ash',
 			this.completeAction("use_in_campfire");
 			this.forceResourceBarUpdate();
 		},
+        
+        useMarket: function () {
+			var campSector = this.nearestCampNodes.head.entity;
+			var campComponent = campSector.get(CampComponent);
+			// TODO move this check to startAction
+            // TODO add a bit of randomness to the number of rumours received?
+			if (campSector) {
+				this.playerStatsNodes.head.rumours.value += CampConstants.RUMOURS_PER_VISIT_MARKET;
+				this.addLogMessage(LogConstants.MSG_ID_USE_MARKET, "Visited the market and listened to the latest gossip.");
+			} else {
+				console.log("WARN: No camp sector found.");
+			}
+			this.completeAction("use_in_market");
+			this.forceResourceBarUpdate();
+        },
 
 		useHospital: function () {
 			var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);

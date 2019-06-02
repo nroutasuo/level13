@@ -501,6 +501,13 @@ function (Ash, GameConstants, CampConstants) {
                         population: [1, -1]
                     }
                 },
+                
+                use_in_market: {
+                    improvements: {
+                        market: [1, -1],
+                    },
+                    busy: false,
+                },
 
                 build_in_library: {
                     upgrades: {
@@ -2159,6 +2166,7 @@ function (Ash, GameConstants, CampConstants) {
                 use_spring: 30,
                 use_in_campfire: 60,
                 use_in_home: 180,
+                use_in_market: 300,
                 scout_locale_i: 60,
                 scout_locale_u: 60,
                 clear_workshop: 60,
@@ -2172,6 +2180,7 @@ function (Ash, GameConstants, CampConstants) {
             durations: {
                 use_in_hospital: 60 * 3,
                 use_in_campfire: 5,
+                use_in_market: 10,
                 use_in_home: 60,
                 send_caravan: 60 * 10
             },
@@ -2247,6 +2256,7 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_fortification2: "Camp defences: +" + CampConstants.FORTIFICATION_2_DEFENCE,
                 use_in_home: "Recover stamina.",
                 use_in_campfire: "Collect rumours from the population.",
+                use_in_market: "Go hear the latest gossip.",
                 use_in_hospital: "Heal injuries.",
                 use_in_inn: "Recruit followers.",
                 use_item_glowstick_1: "Create a temporary light in this location.",

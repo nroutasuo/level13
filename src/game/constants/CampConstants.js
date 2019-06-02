@@ -2,6 +2,7 @@ define(['ash'], function (Ash) {
     
     var CampConstants = {
     
+        // population
         POPULATION_PER_HOUSE: 4,
         POPULATION_PER_HOUSE2: 10,
         POOL_RUMOURS_PER_POPULATION: 3,
@@ -18,6 +19,7 @@ define(['ash'], function (Ash) {
         RUMOURS_BONUS_PER_CAMPFIRE_PER_UPGRADE: 0.2,
         RUMOUR_BONUS_PER_INN_BASE: 1.1,
         RUMOURS_BONUS_PER_INN_PER_UPGRADE: 0.01,
+        RUMOURS_PER_VISIT_MARKET: 2,
         
         // Cost of workers
         CONSUMPTION_WATER_PER_WORKER_PER_S: 0.02,

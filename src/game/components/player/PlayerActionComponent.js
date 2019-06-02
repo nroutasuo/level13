@@ -78,6 +78,7 @@ define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
                 case "use_in_home": return "resting";
                 case "use_in_campfire": return "discussing";
                 case "use_in_hospital": return "recovering";
+                case "use_in_market": return "visiting";
                 default: return this.action;
             }
         },
