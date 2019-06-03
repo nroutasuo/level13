@@ -166,6 +166,8 @@ define([
             this.initializeGameGlobals();
 			this.addSystems();
             this.initializePlugins(plugins);
+
+            GameGlobals.uiFunctions.init();
             
             this.GameFlowLogger = new GameFlowLogger();
             ExceptionHandler.exceptionCallback = function (ex) { game.handleException(ex) };

@@ -52,12 +52,14 @@ define(['ash',
 			},
 
 			constructor: function () {
+				this.popupManager = new UIPopupManager(this);
+			},
+            
+            init: function () {
 				this.generateElements();
 				this.registerListeners();
 				this.registerGlobalMouseEvents();
-
-				this.popupManager = new UIPopupManager(this);
-			},
+            },
 
 			registerListeners: function () {
 				var elementIDs = this.elementIDs;

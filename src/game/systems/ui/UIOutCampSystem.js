@@ -3,6 +3,7 @@
     'utils/UIState',
     'game/GameGlobals',
     'game/GlobalSignals',
+	'game/constants/ImprovementConstants',
 	'game/constants/PlayerActionConstants',
     'game/constants/UIConstants',
     'game/constants/UpgradeConstants',
@@ -24,7 +25,8 @@
     'game/components/sector/events/TraderComponent',
     'game/components/sector/events/RaidComponent',
 ], function (
-    Ash, UIState, GameGlobals, GlobalSignals, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants,
+    Ash, UIState, GameGlobals, GlobalSignals,
+    ImprovementConstants, PlayerActionConstants, UIConstants, UpgradeConstants, OccurrenceConstants, CampConstants, PerkConstants, TextConstants,
     PlayerLevelNode, PlayerPositionNode, PlayerLocationNode, DeityNode, TribeUpgradesNode,
     PerksComponent,
     CampComponent, OutgoingCaravansComponent, ReputationComponent, SectorImprovementsComponent, CampEventTimersComponent,
@@ -300,6 +302,27 @@
         },
 
         initImprovements: function () {
+            var $table = $("#in-improvements table");
+            var trs = "";
+            for (var key in ImprovementConstants.campImprovements) {
+                var def = ImprovementConstants.campImprovements[key];
+                var tds = "";
+                var buildAction = "build_in_" + key;
+                var name = improvementNames[key];
+                var buildButton = "<button class='action action-build action-location multiline' action='" + buildAction +"'>" + name + "</button>";
+                var useAction = "use_in_" + key;
+                var useButton = "";
+                if (PlayerActionConstants.hasAction(useAction)) {
+                    useButton = "<button class='action action-use action-location' action='" + useAction + "'>" + def.useActionName + "</button>";
+                }
+                tds += "<td>" + buildButton + "</td>";
+                tds += "<td class='list-amount'>0</td>";
+                tds += "<td>" + useButton + "</td>";
+                tds += "<td></td>";
+                trs += "<tr id='in-improvements-" + key + "'>" + tds + "</tr>";
+            }
+            $table.append(trs);
+            
             var result = [];
             $.each($("#in-improvements tr"), function () {
                 var id = $(this).attr("id");
@@ -357,8 +380,9 @@
                 var commonVisibilityRule = (actionEnabled || existingImprovements > 0 || showActionDisabledReason);
                 var specialVisibilityRule = true;
                 // TODO get rid of these & move to requirements
+                // TODO check TR ids after improvements table remake
                 if (id === "in-improvements-shrine") specialVisibilityRule = hasDeity;
-                if (id === "in-improvements-trading") specialVisibilityRule = campCount > 1;
+                if (id === "in-improvements-tradepost") specialVisibilityRule = campCount > 1;
                 if (id === "in-improvements-research") specialVisibilityRule = campCount > 1;
                 if (id === "in-improvements-market") specialVisibilityRule = hasTradePost;
                 if (id === "in-improvements-inn") specialVisibilityRule = hasTradePost;

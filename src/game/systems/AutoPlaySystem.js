@@ -801,7 +801,7 @@ define(['ash',
 			var improvementsComponent = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var maxPopulation = CampConstants.getHousingCap(improvementsComponent);
 
-            if (GameGlobals.playerActionsHelper.checkAvailability("build_in_tradingPost")) {
+            if (GameGlobals.playerActionsHelper.checkAvailability("build_in_tradepost")) {
                 this.printStep("build trading post");
                 GameGlobals.playerActionFunctions.buildTradingPost();
                 return true;

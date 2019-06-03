@@ -1184,7 +1184,7 @@ define([
                 case "build_in_house": return improvementNames.house;
                 case "build_in_storage": return improvementNames.storage;
                 case "build_in_hospital": return improvementNames.hospital;
-                case "build_in_tradingPost": return improvementNames.tradepost;
+                case "build_in_tradepost": return improvementNames.tradepost;
                 case "build_in_inn": return improvementNames.inn;
                 case "build_out_bridge": return improvementNames.bridge;
                 case "build_out_spaceship1": return improvementNames.spaceship1;
@@ -1209,7 +1209,7 @@ define([
                 case "build_in_aqueduct": return improvementNames.aqueduct;
                 case "build_in_stable": return improvementNames.stable;
                 case "build_in_market": return improvementNames.market;
-                case "build_in_radio": return improvementNames.radiotower;
+                case "build_in_radiotower": return improvementNames.radiotower;
                 case "build_in_researchcenter": return improvementNames.researchcenter;
                 case "build_out_passage_up_stairs": return improvementNames.passageUpStairs;
                 case "build_out_passage_up_elevator": return improvementNames.passageUpElevator;

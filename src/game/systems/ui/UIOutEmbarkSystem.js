@@ -29,9 +29,6 @@ define([
 		constructor: function (resourceHelper) {
             GameGlobals.uiFunctions.toggle("#switch-embark .bubble", false);
             this.initElements();
-            GameGlobals.uiFunctions.generateSteppers("#embark-resources");
-            GameGlobals.uiFunctions.registerStepperListeners("#embark-resources");
-            this.registerStepperListeners("#embark-resources");
 			return this;
 		},
 	

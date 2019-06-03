@@ -188,7 +188,7 @@ define(['ash',
                 case "build_in_hospital": this.buildHospital(param); break;
                 case "build_in_ceiling": this.buildCeiling(param); break;
                 case "build_in_inn": this.buildInn(param); break;
-                case "build_in_tradingPost": this.buildTradingPost(param); break;
+                case "build_in_tradepost": this.buildTradingPost(param); break;
                 case "build_in_library": this.buildLibrary(param); break;
                 case "build_in_market": this.buildMarket(param); break;
                 case "build_in_fortification": this.buildFortification(param); break;
@@ -199,7 +199,7 @@ define(['ash',
                 case "build_in_apothecary": this.buildApothecary(param); break;
                 case "build_in_smithy": this.buildSmithy(param); break;
                 case "build_in_cementmill": this.buildCementMill(param); break;
-                case "build_in_radio": this.buildRadioTower(param); break;
+                case "build_in_radiotower": this.buildRadioTower(param); break;
                 case "build_in_lights": this.buildLights(param); break;
                 case "build_in_square": this.buildSquare(param); break;
                 case "build_in_garden": this.buildGarden(param); break;
@@ -1025,7 +1025,7 @@ define(['ash',
 		},
 
 		buildRadioTower: function () {
-			this.buildImprovement("build_in_radio", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_radio"));
+			this.buildImprovement("build_in_radiotower", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_radio"));
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_RADIO, "Built a radio tower.");
 		},
 
@@ -1062,7 +1062,7 @@ define(['ash',
 		},
 
 		buildTradingPost: function () {
-			this.buildImprovement("build_in_tradingPost", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_tradingPost"));
+			this.buildImprovement("build_in_tradepost", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_tradepost"));
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_TRADING_POST, "Built a trading post.");
 		},
 

@@ -367,6 +367,11 @@ function (Ash, GameConstants, CampConstants) {
                     }
                 },
 
+                use_in_home: {
+                    maxStamina: false,
+                    busy: false,
+                },
+
                 build_in_house: {
                     improvements: {
                         camp: [1, -1],
@@ -378,17 +383,19 @@ function (Ash, GameConstants, CampConstants) {
                     improvements: {
                         camp: [1, -1],
                         campfire: [-1, 1],
-                    },
+                    }
+                },
+                
+                improve_in_campfire: {
+                    improvements: {
+                        camp: [1, -1],
+                        campfire: [1, -1],
+                    }
                 },
 
                 use_in_campfire: {
                     rumourpoolchecked: false,
                     population: [1, -1],
-                    busy: false,
-                },
-
-                use_in_home: {
-                    maxStamina: false,
                     busy: false,
                 },
 
@@ -452,7 +459,7 @@ function (Ash, GameConstants, CampConstants) {
                     },
                 },
 
-                build_in_tradingPost: {
+                build_in_tradepost: {
                     numCamps: 2,
                     improvements: {
                         tradepost: [0, 1],
@@ -632,7 +639,7 @@ function (Ash, GameConstants, CampConstants) {
                     }
                 },
 
-                build_in_radio: {
+                build_in_radiotower: {
                     improvements: {},
                     upgrades: {
                         unlock_building_radio: true
@@ -1509,6 +1516,12 @@ function (Ash, GameConstants, CampConstants) {
                     cost_factor_e1_base: 2,
                 },
 
+                improve_in_campfire: {
+                    resource_metal: 5,
+                    resource_food: 5,
+                    cost_factor_e1_base: 1.5,
+                },
+
                 build_in_darkfarm: {
                     resource_metal: 50,
                     resource_water: 20,
@@ -1543,7 +1556,7 @@ function (Ash, GameConstants, CampConstants) {
                     resource_food: 15,
                 },
 
-                build_in_tradingPost: {
+                build_in_tradepost: {
                     resource_metal: 78,
                 },
 
@@ -1621,7 +1634,7 @@ function (Ash, GameConstants, CampConstants) {
                     cost_factor_e1_base: 1.5,
                 },
 
-                build_in_radio: {
+                build_in_radiotower: {
                     resource_metal: 500,
                     resource_rope: 50,
                     cost_factor_e1_base: 1.5,
@@ -2245,7 +2258,7 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_darkfarm: "Produces food",
                 build_in_square: "A place to relax and socialize.",
                 build_in_garden: "A dash of beauty in the concrete desert.",
-                build_in_tradingPost: "Connect camps to a trade network.",
+                build_in_tradepost: "Connect camps to a trade network.",
                 build_in_market: "Enables foreign traders to visit.",
                 build_in_barracks: "Allows 10 soldiers.",
                 build_in_lights: "Keep the darkness at bay for good.",
@@ -2254,6 +2267,7 @@ function (Ash, GameConstants, CampConstants) {
                 build_in_stable: "Space to set up a trading caravan.",
                 build_in_fortification: "Camp defences: +" + CampConstants.FORTIFICATION_1_DEFENCE,
                 build_in_fortification2: "Camp defences: +" + CampConstants.FORTIFICATION_2_DEFENCE,
+                improve_in_campfire: "Increase rumour generation",
                 use_in_home: "Recover stamina.",
                 use_in_campfire: "Collect rumours from the population.",
                 use_in_market: "Go hear the latest gossip.",
@@ -2282,6 +2296,10 @@ function (Ash, GameConstants, CampConstants) {
             UNAVAILABLE_REASON_LOCKED_RESOURCES: "Requires undiscovered resources.",
             UNAVAILABLE_REASON_BAG_FULL: "Bag full.",
             DISABLED_REASON_NOT_ENOUGH_LEVEL_POP: "Not enough people on this level.",
+
+            hasAction: function (action) {
+                return this.requirements[action] || this.costs[action] || this.cooldowns[action] || this.durations[action] || this.descriptions[action] || false;
+            },
 
             getCostSource: function (action) {
                 var rawSource = this.costs[action].cost_source;
