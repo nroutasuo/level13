@@ -178,7 +178,7 @@ define(['ash',
                 case "build_out_spaceship1": this.buildSpaceShip1(param); break;
                 case "build_out_spaceship2": this.buildSpaceShip2(param); break;
                 case "build_out_spaceship3": this.buildSpaceShip3(param); break;
-					// In improvements
+				// In improvements
                 case "build_in_campfire": this.buildCampfire(param); break;
                 case "build_in_house": this.buildHouse(param); break;
                 case "build_in_house2": this.buildHouse2(param); break;
@@ -203,20 +203,21 @@ define(['ash',
                 case "build_in_lights": this.buildLights(param); break;
                 case "build_in_square": this.buildSquare(param); break;
                 case "build_in_garden": this.buildGarden(param); break;
+                case "improve_in_campfire": this.improveCampfire(param); break;
                 case "use_in_home": this.useHome(param); break;
                 case "use_in_campfire": this.useCampfire(param); break;
                 case "use_in_market": this.useMarket(param); break;
                 case "use_in_hospital": this.useHospital(param); break;
                 case "use_in_hospital2": this.useHospital2(param); break;
                 case "use_in_inn": this.useInn(param); break;
-					// Item actions
+				// Item actions
                 case "craft": this.craftItem(param); break;
                 case "equip": this.equipItem(param); break;
                 case "unequip": this.unequipItem(param); break;
                 case "discard": this.discardItem(param); break;
                 case "use_item": this.useItem(param); break;
                 case "use_item_fight": this.useItemFight(param); break;
-					// Non-improvement actions
+				// Non-improvement actions
                 case "enter_camp": this.enterCamp(param); break;
                 case "scavenge": this.scavenge(param); break;
                 case "scout": this.scout(param); break;
@@ -233,9 +234,9 @@ define(['ash',
                 case "unlock_upgrade": this.unlockUpgrade(param); break;
                 case "create_blueprint": this.createBlueprint(param); break;
                 case "launch": this.launch(param); break;
-					// Mapped directly in UIFunctions
+				// Mapped directly in UIFunctions
                 case "leave_camp": break;
-					// Movement
+				// Movement
                 case "move_level_up": this.moveTo(PositionConstants.DIRECTION_UP); break;
                 case "move_level_down": this.moveTo(PositionConstants.DIRECTION_DOWN); break;
                 case "move_camp_level": this.moveTo(PositionConstants.DIRECTION_CAMP); break;
@@ -1140,8 +1141,12 @@ define(['ash',
 				console.log(sector);
 				console.log(sectorPos);
 			}
-
 		},
+        
+        improveCampfire: function () {
+            this.improveImprovement("improve_in_campfire");
+            this.addLogMessage(LogConstants.MSG_ID_IMPROVED_CAMPFIRE, "Made the campfire a bit cozier.");
+        },
 
 		collectFood: function () {
 			this.collectCollector("use_out_collector_food", "collector_food");
@@ -1420,11 +1425,20 @@ define(['ash',
 			var sector = otherSector ? otherSector : this.playerLocationNodes.head.entity;
 			var improvementsComponent = sector.get(SectorImprovementsComponent);
 			improvementsComponent.add(improvementName);
-
 			GlobalSignals.improvementBuiltSignal.dispatch();
 			this.forceResourceBarUpdate();
 			this.save();
 		},
+        
+        improveImprovement: function (actionName) {
+            var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(actionName);
+			var sector = this.playerLocationNodes.head.entity;
+			var improvementsComponent = sector.get(SectorImprovementsComponent);
+			improvementsComponent.improve(improvementName);
+			GlobalSignals.improvementBuiltSignal.dispatch();
+			this.forceResourceBarUpdate();
+			this.save();
+        },
 
 		assignWorkers: function (scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers, scientists) {
 			var sector = this.playerLocationNodes.head.entity;

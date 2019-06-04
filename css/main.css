@@ -381,7 +381,7 @@ body.dark td.maxwidth {
 }
 body.dark td.list-amount,
 body.dark td.list-storage {
-  min-width: 35pt;
+  min-width: 30pt;
   text-align: center;
 }
 body.dark td.list-description {
@@ -507,7 +507,15 @@ body.dark button.btn-wide {
   width: 110pt;
 }
 body.dark button.btn-narrow {
-  width: 65pt;
+  width: 80pt;
+}
+body.dark button.btn-compact {
+  width: auto;
+  padding: 8px 10px;
+}
+body.dark button.btn-mini {
+  width: auto;
+  padding: 4px 8px;
 }
 body.dark button.btn-glyph {
   font-weight: bold;
@@ -520,10 +528,6 @@ body.dark button.btn-glyph {
   text-align: center;
   border-width: 1px;
   border-radius: 1px;
-}
-body.dark button.btn-mini {
-  width: auto;
-  padding: 4px 8px;
 }
 body.dark button.btn-meta {
   width: auto;
@@ -2046,7 +2050,7 @@ body.sunlit td.maxwidth {
 }
 body.sunlit td.list-amount,
 body.sunlit td.list-storage {
-  min-width: 35pt;
+  min-width: 30pt;
   text-align: center;
 }
 body.sunlit td.list-description {
@@ -2172,7 +2176,15 @@ body.sunlit button.btn-wide {
   width: 110pt;
 }
 body.sunlit button.btn-narrow {
-  width: 65pt;
+  width: 80pt;
+}
+body.sunlit button.btn-compact {
+  width: auto;
+  padding: 8px 10px;
+}
+body.sunlit button.btn-mini {
+  width: auto;
+  padding: 4px 8px;
 }
 body.sunlit button.btn-glyph {
   font-weight: bold;
@@ -2185,10 +2197,6 @@ body.sunlit button.btn-glyph {
   text-align: center;
   border-width: 1px;
   border-radius: 1px;
-}
-body.sunlit button.btn-mini {
-  width: auto;
-  padding: 4px 8px;
 }
 body.sunlit button.btn-meta {
   width: auto;

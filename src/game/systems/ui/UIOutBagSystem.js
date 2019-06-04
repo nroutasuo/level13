@@ -31,14 +31,15 @@ define([
             $("#checkbox-crafting-show-obsolete").change(function () {
                 sys.onObsoleteToggled();
             });
+            
+			this.initItemSlots();
+            this.initCraftingButtons();
 
 			return this;
 		},
 
 		addToEngine: function (engine) {
 			this.itemNodes = engine.getNodeList(ItemsNode);
-			this.initItemSlots();
-            this.initCraftingButtons();
             GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
             GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.onInventoryChanged);
@@ -88,11 +89,6 @@ define([
             }
             div = div + "</div>";
             $("#self-craft").append(div);
-            GameGlobals.uiFunctions.registerActionButtonListeners("#self-craft");
-            GameGlobals.uiFunctions.registerCollapsibleContainerListeners("#self-craft");
-            GameGlobals.uiFunctions.generateButtonOverlays("#self-craft");
-            GameGlobals.uiFunctions.generateCallouts("#self-craft");
-            GlobalSignals.elementCreatedSignal.dispatch();
         },
 
 		removeFromEngine: function (engine) {

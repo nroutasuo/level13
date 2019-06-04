@@ -304,25 +304,35 @@
         initImprovements: function () {
             var $table = $("#in-improvements table");
             var trs = "";
+            this.elements.improvements = {};
             for (var key in ImprovementConstants.campImprovements) {
                 var def = ImprovementConstants.campImprovements[key];
                 var tds = "";
                 var buildAction = "build_in_" + key;
-                var name = improvementNames[key];
-                var buildButton = "<button class='action action-build action-location multiline' action='" + buildAction +"'>" + name + "</button>";
+                var improveAction = "improve_in_" + key;
+                var hasImproveAction = PlayerActionConstants.hasAction(improveAction);
                 var useAction = "use_in_" + key;
+                var hasUseAction = PlayerActionConstants.hasAction(useAction);
+                
+                var name = improvementNames[key];
+                var buildButton = "<button class='action action-build action-location' action='" + buildAction +"' style='width:" + (hasImproveAction ? "90pt" : "117pt") + "'>" + name + "</button>";
                 var useButton = "";
-                if (PlayerActionConstants.hasAction(useAction)) {
-                    useButton = "<button class='action action-use action-location' action='" + useAction + "'>" + def.useActionName + "</button>";
+                if (hasUseAction) {
+                    useButton = "<button class='action action-use action-location btn-narrow' action='" + useAction + "'>" + def.useActionName + "</button>";
                 }
-                tds += "<td>" + buildButton + "</td>";
-                tds += "<td class='list-amount'>0</td>";
+                var improveButton = "";
+                if (hasImproveAction) {
+                    improveButton = "<button class='action btn-compact' action='" + improveAction + "'>↑</button>";
+                }
+                tds += "<td>" + buildButton + (hasImproveAction ? improveButton : "") + "</td>";
+                tds += "<td class='list-amount improvement-count'>0</td>";
+                tds += "<td class='list-amount improvement-level'>0</td>";
                 tds += "<td>" + useButton + "</td>";
-                tds += "<td></td>";
                 trs += "<tr id='in-improvements-" + key + "'>" + tds + "</tr>";
             }
             $table.append(trs);
             
+            // TODO save elements already in the previous loop
             var result = [];
             $.each($("#in-improvements tr"), function () {
                 var id = $(this).attr("id");
@@ -333,8 +343,9 @@
                     var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(actionName);
                     if (improvementName) {
                         var btnUse = $(this).find(".action-use");
-                        var listAmount =  $(this).find(".list-amount")
-                        result.push({ elem: $(this), btnUse: btnUse, listAmount: listAmount, id: id, action: actionName, improvementName: improvementName });
+                        var count =  $(this).find(".improvement-count")
+                        var level =  $(this).find(".improvement-level")
+                        result.push({ elem: $(this), btnUse: btnUse, count: count, level: level, id: id, action: actionName, improvementName: improvementName });
                     }
                 }
             });
@@ -370,11 +381,13 @@
                 }
                 var actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
                 var existingImprovements = improvements.getCount(improvementName);
+                var improvementLevel = improvements.getLevel(improvementName);
+                console.log("update " + improvementName + " " + improvementLevel);
+                console.log(improvements.getVO(improvementName))
                 if (isActive) {
-                    elem.listAmount.text(existingImprovements);
-                    if (improvementName !== improvementNames.hospital) {
-                        GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0);
-                    }
+                    elem.count.text(existingImprovements);
+                    elem.level.text(improvementLevel);
+                    GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0);
                 }
 
                 var commonVisibilityRule = (actionEnabled || existingImprovements > 0 || showActionDisabledReason);
@@ -391,14 +404,6 @@
                 if (isVisible) visibleBuildingCount++;
                 if (actionAvailable) availableBuildingCount++;
             }
-
-            var perksComponent = this.playerPosNodes.head.entity.get(PerksComponent);
-			var hasHospital = improvements.getCount(improvementNames.hospital) > 0;
-			var isInjured = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury) !== 1;
-			var isAugmented = perksComponent.hasPerk(PerkConstants.perkIds.healthAugment);
-			var isAugmentAvailable = this.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdsForImprovement(improvementNames.hospital)[0]);
-			GameGlobals.uiFunctions.toggle("#btn-use_in_hospital1", hasHospital && (isInjured || isAugmented || !isAugmentAvailable));
-            GameGlobals.uiFunctions.toggle("#btn-use_in_hospital2", hasHospital && !isInjured && !isAugmented && isAugmentAvailable);
 
             this.availableBuildingCount = availableBuildingCount;
             if (isActive) this.lastShownAvailableBuildingCount = this.availableBuildingCount;

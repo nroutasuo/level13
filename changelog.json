@@ -7,6 +7,10 @@
             "changes": [
                 {
                     "type": "GD",
+                    "summary": "Add possibility to improve (some) buildings for small effect boosts"
+                },
+                {
+                    "type": "GD",
                     "summary": "Add active and passive rumour generation to markets"
                 },
                 {
@@ -19,7 +23,7 @@
                 },
                 {
                     "type": "DEV",
-                    "summary": " Refactor CSS styles and color themes for easier maintanability"
+                    "summary": "Refactor CSS styles and color themes for easier maintanability"
                 }
                 {
                     "type": "DEV",

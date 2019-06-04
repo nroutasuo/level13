@@ -55,6 +55,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
         constructor: function (name) {
 			this.name = name;
 			this.count = 0;
+            this.level = 1;
 			
 			this.initStorage();
 		},

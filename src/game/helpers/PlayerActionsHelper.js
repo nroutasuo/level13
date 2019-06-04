@@ -833,6 +833,13 @@ define([
 				if (action === "build_in_house" && result === 1) result = 0.5;
                 return result;
             }
+            
+            if (action.indexOf("improve_in") >= 0) {
+                var improvementName = this.getImprovementNameForAction(action);
+                var improvementsComponent = sector.get(SectorImprovementsComponent);
+                var result = improvementsComponent.getLevel(improvementName);
+                return result;
+            }
 
             switch (baseActionID) {
                 case "use_in_inn":
@@ -1177,7 +1184,8 @@ define([
         },
 
         getImprovementNameForAction: function(action, disableWarnings) {
-            switch (this.getBaseActionID(action)) {
+            var baseId = this.getBaseActionID(action);
+            switch (baseId) {
                 case "build_out_collector_food": return improvementNames.collector_food;
                 case "build_out_collector_water": return improvementNames.collector_water;
                 case "build_in_home": return improvementNames.home;
@@ -1211,6 +1219,7 @@ define([
                 case "build_in_market": return improvementNames.market;
                 case "build_in_radiotower": return improvementNames.radiotower;
                 case "build_in_researchcenter": return improvementNames.researchcenter;
+                case "improve_in_campfire": return improvementNames.campfire;
                 case "build_out_passage_up_stairs": return improvementNames.passageUpStairs;
                 case "build_out_passage_up_elevator": return improvementNames.passageUpElevator;
                 case "build_out_passage_up_hole": return improvementNames.passageUpHole;

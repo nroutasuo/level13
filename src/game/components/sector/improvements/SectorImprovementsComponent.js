@@ -31,11 +31,28 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
                 vo.count++;
             }
         },
+        
+        improve: function (type) {
+            var vo = this.improvements[type];
+            if (!vo) return;
+            if (!vo.level) vo.level = 1;
+            if (vo.level < 1) vo.level = 1;
+            vo.level++;
+        },
 
-        getCount: function(type) {
+        getCount: function (type) {
             var vo = this.improvements[type];
             if (vo) {
                 return vo.count || 0;
+            } else {
+                return 0;
+            }
+        },
+        
+        getLevel: function (type) {
+            var vo = this.improvements[type];
+            if (vo) {
+                return vo.level || 1;
             } else {
                 return 0;
             }
@@ -142,6 +159,7 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
                 if (key == "undefined") continue;
                 this.improvements[key] = new ImprovementVO(key);
                 this.improvements[key].count = componentValues.i[key].count;
+                this.improvements[key].level = componentValues.i[key].level;
                 if (componentValues.i[key].storedResources) {
                     for (var res in componentValues.i[key].storedResources) {
                         this.improvements[key].storedResources[res] = componentValues.i[key].storedResources[res];
