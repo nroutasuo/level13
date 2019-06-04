@@ -106,9 +106,10 @@ define([
 			var sys = this;
 			for (var i = 0; i < this.elementsVisibleButtons.length; i++) {
 				var $button = $(this.elementsVisibleButtons[i]);
-				var action = $button.attr("action");
-				if (!action)
-					return;
+                var action = $button.attr("action");
+				if (!action) {
+					continue;
+                }
 
 				var buttonStatus = sys.buttonStatuses[i];
 				var buttonElements = sys.buttonElements[i];
@@ -339,6 +340,7 @@ define([
 			this.elementsVisibleButtons = [];
 			this.buttonStatuses = [];
 			this.buttonElements = [];
+            var buttonActions = [];
 			var sys = this;
 			$.each($("button.action"), function () {
 				var $button = $(this);
@@ -373,9 +375,10 @@ define([
 						elements.costSpanValues[key] = elements.costSpans[key].children(".action-cost-value");
 					}
 					sys.buttonElements.push(elements);
+                    buttonActions.push(action);
 				}
 			});
-            // console.log("update visible buttons:" + this.elementsVisibleButtons.length);
+            // console.log("update visible buttons:" + this.elementsVisibleButtons.length + ":" + buttonActions.join(","));
 		},
 
 		updateVisibleProgressbarsList: function () {
