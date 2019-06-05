@@ -315,7 +315,7 @@
                 var hasUseAction = PlayerActionConstants.hasAction(useAction);
                 
                 var name = improvementNames[key];
-                var buildButton = "<button class='action action-build action-location' action='" + buildAction +"' style='width:" + (hasImproveAction ? "90pt" : "117pt") + "'>" + name + "</button>";
+                var buildButton = "<button class='action action-build action-location' action='" + buildAction +"'>" + name + "</button>";
                 var useButton = "";
                 if (hasUseAction) {
                     useButton = "<button class='action action-use action-location btn-narrow' action='" + useAction + "'>" + def.useActionName + "</button>";
@@ -324,9 +324,9 @@
                 if (hasImproveAction) {
                     improveButton = "<button class='action btn-compact' action='" + improveAction + "'>↑</button>";
                 }
-                tds += "<td>" + buildButton + (hasImproveAction ? improveButton : "") + "</td>";
-                tds += "<td class='list-amount improvement-count'>0</td>";
-                tds += "<td class='list-amount improvement-level'>0</td>";
+                tds += "<td>" + buildButton + "</td>";
+                tds += "<td><span class='improvement-badge improvement-count'>0</span></td>";
+                tds += "<td><span class='improvement-badge improvement-level'>0</span>" + improveButton + "</td>";
                 tds += "<td>" + useButton + "</td>";
                 trs += "<tr id='in-improvements-" + key + "'>" + tds + "</tr>";
             }
@@ -382,8 +382,6 @@
                 var actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
                 var existingImprovements = improvements.getCount(improvementName);
                 var improvementLevel = improvements.getLevel(improvementName);
-                console.log("update " + improvementName + " " + improvementLevel);
-                console.log(improvements.getVO(improvementName))
                 if (isActive) {
                     elem.count.text(existingImprovements);
                     elem.level.text(improvementLevel);

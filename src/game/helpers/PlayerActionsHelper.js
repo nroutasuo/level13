@@ -5,6 +5,7 @@ define([
 	'game/constants/PositionConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/PlayerStatConstants',
+	'game/constants/ImprovementConstants',
 	'game/constants/ItemConstants',
 	'game/constants/HazardConstants',
 	'game/constants/BagConstants',
@@ -40,7 +41,7 @@ define([
     'game/vos/ResourcesVO',
     'game/vos/ImprovementVO'
 ], function (
-	Ash, GameGlobals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
+	Ash, GameGlobals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ImprovementConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	LevelComponent, PositionComponent, PlayerActionComponent, BagComponent, ItemsComponent, PerksComponent, DeityComponent,
 	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
@@ -1126,13 +1127,18 @@ define([
 			if (action) {
 				var baseAction = this.getBaseActionID(action);
                 var improvementName = this.getImprovementNameForAction(action, true);
-                if (improvementName) {
-                    var reputation = getImprovementReputationBonus(improvementName);
-                    if (reputation > 0) {
-                        return (PlayerActionConstants.descriptions[action] || "") + "<hr/>Reputation: +" + reputation;
-                    } else {
-                        return PlayerActionConstants.descriptions[action] || "";
+                if (baseAction.indexOf("build_in_") == 0) {
+                    var buildingKey = baseAction.replace("build_in_", "");
+                    var baseDesc = "";
+                    if (ImprovementConstants.campImprovements[buildingKey]) {
+                        baseDesc = ImprovementConstants.campImprovements[buildingKey].description;
                     }
+                    var reputationDesc = "";
+                    var reputation = getImprovementReputationBonus(improvementName);
+                    if (reputation > 0) reputationDesc = "Reputation: " + reputation;
+                    return baseDesc + (baseDesc && reputationDesc ? "<hr>" : "") + reputationDesc;
+                } else if (improvementName) {
+                    return PlayerActionConstants.descriptions[action] || "";
                 } else if (PlayerActionConstants.descriptions[action]) {
                     return PlayerActionConstants.descriptions[action];
                 } else if (PlayerActionConstants.descriptions[baseAction]) {

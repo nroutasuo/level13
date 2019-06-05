@@ -420,8 +420,8 @@ body.dark hr {
 body.dark table td {
   padding: 0px 2px;
 }
-body.dark table button,
-body.dark table div.container-btn-action {
+body.dark td > button,
+body.dark td > div.container-btn-action {
   margin-left: 0px;
 }
 body.dark button {
@@ -511,6 +511,7 @@ body.dark button.btn-narrow {
 }
 body.dark button.btn-compact {
   width: auto;
+  min-width: 2.5em;
   padding: 8px 10px;
 }
 body.dark button.btn-mini {
@@ -1614,6 +1615,20 @@ body.dark .sticky-footer .one-quarter {
   height: 2px;
   padding: 0px;
 }
+body.dark span.improvement-count {
+  font-weight: bold;
+}
+body.dark span.improvement-badge {
+  padding: 5px;
+  margin: 1px;
+  background-color: #282a28;
+  border: 1px solid #3a3a3a;
+  border-radius: 5px;
+  min-width: 1em;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+}
 body.dark .changelog-type {
   padding: 2px 5px;
   border-width: 1px;
@@ -2089,8 +2104,8 @@ body.sunlit hr {
 body.sunlit table td {
   padding: 0px 2px;
 }
-body.sunlit table button,
-body.sunlit table div.container-btn-action {
+body.sunlit td > button,
+body.sunlit td > div.container-btn-action {
   margin-left: 0px;
 }
 body.sunlit button {
@@ -2180,6 +2195,7 @@ body.sunlit button.btn-narrow {
 }
 body.sunlit button.btn-compact {
   width: auto;
+  min-width: 2.5em;
   padding: 8px 10px;
 }
 body.sunlit button.btn-mini {
@@ -3282,6 +3298,20 @@ body.sunlit #game-msg {
 body.sunlit .sticky-footer .one-quarter {
   height: 2px;
   padding: 0px;
+}
+body.sunlit span.improvement-count {
+  font-weight: bold;
+}
+body.sunlit span.improvement-badge {
+  padding: 5px;
+  margin: 1px;
+  background-color: #282a28;
+  border: 1px solid #3a3a3a;
+  border-radius: 5px;
+  min-width: 1em;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
 }
 body.sunlit .changelog-type {
   padding: 2px 5px;

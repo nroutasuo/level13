@@ -2,8 +2,9 @@
 define(['ash',
     'game/constants/GameConstants',
     'game/constants/CampConstants',
+    'game/constants/ImprovementConstants',
 ],
-function (Ash, GameConstants, CampConstants) {
+function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
     var COST_SOURCE_CAMP = "camp";
     var COST_SOURCE_DEFAULT = "default";
@@ -2223,8 +2224,8 @@ function (Ash, GameConstants, CampConstants) {
                 despair: [0.75, 0], // TODO make dynamic and link to cases in FaintingSystem
             },
 
+            // build_in action descriptions are based on building descriptions on ImprovementConstants
             descriptions: {
-                build_in_home: "Set up camp.",
                 scout: "Scout the area for evidence.",
                 scout_locale_i: "Find out if there is anyone living here.",
                 scout_locale_u: "Scout for additional resources and evidence.",
@@ -2246,27 +2247,6 @@ function (Ash, GameConstants, CampConstants) {
                 build_out_collector_food: "Accumulates food.",
                 build_out_collector_water: "Accumulates water.",
                 build_out_camp: "A place to rest.",
-                build_in_house: "A place for " + CampConstants.POPULATION_PER_HOUSE + " people to stay.",
-                build_in_house2: "Houses " + CampConstants.POPULATION_PER_HOUSE2 + " people.",
-                build_in_storage: "Increases resource storage.",
-                build_in_generator: "Increases reputation bonus from housing (" + CampConstants.REPUTATION_PER_HOUSE_FROM_GENERATOR + "% per house)",
-                build_in_campfire: "Increases rumour generation and unlocks upgrades.",
-                build_in_library: "Accumulate and store more evidence.",
-                build_in_hospital: "Enables healing injuries.",
-                build_in_hospital2: "Improve your general health.",
-                build_in_inn: "Increases rumours and enables recruitment.",
-                build_in_darkfarm: "Produces food",
-                build_in_square: "A place to relax and socialize.",
-                build_in_garden: "A dash of beauty in the concrete desert.",
-                build_in_tradepost: "Connect camps to a trade network.",
-                build_in_market: "Enables foreign traders to visit.",
-                build_in_barracks: "Allows 10 soldiers.",
-                build_in_lights: "Keep the darkness at bay for good.",
-                build_in_smithy: "Workspace for toolsmiths.",
-                build_in_aqueduct: "Water infrastructure to improve collecting efficiency.",
-                build_in_stable: "Space to set up a trading caravan.",
-                build_in_fortification: "Camp defences: +" + CampConstants.FORTIFICATION_1_DEFENCE,
-                build_in_fortification2: "Camp defences: +" + CampConstants.FORTIFICATION_2_DEFENCE,
                 improve_in_campfire: "Increase rumour generation",
                 use_in_home: "Recover stamina.",
                 use_in_campfire: "Collect rumours from the population.",
