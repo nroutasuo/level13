@@ -154,6 +154,7 @@ define([
 
             var sectorID = sector.get(PositionComponent).positionId();
             var reqsID = action + "-" + sectorID;
+            var ordinal = this.getActionOrdinal(action, sector);
 
             var checkRequirementsInternal = function (action, log, sector) {
                 var playerVision = this.playerStatsNodes.head.vision.value;
@@ -184,6 +185,12 @@ define([
                     return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_UP] };
                 if (action === "move_level_down" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_DOWN])
                     return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_DOWN] };
+
+                if (action.indexOf("improve_in_") == 0) {
+                    if (ordinal >= ImprovementConstants.maxLevel) {
+                        return { value: 0, reason: "Max level" };
+                    }
+                }
 
                 if (costs) {
                     if (costs.stamina > 0) {

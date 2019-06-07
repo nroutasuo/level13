@@ -1,6 +1,8 @@
 define(['game/constants/CampConstants'], function (CampConstants) {
     
     var ImprovementConstants = {
+        
+        maxLevel: 10,
 
         campImprovements: {
             home: {
