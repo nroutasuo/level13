@@ -48,6 +48,7 @@ define([
 				
                 var improvementsComponent;
                 var campfireCount = 0;
+                var campfireLevel = 0;
 				var campfireFactor = 1;
                 var marketCount;
                 var marketFactor = 1;
@@ -57,7 +58,9 @@ define([
 					improvementsComponent = campNode.entity.get(SectorImprovementsComponent);
 					
 					campfireCount = improvementsComponent.getCount(improvementNames.campfire);
+                    campfireLevel = improvementsComponent.getLevel(improvementNames.campfire);
 					campfireFactor = CampConstants.RUMOUR_BONUS_PER_CAMPFIRE_BASE;
+					campfireFactor += campfireLevel > 1 ? (campfireLevel - 1) * CampConstants.RUMOURS_BONUS_PER_CAMPFIRE_PER_LEVEL : 0;
 					campfireFactor += campfireUpgradeLevel > 1 ? (campfireUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_CAMPFIRE_PER_UPGRADE : 0;
                     
                     marketCount = improvementsComponent.getCount(improvementNames.market);

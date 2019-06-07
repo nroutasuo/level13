@@ -1520,7 +1520,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 improve_in_campfire: {
                     resource_metal: 5,
                     resource_food: 5,
-                    cost_factor_e1_base: 1.5,
+                    cost_factor_e1_base: 1.75,
                 },
 
                 build_in_darkfarm: {
