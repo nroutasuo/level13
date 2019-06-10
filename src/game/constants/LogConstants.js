@@ -80,6 +80,7 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
         MSG_ID_BUILT_GARDEN: "MSG_ID_BUILT_GARDEN",
         
         MSG_ID_IMPROVED_CAMPFIRE: "MSG_ID_IMPROVED_CAMPFIRE",
+        MSG_ID_IMPROVED_LIBRARY: "MSG_ID_IMPROVED_LIBRARY",
 
         // out buildings
         MSG_ID_BUILT_PASSAGE: "BUILT_PASSAGE",

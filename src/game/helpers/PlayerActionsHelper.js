@@ -1233,6 +1233,7 @@ define([
                 case "build_in_radiotower": return improvementNames.radiotower;
                 case "build_in_researchcenter": return improvementNames.researchcenter;
                 case "improve_in_campfire": return improvementNames.campfire;
+                case "improve_in_library": return improvementNames.library;
                 case "build_out_passage_up_stairs": return improvementNames.passageUpStairs;
                 case "build_out_passage_up_elevator": return improvementNames.passageUpElevator;
                 case "build_out_passage_up_hole": return improvementNames.passageUpHole;

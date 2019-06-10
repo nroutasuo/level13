@@ -526,6 +526,13 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         library: [-1, 1],
                     },
                 },
+                
+                improve_in_library: {
+                    improvements: {
+                        camp: [1, -1],
+                        library: [1, -1],
+                    }
+                },
 
                 build_in_house2: {
                     upgrades: {
@@ -1588,6 +1595,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     cost_factor_e1_base: 2,
                 },
 
+                improve_in_library: {
+                    resource_metal: 30,
+                    resource_rope: 50,
+                    cost_factor_e1_base: 1.75,
+                },
+
                 build_in_fortification: {
                     resource_metal: 350,
                     resource_rope: 100,
@@ -2248,6 +2261,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 build_out_collector_water: "Accumulates water.",
                 build_out_camp: "A place to rest.",
                 improve_in_campfire: "Increase rumour generation",
+                improve_in_library: "Increase evidence generation",
                 use_in_home: "Recover stamina.",
                 use_in_campfire: "Collect rumours from the population.",
                 use_in_market: "Go hear the latest gossip.",

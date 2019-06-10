@@ -204,6 +204,7 @@ define(['ash',
                 case "build_in_square": this.buildSquare(param); break;
                 case "build_in_garden": this.buildGarden(param); break;
                 case "improve_in_campfire": this.improveCampfire(param); break;
+                case "improve_in_library": this.improveLibrary(param); break;
                 case "use_in_home": this.useHome(param); break;
                 case "use_in_campfire": this.useCampfire(param); break;
                 case "use_in_market": this.useMarket(param); break;
@@ -1146,6 +1147,11 @@ define(['ash',
         improveCampfire: function () {
             this.improveImprovement("improve_in_campfire");
             this.addLogMessage(LogConstants.MSG_ID_IMPROVED_CAMPFIRE, "Made the campfire a bit cozier.");
+        },
+        
+        improveLibrary: function () {
+            this.improveImprovement("improve_in_library");
+            this.addLogMessage(LogConstants.MSG_ID_IMPROVED_LIBRARY, "Bolstered the library.");
         },
 
 		collectFood: function () {

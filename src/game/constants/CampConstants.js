@@ -24,6 +24,9 @@ define(['ash'], function (Ash) {
         RUMOURS_BONUS_PER_INN_PER_UPGRADE: 0.01,
         RUMOURS_PER_VISIT_MARKET: 2,
         
+        // Evidence
+        EVIDENCE_BONUS_PER_LIBRARY_LEVEL: 0.2,
+        
         // Cost of workers
         CONSUMPTION_WATER_PER_WORKER_PER_S: 0.02,
         CONSUMPTION_FOOD_PER_WORKER_PER_S: 0.01,
