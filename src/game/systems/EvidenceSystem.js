@@ -56,7 +56,7 @@ define([
                     numScientists = campNode.camp.assignedWorkers.scientist;
                     
                     var libraryLevelFactor = (1 + libraryLevel * CampConstants.EVIDENCE_BONUS_PER_LIBRARY_LEVEL);
-					var accLibrary = 0.0005 * libraryCount * libraryUpgradeLevel * libraryLevelFactor * GameConstants.gameSpeedCamp;
+					var accLibrary = 0.002 * libraryCount * libraryUpgradeLevel * libraryLevelFactor * GameConstants.gameSpeedCamp;
                     var accScientists = GameGlobals.campHelper.getEvidenceProductionPerSecond(numScientists, improvementsComponent);
 					var accSpeedCamp = accLibrary + accScientists;
 					accSpeed += accSpeedCamp;
