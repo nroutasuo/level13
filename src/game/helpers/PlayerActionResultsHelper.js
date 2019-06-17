@@ -172,6 +172,7 @@ define([
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var playerPos = this.playerLocationNodes.head.position;
             var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
+            var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
             var localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
 
             if (localeVO.type !== localeTypes.tradingpartner) {
@@ -179,7 +180,7 @@ define([
             }
 
             if (localeCategory === "u") {
-                rewards.gainedEvidence = 1;
+                rewards.gainedEvidence = campOrdinal;
                 rewards.gainedPopulation = Math.random() < 0.05 ? 1 : 0;
             } else {
                 rewards.gainedPopulation = Math.random() < 0.2 ? 1 : 0;

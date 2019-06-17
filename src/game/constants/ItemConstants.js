@@ -73,7 +73,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("clothing_over_4", "Kevlar vest", "Armor", {"fight defence": 40, warmth: 0, "radiation protection": 0, "poison protection": 5}, true, true, false, "img/items/clothing-2.png",
                     "Heavy, but worth it.", 1, 7),
                 new ItemVO("clothing_over_5", "Riot police vest", "Armor", {"fight defence": 100, warmth: 10, "radiation protection": 0, "poison protection": 10}, true, false, false, "img/items/clothing-3.png",
-                    "Based on the old Surface Guard uniform with additional environmental proection.", 17, 6),
+                    "Based on the old Surface Guard uniform with additional environmental proection.", 13, 6),
                 new ItemVO("clothing_over_6", "Exoskeleton", "Armor", {"fight defence": 290, warmth: 10, "radiation protection": 30, "poison protection": 20}, true, true, false, "img/items/clothing-3.png",
                     "Based on the old Surface Guard uniform with additional environmental proection.", 18, -1),
             ],

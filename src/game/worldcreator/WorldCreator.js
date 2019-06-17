@@ -447,12 +447,12 @@ define([
 
 				// min number of (easy) locales ensures that player can get all upgrades intended for that level
                 // two "levels" of locales for critical paths, those on path 2 can require tech from path 1 to reach but not the other way around
-				var minEarly = Math.max(1, UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_EARLY));
+				var minEarly = 2 + UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_EARLY);
                 var maxEarly = minEarly * 2;
 				var countEarly = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minEarly, maxEarly);
                 createLocales(this.world, levelVO, campOrdinal, true, countEarly, minEarly);
 
-                var minLate = Math.max(1, UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_LATE));
+                var minLate = 2 + UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_LATE);
                 var maxLate = minLate * 2;
 				var countLate = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minLate, maxLate);
                 createLocales(this.world, levelVO, campOrdinal, false, countLate, minLate);
