@@ -120,7 +120,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
                     break;
                 case this.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE:
                     // there and back
-                    // must be smaller than CAMP_TO_CAMP because that one can me CAMP_TO_PASSAGE + PASSAGE_TO_PASSAGE + CAMP_TO_PASSAGE
+                    // must be smaller than CAMP_TO_CAMP because that one can be CAMP_TO_PASSAGE + PASSAGE_TO_PASSAGE + CAMP_TO_PASSAGE
                     maxLength = maxLength / 3;
                     break;
                 default:

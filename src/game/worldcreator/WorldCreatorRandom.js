@@ -142,11 +142,18 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 			return neighbour;
 		},
 		
-		// Pseudo-random sector position on the given level, within the given area (distance from 0,0)
-		randomSectorPosition: function (seed, level, areaSize) {
+		// Pseudo-random sector position on the given level, within the given area (distance from 0,0 or centerPos)
+		randomSectorPosition: function (seed, level, areaSize, centerPos, minDist) {
+            centerPos = centerPos || new PositionVO(level, 0, 0);
+            minDist = minDist || 0;
 			var sectorX = this.randomInt(seed * 335, -areaSize, areaSize + 1);
+            if (sectorX > 0 && sectorX < minDist) sectorX = minDist;
+            if (sectorX < 0 && sectorX > minDist) sectorX =- minDist;
 			var sectorY = this.randomInt(seed * 7812 + level, -areaSize, areaSize + 1);
-			return new PositionVO(level, sectorX, sectorY);
+            if (sectorY > 0 && sectorY < minDist) sectorY = minDist;
+            if (sectorY < 0 && sectorY > minDist) sectorY =- minDist;
+            var result = new PositionVO(level, Math.round(centerPos.sectorX + sectorX), Math.round(centerPos.sectorY + sectorY));
+			return result;
 		},
 		
 		// Pseudo-random existing sector on the given level

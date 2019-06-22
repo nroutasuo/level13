@@ -1,4 +1,4 @@
-define(['ash'], function (Ash) {
+define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 
     var PositionConstants = {
     
@@ -79,6 +79,21 @@ define(['ash'], function (Ash) {
             return Math.sqrt(xs + ys);
         },
         
+        getMiddlePoint: function (positions) {
+            var result = new PositionVO(0, 0, 0);
+            if (positions && positions.length > 0) {
+                for (var i = 0; i < positions.length; i++) {
+                    result.level += positions[i].level;
+                    result.sectorX += positions[i].sectorX;
+                    result.sectorY += positions[i].sectorY;
+                }
+                result.level /= positions.length;
+                result.sectorX /= positions.length;
+                result.sectorY /= positions.length;
+            }
+            return result;
+        },
+        
         getOppositeDirection: function (direction) {
             switch (direction) {
                 case this.DIRECTION_WEST: return this.DIRECTION_EAST;
@@ -115,7 +130,7 @@ define(['ash'], function (Ash) {
                     return includeDiagonalSteps ? this.DIRECTION_NORTH : this.DIRECTION_NE;
                 default:
                     return this.DIRECTION_NONE;
-            }            
+            }
         },
 
         getNextCounterClockWise: function (direction, includeDiagonalSteps) {
@@ -183,7 +198,7 @@ define(['ash'], function (Ash) {
                 case this.DIRECTION_NW:
                 case this.DIRECTION_SE:
                     return true;
-                default: 
+                default:
                     return false;
             }
         }
