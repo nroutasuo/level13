@@ -697,10 +697,10 @@ define([
             var pathDirection;
             var totalLength = dist;
             if (dist == 0) {
-                this.createSector(levelVO, startPos);
+                this.createSector(levelVO, startPos, null, type);
             } else if (dist == 1) {
-                this.createSector(levelVO, startPos);
-                this.createSector(levelVO, endPos);
+                this.createSector(levelVO, startPos, null, type);
+                this.createSector(levelVO, endPos, null, type);
             } else {
                 // TODO extend to diagonals
                 var xdist = Math.abs(startPos.sectorX - endPos.sectorX);
@@ -713,7 +713,7 @@ define([
                 var wayPoint = PositionConstants.getPositionOnPath(startPos, pathDirection, pathLength - 1);
                 pathLength = ydist + 1 + WorldCreatorRandom.randomInt(seed * l / 35 + startPos.sectorX * 5 - endPos.sectorY * 3, 1, 5);
                 pathDirection = PositionConstants.getYDirectionFrom(startPos, endPos);
-                this.generateSectorPath(levelVO, wayPoint, pathDirection, pathLength, false, true);
+                this.generateSectorPath(levelVO, wayPoint, pathDirection, pathLength, false, true, type);
                 totalLength = xdist + ydist;
             }
             
@@ -831,18 +831,18 @@ define([
             food: 0,
         },
 
-        generateSectorPath: function (levelVO, pathStartingPos, pathDirection, pathLength, continueStepsTillSupplies, forceComplete) {
-            if (pathLength < 1) return;
-            var maxStepsTillSupplies = continueStepsTillSupplies ? levelVO.bagSize / 2 : Math.min(pathLength, levelVO.bagSize / 2);
+        generateSectorPath: function (levelVO, startPos, direction, len, continueStepsTillSupplies, forceComplete, criticalPathType) {
+            if (len < 1) return;
+            var maxStepsTillSupplies = continueStepsTillSupplies ? levelVO.bagSize / 2 : Math.min(len, levelVO.bagSize / 2);
 
             if (!continueStepsTillSupplies) {
                 this.stepsTillSupplies.water = Math.floor(
                     maxStepsTillSupplies / 2 +
-                    WorldCreatorRandom.random(73999 + levelVO.level * 9 + levelVO.maxX * pathStartingPos.sectorY + pathStartingPos.sectorX * 5) * maxStepsTillSupplies / 2 +
+                    WorldCreatorRandom.random(73999 + levelVO.level * 9 + levelVO.maxX * startPos.sectorY + startPos.sectorX * 5) * maxStepsTillSupplies / 2 +
                     1);
                 this.stepsTillSupplies.food = Math.floor(
                     maxStepsTillSupplies / 2 +
-                    WorldCreatorRandom.random(10764 + levelVO.level * 3 + +levelVO.maxY * pathStartingPos.sectorX + pathStartingPos.sectorY * 8) * maxStepsTillSupplies / 2 +
+                    WorldCreatorRandom.random(10764 + levelVO.level * 3 + +levelVO.maxY * startPos.sectorX + startPos.sectorY * 8) * maxStepsTillSupplies / 2 +
                     1);
             }
 
@@ -850,8 +850,8 @@ define([
             var requiresWater = true;
             var requiresFood = true;
             var sectorPos;
-            for (var si = 0; si < pathLength; si++) {
-                sectorPos = PositionConstants.getPositionOnPath(pathStartingPos, pathDirection, si);
+            for (var si = 0; si < len; si++) {
+                sectorPos = PositionConstants.getPositionOnPath(startPos, direction, si);
                 sectorPos.level = levelVO.level;
 
                 this.stepsTillSupplies.water--;
@@ -895,16 +895,19 @@ define([
                     requiredResources = null;
                 }
 
-				this.createSector(levelVO, sectorPos, requiredResources);
+				this.createSector(levelVO, sectorPos, requiredResources, criticalPathType);
             }
             return true;
         },
 
-		createSector: function (levelVO, sectorPos, requiredResources) {
+		createSector: function (levelVO, sectorPos, requiredResources, criticalPathType) {
             if (levelVO.hasSector(sectorPos.sectorX, sectorPos.sectorY)) return;
             this.totalSectors++;
 			var sectorVO = new SectorVO(sectorPos, levelVO.isCampable, levelVO.notCampableReason, requiredResources);
 			levelVO.addSector(sectorVO);
+            if (criticalPathType) {
+                sectorVO.addToCriticalPath(criticalPathType);
+            }
 		},
 
         generatePassages: function (seed, levelVO, passageUpPositions, passageDownPositions, bottomLevel) {
