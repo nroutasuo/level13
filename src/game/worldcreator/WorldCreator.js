@@ -636,15 +636,14 @@ define([
             var numSectors = WorldCreatorConstants.getNumSectors(campOrdinal, isSmallLevel);
             var numSectorsCentral = WorldCreatorConstants.getNumSectorsCentral(campOrdinal, isSmallLevel);
 
-            //  create central structure
+            // create central structure
             this.generateCentralRectangle(levelVO, topLevel, bottomLevel);
+            levelVO.centralRectSectors = levelVO.sectors.slice(0);
 
             // create required paths
             this.generateRequiredPaths(seed, levelVO, requiredPaths);
-            
-            // ensure everything created so far is connected
 
-            // then create the rest of the sectors randomly
+            // create the rest of the sectors randomly
             var attempts = 0;
             var maxAttempts = 1000;
             while ((levelVO.sectors.length < numSectors && levelVO.centralSectors.length < numSectorsCentral) && (attempts < maxAttempts)) {
@@ -658,6 +657,7 @@ define([
                 }
             }
 
+            // fill singe-sector wide gaps that are just annoying
             this.generateSectorsFillSingleGaps(levelVO);
 
             // WorldCreatorDebug.printLevel(this.world, levelVO);
@@ -682,7 +682,10 @@ define([
                 path = requiredPaths[i];
                 startPos = path.start.clone();
                 endPos = path.end.clone();
+                // generate required path
                 this.generatePathBetween(seed, levelVO, startPos, endPos, path.maxlen, path.type);
+                // ensure new path is connected to the rest of the level
+                this.generatePathBetween(seed, levelVO, levelVO.centralRectSectors[0].position, startPos);
             }
         },
         

@@ -17,6 +17,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 		
 		sectors: [],
 		centralSectors: [],
+        centralRectSectors: [],
         campSectors: [],
         passageSectors: [],
 		sectorsByPos: {},
