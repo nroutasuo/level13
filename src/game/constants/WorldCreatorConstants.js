@@ -2,12 +2,11 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
     
     var WorldCreatorConstants = {
         
-        CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP: "camp_to_workshop",
-        CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1: "camp_to_locale_1",
-        CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2: "camp_to_locale_2",
         CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE: "camp_to_passage",
+        CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP: "passage_to_camp",
         CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE: "passage_to_passage",
-        CRITICAL_PATH_TYPE_CAMP_TO_CAMP: "camp_to_camp",
+        CRITICAL_PATH_TYPE_CAMP_TO_POI_1: "camp_to_poi_1",
+        CRITICAL_PATH_TYPE_CAMP_TO_POI_2: "camp_to_poi_2",
         
         // Sector features
         SECTOR_TYPE_RESIDENTIAL: "residential",
@@ -96,27 +95,20 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
             var deductScavenges = true;
 
             switch (pathType) {
-                case this.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1:
-                case this.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2:
-                    // there, scout and back (these paths have a lot of points so less strict -> faster world creation)
+                case this.CRITICAL_PATH_TYPE_CAMP_TO_POI_1:
+                case this.CRITICAL_PATH_TYPE_CAMP_TO_POI_2:
+                    // there, scout/fight and back (these paths have a lot of points so less strict -> faster world creation)
                     var maxScoutCost = WorldCreatorConstants.MAX_SCOUT_LOCALE_STAMINA_COST;
-                    maxLength = (maxLength - maxScoutCost / movementCost) / 2;
+                    var fightCost = 10 * 3;
+                    var actionCost = Math.max(fightCost, maxScoutCost);
+                    maxLength = (maxLength - actionCost / movementCost) / 2;
                     deductScouts = false;
                     deductScavenges = false;
                     break;
-                case this.CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP:
-                    // there, fight and back
-                    var fightCost = 10 * 3;
-                    maxLength = (maxLength - fightCost / movementCost) / 2;
-                    deductScouts = false;
-                    break;
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE:
+                case this.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP:
                     // there and back
-                    // must be smaller than CAMP_TO_CAMP because that one can me CAMP_TO_PASSAGE + PASSAGE_TO_PASSAGE + CAMP_TO_PASSAGE
                     maxLength = maxLength / 3;
-                    break;
-                case this.CRITICAL_PATH_TYPE_CAMP_TO_CAMP:
-                    // only need to make it there
                     break;
                 case this.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE:
                     // there and back
@@ -188,6 +180,14 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
             }
         }
     };
+    
+    WorldCreatorConstants.CRITICAL_PATHS_BY_ORDER = [
+            WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP,
+            WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE,
+            WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1,
+            WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2,
+            WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE,
+    ];
     
     return WorldCreatorConstants;
 });

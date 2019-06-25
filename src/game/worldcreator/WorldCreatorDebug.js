@@ -66,10 +66,19 @@ define(['ash',], function (Ash) {
 				for (var x = levelVO.minX; x <= levelVO.maxX; x++) {
 					if (levelVO.hasSector(x, y)) {
                         var sectorVO = levelVO.getSector(x, y);
-                        if (sectorVO.passageUp)
+                        var criticalPath = sectorVO.getCriticalPath();
+                        if (sectorVO.passageUp && sectorVO.passageDown)
+                            print += "O ";
+                        else if (sectorVO.passageUp)
                             print += "U ";
-                        if (sectorVO.passageDown)
+                        else if (sectorVO.passageDown)
                             print += "D ";
+                        else if (sectorVO.camp)
+                            print += "C ";
+                        else if (sectorVO.locales.length > 0)
+                            print += "l ";
+                        else if (criticalPath >= 0)
+                            print += criticalPath + " ";
                         else
                             print += "+ ";
 					} else if (levelVO.isCentral(x, y))

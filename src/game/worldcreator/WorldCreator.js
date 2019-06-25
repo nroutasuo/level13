@@ -35,7 +35,6 @@ define([
 		world: null,
 
 		prepareWorld: function (seed, itemsHelper) {
-
             this.enemyCreator = new EnemyCreator();
             this.enemyCreator.createEnemies();
 
@@ -57,6 +56,11 @@ define([
 			this.prepareWorldResources(seed, topLevel, bottomLevel, itemsHelper);
 			// enemies (and gangs)
 			this.prepareWorldEnemies(seed, topLevel, bottomLevel);
+            
+			for (var l = topLevel; l >= bottomLevel; l--) {
+                var levelVO = this.world.getLevel(l);
+                WorldCreatorDebug.printLevel(this.world, levelVO);
+            }
 		},
 
         discardWorld: function () {
@@ -117,7 +121,7 @@ define([
 
                 // create basic structure (sectors and paths)
                 console.log("LEVEL CENTER: " + levelCenter + " num camps: " + numCamps);
-                var requiredPaths = this.createRequiredPathsFromPositions(l, campOrdinal, passageUpPosition, campPositions, passageDownPosition);
+                var requiredPaths = this.createRequiredPathsFromPositions(l, campOrdinal, passageUpPosition, campPositions, passageDownPosition, bottomLevel);
                 this.generateSectors(seed, levelVO, requiredPaths);
                 
                 // camps: assign camps to sectors in camp positions
@@ -295,8 +299,8 @@ define([
                     var pathConstraints = [];
                     for (var i = 0; i < levelVO.campSectors.length; i++) {
                         var startPos = levelVO.campSectors[i].position;
-                        var maxLength = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP);
-                        pathConstraints.push(new PathConstraintVO(startPos, maxLength, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP));
+                        var maxLength = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1);
+                        pathConstraints.push(new PathConstraintVO(startPos, maxLength, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1));
                     }
                     var options = { requireCentral: false, excludingFeature: "camp", pathConstraints: pathConstraints };
                     var refinerySectors = WorldCreatorRandom.randomSectors(seed * l * 2 / 7 * l, this.world, levelVO, 1, 2, options);
@@ -305,7 +309,7 @@ define([
                         refinerySectors[i].workshopResource = resourceNames.fuel;
                         refinerySectors[i].workshop = true;
                         for (var j = 0; j < pathConstraints.length; j++) {
-                            WorldCreatorHelper.addCriticalPath(this.world, refinerySectors[i].position, pathConstraints[j].startPosition, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP);
+                            WorldCreatorHelper.addCriticalPath(this.world, refinerySectors[i].position, pathConstraints[j].startPosition, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1);
                         }
                     }
                 }
@@ -397,7 +401,7 @@ define([
 			var createLocales = function (worldVO, levelVO, campOrdinal, isEarly, count, countEasy) {
                 var pathConstraints = [];
                 for (var j = 0; j < levelVO.campSectors.length; j++) {
-                    var pathType = isEarly ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1 : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2;
+                    var pathType = isEarly ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1 : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2;
                     var pos = levelVO.campSectors[j].position;
                     var length = WorldCreatorConstants.getMaxPathLength(campOrdinal, pathType);
                     pathConstraints.push(new PathConstraintVO(pos, length, pathType));
@@ -589,18 +593,21 @@ define([
             // WorldCreatorDebug.printWorld(this.world, [ "enemyDifficulty" ]);
 		},
 
-        createRequiredPathsFromPositions: function (level, campOrdinal, passageUpPosition, campPositions, passageDownPosition) {
+        createRequiredPathsFromPositions: function (level, campOrdinal, passageUpPosition, campPositions, passageDownPosition, bottomLevel) {
             var maxPathLenP2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
             var maxPathLenC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
             var requiredPaths = [];
             if (campPositions.length > 0) {
                 // passages up -> camps -> passages down
+                var isGoingDown = level <= 13 && level > bottomLevel;
+                var passageUpPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+                var passageDownPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE : WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP;
                 for (var i = 0; i < campPositions.length; i++) {
                     if (passageUpPosition) {
-                        requiredPaths.push({ start: campPositions[i], end: passageUpPosition, maxlen: maxPathLenC2P, type: WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE });
+                        requiredPaths.push({ start: campPositions[i], end: passageUpPosition, maxlen: maxPathLenC2P, type: passageUpPathType });
                     }
                     if (passageDownPosition) {
-                        requiredPaths.push({ start: campPositions[i], end: passageDownPosition, maxlen: maxPathLenC2P, type: WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE });
+                        requiredPaths.push({ start: campPositions[i], end: passageDownPosition, maxlen: maxPathLenC2P, type: passageDownPathType });
                     }
                 }
             } else if (!passageUpPosition) {
@@ -659,8 +666,6 @@ define([
 
             // fill singe-sector wide gaps that are just annoying
             this.generateSectorsFillSingleGaps(levelVO);
-
-            // WorldCreatorDebug.printLevel(this.world, levelVO);
         },
         
         generateCentralRectangle: function (levelVO, topLevel, bottomLevel) {
@@ -1047,7 +1052,7 @@ define([
             var numBetweenPassages = 0;
             if (l === 14) numBetweenPassages = 1;
             if (numBetweenPassages > 0) {
-                var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2 ];
+                var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2 ];
                 for (var i = 0; i < levelVO.passageSectors.length; i++) {
                     for (var j = i + 1; j < levelVO.passageSectors.length; j++) {
                         var rand = Math.round(2222 + seed + (i+21) * 41 + (j + 2) * 33);
@@ -1086,10 +1091,9 @@ define([
                     if (numToLocale > 0) {
                         var numLocales = 0;
                         var allowedCriticalPaths = [
-                            WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_CAMP,
                             WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE,
-                            WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1,
-                            WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2
+                            WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1,
+                            WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2,
                         ];
                         for (var i = 0; i < levelVO.sectors.length; i++) {
                             var sectorVO = levelVO.sectors[i];

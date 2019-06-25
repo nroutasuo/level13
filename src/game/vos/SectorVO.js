@@ -1,4 +1,4 @@
-define(['ash', 'game/constants/WorldCreatorConstants','game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'], 
+define(['ash', 'game/constants/WorldCreatorConstants','game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'],
 function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
 
     var SectorVO = Ash.Class.extend({
@@ -34,9 +34,8 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
         },
         
         isOnEarlyCriticalPath: function () {
-            if (this.criticalPaths.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1) >= 0) return true;
-            if (this.criticalPaths.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE) >= 0) return true;
-            if (this.criticalPaths.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_CAMP) >= 0) return true;
+            if (this.criticalPaths.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1) >= 0) return true;
+            if (this.criticalPaths.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP) >= 0) return true;
             if (this.criticalPaths.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE) >= 0) return true;
             return false;
         },
@@ -75,14 +74,20 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
             return this.passageUp > 0 || this.passageDown > 0;
         },
         
+        getCriticalPath: function () {
+            for (var i = 0; i < WorldCreatorConstants.CRITICAL_PATHS_BY_ORDER.length; i++) {
+                var path = WorldCreatorConstants.CRITICAL_PATHS_BY_ORDER[i];
+                if (this.isOnCriticalPath(path)) return i;
+            }
+            return -1;
+        },
+        
         getCriticalPathPriority: function (pathType) {
             if (!pathType) return 99;
             switch (pathType) {
-                case this.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_1: return 3;
-                case this.CRITICAL_PATH_TYPE_CAMP_TO_LOCALE_2: return 4;
-                case this.CRITICAL_PATH_TYPE_CAMP_TO_WORKSHOP: return 2;
+                case this.CRITICAL_PATH_TYPE_CAMP_TO_POI_1: return 3;
+                case this.CRITICAL_PATH_TYPE_CAMP_TO_POI_2: return 4;
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE: return 1;
-                case this.CRITICAL_PATH_TYPE_CAMP_TO_CAMP: return 5;
                 case this.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE: return 10;
                 default: return 50;
             }
