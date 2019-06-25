@@ -76,7 +76,7 @@ define(['ash',], function (Ash) {
                         else if (sectorVO.camp)
                             print += "C ";
                         else if (sectorVO.locales.length > 0)
-                            print += "l ";
+                            print += "L ";
                         else if (criticalPath >= 0)
                             print += criticalPath + " ";
                         else

@@ -103,7 +103,6 @@ define([
                     if (numCamps > 0) {
                         var basePosition = WorldCreatorRandom.randomSectorPosition(seed * l * 534, l, campPositionsArea, levelCenter, 2);
                         for (var i = 0; i < numCamps; i++) {
-                            console.log("add campp pos: " + i)
                             campPositions.push(WorldCreatorRandom.randomSectorPosition(l * 100 + i * 101, l, i * 2, basePosition, 1));
                         }
                     }
@@ -599,9 +598,13 @@ define([
             var requiredPaths = [];
             if (campPositions.length > 0) {
                 // passages up -> camps -> passages down
-                var isGoingDown = level <= 13 && level > bottomLevel;
+                var isGoingDown = level < 13 && level > bottomLevel;
                 var passageUpPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
                 var passageDownPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE : WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP;
+                if (level == 13) {
+                    passageUpPathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+                    passageDownPathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+                }
                 for (var i = 0; i < campPositions.length; i++) {
                     if (passageUpPosition) {
                         requiredPaths.push({ start: campPositions[i], end: passageUpPosition, maxlen: maxPathLenC2P, type: passageUpPathType });
@@ -666,6 +669,8 @@ define([
 
             // fill singe-sector wide gaps that are just annoying
             this.generateSectorsFillSingleGaps(levelVO);
+            
+            WorldCreatorDebug.printLevel(this.world, levelVO);
         },
         
         generateCentralRectangle: function (levelVO, topLevel, bottomLevel) {
@@ -690,7 +695,7 @@ define([
                 // generate required path
                 this.generatePathBetween(seed, levelVO, startPos, endPos, path.maxlen, path.type);
                 // ensure new path is connected to the rest of the level
-                this.generatePathBetween(seed, levelVO, levelVO.centralRectSectors[0].position, startPos);
+                this.generatePathBetween(seed, levelVO, levelVO.centralRectSectors[0].position, startPos, -1, path.type);
             }
         },
         
@@ -713,7 +718,7 @@ define([
                 
                 pathLength = xdist + 1;
                 pathDirection = PositionConstants.getXDirectionFrom(startPos, endPos);
-                this.generateSectorPath(levelVO, startPos, pathDirection, pathLength, false, true);
+                this.generateSectorPath(levelVO, startPos, pathDirection, pathLength, false, true, type);
 
                 var wayPoint = PositionConstants.getPositionOnPath(startPos, pathDirection, pathLength - 1);
                 pathLength = ydist + 1 + WorldCreatorRandom.randomInt(seed * l / 35 + startPos.sectorX * 5 - endPos.sectorY * 3, 1, 5);
@@ -906,10 +911,12 @@ define([
         },
 
 		createSector: function (levelVO, sectorPos, requiredResources, criticalPathType) {
-            if (levelVO.hasSector(sectorPos.sectorX, sectorPos.sectorY)) return;
-            this.totalSectors++;
-			var sectorVO = new SectorVO(sectorPos, levelVO.isCampable, levelVO.notCampableReason, requiredResources);
-			levelVO.addSector(sectorVO);
+            var sectorVO = levelVO.getSector(sectorPos.sectorX, sectorPos.sectorY);
+            if (!sectorVO) {
+                this.totalSectors++;
+    			sectorVO = new SectorVO(sectorPos, levelVO.isCampable, levelVO.notCampableReason, requiredResources);
+    			levelVO.addSector(sectorVO);
+            }
             if (criticalPathType) {
                 sectorVO.addToCriticalPath(criticalPathType);
             }
