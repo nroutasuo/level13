@@ -172,7 +172,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
             for (var i = 0; i < this.zonePoints.length; i++) {
                 var point = this.zonePoints[i];
                 if (point.position.sectorX == sectorX && point.position.sectorY == sectorY) {
-                    return point.type;
+                    return point.zone;
                 }
             }
             return null;

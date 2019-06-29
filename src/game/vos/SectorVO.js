@@ -85,11 +85,7 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
         },
         
         getZoneC: function () {
-            for (var i = 0; i < WorldCreatorConstants.ZONES_BY_ORDER.length; i++) {
-                var zone = WorldCreatorConstants.ZONES_BY_ORDER[i];
-                if (this.zone == zone) return i;
-            }
-            return -1;
+            return WorldCreatorConstants.getZoneIndex(this.zone);
         },
         
         getCriticalPathPriority: function (pathType) {

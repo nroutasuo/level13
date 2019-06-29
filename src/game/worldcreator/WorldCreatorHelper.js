@@ -203,20 +203,46 @@ define([
         
         getVornoiPoints: function (seed, worldVO, levelVO, passage1, camp) {
             var level = levelVO.level;
-            var sectorsByDistance = levelVO.sectors.slice(0).sort(WorldCreatorHelper.sortSectorsByPathLenTo(worldVO, camp));
             var points = [];
-            points.push({ position: passage1.position, type: WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, sectors: [] });
-            points.push({ position: sectorsByDistance[sectorsByDistance.length - 1].position, type: WorldCreatorConstants.ZONE_EXTRA, sectors: [] });
+            var addPoint = function (position, zone, minDistance) {
+                if (minDistance) {
+                    for (var i = 0; i < points.length; i++) {
+                        if (PositionConstants.getDistanceTo(points[i].position, position) <= minDistance) return false;
+                    }
+                }
+                points.push({ position: position, zone: zone, sectors: [] });
+                return true;
+            };
+            
+            // 1st passage
+            if (levelVO.level != 13) {
+                addPoint(passage1.position, WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP);
+            }
+            
+            // camp
+            addPoint(camp.position, WorldCreatorConstants.ZONE_POI_TEMP);
+            
+            // two sectors furthest away from the camp (but not next to each other)
+            var sectorsByDistance = levelVO.sectors.slice(0).sort(WorldCreatorHelper.sortSectorsByPathLenTo(worldVO, camp));
+            addPoint(sectorsByDistance[sectorsByDistance.length - 1].position, WorldCreatorConstants.ZONE_EXTRA);
+            var i = 1;
+            while (1 <= sectorsByDistance.length) {
+                i++;
+                var added = addPoint(sectorsByDistance[sectorsByDistance.length - i].position, WorldCreatorConstants.ZONE_POI_TEMP, 8);
+                if (added) break;
+            }
+            
+            // randomish positions in 8 cardinal directions from camp
             var directions = PositionConstants.getLevelDirections();
             for (var i in directions) {
                 var direction = directions[i];
-                var pointDist = 10 + WorldCreatorRandom.randomInt(10101 + seed % 11 * 182 + i*549 + level * 28, 0, 5);
+                var pointDist = 7 + WorldCreatorRandom.randomInt(10101 + seed % 11 * 182 + i*549 + level * 28, 0, 7);
                 var pointPos = PositionConstants.getPositionOnPath(camp.position, direction, pointDist);
                 if (levelVO.containsPosition(pointPos)) {
-                    var point = { position: pointPos, type: "POI", sectors: [] };
-                    points.push(point);
+                    addPoint(pointPos, WorldCreatorConstants.ZONE_POI_TEMP, 6);
                 }
             }
+            
             return points;
         },
 		
