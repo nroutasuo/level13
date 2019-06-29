@@ -5,7 +5,8 @@ define([
 	'game/worldcreator/WorldCreatorRandom',
 	'game/constants/WorldCreatorConstants',
 	'game/constants/LevelConstants',
-], function (Ash, ResourcesVO, WorldCreatorRandom, WorldCreatorConstants, LevelConstants) {
+	'game/constants/PositionConstants',
+], function (Ash, ResourcesVO, WorldCreatorRandom, WorldCreatorConstants, LevelConstants, PositionConstants) {
 
     var WorldCreatorHelper = {
         
@@ -191,6 +192,33 @@ define([
             
             return result;
         },
+        
+        sortSectorsByPathLenTo: function (worldVO, sector) {
+            return function (a, b) {
+                var patha = WorldCreatorRandom.findPath(worldVO, sector.position, a.position);
+                var pathb = WorldCreatorRandom.findPath(worldVO, sector.position, b.position);
+                return patha.length - pathb.length;
+            };
+        },
+        
+        getVornoiPoints: function (seed, worldVO, levelVO, passage1, camp) {
+            var level = levelVO.level;
+            var sectorsByDistance = levelVO.sectors.slice(0).sort(WorldCreatorHelper.sortSectorsByPathLenTo(worldVO, camp));
+            var points = [];
+            points.push({ position: passage1.position, type: WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, sectors: [] });
+            points.push({ position: sectorsByDistance[sectorsByDistance.length - 1].position, type: WorldCreatorConstants.ZONE_EXTRA, sectors: [] });
+            var directions = PositionConstants.getLevelDirections();
+            for (var i in directions) {
+                var direction = directions[i];
+                var pointDist = 10 + WorldCreatorRandom.randomInt(10101 + seed % 11 * 182 + i*549 + level * 28, 0, 5);
+                var pointPos = PositionConstants.getPositionOnPath(camp.position, direction, pointDist);
+                if (levelVO.containsPosition(pointPos)) {
+                    var point = { position: pointPos, type: "POI", sectors: [] };
+                    points.push(point);
+                }
+            }
+            return points;
+        },
 		
 		getBottomLevel: function (seed) {
             switch (seed % 5) {
@@ -246,14 +274,14 @@ define([
             var levelOrdinal = campOrdinal;
             var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
             for (var i = 0; i < camplessLevelOrdinals.length; i++) {
-                if (camplessLevelOrdinals[i] <= levelOrdinal) 
+                if (camplessLevelOrdinals[i] <= levelOrdinal)
                     levelOrdinal++;
             }
             return levelOrdinal;
         },
         
         isCampableLevel: function (seed, level) {
-            var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);            
+            var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
             var levelOrdinal = this.getLevelOrdinal(seed, level);
             var campOrdinal = this.getCampOrdinal(seed, level);
             return camplessLevelOrdinals.indexOf(levelOrdinal) < 0 && campOrdinal <= WorldCreatorConstants.CAMP_ORDINAL_LIMIT;
@@ -270,9 +298,9 @@ define([
             
             var levelOrdinal = this.getLevelOrdinal(seed, level);
             var rand = WorldCreatorRandom.random(seed % 4 + level + level * 8 + 88);
-            if (rand < 0.33 && levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION) 
+            if (rand < 0.33 && levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION)
                 return LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
-            if (rand < 0.66 && levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_HAZARD_POISON) 
+            if (rand < 0.66 && levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_HAZARD_POISON)
                 return LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
             return LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION;
         },

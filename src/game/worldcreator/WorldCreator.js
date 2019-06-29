@@ -42,7 +42,7 @@ define([
 			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
             this.world = new WorldVO(seed, topLevel, bottomLevel);
 
-			// base: passages, campable sectors and levels, sunlight
+			// base: paths, zones, passages, campable sectors and levels
 			this.prepareWorldStructure(seed, topLevel, bottomLevel);
 			// building density, state of repair
 			this.prepareWorldTexture(seed, topLevel, bottomLevel);
@@ -68,7 +68,7 @@ define([
             this.world = null;
         },
 
-		// campable sectors and levels, movement blockers, passages, sunlight
+		// campable sectors and levels, passages, zones
 		prepareWorldStructure: function (seed, topLevel, bottomLevel) {
 			var passageDownPosition = null;
             this.totalSectors = 0;
@@ -132,6 +132,9 @@ define([
                 
                 // passages: assign passages to sectors in passage positions
                 this.generatePassages(seed, levelVO, [ passageUpPosition ], [ passageDownPosition ], bottomLevel);
+                
+                // zones: areas based around critical paths that define difficulty level of fights etc across the level
+                this.generateZones(seed, levelVO);
 			}
 
 			console.log((GameConstants.logInfo ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
@@ -598,7 +601,7 @@ define([
             var requiredPaths = [];
             if (campPositions.length > 0) {
                 // passages up -> camps -> passages down
-                var isGoingDown = level < 13 && level > bottomLevel;
+                var isGoingDown = level < 13 && level >= bottomLevel;
                 var passageUpPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
                 var passageDownPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE : WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP;
                 if (level == 13) {
@@ -669,8 +672,6 @@ define([
 
             // fill singe-sector wide gaps that are just annoying
             this.generateSectorsFillSingleGaps(levelVO);
-            
-            WorldCreatorDebug.printLevel(this.world, levelVO);
         },
         
         generateCentralRectangle: function (levelVO, topLevel, bottomLevel) {
@@ -941,7 +942,7 @@ define([
                 if (passagePosition == null) continue;
                 passageSector = levelVO.getSector(passagePosition.sectorX, passagePosition.sectorY);
                 passageSector.passageUp = previousLevelVO.getSector(passagePosition.sectorX, passagePosition.sectorY).passageDown;
-                levelVO.addPassageSector(passageSector);
+                levelVO.addPassageUpSector(passageSector);
             }
             
             // passages down: generate types
@@ -968,7 +969,126 @@ define([
                     var passageType = availablePassageTypes[passageTypeIndex];
                     passageDownSectors[i].passageDown = passageType;
                 }
-                levelVO.addPassageSector(passageDownSectors[i]);
+                levelVO.addPassageDownSector(passageDownSectors[i]);
+            }
+        },
+        
+        generateZones: function (seed, levelVO) {
+            var worldVO = this.world;
+            var level = levelVO.level;
+			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
+            var isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, level);
+            var isGoingDown = level < 13 && level >= bottomLevel;
+            var passageUp = levelVO.passageUpSector;
+            var passageDown = levelVO.passageDownSector;
+            var passage1 = isGoingDown ? passageUp : passageDown;
+            var passage2 = isGoingDown ? passageDown : passageUp;
+            
+            var setSectorZone = function (sector, zone, area) {
+                sector.zone = zone;
+                var d = area - 1;
+                for (var x = sector.position.sectorX - d; x <= sector.position.sectorX + d; x++) {
+                    for (var y = sector.position.sectorY - d; y <= sector.position.sectorY + d; y++) {
+                        var neighbour = levelVO.getSector(x, y);
+                        if (neighbour) {
+                            neighbour.zone = zone;
+                        }
+                    }
+                }
+            };
+            
+            var setPathZone = function (path, zone, area) {
+                for (var i = 0; i < path.length; i++) {
+                    var pos = path[i];
+                    var sector = levelVO.getSector(pos.sectorX, pos.sectorY);
+                    setSectorZone(sector, zone, area);
+                }
+            };
+            
+            if (isCampableLevel) {
+                // camp:
+                var camp = levelVO.campSectors[0];
+                // path to passage2 ZONE_CAMP_TO_PASSAGE
+                if (passage2) {
+                    var pathToCamp = WorldCreatorRandom.findPath(worldVO, camp.position, passage2.position, false, true);
+                    setPathZone(pathToCamp, WorldCreatorConstants.ZONE_CAMP_TO_PASSAGE, 1);
+                }
+                // path to camp ZONE_PASSAGE_TO_CAMP (overrides ZONE_CAMP_TO_PASSAGE)
+                if (level != 13) {
+                    setSectorZone(passage1, WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, 2);
+                    var pathToCamp = WorldCreatorRandom.findPath(worldVO, passage1.position, camp.position, false, true);
+                    setPathZone(pathToCamp, WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, 2);
+                }
+                // divide up the level into vornoi regions
+                var points = WorldCreatorHelper.getVornoiPoints(seed, worldVO, levelVO, passage1, camp);
+                levelVO.zonePoints = points;
+                // assign all sectors to a zone based on vornoi points
+                for (var i = 0; i < levelVO.sectors.length; i++) {
+                    var sector = levelVO.sectors[i];
+                    if (sector.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP) continue;
+                    if (sector.zone == WorldCreatorConstants.ZONE_CAMP_TO_PASSAGE) continue;
+                    var closestPoint = null;
+                    var closestPointDist = 0;
+                    for (var j = 0; j < points.length; j++) {
+                        var point = points[j];
+                        var dist = PositionConstants.getDistanceTo(sector.position, point.position);
+                        if (closestPoint == null || dist < closestPointDist) {
+                            closestPoint = point;
+                            closestPointDist = dist;
+                        }
+                    }
+                    closestPoint.sectors.push(sector);
+                    if (closestPoint.type != "POI") {
+                        sector.zone = closestPoint.type;
+                    }
+                }
+                // split POI points between CAMP_TO_POI zones (1,2)
+                // - find shortest distance to camp for each poi point
+                var poipoints = [];
+                var poipointSectorsTotal = 0;
+                for (var i = 0; i < points.length; i++) {
+                    var point = points[i];
+                    if (point.type != "POI") continue;
+                    poipoints.push(point);
+                    point.distanceToCamp = 9999;
+                    for (var j = 0; j < point.sectors.length; j++) {
+                        var sector = point.sectors[j];
+                        var pathToCamp =  WorldCreatorRandom.findPath(worldVO, camp.position, sector.position, false, true);
+                        if (pathToCamp.length < point.distanceToCamp) {
+                            point.distanceToCamp = pathToCamp.length;
+                        }
+                        poipointSectorsTotal++;
+                    }
+                }
+                // - sort by distance
+                poipoints.sort(function (a, b) {
+                    return a.distanceToCamp - b.distanceToCamp;
+                });
+                // - assign closest ~half to ZONE_CAMP_TO_POI_1, rest to ZONE_CAMP_TO_POI_2
+                var poipointSectorsAssigned = 0;
+                for (var i = 0; i < poipoints.length; i++) {
+                    var point = poipoints[i];
+                    var zone = poipointSectorsAssigned / poipointSectorsTotal < 0.5 ? WorldCreatorConstants.ZONE_CAMP_TO_POI_1 : WorldCreatorConstants.ZONE_CAMP_TO_POI_2;
+                    for (var j = 0; j < point.sectors.length; j++) {
+                        var sector = point.sectors[j];
+                        sector.zone = zone;
+                        poipointSectorsAssigned++;
+                    }
+                }
+            } else {
+                // no camp:
+                // area around passage1 and path from passage to passage is ZONE_PASSAGE_TO_PASSAGE
+                setSectorZone(passage1, WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE, 3);
+                if (passage2) {
+                    var pathPassageToPassage = WorldCreatorRandom.findPath(worldVO, passage1.position, passage2.position, false, true);
+                    setPathZone(pathPassageToPassage, WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE, 2);
+                }
+            }
+            
+            // rest ZONE_EXTRA
+            for (var i = 0; i < levelVO.sectors.length; i++) {
+                var sector = levelVO.sectors[i];
+                if (!sector.zone) sector.zone = WorldCreatorConstants.ZONE_EXTRA;
             }
         },
 

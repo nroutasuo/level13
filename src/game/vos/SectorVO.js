@@ -4,6 +4,8 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
     var SectorVO = Ash.Class.extend({
 	
 		position: null,
+        level: 0,
+        zone: "",
         movementBlockers: {},
 	
         constructor: function (position, isCampableLevel, notCampableReason, requiredResources) {
@@ -74,10 +76,18 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
             return this.passageUp > 0 || this.passageDown > 0;
         },
         
-        getCriticalPath: function () {
+        getCriticalPathC: function () {
             for (var i = 0; i < WorldCreatorConstants.CRITICAL_PATHS_BY_ORDER.length; i++) {
                 var path = WorldCreatorConstants.CRITICAL_PATHS_BY_ORDER[i];
                 if (this.isOnCriticalPath(path)) return i;
+            }
+            return -1;
+        },
+        
+        getZoneC: function () {
+            for (var i = 0; i < WorldCreatorConstants.ZONES_BY_ORDER.length; i++) {
+                var zone = WorldCreatorConstants.ZONES_BY_ORDER[i];
+                if (this.zone == zone) return i;
             }
             return -1;
         },

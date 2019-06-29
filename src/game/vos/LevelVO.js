@@ -20,6 +20,8 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
         centralRectSectors: [],
         campSectors: [],
         passageSectors: [],
+        passageUpSectors: null,
+        passageDownSector: null,
 		sectorsByPos: {},
         possibleSpringSectors: [],
 		minX: 0,
@@ -39,6 +41,8 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			this.centralSectors = [];
             this.campSectors = [];
             this.passageSectors = [];
+            this.passageUpSectors = null;
+            this.passageDownSectors = null;
 			this.sectorsByPos = [];
             this.possibleSpringSectors = [];
 			this.minX = 0;
@@ -83,8 +87,14 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
             this.campSectors.push(sectorVO);
         },
         
-        addPassageSector: function (sectorVO) {
+        addPassageUpSector: function (sectorVO) {
             this.passageSectors.push(sectorVO);
+            this.passageUpSector = sectorVO;
+        },
+        
+        addPassageDownSector: function (sectorVO) {
+            this.passageSectors.push(sectorVO);
+            this.passageDownSector = sectorVO;
         },
 		
 		hasSector: function (sectorX, sectorY) {
@@ -156,6 +166,25 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 		getSector: function (sectorX, sectorY) {
 			return this.hasSector(sectorX, sectorY) ? this.sectorsByPos[sectorX][sectorY] : null;
 		},
+        
+        getZonePoint: function (sectorX, sectorY) {
+            if (!this.zonePoints) return null;
+            for (var i = 0; i < this.zonePoints.length; i++) {
+                var point = this.zonePoints[i];
+                if (point.position.sectorX == sectorX && point.position.sectorY == sectorY) {
+                    return point.type;
+                }
+            }
+            return null;
+        },
+        
+        containsPosition: function (position) {
+            if (position.y < this.minY) return false;
+            if (position.y > this.maxY) return false;
+            if (position.x < this.minX) return false;
+            if (position.x > this.maxX) return false;
+            return true;
+        },
         
         isEdgeSector: function (sectorX, sectorY, padding) {
             return this.getEdgeDirection(sectorX, sectorY, padding) >= 0;

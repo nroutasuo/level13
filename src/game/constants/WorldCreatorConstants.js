@@ -2,11 +2,18 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
     
     var WorldCreatorConstants = {
         
-        CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE: "camp_to_passage",
         CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP: "passage_to_camp",
+        CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE: "camp_to_passage",
         CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE: "passage_to_passage",
         CRITICAL_PATH_TYPE_CAMP_TO_POI_1: "camp_to_poi_1",
         CRITICAL_PATH_TYPE_CAMP_TO_POI_2: "camp_to_poi_2",
+        
+        ZONE_PASSAGE_TO_CAMP: "z_p2c",
+        ZONE_PASSAGE_TO_PASSAGE: "z_p2p",
+        ZONE_CAMP_TO_POI_1: "z_c2poi1",
+        ZONE_CAMP_TO_POI_2: "z_c2poi2",
+        ZONE_CAMP_TO_PASSAGE: "z_c2p",
+        ZONE_EXTRA: "z_extra",
         
         // Sector features
         SECTOR_TYPE_RESIDENTIAL: "residential",
@@ -188,6 +195,15 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
             WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2,
             WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE,
     ];
+    
+    WorldCreatorConstants.ZONES_BY_ORDER = [
+        WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP,
+        WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE,
+        WorldCreatorConstants.ZONE_CAMP_TO_POI_1,
+        WorldCreatorConstants.ZONE_CAMP_TO_POI_2,
+        WorldCreatorConstants.ZONE_CAMP_TO_PASSAGE,
+        WorldCreatorConstants.ZONE_EXTRA,
+    ]
     
     return WorldCreatorConstants;
 });
