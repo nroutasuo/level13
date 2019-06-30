@@ -84,7 +84,11 @@ define([
 				this.world.addLevel(levelVO);
 
                 // passages up: previous passages down (positions)
-                var passageUpPosition = passageDownPosition;
+                var passageUpPosition = null;
+                if (passageDownPosition) {
+                    passageUpPosition = passageDownPosition.clone();
+                    passageUpPosition.level = l;
+                }
                 
                 // level center: use to position camps and passages down near (first) passage up (without slipping too far from level middle)
                 var levelCenter = passageUpPosition == null ? new PositionVO(l,0,0) : passageUpPosition.clone();
@@ -119,9 +123,9 @@ define([
                 }
 
                 // create basic structure (sectors and paths)
-                console.log("LEVEL CENTER: " + levelCenter + " num camps: " + numCamps);
+                console.log("GENERATING LEVEL: " + levelVO.level + " num camps: " + numCamps);
                 var requiredPaths = this.createRequiredPathsFromPositions(l, campOrdinal, passageUpPosition, campPositions, passageDownPosition, bottomLevel);
-                this.generateSectors(seed, levelVO, requiredPaths);
+                this.generateSectors(seed, levelVO, campPositions, requiredPaths);
                 
                 // camps: assign camps to sectors in camp positions
                 for (var i = 0; i < campPositions.length; i++) {
@@ -633,7 +637,7 @@ define([
             return requiredPaths;
         },
 
-        generateSectors: function (seed, levelVO, requiredPaths) {
+        generateSectors: function (seed, levelVO, campPositions, requiredPaths) {
             var l = levelVO.level;
             var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
 			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
@@ -652,10 +656,18 @@ define([
             // create central structure
             this.generateCentralRectangle(levelVO, topLevel, bottomLevel);
             levelVO.centralRectSectors = levelVO.sectors.slice(0);
-
+            
+            // draw a line across the camp position so camp is never in a dead end
+            if (campPositions.length > 0) {
+                var campPos = campPositions[0];
+                var connectingSector = WorldCreatorHelper.getClosestSector(levelVO.centralRectSectors, campPos);
+                var overshoot = WorldCreatorRandom.randomInt(5555 + seed % 18 * 159 + (l+5)^2, 2, 5);
+                this.generatePathBetween(seed, levelVO, connectingSector.position, campPos, -1, null, overshoot);
+            }
+            
             // create required paths
             this.generateRequiredPaths(seed, levelVO, requiredPaths);
-
+            
             // create the rest of the sectors randomly
             var attempts = 0;
             var maxAttempts = 1000;
@@ -694,13 +706,15 @@ define([
                 startPos = path.start.clone();
                 endPos = path.end.clone();
                 // generate required path
-                this.generatePathBetween(seed, levelVO, startPos, endPos, path.maxlen, path.type);
+                var overshoot = WorldCreatorRandom.randomInt(seed % 22 * 100 + levelVO.level * 10 + i * 66, 2, 8);
+                this.generatePathBetween(seed, levelVO, startPos, endPos, path.maxlen, path.type, overshoot);
                 // ensure new path is connected to the rest of the level
                 this.generatePathBetween(seed, levelVO, levelVO.centralRectSectors[0].position, startPos, -1, path.type);
             }
         },
         
-        generatePathBetween: function (seed, levelVO, startPos, endPos, maxlen, type) {
+        generatePathBetween: function (seed, levelVO, startPos, endPos, maxlen, pathType, overshoot) {
+            overshoot = overshoot || 0;
             var l = levelVO.level;
             var dist = Math.ceil(PositionConstants.getDistanceTo(startPos, endPos));
             
@@ -708,10 +722,10 @@ define([
             var pathDirection;
             var totalLength = dist;
             if (dist == 0) {
-                this.createSector(levelVO, startPos, null, type);
+                this.createSector(levelVO, startPos, null, pathType);
             } else if (dist == 1) {
-                this.createSector(levelVO, startPos, null, type);
-                this.createSector(levelVO, endPos, null, type);
+                this.createSector(levelVO, startPos, null, pathType);
+                this.createSector(levelVO, endPos, null, pathType);
             } else {
                 // TODO extend to diagonals
                 var xdist = Math.abs(startPos.sectorX - endPos.sectorX);
@@ -719,17 +733,17 @@ define([
                 
                 pathLength = xdist + 1;
                 pathDirection = PositionConstants.getXDirectionFrom(startPos, endPos);
-                this.generateSectorPath(levelVO, startPos, pathDirection, pathLength, false, true, type);
+                this.generateSectorPath(levelVO, startPos, pathDirection, pathLength, false, true, pathType);
 
                 var wayPoint = PositionConstants.getPositionOnPath(startPos, pathDirection, pathLength - 1);
-                pathLength = ydist + 1 + WorldCreatorRandom.randomInt(seed * l / 35 + startPos.sectorX * 5 - endPos.sectorY * 3, 1, 5);
+                pathLength = ydist + 1 + overshoot;
                 pathDirection = PositionConstants.getYDirectionFrom(startPos, endPos);
-                this.generateSectorPath(levelVO, wayPoint, pathDirection, pathLength, false, true, type);
+                this.generateSectorPath(levelVO, wayPoint, pathDirection, pathLength, false, true, pathType);
                 totalLength = xdist + ydist;
             }
             
             if (maxlen > 0) {
-                console.log("- dist: " + dist + " / maxlen: " + maxlen + " / final len: " + totalLength +  " | " + startPos + " to " + endPos + " | " + type);
+                console.log("- dist: " + dist + " / maxlen: " + maxlen + " / final len: " + totalLength +  " | " + startPos + " to " + endPos + " | " + pathType);
                 if (dist > maxlen) {
                     console.log("-- WARN: required path max len < distance");
                 }
@@ -1080,7 +1094,7 @@ define([
             } else {
                 // no camp:
                 // area around passage1 and path from passage to passage is ZONE_PASSAGE_TO_PASSAGE
-                setSectorZone(passage1, WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE, 8);
+                setSectorZone(passage1, WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE, 6);
                 if (passage2) {
                     var pathPassageToPassage = WorldCreatorRandom.findPath(worldVO, passage1.position, passage2.position, false, true);
                     setPathZone(pathPassageToPassage, WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE, 2);

@@ -193,6 +193,19 @@ define([
             return result;
         },
         
+        getClosestSector: function (sectors, pos) {
+            var result = null;
+            var resultDist = 0;
+            for (var i = 0; i < sectors.length; i++) {
+                var dist = PositionConstants.getDistanceTo(sectors[i].position, pos);
+                if (!result || dist < resultDist) {
+                    result = sectors[i];
+                    resultDist = dist;
+                }
+            }
+            return result;
+        },
+        
         sortSectorsByPathLenTo: function (worldVO, sector) {
             return function (a, b) {
                 var patha = WorldCreatorRandom.findPath(worldVO, sector.position, a.position);
@@ -226,7 +239,7 @@ define([
             var sectorsByDistance = levelVO.sectors.slice(0).sort(WorldCreatorHelper.sortSectorsByPathLenTo(worldVO, camp));
             addPoint(sectorsByDistance[sectorsByDistance.length - 1].position, WorldCreatorConstants.ZONE_EXTRA);
             var i = 1;
-            while (1 <= sectorsByDistance.length) {
+            while (i < sectorsByDistance.length) {
                 i++;
                 var added = addPoint(sectorsByDistance[sectorsByDistance.length - i].position, WorldCreatorConstants.ZONE_POI_TEMP, 8);
                 if (added) break;
