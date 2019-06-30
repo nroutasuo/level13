@@ -193,6 +193,24 @@ define([
             return result;
         },
         
+        getClosestPair: function (sectors1, sectors2) {
+            var result = [null, null];
+            var resultDist = 9999;
+            for (var i = 0; i < sectors1.length; i++) {
+                for (var j = 0; j < sectors2.length; j++) {
+                    var dist = PositionConstants.getDistanceTo(sectors1[i].position, sectors2[j].position);
+                    if (dist < resultDist) {
+                        result = [ sectors1[i], sectors2[j] ];
+                        resultDist = dist;
+                    }
+                    if (resultDist == 0) {
+                        return result;
+                    }
+                }
+            }
+            return result;
+        },
+        
         getClosestSector: function (sectors, pos) {
             var result = null;
             var resultDist = 0;

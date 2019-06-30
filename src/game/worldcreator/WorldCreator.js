@@ -455,7 +455,8 @@ define([
             // WorldCreatorDebug.printWorld(this.world, [ "locales.length" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "criticalPath" ]);
 		},
-
+        
+        // movement blockers
         prepareWorldMovementBlockers: function (seed, topLevel, bottomLevel) {
 			for (var l = topLevel; l >= bottomLevel; l--) {
                 var levelVO = this.world.getLevel(l);
@@ -612,13 +613,14 @@ define([
                     passageUpPathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
                     passageDownPathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
                 }
-                for (var i = 0; i < campPositions.length; i++) {
-                    if (passageUpPosition) {
-                        requiredPaths.push({ start: campPositions[i], end: passageUpPosition, maxlen: maxPathLenC2P, type: passageUpPathType });
-                    }
-                    if (passageDownPosition) {
-                        requiredPaths.push({ start: campPositions[i], end: passageDownPosition, maxlen: maxPathLenC2P, type: passageDownPathType });
-                    }
+                if (passageUpPosition) {
+                    requiredPaths.push({ start: campPositions[0], end: passageUpPosition, maxlen: maxPathLenC2P, type: passageUpPathType });
+                }
+                if (passageDownPosition) {
+                    requiredPaths.push({ start: campPositions[0], end: passageDownPosition, maxlen: maxPathLenC2P, type: passageDownPathType });
+                }
+                for (var i = 1; i < campPositions.length; i++) {
+                    requiredPaths.push({ start: campPositions[0], end: campPositions[i], maxlen: 0 });
                 }
             } else if (!passageUpPosition) {
                 // just passage down sector
@@ -707,9 +709,14 @@ define([
                 endPos = path.end.clone();
                 // generate required path
                 var overshoot = WorldCreatorRandom.randomInt(seed % 22 * 100 + levelVO.level * 10 + i * 66, 2, 8);
-                this.generatePathBetween(seed, levelVO, startPos, endPos, path.maxlen, path.type, overshoot);
+                var path = this.generatePathBetween(seed, levelVO, startPos, endPos, path.maxlen, path.type, overshoot);
                 // ensure new path is connected to the rest of the level
-                this.generatePathBetween(seed, levelVO, levelVO.centralRectSectors[0].position, startPos, -1, path.type);
+                var pathToCenter = WorldCreatorRandom.findPath(this.world, startPos, levelVO.centralRectSectors[0].position, false, true);
+                if (!pathToCenter) {
+                    var pair = WorldCreatorHelper.getClosestPair(levelVO.centralRectSectors, path);
+                    var pairDist = PositionConstants.getDistanceTo(pair[0].position, pair[1].position);
+                    this.generatePathBetween(seed, levelVO, pair[0].position, pair[1].position, -1, path.type);
+                }
             }
         },
         
@@ -717,28 +724,35 @@ define([
             overshoot = overshoot || 0;
             var l = levelVO.level;
             var dist = Math.ceil(PositionConstants.getDistanceTo(startPos, endPos));
+            var result = [];
             
             var pathLength;
             var pathDirection;
             var totalLength = dist;
             if (dist == 0) {
-                this.createSector(levelVO, startPos, null, pathType);
+                result.push(this.createSector(levelVO, startPos, null, pathType));
             } else if (dist == 1) {
-                this.createSector(levelVO, startPos, null, pathType);
-                this.createSector(levelVO, endPos, null, pathType);
+                result.push(this.createSector(levelVO, startPos, null, pathType));
+                result.push(this.createSector(levelVO, endPos, null, pathType));
             } else {
                 // TODO extend to diagonals
                 var xdist = Math.abs(startPos.sectorX - endPos.sectorX);
                 var ydist = Math.abs(startPos.sectorY - endPos.sectorY);
+                var xFirst = WorldCreatorRandom.randomBool(50000 + (l + 5) * 55 + dist * 555);
+                var pathResult;
                 
-                pathLength = xdist + 1;
-                pathDirection = PositionConstants.getXDirectionFrom(startPos, endPos);
-                this.generateSectorPath(levelVO, startPos, pathDirection, pathLength, false, true, pathType);
+                pathLength = xFirst ? xdist + 1 : ydist + 1;
+                pathDirection = xFirst ? PositionConstants.getXDirectionFrom(startPos, endPos) : PositionConstants.getYDirectionFrom(startPos, endPos);
+                pathResult = this.generateSectorPath(levelVO, startPos, pathDirection, pathLength, false, true, pathType);
+                result = result.concat(pathResult.path);
 
                 var wayPoint = PositionConstants.getPositionOnPath(startPos, pathDirection, pathLength - 1);
-                pathLength = ydist + 1 + overshoot;
-                pathDirection = PositionConstants.getYDirectionFrom(startPos, endPos);
-                this.generateSectorPath(levelVO, wayPoint, pathDirection, pathLength, false, true, pathType);
+                
+                pathLength = (xFirst ? ydist : xdist) + 1 + overshoot;
+                pathDirection = xFirst ? PositionConstants.getYDirectionFrom(startPos, endPos) : PositionConstants.getXDirectionFrom(startPos, endPos);
+                pathResult = this.generateSectorPath(levelVO, wayPoint, pathDirection, pathLength, false, true, pathType);
+                result = result.concat(pathResult.path);
+                
                 totalLength = xdist + ydist;
             }
             
@@ -751,6 +765,7 @@ define([
                     console.log("-- WARN: required path max len < final len");
                 }
             }
+            return result;
         },
 
         generateSectorsPaths: function(seed, pathSeed, levelVO, forceCentralStart) {
@@ -799,8 +814,8 @@ define([
             var currentDirection = startDirection;
             for (var j = 0; j < 4; j++) {
                 var sideLength = PositionConstants.isHorizontalDirection(currentDirection) ? w : h;
-                var fullyCreated = this.generateSectorPath(levelVO, sideStartingPos, currentDirection, sideLength, i > 0 || j > 0);
-                if (!fullyCreated) return false;
+                var result = this.generateSectorPath(levelVO, sideStartingPos, currentDirection, sideLength, i > 0 || j > 0);
+                if (!result.completed) return false;
                 sideStartingPos = PositionConstants.getPositionOnPath(sideStartingPos, currentDirection, sideLength);
                 currentDirection = PositionConstants.getNextClockWise(currentDirection, false);
             }
@@ -857,7 +872,8 @@ define([
         },
 
         generateSectorPath: function (levelVO, startPos, direction, len, continueStepsTillSupplies, forceComplete, criticalPathType) {
-            if (len < 1) return;
+            if (len < 1) return { path: [], completed: false };;
+            var result = [];
             var maxStepsTillSupplies = continueStepsTillSupplies ? levelVO.bagSize / 2 : Math.min(len, levelVO.bagSize / 2);
 
             if (!continueStepsTillSupplies) {
@@ -894,14 +910,17 @@ define([
                     if (neighbours[PositionConstants.DIRECTION_WEST] && neighbours[PositionConstants.DIRECTION_NORTH]) sectorHasUnmatchingNeighbours = true;
                     if (sectorExists || sectorHasUnmatchingNeighbours || Object.keys(neighbours).length > 4) {
                         if (si > 0) {
-                            return false;
+                            return { path: result, completed: false };
                         } else {
                             continue;
                         }
                     }
                 }
 
-                if (sectorExists) continue;
+                if (sectorExists) {
+                    result.push(levelVO.getSector(sectorPos.sectorX, sectorPos.sectorY));
+                    continue;
+                }
 
                 requiresWater = this.stepsTillSupplies.water <= 0;
                 requiresFood = this.stepsTillSupplies.food <= 0;
@@ -920,9 +939,9 @@ define([
                     requiredResources = null;
                 }
 
-				this.createSector(levelVO, sectorPos, requiredResources, criticalPathType);
+				result.push(this.createSector(levelVO, sectorPos, requiredResources, criticalPathType));
             }
-            return true;
+            return { path: result, completed: true };
         },
 
 		createSector: function (levelVO, sectorPos, requiredResources, criticalPathType) {
@@ -935,6 +954,7 @@ define([
             if (criticalPathType) {
                 sectorVO.addToCriticalPath(criticalPathType);
             }
+            return sectorVO;
 		},
 
         generatePassages: function (seed, levelVO, passageUpPositions, passageDownPositions, bottomLevel) {

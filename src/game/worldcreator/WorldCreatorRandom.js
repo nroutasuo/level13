@@ -219,6 +219,10 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
             }
 			return Math.floor(Math.min(max - 1, Math.floor(this.random(seed) * (max - min + 1)) + min));
 		},
+        
+        randomBool: function (seed) {
+            return this.random(seed) < 0.5;
+        },
 		
 		// Pseudo-random number based on the seed, evenly distributed between 0-1
 		random: function (seed) {
