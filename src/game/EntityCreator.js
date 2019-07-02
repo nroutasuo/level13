@@ -149,7 +149,7 @@ define([
 
 		createSector: function (saveKey, level, posX, posY, passageOptions, movementBlockers, sectorFeatures, locales, criticalPaths, enemies, hasRegularEnemies, localeEnemyNum) {
 			var sector = new Ash.Entity()
-				.add(new SectorComponent(criticalPaths))
+				.add(new SectorComponent())
 				.add(new ResourcesComponent(0))
 				.add(new ResourceAccumulationComponent(saveKey))
 				.add(new EnemiesComponent(hasRegularEnemies, enemies))
@@ -164,6 +164,8 @@ define([
 					movementBlockers))
 				.add(new SectorFeaturesComponent(
 					level,
+                    sectorFeatures.criticalPaths,
+                    sectorFeatures.zone,
 					sectorFeatures.buildingDensity,
 					sectorFeatures.stateOfRepair,
 					sectorFeatures.sectorType,

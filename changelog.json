@@ -3,7 +3,7 @@
             "version": "0.2.5",
             "phase": "alpha",
             "final": false,
-            "updated": "2019-06-02",
+            "updated": "2019-07-02",
             "changes": [
                 {
                     "type": "GD",
@@ -15,16 +15,16 @@
                 },
                 {
                     "type": "GB",
-                    "summary": "Adjust level sizes"
+                    "summary": "Adjust level sizes and structure"
                 },
                 {
                     "type": "GB",
-                    "summary": "Adjust balancing (raids, rumours)"
+                    "summary": "Adjust balancing (raids, rumours, upgrades)"
                 },
                 {
                     "type": "DEV",
                     "summary": "Refactor CSS styles and color themes for easier maintanability"
-                }
+                },
                 {
                     "type": "DEV",
                     "summary": "Bugfixes and testing tools"

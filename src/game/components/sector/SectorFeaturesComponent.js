@@ -1,7 +1,7 @@
 // A component that describes features of a sector, both functional (ability to build stuff)
 // and purely aesthetic (description)
 define(
-    ['ash', 'game/constants/WorldCreatorConstants', 'game/vos/ResourcesVO'], 
+    ['ash', 'game/constants/WorldCreatorConstants', 'game/vos/ResourcesVO'],
     function (Ash, WorldCreatorConstants, ResourcesVO) {
     
     var SectorFeaturesComponent = Ash.Class.extend({
@@ -12,6 +12,9 @@ define(
         stateOfRepair: 0,
         sectorType: 0,
         
+        criticalPaths: [],
+        zone: null,
+        
         sunlit: false,
         hazards: null,
         weather: false,
@@ -20,9 +23,11 @@ define(
         resourcesScavengable: null,
         resourcesCollectable: null,
         
-        constructor: function (level, buildingDensity, stateOfRepair, sectorType, buildingStyle, sunlit, hazards, weather,
+        constructor: function (level, criticalPaths, zone, buildingDensity, stateOfRepair, sectorType, buildingStyle, sunlit, hazards, weather,
                                campable, notCampableReason, resourcesScavengable, resourcesCollectable, hasSpring, stash) {
             this.level = level;
+            this.criticalPaths = criticalPaths;
+            this.zone = zone;
             this.buildingDensity = buildingDensity;
             this.stateOfRepair = stateOfRepair;
             this.sectorType = sectorType;
@@ -39,6 +44,10 @@ define(
         },
         
         // Secondary attributes
+        
+        isOnCriticalPath: function (type) {
+            return this.criticalPaths.indexOf(type) >= 0;
+        },
         
         canHaveCamp: function () {
             return this.campable;
@@ -100,8 +109,8 @@ define(
                 var amount = this.resourcesScavengable.getResource(name);
                 if (amount > 0 && discoveredResources.indexOf(name) >= 0) {
                     var amountDesc = "scarce";
-                    if (amount > 3) amountDesc = "common" 
-                    if (amount > 7) amountDesc = "abundant" 
+                    if (amount > 3) amountDesc = "common"
+                    if (amount > 7) amountDesc = "abundant"
                     s += key + " (" + amountDesc + "), ";
                 }
             }

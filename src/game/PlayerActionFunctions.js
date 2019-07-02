@@ -1151,7 +1151,7 @@ define(['ash',
         
         improveLibrary: function () {
             this.improveImprovement("improve_in_library");
-            this.addLogMessage(LogConstants.MSG_ID_IMPROVED_LIBRARY, "Bolstered the library.");
+            this.addLogMessage(LogConstants.MSG_ID_IMPROVED_LIBRARY, "Upgraded the library.");
         },
 
 		collectFood: function () {

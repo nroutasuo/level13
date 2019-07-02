@@ -1445,6 +1445,8 @@ define([
 		getSectorFeatures: function (level, sectorX, sectorY) {
 			var sectorVO = this.world.getLevel(level).getSector(sectorX, sectorY);
 			var sectorFeatures = {};
+            sectorFeatures.criticalPaths = sectorVO.criticalPaths || [];
+            sectorFeatures.zone = sectorVO.zone;
 			sectorFeatures.buildingDensity = sectorVO.buildingDensity;
 			sectorFeatures.stateOfRepair = sectorVO.stateOfRepair;
 			sectorFeatures.sunlit = sectorVO.sunlit > 0;
