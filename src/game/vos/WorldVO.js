@@ -32,6 +32,10 @@ define(['ash'], function (Ash) {
             this.paths[key] = path;
         },
         
+        resetPaths: function () {
+            this.paths = {};
+        },
+        
         getPathKey: function (pos1, pos2, blockedByBlockers) {
             var start = this.getPathStart(pos1, pos2);
             var end = this.getPathEnd(pos1, pos2);

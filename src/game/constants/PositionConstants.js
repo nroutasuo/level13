@@ -71,12 +71,53 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
             return this.DIRECTION_NONE;
         },
         
+        getDirectionsFrom: function (sectorPosFrom, sectorPosTo, includeDiagonals) {
+            var result = [];
+            var dx = sectorPosFrom.sectorX - sectorPosTo.sectorX;
+            var dy = sectorPosFrom.sectorY - sectorPosTo.sectorY;
+
+            if (dx < 0) result.push(this.DIRECTION_EAST);
+            if (dx > 0) result.push(this.DIRECTION_WEST);
+            if (dy < 0) result.push(this.DIRECTION_SOUTH);
+            if (dy > 0) result.push(this.DIRECTION_NORTH);
+            if (includeDiagonals) {
+                if (dx > 0 && dy > 0) result.push(this.DIRECTION_NW);
+                if (dx < 0 && dy > 0) result.push(this.DIRECTION_NE);
+                if (dx > 0 && dy < 0) result.push(this.DIRECTION_SW);
+                if (dx < 0 && dy < 0) result.push(this.DIRECTION_SE);
+            }
+            return result;
+        },
+        
         getDistanceTo: function (sectorPosFrom, sectorPosTo) {
             var xs = sectorPosFrom.sectorX - sectorPosTo.sectorX;
             xs = xs * xs;
             var ys = sectorPosFrom.sectorY - sectorPosTo.sectorY;
             ys = ys * ys;
             return Math.sqrt(xs + ys);
+        },
+        
+        getDistanceInDirection: function (sectorPosFrom, sectorPosTo, direction) {
+            var dx = Math.abs(sectorPosFrom.sectorX - sectorPosTo.sectorX);
+            var dy = Math.abs(sectorPosFrom.sectorY - sectorPosTo.sectorY);
+            var dl = Math.abs(sectorPosFrom.level - sectorPosTo.level);
+            switch (direction) {
+                case this.DIRECTION_WEST:
+                case this.DIRECTION_EAST:
+                    return dx;
+                case this.DIRECTION_NORTH:
+                case this.DIRECTION_SOUTH:
+                    return dy;
+                case this.DIRECTION_NE:
+                case this.DIRECTION_SE:
+                case this.DIRECTION_SW:
+                case this.DIRECTION_NW:
+                    return Math.min(dx, dy);
+                case this.DIRECTION_UP:
+                case this.DIRECTION_DOWN:
+                    return dl;
+            }
+            return 0;
         },
         
         getMiddlePoint: function (positions) {
@@ -153,6 +194,18 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
                     return includeDiagonalSteps ? this.DIRECTION_WEST : this.DIRECTION_SW;
                 default:
                     return this.DIRECTION_NONE;
+            }
+        },
+        
+        isDiagonal: function (direction) {
+            switch (direction) {
+                case this.DIRECTION_WEST:
+                case this.DIRECTION_NORTH:
+                case this.DIRECTION_SOUTH:
+                case this.DIRECTION_EAST:
+                    return false;
+                default:
+                    return true;
             }
         },
         

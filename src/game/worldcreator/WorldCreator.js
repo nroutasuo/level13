@@ -683,9 +683,11 @@ define([
                     this.generateSectorsPaths(seed, attempts, levelVO, forceCentralStart);
                 }
             }
-
-            // fill singe-sector wide gaps that are just annoying
-            this.generateSectorsFillSingleGaps(levelVO);
+            
+            // connect sectors that are close by direct distance by very far by path length
+            this.generateSectorsFillGaps(levelVO);
+            
+            // WorldCreatorDebug.printLevel(this.world, levelVO);
         },
         
         generateCentralRectangle: function (levelVO, topLevel, bottomLevel) {
@@ -727,7 +729,6 @@ define([
             var result = [];
             
             var pathLength;
-            var pathDirection;
             var totalLength = dist;
             if (dist == 0) {
                 result.push(this.createSector(levelVO, startPos, null, pathType));
@@ -735,25 +736,21 @@ define([
                 result.push(this.createSector(levelVO, startPos, null, pathType));
                 result.push(this.createSector(levelVO, endPos, null, pathType));
             } else {
-                // TODO extend to diagonals
-                var xdist = Math.abs(startPos.sectorX - endPos.sectorX);
-                var ydist = Math.abs(startPos.sectorY - endPos.sectorY);
-                var xFirst = WorldCreatorRandom.randomBool(50000 + (l + 5) * 55 + dist * 555);
+                var allowDiagonals = WorldCreatorRandom.randomBool(50000 + (l + 5) * 55 + dist * 555);
+                var currentPos = startPos;
                 var pathResult;
-                
-                pathLength = xFirst ? xdist + 1 : ydist + 1;
-                pathDirection = xFirst ? PositionConstants.getXDirectionFrom(startPos, endPos) : PositionConstants.getYDirectionFrom(startPos, endPos);
-                pathResult = this.generateSectorPath(levelVO, startPos, pathDirection, pathLength, false, true, pathType);
-                result = result.concat(pathResult.path);
-
-                var wayPoint = PositionConstants.getPositionOnPath(startPos, pathDirection, pathLength - 1);
-                
-                pathLength = (xFirst ? ydist : xdist) + 1 + overshoot;
-                pathDirection = xFirst ? PositionConstants.getYDirectionFrom(startPos, endPos) : PositionConstants.getXDirectionFrom(startPos, endPos);
-                pathResult = this.generateSectorPath(levelVO, wayPoint, pathDirection, pathLength, false, true, pathType);
-                result = result.concat(pathResult.path);
-                
-                totalLength = xdist + ydist;
+                var i = 0;
+                while (!currentPos.equals(endPos)) {
+                    var possibleDirections = PositionConstants.getDirectionsFrom(currentPos, endPos, allowDiagonals);
+                    var directionIndex = WorldCreatorRandom.randomInt(seed % 10200 + l * 555 + dist * 77 + i * 1001, 0, possibleDirections.length);
+                    var direction = possibleDirections[directionIndex];
+                    pathLength = PositionConstants.getDistanceInDirection(currentPos, endPos, direction) + 1;
+                    pathResult = this.generateSectorPath(levelVO, currentPos, direction, pathLength, false, true, pathType);
+                    result = result.concat(pathResult.path);
+                    currentPos = PositionConstants.getPositionOnPath(currentPos, direction, pathLength - 1);
+                    i++;
+                    if (i > 100) break;
+                }
             }
             
             if (maxlen > 0) {
@@ -821,48 +818,36 @@ define([
             }
         },
 
-        generateSectorsFillSingleGaps: function(levelVO) {
-            // fill in annoying hole sectors (if an empty position has more than one sector neighbours + conditions, fill it in)
-            // 1 neighbour = end of line, no fill
-            // 2-5 neighbours = if there is one from where it's not possible to move to any of the others already, fill
-            // 6+ neighbours = can always move around, no fill
-            var directions = PositionConstants.getLevelDirections();
-            var canMoveAroundSector = function(sectorNeighbours) {
-                for (var i in directions) {
-                    var direction = directions[i];
-                    var neighbourToTest = sectorNeighbours[direction];
-                    if (neighbourToTest) {
-                        var canMove = false;
-                        for (var j in directions) {
-                            var otherNeighbour = neighbours[directions[j]];
-                            if (otherNeighbour && PositionConstants.isNeighbouringDirection(direction, directions[j])) {
-                                canMove = true;
+        generateSectorsFillGaps: function (levelVO) {
+            var worldVO = this.world;
+            var furthestPathDist = 0;
+            var getFurthestPair = function () {
+                var furthestPair = [null, null];
+                furthestPathDist = 0;
+                for (var i = 0; i < levelVO.sectors.length; i++) {
+                    var sector1 = levelVO.sectors[i];
+                    for (var j = i; j < levelVO.sectors.length; j++) {
+                        var sector2 = levelVO.sectors[j];
+                        var dist = PositionConstants.getDistanceTo(sector1.position, sector2.position);
+                        if (dist > 1 && dist < 3) {
+                            var pathDist = WorldCreatorRandom.findPath(worldVO, sector1.position, sector2.position, false, true).length;
+                            if (pathDist > furthestPathDist) {
+                                furthestPathDist = pathDist;
+                                furthestPair = [sector1, sector2];
                             }
                         }
-                        if (!canMove) return false;
                     }
                 }
-                return true;
-            };
-
-            var minY = levelVO.minY;
-            var maxY = levelVO.maxY;
-            var minX = levelVO.minY;
-            var maxX = levelVO.maxX;
-            var neighbours;
-            var neighboursCount;
-            for (var y = minY; y <= maxY; y++) {
-                for (var x = minX; x <= maxX; x++) {
-                    if (!levelVO.hasSector(x, y)) {
-                        neighbours = levelVO.getNeighbours(x, y);
-                        neighboursCount = Object.keys(neighbours).length;
-                        var canMoveAround = canMoveAroundSector(neighbours);
-                        var needFill = neighboursCount > 1 && neighboursCount < 6 && !canMoveAround;
-                        if (needFill) {
-                            this.createSector(levelVO, new PositionVO(levelVO.level, x, y));
-                        }
-                    }
-                }
+                return furthestPair;
+            }
+            
+            var currentPair = getFurthestPair();
+            
+            var i = 0;
+            while (furthestPathDist > 15 && i < 10) {
+                this.generatePathBetween(0, levelVO, currentPair[0].position, currentPair[1].position);
+                currentPair = getFurthestPair();
+                i++;
             }
         },
 
@@ -950,6 +935,7 @@ define([
                 this.totalSectors++;
     			sectorVO = new SectorVO(sectorPos, levelVO.isCampable, levelVO.notCampableReason, requiredResources);
     			levelVO.addSector(sectorVO);
+                this.world.resetPaths();
             }
             if (criticalPathType) {
                 sectorVO.addToCriticalPath(criticalPathType);
