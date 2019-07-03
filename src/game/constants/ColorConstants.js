@@ -61,7 +61,7 @@ define(function () {
             var theme = sunlit ? "sunlit" : "dark";
             var color = this.colors[theme][name];
             if (!color) {
-                console.log("WARN: No such color: " + name);
+                console.warn("No such color: " + name);
                 return "#000";
             }
             return color;
@@ -70,7 +70,7 @@ define(function () {
         getGlobalColor: function (name) {
             var color = this.colors.global[name];
             if (!color) {
-                console.log("WARN: No such color: " + name);
+                console.warn("No such color: " + name);
                 return "#000";
             }
             return color;

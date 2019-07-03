@@ -18,11 +18,11 @@ define(function () {
         // - omitWarnings (bool)
         findPath: function (startVO, goalVO, utilities, settings) {
             if (!startVO) {
-                console.log("WARN: No start sector defined.");
+                console.warn("No start sector defined.");
             }
 
             if (!goalVO) {
-                console.log("WARN: No goal sector defined.");
+                console.warn("No goal sector defined.");
             }
 
             if (this.getKey(startVO) === this.getKey(goalVO)) return [];
@@ -128,7 +128,7 @@ define(function () {
             }
             
             if (!foundGoal && !settings.omitWarnings) {
-                console.log("WARN: Couldn't find goal (mapping paths " + startVO.position + " - " + goalVO.position + ") (pass: " + pass + ")");
+                console.warn("Couldn't find goal (mapping paths " + startVO.position + " - " + goalVO.position + ") (pass: " + pass + ")");
                 this.printPaths(startVO, goalVO, cameFrom);
             }
 
@@ -146,7 +146,7 @@ define(function () {
                 // TODO check (pass?) reasonable max length
                 if (!current || result.length > 500) {
                     if (!settings.omitWarnings) {
-                        console.log("WARN: failed to find path (res len: " + result.length + ", prev: " + this.getKey(previous) + ")");
+                        console.warn("failed to find path (res len: " + result.length + ", prev: " + this.getKey(previous) + ")");
                         console.log(cameFrom);
                         console.log(previous);
                     }

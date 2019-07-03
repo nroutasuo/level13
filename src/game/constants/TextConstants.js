@@ -73,7 +73,7 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
                 case MovementConstants.PASSAGE_TYPE_STAIRWELL:
                     return "Stairwell " + directionName + " repaired at " + sectorPosVO.getInGameFormat(true);
                 default:
-                    console.log("WARN: Unknown passage type: [" + passageType + "]")
+                    console.warn("Unknown passage type: [" + passageType + "]")
                     return "Passage " + directionName + " ready at " + sectorPosVO.getInGameFormat(true);
             }
         },

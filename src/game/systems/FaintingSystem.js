@@ -194,7 +194,7 @@ define([
 			} else if (nearestVisitedSafeSector) {
 				this.fadeOut(msgMain, msgLog, true, nearestVisitedSafeSector, 1, 0);
 			} else {
-				if (GameGlobals.logWarnings) console.log("WARN: Nowhere to fade out to.");
+				if (GameGlobals.logWarnings) console.warn("Nowhere to fade out to.");
 			}
 		},
 		
@@ -229,7 +229,7 @@ define([
                 GameGlobals.playerActionFunctions.enterCamp(false);
                 GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in);
             } else {
-                if (GameGlobals.logWarnings) console.log("WARN: Fainting target sector has no CampComponent");
+                if (GameGlobals.logWarnings) console.warn("Fainting target sector has no CampComponent");
             }
             
 			this.log(msgLog);

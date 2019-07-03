@@ -14,12 +14,12 @@ function (Ash, ItemVO, ItemConstants) {
 
         addItem: function (item, isCarried) {
             if (!item) {
-                console.log("WARN: Trying to add undefined item.");
+                console.warn("Trying to add undefined item.");
                 return;
             }
 
             if (this.getItem(item.id, item.itemID, true)) {
-                console.log("WARN: Trying to add duplicate item: " + item.id);
+                console.warn("Trying to add duplicate item: " + item.id);
                 return;
             }
 
@@ -34,9 +34,9 @@ function (Ash, ItemVO, ItemConstants) {
         },
 
         discardItem: function (item, autoEquip) {
-            if (!item) console.log("WARN: Trying to discard null item.");
+            if (!item) console.warn("Trying to discard null item.");
             if (!this.isItemDiscardable(item)) {
-                console.log("WARN: Trying to discard un-discardable item.");
+                console.warn("Trying to discard un-discardable item.");
                 return;
             }
 
@@ -59,7 +59,7 @@ function (Ash, ItemVO, ItemConstants) {
                         if (nextItem) this.equip(nextItem);
                     }
                 } else {
-                    console.log("WARN: Item to discard not found.");
+                    console.warn("Item to discard not found.");
                 }
             }
             this.uniqueItemsCarried = {};

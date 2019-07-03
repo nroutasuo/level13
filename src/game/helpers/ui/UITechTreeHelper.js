@@ -73,7 +73,7 @@ function (Ash, GameGlobals, CanvasConstants, ColorConstants, PlayerActionConstan
                             requiredNode.requiredByByLevel[node.level] = [];
                         requiredNode.requiredByByLevel[node.level].push(node);
                     } else {
-                        console.log("WARN: Missing required node: " + requiredId);
+                        console.warn("Missing required node: " + requiredId);
                     }
                 }
             }
@@ -278,7 +278,7 @@ function (Ash, GameGlobals, CanvasConstants, ColorConstants, PlayerActionConstan
             var gridX = Math.round(x*grids) / grids;
             var gridY = Math.round(y*grids) / grids;
             if (!tree.grid[gridY]) tree.grid[gridY] = {};
-            if (this.isOccupiedArea(tree, gridX, gridY, 0.5, 0.5)) console.log("WARN: Overlapping position: " + gridX + "-" + gridY + " " + node.definition.name);
+            if (this.isOccupiedArea(tree, gridX, gridY, 0.5, 0.5)) console.warn("Overlapping position: " + gridX + "-" + gridY + " " + node.definition.name);
             tree.grid[gridY][gridX] = node;
         },
         

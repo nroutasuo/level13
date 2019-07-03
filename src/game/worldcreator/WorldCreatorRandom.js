@@ -57,7 +57,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 					sector = this.randomSector(seed + (i + 1) * 369 + additionalRandom * 55, worldVO, levelVO, options.requireCentral, options.pathConstraints);
 					additionalRandom++;
                     if (additionalRandom > 50) {
-                        console.log("WARN: getRandomSectorsSmall: Couldn't find random sector " + i + "/" + numSectors + "(level: " + levelVO.level + ")");
+                        console.warn("getRandomSectorsSmall: Couldn't find random sector " + i + "/" + numSectors + "(level: " + levelVO.level + ")");
                         console.log(options);
                         console.log(counts)
                         return sectors;
@@ -97,7 +97,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
             }
             
             if (numSectors > possibleSectors.length) {
-                console.log("WARN: Not enough valid sectors (" + possibleSectors.length + ") to pick random sectors (" + numSectors + ") (level: " + levelVO.level + ")");
+                console.warn("Not enough valid sectors (" + possibleSectors.length + ") to pick random sectors (" + numSectors + ") (level: " + levelVO.level + ")");
                 return possibleSectors;
             }
             
@@ -178,7 +178,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
             }
             
             // print some debug info about the failed sector and paths
-            console.log("WARN: Failed to find random sector that fulfills requirements: central: " + isCentral + ", " + (pathConstraints ? pathConstraints.length : 0) + " paths, " + sectors.length + " sectors (level: " + levelVO.level + ")");
+            console.warn("Failed to find random sector that fulfills requirements: central: " + isCentral + ", " + (pathConstraints ? pathConstraints.length : 0) + " paths, " + sectors.length + " sectors (level: " + levelVO.level + ")");
             var fails = [];
             for (var j = 0; j < pathConstraints.length; j++) {
                 fails[j] = 0;
@@ -197,7 +197,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
             if (!pathConstraints || pathConstraints.length === 0) return true;
             for (var j = 0; j < pathConstraints.length; j++) {
                 if (pathConstraints[j].maxLength <= 0) {
-                    console.log("WARN: Max path length is <= 0, skipping check.");
+                    console.warn("Max path length is <= 0, skipping check.");
                     continue;
                 }
                 var path = this.findPath(worldVO, pathConstraints[j].startPosition, sector.position, false, true);
@@ -238,11 +238,11 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
         
         findPath: function (worldVO, startPos, endPos, blockByBlockers, omitWarnings) {
             if (!startPos) {
-                console.log("WARN: No start pos defined.");
+                console.warn("No start pos defined.");
             }
             
             if (!endPos) {
-                console.log("WARN: No goal pos defined.");
+                console.warn("No goal pos defined.");
             }
             
             var cachedPath = worldVO.getPath(startPos, endPos, blockByBlockers);

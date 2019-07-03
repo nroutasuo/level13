@@ -86,7 +86,7 @@ define([
 				levelPosition = node.entity.get(PositionComponent);
 				if (levelPosition.level === sectorPosition.level) return node.entity;
 			}
-			console.log("WARN: No level entity found for sector with position " + sectorPosition);
+			console.warn("No level entity found for sector with position " + sectorPosition);
 			return null;
 		},
 

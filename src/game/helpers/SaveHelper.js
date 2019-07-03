@@ -34,17 +34,17 @@ define([
 			try {
 				result = JSON.parse(json);
 			} catch (ex) {
-				console.log("WARN: Error parsing save JSON. " + ex);
+				console.warn("Error parsing save JSON. " + ex);
 				return null;
 			}
 
 			if (!result.gameState) {
-				console.log("WARN: Save JSON is missing a GameState.");
+				console.warn("Save JSON is missing a GameState.");
 				return null;
 			}
 
 			if (!result.entitiesObject) {
-				console.log("WARN: Save JSON is missing an entities object.");
+				console.warn("Save JSON is missing an entities object.");
 				return null;
 			}
 
@@ -98,7 +98,7 @@ define([
 				}
 
 				if (!component) {
-					console.log("WARN: Component not found while loading:");
+					console.warn("Component not found while loading:");
 					console.log(componentKey);
 					failedComponents++;
 					continue;
@@ -140,7 +140,7 @@ define([
 							this.loadObject(component[valueKey][valueKey2], componentValues[valueKey][valueKey2Int]);
 						} else {
 							if (typeof component[valueKey][valueKey2] == "undefined") {
-								console.log("WARN: Error loading. Unknown value key " + valueKey2 + " for object " + valueKey + " in " + saveKey);
+								console.warn("Error loading. Unknown value key " + valueKey2 + " for object " + valueKey + " in " + saveKey);
 								continue;
 							}
 							this.loadObject(component[valueKey][valueKey2], value2);

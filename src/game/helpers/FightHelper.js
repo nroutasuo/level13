@@ -86,10 +86,10 @@ define([
 				if (encounterComponent && encounterComponent.enemy) {
 					sector.add(new FightComponent(encounterComponent.enemy));
 				} else {
-					if (GameGlobals.logWarnings) console.log("WARN: Encounter or enemy not initialized - cannot start fight.");
+					if (GameGlobals.logWarnings) console.warn("Encounter or enemy not initialized - cannot start fight.");
 				}
             } else {
-                if (GameGlobals.logWarnings) console.log("WARN: Can't start fight- availability check failed");
+                if (GameGlobals.logWarnings) console.warn("Can't start fight- availability check failed");
             }
         },
 

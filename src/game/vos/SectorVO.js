@@ -62,7 +62,7 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
             var existingType = this.movementBlockers[direction];
             if (existingType === blockerType) return;
             if (existingType) {
-                console.log("WARN: movement blocker already exists:" + this.movementBlockers[direction] + " (trying to add: " + blockerType + ")");
+                console.warn("movement blocker already exists:" + this.movementBlockers[direction] + " (trying to add: " + blockerType + ")");
                 return;
             }
 			this.movementBlockers[direction] = blockerType;

@@ -48,7 +48,7 @@ define(function () {
             if (cache.lastPruneTime && (now - cache.lastPruneTime) / 1000 < 1) {
                 if (!cache.pruneWarningLogged) {
                     cache.pruneWarningLogged = true;
-                    console.log("WARN: VO Cache " + context + " is being pruned too often. keys: " + len + "/" + cache.maxKeys);
+                    console.warn("VO Cache " + context + " is being pruned too often. keys: " + len + "/" + cache.maxKeys);
                 }
                 return;
             }

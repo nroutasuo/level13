@@ -124,7 +124,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
                     maxLength = maxLength / 3;
                     break;
                 default:
-                    console.log("WARN: Unknown path type: " + pathType);
+                    console.warn("Unknown path type: " + pathType);
                     break;
             }
             
@@ -193,7 +193,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
             for (var i = 0; i < WorldCreatorConstants.ZONES_BY_ORDER.length; i++) {
                 var z = WorldCreatorConstants.ZONES_BY_ORDER[i];
                 if (zone == z) return i;
-        }
+            }
             return -1;
         }
 

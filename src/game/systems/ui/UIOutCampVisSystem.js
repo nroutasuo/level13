@@ -126,7 +126,7 @@ define([
                         // get coords
                         var coords = this.getBuildingCoords(improvements, building, n, j);
                         if (!coords) {
-                            console.log("WARN: No coordinates found for building " + building.name + " " + n + " " + j);
+                            console.warn("No coordinates found for building " + building.name + " " + n + " " + j);
                             continue;
                         }
 
@@ -165,7 +165,7 @@ define([
                     var coords2 = buildingCoords[j].coords;
                     var buildingType2 = buildingCoords[j].building.name;
                     if (GameGlobals.campVisHelper.isConflict(coords1, coords2, buildingType1, buildingType2)) {
-                        console.log("WARN: overlap " + buildingType1 + " and " + buildingType2);
+                        console.warn("overlap " + buildingType1 + " and " + buildingType2);
                     }
                 }
             }
@@ -178,7 +178,7 @@ define([
         getBuildingCoords: function (improvements, building, n, j) {
             var index = improvements.getSelectedCampBuildingSpot(building, n, j, true);
             if (index < 0) {
-                console.log("WARN: No building spot defined for " + building.name + " " + n + " " + j + " | " + index);
+                console.warn("No building spot defined for " + building.name + " " + n + " " + j + " | " + index);
                 return null;
             }
             return this.getBuildingSpotCoords(index);

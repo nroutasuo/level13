@@ -36,7 +36,7 @@ define([
                 if (sectorFeatures.resourcesScavengable[res] > 0) {
                     resources.push(res);
                 } else {
-                    console.log("WARN: Resource in discovered resources not found on sector.");
+                    console.warn("Resource in discovered resources not found on sector.");
                     missingResources.push(res);
                 }
 			}

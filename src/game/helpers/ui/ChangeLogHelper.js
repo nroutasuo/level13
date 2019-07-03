@@ -21,7 +21,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants) {
 			.fail(function (jqxhr, textStatus, error) {
 				helper.loadingSuccessful = false;
                 helper.versions = [];
-                console.log("Failed to load version.");
+                console.warn("Failed to load version.");
 				var err = "";
                 if (jqxhr && jqxhr.status) err += "[" + jqxhr.status + "] ";
                 err += textStatus;

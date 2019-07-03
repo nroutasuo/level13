@@ -11,7 +11,7 @@ define(['ash'], function (Ash) {
         constructor: function (type) {
 			this.type = type;
 			
-			if (!passageTypes[type]) console.log("WARN: No such passage type: " + type);
+			if (!passageTypes[type]) console.warn("No such passage type: " + type);
 			
 			this.name = passageTypes[type][0];
             this.nameRepaired = passageTypes[type][1];

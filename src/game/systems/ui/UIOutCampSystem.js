@@ -106,7 +106,7 @@
 
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
             if (!campComponent) {
-                console.log("WARN: Camp UI systen active but no camp found.");
+                console.warn("Camp UI systen active but no camp found.");
                 GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.out);
                 return;
             }
@@ -338,7 +338,7 @@
                 var id = $(this).attr("id");
                 var actionName = $(this).find("button.action-build").attr("action");
                 if (!actionName) {
-                    console.log("WARN: In improvement tr without action name: #" + id);
+                    console.warn("In improvement tr without action name: #" + id);
                 } else {
                     var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(actionName);
                     if (improvementName) {

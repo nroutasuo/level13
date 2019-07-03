@@ -128,7 +128,7 @@ define([
 					var targetEnemies = Math.min(currentEnemies, neighbourEnemies);
 					
 					if (targetEnemies < currentEnemies) {
-						console.log("WARN: set sector control for " + localeId + " at " + positionComponent.level + "-" + positionComponent.sectorId() + " | " + targetEnemies + " < " + currentEnemies);
+						console.warn("set sector control for " + localeId + " at " + positionComponent.level + "-" + positionComponent.sectorId() + " | " + targetEnemies + " < " + currentEnemies);
 						sectorControlComponent.currentLocaleEnemies[localeId] -= (currentEnemies - targetEnemies);
 					}
 				}

@@ -128,7 +128,7 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
                     return "Continued exploring.";
 
                 default:
-                    console.log("WARN: text not defined for merged log message: " + mergedId);
+                    console.warn("text not defined for merged log message: " + mergedId);
                     return String(mergedId);
             }
         },

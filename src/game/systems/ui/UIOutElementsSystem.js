@@ -89,7 +89,7 @@ define([
 
 			if (GameConstants.logWarnings) {
 				if (this.elementsVisibilityChangedFrames > 5) {
-					console.log("WARN: element visibility updated too often");
+					console.warn("element visibility updated too often");
 				}
 			}
 
@@ -182,7 +182,7 @@ define([
 			for (var key in costs) {
 				var $costSpan = buttonElements.costSpans[key];
 				if (!$costSpan) {
-					console.log("WARN: cost span missing: " + key + " " + action);
+					console.warn("cost span missing: " + key + " " + action);
 					continue;
 				}
 				var value = costs[key];

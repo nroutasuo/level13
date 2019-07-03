@@ -121,7 +121,7 @@ function (Ash) {
                 if (foundConflict) continue;
                 return i;
             }
-            console.log("WARN: Couldn't find free valid buildings spot for " + building.name);
+            console.warn("Couldn't find free valid buildings spot for " + building.name);
             return 0;
         },
 
@@ -139,7 +139,7 @@ function (Ash) {
                 if (this.getSpotIndex(x, z) < 0) return x;
                 if (this.getSpotIndex(-x, z) < 0) return -x;
             }
-            console.log("WARN: Couldn't find free x coordinate for building spot: " + targetI);
+            console.warn("Couldn't find free x coordinate for building spot: " + targetI);
             return 0;
         },
         

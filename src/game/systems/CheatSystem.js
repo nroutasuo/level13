@@ -386,7 +386,7 @@ define(['ash',
             if (camp) {
                 camp.addPopulation(amount);
             } else {
-                console.log("WARN: Camp not found.");
+                console.warn("Camp not found.");
             }
         },
 
@@ -499,7 +499,7 @@ define(['ash',
                     itemsComponent.addItem(item.clone(), !playerPos.inCamp);
                 }
             } else {
-                console.log("WARN: No such item: " + itemID);
+                console.warn("No such item: " + itemID);
             }
         },
 
@@ -520,7 +520,7 @@ define(['ash',
             if (perk) {
                 perksComponent.addPerk(perk);
             } else {
-                console.log("WARN: No such perk: " + perkID);
+                console.warn("No such perk: " + perkID);
             }
         },
 

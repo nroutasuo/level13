@@ -65,7 +65,7 @@ define([
                 var upgradeDefinition = UpgradeConstants.upgradeDefinitions[blueprintVO.upgradeId];
                 
                 if (!upgradeDefinition) {
-                    if (GameConstants.logWarnings) console.log("WARN: No definition found for upgrade: " + blueprintVO.upgradeId);
+                    if (GameConstants.logWarnings) console.warn("No definition found for upgrade: " + blueprintVO.upgradeId);
                     continue;
                 }
                 

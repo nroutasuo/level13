@@ -113,7 +113,7 @@ define([
                     resultVO = this.getNapRewards();
                     break;
                 default:
-                    if (GameConstants.logWarnings) console.log("WARN: Unknown action: " + baseActionID + ". Can't create result vo.");
+                    if (GameConstants.logWarnings) console.warn("Unknown action: " + baseActionID + ". Can't create result vo.");
                     return null;
             }
 
@@ -329,7 +329,7 @@ define([
 				if (nearestCampNode) {
 					nearestCampNode.camp.population += 1;
 				} else {
-					console.log("WARN: No nearest camp found.");
+					console.warn("No nearest camp found.");
 				}
 			}
 
@@ -697,7 +697,7 @@ define([
             }
 
             if (!itemType) {
-                console.log("WARN: Could not determine reward item type.");
+                console.warn("Could not determine reward item type.");
                 console.log(itemTypeLimits);
             }
 
@@ -728,7 +728,7 @@ define([
                     break;
 
                 default:
-                    console.log("WARN: No reward items defined for type: [" + itemType + "]");
+                    console.warn("No reward items defined for type: [" + itemType + "]");
                     break;
             }
 
@@ -745,7 +745,7 @@ define([
             }
 
             if (validItems.length === 0) {
-                console.log("WARN: No valid reward items found for type: [" + itemType + "]");
+                console.warn("No valid reward items found for type: [" + itemType + "]");
                 return null;
             }
 
@@ -965,7 +965,7 @@ define([
             
             if (missedBlueprints.length > 0) {
                 if (GameConstants.logWarnings) {
-                    console.log("WARN: Found missed blueprints: " + missedBlueprints.join(","));
+                    console.warn("Found missed blueprints: " + missedBlueprints.join(","));
                 }
                 if (Math.random() < probability) {
                     return missedBlueprints[0];

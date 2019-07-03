@@ -399,7 +399,7 @@ define([
                         break;
 
 					default:
-						console.log("WARN: Unknown sector type " + sectorType);
+						console.warn("Unknown sector type " + sectorType);
 					}
 				}
 				return localeType;
@@ -522,7 +522,7 @@ define([
                         });
                         return true;
                     } else {
-                        if (GameConstants.logWarnings) console.log("WARN: Skipped adding gang at " + sectorVO.position);
+                        if (GameConstants.logWarnings) console.warn("Skipped adding gang at " + sectorVO.position);
                         return false;
                     }
                 };
@@ -756,10 +756,10 @@ define([
             if (maxlen > 0) {
                 console.log("- dist: " + dist + " / maxlen: " + maxlen + " / final len: " + totalLength +  " | " + startPos + " to " + endPos + " | " + pathType);
                 if (dist > maxlen) {
-                    console.log("-- WARN: required path max len < distance");
+                    console.log("-- required path max len < distance");
                 }
                 if (totalLength > maxlen) {
-                    console.log("-- WARN: required path max len < final len");
+                    console.log("-- required path max len < final len");
                 }
             }
             return result;
@@ -1132,7 +1132,7 @@ define([
                     if (options.allowedCriticalPaths && options.allowedCriticalPaths.indexOf(pathType) >= 0) continue;
                     for (var j = 0; j < neighbourVO.criticalPaths.length; j++) {
                         if (pathType === neighbourVO.criticalPaths[j]) {
-                            // console.log("WARN: (level " + levelVO.level + ") Skipping blocker on critical path: " + pathType + " (type: " + blockerType + ")");
+                            // console.warn("(level " + levelVO.level + ") Skipping blocker on critical path: " + pathType + " (type: " + blockerType + ")");
                             return;
                         }
                     }
@@ -1412,7 +1412,7 @@ define([
                 if (globalE.length > 0) {
                     enemies.push(globalE[0]);
                 } else {
-                    console.log("WARN: No valid enemies defined for sector " + sectorVO.position + " difficulty " + enemyDifficulty);
+                    console.warn("No valid enemies defined for sector " + sectorVO.position + " difficulty " + enemyDifficulty);
                 }
             }
 

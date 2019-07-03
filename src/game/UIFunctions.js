@@ -164,7 +164,7 @@ define(['ash',
 				$.each($(scope + " button.action"), function () {
 					var $element = $(this);
 					if ($element.hasClass("click-bound")) {
-						console.log("WARN: trying to bind click twice! id: " + $element.attr("id"));
+						console.warn("trying to bind click twice! id: " + $element.attr("id"));
 						return;
 					}
                     if ($element.hasClass("action-manual-trigger")) {
@@ -174,7 +174,7 @@ define(['ash',
 					$element.click(ExceptionHandler.wrapClick(function (e) {
 						var action = $(this).attr("action");
 						if (!action) {
-							console.log("WARN: No action mapped for button.");
+							console.warn("No action mapped for button.");
 							return;
 						}
 
@@ -337,7 +337,7 @@ define(['ash',
                     var generated = $container.data("callout-generated");
                     if (generated) {
                         if (GameConstants.logWarnings) {
-                            console.log("WARN: Button callout already generated!");
+                            console.warn("Button callout already generated!");
                             console.log($container);
                         }
                         return;
@@ -348,7 +348,7 @@ define(['ash',
                         var button = $(this).children("button")[0];
     					var action = $(button).attr("action");
                         if (!action) {
-                            console.log("WARN: Action button with no action " + uiFunctions.count);
+                            console.warn("Action button with no action " + uiFunctions.count);
                             console.log($(button))
                             return "";
                         }
@@ -427,7 +427,7 @@ define(['ash',
 				if (content.length > 0) {
 					return '<div class="btn-callout"><div class="callout-arrow-up"></div><div class="btn-callout-content">' + content + '</div></div>';
 				} else {
-					console.log("WARN: No callout could be created for action button with action " + action + ". No content for callout.");
+					console.warn("No callout could be created for action button with action " + action + ". No content for callout.");
 					return "";
 				}
 			},
@@ -576,7 +576,7 @@ define(['ash',
 						}
 					}
 				} else {
-					console.log("WARN: invalid stepper input value [" + fieldName + "]");
+					console.warn("invalid stepper input value [" + fieldName + "]");
 					input.val(0);
 				}
 			},

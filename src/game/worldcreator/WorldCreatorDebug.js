@@ -53,6 +53,7 @@ define(['ash',], function (Ash) {
 		
 		printLevel: function (woldVO, levelVO) {
 			console.log("Print level, seed: " + woldVO.seed + ", level: " + levelVO.level + ", total sectors: " + levelVO.sectors.length + ", bounds: " + levelVO.minX + "." + levelVO.minY + "-" + levelVO.maxX + "." + levelVO.maxY);
+            console.group("level " + levelVO.level);
             console.log("central area: " + levelVO.centralAreaSize + ", bag size: " + levelVO.bagSize);
 			var print = "\t";
 		
@@ -77,10 +78,14 @@ define(['ash',], function (Ash) {
                             print += "D ";
                         else if (sectorVO.camp)
                             print += "C ";
+                        /*
                         else if (zonePoint)
                             print += "P ";
+                        */
+                        /*
                         else if (sectorVO.locales.length > 0)
                             print += "L ";
+                        */
                         /*
                         else if (criticalPath >= 0)
                             print += criticalPath + " ";
@@ -90,9 +95,11 @@ define(['ash',], function (Ash) {
                         else
                             print += "+ ";
 					} else {
+                        /*
                         if (zonePoint)
                             print += "P ";
-                        else if (levelVO.isCentral(x, y))
+                        else
+                    */if (levelVO.isCentral(x, y))
                             print += "· ";
                        else
                             print += "  ";
@@ -100,6 +107,7 @@ define(['ash',], function (Ash) {
 				}
 			}
 			console.log(print);
+            console.groupEnd();
 		},
         
     };

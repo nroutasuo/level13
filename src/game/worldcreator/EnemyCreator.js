@@ -187,7 +187,7 @@ define([
             if (typicalWeapon)
                 typicalItems.addItem(typicalWeapon, false);
             else
-                console.log("WARN: No typical weapon for camp ordinal " + campOrdinal);
+                console.warn("No typical weapon for camp ordinal " + campOrdinal);
 
             if (typicalClothing.length > 0) {
                 for ( var i = 0; i < typicalClothing.length; i++ ) {

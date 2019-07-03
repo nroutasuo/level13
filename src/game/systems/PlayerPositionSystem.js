@@ -210,8 +210,8 @@ define([
 
         handleInvalidPosition: function () {
             var playerPos = this.playerPositionNodes.head.position;
-            console.log("WARN: Player location could not be found  (" + playerPos.level + "." + playerPos.sectorId() + ").");
-            console.log("WARN: Moving to a known valid position.");
+            console.warn("Player location could not be found  (" + playerPos.level + "." + playerPos.sectorId() + ").");
+            console.warn("Moving to a known valid position.");
             playerPos.level = 13;
             playerPos.sectorX = WorldCreatorConstants.FIRST_CAMP_X;
             playerPos.sectorY = WorldCreatorConstants.FIRST_CAMP_Y;

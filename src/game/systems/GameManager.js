@@ -240,7 +240,7 @@ define([
                 console.log("Loaded from " + save.timeStamp);
 
                 if (failedComponents > 0) {
-                    console.log(failedComponents + " components failed to load.");
+                    console.warn(failedComponents + " components failed to load.");
                 }
 
                 return true;
