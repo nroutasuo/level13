@@ -71,13 +71,13 @@ define([
             sector.remove(FightComponent);
             var enemiesComponent = sector.get(EnemiesComponent);
             enemiesComponent.selectNextEnemy();
-            if (GameConstants.logInfo) console.log("init fight: " + action);
+            log.i("init fight: " + action);
 			sector.add(new FightEncounterComponent(enemiesComponent.getNextEnemy(), action, this.pendingEnemies, this.totalEnemies));
 			GameGlobals.uiFunctions.showFight();
         },
 
         startFight: function () {
-            if (GameConstants.logInfo) console.log("start fight");
+            log.i("start fight");
             // TODO move to PlayerActionFunctions
             if (GameGlobals.playerActionsHelper.checkAvailability("fight", true)) {
                 GameGlobals.playerActionsHelper.deductCosts("fight");
@@ -86,10 +86,10 @@ define([
 				if (encounterComponent && encounterComponent.enemy) {
 					sector.add(new FightComponent(encounterComponent.enemy));
 				} else {
-					if (GameGlobals.logWarnings) console.warn("Encounter or enemy not initialized - cannot start fight.");
+					if (GameGlobals.logWarnings) log.w("Encounter or enemy not initialized - cannot start fight.");
 				}
             } else {
-                if (GameGlobals.logWarnings) console.warn("Can't start fight- availability check failed");
+                if (GameGlobals.logWarnings) log.w("Can't start fight- availability check failed");
             }
         },
 

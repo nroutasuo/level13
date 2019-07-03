@@ -121,12 +121,12 @@ var UIOutManageSaveSystem = Ash.System.extend({
 			if (typeof(Storage) !== "undefined") {
                 try {
                     localStorage.save = saveSystem.getCompressedSaveJSON(importJSON);
-                    console.log("Replaced save.");
+                    log.i("Replaced save.");
                 } catch (ex) {
-                    console.log("Failed to replace save.");
+                    log.i("Failed to replace save.");
                 }
 			} else {
-                console.log("Failed to replace save.");
+                log.i("Failed to replace save.");
 			}
             GlobalSignals.restartGameSignal.dispatch(false);
         }

@@ -213,11 +213,11 @@ define(['ash',
                 if (Math.abs(inputParts.length - 1 - numParams) <= numOptional) {
                     func.call(this, inputParts.slice(1));
                 } else {
-                    console.log("Wrong number of parameters. Expected " + numParams + " (" + numOptional + ") got " + (inputParts.length -1));
+                    log.i("Wrong number of parameters. Expected " + numParams + " (" + numOptional + ") got " + (inputParts.length -1));
                 }
                 return;
             } else {
-                console.log("cheat not found: " + name);
+                log.i("cheat not found: " + name);
             }
 
             // TODO re-implement these cheats
@@ -225,17 +225,17 @@ define(['ash',
             var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             switch (name) {
                 case "printSector":
-                    console.log(currentSector.get(SectorFeaturesComponent));
+                    log.i(currentSector.get(SectorFeaturesComponent));
                     break;
 
                 case "printEnemies":
                     var enemiesComponent = currentSector.get(EnemiesComponent);
                     var playerStamina = this.playerStatsNodes.head.stamina;
                     if (enemiesComponent.possibleEnemies.length < 1)
-                        console.log("No enemies here.");
+                        log.i("No enemies here.");
                     for (var e = 0; e < enemiesComponent.possibleEnemies.length; e++) {
                         var enemy = enemiesComponent.possibleEnemies[e];
-                        console.log(
+                        log.i(
                             enemy.name + " " +
                             "(att: " + enemy.att + ", def: " + enemy.def + ", rarity: " + enemy.rarity + ") " +
                             "chances: " + Math.round(100 * FightConstants.getFightWinProbability(enemy, playerStamina, itemsComponent)) + "% " +
@@ -255,7 +255,7 @@ define(['ash',
                 for (var i = 0; i < this.cheatDefinitions[cmd].params.length; i++) {
                     params += "[" + this.cheatDefinitions[cmd].params[i] + "] ";
                 }
-                console.log(cmd + " " + params + "- " + this.cheatDefinitions[cmd].desc);
+                log.i(cmd + " " + params + "- " + this.cheatDefinitions[cmd].desc);
             }
         },
 
@@ -351,8 +351,8 @@ define(['ash',
                 var playerResources = GameGlobals.resourcesHelper.getCurrentStorage().resources;
                 playerResources.setResource(name, amount);
             } else {
-                console.log(name + " is not a valid resource. Possible names are:");
-                console.log(Object.keys(resourceNames));
+                log.i(name + " is not a valid resource. Possible names are:");
+                log.i(Object.keys(resourceNames));
             }
         },
 
@@ -386,7 +386,7 @@ define(['ash',
             if (camp) {
                 camp.addPopulation(amount);
             } else {
-                console.warn("Camp not found.");
+                log.w("Camp not found.");
             }
         },
 
@@ -499,7 +499,7 @@ define(['ash',
                     itemsComponent.addItem(item.clone(), !playerPos.inCamp);
                 }
             } else {
-                console.warn("No such item: " + itemID);
+                log.w("No such item: " + itemID);
             }
         },
 
@@ -520,7 +520,7 @@ define(['ash',
             if (perk) {
                 perksComponent.addPerk(perk);
             } else {
-                console.warn("No such perk: " + perkID);
+                log.w("No such perk: " + perkID);
             }
         },
 

@@ -87,9 +87,9 @@ define([
 				this.elementsVisibilityChangedFrames = 0;
 			}
 
-			if (GameConstants.logWarnings) {
+			{
 				if (this.elementsVisibilityChangedFrames > 5) {
-					console.warn("element visibility updated too often");
+					log.w("element visibility updated too often");
 				}
 			}
 
@@ -182,7 +182,7 @@ define([
 			for (var key in costs) {
 				var $costSpan = buttonElements.costSpans[key];
 				if (!$costSpan) {
-					console.warn("cost span missing: " + key + " " + action);
+					log.w("cost span missing: " + key + " " + action);
 					continue;
 				}
 				var value = costs[key];
@@ -378,7 +378,7 @@ define([
                     buttonActions.push(action);
 				}
 			});
-            // console.log("update visible buttons:" + this.elementsVisibleButtons.length + ":" + buttonActions.join(","));
+            // log.i("update visible buttons:" + this.elementsVisibleButtons.length + ":" + buttonActions.join(","));
 		},
 
 		updateVisibleProgressbarsList: function () {

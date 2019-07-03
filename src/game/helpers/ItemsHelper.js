@@ -78,7 +78,7 @@ define([
                 if (!includeMultiplePerType && bestAvailableItem) {
                     // var reqs = PlayerActionConstants.requirements["craft_" + clothingItem.id];
                     // var reqTech = reqs ? Object.keys(reqs.upgrades) : "none";
-                    // console.log("-> level ordinal " + levelOrdinal + " best " + clothingList[0].type + ": " + bestAvailableItem.name + " " + bestAvailableItem.id + " | " + bestAvailableItem.craftable + " " + reqTech)
+                    // log.i("-> level ordinal " + levelOrdinal + " best " + clothingList[0].type + ": " + bestAvailableItem.name + " " + bestAvailableItem.id + " | " + bestAvailableItem.craftable + " " + reqTech)
                     result.push(bestAvailableItem);
                 }
             }

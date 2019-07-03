@@ -124,7 +124,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
                     maxLength = maxLength / 3;
                     break;
                 default:
-                    console.warn("Unknown path type: " + pathType);
+                    log.w("Unknown path type: " + pathType);
                     break;
             }
             

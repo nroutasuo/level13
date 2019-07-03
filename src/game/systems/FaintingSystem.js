@@ -194,7 +194,7 @@ define([
 			} else if (nearestVisitedSafeSector) {
 				this.fadeOut(msgMain, msgLog, true, nearestVisitedSafeSector, 1, 0);
 			} else {
-				if (GameGlobals.logWarnings) console.warn("Nowhere to fade out to.");
+				if (GameGlobals.logWarnings) log.w("Nowhere to fade out to.");
 			}
 		},
 		
@@ -220,7 +220,7 @@ define([
 			playerPosition.sectorX = sectorPosition.sectorX;
 			playerPosition.sectorY = sectorPosition.sectorY;
             
-            if (GameGlobals.logInfo) console.log("faint teleport " + sectorPosition);
+            if (GameGlobals.logInfo) log.i("faint teleport " + sectorPosition);
             
             // TODO make neater way to request position update - needs to happen before enterCamp which relies on nearest camp node
             this.engine.getSystem(PlayerPositionSystem).updateSectors();
@@ -229,7 +229,7 @@ define([
                 GameGlobals.playerActionFunctions.enterCamp(false);
                 GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in);
             } else {
-                if (GameGlobals.logWarnings) console.warn("Fainting target sector has no CampComponent");
+                if (GameGlobals.logWarnings) log.w("Fainting target sector has no CampComponent");
             }
             
 			this.log(msgLog);

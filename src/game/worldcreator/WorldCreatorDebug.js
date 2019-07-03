@@ -4,7 +4,7 @@ define(['ash',], function (Ash) {
     var WorldCreatorDebug = {
 		
 		printWorld: function (worldVO, keys) {
-			console.log("Print world, seed: " + worldVO.seed + ", attributes: " + keys)
+			log.i("Print world, seed: " + worldVO.seed + ", attributes: " + keys)
 			var print = "";
 			var levelVO;
 			var sectorVO;
@@ -45,16 +45,15 @@ define(['ash',], function (Ash) {
 				}
 				print = print.substring(0, print.length - 1);
 				print += "\n\n";
-                console.log(print);
+                log.i(print);
                 print = "";
 			}
-			//console.log(print.trim());
+			//log.i(print.trim());
 		},
 		
 		printLevel: function (woldVO, levelVO) {
-			console.log("Print level, seed: " + woldVO.seed + ", level: " + levelVO.level + ", total sectors: " + levelVO.sectors.length + ", bounds: " + levelVO.minX + "." + levelVO.minY + "-" + levelVO.maxX + "." + levelVO.maxY);
-            console.group("level " + levelVO.level);
-            console.log("central area: " + levelVO.centralAreaSize + ", bag size: " + levelVO.bagSize);
+			log.i("Print level, seed: " + woldVO.seed + ", level: " + levelVO.level + ", total sectors: " + levelVO.sectors.length + ", bounds: " + levelVO.minX + "." + levelVO.minY + "-" + levelVO.maxX + "." + levelVO.maxY);
+            log.i("central area: " + levelVO.centralAreaSize + ", bag size: " + levelVO.bagSize);
 			var print = "\t";
 		
 			for (var x = levelVO.minX; x <= levelVO.maxX; x++) {
@@ -106,8 +105,7 @@ define(['ash',], function (Ash) {
                     }
 				}
 			}
-			console.log(print);
-            console.groupEnd();
+			log.i(print);
 		},
         
     };

@@ -470,7 +470,7 @@ define(['ash',
             var result = {};
 			var checkSector = function (sector) {
                 if (Object.keys(result).length === resourceNames.length) {
-                    console.log("[getNearestSectorsByRes] all found.");
+                    log.i("[getNearestSectorsByRes] all found.");
                     return true;
                 }
                 var featuresComponent = sector.get(SectorFeaturesComponent);
@@ -1041,7 +1041,7 @@ define(['ash',
             var status = "idle";
             if (this.autoPlayNodes.head.autoPlay.isExploring) status = "exploring";
             if (this.autoPlayNodes.head.autoPlay.isManagingCamps) status = "managing";
-            console.log("autoplay (" + this.isExpress + ") (" + status + ") " + playerPosition.level + "-" + playerPosition.sectorId() + ": " + message);
+            log.i("autoplay (" + this.isExpress + ") (" + status + ") " + playerPosition.level + "-" + playerPosition.sectorId() + ": " + message);
         },
 
         hasUpgrade: function (upgradeId) {

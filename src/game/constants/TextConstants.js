@@ -73,7 +73,7 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
                 case MovementConstants.PASSAGE_TYPE_STAIRWELL:
                     return "Stairwell " + directionName + " repaired at " + sectorPosVO.getInGameFormat(true);
                 default:
-                    console.warn("Unknown passage type: [" + passageType + "]")
+                    log.w("Unknown passage type: [" + passageType + "]")
                     return "Passage " + directionName + " ready at " + sectorPosVO.getInGameFormat(true);
             }
         },
@@ -391,8 +391,8 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
 				}
 			}
 			
-            // console.log("getCommonText " + objectAttribute + " | " + validDetail + " | " + validWords.join(",") + " | " + minimumWords.join(",") + " | " + defaultWord);
-            // console.log(objectList)
+            // log.i("getCommonText " + objectAttribute + " | " + validDetail + " | " + validWords.join(",") + " | " + minimumWords.join(",") + " | " + defaultWord);
+            // log.i(objectList)
             
 			if (validDetail.length > 0) {
 				return this.pluralify(validDetail);

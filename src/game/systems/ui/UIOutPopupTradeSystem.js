@@ -45,7 +45,7 @@ define([
         initElements: function () {
             var sys = this;
             $("#incoming-caravan-popup-reset").click(function (e) {
-                console.log("reset");
+                log.i("reset");
                 sys.clearSelection();
                 sys.updateLists();
             });
@@ -141,7 +141,7 @@ define([
     					addLis(li, key, "camp")
     				}
                         
-                    console.log("create " + name + " " + traderInventoryAmount + " " + campInventoryAmount)
+                    log.i("create " + name + " " + traderInventoryAmount + " " + campInventoryAmount)
                     highestAmount = Math.max(highestAmount, traderInventoryAmount, campInventoryAmount);
                 }
 			}
@@ -173,7 +173,7 @@ define([
 				var isCampOffer = $li.parents("#inventorylist-incoming-caravan-camp-offer").length > 0;
                 
                 var amount = Math.max(1, HorizontalSelect.getSelection(sys.multiplierSelect).value);
-                console.log("moveItem " + amount);
+                log.i("moveItem " + amount);
 
 				if (isCurrency) {
 					if (isTraderInventory) {

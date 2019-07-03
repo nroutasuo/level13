@@ -113,7 +113,7 @@ define([
                     resultVO = this.getNapRewards();
                     break;
                 default:
-                    if (GameConstants.logWarnings) console.warn("Unknown action: " + baseActionID + ". Can't create result vo.");
+                    log.w("Unknown action: " + baseActionID + ". Can't create result vo.");
                     return null;
             }
 
@@ -329,7 +329,7 @@ define([
 				if (nearestCampNode) {
 					nearestCampNode.camp.population += 1;
 				} else {
-					console.warn("No nearest camp found.");
+					log.w("No nearest camp found.");
 				}
 			}
 
@@ -697,8 +697,8 @@ define([
             }
 
             if (!itemType) {
-                console.warn("Could not determine reward item type.");
-                console.log(itemTypeLimits);
+                log.w("Could not determine reward item type.");
+                log.i(itemTypeLimits);
             }
 
             // list possible items
@@ -728,7 +728,7 @@ define([
                     break;
 
                 default:
-                    console.warn("No reward items defined for type: [" + itemType + "]");
+                    log.w("No reward items defined for type: [" + itemType + "]");
                     break;
             }
 
@@ -745,7 +745,7 @@ define([
             }
 
             if (validItems.length === 0) {
-                console.warn("No valid reward items found for type: [" + itemType + "]");
+                log.w("No valid reward items found for type: [" + itemType + "]");
                 return null;
             }
 
@@ -799,7 +799,7 @@ define([
             if (!stashVO) return;
             var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
             if (sectorStatus.scavenged) return;
-            if (GameConstants.logInfo) console.log("found stash");
+            log.i("found stash");
             switch (stashVO.stashType) {
                 case StashVO.STASH_TYPE_ITEM:
                     for (var i = 0; i < stashVO.amount; i++) {
@@ -929,10 +929,8 @@ define([
 			var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, false, bracket, localeVO).length + 1;
 			var levelBlueprintProbability = blueprintPiecesToFind / unscoutedLocales;
             
-            if (GameConstants.logInfo) {
-                console.log("get result blueprint: " + blueprintType + " | pieces to find: " + blueprintPiecesToFind + " / unscouted locales: " + unscoutedLocales);
-                console.log(levelBlueprints);
-            }
+            log.i("get result blueprint: " + blueprintType + " | pieces to find: " + blueprintPiecesToFind + " / unscouted locales: " + unscoutedLocales);
+            log.i(levelBlueprints);
 
 			if (Math.random() < levelBlueprintProbability) {
 				return blueprintsToFind[Math.floor(Math.random() * blueprintsToFind.length)];
@@ -964,9 +962,7 @@ define([
             }
             
             if (missedBlueprints.length > 0) {
-                if (GameConstants.logWarnings) {
-                    console.warn("Found missed blueprints: " + missedBlueprints.join(","));
-                }
+                log.w("Found missed blueprints: " + missedBlueprints.join(","));
                 if (Math.random() < probability) {
                     return missedBlueprints[0];
                 }

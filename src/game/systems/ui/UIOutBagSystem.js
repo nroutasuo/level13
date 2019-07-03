@@ -196,7 +196,7 @@ define([
                     var hasCosts = Object.keys(GameGlobals.playerActionsHelper.getCosts(actionName, costFactor)).length > 0;
 
                     if (isActive && !hasCosts) {
-                        console.warn("Craftable item has no costs: " + itemDefinition.id);
+                        log.w("Craftable item has no costs: " + itemDefinition.id);
                     }
 
                     var trID = this.getItemCraftTRID(itemDefinition);

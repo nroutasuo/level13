@@ -18,11 +18,11 @@ define(function () {
         // - omitWarnings (bool)
         findPath: function (startVO, goalVO, utilities, settings) {
             if (!startVO) {
-                console.warn("No start sector defined.");
+                log.w("No start sector defined.");
             }
 
             if (!goalVO) {
-                console.warn("No goal sector defined.");
+                log.w("No goal sector defined.");
             }
 
             if (this.getKey(startVO) === this.getKey(goalVO)) return [];
@@ -47,7 +47,7 @@ define(function () {
                         return null;
                     }
                 } else {
-                    console.log("Can't find path because there is no passage down from level " + startLevel);
+                    log.i("Can't find path because there is no passage down from level " + startLevel);
                     return null;
                 }
             } else if (startLevel < goalLevel) {
@@ -63,7 +63,7 @@ define(function () {
                         return null;
                     }
                 } else {
-                    console.log("Can't find path because there is no passage up from level " + startLevel);
+                    log.i("Can't find path because there is no passage up from level " + startLevel);
                     return null;
                 }
             }
@@ -128,7 +128,7 @@ define(function () {
             }
             
             if (!foundGoal && !settings.omitWarnings) {
-                console.warn("Couldn't find goal (mapping paths " + startVO.position + " - " + goalVO.position + ") (pass: " + pass + ")");
+                log.w("Couldn't find goal (mapping paths " + startVO.position + " - " + goalVO.position + ") (pass: " + pass + ")");
                 this.printPaths(startVO, goalVO, cameFrom);
             }
 
@@ -146,9 +146,9 @@ define(function () {
                 // TODO check (pass?) reasonable max length
                 if (!current || result.length > 500) {
                     if (!settings.omitWarnings) {
-                        console.warn("failed to find path (res len: " + result.length + ", prev: " + this.getKey(previous) + ")");
-                        console.log(cameFrom);
-                        console.log(previous);
+                        log.w("failed to find path (res len: " + result.length + ", prev: " + this.getKey(previous) + ")");
+                        log.i(cameFrom);
+                        log.i(previous);
                     }
                     return null;
                 }
@@ -209,7 +209,7 @@ define(function () {
             
             for (var k in pathsByLastKey) {
                 for (var i = 0; i < pathsByLastKey[k].length; i++) {
-                    console.log(pathsByLastKey[k][i].join("|"));
+                    log.i(pathsByLastKey[k][i].join("|"));
                 }
             }
         },

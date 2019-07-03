@@ -8,10 +8,6 @@ define( function () {
         isAutosaveEnabled: true,
         
         gameURL: "https://nroutasuo.github.io/level13",
-        
-        logInfo: true,
-        logWarnings: true,
-        logErrors: true,
 
     };
     return GameConstants;

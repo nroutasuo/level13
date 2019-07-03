@@ -115,23 +115,23 @@ define([
                         // player wants to discard an item; discard rewards first then own items
                         if (isInSelected) {
                             var itemToLeave = findItemById(itemId, rewards.selectedItems, null);
-                            console.log("leave: " + itemToLeave);
+                            log.i("leave: " + itemToLeave);
                             rewards.selectedItems.splice(itemToLeave);
                         } else {
                             var itemToDiscard = findItemById(itemId, playerAllItems, rewards.discardedItems, true);
                             if (!itemToDiscard) return;
-                            console.log("discard: " + itemToDiscard);
+                            log.i("discard: " + itemToDiscard);
                             rewards.discardedItems.push(itemToDiscard);
                         }
                     } else {
                         // player wants to take an item; take own items first then rewards
                         if (isInRewards) {
                             var itemToTake = findItemById(itemId, rewards.gainedItems, rewards.selectedItems);
-                            console.log("take: " + itemToTake);
+                            log.i("take: " + itemToTake);
                             rewards.selectedItems.push(itemToTake);
                         } else {
                             var itemToKeep = findItemById(itemId, rewards.discardedItems, null);
-                            console.log("keep: " + itemToKeep);
+                            log.i("keep: " + itemToKeep);
                             rewards.discardedItems.splice(itemToKeep);
                         }
                     }

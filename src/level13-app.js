@@ -1,9 +1,10 @@
 define([
     'module',
     'jquery/jquery-1.11.1.min',
+    'core/ConsoleLogger',
     'game/level13',
     'game/constants/GameConstants',
-], function (module, jQuery, Level13, GameConstants) {
+], function (module, jQuery, ConsoleLogger, Level13, GameConstants) {
     'use strict';
 
     function Level13App() {
@@ -13,7 +14,7 @@ define([
             GameConstants.isDebugVersion = config.isDebugVersion;
             GameConstants.isCheatsEnabled = config.isCheatsEnabled;
             GameConstants.isAutosaveEnabled = config.isAutosaveEnabled;
-            GameConstants.logInfo = config.isDebugOutputEnabled;
+            ConsoleLogger.logInfo = config.isDebugOutputEnabled;
 
             GameConstants.STARTTimeStart = new Date().getTime();
             GameConstants.STARTTimeNow = function () {

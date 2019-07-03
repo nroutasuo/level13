@@ -13,7 +13,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants) {
 				helper.loadingSuccessful = true;
 				helper.versions = json.versions;
                 var version = helper.getCurrentVersionNumber();
-                console.log("Loaded version: " + version);
+                log.i("Loaded version: " + version);
                 gtag('set', { 'app_version': version });
                 GlobalSignals.changelogLoadedSignal.dispatch();
                 helper.displayVersionWarnings();
@@ -21,7 +21,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants) {
 			.fail(function (jqxhr, textStatus, error) {
 				helper.loadingSuccessful = false;
                 helper.versions = [];
-                console.warn("Failed to load version.");
+                log.w("Failed to load version.");
 				var err = "";
                 if (jqxhr && jqxhr.status) err += "[" + jqxhr.status + "] ";
                 err += textStatus;

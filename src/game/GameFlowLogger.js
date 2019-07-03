@@ -1,9 +1,14 @@
-define(['ash', 'game/GlobalSignals', 'game/GameGlobals', 'game/constants/GameConstants'], function (Ash, GlobalSignals, GameGlobals, GameConstants) {
+define(['ash',
+    'core/ConsoleLogger',
+    'game/GlobalSignals',
+    'game/GameGlobals',
+    'game/constants/GameConstants'
+], function (Ash, ConsoleLogger, GlobalSignals, GameGlobals, GameConstants) {
     
     var GameFlowLogger = Ash.Class.extend({
         
         constructor: function () {
-            if (GameConstants.logInfo) {
+            if (ConsoleLogger.logInfo) {
                 GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
                 GlobalSignals.add(this, GlobalSignals.popupOpenedSignal, this.onPopupOpened);
                 GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.onPopupClosed);
@@ -13,9 +18,7 @@ define(['ash', 'game/GlobalSignals', 'game/GameGlobals', 'game/constants/GameCon
         },
         
         log: function (msg) {
-            if (GameConstants.logInfo) {
-                console.log("flow: " + msg);
-            }
+            log.i("flow: " + msg);
         },
         
         onGameShown: function () {

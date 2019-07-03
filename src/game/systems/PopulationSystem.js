@@ -138,7 +138,7 @@ define([
                     var count = node.camp.assignedWorkers[workerCheck.name];
                     if (count > workerCheck.min) {
                         node.camp.assignedWorkers[workerCheck.name]--;
-                        console.log("Unassigned a worker: " + workerCheck.name);
+                        log.i("Unassigned a worker: " + workerCheck.name);
                         break;
                     }
                 }

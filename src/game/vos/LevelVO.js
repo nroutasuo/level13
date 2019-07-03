@@ -53,17 +53,17 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 		
 		addSector: function (sectorVO) {
 			if (sectorVO === null) {
-				console.warn("tried to add null sector to a level");
+				log.w("tried to add null sector to a level");
                 return false;
 			}
             
             if (sectorVO.position.level !== this.level) {
-				console.warn("tried to add sector (" + sectorVO.position + ") to wrong level (" + this.level + ")");
+				log.w("tried to add sector (" + sectorVO.position + ") to wrong level (" + this.level + ")");
                 return false;
             }
 			
 			if (this.hasSector(sectorVO.position.sectorX, sectorVO.position.sectorY)) {
-				console.warn("Level " + this.level + " already contains sector " + sectorVO.position);
+				log.w("Level " + this.level + " already contains sector " + sectorVO.position);
                 return false;
 			}
 			

@@ -33,7 +33,7 @@ function (Ash) {
             
             var result = { x: x, z: z };
             this.coordinates[i] = result;
-            // console.log("assigned coordinate: " + i + " { x: " + x + ", z: " + z +" }");
+            // log.i("assigned coordinate: " + i + " { x: " + x + ", z: " + z +" }");
         },
         
         initCoordinates: function (count) {
@@ -121,7 +121,7 @@ function (Ash) {
                 if (foundConflict) continue;
                 return i;
             }
-            console.warn("Couldn't find free valid buildings spot for " + building.name);
+            log.w("Couldn't find free valid buildings spot for " + building.name);
             return 0;
         },
 
@@ -139,7 +139,7 @@ function (Ash) {
                 if (this.getSpotIndex(x, z) < 0) return x;
                 if (this.getSpotIndex(-x, z) < 0) return -x;
             }
-            console.warn("Couldn't find free x coordinate for building spot: " + targetI);
+            log.w("Couldn't find free x coordinate for building spot: " + targetI);
             return 0;
         },
         

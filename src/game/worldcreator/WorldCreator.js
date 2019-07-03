@@ -29,6 +29,7 @@ define([
     WorldVO, LevelVO, SectorVO, ResourcesVO, LocaleVO, PositionVO, StashVO, PathConstraintVO,
     WorldCreatorConstants, PositionConstants, MovementConstants, EnemyConstants, UpgradeConstants, LocaleConstants
 ) {
+    var context = "WorldCreator";
 
     var WorldCreator = {
 
@@ -123,7 +124,7 @@ define([
                 }
 
                 // create basic structure (sectors and paths)
-                console.log("GENERATING LEVEL: " + levelVO.level + " num camps: " + numCamps);
+                log.i("GENERATING LEVEL: " + levelVO.level + " num camps: " + numCamps, context);
                 var requiredPaths = this.createRequiredPathsFromPositions(l, campOrdinal, passageUpPosition, campPositions, passageDownPosition, bottomLevel);
                 this.generateSectors(seed, levelVO, campPositions, requiredPaths);
                 
@@ -141,9 +142,9 @@ define([
                 this.generateZones(seed, levelVO);
 			}
 
-			console.log((GameConstants.logInfo ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
+			log.i("START " + GameConstants.STARTTimeNow() + "\t "
 				+ "World structure ready."
-				+ (GameConstants.logInfo ? " (ground: " + bottomLevel + ", surface: " + topLevel + ", total sectors: " + this.totalSectors + ")" : ""));
+				+ (" (ground: " + bottomLevel + ", surface: " + topLevel + ", total sectors: " + this.totalSectors + ")"));
             // WorldCreatorDebug.printWorld(this.world, [ "passageDown" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "criticalPaths.length" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "locales.length" ]);
@@ -235,8 +236,7 @@ define([
 				}
 			}
 
-			console.log((GameConstants.logInfo ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
-				+ "World texture ready.");
+			log.i("START " + GameConstants.STARTTimeNow() + "\t World texture ready.");
             // WorldCreatorDebug.printWorld(this.world, [ "sunlit" ]);
 		},
 
@@ -321,8 +321,7 @@ define([
                 }
 			}
 
-			console.log((GameConstants.logInfo ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
-				+ "World resources ready.");
+			log.i("START " + GameConstants.STARTTimeNow() + "\t World resources ready.");
             // WorldCreatorDebug.printWorld(this.world, [ "resourcesScavengable.food" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "hasSpring" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "criticalPaths.length" ]);
@@ -399,7 +398,7 @@ define([
                         break;
 
 					default:
-						console.warn("Unknown sector type " + sectorType);
+						log.w("Unknown sector type " + sectorType);
 					}
 				}
 				return localeType;
@@ -450,8 +449,7 @@ define([
                 createLocales(this.world, levelVO, campOrdinal, false, countLate, minLate);
 			}
 
-			console.log((GameConstants.logInfo ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
-				+ "World locales ready.");
+			log.i("START " + GameConstants.STARTTimeNow() + "\t World locales ready.");
             // WorldCreatorDebug.printWorld(this.world, [ "locales.length" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "criticalPath" ]);
 		},
@@ -498,8 +496,7 @@ define([
                 }
             }
 
-			console.log((GameConstants.logInfo ? "START " + GameConstants.STARTTimeNow() + "\t " : "")
-				+ "World hazards ready.");
+			log.i("START " + GameConstants.STARTTimeNow() + "\t World hazards ready.");
             // WorldCreatorDebug.printWorld(this.world, [ "hazards.cold" ]);
         },
 
@@ -522,7 +519,7 @@ define([
                         });
                         return true;
                     } else {
-                        if (GameConstants.logWarnings) console.warn("Skipped adding gang at " + sectorVO.position);
+                        log.w("Skipped adding gang at " + sectorVO.position);
                         return false;
                     }
                 };
@@ -595,7 +592,7 @@ define([
 				}
 			}
 
-			console.log((GameConstants.logInfo ? "START " + GameConstants.STARTTimeNow() + "\t " : "") + "World enemies ready.");
+			log.i("START " + GameConstants.STARTTimeNow() + "\t World enemies ready.");
             // WorldCreatorDebug.printWorld(this.world, [ "possibleEnemies.length" ]);
             // WorldCreatorDebug.printWorld(this.world, [ "enemyDifficulty" ]);
 		},
@@ -704,7 +701,7 @@ define([
             var path;
             var startPos;
             var endPos;
-            console.log("generate required paths level " + levelVO.level + ", count: " + requiredPaths.length);
+            log.i("generate required paths level " + levelVO.level + ", count: " + requiredPaths.length);
             for (var i = 0; i < requiredPaths.length; i++) {
                 path = requiredPaths[i];
                 startPos = path.start.clone();
@@ -754,12 +751,12 @@ define([
             }
             
             if (maxlen > 0) {
-                console.log("- dist: " + dist + " / maxlen: " + maxlen + " / final len: " + totalLength +  " | " + startPos + " to " + endPos + " | " + pathType);
+                log.i("- dist: " + dist + " / maxlen: " + maxlen + " / final len: " + totalLength +  " | " + startPos + " to " + endPos + " | " + pathType);
                 if (dist > maxlen) {
-                    console.log("-- required path max len < distance");
+                    log.i("-- required path max len < distance");
                 }
                 if (totalLength > maxlen) {
-                    console.log("-- required path max len < final len");
+                    log.i("-- required path max len < final len");
                 }
             }
             return result;
@@ -1132,7 +1129,7 @@ define([
                     if (options.allowedCriticalPaths && options.allowedCriticalPaths.indexOf(pathType) >= 0) continue;
                     for (var j = 0; j < neighbourVO.criticalPaths.length; j++) {
                         if (pathType === neighbourVO.criticalPaths[j]) {
-                            // console.warn("(level " + levelVO.level + ") Skipping blocker on critical path: " + pathType + " (type: " + blockerType + ")");
+                            // log.w("(level " + levelVO.level + ") Skipping blocker on critical path: " + pathType + " (type: " + blockerType + ")");
                             return;
                         }
                     }
@@ -1311,7 +1308,7 @@ define([
                 var options = { excludingFeature: "camp" };
                 var hazardSectors = WorldCreatorRandom.randomSectors(seed / 3 * levelOrdinal + 73 * levelVO.maxX, this.world, levelVO, 0, maxNumHazardClusters, options);
 
-                // console.log("level " + levelVO.level + ": " + hazardSectors.length + "/" + maxNumHazardClusters + " clusters");
+                // log.i("level " + levelVO.level + ": " + hazardSectors.length + "/" + maxNumHazardClusters + " clusters");
 
                 for (var h = 0; h < hazardSectors.length; h++) {
                     var hs = hazardSectors[h];
@@ -1412,7 +1409,7 @@ define([
                 if (globalE.length > 0) {
                     enemies.push(globalE[0]);
                 } else {
-                    console.warn("No valid enemies defined for sector " + sectorVO.position + " difficulty " + enemyDifficulty);
+                    log.w("No valid enemies defined for sector " + sectorVO.position + " difficulty " + enemyDifficulty);
                 }
             }
 

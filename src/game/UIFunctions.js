@@ -164,7 +164,7 @@ define(['ash',
 				$.each($(scope + " button.action"), function () {
 					var $element = $(this);
 					if ($element.hasClass("click-bound")) {
-						console.warn("trying to bind click twice! id: " + $element.attr("id"));
+						log.w("trying to bind click twice! id: " + $element.attr("id"));
 						return;
 					}
                     if ($element.hasClass("action-manual-trigger")) {
@@ -174,7 +174,7 @@ define(['ash',
 					$element.click(ExceptionHandler.wrapClick(function (e) {
 						var action = $(this).attr("action");
 						if (!action) {
-							console.warn("No action mapped for button.");
+							log.w("No action mapped for button.");
 							return;
 						}
 
@@ -336,9 +336,9 @@ define(['ash',
                     var $container = $(this);
                     var generated = $container.data("callout-generated");
                     if (generated) {
-                        if (GameConstants.logWarnings) {
-                            console.warn("Button callout already generated!");
-                            console.log($container);
+                        {
+                            log.w("Button callout already generated!");
+                            log.i($container);
                         }
                         return;
                     }
@@ -348,8 +348,8 @@ define(['ash',
                         var button = $(this).children("button")[0];
     					var action = $(button).attr("action");
                         if (!action) {
-                            console.warn("Action button with no action " + uiFunctions.count);
-                            console.log($(button))
+                            log.w("Action button with no action " + uiFunctions.count);
+                            log.i($(button))
                             return "";
                         }
     					if (action === "take_all" || action === "accept_inventory" || action === "use_in_inn_cancel" || action === "fight")
@@ -427,7 +427,7 @@ define(['ash',
 				if (content.length > 0) {
 					return '<div class="btn-callout"><div class="callout-arrow-up"></div><div class="btn-callout-content">' + content + '</div></div>';
 				} else {
-					console.warn("No callout could be created for action button with action " + action + ". No content for callout.");
+					log.w("No callout could be created for action button with action " + action + ". No content for callout.");
 					return "";
 				}
 			},
@@ -461,7 +461,7 @@ define(['ash',
 			},
 
 			startGame: function () {
-				console.log("Starting game..");
+				log.i("Starting game..");
 				var startTab = this.elementIDs.tabs.out;
 				var playerPos = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
 				if (playerPos.inCamp) startTab = this.elementIDs.tabs.in;
@@ -576,7 +576,7 @@ define(['ash',
 						}
 					}
 				} else {
-					console.warn("invalid stepper input value [" + fieldName + "]");
+					log.w("invalid stepper input value [" + fieldName + "]");
 					input.val(0);
 				}
 			},

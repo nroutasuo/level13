@@ -73,7 +73,7 @@ function (Ash, GameGlobals, CanvasConstants, ColorConstants, PlayerActionConstan
                             requiredNode.requiredByByLevel[node.level] = [];
                         requiredNode.requiredByByLevel[node.level].push(node);
                     } else {
-                        console.warn("Missing required node: " + requiredId);
+                        log.w("Missing required node: " + requiredId);
                     }
                 }
             }
@@ -235,7 +235,7 @@ function (Ash, GameGlobals, CanvasConstants, ColorConstants, PlayerActionConstan
             var $div = $("<div class='canvas-overlay-cell upgrades-overlay-cell' style='top: " + ypx + "px; left: " + xpx + "px' " + data +"><p>" + text +"</p></div>");
             var helper = this;
             $div.click(function (e) {
-                console.log("tech selected: " + node.definition.id);
+                log.i("tech selected: " + node.definition.id);
                 vis.selectedID = node.definition.id;
                 vis.selectioncb();
             });
@@ -278,7 +278,7 @@ function (Ash, GameGlobals, CanvasConstants, ColorConstants, PlayerActionConstan
             var gridX = Math.round(x*grids) / grids;
             var gridY = Math.round(y*grids) / grids;
             if (!tree.grid[gridY]) tree.grid[gridY] = {};
-            if (this.isOccupiedArea(tree, gridX, gridY, 0.5, 0.5)) console.warn("Overlapping position: " + gridX + "-" + gridY + " " + node.definition.name);
+            if (this.isOccupiedArea(tree, gridX, gridY, 0.5, 0.5)) log.w("Overlapping position: " + gridX + "-" + gridY + " " + node.definition.name);
             tree.grid[gridY][gridX] = node;
         },
         
@@ -311,8 +311,8 @@ function (Ash, GameGlobals, CanvasConstants, ColorConstants, PlayerActionConstan
                 
                 var j = 0;
                 while (this.isOccupiedArea(tree, childX, childY, 0.25, childYHeight/2)) {
-                    if (childY < 0) { console.log("break push due to 0"); break; }
-                    if (j > 100) { console.log("break push due to j"); break; }
+                    if (childY < 0) { log.i("break push due to 0"); break; }
+                    if (j > 100) { log.i("break push due to j"); break; }
                     childY += childYHeight / 2;
                     j++;
                 }

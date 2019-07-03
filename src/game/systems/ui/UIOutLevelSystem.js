@@ -115,7 +115,7 @@ define([
 			var posComponent = this.playerPosNodes.head.position;
 
             if (!this.playerLocationNodes.head) {
-                console.warn("No player location");
+                log.w("No player location");
                 return;
             }
 

@@ -216,7 +216,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                     amountLeft -= amount;
                 }
             } else {
-                console.warn("Unknown buy good: " + outgoingCaravan.buyGood);
+                log.w("Unknown buy good: " + outgoingCaravan.buyGood);
             }
             result.selectedItems = result.gainedItems;
             result.selectedResources = result.gainedResources;
@@ -233,7 +233,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             } else if (buyGood === TradeConstants.GOOD_TYPE_NAME_INGREDIENTS) {
                 amountGet = valueSell / TradeConstants.VALUE_INGREDIENTS;
             } else {
-                console.warn("Unknown buy good: " + buyGood);
+                log.w("Unknown buy good: " + buyGood);
             }
             amountGet = Math.floor(amountGet+0.001);
             return amountGet;
@@ -247,7 +247,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             } else if (good === TradeConstants.GOOD_TYPE_NAME_INGREDIENTS) {
                 return BagConstants.CAPACITY_ITEM_INGREDIENT * amount;
             } else {
-                console.warn("Unknown  good: " + good);
+                log.w("Unknown  good: " + good);
                 return 0;
             }
         },

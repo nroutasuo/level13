@@ -34,17 +34,17 @@ define([
 			try {
 				result = JSON.parse(json);
 			} catch (ex) {
-				console.warn("Error parsing save JSON. " + ex);
+				log.w("Error parsing save JSON. " + ex);
 				return null;
 			}
 
 			if (!result.gameState) {
-				console.warn("Save JSON is missing a GameState.");
+				log.w("Save JSON is missing a GameState.");
 				return null;
 			}
 
 			if (!result.entitiesObject) {
-				console.warn("Save JSON is missing an entities object.");
+				log.w("Save JSON is missing an entities object.");
 				return null;
 			}
 
@@ -98,8 +98,8 @@ define([
 				}
 
 				if (!component) {
-					console.warn("Component not found while loading:");
-					console.log(componentKey);
+					log.w("Component not found while loading:");
+					log.i(componentKey);
 					failedComponents++;
 					continue;
 				}
@@ -116,16 +116,16 @@ define([
 		},
 
 		loadComponent: function (component, componentValues, saveKey) {
-			// console.log(component);
+			// log.i(component);
 			for (var valueKey in componentValues) {
-				// console.log(valueKey + ": " + componentValues[valueKey]);
+				// log.i(valueKey + ": " + componentValues[valueKey]);
 				if (typeof componentValues[valueKey] != 'object') {
 					component[valueKey] = componentValues[valueKey];
 				} else {
 					if (typeof component[valueKey] == "undefined") continue;
 					for (var valueKey2 in componentValues[valueKey]) {
 						var value2 = componentValues[valueKey][valueKey2];
-						// console.log(valueKey2 + ": " + value2)
+						// log.i(valueKey2 + ": " + value2)
 						if (value2 === null) {
 							continue;
 						} else if (typeof value2 != 'object') {
@@ -140,7 +140,7 @@ define([
 							this.loadObject(component[valueKey][valueKey2], componentValues[valueKey][valueKey2Int]);
 						} else {
 							if (typeof component[valueKey][valueKey2] == "undefined") {
-								console.warn("Error loading. Unknown value key " + valueKey2 + " for object " + valueKey + " in " + saveKey);
+								log.w("Error loading. Unknown value key " + valueKey2 + " for object " + valueKey + " in " + saveKey);
 								continue;
 							}
 							this.loadObject(component[valueKey][valueKey2], value2);

@@ -1,6 +1,7 @@
 define([
     'ash',
     'core/ExceptionHandler',
+    'core/ConsoleLogger',
     'game/GameGlobals',
     'game/GameFlowLogger',
     'game/GlobalSignals',
@@ -77,6 +78,7 @@ define([
 ], function (
     Ash,
     ExceptionHandler,
+    ConsoleLogger,
     GameGlobals,
     GameFlowLogger,
     GlobalSignals,
@@ -212,7 +214,7 @@ define([
             if (!plugins) return;
             var game = this;
             for (var i = 0; i < plugins.length; i++) {
-                console.log("Add plugin " + (i+1) + "/" + plugins.length + ": " + plugins[i]);
+                log.i("Add plugin " + (i+1) + "/" + plugins.length + ": " + plugins[i]);
                 require([plugins[i]], function (plugin) {
                     game.engine.addSystem(new plugin(), SystemPriorities.update);
                 });
@@ -220,7 +222,7 @@ define([
         },
 
 		addSystems: function () {
-			if (GameConstants.logInfo) console.log("START " + GameConstants.STARTTimeNow() + "\t initializing systems");
+			log.i("START " + GameConstants.STARTTimeNow() + "\t initializing systems");
 
 			this.engine.addSystem(new SaveSystem(), SystemPriorities.preUpdate);
 			this.engine.addSystem(new PlayerPositionSystem(), SystemPriorities.preupdate);

@@ -51,7 +51,7 @@ define([
                 if (!this.partialTickModeStarted) {
                     var remainingTicks = Math.ceil(totalTime / this.maxGameTickTime);
                     var showThinking = remainingTicks >= 20;
-                    if (GameConstants.logInfo && !this.partialTickModeStarted) console.log("tick: partial tick, estimated remaining: " + remainingTicks + ", showThinking: " + showThinking);
+                    if (!this.partialTickModeStarted) log.i("tick: partial tick, estimated remaining: " + remainingTicks + ", showThinking: " + showThinking);
                     if (showThinking) {
                         GameGlobals.uiFunctions.hideGame(false, true);
                     } else {
@@ -62,7 +62,7 @@ define([
             } else {
                 // normal tick
                 if (this.partialTickModeStarted) {
-                    if (GameConstants.logInfo) console.log("tick: normal");
+                    log.i("tick: normal");
                     GameGlobals.uiFunctions.showGame();
                     this.partialTickModeStarted = false;
                 }
@@ -73,7 +73,7 @@ define([
 
 		// Called on page load
 		setupGame: function () {
-            if (GameConstants.logInfo) console.log("START " + GameConstants.STARTTimeNow() + "\t loading and setting up game");
+            log.i("START " + GameConstants.STARTTimeNow() + "\t loading and setting up game");
 			this.initializeEntities();
 			var loaded = this.loadGameState();
             GameConstants.gameSpeedCamp = 1;
@@ -83,13 +83,13 @@ define([
 			if (loaded) this.syncLoadedGameState();
 			if (!loaded) this.setupNewGame();
 
-            if (GameConstants.logInfo) console.log("START " + GameConstants.STARTTimeNow() + "\t world ready");
+            log.i("START " + GameConstants.STARTTimeNow() + "\t world ready");
             GlobalSignals.worldReadySignal.dispatch();
 		},
 
 		// Called after all other systems are ready
 		startGame: function () {
-            if (GameConstants.logInfo) console.log("START " + GameConstants.STARTTimeNow() + "\t starting game");
+            log.i("START " + GameConstants.STARTTimeNow() + "\t starting game");
 
             // for restart:
             this.engine.getSystem(UIOutLevelSystem).pendingUpdateDescription = true;
@@ -105,7 +105,7 @@ define([
 		},
 
 		restartGame: function () {
-            console.log("Restarting game..");
+            log.i("Restarting game..");
             gtag('event', 'game_restart', { event_category: 'game_data' });
 			GameGlobals.uiFunctions.hideGame(true);
             var sys = this;
@@ -188,14 +188,14 @@ define([
             var worldSeed;
             if (hasSave) worldSeed = parseInt(loadedGameState.worldSeed);
             else worldSeed = WorldCreatorRandom.getNewSeed();
-            if (GameConstants.logInfo) console.log("START " + GameConstants.STARTTimeNow() + "\t creating world (seed: " + worldSeed + ")");
+            log.i("START " + GameConstants.STARTTimeNow() + "\t creating world (seed: " + worldSeed + ")");
 
             WorldCreator.prepareWorld(worldSeed, GameGlobals.itemsHelper);
             GameGlobals.gameState.worldSeed = worldSeed;
             gtag('set', { 'world_seed': worldSeed });
 
             // Create other entities and fill components
-            if (GameConstants.logInfo) console.log("START " + GameConstants.STARTTimeNow() + "\t loading entities");
+            log.i("START " + GameConstants.STARTTimeNow() + "\t loading entities");
             this.createLevelEntities(worldSeed);
             WorldCreator.discardWorld();
             if (hasSave) {
@@ -237,17 +237,17 @@ define([
                     }
                 }
 
-                console.log("Loaded from " + save.timeStamp);
+                log.i("Loaded from " + save.timeStamp);
 
                 if (failedComponents > 0) {
-                    console.warn(failedComponents + " components failed to load.");
+                    log.w(failedComponents + " components failed to load.");
                 }
 
                 return true;
             }
             else
             {
-                console.log("No save found.");
+                log.i("No save found.");
                 return false;
             }
 		},
@@ -261,7 +261,7 @@ define([
                 return object;
             } catch (exception) {
                 // TODO show no save found to user?
-                console.log("Error loading save: " + exception);
+                log.i("Error loading save: " + exception);
             }
             return null;
         },
@@ -290,6 +290,7 @@ define([
         },
 
         onRestart: function (resetSave) {
+            console.clear();
             this.restartGame();
         }
     });

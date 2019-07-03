@@ -37,7 +37,7 @@ function (Ash, UpgradeConstants, UpgradeVO, BlueprintVO) {
                 this.newBlueprints.splice(this.newBlueprints.indexOf(blueprintVO), 1);
                 this.availableBlueprints.push(blueprintVO);
             } else {
-                console.warn("No such blueprint found: " + upgradeId);
+                log.w("No such blueprint found: " + upgradeId);
             }
         },
 

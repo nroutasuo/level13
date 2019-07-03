@@ -128,7 +128,7 @@ define([
 					var targetEnemies = Math.min(currentEnemies, neighbourEnemies);
 					
 					if (targetEnemies < currentEnemies) {
-						console.warn("set sector control for " + localeId + " at " + positionComponent.level + "-" + positionComponent.sectorId() + " | " + targetEnemies + " < " + currentEnemies);
+						log.w("set sector control for " + localeId + " at " + positionComponent.level + "-" + positionComponent.sectorId() + " | " + targetEnemies + " < " + currentEnemies);
 						sectorControlComponent.currentLocaleEnemies[localeId] -= (currentEnemies - targetEnemies);
 					}
 				}
@@ -164,7 +164,7 @@ define([
                 if (isBlockedByHazard) movementOptions.cantMoveToReason[direction] = HazardConstants.getHazardDisabledReason(featuresComponent, this.itemsNodes.head.items);
 				if (!neighbour) movementOptions.cantMoveToReason[direction] = "Nothing here.";
                 
-                //console.log(PositionConstants.getDirectionName(direction) + "\t" + isBlockedByHazard + " | " + movementOptions.cantMoveToReason[direction]);
+                //log.i(PositionConstants.getDirectionName(direction) + "\t" + isBlockedByHazard + " | " + movementOptions.cantMoveToReason[direction]);
 			}
 			
 			// Allow up/down movement if passages exists AND no hazard

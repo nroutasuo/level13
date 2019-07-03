@@ -106,10 +106,10 @@ define(['ash',
 		},
 
 		startAction: function (action, param) {
-            // console.log("start action: " + action + " | " + param);
+            // log.i("start action: " + action + " | " + param);
             
             if (this.currentAction && !this.isSubAction(action)) {
-                if (GameConstants.logWarnings) console.warn("There is an incompleted action: " + this.currentAction + " (tried to start: " + action + ")");
+                log.w("There is an incompleted action: " + this.currentAction + " (tried to start: " + action + ")");
                 return;
             }
             
@@ -144,7 +144,7 @@ define(['ash',
                         var tradePartnerOrdinal = parseInt(param);
 						var caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
 						if (!caravansComponent.pendingCaravan) {
-							console.warn("Can't start caravan. No valid pending caravan found.");
+							log.w("Can't start caravan. No valid pending caravan found.");
 							return;
 						}
                         
@@ -251,7 +251,7 @@ define(['ash',
                 case "move_sector_nw": this.moveTo(PositionConstants.DIRECTION_NW); break;
                 case "move_camp_global": this.moveToCamp(param); break;
 				default:
-					console.warn("No function mapped for action " + action + " in PlayerActionFunctions.performAction");
+					log.w("No function mapped for action " + action + " in PlayerActionFunctions.performAction");
 					break;
 			}
 		},
@@ -333,7 +333,7 @@ define(['ash',
 					break;
 
 				default:
-					console.warn("unknown direction: " + direction);
+					log.w("unknown direction: " + direction);
 					break;
 			}
 
@@ -361,7 +361,7 @@ define(['ash',
 				this.enterCamp(true);
 				GlobalSignals.playerMovedSignal.dispatch(playerPos);
 			} else {
-				console.warn("No camp found for level " + level);
+				log.w("No camp found for level " + level);
 			}
 		},
 
@@ -446,7 +446,7 @@ define(['ash',
 				}
 			} else {
 				playerPos.inCamp = false;
-				console.warn("No valid camp found.");
+				log.w("No valid camp found.");
 			}
 		},
 
@@ -469,7 +469,7 @@ define(['ash',
 				this.forceTabUpdate();
 				this.save();
 			} else {
-				console.warn("No valid camp found. (player pos: " + playerPos + ")");
+				log.w("No valid camp found. (player pos: " + playerPos + ")");
 			}
 		},
 
@@ -558,7 +558,7 @@ define(['ash',
 				var logMsgId = found ? LogConstants.MSG_ID_SCOUT_FOUND_SOMETHING : LogConstants.MSG_ID_SCOUT;
 				this.handleOutActionResults("scout", logMsgId, logMsg, logMsg, logMsg, true, successCallback);
 			} else {
-				if (GameConstants.logWarnings) console.warn("Sector already scouted.");
+				log.w("Sector already scouted.");
 			}
 		},
 
@@ -630,7 +630,7 @@ define(['ash',
 		},
 
 		clearWaste: function (direction) {
-			console.log("clear waste " + direction);
+			log.i("clear waste " + direction);
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 
 			var logMsgSuccess = "Cleared the pollution. The area is now safe to pass through.";
@@ -639,7 +639,7 @@ define(['ash',
 			var logMsgDefeat = logMsgFailBase + "Lost the fight.";
 
 			var successCallback = function () {
-				console.log("clear waste callback " + direction);
+				log.i("clear waste callback " + direction);
 				sectorStatus.setCleared(direction);
 			};
 
@@ -729,7 +729,7 @@ define(['ash',
             }
 
 			if (!campSector || !caravan) {
-				console.warn("No matching returning caravan found.");
+				log.w("No matching returning caravan found.");
 				return;
 			}
 
@@ -737,8 +737,8 @@ define(['ash',
 			var tradePartner = TradeConstants.getTradePartner(parseInt(tradePartnerOrdinal));
 
 			if (!tradePartner) {
-				console.warn("No matching trade partner found.");
-                console.log(caravan);
+				log.w("No matching trade partner found.");
+                log.i(caravan);
 				return;
 			}
             
@@ -852,7 +852,7 @@ define(['ash',
 			var sector = this.playerLocationNodes.head.entity;
 			var level = GameGlobals.levelHelper.getLevelEntityForSector(sector);
 			var position = sector.get(PositionComponent).getPosition();
-            if (GameConstants.logInfo) console.log("Build camp " + position);
+            log.i("Build camp " + position);
 			var campComponent = new CampComponent(position.toString());
 			campComponent.foundedTimeStamp = GameGlobals.gameState.gamePlayedSeconds;
 			sector.add(campComponent);
@@ -924,10 +924,10 @@ define(['ash',
 				this.buildImprovement(neighbourAction, GameGlobals.playerActionsHelper.getImprovementNameForAction(neighbourAction), neighbour, true);
 				this.addLogMessage(LogConstants.MSG_ID_BUILT_PASSAGE, msg);
 			} else {
-				console.warn("Couldn't find sectors for building passage.");
-				console.log(sector);
-				console.log(neighbour);
-				console.log(sectorPos);
+				log.w("Couldn't find sectors for building passage.");
+				log.i(sector);
+				log.i(neighbour);
+				log.i(sectorPos);
 			}
 		},
 
@@ -1092,7 +1092,7 @@ define(['ash',
 
 			// TODO move this check to startAction
 			if (!blocker || blocker.type !== MovementConstants.BLOCKER_TYPE_GAP) {
-				console.warn("Can't build bridge because there is no gap: " + sectorPos);
+				log.w("Can't build bridge because there is no gap: " + sectorPos);
 				return;
 			}
 
@@ -1104,7 +1104,7 @@ define(['ash',
 
 			// TODO move this check to startAction
 			if (!neighbourBlocker || neighbourBlocker.type !== MovementConstants.BLOCKER_TYPE_GAP) {
-				console.warn("Trying to build bridge but neighbour doesn't have a gap.");
+				log.w("Trying to build bridge but neighbour doesn't have a gap.");
 				return;
 			}
 
@@ -1138,9 +1138,9 @@ define(['ash',
 				this.buildImprovement(action, GameGlobals.playerActionsHelper.getImprovementNameForAction(action), sector);
 				this.addLogMessage(LogConstants.MSG_ID_BUILT_SPACESHIP, msg);
 			} else {
-				console.warn("Couldn't find sectors for building space ship.");
-				console.log(sector);
-				console.log(sectorPos);
+				log.w("Couldn't find sectors for building space ship.");
+				log.i(sector);
+				log.i(sectorPos);
 			}
 		},
         
@@ -1182,7 +1182,7 @@ define(['ash',
 					campComponent.rumourpoolchecked = true;
 				}
 			} else {
-				console.warn("No camp sector found.");
+				log.w("No camp sector found.");
 			}
 			this.completeAction("use_in_campfire");
 			this.forceResourceBarUpdate();
@@ -1197,7 +1197,7 @@ define(['ash',
 				this.playerStatsNodes.head.rumours.value += CampConstants.RUMOURS_PER_VISIT_MARKET;
 				this.addLogMessage(LogConstants.MSG_ID_USE_MARKET, "Visited the market and listened to the latest gossip.");
 			} else {
-				console.warn("No camp sector found.");
+				log.w("No camp sector found.");
 			}
 			this.completeAction("use_in_market");
 			this.forceResourceBarUpdate();
@@ -1343,7 +1343,7 @@ define(['ash',
 					if (injuryToHeal !== null) {
 						perksComponent.removeItemsById(injuryToHeal.id);
 					} else {
-						console.warn("No injury found that can be healed!");
+						log.w("No injury found that can be healed!");
 					}
 					this.forceStatsBarUpdate();
 					break;
@@ -1354,7 +1354,7 @@ define(['ash',
 					break;
 
 				default:
-					console.warn("Item not mapped for useItem: " + itemId);
+					log.w("Item not mapped for useItem: " + itemId);
 					break;
 			}
 		},
@@ -1365,12 +1365,12 @@ define(['ash',
 					var fightComponent = this.fightNodes.head.fight;
 					if (fightComponent) {
                         var stunTime = FightConstants.FIGHT_LENGTH_SECONDS / 2;
-                        if (GameConstants.logInfo) console.log("stun enemy for " + Math.round(stunTime * 100)/100 + "s")
+                        log.i("stun enemy for " + Math.round(stunTime * 100)/100 + "s")
 						fightComponent.itemEffects.enemyStunnedSeconds = stunTime;
 					}
 					break;
 				default:
-					console.warn("Item not mapped for useItemFight: " + itemId);
+					log.w("Item not mapped for useItemFight: " + itemId);
 					break;
 			}
 
@@ -1463,7 +1463,7 @@ define(['ash',
 				camp.assignedWorkers.scientist = Math.max(0, Math.floor(scientists));
 				GlobalSignals.workersAssignedSignal.dispatch(sector);
 			} else {
-				console.warn("No camp found for worker assignment.");
+				log.w("No camp found for worker assignment.");
 			}
 		},
 
