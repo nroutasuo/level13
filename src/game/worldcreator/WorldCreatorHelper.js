@@ -224,6 +224,19 @@ define([
             return result;
         },
         
+        getDistanceToCamp: function (worldVO, levelVO, sector) {
+            var result = 9999;
+            for (var s = 0; s < levelVO.campSectors.length; s++) {
+                var campSector = levelVO.campSectors[s];
+                var path = WorldCreatorRandom.findPath(worldVO, sector.position, campSector.position, false, true);
+                if (path && path.length >= 0) {
+                    var dist = path.length;
+                    result = Math.min(result, dist);
+                }
+            }
+            return result;
+        },
+        
         sortSectorsByPathLenTo: function (worldVO, sector) {
             return function (a, b) {
                 var patha = WorldCreatorRandom.findPath(worldVO, sector.position, a.position);
@@ -275,6 +288,25 @@ define([
             }
             
             return points;
+        },
+        
+        getBorderSectorsForZone: function (levelVO, zone, includeAllPairs) {
+            var result = [];
+            var directions = PositionConstants.getLevelDirections();
+            for (var i = 0; i < levelVO.sectors.length; i++) {
+                var sector = levelVO.sectors[i];
+                if (sector.zone == zone) continue;
+                var neighbours = levelVO.getNeighbours(sector.position.sectorX, sector.position.sectorY);
+                for (var d in directions) {
+                    var direction = directions[d];
+                    var neighbour = neighbours[direction];
+                    if (neighbour && neighbour.zone == zone) {
+                        result.push({ sector: sector, neighbour: neighbour });
+                        if (!includeAllPairs) break;
+                    }
+                }
+            }
+            return result;
         },
 		
 		getBottomLevel: function (seed) {

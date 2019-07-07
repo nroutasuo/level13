@@ -504,16 +504,16 @@ define([
 		prepareWorldEnemies: function (seed, topLevel, bottomLevel) {
             var worldVO = this.world;
             var creator = this;
+            var randomGangFreq = 45;
+            
 			for (var l = topLevel; l >= bottomLevel; l--) {
                 var levelVO = this.world.getLevel(l);
-                var numLocales = 0;
-                var randomGangFreq = 45;
                 
                 var blockerType = MovementConstants.BLOCKER_TYPE_GANG;
-                var blockerSettings = { addDiagonals: addDiagonals };
-                var addGang = function (sectorVO, neighbourVO, addDiagonals) {
+                var addGang = function (sectorVO, neighbourVO, addDiagonals, force) {
                     if (!neighbourVO) neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
-                    if (creator.canHaveGang(sectorVO) && creator.canHaveGang(neighbourVO)) {
+                    if (force || (creator.canHaveGang(sectorVO) && creator.canHaveGang(neighbourVO))) {
+                        var blockerSettings = { addDiagonals: addDiagonals };
                         creator.addMovementBlocker(levelVO, sectorVO, neighbourVO, blockerType, blockerSettings, function (s, direction) {
                             s.numLocaleEnemies[LocaleConstants.getPassageLocaleId(direction)] = 3;
                         });
@@ -537,13 +537,14 @@ define([
                         index = WorldCreatorRandom.randomInt(finalSeed, min, max);
                         var sectorVO = levelVO.getSector(path[index].sectorX, path[index].sectorY);
                         var neighbourVO = levelVO.getSector(path[index + 1].sectorX, path[index + 1].sectorY);
+                        if (!creator.canHaveGang(sectorVO)) continue;
+                        if (!creator.canHaveGang(neighbourVO)) continue;
                         if (addGang(sectorVO, neighbourVO, false)) num++;
                     }
                     return num;
                 };
 
                 // sector-based: possible enemies, random encounters and locales
-                var randomGangIndex = 0;
                 for (var i = 0; i < levelVO.sectors.length; i++) {
                     var sectorVO = levelVO.sectors[i];
                     sectorVO.possibleEnemies = [];
@@ -559,10 +560,28 @@ define([
                     if (sectorVO.workshop) {
                         sectorVO.numLocaleEnemies[LocaleConstants.LOCALE_ID_WORKSHOP] = 3;
                     }
-
-                    // gangs: critical paths
-                    for (var s = 0; s < levelVO.campSectors.length; s++) {
-                        var campSector = levelVO.campSectors[s];
+				}
+                
+                // gangs: on zone borders
+                // - ZONE_PASSAGE_TO_CAMP: all except too close to camp
+                var borderSectors = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, true);
+                for (var i = 0; i < borderSectors.length; i++) {
+                    var pair = borderSectors[i];
+                    var distanceToCamp = Math.min(
+                        WorldCreatorHelper.getDistanceToCamp(this.world, levelVO, pair.sector),
+                        WorldCreatorHelper.getDistanceToCamp(this.world, levelVO, pair.neighbour)
+                    );
+                    if (distanceToCamp > 2) {
+                        addGang(pair.sector, pair.neighbour, true, true);
+                    }
+                }
+                
+                // gangs: critical paths
+                var numLocales = 0;
+                for (var s = 0; s < levelVO.campSectors.length; s++) {
+                    var campSector = levelVO.campSectors[s];
+                    for (var i = 0; i < levelVO.sectors.length; i++) {
+                        var sectorVO = levelVO.sectors[i];
                         if (sectorVO.workshop) {
                             // camps to workshops (all paths)
                             var rand = Math.round(1000 + seed + (l+21) * 11 + (s + 2) * 31 + (i + 1) * 51);
@@ -576,10 +595,16 @@ define([
                             numLocales++;
                         }
                     }
+                }
 
-                    // gangs: some random gangs regardless of camps
+                // gangs: some random gangs regardless of camps
+                var randomGangIndex = 0;
+                for (var i = 0; i < levelVO.sectors.length; i++) {
+                    var sectorVO = levelVO.sectors[i];
+                    if (!creator.canHaveGang(sectorVO)) continue;
                     if (randomGangIndex >= randomGangFreq) {
                         var neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
+                        if (!creator.canHaveGang(neighbourVO)) continue;
                         var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
                         if (!sectorVO.movementBlockers[direction]) {
                             var addDiagonals = i % (randomGangFreq * 2) === 0;
@@ -589,7 +614,7 @@ define([
                     }
 
                     randomGangIndex++;
-				}
+                }
 			}
 
 			log.i("START " + GameConstants.STARTTimeNow() + "\t World enemies ready.");
@@ -1034,6 +1059,7 @@ define([
                 // path to camp ZONE_PASSAGE_TO_CAMP
                 if (level != 13) {
                     setSectorZone(passage1, WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, 2);
+                    setSectorZone(camp, WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, 2);
                     var pathToCamp = WorldCreatorRandom.findPath(worldVO, passage1.position, camp.position, false, true);
                     setPathZone(pathToCamp, WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, 2);
                 }
@@ -1418,12 +1444,14 @@ define([
         
         canHaveGang: function (sectorVO) {
             if (!sectorVO) return false;
+            if (sectorVO.camp) return false;
+            if (sectorVO.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP) return false;
+            if (sectorVO.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE) return false;
             var position = sectorVO.position;
             if (position.level == 13 && position.sectorX == WorldCreatorConstants.FIRST_CAMP_X && position.sectorY == WorldCreatorConstants.FIRST_CAMP_Y) return false;
             return true;
         },
-
-
+        
 
 		// Functions that require that prepareWorld has been called first below this
 
