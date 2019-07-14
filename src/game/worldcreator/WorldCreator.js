@@ -476,22 +476,33 @@ define([
                 // hazards: level-wide values
                 var maxHazardCold = Math.min(100, itemsHelper.getMaxHazardColdForLevel(campOrdinal));
                 var maxHazardColdEasy = Math.min(100, itemsHelper.getMaxHazardColdForLevel(campOrdinal - 1));
+                
+                // hazard clusters (radiation and poison)
                 this.generateHazardClusters(seed, levelVO, itemsHelper);
 
-                // non-clustered environmental hazards (cold)
+                // non-clustered environmental hazards (cold) (edges of the map)
                 for (var s = 0; s < levelVO.sectors.length; s++) {
                     var sectorVO = levelVO.sectors[s];
+                    if (sectorVO.camp) continue;
                     var x = sectorVO.position.sectorX;
                     var y = sectorVO.position.sectorY;
+                    if (Math.abs(y) <= 2 && Math.abs(x) <= 2) continue;
+                    
+                    var distanceToCamp = WorldCreatorHelper.getDistanceToCamp(this.world, levelVO, sectorVO);
+                    if (distanceToCamp < 3) continue;
+                    
+                    var isEarlyZone = sectorVO.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP || sectorVO.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE;
+                    var isEarlyCriticalPath = sectorVO.isOnEarlyCriticalPath();
                     var edgeSector = levelVO.isEdgeSector(x, y);
                     var distanceToEdge = Math.min(Math.abs(y - levelVO.minY), Math.abs(y - levelVO.maxY), Math.abs(x - levelVO.minX), Math.abs(x - levelVO.maxX));
-
-                    if (Math.abs(y) > 2 && Math.abs(x) > 2 && !sectorVO.camp) {
+                    
+                    var edgeThreshold = isEarlyCriticalPath || isEarlyZone ? 7 : 5;
+                    var centerThreshold = isEarlyCriticalPath || isEarlyZone ? WorldCreatorConstants.TOWER_RADIUS + 2 : WorldCreatorConstants.TOWER_RADIUS;
+                    
+                    if (edgeSector || l === topLevel || distanceToEdge < edgeThreshold || Math.abs(y) > centerThreshold || Math.abs(x) > centerThreshold) {
                         var hazardValueRand = WorldCreatorRandom.random(seed / (l + 40) + x * y / 6 + seed + y * 2 + l * l * 959);
-                        if (edgeSector || l === topLevel || distanceToEdge < 5 || Math.abs(y) > WorldCreatorConstants.TOWER_RADIUS || Math.abs(x) > WorldCreatorConstants.TOWER_RADIUS) {
-                            var maxValue = sectorVO.isOnEarlyCriticalPath() ? maxHazardColdEasy : maxHazardCold;
-                            sectorVO.hazards.cold = Math.min(maxValue, Math.ceil(hazardValueRand * 10) * 10);
-                        }
+                        var maxValue = isEarlyCriticalPath || isEarlyZone ? maxHazardColdEasy : maxHazardCold;
+                        sectorVO.hazards.cold = Math.min(maxValue, Math.ceil(hazardValueRand * 10) * 10);
                     }
                 }
             }
@@ -573,6 +584,24 @@ define([
                     );
                     if (distanceToCamp > 2) {
                         addGang(pair.sector, pair.neighbour, true, true);
+                    }
+                }
+                // - ZONE_PASSAGE_TO_PASSAGE: most
+                var isGoingDown = l <= 13 && l >= bottomLevel;
+                var passageUp = levelVO.passageUpSector;
+                var passageDown = levelVO.passageDownSector;
+                var passage1 = isGoingDown ? passageUp : passageDown;
+                var passage2 = isGoingDown ? passageDown : passageUp;
+                if (passage2) {
+                    borderSectors = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE, false);
+                    for (var i = 0; i < borderSectors.length; i++) {
+                        // sector: z_extra, neighbour: z_p2p - if distance from sector is longer than from neighbour, add blocker
+                        var pair = borderSectors[i];
+                        var distance1 = WorldCreatorRandom.findPath(worldVO, pair.sector.position, passage2.position, false, true).length;
+                        var distance2 = WorldCreatorRandom.findPath(worldVO, pair.neighbour.position, passage2.position, false, true).length;
+                        if (distance1 > distance2) {
+                            addGang(pair.sector, pair.neighbour, true, true);
+                        }
                     }
                 }
                 
@@ -1058,8 +1087,8 @@ define([
                 var camp = levelVO.campSectors[0];
                 // path to camp ZONE_PASSAGE_TO_CAMP
                 if (level != 13) {
-                    setSectorZone(passage1, WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, 2);
-                    setSectorZone(camp, WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, 2);
+                    setSectorZone(passage1, WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, 3);
+                    setSectorZone(camp, WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, 3);
                     var pathToCamp = WorldCreatorRandom.findPath(worldVO, passage1.position, camp.position, false, true);
                     setPathZone(pathToCamp, WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, 2);
                 }
@@ -1328,14 +1357,25 @@ define([
                     else return maxHazardPoison;
                 }
             }
+            
+            var setSectorHazard = function (sectorVO, hazardValueRand, isRadiation) {
+                var isEasy = sectorVO.isOnEarlyCriticalPath() || sectorVO.isOnEarlyZone();
+                var maxHazardValue = getMaxValue(isRadiation, isEasy);
+                var minHazardValue = Math.min(20, maxHazardValue / 3 * 2);
+                var hazardValue = Math.ceil((minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue)) / 5) * 5;
+                if (isRadiation) {
+                    sectorVO.hazards.radiation = hazardValue;
+                } else {
+                    sectorVO.hazards.poison = hazardValue;
+                }
+            };
 
             if (!(isPollutedLevel || isRadiatedLevel)) {
+                // normal level
+                // - clusters
                 var maxNumHazardClusters = Math.min(4, levelVO.sectors.length / 100);
-                var options = { excludingFeature: "camp" };
+                var options = { excludingFeature: "camp", excludingZone: WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP };
                 var hazardSectors = WorldCreatorRandom.randomSectors(seed / 3 * levelOrdinal + 73 * levelVO.maxX, this.world, levelVO, 0, maxNumHazardClusters, options);
-
-                // log.i("level " + levelVO.level + ": " + hazardSectors.length + "/" + maxNumHazardClusters + " clusters");
-
                 for (var h = 0; h < hazardSectors.length; h++) {
                     var hs = hazardSectors[h];
                     var hrRandom = WorldCreatorRandom.random(84848 + levelOrdinal * 99 + (h+12) * 111 + seed / 777);
@@ -1345,20 +1385,25 @@ define([
                     for (var hx = hs.position.sectorX - hr; hx <= hs.position.sectorX + hr; hx++) {
                         for (var hy = hs.position.sectorY - hr; hy <= hs.position.sectorY + hr; hy++) {
                             var sectorVO = levelVO.getSector(hx, hy);
-                            if (sectorVO && !sectorVO.camp) {
-                                var maxHazardValue = getMaxValue(isRadiation, sectorVO.isOnEarlyCriticalPath());
-                                var minHazardValue = Math.min(20, maxHazardValue / 3 * 2);
-                                var hazardValue = Math.ceil((minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue)) / 5) * 5;
-                                if (isRadiation) {
-                                    sectorVO.hazards.radiation = hazardValue;
-                                } else {
-                                    sectorVO.hazards.poison = hazardValue;
-                                }
-                            }
+                            if (!sectorVO) continue;
+                            if (sectorVO.camp) continue;
+                            if (WorldCreatorConstants.isEarlierZone(sectorVO.zone, hs.zone)) continue;
+                            setSectorHazard(sectorVO, hazardValueRand, isRadiation);
                         }
                     }
                 }
+                // - zone ZONE_EXTRA (only on campable levels as on on-campable ones ZONE_EXTRA is most of the level)
+                if (levelVO.isCampable) {
+                    var isRadiation = maxHazardRadiation > 0 && WorldCreatorRandom.randomBool(seed / 3385 + levelOrdinal * 7799);
+                    for (var i = 0; i < levelVO.sectors.length; i++) {
+                        var sectorVO = levelVO.sectors[i];
+                        if (sectorVO.zone != WorldCreatorConstants.ZONE_EXTRA) continue;
+                        setSectorHazard(sectorVO, 1, isRadiation);
+                        
+                    }
+                }
             } else {
+                // level completely covered in hazard
                 for (var i = 0; i < levelVO.sectors.length; i++) {
                     var sectorVO = levelVO.sectors[i];
                     var maxHazardValue = getMaxValue(isRadiation, sectorVO.isOnEarlyCriticalPath());

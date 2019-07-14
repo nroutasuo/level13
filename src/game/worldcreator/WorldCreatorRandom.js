@@ -15,6 +15,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
         // options:
         // - requireCentral (boolean): only include central sectors (default false)
         // - excludingFeature (string): exclude sectors that have this featue (for example "camp")
+        // - excludingZone (strong): exclude sectors assigned to give zone
         // - pathConstraints (array of PathConstraintVO): all paths must be satisfied if present
         // - numDuplicates (int): how many of the returned sectors can be the same (default 1 -> no duplicates) (0 -> no limit)
 		randomSectors: function (seed, worldVO, levelVO, min, max, options) {
@@ -48,6 +49,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 			var checkExclusion = function (sectorVO) {
                 if (!sectorVO) return false;
 				if (options.excludingFeature && sectorVO[options.excludingFeature]) return false;
+                if (options.excludingZone && sectorVO.zone == options.excludingZone) return false;
 				return true;
 			};
 			for (var i = 0; i < numSectors; i++) {
@@ -82,6 +84,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 				if (options.excludingFeature && sectorVO[options.excludingFeature]) {
 					return false;
 				}
+                if (options.excludingZone && sectorVO.zone == options.excludingZone) return false;
                 if (!WorldCreatorRandom.checkPathRequirements(worldVO, sector, options.pathConstraints)) {
                     return false;
                 }

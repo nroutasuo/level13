@@ -258,11 +258,6 @@ define([
                 return true;
             };
             
-            // 1st passage
-            if (levelVO.level != 13) {
-                addPoint(passage1.position, WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP);
-            }
-            
             // camp
             addPoint(camp.position, WorldCreatorConstants.ZONE_POI_TEMP);
             

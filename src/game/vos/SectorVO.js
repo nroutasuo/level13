@@ -42,6 +42,10 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
             return false;
         },
         
+        isOnEarlyZone: function () {
+            return this.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP || this.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE;
+        },
+        
         updateCriticalPath: function () {
             this.criticalPath = "-";
             for (var i = 0; i < this.criticalPaths.length; i++) {

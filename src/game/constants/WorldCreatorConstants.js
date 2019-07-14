@@ -195,6 +195,10 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
                 if (zone == z) return i;
             }
             return -1;
+        },
+        
+        isEarlierZone: function (zone1, zone2) {
+            return this.getZoneIndex(zone1) < this.getZoneIndex(zone2);
         }
 
     };
