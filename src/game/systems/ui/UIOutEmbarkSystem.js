@@ -27,7 +27,6 @@ define([
         // TODO create nice transitions for leaving camp
 	
 		constructor: function (resourceHelper) {
-            GameGlobals.uiFunctions.toggle("#switch-embark .bubble", false);
             this.initElements();
 			return this;
 		},

@@ -308,7 +308,7 @@ define(['ash',
 			},
 
 			generateTabBubbles: function () {
-				$("#switch li").append("<div class='bubble'>1</div>");
+				$("#switch li").append("<div class='bubble' style='display:none'>1</div>");
 			},
 
 			generateResourceIndicators: function () {
