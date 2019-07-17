@@ -755,7 +755,6 @@ define([
             var path;
             var startPos;
             var endPos;
-            log.i("generate required paths level " + levelVO.level + ", count: " + requiredPaths.length);
             for (var i = 0; i < requiredPaths.length; i++) {
                 path = requiredPaths[i];
                 startPos = path.start.clone();
@@ -805,12 +804,11 @@ define([
             }
             
             if (maxlen > 0) {
-                log.i("- dist: " + dist + " / maxlen: " + maxlen + " / final len: " + totalLength +  " | " + startPos + " to " + endPos + " | " + pathType);
                 if (dist > maxlen) {
-                    log.i("-- required path max len < distance");
+                    log.w("-- required path max len < distance");
                 }
                 if (totalLength > maxlen) {
-                    log.i("-- required path max len < final len");
+                    log.w("-- required path max len < final len");
                 }
             }
             return result;
@@ -1195,11 +1193,6 @@ define([
             sectorVO.addBlocker(direction, blockerType);
             neighbourVO.addBlocker(neighbourDirection, blockerType);
 
-            if (cb) {
-                cb(sectorVO, direction);
-                cb(neighbourVO, neighbourDirection);
-            }
-
             // add blockers to adjacent paths too (if present) so player can't just walk around the blocker
             if (options.addDiagonals) {
                 var diagonalsOptions = Object.assign({}, options);
@@ -1212,6 +1205,13 @@ define([
                 for (var j = 0; j < nextNeighbours.length; j++) {
                     this.addMovementBlocker(levelVO, neighbourVO, nextNeighbours[j], blockerType, diagonalsOptions, cb);
                 }
+            }
+            
+            this.world.resetPaths();
+
+            if (cb) {
+                cb(sectorVO, direction);
+                cb(neighbourVO, neighbourDirection);
             }
         },
 
