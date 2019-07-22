@@ -22,8 +22,9 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
         passageSectors: [],
         passageUpSectors: null,
         passageDownSector: null,
-		sectorsByPos: {},
+        localeSectors: [],
         possibleSpringSectors: [],
+		sectorsByPos: {},
 		minX: 0,
 		maxX: 0,
 		minY: 0,
@@ -43,8 +44,9 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
             this.passageSectors = [];
             this.passageUpSectors = null;
             this.passageDownSectors = null;
-			this.sectorsByPos = [];
+            this.localeSectors = [];
             this.possibleSpringSectors = [];
+			this.sectorsByPos = [];
 			this.minX = 0;
 			this.maxX = 0;
 			this.minY = 0;
