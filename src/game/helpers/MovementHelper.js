@@ -1,8 +1,8 @@
 // Singleton with helper methods for movement, blockers etc
 define([
     'ash',
-    'game/constants/ItemConstants',
     'game/constants/LocaleConstants',
+    'game/constants/MovementConstants',
     'game/constants/PositionConstants',
     'game/nodes/player/ItemsNode',
     'game/components/common/PositionComponent',
@@ -10,7 +10,7 @@ define([
     'game/components/sector/SectorControlComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
-], function (Ash, ItemConstants, LocaleConstants, PositionConstants, ItemsNode, PositionComponent, PassagesComponent, SectorControlComponent, SectorStatusComponent, SectorImprovementsComponent) {
+], function (Ash, LocaleConstants, MovementConstants, PositionConstants, ItemsNode, PositionComponent, PassagesComponent, SectorControlComponent, SectorStatusComponent, SectorImprovementsComponent) {
     
     var MovementHelper = Ash.Class.extend({
         
@@ -45,20 +45,25 @@ define([
 				var isBridged = this.isBridged(sectorEntity, direction);
 				var isDefeated = this.isDefeated(sectorEntity, direction);
 				var isCleaned = this.isCleaned(sectorEntity, direction);
-				
 				var blocker = passagesComponent.getBlocker(direction);
-					
-				var notBridged = blocker !== null && blocker.bridgeable && !isBridged;
-				var notBridged = blocker !== null && blocker.bridgeable && !isBridged;
-				var notDefeated = blocker !== null && blocker.defeatable && !isDefeated;
-				var notCleaned = blocker !== null && blocker.cleanable && !isCleaned;
 				
-				blocked = Boolean(blocker && (notBridged || notDefeated || notCleaned));
-				if (notBridged) reason = "Bridge needed.";
-				if (notDefeated) reason = "Blocked by a fight.";
-				if (notCleaned) reason = "Blocked by toxic waste.";
-				
-				return { value: blocked, reason: reason };
+                if (blocker !== null) {
+                    switch (blocker.type) {
+        				case MovementConstants.BLOCKER_TYPE_GAP:
+				            return { value: !isBridged, reason: "Bridge needed." };
+        				case MovementConstants.BLOCKER_TYPE_WASTE:
+				            return { value: !isCleaned, reason: "Blocked by toxic waste." };
+        				case MovementConstants.BLOCKER_TYPE_GANG:
+				            return { value: !isDefeated, reason: "Blocked by a fight." };
+                        case MovementConstants.BLOCKER_TYPE_DEBRIS:
+				            return { value: true, reason: "Blocked by debris." };
+                        default:
+                            log.w(this, "Unknown blocker type: " + blocker.type);
+                            return { value: false };
+                    }
+                } else {
+                    return { value: false };
+                }
 			}
 			
 			if (direction === PositionConstants.DIRECTION_UP || direction === PositionConstants.DIRECTION_DOWN) {

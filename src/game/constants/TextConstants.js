@@ -294,11 +294,11 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
 			return this.getCommonText(enemyList, "activeV", "", "occupied by", false);
 		},
 		
-		getEnemeyDefeatedVerb: function(enemyList) {
+		getEnemeyDefeatedVerb: function (enemyList) {
 			return this.getCommonText(enemyList, "defeatedV", "", "defeated", false);
 		},
         
-        getMovementBlockerName: function(blockerVO, enemiesComponent) {
+        getMovementBlockerName: function (blockerVO, enemiesComponent) {
 			switch (blockerVO.type) {
                 case MovementConstants.BLOCKER_TYPE_GANG:
                     var groupNoun = this.getEnemyGroupNoun(enemiesComponent.possibleEnemies);
@@ -307,6 +307,7 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
                 default:
                     return blockerVO.name;
             }
+            return "";
         },
         
         getMovementBlockerAction: function (blockerVO, enemiesComponent) {
@@ -322,6 +323,7 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
 				case MovementConstants.BLOCKER_TYPE_GAP: return "bridged";
 				case MovementConstants.BLOCKER_TYPE_WASTE: return "cleared";
 				case MovementConstants.BLOCKER_TYPE_GANG: return "defeated";
+				case MovementConstants.BLOCKER_TYPE_DEBRIS: return "cleared";
 	 	 	}
 		},
 		
