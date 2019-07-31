@@ -1,7 +1,11 @@
 // A convenience component to store which directions the player can move to from this sector
 // Default is north, south, west and east (if there is a corresponding sector), but not up or down unless there is a passge
-define(['ash', 'game/constants/PositionConstants', 'game/vos/PassageVO', 'game/vos/MovementBlockerVO'],
-function (Ash, PositionConstants, PassageVO, MovementBlockerVO) {
+define(['ash',
+    'game/constants/MovementConstants',
+    'game/constants/PositionConstants',
+    'game/vos/PassageVO',
+    'game/vos/MovementBlockerVO'],
+function (Ash, MovementConstants, PositionConstants, PassageVO, MovementBlockerVO) {
     
     var PassagesComponent = Ash.Class.extend({
 
@@ -61,7 +65,10 @@ function (Ash, PositionConstants, PassageVO, MovementBlockerVO) {
                     this.isClearable(PositionConstants.DIRECTION_NW);
             }
             var blocker = this.getBlocker(direction);
-            return blocker !== null && blocker.cleanable;
+            if (blocker == null) return false;
+            if (blocker.type == MovementConstants.BLOCKER_TYPE_WASTE) return true;
+            if (blocker.type == MovementConstants.BLOCKER_TYPE_DEBRIS) return true;
+            return false;
         },
     });
 

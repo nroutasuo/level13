@@ -615,10 +615,10 @@ define([
                                 }
                             }
 
-                            var clearedKey = "isCleared_" + direction;
+                            var clearedKey = "isWasteCleared_" + direction;
                             if (typeof requirements.sector[clearedKey] !== 'undefined') {
                                 var requiredValue = requirements.sector[clearedKey];
-                                var currentValue = statusComponent.isCleared(direction);
+                                var currentValue = statusComponent.isCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE);
 
                                 if (requiredValue !== currentValue) {
                                     if (currentValue) {
@@ -964,7 +964,7 @@ define([
 					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
 					var direction = parseInt(action.split("_")[2]);
 					if (!requirements.sector) requirements.sector = {};
-                    requirements.sector["isCleared_" + direction] = false;
+                    requirements.sector["isWasteCleared_" + direction] = false;
                     return requirements;
                 case "create_blueprint":
                     requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
@@ -979,6 +979,7 @@ define([
                 case "move_camp_global":
                 case "use_in_inn_select":
                 case "send_caravan":
+                case "clear_debris":
                     return PlayerActionConstants.requirements[baseActionID];
 				default:
 					return PlayerActionConstants.requirements[action];
@@ -1177,6 +1178,7 @@ define([
 			if (action.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
 			if (action.indexOf("create_blueprint_") >= 0) return "create_blueprint";
 			if (action.indexOf("clear_waste_") >= 0) return "clear_waste";
+			if (action.indexOf("clear_debris_") >= 0) return "clear_debris";
 			if (action.indexOf("fight_gang_") >= 0) return "fight_gang";
 			if (action.indexOf("send_caravan_") >= 0) return "send_caravan";
             if (action.indexOf("use_in_inn_select_") >= 0) return "use_in_inn_select";
@@ -1313,6 +1315,7 @@ define([
                 case "craft": return true;
                 case "equip": return true;
                 case "unequip": return true;
+                case "clear_debris": return true;
                 case "move_camp_level": return true;
                 case "despair": return true;
                 case "accept_inventory": return true;

@@ -47,6 +47,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         scouted: true,
                     },
                 },
+                
+                clear_debris: {
+                    sector: {
+                        scouted: true,
+                    },
+                },
 
                 use_spring: {
                     vision: [10, -1],
@@ -1485,6 +1491,11 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 build_out_collector_water: {
                     resource_metal: 8
                 },
+                
+                clear_debris: {
+                    resource_rope: 50,
+                    cost_source: COST_SOURCE_CAMP,
+                },
 
                 build_in_house: {
                     resource_metal: 30,
@@ -2248,6 +2259,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 investigate: "Look for resources.",
                 clear_workshop: "Scout the workshop to see if it can be used.",
                 clear_waste: "Clear the pollution.",
+                clear_debris: "Clear the debris blocking the way.",
                 enter_camp: "Rest and manage camp.",
                 use_spring: "Get water.",
                 fight_gang: "Clear the enemies blocking passage.",

@@ -226,6 +226,7 @@ define(['ash',
                 case "scout_locale_u": this.scoutLocale(param); break;
                 case "clear_workshop": this.clearWorkshop(param); break;
                 case "clear_waste": this.clearWaste(param); break;
+                case "clear_debris": this.clearDebris(param); break;
                 case "use_spring": this.useSpring(param); break;
                 case "fight_gang": this.fightGang(param); break;
                 case "send_caravan": this.sendCaravan(param); break;
@@ -263,25 +264,11 @@ define(['ash',
         },
 
 		getActionSector: function (action, param) {
-			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
-			switch (baseActionID) {
-				case "build_out_bridge":
-				case "build_out_passage_down_stairs":
-				case "build_out_passage_down_elevator":
-				case "build_out_passage_down_hole":
-				case "build_out_passage_up_stairs":
-				case "build_out_passage_up_elevator":
-				case "build_out_passage_up_hole":
-				case "build_out_spaceship1":
-				case "build_out_spaceship2":
-				case "build_out_spaceship3":
-					var l = parseInt(param.split(".")[0]);
-					var sX = parseInt(param.split(".")[1]);
-					var sY = parseInt(param.split(".")[2]);
-					return GameGlobals.levelHelper.getSectorByPosition(l, sX, sY);
-				default:
-					return null;
-			}
+            if (!param) return null;
+			var l = parseInt(param.split(".")[0]);
+			var sX = parseInt(param.split(".")[1]);
+			var sY = parseInt(param.split(".")[2]);
+			return GameGlobals.levelHelper.getSectorByPosition(l, sX, sY);
 		},
 
 		moveTo: function (direction) {
@@ -639,12 +626,37 @@ define(['ash',
 			var logMsgDefeat = logMsgFailBase + "Lost the fight.";
 
 			var successCallback = function () {
-				log.i("clear waste callback " + direction);
-				sectorStatus.setCleared(direction);
+				sectorStatus.setCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE);
+                GlobalSignals.movementBlockerClearedSignal.dispatch();
 			};
 
 			this.handleOutActionResults("clear_waste", LogConstants.MSG_ID_CLEAR_WASTE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, successCallback);
 		},
+        
+        clearDebris: function (sectorPos) {
+            log.i("clear debris " + sectorPos);
+			var l = parseInt(sectorPos.split(".")[0]);
+			var sX = parseInt(sectorPos.split(".")[1]);
+			var sY = parseInt(sectorPos.split(".")[2]);
+            var direction = parseInt(sectorPos.split(".")[3]);
+            
+			var sector = this.getActionSector("clear_debris", sectorPos);
+			var positionComponent = sector.get(PositionComponent);
+
+			// Find neighbour
+            var oppositeDirection = PositionConstants.getOppositeDirection(direction);
+			var neighbourPos = PositionConstants.getPositionOnPath(positionComponent.getPosition(), direction, 1);
+			var neighbour = GameGlobals.levelHelper.getSectorByPosition(neighbourPos.level, neighbourPos.sectorX, neighbourPos.sectorY);
+            
+            var sectorStatus = sector.get(SectorStatusComponent);
+            sectorStatus.setCleared(direction, MovementConstants.BLOCKER_TYPE_DEBRIS);
+            var neighbourStatus = neighbour.get(SectorStatusComponent);
+            neighbourStatus.setCleared(oppositeDirection, MovementConstants.BLOCKER_TYPE_DEBRIS);
+            
+            this.completeAction("clear_debris");
+            
+            GlobalSignals.movementBlockerClearedSignal.dispatch();
+        },
 
 		nap: function () {
 			GameGlobals.uiFunctions.hideGame(false);

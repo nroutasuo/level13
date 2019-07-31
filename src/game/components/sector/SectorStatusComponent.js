@@ -1,5 +1,5 @@
 // Current sector control status & wins needed
-define(['ash'], function (Ash) {
+define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConstants) {
 
     var SectorStatusComponent = Ash.Class.extend({
 
@@ -9,6 +9,7 @@ define(['ash'], function (Ash) {
         localesScouted: [],
         glowStickSeconds: -100, // not saved
         wasteClearedDirections: [],
+        debrisClearedDirections: [],
 
         constructor: function () {
             this.discoveredResources = [];
@@ -36,14 +37,25 @@ define(['ash'], function (Ash) {
             return scouted;
         },
 
-        isCleared: function (direction) {
-            return this.wasteClearedDirections && this.wasteClearedDirections.indexOf(parseInt(direction)) >= 0;
+        isCleared: function (direction, blockerType) {
+            if (blockerType == MovementConstants.BLOCKER_TYPE_WASTE) {
+                return this.wasteClearedDirections && this.wasteClearedDirections.indexOf(parseInt(direction)) >= 0;
+            }
+            if (blockerType == MovementConstants.BLOCKER_TYPE_DEBRIS) {
+                return this.debrisClearedDirections && this.debrisClearedDirections.indexOf(parseInt(direction)) >= 0;
+            }
+            return false;
         },
 
-        setCleared: function (direction) {
-            if (this.isCleared(direction))
+        setCleared: function (direction, blockerType) {
+            if (this.isCleared(direction, blockerType))
                 return;
-            this.wasteClearedDirections.push(parseInt(direction));
+            if (blockerType == MovementConstants.BLOCKER_TYPE_WASTE) {
+                this.wasteClearedDirections.push(parseInt(direction));
+            }
+            if (blockerType == MovementConstants.BLOCKER_TYPE_DEBRIS) {
+                this.debrisClearedDirections.push(parseInt(direction));
+            }
         },
 
         getSaveKey: function () {
@@ -62,6 +74,8 @@ define(['ash'], function (Ash) {
                 copy.lS = this.localesScouted;
             if (this.wasteClearedDirections && this.wasteClearedDirections.length > 0)
                 copy.wd = this.wasteClearedDirections ? this.wasteClearedDirections  : [];
+            if (this.debrisClearedDirections && this.debrisClearedDirections.length > 0)
+                copy.dd = this.debrisClearedDirections ? this.debrisClearedDirections  : [];
             return Object.keys(copy).length > 0 ? copy : null;
         },
 
@@ -74,6 +88,7 @@ define(['ash'], function (Ash) {
             else
                 this.localesScouted = [];
             this.wasteClearedDirections = componentValues.wd ? componentValues.wd : [];
+            this.debrisClearedDirections = componentValues.dd ? componentValues.dd : [];
         }
 
     });

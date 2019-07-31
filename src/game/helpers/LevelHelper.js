@@ -360,16 +360,25 @@ define([
 				return levelOrdinalB - levelOrdinalA;
 			});
 
-			// filter duplicates (corresponding up and down)
+			// filter duplicates
 			for (var i = 0; i < projects.length; i++) {
 				project = projects[i];
 				projectExists = false;
 				for (var j = 0; j < result.length; j++) {
 					existingProject = result[j];
+                    // corresponding up and down passages
 					if (existingProject.sector === project.sector && (existingProject.level - 1 === project.level || existingProject.level + 1 === project.level)) {
 						projectExists = true;
 						break;
 					}
+                    // neighbouring movement blockers
+                    var dist = PositionConstants.getDistanceTo(existingProject.position, project.position);
+                    if (dist < 2) {
+                        if (PositionConstants.getOppositeDirection(project.direction) == existingProject.direction) {
+                            projectExists = true;
+                            break;
+                        }
+                    }
 				}
 				if (!projectExists)
                     result.push(project);
@@ -512,13 +521,21 @@ define([
                 }
             }
 
-            // bridges
+            // movement blockers (bridges and debris)
             for (var i in PositionConstants.getLevelDirections()) {
                 var direction = PositionConstants.getLevelDirections()[i];
                 var directionBlocker = sectorPassagesComponent.getBlocker(direction);
-                if (directionBlocker && directionBlocker.bridgeable) {
-                    actionName = actionName + "_" + levelOrdinal;
-                    projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.bridge), "build_out_bridge", sectorPosition, direction));
+                if (directionBlocker) {
+                    switch (directionBlocker.type) {
+        				case MovementConstants.BLOCKER_TYPE_GAP:
+                            projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.bridge), "build_out_bridge", sectorPosition, direction));
+                            break;
+        				case MovementConstants.BLOCKER_TYPE_DEBRIS:
+                            if (GameGlobals.movementHelper.isBlocked(sectorEntity, direction)) {
+                                projects.push(new LevelProjectVO(null, "clear_debris", sectorPosition, direction, "Debris"));
+                                break;
+                            }
+                    }
                 }
             }
 

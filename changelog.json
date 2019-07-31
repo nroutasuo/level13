@@ -3,7 +3,7 @@
             "version": "0.2.5",
             "phase": "alpha",
             "final": false,
-            "updated": "2019-07-02",
+            "updated": "2019-07-31",
             "changes": [
                 {
                     "type": "GD",
@@ -12,6 +12,10 @@
                 {
                     "type": "GD",
                     "summary": "Add active and passive rumour generation to markets"
+                },
+                {
+                    "type": "GD",
+                    "summary": "Add a new movement blocker: debris"
                 },
                 {
                     "type": "GB",

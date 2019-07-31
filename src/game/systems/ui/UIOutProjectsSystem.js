@@ -32,7 +32,7 @@ define([
             GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, this.refresh);
             GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.refresh);
             GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.refresh);
-            GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.refresh);
+            GlobalSignals.add(this, GlobalSignals.movementBlockerClearedSignal, this.refresh);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.refresh);
         },
 
@@ -159,7 +159,7 @@ define([
             
             var showLevel = GameGlobals.gameState.unlockedFeatures.levels;
             var info = "at " + project.position.getPosition().getInGameFormat() + (showLevel ? " level " + project.level : "");
-            var isPassage = project.improvement.isPassage();
+            var isPassage = project.improvement && project.improvement.isPassage();
             if (isPassage) {
                 var levels = this.getProjectLevels(project);
                 info = " connecting levels <span class='hl-functionality'>" + levels[0] + "</span> and <span class='hl-functionality'>" + levels[1] + "</span>";
@@ -191,7 +191,7 @@ define([
         },
         
         getProjectLevels: function (project) {
-            var isPassage = project.improvement.isPassage();
+            var isPassage = project.improvement && project.improvement.isPassage();
             var level = project.level;
             if (isPassage) {
                 var otherLevel = project.level + 1;

@@ -45,6 +45,7 @@ define([
 				var isBridged = this.isBridged(sectorEntity, direction);
 				var isDefeated = this.isDefeated(sectorEntity, direction);
 				var isCleaned = this.isCleaned(sectorEntity, direction);
+                var isCleared = this.isCleared(sectorEntity, direction);
 				var blocker = passagesComponent.getBlocker(direction);
 				
                 if (blocker !== null) {
@@ -56,7 +57,7 @@ define([
         				case MovementConstants.BLOCKER_TYPE_GANG:
 				            return { value: !isDefeated, reason: "Blocked by a fight." };
                         case MovementConstants.BLOCKER_TYPE_DEBRIS:
-				            return { value: true, reason: "Blocked by debris." };
+				            return { value: !isCleared, reason: "Blocked by debris." };
                         default:
                             log.w(this, "Unknown blocker type: " + blocker.type);
                             return { value: false };
@@ -96,7 +97,12 @@ define([
         
         isCleaned: function (sectorEntity, direction) {
             var statusComponent = sectorEntity.get(SectorStatusComponent);
-            return this.hasClearableBlocker(sectorEntity, direction) && statusComponent.isCleared(direction);
+            return this.hasClearableBlocker(sectorEntity, direction) && statusComponent.isCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE);
+        },
+        
+        isCleared: function (sectorEntity, direction) {
+            var statusComponent = sectorEntity.get(SectorStatusComponent);
+            return this.hasClearableBlocker(sectorEntity, direction) && statusComponent.isCleared(direction, MovementConstants.BLOCKER_TYPE_DEBRIS);
         },
 		
 		hasBridgeableBlocker: function (sectorEntity, direction) {
