@@ -45,12 +45,14 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     health: 80,
                     sector: {
                         scouted: true,
+                        acessible_to_workers: true,
                     },
                 },
                 
                 clear_debris: {
                     sector: {
                         scouted: true,
+                        acessible_to_workers: true,
                     },
                 },
 

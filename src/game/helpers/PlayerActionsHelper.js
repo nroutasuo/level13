@@ -112,7 +112,6 @@ define([
                 } else if (costName == "blueprint") {
                 } else {
                     log.w("unknown cost: " + costName + ", action: " + action);
-                    log.i(costs);
                 }
             }
         },
@@ -161,9 +160,10 @@ define([
                 var playerPerks = this.playerResourcesNodes.head.entity.get(PerksComponent);
                 var playerStamina = this.playerStatsNodes.head.stamina.stamina;
                 var deityComponent = this.playerResourcesNodes.head.entity.get(DeityComponent);
-
+                
                 var requirements = this.getReqs(action, sector);
                 var costs = this.getCosts(action, this.getCostFactor(action));
+                var positionComponent = sector.get(PositionComponent);
                 var improvementComponent = sector.get(SectorImprovementsComponent);
                 var movementOptionsComponent = sector.get(MovementOptionsComponent);
                 var passagesComponent = sector.get(PassagesComponent);
@@ -573,7 +573,6 @@ define([
                                 return { value: 0, reason: reason };
                             }
                         }
-
                         if (typeof requirements.sector.spring != "undefined") {
                             if (featuresComponent.hasSpring != requirements.sector.spring) {
                                 if (featuresComponent.hasSpring)    reason = "There is a spring.";
@@ -582,7 +581,6 @@ define([
                                 return { value: 0, reason: reason };
                             }
                         }
-
                         if (typeof requirements.sector.scoutedLocales !== "undefined") {
                             for(var localei in requirements.sector.scoutedLocales) {
                                 var requiredStatus = requirements.sector.scoutedLocales[localei];
@@ -594,7 +592,6 @@ define([
                                 }
                             }
                         }
-
                         for (var i in PositionConstants.getLevelDirections()) {
                             var direction = PositionConstants.getLevelDirections()[i];
                             var directionName = PositionConstants.getDirectionName(direction);
@@ -614,7 +611,6 @@ define([
                                     }
                                 }
                             }
-
                             var clearedKey = "isWasteCleared_" + direction;
                             if (typeof requirements.sector[clearedKey] !== 'undefined') {
                                 var requiredValue = requirements.sector[clearedKey];
@@ -690,6 +686,17 @@ define([
                                     lowestFraction = currentStorage / requiredStorage;
                                     reason = "Nothing to collect";
                                 }
+                            }
+                        }
+                        
+                        if (typeof requirements.sector.acessible_to_workers != "undefined") {
+    			            var campOrdinal = GameGlobals.gameState.getCampOrdinal(positionComponent.level);
+			                var campCount = GameGlobals.gameState.numCamps;
+                            var requiredValue = requirements.sector.acessible_to_workers;
+                            var currentValue = campCount >= campOrdinal;
+                            if (currentValue != requiredValue) {
+                                var reason = requiredValue ? "Not accessible to workers" : "Accessible to workers";
+                                return { value: 0, reason: reason };
                             }
                         }
                     }
