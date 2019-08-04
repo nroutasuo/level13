@@ -25,6 +25,7 @@ define([
 
     var UIOutMapSystem = Ash.System.extend({
 
+        context: "UIOutMapSystem",
         playerPositionNodes: null,
 		playerLocationNodes: null,
 
@@ -259,11 +260,15 @@ define([
             this.updateHeight();
         },
 
-		onTabChanged: function (tabID) {
+		onTabChanged: function (tabID, tabProps) {
             if (tabID === GameGlobals.uiFunctions.elementIDs.tabs.map) {
                 $("#tab-header h2").text("Map");
+                var level = tabProps ? tabProps.level : this.playerPositionNodes.head.position.level;
                 this.updateLevelSelector();
-                this.selectLevel(this.playerPositionNodes.head.position.level);
+                this.selectLevel(level);
+                if (tabProps) {
+                    this.selectSector(tabProps.level, tabProps.sectorX, tabProps.sectorY);
+                }
                 this.updateMap();
                 this.centerMap();
                 this.updateMapCompletionHint();

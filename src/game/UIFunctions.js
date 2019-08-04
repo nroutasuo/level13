@@ -248,6 +248,18 @@ define(['ash',
 				// Buttons: Bag: Item details
 				// some in UIOoutBagSystem
 			},
+            
+            registerCustomButtonListeners: function (scope, btnClass, fn) {
+                $.each($(scope + " button." + btnClass), function () {
+					var $element = $(this);
+					if ($element.hasClass("click-bound")) {
+						log.w("trying to bind click twice! id: " + $element.attr("id"));
+						return;
+					}
+					$element.addClass("click-bound");
+					$element.click(ExceptionHandler.wrapClick(fn));
+                });
+            },
 
 			registerCollapsibleContainerListeners: function (scope) {
 				var sys = this;
@@ -537,7 +549,7 @@ define(['ash',
 				return html;
 			},
 
-			onTabClicked: function (tabID, gameState, uiFunctions) {
+			onTabClicked: function (tabID, gameState, uiFunctions, tabProps) {
 				$("#switch-tabs li").removeClass("selected");
 				$("#switch-tabs li#" + tabID).addClass("selected");
 				$("#tab-header h2").text(tabID);
@@ -554,7 +566,7 @@ define(['ash',
 					uiFunctions.slideToggleIf($(this), null, $(this).attr("data-tab") === tabID, transitionTime, 200);
 				});
 
-				GlobalSignals.tabChangedSignal.dispatch(tabID);
+				GlobalSignals.tabChangedSignal.dispatch(tabID, tabProps);
 			},
 
 			onStepperButtonClicked: function (button, e) {
@@ -913,8 +925,8 @@ define(['ash',
 				});
 			},
 
-			showTab: function (tabID) {
-				this.onTabClicked(tabID, GameGlobals.gameState, this);
+			showTab: function (tabID, tabProps) {
+				this.onTabClicked(tabID, GameGlobals.gameState, this, tabProps);
 			},
 
 			showFight: function () {

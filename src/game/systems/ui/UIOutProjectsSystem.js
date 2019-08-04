@@ -6,8 +6,9 @@ define([
     'game/constants/PositionConstants',
     'game/nodes/PlayerLocationNode',
     'game/vos/TabCountsVO',
+    'utils/StringUtils',
 ], function (
-    Ash, GameGlobals, GlobalSignals, UIConstants, PositionConstants, PlayerLocationNode, TabCountsVO
+    Ash, GameGlobals, GlobalSignals, UIConstants, PositionConstants, PlayerLocationNode, TabCountsVO, StringUtils
 ) {
     var UIOutProjectsSystem = Ash.System.extend({
         
@@ -121,6 +122,11 @@ define([
             
             if (updateTables) {
                 GameGlobals.uiFunctions.registerActionButtonListeners("#in-improvements-level");
+                GameGlobals.uiFunctions.registerCustomButtonListeners("#in-improvements-level", "navigation", function () {
+                    var sector = $(this).attr("data-sector");
+                    var position = StringUtils.getPosition(sector);
+                    GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.map, position);
+                });
                 GameGlobals.uiFunctions.generateButtonOverlays("#in-improvements-level");
                 GameGlobals.uiFunctions.generateCallouts("#in-improvements-level");
                 GameGlobals.uiFunctions.registerActionButtonListeners("#in-improvements-colony");
@@ -158,18 +164,25 @@ define([
             name = name.replace(" Down", "");
             
             var showLevel = GameGlobals.gameState.unlockedFeatures.levels;
-            var info = "at " + project.position.getPosition().getInGameFormat() + (showLevel ? " level " + project.level : "");
+            var info = "at " + location + " on level " + project.level;
             var isPassage = project.improvement && project.improvement.isPassage();
             if (isPassage) {
                 var levels = this.getProjectLevels(project);
-                info = " connecting levels <span class='hl-functionality'>" + levels[0] + "</span> and <span class='hl-functionality'>" + levels[1] + "</span>";
+                info = "connecting levels <span class='hl-functionality'>" + levels[0] + "</span> and <span class='hl-functionality'>" + levels[1] + "</span> at " + location;
+            }
+            if (project.action == "clear_debris") {
+                var neighbourPosition = PositionConstants.getPositionOnPath(project.position.getPosition(), project.direction, 1);
+                var neighbourLocation = neighbourPosition.getInGameFormat();
+                info = "between " + location + " and " + neighbourLocation + " on level " + project.level;
             }
             
             var classes = this.isCurrentLevel(project) ? "current" : "";
+            var mapID = "project-map-";
             var result = "<tr class='" + classes + "'>";
             result += "<td>" + name + "</td>";
-            result += "<td class='list-description'>" + info + " at " + location + "</td>";
+            result += "<td class='list-description'>" + info + "</td>";
             if (isAvailable) {
+                result += "<td><button class='btn-mini navigation' data-sector='" + sector + "'>map</button></td>";
                 var classes = "action action-build action-level-project multiline";
                 var actionLabel = project.actionLabel;
                 var action = project.action;
@@ -203,7 +216,7 @@ define([
             } else {
                 return [ level ];
             }
-        }
+        },
         
     });
 

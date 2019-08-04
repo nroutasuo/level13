@@ -60,7 +60,7 @@ define([
             
 			for (var l = topLevel; l >= bottomLevel; l--) {
                 var levelVO = this.world.getLevel(l);
-                WorldCreatorDebug.printLevel(this.world, levelVO);
+                // WorldCreatorDebug.printLevel(this.world, levelVO);
             }
 		},
 

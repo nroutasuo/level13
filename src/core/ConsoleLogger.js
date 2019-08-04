@@ -8,8 +8,9 @@ define(function () {
     
     window.log = {
         
-        i: function (msg, context) {
+        i: function (context, msg) {
             if (!ConsoleLogger.logInfo) return;
+            var context = this.parseContext(context);
             if (context) {
                 console.log("[" + context + "] " + msg);
             } else {
@@ -17,8 +18,9 @@ define(function () {
             }
         },
             
-        w: function (msg, context) {
+        w: function (context, msg) {
             if (!ConsoleLogger.logWarnings) return;
+            var context = this.parseContext(context);
             if (context) {
                 console.warn("[" + context + "] " + msg);
             } else {
@@ -26,14 +28,23 @@ define(function () {
             }
         },
             
-        e: function (msg, context) {
+        e: function (context, msg) {
             if (!ConsoleLogger.logErrors) return;
+            var context = this.parseContext(context);
             if (context) {
                 console.error();("[" + context + "] " + msg);
             } else {
                 console.error(msg);
             }
         },
+        
+        parseContext: function (c) {
+            if (!c) return c;
+            if (c.context) return c.context;
+            if (typeof c === 'string' || c instanceof String) return c;
+            if (c.constructor) return c.constructor.name;
+            return c;
+        }
 
     };
     

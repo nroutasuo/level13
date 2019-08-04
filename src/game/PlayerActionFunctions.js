@@ -54,7 +54,8 @@ define(['ash',
 	'game/systems/ui/UIOutTabBarSystem',
 	'game/systems/ui/UIOutLevelSystem',
 	'game/systems/FaintingSystem',
-	'game/systems/PlayerPositionSystem'
+	'game/systems/PlayerPositionSystem',
+	'utils/StringUtils'
 ], function (Ash, GameGlobals, GlobalSignals,
 	GameConstants, CampConstants, LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
 	PositionVO, LocaleVO,
@@ -66,7 +67,8 @@ define(['ash',
 	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, TraderComponent,
 	LogMessagesComponent,
-	UIOutHeaderSystem, UIOutTabBarSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem
+	UIOutHeaderSystem, UIOutTabBarSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem,
+    StringUtils
 ) {
 	var PlayerActionFunctions = Ash.System.extend({
 
@@ -926,7 +928,7 @@ define(['ash',
 			var sector = this.getActionSector(action, sectorPos);
 			neighbourAction = neighbourAction + "_" + levelOrdinal;
 
-			var sectorPosVO = new PositionVO(l, sX, sY);
+			var sectorPosVO = StringUtils.getPosition(sectorPos);
 			var neighbour = GameGlobals.levelHelper.getSectorByPosition(up ? l + 1 : l - 1, sX, sY);
 
 			if (sector && neighbour) {
