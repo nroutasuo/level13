@@ -114,9 +114,10 @@ define([
                 mapPosition.sectorY = 0;
             }
             var sys = this;
-            GameGlobals.uiMapHelper.rebuildMap("mainmap", "mainmap-overlay", mapPosition, -1, false, function (level, x, y) {
+            this.map = GameGlobals.uiMapHelper.rebuildMap("mainmap", "mainmap-overlay", mapPosition, -1, false, function (level, x, y) {
                 sys.onSectorSelected(level, x, y)
             });
+            GameGlobals.uiMapHelper.setSelectedSector(this.map, this.selectedSector);
         },
 
         updateSector: function () {

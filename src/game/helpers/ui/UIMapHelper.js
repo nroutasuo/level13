@@ -11,6 +11,7 @@ define(['ash',
     'game/nodes/PlayerPositionNode',
     'game/components/type/LevelComponent',
     'game/components/common/CampComponent',
+    'game/components/common/PositionComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/SectorFeaturesComponent',
@@ -22,7 +23,7 @@ define(['ash',
 function (Ash,
     GameGlobals, ColorConstants, UIConstants, CanvasConstants, MovementConstants, PositionConstants, SectorConstants, WorldCreatorConstants,
     PlayerPositionNode,
-    LevelComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, SectorImprovementsComponent, WorkshopComponent, SectorComponent,
+    LevelComponent, CampComponent, PositionComponent, SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, SectorImprovementsComponent, WorkshopComponent, SectorComponent,
     PositionVO) {
 
     var UIMapHelper = Ash.Class.extend({
@@ -83,6 +84,9 @@ function (Ash,
         },
 
         rebuildMap: function (canvasId, overlayId, mapPosition, mapSize, centered, sectorSelectedCallback) {
+            var map = {};
+            map.canvasID = canvasId;
+            
             var canvas = $("#" + canvasId)[0];
             var ctx = canvas ? canvas.getContext && canvas.getContext('2d') : null;
 
@@ -95,8 +99,23 @@ function (Ash,
             }
 
             if (overlayId) {
-                this.rebuildOverlay(mapPosition, overlayId, centered, visibleSectors, mapDimensions, sectorSelectedCallback);
+                this.rebuildOverlay(map, mapPosition, overlayId, centered, visibleSectors, mapDimensions, sectorSelectedCallback);
             }
+            
+            return map;
+        },
+        
+        setSelectedSector: function (map, sector) {
+            var sectorPos = sector == null ? null : sector.get(PositionComponent).getPosition();
+            var matchingID =
+            $.each($(".map-overlay-cell"), function () {
+                var level = $(this).attr("data-level");
+                var x = $(this).attr("data-x");
+                var y = $(this).attr("data-y");
+                var isMatch = sectorPos && sectorPos.level == level && sectorPos.sectorX == x && sectorPos.sectorY == y;
+                if (isMatch == null) isMatch = false;
+                $(this).toggleClass("selected", isMatch);
+            });
         },
 
         rebuildMapWithCanvas: function (mapPosition, canvas, ctx, centered, visibleSectors, allSectors, dimensions) {
@@ -172,11 +191,13 @@ function (Ash,
             CanvasConstants.updateScrollEnable($(canvas).attr("id"));
         },
 
-        rebuildOverlay: function (mapPosition, overlayId, centered, visibleSectors, dimensions, sectorSelectedCallback) {
+        rebuildOverlay: function (map, mapPosition, overlayId, centered, visibleSectors, dimensions, sectorSelectedCallback) {
             var $overlay = $("#" + overlayId);
             $overlay.empty();
             $overlay.css("width", dimensions.canvasWidth + "px");
             $overlay.css("height", dimensions.canvasHeight + "px");
+            
+            map.overlay = {};
 
             var sectorSize = this.getSectorSize(centered);
 
@@ -197,10 +218,14 @@ function (Ash,
                         var $div = $("<div class='canvas-overlay-cell map-overlay-cell' style='top: " + sectorYpx + "px; left: " + sectorXpx + "px' " + data +"></div>");
                         if (sectorSelectedCallback) {
                             $div.click(function (e) {
+                                $.each($(".map-overlay-cell"), function () {
+                                    $(this).toggleClass("selected", false);
+                                });
                                 var $target = $(e.target);
                                 var level = $target.attr("data-level");
                                 var x = $target.attr("data-x");
                                 var y = $target.attr("data-y");
+                                $target.toggleClass("selected", true);
                                 sectorSelectedCallback(level, x, y);
                             });
                         }
@@ -215,8 +240,8 @@ function (Ash,
             var padding = this.getSectorPadding(centered);
             var margin = this.getSectorMargin(centered);
             return {
-                x: sectorSize * margin + sectorSize * padding + (x - dimensions.minVisibleX) * sectorSize * (1 + padding) + smallMapOffsetX,
-                y: sectorSize * margin + sectorSize * padding + (y - dimensions.minVisibleY) * sectorSize * (1 + padding)
+                x: Math.round((sectorSize * margin + sectorSize * padding + (x - dimensions.minVisibleX) * sectorSize * (1 + padding) + smallMapOffsetX) * 10)/10,
+                y: Math.round((sectorSize * margin + sectorSize * padding + (y - dimensions.minVisibleY) * sectorSize * (1 + padding)) * 10)/10
             };
         },
 

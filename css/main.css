@@ -1896,11 +1896,16 @@ body.dark .canvas-overlay-cell p {
   text-align: center;
 }
 body.dark .map-overlay-cell {
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
+  border: none;
 }
 body.dark .map-overlay-cell:hover {
   background: #fdfdfd;
+}
+body.dark .map-overlay-cell.selected {
+  background: #fdfdfd;
+  outline: 4px solid rgba(255, 255, 255, 0.5);
 }
 body.dark #researched-upgrades-vis-container {
   max-height: 300px;
@@ -3580,11 +3585,16 @@ body.sunlit .canvas-overlay-cell p {
   text-align: center;
 }
 body.sunlit .map-overlay-cell {
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
+  border: none;
 }
 body.sunlit .map-overlay-cell:hover {
   background: #202220;
+}
+body.sunlit .map-overlay-cell.selected {
+  background: #202220;
+  outline: 4px solid rgba(0, 0, 0, 0.5);
 }
 body.sunlit #researched-upgrades-vis-container {
   max-height: 300px;

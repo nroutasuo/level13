@@ -39,12 +39,18 @@
 }
 
 .map-overlay-cell {
-    width: 10px;
-    height: 10px;
+    width: 11px;
+    height: 11px;
+    border: none;
 }
 
 .map-overlay-cell:hover {
     background: @color-text-default;
+}
+
+.map-overlay-cell.selected {
+    background: @color-text-default;
+    outline: 4px solid @color-text-meta;
 }
 
 // TECH TREE

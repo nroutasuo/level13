@@ -8,7 +8,7 @@ define(function () {
     
     window.log = {
         
-        i: function (context, msg) {
+        i: function (msg, context) {
             if (!ConsoleLogger.logInfo) return;
             var context = this.parseContext(context);
             if (context) {
@@ -18,7 +18,7 @@ define(function () {
             }
         },
             
-        w: function (context, msg) {
+        w: function (msg, context) {
             if (!ConsoleLogger.logWarnings) return;
             var context = this.parseContext(context);
             if (context) {
@@ -28,7 +28,7 @@ define(function () {
             }
         },
             
-        e: function (context, msg) {
+        e: function (msg, context) {
             if (!ConsoleLogger.logErrors) return;
             var context = this.parseContext(context);
             if (context) {
