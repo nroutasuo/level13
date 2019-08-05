@@ -143,8 +143,14 @@ define([
             var mapPosition = this.playerPositionNodes.head.position.getPosition();
             if (this.selectedLevel) {
                 mapPosition.level = this.selectedLevel;
-                mapPosition.sectorX = 0;
-                mapPosition.sectorY = 0;
+                if (this.selectedSector) {
+                    var pos = this.selectedSector.get(PositionComponent);
+                    mapPosition.sectorX = pos.sectorX;
+                    mapPosition.sectorY = pos.sectorY;
+                } else {
+                    mapPosition.sectorX = 0;
+                    mapPosition.sectorY = 0;
+                }
             }
             GameGlobals.uiMapHelper.centerMapToPlayer("mainmap", mapPosition, false);
         },
