@@ -3,6 +3,7 @@ define([
     'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/GameConstants',
+    'game/constants/PositionConstants',
     'game/constants/TextConstants',
     'game/nodes/PlayerLocationNode',
     'game/nodes/PlayerPositionNode',
@@ -18,7 +19,7 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/improvements/WorkshopComponent',
     'game/systems/CheatSystem'
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, TextConstants,
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, PositionConstants, TextConstants,
     PlayerLocationNode, PlayerPositionNode,
     CampComponent, PositionComponent, VisitedComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent,
     CheatSystem) {
@@ -134,6 +135,7 @@ define([
                 $("#mainmap-sector-details-res-sca").text(this.getResScaText(this.selectedSector, isScouted));
                 $("#mainmap-sector-details-res-col").text(this.getCollectorsText(this.selectedSector, isScouted));
                 $("#mainmap-sector-details-threats").text(this.getThreatsText(this.selectedSector, isScouted));
+                $("#mainmap-sector-details-blockers").text(this.getBlockersText(this.selectedSector, isScouted));
                 $("#mainmap-sector-details-env").text(this.getEnvironmentText(this.selectedSector, isScouted));
                 $("#mainmap-sector-details-distance").text(this.getDistanceText(this.selectedSector));
             }
@@ -224,6 +226,28 @@ define([
 			} else {
                 return "-"
 			}
+        },
+        
+        getBlockersText: function (sector, isScouted) {
+            if (!isScouted) return "?";
+            var result = [];
+            
+            var passagesComponent = sector.get(PassagesComponent);
+			for (var i in PositionConstants.getLevelDirections()) {
+				var direction = PositionConstants.getLevelDirections()[i];
+                var directionName = PositionConstants.getDirectionName(direction);
+				var blocker = passagesComponent.getBlocker(direction);
+				if (blocker) {
+                	var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
+                    var blockerName = TextConstants.getMovementBlockerName(blocker, enemiesComponent).toLowerCase();
+                    if (GameGlobals.movementHelper.isBlocked(sector, direction)) {
+                        result.push(blockerName + " (" + directionName + ")");
+                    }
+                }
+            }
+            
+            if (result.length < 1) return "-";
+            else return result.join(", ");
         },
         
         getEnvironmentText: function (sector, isScouted) {
