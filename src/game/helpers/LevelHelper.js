@@ -526,15 +526,14 @@ define([
                 var direction = PositionConstants.getLevelDirections()[i];
                 var directionBlocker = sectorPassagesComponent.getBlocker(direction);
                 if (directionBlocker) {
+                    if (!GameGlobals.movementHelper.isBlocked(sectorEntity, direction)) continue;
                     switch (directionBlocker.type) {
         				case MovementConstants.BLOCKER_TYPE_GAP:
                             projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.bridge), "build_out_bridge", sectorPosition, direction));
                             break;
         				case MovementConstants.BLOCKER_TYPE_DEBRIS:
-                            if (GameGlobals.movementHelper.isBlocked(sectorEntity, direction)) {
-                                projects.push(new LevelProjectVO(null, "clear_debris", sectorPosition, direction, "Debris"));
-                                break;
-                            }
+                            projects.push(new LevelProjectVO(null, "clear_debris", sectorPosition, direction, "Debris"));
+                            break;
                     }
                 }
             }

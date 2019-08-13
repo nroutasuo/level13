@@ -1058,8 +1058,8 @@ define([
             var setSectorZone = function (sector, zone, area, force) {
                 var existingZone = sector.zone;
                 if (existingZone) {
-                    var existingIndex = WorldCreatorConstants.getZoneIndex(existingZone);
-                    var newIndex = WorldCreatorConstants.getZoneIndex(zone);
+                    var existingIndex = WorldCreatorConstants.getZoneOrdinal(existingZone);
+                    var newIndex = WorldCreatorConstants.getZoneOrdinal(zone);
                     if (existingIndex <= newIndex) return;
                 }
                 sector.zone = zone;
@@ -1166,7 +1166,11 @@ define([
             for (var i = 0; i < levelVO.sectors.length; i++) {
                 var sector = levelVO.sectors[i];
                 if (!sector.zone) {
-                    sector.zone = WorldCreatorConstants.ZONE_EXTRA;
+                    if (isCampableLevel) {
+                        sector.zone = WorldCreatorConstants.ZONE_EXTRA_CAMPABLE;
+                    } else {
+                        sector.zone = WorldCreatorConstants.ZONE_EXTRA_UNCAMPABLE;
+                    }
                 }
             }
         },
@@ -1392,7 +1396,7 @@ define([
                     var isRadiation = maxHazardRadiation > 0 && WorldCreatorRandom.randomBool(seed / 3385 + levelOrdinal * 7799);
                     for (var i = 0; i < levelVO.sectors.length; i++) {
                         var sectorVO = levelVO.sectors[i];
-                        if (sectorVO.zone != WorldCreatorConstants.ZONE_EXTRA) continue;
+                        if (sectorVO.zone != WorldCreatorConstants.ZONE_EXTRA_CAMPABLE) continue;
                         setSectorHazard(sectorVO, 1, isRadiation);
                         
                     }

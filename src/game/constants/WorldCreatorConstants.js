@@ -13,7 +13,8 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         ZONE_POI_1: "z_poi1",
         ZONE_POI_2: "z_poi2",
         ZONE_CAMP_TO_PASSAGE: "z_c2p",
-        ZONE_EXTRA: "z_extra",
+        ZONE_EXTRA_CAMPABLE: "z_extra_c",
+        ZONE_EXTRA_UNCAMPABLE: "z_extra_u",
         ZONE_POI_TEMP: "z_poi_temp",
         
         // Sector features
@@ -187,18 +188,27 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
                     return 1;
             }
         },
-
-        getZoneIndex: function (zone) {
-            if (zone == WorldCreatorConstants.ZONE_POI_TEMP) return 9;
-            for (var i = 0; i < WorldCreatorConstants.ZONES_BY_ORDER.length; i++) {
-                var z = WorldCreatorConstants.ZONES_BY_ORDER[i];
-                if (zone == z) return i;
+        
+        getZoneOrdinal: function (zone) {
+            switch (zone) {
+                // campable levels
+                case WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP: return 0;
+                case WorldCreatorConstants.ZONE_POI_1: return 1;
+                case WorldCreatorConstants.ZONE_POI_2: return 2;
+                case WorldCreatorConstants.ZONE_CAMP_TO_PASSAGE: return 3;
+                case WorldCreatorConstants.ZONE_EXTRA_CAMPABLE: return 4;
+                case WorldCreatorConstants.ZONE_POI_TEMP: return 5;
+                // uncampable levels
+                case WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE: return 0;
+                case WorldCreatorConstants.ZONE_EXTRA_UNCAMPABLE: return 1;
+                default:
+                    log.i("no ordinal defined for zone: " + zone);
+                    return 5;
             }
-            return -1;
         },
         
         isEarlierZone: function (zone1, zone2) {
-            return this.getZoneIndex(zone1) < this.getZoneIndex(zone2);
+            return this.getZoneOrdinal(zone1) < this.getZoneOrdinal(zone2);
         }
 
     };
@@ -210,16 +220,6 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
             WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2,
             WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE,
     ];
-    
-    WorldCreatorConstants.ZONES_BY_ORDER = [
-        WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP,
-        WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE,
-        WorldCreatorConstants.ZONE_POI_1,
-        WorldCreatorConstants.ZONE_POI_2,
-        WorldCreatorConstants.ZONE_CAMP_TO_PASSAGE,
-        WorldCreatorConstants.ZONE_EXTRA,
-        WorldCreatorConstants.ZONE_POI_TEMP,
-    ]
     
     return WorldCreatorConstants;
 });

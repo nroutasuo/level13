@@ -89,7 +89,7 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
         },
         
         getZoneC: function () {
-            return WorldCreatorConstants.getZoneIndex(this.zone);
+            return WorldCreatorConstants.getZoneOrdinal(this.zone);
         },
         
         getCriticalPathPriority: function (pathType) {

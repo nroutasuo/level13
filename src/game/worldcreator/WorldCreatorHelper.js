@@ -263,7 +263,7 @@ define([
             
             // two sectors furthest away from the camp (but not next to each other)
             var sectorsByDistance = levelVO.sectors.slice(0).sort(WorldCreatorHelper.sortSectorsByPathLenTo(worldVO, camp));
-            addPoint(sectorsByDistance[sectorsByDistance.length - 1].position, WorldCreatorConstants.ZONE_EXTRA);
+            addPoint(sectorsByDistance[sectorsByDistance.length - 1].position, WorldCreatorConstants.ZONE_EXTRA_CAMPABLE);
             var i = 1;
             while (i < sectorsByDistance.length) {
                 i++;
