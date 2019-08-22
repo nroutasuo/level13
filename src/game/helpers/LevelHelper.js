@@ -181,6 +181,13 @@ define([
 			return result;
         },
 
+        getCampStep: function (pos) {
+            var sector = this.getSectorByPosition(pos.level, pos.sectorX, pos.sectorY);
+            if (!sector) return 1;
+            var featuresComponent = sector.get(SectorFeaturesComponent);
+            return WorldCreatorConstants.getCampStep(featuresComponent.zone);
+        },
+
         findPathTo: function (startSector, goalSector, settings) {
             if (!startSector || !goalSector) return null;
 

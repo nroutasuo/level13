@@ -86,9 +86,10 @@ define([
 
         // Enemy definitions (level: level ordinal, difficulty: 1-10, attRatio: 0-1, rarity: 0-100)
         createEnemy: function (name, type, nouns, groupN, activeV, defeatedV, campOrdinal, normalizedDifficulty, attRatio, rarity) {
-            var reqStr = this.getRequiredStrength(campOrdinal, 0, 20);
-            var reqStrPrev = this.getRequiredStrength(campOrdinal - 1, 0, 20);
-            var reqStrNext = this.getRequiredStrength(campOrdinal + 1, 0, 20);
+            var reqStr = this.getRequiredStrength(campOrdinal, 2);
+            var reqStrPrev = this.getRequiredStrength(campOrdinal, 1);
+            var reqStrNext = this.getRequiredStrength(campOrdinal, 3);
+            console.log("create enemy " + name + " camp " + campOrdinal + " -> " + reqStr + " "+ reqStrPrev + " " + reqStrNext);
             var statsMin = Math.max(0, reqStr - (reqStr - reqStrPrev) * 0.5);
             var statsMax = Math.max(2, reqStr + (reqStrNext - reqStr) * 0.5);
             if (reqStr === reqStrNext) {
@@ -100,7 +101,6 @@ define([
             var def = Math.max(1, Math.round(stats * (1 - attRatio)));
             return new EnemyVO(name, type, nouns, groupN, activeV, defeatedV, att, def, rarity);
         },
-        
 
         // get enemies by type (string) and difficulty (1-15 (campOrdinal))
         // by default will also include enemies of one difficulty lower, if restrictDifficulty, then not
@@ -146,33 +146,55 @@ define([
                 for (var i = 0; i < EnemyConstants.enemyDefinitions[type].length; i++) {
                     enemy = EnemyConstants.enemyDefinitions[type][i];
                     enemyDifficulty = this.getEnemyDifficultyLevel(enemy);
+                    console.log(enemy.name + " -> " + enemyDifficulty);
                     EnemyConstants.enemyDifficulties[enemy.id] = enemyDifficulty;
                 }
             }
+            console.log(EnemyConstants.enemyDifficulties);
         },
 
-        // get the difficulty level (1-15, corresponding to camp ordinal) of a given enemy
+        // get the difficulty level (1-3*15, corresponding to camp ordinal and step) of a given enemy
         getEnemyDifficultyLevel: function (enemy) {
             var enemyStats = enemy.att + enemy.def;
-            var campDifficulty;
-            for (var i = 1; i <= WorldCreatorConstants.CAMPS_TOTAL; i++) {
-                campDifficulty = this.getRequiredStrength(i);
-                if (campDifficulty > enemyStats) return i;
+            var requiredStats;
+            var max = this.getDifficulty(WorldCreatorConstants.CAMPS_TOTAL, WorldCreatorConstants.CAMP_STEP_END);
+            for (var i = 1; i <= max; i++) {
+                var campOrdinal = this.getCampOrdinalFromDifficulty(i);
+                var step = this.getStepFromDifficulty(i);
+                requiredStats = this.getRequiredStrength(campOrdinal, step);
+                if (requiredStats > enemyStats) return i;
             }
-            return WorldCreatorConstants.CAMPS_TOTAL;
+            return max;
         },
         
-        getRequiredStrength: function (campOrdinal) {
+        getCampOrdinalFromDifficulty: function (difficulty) {
+            return Math.ceil(difficulty/3);
+        },
+        
+        getStepFromDifficulty: function (difficulty) {
+            return difficulty - (this.getCampOrdinalFromDifficulty(difficulty) - 1)*3;
+        },
+        
+        getDifficulty: function (campOrdinal, step) {
+            return (campOrdinal - 1)*3+step;
+        },
+        
+        getRequiredStrength: function (campOrdinal, step) {
             if (campOrdinal < 1)
                 return 1;
-            if (campOrdinal === 1)
-                return FightConstants.FIGHT_PLAYER_BASE_ATT + FightConstants.FIGHT_PLAYER_BASE_DEF;
-            var typicalStrength = this.getTypicalStrength(campOrdinal);
-            var typicalStrengthPrevious = this.getTypicalStrength(campOrdinal - 1);
+            var prevOrdinal = campOrdinal;
+            var prevStep = step - 1;
+            if (prevStep < WorldCreatorConstants.CAMP_STEP_START) {
+                prevOrdinal = campOrdinal - 1;
+                prevStep = WorldCreatorConstants.CAMP_STEP_END;
+            }
+            var typicalStrength = this.getTypicalStrength(campOrdinal, step);
+            var typicalStrengthPrevious = this.getTypicalStrength(prevOrdinal, prevStep);
             return Math.ceil((typicalStrength + typicalStrengthPrevious) / 2);
         },
 
-        getTypicalStrength: function (campOrdinal) {
+        getTypicalStrength: function (campOrdinal, step) {
+            // health
             var typicalHealth = 50;
             var healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus).effect;
             if (campOrdinal > 0)
@@ -180,14 +202,13 @@ define([
             if (campOrdinal >= WorldCreatorConstants.CAMPS_BEFORE_GROUND)
                 typicalHealth = typicalHealth * healthyPerkFactor;
 
+            // items
             var typicalItems = new ItemsComponent();
-            var typicalWeapon = ItemConstants.getDefaultWeapon(campOrdinal);
-            var typicalClothing = GameGlobals.itemsHelper.getBestClothing(campOrdinal, ItemConstants.itemBonusTypes.fight_def);
+            var typicalWeapon = ItemConstants.getDefaultWeapon(campOrdinal, step);
+            var typicalClothing = GameGlobals.itemsHelper.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.fight_def);
 
             if (typicalWeapon)
                 typicalItems.addItem(typicalWeapon, false);
-            else
-                log.w("No typical weapon for camp ordinal " + campOrdinal);
 
             if (typicalClothing.length > 0) {
                 for ( var i = 0; i < typicalClothing.length; i++ ) {
@@ -195,6 +216,7 @@ define([
                 }
             }
 
+            // followers
             var numFollowers = FightConstants.getMaxFollowers(campOrdinal);
             for (var f = 0; f < numFollowers; f++)
                 typicalItems.addItem(ItemConstants.getFollower(13, campOrdinal));
@@ -203,7 +225,8 @@ define([
 
             var typicalStamina = {};
             typicalStamina.health = typicalHealth;
-            return FightConstants.getPlayerStrength(typicalStamina, typicalItems);
+            var result = FightConstants.getPlayerStrength(typicalStamina, typicalItems);
+            return result;
         },
     });
 

@@ -138,7 +138,7 @@ define([
             var efficiency = this.getScavengeEfficiency();
 
             rewards.gainedResources = this.getRewardResources(0.95 + efficiency * 0.05, 1, efficiency, sectorResources);
-            rewards.gainedItems = this.getRewardItems(0.01 + efficiency * 0.03, efficiency * 0.06, this.itemResultTypes.scavenge, efficiency, itemsComponent, levelOrdinal);
+            rewards.gainedItems = this.getRewardItems(0.01 + efficiency * 0.03, efficiency * 0.06, this.itemResultTypes.scavenge, efficiency, itemsComponent, campOrdinal, step);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
 
             this.addStash(rewards, sectorFeatures.stash);
@@ -173,6 +173,7 @@ define([
             var playerPos = this.playerLocationNodes.head.position;
             var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
             var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
+            var step = GameGlobals.levelHelper.getCampStep(playerPos);
             var localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
 
             if (localeVO.type !== localeTypes.tradingpartner) {
@@ -190,9 +191,9 @@ define([
             if (rewards.gainedInjuries.length === 0 && localeVO.type !== localeTypes.tradingpartner) {
                 if (localeCategory === "u") {
                     rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
-                    rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.scavenge, 1, itemsComponent, levelOrdinal);
+                    rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.scavenge, 1, itemsComponent, campOrdinal, step);
                 } else {
-                    rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.meet, 1, itemsComponent, levelOrdinal);
+                    rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.meet, 1, itemsComponent, campOrdinal, step);
                 }
             }
 
@@ -225,10 +226,12 @@ define([
 				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 				var playerPos = this.playerLocationNodes.head.position;
 				var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
+                var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
+                var step = GameGlobals.levelHelper.getCampStep(playerPos);
 				availableResources.setResource(resourceNames.food, 10);
 				availableResources.setResource(resourceNames.metal, 3);
 				rewards.gainedResources = this.getRewardResources(0.3, 2, this.getScavengeEfficiency(), availableResources);
-                rewards.gainedItems = this.getRewardItems(0.1, 0.1, this.itemResultTypes.fight, 1, itemsComponent, levelOrdinal);
+                rewards.gainedItems = this.getRewardItems(0.1, 0.1, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step);
 				rewards.gainedReputation = 1;
             } else {
 				// TODO lost followers
@@ -635,7 +638,7 @@ define([
         // efficiency: 0-1 current scavenge efficiency of the player, affects chance to find something
         // currentItems: ItemsComponent
         // level ordinal: current location level ordinal
-		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, efficiency, currentItems, campOrdinal) {
+		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, efficiency, currentItems, campOrdinal, step) {
 			var result = [];
 
 			// Neccessity items (map, bag) that the player should find quickly if missing
@@ -646,7 +649,7 @@ define([
 
 			// Normal items
             if (!necessityItem && Math.random() < itemProbability) {
-                var item = this.getRewardItem(itemTypeLimits, efficiency, campOrdinal);
+                var item = this.getRewardItem(itemTypeLimits, efficiency, campOrdinal, step);
                 if (item) result.push(item);
             }
 
@@ -674,7 +677,7 @@ define([
 			return followers;
 		},
 
-        getRewardItem: function (itemTypeLimits, efficiency, campOrdinal) {
+        getRewardItem: function (itemTypeLimits, efficiency, campOrdinal, step) {
             // add limits to choose type
             var sum = 0;
             var limitsMin = {};
@@ -718,7 +721,7 @@ define([
                     items = ItemConstants.itemDefinitions.weapon.slice(0);
                     break;
                 case "clothing":
-                    items = GameGlobals.itemsHelper.getScavengeRewardClothing(campOrdinal);
+                    items = GameGlobals.itemsHelper.getScavengeRewardClothing(campOrdinal, step);
                     break;
                 case "exploration":
                     items = ItemConstants.itemDefinitions.exploration.slice(0);
@@ -781,7 +784,7 @@ define([
             // non-craftable level clothing
             if (itemTypeLimits.clothing > 0) {
                 if (Math.random() < adjustedProbability * efficiency) {
-                    var clothing = GameGlobals.itemsHelper.getScavengeNecessityClothing(campOrdinal);
+                    var clothing = GameGlobals.itemsHelper.getScavengeNecessityClothing(campOrdinal, 1);
                     for (var i = 0; i < clothing.length; i++) {
                         if (currentItems.getCountById(clothing[i].id, true) <= 0) {
                             if (Math.random() < 0.25) {

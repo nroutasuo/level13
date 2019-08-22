@@ -51,17 +51,17 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("weapon1", "Shiv", "Weapon", {"fight attack": 2}, true, true, false, "img/items/weapon-shiv.png",
                     "Improvised sharp poking implement.", 1, 2),
                 new ItemVO("weapon2", "Spear", "Weapon", {"fight attack": 5}, true, true, false, "img/items/weapon-shiv.png",
-                    "Old-fashioned but reliable weapon.", 5, 2),
+                    "Old-fashioned but reliable weapon.", 4, 2),
                 new ItemVO("weapon3", "Crossbow", "Weapon", {"fight attack": 11}, true, true, false, "img/items/weapon-shiv.png",
-                    "A deadly ranged weapon consisting of a horizontal limb assembly mounted on a stock that shoots projectiles.", 8, 7),
+                    "A deadly ranged weapon consisting of a horizontal limb assembly mounted on a stock that shoots projectiles.", 7, 7),
                 new ItemVO("weapon4", "Pistol", "Weapon", {"fight attack": 24}, true, true, false, "img/items/weapon-bomb.png",
-                    "A crude single-shot pistol, like a hand-held miniature cannon.", 11, 7),
+                    "A crude single-shot pistol, like a hand-held miniature cannon.", 8, 7),
                 new ItemVO("weapon5", "Revolver", "Weapon", {"fight attack": 52}, true, true, false, "img/items/weapon-bomb.png",
-                    "A more sophisticated handgun that allows several shots before reloading.", 14, 7),
+                    "A more sophisticated handgun that allows several shots before reloading.", 11, 7),
                 new ItemVO("weapon6", "Custom SMG", "Weapon", {"fight attack": 116}, true, true, false, "img/items/weapon-bomb.png",
-                    "It may be made from scrap metal but it is still a serious weapon.", 17, -1),
+                    "It may be made from scrap metal but it is still a serious weapon.", 13, -1),
                 new ItemVO("weapon7", "Improvised bazooka", "Weapon", {"fight attack": 225}, true, true, false, "img/items/weapon-bomb.png",
-                    "Powerful but heavy and somewhat unreliable construction of pipes, reclaimed weapon parts and improvised ammunition.", 19, -1),
+                    "Powerful but heavy and somewhat unreliable construction of pipes, reclaimed weapon parts and improvised ammunition.", 14, -1),
             ],
             clothing_over: [
                 new ItemVO("clothing_over_1", "Warm Coat", "Armor", {"fight defence": 1, warmth: 20}, true, true, false, "img/items/clothing-2.png",
@@ -303,10 +303,19 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             return this.itemDefinitions.shoes[Math.floor(3 * Math.random())];
         },
         
-        getDefaultWeapon: function (campOrdinal) {
+        getDefaultWeapon: function (campOrdinal, step) {
+            var step = step || 2;
             var totalWeapons = this.itemDefinitions.weapon.length;
-            var weapon = Math.max(1, Math.floor(campOrdinal / WorldCreatorConstants.CAMPS_TOTAL * totalWeapons));
-            return this.itemDefinitions.weapon[weapon - 1];
+            var result = null;
+            for (var i = 0; i < totalWeapons; i++) {
+                var weapon = this.itemDefinitions.weapon[i];
+                var weaponCampOrdinal = Math.min(weapon.requiredCampOrdinal);
+                if (step == 1 && weaponCampOrdinal >= campOrdinal) break;
+                if (step == 2 && weaponCampOrdinal >= campOrdinal) break;
+                if (step == 3 && weaponCampOrdinal > campOrdinal) break;
+                result = weapon;
+            }
+            return result;
         },
         
         getIngredient: function () {

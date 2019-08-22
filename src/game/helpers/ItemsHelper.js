@@ -2,12 +2,14 @@ define([
     'ash',
     'game/constants/ItemConstants',
     'game/constants/UpgradeConstants',
-    'game/constants/PlayerActionConstants'
+    'game/constants/PlayerActionConstants',
+    'game/constants/WorldCreatorConstants'
 ], function (
     Ash,
     ItemConstants,
     UpgradeConstants,
-    PlayerActionConstants
+    PlayerActionConstants,
+    WorldCreatorConstants
 ) {
     var ItemsHelper = Ash.Class.extend({
 
@@ -16,22 +18,23 @@ define([
         defaultClothing: {
         },
         
-        availableClothing: {            
+        availableClothing: {
         },
         
-        getBestClothing: function (campOrdinal, itemBonusType) {
-            return this.getAvailableClothingList(campOrdinal, true, true, false, itemBonusType);
+        getBestClothing: function (campOrdinal, step, itemBonusType) {
+            return this.getAvailableClothingList(campOrdinal, step, true, true, false, itemBonusType);
         },
         
-        getScavengeRewardClothing: function (campOrdinal) {
-            return this.getAvailableClothingList(campOrdinal, true, true, true);
+        getScavengeRewardClothing: function (campOrdinal, step) {
+            return this.getAvailableClothingList(campOrdinal, step, true, true, true);
         },
         
-        getScavengeNecessityClothing: function (campOrdinal) {
-            return this.getAvailableClothingList(campOrdinal, false, true, false);
+        getScavengeNecessityClothing: function (campOrdinal, step) {
+            return this.getAvailableClothingList(campOrdinal, step, false, true, false);
         },
         
-        getAvailableClothingList: function (campOrdinal, includeCraftable, includeNonCraftable, includeMultiplePerType, preferredItemBonus) {
+        getAvailableClothingList: function (campOrdinal, step, includeCraftable, includeNonCraftable, includeMultiplePerType, preferredItemBonus) {
+            step = step || 2;
             var result = [];
             var clothingLists = [
                 ItemConstants.itemDefinitions.clothing_over,
@@ -56,7 +59,8 @@ define([
                     
                     // only craftable items are considered default (no reliable source especially when possible to lose once acquired)
                     if (clothingItem.craftable && includeCraftable) {
-                        isAvailable = ItemConstants.getRequiredCampOrdinalToCraft(clothingItem) <= campOrdinal;
+                        var comparisonOrdinal = step == 1 ? campOrdinal - 1 : campOrdinal;
+                        isAvailable = ItemConstants.getRequiredCampOrdinalToCraft(clothingItem) <= comparisonOrdinal;
                     }
 
                     // non-craftable items added for scavenging results
@@ -88,8 +92,8 @@ define([
         
         getNewEquipment: function (campOrdinal) {
             var result = [];
-            var prevNecessityClothing = this.getScavengeNecessityClothing(campOrdinal - 1);
-            var necessityClothing = this.getScavengeNecessityClothing(campOrdinal);
+            var prevNecessityClothing = this.getScavengeNecessityClothing(campOrdinal - 1, 1);
+            var necessityClothing = this.getScavengeNecessityClothing(campOrdinal, 1);
             for (var i = 0; i < necessityClothing.length; i++) {
                 var notNew = false;
                 for (var j = 0; j < prevNecessityClothing.length; j++) {
@@ -100,15 +104,15 @@ define([
                 if (notNew) continue;
                 result.push(necessityClothing[i]);
             }
-            var prevWeapon = ItemConstants.getDefaultWeapon(campOrdinal - 1);
-            var weapon = ItemConstants.getDefaultWeapon(campOrdinal);
+            var prevWeapon = ItemConstants.getDefaultWeapon(campOrdinal - 1, WorldCreatorConstants.CAMP_STEP_END);
+            var weapon = ItemConstants.getDefaultWeapon(campOrdinal, WorldCreatorConstants.CAMP_STEP_END);
             if (weapon && (!prevWeapon || weapon.id !== prevWeapon.id)) result.push(weapon);
             return result;
         },
         
         // max radiation level at the END of the given camp ordinal (all tech and items etc)
-        getMaxHazardRadiationForLevel: function (campOrdinal) {
-            var defaultClothing = this.getBestClothing(campOrdinal, ItemConstants.itemBonusTypes.res_radiation);
+        getMaxHazardRadiationForLevel: function (campOrdinal, step) {
+            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_radiation);
             var radiationProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 radiationProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_radiation);
@@ -117,18 +121,18 @@ define([
         },
         
          // max radiation level at the END of the given camp ordinal (all tech and items etc)
-        getMaxHazardPoisonForLevel: function (campOrdinal) {
-            var defaultClothing = this.getBestClothing(campOrdinal, ItemConstants.itemBonusTypes.res_poison);
+        getMaxHazardPoisonForLevel: function (campOrdinal, step) {
+            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_poison);
             var poisonProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 poisonProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_poison);
             }
-            return poisonProtection;        
+            return poisonProtection;
         },
         
          // max radiation level at the END of the given camp ordinal (all tech and items etc)
-        getMaxHazardColdForLevel: function (campOrdinal) {
-            var defaultClothing = this.getBestClothing(campOrdinal, ItemConstants.itemBonusTypes.res_cold);
+        getMaxHazardColdForLevel: function (campOrdinal, step) {
+            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_cold);
             var coldProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 coldProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_cold);

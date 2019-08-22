@@ -475,7 +475,7 @@ define([
                 var levelVO = this.world.getLevel(i);
 				var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, i);
 
-                // hazards: level-wide values
+                // hazards: level-wide values (TODO pass step and make zone-specific)
                 var maxHazardCold = Math.min(100, itemsHelper.getMaxHazardColdForLevel(campOrdinal));
                 var maxHazardColdEasy = Math.min(100, itemsHelper.getMaxHazardColdForLevel(campOrdinal - 1));
                 
@@ -1338,6 +1338,7 @@ define([
                 return;
             }
 
+            // TODO pass step and make these values zone-specific
             var maxHazardRadiation = Math.min(100, itemsHelper.getMaxHazardRadiationForLevel(campOrdinal));
             var maxHazardRadiationEasy = Math.min(100, itemsHelper.getMaxHazardRadiationForLevel(easyCampOrdinal));
             var maxHazardPoison = Math.min(100, itemsHelper.getMaxHazardPoisonForLevel(campOrdinal));
