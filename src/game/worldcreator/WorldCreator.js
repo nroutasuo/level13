@@ -556,7 +556,7 @@ define([
                     }
                     return num;
                 };
-
+                
                 // sector-based: possible enemies, random encounters and locales
                 for (var i = 0; i < levelVO.sectors.length; i++) {
                     var sectorVO = levelVO.sectors[i];

@@ -42,7 +42,7 @@ define([
             definitions.global.push(this.createEnemy("rusted guard bot", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 8, 5, 0.5, 65));
             definitions.global.push(this.createEnemy("ancient guard bot", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 9, 5, 0.3, 65));
             definitions.global.push(this.createEnemy("robot from a forgotten war", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aGuard, c.aInfest], [c.dDisabled], 9, 5, 0.5, 60));
-            definitions.global.push(this.createEnemy("drone from a forgotten war", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aGuard, c.aInfest], [c.dDisabled], 10, 5, 0.5, 60));
+            definitions.global.push(this.createEnemy("drone from a forgotten war", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aGuard, c.aInfest], [c.dDisabled], 11, 4, 0.5, 60));
             definitions.global.push(this.createEnemy("malfunctioning fire door", "global", [c.nBot], [], [c.aGuard], [c.dDisabled], 11, 7, 0.1, 65));
             definitions.global.push(this.createEnemy("antagonistic fire door", "global", [c.nBot], [], [c.aGuard], [c.dDisabled], 12, 7, 0.2, 50));
             definitions.global.push(this.createEnemy("territorial sewer varanid", "global", [c.nAnimal], [c.gPack, c.gGang], [c.aGuard], [c.dKilled, c.dDrive], 13, 8, 0.7, 85));
@@ -68,10 +68,10 @@ define([
             definitions.inhabited.push(this.createEnemy("doomsayer", "inhabited", [], [c.gMob], [c.aPatrol], [c.dDrive], 13, 4, 0.6, 45));
             definitions.inhabited.push(this.createEnemy("armed gangster", "inhabited", [c.nGangster], [c.gMob, c.gGang], [c.aPatrol, c.aGuard, c.aInfest], [], 14, 6, 0.8, 75));
             definitions.inhabited.push(this.createEnemy("sector emergency system", "inhabited", [c.nBot], [], [c.aGuard], [], 15, 5, 0.7, 25));
-            definitions.sunlit.push(this.createEnemy("thorny bush", "sunlit", [c.nPest], [c.gCluster], [c.aInfest, c.aCover], [], 2, 5, 0.5));
+            definitions.sunlit.push(this.createEnemy("thorny bush", "sunlit", [c.nPest], [c.gCluster], [c.aInfest, c.aCover], [], 2, 2, 0.5));
             definitions.sunlit.push(this.createEnemy("overgrown nettle", "sunlit", [c.nPest], [c.gCluster], [c.aInfest, c.aCover], [], 3, 5, 0.25));
             definitions.sunlit.push(this.createEnemy("hawk", "sunlit", [c.nPest, c.nAnimal], [c.gFlock, c.gPack], [c.aInfest], [], 3, 9, 0.3, 50));
-            definitions.sunlit.push(this.createEnemy("a group of seagulls", "sunlit", [c.nPest, c.nAnimal], [c.gFlock], [c.aInfest], [], 10, 6, 0.8, 20));
+            definitions.sunlit.push(this.createEnemy("a group of seagulls", "sunlit", [c.nPest, c.nAnimal], [c.gFlock], [c.aInfest], [], 10, 3, 0.8, 20));
             definitions.sunlit.push(this.createEnemy("scorpion", "sunlit", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [], 12, 5, 0.7));
             definitions.sunlit.push(this.createEnemy("territorial magpie", "sunlit", [c.nPest, c.nAnimal], [], [c.aInfest], [], 13, 4, 0.7, 35));
             definitions.sunlit.push(this.createEnemy("great black pelican", "sunlit", [c.nPest, c.nAnimal], [], [c.aInfest, c.aGuard], [c.dKilled, c.dDrive], 15, 5, 0.5, 35));
@@ -89,7 +89,6 @@ define([
             var reqStr = this.getRequiredStrength(campOrdinal, 2);
             var reqStrPrev = this.getRequiredStrength(campOrdinal, 1);
             var reqStrNext = this.getRequiredStrength(campOrdinal, 3);
-            console.log("create enemy " + name + " camp " + campOrdinal + " -> " + reqStr + " "+ reqStrPrev + " " + reqStrNext);
             var statsMin = Math.max(0, reqStr - (reqStr - reqStrPrev) * 0.5);
             var statsMax = Math.max(2, reqStr + (reqStrNext - reqStr) * 0.5);
             if (reqStr === reqStrNext) {
@@ -146,11 +145,9 @@ define([
                 for (var i = 0; i < EnemyConstants.enemyDefinitions[type].length; i++) {
                     enemy = EnemyConstants.enemyDefinitions[type][i];
                     enemyDifficulty = this.getEnemyDifficultyLevel(enemy);
-                    console.log(enemy.name + " -> " + enemyDifficulty);
                     EnemyConstants.enemyDifficulties[enemy.id] = enemyDifficulty;
                 }
             }
-            console.log(EnemyConstants.enemyDifficulties);
         },
 
         // get the difficulty level (1-3*15, corresponding to camp ordinal and step) of a given enemy
