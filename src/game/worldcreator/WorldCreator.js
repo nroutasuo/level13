@@ -1423,65 +1423,63 @@ define([
 			var l = sectorVO.position.level;
 			var x = sectorVO.position.sectorX;
 			var y = sectorVO.position.sectorY;
-
-			var randomEnemyCheck = function (typeSeed, enemy) {
-				var threshold = (enemy.rarity + 5) / 110;
-				var r = WorldCreatorRandom.random(typeSeed * l * seed + x * l + y + typeSeed + typeSeed * x - y * typeSeed * x);
-				return r > threshold;
-			};
-
+            var levelVO = this.world.getLevel(l);
+            
 			var enemyDifficulty = WorldCreatorHelper.getCampOrdinal(seed, l);
             if (sectorVO.isOnEarlyCriticalPath() && enemyDifficulty > 1) enemyDifficulty -= 1;
-
             sectorVO.enemyDifficulty = enemyDifficulty;
 
 			var enemies = sectorVO.possibleEnemies;
+            
+            // collect all valid enemies for this sector (candidates)
+            var candidates = [];
+            var enemyCreator = this.enemyCreator;
             var enemy;
+            var addEnemyCandidates = function (enemyType) {
+                var typeEnemies = enemyCreator.getEnemies(enemyType, enemyDifficulty, false);
+    			for (var e in typeEnemies) {
+    				enemy = typeEnemies[e];
+    				candidates.push(enemy);
+    			}
+            };
 
-            var globalE = this.enemyCreator.getEnemies(EnemyConstants.enemyTypes.global, enemyDifficulty, false);
-			for (var e in globalE) {
-				enemy = globalE[e];
-				if (randomEnemyCheck(11 * (e + 1), enemy)) enemies.push(enemy);
-			}
-
-			if (l <= bottomLevel + 1) {
-				var earthE = this.enemyCreator.getEnemies(EnemyConstants.enemyTypes.earth, enemyDifficulty, false);
-				for (var e in earthE) {
-					enemy = earthE[e];
-					if (randomEnemyCheck(333 * (e + 1), enemy)) enemies.push(enemy);
-				}
-			}
-
-			if (sectorVO.sunlit) {
-				var sunE = this.enemyCreator.getEnemies(EnemyConstants.enemyTypes.sunlit, enemyDifficulty, false);
-				for (var e in sunE) {
-					enemy = sunE[e];
-					if (randomEnemyCheck(6666 * (e + 4) + 2, enemy)) enemies.push(enemy);
-				}
-			}
-
-			if (l >= topLevel - 10) {
-				var inhabitedE = this.enemyCreator.getEnemies(EnemyConstants.enemyTypes.inhabited, enemyDifficulty, false);
-				for (var e in inhabitedE) {
-					enemy = inhabitedE[e];
-					if (randomEnemyCheck(777 * (e + 2) ^ 2, enemy)) enemies.push(enemy);
-				}
-			}
-
-			if (l >= topLevel - 5) {
-				var urbanE = this.enemyCreator.getEnemies(EnemyConstants.enemyTypes.urban, enemyDifficulty, false);
-				for (var e in urbanE) {
-					enemy = urbanE[e];
-					if (randomEnemyCheck(99 * (e + 1), enemy)) enemies.push(enemy);
-				}
-			}
+            addEnemyCandidates(EnemyConstants.enemyTypes.global);
+            if (!sectorVO.hazards.hasHazards()) addEnemyCandidates(EnemyConstants.enemyTypes.nohazard);
+            if (sectorVO.hazards.cold > 0) addEnemyCandidates(EnemyConstants.enemyTypes.cold);
+            if (sectorVO.hazards.poison > 0) addEnemyCandidates(EnemyConstants.enemyTypes.toxic);
+            if (sectorVO.hazards.radiation > 0) addEnemyCandidates(EnemyConstants.enemyTypes.radiation);
+            if (sectorVO.sunlit) addEnemyCandidates(EnemyConstants.enemyTypes.sunlit);
+            if (!sectorVO.sunlit) addEnemyCandidates(EnemyConstants.enemyTypes.dark);
+            if (sectorVO.buildingDensity > 5) addEnemyCandidates(EnemyConstants.enemyTypes.dense);
+            if (sectorVO.buildingDensity <= 5) addEnemyCandidates(EnemyConstants.enemyTypes.sparse);
+            
+            var hasWater = sectorVO.hasWater();
+            var directions = PositionConstants.getLevelDirections();
+            var neighbours = levelVO.getNeighbours(x, y);
+            for (var d in directions) {
+                var direction = directions[d];
+                var neighbour = neighbours[direction];
+                if (neighbour) {
+                    hasWater = hasWater || neighbour.hasWater();
+                }
+            }
+            if (hasWater) addEnemyCandidates(EnemyConstants.enemyTypes.water);
+            
+            // select enemies from candidates by rarity
+            candidates = candidates.sort(function (a,b) {
+                return a.rarity - b.rarity;
+            });
+            for (var i = 0; i < candidates.length; i++) {
+                enemy = candidates[i];
+				var threshold = (enemy.rarity + 5) / 110;
+				var r = WorldCreatorRandom.random(9999 + l * seed + x * l * 80 + y * 10 + i * x *22 - y * i * x * 15);
+                if (i == 0 || r > threshold) {
+                    enemies.push(enemy);
+                }
+            }
 
 			if (enemies.length < 1) {
-                if (globalE.length > 0) {
-                    enemies.push(globalE[0]);
-                } else {
-                    log.w("No valid enemies defined for sector " + sectorVO.position + " difficulty " + enemyDifficulty);
-                }
+                log.w("No valid enemies defined for sector " + sectorVO.position + " difficulty " + enemyDifficulty);
             }
 
 			return enemies;

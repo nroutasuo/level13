@@ -6,19 +6,30 @@ function (Ash, WorldCreatorConstants, EnemyVO) {
     var EnemyConstants = {
 		
 		enemyTypes: {
-			urban: "urban",			// top 5 levels
-			inhabited: "inhabited",	// top 10 levels
-			sunlit: "sunlit",		// anywhere with sunlight
-			earth: "earth",			// bottom 2 levels
-			global: "global",		// any level
+            // nohazard, cold, toxic, radiation, sunlit, dark, dense, sparse, water (sectors that contain AND neighbours)
+            global: "global",     // anywhere
+            nohazard: "nohazard",   // sectors with no hazards
+            cold: "cold",           // cold sectors
+            toxic: "toxic",         // toxic sectors
+            radiation: "radiation", // radiactive sectors
+            sunlit: "sunlit",       // sunlit sectors
+            dark: "dark",           // dark sectors
+            dense: "dense",         // densely built sectors
+            sparse: "sparse",       // sparsely built sectors
+            water: "water"          // sectors with water (or neighbours)
 		},
 		
 		enemyDefinitions: {
-			urban: [ ],
-			inhabited: [ ],
-			sunlit: [ ],
-			earth: [ ],
 			global: [ ],
+			nohazard: [ ],
+			cold: [ ],
+			toxic: [ ],
+			radiation: [ ],
+			sunlit: [ ],
+			dark: [ ],
+			dense: [ ],
+			sparse: [ ],
+			water: [ ],
 		},
 		
 		// saved for convenience & startup speed

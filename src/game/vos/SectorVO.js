@@ -31,6 +31,10 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
             this.numLocaleEnemies = {};
         },
         
+        hasWater: function () {
+            return this.hasSpring || this.resourcesScavengable.getResource(resourceNames.water) > 0 || this.resourcesCollectable.getResource(resourceNames.water) > 0;
+        },
+        
         isOnCriticalPath: function (type) {
             return this.criticalPaths.indexOf(type) >= 0;
         },
