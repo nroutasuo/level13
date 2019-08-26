@@ -16,7 +16,8 @@ function (Ash, WorldCreatorConstants, EnemyVO) {
             dark: "dark",           // dark sectors
             dense: "dense",         // densely built sectors
             sparse: "sparse",       // sparsely built sectors
-            water: "water"          // sectors with water (or neighbours)
+            water: "water",         // sectors with water (or neighbours)
+            magic: "magic"          // sectors with magic (WIP)
 		},
 		
 		enemyDefinitions: {
@@ -30,6 +31,7 @@ function (Ash, WorldCreatorConstants, EnemyVO) {
 			dense: [ ],
 			sparse: [ ],
 			water: [ ],
+			magic: [ ],
 		},
 		
 		// saved for convenience & startup speed

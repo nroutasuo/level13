@@ -27,71 +27,101 @@ define([
             var c = EnemyConstants;
             var definitions = EnemyConstants.enemyDefinitions;
             // global
+            definitions.global.push(this.createEnemy("huge rat", "global", [c.nPest, c.nAnimal], [c.gPack, c.gMob, c.gHorde], [c.aInfest], [c.dCleared], 0, 5, 0.75));
             definitions.global.push(this.createEnemy("giant centipede", "global", [c.nPest, c.nAnimal],  [c.gSwarm],[c.aInfest], [c.dCleared], 1, 2, 0.4, 30));
-            definitions.global.push(this.createEnemy("poisonous spider", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled], 4, 5, 0.8, 20));
-            definitions.global.push(this.createEnemy("gigantic spider", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled], 4, 5, 0.8, 20));
-            definitions.global.push(this.createEnemy("ratsnake", "global", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gCluster], [c.aInfest, c.aOverrun], [c.dKilled, c.dCleared], 5, 5, 0.6, 50));
-            definitions.global.push(this.createEnemy("fire salamander", "global", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gMob, c.gHorde], [c.aInfest], [c.dKilled], 6, 5, 0.6, 50));
-            definitions.global.push(this.createEnemy("rusted guard bot", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 8, 5, 0.5, 65));
-            definitions.global.push(this.createEnemy("ancient guard bot", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 9, 5, 0.3, 65));
-            definitions.global.push(this.createEnemy("robot from a forgotten war", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aGuard, c.aInfest], [c.dDisabled], 9, 5, 0.5, 60));
-            definitions.global.push(this.createEnemy("drone from a forgotten war", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aGuard, c.aInfest], [c.dDisabled], 11, 4, 0.5, 60));
-            definitions.global.push(this.createEnemy("malfunctioning fire door", "global", [c.nBot], [], [c.aGuard], [c.dDisabled], 11, 7, 0.1, 65));
-            definitions.global.push(this.createEnemy("antagonistic fire door", "global", [c.nBot], [], [c.aGuard], [c.dDisabled], 12, 7, 0.2, 50));
-            definitions.global.push(this.createEnemy("territorial sewer varanid", "global", [c.nAnimal], [c.gPack, c.gGang], [c.aGuard], [c.dKilled, c.dDrive], 13, 8, 0.7, 85));
-            definitions.global.push(this.createEnemy("predatory sewer varanid", "global", [c.nAnimal], [c.gPack, c.gGang], [c.aGuard], [c.dKilled, c.dDrive], 14, 8, 0.8, 85));
-            definitions.global.push(this.createEnemy("haywire guard bot 1", "global", [c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 12, 5, 0.2, 50));
-            definitions.global.push(this.createEnemy("haywire guard bot 2", "global", [c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 13, 5, 0.7, 50));
-            definitions.global.push(this.createEnemy("haywire guard bot 3", "global", [c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 15, 5, 0.6, 50));
-            definitions.global.push(this.createEnemy("agitated murder of crows", "global", [c.nPest, c.nAnimal], [c.gFlock, c.gSwarm], [c.aInfest], [c.dDrive], 10, 5, 0.3));
-            definitions.global.push(this.createEnemy("military bot", "global", [c.nBot], [c.gMob], [c.aPatrol, c.aGuard], [c.dDisabled], 13, 5, 0.8, 85));
             definitions.global.push(this.createEnemy("security bot", "global", [c.nBot], [c.gMob], [c.aPatrol, c.aGuard], [c.dDisabled], 3, 5, 0.3));
-            definitions.global.push(this.createEnemy("rabid dog", "global", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled], 4, 5, 0.6));
-            definitions.global.push(this.createEnemy("sector emergency system", "global", [c.nBot], [], [c.aGuard], [], 15, 5, 0.7, 25));
+            definitions.global.push(this.createEnemy("giant scorpion", "global", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [], 4, 5, 0.7));
+            definitions.global.push(this.createEnemy("camel spider", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aOverrun], [c.dCleared, c.dDrive], 5, 5, 0.3, 35));
+            definitions.global.push(this.createEnemy("ancient guard bot", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 6, 5, 0.3, 65));
+            definitions.global.push(this.createEnemy("carpet viper", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aOverrun], [c.dCleared, c.dDrive], 7, 5, 0.3, 35));
+            definitions.global.push(this.createEnemy("alligator", "global", [c.nPest, c.nAnimal], [c.gPack, c.gMob], [c.aOverrun, c.aGuard, c.aInfest], [c.dCleared, c.dKilled], 7, 5, 0.3, 75));
+            definitions.global.push(this.createEnemy("rusted guard bot", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 9, 5, 0.5, 65));
+            definitions.global.push(this.createEnemy("robot from a forgotten war", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aGuard, c.aInfest], [c.dDisabled], 9, 5, 0.5, 60));
+            definitions.global.push(this.createEnemy("aggressive alligator", "global", [c.nPest, c.nAnimal], [c.gPack, c.gMob], [c.aOverrun, c.aGuard, c.aInfest], [c.dCleared, c.dKilled], 10, 5, 0.3, 75));
+            definitions.global.push(this.createEnemy("drone from a forgotten war", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aGuard, c.aInfest], [c.dDisabled], 11, 4, 0.5, 60));
+            definitions.global.push(this.createEnemy("malfunctioning fire door", "global", [c.nBot], [], [c.aGuard], [c.dDisabled], 11, 6, 0.1, 65));
+            definitions.global.push(this.createEnemy("antagonistic fire door", "global", [c.nBot], [], [c.aGuard], [c.dDisabled], 12, 7, 0.2, 50));
             // nohazard
-            definitions.nohazard.push(this.createEnemy("huge rat", "nohazard", [c.nPest, c.nAnimal], [c.gPack, c.gMob, c.gHorde], [c.aInfest], [c.dCleared], 0, 5, 0.75));
-            definitions.nohazard.push(this.createEnemy("doomsayer", "nohazard", [], [c.gMob], [c.aPatrol], [c.dDrive], 13, 4, 0.6, 45));
+            definitions.nohazard.push(this.createEnemy("rabid dog", "nohazard", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled], 2, 5, 0.6));
+            definitions.nohazard.push(this.createEnemy("gigantic spider", "nohazard", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled], 4, 5, 0.8, 20));
+            definitions.nohazard.push(this.createEnemy("fire salamander", "nohazard", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gMob, c.gHorde], [c.aInfest], [c.dKilled], 6, 5, 0.6, 50));
+            definitions.nohazard.push(this.createEnemy("tiger snake", "nohazard", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aOverrun], [c.dCleared, c.dDrive], 7, 5, 0.3, 35));
+            definitions.nohazard.push(this.createEnemy("haywire guard bot 1", "nohazard", [c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 12, 5, 0.2, 50));
+            definitions.nohazard.push(this.createEnemy("haywire guard bot 2", "nohazard", [c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 13, 5, 0.7, 50));
+            definitions.nohazard.push(this.createEnemy("doomsayer", "nohazard", [], [c.gMob], [c.aPatrol], [c.dDrive], 13, 3, 0.6, 45));
             definitions.nohazard.push(this.createEnemy("armed gangster", "nohazard", [c.nGangster], [c.gMob, c.gGang], [c.aPatrol, c.aGuard, c.aInfest], [], 14, 6, 0.8, 75));
             definitions.nohazard.push(this.createEnemy("escaped zoo panther", "nohazard", [c.nAnimal, c.aGuard], [c.gPack, c.gMob], [], [], 14, 8, 0.8, 90));
             definitions.nohazard.push(this.createEnemy("injured zoo panther", "nohazard", [c.nAnimal], [c.gPack, c.gMob], [], [], 15, 8, 0.6, 95));
+            definitions.nohazard.push(this.createEnemy("haywire guard bot 3", "nohazard", [c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 15, 5, 0.6, 50));
             // cold
+            definitions.cold.push(this.createEnemy("goshawk", "cold", [c.nAnimal, c.nPest], [c.gFlock], [c.aInfest, c.aGuard], [c.dCleared], 2, 4, 0.4, 50));
+            definitions.cold.push(this.createEnemy("grey adder", "cold", [c.nAnimal, c.nPest], [c.gFlock], [c.aInfest, c.aGuard], [c.dCleared], 3, 4, 0.4, 50));
+            definitions.cold.push(this.createEnemy("albatross", "cold", [c.nAnimal, c.nPest], [c.gFlock], [c.aInfest, c.aGuard], [c.dCleared], 4, 4, 0.4, 50));
+            definitions.cold.push(this.createEnemy("night scorpion", "cold", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [], 5, 5, 0.7));
+            definitions.cold.push(this.createEnemy("condor", "cold", [c.nAnimal, c.nPest], [c.gFlock], [c.aInfest, c.aGuard], [c.dCleared], 6, 4, 0.4, 50));
             definitions.cold.push(this.createEnemy("duskboar", "cold", [c.nAnimal], [c.gPack], [c.aInfest, c.aGuard], [c.dCleared], 7, 4, 0.4, 50));
+            definitions.cold.push(this.createEnemy("grizzly bear", "cold", [c.nAnimal], [c.gPack], [c.aInfest, c.aGuard], [c.dCleared], 8, 6, 0.4, 50));
+            definitions.cold.push(this.createEnemy("wolly monkey", "cold", [c.nAnimal], [c.gPack], [c.aInfest, c.aGuard], [c.dCleared], 9, 7, 0.4, 50));
+            definitions.cold.push(this.createEnemy("a group of seagulls", "cold", [c.nPest, c.nAnimal], [c.gFlock], [c.aInfest], [], 10, 3, 0.8, 20));
+            definitions.cold.push(this.createEnemy("giant snow owl", "cold", [c.nAnimal], [c.gFlock], [c.aInfest, c.aGuard], [c.dCleared], 10, 7, 0.4, 50));
+            definitions.cold.push(this.createEnemy("dire boar", "cold", [c.nAnimal], [c.gPack], [c.aInfest, c.aGuard], [c.dCleared], 11, 4, 0.4, 75));
             // toxic
-            definitions.toxic.push(this.createEnemy("poisonous centipede", "toxic", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [c.dCleared], 1, 3, 0.4, 50));
+            definitions.toxic.push(this.createEnemy("poisonous centipede", "toxic", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [c.dCleared], 1, 5, 0.4, 50));
+            definitions.toxic.push(this.createEnemy("poisonous spider", "toxic", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled], 4, 5, 0.8, 20));
             definitions.toxic.push(this.createEnemy("leaking gas pipe", "toxic", [], [], [], [c.dCleared], 5, 4, 0.2, 75));
+            definitions.toxic.push(this.createEnemy("toxic spider", "toxic", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled], 6, 5, 0.8, 20));
             // radiation
-            definitions.radiation.push(this.createEnemy("radioactive cockroach", "radiation", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover, c.aOverrun], [c.dCleared], 2, 3, 0.1));
+            definitions.radiation.push(this.createEnemy("radioactive centipede", "radiation", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover, c.aOverrun], [c.dCleared], 2, 3, 0.1));
+            definitions.radiation.push(this.createEnemy("radioactive cockroach", "radiation", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover, c.aOverrun], [c.dCleared], 3, 3, 0.1));
+            definitions.radiation.push(this.createEnemy("mutant spider", "radiation", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled, c.dCleared], 5, 5, 0.3, 20));
+            definitions.radiation.push(this.createEnemy("mutant dog", "radiation", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled, c.dDrive], 9, 5, 0.6));
+            definitions.radiation.push(this.createEnemy("towering mutant dog", "radiation", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled, c.dDrive], 11, 5, 0.7));
             // sunlit
-            definitions.sunlit.push(this.createEnemy("wasp", "sunlit", [c.nAnimal], [c.gSwarm], [c.aInfest], [c.dDrive], 3, 5, 0.75));
-            definitions.sunlit.push(this.createEnemy("bee", "sunlit", [c.nAnimal], [c.gSwarm], [c.aInfest], [c.dDrive], 4, 5, 0.25, 70));
-            definitions.sunlit.push(this.createEnemy("spirit of earth", "sunlit", [], [], [c.aGuard], [c.dDrive], 5, 5, 0.2, 25));
-            definitions.sunlit.push(this.createEnemy("spirit of wind", "sunlit", [], [], [c.aGuard], [c.dDrive], 5, 8, 0.8, 35));
-            definitions.sunlit.push(this.createEnemy("spirit of fire", "sunlit", [], [], [c.aGuard], [c.dDrive], 5, 6, 0.6, 45));
-            definitions.sunlit.push(this.createEnemy("spirit of sun", "sunlit", [], [], [c.aGuard], [c.dDrive], 5, 6, 0.2, 55));
-            definitions.sunlit.push(this.createEnemy("vengeful dryad", "sunlit", [], [c.gMob], [c.aGuard], [c.dDrive], 6, 8, 0.5, 90));
-            definitions.sunlit.push(this.createEnemy("ape", "sunlit", [c.nAnimal], [c.gPack, c.gGang, c.gMob], [c.aGuard], [c.dDrive], 7, 5, 0.5));
-            definitions.sunlit.push(this.createEnemy("bear", "sunlit", [c.nAnimal], [], [], [c.dDrive], 8, 6, 0.6));
-            definitions.sunlit.push(this.createEnemy("drove of boars", "sunlit", [c.nAnimal], [], [], [c.dDrive], 8, 5, 0.8));
-            definitions.sunlit.push(this.createEnemy("swarm of pidgeons", "sunlit", [c.nPest, c.nAnimal], [c.gFlock, c.gSwarm], [c.aInfest], [c.dDrive], 9, 5, 0.75, 10));
+            definitions.sunlit.push(this.createEnemy("wasp", "sunlit", [c.nAnimal], [c.gSwarm], [c.aInfest], [c.dDrive], 0, 1, 0.75, 10));
+            definitions.sunlit.push(this.createEnemy("bee", "sunlit", [c.nAnimal], [c.gSwarm], [c.aInfest], [c.dDrive], 1, 5, 0.25, 70));
             definitions.sunlit.push(this.createEnemy("thorny bush", "sunlit", [c.nPest], [c.gCluster], [c.aInfest, c.aCover], [], 2, 2, 0.5));
             definitions.sunlit.push(this.createEnemy("overgrown nettle", "sunlit", [c.nPest], [c.gCluster], [c.aInfest, c.aCover], [], 3, 5, 0.25));
             definitions.sunlit.push(this.createEnemy("hawk", "sunlit", [c.nPest, c.nAnimal], [c.gFlock, c.gPack], [c.aInfest], [], 3, 9, 0.3, 50));
-            definitions.sunlit.push(this.createEnemy("a group of seagulls", "sunlit", [c.nPest, c.nAnimal], [c.gFlock], [c.aInfest], [], 10, 3, 0.8, 20));
-            definitions.sunlit.push(this.createEnemy("scorpion", "sunlit", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [], 12, 5, 0.7));
+            definitions.sunlit.push(this.createEnemy("skunk", "sunlit", [c.nPest, c.nAnimal], [c.gGang, c.gPack], [c.aOverrun], [c.dDrive, c.dCleared], 4, 9, 0.3, 50));
+            definitions.sunlit.push(this.createEnemy("fire scorpion", "sunlit", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [], 6, 5, 0.7));
+            definitions.sunlit.push(this.createEnemy("bear", "sunlit", [c.nAnimal], [], [], [c.dDrive], 8, 6, 0.6));
+            definitions.sunlit.push(this.createEnemy("drove of boars", "sunlit", [c.nAnimal], [], [], [c.dDrive], 8, 5, 0.8));
+            definitions.sunlit.push(this.createEnemy("swarm of pidgeons", "sunlit", [c.nPest, c.nAnimal], [c.gFlock, c.gSwarm], [c.aInfest], [c.dDrive], 9, 5, 0.75, 10));
             definitions.sunlit.push(this.createEnemy("great black pelican", "sunlit", [c.nPest, c.nAnimal], [], [c.aInfest, c.aGuard], [c.dKilled, c.dDrive], 15, 5, 0.5, 35));
             // dark
+            definitions.dark.push(this.createEnemy("cockroach", "dark", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover, c.aOverrun], [c.dCleared], 0, 1, 0.2, 10));
             definitions.dark.push(this.createEnemy("cave bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 2, 5, 0.4, 20));
             definitions.dark.push(this.createEnemy("ghost bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 3, 6, 0.8, 50));
             definitions.dark.push(this.createEnemy("vampire bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 3, 5, 0.7, 70));
             definitions.dark.push(this.createEnemy("albino salamander", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gMob, c.gHorde], [c.aInfest], [c.dKilled], 6, 5, 0.6, 50));
-            definitions.dark.push(this.createEnemy("vampire", "dark", [], [], [], [c.dDrive], 7, 8, 0.8, 90));
+            definitions.dark.push(this.createEnemy("vampire", "dark", [], [], [], [c.dDrive], 7, 8, 0.9, 90));
+            definitions.dark.push(this.createEnemy("giant albino salamander", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gMob, c.gHorde], [c.aInfest], [c.dKilled], 9, 5, 0.6, 50));
+            definitions.dark.push(this.createEnemy("great vampire bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 10, 5, 0.7, 70));
             // dense
+            definitions.dense.push(this.createEnemy("ratsnake", "dense", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gCluster], [c.aInfest, c.aOverrun], [c.dKilled, c.dCleared], 5, 5, 0.6, 50));
+            definitions.dense.push(this.createEnemy("fierce snake", "dense", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gCluster], [c.aInfest, c.aOverrun], [c.dKilled, c.dCleared], 8, 5, 0.6, 50));
+            definitions.dense.push(this.createEnemy("death adder", "dense", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gCluster], [c.aInfest, c.aOverrun], [c.dKilled, c.dCleared], 10, 5, 0.6, 50));
             definitions.dense.push(this.createEnemy("escaped pet boa", "dense", [c.nAnimal], [], [c.aInfest], [], 12, 7, 0.5, 85));
+            definitions.dense.push(this.createEnemy("territorial sewer varanid", "dense", [c.nAnimal], [c.gPack, c.gGang], [c.aGuard], [c.dKilled, c.dDrive], 13, 8, 0.7, 85));
+            definitions.dense.push(this.createEnemy("predatory sewer varanid", "dense", [c.nAnimal], [c.gPack, c.gGang], [c.aGuard], [c.dKilled, c.dDrive], 14, 5, 0.8, 85));
             // sparse
-            definitions.sparse.push(this.createEnemy("territorial magpie", "sparse", [c.nPest, c.nAnimal], [], [c.aInfest], [], 13, 4, 0.7, 35));
+            definitions.sparse.push(this.createEnemy("aggressive magpie", "sparse", [c.nPest, c.nAnimal], [], [c.aInfest], [], 4, 4, 0.7, 50));
+            definitions.sparse.push(this.createEnemy("territorial magpie", "sparse", [c.nPest, c.nAnimal], [], [c.aInfest], [], 5, 4, 0.7, 35));
+            definitions.global.push(this.createEnemy("agitated murder of crows", "global", [c.nPest, c.nAnimal], [c.gFlock, c.gSwarm], [c.aInfest], [c.dDrive], 10, 5, 0.3));
+            definitions.global.push(this.createEnemy("military bot", "global", [c.nBot], [c.gMob], [c.aPatrol, c.aGuard], [c.dDisabled], 13, 5, 0.8, 85));
+            definitions.global.push(this.createEnemy("advanced military bot", "global", [c.nBot], [c.gMob], [c.aPatrol, c.aGuard], [c.dDisabled], 14, 5, 0.8, 85));
             // water
             definitions.water.push(this.createEnemy("mugger", "water", [c.nGangster], [c.gGang], [c.aInfest], [c.dDrive], 10, 5, 0.5, 15));
+            definitions.water.push(this.createEnemy("threathening mugger", "water", [c.nGangster], [c.gGang], [c.aInfest], [c.dDrive], 11, 5, 0.5, 15));
             definitions.water.push(this.createEnemy("aggressive raccoon", "water", [c.nPest, c.nAnimal], [], [], [], 11, 5, 0.6, 40));
+            definitions.water.push(this.createEnemy("robber", "water", [c.nGangster], [c.gGang, c.gMob], [c.aPatrol, c.aGuard], [c.dKilled], 12, 5, 0.5, 50));
+            definitions.water.push(this.createEnemy("mean robber", "water", [c.nGangster], [c.gGang, c.gMob], [c.aPatrol, c.aGuard], [c.dKilled], 13, 5, 0.5, 50));
+            // magic
+            definitions.magic.push(this.createEnemy("spirit of earth", "magic", [], [], [c.aGuard], [c.dDrive], 5, 5, 0.2, 25));
+            definitions.magic.push(this.createEnemy("spirit of wind", "magic", [], [], [c.aGuard], [c.dDrive], 5, 8, 0.8, 35));
+            definitions.magic.push(this.createEnemy("spirit of fire", "magic", [], [], [c.aGuard], [c.dDrive], 5, 6, 0.6, 45));
+            definitions.magic.push(this.createEnemy("spirit of sun", "magic", [], [], [c.aGuard], [c.dDrive], 5, 6, 0.2, 55));
+            definitions.magic.push(this.createEnemy("vengeful dryad", "magic", [], [c.gMob], [c.aGuard], [c.dDrive], 6, 8, 0.5, 90));
         },
 
         // Enemy definitions (level: level ordinal, difficulty: 1-10, attRatio: 0-1, rarity: 0-100)

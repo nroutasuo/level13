@@ -3,7 +3,7 @@
             "version": "0.2.5",
             "phase": "alpha",
             "final": false,
-            "updated": "2019-07-31",
+            "updated": "2019-08-25",
             "changes": [
                 {
                     "type": "GD",
@@ -24,6 +24,10 @@
                 {
                     "type": "GB",
                     "summary": "Adjust balancing (raids, rumours, upgrades)"
+                },
+                {
+                    "type": "GB",
+                    "summary": "Add many more enemies and make enemy difficulty more dynamic"
                 },
                 {
                     "type": "DEV",
