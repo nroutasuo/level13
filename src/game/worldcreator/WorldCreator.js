@@ -1424,8 +1424,10 @@ define([
 			var x = sectorVO.position.sectorX;
 			var y = sectorVO.position.sectorY;
             var levelVO = this.world.getLevel(l);
+            var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
+            var step = WorldCreatorConstants.getCampStep(sectorVO.zone);
             
-			var enemyDifficulty = WorldCreatorHelper.getCampOrdinal(seed, l);
+			var enemyDifficulty = this.enemyCreator.getDifficulty(campOrdinal, step);
             if (sectorVO.isOnEarlyCriticalPath() && enemyDifficulty > 1) enemyDifficulty -= 1;
             sectorVO.enemyDifficulty = enemyDifficulty;
 
