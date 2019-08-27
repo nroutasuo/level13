@@ -474,37 +474,41 @@ define([
 				var l = i === 0 ? 1342 : i;
                 var levelVO = this.world.getLevel(i);
 				var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, i);
-
-                // hazards: level-wide values (TODO pass step and make zone-specific)
-                var maxHazardCold = Math.min(100, itemsHelper.getMaxHazardColdForLevel(campOrdinal));
-                var maxHazardColdEasy = Math.min(100, itemsHelper.getMaxHazardColdForLevel(campOrdinal - 1));
                 
                 // hazard clusters (radiation and poison)
                 this.generateHazardClusters(seed, levelVO, itemsHelper);
 
                 // non-clustered environmental hazards (cold) (edges of the map)
                 for (var s = 0; s < levelVO.sectors.length; s++) {
+                    // - block for certain sectors
                     var sectorVO = levelVO.sectors[s];
                     if (sectorVO.camp) continue;
+                    if (sectorVO.isOnCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP)) continue;
                     var x = sectorVO.position.sectorX;
                     var y = sectorVO.position.sectorY;
                     if (Math.abs(y) <= 2 && Math.abs(x) <= 2) continue;
-                    
                     var distanceToCamp = WorldCreatorHelper.getDistanceToCamp(this.world, levelVO, sectorVO);
                     if (distanceToCamp < 3) continue;
                     
+                    // - determine value range
+                    var step = WorldCreatorConstants.getCampStep(sectorVO.zone);
+                    var maxHazardCold = Math.min(100, itemsHelper.getMaxHazardColdForLevel(campOrdinal, step));
+                    var minHazardCold = itemsHelper.getMaxHazardColdForLevel(campOrdinal - 1, WorldCreatorConstants.CAMP_STEP_START);
+                    minHazardCold = Math.min(minHazardCold, maxHazardCold - 5);
+                    minHazardCold = Math.max(minHazardCold, 1);
+                    
+                    // - determine eligibility
                     var isEarlyZone = sectorVO.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP || sectorVO.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE;
                     var isEarlyCriticalPath = sectorVO.isOnEarlyCriticalPath();
                     var edgeSector = levelVO.isEdgeSector(x, y);
                     var distanceToEdge = Math.min(Math.abs(y - levelVO.minY), Math.abs(y - levelVO.maxY), Math.abs(x - levelVO.minX), Math.abs(x - levelVO.maxX));
-                    
                     var edgeThreshold = isEarlyCriticalPath || isEarlyZone ? 7 : 5;
                     var centerThreshold = isEarlyCriticalPath || isEarlyZone ? WorldCreatorConstants.TOWER_RADIUS + 2 : WorldCreatorConstants.TOWER_RADIUS;
                     
                     if (edgeSector || l === topLevel || distanceToEdge < edgeThreshold || Math.abs(y) > centerThreshold || Math.abs(x) > centerThreshold) {
-                        var hazardValueRand = WorldCreatorRandom.random(seed / (l + 40) + x * y / 6 + seed + y * 2 + l * l * 959);
-                        var maxValue = isEarlyCriticalPath || isEarlyZone ? maxHazardColdEasy : maxHazardCold;
-                        sectorVO.hazards.cold = Math.min(maxValue, Math.ceil(hazardValueRand * 10) * 10);
+                        var hazardValueRand = WorldCreatorRandom.random(3000 + seed / (l + 40) + x * y / 6 + seed + y * 2 + l * l * 959);
+                        sectorVO.hazards.cold = MathUtils.clamp(hazardValueRand * 100, minHazardCold, maxHazardCold);
+                        sectorVO.hazards.cold = Math.floor(sectorVO.hazards.cold/5)*5;
                     }
                 }
             }

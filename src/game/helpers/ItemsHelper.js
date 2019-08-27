@@ -110,7 +110,7 @@ define([
             return result;
         },
         
-        // max radiation level at the END of the given camp ordinal (all tech and items etc)
+        // max radiation level at the beginning of the given camp ordinal and step
         getMaxHazardRadiationForLevel: function (campOrdinal, step) {
             var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_radiation);
             var radiationProtection = 0;
@@ -120,7 +120,7 @@ define([
             return radiationProtection;
         },
         
-         // max radiation level at the END of the given camp ordinal (all tech and items etc)
+         // max poison level at the beginning of the given camp ordinal and step
         getMaxHazardPoisonForLevel: function (campOrdinal, step) {
             var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_poison);
             var poisonProtection = 0;
@@ -130,7 +130,7 @@ define([
             return poisonProtection;
         },
         
-         // max radiation level at the END of the given camp ordinal (all tech and items etc)
+         // max cold level at the beginning of the given camp ordinal and step
         getMaxHazardColdForLevel: function (campOrdinal, step) {
             var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_cold);
             var coldProtection = 0;
