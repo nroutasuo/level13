@@ -1335,38 +1335,28 @@ define([
         generateHazardClusters: function (seed, levelVO, itemsHelper) {
             var levelOrdinal = levelVO.levelOrdinal;
             var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, levelVO.level);
-            var easyCampOrdinal = campOrdinal - 1;
-            if (!levelVO.isCampable) easyCampOrdinal = campOrdinal;
 
             if (levelOrdinal < WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION && levelVO.level < WorldCreatorConstants.MIN_LEVEL_HAZARD_POISON) {
                 return;
             }
 
-            // TODO pass step and make these values zone-specific
-            var maxHazardRadiation = Math.min(100, itemsHelper.getMaxHazardRadiationForLevel(campOrdinal));
-            var maxHazardRadiationEasy = Math.min(100, itemsHelper.getMaxHazardRadiationForLevel(easyCampOrdinal));
-            var maxHazardPoison = Math.min(100, itemsHelper.getMaxHazardPoisonForLevel(campOrdinal));
-            var maxHazardPoisonEasy = Math.min(100, itemsHelper.getMaxHazardPoisonForLevel(easyCampOrdinal));
-
-            if (maxHazardRadiation <= 0 && maxHazardPoison <= 0) return;
             var isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
             var isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
 
-            var getMaxValue = function (isRadiation, isEasy) {
-                if (isEasy) {
-                    if (isRadiation) return maxHazardRadiationEasy;
-                    else return maxHazardPoisonEasy;
+            var getMaxValue = function (isRadiation, zone) {
+                var step = WorldCreatorConstants.getCampStep(zone);
+                if (isRadiation) {
+                    return Math.min(100, itemsHelper.getMaxHazardRadiationForLevel(campOrdinal, step));
                 } else {
-                    if (isRadiation) return maxHazardRadiation;
-                    else return maxHazardPoison;
+                    return Math.min(100, itemsHelper.getMaxHazardPoisonForLevel(campOrdinal, step));
                 }
             }
             
             var setSectorHazard = function (sectorVO, hazardValueRand, isRadiation) {
-                var isEasy = sectorVO.isOnEarlyCriticalPath() || sectorVO.isOnEarlyZone();
-                var maxHazardValue = getMaxValue(isRadiation, isEasy);
+                var maxHazardValue = getMaxValue(isRadiation, sectorVO.zone);
                 var minHazardValue = Math.min(20, maxHazardValue / 3 * 2);
                 var hazardValue = Math.ceil((minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue)) / 5) * 5;
+                log.i("level " + levelVO.level + ", zone " + sectorVO.zone + ": " + minHazardValue +"-" + maxHazardValue + " -> " + hazardValue)
                 if (isRadiation) {
                     sectorVO.hazards.radiation = hazardValue;
                 } else {
@@ -1398,7 +1388,7 @@ define([
                 }
                 // - zone ZONE_EXTRA (only on campable levels as on on-campable ones ZONE_EXTRA is most of the level)
                 if (levelVO.isCampable) {
-                    var isRadiation = maxHazardRadiation > 0 && WorldCreatorRandom.randomBool(seed / 3385 + levelOrdinal * 7799);
+                    var isRadiation = levelOrdinal < WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION && WorldCreatorRandom.randomBool(seed / 3385 + levelOrdinal * 7799);
                     for (var i = 0; i < levelVO.sectors.length; i++) {
                         var sectorVO = levelVO.sectors[i];
                         if (sectorVO.zone != WorldCreatorConstants.ZONE_EXTRA_CAMPABLE) continue;
@@ -1410,7 +1400,7 @@ define([
                 // level completely covered in hazard
                 for (var i = 0; i < levelVO.sectors.length; i++) {
                     var sectorVO = levelVO.sectors[i];
-                    var maxHazardValue = getMaxValue(isRadiation, sectorVO.isOnEarlyCriticalPath());
+                    var maxHazardValue = getMaxValue(isRadiation, sectorVO.zone);
                     var minHazardValue = Math.min(10, maxHazardValue);
                     var hazardValueRand = WorldCreatorRandom.random(levelOrdinal * (i + 11) / seed * 55 + seed / (i + 99) - i * i);
                     var hazardValue = Math.ceil((minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue)) / 5) * 5;
