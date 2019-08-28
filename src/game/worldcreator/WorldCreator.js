@@ -1190,11 +1190,12 @@ define([
                 return;
             }
 
-            // check for critical paths (not allowed on early paths for blockers other than gang)
-            if (blockerType !== MovementConstants.BLOCKER_TYPE_GANG) {
+            // check for critical paths
+            var allowedForGangs = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
                 for (var i = 0; i < sectorVO.criticalPaths.length; i++) {
                     var pathType = sectorVO.criticalPaths[i];
                     if (options.allowedCriticalPaths && options.allowedCriticalPaths.indexOf(pathType) >= 0) continue;
+                if (blockerType === MovementConstants.BLOCKER_TYPE_GANG && allowedForGangs.indexOf(pathType) >= 0) continue;
                     for (var j = 0; j < neighbourVO.criticalPaths.length; j++) {
                         if (pathType === neighbourVO.criticalPaths[j]) {
                             log.w("(level " + levelVO.level + ") Skipping blocker on critical path: " + pathType + " (type: " + blockerType + ")");
@@ -1202,7 +1203,6 @@ define([
                         }
                     }
                 }
-            }
                     
             // add blocker
             sectorVO.addBlocker(direction, blockerType);
@@ -1356,7 +1356,6 @@ define([
                 var maxHazardValue = getMaxValue(isRadiation, sectorVO.zone);
                 var minHazardValue = Math.min(20, maxHazardValue / 3 * 2);
                 var hazardValue = Math.ceil((minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue)) / 5) * 5;
-                log.i("level " + levelVO.level + ", zone " + sectorVO.zone + ": " + minHazardValue +"-" + maxHazardValue + " -> " + hazardValue)
                 if (isRadiation) {
                     sectorVO.hazards.radiation = hazardValue;
                 } else {
