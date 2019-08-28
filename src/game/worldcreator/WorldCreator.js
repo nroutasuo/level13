@@ -1192,17 +1192,17 @@ define([
 
             // check for critical paths
             var allowedForGangs = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
-                for (var i = 0; i < sectorVO.criticalPaths.length; i++) {
-                    var pathType = sectorVO.criticalPaths[i];
-                    if (options.allowedCriticalPaths && options.allowedCriticalPaths.indexOf(pathType) >= 0) continue;
+            for (var i = 0; i < sectorVO.criticalPaths.length; i++) {
+                var pathType = sectorVO.criticalPaths[i];
+                if (options.allowedCriticalPaths && options.allowedCriticalPaths.indexOf(pathType) >= 0) continue;
                 if (blockerType === MovementConstants.BLOCKER_TYPE_GANG && allowedForGangs.indexOf(pathType) >= 0) continue;
-                    for (var j = 0; j < neighbourVO.criticalPaths.length; j++) {
-                        if (pathType === neighbourVO.criticalPaths[j]) {
-                            log.w("(level " + levelVO.level + ") Skipping blocker on critical path: " + pathType + " (type: " + blockerType + ")");
-                            return;
-                        }
+                for (var j = 0; j < neighbourVO.criticalPaths.length; j++) {
+                    if (pathType === neighbourVO.criticalPaths[j]) {
+                        log.w("(level " + levelVO.level + ") Skipping blocker on critical path: " + pathType + " (type: " + blockerType + ")");
+                        return;
                     }
                 }
+            }
                     
             // add blocker
             sectorVO.addBlocker(direction, blockerType);
@@ -1265,8 +1265,6 @@ define([
                     addBlocker(finalSeed, sectorVO, neighbourVO, true, allowedCriticalPaths);
                 }
             };
-            
-            log.i("creating movement blockers level " + levelVO.level + " | " + levelVO.isCampable, creator);
             
             // critical paths: between passages on certain levels
             var numBetweenPassages = 0;
@@ -1362,29 +1360,34 @@ define([
                     sectorVO.hazards.poison = hazardValue;
                 }
             };
+            
+            var makeCluster = function (centerSector, h, radius) {
+                var isRadiation = WorldCreatorRandom.random(seed / 3381 + levelOrdinal * 777 + (h+44)*(h+11)) > 0.5;
+                var hazardValueRand = WorldCreatorRandom.random(levelOrdinal * (h+11) / seed * 2 + seed/(h+99+levelOrdinal) - h*h);
+                for (var hx = centerSector.position.sectorX - radius; hx <= centerSector.position.sectorX + radius; hx++) {
+                    for (var hy = centerSector.position.sectorY - radius; hy <= centerSector.position.sectorY + radius; hy++) {
+                        var sectorVO = levelVO.getSector(hx, hy);
+                        if (!sectorVO) continue;
+                        if (sectorVO.camp) continue;
+                        if (WorldCreatorConstants.isEarlierZone(sectorVO.zone, centerSector.zone)) continue;
+                        setSectorHazard(sectorVO, hazardValueRand, isRadiation);
+                    }
+                }
+            }
 
             if (!(isPollutedLevel || isRadiatedLevel)) {
                 // normal level
-                // - clusters
-                var maxNumHazardClusters = Math.min(4, levelVO.sectors.length / 100);
+                // - random clusters
+                var maxNumHazardClusters = Math.round(Math.min(4, levelVO.sectors.length / 100));
                 var options = { excludingFeature: "camp", excludingZone: WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP };
                 var hazardSectors = WorldCreatorRandom.randomSectors(seed / 3 * levelOrdinal + 73 * levelVO.maxX, this.world, levelVO, 0, maxNumHazardClusters, options);
                 for (var h = 0; h < hazardSectors.length; h++) {
-                    var hs = hazardSectors[h];
+                    var centerSector = hazardSectors[h];
                     var hrRandom = WorldCreatorRandom.random(84848 + levelOrdinal * 99 + (h+12) * 111 + seed / 777);
-                    var hr = Math.round(hrRandom * 8) + 2;
-                    var isRadiation = WorldCreatorRandom.random(seed / 3381 + levelOrdinal * 777 + (h+44)*(h+11)) > 0.5;
-                    var hazardValueRand = WorldCreatorRandom.random(levelOrdinal * (h+11) / seed * 2 + seed/(h+99+levelOrdinal) - h*h);
-                    for (var hx = hs.position.sectorX - hr; hx <= hs.position.sectorX + hr; hx++) {
-                        for (var hy = hs.position.sectorY - hr; hy <= hs.position.sectorY + hr; hy++) {
-                            var sectorVO = levelVO.getSector(hx, hy);
-                            if (!sectorVO) continue;
-                            if (sectorVO.camp) continue;
-                            if (WorldCreatorConstants.isEarlierZone(sectorVO.zone, hs.zone)) continue;
-                            setSectorHazard(sectorVO, hazardValueRand, isRadiation);
-                        }
-                    }
+                    var radius = Math.round(hrRandom * 7) + 2;
+                    makeCluster(centerSector, h, radius);
                 }
+                
                 // - zone ZONE_EXTRA (only on campable levels as on on-campable ones ZONE_EXTRA is most of the level)
                 if (levelVO.isCampable) {
                     var isRadiation = levelOrdinal < WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION && WorldCreatorRandom.randomBool(seed / 3385 + levelOrdinal * 7799);
@@ -1393,6 +1396,24 @@ define([
                         if (sectorVO.zone != WorldCreatorConstants.ZONE_EXTRA_CAMPABLE) continue;
                         setSectorHazard(sectorVO, 1, isRadiation);
                         
+                    }
+                }
+                // - clusters on border sector (to guide player to camp)
+                var freq = 0.75;
+                var borderSectors = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, true);
+                for (var i = 0; i < borderSectors.length; i++) {
+                    var pair = borderSectors[i];
+                    var distanceToCamp = Math.min(
+                        WorldCreatorHelper.getDistanceToCamp(this.world, levelVO, pair.sector),
+                        WorldCreatorHelper.getDistanceToCamp(this.world, levelVO, pair.neighbour)
+                    );
+                    if (distanceToCamp > 2) {
+                        var s = 2000 + seed % 26 * 3331 + 100 + (i + 5) * 6541 + distanceToCamp * 11;
+                        var add = WorldCreatorRandom.randomBool(s);
+                        if (add) {
+                            var radius = WorldCreatorRandom.randomInt(s / 2, 1, 3);
+                            makeCluster(pair.sector, i, radius);
+                        }
                     }
                 }
             } else {
