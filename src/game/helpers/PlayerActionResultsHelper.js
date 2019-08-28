@@ -135,6 +135,8 @@ define([
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var playerPos = this.playerLocationNodes.head.position;
             var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
+            var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
+            var step = GameGlobals.levelHelper.getCampStep(playerPos);
             var efficiency = this.getScavengeEfficiency();
 
             rewards.gainedResources = this.getRewardResources(0.95 + efficiency * 0.05, 1, efficiency, sectorResources);
