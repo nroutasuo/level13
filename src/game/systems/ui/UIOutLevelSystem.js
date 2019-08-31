@@ -234,11 +234,12 @@ define([
             }
 
             var costToCamp = GameGlobals.playerActionsHelper.getCosts("move_camp_level");
+            var staminaToCamp = costToCamp.stamina || 10;
             var staminaComponent = this.playerPosNodes.head.entity.get(StaminaComponent);
             var improvementsComponent = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 
-            var staminaCostToMoveOneSector = costToCamp.stamina || 10;
-            var lowStamina = staminaComponent.stamina < staminaCostToMoveOneSector;
+            var staminaCostToMove = staminaToCamp;
+            var lowStamina = staminaComponent.stamina < staminaCostToMove;
 
             var collectorFood = improvementsComponent.getVO(improvementNames.collector_food);
             var collectorWater = improvementsComponent.getVO(improvementNames.collector_water);

@@ -1004,6 +1004,7 @@ define([
         // statusFactor = a factor based on current status such as equipped items (default 1)
 		getCosts: function (action, statusFactor, otherSector) {
             if (!action) return null;
+            if (!statusFactor) statusFactor = this.getCostFactor(action);
 
 			var result = {};
             var skipRounding = false;
