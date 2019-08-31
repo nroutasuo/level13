@@ -8,11 +8,12 @@ define([
     'game/worldcreator/WorldCreatorHelper',
     'game/worldcreator/WorldCreatorRandom',
     'game/nodes/sector/SectorNode',
+    'game/nodes/player/PlayerStatsNode',
     'game/nodes/level/LevelNode',
     'game/components/common/PositionComponent',
     'game/systems/ui/UIOutLevelSystem',
     'game/systems/SaveSystem',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, EntityCreator, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, LevelNode, PositionComponent, UIOutLevelSystem, SaveSystem) {
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, EntityCreator, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, PlayerStatsNode, LevelNode, PositionComponent, UIOutLevelSystem, SaveSystem) {
 
     var GameManager = Ash.Class.extend({
 
@@ -269,6 +270,7 @@ define([
 		// Clean up a loaded game state, mostly used to ensure backwards compatibility
 		syncLoadedGameState: function () {
             gtag('event', 'game_load_save', { event_category: 'game_data' });
+            this.creator.syncPlayer(this.creator.engine.getNodeList(PlayerStatsNode).head.entity);
 			var sectorNodes = this.creator.engine.getNodeList(SectorNode);
 			for (var node = sectorNodes.head; node; node = node.next) {
 				this.creator.syncSector(node.entity);

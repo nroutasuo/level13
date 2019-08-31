@@ -24,6 +24,7 @@ define([
     'game/components/common/PositionComponent',
     'game/components/player/PlayerActionComponent',
     'game/components/player/BagComponent',
+    'game/components/player/ExcursionComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
     'game/components/player/DeityComponent',
@@ -43,7 +44,7 @@ define([
 ], function (
 	Ash, GameGlobals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ImprovementConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
-	LevelComponent, PositionComponent, PlayerActionComponent, BagComponent, ItemsComponent, PerksComponent, DeityComponent,
+	LevelComponent, PositionComponent, PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, PerksComponent, DeityComponent,
 	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
 	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, SectorImprovementsComponent, TraderComponent,
 	CampComponent,
@@ -117,25 +118,25 @@ define([
         },
 
 		// Check costs, requirements and cooldown - everything that is needed for the player action
-        checkAvailability: function (action, log, otherSector) {
+        checkAvailability: function (action, logUnavailable, otherSector) {
             var isLocationAction = PlayerActionConstants.isLocationAction(action);
             var playerPos = this.playerStatsNodes.head.entity.get(PositionComponent);
             var locationKey = GameGlobals.gameState.getActionLocationKey(isLocationAction, playerPos);
             var cooldownTotal = PlayerActionConstants.getCooldown(action);
             var cooldownLeft = Math.min(cooldownTotal, GameGlobals.gameState.getActionCooldown(action, locationKey) / 1000);
             if (cooldownLeft) {
-                if (log) log.w("Action blocked by cooldown [" + action + "]");
+                if (logUnavailable) log.w("Action blocked by cooldown [" + action + "]");
                 return false;
             }
 
-			var reqsResult = this.checkRequirements(action, log, otherSector);
+			var reqsResult = this.checkRequirements(action, logUnavailable, otherSector);
 			if (reqsResult.value < 1) {
-				if (log) log.i("blocked by requirements: " + reqsResult.reason);
+				if (logUnavailable) log.i("blocked by requirements: " + reqsResult.reason);
 				return false;
 			}
-			var costsResult = this.checkCosts(action, log, otherSector);
+			var costsResult = this.checkCosts(action, logUnavailable, otherSector);
 			if (costsResult < 1) {
-				if (log) log.i("blocked by costs");
+				if (logUnavailable) log.i("blocked by costs");
 				return false;
 			}
 
@@ -551,6 +552,15 @@ define([
                                 return { value: 0, reason: "No collectable food." };
                             }
                         }
+                        
+                        if (typeof requirements.sector.hasCamp !== "undefined") {
+                            var value = sector.has(CampComponent);
+                            var requiredValue = requirements.sector.hasCamp;
+                            if (value !== requiredValue) {
+                                var reason = requiredValue ? "No camp here." : "There is a camp here";
+                                return { value: 0, reason: reason };
+                            }
+                        }
 
                         if (requirements.sector.canHaveCamp) {
                             if (!featuresComponent.canHaveCamp()) {
@@ -721,6 +731,22 @@ define([
                                 if (log) log.w("" + reason);
                                 if (min > amount) return { value: amount/min, reason: reason };
                                 else return { value: 0, reason: reason };
+                            }
+                        }
+                    }
+                    
+                    if (requirements.excursion) {
+                        if (requirements.excursion.numNaps) {
+                            var excursionComponent = this.playerStatsNodes.head.entity.get(ExcursionComponent);
+                            var currentValue = excursionComponent != null ? excursionComponent.numNaps : 0;
+                            var min = requirements.excursion.numNaps[0];
+                            var max = requirements.excursion.numNaps[1];
+                            if (currentValue < min) {
+                                reason = "Min " + min + " naps needed.";
+                                lowestFraction = Math.min(lowestFraction, currentValue / min);
+                            } else if (max > 0 && currentValue >= max) {
+                                reason = "Already rested outside recently.";
+                                lowestFraction = 0;
                             }
                         }
                     }

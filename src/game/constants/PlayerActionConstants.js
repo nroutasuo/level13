@@ -70,6 +70,15 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 fight_gang: {
                     health: 70,
                 },
+                
+                nap: {
+                    sector: {
+                        hasCamp: false,
+                    },
+                    excursion: {
+                        numNaps: [0, 1],
+                    }
+                },
 
                 send_caravan: {
                     outgoingcaravan: {
@@ -2215,8 +2224,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 fight_gang: 60,
                 send_caravan: 60 * 10,
                 use_in_inn: 60 * 30,
-                despair: 60,
-                nap: 120,
+                despair: 60
             },
 
             durations: {

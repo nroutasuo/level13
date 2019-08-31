@@ -23,6 +23,7 @@ define([
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/MovementOptionsComponent',
+    'game/components/player/ExcursionComponent',
     'game/components/common/LogMessagesComponent',
     'game/components/common/CampComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
@@ -33,7 +34,7 @@ define([
     Ash, GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, WorldCreatorConstants,
     PlayerPositionNode, PlayerLocationNode, NearestCampNode,
     VisionComponent, StaminaComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
-    MovementOptionsComponent, LogMessagesComponent, CampComponent,
+    MovementOptionsComponent, ExcursionComponent, LogMessagesComponent, CampComponent,
     SectorImprovementsComponent, WorkshopComponent, SectorStatusComponent, EnemiesComponent
 ) {
     var UIOutLevelSystem = Ash.System.extend({
@@ -219,6 +220,7 @@ define([
             }
             
             var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+            var excursionComponent = this.playerPosNodes.head.entity.get(ExcursionComponent);
             
             var hasFirstCamp = GameGlobals.gameState.numCamps > 0;
 			var hasCollectibleFood = isScouted && featuresComponent.resourcesCollectable.food > 0;

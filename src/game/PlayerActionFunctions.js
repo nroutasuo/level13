@@ -29,6 +29,7 @@ define(['ash',
 	'game/components/common/PositionComponent',
 	'game/components/common/ResourcesComponent',
 	'game/components/player/BagComponent',
+	'game/components/player/ExcursionComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PerksComponent',
 	'game/components/player/DeityComponent',
@@ -62,7 +63,7 @@ define(['ash',
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
-	BagComponent, ItemsComponent, PerksComponent, DeityComponent, PlayerActionComponent, PlayerActionResultComponent,
+	BagComponent, ExcursionComponent, ItemsComponent, PerksComponent, DeityComponent, PlayerActionComponent, PlayerActionResultComponent,
 	CampComponent, CurrencyComponent, LevelComponent, SectorImprovementsComponent, SectorCollectorsComponent, WorkshopComponent,
 	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, TraderComponent,
@@ -425,6 +426,8 @@ define(['ash',
 
 					if (this.lastVisitedCamps.head) this.lastVisitedCamps.head.entity.remove(LastVisitedCampComponent);
 					campNode.entity.add(new LastVisitedCampComponent());
+                    
+                    this.playerPositionNodes.head.entity.remove(ExcursionComponent);
 
 					if (log) this.addLogMessage(LogConstants.MSG_ID_ENTER_CAMP, "Entered camp.");
 					GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in);
@@ -450,6 +453,7 @@ define(['ash',
 			if (campNode && campNode.position.level === playerPos.level && campNode.position.sectorId() === playerPos.sectorId()) {
 				var sunlit = campNode.entity.get(SectorFeaturesComponent).sunlit;
 				playerPos.inCamp = false;
+                this.playerPositionNodes.head.entity.add(new ExcursionComponent());
 				var msg = "Left camp. " + (sunlit ? "Sunlight is sharp and merciless." : "The darkness of the city envelops you.");
 				this.addLogMessage(LogConstants.MSG_ID_LEAVE_CAMP, msg);
 				GlobalSignals.playerMovedSignal.dispatch(playerPos);
@@ -665,6 +669,8 @@ define(['ash',
 			var sys = this;
 			this.passTime(60, function () {
 				setTimeout(function () {
+                    var excursionComponent = sys.playerStatsNodes.head.entity.get(ExcursionComponent);
+                    if (excursionComponent) excursionComponent.numNaps++;
 					sys.playerStatsNodes.head.vision.value = Math.min(sys.playerStatsNodes.head.vision.value, PlayerStatConstants.VISION_BASE);
 					var logMsgSuccess = "Found a park bench to sleep on. Barely feel rested.";
 					var logMsgFlee = "Tried to rest but got attacked.";
