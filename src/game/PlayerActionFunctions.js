@@ -669,6 +669,7 @@ define(['ash',
 			var sys = this;
 			this.passTime(60, function () {
 				setTimeout(function () {
+                    GameGlobals.uiFunctions.showGame();
                     var excursionComponent = sys.playerStatsNodes.head.entity.get(ExcursionComponent);
                     if (excursionComponent) excursionComponent.numNaps++;
 					sys.playerStatsNodes.head.vision.value = Math.min(sys.playerStatsNodes.head.vision.value, PlayerStatConstants.VISION_BASE);
@@ -678,11 +679,7 @@ define(['ash',
 					sys.handleOutActionResults("nap", LogConstants.MSG_ID_NAP, logMsgSuccess, logMsgFlee, logMsgDefeat, false,
 						function () {
 							sys.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_NAP;
-							GameGlobals.uiFunctions.showGame();
 						},
-						function () {
-							GameGlobals.uiFunctions.showGame();
-						}
 					);
 				}, 300);
 			});
