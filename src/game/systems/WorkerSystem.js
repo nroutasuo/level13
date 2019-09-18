@@ -238,7 +238,9 @@ define([
 					msg = "Your stomach is grumbling.";
 				}
 				
+                if (msg != null) {
 				this.log(msg);
+			}
 			}
 		},
 		

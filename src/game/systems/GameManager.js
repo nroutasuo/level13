@@ -23,7 +23,8 @@ define([
 		player: null,
 		tribe: null,
         
-        maxGameTickTime: 90,
+        maxGameTickDiff: 43200,
+        maxGameTickTime: 30,
 
 		constructor: function (tickProvider, engine) {
 			this.tickProvider = tickProvider;
@@ -33,6 +34,13 @@ define([
 		},
         
         update: function (time) {
+            // limit input time (actual time between ticks that is taken into account)
+            var origTime = time;
+            time = Math.min(time, this.maxGameTickDiff);
+            if (origTime > time) {
+                log.w("cut overly long tick to max game tick diff " + this.maxGameTickDiff, "tick");
+            }
+            
             // add extra update time
             var extraUpdateTime = GameGlobals.gameState.extraUpdateTime || 0;
             GameGlobals.gameState.extraUpdateTime = 0;
@@ -52,18 +60,20 @@ define([
                 if (!this.partialTickModeStarted) {
                     var remainingTicks = Math.ceil(totalTime / this.maxGameTickTime);
                     var showThinking = remainingTicks >= 20;
-                    if (!this.partialTickModeStarted) log.i("tick: partial tick, estimated remaining: " + remainingTicks + ", showThinking: " + showThinking);
+                    if (!this.partialTickModeStarted) log.i("partial tick, estimated remaining: " + remainingTicks + ", showThinking: " + showThinking, "tick");
                     if (showThinking) {
                         GameGlobals.uiFunctions.hideGame(false, true);
                     } else {
                         GameGlobals.uiFunctions.setUIStatus(false, true);
                     }
                     this.partialTickModeStarted = true;
+                } else {
+                    log.i("partial tick " + tickTime, "tick");
                 }
             } else {
                 // normal tick
                 if (this.partialTickModeStarted) {
-                    log.i("tick: normal");
+                    log.i("normal", "tick");
                     GameGlobals.uiFunctions.showGame();
                     this.partialTickModeStarted = false;
                 }
