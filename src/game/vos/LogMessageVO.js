@@ -2,7 +2,8 @@ define(['ash', 'game/constants/TextConstants'], function (Ash, TextConstants) {
     
     var LogMessageVO = Ash.Class.extend({
         
-		constructor: function (logMsgID, message, replacements, values, campLevel) {
+		constructor: function (logMsgID, message, replacements, values, campLevel, timeOffset) {
+            timeOffset = timeOffset || 0;
             this.logMsgID = logMsgID;
 			this.message = message;
 			this.replacements = replacements ? replacements : [];
@@ -10,6 +11,9 @@ define(['ash', 'game/constants/TextConstants'], function (Ash, TextConstants) {
             this.campLevel = campLevel;
 			
 			this.time = new Date();
+            if (timeOffset != 0) {
+                this.time.setSeconds(this.time.getSeconds() - timeOffset);
+            }
 			this.loadedFromSave = false;
 			this.combined = 0;
 			this.text = this.createText();

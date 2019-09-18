@@ -1,7 +1,7 @@
 // Contains a list of messages to be shown in the log
 define(
-['ash', 'game/constants/LogConstants', 'game/vos/LogMessageVO'],
-function (Ash, LogConstants, LogMessageVO) {
+['ash', 'game/GameGlobals', 'game/constants/LogConstants', 'game/vos/LogMessageVO'],
+function (Ash, GameGlobals, LogConstants, LogMessageVO) {
     var LogMessagesComponent = Ash.Class.extend({
 
 		messages: [],
@@ -16,7 +16,8 @@ function (Ash, LogConstants, LogMessageVO) {
 		addMessage: function (logMsgID, message, replacements, values, visibleLevel, visibleSector, visibleInCamp, campLevel) {
             message = message.replace(/<br\s*[\/]?>/gi, " ");
 			var isPending = Boolean(visibleLevel || visibleSector || visibleInCamp);
-			var newMsg = new LogMessageVO(logMsgID, message, replacements, values, campLevel);
+            var timeOffset = GameGlobals.gameState.pendingUpdateTime;
+			var newMsg = new LogMessageVO(logMsgID, message, replacements, values, campLevel, timeOffset);
 
 			if (!isPending) {
 				this.addMessageImmediate(newMsg);
@@ -114,7 +115,8 @@ function (Ash, LogConstants, LogMessageVO) {
 
             if (mergedMsgID) {
                 var mergedText = LogConstants.getMergedMsgText(mergedMsgID);
-                var mergedMsg = new LogMessageVO(mergedMsgID, mergedText);
+                var timeOffset = GameGlobals.gameState.pendingUpdateTime;
+                var mergedMsg = new LogMessageVO(mergedMsgID, mergedText, null, null, null, timeOffset);
                 this.mergeReplacements(mergedMsg, prevMsg);
                 this.mergeReplacements(mergedMsg, newMsg);
                 return mergedMsg;

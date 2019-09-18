@@ -205,7 +205,6 @@ define([
 		},
 		
 		logAmbient: function () {
-            if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head || !this.playerLocationNodes.head.position) return;
 			
 			var playerFoodSource = GameGlobals.resourcesHelper.getCurrentStorage().resources;
@@ -239,17 +238,16 @@ define([
 				}
 				
                 if (msg != null) {
-				this.log(msg);
-			}
+	                this.log(msg);
+                }
 			}
 		},
 		
 		log: function (msg) {
-			if (msg) {
-				var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
-				logComponent.addMessage(LogConstants.MSG_ID_WORKER_STATUS, msg);
-				this.lastMsgTimeStamp = new Date().getTime();
-			}
+            log.i(msg, "WorkerSystem");
+			var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
+			logComponent.addMessage(LogConstants.MSG_ID_WORKER_STATUS, msg);
+			this.lastMsgTimeStamp = new Date().getTime();
 		}
 
     });
