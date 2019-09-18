@@ -408,7 +408,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     improvements: {
                         camp: [1, -1],
                         campfire: [1, -1],
-                    }
+                    },
+                    population: [1, -1],
                 },
 
                 use_in_campfire: {
@@ -2203,7 +2204,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_worker_rope: {
-					rumours: 13,
+					rumours: 7,
                 },
 
                 unlock_item_shoe1: {
@@ -2337,7 +2338,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 var speed = this.isExplorationAction(baseActionID) ? GameConstants.gameSpeedExploration : GameConstants.gameSpeedCamp;
                 // TODO make send_caravan duration dependent on the trade partner's location
                 if (this.durations[baseActionID]) {
-                    return this.durations[baseActionID] / speed;
+                    return parseInt(this.durations[baseActionID]) / speed;
                 }
                 return 0;
             },

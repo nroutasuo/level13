@@ -397,7 +397,9 @@ define(['ash',
 						var item = ItemConstants.getItemByID(itemName);
 						var name = (this.names.resources[key] ? this.names.resources[key] : item !== null ? item.name : key).toLowerCase();
 						var value = costs[key];
-						enabledContent += "<span class='action-cost action-cost-" + key + "'>" + name + ": <span class='action-cost-value'>" + UIConstants.getDisplayValue(value) + "</span></span><br/>";
+                        if (value > 0) {
+                            enabledContent += "<span class='action-cost action-cost-" + key + "'>" + name + ": <span class='action-cost-value'>" + UIConstants.getDisplayValue(value) + "</span></span><br/>";
+                        }
 					}
 				}
 
@@ -413,7 +415,7 @@ define(['ash',
 				var fightRiskMin = PlayerActionConstants.getRandomEncounterProbability(baseActionId, 100);
 				if (injuryRiskMax > 0 || inventoryRiskMax > 0 || fightRiskMax > 0) {
 					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
-					var inventoryRiskLabel = action === "despair" ? "lose items" : "lose an item";
+					var inventoryRiskLabel = action === "despair" ? "lose items" : "lose item";
 					if (injuryRiskMax > 0)
 						enabledContent += "<span class='action-risk action-risk-injury warning'>injury: <span class='action-risk-value'></span>%</span>";
 					if (inventoryRiskMax > 0)

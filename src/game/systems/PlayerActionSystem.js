@@ -32,6 +32,7 @@ define([
         },
 
         updateNode: function (node, extraUpdateTime) {
+            extraUpdateTime = extraUpdateTime || 0;
             var now = new Date().getTime();
             var newDict = {};
             var newList = [];
