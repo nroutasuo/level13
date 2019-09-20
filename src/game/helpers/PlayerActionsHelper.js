@@ -937,7 +937,7 @@ define([
             }
 
             var factor = 1;
-            switch(action) {
+            switch (action) {
                 case "move_level_down":
                     factor += passageComponent.passageDown && passageComponent.passageDown.climbable ? 2 : 0;
                     factor *= getShoeBonus();
@@ -1018,7 +1018,8 @@ define([
 					return PlayerActionConstants.requirements[action];
 			}
 		},
-
+        
+        // NOTE: if you change this mess, keep GDD up to date
         getCost: function (baseCost, linearScale, e1Scale, e1Base, e2Scale, e2Exp, ordinal1, ordinal2, statusFactor) {
             var linearIncrease = linearScale * ordinal1;
             var expIncrease1 = e1Scale * Math.pow(e1Base, ordinal1-1);
@@ -1027,6 +1028,7 @@ define([
         },
 
         // NOTE: this should always return all possible costs as keys (even if value currently is 0)
+        // NOTE: if you change this mess, keep GDD up to date
         // statusFactor = a factor based on current status such as equipped items (default 1)
 		getCosts: function (action, statusFactor, otherSector) {
             if (!action) return null;
@@ -1040,6 +1042,7 @@ define([
 
             var ordinal1 = this.getActionOrdinal(action, sector);
             var ordinal2 = this.getActionSecondaryOrdinal(action, sector);
+            
             var isOutpost = level ? level.populationGrowthFactor < 1 : false;
             var isCampBuildAction = action.indexOf("build_in_") >= 0;
 
@@ -1058,8 +1061,8 @@ define([
                 var hasE1 = e1Base !== 1;
                 var hasE2 = e2Exp !== 0;
 
-				for(var key in costs) {
-					if (key.indexOf("cost_factor") >= 0 || key === "cost_source") continue;
+				for (var key in costs) {
+					if (key.indexOf("cost_factor") >= 0) continue;
 
                     var value = costs[key];
                     var baseCost = 0;
@@ -1081,7 +1084,9 @@ define([
                         if (value.length > 4) requiredOrdinal = value[4];
                     }
 
-                    if (ordinal1 >= requiredOrdinal) {
+                    if (ordinal1 < requiredOrdinal) {
+                        result[key] = 0;
+                    } else {
                         var cost = this.getCost(baseCost, linearScale, e1Scale, e1Base, e2Scale, e2Exp, ordinal1, ordinal2, statusFactor);
                         if (!isOutpost || !isCampBuildAction) {
                             result[key] = cost;
@@ -1093,8 +1098,6 @@ define([
                             }
                             result[key] = costOutpost;
                         }
-                    } else {
-                        result[key] = 0;
                     }
 				}
 			} else {

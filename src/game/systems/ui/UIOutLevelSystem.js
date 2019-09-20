@@ -526,13 +526,8 @@ define([
                     if (improvementName) {
                         var actionEnabled = GameGlobals.playerActionsHelper.checkRequirements(actionName, false).value >= 1;
                         var existingImprovements = improvements.getCount(improvementName);
-                        var costSource = PlayerActionConstants.getCostSource(actionName);
-                        var isProject = costSource === PlayerActionConstants.COST_SOURCE_CAMP;
                         $(this).find(".list-amount").text(existingImprovements);
                         GameGlobals.uiFunctions.toggle($(this).find(".action-use"), existingImprovements > 0);
-                        if (isProject) {
-                            $(this).find(".list-description").text(actionEnabled ? "Available in camp" : "");
-                        }
 
                         var isVisible = actionEnabled || existingImprovements > 0;
                         GameGlobals.uiFunctions.toggle($(this), isVisible);

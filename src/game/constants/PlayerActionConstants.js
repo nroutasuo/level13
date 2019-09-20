@@ -6,13 +6,7 @@ define(['ash',
 ],
 function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
-    var COST_SOURCE_CAMP = "camp";
-    var COST_SOURCE_DEFAULT = "default";
-
     var PlayerActionConstants = {
-
-            COST_SOURCE_CAMP: COST_SOURCE_CAMP,
-            COST_SOURCE_DEFAULT: COST_SOURCE_DEFAULT,
 
             requirements: {
 
@@ -1314,7 +1308,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
             // structure: resource: cost
             // cost can be a simple number (baseCost) or a table with the following values
             // [baseCost, linearScale, e1Scale, e2Scale, requiredOrdinal]
-            // additional keys: cost_source, cost_factor_e1_base, cost_factor_e2_exp
+            // additional keys: cost_factor_e1_base, cost_factor_e2_exp
             // cost = baseCost + (linearScale * ordinal1) + (e1Scale * pow(e1Base, ordinal1-1)) + (e2Scale * (pow(ordinal2, e2Exp)))
 
             costs: {
@@ -1419,7 +1413,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 build_out_bridge: {
                     resource_metal: 150,
                     resource_rope: 150,
-                    cost_source: COST_SOURCE_CAMP,
                 },
 
                 build_out_spaceship1: {
@@ -1427,7 +1420,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_rope: 3000,
                     resource_concrete: 10000,
                     resource_tools: 1000,
-                    cost_source: COST_SOURCE_CAMP,
                 },
 
                 build_out_spaceship2: {
@@ -1435,7 +1427,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_rope: 5000,
                     resource_concrete: 1000,
                     resource_tools: 2000,
-                    cost_source: COST_SOURCE_CAMP,
                 },
 
                 build_out_spaceship3: {
@@ -1445,7 +1436,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_fuel: 800,
                     resource_medicine: 3000,
                     resource_tools: 1000,
-                    cost_source: COST_SOURCE_CAMP,
                 },
 
                 build_out_passage_up_hole: {
@@ -1453,7 +1443,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_concrete: 10,
                     cost_factor_e1_base: 1.295,
                     cost_factor_e2_exp: 2.3,
-                    cost_source: COST_SOURCE_CAMP,
                 },
 
                 build_out_passage_up_stairs: {
@@ -1461,7 +1450,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_rope: 10,
                     cost_factor_e1_base: 1.295,
                     cost_factor_e2_exp: 2.3,
-                    cost_source: COST_SOURCE_CAMP,
                 },
 
                 build_out_passage_up_elevator: {
@@ -1469,7 +1457,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_fuel: 10,
                     cost_factor_e1_base: 1.295,
                     cost_factor_e2_exp: 2.3,
-                    cost_source: COST_SOURCE_CAMP,
                 },
 
                 build_out_passage_down_hole: {
@@ -1477,7 +1464,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_concrete: 10,
                     cost_factor_e1_base: 1.295,
                     cost_factor_e2_exp: 2.3,
-                    cost_source: COST_SOURCE_CAMP,
                 },
 
                 build_out_passage_down_stairs: {
@@ -1485,7 +1471,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_rope: 10,
                     cost_factor_e1_base: 1.295,
                     cost_factor_e2_exp: 2.3,
-                    cost_source: COST_SOURCE_CAMP,
                 },
 
                 build_out_passage_down_elevator: {
@@ -1493,7 +1478,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_fuel: 10,
                     cost_factor_e1_base: 1.295,
                     cost_factor_e2_exp: 2.3,
-                    cost_source: COST_SOURCE_CAMP,
                 },
 
                 build_out_collector_food: {
@@ -1506,7 +1490,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 
                 clear_debris: {
                     resource_rope: 50,
-                    cost_source: COST_SOURCE_CAMP,
                 },
 
                 build_in_house: {
@@ -2318,12 +2301,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
             hasAction: function (action) {
                 return this.requirements[action] || this.costs[action] || this.cooldowns[action] || this.durations[action] || this.descriptions[action] || false;
-            },
-
-            getCostSource: function (action) {
-                var rawSource = this.costs[action].cost_source;
-                if (rawSource) return rawSource;
-                return COST_SOURCE_DEFAULT;
             },
 
             getCooldown: function (action) {

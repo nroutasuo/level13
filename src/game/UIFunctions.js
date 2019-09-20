@@ -296,18 +296,6 @@ define(['ash',
 				this.generateButtonOverlays("body");
 				this.generateCallouts("body");
 
-				// building project info
-				$.each($("#out-improvements tr"), function () {
-					var actionName = $(this).find("button.action-build").attr("action");
-					if (actionName) {
-						var costSource = PlayerActionConstants.getCostSource(actionName);
-						if (costSource == PlayerActionConstants.COST_SOURCE_CAMP) {
-							var infotd = $(this).find("td")[2];
-							$(infotd).html("<span class='p-meta'></span>");
-						}
-					}
-				});
-
 				// equipment stats labels
 				for (var bonusKey in ItemConstants.itemBonusTypes) {
 					var bonusType = ItemConstants.itemBonusTypes[bonusKey];
