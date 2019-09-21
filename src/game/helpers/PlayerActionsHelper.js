@@ -1134,11 +1134,19 @@ define([
 
                     case "send_caravan":
                         var caravansComponent = sector.get(OutgoingCaravansComponent);
-                        var costs = {};
+                        result["resource_food"] = 100;
+                        result["resource_metal"] = 0;
+                        result["resource_rope"] = 0;
+                        result["resource_fuel"] = 0;
+                        result["resource_herbs"] = 0;
+                        result["resource_medicine"] = 0;
+                        result["resource_tools"] = 0;
+                        result["resource_concrete"] = 0;
                         if (caravansComponent && caravansComponent.pendingCaravan) {
-                            costs["resource_" + caravansComponent.pendingCaravan.sellGood] = caravansComponent.pendingCaravan.sellAmount;
+                            var key = "resource_" + caravansComponent.pendingCaravan.sellGood;
+                            if (!result[key]) result[key] = 0;
+                            result[key] += caravansComponent.pendingCaravan.sellAmount;
                         }
-                        result = costs;
                         skipRounding = true;
                         break;
 

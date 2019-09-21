@@ -1563,7 +1563,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 use_in_hospital: {
                     resource_water: 30,
-                    resource_food: 15,
+                    resource_food: 50,
                 },
 
                 use_in_hospital2: {
@@ -1585,7 +1585,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 use_in_inn_select: {
-                    resource_food: 15,
+                    resource_food: 100,
                     resource_water: 15,
                     cost_factor_e1_base: 1.5,
                 },

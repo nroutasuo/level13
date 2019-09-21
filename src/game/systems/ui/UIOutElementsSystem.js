@@ -179,9 +179,10 @@ define([
 			var playerHealth = this.playerStatsNodes.head.stamina.health;
 			var showStorage = GameGlobals.resourcesHelper.getCurrentStorageCap();
 			if (!buttonStatus.displayedCosts) buttonStatus.displayedCosts = {};
+            
 			for (var key in costs) {
 				var $costSpan = buttonElements.costSpans[key];
-				if (!$costSpan) {
+				if (!$costSpan || $costSpan.length == 0) {
 					log.w("cost span missing: " + key + " " + action);
 					continue;
 				}
@@ -199,6 +200,7 @@ define([
 				if (value !== buttonStatus.displayedCosts[key]) {
 					var $costSpanValue = buttonElements.costSpanValues[key];
 					$costSpanValue.html(UIConstants.getDisplayValue(value));
+					GameGlobals.uiFunctions.toggle($costSpan, value > 0);
 					buttonStatus.displayedCosts[key] = value;
 				}
 			}
