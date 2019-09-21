@@ -368,6 +368,11 @@ define(['ash',
 				var content = "";
 				var enabledContent = "";
 				var disabledContent = "";
+                
+                /*
+                var ordinal = GameGlobals.playerActionsHelper.getActionOrdinal(action);
+                content += "<span>" + action + " " + ordinal +  "</span>"
+                */
 
 				// always visible: description
 				var description = GameGlobals.playerActionsHelper.getDescription(action);

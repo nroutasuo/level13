@@ -1531,9 +1531,10 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 improve_in_campfire: {
-                    resource_metal: 5,
+                    resource_metal: [2, 18, 10, 0, 0],
+                    resource_rope: [5, 5, 0, 0, 2],
                     resource_food: 5,
-                    cost_factor_e1_base: 1.75,
+                    cost_factor_e1_base: 2,
                 },
 
                 build_in_darkfarm: {
@@ -1602,9 +1603,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 improve_in_library: {
-                    resource_metal: 30,
+                    resource_metal: [55, 10, 10, 0, 0],
                     resource_rope: 50,
-                    cost_factor_e1_base: 1.75,
+                    cost_factor_e1_base: 2,
                 },
 
                 build_in_fortification: {
