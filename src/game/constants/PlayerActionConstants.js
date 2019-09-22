@@ -2176,11 +2176,11 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_item_clothing2: {
-					evidence: 15,
+					rumours: 7,
                 },
 
                 unlock_building_passage_staircase: {
-					evidence: 22,
+					evidence: 17,
                 },
 
                 unlock_building_hospital: {
@@ -2192,7 +2192,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_item_shoe1: {
-					rumours: 18,
+					rumours: 11,
+                    evidence: 16,
                 },
 
             },
