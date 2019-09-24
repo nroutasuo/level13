@@ -242,7 +242,7 @@ define([
             // items
             var typicalItems = new ItemsComponent();
             var typicalWeapon = ItemConstants.getDefaultWeapon(campOrdinal, step);
-            var typicalClothing = GameGlobals.itemsHelper.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.fight_def);
+            var typicalClothing = GameGlobals.itemsHelper.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.fight_def, 3);
 
             if (typicalWeapon)
                 typicalItems.addItem(typicalWeapon, false);

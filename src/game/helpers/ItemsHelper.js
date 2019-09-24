@@ -21,8 +21,8 @@ define([
         availableClothing: {
         },
         
-        getBestClothing: function (campOrdinal, step, itemBonusType) {
-            return this.getAvailableClothingList(campOrdinal, step, true, true, false, itemBonusType);
+        getBestClothing: function (campOrdinal, step, itemBonusType, maxScavengeRarity) {
+            return this.getAvailableClothingList(campOrdinal, step, true, true, false, itemBonusType, maxScavengeRarity);
         },
         
         getScavengeRewardClothing: function (campOrdinal, step) {
@@ -30,11 +30,12 @@ define([
         },
         
         getScavengeNecessityClothing: function (campOrdinal, step) {
-            return this.getAvailableClothingList(campOrdinal, step, false, true, false);
+            return this.getAvailableClothingList(campOrdinal, step, false, true, false, null, 5);
         },
         
-        getAvailableClothingList: function (campOrdinal, step, includeCraftable, includeNonCraftable, includeMultiplePerType, preferredItemBonus) {
+        getAvailableClothingList: function (campOrdinal, step, includeCraftable, includeNonCraftable, includeMultiplePerType, preferredItemBonus, maxScavengeRarity) {
             step = step || 2;
+            maxScavengeRarity = maxScavengeRarity || 100;
             var result = [];
             var clothingLists = [
                 ItemConstants.itemDefinitions.clothing_over,
@@ -65,7 +66,7 @@ define([
 
                     // non-craftable items added for scavenging results
                     if (!clothingItem.craftable && includeNonCraftable) {
-                        isAvailable = clothingItem.requiredCampOrdinal >= 0 && clothingItem.requiredCampOrdinal <= campOrdinal;
+                        isAvailable = clothingItem.requiredCampOrdinal >= 0 && clothingItem.requiredCampOrdinal <= campOrdinal && clothingItem.scavengeRarity <= maxScavengeRarity;
                     }
 
                     var bonus = preferredItemBonus ? clothingItem.getBonus(preferredItemBonus) : clothingItem.getTotalBonus();
@@ -112,7 +113,7 @@ define([
         
         // max radiation level at the beginning of the given camp ordinal and step
         getMaxHazardRadiationForLevel: function (campOrdinal, step) {
-            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_radiation);
+            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_radiation, 3);
             var radiationProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 radiationProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_radiation);
@@ -122,7 +123,7 @@ define([
         
          // max poison level at the beginning of the given camp ordinal and step
         getMaxHazardPoisonForLevel: function (campOrdinal, step) {
-            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_poison);
+            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_poison, 3);
             var poisonProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 poisonProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_poison);
@@ -132,7 +133,7 @@ define([
         
          // max cold level at the beginning of the given camp ordinal and step
         getMaxHazardColdForLevel: function (campOrdinal, step) {
-            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_cold);
+            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_cold, 3);
             var coldProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 coldProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_cold);
