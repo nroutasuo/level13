@@ -9,7 +9,10 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		icon: "",
 		description: "",
         requiredCampOrdinal: 1,
-        scavengeRarity: 1, // 1-10, higher = rarer, -1 = never found by scavenging
+        
+        // rarity: 1-10, higher = rarer, -1 = never found by trading/scavenging
+        scavengeRarity: 1,
+        tradeRarity: 1,
 
 		equippable: false,
 		craftable: false,
@@ -19,7 +22,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		equipped: false,
 		carried: false,
 
-        constructor: function (id, name, type, bonuses, equippable, craftable, useable, icon, description, requiredCampOrdinal, scavengeRarity) {
+        constructor: function (id, name, type, bonuses, equippable, craftable, useable, icon, description, requiredCampOrdinal, scavengeRarity, tradeRarity) {
 			this.id = id;
 			this.name = name;
 			this.type = type;
@@ -31,6 +34,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			this.description = description;
 			this.requiredCampOrdinal = typeof requiredCampOrdinal != 'undefined' ? requiredCampOrdinal : 1;
             this.scavengeRarity = typeof scavengeRarity != 'undefined' ? scavengeRarity : 1;
+            this.tradeRarity = typeof tradeRarity != 'undefined' ? tradeRarity : 1;
 
 			this.equipped = false;
 			this.carried = false;
@@ -60,6 +64,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
             delete clone.description;
             delete clone.requiredCampOrdinal;
             delete clone.scavengeRarity;
+            delete clone.tradeRarity;
             delete clone.craftable;
             delete clone.useable;
             delete clone.type;

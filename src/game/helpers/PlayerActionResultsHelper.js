@@ -738,9 +738,9 @@ define([
             }
 
             var validItems = [];
-            var rarityThreshold = 3 + 7 * efficiency * Math.random();
+            var rarityThreshold = 1 + 9 * efficiency * Math.random();
             for (var i = 0; i < items.length; i++) {
-                if (items[i].scavengeRarity < 0)
+                if (items[i].scavengeRarity <= 0)
                     continue;
                 if (items[i].scavengeRarity > rarityThreshold)
                     continue;
