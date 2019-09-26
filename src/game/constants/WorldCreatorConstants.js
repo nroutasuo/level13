@@ -60,8 +60,8 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         
         CAMP_ORDINAL_LIMIT: 16,
         
-        MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 10,
-        MIN_LEVEL_HAZARD_POISON: 15,
+        MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 5,
+        MIN_LEVEL_ORDINAL_HAZARD_POISON: 3,
         
         MAX_SCOUT_LOCALE_STAMINA_COST: 500,
         

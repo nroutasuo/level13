@@ -150,7 +150,7 @@ define([
             // WorldCreatorDebug.printWorld(this.world, [ "locales.length" ]);
 		},
 
-		// sector type, building density, state of repair, sunlight, hazards
+		// sector type, building density, state of repair, sunlight
 		prepareWorldTexture: function (seed, topLevel, bottomLevel) {
             var brokenEdgeLevels = [ 10, 8, 4, topLevel - 5 ];
             var openEdgeLevels = [ topLevel - 1, topLevel - 2, topLevel - 3 ];
@@ -1334,7 +1334,7 @@ define([
             var levelOrdinal = levelVO.levelOrdinal;
             var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, levelVO.level);
 
-            if (levelOrdinal < WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION && levelVO.level < WorldCreatorConstants.MIN_LEVEL_HAZARD_POISON) {
+            if (levelOrdinal < WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION && levelOrdinal < WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_POISON) {
                 return;
             }
 
@@ -1390,7 +1390,7 @@ define([
                 
                 // - zone ZONE_EXTRA (only on campable levels as on on-campable ones ZONE_EXTRA is most of the level)
                 if (levelVO.isCampable) {
-                    var isRadiation = levelOrdinal < WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION && WorldCreatorRandom.randomBool(seed / 3385 + levelOrdinal * 7799);
+                    var isRadiation = levelOrdinal >= WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION && WorldCreatorRandom.randomBool(seed / 3385 + levelOrdinal * 7799);
                     for (var i = 0; i < levelVO.sectors.length; i++) {
                         var sectorVO = levelVO.sectors[i];
                         if (sectorVO.zone != WorldCreatorConstants.ZONE_EXTRA_CAMPABLE) continue;
