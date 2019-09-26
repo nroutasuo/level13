@@ -139,15 +139,15 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("bag_0", "Plastic bag", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_1}, true, true, false, "img/items/bag-0.png",
                     "It's not fancy, but allows one to carry around more stuff than their hands and pockets can hold.", 1, 1),
                 new ItemVO("bag_1", "Basic backpack", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_2}, true, true, false, "img/items/bag-1.png",
-                    "A more spacious bag with lots of pockets.", WorldCreatorConstants.LEVEL_ORDINAL_BAG_2, 4),
+                    "A more spacious bag with lots of pockets.", WorldCreatorConstants.CAMP_ORDINAL_BAG_2 - 1, 4),
                 new ItemVO("bag_2", "Jumbo backpack", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_3}, true, true, false, "img/items/bag-1.png",
-                    "A huge backpack with plenty of space.", 5, WorldCreatorConstants.LEVEL_ORDINAL_BAG_3, 6),
+                    "A huge backpack with plenty of space.", 5, WorldCreatorConstants.CAMP_ORDINAL_BAG_3 - 1, 6),
                 new ItemVO("bag_3", "Hiker's rucksack", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_4}, true, false, false, "img/items/bag-1.png",
-                    "With this bag, weight is starting to be more of a problem than space.", WorldCreatorConstants.LEVEL_ORDINAL_BAG_4, 6),
+                    "With this bag, weight is starting to be more of a problem than space.", WorldCreatorConstants.CAMP_ORDINAL_BAG_4 - 1, 6),
                 new ItemVO("bag_4", "Scavenger bag", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_5}, true, false, false, "img/items/bag-1.png",
-                    "A really practical backpack with lots of pockets.", WorldCreatorConstants.LEVEL_ORDINAL_BAG_5, 8),
+                    "A really practical backpack with lots of pockets.", WorldCreatorConstants.CAMP_ORDINAL_BAG_5 - 1, 8),
                 new ItemVO("bag_5", "Automatic luggage", "Bag", {"bag": WorldCreatorConstants.BAG_BONUS_6}, true, false, false, "img/items/bag-3.png",
-                    "Mechanical chest that automatically follows its owner around. No more worrying about carrying all that stuff yourself.", WorldCreatorConstants.LEVEL_ORDINAL_BAG_6, 10),
+                    "Mechanical chest that automatically follows its owner around. No more worrying about carrying all that stuff yourself.", 15, 10),
             ],
             artefact: [
                 new ItemVO("artefact_ground_1", "Runestone", "Artefact", null, false, false, false, "img/items/artefact-test.png",
@@ -274,23 +274,20 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             return new ItemVO(id, name, type, {"fight attack": strength}, true, false, false, icon, description);
         },
         
-        getBag: function (levelOrdinal) {
-            if (levelOrdinal < WorldCreatorConstants.LEVEL_ORDINAL_BAG_2) {
+        getBag: function (campOrdinal) {
+            if (levelOrdinal < WorldCreatorConstants.CAMP_ORDINAL_BAG_2) {
                 return this.itemDefinitions.bag[0];
             }
-            if (levelOrdinal < WorldCreatorConstants.LEVEL_ORDINAL_BAG_3) {
+            if (levelOrdinal < WorldCreatorConstants.CAMP_ORDINAL_BAG_3) {
                 return this.itemDefinitions.bag[1];
             }
-            if (levelOrdinal < WorldCreatorConstants.LEVEL_ORDINAL_BAG_4) {
+            if (levelOrdinal < WorldCreatorConstants.CAMP_ORDINAL_BAG_4) {
                 return this.itemDefinitions.bag[2];
             }
-            if (levelOrdinal < WorldCreatorConstants.LEVEL_ORDINAL_BAG_5) {
+            if (levelOrdinal < WorldCreatorConstants.CAMP_ORDINAL_BAG_5) {
                 return this.itemDefinitions.bag[3];
             }
-            if (levelOrdinal < WorldCreatorConstants.LEVEL_ORDINAL_BAG_6) {
-                return this.itemDefinitions.bag[4];
-            }
-            return this.itemDefinitions.bag[5];
+            return this.itemDefinitions.bag[4];
         },
         
         getShoes: function (campOrdinal) {

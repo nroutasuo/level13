@@ -65,11 +65,10 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         
         MAX_SCOUT_LOCALE_STAMINA_COST: 500,
         
-        LEVEL_ORDINAL_BAG_2: 2,
-        LEVEL_ORDINAL_BAG_3: 6,
-        LEVEL_ORDINAL_BAG_4: 10,
-        LEVEL_ORDINAL_BAG_5: 14,
-        LEVEL_ORDINAL_BAG_6: 18,
+        CAMP_ORDINAL_BAG_2: 3,
+        CAMP_ORDINAL_BAG_3: 6,
+        CAMP_ORDINAL_BAG_4: 10,
+        CAMP_ORDINAL_BAG_5: 14,
         
         BAG_BONUS_1: 30,
         BAG_BONUS_2: 40,
@@ -152,22 +151,19 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         },
         
         getBagBonus: function (levelOrdinal) {
-            if (levelOrdinal < this.LEVEL_ORDINAL_BAG_2) {
+            if (levelOrdinal < this.CAMP_ORDINAL_BAG_2) {
                 return this.BAG_BONUS_1;
             }
-            if (levelOrdinal < this.LEVEL_ORDINAL_BAG_3) {
+            if (levelOrdinal < this.CAMP_ORDINAL_BAG_3) {
                 return this.BAG_BONUS_2;
             }
-            if (levelOrdinal < this.LEVEL_ORDINAL_BAG_4) {
+            if (levelOrdinal < this.CAMP_ORDINAL_BAG_4) {
                 return this.BAG_BONUS_3;
             }
-            if (levelOrdinal < this.LEVEL_ORDINAL_BAG_5) {
+            if (levelOrdinal < this.CAMP_ORDINAL_BAG_5) {
                 return this.BAG_BONUS_4;
             }
-            if (levelOrdinal < this.LEVEL_ORDINAL_BAG_6) {
-                return this.BAG_BONUS_5;
-            }
-            return this.BAG_BONUS_6;
+            return this.BAG_BONUS_5;
         },
         
         getPopulationGrowthFactor: function (campOrdinal) {
