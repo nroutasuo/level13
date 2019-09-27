@@ -3,7 +3,7 @@
             "version": "0.2.5",
             "phase": "alpha",
             "final": false,
-            "updated": "2019-09-02",
+            "updated": "2019-09-27",
             "changes": [
                 {
                     "type": "GD",
@@ -24,6 +24,10 @@
                 {
                     "type": "GB",
                     "summary": "Adjust balancing (raids, rumours, upgrades)"
+                },
+                {
+                    "type": "GB",
+                    "summary": "Add more items and equipment"
                 },
                 {
                     "type": "GB",
