@@ -419,14 +419,17 @@ function (Ash, ItemVO, ItemConstants) {
             for(var key in componentValues.items) {
                 for (var i in componentValues.items[key]) {
                     var id = componentValues.items[key][i].id;
-                    var item = ItemConstants.getItemByID(id).clone();
-                    if (item) {
-                        item.itemID = componentValues.items[key][i].itemID;
-                        var carried = componentValues.items[key][i].carried;
-                        this.addItem(item, carried);
-                        if (componentValues.items[key][i].equipped) {
-                            this.equip(item);
-                        }
+                    var definition = ItemConstants.getItemByID(id);
+                    if (!definition) {
+                        log.w("no item definition found: " + id);
+                        continue;
+                    }
+                    var item = definition.clone();
+                    item.itemID = componentValues.items[key][i].itemID;
+                    var carried = componentValues.items[key][i].carried;
+                    this.addItem(item, carried);
+                    if (componentValues.items[key][i].equipped) {
+                        this.equip(item);
                     }
                 }
             }
