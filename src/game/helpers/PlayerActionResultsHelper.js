@@ -195,7 +195,7 @@ define([
                     rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
                     rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.scavenge, 1, itemsComponent, campOrdinal, step);
                 } else {
-                    rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.meet, 1, itemsComponent, campOrdinal, step);
+                    rewards.gainedItems = this.getRewardItems(0.25, this.itemResultTypes.meet, 1, itemsComponent, campOrdinal, step);
                 }
             }
 
@@ -232,8 +232,8 @@ define([
                 var step = GameGlobals.levelHelper.getCampStep(playerPos);
 				availableResources.setResource(resourceNames.food, 10);
 				availableResources.setResource(resourceNames.metal, 3);
-				rewards.gainedResources = this.getRewardResources(0.3, 2, this.getScavengeEfficiency(), availableResources);
-                rewards.gainedItems = this.getRewardItems(0.1, 0.1, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step);
+				rewards.gainedResources = this.getRewardResources(0.25, 2, this.getScavengeEfficiency(), availableResources);
+                rewards.gainedItems = this.getRewardItems(0.05, 0.5, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step);
 				rewards.gainedReputation = 1;
             } else {
 				// TODO lost followers
@@ -664,7 +664,7 @@ define([
 					result.push(ingredient.clone());
 				}
 			}
-
+            
 			return result;
 		},
 
