@@ -198,7 +198,7 @@ define([
             GameGlobals.campVisHelper = new CampVisHelper();
 			GameGlobals.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine);
 
-            GameGlobals.itemsHelper = new ItemsHelper();
+            GameGlobals.itemsHelper = new ItemsHelper(this.engine);
 			GameGlobals.upgradeEffectsHelper = new UpgradeEffectsHelper();
 			GameGlobals.saveHelper = new SaveHelper();
             GameGlobals.changeLogHelper = new ChangeLogHelper();

@@ -3,17 +3,21 @@ define([
     'game/constants/ItemConstants',
     'game/constants/UpgradeConstants',
     'game/constants/PlayerActionConstants',
-    'game/constants/WorldCreatorConstants'
+    'game/constants/WorldCreatorConstants',
+    'game/nodes/tribe/TribeUpgradesNode',
 ], function (
     Ash,
     ItemConstants,
     UpgradeConstants,
     PlayerActionConstants,
-    WorldCreatorConstants
+    WorldCreatorConstants,
+    TribeUpgradesNode
 ) {
     var ItemsHelper = Ash.Class.extend({
 
-        constructor: function () { },
+        constructor: function (engine) {
+            this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
+        },
         
         defaultClothing: {
         },
@@ -140,6 +144,63 @@ define([
             }
             return coldProtection;
         },
+        
+        getUsableIngredient: function () {
+            var usableIngredients = [];
+            var itemList = ItemConstants.itemDefinitions.ingredient;
+            for (var i in itemList) {
+                var definition = itemList[i];
+                if (this.isUsableIngredient(definition)) {
+                    usableIngredients.push(definition);
+                }
+            }
+            console.log(usableIngredients)
+            var i = usableIngredients.length * Math.random();
+            return usableIngredients[parseInt(i)];
+        },
+        
+        isUsableIngredient: function (item) {
+            var craftableItems = [];
+            var craftingRecipes = [];
+            var itemList;
+            var itemDefinition;
+            for (var type in ItemConstants.itemDefinitions) {
+                itemList = ItemConstants.itemDefinitions[type];
+                for (var i in itemList) {
+                    itemDefinition = itemList[i];
+                    if (!itemDefinition.craftable) continue;
+                    craftableItems.push(itemDefinition.id);
+                    craftingRecipes.push(PlayerActionConstants.costs["craft_" + itemDefinition.id]);
+                }
+            }
+            var foundMatching = false;
+            for (var i = 0; i < craftingRecipes.length; i++) {
+                var craftingResult = craftableItems[i];
+                var recipe = craftingRecipes[i];
+                var matches = recipe["item_" + item.id];
+                var reqs = PlayerActionConstants.requirements["craft_" + craftingResult];
+                var isUnlocked = true;
+                if (reqs && reqs.upgrades) {
+                    for (var upgradeId in reqs.upgrades) {
+                        var requirementBoolean = reqs.upgrades[upgradeId];
+                        if (requirementBoolean) {
+                            isUnlocked = isUnlocked && this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeId);
+                        }
+                    }
+                }
+                if (matches && isUnlocked) {
+                    log.i("match found: " + craftingResult);
+                    return true;
+                }
+                if (matches) {
+                    foundMatching = true;
+                }
+            }
+            if (!foundMatching) {
+                log.w("no crafting recipe uses ingredient: " + item.id);
+            }
+            return false;
+        }
         
     });
     

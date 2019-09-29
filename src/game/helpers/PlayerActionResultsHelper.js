@@ -659,7 +659,7 @@ define([
 			var hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
 			if (hasBag && Math.random() < ingredientProbability) {
 				var amount = Math.floor(Math.random() * efficiency * 5) + 1;
-				var ingredient = ItemConstants.getIngredient();
+				var ingredient = GameGlobals.itemsHelper.getUsableIngredient();
 				for (var i = 0; i <= amount; i++) {
 					result.push(ingredient.clone());
 				}

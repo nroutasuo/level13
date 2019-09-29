@@ -360,7 +360,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
         getIngredient: function () {
             var i = (this.itemDefinitions.ingredient.length) * Math.random();
             return this.itemDefinitions.ingredient[parseInt(i)];
-        }
+        },
     };
 
     return ItemConstants;
