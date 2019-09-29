@@ -122,7 +122,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                     "Looks official, but not particularly protective.", 8, 1, 2),
                 new ItemVO("clothing_lower_4", "Padded pants", "Legs", {"fight defence": 15, warmth: 10}, true, true, false, "img/items/clothing-3.png",
                     "Protects from bites and scratches.", 11, 3, 3),
-                new ItemVO("clothing_lower_4", "Explorer's pants", "Legs", {"fight defence": 15, warmth: 10, "radiation protection": 5, "poison protection": 5}, true, true, false, "img/items/clothing-3.png",
+                new ItemVO("clothing_lower_45", "Explorer's pants", "Legs", {"fight defence": 15, warmth: 10, "radiation protection": 5, "poison protection": 5}, true, true, false, "img/items/clothing-3.png",
                     "Protects from bites and scratches.", 13, 5, 2),
                 new ItemVO("clothing_lower_5", "Long underwear", "Legs", {"fight defence": 5, warmth: 50, "radiation protection": 1, "poison protection": 1}, true, true, false, "img/items/clothing-3.png",
                     "Nothing keeps you warm like long underwear.", 15, 3, 1),
