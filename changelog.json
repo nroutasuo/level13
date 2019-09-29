@@ -3,7 +3,7 @@
             "version": "0.2.5",
             "phase": "alpha",
             "final": false,
-            "updated": "2019-09-27",
+            "updated": "2019-09-29",
             "changes": [
                 {
                     "type": "GD",
@@ -27,7 +27,7 @@
                 },
                 {
                     "type": "GB",
-                    "summary": "Add more items and equipment"
+                    "summary": "Add more items, equipment and crafting materials"
                 },
                 {
                     "type": "GB",

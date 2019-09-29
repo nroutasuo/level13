@@ -750,7 +750,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
                 craft_glowstick_1: {
                 	upgrades: {
-                		upgrade_worker_chemist: true
+                		unlock_building_apothecary: true
                 	}
                 },
                 craft_weapon52: {
