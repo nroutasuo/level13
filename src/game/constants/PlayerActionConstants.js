@@ -1665,7 +1665,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 build_in_hospital: {
-                    resource_metal: 150,
+                    resource_metal: 120,
                     resource_rope: 30,
                 },
 
