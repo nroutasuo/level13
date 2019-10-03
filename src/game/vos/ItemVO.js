@@ -22,7 +22,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		equipped: false,
 		carried: false,
 
-        constructor: function (id, name, type, bonuses, equippable, craftable, useable, icon, description, requiredCampOrdinal, scavengeRarity, tradeRarity) {
+        constructor: function (id, name, type, requiredCampOrdinal, equippable, craftable, useable, scavengeRarity, tradeRarity, bonuses, icon, description) {
 			this.id = id;
 			this.name = name;
 			this.type = type;
@@ -74,7 +74,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
         },
 
 		clone: function () {
-		    return new ItemVO(this.id, this.name, this.type, this.bonus.bonuses, this.equippable, this.craftable, this.useable, this.icon, this.description, this.requiredCampOrdinal, this.rarity);
+		    return new ItemVO(this.id, this.name, this.type, this.requiredCampOrdinal, this.equippable, this.craftable, this.useable, this.scavengeRarity, this.tradeRarity, this.bonus.bonuses, this.icon, this.description);
 		}
     });
 
