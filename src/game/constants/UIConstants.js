@@ -232,6 +232,7 @@ define(['ash',
 			switch (bonusType) {
 				case ItemConstants.itemBonusTypes.light: return "max vision";
 				case ItemConstants.itemBonusTypes.fight_att: return "attack";
+				case ItemConstants.itemBonusTypes.fight_def: return "defence";
 				case ItemConstants.itemBonusTypes.movement: return "movement cost";
 				case ItemConstants.itemBonusTypes.bag: return "bag size";
                 case ItemConstants.itemBonusTypes.fight_def: return "defence";
