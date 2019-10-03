@@ -753,6 +753,17 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 		unlock_building_apothecary: true
                 	}
                 },
+                craft_consumable_weapon_1: {
+                    upgrades: {
+                        upgrade_worker_scavenger: true,
+                    }
+                },
+                
+                craft_flee_1: {
+                    upgrades: {
+                        unlock_building_darkfarm: true,
+                    }
+                },
                 craft_weapon52: {
                 	upgrades: {
                 		unlock_item_weapon52: true
@@ -1813,6 +1824,15 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_fuel: 10,
                     item_res_tape: 1,
                     item_res_glowbug: 1,
+                },
+                
+                craft_consumable_weapon_1: {
+                    resource_metal: 5,
+                },
+                
+                craft_flee_1: {
+                    resource_water: 5,
+                    item_res_bottle: 1,
                 },
 
                 craft_shade1: {

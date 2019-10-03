@@ -50,13 +50,13 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("weapon2", "Spear", "Weapon", 4, true, true, false, 3, 1, {atk: 5}, "img/items/weapon-shiv.png", "Old-fashioned but reliable weapon."),
                 new ItemVO("weapon25", "Heavy Axe", "Weapon", 5, true, true, false, 3, 1, {atk: 8}, "img/items/weapon-shiv.png", "Easy to use and reliable."),
                 new ItemVO("weapon3", "Crossbow", "Weapon", 6, true, true, false, 3, 1, {atk: 12}, "img/items/weapon-shiv.png", "A deadly ranged weapon consisting of a horizontal limb assembly mounted on a stock that shoots projectiles."),
-                new ItemVO("weapon4", "Pistol", "Weapon", 8, true, true, false, 4, 1, {atk: 24}, "img/items/weapon-bomb.png", "A crude single-shot pistol, like a hand-held miniature cannon."),
-                new ItemVO("weapon5", "Revolver", "Weapon", 10, true, true, false, 4, 1, {atk: 30}, "img/items/weapon-bomb.png", "A more sophisticated handgun that allows several shots before reloading."),
-                new ItemVO("weapon52", "Scrap Metal Waraxe", "Weapon", 11, true, true, false, 1, 1, {atk: 34}, "img/items/weapon-bomb.png", "A formidable axe specifically designed for combat"),
-                new ItemVO("weapon58", "Crude Shotgun", "Weapon", 12, true, true, false, 5, 1, {atk: 55}, "img/items/weapon-bomb.png", "Devastating short-range firearm."),
-                new ItemVO("weapon6", "Custom SMG", "Weapon", 13, true, true, false, 5, 2, {atk: 116}, "img/items/weapon-bomb.png", "It may be made from scrap metal but it is still a serious weapon."),
-                new ItemVO("weapon7", "Improvised bazooka", "Weapon", 14, true, true, false, 3, 3, {atk: 205}, "img/items/weapon-bomb.png", "Powerful but heavy and somewhat unreliable construction of pipes, reclaimed weapon parts and improvised ammunition."),
-                new ItemVO("weapon8", "Rifle", "Weapon", 15, true, true, false, 3, 3, {atk: 245}, "img/items/weapon-bomb.png", "Deadly weapon similar to those that were mass-produced just before the Fall."),
+                new ItemVO("weapon4", "Pistol", "Weapon", 8, true, true, false, 4, 1, {atk: 24}, "img/items/weapon-shiv.png", "A crude single-shot pistol, like a hand-held miniature cannon."),
+                new ItemVO("weapon5", "Revolver", "Weapon", 10, true, true, false, 4, 1, {atk: 30}, "img/items/weapon-shiv.png", "A more sophisticated handgun that allows several shots before reloading."),
+                new ItemVO("weapon52", "Scrap Metal Waraxe", "Weapon", 11, true, true, false, 1, 1, {atk: 34}, "img/items/weapon-shiv.png", "A formidable axe specifically designed for combat"),
+                new ItemVO("weapon58", "Crude Shotgun", "Weapon", 12, true, true, false, 5, 1, {atk: 55}, "img/items/weapon-shiv.png", "Devastating short-range firearm."),
+                new ItemVO("weapon6", "Custom SMG", "Weapon", 13, true, true, false, 5, 2, {atk: 116}, "img/items/weapon-shiv.png", "It may be made from scrap metal but it is still a serious weapon."),
+                new ItemVO("weapon7", "Improvised bazooka", "Weapon", 14, true, true, false, 3, 3, {atk: 205}, "img/items/weapon-shiv.png", "Powerful but heavy and somewhat unreliable construction of pipes, reclaimed weapon parts and improvised ammunition."),
+                new ItemVO("weapon8", "Rifle", "Weapon", 15, true, true, false, 3, 3, {atk: 245}, "img/items/weapon-shiv.png", "Deadly weapon similar to those that were mass-produced just before the Fall."),
             ],
             clothing_over: [
                 new ItemVO("clothing_over_1", "Warm Coat", "Armor", 1, true, true, false, 5, 1, {def: 1, warmth: 20}, "img/items/clothing-2.png", "Something against the chill."),
@@ -153,7 +153,9 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("exploration_1", "Lockpick", "Exploration", 1, false, true, false, 1, 1, null, "img/items/exploration-1.png", "Useful tool when exploring and scouting."),
                 new ItemVO("first_aid_kit_1", "Basic first aid kit", "Exploration", 3, false, true, true, 6, 1, null, "img/items/firstaid-1.png", "Heal light injuries on the go."),
                 new ItemVO("first_aid_kit_2", "Full first aid kit", "Exploration", 10, false, true, true, 8, 2, null, "img/items/firstaid-2.png", "Heal all injuries on the go."),
-                new ItemVO("glowstick_1", "Glowstick", "Exploration", 1, false, true, true, 8, 2, null, "img/items/glowstick-1.png", "Temporary light. Can be used as a distraction.")
+                new ItemVO("glowstick_1", "Glowstick", "Exploration", 1, false, true, true, 8, 2, null, "img/items/glowstick-1.png", "Temporary light. Can be used as a distraction."),
+                new ItemVO("consumable_weapon_1", "Shuriken", "Exploration", 2, false, true, true, 8, 2, null, "img/items/exploration-gear.png", "One-use weapon."),
+                new ItemVO("flee_1", "Smoke Bomb", "Exploration", 3, false, true, true, 8, 2, null, "img/items/weapon-bomb.png", "Can be used to escape a fight.")
             ],
             uniqueEquipment: [
                 new ItemVO("equipment_map", "Map", "UniqueEquipment", 1, false, false, false, -1, -1, null, "img/items/exploration-map.png", "Helps navigating the City."),

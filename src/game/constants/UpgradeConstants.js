@@ -385,9 +385,9 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_bag2]
     = new UpgradeVO("unlock_item_bag2", "Leather-working", "The art of crafting durable bags.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_weapon_15]
-    = new UpgradeVO("unlock_weapon_15", "Knife", "");
+    = new UpgradeVO("unlock_weapon_15", "Knife", "Slightly more reliable than the shiv.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_clothing_basic]
-    = new UpgradeVO("unlock_clothing_basic", "Weaving", "");
+    = new UpgradeVO("unlock_clothing_basic", "Weaving", "Technique for making basic clothing.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_clothing_warm]
     = new UpgradeVO("unlock_clothing_warm", "Textile Arts", "New ways of making textiles.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_darkfarm]
