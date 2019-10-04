@@ -46,9 +46,15 @@ define([
         update: function (time) {
             if (!this.fightNodes || !this.fightNodes.head) return;
             if (this.fightNodes.head.fight.finished) return;
+            if (this.fightNodes.head.fight.fled) return;
             
             var enemy = this.fightNodes.head.fight.enemy;
             var playerStamina = this.playerStatsNodes.head.stamina;
+            var itemEffects = this.fightNodes.head.fight.itemEffects;
+            
+            if (itemEffects.fled) {
+                this.fleeFight();
+            }
             
             if (enemy.hp < 0 || playerStamina.hp < 0) {
                 this.endFight();
@@ -71,15 +77,22 @@ define([
             
             // calculate one-use-item effects
             var itemEffects = this.fightNodes.head.fight.itemEffects;
+            // - stun
             if (itemEffects.enemyStunnedSeconds > 0) {
                 playerDamage = 0;
             }
             itemEffects.enemyStunnedSeconds -= fightTime;
             itemEffects.enemyStunnedSeconds = Math.max(itemEffects.enemyStunnedSeconds, 0);
+            var extraDamage = 0;
+            // - damage
+            if (itemEffects.damage > 0) {
+                extraDamage += itemEffects.damage;
+                itemEffects.damage = 0;
+            }
 
             // apply effects
             var timeFactor = secondsToComplete / FightConstants.FIGHT_LENGTH_SECONDS;
-            enemy.hp -= (enemyDamage) * fightTime * timeFactor;
+            enemy.hp -= (enemyDamage) * fightTime * timeFactor + extraDamage;
             playerStamina.hp -= (playerDamage + playerRandomDamage) * fightTime * timeFactor;
         },
         
@@ -113,6 +126,10 @@ define([
             playerStamina.hp = 100;
             this.fightNodes.head.fight.won = won;
             this.fightNodes.head.fight.finished = true;
+        },
+        
+        fleeFight: function () {
+            this.fightNodes.head.fight.fled = true;
         },
         
         addFightRewardsAndPenalties: function (won, cleared, enemy) {

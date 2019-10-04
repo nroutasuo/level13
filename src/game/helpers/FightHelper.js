@@ -97,7 +97,7 @@ define([
             var sector = this.playerLocationNodes.head.entity;
 			var encounterComponent = sector.get(FightEncounterComponent);
             var fightComponent = sector.get(FightComponent);
-            if (fightComponent) {
+            if (fightComponent && !fightComponent.fled) {
 				if (fightComponent.won) {
                     GameGlobals.playerActionResultsHelper.collectRewards(false, fightComponent.resultVO);
 					sector.get(EnemiesComponent).resetNextEnemy();

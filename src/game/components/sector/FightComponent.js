@@ -3,10 +3,11 @@ define(['ash', 'game/vos/FightItemEffectsVO'], function (Ash, FightItemEffectsVO
     
     var FightComponent = Ash.Class.extend({
         
-        enemy: null,        
+        enemy: null,
         itemEffects: null,
              
         finished: false,
+        fled: false,
         won: null,
         resultVO: null,
         
@@ -14,6 +15,7 @@ define(['ash', 'game/vos/FightItemEffectsVO'], function (Ash, FightItemEffectsVO
             this.enemy = enemy;
             this.itemEffects = new FightItemEffectsVO();
             this.finished = false;
+            this.fled = false;
             this.won = null;
             this.resultVO = null;
         },

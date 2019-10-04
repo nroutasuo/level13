@@ -1377,15 +1377,25 @@ define(['ash',
 		},
 
 		useItemFight: function (itemId) {
+            var fightComponent = this.fightNodes.head.fight;
+            if (!fightComponent) {
+                log.w("can't use item in fight, no fight in progress");
+                return;
+            }
 			switch (itemId) {
 				case "glowstick_1":
-					var fightComponent = this.fightNodes.head.fight;
-					if (fightComponent) {
-                        var stunTime = FightConstants.FIGHT_LENGTH_SECONDS / 2;
-                        log.i("stun enemy for " + Math.round(stunTime * 100)/100 + "s")
-						fightComponent.itemEffects.enemyStunnedSeconds = stunTime;
-					}
+                    var stunTime = FightConstants.FIGHT_LENGTH_SECONDS / 2;
+                    log.i("stun enemy for " + Math.round(stunTime * 100)/100 + "s")
+					fightComponent.itemEffects.enemyStunnedSeconds = stunTime;
 					break;
+                case "consumable_weapon_1":
+                    var damage = 20;
+                    log.i("add " + damage + " extra damage to enemy");
+                    fightComponent.itemEffects.damage = damage;
+                    break;
+                case "flee_1":
+                    fightComponent.itemEffects.fled = true;
+                    break;
 				default:
 					log.w("Item not mapped for useItemFight: " + itemId);
 					break;

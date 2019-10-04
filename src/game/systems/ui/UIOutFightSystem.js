@@ -53,17 +53,17 @@ define([
 
         update: function () {
             if (GameGlobals.gameState.uiStatus.isHidden) return;
-            if (!this.isFightPopupOpen)
-                return;
+            if (!this.isFightPopupOpen) return;
             
-			var fightActive = this.fightNodes.head !== null && this.fightNodes.head.fight.finished !== true;
+			var fightActive = this.fightNodes.head !== null && this.fightNodes.head.fight.finished !== true && this.fightNodes.head.fight.fled !== true;
 			var fightFinished = this.fightNodes.head !== null && this.fightNodes.head.fight.finished === true;
+            var fightFled = this.fightNodes.head !== null && this.fightNodes.head.fight.fled === true;
 			var fightWon = fightFinished && this.fightNodes.head.fight.won;
 			
-			GameGlobals.uiFunctions.toggle("#out-action-fight-confirm", !fightActive && !fightFinished);
-			GameGlobals.uiFunctions.toggle("#out-action-fight-close", fightFinished && !fightWon);
+			GameGlobals.uiFunctions.toggle("#out-action-fight-confirm", !fightActive && !fightFinished && !fightFled);
+			GameGlobals.uiFunctions.toggle("#out-action-fight-close", (fightFinished && !fightWon) || fightFled);
 			GameGlobals.uiFunctions.toggle("#out-action-fight-next", fightFinished && fightWon);
-            GameGlobals.uiFunctions.toggle("#out-action-fight-cancel", !fightFinished && !fightActive);
+            GameGlobals.uiFunctions.toggle("#out-action-fight-cancel", !fightFinished && !fightActive && !fightFled);
             GameGlobals.uiFunctions.toggle("#fight-buttons-main", !fightActive);
             GameGlobals.uiFunctions.toggle("#fight-buttons-infightactions", fightActive);
 			
@@ -74,6 +74,7 @@ define([
 			GameGlobals.uiFunctions.toggle("#fight-popup-results", fightFinished);
             
 			GameGlobals.uiFunctions.toggle("#fight-desc", !fightActive);
+			GameGlobals.uiFunctions.toggle("#fight-popup-enemy-info", !fightFled);
 			
 			$("#fight-popup-enemy-info").toggleClass("strike-through", fightFinished && fightWon);
 			
@@ -89,12 +90,14 @@ define([
             if (encounterComponent == null)
                 return;
             
-			this.updateFightCommon(!fightActive && !fightFinished);
+			this.updateFightCommon(!fightActive && !fightFinished && !fightFled);
 			
 			if (fightActive && !fightFinished) {
                 this.updateFightActive();
 			} else if (fightFinished) {
                 this.updateFightFinished();
+            } else if (fightFled) {
+                this.updateFightFled();
 			} else {
                 this.updateFightPending();
 			}
@@ -148,6 +151,10 @@ define([
 			$("#fight-desc").text(this.getDescriptionByContext(encounterComponent.context, encounterComponent.enemy));
 			this.displayedRewards = null;
 		},
+        
+        updateFightFled: function () {
+            $("#fight-desc").text("Distracted the enemy and fled");
+        },
 		
 		updateFightActive: function () {
 			$("#fight-results-win-res").empty();
@@ -181,6 +188,8 @@ define([
             // TODO show fight effect of items in fight ui
             var itemsToShow = [];
             if (itemsComponent.getCountById("glowstick_1") > 0) itemsToShow.push(itemsComponent.getItem("glowstick_1", null, false));
+            if (itemsComponent.getCountById("consumable_weapon_1") > 0) itemsToShow.push(itemsComponent.getItem("consumable_weapon_1", null, false));
+            if (itemsComponent.getCountById("flee_1") > 0) itemsToShow.push(itemsComponent.getItem("flee_1", null, false));
             var numItemsShown = $("#fight-buttons-infightactions button").length;
             if (numItemsShown !== itemsToShow.length) {
                 $("#fight-buttons-infightactions").empty();
