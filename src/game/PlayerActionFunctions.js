@@ -1384,7 +1384,7 @@ define(['ash',
             }
 			switch (itemId) {
 				case "glowstick_1":
-                    var stunTime = FightConstants.FIGHT_LENGTH_SECONDS / 2;
+                    var stunTime = 2;
                     log.i("stun enemy for " + Math.round(stunTime * 100)/100 + "s")
 					fightComponent.itemEffects.enemyStunnedSeconds = stunTime;
 					break;

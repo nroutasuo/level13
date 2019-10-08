@@ -11,6 +11,9 @@ define(['ash', 'game/vos/FightItemEffectsVO'], function (Ash, FightItemEffectsVO
         won: null,
         resultVO: null,
         
+        nextTurnPlayer: 0,
+        nextTurnEnemy: 0,
+        
         constructor: function (enemy) {
             this.enemy = enemy;
             this.itemEffects = new FightItemEffectsVO();
@@ -18,6 +21,9 @@ define(['ash', 'game/vos/FightItemEffectsVO'], function (Ash, FightItemEffectsVO
             this.fled = false;
             this.won = null;
             this.resultVO = null;
+            
+            this.nextTurnEnemy = 0;
+            this.nextTurnPlayer = 0;
         },
     });
 

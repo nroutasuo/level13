@@ -12,8 +12,12 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
 	
 		FIGHT_PLAYER_BASE_ATT: 3,
 		FIGHT_PLAYER_BASE_DEF: 3,
-		FIGHT_LENGTH_SECONDS: 5,
 		MAX_FOLLOWER_MAX: 5,
+        
+        getPlayerAttackTime: function () {
+            // TODO make this depend on the weapon
+            return 0.8;
+        },
 		 
 		getPlayerAtt: function (playerStamina, itemsComponent) {
 			var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.weapon);
@@ -60,10 +64,21 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
 			return Math.max(0, maxFollowers);
         },
         
+        getEnemyAttackTime: function (enemy) {
+            // TODO make this depend on the enemy
+            return 0.8;
+        },
+        
         // Damage done by player to an enemy per sec
         getEnemyDamagePerSec: function (enemy, playerStamina, itemsComponent) {
             var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
             return (playerAtt / enemy.def);
+        },
+        
+        getEnemyDamagePerAttack: function (enemy, playerStamina, itemsComponent) {
+            var dps = this.getEnemyDamagePerSec(enemy, playerStamina, itemsComponent);
+            var attacktTime = this.getPlayerAttackTime();
+            return dps * attacktTime;
         },
         
         // Damage done by the enemy to the player per sec
@@ -72,9 +87,21 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             return (enemy.att / playerDef);
         },
         
+        getPlayerDamagePerAttack: function (enemy, playerStamina, itemsComponent) {
+            var dps = this.getPlayerDamagePerSec(enemy, playerStamina, itemsComponent);
+            var attacktTime = this.getEnemyAttackTime(enemy);
+            return dps * attacktTime;
+        },
+        
         getRandomDamagePerSec: function (enemy, playerStamina, itemsComponent) {
             var playerDamage = FightConstants.getPlayerDamagePerSec(enemy, playerStamina, itemsComponent);
             return enemy.attRandomFactor * playerDamage;
+        },
+        
+        getRandomDamagePerAttack: function (enemy, playerStamina, itemsComponent) {
+            var dps = this.getRandomDamagePerSec(enemy, playerStamina, itemsComponent);
+            var attacktTime = this.getEnemyAttackTime(enemy);
+            return dps * attacktTime;
         },
         
         getFightChances: function (enemy, playerStamina, itemsComponent) {
