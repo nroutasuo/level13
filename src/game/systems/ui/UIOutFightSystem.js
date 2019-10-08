@@ -1,5 +1,6 @@
 define([
     'ash',
+    'utils/UIState',
     'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/FightConstants',
@@ -13,7 +14,16 @@ define([
     'game/components/sector/FightComponent',
     'game/components/sector/FightEncounterComponent',
     'game/components/sector/EnemiesComponent'
-], function (Ash, GameGlobals, GlobalSignals, FightConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightComponent, FightEncounterComponent, EnemiesComponent) {
+], function (Ash, UIState, GameGlobals, GlobalSignals, FightConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightComponent, FightEncounterComponent, EnemiesComponent) {
+    
+    var FightPopupStateEnum = {
+        CLOSED: 0,
+        FIGHT_PENDING: 1,
+        FIGHT_ACTIVE: 2,
+        FIGHT_FINISHED: 3,
+        FIGHT_FLED: 4,
+    };
+    
     var UIOutFightSystem = Ash.System.extend({
 		
 		playerLocationNodes: null,
@@ -23,26 +33,19 @@ define([
 		lastProgressBarUpdateTimeStamp: 0,
 		lastProgressBarUpdateFreq: 300,
         
-        wasFightActive: false,
+        state: FightPopupStateEnum.CLOSED,
+        
         isFightPopupOpen: false,
 	
-        constructor: function () {
-        },
+        constructor: function () { },
 
         addToEngine: function (engine) {
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
             this.fightNodes = engine.getNodeList(FightNode);
             
-            var sys = this;
-            GlobalSignals.popupOpenedSignal.add(function (popupID) {
-                if (popupID === "fight-popup")
-                    sys.isFightPopupOpen = true;
-            });
-            GlobalSignals.popupClosedSignal.add(function (popupID) {
-                if (popupID === "fight-popup")
-                    sys.isFightPopupOpen = false;
-            });
+            GlobalSignals.add(this, GlobalSignals.popupOpenedSignal, this.onPopupOpened);
+            GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.onPopupClosed);
         },
 
         removeFromEngine: function (engine) {
@@ -55,110 +58,28 @@ define([
             if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (!this.isFightPopupOpen) return;
             
-			var fightActive = this.fightNodes.head !== null && this.fightNodes.head.fight.finished !== true && this.fightNodes.head.fight.fled !== true;
-			var fightFinished = this.fightNodes.head !== null && this.fightNodes.head.fight.finished === true;
-            var fightFled = this.fightNodes.head !== null && this.fightNodes.head.fight.fled === true;
-			var fightWon = fightFinished && this.fightNodes.head.fight.won;
+            this.updateState();
 			
-			GameGlobals.uiFunctions.toggle("#out-action-fight-confirm", !fightActive && !fightFinished && !fightFled);
-			GameGlobals.uiFunctions.toggle("#out-action-fight-close", (fightFinished && !fightWon) || fightFled);
-			GameGlobals.uiFunctions.toggle("#out-action-fight-next", fightFinished && fightWon);
-            GameGlobals.uiFunctions.toggle("#out-action-fight-cancel", !fightFinished && !fightActive && !fightFled);
-            GameGlobals.uiFunctions.toggle("#fight-buttons-main", !fightActive);
-            GameGlobals.uiFunctions.toggle("#fight-buttons-infightactions", fightActive);
-			
-			GameGlobals.uiFunctions.toggle("#fight-popup-control-info", !fightActive);
-			GameGlobals.uiFunctions.toggle("#fight-popup-bars", fightActive);
-			GameGlobals.uiFunctions.toggle("#fight-popup-self-info", fightActive);
-			GameGlobals.uiFunctions.toggle("#list-fight-followers", fightActive);
-			GameGlobals.uiFunctions.toggle("#fight-popup-results", fightFinished);
-            
-			GameGlobals.uiFunctions.toggle("#fight-desc", !fightActive);
-			GameGlobals.uiFunctions.toggle("#fight-popup-enemy-info", !fightFled);
-			
-			$("#fight-popup-enemy-info").toggleClass("strike-through", fightFinished && fightWon);
-			
-            if (fightActive && !this.wasFightActive) {
-                this.initializeFightActive();
-            }
-            
-            // NOTE: can happen in AutoPlay
-			var sector = this.playerLocationNodes.head.entity;
-            if (sector == null)
-                return;
-			var encounterComponent = sector.get(FightEncounterComponent);
-            if (encounterComponent == null)
-                return;
-            
-			this.updateFightCommon(!fightActive && !fightFinished && !fightFled);
-			
-			if (fightActive && !fightFinished) {
+			if (this.state == FightPopupStateEnum.FIGHT_ACTIVE) {
                 this.updateFightActive();
-			} else if (fightFinished) {
-                this.updateFightFinished();
-            } else if (fightFled) {
-                this.updateFightFled();
-			} else {
-                this.updateFightPending();
 			}
-            
-            this.wasFightActive = fightActive;
 		},
         
-        initializeFightActive: function () {
-            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-            $("ul#list-fight-followers").empty();
-            this.numFollowers = 0;
-            var items = itemsComponent.getUnique(true);
-            for (var i = 0; i < items.length; i++) {
-                var item = items[i];
-                if (item.type !== ItemConstants.itemTypes.follower)
-                    continue;
-                this.numFollowers++;
-                $("ul#list-fight-followers").append("<li>" + UIConstants.getItemDiv(null, item, null, UIConstants.getItemCallout(item, true), true) + "</li>");
+        updateState: function () {
+            if (!this.isFightPopupOpen) {
+                this.setState(FightPopupStateEnum.CLOSED);
+            } else if (this.fightNodes.head == null) {
+                this.setState(FightPopupStateEnum.FIGHT_PENDING);
+            } else if (this.fightNodes.head.fight.fled) {
+                this.setState(FightPopupStateEnum.FIGHT_FLED);
+            } else if (this.fightNodes.head.fight.finished) {
+                this.setState(FightPopupStateEnum.FIGHT_FINISHED);
+            } else {
+                this.setState(FightPopupStateEnum.FIGHT_ACTIVE);
             }
-            GameGlobals.uiFunctions.generateCallouts("ul#list-fight-followers");
-        },
-	
-		updateFightCommon: function (fightPending) {
-			var sector = this.playerLocationNodes.head.entity;
-			var encounterComponent = sector.get(FightEncounterComponent);
-            
-			$("#fight-title").text(this.getTitleByContext(encounterComponent));
-			
-			// Enemy info
-			var enemiesComponent = sector.get(EnemiesComponent);
-			var currentEnemy = enemiesComponent.getNextEnemy();
-			var enemyText = " " + currentEnemy.name + " ";
-			enemyText += "<br/>";
-			enemyText += " att: " + currentEnemy.att + " | def: " + currentEnemy.def + " ";
-			if (fightPending) {
-				var playerStamina = this.playerStatsNodes.head.stamina;
-                var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-                enemyText += "<br/>";
-                enemyText += FightConstants.getFightChances(currentEnemy, playerStamina, itemsComponent);
-			}
-			$("#fight-popup-enemy-info").html(enemyText);
-		},
-	
-		updateFightPending: function () {
-			var sector = this.playerLocationNodes.head.entity;
-			var encounterComponent = sector.get(FightEncounterComponent);
-			$("#fight-results-win-res").empty();
-			$("#fight-results-win-items").empty();
-			$("#fight-bar-enemy").data("animation-length", 100);
-			$("#fight-bar-self").data("animation-length", 100);
-			$("#fight-desc").text(this.getDescriptionByContext(encounterComponent.context, encounterComponent.enemy));
-			this.displayedRewards = null;
-		},
-        
-        updateFightFled: function () {
-            $("#fight-desc").text("Distracted the enemy and fled");
         },
 		
 		updateFightActive: function () {
-			$("#fight-results-win-res").empty();
-			$("#fight-results-win-items").empty();
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			
             // update progress bars
@@ -205,8 +126,83 @@ define([
                 GlobalSignals.elementCreatedSignal.dispatch();
             }
 		},
-		
-		updateFightFinished: function () {
+        
+        refresh: function () {
+            
+        },
+        
+        refreshState: function () {
+            var fightWon = this.state == FightPopupStateEnum.FIGHT_FINISHED && this.fightNodes.head.fight.won;
+            
+            // visibility: buttons
+			GameGlobals.uiFunctions.toggle("#out-action-fight-confirm", this.state == FightPopupStateEnum.FIGHT_PENDING);
+			GameGlobals.uiFunctions.toggle("#out-action-fight-close", fightWon || this.state == FightPopupStateEnum.FIGHT_FLED);
+			GameGlobals.uiFunctions.toggle("#out-action-fight-next", fightWon);
+            GameGlobals.uiFunctions.toggle("#out-action-fight-cancel", this.state == FightPopupStateEnum.FIGHT_PENDING);
+            GameGlobals.uiFunctions.toggle("#fight-buttons-main", this.state != FightPopupStateEnum.FIGHT_ACTIVE);
+            GameGlobals.uiFunctions.toggle("#fight-buttons-infightactions", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
+			
+            // visibility: other elements
+			GameGlobals.uiFunctions.toggle("#fight-popup-control-info", this.state != FightPopupStateEnum.FIGHT_ACTIVE);
+			GameGlobals.uiFunctions.toggle("#fight-popup-bars", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
+			GameGlobals.uiFunctions.toggle("#fight-popup-self-info", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
+			GameGlobals.uiFunctions.toggle("#list-fight-followers", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
+			GameGlobals.uiFunctions.toggle("#fight-popup-results", this.state == FightPopupStateEnum.FIGHT_FINISHED);
+			GameGlobals.uiFunctions.toggle("#fight-desc", this.state != FightPopupStateEnum.FIGHT_ACTIVE);
+			GameGlobals.uiFunctions.toggle("#fight-popup-enemy-info", this.state != FightPopupStateEnum.FIGHT_FLED);
+			
+            // texts
+			var sector = this.playerLocationNodes.head.entity;
+			var encounterComponent = sector.get(FightEncounterComponent);
+			$("#fight-title").text(this.getTitleByContext(encounterComponent));
+			$("#fight-popup-enemy-info").toggleClass("strike-through", fightWon);
+			this.updateEnemyText();
+            
+            switch (this.state) {
+                case FightPopupStateEnum.FIGHT_PENDING:
+                    this.refreshFightPending();
+                    break;
+                case FightPopupStateEnum.FIGHT_ACTIVE:
+                    this.refreshFightActive();
+                    break;
+                case FightPopupStateEnum.FIGHT_FINISHED:
+                    this.refreshFightFinished();
+                    break;
+                case FightPopupStateEnum.FIGHT_FLED:
+                    this.refreshFightFled();
+                    break;
+            }
+        },
+        
+        refreshFightPending: function () {
+			var sector = this.playerLocationNodes.head.entity;
+			var encounterComponent = sector.get(FightEncounterComponent);
+			$("#fight-results-win-res").empty();
+			$("#fight-results-win-items").empty();
+			$("#fight-desc").text(this.getDescriptionByContext(encounterComponent.context, encounterComponent.enemy));
+        },
+        
+        refreshFightActive: function () {
+            // progress bars
+			$("#fight-bar-enemy").data("animation-length", 100);
+			$("#fight-bar-self").data("animation-length", 100);
+            
+            // followers
+            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+            $("ul#list-fight-followers").empty();
+            this.numFollowers = 0;
+            var items = itemsComponent.getUnique(true);
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                if (item.type !== ItemConstants.itemTypes.follower)
+                    continue;
+                this.numFollowers++;
+                $("ul#list-fight-followers").append("<li>" + UIConstants.getItemDiv(null, item, null, UIConstants.getItemCallout(item, true), true) + "</li>");
+            }
+            GameGlobals.uiFunctions.generateCallouts("ul#list-fight-followers");
+        },
+        
+		refreshFightFinished: function () {
 			var sector = this.playerLocationNodes.head.entity;
 			var encounterComponent = sector.get(FightEncounterComponent);
 			var isWon = this.fightNodes.head.fight.won;
@@ -218,11 +214,37 @@ define([
 			GameGlobals.uiFunctions.toggle("#fight-results-lose-header", !isWon && false);
 			GameGlobals.uiFunctions.toggle("#fight-results-lose-items", !isWon && false);
 			
-			if (this.displayedRewards !== this.fightNodes.head.fight.resultVO) {
-				$("#fight-popup-results").html(GameGlobals.playerActionResultsHelper.getRewardDiv(this.fightNodes.head.fight.resultVO, true));
-				GameGlobals.uiFunctions.generateCallouts("#fight-popup-results");
-				this.displayedRewards = this.fightNodes.head.fight.resultVO;
+			$("#fight-popup-results").html(GameGlobals.playerActionResultsHelper.getRewardDiv(this.fightNodes.head.fight.resultVO, true));
+			GameGlobals.uiFunctions.generateCallouts("#fight-popup-results");
+        },
+        
+        refreshFightFled: function () {
+            $("#fight-desc").text("Distracted the enemy and fled");
+        },
+	
+		updateEnemyText: function () {
+			var sector = this.playerLocationNodes.head.entity;
+			var encounterComponent = sector.get(FightEncounterComponent);
+			var enemiesComponent = sector.get(EnemiesComponent);
+			var currentEnemy = enemiesComponent.getNextEnemy();
+			var enemyText = " " + currentEnemy.name + " ";
+			enemyText += "<br/>";
+			enemyText += " att: " + currentEnemy.att + " | def: " + currentEnemy.def + " ";
+            
+			if (this.state == FightPopupStateEnum.FIGHT_PENDING) {
+				var playerStamina = this.playerStatsNodes.head.stamina;
+                var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+                enemyText += "<br/>";
+                enemyText += FightConstants.getFightChances(currentEnemy, playerStamina, itemsComponent);
 			}
+            
+			$("#fight-popup-enemy-info").html(enemyText);
+		},
+        
+        setState: function (state) {
+            if (this.state == state) return;
+            this.state = state;
+            this.refreshState();
         },
         
         getTitleByContext: function (encounterComponent) {
@@ -285,6 +307,20 @@ define([
 			}
 		},
 		
+        onPopupOpened: function (popupID) {
+            if (popupID === "fight-popup") {
+                this.refresh();
+                this.isFightPopupOpen = true;
+                this.setState(FightPopupStateEnum.FIGHT_PENDING);
+            }
+        },
+        
+        onPopupClosed: function (popupID) {
+            if (popupID === "fight-popup") {
+                this.isFightPopupOpen = false;
+                this.setState(FightPopupStateEnum.CLOSED);
+            }
+        }
     });
 
     return UIOutFightSystem;
