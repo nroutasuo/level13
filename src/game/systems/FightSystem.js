@@ -2,6 +2,7 @@
 define([
     'ash',
     'game/GameGlobals',
+    'game/GlobalSignals',
     'game/constants/FightConstants',
     'game/constants/PositionConstants',
     'game/constants/EnemyConstants',
@@ -13,7 +14,7 @@ define([
     'game/components/sector/SectorControlComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PlayerActionResultComponent',
-], function (Ash, GameGlobals, FightConstants, PositionConstants, EnemyConstants,
+], function (Ash, GameGlobals, GlobalSignals, FightConstants, PositionConstants, EnemyConstants,
     FightNode, PlayerStatsNode,
     PositionComponent,
     FightComponent, FightEncounterComponent, SectorControlComponent,
@@ -108,15 +109,17 @@ define([
                 extraEnemyDamage += itemEffects.damage;
                 itemEffects.damage = 0;
             }
-            
-            // old turn calculation
-            
-            // calculate one-use-item effects
-            // - stun
 
             // apply effects
-            enemy.hp -= (enemyDamage + extraEnemyDamage);
-            playerStamina.hp -= (playerDamage + playerRandomDamage);
+            var enemyChange = enemyDamage + extraEnemyDamage;
+            enemy.hp -= enemyChange;
+            var playerChange = playerDamage + playerRandomDamage;
+            playerStamina.hp -= playerChange;
+            
+            if (playerChange !== 0 || enemyChange !== 0) {
+                log.i("fight update: " + enemyChange + " " + playerChange, this)
+                GlobalSignals.fightUpdateSignal.dispatch();
+            }
         },
         
         endFight: function () {

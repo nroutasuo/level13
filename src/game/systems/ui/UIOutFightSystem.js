@@ -46,9 +46,11 @@ define([
             
             GlobalSignals.add(this, GlobalSignals.popupOpenedSignal, this.onPopupOpened);
             GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.onPopupClosed);
+            GlobalSignals.add(this, GlobalSignals.fightUpdateSignal, this.onFightUpdate);
         },
 
         removeFromEngine: function (engine) {
+            GlobalSignals.removeAll(this);
             this.playerLocationNodes = null;
             this.playerStatsNodes = null;
             this.fightNodes = null;
@@ -59,10 +61,6 @@ define([
             if (!this.isFightPopupOpen) return;
             
             this.updateState();
-			
-			if (this.state == FightPopupStateEnum.FIGHT_ACTIVE) {
-                this.updateFightActive();
-			}
 		},
         
         updateState: function () {
@@ -200,6 +198,8 @@ define([
                 $("ul#list-fight-followers").append("<li>" + UIConstants.getItemDiv(null, item, null, UIConstants.getItemCallout(item, true), true) + "</li>");
             }
             GameGlobals.uiFunctions.generateCallouts("ul#list-fight-followers");
+            
+            this.updateFightActive();
         },
         
 		refreshFightFinished: function () {
@@ -320,7 +320,14 @@ define([
                 this.isFightPopupOpen = false;
                 this.setState(FightPopupStateEnum.CLOSED);
             }
-        }
+        },
+        
+        onFightUpdate: function () {
+			if (this.state == FightPopupStateEnum.FIGHT_ACTIVE) {
+                this.updateFightActive();
+			}
+        },
+
     });
 
     return UIOutFightSystem;
