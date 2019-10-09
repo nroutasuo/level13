@@ -299,6 +299,7 @@ define(['ash',
 				// equipment stats labels
 				for (var bonusKey in ItemConstants.itemBonusTypes) {
 					var bonusType = ItemConstants.itemBonusTypes[bonusKey];
+                    if (bonusType == ItemConstants.itemBonusTypes.fight_speed) continue;
 					var div = "<div id='stats-equipment-" + bonusKey + "' class='stats-indicator stats-indicator-secondary'>";
 					div += "<span class='label'>" + UIConstants.getItemBonusName(bonusType).replace(" ", "<br/>") + "</span>";
 					div += "<br/>";

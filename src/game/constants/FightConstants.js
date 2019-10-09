@@ -14,9 +14,16 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
 		FIGHT_PLAYER_BASE_DEF: 3,
 		MAX_FOLLOWER_MAX: 5,
         
-        getPlayerAttackTime: function () {
-            // TODO make this depend on the weapon
-            return 0.8;
+        // applies both to enemy and player damage and makes fights to faster (with fewer hits)
+        FIGHT_DAMAGE_FACTOR: 4,
+        // applies to both enemy and player and makes fights go faster (less time between hits)
+        FIGHT_SPEED_FACTOR: 2,
+        
+        getPlayerAttackTime: function (itemsComponent) {
+            var weapons = itemsComponent.getEquipped(ItemConstants.itemTypes.weapon);
+            var weapon = weapons.length > 0 ? weapons[0] : null;
+            var weaponSpeed = weapon ? weapon.getBonus(ItemConstants.itemBonusTypes.fight_speed) || 1 : 1;
+            return (1 * weaponSpeed) / this.FIGHT_SPEED_FACTOR;
         },
 		 
 		getPlayerAtt: function (playerStamina, itemsComponent) {
@@ -72,19 +79,19 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
         // Damage done by player to an enemy per sec
         getEnemyDamagePerSec: function (enemy, playerStamina, itemsComponent) {
             var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
-            return (playerAtt / enemy.def);
+            return Math.max(1, playerAtt / enemy.def * this.FIGHT_DAMAGE_FACTOR);
         },
         
         getEnemyDamagePerAttack: function (enemy, playerStamina, itemsComponent) {
             var dps = this.getEnemyDamagePerSec(enemy, playerStamina, itemsComponent);
-            var attacktTime = this.getPlayerAttackTime();
+            var attacktTime = this.getPlayerAttackTime(itemsComponent);
             return dps * attacktTime;
         },
         
         // Damage done by the enemy to the player per sec
         getPlayerDamagePerSec: function (enemy, playerStamina, itemsComponent) {
             var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent);
-            return (enemy.att / playerDef);
+            return Math.max(1, enemy.att / playerDef * this.FIGHT_DAMAGE_FACTOR);
         },
         
         getPlayerDamagePerAttack: function (enemy, playerStamina, itemsComponent) {

@@ -66,9 +66,10 @@ define([
         },
         
         initFight: function () {
+            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var enemy = this.fightNodes.head.fight.enemy;
             this.fightNodes.head.fight.nextTurnEnemy = FightConstants.getEnemyAttackTime(enemy) * Math.random();
-            this.fightNodes.head.fight.nextTurnPlayer = FightConstants.getPlayerAttackTime() * Math.random();
+            this.fightNodes.head.fight.nextTurnPlayer = FightConstants.getPlayerAttackTime(itemsComponent) * Math.random();
         },
         
         applyFightStep: function (time) {
@@ -100,7 +101,7 @@ define([
             this.fightNodes.head.fight.nextTurnPlayer -= fightTime;
             if (this.fightNodes.head.fight.nextTurnPlayer <= 0) {
                 enemyDamage = FightConstants.getEnemyDamagePerAttack(enemy, playerStamina, itemsComponent);
-                this.fightNodes.head.fight.nextTurnPlayer = FightConstants.getPlayerAttackTime();
+                this.fightNodes.head.fight.nextTurnPlayer = FightConstants.getPlayerAttackTime(itemsComponent);
             }
             
             // item effects: extra damage
