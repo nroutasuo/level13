@@ -952,6 +952,14 @@ body.dark .progress-label {
   text-align: center;
   vertical-align: text-top;
 }
+body.dark .progress-change-indicator {
+  left: 0;
+  top: 0;
+  position: absolute;
+  width: auto;
+  font-size: 85%;
+  color: #E13232;
+}
 body.dark .canvas-container {
   text-align: center;
   overflow: hidden;
@@ -2640,6 +2648,14 @@ body.sunlit .progress-label {
   font-size: 85%;
   text-align: center;
   vertical-align: text-top;
+}
+body.sunlit .progress-change-indicator {
+  left: 0;
+  top: 0;
+  position: absolute;
+  width: auto;
+  font-size: 85%;
+  color: #ee1111;
 }
 body.sunlit .canvas-container {
   text-align: center;

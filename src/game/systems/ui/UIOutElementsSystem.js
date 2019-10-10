@@ -298,21 +298,35 @@ define([
 			for (var i = 0; i < this.elementsVisibleProgressbars.length; i++) {
 				var $progressbar = $(this.elementsVisibleProgressbars[i]);
 				var isAnimated = $progressbar.data("animated") === true;
+                var lastChangeValue = $progressbar.data("last-change-value");
 				if (!isAnimated) {
 					$progressbar.data("animated", true);
 					var percent = ($progressbar.data('progress-percent') / 100);
 					var animationLength = $progressbar.data("animation-counter") > 0 ? ($progressbar.data('animation-length')) : 0;
 					var progressWrapWidth = $progressbar.width();
 					var progressWidth = percent * progressWrapWidth;
+                    var indicatorWidth = $progressbar.children(".progress-change-indicator").width();
 					$progressbar.children(".progress-bar").stop().animate({
 						left: progressWidth
 					}, animationLength, function () {
 						$(this).parent().data("animated", false);
 						$(this).parent().data("animation-counter", $progressbar.parent().data("animation-counter") + 1);
 					});
+                    if (lastChangeValue) {
+                        var indicatorPos = Math.min(progressWidth + 5, progressWrapWidth - indicatorWidth - 5);
+                        $progressbar.children(".progress-change-indicator").stop().animate({
+                            left: indicatorPos
+                        }, animationLength);
+                    }
 				} else {
 					$progressbar.data("animation-counter", 0);
 				}
+                
+                if (!lastChangeValue) {
+                    $progressbar.children(".progress-change-indicator").text("");
+                } else {
+                    $progressbar.children(".progress-change-indicator").text(lastChangeValue);
+                }
 			}
 		},
 

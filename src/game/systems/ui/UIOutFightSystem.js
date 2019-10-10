@@ -30,8 +30,7 @@ define([
 		playerStatsNodes: null,
 		fightNodes: null,
 		
-		lastProgressBarUpdateTimeStamp: 0,
-		lastProgressBarUpdateFreq: 300,
+		progressBarAnimationLen: 300,
         
         state: FightPopupStateEnum.CLOSED,
         
@@ -81,26 +80,23 @@ define([
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 			
             // update progress bars
-			var timeStamp = new Date().getTime();
-			if (timeStamp - this.lastProgressBarUpdateTimeStamp > this.lastProgressBarUpdateFreq) {
-				var enemy = this.fightNodes.head.fight.enemy;
-				var playerStamina = this.playerStatsNodes.head.stamina;
-				var playerVal = Math.round(playerStamina.hp);
-				var enemyVal = Math.round(enemy.hp);
-				$("#fight-bar-enemy").data("progress-percent", enemyVal);
-				$("#fight-bar-enemy").data("animation-length", this.lastProgressBarUpdateFreq);
-				$("#fight-bar-self").data("progress-percent", playerVal);
-				$("#fight-bar-self").data("animation-length", this.lastProgressBarUpdateFreq);
-					
-				var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
-				var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent);
-				var playerText = this.numFollowers > 0 ? "Party" : "Wanderer";
-				playerText += "<br/>";
-				playerText += "att: " + playerAtt + " | def: " + playerDef;
-				$("#fight-popup-self-info").html(playerText);
+			var enemy = this.fightNodes.head.fight.enemy;
+			var playerStamina = this.playerStatsNodes.head.stamina;
+			var playerVal = Math.round(playerStamina.hp);
+			var enemyVal = Math.round(enemy.hp);
+			$("#fight-bar-enemy").data("progress-percent", enemyVal);
+			$("#fight-bar-enemy").data("animation-length", this.progressBarAnimationLen);
+			$("#fight-bar-enemy").data("last-change-value", -this.lastEnemyDamage);
+			$("#fight-bar-self").data("progress-percent", playerVal);
+			$("#fight-bar-self").data("animation-length", this.progressBarAnimationLen);
+			$("#fight-bar-self").data("last-change-value", -this.lastPlayerDamage);
 				
-				this.lastProgressBarUpdateTimeStamp = new Date().getTime();
-			}
+			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
+			var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent);
+			var playerText = this.numFollowers > 0 ? "Party" : "Wanderer";
+			playerText += "<br/>";
+			playerText += "att: " + playerAtt + " | def: " + playerDef;
+			$("#fight-popup-self-info").html(playerText);
             
             // update action buttons
             // TODO remove hard-coding of items usable in fight, instead have fight effect desc in ItemVO (damage, heal, defend, stun)
@@ -126,7 +122,8 @@ define([
 		},
         
         refresh: function () {
-            
+            this.lastPlayerDamage = 0;
+            this.lastEnemyDamage = 0;
         },
         
         refreshState: function () {
@@ -182,8 +179,8 @@ define([
         
         refreshFightActive: function () {
             // progress bars
-			$("#fight-bar-enemy").data("animation-length", 100);
-			$("#fight-bar-self").data("animation-length", 100);
+			$("#fight-bar-enemy").data("last-change-value", 0);
+			$("#fight-bar-self").data("last-change-value", 0);
             
             // followers
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
@@ -322,7 +319,11 @@ define([
             }
         },
         
-        onFightUpdate: function () {
+        onFightUpdate: function (playerDamage, enemyDamage) {
+            if (playerDamage)
+                this.lastPlayerDamage = UIConstants.roundValue(playerDamage, true);
+            if (enemyDamage)
+                this.lastEnemyDamage = UIConstants.roundValue(enemyDamage, true);
 			if (this.state == FightPopupStateEnum.FIGHT_ACTIVE) {
                 this.updateFightActive();
 			}

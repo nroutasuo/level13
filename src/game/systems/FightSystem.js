@@ -142,7 +142,7 @@ define([
             playerStamina.hp -= playerChange;
             
             if (playerChange !== 0 || enemyChange !== 0) {
-                GlobalSignals.fightUpdateSignal.dispatch();
+                GlobalSignals.fightUpdateSignal.dispatch(playerChange, enemyChange);
             }
         },
         
