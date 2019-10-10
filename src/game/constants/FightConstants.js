@@ -22,8 +22,8 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
         getPlayerAttackTime: function (itemsComponent) {
             var weapons = itemsComponent.getEquipped(ItemConstants.itemTypes.weapon);
             var weapon = weapons.length > 0 ? weapons[0] : null;
-            var weaponSpeed = weapon ? weapon.getBonus(ItemConstants.itemBonusTypes.fight_speed) || 1 : 1;
-            return (1 * weaponSpeed) / this.FIGHT_SPEED_FACTOR;
+            var weaponSpeedBonus = weapon ? weapon.getBonus(ItemConstants.itemBonusTypes.fight_speed) || 1 : 1;
+            return weaponSpeedBonus / this.FIGHT_SPEED_FACTOR;
         },
 		 
 		getPlayerAtt: function (playerStamina, itemsComponent) {
@@ -72,8 +72,8 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
         },
         
         getEnemyAttackTime: function (enemy) {
-            // TODO make this depend on the enemy
-            return 0.8;
+            var enemySpeed = enemy.speed || 1;
+            return 1 / enemySpeed / this.FIGHT_SPEED_FACTOR;
         },
         
         // Damage done by player to an enemy per sec
