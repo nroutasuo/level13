@@ -14,10 +14,12 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
 		FIGHT_PLAYER_BASE_DEF: 3,
 		MAX_FOLLOWER_MAX: 5,
         
+        HIT_STUN_TIME: 0.25,
+        
         // applies both to enemy and player damage and makes fights to faster (with fewer hits)
-        FIGHT_DAMAGE_FACTOR: 4,
+        FIGHT_DAMAGE_FACTOR: 6,
         // applies to both enemy and player and makes fights go faster (less time between hits)
-        FIGHT_SPEED_FACTOR: 2,
+        FIGHT_SPEED_FACTOR: 1.5,
         
         getPlayerAttackTime: function (itemsComponent) {
             var weapons = itemsComponent.getEquipped(ItemConstants.itemTypes.weapon);
@@ -111,6 +113,10 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             return dps * attacktTime;
         },
         
+        getMissChance: function () {
+            return 0.025;
+        },
+        
         getFightChances: function (enemy, playerStamina, itemsComponent) {
             var probability = this.getFightWinProbability(enemy, playerStamina, itemsComponent);
             if (probability <= 0.05) {
@@ -146,7 +152,7 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             var damageRatioMax = avgEnemyDamage / totalDamageMax;
             return 0.9 - ((Math.min(1, damageRatioMax) - Math.min(1, damageRatioMin)) / (damageRatioMax - damageRatioMin));
         },
-		
+        		
 		getEnemyLocaleId: function (baseActionID, action, isNeighbour) {
 			switch (baseActionID) {
 				case "clear_workshop": return LocaleConstants.LOCALE_ID_WORKSHOP;
