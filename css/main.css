@@ -952,13 +952,17 @@ body.dark .progress-label {
   text-align: center;
   vertical-align: text-top;
 }
-body.dark .progress-change-indicator {
-  left: 0;
-  top: 0;
-  position: absolute;
-  width: auto;
+body.dark .fight-damage-indicator {
   font-size: 85%;
+  font-weight: bold;
   color: #E13232;
+  position: absolute;
+  width: 100%;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
 }
 body.dark .canvas-container {
   text-align: center;
@@ -2649,13 +2653,17 @@ body.sunlit .progress-label {
   text-align: center;
   vertical-align: text-top;
 }
-body.sunlit .progress-change-indicator {
-  left: 0;
-  top: 0;
-  position: absolute;
-  width: auto;
+body.sunlit .fight-damage-indicator {
   font-size: 85%;
+  font-weight: bold;
   color: #ee1111;
+  position: absolute;
+  width: 100%;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
 }
 body.sunlit .canvas-container {
   text-align: center;

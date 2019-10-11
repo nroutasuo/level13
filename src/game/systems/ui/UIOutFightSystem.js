@@ -86,10 +86,8 @@ define([
 			var enemyVal = Math.round(enemy.hp);
 			$("#fight-bar-enemy").data("progress-percent", enemyVal);
 			$("#fight-bar-enemy").data("animation-length", this.progressBarAnimationLen);
-			$("#fight-bar-enemy").data("last-change-value", -this.lastEnemyDamage);
 			$("#fight-bar-self").data("progress-percent", playerVal);
 			$("#fight-bar-self").data("animation-length", this.progressBarAnimationLen);
-			$("#fight-bar-self").data("last-change-value", -this.lastPlayerDamage);
 				
 			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
 			var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent);
@@ -121,6 +119,20 @@ define([
             }
 		},
         
+        updatePlayerDamage: function (damage) {
+            this.lastPlayerDamage = UIConstants.roundValue(damage, true);
+            this.lastPlayerDamageUpdated = new Date().getTime();
+            $("#fight-change-indictor-self").text(-this.lastPlayerDamage);
+            this.animateDamageIndicator($("#fight-change-indictor-self"));
+        },
+        
+        updateEnemyDamage: function (damage) {
+            this.lastEnemyDamage = UIConstants.roundValue(damage, true);
+            this.lastEnemyDamageUpdated = new Date().getTime();
+            $("#fight-change-indictor-enemy").text(-this.lastEnemyDamage);
+            this.animateDamageIndicator($("#fight-change-indictor-enemy"));
+        },
+        
         refresh: function () {
             this.lastPlayerDamage = 0;
             this.lastEnemyDamage = 0;
@@ -151,7 +163,7 @@ define([
 			var encounterComponent = sector.get(FightEncounterComponent);
 			$("#fight-title").text(this.getTitleByContext(encounterComponent));
 			$("#fight-popup-enemy-info").toggleClass("strike-through", fightWon);
-			this.updateEnemyText();
+			this.refreshEnemyText();
             
             switch (this.state) {
                 case FightPopupStateEnum.FIGHT_PENDING:
@@ -181,6 +193,8 @@ define([
             // progress bars
 			$("#fight-bar-enemy").data("last-change-value", 0);
 			$("#fight-bar-self").data("last-change-value", 0);
+            $("#fight-change-indictor-self").text("");
+            $("#fight-change-indictor-enemy").text("");
             
             // followers
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
@@ -219,7 +233,7 @@ define([
             $("#fight-desc").text("Distracted the enemy and fled");
         },
 	
-		updateEnemyText: function () {
+		refreshEnemyText: function () {
 			var sector = this.playerLocationNodes.head.entity;
 			var encounterComponent = sector.get(FightEncounterComponent);
 			var enemiesComponent = sector.get(EnemiesComponent);
@@ -237,6 +251,19 @@ define([
             
 			$("#fight-popup-enemy-info").html(enemyText);
 		},
+        
+        animateDamageIndicator: function ($indicator) {
+            $indicator.finish().animate({
+                opacity: 0,
+                fontSize: "75%"
+            }, 5).animate({
+                opacity: 1,
+                fontSize: "85%"
+            }, 50).delay(150).animate({
+                opacity: 0,
+                fontSize: "75%"
+            }, 600);
+        },
         
         setState: function (state) {
             if (this.state == state) return;
@@ -320,13 +347,14 @@ define([
         },
         
         onFightUpdate: function (playerDamage, enemyDamage) {
-            if (playerDamage)
-                this.lastPlayerDamage = UIConstants.roundValue(playerDamage, true);
-            if (enemyDamage)
-                this.lastEnemyDamage = UIConstants.roundValue(enemyDamage, true);
-			if (this.state == FightPopupStateEnum.FIGHT_ACTIVE) {
-                this.updateFightActive();
-			}
+            if (this.state !== FightPopupStateEnum.FIGHT_ACTIVE) return;
+            if (playerDamage) {
+                this.updatePlayerDamage(playerDamage);
+            }
+            if (enemyDamage) {
+                this.updateEnemyDamage(enemyDamage);
+            }
+            this.updateFightActive();
         },
 
     });
