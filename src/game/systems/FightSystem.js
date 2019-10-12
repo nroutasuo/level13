@@ -180,6 +180,10 @@ define([
         },
         
         fleeFight: function () {
+            var enemy = this.fightNodes.head.fight.enemy;
+            var playerStamina = this.playerStatsNodes.head.stamina;
+            enemy.hp = 100;
+            playerStamina.hp = 100;
             this.fightNodes.head.fight.fled = true;
         },
         

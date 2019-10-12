@@ -469,7 +469,7 @@ define([
 
                     if (typeof requirements.bag !== "undefined") {
                         if (requirements.bag.validSelection) {
-                            if (bagComponent.selectedCapacity > bagComponent.totalCapacity) {
+                            if (bagComponent.selectionStartCapacity <= bagComponent.totalCapacity && bagComponent.selectedCapacity > bagComponent.totalCapacity) {
                                 if (log) log.w("Can't carry that much stuff.");
                                 return { value: 0, reason: "Can't carry that much stuff." };
                             }
@@ -478,9 +478,6 @@ define([
                             if (bagComponent.selectableCapacity > bagComponent.totalCapacity) {
                                 if (log) log.w("Can't carry that much stuff.");
                                 return {value: 0, reason: "Can't carry that much stuff."};
-                            }
-                            if (bagComponent.selectableCapacity <= bagComponent.selectedCapacity) {
-                                return {value: 0, reason: "Everything already selected."};
                             }
                         }
                         if (typeof requirements.bag.full !== "undefined") {

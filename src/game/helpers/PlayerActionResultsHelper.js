@@ -488,12 +488,12 @@ define([
 
 				baghtml += "<div id='resultlist-inventorymanagement-found' class='infobox inventorybox'>";
 				baghtml += "<ul></ul>";
-				baghtml += "<p class='msg-empty'>" + (isFight ? "Nothing left of the opponent." : "Nothing left here.") + "</p>";
+				baghtml += "<p class='msg-empty p-meta'>" + (isFight ? "Nothing left of the opponent." : "Nothing left here.") + "</p>";
 				baghtml += "</div>"
 
 				baghtml += "<div id='resultlist-inventorymanagement-kept' class='infobox inventorybox'>";
 				baghtml += "<ul></ul>";
-                baghtml += "<p class='msg-empty'>Your " + (hasBag ? "bag is" : "pockets are") + " empty.</p>";
+                baghtml += "<p class='msg-empty p-meta'>Your " + (hasBag ? "bag is" : "pockets are") + " empty.</p>";
 				baghtml += "</div>"
 
                 baghtml += "<div id='inventory-popup-bar' class='progress-wrap progress' style='margin-top: 10px'><div class='progress-bar progress'/><span class='progress-label progress'>?/?</span></div>";
@@ -505,9 +505,9 @@ define([
 			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0;
 			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.gainedInjuries.length > 0 || resultVO.lostCurrency > 0;
 			if (!hasGainedStuff && !hasLostStuff) {
-				if (isFight) div += "<p>Nothing left behind.</p>"
+				if (isFight) div += "<p class='p-meta'>Nothing left behind.</p>"
                 else if (resultVO.action === "despair") div += "";
-				else div += "<p>Didn't find anything useful.</p>";
+				else div += "<p class='p-meta'>Didn't find anything useful.</p>";
 			}
 
 			if (resultVO.gainedInjuries.length > 0) {

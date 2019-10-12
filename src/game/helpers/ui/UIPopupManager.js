@@ -60,6 +60,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             $("#common-popup .buttonbox").empty();
             $("#common-popup .buttonbox").append("<button id='info-ok' class='action'>" + okButtonLabel + "</button>");
             if (hasResult) $("#info-ok").attr("action", "accept_inventory");
+            $("#info-ok").toggleClass("inventory-selection-ok", hasResult);
             $("#info-ok").click(ExceptionHandler.wrapClick(function (e) {
                 popUpManager.closePopup("common-popup");
                 if (okCallback) okCallback(false);
@@ -105,6 +106,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
         closePopup: function (id) {
             var popupManager = this;
             if (popupManager.popupQueue.length === 0) {
+                GlobalSignals.popupClosingSignal.dispatch(id);
                 $("#" + id).data("fading", true);
                 $("#" + id).slideUp(100, function () {
                     GameGlobals.uiFunctions.toggle(".popup-overlay", false);

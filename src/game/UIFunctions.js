@@ -205,13 +205,19 @@ define(['ash',
 					GameGlobals.fightHelper.startFight();
 				});
 				$(scope + "#out-action-fight-close").click(function (e) {
-					GameGlobals.fightHelper.endFight();
+					GameGlobals.fightHelper.endFight(false);
 				});
-				$(scope + "#out-action-fight-next").click(function (e) {
-					GameGlobals.fightHelper.endFight();
+				$(scope + "#out-action-fight-continue").click(function (e) {
+					GameGlobals.fightHelper.endFight(false);
+				});
+				$(scope + "#out-action-fight-takeselected").click(function (e) {
+					GameGlobals.fightHelper.endFight(false);
+				});
+				$(scope + "#out-action-fight-takeall").click(function (e) {
+					GameGlobals.fightHelper.endFight(true);
 				});
 				$(scope + "#out-action-fight-cancel").click(function (e) {
-                    GameGlobals.fightHelper.endFight();
+                    GameGlobals.fightHelper.endFight(false);
 					GameGlobals.playerActionFunctions.flee();
 				});
 				$(scope + "#inn-popup-btn-cancel").click(function (e) {

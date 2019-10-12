@@ -55,8 +55,8 @@ define([
                 var rewards = resultNode.result.pendingResultVO;
                 var hasPickedSomething = rewards.selectedItems.length > 0 || rewards.selectedResources.getTotal() > 0 || rewards.discardedItems.length > 0 || rewards.discardedResources.getTotal() > 0;
                 var canPickSomething = rewards.gainedResources.getTotal() > 0 || rewards.gainedItems.length > 0;
-                $("#info-ok .btn-label").text(hasPickedSomething ? "Take selected" : canPickSomething ? "Leave all" : "Continue");
-                $("#info-ok").toggleClass("btn-secondary", !hasPickedSomething && canPickSomething);
+                $(".inventory-selection-ok .btn-label").text(hasPickedSomething ? "Take selected" : canPickSomething ? "Leave all" : "Continue");
+                $(".inventory-selection-ok").toggleClass("btn-secondary", !hasPickedSomething && canPickSomething);
             }
         },
 
@@ -159,14 +159,15 @@ define([
         },
 
         updateCapacity: function (rewards, resultNode, playerAllItems) {
+            log.i("updateCapacity");
             var bagComponent = this.playerActionResultNodes.head.entity.get(BagComponent);
-
+            log.i(bagComponent);
             BagConstants.updateCapacity(bagComponent, rewards, resultNode.resources, playerAllItems);
 
             $("#inventory-popup-bar").data("progress-percent",  bagComponent.selectedCapacity/bagComponent.totalCapacity*100);
             $("#inventory-popup-bar .progress-label").text((Math.ceil( bagComponent.selectedCapacity * 10) / 10) + " / " + bagComponent.totalCapacity);
 
-            GameGlobals.uiFunctions.toggle("#confirmation-takeall", bagComponent.selectableCapacity > bagComponent.selectionStartCapacity);
+            GameGlobals.uiFunctions.toggle(".inventory-selection-takeall", bagComponent.selectableCapacity > bagComponent.selectionStartCapacity);
         },
 
         addItemsToLists: function (rewards, playerAllItems) {
