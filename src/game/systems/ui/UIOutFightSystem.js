@@ -83,10 +83,16 @@ define([
 			var enemy = this.fightNodes.head.fight.enemy;
 			var playerStamina = this.playerStatsNodes.head.stamina;
 			var playerVal = Math.round(playerStamina.hp);
+			var playerChangeVal = Math.round(this.lastPlayerDamage);
 			var enemyVal = Math.round(enemy.hp);
+			var enemyChangeVal = Math.round(this.lastEnemyDamage);
 			$("#fight-bar-enemy").data("progress-percent", enemyVal);
+			$("#fight-bar-enemy").data("change-percent", enemyChangeVal);
+			$("#fight-bar-enemy").data("change-time", this.lastEnemyDamageUpdated);
 			$("#fight-bar-enemy").data("animation-length", this.progressBarAnimationLen);
 			$("#fight-bar-self").data("progress-percent", playerVal);
+			$("#fight-bar-self").data("change-percent", playerChangeVal);
+			$("#fight-bar-self").data("change-time", this.lastPlayerDamageUpdated);
 			$("#fight-bar-self").data("animation-length", this.progressBarAnimationLen);
 				
 			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
@@ -122,15 +128,15 @@ define([
         updatePlayerDamage: function (damage) {
             this.lastPlayerDamage = UIConstants.roundValue(damage, true);
             this.lastPlayerDamageUpdated = new Date().getTime();
-            $("#fight-change-indictor-self").text(-this.lastPlayerDamage);
-            this.animateDamageIndicator($("#fight-change-indictor-self"));
+            $("#fight-damage-indictor-self").text(-this.lastPlayerDamage);
+            this.animateDamageIndicator($("#fight-damage-indictor-self"));
         },
         
         updateEnemyDamage: function (damage) {
             this.lastEnemyDamage = UIConstants.roundValue(damage, true);
             this.lastEnemyDamageUpdated = new Date().getTime();
-            $("#fight-change-indictor-enemy").text(-this.lastEnemyDamage);
-            this.animateDamageIndicator($("#fight-change-indictor-enemy"));
+            $("#fight-damage-indictor-enemy").text(-this.lastEnemyDamage);
+            this.animateDamageIndicator($("#fight-damage-indictor-enemy"));
         },
         
         refresh: function () {
@@ -157,6 +163,8 @@ define([
 			GameGlobals.uiFunctions.toggle("#fight-popup-results", this.state == FightPopupStateEnum.FIGHT_FINISHED);
 			GameGlobals.uiFunctions.toggle("#fight-desc", this.state != FightPopupStateEnum.FIGHT_ACTIVE);
 			GameGlobals.uiFunctions.toggle("#fight-popup-enemy-info", this.state != FightPopupStateEnum.FIGHT_FLED);
+			GameGlobals.uiFunctions.toggle("#fight-damage-indictor-self", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
+			GameGlobals.uiFunctions.toggle("#fight-damage-indictor-enemy", this.state == FightPopupStateEnum.FIGHT_ACTIVE);
 			
             // texts
 			var sector = this.playerLocationNodes.head.entity;
@@ -193,8 +201,8 @@ define([
             // progress bars
 			$("#fight-bar-enemy").data("last-change-value", 0);
 			$("#fight-bar-self").data("last-change-value", 0);
-            $("#fight-change-indictor-self").text("");
-            $("#fight-change-indictor-enemy").text("");
+            $("#fight-damage-indictor-self").text("");
+            $("#fight-damage-indictor-enemy").text("");
             
             // followers
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
@@ -255,14 +263,11 @@ define([
         animateDamageIndicator: function ($indicator) {
             $indicator.finish().animate({
                 opacity: 0,
-                fontSize: "75%"
             }, 5).animate({
                 opacity: 1,
-                fontSize: "85%"
-            }, 50).delay(150).animate({
+            }, 20).delay(380).animate({
                 opacity: 0,
-                fontSize: "75%"
-            }, 600);
+            }, 500);
         },
         
         setState: function (state) {

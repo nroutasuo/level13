@@ -952,12 +952,24 @@ body.dark .progress-label {
   text-align: center;
   vertical-align: text-top;
 }
+body.dark .progress-bar-change {
+  background: #444;
+  position: absolute;
+  width: 0%;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
 body.dark .fight-damage-indicator {
+  margin: 0;
   font-size: 85%;
   font-weight: bold;
   color: #E13232;
   position: absolute;
-  width: 100%;
+  top: 0;
+  right: -3em;
   -webkit-transition: none;
   -moz-transition: none;
   -ms-transition: none;
@@ -1036,6 +1048,13 @@ body.dark .bubble-increase {
 }
 body.dark .bubble-fastincrease {
   background-image: url('../img/eldorado/icon-fastincrease.png');
+}
+body.dark .container-relative {
+  position: relative;
+  display: inline-block;
+}
+body.dark .container-relative p {
+  margin: 0;
 }
 body.dark .actionbox,
 body.dark .infobox,
@@ -2653,12 +2672,24 @@ body.sunlit .progress-label {
   text-align: center;
   vertical-align: text-top;
 }
+body.sunlit .progress-bar-change {
+  background: #ddd;
+  position: absolute;
+  width: 0%;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
 body.sunlit .fight-damage-indicator {
+  margin: 0;
   font-size: 85%;
   font-weight: bold;
   color: #ee1111;
   position: absolute;
-  width: 100%;
+  top: 0;
+  right: -3em;
   -webkit-transition: none;
   -moz-transition: none;
   -ms-transition: none;
@@ -2737,6 +2768,13 @@ body.sunlit .bubble-increase {
 }
 body.sunlit .bubble-fastincrease {
   background-image: url('../img/eldorado/icon-fastincrease-dark.png');
+}
+body.sunlit .container-relative {
+  position: relative;
+  display: inline-block;
+}
+body.sunlit .container-relative p {
+  margin: 0;
 }
 body.sunlit .actionbox,
 body.sunlit .infobox,

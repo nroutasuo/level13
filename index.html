@@ -623,18 +623,24 @@
     <div id="fight-popup" class="popup fill-on-mobiles" style="display:none">
         <h3 id="fight-title"></h3>
         <p id="fight-desc"></p>
-        <p id="fight-popup-enemy-info">Enemy name & strength</p>
+        <div class="container-relative">
+            <p id="fight-popup-enemy-info">Enemy name & strength</p>
+            <div id="fight-damage-indictor-enemy" class="fight-damage-indicator">-5</div>
+        </div>
         <div id="fight-popup-bars">
             <div id="fight-bar-enemy" class="progress-wrap progress">
                 <div class="progress-bar progress"></div>
-                <div id="fight-change-indictor-enemy" class="fight-damage-indicator">-5</div>
+                <div class="progress-bar-change progress"></div>
             </div>
             <div id="fight-bar-self" class="progress-wrap progress">
                 <div class="progress-bar progress"></div>
-                <div if="fight-change-indictor-self" class="fight-damage-indicator">-5</div>
+                <div class="progress-bar-change progress"></div>
             </div>
         </div>
-        <p id="fight-popup-self-info">Own strength</p>
+        <div class="container-relative">
+            <p id="fight-popup-self-info">Own strength</p>
+            <div id="fight-damage-indictor-self" class="fight-damage-indicator">-5</div>
+        </div>
         <ul class="itemlist" id="list-fight-followers" style="margin-top: -10px;"></ul>
         <div id="fight-popup-results">
         </div>

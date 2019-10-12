@@ -401,12 +401,21 @@ div.popup-overlay {
     vertical-align: text-top;
 }
 
+.progress-bar-change {
+    background: @color-bg-element-2;
+    position: absolute;
+    width: 0%;
+    .opacity-transition-reset();
+}
+
 .fight-damage-indicator {
+    margin: 0;
     font-size: @font-size-small;
     font-weight: bold;
     color: @color-border-warning;
     position: absolute;
-    width: 100%;
+    top: 0;
+    right: -3em;
     .opacity-transition-reset();
 }
 
@@ -499,6 +508,17 @@ table .bubble {
 
 .bubble-fastincrease {
 	background-image: @img-indicator-fastincrease-contrast;
+}
+
+// CONTAINERS
+
+.container-relative {
+    position: relative;
+    display: inline-block;
+}
+
+.container-relative p {
+    margin: 0;
 }
 
 // INFOBOXES

@@ -316,6 +316,22 @@ define([
 				} else {
 					$progressbar.data("animation-counter", 0);
 				}
+                
+                // change indicator
+                var now = new Date().getTime();
+                var changeTime = $progressbar.data('change-time');
+                var changeAnimTime = $progressbar.data('change-anim-time');
+                if (!changeAnimTime || changeTime > changeAnimTime) {
+                    var changePercent = $progressbar.data('change-percent');
+                    $progressbar.children(".progress-bar-change").finish().animate({
+                        width: changePercent + "%",
+                        left: progressWidth,
+                        opacity: 1,
+                    }, animationLength).delay(100).animate({
+                        opacity: 0
+                    }, 300);
+                    $progressbar.data('change-anim-time', now);
+                }
 			}
 		},
 
