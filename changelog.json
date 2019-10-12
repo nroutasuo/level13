@@ -3,7 +3,7 @@
             "version": "0.2.5",
             "phase": "alpha",
             "final": false,
-            "updated": "2019-09-29",
+            "updated": "2019-10-10",
             "changes": [
                 {
                     "type": "GD",
@@ -31,7 +31,11 @@
                 },
                 {
                     "type": "GB",
-                    "summary": "Add many more enemies and make enemy difficulty more dynamic"
+                    "summary": "Add more enemies and make enemy difficulty more dynamic"
+                },
+                {
+                    "type": "UI",
+                    "summary": "Improve fight UI"
                 },
                 {
                     "type": "DEV",

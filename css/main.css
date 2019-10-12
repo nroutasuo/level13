@@ -459,6 +459,9 @@ body.dark .p-dense,
 body.dark .p-dense p {
   margin: 0.25em 0;
 }
+body.dark p.nomargin {
+  margin: 0;
+}
 body.dark button {
   width: 95pt;
   padding: 8px 16px;
@@ -1054,6 +1057,9 @@ body.dark .container-relative {
   display: inline-block;
 }
 body.dark .container-relative p {
+  margin: 0;
+}
+body.dark .container-nomargin {
   margin: 0;
 }
 body.dark .actionbox,
@@ -2179,6 +2185,9 @@ body.sunlit .p-dense,
 body.sunlit .p-dense p {
   margin: 0.25em 0;
 }
+body.sunlit p.nomargin {
+  margin: 0;
+}
 body.sunlit button {
   width: 95pt;
   padding: 8px 16px;
@@ -2774,6 +2783,9 @@ body.sunlit .container-relative {
   display: inline-block;
 }
 body.sunlit .container-relative p {
+  margin: 0;
+}
+body.sunlit .container-nomargin {
   margin: 0;
 }
 body.sunlit .actionbox,
