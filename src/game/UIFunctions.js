@@ -967,12 +967,12 @@ define(['ash',
 				$("#" + popupID).wrap("<div class='popup-overlay' style='display:none'></div>");
 				var uiFunctions = this;
 				$(".popup-overlay").fadeIn(200, function () {
-					uiFunctions.popupManager.onResize();
+					uiFunctions.popupManager.repositionPopups();
 					GlobalSignals.popupOpenedSignal.dispatch(popupID);
 					GameGlobals.gameState.isPaused = true;
 					$("#" + popupID).fadeIn(200, function () {
 						uiFunctions.toggle("#" + popupID, true);
-						uiFunctions.popupManager.onResize();
+						uiFunctions.popupManager.repositionPopups();
 					});
 					GlobalSignals.elementToggledSignal.dispatch(("#" + popupID), true);
 				});

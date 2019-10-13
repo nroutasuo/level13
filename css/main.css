@@ -5,6 +5,7 @@ body {
   height: 100%;
   margin: 0;
   border-width: 0px !important;
+  overflow-x: hidden;
 }
 #grid-main {
   height: 100%;
@@ -966,20 +967,6 @@ body.dark .progress-bar-change {
   -o-transition: none;
   transition: none;
 }
-body.dark .fight-damage-indicator {
-  margin: 0;
-  font-size: 85%;
-  font-weight: bold;
-  color: #E13232;
-  position: absolute;
-  top: 0;
-  right: -3em;
-  -webkit-transition: none;
-  -moz-transition: none;
-  -ms-transition: none;
-  -o-transition: none;
-  transition: none;
-}
 body.dark .canvas-container {
   text-align: center;
   overflow: hidden;
@@ -1810,6 +1797,23 @@ body.dark .event-ending {
   50% {
     opacity: 0.4;
   }
+}
+body.dark #fight-popup {
+  min-width: 35%;
+}
+body.dark .fight-damage-indicator {
+  margin: 0;
+  font-size: 85%;
+  font-weight: bold;
+  color: #E13232;
+  position: absolute;
+  top: 0;
+  right: -3em;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
 }
 body.dark .loading-content,
 body.dark .thinking-content {
@@ -2693,20 +2697,6 @@ body.sunlit .progress-bar-change {
   -o-transition: none;
   transition: none;
 }
-body.sunlit .fight-damage-indicator {
-  margin: 0;
-  font-size: 85%;
-  font-weight: bold;
-  color: #ee1111;
-  position: absolute;
-  top: 0;
-  right: -3em;
-  -webkit-transition: none;
-  -moz-transition: none;
-  -ms-transition: none;
-  -o-transition: none;
-  transition: none;
-}
 body.sunlit .canvas-container {
   text-align: center;
   overflow: hidden;
@@ -3537,6 +3527,23 @@ body.sunlit .event-ending {
   50% {
     opacity: 0.4;
   }
+}
+body.sunlit #fight-popup {
+  min-width: 35%;
+}
+body.sunlit .fight-damage-indicator {
+  margin: 0;
+  font-size: 85%;
+  font-weight: bold;
+  color: #ee1111;
+  position: absolute;
+  top: 0;
+  right: -3em;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
 }
 body.sunlit .loading-content,
 body.sunlit .thinking-content {

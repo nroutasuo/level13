@@ -10,19 +10,8 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             this.popupQueue = [];
             this.hiddenQueue = [];
             
-            GlobalSignals.windowResizedSignal.add(this.onResize);
-        },
-        
-        onResize: function () {
-            var winh = $(window).height();
-            var winw = $(window).width();
-            var padding = 20;
-            $.each($(".popup"), function () {
-                var popuph = $(this).height();
-                var popupw = $(this).width();
-                $(this).css("top", Math.max(0, (winh - popuph) / 2 - padding));
-                $(this).css("left", (winw - popupw) / 2);
-            });
+            GlobalSignals.add(this, GlobalSignals.windowResizedSignal, this.onWindowResized);
+            GlobalSignals.add(this, GlobalSignals.popupResizedSignal, this.onPopupResized);
         },
         
         showPopup: function (title, msg, okButtonLabel, cancelButtonLabel, resultVO, okCallback, cancelCallback) {
@@ -88,9 +77,9 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             // overlay
             $("#common-popup").wrap("<div class='popup-overlay' style='display:none'></div>");
             GameGlobals.uiFunctions.toggle(".popup-overlay", true);
-            popUpManager.onResize();
+            popUpManager.repositionPopups();
             GlobalSignals.popupOpenedSignal.dispatch("common-popup");
-            $("#common-popup").slideDown(150, popUpManager.onResize);
+            $("#common-popup").slideDown(150, popUpManager.repositionPopups);
             
             GameGlobals.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");
             GameGlobals.uiFunctions.generateCallouts("#common-popup .buttonbox");
@@ -126,6 +115,18 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             }
         },
         
+        repositionPopups: function () {
+            var winh = $(window).height();
+            var winw = $(window).width();
+            var padding = 20;
+            $.each($(".popup"), function () {
+                var popuph = $(this).height();
+                var popupw = $(this).width();
+                $(this).css("top", Math.max(0, (winh - popuph) / 2 - padding));
+                $(this).css("left", (winw - popupw) / 2);
+            });
+        },
+        
         closeHidden: function (ok) {
             if (this.hiddenQueue.length > 0) {
                 var hidden = this.hiddenQueue.pop();
@@ -154,6 +155,14 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
         
         hasOpenPopup: function () {
             return $(".popup:visible").length > 0;
+        },
+        
+        onWindowResized: function () {
+            this.repositionPopups();
+        },
+        
+        onPopupResized: function () {
+            this.repositionPopups();
         },
         
     });

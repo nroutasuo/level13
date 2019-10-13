@@ -421,3 +421,20 @@ div.grid-content {
 	0%	{opacity: inherit}
 	50%	{opacity: 0.4}
 }
+
+// FIGHT POPUP
+
+#fight-popup {
+    min-width: 35%;
+}
+
+.fight-damage-indicator {
+    margin: 0;
+    font-size: @font-size-small;
+    font-weight: bold;
+    color: @color-border-warning;
+    position: absolute;
+    top: 0;
+    right: -3em;
+    .opacity-transition-reset();
+}

@@ -199,6 +199,7 @@ define([
             }
             
             GlobalSignals.elementToggledSignal.dispatch();
+            GlobalSignals.popupResizedSignal.dispatch();
         },
         
         refreshFightPending: function () {

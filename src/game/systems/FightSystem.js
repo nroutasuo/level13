@@ -50,6 +50,7 @@ define([
 
         update: function (time) {
             if (!this.fightNodes.head) return;
+            if (this.fightNodes.head.fight.finishedPending) return;
             if (this.fightNodes.head.fight.finished) return;
             if (this.fightNodes.head.fight.fled) return;
             
@@ -61,7 +62,7 @@ define([
                 this.fleeFight();
             }
             
-            if (enemy.hp < 0 || playerStamina.hp < 0) {
+            if (enemy.hp <= 0 || playerStamina.hp <= 0) {
                 this.endFight();
             }
             
@@ -138,8 +139,10 @@ define([
             // apply effects
             var enemyChange = enemyDamage + extraEnemyDamage;
             enemy.hp -= enemyChange;
+            enemy.hp = Math.max(enemy.hp, 0);
             var playerChange = playerDamage + playerRandomDamage;
             playerStamina.hp -= playerChange;
+            playerStamina.hp = Math.max(playerStamina.hp, 0);
             
             if (playerChange !== 0 || enemyChange !== 0) {
                 GlobalSignals.fightUpdateSignal.dispatch(playerChange, enemyChange);
@@ -151,32 +154,34 @@ define([
             var enemy = this.fightNodes.head.fight.enemy;
             var playerStamina = this.playerStatsNodes.head.stamina;
             var won = playerStamina.hp > enemy.hp;
-            var cleared = false;
             
-            if (won) {
-                var sectorControlComponent = sector.get(SectorControlComponent);
-				var encounterComponent = sector.get(FightEncounterComponent);
-				var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(encounterComponent.context);
-				var localeId = FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context);
-				sectorControlComponent.addWin(localeId);
-				
-				var relatedSectorDirection = FightConstants.getRelatedSectorDirection(baseActionID, encounterComponent.context);
-				if (relatedSectorDirection !== PositionConstants.DIRECTION_NONE) {
-					var relatedSectorPosition = PositionConstants.getPositionOnPath(sector.get(PositionComponent).getPosition(), relatedSectorDirection, 1);
-					var relatedSector = GameGlobals.levelHelper.getSectorByPosition(relatedSectorPosition.level, relatedSectorPosition.sectorX, relatedSectorPosition.sectorY);
-					var relatedSectorControlComponent = relatedSector.get(SectorControlComponent);
-					var relatedSectorLocaleId = FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context, true);
-					relatedSectorControlComponent.addWin(relatedSectorLocaleId);
-				}
-            }
-            
-            this.fightNodes.head.fight.resultVO = GameGlobals.playerActionResultsHelper.getFightRewards(won);
-            this.playerStatsNodes.head.entity.add(new PlayerActionResultComponent(this.fightNodes.head.fight.resultVO));
-            
-            enemy.hp = 100;
-            playerStamina.hp = 100;
-            this.fightNodes.head.fight.won = won;
-            this.fightNodes.head.fight.finished = true;
+            this.fightNodes.head.fight.finishedPending = true;
+            setTimeout(function () {
+                if (won) {
+                    var sectorControlComponent = sector.get(SectorControlComponent);
+    				var encounterComponent = sector.get(FightEncounterComponent);
+    				var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(encounterComponent.context);
+    				var localeId = FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context);
+    				sectorControlComponent.addWin(localeId);
+    				
+    				var relatedSectorDirection = FightConstants.getRelatedSectorDirection(baseActionID, encounterComponent.context);
+    				if (relatedSectorDirection !== PositionConstants.DIRECTION_NONE) {
+    					var relatedSectorPosition = PositionConstants.getPositionOnPath(sector.get(PositionComponent).getPosition(), relatedSectorDirection, 1);
+    					var relatedSector = GameGlobals.levelHelper.getSectorByPosition(relatedSectorPosition.level, relatedSectorPosition.sectorX, relatedSectorPosition.sectorY);
+    					var relatedSectorControlComponent = relatedSector.get(SectorControlComponent);
+    					var relatedSectorLocaleId = FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context, true);
+    					relatedSectorControlComponent.addWin(relatedSectorLocaleId);
+    				}
+                }
+                
+                this.fightNodes.head.fight.resultVO = GameGlobals.playerActionResultsHelper.getFightRewards(won);
+                this.playerStatsNodes.head.entity.add(new PlayerActionResultComponent(this.fightNodes.head.fight.resultVO));
+                
+                enemy.hp = 100;
+                playerStamina.hp = 100;
+                this.fightNodes.head.fight.won = won;
+                this.fightNodes.head.fight.finished = true;
+            }.bind(this), 700);
         },
         
         fleeFight: function () {
