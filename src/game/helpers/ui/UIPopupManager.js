@@ -56,7 +56,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             }));
             $defaultButton = $("#info-ok");
             
-            var showTakeAll = hasResult;
+            var showTakeAll = hasResult && resultVO.hasSelectable();
             if (showTakeAll) {
                 $("#common-popup .buttonbox").append("<button id='confirmation-takeall' class='action' action='take_all'>Take all</button>");
                 $("#confirmation-takeall").click(ExceptionHandler.wrapClick(function (e) {

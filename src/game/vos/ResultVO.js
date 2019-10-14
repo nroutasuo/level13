@@ -52,6 +52,10 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             this.discardedResources = new ResourcesVO();
 		},
         
+        hasSelectable: function () {
+            return this.gainedResources.getTotal() > 0 || this.gainedItems.length > 0;
+        },
+        
         clone: function () {
             var result = new ResultVO(this.action);
             result.gainedResources = this.gainedResources.clone();
