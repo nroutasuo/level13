@@ -52,13 +52,17 @@ define(['ash',
 				div += "<div class='item-count lvl13-box-1 vision-text'>" + count + "x </div>";
 
 			if (!hideComparisonIndicator && item.equippable) {
-				var comparison = itemsComponent.getEquipmentComparison(item);
-				var comparisonClass = "indicator-even";
-				if (comparison > 0) {
-					comparisonClass = "indicator-increase";
-				} else if (comparison < 0) {
-					comparisonClass = "indicator-decrease";
-				}
+                var comparisonClass = "indicator-even";
+                if (item.equipped) {
+                    comparisonClass = "indicator-equipped";
+                } else {
+    				var comparison = itemsComponent.getEquipmentComparison(item);
+    				if (comparison > 0) {
+    					comparisonClass = "indicator-increase";
+    				} else if (comparison < 0) {
+    					comparisonClass = "indicator-decrease";
+    				}
+                }
 				div += "<div class='item-comparison-badge'><div class='item-comparison-indicator " + comparisonClass + "'/></div>";
 			}
 
