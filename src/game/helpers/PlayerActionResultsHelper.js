@@ -236,8 +236,8 @@ define([
                 rewards.gainedItems = this.getRewardItems(0.05, 0.5, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step);
 				rewards.gainedReputation = 1;
             } else {
-				// TODO lost followers
-				rewards = this.getFadeOutResults(0.75, 1);
+				// TODO lost followers?
+				rewards = this.getFadeOutResults(0.5, 1);
 			}
 			return rewards;
 		},
@@ -249,7 +249,6 @@ define([
                 resultVO.lostCurrency = this.playerResourcesNodes.head.entity.get(CurrencyComponent).currency;
                 resultVO.lostItems = this.getLostItems("despair", false);
             }
-
             resultVO.gainedInjuries = this.getResultInjuries(injuryProbability);
 
             return resultVO;
@@ -824,15 +823,17 @@ define([
             return false;
         },
 
-        getLostItems: function(action, loseSingleItem) {
+        getLostItems: function (action, loseSingleItem) {
             var lostItems = [];
             var playerItems = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAll(false);
 
             if (playerItems.length <= 0)
                 return lostItems;
 
+            // make list with duplicates based on probabilities
             var itemList = [];
-            var maxItems = 0;
+            var numValidItems = 0;
+            var probabilitySum = 0;
             for (var i = 0; i < playerItems.length; i++) {
                 var loseProbability = this.getItemLoseProbability(action, playerItems[i]);
                 if (loseProbability <= 0) continue;
@@ -840,23 +841,29 @@ define([
                 for (var j = 0; j < count; j++) {
                     itemList.push(playerItems[i]);
                 }
-                maxItems++;
+                probabilitySum += loseProbability;
+                numValidItems++;
             }
             
-            var numItems = loseSingleItem ? 1 : Math.ceil(Math.random() * 3);
-            numItems = Math.min(maxItems, numItems);
+            if (numValidItems > 0) {
+                var probabilityAvg = probabilitySum / numValidItems;
+                var numMaxLost = probabilityAvg * 5;
+                var numItems = loseSingleItem ? 1 : Math.ceil(Math.random() * numMaxLost);
+                numItems = Math.min(numValidItems, numItems);
 
-            for (var i = 0; i < numItems; i++) {
-                var itemi = Math.floor(Math.random() * itemList.length);
-                var selectedItem = itemList[itemi];
-                lostItems.push(selectedItem);
-                var optionsToRemove = [];
-                for (var j = 0; j < itemList.length; j++) {
-                    if (itemList[j] == selectedItem) {
-                        optionsToRemove.push(j);
+                // pick n items from the list
+                for (var i = 0; i < numItems; i++) {
+                    var itemi = Math.floor(Math.random() * itemList.length);
+                    var selectedItem = itemList[itemi];
+                    lostItems.push(selectedItem);
+                    var optionsToRemove = [];
+                    for (var j = 0; j < itemList.length; j++) {
+                        if (itemList[j] == selectedItem) {
+                            optionsToRemove.push(j);
+                        }
                     }
+                    itemList.splice(optionsToRemove[0], optionsToRemove.length);
                 }
-                itemList.splice(optionsToRemove[0], optionsToRemove.length);
             }
             
             return lostItems;

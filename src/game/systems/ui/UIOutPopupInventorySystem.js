@@ -159,9 +159,7 @@ define([
         },
 
         updateCapacity: function (rewards, resultNode, playerAllItems) {
-            log.i("updateCapacity");
             var bagComponent = this.playerActionResultNodes.head.entity.get(BagComponent);
-            log.i(bagComponent);
             BagConstants.updateCapacity(bagComponent, rewards, resultNode.resources, playerAllItems);
 
             $("#inventory-popup-bar").data("progress-percent",  bagComponent.selectedCapacity/bagComponent.totalCapacity*100);
