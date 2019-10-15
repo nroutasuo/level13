@@ -831,27 +831,32 @@ define([
                 return lostItems;
 
             // make list with duplicates based on probabilities
+            // ignore ingredients here, they're handled below
             var itemList = [];
             var numValidItems = 0;
             var probabilitySum = 0;
             for (var i = 0; i < playerItems.length; i++) {
-                var loseProbability = this.getItemLoseProbability(action, playerItems[i]);
+                var item = playerItems[i];
+                if (item.type == ItemConstants.itemTypes.ingredient) continue;
+                var loseProbability = this.getItemLoseProbability(action, item);
                 if (loseProbability <= 0) continue;
                 var count = Math.round(loseProbability * 10);
                 for (var j = 0; j < count; j++) {
-                    itemList.push(playerItems[i]);
+                    itemList.push(item);
                 }
                 probabilitySum += loseProbability;
                 numValidItems++;
             }
             
+            // pick n items from the list
             if (numValidItems > 0) {
                 var probabilityAvg = probabilitySum / numValidItems;
                 var numMaxLost = probabilityAvg * 5;
                 var numItems = loseSingleItem ? 1 : Math.ceil(Math.random() * numMaxLost);
                 numItems = Math.min(numValidItems, numItems);
+                
+                log.i(probabilityAvg + " -> " + numMaxLost + " -> " + numItems + "/" + numValidItems);
 
-                // pick n items from the list
                 for (var i = 0; i < numItems; i++) {
                     var itemi = Math.floor(Math.random() * itemList.length);
                     var selectedItem = itemList[itemi];
@@ -863,6 +868,15 @@ define([
                         }
                     }
                     itemList.splice(optionsToRemove[0], optionsToRemove.length);
+                }
+            }
+            
+            // ingredients: lose all or nothing
+            if (!loseSingleItem) {
+                for (var i = 0; i < playerItems.length; i++) {
+                    var item = playerItems[i];
+                    if (item.type !== ItemConstants.itemTypes.ingredient) continue;
+                    lostItems.push(item);
                 }
             }
             
@@ -890,6 +904,9 @@ define([
                     break;
                 case ItemConstants.itemTypes.light:
                     itemLoseProbability = campCount > 0 ? 0.55 : 0;
+                    break;
+                case ItemConstants.itemTypes.ingredient:
+                    itemLoseProbability = 0;
                     break;
                 default:
                     itemLoseProbability = 0.95;
