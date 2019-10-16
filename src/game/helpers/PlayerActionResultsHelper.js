@@ -237,18 +237,19 @@ define([
 				rewards.gainedReputation = 1;
             } else {
 				// TODO lost followers?
-				rewards = this.getFadeOutResults(0.5, 1);
+				rewards = this.getFadeOutResults(0.5, 1, 1);
 			}
 			return rewards;
 		},
 
-        getFadeOutResults: function (loseInventoryProbability, injuryProbability) {
+        getFadeOutResults: function (loseInventoryProbability, injuryProbability, loseFollowerProbability) {
             var resultVO = new ResultVO("despair");
             if (loseInventoryProbability > Math.random()) {
                 resultVO.lostResources = this.playerResourcesNodes.head.resources.resources.clone();
                 resultVO.lostCurrency = this.playerResourcesNodes.head.entity.get(CurrencyComponent).currency;
                 resultVO.lostItems = this.getLostItems("despair", false);
             }
+            resultVO.lostFollowers = this.getLostFollowers(loseFollowerProbability, loseFollowerProbability);
             resultVO.gainedInjuries = this.getResultInjuries(injuryProbability);
 
             return resultVO;
@@ -312,6 +313,12 @@ define([
 			if (rewards.lostItems) {
 				for (var i = 0; i < rewards.lostItems.length; i++) {
 					itemsComponent.discardItem(rewards.lostItems[i], false);
+				}
+			}
+
+			if (rewards.lostFollowers) {
+				for (var i = 0; i < rewards.lostFollowers.length; i++) {
+					itemsComponent.discardItem(rewards.lostFollowers[i], false);
 				}
 			}
 
@@ -502,11 +509,15 @@ define([
 			}
 
 			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0;
-			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.gainedInjuries.length > 0 || resultVO.lostCurrency > 0;
+			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.lostFollowers.length > 0 || resultVO.gainedInjuries.length > 0 || resultVO.lostCurrency > 0;
 			if (!hasGainedStuff && !hasLostStuff) {
 				if (isFight) div += "<p class='p-meta'>Nothing left behind.</p>"
                 else if (resultVO.action === "despair") div += "";
 				else div += "<p class='p-meta'>Didn't find anything useful.</p>";
+			}
+            
+			if (resultVO.lostFollowers && resultVO.lostFollowers.length > 0) {
+				div += "<p class='warning'>" + resultVO.lostFollowers.length + " followers left.</p>";
 			}
 
 			if (resultVO.gainedInjuries.length > 0) {
@@ -548,6 +559,10 @@ define([
                 if (rewards.lostItems && rewards.lostItems.length > 0) {
                     var messageTemplate = LogConstants.getLostItemMessage(rewards);
                     logComponent.addMessage(LogConstants.MSG_ID_LOST_ITEM, messageTemplate.msg, messageTemplate.replacements, messageTemplate.values);
+                }
+                
+                if (rewards.lostFollowers && rewards.lostFollowers.length > 0) {
+                    logComponent.addMessage(LogConstants.MSG_ID_LOST_FOLLOWER, "Lost " + rewards.lostFollowers.length + "  followers.");
                 }
 
                 if (rewards.gainedInjuries.length > 0) {
@@ -854,8 +869,6 @@ define([
                 var numMaxLost = probabilityAvg * 5;
                 var numItems = loseSingleItem ? 1 : Math.ceil(Math.random() * numMaxLost);
                 numItems = Math.min(numValidItems, numItems);
-                
-                log.i(probabilityAvg + " -> " + numMaxLost + " -> " + numItems + "/" + numValidItems);
 
                 for (var i = 0; i < numItems; i++) {
                     var itemi = Math.floor(Math.random() * itemList.length);
@@ -905,6 +918,7 @@ define([
                 case ItemConstants.itemTypes.light:
                     itemLoseProbability = campCount > 0 ? 0.55 : 0;
                     break;
+                case ItemConstants.itemTypes.follower:
                 case ItemConstants.itemTypes.ingredient:
                     itemLoseProbability = 0;
                     break;
@@ -915,6 +929,28 @@ define([
             if (item.equipped)
                 itemLoseProbability = itemLoseProbability / 2;
             return itemLoseProbability;
+        },
+        
+        getLostFollowers: function (loseAllProbability, loseOneProbability) {
+            var lostFollowers = [];
+            if (loseAllProbability <= 0 && loseOneProbability <= 0)
+                return lostFollowers;
+                
+            var playerFollowers = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAllByType(ItemConstants.itemTypes.follower);
+            if (playerFollowers.length < 1)
+                return lostFollowers;
+                
+            var loseAll = Math.random() < loseAllProbability;
+            var loseOne = Math.random() < loseOneProbability;
+            
+            if (loseAll) {
+                lostFollowers = playerFollowers.concat();
+            } else if (loseOne) {
+                var index = Math.floor(playerFollowers.length * Math.random());
+                lostFollowers =playerFollowers[index];
+            }
+            
+            return lostFollowers;
         },
 
 		getResultInjuries: function (injuryProbability) {

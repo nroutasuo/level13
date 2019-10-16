@@ -118,7 +118,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             bag: [
                 new ItemVO("bag_0", "Plastic bag", "Bag", 1, true, true, false, 1, 5, {bag: WorldCreatorConstants.BAG_BONUS_1}, "img/items/bag-0.png", "It's not fancy, but allows one to carry around more stuff than their hands and pockets can hold."),
                 new ItemVO("bag_1", "Basic backpack", "Bag", WorldCreatorConstants.CAMP_ORDINAL_BAG_2 - 1, true, true, false, 4, 1, {bag: WorldCreatorConstants.BAG_BONUS_2}, "img/items/bag-1.png", "A more spacious bag with lots of pockets."),
-                new ItemVO("bag_2", "Jumbo backpack", "Bag", 5, WorldCreatorConstants.CAMP_ORDINAL_BAG_3 - 1, true, true, false, 6, 2, {bag: WorldCreatorConstants.BAG_BONUS_3}, "img/items/bag-1.png", "A huge backpack with plenty of space."),
+                new ItemVO("bag_2", "Jumbo backpack", "Bag", WorldCreatorConstants.CAMP_ORDINAL_BAG_3 - 1, true, true, false, 6, 2, {bag: WorldCreatorConstants.BAG_BONUS_3}, "img/items/bag-1.png", "A huge backpack with plenty of space."),
                 new ItemVO("bag_3", "Hiker's rucksack", "Bag", WorldCreatorConstants.CAMP_ORDINAL_BAG_4 - 1, true, false, false, 6, 3, {bag: WorldCreatorConstants.BAG_BONUS_4}, "img/items/bag-1.png", "With this bag, weight is starting to be more of a problem than space."),
                 new ItemVO("bag_4", "Scavenger bag", "Bag", WorldCreatorConstants.CAMP_ORDINAL_BAG_5 - 1, true, false, false, 8, 3, {bag: WorldCreatorConstants.BAG_BONUS_5}, "img/items/bag-1.png", "A really practical backpack with lots of pockets."),
                 new ItemVO("bag_5", "Automatic luggage", "Bag", 15, true, false, false, 10, 8, {"bag": WorldCreatorConstants.BAG_BONUS_6}, "img/items/bag-3.png", "Mechanical chest that automatically follows its owner around. No more worrying about carrying all that stuff yourself."),
@@ -242,16 +242,16 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
         },
         
         getBag: function (campOrdinal) {
-            if (levelOrdinal < WorldCreatorConstants.CAMP_ORDINAL_BAG_2) {
+            if (campOrdinal < WorldCreatorConstants.CAMP_ORDINAL_BAG_2) {
                 return this.itemDefinitions.bag[0];
             }
-            if (levelOrdinal < WorldCreatorConstants.CAMP_ORDINAL_BAG_3) {
+            if (campOrdinal < WorldCreatorConstants.CAMP_ORDINAL_BAG_3) {
                 return this.itemDefinitions.bag[1];
             }
-            if (levelOrdinal < WorldCreatorConstants.CAMP_ORDINAL_BAG_4) {
+            if (campOrdinal < WorldCreatorConstants.CAMP_ORDINAL_BAG_4) {
                 return this.itemDefinitions.bag[2];
             }
-            if (levelOrdinal < WorldCreatorConstants.CAMP_ORDINAL_BAG_5) {
+            if (campOrdinal < WorldCreatorConstants.CAMP_ORDINAL_BAG_5) {
                 return this.itemDefinitions.bag[3];
             }
             return this.itemDefinitions.bag[4];

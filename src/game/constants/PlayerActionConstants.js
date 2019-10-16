@@ -1349,7 +1349,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 unlock_building_inn: {
                 	blueprint: 3,
                 	upgrades: {
-                		unlock_building_market: true,
+                    		unlock_building_market: true,
                 	}
                 },
 
@@ -2469,7 +2469,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 fight_gang: 60,
                 send_caravan: 60 * 10,
                 use_in_inn: 60 * 30,
-                despair: 60
+                despair: 10
             },
 
             durations: {

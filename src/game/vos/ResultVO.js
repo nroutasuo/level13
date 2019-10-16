@@ -20,6 +20,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		lostResources: null,
         lostCurrency: null,
 		lostItems: [],
+        lostFollowers: [],
 		gainedInjuries: [],
         
         // inventory management selection
@@ -45,6 +46,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 			this.lostResources = new ResourcesVO();
             this.lostCurrency = 0;
             this.lostItems = [];
+            this.lostFollowers = [];
             this.gainedInjuries = [];
             
             this.selectedItems = [];
@@ -66,6 +68,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             result.gainedItems = this.gainedItems.concat();
             result.gainedFollowers = this.gainedFollowers.concat();
             result.lostItems = this.lostItems.concat();
+            result.lostFollowers = this.lostFollowers.concat();
             result.gainedInjuries = this.gainedInjuries.concat();
             result.gainedBlueprintPiece = this.gainedBlueprintPiece;
             result.gainedPopulation = this.gainedPopulation;

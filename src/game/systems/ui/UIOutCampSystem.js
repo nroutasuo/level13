@@ -560,11 +560,9 @@
             }
         },
 
-        onGameShown: function (entity) {
+        onGameShown: function () {
             if (!this.playerLocationNodes.head) return;
-            if (this.playerLocationNodes.head.entity === entity) {
-                this.refresh();
-            }
+            this.refresh();
         },
 
         hasUpgrade: function (upgradeId) {

@@ -110,8 +110,9 @@ define([
                         this.pendingWinCallback();
                     }
 				} else {
+                    GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, fightComponent.resultVO);
 					if (this.pendingLoseCallback) this.pendingLoseCallback();
-					this.engine.getSystem(FaintingSystem).fadeOutToLastVisitedCamp(false, false);
+					this.engine.getSystem(FaintingSystem).fadeOutToLastVisitedCamp(false);
 				}
             } else {
 				if (this.pendingFleeCallback) this.pendingFleeCallback();

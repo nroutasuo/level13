@@ -107,17 +107,13 @@ define([
 				// rescued by campers: back to nearest camp, keep items, maybe injured
 				msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. Some of the scavengers found you and brought you home.";
 				msgLog = "The world fades. You wake up back in camp.";
-				this.fadeOut(msgMain, msgLog, this.lastVisitedCampNodes.head.entity, 0, 1);
+				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 1, 0);
 				return;
 			}
 			
 			if (hasLastVisitedCamp) {
 				// pass out and teleport to last visited camp: lose items, back to last visited camp, maybe injured
-                if (!this.lastVisitedCampNodes.head) return;
-    			var msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in camp.";
-    			var msgLog = "The world fades. You wake up with no memory how you found your way back.";
-    			this.fadeOut(msgMain, msgLog, this.lastVisitedCampNodes.head.entity, 1, 1);
-				return;
+                this.fadeOutToLastVisitedCamp(true, msgAdjective);
 			}
 			
 			var sectorSafe = this.isSectorSafe(this.playerLocationNodes.head.entity);
@@ -174,25 +170,44 @@ define([
 			var msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in a familiar area.";
 			var msgLog = "The world fades. You wake up with no memory how you got here.";
 			if (nearestKnownSafeSector) {
-				this.fadeOut(msgMain, msgLog, nearestKnownSafeSector, 1, 0);
+				this.fadeOut(msgMain, msgLog, true, nearestKnownSafeSector, 1, 0, 0);
 			} else if (nearestVisitedSafeSector) {
-				this.fadeOut(msgMain, msgLog, nearestVisitedSafeSector, 1, 0);
+				this.fadeOut(msgMain, msgLog, true, nearestVisitedSafeSector, 1, 0, 0);
 			} else {
 				if (GameGlobals.logWarnings) log.w("Nowhere to fade out to.");
 			}
 		},
+        
+        fadeOutToLastVisitedCamp: function (handleResults, msgAdjective) {
+            if (!this.lastVisitedCampNodes.head) return;
+            var msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in camp.";
+            var msgLog = "The world fades. You wake up with no memory how you found your way back.";
+            this.fadeOut(msgMain, msgLog, handleResults, this.lastVisitedCampNodes.head.entity, 1, 1, 0.25);
+        },
+        
+        count: 0,
 		
-		fadeOut: function (msg, msgLog, sector, loseInventoryProbability, injuryProbability) {
-			var resultVO = GameGlobals.playerActionResultsHelper.getFadeOutResults(loseInventoryProbability, injuryProbability);
+		fadeOut: function (msg, msgLog, handleResults, sector, loseInventoryProbability, injuryProbability, loseFollowerProbability) {
             var sys = this;
-            this.playerResourcesNodes.head.entity.add(new PlayerActionResultComponent(resultVO));
-            var resultPopUpCallback = function (isTakeAll) {
-                GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, resultVO);
+            if (handleResults) {
+    			var resultVO = GameGlobals.playerActionResultsHelper.getFadeOutResults(loseInventoryProbability, injuryProbability, loseFollowerProbability);
+                this.playerResourcesNodes.head.entity.add(new PlayerActionResultComponent(resultVO));
+                var resultPopUpCallback = function (isTakeAll) {
+                    GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, resultVO);
+                    GameGlobals.uiFunctions.hideGame(false, false);
+        			setTimeout(function () {
+                        GameGlobals.uiFunctions.showGame(true);
+                    }, 500);
+                    sys.teleport(sector);
+        			sys.log(msgLog);
+        			sys.save();
+                };
+                GameGlobals.uiFunctions.showResultPopup("Exhaustion", msg, resultVO, resultPopUpCallback);
+            } else {
                 sys.teleport(sector);
-    			sys.log(msgLog);
-    			sys.save();
-            };
-			GameGlobals.uiFunctions.showResultPopup("Exhaustion", msg, resultVO, resultPopUpCallback);
+                sys.log(msgLog);
+                sys.save();
+            }
 		},
 		
 		teleport: function (sector) {
@@ -207,12 +222,14 @@ define([
             // TODO make neater way to request position update - needs to happen before enterCamp which relies on nearest camp node
             this.engine.getSystem(PlayerPositionSystem).updateSectors();
             
-			if (sector.has(CampComponent)) {
-                GameGlobals.playerActionFunctions.enterCamp(false);
-                GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in);
-            } else {
-                if (GameGlobals.logWarnings) log.w("Fainting target sector has no CampComponent");
-            }
+            setTimeout(function () {
+    			if (sector.has(CampComponent)) {
+                    GameGlobals.playerActionFunctions.enterCamp(false);
+                    GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in);
+                } else {
+                    if (GameGlobals.logWarnings) log.w("Fainting target sector has no CampComponent");
+                }
+            }, 100);
 		},
 	
 		log: function (msg) {

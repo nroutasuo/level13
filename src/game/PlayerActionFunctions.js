@@ -413,7 +413,7 @@ define(['ash',
 			}
 		},
 
-		enterCamp: function (log) {
+		enterCamp: function (logMessage) {
 			var playerPos = this.playerPositionNodes.head.position;
 			var campNode = this.nearestCampNodes.head;
 			if (campNode && campNode.position.level === playerPos.level && campNode.position.sectorId() === playerPos.sectorId()) {
@@ -429,7 +429,7 @@ define(['ash',
                     
                     this.playerPositionNodes.head.entity.remove(ExcursionComponent);
 
-					if (log) this.addLogMessage(LogConstants.MSG_ID_ENTER_CAMP, "Entered camp.");
+					if (logMessage) this.addLogMessage(LogConstants.MSG_ID_ENTER_CAMP, "Entered camp.");
 					GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in);
 					GlobalSignals.playerMovedSignal.dispatch(playerPos);
 					this.forceResourceBarUpdate();
