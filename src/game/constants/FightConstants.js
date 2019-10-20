@@ -156,10 +156,6 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
 		getEnemyLocaleId: function (baseActionID, action, isNeighbour) {
 			switch (baseActionID) {
 				case "clear_workshop": return LocaleConstants.LOCALE_ID_WORKSHOP;
-				case "fight_gang":
-					var direction = parseInt(action.split("_")[2]);
-					if (isNeighbour) direction = PositionConstants.getOppositeDirection(direction);
-					return LocaleConstants.getPassageLocaleId(direction);
 				default: return null;
 			}
 		},

@@ -160,18 +160,13 @@ define([
                 if (won) {
                     var sectorControlComponent = sector.get(SectorControlComponent);
     				var encounterComponent = sector.get(FightEncounterComponent);
-    				var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(encounterComponent.context);
-    				var localeId = FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context);
-    				sectorControlComponent.addWin(localeId);
-    				
-    				var relatedSectorDirection = FightConstants.getRelatedSectorDirection(baseActionID, encounterComponent.context);
-    				if (relatedSectorDirection !== PositionConstants.DIRECTION_NONE) {
-    					var relatedSectorPosition = PositionConstants.getPositionOnPath(sector.get(PositionComponent).getPosition(), relatedSectorDirection, 1);
-    					var relatedSector = GameGlobals.levelHelper.getSectorByPosition(relatedSectorPosition.level, relatedSectorPosition.sectorX, relatedSectorPosition.sectorY);
-    					var relatedSectorControlComponent = relatedSector.get(SectorControlComponent);
-    					var relatedSectorLocaleId = FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context, true);
-    					relatedSectorControlComponent.addWin(relatedSectorLocaleId);
-    				}
+                    if (encounterComponent.gangComponent) {
+                        encounterComponent.gangComponent.addWin();
+                    } else {
+        				var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(encounterComponent.context);
+        				var localeId = FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context);
+        				sectorControlComponent.addWin(localeId);
+                    }
                 }
                 
                 this.fightNodes.head.fight.resultVO = GameGlobals.playerActionResultsHelper.getFightRewards(won);

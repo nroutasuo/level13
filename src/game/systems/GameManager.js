@@ -10,10 +10,12 @@ define([
     'game/nodes/sector/SectorNode',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/level/LevelNode',
+    'game/nodes/GangNode',
     'game/components/common/PositionComponent',
+    'game/components/type/GangComponent',
     'game/systems/ui/UIOutLevelSystem',
     'game/systems/SaveSystem',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, EntityCreator, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, PlayerStatsNode, LevelNode, PositionComponent, UIOutLevelSystem, SaveSystem) {
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, EntityCreator, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, PlayerStatsNode, LevelNode, GangNode, PositionComponent, GangComponent, UIOutLevelSystem, SaveSystem) {
 
     var GameManager = Ash.Class.extend({
 
@@ -177,15 +179,17 @@ define([
                         );
                     }
 				}
+                
                 for (var j = 0; j < levelVO.gangs.length; j++) {
                     var gang = levelVO.gangs[j];
                     var x = gang.pos.sectorX;
                     var y = gang.pos.sectorY;
                     this.creator.createGang(
-                        GameGlobals.saveHelper.saveKeys.gang + i + "_" + x + "_" + y,
+                        GameGlobals.saveHelper.saveKeys.gang + levelVO.level + "_" + x + "_" + y,
                         i,
                         x,
-                        y
+                        y,
+                        gang
                     );
                 }
 			}
@@ -253,6 +257,24 @@ define([
                     saveKey = GameGlobals.saveHelper.saveKeys.level + positionComponent.level;
                     failedComponents += GameGlobals.saveHelper.loadEntity(entitiesObject, saveKey, levelNode.entity);
 
+                    if (!saveWarningShown && failedComponents > 0) {
+                        saveWarningShown = true;
+                        this.showSaveWarning(save.version);
+                    }
+                }
+                
+                var gangNodes = this.creator.engine.getNodeList(GangNode);
+                for (var gangNode = gangNodes.head; gangNode; gangNode = gangNode.next) {
+                    positionComponent = gangNode.entity.get(PositionComponent);
+                    saveKey = GameGlobals.saveHelper.saveKeys.gang + positionComponent.level + "_" + positionComponent.sectorX + "_" + positionComponent.sectorY;
+                    failedComponents += GameGlobals.saveHelper.loadEntity(entitiesObject, saveKey, gangNode.entity);
+                    //  gang-7_-0.5_1
+                    if (positionComponent.level == 7 && positionComponent.sectorX == -0.5 && positionComponent.sectorY == 1) {
+                        log.i("loadGameState " + saveKey);
+            			var savedComponents = entitiesObject[saveKey];
+                        log.i(savedComponents);
+                        log.i(gangNode.entity.get(GangComponent));
+                    }
                     if (!saveWarningShown && failedComponents > 0) {
                         saveWarningShown = true;
                         this.showSaveWarning(save.version);

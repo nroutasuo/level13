@@ -50,6 +50,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
             this.localeSectors = [];
             this.possibleSpringSectors = [];
 			this.sectorsByPos = [];
+            this.gangs = [];
 			this.minX = 0;
 			this.maxX = 0;
 			this.minY = 0;

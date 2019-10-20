@@ -11,6 +11,7 @@ define([
     'game/constants/WorldCreatorConstants',
     'game/nodes/level/LevelNode',
     'game/nodes/sector/SectorNode',
+    'game/nodes/GangNode',
     'game/components/common/PositionComponent',
     'game/components/common/RevealedComponent',
     'game/components/common/CampComponent',
@@ -39,6 +40,7 @@ define([
     WorldCreatorConstants,
 	LevelNode,
     SectorNode,
+    GangNode,
 	PositionComponent,
     RevealedComponent,
     CampComponent,
@@ -61,6 +63,7 @@ define([
 		engine: null,
 		levelNodes: null,
 		sectorNodes: null,
+        gangNodes: null,
 
         // todo check using VOCache for these (compare performance)
         sectorEntitiesByPosition: {}, // int (level) -> int (x) -> int (y) -> entity
@@ -70,7 +73,7 @@ define([
 			this.engine = engine;
 			this.levelNodes = engine.getNodeList(LevelNode);
 			this.sectorNodes = engine.getNodeList(SectorNode);
-
+            this.gangNodes = engine.getNodeList(GangNode);
             VOCache.create("LevelHelper-SectorNeighboursMap", 300);
 		},
 
@@ -128,6 +131,21 @@ define([
 
 			return null;
 		},
+        
+        getGang: function (position, direction) {
+            // TODO do some caching here
+            var level = position.level;
+            var neighbourPosition = PositionConstants.getNeighbourPosition(position, direction);
+            var sectorX = (position.sectorX + neighbourPosition.sectorX) / 2;
+            var sectorY = (position.sectorY + neighbourPosition.sectorY) / 2;
+            var gangPosition;
+			for (var node = this.gangNodes.head; node; node = node.next) {
+				gangPosition = node.entity.get(PositionComponent);
+				if (gangPosition.level === level && gangPosition.sectorX === sectorX && gangPosition.sectorY === sectorY) {
+                    return node.entity;
+                }
+			}
+        },
 
         // todo use neighboursmap so we benefit from the same cache
         getSectorNeighboursList: function (sector) {

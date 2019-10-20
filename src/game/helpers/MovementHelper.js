@@ -1,6 +1,7 @@
 // Singleton with helper methods for movement, blockers etc
 define([
     'ash',
+    'game/GameGlobals',
     'game/constants/LocaleConstants',
     'game/constants/MovementConstants',
     'game/constants/PositionConstants',
@@ -10,7 +11,8 @@ define([
     'game/components/sector/SectorControlComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
-], function (Ash, LocaleConstants, MovementConstants, PositionConstants, ItemsNode, PositionComponent, PassagesComponent, SectorControlComponent, SectorStatusComponent, SectorImprovementsComponent) {
+    'game/components/type/GangComponent',
+], function (Ash, GameGlobals, LocaleConstants, MovementConstants, PositionConstants, ItemsNode, PositionComponent, PassagesComponent, SectorControlComponent, SectorStatusComponent, SectorImprovementsComponent, GangComponent) {
     
     var MovementHelper = Ash.Class.extend({
         
@@ -90,9 +92,11 @@ define([
 		},
 		
 		isDefeated: function (sectorEntity, direction) {
-			var controlComponent = sectorEntity.get(SectorControlComponent);
-			var localeId = LocaleConstants.getPassageLocaleId(direction);
-			return this.hasDefeatableBlocker(sectorEntity, direction) && controlComponent.hasControlOfLocale(localeId);
+            var position = sectorEntity.get(PositionComponent).getPosition();
+            var gangEntity = GameGlobals.levelHelper.getGang(position, direction);
+            if (!gangEntity) return false;
+            var gangComponent = gangEntity.get(GangComponent);
+			return this.hasDefeatableBlocker(sectorEntity, direction) && gangComponent.isDefeated();
 		},
         
         isCleaned: function (sectorEntity, direction) {

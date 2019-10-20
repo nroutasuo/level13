@@ -5,12 +5,14 @@ define(['ash'], function (Ash) {
         
         enemy: null,
         context: null,
+        gangComponent: null,
         
-        constructor: function (enemy, context, pendingEnemies, totalEnemies) {
+        constructor: function (enemy, context, pendingEnemies, totalEnemies, gang) {
             this.enemy = enemy;
             this.context = context;
             this.pendingEnemies = pendingEnemies;
             this.totalEnemies = totalEnemies;
+            this.gangComponent = gang;
         },
     });
 

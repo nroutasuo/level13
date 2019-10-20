@@ -11,12 +11,13 @@ define([
     'game/components/sector/SectorControlComponent',
     'game/components/sector/FightComponent',
     'game/components/sector/FightEncounterComponent',
+    'game/components/type/GangComponent',
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/PlayerStatsNode',
     'game/systems/FaintingSystem'
 ], function (
 	Ash, GameGlobals, GlobalSignals, GameConstants, PlayerActionConstants, LocaleConstants, FightConstants,
-    EnemiesComponent, SectorControlComponent, FightComponent, FightEncounterComponent,
+    EnemiesComponent, SectorControlComponent, FightComponent, FightEncounterComponent, GangComponent,
     PlayerLocationNode, PlayerStatsNode,
     FaintingSystem
 ) {
@@ -57,13 +58,15 @@ define([
 			winCallback();
 		},
 
-        hasEnemiesCurrentLocation: function(action) {
+        hasEnemiesCurrentLocation: function (action) {
             if (!this.playerLocationNodes.head) return false;
-            var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
-            var localeId = FightConstants.getEnemyLocaleId(baseActionID, action);
             var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
-            var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
-            return enemiesComponent.hasEnemies || !sectorControlComponent.hasControlOfLocale(localeId);
+            if (enemiesComponent.hasEnemies) return true;
+            var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+            switch (baseActionID) {
+                case "fight_gang":
+                    return true;
+            }
         },
 
         initFight: function (action) {
@@ -72,7 +75,15 @@ define([
             var enemiesComponent = sector.get(EnemiesComponent);
             enemiesComponent.selectNextEnemy();
             log.i("init fight: " + action);
-			sector.add(new FightEncounterComponent(enemiesComponent.getNextEnemy(), action, this.pendingEnemies, this.totalEnemies));
+			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+            var gang = null;
+            if (baseActionID == "fight_gang") {
+                var direction = parseInt(action.split("_")[2]);
+                var position = this.playerLocationNodes.head.position;
+                var gangEntity = GameGlobals.levelHelper.getGang(position, direction);
+                gang = gangEntity.get(GangComponent);
+            }
+			sector.add(new FightEncounterComponent(enemiesComponent.getNextEnemy(), action, this.pendingEnemies, this.totalEnemies, gang));
 			GameGlobals.uiFunctions.showFight();
         },
 
@@ -127,13 +138,18 @@ define([
         },
 
 		getEnemyCount: function (action) {
+            var position = this.playerLocationNodes.head.position.getPosition();
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			var localeId = FightConstants.getEnemyLocaleId(baseActionID, action);
 			switch (baseActionID) {
 				case "clear_workshop":
-				case "fight_gang":
 					return sectorControlComponent.getCurrentEnemies(localeId);
+				case "fight_gang":
+                    var direction = parseInt(action.split("_")[2]);
+                    var gangEntity = GameGlobals.levelHelper.getGang(position, direction);
+                    var gangComponent = gangEntity.get(GangComponent);
+                    return gangComponent.getEnemyCount();
 				default: return 1;
 			}
 		},

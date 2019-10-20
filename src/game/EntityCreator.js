@@ -221,11 +221,11 @@ define([
 			return tribe;
 		},
         
-        createGang: function (saveKey, level, posX, posY) {
+        createGang: function (saveKey, level, posX, posY, gangVO) {
             var gang = new Ash.Entity()
                 .add(new PositionComponent(level, posX, posY))
-                .add(new GangComponent())
-                .add(new SaveComponent(saveKey, [GangComponent]));
+                .add(new GangComponent(gangVO))
+                .add(new SaveComponent(saveKey, [PositionComponent, GangComponent]));
             this.engine.addEntity(gang);
             return gang;
         },
