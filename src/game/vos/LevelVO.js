@@ -25,6 +25,9 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
         localeSectors: [],
         possibleSpringSectors: [],
 		sectorsByPos: {},
+        
+        gangs: [],
+        
 		minX: 0,
 		maxX: 0,
 		minY: 0,
@@ -84,6 +87,10 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
             
             return true;
 		},
+        
+        addGang: function (gangVO) {
+            this.gangs.push(gangVO);
+        },
         
         addCampSector: function (sectorVO) {
             this.campSectors.push(sectorVO);

@@ -12,6 +12,7 @@ define([
 	'game/vos/WorldVO',
 	'game/vos/LevelVO',
 	'game/vos/SectorVO',
+	'game/vos/GangVO',
 	'game/vos/ResourcesVO',
 	'game/vos/LocaleVO',
 	'game/vos/PositionVO',
@@ -26,7 +27,7 @@ define([
 ], function (
     Ash, MathUtils, GameConstants, LevelConstants, TradeConstants,
     WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, EnemyCreator,
-    WorldVO, LevelVO, SectorVO, ResourcesVO, LocaleVO, PositionVO, StashVO, PathConstraintVO,
+    WorldVO, LevelVO, SectorVO, GangVO, ResourcesVO, LocaleVO, PositionVO, StashVO, PathConstraintVO,
     WorldCreatorConstants, PositionConstants, MovementConstants, EnemyConstants, UpgradeConstants, LocaleConstants
 ) {
     var context = "WorldCreator";
@@ -531,8 +532,14 @@ define([
                     if (!neighbourVO) neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
                     if (force || (creator.canHaveGang(sectorVO) && creator.canHaveGang(neighbourVO))) {
                         var blockerSettings = { addDiagonals: addDiagonals };
+                        // callback is called twice, once for each sector
                         creator.addMovementBlocker(levelVO, sectorVO, neighbourVO, blockerType, blockerSettings, function (s, direction) {
                             s.numLocaleEnemies[LocaleConstants.getPassageLocaleId(direction)] = 3;
+                        }, function () {
+                            var pos1 = sectorVO.position;
+                            var pos2 = neighbourVO.position;
+                            var gang = new GangVO(pos1, pos2);
+                            levelVO.addGang(gang);
                         });
                         return true;
                     } else {
@@ -1179,7 +1186,7 @@ define([
             }
         },
 
-        addMovementBlocker: function(levelVO, sectorVO, neighbourVO, blockerType, options, cb) {
+        addMovementBlocker: function(levelVO, sectorVO, neighbourVO, blockerType, options, sectorcb, cb) {
             var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
             var neighbourDirection = PositionConstants.getDirectionFrom(neighbourVO.position, sectorVO.position);
 
@@ -1214,19 +1221,23 @@ define([
                 diagonalsOptions.addDiagonals = false;
                 var nextNeighbours = levelVO.getNextNeighbours(sectorVO, direction);
                 for (var j = 0; j < nextNeighbours.length; j++) {
-                    this.addMovementBlocker(levelVO, sectorVO, nextNeighbours[j], blockerType, diagonalsOptions, cb);
+                    this.addMovementBlocker(levelVO, sectorVO, nextNeighbours[j], blockerType, diagonalsOptions, sectorcb);
                 }
                 nextNeighbours = levelVO.getNextNeighbours(neighbourVO, neighbourDirection);
                 for (var j = 0; j < nextNeighbours.length; j++) {
-                    this.addMovementBlocker(levelVO, neighbourVO, nextNeighbours[j], blockerType, diagonalsOptions, cb);
+                    this.addMovementBlocker(levelVO, neighbourVO, nextNeighbours[j], blockerType, diagonalsOptions, sectorcb);
                 }
             }
             
             this.world.resetPaths();
 
+            if (sectorcb) {
+                sectorcb(sectorVO, direction);
+                sectorcb(neighbourVO, neighbourDirection);
+            }
+            
             if (cb) {
-                cb(sectorVO, direction);
-                cb(neighbourVO, neighbourDirection);
+                cb();
             }
         },
 

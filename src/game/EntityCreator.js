@@ -15,6 +15,7 @@ define([
 	'game/components/player/DeityComponent',
 	'game/components/player/ItemsComponent',
 	'game/components/player/PerksComponent',
+	'game/components/type/GangComponent',
 	'game/components/type/PlayerComponent',
 	'game/components/type/TribeComponent',
 	'game/components/type/LevelComponent',
@@ -62,6 +63,7 @@ define([
 	DeityComponent,
 	ItemsComponent,
 	PerksComponent,
+    GangComponent,
 	PlayerComponent,
 	TribeComponent,
 	LevelComponent,
@@ -218,6 +220,15 @@ define([
 			this.engine.addEntity(tribe);
 			return tribe;
 		},
+        
+        createGang: function (saveKey, level, posX, posY) {
+            var gang = new Ash.Entity()
+                .add(new PositionComponent(level, posX, posY))
+                .add(new GangComponent())
+                .add(new SaveComponent(saveKey, [GangComponent]));
+            this.engine.addEntity(gang);
+            return gang;
+        },
 
 		initPlayer: function (entity) {
 			var defaultInjury = PerkConstants.perkDefinitions.injury[0];

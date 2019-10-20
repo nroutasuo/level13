@@ -177,6 +177,17 @@ define([
                         );
                     }
 				}
+                for (var j = 0; j < levelVO.gangs.length; j++) {
+                    var gang = levelVO.gangs[j];
+                    var x = gang.pos.sectorX;
+                    var y = gang.pos.sectorY;
+                    this.creator.createGang(
+                        GameGlobals.saveHelper.saveKeys.gang + i + "_" + x + "_" + y,
+                        i,
+                        x,
+                        y
+                    );
+                }
 			}
 		},
 
