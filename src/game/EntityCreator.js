@@ -225,7 +225,7 @@ define([
             var gang = new Ash.Entity()
                 .add(new PositionComponent(level, posX, posY))
                 .add(new GangComponent(gangVO))
-                .add(new SaveComponent(saveKey, [PositionComponent, GangComponent]));
+                .add(new SaveComponent(saveKey, [GangComponent]));
             this.engine.addEntity(gang);
             return gang;
         },

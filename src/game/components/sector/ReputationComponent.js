@@ -53,6 +53,16 @@ define(['ash'], function (Ash) {
             return "Reputation";
         },
 
+        getCustomSaveObject: function () {
+            var copy = {};
+            copy.v = this.value;
+            return copy;
+        },
+
+        customLoadFromSave: function (componentValues) {
+            this.value = componentValues.v || 0;
+        }
+
     });
 
     return ReputationComponent;

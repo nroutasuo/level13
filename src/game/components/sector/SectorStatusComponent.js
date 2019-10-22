@@ -16,6 +16,8 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
             this.scavenged = false;
             this.scouted = false;
             this.localesScouted = [];
+            this.wasteClearedDirections = [];
+            this.debrisClearedDirections = [];
         },
 
         addDiscoveredResource: function (name) {

@@ -77,12 +77,20 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             return "Res";
         },
         
-        // resources component needs to be saved only if there is storage (player/camp), otherwise the resources are defined by the WorldCreator
         getCustomSaveObject: function () {
-            if (this.storageCapacity > 0)
-                return this;
-            else return null;
+            // resources component needs to be saved only if there is storage (player/camp), otherwise the resources are defined by the WorldCreator
+            if (this.storageCapacity <= 0) return null;
+            var copy = {};
+            copy.r = this.resources.getCustomSaveObject();
+            copy.c = this.storageCapacity;
+            return copy;
         },
+
+        customLoadFromSave: function (componentValues) {
+            this.resources.customLoadFromSave(componentValues.r);
+            this.storageCapacity = componentValues.c || 0;
+        }
+        
     });
 
     return ResourcesComponent;

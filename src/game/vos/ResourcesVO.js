@@ -163,7 +163,34 @@ define(['ash'], function (Ash) {
 			}
             return result;
         },
-		
+        
+        getCustomSaveObject: function () {
+            var copy = {};
+            if (this.water !== 0) copy.w = this.water;
+            if (this.food !== 0) copy.f = this.food;
+            if (this.metal !== 0) copy.m = this.metal;
+            if (this.rope !== 0) copy.r = this.rope;
+            if (this.herbs !== 0) copy.h = this.herbs;
+            if (this.fuel !== 0) copy.fu = this.fuel;
+            if (this.tools !== 0) copy.t = this.tools;
+            if (this.medicine !== 0) copy.med = this.medicine;
+            if (this.concrete !== 0) copy.c = this.concrete;
+            return copy;
+        },
+
+        customLoadFromSave: function (componentValues) {
+            if (!componentValues) return;
+            if (componentValues.w) this.water = componentValues.w;
+            if (componentValues.f) this.food = componentValues.f;
+            if (componentValues.m) this.metal = componentValues.m;
+            if (componentValues.r) this.rope = componentValues.r;
+            if (componentValues.h) this.herbs = componentValues.h;
+            if (componentValues.fu) this.fuel = componentValues.fu;
+            if (componentValues.t) this.tools = componentValues.t;
+            if (componentValues.med) this.medicine = componentValues.med;
+            if (componentValues.c) this.concrete = componentValues.c;
+        },
+        
 		clone: function() {
 			var c = new ResourcesVO();
 			for(var key in resourceNames) {

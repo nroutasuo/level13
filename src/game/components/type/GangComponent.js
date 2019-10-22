@@ -26,6 +26,19 @@ define(['ash'], function (Ash) {
 		getSaveKey: function () {
 			return "Gang";
 		},
+
+        getCustomSaveObject: function () {
+            var copy = {};
+            if (this.numEnemiesDefeated > 0) {
+                copy.nd = this.numEnemiesDefeated;
+            }
+            return Object.keys(copy).length > 0 ? copy : null;
+        },
+
+        customLoadFromSave: function (componentValues) {
+            this.numEnemiesDefeated = componentValues.nd ? componentValues.nd : 0;
+        }
+        
     });
 
     return GangComponent;
