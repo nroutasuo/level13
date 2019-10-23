@@ -280,7 +280,7 @@ define([
 			var sector = this.playerLocationNodes.head.entity;
 			var encounterComponent = sector.get(FightEncounterComponent);
 			var enemiesComponent = sector.get(EnemiesComponent);
-			var currentEnemy = enemiesComponent.getNextEnemy();
+			var currentEnemy = encounterComponent.enemy;
 			var statsText = " att: " + currentEnemy.att + " | def: " + currentEnemy.def + " ";
             
 			if (this.state == FightPopupStateEnum.FIGHT_PENDING) {

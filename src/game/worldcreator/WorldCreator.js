@@ -536,9 +536,12 @@ define([
                         creator.addMovementBlocker(levelVO, sectorVO, neighbourVO, blockerType, blockerSettings, function (s, direction) {
                             s.numLocaleEnemies[LocaleConstants.getPassageLocaleId(direction)] = 3;
                         }, function () {
+                            // TODO add a bit of randomness
+                            var possibleEnemies = sectorVO.possibleEnemies.concat(neighbourVO.possibleEnemies);
+                            possibleEnemies.sort(creator.enemyCreator.sortByDifficulty);
                             var pos1 = sectorVO.position;
                             var pos2 = neighbourVO.position;
-                            var gang = new GangVO(pos1, pos2);
+                            var gang = new GangVO(pos1, pos2, possibleEnemies[0]);
                             levelVO.addGang(gang);
                         });
                         return true;

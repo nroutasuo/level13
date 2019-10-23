@@ -4,10 +4,12 @@ define(['ash'], function (Ash) {
         
         numEnemies: 0,
         numEnemiesDefeated: 0,
+        enemyID: null,
         
         constructor: function (gangVO) {
             this.numEnemies = gangVO.numEnemies;
             this.numEnemiesDefeated = 0;
+            this.enemyID = gangVO.enemyID;
         },
         
         getEnemyCount: function () {
@@ -16,7 +18,6 @@ define(['ash'], function (Ash) {
         
         addWin: function () {
             this.numEnemiesDefeated++;
-            log.i("gangComponent add win -> " + this.numEnemiesDefeated);
         },
         
         isDefeated: function () {

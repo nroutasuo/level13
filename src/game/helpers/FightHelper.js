@@ -4,6 +4,7 @@ define([
     'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/GameConstants',
+    'game/constants/EnemyConstants',
     'game/constants/PlayerActionConstants',
     'game/constants/LocaleConstants',
     'game/constants/FightConstants',
@@ -16,7 +17,7 @@ define([
     'game/nodes/player/PlayerStatsNode',
     'game/systems/FaintingSystem'
 ], function (
-	Ash, GameGlobals, GlobalSignals, GameConstants, PlayerActionConstants, LocaleConstants, FightConstants,
+	Ash, GameGlobals, GlobalSignals, GameConstants, EnemyConstants, PlayerActionConstants, LocaleConstants, FightConstants,
     EnemiesComponent, SectorControlComponent, FightComponent, FightEncounterComponent, GangComponent,
     PlayerLocationNode, PlayerStatsNode,
     FaintingSystem
@@ -76,14 +77,16 @@ define([
             enemiesComponent.selectNextEnemy();
             log.i("init fight: " + action);
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
-            var gang = null;
+            var gangComponent = null;
             if (baseActionID == "fight_gang") {
                 var direction = parseInt(action.split("_")[2]);
                 var position = this.playerLocationNodes.head.position;
                 var gangEntity = GameGlobals.levelHelper.getGang(position, direction);
-                gang = gangEntity.get(GangComponent);
+                gangComponent = gangEntity.get(GangComponent);
+                log.i("gang enemy: " + gangComponent.enemyID);
             }
-			sector.add(new FightEncounterComponent(enemiesComponent.getNextEnemy(), action, this.pendingEnemies, this.totalEnemies, gang));
+            var enemy = this.getEnemy(enemiesComponent, gangComponent);
+			sector.add(new FightEncounterComponent(enemy, action, this.pendingEnemies, this.totalEnemies, gangComponent));
 			GameGlobals.uiFunctions.showFight();
         },
 
@@ -153,6 +156,18 @@ define([
 				default: return 1;
 			}
 		},
+        
+        getEnemy: function (enemiesComponent, gangComponent) {
+            if (gangComponent) {
+                if (gangComponent.numEnemiesDefeated == gangComponent.numEnemies - 1) {
+                    var gangEnemy = EnemyConstants.getEnemy(gangComponent.enemyID);
+                    if (gangEnemy) {
+                        return gangEnemy;
+                    }
+                }
+            }
+            return enemiesComponent.getNextEnemy()
+        },
 
         save: function () {
             GlobalSignals.saveGameSignal.dispatch();
