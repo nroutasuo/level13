@@ -96,6 +96,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         blockerNorth: false,
                     },
                     busy: false,
+                    inCamp: false,
                 },
 
                 move_sector_south: {
@@ -104,6 +105,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         blockerSouth: false,
                     },
                     busy: false,
+                    inCamp: false,
                 },
 
                 move_sector_east: {
@@ -112,6 +114,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         blockerEast: false,
                     },
                     busy: false,
+                    inCamp: false,
                 },
 
                 move_sector_west: {
@@ -120,6 +123,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         blockerWest: false,
                     },
                     busy: false,
+                    inCamp: false,
                 },
 
                 move_sector_ne: {
@@ -128,6 +132,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         blockerNE: false,
                     },
                     busy: false,
+                    inCamp: false,
                 },
 
                 move_sector_se: {
@@ -136,6 +141,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         blockerSE: false,
                     },
                     busy: false,
+                    inCamp: false,
                 },
 
                 move_sector_sw: {
@@ -144,6 +150,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         blockerSW: false,
                     },
                     busy: false,
+                    inCamp: false,
                 },
 
                 move_sector_nw: {
@@ -152,6 +159,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         blockerNW: false,
                     },
                     busy: false,
+                    inCamp: false,
                 },
 
                 move_level_up: {
