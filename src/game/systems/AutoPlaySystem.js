@@ -556,6 +556,7 @@ define(['ash',
 		},
 
         buildOutImprovements: function () {
+            if (!GameGlobals.playerActionFunctions.playerLocationNodes.head) return;
 			var improvementsComponent = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 
             // traps & buckets
@@ -1034,6 +1035,8 @@ define(['ash',
                 if (autoPlayComponent.isExploreGoalComplete)
                     this.printStep("complete resource goal (" + goalres + " " + goalamount + ")");
             }
+            
+            GameGlobals.playerActionFunctions.completeAction(GameGlobals.playerActionFunctions.currentAction);
         },
 
         printStep: function (message) {

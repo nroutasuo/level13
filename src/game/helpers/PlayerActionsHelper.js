@@ -147,7 +147,7 @@ define([
         // returns an object containing:
         // value: fraction the player has of requirements or 0 depending on req type (if 0, action is not available)
         // reason: string to describe the non-passed requirement (for button explanations)
-        checkRequirements: function (action, log, otherSector) {
+        checkRequirements: function (action, doLog, otherSector) {
             var sector = otherSector;
 			if (!sector) sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             if (!sector) return { value: 0, reason: "No selected sector" };
@@ -156,7 +156,7 @@ define([
             var reqsID = action + "-" + sectorID;
             var ordinal = this.getActionOrdinal(action, sector);
 
-            var checkRequirementsInternal = function (action, log, sector) {
+            var checkRequirementsInternal = function (action, doLog, sector) {
                 var playerVision = this.playerStatsNodes.head.vision.value;
                 var playerPerks = this.playerResourcesNodes.head.entity.get(PerksComponent);
                 var playerStamina = this.playerStatsNodes.head.stamina.stamina;
@@ -220,11 +220,11 @@ define([
                         var min = requirements.vision[0];
                         var max = requirements.vision[1];
                         if (playerVision < min) {
-                            if (log) log.w("Not enough vision to perform action [" + action + "]");
+                            if (doLog) log.w("Not enough vision to perform action [" + action + "]");
                             reason = requirements.vision[0] + " vision needed.";
                             lowestFraction = Math.min(lowestFraction, playerVision / requirements.vision[0]);
                         } else if (max > 0 && playerVision > max) {
-                            if (log) log.w("Too much vision for action [" + action + "]");
+                            if (doLog) log.w("Too much vision for action [" + action + "]");
                             reason = requirements.vision[1] + " vision max.";
                             lowestFraction = 0;
                         }
@@ -232,7 +232,7 @@ define([
 
                     if (requirements.stamina) {
                         if (playerStamina < requirements.stamina) {
-                            if (log) log.w("Not enough stamina to perform action [" + action + "]");
+                            if (doLog) log.w("Not enough stamina to perform action [" + action + "]");
                             reason = "Not enough stamina";
                             lowestFraction = Math.min(lowestFraction, playerStamina / requirements.stamina);
                         }
@@ -244,7 +244,7 @@ define([
                         if (currentValue !== requiredValue) {
                             if (currentValue) reason = "Already fully rested.";
                             else reason = "Must be fully rested.";
-                            if (log) log.w("" + reason);
+                            if (doLog) log.w("" + reason);
                             return {value: 0, reason: reason};
                         }
                     }
@@ -253,7 +253,7 @@ define([
                         var playerHealth = this.playerStatsNodes.head.stamina.health;
                         if (playerHealth < requirements.health) {
                             reason = requirements.health + " health required.";
-                            if (log) log.w("" + reason);
+                            if (doLog) log.w("" + reason);
                             lowestFraction = Math.min(lowestFraction, playerHealth / requirements.health);
                         }
                     }
@@ -264,7 +264,7 @@ define([
                         if (currentValue !== requiredValue) {
                             if (currentValue) reason = "Sunlight not allowed.";
                             else reason = "Sunlight required.";
-                            if (log) log.w("" + reason);
+                            if (doLog) log.w("" + reason);
                             return { value: 0, reason: reason };
                         }
                     }
@@ -368,7 +368,7 @@ define([
                                     reason = improvementName + " already exists";
                                     if (max > 1) reason += ": " + max + "x " + improvName;
                                 }
-                                if (log) log.w("" + reason);
+                                if (doLog) log.w("" + reason);
                                 if (min > amount) return { value: amount/min, reason: reason };
                                 else return { value: 0, reason: reason };
                             }
@@ -388,7 +388,7 @@ define([
                             if ((!isOneValue && (min > totalEffect || max <= totalEffect)) || (isOneValue && validPerk == null)) {
                                 if (min > totalEffect) reason = "Can't do this while: " + perkName;
                                 if (max <= totalEffect) reason = "Perk required: " + perkName;
-                                if (log) log.w("" + reason);
+                                if (doLog) log.w("" + reason);
                                 return { value: 0, reason: reason };
                             }
                         }
@@ -402,7 +402,7 @@ define([
                             if (requirementBoolean != hasBoolean) {
                                 if (requirementBoolean) reason = "Upgrade required: " + UpgradeConstants.upgradeDefinitions[upgradeId].name;
                                 else reason = "Upgrade already researched (" + upgradeId + ")";
-                                if (log) log.w("" + reason);
+                                if (doLog) log.w("" + reason);
                                 return { value: 0, reason: reason };
                             }
                         }
@@ -437,7 +437,7 @@ define([
                             var timeLeft = Math.ceil(playerActionComponent.getBusyTimeLeft());
                             if (currentValue) reason = "Busy " + playerActionComponent.getBusyDescription() + " (" + timeLeft + "s)";
                             else reason = "Need to be busy to do this.";
-                            if (log) log.w("" + reason);
+                            if (doLog) log.w("" + reason);
                             return { value: 0, reason: reason };
                         }
                     }
@@ -449,7 +449,7 @@ define([
                         if (currentValue !== requiredValue) {
                             if (currentValue) reason = "Path to camp exists";
                             else reason = "No path to camp.";
-                            if (log) log.w("" + reason);
+                            if (doLog) log.w("" + reason);
                             return { value: 0, reason: reason };
                         }
                     }
@@ -462,7 +462,7 @@ define([
                         if (currentValue !== requiredValue) {
                             if (currentValue) reason = "Max followers reached.";
                             else reason = "Must have max followers to do this.";
-                            if (log) log.w("" + reason);
+                            if (doLog) log.w("" + reason);
                             return { value: 0, reason: reason };
                         }
                     }
@@ -470,13 +470,13 @@ define([
                     if (typeof requirements.bag !== "undefined") {
                         if (requirements.bag.validSelection) {
                             if (bagComponent.selectionStartCapacity <= bagComponent.totalCapacity && bagComponent.selectedCapacity > bagComponent.totalCapacity) {
-                                if (log) log.w("Can't carry that much stuff.");
+                                if (doLog) log.w("Can't carry that much stuff.");
                                 return { value: 0, reason: "Can't carry that much stuff." };
                             }
                         }
                         if (requirements.bag.validSelectionAll) {
                             if (bagComponent.selectableCapacity > bagComponent.totalCapacity) {
-                                if (log) log.w("Can't carry that much stuff.");
+                                if (doLog) log.w("Can't carry that much stuff.");
                                 return {value: 0, reason: "Can't carry that much stuff."};
                             }
                         }
@@ -538,14 +538,14 @@ define([
                         if (requirements.sector.collectable_water) {
                             var hasWater = featuresComponent.resourcesCollectable.water > 0;
                             if (!hasWater) {
-                                if (log) log.w("No collectable water.");
+                                if (doLog) log.w("No collectable water.");
                                 return { value: 0, reason: "No collectable water." };
                             }
                         }
                         if (requirements.sector.collectable_food) {
                             var hasFood = featuresComponent.resourcesCollectable.food > 0;
                             if (!hasFood) {
-                                if (log) log.w("No collectable food.");
+                                if (doLog) log.w("No collectable food.");
                                 return { value: 0, reason: "No collectable food." };
                             }
                         }
@@ -561,14 +561,14 @@ define([
 
                         if (requirements.sector.canHaveCamp) {
                             if (!featuresComponent.canHaveCamp()) {
-                                if (log) log.w("Location not suitabe for camp.");
+                                if (doLog) log.w("Location not suitabe for camp.");
                                 return { value: 0, reason: "Location not suitable for camp" };
                             }
                         }
                         if (typeof requirements.sector.enemies != "undefined") {
                             var enemiesComponent = sector.get(EnemiesComponent);
                             if ((enemiesComponent.possibleEnemies.length > 0) != requirements.sector.enemies) {
-                                if (log) log.w("Sector enemies required / not allowed");
+                                if (doLog) log.w("Sector enemies required / not allowed");
                                 return { value: 0, reason: "Sector enemies required / not allowed" };
                             }
                         }
@@ -576,7 +576,7 @@ define([
                             if (statusComponent.scouted != requirements.sector.scouted) {
                                 if (statusComponent.scouted)    reason = "Area already scouted.";
                                 else                            reason = "Area not scouted yet.";
-                                if (log) log.w("" + reason);
+                                if (doLog) log.w("" + reason);
                                 return { value: 0, reason: reason };
                             }
                         }
@@ -584,7 +584,7 @@ define([
                             if (featuresComponent.hasSpring != requirements.sector.spring) {
                                 if (featuresComponent.hasSpring)    reason = "There is a spring.";
                                 else                                reason = "There is no spring.";
-                                if (log) log.w("" + reason);
+                                if (doLog) log.w("" + reason);
                                 return { value: 0, reason: reason };
                             }
                         }
@@ -610,10 +610,10 @@ define([
 
                                 if (requiredValue !== currentValue) {
                                     if (currentValue) {
-                                        if (log) log.w("Movement to " + directionName + " blocked.");
+                                        if (doLog) log.w("Movement to " + directionName + " blocked.");
                                         return { value: 0, reason: "Blocked. " + movementOptionsComponent.cantMoveToReason[direction] };
                                     } else {
-                                        if (log) log.w("Nothing blocking movement to " + directionName + "." );
+                                        if (doLog) log.w("Nothing blocking movement to " + directionName + "." );
                                         return { value: 0, reason: "Nothing blocking movement to " + directionName + "." };
                                     }
                                 }
@@ -625,10 +625,10 @@ define([
 
                                 if (requiredValue !== currentValue) {
                                     if (currentValue) {
-                                        if (log) log.w("Waste in " + directionName + " cleared.");
+                                        if (doLog) log.w("Waste in " + directionName + " cleared.");
                                         return { value: 0, reason: "Waste cleared. " };
                                     } else {
-                                        if (log) log.w("Waste hasn't been cleared " + directionName + "." );
+                                        if (doLog) log.w("Waste hasn't been cleared " + directionName + "." );
                                         return { value: 0, reason: "Waste not cleared " + directionName + "." };
                                     }
                                 }
@@ -638,7 +638,7 @@ define([
                         if (typeof requirements.sector.passageUp != 'undefined') {
                             if (!passagesComponent.passageUp) {
                                 reason = "No passage up.";
-                                if (log) log.w("" + reason);
+                                if (doLog) log.w("" + reason);
                                 return { value: 0, reason: "Blocked. " + reason };
                             } else {
                                 var requiredType = parseInt(requirements.sector.passageUp);
@@ -646,7 +646,7 @@ define([
                                     var existingType = passagesComponent.passageUp.type;
                                     if (existingType !== requiredType) {
                                         reason = "Wrong passage type.";
-                                        if (log) log.w("" + reason);
+                                        if (doLog) log.w("" + reason);
                                         return { value: 0, reason: "Blocked. " + reason };
                                     }
                                 }
@@ -655,7 +655,7 @@ define([
                         if (typeof requirements.sector.passageDown != 'undefined') {
                             if (!passagesComponent.passageDown) {
                                 reason = "No passage down.";
-                                if (log) log.w("" + reason);
+                                if (doLog) log.w("" + reason);
                                 return { value: 0, reason: "Blocked. " + reason };
                             } else {
                                 var requiredType = parseInt(requirements.sector.passageDown);
@@ -663,7 +663,7 @@ define([
                                     var existingType = passagesComponent.passageDown.type;
                                     if (existingType != requiredType) {
                                         reason = "Wrong passage type.";
-                                        if (log) log.w("" + reason);
+                                        if (doLog) log.w("" + reason);
                                         return { value: 0, reason: "Blocked. " + reason };
                                     }
                                 }
@@ -675,7 +675,7 @@ define([
                             var requiredStorage = requirements.sector.collected_food;
                             var currentStorage = collector.storedResources.getResource(resourceNames.food);
                             if (currentStorage < requiredStorage) {
-                                if (log) log.w("Not enough stored resources in collectors.");
+                                if (doLog) log.w("Not enough stored resources in collectors.");
                                 if (lowestFraction > currentStorage / requiredStorage) {
                                     lowestFraction = currentStorage / requiredStorage;
                                     reason = "Nothing to collect";
@@ -688,7 +688,7 @@ define([
                             var requiredStorage = requirements.sector.collected_water;
                             var currentStorage = collector.storedResources.getResource(resourceNames.water);
                             if (currentStorage < requiredStorage) {
-                                if (log) log.w("Not enough stored resources in collectors.");
+                                if (doLog) log.w("Not enough stored resources in collectors.");
                                 if (lowestFraction > currentStorage / requiredStorage) {
                                     lowestFraction = currentStorage / requiredStorage;
                                     reason = "Nothing to collect";
@@ -725,7 +725,7 @@ define([
                                     reason = "Too many people on this level.";
                                     if (max > 1) reason += ": " + max + "x " + improvName;
                                 }
-                                if (log) log.w("" + reason);
+                                if (doLog) log.w("" + reason);
                                 if (min > amount) return { value: amount/min, reason: reason };
                                 else return { value: 0, reason: reason };
                             }
@@ -767,7 +767,7 @@ define([
             };
 
             if (!this.cache.reqs[reqsID]) {
-                var result = checkRequirementsInternal.apply(this, [action, log, sector]);
+                var result = checkRequirementsInternal.apply(this, [action, doLog, sector]);
                 this.cache.reqs[reqsID] = result;
             }
 
@@ -775,7 +775,7 @@ define([
         },
 
         // Check the costs of an action; returns lowest fraction of the cost player can cover; >1 means the action is available
-        checkCosts: function(action, log, otherSector) {
+        checkCosts: function(action, doLog, otherSector) {
             var costs = this.getCosts(action, this.getCostFactor(action));
 
             if (costs) {
@@ -784,7 +784,7 @@ define([
                 for (var key in costs) {
                     currentFraction = this.checkCost(action, key, otherSector);
                     if (currentFraction < lowestFraction) {
-                        if(log) log.w("Not enough " + key + " to perform action [" + action + "]");
+                        if(doLog) log.w("Not enough " + key + " to perform action [" + action + "]");
                         lowestFraction = currentFraction;
                     }
                 }
