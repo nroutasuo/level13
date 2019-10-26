@@ -538,8 +538,10 @@ define([
                         actionName = "build_out_passage_down_stairs";
                         actionLabel = "repair";
                         break;
+                    case MovementConstants.PASSAGE_TYPE_BLOCKED:
+                        break;
                 }
-
+                
                 if (GameGlobals.playerActionsHelper.checkRequirements(actionName, false, sectorEntity).value > 0) {
                     actionName = actionName + "_" + levelOrdinal;
                     projects.push(new LevelProjectVO(new ImprovementVO(improvementName), actionName, sectorPosition, PositionConstants.DIRECTION_DOWN, null, actionLabel));

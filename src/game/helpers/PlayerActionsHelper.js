@@ -148,6 +148,7 @@ define([
         // value: fraction the player has of requirements or 0 depending on req type (if 0, action is not available)
         // reason: string to describe the non-passed requirement (for button explanations)
         checkRequirements: function (action, doLog, otherSector) {
+            if (!action) return { value: 0, reason: "No action" };
             var sector = otherSector;
 			if (!sector) sector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
             if (!sector) return { value: 0, reason: "No selected sector" };

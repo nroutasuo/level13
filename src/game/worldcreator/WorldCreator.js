@@ -118,7 +118,6 @@ define([
                 passageDownPosition = null;
                 if (l > bottomLevel) {
                     var numPassages = 1;
-                    if (campOrdinal >= WorldCreatorConstants.CAMP_ORDINAL_LIMIT) numPassages = 0;
                     if (numPassages > 0) {
                         passageDownPosition = WorldCreatorRandom.randomSectorPosition(seed - l * 654, l, passagePositionsArea, levelCenter, 3);
                     }
@@ -1038,6 +1037,8 @@ define([
                 passageDownSectors[i] = levelVO.getSector(passagePosition.sectorX, passagePosition.sectorY);
                 if (l === 13) {
                     passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_STAIRWELL;
+                } else if (campOrdinal >= WorldCreatorConstants.CAMP_ORDINAL_LIMIT) {
+                    passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_BLOCKED;
                 } else if (l === 14) {
                     passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_HOLE;
                 } else if (isCampable && campOrdinal == unlockElevatorOrdinal) {

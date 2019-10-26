@@ -10,6 +10,7 @@ define(['ash'], function (Ash) {
         PASSAGE_TYPE_HOLE: 1,
         PASSAGE_TYPE_ELEVATOR: 2,
         PASSAGE_TYPE_STAIRWELL: 3,
+        PASSAGE_TYPE_BLOCKED: 4,
     
     };
     

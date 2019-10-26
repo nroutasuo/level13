@@ -58,6 +58,8 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
                         else
                             return "There is a massive sinkhole here. Only vast emptiness is visible below.";
                     }
+                case MovementConstants.PASSAGE_TYPE_BLOCKED:
+                    return "There seems to have been a staircase here once but it has been destroyed beyond repair.";
                 default:
                     return "There used to be " + TextConstants.addArticle(passageVO.name.toLowerCase()) + " here.";
             }
@@ -101,6 +103,8 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
                         state = "and it has been repaired";
                     } else if (passageVO.type === MovementConstants.PASSAGE_TYPE_ELEVATOR) {
                         state = "but it is broken";
+                    } else if (passageVO.type === MovementConstants.PASSAGE_TYPE_BLOCKED) {
+                        state = "but it is unrepairable";
                     } else {
                         state = "but it needs to be repaired";
                     }
