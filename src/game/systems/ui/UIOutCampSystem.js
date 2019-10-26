@@ -106,7 +106,8 @@
 
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
             if (!campComponent) {
-                log.w("Camp UI systen active but no camp found.");
+                log.w("Camp UI systen active but no camp found. Switching out.");
+                this.playerPosNodes.head.position.inCamp = false;
                 GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.out);
                 return;
             }

@@ -114,12 +114,14 @@ define([
 			if (hasLastVisitedCamp) {
 				// pass out and teleport to last visited camp: lose items, back to last visited camp, maybe injured
                 this.fadeOutToLastVisitedCamp(true, msgAdjective);
+                return;
 			}
 			
 			var sectorSafe = this.isSectorSafe(this.playerLocationNodes.head.entity);
 			if (!sectorSafe) {
 				// pass out and teleport to nearest safe sector (with scavengable food & water)
 				this.fadeOutToOutside(msgAdjective);
+                return;
 			}
 		},
 		
@@ -184,8 +186,6 @@ define([
             var msgLog = "The world fades. You wake up with no memory how you found your way back.";
             this.fadeOut(msgMain, msgLog, handleResults, this.lastVisitedCampNodes.head.entity, 1, 1, 0.25);
         },
-        
-        count: 0,
 		
 		fadeOut: function (msg, msgLog, handleResults, sector, loseInventoryProbability, injuryProbability, loseFollowerProbability) {
             var sys = this;
