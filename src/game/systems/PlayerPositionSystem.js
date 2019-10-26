@@ -4,6 +4,7 @@ define([
     'ash',
     'game/GameGlobals',
     'game/GlobalSignals',
+    'game/constants/GameConstants',
     'game/constants/LogConstants',
     'game/constants/WorldCreatorConstants',
     'game/nodes/PlayerPositionNode',
@@ -19,7 +20,7 @@ define([
     'game/components/common/RevealedComponent',
     'game/components/common/CampComponent',
     'game/components/type/LevelComponent',
-], function (Ash, GameGlobals, GlobalSignals, WorldCreatorConstants, LogConstants,
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, WorldCreatorConstants,
     PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode, CampNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, LogMessagesComponent, PositionComponent,
 	VisitedComponent, RevealedComponent, CampComponent, LevelComponent) {
@@ -172,11 +173,28 @@ define([
 			levelNode.entity.add(new VisitedComponent());
 			levelNode.entity.add(new RevealedComponent());
             var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(levelPos);
+            var campOrdinal = GameGlobals.gameState.getCampOrdinal(levelPos);
             GameGlobals.gameState.level = Math.max(GameGlobals.gameState.level, levelOrdinal);
             gtag('set', { 'max_level': levelOrdinal });
             gtag('event', 'reach_new_level', { event_category: 'progression', value: levelOrdinal})
 			if (levelPos !== 13) GameGlobals.gameState.unlockedFeatures.levels = true;
 			if (levelPos === GameGlobals.gameState.getGroundLevel()) GameGlobals.gameState.unlockedFeatures.favour = true;
+            
+            setTimeout(function () {
+                if (campOrdinal == WorldCreatorConstants.CAMP_ORDINAL_LIMIT) {
+                    gtag('event', 'camp_ordinal_limit_level_reached', { event_category: 'progression' })
+                    var msg = "You've reached the last level of the current version of Level 13. ";
+                    msg += "You can still explore this level and find many new things, but you won't be able to progress further down.";
+                    msg += "<br/><br/>"
+                    msg += "<span class='p-meta'>Thank you for playing this far! The developer would love to hear your feedback. You can use any of these channels:</span>";
+    				msg += "<p>" + GameConstants.feedbackLinksHTML + "</p>";
+                    GameGlobals.uiFunctions.showInfoPopup(
+                        "Last level",
+                        msg,
+                        "Continue"
+                    );
+                }
+            }, 200);
 		},
 
         handleEnterLevel: function (levelNode) {
