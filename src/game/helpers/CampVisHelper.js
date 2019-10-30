@@ -63,20 +63,25 @@ function (Ash) {
         },
         
         getBuildingSize: function (buildingType) {
+            var s = 16;
             switch (buildingType) {
                 case improvementNames.campfire:
                     return { x: 4, y: 4 };
                 case improvementNames.lights:
-                    return { x: 2, y: 24 };
+                    return { x: 2, y: s / 2 * 3 };
                 case improvementNames.storage:
-                    return { x: 16, y: 16 };
+                    return { x: s / 2 * 3, y: s * 2.5 };
                 case improvementNames.hospital:
-                    return { x: 16, y: 12 };
+                    return { x: s, y: s * 1.5 };
                 case improvementNames.fortification:
                 case improvementNames.fortification2:
-                    return { x: 4, y: 20 };
+                    return { x: 4, y: s * 3 };
+                case improvementNames.tradepost:
+                    return { x: s, y: s * 1.25 };
+                case improvementNames.square:
+                    return { x: s * 3, y: 2 };
             }
-            return { x: 12, y: 12 };
+            return { x: s, y: s };
         },
         
         isConflict: function (coords1, coords2, buildingType1, buildingType2) {
