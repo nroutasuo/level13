@@ -2011,16 +2011,21 @@ body.dark .vis-camp-building {
   border-width: 1px 1px 0px 1px;
 }
 body.dark .vis-camp-building-z0 {
-  background: #888;
-  border-color: #bbb;
-  z-index: 2;
+  background: #aaa;
+  border-color: #ccc;
+  z-index: 3;
 }
 body.dark .vis-camp-building-z1 {
+  background: #888;
+  border-color: #aaa;
+  z-index: 2;
+}
+body.dark .vis-camp-building-z2 {
   background: #666;
   border-color: #888;
   z-index: 1;
 }
-body.dark .vis-camp-building-z2 {
+body.dark .vis-camp-building-z3 {
   background: #444;
   border-color: #555;
   z-index: 0;
@@ -3745,16 +3750,21 @@ body.sunlit .vis-camp-building {
   border-width: 1px 1px 0px 1px;
 }
 body.sunlit .vis-camp-building-z0 {
+  background: #666;
+  border-color: #555;
+  z-index: 3;
+}
+body.sunlit .vis-camp-building-z1 {
   background: #888;
   border-color: #777;
   z-index: 2;
 }
-body.sunlit .vis-camp-building-z1 {
+body.sunlit .vis-camp-building-z2 {
   background: #aaa;
   border-color: #bbb;
   z-index: 1;
 }
-body.sunlit .vis-camp-building-z2 {
+body.sunlit .vis-camp-building-z3 {
   background: #ccc;
   border-color: #ddd;
   z-index: 0;

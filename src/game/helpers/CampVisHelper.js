@@ -17,16 +17,10 @@ function (Ash) {
         initCoordinate: function (i) {
             // determine z
             var mod9 = i % 9;
-            var mod9limit1 = 3;
-            var mod9limit2 = 6;
-            if (i < 8) {
-                mod9limit1 = 9;
-                mod9limit2 = 9;
-            } else if (i < 20) {
-                mod9limit1 = 2;
-                mod9limit2 = 4;
-            }
-            var z = mod9 < mod9limit1 ? 0 : mod9 < mod9limit2 ? 1 : 2;
+            var mod9limit0 = 1;
+            var mod9limit1 = 4;
+            var mod9limit2 = 7;
+            var z = mod9 < mod9limit0 ? 0 : mod9 < mod9limit1 ? 1 : mod9 < mod9limit2 ? 2 : 3;
             
             // find next free x
             var x = this.findNextFreeX(i, z);

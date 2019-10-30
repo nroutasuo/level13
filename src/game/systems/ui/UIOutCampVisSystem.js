@@ -25,9 +25,9 @@ define([
             
             this.containerDefaultHeight = 80;
             this.buildingContainerSizeX = 14;
-            this.floorPos = 12;
-            this.floorThickness = 12;
-            this.zStep = 0;
+            this.floorPos = 6;
+            this.floorThickness = 0;
+            this.zStep = 6;
             
             return this;
         },
@@ -224,7 +224,8 @@ define([
         getBuildingColorClass: function (building, coords) {
             if (coords.z == 0) return "vis-camp-building-z0";
             if (coords.z == 1) return "vis-camp-building-z1";
-            return "vis-camp-building-z2";
+            if (coords.z == 2) return "vis-camp-building-z2";
+            return "vis-camp-building-z3";
         },
         
         getXpx: function (x, z, size) {
