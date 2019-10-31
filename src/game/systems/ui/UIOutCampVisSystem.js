@@ -229,7 +229,7 @@ define([
         },
         
         getXpx: function (x, z, size) {
-            return Math.round((this.containerWidth / 2) + x * GameGlobals.campVisHelper.gridX + size.x / 2);
+            return Math.round((this.containerWidth / 2) + x * GameGlobals.campVisHelper.gridX - size.x / 2);
         },
         
         getYpx: function (x, z, size) {

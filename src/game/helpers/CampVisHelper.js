@@ -7,23 +7,18 @@ function (Ash) {
         
         // i -> { x, z }
         // x: 0 (middle) to positive and negative infinity
-        // z: 0 (front), 1 or 2 (back)
+        // z: 0-3 (smaller is in front)
         coordinates: {},
 
         constructor: function () {
-            this.gridX = 6;
+            this.gridX = 12;
         },
         
         initCoordinate: function (i) {
-            // determine z
-            var mod9 = i % 9;
-            var mod9limit0 = 1;
-            var mod9limit1 = 4;
-            var mod9limit2 = 7;
-            var z = mod9 < mod9limit0 ? 0 : mod9 < mod9limit1 ? 1 : mod9 < mod9limit2 ? 2 : 3;
-            
-            // find next free x
-            var x = this.findNextFreeX(i, z);
+            var z = i % 4;
+            var d = Math.floor(i/4);
+            var x = Math.ceil(d/2);
+            if (d % 2 > 0) x = -x;
             
             var result = { x: x, z: z };
             this.coordinates[i] = result;
@@ -58,6 +53,7 @@ function (Ash) {
         
         getBuildingSize: function (buildingType) {
             var s = 16;
+            
             switch (buildingType) {
                 case improvementNames.campfire:
                     return { x: 4, y: 4 };
@@ -79,6 +75,8 @@ function (Ash) {
         },
         
         isConflict: function (coords1, coords2, buildingType1, buildingType2) {
+            return false;
+            /*
             var width1 = this.getBuildingSize(buildingType1).x;
             var width2 = this.getBuildingSize(buildingType2).x;
             var x1 = coords1.x * this.gridX + width1 / 2;
@@ -94,6 +92,7 @@ function (Ash) {
                 var minDistance = Math.max(width1/2, width2/2) + 2;
                 return xdist < minDistance;
             }
+            */
         },
         
         getNextValidCampBuildingSpot: function (sectorImprovements, building) {
