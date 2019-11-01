@@ -75,24 +75,36 @@ function (Ash) {
         },
         
         isConflict: function (coords1, coords2, buildingType1, buildingType2) {
-            return false;
-            /*
             var width1 = this.getBuildingSize(buildingType1).x;
             var width2 = this.getBuildingSize(buildingType2).x;
-            var x1 = coords1.x * this.gridX + width1 / 2;
-            var x2 = coords2.x * this.gridX + width2 / 2;
+            var x1 = coords1.x * this.gridX;
+            var x2 = coords2.x * this.gridX;
             var xdist = Math.abs(x1 - x2);
+            var minDistance = 0;
             if (coords1.z == coords2.z) {
-                // same layer, no overlap allowed
-                var margin = 2;
-                var minDistance = Math.ceil(width1/2 + width2/2 + margin);
-                return xdist < minDistance;
+                // same layer, no overlap allowed and some margin
+                minDistance = Math.ceil(width1/2 + width2/2) + 4;
             } else {
-                // different layers, ok as long as they don't cover each other completely
-                var minDistance = Math.max(width1/2, width2/2) + 2;
-                return xdist < minDistance;
+                // different layers, depends on height difference
+                var height1 = this.getBuildingSize(buildingType1).y;
+                var height2 = this.getBuildingSize(buildingType2).y;
+                var ydiff = height1 - height2;
+                var zdiff = coords1.z - coords2.z;
+                if (zdiff < 0 && ydiff < 0) {
+                    // 1 in front and 2 is taller, overlap fine
+                    minDistance = 0;
+                } else if (zdiff > 0 && ydiff > 0) {
+                    // 2 in front and 1 is taller, overlap fine
+                    minDistance = 0;
+                } else if (ydiff == 0) {
+                    // same height, a bit of margin
+                    minDistance = 6;
+                } else {
+                    // taller building in front, ma sure shorter is visible
+                    minDistance = Math.max(width1/2, width2/2) + 2;
+                }
             }
-            */
+            return xdist < minDistance;
         },
         
         getNextValidCampBuildingSpot: function (sectorImprovements, building) {
