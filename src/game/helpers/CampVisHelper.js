@@ -12,6 +12,7 @@ function (Ash) {
 
         constructor: function () {
             this.gridX = 12;
+            this.defaultBuildingSize = 16;
         },
         
         initCoordinate: function (i) {
@@ -52,8 +53,7 @@ function (Ash) {
         },
         
         getBuildingSize: function (buildingType) {
-            var s = 16;
-            
+            var s = this.defaultBuildingSize;
             switch (buildingType) {
                 case improvementNames.campfire:
                     return { x: 4, y: 4 };
@@ -107,16 +107,40 @@ function (Ash) {
             return xdist < minDistance;
         },
         
-        getNextValidCampBuildingSpot: function (sectorImprovements, building) {
+        isValidCoordinates: function (coords, buildingType) {
+            // create soft rules / preferences by applying some rules to only some coordinates
+            var isStrict = coords.x % 2 == 0;
+            // z-coordinate: bigger buildings prefer higher z values
+            var size = this.getBuildingSize(buildingType);
+            if (isStrict && size.y > this.defaultBuildingSize && coords.z < 1) return false;
+            if (size.y < this.defaultBuildingSize && coords.z > 1) return false;
+            // x-coordinate: some building types avoid the center
+            var xdist = Math.abs(coords.x);
+            switch (buildingType) {
+                case improvementNames.storage:
+                    if (xdist < 4) return false;
+                    break;
+                case improvementNames.fortification:
+                    if (xdist < 10  ) return false;
+            }
+            // both: no low z coordinates far from the center
+            if (xdist > 10 && coords.z < 1) return false;
+            if (xdist > 20 && coords.z < 2) return false;
+            return true;
+        },
+        
+        getFreeCampBuildingSpot: function (sectorImprovements, building) {
             var buildingType1 = building.name;
             for (var i = 0; i < 1000; i++) {
+                var coords1 = this.getCoords(i);
+                // valid coordinates for building type?
+                if (!this.isValidCoordinates(coords1, buildingType1)) continue;
+                // already occupied?
                 var contents = sectorImprovements.buildingSpots[i];
-                // already occupied
                 if (contents) continue;
-                // conflicts with some existing
+                // conflicts with some existing?
                 var j = 0;
                 var foundConflict = false;
-                var coords1 = this.getCoords(i);
                 for (var j = 0; j < sectorImprovements.buildingSpots.length; j++) {
                     var contents2 = sectorImprovements.buildingSpots[j];
                     if (contents2) {

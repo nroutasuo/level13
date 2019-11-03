@@ -14,7 +14,7 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
             this.buildingSpots = [];
         },
 
-        add: function(type, amount) {
+        add: function (type, amount) {
             var vo = this.improvements[type];
             if (!vo) {
                 this.improvements[type] = new ImprovementVO(type);
@@ -25,7 +25,7 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
             for (var i = 0; i < amount; i++) {
                 var visCount = vo.getVisCount();
                 for (var j = 0; j < visCount; j++) {
-                    var spotIndex = this.getNextFreeCampBuildingSpot(vo);
+                    var spotIndex = this.getFreeCampBuildingSpot(vo);
                     this.setSelectedCampBuildingSpot(vo, vo.count, spotIndex, j);
                 }
                 vo.count++;
@@ -102,8 +102,8 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
             }
 
             if (assignIfNotSet) {
-                var nextAvailable = this.getNextFreeCampBuildingSpot(building);
-                this.setSelectedCampBuildingSpot(building, i, j, nextAvailable);
+                var newSpot = this.getFreeCampBuildingSpot(building);
+                this.setSelectedCampBuildingSpot(building, i, j, newSpot);
                 return this.getSelectedCampBuildingSpot(building, i, j);
             } else {
                 return -1;
@@ -129,9 +129,8 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
             return result;
         },
 
-        // TODO move this kind of logic out of the component
-        getNextFreeCampBuildingSpot: function (building) {
-            return GameGlobals.campVisHelper.getNextValidCampBuildingSpot(this, building);
+        getFreeCampBuildingSpot: function (building) {
+            return GameGlobals.campVisHelper.getFreeCampBuildingSpot(this, building);
         },
         
         resetBuildingSpots: function () {
