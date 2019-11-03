@@ -22,11 +22,13 @@ define([
             this.elements.layerGrid = $("#vis-camp-layer-grid");
             this.elements.layerSpots = $("#vis-camp-layer-spots");
             this.elements.layerBuildings = $("#vis-camp-layer-buildings");
+            this.elements.infoOverlay = $("#vis-camp-info-overlay");
+            this.elements.infoText = $("#vis-camp-info-overlay span");
             
-            this.containerDefaultHeight = 80;
+            this.containerDefaultHeight = 96;
             this.buildingContainerSizeX = 14;
-            this.floorPos = 6;
-            this.floorThickness = 0;
+            this.floorPos = 22;
+            this.floorThickness = 22;
             this.zStep = 6;
             
             return this;
@@ -72,6 +74,7 @@ define([
             this.refreshGrid();
             this.refreshFloor();
             this.refreshBuildings();
+            this.updateInfoOverlay();
         },
         
         refreshGrid: function () {
@@ -136,6 +139,8 @@ define([
                             $elem = $(this.getBuildingDiv(i, building, n, j, coords));
                             this.elements.layerBuildings.append($elem);
                             this.elements.buildings[building.name][n][j] = $elem;
+                            $elem.mouseleave({ system: this, building: building.name }, this.onMouseLeaveBuilding);
+                            $elem.mouseenter({ system: this, building: building.name }, this.onMouseEnterBuilding);
                             if (!reset) {
                                 // animate newly built buildings
                                 $elem.hide();
@@ -161,6 +166,16 @@ define([
             this.buildingsLevel = level;
         },
         
+        updateInfoOverlay: function () {
+            if (this.hoveredBuilding) {
+                this.elements.infoOverlay.show();
+                this.elements.infoText.text(this.hoveredBuilding);
+            } else {
+                this.elements.infoOverlay.hide();
+                
+            }
+        },
+        
         checkOverlaps: function (buildingCoords) {
             for (var i = 0; i < buildingCoords.length; i++) {
                 var coords1 = buildingCoords[i].coords;
@@ -173,6 +188,16 @@ define([
                     }
                 }
             }
+        },
+        
+        onMouseEnterBuilding: function (e) {
+            e.data.system.hoveredBuilding = e.data.building;
+            e.data.system.updateInfoOverlay();
+        },
+        
+        onMouseLeaveBuilding: function (e) {
+            e.data.system.hoveredBuilding= null;
+            e.data.system.updateInfoOverlay();
         },
         
         getBuildingSpotCoords: function (i) {
@@ -198,7 +223,8 @@ define([
             var classes = "vis-camp-building " + this.getBuildingClasses(building, coords);
             var data = "data-building-name='" + building.name + "' data-building-index='" + n + "' data-building-vis-index='" + j + "'";
             var id = this.getBuildingDivID(building, n, j);
-            return "<div class='" + classes + "' style='" + style + "' id='" + id + "' " + data + "'></div>";
+            var desc = building.name;
+            return "<div class='" + classes + "' style='" + style + "' id='" + id + "' " + data + "' description='" + desc + "'></div>";
         },
         
         getBuildingDivID: function (building, n, j) {
@@ -211,6 +237,7 @@ define([
         
         getBuildingClasses: function (building, coords) {
             var result = [];
+            
             result.push(this.getBuildingColorClass(building, coords));
             switch (building.name) {
                 case improvementNames.home:
@@ -237,7 +264,7 @@ define([
         },
         
         getYpx: function (x, z, size) {
-            return Math.round(this.containerHeight - this.floorPos - z * this.zStep - size.y);
+            return Math.round(this.containerHeight -this.floorPos - z * this.zStep - size.y);
         }
         
     });
