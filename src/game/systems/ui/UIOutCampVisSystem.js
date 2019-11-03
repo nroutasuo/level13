@@ -148,6 +148,10 @@ define([
                         // position all buildings
                         $elem.css("left", this.getXpx(coords.x, coords.z, size) + "px");
                         $elem.css("top", this.getYpx(coords.x, coords.z, size) + "px");
+                        $elem.toggleClass("vis-camp-building-z0", coords.z == 0);
+                        $elem.toggleClass("vis-camp-building-z1", coords.z == 1);
+                        $elem.toggleClass("vis-camp-building-z2", coords.z == 2);
+                        $elem.toggleClass("vis-camp-building-z3", coords.z == 3);
                     }
                 }
             }
