@@ -329,13 +329,23 @@ define(['ash',
 
 			generateCallouts: function (scope) {
 				// Info callouts
-				$(scope + " .info-callout-target").wrap('<div class="callout-container"></div>');
-				$(scope + " .info-callout-target").after(function () {
-					var description = $(this).attr("description");
-					var content = description;
-					content = '<div class="callout-arrow-up"></div><div class="info-callout-content">' + content + "</div>";
-					return '<div class="info-callout">' + content + '</div>'
-				});
+                $.each($(scope + " .info-callout-target"), function () {
+                    var $target = $(this);
+                    var generated = $target.data("callout-generated");
+                    if (generated) {
+                        log.w("Info callout already generated!");
+                        log.i($target);
+                        return;
+                    }
+	                $target.wrap('<div class="callout-container"></div>');
+	                $target.after(function () {
+                        var description = $(this).attr("description");
+                        var content = description;
+                        content = '<div class="callout-arrow-up"></div><div class="info-callout-content">' + content + "</div>";
+                        return '<div class="info-callout">' + content + '</div>'
+    				});
+                    $target.data("callout-generated", true);
+                });
 
 				// Button callouts
 				var uiFunctions = this;
