@@ -49,6 +49,15 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
             }
         },
         
+        getTotalCount: function () {
+            var result = 0;
+            for (var key in this.improvements) {
+				var val = this.improvements[key];
+				if (val) result += val.count;
+			}
+            return result;
+        },
+        
         getLevel: function (type) {
             var vo = this.improvements[type];
             if (vo) {

@@ -131,7 +131,11 @@ function (Ash) {
         
         getFreeCampBuildingSpot: function (sectorImprovements, building) {
             var buildingType1 = building.name;
-            for (var i = 0; i < 1000; i++) {
+            var buildingCount = sectorImprovements.getTotalCount();
+            var minstarti = 0;
+            var maxstarti = 12 + buildingCount * 4;
+            var starti = minstarti + Math.floor(Math.random() * (maxstarti - minstarti));
+            for (var i = starti; i < 1000; i++) {
                 var coords1 = this.getCoords(i);
                 // valid coordinates for building type?
                 if (!this.isValidCoordinates(coords1, buildingType1)) continue;
