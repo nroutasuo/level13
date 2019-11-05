@@ -1,12 +1,13 @@
 // Creates and updates maps (mini-map and main)
 define(['ash',
+    'utils/CanvasUtils',
     'game/GameGlobals',
     'game/constants/CanvasConstants',
     'game/constants/ColorConstants',
     'game/constants/PlayerActionConstants',
     'game/constants/UpgradeConstants',
     'game/nodes/tribe/TribeUpgradesNode'],
-function (Ash, GameGlobals, CanvasConstants, ColorConstants, PlayerActionConstants, UpgradeConstants, TribeUpgradesNode) {
+function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, PlayerActionConstants, UpgradeConstants, TribeUpgradesNode) {
     
     var UITechTreeNode = Ash.Class.extend({
         
@@ -190,7 +191,7 @@ function (Ash, GameGlobals, CanvasConstants, ColorConstants, PlayerActionConstan
         
         refreshCanvas: function (vis) {
             this.canvas = vis.$canvas[0];
-            this.ctx = this.canvas ? this.canvas.getContext && this.canvas.getContext('2d') : null;
+            this.ctx = CanvasUtils.getCTX(vis.$canvas);
             
             if (!this.ctx)
                 return;

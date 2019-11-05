@@ -1,5 +1,6 @@
 // Creates and updates maps (mini-map and main)
 define(['ash',
+    'utils/CanvasUtils',
     'game/GameGlobals',
     'game/constants/ColorConstants',
     'game/constants/UIConstants',
@@ -20,7 +21,7 @@ define(['ash',
     'game/components/sector/improvements/WorkshopComponent',
     'game/components/type/SectorComponent',
     'game/vos/PositionVO'],
-function (Ash,
+function (Ash, CanvasUtils,
     GameGlobals, ColorConstants, UIConstants, CanvasConstants, MovementConstants, PositionConstants, SectorConstants, WorldCreatorConstants,
     PlayerPositionNode,
     LevelComponent, CampComponent, PositionComponent, SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, SectorImprovementsComponent, WorkshopComponent, SectorComponent,
@@ -87,8 +88,9 @@ function (Ash,
             var map = {};
             map.canvasID = canvasId;
             
-            var canvas = $("#" + canvasId)[0];
-            var ctx = canvas ? canvas.getContext && canvas.getContext('2d') : null;
+            var canvases = $("#" + canvasId);
+            var canvas = canvases[0];
+            var ctx = CanvasUtils.getCTX(canvases);
 
             var visibleSectors = {};
             var allSectors = {};

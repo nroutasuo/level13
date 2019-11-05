@@ -99,6 +99,7 @@
 
 .vis-camp-layer {
     position: absolute;
+    top: 0;
 }
 
 .vis-camp-building-container {
@@ -133,47 +134,24 @@
     height: 12px;
     z-index: 3;
     font-size: 75%;
-    border-style: solid;
-    border-width: 1px 1px 0px 1px;
+}
+
+.vis-camp-building:hover {
+    background: fade(@color-text-highlight, 50%);
 }
 
 .vis-camp-building-z0 {
-    background: @color-vis-in-building-z0-bg;
-    border-color: @color-vis-in-building-z0-border;
     z-index: 3;
 }
 
 .vis-camp-building-z1 {
-    background: @color-vis-in-building-z1-bg;
-    border-color: @color-vis-in-building-z1-border;
     z-index: 2;
 }
 
 .vis-camp-building-z2 {
-    background: @color-vis-in-building-z2-bg;
-    border-color: @color-vis-in-building-z2-border;
     z-index: 1;
 }
 
 .vis-camp-building-z3 {
-    background: @color-vis-in-building-z3-bg;
-    border-color: @color-vis-in-building-z3-border;
     z-index: 0;
-}
-
-.vis-camp-building-rounded {
-    border-radius: 6px 6px 0px 0px;
-}
-
-.vis-camp-building-lit {
-    background: @color-vis-in-building-lit-bg;
-    border-color: @color-vis-in-building-lit-border;
-}
-
-.vis-camp-point {
-    width: 2px;
-    height: 2px;
-    background: red;
-    position: absolute;
-    z-index: 100;
 }

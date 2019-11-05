@@ -1988,6 +1988,7 @@ body.dark #vis-camp-info-overlay {
 }
 body.dark .vis-camp-layer {
   position: absolute;
+  top: 0;
 }
 body.dark .vis-camp-building-container {
   background: transparent;
@@ -2018,42 +2019,21 @@ body.dark .vis-camp-building {
   height: 12px;
   z-index: 3;
   font-size: 75%;
-  border-style: solid;
-  border-width: 1px 1px 0px 1px;
+}
+body.dark .vis-camp-building:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 body.dark .vis-camp-building-z0 {
-  background: #aaa;
-  border-color: #ccc;
   z-index: 3;
 }
 body.dark .vis-camp-building-z1 {
-  background: #888;
-  border-color: #aaa;
   z-index: 2;
 }
 body.dark .vis-camp-building-z2 {
-  background: #666;
-  border-color: #888;
   z-index: 1;
 }
 body.dark .vis-camp-building-z3 {
-  background: #444;
-  border-color: #555;
   z-index: 0;
-}
-body.dark .vis-camp-building-rounded {
-  border-radius: 6px 6px 0px 0px;
-}
-body.dark .vis-camp-building-lit {
-  background: #ddd56c;
-  border-color: #ddd56c;
-}
-body.dark .vis-camp-point {
-  width: 2px;
-  height: 2px;
-  background: red;
-  position: absolute;
-  z-index: 100;
 }
 body.sunlit {
   background: #fdfdfd;
@@ -3738,6 +3718,7 @@ body.sunlit #vis-camp-info-overlay {
 }
 body.sunlit .vis-camp-layer {
   position: absolute;
+  top: 0;
 }
 body.sunlit .vis-camp-building-container {
   background: transparent;
@@ -3768,40 +3749,19 @@ body.sunlit .vis-camp-building {
   height: 12px;
   z-index: 3;
   font-size: 75%;
-  border-style: solid;
-  border-width: 1px 1px 0px 1px;
+}
+body.sunlit .vis-camp-building:hover {
+  background: rgba(0, 0, 0, 0.5);
 }
 body.sunlit .vis-camp-building-z0 {
-  background: #666;
-  border-color: #555;
   z-index: 3;
 }
 body.sunlit .vis-camp-building-z1 {
-  background: #888;
-  border-color: #777;
   z-index: 2;
 }
 body.sunlit .vis-camp-building-z2 {
-  background: #aaa;
-  border-color: #bbb;
   z-index: 1;
 }
 body.sunlit .vis-camp-building-z3 {
-  background: #ccc;
-  border-color: #ddd;
   z-index: 0;
-}
-body.sunlit .vis-camp-building-rounded {
-  border-radius: 6px 6px 0px 0px;
-}
-body.sunlit .vis-camp-building-lit {
-  background: #fff;
-  border-color: #ddd;
-}
-body.sunlit .vis-camp-point {
-  width: 2px;
-  height: 2px;
-  background: red;
-  position: absolute;
-  z-index: 100;
 }

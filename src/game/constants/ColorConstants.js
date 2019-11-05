@@ -27,6 +27,11 @@ define(function () {
                 techtree_node_available: "#777",
                 techtree_node_default: "#777",
                 techtree_node_dimmed: "#444",
+                campvis_building_lit_bg: "#ddd56c",
+                campvis_building_z0_bg: "#aaa",
+                campvis_building_z1_bg: "#888",
+                campvis_building_z2_bg: "#666",
+                campvis_building_z3_bg: "#444",
             },
             sunlit: {
                 bg_page: "#fdfdfd",
@@ -50,6 +55,11 @@ define(function () {
                 techtree_node_available: "#ccc",
                 techtree_node_default: "#ccc",
                 techtree_node_dimmed: "#eee",
+                campvis_building_lit_bg: "#fff",
+                campvis_building_z0_bg: "#666",
+                campvis_building_z1_bg: "#888",
+                campvis_building_z2_bg: "#aaa",
+                campvis_building_z3_bg: "#ccc",
             },
             global: {
                 res_metal: "#202020",

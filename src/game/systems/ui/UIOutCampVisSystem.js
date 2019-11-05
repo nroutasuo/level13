@@ -1,14 +1,16 @@
 define([
     'ash',
     'utils/MathUtils',
+    'utils/CanvasUtils',
     'utils/UIState',
     'game/GameGlobals',
     'game/GlobalSignals',
+    'game/constants/ColorConstants',
     'game/nodes/PlayerLocationNode',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/worldcreator/WorldCreatorRandom',
 ], function (
-    Ash, MathUtils, UIState, GameGlobals, GlobalSignals, PlayerLocationNode, SectorImprovementsComponent, WorldCreatorRandom
+    Ash, MathUtils, CanvasUtils, UIState, GameGlobals, GlobalSignals, ColorConstants, PlayerLocationNode, SectorImprovementsComponent, WorldCreatorRandom
 ) {
 
     var UIOutCampVisSystem = Ash.System.extend({
@@ -19,11 +21,11 @@ define([
         
         constructor: function () {
             this.elements.container = $("#tab-vis-in-container");
-            this.elements.layerGrid = $("#vis-camp-layer-grid");
-            this.elements.layerSpots = $("#vis-camp-layer-spots");
+            this.elements.canvas = $("#campvis");
             this.elements.layerBuildings = $("#vis-camp-layer-buildings");
             this.elements.infoOverlay = $("#vis-camp-info-overlay");
             this.elements.infoText = $("#vis-camp-info-overlay span");
+            this.ctx = CanvasUtils.getCTX(this.elements.canvas);
             
             this.containerDefaultHeight = 96;
             this.buildingContainerSizeX = 14;
@@ -83,6 +85,8 @@ define([
             this.containerHeight = this.containerDefaultHeight;
             this.elements.container.css("width", this.containerWidth + "px");
             this.elements.container.css("height", this.containerHeight + "px");
+            this.elements.canvas.attr("width", this.containerWidth);
+            this.elements.canvas.attr("height", this.containerHeight);
         },
         
         refreshFloor: function () {
@@ -99,6 +103,7 @@ define([
             var level = this.playerLocationNodes.head.position.level;
             var reset = this.buildingsLevel !== level;
             
+            // update divs
             if (reset) {
                 if (this.elements.buildings) {
                     for (var name in this.elements.buildings) {
@@ -117,6 +122,7 @@ define([
             var all = improvements.getAll(improvementTypes.camp);
             
             var building;
+            var buildingsToDraw = [[],[],[],[]];
             for (var i = 0; i < all.length; i++) {
                 building = all[i];
                 var size = this.getBuildingSize(building);
@@ -141,23 +147,27 @@ define([
                             this.elements.buildings[building.name][n][j] = $elem;
                             $elem.mouseleave({ system: this, building: building.name }, this.onMouseLeaveBuilding);
                             $elem.mouseenter({ system: this, building: building.name }, this.onMouseEnterBuilding);
-                            if (!reset) {
-                                // animate newly built buildings
-                                $elem.hide();
-                                $elem.show("scale");
-                            }
                         }
                         
                         buildingCoords.push({ building: building, n: n, j: j, coords: coords });
 
-                        // position all buildings
-                        $elem.css("left", this.getXpx(coords.x, coords.z, size) + "px");
-                        $elem.css("top", this.getYpx(coords.x, coords.z, size) + "px");
-                        $elem.toggleClass("vis-camp-building-z0", coords.z == 0);
-                        $elem.toggleClass("vis-camp-building-z1", coords.z == 1);
-                        $elem.toggleClass("vis-camp-building-z2", coords.z == 2);
-                        $elem.toggleClass("vis-camp-building-z3", coords.z == 3);
+                        // position building
+                        var xpx = this.getXpx(coords.x, coords.z, size);
+                        var ypx = this.getYpx(coords.x, coords.z, size);
+                        $elem.css("left", xpx + "px");
+                        $elem.css("top", ypx + "px");
+                        buildingsToDraw[coords.z].push({building: building, coords: coords, xpx: xpx, ypx: ypx, size: size});
                     }
+                }
+            }
+            
+            // update canvas
+            this.ctx.clearRect(0, 0, this.containerWidth, this.containerHeight);
+            for (var z = buildingsToDraw.length - 1; z >= 0; z--) {
+                for (var i = 0; i < buildingsToDraw[z].length; i++) {
+                var vo = buildingsToDraw[z][i];
+                    this.ctx.fillStyle = this.getBuildingColor(vo.building, vo.coords);
+                    this.ctx.fillRect(vo.xpx, vo.ypx, vo.size.x, vo.size.y);
                 }
             }
             
@@ -220,7 +230,7 @@ define([
         getBuildingDiv: function (i, building, n, j, coords) {
             var size = this.getBuildingSize(building);
             var style = "width: " + size.x + "px; height: " + size.y + "px;";
-            var classes = "vis-camp-building " + this.getBuildingClasses(building, coords);
+            var classes = "vis-camp-building " + this.getBuildingZClass(building, coords);
             var data = "data-building-name='" + building.name + "' data-building-index='" + n + "' data-building-vis-index='" + j + "'";
             var id = this.getBuildingDivID(building, n, j);
             var desc = building.name;
@@ -235,28 +245,23 @@ define([
             return GameGlobals.campVisHelper.getBuildingSize(building.name);
         },
         
-        getBuildingClasses: function (building, coords) {
-            var result = [];
-            
-            result.push(this.getBuildingColorClass(building, coords));
-            switch (building.name) {
-                case improvementNames.home:
-                case improvementNames.house:
-                    result.push("vis-camp-building-rounded");
-                    break;
-                case improvementNames.campfire:
-                case improvementNames.lights:
-                    result.push("vis-camp-building-lit");
-                    break;
-            }
-            return result.join(" ");
-        },
-        
-        getBuildingColorClass: function (building, coords) {
+        getBuildingZClass: function (building, coords) {
             if (coords.z == 0) return "vis-camp-building-z0";
             if (coords.z == 1) return "vis-camp-building-z1";
             if (coords.z == 2) return "vis-camp-building-z2";
             return "vis-camp-building-z3";
+        },
+        
+        getBuildingColor: function (building, coords) {
+            var sunlit = $("body").hasClass("sunlit");
+            switch (building.name) {
+                case improvementNames.campfire:
+                case improvementNames.lights:
+                    return ColorConstants.getColor(sunlit, "campvis_building_lit_bg");
+                    break;
+                default:
+                    return ColorConstants.getColor(sunlit, "campvis_building_z" + coords.z + "_bg");
+            }
         },
         
         getXpx: function (x, z, size) {
