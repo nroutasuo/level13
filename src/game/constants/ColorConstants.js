@@ -32,6 +32,10 @@ define(function () {
                 campvis_building_z1_bg: "#888",
                 campvis_building_z2_bg: "#666",
                 campvis_building_z3_bg: "#444",
+                campvis_building_z0_detail: "#888",
+                campvis_building_z1_detail: "#777",
+                campvis_building_z2_detail: "#666",
+                campvis_building_z3_detail: "#444",
             },
             sunlit: {
                 bg_page: "#fdfdfd",
@@ -60,6 +64,10 @@ define(function () {
                 campvis_building_z1_bg: "#888",
                 campvis_building_z2_bg: "#aaa",
                 campvis_building_z3_bg: "#ccc",
+                campvis_building_z0_detail: "#888",
+                campvis_building_z1_detail: "#999",
+                campvis_building_z2_detail: "#aaa",
+                campvis_building_z3_detail: "#ccc",
             },
             global: {
                 res_metal: "#202020",

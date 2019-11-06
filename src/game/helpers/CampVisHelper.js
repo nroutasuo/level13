@@ -55,19 +55,17 @@ function (Ash) {
         getBuildingSize: function (buildingType) {
             var s = this.defaultBuildingSize;
             switch (buildingType) {
-                case improvementNames.campfire:
-                    return { x: 4, y: 4 };
                 case improvementNames.lights:
                     return { x: 2, y: s / 2 * 3 };
                 case improvementNames.storage:
                     return { x: s / 2 * 3, y: s * 2.5 };
                 case improvementNames.hospital:
-                    return { x: s, y: s * 1.5 };
+                    return { x: s * 2, y: s * 2 };
                 case improvementNames.fortification:
                 case improvementNames.fortification2:
                     return { x: 4, y: s * 3 };
                 case improvementNames.tradepost:
-                    return { x: s, y: s * 1.25 };
+                    return { x: s * 2, y: s * 1.25 };
                 case improvementNames.square:
                     return { x: s * 3, y: 2 };
             }

@@ -414,17 +414,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
             this.ctx.stroke();
             
             // arrowhead
-            var headlen = 8;
-            this.ctx.fillStyle = color;
-            this.ctx.lineWidth = 2;
-            this.ctx.beginPath();
-            this.ctx.moveTo(tox, toy);
-            this.ctx.lineTo(tox-headlen*Math.cos(angle-Math.PI/6),toy-headlen*Math.sin(angle-Math.PI/6));
-            this.ctx.moveTo(tox, toy);
-            this.ctx.lineTo(tox-headlen*Math.cos(angle+Math.PI/6),toy-headlen*Math.sin(angle+Math.PI/6));
-            this.ctx.lineTo(tox-headlen*Math.cos(angle-Math.PI/6),toy-headlen*Math.sin(angle-Math.PI/6));
-            this.ctx.fill();
-            this.ctx.closePath();
+            CanvasUtils.drawTriangle(this.ctx, color, 8, 8, tox, toy, angle);
         },
         
         makeTechTree: function () {

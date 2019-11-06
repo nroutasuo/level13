@@ -156,7 +156,7 @@ define([
                         var ypx = this.getYpx(coords.x, coords.z, size);
                         $elem.css("left", xpx + "px");
                         $elem.css("top", ypx + "px");
-                        buildingsToDraw[coords.z].push({building: building, coords: coords, xpx: xpx, ypx: ypx, size: size});
+                        buildingsToDraw[coords.z].push({building: building, coords: coords});
                     }
                 }
             }
@@ -165,15 +165,96 @@ define([
             this.ctx.clearRect(0, 0, this.containerWidth, this.containerHeight);
             for (var z = buildingsToDraw.length - 1; z >= 0; z--) {
                 for (var i = 0; i < buildingsToDraw[z].length; i++) {
-                var vo = buildingsToDraw[z][i];
-                    this.ctx.fillStyle = this.getBuildingColor(vo.building, vo.coords);
-                    this.ctx.fillRect(vo.xpx, vo.ypx, vo.size.x, vo.size.y);
+                    var vo = buildingsToDraw[z][i];
+                    this.drawBuildingOnCanvas(vo.building, vo.coords);
                 }
             }
             
             this.checkOverlaps(buildingCoords);
             
             this.buildingsLevel = level;
+        },
+        
+        drawBuildingOnCanvas: function (building, coords) {
+            var size = this.getBuildingSize(building);
+            var xpx = this.getXpx(coords.x, coords.z, size);
+            var ypx = this.getYpx(coords.x, coords.z, size);
+            var tipx = xpx + size.x / 2;
+            var tipy = ypx;
+            var basex = xpx + size.x / 2;
+            var basey = ypx + size.y;
+            var middlex = xpx + size.x / 2;
+            var middley = ypx + size.y / 2;
+            var xleft = xpx;
+            var xright = xpx + size.x;
+            var ytop = ypx;
+            var ybottom = ypx + size.y;
+            
+            // shape
+            var color = this.getBuildingColor(building, coords);
+            this.ctx.fillStyle = color;
+            switch (building.name) {
+                case improvementNames.campfire:
+                    CanvasUtils.drawTriangle(this.ctx, color, size.x, size.y, tipx, tipy, -90 * Math.PI / 180);
+                    break;
+                case improvementNames.home:
+                    CanvasUtils.drawTriangle(this.ctx, color, size.x, size.y/2+1, tipx, tipy, -90 * Math.PI / 180);
+                    this.ctx.fillRect(xpx, middley, size.x, size.y/2);
+                    break;
+                case improvementNames.storage:
+                    var triangleH = size.y / 5;
+                    CanvasUtils.drawTriangle(this.ctx, color, size.x, triangleH+2, tipx, tipy, -90 * Math.PI / 180);
+                    CanvasUtils.drawTriangle(this.ctx, color, size.x, triangleH+2, basex, basey, 90 * Math.PI / 180);
+                    this.ctx.fillRect(xpx, ypx + triangleH, size.x, size.y - triangleH * 2);
+                    this.ctx.fillRect(xleft, middley, 3, size.y / 2);
+                    this.ctx.fillRect(xright - 3, middley, 3, size.y / 2);
+                    break;
+                case improvementNames.house:
+                    this.ctx.beginPath();
+                    this.ctx.arc(middlex, middley, size.y/2, 0, 2 * Math.PI);
+                    this.ctx.fill();
+                    this.ctx.fillRect(xpx, middley, size.x, size.y/2);
+                    break;
+                default:
+                    this.ctx.fillRect(xpx, ypx, size.x, size.y);
+                    break;
+            }
+            
+            // details
+            var detailcolor = this.getBuildingDetailColor(building, coords);
+            this.ctx.fillStyle = detailcolor;
+            this.ctx.strokeStyle = detailcolor;
+            this.ctx.lineWidth = 2;
+            switch (building.name) {
+                case improvementNames.storage:
+                    this.ctx.fillRect(xpx+1, middley-6, size.x-2, 2);
+                    this.ctx.fillRect(xpx+1, middley, size.x-2, 2);
+                    this.ctx.fillRect(xpx+1, middley+6, size.x-2, 2);
+                    break;
+                case improvementNames.hospital:
+                    var xpadding = 1;
+                    var ypadding = 4;
+                    var margin = 4;
+                    var xw = (size.x - xpadding*2-margin*2) / 3;
+                    var yh = (size.y - ypadding*2-margin*2) / 3;
+                    for (var x = margin; x < size.x - xw; x += xw + xpadding) {
+                        for (var y = margin; y < size.y - yh; y += yh + ypadding) {
+                            this.ctx.fillRect(xpx+x, ypx+y, xw, yh);
+                        }
+                    }
+                    break;
+                case improvementNames.tradepost:
+                    var xpadding = 3;
+                    var margin = 3;
+                    var xw = (size.x - xpadding-margin*2) / 2;
+                    var yh = size.y - margin * 2;
+                    this.ctx.strokeRect(xpx+margin, ypx+3, xw, yh);
+                    this.ctx.strokeRect(xright-margin - xw, ypx+3, xw, yh);
+                    break;
+                default:
+                    break;
+            }
+            
         },
         
         updateInfoOverlay: function () {
@@ -262,6 +343,11 @@ define([
                 default:
                     return ColorConstants.getColor(sunlit, "campvis_building_z" + coords.z + "_bg");
             }
+        },
+        
+        getBuildingDetailColor: function (building, coords) {
+            var sunlit = $("body").hasClass("sunlit");
+            return ColorConstants.getColor(sunlit, "campvis_building_z" + coords.z + "_detail");
         },
         
         getXpx: function (x, z, size) {
