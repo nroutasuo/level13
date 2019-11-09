@@ -55,19 +55,31 @@ function (Ash) {
         getBuildingSize: function (buildingType) {
             var s = this.defaultBuildingSize;
             switch (buildingType) {
-                case improvementNames.lights:
-                    return { x: 2, y: s / 2 * 3 };
-                case improvementNames.storage:
-                    return { x: s / 2 * 3, y: s * 2.5 };
-                case improvementNames.hospital:
-                    return { x: s * 2, y: s * 2 };
+                case improvementNames.darkfarm:
+                    return { x: s * 1.75, y: s * 1.25 };
                 case improvementNames.fortification:
                 case improvementNames.fortification2:
                     return { x: 4, y: s * 3 };
+                case improvementNames.generator:
+                    return { x: s, y: s * 0.75 };
+                case improvementNames.hospital:
+                    return { x: s * 2, y: s * 2 };
+                case improvementNames.inn:
+                    return { x: s * 1.25, y: s * 1.5 };
+                case improvementNames.library:
+                    return { x: s, y: s * 3.5 };
+                case improvementNames.lights:
+                    return { x: 2, y: s / 2 * 3 };
+                case improvementNames.market:
+                    return { x: s * 3, y: s * 1.25 };
+                case improvementNames.stable:
+                    return { x: s * 1.25, y: s * 1.5 };
+                case improvementNames.storage:
+                    return { x: s / 2 * 3, y: s * 2.5 };
+                case improvementNames.square:
+                    return { x: s * 3, y: s };
                 case improvementNames.tradepost:
                     return { x: s * 2, y: s * 1.25 };
-                case improvementNames.square:
-                    return { x: s * 3, y: 2 };
             }
             return { x: s, y: s };
         },
@@ -112,6 +124,16 @@ function (Ash) {
             var size = this.getBuildingSize(buildingType);
             if (isStrict && size.y > this.defaultBuildingSize && coords.z < 1) return false;
             if (size.y < this.defaultBuildingSize && coords.z > 1) return false;
+            // z-coordinate: some buildings prefer foreground/bacgrkound
+            switch (buildingType) {
+                case improvementNames.fortification:
+                case improvementNames.fortification2:
+                    if (coords.z < 2) return false;
+                    break;
+                case improvementNames.hospital:
+                case improvementNames.library:
+                    if (coords.z > 1) return false;
+            }
             // x-coordinate: some building types avoid the center
             var xdist = Math.abs(coords.x);
             switch (buildingType) {
@@ -119,7 +141,7 @@ function (Ash) {
                     if (xdist < 4) return false;
                     break;
                 case improvementNames.fortification:
-                    if (xdist < 10  ) return false;
+                    if (xdist < 12) return false;
             }
             // both: no low z coordinates far from the center
             if (xdist > 10 && coords.z < 1) return false;
