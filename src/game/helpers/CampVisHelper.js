@@ -41,6 +41,10 @@ function (Ash) {
             return this.coordinates[i];
         },
         
+        getFortificationCoords: function (n) {
+            return { x: 0, z: 4};
+        },
+        
         getSpotIndex: function (x, z) {
             var i = 0;
             while (this.coordinates[i]) {
@@ -59,7 +63,7 @@ function (Ash) {
                     return { x: s * 1.75, y: s * 1.25 };
                 case improvementNames.fortification:
                 case improvementNames.fortification2:
-                    return { x: 4, y: s * 3 };
+                    return { x: 1000, y: s * 1 };
                 case improvementNames.generator:
                     return { x: s, y: s * 0.75 };
                 case improvementNames.hospital:
@@ -165,6 +169,9 @@ function (Ash) {
         
         getFreeCampBuildingSpot: function (sectorImprovements, building) {
             var buildingType1 = building.name;
+            if (buildingType1 == improvementNames.fortification) {
+                return -1;
+            }
             var buildingCount = sectorImprovements.getTotalCount();
             var minstarti = 0;
             var maxstarti = this.getMaxBuildingSpotAssignStartIndex(building, buildingCount);

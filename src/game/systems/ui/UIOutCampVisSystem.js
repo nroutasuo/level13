@@ -122,7 +122,7 @@ define([
             var all = improvements.getAll(improvementTypes.camp);
             
             var building;
-            var buildingsToDraw = [[],[],[],[]];
+            var buildingsToDraw = [[],[],[],[],[]];
             for (var i = 0; i < all.length; i++) {
                 building = all[i];
                 var size = this.getBuildingSize(building);
@@ -156,7 +156,7 @@ define([
                         var ypx = this.getYpx(coords.x, coords.z, size);
                         $elem.css("left", xpx + "px");
                         $elem.css("top", ypx + "px");
-                        buildingsToDraw[coords.z].push({building: building, coords: coords});
+                        buildingsToDraw[coords.z].push({building: building, coords: coords, n: n});
                     }
                 }
             }
@@ -166,7 +166,7 @@ define([
             for (var z = buildingsToDraw.length - 1; z >= 0; z--) {
                 for (var i = 0; i < buildingsToDraw[z].length; i++) {
                     var vo = buildingsToDraw[z][i];
-                    this.drawBuildingOnCanvas(vo.building, vo.coords);
+                    this.drawBuildingOnCanvas(vo.building, vo.coords, vo.n);
                 }
             }
             
@@ -175,7 +175,7 @@ define([
             this.buildingsLevel = level;
         },
         
-        drawBuildingOnCanvas: function (building, coords) {
+        drawBuildingOnCanvas: function (building, coords, n) {
             var size = this.getBuildingSize(building);
             var xpx = this.getXpx(coords.x, coords.z, size);
             var ypx = this.getYpx(coords.x, coords.z, size);
@@ -232,6 +232,41 @@ define([
                     }
                     CanvasUtils.drawLine(this.ctx, xpx + xw, ypx + 2, xpx + xw, ybottom);
                     CanvasUtils.drawLine(this.ctx, xpx + xw*2, ypx + 2, xpx + xw*2, ybottom);
+                    break;
+                case improvementNames.fortification:
+                case improvementNames.fortification2:
+                    var logw = 3;
+                    var logh = n == 0 ? size.y : n >= 4 ? size.y * 2 : size.y * 1.5;
+                    var logd = 18;
+                    var startx = n == 0 ? 0 : logd / 2;
+                    switch (n) {
+                        case 0:
+                        case 1:
+                            this.ctx.fillRect(xpx, middley, size.x, 2);
+                            for (var x = startx; x < size.x ; x += logd) {
+                                this.ctx.fillRect(middlex + x, ybottom - logh, logw, logh);
+                                this.ctx.fillRect(middlex - x, ybottom - logh, logw, logh);
+                            }
+                            break;
+                        case 2:
+                            this.ctx.fillRect(xpx, middley - 9, size.x, 4);
+                            break;
+                        case 3:
+                            var h = size.y * 0.75;
+                            this.ctx.fillRect(xpx, ybottom - h - 4, size.x, h);
+                            break;
+                        case 4:
+                            var h = size.y * 1;
+                            this.ctx.fillRect(xpx, ybottom - h - 3, size.x, h);
+                            break;
+                        default:
+                            var w = logd;
+                            var h = size.y * 2.5;
+                            var d = 2 + (n-4)*4;
+                            this.ctx.fillRect(middlex - logd * d, ybottom - h, w, h);
+                            this.ctx.fillRect(middlex + logd * d, ybottom - h, w, h);
+                            break;
+                    }
                     break;
                 case improvementNames.generator:
                     this.ctx.fillRect(xpx, ypx, size.x, size.y - 3);
@@ -387,6 +422,9 @@ define([
         },
         
         getBuildingCoords: function (improvements, building, n, j) {
+            if (building.name == improvementNames.fortification) {
+                return GameGlobals.campVisHelper.getFortificationCoords(n);
+            }
             var index = improvements.getSelectedCampBuildingSpot(building, n, j, true);
             if (index < 0) {
                 log.w("No building spot defined for " + building.name + " " + n + " " + j + " | " + index);
