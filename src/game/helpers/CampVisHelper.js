@@ -12,7 +12,7 @@ function (Ash) {
 
         constructor: function () {
             this.gridX = 12;
-            this.defaultBuildingSize = 16;
+            this.defaultBuildingSize = 15;
         },
         
         initCoordinate: function (i) {
@@ -69,7 +69,7 @@ function (Ash) {
                 case improvementNames.library:
                     return { x: s, y: s * 3.5 };
                 case improvementNames.lights:
-                    return { x: 2, y: s / 2 * 3 };
+                    return { x: 3, y: s / 2 * 3.5 };
                 case improvementNames.market:
                     return { x: s * 3, y: s * 1.25 };
                 case improvementNames.stable:
@@ -120,32 +120,46 @@ function (Ash) {
         isValidCoordinates: function (coords, buildingType) {
             // create soft rules / preferences by applying some rules to only some coordinates
             var isStrict = coords.x % 2 == 0;
+            
             // z-coordinate: bigger buildings prefer higher z values
             var size = this.getBuildingSize(buildingType);
             if (isStrict && size.y > this.defaultBuildingSize && coords.z < 1) return false;
             if (size.y < this.defaultBuildingSize && coords.z > 1) return false;
+            
             // z-coordinate: some buildings prefer foreground/bacgrkound
             switch (buildingType) {
                 case improvementNames.fortification:
                 case improvementNames.fortification2:
                     if (coords.z < 2) return false;
                     break;
-                case improvementNames.hospital:
-                case improvementNames.library:
+                case improvementNames.campfire:
+                case improvementNames.lights:
                     if (coords.z > 1) return false;
+                    break;
             }
+            
             // x-coordinate: some building types avoid the center
             var xdist = Math.abs(coords.x);
             switch (buildingType) {
-                case improvementNames.storage:
+                case improvementNames.house:
                     if (xdist < 4) return false;
                     break;
+                case improvementNames.darkfarm:
+                case improvementNames.storage:
+                    if (xdist < 6) return false;
+                    break;
+                case improvementNames.stable:
+                    if (xdist < 8) return false;
+                    break;
                 case improvementNames.fortification:
-                    if (xdist < 12) return false;
+                    if (xdist < 20) return false;
+                    break;
             }
+            
             // both: no low z coordinates far from the center
-            if (xdist > 10 && coords.z < 1) return false;
-            if (xdist > 20 && coords.z < 2) return false;
+            if (xdist > 15 && coords.z < 1) return false;
+            if (xdist > 25 && coords.z < 2) return false;
+            
             return true;
         },
         
@@ -153,7 +167,7 @@ function (Ash) {
             var buildingType1 = building.name;
             var buildingCount = sectorImprovements.getTotalCount();
             var minstarti = 0;
-            var maxstarti = 12 + buildingCount * 4;
+            var maxstarti = this.getMaxBuildingSpotAssignStartIndex(building, buildingCount);
             var starti = minstarti + Math.floor(Math.random() * (maxstarti - minstarti));
             for (var i = starti; i < 1000; i++) {
                 var coords1 = this.getCoords(i);
@@ -182,23 +196,18 @@ function (Ash) {
             log.w("Couldn't find free valid buildings spot for " + building.name);
             return 0;
         },
-
-        findNextFreeX: function (targetI, z) {
-            // ensure previous i are initialized
-            for (var i = 0; i < targetI; i++) {
-                if (!this.coordinates[i]) {
-                    this.coordinates[i] = this.initCoordinate(i);
-                }
+        
+        getMaxBuildingSpotAssignStartIndex: function (building, buildingCount) {
+            switch (building) {
+                case improvementNames.square:
+                case improvementNames.inn:
+                    return 0;
+                case improvementNames.house:
+                case improvementNames.house2:
+                    return 1 + buildingCount * 2;
+                default:
+                    return 12 + buildingCount * 4;
             }
-            for (var x = 0; x < 1000; x++) {
-                // TODO skip certain coords by level to create variety
-                if (x % (z+2) == 0) x++;
-                if (x / 2 % 4 == 0) x++;
-                if (this.getSpotIndex(x, z) < 0) return x;
-                if (this.getSpotIndex(-x, z) < 0) return -x;
-            }
-            log.w("Couldn't find free x coordinate for building spot: " + targetI);
-            return 0;
         },
         
     });

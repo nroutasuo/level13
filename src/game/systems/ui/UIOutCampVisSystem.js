@@ -200,6 +200,9 @@ define([
                     CanvasUtils.drawTriangle(this.ctx, color, size.x, triangleH, tipx, tipy, -90 * Math.PI / 180);
                     this.ctx.fillRect(xpx, ypx + triangleH, size.x, size.y - triangleH);
                     break;
+                case improvementNames.market:
+                    this.ctx.fillRect(xpx+2, ypx + roofh + 2, size.x-4, size.y-roofh-2);
+                    break;
             }
             
             // main structure
@@ -211,6 +214,13 @@ define([
             switch (building.name) {
                 case improvementNames.campfire:
                     CanvasUtils.drawTriangle(this.ctx, color, size.x, size.y, tipx, tipy, -90 * Math.PI / 180);
+                    break;
+                case improvementNames.cementmill:
+                    this.ctx.fillRect(xpx, ypx, size.x, size.y);
+                    this.ctx.fillRect(xpx-1, ypx, size.x + 2, 2);
+                    var chimneyh = 4;
+                    var chimneyw = 3;
+                    this.ctx.fillRect(xright - chimneyw - 3, ypx - chimneyh, chimneyw, chimneyh);
                     break;
                 case improvementNames.darkfarm:
                     var triangleH = size.y / 3;
@@ -230,7 +240,7 @@ define([
                     break;
                 case improvementNames.home:
                     CanvasUtils.drawTriangle(this.ctx, color, size.x, size.y/2+1, tipx, tipy, -90 * Math.PI / 180);
-                    this.ctx.fillRect(xpx, middley, size.x, size.y/2);
+                    this.ctx.fillRect(xpx, middley-1, size.x, size.y/2+1);
                     break;
                 case improvementNames.library:
                     this.ctx.fillRect(xpx, middley, size.x, size.y/2);
@@ -238,11 +248,17 @@ define([
                     this.ctx.fillRect(xpx + 3, ypx, size.x - 6, size.y);
                     break;
                 case improvementNames.market:
-                    this.ctx.fillRect(xpx, ypx, size.x, 6);
+                    var roofh = 6;
+                    this.ctx.fillRect(xpx, ypx, size.x, roofh);
                     this.ctx.fillRect(xpx, ybottom - 2, size.x, 2);
-                    this.ctx.fillRect(xleft+2, ypx, 2, size.y);
-                    this.ctx.fillRect(middlex-1, ypx, 2, size.y);
-                    this.ctx.fillRect(xright-4, ypx, 2, size.y);
+                    this.ctx.fillRect(xpx+2, ypx + roofh + 2, size.x-4, size.y-roofh-2);
+                    break;
+                case improvementNames.smithy:
+                    this.ctx.fillRect(xpx, ypx, size.x, size.y);
+                    this.ctx.fillRect(xpx-1, ypx, size.x + 2, 2);
+                    var chimneyh = 3;
+                    var chimneyw = 4;
+                    this.ctx.fillRect(xpx + 2, ypx - chimneyh, chimneyw, chimneyh);
                     break;
                 case improvementNames.stable:
                     this.ctx.fillRect(xpx, ypx + size.y/3, size.x, size.y/3*2);
@@ -297,6 +313,11 @@ define([
                     CanvasUtils.fillWithRectangles(this.ctx, detailcolor, xpx, ypx, size.x, size.y/3, 2, 2, 2, 2, 1, 3);
                     CanvasUtils.fillWithRectangles(this.ctx, detailcolor, xpx, middley, size.x, size.y/2-2, 2, 2, 2, 2, 2, 3);
                     break;
+                case improvementNames.smithy:
+                case improvementNames.apothecary:
+                case improvementNames.cementmill:
+                    this.ctx.fillRect(xpx + 2, ypx + 4, size.x - 4, size.y / 3);
+                    break;
                 case improvementNames.stable:
                     this.ctx.fillRect(middlex - 3, ypx + 3, 6, 2);
                     this.ctx.fillRect(middlex - 3, ypx + 8, 6, 2);
@@ -314,12 +335,12 @@ define([
                     this.ctx.fillRect(middlex - w, ybottom - 1 - h*2, w*2, h*2);
                     break;
                 case improvementNames.tradepost:
-                    var xpadding = 3;
+                    var xpadding = 5;
                     var margin = 3;
                     var xw = (size.x - xpadding-margin*2) / 2;
                     var yh = size.y - margin * 2;
-                    this.ctx.strokeRect(xpx+margin, ypx+3, xw, yh);
-                    this.ctx.strokeRect(xright-margin - xw, ypx+3, xw, yh);
+                    this.ctx.fillRect(xpx+margin, ypx+3, xw, yh);
+                    this.ctx.fillRect(xright-margin - xw, ypx+3, xw, yh);
                     break;
                 default:
                     break;
