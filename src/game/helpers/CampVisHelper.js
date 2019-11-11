@@ -11,7 +11,7 @@ function (Ash) {
         coordinates: {},
 
         constructor: function () {
-            this.gridX = 12;
+            this.gridX = 10;
             this.defaultBuildingSize = 15;
         },
         
@@ -60,16 +60,18 @@ function (Ash) {
             var s = this.defaultBuildingSize;
             switch (buildingType) {
                 case improvementNames.darkfarm:
-                    return { x: s * 1.75, y: s * 1.25 };
+                    return { x: s * 1.5, y: s * 1.25 };
                 case improvementNames.fortification:
                 case improvementNames.fortification2:
                     return { x: 1000, y: s * 1 };
                 case improvementNames.generator:
-                    return { x: s, y: s * 0.75 };
+                    return { x: s * 0.9, y: s * 0.65 };
                 case improvementNames.hospital:
                     return { x: s * 2, y: s * 2 };
+                case improvementNames.house2:
+                    return { x: s * 0.9, y: s * 2.5 };
                 case improvementNames.inn:
-                    return { x: s * 1.25, y: s * 1.5 };
+                    return { x: s, y: s * 1.25 };
                 case improvementNames.library:
                     return { x: s, y: s * 3.5 };
                 case improvementNames.lights:
@@ -89,30 +91,35 @@ function (Ash) {
         },
         
         isConflict: function (coords1, coords2, buildingType1, buildingType2) {
+            if (buildingType1 == improvementNames.fortification) return false;
+            if (buildingType1 == improvementNames.fortification2) return false;
+            if (buildingType2 == improvementNames.fortification) return false;
+            if (buildingType2 == improvementNames.fortification2) return false;
             var width1 = this.getBuildingSize(buildingType1).x;
             var width2 = this.getBuildingSize(buildingType2).x;
             var x1 = coords1.x * this.gridX;
             var x2 = coords2.x * this.gridX;
             var xdist = Math.abs(x1 - x2);
+            var zdiff = coords1.z - coords2.z;
+            var zdist = Math.abs(zdiff);
             var minDistance = 0;
             if (coords1.z == coords2.z) {
                 // same layer, no overlap allowed and some margin
-                minDistance = Math.ceil(width1/2 + width2/2) + 4;
+                minDistance = Math.ceil(width1/2 + width2/2) + 2;
             } else {
                 // different layers, depends on height difference
                 var height1 = this.getBuildingSize(buildingType1).y;
                 var height2 = this.getBuildingSize(buildingType2).y;
                 var ydiff = height1 - height2;
-                var zdiff = coords1.z - coords2.z;
                 if (zdiff < 0 && ydiff < 0) {
                     // 1 in front and 2 is taller, overlap fine
-                    minDistance = 0;
+                    minDistance = zdist > 1 ? 0 : 1;
                 } else if (zdiff > 0 && ydiff > 0) {
                     // 2 in front and 1 is taller, overlap fine
-                    minDistance = 0;
+                    minDistance = zdist > 1 ? 0 : 1;
                 } else if (ydiff == 0) {
                     // same height, a bit of margin
-                    minDistance = 6;
+                    minDistance = Math.min(width1/2, width2/2);
                 } else {
                     // taller building in front, ma sure shorter is visible
                     minDistance = Math.max(width1/2, width2/2) + 2;
@@ -150,13 +157,12 @@ function (Ash) {
                     break;
                 case improvementNames.darkfarm:
                 case improvementNames.storage:
+                case improvementNames.cementmill:
+                case improvementNames.generator:
                     if (xdist < 6) return false;
                     break;
                 case improvementNames.stable:
-                    if (xdist < 8) return false;
-                    break;
-                case improvementNames.fortification:
-                    if (xdist < 20) return false;
+                    if (xdist < 10) return false;
                     break;
             }
             
@@ -174,9 +180,10 @@ function (Ash) {
             }
             var buildingCount = sectorImprovements.getTotalCount();
             var minstarti = 0;
-            var maxstarti = this.getMaxBuildingSpotAssignStartIndex(building, buildingCount);
+            var maxstarti = this.getMaxBuildingSpotAssignStartIndex(buildingType1, buildingCount);
             var starti = minstarti + Math.floor(Math.random() * (maxstarti - minstarti));
-            for (var i = starti; i < 1000; i++) {
+            var step = 1 +  Math.floor(Math.random() * 8);
+            for (var i = starti; i < 1000; i += step) {
                 var coords1 = this.getCoords(i);
                 // valid coordinates for building type?
                 if (!this.isValidCoordinates(coords1, buildingType1)) continue;

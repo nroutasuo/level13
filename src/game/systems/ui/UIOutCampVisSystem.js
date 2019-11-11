@@ -29,9 +29,9 @@ define([
             
             this.containerDefaultHeight = 96;
             this.buildingContainerSizeX = 14;
-            this.floorPos = 22;
-            this.floorThickness = 22;
-            this.zStep = 6;
+            this.floorPos = 20;
+            this.floorThickness = 20;
+            this.zStep = 4;
             
             return this;
         },
@@ -269,9 +269,11 @@ define([
                     }
                     break;
                 case improvementNames.generator:
-                    this.ctx.fillRect(xpx, ypx, size.x, size.y - 3);
-                    this.ctx.fillRect(xleft, ypx, 3, size.y);
-                    this.ctx.fillRect(xright - 3, ypx, 3, size.y);
+                    var legh = 2;
+                    var legw = 2;
+                    this.ctx.fillRect(xpx, ypx, size.x, size.y - legh);
+                    this.ctx.fillRect(xleft, ypx, legw, size.y);
+                    this.ctx.fillRect(xright - legw, ypx, legw, size.y);
                     break;
                 case improvementNames.home:
                     CanvasUtils.drawTriangle(this.ctx, color, size.x, size.y/2+1, tipx, tipy, -90 * Math.PI / 180);
@@ -335,13 +337,11 @@ define([
                 case improvementNames.hospital:
                     CanvasUtils.fillWithRectangles(this.ctx, detailcolor, xpx, ypx, size.x, size.y, 4, 4, 1, 4, 3, 3);
                     break;
+                case improvementNames.house2:
+                    CanvasUtils.fillWithRectangles(this.ctx, detailcolor, xpx, ypx, size.x, size.y, 2, 2, 2, 2, 2, 5);
+                    break;
                 case improvementNames.inn:
-                    var xpadding = 3;
-                    var margin = 3;
-                    var xw = (size.x - xpadding-margin*2) / 2;
-                    var yh = size.y / 2 - margin;
-                    this.ctx.fillRect(xpx+margin, ypx+3, xw, yh);
-                    this.ctx.fillRect(xright-margin - xw, ypx+3, xw, yh);
+                    CanvasUtils.fillWithRectangles(this.ctx, detailcolor, xpx, ypx, size.x, size.y/3*2, 2, 2, 2, 2, 1, 2);
                     break;
                 case improvementNames.library:
                     this.ctx.fillRect(xpx + 3, ypx + size.y/3, size.x - 6, size.y - size.y/3 - size.y/2);
@@ -366,7 +366,6 @@ define([
                     var h = 3;
                     var h2 = size.y;
                     var w = 3;
-                    this.ctx.fillRect(middlex - w/2, ybottom - 1 - h2, w, h2);
                     this.ctx.fillRect(middlex - w, ybottom - 1 - h*2, w*2, h*2);
                     break;
                 case improvementNames.tradepost:
@@ -459,7 +458,8 @@ define([
             if (coords.z == 0) return "vis-camp-building-z0";
             if (coords.z == 1) return "vis-camp-building-z1";
             if (coords.z == 2) return "vis-camp-building-z2";
-            return "vis-camp-building-z3";
+            if (coords.z == 3) return "vis-camp-building-z3";
+            return "vis-camp-building-z4";
         },
         
         getBuildingColor: function (building, coords) {
@@ -484,7 +484,7 @@ define([
         },
         
         getYpx: function (x, z, size) {
-            return Math.round(this.containerHeight -this.floorPos - z * this.zStep - size.y);
+            return Math.round(this.containerHeight -this.floorPos - z * this.zStep - size.y - 1);
         }
         
     });

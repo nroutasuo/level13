@@ -103,9 +103,10 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
         },
 
         getSelectedCampBuildingSpot: function (building, i, j, assignIfNotSet) {
+            var id = this.getBuildingID(building, i, j);
             for (var spotIndex = 0; spotIndex < this.buildingSpots.length; spotIndex++) {
                 var contents = this.buildingSpots[spotIndex];
-                if (contents && contents.id === this.getBuildingID(building, i, j)) {
+                if (contents && contents.id == id) {
                     return spotIndex;
                 }
             }
