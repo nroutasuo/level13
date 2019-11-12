@@ -7,7 +7,7 @@ function (Ash) {
         
         // i -> { x, z }
         // x: 0 (middle) to positive and negative infinity
-        // z: 0-3 (smaller is in front)
+        // z: 0-3 (smaller is in front) (4 for special cases like fortifications)
         coordinates: {},
 
         constructor: function () {
@@ -67,9 +67,9 @@ function (Ash) {
                 case improvementNames.generator:
                     return { x: s * 0.9, y: s * 0.65 };
                 case improvementNames.hospital:
-                    return { x: s * 2, y: s * 2 };
+                    return { x: s * 1.25, y: s * 1.25 };
                 case improvementNames.house2:
-                    return { x: s * 0.9, y: s * 2.5 };
+                    return { x: s, y: s * 3.25 };
                 case improvementNames.inn:
                     return { x: s, y: s * 1.25 };
                 case improvementNames.library:
@@ -81,11 +81,11 @@ function (Ash) {
                 case improvementNames.stable:
                     return { x: s * 1.25, y: s * 1.5 };
                 case improvementNames.storage:
-                    return { x: s / 2 * 3, y: s * 2.5 };
+                    return { x: s / 2 * 3, y: s * 2.35 };
                 case improvementNames.square:
                     return { x: s * 3, y: s };
                 case improvementNames.tradepost:
-                    return { x: s * 2, y: s * 1.25 };
+                    return { x: s * 1.25, y: s * 2.85 };
             }
             return { x: s, y: s };
         },
@@ -119,18 +119,22 @@ function (Ash) {
                     minDistance = zdist > 1 ? 0 : 1;
                 } else if (ydiff == 0) {
                     // same height, a bit of margin
-                    minDistance = Math.min(width1/2, width2/2);
+                    minDistance = Math.max(width1/2, width2/2);
                 } else {
-                    // taller building in front, ma sure shorter is visible
+                    // taller building in front, make sure shorter is visible
                     minDistance = Math.max(width1/2, width2/2) + 2;
                 }
             }
             return xdist < minDistance;
         },
         
-        isValidCoordinates: function (coords, buildingType) {
+        isValidCoordinates: function (coords, buildingType, buildingCount) {
             // create soft rules / preferences by applying some rules to only some coordinates
             var isStrict = coords.x % 2 == 0;
+            
+            // z-coordinate: limit by building count
+            if (buildingCount < 6 && coords.z == 0) return false;
+            if (buildingCount < 12 && coords.z == 3) return false;
             
             // z-coordinate: bigger buildings prefer higher z values
             var size = this.getBuildingSize(buildingType);
@@ -186,7 +190,7 @@ function (Ash) {
             for (var i = starti; i < 1000; i += step) {
                 var coords1 = this.getCoords(i);
                 // valid coordinates for building type?
-                if (!this.isValidCoordinates(coords1, buildingType1)) continue;
+                if (!this.isValidCoordinates(coords1, buildingType1, buildingCount)) continue;
                 // already occupied?
                 var contents = sectorImprovements.buildingSpots[i];
                 if (contents) continue;

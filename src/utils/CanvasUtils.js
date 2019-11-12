@@ -32,6 +32,13 @@ define(function () {
             ctx.closePath();
         },
         
+        drawCircle: function (ctx, color, x, y, r) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, 2 * Math.PI);
+            ctx.fill();
+        },
+        
         drawHexagon: function (ctx, color, size, x, y) {
             var r = size / 2;
             ctx.fillStyle = color;

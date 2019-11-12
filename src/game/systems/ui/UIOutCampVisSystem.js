@@ -203,6 +203,10 @@ define([
                 case improvementNames.market:
                     this.ctx.fillRect(xpx+2, ypx + roofh + 2, size.x-4, size.y-roofh-2);
                     break;
+                case improvementNames.tradepost:
+                    var arcr = size.x / 2;
+                    CanvasUtils.drawCircle(this.ctx, color, middlex, ypx + arcr, arcr);
+                    break;
             }
             
             // main structure
@@ -216,11 +220,8 @@ define([
                     CanvasUtils.drawTriangle(this.ctx, color, size.x, size.y, tipx, tipy, -90 * Math.PI / 180);
                     break;
                 case improvementNames.cementmill:
-                    this.ctx.fillRect(xpx, ypx, size.x, size.y);
-                    this.ctx.fillRect(xpx-1, ypx, size.x + 2, 2);
-                    var chimneyh = 4;
-                    var chimneyw = 3;
-                    this.ctx.fillRect(xright - chimneyw - 3, ypx - chimneyh, chimneyw, chimneyh);
+                    this.ctx.fillRect(xpx, middley, size.x, size.y/2);
+                    CanvasUtils.drawTriangle(this.ctx, color, size.x, size.y, xright, ypx, -60 * Math.PI / 180);
                     break;
                 case improvementNames.darkfarm:
                     var triangleH = size.y / 3;
@@ -279,6 +280,29 @@ define([
                     CanvasUtils.drawTriangle(this.ctx, color, size.x, size.y/2+1, tipx, tipy, -90 * Math.PI / 180);
                     this.ctx.fillRect(xpx, middley-1, size.x, size.y/2+1);
                     break;
+                case improvementNames.hospital:
+                    var legh = 5;
+                    var legw = 3;
+                    this.ctx.fillRect(xpx, ypx, size.x, size.y - legh);
+                    this.ctx.fillRect(xpx-1, ybottom-legh, size.x+2, 2);
+                    this.ctx.fillRect(xleft + 2, ypx, legw, size.y);
+                    this.ctx.fillRect(xright - legw -2, ypx, legw, size.y);
+                    break;
+                case improvementNames.house:
+                    this.ctx.beginPath();
+                    this.ctx.arc(middlex, middley, size.y/2, 0, 2 * Math.PI);
+                    this.ctx.fill();
+                    this.ctx.fillRect(xpx, middley, size.x, size.y/2);
+                    break;
+                case improvementNames.house2:
+                    var antennah = 6;
+                    var antennaw = 2;
+                    var roofh = 3;
+                    var roofpaddingx = 2;
+                    this.ctx.fillRect(xpx, ypx + roofh + antennah, size.x, size.y - roofh - antennah);
+                    this.ctx.fillRect(xpx + roofpaddingx, ypx + antennah, size.x - roofpaddingx*2, roofh);
+                    this.ctx.fillRect(middlex - antennaw/2, ypx, antennaw, antennah);
+                    break;
                 case improvementNames.library:
                     this.ctx.fillRect(xpx, middley, size.x, size.y/2);
                     this.ctx.fillRect(xpx, ypx, size.x, size.y/3);
@@ -291,14 +315,12 @@ define([
                     this.ctx.fillRect(xpx+2, ypx + roofh + 2, size.x-4, size.y-roofh-2);
                     break;
                 case improvementNames.smithy:
-                    this.ctx.fillRect(xpx, ypx, size.x, size.y);
-                    this.ctx.fillRect(xpx-1, ypx, size.x + 2, 2);
-                    var chimneyh = 3;
-                    var chimneyw = 4;
-                    this.ctx.fillRect(xpx + 2, ypx - chimneyh, chimneyw, chimneyh);
+                    this.ctx.fillRect(xpx, middley, size.x, size.y/2);
+                    CanvasUtils.drawTriangle(this.ctx, color, size.x, size.y, xpx, ypx, -120 * Math.PI / 180);
                     break;
                 case improvementNames.stable:
-                    this.ctx.fillRect(xpx, ypx + size.y/3, size.x, size.y/3*2);
+                    var paddingx = 2;
+                    this.ctx.fillRect(xpx + paddingx, ypx + size.y/3, size.x - paddingx*2, size.y/3*2);
                     CanvasUtils.drawHexagon(this.ctx, color, size.x, middlex, ypx + size.x / 2);
                     break;
                 case improvementNames.storage:
@@ -317,11 +339,15 @@ define([
                     this.ctx.fillRect(middlex - w/2, ybottom - 1 - h2, w, h2);
                     this.ctx.fillRect(middlex - w, ybottom - 1 - h*2, w*2, h*2);
                     break;
-                case improvementNames.house:
-                    this.ctx.beginPath();
-                    this.ctx.arc(middlex, middley, size.y/2, 0, 2 * Math.PI);
-                    this.ctx.fill();
-                    this.ctx.fillRect(xpx, middley, size.x, size.y/2);
+                case improvementNames.tradepost:
+                    var w = 4;
+                    var arcr = size.x / 2;
+                    this.ctx.fillRect(middlex - w/2, ypx + arcr * 2, w, size.y - arcr * 2);
+                    this.ctx.fillRect(xpx-1, ypx + arcr, size.x+2, 4);
+                    this.ctx.fillRect(xpx + 2, ypx + arcr + 4, size.x - 4, 6);
+                    this.ctx.fillRect(xpx, ypx + arcr + 4 + 6 - 1, size.x, 2);
+                    var basew = size.x / 3 * 2;
+                    CanvasUtils.drawTriangle(this.ctx, color, basew, basew, middlex, ybottom - basew + 1, -90 * Math.PI / 180);
                     break;
                 default:
                     this.ctx.fillRect(xpx, ypx, size.x, size.y);
@@ -335,10 +361,13 @@ define([
             this.ctx.lineWidth = 2;
             switch (building.name) {
                 case improvementNames.hospital:
-                    CanvasUtils.fillWithRectangles(this.ctx, detailcolor, xpx, ypx, size.x, size.y, 4, 4, 1, 4, 3, 3);
+                    CanvasUtils.fillWithRectangles(this.ctx, detailcolor, xpx, ypx, size.x, size.y - 8, 2, 2, 2, 2, 3, 1);
                     break;
                 case improvementNames.house2:
-                    CanvasUtils.fillWithRectangles(this.ctx, detailcolor, xpx, ypx, size.x, size.y, 2, 2, 2, 2, 2, 5);
+                    var antennah = 6;
+                    var roofh = 3;
+                    var bottomh = 2;
+                    CanvasUtils.fillWithRectangles(this.ctx, detailcolor, xpx, ypx + antennah + roofh, size.x, size.y - antennah - roofh - bottomh, 2, 4, 2, 2, 2, 4);
                     break;
                 case improvementNames.inn:
                     CanvasUtils.fillWithRectangles(this.ctx, detailcolor, xpx, ypx, size.x, size.y/3*2, 2, 2, 2, 2, 1, 2);
@@ -351,7 +380,7 @@ define([
                 case improvementNames.smithy:
                 case improvementNames.apothecary:
                 case improvementNames.cementmill:
-                    this.ctx.fillRect(xpx + 2, ypx + 4, size.x - 4, size.y / 3);
+                    // this.ctx.fillRect(xpx + 2, ypx + 4, size.x - 4, size.y / 3);
                     break;
                 case improvementNames.stable:
                     this.ctx.fillRect(middlex - 3, ypx + 3, 6, 2);
@@ -364,17 +393,10 @@ define([
                     break;
                 case improvementNames.square:
                     var h = 3;
-                    var h2 = size.y;
-                    var w = 3;
+                    var w = 2;
                     this.ctx.fillRect(middlex - w, ybottom - 1 - h*2, w*2, h*2);
                     break;
                 case improvementNames.tradepost:
-                    var xpadding = 5;
-                    var margin = 3;
-                    var xw = (size.x - xpadding-margin*2) / 2;
-                    var yh = size.y - margin * 2;
-                    this.ctx.fillRect(xpx+margin, ypx+3, xw, yh);
-                    this.ctx.fillRect(xright-margin - xw, ypx+3, xw, yh);
                     break;
                 default:
                     break;
