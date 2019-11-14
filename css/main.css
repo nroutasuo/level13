@@ -68,11 +68,18 @@ h3,
 div,
 span,
 canvas {
-  -webkit-transition: opacity 2s ease-in-out;
-  -moz-transition: opacity 2s ease-in-out;
-  -ms-transition: opacity 2s ease-in-out;
-  -o-transition: opacity 2s ease-in-out;
-  transition: opacity 2s ease-in-out;
+  -webkit-transition: opacity 1.5s ease-in-out;
+  -moz-transition: opacity 1.5s ease-in-out;
+  -ms-transition: opacity 1.5s ease-in-out;
+  -o-transition: opacity 1.5s ease-in-out;
+  transition: opacity 1.5s ease-in-out;
+}
+#vision-overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  pointer-events: none;
 }
 .vision-step-0 #grid-main {
   opacity: 0.5;
@@ -2036,6 +2043,61 @@ body.dark .vis-camp-building-z3 {
 body.dark .vis-camp-building-z4 {
   z-index: 0;
 }
+body.dark.vision-step-0 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.75) 75%, #202220 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.75) 75%, #202220 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.75) 75%, #202220 100%);
+}
+body.dark.vision-step-1 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.7495) 78%, #202220 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.7495) 78%, #202220 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.7495) 78%, #202220 100%);
+}
+body.dark.vision-step-2 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.749) 81%, #202220 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.749) 81%, #202220 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.749) 81%, #202220 100%);
+}
+body.dark.vision-step-3 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.7485) 84%, #202220 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.7485) 84%, #202220 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.7485) 84%, #202220 100%);
+}
+body.dark.vision-step-4 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.748) 87%, #202220 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.748) 87%, #202220 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.748) 87%, #202220 100%);
+}
+body.dark.vision-step-5 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.7475) 90%, #202220 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.7475) 90%, #202220 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.7475) 90%, #202220 100%);
+}
+body.dark.vision-step-6 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.747) 93%, #202220 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.747) 93%, #202220 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.747) 93%, #202220 100%);
+}
+body.dark.vision-step-7 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.7465) 96%, #202220 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.7465) 96%, #202220 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.7465) 96%, #202220 100%);
+}
+body.dark.vision-step-8 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.746) 99%, #202220 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.746) 99%, #202220 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.746) 99%, #202220 100%);
+}
+body.dark.vision-step-9 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.7455) 99%, #202220 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.7455) 99%, #202220 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.7455) 99%, #202220 100%);
+}
+body.dark.vision-step-10 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.745) 99%, #202220 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.745) 99%, #202220 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(32, 34, 32, 0.745) 99%, #202220 100%);
+}
 body.sunlit {
   background: #fdfdfd;
   color: #202220;
@@ -3766,4 +3828,59 @@ body.sunlit .vis-camp-building-z3 {
 }
 body.sunlit .vis-camp-building-z4 {
   z-index: 0;
+}
+body.sunlit.vision-step-0 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.75) 75%, #fdfdfd 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.75) 75%, #fdfdfd 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.75) 75%, #fdfdfd 100%);
+}
+body.sunlit.vision-step-1 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.7495) 78%, #fdfdfd 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.7495) 78%, #fdfdfd 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.7495) 78%, #fdfdfd 100%);
+}
+body.sunlit.vision-step-2 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.749) 81%, #fdfdfd 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.749) 81%, #fdfdfd 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.749) 81%, #fdfdfd 100%);
+}
+body.sunlit.vision-step-3 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.7485) 84%, #fdfdfd 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.7485) 84%, #fdfdfd 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.7485) 84%, #fdfdfd 100%);
+}
+body.sunlit.vision-step-4 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.748) 87%, #fdfdfd 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.748) 87%, #fdfdfd 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.748) 87%, #fdfdfd 100%);
+}
+body.sunlit.vision-step-5 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.7475) 90%, #fdfdfd 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.7475) 90%, #fdfdfd 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.7475) 90%, #fdfdfd 100%);
+}
+body.sunlit.vision-step-6 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.747) 93%, #fdfdfd 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.747) 93%, #fdfdfd 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.747) 93%, #fdfdfd 100%);
+}
+body.sunlit.vision-step-7 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.7465) 96%, #fdfdfd 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.7465) 96%, #fdfdfd 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.7465) 96%, #fdfdfd 100%);
+}
+body.sunlit.vision-step-8 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.746) 99%, #fdfdfd 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.746) 99%, #fdfdfd 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.746) 99%, #fdfdfd 100%);
+}
+body.sunlit.vision-step-9 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.7455) 99%, #fdfdfd 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.7455) 99%, #fdfdfd 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.7455) 99%, #fdfdfd 100%);
+}
+body.sunlit.vision-step-10 #vision-overlay {
+  background: -moz-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.745) 99%, #fdfdfd 100%);
+  background: -webkit-radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.745) 99%, #fdfdfd 100%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 50%, rgba(253, 253, 253, 0.745) 99%, #fdfdfd 100%);
 }
