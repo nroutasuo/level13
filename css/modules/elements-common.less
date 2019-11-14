@@ -156,7 +156,6 @@ ul.tabs li.selected {
 
 ul.tabs li.selected {
 	background: @color-bg-box-1;
-	border: 2px solid @color-border-box-1;
 }
 
 ul.tabs li:hover {
@@ -166,13 +165,13 @@ ul.tabs li:hover {
 ul.tabs li.selected {
 	border-color: @color-border-box-1;
 	border-bottom-color: @color-bg-box-1;
-	border-width: 2px !important;
+	border-width: @border-width-box-1 !important;
 }
 
 // POPUPS
 
 div.popup {
-	background: @color-bg-box-1;
+    background: @color-bg-popup;
 	border: 2px solid @color-border-box-1;
 	padding: 20px;
 	text-align: center;
@@ -434,6 +433,7 @@ div.popup-overlay {
 
 .scroll-position-indicator {
     position: absolute;
+    background: @color-border-box-1;
 }
 
 .scroll-position-indicator-vertical {
@@ -452,10 +452,6 @@ div.popup-overlay {
     min-height: 10px;
     top: 0;
     left: 10px;
-}
-
-.scroll-position-indicator {
-    background: @color-border-box-1;
 }
 
 .scrollable.scroll-enabled {
@@ -517,6 +513,10 @@ table .bubble {
 
 .container-nomargin {
     margin: 0;
+}
+
+.statsbar {
+    padding: 3px 2px;
 }
 
 // INFOBOXES
@@ -626,14 +626,16 @@ table .bubble {
     opacity: 80%;
 }
 
-.li-item-negative {
-    background: @color-bg-warning !important;
-	border: 1px solid @color-border-warning !important;
-}
-
 .highlightbox, .inventorybox-header, .inventorybox-footer {
 	background: @color-bg-element-1;
     border-color: @color-bg-element-1;
+}
+
+// ITEMs
+
+.li-item-negative {
+    background: @color-bg-warning !important;
+	border: 1px solid @color-border-warning !important;
 }
 
 // ITEM SLOTS
@@ -768,7 +770,7 @@ ul.itemlist, ul.resultlist {
 
 .item, .res, .li-item-negative, .li-item-positive {
 	background: @color-bg-box-1;
-	border: 2px solid @color-border-box-1;
+	border: @border-width-box-1 solid @color-border-box-1;
 }
 
 .item.highlighted {
