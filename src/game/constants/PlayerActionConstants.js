@@ -579,6 +579,13 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         campfire: [1, -1],
                     }
                 },
+                
+                improve_in_generator: {
+                    improvements: {
+                        camp: [1, -1],
+                        generator: [1, -1],
+                    }
+                },
 
                 build_in_lights: {
                     upgrades: {
@@ -1642,6 +1649,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_fuel: 100
                 },
 
+                improve_in_generator: {
+                    resource_metal: [0, 0, 20, 0, 0],
+                    resource_fuel: [10, 3, 2, 0, 0],
+                    cost_factor_e1_base: 1.5,
+                },
+
                 build_in_lights: {
                     resource_metal: 100,
                     resource_rope: 10,
@@ -2553,6 +2566,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 improve_in_campfire: "Increase rumour generation",
                 improve_in_library: "Increase evidence generation",
                 improve_in_square: "Increase reputation bonus",
+                improve_in_generator: "Increase repuration bonus",
                 use_in_home: "Recover stamina.",
                 use_in_campfire: "Collect rumours from the population.",
                 use_in_market: "Go hear the latest gossip.",

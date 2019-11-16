@@ -209,6 +209,7 @@ define(['ash',
                 case "improve_in_campfire": this.improveCampfire(param); break;
                 case "improve_in_library": this.improveLibrary(param); break;
                 case "improve_in_square": this.improveSquare(param); break;
+                case "improve_in_generator": this.improveGenerator(param); break;
                 case "use_in_home": this.useHome(param); break;
                 case "use_in_campfire": this.useCampfire(param); break;
                 case "use_in_market": this.useMarket(param); break;
@@ -1175,6 +1176,11 @@ define(['ash',
         improveSquare: function () {
             this.improveImprovement("improve_in_square");
             this.addLogMessage(LogConstants.MSG_ID_IMPROVED_SQUARE, "Upgraded the square.");
+        },
+        
+        improveGenerator: function () {
+            this.improveImprovement("improve_in_generator");
+            this.addLogMessage(LogConstants.MSG_ID_IMPROVED_GENERATOR, "Fixed up the generator.");
         },
 
 		collectFood: function () {
