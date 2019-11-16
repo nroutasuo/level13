@@ -131,7 +131,7 @@ define([
 			var metalRequiredConcrete = time * GameGlobals.campHelper.getMetalConsumptionPerSecondConcrete(camp.assignedWorkers.concrete);
 			if (metalRequiredConcrete > 0) {
 				var metalUsedConcrete = Math.min(availableResources.getResource(resourceNames.metal), metalRequiredConcrete);
-                var concrete = time * (metalUsedConcrete / metalRequiredConcrete) * GameGlobals.campHelper.getConcreteProductionPerSecond(camp.assignedWorkers.concrete);
+                var concrete = time * (metalUsedConcrete / metalRequiredConcrete) * GameGlobals.campHelper.getConcreteProductionPerSecond(camp.assignedWorkers.concrete, improvementsComponent);
 				campResources.addResource(resourceNames.concrete, concrete);
 				campResources.addResource(resourceNames.metal, -metalUsedConcrete);
 				resourceAccComponent.addChange(resourceNames.concrete, concrete / time, "Concrete mixers");

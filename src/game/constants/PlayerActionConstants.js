@@ -653,6 +653,14 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         unlock_building_apothecary: true,
                     }
                 },
+                
+                improve_in_apothecary: {
+                    improvements: {
+                        camp: [1, -1],
+                        apothecary: [1, -1],
+                    }
+                    
+                },
 
                 build_in_smithy: {
                     improvements: {
@@ -662,6 +670,13 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         unlock_building_smithy: true,
                     }
                 },
+                
+                improve_in_smithy: {
+                    improvements: {
+                        camp: [1, -1],
+                        smithy: [1, -1],
+                    }
+                },
 
                 build_in_cementmill: {
                     improvements: {
@@ -669,6 +684,13 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     },
                     upgrades: {
                         unlock_building_cementmill: true,
+                    }
+                },
+                
+                improve_in_cementmill: {
+                    improvements: {
+                        camp: [1, -1],
+                        cementmill: [1, -1],
                     }
                 },
 
@@ -1795,17 +1817,35 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_rope: 50,
                     cost_factor_e1_base: 1.5,
                 },
+                
+                improve_in_apothecary: {
+                    resource_metal: [30, 0, 5, 0, 0],
+                    resource_rope: [10, 0, 5, 0, 0],
+                    cost_factor_e1_base: 2,
+                },
 
                 build_in_smithy: {
                     resource_metal: 100,
                     resource_rope: 50,
                     cost_factor_e1_base: 1.5,
                 },
+                
+                improve_in_smithy: {
+                    resource_metal: [30, 0, 5, 0, 0],
+                    resource_rope: [20, 0, 5, 0, 0],
+                    cost_factor_e1_base: 2,
+                },
 
                 build_in_cementmill: {
                     resource_metal: 500,
                     resource_rope: 50,
                     cost_factor_e1_base: 1.5,
+                },
+                
+                improve_in_cementmill: {
+                    resource_metal: [40, 0, 5, 0, 0],
+                    resource_rope: [10, 0, 5, 0, 0],
+                    cost_factor_e1_base: 2,
                 },
 
                 build_in_radiotower: {
@@ -2567,6 +2607,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 improve_in_library: "Increase evidence generation",
                 improve_in_square: "Increase reputation bonus",
                 improve_in_generator: "Increase repuration bonus",
+                improve_in_apothecary: "Increase efficiency",
+                improve_in_smithy: "Increase efficiency",
+                improve_in_cementmill: "Increase efficiency",
                 use_in_home: "Recover stamina.",
                 use_in_campfire: "Collect rumours from the population.",
                 use_in_market: "Go hear the latest gossip.",

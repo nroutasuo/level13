@@ -181,7 +181,7 @@
             GameGlobals.uiFunctions.toggle($(id).closest("tr"), maxWorkers > 0);
 
             var freePopulation = campComponent.getFreePopulation();
-            var assignedWorkers = campComponent.assignedWorkers[workerType] || 0;
+            var assignedWorkers = Math.max(0, campComponent.assignedWorkers[workerType]) || 0;
             var maxAssigned = Math.min(assignedWorkers + freePopulation, maxWorkers);
             GameGlobals.uiFunctions.updateStepper(id, assignedWorkers, 0, maxAssigned);
 
@@ -243,18 +243,42 @@
             var hasUnlockedScientists = GameGlobals.upgradeEffectsHelper.getWorkerLevel("scientist", this.tribeUpgradesNodes.head.upgrades) > 0;
             var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
 
-            var workerConsumptionS = "<br/><span class='warning'>water -" + GameGlobals.campHelper.getWaterConsumptionPerSecond(1) + "/s</span>" +
-                "<br/><span class='warning'>food -" + GameGlobals.campHelper.getFoodConsumptionPerSecond(1) + "/s</span>";
-            UIConstants.updateCalloutContent("#in-assign-water .in-assing-worker-desc .info-callout-target", "water +" + GameGlobals.campHelper.getWaterProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-scavenger .in-assing-worker-desc .info-callout-target", "metal +" + GameGlobals.campHelper.getMetalProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-trapper .in-assing-worker-desc .info-callout-target", "food +" + GameGlobals.campHelper.getFoodProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-weaver .in-assing-worker-desc .info-callout-target", "rope +" + GameGlobals.campHelper.getRopeProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-chemist .in-assing-worker-desc .info-callout-target", "fuel +" + GameGlobals.campHelper.getFuelProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-apothecary .in-assing-worker-desc .info-callout-target", "medicine +" + GameGlobals.campHelper.getMedicineProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>herbs -" + GameGlobals.campHelper.getHerbsConsumptionPerSecond(1) + "/s</span>", true);
-            UIConstants.updateCalloutContent("#in-assign-concrete .in-assing-worker-desc .info-callout-target", "concrete +" + GameGlobals.campHelper.getConcreteProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>metal -" + GameGlobals.campHelper.getMetalConsumptionPerSecondConcrete(1) + "/s</span>", true);
-            UIConstants.updateCalloutContent("#in-assign-smith .in-assing-worker-desc .info-callout-target", "tools +" + GameGlobals.campHelper.getToolsProductionPerSecond(1, improvements) + "/s" + workerConsumptionS + "<br/><span class='warning'>metal -" + GameGlobals.campHelper.getMetalConsumptionPerSecondSmith(1) + "/s</span>", true);
-            UIConstants.updateCalloutContent("#in-assign-scientist .in-assing-worker-desc .info-callout-target", "evidence +" + GameGlobals.campHelper.getEvidenceProductionPerSecond(1, improvements) + "/s" + workerConsumptionS, true);
-            UIConstants.updateCalloutContent("#in-assign-soldier .in-assing-worker-desc .info-callout-target", "camp defence +" + CampConstants.getSoldierDefence(soldierLevel) + workerConsumptionS, true);
+            var workerConsumptionS =
+                "<br/><span class='warning'>water -" + UIConstants.roundValue(GameGlobals.campHelper.getWaterConsumptionPerSecond(1), true, true) + "/s</span>" +
+                "<br/><span class='warning'>food -" + UIConstants.roundValue(GameGlobals.campHelper.getFoodConsumptionPerSecond(1), true, true) + "/s</span>";
+            UIConstants.updateCalloutContent("#in-assign-water .in-assing-worker-desc .info-callout-target",
+                "water +" + UIConstants.roundValue(GameGlobals.campHelper.getWaterProductionPerSecond(1, improvements), true, true) + "/s" +
+                workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-scavenger .in-assing-worker-desc .info-callout-target",
+                "metal +" + UIConstants.roundValue(GameGlobals.campHelper.getMetalProductionPerSecond(1, improvements), true, true) + "/s" +
+                workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-trapper .in-assing-worker-desc .info-callout-target",
+                "food +" + UIConstants.roundValue(GameGlobals.campHelper.getFoodProductionPerSecond(1, improvements), true, true) + "/s" +
+                workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-weaver .in-assing-worker-desc .info-callout-target",
+                "rope +" + UIConstants.roundValue(GameGlobals.campHelper.getRopeProductionPerSecond(1, improvements), true, true) + "/s" +
+                workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-chemist .in-assing-worker-desc .info-callout-target",
+                "fuel +" + UIConstants.roundValue(GameGlobals.campHelper.getFuelProductionPerSecond(1, improvements), true, true) + "/s" +
+                workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-apothecary .in-assing-worker-desc .info-callout-target",
+                "medicine +" + UIConstants.roundValue(GameGlobals.campHelper.getMedicineProductionPerSecond(1, improvements), true, true) + "/s" +
+                workerConsumptionS +
+                "<br/><span class='warning'>herbs -" + GameGlobals.campHelper.getHerbsConsumptionPerSecond(1) + "/s</span>", true);
+            UIConstants.updateCalloutContent("#in-assign-concrete .in-assing-worker-desc .info-callout-target",
+                "concrete +" + UIConstants.roundValue(GameGlobals.campHelper.getConcreteProductionPerSecond(1, improvements), true, true) + "/s" +
+                workerConsumptionS +
+                "<br/><span class='warning'>metal -" + GameGlobals.campHelper.getMetalConsumptionPerSecondConcrete(1) + "/s</span>", true);
+            UIConstants.updateCalloutContent("#in-assign-smith .in-assing-worker-desc .info-callout-target",
+                "tools +" + UIConstants.roundValue(GameGlobals.campHelper.getToolsProductionPerSecond(1, improvements), true, true) + "/s" +
+                workerConsumptionS +
+                "<br/><span class='warning'>metal -" + GameGlobals.campHelper.getMetalConsumptionPerSecondSmith(1) + "/s</span>", true);
+            UIConstants.updateCalloutContent("#in-assign-scientist .in-assing-worker-desc .info-callout-target",
+                "evidence +" + UIConstants.roundValue(GameGlobals.campHelper.getEvidenceProductionPerSecond(1, improvements), true, true) + "/s" +
+                workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-soldier .in-assing-worker-desc .info-callout-target",
+                "camp defence +" + CampConstants.getSoldierDefence(soldierLevel) +
+                workerConsumptionS, true);
 
             var refineriesOnLevel = GameGlobals.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel);
             var apothecariesInCamp = improvements.getCount(improvementNames.apothecary);

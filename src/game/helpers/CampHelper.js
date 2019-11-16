@@ -41,17 +41,20 @@ define([
         
         getMedicineProductionPerSecond: function (workers, improvementsComponent) {
 			var medicineUpgradeBonus = this.getUpgradeBonus("apothecary");
-			return workers * CampConstants.PRODUCTION_MEDICINE_PER_WORKER_PER_S * medicineUpgradeBonus * GameConstants.gameSpeedCamp;
+            var levelBonus = 1 + improvementsComponent.getLevel(improvementNames.apothecary) / 10;
+			return workers * CampConstants.PRODUCTION_MEDICINE_PER_WORKER_PER_S * medicineUpgradeBonus * levelBonus * GameConstants.gameSpeedCamp;
         },
         
         getToolsProductionPerSecond: function (workers, improvementsComponent) {
 			var toolsUpgradeBonus = this.getUpgradeBonus("smith");
-			return workers * CampConstants.PRODUCTION_TOOLS_PER_WORKER_PER_S * toolsUpgradeBonus * GameConstants.gameSpeedCamp;
+            var levelBonus = 1 + improvementsComponent.getLevel(improvementNames.smithy) / 10;
+			return workers * CampConstants.PRODUCTION_TOOLS_PER_WORKER_PER_S * toolsUpgradeBonus * levelBonus * GameConstants.gameSpeedCamp;
         },
         
-        getConcreteProductionPerSecond: function (workers, improvementComponent) {
+        getConcreteProductionPerSecond: function (workers, improvementsComponent) {
 			var concreteUpgradeBonus = this.getUpgradeBonus("concrete");
-			return workers * CampConstants.PRODUCTION_CONCRETE_PER_WORKER_PER_S * concreteUpgradeBonus * GameConstants.gameSpeedCamp;
+            var levelBonus = 1 + improvementsComponent.getLevel(improvementNames.cementmill) / 10;
+			return workers * CampConstants.PRODUCTION_CONCRETE_PER_WORKER_PER_S * concreteUpgradeBonus * levelBonus * GameConstants.gameSpeedCamp;
         },
         
         getEvidenceProductionPerSecond: function (workers, improvementComponent) {

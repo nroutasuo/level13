@@ -210,6 +210,9 @@ define(['ash',
                 case "improve_in_library": this.improveLibrary(param); break;
                 case "improve_in_square": this.improveSquare(param); break;
                 case "improve_in_generator": this.improveGenerator(param); break;
+                case "improve_in_apothecary": this.improveApothecary(param); break;
+                case "improve_in_smithy": this.improveSmithy(param); break;
+                case "improve_in_cementmill": this.improveCementMill(param); break;
                 case "use_in_home": this.useHome(param); break;
                 case "use_in_campfire": this.useCampfire(param); break;
                 case "use_in_market": this.useMarket(param); break;
@@ -1181,6 +1184,21 @@ define(['ash',
         improveGenerator: function () {
             this.improveImprovement("improve_in_generator");
             this.addLogMessage(LogConstants.MSG_ID_IMPROVED_GENERATOR, "Fixed up the generator.");
+        },
+        
+        improveApothecary: function () {
+            this.improveImprovement("improve_in_apothecary");
+            this.addLogMessage(LogConstants.MSG_ID_IMPROVED_APOTHECARY, "Improved the apothecaries.");
+        },
+        
+        improveSmithy: function () {
+            this.improveImprovement("improve_in_smithy");
+            this.addLogMessage(LogConstants.MSG_ID_IMPROVED_SMIHTY, "Improved the smithy.");
+        },
+        
+        improveCementMill: function () {
+            this.improveImprovement("improve_in_cementmill");
+            this.addLogMessage(LogConstants.MSG_ID_IMPROVED_CEMENTMILL, "Improved the cement mills.");
         },
 
 		collectFood: function () {
