@@ -80,7 +80,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		},
         
         getReputationBonus: function () {
-            return getImprovementReputationBonus(this.name);
+            return getImprovementReputationBonus(this.name, this.level);
         },
         
         getKey: function () {
@@ -139,7 +139,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
         }
     };
     
-    getImprovementReputationBonus = function (name) {
+    getImprovementReputationBonus = function (name, level) {
         if (getImprovementType(name) == improvementTypes.level) return 0;
         switch (name) {
             case improvementNames.home:
@@ -161,7 +161,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
                 return 3;
             case improvementNames.square:
             case improvementNames.garden:
-                return 5;
+                return 4 + 1 * (level / 10);
             default:
                 return 1;
         }

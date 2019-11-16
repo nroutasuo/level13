@@ -441,6 +441,13 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         unlock_building_passage_staircase: true,
                     }
                 },
+                
+                improve_in_square: {
+                    improvements: {
+                        camp: [1, -1],
+                        square: [1, -1],
+                    }
+                },
 
                 build_in_garden: {
                     upgrades: {
@@ -1675,6 +1682,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_metal: 300,
                     resource_rope: 100,
                 },
+                
+                improve_in_square: {
+                    resource_metal: [0, 0, 80, 0, 0],
+                    resource_rope: [0, 0, 20, 0, 0],
+                    cost_factor_e1_base: 1.25,
+                },
 
                 build_in_garden: {
                     resource_metal: 100,
@@ -2539,6 +2552,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 build_out_camp: "A place to rest.",
                 improve_in_campfire: "Increase rumour generation",
                 improve_in_library: "Increase evidence generation",
+                improve_in_square: "Increase reputation bonus",
                 use_in_home: "Recover stamina.",
                 use_in_campfire: "Collect rumours from the population.",
                 use_in_market: "Go hear the latest gossip.",
