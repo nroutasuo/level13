@@ -351,7 +351,7 @@
                 }
                 tds += "<td>" + buildButton + "</td>";
                 tds += "<td><span class='improvement-badge improvement-count'>0</span></td>";
-                tds += "<td><span class='improvement-badge improvement-level'>0</span></td>";
+                tds += "<td style='position:relative'><span class='improvement-badge improvement-level'>0</span><span class='improvement-badge improvement-upgrade-level'>0</span></td>";
                 tds += "<td>" + improveButton + "</td>";
                 tds += "<td>" + useButton + "</td>";
                 trs += "<tr id='in-improvements-" + key + "'>" + tds + "</tr>";
@@ -374,7 +374,8 @@
                 var btnImprove = $(this).find(".action-improve");
                 var count =  $(this).find(".improvement-count")
                 var level =  $(this).find(".improvement-level")
-                result.push({ tr: $(this), btnUse: btnUse, btnImprove: btnImprove, count: count, level: level, id: id, action: buildAction, improveAction: improveAction, improvementName: improvementName });
+                var upgradeLevel =  $(this).find(".improvement-upgrade-level")
+                result.push({ tr: $(this), btnUse: btnUse, btnImprove: btnImprove, count: count, level: level, upgradeLevel: upgradeLevel, id: id, action: buildAction, improveAction: improveAction, improvementName: improvementName });
             });
             this.elements.improvementRows = result;
         },
@@ -410,11 +411,14 @@
                 var actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(buildAction, false);
                 var existingImprovements = improvements.getCount(improvementName);
                 var improvementLevel = improvements.getLevel(improvementName);
+                var upgradeLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementName, this.tribeUpgradesNodes.head.upgrades);
                 elem.count.text(existingImprovements);
                 elem.count.toggleClass("badge-disabled", existingImprovements < 1);
                 elem.level.text(improvementLevel);
-                log.i(elem.improvementName + " " + buildAction + " " + improveAction)
                 elem.level.toggleClass("badge-disabled", existingImprovements < 1 || !improveAction);
+                elem.upgradeLevel.text("+");
+                elem.upgradeLevel.toggleClass("badge-disabled", existingImprovements < 1);
+                GameGlobals.uiFunctions.toggle(elem.upgradeLevel, existingImprovements > 0 && upgradeLevel > 1);
 
                 var commonVisibilityRule = (buildActionEnabled || existingImprovements > 0 || showActionDisabledReason);
                 var specialVisibilityRule = true;

@@ -1671,6 +1671,15 @@ body.dark span.improvement-badge.badge-disabled {
 body.dark span.improvement-count {
   font-weight: bold;
 }
+body.dark span.improvement-badge.improvement-upgrade-level {
+  position: absolute;
+  background-color: #2f322f;
+  top: -1px;
+  right: -1px;
+  padding: 0 1px !important;
+  font-size: 75%;
+  width: 1em;
+}
 body.dark .changelog-type {
   padding: 2px 5px;
   border-width: 1px;
@@ -3462,6 +3471,15 @@ body.sunlit span.improvement-badge.badge-disabled {
 }
 body.sunlit span.improvement-count {
   font-weight: bold;
+}
+body.sunlit span.improvement-badge.improvement-upgrade-level {
+  position: absolute;
+  background-color: #e6e6e6;
+  top: -1px;
+  right: -1px;
+  padding: 0 1px !important;
+  font-size: 75%;
+  width: 1em;
 }
 body.sunlit .changelog-type {
   padding: 2px 5px;
