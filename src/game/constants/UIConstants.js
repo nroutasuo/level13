@@ -237,6 +237,7 @@ define(['ash',
 				case ItemConstants.itemBonusTypes.light: return "max vision";
 				case ItemConstants.itemBonusTypes.fight_att: return "attack";
 				case ItemConstants.itemBonusTypes.fight_def: return "defence";
+				case ItemConstants.itemBonusTypes.fight_speed: return "speed";
 				case ItemConstants.itemBonusTypes.movement: return "movement cost";
 				case ItemConstants.itemBonusTypes.bag: return "bag size";
                 case ItemConstants.itemBonusTypes.fight_def: return "defence";
@@ -253,8 +254,12 @@ define(['ash',
 			var bonusValue = item.getBonus(bonusType);
 			if (bonusValue === 0)
 				return "+0";
+            else if (item.type == ItemConstants.itemTypes.bag)
+                return " " + bonusValue;
+            else if (bonusType == ItemConstants.itemBonusTypes.fight_speed)
+				return " +" + Math.round((1 - bonusValue) * 100) + "%";
 			else if (bonusValue >= 1)
-				return item.type === ItemConstants.itemTypes.bag ? " " + bonusValue : " +" + bonusValue;
+				return " +" + bonusValue;
 			else if (bonusValue > 0) {
 				return " -" + Math.round((1 - bonusValue) * 100) + "%";
 			} else if (bonusValue > -1) {
