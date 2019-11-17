@@ -40,6 +40,7 @@ define(['ash',], function (Ash) {
         visionChangedSignal: new Ash.Signals.Signal(),
         healthChangedSignal: new Ash.Signals.Signal(),
         populationChangedSignal: new Ash.Signals.Signal(),
+        perksChangedSignal: new Ash.Signals.Signal(),
         
         // other
         fightUpdateSignal: new Ash.Signals.Signal(),

@@ -377,6 +377,13 @@ define(['ash',
 
 				GlobalSignals.calloutsGeneratedSignal.dispatch();
 			},
+            
+            updateCallouts: function (scope) {
+                $.each($(scope + " .callout-container"), function () {
+                    var description = $(this).children(".info-callout-target").attr("description");
+    				$(this).find(".info-callout-content").html(description);
+                });
+            },
 
 			generateActionButtonCallout: function (action) {
 				var baseActionId = GameGlobals.playerActionsHelper.getBaseActionID(action);

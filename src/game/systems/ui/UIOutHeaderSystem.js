@@ -51,7 +51,6 @@ define([
 		engine: null,
 
 		constructor: function () {
-
             this.elements = {};
             this.elements.body = $("body");
             this.elements.locationHeader = $("#grid-location-header h1");
@@ -93,9 +92,11 @@ define([
             GlobalSignals.inventoryChangedSignal.add(function () { sys.onInventoryChanged(); });
             GlobalSignals.slowUpdateSignal.add(function () { sys.slowUpdate(); });
             GlobalSignals.changelogLoadedSignal.add(function () { sys.updateGameVersion(); });
+            GlobalSignals.add(this, GlobalSignals.perksChangedSignal, this.onPerksChanged);
 
 			this.generateStatsCallouts();
             this.updateGameVersion();
+            this.refreshPerks();
 		},
 
 		removeFromEngine: function (engine) {
@@ -134,6 +135,7 @@ define([
 
 			this.updateGameMsg();
 			this.updateNotifications(isInCamp);
+			this.updatePerks();
 
             if (isInCamp && !campComponent) return;
 		},
@@ -147,42 +149,9 @@ define([
 			this.updatePlayerStats(isInCamp);
 			this.updateDeity();
 			this.updateItems(false, isInCamp);
-			this.updatePerks();
 			this.updateResources();
             this.updateItemStats();
         },
-
-        onPlayerMoved: function () {
-		    if (GameGlobals.gameState.uiStatus.isHidden) return;
-            this.updateTabVisibility();
-            this.updateStaminaWarningLimit();
-            this.updateLocation();
-            this.updateHeaderTexts();
-            this.updateResources();
-        },
-
-        onHealthChanged: function () {
-		    if (GameGlobals.gameState.uiStatus.isHidden) return;
-            this.updateStaminaWarningLimit();
-            this.updatePlayerStats();
-        },
-
-        onInventoryChanged: function () {
-		    if (GameGlobals.gameState.uiStatus.isHidden) return;
-            this.updateResources();
-            this.updatePlayerStats();
-        },
-
-		onVisionChanged: function () {
-		    if (GameGlobals.gameState.uiStatus.isHidden) return;
-            this.updateVisionStatus();
-		},
-
-		onTabChanged: function () {
-		    if (GameGlobals.gameState.uiStatus.isHidden) return;
-            this.updateVisionStatus();
-            this.updateHeaderTexts();
-		},
         
         updateGameVersion: function () {
 			this.elements.gameVersion.text("v. " + GameGlobals.changeLogHelper.getCurrentVersionNumber());
@@ -371,39 +340,42 @@ define([
                 this.lastItemsUpdateItemCount = items.length;
 			}
 		},
-
-		updatePerks: function (forced) {
+        
+        refreshPerks: function () {
+            if (!this.playerStatsNodes.head) return;
 			var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
-
 			var perks = perksComponent.getAll();
-            var resetList = forced || perks.length !== $("ul#list-items-perks li").length;
-			if (resetList) {
-				$("ul#list-items-perks").empty();
+            $("ul#list-items-perks").empty();
+            for (var i = 0; i < perks.length; i++) {
+                var perk = perks[i];
+                var desc = perk.name + " (" + UIConstants.getPerkDetailText(perk) + ")";
+                var url = perk.icon;
+                var isNegative = perksComponent.isNegative(perk);
+                var liClass = isNegative ? "li-item-negative" : "li-item-positive";
+                liClass += " item item-equipped";
+                var li =
+                    "<li class='" + liClass + "' id='perk-header-" + perk.id + "'>" +
+                    "<div class='info-callout-target info-callout-target-small' description='" + desc + "'>" +
+                    "<img src='" + url + "' alt='" + perk.name + "'/>" +
+                    "</div></li>";
+                $("ul#list-items-perks").append(li);
             }
+
+            GameGlobals.uiFunctions.generateCallouts("ul#list-items-perks");
+        },
+
+		updatePerks: function () {
+			var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
+			var perks = perksComponent.getAll();
 
             for (var i = 0; i < perks.length; i++) {
                 var perk = perks[i];
                 var desc = perk.name + " (" + UIConstants.getPerkDetailText(perk) + ")";
-                if (resetList) {
-                    var url = perk.icon;
-                    var isNegative = perksComponent.isNegative(perk);
-                    var liClass = isNegative ? "li-item-negative" : "li-item-positive";
-                    liClass += " item item-equipped";
-                    var li =
-                        "<li class='" + liClass + "' id='perk-header-" + perk.id + "'>" +
-                        "<div class='info-callout-target info-callout-target-small' description='" + desc + "'>" +
-                        "<img src='" + url + "' alt='" + perk.name + "'/>" +
-                        "</div></li>";
-                } else {
-                    $("#perk-header-" + perk.id + " .info-callout-target").attr("description", desc);
-                    $("#perk-header-" + perk.id).toggleClass("event-ending", perk.effectTimer >= 0 && perk.effectTimer < 5);
-                }
-                $("ul#list-items-perks").append(li);
+                $("#perk-header-" + perk.id + " .info-callout-target").attr("description", desc);
+                $("#perk-header-" + perk.id + " .info-callout-target").toggleClass("event-ending", perk.effectTimer >= 0 && perk.effectTimer < 5);
             }
 
-            if (resetList) {
-                GameGlobals.uiFunctions.generateCallouts("ul#list-items-perks");
-            }
+            GameGlobals.uiFunctions.updateCallouts("ul#list-items-perks");
 		},
 
 		updateResources: function () {
@@ -436,7 +408,7 @@ define([
                 if (inCamp) {
                     UIConstants.updateResourceIndicator(
                         "#resources-" + name,
-                        showResources.getResource(name),
+                        Math.floor(showResources.getResource(name)),
                         showResourceAcc == null ? 0 : Math.round(showResourceAcc.resourceChange.getResource(name) * 10000) / 10000,
                         storageCap,
                         false,
@@ -455,7 +427,7 @@ define([
                     var isSupplies = name === resourceNames.food || name === resourceNames.water;
                     UIConstants.updateResourceIndicator(
                         "#resources-bag-" + name,
-                        showResources.getResource(name),
+                        Math.floor(showResources.getResource(name)),
                         showResourceAcc == null ? 0 : Math.round(showResourceAcc.resourceChange.getResource(name) * 10000) / 10000,
                         storageCap,
                         false,
@@ -631,6 +603,42 @@ define([
 		getShowResourceAcc: function () {
 			return GameGlobals.resourcesHelper.getCurrentStorageAccumulation(false);
 		},
+
+        onPlayerMoved: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
+            this.updateTabVisibility();
+            this.updateStaminaWarningLimit();
+            this.updateLocation();
+            this.updateHeaderTexts();
+            this.updateResources();
+        },
+
+        onHealthChanged: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
+            this.updateStaminaWarningLimit();
+            this.updatePlayerStats();
+        },
+
+        onInventoryChanged: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
+            this.updateResources();
+            this.updatePlayerStats();
+        },
+
+		onVisionChanged: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
+            this.updateVisionStatus();
+		},
+
+		onTabChanged: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
+            this.updateVisionStatus();
+            this.updateHeaderTexts();
+		},
+        
+        onPerksChanged: function () {
+            this.refreshPerks();
+        },
     });
 
     return UIOutHeaderSystem;
