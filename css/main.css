@@ -563,6 +563,9 @@ body.dark div.container-btn-action {
   margin: 4px 6px;
   border-width: 0px;
 }
+body.dark table div.container-btn-action {
+  margin: 2px 2px;
+}
 body.dark div.container-btn-action button {
   margin: -1px;
 }
@@ -1651,9 +1654,6 @@ body.dark .sticky-footer .one-quarter {
   height: 2px;
   padding: 0px;
 }
-body.dark span.improvement-count {
-  font-weight: bold;
-}
 body.dark span.improvement-badge {
   padding: 5px;
   margin: 1px;
@@ -1664,6 +1664,12 @@ body.dark span.improvement-badge {
   display: inline-block;
   vertical-align: middle;
   text-align: center;
+}
+body.dark span.improvement-badge.badge-disabled {
+  color: #999;
+}
+body.dark span.improvement-count {
+  font-weight: bold;
 }
 body.dark .changelog-type {
   padding: 2px 5px;
@@ -2348,6 +2354,9 @@ body.sunlit div.container-btn-action {
   padding: -1px;
   margin: 4px 6px;
   border-width: 0px;
+}
+body.sunlit table div.container-btn-action {
+  margin: 2px 2px;
 }
 body.sunlit div.container-btn-action button {
   margin: -1px;
@@ -3437,9 +3446,6 @@ body.sunlit .sticky-footer .one-quarter {
   height: 2px;
   padding: 0px;
 }
-body.sunlit span.improvement-count {
-  font-weight: bold;
-}
 body.sunlit span.improvement-badge {
   padding: 5px;
   margin: 1px;
@@ -3450,6 +3456,12 @@ body.sunlit span.improvement-badge {
   display: inline-block;
   vertical-align: middle;
   text-align: center;
+}
+body.sunlit span.improvement-badge.badge-disabled {
+  color: #666;
+}
+body.sunlit span.improvement-count {
+  font-weight: bold;
 }
 body.sunlit .changelog-type {
   padding: 2px 5px;

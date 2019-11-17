@@ -53,7 +53,7 @@
         lastShownPopulation: 0,
 
         elements: {
-            improvementButtons: [],
+            improvementRows: [],
             steppers: {},
         },
 
@@ -329,7 +329,7 @@
         initImprovements: function () {
             var $table = $("#in-improvements table");
             var trs = "";
-            this.elements.improvements = {};
+            this.elements.improvementRows = {};
             for (var key in ImprovementConstants.campImprovements) {
                 var def = ImprovementConstants.campImprovements[key];
                 var tds = "";
@@ -347,11 +347,12 @@
                 }
                 var improveButton = "";
                 if (hasImproveAction) {
-                    improveButton = "<button class='action btn-compact' action='" + improveAction + "'>↑</button>";
+                    improveButton = "<button class='action action-improve btn-compact' action='" + improveAction + "'>↑</button>";
                 }
                 tds += "<td>" + buildButton + "</td>";
                 tds += "<td><span class='improvement-badge improvement-count'>0</span></td>";
-                tds += "<td><span class='improvement-badge improvement-level'>0</span>" + improveButton + "</td>";
+                tds += "<td><span class='improvement-badge improvement-level'>0</span></td>";
+                tds += "<td>" + improveButton + "</td>";
                 tds += "<td>" + useButton + "</td>";
                 trs += "<tr id='in-improvements-" + key + "'>" + tds + "</tr>";
             }
@@ -361,20 +362,21 @@
             var result = [];
             $.each($("#in-improvements tr"), function () {
                 var id = $(this).attr("id");
-                var actionName = $(this).find("button.action-build").attr("action");
-                if (!actionName) {
+                var buildAction = $(this).find("button.action-build").attr("action");
+                if (!buildAction) {
                     log.w("In improvement tr without action name: #" + id);
-                } else {
-                    var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(actionName);
-                    if (improvementName) {
-                        var btnUse = $(this).find(".action-use");
-                        var count =  $(this).find(".improvement-count")
-                        var level =  $(this).find(".improvement-level")
-                        result.push({ elem: $(this), btnUse: btnUse, count: count, level: level, id: id, action: actionName, improvementName: improvementName });
-                    }
+                    return;
                 }
+                var improveAction = $(this).find("button.action-improve").attr("action");
+                var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(buildAction);
+                if (!improvementName) return;
+                var btnUse = $(this).find(".action-use");
+                var btnImprove = $(this).find(".action-improve");
+                var count =  $(this).find(".improvement-count")
+                var level =  $(this).find(".improvement-level")
+                result.push({ tr: $(this), btnUse: btnUse, btnImprove: btnImprove, count: count, level: level, id: id, action: buildAction, improveAction: improveAction, improvementName: improvementName });
             });
-            this.elements.improvementButtons = result;
+            this.elements.improvementRows = result;
         },
 
         updateImprovements: function () {
@@ -389,31 +391,32 @@
             var availableBuildingCount = 0;
             var visibleBuildingCount = 0;
 
-            for (var i = 0; i < this.elements.improvementButtons.length; i++) {
-                var elem = this.elements.improvementButtons[i];
-                var actionName = elem.action;
+            for (var i = 0; i < this.elements.improvementRows.length; i++) {
+                var elem = this.elements.improvementRows[i];
+                var buildAction = elem.action;
                 var id = elem.id;
+                var improveAction = elem.improveAction;
                 var improvementName = elem.improvementName;
-				var requirementCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false, null);
-                var actionEnabled = requirementCheck.value >= 1;
+				var requirementCheck = GameGlobals.playerActionsHelper.checkRequirements(buildAction, false, null);
+                var buildActionEnabled = requirementCheck.value >= 1;
                 var showActionDisabledReason = false;
-                if (!actionEnabled) {
+                if (!buildActionEnabled) {
                     switch (requirementCheck.reason) {
                         case PlayerActionConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP:
                         case PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES:
                             showActionDisabledReason = true;
                     }
                 }
-                var actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
+                var actionAvailable = GameGlobals.playerActionsHelper.checkAvailability(buildAction, false);
                 var existingImprovements = improvements.getCount(improvementName);
                 var improvementLevel = improvements.getLevel(improvementName);
-                if (isActive) {
-                    elem.count.text(existingImprovements);
-                    elem.level.text(improvementLevel);
-                    GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0);
-                }
+                elem.count.text(existingImprovements);
+                elem.count.toggleClass("badge-disabled", existingImprovements < 1);
+                elem.level.text(improvementLevel);
+                log.i(elem.improvementName + " " + buildAction + " " + improveAction)
+                elem.level.toggleClass("badge-disabled", existingImprovements < 1 || !improveAction);
 
-                var commonVisibilityRule = (actionEnabled || existingImprovements > 0 || showActionDisabledReason);
+                var commonVisibilityRule = (buildActionEnabled || existingImprovements > 0 || showActionDisabledReason);
                 var specialVisibilityRule = true;
                 // TODO get rid of these & move to requirements
                 // TODO check TR ids after improvements table remake
@@ -423,7 +426,9 @@
                 if (id === "in-improvements-market") specialVisibilityRule = hasTradePost;
                 if (id === "in-improvements-inn") specialVisibilityRule = hasTradePost;
                 var isVisible = specialVisibilityRule && commonVisibilityRule;
-                GameGlobals.uiFunctions.toggle(elem.elem, isVisible);
+                GameGlobals.uiFunctions.toggle(elem.tr, isVisible);
+                GameGlobals.uiFunctions.toggle(elem.btnUse, existingImprovements > 0);
+                GameGlobals.uiFunctions.toggle(elem.btnImprove, existingImprovements > 0);
                 if (isVisible) visibleBuildingCount++;
                 if (actionAvailable) availableBuildingCount++;
             }
