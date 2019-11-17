@@ -27,8 +27,8 @@ define([
             var c = EnemyConstants;
             var definitions = EnemyConstants.enemyDefinitions;
             // global
-            definitions.global.push(this.createEnemy("huge rat", "huge rat", "global", [c.nPest, c.nAnimal], [c.gPack, c.gMob, c.gHorde], [c.aInfest], [c.dCleared], 0, 5, 1.1, 0.75));
             definitions.global.push(this.createEnemy("giant centipede", "giant centipede", "global", [c.nPest, c.nAnimal],  [c.gSwarm],[c.aInfest], [c.dCleared], 1, 2, 0.4, 0.9, 30));
+            definitions.global.push(this.createEnemy("huge rat", "huge rat", "global", [c.nPest, c.nAnimal], [c.gPack, c.gMob, c.gHorde], [c.aInfest], [c.dCleared], 1, 5, 1.1, 0.75));
             definitions.global.push(this.createEnemy("security bot", "security bot", "global", [c.nBot], [c.gMob], [c.aPatrol, c.aGuard], [c.dDisabled], 3, 5, 1, 0.3));
             definitions.global.push(this.createEnemy("giant scorpion", "giant scorpion", "global", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [], 4, 5, 1.1, 0.7));
             definitions.global.push(this.createEnemy("camel spider", "camel spider", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aOverrun], [c.dCleared, c.dDrive], 5, 5, 0.3, 1, 35));
@@ -217,8 +217,6 @@ define([
         },
         
         getRequiredStrength: function (campOrdinal, step) {
-            if (campOrdinal < 1)
-                return 1;
             var prevOrdinal = campOrdinal;
             var prevStep = step - 1;
             if (prevStep < WorldCreatorConstants.CAMP_STEP_START) {
@@ -231,6 +229,7 @@ define([
         },
 
         getTypicalStrength: function (campOrdinal, step) {
+            if (campOrdinal < 0) campOrdinal = 0;
             // health
             var typicalHealth = 50;
             var healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus).effect;
