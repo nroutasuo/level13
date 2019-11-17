@@ -26,7 +26,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
         generator: "Generator",
 		tradepost: "Trading post",
 		inn: "Inn",
-		apothecary: "Apothecary shop",
+		apothecary: "Apothecary",
 		smithy: "Smithy",
 		cementmill: "Cement mill",
 		library: "Library",

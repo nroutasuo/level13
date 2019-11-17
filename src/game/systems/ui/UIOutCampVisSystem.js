@@ -406,8 +406,10 @@ define([
         
         updateInfoOverlay: function () {
             if (this.hoveredBuilding) {
+                var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+                var buildingLevel = improvements.getLevel(this.hoveredBuilding);
+                this.elements.infoText.text(this.hoveredBuilding + " (Level " + buildingLevel + ")");
                 this.elements.infoOverlay.show();
-                this.elements.infoText.text(this.hoveredBuilding);
             } else {
                 this.elements.infoOverlay.hide();
                 
@@ -434,7 +436,7 @@ define([
         },
         
         onMouseLeaveBuilding: function (e) {
-            e.data.system.hoveredBuilding= null;
+            e.data.system.hoveredBuilding = null;
             e.data.system.updateInfoOverlay();
         },
         
