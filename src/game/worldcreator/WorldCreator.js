@@ -488,7 +488,8 @@ define([
                     var y = sectorVO.position.sectorY;
                     if (Math.abs(y) <= 2 && Math.abs(x) <= 2) continue;
                     var distanceToCamp = WorldCreatorHelper.getDistanceToCamp(this.world, levelVO, sectorVO);
-                    if (distanceToCamp < 3) continue;
+                    var distanceToCampThreshold = l == 13 ? 7 : 3;
+                    if (distanceToCamp < distanceToCampThreshold) continue;
                     
                     // - determine value range
                     var step = WorldCreatorConstants.getCampStep(sectorVO.zone);
@@ -597,10 +598,12 @@ define([
                         WorldCreatorHelper.getDistanceToCamp(this.world, levelVO, pair.sector),
                         WorldCreatorHelper.getDistanceToCamp(this.world, levelVO, pair.neighbour)
                     );
-                    if (distanceToCamp > 2) {
+                    var distanceToCampThreshold = l == 13 ? 4 : 2;
+                    if (distanceToCamp > distanceToCampThreshold) {
                         addGang(pair.sector, pair.neighbour, true, true);
                     }
                 }
+                
                 // - ZONE_PASSAGE_TO_PASSAGE: most
                 var isGoingDown = l <= 13 && l >= bottomLevel;
                 var passageUp = levelVO.passageUpSector;
@@ -1522,7 +1525,11 @@ define([
             if (sectorVO.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP) return false;
             if (sectorVO.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE) return false;
             var position = sectorVO.position;
-            if (position.level == 13 && position.sectorX == WorldCreatorConstants.FIRST_CAMP_X && position.sectorY == WorldCreatorConstants.FIRST_CAMP_Y) return false;
+            if (position.level == 13) {
+                var firstCampPosition = new PositionVO(position.level, WorldCreatorConstants.FIRST_CAMP_X , WorldCreatorConstants.FIRST_CAMP_Y)
+                var path = WorldCreatorRandom.findPath(this.world, position, firstCampPosition, false, true);
+                if (path.length < 4) return false;
+            }
             return true;
         },
         
