@@ -72,9 +72,20 @@ define([
         initFight: function () {
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var enemy = this.fightNodes.head.fight.enemy;
+            enemy.resetHP();
             this.fightNodes.head.fight.nextTurnEnemy = 0.15 + FightConstants.getEnemyAttackTime(enemy) * Math.random();
             this.fightNodes.head.fight.nextTurnPlayer = 0.15 + FightConstants.getPlayerAttackTime(itemsComponent) * Math.random();
             this.totalFightTime = 0;
+            
+            var playerStamina = this.playerStatsNodes.head.stamina;
+            playerStamina.resetHP();
+            
+            var enemyDamagePerSec = FightConstants.getEnemyDamagePerSec(enemy, playerStamina, itemsComponent);
+            var playerDamagePerSec = FightConstants.getPlayerDamagePerSec(enemy, playerStamina, itemsComponent);
+            var playerRandomDamagePerSec = FightConstants.getRandomDamagePerSec(enemy, playerStamina, itemsComponent);
+            var duration = Math.min(enemy.hp / enemyDamagePerSec, playerStamina.hp / (playerDamagePerSec + playerRandomDamagePerSec));
+            var winChance = FightConstants.getFightWinProbability(enemy, playerStamina, itemsComponent);
+            this.log("init fight | expected duration: " + Math.round(duration*100)/100 + ", win chance: " + Math.round(winChance*100)/100);
         },
         
         applyFightStep: function (time) {
@@ -137,16 +148,21 @@ define([
             }
 
             // apply effects
-            var enemyChange = enemyDamage + extraEnemyDamage;
+            var enemyChange = this.adjustChange(enemyDamage + extraEnemyDamage);
             enemy.hp -= enemyChange;
             enemy.hp = Math.max(enemy.hp, 0);
-            var playerChange = playerDamage + playerRandomDamage;
+            var playerChange = this.adjustChange(playerDamage + playerRandomDamage);
             playerStamina.hp -= playerChange;
             playerStamina.hp = Math.max(playerStamina.hp, 0);
             
             if (playerChange !== 0 || enemyChange !== 0) {
                 GlobalSignals.fightUpdateSignal.dispatch(playerChange, enemyChange);
             }
+        },
+        
+        adjustChange: function (value) {
+            if (value <= 0) return 0;
+            return Math.max(1, value);
         },
         
         endFight: function () {
@@ -172,8 +188,8 @@ define([
                 this.fightNodes.head.fight.resultVO = GameGlobals.playerActionResultsHelper.getFightRewards(won);
                 this.playerStatsNodes.head.entity.add(new PlayerActionResultComponent(this.fightNodes.head.fight.resultVO));
                 
-                enemy.hp = 100;
-                playerStamina.hp = 100;
+                enemy.resetHP();
+                playerStamina.resetHP();
                 this.fightNodes.head.fight.won = won;
                 this.fightNodes.head.fight.finished = true;
             }.bind(this), 700);
@@ -182,8 +198,8 @@ define([
         fleeFight: function () {
             var enemy = this.fightNodes.head.fight.enemy;
             var playerStamina = this.playerStatsNodes.head.stamina;
-            enemy.hp = 100;
-            playerStamina.hp = 100;
+            enemy.resetHP();
+            playerStamina.resetHP();
             this.fightNodes.head.fight.fled = true;
         },
         

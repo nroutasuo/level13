@@ -237,7 +237,7 @@ define([
 			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var fightAtt = FightConstants.getPlayerAtt(playerStatsNode.stamina, itemsComponent);
             var fightDef = FightConstants.getPlayerDef(playerStatsNode.stamina, itemsComponent);
-            var fightStrength = fightAtt + fightDef;
+            var fightStrength = FightConstants.getStrength(fightAtt, fightDef, playerStatsNode.stamina.maxHP);
 
             $("#stats-fight .value").text(fightStrength);
             $("#stats-fight-att .value").text(fightAtt);

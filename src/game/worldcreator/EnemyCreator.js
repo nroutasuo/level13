@@ -28,9 +28,9 @@ define([
             var definitions = EnemyConstants.enemyDefinitions;
             // global
             definitions.global.push(this.createEnemy("giant centipede", "giant centipede", "global", [c.nPest, c.nAnimal],  [c.gSwarm],[c.aInfest], [c.dCleared], 1, 2, 0.4, 0.9, 30));
-            definitions.global.push(this.createEnemy("huge rat", "huge rat", "global", [c.nPest, c.nAnimal], [c.gPack, c.gMob, c.gHorde], [c.aInfest], [c.dCleared], 1, 5, 1.1, 0.75));
-            definitions.global.push(this.createEnemy("security bot", "security bot", "global", [c.nBot], [c.gMob], [c.aPatrol, c.aGuard], [c.dDisabled], 3, 5, 1, 0.3));
-            definitions.global.push(this.createEnemy("giant scorpion", "giant scorpion", "global", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [], 4, 5, 1.1, 0.7));
+            definitions.global.push(this.createEnemy("huge rat", "huge rat", "global", [c.nPest, c.nAnimal], [c.gPack, c.gMob, c.gHorde], [c.aInfest], [c.dCleared], 1, 5, 0.9, 0.75));
+            definitions.global.push(this.createEnemy("security bot", "security bot", "global", [c.nBot], [c.gMob], [c.aPatrol, c.aGuard], [c.dDisabled], 3, 5, 0.2, 0.3));
+            definitions.global.push(this.createEnemy("giant scorpion", "giant scorpion", "global", [c.nPest, c.nAnimal], [c.gSwarm, c.gMob], [c.aInfest], [], 4, 5, 0.6, 0.7));
             definitions.global.push(this.createEnemy("camel spider", "camel spider", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aOverrun], [c.dCleared, c.dDrive], 5, 5, 0.3, 1, 35));
             definitions.global.push(this.createEnemy("ancient guard bot", "ancient guard bot", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 6, 5, 0.3, 0.75, 65));
             definitions.global.push(this.createEnemy("carpet viper", "carpet viper", "global", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aOverrun], [c.dCleared, c.dDrive], 7, 5, 0.3, 1, 35));
@@ -78,7 +78,7 @@ define([
             definitions.radiation.push(this.createEnemy("towering mutant dog", "towering mutant dog", "radiation", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled, c.dDrive], 11, 5, 1.1, 0.7));
             // sunlit
             definitions.sunlit.push(this.createEnemy("wasp", "wasp", "sunlit", [c.nAnimal], [c.gSwarm], [c.aInfest], [c.dDrive], 0, 1, 0.75, 1.5, 10));
-            definitions.sunlit.push(this.createEnemy("bee", "bee", "sunlit", [c.nAnimal], [c.gSwarm], [c.aInfest], [c.dDrive], 1, 5, 0.25, 1.5, 70));
+            definitions.sunlit.push(this.createEnemy("bee", "bee", "sunlit", [c.nAnimal], [c.gSwarm], [c.aInfest], [c.dDrive], 1, 4, 0.25, 1.5, 70));
             definitions.sunlit.push(this.createEnemy("thorny bush", "thorny bush", "sunlit", [c.nPest], [c.gCluster], [c.aInfest, c.aCover], [], 2, 2, 0.8, 0.5));
             definitions.sunlit.push(this.createEnemy("overgrown nettle", "overgrown nettle", "sunlit", [c.nPest], [c.gCluster], [c.aInfest, c.aCover], [], 3, 5, 0.8, 0.25));
             definitions.sunlit.push(this.createEnemy("hawk", "hawk", "sunlit", [c.nPest, c.nAnimal], [c.gFlock, c.gPack], [c.aInfest], [], 3, 9, 0.3, 1.1, 50));
@@ -89,7 +89,7 @@ define([
             definitions.sunlit.push(this.createEnemy("swarm of pidgeons", "swarm of pidgeons", "sunlit", [c.nPest, c.nAnimal], [c.gFlock, c.gSwarm], [c.aInfest], [c.dDrive], 9, 5, 0.75, 1.1, 10));
             definitions.sunlit.push(this.createEnemy("great black pelican", "great black pelican", "sunlit", [c.nPest, c.nAnimal], [], [c.aInfest, c.aGuard], [c.dKilled, c.dDrive], 15, 5, 0.5, 0.9, 35));
             // dark
-            definitions.dark.push(this.createEnemy("cockroach", "cockroach", "dark", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover, c.aOverrun], [c.dCleared], 0, 1, 0.2, 1, 10));
+            definitions.dark.push(this.createEnemy("cockroach", "cockroach", "dark", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover, c.aOverrun], [c.dCleared], 0, 1, 0.4, 1, 10));
             definitions.dark.push(this.createEnemy("cave bat", "cave bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 2, 5, 0.4, 1.1, 20));
             definitions.dark.push(this.createEnemy("ghost bat", "ghost bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 3, 6, 0.8, 1, 50));
             definitions.dark.push(this.createEnemy("vampire bat", "vampire bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 3, 5, 0.7, 1, 70));
@@ -107,7 +107,7 @@ define([
             // sparse
             definitions.sparse.push(this.createEnemy("aggressive magpie", "aggressive magpie", "sparse", [c.nPest, c.nAnimal], [], [c.aInfest], [], 4, 4, 0.7, 1.2, 50));
             definitions.sparse.push(this.createEnemy("territorial magpie", "territorial magpie", "sparse", [c.nPest, c.nAnimal], [], [c.aInfest], [], 5, 4, 0.7, 1.2, 35));
-            definitions.global.push(this.createEnemy("agitated murder of crows", "agitated murder of crows", "global", [c.nPest, c.nAnimal], [c.gFlock, c.gSwarm], [c.aInfest], [c.dDrive], 10, 5, 1.25, 0.3));
+            definitions.global.push(this.createEnemy("agitated murder of crows", "agitated murder of crows", "global", [c.nPest, c.nAnimal], [c.gFlock, c.gSwarm], [c.aInfest], [c.dDrive], 10, 5, 1.25, 1.3));
             definitions.global.push(this.createEnemy("military bot", "military bot", "global", [c.nBot], [c.gMob], [c.aPatrol, c.aGuard], [c.dDisabled], 13, 5, 0.8, 1.2, 85));
             definitions.global.push(this.createEnemy("advanced military bot", "advanced military bot", "global", [c.nBot], [c.gMob], [c.aPatrol, c.aGuard], [c.dDisabled], 14, 5, 0.8, 1.2, 85));
             // water
@@ -124,24 +124,30 @@ define([
             definitions.magic.push(this.createEnemy("vengeful dryad", "vengeful dryad", "magic", [], [c.gMob], [c.aGuard], [c.dDrive], 6, 8, 0.5, 1.1, 90));
         },
 
-        // Enemy definitions (level: level ordinal, difficulty: 1-10, attRatio: 0-1, rarity: 0-100)
+        // Enemy definitions (level: level ordinal, difficulty: 1-10, attRatio: 0-1, speed 0.5-1.5, rarity: 0-100)
         createEnemy: function (id, name, type, nouns, groupN, activeV, defeatedV, campOrdinal, normalizedDifficulty, attRatio, speed, rarity) {
             var reqStr = this.getRequiredStrength(campOrdinal, 2);
             var reqStrPrev = this.getRequiredStrength(campOrdinal, 1);
             var reqStrNext = this.getRequiredStrength(campOrdinal, 3);
-            var statsMin = Math.max(0, reqStr - (reqStr - reqStrPrev) * 0.5);
-            var statsMax = Math.max(2, reqStr + (reqStrNext - reqStr) * 0.5);
+            var strengthMin = Math.max(0, reqStr - (reqStr - reqStrPrev) * 0.5);
+            var strengthMax = Math.max(2, reqStr + (reqStrNext - reqStr) * 0.5);
             if (reqStr === reqStrNext) {
-                statsMax = Math.max(2, reqStr + (reqStr - reqStrPrev) * 0.5);
+                strengthMax = Math.max(2, reqStr + (reqStr - reqStrPrev) * 0.5);
             }
-
-            var stats = statsMin + (statsMax - statsMin) / 10 * normalizedDifficulty;
-            var att = Math.max(1, Math.round(stats * attRatio));
-            var def = Math.max(1, Math.round(stats * (1 - attRatio)));
-            return new EnemyVO(id, name, type, nouns, groupN, activeV, defeatedV, att, def, speed, rarity);
+            
+            attRatio = Math.max(0.3, attRatio);
+            attRatio = Math.min(0.7, attRatio);
+            
+            var strength = strengthMin + (strengthMax - strengthMin) / 10 * normalizedDifficulty;
+            var hp = Math.round(100 + ((1-attRatio) - 0.5) * 50 + (normalizedDifficulty - 5)/10 * 50 + (campOrdinal - 5) * 5);
+            var stats = strength * 100 / hp;
+            var def = Math.max(campOrdinal, Math.round(stats * (1 - attRatio)));
+            var att = Math.max(campOrdinal, Math.round(stats * attRatio));
+            log.i("createEnemy " + name + " " + strength + " -> " + FightConstants.getStrength(att, def, hp) + " | " + hp + " " + att + " " + def);
+            return new EnemyVO(id, name, type, nouns, groupN, activeV, defeatedV, att, def, hp, speed, rarity);
         },
 
-        // get enemies by type (string) and difficulty (1-15 (campOrdinal))
+        // get enemies by type (string) and difficulty (campOrdinal and step)
         // by default will also include enemies of one difficulty lower, if restrictDifficulty, then not
         // will return at least one enemy; if no matching enemy exists, one with lower difficulty is returned
         getEnemies: function (type, difficulty, restrictDifficulty) {
@@ -192,14 +198,14 @@ define([
 
         // get the difficulty level (1-3*15, corresponding to camp ordinal and step) of a given enemy
         getEnemyDifficultyLevel: function (enemy) {
-            var enemyStats = enemy.att + enemy.def;
+            var enemyStats = FightConstants.getStrength(enemy.att, enemy.def, enemy.maxHP);
             var requiredStats;
             var max = this.getDifficulty(WorldCreatorConstants.CAMPS_TOTAL, WorldCreatorConstants.CAMP_STEP_END);
             for (var i = 1; i <= max; i++) {
                 var campOrdinal = this.getCampOrdinalFromDifficulty(i);
                 var step = this.getStepFromDifficulty(i);
                 requiredStats = this.getRequiredStrength(campOrdinal, step);
-                if (requiredStats > enemyStats) return i;
+                if (requiredStats >= enemyStats) return i;
             }
             return max;
         },
@@ -225,16 +231,15 @@ define([
             }
             var typicalStrength = this.getTypicalStrength(campOrdinal, step);
             var typicalStrengthPrevious = this.getTypicalStrength(prevOrdinal, prevStep);
-            return Math.ceil((typicalStrength + typicalStrengthPrevious) / 2);
+            var result = Math.ceil((typicalStrength + typicalStrengthPrevious) / 2);
+            return result;
         },
 
         getTypicalStrength: function (campOrdinal, step) {
             if (campOrdinal < 0) campOrdinal = 0;
             // health
-            var typicalHealth = 50;
+            var typicalHealth = 100;
             var healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus).effect;
-            if (campOrdinal > 0)
-                typicalHealth = 100;
             if (campOrdinal >= WorldCreatorConstants.CAMPS_BEFORE_GROUND)
                 typicalHealth = typicalHealth * healthyPerkFactor;
 
@@ -261,6 +266,7 @@ define([
 
             var typicalStamina = {};
             typicalStamina.health = typicalHealth;
+            typicalStamina.maxHP = typicalHealth;
             var result = FightConstants.getPlayerStrength(typicalStamina, typicalItems);
             return result;
         },

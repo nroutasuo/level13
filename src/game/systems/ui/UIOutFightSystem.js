@@ -86,9 +86,9 @@ define([
             // update progress bars
 			var enemy = this.fightNodes.head.fight.enemy;
 			var playerStamina = this.playerStatsNodes.head.stamina;
-			var playerVal = Math.round(playerStamina.hp);
+			var playerVal = Math.round(playerStamina.hp / playerStamina.maxHP * 100);
 			var playerChangeVal = Math.round(this.lastPlayerDamage);
-			var enemyVal = Math.round(enemy.hp);
+			var enemyVal = Math.round(enemy.hp / enemy.maxHP * 100);
 			var enemyChangeVal = Math.round(this.lastEnemyDamage);
 			$("#fight-bar-enemy").data("progress-percent", enemyVal);
 			$("#fight-bar-enemy").data("change-percent", enemyChangeVal);
@@ -101,8 +101,9 @@ define([
 				
 			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
 			var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent);
+            var playerHP = playerStamina.maxHP;
 			$("#fight-popup-self-name").text(this.numFollowers > 0 ? " Party " : " Wanderer ");
-			$("#fight-popup-self-stats").text(" att: " + playerAtt + " | def: " + playerDef + " ");
+			$("#fight-popup-self-stats").text(" att: " + playerAtt + " | def: " + playerDef + " | hp: " + playerHP + " ");
             
             // update action buttons
             // TODO remove hard-coding of items usable in fight, instead have fight effect desc in ItemVO (damage, heal, defend, stun)
@@ -281,7 +282,8 @@ define([
 			var encounterComponent = sector.get(FightEncounterComponent);
 			var enemiesComponent = sector.get(EnemiesComponent);
 			var currentEnemy = encounterComponent.enemy;
-			var statsText = " att: " + currentEnemy.att + " | def: " + currentEnemy.def + " ";
+            if (currentEnemy == null) return;
+			var statsText = " att: " + currentEnemy.att + " | def: " + currentEnemy.def + " " + " | hp: " + currentEnemy.maxHP + " ";
             
 			if (this.state == FightPopupStateEnum.FIGHT_PENDING) {
 				var playerStamina = this.playerStatsNodes.head.stamina;

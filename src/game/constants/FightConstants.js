@@ -11,15 +11,29 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
     var FightConstants = {
 	
 		FIGHT_PLAYER_BASE_ATT: 3,
-		FIGHT_PLAYER_BASE_DEF: 3,
-		MAX_FOLLOWER_MAX: 5,
+		FIGHT_PLAYER_BASE_DEF: 1,
+		MAX_FOLLOWER_MAX: 3,
         
         HIT_STUN_TIME: 0.25,
         
         // applies both to enemy and player damage and makes fights to faster (with fewer hits)
-        FIGHT_DAMAGE_FACTOR: 6,
+        FIGHT_DAMAGE_BASE: 2,
         // applies to both enemy and player and makes fights go faster (less time between hits)
-        FIGHT_SPEED_FACTOR: 1.5,
+        FIGHT_SPEED_FACTOR: 1,
+        
+        getStrength: function (att, def, hp) {
+             var str = (att + def) / 100 * hp;
+             return Math.round(str);
+        },
+        
+        getDamagePerSec: function (att, def) {
+            var ratio = att / (att + def);
+            // damage is part determined by attack, part by a static value
+            // -> increases with att but tends to be around reasonable numbers relative to max hp which is around 100
+            var result =  ratio * att + ratio * this.FIGHT_DAMAGE_BASE;
+            result = Math.max(1, result);
+            return result;
+        },
         
         getPlayerAttackTime: function (itemsComponent) {
             var weapons = itemsComponent.getEquipped(ItemConstants.itemTypes.weapon);
@@ -30,8 +44,7 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
 		 
 		getPlayerAtt: function (playerStamina, itemsComponent) {
 			var itemBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.weapon);
-			var healthFactor = (playerStamina.health / 100);
-			var playerAtt = Math.floor((this.FIGHT_PLAYER_BASE_ATT + itemBonus) * healthFactor);
+			var playerAtt = Math.floor(this.FIGHT_PLAYER_BASE_ATT + itemBonus);
 			var followerBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_att, ItemConstants.itemTypes.follower);
             return playerAtt + followerBonus;
         },
@@ -62,7 +75,7 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
         getPlayerStrength: function (playerStamina, itemsComponent) {
             var att = this.getPlayerAtt(playerStamina, itemsComponent);
             var def = this.getPlayerDef(playerStamina, itemsComponent);
-            return att + def;
+            return this.getStrength(att, def, playerStamina.maxHP);
         },
         
         getMaxFollowers: function (numCamps) {
@@ -81,19 +94,19 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
         // Damage done by player to an enemy per sec
         getEnemyDamagePerSec: function (enemy, playerStamina, itemsComponent) {
             var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
-            return Math.max(1, playerAtt / enemy.def * this.FIGHT_DAMAGE_FACTOR);
+            return this.getDamagePerSec(playerAtt, enemy.def);
         },
         
         getEnemyDamagePerAttack: function (enemy, playerStamina, itemsComponent) {
             var dps = this.getEnemyDamagePerSec(enemy, playerStamina, itemsComponent);
-            var attacktTime = this.getPlayerAttackTime(itemsComponent);
-            return dps * attacktTime;
+            var attackTime = this.getPlayerAttackTime(itemsComponent);
+            return dps * attackTime;
         },
         
         // Damage done by the enemy to the player per sec
         getPlayerDamagePerSec: function (enemy, playerStamina, itemsComponent) {
             var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent);
-            return Math.max(1, enemy.att / playerDef * this.FIGHT_DAMAGE_FACTOR);
+            return this.getDamagePerSec(enemy.att, playerDef);
         },
         
         getPlayerDamagePerAttack: function (enemy, playerStamina, itemsComponent) {
@@ -103,7 +116,7 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
         },
         
         getRandomDamagePerSec: function (enemy, playerStamina, itemsComponent) {
-            var playerDamage = FightConstants.getPlayerDamagePerSec(enemy, playerStamina, itemsComponent);
+            var playerDamage = this.getPlayerDamagePerSec(enemy, playerStamina, itemsComponent);
             return enemy.attRandomFactor * playerDamage;
         },
         
@@ -128,6 +141,7 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             if (probability < 0.4) {
                 return "dangerous";
             }
+            
             if (probability >= 0.95) {
                 return "harmless";
             }
@@ -142,15 +156,21 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
         },
         
         getFightWinProbability: function(enemy, playerStamina, itemsComponent) {
-            var avgEnemyDamage = this.getEnemyDamagePerSec(enemy, playerStamina, itemsComponent);
-            var avgPlayerDamage = this.getPlayerDamagePerSec(enemy, playerStamina, itemsComponent);
-            var randomDamageMin = -0.5 * avgPlayerDamage;
-            var randomDamageMax = 0.5 * avgPlayerDamage;
-            var totalDamageMin = avgPlayerDamage + randomDamageMin;
-            var totalDamageMax = avgPlayerDamage + randomDamageMax;
-            var damageRatioMin = avgEnemyDamage / totalDamageMin;
-            var damageRatioMax = avgEnemyDamage / totalDamageMax;
-            return 0.9 - ((Math.min(1, damageRatioMax) - Math.min(1, damageRatioMin)) / (damageRatioMax - damageRatioMin));
+            var enemyDamage = this.getEnemyDamagePerSec(enemy, playerStamina, itemsComponent);
+            var playerDamage = this.getPlayerDamagePerSec(enemy, playerStamina, itemsComponent);
+            
+            var playerDamageRandomMin = playerDamage * -0.5;
+            var playerDamageRandomMax = playerDamage * 0.5;
+            
+            var timeAliveEnemy = enemy.maxHP / enemyDamage;
+            var timeAlivePlayerMin = playerStamina.maxHP / (playerDamage + playerDamageRandomMax);
+            var timeAlivePlayerMax = playerStamina.maxHP / (playerDamage + playerDamageRandomMin);
+            
+            if (timeAlivePlayerMin > timeAliveEnemy) return 1;
+            if (timeAlivePlayerMax < timeAliveEnemy) return 0;
+            
+            var ratio =  (timeAlivePlayerMax - timeAliveEnemy) / (timeAlivePlayerMax - timeAlivePlayerMin);
+            return ratio;
         },
         		
 		getEnemyLocaleId: function (baseActionID, action, isNeighbour) {

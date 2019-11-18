@@ -57,9 +57,13 @@ define([
             var newHealth = Math.max(PlayerStatConstants.HEALTH_MINIMUM, Math.round(200 * healthEffects * injuryEffects) / 2);
             var oldHealth = staminaComponent.health;
 			staminaComponent.health = newHealth;
+            staminaComponent.maxHP = newHealth;
+            if (staminaComponent.hp > newHealth) staminaComponent.hp = newHealth;
             
-            if (newHealth !== oldHealth)
+            if (newHealth !== oldHealth) {
+                staminaComponent.resetHP();
                 GlobalSignals.healthChangedSignal.dispatch();
+            }
 			
             // stamina
             var healthVal = staminaComponent.health;
