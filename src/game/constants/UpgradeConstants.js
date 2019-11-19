@@ -172,13 +172,24 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
         	unlock_building_passage_staircase: 3,
         },
 		
+        // cache for faster world generation / page load
+        campOrdinalsByBlueprint: {},
+        
 		getBlueprintCampOrdinal: function (upgradeId) {
-			var level = 1;
-            for (var key in this.blueprintsByCampOrdinal) {
-                if (this.blueprintsByCampOrdinal[key][0].indexOf(upgradeId) >= 0) return key;
-                if (this.blueprintsByCampOrdinal[key][1].indexOf(upgradeId) >= 0) return key;
+            if (this.campOrdinalsByBlueprint[upgradeId]) {
+                return this.campOrdinalsByBlueprint[upgradeId];
             }
-			return level;
+            for (var key in this.blueprintsByCampOrdinal) {
+                if (this.blueprintsByCampOrdinal[key][0].indexOf(upgradeId) >= 0) {
+                    this.campOrdinalsByBlueprint[upgradeId] = key;
+                    return key;
+                }
+                if (this.blueprintsByCampOrdinal[key][1].indexOf(upgradeId) >= 0) {
+                    this.campOrdinalsByBlueprint[upgradeId] = key;
+                    return key;
+                }
+            }
+			return 1;
 		},
         
         getMaxPiecesForBlueprint: function (upgradeId) {
