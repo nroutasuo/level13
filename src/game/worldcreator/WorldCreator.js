@@ -487,8 +487,8 @@ define([
                     var x = sectorVO.position.sectorX;
                     var y = sectorVO.position.sectorY;
                     if (Math.abs(y) <= 2 && Math.abs(x) <= 2) continue;
-                    var distanceToCamp = WorldCreatorHelper.getDistanceToCamp(this.world, levelVO, sectorVO);
-                    var distanceToCampThreshold = l == 13 ? 7 : 3;
+                    var distanceToCamp = WorldCreatorHelper.getQuickDistanceToCamp(this.world, levelVO, sectorVO);
+                    var distanceToCampThreshold = l == 13 ? 6 : 3;
                     if (distanceToCamp < distanceToCampThreshold) continue;
                     
                     // - determine value range

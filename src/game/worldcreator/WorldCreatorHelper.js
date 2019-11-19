@@ -225,6 +225,7 @@ define([
         },
         
         getDistanceToCamp: function (worldVO, levelVO, sector) {
+            if (sector.distanceToCamp >= 0) return sector.distanceToCamp;
             var result = 9999;
             for (var s = 0; s < levelVO.campSectors.length; s++) {
                 var campSector = levelVO.campSectors[s];
@@ -234,6 +235,17 @@ define([
                     result = Math.min(result, dist);
                 }
             }
+            sector.distanceToCamp = result;
+            return result;
+        },
+        
+        getQuickDistanceToCamp: function (worldVO, levelVO, sector) {
+            var result = 9999;
+            for (var s = 0; s < levelVO.campSectors.length; s++) {
+                var campSector = levelVO.campSectors[s];
+                var dist = PositionConstants.getDistanceTo(sector.position, campSector.position);
+                result = Math.min(result, dist);
+            }
             return result;
         },
         
@@ -242,6 +254,14 @@ define([
                 var patha = WorldCreatorRandom.findPath(worldVO, sector.position, a.position);
                 var pathb = WorldCreatorRandom.findPath(worldVO, sector.position, b.position);
                 return patha.length - pathb.length;
+            };
+        },
+        
+        sortSectorsByDistanceTo: function (worldVO, sector) {
+            return function (a, b) {
+                var dista = PositionConstants.getDistanceTo(sector.position, a.position);
+                var distb = PositionConstants.getDistanceTo(sector.position, b.position);
+                return dista - distb;
             };
         },
         
@@ -262,7 +282,7 @@ define([
             addPoint(camp.position, WorldCreatorConstants.ZONE_POI_TEMP);
             
             // two sectors furthest away from the camp (but not next to each other)
-            var sectorsByDistance = levelVO.sectors.slice(0).sort(WorldCreatorHelper.sortSectorsByPathLenTo(worldVO, camp));
+            var sectorsByDistance = levelVO.sectors.slice(0).sort(WorldCreatorHelper.sortSectorsByDistanceTo(worldVO, camp));
             addPoint(sectorsByDistance[sectorsByDistance.length - 1].position, WorldCreatorConstants.ZONE_EXTRA_CAMPABLE);
             var i = 1;
             while (i < sectorsByDistance.length) {

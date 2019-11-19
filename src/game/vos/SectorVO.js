@@ -7,6 +7,7 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
         level: 0,
         zone: "",
         movementBlockers: {},
+        distanceToCamp: -1,
 	
         constructor: function (position, isCampableLevel, notCampableReason, requiredResources) {
 			this.position = position;
@@ -29,6 +30,8 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
             this.resourcesScavengable = new ResourcesVO();
             this.resourcesCollectable = new ResourcesVO();
             this.numLocaleEnemies = {};
+            
+            this.distanceToCamp = -1;
         },
         
         hasWater: function () {
