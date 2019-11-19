@@ -17,9 +17,12 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
         HIT_STUN_TIME: 0.25,
         
         // applies both to enemy and player damage and makes fights to faster (with fewer hits)
-        FIGHT_DAMAGE_BASE: 2,
+        FIGHT_DAMAGE_BASE: 16,
         // applies to both enemy and player and makes fights go faster (less time between hits)
         FIGHT_SPEED_FACTOR: 1,
+        
+        PARTICIPANT_TYPE_FRIENDLY: 0,
+        PARTICIPANT_TYPE_ENEMY: 1,
         
         getStrength: function (att, def, hp) {
              var str = (att + def) / 100 * hp;
@@ -30,7 +33,7 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             var ratio = att / (att + def);
             // damage is part determined by attack, part by a static value
             // -> increases with att but tends to be around reasonable numbers relative to max hp which is around 100
-            var result =  ratio * att + ratio * this.FIGHT_DAMAGE_BASE;
+            var result =  ratio * att /2 + ratio * this.FIGHT_DAMAGE_BASE / 2;
             result = Math.max(1, result);
             return result;
         },
@@ -126,8 +129,28 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             return dps * attacktTime;
         },
         
-        getMissChance: function () {
-            return 0.025;
+        getMissChance: function (participantType) {
+            if (participantType == this.PARTICIPANT_TYPE_FRIENDLY)
+                return 0.03;
+            return 0.06;
+        },
+        
+        getPoorHitChance: function (participantType) {
+            if (participantType == this.PARTICIPANT_TYPE_FRIENDLY)
+                return 0.07;
+            return 0.09;
+        },
+        
+        getGoodHitChance: function (participantType) {
+            if (participantType == this.PARTICIPANT_TYPE_FRIENDLY)
+                return 0.07;
+            return 0.09;
+        },
+        
+        getCriticalHitChance: function (participantType) {
+            if (participantType == this.PARTICIPANT_TYPE_FRIENDLY)
+                return 0.07;
+            return 0.05;
         },
         
         getFightChances: function (enemy, playerStamina, itemsComponent) {

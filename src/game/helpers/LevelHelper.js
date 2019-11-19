@@ -145,6 +145,7 @@ define([
                     return node.entity;
                 }
 			}
+            return null;
         },
 
         // todo use neighboursmap so we benefit from the same cache

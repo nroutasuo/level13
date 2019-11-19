@@ -94,7 +94,7 @@ define([
 		isDefeated: function (sectorEntity, direction) {
             var position = sectorEntity.get(PositionComponent).getPosition();
             var gangEntity = GameGlobals.levelHelper.getGang(position, direction);
-            if (!gangEntity) return false;
+            if (!gangEntity) return true;
             var gangComponent = gangEntity.get(GangComponent);
 			return this.hasDefeatableBlocker(sectorEntity, direction) && gangComponent.isDefeated();
 		},

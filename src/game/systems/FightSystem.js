@@ -103,15 +103,17 @@ define([
             
             // player turn
             var enemyDamage = 0;
+            var enemyChange = 0;
             this.fightNodes.head.fight.nextTurnPlayer -= fightTime;
             if (this.fightNodes.head.fight.nextTurnPlayer <= 0) {
-                var isMiss = Math.random() < FightConstants.getMissChance();
+                var isMiss = Math.random() < FightConstants.getMissChance(FightConstants.PARTICIPANT_TYPE_FRIENDLY);
                 if (!isMiss) {
                     enemyDamage = FightConstants.getEnemyDamagePerAttack(enemy, playerStamina, itemsComponent);
                     var attackTime = FightConstants.getPlayerAttackTime(itemsComponent);
                     this.fightNodes.head.fight.nextTurnPlayer = attackTime;
                     this.fightNodes.head.fight.nextTurnEnemy += Math.min(FightConstants.HIT_STUN_TIME, attackTime * 0.75);
-                    this.log("player hit: " + enemyDamage);
+                    enemyChange = this.getFinalDamage(enemyDamage, FightConstants.PARTICIPANT_TYPE_FRIENDLY);
+                    this.log("player hit: " + enemyChange);
                 } else {
                     this.log("player missed");
                 }
@@ -120,17 +122,19 @@ define([
             // enemy turn
             var playerDamage = 0;
             var playerRandomDamage = 0;
+            var playerChange = 0;
             if (itemEffects.enemyStunnedSeconds <= 0) {
                 this.fightNodes.head.fight.nextTurnEnemy -= fightTime;
                 if (this.fightNodes.head.fight.nextTurnEnemy <= 0) {
-                    var isMiss = Math.random() < FightConstants.getMissChance();
+                    var isMiss = Math.random() < FightConstants.getMissChance(FightConstants.PARTICIPANT_TYPE_ENEMY);
                     if (!isMiss) {
                         playerDamage = FightConstants.getPlayerDamagePerAttack(enemy, playerStamina, itemsComponent);
                         playerRandomDamage = FightConstants.getRandomDamagePerAttack(enemy, playerStamina, itemsComponent);
                         var attackTime = FightConstants.getEnemyAttackTime(enemy);
                         this.fightNodes.head.fight.nextTurnEnemy = attackTime;
                         this.fightNodes.head.fight.nextTurnPlayer += Math.min(FightConstants.HIT_STUN_TIME, attackTime * 0.75);
-                        this.log("enemy hit: " + playerDamage + " + " + Math.round(playerRandomDamage * 100)/100);
+                        playerChange = this.getFinalDamage(playerDamage + playerRandomDamage, FightConstants.PARTICIPANT_TYPE_ENEMY);
+                        this.log("enemy hit: " + playerChange + " (" + Math.round(playerRandomDamage * 100)/100 + ")");
                     } else {
                         this.log("enemy missed");
                     }
@@ -148,10 +152,8 @@ define([
             }
 
             // apply effects
-            var enemyChange = this.adjustChange(enemyDamage + extraEnemyDamage);
-            enemy.hp -= enemyChange;
+            enemy.hp -= (enemyChange + extraEnemyDamage);
             enemy.hp = Math.max(enemy.hp, 0);
-            var playerChange = this.adjustChange(playerDamage + playerRandomDamage);
             playerStamina.hp -= playerChange;
             playerStamina.hp = Math.max(playerStamina.hp, 0);
             
@@ -160,9 +162,17 @@ define([
             }
         },
         
-        adjustChange: function (value) {
+        getFinalDamage: function (value, participantType) {
             if (value <= 0) return 0;
-            return Math.max(1, value);
+            var result = value;
+            if (result < 1) result = 1;
+            if (Math.random() < FightConstants.getGoodHitChance(participantType))
+                result = result * 1.15;
+            else if (Math.random() < FightConstants.getPoorHitChance(participantType))
+                result = result * 0.85;
+            else if (Math.random() < FightConstants.getCriticalHitChance(participantType))
+                result = result * 1.5;
+            return Math.round(result * 4)/4;
         },
         
         endFight: function () {
