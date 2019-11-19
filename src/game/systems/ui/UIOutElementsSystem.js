@@ -81,21 +81,24 @@ define([
 				this.updateVisibleButtonsList();
 				this.updateVisibleProgressbarsList();
     			this.updateInfoCallouts();
+    			this.updateButtons();
 				this.elementsVisibilityChanged = false;
 				this.elementsVisibilityChangedFrames++;
 			} else {
 				this.elementsVisibilityChangedFrames = 0;
 			}
 
-			{
-				if (this.elementsVisibilityChangedFrames > 5) {
-					log.w("element visibility updated too often");
-				}
+			if (this.elementsVisibilityChangedFrames > 5) {
+				log.w("element visibility updated too often");
 			}
 
-			this.updateButtons();
 			this.updateProgressbars();
 		},
+
+        slowUpdate: function () {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
+            this.updateButtons();
+        },
 
 		refreshGlobalSavedElements: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
