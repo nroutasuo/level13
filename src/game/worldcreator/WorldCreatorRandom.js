@@ -282,8 +282,8 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
                 },
                 getSectorNeighboursMap: function (pathSectorVO) {
                     var levelVO = worldVO.getLevel(pathSectorVO.position.level);
-                    return levelVO.getNeighbours(pathSectorVO.result.sectorX, pathSectorVO.result.sectorY,
-                        function (sector) { return makePathSectorVO(sector.position);
+                    return levelVO.getNeighbours(pathSectorVO.result.sectorX, pathSectorVO.result.sectorY, function (sector) {
+                        return makePathSectorVO(sector.position);
                     });
                 },
                 isBlocked: function (pathSectorVO, direction) {

@@ -172,8 +172,9 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
         	unlock_building_passage_staircase: 3,
         },
 		
-        // cache for faster world generation / page load
+        // caches for faster world generation / page load
         campOrdinalsByBlueprint: {},
+        minCampOrdinalsByUpgrade: {},
         
 		getBlueprintCampOrdinal: function (upgradeId) {
             if (this.campOrdinalsByBlueprint[upgradeId]) {
@@ -225,6 +226,8 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
         },
         
         getMinimumCampOrdinalForUpgrade: function (upgrade) {
+            if (this.getMinimumCampOrdinalForUpgrade[upgrade]) return this.getMinimumCampOrdinalForUpgrade[upgrade];
+            
             // required tech
             var reqs = PlayerActionConstants.requirements[upgrade];
             var requiredTechCampOrdinal = 0;
@@ -255,7 +258,9 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
                 costCampOrdinal = Math.max(costCampOrdinal, favourCampOrdinal);
             }
             
-            return Math.max(1, blueprintCampOrdinal, requiredTechCampOrdinal, costCampOrdinal);
+            result = Math.max(1, blueprintCampOrdinal, requiredTechCampOrdinal, costCampOrdinal);
+            this.getMinimumCampOrdinalForUpgrade[upgrade] = result;
+            return result;
         },
     };
     
