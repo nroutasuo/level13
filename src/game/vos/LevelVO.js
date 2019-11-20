@@ -1,4 +1,4 @@
-define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], function (Ash, PositionConstants, PositionVO) {
+define(['ash', 'game/constants/PositionConstants', 'game/constants/WorldCreatorConstants', 'game/vos/PositionVO'], function (Ash, PositionConstants, WorldCreatorConstants, PositionVO) {
 
     // TODO separate LevelVO used in WorldConstructor and LevelVO in LevelComponent / used during play - same for SectorVO
 
@@ -76,7 +76,11 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			this.sectors.push(sectorVO);
 			
 			if (this.isCentral(sectorVO.position.sectorX, sectorVO.position.sectorY)) this.centralSectors.push(sectorVO);
-            if (sectorVO.requiredResources && sectorVO.requiredResources.getResource("water") > 0) this.possibleSpringSectors.push(sectorVO);
+            if (sectorVO.requiredResources && sectorVO.requiredResources.getResource("water") > 0) {
+                if (!WorldCreatorConstants.isStartPosition(sectorVO.position)) {
+                    this.possibleSpringSectors.push(sectorVO);
+                }
+            }
 			
 			if (!this.sectorsByPos[sectorVO.position.sectorX]) this.sectorsByPos[sectorVO.position.sectorX] = {};
 			this.sectorsByPos[sectorVO.position.sectorX][sectorVO.position.sectorY] = sectorVO;

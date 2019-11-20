@@ -77,6 +77,10 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         BAG_BONUS_5: 100,
         BAG_BONUS_6: 150,
         
+        isStartPosition: function (pos) {
+            return pos.level === 13 && pos.sectorX === this.FIRST_CAMP_X && pos.sectorY == this.FIRST_CAMP_Y;
+        },
+        
         getNumSectors: function (campOrdinal, isSmall) {
             return Math.round(this.getNumSectorsCentral(campOrdinal, isSmall) * 1.15);
         },
