@@ -360,15 +360,22 @@ define([
                             }
 
                             if (min > amount || max <= amount) {
-                                var improvementName = this.getImprovementNameForAction(action, true);
-                                if (!improvementName) improvementName = "Improvement";
+                                var actionImprovementName = this.getImprovementNameForAction(action, true);
+                                if (!actionImprovementName) actionImprovementName = "Improvement";
+                                var requirementImprovementName = improvementNames[improvName];
+                                var displayImprovementName = actionImprovementName === requirementImprovementName ? "" :  requirementImprovementName;
                                 if (min > amount) {
-                                    reason = improvementName + " required";
-                                    if (min > 1) reason += ": " + min + "x " + improvName;
+                                    if (min == 1)
+                                        reason = displayImprovementName + " required";
+                                    else
+                                        reason += min + "x " + displayImprovementName + " required";
                                 } else {
-                                    reason = improvementName + " already exists";
-                                    if (max > 1) reason += ": " + max + "x " + improvName;
+                                    if (max == 1)
+                                        reason = displayImprovementName + " already built";
+                                    else
+                                        reason = "max " + displayImprovementName + " built";
                                 }
+                                reason = reason.trim();
                                 if (doLog) log.w("" + reason);
                                 if (min > amount) return { value: amount/min, reason: reason };
                                 else return { value: 0, reason: reason };
