@@ -24,8 +24,9 @@ define([
             this.engine = null;
         },
 
-        update: function (time, extraUpdateTime) {
+        update: function (time) {
             if (GameGlobals.gameState.isPaused) return;
+            var extraUpdateTime = GameGlobals.gameState.frameExtraUpdateTime;
             for (var node = this.playerActionNodes.head; node; node = node.next) {
                 this.updateNode(node, extraUpdateTime);
             }
@@ -37,7 +38,9 @@ define([
             var newDict = {};
             var newList = [];
             
-            node.playerActions.applyExtraTime(extraUpdateTime);
+            if (extraUpdateTime != 0) {
+                node.playerActions.applyExtraTime(extraUpdateTime);
+            }
             
             var timeStamp;
 			var action;

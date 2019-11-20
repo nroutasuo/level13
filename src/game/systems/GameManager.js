@@ -46,6 +46,7 @@ define([
             // add extra update time
             var extraUpdateTime = GameGlobals.gameState.extraUpdateTime || 0;
             GameGlobals.gameState.extraUpdateTime = 0;
+            GameGlobals.gameState.frameExtraUpdateTime = extraUpdateTime;
             var gameTime = time + extraUpdateTime;
             
             // add pending time (time left over from previous ticks)
@@ -80,8 +81,8 @@ define([
                     this.partialTickModeStarted = false;
                 }
             }
-            
-            this.engine.update(tickTime, extraUpdateTime);
+                
+            this.engine.update(tickTime);
         },
 
 		// Called on page load
