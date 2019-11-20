@@ -93,6 +93,7 @@ define([
             GlobalSignals.slowUpdateSignal.add(function () { sys.slowUpdate(); });
             GlobalSignals.changelogLoadedSignal.add(function () { sys.updateGameVersion(); });
             GlobalSignals.add(this, GlobalSignals.perksChangedSignal, this.onPerksChanged);
+            GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
 
 			this.generateStatsCallouts();
             this.updateGameVersion();
@@ -639,6 +640,16 @@ define([
         onPerksChanged: function () {
             this.refreshPerks();
         },
+        
+        onGameShown: function () {
+            this.updateTabVisibility();
+            this.updateStaminaWarningLimit();
+            this.updateLocation();
+            this.updateHeaderTexts();
+            this.updateResources();
+            this.updateVisionStatus();
+            this.updatePlayerStats();
+        }
     });
 
     return UIOutHeaderSystem;
