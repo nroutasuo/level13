@@ -45,8 +45,6 @@ define([
             GlobalSignals.add(this, GlobalSignals.windowResizedSignal, this.onResize);
             GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onResize);
             
-            this.refreshGrid();
-            this.refreshFloor();
             this.refresh();
         },
 
@@ -60,13 +58,9 @@ define([
         onResize: function () {
             this.previousContainerWidth = this.containerWidth;
             this.previousContainerHeight = this.containerHeight;
-            this.refreshGrid();
-            this.refreshFloor();
             var diffWidth = Math.abs(this.containerWidth - this.previousContainerWidth);
             var diffHeight = Math.abs(this.containerHeight - this.previousContainerHeight);
-            if (diffWidth > 10 || diffHeight > 10) {
-                this.refreshBuildings();
-            }
+            this.refresh();
         },
         
         refresh: function () {
