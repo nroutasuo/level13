@@ -42,6 +42,7 @@ function (Ash, UpgradeConstants, UpgradeVO, BlueprintVO) {
         },
 
         addNewBlueprintPiece: function (upgradeId) {
+            if (this.hasUpgrade(upgradeId)) return;
             var blueprintVO = this.getBlueprint(upgradeId);
             if (!blueprintVO) {
                 var maxPieces = UpgradeConstants.getMaxPiecesForBlueprint(upgradeId);

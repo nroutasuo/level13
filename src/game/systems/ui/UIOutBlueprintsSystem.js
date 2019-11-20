@@ -61,6 +61,7 @@ define([
 			for (var i = 0; i < this.tribeNodes.head.upgrades.newBlueprints.length; i++) {
                 var blueprintVO = this.tribeNodes.head.upgrades.newBlueprints[i];
                 if (blueprintVO.completed) continue;
+                if (this.tribeNodes.head.upgrades.hasUpgrade(blueprintVO.upgradeId)) continue;
                 
                 var upgradeDefinition = UpgradeConstants.upgradeDefinitions[blueprintVO.upgradeId];
                 
@@ -96,6 +97,7 @@ define([
 			for (var i = 0; i < this.tribeNodes.head.upgrades.newBlueprints.length; i++) {
                 var blueprintVO = this.tribeNodes.head.upgrades.newBlueprints[i];
                 if (blueprintVO.completed) continue;
+                if (this.tribeNodes.head.upgrades.hasUpgrade(blueprintVO.upgradeId)) continue;
                 if (blueprintVO.currentPieces === blueprintVO.maxPieces) count++;
             }
             return count;
