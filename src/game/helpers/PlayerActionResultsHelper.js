@@ -1019,9 +1019,10 @@ define([
                     var blueprintsToFind = [];
         			for (var j = 0; j < levelBlueprints.length; j++) {
 		                var blueprintId = levelBlueprints[j];
-		                if (!upgradesComponent.hasUpgrade(blueprintId) && !upgradesComponent.hasAvailableBlueprint(blueprintId)) {
-		                   missedBlueprints.push(blueprintId);
-		               }
+		                if (upgradesComponent.hasUpgrade(blueprintId)) continue;
+                        if (upgradesComponent.hasAvailableBlueprint(blueprintId)) continue;
+                        if (upgradesComponent.hasAllPieces(blueprintId)) continue;
+	                   missedBlueprints.push(blueprintId);
                    }
                 }
             }
