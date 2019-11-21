@@ -3,6 +3,7 @@ define([
 	'ash',
     'utils/MathUtils',
 	'game/constants/GameConstants',
+	'game/constants/ItemConstants',
 	'game/constants/LevelConstants',
 	'game/constants/TradeConstants',
     'game/worldcreator/WorldCreatorHelper',
@@ -25,7 +26,7 @@ define([
 	'game/constants/UpgradeConstants',
 	'game/constants/LocaleConstants',
 ], function (
-    Ash, MathUtils, GameConstants, LevelConstants, TradeConstants,
+    Ash, MathUtils, GameConstants, ItemConstants, LevelConstants, TradeConstants,
     WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, EnemyCreator,
     WorldVO, LevelVO, SectorVO, GangVO, ResourcesVO, LocaleVO, PositionVO, StashVO, PathConstraintVO,
     WorldCreatorConstants, PositionConstants, MovementConstants, EnemyConstants, UpgradeConstants, LocaleConstants
@@ -256,16 +257,20 @@ define([
                         stashSectors[i].stash = new StashVO(stashType, numItemsPerStash, itemID);
                     }
                 };
-                var silkPerStash = 3;
-                var minAmountSilk = levelVO.numLocales;
-                var numSilkStashes = 3 + Math.ceil(minAmountSilk / silkPerStash);
-                addStashes(seed * l * 8 / 3 + (l+100)*14, StashVO.STASH_TYPE_ITEM, "res_silk", numSilkStashes, silkPerStash);
-
+                // - hairpins (for lockpics)
+                var pinsPerStash = 3;
+                var minAmountPins = levelVO.numLocales;
+                var numHairpinStashes = 3 + Math.ceil(minAmountPins / pinsPerStash);
+                addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, StashVO.STASH_TYPE_ITEM, "res_hairpin", numHairpinStashes, pinsPerStash);
+                // - other crafting ingredients
+                var i = seed % (l+5) + 3;
+                var ingredient = ItemConstants.getIngredient(i);
+                addStashes(seed % 7 + 3000 + 101 * l, StashVO.STASH_TYPE_ITEM, ingredient.id, 2, 3);
+                //- equipment
                 var newEquipment = itemsHelper.getNewEquipment(campOrdinal);
                 for (var i = 0; i < newEquipment.length; i++) {
                     addStashes(seed / 3 + (l+551)*8 + (i+103)*18, StashVO.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1);
                 }
-
                 // TODO add currency stashes just for fun
 
                 // springs

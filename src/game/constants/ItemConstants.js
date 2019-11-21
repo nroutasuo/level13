@@ -282,8 +282,9 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             return result;
         },
         
-        getIngredient: function () {
-            var i = (this.itemDefinitions.ingredient.length) * Math.random();
+        getIngredient: function (i) {
+            var i = i || (this.itemDefinitions.ingredient.length) * Math.random();
+            i = i % this.itemDefinitions.ingredient.length;
             return this.itemDefinitions.ingredient[parseInt(i)];
         },
     };
