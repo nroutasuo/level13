@@ -257,12 +257,16 @@ define([
                         stashSectors[i].stash = new StashVO(stashType, numItemsPerStash, itemID);
                     }
                 };
+                // - lock picks
+                if (l % 2 == 1) {
+                    addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, StashVO.STASH_TYPE_ITEM, "exploration_1", 1, 1);
+                }
                 // - hairpins (for lockpics)
                 var pinsPerStash = 3;
                 var minAmountPins = levelVO.numLocales;
                 var numHairpinStashes = 3 + Math.ceil(minAmountPins / pinsPerStash);
                 addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, StashVO.STASH_TYPE_ITEM, "res_hairpin", numHairpinStashes, pinsPerStash);
-                // - other crafting ingredients
+                // - random crafting ingredients
                 var i = seed % (l+5) + 3;
                 var ingredient = ItemConstants.getIngredient(i);
                 addStashes(seed % 7 + 3000 + 101 * l, StashVO.STASH_TYPE_ITEM, ingredient.id, 2, 3);
