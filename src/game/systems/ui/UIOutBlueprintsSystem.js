@@ -29,6 +29,7 @@ define([
 			this.tribeNodes = engine.getNodeList(TribeUpgradesNode);
 			this.hasNeverBeenOpened = !GameGlobals.gameState.unlockedFeatures.blueprints;
 			GlobalSignals.tabChangedSignal.add(this.onTabChanged);
+			GlobalSignals.add(this, GlobalSignals.blueprintsChangedSignal, this.refresh);
 		},
 	
 		removeFromEngine: function (engine) {
@@ -40,12 +41,11 @@ define([
 		update: function (time) {
 			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.blueprints;
 			this.updateBubble();
-            
-            if (isActive) {
-                var resetList = this.tribeNodes.head.upgrades.getUnfinishedBlueprints().length !== $("#blueprints-pieces-list tr").length || $("#blueprints-pieces-list tr").length === 0;
-                if (resetList) this.updateBlueprintList();
-            }
 		},
+        
+        refresh: function () {
+            this.updateBlueprintList();
+        },
         
         updateBubble: function () {
             var newBubbleNumber = Math.max(0, this.getCurrentCompletableCount());
