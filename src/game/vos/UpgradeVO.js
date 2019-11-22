@@ -7,9 +7,9 @@ define(['ash'], function (Ash) {
 	description: "",
 	
         constructor: function (id, name, description) {
-	    this.id = id;
-	    this.name = name;
-	    this.description = description;
+    	    this.id = id;
+    	    this.name = name;
+    	    this.description = description;
         },
     });
 

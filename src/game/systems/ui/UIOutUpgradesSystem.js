@@ -7,6 +7,15 @@ define([
     'game/constants/UpgradeConstants',
     'game/nodes/tribe/TribeUpgradesNode',
 ], function (Ash, GameGlobals, GlobalSignals, PlayerActionConstants, UIConstants, UpgradeConstants, TribeUpgradesNode) {
+    
+    var UpgradeStatusEnum = {
+        HIDDEN: 0,
+        BLUEPRINT_USABLE: 1,
+        VISIBLE: 2,
+        UNLOCKABLE: 3,
+        UNLOCKED: 4,
+    };
+    
     var UIOutUpgradesSystem = Ash.System.extend({
 
 		engine: null,
@@ -15,15 +24,14 @@ define([
 
 		lastUpdateUpgradeCount: 0,
 
-		currentBlueprints: 0,
-		lastShownBlueprints: 0,
-		currentUpgrades: 0,
-		lastShownUpgrades: 0,
+		numCurrentNewBlueprints: 0,
+		numCurrentResearchableUpgrades: 0,
+		numShownResearchableUpgrades: 0,
 
 		constructor: function () {
             var sys = this;
             this.vis = GameGlobals.uiTechTreeHelper.init("researched-upgrades-vis", "upgrades-vis-overlay", function () {
-                sys.updateTechDetails();
+                sys.refreshTechDetails();
             });
         },
 
@@ -46,28 +54,25 @@ define([
 		update: function (time) {
             if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (!GameGlobals.gameState.uiStatus.isInCamp) return;
-			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.upgrades;
+            var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.upgrades;
 
 			this.updateBubble();
-
-			if (!isActive) {
-				return;
-			}
+            this.updateUpgradesLists(isActive);
 		},
         
         refresh: function () {
 			$("#tab-header h2").text("Upgrades");
-			this.updateUpgradesLists(true, true);
-            this.updateTechTree(true);
-            this.updateTechDetails();
+			this.refreshUpgradesLists();
+            this.refreshTechTree(true);
+            this.refreshTechDetails();
 			GameGlobals.uiFunctions.toggle("#world-blueprints", $("#blueprints-list tr").length > 0);
 			GameGlobals.uiFunctions.toggle("#world-upgrades-count", this.lastUpdateUpgradeCount > 0);
 			$("#world-upgrades-count").text("Upgrades researched: " + this.lastUpdateUpgradeCount);
         },
 
         updateBubble: function () {
-			var blueprintsNum = this.currentBlueprints;
-			var upgradesNum = this.currentUpgrades - this.lastShownUpgrades;
+			var blueprintsNum = this.numCurrentNewBlueprints;
+			var upgradesNum = this.numCurrentResearchableUpgrades - this.numShownResearchableUpgrades;
             var newBubbleNumber = blueprintsNum + upgradesNum;
             if (this.bubbleNumber === newBubbleNumber)
                 return;
@@ -76,86 +81,85 @@ define([
             GameGlobals.uiFunctions.toggle("#switch-upgrades .bubble", this.bubbleNumber > 0);
         },
 
-		updateUpgradesLists: function (isActive, resetLists) {
-			this.currentBlueprints = 0;
-			this.currentUpgrades = 0;
-			this.availableUpgrades = 0;
+		updateUpgradesLists: function (isActive) {
+			this.numCurrentNewBlueprints = 0;
+			this.numCurrentResearchableUpgrades = 0;
 
-			if (isActive && resetLists) {
-				$("#blueprints-list").empty();
-				$("#upgrades-list").empty();
+            var status;
+			for (var id in UpgradeConstants.upgradeDefinitions) {
+                status = this.getUpgradeStatus(id);
+                switch (status) {
+                    case UpgradeStatusEnum.BLUEPRINT_USABLE:
+                        this.numCurrentNewBlueprints++;
+                        break;
+                    case UpgradeStatusEnum.UNLOCKABLE:
+                        this.numCurrentResearchableUpgrades++;
+                        break;
+                }
 			}
+
+			if (isActive) this.numShownResearchableUpgrades = this.numCurrentResearchableUpgrades;
+		},
+        
+        refreshUpgradesLists: function () {
+			$("#blueprints-list").empty();
+			$("#upgrades-list").empty();
 
 			var upgradeDefinition;
-			var hasBlueprintUnlocked;
-			var hasBlueprintNew;
-			var isAvailable;
+            var status;
             var numUnResearched = 0;
-			for (var id in UpgradeConstants.upgradeDefinitions) {
+			
+            for (var id in UpgradeConstants.upgradeDefinitions) {
 				upgradeDefinition = UpgradeConstants.upgradeDefinitions[id];
-				hasBlueprintUnlocked = this.tribeNodes.head.upgrades.hasAvailableBlueprint(id);
-				hasBlueprintNew = this.tribeNodes.head.upgrades.hasNewBlueprint(id);
-
-				if (!this.tribeNodes.head.upgrades.hasUpgrade(id)) {
+                status = this.getUpgradeStatus(id);
+                
+                if (status != UpgradeStatusEnum.UNLOCKED)
                     numUnResearched++;
-                    var requirements = GameGlobals.playerActionsHelper.checkRequirements(id, false);
-					isAvailable = requirements.value > 0;
-
-					if (hasBlueprintNew || hasBlueprintUnlocked || isAvailable) {
-						if (isActive && resetLists) {
-							var tr = this.getUpgradeTR(upgradeDefinition, isAvailable, hasBlueprintUnlocked, hasBlueprintNew);
-							if (hasBlueprintNew)
-								$("#blueprints-list").append(tr);
-							else
-								$("#upgrades-list").append(tr);
-						}
-						var isResearchable = GameGlobals.playerActionsHelper.checkAvailability(id, false);
-						if (hasBlueprintNew) this.currentBlueprints++;
-						else {
-							if (isResearchable) this.currentUpgrades++;
-							this.availableUpgrades++;
-						}
-					}
-				} else {
-					if (hasBlueprintNew) this.tribeNodes.head.upgrades.useBlueprint(id);
-				}
-			}
-
-			if (resetLists) {
-				GameGlobals.uiFunctions.toggle("#world-upgrades-info", this.tribeNodes.head.upgrades.boughtUpgrades.length > 0);
-                var noUpgrades = $("#upgrades-list tr").length === 0;
-				GameGlobals.uiFunctions.toggle("#world-upgrades-empty-message", noUpgrades);
-                if (noUpgrades) {
-                    var allResearched = numUnResearched === 0;
-                    $("#world-upgrades-empty-message").text(allResearched ?
-                        "All upgrades researched." : "No upgrades available at the moment.");
+                    
+                switch (status) {
+                    case UpgradeStatusEnum.UNLOCKABLE:
+                    case UpgradeStatusEnum.VISIBLE:
+						var tr = this.getUpgradeTR(upgradeDefinition, status);
+						$("#upgrades-list").append(tr);
+                        break;
+                    case UpgradeStatusEnum.BLUEPRINT_USABLE:
+						var tr = this.getUpgradeTR(upgradeDefinition, status);
+							$("#blueprints-list").append(tr);
+                        break;
                 }
-
-				$.each($("#upgrades-list button.action"), function () {
-					$(this).click(function () {
-						GameGlobals.playerActionFunctions.buyUpgrade($(this).attr("action"));
-					})
-				});
-
-				GameGlobals.uiFunctions.generateButtonOverlays("#upgrades-list");
-				GameGlobals.uiFunctions.generateCallouts("#upgrades-list");
-				GameGlobals.uiFunctions.generateButtonOverlays("#blueprints-list");
-				GameGlobals.uiFunctions.generateCallouts("#blueprints-list");
-				GameGlobals.uiFunctions.registerActionButtonListeners("#blueprints-list");
-                GlobalSignals.elementCreatedSignal.dispatch();
-				this.lastUpdateUpgradeCount = this.tribeNodes.head.upgrades.boughtUpgrades.length;
 			}
+            
+			GameGlobals.uiFunctions.toggle("#world-upgrades-info", this.tribeNodes.head.upgrades.boughtUpgrades.length > 0);
+            var noUpgrades = $("#upgrades-list tr").length === 0;
+			GameGlobals.uiFunctions.toggle("#world-upgrades-empty-message", noUpgrades);
+            if (noUpgrades) {
+                var allResearched = numUnResearched === 0;
+                $("#world-upgrades-empty-message").text(allResearched ?
+                    "All upgrades researched." : "No upgrades available at the moment.");
+            }
 
-			if (isActive) this.lastShownUpgrades = this.currentUpgrades;
-		},
+			$.each($("#upgrades-list button.action"), function () {
+				$(this).click(function () {
+					GameGlobals.playerActionFunctions.buyUpgrade($(this).attr("action"));
+				})
+			});
 
-        updateTechTree: function (resetLists) {
+			GameGlobals.uiFunctions.generateButtonOverlays("#upgrades-list");
+			GameGlobals.uiFunctions.generateCallouts("#upgrades-list");
+			GameGlobals.uiFunctions.generateButtonOverlays("#blueprints-list");
+			GameGlobals.uiFunctions.generateCallouts("#blueprints-list");
+			GameGlobals.uiFunctions.registerActionButtonListeners("#blueprints-list");
+            GlobalSignals.elementCreatedSignal.dispatch();
+			this.lastUpdateUpgradeCount = this.tribeNodes.head.upgrades.boughtUpgrades.length;
+        },
+
+        refreshTechTree: function (resetLists) {
             if (!resetLists)
                 return;
             GameGlobals.uiTechTreeHelper.drawTechTree(this.vis);
         },
 
-        updateTechDetails: function () {
+        refreshTechDetails: function () {
             var hasSelection = this.vis.selectedID !== null;
             GameGlobals.uiFunctions.toggle($("#upgrade-details-content-empty"), !hasSelection);
             GameGlobals.uiFunctions.toggle($("#upgrade-details-content"), hasSelection);
@@ -190,32 +194,56 @@ define([
             else this.updateUpgradesLists(false, false);
         },
         
-		getUpgradeTR: function (upgradeDefinition, isAvailable, hasBlueprintUnlocked, hasBlueprintNew) {
+        getUpgradeStatus: function (id) {
+            if (this.tribeNodes.head.upgrades.hasUpgrade(id))
+                return UpgradeStatusEnum.UNLOCKED;
+            if (GameGlobals.playerActionsHelper.checkAvailability(id, false))
+                return UpgradeStatusEnum.UNLOCKABLE;
+            var requirements = GameGlobals.playerActionsHelper.checkRequirements(id, false);
+            if (requirements.value > 0)
+                return UpgradeStatusEnum.VISIBLE;
+            if (this.tribeNodes.head.upgrades.hasAvailableBlueprint(id))
+                return UpgradeStatusEnum.VISIBLE;
+            if (this.tribeNodes.head.upgrades.hasNewBlueprint(id))
+                return UpgradeStatusEnum.BLUEPRINT_USABLE;
+                
+            return UpgradeStatusEnum.HIDDEN;
+        },
+        
+		getUpgradeTR: function (upgradeDefinition, status) {
 			var nameTD = "<td class='item-name'>" + upgradeDefinition.name + "</td>";
-			var classes = hasBlueprintNew ? "item item-equipped" : "item";
+			var classes = status == UpgradeStatusEnum.BLUEPRINT_USABLE ? "item item-equipped" : "item";
 			var iconTD = "<td style='padding: 0px 3px'>";
-			if (hasBlueprintUnlocked || hasBlueprintNew)
+            var hasBlueprint = this.tribeNodes.head.upgrades.getBlueprint(upgradeDefinition.id);
+			if (hasBlueprint)
 				iconTD += "<span class='" + classes + "'><div class='info-callout-target info-callout-target-small' description='blueprint'><img src='img/items/blueprint.png'/></div></span>";
 			iconTD += "</td>";
 
-            var effectDesc = "<span class='p-meta'>" + this.getEffectDescription(upgradeDefinition.id, hasBlueprintNew) + "</span>"
+            var effectDesc = "<span class='p-meta'>" + this.getEffectDescription(upgradeDefinition.id, status) + "</span>"
 			var descriptionTD = "<td class='maxwidth'>";
 			descriptionTD += upgradeDefinition.description + "<br/>" + effectDesc + "</td>";
 
-			if (isAvailable || hasBlueprintUnlocked)
-				buttonTD = "<td class='minwidth'><button class='action' action='" + upgradeDefinition.id + "'>research</button></td>";
-			else if (hasBlueprintNew)
-				buttonTD = "<td class='minwidth'><button class='action' action='unlock_upgrade_" + upgradeDefinition.id + "'>unlock</button></td>";
-			else
-				buttonTD = "<td></td>";
+            var buttonTD;
+			switch (status) {
+                case UpgradeStatusEnum.VISIBLE:
+                case UpgradeStatusEnum.UNLOCKABLE:
+    				buttonTD = "<td class='minwidth'><button class='action' action='" + upgradeDefinition.id + "'>research</button></td>";
+                    break;
+                case UpgradeStatusEnum.BLUEPRINT_USABLE:
+			         buttonTD = "<td class='minwidth'><button class='action' action='unlock_upgrade_" + upgradeDefinition.id + "'>unlock</button></td>";
+                     break;
+                default:
+		            buttonTD = "<td></td>";
+                    break;
+            }
 
 			return "<tr>" + nameTD + "" + descriptionTD + "" + iconTD + "" + buttonTD + "</tr>";
 		},
 
-		getEffectDescription: function (upgradeId, isUnlockable) {
+		getEffectDescription: function (upgradeId, status) {
 			var effects = "";
 
-			if(isUnlockable) {
+			if (status == UpgradeStatusEnum.BLUEPRINT_USABLE) {
 				effects = "";
 			} else {
 				var unlockedBuildings = GameGlobals.upgradeEffectsHelper.getUnlockedBuildings(upgradeId);
@@ -238,9 +266,8 @@ define([
 				var unlockedWorkers = GameGlobals.upgradeEffectsHelper.getUnlockedWorkers(upgradeId);
 				if (unlockedWorkers.length > 0) {
 					effects += "workers: ";
-					for (var i in unlockedWorkers) {
+					for (var i in unlockedWorkers)
 						effects += unlockedWorkers[i];
-					}
 					effects += ", ";
 				}
 

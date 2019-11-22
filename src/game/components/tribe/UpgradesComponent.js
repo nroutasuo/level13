@@ -69,6 +69,12 @@ function (Ash, UpgradeConstants, UpgradeVO, BlueprintVO) {
         hasAvailableBlueprint: function (upgradeId) {
             return this.availableBlueprints.indexOf(this.getBlueprint(upgradeId)) >= 0;
         },
+        
+        hasAllPieces: function (upgradeId) {
+            var blueprintVO = this.getBlueprint(upgradeId);
+            if (!blueprintVO) return false;
+            return blueprintVO.currentPieces >= blueprintVO.maxPieces;
+        },
 
         hasNewBlueprint: function (upgradeId) {
             var blueprintVO = this.getBlueprint(upgradeId);
