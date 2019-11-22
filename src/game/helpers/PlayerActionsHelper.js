@@ -899,6 +899,7 @@ define([
                 case "build_out_passage_up_stairs":
                 case "build_out_passage_up_elevator":
                 case "build_out_passage_up_hole":
+                    // level ordinal
                     return action.substring(action.lastIndexOf("_") + 1);
 
                 default: return 1;
@@ -907,6 +908,7 @@ define([
 
         getActionSecondaryOrdinal: function (action, otherSector) {
             var baseActionID = this.getBaseActionID(action);
+            var ordinal = this.getActionOrdinal(action, otherSector);
             switch (baseActionID) {
                 case "build_out_passage_down_stairs":
                 case "build_out_passage_down_elevator":
@@ -914,8 +916,12 @@ define([
                 case "build_out_passage_up_stairs":
                 case "build_out_passage_up_elevator":
                 case "build_out_passage_up_hole":
-                    return GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.storage, this.tribeUpgradesNodes.head.upgrades);
-
+                    var levelOrdinal = ordinal;
+                    if (!parseInt(levelOrdinal)) log.w(action)
+                    var level = GameGlobals.gameState.getLevelForOrdinal(levelOrdinal);
+                    var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+                    var result = GameGlobals.upgradeEffectsHelper.getExpectedBuildingUpgradeLevel(improvementNames.storage, campOrdinal);
+                    return result;
                 default: return 1;
             }
         },
