@@ -1220,7 +1220,7 @@ define([
 			if (!action) return action;
 			if (action == "savenge") return action;
 			if (action == "scout") return action;
-			if (action.indexOf("build_") >= 0) return action;
+			if (action.indexOf("build_in_") >= 0) return action;
 			if (action.indexOf("scout_locale_i") >= 0) return "scout_locale_i";
 			if (action.indexOf("scout_locale_u") >= 0) return "scout_locale_u";
 			if (action.indexOf("craft_") >= 0) return "craft";
