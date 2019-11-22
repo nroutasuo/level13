@@ -108,7 +108,8 @@ define([
                 } else if (costNameParts[0] === "item") {
                     var itemId = costName.replace(costNameParts[0] + "_", "");
                     for (var i = 0; i < costAmount; i++) {
-                        itemsComponent.discardItem(itemsComponent.getItem(itemId, null, inCamp), false);
+                        var item = itemsComponent.getItem(itemId, null, inCamp, false) || itemsComponent.getItem(itemId, null, inCamp, true);
+                        itemsComponent.discardItem(item, false);
                     }
                 } else if (costName == "blueprint") {
                 } else {

@@ -18,7 +18,7 @@ function (Ash, ItemVO, ItemConstants) {
                 return;
             }
 
-            if (this.getItem(item.id, item.itemID, true)) {
+            if (this.getItem(item.id, item.itemID, true, true)) {
                 log.w("Trying to add duplicate item: " + item.id);
                 return;
             }
@@ -327,13 +327,14 @@ function (Ash, ItemVO, ItemConstants) {
             return strongest;
         },
 
-        getItem: function (id, instanceId, includeNotCarried) {
+        getItem: function (id, instanceId, includeNotCarried, includeEquipped) {
             for (var key in this.items) {
                 for( var i = 0; i < this.items[key].length; i++) {
                     var item = this.items[key][i];
                     if (id != item.id) continue;
                     if (instanceId && instanceId != item.itemID) continue;
                     if (!includeNotCarried && !item.carried) continue;
+                    if (!includeEquipped && item.equipped) continue;
                     return item;
                 }
             }
