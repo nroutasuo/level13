@@ -143,6 +143,10 @@ define([
 
             return true;
         },
+        
+        isRequirementsMet:  function (action, sector) {
+            return GameGlobals.playerActionsHelper.checkRequirements(action, false, sector).value >= 1;
+        },
 
 		// Check requirements (not costs) of an action
         // returns an object containing:

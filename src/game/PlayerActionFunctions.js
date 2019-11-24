@@ -701,7 +701,6 @@ define(['ash',
 				sector.add(new PlayerActionResultComponent(rewards));
 				var resultPopupCallback = function (isTakeAll) {
 					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
-					playerActionFunctions.completeAction(action);
 					if (logMsgSuccess) playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
 					GameGlobals.playerActionResultsHelper.logResults(rewards);
 					playerActionFunctions.forceResourceBarUpdate();
@@ -709,6 +708,7 @@ define(['ash',
 					sector.remove(PlayerActionResultComponent);
 					GlobalSignals.inventoryChangedSignal.dispatch();
 					if (successCallback) successCallback();
+					playerActionFunctions.completeAction(action);
 				};
 				if (showResultPopup) {
 					GameGlobals.uiFunctions.showResultPopup(TextConstants.getActionName(baseActionID), logMsgSuccess, rewards, resultPopupCallback);
