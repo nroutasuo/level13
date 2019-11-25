@@ -2574,8 +2574,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
             },
 
             loseInventoryProbabilities: {
-                scout: [0, 0.01],
-                scavenge: [0, 0.01],
+                scout: [0, 0.03],
+                scavenge: [0, 0.03],
                 despair: [0.75, 0], // TODO make dynamic and link to cases in FaintingSystem
             },
 
@@ -2687,7 +2687,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 if (vision === undefined) vision = 100;
                 if (this.loseInventoryProbabilities[action]) {
                     var baseProbability = this.loseInventoryProbabilities[action][0];
-                    var visionFactor = Math.pow(1 - (vision / 100), 2);
+                    var visionFactor = Math.pow(1 - (vision / 100), 4);
                     var visionProbability = this.loseInventoryProbabilities[action][1] * visionFactor;
                     return baseProbability + visionProbability;
                 }
