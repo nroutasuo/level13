@@ -1,5 +1,6 @@
 define([
     'ash',
+    'game/GameGlobals',
     'game/constants/ItemConstants',
     'game/constants/UpgradeConstants',
     'game/constants/PlayerActionConstants',
@@ -7,6 +8,7 @@ define([
     'game/nodes/tribe/TribeUpgradesNode',
 ], function (
     Ash,
+    GameGlobals,
     ItemConstants,
     UpgradeConstants,
     PlayerActionConstants,
@@ -147,19 +149,20 @@ define([
         
         getUsableIngredient: function () {
             var usableIngredients = [];
+			var campCount = GameGlobals.gameState.numCamps;
+            var campOrdinal = Math.max(1, campCount);
             var itemList = ItemConstants.itemDefinitions.ingredient;
             for (var i in itemList) {
                 var definition = itemList[i];
-                if (this.isUsableIngredient(definition)) {
+                if (this.isUsableIngredient(definition, campOrdinal)) {
                     usableIngredients.push(definition);
                 }
             }
-            console.log(usableIngredients)
             var i = usableIngredients.length * Math.random();
             return usableIngredients[parseInt(i)];
         },
         
-        isUsableIngredient: function (item) {
+        isUsableIngredient: function (item, campOrdianl) {
             var craftableItems = [];
             var craftingRecipes = [];
             var itemList;
@@ -169,27 +172,27 @@ define([
                 for (var i in itemList) {
                     itemDefinition = itemList[i];
                     if (!itemDefinition.craftable) continue;
+                    var craftAction = "craft_" + itemDefinition.id;
                     craftableItems.push(itemDefinition.id);
-                    craftingRecipes.push(PlayerActionConstants.costs["craft_" + itemDefinition.id]);
+                    craftingRecipes.push({ action: craftAction, reqs: PlayerActionConstants.requirements[craftAction], costs: PlayerActionConstants.costs[craftAction]});
                 }
             }
             var foundMatching = false;
             for (var i = 0; i < craftingRecipes.length; i++) {
                 var craftingResult = craftableItems[i];
-                var recipe = craftingRecipes[i];
+                var recipe = craftingRecipes[i].costs;
                 var matches = recipe["item_" + item.id];
-                var reqs = PlayerActionConstants.requirements["craft_" + craftingResult];
+                var reqs = craftingRecipes[i].reqs;
                 var isUnlocked = true;
                 if (reqs && reqs.upgrades) {
                     for (var upgradeId in reqs.upgrades) {
                         var requirementBoolean = reqs.upgrades[upgradeId];
                         if (requirementBoolean) {
-                            isUnlocked = isUnlocked && this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeId);
+                            isUnlocked = isUnlocked && UpgradeConstants.getMinimumCampOrdinalForUpgrade(upgradeId) <= campOrdianl;
                         }
                     }
                 }
                 if (matches && isUnlocked) {
-                    log.i("match found: " + craftingResult);
                     return true;
                 }
                 if (matches) {
