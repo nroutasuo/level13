@@ -345,7 +345,7 @@ define([
                 var level = WorldCreatorHelper.getLevelForOrdinal(seed, levelOrdinal);
                 var levelVO = this.world.getLevel(level);
                 var sectorVO = WorldCreatorRandom.randomSector(seed - 9393 + i * i, this.world, levelVO, false);
-                var locale = new LocaleVO(localeTypes.tradingpartner, true);
+                var locale = new LocaleVO(localeTypes.tradingpartner, true, false);
                 sectorVO.locales.push(locale);
                 levelVO.numLocales++;
             }
@@ -448,15 +448,25 @@ define([
 
 				// min number of (easy) locales ensures that player can get all upgrades intended for that level
                 // two "levels" of locales for critical paths, those on path 2 can require tech from path 1 to reach but not the other way around
-				var minEarly = 2 + UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_EARLY);
-                var maxEarly = minEarly * 2;
-				var countEarly = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minEarly, maxEarly);
-                createLocales(this.world, levelVO, campOrdinal, true, countEarly, minEarly);
+                var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_EARLY);
+                if (numEarlyBlueprints) {
+    				var minEarly = 2 + numEarlyBlueprints;
+                    var maxEarly = minEarly * 2;
+    				var countEarly = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minEarly, maxEarly);
+                    createLocales(this.world, levelVO, campOrdinal, true, countEarly, minEarly);
+                } else {
+                    log.w("no early blueprints on camp level " + l);
+                }
 
-                var minLate = 2 + UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_LATE);
-                var maxLate = minLate * 2;
-				var countLate = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minLate, maxLate);
-                createLocales(this.world, levelVO, campOrdinal, false, countLate, minLate);
+                var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_LATE);
+                if (numLateBlueprints > 0) {
+                    var minLate = 2 + numLateBlueprints;
+                    var maxLate = minLate * 2;
+    				var countLate = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minLate, maxLate);
+                    createLocales(this.world, levelVO, campOrdinal, false, countLate, minLate);
+                } else {
+                    log.w("no late blueprints on camp level " + l);
+                }
 			}
 
 			log.i("START " + GameConstants.STARTTimeNow() + "\t World locales ready.");

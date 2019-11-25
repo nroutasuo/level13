@@ -977,6 +977,7 @@ define([
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
             var blueprintType = localeVO.isEarly ? UpgradeConstants.BLUEPRINT_TYPE_EARLY : UpgradeConstants.BLUEPRINT_TYPE_LATE;
 			var levelBlueprints = UpgradeConstants.getblueprintsByCampOrdinal(campOrdinal, blueprintType);
+            var numScoutedLocales = GameGlobals.gameState.numScoutedLocales;
 
 			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
 			var blueprintsToFind = [];
@@ -992,12 +993,14 @@ define([
             
             var bracket = localeVO.getBracket();
 			var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, false, bracket, localeVO).length + 1;
+            var scoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, true, bracket, localeVO).length + 1 - unscoutedLocales;
 			var levelBlueprintProbability = blueprintPiecesToFind / unscoutedLocales;
             
-            log.i("get result blueprint: " + blueprintType + " | pieces to find: " + blueprintPiecesToFind + " / unscouted locales: " + unscoutedLocales);
+            log.i("get result blueprint: " + blueprintType + " | pieces to find: " + blueprintPiecesToFind + " / unscouted locales: " + unscoutedLocales + ", scouted locales: " + scoutedLocales);
             log.i(levelBlueprints);
 
-			if (Math.random() < levelBlueprintProbability) {
+            var isFirstEver = playerPos.level == 13 && scoutedLocales == 0;
+			if (isFirstEver || Math.random() < levelBlueprintProbability) {
 				return blueprintsToFind[Math.floor(Math.random() * blueprintsToFind.length)];
 			}
 
