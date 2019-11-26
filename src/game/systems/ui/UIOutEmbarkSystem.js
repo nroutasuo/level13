@@ -212,6 +212,19 @@ define([
             this.registerStepperListeners("#embark-items");
         },
         
+        saveSelections: function () {
+            $.each($("#embark-resources tr"), function () {
+                var resourceName = $(this).attr("id").split("-")[2];
+                var selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
+                GameGlobals.gameState.uiStatus.leaveCampRes[resourceName] = selectedVal;
+            });
+            $.each($("#embark-items tr"), function () {
+                var itemID = $(this).attr("id").split("-")[2];
+                var selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
+                GameGlobals.gameState.uiStatus.leaveCampItems[itemID] = selectedVal;
+            });
+        },
+        
         registerStepperListeners: function (scope) {
             var sys = this;
             $(scope + " input.amount").change(function (e) {
@@ -220,14 +233,22 @@ define([
         },
         
         onTabChanged: function () {
-			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.embark) return;
+			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.embark) {
+                if (this.wasActive) {
+                    this.saveSelections();
+                }
+                this.wasActive = false;
+                return;
+            }
             var posComponent = this.playerPosNodes.head.position;
             if (!posComponent.inCamp) return;
             
+            this.regenrateEmbarkItems();
             this.initLeaveCampRes();
             this.initLeaveCampItems();
-            this.regenrateEmbarkItems();
             this.refresh();
+            
+            this.wasActive = true;
         },
         
 		

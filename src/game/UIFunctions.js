@@ -235,14 +235,12 @@ define(['ash',
 						var resourceName = $(this).attr("id").split("-")[2];
 						var selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
 						selectedResVO.setResource(resourceName, selectedVal);
-						gameState.uiStatus.leaveCampRes[resourceName] = selectedVal;
 					});
 
 					var selectedItems = {};
 					$.each($("#embark-items tr"), function () {
 						var itemID = $(this).attr("id").split("-")[2];
 						var selectedVal = parseInt($(this).children("td").children(".stepper").children("input").val());
-						gameState.uiStatus.leaveCampItems[itemID] = selectedVal;
 						selectedItems[itemID] = selectedVal;
 					});
 
@@ -662,6 +660,7 @@ define(['ash',
 				var cooldownTotal;
 				var durationLeft;
 				var durationTotal;
+                var updates = false;
 				$.each($("button.action"), function () {
 					var action = $(this).attr("action");
 					var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
@@ -674,8 +673,11 @@ define(['ash',
 						if (cooldownLeft > 0) uiFunctions.startButtonCooldown($(this), cooldownTotal, cooldownLeft);
 						else uiFunctions.stopButtonCooldown($(this));
 						if (durationLeft > 0) uiFunctions.startButtonDuration($(this), cooldownTotal, durationLeft);
+                        updates = true;
 					}
 				});
+                if (updates)
+                    GlobalSignals.actionButtonCooldownUpdatedSignal.dispatch();
 			},
 
 			slideToggleIf: function (element, replacement, show, durationIn, durationOut) {
@@ -803,6 +805,7 @@ define(['ash',
 				$(button).attr("data-hasCooldown", "false");
 				$(button).children(".cooldown-action").css("display", "none");
 				$(button).children(".cooldown-action").css("width", "100%");
+                GlobalSignals.actionButtonCooldownUpdatedSignal.dispatch();
 			},
 
 			startButtonCooldown: function (button, cooldown, cooldownLeft) {
