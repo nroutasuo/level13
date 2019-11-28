@@ -546,13 +546,15 @@ body.dark button.btn-meta {
   width: auto;
   padding: 2px 7px;
   border-radius: 0px !important;
-  float: right;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
   background: none;
   border-width: 0px;
   text-transform: lowercase;
+}
+body.dark button.btn-meta-float {
+  float: right;
 }
 body.dark button.btn-meta:hover {
   text-decoration: underline;
@@ -2347,13 +2349,15 @@ body.sunlit button.btn-meta {
   width: auto;
   padding: 2px 7px;
   border-radius: 0px !important;
-  float: right;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
   background: none;
   border-width: 0px;
   text-transform: lowercase;
+}
+body.sunlit button.btn-meta-float {
+  float: right;
 }
 body.sunlit button.btn-meta:hover {
   text-decoration: underline;

@@ -20,6 +20,10 @@ define(['ash', 'game/vos/ImprovementVO'], function (Ash, ImprovementVO) {
             }
 		},
         
+        getID: function () {
+            return this.action + "_" + this.level + "_" + this.position.sectorX + "_" + this.position.sectorY + "_" + this.direction;
+        },
+        
         isColonyProject: function () {
             return this.action.indexOf("space") >= 0;
         }

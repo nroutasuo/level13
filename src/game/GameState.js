@@ -54,6 +54,7 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
                 isHidden: false,
                 isBlocked: false,
                 isInCamp: false,
+                hiddenProjects: [],
                 leaveCampRes: {},
                 leaveCampItems: {},
             };
