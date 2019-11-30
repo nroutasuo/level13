@@ -153,31 +153,6 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             return 0.05;
         },
         
-        getFightChances: function (enemy, playerStamina, itemsComponent) {
-            var probability = this.getFightWinProbability(enemy, playerStamina, itemsComponent);
-            if (probability <= 0.05) {
-                return "deadly";
-            }
-            if (probability < 0.2) {
-                return "very dangerous";
-            }
-            if (probability < 0.4) {
-                return "dangerous";
-            }
-            
-            if (probability >= 0.95) {
-                return "harmless";
-            }
-            if (probability > 0.8) {
-                return "easy";
-            }
-            if (probability > 0.6) {
-                return "intimidating";
-            }
-            
-            return "risky";
-        },
-        
         getFightWinProbability: function(enemy, playerStamina, itemsComponent) {
             var enemyDamage = this.getEnemyDamagePerSec(enemy, playerStamina, itemsComponent);
             var playerDamage = this.getPlayerDamagePerSec(enemy, playerStamina, itemsComponent);
