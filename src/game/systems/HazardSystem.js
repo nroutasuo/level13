@@ -115,6 +115,9 @@ define([
             var msg = "";
             switch (perkID) {
                 case PerkConstants.perkIds.hazardCold:
+                    msg = "Warmer here.";
+                    break;
+                default:
                     msg = "Safer here.";
                     break;
             }
