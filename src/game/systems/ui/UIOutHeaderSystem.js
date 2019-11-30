@@ -346,6 +346,7 @@ define([
             if (!this.playerStatsNodes.head) return;
 			var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
 			var perks = perksComponent.getAll();
+            var now = new Date().getTime();
             $("ul#list-items-perks").empty();
             for (var i = 0; i < perks.length; i++) {
                 var perk = perks[i];
@@ -359,7 +360,14 @@ define([
                     "<div class='info-callout-target info-callout-target-small' description='" + desc + "'>" +
                     "<img src='" + url + "' alt='" + perk.name + "'/>" +
                     "</div></li>";
-                $("ul#list-items-perks").append(li);
+                $li = $(li);
+                $("ul#list-items-perks").append($li);
+                var diff = now - perk.timestamp;
+                var animate = diff < 100;
+                if (animate) {
+                    $li.toggle(false);
+                    $li.fadeIn(500);
+                }
             }
 
             GameGlobals.uiFunctions.generateCallouts("ul#list-items-perks");

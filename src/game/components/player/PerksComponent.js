@@ -16,6 +16,7 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
         },
 
         addPerk: function (perk) {
+            perk.timestamp = new Date().getTime();
             if (typeof this.perks[perk.type] == 'undefined') {
                 this.perks[perk.type] = [];
             }
