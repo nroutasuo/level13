@@ -66,7 +66,10 @@ define([
             var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
             switch (baseActionID) {
                 case "fight_gang":
+                case "clear_workshop":
                     return true;
+                default:
+                    return false;
             }
         },
 
