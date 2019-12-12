@@ -91,7 +91,7 @@ define([
             // Check max value and accumulation
 			var maxValueBase = sunlit ? PlayerStatConstants.VISION_BASE_SUNLIT : PlayerStatConstants.VISION_BASE;
 			maxValue = maxValueBase;
-            addAccumulation("Base", 25 / maxValueBase);
+            addAccumulation("Base", (sunlit ? 75 : 25) / maxValueBase);
 			
 			if (inCamp) {
 				if (!sunlit) {
