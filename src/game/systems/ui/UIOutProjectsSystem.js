@@ -127,12 +127,12 @@ define([
                 
                 if (isColonyProject) {
                     if (isHidden) hiddenColony++;
-                    else visibleColony++;
-                    if (actionAvailable) availableColony++;
+                    if (!isHidden) visibleColony++;
+                    if (!isHidden && actionAvailable) availableColony++;
                 } else {
                     if (isHidden) hiddenRegular++;
-                    else visibleRegular++;
-                    if (actionAvailable) availableRegular++;
+                    if (!isHidden) visibleRegular++;
+                    if (!isHidden && actionAvailable) availableRegular++;
                 }
             }
             
@@ -215,7 +215,7 @@ define([
             result += "<td class='list-description'>" + info + "</td>";
             if (isAvailable) {
                 result += "<td class='minwidth'>";
-                if (project.action == "clear_debris") {
+                if (project.action == "clear_debris" || project.action == "build_out_bridge") {
                     result += "<button class='btn-mini btn-meta hide-project' data-project='" + projectID + "'>hide</button>";
                 }
                 result += "</td>";
