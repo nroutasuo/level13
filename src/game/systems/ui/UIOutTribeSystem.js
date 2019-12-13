@@ -23,6 +23,7 @@ define([
 		engine: null,
 
         campNodes: null,
+        sortedCampNodes: null,
 		playerPosNodes: null,
 
         campNotificationTypes: {
@@ -43,8 +44,11 @@ define([
 			this.engine  = engine;
             this.campNodes = engine.getNodeList( CampNode );
             this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
+            GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.onCampBuilt);
             GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
+            
+            this.sortCampNodes();
         },
 
         removeFromEngine: function (engine) {
@@ -70,8 +74,8 @@ define([
             this.alerts = {};
             this.notifications = {};
             this.campsWithAlert = 0;
-            for (var node = this.campNodes.head; node; node = node.next) {
-                this.updateNode(node, isActive);
+            for (var i = 0; i < this.sortedCampNodes.length; i++) {
+                this.updateNode(this.sortedCampNodes[i], isActive);
             }
         },
 
@@ -180,7 +184,7 @@ define([
 			var camp = node.camp;
 			var level = node.entity.get(PositionComponent).level;
 
-            var rowHTML = "<tr id='" + rowID + "' class='lvl13-box-1'>";
+            var rowHTML = "<tr id='" + rowID + "' class='lvl13-box-1 camp-overview-camp'>";
             var btnID = "out-action-move-camp-" + level;
             var btnAction = "move_camp_global_" + level;
             rowHTML += "<td class='camp-overview-level'><div class='camp-overview-level-container lvl13-box-1'>" + level + "</div></td>";
@@ -274,12 +278,6 @@ define([
 			$("#camp-overview tr#" + rowID + " .camp-overview-storage").text(resources.storageCapacity);
         },
 
-        onTabChanged: function () {
-            if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.world) {
-                this.refresh();
-            }
-        },
-
         getAlertDescription: function (notificationType) {
             switch (notificationType) {
                 case this.campNotificationTypes.EVENT_RAID_ONGOING: return "raid";
@@ -328,6 +326,32 @@ define([
             indicator.toggleClass("indicator-even", accumulation === 0);
             indicator.toggleClass("indicator-decrease", !showWarning && accumulation < 0);
         },
+        
+        sortCampNodes: function () {
+            // todo don't do the first loop on every update?
+            var nodes = [];
+            for (var node = this.campNodes.head; node; node = node.next) {
+                nodes.push(node);
+            }
+            nodes.sort(function (a, b) {
+                var levela = a.entity.get(PositionComponent).level;
+                var levelb = b.entity.get(PositionComponent).level;
+                return levelb - levela;
+            });
+            this.sortedCampNodes = nodes;
+        },
+
+        onTabChanged: function () {
+            if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.world) {
+                this.sortCampNodes();
+                this.refresh();
+            }
+        },
+        
+        onCampBuilt: function () {
+            $("#camp-overview .camp-overview-camp").remove();
+            this.sortCampNodes();
+        }
 
     });
 
