@@ -24,6 +24,7 @@ define([
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/MovementOptionsComponent',
     'game/components/player/ExcursionComponent',
+    'game/components/common/PositionComponent',
     'game/components/common/LogMessagesComponent',
     'game/components/common/CampComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
@@ -34,7 +35,7 @@ define([
     Ash, GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, WorldCreatorConstants,
     PlayerPositionNode, PlayerLocationNode, NearestCampNode,
     VisionComponent, StaminaComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
-    MovementOptionsComponent, ExcursionComponent, LogMessagesComponent, CampComponent,
+    MovementOptionsComponent, ExcursionComponent, PositionComponent, LogMessagesComponent, CampComponent,
     SectorImprovementsComponent, WorkshopComponent, SectorStatusComponent, EnemiesComponent
 ) {
     var UIOutLevelSystem = Ash.System.extend({
@@ -428,7 +429,19 @@ define([
                     if (GameGlobals.movementHelper.isBlocked(entity, direction)) {
                         description += "Passage to the " + directionName + " is blocked by a " + blockerName + ". ";
                     } else {
+                        var position = entity.get(PositionComponent).getPosition();
+                        var gang = GameGlobals.levelHelper.getGang(position, direction);
+                        if (blocker.type == MovementConstants.BLOCKER_TYPE_DEBRIS) {
+                            description += "Debris to the " + directionName + " has been cleared away. ";
+                        } else if (blocker.type == MovementConstants.BLOCKER_TYPE_GANG) {
+                            if (gang) {
                         description += "A " + blockerName + " on the " + directionName + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
+                            } else {
+                                log.w("gang blocker but no gang component at " + position, this);
+                            }
+                        } else {
+                            description += "A " + blockerName + " on the " + directionName + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
+                        }
                     }
                 }
 			}
@@ -609,7 +622,9 @@ define([
 			for (var i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var directionBlocker = GameGlobals.movementHelper.getBlocker(currentSector, direction);
-				if (directionBlocker) addBlockerActionButton(directionBlocker, direction);
+				if (directionBlocker && directionBlocker.type != MovementConstants.BLOCKER_TYPE_DEBRIS) {
+                    addBlockerActionButton(directionBlocker, direction);
+                }
 			}
 
             GameGlobals.uiFunctions.registerActionButtonListeners("#container-out-actions-movement-related");

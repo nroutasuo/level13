@@ -257,7 +257,7 @@ define(['ash',
             else if (item.type == ItemConstants.itemTypes.bag)
                 return " " + bonusValue;
             else if (bonusType == ItemConstants.itemBonusTypes.fight_speed)
-				return " +" + Math.round((1 - bonusValue) * 100) + "%";
+				return " +" + -Math.round((1 - bonusValue) * 100) + "%";
 			else if (bonusValue >= 1)
 				return " +" + bonusValue;
 			else if (bonusValue > 0) {

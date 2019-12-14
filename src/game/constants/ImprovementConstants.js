@@ -34,7 +34,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
                 description: "Enables production of a new kind of construction material",
             },
             library: {
-                description: "Accumulate and store more evidence.",
+                description: "Generates evidence.",
             },
             shrine: {},
             barracks: {

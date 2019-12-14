@@ -328,13 +328,13 @@ define([
                         var improvementRequirements = requirements.improvements;
 
                         for (var improvName in improvementRequirements) {
-
                             var requirementDef = improvementRequirements[improvName];
                             var min = requirementDef[0];
                             var max = requirementDef[1];
                             if (max < 0) max = 9999999;
 
                             var amount = 0;
+                            var requirementImprovementName = improvementNames[improvName];
                             switch (improvName) {
                                 case "camp":
                                     // TODO global function for camps per level & get rid of PositionComponent & engine
@@ -343,31 +343,28 @@ define([
                                             amount++;
                                     }
                                     break;
-
                                 case "passageUp":
                                     amount =
                                         improvementComponent.getCount(improvementNames.passageUpStairs) +
                                         improvementComponent.getCount(improvementNames.passageUpElevator) +
                                         improvementComponent.getCount(improvementNames.passageUpHole);
+                                    requirementImprovementName = "passage";
                                     break;
-
                                 case "passageDown":
                                     amount =
                                         improvementComponent.getCount(improvementNames.passageDownStairs) +
                                         improvementComponent.getCount(improvementNames.passageDownElevator) +
                                         improvementComponent.getCount(improvementNames.passageDownHole);
+                                    requirementImprovementName = "passage";
                                     break;
-
                                 default:
-                                    var name = improvementNames[improvName];
-                                    amount = improvementComponent.getCount(name);
+                                    amount = improvementComponent.getCount(requirementImprovementName);
                                     break;
                             }
 
                             if (min > amount || max <= amount) {
                                 var actionImprovementName = this.getImprovementNameForAction(action, true);
                                 if (!actionImprovementName) actionImprovementName = "Improvement";
-                                var requirementImprovementName = improvementNames[improvName];
                                 var displayImprovementName = actionImprovementName === requirementImprovementName ? "" :  requirementImprovementName;
                                 if (min > amount) {
                                     if (min == 1)
@@ -400,7 +397,7 @@ define([
                             var validPerk = playerPerks.getPerkWithEffect(perkName, min, max);
                             if ((!isOneValue && (min > totalEffect || max <= totalEffect)) || (isOneValue && validPerk == null)) {
                                 if (min > totalEffect) reason = "Can't do this while: " + perkName;
-                                if (max <= totalEffect) reason = "Perk required: " + perkName;
+                                if (max <= totalEffect) reason = "Status required: " + perkName;
                                 if (doLog) log.w("" + reason);
                                 return { value: 0, reason: reason };
                             }
@@ -995,11 +992,11 @@ define([
 					var localei = parseInt(action.split("_")[3]);
 					var sectorLocalesComponent = sector.get(SectorLocalesComponent);
 					var localeVO = sectorLocalesComponent.locales[localei];
-					requirements = localeVO.requirements;
-                    localeVO.requirements.sector = {};
-                    localeVO.requirements.sector.scouted = true;
-                    localeVO.requirements.sector.scoutedLocales = {};
-                    localeVO.requirements.sector.scoutedLocales[localei] = false;
+					requirements = localeVO == null ? {} : localeVO.requirements;
+                    requirements.sector = {};
+                    requirements.sector.scouted = true;
+                    requirements.sector.scoutedLocales = {};
+                    requirements.sector.scoutedLocales[localei] = false;
                     return requirements;
 				case "fight_gang":
 					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);

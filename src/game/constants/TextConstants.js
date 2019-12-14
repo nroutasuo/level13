@@ -29,7 +29,7 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
         },
 		
 		getSectorDescription: function (hasLight, sunlit, sectorType, density, repair) {
-			if (!hasLight) {
+			if (!hasLight && !sunlit) {
 				sectorType = SECTOR_TYPE_NOLIGHT;
 			}
 			 

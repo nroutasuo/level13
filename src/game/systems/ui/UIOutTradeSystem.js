@@ -185,7 +185,12 @@ define([
                         "Available caravans: <span class='hl-functionality'>" + availableCaravans + "/" + totalCaravans + "</span>. " +
                         "Capacity: <span class='hl-functionality'>" + this.getCaravanCapacity() + "</span> per caravan.");
                 } else {
-                    $("#trade-caravans-outgoing-num").html("Available caravans: <span class='hl-functionality'>0</span> (build the stable to send caravans)");
+                    var stableUnlocked = GameGlobals.playerActionsHelper.isRequirementsMet("build_in_stable");
+                    if (stableUnlocked) {
+                        $("#trade-caravans-outgoing-num").html("Available caravans: <span class='hl-functionality'>0</span> (build the stable to send caravans)");
+                    } else {
+                        $("#trade-caravans-outgoing-num").html("");
+                    }
                 }
             }
         },
