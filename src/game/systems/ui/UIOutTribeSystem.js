@@ -90,6 +90,7 @@ define([
                 return;
             this.updateMessages();
             this.bubbleNumber = this.campsWithAlert;
+            $("#switch-world .bubble").text(this.bubbleNumber)
             GameGlobals.uiFunctions.toggle("#switch-world .bubble", this.bubbleNumber > 0);
         },
 

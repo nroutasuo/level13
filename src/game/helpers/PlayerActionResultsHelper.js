@@ -349,6 +349,8 @@ define([
 			if (rewards.gainedEvidence) this.playerStatsNodes.head.evidence.value += rewards.gainedEvidence;
 			// if (rewards.gainedReputation) this.playerStatsNodes.head.reputation.value += rewards.gainedReputation;
 			if (rewards.gainedRumours) this.playerStatsNodes.head.rumours.value += rewards.gainedRumours;
+
+            GlobalSignals.inventoryChangedSignal.dispatch();
 		},
 
 		getRewardsMessage: function (rewards, baseMsg) {

@@ -1,6 +1,7 @@
 // Functions to handle cheats, either from the console or UI
 define(['ash',
     'game/GameGlobals',
+    'game/GlobalSignals',
     'game/constants/GameConstants',
     'game/constants/CheatConstants',
     'game/constants/ItemConstants',
@@ -26,6 +27,7 @@ define(['ash',
     'game/nodes/PlayerLocationNode'
 ], function (Ash,
     GameGlobals,
+    GlobalSignals,
     GameConstants,
     CheatConstants,
     ItemConstants,
@@ -153,6 +155,7 @@ define(['ash',
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_ITEM, "Add the given item to inventory.", ["item id"], function (params) {
                 this.addItem(params[0]);
+                GlobalSignals.inventoryChangedSignal.dispatch();
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_EQUIP_BEST, "Auto-equip best items available.", [], function (params) {
                 this.equipBest();
@@ -226,21 +229,6 @@ define(['ash',
             switch (name) {
                 case "printSector":
                     log.i(currentSector.get(SectorFeaturesComponent));
-                    break;
-
-                case "printEnemies":
-                    var enemiesComponent = currentSector.get(EnemiesComponent);
-                    var playerStamina = this.playerStatsNodes.head.stamina;
-                    if (enemiesComponent.possibleEnemies.length < 1)
-                        log.i("No enemies here.");
-                    for (var e = 0; e < enemiesComponent.possibleEnemies.length; e++) {
-                        var enemy = enemiesComponent.possibleEnemies[e];
-                        log.i(
-                            enemy.name + " " +
-                            "(att: " + enemy.att + ", def: " + enemy.def + ", rarity: " + enemy.rarity + ") " +
-                            "chances: " + Math.round(100 * FightConstants.getFightWinProbability(enemy, playerStamina, itemsComponent)) + "% " +
-                            FightConstants.getFightChances(enemy, playerStamina, itemsComponent));
-                    }
                     break;
             }
             */

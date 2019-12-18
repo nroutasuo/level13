@@ -38,6 +38,7 @@ define([
 			this.itemNodes = engine.getNodeList(ItemsNode);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
 			GlobalSignals.add(this, GlobalSignals.caravanSentSignal, this.refresh);
+			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.refresh);
 		},
 
 		removeFromEngine: function (engine) {
