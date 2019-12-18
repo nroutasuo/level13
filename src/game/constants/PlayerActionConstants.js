@@ -885,7 +885,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
                 craft_bag_2: {
                 	upgrades: {
-                		unlock_item_bag2: true
+                		unlock_item_bag22: true
                 	}
                 },
                 craft_first_aid_kit_1: {
@@ -1266,7 +1266,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 unlock_item_clothing_hands_25: {
                 	upgrades: {
-                		unlock_item_bag2: true,
+                		unlock_item_bag22: true,
                 	}
                 },
 
@@ -1299,6 +1299,13 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 	blueprint: 6,
                 	upgrades: {
                 		unlock_item_shoe1: true,
+                	}
+                },
+
+                unlock_item_bag22: {
+                	blueprint: 2,
+                	upgrades: {
+                		unlock_item_bag2: true,
                 	}
                 },
 
@@ -1464,6 +1471,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_item_shoe1: {
+                    blueprint: 2,
                 },
 
             },
@@ -2405,7 +2413,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 	evidence: 85,
                 },
 
-                unlock_item_bag2: {
+                unlock_item_bag22: {
                 	evidence: 94,
                 },
 
@@ -2488,11 +2496,11 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_weapon_15: {
-                	rumours: 65,
+                	rumours: 87,
                 },
 
                 unlock_clothing_basic: {
-                	rumours: 59,
+                	rumours: 61,
                 },
 
                 unlock_clothing_warm: {
@@ -2500,11 +2508,10 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_building_darkfarm: {
-                	rumours: 65,
+                	rumours: 87,
                 },
 
                 unlock_building_tradingpost: {
-                	rumours: 33,
                 	evidence: 56,
                 },
 

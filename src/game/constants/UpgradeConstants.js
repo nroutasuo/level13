@@ -74,7 +74,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
         	unlock_building_inn: "unlock_building_inn",
         	unlock_building_market: "unlock_building_market",
         	unlock_building_fortifications: "unlock_building_fortifications",
-        	unlock_item_bag2: "unlock_item_bag2",
+        	unlock_item_bag22: "unlock_item_bag22",
         	unlock_weapon_15: "unlock_weapon_15",
         	unlock_clothing_basic: "unlock_clothing_basic",
         	unlock_clothing_warm: "unlock_clothing_warm",
@@ -95,12 +95,12 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
         
         // camp ordinal > a list of blueprints, first array is early and second is late
         blueprintsByCampOrdinal: {
-        	1: [[], ["unlock_building_passage_staircase"]],
+        	1: [["unlock_item_shoe1"], ["unlock_building_passage_staircase"]],
         	2: [["unlock_building_tradingpost"], ["unlock_clothing_warm", "unlock_building_darkfarm"]],
         	3: [["unlock_building_library", "unlock_building_inn"], ["unlock_building_market", "unlock_building_fortifications"]],
         	4: [["unlock_item_weapon2"], ["upgrade_worker_scavenger"]],
-        	5: [["unlock_item_clothing4h"], ["unlock_building_passage_elevator", "unlock_building_bridge", "unlock_building_lights"]],
-        	6: [["unlock_building_smithy"], ["unlock_item_bag2", "upgrade_building_market", "upgrade_worker_collector1", "unlock_building_cementmill"]],
+        	5: [["unlock_item_clothing4h", "unlock_building_bridge"], ["unlock_building_passage_elevator", "unlock_building_lights"]],
+        	6: [["unlock_building_smithy"], ["unlock_item_bag22", "upgrade_building_market", "upgrade_worker_collector1", "unlock_building_cementmill"]],
         	7: [["upgrade_building_storage1"], ["unlock_building_passage_hole", "unlock_building_house2"]],
         	8: [["unlock_item_weapon4", "unlock_item_clothing5"], ["upgrade_building_market2", "unlock_item_clothing3"]],
         	9: [["upgrade_building_campfire"], ["upgrade_worker_trapper"]],
@@ -152,7 +152,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
         	unlock_building_passage_hole: 5,
         	unlock_building_house2: 2,
         	unlock_building_smithy: 3,
-        	unlock_item_bag2: 2,
+        	unlock_item_bag22: 2,
         	upgrade_building_market: 3,
         	upgrade_worker_collector1: 2,
         	unlock_building_cementmill: 3,
@@ -170,6 +170,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
         	unlock_building_darkfarm: 4,
         	unlock_building_tradingpost: 2,
         	unlock_building_passage_staircase: 3,
+            unlock_item_shoe1: 2,
         },
 		
         // caches for faster world generation / page load
@@ -237,6 +238,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
                     requiredTechCampOrdinal = Math.max(requiredTechCampOrdinal, this.getMinimumCampOrdinalForUpgrade(requiredTech[i]));
                 }
             }
+            
             // blueprint
             var blueprintCampOrdinal = this.getBlueprintCampOrdinal(upgrade);
             
@@ -311,7 +313,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_shrine]
     = new UpgradeVO("upgrade_building_shrine", "Philosophy", "Another way to find answers to questions.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_weapon52]
-    = new UpgradeVO("unlock_item_weapon52", "Axe-making 2", "");
+    = new UpgradeVO("unlock_item_weapon52", "Axe-making 2", "Improved war axes.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_clothing6]
     = new UpgradeVO("unlock_item_clothing6", "Augmented Clothing 1", "Techniques for improving existing clothing for exploration");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_storage2]
@@ -353,7 +355,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_outgoing_caravans]
     = new UpgradeVO("upgrade_outgoing_caravans", "Bigger caravans", "Managing bigger caravans that can carry more goods");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_clothing_hands_25]
-    = new UpgradeVO("unlock_item_clothing_hands_25", "Glove-making", "");
+    = new UpgradeVO("unlock_item_clothing_hands_25", "Glove-making", "Gloves are a scavenger's best tool.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_storage1]
     = new UpgradeVO("upgrade_building_storage1", "Pest control", "Keeping other animals away from food and materials for more reliable storage.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_passage_hole]
@@ -362,8 +364,8 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
     = new UpgradeVO("unlock_building_house2", "Tower blocks", "Reclaiming tower blocks that can house more people.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_smithy]
     = new UpgradeVO("unlock_building_smithy", "Metal working 1", "Smiths can turn scrap metal into tools and weapons.");
-    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_bag2]
-    = new UpgradeVO("unlock_item_bag2", "Bag-making", "");
+    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_bag22]
+    = new UpgradeVO("unlock_item_bag22", "Bag-making", "Making better bags for explorers.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_firstaid]
     = new UpgradeVO("unlock_item_firstaid", "First Aid", "Heal injuries on the go.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_market]
@@ -377,7 +379,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_passage_elevator]
     = new UpgradeVO("unlock_building_passage_elevator", "Elevator mechanics", "Repairing elevators that allow passage to new levels.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_weapon25]
-    = new UpgradeVO("unlock_item_weapon25", "Axe-making", "");
+    = new UpgradeVO("unlock_item_weapon25", "Axe-making", "A weapon made for war.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_bridge]
     = new UpgradeVO("unlock_building_bridge", "Bridge-building", "Building bridges over collapsed sectors.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_library]
