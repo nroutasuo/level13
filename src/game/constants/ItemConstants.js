@@ -201,6 +201,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
         },
         
         getRequiredCampOrdinalToCraft: function (item) {
+            if (!item.craftable) return -1;
             var campOrdinal = 0;
             var reqs = PlayerActionConstants.requirements["craft_" + item.id];
             if (reqs && reqs.upgrades) {
@@ -211,6 +212,20 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 }
             }
             return campOrdinal;
+        },
+        
+        getRequiredLevelStepToCraft: function (item) {
+            if (!item.craftable) return -1;
+            var step = 0;
+            var reqs = PlayerActionConstants.requirements["craft_" + item.id];
+            if (reqs && reqs.upgrades) {
+                var requiredTech = Object.keys(reqs.upgrades);
+                for (var k = 0; k < requiredTech.length; k++) {
+                    var requiredStep = UpgradeConstants.getMinimumLevelStepForUpgrade(requiredTech[k]);
+                    step = Math.max(step, requiredStep);
+                }
+            }
+            return step;
         },
         
         getFollower: function (level, campCount) {

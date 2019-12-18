@@ -1352,9 +1352,11 @@ define([
                 // - determine value range
                 var step = WorldCreatorConstants.getCampStep(sectorVO.zone);
                 var maxHazardCold = Math.min(100, itemsHelper.getMaxHazardColdForLevel(campOrdinal, step));
-                var minHazardCold = itemsHelper.getMaxHazardColdForLevel(campOrdinal - 1, WorldCreatorConstants.CAMP_STEP_START);
-                minHazardCold = Math.min(minHazardCold, maxHazardCold - 5);
+                var minHazardCold = itemsHelper.getMinHazardColdForLevel(campOrdinal, step);
+                minHazardCold = Math.min(minHazardCold, maxHazardCold - 1);
                 minHazardCold = Math.max(minHazardCold, 1);
+                if (maxHazardCold < 5) continue;
+                //log.i(levelVO.level + ": " + minHazardCold + "-" + maxHazardCold)
                 
                 // - determine eligibility
                 var isEarlyZone = sectorVO.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP || sectorVO.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE;
@@ -1366,8 +1368,13 @@ define([
                 
                 if (edgeSector || l === topLevel || distanceToEdge < edgeThreshold || Math.abs(y) > centerThreshold || Math.abs(x) > centerThreshold) {
                     var hazardValueRand = WorldCreatorRandom.random(3000 + seed / (l + 40) + x * y / 6 + seed + y * 2 + l * l * 959);
-                    sectorVO.hazards.cold = MathUtils.clamp(hazardValueRand * 100, minHazardCold, maxHazardCold);
-                    sectorVO.hazards.cold = Math.floor(sectorVO.hazards.cold/5)*5;
+                    var value = hazardValueRand * 100;
+                    if (value < minHazardCold) value = minHazardCold;
+                    if (value > 10) {
+                        value = Math.floor(value/5)*5;
+                    }
+                    if (value > maxHazardCold) value = maxHazardCold;
+                    sectorVO.hazards.cold = value;
                 }
             }
         },
@@ -1395,8 +1402,9 @@ define([
             
             var setSectorHazard = function (sectorVO, hazardValueRand, isRadiation) {
                 var maxHazardValue = getMaxValue(sectorVO, isRadiation, sectorVO.zone);
-                var minHazardValue = Math.min(20, maxHazardValue / 3 * 2);
+                var minHazardValue = Math.floor(Math.min(20, maxHazardValue / 3 * 2));
                 var hazardValue = Math.ceil((minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue)) / 5) * 5;
+                if (hazardValue > maxHazardValue) hazardValue = maxHazardValue;
                 if (isRadiation) {
                     sectorVO.hazards.radiation = hazardValue;
                 } else {
@@ -1467,6 +1475,7 @@ define([
                     var minHazardValue = Math.min(10, maxHazardValue);
                     var hazardValueRand = WorldCreatorRandom.random(levelOrdinal * (i + 11) / seed * 55 + seed / (i + 99) - i * i);
                     var hazardValue = Math.ceil((minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue)) / 5) * 5;
+                    if (hazardValue > maxHazardValue) hazardValue = maxHazardValue;
                     if (isPollutedLevel) {
                         sectorVO.hazards.poison = hazardValue;
                     } else if (isRadiatedLevel) {

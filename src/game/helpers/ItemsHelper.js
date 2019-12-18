@@ -41,6 +41,7 @@ define([
         
         getAvailableClothingList: function (campOrdinal, step, includeCraftable, includeNonCraftable, includeMultiplePerType, preferredItemBonus, maxScavengeRarity) {
             step = step || 2;
+            var adjustedCampOrdinal = step == 1 ? campOrdinal - 1 : campOrdinal;
             maxScavengeRarity = maxScavengeRarity || 100;
             var result = [];
             var clothingLists = [
@@ -64,15 +65,16 @@ define([
                     clothingItem = clothingList[j];
                     isAvailable = false;
                     
-                    // only craftable items are considered default (no reliable source especially when possible to lose once acquired)
+                    // only craftable items are considered by default (scavenging is not a reliable source especially when possible to lose once acquired)
                     if (clothingItem.craftable && includeCraftable) {
-                        var comparisonOrdinal = step == 1 ? campOrdinal - 1 : campOrdinal;
-                        isAvailable = ItemConstants.getRequiredCampOrdinalToCraft(clothingItem) <= comparisonOrdinal;
+                        var requiredOrdinal = ItemConstants.getRequiredCampOrdinalToCraft(clothingItem);
+                        var requiredStep = ItemConstants.getRequiredLevelStepToCraft(clothingItem);
+                        isAvailable = requiredOrdinal <= adjustedCampOrdinal && requiredStep <= step;
                     }
 
                     // non-craftable items added for scavenging results
                     if (!clothingItem.craftable && includeNonCraftable) {
-                        isAvailable = clothingItem.requiredCampOrdinal >= 0 && clothingItem.requiredCampOrdinal <= campOrdinal && clothingItem.scavengeRarity <= maxScavengeRarity;
+                        isAvailable = clothingItem.requiredCampOrdinal >= 0 && clothingItem.requiredCampOrdinal <= adjustedCampOrdinal && clothingItem.scavengeRarity <= maxScavengeRarity;
                     }
 
                     var bonus = preferredItemBonus ? clothingItem.getBonus(preferredItemBonus) : clothingItem.getTotalBonus();
@@ -89,7 +91,7 @@ define([
                 if (!includeMultiplePerType && bestAvailableItem) {
                     // var reqs = PlayerActionConstants.requirements["craft_" + clothingItem.id];
                     // var reqTech = reqs ? Object.keys(reqs.upgrades) : "none";
-                    // log.i("-> level ordinal " + levelOrdinal + " best " + clothingList[0].type + ": " + bestAvailableItem.name + " " + bestAvailableItem.id + " | " + bestAvailableItem.craftable + " " + reqTech)
+                    // log.i("-> camp ordinal " + campOrdinal + " best " + clothingList[0].type + ": " + bestAvailableItem.name + " " + bestAvailableItem.id + " | " + bestAvailableItem.craftable)
                     result.push(bestAvailableItem);
                 }
             }
@@ -117,9 +119,8 @@ define([
             return result;
         },
         
-        // max radiation level at the beginning of the given camp ordinal and step
         getMaxHazardRadiationForLevel: function (campOrdinal, step) {
-            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_radiation, 3);
+            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_radiation, 1);
             var radiationProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 radiationProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_radiation);
@@ -127,9 +128,8 @@ define([
             return radiationProtection;
         },
         
-         // max poison level at the beginning of the given camp ordinal and step
         getMaxHazardPoisonForLevel: function (campOrdinal, step) {
-            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_poison, 3);
+            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_poison, 1);
             var poisonProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 poisonProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_poison);
@@ -137,14 +137,23 @@ define([
             return poisonProtection;
         },
         
-         // max cold level at the beginning of the given camp ordinal and step
         getMaxHazardColdForLevel: function (campOrdinal, step) {
-            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_cold, 3);
+            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_cold, 1);
             var coldProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 coldProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_cold);
             }
             return coldProtection;
+        },
+        
+        getMinHazardColdForLevel: function (campOrdinal, step) {
+            var minByLevel = this.getMaxHazardColdForLevel(campOrdinal - 1, WorldCreatorConstants.CAMP_STEP_START);
+            var minByItems = 0;
+            var defaultClothing = this.getBestClothing(campOrdinal, step, null, 0);
+            for (var i = 0; i < defaultClothing.length; i++) {
+                minByItems += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_cold);
+            }
+            return Math.min(minByItems, minByLevel);
         },
         
         getUsableIngredient: function () {
@@ -162,7 +171,7 @@ define([
             return usableIngredients[parseInt(i)];
         },
         
-        isUsableIngredient: function (item, campOrdianl) {
+        isUsableIngredient: function (item, campOrdinal) {
             var craftableItems = [];
             var craftingRecipes = [];
             var itemList;
@@ -188,7 +197,7 @@ define([
                     for (var upgradeId in reqs.upgrades) {
                         var requirementBoolean = reqs.upgrades[upgradeId];
                         if (requirementBoolean) {
-                            isUnlocked = isUnlocked && UpgradeConstants.getMinimumCampOrdinalForUpgrade(upgradeId) <= campOrdianl;
+                            isUnlocked = isUnlocked && UpgradeConstants.getMinimumCampOrdinalForUpgrade(upgradeId) <= campOrdinal;
                         }
                     }
                 }

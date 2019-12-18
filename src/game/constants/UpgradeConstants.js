@@ -264,6 +264,14 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
             this.getMinimumCampOrdinalForUpgrade[upgrade] = result;
             return result;
         },
+    
+        getMinimumLevelStepForUpgrade: function (upgrade) {
+            var blueprintType = this.getBlueprintType(upgrade);
+            if (blueprintType == this.BLUEPRINT_TYPE_EARLY) return WorldCreatorConstants.CAMP_STEP_POI_2;
+            if (blueprintType == this.BLUEPRINT_TYPE_LATE) return WorldCreatorConstants.CAMP_STEP_END;
+            return 0;
+        },
+        
     };
     
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_clothing5l]
