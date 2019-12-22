@@ -222,6 +222,8 @@ define([
             
             var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
             var excursionComponent = this.playerPosNodes.head.entity.get(ExcursionComponent);
+            var improvementsComponent = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+            var staminaComponent = this.playerPosNodes.head.entity.get(StaminaComponent);
             
             var hasFirstCamp = GameGlobals.gameState.numCamps > 0;
 			var hasCollectibleFood = isScouted && featuresComponent.resourcesCollectable.food > 0;
@@ -236,13 +238,14 @@ define([
                 return;
             }
 
+            var lowStamina = false;
             var costToCamp = GameGlobals.playerActionsHelper.getCosts("move_camp_level");
-            var staminaToCamp = costToCamp.stamina || 10;
-            var staminaComponent = this.playerPosNodes.head.entity.get(StaminaComponent);
-            var improvementsComponent = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-
-            var staminaCostToMove = staminaToCamp;
-            var lowStamina = staminaComponent.stamina < staminaCostToMove;
+            if (GameGlobals.playerActionsHelper.isRequirementsMet("move_camp_level")) {
+                var staminaToCamp = costToCamp.stamina || 10;
+                var staminaCostToMove = staminaToCamp;
+                var missingStamina = staminaCostToMove - staminaComponent.stamina;
+                lowStamina = missingStamina > 0 && missingStamina <= PlayerStatConstants.STAMINA_GAINED_FROM_NAP;
+            }
 
             var collectorFood = improvementsComponent.getVO(improvementNames.collector_food);
             var collectorWater = improvementsComponent.getVO(improvementNames.collector_water);
@@ -253,7 +256,6 @@ define([
             var lowSupplies = (lowFood || lowWater);
 
             var blockedByTutorial = !hasFirstCamp && staminaComponent.stamina > 15;
-
             var showNap = (lowStamina || lowSupplies) && !blockedBySupplies && !blockedByTutorial;
             GameGlobals.uiFunctions.toggle(this.elements.btnNap, showNap);
         },
@@ -435,7 +437,7 @@ define([
                             description += "Debris to the " + directionName + " has been cleared away. ";
                         } else if (blocker.type == MovementConstants.BLOCKER_TYPE_GANG) {
                             if (gang) {
-                        description += "A " + blockerName + " on the " + directionName + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
+                                description += "A " + blockerName + " on the " + directionName + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
                             } else {
                                 log.w("gang blocker but no gang component at " + position, this);
                             }
