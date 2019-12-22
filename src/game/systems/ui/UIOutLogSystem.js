@@ -9,8 +9,7 @@ define([
 		lastUpdateTimeStamp: 0,
 		updateFrequency: 1000 * 15,
 
-        constructor: function () {
-        },
+        constructor: function () {},
 
         addToEngine: function (engine) {
 			var logSystem = this;
@@ -19,7 +18,7 @@ define([
 				logSystem.checkPendingMessages(playerPosition);
 			};
 			GlobalSignals.playerMovedSignal.add(this.onPlayerMoved);
-			this.update();
+            this.updateMessages();
         },
 
         removeFromEngine: function (engine) {
@@ -30,21 +29,19 @@ define([
         update: function () {
             if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (GameGlobals.gameState.isPaused) return;
+            
 			var timeStamp = new Date().getTime();
 			var isTime = timeStamp - this.lastUpdateTimeStamp > this.updateFrequency;
+            
 			var hasNewMessages = false;
-			
-			var messages = [];
 			for (var node = this.logNodes.head; node; node = node.next) {
-				messages = messages.concat(node.logMessages.messages);
 				hasNewMessages = hasNewMessages || node.logMessages.hasNewMessages;
 				node.logMessages.hasNewMessages = false;
 			}
 		
 			if (!hasNewMessages && !isTime) return;
-			
-			this.pruneMessages();
-			this.refreshMessages(messages);
+            
+            this.updateMessages();
 			this.lastUpdateTimeStamp = timeStamp;
 		},
 	
@@ -65,8 +62,18 @@ define([
 				}
             }
 		},
+        
+        updateMessages: function () {
+            var messages = [];
+            for (var node = this.logNodes.head; node; node = node.next) {
+                messages = messages.concat(node.logMessages.messages);
+                node.logMessages.hasNewMessages = false;
+            }
+			this.pruneMessages();
+			this.updateMessageList(messages);
+        },
 	
-		refreshMessages: function (messages) {
+		updateMessageList: function (messages) {
             var animateFromIndex = messages.length - (messages.length - $("#log ul li").length);
 			$("#log ul").empty();
 				
@@ -87,7 +94,7 @@ define([
                 var animate = index >= animateFromIndex;
                 if (animate) {
                     liMsg.toggle(false);
-                    liMsg.fadeIn(500);
+                    liMsg.fadeIn(600);
                 }
 			}
 		},
