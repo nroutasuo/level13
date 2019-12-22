@@ -55,10 +55,11 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                         if (ItemConstants.getRequiredCampOrdinalToCraft(itemDefinition) > campOrdinal + 1)
                             continue;
                         var amount = Math.ceil(Math.random() * maxAmount);
-                        for (var j = 0; j < amount; j++)
+                        for (var j = 0; j < amount; j++) {
                             sellItems.push(itemDefinition.clone());
                     }
                 }
+            }
             }
             
             var rand = Math.random();
@@ -202,6 +203,9 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
         makeResultVO: function (outgoingCaravan) {
             var result = new ResultVO("send_camp");
             var amountTraded = TradeConstants.getAmountTraded(outgoingCaravan.buyGood, outgoingCaravan.sellGood, outgoingCaravan.sellAmount);
+            if (amountTraded > outgoingCaravan.capacity) {
+                amountTraded = outgoingCaravan.capacity;
+            }
             if (isResource(outgoingCaravan.buyGood)) {
                 result.gainedResources.setResource(outgoingCaravan.buyGood, amountTraded);
             } else if (outgoingCaravan.buyGood === TradeConstants.GOOD_TYPE_NAME_CURRENCY) {
@@ -318,6 +322,10 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
         
         getBlueprintValue: function (upgradeID) {
             return UpgradeConstants.getBlueprintCampOrdinal(upgradeID) + 2;
+        },
+        
+        getCaravanCapacity: function (stableLevel) {
+            return stableLevel * 750;
         }
     
     };
