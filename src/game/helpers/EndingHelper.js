@@ -1,5 +1,5 @@
-define(['ash', 'game/GameGlobals', 'game/constants/UpgradeConstants', 'game/nodes/tribe/TribeUpgradesNode'], 
-function (Ash, GameGlobals, UpgradeConstants, TribeUpgradesNode) {
+define(['ash', 'game/GameGlobals', 'game/constants/UpgradeConstants', 'game/constants/WorldCreatorConstants', 'game/nodes/tribe/TribeUpgradesNode'],
+function (Ash, GameGlobals, UpgradeConstants, WorldCreatorConstants, TribeUpgradesNode) {
     
     var EndingHelper = Ash.Class.extend({
         
@@ -25,6 +25,7 @@ function (Ash, GameGlobals, UpgradeConstants, TribeUpgradesNode) {
         },
         
         isReadyForLaunch: function () {
+            if (GameGlobals.gameState.numCamps < WorldCreatorConstants.CAMPS_TOTAL) return false;
             return GameGlobals.playerActionsHelper.checkAvailability("launch");
         },
         
