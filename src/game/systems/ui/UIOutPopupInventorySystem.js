@@ -1,6 +1,7 @@
 define([
     'ash',
     'game/GameGlobals',
+    'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/BagConstants',
@@ -8,7 +9,7 @@ define([
     'game/nodes/player/PlayerActionResultNode',
     'game/components/common/PositionComponent',
     'game/components/player/BagComponent'
-], function (Ash, GameGlobals, UIConstants, ItemConstants, BagConstants, ItemsNode, PlayerActionResultNode, PositionComponent, BagComponent) {
+], function (Ash, GameGlobals, GlobalSignals, UIConstants, ItemConstants, BagConstants, ItemsNode, PlayerActionResultNode, PositionComponent, BagComponent) {
     var UIOutPopupInventorySystem = Ash.System.extend({
 
         playerActionResultNodes: null,
@@ -154,7 +155,9 @@ define([
             GameGlobals.uiFunctions.generateCallouts("#resultlist-loststuff-lost");
 
             this.updateCapacity(rewards, resultNode, playerAllItems);
-
+            
+            GlobalSignals.updateButtonsSignal.dispatch();
+            
             this.pendingListUpdate = false;
         },
 

@@ -16,6 +16,7 @@ define(['ash',], function (Ash) {
         elementCreatedSignal: new Ash.Signals.Signal(),
         windowResizedSignal: new Ash.Signals.Signal(),
         popupResizedSignal: new Ash.Signals.Signal(),
+        updateButtonsSignal: new Ash.Signals.Signal(),
         clearBubblesSignal: new Ash.Signals.Signal(),
 
         // player actions

@@ -40,32 +40,21 @@ define([
 			this.autoPlayNodes = engine.getNodeList(AutoPlayNode);
 
 			this.refreshGlobalSavedElements();
-			GlobalSignals.calloutsGeneratedSignal.add(this.refreshGlobalSavedElements);
-
-			var sys = this;
-			GlobalSignals.featureUnlockedSignal.add(function () {
-				sys.elementsVisibilityChanged = true;
-			});
-			GlobalSignals.playerMovedSignal.add(function () {
-				sys.elementsVisibilityChanged = true;
-			});
-			GlobalSignals.gameShownSignal.add(function () {
-				sys.refreshGlobalSavedElements();
-				sys.elementsVisibilityChanged = true;
-			});
-			GlobalSignals.elementToggledSignal.add(function () {
-				sys.elementsVisibilityChanged = true;
-			});
-			GlobalSignals.tabChangedSignal.add(function () {
-				sys.elementsVisibilityChanged = true;
-			});
-			GlobalSignals.elementCreatedSignal.add(function () {
-				sys.elementsVisibilityChanged = true;
-			});
-			GlobalSignals.actionButtonClickedSignal.add(function () {
-				sys.elementsVisibilityChanged = true;
-			});
-
+			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onElementsVisibilityChanged);
+			GlobalSignals.add(this, GlobalSignals.updateButtonsSignal, this.onElementsVisibilityChanged);
+			GlobalSignals.add(this, GlobalSignals.featureUnlockedSignal, this.onElementsVisibilityChanged);
+			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onElementsVisibilityChanged);
+			GlobalSignals.add(this, GlobalSignals.elementToggledSignal, this.onElementsVisibilityChanged);
+			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onElementsVisibilityChanged);
+			GlobalSignals.add(this, GlobalSignals.elementCreatedSignal, this.onElementsVisibilityChanged);
+			GlobalSignals.add(this, GlobalSignals.actionButtonClickedSignal, this.onElementsVisibilityChanged);
+            
+			GlobalSignals.add(this, GlobalSignals.updateButtonsSignal, this.onButtonStatusChanged);
+			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onButtonStatusChanged);
+			GlobalSignals.add(this, GlobalSignals.actionStartedSignal, this.onButtonStatusChanged);
+            
+			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.refreshGlobalSavedElements);
+			GlobalSignals.add(this, GlobalSignals.calloutsGeneratedSignal, this.refreshGlobalSavedElements);
 			this.elementsVisibilityChanged = true;
 		},
 
@@ -83,10 +72,16 @@ define([
     			this.updateInfoCallouts();
     			this.updateButtons();
 				this.elementsVisibilityChanged = false;
+				this.buttonStatusChanged = false;
 				this.elementsVisibilityChangedFrames++;
 			} else {
 				this.elementsVisibilityChangedFrames = 0;
 			}
+            
+            if (this.buttonStatusChanged) {
+                this.buttonStatusChanged = false;
+                this.updateButtons();
+            }
 
 			if (this.elementsVisibilityChangedFrames > 5) {
 				log.w("element visibility updated too often");
@@ -107,18 +102,20 @@ define([
 
 		updateButtons: function () {
 			var sys = this;
+            var actions = [];
 			for (var i = 0; i < this.elementsVisibleButtons.length; i++) {
 				var $button = $(this.elementsVisibleButtons[i]);
                 var action = $button.attr("action");
 				if (!action) {
 					continue;
                 }
-
 				var buttonStatus = sys.buttonStatuses[i];
 				var buttonElements = sys.buttonElements[i];
 				var isHardDisabled = sys.updateButtonDisabledState($button, action, buttonStatus, buttonElements);
 				sys.updateButtonCallout($button, action, buttonStatus, buttonElements, isHardDisabled);
+                actions.push(action + "(" + isHardDisabled + ")");
 			}
+            log.i("updated buttons " + actions.join(","));
 		},
 
 		updateButtonDisabledState: function ($button, action, buttonStatus, buttonElements) {
@@ -282,10 +279,9 @@ define([
 
 			var action = $button.attr("action");
 			if (!action) return false;
-
+            
 			var sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button);
 			var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity);
-
 			return reqsCheck.value < 1 && reqsCheck.reason !== PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES;
 		},
 
@@ -386,6 +382,7 @@ define([
 					elements.calloutRiskFightValue = elements.calloutRiskFight.children(".action-risk-value");
 					elements.cooldownReqs = $button.siblings(".cooldown-reqs");
 					elements.cooldownDuration = $button.children(".cooldown-duration");
+					elements.cooldownAction = $button.children(".cooldown-action");
 
 					var costFactor = GameGlobals.playerActionsHelper.getCostFactor(action);
 					var costs = GameGlobals.playerActionsHelper.getCosts(action, costFactor);
@@ -414,6 +411,14 @@ define([
 				}
 			});
 		},
+        
+        onElementsVisibilityChanged: function () {
+            this.elementsVisibilityChanged = true;
+        },
+        
+        onButtonStatusChanged: function () {
+            this.buttonStatusChanged = true;
+        }
         
 	});
 

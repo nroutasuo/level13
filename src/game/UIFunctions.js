@@ -677,7 +677,7 @@ define(['ash',
 					}
 				});
                 if (updates)
-                    GlobalSignals.actionButtonCooldownUpdatedSignal.dispatch();
+                    GlobalSignals.updateButtonsSignal.dispatch();
 			},
 
 			slideToggleIf: function (element, replacement, show, durationIn, durationOut) {
@@ -805,7 +805,7 @@ define(['ash',
 				$(button).attr("data-hasCooldown", "false");
 				$(button).children(".cooldown-action").css("display", "none");
 				$(button).children(".cooldown-action").css("width", "100%");
-                GlobalSignals.actionButtonCooldownUpdatedSignal.dispatch();
+                GlobalSignals.updateButtonsSignal.dispatch();
 			},
 
 			startButtonCooldown: function (button, cooldown, cooldownLeft) {

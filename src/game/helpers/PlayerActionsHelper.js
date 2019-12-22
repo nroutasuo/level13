@@ -2,6 +2,7 @@
 define([
     'ash',
     'game/GameGlobals',
+    'game/GlobalSignals',
 	'game/constants/PositionConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/PlayerStatConstants',
@@ -42,7 +43,7 @@ define([
     'game/vos/ResourcesVO',
     'game/vos/ImprovementVO'
 ], function (
-	Ash, GameGlobals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ImprovementConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
+	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ImprovementConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	LevelComponent, PositionComponent, PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, PerksComponent, DeityComponent,
 	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
@@ -71,6 +72,9 @@ define([
 
             var sys = this;
             this.engine.updateComplete.add(function () {
+                sys.cache.reqs = {};
+            });
+            GlobalSignals.add(this, GlobalSignals.actionStartedSignal, function () {
                 sys.cache.reqs = {};
             });
 		},
