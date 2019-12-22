@@ -12,7 +12,8 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
         GOOD_TYPE_NAME_INGREDIENTS: "ingredients",
         
         VALUE_INGREDIENTS: 0.05,
-        VALUE_MARKUP_INCOMING_CARAVANS: 0.1,
+        VALUE_MARKUP_INCOMING_CARAVANS: 0.15,
+        VALUE_DISCOUNT_CAMP_ITEMS: 0.25,
         
         TRADING_PARTNERS: [
             new TradingPartnerVO(3, "Bone Crossing", [resourceNames.rope], [resourceNames.metal], false),
@@ -57,9 +58,9 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                         var amount = Math.ceil(Math.random() * maxAmount);
                         for (var j = 0; j < amount; j++) {
                             sellItems.push(itemDefinition.clone());
+                        }
                     }
                 }
-            }
             }
             
             var rand = Math.random();
@@ -284,6 +285,8 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             var value = 0;
             switch (item.type) {
                 case ItemConstants.itemTypes.light:
+                    value = Math.ceil(item.getTotalBonus() / 25);
+                    break;
                 case ItemConstants.itemTypes.weapon:
                 case ItemConstants.itemTypes.clothing_over:
                 case ItemConstants.itemTypes.clothing_upper:
@@ -317,6 +320,8 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             }
             if (isTrader)
                 value = value + value * TradeConstants.VALUE_MARKUP_INCOMING_CARAVANS;
+            else
+                value = value - value * TradeConstants.VALUE_DISCOUNT_CAMP_ITEMS;
             return value;
         },
         

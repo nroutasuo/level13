@@ -2563,7 +2563,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
             // [ base-value, vision-dependent-value ]
             randomEncounterProbabilities: {
-                scavenge: [0.01, 0.01],
+                scavenge: [0.02, 0.02],
                 scout_locale_i: [0.2, 0.1],
                 scout_locale_u: [0.1, 0.1],
                 use_spring: [0.1, 0.1],

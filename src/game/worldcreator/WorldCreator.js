@@ -258,13 +258,14 @@ define([
                     }
                 };
                 // - lock picks
-                if (l % 2 == 1) {
+                if (l == 13) {
                     addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, StashVO.STASH_TYPE_ITEM, "exploration_1", 1, 1);
                 }
                 // - hairpins (for lockpics)
                 var pinsPerStash = 3;
-                var minAmountPins = levelVO.numLocales;
-                var numHairpinStashes = 3 + Math.ceil(minAmountPins / pinsPerStash);
+                var numHairpinStashes = 2;
+                if (l == 13) numHairpinStashes = 5;
+                if (!levelVO.isCampable) numHairpinStashes = 5;
                 addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, StashVO.STASH_TYPE_ITEM, "res_hairpin", numHairpinStashes, pinsPerStash);
                 // - random crafting ingredients
                 var i = seed % (l+5) + 3;

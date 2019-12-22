@@ -66,6 +66,9 @@ define([
 			GlobalSignals.sectorScoutedSignal.add(function () {
 				sys.updateCurrentLocation();
 			});
+			GlobalSignals.equipmentChangedSignal.add(function () {
+				sys.updateCurrentLocation();
+			});
 			GlobalSignals.gameResetSignal.add(function () {
 				sys.reset();
 			});

@@ -47,7 +47,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             ],
             weapon: [
                 new ItemVO("weapon1", "Shiv", "Weapon", 1, true, true, false, 2, 2, {atk: 3, spd: 1.1}, "img/items/weapon-shiv.png", "Improvised sharp poking implement."),
-                new ItemVO("weapon12", "Knife", "Weapon", 2, true, true, false, 2, 1, {atk: 4, spd: 1}, "img/items/weapon-shiv.png", "A bit sturdier than the shiv."),
+                new ItemVO("weapon12", "Knife", "Weapon", 2, true, true, false, 2, 1, {atk: 4, spd: 1.1}, "img/items/weapon-shiv.png", "A bit sturdier than the shiv."),
                 new ItemVO("weapon2", "Spear", "Weapon", 4, true, true, false, 3, 1, {atk: 6, spd: 1}, "img/items/weapon-shiv.png", "Old-fashioned but reliable weapon."),
                 new ItemVO("weapon25", "Heavy Axe", "Weapon", 5, true, true, false, 3, 1, {atk: 8, spd: 1.5}, "img/items/weapon-shiv.png", "Easy to use and reliable."),
                 new ItemVO("weapon3", "Crossbow", "Weapon", 6, true, true, false, 3, 1, {atk: 12, spd: 1.1}, "img/items/weapon-shiv.png", "A deadly ranged weapon consisting of a horizontal limb assembly mounted on a stock that shoots projectiles."),
@@ -102,8 +102,8 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             clothing_hands: [
                 new ItemVO("clothing_hands_1", "Mittens", "Hands", 2, true, true, false, 3, 1, {warmth: 5}, "img/items/clothing-hand-0.png", "Nothing keeps hands warm like fluffy mittens."),
                 new ItemVO("clothing_hands_12", "Leather Gloves", "Hands", 3, true, true, false, 3, 1, {def: 1, warmth: 3, res_rad: 1, res_poison: 1}, "img/items/clothing-hand-0.png", "Not only warm but also protective."),
-                new ItemVO("clothing_hands_2", "Work gloves", "Hands", 5, true, true, false, 1, 1, {def: 1, warmth: 3, res_rad: 3, res_poison: 3}, "img/items/clothing-hand-0.png", "Basic protection for hands."),
-                new ItemVO("clothing_hands_25", "Good gloves", "Hands", 7, true, true, false, 2, 1, {def: 2, warmth: 3, res_rad: 3, res_poison: 3}, "img/items/clothing-hand-0.png", "Good gloves make scavenging much safer."),
+                new ItemVO("clothing_hands_2", "Work gloves", "Hands", 5, true, true, false, 1, 1, {def: 1, warmth: 5, res_rad: 3, res_poison: 3}, "img/items/clothing-hand-0.png", "Basic protection for hands."),
+                new ItemVO("clothing_hands_25", "Good gloves", "Hands", 7, true, true, false, 2, 1, {def: 2, warmth: 5, res_rad: 3, res_poison: 3}, "img/items/clothing-hand-0.png", "Good gloves make scavenging much safer."),
                 new ItemVO("clothing_hands_3", "Quality gloves", "Hands", 10, true, true, false, 2, 1, {def: 2, warmth: 7, res_rad: 5, res_poison: 10}, "img/items/clothing-hand-0.png", "No scavenger ever regretted having good gloves."),
                 new ItemVO("clothing_hands_4", "Scavenger's gloves", "Hands", 12, true, true, false, 3, 1, {def: 5, warmth: 15, res_rad: 15, res_poison: 15}, "img/items/clothing-hand-0.png", "Gloves that protect from almost all environmental hazards."),
                 new ItemVO("clothing_hands_5", "Synthetic gloves", "Hands", 14, true, false, false, 3, 2, {def: 8, warmth: 15, res_rad: 15, res_poison: 15}, "img/items/clothing-hand-0.png", "Gloves made from recycled advanced textiles from before the Fall."),
@@ -171,7 +171,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 for (var i in this.itemDefinitions[type]) {
                     var item = this.itemDefinitions[type][i];
                     if (item.id === id) {
-                        return item;
+                        return item.clone();
                     }
                 }
             }
