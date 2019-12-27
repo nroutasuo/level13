@@ -2552,7 +2552,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
             cooldowns: {
                 scavenge: 10,
-                use_spring: 30,
+                use_spring: 60,
                 use_in_campfire: 60,
                 use_in_home: 180,
                 use_in_market: 300,
@@ -2649,6 +2649,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 use_in_inn_cancel: false,
                 scavenge: true,
                 scout: true,
+                use_spring: true,
                 investigate: true,
                 clear_workshop: true,
                 despair: true,
