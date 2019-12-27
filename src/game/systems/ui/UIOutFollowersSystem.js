@@ -46,7 +46,7 @@ define([
         },
         
         updateBubble: function () {
-            var newBubbleNumber = Math.max(0, this.followerCount - this.lastShownFollowerCount);
+            var newBubbleNumber = 0;// Math.max(0, this.followerCount - this.lastShownFollowerCount);
             if (this.bubbleNumber === newBubbleNumber)
                 return;
             this.bubbleNumber = newBubbleNumber;
