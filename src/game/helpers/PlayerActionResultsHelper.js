@@ -3,6 +3,7 @@ define([
     'ash',
     'utils/MathUtils',
     'game/GameGlobals',
+    'game/GlobalSignals',
     'game/constants/GameConstants',
     'game/constants/LocaleConstants',
     'game/constants/PlayerActionConstants',
@@ -16,6 +17,7 @@ define([
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/tribe/TribeUpgradesNode',
+    'game/nodes/sector/CampNode',
     'game/nodes/NearestCampNode',
     'game/components/common/ResourcesComponent',
     'game/components/common/CurrencyComponent',
@@ -33,6 +35,7 @@ define([
     Ash,
     MathUtils,
     GameGlobals,
+    GlobalSignals,
     GameConstants,
     LocaleConstants,
     PlayerActionConstants,
@@ -46,6 +49,7 @@ define([
     PlayerLocationNode,
     PlayerResourcesNode,
     TribeUpgradesNode,
+    CampNode,
     NearestCampNode,
     ResourcesComponent,
     CurrencyComponent,
@@ -82,6 +86,7 @@ define([
             this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
             this.nearestCampNodes = engine.getNodeList(NearestCampNode);
+            this.campNodes = engine.getNodeList(CampNode);
         },
 
         getResultVOByAction: function (action) {
@@ -184,9 +189,13 @@ define([
 
             if (localeCategory === "u") {
                 rewards.gainedEvidence = campOrdinal;
-                rewards.gainedPopulation = Math.random() < 0.05 ? 1 : 0;
+                if (this.nearestCampNodes.head) {
+                    rewards.gainedPopulation = Math.random() < 0.05 ? 1 : 0;
+                }
             } else {
-                rewards.gainedPopulation = Math.random() < 0.2 ? 1 : 0;
+                if (this.nearestCampNodes.head) {
+                    rewards.gainedPopulation = Math.random() < 0.2 ? 1 : 0;
+                }
                 rewards.gainedFollowers = this.getRewardFollowers(0.1);
             }
 
@@ -338,10 +347,14 @@ define([
 
 			if (rewards.gainedPopulation > 0) {
 				var nearestCampNode = this.nearestCampNodes.head;
+                var campNode = this.campNodes.head;
 				if (nearestCampNode) {
 					nearestCampNode.camp.population += 1;
 				} else {
-					log.w("No nearest camp found.");
+                    log.w("No nearest camp found.");
+                    if (campNode) {
+                       campNode.camp.population += 1;
+                    }
 				}
 			}
 
@@ -1001,10 +1014,12 @@ define([
             
             log.i("get result blueprint: " + blueprintType + " | pieces to find: " + blueprintPiecesToFind + " / unscouted locales: " + unscoutedLocales + ", scouted locales: " + scoutedLocales);
             log.i(levelBlueprints);
+            log.i(blueprintsToFind);
 
             var isFirstEver = playerPos.level == 13 && scoutedLocales == 0;
 			if (isFirstEver || Math.random() < levelBlueprintProbability) {
-				return blueprintsToFind[Math.floor(Math.random() * blueprintsToFind.length)];
+                var i = Math.floor(Math.random() * blueprintsToFind.length);
+				return blueprintsToFind[i];
 			}
 
 			return null;
@@ -1015,14 +1030,14 @@ define([
 			var playerPos = this.playerLocationNodes.head.position;
 			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
-            for (var i = 1; i <= campOrdinal; i++) {
-                // NOTE: this assumes campable levels don't have blueprints
-                var levelOrdinal = GameGlobals.gameState.getLevelOrdinalForCampOrdinal(i);
-                var level = GameGlobals.gameState.getLevelForOrdinal(levelOrdinal);
+            var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
+            for (var i = 1; i <= levelOrdinal; i++) {
+                var level = GameGlobals.gameState.getLevelForOrdinal(i);
+                var allLocales = GameGlobals.levelHelper.getLevelLocales(level, true, null).length;
                 var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(level, false, null).length;
-                if (unscoutedLocales === 0) {
-                    var levelBlueprints = UpgradeConstants.getblueprintsByCampOrdinal(i);
-                    var blueprintsToFind = [];
+                if (allLocales > 0 && unscoutedLocales === 0) {
+                    var c = GameGlobals.gameState.getCampOrdinal(level);
+                    var levelBlueprints = UpgradeConstants.getblueprintsByCampOrdinal(c);
         			for (var j = 0; j < levelBlueprints.length; j++) {
 		                var blueprintId = levelBlueprints[j];
 		                if (upgradesComponent.hasUpgrade(blueprintId)) continue;
