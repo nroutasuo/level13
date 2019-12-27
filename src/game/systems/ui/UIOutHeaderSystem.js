@@ -86,6 +86,7 @@ define([
 
             var sys = this;
             GlobalSignals.playerMovedSignal.add(function () { sys.onPlayerMoved(); });
+            GlobalSignals.actionStartedSignal.add(function () { sys.onInventoryChanged(); });
             GlobalSignals.visionChangedSignal.add(function () { sys.onVisionChanged(); });
             GlobalSignals.tabChangedSignal.add(function () { sys.onTabChanged(); });
             GlobalSignals.healthChangedSignal.add(function () { sys.onHealthChanged(); });
@@ -269,6 +270,7 @@ define([
 		updateStatsCallout: function (description, indicatorID, changeSources) {
             var sources = "";
 			var source;
+            var total = 0;
 			for (var i in changeSources) {
 				source = changeSources[i];
 				if (source.amount != 0) {
@@ -277,13 +279,16 @@ define([
 						amount = "<&nbsp;" + (1/1000);
 					}
 					sources += source.source + ": " + amount + "/s<br/>";
+                    total+= source.amount;
 				}
 			}
 
 			if (sources.length <= 0) {
 				sources = "(no change)";
 			}
-            var content = description + (description && sources ? "<hr/>" :  "") + sources;
+            
+            var totals =  "Total: " + Math.round(total * 10000)/10000 + "/s";
+            var content = description + (description && sources ? "<hr/>" :  "") + sources + (total > 0 ? ("<hr/>" + totals) : "");
 			UIConstants.updateCalloutContent("#" + indicatorID, content);
 		},
 
