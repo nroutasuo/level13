@@ -98,7 +98,8 @@ function (Ash, ItemVO, ItemConstants) {
             if (!item) return -1;
             if (item.equipped) return 0;
             if (!item.equippable) return -1;
-            var currentItem = this.getEquipped(item.type)[0];
+            var currentItems = this.getEquipped(item.type);
+            var currentItem = currentItems[0];
             var result = 0;
             for (var bonusKey in ItemConstants.itemBonusTypes) {
                 var bonusType = ItemConstants.itemBonusTypes[bonusKey];
@@ -107,6 +108,10 @@ function (Ash, ItemVO, ItemConstants) {
                 if (bonusType == ItemConstants.itemBonusTypes.movement) {
                     currentBonus = 1 / (currentBonus || 1);
                     newBonus = 1 / (newBonus || 1);
+                }
+                if (bonusType == ItemConstants.itemBonusTypes.fight_speed) {
+                    // TODO smarter item comparison (now just ignore speed to rank weapons by attack but should consider both)
+                    continue;
                 }
                 if (newBonus < currentBonus) {
                     if (result > 0) return 0;
