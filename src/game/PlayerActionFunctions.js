@@ -428,19 +428,17 @@ define(['ash',
 						this.moveResFromBagToCamp();
 					}
 					this.moveCurrencyFromBagToCamp();
-
-					if (this.lastVisitedCamps.head) this.lastVisitedCamps.head.entity.remove(LastVisitedCampComponent);
-					campNode.entity.add(new LastVisitedCampComponent());
                     
                     this.playerPositionNodes.head.entity.remove(ExcursionComponent);
 
 					if (logMessage) this.addLogMessage(LogConstants.MSG_ID_ENTER_CAMP, "Entered camp.");
 					GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in);
-					GlobalSignals.playerMovedSignal.dispatch(playerPos);
-					this.forceResourceBarUpdate();
-					this.forceTabUpdate();
-					this.save();
 				}
+                GlobalSignals.playerMovedSignal.dispatch(playerPos);
+                this.forceResourceBarUpdate();
+                this.forceTabUpdate();
+                this.save();
+                this.updateLastVisitedCamp(campNode.entity);
 			} else {
 				playerPos.inCamp = false;
 				log.w("No valid camp found.");
@@ -461,8 +459,8 @@ define(['ash',
                 this.playerPositionNodes.head.entity.add(new ExcursionComponent());
 				var msg = "Left camp. " + (sunlit ? "Sunlight is sharp and merciless." : "The darkness of the city envelops you.");
 				this.addLogMessage(LogConstants.MSG_ID_LEAVE_CAMP, msg);
-				GlobalSignals.playerMovedSignal.dispatch(playerPos);
                 GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.out);
+				GlobalSignals.playerMovedSignal.dispatch(playerPos);
 				this.forceResourceBarUpdate();
 				this.forceTabUpdate();
 				this.save();
@@ -589,7 +587,7 @@ define(['ash',
 					var playerPos = playerActionFunctions.playerPositionNodes.head.position;
 					var level = playerPos.level;
 					var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
-					GameGlobals.gameState.foundTradingPartners.push(campOrdinal);
+	                   GameGlobals.gameState.foundTradingPartners.push(campOrdinal);
 				}
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 				playerActionFunctions.save();
@@ -837,7 +835,7 @@ define(['ash',
 
 			caravan.clearSelection();
 			caravan.tradesMade++;
-
+            
 			this.addLogMessage(LogConstants.MSG_ID_TRADE_WITH_CARAVAN, "Traded with a caravan.");
 		},
 
@@ -1280,9 +1278,9 @@ define(['ash',
 			for (var i = 0; i < numAvailableFollowers; i++) {
 				availableFollowers.push(ItemConstants.getFollower(positionComponent.level, campCount));
 			}
-			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-			var currentFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower);
 			if (auto) {
+    			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+    			var currentFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower);
 				if (currentFollowers.length === 0 && availableFollowers.length > 0) {
 					this.addFollower(availableFollowers[0]);
 					return true;
@@ -1300,6 +1298,8 @@ define(['ash',
 					}
 				}
 			} else {
+                // TODO save somewhere better
+                GameGlobals.gameState.uiStatus.availableFollowers = availableFollowers;
 				GameGlobals.uiFunctions.showInnPopup(availableFollowers);
 			}
 			this.completeAction("use_in_inn");
@@ -1308,6 +1308,7 @@ define(['ash',
 		},
 
 		addFollower: function (follower) {
+            log.i("add follower " + follower.name, this);
 			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 			itemsComponent.addItem(follower, false);
 			this.addLogMessage(LogConstants.MSG_ID_ADD_FOLLOWER, "A wanderer agrees to travel together for awhile.");
@@ -1566,6 +1567,12 @@ define(['ash',
                 case "use_item_fight": return true;
                 default: return false;
             }
+        },
+        
+        updateLastVisitedCamp: function (entity) {
+			if (this.lastVisitedCamps.head) this.lastVisitedCamps.head.entity.remove(LastVisitedCampComponent);
+			entity.add(new LastVisitedCampComponent());
+            log.i("updateLastVisitedCamp: " + entity.get(PositionComponent))
         },
 
 		forceResourceBarUpdate: function () {
