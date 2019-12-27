@@ -5,6 +5,7 @@ define(['ash', 'game/vos/FightItemEffectsVO'], function (Ash, FightItemEffectsVO
         
         enemy: null,
         itemEffects: null,
+        itemsUsed: {},
              
         finished: false,
         fled: false,
@@ -17,6 +18,7 @@ define(['ash', 'game/vos/FightItemEffectsVO'], function (Ash, FightItemEffectsVO
         constructor: function (enemy) {
             this.enemy = enemy;
             this.itemEffects = new FightItemEffectsVO();
+            this.itemsUsed = {};
             this.finished = false;
             this.fled = false;
             this.won = null;
@@ -24,6 +26,12 @@ define(['ash', 'game/vos/FightItemEffectsVO'], function (Ash, FightItemEffectsVO
             
             this.nextTurnEnemy = 0;
             this.nextTurnPlayer = 0;
+        },
+        
+        addItemUsed: function (itemID) {
+            if (!this.itemsUsed[itemID])
+                this.itemsUsed[itemID] = 0;
+            this.itemsUsed[itemID]++;
         },
     });
 

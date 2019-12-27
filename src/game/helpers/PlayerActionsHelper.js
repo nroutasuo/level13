@@ -29,6 +29,7 @@ define([
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
     'game/components/player/DeityComponent',
+    'game/components/sector/FightComponent',
     'game/components/sector/OutgoingCaravansComponent',
     'game/components/sector/PassagesComponent',
     'game/components/sector/EnemiesComponent',
@@ -46,7 +47,7 @@ define([
 	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ImprovementConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	LevelComponent, PositionComponent, PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, PerksComponent, DeityComponent,
-	OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
+	FightComponent, OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
 	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, SectorImprovementsComponent, TraderComponent,
 	CampComponent,
     ResourcesVO, ImprovementVO
@@ -758,6 +759,28 @@ define([
                             } else if (max > 0 && currentValue >= max) {
                                 reason = "Already rested outside recently.";
                                 lowestFraction = 0;
+                            }
+                        }
+                    }
+                    
+                    if (requirements.uses_in_fight) {
+                        var fightComponent = sector.get(FightComponent);
+                        var usesReqs = requirements.uses_in_fight;
+                        var actionItemID = GameGlobals.playerActionsHelper.getActionIDParam(action);
+                        for (var itemID in usesReqs) {
+                            var def = usesReqs[itemID];
+                            var min = def[0];
+                            var max = def[1];
+                            var current = fightComponent ? fightComponent.itemsUsed[itemID] || 0 : 0;
+                            var itemName = ItemConstants.getItemByID(itemID).name;
+                            if (min > current) {
+                                return { value: 0, reason: "Must use " + itemName + " first" };
+                            } else if (max <= current) {
+                                if (itemID == actionItemID && max == 1) {
+                                    return { value: 0, reason: "Already used" };
+                                } else {
+                                    return { value: 0, reason: "Already used " + itemName };
+                                }
                             }
                         }
                     }

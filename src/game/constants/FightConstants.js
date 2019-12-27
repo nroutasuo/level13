@@ -164,10 +164,11 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             var timeAlivePlayerMin = playerStamina.maxHP / (playerDamage + playerDamageRandomMax);
             var timeAlivePlayerMax = playerStamina.maxHP / (playerDamage + playerDamageRandomMin);
             
-            if (timeAlivePlayerMin > timeAliveEnemy) return 1;
-            if (timeAlivePlayerMax < timeAliveEnemy) return 0;
-            
             var ratio =  (timeAlivePlayerMax - timeAliveEnemy) / (timeAlivePlayerMax - timeAlivePlayerMin);
+            if (ratio < 0.05) ratio = 0.05;
+            if (ratio > 0.95) ratio = 0.95;
+            
+            log.i("getFightWinProbability: time alive player: " + timeAlivePlayerMin + "-" + timeAlivePlayerMax + ", enemy: " + timeAliveEnemy + " -> " + ratio);
             return ratio;
         },
         		

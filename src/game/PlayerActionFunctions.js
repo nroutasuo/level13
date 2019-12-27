@@ -1408,6 +1408,7 @@ define(['ash',
 		},
 
 		useItemFight: function (itemId) {
+            log.i("use item fight: " + itemId);
             var fightComponent = this.fightNodes.head.fight;
             if (!fightComponent) {
                 log.w("can't use item in fight, no fight in progress");
@@ -1431,7 +1432,8 @@ define(['ash',
 					log.w("Item not mapped for useItemFight: " + itemId);
 					break;
 			}
-
+            fightComponent.addItemUsed(itemId);
+            log.i("used item added");
 		},
 
 		createBlueprint: function (upgradeId) {

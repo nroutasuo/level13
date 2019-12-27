@@ -990,6 +990,18 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         Injury: [0.05, 0.99, true],
                     },
                 },
+                
+                use_item_fight_consumable_weapon_1: {
+                    uses_in_fight: {
+                        consumable_weapon_1: [-1, 1],
+                    },
+                },
+                
+                use_item_fight_glowstick_1: {
+                    uses_in_fight: {
+                        glowstick_1: [-1, 1],
+                    },
+                },
 
                 create_blueprint: {
                     inCamp: true,

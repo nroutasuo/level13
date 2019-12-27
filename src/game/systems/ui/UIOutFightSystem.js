@@ -288,8 +288,11 @@ define([
 			if (this.state == FightPopupStateEnum.FIGHT_PENDING) {
 				var playerStamina = this.playerStatsNodes.head.stamina;
                 var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+                var chances = FightConstants.getFightWinProbability(currentEnemy, playerStamina, itemsComponent);
+                var chancesText = this.getFightChancesText(chances);
+                var spanClass = chances < 0.4 ? "warning": "";
                 statsText += "<br/>";
-                statsText += FightConstants.getFightChances(currentEnemy, playerStamina, itemsComponent);
+                statsText += "<span class='" + spanClass + "'>" + chancesText + "</span>";
 			}
             
 			$("#fight-popup-enemy-name").html(" " + currentEnemy.name + " ");
@@ -310,6 +313,30 @@ define([
             if (this.state == state) return;
             this.state = state;
             this.refreshState();
+        },
+        
+        getFightChancesText: function (probability) {
+            if (probability <= 0.1) {
+                return "deadly";
+            }
+            if (probability < 0.2) {
+                return "very dangerous";
+            }
+            if (probability < 0.4) {
+                return "dangerous";
+            }
+            
+            if (probability >= 0.9) {
+                return "fairly harmless";
+            }
+            if (probability > 0.8) {
+                return "unnerving";
+            }
+            if (probability > 0.6) {
+                return "intimidating";
+            }
+            
+            return "risky";
         },
         
         getTitleByContext: function (encounterComponent) {
