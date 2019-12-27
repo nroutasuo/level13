@@ -183,7 +183,7 @@ function (Ash) {
                 return -1;
             }
             var buildingCount = sectorImprovements.getTotalCount();
-            var minstarti = 0;
+            var minstarti = 1;
             var maxstarti = this.getMaxBuildingSpotAssignStartIndex(buildingType1, buildingCount);
             var starti = minstarti + Math.floor(Math.random() * (maxstarti - minstarti));
             var step = 1 +  Math.floor(Math.random() * 8);
@@ -212,7 +212,7 @@ function (Ash) {
                 return i;
             }
             log.w("Couldn't find free valid buildings spot for " + building.name);
-            return 0;
+            return -1;
         },
         
         getMaxBuildingSpotAssignStartIndex: function (building, buildingCount) {
