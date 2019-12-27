@@ -15,6 +15,7 @@ define(['ash',
 
 		var UIFunctions = Ash.Class.extend({
 
+            context: "UIFunctions",
 			popupManager: null,
 
 			elementIDs: {
@@ -177,7 +178,8 @@ define(['ash',
 							log.w("No action mapped for button.");
 							return;
 						}
-
+                        
+                        log.i("action button clicked: " + action);
 						GlobalSignals.actionButtonClickedSignal.dispatch(action);
 
 						var param = null;
@@ -511,6 +513,8 @@ define(['ash',
 			},
 
 			showGame: function () {
+                this.hideGameCounter--;
+                if (this.hideGameCounter > 0) return;
                 this.setGameOverlay(false, false);
                 this.setGameElementsVisibility(true);
                 this.setUIStatus(false, false);
@@ -518,6 +522,8 @@ define(['ash',
 			},
 
 			hideGame: function (showLoading, showThinking) {
+                this.hideGameCounter = this.hideGameCounter || 0;
+                this.hideGameCounter++;
                 showThinking = showThinking && !showLoading;
                 this.setGameOverlay(showLoading, showThinking);
 				this.setGameElementsVisibility(showThinking);

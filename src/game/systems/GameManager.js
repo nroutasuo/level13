@@ -65,8 +65,10 @@ define([
                     var showThinking = remainingTicks >= 20;
                     if (!this.partialTickModeStarted) log.i("partial tick, estimated remaining: " + remainingTicks + ", showThinking: " + showThinking, "tick");
                     if (showThinking) {
+                        this.gameHidden = true;
                         GameGlobals.uiFunctions.hideGame(false, true);
                     } else {
+                        this.gameBlocked = true;
                         GameGlobals.uiFunctions.setUIStatus(false, true);
                     }
                     this.partialTickModeStarted = true;
@@ -77,7 +79,14 @@ define([
                 // normal tick
                 if (this.partialTickModeStarted) {
                     log.i("normal", "tick");
-                    GameGlobals.uiFunctions.showGame();
+                    if (this.gameHidden) {
+                        GameGlobals.uiFunctions.showGame();
+                        this.gameHidden = false;
+                    }
+                    if (this.gameBlocked) {
+                        GameGlobals.uiFunctions.setUIStatus(false, false);
+                        this.gameBlocked = false;
+                    }
                     this.partialTickModeStarted = false;
                 }
             }

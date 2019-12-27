@@ -189,24 +189,28 @@ define([
 		
 		fadeOut: function (msg, msgLog, handleResults, sector, loseInventoryProbability, injuryProbability, loseFollowerProbability) {
             var sys = this;
+            var finalStep = function () {
+                log.i("hide game", this)
+                GameGlobals.uiFunctions.hideGame(false, false);
+                setTimeout(function () {
+                    log.i("show game", this)
+                    GameGlobals.uiFunctions.showGame(true);
+                }, 750);
+                GameGlobals.playerActionFunctions.passTime(60);
+                sys.teleport(sector);
+                sys.log(msgLog);
+                sys.save();
+            };
             if (handleResults) {
     			var resultVO = GameGlobals.playerActionResultsHelper.getFadeOutResults(loseInventoryProbability, injuryProbability, loseFollowerProbability);
                 this.playerResourcesNodes.head.entity.add(new PlayerActionResultComponent(resultVO));
                 var resultPopUpCallback = function (isTakeAll) {
                     GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, resultVO);
-                    GameGlobals.uiFunctions.hideGame(false, false);
-        			setTimeout(function () {
-                        GameGlobals.uiFunctions.showGame(true);
-                    }, 500);
-                    sys.teleport(sector);
-        			sys.log(msgLog);
-        			sys.save();
+                    finalStep();
                 };
                 GameGlobals.uiFunctions.showResultPopup("Exhaustion", msg, resultVO, resultPopUpCallback);
             } else {
-                sys.teleport(sector);
-                sys.log(msgLog);
-                sys.save();
+                finalStep();
             }
 		},
 		
