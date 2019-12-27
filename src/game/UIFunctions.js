@@ -960,22 +960,6 @@ define(['ash',
 			},
 
 			showInnPopup: function (availableFollowers) {
-				$("table#inn-popup-options-followers").empty();
-				$("table#inn-popup-options-followers").append("<tr></tr>");
-				for (var i = 0; i < availableFollowers.length; i++) {
-					var td = "<td id='td-item-use_in_inn_select-" + availableFollowers[i].id + "'>";
-					td += UIConstants.getItemDiv(null, availableFollowers[i], false, UIConstants.getItemCallout(availableFollowers[i]), true);
-					td += "</td>";
-					$("table#inn-popup-options-followers tr").append(td);
-				}
-				$("table#inn-popup-options-followers").append("<tr></tr>");
-				for (var j = 0; j < availableFollowers.length; j++) {
-					var td = "<td>";
-					td += "<button class='action btn-narrow' action='use_in_inn_select_" + availableFollowers[j].id + "' followerID='" + availableFollowers[j].id + "'>Recruit</button>";
-					td += "</td>";
-					$($("table#inn-popup-options-followers tr")[1]).append(td);
-				}
-				this.generateButtonOverlays("#inn-popup-options-followers");
 				this.showSpecialPopup("inn-popup");
 			},
 

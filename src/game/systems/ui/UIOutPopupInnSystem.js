@@ -33,12 +33,7 @@ var UIOutPopupInnSystem = Ash.System.extend({
 
         initializePopup: function () {
             this.refreshCurrent();
-
-            var sys = this;
-            $("table#inn-popup-options-followers button").click(function (e) {
-                var followerID = $(this).attr("followerID");
-                sys.selectFollower(followerID);
-            });
+            this.refreshAvailable();
         },
 
         refreshCurrent: function () {
@@ -62,14 +57,43 @@ var UIOutPopupInnSystem = Ash.System.extend({
                 td += "</td>";
                 $($("table#inn-popup-current-followers tr")[1]).append(td);
             }
-			GameGlobals.uiFunctions.generateCallouts("#inn-popup-current-followers");
 			GameGlobals.uiFunctions.generateButtonOverlays("#inn-popup-current-followers");
+			GameGlobals.uiFunctions.generateCallouts("#inn-popup-current-followers");
             GlobalSignals.elementCreatedSignal.dispatch();
 
             var sys = this;
             $("table#inn-popup-current-followers button").click(function (e) {
                 var followerID = $(this).attr("followerID");
                 sys.disbandFollower(followerID, sys);
+            });
+        },
+        
+        refreshAvailable: function () {
+            var availableFollowers = GameGlobals.gameState.uiStatus.availableFollowers;
+            $("table#inn-popup-options-followers").empty();
+            $("table#inn-popup-options-followers").append("<tr></tr>");
+            for (var i = 0; i < availableFollowers.length; i++) {
+                var td = "<td id='td-item-use_in_inn_select-" + availableFollowers[i].id + "'>";
+                td += UIConstants.getItemDiv(null, availableFollowers[i], false, UIConstants.getItemCallout(availableFollowers[i]), true);
+                td += "</td>";
+                $("table#inn-popup-options-followers tr").append(td);
+            }
+            $("table#inn-popup-options-followers").append("<tr></tr>");
+            for (var j = 0; j < availableFollowers.length; j++) {
+                var td = "<td>";
+                td += "<button class='action btn-narrow' action='use_in_inn_select_" + availableFollowers[j].id + "' followerID='" + availableFollowers[j].id + "'>Recruit</button>";
+                td += "</td>";
+                $($("table#inn-popup-options-followers tr")[1]).append(td);
+            }
+            GameGlobals.uiFunctions.generateButtonOverlays("#inn-popup-options-followers");
+			GameGlobals.uiFunctions.generateCallouts("#inn-popup-options-followers");
+            GlobalSignals.elementCreatedSignal.dispatch();
+
+            var sys = this;
+            $("table#inn-popup-options-followers button").click(function (e) {
+                log.i("follower button cb", this);
+                var followerID = $(this).attr("followerID");
+                sys.selectFollower(followerID);
             });
         },
 
