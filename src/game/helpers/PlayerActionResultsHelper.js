@@ -145,7 +145,7 @@ define([
             var efficiency = this.getScavengeEfficiency();
 
             rewards.gainedResources = this.getRewardResources(0.95 + efficiency * 0.05, 1, efficiency, sectorResources);
-            rewards.gainedItems = this.getRewardItems(0.01 + efficiency * 0.03, efficiency * 0.06, this.itemResultTypes.scavenge, efficiency, itemsComponent, campOrdinal, step);
+            rewards.gainedItems = this.getRewardItems(efficiency * 0.025, 0.01 + efficiency * 0.03, this.itemResultTypes.scavenge, efficiency, itemsComponent, campOrdinal, step);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
 
             this.addStash(rewards, sectorFeatures.stash);
@@ -202,9 +202,9 @@ define([
             if (rewards.gainedInjuries.length === 0 && localeVO.type !== localeTypes.tradingpartner) {
                 if (localeCategory === "u") {
                     rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
-                    rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.scavenge, 1, itemsComponent, campOrdinal, step);
+                    rewards.gainedItems = this.getRewardItems(0.5, 0, this.itemResultTypes.scavenge, 1, itemsComponent, campOrdinal, step);
                 } else {
-                    rewards.gainedItems = this.getRewardItems(0.25, this.itemResultTypes.meet, 1, itemsComponent, campOrdinal, step);
+                    rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.meet, 1, itemsComponent, campOrdinal, step);
                 }
             }
 
@@ -243,7 +243,7 @@ define([
 				availableResources.setResource(resourceNames.food, 10);
 				availableResources.setResource(resourceNames.metal, 3);
 				rewards.gainedResources = this.getRewardResources(0.25, 2, this.getScavengeEfficiency(), availableResources);
-                rewards.gainedItems = this.getRewardItems(0.05, 0.5, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step);
+                rewards.gainedItems = this.getRewardItems(0.05, 0.25, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step);
 				rewards.gainedReputation = 1;
             } else {
 				// TODO lost followers?
