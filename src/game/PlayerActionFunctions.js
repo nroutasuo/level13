@@ -587,7 +587,11 @@ define(['ash',
 					var playerPos = playerActionFunctions.playerPositionNodes.head.position;
 					var level = playerPos.level;
 					var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+                    if (GameGlobals.gameState.foundTradingPartners.indexOf(campOrdinal) < 0) {
 	                   GameGlobals.gameState.foundTradingPartners.push(campOrdinal);
+                    } else {
+                       log.w("can't add trade partner - already found: camp ordinal " + campOrdinal);
+                    }
 				}
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 				playerActionFunctions.save();
@@ -836,6 +840,7 @@ define(['ash',
 			caravan.clearSelection();
 			caravan.tradesMade++;
             
+            GlobalSignals.inventoryChangedSignal.dispatch();
 			this.addLogMessage(LogConstants.MSG_ID_TRADE_WITH_CARAVAN, "Traded with a caravan.");
 		},
 
@@ -1130,6 +1135,8 @@ define(['ash',
 
 			this.buildImprovement("build_out_bridge", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_bridge"), sector);
 			this.buildImprovement("build_out_bridge", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_bridge"), neighbour, true);
+            
+			this.addLogMessage(LogConstants.MSG_ID_BUILT_BRDIGE, "Built a bridge.");
 		},
 
 		buildSpaceShip1: function (sectorPos) {
