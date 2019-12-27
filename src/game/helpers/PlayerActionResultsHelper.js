@@ -205,8 +205,9 @@ define([
 		getUseSpringRewards: function () {
 			var rewards = new ResultVO("use_spring");
             var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
+            var water = Math.min(bagComponent.totalCapacity -  bagComponent.usedCapacity, 30);
 			rewards.gainedResources = new ResourcesVO();
-			rewards.gainedResources.water = bagComponent.totalCapacity -  bagComponent.usedCapacity;
+			rewards.gainedResources.water = water;
 			return rewards;
 		},
 
