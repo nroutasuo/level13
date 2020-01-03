@@ -73,9 +73,9 @@ define([
 
         // probabilities of getting item of that type (relative, will be scaled to add up to 1)
         itemResultTypes: {
-            scavenge: { bag: 0.1, light: 0.2, shoes: 0.15, weapon: 0.05, clothing: 0.3, exploration: 0.2, artefact: 0.01 },
+            scavenge: { bag: 0.1, light: 0.1, shoes: 0.15, weapon: 0.05, clothing: 0.3, exploration: 0.2, artefact: 0.01 },
             fight: { bag: 0, light: 0, shoes: 0.1, weapon: 0.5, clothing: 0.5, exploration: 0.25, artefact: 0.02 },
-            meet: { bag: 0.1, light: 0.1, shoes: 0.1, weapon: 0.5, clothing: 0.5, exploration: 0.5, artefact: 0 }
+            meet: { bag: 0.05, light: 0, shoes: 0.1, weapon: 0.5, clothing: 0.5, exploration: 0.5, artefact: 0 }
         },
 
         constructor: function (engine) {
@@ -672,6 +672,7 @@ define([
         // level ordinal: current location level ordinal
 		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, efficiency, currentItems, campOrdinal, step) {
 			var result = [];
+			var hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
 
 			// Neccessity items (map, bag) that the player should find quickly if missing
 			var necessityItem = this.getNecessityItem(itemProbability, itemTypeLimits, efficiency, currentItems, campOrdinal);
@@ -680,13 +681,12 @@ define([
 			}
 
 			// Normal items
-            if (!necessityItem && Math.random() < itemProbability) {
+            if (hasBag && !necessityItem && Math.random() < itemProbability) {
                 var item = this.getRewardItem(itemTypeLimits, efficiency, campOrdinal, step);
                 if (item) result.push(item);
             }
 
 			// Ingredients
-			var hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
 			if (hasBag && Math.random() < ingredientProbability) {
 				var amount = Math.floor(Math.random() * efficiency * 5) + 1;
 				var ingredient = GameGlobals.itemsHelper.getUsableIngredient();
@@ -738,22 +738,25 @@ define([
 
             // list possible items
             var items = [];
-			var totalLevels = GameGlobals.gameState.getTotalLevels();
+            var minCampOrdinal = 0;
             switch (itemType) {
                 case "bag":
-                    items = ItemConstants.itemDefinitions.bag.slice(0);
+                    items = [ ItemConstants.getBag(campOrdinal - 1), ItemConstants.getBag(campOrdinal) ];
                     break;
                 case "light":
                     items = ItemConstants.itemDefinitions.light.slice(0);
                     break;
                 case "shoes":
                     items = ItemConstants.itemDefinitions.shoes.slice(0);
+                    minCampOrdinal = campOrdinal - 5;
                     break;
                 case "weapon":
                     items = ItemConstants.itemDefinitions.weapon.slice(0);
+                    minCampOrdinal = campOrdinal - 3;
                     break;
                 case "clothing":
                     items = GameGlobals.itemsHelper.getScavengeRewardClothing(campOrdinal, step);
+                    minCampOrdinal = campOrdinal - 3;
                     break;
                 case "exploration":
                     items = ItemConstants.itemDefinitions.exploration.slice(0);
@@ -775,6 +778,8 @@ define([
                 if (items[i].scavengeRarity > rarityThreshold)
                     continue;
                 if (items[i].requiredCampOrdinal > campOrdinal)
+                    continue;
+                if (items[i].requiredCampOrdinal < minCampOrdinal)
                     continue;
                 validItems.push(items[i]);
             }
