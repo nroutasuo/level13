@@ -171,7 +171,6 @@ define(['ash',
                 case "use_out_collector_water": this.collectWater(param); break;
                 case "use_out_collector_food": this.collectFood(param); break;
                 case "build_out_camp": this.buildCamp(param); break;
-                case "build_out_bridge": this.buildBridge(param); break;
                 case "build_out_passage_down_stairs": this.buildPassageDownStairs(param); break;
                 case "build_out_passage_down_elevator": this.buildPassageDownElevator(param); break;
                 case "build_out_passage_down_hole": this.buildPassageDownHole(param); break;
@@ -234,6 +233,7 @@ define(['ash',
                 case "scout_locale_u": this.scoutLocale(param); break;
                 case "clear_workshop": this.clearWorkshop(param); break;
                 case "clear_waste": this.clearWaste(param); break;
+                case "bridge_gap": this.bridgeGap(param); break;
                 case "clear_debris": this.clearDebris(param); break;
                 case "use_spring": this.useSpring(param); break;
                 case "fight_gang": this.fightGang(param); break;
@@ -645,29 +645,39 @@ define(['ash',
 
 			this.handleOutActionResults("clear_waste", LogConstants.MSG_ID_CLEAR_WASTE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, successCallback);
 		},
+
+		bridgeGap: function (sectorPos) {
+            this.clearBlocker("bridge_gap", MovementConstants.BLOCKER_TYPE_GAP, sectorPos)
+			this.addLogMessage(LogConstants.MSG_ID_BRIDGED_GAP, "Built a bridge.");
+		},
         
         clearDebris: function (sectorPos) {
-            log.i("clear debris " + sectorPos);
-			var l = parseInt(sectorPos.split(".")[0]);
-			var sX = parseInt(sectorPos.split(".")[1]);
-			var sY = parseInt(sectorPos.split(".")[2]);
+            this.clearBlocker("clear_debris", MovementConstants.BLOCKER_TYPE_DEBRIS, sectorPos)
+			this.addLogMessage(LogConstants.MSG_ID_CLEAR_DEBRIS, "Cleared debris.");
+        },
+        
+        clearBlocker: function (action, blockerType, sectorPos) {
+            // parse sector pos
             var direction = parseInt(sectorPos.split(".")[3]);
-            
-			var sector = this.getActionSector("clear_debris", sectorPos);
+			var sector = this.getActionSector(action, sectorPos);
 			var positionComponent = sector.get(PositionComponent);
-
-			// Find neighbour
+            
+			// find neighbour
             var oppositeDirection = PositionConstants.getOppositeDirection(direction);
 			var neighbourPos = PositionConstants.getPositionOnPath(positionComponent.getPosition(), direction, 1);
 			var neighbour = GameGlobals.levelHelper.getSectorByPosition(neighbourPos.level, neighbourPos.sectorX, neighbourPos.sectorY);
             
+            // set status
             var sectorStatus = sector.get(SectorStatusComponent);
-            sectorStatus.setCleared(direction, MovementConstants.BLOCKER_TYPE_DEBRIS);
+            sectorStatus.setBlockerCleared(direction, blockerType);
             var neighbourStatus = neighbour.get(SectorStatusComponent);
-            neighbourStatus.setCleared(oppositeDirection, MovementConstants.BLOCKER_TYPE_DEBRIS);
+            neighbourStatus.setBlockerCleared(oppositeDirection, blockerType);
             
-            this.completeAction("clear_debris");
-            
+            log.i(sectorStatus)
+            log.i(neighbourStatus)
+        
+            // complete
+            this.completeAction(action);
             GlobalSignals.movementBlockerClearedSignal.dispatch();
         },
 
@@ -1106,37 +1116,6 @@ define(['ash',
 		buildGarden: function () {
 			this.buildImprovement("build_in_garden", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_garden"));
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_GARDEN, "Built a garden.");
-		},
-
-		buildBridge: function (sectorPos) {
-			var sector = this.getActionSector("build_out_bridge", sectorPos);
-			var direction = parseInt(sectorPos.split(".")[3]);
-			var positionComponent = sector.get(PositionComponent);
-			var passagesComponent = sector.get(PassagesComponent);
-			var blocker = passagesComponent.getBlocker(direction);
-
-			// TODO move this check to startAction
-			if (!blocker || blocker.type !== MovementConstants.BLOCKER_TYPE_GAP) {
-				log.w("Can't build bridge because there is no gap: " + sectorPos);
-				return;
-			}
-
-			// Find neighbour
-			var neighbourPos = PositionConstants.getPositionOnPath(positionComponent.getPosition(), direction, 1);
-			var neighbour = GameGlobals.levelHelper.getSectorByPosition(neighbourPos.level, neighbourPos.sectorX, neighbourPos.sectorY);
-			var neighbourPassagesComponent = neighbour.get(PassagesComponent);
-			var neighbourBlocker = neighbourPassagesComponent.getBlocker(PositionConstants.getOppositeDirection(direction));
-
-			// TODO move this check to startAction
-			if (!neighbourBlocker || neighbourBlocker.type !== MovementConstants.BLOCKER_TYPE_GAP) {
-				log.w("Trying to build bridge but neighbour doesn't have a gap.");
-				return;
-			}
-
-			this.buildImprovement("build_out_bridge", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_bridge"), sector);
-			this.buildImprovement("build_out_bridge", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_bridge"), neighbour, true);
-            
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_BRDIGE, "Built a bridge.");
 		},
 
 		buildSpaceShip1: function (sectorPos) {

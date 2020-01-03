@@ -86,11 +86,6 @@ define([
 			return { value: blocked, reason: reason };
 		},
 		
-		isBridged: function (sectorEntity, direction) {
-			var improvementsComponent = sectorEntity.get(SectorImprovementsComponent);
-			return this.hasBridgeableBlocker(sectorEntity, direction) && improvementsComponent.getCount(improvementNames.bridge) > 0;
-		},
-		
 		isDefeated: function (sectorEntity, direction) {
             var position = sectorEntity.get(PositionComponent).getPosition();
             var gangEntity = GameGlobals.levelHelper.getGang(position, direction);
@@ -101,13 +96,18 @@ define([
         
         isCleaned: function (sectorEntity, direction) {
             var statusComponent = sectorEntity.get(SectorStatusComponent);
-            return this.hasClearableBlocker(sectorEntity, direction) && statusComponent.isCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE);
+            return this.hasClearableBlocker(sectorEntity, direction) && statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE);
         },
         
         isCleared: function (sectorEntity, direction) {
             var statusComponent = sectorEntity.get(SectorStatusComponent);
-            return this.hasClearableBlocker(sectorEntity, direction) && statusComponent.isCleared(direction, MovementConstants.BLOCKER_TYPE_DEBRIS);
+            return this.hasClearableBlocker(sectorEntity, direction) && statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_DEBRIS);
         },
+		
+		isBridged: function (sectorEntity, direction) {
+            var statusComponent = sectorEntity.get(SectorStatusComponent);
+            return this.hasClearableBlocker(sectorEntity, direction) && statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_GAP);
+		},
 		
 		hasBridgeableBlocker: function (sectorEntity, direction) {
 			var passagesComponent = sectorEntity.get(PassagesComponent);

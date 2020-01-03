@@ -557,10 +557,10 @@ define([
                     if (!GameGlobals.movementHelper.isBlocked(sectorEntity, direction)) continue;
                     switch (directionBlocker.type) {
         				case MovementConstants.BLOCKER_TYPE_GAP:
-                            projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.bridge), "build_out_bridge", sectorPosition, direction));
+                            projects.push(new LevelProjectVO(null, "bridge_gap", sectorPosition, direction, "Gap", "bridge"));
                             break;
         				case MovementConstants.BLOCKER_TYPE_DEBRIS:
-                            projects.push(new LevelProjectVO(null, "clear_debris", sectorPosition, direction, "Debris"));
+                            projects.push(new LevelProjectVO(null, "clear_debris", sectorPosition, direction, "Debris", "clear"));
                             break;
                     }
                 }

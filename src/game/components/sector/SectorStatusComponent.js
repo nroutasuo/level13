@@ -10,6 +10,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
         glowStickSeconds: -100, // not saved
         wasteClearedDirections: [],
         debrisClearedDirections: [],
+        gapBridgedDirections: [],
 
         constructor: function () {
             this.discoveredResources = [];
@@ -18,6 +19,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
             this.localesScouted = [];
             this.wasteClearedDirections = [];
             this.debrisClearedDirections = [];
+            this.gapBridgedDirections = [];
         },
 
         addDiscoveredResource: function (name) {
@@ -39,24 +41,30 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
             return scouted;
         },
 
-        isCleared: function (direction, blockerType) {
+        isBlockerCleared: function (direction, blockerType) {
             if (blockerType == MovementConstants.BLOCKER_TYPE_WASTE) {
                 return this.wasteClearedDirections && this.wasteClearedDirections.indexOf(parseInt(direction)) >= 0;
             }
             if (blockerType == MovementConstants.BLOCKER_TYPE_DEBRIS) {
                 return this.debrisClearedDirections && this.debrisClearedDirections.indexOf(parseInt(direction)) >= 0;
             }
+            if (blockerType == MovementConstants.BLOCKER_TYPE_GAP) {
+                return this.gapBridgedDirections && this.gapBridgedDirections.indexOf(parseInt(direction)) >= 0;
+            }
             return false;
         },
 
-        setCleared: function (direction, blockerType) {
-            if (this.isCleared(direction, blockerType))
+        setBlockerCleared: function (direction, blockerType) {
+            if (this.isBlockerCleared(direction, blockerType))
                 return;
             if (blockerType == MovementConstants.BLOCKER_TYPE_WASTE) {
                 this.wasteClearedDirections.push(parseInt(direction));
             }
             if (blockerType == MovementConstants.BLOCKER_TYPE_DEBRIS) {
                 this.debrisClearedDirections.push(parseInt(direction));
+            }
+            if (blockerType == MovementConstants.BLOCKER_TYPE_GAP) {
+                this.gapBridgedDirections.push(parseInt(direction));
             }
         },
 
@@ -78,6 +86,8 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
                 copy.wd = this.wasteClearedDirections ? this.wasteClearedDirections  : [];
             if (this.debrisClearedDirections && this.debrisClearedDirections.length > 0)
                 copy.dd = this.debrisClearedDirections ? this.debrisClearedDirections  : [];
+            if (this.gapBridgedDirections && this.gapBridgedDirections.length > 0)
+                copy.bd = this.gapBridgedDirections ? this.gapBridgedDirections  : [];
             return Object.keys(copy).length > 0 ? copy : null;
         },
 
@@ -91,6 +101,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
                 this.localesScouted = [];
             this.wasteClearedDirections = componentValues.wd ? componentValues.wd : [];
             this.debrisClearedDirections = componentValues.dd ? componentValues.dd : [];
+            this.gapBridgedDirections = componentValues.bd ? componentValues.bd : [];
         }
 
     });

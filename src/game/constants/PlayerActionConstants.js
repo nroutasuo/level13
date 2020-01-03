@@ -50,6 +50,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     },
                 },
 
+                bridge_gap: {
+                    upgrades: {
+                        unlock_building_bridge: true,
+                    }
+                },
+
                 use_spring: {
                     vision: [10, -1],
                     sector: {
@@ -227,15 +233,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     },
                     sector: {
                         canHaveCamp: true,
-                    }
-                },
-
-                build_out_bridge: {
-                    improvements: {
-                        bridge: [0, 1],
-                    },
-                    upgrades: {
-                        unlock_building_bridge: true,
                     }
                 },
 
@@ -1593,11 +1590,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_food: 2,
                 },
 
-                build_out_bridge: {
-                    resource_metal: 150,
-                    resource_rope: 150,
-                },
-
                 build_out_spaceship1: {
                     resource_metal: 20000,
                     resource_rope: 3000,
@@ -1673,6 +1665,11 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 
                 clear_debris: {
                     resource_rope: 50,
+                },
+
+                bridge_gap: {
+                    resource_metal: 150,
+                    resource_rope: 150,
                 },
 
                 build_in_house: {
@@ -1792,7 +1789,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 build_in_library: {
-                    resource_metal: 100,
+                    resource_metal: 200,
                     resource_rope: 100,
                     cost_factor_e1_base: 2,
                 },
@@ -2608,6 +2605,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 clear_workshop: "Scout the workshop to see if it can be used.",
                 clear_waste: "Clear the pollution.",
                 clear_debris: "Clear the debris blocking the way.",
+                bridge_gap: "Build a bridge to cross the gap",
                 enter_camp: "Rest and manage camp.",
                 use_spring: "Get water.",
                 fight_gang: "Clear the enemies blocking passage.",

@@ -636,7 +636,7 @@ define([
                             var clearedKey = "isWasteCleared_" + direction;
                             if (typeof requirements.sector[clearedKey] !== 'undefined') {
                                 var requiredValue = requirements.sector[clearedKey];
-                                var currentValue = statusComponent.isCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE);
+                                var currentValue = statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE);
 
                                 if (requiredValue !== currentValue) {
                                     if (currentValue) {
@@ -1053,6 +1053,7 @@ define([
                 case "use_in_inn_select":
                 case "send_caravan":
                 case "clear_debris":
+                case "bridge_gap":
                     return PlayerActionConstants.requirements[baseActionID];
 				default:
 					return PlayerActionConstants.requirements[action];
@@ -1297,7 +1298,6 @@ define([
                 case "build_in_hospital": return improvementNames.hospital;
                 case "build_in_tradepost": return improvementNames.tradepost;
                 case "build_in_inn": return improvementNames.inn;
-                case "build_out_bridge": return improvementNames.bridge;
                 case "build_out_spaceship1": return improvementNames.spaceship1;
                 case "build_out_spaceship2": return improvementNames.spaceship2;
                 case "build_out_spaceship3": return improvementNames.spaceship3;
@@ -1351,7 +1351,6 @@ define([
             var helper = this;
             var result = null;
             switch (improvementName) {
-                case improvementNames.bridge: return "build_out_bridge";
                 case improvementNames.passageUpStairs: return "build_out_passage_up_stairs";
                 case improvementNames.passageUpElevator: return "build_out_passage_up_elevator";
                 case improvementNames.passageUpHole: return "build_out_passage_up_hole";
@@ -1409,6 +1408,7 @@ define([
                 case "equip": return true;
                 case "unequip": return true;
                 case "clear_debris": return true;
+                case "bridge_gap": return true;
                 case "move_camp_level": return true;
                 case "despair": return true;
                 case "accept_inventory": return true;

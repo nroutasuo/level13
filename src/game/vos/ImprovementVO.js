@@ -5,7 +5,6 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		collector_food: "Trap",
 		collector_water: "Bucket",
 		
-		bridge: "Bridge",
 		passageUpStairs: "Staircase Up",
 		passageUpElevator: "Elevator Up (Repair)",
 		passageUpHole: "Elevator Up (Build)",
@@ -122,7 +121,6 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
         switch (name) {
             case improvementNames.collector_food:
             case improvementNames.collector_water:
-            case improvementNames.bridge:
             case improvementNames.spaceship1:
             case improvementNames.spaceship2:
             case improvementNames.spaceship3:

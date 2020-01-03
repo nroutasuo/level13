@@ -68,6 +68,7 @@ function (Ash, MovementConstants, PositionConstants, PassageVO, MovementBlockerV
             if (blocker == null) return false;
             if (blocker.type == MovementConstants.BLOCKER_TYPE_WASTE) return true;
             if (blocker.type == MovementConstants.BLOCKER_TYPE_DEBRIS) return true;
+            if (blocker.type == MovementConstants.BLOCKER_TYPE_GAP) return true;
             return false;
         },
     });
