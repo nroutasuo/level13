@@ -305,13 +305,14 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
         },
         
         becomesObsolete: function (category) {
-            switch (category) {
-                case "weapon":
-                case "clothing_over":
-                case "clothing_upper":
-                case "clothing_lower":
-                case "clothing_hands":
-                case "clothing_head":
+            var t = ItemConstants.itemTypes[category] || category;
+            switch (t) {
+                case ItemConstants.itemTypes.weapon:
+                case ItemConstants.itemTypes.clothing_over:
+                case ItemConstants.itemTypes.clothing_upper:
+                case ItemConstants.itemTypes.clothing_lower:
+                case ItemConstants.itemTypes.clothing_hands:
+                case ItemConstants.itemTypes.clothing_head:
                     return true;
                 default:
                     return false;

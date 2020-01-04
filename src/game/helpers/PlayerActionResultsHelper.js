@@ -779,8 +779,10 @@ define([
                     continue;
                 if (items[i].requiredCampOrdinal > campOrdinal)
                     continue;
+                if (ItemConstants.becomesObsolete(items[i].type)) {
                 if (items[i].requiredCampOrdinal < minCampOrdinal)
                     continue;
+                }
                 validItems.push(items[i]);
             }
 
