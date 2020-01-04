@@ -303,8 +303,22 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             i = i % this.itemDefinitions.ingredient.length;
             return this.itemDefinitions.ingredient[parseInt(i)];
         },
+        
+        becomesObsolete: function (category) {
+            switch (category) {
+                case "weapon":
+                case "clothing_over":
+                case "clothing_upper":
+                case "clothing_lower":
+                case "clothing_hands":
+                case "clothing_head":
+                    return true;
+                default:
+                    return false;
+            }
+        }
     };
-
+    
     return ItemConstants;
 
 });

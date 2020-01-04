@@ -11,19 +11,19 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
         GOOD_TYPE_NAME_CURRENCY: "currency",
         GOOD_TYPE_NAME_INGREDIENTS: "ingredients",
         
-        VALUE_INGREDIENTS: 0.05,
+        VALUE_INGREDIENTS: 0.1,
         VALUE_MARKUP_INCOMING_CARAVANS: 0.15,
         VALUE_DISCOUNT_CAMP_ITEMS: 0.25,
         
         TRADING_PARTNERS: [
-            new TradingPartnerVO(3, "Bone Crossing", [resourceNames.rope], [resourceNames.metal], false),
-            new TradingPartnerVO(4, "Slugger Town", [resourceNames.metal], [], false),
-            new TradingPartnerVO(6, "Old Waterworks", [resourceNames.fuel], [], true),
-            new TradingPartnerVO(7, "Mill Road Academy", [resourceNames.food, resourceNames.water], [resourceNames.metal], true),
-            new TradingPartnerVO(9, "Bleaksey", [resourceNames.herbs], [resourceNames.medicine], false),
-            new TradingPartnerVO(10, "Pinewood", [resourceNames.medicine], [], true),
-            new TradingPartnerVO(12, "Highgate", [resourceNames.tools], [resourceNames.metal], true),
-            new TradingPartnerVO(14, "Factory 32", [resourceNames.concrete], [resourceNames.metal], true),
+            new TradingPartnerVO(3, "Bone Crossing", [resourceNames.rope], [resourceNames.metal], false, [ "weapon" ], [ "weapon", "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
+            new TradingPartnerVO(4, "Slugger Town", [resourceNames.metal], [resourceNames.food], false, [], ["exploration", "shoes" ]),
+            new TradingPartnerVO(6, "Old Waterworks", [resourceNames.fuel], [], true, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
+            new TradingPartnerVO(7, "Mill Road Academy", [resourceNames.food, resourceNames.water], [resourceNames.metal], true, [], [ "weapon", "artefact" ]),
+            new TradingPartnerVO(9, "Bleaksey", [resourceNames.herbs], [resourceNames.medicine], false, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
+            new TradingPartnerVO(10, "Pinewood", [resourceNames.medicine], [], true, [], [ "artefact", "exploration" ]),
+            new TradingPartnerVO(12, "Highgate", [resourceNames.tools], [resourceNames.metal], true, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
+            new TradingPartnerVO(14, "Factory 32", [resourceNames.concrete], [resourceNames.metal], true, [], [ "exploration" ]),
         ],
         
         getRandomIncomingCaravan: function (campOrdinal, levelOrdinal, unlockedResources, gameState) {
@@ -34,7 +34,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             var buyResources = [];
             var usesCurrency = false;
             
-            // TODO rare traders with blueprints
+            // TODO rare traders with blueprints?
             // TODO balance resource amounts based on camp storage / player level?
             var minResAmount = 50;
             var randResAmount = 450;
@@ -47,6 +47,10 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                         var itemDefinition = itemList[i];
                         if (itemDefinition.requiredCampOrdinal > campOrdinal + 1)
                             continue;
+                        if (ItemConstants.becomesObsolete(category)) {
+                            if (itemDefinition.requiredCampOrdinal < campOrdinal - 5)
+                                continue;
+                        }
                         var tradeRarity = itemDefinition.tradeRarity;
                         if (tradeRarity <= 0)
                             continue;
@@ -86,7 +90,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                     categories.push("exploration");
                 }
                 var prob = 0.75;
-                while (sellItems.length < 3 && prob <= 1) {
+                while (sellItems.length < 4 && prob <= 1) {
                     addSellItemsFromCategories(categories, prob, 1);
                     prob += 0.05;
                 }
@@ -96,17 +100,17 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                 // 2) misc trader: sells ingredients, random items, buys all items, uses currency
                 name = "General trader";
                 var categories = [];
-                while (categories.length < 2) {
-                    if (Math.random() <= 0.25) categories.push("light");
+                while (categories.length < 3) {
+                    if (Math.random() <= 0.2) categories.push("light");
                     if (Math.random() <= 0.5) categories.push("weapon");
-                    if (Math.random() <= 0.25) categories.push("clothing_over");
-                    if (Math.random() <= 0.25) categories.push("clothing_upper");
-                    if (Math.random() <= 0.25) categories.push("clothing_lower");
-                    if (Math.random() <= 0.25) categories.push("clothing_hands");
-                    if (Math.random() <= 0.25) categories.push("clothing_head");
-                    if (Math.random() <= 0.25) categories.push("shoes");
-                    if (Math.random() <= 0.25) categories.push("bag");
-                    if (Math.random() <= 0.75) categories.push("exploration");
+                    if (Math.random() <= 0.3) categories.push("clothing_over");
+                    if (Math.random() <= 0.3) categories.push("clothing_upper");
+                    if (Math.random() <= 0.3) categories.push("clothing_lower");
+                    if (Math.random() <= 0.3) categories.push("clothing_hands");
+                    if (Math.random() <= 0.3) categories.push("clothing_head");
+                    if (Math.random() <= 0.3) categories.push("shoes");
+                    if (Math.random() <= 0.3) categories.push("bag");
+                    if (Math.random() <= 0.7) categories.push("exploration");
                     if (Math.random() <= 0.1) categories.push("artefact");
                 }
                 var prob = 0.10;
@@ -114,13 +118,18 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                     addSellItemsFromCategories(categories, prob, 1);
                     prob += 0.05;
                 }
-                addSellItemsFromCategories([ "ingredient"], 0.75, 10);
+                addSellItemsFromCategories([ "ingredient"], 0.7, 5 + campOrdinal + 2);
                 buyItemTypes = Object.keys(ItemConstants.itemTypes);
                 usesCurrency = true;
             } else if (rand <= 0.6) {
                 // 3) ingredient trader: sells ingredients, buys ingredients, no currency
                 name = "Crafting trader";
-                addSellItemsFromCategories([ "ingredient"], 1, 10);
+                var prob = 0.25;
+                var num = 5 + campOrdinal * 3;
+                while (sellItems.length < num && prob < 1) {
+                    addSellItemsFromCategories([ "ingredient"], prob, num / 3);
+                    prob += 0.05;
+                }
                 buyItemTypes = [ "ingredient" ];
                 usesCurrency = false;
             } else if (rand <= 0.8) {
@@ -162,18 +171,23 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                 usesCurrency = true;
             } else {
                 // 5) trading partner trader: buys and sells same stuff as partner, plus occational items, currency based on partner
-                // TODO add more random items based on partner
                 var partner = this.getRandomTradePartner(campOrdinal);
                 name = "Trader from " + partner.name;
                 for (var i = 0; i < partner.sellsResources.length; i++) {
                     sellResources.addResource(partner.sellsResources[i], minResAmount + Math.random() * randResAmount);
                 }
-                for (var j = 0; j < partner.buysResources.length; j++) {
-                    buyResources.push(partner.buysResources[j]);
+                for (var i = 0; i < partner.buysResources.length; i++) {
+                    buyResources.push(partner.buysResources[i]);
                 }
-                addSellItemsFromCategories([ "ingredient"], 0.25, 10);
-                addSellItemsFromCategories([ "exploration"], 0.15, 5);
-                addSellItemsFromCategories([ "artefact"], 0.05, 1);
+                var prob = 0.01;
+                var numItems = Math.floor(Math.random() * 2);
+                while (sellItems.length < numItems && prob < 1) {
+                    addSellItemsFromCategories(partner.sellItemTypes, prob, 1);
+                    prob += 0.01;
+                }
+                for (var i = 0; i < partner.buyItemTypes.length; i++) {
+                    buyItemTypes.push(partner.buyItemTypes[i]);
+                }
                 if (!partner.usesCurrency)
                     buyItemTypes.push("ingredient");
                 usesCurrency = partner.usesCurrency;
@@ -265,16 +279,16 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             var value = 0;
             switch (name) {
                 case resourceNames.water: value = 0.01; break;
-                case resourceNames.food: value = 0.005; break;
-                case resourceNames.metal: value = 0.001; break;
-                case resourceNames.rope: value = 0.01; break;
+                case resourceNames.food: value = 0.01; break;
+                case resourceNames.metal: value = 0.005; break;
+                
+                case resourceNames.rope: value = 0.02; break;
+                case resourceNames.herbs: value = 0.02; break;
+                case resourceNames.fuel: value = 0.02; break;
 
-                case resourceNames.herbs: value = 0.01; break;
-                case resourceNames.fuel: value = 0.01; break;
-
-                case resourceNames.medicine: value = 0.02; break;
-                case resourceNames.tools: value = 0.02; break;
-                case resourceNames.concrete: value = 0.02; break;
+                case resourceNames.medicine: value = 0.05; break;
+                case resourceNames.tools: value = 0.05; break;
+                case resourceNames.concrete: value = 0.05; break;
             }
             if (isTrader)
                 value = value + value * TradeConstants.VALUE_MARKUP_INCOMING_CARAVANS;
@@ -285,19 +299,21 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             var value = 0;
             switch (item.type) {
                 case ItemConstants.itemTypes.light:
-                    value = Math.ceil(item.getTotalBonus() / 25);
+                    value = (item.getTotalBonus() - 10) / 30;
                     break;
                 case ItemConstants.itemTypes.weapon:
+                    value = Math.ceil(item.getTotalBonus() / 5);
+                    break;
                 case ItemConstants.itemTypes.clothing_over:
                 case ItemConstants.itemTypes.clothing_upper:
                 case ItemConstants.itemTypes.clothing_lower:
                 case ItemConstants.itemTypes.clothing_hands:
                 case ItemConstants.itemTypes.clothing_head:
                 case ItemConstants.itemTypes.shoes:
-                    value = Math.ceil(item.getTotalBonus() / 5);
+                    value = Math.max(0.1, Math.ceil(item.getTotalBonus() / 12));
                     break;
                 case ItemConstants.itemTypes.bag:
-                    value = Math.ceil(item.getTotalBonus() / 10);
+                    value = (item.getTotalBonus() - 20) / 40;
                     break;
                 case ItemConstants.itemTypes.follower:
                     value = 0;
@@ -306,13 +322,13 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                     value = TradeConstants.VALUE_INGREDIENTS;
                     break;
                 case ItemConstants.itemTypes.exploration:
-                    value = 1;
+                    value = 0.5;
                     break;
                 case ItemConstants.itemTypes.uniqueEquipment:
-                    value = 2;
+                    value = 1;
                     break;
                 case ItemConstants.itemTypes.artefact:
-                    value = 2;
+                    value = 1;
                     break;
                 case ItemConstants.itemTypes.note:
                     value = 0;

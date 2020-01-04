@@ -7,13 +7,17 @@ define(['ash'], function (Ash) {
 		buysResources: [],
         sellsResources: [],
         usesCurrency: false,
+		sellItemTypes: [],
+		buyItemTypes: [],
 	
-        constructor: function (campOrdinal, name, buysResources, sellsResources, usesCurrency) {
+        constructor: function (campOrdinal, name, buysResources, sellsResources, usesCurrency, buyItemTypes, sellItemTypes) {
 			this.campOrdinal = campOrdinal;
 			this.name = name;
 			this.buysResources = buysResources;
 			this.sellsResources = sellsResources;
 			this.usesCurrency = usesCurrency;
+            this.buyItemTypes = buyItemTypes || [];
+            this.sellItemTypes = sellItemTypes || [];
         }
         
     });

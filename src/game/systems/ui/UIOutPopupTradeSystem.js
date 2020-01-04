@@ -118,10 +118,13 @@ define([
 			}
 
 			// camp items: create
+            var count = 0;
 			for (var itemID in this.campTotalItems) {
 				var item = ItemConstants.getItemByID(itemID);
 				var li = UIConstants.getItemSlot(itemsComponent, item, 0, false, true);
 				addLis(li, itemID, "camp")
+                count++;
+                if (count >= 23) break;
 			}
 
 			// trader and camp resources
