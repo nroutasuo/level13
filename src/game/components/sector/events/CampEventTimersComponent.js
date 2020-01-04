@@ -13,12 +13,13 @@ define(['ash'], function (Ash) {
             this.eventStartTimers = {};
             this.eventDurations = {};
         },
+        
+        scheduleNext: function (event, timeToNext) {
+            this.eventStartTimers[event] = timeToNext;
+        },
 
-        onEventEnded: function(event, timeToNext) {
+        onEventEnded: function(event) {
             this.eventEndTimers[event] = null;
-            if (timeToNext) {
-                this.eventStartTimers[event] = timeToNext;
-            }
         },
 
         onEventStarted: function(event, durationSec) {

@@ -40,6 +40,7 @@ define([
 			this.playerNodes = engine.getNodeList(PlayerResourcesNode);
 			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
 			this.campNodes = engine.getNodeList(CampNode);
+            
             GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
 		},
 
@@ -76,7 +77,7 @@ define([
 								this.endEvent(campNode, event);
 							}
 						} else if (!this.isScheduled(campNode, event)) {
-							this.endEvent(campNode, event);
+                            this.scheduleEvent(campNode, event);
 						} else {
 							if (campTimers.isTimeToStart(event)) {
 								this.startEvent(campNode, event);
@@ -135,21 +136,32 @@ define([
 			var campTimers = campNode.entity.get(CampEventTimersComponent);
 			return campTimers.isEventScheduled(event);
 		},
+        
+        isNew: function (event) {
+            if (!GameGlobals.gameState.unlockedFeatures.events)
+                GameGlobals.gameState.unlockedFeatures.events = [];
+			return GameGlobals.gameState.unlockedFeatures.events.indexOf(event) < 0;
+        },
 
 		removeTimer: function (campNode, event) {
 			var campTimers = campNode.entity.get(CampEventTimersComponent);
 			return campTimers.removeTimer(event);
 		},
+        
+        scheduleEvent: function (campNode, event) {
+            var campTimers = campNode.entity.get(CampEventTimersComponent);
+            var timeToNext = this.getTimeToNext(campNode, event);
+            campTimers.scheduleNext(event, timeToNext);
+			log.i("Scheduled " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ")" + " in " + timeToNext + "s.");
+        },
 
 		endEvent: function (campNode, event) {
 			if (!this.isCampValidForEvent(campNode, event)) return;
-			var campTimers = campNode.entity.get(CampEventTimersComponent);
-			var timeToNext = this.getTimeToNext(campNode, event);
-			campTimers.onEventEnded(event, timeToNext);
             
-            if (!timeToNext) return;
-
-			log.i("End " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ")" + ". Next in " + timeToNext + "s.");
+			log.i("Ending " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ")");
+            var campTimers = campNode.entity.get(CampEventTimersComponent);
+			campTimers.onEventEnded(event);
+            this.scheduleEvent(campNode, event);
 
 			if (!this.hasCampEvent(campNode, event)) return;
 
@@ -206,12 +218,15 @@ define([
 			var campPos = campNode.entity.get(PositionComponent);
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(campPos.level);
 			campTimers.onEventStarted(event, duration);
+            if (this.isNew(event))
+                GameGlobals.gameState.unlockedFeatures.events.push(event);
 			log.i("Start " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ") (" + duration + "s)");
 
 			var logMsg;
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.trader:
-					var caravan = TradeConstants.getRandomIncomingCaravan(campOrdinal, GameGlobals.gameState.level, GameGlobals.gameState.unlockedFeatures.resources, GameGlobals.gameState);
+                    var numCamps = GameGlobals.gameState.numCamps;
+					var caravan = TradeConstants.getRandomIncomingCaravan(numCamps, GameGlobals.gameState.level, GameGlobals.gameState.unlockedFeatures.resources, GameGlobals.gameState);
 					campNode.entity.add(new TraderComponent(caravan));
 					logMsg = "A trader arrives.";
 					break;
@@ -301,7 +316,8 @@ define([
 		},
 
 		getTimeToNext: function (campNode, event) {
-			return OccurrenceConstants.scheduleNext(event, this.getEventUpgradeFactor(event), campNode.camp.population, campNode.camp.maxPopulation);
+            var isNew = this.isNew(event);
+			return OccurrenceConstants.getTimeToNext(event, isNew, this.getEventUpgradeFactor(event), campNode.camp.population, campNode.camp.maxPopulation);
 		},
 
 		getEventUpgradeFactor: function (event) {
