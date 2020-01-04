@@ -62,8 +62,9 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             clothing_over: [
                 new ItemVO("clothing_over_1", "Warm Coat", "Armor", 1, true, true, false, 5, 1, {def: 1, warmth: 20}, "img/items/clothing-2.png", "Something against the chill."),
                 new ItemVO("clothing_over_1x", "Lab Coat", "Armor", 2, true, false, false, 5, 1, {def: 1, warmth: 2, res_poison: 10}, "img/items/clothing-2.png", "Might protect from environmental hazards."),
+                new ItemVO("clothing_over_15", "Leather Jacket", "Armor", 3, true, true, false, 2, 1, {def: 4, warmth: 5, res_rad: 3, res_poison: 3}, "img/items/clothing-2.png", "A solid jacket."),
                 new ItemVO("clothing_over_2", "Biker jacket", "Armor", 3, true, false, false, 2, 1, {def: 6, warmth: 10, res_rad: 3, res_poison: 3}, "img/items/clothing-2.png", "Doesn't make one invincible, but feels like it."),
-                new ItemVO("clothing_over_25", "Army Jacket", "Armor", 6, true, false, false, 2, 1, {def: 15, warmth: 10, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Something that's actually produced with the aim of keeping one safe."),
+                new ItemVO("clothing_over_25", "Army Jacket", "Armor", 5, true, false, false, 2, 1, {def: 15, warmth: 10, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Something that's actually produced with the aim of keeping one safe."),
                 new ItemVO("clothing_over_3", "Scrap metal armor", "Armor", 8, true, true, false, 5, 2, {def: 25, warmth: 5, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "An ugly but surprisingly comfortable metal blanket"),
                 new ItemVO("clothing_over_4", "Kevlar vest", "Armor", 10, true, true, false, 3, 2, {def: 40, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Heavy, but worth it."),
                 new ItemVO("clothing_over_45", "Scavenger vest", "Armor", 12, true, true, false, 3, 1, {def: 40, warmth: 20, res_rad: 10, res_poison: 10}, "img/items/clothing-2.png", "Novel technology for maximal survival in the post-Fall City"),
