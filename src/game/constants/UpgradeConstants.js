@@ -56,7 +56,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
         	unlock_building_passage_hole: "unlock_building_passage_hole",
         	unlock_building_house2: "unlock_building_house2",
         	unlock_building_smithy: "unlock_building_smithy",
-        	unlock_item_bag2: "unlock_item_bag2",
+        	unlock_item_bag22: "unlock_item_bag22",
         	unlock_item_firstaid: "unlock_item_firstaid",
         	upgrade_building_market: "upgrade_building_market",
         	upgrade_worker_collector1: "upgrade_worker_collector1",
@@ -74,7 +74,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
         	unlock_building_inn: "unlock_building_inn",
         	unlock_building_market: "unlock_building_market",
         	unlock_building_fortifications: "unlock_building_fortifications",
-        	unlock_item_bag22: "unlock_item_bag22",
+        	unlock_item_bag2: "unlock_item_bag2",
         	unlock_weapon_15: "unlock_weapon_15",
         	unlock_clothing_basic: "unlock_clothing_basic",
         	unlock_clothing_warm: "unlock_clothing_warm",
@@ -429,7 +429,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_worker_rope]
     = new UpgradeVO("unlock_worker_rope", "Rope-making", "Using scavenged fiber and cloth to make rope, a useful building and crafting material.");
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_shoe1]
-= new UpgradeVO("unlock_item_shoe1", "Crafting", "The varied skill of making useful things out of whatever happens to be available");
+    = new UpgradeVO("unlock_item_shoe1", "Crafting", "The varied skill of making useful things out of whatever happens to be available");
     
     return UpgradeConstants;
     

@@ -188,7 +188,7 @@ define([
             }
 
             if (localeCategory === "u") {
-                rewards.gainedEvidence = campOrdinal;
+                rewards.gainedEvidence = Math.ceil(campOrdinal / 3);
                 if (this.nearestCampNodes.head) {
                     rewards.gainedPopulation = Math.random() < 0.05 ? 1 : 0;
                 }

@@ -25,7 +25,7 @@ define(['ash'], function (Ash) {
         RUMOURS_PER_VISIT_MARKET: 2,
         
         // Evidence
-        EVIDENCE_BONUS_PER_LIBRARY_LEVEL: 0.2,
+        EVIDENCE_BONUS_PER_LIBRARY_LEVEL: 0.15,
         
         // Cost of workers
         CONSUMPTION_WATER_PER_WORKER_PER_S: 0.02,
@@ -43,7 +43,7 @@ define(['ash'], function (Ash) {
         PRODUCTION_MEDICINE_PER_WORKER_PER_S: 0.01,
         PRODUCTION_TOOLS_PER_WORKER_PER_S: 0.02,
         PRODUCTION_CONCRETE_PER_WORKER_PER_S: 0.03,
-        PRODUCTION_EVIDENCE_PER_WORKER_PER_S: 0.000375,
+        PRODUCTION_EVIDENCE_PER_WORKER_PER_S: 0.0005,
         
         // reputation
         REPUTATION_PER_RADIO_PER_SEC: 0.1,

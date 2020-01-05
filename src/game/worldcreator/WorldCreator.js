@@ -452,7 +452,7 @@ define([
                 var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_EARLY);
                 if (numEarlyBlueprints) {
     				var minEarly = 2 + numEarlyBlueprints;
-                    var maxEarly = minEarly * 2;
+                    var maxEarly = numEarlyBlueprints * 2;
     				var countEarly = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minEarly, maxEarly);
                     createLocales(this.world, levelVO, campOrdinal, true, countEarly, minEarly);
                 } else {
@@ -462,7 +462,7 @@ define([
                 var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_LATE);
                 if (numLateBlueprints > 0) {
                     var minLate = 2 + numLateBlueprints;
-                    var maxLate = minLate * 2;
+                    var maxLate = numLateBlueprints * 2;
     				var countLate = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minLate, maxLate);
                     createLocales(this.world, levelVO, campOrdinal, false, countLate, minLate);
                 } else {
