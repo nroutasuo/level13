@@ -1625,7 +1625,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 build_out_passage_up_hole: {
                     resource_metal: [50, 100, 50, 5500, 0],
-                    resource_concrete: 10,
+                    resource_concrete: 50,
                     cost_factor_e1_base: 1.295,
                     cost_factor_e2_exp: 2.3,
                 },
@@ -1646,7 +1646,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 build_out_passage_down_hole: {
                     resource_metal: [50, 100, 50, 5500, 0],
-                    resource_concrete: 10,
+                    resource_concrete: 50,
                     cost_factor_e1_base: 1.295,
                     cost_factor_e2_exp: 2.3,
                 },
@@ -1688,9 +1688,10 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 build_in_house2: {
-                    resource_metal: 300,
-                    resource_rope: 25,
-                    cost_factor_e1_base: 1.5,
+                    resource_metal: 500,
+                    resource_rope: 20,
+                    resource_concrete: 50,
+                    cost_factor_e1_base: 1.75,
                 },
 
                 build_in_generator: {
@@ -1701,12 +1702,16 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 improve_in_generator: {
                     resource_metal: [0, 0, 20, 0, 0],
                     resource_fuel: [10, 3, 2, 0, 0],
+                    resource_concrete: 10,
+                    resource_fuel: 10,
                     cost_factor_e1_base: 1.5,
                 },
 
                 build_in_lights: {
                     resource_metal: 100,
                     resource_rope: 10,
+                    resource_concrete: 10,
+                    resource_fuel: 50,
                 },
 
                 build_in_ceiling: {
@@ -1748,6 +1753,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 improve_in_square: {
                     resource_metal: [0, 0, 80, 0, 0],
                     resource_rope: [0, 0, 20, 0, 0],
+                    resource_tools: 10,
                     cost_factor_e1_base: 1.25,
                 },
 
@@ -1780,7 +1786,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 build_in_inn: {
                     resource_metal: 50,
                     resource_rope: 20,
-                    resource_fuel: 10,
+                    resource_fuel: 20,
                 },
 
                 use_in_inn: {
@@ -1795,6 +1801,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 build_in_market: {
                     resource_metal: 50,
                     resource_rope: 100,
+                    resource_fuel: 5,
                     cost_factor_e1_base: 1.5,
                 },
 
@@ -1813,12 +1820,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 build_in_fortification: {
                     resource_metal: 350,
                     resource_rope: 100,
-                    cost_factor_e1_base: 1.75,
+                    cost_factor_e1_base: 1.5,
                 },
 
                 build_in_fortification2: {
                     resource_concrete: 100,
-                    cost_factor_e1_base: 1.75,
+                    cost_factor_e1_base: 1.5,
                 },
 
                 build_in_aqueduct: {
@@ -1827,15 +1834,16 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 build_in_stable: {
-                    resource_metal: 100,
+                    resource_metal: 300,
                     resource_rope: 50,
+                    resource_fuel: 30,
                     cost_factor_e1_base: 1.75,
                 },
 
                 build_in_barracks: {
                     resource_metal: 100,
                     resource_rope: 50,
-                    resource_concrete: 50,
+                    resource_concrete: 200,
                     cost_factor_e1_base: 1.2,
                 },
 
@@ -1848,30 +1856,35 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 improve_in_apothecary: {
                     resource_metal: [30, 0, 5, 0, 0],
                     resource_rope: [10, 0, 5, 0, 0],
+                    resource_tools: 10,
                     cost_factor_e1_base: 2,
                 },
 
                 build_in_smithy: {
                     resource_metal: 100,
                     resource_rope: 50,
+                    resource_fuel: 10,
                     cost_factor_e1_base: 1.5,
                 },
                 
                 improve_in_smithy: {
                     resource_metal: [30, 0, 5, 0, 0],
                     resource_rope: [20, 0, 5, 0, 0],
+                    resource_tools: 10,
                     cost_factor_e1_base: 2,
                 },
 
                 build_in_cementmill: {
                     resource_metal: 500,
                     resource_rope: 50,
+                    resource_fuel: 10,
                     cost_factor_e1_base: 1.5,
                 },
                 
                 improve_in_cementmill: {
                     resource_metal: [40, 0, 5, 0, 0],
                     resource_rope: [10, 0, 5, 0, 0],
+                    resource_tools: 10,
                     cost_factor_e1_base: 2,
                 },
 
@@ -1973,6 +1986,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 craft_weapon3: {
                     resource_metal: 100,
                     resource_rope: 10,
+                    resource_tools: 2,
                     item_res_tape: 1,
                     item_res_bottle: 1,
                 },
@@ -2080,6 +2094,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 craft_clothing_hands_25: {
                     resource_rope: 20,
+                    resource_tools: 10,
                     item_res_leather: 3,
                     item_res_silk: 1,
                 },
