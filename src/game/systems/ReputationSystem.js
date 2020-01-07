@@ -108,7 +108,7 @@ define([
             this.logReputationPenalty(campNode, CampConstants.REPUTATION_PENALTY_TYPE_WATER, noWater);
             
             // penalties: defences
-            var defenceLimit = 0.25;
+            var defenceLimit = CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
             var soldiers = campNode.camp.assignedWorkers.soldier;
             var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradeNodes.head.upgrades);
             var danger = OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers, soldierLevel);

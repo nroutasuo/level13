@@ -525,8 +525,10 @@
 
 			var showRaid = raidDanger > 0 || raidDefence > CampConstants.CAMP_BASE_DEFENCE || campComponent.population > 1;
 			if (showRaid) {
+                var raidWarning = raidDanger > CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
                 var defenceS = OccurrenceConstants.getRaidDefenceString(improvements, soldiers, soldierLevel);
 				$("#in-demographics-raid-danger .value").text(Math.round(raidDanger * 100) + "%");
+				$("#in-demographics-raid-danger .value").toggleClass("warning", raidWarning);
 				$("#in-demographics-raid-defence .value").text(raidDefence);
                 UIConstants.updateCalloutContent("#in-demographics-raid-danger", "Increases with camp size and decreases with camp defences.");
                 UIConstants.updateCalloutContent("#in-demographics-raid-defence", defenceS);
