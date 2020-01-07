@@ -139,6 +139,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
     
     getImprovementReputationBonus = function (name, level) {
         if (getImprovementType(name) == improvementTypes.level) return 0;
+        level = level || 1;
         switch (name) {
             case improvementNames.home:
             case improvementNames.apothecary:
@@ -148,18 +149,25 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             case improvementNames.fortification:
             case improvementNames.fortification2:
             case improvementNames.storage:
+            case improvementNames.stable:
                 return 0;
+            case improvementNames.house:
+            case improvementNames.house2:
             case improvementNames.darkfarm:
+            case improvementNames.library:
+                return 0.5;
             case improvementNames.inn:
             case improvementNames.market:
             case improvementNames.tradepost:
+                return 1;
             case improvementNames.campfire:
+            case improvementNames.hospital:
                 return 2;
             case improvementNames.shrine:
                 return 3;
             case improvementNames.square:
             case improvementNames.garden:
-                return 4 + 1 * (level / 10);
+                return 2;
             default:
                 return 1;
         }

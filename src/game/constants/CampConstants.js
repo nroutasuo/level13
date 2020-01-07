@@ -46,6 +46,7 @@ define(['ash'], function (Ash) {
         PRODUCTION_EVIDENCE_PER_WORKER_PER_S: 0.0005,
         
         // reputation
+        REPUTATION_TO_POPULATION_FACTOR: 0.75,
         REPUTATION_PER_RADIO_PER_SEC: 0.1,
         REPUTATION_PER_HOUSE_FROM_GENERATOR: 0.3,
         REPUTATION_PENALTY_TYPE_FOOD: "FOOD",
@@ -112,8 +113,14 @@ define(['ash'], function (Ash) {
         
         getRequiredReputation: function (pop) {
             if (pop < 1) return 0;
-            var rawValue = Math.max(0, pop)/(pop+100)*100;
-            return Math.max(1, Math.floor(rawValue * 100) / 100);
+            pop = Math.ceil(pop);
+            var result = Math.max(1, Math.pow(pop, CampConstants.REPUTATION_TO_POPULATION_FACTOR));
+            return Math.floor(result * 100) / 100;
+        },
+        
+        getMaxPopulation: function (reputation) {
+            if (reputation < 1) return 0;
+            return Math.floor(Math.pow(reputation, 1 / CampConstants.REPUTATION_TO_POPULATION_FACTOR));
         },
         
         getSoldierDefence: function (upgradeLevel) {

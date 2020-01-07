@@ -141,7 +141,7 @@ define([
             // penalties: level population
             var levelVO = GameGlobals.levelHelper.getLevelEntityForSector(campNode.entity).get(LevelComponent).levelVO;
             if (levelVO.populationGrowthFactor < 1) {
-                var levelPopPenalty = targetReputationWithoutPenalties * (1 - levelVO.populationGrowthFactor) * 0.5;
+                var levelPopPenalty = targetReputationWithoutPenalties * (1 - levelVO.populationGrowthFactor);
                 addValue(-levelPopPenalty, "Level population");
             }
             this.logReputationPenalty(campNode, CampConstants.REPUTATION_PENALTY_TYPE_LEVEL_POP, levelVO.populationGrowthFactor < 1);
