@@ -5,6 +5,7 @@ define([
     'game/constants/GameConstants',
     'game/constants/PositionConstants',
     'game/constants/TextConstants',
+	'game/constants/TradeConstants',
     'game/nodes/PlayerLocationNode',
     'game/nodes/PlayerPositionNode',
     'game/components/common/CampComponent',
@@ -19,7 +20,7 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/improvements/WorkshopComponent',
     'game/systems/CheatSystem'
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, PositionConstants, TextConstants,
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, PositionConstants, TextConstants, TradeConstants,
     PlayerLocationNode, PlayerPositionNode,
     CampComponent, PositionComponent, VisitedComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent,
     CheatSystem) {
@@ -191,6 +192,17 @@ define([
             if (sectorPassages.passageDown) result.push("passage down");
             if (unScoutedLocales > 0) result.push("unscouted locales");
             if (sectorFeatures.hasSpring) result.push(TextConstants.getSpringName(sectorFeatures));
+            
+            for (var i = 0; i < localesComponent.locales.length; i++) {
+                var locale = localesComponent.locales[i];
+                if (statusComponent.isLocaleScouted(i)) {
+                    if (locale.type == localeTypes.tradingpartner) {
+                        var campOrdinal = GameGlobals.gameState.getCampOrdinal(sector.get(PositionComponent).level);
+                        var partner = TradeConstants.getTradePartner(campOrdinal);
+                        result.push(partner.name);
+                    }
+                }
+            }
             
             if (result.length < 1) return "-";
             else return result.join(", ");

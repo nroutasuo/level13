@@ -11,6 +11,7 @@ define([
     'game/constants/LocaleConstants',
     'game/constants/LevelConstants',
     'game/constants/MovementConstants',
+	'game/constants/TradeConstants',
     'game/constants/WorldCreatorConstants',
     'game/nodes/PlayerPositionNode',
     'game/nodes/PlayerLocationNode',
@@ -32,7 +33,7 @@ define([
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/EnemiesComponent'
 ], function (
-    Ash, GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, WorldCreatorConstants,
+    Ash, GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, TradeConstants, WorldCreatorConstants,
     PlayerPositionNode, PlayerLocationNode, NearestCampNode,
     VisionComponent, StaminaComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
     MovementOptionsComponent, ExcursionComponent, PositionComponent, LogMessagesComponent, CampComponent,
@@ -288,15 +289,17 @@ define([
         },
 
 		getDescription: function (entity, hasCampHere, hasCampOnLevel, hasVision, isScouted) {
+            var position = entity.get(PositionComponent).getPosition();
 			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
 			var workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var statusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
             var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
+			var localesComponent = entity.get(SectorLocalesComponent);
 			var hasEnemies = enemiesComponent.hasEnemies;
 
 			var description = "<p>";
-			description += this.getTextureDescription(hasVision, featuresComponent, statusComponent);
+			description += this.getTextureDescription(hasVision, position, featuresComponent, statusComponent, localesComponent);
 			description += this.getFunctionalDescription(hasVision, isScouted, featuresComponent, workshopComponent, hasCampHere, hasCampOnLevel);
 			description += "</p><p>";
 			description += this.getStatusDescription(hasVision, isScouted, hasEnemies, featuresComponent, passagesComponent, hasCampHere, hasCampOnLevel);
@@ -308,7 +311,7 @@ define([
 		},
 
 		// Sector type, density, repair. Sunlight.
-		getTextureDescription: function (hasVision, featuresComponent, statusComponent) {
+		getTextureDescription: function (hasVision, position, featuresComponent, statusComponent, localesComponent) {
 			var desc = TextConstants.getSectorDescription(
 				hasVision,
 				featuresComponent.sunlit,
@@ -328,6 +331,17 @@ define([
                 } else {
                     if (hasVision) desc += "";
                     else desc += "There is no <span class='hl-functionality'>light</span>. ";
+                }
+            }
+            
+            for (var i = 0; i < localesComponent.locales.length; i++) {
+                var locale = localesComponent.locales[i];
+                if (statusComponent.isLocaleScouted(i)) {
+                    if (locale.type == localeTypes.tradingpartner) {
+                        var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+                        var partner = TradeConstants.getTradePartner(campOrdinal);
+                        desc += "<span class='hl-functionality'>" + partner.name + "</span> is located here. ";
+                    }
                 }
             }
 
@@ -586,6 +600,7 @@ define([
             if (!this.playerLocationNodes.head) return;
 
 			var currentSector = this.playerLocationNodes.head.entity;
+            var position = currentSector.get(PositionComponent);
 			var sectorLocalesComponent = currentSector.get(SectorLocalesComponent);
 			var sectorFeaturesComponent = currentSector.get(SectorFeaturesComponent);
 			var sectorStatusComponent = currentSector.get(SectorStatusComponent);
@@ -593,7 +608,17 @@ define([
 			for (var i = 0; i < sectorLocalesComponent.locales.length; i++) {
 				var locale = sectorLocalesComponent.locales[i];
 				var button = "<button class='action multiline' action='scout_locale_" + locale.getCategory() + "_" + i + "'>" + TextConstants.getLocaleName(locale, sectorFeaturesComponent.stateOfRepair) + "</button>";
-				var info = "<span class='p-meta'>" + (sectorStatusComponent.isLocaleScouted(i) ? "Already scouted" : "") + "</span>";
+				var info = "<span class='p-meta'>";
+                if (sectorStatusComponent.isLocaleScouted(i)) {
+                    if (locale.type == localeTypes.tradingpartner) {
+                        var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+                        var partner = TradeConstants.getTradePartner(campOrdinal);
+                        info += "Already scouted (" + partner.name + ")";
+                    } else {
+                        info += "Already scouted";
+                    }
+                }
+                info += "</span>";
 				$("#table-out-actions-locales").append("<tr><td>" + button + "</td><td>" + info + "</td></tr>");
 			}
             GameGlobals.uiFunctions.registerActionButtonListeners("#table-out-actions-locales");
