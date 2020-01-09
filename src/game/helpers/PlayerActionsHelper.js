@@ -1243,8 +1243,10 @@ define([
 							var item = this.getItemForCraftAction(action);
 							return item.description + (item.getTotalBonus() === 0 ? "" : "<hr/>" + UIConstants.getItemBonusDescription(item, true, true));
                         case "use_item":
+                        case "use_item_fight":
                             var item = this.getItemForCraftAction(action);
                             return item.description;
+                        
                     }
                 }
 			}
@@ -1388,6 +1390,7 @@ define([
 				case "craft":
 					return ItemConstants.getItemByID(this.getActionIDParam(actionName));
                 case "use_item":
+                case "use_item_fight":
 					return ItemConstants.getItemByID(this.getActionIDParam(actionName));
 
 				default: return null;
