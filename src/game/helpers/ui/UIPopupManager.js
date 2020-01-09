@@ -42,6 +42,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             if (hasResult) {
                 var rewardDiv = GameGlobals.playerActionResultsHelper.getRewardDiv(resultVO, false);
                 $("#info-results").append(rewardDiv);
+                GameGlobals.uiFunctions.generateCallouts("#reward-div");
             }
             
             // buttons and callbacks

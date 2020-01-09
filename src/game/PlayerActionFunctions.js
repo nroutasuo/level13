@@ -490,7 +490,7 @@ define(['ash',
 			var successCallback = function () {
 				sectorStatus.scavenged = true;
 			};
-			this.handleOutActionResults("scavenge", LogConstants.MSG_ID_SCAVENGE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, successCallback);
+			this.handleOutActionResults("scavenge", LogConstants.MSG_ID_SCAVENGE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, null, successCallback);
 		},
 
 		scout: function () {
@@ -558,7 +558,7 @@ define(['ash',
 				};
 
 				var logMsgId = found ? LogConstants.MSG_ID_SCOUT_FOUND_SOMETHING : LogConstants.MSG_ID_SCOUT;
-				this.handleOutActionResults("scout", logMsgId, logMsg, logMsg, logMsg, true, successCallback);
+				this.handleOutActionResults("scout", logMsgId, logMsg, logMsg, logMsg, true, found, successCallback);
 			} else {
 				log.w("Sector already scouted.");
 			}
@@ -576,34 +576,34 @@ define(['ash',
 			localeName = localeName.split(" ")[localeName.split(" ").length - 1];
 			var baseMsg = "Scouted the " + localeName + ". ";
 			var logMsgSuccess = baseMsg;
+			var logMsgFlee = baseMsg + " Got surprised and fled.";
+			var logMsgDefeat = baseMsg + " Got surprised and beaten.";
+            
+            var tradingPartner = null;
 			if (localeVO.type === localeTypes.tradingpartner) {
 				var playerPos = this.playerPositionNodes.head.position;
 				var level = playerPos.level;
 				var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
-				var partnerName = TradeConstants.getTradePartner(campOrdinal).name;
-				logMsgSuccess += "<br/>Found a new <span class='hl-functionality'>trading partner</span>. They call this place " + partnerName + ".";
+                if (GameGlobals.gameState.foundTradingPartners.indexOf(campOrdinal) < 0) {
+	                var partnerName = TradeConstants.getTradePartner(campOrdinal).name;
+		            logMsgSuccess += "<br/>Found a new <span class='hl-functionality'>trading partner</span>. They call this place " + partnerName + ".";
+                    tradingPartner = campOrdinal;
+                } else {
+                   log.w("can't add trade partner - already found: camp ordinal " + campOrdinal);
+                }
 			}
-			var logMsgFlee = baseMsg + " Got surprised and fled.";
-			var logMsgDefeat = baseMsg + " Got surprised and beaten.";
 
 			var playerActionFunctions = this;
 			var successCallback = function () {
 				sectorStatus.localesScouted[i] = true;
-				if (localeVO.type === localeTypes.tradingpartner) {
-					var playerPos = playerActionFunctions.playerPositionNodes.head.position;
-					var level = playerPos.level;
-					var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
-                    if (GameGlobals.gameState.foundTradingPartners.indexOf(campOrdinal) < 0) {
-	                   GameGlobals.gameState.foundTradingPartners.push(campOrdinal);
-                    } else {
-                       log.w("can't add trade partner - already found: camp ordinal " + campOrdinal);
-                    }
+				if (tradingPartner) {
+                    GameGlobals.gameState.foundTradingPartners.push(tradingPartner);
 				}
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 				playerActionFunctions.save();
 			};
 
-			this.handleOutActionResults(action, LogConstants.MSG_ID_SCOUT_LOCALE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, successCallback);
+			this.handleOutActionResults(action, LogConstants.MSG_ID_SCOUT_LOCALE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, tradingPartner != null, successCallback);
 		},
 
 		useSpring: function () {
@@ -616,7 +616,7 @@ define(['ash',
 			var logMsgFlee = logMsgFailBase + "Fled empty-handed.";
 			var logMsgDefeat = logMsgFailBase + "Lost the fight.";
 
-			this.handleOutActionResults("use_spring", LogConstants.MSG_ID_USE_SPRING, logMsgSuccess, logMsgFlee, true, logMsgDefeat);
+			this.handleOutActionResults("use_spring", LogConstants.MSG_ID_USE_SPRING, logMsgSuccess, logMsgFlee, true, false, logMsgDefeat);
 		},
 
 		clearWorkshop: function () {
@@ -632,7 +632,7 @@ define(['ash',
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 			};
 
-			this.handleOutActionResults(action, LogConstants.MSG_ID_WORKSHOP_CLEARED, logMsgSuccess, logMsgFlee, logMsgDefeat, true, successCallback);
+			this.handleOutActionResults(action, LogConstants.MSG_ID_WORKSHOP_CLEARED, logMsgSuccess, logMsgFlee, logMsgDefeat, true, true, successCallback);
 		},
 
 		clearWaste: function (direction) {
@@ -649,7 +649,7 @@ define(['ash',
                 GlobalSignals.movementBlockerClearedSignal.dispatch();
 			};
 
-			this.handleOutActionResults("clear_waste", LogConstants.MSG_ID_CLEAR_WASTE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, successCallback);
+			this.handleOutActionResults("clear_waste", LogConstants.MSG_ID_CLEAR_WASTE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, false, successCallback);
 		},
 
 		bridgeGap: function (sectorPos) {
@@ -699,7 +699,7 @@ define(['ash',
 					var logMsgSuccess = "Found a park bench to sleep on. Barely feel rested.";
 					var logMsgFlee = "Tried to rest but got attacked.";
 					var logMsgDefeat = logMsgFlee;
-					sys.handleOutActionResults("nap", LogConstants.MSG_ID_NAP, logMsgSuccess, logMsgFlee, logMsgDefeat, false,
+					sys.handleOutActionResults("nap", LogConstants.MSG_ID_NAP, logMsgSuccess, logMsgFlee, logMsgDefeat, false, false,
 						function () {
 							sys.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_NAP;
 						},
@@ -708,13 +708,13 @@ define(['ash',
 			});
 		},
 
-		handleOutActionResults: function (action, logMsgId, logMsgSuccess, logMsgFlee, logMsgDefeat, showResultPopup, successCallback, failCallback) {
+		handleOutActionResults: function (action, logMsgId, logMsgSuccess, logMsgFlee, logMsgDefeat, showResultPopup, hasCustomReward, successCallback, failCallback) {
             this.currentAction = action;
 			var playerActionFunctions = this;
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
             showResultPopup = showResultPopup && !GameGlobals.gameState.uiStatus.isHidden;
 			GameGlobals.fightHelper.handleRandomEncounter(action, function () {
-				var rewards = GameGlobals.playerActionResultsHelper.getResultVOByAction(action);
+				var rewards = GameGlobals.playerActionResultsHelper.getResultVOByAction(action, hasCustomReward);
 				var sector = playerActionFunctions.playerStatsNodes.head.entity;
 				sector.add(new PlayerActionResultComponent(rewards));
 				var resultPopupCallback = function (isTakeAll) {

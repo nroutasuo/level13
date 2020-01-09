@@ -188,7 +188,7 @@ define(['ash',
 		getBlueprintPieceLI: function (upgradeId) {
 			var upgradeDefinition = UpgradeConstants.upgradeDefinitions[upgradeId];
 			var name = upgradeDefinition.name;
-			return "<li><div class='info-callout-target info-callout-target-small' description='A piece of forgotten technology (" + name + ")'>" + this.getBlueprintPieceIcon(upgradeId) + " blueprint</li>";
+			return "<li><div class='info-callout-target' description='Blueprint (" + name + ")'>" + this.getBlueprintPieceIcon(upgradeId) + " blueprint</li>";
 		},
 
 		getResourceList: function (resourceVO) {

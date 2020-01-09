@@ -89,7 +89,7 @@ define([
             this.campNodes = engine.getNodeList(CampNode);
         },
 
-        getResultVOByAction: function (action) {
+        getResultVOByAction: function (action, hasCustomReward) {
             var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 
             var resultVO;
@@ -128,6 +128,7 @@ define([
                 resultVO.lostItems = this.getLostItems(action, true);
             }
             resultVO.gainedInjuries = this.getResultInjuries(PlayerActionConstants.getInjuryProbability(action, playerVision));
+            resultVO.hasCustomReward = hasCustomReward;
 
             return resultVO;
         },
@@ -469,7 +470,7 @@ define([
             var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
             var isInitialSelectionValid = bagComponent.usedCapacity <= bagComponent.totalCapacity;
 
-			var div = "<div>";
+			var div = "<div id='reward-div'>";
 
             var gainedhtml = "";
             gainedhtml += "<ul class='resultlist resultlist-positive'>";
@@ -497,7 +498,9 @@ define([
 			if (hasGainedStuff) div += gainedhtml;
 
 			if (resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.lostCurrency > 0) {
+                var lostMsg = resultVO.lostItems.length > 1 ? "Lost some items." : resultVO.lostItems.length > 0 ? "Lost an item." : ""
 				var losthtml = "<div id='resultlist-loststuff' class='infobox'>";
+				var losthtml = "<span class='warning'>" + lostMsg + "</span>";
 				losthtml += "<div id='resultlist-loststuff-lost' class='infobox inventorybox inventorybox-negative'>";
                 losthtml += "<ul></ul>";
 				losthtml += "</div>"
@@ -521,14 +524,16 @@ define([
                 baghtml += "<div id='inventory-popup-bar' class='progress-wrap progress' style='margin-top: 10px'><div class='progress-bar progress'/><span class='progress-label progress'>?/?</span></div>";
 				baghtml += "</div>"
 				div += baghtml;
-
 			}
 
 			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0;
 			var hasLostStuff = resultVO.lostResources.getTotal() > 0 || resultVO.lostItems.length > 0 || resultVO.lostFollowers.length > 0 || resultVO.gainedInjuries.length > 0 || resultVO.lostCurrency > 0;
+            
 			if (!hasGainedStuff && !hasLostStuff) {
 				if (isFight) div += "<p class='p-meta'>Nothing left behind.</p>"
                 else if (resultVO.action === "despair") div += "";
+                else if (resultVO.action === "clear_workshop") div += "";
+                else if (resultVO.hasCustomReward) div += "";
 				else div += "<p class='p-meta'>Didn't find anything useful.</p>";
 			}
             
@@ -769,7 +774,7 @@ define([
                     log.w("No reward items defined for type: [" + itemType + "]");
                     break;
             }
-
+            
             var validItems = [];
             var rarityThreshold = 1 + 9 * efficiency * Math.random();
             for (var i = 0; i < items.length; i++) {
@@ -780,12 +785,12 @@ define([
                 if (items[i].requiredCampOrdinal > campOrdinal)
                     continue;
                 if (ItemConstants.becomesObsolete(items[i].type)) {
-                if (items[i].requiredCampOrdinal < minCampOrdinal)
-                    continue;
+                    if (items[i].requiredCampOrdinal < minCampOrdinal)
+                        continue;
                 }
                 validItems.push(items[i]);
             }
-
+            
             if (validItems.length === 0) {
                 log.w("No valid reward items found for type: [" + itemType + "]");
                 return null;

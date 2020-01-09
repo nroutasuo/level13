@@ -347,6 +347,7 @@ define([
                 var levelVO = this.world.getLevel(level);
                 var sectorVO = WorldCreatorRandom.randomSector(seed - 9393 + i * i, this.world, levelVO, false);
                 var locale = new LocaleVO(localeTypes.tradingpartner, true, false);
+                log.i("trade partner at " + sectorVO.position)
                 sectorVO.locales.push(locale);
                 levelVO.numLocales++;
             }

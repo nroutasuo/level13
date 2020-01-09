@@ -665,12 +665,13 @@ body.dark div.info-callout {
   min-width: 50%;
   max-width: 100%;
 }
-body.dark div.info-callout-target {
+body.dark .info-callout-target {
   border-width: 0px;
   border-style: solid;
   padding: 0px;
   margin: 0px;
   cursor: help;
+  display: inline-block;
 }
 body.dark div.info-callout-content {
   width: 100%;
@@ -1771,6 +1772,7 @@ body.dark #camp-overview tr {
 body.dark #resultlist-inventorymanagement-found ul li,
 body.dark #resultlist-loststuff-lost ul li {
   border-width: 0px;
+  padding-bottom: 5px;
 }
 body.dark ul.resultlist li {
   margin: 0px 3px;
@@ -2468,12 +2470,13 @@ body.sunlit div.info-callout {
   min-width: 50%;
   max-width: 100%;
 }
-body.sunlit div.info-callout-target {
+body.sunlit .info-callout-target {
   border-width: 0px;
   border-style: solid;
   padding: 0px;
   margin: 0px;
   cursor: help;
+  display: inline-block;
 }
 body.sunlit div.info-callout-content {
   width: 100%;
@@ -3574,6 +3577,7 @@ body.sunlit #camp-overview tr {
 body.sunlit #resultlist-inventorymanagement-found ul li,
 body.sunlit #resultlist-loststuff-lost ul li {
   border-width: 0px;
+  padding-bottom: 5px;
 }
 body.sunlit ul.resultlist li {
   margin: 0px 3px;
