@@ -187,7 +187,7 @@ define([
                     msg += "You can still explore this level and find many new things, but you won't be able to progress further down.";
                     msg += "<br/><br/>"
                     msg += "<span class='p-meta'>Thank you for playing this far! The developer would love to hear your feedback. You can use any of these channels:</span>";
-    				msg += "<p>" + GameConstants.feedbackLinksHTML + "</p>";
+    				msg += "<p>" + GameConstants.getFeedbackLinksHTML() + "</p>";
                     GameGlobals.uiFunctions.showInfoPopup(
                         "Last level",
                         msg,

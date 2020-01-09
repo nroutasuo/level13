@@ -8,7 +8,17 @@ define( function () {
         isAutosaveEnabled: true,
         
         gameURL: "https://nroutasuo.github.io/level13",
-        feedbackLinksHTML: "<a href='https://github.com/nroutasuo/level13' target='github'>github</a> | <a href='https://www.reddit.com/r/level13' target='reddit'>reddit</a> | <a href='https://sayat.me/level13' target='sayatme'>sayat.me</a>",
+        
+        getFeedbackLinksHTML: function () {
+            var result;
+            var a = [ "level13game", "gmail.com" ];
+            result += "<a href='https://github.com/nroutasuo/level13' target='github'>github</a>";
+            result += " | ";
+            result += "<a href='https://www.reddit.com/r/level13' target='reddit'>reddit</a>";
+            result += " | ";
+            result += "<a href='mailto:" + a.join("@") + "' rel='noopener noreferrer'>email</a>";
+            return result;
+        }
 
     };
     return GameConstants;
