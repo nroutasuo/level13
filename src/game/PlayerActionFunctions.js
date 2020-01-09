@@ -515,11 +515,17 @@ define(['ash',
 					found = true;
 					logMsg += "<br/>Found " + TextConstants.addArticle(TextConstants.getSpringName(featuresComponent)) + ".";
 				}
+                
 				var workshopComponent = sector.get(WorkshopComponent);
 				if (workshopComponent) {
 					found = true;
 					logMsg += "<br/>Found " + TextConstants.addArticle(TextConstants.getWorkshopName(workshopComponent.resource));
 				}
+                
+                if (featuresComponent.campable) {
+                    found = true;
+                    logMsg += "<br/>This seems like a good place for a camp.";
+                }
 
 				var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
 				if (passagesComponent.passageUp) {
