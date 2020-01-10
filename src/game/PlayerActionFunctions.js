@@ -1534,6 +1534,7 @@ define(['ash',
 		},
 
 		setNearestCampName: function (newName) {
+            var newName = newName.substring(0, 20);
 			var campSector = this.nearestCampNodes.head.entity;
 			if (campSector) {
 				campSector.get(CampComponent).campName = newName;
