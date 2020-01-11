@@ -872,6 +872,9 @@ define([
 
             if (playerItems.length <= 0)
                 return lostItems;
+                
+            if (GameGlobals.gameState.unlockedFeatures.camp)
+                return false;
 
             // make list with duplicates based on probabilities
             // ignore ingredients here, they're handled below
