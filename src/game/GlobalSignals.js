@@ -5,6 +5,7 @@ define(['ash',], function (Ash) {
         exceptionCallback: null,
 
         // ui events
+        pageSetUpSignal:new Ash.Signals.Signal(),
         gameShownSignal: new Ash.Signals.Signal(),
         tabChangedSignal: new Ash.Signals.Signal(),
         actionButtonClickedSignal: new Ash.Signals.Signal(),

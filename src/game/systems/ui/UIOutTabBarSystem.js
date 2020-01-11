@@ -48,6 +48,7 @@ define([
             GlobalSignals.add(this, GlobalSignals.featureUnlockedSignal, this.updateTabVisibility);
             GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.updateTabVisibility);
             GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.updateTabVisibility);
+            GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.updateTabVisibility);
             
 			this.updateTabVisibility();
         },

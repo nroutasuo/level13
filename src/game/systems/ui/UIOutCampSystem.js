@@ -161,13 +161,9 @@
             if (isActive) this.lastShownPopulation = this.currentPopulation;
 
             if (!isActive) return;
-
-            var showPopulation = campComponent.population > 0 || GameGlobals.gameState.numCamps > 1;
-            GameGlobals.uiFunctions.toggle("#in-population", showPopulation);
-            if (!showPopulation) return;
-
-            var reputation = this.playerLocationNodes.head.entity.get(ReputationComponent).value;
+            
             var maxPopulation = this.getCampMaxPopulation();
+            var reputation = this.playerLocationNodes.head.entity.get(ReputationComponent).value;
             this.updatePopulationChangeDisplay(campComponent, maxPopulation, reputation);
         },
 
@@ -225,7 +221,8 @@
                 $("#in-population-bar-next").data("animation-length", 500);
             }
 
-            GameGlobals.uiFunctions.slideToggleIf("#in-population-reputation", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
+            GameGlobals.uiFunctions.slideToggleIf("#in-population h3", null, maxPopulation > 0 || campComponent.population > 0 || GameGlobals.gameState.numCamps > 1, 200, 200);
+            GameGlobals.uiFunctions.slideToggleIf("#in-population-reputation", null, maxPopulation > 0 && !isPopulationMaxed, 200, 200);
             GameGlobals.uiFunctions.slideToggleIf("#in-population-bar-next", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
             GameGlobals.uiFunctions.slideToggleIf("#in-population-next", null, campComponent.population > 0 && !isPopulationStill, 200, 200);
             GameGlobals.uiFunctions.slideToggleIf("#in-population-status", null, campComponent.population >= 1, 200, 200);

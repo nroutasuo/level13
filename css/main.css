@@ -330,6 +330,10 @@ body.dark .hidden {
 body.dark .full-width {
   width: 100%;
 }
+body.dark .centered {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
 body.dark .strike-through,
 body.dark .strike-through p {
   text-decoration: line-through;
@@ -953,7 +957,7 @@ body.dark .progress {
 }
 body.dark .progress-wrap {
   background-color: #666;
-  margin: 6px auto;
+  margin: 2px 0;
   border: 0px;
   overflow: hidden;
   position: relative;
@@ -1073,7 +1077,7 @@ body.dark .buttonbox {
   margin: 6px 0px;
 }
 body.dark .infobox {
-  padding: 5px 0px 10px 0px;
+  padding: 0px 0px 5px 0px;
 }
 body.dark .infobox-scrollable {
   border: 1px solid #3a3a3a;
@@ -2147,6 +2151,10 @@ body.sunlit .hidden {
 body.sunlit .full-width {
   width: 100%;
 }
+body.sunlit .centered {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
 body.sunlit .strike-through,
 body.sunlit .strike-through p {
   text-decoration: line-through;
@@ -2770,7 +2778,7 @@ body.sunlit .progress {
 }
 body.sunlit .progress-wrap {
   background-color: #999;
-  margin: 6px auto;
+  margin: 2px 0;
   border: 0px;
   overflow: hidden;
   position: relative;
@@ -2890,7 +2898,7 @@ body.sunlit .buttonbox {
   margin: 6px 0px;
 }
 body.sunlit .infobox {
-  padding: 5px 0px 10px 0px;
+  padding: 0px 0px 5px 0px;
 }
 body.sunlit .infobox-scrollable {
   border: 1px solid #aaa;

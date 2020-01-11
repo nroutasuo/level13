@@ -170,6 +170,7 @@ define([
             this.initializePlugins(plugins);
 
             GameGlobals.uiFunctions.init();
+            GlobalSignals.pageSetUpSignal.dispatch();
             
             this.GameFlowLogger = new GameFlowLogger();
             ExceptionHandler.exceptionCallback = function (ex) { game.handleException(ex) };

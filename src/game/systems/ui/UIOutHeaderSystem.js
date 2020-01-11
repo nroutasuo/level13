@@ -179,6 +179,7 @@ define([
             this.elements.valHealth.text(playerStatsNode.stamina.health);
             this.updateStatsCallout("Determines maximum stamina", "stats-health", null);
 
+            GameGlobals.uiFunctions.toggle($("#stats-stamina"), GameGlobals.gameState.unlockedFeatures.scavenge);
 			this.elements.valStamina.text(UIConstants.roundValue(playerStamina, true, false) + " / " + maxStamina);
 			this.updateStatsCallout("Required for exploration", "stats-stamina", playerStatsNode.stamina.accSources);
             var isResting = isResting;

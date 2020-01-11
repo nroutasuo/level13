@@ -35,6 +35,7 @@ define([
 			this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged)
+            GlobalSignals.add(this, GlobalSignals.pageSetUpSignal, this.setupElements)
 			
 			this.engine  = engine;
 		},
@@ -57,6 +58,10 @@ define([
                     "</tr>"
                 );
             }
+        },
+        
+        setupElements: function () {
+            this.registerStepperListeners("#embark-resources");
         },
 		
 		initLeaveCampRes: function () {
@@ -178,6 +183,8 @@ define([
                 else if (isFoodDecreasing && selectedFood > 0 && remainingFood <= campPopulation) {
                     warning = "There won't be much food left in the camp.";
                 }
+            } else if (selectedWater < 1 || selectedFood < 1) {
+                warning = "Won't get far without food and water.";
             }
             $("#embark-warning").text(warning);
             GameGlobals.uiFunctions.toggle("#embark-warning", warning.length > 0);

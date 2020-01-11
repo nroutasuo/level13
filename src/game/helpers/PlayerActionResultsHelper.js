@@ -215,7 +215,7 @@ define([
 		getUseSpringRewards: function () {
 			var rewards = new ResultVO("use_spring");
             var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
-            var water = Math.min(bagComponent.totalCapacity -  bagComponent.usedCapacity, 30);
+            var water = Math.min(bagComponent.totalCapacity - bagComponent.usedCapacity, 30);
 			rewards.gainedResources = new ResourcesVO();
 			rewards.gainedResources.water = water;
 			return rewards;
@@ -521,7 +521,7 @@ define([
                 baghtml += "<p class='msg-empty p-meta'>Your " + (hasBag ? "bag is" : "pockets are") + " empty.</p>";
 				baghtml += "</div>"
 
-                baghtml += "<div id='inventory-popup-bar' class='progress-wrap progress' style='margin-top: 10px'><div class='progress-bar progress'/><span class='progress-label progress'>?/?</span></div>";
+                baghtml += "<div id='inventory-popup-bar' class='progress-wrap progress centered' style='margin-top: 10px'><div class='progress-bar progress'/><span class='progress-label progress'>?/?</span></div>";
 				baghtml += "</div>"
 				div += baghtml;
 			}
@@ -807,7 +807,9 @@ define([
                 if (currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) <= 0) {
                     var res = this.playerResourcesNodes.head.resources;
                     if (res.resources.getTotal() > 2) {
-                        if (Math.random() < 0.5) {
+                        var rand = Math.random();
+                        var threshold = GameGlobals.gameState.numCamps > 1 ? 0.25 : 0.75;
+                        if (rand < threshold) {
                             return ItemConstants.getBag(1).clone();
                         }
                     }

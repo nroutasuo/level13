@@ -52,7 +52,7 @@ define([
                 sys.lastUpdatePosition = null;
             });
             this.playerLocationNodes.nodeAdded.addOnce(function (node) {
-                sys.handleNewSector(node.entity);
+                sys.handleNewSector(node.entity, false);
             });
 
             GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
@@ -145,7 +145,7 @@ define([
                     this.playerLocationNodes.head.entity.remove(CurrentPlayerLocationComponent);
                 sector.add(new CurrentPlayerLocationComponent());
                 if (!sector.has(VisitedComponent)) {
-                    this.handleNewSector(sector, sectorPos);
+                    this.handleNewSector(sector, true);
                 }
                 GlobalSignals.playerMovedSignal.dispatch(playerPos);
                 GameGlobals.uiFunctions.onPlayerMoved();
@@ -207,7 +207,7 @@ define([
             }
         },
 
-		handleNewSector: function (sectorEntity) {
+		handleNewSector: function (sectorEntity, isNew) {
 			sectorEntity.add(new VisitedComponent());
 			sectorEntity.add(new RevealedComponent());
 
@@ -222,8 +222,10 @@ define([
                 }
             }
 
-            GameGlobals.gameState.numVisitedSectors++;
-			GameGlobals.gameState.unlockedFeatures.sectors = true;
+            if (isNew) {
+                GameGlobals.gameState.numVisitedSectors++;
+    			GameGlobals.gameState.unlockedFeatures.sectors = true;
+            }
 		},
 
         handleInvalidPosition: function () {
