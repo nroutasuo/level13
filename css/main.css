@@ -858,7 +858,7 @@ body.dark .horizontal-select-option.selected {
 }
 body.dark .stats-indicator {
   display: block;
-  margin: 0 10px 0 0;
+  margin: 0 2px 0 0;
   white-space: nowrap;
 }
 body.dark .stats-indicator span {
@@ -1754,6 +1754,18 @@ body.dark #incoming-caravan-popup-multiplier {
   justify-content: flex-end;
   font-size: 85%;
   margin-bottom: 1em;
+}
+body.dark .camp-overview-production,
+body.dark .camp-overview-stats {
+  font-size: 85%;
+}
+body.dark .camp-overview-name {
+  max-width: 5em;
+  white-space: nowrap;
+  overflow-x: hidden;
+}
+body.dark .camp-overview-btn {
+  text-align: center;
 }
 body.dark .camp-overview-level-container {
   border-radius: 1.75em;
@@ -2663,7 +2675,7 @@ body.sunlit .horizontal-select-option.selected {
 }
 body.sunlit .stats-indicator {
   display: block;
-  margin: 0 10px 0 0;
+  margin: 0 2px 0 0;
   white-space: nowrap;
 }
 body.sunlit .stats-indicator span {
@@ -3559,6 +3571,18 @@ body.sunlit #incoming-caravan-popup-multiplier {
   justify-content: flex-end;
   font-size: 85%;
   margin-bottom: 1em;
+}
+body.sunlit .camp-overview-production,
+body.sunlit .camp-overview-stats {
+  font-size: 85%;
+}
+body.sunlit .camp-overview-name {
+  max-width: 5em;
+  white-space: nowrap;
+  overflow-x: hidden;
+}
+body.sunlit .camp-overview-btn {
+  text-align: center;
 }
 body.sunlit .camp-overview-level-container {
   border-radius: 1.75em;

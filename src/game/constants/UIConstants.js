@@ -490,14 +490,15 @@ define(['ash',
 			return "Y" + year + "-N" + week;
 		},
 
-		roundValue: function (value, showDecimalsWhenSmall, showDecimalsAlways) {
-			var decimalDivisor = 0;
-			if (showDecimalsWhenSmall && value <= 10) decimalDivisor = 100;
-			if (showDecimalsAlways) decimalDivisor = 100;
+		roundValue: function (value, showDecimalsWhenSmall, showDecimalsAlways, decimalDivisor) {
+            decimalDivisor = decimalDivisor || 100;
+			var divisor = 0;
+			if (showDecimalsWhenSmall && value <= 10) divisor = decimalDivisor;
+			if (showDecimalsAlways) divisor = decimalDivisor;
 
-			if (value % 1 === 0 || decimalDivisor <= 0) return Math.round(value);
-
-			return Math.round(value * decimalDivisor) / decimalDivisor;
+			if (value % 1 === 0 || divisor <= 0) return Math.round(value);
+            
+			return Math.round(value * divisor) / divisor;
 		},
 
 		getDisplayValue: function (value) {

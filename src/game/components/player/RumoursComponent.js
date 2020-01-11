@@ -7,6 +7,7 @@ define(['ash'], function (Ash) {
             this.cap = 100;
             this.isAccumulating = false;
             this.accumulation = 0;
+            this.accumulationPerCamp = {};
             this.accSources = [];
             this.rumours = [];
         },

@@ -537,6 +537,7 @@ define([
 		},
 
         updateLocation: function () {
+            if (!this.currentLocationNodes.head) return;
             var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
 			var inCamp = playerPosition.inCamp;
 

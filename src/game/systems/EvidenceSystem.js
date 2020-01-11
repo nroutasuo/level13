@@ -61,9 +61,10 @@ define([
 					var accSpeedCamp = accLibrary + accScientists;
 					accSpeed += accSpeedCamp;
 					
-					evidenceComponent.addChange("Libraries", accLibrary);
-					evidenceComponent.addChange("Scientists", accScientists);
+					evidenceComponent.addChange("Libraries", accLibrary, campNode.position.level);
+					evidenceComponent.addChange("Scientists", accScientists, campNode.position.level);
 					evidenceComponent.accumulation += accSpeed;
+                    evidenceComponent.accumulationPerCamp[campNode.position.level] = accSpeedCamp;
 				}
 				
 				evidenceComponent.value += time * accSpeed;

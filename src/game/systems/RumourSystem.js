@@ -84,6 +84,7 @@ define([
 					if (marketFactor > 1) rumoursComponent.addChange("Markets", accSpeedMarket);
 					if (innFactor > 1) rumoursComponent.addChange("Inns", accSpeedInn);
 					rumoursComponent.accumulation += accSpeed;
+                    rumoursComponent.accumulationPerCamp[campNode.position.level] = accSpeedCamp;
 				}
 				
 				rumoursComponent.value += time * accSpeed;

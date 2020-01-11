@@ -4,8 +4,11 @@ define([
     'game/GlobalSignals',
     'game/constants/UIConstants',
     'game/constants/CampConstants',
+    'game/constants/OccurrenceConstants',
     'game/nodes/sector/CampNode',
     'game/nodes/PlayerPositionNode',
+	'game/nodes/player/PlayerStatsNode',
+    'game/nodes/tribe/TribeUpgradesNode',
     'game/components/common/PositionComponent',
     'game/components/common/ResourcesComponent',
     'game/components/common/ResourceAccumulationComponent',
@@ -14,8 +17,8 @@ define([
     'game/components/sector/events/TraderComponent',
     'game/components/sector/events/RaidComponent'
 ], function (
-    Ash, GameGlobals, GlobalSignals, UIConstants, CampConstants,
-    CampNode, PlayerPositionNode,
+    Ash, GameGlobals, GlobalSignals, UIConstants, CampConstants, OccurrenceConstants,
+    CampNode, PlayerPositionNode, PlayerStatsNode, TribeUpgradesNode,
     PositionComponent, ResourcesComponent, ResourceAccumulationComponent, LevelComponent, SectorImprovementsComponent, TraderComponent, RaidComponent
 ) {
     var UIOutTribeSystem = Ash.System.extend({
@@ -25,6 +28,8 @@ define([
         campNodes: null,
         sortedCampNodes: null,
 		playerPosNodes: null,
+        playerStatsNodes: null,
+        tribeUpgradesNodes: null,
 
         campNotificationTypes: {
             NONE: "none",
@@ -42,8 +47,10 @@ define([
 
         addToEngine: function (engine) {
 			this.engine  = engine;
-            this.campNodes = engine.getNodeList( CampNode );
+            this.campNodes = engine.getNodeList(CampNode);
             this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
+            this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
+            this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
             GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.onCampBuilt);
             GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onTabChanged);
@@ -192,15 +199,23 @@ define([
             rowHTML += "<td class='camp-overview-name'>" + camp.campName + "</td>";
             rowHTML += "<td class='camp-overview-population list-amount'><span class='value'></span><span class='change-indicator'></span></td>";
             rowHTML += "<td class='camp-overview-reputation list-amount'><span class='value'></span><span class='change-indicator'></span></td>";
+            rowHTML += "<td class='camp-overview-raid list-amount'><span class='value'></span></span></td>";
             rowHTML += "<td class='camp-overview-levelpop list-amount'></td>";
-            rowHTML += "<td class='camp-overview-improvements list-amount'>";
-            rowHTML += "</span></td>";
             rowHTML += "<td class='camp-overview-storage list-amount'></td>";
             rowHTML += "<td class='camp-overview-production'>";
             for(var key in resourceNames) {
                 var name = resourceNames[key];
-                rowHTML += UIConstants.createResourceIndicator(name, false, rowID+"-"+name, false, true) + " ";
+                rowHTML += UIConstants.createResourceIndicator(name, false, rowID + "-" + name, false, true) + " ";
             }
+            rowHTML += "</td>";
+            
+            rowHTML += "<td class='camp-overview-stats'>";
+            rowHTML += "<span class='camp-overview-stats-evidence info-callout-target info-callout-target-small'>";
+            rowHTML += "<span class='icon'><img src='img/stat-evidence.png' alt='evidence'/></span><span class='change-indicator'></span> ";
+            rowHTML += "</span> ";
+            rowHTML += "<span class='camp-overview-stats-rumours info-callout-target info-callout-target-small'>";
+            rowHTML += "<span class='icon'><img src='img/stat-rumours.png' alt='rumours'/><span class='change-indicator'></span> ";
+            rowHTML += "</span>";
             rowHTML += "</td>";
 
             rowHTML += "<td class='camp-overview-btn'><button class='btn-mini action action-move' id='" + btnID + "' action='" + btnAction + "'>Go</button></td>";
@@ -246,12 +261,16 @@ define([
             $("#camp-overview tr#" + rowID + " .camp-overview-reputation .value").text(UIConstants.roundValue(reputationComponent.value, true, true) + "/" + UIConstants.roundValue(reputationComponent.targetValue, true, true));
             $("#camp-overview tr#" + rowID + " .camp-overview-reputation .value").toggleClass("warning", reputationComponent.targetValue < 1);
             this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-reputation .change-indicator"), reputationComponent.accumulation);
+            
+			var soldiers = camp.assignedWorkers.soldier;
+            var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
+			var raidDanger = OccurrenceConstants.getRaidDanger(improvements, soldiers, soldierLevel);
+            var raidWarning = raidDanger > CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
+            $("#camp-overview tr#" + rowID + " .camp-overview-raid .value").text(UIConstants.roundValue(raidDanger * 100) + "%");
+            $("#camp-overview tr#" + rowID + " .camp-overview-raid .value").toggleClass("warning", raidWarning);
 
             var levelVO = GameGlobals.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent).levelVO;
 			$("#camp-overview tr#" + rowID + " .camp-overview-levelpop").text(levelVO.populationGrowthFactor * 100 + "%");
-
-			var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
-			$("#camp-overview tr#" + rowID + " .camp-overview-improvements").text(hasTradePost ? "X" : "-");
 
             // TODO updateResourceIndicatorCallout is a performance bottleneck
 			var resources = node.entity.get(ResourcesComponent);
@@ -275,8 +294,25 @@ define([
 					amount > 0 || Math.abs(change) > 0.001);
 				UIConstants.updateResourceIndicatorCallout("#" + rowID+"-"+name, resourceAcc.getSources(name));
 			}
-
-			$("#camp-overview tr#" + rowID + " .camp-overview-storage").text(resources.storageCapacity);
+            
+			var evidenceComponent = this.playerStatsNodes.head.evidence;
+            var evidenceChange = evidenceComponent.accumulationPerCamp[level] || 0;
+            GameGlobals.uiFunctions.toggle($("#camp-overview tr#" + rowID + " .camp-overview-stats-evidence"), evidenceChange > 0);
+            this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-stats-evidence .change-indicator"), evidenceChange);
+            UIConstants.updateCalloutContent("#camp-overview tr#" + rowID + " .camp-overview-stats-evidence", "evidence: " + UIConstants.roundValue(evidenceChange, true, true, 1000), true);
+            
+			var rumoursComponent = this.playerStatsNodes.head.rumours;
+            var rumoursChange = rumoursComponent.accumulationPerCamp[level] || 0;
+            GameGlobals.uiFunctions.toggle($("#camp-overview tr#" + rowID + " .camp-overview-stats-rumours"), rumoursChange > 0);
+            this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-stats-rumours .change-indicator"), rumoursChange);
+            UIConstants.updateCalloutContent("#camp-overview tr#" + rowID + " .camp-overview-stats-rumours", "rumours: " + UIConstants.roundValue(rumoursChange, true, true, 1000), true);
+            
+			var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
+            var storageText = resources.storageCapacity;
+            if (!hasTradePost) {
+                storageText = "(" + resources.storageCapacity + ")";
+            }
+			$("#camp-overview tr#" + rowID + " .camp-overview-storage").text(storageText);
         },
 
         getAlertDescription: function (notificationType) {

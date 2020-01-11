@@ -7,14 +7,15 @@ define(['ash'], function (Ash) {
             this.cap = 100;
             this.isAccumulating = false;
             this.accumulation = 0;
+            this.accumulationPerCamp = {};
             this.accSources = [];
             this.evidence = [];
         },
 
-        addChange: function(source, amount) {
+        addChange: function (source, amount, level) {
             if (amount == 0) return;
 
-	    for (var i = 0; i < this.accSources.length; i++) {
+    	    for (var i = 0; i < this.accSources.length; i++) {
                 var change = this.accSources[i];
                 if (change.source == source) {
                     change.amount += amount;
