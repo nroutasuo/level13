@@ -616,7 +616,7 @@ define(['ash',
 			var logMsgFlee = logMsgFailBase + "Fled empty-handed.";
 			var logMsgDefeat = logMsgFailBase + "Lost the fight.";
 
-			this.handleOutActionResults("use_spring", LogConstants.MSG_ID_USE_SPRING, logMsgSuccess, logMsgFlee, true, false, logMsgDefeat);
+			this.handleOutActionResults("use_spring", LogConstants.MSG_ID_USE_SPRING, logMsgSuccess, logMsgFlee, logMsgDefeat, true, false);
 		},
 
 		clearWorkshop: function () {
