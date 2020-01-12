@@ -230,7 +230,7 @@ define([
                 if (item.equipped) continue;
                 if (item.type === ItemConstants.itemTypes.bag) continue;
                 if (item.type === ItemConstants.itemTypes.uniqueEquipment) continue;
-                if (rewards.lostItems.indexOf(item) >= 0) continue;
+                if (rewards.lostItems && rewards.lostItems.indexOf(item) >= 0) continue;
                 if (rewards.discardedItems.indexOf(item) < 0) {
                     countKeptItem(item);
                 } else {

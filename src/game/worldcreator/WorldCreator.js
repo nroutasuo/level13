@@ -1380,6 +1380,8 @@ define([
                     if (value < minHazardCold) value = minHazardCold;
                     if (value > 10) {
                         value = Math.floor(value/5)*5;
+                    } else {
+                        value = Math.floor(value);
                     }
                     if (value > maxHazardCold) value = maxHazardCold;
                     sectorVO.hazards.cold = value;

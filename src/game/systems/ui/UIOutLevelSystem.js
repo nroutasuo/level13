@@ -254,10 +254,9 @@ define([
             var storedWater = collectorWater.storedResources.getResource(resourceNames.water);
             var lowFood = GameGlobals.resourcesHelper.getCurrentStorage().resources.food + storedFood < Math.min(costToCamp.resource_food, 5);
             var lowWater = GameGlobals.resourcesHelper.getCurrentStorage().resources.water + storedWater < Math.min(costToCamp.resource_water, 5);
-            var lowSupplies = (lowFood || lowWater);
 
             var blockedByTutorial = !hasFirstCamp && staminaComponent.stamina > 15;
-            var showNap = (lowStamina || lowSupplies) && !blockedBySupplies && !blockedByTutorial;
+            var showNap = (lowStamina || (lowWater && hasCollectibleWater) || (lowFood && hasCollectibleFood)) && !blockedBySupplies && !blockedByTutorial;
             GameGlobals.uiFunctions.toggle(this.elements.btnNap, showNap);
         },
 
