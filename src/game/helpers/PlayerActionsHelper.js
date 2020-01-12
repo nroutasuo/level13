@@ -60,7 +60,7 @@ define([
         tribeUpgradesNodes: null,
         nearestCampNodes: null,
 
-        cache: { reqs: {} },
+        cache: { reqs: {}, baseActionID: {} },
 
 		constructor: function (engine) {
 			this.engine = engine;
@@ -1255,32 +1255,37 @@ define([
 
 		getBaseActionID: function (action) {
 			if (!action) return action;
-			if (action == "savenge") return action;
-			if (action == "scout") return action;
-			if (action.indexOf("build_in_") >= 0) return action;
-			if (action.indexOf("scout_locale_i") >= 0) return "scout_locale_i";
-			if (action.indexOf("scout_locale_u") >= 0) return "scout_locale_u";
-			if (action.indexOf("craft_") >= 0) return "craft";
-			if (action.indexOf("discard_") >= 0) return "discard";
-			if (action.indexOf("unequip_") >= 0) return "unequip";
-			if (action.indexOf("equip_") >= 0) return "equip";
-            if (action.indexOf("use_item_fight") >= 0) return "use_item_fight";
-            if (action.indexOf("use_item") >= 0) return "use_item";
-			if (action.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
-			if (action.indexOf("create_blueprint_") >= 0) return "create_blueprint";
-			if (action.indexOf("clear_waste_") >= 0) return "clear_waste";
-			if (action.indexOf("clear_debris_") >= 0) return "clear_debris";
-			if (action.indexOf("fight_gang_") >= 0) return "fight_gang";
-			if (action.indexOf("send_caravan_") >= 0) return "send_caravan";
-            if (action.indexOf("use_in_inn_select_") >= 0) return "use_in_inn_select";
-            if (action.indexOf("move_camp_global_") >= 0) return "move_camp_global";
-            if (action.indexOf("build_out_passage") >= 0) {
-                var parts = action.split("_");
-                if (isNaN(parts[parts.length-1]))
-                    return action;
-                return action.substring(0, action.lastIndexOf("_"));
-            }
-			return action;
+            var getBaseActionIdInternal = function (a) {
+    			if (a.indexOf("build_in_") >= 0) return a;
+    			if (a.indexOf("scout_locale_i") >= 0) return "scout_locale_i";
+    			if (a.indexOf("scout_locale_u") >= 0) return "scout_locale_u";
+    			if (a.indexOf("craft_") >= 0) return "craft";
+    			if (a.indexOf("discard_") >= 0) return "discard";
+    			if (a.indexOf("unequip_") >= 0) return "unequip";
+    			if (a.indexOf("equip_") >= 0) return "equip";
+                if (a.indexOf("use_item_fight") >= 0) return "use_item_fight";
+                if (a.indexOf("use_item") >= 0) return "use_item";
+    			if (a.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
+    			if (a.indexOf("create_blueprint_") >= 0) return "create_blueprint";
+    			if (a.indexOf("clear_waste_") >= 0) return "clear_waste";
+    			if (a.indexOf("clear_debris_") >= 0) return "clear_debris";
+    			if (a.indexOf("fight_gang_") >= 0) return "fight_gang";
+    			if (a.indexOf("send_caravan_") >= 0) return "send_caravan";
+                if (a.indexOf("use_in_inn_select_") >= 0) return "use_in_inn_select";
+                if (a.indexOf("move_camp_global_") >= 0) return "move_camp_global";
+                if (a.indexOf("build_out_passage") >= 0) {
+                    var parts = a.split("_");
+                    if (isNaN(parts[parts.length-1]))
+                        return a;
+                    return a.substring(0, a.lastIndexOf("_"));
+                }
+    			return a;
+            };
+            if (this.cache.baseActionID[action])
+                return this.cache.baseActionID[action];
+            var result = getBaseActionIdInternal(action);
+            this.cache.baseActionID[action] = result;
+            return result;
 		},
 
         getActionIDParam: function (action) {
