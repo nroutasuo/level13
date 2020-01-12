@@ -206,7 +206,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
                 case WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE: return 0;
                 case WorldCreatorConstants.ZONE_EXTRA_UNCAMPABLE: return 1;
                 default:
-                    log.i("no ordinal defined for zone: " + zone);
+                    log.w("no ordinal defined for zone: " + zone);
                     return 5;
             }
         },

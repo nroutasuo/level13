@@ -249,10 +249,12 @@ define([
 				var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
 
                 // stashes
+                // TODO handle multiple stashes per sector (currently just overwrites)
                 var addStashes = function (sectorSeed, stashType, itemID, num, numItemsPerStash) {
                     var options = { requireCentral: false, excludingFeature: "camp" };
                     var stashSectors = WorldCreatorRandom.randomSectors(sectorSeed, this.world, levelVO, num, num + 1, options);
                     for (var i = 0; i < stashSectors.length; i++) {
+                        log.i("add stash " + stashSectors[i].position + " " + stashType + " " + itemID)
                         stashSectors[i].stashItem = itemID;
                         stashSectors[i].stash = new StashVO(stashType, numItemsPerStash, itemID);
                     }
@@ -353,6 +355,7 @@ define([
             }
 
             // 2) spawn other types (for blueprints)
+            var worldVO = this.world;
 			var getLocaleType = function (localeRandom, sectorType, l, isEarly) {
 				var localeType = localeTypes.house;
 
@@ -422,7 +425,8 @@ define([
                     var length = WorldCreatorConstants.getMaxPathLength(campOrdinal, pathType);
                     pathConstraints.push(new PathConstraintVO(pos, length, pathType));
                 }
-                var options = { requireCentral: false, excludingFeature: "camp", pathConstraints: pathConstraints, numDuplicates: 2 };
+                var excludedZones = isEarly ? [ WorldCreatorConstants.ZONE_POI_2, WorldCreatorConstants.ZONE_EXTRA_CAMPABLE ] : [ WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, WorldCreatorConstants.ZONE_POI_1 ];
+                var options = { requireCentral: false, excludingFeature: "camp", pathConstraints: pathConstraints, excludedZones: excludedZones, numDuplicates: 2 };
                 var l = levelVO.level;
                 var sseed = seed - (isEarly ? 5555 : 0) + (l + 50) * 2;
 				for (var i = 0; i < count; i++) {
@@ -435,6 +439,7 @@ define([
                     sectorVO.locales.push(locale);
                     levelVO.localeSectors.push(sectorVO);
                     levelVO.numLocales++;
+                    log.i(levelVO.level + " added locale: isEarly:" + isEarly + ", distance to camp: " + WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO) + ", zone: " + sectorVO.zone);
                     for (var j = 0; j < pathConstraints.length; j++) {
                         WorldCreatorHelper.addCriticalPath(worldVO, sectorVO.position, pathConstraints[j].startPosition, pathConstraints[j].pathType);
                     }
@@ -1433,7 +1438,7 @@ define([
                 // normal level
                 // - random clusters
                 var maxNumHazardClusters = Math.round(Math.min(4, levelVO.sectors.length / 100));
-                var options = { excludingFeature: "camp", excludingZone: WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP };
+                var options = { excludingFeature: "camp", excludedZones: [ WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP ] };
                 var hazardSectors = WorldCreatorRandom.randomSectors(seed / 3 * levelOrdinal + 73 * levelVO.maxX, this.world, levelVO, 0, maxNumHazardClusters, options);
                 for (var h = 0; h < hazardSectors.length; h++) {
                     var centerSector = hazardSectors[h];

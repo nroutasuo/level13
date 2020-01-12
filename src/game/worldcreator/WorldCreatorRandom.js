@@ -15,7 +15,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
         // options:
         // - requireCentral (boolean): only include central sectors (default false)
         // - excludingFeature (string): exclude sectors that have this featue (for example "camp")
-        // - excludingZone (strong): exclude sectors assigned to give zone
+        // - excludedZones (array of strings): exclude sectors assigned to give zone
         // - pathConstraints (array of PathConstraintVO): all paths must be satisfied if present
         // - numDuplicates (int): how many of the returned sectors can be the same (default 1 -> no duplicates) (0 -> no limit)
 		randomSectors: function (seed, worldVO, levelVO, min, max, options) {
@@ -49,7 +49,11 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 			var checkExclusion = function (sectorVO) {
                 if (!sectorVO) return false;
 				if (options.excludingFeature && sectorVO[options.excludingFeature]) return false;
-                if (options.excludingZone && sectorVO.zone == options.excludingZone) return false;
+                if (options.excludedZones) {
+                    for (var i = 0; i < options.excludedZones.length; i++) {
+                        if (sectorVO.zone == options.excludedZones[i]) return false;
+                    }
+                }
 				return true;
 			};
 			for (var i = 0; i < numSectors; i++) {
@@ -58,8 +62,8 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 				do {
 					sector = this.randomSector(seed + (i + 1) * 369 + additionalRandom * 55, worldVO, levelVO, options.requireCentral, options.pathConstraints);
 					additionalRandom++;
-                    if (additionalRandom > 50) {
-                        log.w("getRandomSectorsSmall: Couldn't find random sector " + i + "/" + numSectors + "(level: " + levelVO.level + ")");
+                    if (additionalRandom > 100) {
+                        log.w("getRandomSectorsSmall: Couldn't find random sector " + (i+1) + "/" + numSectors + " (level: " + levelVO.level + ")");
                         log.i(options);
                         log.i(counts)
                         return sectors;
@@ -84,7 +88,11 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 				if (options.excludingFeature && sectorVO[options.excludingFeature]) {
 					return false;
 				}
-                if (options.excludingZone && sectorVO.zone == options.excludingZone) return false;
+                if (options.excludedZones) {
+                    for (var i = 0; i < options.excludedZones.length; i++) {
+                        if (sectorVO.zone == options.excludedZones[i]) return false;
+                    }
+                }
                 if (!WorldCreatorRandom.checkPathRequirements(worldVO, sector, options.pathConstraints)) {
                     return false;
                 }
