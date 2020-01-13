@@ -138,6 +138,7 @@
             this.updateWorkerMaxDescriptions();
             this.updateImprovements();
             this.updateStats();
+            this.updateBubble();
         },
 
         updateBubble: function () {
