@@ -977,9 +977,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 	}
                 },
                 craft_exploration_1: {
-                	upgrades: {
-                		unlock_item_shoe1: true
-                	}
                 },
 
                 use_item_glowstick_1: {
@@ -1960,7 +1957,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 craft_weapon1: {
                     resource_metal: 10,
                     resource_rope: 1,
-                    item_res_tape: 1,
                 },
 
                 craft_weapon12: {
@@ -2559,7 +2555,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_building_passage_staircase: {
-                	evidence: 32,
+                	evidence: 49,
                 },
 
                 unlock_building_hospital: {

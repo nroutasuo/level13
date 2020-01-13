@@ -73,7 +73,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             ],
             clothing_upper: [
                 new ItemVO("clothing_upper_1", "Tattered shirt", "Shirt", 1, true, false, false, 1, 3, {warmth: 1}, "img/items/clothing-rags.png", "Barely counts for clothing, but for now it'll have to do."),
-                new ItemVO("clothing_upper_15", "T-shirt", "Shirt", 2, true, false, false, 2, 1, { def: 1, warmth: 2, res_rad: 1, res_poison: 1}, "img/items/clothing-shirt.png", "Standard shirt."),
+                new ItemVO("clothing_upper_15", "T-shirt", "Shirt", 2, true, true, false, 2, 1, { def: 1, warmth: 2, res_rad: 1, res_poison: 1}, "img/items/clothing-shirt.png", "Standard shirt."),
                 new ItemVO("clothing_upper_2", "Factory uniform shirt", "Shirt", 5, true, false, false, 1, 1, {def: 2, warmth: 3, res_rad: 1, res_poison: 1}, "img/items/clothing-shirt-2.png", "Feels oddly comfortable in dark corridors and abandoned factories."),
                 new ItemVO("clothing_upper_3", "Guard uniform shirt", "Shirt", 8, true, true, false, 1, 1, {def: 5, warmth: 10, res_rad: 3, res_poison: 3}, "img/items/clothing-shirt-2.png", "Looks official, but not particularly protective."),
                 new ItemVO("clothing_upper_35", "Synthetic shirt", "Shirt", 10, true, false, false, 2, 2, {def: 5, warmth: 12, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Shirt made from recycled advanced textiles used before the Fall."),

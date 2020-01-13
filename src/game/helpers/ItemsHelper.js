@@ -190,7 +190,8 @@ define([
             for (var i = 0; i < craftingRecipes.length; i++) {
                 var craftingResult = craftableItems[i];
                 var recipe = craftingRecipes[i].costs;
-                var matches = recipe["item_" + item.id];
+                var matches = recipe && recipe["item_" + item.id];
+                if (!matches) continue;
                 var reqs = craftingRecipes[i].reqs;
                 var isUnlocked = true;
                 if (reqs && reqs.upgrades) {
