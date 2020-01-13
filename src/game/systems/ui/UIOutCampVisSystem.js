@@ -44,6 +44,7 @@ define([
             GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.refresh);
             GlobalSignals.add(this, GlobalSignals.windowResizedSignal, this.onResize);
             GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onResize);
+            GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onResize);
             
             this.refresh();
         },
