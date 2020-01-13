@@ -442,7 +442,11 @@ define([
                 	var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
                     var blockerName = TextConstants.getMovementBlockerName(blocker, enemiesComponent).toLowerCase();
                     if (GameGlobals.movementHelper.isBlocked(entity, direction)) {
-                        description += "Passage to the " + directionName + " is blocked by a " + blockerName + ". ";
+                        if (blocker.type == MovementConstants.BLOCKER_TYPE_DEBRIS) {
+                            description += "Passage to the " + directionName + " is blocked by " + blockerName + ". ";
+                        } else {
+                            description += "Passage to the " + directionName + " is blocked by a " + blockerName + ". ";
+                        }
                     } else {
                         var position = entity.get(PositionComponent).getPosition();
                         var gang = GameGlobals.levelHelper.getGang(position, direction);

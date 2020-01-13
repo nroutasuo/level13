@@ -4,14 +4,27 @@ define([
     'game/GameGlobals',
     'game/constants/GameConstants',
     'game/constants/CampConstants',
+	'game/components/sector/improvements/SectorImprovementsComponent',
+    'game/nodes/sector/CampNode',
     'game/nodes/tribe/TribeUpgradesNode',
-], function (Ash, GameGlobals, GameConstants, CampConstants, TribeUpgradesNode) {
+], function (Ash, GameGlobals, GameConstants, CampConstants, SectorImprovementsComponent, CampNode, TribeUpgradesNode) {
     
     var CampHelper = Ash.Class.extend({
 		
 		constructor: function (engine) {
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
+            this.campNodes = engine.getNodeList(CampNode);
 		},
+        
+        getTotalNumImprovementsBuilt: function (improvementName) {
+            if (!this.campNodes.head) return 0;
+            var result = 0;
+            for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
+                var improvements = campNode.entity.get(SectorImprovementsComponent);
+                result += improvements.getCount(improvementName);
+            }
+            return result;
+        },
         
         getMetalProductionPerSecond: function (workers, improvementsComponent) {
 			var metalUpgradeBonus = this.getUpgradeBonus("scavenger");

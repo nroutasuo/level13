@@ -523,8 +523,11 @@ define(['ash',
 				}
                 
                 if (featuresComponent.campable) {
-                    found = true;
-                    logMsg += "<br/>This seems like a good place for a camp.";
+        			var nearestCampSector = this.nearestCampNodes.head.entity;
+                    if (!this.nearestCampNodes.head || this.nearestCampNodes.head.position.level != this.playerLocationNodes.head.position.level) {
+                        found = true;
+                        logMsg += "<br/>This seems like a good place for a camp.";
+                    }
                 }
 
 				var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
@@ -1105,8 +1108,14 @@ define(['ash',
 		},
 
 		buildTradingPost: function () {
-			this.buildImprovement("build_in_tradepost", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_tradepost"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_TRADING_POST, "Built a trading post.");
+            var improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_tradepost");
+            var isFirst = GameGlobals.campHelper.getTotalNumImprovementsBuilt(improvementName) == 0;
+			this.buildImprovement("build_in_tradepost", improvementName);
+            if (isFirst) {
+	             this.addLogMessage(LogConstants.MSG_ID_BUILT_TRADING_POST, "Built a trading post. Build another one to connect the camps.");
+            } else {
+	             this.addLogMessage(LogConstants.MSG_ID_BUILT_TRADING_POST, "Built a trading post.");
+            }
 		},
 
 		buildInn: function () {
