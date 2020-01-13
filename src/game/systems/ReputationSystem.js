@@ -40,7 +40,7 @@ define([
 
         update: function (time) {
             if (GameGlobals.gameState.isPaused) return;
-			
+            
 			if (this.campNodes.head) {
 				for (var campNode = this.campNodes.head; campNode; campNode = campNode.next) {
                     var reputationComponent = campNode.reputation;
@@ -93,7 +93,7 @@ define([
             var targetReputationWithoutPenalties = targetReputation;
             
             // penalties: food and water
-            var storage = GameGlobals.resourcesHelper.getCurrentStorage(true);
+            var storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
 			var resources = storage ? storage.resources : null;
             var noFood = resources && resources.getResource(resourceNames.food) <= 0;
             var noWater = resources && resources.getResource(resourceNames.water) <= 0;
