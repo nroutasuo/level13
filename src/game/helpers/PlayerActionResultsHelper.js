@@ -350,11 +350,11 @@ define([
 				var nearestCampNode = this.nearestCampNodes.head;
                 var campNode = this.campNodes.head;
 				if (nearestCampNode) {
-					nearestCampNode.camp.population += 1;
+					nearestCampNode.camp.pendingPopulation += 1;
 				} else {
                     log.w("No nearest camp found.");
                     if (campNode) {
-                       campNode.camp.population += 1;
+                       campNode.camp.pendingPopulation += 1;
                     }
 				}
 			}

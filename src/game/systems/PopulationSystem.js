@@ -65,8 +65,13 @@ define([
             newPopulation = Math.min(newPopulation, maxPopulation);
             change = newPopulation - oldPopulation;
             changePerSec = change / time / GameConstants.gameSpeedCamp;
-            camp.addPopulation(change);
             camp.populationChangePerSec = changePerSec;
+            
+            if (camp.pendingPopulation) {
+                change += camp.pendingPopulation;
+                camp.pendingPopulation = 0;
+            }
+            camp.addPopulation(change);
 
             if (Math.floor(camp.population) !== Math.floor(oldPopulation)) {
                 this.handlePopulationChange(node, camp.population > oldPopulation);

@@ -13,6 +13,8 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
         campName: "",
         lastRaid: null,
         
+        pendingPopulation: 0,
+        
         constructor: function (id) {
             this.id = id;
             this.population = 0;
@@ -25,6 +27,8 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
             }
             this.campName = "";
             this.lastRaid = new RaidVO(null);
+            
+            this.pendingPopulation = 0;
         },
         
         getFreePopulation: function () {
