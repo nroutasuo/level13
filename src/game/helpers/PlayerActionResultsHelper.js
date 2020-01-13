@@ -255,7 +255,7 @@ define([
 
         getFadeOutResults: function (loseInventoryProbability, injuryProbability, loseFollowerProbability) {
             var resultVO = new ResultVO("despair");
-            if (loseInventoryProbability > Math.random()) {
+            if (Math.random() < loseInventoryProbability) {
                 resultVO.lostResources = this.playerResourcesNodes.head.resources.resources.clone();
                 resultVO.lostCurrency = this.playerResourcesNodes.head.entity.get(CurrencyComponent).currency;
                 resultVO.lostItems = this.getLostItems("despair", false);
@@ -875,7 +875,7 @@ define([
             if (playerItems.length <= 0)
                 return lostItems;
                 
-            if (GameGlobals.gameState.unlockedFeatures.camp)
+            if (!GameGlobals.gameState.unlockedFeatures.camp)
                 return false;
 
             // make list with duplicates based on probabilities
@@ -951,7 +951,6 @@ define([
                 case ItemConstants.itemTypes.light:
                     itemLoseProbability = campCount > 0 ? 0.55 : 0;
                     break;
-                case ItemConstants.itemTypes.follower:
                 case ItemConstants.itemTypes.ingredient:
                     itemLoseProbability = 0;
                     break;
