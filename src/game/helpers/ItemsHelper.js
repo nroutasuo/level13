@@ -42,6 +42,7 @@ define([
         getAvailableClothingList: function (campOrdinal, step, includeCraftable, includeNonCraftable, includeMultiplePerType, preferredItemBonus, maxScavengeRarity) {
             step = step || 2;
             var adjustedCampOrdinal = step == 1 ? campOrdinal - 1 : campOrdinal;
+            var adjustedStep = step == 1 ? WorldCreatorConstants.CAMP_STEP_END : step - 1;
             maxScavengeRarity = maxScavengeRarity || 100;
             var result = [];
             var clothingLists = [
@@ -67,9 +68,8 @@ define([
                     
                     // only craftable items are considered by default (scavenging is not a reliable source especially when possible to lose once acquired)
                     if (clothingItem.craftable && includeCraftable) {
-                        var requiredOrdinal = ItemConstants.getRequiredCampOrdinalToCraft(clothingItem);
-                        var requiredStep = ItemConstants.getRequiredLevelStepToCraft(clothingItem);
-                        isAvailable = requiredOrdinal <= adjustedCampOrdinal && requiredStep <= step;
+                        var req = ItemConstants.getRequiredCampAndStepToCraft(clothingItem);
+                        isAvailable = req.campOrdinal < adjustedCampOrdinal || (req.campOrdinal == adjustedCampOrdinal && req.step <= adjustedStep);
                     }
 
                     // non-craftable items added for scavenging results

@@ -201,32 +201,23 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             }
         },
         
-        getRequiredCampOrdinalToCraft: function (item) {
-            if (!item.craftable) return -1;
-            var campOrdinal = 0;
+        getRequiredCampAndStepToCraft: function (item) {
+            var result = { campOrdinal: 0, step: 0 };
+            if (!item.craftable) return result;
+            
             var reqs = PlayerActionConstants.requirements["craft_" + item.id];
             if (reqs && reqs.upgrades) {
                 var requiredTech = Object.keys(reqs.upgrades);
                 for (var k = 0; k < requiredTech.length; k++) {
-                    var requiredTechCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredTech[k]);
-                    campOrdinal = Math.max(campOrdinal, requiredTechCampOrdinal);
+                    var campOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredTech[k]);
+                    var step = UpgradeConstants.getMinimumLevelStepForUpgrade(requiredTech[k]);
+                    if (campOrdinal > result.campOrdinal || step > result.step) {
+                        result = { campOrdinal: campOrdinal, step: step };
+                    }
                 }
             }
-            return campOrdinal;
-        },
-        
-        getRequiredLevelStepToCraft: function (item) {
-            if (!item.craftable) return -1;
-            var step = 0;
-            var reqs = PlayerActionConstants.requirements["craft_" + item.id];
-            if (reqs && reqs.upgrades) {
-                var requiredTech = Object.keys(reqs.upgrades);
-                for (var k = 0; k < requiredTech.length; k++) {
-                    var requiredStep = UpgradeConstants.getMinimumLevelStepForUpgrade(requiredTech[k]);
-                    step = Math.max(step, requiredStep);
-                }
-            }
-            return step;
+            
+            return result;
         },
         
         getFollower: function (level, campCount) {

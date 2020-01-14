@@ -254,7 +254,6 @@ define([
                     var options = { requireCentral: false, excludingFeature: "camp" };
                     var stashSectors = WorldCreatorRandom.randomSectors(sectorSeed, this.world, levelVO, num, num + 1, options);
                     for (var i = 0; i < stashSectors.length; i++) {
-                        log.i("add stash " + stashSectors[i].position + " " + stashType + " " + itemID)
                         stashSectors[i].stashItem = itemID;
                         stashSectors[i].stash = new StashVO(stashType, numItemsPerStash, itemID);
                     }
@@ -1364,7 +1363,6 @@ define([
                 minHazardCold = Math.min(minHazardCold, maxHazardCold - 1);
                 minHazardCold = Math.max(minHazardCold, 1);
                 if (maxHazardCold < 5) continue;
-                //log.i(levelVO.level + ": " + minHazardCold + "-" + maxHazardCold)
                 
                 // - determine eligibility
                 var isEarlyZone = sectorVO.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP || sectorVO.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE;

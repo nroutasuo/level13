@@ -226,17 +226,22 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
             return pieceCount;
         },
         
+        getRequiredTech: function (upgradeID) {
+            var reqs = PlayerActionConstants.requirements[upgradeID];
+            if (reqs && reqs.upgrades) {
+                return Object.keys(reqs.upgrades);
+            }
+            return [];
+        },
+        
         getMinimumCampOrdinalForUpgrade: function (upgrade) {
             if (this.getMinimumCampOrdinalForUpgrade[upgrade]) return this.getMinimumCampOrdinalForUpgrade[upgrade];
             
             // required tech
-            var reqs = PlayerActionConstants.requirements[upgrade];
+            var requiredTech = this.getRequiredTech(upgrade);
             var requiredTechCampOrdinal = 0;
-            if (reqs && reqs.upgrades) {
-                var requiredTech = Object.keys(reqs.upgrades);
-                for (var i = 0; i < requiredTech.length; i++) {
-                    requiredTechCampOrdinal = Math.max(requiredTechCampOrdinal, this.getMinimumCampOrdinalForUpgrade(requiredTech[i]));
-                }
+            for (var i = 0; i < requiredTech.length; i++) {
+                requiredTechCampOrdinal = Math.max(requiredTechCampOrdinal, this.getMinimumCampOrdinalForUpgrade(requiredTech[i]));
             }
             
             // blueprint
@@ -266,10 +271,19 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
         },
     
         getMinimumLevelStepForUpgrade: function (upgrade) {
+            var result = 0;
             var blueprintType = this.getBlueprintType(upgrade);
-            if (blueprintType == this.BLUEPRINT_TYPE_EARLY) return WorldCreatorConstants.CAMP_STEP_POI_2;
-            if (blueprintType == this.BLUEPRINT_TYPE_LATE) return WorldCreatorConstants.CAMP_STEP_END;
-            return 0;
+            if (blueprintType == this.BLUEPRINT_TYPE_EARLY)
+                result = WorldCreatorConstants.CAMP_STEP_START;
+            if (blueprintType == this.BLUEPRINT_TYPE_LATE)
+                result = WorldCreatorConstants.CAMP_STEP_POI_2;
+                
+            var requiredTech = this.getRequiredTech(upgrade);
+            for (var i = 0; i < requiredTech.length; i++) {
+                result = Math.max(result, this.getMinimumLevelStepForUpgrade(requiredTech[i]));
+            }
+            
+            return result;
         },
         
     };
