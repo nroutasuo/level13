@@ -247,20 +247,23 @@ define([
                 var ll = l === 0 ? l : 50;
                 var levelVO = this.world.getLevel(l);
 				var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
+                var lateZones = [ WorldCreatorConstants.ZONE_POI_2, WorldCreatorConstants.ZONE_EXTRA_CAMPABLE ];
+                var earlyZones = [ WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE, WorldCreatorConstants.ZONE_POI_1 ];
 
                 // stashes
                 // TODO handle multiple stashes per sector (currently just overwrites)
-                var addStashes = function (sectorSeed, stashType, itemID, num, numItemsPerStash) {
-                    var options = { requireCentral: false, excludingFeature: "camp" };
+                var addStashes = function (sectorSeed, stashType, itemID, num, numItemsPerStash, excludedZones) {
+                    var options = { requireCentral: false, excludingFeature: "camp", excludedZones: excludedZones };
                     var stashSectors = WorldCreatorRandom.randomSectors(sectorSeed, this.world, levelVO, num, num + 1, options);
                     for (var i = 0; i < stashSectors.length; i++) {
                         stashSectors[i].stashItem = itemID;
                         stashSectors[i].stash = new StashVO(stashType, numItemsPerStash, itemID);
+                        // log.i("add stash: " + itemID + " " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
                     }
                 };
                 // - lock picks
                 if (l == 13) {
-                    addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, StashVO.STASH_TYPE_ITEM, "exploration_1", 1, 1);
+                    addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, StashVO.STASH_TYPE_ITEM, "exploration_1", 1, 1, lateZones);
                 }
                 // - hairpins (for lockpics)
                 var pinsPerStash = 3;
@@ -269,13 +272,18 @@ define([
                 if (!levelVO.isCampable) numHairpinStashes = 5;
                 addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, StashVO.STASH_TYPE_ITEM, "res_hairpin", numHairpinStashes, pinsPerStash);
                 // - random crafting ingredients
-                var i = seed % (l+5) + 3;
-                var ingredient = ItemConstants.getIngredient(i);
-                addStashes(seed % 7 + 3000 + 101 * l, StashVO.STASH_TYPE_ITEM, ingredient.id, 2, 3);
+                if (l == 13) {
+                    addStashes(seed % 9 + 2200 + (100 - l * 3) * 333, StashVO.STASH_TYPE_ITEM, "res_tape", 2, 3, lateZones);
+                    addStashes(seed % 6 + 7000 + (100 - l * 2) * 222, StashVO.STASH_TYPE_ITEM, "res_silk", 2, 3, lateZones);
+                } else {
+                    var i = seed % (l+5) + 3;
+                    var ingredient = ItemConstants.getIngredient(i);
+                    addStashes(seed % 7 + 3000 + 101 * l, StashVO.STASH_TYPE_ITEM, ingredient.id, 2, 3, earlyZones);
+                }
                 //- equipment
                 var newEquipment = itemsHelper.getNewEquipment(campOrdinal);
                 for (var i = 0; i < newEquipment.length; i++) {
-                    addStashes(seed / 3 + (l+551)*8 + (i+103)*18, StashVO.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1);
+                    addStashes(seed / 3 + (l+551)*8 + (i+103)*18, StashVO.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1, lateZones);
                 }
                 // TODO add currency stashes just for fun
 
@@ -424,7 +432,7 @@ define([
                     var length = WorldCreatorConstants.getMaxPathLength(campOrdinal, pathType);
                     pathConstraints.push(new PathConstraintVO(pos, length, pathType));
                 }
-                var excludedZones = isEarly ? [ WorldCreatorConstants.ZONE_POI_2, WorldCreatorConstants.ZONE_EXTRA_CAMPABLE ] : [ WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, WorldCreatorConstants.ZONE_POI_1 ];
+                var excludedZones = isEarly ? [ WorldCreatorConstants.ZONE_POI_2, WorldCreatorConstants.ZONE_EXTRA_CAMPABLE ] : [ WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, WorldCreatorConstants.ZONE_POI_1, WorldCreatorConstants.ZONE_EXTRA_CAMPABLE ];
                 var options = { requireCentral: false, excludingFeature: "camp", pathConstraints: pathConstraints, excludedZones: excludedZones, numDuplicates: 2 };
                 var l = levelVO.level;
                 var sseed = seed - (isEarly ? 5555 : 0) + (l + 50) * 2;

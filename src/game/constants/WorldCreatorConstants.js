@@ -105,6 +105,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
             if (campOrdinal > 7) movementCost = 8;
             var maxStamina = 1000;
             if (campOrdinal > 12) maxStamina = 1250;
+            var movementCostLevel = movementCost * 10;
             var maxLength = maxStamina / movementCost;
             
             var deductScouts = true;
@@ -123,13 +124,9 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
                     break;
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE:
                 case this.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP:
-                    // there and back
-                    maxLength = maxLength / 3;
-                    break;
                 case this.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE:
-                    // there and back
-                    // must be smaller than CAMP_TO_CAMP because that one can be CAMP_TO_PASSAGE + PASSAGE_TO_PASSAGE + CAMP_TO_PASSAGE
-                    maxLength = maxLength / 3;
+                    // one there, but the whole route can be CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE  + CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE + CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP
+                    maxLength = maxLength / 3 - movementCostLevel / movementCost;
                     break;
                 default:
                     log.w("Unknown path type: " + pathType);
