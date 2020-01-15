@@ -62,7 +62,6 @@ var UIOutManageSaveSystem = Ash.System.extend({
             GameGlobals.uiFunctions.toggle(this.spanMsg, false);
             GameGlobals.uiFunctions.toggle(this.textField, false);
             GameGlobals.uiFunctions.toggle(this.loadImportcontainer, false);
-
         },
 
         openExport: function () {
@@ -129,6 +128,7 @@ var UIOutManageSaveSystem = Ash.System.extend({
                 log.i("Failed to replace save.");
 			}
             GlobalSignals.restartGameSignal.dispatch(false);
+			GameGlobals.uiFunctions.showGame(true);
         }
 
     });
