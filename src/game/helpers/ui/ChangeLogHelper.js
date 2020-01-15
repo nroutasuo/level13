@@ -59,31 +59,6 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants) {
 			return "[no time stamp]";
         },
 		
-		getChangeLogHTML: function () {
-			var html = "";
-			var v;
-			for (var i in this.versions) {
-				v = this.versions[i];
-				if (v.changes.length === 0) continue;
-				html += "<div class='changelog-version'>";
-				html += "<b>version " + this.getVersionNumber(v);
-				if (v.final) html += " released: " + v.released + "";
-                else html += " (work in progress)";
-                html += "</b>";
-				html += "<ul>";
-				for (var j in v.changes) {
-					var change = v.changes[j];
-                    var summary = change.summary.trim().replace(/\.$/, "");
-					html += "<li class='changelog-" + change.type + "'>";
-					html += "<span class='changelog-summary'>" + summary + "</span>";
-					html += "</li>";
-				}
-				html += "</ul>";
-				html += "</div>";
-			}
-			return html;
-		},
-		
 		getVersionNumber: function (version) {
 			return version.version + " (" + version.phase + ")";
 		},

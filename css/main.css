@@ -1095,6 +1095,10 @@ body.dark .infobox-scrollable-header {
 body.dark .actionbox {
   padding: 3px 0px;
 }
+body.dark .textbox {
+  padding: 10px  0px;
+  max-width: 70em;
+}
 body.dark .inventorybox {
   border-color: #3a3a3a;
   border-width: 1px;
@@ -1489,6 +1493,15 @@ body.dark input.amount {
   padding: 1px;
   text-align: center;
   border-width: 1px 0px;
+}
+body.dark .sub-page-container {
+  padding: 10px 20px;
+}
+body.dark .faq-category h3 {
+  text-transform: none;
+}
+body.dark .faq-category p {
+  margin-left: 1em;
 }
 body.dark #log {
   background: none;
@@ -1922,12 +1935,17 @@ body.dark .loading-spinner .loading-dot3 {
     transform: scale(1);
   }
 }
+body.dark div {
+  scrollbar-color: #2f322f #666;
+}
 body.dark div ::-webkit-scrollbar {
   width: 11px;
   background: #2f322f;
 }
 body.dark div ::-webkit-scrollbar-track {
   background: #2f322f;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
 }
 body.dark div ::-webkit-scrollbar-button {
   background: #666;
@@ -2916,6 +2934,10 @@ body.sunlit .infobox-scrollable-header {
 body.sunlit .actionbox {
   padding: 3px 0px;
 }
+body.sunlit .textbox {
+  padding: 10px  0px;
+  max-width: 70em;
+}
 body.sunlit .inventorybox {
   border-color: #aaa;
   border-width: 1px;
@@ -3310,6 +3332,15 @@ body.sunlit input.amount {
   padding: 1px;
   text-align: center;
   border-width: 1px 0px;
+}
+body.sunlit .sub-page-container {
+  padding: 10px 20px;
+}
+body.sunlit .faq-category h3 {
+  text-transform: none;
+}
+body.sunlit .faq-category p {
+  margin-left: 1em;
 }
 body.sunlit #log {
   background: none;
@@ -3743,12 +3774,17 @@ body.sunlit .loading-spinner .loading-dot3 {
     transform: scale(1);
   }
 }
+body.sunlit div {
+  scrollbar-color: #e6e6e6 #999;
+}
 body.sunlit div ::-webkit-scrollbar {
   width: 11px;
   background: #e6e6e6;
 }
 body.sunlit div ::-webkit-scrollbar-track {
   background: #e6e6e6;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
 }
 body.sunlit div ::-webkit-scrollbar-button {
   background: #999;

@@ -16,6 +16,10 @@
 
 /* WEBKIT BROWSERS */
 
+div {
+    scrollbar-color: @scrollbar-dark-bg @scrollbar-dark-thumb;
+}
+
 div ::-webkit-scrollbar {
     width: @scrollbar-width;
     background: @scrollbar-dark-bg;
@@ -23,6 +27,8 @@ div ::-webkit-scrollbar {
 
 div ::-webkit-scrollbar-track {
     background: @scrollbar-dark-bg;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
 }
 
 div ::-webkit-scrollbar-button {
