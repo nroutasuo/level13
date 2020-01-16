@@ -789,7 +789,7 @@ define([
                 }
 
                 var item = this.getItemForCraftAction(action);
-                if (item) {
+                if (item && baseActionID == "craft") {
                     if (!inCamp) {
                         var spaceNow = bagComponent.totalCapacity - bagComponent.usedCapacity;
                         var spaceRequired = BagConstants.getItemCapacity(item);
