@@ -97,7 +97,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
         blueprintsByCampOrdinal: {
         	1: [["unlock_item_shoe1"], ["unlock_building_passage_staircase"]],
         	2: [["unlock_building_tradingpost"], ["unlock_clothing_warm", "unlock_building_darkfarm"]],
-        	3: [["unlock_building_library", "unlock_building_inn"], ["unlock_building_market", "unlock_building_fortifications"]],
+        	3: [["unlock_building_library", "unlock_building_market"], ["unlock_building_inn", "unlock_building_fortifications"]],
         	4: [["unlock_item_weapon2"], ["upgrade_worker_scavenger"]],
         	5: [["unlock_item_clothing4h", "unlock_building_bridge"], ["unlock_building_passage_elevator", "unlock_building_lights"]],
         	6: [["unlock_building_smithy"], ["unlock_item_bag22", "upgrade_building_market", "upgrade_worker_collector1", "unlock_building_cementmill"]],
