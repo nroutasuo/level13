@@ -523,7 +523,6 @@ define(['ash',
 				}
                 
                 if (featuresComponent.campable) {
-        			var nearestCampSector = this.nearestCampNodes.head.entity;
                     if (!this.nearestCampNodes.head || this.nearestCampNodes.head.position.level != this.playerLocationNodes.head.position.level) {
                         found = true;
                         logMsg += "<br/>This seems like a good place for a camp.";
