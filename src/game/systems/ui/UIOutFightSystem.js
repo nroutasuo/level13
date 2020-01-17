@@ -214,7 +214,9 @@ define([
         refreshFightActive: function () {
             // progress bars
 			$("#fight-bar-enemy").data("last-change-value", 0);
+			$("#fight-bar-enemy").data("progress-percent", 100);
 			$("#fight-bar-self").data("last-change-value", 0);
+			$("#fight-bar-self").data("progress-percent", 100);
             $("#fight-damage-indictor-self").text("");
             $("#fight-damage-indictor-enemy").text("");
             
