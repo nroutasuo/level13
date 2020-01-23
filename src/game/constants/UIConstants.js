@@ -268,9 +268,11 @@ define(['ash',
 				return " " + bonusValue;
 		},
 
-		getPerkDetailText: function (perk) {
+		getPerkDetailText: function (perk, isResting) {
 			if (perk.effectTimer >= 0) {
-				return this.getPerkBonusText(perk) + ", time left: " + this.getTimeToNum(perk.effectTimer);
+                var factor = isResting ? PerkConstants.PERK_RECOVERY_FACTOR_REST : 1;
+                var timeleft = perk.effectTimer / factor;
+				return this.getPerkBonusText(perk) + ", time left: " + this.getTimeToNum(timeleft);
 			} else {
 				return this.getPerkBonusText(perk);
 			}

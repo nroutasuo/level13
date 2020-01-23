@@ -24,6 +24,8 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 			health: [],
 			movement: [],
 		},
+        
+        PERK_RECOVERY_FACTOR_REST: 3,
 	
 		getPerk: function (perkId) {
 			for (var key in this.perkDefinitions) {
@@ -67,7 +69,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
         var id = injuryTypes[j].toLowerCase();
         PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-big-" + id, injuryTypes[j] + " (serious)", "Injury", seriousInjuryEffect, "img/items/injury-1.png"));
         PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-med-" + id, injuryTypes[j] + " (medium)", "Injury", medInjuryEffect, "img/items/injury-2.png"));
-        PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-small-" + id, injuryTypes[j] + " (light)", "Injury", lightInjuryEffect, "img/items/injury-3.png"));        
+        PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-small-" + id, injuryTypes[j] + " (light)", "Injury", lightInjuryEffect, "img/items/injury-3.png"));
     }
 	
 	return PerkConstants;

@@ -10,11 +10,12 @@ define([
     'game/components/common/LogMessagesComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/player/ItemsComponent',
-    'game/components/player/PerksComponent'
+    'game/components/player/PerksComponent',
+    'game/components/player/PlayerActionComponent'
 ], function (Ash,
     HazardConstants, PerkConstants, GameConstants, LogConstants,
     PlayerPositionNode, PlayerLocationNode,
-    LogMessagesComponent, SectorFeaturesComponent, ItemsComponent, PerksComponent) {
+    LogMessagesComponent, SectorFeaturesComponent, ItemsComponent, PerksComponent, PlayerActionComponent) {
     
     var HazardSystem = Ash.System.extend({
         
@@ -66,6 +67,7 @@ define([
             // TODO generic effect timer system?
             
             var featuresComponent = this.locationNodes.head.entity.get(SectorFeaturesComponent);
+            var busyComponent =  this.playerNodes.head.entity.get(PlayerActionComponent);
             var itemsComponent = this.playerNodes.head.entity.get(ItemsComponent);
             var perksComponent = this.playerNodes.head.entity.get(PerksComponent);
             
@@ -77,11 +79,16 @@ define([
                     var playerPerk = perksComponent.getPerk(perkID);
                     if (playerPerk) {
                         if (playerPerk.effectTimer === -1) {
+                            // add perk
                             playerPerk.effectTimer = (1 - playerPerk.effect) * 100;
                             this.addTimedPerkLogMessage(perkID);
                         } else {
-                            playerPerk.effectTimer -= time * GameConstants.gameSpeedExploration;
+                            // adjust perk timer
+                            var isResting = busyComponent && busyComponent.getLastActionName() == "use_in_home";
+                            var restFactor = isResting ? PerkConstants.PERK_RECOVERY_FACTOR_REST : 1;
+                            playerPerk.effectTimer -= time * restFactor * GameConstants.gameSpeedExploration;
                             if (playerPerk.effectTimer < 0) {
+                                // remove perk
                                 perksComponent.removeItemsById(playerPerk.id);
                                 this.addRemovedPerkLogMessage(perkID);
                             }

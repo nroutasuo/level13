@@ -162,14 +162,14 @@ define([
 		updatePlayerStats: function (isInCamp) {
             if (!this.currentLocationNodes.head) return;
 			var campComponent = this.currentLocationNodes.head.entity.get(CampComponent);
+            var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
 			var playerStatsNode = this.playerStatsNodes.head;
             var playerStamina = playerStatsNode.stamina.stamina;
 			var playerVision = playerStatsNode.vision.value;
 			var maxVision = playerStatsNode.vision.maximum;
             var shownVision = UIConstants.roundValue(playerVision, true, false);
 			var maxStamina = Math.round(playerStatsNode.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
-            var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
-            var isResting = busyComponent && busyComponent.getLastActionName() == "use_in_home";
+            var isResting = this.isResting();
             var isHealing = busyComponent && busyComponent.getLastActionName() == "use_in_hospital";
 
 			this.elements.valVision.text(shownVision + " / " + maxVision);
@@ -182,7 +182,6 @@ define([
             GameGlobals.uiFunctions.toggle($("#stats-stamina"), GameGlobals.gameState.unlockedFeatures.scavenge);
 			this.elements.valStamina.text(UIConstants.roundValue(playerStamina, true, false) + " / " + maxStamina);
 			this.updateStatsCallout("Required for exploration", "stats-stamina", playerStatsNode.stamina.accSources);
-            var isResting = isResting;
             this.updateChangeIndicator(this.elements.changeIndicatorStamina, playerStatsNode.stamina.accumulation, playerStamina < maxStamina, isResting || isHealing);
 
             this.elements.valVision.toggleClass("warning", playerVision <= 25);
@@ -350,13 +349,14 @@ define([
         
         refreshPerks: function () {
             if (!this.playerStatsNodes.head) return;
+            var isResting = this.isResting();
 			var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
 			var perks = perksComponent.getAll();
             var now = new Date().getTime();
             $("ul#list-items-perks").empty();
             for (var i = 0; i < perks.length; i++) {
                 var perk = perks[i];
-                var desc = perk.name + " (" + UIConstants.getPerkDetailText(perk) + ")";
+                var desc = perk.name + " (" + UIConstants.getPerkDetailText(perk, isResting) + ")";
                 var url = perk.icon;
                 var isNegative = perksComponent.isNegative(perk);
                 var liClass = isNegative ? "li-item-negative" : "li-item-positive";
@@ -382,10 +382,11 @@ define([
 		updatePerks: function () {
 			var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
 			var perks = perksComponent.getAll();
+            var isResting = this.isResting();
 
             for (var i = 0; i < perks.length; i++) {
                 var perk = perks[i];
-                var desc = perk.name + " (" + UIConstants.getPerkDetailText(perk) + ")";
+                var desc = perk.name + " (" + UIConstants.getPerkDetailText(perk, isResting) + ")";
                 $("#perk-header-" + perk.id + " .info-callout-target").attr("description", desc);
                 $("#perk-header-" + perk.id + " .info-callout-target").toggleClass("event-ending", perk.effectTimer >= 0 && perk.effectTimer < 5);
             }
@@ -611,6 +612,11 @@ define([
 		             this.elements.body.toggleClass("vision-step-" + i, i == visionStep);
                 }
             });
+        },
+        
+        isResting: function () {
+            var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
+            return busyComponent && busyComponent.getLastActionName() == "use_in_home";
         },
 
 		getShowResources: function () {
