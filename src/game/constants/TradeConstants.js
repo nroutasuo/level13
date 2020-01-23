@@ -57,7 +57,8 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                         var itemProbability = probability * (1/tradeRarity);
                         if (Math.random() > itemProbability)
                             continue;
-                        if (ItemConstants.getRequiredCampOrdinalToCraft(itemDefinition) > campOrdinal + 1)
+                        var req = ItemConstants.getRequiredCampAndStepToCraft(itemDefinition);
+                        if (req.campOrdinal > campOrdinal + 2)
                             continue;
                         var amount = Math.ceil(Math.random() * maxAmount);
                         for (var j = 0; j < amount; j++) {
