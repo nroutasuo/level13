@@ -221,6 +221,7 @@ define([
 				}
 
 				sys.updateLists();
+                GlobalSignals.updateButtonsSignal.dispatch();
 			};
 
 			var onLiClicked = function (e) {
