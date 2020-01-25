@@ -74,7 +74,7 @@ define([
 
                     // non-craftable items added for scavenging results
                     if (!clothingItem.craftable && includeNonCraftable) {
-                        isAvailable = clothingItem.requiredCampOrdinal >= 0 && clothingItem.requiredCampOrdinal <= adjustedCampOrdinal && clothingItem.scavengeRarity <= maxScavengeRarity;
+                        isAvailable = clothingItem.requiredCampOrdinal <= adjustedCampOrdinal && clothingItem.scavengeRarity <= maxScavengeRarity;
                     }
 
                     var bonus = preferredItemBonus ? clothingItem.getBonus(preferredItemBonus) : clothingItem.getTotalBonus();
@@ -213,6 +213,37 @@ define([
                 log.w("no crafting recipe uses ingredient: " + item.id);
             }
             return false;
+        },
+        
+        isObsolete: function (itemVO, itemsComponent, inCamp) {
+            // if item is not equippable, it cannot be obsolete
+            if (!itemVO.equippable) return false;
+
+            // if the player already has one, equipped or not -> obsolete
+            var owned = itemsComponent.getUnique(inCamp);
+            for (var j = 0; j < owned.length; j++) {
+                if (owned[j].id === itemVO.id) return true;
+            }
+
+            // if no equipped item of type -> not obsolete
+            var equipped = itemsComponent.getEquipped(itemVO.type);
+            if (equipped.length === 0) return false;
+
+            // if item bonus is higher than any bonus on the currently equipped item of the same type -> not obsolete
+            for (var bonusKey in ItemConstants.itemBonusTypes) {
+                var bonusType = ItemConstants.itemBonusTypes[bonusKey];
+                var itemBonus = itemVO.getBonus(bonusType);
+                for (var i = 0; i < equipped.length; i++)
+                    if (itemBonus > equipped[i].getBonus(bonusType) && bonusType != ItemConstants.itemBonusTypes.movement) {
+                        return false;
+                    }
+                    else if (itemBonus < equipped[i].getBonus(bonusType) && bonusType == ItemConstants.itemBonusTypes.movement) {
+                        return false;
+                    }
+            }
+
+            // has equipped item of type and no bonus is higher -> obsolete
+            return true;
         }
         
     });

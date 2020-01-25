@@ -47,8 +47,8 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                         var itemDefinition = itemList[i];
                         if (itemDefinition.requiredCampOrdinal > campOrdinal + 1)
                             continue;
-                        if (ItemConstants.becomesObsolete(category)) {
-                            if (itemDefinition.requiredCampOrdinal < campOrdinal - 5)
+                        if (ItemConstants.isQuicklyObsoletable(category)) {
+                            if (itemDefinition.requiredCampOrdinal > 0 && itemDefinition.requiredCampOrdinal < campOrdinal - 5)
                                 continue;
                         }
                         var tradeRarity = itemDefinition.tradeRarity;

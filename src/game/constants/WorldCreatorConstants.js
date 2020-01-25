@@ -215,15 +215,15 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         getCampStep: function (zone) {
             switch (zone) {
                 // campable levels
-                case WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP: 1;
-                case WorldCreatorConstants.ZONE_POI_1: return 1;
-                case WorldCreatorConstants.ZONE_POI_2: return 2;
-                case WorldCreatorConstants.ZONE_CAMP_TO_PASSAGE: return 3;
-                case WorldCreatorConstants.ZONE_EXTRA_CAMPABLE: return 3;
-                case WorldCreatorConstants.ZONE_POI_TEMP: return 3;
+                case WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP: WorldCreatorConstants.CAMP_STEP_START;
+                case WorldCreatorConstants.ZONE_POI_1: return WorldCreatorConstants.CAMP_STEP_START;
+                case WorldCreatorConstants.ZONE_POI_2: return WorldCreatorConstants.CAMP_STEP_POI_2;
+                case WorldCreatorConstants.ZONE_CAMP_TO_PASSAGE: return WorldCreatorConstants.CAMP_STEP_END;
+                case WorldCreatorConstants.ZONE_EXTRA_CAMPABLE: return WorldCreatorConstants.CAMP_STEP_END;
+                case WorldCreatorConstants.ZONE_POI_TEMP: return WorldCreatorConstants.CAMP_STEP_END;
                 // uncampable levels
-                case WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE: return 3;
-                case WorldCreatorConstants.ZONE_EXTRA_UNCAMPABLE: return 3;
+                case WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE: return WorldCreatorConstants.CAMP_STEP_END;
+                case WorldCreatorConstants.ZONE_EXTRA_UNCAMPABLE: return WorldCreatorConstants.CAMP_STEP_END;
                 default:
                     log.i("no camp step defined for zone: " + zone);
                     return 5;

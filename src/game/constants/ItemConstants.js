@@ -41,7 +41,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
         
         itemDefinitions: {
             light: [
-                new ItemVO("light1", "Lantern", "Light", 1, true, true, false, 2, 1, {light: 25}, "img/items/light-lantern.png", "Feeble light for basic survival in the dark undercorridors."),
+                new ItemVO("light1", "Lantern", "Light", 1, true, true, false, 3, 1, {light: 25}, "img/items/light-lantern.png", "Feeble light for basic survival in the dark undercorridors."),
                 new ItemVO("light2", "Electric light", "Light", 5, true, true, false, 5, 3, {light: 75}, "img/items/light-electric.png", "Advanced light for serious travellers."),
                 new ItemVO("light3", "Ghost light", "Light", 14, true, false, false, 9, 7, {light: 125}, "img/items/light-ghost.png", "They say the ghost light can show you more the darker places you go."),
             ],
@@ -117,7 +117,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             follower: [
             ],
             bag: [
-                new ItemVO("bag_0", "Plastic bag", "Bag", 1, true, true, false, 1, 5, {bag: WorldCreatorConstants.BAG_BONUS_1}, "img/items/bag-0.png", "It's not fancy, but allows one to carry around more stuff than their hands and pockets can hold."),
+                new ItemVO("bag_0", "Plastic bag", "Bag", 1, true, true, false, 2, 5, {bag: WorldCreatorConstants.BAG_BONUS_1}, "img/items/bag-0.png", "It's not fancy, but allows one to carry around more stuff than their hands and pockets can hold."),
                 new ItemVO("bag_1", "Basic backpack", "Bag", WorldCreatorConstants.CAMP_ORDINAL_BAG_2 - 1, true, true, false, 4, 1, {bag: WorldCreatorConstants.BAG_BONUS_2}, "img/items/bag-1.png", "A more spacious bag with lots of pockets."),
                 new ItemVO("bag_2", "Jumbo backpack", "Bag", WorldCreatorConstants.CAMP_ORDINAL_BAG_3 - 1, true, true, false, 6, 2, {bag: WorldCreatorConstants.BAG_BONUS_3}, "img/items/bag-1.png", "A huge backpack with plenty of space."),
                 new ItemVO("bag_3", "Hiker's rucksack", "Bag", WorldCreatorConstants.CAMP_ORDINAL_BAG_4 - 1, true, false, false, 6, 3, {bag: WorldCreatorConstants.BAG_BONUS_4}, "img/items/bag-1.png", "With this bag, weight is starting to be more of a problem than space."),
@@ -160,7 +160,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("flee_1", "Smoke Bomb", "Exploration", 3, false, true, false, 8, 2, null, "img/items/weapon-bomb.png", "Can be used to escape a fight.")
             ],
             uniqueEquipment: [
-                new ItemVO("equipment_map", "Map", "UniqueEquipment", 1, false, false, false, -1, -1, null, "img/items/exploration-map.png", "Helps navigating the City."),
+                new ItemVO("equipment_map", "Map", "UniqueEquipment", 0, false, false, false, -1, -1, null, "img/items/exploration-map.png", "Helps navigating the City."),
             ],
         },
 
@@ -280,7 +280,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             var result = null;
             for (var i = 0; i < totalWeapons; i++) {
                 var weapon = this.itemDefinitions.weapon[i];
-                var weaponCampOrdinal = Math.min(weapon.requiredCampOrdinal);
+                var weaponCampOrdinal = Math.max(1, weapon.requiredCampOrdinal);
                 if (step == 1 && weaponCampOrdinal >= campOrdinal) break;
                 if (step == 2 && weaponCampOrdinal >= campOrdinal) break;
                 if (step == 3 && weaponCampOrdinal > campOrdinal) break;
@@ -295,7 +295,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             return this.itemDefinitions.ingredient[parseInt(i)];
         },
         
-        becomesObsolete: function (category) {
+        isQuicklyObsoletable: function (category) {
             var t = ItemConstants.itemTypes[category] || category;
             switch (t) {
                 case ItemConstants.itemTypes.weapon:
@@ -304,6 +304,23 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 case ItemConstants.itemTypes.clothing_lower:
                 case ItemConstants.itemTypes.clothing_hands:
                 case ItemConstants.itemTypes.clothing_head:
+                    return true;
+                default:
+                    return false;
+            }
+        },
+        
+        isObsoletable: function (category) {
+            var t = ItemConstants.itemTypes[category] || category;
+            switch (t) {
+                case ItemConstants.itemTypes.weapon:
+                case ItemConstants.itemTypes.clothing_over:
+                case ItemConstants.itemTypes.clothing_upper:
+                case ItemConstants.itemTypes.clothing_lower:
+                case ItemConstants.itemTypes.clothing_hands:
+                case ItemConstants.itemTypes.clothing_head:
+                case ItemConstants.itemTypes.light:
+                case ItemConstants.itemTypes.bag:
                     return true;
                 default:
                     return false;

@@ -13,6 +13,7 @@ define([
     'game/constants/PerkConstants',
     'game/constants/UpgradeConstants',
     'game/constants/UIConstants',
+    'game/constants/WorldCreatorConstants',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/PlayerResourcesNode',
@@ -45,6 +46,7 @@ define([
     PerkConstants,
     UpgradeConstants,
     UIConstants,
+    WorldCreatorConstants,
     PlayerStatsNode,
     PlayerLocationNode,
     PlayerResourcesNode,
@@ -73,7 +75,7 @@ define([
 
         // probabilities of getting item of that type (relative, will be scaled to add up to 1)
         itemResultTypes: {
-            scavenge: { bag: 0.1, light: 0.1, shoes: 0.15, weapon: 0.05, clothing: 0.3, exploration: 0.2, artefact: 0.01 },
+            scavenge: { bag: 0.1, light: 0.05, shoes: 0.15, weapon: 0.1, clothing: 0.4, exploration: 0.2, artefact: 0.01 },
             fight: { bag: 0, light: 0, shoes: 0.1, weapon: 0.5, clothing: 0.5, exploration: 0.25, artefact: 0.02 },
             meet: { bag: 0.05, light: 0, shoes: 0.1, weapon: 0.5, clothing: 0.5, exploration: 0.5, artefact: 0 }
         },
@@ -146,9 +148,9 @@ define([
             var efficiency = this.getScavengeEfficiency();
 
             rewards.gainedResources = this.getRewardResources(0.95 + efficiency * 0.05, 1, efficiency, sectorResources);
-            rewards.gainedItems = this.getRewardItems(efficiency * 0.025, 0.01 + efficiency * 0.03, this.itemResultTypes.scavenge, efficiency, itemsComponent, campOrdinal, step);
+            rewards.gainedItems = this.getRewardItems(efficiency * 0.0275, 0.01 + efficiency * 0.02, this.itemResultTypes.scavenge, efficiency, itemsComponent, campOrdinal, step);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
-
+            
             this.addStash(rewards, sectorFeatures.stash);
             rewards.gainedBlueprintPiece = this.getFallbackBlueprint(0.05 + efficiency * 0.15);
 
@@ -244,7 +246,7 @@ define([
 				availableResources.setResource(resourceNames.food, 10);
 				availableResources.setResource(resourceNames.metal, 3);
 				rewards.gainedResources = this.getRewardResources(0.25, 2, this.getScavengeEfficiency(), availableResources);
-                rewards.gainedItems = this.getRewardItems(0.05, 0.25, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step);
+                rewards.gainedItems = this.getRewardItems(0.2, 0.25, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step);
 				rewards.gainedReputation = 1;
             } else {
 				// TODO lost followers?
@@ -715,88 +717,75 @@ define([
 		},
 
         getRewardItem: function (itemTypeLimits, efficiency, campOrdinal, step) {
-            // add limits to choose type
+            // normalize item type probabilities
             var sum = 0;
-            var limitsMin = {};
-            var limitsMax = {};
+            var typeProbabilities = {};
             for (var type in itemTypeLimits) {
-                if (this.isRewardItemTypeLocked(type)) continue;
-                limitsMin[type] = sum;
-                limitsMax[type] = sum + itemTypeLimits[type];
+                typeProbabilities[type] = 0;
+                if (this.isRewardItemTypeLocked(type))
+                    continue;
+                typeProbabilities[type] = itemTypeLimits[type];
                 sum += itemTypeLimits[type];
             }
-
-            // select item type
-            var itemTypeRand = Math.random() * sum;
-            var itemType;
             for (var type in itemTypeLimits) {
-                if (itemTypeRand >= limitsMin[type] && itemTypeRand < limitsMax[type]) {
-                    itemType = type;
-                    break;
-                }
-            }
-
-            if (!itemType) {
-                log.w("Could not determine reward item type.");
-                log.i(itemTypeLimits);
+                typeProbabilities[type] = typeProbabilities[type] / sum;
             }
 
             // list possible items
-            var items = [];
-            var minCampOrdinal = 0;
-            switch (itemType) {
-                case "bag":
-                    items = [ ItemConstants.getBag(campOrdinal - 1), ItemConstants.getBag(campOrdinal) ];
-                    break;
-                case "light":
-                    items = ItemConstants.itemDefinitions.light.slice(0);
-                    break;
-                case "shoes":
-                    items = ItemConstants.itemDefinitions.shoes.slice(0);
-                    minCampOrdinal = campOrdinal - 5;
-                    break;
-                case "weapon":
-                    items = ItemConstants.itemDefinitions.weapon.slice(0);
-                    minCampOrdinal = campOrdinal - 3;
-                    break;
-                case "clothing":
-                    items = GameGlobals.itemsHelper.getScavengeRewardClothing(campOrdinal, step);
-                    minCampOrdinal = campOrdinal - 3;
-                    break;
-                case "exploration":
-                    items = ItemConstants.itemDefinitions.exploration.slice(0);
-                    break;
-                case "artefact":
-                    items = ItemConstants.itemDefinitions.artefact.slice(0);
-                    break;
-
-                default:
-                    log.w("No reward items defined for type: [" + itemType + "]");
-                    break;
-            }
-            
+            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var validItems = [];
-            var rarityThreshold = 1 + 9 * efficiency * Math.random();
-            for (var i = 0; i < items.length; i++) {
-                if (items[i].scavengeRarity <= 0)
-                    continue;
-                if (items[i].scavengeRarity > rarityThreshold)
-                    continue;
-                if (items[i].requiredCampOrdinal > campOrdinal)
-                    continue;
-                if (ItemConstants.becomesObsolete(items[i].type)) {
-                    if (items[i].requiredCampOrdinal < minCampOrdinal)
-                        continue;
+            var itemScores = {};
+            var itemList;
+            var itemDefinition;
+            var maxCampOrdinalBonus = step == WorldCreatorConstants.CAMP_STEP_END ? 1 : 0;
+            var maxCampOrdinal = campOrdinal + Math.floor(Math.random(maxCampOrdinalBonus + 1));
+            var minCampOrdinal = Math.max(0, campOrdinal - 3);
+            var maxRarity = 1 + 9 * efficiency * Math.random();
+            var maxCampOrdinalDiff = maxCampOrdinal - minCampOrdinal;
+			for (var type in ItemConstants.itemDefinitions) {
+                var typekey = type.split("_")[0];
+                var typeProb = typeProbabilities[typekey]
+                if (!typeProb || typeProb < 0) continue;
+                var isObsoletable = ItemConstants.isObsoletable(type);
+				itemList = ItemConstants.itemDefinitions[type];
+				for (var i in itemList) {
+					itemDefinition = itemList[i];
+                    if (itemDefinition.scavengeRarity <= 0) continue;
+                    if (itemDefinition.scavengeRarity > maxRarity) continue;
+                    if (itemDefinition.requiredCampOrdinal > maxCampOrdinal) continue;
+                    if (itemDefinition.requiredCampOrdinal > 0 && isObsoletable && itemDefinition.craftable && itemDefinition.requiredCampOrdinal < minCampOrdinal) continue;
+                    validItems.push(itemDefinition);
+                    
+                    var campOrdinalFactor = 1;
+                    if (itemDefinition.requiredCampOrdinal > 0 && isObsoletable)
+                        campOrdinalFactor = 1 - Math.abs(campOrdinal - itemDefinition.requiredCampOrdinal) / maxCampOrdinalDiff;
+                    var score = 1;
+                    if (GameGlobals.itemsHelper.isObsolete(itemDefinition, itemsComponent, false))
+                        score = score / 2;
+                    score *= typeProb;
+                    score *= campOrdinalFactor;
+                    if (itemDefinition.craftable)
+                        score = score / 2;
+                    itemScores[itemDefinition.id] = score;
                 }
-                validItems.push(items[i]);
             }
-            
             if (validItems.length === 0) {
-                log.w("No valid reward items found for type: [" + itemType + "]");
+                log.w("No valid reward items found for campOrdinal " + campOrdinal + ", step " + step);
                 return null;
             }
-
-            return validItems[Math.floor(Math.random() * validItems.length)].clone();
+            
+            // sort by score
+            validItems.sort(function (a, b) {
+                return itemScores[b.id] - itemScores[a.id];
+            });
+            
+            log.i("valid items: " + validItems.length + " (max rarity: " + maxRarity + ", camp ordinal: " + campOrdinal + " (" + minCampOrdinal + "-" + maxCampOrdinal + "))")
+            
+            // pick one random valid item, higher score more likely but all possible
+            var index = MathUtils.getWeightedRandom(0, validItems.length);
+            var item = validItems[index];
+            log.i("- selected index " + index + "/" + validItems.length + ": "+ item.id);
+            return item.clone();
         },
 
 		getNecessityItem: function (itemProbability, itemTypeLimits, efficiency, currentItems, campOrdinal) {
