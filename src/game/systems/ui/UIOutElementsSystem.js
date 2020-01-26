@@ -38,6 +38,8 @@ define([
 			this.engine = engine;
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			this.autoPlayNodes = engine.getNodeList(AutoPlayNode);
+            
+            GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 
 			this.refreshGlobalSavedElements();
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onElementsVisibilityChanged);
