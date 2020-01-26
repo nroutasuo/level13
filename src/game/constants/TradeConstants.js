@@ -27,7 +27,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             new TradingPartnerVO(14, "Factory 32", [resourceNames.concrete], [resourceNames.metal], true, false, [], [ "exploration" ]),
         ],
         
-        getRandomIncomingCaravan: function (campOrdinal, levelOrdinal, unlockedResources, gameState) {
+        getRandomIncomingCaravan: function (campOrdinal, levelOrdinal, unlockedResources) {
             var name = "";
             var sellItems = [];
             var sellResources = new ResourcesVO();
@@ -36,22 +36,26 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             var usesCurrency = false;
             
             // TODO rare traders with blueprints?
-            // TODO balance resource amounts based on camp storage / player level?
-            var minResAmount = 50;
-            var randResAmount = 450;
+            // TODO adjust resource amounts based on resource rarity / value (plenty of metal, less herbs)
+            var minResAmount = 40 + campOrdinal * 10;
+            var randResAmount = 450 + campOrdinal * 50;
             
-            var addSellItemsFromCategories = function (categories, probability, maxAmount) {
+            // TODO unify logic with scavenge rewards - many similar checks
+            var addSellItemsFromCategories = function (categories, probability, maxAmount, includeCommon) {
                 for (var j in categories) {
                     var category = categories[j];
+                    var isObsoletable = ItemConstants.isObsoletable(category);
                     var itemList = ItemConstants.itemDefinitions[category];
                     for (var i in itemList) {
                         var itemDefinition = itemList[i];
                         if (itemDefinition.requiredCampOrdinal > campOrdinal + 1)
                             continue;
                         if (ItemConstants.isQuicklyObsoletable(category)) {
-                            if (itemDefinition.requiredCampOrdinal > 0 && itemDefinition.requiredCampOrdinal < campOrdinal - 5)
+                            if (itemDefinition.requiredCampOrdinal > 0 && itemDefinition.requiredCampOrdinal <= campOrdinal - 5)
                                 continue;
                         }
+                        if (!includeCommon && isObsoletable && itemDefinition.craftable && itemDefinition.requiredCampOrdinal < campOrdinal)
+                            continue;
                         var tradeRarity = itemDefinition.tradeRarity;
                         if (tradeRarity <= 0)
                             continue;
@@ -93,7 +97,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                 }
                 var prob = 0.75;
                 while (sellItems.length < 4 && prob <= 1) {
-                    addSellItemsFromCategories(categories, prob, 1);
+                    addSellItemsFromCategories(categories, prob, 1, true);
                     prob += 0.05;
                 }
                 buyItemTypes = categories;
@@ -111,27 +115,30 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                     if (Math.random() <= 0.3) categories.push("clothing_hands");
                     if (Math.random() <= 0.3) categories.push("clothing_head");
                     if (Math.random() <= 0.3) categories.push("shoes");
-                    if (Math.random() <= 0.3) categories.push("bag");
+                    if (Math.random() <= 0.2) categories.push("bag");
                     if (Math.random() <= 0.7) categories.push("exploration");
                     if (Math.random() <= 0.1) categories.push("artefact");
                 }
-                var prob = 0.10;
+                var prob = 0.05;
                 while (sellItems.length < 5 && prob < 1) {
-                    addSellItemsFromCategories(categories, prob, 1);
+                    addSellItemsFromCategories(categories, prob, 1, true);
                     prob += 0.05;
                 }
-                addSellItemsFromCategories([ "ingredient"], 0.7, 5 + campOrdinal + 2);
+                if (Math.random() < 0.5) {
+                    addSellItemsFromCategories([ "ingredient"], 0.7, 5 + campOrdinal + 2, true);
+                }
                 buyItemTypes = Object.keys(ItemConstants.itemTypes);
                 usesCurrency = true;
             } else if (rand <= 0.6) {
-                // 3) ingredient trader: sells ingredients, buys ingredients, no currency
+                // 3) ingredient trader: sells ingredients, buys ingredients, occational items, no currency
                 name = "Crafting trader";
                 var prob = 0.25;
                 var num = 5 + campOrdinal * 3;
                 while (sellItems.length < num && prob < 1) {
-                    addSellItemsFromCategories([ "ingredient"], prob, num / 3);
+                    addSellItemsFromCategories([ "ingredient"], prob, num / 3, true);
                     prob += 0.05;
                 }
+                addSellItemsFromCategories([ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head", "shoes", "bag", "exploration" ], 0.05, 1, false);
                 buyItemTypes = [ "ingredient" ];
                 usesCurrency = false;
             } else if (rand <= 0.8) {
@@ -184,7 +191,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                 var prob = 0.01;
                 var numItems = Math.floor(Math.random() * 2);
                 while (sellItems.length < numItems && prob < 1) {
-                    addSellItemsFromCategories(partner.sellItemTypes, prob, 1);
+                    addSellItemsFromCategories(partner.sellItemTypes, prob, 1, true);
                     prob += 0.01;
                 }
                 for (var i = 0; i < partner.buyItemTypes.length; i++) {
