@@ -72,9 +72,10 @@ define([
         initFight: function () {
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var enemy = this.fightNodes.head.fight.enemy;
+            var startDelay = 0.25;
             enemy.resetHP();
-            this.fightNodes.head.fight.nextTurnEnemy = 0.15 + FightConstants.getEnemyAttackTime(enemy) * Math.random();
-            this.fightNodes.head.fight.nextTurnPlayer = 0.15 + FightConstants.getPlayerAttackTime(itemsComponent) * Math.random();
+            this.fightNodes.head.fight.nextTurnEnemy = startDelay + FightConstants.getEnemyAttackTime(enemy) * Math.random();
+            this.fightNodes.head.fight.nextTurnPlayer = startDelay + FightConstants.getPlayerAttackTime(itemsComponent) * Math.random();
             this.totalFightTime = 0;
             
             var playerStamina = this.playerStatsNodes.head.stamina;

@@ -1385,7 +1385,7 @@ define([
                     var value = hazardValueRand * 100;
                     if (value < minHazardCold) value = minHazardCold;
                     if (value > 10) {
-                        value = Math.floor(value/5)*5;
+                        value = Math.floor(value / 5) * 5;
                     } else {
                         value = Math.floor(value);
                     }
@@ -1510,7 +1510,8 @@ define([
             var step = WorldCreatorConstants.getCampStep(sectorVO.zone);
             
 			var enemyDifficulty = this.enemyCreator.getDifficulty(campOrdinal, step);
-            if (sectorVO.isOnEarlyCriticalPath() && enemyDifficulty > 1) enemyDifficulty -= 1;
+            if (sectorVO.isOnEarlyCriticalPath()) enemyDifficulty -= 2;
+            enemyDifficulty = Math.max(enemyDifficulty, 1);
             sectorVO.enemyDifficulty = enemyDifficulty;
 
 			var enemies = sectorVO.possibleEnemies;

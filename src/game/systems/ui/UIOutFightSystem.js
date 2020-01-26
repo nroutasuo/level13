@@ -328,11 +328,14 @@ define([
                 return "dangerous";
             }
             
-            if (probability >= 0.9) {
+            if (probability >= 0.95) {
                 return "fairly harmless";
             }
+            if (probability >= 0.9) {
+                return "relatively innocuous";
+            }
             if (probability > 0.8) {
-                return "unnerving";
+                return "slightly unnerving";
             }
             if (probability > 0.6) {
                 return "intimidating";

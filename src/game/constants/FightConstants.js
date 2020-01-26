@@ -17,7 +17,7 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
         HIT_STUN_TIME: 0.25,
         
         // applies both to enemy and player damage and makes fights to faster (with fewer hits)
-        FIGHT_DAMAGE_BASE: 16,
+        FIGHT_DAMAGE_BASE: 17,
         // applies to both enemy and player and makes fights go faster (less time between hits)
         FIGHT_SPEED_FACTOR: 1,
         
@@ -33,7 +33,7 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             var ratio = att / (att + def);
             // damage is part determined by attack, part by a static value
             // -> increases with att but tends to be around reasonable numbers relative to max hp which is around 100
-            var result =  ratio * att /2 + ratio * this.FIGHT_DAMAGE_BASE / 2;
+            var result =  ratio * att / 2 + ratio * this.FIGHT_DAMAGE_BASE / 2;
             result = Math.max(1, result);
             return result;
         },
@@ -87,6 +87,12 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
 			var totalFollowerCamps = (WorldCreatorConstants.CAMPS_TOTAL - firstFollowerCamp + 1);
 			var maxFollowers = Math.ceil(numFollowerCamps / totalFollowerCamps * this.MAX_FOLLOWER_MAX);
 			return Math.max(0, maxFollowers);
+        },
+        
+        getTypicalFollowers: function (numCamps) {
+			var firstFollowerCamp = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_inn");
+            if (numCamps <= firstFollowerCamp) return 0;
+            return this.getMaxFollowers(numCamps);
         },
         
         getEnemyAttackTime: function (enemy) {
@@ -160,9 +166,9 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             var playerDamageRandomMin = playerDamage * -0.5;
             var playerDamageRandomMax = playerDamage * 0.5;
             
-            var timeAliveEnemy = enemy.maxHP / enemyDamage;
-            var timeAlivePlayerMin = playerStamina.maxHP / (playerDamage + playerDamageRandomMax);
-            var timeAlivePlayerMax = playerStamina.maxHP / (playerDamage + playerDamageRandomMin);
+            var timeAliveEnemy = enemy.maxHP / enemyDamage * 1.1;
+            var timeAlivePlayerMin = playerStamina.maxHP / (playerDamage + playerDamageRandomMax) * 0.9;
+            var timeAlivePlayerMax = playerStamina.maxHP / (playerDamage + playerDamageRandomMin) * 1.1;
             
             var ratio =  (timeAlivePlayerMax - timeAliveEnemy) / (timeAlivePlayerMax - timeAlivePlayerMin);
             if (ratio < 0.05) ratio = 0.05;
