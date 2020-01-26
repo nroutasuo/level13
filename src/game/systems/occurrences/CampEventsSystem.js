@@ -317,7 +317,8 @@ define([
 
 		getTimeToNext: function (campNode, event) {
             var isNew = this.isNew(event);
-			return OccurrenceConstants.getTimeToNext(event, isNew, this.getEventUpgradeFactor(event), campNode.camp.population, campNode.camp.maxPopulation);
+			var numCamps = GameGlobals.gameState.numCamps;
+			return OccurrenceConstants.getTimeToNext(event, isNew, this.getEventUpgradeFactor(event), campNode.camp.population, campNode.camp.maxPopulation, numCamps);
 		},
 
 		getEventUpgradeFactor: function (event) {
