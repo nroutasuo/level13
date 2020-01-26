@@ -497,7 +497,7 @@ body.dark button:active {
 }
 body.dark button,
 body.dark ul.tabs li {
-  transition: all 0.2s;
+  transition: color 0.2s;
 }
 body.dark button.action {
   border-width: 2px;
@@ -640,6 +640,9 @@ body.dark button.btn-disabled-resources,
 body.dark button.btn-disabled-cooldown {
   border-color: #444;
   color: #999 !important;
+}
+body.dark .button-detail-label {
+  margin: -4px 0 2px 0;
 }
 body.dark div.container-btn-action:hover + div.btn-callout,
 body.dark div.btn-callout:hover,
@@ -2336,7 +2339,7 @@ body.sunlit button:active {
 }
 body.sunlit button,
 body.sunlit ul.tabs li {
-  transition: all 0.2s;
+  transition: color 0.2s;
 }
 body.sunlit button.action {
   border-width: 2px;
@@ -2479,6 +2482,9 @@ body.sunlit button.btn-disabled-resources,
 body.sunlit button.btn-disabled-cooldown {
   border-color: #999;
   color: #666 !important;
+}
+body.sunlit .button-detail-label {
+  margin: -4px 0 2px 0;
 }
 body.sunlit div.container-btn-action:hover + div.btn-callout,
 body.sunlit div.btn-callout:hover,
