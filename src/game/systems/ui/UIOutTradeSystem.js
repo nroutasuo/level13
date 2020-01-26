@@ -135,8 +135,9 @@ define([
 				}
 				if (partner.usesCurrency) {
 					sendTR += "<option value='" + TradeConstants.GOOD_TYPE_NAME_CURRENCY + "'>silver</option>";
-				} else if (partner.sellsResources.length === 0) {
-					sendTR += "<option value='" + TradeConstants.GOOD_TYPE_NAME_INGREDIENTS + "'>crafting ingredients</option>";
+                }
+				if (partner.sellsIngredients) {
+					sendTR += "<option value='" + TradeConstants.GOOD_TYPE_NAME_INGREDIENTS + "'>ingredients</option>";
 				}
 				sendTR += "</select>";
 				sendTR += " <span class='trade-buy-value'>0</span>";

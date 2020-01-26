@@ -13,17 +13,18 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
         
         VALUE_INGREDIENTS: 0.1,
         VALUE_MARKUP_INCOMING_CARAVANS: 0.15,
+        VALUE_MARKUP_OUTGOING_CARAVANS_INGREDIENTS: 0.5,
         VALUE_DISCOUNT_CAMP_ITEMS: 0.25,
         
         TRADING_PARTNERS: [
-            new TradingPartnerVO(3, "Bone Crossing", [resourceNames.rope], [resourceNames.metal], false, [ "weapon" ], [ "weapon", "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
-            new TradingPartnerVO(4, "Slugger Town", [resourceNames.metal], [resourceNames.food], false, [], ["exploration", "shoes" ]),
-            new TradingPartnerVO(6, "Old Waterworks", [resourceNames.fuel], [], true, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
-            new TradingPartnerVO(7, "Mill Road Academy", [resourceNames.food, resourceNames.water], [resourceNames.metal], true, [], [ "weapon", "artefact" ]),
-            new TradingPartnerVO(9, "Bleaksey", [resourceNames.herbs], [resourceNames.medicine], false, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
-            new TradingPartnerVO(10, "Pinewood", [resourceNames.medicine], [], true, [], [ "artefact", "exploration" ]),
-            new TradingPartnerVO(12, "Highgate", [resourceNames.tools], [resourceNames.metal], true, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
-            new TradingPartnerVO(14, "Factory 32", [resourceNames.concrete], [resourceNames.metal], true, [], [ "exploration" ]),
+            new TradingPartnerVO(3, "Bone Crossing", [resourceNames.rope], [resourceNames.metal], false, false, [ "weapon" ], [ "weapon", "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
+            new TradingPartnerVO(4, "Slugger Town", [resourceNames.metal], [resourceNames.food], false, true, [], ["exploration", "shoes" ]),
+            new TradingPartnerVO(6, "Old Waterworks", [resourceNames.fuel], [], true, false, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
+            new TradingPartnerVO(7, "Mill Road Academy", [resourceNames.food, resourceNames.water], [resourceNames.metal], true, false, [], [ "weapon", "artefact" ]),
+            new TradingPartnerVO(9, "Bleaksey", [resourceNames.herbs], [resourceNames.medicine], false, true, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
+            new TradingPartnerVO(10, "Pinewood", [resourceNames.medicine], [], true, false, [], [ "artefact", "exploration" ]),
+            new TradingPartnerVO(12, "Highgate", [resourceNames.tools], [resourceNames.metal], true, false, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
+            new TradingPartnerVO(14, "Factory 32", [resourceNames.concrete], [resourceNames.metal], true, false, [], [ "exploration" ]),
         ],
         
         getRandomIncomingCaravan: function (campOrdinal, levelOrdinal, unlockedResources, gameState) {
@@ -255,7 +256,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             } else if (buyGood === TradeConstants.GOOD_TYPE_NAME_CURRENCY) {
                 amountGet = valueSell;
             } else if (buyGood === TradeConstants.GOOD_TYPE_NAME_INGREDIENTS) {
-                amountGet = valueSell / TradeConstants.VALUE_INGREDIENTS;
+                amountGet = valueSell / TradeConstants.VALUE_INGREDIENTS * (1 - TradeConstants.VALUE_MARKUP_OUTGOING_CARAVANS_INGREDIENTS);
             } else {
                 log.w("Unknown buy good: " + buyGood);
             }
