@@ -420,12 +420,13 @@ define([
 
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
-				var resourceUnlocked = GameGlobals.gameState.unlockedFeatures.resources[name] === true;
+                var currentAmount = showResources.getResource(name);
+				var resourceUnlocked = GameGlobals.gameState.unlockedFeatures.resources[name] === true || currentAmount > 0;
 				inventoryUnlocked = inventoryUnlocked || resourceUnlocked;
                 if (inCamp) {
                     UIConstants.updateResourceIndicator(
                         "#resources-" + name,
-                        Math.floor(showResources.getResource(name)),
+                        Math.floor(currentAmount),
                         showResourceAcc == null ? 0 : Math.round(showResourceAcc.resourceChange.getResource(name) * 10000) / 10000,
                         storageCap,
                         false,
@@ -444,7 +445,7 @@ define([
                     var isSupplies = name === resourceNames.food || name === resourceNames.water;
                     UIConstants.updateResourceIndicator(
                         "#resources-bag-" + name,
-                        Math.floor(showResources.getResource(name)),
+                        Math.floor(currentAmount),
                         showResourceAcc == null ? 0 : Math.round(showResourceAcc.resourceChange.getResource(name) * 10000) / 10000,
                         storageCap,
                         false,
