@@ -192,8 +192,7 @@ define([
                 for (var i in itemList) {
                     itemDefinition = itemList[i];
                     var actionName = "craft_" + itemDefinition.id;
-                    var costFactor = GameGlobals.playerActionsHelper.getCostFactor(actionName);
-                    var hasCosts = Object.keys(GameGlobals.playerActionsHelper.getCosts(actionName, costFactor)).length > 0;
+                    var hasCosts = Object.keys(GameGlobals.playerActionsHelper.getCosts(actionName)).length > 0;
 
                     if (isActive && !hasCosts) {
                         log.w("Craftable item has no costs: " + itemDefinition.id);

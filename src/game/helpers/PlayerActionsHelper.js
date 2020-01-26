@@ -81,7 +81,7 @@ define([
 		},
 
 		deductCosts: function (action) {
-            var costs = this.getCosts(action, this.getCostFactor(action));
+            var costs = this.getCosts(action);
 
             if (!costs) {
                 return;
@@ -174,7 +174,7 @@ define([
                 var deityComponent = this.playerResourcesNodes.head.entity.get(DeityComponent);
                 
                 var requirements = this.getReqs(action, sector);
-                var costs = this.getCosts(action, this.getCostFactor(action));
+                var costs = this.getCosts(action);
                 var positionComponent = sector.get(PositionComponent);
                 var improvementComponent = sector.get(SectorImprovementsComponent);
                 var movementOptionsComponent = sector.get(MovementOptionsComponent);
@@ -813,7 +813,7 @@ define([
 
         // Check the costs of an action; returns lowest fraction of the cost player can cover; >1 means the action is available
         checkCosts: function(action, doLog, otherSector) {
-            var costs = this.getCosts(action, this.getCostFactor(action));
+            var costs = this.getCosts(action);
 
             if (costs) {
                 var currentFraction = 1;
@@ -841,7 +841,7 @@ define([
             var sector = otherSector || (this.playerLocationNodes.head && this.playerLocationNodes.head.entity);
             if (!sector) return false;
 
-            var costs = this.getCosts(action, this.getCostFactor(action));
+            var costs = this.getCosts(action);
 
             var costNameParts = name.split("_");
             var costAmount = costs[name];
@@ -877,7 +877,7 @@ define([
         },
 
         getCostResourcesVO: function (action) {
-            var costs = this.getCosts(action, this.getCostFactor(action));
+            var costs = this.getCosts(action);
             var resourcesVO = new ResourcesVO();
             if (costs) {
                 for (var key in costs) {
@@ -955,7 +955,7 @@ define([
         },
 
         // Returns the cost factor of a given action, usually 1, but may depend on the current status for some actions
-        getCostFactor: function(action) {
+        getCostFactor: function (action, cost) {
             if (!this.playerLocationNodes || !this.playerLocationNodes.head) return 1;
 
             var sector = this.playerLocationNodes.head.entity;
@@ -978,18 +978,6 @@ define([
 
             var factor = 1;
             switch (action) {
-                case "move_level_down":
-                    factor += passageComponent.passageDown && passageComponent.passageDown.climbable ? 2 : 0;
-                    factor *= getShoeBonus();
-                    factor *= getPerkBonus();
-                    break;
-
-                case "move_level_up":
-                    factor += passageComponent.passageUp && passageComponent.passageUp.climbable ? 2 : 0;
-                    factor *= getShoeBonus();
-                    factor *= getPerkBonus();
-                    break;
-
                 case "move_sector_north":
                 case "move_sector_east":
                 case "move_sector_west":
@@ -998,10 +986,14 @@ define([
                 case "move_sector_se":
                 case "move_sector_sw":
                 case "move_sector_nw":
+                case "move_level_down":
+                case "move_level_up":
                 case "move_camp_level":
                 case "move_camp_global":
-                    factor *= getShoeBonus();
-                    factor *= getPerkBonus();
+                    if (cost == "stamina") {
+                        factor *= getShoeBonus();
+                        factor *= getPerkBonus();
+                    }
                     break;
             }
 
@@ -1070,10 +1062,10 @@ define([
 
         // NOTE: this should always return all possible costs as keys (even if value currently is 0)
         // NOTE: if you change this mess, keep GDD up to date
-        // statusFactor = a factor based on current status such as equipped items (default 1)
-		getCosts: function (action, statusFactor, otherSector) {
+        // multiplier: simple multiplier applied to ALL of the costs
+		getCosts: function (action, multiplier, otherSector) {
             if (!action) return null;
-            if (!statusFactor) statusFactor = this.getCostFactor(action);
+            if (!multiplier) multiplier = 1;
 
 			var result = {};
             var skipRounding = false;
@@ -1104,6 +1096,7 @@ define([
 
 				for (var key in costs) {
 					if (key.indexOf("cost_factor") >= 0) continue;
+                    var statusFactor = this.getCostFactor(action, key);
 
                     var value = costs[key];
                     var baseCost = 0;
@@ -1128,11 +1121,11 @@ define([
                     if (ordinal1 < requiredOrdinal) {
                         result[key] = 0;
                     } else {
-                        var cost = this.getCost(baseCost, linearScale, e1Scale, e1Base, e2Scale, e2Exp, ordinal1, ordinal2, statusFactor);
+                        var cost = this.getCost(baseCost, linearScale, e1Scale, e1Base, e2Scale, e2Exp, ordinal1, ordinal2, statusFactor * multiplier);
                         if (!isOutpost || !isCampBuildAction) {
                             result[key] = cost;
                         } else {
-                            var costOutpost = this.getCost(baseCost, linearScale, e1Scale, e1BaseOutpost, e2Scale, e2ExpOutpost, ordinal1, ordinal2, statusFactor);
+                            var costOutpost = this.getCost(baseCost, linearScale, e1Scale, e1BaseOutpost, e2Scale, e2ExpOutpost, ordinal1, ordinal2, statusFactor * multiplier);
                             if (cost === costOutpost && e1Base === e1BaseOutpost && e2Exp === e2ExpOutpost) {
                                 // default: unless outpost cost otherwise defined, just scale
                                 costOutpost *= 1.25;
@@ -1147,7 +1140,7 @@ define([
 					case "move_camp_level":
                         var path = this.getPathToNearestCamp(sector);
                         var sectorsToMove = path ? path.length : 99;
-                        return this.getCosts("move_sector_west", sectorsToMove * statusFactor);
+                        return this.getCosts("move_sector_west", sectorsToMove);
 
 					case "move_camp_global":
 						result.stamina = 10 * PlayerActionConstants.costs.move_sector_west.stamina * statusFactor;

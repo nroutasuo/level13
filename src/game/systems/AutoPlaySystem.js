@@ -419,8 +419,7 @@ define(['ash',
                 if (actionAvailable)
                     continue;
 
-                var costFactor =  GameGlobals.playerActionsHelper.getCostFactor(actionName);
-                var costs = GameGlobals.playerActionsHelper.getCosts(actionName, costFactor);
+                var costs = GameGlobals.playerActionsHelper.getCosts(actionName);
 
                 var costFactor = 1;
                 var costFactorRes = null;

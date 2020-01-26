@@ -387,7 +387,6 @@ define(['ash',
 
 			generateActionButtonCallout: function (action) {
 				var baseActionId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-				var costFactor = GameGlobals.playerActionsHelper.getCostFactor(action);
 
 				var content = "";
 				var enabledContent = "";
@@ -405,7 +404,7 @@ define(['ash',
 				}
 
 				// visible if button is enabled: costs & risks
-				var costs = GameGlobals.playerActionsHelper.getCosts(action, costFactor);
+				var costs = GameGlobals.playerActionsHelper.getCosts(action);
 				var hasCosts = action && costs && Object.keys(costs).length > 0;
 				if (hasCosts) {
 					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";

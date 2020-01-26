@@ -142,8 +142,7 @@ define([
 			var $enabledContent = buttonElements.calloutContentEnabled;
 			var $disabledContent = buttonElements.calloutContentDisabled;
 
-			var costFactor = GameGlobals.playerActionsHelper.getCostFactor(action);
-			var costs = GameGlobals.playerActionsHelper.getCosts(action, costFactor);
+			var costs = GameGlobals.playerActionsHelper.getCosts(action);
 
 			var costsStatus = {};
 			costsStatus.hasCostBlockers = false;
@@ -384,8 +383,7 @@ define([
 					elements.cooldownDuration = $button.children(".cooldown-duration");
 					elements.cooldownAction = $button.children(".cooldown-action");
 
-					var costFactor = GameGlobals.playerActionsHelper.getCostFactor(action);
-					var costs = GameGlobals.playerActionsHelper.getCosts(action, costFactor);
+					var costs = GameGlobals.playerActionsHelper.getCosts(action);
 					elements.costSpans = {};
 					elements.costSpanValues = {};
 					for (var key in costs) {
