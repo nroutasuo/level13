@@ -10,8 +10,8 @@ define(['ash'], function (Ash) {
         // Storage
         BASE_STORAGE: 50,
         STORAGE_PER_IMPROVEMENT: 50,
-        STORAGE_PER_IMPROVEMENT_LEVEL_2: 150,
-        STORAGE_PER_IMPROVEMENT_LEVEL_3: 450,
+        STORAGE_PER_IMPROVEMENT_LEVEL_2: 100,
+        STORAGE_PER_IMPROVEMENT_LEVEL_3: 200,
         
         // Rumours
         RUMOURS_PER_POP_PER_SEC_BASE: 0.0003,
