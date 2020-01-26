@@ -68,6 +68,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 fight_gang: {
+                    vision: [50, -1],
                     health: 70,
                 },
                 
@@ -1681,7 +1682,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 build_in_house: {
                     resource_metal: 30,
-                    cost_factor_e1_base: 2.25,
+                    cost_factor_e1_base: 2,
                 },
 
                 build_in_house2: {
@@ -1777,7 +1778,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 build_in_tradepost: {
-                    resource_metal: 78,
+                    resource_metal: 72,
                 },
 
                 build_in_inn: {
@@ -1804,7 +1805,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 build_in_library: {
                     resource_metal: 200,
-                    resource_rope: 100,
+                    resource_rope: 150,
                     cost_factor_e1_base: 2,
                 },
 
@@ -1831,7 +1832,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 build_in_stable: {
-                    resource_metal: 300,
+                    resource_metal: 200,
                     resource_rope: 50,
                     resource_fuel: 30,
                     cost_factor_e1_base: 1.75,
@@ -2174,6 +2175,11 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 craft_clothing_upper_1: {
                     resource_rope: 5
                 },
+                
+                craft_clothing_upper_15: {
+                    resource_rope: 10,
+                    item_res_silk: 1,
+                },
 
                 craft_clothing_upper_2: {
                     resource_rope: 20
@@ -2205,7 +2211,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 craft_bag_1: {
-                    resource_rope: 100,
+                    resource_rope: 80,
                     item_res_leather: 3,
                 },
 
