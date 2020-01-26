@@ -867,7 +867,7 @@ define(['ash',
             this.currentAction = action;
 			var playerActionFunctions = this;
 			GameGlobals.fightHelper.handleRandomEncounter(action, function () {
-				playerActionFunctions.addLogMessage(LogConstants.MSG_ID_GANG_DEFEATED, "The road is clear.");
+				playerActionFunctions.addLogMessage(LogConstants.MSG_ID_GANG_DEFEATED, "The street is clear.");
 				playerActionFunctions.completeAction(action);
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 			}, function () {
