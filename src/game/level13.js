@@ -42,6 +42,7 @@ define([
     'game/systems/LevelPassagesSystem',
     'game/systems/CollectorSystem',
     'game/systems/FightSystem',
+    'game/systems/FollowerSystem',
     'game/systems/PopulationSystem',
     'game/systems/WorkerSystem',
     'game/systems/FaintingSystem',
@@ -119,6 +120,7 @@ define([
     LevelPassagesSystem,
     CollectorSystem,
     FightSystem,
+    FollowerSystem,
     PopulationSystem,
     WorkerSystem,
     FaintingSystem,
@@ -235,6 +237,7 @@ define([
 			this.engine.addSystem(new HazardSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CollectorSystem(), SystemPriorities.update);
 			this.engine.addSystem(new FightSystem(), SystemPriorities.update);
+			this.engine.addSystem(new FollowerSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PopulationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new WorkerSystem(), SystemPriorities.update);
 			this.engine.addSystem(new FaintingSystem(), SystemPriorities.update);
