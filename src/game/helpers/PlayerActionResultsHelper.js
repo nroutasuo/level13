@@ -148,7 +148,7 @@ define([
             var efficiency = this.getScavengeEfficiency();
 
             rewards.gainedResources = this.getRewardResources(0.95 + efficiency * 0.05, 1, efficiency, sectorResources);
-            rewards.gainedItems = this.getRewardItems(efficiency * 0.0275, 0.01 + efficiency * 0.02, this.itemResultTypes.scavenge, efficiency, itemsComponent, campOrdinal, step);
+            rewards.gainedItems = this.getRewardItems(efficiency * 0.025, 0.01 + efficiency * 0.02, this.itemResultTypes.scavenge, efficiency, itemsComponent, campOrdinal, step);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
             
             this.addStash(rewards, sectorFeatures.stash);
@@ -756,15 +756,17 @@ define([
                     if (itemDefinition.requiredCampOrdinal > 0 && isObsoletable && itemDefinition.craftable && itemDefinition.requiredCampOrdinal < minCampOrdinal) continue;
                     validItems.push(itemDefinition);
                     
-                    var campOrdinalFactor = 1;
-                    if (itemDefinition.requiredCampOrdinal > 0 && isObsoletable)
-                        campOrdinalFactor = 1 - Math.abs(campOrdinal - itemDefinition.requiredCampOrdinal) / maxCampOrdinalDiff;
                     var score = 1;
                     if (GameGlobals.itemsHelper.isObsolete(itemDefinition, itemsComponent, false))
                         score = score / 2;
                     score *= typeProb;
+                    var campOrdinalFactor = 1;
+                    if (itemDefinition.requiredCampOrdinal > 0 && isObsoletable)
+                        campOrdinalFactor = 1 - Math.abs(campOrdinal - itemDefinition.requiredCampOrdinal) / maxCampOrdinalDiff;
                     score *= campOrdinalFactor;
                     if (itemDefinition.craftable)
+                        score = score / 2;
+                    if (itemDefinition.craftable && isObsoletable)
                         score = score / 2;
                     itemScores[itemDefinition.id] = score;
                 }

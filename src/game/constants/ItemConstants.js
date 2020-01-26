@@ -50,7 +50,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("weapon12", "Knife", "Weapon", 2, true, true, false, 2, 1, {atk: 4, spd: 1.1}, "img/items/weapon-shiv.png", "A bit sturdier than the shiv."),
                 new ItemVO("weapon2", "Spear", "Weapon", 4, true, true, false, 3, 1, {atk: 6, spd: 1}, "img/items/weapon-shiv.png", "Old-fashioned but reliable weapon."),
                 new ItemVO("weapon25", "Heavy Axe", "Weapon", 5, true, true, false, 3, 1, {atk: 8, spd: 1.5}, "img/items/weapon-shiv.png", "Easy to use and reliable."),
-                new ItemVO("weapon3", "Crossbow", "Weapon", 6, true, true, false, 3, 1, {atk: 12, spd: 1.1}, "img/items/weapon-shiv.png", "A deadly ranged weapon consisting of a horizontal limb assembly mounted on a stock that shoots projectiles."),
+                new ItemVO("weapon3", "Crossbow", "Weapon", 6, true, true, false, 3, 1, {atk: 12, spd: 1.1}, "img/items/weapon-shiv.png", "A deadly ranged weapon."),
                 new ItemVO("weapon4", "Pistol", "Weapon", 8, true, true, false, 4, 1, {atk: 24, spd: 0.9}, "img/items/weapon-shiv.png", "A crude single-shot pistol, like a hand-held miniature cannon."),
                 new ItemVO("weapon5", "Revolver", "Weapon", 10, true, true, false, 4, 1, {atk: 30, spd: 0.9}, "img/items/weapon-shiv.png", "A more sophisticated handgun that allows several shots before reloading."),
                 new ItemVO("weapon52", "Scrap Metal Waraxe", "Weapon", 11, true, true, false, 1, 1, {atk: 38, spd: 1.25}, "img/items/weapon-shiv.png", "A formidable axe specifically designed for combat"),
@@ -111,7 +111,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             ],
             shoes: [
                 new ItemVO("shoe_1", "Improvised flip-flops", "Shoes", 1, true, true, false, 2, 1, {movement: 0.9}, "img/items/shoe-1.png", "Protects a scavenger's feet from sharp things that might be lying around."),
-                new ItemVO("shoe_2", "Worn trainers", "Shoes", 5, true, false, false, 5, 3, {movement: 0.8}, "img/items/shoe-2.png", "Decent, reasonable shoes for walking in most places."),
+                new ItemVO("shoe_2", "Worn trainers", "Shoes", 5, true, false, false, 5, 3, {movement: 0.8}, "img/items/shoe-2.png", "Decent shoes for walking in most places."),
                 new ItemVO("shoe_3", "Hiking boots", "Shoes", 10, true, false, false, 8, 5, {movement: 0.5}, "img/items/shoe-3.png", "Good shoes like these can make travelling much easier."),
             ],
             follower: [
