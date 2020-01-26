@@ -193,13 +193,15 @@ define([
                 log.i("hide game", this)
                 GameGlobals.uiFunctions.hideGame(false, false);
                 setTimeout(function () {
-                    log.i("show game", this)
-                    GameGlobals.uiFunctions.showGame(true);
-                }, 750);
-                GameGlobals.playerActionFunctions.passTime(60);
-                sys.teleport(sector);
-                sys.log(msgLog);
-                sys.save();
+                    setTimeout(function () {
+                        log.i("show game", this)
+                        GameGlobals.uiFunctions.showGame(true);
+                    }, 750);
+                    GameGlobals.playerActionFunctions.passTime(60);
+                    sys.teleport(sector);
+                    sys.log(msgLog);
+                    sys.save();
+                }, 250);
             };
             if (handleResults) {
     			var resultVO = GameGlobals.playerActionResultsHelper.getFadeOutResults(loseInventoryProbability, injuryProbability, loseFollowerProbability);
