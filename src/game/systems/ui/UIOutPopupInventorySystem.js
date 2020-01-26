@@ -165,7 +165,9 @@ define([
             var bagComponent = this.playerActionResultNodes.head.entity.get(BagComponent);
             BagConstants.updateCapacity(bagComponent, rewards, resultNode.resources, playerAllItems);
 
-            $("#inventory-popup-bar").data("progress-percent",  bagComponent.selectedCapacity/bagComponent.totalCapacity*100);
+            var selectedCapacityPercent = bagComponent.selectedCapacity / bagComponent.totalCapacity * 100;
+            log.i("update capacity: " + selectedCapacityPercent + " = " + bagComponent.selectedCapacity + "/" + bagComponent.totalCapacity);
+            $("#inventory-popup-bar").data("progress-percent", selectedCapacityPercent);
             $("#inventory-popup-bar .progress-label").text((Math.ceil( bagComponent.selectedCapacity * 10) / 10) + " / " + bagComponent.totalCapacity);
 
             GameGlobals.uiFunctions.toggle(".inventory-selection-takeall", bagComponent.selectableCapacity > bagComponent.selectionStartCapacity);
