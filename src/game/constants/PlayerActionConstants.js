@@ -1910,7 +1910,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 craft_light2: {
                     resource_metal: 50,
                     resource_fuel: 20,
-                    item_res_hairpin: 1,
+                    item_res_hairpin: 2,
                 },
 
                 craft_exploration_1: {
@@ -1919,22 +1919,22 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 craft_first_aid_kit_1: {
-                    item_res_bands: 2,
+                    item_res_bands: 3,
                     resource_water: 10,
                     resource_herbs: 10,
                     item_res_bottle: 1,
                 },
 
                 craft_first_aid_kit_2: {
-                    item_res_bands: 2,
+                    item_res_bands: 5,
                     resource_water: 20,
                     resource_medicine: 10,
-                    item_res_bottle: 2,
+                    item_res_bottle: 3,
                 },
 
                 craft_glowstick_1: {
                     resource_fuel: 10,
-                    item_res_tape: 1,
+                    item_res_tape: 2,
                     item_res_glowbug: 1,
                 },
                 
@@ -1944,15 +1944,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 
                 craft_flee_1: {
                     resource_water: 5,
+                    item_res_tape: 1,
                     item_res_bottle: 1,
-                },
-
-                craft_shade1: {
-                    resource_metal: 10,
-                },
-
-                craft_shade2: {
-                    resource_metal: 20,
                 },
 
                 craft_weapon1: {
@@ -1963,13 +1956,13 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 craft_weapon12: {
                     resource_metal: 15,
                     resource_rope: 5,
-                    item_res_bands: 1,
+                    item_res_bands: 2,
                 },
 
                 craft_weapon2: {
                     resource_metal: 20,
                     resource_rope: 10,
-                    item_res_bands: 1,
+                    item_res_bands: 3,
                     item_res_tape: 1,
                 },
 
@@ -1977,7 +1970,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_metal: 50,
                     resource_rope: 10,
                     item_res_bands: 1,
-                    item_res_tape: 2,
+                    item_res_tape: 5,
                 },
 
                 craft_weapon3: {
@@ -2007,7 +2000,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 craft_weapon52: {
                     resource_metal: 100,
                     item_res_leather: 1,
-                    item_res_tape: 1,
+                    item_res_tape: 5,
                 },
                 
                 craft_weapon58: {
@@ -2048,6 +2041,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 craft_clothing_head_2: {
                     resource_rope: 50,
+                    item_res_silk: 1,
                 },
 
                 craft_clothing_head_3: {
@@ -2093,18 +2087,18 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_rope: 20,
                     resource_tools: 10,
                     item_res_leather: 3,
-                    item_res_silk: 1,
+                    item_res_silk: 3,
                 },
 
                 craft_clothing_hands_3: {
                     resource_rope: 20,
                     item_res_leather: 3,
-                    item_res_silk: 2,
+                    item_res_silk: 5,
                 },
 
                 craft_clothing_hands_4: {
                     resource_rope: 20,
-                    item_res_leather: 5,
+                    item_res_tape: 5,
                     item_res_silk: 5,
                 },
 
@@ -2153,23 +2147,23 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 craft_clothing_lower_3: {
                     resource_rope: 20,
-                    item_res_silk: 1,
+                    item_res_silk: 2,
                 },
 
                 craft_clothing_lower_4: {
                     resource_rope: 20,
-                    item_res_silk: 2,
+                    item_res_silk: 5,
                 },
 
                 craft_clothing_lower_45: {
                     resource_rope: 50,
-                    item_res_silk: 1,
-                    item_res_bands: 1,
+                    item_res_silk: 3,
+                    item_res_bands: 5,
                 },
 
                 craft_clothing_lower_5: {
                     resource_rope: 50,
-                    item_res_silk: 5,
+                    item_res_silk: 10,
                 },
 
                 craft_clothing_upper_1: {
@@ -2180,18 +2174,15 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_rope: 10,
                     item_res_silk: 1,
                 },
-
-                craft_clothing_upper_2: {
-                    resource_rope: 20
-                },
-
+                
                 craft_clothing_upper_3: {
-                    resource_rope: 30
+                    resource_rope: 30,
+                    item_res_silk: 3,
                 },
 
                 craft_clothing_upper_4: {
                     resource_rope: 30,
-                    item_res_silk: 2,
+                    item_res_silk: 5,
                 },
 
                 craft_clothing_upper_5: {
@@ -2202,7 +2193,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 craft_shoe_1: {
                     resource_rope: 10,
                     item_res_tape: 1,
-                    item_res_leather: 1,
+                    item_res_leather: 3,
                 },
 
                 craft_bag_0: {
@@ -2212,19 +2203,14 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 craft_bag_1: {
                     resource_rope: 80,
-                    item_res_leather: 3,
+                    item_res_leather: 5,
                 },
 
                 craft_bag_2: {
                     resource_rope: 100,
                     resource_herbs: 10,
-                    item_res_leather: 5,
-                },
-
-                craft_bag_5: {
-                    resource_rope: 100,
-                    resource_herbs: 10,
-                    resource_fuel: 10,
+                    item_res_leather: 10,
+                    item_res_bands: 3,
                 },
                 
                 unlock_item_clothing5l: {

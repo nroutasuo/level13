@@ -147,8 +147,15 @@ define([
             var step = GameGlobals.levelHelper.getCampStep(playerPos);
             var efficiency = this.getScavengeEfficiency();
 
-            rewards.gainedResources = this.getRewardResources(0.95 + efficiency * 0.05, 1, efficiency, sectorResources);
-            rewards.gainedItems = this.getRewardItems(efficiency * 0.025, 0.01 + efficiency * 0.02, this.itemResultTypes.scavenge, efficiency, itemsComponent, campOrdinal, step);
+             // starts from 1 and approaches 0.5 as campOrdinal increases
+            var ingredientCampOrdinalFactor = (campOrdinal + 1) / campOrdinal / 2;
+            
+            var resourceProb = 0.95 + efficiency * 0.05;
+            var itemProb = efficiency * 0.0225;
+            var ingredientProb = 0.01 * ingredientCampOrdinalFactor + efficiency * 0.02;
+
+            rewards.gainedResources = this.getRewardResources(resourceProb, 1, efficiency, sectorResources);
+            rewards.gainedItems = this.getRewardItems(itemProb, ingredientProb, this.itemResultTypes.scavenge, efficiency, itemsComponent, campOrdinal, step);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
             
             this.addStash(rewards, sectorFeatures.stash);
@@ -246,10 +253,9 @@ define([
 				availableResources.setResource(resourceNames.food, 10);
 				availableResources.setResource(resourceNames.metal, 3);
 				rewards.gainedResources = this.getRewardResources(0.25, 2, this.getScavengeEfficiency(), availableResources);
-                rewards.gainedItems = this.getRewardItems(0.2, 0.25, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step);
+                rewards.gainedItems = this.getRewardItems(0.2, 0.2, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step);
 				rewards.gainedReputation = 1;
             } else {
-				// TODO lost followers?
 				rewards = this.getFadeOutResults(0.5, 1, 1);
 			}
 			return rewards;
@@ -695,7 +701,8 @@ define([
 
 			// Ingredients
 			if (hasBag && Math.random() < ingredientProbability) {
-				var amount = Math.floor(Math.random() * efficiency * 5) + 1;
+                var max = Math.floor(Math.random() * 5);
+				var amount = Math.floor(Math.random() * efficiency * max) + 1;
 				var ingredient = GameGlobals.itemsHelper.getUsableIngredient();
 				for (var i = 0; i <= amount; i++) {
 					result.push(ingredient.clone());
