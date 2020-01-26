@@ -1384,12 +1384,12 @@ define([
                     var hazardValueRand = WorldCreatorRandom.random(3000 + seed / (l + 40) + x * y / 6 + seed + y * 2 + l * l * 959);
                     var value = hazardValueRand * 100;
                     if (value < minHazardCold) value = minHazardCold;
+                    if (value > maxHazardCold) value = maxHazardCold;
                     if (value > 10) {
                         value = Math.floor(value / 5) * 5;
                     } else {
                         value = Math.floor(value);
                     }
-                    if (value > maxHazardCold) value = maxHazardCold;
                     sectorVO.hazards.cold = value;
                 }
             }
