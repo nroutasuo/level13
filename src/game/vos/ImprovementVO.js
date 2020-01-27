@@ -155,6 +155,8 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             case improvementNames.house2:
             case improvementNames.darkfarm:
             case improvementNames.library:
+            case improvementNames.lights:
+            case improvementNames.generator:
                 return 0.5;
             case improvementNames.inn:
             case improvementNames.market:

@@ -46,7 +46,8 @@ define(['ash'], function (Ash) {
         PRODUCTION_EVIDENCE_PER_WORKER_PER_S: 0.0005,
         
         // reputation
-        REPUTATION_TO_POPULATION_FACTOR: 0.75,
+        REPUTATION_TO_POPULATION_FACTOR: 0.83,
+        REPUTATION_TO_POPULATION_OFFSET: -0.25,
         REPUTATION_PER_RADIO_PER_SEC: 0.1,
         REPUTATION_PER_HOUSE_FROM_GENERATOR: 0.3,
         REPUTATION_PENALTY_DEFENCES_THRESHOLD: 0.25,
@@ -115,13 +116,13 @@ define(['ash'], function (Ash) {
         getRequiredReputation: function (pop) {
             if (pop < 1) return 0;
             pop = Math.ceil(pop);
-            var result = Math.max(1, Math.pow(pop, CampConstants.REPUTATION_TO_POPULATION_FACTOR));
+            var result = Math.max(1, Math.pow(pop, CampConstants.REPUTATION_TO_POPULATION_FACTOR) + CampConstants.REPUTATION_TO_POPULATION_OFFSET);
             return Math.floor(result * 100) / 100;
         },
         
         getMaxPopulation: function (reputation) {
             if (reputation < 1) return 0;
-            return Math.floor(Math.pow(reputation, 1 / CampConstants.REPUTATION_TO_POPULATION_FACTOR));
+            return Math.floor(Math.pow(reputation - CampConstants.REPUTATION_TO_POPULATION_OFFSET, 1 / CampConstants.REPUTATION_TO_POPULATION_FACTOR));
         },
         
         getSoldierDefence: function (upgradeLevel) {
