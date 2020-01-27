@@ -2214,60 +2214,60 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
                 
                 unlock_item_clothing5l: {
-                    rumours: 30006,
+                    rumours: 3418,
                 },
                 
                 unlock_item_clothing8: {
-                	rumours: 22562,
+                	rumours: 3560,
                 },
 
                 unlock_item_weapon8: {
-                	evidence: 69,
+                	evidence: 81,
                 	favour: 277,
                 },
 
                 unlock_building_ceiling: {
-                	rumours: 13537,
-                	evidence: 52,
+                	rumours: 2136,
+                	evidence: 61,
                 },
 
                 unlock_building_spaceship1: {
-                	rumours: 22562,
-                	evidence: 86,
+                	rumours: 3560,
+                	evidence: 101,
                 },
 
                 unlock_building_spaceship2: {
-                	rumours: 27075,
-                	evidence: 103,
+                	rumours: 4272,
+                	evidence: 122,
                 },
 
                 unlock_building_spaceship3: {
-                	rumours: 27075,
-                	evidence: 103,
+                	rumours: 4272,
+                	evidence: 122,
                 },
 
                 unlock_item_bag_4: {
-                	evidence: 74,
+                	evidence: 88,
                 	favour: 48,
                 },
 
                 improve_building_market3: {
-                	rumours: 29257,
-                	evidence: 92,
+                	rumours: 5724,
+                	evidence: 110,
                 	favour: 60,
                 },
 
                 upgrade_building_cementmill: {
-                	evidence: 74,
+                	evidence: 88,
                 },
 
                 unlock_building_researchcenter: {
-                	evidence: 55,
+                	evidence: 66,
                 },
 
                 unlock_item_weapon7: {
-                	rumours: 35108,
-                	evidence: 111,
+                	rumours: 6869,
+                	evidence: 132,
                 },
 
                 unlock_item_clothing_head_5: {
@@ -2275,101 +2275,101 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 upgrade_building_apothecary: {
-                	evidence: 119,
+                	evidence: 142,
                 	favour: 30,
                 },
 
                 unlock_item_weapon6: {
-                	evidence: 101,
+                	evidence: 121,
                 },
 
                 unlock_building_radio: {
-                	rumours: 9726,
-                	evidence: 119,
+                	rumours: 2588,
+                	evidence: 142,
                 },
 
                 upgrade_building_hospital: {
-                	rumours: 8267,
+                	rumours: 2200,
                 },
 
                 unlock_itemclothing_lower_45: {
-                	rumours: 9726,
+                	rumours: 2588,
                 	favour: 30,
                 },
 
                 unlock_item_weapon58: {
-                	evidence: 113,
+                	evidence: 131,
                 },
 
                 unlock_item_scavenger_gear: {
-                	rumours: 6642,
+                	rumours: 2210,
                 },
 
                 upgrade_worker_chemist: {
-                	evidence: 85,
+                	evidence: 99,
                 	favour: 19,
                 },
 
                 unlock_item_clothing_upper_4: {
-                	rumours: 5978,
-                	evidence: 102,
+                	rumours: 1989,
+                	evidence: 118,
                 	favour: 22,
                 },
 
                 upgrade_building_shrine: {
-                	rumours: 5314,
+                	rumours: 1768,
                 	favour: 20,
                 },
 
                 unlock_item_weapon52: {
-                	evidence: 107,
+                	evidence: 124,
                 	favour: 13,
                 },
 
                 unlock_item_clothing6: {
-                	rumours: 2443,
+                	rumours: 1002,
                 },
 
                 upgrade_building_storage2: {
-                	rumours: 2714,
-                	evidence: 107,
+                	rumours: 1113,
+                	evidence: 124,
                 },
 
                 upgrade_building_fortifications: {
-                	rumours: 2714,
+                	rumours: 1113,
                 },
 
                 unlock_item_clothing3h: {
-                	rumours: 2443,
+                	rumours: 1002,
                 	favour: 11,
                 },
 
                 unlock_item_clothing4he: {
-                	evidence: 80,
+                	evidence: 93,
                 	favour: 9,
                 },
 
                 unlock_item_bag3: {
-                	rumours: 2262,
-                	evidence: 48,
+                	rumours: 1048,
+                	evidence: 55,
                 },
 
                 unlock_item_weapon5: {
-                	rumours: 3017,
-                	evidence: 64,
+                	rumours: 1398,
+                	evidence: 73,
                 },
 
                 unlock_building_aqueduct: {
-                	evidence: 77,
+                	evidence: 88,
                 },
 
                 unlock_item_clothing4: {
-                	evidence: 64,
+                	evidence: 73,
                 },
 
                 upgrade_building_library2: {
-                	rumours: 3318,
-                	evidence: 70,
+                	rumours: 1538,
+                	evidence: 81,
                 },
 
                 unlock_building_apothecary: {
@@ -2381,173 +2381,173 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_building_barracks: {
-                	rumours: 2800,
+                	rumours: 1499,
                 	favour: 4,
                 },
 
                 upgrade_building_campfire: {
-                	rumours: 2520,
-                	evidence: 269,
+                	rumours: 1349,
+                	evidence: 301,
                 	favour: 3,
                 },
 
                 upgrade_building_inn: {
-                	rumours: 2800,
+                	rumours: 1499,
                 	favour: 4,
                 },
 
                 upgrade_building_market2: {
-                	rumours: 991,
+                	rumours: 595,
                 	favour: 25,
                 },
 
                 unlock_item_weapon4: {
-                	evidence: 148,
+                	evidence: 164,
                 },
 
                 unlock_item_clothing5: {
-                	rumours: 991,
-                	evidence: 148,
+                	rumours: 595,
+                	evidence: 164,
                 },
 
                 unlock_item_clothing3: {
-                	rumours: 793,
+                	rumours: 476,
                 },
 
                 upgrade_outgoing_caravans: {
-                	rumours: 744,
+                	rumours: 446,
                 	favour: 19,
                 },
 
                 unlock_item_clothing_hands_25: {
-                	rumours: 927,
+                	rumours: 759,
                 },
 
                 upgrade_building_storage1: {
-                	evidence: 142,
+                	evidence: 156,
                 },
 
                 unlock_building_passage_hole: {
-                	evidence: 104,
+                	evidence: 115,
                 },
 
                 unlock_building_house2: {
-                	rumours: 1545,
-                	evidence: 118,
+                	rumours: 1265,
+                	evidence: 130,
                 },
 
                 unlock_building_smithy: {
-                	evidence: 93,
+                	evidence: 125,
                 },
 
                 unlock_item_bag22: {
-                	evidence: 102,
+                	evidence: 110,
                 },
 
                 unlock_item_firstaid: {
-                	rumours: 746,
+                	rumours: 596,
                 },
 
                 upgrade_building_market: {
-                	rumours: 888,
+                	rumours: 596,
                 },
 
                 upgrade_worker_collector1: {
-                	rumours: 710,
+                	rumours: 745,
                 },
 
                 unlock_building_cementmill: {
-                	evidence: 93,
+                	evidence: 110,
                 },
 
                 unlock_item_clothing4h: {
-                	rumours: 164,
-                	evidence: 50,
+                	rumours: 147,
+                	evidence: 54,
                 },
 
                 unlock_building_passage_elevator: {
-                	rumours: 218,
-                	evidence: 67,
+                	rumours: 195,
+                	evidence: 71,
                 },
 
                 unlock_item_weapon25: {
-                	rumours: 218,
+                	rumours: 195,
                 },
 
                 unlock_building_bridge: {
-                	evidence: 67,
+                	evidence: 89,
                 },
 
                 upgrade_building_library: {
-                	rumours: 218,
+                	rumours: 166,
                 },
 
                 unlock_building_lights: {
-                	evidence: 84,
+                	evidence: 89,
                 },
 
                 unlock_item_weapon2: {
-                	rumours: 181,
-                	evidence: 103,
+                	rumours: 167,
+                	evidence: 109,
                 },
 
                 upgrade_worker_scavenger: {
-                	rumours: 227,
-                	evidence: 129,
+                	rumours: 208,
+                	evidence: 136,
                 },
 
                 unlock_outgoing_caravans: {
-                	rumours: 249,
+                	rumours: 229,
                 },
 
                 unlock_building_library: {
-                	evidence: 63,
+                	evidence: 87,
                 },
 
                 unlock_building_inn: {
-                	rumours: 81,
-                	evidence: 84,
+                	rumours: 78,
+                	evidence: 87,
                 },
 
                 unlock_building_market: {
-                	rumours: 81,
+                	rumours: 78,
                 },
 
                 unlock_building_fortifications: {
-                	rumours: 73,
-                	evidence: 75,
+                	rumours: 70,
+                	evidence: 78,
                 },
 
                 unlock_item_bag2: {
-                	rumours: 61,
+                	rumours: 58,
                 },
 
                 unlock_weapon_15: {
-                	rumours: 50,
+                	rumours: 65,
                 },
 
                 unlock_clothing_basic: {
-                	rumours: 35,
+                	rumours: 46,
                 },
 
                 unlock_clothing_warm: {
-                	evidence: 128,
+                	evidence: 106,
                 },
 
                 unlock_building_darkfarm: {
-                	rumours: 50,
+                	rumours: 82,
                 },
 
                 unlock_building_tradingpost: {
-                	evidence: 64,
+                	evidence: 66,
                 },
 
                 unlock_item_clothing2: {
-                	rumours: 9,
+                	rumours: 8,
                 },
 
                 unlock_building_passage_staircase: {
-                	evidence: 49,
+                	evidence: 52,
                 },
 
                 unlock_building_hospital: {
@@ -2555,11 +2555,11 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_worker_rope: {
-                	rumours: 9,
+                	rumours: 10,
                 },
 
                 unlock_item_shoe1: {
-                	rumours: 13,
+                	rumours: 17,
                 	evidence: 32,
                 },
 
