@@ -3,16 +3,40 @@ function (Ash) {
     
     var CampVisHelper = Ash.Class.extend({
         
-        // TODO create differences between levels and worlds
-        
         // i -> { x, z }
         // x: 0 (middle) to positive and negative infinity
         // z: 0-3 (smaller is in front) (4 for special cases like fortifications)
         coordinates: {},
+        
+        // settings per camp (ordinal) to create different camps on different levels
+        // TODO adjust depending on world structure (what kind of sector/level the camp is actually located on)
+        campSettings: {
+            1: {},
+            2: {},
+            3: {},
+            4: {},
+            5: {},
+            6: {},
+            7: {},
+            8: {},
+            9: {},
+            10: {},
+            11: {},
+            12: {},
+            13: {},
+            14: {},
+            15: {},
+        },
 
         constructor: function () {
             this.gridX = 10;
             this.defaultBuildingSize = 15;
+        },
+        
+        initCampSettings: function (campOrdinal, settings) {
+            this.campSettings[campOrdinal] = settings;
+            log.i("init camp settings: " + campOrdinal);
+            log.i(settings);
         },
         
         initCoordinate: function (i) {
@@ -177,7 +201,7 @@ function (Ash) {
             return true;
         },
         
-        getFreeCampBuildingSpot: function (sectorImprovements, building) {
+        getFreeCampBuildingSpot: function (campOrdinal, sectorImprovements, building) {
             var buildingType1 = building.name;
             if (buildingType1 == improvementNames.fortification) {
                 return -1;

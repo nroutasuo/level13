@@ -8,9 +8,9 @@ define([
     'game/constants/ColorConstants',
     'game/nodes/PlayerLocationNode',
     'game/components/sector/improvements/SectorImprovementsComponent',
-    'game/worldcreator/WorldCreatorRandom',
+    'game/components/type/LevelComponent',
 ], function (
-    Ash, MathUtils, CanvasUtils, UIState, GameGlobals, GlobalSignals, ColorConstants, PlayerLocationNode, SectorImprovementsComponent, WorldCreatorRandom
+    Ash, MathUtils, CanvasUtils, UIState, GameGlobals, GlobalSignals, ColorConstants, PlayerLocationNode, SectorImprovementsComponent, LevelComponent
 ) {
 
     var UIOutCampVisSystem = Ash.System.extend({
@@ -68,10 +68,22 @@ define([
             if (!this.playerLocationNodes.head) return;
             if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.in) return;
             
+            this.refreshSettings();
             this.refreshGrid();
             this.refreshFloor();
             this.refreshBuildings();
             this.updateInfoOverlay();
+        },
+        
+        refreshSettings: function () {
+            var level = this.playerLocationNodes.head.position.level;
+            var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
+            var levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(level);
+            var levelComponent = levelEntity.get(LevelComponent);
+            var levelVO = levelComponent.levelVO;
+            var settings = {};
+            settings.populationGrowthFactor = levelVO.populationGrowthFactor;
+            GameGlobals.campVisHelper.initCampSettings(campOrdinal, settings);
         },
         
         refreshGrid: function () {
@@ -96,6 +108,7 @@ define([
         refreshBuildings: function () {
             if (!this.playerLocationNodes.head) return;
             var level = this.playerLocationNodes.head.position.level;
+            var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
             var reset = this.buildingsLevel !== level;
             
             // update divs
@@ -128,7 +141,7 @@ define([
                     if (!this.elements.buildings[building.name][n]) this.elements.buildings[building.name][n] = [];
                     for (var j = 0; j < visualCount; j++) {
                         // get coords
-                        var coords = this.getBuildingCoords(improvements, building, n, j);
+                        var coords = this.getBuildingCoords(campOrdinal, improvements, building, n, j);
                         if (!coords) {
                             log.w("No coordinates found for building " + building.name + " " + n + " " + j);
                             continue;
@@ -439,11 +452,14 @@ define([
             return GameGlobals.campVisHelper.getCoords(i);
         },
         
-        getBuildingCoords: function (improvements, building, n, j) {
+        getBuildingCoords: function (campOrdinal, improvements, building, n, j) {
             if (building.name == improvementNames.fortification) {
                 return GameGlobals.campVisHelper.getFortificationCoords(n);
             }
-            var index = improvements.getSelectedCampBuildingSpot(building, n, j, true);
+            var index = improvements.getSelectedCampBuildingSpot(building, n, j);
+            if (index < 0) {
+                index = improvements.assignSelectedCampBuildingSpot(campOrdinal, building, n, j);
+            }
             if (index < 0) {
                 log.w("No building spot defined for " + building.name + " " + n + " " + j + " | " + index);
                 return null;
