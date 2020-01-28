@@ -95,7 +95,7 @@ define([
             var costAmount;
             for (var costName in costs) {
                 costNameParts = costName.split("_");
-                costAmount = costs[costName];
+                costAmount = costs[costName] || 0;
                 if (costName === "stamina") {
                     this.playerStatsNodes.head.stamina.stamina -= costAmount;
                 } else if (costName === "rumours") {
@@ -1143,6 +1143,7 @@ define([
                         return this.getCosts("move_sector_west", sectorsToMove);
 
 					case "move_camp_global":
+                        var statusFactor = this.getCostFactor(action, "stamina");
 						result.stamina = 10 * PlayerActionConstants.costs.move_sector_west.stamina * statusFactor;
 						break;
 
