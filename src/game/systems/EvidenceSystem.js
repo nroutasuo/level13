@@ -71,10 +71,8 @@ define([
 				evidenceComponent.isAccumulating = true;
 			}
             
-            if (evidenceComponent.value < 0 )
+            if (evidenceComponent.value < 0)
                 evidenceComponent.value = 0;
-            
-            GameGlobals.gameState.unlockedFeatures.projects = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(UpgradeConstants.upgradeIds.unlock_building_passage_staircase);
         },
 		
 		getLibraryUpgradeLevel: function () {

@@ -90,6 +90,7 @@ define([
             GlobalSignals.visionChangedSignal.add(function () { sys.onVisionChanged(); });
             GlobalSignals.tabChangedSignal.add(function () { sys.onTabChanged(); });
             GlobalSignals.healthChangedSignal.add(function () { sys.onHealthChanged(); });
+            GlobalSignals.tribeStatsChangedSignal.add(function () { sys.onTribeStatsChanged(); });
             GlobalSignals.inventoryChangedSignal.add(function () { sys.onInventoryChanged(); });
             GlobalSignals.slowUpdateSignal.add(function () { sys.slowUpdate(); });
             GlobalSignals.changelogLoadedSignal.add(function () { sys.updateGameVersion(); });
@@ -640,6 +641,11 @@ define([
         onHealthChanged: function () {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.updateStaminaWarningLimit();
+            this.updatePlayerStats();
+        },
+        
+        onTribeStatsChanged: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.updatePlayerStats();
         },
 

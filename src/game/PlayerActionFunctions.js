@@ -1231,6 +1231,8 @@ define(['ash',
 			}
 			this.completeAction("use_in_campfire");
 			this.forceResourceBarUpdate();
+            
+            GlobalSignals.tribeStatsChangedSignal.dispatch();
 		},
         
         useMarket: function () {
