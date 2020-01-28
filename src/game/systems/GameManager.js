@@ -107,7 +107,10 @@ define([
 			if (!loaded) this.setupNewGame();
 
             log.i("START " + GameConstants.STARTTimeNow() + "\t world ready");
-            GlobalSignals.worldReadySignal.dispatch();
+            GlobalSignals.gameStateReadySignal.dispatch();
+            setTimeout(function () {
+                WorldCreator.discardWorld();
+            }, 1);
 		},
 
 		// Called after all other systems are ready
@@ -159,11 +162,12 @@ define([
 			this.creator.initPlayer(this.player);
 		},
 
-		createLevelEntities: function (seed) {
+		createLevelEntities: function (worldVO) {
+            var seed = worldVO.seed;
             var levelVO;
             var sectorVO;
 			for (var i = WorldCreatorHelper.getBottomLevel(seed); i <= WorldCreatorHelper.getHighestLevel(seed); i++) {
-                levelVO = WorldCreator.world.getLevel(i);
+                levelVO = worldVO.getLevel(i);
 				this.creator.createLevel(GameGlobals.saveHelper.saveKeys.level + i, i, levelVO);
 				for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
 					for (var x = levelVO.minX; x <= levelVO.maxX; x++) {
@@ -225,15 +229,15 @@ define([
             if (hasSave) worldSeed = parseInt(loadedGameState.worldSeed);
             else worldSeed = WorldCreatorRandom.getNewSeed();
             log.i("START " + GameConstants.STARTTimeNow() + "\t creating world (seed: " + worldSeed + ")");
-
-            WorldCreator.prepareWorld(worldSeed, GameGlobals.itemsHelper);
-            GameGlobals.gameState.worldSeed = worldSeed;
+            var worldVO = WorldCreator.prepareWorld(worldSeed, GameGlobals.itemsHelper);
+            GameGlobals.gameState.worldSeed = worldVO.seed;
             gtag('set', { 'world_seed': worldSeed });
+            GlobalSignals.worldReadySignal.dispatch(worldVO);
 
             // Create other entities and fill components
             log.i("START " + GameConstants.STARTTimeNow() + "\t loading entities");
-            this.createLevelEntities(worldSeed);
-            WorldCreator.discardWorld();
+            this.createLevelEntities(worldVO);
+            
             if (hasSave) {
                 var entitiesObject = save.entitiesObject;
                 var failedComponents = 0;

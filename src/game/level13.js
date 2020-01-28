@@ -174,10 +174,10 @@ define([
             GameGlobals.uiFunctions.init();
             GlobalSignals.pageSetUpSignal.dispatch();
             
-            this.GameFlowLogger = new GameFlowLogger();
+            this.gameFlowLogger = new GameFlowLogger();
             ExceptionHandler.exceptionCallback = function (ex) { game.handleException(ex) };
             GlobalSignals.exceptionCallback = function (ex) { game.handleException(ex) };
-            GlobalSignals.worldReadySignal.addOnce(function () {
+            GlobalSignals.gameStateReadySignal.addOnce(function () {
                 game.start();
             });
 

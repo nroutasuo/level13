@@ -64,6 +64,8 @@ define([
                 var levelVO = this.world.getLevel(l);
                 // WorldCreatorDebug.printLevel(this.world, levelVO);
             }
+            
+            return this.world;
 		},
 
         discardWorld: function () {
@@ -83,7 +85,7 @@ define([
 				var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
                 var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
                 var populationGrowthFactor = isCampableLevel ? WorldCreatorConstants.getPopulationGrowthFactor(campOrdinal) : 0;
-                var levelVO = new LevelVO(l, levelOrdinal, isCampableLevel, notCampableReason, populationGrowthFactor);
+                var levelVO = new LevelVO(l, levelOrdinal, campOrdinal, isCampableLevel, notCampableReason, populationGrowthFactor);
 				this.world.addLevel(levelVO);
 
                 // passages up: previous passages down (positions)

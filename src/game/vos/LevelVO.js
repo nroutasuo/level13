@@ -6,6 +6,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/constants/WorldCreatorC
 	
 		level: -1,
 		levelOrdinal: -1,
+        campOrdinal: -1,
         
 		isCampable: false,
         notCampableReason: null,
@@ -33,9 +34,10 @@ define(['ash', 'game/constants/PositionConstants', 'game/constants/WorldCreatorC
 		minY: 0,
 		maxY: 0,
 	
-        constructor: function (level, levelOrdinal, isCampable, notCampableReason, populationGrowthFactor) {
+        constructor: function (level, levelOrdinal, campOrdinal, isCampable, notCampableReason, populationGrowthFactor) {
 			this.level = level;
 			this.levelOrdinal = levelOrdinal;
+            this.campOrdinal  = campOrdinal;
 			this.isCampable = isCampable;
             this.notCampableReason = notCampableReason;
             this.populationGrowthFactor = populationGrowthFactor;
