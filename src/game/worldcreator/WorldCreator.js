@@ -285,7 +285,9 @@ define([
                 //- equipment
                 var newEquipment = itemsHelper.getNewEquipment(campOrdinal);
                 for (var i = 0; i < newEquipment.length; i++) {
+                    if (!newEquipment[i].craftable && newEquipment[i].scavengeRarity <= 5) {
                     addStashes(seed / 3 + (l+551)*8 + (i+103)*18, StashVO.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1, lateZones);
+                }
                 }
                 // TODO add currency stashes just for fun
 
