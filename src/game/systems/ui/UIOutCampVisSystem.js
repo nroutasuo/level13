@@ -81,7 +81,9 @@ define([
             var levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(level);
             var levelComponent = levelEntity.get(LevelComponent);
             var levelVO = levelComponent.levelVO;
-            var settings = {};
+            // TODO add more detail depending on world structure (what kind of sector/level the camp is actually located on)
+            // TODO define constants someplace neater
+            var settings = Object.assign({}, this.campSettings[campOrdinal] || {});
             settings.populationGrowthFactor = levelVO.populationGrowthFactor;
             GameGlobals.campVisHelper.initCampSettings(campOrdinal, settings);
         },
@@ -520,7 +522,40 @@ define([
         
         getYpx: function (x, z, size) {
             return Math.round(this.containerHeight -this.floorPos - z * this.zStep - size.y - 1);
-        }
+        },
+        
+        // TODO move to some constants?
+        campSettings: {
+            1: {
+                predefinedPositions: {
+                    13: improvementNames.home,
+                    1: improvementNames.campfire,
+                    80: improvementNames.storage,
+                    25: improvementNames.house,
+                    41: improvementNames.house,
+                    45: improvementNames.house,
+                }
+            },
+            2: {
+                predefinedPositions: {
+                    1: improvementNames.tradepost,
+                    100: improvementNames.campfire,
+                }
+            },
+            3: {},
+            4: {},
+            5: {},
+            6: {},
+            7: {},
+            8: {},
+            9: {},
+            10: {},
+            11: {},
+            12: {},
+            13: {},
+            14: {},
+            15: {},
+        },
         
     });
 

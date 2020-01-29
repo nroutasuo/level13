@@ -9,24 +9,7 @@ function (Ash) {
         coordinates: {},
         
         // settings per camp (ordinal) to create different camps on different levels
-        // TODO adjust depending on world structure (what kind of sector/level the camp is actually located on)
-        campSettings: {
-            1: {},
-            2: {},
-            3: {},
-            4: {},
-            5: {},
-            6: {},
-            7: {},
-            8: {},
-            9: {},
-            10: {},
-            11: {},
-            12: {},
-            13: {},
-            14: {},
-            15: {},
-        },
+        campSettings: {},
 
         constructor: function () {
             this.gridX = 10;
@@ -35,8 +18,6 @@ function (Ash) {
         
         initCampSettings: function (campOrdinal, settings) {
             this.campSettings[campOrdinal] = settings;
-            log.i("init camp settings: " + campOrdinal);
-            log.i(settings);
         },
         
         initCoordinate: function (i) {
@@ -47,7 +28,7 @@ function (Ash) {
             
             var result = { x: x, z: z };
             this.coordinates[i] = result;
-            // log.i("assigned coordinate: " + i + " { x: " + x + ", z: " + z +" }");
+            log.i("assigned coordinate: " + i + " { x: " + x + ", z: " + z +" }");
         },
         
         initCoordinates: function (count) {
@@ -202,10 +183,18 @@ function (Ash) {
         },
         
         getFreeCampBuildingSpot: function (campOrdinal, sectorImprovements, building) {
+            var settings = this.campSettings[campOrdinal] || {};
             var buildingType1 = building.name;
             if (buildingType1 == improvementNames.fortification) {
                 return -1;
             }
+            
+            if (this.hasPredefinedPosition(building, settings, sectorImprovements, true)) {
+                var i = this.getPredefinedPosition(building, settings, sectorImprovements, true);
+                log.i("assigned predefined building spot for: " + building.name + ": " + i);
+                return i;
+            }
+            
             var buildingCount = sectorImprovements.getTotalCount();
             var minstarti = 1;
             var maxstarti = this.getMaxBuildingSpotAssignStartIndex(buildingType1, buildingCount);
@@ -213,19 +202,31 @@ function (Ash) {
             var step = 1 +  Math.floor(Math.random() * 8);
             for (var i = starti; i < 1000; i += step) {
                 var coords1 = this.getCoords(i);
-                // valid coordinates for building type?
-                if (!this.isValidCoordinates(coords1, buildingType1, buildingCount)) continue;
                 // already occupied?
                 var contents = sectorImprovements.buildingSpots[i];
                 if (contents) continue;
+                if (this.isPredefinedPosition(i, settings, sectorImprovements, false)) continue;
+                // valid coordinates for building type?
+                if (!this.isValidCoordinates(coords1, buildingType1, buildingCount)) continue;
                 // conflicts with some existing?
-                var j = 0;
                 var foundConflict = false;
                 for (var j = 0; j < sectorImprovements.buildingSpots.length; j++) {
                     var contents2 = sectorImprovements.buildingSpots[j];
                     if (contents2) {
                         var coords2 = this.getCoords(j);
                         var buildingType2 = contents2.buildingType;
+                        if (this.isConflict(coords1, coords2, buildingType1, buildingType2)) {
+                            foundConflict = true;
+                            break;
+                        }
+                    }
+                }
+                if (foundConflict) continue;
+                // conflicst with a predefined position?
+                if (settings.predefinedPositions) {
+                    for (var pos in settings.predefinedPositions) {
+                        var coords2 = this.getCoords(pos);
+                        var buildingType2 = settings.predefinedPositions[pos];
                         if (this.isConflict(coords1, coords2, buildingType1, buildingType2)) {
                             foundConflict = true;
                             break;
@@ -250,6 +251,29 @@ function (Ash) {
                 default:
                     return 12 + buildingCount * 4;
             }
+        },
+        
+        hasPredefinedPosition: function (building, settings, sectorImprovements, requireFree) {
+            return this.getPredefinedPosition(building, settings, sectorImprovements, requireFree) >= 0;
+        },
+        
+        getPredefinedPosition: function (building, settings, sectorImprovements, requireFree) {
+            if (!settings.predefinedPositions) return -1;
+            for (var pos in settings.predefinedPositions) {
+                var posBuilding = settings.predefinedPositions[pos];
+                var contents = sectorImprovements.buildingSpots[pos];
+                if (requireFree && contents) continue;
+                if (posBuilding == building.name) return pos;
+            }
+            return -1;
+        },
+        
+        isPredefinedPosition: function (i, settings) {
+            if (!settings.predefinedPositions) return -1;
+            for (var pos in settings.predefinedPositions) {
+                if (pos == i) return true;
+            }
+            return false;
         },
         
     });
