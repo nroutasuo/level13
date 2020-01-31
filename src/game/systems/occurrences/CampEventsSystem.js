@@ -15,6 +15,7 @@ define([
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
 	'game/components/common/LogMessagesComponent',
+	'game/components/player/ItemsComponent',
 	'game/components/sector/events/TraderComponent',
 	'game/components/sector/events/RaidComponent',
 	'game/components/sector/events/CampEventTimersComponent',
@@ -23,7 +24,7 @@ define([
 ], function (
 	Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants, UIConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
-	CampComponent, PositionComponent, LogMessagesComponent,
+	CampComponent, PositionComponent, LogMessagesComponent, ItemsComponent,
 	TraderComponent, RaidComponent, CampEventTimersComponent,
 	SectorImprovementsComponent, RaidVO) {
 
@@ -226,7 +227,8 @@ define([
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.trader:
                     var numCamps = GameGlobals.gameState.numCamps;
-					var caravan = TradeConstants.getRandomIncomingCaravan(numCamps, GameGlobals.gameState.level, GameGlobals.gameState.unlockedFeatures.resources);
+                    var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(this.playerNodes.head.entity.get(ItemsComponent));
+					var caravan = TradeConstants.getRandomIncomingCaravan(numCamps, GameGlobals.gameState.level, GameGlobals.gameState.unlockedFeatures.resources, neededIngredient);
 					campNode.entity.add(new TraderComponent(caravan));
 					logMsg = "A trader arrives.";
 					break;

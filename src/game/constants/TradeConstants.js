@@ -27,7 +27,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             new TradingPartnerVO(14, "Factory 32", [resourceNames.concrete], [resourceNames.metal], true, false, [], [ "exploration" ]),
         ],
         
-        getRandomIncomingCaravan: function (campOrdinal, levelOrdinal, unlockedResources) {
+        getRandomIncomingCaravan: function (campOrdinal, levelOrdinal, unlockedResources, neededIngredient) {
             var name = "";
             var sellItems = [];
             var sellResources = new ResourcesVO();
@@ -48,6 +48,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                     var itemList = ItemConstants.itemDefinitions[category];
                     for (var i in itemList) {
                         var itemDefinition = itemList[i];
+                        var isNeeded = neededIngredient && itemDefinition.id == neededIngredient;
                         if (itemDefinition.requiredCampOrdinal > campOrdinal + 1)
                             continue;
                         if (ItemConstants.isQuicklyObsoletable(category)) {
@@ -60,7 +61,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                         if (tradeRarity <= 0)
                             continue;
                         var itemProbability = probability * (1/tradeRarity);
-                        if (Math.random() > itemProbability)
+                        if (Math.random() > itemProbability && !isNeeded)
                             continue;
                         var req = ItemConstants.getRequiredCampAndStepToCraft(itemDefinition);
                         if (req.campOrdinal > campOrdinal + 2)
@@ -75,7 +76,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             
             var rand = Math.random();
             var rand2 = Math.random();
-            if (rand <= 0.2) {
+            if (rand <= 0.2 && !neededIngredient) {
                 // 1) equipment trader: sells (equipment caterogy), buys equipment, uses currency
                 var categories = [];
                 if (rand2 <= 0.33) {
@@ -124,12 +125,12 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                     addSellItemsFromCategories(categories, prob, 1, true);
                     prob += 0.05;
                 }
-                if (Math.random() < 0.5) {
+                if (Math.random() < 0.5 || neededIngredient) {
                     addSellItemsFromCategories([ "ingredient"], 0.7, 5 + campOrdinal + 2, true);
                 }
                 buyItemTypes = Object.keys(ItemConstants.itemTypes);
                 usesCurrency = true;
-            } else if (rand <= 0.6) {
+            } else if (rand <= 0.6 || neededIngredient) {
                 // 3) ingredient trader: sells ingredients, buys ingredients, occational items, no currency
                 name = "Crafting trader";
                 var prob = 0.25;
@@ -141,7 +142,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                 addSellItemsFromCategories([ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head", "shoes", "bag", "exploration" ], 0.05, 1, false);
                 buyItemTypes = [ "ingredient" ];
                 usesCurrency = false;
-            } else if (rand <= 0.8) {
+            } else if (rand <= 0.8 && !neededIngredient) {
                 // 4) resource trader: sells and buys a specific resource
                 if (rand2 <= 0.2 && unlockedResources.herbs) {
                     name = "Herbs trader";
@@ -197,7 +198,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                 for (var i = 0; i < partner.buyItemTypes.length; i++) {
                     buyItemTypes.push(partner.buyItemTypes[i]);
                 }
-                if (!partner.usesCurrency)
+                if (!partner.usesCurrency || neededIngredient)
                     buyItemTypes.push("ingredient");
                 usesCurrency = partner.usesCurrency;
             }
@@ -331,7 +332,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                     value = TradeConstants.VALUE_INGREDIENTS;
                     break;
                 case ItemConstants.itemTypes.exploration:
-                    value = 0.5;
+                        value = 0.5;
                     break;
                 case ItemConstants.itemTypes.uniqueEquipment:
                     value = 1;

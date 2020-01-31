@@ -244,6 +244,16 @@ define([
 
             // has equipped item of type and no bonus is higher -> obsolete
             return true;
+        },
+        
+        getNeededIngredient: function (itemsComponent) {
+            // TODO de-hardcode important items and their crafting ingredients
+            if (itemsComponent.getCountById("exploration_1", true) < 1) {
+                if (itemsComponent.getCountById("res_hairpin", true) < 3) {
+                    return "res_hairpin";
+                }
+            }
+            return null;
         }
         
     });
