@@ -499,9 +499,16 @@ define([
 				var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
                 var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
                 var blockerTypes = [];
-                if (levelOrdinal > 1) blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
-                if (campOrdinal >= 5) blockerTypes.push(MovementConstants.BLOCKER_TYPE_GAP);
-                if (l >= 14) blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE);
+                if (levelOrdinal > 1) {
+                    blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
+                    blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
+                }
+                if (campOrdinal >= 5) {
+                    blockerTypes.push(MovementConstants.BLOCKER_TYPE_GAP);
+                }
+                if (l >= 14) {
+                    blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE);
+                }
                 this.addMovementBlockers(seed, l, levelVO, blockerTypes);
             }
         },
