@@ -119,7 +119,9 @@ define([
                     for (var name in this.elements.buildings) {
                         for (var n = 0; n < this.elements.buildings[name].length; n++) {
                             for (var j = 0; j < this.elements.buildings[name][n].length; j++) {
-                                this.elements.buildings[name][n][j].remove();
+                                if (this.elements.buildings[name][n][j]) {
+                                    this.elements.buildings[name][n][j].remove();
+                                }
                             }
                         }
                     }
@@ -527,24 +529,38 @@ define([
         // TODO move to some constants?
         campSettings: {
             1: {
+                blockedAreas: [ { minx: -5, maxx: 5, z: 1 } ],
                 predefinedPositions: {
+                1: improvementNames.campfire,
                     13: improvementNames.home,
-                    1: improvementNames.campfire,
                     80: improvementNames.storage,
                     25: improvementNames.house,
                     41: improvementNames.house,
                     45: improvementNames.house,
+                    28: improvementNames.square,
                 }
             },
             2: {
+                blockedAreas: [ { minx: 5, maxx: 8}, { minx: -500, maxx: -15, z: 2 } ],
                 predefinedPositions: {
-                    1: improvementNames.tradepost,
+                    2: improvementNames.market,
                     100: improvementNames.campfire,
+                    145: improvementNames.darkfarm,
+                    169: improvementNames.darkfarm,
+                    193: improvementNames.darkfarm,
                 }
             },
             3: {},
-            4: {},
-            5: {},
+            4: {
+                predefinedPositions: {
+                    1: improvementNames.square,
+                }
+            },
+            5: {
+                predefinedPositions: {
+                    88: improvementNames.hospital,
+                }
+            },
             6: {},
             7: {},
             8: {},

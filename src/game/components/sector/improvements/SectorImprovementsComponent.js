@@ -118,7 +118,7 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
         },
         
         assignSelectedCampBuildingSpot: function (campOrdinal, building, i, j) {
-            var newSpot = this.getFreeCampBuildingSpot(campOrdinal, building);
+            var newSpot = this.getNextCampBuildingSpot(campOrdinal, building);
             this.setSelectedCampBuildingSpot(building, i, j, newSpot);
             return this.getSelectedCampBuildingSpot(building, i, j);
         },
@@ -131,8 +131,8 @@ define(['ash', 'game/GameGlobals', 'game/vos/ImprovementVO'], function (Ash, Gam
             return result;
         },
 
-        getFreeCampBuildingSpot: function (campOrdinal, building) {
-            return GameGlobals.campVisHelper.getFreeCampBuildingSpot(campOrdinal, this, building);
+        getNextCampBuildingSpot: function (campOrdinal, building) {
+            return GameGlobals.campVisHelper.getNextCampBuildingSpot(campOrdinal, this, building);
         },
         
         resetBuildingSpots: function () {

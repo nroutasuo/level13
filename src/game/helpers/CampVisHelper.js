@@ -10,6 +10,8 @@ function (Ash) {
         
         // settings per camp (ordinal) to create different camps on different levels
         campSettings: {},
+        
+        maxSpot: 999,
 
         constructor: function () {
             this.gridX = 10;
@@ -28,7 +30,7 @@ function (Ash) {
             
             var result = { x: x, z: z };
             this.coordinates[i] = result;
-            log.i("assigned coordinate: " + i + " { x: " + x + ", z: " + z +" }");
+            // log.i("assigned coordinate: " + i + " { x: " + x + ", z: " + z +" }");
         },
         
         initCoordinates: function (count) {
@@ -44,6 +46,16 @@ function (Ash) {
                 this.initCoordinates(i);
             }
             return this.coordinates[i];
+        },
+        
+        getSpot: function (x, z) {
+            for (var i = 0; i < this.maxSpot; i++) {
+                var coords2 = this.getCoords(i);
+                if (coords2.x == x && coords2.z == z)
+                    return i;
+            }
+            log.w("couldn't find building spot for coordinates: " + x + "." + z);
+            return -1;
         },
         
         getFortificationCoords: function (n) {
@@ -134,6 +146,8 @@ function (Ash) {
         },
         
         isValidCoordinates: function (coords, buildingType, buildingCount) {
+            if (!coords) return false;
+            
             // create soft rules / preferences by applying some rules to only some coordinates
             var isStrict = coords.x % 2 == 0;
             
@@ -182,30 +196,61 @@ function (Ash) {
             return true;
         },
         
-        getFreeCampBuildingSpot: function (campOrdinal, sectorImprovements, building) {
+        getNextCampBuildingSpot: function (campOrdinal, sectorImprovements, building) {
             var settings = this.campSettings[campOrdinal] || {};
             var buildingType1 = building.name;
+            
             if (buildingType1 == improvementNames.fortification) {
                 return -1;
             }
             
             if (this.hasPredefinedPosition(building, settings, sectorImprovements, true)) {
                 var i = this.getPredefinedPosition(building, settings, sectorImprovements, true);
-                log.i("assigned predefined building spot for: " + building.name + ": " + i);
+                log.i("assigned predefined building spot for: " + buildingType1 + ": " + i);
                 return i;
             }
             
-            var buildingCount = sectorImprovements.getTotalCount();
+            // find a number of valid spots, score them, and select the highest score
+            var bestScore = -1;
+            var bestSpot = -1;
+            var spots = [];
             var minstarti = 1;
-            var maxstarti = this.getMaxBuildingSpotAssignStartIndex(buildingType1, buildingCount);
+            var maxstarti = this.getMaxBuildingSpotAssignStartIndex(buildingType1, sectorImprovements.getTotalCount());
             var starti = minstarti + Math.floor(Math.random() * (maxstarti - minstarti));
-            var step = 1 +  Math.floor(Math.random() * 8);
-            for (var i = starti; i < 1000; i += step) {
+            for (var n = 0; n < 5; n++) {
+                var i = this.getRandomValidBuildingSpot(settings, sectorImprovements, buildingType1, starti);
+                if (i < minstarti) break;
+                var score = this.getSpotScore(settings, sectorImprovements, buildingType1, i);
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestSpot = i;
+                }
+                starti = Math.max(starti, i + 1 + Math.round(Math.random(3)));
+                spots.push({ spot: i, score: score });
+            }
+            
+            if (bestSpot < minstarti) {
+                log.w("Couldn't find free valid buildings spot for " + buildingType1 + ", starti: " + starti + "/" + maxstarti);
+                return -1;
+            }
+            
+            log.i("selected a next camp building spot for " + buildingType1 + " " + bestSpot + ", score " + bestScore);
+            log.i(spots);
+            
+            return bestSpot;
+        },
+        
+        getRandomValidBuildingSpot: function (settings, sectorImprovements, buildingType1, starti) {
+            var buildingCount = sectorImprovements.getTotalCount();
+            var step = 1 + Math.floor(Math.random() * 11);
+            for (var i = starti; i < this.maxSpot; i += step) {
                 var coords1 = this.getCoords(i);
+                // is blocked area?
+                if (this.isBlockedArea(i, settings)) continue;
                 // already occupied?
                 var contents = sectorImprovements.buildingSpots[i];
                 if (contents) continue;
-                if (this.isPredefinedPosition(i, settings, sectorImprovements, false)) continue;
+                if (this.isPredefinedPosition(i, settings)) continue;
                 // valid coordinates for building type?
                 if (!this.isValidCoordinates(coords1, buildingType1, buildingCount)) continue;
                 // conflicts with some existing?
@@ -222,7 +267,7 @@ function (Ash) {
                     }
                 }
                 if (foundConflict) continue;
-                // conflicst with a predefined position?
+                // conflict with a predefined position?
                 if (settings.predefinedPositions) {
                     for (var pos in settings.predefinedPositions) {
                         var coords2 = this.getCoords(pos);
@@ -236,8 +281,49 @@ function (Ash) {
                 if (foundConflict) continue;
                 return i;
             }
-            log.w("Couldn't find free valid buildings spot for " + building.name);
             return -1;
+        },
+        
+        getSpotScore: function (settings, improvements, buildingType1, i) {
+            var result = 0;
+            var coords = this.getCoords(i);
+            var dx = 5;
+            // neighbours
+            for (var x = coords.x - dx; x <= coords.x + dx; x++) {
+                for (var z = 0; z <= 3; z++) {
+                    var pos = this.getSpot(x, z);
+                    var neighbour = improvements.buildingSpots[pos];
+                    if (neighbour && neighbour.buildingType == buildingType1) {
+                        // - point for nearby similar building
+                        result += 1;
+                        // - point for same z
+                        if (z == coords.z) result += 1;
+                    } else if (neighbour) {
+                        if (z != coords.z) result -= 0.25;
+                    }
+                }
+            }
+            // coordinates
+            switch (buildingType1) {
+                case improvementNames.square:
+                    if (coords.z < 2) result += 1;
+                    break;
+                case improvementNames.darkfarm:
+                    if (Math.abs(coords.x) > 5) result += 0.5;
+                    if (Math.abs(coords.x) > 10) result += 0.5;
+                    break;
+                case improvementNames.storage:
+                    if (Math.abs(coords.x) > 3) result += 0.5;
+                    if (Math.abs(coords.x) > 6) result += 0.5;
+                    break;
+            }
+            
+            if (Math.abs(coords.x) > 25) result -= 0.1;
+            if (Math.abs(coords.x) > 35) result -= 0.1;
+            if (Math.abs(coords.x) > 45) result -= 0.1;
+            if (Math.abs(coords.x) > 55) result -= 0.1;
+                
+            return result;
         },
         
         getMaxBuildingSpotAssignStartIndex: function (building, buildingCount) {
@@ -269,9 +355,23 @@ function (Ash) {
         },
         
         isPredefinedPosition: function (i, settings) {
-            if (!settings.predefinedPositions) return -1;
+            if (!settings.predefinedPositions) return false
             for (var pos in settings.predefinedPositions) {
                 if (pos == i) return true;
+            }
+            return false;
+        },
+        
+        isBlockedArea: function (i, settings) {
+            if (!settings.blockedAreas) return false;
+            var coords = this.getCoords(i);
+            for (var a = 0; a < settings.blockedAreas.length; a++) {
+                var area = settings.blockedAreas[a];
+                if (!area.z || coords.z == area.z) {
+                    if (coords.x >= area.minx && coords.x <= area.maxx) {
+                        return true;
+                    }
+                }
             }
             return false;
         },
