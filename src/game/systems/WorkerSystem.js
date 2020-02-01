@@ -186,7 +186,7 @@ define([
 			var improvementsComponent = node.entity.get(SectorImprovementsComponent);
 			
 			// Darkfarms
-			var farmFood = improvementsComponent.getCount(improvementNames.darkfarm) * 0.01 * time * GameConstants.gameSpeedCamp;
+			var farmFood = improvementsComponent.getCount(improvementNames.darkfarm) * 0.015 * time * GameConstants.gameSpeedCamp;
 			resources.addResource(resourceNames.food, farmFood);
 			resourceAcc.addChange(resourceNames.food, farmFood / time, "Snail farms");
 		},

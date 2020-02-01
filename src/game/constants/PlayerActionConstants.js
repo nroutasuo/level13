@@ -1686,9 +1686,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 build_in_house2: {
-                    resource_metal: 500,
+                    resource_metal: 600,
                     resource_rope: 20,
-                    resource_concrete: 50,
+                    resource_concrete: 100,
                     cost_factor_e1_base: 1.75,
                 },
 
@@ -1719,6 +1719,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 build_in_storage: {
                     resource_metal: [0, 0, 50, 0, 0],
                     resource_rope: [5, 2, 2, 0, 2],
+                    resource_concrete: [20, 2, 2, 0, 8],
                     cost_factor_e1_base: 1.65,
                     cost_factor_e1_base_outpost: 2.5,
                 },
@@ -1744,7 +1745,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 build_in_square: {
-                    resource_metal: 300,
+                    resource_metal: 200,
                     resource_rope: 100,
                 },
                 
@@ -1859,7 +1860,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 build_in_smithy: {
-                    resource_metal: 100,
+                    resource_metal: 200,
                     resource_rope: 50,
                     resource_fuel: 10,
                     cost_factor_e1_base: 1.5,
@@ -1874,7 +1875,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 build_in_cementmill: {
                     resource_metal: 500,
-                    resource_rope: 50,
+                    resource_rope: 10,
                     resource_fuel: 10,
                     cost_factor_e1_base: 1.5,
                 },
@@ -1939,7 +1940,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
                 
                 craft_consumable_weapon_1: {
-                    resource_metal: 5,
+                    resource_metal: 10,
                 },
                 
                 craft_flee_1: {

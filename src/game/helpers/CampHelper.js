@@ -103,7 +103,7 @@ define([
 			var workerUpgrade;
 			for (var i in workerUpgrades) {
 				workerUpgrade = workerUpgrades[i];
-				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(workerUpgrade)) upgradeLevel += 0.1;
+				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(workerUpgrade)) upgradeLevel += 0.15;
 			}
 			return upgradeLevel;
 		},
