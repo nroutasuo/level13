@@ -1388,6 +1388,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 unlock_building_lights: {
                 	blueprint: 5,
+                	upgrades: {
+                		unlock_building_darkfarm: true,
+                	}
                 },
 
                 unlock_item_weapon2: {
@@ -2506,41 +2509,42 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_building_inn: {
-                	rumours: 78,
+                	rumours: 60,
                 	evidence: 87,
                 },
 
                 unlock_building_market: {
-                	rumours: 78,
+                	rumours: 60,
                 },
 
                 unlock_building_fortifications: {
-                	rumours: 70,
+                	rumours: 54,
                 	evidence: 78,
                 },
 
                 unlock_item_bag2: {
-                	rumours: 58,
+                	rumours: 54,
                 },
 
                 unlock_weapon_15: {
-                	rumours: 65,
+                	rumours: 42,
+                    evidence: 88,
                 },
 
                 unlock_clothing_basic: {
-                	rumours: 46,
+                	rumours: 33,
                 },
 
                 unlock_clothing_warm: {
-                	evidence: 106,
+                	evidence: 71,
                 },
 
                 unlock_building_darkfarm: {
-                	rumours: 82,
+                	rumours: 62,
                 },
 
                 unlock_building_tradingpost: {
-                	evidence: 66,
+                	evidence: 44,
                 },
 
                 unlock_item_clothing2: {
@@ -2548,7 +2552,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_building_passage_staircase: {
-                	evidence: 52,
+                	evidence: 43,
                 },
 
                 unlock_building_hospital: {
@@ -2556,7 +2560,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_worker_rope: {
-                	rumours: 10,
+                	rumours: 8,
                 },
 
                 unlock_item_shoe1: {
