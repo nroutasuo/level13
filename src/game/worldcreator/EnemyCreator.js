@@ -138,14 +138,14 @@ define([
             attRatio = Math.max(0.3, attRatio);
             attRatio = Math.min(0.7, attRatio);
             
-            log.i("createEnemy " + name + " campOrdinal:" + campOrdinal + ", normalizedDifficulty: " + normalizedDifficulty + " strengthMin: " + strengthMin + ", strengthMax: " + strengthMax)
+            // log.i("createEnemy " + name + " campOrdinal:" + campOrdinal + ", normalizedDifficulty: " + normalizedDifficulty + " strengthMin: " + strengthMin + ", strengthMax: " + strengthMax)
             
             var strength = strengthMin + (strengthMax - strengthMin) / 10 * normalizedDifficulty;
             var hp = Math.round(100 + ((1-attRatio) - 0.5) * 50 + (normalizedDifficulty - 5)/10 * 50 + (campOrdinal - 5) * 5);
             var stats = strength * 100 / hp;
             var def = Math.max(campOrdinal, Math.round(stats * (1 - attRatio)));
             var att = Math.max(campOrdinal, Math.round(stats * attRatio));
-            log.i("createEnemy " + name + " " + strength + " -> " + FightConstants.getStrength(att, def, hp) + " | " + hp + " " + att + " " + def);
+            // log.i("createEnemy " + name + " " + strength + " -> " + FightConstants.getStrength(att, def, hp) + " | " + hp + " " + att + " " + def);
             return new EnemyVO(id, name, type, nouns, groupN, activeV, defeatedV, att, def, hp, speed, rarity);
         },
 

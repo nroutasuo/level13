@@ -117,7 +117,7 @@ define([
 				sys.updateButtonCallout($button, action, buttonStatus, buttonElements, isHardDisabled);
                 actions.push(action + "(" + isHardDisabled + ")");
 			}
-            log.i("updated buttons " + actions.join(","));
+            // log.i("updated buttons " + actions.join(","));
 		},
 
 		updateButtonDisabledState: function ($button, action, buttonStatus, buttonElements) {

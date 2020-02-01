@@ -945,7 +945,6 @@ define([
                 case "build_out_passage_up_elevator":
                 case "build_out_passage_up_hole":
                     var levelOrdinal = ordinal;
-                    if (!parseInt(levelOrdinal)) log.w(action)
                     var level = GameGlobals.gameState.getLevelForOrdinal(levelOrdinal);
                     var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
                     var result = GameGlobals.upgradeEffectsHelper.getExpectedBuildingUpgradeLevel(improvementNames.storage, campOrdinal);
