@@ -366,6 +366,10 @@ define(['ash',
             var playerResources = playerStorage.resources;
             playerResources.setResource("metal", playerStorage.storageCapacity);
             playerResources.setResource("rope", playerStorage.storageCapacity / 2);
+            if (GameGlobals.gameState.unlockedFeatures.resources.concrete)
+                playerResources.setResource("concrete", playerStorage.storageCapacity / 4);
+            if (GameGlobals.gameState.unlockedFeatures.resources.tools)
+                playerResources.setResource("tools", playerStorage.storageCapacity / 4);
         },
 
         addPopulation: function (amount) {
