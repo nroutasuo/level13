@@ -979,6 +979,7 @@ define(['ash',
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_TRAP, "Built a trap. It will catch food.");
 			if (!this.playerLocationNodes.head.entity.has(SectorCollectorsComponent))
 				this.playerLocationNodes.head.entity.add(new SectorCollectorsComponent());
+            GlobalSignals.improvementBuiltSignal.dispatch();
 		},
 
 		buildBucket: function () {
@@ -986,6 +987,7 @@ define(['ash',
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_BUCKET, "Made a bucket. It will collect water.");
 			if (!this.playerLocationNodes.head.entity.has(SectorCollectorsComponent))
 				this.playerLocationNodes.head.entity.add(new SectorCollectorsComponent());
+            GlobalSignals.improvementBuiltSignal.dispatch();
 		},
 
 		buildHouse: function (otherSector) {

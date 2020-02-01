@@ -40,6 +40,7 @@ define([
             GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.refresh);
             GlobalSignals.add(this, GlobalSignals.movementBlockerClearedSignal, this.refresh);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.refresh);
+            GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
         },
 
         removeFromEngine: function (engine) {
@@ -63,6 +64,10 @@ define([
             
             GameGlobals.uiFunctions.toggle("#in-improvements-level-empty-message", this.tabCounts.lastShown.visible.regular <= 0);
             this.elements.tabHeader.text("Building projects");
+        },
+        
+        slowUpdate: function () {
+            this.updateAvailableProjects(false);
         },
         
         refresh: function () {
