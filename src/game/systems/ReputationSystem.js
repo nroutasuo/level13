@@ -114,12 +114,12 @@ define([
             var danger = OccurrenceConstants.getRaidDanger(sectorImprovements, soldiers, soldierLevel);
             var noDefences = danger > defenceLimit;
             if (noDefences) {
-                var steppedDanger = Math.ceil(danger * 100 / 5) * 5;
-                var penaltyRatio = (steppedDanger - defenceLimit * 100) / 200;
-                var defencePenalty = Math.ceil(targetReputationWithoutPenalties * penaltyRatio);
-                if (steppedDanger >= 75) {
+                var steppedDanger = Math.ceil((danger - defenceLimit) * 100 / 5) * 5;
+                var penaltyRatio = steppedDanger / (100 - defenceLimit);
+                var defencePenalty = Math.ceil(targetReputationWithoutPenalties * penaltyRatio * 4) / 4;
+                if (penaltyRatio > 0.25) {
                     addValue(-defencePenalty, "Terrible defences");
-                } else if (steppedDanger >= 0) {
+                } else if (penaltyRatio > 0.15) {
                     addValue(-defencePenalty, "Poor defences");
                 } else {
                     addValue(-defencePenalty, "Inadequate defences");
