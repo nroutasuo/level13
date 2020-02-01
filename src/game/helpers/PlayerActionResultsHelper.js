@@ -151,7 +151,7 @@ define([
             var ingredientCampOrdinalFactor = (campOrdinal + 1) / campOrdinal / 2;
             
             var resourceProb = 0.95 + efficiency * 0.05;
-            var itemProb = efficiency * 0.0225;
+            var itemProb = efficiency * 0.022;
             var ingredientProb = 0.01 * ingredientCampOrdinalFactor + efficiency * 0.02;
 
             rewards.gainedResources = this.getRewardResources(resourceProb, 1, efficiency, sectorResources);
@@ -253,7 +253,7 @@ define([
 				availableResources.setResource(resourceNames.food, 10);
 				availableResources.setResource(resourceNames.metal, 3);
 				rewards.gainedResources = this.getRewardResources(0.25, 2, this.getScavengeEfficiency(), availableResources);
-                rewards.gainedItems = this.getRewardItems(0.2, 0.2, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step);
+                rewards.gainedItems = this.getRewardItems(0.15, 0.2, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step);
 				rewards.gainedReputation = 1;
             } else {
 				rewards = this.getFadeOutResults(0.5, 1, 1);
@@ -747,7 +747,8 @@ define([
             var maxCampOrdinalBonus = step == WorldCreatorConstants.CAMP_STEP_END ? 1 : 0;
             var maxCampOrdinal = campOrdinal + Math.floor(Math.random(maxCampOrdinalBonus + 1));
             var minCampOrdinal = Math.max(0, campOrdinal - 3);
-            var maxRarity = 1 + 9 * efficiency * Math.random();
+            var campOrdinalMaxRarity = Math.min(campOrdinal, 5) * 2;
+            var maxRarity = 1 + (campOrdinalMaxRarity - 1) * efficiency *  Math.random();
             var maxCampOrdinalDiff = maxCampOrdinal - minCampOrdinal;
 			for (var type in ItemConstants.itemDefinitions) {
                 var typekey = type.split("_")[0];
@@ -757,14 +758,19 @@ define([
 				itemList = ItemConstants.itemDefinitions[type];
 				for (var i in itemList) {
 					itemDefinition = itemList[i];
+                    var isObsolete = GameGlobals.itemsHelper.isObsolete(itemDefinition, itemsComponent, false);
                     if (itemDefinition.scavengeRarity <= 0) continue;
                     if (itemDefinition.scavengeRarity > maxRarity) continue;
                     if (itemDefinition.requiredCampOrdinal > maxCampOrdinal) continue;
-                    if (itemDefinition.requiredCampOrdinal > 0 && isObsoletable && itemDefinition.craftable && itemDefinition.requiredCampOrdinal < minCampOrdinal) continue;
+                    if (itemDefinition.requiredCampOrdinal > 0 && isObsoletable && itemDefinition.requiredCampOrdinal < minCampOrdinal) {
+                        if (isObsolete || itemDefinition.craftable) {
+                            continue;
+                        }
+                    }
                     validItems.push(itemDefinition);
                     
                     var score = 1;
-                    if (GameGlobals.itemsHelper.isObsolete(itemDefinition, itemsComponent, false))
+                    if (isObsolete)
                         score = score / 2;
                     score *= typeProb;
                     var campOrdinalFactor = 1;
@@ -788,7 +794,8 @@ define([
                 return itemScores[b.id] - itemScores[a.id];
             });
             
-            log.i("valid items: " + validItems.length + " (max rarity: " + maxRarity + ", camp ordinal: " + campOrdinal + " (" + minCampOrdinal + "-" + maxCampOrdinal + "))")
+            log.i("valid items: " + validItems.length + " (max rarity: " + maxRarity + "/" + campOrdinalMaxRarity + ", camp ordinal: " + campOrdinal + " (" + minCampOrdinal + "-" + maxCampOrdinal + "))")
+            // log.i(validItems);
             
             // pick one random valid item, higher score more likely but all possible
             var index = MathUtils.getWeightedRandom(0, validItems.length);

@@ -230,16 +230,20 @@ define([
             if (equipped.length === 0) return false;
 
             // if item bonus is higher than any bonus on the currently equipped item of the same type -> not obsolete
+            // exception: fight_speed (ignored)
+            // TODO take fight_speed into account, but only together with attack
             for (var bonusKey in ItemConstants.itemBonusTypes) {
                 var bonusType = ItemConstants.itemBonusTypes[bonusKey];
                 var itemBonus = itemVO.getBonus(bonusType);
-                for (var i = 0; i < equipped.length; i++)
+                if (bonusType == ItemConstants.itemBonusTypes.fight_speed) continue;
+                for (var i = 0; i < equipped.length; i++) {
                     if (itemBonus > equipped[i].getBonus(bonusType) && bonusType != ItemConstants.itemBonusTypes.movement) {
                         return false;
                     }
                     else if (itemBonus < equipped[i].getBonus(bonusType) && bonusType == ItemConstants.itemBonusTypes.movement) {
                         return false;
                     }
+                }
             }
 
             // has equipped item of type and no bonus is higher -> obsolete
