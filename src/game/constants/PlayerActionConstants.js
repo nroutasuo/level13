@@ -2608,7 +2608,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
             // [ base-value, vision-dependent-value ]
             injuryProbabilities: {
                 scout: [0.005, 0.01],
-                scavenge: [0.001, 0.005],
+                scavenge: [0.0005, 0.005],
                 despair: [0.75, 0], // TODO make dynamic and link to cases in FaintingSystem
             },
 
@@ -2719,7 +2719,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     var baseProbability = this.injuryProbabilities[action][0];
                     var visionFactor = Math.pow(1 - (vision / 100), 2);
                     var visionProbability = this.injuryProbabilities[action][1] * visionFactor;
-                    return baseProbability + visionProbability;
+                    var result = baseProbability + visionProbability;
+                    if (result < 0.001) result = 0;
+                    return result;
                 }
                 return 0;
             },
