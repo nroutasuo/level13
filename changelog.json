@@ -2,8 +2,9 @@
 	"versions": [{
             "version": "0.2.5",
             "phase": "alpha",
-            "final": false,
-            "updated": "2020-01-11",
+            "final": true,
+            "updated": "2020-02-01",
+            "released": "2020-02-01",
             "changes": [
                 {
                     "type": "GD",
@@ -23,7 +24,7 @@
                 },
                 {
                     "type": "GB",
-                    "summary": "Adjust balancing (raids, rumours, upgrades)"
+                    "summary": "Adjust balancing (raids, rumours, upgrades, reputation)"
                 },
                 {
                     "type": "GB",
