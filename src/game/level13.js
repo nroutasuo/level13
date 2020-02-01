@@ -180,9 +180,11 @@ define([
             GlobalSignals.gameStateReadySignal.addOnce(function () {
                 game.start();
             });
-
-            ExceptionHandler.wrapCall(this, function () {
-                this.gameManager.setupGame();
+            
+            GlobalSignals.changelogLoadedSignal.addOnce(function () {
+                ExceptionHandler.wrapCall(this, function () {
+                    game.gameManager.setupGame();
+                });
             });
         },
 

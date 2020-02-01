@@ -295,10 +295,14 @@ define([
                     }
                 }
 
-                log.i("Loaded from " + save.timeStamp);
+                log.i("Loaded from " + save.timeStamp + ", save version: " + save.version);
 
                 if (failedComponents > 0) {
                     log.w(failedComponents + " components failed to load.");
+                }
+                
+                if (!saveWarningShown && GameGlobals.changeLogHelper.isOldVersion(save.version)) {
+                    this.showVersionWarning(save.version);
                 }
 
                 return true;
@@ -339,6 +343,20 @@ define([
             GameGlobals.uiFunctions.showQuestionPopup(
                 "Warning",
                 "Part of the save could not be loaded. Most likely your save is old and incompatible with the current version. Restart the game or continue at your own risk.<br><br/>Save version: " + saveVersion + "<br/>Current version: " + currentVersion,
+                "Restart",
+                "Continue",
+                function () {
+                    GameGlobals.uiFunctions.restart();
+                },
+                function () {}
+            );
+        },
+        
+        showVersionWarning: function (saveVersion) {
+            var currentVersion = GameGlobals.changeLogHelper.getCurrentVersionNumber();
+            GameGlobals.uiFunctions.showQuestionPopup(
+                "Update",
+                "Your save version is older than the current version. Most likely the game has been updated since you last played. Restart the game or continue at your own risk.<br><br/>Save version: " + saveVersion + "<br/>Current version: " + currentVersion,
                 "Restart",
                 "Continue",
                 function () {

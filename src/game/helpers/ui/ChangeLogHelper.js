@@ -15,7 +15,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants) {
                 var version = helper.getCurrentVersionNumber();
                 log.i("Loaded version: " + version);
                 gtag('set', { 'app_version': version });
-                GlobalSignals.changelogLoadedSignal.dispatch();
+                GlobalSignals.changelogLoadedSignal.dispatch(true);
                 helper.displayVersionWarnings();
 			})
 			.fail(function (jqxhr, textStatus, error) {
@@ -27,6 +27,7 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants) {
                 err += textStatus;
 				if (error) err += ", " + error;
                 gtag('set', { 'app_version': 'unknown' });
+                GlobalSignals.changelogLoadedSignal.dispatch(false);
                 helper.displayVersionWarnings();
 			});
 		},
@@ -73,7 +74,25 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants) {
 				i++;
 			}
 			return version;
-		}
+		},
+        
+        getVersionDigits: function (version) {
+            var parts1 = version.split(" ");
+            var parts2 = parts1[0].split(".");
+            return { major: parts2[0], minor: parts2[1], patch: parts2[2] };
+        },
+        
+        isOldVersion: function (version) {
+            var currentVersionNumber = this.getCurrentVersionNumber();
+            var currentVersionDigits = this.getVersionDigits(currentVersionNumber);
+            var compareVersionDigits = this.getVersionDigits(version);
+            log.i("isOldVersion?")
+            log.i(currentVersionDigits);
+            log.i(compareVersionDigits)
+            if (!currentVersionDigits) return false;
+            if (!compareVersionDigits) return false;
+            return compareVersionDigits.major < currentVersionDigits.major || compareVersionDigits.minor < currentVersionDigits.minor || compareVersionDigits.patch < currentVersionDigits.patch;
+        },
 	
     });
     
