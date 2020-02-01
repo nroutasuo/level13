@@ -102,12 +102,12 @@ define([
             if (isWarning && !this.isWarning) {
                 var logComponent = node.entity.get(LogMessagesComponent);
                 var hasCamp = GameGlobals.gameState.unlockedFeatures.camp;
-                if (node.position.inCamp)
-                    logComponent.addMessage(LogConstants.MSG_ID_STAMINA_WARNING, "Getting tired. Should have a rest soon.");
-                else if (hasCamp)
-                    logComponent.addMessage(LogConstants.MSG_ID_STAMINA_WARNING, "Getting tired. Should head back to camp soon.");
-                else
-                    logComponent.addMessage(LogConstants.MSG_ID_STAMINA_WARNING, "Getting tired. Should find a place to rest soon.");
+                if (!node.position.inCamp) {
+                    if (hasCamp)
+                        logComponent.addMessage(LogConstants.MSG_ID_STAMINA_WARNING, "Getting tired. Should head back to camp soon.");
+                    else
+                        logComponent.addMessage(LogConstants.MSG_ID_STAMINA_WARNING, "Getting tired. Should find a place to rest soon.");
+                }
             }
             this.isWarning = isWarning;
         },

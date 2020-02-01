@@ -84,31 +84,48 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
         There is a hole in the level ceiling here. An elevator has been built,
         /**/
         
-        getPassageDescription: function (passageVO, direction, isBuilt) {
+        getPassageDescription: function (passageVO, direction, isBuilt, isShort) {
             var makeHighlight = function (content) { return "<span class='hl-functionality'>" + content + "</span>"; };
             var directionName = (direction === PositionConstants.DIRECTION_UP ? " up" : " down");
-            switch (passageVO.type) {
-                case MovementConstants.PASSAGE_TYPE_HOLE:
-                    if (isBuilt) {
-                        return "A brand new " + makeHighlight("elevator " + directionName) + " has been built here.";
-                    } else {
-                        return "There is a " + makeHighlight("hole") + " in the level " + (direction === PositionConstants.DIRECTION_UP ? "ceiling" : "floor") + " here.";
-                    }
-                default:
-                    var name = passageVO.name.toLowerCase() + " " + directionName;
-                    var article = TextConstants.getArticle(name);
-                    var span = article + " " + makeHighlight(name);
-                    var state;
-                    if (isBuilt) {
-                        state = "and it has been repaired";
-                    } else if (passageVO.type === MovementConstants.PASSAGE_TYPE_ELEVATOR) {
-                        state = "but it is broken";
-                    } else if (passageVO.type === MovementConstants.PASSAGE_TYPE_BLOCKED) {
-                        state = "but it is unrepairable";
-                    } else {
-                        state = "but it needs to be repaired";
-                    }
-                    return "There is " + span + " here, " + state + ".";
+            if (isShort) {
+                switch (passageVO.type) {
+                    case MovementConstants.PASSAGE_TYPE_HOLE:
+                        if (isBuilt) {
+                            return "passage " + directionName + " (elevator) (built)";
+                        } else {
+                            return "hole in the level " + (direction === PositionConstants.DIRECTION_UP ? "ceiling" : "floor");
+                        }
+                    default:
+                        var status = isBuilt ? "repaired" : "broken";
+                        if (passageVO.type === MovementConstants.PASSAGE_TYPE_BLOCKED) {
+                            status = "unrepairable"
+                        }
+                        return "passage " + directionName + " (" + passageVO.name.toLowerCase() + ") (" + status + ")";
+                }
+            } else {
+                switch (passageVO.type) {
+                    case MovementConstants.PASSAGE_TYPE_HOLE:
+                        if (isBuilt) {
+                            return "A brand new " + makeHighlight("elevator " + directionName) + " has been built here.";
+                        } else {
+                            return "There is a " + makeHighlight("hole") + " in the level " + (direction === PositionConstants.DIRECTION_UP ? "ceiling" : "floor") + " here.";
+                        }
+                    default:
+                        var name = passageVO.name.toLowerCase() + " " + directionName;
+                        var article = TextConstants.getArticle(name);
+                        var span = article + " " + makeHighlight(name);
+                        var state;
+                        if (isBuilt) {
+                            state = "and it has been repaired";
+                        } else if (passageVO.type === MovementConstants.PASSAGE_TYPE_ELEVATOR) {
+                            state = "but it is broken";
+                        } else if (passageVO.type === MovementConstants.PASSAGE_TYPE_BLOCKED) {
+                            state = "but it is unrepairable";
+                        } else {
+                            state = "but it needs to be repaired";
+                        }
+                        return "There is " + span + " here, " + state + ".";
+                }
             }
         },
         

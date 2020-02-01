@@ -274,7 +274,9 @@ define([
 				var improvedWorkers = GameGlobals.upgradeEffectsHelper.getImprovedWorkers(upgradeId);
 				if (improvedWorkers.length > 0) {
 					for (var i in improvedWorkers) {
-						effects += "improved " + improvedWorkers[i];
+                        // TOOD make a global get worker display name function
+                        var name = improvedWorkers[i] == "weaver" ? "rope-maker" : improvedWorkers[i];
+						effects += "improved " + name;
 					}
 					effects += ", ";
 				}
@@ -312,7 +314,6 @@ define([
 					}
 					effects += ", ";
 				}
-
 
 				// TODO unlocked upgrades? only when other requirements met / blueprint not required?
 

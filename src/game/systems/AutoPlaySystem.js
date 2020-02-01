@@ -743,7 +743,7 @@ define(['ash',
                 var currentFoodRatio = currentFood / maxStorage;
                 var currentWaterRatio = currentWater / maxStorage;
 
-                var canRope = this.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdForWorker("rope-maker"));
+                var canRope = this.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdForWorker("weaver"));
                 var upgradesComponent = GameGlobals.playerActionFunctions.tribeUpgradesNodes.head.upgrades;
 
                 var maxApothecaries = improvementsComponent.getCount(improvementNames.apothecary) * CampConstants.getApothecariesPerShop(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.apothecary, upgradesComponent));

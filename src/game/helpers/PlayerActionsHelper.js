@@ -207,7 +207,7 @@ define([
                 if (costs) {
                     if (costs.stamina > 0) {
                         if (!requirements) requirements = {};
-                        requirements.health = costs.stamina / PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
+                        requirements.health = Math.ceil(costs.stamina / PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
                     }
                     if (costs.favour && !GameGlobals.gameState.unlockedFeatures.favour) {
                         reason = "Locked stats.";

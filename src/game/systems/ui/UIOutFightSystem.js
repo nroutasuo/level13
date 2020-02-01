@@ -318,21 +318,8 @@ define([
         },
         
         getFightChancesText: function (probability) {
-            if (probability <= 0.1) {
-                return "deadly";
-            }
-            if (probability < 0.2) {
-                return "very dangerous";
-            }
-            if (probability < 0.4) {
-                return "dangerous";
-            }
-            
-            if (probability >= 0.95) {
-                return "fairly harmless";
-            }
             if (probability >= 0.9) {
-                return "relatively innocuous";
+                return "fairly harmless";
             }
             if (probability > 0.8) {
                 return "slightly unnerving";
@@ -340,8 +327,16 @@ define([
             if (probability > 0.6) {
                 return "intimidating";
             }
-            
-            return "risky";
+            if (probability >= 0.5) {
+                return "risky";
+            }
+            if (probability >= 0.4) {
+                return "dangerous";
+            }
+            if (probability >= 0.2) {
+                return "very dangerous";
+            }
+            return "deadly";
         },
         
         getTitleByContext: function (encounterComponent) {

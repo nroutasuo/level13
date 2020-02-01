@@ -13,7 +13,7 @@ define([
         constructor: function () {},
 		
 		upgradesByWorker: {
-			"rope-maker": UpgradeConstants.upgradeIds.unlock_worker_rope,
+			"weaver": UpgradeConstants.upgradeIds.unlock_worker_rope,
 			"apothecary": UpgradeConstants.upgradeIds.unlock_building_apothecary,
 			"concrete": UpgradeConstants.upgradeIds.unlock_building_cementmill,
 			"smith": UpgradeConstants.upgradeIds.unlock_building_smithy,

@@ -676,7 +676,7 @@ define([
 
 			// Header
 			var header = "";
-			var name = featuresComponent.getSectorTypeName(hasVision || featuresComponent.sunlit);
+			var name = featuresComponent.getSectorTypeName(hasVision || featuresComponent.sunlit, hasCampHere);
 			header = name;
             this.elements.sectorHeader.text(header);
 

@@ -55,7 +55,7 @@ define(
         
         // Text functions
         
-        getSectorTypeName: function (hasLight) {
+        getSectorTypeName: function (hasLight, hasCamp) {
             var densityAdj = "";
             var repairAdj = "";
             var typeNoun = "";
@@ -91,11 +91,12 @@ define(
            
             var wholeNoun = typeNoun + " " + genericNoun;
             if (this.sectorType === WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL && this.buildingDensity > 8) {
-                    wholeNoun = "back alley";
+                wholeNoun = "back alley";
             }
             
-            if (hasLight) {
-                if (this.sectorType == WorldCreatorConstants.SECTOR_TYPE_SLUM) genericNoun = "";
+            if (hasCamp) {
+                return genericNoun + " with camp";
+            } else if (hasLight) {
                 return repairAdj + " " + wholeNoun;
             } else {
                 return "dark" + " " + repairAdj + " " + densityAdj + " " + genericNoun;

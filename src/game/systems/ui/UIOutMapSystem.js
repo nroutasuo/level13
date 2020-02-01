@@ -182,14 +182,25 @@ define([
             var sectorPassages = sector.get(PassagesComponent);
             var statusComponent = this.selectedSector.get(SectorStatusComponent);
             var localesComponent = sector.get(SectorLocalesComponent);
+            var improvements = sector.get(SectorImprovementsComponent);
             var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
             
             var result = [];
             if (sector.has(CampComponent)) result.push("camp");
             if (sector.has(WorkshopComponent)) result.push("workshop");
             if (!hasCampOnLevel && sectorFeatures.canHaveCamp()) result.push("good place for camp");
-            if (sectorPassages.passageUp) result.push("passage up");
-            if (sectorPassages.passageDown) result.push("passage down");
+            if (sectorPassages.passageUp) {
+    			var passageUpBuilt = improvements.getCount(improvementNames.passageUpStairs) +
+    				improvements.getCount(improvementNames.passageUpElevator) +
+    				improvements.getCount(improvementNames.passageUpHole) > 0;
+                result.push(TextConstants.getPassageDescription(sectorPassages.passageUp, PositionConstants.DIRECTION_UP, passageUpBuilt, true));
+            }
+            if (sectorPassages.passageDown) {
+                var passageDownBuilt = improvements.getCount(improvementNames.passageDownStairs) +
+                    improvements.getCount(improvementNames.passageDownElevator) +
+                    improvements.getCount(improvementNames.passageDownHole) > 0;
+                result.push(TextConstants.getPassageDescription(sectorPassages.passageDown, PositionConstants.DIRECTION_DOWN, passageDownBuilt, true));
+            }
             if (unScoutedLocales > 0) result.push("unscouted locales");
             if (sectorFeatures.hasSpring) result.push(TextConstants.getSpringName(sectorFeatures));
             
