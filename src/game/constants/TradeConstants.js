@@ -309,21 +309,32 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             var value = 0;
             switch (item.type) {
                 case ItemConstants.itemTypes.light:
-                    value = (item.getTotalBonus() - 10) / 30;
+                    var lightBonus = item.getTotalBonus(ItemConstants.itemBonusTypes.light);
+                    if (lightBonus <= 25)
+                        value = 0.1;
+                    else
+                        value = (lightBonus - 10) / 30;
                     break;
                 case ItemConstants.itemTypes.weapon:
-                    value = Math.ceil(item.getTotalBonus() / 5);
+                    var attackBonus = item.getTotalBonus(ItemConstants.itemBonusTypes.fight_att);
+                    if (attackBonus <= 3)
+                        value = 0.1;
+                    else
+                        value = attackBonus / 5;
                     break;
                 case ItemConstants.itemTypes.clothing_over:
                 case ItemConstants.itemTypes.clothing_upper:
                 case ItemConstants.itemTypes.clothing_lower:
                 case ItemConstants.itemTypes.clothing_hands:
                 case ItemConstants.itemTypes.clothing_head:
+                    value = Math.max(0.1, (item.getTotalBonus() / 12));
+                    break;
                 case ItemConstants.itemTypes.shoes:
-                    value = Math.max(0.1, Math.ceil(item.getTotalBonus() / 12));
+                    var shoeBonus = item.getTotalBonus(ItemConstants.itemBonusTypes.movement);
+                    value = Math.pow(((shoeBonus)*5), 2);
                     break;
                 case ItemConstants.itemTypes.bag:
-                    value = (item.getTotalBonus() - 20) / 40;
+                    value = Math.pow(((item.getTotalBonus() - 25) / 20), 1.5);
                     break;
                 case ItemConstants.itemTypes.follower:
                     value = 0;
@@ -332,6 +343,10 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                     value = TradeConstants.VALUE_INGREDIENTS;
                     break;
                 case ItemConstants.itemTypes.exploration:
+                    // TODO instead of hard-coded ids, check if craftable & crafting doesn't require any ingredients -> cheap
+                    if (item.id == "consumable_weapon_1")
+                        value = 0.25;
+                    else
                         value = 0.5;
                     break;
                 case ItemConstants.itemTypes.uniqueEquipment:
@@ -348,6 +363,9 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                 value = value + value * TradeConstants.VALUE_MARKUP_INCOMING_CARAVANS;
             else
                 value = value - value * TradeConstants.VALUE_DISCOUNT_CAMP_ITEMS;
+            
+            value = Math.round(value * 10) / 10;
+                
             return value;
         },
         
