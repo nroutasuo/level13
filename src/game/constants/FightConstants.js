@@ -17,7 +17,7 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
         HIT_STUN_TIME: 0.25,
         
         // applies both to enemy and player damage and makes fights to faster (with fewer hits)
-        FIGHT_DAMAGE_BASE: 17,
+        FIGHT_DAMAGE_BASE: 18,
         // applies to both enemy and player and makes fights go faster (less time between hits)
         FIGHT_SPEED_FACTOR: 1,
         
@@ -166,9 +166,9 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             var playerDamageRandomMin = playerDamage * -0.5;
             var playerDamageRandomMax = playerDamage * 0.5;
             
-            var timeAliveEnemy = enemy.maxHP / enemyDamage * 1.1;
-            var timeAlivePlayerMin = playerStamina.maxHP / (playerDamage + playerDamageRandomMax) * 0.9;
-            var timeAlivePlayerMax = playerStamina.maxHP / (playerDamage + playerDamageRandomMin) * 1.1;
+            var timeAliveEnemy = enemy.maxHP / enemyDamage * 1.05;
+            var timeAlivePlayerMin = playerStamina.maxHP / (playerDamage + playerDamageRandomMax) * 0.95;
+            var timeAlivePlayerMax = playerStamina.maxHP / (playerDamage + playerDamageRandomMin) * 1.05;
             
             var ratio =  (timeAlivePlayerMax - timeAliveEnemy) / (timeAlivePlayerMax - timeAlivePlayerMin);
             if (ratio < 0.05) ratio = 0.05;

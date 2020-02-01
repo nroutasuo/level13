@@ -207,7 +207,7 @@ define([
                 var campOrdinal = this.getCampOrdinalFromDifficulty(i);
                 var step = this.getStepFromDifficulty(i);
                 requiredStats = this.getRequiredStrength(campOrdinal, step);
-                if (requiredStats > enemyStats) return i;
+                if (requiredStats >= enemyStats) return i;
             }
             return max;
         },
@@ -273,7 +273,7 @@ define([
             typicalStamina.health = typicalHealth;
             typicalStamina.maxHP = typicalHealth;
             var result = FightConstants.getPlayerStrength(typicalStamina, typicalItems);
-            log.i("typical strength: campOrdinal: " + campOrdinal + ", step: " + step + " -> " + result + " | " + numFollowers + " " + typicalHealth);
+            // log.i("typical strength: campOrdinal: " + campOrdinal + ", step: " + step + " -> " + result + " | " + numFollowers + " " + typicalHealth);
             return result;
         },
         
