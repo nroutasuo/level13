@@ -100,8 +100,8 @@ define([
                 levelCenter.level = l;
                 levelCenter.sectorX = MathUtils.clamp(levelCenter.sectorX, -5, 5);
                 levelCenter.sectorY = MathUtils.clamp(levelCenter.sectorY, -5, 5);
-                var passagePositionsArea = 12;
-                var campPositionsArea = 8;
+                var passagePositionsArea = 11;
+                var campPositionsArea = 7;
                 
 				// camps: a few guaranteed campable spots for every campable level (positions)
                 var campPositions = [];
@@ -286,10 +286,11 @@ define([
                 var newEquipment = itemsHelper.getNewEquipment(campOrdinal);
                 for (var i = 0; i < newEquipment.length; i++) {
                     if (!newEquipment[i].craftable && newEquipment[i].scavengeRarity <= 5) {
-                    addStashes(seed / 3 + (l+551)*8 + (i+103)*18, StashVO.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1, lateZones);
-                }
+                        addStashes(seed / 3 + (l+551)*8 + (i+103)*18, StashVO.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1, lateZones);
+                    }
                 }
                 // TODO add currency stashes just for fun
+                // TODO add rare and non-essential stuff no non-campable levels
 
                 // springs
                 var springSectors = [];
@@ -450,7 +451,7 @@ define([
                     sectorVO.locales.push(locale);
                     levelVO.localeSectors.push(sectorVO);
                     levelVO.numLocales++;
-                    log.i(levelVO.level + " added locale: isEarly:" + isEarly + ", distance to camp: " + WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO) + ", zone: " + sectorVO.zone);
+                    // log.i(levelVO.level + " added locale: isEarly:" + isEarly + ", distance to camp: " + WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO) + ", zone: " + sectorVO.zone);
                     for (var j = 0; j < pathConstraints.length; j++) {
                         WorldCreatorHelper.addCriticalPath(worldVO, sectorVO.position, pathConstraints[j].startPosition, pathConstraints[j].pathType);
                     }
@@ -1212,6 +1213,11 @@ define([
             if (sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection]) {
                 var existing = sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection];
                 log.w(this, "skipping movement blocker (" + blockerType + "): sector already has movement blocker (" + existing + ")");
+                return;
+            }
+            
+            if (sectorVO.camp || neighbourVO.camp) {
+                log.w(this, "skipping movement blocker (" + blockerType + "): too close to camp");
                 return;
             }
 
