@@ -237,7 +237,7 @@
             var maxPopulation = this.getCampMaxPopulation();
             var posComponent = this.playerPosNodes.head.position;
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-            var hasUnlockedRopers = GameGlobals.upgradeEffectsHelper.getWorkerLevel("rope-maker", this.tribeUpgradesNodes.head.upgrades) > 0;
+            var hasUnlockedRopers = GameGlobals.upgradeEffectsHelper.getWorkerLevel("weaver", this.tribeUpgradesNodes.head.upgrades) > 0;
             var hasUnlockedScientists = GameGlobals.upgradeEffectsHelper.getWorkerLevel("scientist", this.tribeUpgradesNodes.head.upgrades) > 0;
             var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
 
