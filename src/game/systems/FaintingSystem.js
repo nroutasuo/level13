@@ -103,7 +103,7 @@ define([
 			var msgMain = "";
 			var msgLog = "";
 			
-			if (hasCampOnLevel && this.lastVisitedCampNodes.head && Math.random() < 0.2) {
+			if (hasCampOnLevel && this.lastVisitedCampNodes.head && this.lastVisitedCampNodes.head.camp.population >= 1 && Math.random() < 0.2) {
 				// rescued by campers: back to nearest camp, keep items, maybe injured
 				msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. Some of the scavengers found you and brought you home.";
 				msgLog = "The world fades. You wake up back in camp.";
