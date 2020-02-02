@@ -76,6 +76,15 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants) {
 			return version;
 		},
         
+        getVersion: function (version) {
+            for (var i = 0; i < this.versions.legnth; i++) {
+                if (this.versions[i].version == version) {
+                    return this.versions[i];
+                }
+            }
+            return null;
+        },
+        
         getVersionDigits: function (version) {
             var parts1 = version.split(" ");
             var parts2 = parts1[0].split(".");
@@ -84,14 +93,15 @@ function (Ash, GameGlobals, GlobalSignals, GameConstants) {
         
         isOldVersion: function (version) {
             var currentVersionNumber = this.getCurrentVersionNumber();
-            var currentVersionDigits = this.getVersionDigits(currentVersionNumber);
+            var currentVersionDetails = this.getCurrentVersion();
+            var requiredVersion = currentVersionDetails && currentVersionDetails.requiredVersion || currentVersionNumber;
+            var requiredVersionDigits = this.getVersionDigits(requiredVersion);
             var compareVersionDigits = this.getVersionDigits(version);
-            log.i("isOldVersion?")
-            log.i(currentVersionDigits);
-            log.i(compareVersionDigits)
-            if (!currentVersionDigits) return false;
+            
+            log.i("isOldVersion? " + version + ", current: " + currentVersionNumber + ", required: " + requiredVersion);
+            if (!requiredVersionDigits) return false;
             if (!compareVersionDigits) return false;
-            return compareVersionDigits.major < currentVersionDigits.major || compareVersionDigits.minor < currentVersionDigits.minor || compareVersionDigits.patch < currentVersionDigits.patch;
+            return compareVersionDigits.major < requiredVersionDigits.major || compareVersionDigits.minor < requiredVersionDigits.minor || compareVersionDigits.patch < requiredVersionDigits.patch;
         },
 	
     });
