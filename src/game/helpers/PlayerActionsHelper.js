@@ -129,9 +129,9 @@ define([
             var playerPos = this.playerStatsNodes.head.entity.get(PositionComponent);
             var locationKey = GameGlobals.gameState.getActionLocationKey(isLocationAction, playerPos);
             var cooldownTotal = PlayerActionConstants.getCooldown(action);
-            var cooldownLeft = Math.min(cooldownTotal, GameGlobals.gameState.getActionCooldown(action, locationKey) / 1000);
+            var cooldownLeft = GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal) / 1000;
             if (cooldownLeft) {
-                if (logUnavailable) log.w("Action blocked by cooldown [" + action + "]");
+                if (logUnavailable) log.w("Action blocked by cooldown [" + action + "] " + cooldownLeft);
                 return false;
             }
 

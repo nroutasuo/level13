@@ -671,9 +671,9 @@ define(['ash',
 					if (action) {
 						var locationKey = uiFunctions.getLocationKey($(this));
 						cooldownTotal = PlayerActionConstants.getCooldown(action);
-						cooldownLeft = Math.min(cooldownTotal, GameGlobals.gameState.getActionCooldown(action, locationKey) / 1000);
+						cooldownLeft = Math.min(cooldownTotal, GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal) / 1000);
 						durationTotal = PlayerActionConstants.getDuration(baseId);
-						durationLeft = Math.min(durationTotal, GameGlobals.gameState.getActionDuration(action, locationKey) / 1000);
+						durationLeft = Math.min(durationTotal, GameGlobals.gameState.getActionDuration(action, locationKey, durationTotal) / 1000);
 						if (cooldownLeft > 0) uiFunctions.startButtonCooldown($(this), cooldownTotal, cooldownLeft);
 						else uiFunctions.stopButtonCooldown($(this));
 						if (durationLeft > 0) uiFunctions.startButtonDuration($(this), cooldownTotal, durationLeft);
@@ -831,7 +831,7 @@ define(['ash',
 				);
 			},
 
-			stopButtonDuration: function (button, complete) {
+			stopButtonDuration: function (button) {
 				$(button).children(".cooldown-duration").stop(true, true);
 				$(button).children(".cooldown-duration").css("display", "none");
 				$(button).children(".cooldown-duration").css("width", "0%");
@@ -849,7 +849,7 @@ define(['ash',
 					durationLeft * 1000,
 					'linear',
 					function () {
-						uiFunctions.stopButtonDuration($(this).parent(), true);
+						uiFunctions.stopButtonDuration($(this).parent());
 					}
 				);
 			},

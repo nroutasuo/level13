@@ -125,14 +125,20 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
             this.actionCooldownEndTimestamps[actionKey] = new Date().getTime() + cooldown * 1000;
         },
 
-        getActionCooldown: function (action, key) {
+        getActionCooldown: function (action, key, max) {
             var actionKey = action;
             if (key.length > 0) actionKey += "-" + key;
             var timestamp = this.actionCooldownEndTimestamps[actionKey];
             if (timestamp) {
                 var now = new Date().getTime();
                 var diff = timestamp - now;
-                if (diff > 0) return timestamp - now;
+                if (diff > 0) {
+                    if (max && diff > max) {
+                        log.w("fix action cooldown: " + diff + " -> " + max);
+                        this.actionCooldownEndTimestamps[actionKey] = now + max;
+                    }
+                    return timestamp - now;
+                }
             }
             return 0;
         },
@@ -154,14 +160,20 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
             this.actionDurationEndTimestamps[actionKey] = new Date().getTime() + duration * 1000;
         },
 
-        getActionDuration: function (action, key) {
+        getActionDuration: function (action, key, max) {
             var actionKey = action;
             if (key.length > 0) actionKey += "-" + key;
             var timestamp = this.actionDurationEndTimestamps[actionKey];
             if (timestamp) {
                 var now = new Date().getTime();
                 var diff = timestamp - now;
-                if (diff > 0) return timestamp - now;
+                if (diff > 0) {
+                    if (max && diff > max) {
+                        log.w("fix action duration: " + diff + " -> " + max);
+                        this.actionDurationEndTimestamps[actionKey] = now + max;
+                    }
+                    return timestamp - now;
+                }
             }
             return 0;
         },
