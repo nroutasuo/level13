@@ -437,7 +437,7 @@ define([
                     var length = WorldCreatorConstants.getMaxPathLength(campOrdinal, pathType);
                     pathConstraints.push(new PathConstraintVO(pos, length, pathType));
                 }
-                var excludedZones = isEarly ? [ WorldCreatorConstants.ZONE_POI_2, WorldCreatorConstants.ZONE_EXTRA_CAMPABLE ] : [ WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, WorldCreatorConstants.ZONE_POI_1, WorldCreatorConstants.ZONE_EXTRA_CAMPABLE ];
+                var excludedZones = isEarly ? [ WorldCreatorConstants.ZONE_POI_2, WorldCreatorConstants.ZONE_EXTRA_CAMPABLE, WorldCreatorConstants.ZONE_CAMP_TO_PASSAGE ] : [ WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP, WorldCreatorConstants.ZONE_POI_1, WorldCreatorConstants.ZONE_EXTRA_CAMPABLE ];
                 var options = { requireCentral: false, excludingFeature: "camp", pathConstraints: pathConstraints, excludedZones: excludedZones, numDuplicates: 2 };
                 var l = levelVO.level;
                 var sseed = seed - (isEarly ? 5555 : 0) + (l + 50) * 2;

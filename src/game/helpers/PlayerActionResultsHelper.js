@@ -1014,7 +1014,6 @@ define([
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
             var blueprintType = localeVO.isEarly ? UpgradeConstants.BLUEPRINT_TYPE_EARLY : UpgradeConstants.BLUEPRINT_TYPE_LATE;
 			var levelBlueprints = UpgradeConstants.getblueprintsByCampOrdinal(campOrdinal, blueprintType);
-            var numScoutedLocales = GameGlobals.gameState.numScoutedLocales;
 
 			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
 			var blueprintsToFind = [];
@@ -1029,16 +1028,18 @@ define([
 			}
             
             var bracket = localeVO.getBracket();
-			var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, false, bracket, localeVO).length + 1;
-            var scoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, true, bracket, localeVO).length + 1 - unscoutedLocales;
-			var levelBlueprintProbability = blueprintPiecesToFind / unscoutedLocales;
+            var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, false, bracket, localeVO);
+			var numUnscoutedLocales = unscoutedLocales.length + 1;
+            var scoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, true, bracket, localeVO);
+            var numScoutedLocales = scoutedLocales.length + 1 - numUnscoutedLocales;
+			var findBlueprintProbability = blueprintPiecesToFind / numUnscoutedLocales;
             
-            log.i("get result blueprint: " + blueprintType + " | pieces to find: " + blueprintPiecesToFind + " / unscouted locales: " + unscoutedLocales + ", scouted locales: " + scoutedLocales);
+            log.i("get result blueprint: " + blueprintType + " | pieces to find: " + blueprintPiecesToFind + " / unscouted locales: " + numUnscoutedLocales + " -> " + Math.round(findBlueprintProbability*100)/100 + ", scouted locales: " + numScoutedLocales);
             log.i(levelBlueprints);
             log.i(blueprintsToFind);
 
-            var isFirstEver = playerPos.level == 13 && scoutedLocales == 0;
-			if (isFirstEver || Math.random() < levelBlueprintProbability) {
+            var isFirstEver = playerPos.level == 13 && numScoutedLocales == 0;
+			if (isFirstEver || Math.random() < findBlueprintProbability) {
                 var i = Math.floor(Math.random() * blueprintsToFind.length);
 				return blueprintsToFind[i];
 			}
