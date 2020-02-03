@@ -1216,7 +1216,8 @@ define([
                 return;
             }
             
-            if (sectorVO.camp || neighbourVO.camp) {
+            // check for too close to camp or in ZONE_PASSAGE_TO_CAMP
+            if (sectorVO.camp || neighbourVO.camp || (levelVO.isCampable && sectorVO.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP)) {
                 log.w(this, "skipping movement blocker (" + blockerType + "): too close to camp");
                 return;
             }
