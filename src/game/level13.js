@@ -174,7 +174,6 @@ define([
             GameGlobals.uiFunctions.init();
             GlobalSignals.pageSetUpSignal.dispatch();
             
-            this.gameFlowLogger = new GameFlowLogger();
             ExceptionHandler.exceptionCallback = function (ex) { game.handleException(ex) };
             GlobalSignals.exceptionCallback = function (ex) { game.handleException(ex) };
             GlobalSignals.gameStateReadySignal.addOnce(function () {
@@ -207,6 +206,7 @@ define([
 			GameGlobals.upgradeEffectsHelper = new UpgradeEffectsHelper();
 			GameGlobals.saveHelper = new SaveHelper();
             GameGlobals.changeLogHelper = new ChangeLogHelper();
+            GameGlobals.gameFlowLogger = new GameFlowLogger();
 
             GameGlobals.uiMapHelper = new UIMapHelper(this.engine);
             GameGlobals.uiTechTreeHelper = new UITechTreeHelper(this.engine);

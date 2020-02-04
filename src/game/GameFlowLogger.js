@@ -7,6 +7,8 @@ define(['ash',
     
     var GameFlowLogger = Ash.Class.extend({
         
+        isEnabled: true,
+        
         constructor: function () {
             if (ConsoleLogger.logInfo) {
                 GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
@@ -18,7 +20,12 @@ define(['ash',
         },
         
         log: function (msg) {
+            if (!this.isEnabled) return;
             log.i("flow: " + msg);
+        },
+        
+        setEnabled: function (value) {
+            this.isEnabled = value;
         },
         
         onGameShown: function () {
