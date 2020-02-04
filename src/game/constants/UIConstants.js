@@ -252,20 +252,22 @@ define(['ash',
 
 		getItemBonusText: function (item, bonusType) {
 			var bonusValue = item.getBonus(bonusType);
-			if (bonusValue === 0)
+			if (bonusValue === 0) {
 				return "+0";
-            else if (item.type == ItemConstants.itemTypes.bag)
+            } else if (item.type == ItemConstants.itemTypes.bag) {
                 return " " + bonusValue;
-            else if (bonusType == ItemConstants.itemBonusTypes.fight_speed)
-				return " +" + -Math.round((1 - bonusValue) * 100) + "%";
-			else if (bonusValue >= 1)
+            } else if (bonusType == ItemConstants.itemBonusTypes.fight_speed) {
+                var val = Math.abs(Math.round((1 - bonusValue) * 100));
+				return bonusValue == 1 ? "+0%" : (bonusValue < 1 ? "+" + val + "%" : "-" + val + "%");
+			} else if (bonusValue >= 1) {
 				return " +" + bonusValue;
-			else if (bonusValue > 0) {
+			} else if (bonusValue > 0) {
 				return " -" + Math.round((1 - bonusValue) * 100) + "%";
 			} else if (bonusValue > -1) {
 				return " +" + Math.round((1 - bonusValue) * 100) + "%";
-			} else
+			} else {
 				return " " + bonusValue;
+            }
 		},
 
 		getPerkDetailText: function (perk, isResting) {
