@@ -156,6 +156,37 @@ define([
             return Math.min(minByItems, minByLevel);
         },
         
+        getNeededIngredient: function (campOrdinal, step, itemsComponent, isStrict) {
+            var checkItem = function(item) {
+                if (!item.craftable) return null;
+                if (itemsComponent.getCountById(item.id, true) < (isStrict ? 1 : 1)) {
+                    var ingredients = GameGlobals.itemsHelper.getIngredientsToCraft(item.id);
+                    log.i(ingredients);
+                    for (var i = 0; i < ingredients.length; i++) {
+                        var def = ingredients[i];
+                        if (itemsComponent.getCountById(def.id, true) < (isStrict ? def.amount : Math.max(def.amount, 3))) {
+                            return ItemConstants.getItemByID(def.id);
+                        }
+                    }
+                }
+                return null;
+            }
+            
+            var exploration = checkItem(ItemConstants.getItemByID("exploration_1"));
+            if (exploration) return exploration;
+            
+            var bonusTypes = [ ItemConstants.itemBonusTypes.res_poison, ItemConstants.itemBonusTypes.res_cold, ItemConstants.itemBonusTypes.res_radiation ];
+            for (var i = 0; i < bonusTypes.length; i++) {
+                var neededClothing = this.getAvailableClothingList(campOrdinal, step, true, false, false, bonusTypes[i], 10);
+                for (var j = 0; j < neededClothing.length; j++) {
+                    var item = checkItem(ItemConstants.getItemByID(neededClothing[j].id));
+                    if (item) return item;
+                }
+            }
+            
+            return null;
+        },
+        
         getUsableIngredient: function () {
             var usableIngredients = [];
 			var campCount = GameGlobals.gameState.numCamps;
@@ -215,6 +246,18 @@ define([
             return false;
         },
         
+        getIngredientsToCraft: function (itemID) {
+            var craftAction = "craft_" + itemID;
+            var costs = PlayerActionConstants.costs[craftAction];
+            var result = [];
+			for (var key in costs) {
+                if (key.startsWith("item_res_")) {
+                    result.push({ id: key.replace("item_", ""), amount: costs[key] });
+                }
+            }
+            return result;
+        },
+        
         isObsolete: function (itemVO, itemsComponent, inCamp) {
             // if item is not equippable, it cannot be obsolete
             if (!itemVO.equippable) return false;
@@ -250,15 +293,6 @@ define([
             return true;
         },
         
-        getNeededIngredient: function (itemsComponent) {
-            // TODO de-hardcode important items and their crafting ingredients
-            if (itemsComponent.getCountById("exploration_1", true) < 1) {
-                if (itemsComponent.getCountById("res_hairpin", true) < 3) {
-                    return "res_hairpin";
-                }
-            }
-            return null;
-        }
         
     });
     

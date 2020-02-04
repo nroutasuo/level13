@@ -227,7 +227,8 @@ define([
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.trader:
                     var numCamps = GameGlobals.gameState.numCamps;
-                    var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(this.playerNodes.head.entity.get(ItemsComponent));
+                    var itemsComponent = this.playerNodes.head.entity.get(ItemsComponent);
+                    var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(numCamps, 3, itemsComponent, false);
 					var caravan = TradeConstants.getRandomIncomingCaravan(numCamps, GameGlobals.gameState.level, GameGlobals.gameState.unlockedFeatures.resources, neededIngredient);
 					campNode.entity.add(new TraderComponent(caravan));
 					logMsg = "A trader arrives.";
