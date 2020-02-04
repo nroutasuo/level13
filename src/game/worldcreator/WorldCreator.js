@@ -289,6 +289,16 @@ define([
                         addStashes(seed / 3 + (l+551)*8 + (i+103)*18, StashVO.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1, lateZones);
                     }
                 }
+                // metal
+                if (l == 13) {
+                    addStashes(seed / 3 * 338 + l * 402, StashVO.STASH_TYPE_ITEM, "cache_metal_1", 2, 1, lateZones);
+                    addStashes(seed / 5 * 931 + l * 442, StashVO.STASH_TYPE_ITEM, "cache_metal_2", 2, 1, lateZones);
+                } else {
+                    if (l % 2 == 0)
+                        addStashes(seed / 5 * 931 + l * 442, StashVO.STASH_TYPE_ITEM, "cache_metal_1", 1, 1);
+                    else
+                        addStashes(seed / 5 * 931 + l * 442, StashVO.STASH_TYPE_ITEM, "cache_metal_2", 1, 1);
+                }
                 // TODO add currency stashes just for fun
                 // TODO add rare and non-essential stuff no non-campable levels
 
