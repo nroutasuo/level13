@@ -1404,11 +1404,18 @@ define(['ash',
 					var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 					sectorStatus.glowStickSeconds = 120;
 					break;
+                    
+                case "cache_metal_1":
+                case "cache_metal_2":
+        			var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
+					currentStorage.resources.addResource(resourceNames.metal, 10);
+                    break;
 
 				default:
 					log.w("Item not mapped for useItem: " + itemId);
 					break;
 			}
+            GlobalSignals.inventoryChangedSignal.dispatch();
 		},
 
 		useItemFight: function (itemId) {

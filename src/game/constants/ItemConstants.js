@@ -160,7 +160,9 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("first_aid_kit_2", "Full first aid kit", "Exploration", 10, false, true, true, 8, 2, null, "img/items/firstaid-2.png", "Heal all injuries on the go."),
                 new ItemVO("glowstick_1", "Glowstick", "Exploration", 1, false, true, true, 8, 2, null, "img/items/glowstick-1.png", "Temporary light. Can be used as a distraction."),
                 new ItemVO("consumable_weapon_1", "Shuriken", "Exploration", 2, false, true, false, 8, 2, null, "img/items/exploration-gear.png", "One-use weapon."),
-                new ItemVO("flee_1", "Smoke Bomb", "Exploration", 3, false, true, false, 8, 2, null, "img/items/weapon-bomb.png", "Can be used to escape a fight.")
+                new ItemVO("flee_1", "Smoke Bomb", "Exploration", 3, false, true, false, 8, 2, null, "img/items/weapon-bomb.png", "Can be used to escape a fight."),
+                new ItemVO("cache_metal_1", "Broken robot", "Exploration", 1, false, false, true, 5, -1, {}, "img/items/cahce-metal.png", "Can probably be taken apart down for some scrap metal"),
+                new ItemVO("cache_metal_2", "Broken appliance", "Exploration", 1, false, false, true, 5, -1, {}, "img/items/cahce-metal.png", "Can probably be taken apart down for some scrap metal"),
             ],
             uniqueEquipment: [
                 new ItemVO("equipment_map", "Map", "UniqueEquipment", 0, false, false, false, -1, -1, null, "img/items/exploration-map.png", "Helps navigating the City."),
