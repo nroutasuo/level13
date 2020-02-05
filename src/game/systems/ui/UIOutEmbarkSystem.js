@@ -140,6 +140,8 @@ define([
 			$.each($("#embark-items tr"), function () {
 				var itemID = $(this).attr("id").split("-")[2];
                 var count = itemsComponent.getCountById(itemID, true);
+                var item = itemsComponent.getItem(itemID, null, true, true);
+                if (item && item.equipped) count -= 1;
 				var visible = count > 0;
                 if (visible) visibleItemTRs++;
 				GameGlobals.uiFunctions.toggle($(this), visible);
