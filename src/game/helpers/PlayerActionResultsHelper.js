@@ -517,7 +517,7 @@ define([
 			}
 
 			if (resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0 || !isInitialSelectionValid) {
-				var baghtml = "<div id='resultlist-inventorymanagement'>";
+				var baghtml = "<div id='resultlist-inventorymanagement' class='unselectable'>";
 
 				baghtml += "<div id='resultlist-inventorymanagement-found' class='infobox inventorybox'>";
 				baghtml += "<ul></ul>";
