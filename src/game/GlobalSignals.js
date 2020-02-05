@@ -25,6 +25,7 @@ define(['ash',], function (Ash) {
         playerMovedSignal: new Ash.Signals.Signal(),
         sectorScoutedSignal: new Ash.Signals.Signal(),
         improvementBuiltSignal: new Ash.Signals.Signal(),
+        itemUsedSignal: new Ash.Signals.Signal(),
         campBuiltSignal: new Ash.Signals.Signal(),
         movementBlockerClearedSignal: new Ash.Signals.Signal(),
         blueprintsChangedSignal: new Ash.Signals.Signal(),

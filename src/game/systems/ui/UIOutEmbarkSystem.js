@@ -171,7 +171,9 @@ define([
         updateWarning: function (campResourcesAcc, campResources, selectedWater, selectedFood) {
             var warning = "";
             var staminaComponent = this.playerPosNodes.head.entity.get(StaminaComponent);
-            var campPopulation = Math.floor(this.playerLocationNodes.head.entity.get(CampComponent).population);
+            var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+            if (!campComponent) return;
+            var campPopulation = Math.floor(campComponent.population);
             if (staminaComponent.stamina < PlayerStatConstants.getStaminaWarningLimit(staminaComponent)) {
                 warning = "Won't get far with low stamina.";
             } else if (campPopulation > 1) {

@@ -174,11 +174,13 @@ define([
             }
             
             // update canvas
-            this.ctx.clearRect(0, 0, this.containerWidth, this.containerHeight);
-            for (var z = buildingsToDraw.length - 1; z >= 0; z--) {
-                for (var i = 0; i < buildingsToDraw[z].length; i++) {
-                    var vo = buildingsToDraw[z][i];
-                    this.drawBuildingOnCanvas(vo.building, vo.coords, vo.n);
+            if (this.ctx) {
+                this.ctx.clearRect(0, 0, this.containerWidth, this.containerHeight);
+                for (var z = buildingsToDraw.length - 1; z >= 0; z--) {
+                    for (var i = 0; i < buildingsToDraw[z].length; i++) {
+                        var vo = buildingsToDraw[z][i];
+                        this.drawBuildingOnCanvas(vo.building, vo.coords, vo.n);
+                    }
                 }
             }
             

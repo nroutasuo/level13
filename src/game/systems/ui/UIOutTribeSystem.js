@@ -73,6 +73,7 @@ define([
         },
 
         slowUpdate: function () {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.world;
             if (!isActive) this.updateNodes(isActive);
         },
@@ -126,6 +127,8 @@ define([
         },
 
 		updateNode: function (node, isActive) {
+            if (!node.entity) return;
+            
 			var camp = node.camp;
 			var level = node.entity.get(PositionComponent).level;
 

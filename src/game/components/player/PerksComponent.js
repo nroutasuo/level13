@@ -133,7 +133,9 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
             for(var key in componentValues.perks) {
                 for (var i in componentValues.perks[key]) {
                     var perkID = componentValues.perks[key][i].id;
-                    var perk = PerkConstants.getPerk(perkID).clone();
+                    var perk = PerkConstants.getPerk(perkID);
+                    if (!perk) continue;
+                    perk = perk.clone();
                     perk.effectTimer = componentValues.perks[key][i].effectTimer;
                     if (perk) {
                         this.addPerk(perk);

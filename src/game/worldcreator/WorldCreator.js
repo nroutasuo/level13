@@ -1349,6 +1349,7 @@ define([
             }
             
             // campable levels: block all paths to one POI
+            // TODO check that that POI is in a different direction than first passage of the level, otherwise the movement blockers will just get blocked because blockers on zone ZONE_PASSAGE_TO_CAMP are not allowed
             if (levelVO.isCampable && WorldCreatorRandom.randomBool(seed % 888 + l * 777, 0.75)) {
                 var localeSectors = levelVO.localeSectors;
                 var rand = seed % 333 + 1000 + l * 652;
