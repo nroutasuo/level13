@@ -686,6 +686,8 @@ define([
 		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, efficiency, currentItems, campOrdinal, step) {
 			var result = [];
 			var hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
+            var hasCamp = GameGlobals.gameState.unlockedFeatures.camp;
+            var hasDecentEfficiency = efficiency > 0.1;
 
 			// Neccessity items (map, bag) that the player should find quickly if missing
 			var necessityItem = this.getNecessityItem(itemProbability, itemTypeLimits, efficiency, currentItems, campOrdinal);
@@ -694,26 +696,28 @@ define([
 			}
 
 			// Normal items
-            if (hasBag && !necessityItem && Math.random() < itemProbability) {
+            if (hasBag && !necessityItem && hasDecentEfficiency && Math.random() < itemProbability) {
                 var item = this.getRewardItem(itemTypeLimits, efficiency, campOrdinal, step);
                 if (item) result.push(item);
             }
             
             // Necessity ingredient (stuff blocking the player from progressing)
-            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-            var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(campOrdinal, step, itemsComponent, true);
-            var neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
-            log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp);
-            if (neededIngredient && Math.random() < neededIngredientProp) {
-                var max = Math.floor(Math.random() * 5);
-                var amount = Math.floor(Math.random() * efficiency * max) + 1;
-				for (var i = 0; i <= amount; i++) {
-                    result.push(neededIngredient.clone());
+            if (hasCamp && hasDecentEfficiency) {
+                var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+                var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(campOrdinal, step, itemsComponent, true);
+                var neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
+                log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp);
+                if (neededIngredient && Math.random() < neededIngredientProp) {
+                    var max = Math.floor(Math.random() * 5);
+                    var amount = Math.floor(Math.random() * efficiency * max) + 1;
+    				for (var i = 0; i <= amount; i++) {
+                        result.push(neededIngredient.clone());
+                    }
                 }
             }
 
 			// Ingredients
-			if (hasBag && Math.random() < ingredientProbability) {
+			if (hasBag && hasCamp && hasDecentEfficiency && Math.random() < ingredientProbability) {
                 var max = Math.floor(Math.random() * 5);
 				var amount = Math.floor(Math.random() * efficiency * max) + 1;
 				var ingredient = GameGlobals.itemsHelper.getUsableIngredient();
