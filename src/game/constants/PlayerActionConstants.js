@@ -1755,7 +1755,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 improve_in_square: {
                     resource_metal: [0, 0, 80, 0, 0],
                     resource_rope: [0, 0, 20, 0, 0],
-                    resource_tools: 10,
+                    resource_tools: [0, 0, 10, 0, 2],
                     cost_factor_e1_base: 1.25,
                 },
 

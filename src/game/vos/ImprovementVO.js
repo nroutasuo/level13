@@ -169,7 +169,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
                 return 3;
             case improvementNames.square:
             case improvementNames.garden:
-                return 2;
+                return 1.9 + level * 0.1;
             default:
                 return 1;
         }
