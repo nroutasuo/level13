@@ -268,8 +268,11 @@ define([
                     itemDefinition = itemList[i];
                     if (itemDefinition.useable) {
                         var actionName = "use_item_" + itemDefinition.id;
-                        var reqsCheck = GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
-                        if (reqsCheck) {
+                        var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
+                        var isAvailable = GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
+                        var costsCheck = GameGlobals.playerActionsHelper.checkCosts(actionName);
+                        var showItem = isAvailable || (costsCheck >= 1 && reqsCheck.reason == PlayerActionConstants.UNAVAILABLE_REASON_NOT_IN_CAMP);
+                        if (showItem) {
                             itemDefinitionList.push(itemDefinition);
                         }
                     }
@@ -286,7 +289,8 @@ define([
             for (var j = 0; j < itemDefinitionList.length; j++) {
                 var itemDefinition = itemDefinitionList[j];
                 var actionName = "use_item_" + itemDefinition.id;
-                tr = "<tr><td><button class='action multiline' action='" + actionName + "'>Use " + itemDefinition.name + "</button></td></tr>";
+                var actionVerb = itemDefinition.id.startsWith("cache_metal") ? "Disassemble" : "Use";
+                tr = "<tr><td><button class='action multiline' action='" + actionName + "'>" + actionVerb + " " + itemDefinition.name + "</button></td></tr>";
                 $("#self-use-items table").append(tr);
             }
 

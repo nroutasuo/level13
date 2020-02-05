@@ -322,7 +322,7 @@ define([
                         var current = inCamp;
                         if (required !== current) {
                             if (required) {
-                                return { value: 0, reason: "Must be in camp to do this." };
+                                return { value: 0, reason: PlayerActionConstants.UNAVAILABLE_REASON_NOT_IN_CAMP };
                             } else {
                                 return { value: 0, reason: "Must be outside to do this." };
                             }

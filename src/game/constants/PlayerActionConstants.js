@@ -1007,6 +1007,14 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         glowstick_1: [-1, 1],
                     },
                 },
+                
+                use_item_cache_metal_1: {
+                    inCamp: true,
+                },
+                
+                use_item_cache_metal_2: {
+                    inCamp: true,
+                },
 
                 create_blueprint: {
                     inCamp: true,
@@ -2678,6 +2686,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
             UNAVAILABLE_REASON_LOCKED_RESOURCES: "Requires undiscovered resources.",
             UNAVAILABLE_REASON_BAG_FULL: "Bag full.",
+            UNAVAILABLE_REASON_NOT_IN_CAMP: "Must be in camp to do this.",
             DISABLED_REASON_NOT_ENOUGH_LEVEL_POP: "Not enough people on this level.",
 
             hasAction: function (action) {

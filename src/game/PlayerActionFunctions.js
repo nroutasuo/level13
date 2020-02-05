@@ -1397,6 +1397,7 @@ define(['ash',
 					} else {
 						log.w("No injury found that can be healed!");
 					}
+        			this.addLogMessage(LogConstants.MSG_ID_USE_FIRST_AID_KIT, "Used a first aid kit.");
 					this.forceStatsBarUpdate();
 					break;
 
@@ -1407,14 +1408,20 @@ define(['ash',
                     
                 case "cache_metal_1":
                 case "cache_metal_2":
+                    var value = 10;
+                    var item = ItemConstants.getItemByID(itemId);
+                    var itemNameParts = item.name.split(" ");
+                    var itemName = itemNameParts[itemNameParts.length - 1];
         			var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
-					currentStorage.resources.addResource(resourceNames.metal, 10);
+					currentStorage.resources.addResource(resourceNames.metal, value);
+        			this.addLogMessage(LogConstants.MSG_ID_USE_FIRST_AID_KIT, "Took apart the " + itemName + ". Gained " + value + " metal.");
                     break;
 
 				default:
 					log.w("Item not mapped for useItem: " + itemId);
 					break;
 			}
+            
             GlobalSignals.inventoryChangedSignal.dispatch();
 		},
 
