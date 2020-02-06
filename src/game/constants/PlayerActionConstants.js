@@ -2513,12 +2513,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_building_library: {
-                	evidence: 87,
+                	evidence: 91,
                 },
 
                 unlock_building_inn: {
                 	rumours: 60,
-                	evidence: 87,
+                	evidence: 91,
                 },
 
                 unlock_building_market: {
@@ -2527,7 +2527,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 unlock_building_fortifications: {
                 	rumours: 54,
-                	evidence: 78,
+                	evidence: 82,
                 },
 
                 unlock_item_bag2: {
@@ -2536,7 +2536,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 unlock_weapon_15: {
                 	rumours: 42,
-                    evidence: 88,
+                    evidence: 62,
                 },
 
                 unlock_clothing_basic: {
@@ -2544,7 +2544,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_clothing_warm: {
-                	evidence: 71,
+                	evidence: 46,
                 },
 
                 unlock_building_darkfarm: {
@@ -2552,7 +2552,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_building_tradingpost: {
-                	evidence: 44,
+                	evidence: 31,
                 },
 
                 unlock_item_clothing2: {
@@ -2573,7 +2573,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 unlock_item_shoe1: {
                 	rumours: 17,
-                	evidence: 32,
+                	evidence: 30,
                 },
 
             },
