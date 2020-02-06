@@ -1408,7 +1408,7 @@ define(['ash',
                     
                 case "cache_metal_1":
                 case "cache_metal_2":
-                    var value = 10;
+                    var value = 10 + Math.round(Math.random(10));
                     var item = ItemConstants.getItemByID(itemId);
                     var itemNameParts = item.name.split(" ");
                     var itemName = itemNameParts[itemNameParts.length - 1];
