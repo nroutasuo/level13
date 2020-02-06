@@ -3,8 +3,9 @@
         {
             "version": "0.2.6",
             "phase": "alpha",
-            "final": false,
-            "updated": "2020-02-03",
+            "final": true,
+            "updated": "2020-02-06",
+            "released": "2020-02-06",
             "requiredVersion": "0.2.5",
             "changes": [
                 {
