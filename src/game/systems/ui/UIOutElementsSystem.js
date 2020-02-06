@@ -69,10 +69,10 @@ define([
 		update: function (time) {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (this.elementsVisibilityChanged) {
-				this.updateVisibleButtonsList();
+                this.updateVisibleButtonsList();
 				this.updateVisibleProgressbarsList();
     			this.updateInfoCallouts();
-    			this.updateButtons();
+                this.updateButtons();
 				this.elementsVisibilityChanged = false;
 				this.buttonStatusChanged = false;
 				this.elementsVisibilityChangedFrames++;
@@ -94,6 +94,7 @@ define([
 
         slowUpdate: function () {
             if (GameGlobals.gameState.uiStatus.isHidden) return;
+            this.updateVisibleButtonsList();
             this.updateButtons();
         },
 
