@@ -146,14 +146,18 @@ define(['ash',
 
 			registerGlobalMouseEvents: function () {
 				GameGlobals.gameState.uiStatus.mouseDown = false;
+                GameGlobals.gameState.uiStatus.mouseDownElement = null;
 				$(document).on('mouseleave', function (e) {
 					GameGlobals.gameState.uiStatus.mouseDown = false;
+                    GameGlobals.gameState.uiStatus.mouseDownElement = null;
 				});
 				$(document).on('mouseup', function (e) {
 					GameGlobals.gameState.uiStatus.mouseDown = false;
+                    GameGlobals.gameState.uiStatus.mouseDownElement = null;
 				});
 				$(document).on('mousedown', function (e) {
 					GameGlobals.gameState.uiStatus.mouseDown = true;
+                    GameGlobals.gameState.uiStatus.mouseDownElement = e.target;
 				});
 			},
 
@@ -905,7 +909,7 @@ define(['ash',
 
 			registerLongTap: function (element, callback) {
 				var $element = typeof (element) === "string" ? $(element) : element;
-				var minTime = 1250;
+				var minTime = 1000;
 				var intervalTime = 200;
 
 				var cancelLongTap = function () {
@@ -919,13 +923,14 @@ define(['ash',
 					$(this).attr("data-long-tap-timeout", 0);
 				};
 				$element.on('mousedown', function (e) {
-					var target = $(this);
+                    var target = e.target;
+					var $target = $(this);
 					cancelLongTap()
 					var timer = setTimeout(function () {
 						cancelLongTap()
 						var interval = setInterval(function () {
-							if (GameGlobals.gameState.uiStatus.mouseDown) {
-								callback.apply(target, e);
+							if (GameGlobals.gameState.uiStatus.mouseDown && GameGlobals.gameState.uiStatus.mouseDownElement == target) {
+								callback.apply($target, e);
 							} else {
 								cancelLongTap();
 							}
