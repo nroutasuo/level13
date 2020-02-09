@@ -5,9 +5,10 @@ define([
     'game/constants/GameConstants',
     'game/constants/CampConstants',
 	'game/components/sector/improvements/SectorImprovementsComponent',
+	'game/components/type/LevelComponent',
     'game/nodes/sector/CampNode',
     'game/nodes/tribe/TribeUpgradesNode',
-], function (Ash, GameGlobals, GameConstants, CampConstants, SectorImprovementsComponent, CampNode, TribeUpgradesNode) {
+], function (Ash, GameGlobals, GameConstants, CampConstants, SectorImprovementsComponent, LevelComponent, CampNode, TribeUpgradesNode) {
     
     var CampHelper = Ash.Class.extend({
 		
@@ -95,6 +96,97 @@ define([
         
         getMetalConsumptionPerSecondConcrete: function (workers) {
             return workers * CampConstants.CONSUMPTION_METAL_PER_CONCRETE_PER_S * GameConstants.gameSpeedCamp;
+        },
+        
+        getTargetReputation: function (campEntity, sectorImprovements, population, danger) {
+            var result = 0;
+            var sources = {}; // text -> value
+            var penalties = {}; // id -> bool
+            
+            var addValue = function (value, name) {
+                result += value;
+                sources[name] = value;
+            };
+            
+            var addPenalty = function (id, active) {
+                penalties[id] = active;
+            };
+            
+            // base: building happiness values
+            var allImprovements = sectorImprovements.getAll(improvementTypes.camp);
+            for (var i in allImprovements) {
+                var improvementVO = allImprovements[i];
+                var defaultBonus = improvementVO.getReputationBonus();
+                switch (improvementVO.name) {
+                    case improvementNames.generator:
+                        var numHouses = sectorImprovements.getCount(improvementNames.house) + sectorImprovements.getCount(improvementNames.house2);
+                        var generatorBonus = numHouses * CampConstants.REPUTATION_PER_HOUSE_FROM_GENERATOR * (1 + improvementVO.level * 0.02);
+                        generatorBonus = Math.round(generatorBonus * 100) / 100;
+                        addValue(generatorBonus, "Generator");
+                        break;
+                    case improvementNames.radio:
+                        addValue(improvementVO.count * defaultBonus, "Radio");
+                        break;
+                    default:
+                        addValue(improvementVO.count * defaultBonus, "Buildings");
+                        break;
+                }
+            }
+            
+            var resultWithoutPenalties = result;
+            
+            // penalties: food and water
+            var storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campEntity);
+            var resources = storage ? storage.resources : null;
+            var noFood = resources && resources.getResource(resourceNames.food) <= 0;
+            var noWater = resources && resources.getResource(resourceNames.water) <= 0;
+            var penalty = Math.max(5, Math.ceil(resultWithoutPenalties));
+            if (noFood) {
+                addValue(-penalty, "No food");
+            }
+            if (noWater) {
+                addValue(-penalty, "No water");
+            }
+            addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_FOOD, noFood);
+            addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_WATER, noWater);
+            
+            // penalties: defences
+            var defenceLimit = CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
+            var noDefences = danger > defenceLimit;
+            if (noDefences) {
+                var steppedDanger = Math.ceil((danger - defenceLimit) * 100 / 5) * 5;
+                var penaltyRatio = steppedDanger / (100 - defenceLimit);
+                var defencePenalty = Math.ceil(resultWithoutPenalties * penaltyRatio * 4) / 4;
+                if (penaltyRatio > 0.25) {
+                    addValue(-defencePenalty, "Terrible defences");
+                } else if (penaltyRatio > 0.15) {
+                    addValue(-defencePenalty, "Poor defences");
+                } else {
+                    addValue(-defencePenalty, "Inadequate defences");
+                }
+            }
+            addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_DEFENCES, noDefences);
+            
+            // penalties: over-crowding
+            var housingCap = CampConstants.getHousingCap(sectorImprovements);
+            var population = Math.floor(population);
+            var noHousing = population > housingCap;
+            if (noHousing) {
+                var housingPenaltyRatio = Math.ceil((population - housingCap) / population * 20) / 20;
+                var housingPenalty = Math.ceil(resultWithoutPenalties * housingPenaltyRatio);
+                addValue(-housingPenalty, "Overcrowding");
+            }
+            addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_HOUSING, noHousing);
+            
+            // penalties: level population
+            var levelVO = GameGlobals.levelHelper.getLevelEntityForSector(campEntity).get(LevelComponent).levelVO;
+            if (levelVO.populationGrowthFactor < 1) {
+                var levelPopPenalty = resultWithoutPenalties * (1 - levelVO.populationGrowthFactor);
+                addValue(-levelPopPenalty, "Level population");
+            }
+            addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_LEVEL_POP, levelVO.populationGrowthFactor < 1);
+            
+            return { value: Math.max(0, result), sources: sources, penalties: penalties };
         },
 		
 		getUpgradeBonus: function (worker) {
