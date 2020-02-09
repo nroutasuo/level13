@@ -1,6 +1,17 @@
 {
 	"versions": [
         {
+            "version": "0.3.1",
+            "phase": "alpha",
+            "final": false,
+            "updated": "2020-02-06",
+            "requiredVersion": "0.3.1",
+            "changes": [
+                {
+                }
+            ]
+        },
+        {
             "version": "0.2.6",
             "phase": "alpha",
             "final": true,
