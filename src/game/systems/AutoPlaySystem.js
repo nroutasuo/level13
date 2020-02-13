@@ -1,4 +1,4 @@
-// A system to autoplay the game - mostly useful for quickly cheating to a semi-realistic later state of the game
+// A system to autoplay the game - mostly useful for quickly cheating to a semi-realistic later state of the game, or for skipping repetitive exploration steps
 define(['ash',
     'game/GameGlobals',
 	'game/constants/AutoPlayConstants',
@@ -768,7 +768,7 @@ define(['ash',
                 var scientists = Math.min(1, specialistPop - ropers - chemists - smiths - apothecaries - concrete - soldiers, maxScientists);
                 var scavengers = Math.floor(pop - trappers - waters - ropers - chemists - apothecaries - smiths - concrete - soldiers - scientists);
 
-                GameGlobals.playerActionFunctions.assignWorkers(scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers, scientists);
+                GameGlobals.playerActionFunctions.assignWorkers(null, scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers, scientists);
                 this.printStep("assigned workers (" + scavengers + ", " + trappers + ", " + waters + ", " + ropers + ", " + chemists + ", " + apothecaries + ", " + smiths + ", " + concrete + ", " + soldiers + ")");
                 this.refreshWorkers = false;
                 return true;

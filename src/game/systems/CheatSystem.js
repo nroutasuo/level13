@@ -95,10 +95,10 @@ define(['ash',
                 this.playerStatsNodes.head.vision.value = Math.min(200, Math.max(0, parseInt(params[0])));
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_EVIDENCE, "Set evidence.", ["value"], function (params) {
-                this.playerStatsNodes.head.evidence.value = Math.max(0, parseInt(params[0]));
+                this.setEvidence(parseInt(params[0]));
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_RUMOURS, "Set rumours.", ["value"], function (params) {
-                this.playerStatsNodes.head.rumours.value = Math.max(0, parseInt(params[0]));
+                this.setRumours(parseInt(params[0]));
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_FAVOUR, "Set favour.", ["value"], function (params) {
                 var value = parseInt(params[0]);
@@ -342,6 +342,14 @@ define(['ash',
                 log.i(name + " is not a valid resource. Possible names are:");
                 log.i(Object.keys(resourceNames));
             }
+        },
+        
+        setEvidence: function (value) {
+            this.playerStatsNodes.head.evidence.value = Math.max(0, value);
+        },
+        
+        setRumours: function (value) {
+            this.playerStatsNodes.head.rumours.value = Math.max(0, value);
         },
 
         setFavour: function (value) {

@@ -5,6 +5,7 @@ define([
     'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/GameConstants',
+    'game/constants/ExplorationConstants',
     'game/constants/LocaleConstants',
     'game/constants/PlayerActionConstants',
     'game/constants/LogConstants',
@@ -38,6 +39,7 @@ define([
     GameGlobals,
     GlobalSignals,
     GameConstants,
+    ExplorationConstants,
     LocaleConstants,
     PlayerActionConstants,
     LogConstants,
@@ -196,9 +198,10 @@ define([
             if (localeVO.type !== localeTypes.tradingpartner) {
                 rewards.gainedBlueprintPiece = this.getResultBlueprint(localeVO);
             }
+            
+            rewards.gainedEvidence = ExplorationConstants.getScoutLocaleReward(localeCategory, campOrdinal);
 
             if (localeCategory === "u") {
-                rewards.gainedEvidence = Math.ceil(campOrdinal / 3);
                 if (this.nearestCampNodes.head) {
                     rewards.gainedPopulation = Math.random() < 0.05 ? 1 : 0;
                 }
@@ -706,7 +709,8 @@ define([
                 var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
                 var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(campOrdinal, step, itemsComponent, true);
                 var neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
-                log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp);
+                if (!GameGlobals.gameState.uiStatus.isHidden)
+                    log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp);
                 if (neededIngredient && Math.random() < neededIngredientProp) {
                     var max = Math.floor(Math.random() * 5);
                     var amount = Math.floor(Math.random() * efficiency * max) + 1;
@@ -870,7 +874,8 @@ define([
             if (!stashVO) return;
             var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
             if (sectorStatus.scavenged) return;
-            log.i("found stash");
+            if (!GameGlobals.gameState.uiStatus.isHidden)
+                log.i("found stash");
             switch (stashVO.stashType) {
                 case StashVO.STASH_TYPE_ITEM:
                     for (var i = 0; i < stashVO.amount; i++) {

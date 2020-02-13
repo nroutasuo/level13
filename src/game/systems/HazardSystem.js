@@ -65,6 +65,7 @@ define([
         
         updatePerks: function (time) {
             // TODO generic effect timer system?
+            // TOOD performance buttleneck
             
             var featuresComponent = this.locationNodes.head.entity.get(SectorFeaturesComponent);
             var busyComponent =  this.playerNodes.head.entity.get(PlayerActionComponent);

@@ -161,7 +161,6 @@ define([
                 if (!item.craftable) return null;
                 if (itemsComponent.getCountById(item.id, true) < (isStrict ? 1 : 1)) {
                     var ingredients = GameGlobals.itemsHelper.getIngredientsToCraft(item.id);
-                    log.i(ingredients);
                     for (var i = 0; i < ingredients.length; i++) {
                         var def = ingredients[i];
                         if (itemsComponent.getCountById(def.id, true) < (isStrict ? def.amount : Math.max(def.amount, 3))) {

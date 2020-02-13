@@ -567,6 +567,7 @@ define(['ash',
 		},
 
 		scoutLocale: function (i) {
+            if (!this.playerLocationNodes.head) return;
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
 			var sectorFeaturesComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
@@ -1524,8 +1525,8 @@ define(['ash',
 			this.save();
         },
 
-		assignWorkers: function (scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers, scientists) {
-			var sector = this.playerLocationNodes.head.entity;
+		assignWorkers: function (sector, scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers, scientists) {
+			sector = sector || this.playerLocationNodes.head.entity;
 			var camp = sector ? sector.get(CampComponent) : null;
 
 			if (camp) {

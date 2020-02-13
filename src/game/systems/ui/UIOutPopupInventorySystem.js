@@ -166,7 +166,6 @@ define([
             BagConstants.updateCapacity(bagComponent, rewards, resultNode.resources, playerAllItems);
 
             var selectedCapacityPercent = bagComponent.selectedCapacity / bagComponent.totalCapacity * 100;
-            log.i("update capacity: " + selectedCapacityPercent + " = " + bagComponent.selectedCapacity + "/" + bagComponent.totalCapacity);
             $("#inventory-popup-bar").data("progress-percent", selectedCapacityPercent);
             $("#inventory-popup-bar .progress-label").text((Math.ceil( bagComponent.selectedCapacity * 10) / 10) + " / " + bagComponent.totalCapacity);
 

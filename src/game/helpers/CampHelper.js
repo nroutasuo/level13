@@ -98,6 +98,36 @@ define([
             return workers * CampConstants.CONSUMPTION_METAL_PER_CONCRETE_PER_S * GameConstants.gameSpeedCamp;
         },
         
+        getLibraryEvidenceGenerationPerSecond: function (improvementsComponent, libraryUpgradeLevel) {
+            var libraryCount = improvementsComponent.getCount(improvementNames.library);
+            var libraryLevel = improvementsComponent.getLevel(improvementNames.library);
+            var libraryLevelFactor = (1 + libraryLevel * CampConstants.EVIDENCE_BONUS_PER_LIBRARY_LEVEL);
+            return 0.0015 * libraryCount * libraryUpgradeLevel * libraryLevelFactor * GameConstants.gameSpeedCamp;
+        },
+        
+        getCamprifeRumourGenerationPerSecond: function (improvementsComponent, campfireUpgradeLevel, accSpeedPopulation) {
+            var campfireCount = improvementsComponent.getCount(improvementNames.campfire);
+            var campfireLevel = improvementsComponent.getLevel(improvementNames.campfire);
+            var campfireFactor = CampConstants.RUMOUR_BONUS_PER_CAMPFIRE_BASE;
+            campfireFactor += campfireLevel > 1 ? (campfireLevel - 1) * CampConstants.RUMOURS_BONUS_PER_CAMPFIRE_PER_LEVEL : 0;
+            campfireFactor += campfireUpgradeLevel > 1 ? (campfireUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_CAMPFIRE_PER_UPGRADE : 0;
+            return campfireCount > 0 ? Math.pow(campfireFactor, campfireCount) * accSpeedPopulation - accSpeedPopulation : 0;
+        },
+        
+        getMarketRumourGenerationPerSecond: function (improvementsComponent, marketUpgradeLevel, accSpeedPopulation) {
+            var marketCount = improvementsComponent.getCount(improvementNames.market);
+            var marketFactor = CampConstants.RUMOUR_BONUS_PER_MARKET_BASE;
+            marketFactor += marketUpgradeLevel > 1 ? (marketUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_MARKET_PER_UPGRADE : 0;
+            return marketCount > 0 ?  Math.pow(marketFactor, marketCount) * accSpeedPopulation - accSpeedPopulation : 0;
+        },
+        
+        getInnRumourGenerationPerSecond: function (improvementsComponent, innUpgradeLevel, accSpeedPopulation) {
+            var innCount = improvementsComponent.getCount(improvementNames.inn);
+            var innFactor = CampConstants.RUMOUR_BONUS_PER_INN_BASE;
+            innFactor += innUpgradeLevel > 1 ? (innUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_INN_PER_UPGRADE : 0;
+            return innCount > 0 ? Math.pow(innFactor, innCount) * accSpeedPopulation - accSpeedPopulation : 0;
+        },
+        
         getTargetReputation: function (campEntity, sectorImprovements, population, danger) {
             var result = 0;
             var sources = {}; // text -> value
