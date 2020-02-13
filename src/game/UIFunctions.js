@@ -516,6 +516,7 @@ define(['ash',
 			},
 
 			showGame: function () {
+                this.hideGameCounter = this.hideGameCounter || 1;
                 this.hideGameCounter--;
                 if (this.hideGameCounter > 0) return;
                 this.setGameOverlay(false, false);
@@ -532,6 +533,14 @@ define(['ash',
 				this.setGameElementsVisibility(showThinking);
                 this.setUIStatus(true, true);
 			},
+            
+            blockGame: function () {
+                this.setUIStatus(GameGlobals.gameState.uiStatus.isHidden, true);
+            },
+            
+            unblockGame: function () {
+                this.setUIStatus(GameGlobals.gameState.uiStatus.isHidden, false);
+            },
             
             setUIStatus: function (isHidden, isBlocked) {
                 isBlocked = isBlocked || isHidden;

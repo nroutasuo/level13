@@ -69,7 +69,7 @@ define([
                         GameGlobals.uiFunctions.hideGame(false, true);
                     } else {
                         this.gameBlocked = true;
-                        GameGlobals.uiFunctions.setUIStatus(false, true);
+                        GameGlobals.uiFunctions.blockGame();
                     }
                     this.partialTickModeStarted = true;
                 } else {
@@ -84,7 +84,7 @@ define([
                         this.gameHidden = false;
                     }
                     if (this.gameBlocked) {
-                        GameGlobals.uiFunctions.setUIStatus(false, false);
+                        GameGlobals.uiFunctions.unblockGame();
                         this.gameBlocked = false;
                     }
                     this.partialTickModeStarted = false;
