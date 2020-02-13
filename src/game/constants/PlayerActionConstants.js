@@ -1453,6 +1453,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_weapon_15: {
+                	blueprint: 2,
                 	upgrades: {
                 		unlock_item_shoe1: true,
                 	}
