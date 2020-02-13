@@ -1042,9 +1042,12 @@ define([
 			for (var i = 0; i < levelBlueprints.length; i++) {
 				var blueprintId = levelBlueprints[i];
 				if (!upgradesComponent.hasUpgrade(blueprintId) && !upgradesComponent.hasAvailableBlueprint(blueprintId)) {
-					blueprintsToFind.push(blueprintId);
 					var blueprintVO = upgradesComponent.getBlueprint(blueprintId);
-					blueprintPiecesToFind += blueprintVO ? blueprintVO.maxPieces - blueprintVO.currentPieces : UpgradeConstants.getMaxPiecesForBlueprint(blueprintId);
+                    var remainingPieces = blueprintVO ? blueprintVO.maxPieces - blueprintVO.currentPieces : UpgradeConstants.getMaxPiecesForBlueprint(blueprintId);
+                    if (remainingPieces > 0) {
+                        blueprintsToFind.push(blueprintId);
+                        blueprintPiecesToFind += remainingPieces;
+                    }
 				}
 			}
             
@@ -1055,9 +1058,9 @@ define([
             var numScoutedLocales = scoutedLocales.length + 1 - numUnscoutedLocales;
 			var findBlueprintProbability = blueprintPiecesToFind / numUnscoutedLocales;
             
-            log.i("get result blueprint: " + blueprintType + " | pieces to find: " + blueprintPiecesToFind + " / unscouted locales: " + numUnscoutedLocales + " -> " + Math.round(findBlueprintProbability*100)/100 + ", scouted locales: " + numScoutedLocales);
-            //log.i(levelBlueprints);
-            //log.i(blueprintsToFind);
+            log.i("get result blueprint: " + blueprintType + " | pieces to find: " + blueprintPiecesToFind + " / unscouted locales: " + numUnscoutedLocales + " -> prob: " + Math.round(findBlueprintProbability*100)/100 + ", scouted locales: " + numScoutedLocales);
+            // log.i(levelBlueprints);
+            // log.i(blueprintsToFind);
 
             var isFirstEver = playerPos.level == 13 && numScoutedLocales == 0;
 			if (isFirstEver || Math.random() < findBlueprintProbability) {
