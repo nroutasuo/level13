@@ -148,7 +148,8 @@ define([
 
         updateBubble: function () {
             var isStatIncreaseAvailable = this.isStatIncreaseAvailable();
-            var newBubbleNumber = Math.max(0, this.numCraftableUnlockedUnseen + this.numCraftableAvailableUnseen);
+            var numImmediatelyUsable = this.getNumImmediatelyUsable();
+            var newBubbleNumber = Math.max(0, this.numCraftableUnlockedUnseen + this.numCraftableAvailableUnseen + numImmediatelyUsable);
             if (this.isStatIncreaseShown == isStatIncreaseAvailable && this.bubbleNumber === newBubbleNumber)
                 return;
                 
@@ -520,6 +521,17 @@ define([
                 if (comparison > 0) return true;
             }
             return false;
+        },
+        
+        getNumImmediatelyUsable: function () {
+            // TODO remove hardcoded item ids
+            var itemsComponent = this.itemNodes.head.items;
+            var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
+            if (inCamp) {
+                return itemsComponent.getCountById("cache_metal_1", true) + itemsComponent.getCountById("cache_metal_2", true);
+            } else {
+                return 0;
+            }
         },
 
         getCraftableItemDefinitions: function () {
