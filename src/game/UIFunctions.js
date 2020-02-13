@@ -337,7 +337,7 @@ define(['ash',
                     var $target = $(this);
                     var generated = $target.data("callout-generated");
                     if (generated) {
-                        log.w("Info callout already generated!");
+                        log.w("Info callout already generated! id: " + $target.attr("id") + ", scope: " + scope);
                         log.i($target);
                         return;
                     }

@@ -710,7 +710,7 @@ define([
                 }
                 var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(campOrdinal, step, itemsComponent, true);
                 var neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
-                log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp);
+                // log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp);
                 if (neededIngredient && Math.random() < neededIngredientProp) {
                     var max = Math.floor(Math.random() * 5);
                     var amount = Math.floor(Math.random() * efficiency * max) + 1;

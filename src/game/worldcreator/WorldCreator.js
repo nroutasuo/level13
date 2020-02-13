@@ -127,7 +127,6 @@ define([
                 }
 
                 // create basic structure (sectors and paths)
-                log.i("GENERATING LEVEL: " + levelVO.level + " num camps: " + numCamps, context);
                 var requiredPaths = this.createRequiredPathsFromPositions(l, campOrdinal, passageUpPosition, campPositions, passageDownPosition, bottomLevel);
                 this.generateSectors(seed, levelVO, campPositions, requiredPaths);
                 
@@ -260,7 +259,7 @@ define([
                     for (var i = 0; i < stashSectors.length; i++) {
                         stashSectors[i].stashItem = itemID;
                         stashSectors[i].stash = new StashVO(stashType, numItemsPerStash, itemID);
-                        log.i("add stash level " + l + " [" + reason + "]: " + itemID + " " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
+                        // log.i("add stash level " + l + " [" + reason + "]: " + itemID + " " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
                     }
                 };
                 

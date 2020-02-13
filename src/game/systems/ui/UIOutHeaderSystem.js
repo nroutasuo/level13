@@ -124,8 +124,6 @@ define([
 				$(this).wrap("<div class='info-callout-target'></div>");
 			});
 			GameGlobals.uiFunctions.generateCallouts("#statsbar-self");
-			GameGlobals.uiFunctions.generateCallouts("#header-self-bar");
-			GameGlobals.uiFunctions.generateCallouts("#header-camp-container");
 		},
 
 		update: function (time) {
