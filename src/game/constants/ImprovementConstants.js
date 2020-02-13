@@ -6,7 +6,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
 
         campImprovements: {
             home: {
-                description: "Foundation of a camp",
+                description: "Foundation of a camp.",
                 useActionName: "Rest"
             },
             campfire: {
@@ -38,7 +38,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
                 description: "Generates evidence.",
             },
             darkfarm: {
-                description: "Produces food",
+                description: "Produces food.",
             },
             aqueduct: {
                 description: "Water infrastructure to improve collecting efficiency.",
@@ -48,22 +48,22 @@ define(['game/constants/CampConstants'], function (CampConstants) {
                 description: "Allows 10 soldiers.",
             },
             apothecary: {
-                description: "Enables production of medicine",
+                description: "Enables production of medicine.",
             },
             smithy: {
                 description: "Workspace for toolsmiths.",
             },
             cementmill: {
-                description: "Enables production of a new kind of construction material",
+                description: "Enables production of a new kind of construction material.",
             },
             stable: {
                  description: "Space to set up a trading caravan.",
             },
             fortification: {
-                description: "Camp defences: +" + CampConstants.FORTIFICATION_1_DEFENCE,
+                description: "Camp defences: +" + CampConstants.FORTIFICATION_1_DEFENCE + ".",
             },
             fortification2: {
-                description: "Camp defences: +" + CampConstants.FORTIFICATION_2_DEFENCE,
+                description: "Camp defences: +" + CampConstants.FORTIFICATION_2_DEFENCE + ".",
             },
             researchcenter: {},
             tradepost: {
@@ -77,7 +77,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
                  description: "Keep the darkness at bay for good.",
             },
             generator: {
-                description: "Increases reputation bonus from housing (" + CampConstants.REPUTATION_PER_HOUSE_FROM_GENERATOR + "% per house)",
+                description: "Increases reputation bonus from housing (" + CampConstants.REPUTATION_PER_HOUSE_FROM_GENERATOR + "% per house).",
             },
             square: {
                 description: "A place to relax and socialize.",

@@ -1453,6 +1453,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_weapon_15: {
+                	blueprint: 2,
                 	upgrades: {
                 		unlock_item_shoe1: true,
                 	}
@@ -2654,7 +2655,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 improve_in_campfire: "Increase rumour generation",
                 improve_in_library: "Increase evidence generation",
                 improve_in_square: "Increase reputation bonus",
-                improve_in_generator: "Increase repuration bonus",
+                improve_in_generator: "Increase reputation bonus",
                 improve_in_apothecary: "Increase efficiency",
                 improve_in_smithy: "Increase efficiency",
                 improve_in_cementmill: "Increase efficiency",

@@ -707,6 +707,10 @@ define([
             // Necessity ingredient (stuff blocking the player from progressing)
             if (hasCamp && hasDecentEfficiency) {
                 var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+                if (this.isLevelCleared()) {
+                    campOrdinal += 1;
+                    step = WorldCreatorConstants.CAMP_STEP_START;
+                }
                 var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(campOrdinal, step, itemsComponent, true);
                 var neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
                 if (!GameGlobals.gameState.uiStatus.isHidden)
@@ -1043,9 +1047,12 @@ define([
 			for (var i = 0; i < levelBlueprints.length; i++) {
 				var blueprintId = levelBlueprints[i];
 				if (!upgradesComponent.hasUpgrade(blueprintId) && !upgradesComponent.hasAvailableBlueprint(blueprintId)) {
-					blueprintsToFind.push(blueprintId);
 					var blueprintVO = upgradesComponent.getBlueprint(blueprintId);
-					blueprintPiecesToFind += blueprintVO ? blueprintVO.maxPieces - blueprintVO.currentPieces : UpgradeConstants.getMaxPiecesForBlueprint(blueprintId);
+                    var remainingPieces = blueprintVO ? blueprintVO.maxPieces - blueprintVO.currentPieces : UpgradeConstants.getMaxPiecesForBlueprint(blueprintId);
+                    if (remainingPieces > 0) {
+                        blueprintsToFind.push(blueprintId);
+                        blueprintPiecesToFind += remainingPieces;
+                    }
 				}
 			}
             
@@ -1056,9 +1063,9 @@ define([
             var numScoutedLocales = scoutedLocales.length + 1 - numUnscoutedLocales;
 			var findBlueprintProbability = blueprintPiecesToFind / numUnscoutedLocales;
             
-            log.i("get result blueprint: " + blueprintType + " | pieces to find: " + blueprintPiecesToFind + " / unscouted locales: " + numUnscoutedLocales + " -> " + Math.round(findBlueprintProbability*100)/100 + ", scouted locales: " + numScoutedLocales);
-            //log.i(levelBlueprints);
-            //log.i(blueprintsToFind);
+            log.i("get result blueprint: " + blueprintType + " | pieces to find: " + blueprintPiecesToFind + " / unscouted locales: " + numUnscoutedLocales + " -> prob: " + Math.round(findBlueprintProbability*100)/100 + ", scouted locales: " + numScoutedLocales);
+            // log.i(levelBlueprints);
+            // log.i(blueprintsToFind);
 
             var isFirstEver = playerPos.level == 13 && numScoutedLocales == 0;
 			if (isFirstEver || Math.random() < findBlueprintProbability) {
@@ -1100,6 +1107,12 @@ define([
             }
             return null;
         },
+        
+        isLevelCleared: function () {
+            var playerPos = this.playerLocationNodes.head.position;
+            var mapStatus = GameGlobals.levelHelper.getLevelStats(playerPos.level);
+            return mapStatus.percentClearedSectors >= 1;
+        }
 
     });
 

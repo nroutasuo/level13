@@ -127,7 +127,6 @@ define([
                 }
 
                 // create basic structure (sectors and paths)
-                log.i("GENERATING LEVEL: " + levelVO.level + " num camps: " + numCamps, context);
                 var requiredPaths = this.createRequiredPathsFromPositions(l, campOrdinal, passageUpPosition, campPositions, passageDownPosition, bottomLevel);
                 this.generateSectors(seed, levelVO, campPositions, requiredPaths);
                 
@@ -254,51 +253,66 @@ define([
 
                 // stashes
                 // TODO handle multiple stashes per sector (currently just overwrites)
-                var addStashes = function (sectorSeed, stashType, itemID, num, numItemsPerStash, excludedZones) {
+                var addStashes = function (sectorSeed, reason, stashType, itemID, num, numItemsPerStash, excludedZones) {
                     var options = { requireCentral: false, excludingFeature: "camp", excludedZones: excludedZones };
                     var stashSectors = WorldCreatorRandom.randomSectors(sectorSeed, this.world, levelVO, num, num + 1, options);
                     for (var i = 0; i < stashSectors.length; i++) {
                         stashSectors[i].stashItem = itemID;
                         stashSectors[i].stash = new StashVO(stashType, numItemsPerStash, itemID);
-                        // log.i("add stash: " + itemID + " " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
+                        // log.i("add stash level " + l + " [" + reason + "]: " + itemID + " " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
                     }
                 };
-                // - lock picks
+                
+                // - stashes: lock picks
                 if (l == 13) {
-                    addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, StashVO.STASH_TYPE_ITEM, "exploration_1", 1, 1, lateZones);
+                    addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, "lockpick", StashVO.STASH_TYPE_ITEM, "exploration_1", 1, 1, lateZones);
                 }
-                // - hairpins (for lockpics)
+                
+                // - stashes: hairpins (for lockpics)
                 var pinsPerStash = 3;
                 var numHairpinStashes = 2;
                 if (l == 13) numHairpinStashes = 5;
                 if (!levelVO.isCampable) numHairpinStashes = 5;
-                addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, StashVO.STASH_TYPE_ITEM, "res_hairpin", numHairpinStashes, pinsPerStash);
-                // - random crafting ingredients
-                if (l == 13) {
-                    addStashes(seed % 9 + 2200 + (100 - l * 3) * 333, StashVO.STASH_TYPE_ITEM, "res_tape", 2, 3, lateZones);
-                    addStashes(seed % 6 + 7000 + (100 - l * 2) * 222, StashVO.STASH_TYPE_ITEM, "res_silk", 2, 3, lateZones);
-                } else {
-                    var i = seed % (l+5) + 3;
-                    var ingredient = ItemConstants.getIngredient(i);
-                    addStashes(seed % 7 + 3000 + 101 * l, StashVO.STASH_TYPE_ITEM, ingredient.id, 2, 3, earlyZones);
+                addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, "hairpin", StashVO.STASH_TYPE_ITEM, "res_hairpin", numHairpinStashes, pinsPerStash);
+                
+                // - stashes: ingredients for craftable equipment (campable levels)
+                if (levelVO.isCampable) {
+                    var requiredEquipment = itemsHelper.getRequiredEquipment(campOrdinal, WorldCreatorConstants.CAMP_STEP_END);
+                    var requiredEquipmentIngredients = itemsHelper.getIngredientsToCraftMany(requiredEquipment);
+                    var numStashIngredients = MathUtils.clamp(Math.floor(requiredEquipmentIngredients.length / 2), 1, 3);
+                    for (var i = 0; i < numStashIngredients; i++) {
+                        var def = requiredEquipmentIngredients[i];
+                        var amount = MathUtils.clamp(def.amount / 3, 3, 10);
+                        addStashes(seed % 13 + l * 7 + 5 + (i+1) * 10, "craftable ingredients", StashVO.STASH_TYPE_ITEM, def.id, 2, amount);
+                    }
                 }
-                //- equipment
+                
+                // - stashes: non-craftable equipment
                 var newEquipment = itemsHelper.getNewEquipment(campOrdinal);
                 for (var i = 0; i < newEquipment.length; i++) {
                     if (!newEquipment[i].craftable && newEquipment[i].scavengeRarity <= 5) {
-                        addStashes(seed / 3 + (l+551)*8 + (i+103)*18, StashVO.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1, lateZones);
+                        addStashes(seed / 3 + (l+551)*8 + (i+103)*18, "non-craftable equipment", StashVO.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1, lateZones);
                     }
                 }
-                // metal
+                
+                // - stashes: random ingredients (uncampable levels)
+                if (!levelVO.isCampable) {
+                    var i = seed % (l+5) + 3;
+                    var ingredient = ItemConstants.getIngredient(i);
+                    addStashes(seed % 7 + 3000 + 101 * l, "random", StashVO.STASH_TYPE_ITEM, ingredient.id, 2, 3);
+                }
+                
+                // - stashes: metal caches
                 if (l == 13) {
-                    addStashes(seed / 3 * 338 + l * 402, StashVO.STASH_TYPE_ITEM, "cache_metal_1", 2, 1, lateZones);
-                    addStashes(seed / 5 * 931 + l * 442, StashVO.STASH_TYPE_ITEM, "cache_metal_2", 2, 1, lateZones);
+                    addStashes(seed / 3 * 338 + l * 402, "metal", StashVO.STASH_TYPE_ITEM, "cache_metal_1", 2, 1, lateZones);
+                    addStashes(seed / 5 * 931 + l * 442, "metal", StashVO.STASH_TYPE_ITEM, "cache_metal_2", 2, 1, lateZones);
                 } else {
                     if (l % 2 == 0)
-                        addStashes(seed / 5 * 931 + l * 442, StashVO.STASH_TYPE_ITEM, "cache_metal_1", 1, 1);
+                        addStashes(seed / 5 * 931 + l * 442, "metal", StashVO.STASH_TYPE_ITEM, "cache_metal_1", 1, 1);
                     else
-                        addStashes(seed / 5 * 931 + l * 442, StashVO.STASH_TYPE_ITEM, "cache_metal_2", 1, 1);
+                        addStashes(seed / 5 * 931 + l * 442, "metal", StashVO.STASH_TYPE_ITEM, "cache_metal_2", 1, 1);
                 }
+                
                 // TODO add currency stashes just for fun
                 // TODO add rare and non-essential stuff no non-campable levels
 
@@ -1124,6 +1138,8 @@ define([
                     setSectorZone(sector, zone, area);
                 }
             };
+            
+            setSectorZone(passage1, WorldCreatorConstants.ZONE_ENTRANCE, 2);
             
             if (isCampableLevel) {
                 // camp:

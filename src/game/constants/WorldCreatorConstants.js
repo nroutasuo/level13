@@ -8,6 +8,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         CRITICAL_PATH_TYPE_CAMP_TO_POI_1: "camp_to_poi_1",
         CRITICAL_PATH_TYPE_CAMP_TO_POI_2: "camp_to_poi_2",
         
+        ZONE_ENTRANCE: "z_e",
         ZONE_PASSAGE_TO_CAMP: "z_p2c",
         ZONE_PASSAGE_TO_PASSAGE: "z_p2p",
         ZONE_POI_1: "z_poi1",
@@ -17,9 +18,10 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         ZONE_EXTRA_UNCAMPABLE: "z_extra_u",
         ZONE_POI_TEMP: "z_poi_temp",
         
-        CAMP_STEP_START: 1, // zones up to and including POI_1
-        CAMP_STEP_POI_2: 2, // zone POI_2
-        CAMP_STEP_END: 3, // zones after POI_2
+        CAMP_STEP_PREVIOUS: 0,  // passage to level sector
+        CAMP_STEP_START: 1,     // zones up to and including POI_1
+        CAMP_STEP_POI_2: 2,     // zone POI_2
+        CAMP_STEP_END: 3,       // zones after POI_2
         
         // Sector features
         SECTOR_TYPE_RESIDENTIAL: "residential",
@@ -192,16 +194,18 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         
         getZoneOrdinal: function (zone) {
             switch (zone) {
+                // all levels
+                case WorldCreatorConstants.ZONE_ENTRANCE: return 0;
                 // campable levels
-                case WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP: return 0;
-                case WorldCreatorConstants.ZONE_POI_1: return 1;
-                case WorldCreatorConstants.ZONE_POI_2: return 2;
-                case WorldCreatorConstants.ZONE_CAMP_TO_PASSAGE: return 3;
-                case WorldCreatorConstants.ZONE_EXTRA_CAMPABLE: return 4;
-                case WorldCreatorConstants.ZONE_POI_TEMP: return 5;
+                case WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP: return 1;
+                case WorldCreatorConstants.ZONE_POI_1: return 2;
+                case WorldCreatorConstants.ZONE_POI_2: return 3;
+                case WorldCreatorConstants.ZONE_CAMP_TO_PASSAGE: return 4;
+                case WorldCreatorConstants.ZONE_EXTRA_CAMPABLE: return 5;
+                case WorldCreatorConstants.ZONE_POI_TEMP: return 6;
                 // uncampable levels
-                case WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE: return 0;
-                case WorldCreatorConstants.ZONE_EXTRA_UNCAMPABLE: return 1;
+                case WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE: return 1;
+                case WorldCreatorConstants.ZONE_EXTRA_UNCAMPABLE: return 2;
                 default:
                     log.w("no ordinal defined for zone: " + zone);
                     return 5;
@@ -214,8 +218,10 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         
         getCampStep: function (zone) {
             switch (zone) {
+                // all levels
+                case WorldCreatorConstants.ZONE_ENTRANCE: return WorldCreatorConstants.CAMP_STEP_PREVIOUS;
                 // campable levels
-                case WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP: WorldCreatorConstants.CAMP_STEP_START;
+                case WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP: return WorldCreatorConstants.CAMP_STEP_START;
                 case WorldCreatorConstants.ZONE_POI_1: return WorldCreatorConstants.CAMP_STEP_START;
                 case WorldCreatorConstants.ZONE_POI_2: return WorldCreatorConstants.CAMP_STEP_POI_2;
                 case WorldCreatorConstants.ZONE_CAMP_TO_PASSAGE: return WorldCreatorConstants.CAMP_STEP_END;
