@@ -1,6 +1,24 @@
 {
 	"versions": [
         {
+            "version": "0.2.7",
+            "phase": "alpha",
+            "final": true,
+            "updated": "2020-02-13",
+            "released": "2020-02-13",
+            "requiredVersion": "0.2.5",
+            "changes": [
+                {
+                    "type": "GB",
+                    "summary": "Adjust upgrade unlocking order (Block Knife from being unlocked on Level 13)"
+                },
+                {
+                    "type": "DEV",
+                    "summary": "Bugfixes"
+                }
+            ]
+        },
+        {
             "version": "0.2.6",
             "phase": "alpha",
             "final": true,
