@@ -1140,6 +1140,8 @@ define([
                 }
             };
             
+            setSectorZone(passage1, WorldCreatorConstants.ZONE_ENTRANCE, 2);
+            
             if (isCampableLevel) {
                 // camp:
                 var camp = levelVO.campSectors[0];
