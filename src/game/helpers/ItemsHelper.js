@@ -16,6 +16,8 @@ define([
     TribeUpgradesNode
 ) {
     var ItemsHelper = Ash.Class.extend({
+        
+        MAX_SCA_RARITY_DEFAULT_CLOTHING: 1,
 
         constructor: function (engine) {
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
@@ -120,7 +122,7 @@ define([
         },
         
         getMaxHazardRadiationForLevel: function (campOrdinal, step) {
-            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_radiation, 1);
+            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_radiation, this.MAX_SCA_RARITY_DEFAULT_CLOTHING);
             var radiationProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 radiationProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_radiation);
@@ -129,7 +131,7 @@ define([
         },
         
         getMaxHazardPoisonForLevel: function (campOrdinal, step) {
-            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_poison, 1);
+            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_poison, this.MAX_SCA_RARITY_DEFAULT_CLOTHING);
             var poisonProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 poisonProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_poison);
@@ -138,7 +140,7 @@ define([
         },
         
         getMaxHazardColdForLevel: function (campOrdinal, step) {
-            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_cold, 1);
+            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_cold, this.MAX_SCA_RARITY_DEFAULT_CLOTHING);
             var coldProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 coldProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_cold);
@@ -154,6 +156,25 @@ define([
                 minByItems += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_cold);
             }
             return Math.min(minByItems, minByLevel);
+        },
+        
+        getRequiredEquipment: function (campOrdinal, step) {
+            // all equipment required to clear a level (all hazards), even if multiple per slot
+            var result = [];
+            var addedIDs = [];
+            var bonusTypes = [ ItemConstants.itemBonusTypes.res_poison, ItemConstants.itemBonusTypes.res_cold, ItemConstants.itemBonusTypes.res_radiation ];
+            for (var i = 0; i < bonusTypes.length; i++) {
+                var neededClothing = this.getBestClothing(campOrdinal, step, bonusTypes[i], this.MAX_SCA_RARITY_DEFAULT_CLOTHING);
+                for (var j = 0; j < neededClothing.length; j++) {
+                    var id = neededClothing[j].id;
+                    if (addedIDs.indexOf(id) >= 0) continue;
+                    result.push(neededClothing[j]);
+                    addedIDs.push(id);
+                }
+            }
+            var weapon = ItemConstants.getDefaultWeapon(campOrdinal, step);
+            result.push(weapon);
+            return result;
         },
         
         getNeededIngredient: function (campOrdinal, step, itemsComponent, isStrict) {
@@ -246,10 +267,40 @@ define([
             return false;
         },
         
+        getIngredientsToCraftMany: function (items) {
+            var result = [];
+            var getResultEntry = function (id) {
+                for (var i = 0; i < result.length; i++) {
+                    if (result[i].id == id) return result[i];
+                }
+                var newEntry = { id: id, amount: 0 };
+                result.push(newEntry);
+                return newEntry;
+            };
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                if (!item.craftable) continue;
+                var itemIngredients = this.getIngredientsToCraft(item.id);
+                if (!itemIngredients || itemIngredients.length < 1) continue;
+                for (var j = 0; j < itemIngredients.length; j++) {
+                    var itemEntry = itemIngredients[j];
+                    var resultEntry = getResultEntry(itemEntry.id);
+                    resultEntry.amount = resultEntry.amount + itemEntry.amount;
+                }
+            }
+            
+            result.sort(function (a, b) {
+                return b.amount - a.amount;
+            });
+            
+            return result;
+        },
+        
         getIngredientsToCraft: function (itemID) {
             var craftAction = "craft_" + itemID;
             var costs = PlayerActionConstants.costs[craftAction];
             var result = [];
+            if (!costs) return result;
 			for (var key in costs) {
                 if (key.startsWith("item_res_")) {
                     result.push({ id: key.replace("item_", ""), amount: costs[key] });
