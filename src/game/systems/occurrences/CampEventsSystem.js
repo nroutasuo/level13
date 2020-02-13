@@ -9,6 +9,7 @@ define([
 	'game/constants/TradeConstants',
 	'game/constants/TextConstants',
 	'game/constants/UIConstants',
+	'game/constants/WorldCreatorConstants',
 	'game/nodes/player/PlayerResourcesNode',
 	'game/nodes/sector/CampNode',
 	'game/nodes/tribe/TribeUpgradesNode',
@@ -22,7 +23,7 @@ define([
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/vos/RaidVO',
 ], function (
-	Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants, UIConstants,
+	Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants, UIConstants, WorldCreatorConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	CampComponent, PositionComponent, LogMessagesComponent, ItemsComponent,
 	TraderComponent, RaidComponent, CampEventTimersComponent,
@@ -228,7 +229,7 @@ define([
 				case OccurrenceConstants.campOccurrenceTypes.trader:
                     var numCamps = GameGlobals.gameState.numCamps;
                     var itemsComponent = this.playerNodes.head.entity.get(ItemsComponent);
-                    var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(numCamps, 3, itemsComponent, false);
+                    var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(numCamps, WorldCreatorConstants.CAMP_STEP_END, itemsComponent, false);
 					var caravan = TradeConstants.getRandomIncomingCaravan(numCamps, GameGlobals.gameState.level, GameGlobals.gameState.unlockedFeatures.resources, neededIngredient);
 					campNode.entity.add(new TraderComponent(caravan));
 					logMsg = "A trader arrives.";

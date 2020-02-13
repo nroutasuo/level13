@@ -704,6 +704,10 @@ define([
             // Necessity ingredient (stuff blocking the player from progressing)
             if (hasCamp && hasDecentEfficiency) {
                 var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+                if (this.isLevelCleared()) {
+                    campOrdinal += 1;
+                    step = WorldCreatorConstants.CAMP_STEP_START;
+                }
                 var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(campOrdinal, step, itemsComponent, true);
                 var neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
                 log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp);
@@ -1095,6 +1099,12 @@ define([
             }
             return null;
         },
+        
+        isLevelCleared: function () {
+            var playerPos = this.playerLocationNodes.head.position;
+            var mapStatus = GameGlobals.levelHelper.getLevelStats(playerPos.level);
+            return mapStatus.percentClearedSectors >= 1;
+        }
 
     });
 
