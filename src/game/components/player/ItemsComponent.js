@@ -105,9 +105,9 @@ function (Ash, ItemVO, ItemConstants) {
                 var bonusType = ItemConstants.itemBonusTypes[bonusKey];
                 var currentBonus = currentItem ? currentItem.getBonus(bonusType) : 0;
                 var newBonus = item.getBonus(bonusType);
-                if (bonusType == ItemConstants.itemBonusTypes.movement) {
-                    currentBonus = 1 / (currentBonus || 1);
-                    newBonus = 1 / (newBonus || 1);
+                if (!ItemConstants.isIncreasing(bonusType)) {
+                    currentBonus = -currentBonus;
+                    newBonus = -newBonus;
                 }
                 if (bonusType == ItemConstants.itemBonusTypes.fight_speed) {
                     // TODO smarter item comparison (now just ignore speed to rank weapons by attack but should consider both)

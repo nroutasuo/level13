@@ -42,7 +42,7 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             var weapons = itemsComponent.getEquipped(ItemConstants.itemTypes.weapon);
             var weapon = weapons.length > 0 ? weapons[0] : null;
             var weaponSpeedBonus = weapon ? weapon.getBonus(ItemConstants.itemBonusTypes.fight_speed) || 1 : 1;
-            return weaponSpeedBonus / this.FIGHT_SPEED_FACTOR;
+            return 1 / weaponSpeedBonus / this.FIGHT_SPEED_FACTOR;
         },
 		 
 		getPlayerAtt: function (playerStamina, itemsComponent) {

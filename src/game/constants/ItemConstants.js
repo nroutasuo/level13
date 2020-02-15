@@ -99,9 +99,9 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("clothing_head_2", "Medical mask", "Head", 4, true, false, false, 5, 1, {res_poison: 15}, "img/items/clothing-hat-1.png", "Meager protection against the effects of polluted air."),
                 new ItemVO("clothing_head_25", "Bike helmet", "Head", 5, true, false, false, 3, 1, {def: 3}, "img/items/clothing-hat-2.png", "A bit clumsy, but quite useful in a fight."),
                 new ItemVO("clothing_head_3", "Scrap metal helmet", "Head", 7, true, true, false, 4, 2, {def: 5, warmth: 5, res_rad: 5, res_poison: 5, shade: 10}, "img/items/clothing-hat-2.png", "Perfect apparel for the post-apocalyptic hero."),
-                new ItemVO("clothing_head_4", "Gas mask", "Head", 11, true, true, false, 2, 1, {def: 5, warmth: 3, res_rad: 15, res_poison: 30, shade": 10}, "img/items/clothing-hat-2.png", "Gives a definite sense of security in dangerous environments."),
+                new ItemVO("clothing_head_4", "Gas mask", "Head", 11, true, true, false, 2, 1, {def: 5, warmth: 3, res_rad: 15, res_poison: 30, shade: 10}, "img/items/clothing-hat-2.png", "Gives a definite sense of security in dangerous environments."),
                 new ItemVO("clothing_head_45", "Scavenger's hood", "Head", 12, true, true, false, 3, 1, {def: 10, warmth: 10, res_rad: 15, res_poison: 15, shade: 15}, "img/items/clothing-hat-2.png", "A practical, protective hood that doesn't get in the way."),
-                new ItemVO("clothing_head_5", "Explorer's helmet", "Head", 13, true, true, false, 5, 2, {def: 30, warmth: 15, res_rad: 20, res_poison: 10, shade": 50}, "img/items/clothing-hat-3.png", "Headgear designed specifically for scavenging in the City."),
+                new ItemVO("clothing_head_5", "Explorer's helmet", "Head", 13, true, true, false, 5, 2, {def: 30, warmth: 15, res_rad: 20, res_poison: 10, shade: 50}, "img/items/clothing-hat-3.png", "Headgear designed specifically for scavenging in the City."),
             ],
             clothing_hands: [
                 new ItemVO("clothing_hands_1", "Mittens", "Hands", 2, true, true, false, 3, 1, {warmth: 5}, "img/items/clothing-hand-0.png", "Nothing keeps hands warm like fluffy mittens."),
@@ -172,8 +172,8 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
         
         isMultiplier: function (itemBonusType) {
             switch (itemBonusType) {
-                case itemBonusTypes.fight_speed:
-                case itemBonusTypes.movement:
+                case this.itemBonusTypes.fight_speed:
+                case this.itemBonusTypes.movement:
                     return true;
             }
             return false;
@@ -181,7 +181,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
         
         isIncreasing: function (itemBonusType) {
             switch (itemBonusType) {
-                case itemBonusTypes.movement:
+                case this.itemBonusTypes.movement:
                     return false;
             }
             return true;
