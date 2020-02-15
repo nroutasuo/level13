@@ -819,13 +819,16 @@ define([
                 return itemScores[b.id] - itemScores[a.id];
             });
             
-            log.i("valid items: " + validItems.length + " (max rarity: " + maxRarity + "/" + campOrdinalMaxRarity + ", camp ordinal: " + campOrdinal + " (" + minCampOrdinal + "-" + maxCampOrdinal + "))")
-            // log.i(validItems);
+            if (!GameGlobals.gameState.uiStatus.isHidden) {
+                log.i("valid items: " + validItems.length + " (max rarity: " + maxRarity + "/" + campOrdinalMaxRarity + ", camp ordinal: " + campOrdinal + " (" + minCampOrdinal + "-" + maxCampOrdinal + "))")
+                // log.i(validItems);
+            }
             
             // pick one random valid item, higher score more likely but all possible
             var index = MathUtils.getWeightedRandom(0, validItems.length);
             var item = validItems[index];
-            log.i("- selected index " + index + "/" + validItems.length + ": "+ item.id);
+            if (!GameGlobals.gameState.uiStatus.isHidden)
+                log.i("- selected index " + index + "/" + validItems.length + ": "+ item.id);
             return item.clone();
         },
 
@@ -1063,9 +1066,11 @@ define([
             var numScoutedLocales = scoutedLocales.length + 1 - numUnscoutedLocales;
 			var findBlueprintProbability = blueprintPiecesToFind / numUnscoutedLocales;
             
-            log.i("get result blueprint: " + blueprintType + " | pieces to find: " + blueprintPiecesToFind + " / unscouted locales: " + numUnscoutedLocales + " -> prob: " + Math.round(findBlueprintProbability*100)/100 + ", scouted locales: " + numScoutedLocales);
-            // log.i(levelBlueprints);
-            // log.i(blueprintsToFind);
+            if (!GameGlobals.gameState.uiStatus.isHidden) {
+                log.i("get result blueprint: " + blueprintType + " | pieces to find: " + blueprintPiecesToFind + " / unscouted locales: " + numUnscoutedLocales + " -> prob: " + Math.round(findBlueprintProbability*100)/100 + ", scouted locales: " + numScoutedLocales);
+                // log.i(levelBlueprints);
+                // log.i(blueprintsToFind);
+            }
 
             var isFirstEver = playerPos.level == 13 && numScoutedLocales == 0;
 			if (isFirstEver || Math.random() < findBlueprintProbability) {

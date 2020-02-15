@@ -244,7 +244,6 @@ define([
 		},
 		
 		log: function (msg) {
-            log.i(msg, "WorkerSystem");
 			var logComponent = this.playerNodes.head.entity.get(LogMessagesComponent);
 			logComponent.addMessage(LogConstants.MSG_ID_WORKER_STATUS, msg);
 			this.lastMsgTimeStamp = new Date().getTime();
