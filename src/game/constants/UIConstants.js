@@ -244,7 +244,7 @@ define(['ash',
                 case ItemConstants.itemBonusTypes.res_cold: return "warmth";
                 case ItemConstants.itemBonusTypes.res_radiation: return "radiation protection";
                 case ItemConstants.itemBonusTypes.res_poison: return "poison protection";
-                case ItemConstants.itemBonusTypes.res_sunlight: return "sunblindness protection";
+                case ItemConstants.itemBonusTypes.shade: return "sunblindness protection";
 				default:
 					return null;
 			}

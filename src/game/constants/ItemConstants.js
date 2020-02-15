@@ -36,7 +36,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             res_cold: "warmth",
             res_radiation: "res_rad",
             res_poison: "res_poison",
-            res_sunlight: "shade",
+            shade: "shade",
         },
         
         itemDefinitions: {
@@ -46,20 +46,20 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("light3", "Ghost light", "Light", 14, true, false, false, 9, 7, {light: 125}, "img/items/light-ghost.png", "They say the ghost light can show you more the darker places you go."),
             ],
             weapon: [
-                new ItemVO("weapon1", "Shiv", "Weapon", 1, true, true, false, 2, 2, {atk: 3, spd: 1.1}, "img/items/weapon-shiv.png", "Improvised sharp poking implement."),
+                new ItemVO("weapon1", "Shiv", "Weapon", 1, true, true, false, 2, 2, {atk: 3, spd: 0.9}, "img/items/weapon-shiv.png", "Improvised sharp poking implement."),
                 new ItemVO("weapon12", "Knife", "Weapon", 2, true, true, false, 2, 1, {atk: 4, spd: 1}, "img/items/weapon-shiv.png", "A bit sturdier than the shiv."),
                 new ItemVO("weapon122", "Sharp knife", "Weapon", 2, true, false, false, 6, 2, {atk: 5, spd: 1}, "img/items/weapon-shiv.png", "A good quality knife."),
-                new ItemVO("weapon2", "Spear", "Weapon", 4, true, true, false, 3, 1, {atk: 6, spd: 1.1}, "img/items/weapon-shiv.png", "Old-fashioned but reliable weapon."),
-                new ItemVO("weapon25", "Heavy Axe", "Weapon", 5, true, true, false, 3, 1, {atk: 8, spd: 1.5}, "img/items/weapon-shiv.png", "Easy to use and reliable."),
-                new ItemVO("weapon3", "Crossbow", "Weapon", 6, true, true, false, 3, 1, {atk: 12, spd: 1.1}, "img/items/weapon-shiv.png", "A deadly ranged weapon."),
-                new ItemVO("weapon35", "Improved Crossbow", "Weapon", 6, true, false, false, 8, 2, {atk: 14, spd: 1.1}, "img/items/weapon-shiv.png", "An extra deadly ranged weapon."),
-                new ItemVO("weapon4", "Pistol", "Weapon", 8, true, true, false, 4, 1, {atk: 24, spd: 0.9}, "img/items/weapon-shiv.png", "A crude single-shot pistol, like a hand-held miniature cannon."),
-                new ItemVO("weapon5", "Revolver", "Weapon", 10, true, true, false, 4, 1, {atk: 30, spd: 0.9}, "img/items/weapon-shiv.png", "A more sophisticated handgun that allows several shots before reloading."),
-                new ItemVO("weapon52", "Scrap Metal Waraxe", "Weapon", 11, true, true, false, 1, 1, {atk: 38, spd: 1.25}, "img/items/weapon-shiv.png", "A formidable axe specifically designed for combat"),
+                new ItemVO("weapon2", "Spear", "Weapon", 4, true, true, false, 3, 1, {atk: 6, spd: 0.9}, "img/items/weapon-shiv.png", "Old-fashioned but reliable weapon."),
+                new ItemVO("weapon25", "Heavy Axe", "Weapon", 5, true, true, false, 3, 1, {atk: 8, spd: 0.5}, "img/items/weapon-shiv.png", "Easy to use and reliable."),
+                new ItemVO("weapon3", "Crossbow", "Weapon", 6, true, true, false, 3, 1, {atk: 12, spd: 0.9}, "img/items/weapon-shiv.png", "A deadly ranged weapon."),
+                new ItemVO("weapon35", "Improved Crossbow", "Weapon", 6, true, false, false, 8, 2, {atk: 14, spd: 0.9}, "img/items/weapon-shiv.png", "An extra deadly ranged weapon."),
+                new ItemVO("weapon4", "Pistol", "Weapon", 8, true, true, false, 4, 1, {atk: 24, spd: 1.1}, "img/items/weapon-shiv.png", "A crude single-shot pistol, like a hand-held miniature cannon."),
+                new ItemVO("weapon5", "Revolver", "Weapon", 10, true, true, false, 4, 1, {atk: 30, spd: 1.1}, "img/items/weapon-shiv.png", "A more sophisticated handgun that allows several shots before reloading."),
+                new ItemVO("weapon52", "Scrap Metal Waraxe", "Weapon", 11, true, true, false, 1, 1, {atk: 38, spd: 0.75}, "img/items/weapon-shiv.png", "A formidable axe specifically designed for combat"),
                 new ItemVO("weapon58", "Crude Shotgun", "Weapon", 12, true, true, false, 5, 1, {atk: 60, spd: 1}, "img/items/weapon-shiv.png", "Devastating short-range firearm."),
-                new ItemVO("weapon6", "Custom SMG", "Weapon", 13, true, true, false, 5, 2, {atk: 116, spd: 0.5}, "img/items/weapon-shiv.png", "It may be made from scrap metal but it is still a serious weapon."),
+                new ItemVO("weapon6", "Custom SMG", "Weapon", 13, true, true, false, 5, 2, {atk: 116, spd: 1.5}, "img/items/weapon-shiv.png", "It may be made from scrap metal but it is still a serious weapon."),
                 new ItemVO("weapon7", "Improvised bazooka", "Weapon", 14, true, true, false, 3, 3, {atk: 180, spd: 1}, "img/items/weapon-shiv.png", "Powerful but heavy and somewhat unreliable construction of pipes, reclaimed weapon parts and improvised ammunition."),
-                new ItemVO("weapon8", "Rifle", "Weapon", 15, true, true, false, 3, 3, {atk: 200, spd: 0.75}, "img/items/weapon-shiv.png", "Deadly weapon similar to those that were mass-produced just before the Fall."),
+                new ItemVO("weapon8", "Rifle", "Weapon", 15, true, true, false, 3, 3, {atk: 200, spd: 1.25}, "img/items/weapon-shiv.png", "Deadly weapon similar to those that were mass-produced just before the Fall."),
             ],
             clothing_over: [
                 new ItemVO("clothing_over_1", "Warm Coat", "Armor", 1, true, true, false, 5, 1, {def: 1, warmth: 20}, "img/items/clothing-2.png", "Something against the chill."),
@@ -98,10 +98,10 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("clothing_head_1", "Wool hat", "Head", 2, true, true, false, 3, 1, {def: 1, warmth: 10}, "img/items/clothing-hat-1.png", "Warm basic headwear."),
                 new ItemVO("clothing_head_2", "Medical mask", "Head", 4, true, false, false, 5, 1, {res_poison: 15}, "img/items/clothing-hat-1.png", "Meager protection against the effects of polluted air."),
                 new ItemVO("clothing_head_25", "Bike helmet", "Head", 5, true, false, false, 3, 1, {def: 3}, "img/items/clothing-hat-2.png", "A bit clumsy, but quite useful in a fight."),
-                new ItemVO("clothing_head_3", "Scrap metal helmet", "Head", 7, true, true, false, 4, 2, {def: 5, warmth: 5, res_rad: 5, res_poison: 5, "shade": 10}, "img/items/clothing-hat-2.png", "Perfect apparel for the post-apocalyptic hero."),
-                new ItemVO("clothing_head_4", "Gas mask", "Head", 11, true, true, false, 2, 1, {def: 5, warmth: 3, res_rad: 15, res_poison: 30, "shade": 10}, "img/items/clothing-hat-2.png", "Gives a definite sense of security in dangerous environments."),
-                new ItemVO("clothing_head_45", "Scavenger's hood", "Head", 12, true, true, false, 3, 1, {def: 10, warmth: 10, res_rad: 15, res_poison: 15, "shade": 15}, "img/items/clothing-hat-2.png", "A practical, protective hood that doesn't get in the way."),
-                new ItemVO("clothing_head_5", "Explorer's helmet", "Head", 13, true, true, false, 5, 2, {def: 30, warmth: 15, res_rad: 20, res_poison: 10, "shade": 50}, "img/items/clothing-hat-3.png", "Headgear designed specifically for scavenging in the City."),
+                new ItemVO("clothing_head_3", "Scrap metal helmet", "Head", 7, true, true, false, 4, 2, {def: 5, warmth: 5, res_rad: 5, res_poison: 5, shade: 10}, "img/items/clothing-hat-2.png", "Perfect apparel for the post-apocalyptic hero."),
+                new ItemVO("clothing_head_4", "Gas mask", "Head", 11, true, true, false, 2, 1, {def: 5, warmth: 3, res_rad: 15, res_poison: 30, shade": 10}, "img/items/clothing-hat-2.png", "Gives a definite sense of security in dangerous environments."),
+                new ItemVO("clothing_head_45", "Scavenger's hood", "Head", 12, true, true, false, 3, 1, {def: 10, warmth: 10, res_rad: 15, res_poison: 15, shade: 15}, "img/items/clothing-hat-2.png", "A practical, protective hood that doesn't get in the way."),
+                new ItemVO("clothing_head_5", "Explorer's helmet", "Head", 13, true, true, false, 5, 2, {def: 30, warmth: 15, res_rad: 20, res_poison: 10, shade": 50}, "img/items/clothing-hat-3.png", "Headgear designed specifically for scavenging in the City."),
             ],
             clothing_hands: [
                 new ItemVO("clothing_hands_1", "Mittens", "Hands", 2, true, true, false, 3, 1, {warmth: 5}, "img/items/clothing-hand-0.png", "Nothing keeps hands warm like fluffy mittens."),
@@ -169,6 +169,23 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             ],
         },
 
+        
+        isMultiplier: function (itemBonusType) {
+            switch (itemBonusType) {
+                case itemBonusTypes.fight_speed:
+                case itemBonusTypes.movement:
+                    return true;
+            }
+            return false;
+        },
+        
+        isIncreasing: function (itemBonusType) {
+            switch (itemBonusType) {
+                case itemBonusTypes.movement:
+                    return false;
+            }
+            return true;
+        },
         
         getItemByID: function (id) {
             if (id.indexOf("follower-") >= 0)

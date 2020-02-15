@@ -112,7 +112,7 @@ define([
 			}
 			
 			if (sunlit) {
-				var shadeBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_sunlight);
+				var shadeBonus = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.shade);
 				if (shadeBonus + maxValueBase > maxValue) {
 					maxValue = shadeBonus + maxValueBase;
 					addAccumulation("Sunglasses", shadeBonus / maxValueBase);
