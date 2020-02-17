@@ -60,7 +60,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         FIRST_CAMP_X: 1,
         FIRST_CAMP_Y: 0,
         
-        CAMP_ORDINAL_LIMIT: 7,
+        CAMP_ORDINAL_LIMIT: 8,
         
         MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 5,
         MIN_LEVEL_ORDINAL_HAZARD_POISON: 3,
