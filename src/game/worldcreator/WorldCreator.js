@@ -1051,10 +1051,6 @@ define([
             var isCampable = levelVO.isCampable;
             var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
             var unlockElevatorOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_passage_elevator");
-            var unlockHoleOrdinal = Math.max(
-                UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_passage_hole"),
-                UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_cementmill"),
-            );
 
             // passages up: according to previous level
             var previousLevelVO = this.world.levels[l + 1];
@@ -1076,19 +1072,17 @@ define([
                 passageDownSectors[i] = levelVO.getSector(passagePosition.sectorX, passagePosition.sectorY);
                 if (l === 13) {
                     passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_STAIRWELL;
-                } else if (campOrdinal >= WorldCreatorConstants.CAMP_ORDINAL_LIMIT) {
+                } else if (campOrdinal > WorldCreatorConstants.CAMP_ORDINAL_LIMIT) {
                     passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_BLOCKED;
                 } else if (l === 14) {
                     passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_HOLE;
                 } else if (isCampable && campOrdinal == unlockElevatorOrdinal) {
                     passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_ELEVATOR;
-                } else if (isCampable && campOrdinal == unlockHoleOrdinal) {
-                    passageDownSectors[i].passageDown = MovementConstants.PASSAGE_TYPE_HOLE;
                 } else {
                     var availablePassageTypes = [MovementConstants.PASSAGE_TYPE_STAIRWELL];
                     if (campOrdinal >= unlockElevatorOrdinal)
                         availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_ELEVATOR);
-                    if (campOrdinal >= unlockHoleOrdinal)
+                    if (l > 14)
                         availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_HOLE);
                     var passageTypeIndex = WorldCreatorRandom.randomInt(9 * seed + l * i * 7 + i + l * seed, 0, availablePassageTypes.length);
                     var passageType = availablePassageTypes[passageTypeIndex];
@@ -1139,7 +1133,7 @@ define([
                 }
             };
             
-            setSectorZone(passage1, WorldCreatorConstants.ZONE_ENTRANCE, 2);
+            setSectorZone(passage1, WorldCreatorConstants.ZONE_ENTRANCE, level == 14 ? 4 : 2);
             
             if (isCampableLevel) {
                 // camp:
@@ -1396,6 +1390,8 @@ define([
         generateHazardAreas: function (seed, levelVO, itemsHelper) {
             var topLevel = WorldCreatorHelper.getHighestLevel(seed);
             var l = levelVO.level == 0 ? 1342 : levelVO.level;
+            // no cold on level 14
+            if (l == 14) return;
             var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, levelVO.level);
             for (var s = 0; s < levelVO.sectors.length; s++) {
                 // - block for certain sectors
@@ -1532,6 +1528,7 @@ define([
                 // level completely covered in hazard
                 for (var i = 0; i < levelVO.sectors.length; i++) {
                     var sectorVO = levelVO.sectors[i];
+                    if (sectorVO.zone == WorldCreatorConstants.ZONE_ENTRANCE) continue;
                     var maxHazardValue = getMaxValue(sectorVO, isRadiation, sectorVO.zone);
                     var minHazardValue = Math.min(10, maxHazardValue);
                     var hazardValueRand = WorldCreatorRandom.random(levelOrdinal * (i + 11) / seed * 55 + seed / (i + 99) - i * i);

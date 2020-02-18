@@ -394,7 +394,7 @@ define([
         getNotCampableReason: function (seed, level) {
             if (this.isCampableLevel(seed, level)) return null;
             
-            if (level === 14) return LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
+            if (level === 14) return LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
             
             var campOrdinal = this.getCampOrdinal(seed, level);
             if (campOrdinal > WorldCreatorConstants.CAMP_ORDINAL_LIMIT)

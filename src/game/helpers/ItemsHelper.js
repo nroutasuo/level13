@@ -43,8 +43,9 @@ define([
         
         getAvailableClothingList: function (campOrdinal, step, includeCraftable, includeNonCraftable, includeMultiplePerType, preferredItemBonus, maxScavengeRarity) {
             step = step || 2;
-            var adjustedCampOrdinal = step == 1 ? campOrdinal - 1 : campOrdinal;
-            var adjustedStep = step == 1 ? WorldCreatorConstants.CAMP_STEP_END : step - 1;
+            var adjustCampOrdinal = step == WorldCreatorConstants.CAMP_STEP_START || step == WorldCreatorConstants.CAMP_STEP_PREVIOUS;
+            var adjustedCampOrdinal = adjustCampOrdinal ? campOrdinal - 1 : campOrdinal;
+            var adjustedStep = adjustCampOrdinal ? WorldCreatorConstants.CAMP_STEP_END : step - 1;
             maxScavengeRarity = maxScavengeRarity || 100;
             var result = [];
             var clothingLists = [
