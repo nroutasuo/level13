@@ -20,6 +20,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 scavenge: {
                     vision: [10, -1],
+                    busy: false,
                 },
 
                 fight: {
@@ -39,8 +40,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     health: 80,
                     sector: {
                         scouted: true,
-                        acessible_to_workers: true,
                     },
+                    busy: false,
                 },
                 
                 clear_debris: {
@@ -206,6 +207,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 
                 move_camp_level: {
                     path_to_camp: true,
+                    busy: false,
                 },
 
                 leave_camp: {
@@ -2595,6 +2597,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
             },
 
             durations: {
+                clear_waste: 8,
                 use_in_hospital: 60 * 3,
                 use_in_campfire: 5,
                 use_in_market: 10,

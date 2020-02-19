@@ -10,6 +10,7 @@ define([
 	'game/constants/ItemConstants',
 	'game/constants/HazardConstants',
 	'game/constants/BagConstants',
+	'game/constants/MovementConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/FightConstants',
 	'game/constants/PerkConstants',
@@ -44,7 +45,7 @@ define([
     'game/vos/ResourcesVO',
     'game/vos/ImprovementVO'
 ], function (
-	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ImprovementConstants, ItemConstants, HazardConstants, BagConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
+	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ImprovementConstants, ItemConstants, HazardConstants, BagConstants, MovementConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	LevelComponent, PositionComponent, PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, PerksComponent, DeityComponent,
 	FightComponent, OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
@@ -1019,7 +1020,7 @@ define([
 				case "fight_gang":
 					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
 					var direction = parseInt(action.split("_")[2]);
-					if (!requirements.sector) requirements.sector = {};
+					requirements.sector = $.extend({}, PlayerActionConstants.requirements[baseActionID].sector);
                     var directionName = PositionConstants.getDirectionName(direction);
                     var blockerKey = "blocker" + TextConstants.capitalize(directionName);
                     requirements.sector[blockerKey] = true;
@@ -1027,7 +1028,7 @@ define([
                 case "clear_waste":
 					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
 					var direction = parseInt(action.split("_")[2]);
-					if (!requirements.sector) requirements.sector = {};
+					requirements.sector = $.extend({}, PlayerActionConstants.requirements[baseActionID].sector);
                     requirements.sector["isWasteCleared_" + direction] = false;
                     return requirements;
                 case "create_blueprint":

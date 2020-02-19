@@ -1,4 +1,4 @@
-define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
+define(['ash', 'game/GameGlobals', 'game/vos/PlayerActionVO'], function (Ash, GameGlobals, PlayerActionVO) {
 
     var PlayerActionComponent = Ash.Class.extend({
 
@@ -74,11 +74,14 @@ define(['ash', 'game/vos/PlayerActionVO'], function (Ash, PlayerActionVO) {
         },
 
         getBusyDescription: function () {
-            switch (this.getLastAction(true).action) {
+            var action = this.getLastAction(true).action;
+			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+            switch (baseActionID) {
                 case "use_in_home": return "resting";
                 case "use_in_campfire": return "discussing";
                 case "use_in_hospital": return "recovering";
                 case "use_in_market": return "visiting";
+                case "clear_waste": return "clearing waste";
                 default: return this.action;
             }
         },

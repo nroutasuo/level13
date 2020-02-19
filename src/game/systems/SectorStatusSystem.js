@@ -69,6 +69,9 @@ define([
 			GlobalSignals.equipmentChangedSignal.add(function () {
 				sys.updateCurrentLocation();
 			});
+			GlobalSignals.movementBlockerClearedSignal.add(function () {
+				sys.updateCurrentLocation();
+			});
 			GlobalSignals.gameResetSignal.add(function () {
 				sys.reset();
 			});

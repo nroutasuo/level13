@@ -641,15 +641,17 @@ define(['ash',
 		clearWaste: function (direction) {
 			log.i("clear waste " + direction);
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			var positionComponent = this.playerLocationNodes.head.entity.get(PositionComponent);
 
 			var logMsgSuccess = "Cleared the pollution. The area is now safe to pass through.";
 			var logMsgFailBase = "Attempted to clear the pollution but got attacked. ";
 			var logMsgFlee = logMsgFailBase + "Feld before completing the operation.";
 			var logMsgDefeat = logMsgFailBase + "Lost the fight.";
 
+            var sys = this;
 			var successCallback = function () {
-				sectorStatus.setCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE);
-                GlobalSignals.movementBlockerClearedSignal.dispatch();
+                var sectorPos = positionComponent.level + "." + positionComponent.sectorId() + "." + direction;
+                sys.clearBlocker("bridge_gap", MovementConstants.BLOCKER_TYPE_WASTE, sectorPos);
 			};
 
 			this.handleOutActionResults("clear_waste", LogConstants.MSG_ID_CLEAR_WASTE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, false, successCallback);

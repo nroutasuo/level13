@@ -107,6 +107,7 @@ define([
             GlobalSignals.gameShownSignal.add(function () {
                 sys.updateAll();
             });
+            GlobalSignals.add(this, GlobalSignals.movementBlockerClearedSignal, this.updateAll);
 			this.rebuildVis();
             this.updateUnlockedFeatures();
 		},
