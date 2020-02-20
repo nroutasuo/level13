@@ -35,9 +35,18 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     },
                 },
 
-                clear_waste: {
+                clear_waste_t: {
                     vision: [50, -1],
                     health: 80,
+                    sector: {
+                        scouted: true,
+                    },
+                    busy: false,
+                },
+
+                clear_waste_r: {
+                    vision: [50, -1],
+                    health: 100,
                     sector: {
                         scouted: true,
                     },
@@ -1531,7 +1540,11 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     stamina: 10,
                 },
 
-                clear_waste: {
+                clear_waste_t: {
+                    stamina: 100,
+                },
+
+                clear_waste_r: {
                     stamina: 100,
                 },
 
@@ -2597,7 +2610,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
             },
 
             durations: {
-                clear_waste: 8,
+                clear_waste_t: 5,
+                clear_waste_r: 10,
                 use_in_hospital: 60 * 3,
                 use_in_campfire: 5,
                 use_in_market: 10,
@@ -2612,7 +2626,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 scout_locale_u: [0.1, 0.1],
                 use_spring: [0.1, 0.1],
                 clear_workshop: [1, 0],
-                clear_waste: [0.1, 0.1],
+                clear_waste_t: [0.1, 0.1],
+                clear_waste_r: [0.1, 0.1],
                 fight_gang: [1, 0],
                 nap: [0.1, 0]
             },
@@ -2638,7 +2653,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 scavenge: "Look for resources.",
                 investigate: "Look for resources.",
                 clear_workshop: "Scout the workshop to see if it can be used.",
-                clear_waste: "Clear the pollution.",
+                clear_waste_t: "Clear the pollution.",
+                clear_waste_r: "Clear the radiactive waste.",
                 clear_debris: "Clear the debris blocking the way.",
                 bridge_gap: "Build a bridge to cross the gap",
                 enter_camp: "Rest and manage camp.",
@@ -2757,7 +2773,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     case "scout_locale_i":
                     case "scout_locale_u":
                     case "clear_workshop":
-                    case "clear_waste":
+                    case "clear_waste_t":
+                    case "clear_waste_r":
                     case "fight_gang":
                         return true;
                     default:

@@ -637,7 +637,9 @@ define([
                             var clearedKey = "isWasteCleared_" + direction;
                             if (typeof requirements.sector[clearedKey] !== 'undefined') {
                                 var requiredValue = requirements.sector[clearedKey];
-                                var currentValue = statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE);
+                                var currentValue =
+                                    statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE_TOXIC) ||
+                                    statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
 
                                 if (requiredValue !== currentValue) {
                                     if (currentValue) {
@@ -1025,7 +1027,8 @@ define([
                     var blockerKey = "blocker" + TextConstants.capitalize(directionName);
                     requirements.sector[blockerKey] = true;
 					return requirements;
-                case "clear_waste":
+                case "clear_waste_t":
+                case "clear_waste_r":
 					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
 					var direction = parseInt(action.split("_")[2]);
 					requirements.sector = $.extend({}, PlayerActionConstants.requirements[baseActionID].sector);
@@ -1261,7 +1264,8 @@ define([
                 if (a.indexOf("use_item") >= 0) return "use_item";
     			if (a.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
     			if (a.indexOf("create_blueprint_") >= 0) return "create_blueprint";
-    			if (a.indexOf("clear_waste_") >= 0) return "clear_waste";
+    			if (a.indexOf("clear_waste_t") >= 0) return "clear_waste_t";
+    			if (a.indexOf("clear_waste_r") >= 0) return "clear_waste_r";
     			if (a.indexOf("clear_debris_") >= 0) return "clear_debris";
     			if (a.indexOf("fight_gang_") >= 0) return "fight_gang";
     			if (a.indexOf("send_caravan_") >= 0) return "send_caravan";

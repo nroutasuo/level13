@@ -443,10 +443,15 @@ define([
                 	var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
                     var blockerName = TextConstants.getMovementBlockerName(blocker, enemiesComponent).toLowerCase();
                     if (GameGlobals.movementHelper.isBlocked(entity, direction)) {
-                        if (blocker.type == MovementConstants.BLOCKER_TYPE_DEBRIS) {
-                            description += "Passage to the " + directionName + " is blocked by " + blockerName + ". ";
-                        } else {
-                            description += "Passage to the " + directionName + " is blocked by a " + blockerName + ". ";
+                        switch (blocker.type) {
+                            case MovementConstants.BLOCKER_TYPE_DEBRIS:
+                            case MovementConstants.BLOCKER_TYPE_WASTE_TOXIC:
+                            case MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE:
+                                description += "Passage to the " + directionName + " is blocked by <span class='hl-functionality'>" + blockerName + "</span>. ";
+                                break;
+                            default:
+                                description += "Passage to the " + directionName + " is blocked by a <span class='hl-functionality'>" + blockerName + "</span>. ";
+                                break;
                         }
                     } else {
                         var position = entity.get(PositionComponent).getPosition();

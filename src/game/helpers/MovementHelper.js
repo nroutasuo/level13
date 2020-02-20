@@ -54,8 +54,10 @@ define([
                     switch (blocker.type) {
         				case MovementConstants.BLOCKER_TYPE_GAP:
 				            return { value: !isBridged, reason: "Bridge needed." };
-        				case MovementConstants.BLOCKER_TYPE_WASTE:
+        				case MovementConstants.BLOCKER_TYPE_WASTE_TOXIC:
 				            return { value: !isCleaned, reason: "Blocked by toxic waste." };
+        				case MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE:
+				            return { value: !isCleaned, reason: "Blocked by radioactive waste." };
         				case MovementConstants.BLOCKER_TYPE_GANG:
 				            return { value: !isDefeated, reason: "Blocked by a fight." };
                         case MovementConstants.BLOCKER_TYPE_DEBRIS:
@@ -96,7 +98,10 @@ define([
         
         isCleaned: function (sectorEntity, direction) {
             var statusComponent = sectorEntity.get(SectorStatusComponent);
-            return this.hasClearableBlocker(sectorEntity, direction) && statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE);
+            var isCleared =
+                statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE_TOXIC) ||
+                statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
+            return this.hasClearableBlocker(sectorEntity, direction) && isCleared;
         },
         
         isCleared: function (sectorEntity, direction) {

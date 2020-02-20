@@ -42,7 +42,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
         },
 
         isBlockerCleared: function (direction, blockerType) {
-            if (blockerType == MovementConstants.BLOCKER_TYPE_WASTE) {
+            if (blockerType == MovementConstants.BLOCKER_TYPE_WASTE_TOXIC || blockerType == MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE) {
                 return this.wasteClearedDirections && this.wasteClearedDirections.indexOf(parseInt(direction)) >= 0;
             }
             if (blockerType == MovementConstants.BLOCKER_TYPE_DEBRIS) {
@@ -57,7 +57,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
         setBlockerCleared: function (direction, blockerType) {
             if (this.isBlockerCleared(direction, blockerType))
                 return;
-            if (blockerType == MovementConstants.BLOCKER_TYPE_WASTE) {
+            if (blockerType == MovementConstants.BLOCKER_TYPE_WASTE_TOXIC || blockerType == MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE) {
                 this.wasteClearedDirections.push(parseInt(direction));
             }
             if (blockerType == MovementConstants.BLOCKER_TYPE_DEBRIS) {

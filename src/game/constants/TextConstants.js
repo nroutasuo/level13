@@ -334,7 +334,8 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
         getMovementBlockerAction: function (blockerVO, enemiesComponent) {
 			switch (blockerVO.type) {
 				case MovementConstants.BLOCKER_TYPE_GAP: return "Bridge gap";
-				case MovementConstants.BLOCKER_TYPE_WASTE: return "Clear waste";
+				case MovementConstants.BLOCKER_TYPE_WASTE_TOXIC: return "Clear waste";
+				case MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE: return "Clear waste";
 				case MovementConstants.BLOCKER_TYPE_GANG: return "Fight " + this.getEnemyNoun(enemiesComponent.possibleEnemies);
 	 	 	}
         },
@@ -342,7 +343,8 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
 		getUnblockedVerb: function (blockerType) {
 			switch (blockerType) {
 				case MovementConstants.BLOCKER_TYPE_GAP: return "bridged";
-				case MovementConstants.BLOCKER_TYPE_WASTE: return "cleared";
+				case MovementConstants.BLOCKER_TYPE_WASTE_TOXIC: return "cleared";
+				case MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE: return "cleared";
 				case MovementConstants.BLOCKER_TYPE_GANG: return "defeated";
 				case MovementConstants.BLOCKER_TYPE_DEBRIS: return "cleared";
 	 	 	}

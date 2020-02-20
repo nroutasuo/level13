@@ -523,6 +523,10 @@ define([
                 var levelVO = this.world.getLevel(l);
 				var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
                 var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
+                
+                var isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
+                var isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
+                            
                 var blockerTypes = [];
                 if (levelOrdinal > 1) {
                     blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
@@ -531,8 +535,11 @@ define([
                 if (campOrdinal >= 5) {
                     blockerTypes.push(MovementConstants.BLOCKER_TYPE_GAP);
                 }
-                if (l >= 14) {
-                    blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE);
+                if (campOrdinal >= 7) {
+                    blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_TOXIC);
+                }
+                if (l >= 14 && isRadiatedLevel) {
+                    blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
                 }
                 this.addMovementBlockers(seed, l, levelVO, blockerTypes);
             }

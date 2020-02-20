@@ -81,7 +81,8 @@ define(['ash', 'game/GameGlobals', 'game/vos/PlayerActionVO'], function (Ash, Ga
                 case "use_in_campfire": return "discussing";
                 case "use_in_hospital": return "recovering";
                 case "use_in_market": return "visiting";
-                case "clear_waste": return "clearing waste";
+                case "clear_waste_t": return "clearing waste";
+                case "clear_waste_r": return "clearing waste";
                 default: return this.action;
             }
         },

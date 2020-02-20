@@ -184,7 +184,7 @@ define([
                 if (campOrdinal == WorldCreatorConstants.CAMP_ORDINAL_LIMIT) {
                     gtag('event', 'camp_ordinal_limit_level_reached', { event_category: 'progression' })
                     var msg = "You've reached the last level of the current version of Level 13. ";
-                    msg += "You can still explore this level and find many new things, but you won't be able to progress further down.";
+                    msg += "You can still explore this level and find many new things, but you won't be able to progress further up.";
                     msg += "<br/><br/>"
                     msg += "<span class='p-meta'>Thank you for playing this far! The developer would love to hear your feedback. You can use any of these channels:</span>";
     				msg += "<p>" + GameConstants.getFeedbackLinksHTML() + "</p>";

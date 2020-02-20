@@ -232,7 +232,8 @@ define(['ash',
                 case "scout_locale_i": this.scoutLocale(param); break;
                 case "scout_locale_u": this.scoutLocale(param); break;
                 case "clear_workshop": this.clearWorkshop(param); break;
-                case "clear_waste": this.clearWaste(param); break;
+                case "clear_waste_t": this.clearWaste(action, param); break;
+                case "clear_waste_r": this.clearWaste(action, param); break;
                 case "bridge_gap": this.bridgeGap(param); break;
                 case "clear_debris": this.clearDebris(param); break;
                 case "use_spring": this.useSpring(param); break;
@@ -638,23 +639,25 @@ define(['ash',
 			this.handleOutActionResults(action, LogConstants.MSG_ID_WORKSHOP_CLEARED, logMsgSuccess, logMsgFlee, logMsgDefeat, true, true, successCallback);
 		},
 
-		clearWaste: function (direction) {
+		clearWaste: function (action, direction) {
 			log.i("clear waste " + direction);
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var positionComponent = this.playerLocationNodes.head.entity.get(PositionComponent);
+            var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
+            var blocker = passagesComponent.getBlocker(direction);
 
-			var logMsgSuccess = "Cleared the pollution. The area is now safe to pass through.";
-			var logMsgFailBase = "Attempted to clear the pollution but got attacked. ";
+			var logMsgSuccess = "Cleared the waste. The area is now safe to pass through.";
+			var logMsgFailBase = "Attempted to clear the waste but got attacked. ";
 			var logMsgFlee = logMsgFailBase + "Feld before completing the operation.";
 			var logMsgDefeat = logMsgFailBase + "Lost the fight.";
 
             var sys = this;
 			var successCallback = function () {
                 var sectorPos = positionComponent.level + "." + positionComponent.sectorId() + "." + direction;
-                sys.clearBlocker("bridge_gap", MovementConstants.BLOCKER_TYPE_WASTE, sectorPos);
+                sys.clearBlocker(action, blocker.type, sectorPos);
 			};
 
-			this.handleOutActionResults("clear_waste", LogConstants.MSG_ID_CLEAR_WASTE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, false, successCallback);
+			this.handleOutActionResults(action, LogConstants.MSG_ID_CLEAR_WASTE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, false, successCallback);
 		},
 
 		bridgeGap: function (sectorPos) {
