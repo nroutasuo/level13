@@ -34,6 +34,7 @@ define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCrea
                     rope: false,
                     herbs: false,
                     fuel: false,
+                    rubber: false,
                     medicine: false,
                     tools: false,
                     concrete: false,

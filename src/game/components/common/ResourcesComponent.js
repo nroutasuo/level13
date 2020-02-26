@@ -63,15 +63,6 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             }
             return true;
         },
-    
-        getResourceForLevel: function (lvl) {
-            if (lvl < 0) {
-                return resourceNames.herbs;
-            }
-            else {
-                return resourceNames.fuel;
-            }
-        },
         
         getSaveKey: function () {
             return "Res";

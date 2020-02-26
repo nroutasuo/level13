@@ -144,6 +144,7 @@ define([
 			GameGlobals.gameState.unlockedFeatures.resources.rope = checkUnlockedResource("rope");
 			GameGlobals.gameState.unlockedFeatures.resources.herbs = checkUnlockedResource("herbs");
 			GameGlobals.gameState.unlockedFeatures.resources.fuel = checkUnlockedResource("fuel");
+			GameGlobals.gameState.unlockedFeatures.resources.rubber = checkUnlockedResource("rubber");
 			GameGlobals.gameState.unlockedFeatures.resources.medicine = checkUnlockedResource("medicine");
 			GameGlobals.gameState.unlockedFeatures.resources.concrete = checkUnlockedResource("concrete");
 			GameGlobals.gameState.unlockedFeatures.resources.tools = checkUnlockedResource("tools");

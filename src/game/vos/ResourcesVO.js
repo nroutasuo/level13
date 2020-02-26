@@ -10,6 +10,7 @@ define(['ash'], function (Ash) {
 		
 		herbs: "herbs",
 		fuel: "fuel",
+        rubber: "rubber",
 		
 		medicine: "medicine",
 		tools: "tools",
@@ -31,6 +32,7 @@ define(['ash'], function (Ash) {
         // Level-dependent
 		herbs: 0,
 		fuel: 0,
+        rubber: 0,
 	
 		// Advanced
 		tools: 0,
@@ -51,6 +53,7 @@ define(['ash'], function (Ash) {
             // Level-dependent
             this.herbs = 0;
             this.fuel = 0;
+            this.rubber = 0;
             
             // Advanced
             this.tools = 0;
@@ -67,6 +70,7 @@ define(['ash'], function (Ash) {
                 case resourceNames.rope: this.rope += amount; break;
                 case resourceNames.herbs: this.herbs += amount; break;
                 case resourceNames.fuel: this.fuel += amount; break;
+                case resourceNames.rubber: this.rubber += amount; break;
                 case resourceNames.tools: this.tools += amount; break;
                 case resourceNames.medicine: this.medicine += amount; break;
                 case resourceNames.concrete: this.concrete += amount; break;
@@ -83,6 +87,7 @@ define(['ash'], function (Ash) {
                 case resourceNames.rope: this.rope = amount; break;
                 case resourceNames.herbs: this.herbs = amount; break;
                 case resourceNames.fuel: this.fuel = amount; break;
+                case resourceNames.rubber: this.rubber = amount; break;
                 case resourceNames.tools: this.tools = amount; break;
                 case resourceNames.medicine: this.medicine = amount; break;
                 case resourceNames.concrete: this.concrete = amount; break;
@@ -100,6 +105,7 @@ define(['ash'], function (Ash) {
                     
                 case resourceNames.herbs: return this.herbs;
                 case resourceNames.fuel: return this.fuel;
+                case resourceNames.rubber: return this.rubber;
 		    
                 case resourceNames.medicine: return this.medicine;
                 case resourceNames.tools: return this.tools;
@@ -172,6 +178,7 @@ define(['ash'], function (Ash) {
             if (this.rope !== 0) copy.r = this.rope;
             if (this.herbs !== 0) copy.h = this.herbs;
             if (this.fuel !== 0) copy.fu = this.fuel;
+            if (this.rubber !== 0) copy.ru = this.rubber;
             if (this.tools !== 0) copy.t = this.tools;
             if (this.medicine !== 0) copy.med = this.medicine;
             if (this.concrete !== 0) copy.c = this.concrete;
@@ -186,6 +193,7 @@ define(['ash'], function (Ash) {
             if (componentValues.r) this.rope = componentValues.r;
             if (componentValues.h) this.herbs = componentValues.h;
             if (componentValues.fu) this.fuel = componentValues.fu;
+            if (componentValues.ru) this.rubber = componentValues.ru;
             if (componentValues.t) this.tools = componentValues.t;
             if (componentValues.med) this.medicine = componentValues.med;
             if (componentValues.c) this.concrete = componentValues.c;

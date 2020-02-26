@@ -591,6 +591,7 @@ function (Ash, CanvasUtils,
                 case resourceNames.water: return ColorConstants.getGlobalColor("res_water");
                 case resourceNames.food: return ColorConstants.getGlobalColor("res_food");
                 case resourceNames.fuel: return ColorConstants.getGlobalColor("res_fuel");
+                case resourceNames.rubber: return ColorConstants.getGlobalColor("res_rubber");
             }
         },
         

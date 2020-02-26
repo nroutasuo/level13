@@ -261,8 +261,9 @@ function (Ash, GameConstants, WorldCreatorConstants, PositionConstants, Movement
 		
 		getWorkshopName: function (resource) {
 			switch (resource) {
-			case resourceNames.fuel: return "refinery";
-			default: return "workshop";
+                    case resourceNames.fuel: return "refinery";
+                    case resourceNames.rubber: return "plantation";
+                    default: return "workshop";
 			}
 		},
 		

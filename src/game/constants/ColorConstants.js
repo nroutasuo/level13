@@ -78,6 +78,7 @@ define(function () {
                 res_water: "#2299ff",
                 res_food: "#ff6622",
                 res_fuel: "#dd66cc",
+                res_rubber: "#dddddd",
             }
         },
         

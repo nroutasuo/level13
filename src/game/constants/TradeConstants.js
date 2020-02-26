@@ -22,7 +22,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             new TradingPartnerVO(6, "Old Waterworks", [resourceNames.fuel], [], true, false, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
             new TradingPartnerVO(7, "Mill Road Academy", [resourceNames.food, resourceNames.water], [resourceNames.metal], true, false, [], [ "weapon", "artefact" ]),
             new TradingPartnerVO(9, "Bleaksey", [resourceNames.herbs], [resourceNames.medicine], false, true, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
-            new TradingPartnerVO(10, "Pinewood", [resourceNames.medicine], [], true, false, [], [ "artefact", "exploration" ]),
+            new TradingPartnerVO(10, "Pinewood", [resourceNames.medicine, resourceNames.rubber], [], true, false, [], [ "artefact", "exploration" ]),
             new TradingPartnerVO(12, "Highgate", [resourceNames.tools], [resourceNames.metal], true, false, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
             new TradingPartnerVO(14, "Factory 32", [resourceNames.concrete], [resourceNames.metal], true, false, [], [ "exploration" ]),
         ],
@@ -295,6 +295,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                 case resourceNames.rope: value = 0.02; break;
                 case resourceNames.herbs: value = 0.02; break;
                 case resourceNames.fuel: value = 0.02; break;
+                case resourceNames.rubber: value = 0.03; break;
 
                 case resourceNames.medicine: value = 0.05; break;
                 case resourceNames.tools: value = 0.05; break;
