@@ -1541,11 +1541,11 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 clear_waste_t: {
-                    stamina: 100,
+                    stamina: 50,
                 },
 
                 clear_waste_r: {
-                    stamina: 100,
+                    stamina: 50,
                 },
 
                 use_spring: {
@@ -2077,6 +2077,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_rope: 10,
                     item_res_tape: 3,
                 },
+                
+                craft_clothing_head_l14: {
+                    resource_rubber: 10,
+                    resource_fuel: 2,
+                    item_res_bands: 2,
+                },
 
                 craft_clothing_head_4: {
                     item_res_bands: 5,
@@ -2117,6 +2123,11 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     item_res_leather: 3,
                     item_res_silk: 3,
                 },
+                
+                craft_clothing_hands_lvl14: {
+                    resource_rubber: 10,
+                    item_res_silk: 2,
+                },
 
                 craft_clothing_hands_3: {
                     resource_rope: 20,
@@ -2144,6 +2155,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_metal: 50,
                     item_res_tape: 1,
                     item_res_bands: 2,
+                },
+                
+                craft_clothing_over_l14: {
+                    resource_rubber: 60,
+                    item_res_silk: 2,
+                    item_res_tape: 2,
                 },
 
                 craft_clothing_over_4: {
@@ -2222,6 +2239,11 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_rope: 10,
                     item_res_tape: 1,
                     item_res_leather: 3,
+                },
+                
+                craft_shoe_l14: {
+                    resource_rubber: 20,
+                    item_res_tape: 1
                 },
 
                 craft_bag_0: {

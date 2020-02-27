@@ -118,7 +118,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             shoes: [
                 new ItemVO("shoe_1", "Improvised flip-flops", "Shoes", 1, true, true, false, 2, 1, {movement: 0.9}, "img/items/shoe-1.png", "Protects a scavenger's feet from sharp things that might be lying around."),
                 new ItemVO("shoe_2", "Worn trainers", "Shoes", 5, true, false, false, 5, 3, {movement: 0.8}, "img/items/shoe-2.png", "Decent shoes for walking in most places."),
-                new ItemVO("shoe_l14", "Rubber boots", "Shoes", 8, true, false, false, 5, 3, {movement: 0.9, res_rad: 5, res_poison: 5 }, "img/items/shoe-2.png", "Protection from environmental hazards. And snakes."),
+                new ItemVO("shoe_l14", "Rubber boots", "Shoes", 8, true, true, false, 5, 3, {movement: 0.9, res_rad: 5, res_poison: 5 }, "img/items/shoe-2.png", "Protection from environmental hazards. And snakes."),
                 new ItemVO("shoe_3", "Hiking boots", "Shoes", 10, true, false, false, 8, 5, {movement: 0.5}, "img/items/shoe-3.png", "Good shoes like these can make travelling much easier."),
             ],
             follower: [
