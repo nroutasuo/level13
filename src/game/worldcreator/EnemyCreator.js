@@ -206,7 +206,7 @@ define([
             for (var i = 1; i <= max; i++) {
                 var campOrdinal = this.getCampOrdinalFromDifficulty(i);
                 var step = this.getStepFromDifficulty(i);
-                requiredStats = this.getRequiredStrength(campOrdinal, step);
+                requiredStats = this.getRequiredStrength(campOrdinal, step, false);
                 if (requiredStats >= enemyStats) return i;
             }
             return max;
@@ -224,20 +224,20 @@ define([
             return (campOrdinal - 1)*3+step;
         },
         
-        getRequiredStrength: function (campOrdinal, step) {
+        getRequiredStrength: function (campOrdinal, step, isHardLevel) {
             var prevOrdinal = campOrdinal;
             var prevStep = step - 1;
             if (prevStep < WorldCreatorConstants.CAMP_STEP_START) {
                 prevOrdinal = campOrdinal - 1;
                 prevStep = WorldCreatorConstants.CAMP_STEP_END;
             }
-            var typicalStrength = this.getTypicalStrength(campOrdinal, step);
-            var typicalStrengthPrevious = this.getTypicalStrength(prevOrdinal, prevStep);
+            var typicalStrength = this.getTypicalStrength(campOrdinal, step, isHardLevel);
+            var typicalStrengthPrevious = this.getTypicalStrength(prevOrdinal, prevStep, isHardLevel);
             var result = Math.ceil((typicalStrength + typicalStrengthPrevious) / 2);
             return result;
         },
 
-        getTypicalStrength: function (campOrdinal, step) {
+        getTypicalStrength: function (campOrdinal, step,  isHardLevel) {
             if (campOrdinal < 0) campOrdinal = 0;
             
             // health
@@ -251,7 +251,7 @@ define([
             // items
             var typicalItems = new ItemsComponent();
             var typicalWeapon = ItemConstants.getDefaultWeapon(campOrdinal, step);
-            var typicalClothing = GameGlobals.itemsHelper.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.fight_def, 3);
+            var typicalClothing = GameGlobals.itemsHelper.getDefaultClothing(campOrdinal, step, ItemConstants.itemBonusTypes.fight_def, isHardLevel);
 
             if (typicalWeapon)
                 typicalItems.addItem(typicalWeapon, false);

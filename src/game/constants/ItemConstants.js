@@ -69,7 +69,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("clothing_over_25", "Army Jacket", "Armor", 5, true, false, false, 2, 1, {def: 15, warmth: 10, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Something that's actually produced with the aim of keeping one safe."),
                 new ItemVO("clothing_over_25x", "Warm Army Jacket", "Armor", 5, true, false, false, 5, 5, {def: 15, warmth: 15, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Something that's actually produced with the aim of keeping one safe."),
                 new ItemVO("clothing_over_3", "Scrap metal armor", "Armor", 7, true, true, false, 5, 2, {def: 25, warmth: 5, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "An ugly but surprisingly comfortable metal blanket"),
-                new ItemVO("clothing_over_l14", "Hazmat suit", "Armor", 8, true, true, false, 5, 2, {movement: 1.1, def: 1, warmth: 5, res_rad: 15, res_poison: 15}, "img/items/clothing-2.png", "Effective protection against radiation, but clumsy to move around in."),
+                new ItemVO("clothing_over_l14", "Hazmat suit", "Armor", 8, true, true, false, 5, 2, {movement: 1.1, def: 1, warmth: 5, res_rad: 15, res_poison: 15}, "img/items/clothing-2.png", "Effective protection against radiation, but clumsy to move around in.", true),
                 new ItemVO("clothing_over_4", "Kevlar vest", "Armor", 10, true, true, false, 3, 2, {def: 40, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Heavy, but worth it."),
                 new ItemVO("clothing_over_45", "Scavenger vest", "Armor", 12, true, true, false, 3, 1, {def: 40, warmth: 20, res_rad: 10, res_poison: 10}, "img/items/clothing-2.png", "Novel technology for maximal survival in the post-Fall City"),
                 new ItemVO("clothing_over_5", "Riot police vest", "Armor", 13, true, false, false, 2, 2, {def: 100, warmth: 10, res_rad: 5, res_poison: 10}, "img/items/clothing-3.png", "Based on the old Surface Guard uniform with additional environmental proection."),
@@ -83,7 +83,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("clothing_upper_35", "Synthetic shirt", "Shirt", 9, true, false, false, 2, 2, {def: 5, warmth: 12, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Shirt made from recycled advanced textiles used before the Fall."),
                 new ItemVO("clothing_upper_4", "Protective shirt", "Shirt", 12, true, true, false, 5, 1, {def: 8, warmth: 15, res_rad: 5, res_poison: 5}, "img/items/clothing-3.png", "Specifically made for keeping travellers warm and safe."),
                 new ItemVO("clothing_upper_45", "Explorer's shirt", "Shirt", 13, true, false, false, 2, 2, {def: 10, warmth: 15, res_rad: 5, res_poison: 5}, "img/items/clothing-3.png", "Comes with many pockets."),
-                new ItemVO("clothing_upper_5", "Scavenger's raincoat", "Shirt", 15, true, true, false, 4, 2, {def: 0, warmth: 25, res_rad: 40, res_poison: 60}, "img/items/clothing-3.png", "The best protection an explorer can hope for."),
+                new ItemVO("clothing_upper_5", "Scavenger's shirt", "Shirt", 15, true, true, false, 4, 2, {def: 0, warmth: 25, res_rad: 40, res_poison: 60}, "img/items/clothing-3.png", "The best protection an explorer can hope for."),
             ],
             clothing_lower: [
                 new ItemVO("clothing_lower_1", "Ragged pants", "Legs", 1, true, false, false, 1, 3, {warmth: 1}, "img/items/clothing-rags.png", "Barely counts for clothing, but for now it'll have to do."),
@@ -101,7 +101,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("clothing_head_25", "Bike helmet", "Head", 5, true, false, false, 3, 1, {def: 3}, "img/items/clothing-hat-2.png", "A bit clumsy, but quite useful in a fight."),
                 new ItemVO("clothing_head_4", "Gas mask", "Head", 6, true, true, false, 2, 1, {def: 5, warmth: 3, res_rad: 5, res_poison: 30, shade: 10}, "img/items/clothing-hat-2.png", "Gives a definite sense of security in dangerous environments."),
                 new ItemVO("clothing_head_3", "Scrap metal helmet", "Head", 7, true, true, false, 4, 2, {def: 5, warmth: 5, res_rad: 5, res_poison: 5, shade: 10}, "img/items/clothing-hat-2.png", "Perfect apparel for the post-apocalyptic hero."),
-                new ItemVO("clothing_head_l14", "Respirator", "Head", 8, true, true, false, 4, 2, {def: 5, warmth: 3, res_rad: 15, res_poison: 30, shade: 10}, "img/items/clothing-hat-2.png", "Offers reasonable protection from environmental hazards."),
+                new ItemVO("clothing_head_l14", "Respirator", "Head", 8, true, true, false, 4, 2, {def: 5, warmth: 3, res_rad: 15, res_poison: 30, shade: 10}, "img/items/clothing-hat-2.png", "Offers reasonable protection from environmental hazards.", true),
                 new ItemVO("clothing_head_45", "Scavenger's hood", "Head", 12, true, true, false, 3, 1, {def: 10, warmth: 10, res_rad: 15, res_poison: 15, shade: 15}, "img/items/clothing-hat-2.png", "A practical, protective hood that doesn't get in the way."),
                 new ItemVO("clothing_head_5", "Explorer's helmet", "Head", 13, true, true, false, 5, 2, {def: 30, warmth: 15, res_rad: 20, res_poison: 10, shade: 50}, "img/items/clothing-hat-3.png", "Headgear designed specifically for scavenging in the City."),
             ],
@@ -110,7 +110,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("clothing_hands_12", "Leather Gloves", "Hands", 3, true, true, false, 3, 1, {def: 1, warmth: 3, res_rad: 1, res_poison: 1}, "img/items/clothing-hand-0.png", "Not only warm but also protective."),
                 new ItemVO("clothing_hands_2", "Work gloves", "Hands", 5, true, true, false, 1, 1, {def: 1, warmth: 5, res_rad: 3, res_poison: 3}, "img/items/clothing-hand-0.png", "Basic protection for hands."),
                 new ItemVO("clothing_hands_25", "Good gloves", "Hands", 7, true, true, false, 2, 1, {def: 2, warmth: 5, res_rad: 3, res_poison: 3}, "img/items/clothing-hand-0.png", "Good gloves make scavenging much safer."),
-                new ItemVO("clothing_hands_lvl14", "Hazmat gloves", "Hands", 8, true, true, false, 2, 1, {def: 2, warmth: 5, res_rad: 10, res_poison: 10}, "img/items/clothing-hand-0.png", "Protection from environmental hazards."),
+                new ItemVO("clothing_hands_lvl14", "Hazmat gloves", "Hands", 8, true, true, false, 2, 1, {def: 2, warmth: 5, res_rad: 10, res_poison: 10}, "img/items/clothing-hand-0.png", "Protection from environmental hazards.", true),
                 new ItemVO("clothing_hands_3", "Quality gloves", "Hands", 10, true, true, false, 2, 1, {def: 2, warmth: 7, res_rad: 5, res_poison: 10}, "img/items/clothing-hand-0.png", "No scavenger ever regretted having good gloves."),
                 new ItemVO("clothing_hands_4", "Scavenger's gloves", "Hands", 12, true, true, false, 3, 1, {def: 5, warmth: 15, res_rad: 15, res_poison: 15}, "img/items/clothing-hand-0.png", "Gloves that protect from almost all environmental hazards."),
                 new ItemVO("clothing_hands_5", "Synthetic gloves", "Hands", 14, true, false, false, 3, 2, {def: 8, warmth: 15, res_rad: 15, res_poison: 15}, "img/items/clothing-hand-0.png", "Gloves made from recycled advanced textiles from before the Fall."),
@@ -118,7 +118,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             shoes: [
                 new ItemVO("shoe_1", "Improvised flip-flops", "Shoes", 1, true, true, false, 2, 1, {movement: 0.9}, "img/items/shoe-1.png", "Protects a scavenger's feet from sharp things that might be lying around."),
                 new ItemVO("shoe_2", "Worn trainers", "Shoes", 5, true, false, false, 5, 3, {movement: 0.8}, "img/items/shoe-2.png", "Decent shoes for walking in most places."),
-                new ItemVO("shoe_l14", "Rubber boots", "Shoes", 8, true, true, false, 5, 3, {movement: 0.9, res_rad: 5, res_poison: 5 }, "img/items/shoe-2.png", "Protection from environmental hazards. And snakes."),
+                new ItemVO("shoe_l14", "Rubber boots", "Shoes", 8, true, true, false, 5, 3, {movement: 0.9, res_rad: 5, res_poison: 5 }, "img/items/shoe-2.png", "Protection from environmental hazards. And snakes.", true),
                 new ItemVO("shoe_3", "Hiking boots", "Shoes", 10, true, false, false, 8, 5, {movement: 0.5}, "img/items/shoe-3.png", "Good shoes like these can make travelling much easier."),
             ],
             follower: [
@@ -231,6 +231,12 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             var result = { campOrdinal: 0, step: 0 };
             if (!item.craftable) return result;
             
+            var addRequirement = function (campOrdinal, step) {
+                if (campOrdinal > result.campOrdinal || (campOrdinal == result.campOrdinal && step > result.step)) {
+                    result = { campOrdinal: campOrdinal, step: step };
+                }
+            };
+            
             // upgrades
             var reqs = PlayerActionConstants.requirements["craft_" + item.id];
             if (reqs && reqs.upgrades) {
@@ -238,13 +244,23 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 for (var k = 0; k < requiredTech.length; k++) {
                     var campOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredTech[k]);
                     var step = UpgradeConstants.getMinimumLevelStepForUpgrade(requiredTech[k]);
-                    if (campOrdinal > result.campOrdinal || step > result.step) {
-                        result = { campOrdinal: campOrdinal, step: step };
-                    }
+                    addRequirement(campOrdinal, step);
                 }
             }
             
-            // TODO check level resources
+            // resources
+            var costs = PlayerActionConstants.costs["craft_" + item.id];
+            if (costs) {
+                if (costs && costs.resource_fuel && costs.resource_fuel > 0) {
+                    addRequirement(WorldCreatorConstants.CAMP_ORDINAL_FUEL, WorldCreatorConstants.CAMP_STEP_POI_2);
+                }
+                if (costs && costs.resource_rubber && costs.resource_rubber > 0) {
+                    addRequirement(WorldCreatorConstants.CAMP_ORDINAL_GROUND, WorldCreatorConstants.CAMP_STEP_POI_2);
+                }
+                if (costs && costs.resource_herbs && costs.resource_herbs > 0) {
+                    addRequirement(WorldCreatorConstants.CAMP_ORDINAL_GROUND, WorldCreatorConstants.CAMP_STEP_POI_2);
+                }
+            }
             
             return result;
         },

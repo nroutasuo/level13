@@ -4,11 +4,15 @@
             "version": "0.3.1",
             "phase": "alpha",
             "final": false,
-            "updated": "2020-02-27",
+            "updated": "2020-02-28",
             "changes": [
                 {
                     "type": "GD",
                     "summary": "New equipment for surviving extremely irradiated levels",
+                },
+                {
+                    "type": "WG",
+                    "summary": "Hard levels",
                 }
             ]
         },

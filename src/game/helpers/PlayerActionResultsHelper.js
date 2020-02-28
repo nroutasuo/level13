@@ -685,12 +685,12 @@ define([
         // itemTypeLimits: list of item types and their probabilities ([ type: relative_probability ])
         // efficiency: 0-1 current scavenge efficiency of the player, affects chance to find something
         // currentItems: ItemsComponent
-        // level ordinal: current location level ordinal
 		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, efficiency, currentItems, campOrdinal, step) {
 			var result = [];
 			var hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
             var hasCamp = GameGlobals.gameState.unlockedFeatures.camp;
             var hasDecentEfficiency = efficiency > 0.1;
+            var isHardLevel = false;
 
 			// Neccessity items (map, bag) that the player should find quickly if missing
 			var necessityItem = this.getNecessityItem(itemProbability, itemTypeLimits, efficiency, currentItems, campOrdinal);
@@ -711,7 +711,7 @@ define([
                     campOrdinal += 1;
                     step = WorldCreatorConstants.CAMP_STEP_START;
                 }
-                var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(campOrdinal, step, itemsComponent, true);
+                var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(campOrdinal, step, isHardLevel, itemsComponent, true);
                 var neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
                 if (!GameGlobals.gameState.uiStatus.isHidden)
                     log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp);

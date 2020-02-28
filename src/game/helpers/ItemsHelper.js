@@ -23,14 +23,12 @@ define([
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
         },
         
-        defaultClothing: {
+        getDefaultClothing: function (campOrdinal, step, itemBonusType, isHardLevel) {
+            return this.getBestClothing(campOrdinal, step, itemBonusType, this.MAX_SCA_RARITY_DEFAULT_CLOTHING, isHardLevel);
         },
         
-        availableClothing: {
-        },
-        
-        getBestClothing: function (campOrdinal, step, itemBonusType, maxScavengeRarity) {
-            return this.getAvailableClothingList(campOrdinal, step, true, true, false, itemBonusType, maxScavengeRarity);
+        getBestClothing: function (campOrdinal, step, itemBonusType, maxScavengeRarity, isHardLevel) {
+            return this.getAvailableClothingList(campOrdinal, step, true, true, false, itemBonusType, maxScavengeRarity, isHardLevel);
         },
         
         getScavengeRewardClothing: function (campOrdinal, step) {
@@ -38,10 +36,10 @@ define([
         },
         
         getScavengeNecessityClothing: function (campOrdinal, step) {
-            return this.getAvailableClothingList(campOrdinal, step, false, true, false, null, 5);
+            return this.getAvailableClothingList(campOrdinal, step, false, true, false, null, this.MAX_SCA_RARITY_DEFAULT_CLOTHING);
         },
         
-        getAvailableClothingList: function (campOrdinal, step, includeCraftable, includeNonCraftable, includeMultiplePerType, preferredItemBonus, maxScavengeRarity) {
+        getAvailableClothingList: function (campOrdinal, step, includeCraftable, includeNonCraftable, includeMultiplePerType, preferredItemBonus, maxScavengeRarity, includeSpecialEquipment) {
             step = step || 2;
             var adjustCampOrdinal = step == WorldCreatorConstants.CAMP_STEP_START || step == WorldCreatorConstants.CAMP_STEP_PREVIOUS;
             var adjustedCampOrdinal = adjustCampOrdinal ? campOrdinal - 1 : campOrdinal;
@@ -69,13 +67,15 @@ define([
                     clothingItem = clothingList[j];
                     isAvailable = false;
                     
-                    // only craftable items are considered by default (scavenging is not a reliable source especially when possible to lose once acquired)
+                    if (clothingItem.isSpecialEquipment && !includeSpecialEquipment) continue;
+                    
+                    // craftable items: by craftable camp ordinal
                     if (clothingItem.craftable && includeCraftable) {
                         var req = ItemConstants.getRequiredCampAndStepToCraft(clothingItem);
                         isAvailable = req.campOrdinal < adjustedCampOrdinal || (req.campOrdinal == adjustedCampOrdinal && req.step <= adjustedStep);
                     }
 
-                    // non-craftable items added for scavenging results
+                    // non-craftable items: by item defintiion camp ordinal
                     if (!clothingItem.craftable && includeNonCraftable) {
                         isAvailable = clothingItem.requiredCampOrdinal <= adjustedCampOrdinal && clothingItem.scavengeRarity <= maxScavengeRarity;
                     }
@@ -122,8 +122,8 @@ define([
             return result;
         },
         
-        getMaxHazardRadiationForLevel: function (campOrdinal, step) {
-            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_radiation, this.MAX_SCA_RARITY_DEFAULT_CLOTHING);
+        getMaxHazardRadiationForLevel: function (campOrdinal, step, isHardLevel) {
+            var defaultClothing = this.getDefaultClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_radiation, isHardLevel);
             var radiationProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 radiationProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_radiation);
@@ -131,8 +131,8 @@ define([
             return radiationProtection;
         },
         
-        getMaxHazardPoisonForLevel: function (campOrdinal, step) {
-            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_poison, this.MAX_SCA_RARITY_DEFAULT_CLOTHING);
+        getMaxHazardPoisonForLevel: function (campOrdinal, step, isHardLevel) {
+            var defaultClothing = this.getDefaultClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_poison, isHardLevel);
             var poisonProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 poisonProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_poison);
@@ -140,8 +140,8 @@ define([
             return poisonProtection;
         },
         
-        getMaxHazardColdForLevel: function (campOrdinal, step) {
-            var defaultClothing = this.getBestClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_cold, this.MAX_SCA_RARITY_DEFAULT_CLOTHING);
+        getMaxHazardColdForLevel: function (campOrdinal, step, isHardLevel) {
+            var defaultClothing = this.getDefaultClothing(campOrdinal, step, ItemConstants.itemBonusTypes.res_cold, isHardLevel);
             var coldProtection = 0;
             for (var i = 0; i < defaultClothing.length; i++) {
                 coldProtection += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_cold);
@@ -149,23 +149,23 @@ define([
             return coldProtection;
         },
         
-        getMinHazardColdForLevel: function (campOrdinal, step) {
-            var minByLevel = this.getMaxHazardColdForLevel(campOrdinal - 1, WorldCreatorConstants.CAMP_STEP_START);
+        getMinHazardColdForLevel: function (campOrdinal, step, isHardLevel) {
+            var minByLevel = this.getMaxHazardColdForLevel(campOrdinal - 1, WorldCreatorConstants.CAMP_STEP_START, isHardLevel);
             var minByItems = 0;
-            var defaultClothing = this.getBestClothing(campOrdinal, step, null, 0);
+            var defaultClothing = this.getDefaultClothing(campOrdinal, step, null, isHardLevel);
             for (var i = 0; i < defaultClothing.length; i++) {
                 minByItems += defaultClothing[i].getBonus(ItemConstants.itemBonusTypes.res_cold);
             }
             return Math.min(minByItems, minByLevel);
         },
         
-        getRequiredEquipment: function (campOrdinal, step) {
+        getRequiredEquipment: function (campOrdinal, step, isHardLevel) {
             // all equipment required to clear a level (all hazards), even if multiple per slot
             var result = [];
             var addedIDs = [];
             var bonusTypes = [ ItemConstants.itemBonusTypes.res_poison, ItemConstants.itemBonusTypes.res_cold, ItemConstants.itemBonusTypes.res_radiation ];
             for (var i = 0; i < bonusTypes.length; i++) {
-                var neededClothing = this.getBestClothing(campOrdinal, step, bonusTypes[i], this.MAX_SCA_RARITY_DEFAULT_CLOTHING);
+                var neededClothing = this.getDefaultClothing(campOrdinal, step, bonusTypes[i], isHardLevel);
                 for (var j = 0; j < neededClothing.length; j++) {
                     var id = neededClothing[j].id;
                     if (addedIDs.indexOf(id) >= 0) continue;
@@ -178,7 +178,7 @@ define([
             return result;
         },
         
-        getNeededIngredient: function (campOrdinal, step, itemsComponent, isStrict) {
+        getNeededIngredient: function (campOrdinal, step, isHardLevel, itemsComponent, isStrict) {
             var checkItem = function(item) {
                 if (!item.craftable) return null;
                 if (itemsComponent.getCountById(item.id, true) < (isStrict ? 1 : 1)) {
@@ -198,7 +198,7 @@ define([
             
             var bonusTypes = [ ItemConstants.itemBonusTypes.res_poison, ItemConstants.itemBonusTypes.res_cold, ItemConstants.itemBonusTypes.res_radiation ];
             for (var i = 0; i < bonusTypes.length; i++) {
-                var neededClothing = this.getAvailableClothingList(campOrdinal, step, true, false, false, bonusTypes[i], 10);
+                var neededClothing = this.getDefaultClothing(campOrdinal, step, bonusTypes[i], isHardLevel);
                 for (var j = 0; j < neededClothing.length; j++) {
                     var item = checkItem(ItemConstants.getItemByID(neededClothing[j].id));
                     if (item) return item;

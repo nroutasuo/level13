@@ -11,6 +11,7 @@ define([
     var WorldCreatorHelper = {
         
         camplessLevelOrdinals: {},
+        hardLevelOrdinals: {},
         
         addCriticalPath: function (worldVO, pathStartPos, pathEndPos, pathType) {
             var path = WorldCreatorRandom.findPath(worldVO, pathStartPos, pathEndPos);
@@ -391,6 +392,12 @@ define([
             return camplessLevelOrdinals.indexOf(levelOrdinal) < 0 && campOrdinal <= WorldCreatorConstants.CAMP_ORDINAL_LIMIT;
         },
         
+        isHardLevel: function (seed, level) {
+            var hardLevelOrdinals = this.getHardLevelOrdinals(seed);
+            var levelOrdinal = this.getLevelOrdinal(seed, level);
+            return hardLevelOrdinals.includes(levelOrdinal);
+        },
+        
         getNotCampableReason: function (seed, level) {
             if (this.isCampableLevel(seed, level)) return null;
             
@@ -485,6 +492,39 @@ define([
             }
 			return this.camplessLevelOrdinals[seed];
 		},
+        
+        getHardLevelOrdinals: function (seed) {
+            if (!this.hardLevelOrdinals[seed]) {
+                var hardLevelOrdinals = [];
+                var surfaceLevel = this.getHighestLevel(seed);
+                hardLevelOrdinals.push(this.getLevelOrdinal(seed, 14));
+                hardLevelOrdinals.push(this.getLevelOrdinal(seed, surfaceLevel));
+                switch (seed % 5) {
+                    case 0:
+                        hardLevelOrdinals.push(10);
+                        hardLevelOrdinals.push(23);
+                        break;
+                    case 1:
+                        hardLevelOrdinals.push(9);
+                        hardLevelOrdinals.push(23);
+                        break;
+                    case 2:
+                        hardLevelOrdinals.push(11);
+                        hardLevelOrdinals.push(24);
+                        break;
+                    case 3:
+                        hardLevelOrdinals.push(11);
+                        hardLevelOrdinals.push(23);
+                        break;
+                    case 4:
+                        hardLevelOrdinals.push(10);
+                        hardLevelOrdinals.push(23);
+                        break;
+                }
+                this.hardLevelOrdinals[seed] = hardLevelOrdinals.sort();
+            }
+            return this.hardLevelOrdinals[seed];
+        },
 		
 		isDarkLevel: function (seed, level) {
 			return !this.isEarthLevel(seed, level) && !this.isSunLevel(seed, level);

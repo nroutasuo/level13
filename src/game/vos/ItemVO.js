@@ -9,6 +9,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		icon: "",
 		description: "",
         requiredCampOrdinal: 1,
+        isSpecialEquipment: false,
         
         // rarity: 1-10, higher = rarer, -1 = never found by trading/scavenging
         scavengeRarity: 1,
@@ -22,7 +23,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		equipped: false,
 		carried: false,
 
-        constructor: function (id, name, type, requiredCampOrdinal, equippable, craftable, useable, scavengeRarity, tradeRarity, bonuses, icon, description) {
+        constructor: function (id, name, type, requiredCampOrdinal, equippable, craftable, useable, scavengeRarity, tradeRarity, bonuses, icon, description, isSpecialEquipment) {
 			this.id = id;
 			this.name = name;
 			this.type = type;
@@ -33,6 +34,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			this.icon = icon;
 			this.description = description;
 			this.requiredCampOrdinal = typeof requiredCampOrdinal != 'undefined' ? requiredCampOrdinal : 1;
+            this.isSpecialEquipment = isSpecialEquipment || false;
             this.scavengeRarity = typeof scavengeRarity != 'undefined' ? scavengeRarity : 1;
             this.tradeRarity = typeof tradeRarity != 'undefined' ? tradeRarity : 1;
 
@@ -63,6 +65,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
             delete clone.icon;
             delete clone.description;
             delete clone.requiredCampOrdinal;
+            delete clone.isSpecialEquipment;
             delete clone.scavengeRarity;
             delete clone.tradeRarity;
             delete clone.craftable;
@@ -74,7 +77,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
         },
 
 		clone: function () {
-		    return new ItemVO(this.id, this.name, this.type, this.requiredCampOrdinal, this.equippable, this.craftable, this.useable, this.scavengeRarity, this.tradeRarity, this.bonus.bonuses, this.icon, this.description);
+		    return new ItemVO(this.id, this.name, this.type, this.requiredCampOrdinal, this.equippable, this.craftable, this.useable, this.scavengeRarity, this.tradeRarity, this.bonus.bonuses, this.icon, this.description, this.isSpecialEquipment);
 		}
     });
 

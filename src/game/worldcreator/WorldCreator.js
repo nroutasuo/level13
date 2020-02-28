@@ -81,11 +81,12 @@ define([
 			for (var l = topLevel; l >= bottomLevel; l--) {
                 // prepare level vo
                 var isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, l);
+                var isHardLevel = WorldCreatorHelper.isHardLevel(seed, l);
                 var notCampableReason = isCampableLevel ? null : WorldCreatorHelper.getNotCampableReason(seed, l);
 				var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
                 var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
                 var populationGrowthFactor = isCampableLevel ? WorldCreatorConstants.getPopulationGrowthFactor(campOrdinal) : 0;
-                var levelVO = new LevelVO(l, levelOrdinal, campOrdinal, isCampableLevel, notCampableReason, populationGrowthFactor);
+                var levelVO = new LevelVO(l, levelOrdinal, campOrdinal, isCampableLevel, isHardLevel, notCampableReason, populationGrowthFactor);
 				this.world.addLevel(levelVO);
 
                 // passages up: previous passages down (positions)
@@ -277,7 +278,7 @@ define([
                 
                 // - stashes: ingredients for craftable equipment (campable levels)
                 if (levelVO.isCampable) {
-                    var requiredEquipment = itemsHelper.getRequiredEquipment(campOrdinal, WorldCreatorConstants.CAMP_STEP_END);
+                    var requiredEquipment = itemsHelper.getRequiredEquipment(campOrdinal, WorldCreatorConstants.CAMP_STEP_END, levelVO.isHard);
                     var requiredEquipmentIngredients = itemsHelper.getIngredientsToCraftMany(requiredEquipment);
                     var numStashIngredients = MathUtils.clamp(Math.floor(requiredEquipmentIngredients.length / 2), 1, 3);
                     for (var i = 0; i < numStashIngredients; i++) {
@@ -349,7 +350,7 @@ define([
                 }
 
                 // workshops
-                if (campOrdinal === 3 && levelVO.isCampable) {
+                if (campOrdinal === WorldCreatorConstants.CAMP_ORDINAL_FUEL && levelVO.isCampable) {
                     var pathConstraints = [];
                     for (var i = 0; i < levelVO.campSectors.length; i++) {
                         var startPos = levelVO.campSectors[i].position;
@@ -1414,8 +1415,8 @@ define([
                 
                 // - determine value range
                 var step = WorldCreatorConstants.getCampStep(sectorVO.zone);
-                var maxHazardCold = Math.min(100, itemsHelper.getMaxHazardColdForLevel(campOrdinal, step));
-                var minHazardCold = itemsHelper.getMinHazardColdForLevel(campOrdinal, step);
+                var maxHazardCold = Math.min(100, itemsHelper.getMaxHazardColdForLevel(campOrdinal, step, levelVO.isHard));
+                var minHazardCold = itemsHelper.getMinHazardColdForLevel(campOrdinal, step, levelVO.isHard);
                 minHazardCold = Math.min(minHazardCold, maxHazardCold - 1);
                 minHazardCold = Math.max(minHazardCold, 1);
                 if (maxHazardCold < 5) continue;
@@ -1458,9 +1459,9 @@ define([
                 var step = WorldCreatorConstants.getCampStep(zone);
                 if (sectorVO.hazards.cold) return 0;
                 if (isRadiation) {
-                    return Math.min(100, itemsHelper.getMaxHazardRadiationForLevel(campOrdinal, step));
+                    return Math.min(100, itemsHelper.getMaxHazardRadiationForLevel(campOrdinal, step, levelVO.isHard));
                 } else {
-                    return Math.min(100, itemsHelper.getMaxHazardPoisonForLevel(campOrdinal, step));
+                    return Math.min(100, itemsHelper.getMaxHazardPoisonForLevel(campOrdinal, step, levelVO.isHard));
                 }
             }
             
@@ -1533,11 +1534,13 @@ define([
                 }
             } else {
                 // level completely covered in hazard
+                var isRadiation = isRadiatedLevel;
                 for (var i = 0; i < levelVO.sectors.length; i++) {
                     var sectorVO = levelVO.sectors[i];
                     if (sectorVO.zone == WorldCreatorConstants.ZONE_ENTRANCE) continue;
                     var maxHazardValue = getMaxValue(sectorVO, isRadiation, sectorVO.zone);
-                    var minHazardValue = Math.min(10, maxHazardValue);
+                    var minHazardValue = Math.floor(maxHazardValue / 2);
+                    if (levelVO.isHard) minHazardValue = maxHazardValue;
                     var hazardValueRand = WorldCreatorRandom.random(levelOrdinal * (i + 11) / seed * 55 + seed / (i + 99) - i * i);
                     var hazardValue = Math.ceil((minHazardValue + hazardValueRand * (maxHazardValue - minHazardValue)) / 5) * 5;
                     if (hazardValue > maxHazardValue) hazardValue = maxHazardValue;
