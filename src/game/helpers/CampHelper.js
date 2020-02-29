@@ -53,6 +53,11 @@ define([
 			return workers * CampConstants.PRODUCTION_FUEL_PER_WORKER_PER_S * fuelUpgradeBonus * GameConstants.gameSpeedCamp;
         },
         
+        getRubberProductionPerSecond: function (workers, improvementsComponent) {
+			var upgradeBonus = this.getUpgradeBonus("rubbermaker");
+			return workers * CampConstants.PRODUCTION_RUBBER_PER_WORKER_PER_S * upgradeBonus * GameConstants.gameSpeedCamp;
+        },
+        
         getMedicineProductionPerSecond: function (workers, improvementsComponent) {
 			var medicineUpgradeBonus = this.getUpgradeBonus("apothecary");
             var levelBonus = 1 + improvementsComponent.getLevel(improvementNames.apothecary) / 10;

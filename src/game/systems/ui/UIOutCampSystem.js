@@ -259,6 +259,9 @@
             UIConstants.updateCalloutContent("#in-assign-chemist .in-assing-worker-desc .info-callout-target",
                 "fuel +" + UIConstants.roundValue(GameGlobals.campHelper.getFuelProductionPerSecond(1, improvements), true, true) + "/s" +
                 workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-rubber .in-assing-worker-desc .info-callout-target",
+                "rubber +" + UIConstants.roundValue(GameGlobals.campHelper.getRubberProductionPerSecond(1, improvements), true, true) + "/s" +
+                workerConsumptionS, true);
             UIConstants.updateCalloutContent("#in-assign-apothecary .in-assing-worker-desc .info-callout-target",
                 "medicine +" + UIConstants.roundValue(GameGlobals.campHelper.getMedicineProductionPerSecond(1, improvements), true, true) + "/s" +
                 workerConsumptionS +
@@ -279,6 +282,7 @@
                 workerConsumptionS, true);
 
             var refineriesOnLevel = GameGlobals.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel);
+            var plantationsOnLevel = GameGlobals.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.rubber);
             var apothecariesInCamp = improvements.getCount(improvementNames.apothecary);
             var cementMillsInCamp = improvements.getCount(improvementNames.cementmill);
             var smithiesInCamp = improvements.getCount(improvementNames.smithy);
@@ -292,12 +296,14 @@
             var maxSoldiers = barracksInCamp * CampConstants.getSoldiersPerBarracks(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.barracks, this.tribeUpgradesNodes.head.upgrades));
             var maxScientists = hasUnlockedScientists ? librariesInCamp * CampConstants.getScientistsPerLibrary(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.library, this.tribeUpgradesNodes.head.upgrades)) : 0;
             var maxChemists = refineriesOnLevel * CampConstants.CHEMISTS_PER_WORKSHOP;
+            var maxRubbers = plantationsOnLevel * CampConstants.RUBBER_WORKER_PER_WORKSHOP;
 
             this.updateWorkerStepper(campComponent, "#stepper-scavenger", "scavenger", maxPopulation, false);
             this.updateWorkerStepper(campComponent, "#stepper-trapper", "trapper", maxPopulation, false);
             this.updateWorkerStepper(campComponent, "#stepper-water", "water", maxPopulation, false);
             this.updateWorkerStepper(campComponent, "#stepper-rope", "ropemaker", maxRopers, false);
             this.updateWorkerStepper(campComponent, "#stepper-fuel", "chemist", maxChemists, true);
+            this.updateWorkerStepper(campComponent, "#stepper-rubber", "rubbermaker", maxRubbers, true);
             this.updateWorkerStepper(campComponent, "#stepper-medicine", "apothecary", maxApothecaries, true);
             this.updateWorkerStepper(campComponent, "#stepper-concrete", "concrete", maxConcrete, true);
             this.updateWorkerStepper(campComponent, "#stepper-smith", "toolsmith", maxSmiths, true);
@@ -310,13 +316,15 @@
             var posComponent = this.playerPosNodes.head.position;
 
             var refineriesOnLevel = GameGlobals.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel);
+            var plantationsOnLevel = GameGlobals.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.rubber);
             var apothecariesInCamp = improvements.getCount(improvementNames.apothecary);
             var cementMillsInCamp = improvements.getCount(improvementNames.cementmill);
             var smithiesInCamp = improvements.getCount(improvementNames.smithy);
             var librariesInCamp = improvements.getCount(improvementNames.library);
             var barracksInCamp = improvements.getCount(improvementNames.barracks);
 
-            UIConstants.updateCalloutContent("#in-assign-chemist .in-assign-worker-limit .info-callout-target", refineriesOnLevel + " refineries found", true);
+            UIConstants.updateCalloutContent("#in-assign-chemist .in-assign-worker-limit .info-callout-target", refineriesOnLevel + " refineries cleared", true);
+            UIConstants.updateCalloutContent("#in-assign-rubber .in-assign-worker-limit .info-callout-target", plantationsOnLevel + " plantations found", true);
             UIConstants.updateCalloutContent("#in-assign-apothecary .in-assign-worker-limit .info-callout-target", apothecariesInCamp + " apothecaries built", true);
             UIConstants.updateCalloutContent("#in-assign-concrete .in-assign-worker-limit .info-callout-target", cementMillsInCamp + " cement mills built", true);
             UIConstants.updateCalloutContent("#in-assign-smith .in-assign-worker-limit .info-callout-target", smithiesInCamp + " smithies built", true);

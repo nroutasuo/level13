@@ -124,12 +124,13 @@ define(['ash',
 					var waters = parseInt($("#stepper-water input").val());
 					var ropers = parseInt($("#stepper-rope input").val());
 					var chemists = parseInt($("#stepper-fuel input").val());
+					var rubbers = parseInt($("#stepper-rubber input").val());
 					var apothecaries = parseInt($("#stepper-medicine input").val());
 					var smiths = parseInt($("#stepper-smith input").val());
 					var concrete = parseInt($("#stepper-concrete input").val());
 					var soldiers = parseInt($("#stepper-soldier input").val());
 					var scientists = parseInt($("#stepper-scientist input").val());
-					GameGlobals.playerActionFunctions.assignWorkers(null, scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers, scientists);
+					GameGlobals.playerActionFunctions.assignWorkers(null, scavengers, trappers, waters, ropers, chemists, rubbers, apothecaries, smiths, concrete, soldiers, scientists);
 				});
 
 				// Buttons: In: Other

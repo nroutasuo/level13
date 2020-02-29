@@ -368,7 +368,7 @@ define([
                         for (var j = 0; j < pathConstraints.length; j++) {
                             WorldCreatorHelper.addCriticalPath(this.world, workshopSectors[i].position, pathConstraints[j].startPosition, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1);
                         }
-                        log.i("workshop at " +workshopSectors[i].position)
+                        log.i("workshop at " +workshopSectors[i].position);
                     }
                 }
 			}

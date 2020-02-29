@@ -752,6 +752,7 @@ define(['ash',
                 var maxSoldiers = improvementsComponent.getCount(improvementNames.barracks) * CampConstants.getSoldiersPerBarracks(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.barracks, upgradesComponent));
                 var maxScientists = improvementsComponent.getCount(improvementNames.library) * CampConstants.getScientistsPerLibrary(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.library, upgradesComponent));
                 var maxChemists = GameGlobals.levelHelper.getLevelClearedWorkshopCount(playerPosition.level, resourceNames.fuel) * CampConstants.CHEMISTS_PER_WORKSHOP;
+                var maxRubber = GameGlobals.levelHelper.getLevelClearedWorkshopCount(playerPosition.level, resourceNames.rubber) * CampConstants.RUBBER_WORKER_PER_WORKSHOP;
 
                 var pop = campComponent.population;
 
@@ -761,15 +762,16 @@ define(['ash',
 
                 var ropers = canRope && currentRope < maxStorage / 2 ? 1 : 0;
                 var chemists = Math.min(1, specialistPop - ropers, maxChemists);
-                var smiths = Math.min((currentTools > maxSmiths * 0.9 ? 0 : 1), specialistPop - ropers - chemists, maxSmiths);
-                var apothecaries = Math.min(1, specialistPop - ropers - chemists - smiths, maxApothecaries);
-                var concrete = Math.min(1, specialistPop - ropers - chemists - smiths - apothecaries, maxConcrete);
-                var soldiers = Math.min(1, specialistPop - ropers - chemists - smiths - apothecaries - concrete, maxSoldiers);
-                var scientists = Math.min(1, specialistPop - ropers - chemists - smiths - apothecaries - concrete - soldiers, maxScientists);
-                var scavengers = Math.floor(pop - trappers - waters - ropers - chemists - apothecaries - smiths - concrete - soldiers - scientists);
+                var rubber = Math.min(1, specialistPop - ropers - chemists, maxRubber);
+                var smiths = Math.min((currentTools > maxSmiths * 0.9 ? 0 : 1), specialistPop - ropers - chemists - rubber, maxSmiths);
+                var apothecaries = Math.min(1, specialistPop - ropers - chemists - rubber - smiths, maxApothecaries);
+                var concrete = Math.min(1, specialistPop - ropers - chemists - rubber - smiths - apothecaries, maxConcrete);
+                var soldiers = Math.min(1, specialistPop - ropers - chemists - rubber - smiths - apothecaries - concrete, maxSoldiers);
+                var scientists = Math.min(1, specialistPop - ropers - chemists - rubber - smiths - apothecaries - concrete - soldiers, maxScientists);
+                var scavengers = Math.floor(pop - trappers - waters - ropers - chemist - rubber - apothecaries - smiths - concrete - soldiers - scientists);
 
-                GameGlobals.playerActionFunctions.assignWorkers(null, scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers, scientists);
-                this.printStep("assigned workers (" + scavengers + ", " + trappers + ", " + waters + ", " + ropers + ", " + chemists + ", " + apothecaries + ", " + smiths + ", " + concrete + ", " + soldiers + ")");
+                GameGlobals.playerActionFunctions.assignWorkers(null, scavengers, trappers, waters, ropers, chemists, rubber, apothecaries, smiths, concrete, soldiers, scientists);
+                this.printStep("assigned workers (" + scavengers + ", " + trappers + ", " + waters + ", " + ropers + ", " + chemists + ", " + rubber + ", " + apothecaries + ", " + smiths + ", " + concrete + ", " + soldiers + ")");
                 this.refreshWorkers = false;
                 return true;
             }

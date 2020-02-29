@@ -40,6 +40,7 @@ define(['ash'], function (Ash) {
         PRODUCTION_WATER_PER_WORKER_PER_S: 0.05,
         PRODUCTION_ROPE_PER_WORKER_PER_S: 0.03,
         PRODUCTION_FUEL_PER_WORKER_PER_S: 0.02,
+        PRODUCTION_RUBBER_PER_WORKER_PER_S: 0.02,
         PRODUCTION_MEDICINE_PER_WORKER_PER_S: 0.01,
         PRODUCTION_TOOLS_PER_WORKER_PER_S: 0.02,
         PRODUCTION_CONCRETE_PER_WORKER_PER_S: 0.03,
@@ -64,6 +65,7 @@ define(['ash'], function (Ash) {
         
         // Workers per building
         CHEMISTS_PER_WORKSHOP: 5,
+        RUBBER_WORKER_PER_WORKSHOP: 5,
         
         WORKER_TYPES: {
             scavenger: "scavenger",
@@ -71,6 +73,7 @@ define(['ash'], function (Ash) {
             water: "water",
             ropemaker: "ropemaker",
             chemist: "chemist",
+            rubbermaker: "rubbermaker",
             apothecary: "apothecary",
             toolsmith: "toolsmith",
             concrete: "concrete",

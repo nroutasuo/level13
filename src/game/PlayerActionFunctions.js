@@ -630,8 +630,6 @@ define(['ash',
 			var logMsgSuccess = "Workshop cleared. Workers can now use it.";
 			var logMsgFlee = "The " + name + " is too dangerous.";
 			var logMsgDefeat = "Got driven out of the " + name + ".";
-            
-            log.i("clear workshop: " + workshopComponent.resource + " " + name);
 
 			var playerActionFunctions = this;
 			var successCallback = function () {
@@ -1533,7 +1531,7 @@ define(['ash',
 			this.save();
         },
 
-		assignWorkers: function (sector, scavengers, trappers, waters, ropers, chemists, apothecaries, smiths, concrete, soldiers, scientists) {
+		assignWorkers: function (sector, scavengers, trappers, waters, ropers, chemists, rubber, apothecaries, smiths, concrete, soldiers, scientists) {
 			sector = sector || this.playerLocationNodes.head.entity;
 			var camp = sector ? sector.get(CampComponent) : null;
 
@@ -1543,6 +1541,7 @@ define(['ash',
 				camp.assignedWorkers.water = Math.max(0, Math.floor(waters));
 				camp.assignedWorkers.ropemaker = Math.max(0, Math.floor(ropers));
 				camp.assignedWorkers.chemist = Math.max(0, Math.floor(chemists));
+				camp.assignedWorkers.rubbermaker = Math.max(0, Math.floor(rubber));
 				camp.assignedWorkers.apothecary = Math.max(0, Math.floor(apothecaries));
 				camp.assignedWorkers.toolsmith = Math.max(0, Math.floor(smiths));
 				camp.assignedWorkers.concrete = Math.max(0, Math.floor(concrete));
