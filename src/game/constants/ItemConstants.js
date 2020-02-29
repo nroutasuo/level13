@@ -151,7 +151,7 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             ],
             ingredient: [
                 new ItemVO("res_tape", "Duct tape", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-tape.png", "Used for crafting."),
-                new ItemVO("res_bands", "Rubber bands", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-bands.png", "Used for crafting."),
+                new ItemVO("res_bands", "Elastic bands", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-bands.png", "Used for crafting."),
                 new ItemVO("res_silk", "Spider silk", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-silk.png", "Used for crafting."),
                 new ItemVO("res_glowbug", "Glowbug", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-glowbug.png", "Used for crafting."),
                 new ItemVO("res_hairpin", "Hairpin", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-pin.png", "Used for crafting."),

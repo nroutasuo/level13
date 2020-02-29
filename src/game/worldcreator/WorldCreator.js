@@ -350,7 +350,9 @@ define([
                 }
 
                 // workshops
-                if (campOrdinal === WorldCreatorConstants.CAMP_ORDINAL_FUEL && levelVO.isCampable) {
+                var isWorkshopLevel = levelVO.isCampable && (campOrdinal === WorldCreatorConstants.CAMP_ORDINAL_FUEL || campOrdinal === WorldCreatorConstants.CAMP_ORDINAL_GROUND);
+                if (isWorkshopLevel) {
+                    var res = campOrdinal === WorldCreatorConstants.CAMP_ORDINAL_GROUND ? "rubber" : "fuel";
                     var pathConstraints = [];
                     for (var i = 0; i < levelVO.campSectors.length; i++) {
                         var startPos = levelVO.campSectors[i].position;
@@ -358,14 +360,15 @@ define([
                         pathConstraints.push(new PathConstraintVO(startPos, maxLength, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1));
                     }
                     var options = { requireCentral: false, excludingFeature: "camp", pathConstraints: pathConstraints };
-                    var refinerySectors = WorldCreatorRandom.randomSectors(seed * l * 2 / 7 * l, this.world, levelVO, 1, 2, options);
-                    for (var i = 0; i < refinerySectors.length; i++) {
-                        refinerySectors[i].resourcesScavengable.fuel = 5;
-                        refinerySectors[i].workshopResource = resourceNames.fuel;
-                        refinerySectors[i].workshop = true;
+                    var workshopSectors = WorldCreatorRandom.randomSectors(seed * l * 2 / 7 * l, this.world, levelVO, 1, 2, options);
+                    for (var i = 0; i < workshopSectors.length; i++) {
+                        workshopSectors[i].resourcesScavengable[res] = 5;
+                        workshopSectors[i].workshopResource = resourceNames[res];
+                        workshopSectors[i].workshop = true;
                         for (var j = 0; j < pathConstraints.length; j++) {
-                            WorldCreatorHelper.addCriticalPath(this.world, refinerySectors[i].position, pathConstraints[j].startPosition, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1);
+                            WorldCreatorHelper.addCriticalPath(this.world, workshopSectors[i].position, pathConstraints[j].startPosition, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1);
                         }
+                        log.i("workshop at " +workshopSectors[i].position)
                     }
                 }
 			}

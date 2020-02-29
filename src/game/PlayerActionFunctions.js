@@ -624,15 +624,18 @@ define(['ash',
 		},
 
 		clearWorkshop: function () {
+            var workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
+            var name = TextConstants.getWorkshopName(workshopComponent.resource);
 			var action = "clear_workshop";
 			var logMsgSuccess = "Workshop cleared. Workers can now use it.";
-			var logMsgFlee = "The workshop is too dangerous.";
-			var logMsgDefeat = "Got driven out of the workshop.";
+			var logMsgFlee = "The " + name + " is too dangerous.";
+			var logMsgDefeat = "Got driven out of the " + name + ".";
+            
+            log.i("clear workshop: " + workshopComponent.resource + " " + name);
 
 			var playerActionFunctions = this;
 			var successCallback = function () {
-                // TODO check workshop resource
-                GameGlobals.gameState.unlockedFeatures.resources.fuel = true;
+                GameGlobals.gameState.unlockedFeatures.resources[workshopComponent.resource] = true;
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 			};
 
