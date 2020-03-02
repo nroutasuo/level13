@@ -80,6 +80,7 @@ define(
                 case WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL: typeNoun = "industrial"; break;
                 case WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE: typeNoun = "maintenance"; break;
                 case WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL: typeNoun = "commercial"; break;
+                case WorldCreatorConstants.SECTOR_TYPE_PUBLIC: typeNoun = "public"; break;
                 case WorldCreatorConstants.SECTOR_TYPE_SLUM: typeNoun = "slum"; break;
             }
                  

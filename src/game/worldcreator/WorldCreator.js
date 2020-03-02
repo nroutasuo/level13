@@ -222,10 +222,11 @@ define([
                     if (sectorVO.camp) stateOfRepair = Math.max(3, stateOfRepair);
                     if (isOpenEdge) stateOfRepair = Math.min(7, stateOfRepair);
                     if (isBrokenEdge) stateOfRepair = Math.min(3, stateOfRepair);
-                    sectorVO.stateOfRepair = stateOfRepair;
+                    if (l == 14) stateOfRepair = Math.min(3, stateOfRepair);
+                    sectorVO.stateOfRepair = Math.round(stateOfRepair);
 
                     // sector type
-                    var sectorType = WorldCreatorHelper.getSectorType(seed, l, x, y);
+                    var sectorType = WorldCreatorHelper.getSectorType(seed, l, levelVO, x, y);
                     sectorVO.sectorType = sectorType;
 
                     // buildingDensity
@@ -406,6 +407,7 @@ define([
 				else {
 					switch (sectorType) {
 					case WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL:
+					case WorldCreatorConstants.SECTOR_TYPE_PUBLIC:
 						if (localeRandom > 0.7) localeType = localeTypes.house;
                         else if (localeRandom > 0.6) localeType = localeTypes.transport;
                         else if (localeRandom > 0.55) localeType = localeTypes.sewer;

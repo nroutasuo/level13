@@ -28,6 +28,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         SECTOR_TYPE_INDUSTRIAL: "industrial",
         SECTOR_TYPE_MAINTENANCE: "maintenance",
         SECTOR_TYPE_COMMERCIAL: "commercial",
+        SECTOR_TYPE_PUBLIC: "public",
         SECTOR_TYPE_SLUM: "slum",
         
         BUILDING_STYLE_RECENT: 0,

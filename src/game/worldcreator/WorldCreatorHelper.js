@@ -21,34 +21,55 @@ define([
             }
         },
 		
-		getSectorType: function (seed, level, x, y) {
+		getSectorType: function (seed, level, levelVO, x, y) {
             var sector = x + y + 2000;
 			var topLevel = this.getHighestLevel(seed);
+			var bottomLevel = this.getBottomLevel(seed);
+            var rand = WorldCreatorRandom.random(seed % 1000 + level * sector + 5);
+            
             if (level === 13 && x === WorldCreatorConstants.FIRST_CAMP_X && y === WorldCreatorConstants.FIRST_CAMP_Y)
                 return WorldCreatorConstants.SECTOR_TYPE_SLUM;
             
 			var sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
-			if (level > topLevel - 5) {
-				// Recent mostly residential and commercial area
-				sectorType = WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL;
-				if (WorldCreatorRandom.random(seed * level * sector + 5) < 0.3) sectorType = WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL;
-				if (WorldCreatorRandom.random(seed * level * sector + 5) < 0.05) sectorType = WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL;
-			} else if (level > topLevel - 7) {
-				// Recent industrial and maintenance area
+            if (level == topLevel) {
+                // special level: top level
+                sectorType = WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL;
+				if (rand < 0.2) sectorType = WorldCreatorConstants.SECTOR_TYPE_PUBLIC;
+				if (rand < 0.6) sectorType = WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL;
+				if (rand < 0.65) sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
+            } else if (level == 14) {
+                // special level: 14
 				sectorType = WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL;
-				if (WorldCreatorRandom.random(seed * level * sector + 2) < 0.4) sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
-				if (WorldCreatorRandom.random(seed * level * sector + 2) < 0.15) sectorType = WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL;
-			} else if (level > topLevel - 10) {
-				// Recent slums & maintenance
+				if (rand < 0.3) sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
+				if (rand < 0.4) sectorType = WorldCreatorConstants.SECTOR_TYPE_SLUM;
+            } else if (level == bottomLevel) {
+                // special level: ground level
 				sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
-				if (WorldCreatorRandom.random(seed * level * sector + 5) < 0.3) sectorType = WorldCreatorConstants.SECTOR_TYPE_SLUM;
+				if (rand < 0.1) sectorType = WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL;
+				if (rand < 0.2) sectorType = WorldCreatorConstants.SECTOR_TYPE_PUBLIC;
+				if (rand < 0.3) sectorType = WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL;
+            } else if (level > topLevel - 5) {
+				// levels near top: mainly residentai
+				sectorType = WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL;
+				if (rand < 0.3) sectorType = WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL;
+				if (rand < 0.05) sectorType = WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL;
+			} else if (level > topLevel - 8) {
+				// first dark levels: mainly recent industrial and maintenance
+				sectorType = WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL;
+				if (rand < 0.4) sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
+				if (rand < 0.15) sectorType = WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL;
+			} else if (level > 14) {
+				// levels baove 14: slums and maintenance
+				sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
+				if (rand < 0.3) sectorType = WorldCreatorConstants.SECTOR_TYPE_SLUM;
 			} else {
 				// Old levels: mix of slum, maintenance, and everything else
 				sectorType = WorldCreatorConstants.SECTOR_TYPE_SLUM;
-				if (WorldCreatorRandom.random(seed * level * sector * 4) < 0.4) sectorType = WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL;
-				if (WorldCreatorRandom.random(seed * level * sector * 4) < 0.3) sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
-				if (WorldCreatorRandom.random(seed * level * sector * 4) < 0.2) sectorType = WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL;
-				if (WorldCreatorRandom.random(seed * level * sector * 4) < 0.1) sectorType = WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL;
+				if (rand < 0.4) sectorType = WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL;
+				if (rand < 0.3) sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
+				if (rand < 0.2) sectorType = WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL;
+				if (rand < 0.1) sectorType = WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL;
+				if (rand < 0.1) sectorType = WorldCreatorConstants.SECTOR_TYPE_PUBLIC;
 			}
 			return sectorType;
 		},

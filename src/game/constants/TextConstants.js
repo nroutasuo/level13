@@ -455,6 +455,7 @@ function (Ash, DescriptionMapper, GameConstants, WorldCreatorConstants, Position
         var t_I = WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL;
         var t_M = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
         var t_C = WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL;
+        var t_P = WorldCreatorConstants.SECTOR_TYPE_PUBLIC;
         var t_S = WorldCreatorConstants.SECTOR_TYPE_SLUM;
 
         // visible descriptions
@@ -507,6 +508,10 @@ function (Ash, DescriptionMapper, GameConstants, WorldCreatorConstants, Position
         DescriptionMapper.add("sector-vision", { sectorType: t_C, stateOfRepair: r3, buildingDensity: d1 }, "A wide market square lined with commercial towers whose walls are covered in dead black screens");
         DescriptionMapper.add("sector-vision", { sectorType: t_C, stateOfRepair: r3, buildingDensity: d2 }, "Old shopping street, long-since abandoned, but still retaining an atmosphere of abundance");
         DescriptionMapper.add("sector-vision", { sectorType: t_C, stateOfRepair: r3, buildingDensity: d3 }, "A narrow passage between two shopping malls");
+        
+        DescriptionMapper.add("sector-vision", { sectorType: t_P, buildingDensity: d1 }, "An open space that looks like it might have once been dedicated to a sport of some kind.");
+        DescriptionMapper.add("sector-vision", { sectorType: t_P, buildingDensity: d2 }, "A street with some stranded benches and nondescript buildings.");
+        DescriptionMapper.add("sector-vision", { sectorType: t_P, buildingDensity: d3 }, "A street dominated by huge building that looks like it was once a public facility of some kind.");
         
         DescriptionMapper.add("sector-vision", { sectorType: t_S, stateOfRepair: r0, buildingDensity: d1 }, "It seems like once a few people lived here, but there is nothing left but ruins");
         DescriptionMapper.add("sector-vision", { sectorType: t_S, stateOfRepair: r0, buildingDensity: d2 }, "It seems like this place was last used as a make-shift residential area, but there is nothing left but ruins");
