@@ -310,15 +310,15 @@ define([
 			return description;
 		},
 
-		// Sector type, density, repair. Sunlight.
 		getTextureDescription: function (hasVision, position, featuresComponent, statusComponent, localesComponent) {
-			var desc = TextConstants.getSectorDescription(
-				hasVision,
-				featuresComponent.sunlit,
-				featuresComponent.sectorType,
-				featuresComponent.buildingDensity,
-				featuresComponent.stateOfRepair) + " ";
+            // sector static description
+            log.i("sector features -> desc")
+            var features = Object.assign({}, featuresComponent);
+            log.i(features);
+			var desc = TextConstants.getSectorDescription(hasVision, features) + ". ";
+            log.i(desc);
 
+            // light / darkness description
 			if (featuresComponent.sunlit) {
 				if (hasVision) desc += "The area is swathed in relentless <span class='hl-functionality'>daylight</span>. ";
 				else desc += "The area is swathed in blinding <span class='hl-functionality'>sunlight</span>. ";
@@ -334,6 +334,7 @@ define([
                 }
             }
             
+            // locales / POIs description
             for (var i = 0; i < localesComponent.locales.length; i++) {
                 var locale = localesComponent.locales[i];
                 if (statusComponent.isLocaleScouted(i)) {

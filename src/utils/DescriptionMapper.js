@@ -3,10 +3,12 @@
 // get description with an object
 // - returns description whose properties all match that of the object
 // - if several match, returns most specific description (most properties)
+// properties may be simple (equals) or ranges (array of two values (inclusive))
 
 define(function () {
     var DescriptionMapper = {
         
+        WILDCARD: "WILDCARD",
         descriptions: {},
         
         add: function (type, props, text) {
@@ -49,6 +51,8 @@ define(function () {
                 if (value.length && value.length == 2) {
                     if (props[key] >= value[0] && props[key] <= value[1]) continue;
                 }
+                // test for wildcard
+                if (value == this.WILDCARD) continue;
                 return false;
             }
             return true;
