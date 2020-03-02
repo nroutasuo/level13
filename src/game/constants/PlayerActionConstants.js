@@ -1630,6 +1630,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_rope: 3000,
                     resource_concrete: 10000,
                     resource_tools: 1000,
+                    resource_rubber: 1000,
                 },
 
                 build_out_spaceship2: {
@@ -1856,6 +1857,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 build_in_aqueduct: {
                     resource_metal: 300,
+                    resource_concrete: 50,
+                    resource_rubber: 10,
                     cost_factor_e1_base: 2,
                 },
 
@@ -1929,6 +1932,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_water: 200,
                     resource_metal: 1200,
                     resource_rope: 100,
+                    resource_rubber: 100,
                 },
 
                 craft_light1: {
@@ -2177,7 +2181,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 craft_clothing_over_6: {
                     resource_metal: 100,
-                    resource_fuel: 10,
+                    resource_rubber: 10,
                     item_res_silk: 10,
                 },
                 

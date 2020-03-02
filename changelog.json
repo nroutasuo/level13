@@ -8,7 +8,15 @@
             "changes": [
                 {
                     "type": "GD",
+                    "summary": "New resource: rubber",
+                },
+                {
+                    "type": "GD",
                     "summary": "New equipment for surviving extremely irradiated levels",
+                },
+                {
+                    "type": "GD",
+                    "summary": "Unlock level 14, an extremely radioactive level",
                 },
                 {
                     "type": "WG",
