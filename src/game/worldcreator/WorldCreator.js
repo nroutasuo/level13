@@ -1563,35 +1563,39 @@ define([
             var levelVO = this.world.getLevel(l);
             var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
             var step = WorldCreatorConstants.getCampStep(sectorVO.zone);
+            var isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
+            var isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
             
 			var enemyDifficulty = this.enemyCreator.getDifficulty(campOrdinal, step);
             if (sectorVO.isOnEarlyCriticalPath()) enemyDifficulty -= 2;
             enemyDifficulty = Math.max(enemyDifficulty, 1);
             sectorVO.enemyDifficulty = enemyDifficulty;
 
-			var enemies = sectorVO.possibleEnemies;
+			var enemies = [];
             
             // collect all valid enemies for this sector (candidates)
             var candidates = [];
             var enemyCreator = this.enemyCreator;
             var enemy;
+            var candidateDifficulties = [];
             var addEnemyCandidates = function (enemyType) {
                 var typeEnemies = enemyCreator.getEnemies(enemyType, enemyDifficulty, false);
     			for (var e in typeEnemies) {
     				enemy = typeEnemies[e];
     				candidates.push(enemy);
+                    candidateDifficulties.push(enemyCreator.getEnemyDifficultyLevel(enemy));
     			}
             };
 
             addEnemyCandidates(EnemyConstants.enemyTypes.global);
-            if (!sectorVO.hazards.hasHazards()) addEnemyCandidates(EnemyConstants.enemyTypes.nohazard);
+            if (!isPollutedLevel && !isRadiatedLevel && !sectorVO.hazards.hasHazards()) addEnemyCandidates(EnemyConstants.enemyTypes.nohazard);
             if (sectorVO.hazards.cold > 0) addEnemyCandidates(EnemyConstants.enemyTypes.cold);
-            if (sectorVO.hazards.poison > 0) addEnemyCandidates(EnemyConstants.enemyTypes.toxic);
-            if (sectorVO.hazards.radiation > 0) addEnemyCandidates(EnemyConstants.enemyTypes.radiation);
+            if (isPollutedLevel || sectorVO.hazards.poison > 0) addEnemyCandidates(EnemyConstants.enemyTypes.toxic);
+            if (isRadiatedLevel || sectorVO.hazards.radiation > 0) addEnemyCandidates(EnemyConstants.enemyTypes.radiation);
             if (sectorVO.sunlit) addEnemyCandidates(EnemyConstants.enemyTypes.sunlit);
             if (!sectorVO.sunlit) addEnemyCandidates(EnemyConstants.enemyTypes.dark);
-            if (sectorVO.buildingDensity > 5) addEnemyCandidates(EnemyConstants.enemyTypes.dense);
-            if (sectorVO.buildingDensity <= 5) addEnemyCandidates(EnemyConstants.enemyTypes.sparse);
+            if (!isPollutedLevel && !isRadiatedLevel && sectorVO.buildingDensity > 5) addEnemyCandidates(EnemyConstants.enemyTypes.dense);
+            if (!isPollutedLevel && !isRadiatedLevel && sectorVO.buildingDensity <= 5) addEnemyCandidates(EnemyConstants.enemyTypes.sparse);
             
             var hasWater = sectorVO.hasWater();
             var directions = PositionConstants.getLevelDirections();
@@ -1603,23 +1607,31 @@ define([
                     hasWater = hasWater || neighbour.hasWater();
                 }
             }
-            if (hasWater) addEnemyCandidates(EnemyConstants.enemyTypes.water);
+            if (!isPollutedLevel && !isRadiatedLevel && hasWater) addEnemyCandidates(EnemyConstants.enemyTypes.water);
+
+            // check that we found some candidates
+			if (candidates.length < 1) {
+                log.w("No valid enemies defined for sector " + sectorVO.position + " difficulty " + enemyDifficulty);
+                return enemies;
+            }
             
-            // select enemies from candidates by rarity
+            // select enemies from candidates by rarity and difficulty
             candidates = candidates.sort(function (a,b) {
                 return a.rarity - b.rarity;
             });
+            candidateDifficulties = candidateDifficulties.sort(function (a,b) {
+                return a - b;
+            });
+            
+            var minDifficulty = levelVO.isHard ? candidateDifficulties[Math.floor(candidateDifficulties.length/2)] : candidateDifficulties[0];
             for (var i = 0; i < candidates.length; i++) {
                 enemy = candidates[i];
+                if (enemyCreator.getEnemyDifficultyLevel(enemy) < minDifficulty)  continue;
 				var threshold = (enemy.rarity + 5) / 110;
 				var r = WorldCreatorRandom.random(9999 + l * seed + x * l * 80 + y * 10 + i * x *22 - y * i * x * 15);
                 if (i == 0 || r > threshold) {
                     enemies.push(enemy);
                 }
-            }
-
-			if (enemies.length < 1) {
-                log.w("No valid enemies defined for sector " + sectorVO.position + " difficulty " + enemyDifficulty);
             }
 
 			return enemies;

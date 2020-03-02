@@ -74,8 +74,11 @@ define([
             definitions.radiation.push(this.createEnemy("radioactive centipede", "radioactive centipede", "radiation", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover, c.aOverrun], [c.dCleared], 2, 3, 0.8, 0.1));
             definitions.radiation.push(this.createEnemy("radioactive cockroach", "radioactive cockroach", "radiation", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover, c.aOverrun], [c.dCleared], 3, 2, 0.9, 0.1));
             definitions.radiation.push(this.createEnemy("mutant spider", "mutant spider", "radiation", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled, c.dCleared], 5, 5, 0.3, 1, 20));
-            definitions.radiation.push(this.createEnemy("mutant dog", "mutant dog", "radiation", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled, c.dDrive], 9, 5, 1.1, 0.6));
-            definitions.radiation.push(this.createEnemy("towering mutant dog", "towering mutant dog", "radiation", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled, c.dDrive], 11, 5, 1.1, 0.7));
+            definitions.radiation.push(this.createEnemy("mutant raccoon", "mutant raccoon", "radiation", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled, c.dDrive], 7, 4, 1, 0.6));
+            definitions.radiation.push(this.createEnemy("radiotrophic fungi", "radiotrophic fungi", "radiation", [c.nPest], [c.gCluster], [c.aInfest], [c.dDrive], 8, 6, 0.8, 0.6));
+            definitions.radiation.push(this.createEnemy("mutant dog", "mutant dog", "radiation", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled, c.dDrive], 8, 5, 1.1, 1.1));
+            definitions.radiation.push(this.createEnemy("towering mutant dog", "towering mutant dog", "radiation", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled, c.dDrive], 10, 5, 1.1, 0.7, 20));
+            definitions.radiation.push(this.createEnemy("mutant alligator", "mutant alligator", "radiation", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled, c.dDrive], 12, 5, 1.1, 0.7, 30));
             // sunlit
             definitions.sunlit.push(this.createEnemy("wasp", "wasp", "sunlit", [c.nAnimal], [c.gSwarm], [c.aInfest], [c.dDrive], 0, 1, 0.75, 1.5, 10));
             definitions.sunlit.push(this.createEnemy("bee", "bee", "sunlit", [c.nAnimal], [c.gSwarm], [c.aInfest], [c.dDrive], 1, 4, 0.25, 1.5, 70));
@@ -94,7 +97,6 @@ define([
             definitions.dark.push(this.createEnemy("ghost bat", "ghost bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 3, 6, 0.8, 1, 50));
             definitions.dark.push(this.createEnemy("vampire bat", "vampire bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 3, 5, 0.7, 1, 70));
             definitions.dark.push(this.createEnemy("albino salamander", "albino salamander", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gMob, c.gHorde], [c.aInfest], [c.dKilled], 6, 5, 0.6, 1, 50));
-            definitions.dark.push(this.createEnemy("vampire", "vampire", "dark", [], [], [], [c.dDrive], 7, 8, 0.9, 1.1, 90));
             definitions.dark.push(this.createEnemy("giant albino salamander", "giant albino salamander", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gMob, c.gHorde], [c.aInfest], [c.dKilled], 9, 5, 0.6, 1, 50));
             definitions.dark.push(this.createEnemy("great vampire bat", "great vampire bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 10, 5, 0.7, 1, 70));
             // dense
@@ -200,6 +202,7 @@ define([
 
         // get the difficulty level (1-3*15, corresponding to camp ordinal and step) of a given enemy
         getEnemyDifficultyLevel: function (enemy) {
+            if (EnemyConstants.enemyDifficulties[enemy.id]) return EnemyConstants.enemyDifficulties[enemy.id];
             var enemyStats = FightConstants.getStrength(enemy.att, enemy.def, enemy.maxHP);
             var requiredStats;
             var max = this.getDifficulty(WorldCreatorConstants.CAMPS_TOTAL, WorldCreatorConstants.CAMP_STEP_END);
