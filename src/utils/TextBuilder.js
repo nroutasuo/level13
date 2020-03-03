@@ -7,17 +7,18 @@
 define(function () {
     var TextBuilder = {
         
+        isDebugMode: false,
+        
         build: function (template, params) {
             var result = template;
-            log.i(result);
             var vars = template.match(/\[\S*\]/g);
             if (vars) {
                 var usedParams = {};
                 for (var i = 0; i < vars.length; i++) {
                     var v = vars[i].substring(1, vars[i].length - 1);
                     var param = this.getNextParam(v, params, usedParams);
+                    if (this.isDebugMode) param = "[" + param + "]";
                     result = result.replace(vars[i], param);
-                    log.i(result);
                 }
             }
             return result;

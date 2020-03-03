@@ -19,6 +19,10 @@
                     "summary": "Unlock level 14, an extremely radioactive level",
                 },
                 {
+                    "type": "GD",
+                    "summary": "Improved sector descriptions",
+                }
+                {
                     "type": "WG",
                     "summary": "Hard levels",
                 }

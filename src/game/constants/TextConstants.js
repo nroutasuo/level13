@@ -1,8 +1,8 @@
 define(
 ['ash',
-    'utils/DescriptionMapper',
+    'utils/DescriptionMapper', 'utils/TextBuilder',
     'game/constants/GameConstants', 'game/constants/WorldCreatorConstants', 'game/constants/PositionConstants', 'game/constants/MovementConstants'],
-function (Ash, DescriptionMapper, GameConstants, WorldCreatorConstants, PositionConstants, MovementConstants) {
+function (Ash, DescriptionMapper, TextBuilder, GameConstants, WorldCreatorConstants, PositionConstants, MovementConstants) {
     
     var TextConstants = {
         
@@ -25,12 +25,130 @@ function (Ash, DescriptionMapper, GameConstants, WorldCreatorConstants, Position
         },
 		
 		getSectorDescription: function (hasVision, features) {
-            if (hasVision) {
-                return DescriptionMapper.get("sector-vision", features);
-            } else {
-                return DescriptionMapper.get("sector-novision", features);
-            }
+            var type = hasVision ? "sector-vision" : "sector-novision";
+            var template = DescriptionMapper.get(type, features);
+            var params = this.getSectorTextParams(features);
+            return TextBuilder.build(template, params);
 		},
+        
+        getSectorTextParams: function (features) {
+            // 1) Collect options for each param based on several features
+            var options = {};
+            var addOptions = function (param, values) {
+                if (!options[param]) options[param] = [];
+                for (var i = 0; i < values.length; i++) {
+                    options[param].push(values[i]);
+                }
+            };
+            // - general: options always available
+            addOptions("a-street-past", [ "well-maintained", "orderly" ]);
+            addOptions("n-building", [ "building" ]);
+            addOptions("n-buildings", [ "buildings" ]);
+            addOptions("a-building", [ "towering", "tall", "gloomy", "abandoned", "nondescript" ]);
+            addOptions("an-decos", [ "stranded benches", "broken elevators" ]);
+            // - sector type: determines n-sector and affects many others
+            switch (features.sectorType) {
+                case WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL:
+                    addOptions("n-sector", [ "apartment complex" ]);
+                    addOptions("a-street-past", [ "beautiful", "calm" ]);
+                    addOptions("n-building", [ "residential tower" ]);
+                    addOptions("n-buildings", [ "residential towers", "apartments" ]);
+                    addOptions("a-building", [ "silent" ]);
+                    break;
+                case WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL:
+                    addOptions("n-sector", [ "industrial complex" ]);
+                    addOptions("a-street-past", [ "high-security" ]);
+                    addOptions("n-building", [ "power plant", "factory", "storehouse", "workshop" ]);
+                    addOptions("n-buildings", [ "factories", "workshops", "storehouses" ]);
+                    addOptions("a-building", [ "decommissioned" ]);
+                    addOptions("an-items", [ "broken machinery" ]);
+                    break;
+                case WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE:
+                    addOptions("n-sector", [ "transport hall", "maintenance area", "transport hub" ]);
+                    addOptions("a-street-past", [ "efficient" ]);
+                    addOptions("n-building", [ "maintenace hub", "cable car station", "utility building" ]);
+                    addOptions("n-buildings", [ "utility buildings", "data centers", "control rooms" ]);
+                    addOptions("a-building", [ "decommissioned", "inaccessible" ]);
+                    addOptions("an-decos", [ "broken pipes", "broken trams" ]);
+                    addOptions("an-items", [ "electrical wiring" ]);
+                    break;
+                case WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL:
+                    addOptions("n-sector", [ "shopping mall", "shopping center", "office complex" ]);
+                    addOptions("a-street-past", [ "glamorous", "buzzling" ]);
+                    addOptions("n-building", [ "shopping center", "department store", "office building" ]);
+                    addOptions("n-buildings", [ "shopping towers", "shopping malls", "shops", "stores", "offices" ]);
+                    addOptions("a-building", [ "empty", "deserted" ]);
+                    addOptions("an-decos", [ "empty fountains", "abandoned stalls" ]);
+                    addOptions("an-items", [ "broken glass" ]);
+                    break;
+                case WorldCreatorConstants.SECTOR_TYPE_PUBLIC:
+                    addOptions("n-sector", ["prison complex", "amusement park", "library"]);
+                    addOptions("a-street-past", [ "leisurely" ]);
+                    addOptions("n-building", [ "library", "prison", "school", "university", "park", "public square", "sports field", "metro station", "research laboratory", "government building" ]);
+                    addOptions("n-buildings", [ "public buildings", "government buildings" ]);
+                    addOptions("a-building", [ "empty", "inaccessible" ]);
+                    addOptions("an-decos", [ "withered trees" ]);
+                    addOptions("an-items", [ "research samples" ]);
+                    break;
+                case WorldCreatorConstants.SECTOR_TYPE_SLUM:
+                    addOptions("n-sector", [ "shanty town", "landfill site" ]);
+                    addOptions("a-street-past", [ "gloomy" ]);
+                    addOptions("n-building", [ "apartment building" ]);
+                    addOptions("a-building", [ "abandoned" ]);
+                    addOptions("an-decos", [ "collapsed shacks", "garbage piles" ]);
+                    addOptions("an-items", [ "rusted pipes" ]);
+                    break;
+            }
+            // - building density: affects n-street and a-street
+            if (features.buildingDensity < this.densityBrackets[0][1]) {
+                addOptions("n-street", ["sector", "space", "square" ]);
+                addOptions("a-street", ["wide", "spacious" ]);
+            } else if (features.buildingDensity < this.densityBrackets[1][1]) {
+                addOptions("n-street", [ "throughfare", "square", "boulevard", "space", "area", "hall" ]);
+                addOptions("a-street", ["wide", "spacious" ]);
+            } else if (features.buildingDensity < this.densityBrackets[2][1]) {
+                addOptions("n-street", [ "street", "alley", "throughfare", "complex", "sector" ]);
+                addOptions("a-street", ["wide", "narrow" ]);
+            } else {
+                addOptions("n-street", [ "corridor", "passage", "alley" ]);
+                addOptions("a-street", ["narrow", "cramped", "dense", "low" ]);
+            }
+            
+            // 2) Build final result by selecting from options
+            var result = {};
+            var rand = (features.buildingDensity + features.stateOfRepair) / 20;
+            var pickRandom = function (options, excluded) {
+                var validOptions = options.filter(option => !excluded.includes(option));
+                var i = Math.floor(rand * validOptions.length);
+                return validOptions[i];
+            };
+            var selectFromOptions = function (key, num) {
+                var selection = [];
+                for (var i = 0; i < num; i++) {
+                    var sel = pickRandom(options[key], selection);
+                    if (sel) {
+                        selection.push(sel);
+                    } else {
+                        log.w("could not select valid " + key + " " + (i+1) + "/" + num);
+                    }
+                }
+                return selection;
+            };
+            result["a-sectortype"] = features.sectorType;
+            result["n-sector"] = selectFromOptions("n-sector", 1);
+            result["n-street"] = selectFromOptions("n-street", 1);
+            result["a-street"] = selectFromOptions("a-street", 2);
+            result["a-street-past"] = selectFromOptions("a-street-past", 1);
+            result["n-building"] = selectFromOptions("n-building", 2);
+            result["n-buildings"] = selectFromOptions("n-buildings", 2);
+            result["a-building"] = selectFromOptions("a-building", 2);
+            result["an-decos"] = selectFromOptions("an-decos", 2);
+            result["an-items"] = selectFromOptions("an-items", 2);
+            
+            log.i("text params:");
+            log.i(result);
+            return result;
+        },
 		
         getPassageFoundMessage: function (passageVO, direction, sunlit) {
             switch (passageVO.type) {
@@ -457,7 +575,7 @@ function (Ash, DescriptionMapper, GameConstants, WorldCreatorConstants, Position
         var t_C = WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL;
         var t_P = WorldCreatorConstants.SECTOR_TYPE_PUBLIC;
         var t_S = WorldCreatorConstants.SECTOR_TYPE_SLUM;
-
+        
         // visible descriptions
         DescriptionMapper.add("sector-vision", { sectorType: t_R, stateOfRepair: r0 }, "There used to be homes here, but there isn't much left except for ruins");
         DescriptionMapper.add("sector-vision", { sectorType: t_R, stateOfRepair: r1, buildingDensity: d1 }, "There used to be a few homes here, but they have not been repaired in a long time");
