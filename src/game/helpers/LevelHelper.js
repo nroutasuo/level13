@@ -101,6 +101,12 @@ define([
 			}
 			return null;
 		},
+        
+        getLevelVO: function (level) {
+            var entity = this.getLevelEntityForPosition(level);
+            if (!entity) return null;
+            return entity.get(LevelComponent).levelVO;
+        },
 
 		getSectorByPosition: function (level, sectorX, sectorY) {
 			var sectorPosition;

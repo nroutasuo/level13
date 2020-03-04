@@ -167,8 +167,7 @@ define([
                 var numEdges = hasBrokenEdge && hasOpenEdge ? 2 : (hasBrokenEdge || hasOpenEdge) ? 1 : 0;
                 var sunlitEdgeDirections = WorldCreatorRandom.randomDirections(seed + i * 222, numEdges, false);
 
-				var levelDensity = Math.min(Math.max(2, i % 2 * 4 + WorldCreatorRandom.random(seed * 7 * l / 3 + 62) * 7), 8);
-				if (Math.abs(i - 15) < 2) levelDensity = 10;
+				var levelDensity = MathUtils.clamp(WorldCreatorRandom.random(seed * 7 * l / 3 + 62) * 10, 3, 7);
 				var levelWear = MathUtils.clamp((topLevel - i) / (topLevel - 5) * 8, 0, 10);
 
                 for (var s = 0; s < levelVO.sectors.length; s++) {
@@ -233,6 +232,7 @@ define([
 
                     // buildingDensity
                     var buildingDensity = levelDensity + WorldCreatorRandom.randomInt(seed * l * x + y + x, -5, 5);
+                    if (i == topLevel) buildingDensity = MathUtils.clamp(buildingDensity, 1, 8);
                     if (sectorVO.camp) {
                         buildingDensity = Math.min(1, Math.max(8, buildingDensity));
                     }

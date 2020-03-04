@@ -5,14 +5,6 @@ define(
 function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, WorldCreatorConstants, PositionConstants, MovementConstants) {
     
     var TextConstants = {
-        
-		densityBrackets: [
-			[0, 0], [1, 4], [5, 8], [9, 10]
-		],
-		
-		repairBrackets: [
-			[0, 1], [2, 4], [5, 7], [8, 10]
-		],
 		
         getActionName: function (baseActionID) {
             switch (baseActionID) {
@@ -41,33 +33,35 @@ function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, W
                 }
             };
             // - general: options always available
+            addOptions("a-street", [ "quiet" ]);
             addOptions("a-street-past", [ "well-maintained", "orderly" ]);
             addOptions("n-building", [ "building" ]);
             addOptions("n-buildings", [ "buildings" ]);
-            addOptions("a-building", [ "towering", "tall", "gloomy", "abandoned", "nondescript" ]);
+            addOptions("a-building", [ "towering", "tall", "gloomy", "abandoned", "nondescript", "small" ]);
             addOptions("an-decos", [ "stranded benches", "broken elevators" ]);
+            addOptions("an-items", [ "debris" ]);
             // - sector type: determines n-sector and affects many others
             switch (features.sectorType) {
                 case WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL:
                     addOptions("n-sector", [ "apartment complex" ]);
                     addOptions("a-street-past", [ "beautiful", "calm" ]);
-                    addOptions("n-building", [ "residential tower" ]);
-                    addOptions("n-buildings", [ "residential towers", "apartments" ]);
+                    addOptions("n-building", [ "residential tower", "apartment house" ]);
+                    addOptions("n-buildings", [ "residential towers", "apartments", "tower blocks" ]);
                     addOptions("a-building", [ "silent" ]);
                     break;
                 case WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL:
                     addOptions("n-sector", [ "industrial complex" ]);
                     addOptions("a-street-past", [ "high-security" ]);
                     addOptions("n-building", [ "power plant", "factory", "storehouse", "workshop" ]);
-                    addOptions("n-buildings", [ "factories", "workshops", "storehouses" ]);
+                    addOptions("n-buildings", [ "factories", "workshops", "storehouses", "warehouses", "workshops", "refineries" ]);
                     addOptions("a-building", [ "decommissioned" ]);
                     addOptions("an-items", [ "broken machinery" ]);
                     break;
                 case WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE:
                     addOptions("n-sector", [ "transport hall", "maintenance area", "transport hub" ]);
                     addOptions("a-street-past", [ "efficient" ]);
-                    addOptions("n-building", [ "maintenace hub", "cable car station", "utility building" ]);
-                    addOptions("n-buildings", [ "utility buildings", "data centers", "control rooms" ]);
+                    addOptions("n-building", [ "maintenace hub", "cable car station", "utility building", "water treatment station" ]);
+                    addOptions("n-buildings", [ "utility buildings", "data centers", "control rooms", "automated control units" ]);
                     addOptions("a-building", [ "decommissioned", "inaccessible" ]);
                     addOptions("an-decos", [ "broken pipes", "broken trams" ]);
                     addOptions("an-items", [ "electrical wiring" ]);
@@ -75,8 +69,8 @@ function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, W
                 case WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL:
                     addOptions("n-sector", [ "shopping mall", "shopping center", "office complex" ]);
                     addOptions("a-street-past", [ "glamorous", "buzzling" ]);
-                    addOptions("n-building", [ "shopping center", "department store", "office building" ]);
-                    addOptions("n-buildings", [ "shopping towers", "shopping malls", "shops", "stores", "offices" ]);
+                    addOptions("n-building", [ "shopping center", "department store", "office building", "cafe", "bar" ]);
+                    addOptions("n-buildings", [ "shopping towers", "shopping malls", "shops", "stores", "offices", "office towers" ]);
                     addOptions("a-building", [ "empty", "deserted" ]);
                     addOptions("an-decos", [ "empty fountains", "abandoned stalls" ]);
                     addOptions("an-items", [ "broken glass" ]);
@@ -95,23 +89,85 @@ function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, W
                     addOptions("a-street-past", [ "gloomy" ]);
                     addOptions("n-building", [ "apartment building" ]);
                     addOptions("a-building", [ "abandoned" ]);
+                    addOptions("n-buildings", [ "shacks", "huts", "slum residences", "residential towers that don't seem to have ever been connected to the grid" ]);
                     addOptions("an-decos", [ "collapsed shacks", "garbage piles" ]);
                     addOptions("an-items", [ "rusted pipes" ]);
                     break;
             }
-            // - building density: affects n-street and a-street
-            if (features.buildingDensity < this.densityBrackets[0][1]) {
-                addOptions("n-street", ["sector", "space", "square" ]);
-                addOptions("a-street", ["wide", "spacious" ]);
-            } else if (features.buildingDensity < this.densityBrackets[1][1]) {
-                addOptions("n-street", [ "throughfare", "square", "boulevard", "space", "area", "hall" ]);
-                addOptions("a-street", ["wide", "spacious" ]);
-            } else if (features.buildingDensity < this.densityBrackets[2][1]) {
+            // - building density
+            if (features.buildingDensity < 3) {
+                addOptions("n-street", [ "sector", "space", "square" ]);
+                addOptions("a-street", [ "wide", "spacious" ]);
+            } else if (features.buildingDensity < 6) {
+                addOptions("n-street", [ "throughfare", "square", "space", "area", "hall" ]);
+                if (features.sectorType == WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL || features.sectorType == WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL)
+                    addOptions("n-street", [ "boulevard", "avenue" ]);
+                addOptions("a-street", [ "wide", "spacious" ]);
+            } else if (features.buildingDensity < 9) {
                 addOptions("n-street", [ "street", "alley", "throughfare", "complex", "sector" ]);
-                addOptions("a-street", ["wide", "narrow" ]);
+                addOptions("a-street", [ "narrow" ]);
             } else {
                 addOptions("n-street", [ "corridor", "passage", "alley" ]);
-                addOptions("a-street", ["narrow", "cramped", "dense", "low" ]);
+                addOptions("a-street", [ "narrow", "cramped", "dense", "low" ]);
+            }
+            // - wear and damage
+            switch (features.condition) {
+                case SectorConstants.SECTOR_CONDITION_RUINED:
+                    addOptions("a-street", [ "ruined", "crumbling" ]);
+                    addOptions("n-buildings", [ "crumbling ruins" ]);
+                    addOptions("n-buildings", [ "crumbling ruins" ]);
+                    addOptions("a-building", [ "ruined" ]);
+                    break;
+                case SectorConstants.SECTOR_CONDITION_DAMAGED:
+                    addOptions("a-street", [ "damaged", "destroyed", "broken" ]);
+                    addOptions("a-building", [ "damaged" ]);
+                    addOptions("an-decos", [ "collapsed tunnels" ]);
+                    break;
+                case SectorConstants.SECTOR_CONDITION_ABANDONED:
+                    addOptions("a-building", [ "decaying", "desolate", "slowly decomposing", "long since abandoned" ]);
+                    break;
+                case SectorConstants.SECTOR_CONDITION_WORN:
+                    addOptions("a-building", [ "desolate" ]);
+                    break;
+                case SectorConstants.SECTOR_CONDITION_RECENT:
+                    break;
+                case SectorConstants.SECTOR_CONDITION_MAINTAINED:
+                    break;
+            }
+            // sunlight
+            if (features.sunlit) {
+                addOptions("a-street", [ "sunlit", "sun-swathed", "bright" ]);
+                addOptions("a-building", [ "vibrant", "sunlit" ]);
+                addOptions("an-decos", [ "persistent weeds" ]);
+            } else {
+                addOptions("a-street", [ "dark" ]);
+            }
+            // hazards
+            if (features.hazards.cold > 0) {
+                addOptions("a-street", [ "cold" ]);
+            }
+            if (features.hazards.radiation > 0) {
+                addOptions("a-street", [ "desolate" ]);
+                addOptions("n-building", [ "nuclear power plant", "nuclear waste depot", "nuclear waste processing unit" ]);
+                addOptions("a-building", [ "abadoned" ]);
+                addOptions("na-items", [ "discarded safety equipment" ]);
+            }
+            if (features.hazards.poison > 0) {
+                addOptions("a-street", [ "polluted" ]);
+                addOptions("n-building", [ "chemical plant", "refinery", "garbage processing plant" ]);
+                addOptions("a-building", [ "polluted" ]);
+                addOptions("na-items", [ "used medical masks" ]);
+            }
+            // level population
+            if (features.populationGrowthFactor == 0) {
+                addOptions("a-building", [ "long abandoned" ]);
+                addOptions("a-building", [ "polluted" ]);
+            } else if (features.populationGrowthFactor < 1) {
+                addOptions("a-street", [ "calm" ]);
+                addOptions("a-building", [ "empty" ]);
+            } else {
+                addOptions("a-building", [ "recently looted" ]);
+                addOptions("na-items", [ "signs of recent scavengers" ]);
             }
             
             // 2) Build final result by selecting from options
@@ -145,8 +201,6 @@ function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, W
             result["an-decos"] = selectFromOptions("an-decos", 2);
             result["an-items"] = selectFromOptions("an-items", 2);
             
-            log.i("text params:");
-            log.i(result);
             return result;
         },
 		
@@ -327,27 +381,27 @@ function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, W
             }
             // nouns and special modifiers
 			switch (locale.type) {
-			case localeTypes.factory:
+    			case localeTypes.factory:
                     noun = "factory";
                     break;
-			case localeTypes.house:
+    			case localeTypes.house:
                     if (condition === SectorConstants.SECTOR_CONDITION_DAMAGED) modifier = "destroyed";
                     noun = "house";
                     break;
-			case localeTypes.lab:
+    			case localeTypes.lab:
                     noun = "laboratory";
                     break;
-			case localeTypes.grove:
+    			case localeTypes.grove:
                     if (condition === SectorConstants.SECTOR_CONDITION_ABANDONED) modifier = "quiet";
                     if (condition === SectorConstants.SECTOR_CONDITION_WORN) modifier = "flourishing";
                     if (condition === SectorConstants.SECTOR_CONDITION_RECENT) modifier = "flourishing";
                     if (condition === SectorConstants.SECTOR_CONDITION_MAINTAINED) modifier = "flourishing";
                     noun = "grove";
                     break;
-			case localeTypes.market:
+    			case localeTypes.market:
                     noun = "market";
                     break;
-			case localeTypes.maintenance:
+    			case localeTypes.maintenance:
                     switch (condition) {
                         case SectorConstants.SECTOR_CONDITION_RUINED:
                             noun = "control unit";
@@ -373,28 +427,28 @@ function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, W
                         default:
                     }
                     break;
-			case localeTypes.transport:
+    			case localeTypes.transport:
                     noun = "station";
                     if (condition === SectorConstants.SECTOR_CONDITION_RUINED) noun = "train depot";
                     if (condition === SectorConstants.SECTOR_CONDITION_WORN) modifier = "defunct tram";
                     if (condition === SectorConstants.SECTOR_CONDITION_RECENT) modifier = "cable car";
                     if (condition === SectorConstants.SECTOR_CONDITION_MAINTAINED) modifier = "train";
     				break;
-			case localeTypes.sewer:
+    			case localeTypes.sewer:
                     noun = "sewer";
                     break;
-			case localeTypes.warehouse:
+    			case localeTypes.warehouse:
                     if (condition === SectorConstants.SECTOR_CONDITION_RECENT) modifier = "sturdy";
                     if (condition === SectorConstants.SECTOR_CONDITION_MAINTAINED) modifier = "sturdy";
                     noun = "warehouse";
                     break;
-			case localeTypes.camp:
-            case localeTypes.tradingpartner:
+    			case localeTypes.camp:
+                case localeTypes.tradingpartner:
                     modifier = "foreign";
                     noun = "camp";
                     break;
-			case localeTypes.hut:
-			case localeTypes.hermit:
+    			case localeTypes.hut:
+    			case localeTypes.hermit:
                     modifier = "hut";
                     noun = "hut";
                     break;
@@ -502,17 +556,6 @@ function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, W
 				case MovementConstants.BLOCKER_TYPE_DEBRIS: return "cleared";
 	 	 	}
 		},
-
-		getRepairBracket: function (repair) {
-			for (var r = 0; r < this.repairBrackets.length; r++) {
-				var repairBracket = this.repairBrackets[r];
-				if (repair >= repairBracket[0] && repair <= repairBracket[1]) {
-					repair = repairBracket[0];
-					break;
-				}
-			}
-			return repair;
-		},
 		
 		// get common description word for a list of objects that contain possible words are in arrays named objectAttribute
 		// if nothing common is found, defaultWord is returned
@@ -610,14 +653,6 @@ function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, W
 		
 	function initSectorTexts() {
         var wildcard = DescriptionMapper.WILDCARD;
-        var d0 = TextConstants.densityBrackets[0];
-        var d1 = TextConstants.densityBrackets[1];
-        var d2 = TextConstants.densityBrackets[2];
-        var d3 = TextConstants.densityBrackets[3];
-        var r0 = TextConstants.repairBrackets[0];
-        var r1 = TextConstants.repairBrackets[1];
-        var r2 = TextConstants.repairBrackets[2];
-        var r3 = TextConstants.repairBrackets[3];
         
         var t_R = WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL;
         var t_I = WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL;
@@ -626,91 +661,88 @@ function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, W
         var t_P = WorldCreatorConstants.SECTOR_TYPE_PUBLIC;
         var t_S = WorldCreatorConstants.SECTOR_TYPE_SLUM;
         
-        // visible descriptions
-        DescriptionMapper.add("sector-vision", { sectorType: t_R, stateOfRepair: r0 }, "There used to be homes here, but there isn't much left except for ruins");
-        DescriptionMapper.add("sector-vision", { sectorType: t_R, stateOfRepair: r1, buildingDensity: d1 }, "There used to be a few homes here, but they have not been repaired in a long time");
-        DescriptionMapper.add("sector-vision", { sectorType: t_R, stateOfRepair: r1, buildingDensity: d2 }, "A crumbling street lined with what were once some kind of apartments");
-        DescriptionMapper.add("sector-vision", { sectorType: t_R, stateOfRepair: r1, buildingDensity: d3 }, "A dense corridor lined so closely with crumling apartment towers that there is barely enough space to walk");
-        DescriptionMapper.add("sector-vision", { sectorType: t_R, stateOfRepair: r2, buildingDensity: d1 }, "A quiet square surrounded by abandoned apartments");
-        DescriptionMapper.add("sector-vision", { sectorType: t_R, stateOfRepair: r2, buildingDensity: d2 }, "A quiet residential area lined with slowly decaying apartment towers");
-        DescriptionMapper.add("sector-vision", { sectorType: t_R, stateOfRepair: r2, buildingDensity: d3 }, "A narrow, forgotten corridor running between two tall residential towers, with barely enough space to walk");
-        DescriptionMapper.add("sector-vision", { sectorType: t_R, stateOfRepair: r3, buildingDensity: d1 }, "A square surrounded by nice-looking apartments that look almost like someone could still be living there");
-        DescriptionMapper.add("sector-vision", { sectorType: t_R, stateOfRepair: r3, buildingDensity: d2 }, "A quiet street between tall apartment towers, lined with withered-looking trees that until recently thrived in artificial light");
-        DescriptionMapper.add("sector-vision", { sectorType: t_R, stateOfRepair: r3, buildingDensity: d3 }, "A narrow corridor running between two huge apartment towers, with barely enough space to walk");
+        // brackets for values like building density, wear, damage
+        var b0 = [0, 0];
+        var bfull = [10, 10];
+        var b12 = [0, 5];
+        var b22 = [5, 10];
+        var b13 = [0, 3];
+        var b23 = [4, 6];
+        var b33 = [7, 10];
         
-        DescriptionMapper.add("sector-vision", { sectorType: t_I, stateOfRepair: r0, buildingDensity: d1 }, "A few large unidentifiable ruins loom over a gloomy industrial square");
-        DescriptionMapper.add("sector-vision", { sectorType: t_I, stateOfRepair: r0, buildingDensity: d2 }, "A former industrial sector where factories and workshops lie in ruins");
-        DescriptionMapper.add("sector-vision", { sectorType: t_I, stateOfRepair: r0, buildingDensity: d3 }, "A dense corridor lined so closely with crumling industrial ruins that there is barely enough space to walk");
-        DescriptionMapper.add("sector-vision", { sectorType: t_I, stateOfRepair: r1, buildingDensity: d1 }, "A wide square with a ruined factory on one side and what looks like the remains of an old storehouse on the other");
-        DescriptionMapper.add("sector-vision", { sectorType: t_I, stateOfRepair: r1, buildingDensity: d2 }, "A wide square with a desolate factory on one side and what looks like the remains of an old storehouse on the other");
-        DescriptionMapper.add("sector-vision", { sectorType: t_I, stateOfRepair: r1, buildingDensity: d3 }, "A narrow corridor between two vast decaying factories with barely enough space to fit through");
-        DescriptionMapper.add("sector-vision", { sectorType: t_I, stateOfRepair: r2, buildingDensity: d1 }, "A wide square with a abandoned factory on one side and a few old storehouses on the other");
-        DescriptionMapper.add("sector-vision", { sectorType: t_I, stateOfRepair: r2, buildingDensity: d2 }, "A low street surrounded by old factories and industrial buildings");
-        DescriptionMapper.add("sector-vision", { sectorType: t_I, stateOfRepair: r2, buildingDensity: d3 }, "Some sort of a maintenance corridor between two vast manufacturing facilities with barely enough space to walk");
-        DescriptionMapper.add("sector-vision", { sectorType: t_I, stateOfRepair: r3, buildingDensity: d1 }, "A wide square with quiet manufacturing facilities on each side");
-        DescriptionMapper.add("sector-vision", { sectorType: t_I, stateOfRepair: r3, buildingDensity: d2 }, "An industrial street surrounded by factories and warehouses");
-        DescriptionMapper.add("sector-vision", { sectorType: t_I, stateOfRepair: r3, buildingDensity: d3 }, "A narrow street with towering, high-security automated factory units on each side");
+        var lmodern = [15, 100];
         
-        DescriptionMapper.add("sector-vision", { sectorType: t_M, stateOfRepair: r0, buildingDensity: d1 }, "A mostly empty and desolate square with the remains of some broken cable systems criss-crossing the low ceiling");
-        DescriptionMapper.add("sector-vision", { sectorType: t_M, stateOfRepair: r0, buildingDensity: d2 }, "A desolate corridor criss-crossed with the remains of broken cable systems and maintenance ducts");
-        DescriptionMapper.add("sector-vision", { sectorType: t_M, stateOfRepair: r0, buildingDensity: d3 }, "A dense corridor lined with broken maintenance ducts and cables");
-        DescriptionMapper.add("sector-vision", { sectorType: t_M, stateOfRepair: r1, buildingDensity: d1 }, "A mostly empty square with of the remains of old cable systems hanging from the low ceiling");
-        DescriptionMapper.add("sector-vision", { sectorType: t_M, stateOfRepair: r1, buildingDensity: d2 }, "A crumbling street behind a maintenance center, the low ceiling criss-crossed by old wires and ducts");
-        DescriptionMapper.add("sector-vision", { sectorType: t_M, stateOfRepair: r1, buildingDensity: d3 }, "A dense corridor lined with broken maintenance ducts and cables");
-        DescriptionMapper.add("sector-vision", { sectorType: t_M, stateOfRepair: r2, buildingDensity: d1 }, "A spacious square with a control room in the middle and old cable system lines disappearing in every direction");
-        DescriptionMapper.add("sector-vision", { sectorType: t_M, stateOfRepair: r2, buildingDensity: d2 }, "A narrow street lined by decommissioned control units for City services like water, electricity, air filtering and robotics");
-        DescriptionMapper.add("sector-vision", { sectorType: t_M, stateOfRepair: r2, buildingDensity: d3 }, "A dense corridor lined with broken maintenance ducts and cables");
-        DescriptionMapper.add("sector-vision", { sectorType: t_M, stateOfRepair: r3, buildingDensity: d1 }, "A transport hall dominated by well-maintained cable car lines and empty taxi lanes criss-crossing just above your head");
-        DescriptionMapper.add("sector-vision", { sectorType: t_M, stateOfRepair: r3, buildingDensity: d2 }, "Once well-maintained transport hall with a few broken elevators and an empty cable car station");
-        DescriptionMapper.add("sector-vision", { sectorType: t_M, stateOfRepair: r3, buildingDensity: d3 }, "A dense corridor lined with maintenance ducts and cables");
-        
-        DescriptionMapper.add("sector-vision", { sectorType: t_C, stateOfRepair: r0, buildingDensity: d1 }, "It seems this used to be a market square of some sort, but there isn't much left except for ruins");
-        DescriptionMapper.add("sector-vision", { sectorType: t_C, stateOfRepair: r0, buildingDensity: d2 }, "It seems there used to be shops and markets here, but there isn't much left except for ruins");
-        DescriptionMapper.add("sector-vision", { sectorType: t_C, stateOfRepair: r0, buildingDensity: d3 }, "An deserted corridor lined with the remains of shops and workshops");
-        DescriptionMapper.add("sector-vision", { sectorType: t_C, stateOfRepair: r1, buildingDensity: d1 }, "An abandoned market square lined with the remains of shops and empty, silent billboards");
-        DescriptionMapper.add("sector-vision", { sectorType: t_C, stateOfRepair: r1, buildingDensity: d2 }, "A desolate shopping street with remains of various shops and cafés");
-        DescriptionMapper.add("sector-vision", { sectorType: t_C, stateOfRepair: r1, buildingDensity: d3 }, "A tight corridor between two vast and decaying shopping towers");
-        DescriptionMapper.add("sector-vision", { sectorType: t_C, stateOfRepair: r2, buildingDensity: d1 }, "A quiet market square lined with the deserted shops and empty, silent billboards");
-        DescriptionMapper.add("sector-vision", { sectorType: t_C, stateOfRepair: r2, buildingDensity: d2 }, "A street lined with abandoned shops");
-        DescriptionMapper.add("sector-vision", { sectorType: t_C, stateOfRepair: r2, buildingDensity: d3 }, "A narrow passage between two shopping malls");
-        DescriptionMapper.add("sector-vision", { sectorType: t_C, stateOfRepair: r3, buildingDensity: d1 }, "A wide market square lined with commercial towers whose walls are covered in dead black screens");
-        DescriptionMapper.add("sector-vision", { sectorType: t_C, stateOfRepair: r3, buildingDensity: d2 }, "Old shopping street, long-since abandoned, but still retaining an atmosphere of abundance");
-        DescriptionMapper.add("sector-vision", { sectorType: t_C, stateOfRepair: r3, buildingDensity: d3 }, "A narrow passage between two shopping malls");
-        
-        DescriptionMapper.add("sector-vision", { sectorType: t_P, buildingDensity: d1 }, "An open space that looks like it might have once been dedicated to a sport of some kind.");
-        DescriptionMapper.add("sector-vision", { sectorType: t_P, buildingDensity: d2 }, "A street with some stranded benches and nondescript buildings.");
-        DescriptionMapper.add("sector-vision", { sectorType: t_P, buildingDensity: d3 }, "A street dominated by huge building that looks like it was once a public facility of some kind.");
-        
-        DescriptionMapper.add("sector-vision", { sectorType: t_S, stateOfRepair: r0, buildingDensity: d1 }, "It seems like once a few people lived here, but there is nothing left but ruins");
-        DescriptionMapper.add("sector-vision", { sectorType: t_S, stateOfRepair: r0, buildingDensity: d2 }, "It seems like this place was last used as a make-shift residential area, but there is nothing left but ruins");
-        DescriptionMapper.add("sector-vision", { sectorType: t_S, stateOfRepair: r0, buildingDensity: d3 }, "A corridor lined so closely with crumling, long abandoned shacks that there is barely enough space to walk");
-        DescriptionMapper.add("sector-vision", { sectorType: t_S, stateOfRepair: r1, buildingDensity: d1 }, "There are some make-shift shacks against the walls here, but they have not been inhabited in a long time");
-        DescriptionMapper.add("sector-vision", { sectorType: t_S, stateOfRepair: r1, buildingDensity: d2 }, "A narrow slum street surrounded (and in some parts, covered) by make-shift dwellings that have been adandoned for some time");
-        DescriptionMapper.add("sector-vision", { sectorType: t_S, stateOfRepair: r1, buildingDensity: d3 }, "A filthy corridor packed so full of long-abandoned dark-dweller shacks that there is barely enough space to pass through");
-        DescriptionMapper.add("sector-vision", { sectorType: t_S, stateOfRepair: r2, buildingDensity: d1 }, "A wide square surrounded by desolate make-shift residential towers that don't seem to have ever been connected to the grid");
-        DescriptionMapper.add("sector-vision", { sectorType: t_S, stateOfRepair: r2, buildingDensity: d2 }, "A narrow slum street surrounded (and in some parts, covered) by make-shift dwellings");
-        DescriptionMapper.add("sector-vision", { sectorType: t_S, stateOfRepair: r2, buildingDensity: d3 }, "A filthy corridor packed so full of abandoned dark-dweller shacks that there is barely enough space to pass through");
-        DescriptionMapper.add("sector-vision", { sectorType: t_S, stateOfRepair: r3, buildingDensity: d1 }, "A wide square whose walls support a few make-shift shacks");
-        DescriptionMapper.add("sector-vision", { sectorType: t_S, stateOfRepair: r3, buildingDensity: d2 }, "A recently inhabited slum so packed with shacks that there is barely enough space to pass through");
-        DescriptionMapper.add("sector-vision", { sectorType: t_S, stateOfRepair: r3, buildingDensity: d3 }, "A narrow street that surrounded (and in some parts, covered) by recent slum-dwellings");
-        
-        DescriptionMapper.add("sector-vision", { sectorType: wildcard, stateOfRepair: r0, buildingDensity: d3 }, "A dense corridor lined so closely with crumbling ruins that there is barely enough space to walk");
-        DescriptionMapper.add("sector-vision", { sectorType: wildcard, stateOfRepair: r0, buildingDensity: wildcard }, "Nothing but ruins and debris here. It's hard to say what this area used to be for");
-        DescriptionMapper.add("sector-vision", { sectorType: wildcard, stateOfRepair: wildcard, buildingDensity: d0 }, "A rare empty space inside the City; there is no floor or walls, no buildings, nothing");
-        DescriptionMapper.add("sector-vision", {}, "");
-        
+        // default descriptions (player has vision)
+        DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "A [n-street] in front of what looks like a [a-building] [n-building]");
+        DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "A [a-street] [n-street] between two [a-building] [n-buildings]");
+        DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "A [a-street] [n-street] between two [n-buildings] with some [a-building] [n-buildings] on either side");
+        DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "A [a-sectortype] [n-street] with a few [a-building] [n-buildings]");
+        DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "A [a-street] [n-sector] littered with [an-items] and [an-items]");
+        DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "A [a-street] [n-street] lined with [a-building] [n-buildings]");
+        DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "A [a-street] [n-street] surrounded by [n-buildings]");
+        DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "A [n-street] with some [an-decos] and [a-building] [n-buildings]");
+        DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "A [a-street] [n-street] between some [n-buildings]");
+        DescriptionMapper.add("sector-vision", { buildingDensity: b0 }, "A rare empty space inside the City; there is no floor or walls, no buildings, nothing.");
+        DescriptionMapper.add("sector-vision", { buildingDensity: b22 }, "Some kind of an [a-sectortype] complex with several narrow passages this way and that.");
+        DescriptionMapper.add("sector-vision", { buildingDensity: b13 }, "A wide square with a [a-building] [n-building] on one side and what looks like the remains of an [a-building] [n-building] on the other");
+        DescriptionMapper.add("sector-vision", { buildingDensity: b23 }, "A [a-street] [n-street] beneath a vast [n-building]");
+        DescriptionMapper.add("sector-vision", { buildingDensity: b33 }, "Some sort of a [a-sectortype] corridor between two vast [n-buildings] with barely enough space to walk");
+        DescriptionMapper.add("sector-vision", { buildingDensity: b33 }, "A [a-street] [n-street] between two vast [n-buildings] with barely enough space fit through");
+        DescriptionMapper.add("sector-vision", { buildingDensity: b33 }, "A [a-street] [n-street] packed so full with [a-building] [n-buildings] and [an-decos] that there is barely enough space to pass through");
+        DescriptionMapper.add("sector-vision", { wear: b13, sunlit: false, level: lmodern }, "A [a-street] [n-street] between tall [n-buildings], lined with withered trees that until recently must have thrived in artificial light");
+        DescriptionMapper.add("sector-vision", { wear: b23, damage: b0 }, "A former [n-sector] with a [a-street-past] atmosphere lingering from its past");
+        DescriptionMapper.add("sector-vision", { wear: b23, damage: b0 }, "Once [a-sector-past] [n-sector] with a few [an-decos] and an [a-building] [n-building]");
+        DescriptionMapper.add("sector-vision", { wear: b33 }, "A [a-street] [a-sectortype] [n-street] with a few large unidentifiable ruins looming over it");
+        DescriptionMapper.add("sector-vision", { wear: b33 }, "A completely ruined [a-sectortype] [n-street]");
+        DescriptionMapper.add("sector-vision", { damage: b22 }, "A former [a-sectortype] sector where [n-buildings] and [n-buildings] lie in ruins");
+        DescriptionMapper.add("sector-vision", { damage: b33 }, "A completely destroyed [a-sectortype] [n-street]");
+        DescriptionMapper.add("sector-vision", { sectorType: t_R }, "A small [n-street] between some [a-building] apartment towers");
+        DescriptionMapper.add("sector-vision", { sectorType: t_R, level: lmodern }, "A square surrounded by what looks like rather comfortable apartment towers");
+        DescriptionMapper.add("sector-vision", { sectorType: t_I }, "A street outside a huge [a-building] industrial complex");
+        DescriptionMapper.add("sector-vision", { sectorType: t_I, buildingDensity: b13 }, "An empty square with some damaged containers and huge rusting mechanical arms");
+        DescriptionMapper.add("sector-vision", { sectorType: t_I, buildingDensity: b23 }, "A [n-street] between two blocks of what looks like [a-building] control rooms and offices.");
+        DescriptionMapper.add("sector-vision", { sectorType: t_M }, "A [a-street] [n-street] behind a [n-building], the low ceiling criss-crossed by old wires and ducts");
+        DescriptionMapper.add("sector-vision", { sectorType: t_M }, "A desolate [n-street] criss-crossed with the remains of broken cable systems and maintenance ducts");
+        DescriptionMapper.add("sector-vision", { sectorType: t_M, buildingDensity: b13 }, "A spacious square with a control room in the middle and old cable system lines disappearing in every direction");
+        DescriptionMapper.add("sector-vision", { sectorType: t_C }, "A [a-street] shopping street with the remains of various shops and cafés");
+        DescriptionMapper.add("sector-vision", { sectorType: t_P }, "A [n-street] dominated by huge building that looks like it was once a public facility of some kind");
+        DescriptionMapper.add("sector-vision", { sectorType: t_P }, "A stretch of abandoned highway with some smaller buildings on the side." );
+        DescriptionMapper.add("sector-vision", { sectorType: t_P, buildingDensity: b13 }, "An open space that looks like it might have once been dedicated to a sport of some kind");
+        DescriptionMapper.add("sector-vision", { sectorType: t_S, buildingDensity: b33, wear: b22 }, "A [a-street] [n-street] surrounded (and in parts, covered) by [a-building] dwellings that have been abandoned for some time");
+        DescriptionMapper.add("sector-vision", { sectorType: t_S, buildingDensity: b13 }, "A wide square whose walls support a few make-shift shacks");
+        DescriptionMapper.add("sector-vision", { level: 14, buildingDensity: b13 }, "A huge hall that looks like it was used as some kind of a storage area, with automated hands rusting in the ceiling");
+        DescriptionMapper.add("sector-vision", { level: 14, buildingDensity: b23 }, "A [a-street] passage between two defunct, walled-off nuclear reactors");
+        DescriptionMapper.add("sector-vision", { level: 14, buildingDensity: b23 }, "A [a-street] [n-street] outside a huge industrial processing complex, all entrances tightly shut");
+        DescriptionMapper.add("sector-vision", { level: 14, buildingDensity: b33 }, "A [a-street] passage that seems to have been used to transport goods between the various facilities on this level");
+        DescriptionMapper.add("sector-vision", { level: 14, buildingDensity: b33 }, "A corridor that must have once looked sterile, but is now littered with debris");
+        DescriptionMapper.add("sector-vision", { level: 14, buildingDensity: b33 }, "A windowed hallway above the ruined remains of a nuclear facility.");
+        DescriptionMapper.add("sector-vision", { isGroundLevel: true, buildingDensity: b13 }, "A wide open space beneath the City with mud, grass and other plants pushing their way through cracks in the concrete floor");
+        DescriptionMapper.add("sector-vision", { isGroundLevel: true, buildingDensity: b13 }, "An ancient square, long since forgotten, with huge pillars supporting the City above on either side");
+        DescriptionMapper.add("sector-vision", { isGroundLevel: true, buildingDensity: b13 }, "An open space, perhaps once a park, now overrun strange plants and mushrooms");
+        DescriptionMapper.add("sector-vision", { isGroundLevel: true, buildingDensity: b23 }, "A [a-street] street between crumbling ancient [a-sector] buildings");
+        DescriptionMapper.add("sector-vision", { isGroundLevel: true, buildingDensity: b23 }, "An open street with no ceiling, the next floor of the City hovering high above and ruins on either side");
+        DescriptionMapper.add("sector-vision", { isGroundLevel: true, buildingDensity: b33 }, "A passage through an ancient building");
+        DescriptionMapper.add("sector-vision", { isGroundLevel: true, buildingDensity: b33 }, "A narrow street with cracked pavement");
+        DescriptionMapper.add("sector-vision", { isSurfaceLevel: true, buildingDensity: b13 }, "A once [a-street-past] square surrounded by glass-domed passages and small shopfronts");
+        DescriptionMapper.add("sector-vision", { isSurfaceLevel: true, buildingDensity: b13 }, "A big square dominated by an ornate public building in the middle");
+        DescriptionMapper.add("sector-vision", { isSurfaceLevel: true, buildingDensity: b23 }, "A wide street dotted by billboards, dead screens and surrounded by tall buildings");
+        DescriptionMapper.add("sector-vision", { isSurfaceLevel: true, buildingDensity: b23 }, "A multi-layered street with space below for trams and below for pedestrians and small shops");
+        DescriptionMapper.add("sector-vision", { isSurfaceLevel: true, buildingDensity: b33 }, "A [a-street] [n-street] between tall, ornate [n-buildings]");
+        DescriptionMapper.add("sector-vision", { isSurfaceLevel: true, buildingDensity: b33 }, "A [a-street] passage between what used to be two shopping centers");
+
         // descriptions when player has no vision (lamp/sunglasses)
-        DescriptionMapper.add("sector-novision", { buildingDensity: d0 }, "A rare empty space inside the City; there is no floor or walls, no buildings, nothing. Only vast empty darkness");
-        DescriptionMapper.add("sector-novision", { buildingDensity: d1 }, "A wide street or corridor. It's hard to find anything in the vast darkness");
-        DescriptionMapper.add("sector-novision", { buildingDensity: d1, stateOfRepair: r0 }, "A wide street or corridor that doesn't seem to be in very good repair. It's hard to find anything in the vast darkness");
-        DescriptionMapper.add("sector-novision", { buildingDensity: d1, stateOfRepair: r1 }, "A wide street or corridor that doesn't seem to be in very good repair. It's hard to find anything in the vast darkness");
-        DescriptionMapper.add("sector-novision", { buildingDensity: d2}, "A street or corridor with an abandoned air. Details fade in the darkness");
-        DescriptionMapper.add("sector-novision", { buildingDensity: d2, stateOfRepair: r0 }, "A street or corridor with several buildings. In the darkness it's hard to say what they are");
-        DescriptionMapper.add("sector-novision", { buildingDensity: d2, stateOfRepair: r1 }, "A street or corridor with several buildings. In the darkness it's hard to say what they are");
-        DescriptionMapper.add("sector-novision", { buildingDensity: d3}, "A dense corridor with barely enough space to walk. You feel your way in the darkness");
-        DescriptionMapper.add("sector-novision", { buildingDensity: d3, stateOfRepair: r0 }, "A dense corridor with barely enough space to walk and plenty of sharp edges, uneven paths and crumbled walls. You feel your way in the darkness");
-        DescriptionMapper.add("sector-novision", { buildingDensity: d3, stateOfRepair: r1 }, "A dense corridor with barely enough space to walk and plenty of sharp edges, uneven paths and crumbled walls. You feel your way in the darkness");
-        DescriptionMapper.add("sector-novision", {}, "A space inside the city, hidden in the darkness");
+        DescriptionMapper.add("sector-novision", { sunlit: false, buildingDensity: b0 }, "A rare empty space inside the City; there is no floor or walls, no buildings, nothing. Only vast empty darkness");
+        DescriptionMapper.add("sector-novision", { sunlit: false, buildingDensity: b13 }, "A wide street or corridor. It's hard to find anything in the vast darkness");
+        DescriptionMapper.add("sector-novision", { sunlit: false, buildingDensity: b23, wear: b22 }, "A street or corridor with an abandoned air. Details fade in the darkness");
+        DescriptionMapper.add("sector-novision", { sunlit: false, buildingDensity: b23, wear: b12 }, "A quiet street or corridor. Details fade in the darkness");
+        DescriptionMapper.add("sector-novision", { sunlit: false, buildingDensity: b33 }, "A dense passage with barely enough space to walk. You feel your way in the darkness");
+        DescriptionMapper.add("sector-novision", { sunlit: false }, "A space inside the city, hidden in the darkness");
+        DescriptionMapper.add("sector-novision", { sunlit: true, buildingDensity: b0 }, "A rare empty space inside the City; there is no floor or walls, no buildings, nothing. Only vast emptiness");
+        DescriptionMapper.add("sector-novision", { sunlit: true, buildingDensity: b13 }, "A wide street or corridor. It's hard to find anything in the blinding sunlight");
+        DescriptionMapper.add("sector-novision", { sunlit: true, buildingDensity: b23, wear: b22 }, "A street or corridor with an abandoned air. Details fada in the blinding light");
+        DescriptionMapper.add("sector-novision", { sunlit: true, buildingDensity: b23, wear: b12 }, "A quiet street or corridor. Details fade in the sunlight");
+        DescriptionMapper.add("sector-novision", { sunlit: true, buildingDensity: b33 }, "A dense passage with barely enough space to walk. You feel your way in the blinding light");
+        DescriptionMapper.add("sector-novision", { sunlit: true }, "A space inside the city, beaming in sunlight");
     }
     
     initSectorTexts();

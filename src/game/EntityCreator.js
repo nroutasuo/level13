@@ -175,7 +175,6 @@ define([
 					sectorFeatures.wear,
 					sectorFeatures.damage,
 					sectorFeatures.sectorType,
-					sectorFeatures.buildingStyle,
 					sectorFeatures.sunlit,
 					sectorFeatures.hazards,
 					sectorFeatures.weather,

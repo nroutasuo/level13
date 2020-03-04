@@ -29,7 +29,7 @@ define(
         resourcesScavengable: null,
         resourcesCollectable: null,
         
-        constructor: function (level, criticalPaths, zone, buildingDensity, wear, damage, sectorType, buildingStyle, sunlit, hazards, weather,
+        constructor: function (level, criticalPaths, zone, buildingDensity, wear, damage, sectorType, sunlit, hazards, weather,
                                campable, notCampableReason, resourcesScavengable, resourcesCollectable, hasSpring, stash) {
             this.level = level;
             this.criticalPaths = criticalPaths;
@@ -38,7 +38,6 @@ define(
             this.wear = wear;
             this.damage = damage;
             this.sectorType = sectorType;
-            this.buildingStyle = buildingStyle,
             this.sunlit = sunlit;
             this.hazards = hazards;
             this.weather = weather;

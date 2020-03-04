@@ -311,12 +311,19 @@ define([
 		},
 
 		getTextureDescription: function (hasVision, position, featuresComponent, statusComponent, localesComponent) {
+            var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(position.level);
+            var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+            var levelVO = GameGlobals.levelHelper.getLevelVO(position.level);
+            
             // sector static description
-            log.i("sector features -> desc")
             var features = Object.assign({}, featuresComponent);
-            log.i(features);
+            features.level = position.level;
+            features.levelOrdinal = levelOrdinal;
+            features.condition = featuresComponent.getCondition();
+            features.levelPopulationGrowthFactor = levelVO.populationGrowthFactor;
+            features.isSurfaceLevel = levelVO.level == GameGlobals.gameState.getSurfaceLevel();
+            features.isGroundLevel = levelVO.level == GameGlobals.gameState.getGroundLevel();
 			var desc = TextConstants.getSectorDescription(hasVision, features) + ". ";
-            log.i(desc);
 
             // light / darkness description
 			if (featuresComponent.sunlit) {
@@ -339,7 +346,6 @@ define([
                 var locale = localesComponent.locales[i];
                 if (statusComponent.isLocaleScouted(i)) {
                     if (locale.type == localeTypes.tradingpartner) {
-                        var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
                         var partner = TradeConstants.getTradePartner(campOrdinal);
                         desc += "<span class='hl-functionality'>" + partner.name + "</span> is located here. ";
                     }
