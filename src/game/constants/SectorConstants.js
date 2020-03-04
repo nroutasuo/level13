@@ -16,6 +16,13 @@ define(['ash',
 		MAP_SECTOR_STATUS_VISITED_UNSCOUTED: "visited",
 		MAP_SECTOR_STATUS_VISITED_SCOUTED: "scouted",
 		MAP_SECTOR_STATUS_VISITED_CLEARED: "cleared",
+        
+        SECTOR_CONDITION_MAINTAINED: 0, // currently maintained
+        SECTOR_CONDITION_RECENT: 1,     // well-kept pre-Fall
+        SECTOR_CONDITION_WORN: 2,       // already in bad shape around the Fall
+        SECTOR_CONDITION_ABANDONED: 3,  // already abandoned pre-Fall
+        SECTOR_CONDITION_DAMAGED: 4,    // not worn out but actually damaged by something
+        SECTOR_CONDITION_RUINED: 5,     // so damaged or worn it's hard to say which
 		
 		getSectorStatus: function (sector) {
 			if (!sector) return null;

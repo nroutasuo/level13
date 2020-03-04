@@ -1,35 +1,42 @@
 // A component that describes features of a sector, both functional (ability to build stuff)
 // and purely aesthetic (description)
 define(
-    ['ash', 'game/constants/WorldCreatorConstants', 'game/vos/ResourcesVO'],
-    function (Ash, WorldCreatorConstants, ResourcesVO) {
+    ['ash', 'game/constants/SectorConstants', 'game/constants/WorldCreatorConstants', 'game/vos/ResourcesVO'],
+    function (Ash, SectorConstants, WorldCreatorConstants, ResourcesVO) {
     
     var SectorFeaturesComponent = Ash.Class.extend({
         
-        // Primary attributes
+        // primary attributes
         level: 0,
-        buildingDensity: 0,
-        stateOfRepair: 0,
         sectorType: 0,
         
+        // description / atmosphere
+        buildingDensity: 0,
+        wear: 0,
+        damage: 0,
+        weather: false,
+        sunlit: false,
+        
+        // pathfinding attributes
         criticalPaths: [],
         zone: null,
         
-        sunlit: false,
+        // functionality
         hazards: null,
-        weather: false,
         campable: false,
         
+        // resources
         resourcesScavengable: null,
         resourcesCollectable: null,
         
-        constructor: function (level, criticalPaths, zone, buildingDensity, stateOfRepair, sectorType, buildingStyle, sunlit, hazards, weather,
+        constructor: function (level, criticalPaths, zone, buildingDensity, wear, damage, sectorType, buildingStyle, sunlit, hazards, weather,
                                campable, notCampableReason, resourcesScavengable, resourcesCollectable, hasSpring, stash) {
             this.level = level;
             this.criticalPaths = criticalPaths;
             this.zone = zone;
             this.buildingDensity = buildingDensity;
-            this.stateOfRepair = stateOfRepair;
+            this.wear = wear;
+            this.damage = damage;
             this.sectorType = sectorType;
             this.buildingStyle = buildingStyle,
             this.sunlit = sunlit;
@@ -66,12 +73,12 @@ define(
             else                               densityAdj = "";
             
             if (hasLight) {
-                if (this.stateOfRepair > 7)      repairAdj = "quiet";
-                else if (this.stateOfRepair > 5) repairAdj = "abandoned";
-                else if (this.stateOfRepair > 2) repairAdj = "crumbling";
+                if (this.wear < 3)      repairAdj = "quiet";
+                else if (this.wear < 5) repairAdj = "abandoned";
+                else if (this.wear < 7) repairAdj = "crumbling";
                 else                             repairAdj = "ruined";
             } else {
-                if (this.stateOfRepair > 5)      repairAdj = "";
+                if (this.wear < 5)      repairAdj = "";
                 else                             repairAdj = "crumbling";
             }
             
@@ -120,6 +127,20 @@ define(
             else if (this.resourcesScavengable.getTotal() > 0) return "Unknown";
             else return "None";
         },
+        
+        getCondition: function () {
+            if (this.damage > 7 || this.wear > 9)
+                return SectorConstants.SECTOR_CONDITION_RUINED;
+            if (this.damage > 0)
+                return SectorConstants.SECTOR_CONDITION_DAMAGED;
+            if (this.wear > 7)
+                return SectorConstants.SECTOR_CONDITION_ABANDONED;
+            if (this.wear > 4)
+                return SectorConstants.SECTOR_CONDITION_WORN;
+            if (this.wear > 0)
+                return SectorConstants.SECTOR_CONDITION_RECENT;
+            return SectorConstants.SECTOR_CONDITION_MAINTAINED;
+        }
         
     });
 

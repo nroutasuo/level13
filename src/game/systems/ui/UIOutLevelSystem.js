@@ -500,7 +500,7 @@ define([
                     var inhabited = featuresComponent.level > 10;
                     switch (featuresComponent.notCampableReason) {
                         case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
-                            if (inhabited && featuresComponent.stateOfRepair > 6)
+                            if (inhabited && featuresComponent.wear < 6)
                                 notCampableDesc = "Many entrances have big yellow warning signs on them, with the text 'KEEP OUT' and a <span class='hl-functionality'>radiation</span> sign. ";
                             else if (inhabited && featuresComponent.buildingDensity > 5)
                                 notCampableDesc = "Walls are covered in graffiti warning about <span class='hl-functionality'>radiation</span>. ";
@@ -509,7 +509,7 @@ define([
                             break;
 
                         case LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION:
-                            if (inhabited && featuresComponent.stateOfRepair > 6)
+                            if (inhabited && featuresComponent.wear < 6)
                                 notCampableDesc = "Many entrances have big red warning signs on them with a <span class='hl-functionality'>skull sign</span> and the text 'KEEP OUT'. ";
                             else if (inhabited && featuresComponent.buildingDensity > 5)
                                 notCampableDesc = "Walls are covered in graffiti warning about some kind of <span class='hl-functionality'>pollution</span>.";
@@ -617,7 +617,7 @@ define([
 			$("#table-out-actions-locales").empty();
 			for (var i = 0; i < sectorLocalesComponent.locales.length; i++) {
 				var locale = sectorLocalesComponent.locales[i];
-				var button = "<button class='action multiline' action='scout_locale_" + locale.getCategory() + "_" + i + "'>" + TextConstants.getLocaleName(locale, sectorFeaturesComponent.stateOfRepair) + "</button>";
+				var button = "<button class='action multiline' action='scout_locale_" + locale.getCategory() + "_" + i + "'>" + TextConstants.getLocaleName(locale, sectorFeaturesComponent) + "</button>";
 				var info = "<span class='p-meta'>";
                 if (sectorStatusComponent.isLocaleScouted(i)) {
                     if (locale.type == localeTypes.tradingpartner) {

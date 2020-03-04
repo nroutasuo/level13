@@ -78,12 +78,11 @@ define([
             var l = sectorVO.position.level;
             var x = sectorVO.position.sectorX;
             var y = sectorVO.position.sectorY;
-            var stateOfRepair = sectorVO.stateOfRepair;
             var sectorType = sectorVO.sectorType;
             var sRandom = (x * 22 + y * 3000);
             
             var sectorAbundanceFactor = WorldCreatorRandom.random(seed * sRandom + (x + 99) * 7 * (y - 888));
-            var waterRandomPart = WorldCreatorRandom.random(seed * (l + 1000) * (x + y + 900) + 10134) * Math.abs(5 - stateOfRepair) / 5;
+            var waterRandomPart = WorldCreatorRandom.random(seed * (l + 1000) * (x + y + 900) + 10134) * Math.abs(5 - sectorVO.wear) / 5;
 
             var result = new ResourcesVO();
             
@@ -91,7 +90,7 @@ define([
             switch (sectorType) {
             case WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL:
                 result.metal = 3;
-                result.food = WorldCreatorRandom.random(seed + l * x * y * 24 + x * 33 + 6) > 0.60 ? Math.round(sectorAbundanceFactor * 5 + stateOfRepair / 2) : 0;
+                result.food = WorldCreatorRandom.random(seed + l * x * y * 24 + x * 33 + 6) > 0.60 ? Math.round(sectorAbundanceFactor * 5 + sectorVO.wear / 2) : 0;
                 result.water = waterRandomPart > 0.82 ? 2 : 0;
                 result.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.95 ? 1 : 0;
                 result.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.95 ? 1 : 0;
@@ -118,7 +117,7 @@ define([
                 break;
             case WorldCreatorConstants.SECTOR_TYPE_SLUM:
                 result.metal = 7;
-                result.food = WorldCreatorRandom.random(seed / (l+10) + x * y * 63) > 0.75 ? Math.round(sectorAbundanceFactor * 5 + stateOfRepair / 2) : 0;
+                result.food = WorldCreatorRandom.random(seed / (l+10) + x * y * 63) > 0.75 ? Math.round(sectorAbundanceFactor * 5 + sectorVO.wear / 2) : 0;
                 result.water = waterRandomPart > 0.75 ? 1 : 0;
                 result.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.85 ? 1 : 0;
                 result.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.95 ? 1 : 0;
@@ -131,11 +130,11 @@ define([
             
             // Adjustments for bottom / top / campable levels
             if (l === bottomLevel) {
-                result.herbs = WorldCreatorRandom.random(seed * l / x + y * 423) * (10 - stateOfRepair);
+                result.herbs = WorldCreatorRandom.random(seed * l / x + y * 423) * (10 - sectorVO.wear);
             }
             
             if (l === bottomLevel + 1) {
-                result.herbs = WorldCreatorRandom.random(seed * l / x + y * 423) * (10 - stateOfRepair) / 2;
+                result.herbs = WorldCreatorRandom.random(seed * l / x + y * 423) * (10 - sectorVO.wear) / 2;
             }
             
             if (sectorVO.camp || (l === 13 && x === WorldCreatorConstants.FIRST_CAMP_X && y === WorldCreatorConstants.FIRST_CAMP_Y)) {
@@ -161,9 +160,8 @@ define([
             var x = sectorVO.position.sectorX;
             var y = sectorVO.position.sectorY;
             var sectorCentralness = (10 - (Math.abs(x) / 10) + 10 - (Math.abs(y) / 10)) / 2;
-            var stateOfRepair = sectorVO.stateOfRepair;
             var sectorType = sectorVO.sectorType;
-            var sectorNatureFactor = (WorldCreatorRandom.random(seed + (x + 1453) / 55 * (y - 455)) * (10 - stateOfRepair + 1)) / 10;
+            var sectorNatureFactor = (WorldCreatorRandom.random(seed + (x + 1453) / 55 * (y - 455)) * (sectorVO.wear)) / 10;
             var sectorWaterFactor = (WorldCreatorRandom.random(seed / (x + 30) + (y + 102214)) * (sectorCentralness + 10)) / 25;
             
             var result = new ResourcesVO();

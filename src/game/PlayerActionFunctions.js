@@ -548,7 +548,7 @@ define(['ash',
 					if (sectorLocalesComponent.locales.length > 1)
 						logMsg += "<br/>There are some interesting buildings here.";
 					else
-						logMsg += "<br/>There is a " + TextConstants.getLocaleName(locale, featuresComponent.stateOfRepair, true).toLowerCase() + " here that seems worth investigating.";
+						logMsg += "<br/>There is a " + TextConstants.getLocaleName(locale, featuresComponent, true).toLowerCase() + " here that seems worth investigating.";
 				}
 
 				var playerActionFunctions = this;
@@ -576,7 +576,7 @@ define(['ash',
 			var action = "scout_locale_" + localeVO.getCategory() + "_" + i;
 
 			// TODO add more interesting log messages - especially for trade partners
-			var localeName = TextConstants.getLocaleName(localeVO, sectorFeaturesComponent.stateOfRepair);
+			var localeName = TextConstants.getLocaleName(localeVO, sectorFeaturesComponent);
 			localeName = localeName.split(" ")[localeName.split(" ").length - 1];
 			var baseMsg = "Scouted the " + localeName + ". ";
 			var logMsgSuccess = baseMsg;

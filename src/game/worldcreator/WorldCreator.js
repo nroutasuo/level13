@@ -169,8 +169,7 @@ define([
 
 				var levelDensity = Math.min(Math.max(2, i % 2 * 4 + WorldCreatorRandom.random(seed * 7 * l / 3 + 62) * 7), 8);
 				if (Math.abs(i - 15) < 2) levelDensity = 10;
-				var levelRepair = Math.max(2, (i - 15) * 2);
-				if (i <= 5) levelRepair = levelRepair - 2;
+				var levelWear = MathUtils.clamp((topLevel - i) / (topLevel - 5) * 8, 0, 10);
 
                 for (var s = 0; s < levelVO.sectors.length; s++) {
                     var sectorVO = levelVO.sectors[s];
@@ -216,27 +215,28 @@ define([
                         }
                     }
 
-                    // state of repair
+                    // wear and damage
                     var explosionStrength = i - topLevel >= -3 && distanceToCenter <= 10 ? distanceToCenter * 2 : 0;
-                    var stateOfRepair = Math.min(10, Math.max(0, Math.ceil(levelRepair + (WorldCreatorRandom.random(seed * l * (x + 100) * (y + 100)) * 5)) - explosionStrength));
-                    if (sectorVO.camp) stateOfRepair = Math.max(3, stateOfRepair);
-                    if (isOpenEdge) stateOfRepair = Math.min(7, stateOfRepair);
-                    if (isBrokenEdge) stateOfRepair = Math.min(3, stateOfRepair);
-                    if (l == 14) stateOfRepair = Math.min(3, stateOfRepair);
-                    sectorVO.stateOfRepair = Math.round(stateOfRepair);
+                    var wear = levelWear + WorldCreatorRandom.randomInt(seed * l * (x + 100) * (y + 100), -2, 2);
+                    var damage = explosionStrength;
+                    if (sectorVO.camp) wear = Math.min(3, wear);
+                    if (sectorVO.camp) damage = Math.min(3, damage);
+                    if (isOpenEdge) wear = Math.max(4, wear);
+                    if (isBrokenEdge) wear = Math.max(6, wear);
+                    if (l == 14) damage = Math.max(3, damage);
+                    sectorVO.wear = MathUtils.clamp(Math.round(wear), 0, 10);
+                    sectorVO.damage = MathUtils.clamp(Math.round(damage), 0, 10);
 
                     // sector type
                     var sectorType = WorldCreatorHelper.getSectorType(seed, l, levelVO, x, y);
                     sectorVO.sectorType = sectorType;
 
                     // buildingDensity
-                    var buildingDensity = Math.ceil(
-                        Math.min(Math.min(levelDensity + 1, 10),
-                        Math.max(0, levelDensity / 1.5 + Math.round((WorldCreatorRandom.random(seed * l * x + y + x) - 0.5) * 5) + (stateOfRepair) / 5)));
+                    var buildingDensity = levelDensity + WorldCreatorRandom.randomInt(seed * l * x + y + x, -5, 5);
                     if (sectorVO.camp) {
                         buildingDensity = Math.min(1, Math.max(8, buildingDensity));
                     }
-                    sectorVO.buildingDensity = buildingDensity;
+                    sectorVO.buildingDensity = MathUtils.clamp(Math.round(buildingDensity), 0, 10);
 				}
 			}
 
@@ -1674,7 +1674,8 @@ define([
             sectorFeatures.criticalPaths = sectorVO.criticalPaths || [];
             sectorFeatures.zone = sectorVO.zone;
 			sectorFeatures.buildingDensity = sectorVO.buildingDensity;
-			sectorFeatures.stateOfRepair = sectorVO.stateOfRepair;
+			sectorFeatures.wear = sectorVO.wear;
+			sectorFeatures.damage = sectorVO.damage;
 			sectorFeatures.sunlit = sectorVO.sunlit > 0;
             sectorFeatures.hazards = sectorVO.hazards;
 			sectorFeatures.sectorType = sectorVO.sectorType;
