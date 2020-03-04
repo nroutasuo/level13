@@ -131,6 +131,7 @@ define([
             if (hasSector) {
                 var position = this.selectedSector.get(PositionComponent).getPosition();
     			var isScouted = this.selectedSector.get(SectorStatusComponent).scouted;
+    			var sectorFeatures = this.selectedSector.get(SectorFeaturesComponent);
                 $("#mainmap-sector-details-pos").text(position.getInGameFormat(false));
                 $("#mainmap-sector-details-poi").text(this.getPOIText(this.selectedSector, isScouted));
                 $("#mainmap-sector-details-res-sca").text(this.getResScaText(this.selectedSector, isScouted));
@@ -139,6 +140,7 @@ define([
                 $("#mainmap-sector-details-blockers").text(this.getBlockersText(this.selectedSector, isScouted));
                 $("#mainmap-sector-details-env").text(this.getEnvironmentText(this.selectedSector, isScouted));
                 $("#mainmap-sector-details-distance").text(this.getDistanceText(this.selectedSector));
+                $("#mainmap-sector-debug-text").text("Zone: " + sectorFeatures.zone + ", enemy difficulty: " + sectorFeatures);
             }
         },
 
