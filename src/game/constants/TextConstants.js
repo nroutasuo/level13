@@ -20,7 +20,8 @@ function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, W
             var type = hasVision ? "sector-vision" : "sector-novision";
             var template = DescriptionMapper.get(type, features);
             var params = this.getSectorTextParams(features);
-            return TextBuilder.build(template, params);
+            var phrase = TextBuilder.build(template, params);
+            return this.capitalize(phrase);
 		},
         
         getSectorTextParams: function (features) {
@@ -646,7 +647,12 @@ function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, W
         },
 		
 		capitalize: function (string) {
-			return string.charAt(0).toUpperCase() + string.slice(1);
+            for (var i = 0; i < string.length; i++) {
+                var c = string.charAt(i);
+                if (c == "[" || c == "]" || c == "(" || c == ")") continue;
+                return string.substr(0, i) + c.toUpperCase() + string.substr(i + 1);
+            }
+            return string;
 		}
 	};
 		
