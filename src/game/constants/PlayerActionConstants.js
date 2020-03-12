@@ -110,7 +110,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 move_sector_north: {
                     vision: [5, -1],
                     sector: {
-                        blockerNorth: false,
+                        blockerNORTH: false,
                     },
                     busy: false,
                     inCamp: false,
@@ -119,7 +119,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 move_sector_south: {
                     vision: [5, -1],
                     sector: {
-                        blockerSouth: false,
+                        blockerSOUTH: false,
                     },
                     busy: false,
                     inCamp: false,
@@ -128,7 +128,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 move_sector_east: {
                     vision: [5, -1],
                     sector: {
-                        blockerEast: false,
+                        blockerEAST: false,
                     },
                     busy: false,
                     inCamp: false,
@@ -137,7 +137,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 move_sector_west: {
                     vision: [5, -1],
                     sector: {
-                        blockerWest: false,
+                        blockerWEST: false,
                     },
                     busy: false,
                     inCamp: false,

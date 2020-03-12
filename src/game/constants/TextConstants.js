@@ -1,8 +1,10 @@
+// Level 13 specific text helpers
+
 define(
 ['ash',
-    'utils/DescriptionMapper', 'utils/TextBuilder',
+    'utils/DescriptionMapper', 'text/Text', 'text/TextBuilder',
     'game/constants/GameConstants', 'game/constants/SectorConstants', 'game/constants/WorldCreatorConstants', 'game/constants/PositionConstants', 'game/constants/MovementConstants'],
-function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, WorldCreatorConstants, PositionConstants, MovementConstants) {
+function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConstants, WorldCreatorConstants, PositionConstants, MovementConstants) {
     
     var TextConstants = {
 		
@@ -21,7 +23,7 @@ function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, W
             var template = DescriptionMapper.get(type, features);
             var params = this.getSectorTextParams(features);
             var phrase = TextBuilder.build(template, params);
-            return this.capitalize(phrase);
+            return Text.capitalize(phrase);
 		},
         
         getSectorTextParams: function (features) {
@@ -221,7 +223,7 @@ function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, W
                 case MovementConstants.PASSAGE_TYPE_BLOCKED:
                     return "There seems to have been a staircase here once but it has been destroyed beyond repair.";
                 default:
-                    return "There used to be " + TextConstants.addArticle(passageVO.name.toLowerCase()) + " here.";
+                    return "There used to be " + Text.addArticle(passageVO.name.toLowerCase()) + " here.";
             }
         },
         
@@ -268,7 +270,7 @@ function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, W
                         }
                     default:
                         var name = passageVO.name.toLowerCase() + " " + directionName;
-                        var article = TextConstants.getArticle(name);
+                        var article = Text.getArticle(name);
                         var span = article + " " + makeHighlight(name);
                         var state;
                         if (isBuilt) {
@@ -605,7 +607,7 @@ function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, W
             // log.i(objectList)
             
 			if (validDetail.length > 0) {
-				return this.pluralify(validDetail);
+				return Text.pluralify(validDetail);
 			} else if (validWords.length > 0) {
 				return validWords[0];
 			} else if (allowSeveral && minimumWords.length > 1) {
@@ -615,45 +617,6 @@ function (Ash, DescriptionMapper, TextBuilder, GameConstants, SectorConstants, W
 			}
 		},
 		
-		pluralify: function (s) {
-			if (s.endsWith("roach")) {
-				return s + "es";
-			} else if (s[s.length - 1] !== "s") {
-				return s + "s";
-			} else {
-				return s;
-			}
-		},
-		
-		depluralify: function (s) {
-			return s.substr(0, s.length - 1);
-		},
-		
-		addArticle: function (s) {
-            return this.getArticle(s) + " " + s;
-		},
-        
-        getArticle: function (s) {
-            switch (s.trim().charAt(0).toLowerCase()) {
-                case "a":
-                case "i":
-                case "e":
-                case "o":
-                // u is often ambiguous use "a" until adding a fancier rule
-                    return "an";
-                default:
-                    return "a";
-            }
-        },
-		
-		capitalize: function (string) {
-            for (var i = 0; i < string.length; i++) {
-                var c = string.charAt(i);
-                if (c == "[" || c == "]" || c == "(" || c == ")") continue;
-                return string.substr(0, i) + c.toUpperCase() + string.substr(i + 1);
-            }
-            return string;
-		}
 	};
 		
 	function initSectorTexts() {

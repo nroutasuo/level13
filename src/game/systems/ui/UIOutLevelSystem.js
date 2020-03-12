@@ -1,5 +1,6 @@
 define([
     'ash',
+    'text/Text',
     'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/PlayerActionConstants',
@@ -33,7 +34,7 @@ define([
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/EnemiesComponent'
 ], function (
-    Ash, GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, TradeConstants, WorldCreatorConstants,
+    Ash, Text,GameGlobals, GlobalSignals, PlayerActionConstants, PlayerStatConstants, TextConstants, LogConstants, UIConstants, PositionConstants, LocaleConstants, LevelConstants, MovementConstants, TradeConstants, WorldCreatorConstants,
     PlayerPositionNode, PlayerLocationNode, NearestCampNode,
     VisionComponent, StaminaComponent, ItemsComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent,
     MovementOptionsComponent, ExcursionComponent, PositionComponent, LogMessagesComponent, CampComponent,
@@ -387,7 +388,7 @@ define([
 				var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
                 var workshopControl = sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP);
                 var workshopStatus = workshopControl ? "cleared for use" : "not cleared";
-				description += "There is " + TextConstants.addArticle(workshopName) + " here (" + workshopStatus + "). ";
+				description += "There is " + Text.addArticle(workshopName) + " here (" + workshopStatus + "). ";
 			}
 
 			return description;

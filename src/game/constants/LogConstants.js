@@ -1,4 +1,4 @@
-define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], function (Ash, TextConstants, ItemConstants) {
+define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/ItemConstants'], function (Ash, Text, TextConstants, ItemConstants) {
 
     var LogConstants = {
 
@@ -184,7 +184,7 @@ define(['ash', 'game/constants/TextConstants', 'game/constants/ItemConstants'], 
                     itemDetails = " Light will make scavenging safer.";
                     break;
             }
-            return "Made " + TextConstants.addArticle(itemVO.name) + "." + itemDetails;
+            return "Made " + Text.addArticle(itemVO.name) + "." + itemDetails;
         },
 
     }

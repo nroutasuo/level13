@@ -620,7 +620,7 @@ define([
                             var direction = PositionConstants.getLevelDirections()[i];
                             var directionName = PositionConstants.getDirectionName(direction);
 
-                            var blockerKey = "blocker" + TextConstants.capitalize(directionName);
+                            var blockerKey = "blocker" + directionName.toUpperCase();
                             if (typeof requirements.sector[blockerKey] !== 'undefined') {
                                 var requiredValue = requirements.sector[blockerKey];
                                 var currentValue = !movementOptionsComponent.canMoveTo[direction];
@@ -1025,7 +1025,7 @@ define([
 					var direction = parseInt(action.split("_")[2]);
 					requirements.sector = $.extend({}, PlayerActionConstants.requirements[baseActionID].sector);
                     var directionName = PositionConstants.getDirectionName(direction);
-                    var blockerKey = "blocker" + TextConstants.capitalize(directionName);
+                    var blockerKey = "blocker" + directionName.toUpperCase();
                     requirements.sector[blockerKey] = true;
 					return requirements;
                 case "clear_waste_t":

@@ -56,6 +56,7 @@ define(['ash',
 	'game/systems/ui/UIOutLevelSystem',
 	'game/systems/FaintingSystem',
 	'game/systems/PlayerPositionSystem',
+	'text/Text',
 	'utils/StringUtils'
 ], function (Ash, GameGlobals, GlobalSignals,
 	GameConstants, CampConstants, LogConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, TradeConstants, UpgradeConstants, TextConstants,
@@ -69,7 +70,7 @@ define(['ash',
 	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, TraderComponent,
 	LogMessagesComponent,
 	UIOutHeaderSystem, UIOutTabBarSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem,
-    StringUtils
+    Text, StringUtils
 ) {
 	var PlayerActionFunctions = Ash.System.extend({
 
@@ -514,13 +515,13 @@ define(['ash',
 				var sunlit = featuresComponent.sunlit;
 				if (featuresComponent.hasSpring) {
 					found = true;
-					logMsg += "<br/>Found " + TextConstants.addArticle(TextConstants.getSpringName(featuresComponent)) + ".";
+					logMsg += "<br/>Found " + Text.addArticle(TextConstants.getSpringName(featuresComponent)) + ".";
 				}
                 
 				var workshopComponent = sector.get(WorkshopComponent);
 				if (workshopComponent) {
 					found = true;
-					logMsg += "<br/>Found " + TextConstants.addArticle(TextConstants.getWorkshopName(workshopComponent.resource));
+					logMsg += "<br/>Found " + Text.addArticle(TextConstants.getWorkshopName(workshopComponent.resource));
 				}
                 
                 if (featuresComponent.campable) {

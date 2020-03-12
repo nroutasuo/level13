@@ -12,7 +12,7 @@ define(function () {
         VAR_INDEFINITE_ARTICLE: "A",
         
         isDebugMode: false,
-        language: {},
+        language: null,
         
         build: function (template, params) {
             var result = template;
