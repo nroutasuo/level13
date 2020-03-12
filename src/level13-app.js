@@ -4,8 +4,9 @@ define([
     'core/ConsoleLogger',
     'game/level13',
     'game/constants/GameConstants',
-    'utils/TextBuilder'
-], function (module, jQuery, ConsoleLogger, Level13, GameConstants, TextBuilder) {
+    'utils/TextBuilder',
+    'utils/lang/LangEnglish'
+], function (module, jQuery, ConsoleLogger, Level13, GameConstants, TextBuilder, LangEnglish) {
     'use strict';
 
     function Level13App() {
@@ -17,6 +18,7 @@ define([
             GameConstants.isAutosaveEnabled = config.isAutosaveEnabled;
             ConsoleLogger.logInfo = config.isDebugOutputEnabled;
             TextBuilder.isDebugMode = config.isDebugVersion;
+            TextBuilder.language = LangEnglish;
 
             GameConstants.STARTTimeStart = new Date().getTime();
             GameConstants.STARTTimeNow = function () {
