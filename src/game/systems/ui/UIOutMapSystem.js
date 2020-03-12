@@ -131,7 +131,11 @@ define([
             if (hasSector) {
                 var position = this.selectedSector.get(PositionComponent).getPosition();
     			var isScouted = this.selectedSector.get(SectorStatusComponent).scouted;
+                var isVisited = this.selectedSector.has(VisitedComponent);
     			var sectorFeatures = this.selectedSector.get(SectorFeaturesComponent);
+                var features = GameGlobals.sectorHelper.getTextFeatures(this.selectedSector);
+                var header = isVisited ? TextConstants.getSectorName(isScouted, features) : "Sector";
+                $("#mainmap-sector-details-name").text(header);
                 $("#mainmap-sector-details-pos").text(position.getInGameFormat(false));
                 $("#mainmap-sector-details-poi").text(this.getPOIText(this.selectedSector, isScouted));
                 $("#mainmap-sector-details-res-sca").text(this.getResScaText(this.selectedSector, isScouted));

@@ -17,7 +17,31 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                     return baseActionID;
             }
         },
+        
+        getSectorName: function (isScouted, features) {
+            var template = "[a-sectortype] [n-street]";
+            var params = this.getSectorTextParams(features);
+            var phrase = TextBuilder.build(template, params);
+            return Text.capitalize(phrase);
+        },
 		
+        getSectorHeader: function (hasVision, features) {
+            var template = "[a-street] [a-sectortype] [n-street]";
+            if (features.hasCamp) {
+                template = "[n-street] with camp";
+            }
+            if (!hasVision) {
+                if (features.sunlit) {
+                    template = "sunlit [n-street]";
+                } else {
+                    template = "dark [n-street]";
+                }
+            }
+            var params = this.getSectorTextParams(features);
+            var phrase = TextBuilder.build(template, params);
+            return Text.capitalize(phrase);
+        },
+        
 		getSectorDescription: function (hasVision, features) {
             var type = hasVision ? "sector-vision" : "sector-novision";
             var template = DescriptionMapper.get(type, features);
@@ -101,12 +125,12 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                 addOptions("n-street", [ "sector", "space", "square" ]);
                 addOptions("a-street", [ "wide", "spacious" ]);
             } else if (features.buildingDensity < 6) {
-                addOptions("n-street", [ "throughfare", "square", "space", "area", "hall" ]);
+                addOptions("n-street", [ "throughfare", "square", "area", "hall" ]);
                 if (features.sectorType == WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL || features.sectorType == WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL)
                     addOptions("n-street", [ "boulevard", "avenue" ]);
                 addOptions("a-street", [ "wide", "spacious" ]);
             } else if (features.buildingDensity < 9) {
-                addOptions("n-street", [ "street", "alley", "throughfare", "complex", "sector" ]);
+                addOptions("n-street", [ "street", "street", "alley", "complex", "sector" ]);
                 addOptions("a-street", [ "narrow" ]);
             } else {
                 addOptions("n-street", [ "corridor", "passage", "alley" ]);
@@ -126,12 +150,13 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                     addOptions("an-decos", [ "collapsed tunnels" ]);
                     break;
                 case SectorConstants.SECTOR_CONDITION_ABANDONED:
-                    addOptions("a-building", [ "decaying", "desolate", "slowly decomposing", "long since abandoned" ]);
+                    addOptions("a-building", [ "decaying", "desolate", "slowly decomposing", "long since abandoned", "crumbling" ]);
                     break;
                 case SectorConstants.SECTOR_CONDITION_WORN:
-                    addOptions("a-building", [ "desolate" ]);
+                    addOptions("a-building", [ "desolate", "abandoned" ]);
                     break;
                 case SectorConstants.SECTOR_CONDITION_RECENT:
+                    addOptions("a-building", [ "well-preserved" ]);
                     break;
                 case SectorConstants.SECTOR_CONDITION_MAINTAINED:
                     break;

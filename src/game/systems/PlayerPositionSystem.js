@@ -101,9 +101,8 @@ define([
                     levelNode.entity.add(new CurrentPlayerLocationComponent());
                     if (!levelNode.entity.has(VisitedComponent)) {
                         this.handleNewLevel(levelNode, levelpos);
-                    } else {
-                        this.handleEnterLevel(levelNode, levelpos);
                     }
+                    this.handleEnterLevel(levelNode, levelpos);
                 } else if (levelpos != playerPos.level && levelNode.entity.has(CurrentPlayerLocationComponent)) {
                     levelNode.entity.remove(CurrentPlayerLocationComponent);
                 }

@@ -61,55 +61,6 @@ define(
         
         // Text functions
         
-        getSectorTypeName: function (hasLight, hasCamp) {
-            var densityAdj = "";
-            var repairAdj = "";
-            var typeNoun = "";
-            var genericNoun = "";
-        
-            if (this.buildingDensity > 8)      densityAdj = "narrow";
-            else if (this.buildingDensity < 1) densityAdj = "emty";
-            else                               densityAdj = "";
-            
-            if (hasLight) {
-                if (this.wear < 3)      repairAdj = "quiet";
-                else if (this.wear < 5) repairAdj = "abandoned";
-                else if (this.wear < 7) repairAdj = "crumbling";
-                else                             repairAdj = "ruined";
-            } else {
-                if (this.wear < 5)      repairAdj = "";
-                else                             repairAdj = "crumbling";
-            }
-            
-            switch (this.sectorType) {
-                case WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL: typeNoun = "residential"; break;
-                case WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL: typeNoun = "industrial"; break;
-                case WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE: typeNoun = "maintenance"; break;
-                case WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL: typeNoun = "commercial"; break;
-                case WorldCreatorConstants.SECTOR_TYPE_PUBLIC: typeNoun = "public"; break;
-                case WorldCreatorConstants.SECTOR_TYPE_SLUM: typeNoun = "slum"; break;
-            }
-                 
-            if (this.buildingDensity > 9)       genericNoun = "passage";
-            if (this.buildingDensity > 8)       genericNoun = "corridor";
-            else if (this.buildingDensity > 4)  genericNoun = "street";
-            else if (this.buildingDensity > 0)  genericNoun = "square";
-            else genericNoun = "sector";
-           
-            var wholeNoun = typeNoun + " " + genericNoun;
-            if (this.sectorType === WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL && this.buildingDensity > 8) {
-                wholeNoun = "back alley";
-            }
-            
-            if (hasCamp) {
-                return genericNoun + " with camp";
-            } else if (hasLight) {
-                return repairAdj + " " + wholeNoun;
-            } else {
-                return "dark" + " " + repairAdj + " " + densityAdj + " " + genericNoun;
-            }
-        },
-        
         getScaResourcesString: function (discoveredResources) {
             var s = "";
              for(var key in resourceNames) {

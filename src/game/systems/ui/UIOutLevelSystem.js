@@ -300,7 +300,7 @@ define([
 			var hasEnemies = enemiesComponent.hasEnemies;
 
 			var description = "<p>";
-			description += this.getTextureDescription(hasVision, position, featuresComponent, statusComponent, localesComponent);
+			description += this.getTextureDescription(hasVision, entity, position, featuresComponent, statusComponent, localesComponent);
 			description += this.getFunctionalDescription(hasVision, isScouted, featuresComponent, workshopComponent, hasCampHere, hasCampOnLevel);
 			description += "</p><p>";
 			description += this.getStatusDescription(hasVision, isScouted, hasEnemies, featuresComponent, passagesComponent, hasCampHere, hasCampOnLevel);
@@ -311,19 +311,12 @@ define([
 			return description;
 		},
 
-		getTextureDescription: function (hasVision, position, featuresComponent, statusComponent, localesComponent) {
-            var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(position.level);
+		getTextureDescription: function (hasVision, sector, position, featuresComponent, statusComponent, localesComponent) {
             var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
             var levelVO = GameGlobals.levelHelper.getLevelVO(position.level);
             
             // sector static description
-            var features = Object.assign({}, featuresComponent);
-            features.level = position.level;
-            features.levelOrdinal = levelOrdinal;
-            features.condition = featuresComponent.getCondition();
-            features.levelPopulationGrowthFactor = levelVO.populationGrowthFactor;
-            features.isSurfaceLevel = levelVO.level == GameGlobals.gameState.getSurfaceLevel();
-            features.isGroundLevel = levelVO.level == GameGlobals.gameState.getGroundLevel();
+            var features = GameGlobals.sectorHelper.getTextFeatures(sector);
 			var desc = TextConstants.getSectorDescription(hasVision, features) + ". ";
 
             // light / darkness description
@@ -682,6 +675,7 @@ define([
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 
+            var sector = this.playerLocationNodes.head.entity;
 			var vision = this.playerPosNodes.head.entity.get(VisionComponent).value;
 			var hasVision = vision > PlayerStatConstants.VISION_BASE;
 			var hasCamp = GameGlobals.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
@@ -689,14 +683,12 @@ define([
             var isScouted = sectorStatusComponent.scouted;
 
 			// Header
-			var header = "";
-			var name = featuresComponent.getSectorTypeName(hasVision || featuresComponent.sunlit, hasCampHere);
-			header = name;
-            this.elements.sectorHeader.text(header);
+            var features = GameGlobals.sectorHelper.getTextFeatures(sector);
+            this.elements.sectorHeader.text(TextConstants.getSectorHeader(hasVision, features));
 
 			// Description
             this.elements.description.html(this.getDescription(
-                this.playerLocationNodes.head.entity,
+                sector,
                 hasCampHere,
                 hasCamp,
                 hasVision,

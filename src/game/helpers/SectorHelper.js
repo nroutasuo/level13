@@ -1,14 +1,20 @@
 // Singleton with helper methods for level entities
 define([
     'ash',
+    'game/GameGlobals',
     'game/nodes/sector/SectorNode',
     'game/nodes/PlayerLocationNode',
+    'game/components/common/CampComponent',
+    'game/components/common/PositionComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/SectorFeaturesComponent',
 ], function (
 	Ash,
+    GameGlobals,
 	SectorNode,
 	PlayerLocationNode,
+    CampComponent,
+    PositionComponent,
 	SectorStatusComponent,
 	SectorFeaturesComponent
 ) {
@@ -23,6 +29,24 @@ define([
 			this.sectorNodes = engine.getNodeList(SectorNode);
 			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 		},
+        
+        getTextFeatures: function (sector) {
+            var position = sector.get(PositionComponent).getPosition();
+            var featuresComponent = sector.get(SectorFeaturesComponent);
+            var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(position.level);
+            var levelVO = GameGlobals.levelHelper.getLevelVO(position.level);
+            var hasCamp = sector.has(CampComponent);
+            
+            var features = Object.assign({}, featuresComponent);
+            features.level = position.level;
+            features.levelOrdinal = levelOrdinal;
+            features.condition = featuresComponent.getCondition();
+            features.levelPopulationGrowthFactor = levelVO.populationGrowthFactor;
+            features.isSurfaceLevel = levelVO.level == GameGlobals.gameState.getSurfaceLevel();
+            features.isGroundLevel = levelVO.level == GameGlobals.gameState.getGroundLevel();
+            features.hasCamp = hasCamp;
+            return features;
+        },
 		
 		getLocationDiscoveredResources: function (sector) {
             var resources = [];
