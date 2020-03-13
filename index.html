@@ -34,9 +34,6 @@
 			<div class="unit three-quarters" id="unit-main" style="display: none">
 
                 <div id="header-self-bar" class="lvl13-box-2">
-                    <div id="header-self-inout"><img src="img/ui-camp-dark.png" alt="camp" title="camp" width="30" height="30" class="rotate-on-hover" /></div>
-                    <span id="out-position-indicator-header" class="vision-text">location</span>
-                    <span id="out-position-indicator" class="vision-text"></span>
                     <div id="notification-player" class="unit whole notification">
                         <div id="notification-player-bar" class="progress-wrap progress">
                             <div class="progress-bar progress"></div>
@@ -134,6 +131,7 @@
                 
                 <div class="grid">
                     <div id="grid-location-header" class="unit whole">
+                        <img id="level-icon" />
                         <h3 id="in-game-date">Y783</h3>
                         <h1>Camp</h1>
                     </div>
@@ -317,9 +315,10 @@
 					<div class="grid tabelement" id="container-tab-two-out" data-tab="switch-out">
                         <div class="unit unit-compass" id="out-container-compass">
                             <div id="minimap-container" class="canvas-container" style="width: 208px; height: 208px">
-                            <canvas id="minimap" width="208" height="208">
-                            </canvas>
+                                <canvas id="minimap" width="208" height="208">
+                                </canvas>
                             </div>
+                            <span id="out-position-indicator" class="vision-text"></span>
                         </div>
 						<div class="unit unit-rest">
                             <h2 id="header-sector">Sector header</h2>

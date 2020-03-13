@@ -136,11 +136,6 @@ span.msg-count, span.time, span.msg-camp-level {
    max-width: 75px;
 }
 
-#header-self-inout img {
-   -webkit-transition: -webkit-transform 1s;
-   transition: all 1s;
-}
-
 #header-self-bar .change-indicator {
 	vertical-align: top;
 	margin: 0.2em 0 0 0.25em;
@@ -148,6 +143,23 @@ span.msg-count, span.time, span.msg-camp-level {
 
 #header-self-bar div.callout-arrow-up {
 	margin: 0 0 0 (@header-self-bar-width/2 - @callout-arrow-size);
+}
+
+// LOCATION HEADER
+
+#grid-location-header {
+   padding: 10px 0px 0px 0px;
+}
+
+#grid-location-header h1, #grid-location-header img {
+   display: inline-block;
+   vertical-align: middle;
+}
+
+#level-icon {
+    margin: 3px 3px 3px 0;
+    width: 2.5em;
+    height: 2.5em;
 }
 
 // BAG SCREEN
@@ -179,7 +191,7 @@ span.msg-count, span.time, span.msg-camp-level {
 
 // PLAYER POSITION INDICATOR
 
-span#out-position-indicator, span#out-position-indicator-header {
+span#out-position-indicator {
 	font-size: 80%;
 	line-height: 1.1em;
 }

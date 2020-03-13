@@ -4,6 +4,7 @@ define([
     'game/GlobalSignals',
     'game/constants/GameConstants',
     'game/constants/CampConstants',
+	'game/constants/LevelConstants',
     'game/constants/UIConstants',
     'game/constants/ItemConstants',
     'game/constants/FightConstants',
@@ -27,7 +28,7 @@ define([
     'game/components/sector/ReputationComponent',
     'utils/UIState'
 ], function (Ash,
-    GameGlobals, GlobalSignals, GameConstants, CampConstants, UIConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
+    GameGlobals, GlobalSignals, GameConstants, CampConstants, LevelConstants, UIConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
     SaveSystem,
 	PlayerStatsNode, AutoPlayNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
     BagComponent,
@@ -549,12 +550,11 @@ define([
 
             var featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
             var sunlit = featuresComponent.sunlit;
-            var imgName = "img/ui-" + (inCamp ? "camp" : "explore") + (sunlit ? "" : "-dark") + ".png";
-            if ($("#header-self-inout img").attr("src") !== imgName)
-                $("#header-self-inout img").attr("src", imgName);
-            $("#header-self-inout img").attr("alt", (inCamp ? "in camp" : "outside"));
-            $("#header-self-inout img").attr("title", (inCamp ? "in camp" : "outside"));
-            $("#header-self-inout img").toggleClass("rotate-on-hover", !inCamp);
+            var icon = this.getLevelIcon(inCamp, this.currentLocationNodes.head.entity);
+            if ($("#level-icon").attr("src") !== icon.src)
+                $("#level-icon").attr("src", icon.src);
+            $("#level-icon").attr("alt", icon.desc);
+            $("#level-icon").attr("title", icon.desc);
 
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var hasMap = itemsComponent.getCountById(ItemConstants.itemDefinitions.uniqueEquipment[0].id, true) > 0;
@@ -617,6 +617,53 @@ define([
         isResting: function () {
             var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
             return busyComponent && busyComponent.getLastActionName() == "use_in_home";
+        },
+        
+        getLevelIcon: function (inCamp, sector) {
+            var result = { src: "", desc: "" };
+            var position = sector.get(PositionComponent);
+            var featuresComponent = sector.get(SectorFeaturesComponent);
+            var levelVO = GameGlobals.levelHelper.getLevelVO(position.level);
+            var sunlit = featuresComponent.sunlit;
+            var path = "img/";
+            var base = "";
+            var desc = "";
+            if (inCamp) {
+                base = levelVO.populationGrowthFactor < 1 ? "ui-camp-outpost" : "ui-camp-default";
+                desc = levelVO.populationGrowthFactor < 1 ? "in camp | outpost" : "in camp | regular";
+            } else {
+                var surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
+                var groundLevel = GameGlobals.gameState.getGroundLevel();
+                if (levelVO.level == surfaceLevel) {
+                    base = "ui-level-sun";
+                    desc = "outside | surface";
+                } else if (levelVO.level == groundLevel) {
+                    base = "ui-level-ground";
+                    desc = "outside | ground";
+                } else if (!levelVO.isCampable) {
+                    switch (levelVO.notCampableReason) {
+                        case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
+                            base = "ui-level-radiation";
+                            desc = "outside | radiation level";
+                            break;
+                        case LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION:
+                            base = "ui-level-poison";
+                            desc = "outside | polluted level";
+                            break;
+                        default:
+                            base = "ui-level-empty";
+                            desc = "outside | uninhabitable level";
+                            break;
+                    }
+                } else {
+                    base = "ui-level-default";
+                    desc = "outside | regular level";
+                }
+            }
+            var suffix = (sunlit ? "" : "-dark");
+            result.src = path + base + suffix + ".png";
+            result.desc = desc;
+            return result;
         },
 
 		getShowResources: function () {
