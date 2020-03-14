@@ -2,8 +2,7 @@
 // add descriptions with properties required to match them
 // get description with an object
 // - returns description whose properties ALL match that of the object
-// - if several match, returns most specific description (most properties)
-// - if several match and they are equally specific, returns a "random" one from matching (guaranteed to be the same one every time for the same properties)
+// - if several match, returns a "random" one from matching (prefers one with many properties and guaranteed to be the same one every time for the same properties)
 // properties in descriptions may be simple (equals) or ranges (array of two values (inclusive))
 
 define(function () {
@@ -23,38 +22,34 @@ define(function () {
                 return "";
             }
             
-            var bestMatches = [];
-            var bestMatchesScore = 0;
+            var matches = [];
+            var weightedMatches = [];
             for (var i = 0; i < this.descriptions[type].length; i++) {
                 var desc = this.descriptions[type][i];
                 if (this.matches(props, desc)) {
                     var score = this.getMatchScore(desc);
-                    if (bestMatchesScore == score) {
-                        // same score, add to list
-                        bestMatches.push(desc);
-                    } else if (bestMatchesScore < score) {
-                        // higher score, reset list
-                        bestMatches = [desc];
-                        bestMatchesScore = score;
+                    matches.push(desc);
+                    for (var j = 0; j < score; j++) {
+                        weightedMatches.push(desc);
                     }
                 }
             }
             
             // no matches: warning
-            if (bestMatches.length == 0) {
+            if (matches.length == 0) {
                 log.w("no description found with type " + type);
                 return "";
             }
             
             // single match, return that
-            if (bestMatches.length == 1) {
-                return bestMatches[0].text;
+            if (matches.length == 1) {
+                return matches[0].text;
             }
             
             // several matches, select one in a semi-random way (same object should return the same one if called again but should be different for different objects)
             var checksum = this.getPropsChecksum(props);
-            var index = checksum % bestMatches.length;
-            return bestMatches[index].text;
+            var index = checksum % weightedMatches.length;
+            return weightedMatches[index].text;
         },
         
         matches: function (props, desc) {
