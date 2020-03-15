@@ -110,7 +110,7 @@ define([
 
 		updateMap: function () {
             var mapPosition = this.playerPositionNodes.head.position.getPosition();
-            if (this.selectedLevel) {
+            if (this.selectedLevel || this.selectedLevel == 0) {
                 mapPosition.level = this.selectedLevel;
                 mapPosition.sectorX = 0;
                 mapPosition.sectorY = 0;
@@ -150,7 +150,7 @@ define([
 
 		centerMap: function () {
             var mapPosition = this.playerPositionNodes.head.position.getPosition();
-            if (this.selectedLevel) {
+            if (this.selectedLevel || this.selectedLevel == 0) {
                 mapPosition.level = this.selectedLevel;
                 if (this.selectedSector) {
                     var pos = this.selectedSector.get(PositionComponent);
