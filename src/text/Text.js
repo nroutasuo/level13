@@ -21,7 +21,7 @@ define(function () {
 		},
         
         getArticle: function (s) {
-            return language.getIndefiniteArticle(s);
+            return this.language.getIndefiniteArticle(s);
         },
         
 		pluralify: function (s) {

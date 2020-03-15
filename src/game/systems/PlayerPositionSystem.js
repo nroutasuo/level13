@@ -5,6 +5,7 @@ define([
     'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/GameConstants',
+    'game/constants/LevelConstants',
     'game/constants/LogConstants',
     'game/constants/WorldCreatorConstants',
     'game/nodes/PlayerPositionNode',
@@ -20,7 +21,7 @@ define([
     'game/components/common/RevealedComponent',
     'game/components/common/CampComponent',
     'game/components/type/LevelComponent',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, WorldCreatorConstants,
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, LevelConstants, LogConstants, WorldCreatorConstants,
     PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode, CampNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, LogMessagesComponent, PositionComponent,
 	VisitedComponent, RevealedComponent, CampComponent, LevelComponent) {
@@ -92,17 +93,19 @@ define([
             this.lastUpdatePosition = playerPos.clone();
         },
 
-        updateLevelEntities: function(updateAll) {
+        updateLevelEntities: function (updateAll) {
+            var isInitLocation = this.playerLocationNodes.head == null;
             var playerPos = this.playerPositionNodes.head.position;
+            var startPos = playerPos.getPosition();
             var levelpos;
             for (var levelNode = this.levelNodes.head; levelNode; levelNode = levelNode.next) {
                 levelpos = levelNode.level.position;
                 if (levelpos == playerPos.level && !levelNode.entity.has(CurrentPlayerLocationComponent)) {
                     levelNode.entity.add(new CurrentPlayerLocationComponent());
                     if (!levelNode.entity.has(VisitedComponent)) {
-                        this.handleNewLevel(levelNode, levelpos);
+                        this.handleNewLevel(levelNode, levelpos, isInitLocation);
                     }
-                    this.handleEnterLevel(levelNode, levelpos);
+                    this.handleEnterLevel(levelNode, levelpos, isInitLocation);
                 } else if (levelpos != playerPos.level && levelNode.entity.has(CurrentPlayerLocationComponent)) {
                     levelNode.entity.remove(CurrentPlayerLocationComponent);
                 }
@@ -196,14 +199,35 @@ define([
             }, 200);
 		},
 
-        handleEnterLevel: function (levelNode) {
+        handleEnterLevel: function (levelNode, levelPos, isInitLocation) {
+            if (isInitLocation) return;
+            
             var levelEntity = levelNode.entity;
             var levelComponent = levelEntity.get(LevelComponent);
             var levelVO = levelComponent.levelVO;
-            if (!levelVO.isCampable) {
-                var msg = "This level seems eerily devoid of any signs of recent human activity.";
-                this.addLogMessage(LogConstants.MSG_ID_ENTER_LEVEL, msg);
+            
+            var surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
+            var groundLevel = GameGlobals.gameState.getGroundLevel();
+            
+            var msg = "Entered level " + levelVO.level + ". ";
+            if (levelVO.level == surfaceLevel) {
+                msg += "There is no ceiling here, the whole level is open to the elements. Sun glares down from an impossibly wide blue sky all above.";
+            } else if (levelVO.level == groundLevel) {
+                msg += "The floor here is different, uneven, organic. But also solid - there seems to be no way further down. There are more plants, mud, stone and signs of animal life.";
+            } else if (!levelVO.isCampable) {
+                switch (levelVO.notCampableReason) {
+                    case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
+                        msg += "You notice several graffiti warning about radiation.";
+                        break;
+                    case LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION:
+                        msg += "There are signs of serious pollution.";
+                        break;
+                    default:
+                        msg += "This area seems eerily devoid of any signs of recent human activity.";
+                        break;
+                }
             }
+            this.addLogMessage(LogConstants.MSG_ID_ENTER_LEVEL, msg);
         },
 
 		handleNewSector: function (sectorEntity, isNew) {
