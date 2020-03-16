@@ -182,9 +182,13 @@ define([
 			if (levelPos !== 13) GameGlobals.gameState.unlockedFeatures.levels = true;
 			if (levelPos === GameGlobals.gameState.getGroundLevel()) GameGlobals.gameState.unlockedFeatures.favour = true;
             
-            setTimeout(function () {
-                if (campOrdinal == WorldCreatorConstants.CAMP_ORDINAL_LIMIT) {
-                    gtag('event', 'camp_ordinal_limit_level_reached', { event_category: 'progression' })
+            var nextLevel = GameGlobals.gameState.getLevelForOrdinal(levelOrdinal + 1);
+            var levelVO = GameGlobals.levelHelper.getLevelVO(levelPos);
+            var nextLevelVO = GameGlobals.levelHelper.getLevelVO(nextLevel);
+            var isLastLevel = levelVO.notCampableReason != LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT && nextLevelVO.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT;
+            if (isLastLevel) {
+                setTimeout(function () {
+                    gtag('event', 'last_level_reached', { event_category: 'progression' })
                     var msg = "You've reached the last level of the current version of Level 13. ";
                     msg += "You can still explore this level and find many new things, but you won't be able to progress further up.";
                     msg += "<br/><br/>"
@@ -195,8 +199,8 @@ define([
                         msg,
                         "Continue"
                     );
-                }
-            }, 200);
+                }, 200);
+            }
 		},
 
         handleEnterLevel: function (levelNode, levelPos, isInitLocation) {
