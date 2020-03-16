@@ -607,6 +607,15 @@ define([
 
             return projects;
         },
+        
+        getCampClearedWorkshopCount: function (campOrdinal, resourceName) {
+            var levels = GameGlobals.gameState.getLevelsForCamp(campOrdinal);
+            var result = 0;
+            for (var i = 0; i < levels.length; i++) {
+                result += this.getLevelClearedWorkshopCount(levels[i], resourceName);
+            }
+            return result;
+        },
 
         getLevelClearedWorkshopCount: function (level, resourceName) {
 			var count = 0;

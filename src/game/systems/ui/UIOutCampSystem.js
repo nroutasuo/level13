@@ -237,6 +237,8 @@
             var maxPopulation = this.getCampMaxPopulation();
             var posComponent = this.playerPosNodes.head.position;
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			var campOrdinal = GameGlobals.gameState.getCampOrdinal(posComponent.level);
+            
             var hasUnlockedRopers = GameGlobals.upgradeEffectsHelper.getWorkerLevel("weaver", this.tribeUpgradesNodes.head.upgrades) > 0;
             var hasUnlockedScientists = GameGlobals.upgradeEffectsHelper.getWorkerLevel("scientist", this.tribeUpgradesNodes.head.upgrades) > 0;
             var soldierLevel = GameGlobals.upgradeEffectsHelper.getWorkerLevel("soldier", this.tribeUpgradesNodes.head.upgrades);
@@ -281,8 +283,8 @@
                 "camp defence +" + CampConstants.getSoldierDefence(soldierLevel) +
                 workerConsumptionS, true);
 
-            var refineriesOnLevel = GameGlobals.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel);
-            var plantationsOnLevel = GameGlobals.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.rubber);
+            var refineriesOnLevel = GameGlobals.levelHelper.getCampClearedWorkshopCount(campOrdinal, resourceNames.fuel);
+            var plantationsOnLevel = GameGlobals.levelHelper.getCampClearedWorkshopCount(campOrdinal, resourceNames.rubber);
             var apothecariesInCamp = improvements.getCount(improvementNames.apothecary);
             var cementMillsInCamp = improvements.getCount(improvementNames.cementmill);
             var smithiesInCamp = improvements.getCount(improvementNames.smithy);
@@ -314,9 +316,10 @@
         updateWorkerMaxDescriptions: function () {
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var posComponent = this.playerPosNodes.head.position;
+			var campOrdinal = GameGlobals.gameState.getCampOrdinal(posComponent.level);
 
-            var refineriesOnLevel = GameGlobals.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.fuel);
-            var plantationsOnLevel = GameGlobals.levelHelper.getLevelClearedWorkshopCount(posComponent.level, resourceNames.rubber);
+            var refineriesOnLevel = GameGlobals.levelHelper.getCampClearedWorkshopCount(posComponent.level, resourceNames.fuel);
+            var plantationsOnLevel = GameGlobals.levelHelper.getCampClearedWorkshopCount(posComponent.level, resourceNames.rubber);
             var apothecariesInCamp = improvements.getCount(improvementNames.apothecary);
             var cementMillsInCamp = improvements.getCount(improvementNames.cementmill);
             var smithiesInCamp = improvements.getCount(improvementNames.smithy);

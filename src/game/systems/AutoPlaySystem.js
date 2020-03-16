@@ -726,6 +726,7 @@ define(['ash',
             var improvementsComponent = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var playerPosition = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
             var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
+			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPosition.level);
 
             // cheat population
             var maxPopulation = CampConstants.getHousingCap(improvementsComponent);
@@ -751,8 +752,8 @@ define(['ash',
                 var maxSmiths = improvementsComponent.getCount(improvementNames.smithy) * CampConstants.getSmithsPerSmithy(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.smithy, upgradesComponent));
                 var maxSoldiers = improvementsComponent.getCount(improvementNames.barracks) * CampConstants.getSoldiersPerBarracks(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.barracks, upgradesComponent));
                 var maxScientists = improvementsComponent.getCount(improvementNames.library) * CampConstants.getScientistsPerLibrary(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.library, upgradesComponent));
-                var maxChemists = GameGlobals.levelHelper.getLevelClearedWorkshopCount(playerPosition.level, resourceNames.fuel) * CampConstants.CHEMISTS_PER_WORKSHOP;
-                var maxRubber = GameGlobals.levelHelper.getLevelClearedWorkshopCount(playerPosition.level, resourceNames.rubber) * CampConstants.RUBBER_WORKER_PER_WORKSHOP;
+                var maxChemists = GameGlobals.levelHelper.getCampClearedWorkshopCount(playerPosition.level, resourceNames.fuel) * CampConstants.CHEMISTS_PER_WORKSHOP;
+                var maxRubber = GameGlobals.levelHelper.getCampClearedWorkshopCount(playerPosition.level, resourceNames.rubber) * CampConstants.RUBBER_WORKER_PER_WORKSHOP;
 
                 var pop = campComponent.population;
 

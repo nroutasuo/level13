@@ -351,7 +351,9 @@ define([
                 }
 
                 // workshops
-                var isWorkshopLevel = levelVO.isCampable && (campOrdinal === WorldCreatorConstants.CAMP_ORDINAL_FUEL || campOrdinal === WorldCreatorConstants.CAMP_ORDINAL_GROUND);
+                var isWorkshopLevel =
+                    (levelVO.isCampable && campOrdinal === WorldCreatorConstants.CAMP_ORDINAL_FUEL) ||
+                    l == bottomLevel;
                 if (isWorkshopLevel) {
                     var res = campOrdinal === WorldCreatorConstants.CAMP_ORDINAL_GROUND ? "rubber" : "fuel";
                     var pathConstraints = [];

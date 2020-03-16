@@ -393,6 +393,24 @@ define([
 			return ordinal;
 		},
         
+        getLevelsForCamp: function (seed, campOrdinal) {
+            var result = [];
+            var mainLevelOrdinal = this.getLevelOrdinalForCampOrdinal(seed, campOrdinal);
+            var mainLevel = this.getLevelForOrdinal(seed, mainLevelOrdinal);
+            result.push(mainLevel);
+            
+            var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
+            for (var i = 0; i < camplessLevelOrdinals.length; i++) {
+                var l = this.getLevelForOrdinal(seed, camplessLevelOrdinals[i]);
+                var co = this.getCampOrdinal(seed, l);
+                if (co == campOrdinal) {
+                    result.push(l);
+                }
+            }
+            
+            return result;
+        },
+        
         getLevelOrdinalForCampOrdinal: function (seed, campOrdinal) {
             // this assumes camplessLevelOrdinals are sorted from smallest to biggest
             var levelOrdinal = campOrdinal;
