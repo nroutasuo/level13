@@ -398,8 +398,9 @@ define([
             var levelOrdinal = campOrdinal;
             var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
             for (var i = 0; i < camplessLevelOrdinals.length; i++) {
-                if (camplessLevelOrdinals[i] <= levelOrdinal)
+                if (camplessLevelOrdinals[i] <= levelOrdinal) {
                     levelOrdinal++;
+                }
             }
             return levelOrdinal;
         },
@@ -507,7 +508,7 @@ define([
                         break;
                 }
                 
-                this.camplessLevelOrdinals[seed] = camplessLevelOrdinals.sort();
+                this.camplessLevelOrdinals[seed] = camplessLevelOrdinals.sort((a, b) => a - b);
             }
 			return this.camplessLevelOrdinals[seed];
 		},
