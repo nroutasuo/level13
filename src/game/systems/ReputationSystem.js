@@ -89,6 +89,8 @@ define([
             var reputationComponent = campNode.reputation;
             var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
             var levelVO = GameGlobals.levelHelper.getLevelEntityForSector(campNode.entity).get(LevelComponent).levelVO;
+            reputationComponent.value = reputationComponent.value || 0;
+            reputationComponent.targetValue = reputationComponent.targetValue || 0;
             
             // improvements
             var accRadio = sectorImprovements.getCount(improvementNames.radio) * CampConstants.REPUTATION_PER_RADIO_PER_SEC * GameConstants.gameSpeedCamp;

@@ -151,11 +151,12 @@ define([
             var allImprovements = sectorImprovements.getAll(improvementTypes.camp);
             for (var i in allImprovements) {
                 var improvementVO = allImprovements[i];
+                var level = improvementVO.level || 1;
                 var defaultBonus = improvementVO.getReputationBonus();
                 switch (improvementVO.name) {
                     case improvementNames.generator:
                         var numHouses = sectorImprovements.getCount(improvementNames.house) + sectorImprovements.getCount(improvementNames.house2);
-                        var generatorBonus = numHouses * CampConstants.REPUTATION_PER_HOUSE_FROM_GENERATOR * (1 + improvementVO.level * 0.02);
+                        var generatorBonus = numHouses * CampConstants.REPUTATION_PER_HOUSE_FROM_GENERATOR * (1 + level * 0.02);
                         generatorBonus = Math.round(generatorBonus * 100) / 100;
                         addValue(generatorBonus, "Generator");
                         break;

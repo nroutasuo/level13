@@ -70,8 +70,9 @@ define([
 				rumoursComponent.isAccumulating = true;
 			}
             
-            if (rumoursComponent.value < 0 )
+            if (rumoursComponent.value < 0) {
                 rumoursComponent.value = 0;
+            }
         },
 		
 		getImprovementUpgradeLevel: function (improvementName) {
