@@ -8,6 +8,7 @@ define([
     'game/components/common/PositionComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/SectorFeaturesComponent',
+    'game/components/sector/SectorLocalesComponent',
 ], function (
 	Ash,
     GameGlobals,
@@ -16,7 +17,8 @@ define([
     CampComponent,
     PositionComponent,
 	SectorStatusComponent,
-	SectorFeaturesComponent
+	SectorFeaturesComponent,
+    SectorLocalesComponent,
 ) {
     var SectorHelper = Ash.Class.extend({
         
@@ -36,6 +38,15 @@ define([
             var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(position.level);
             var levelVO = GameGlobals.levelHelper.getLevelVO(position.level);
             var hasCamp = sector.has(CampComponent);
+            var hasGrove = false;
+            
+            var sectorLocalesComponent = sector.get(SectorLocalesComponent);
+            var locales = sectorLocalesComponent.locales;
+            for (var i = 0; i < locales.length; i++) {
+                if (locales[i].type == localeTypes.grove) {
+                    hasGrove = true;
+                }
+            }
             
             var features = Object.assign({}, featuresComponent);
             features.level = position.level;
@@ -45,6 +56,7 @@ define([
             features.isSurfaceLevel = levelVO.level == GameGlobals.gameState.getSurfaceLevel();
             features.isGroundLevel = levelVO.level == GameGlobals.gameState.getGroundLevel();
             features.hasCamp = hasCamp;
+            features.hasGrove = hasGrove;
             return features;
         },
 		

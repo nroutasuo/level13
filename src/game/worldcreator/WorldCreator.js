@@ -384,6 +384,12 @@ define([
 
 		// locales
 		prepareWorldLocales: function (seed, topLevel, bottomLevel) {
+            var addLocale = function (sectorVO, locale) {
+                sectorVO.locales.push(locale);
+                levelVO.localeSectors.push(sectorVO);
+                levelVO.numLocales++;
+            };
+            
             // 1) spawn trading partners
             for (var i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
                 var partner = TradeConstants.TRADING_PARTNERS[i];
@@ -393,18 +399,26 @@ define([
                 var sectorVO = WorldCreatorRandom.randomSector(seed - 9393 + i * i, this.world, levelVO, false);
                 var locale = new LocaleVO(localeTypes.tradingpartner, true, false);
                 // log.i("trade partner at " + sectorVO.position)
-                sectorVO.locales.push(locale);
-                levelVO.numLocales++;
+                addLocale(sectorVO, locale);
             }
+            
+            // 2) spanw grove
+            var bottomLevelVO = this.world.getLevel(bottomLevel);
+            var groveSector = WorldCreatorRandom.randomSector(seed, this.world, bottomLevelVO, true);
+            var groveLocale = new LocaleVO(localeTypes.grove, true, false);
+            groveSector.sunlit = 1;
+            addLocale(groveSector, groveLocale);
+            log.i("grove location: " + groveSector.position)
+            log.i(groveSector)
 
-            // 2) spawn other types (for blueprints)
+            // 3) spawn other types (for blueprints)
             var worldVO = this.world;
 			var getLocaleType = function (localeRandom, sectorType, l, isEarly) {
 				var localeType = localeTypes.house;
 
 				// level-based
-				if (l === bottomLevel && localeRandom < 0.25) localeType = localeTypes.grove;
-				else if (l >= topLevel - 1 && localeRandom < 0.25) localeType = localeTypes.lab;
+				if (l >= topLevel - 1 && localeRandom < 0.25)
+                    localeType = localeTypes.lab;
 				// sector type based
 				else {
 					switch (sectorType) {
@@ -480,9 +494,7 @@ define([
                     var localeType = getLocaleType(WorldCreatorRandom.random(sseed + sseed + i * seed + localePos), sectorVO.sectorType, l, isEarly);
                     var isEasy = i <= countEasy;
                     var locale = new LocaleVO(localeType, isEasy, isEarly);
-                    sectorVO.locales.push(locale);
-                    levelVO.localeSectors.push(sectorVO);
-                    levelVO.numLocales++;
+                    addLocale(sectorVO, locale);
                     // log.i(levelVO.level + " added locale: isEarly:" + isEarly + ", distance to camp: " + WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO) + ", zone: " + sectorVO.zone);
                     for (var j = 0; j < pathConstraints.length; j++) {
                         WorldCreatorHelper.addCriticalPath(worldVO, sectorVO.position, pathConstraints[j].startPosition, pathConstraints[j].pathType);

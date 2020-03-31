@@ -30,6 +30,9 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
             if (features.hasCamp) {
                 template = "[n-street] with camp";
             }
+            if (features.hasGrove) {
+                template = "[a-street] park";
+            }
             if (!hasVision) {
                 if (features.sunlit) {
                     template = "sunlit [n-street]";
@@ -45,6 +48,9 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
 		getSectorDescription: function (hasVision, features) {
             var type = hasVision ? "sector-vision" : "sector-novision";
             var template = DescriptionMapper.get(type, features);
+            if (features.hasGrove) {
+                template = "A [a-street] park overrun by plantlife. In the middle there is a grove of mature trees. Though strange and wild, it also seems somehow peaceful";
+            }
             var params = this.getSectorTextParams(features);
             var phrase = TextBuilder.build(template, params);
             return Text.capitalize(phrase);
@@ -129,7 +135,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                     addOptions("n-street", [ "plaza", "courtyard" ]);
                 addOptions("a-street", [ "wide", "spacious", "enormous" ]);
             } else if (features.buildingDensity < 6) {
-                addOptions("n-street", [ "throughfare", "square", "area", "hall" ]);
+                addOptions("n-street", [ "room", "throughfare", "square", "area", "hall" ]);
                 if (features.sectorType == WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL || features.sectorType == WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL)
                     addOptions("n-street", [ "boulevard", "avenue" ]);
                 addOptions("a-street", [ "wide", "spacious" ]);
@@ -423,10 +429,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                     noun = "laboratory";
                     break;
     			case localeTypes.grove:
-                    if (condition === SectorConstants.SECTOR_CONDITION_ABANDONED) modifier = "quiet";
-                    if (condition === SectorConstants.SECTOR_CONDITION_WORN) modifier = "flourishing";
-                    if (condition === SectorConstants.SECTOR_CONDITION_RECENT) modifier = "flourishing";
-                    if (condition === SectorConstants.SECTOR_CONDITION_MAINTAINED) modifier = "flourishing";
+                    modifier = "flourishing";
                     noun = "grove";
                     break;
     			case localeTypes.market:
@@ -695,7 +698,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
         DescriptionMapper.add("sector-vision", { wear: b13, level: lmodern, isSurfaceLevel: false }, "A [n-street] between some skeleton buildings that seem to have been abandoned while they were still under construction");
         DescriptionMapper.add("sector-vision", { wear: b23, damage: b0 }, "A former [n-sector] with [A] [a-street-past] atmosphere lingering from its past");
         DescriptionMapper.add("sector-vision", { wear: b23, damage: b0 }, "Once [a-street-past] [n-sector] with a few [an-decos] and [A] [a-building] [n-building]");
-        DescriptionMapper.add("sector-vision", { wear: b33 }, "[A] [a-street] building whose original purpose is hard to determine, stripped down to concrete, with an impressive spiral staircase in the middle");
+        DescriptionMapper.add("sector-vision", { wear: b33 }, "[A] [a-building] building whose original purpose is hard to determine, stripped down to bare concrete");
+        DescriptionMapper.add("sector-vision", { wear: b33 }, "[A] [a-building] building whose original purpose is hard to determine, stripped down to concrete, with an impressive spiral staircase in the middle");
         DescriptionMapper.add("sector-vision", { wear: b33 }, "[A] [a-street] [a-sectortype] [n-street] with a few large unidentifiable ruins looming over it");
         DescriptionMapper.add("sector-vision", { wear: b33 }, "A completely ruined [a-sectortype] [n-street]");
         DescriptionMapper.add("sector-vision", { wear: b33 }, "A rubble-covered [n-street] surrounded by the crumbling remains of [a-sectortype] buildings");
