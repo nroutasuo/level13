@@ -125,6 +125,18 @@ function (Ash, ResourcesVO, LocaleConstants, WorldCreatorConstants) {
         getBracket: function () {
             return this.isEarly ? LocaleConstants.LOCALE_BRACKET_EARLY : LocaleConstants.LOCALE_BRACKET_LATE;
         },
+        
+        hasBlueprints: function () {
+			switch (this.type) {
+                case localeTypes.grove:
+                case localeTypes.tradingpartner:
+                    return false;
+				
+				default:
+                    return true;
+			}
+        },
+        
     });
 
     return LocaleVO;

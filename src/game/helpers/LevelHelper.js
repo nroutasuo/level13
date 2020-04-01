@@ -681,19 +681,19 @@ define([
             return path && path.length >= 0;
         },
         
-		getLevelLocales: function (level, includeScouted, localeBracket, excludeLocaleVO) {
+		getLevelLocales: function (level, includeScouted, localeBracket, excludeLocaleVO, requireBlueprints) {
 			var locales = [];
 			var sectorPosition;
 			for (var node = this.sectorNodes.head; node; node = node.next) {
 				sectorPosition = node.entity.get(PositionComponent);
 				if (sectorPosition.level === level) {
-					locales = locales.concat(this.getSectorLocales(node.entity, includeScouted, localeBracket, excludeLocaleVO));
+					locales = locales.concat(this.getSectorLocales(node.entity, includeScouted, localeBracket, excludeLocaleVO, requireBlueprints));
 				}
 			}
 			return locales;
 		},
 
-		getSectorLocales: function (sectorEntity, includeScouted, localeBracket, excludeLocaleVO) {
+		getSectorLocales: function (sectorEntity, includeScouted, localeBracket, excludeLocaleVO, requireBlueprints) {
 			var locales = [];
 			var sectorLocalesComponent = sectorEntity.get(SectorLocalesComponent);
 			var sectorStatus = sectorEntity.get(SectorStatusComponent);
@@ -703,6 +703,7 @@ define([
 				if (locale === excludeLocaleVO) continue;
                 if (localeBracket && localeBracket !== locale.getBracket()) continue;
                 if (!includeScouted && sectorStatus.isLocaleScouted(i)) continue;
+                if (requireBlueprints && !locale.hasBlueprints()) continue;
 				locales.push(locale);
 			}
 			return locales;

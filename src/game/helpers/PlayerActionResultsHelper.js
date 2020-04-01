@@ -1039,6 +1039,8 @@ define([
 		},
 
 		getResultBlueprint: function (localeVO) {
+            if (!localeVO.hasBlueprints()) return null;
+            
 			var playerPos = this.playerLocationNodes.head.position;
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
             var blueprintType = localeVO.isEarly ? UpgradeConstants.BLUEPRINT_TYPE_EARLY : UpgradeConstants.BLUEPRINT_TYPE_LATE;
@@ -1060,9 +1062,9 @@ define([
 			}
             
             var bracket = localeVO.getBracket();
-            var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, false, bracket, localeVO);
+            var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, false, bracket, localeVO, true);
 			var numUnscoutedLocales = unscoutedLocales.length + 1;
-            var scoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, true, bracket, localeVO);
+            var scoutedLocales = GameGlobals.levelHelper.getLevelLocales(playerPos.level, true, bracket, localeVO, true);
             var numScoutedLocales = scoutedLocales.length + 1 - numUnscoutedLocales;
 			var findBlueprintProbability = blueprintPiecesToFind / numUnscoutedLocales;
             
@@ -1089,8 +1091,8 @@ define([
             var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
             for (var i = 1; i <= levelOrdinal; i++) {
                 var level = GameGlobals.gameState.getLevelForOrdinal(i);
-                var allLocales = GameGlobals.levelHelper.getLevelLocales(level, true, null).length;
-                var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(level, false, null).length;
+                var allLocales = GameGlobals.levelHelper.getLevelLocales(level, true, null, true).length;
+                var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(level, false, null, true).length;
                 if (allLocales > 0 && unscoutedLocales === 0) {
                     var c = GameGlobals.gameState.getCampOrdinal(level);
                     var levelBlueprints = UpgradeConstants.getblueprintsByCampOrdinal(c);
