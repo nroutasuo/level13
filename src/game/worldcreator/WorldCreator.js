@@ -408,8 +408,6 @@ define([
             var groveLocale = new LocaleVO(localeTypes.grove, true, false);
             groveSector.sunlit = 1;
             addLocale(groveSector, groveLocale);
-            log.i("grove location: " + groveSector.position)
-            log.i(groveSector)
 
             // 3) spawn other types (for blueprints)
             var worldVO = this.world;

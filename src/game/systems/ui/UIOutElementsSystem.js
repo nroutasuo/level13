@@ -212,6 +212,7 @@ define([
 			var playerVision = this.playerStatsNodes.head.vision.value;
 			var hasEnemies = GameGlobals.fightHelper.hasEnemiesCurrentLocation(action);
 			var baseActionId = GameGlobals.playerActionsHelper.getBaseActionID(action);
+            var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
 
 			var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
 			var injuryRiskBase = injuryRisk > 0 ? PlayerActionConstants.getInjuryProbability(action) : 0;
@@ -219,8 +220,8 @@ define([
 			var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
 			var inventoryRiskBase = inventoryRisk > 0 ? PlayerActionConstants.getLoseInventoryProbability(action) : 0;
 			var inventoryRiskVision = inventoryRisk - inventoryRiskBase;
-			var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision) : 0;
-			var fightRiskBase = fightRisk > 0 ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision) : 0;
+			var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision, encounterFactor) : 0;
+			var fightRiskBase = fightRisk > 0 ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision, encounterFactor) : 0;
 			var fightRiskVision = fightRisk - fightRiskBase;
 			GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskInjury, injuryRisk > 0);
 			if (injuryRisk > 0)

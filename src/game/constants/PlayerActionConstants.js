@@ -2756,14 +2756,14 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 return 0;
             },
 
-            getRandomEncounterProbability: function (baseActionID, vision) {
+            getRandomEncounterProbability: function (baseActionID, vision, actionFactor) {
                 if (vision === undefined) vision = 100;
-                // TODO for locales get probability based on locale type - for trading partners no encounters!
+                if (actionFactor === undefined) actionFactor = 1;
                 if (this.randomEncounterProbabilities[baseActionID]) {
                     var baseProbability = this.randomEncounterProbabilities[baseActionID][0];
                     var visionFactor = Math.pow(1 - (vision / 100), 2);
                     var visionProbability = this.randomEncounterProbabilities[baseActionID][1] * visionFactor;
-                    return baseProbability + visionProbability;
+                    return (baseProbability + visionProbability) * actionFactor;
                 }
                 return 0;
             },

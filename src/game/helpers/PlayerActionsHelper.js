@@ -1402,6 +1402,26 @@ define([
             }
         },
 
+        getEncounterFactor: function (action) {
+			var baseActionID = this.getBaseActionID(action);
+            switch (baseActionID) {
+                case "scout_locale_i":
+                case "scout_locale_u":
+                    // depending on locale
+        			var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
+                    var i = GameGlobals.playerActionsHelper.getActionIDParam(action);
+        			var localeVO = sectorLocalesComponent.locales[i];
+                    switch (localeVO.type) {
+                        case localeTypes.tradingPartner:
+                        case localeTypes.grove:
+                            return 0;
+                    }
+                    return 1;
+                default:
+                    return 1;
+            }
+        },
+
         isActionIndependentOfHazards: function (action) {
             var improvement = this.getImprovementNameForAction(action, true);
             if (improvement) {
