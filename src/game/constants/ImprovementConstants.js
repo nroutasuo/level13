@@ -43,7 +43,14 @@ define(['game/constants/CampConstants'], function (CampConstants) {
             aqueduct: {
                 description: "Water infrastructure to improve collecting efficiency.",
             },
-            shrine: {},
+            temple: {
+                description: "A central location for religious and cultural activities.",
+                useActionName: "Donate",
+            },
+            shrine: {
+                description: "A place for personal spirituality.",
+                useActionName: "Meditate",
+            },
             barracks: {
                 description: "Allows 10 soldiers.",
             },

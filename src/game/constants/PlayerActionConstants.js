@@ -724,6 +724,19 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 build_in_shrine: {
                     deity: true,
+                    improvements: {
+                        house: [1, -1],
+                        storage: [1, -1],
+                    },
+                },
+                
+                build_in_temple: {
+                    deity: true,
+                    improvements: {
+                        house: [2, -1],
+                        storage: [2, -1],
+                        temple: [0, 1]
+                    },
                 },
                 
                 craft_clothing_over_6: {
@@ -1924,7 +1937,15 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 build_in_shrine: {
-                    resource_water: 500,
+                    resource_herbs: 50,
+                    resource_food: 50,
+                    resource_water: 50,
+                    resource_metal: 100,
+                },
+                
+                build_in_temple: {
+                    resource_herbs: 50,
+                    resource_food: 100,
                     resource_metal: 200,
                 },
 

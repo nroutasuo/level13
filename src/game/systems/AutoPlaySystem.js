@@ -885,6 +885,18 @@ define(['ash',
                 return true;
             }
 
+            if (GameGlobals.playerActionsHelper.checkAvailability("build_in_temple")) {
+                this.printStep("build temple");
+                GameGlobals.playerActionFunctions.buildTemple();
+                return true;
+            }
+
+            if (GameGlobals.playerActionsHelper.checkAvailability("build_in_shrine")) {
+                this.printStep("build shrine");
+                GameGlobals.playerActionFunctions.buildShrine();
+                return true;
+            }
+
             if (GameGlobals.playerActionsHelper.checkAvailability("build_in_garden")) {
                 this.printStep("build garden");
                 GameGlobals.playerActionFunctions.buildGarden();

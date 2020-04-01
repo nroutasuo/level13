@@ -30,6 +30,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 		cementmill: "Cement mill",
 		library: "Library",
 		shrine: "Shrine",
+		temple: "Temple",
 		market: "Market",
 		radiotower: "Radio tower",
 		barracks: "Barracks",
@@ -157,6 +158,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             case improvementNames.library:
             case improvementNames.lights:
             case improvementNames.generator:
+            case improvementNames.shrine:
                 return 0.5;
             case improvementNames.inn:
             case improvementNames.market:
@@ -165,7 +167,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
             case improvementNames.campfire:
             case improvementNames.hospital:
                 return 2;
-            case improvementNames.shrine:
+            case improvementNames.temple:
                 return 3;
             case improvementNames.square:
             case improvementNames.garden:

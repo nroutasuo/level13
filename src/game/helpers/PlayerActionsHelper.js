@@ -1321,6 +1321,7 @@ define([
                 case "build_in_cementmill": return improvementNames.cementmill;
                 case "build_in_library": return improvementNames.library;
                 case "build_in_shrine": return improvementNames.shrine;
+                case "build_in_temple": return improvementNames.temple;
                 case "build_in_barracks": return improvementNames.barracks;
                 case "build_in_fortification": return improvementNames.fortification;
                 case "build_in_fortification2": return improvementNames.fortification2;

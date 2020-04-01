@@ -81,6 +81,8 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
         MSG_ID_BUILT_INN: "BUILT_INN",
         MSG_ID_BUILT_SQUARE: "MSG_ID_BUILT_SQUARE",
         MSG_ID_BUILT_GARDEN: "MSG_ID_BUILT_GARDEN",
+        MSG_ID_BUILT_TEMPLE: "MSG_ID_BUILT_TEMPLE",
+        MSG_ID_BUILT_SHRINE: "MSG_ID_BUILT_SHRINE",
         
         MSG_ID_IMPROVED_CAMPFIRE: "MSG_ID_IMPROVED_CAMPFIRE",
         MSG_ID_IMPROVED_LIBRARY: "MSG_ID_IMPROVED_LIBRARY",
