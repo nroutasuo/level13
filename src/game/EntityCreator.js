@@ -135,7 +135,8 @@ define([
 					EvidenceComponent,
 					LogMessagesComponent,
 					PlayerActionComponent,
-                    ExcursionComponent
+                    ExcursionComponent,
+                    DeityComponent
 				]));
 
 			this.engine.addEntity(player);
