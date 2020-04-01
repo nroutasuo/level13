@@ -35,7 +35,9 @@ function (Ash, ResourcesVO, LocaleConstants, WorldCreatorConstants) {
 			this.requirements.vision = [this.getVisionRequirement(), -1];
 			this.costs = {};
 			this.costs.stamina = this.getStaminaRequirement();
-			this.costs.item_exploration_1 = this.getCategory() == "u" ? 1 : 0;
+            if (type !== localeTypes.grove) {
+	             this.costs.item_exploration_1 = this.getCategory() == "u" ? 1 : 0;
+            }
 		},
         
         getVisionRequirement: function () {

@@ -3,7 +3,13 @@ define(['ash'], function (Ash) {
         constructor: function (name) {
             this.name = name;
             this.favour = 0;
-        }
+            this.accumulation = 0;
+            this.accSources = [];
+        },
+
+        getSaveKey: function () {
+            return "Deity";
+        },
     });
 
     return DeityComponent;

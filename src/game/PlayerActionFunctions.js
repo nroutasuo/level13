@@ -597,6 +597,14 @@ define(['ash',
                    log.w("can't add trade partner - already found: camp ordinal " + campOrdinal);
                 }
 			}
+            if (localeVO.type == localeTypes.grove) {
+                GameGlobals.gameState.unlockedFeatures.favour = true;
+                GlobalSignals.featureUnlockedSignal.dispatch();
+                if (!this.playerStatsNodes.head.entity.has(DeityComponent)) {
+                    this.playerStatsNodes.head.entity.add(new DeityComponent("Deity"))
+                }
+                logMsgSuccess += "The trees seem alive. They whisper, but the words are unintelligible. You have found a source of <span class='hl-functionality'>ancient power</span>.";
+            }
 
 			var playerActionFunctions = this;
 			var successCallback = function () {

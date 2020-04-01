@@ -30,6 +30,7 @@ define([
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
     'game/components/player/BagComponent',
+    'game/components/player/DeityComponent',
     'game/vos/ResultVO',
     'game/vos/ResourcesVO',
 	'game/vos/StashVO',
@@ -64,6 +65,7 @@ define([
     ItemsComponent,
     PerksComponent,
     BagComponent,
+    DeityComponent,
     ResultVO,
     ResourcesVO,
     StashVO
@@ -195,24 +197,31 @@ define([
             var step = GameGlobals.levelHelper.getCampStep(playerPos);
             var localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
 
-            if (localeVO.type !== localeTypes.tradingpartner) {
-                rewards.gainedBlueprintPiece = this.getResultBlueprint(localeVO);
+            // blueprints
+            rewards.gainedBlueprintPiece = this.getResultBlueprint(localeVO);
+            
+            // tribe stats
+            if (localeVO.type == localeTypes.grove) {
+                rewards.gainedFavour = 2;
+            } else if (localeVO.type == localeTypes.tradingpartner) {
+            } else {
+                rewards.gainedEvidence = ExplorationConstants.getScoutLocaleReward(localeCategory, campOrdinal);
             }
             
-            rewards.gainedEvidence = ExplorationConstants.getScoutLocaleReward(localeCategory, campOrdinal);
-
-            if (localeCategory === "u") {
-                if (this.nearestCampNodes.head) {
-                    rewards.gainedPopulation = Math.random() < 0.05 ? 1 : 0;
+            if (localeVO.type !== localeTypes.tradingpartner && localeVO.type != localeTypes.grove) {
+                // population and followers
+                if (localeCategory === "u") {
+                    if (this.nearestCampNodes.head) {
+                        rewards.gainedPopulation = Math.random() < 0.05 ? 1 : 0;
+                    }
+                } else {
+                    if (this.nearestCampNodes.head) {
+                        rewards.gainedPopulation = Math.random() < 0.2 ? 1 : 0;
+                    }
+                    rewards.gainedFollowers = this.getRewardFollowers(0.1);
                 }
-            } else {
-                if (this.nearestCampNodes.head) {
-                    rewards.gainedPopulation = Math.random() < 0.2 ? 1 : 0;
-                }
-                rewards.gainedFollowers = this.getRewardFollowers(0.1);
-            }
-
-            if (rewards.gainedInjuries.length === 0 && localeVO.type !== localeTypes.tradingpartner) {
+                
+                // items and resources
                 if (localeCategory === "u") {
                     rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
                     rewards.gainedItems = this.getRewardItems(0.5, 0, this.itemResultTypes.scavenge, 1, itemsComponent, campOrdinal, step);
@@ -373,8 +382,9 @@ define([
             // TODO assign reputation to nearest camp
 
 			if (rewards.gainedEvidence) this.playerStatsNodes.head.evidence.value += rewards.gainedEvidence;
-			// if (rewards.gainedReputation) this.playerStatsNodes.head.reputation.value += rewards.gainedReputation;
 			if (rewards.gainedRumours) this.playerStatsNodes.head.rumours.value += rewards.gainedRumours;
+			if (rewards.gainedFavour) this.playerStatsNodes.head.entity.get(DeityComponent).favour += rewards.gainedFavour;
+			// if (rewards.gainedReputation) this.playerStatsNodes.head.reputation.value += rewards.gainedReputation;
 
             GlobalSignals.inventoryChangedSignal.dispatch();
 		},
@@ -443,6 +453,14 @@ define([
 				values.push(rewards.gainedRumours);
 			}
 
+			if (rewards.gainedFavour) {
+				msg += ", ";
+				foundSomething = true;
+				msg += "$" + replacements.length + ", ";
+				replacements.push("#" + replacements.length + " favour");
+				values.push(rewards.gainedFavour);
+			}
+
 			if (rewards.gainedBlueprintPiece) {
 				msg += ", ";
 				foundSomething = true;
@@ -493,6 +511,9 @@ define([
 			}
 			if (resultVO.gainedRumours) {
 				gainedhtml += "<li>" + resultVO.gainedRumours + " rumours</li>";
+			}
+			if (resultVO.gainedFavour) {
+				gainedhtml += "<li>" + resultVO.gainedFavour + " favour</li>";
 			}
 			if (resultVO.gainedPopulation) {
 				gainedhtml += "<li>" + resultVO.gainedPopulation + " population</li>";

@@ -63,6 +63,7 @@ define([
             this.elements.valHealth = $("#stats-health .value");
             this.elements.valRumours = $("#stats-rumours .value");
             this.elements.valEvidence = $("#stats-evidence .value");
+            this.elements.valFavour = $("#stats-favour .value");
             this.elements.valScavenge = $("#stats-scavenge .value");
             this.elements.valReputation = $("#header-camp-reputation .value");
             this.elements.changeIndicatorVision = $("#vision-change-indicator");
@@ -72,6 +73,7 @@ define([
             this.elements.changeIndicatorPopulation = $("#population-change-indicator");
             this.elements.changeIndicatorEvidence = $("#evidence-change-indicator");
             this.elements.changeIndicatorRumours = $("#rumours-change-indicator");
+            this.elements.changeIndicatorFavour = $("#favour-change-indicator");
             this.elements.changeIndicatorFavour = $("#favour-change-indicator");
 
 			return this;
@@ -197,6 +199,14 @@ define([
 			GameGlobals.uiFunctions.toggle("#stats-evidence", GameGlobals.gameState.unlockedFeatures.evidence);
 			this.updateStatsCallout("", "stats-evidence", playerStatsNode.evidence.accSources);
             this.updateChangeIndicator(this.elements.changeIndicatorEvidence, playerStatsNode.evidence.accumulation, GameGlobals.gameState.unlockedFeatures.evidence);
+            
+            var hasDeity = this.deityNodes.head != null;
+            GameGlobals.uiFunctions.toggle("#stats-favour", hasDeity);
+            if (hasDeity) {
+    			this.elements.valFavour.text(UIConstants.roundValue(this.deityNodes.head.deity.favour, true, false));
+    			this.updateStatsCallout("", "stats-evidence", this.deityNodes.head.deity.accSources);
+                this.updateChangeIndicator(this.elements.changeIndicatorFavour, this.deityNodes.head.deity.accumulation, GameGlobals.gameState.unlockedFeatures.favour);
+            }
 
             GameGlobals.uiFunctions.toggle($("#header-tribe-container"), GameGlobals.gameState.unlockedFeatures.evidence || playerStatsNode.rumours.isAccumulating);
 
@@ -295,9 +305,7 @@ define([
 		updateDeity: function () {
 			var hasDeity = this.deityNodes.head != null;
 			GameGlobals.uiFunctions.toggle("#statsbar-deity", hasDeity);
-
 			if (hasDeity) {
-				$("#deity-favour .value").text(Math.round(this.deityNodes.head.deity.favour));
 				$("#deity-name").text(this.deityNodes.head.deity.name);
 			}
 		},
