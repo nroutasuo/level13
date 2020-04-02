@@ -50,6 +50,7 @@ define([
     'game/systems/RumourSystem',
     'game/systems/EvidenceSystem',
     'game/systems/EndingSystem',
+    'game/systems/FavourSystem',
     'game/systems/GlobalResourcesSystem',
     'game/systems/GlobalResourcesResetSystem',
     'game/systems/BagSystem',
@@ -128,6 +129,7 @@ define([
     RumourSystem,
     EvidenceSystem,
     EndingSystem,
+    FavourSystem,
     GlobalResourcesSystem,
     GlobalResourcesResetSystem,
     BagSystem,
@@ -246,6 +248,7 @@ define([
 			this.engine.addSystem(new ReputationSystem(), SystemPriorities.update);
 			this.engine.addSystem(new RumourSystem(), SystemPriorities.update);
 			this.engine.addSystem(new EvidenceSystem(), SystemPriorities.update);
+			this.engine.addSystem(new FavourSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PlayerActionSystem(), SystemPriorities.update);
 			this.engine.addSystem(new SectorStatusSystem(), SystemPriorities.update);
 			this.engine.addSystem(new LevelPassagesSystem(), SystemPriorities.update);

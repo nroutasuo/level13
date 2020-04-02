@@ -324,6 +324,9 @@ body.dark .centered {
 body.dark .hidden {
   display: none;
 }
+body.dark .nowrap {
+  white-space: nowrap;
+}
 body.dark .unselectable {
   -webkit-user-select: none;
   /* Safari */
@@ -2173,6 +2176,9 @@ body.sunlit .centered {
 }
 body.sunlit .hidden {
   display: none;
+}
+body.sunlit .nowrap {
+  white-space: nowrap;
 }
 body.sunlit .unselectable {
   -webkit-user-select: none;

@@ -878,7 +878,7 @@ define([
 						return 1;
                     
                     case "silver":
-    			         var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
+    			        var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
                         return currencyComponent.currency / costs.silver;
 
                     default:

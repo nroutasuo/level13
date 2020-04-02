@@ -12,6 +12,7 @@ define([
     'game/components/common/PositionComponent',
     'game/components/common/ResourcesComponent',
     'game/components/common/ResourceAccumulationComponent',
+    'game/components/player/DeityComponent',
     'game/components/type/LevelComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/events/TraderComponent',
@@ -19,7 +20,7 @@ define([
 ], function (
     Ash, GameGlobals, GlobalSignals, UIConstants, CampConstants, OccurrenceConstants,
     CampNode, PlayerPositionNode, PlayerStatsNode, TribeUpgradesNode,
-    PositionComponent, ResourcesComponent, ResourceAccumulationComponent, LevelComponent, SectorImprovementsComponent, TraderComponent, RaidComponent
+    PositionComponent, ResourcesComponent, ResourceAccumulationComponent, DeityComponent, LevelComponent, SectorImprovementsComponent, TraderComponent, RaidComponent
 ) {
     var UIOutTribeSystem = Ash.System.extend({
 
@@ -200,8 +201,8 @@ define([
             var btnAction = "move_camp_global_" + level;
             rowHTML += "<td class='camp-overview-level'><div class='camp-overview-level-container lvl13-box-1'>" + level + "</div></td>";
             rowHTML += "<td class='camp-overview-name'>" + camp.campName + "</td>";
-            rowHTML += "<td class='camp-overview-population list-amount'><span class='value'></span><span class='change-indicator'></span></td>";
-            rowHTML += "<td class='camp-overview-reputation list-amount'><span class='value'></span><span class='change-indicator'></span></td>";
+            rowHTML += "<td class='camp-overview-population list-amount nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
+            rowHTML += "<td class='camp-overview-reputation list-amount nowrap'><span class='value'></span><span class='change-indicator'></span></td>";
             rowHTML += "<td class='camp-overview-raid list-amount'><span class='value'></span></span></td>";
             rowHTML += "<td class='camp-overview-levelpop list-amount'></td>";
             rowHTML += "<td class='camp-overview-storage list-amount'></td>";
@@ -217,7 +218,10 @@ define([
             rowHTML += "<span class='icon'><img src='img/stat-evidence.png' alt='evidence'/></span><span class='change-indicator'></span> ";
             rowHTML += "</span> ";
             rowHTML += "<span class='camp-overview-stats-rumours info-callout-target info-callout-target-small'>";
-            rowHTML += "<span class='icon'><img src='img/stat-rumours.png' alt='rumours'/><span class='change-indicator'></span> ";
+            rowHTML += "<span class='icon'><img src='img/stat-rumours.png' alt='rumours'/></span><span class='change-indicator'></span> ";
+            rowHTML += "</span>";
+            rowHTML += "<span class='camp-overview-stats-favour info-callout-target info-callout-target-small'>";
+            rowHTML += "<span class='icon'><img src='img/stat-favour.png' alt='favour'/></span><span class='change-indicator'></span> ";
             rowHTML += "</span>";
             rowHTML += "</td>";
 
@@ -261,7 +265,7 @@ define([
             this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-population .change-indicator"), camp.populationChangePerSec);
 
             var reputationComponent = node.reputation;
-            $("#camp-overview tr#" + rowID + " .camp-overview-reputation .value").text(UIConstants.roundValue(reputationComponent.value, true, true) + "/" + UIConstants.roundValue(reputationComponent.targetValue, true, true));
+            $("#camp-overview tr#" + rowID + " .camp-overview-reputation .value").text(UIConstants.roundValue(reputationComponent.value, true, true));
             $("#camp-overview tr#" + rowID + " .camp-overview-reputation .value").toggleClass("warning", reputationComponent.targetValue < 1);
             this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-reputation .change-indicator"), reputationComponent.accumulation);
             
@@ -309,6 +313,12 @@ define([
             GameGlobals.uiFunctions.toggle($("#camp-overview tr#" + rowID + " .camp-overview-stats-rumours"), rumoursChange > 0);
             this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-stats-rumours .change-indicator"), rumoursChange);
             UIConstants.updateCalloutContent("#camp-overview tr#" + rowID + " .camp-overview-stats-rumours", "rumours: " + UIConstants.roundValue(rumoursChange, true, true, 1000), true);
+            
+            var deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
+            var favourChange = deityComponent.accumulationPerCamp[level] || 0;
+            GameGlobals.uiFunctions.toggle($("#camp-overview tr#" + rowID + " .camp-overview-stats-favour"), favourChange > 0);
+            this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-stats-favour .change-indicator"), favourChange);
+            UIConstants.updateCalloutContent("#camp-overview tr#" + rowID + " .camp-overview-stats-favour", "favour: " + UIConstants.roundValue(favourChange, true, true, 1000), true);
             
 			var hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
             var storageText = resources.storageCapacity;

@@ -74,7 +74,6 @@ define([
             this.elements.changeIndicatorEvidence = $("#evidence-change-indicator");
             this.elements.changeIndicatorRumours = $("#rumours-change-indicator");
             this.elements.changeIndicatorFavour = $("#favour-change-indicator");
-            this.elements.changeIndicatorFavour = $("#favour-change-indicator");
 
 			return this;
 		},
@@ -204,7 +203,7 @@ define([
             GameGlobals.uiFunctions.toggle("#stats-favour", hasDeity);
             if (hasDeity) {
     			this.elements.valFavour.text(UIConstants.roundValue(this.deityNodes.head.deity.favour, true, false));
-    			this.updateStatsCallout("", "stats-evidence", this.deityNodes.head.deity.accSources);
+    			this.updateStatsCallout("", "stats-favour", this.deityNodes.head.deity.accSources);
                 this.updateChangeIndicator(this.elements.changeIndicatorFavour, this.deityNodes.head.deity.accumulation, GameGlobals.gameState.unlockedFeatures.favour);
             }
 

@@ -1573,7 +1573,7 @@ define(['ash',
 			this.save();
         },
 
-		assignWorkers: function (sector, scavengers, trappers, waters, ropers, chemists, rubber, apothecaries, smiths, concrete, soldiers, scientists) {
+		assignWorkers: function (sector, scavengers, trappers, waters, ropers, chemists, rubber, apothecaries, smiths, concrete, soldiers, scientists, clerics) {
 			sector = sector || this.playerLocationNodes.head.entity;
 			var camp = sector ? sector.get(CampComponent) : null;
 
@@ -1589,6 +1589,7 @@ define(['ash',
 				camp.assignedWorkers.concrete = Math.max(0, Math.floor(concrete));
 				camp.assignedWorkers.soldier = Math.max(0, Math.floor(soldiers));
 				camp.assignedWorkers.scientist = Math.max(0, Math.floor(scientists));
+				camp.assignedWorkers.cleric = Math.max(0, Math.floor(clerics));
 				GlobalSignals.workersAssignedSignal.dispatch(sector);
 			} else {
 				log.w("No camp found for worker assignment.");

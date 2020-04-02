@@ -238,6 +238,7 @@
             var posComponent = this.playerPosNodes.head.position;
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(posComponent.level);
+            var hasDeity = this.deityNodes.head !== null;
             
             var hasUnlockedRopers = GameGlobals.upgradeEffectsHelper.getWorkerLevel("weaver", this.tribeUpgradesNodes.head.upgrades) > 0;
             var hasUnlockedScientists = GameGlobals.upgradeEffectsHelper.getWorkerLevel("scientist", this.tribeUpgradesNodes.head.upgrades) > 0;
@@ -279,6 +280,9 @@
             UIConstants.updateCalloutContent("#in-assign-scientist .in-assing-worker-desc .info-callout-target",
                 "evidence +" + UIConstants.roundValue(GameGlobals.campHelper.getEvidenceProductionPerSecond(1, improvements), true, true) + "/s" +
                 workerConsumptionS, true);
+            UIConstants.updateCalloutContent("#in-assign-cleric .in-assing-worker-desc .info-callout-target",
+                "favour +" + UIConstants.roundValue(GameGlobals.campHelper.getFavourProductionPerSecond(1, improvements), true, true) + "/s" +
+                workerConsumptionS, true);
             UIConstants.updateCalloutContent("#in-assign-soldier .in-assing-worker-desc .info-callout-target",
                 "camp defence +" + CampConstants.getSoldierDefence(soldierLevel) +
                 workerConsumptionS, true);
@@ -290,6 +294,7 @@
             var smithiesInCamp = improvements.getCount(improvementNames.smithy);
             var barracksInCamp = improvements.getCount(improvementNames.barracks);
             var librariesInCamp = improvements.getCount(improvementNames.library);
+            var templesInCamp = improvements.getCount(improvementNames.temple);
 
             var maxRopers = hasUnlockedRopers ? maxPopulation : 0;
             var maxApothecaries = apothecariesInCamp * CampConstants.getApothecariesPerShop(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.apothecary, this.tribeUpgradesNodes.head.upgrades));
@@ -297,6 +302,7 @@
             var maxSmiths = smithiesInCamp * CampConstants.getSmithsPerSmithy(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.smithy, this.tribeUpgradesNodes.head.upgrades));
             var maxSoldiers = barracksInCamp * CampConstants.getSoldiersPerBarracks(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.barracks, this.tribeUpgradesNodes.head.upgrades));
             var maxScientists = hasUnlockedScientists ? librariesInCamp * CampConstants.getScientistsPerLibrary(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.library, this.tribeUpgradesNodes.head.upgrades)) : 0;
+            var maxClerics = hasDeity ? templesInCamp * CampConstants.getClericsPerTemple(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.temple, this.tribeUpgradesNodes.head.upgrades)) : 0;
             var maxChemists = refineriesOnLevel * CampConstants.CHEMISTS_PER_WORKSHOP;
             var maxRubbers = plantationsOnLevel * CampConstants.RUBBER_WORKER_PER_WORKSHOP;
 
@@ -311,6 +317,7 @@
             this.updateWorkerStepper(campComponent, "#stepper-smith", "toolsmith", maxSmiths, true);
             this.updateWorkerStepper(campComponent, "#stepper-soldier", "soldier", maxSoldiers, true);
             this.updateWorkerStepper(campComponent, "#stepper-scientist", "scientist", maxScientists, true);
+            this.updateWorkerStepper(campComponent, "#stepper-cleric", "cleric", maxClerics, true);
         },
 
         updateWorkerMaxDescriptions: function () {

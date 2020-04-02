@@ -45,6 +45,7 @@ define(['ash'], function (Ash) {
         PRODUCTION_TOOLS_PER_WORKER_PER_S: 0.02,
         PRODUCTION_CONCRETE_PER_WORKER_PER_S: 0.03,
         PRODUCTION_EVIDENCE_PER_WORKER_PER_S: 0.0005,
+        PRODUCTION_FAVOUR_PER_WORKER_PER_S: 0.0005,
         
         // reputation
         REPUTATION_TO_POPULATION_FACTOR: 0.82,
@@ -114,6 +115,10 @@ define(['ash'], function (Ash) {
         
         getScientistsPerLibrary: function (upgradeLevel) {
             return 2;
+        },
+        
+        getClericsPerTemple: function (upgradeLevel) {
+            return 5;
         },
         
         getRequiredReputation: function (pop) {

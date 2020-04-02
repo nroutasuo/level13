@@ -81,6 +81,11 @@ define([
 			return workers * CampConstants.PRODUCTION_EVIDENCE_PER_WORKER_PER_S * evidenceUpgradeBonus * GameConstants.gameSpeedCamp;
         },
         
+        getFavourProductionPerSecond: function (workers, improvementComponent) {
+			var upgradeBonus = this.getUpgradeBonus("cleric");
+			return workers * CampConstants.PRODUCTION_FAVOUR_PER_WORKER_PER_S * upgradeBonus * GameConstants.gameSpeedCamp;
+        },
+        
         getWaterConsumptionPerSecond: function (population, useExplorationSpeed) {
             var speed = useExplorationSpeed ? GameConstants.gameSpeedExploration : GameConstants.gameSpeedCamp;
             return CampConstants.CONSUMPTION_WATER_PER_WORKER_PER_S * Math.floor(population) * speed;
