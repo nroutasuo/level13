@@ -1956,6 +1956,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_food: 100,
                     resource_metal: 200,
                 },
+                
+                improve_in_temple: {
+                    resource_herbs: [50, 0, 5, 0, 0],
+                    resource_metal: [50, 0, 5, 0, 0],
+                    cost_factor_e1_base: 2,
+                },
 
                 use_in_temple: {
                     silver: 1,
@@ -2741,6 +2747,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 improve_in_apothecary: "Increase efficiency",
                 improve_in_smithy: "Increase efficiency",
                 improve_in_cementmill: "Increase efficiency",
+                improve_in_temple: "Increase favour generation",
                 use_in_home: "Recover stamina.",
                 use_in_campfire: "Collect rumours from the population.",
                 use_in_market: "Go hear the latest gossip.",

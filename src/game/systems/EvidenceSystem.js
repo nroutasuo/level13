@@ -17,8 +17,7 @@ define([
 		campNodes: null,
         tribeUpgradesNodes: null,
 
-        constructor: function () {
-        },
+        constructor: function () {},
 
         addToEngine: function (engine) {
             this.engine = engine;

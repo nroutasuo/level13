@@ -281,7 +281,7 @@
                 "evidence +" + UIConstants.roundValue(GameGlobals.campHelper.getEvidenceProductionPerSecond(1, improvements), true, true) + "/s" +
                 workerConsumptionS, true);
             UIConstants.updateCalloutContent("#in-assign-cleric .in-assing-worker-desc .info-callout-target",
-                "favour +" + UIConstants.roundValue(GameGlobals.campHelper.getFavourProductionPerSecond(1, improvements), true, true) + "/s" +
+                "favour +" + UIConstants.roundValue(GameGlobals.campHelper.getFavourProductionPerSecond(1, improvements), true, true, 100000) + "/s" +
                 workerConsumptionS, true);
             UIConstants.updateCalloutContent("#in-assign-soldier .in-assing-worker-desc .info-callout-target",
                 "camp defence +" + CampConstants.getSoldierDefence(soldierLevel) +
@@ -332,6 +332,7 @@
             var smithiesInCamp = improvements.getCount(improvementNames.smithy);
             var librariesInCamp = improvements.getCount(improvementNames.library);
             var barracksInCamp = improvements.getCount(improvementNames.barracks);
+            var templesInCamp = improvements.getCount(improvementNames.temple);
 
             UIConstants.updateCalloutContent("#in-assign-chemist .in-assign-worker-limit .info-callout-target", refineriesOnLevel + " refineries cleared", true);
             UIConstants.updateCalloutContent("#in-assign-rubber .in-assign-worker-limit .info-callout-target", plantationsOnLevel + " plantations found", true);
@@ -340,6 +341,7 @@
             UIConstants.updateCalloutContent("#in-assign-smith .in-assign-worker-limit .info-callout-target", smithiesInCamp + " smithies built", true);
             UIConstants.updateCalloutContent("#in-assign-scientist .in-assign-worker-limit .info-callout-target", librariesInCamp + " libraries built", true);
             UIConstants.updateCalloutContent("#in-assign-soldier .in-assign-worker-limit .info-callout-target", barracksInCamp + " barracks built", true);
+            UIConstants.updateCalloutContent("#in-assign-cleric .in-assign-worker-limit .info-callout-target", templesInCamp + " temples built", true);
         },
 
         initImprovements: function () {

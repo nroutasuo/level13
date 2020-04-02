@@ -37,8 +37,7 @@ define([
 		lastMsgTimeStamp: 0,
 		msgFrequency: 1000 * 120,
 
-        constructor: function () {
-        },
+        constructor: function () { },
 
         addToEngine: function (engine) {
             this.engine = engine;

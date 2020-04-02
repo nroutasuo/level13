@@ -27,6 +27,9 @@ define(['ash'], function (Ash) {
         // Evidence
         EVIDENCE_BONUS_PER_LIBRARY_LEVEL: 0.15,
         
+        // Favour
+        FAVOUR_BONUS_PER_TEMPLE_LEVEL: 0.1,
+        
         // Cost of workers
         CONSUMPTION_WATER_PER_WORKER_PER_S: 0.02,
         CONSUMPTION_FOOD_PER_WORKER_PER_S: 0.01,

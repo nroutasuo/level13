@@ -115,6 +115,13 @@ define([
             return 0.0015 * libraryCount * libraryUpgradeLevel * libraryLevelFactor * GameConstants.gameSpeedCamp;
         },
         
+        getTempleFavourGenerationPerSecond: function (improvementsComponent, templeUpgradeLevel) {
+            var templeCount = improvementsComponent.getCount(improvementNames.temple);
+            var templeLevel = improvementsComponent.getLevel(improvementNames.temple);
+            var templeLevelFactor = (1 + templeLevel * CampConstants.FAVOUR_BONUS_PER_TEMPLE_LEVEL);
+            return 0.0015 * templeCount * templeUpgradeLevel * templeLevelFactor * GameConstants.gameSpeedCamp;
+        },
+        
         getCamprifeRumourGenerationPerSecond: function (improvementsComponent, campfireUpgradeLevel, accSpeedPopulation) {
             var campfireCount = improvementsComponent.getCount(improvementNames.campfire);
             var campfireLevel = improvementsComponent.getLevel(improvementNames.campfire);

@@ -1345,6 +1345,7 @@ define([
                 case "improve_in_apothecary": return improvementNames.apothecary;
                 case "improve_in_smithy": return improvementNames.smithy;
                 case "improve_in_cementmill": return improvementNames.cementmill;
+                case "improve_in_temple": return improvementNames.temple;
                 case "build_out_passage_up_stairs": return improvementNames.passageUpStairs;
                 case "build_out_passage_up_elevator": return improvementNames.passageUpElevator;
                 case "build_out_passage_up_hole": return improvementNames.passageUpHole;

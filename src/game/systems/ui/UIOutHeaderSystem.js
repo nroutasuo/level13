@@ -114,7 +114,7 @@ define([
 
 		generateStatsCallouts: function () {
 			$.each($("#statsbar-self .stats-indicator"), function () {
-				$(this).wrap("<div class='info-callout-target'></div>");
+				$(this).wrap("<div class='info-callout-target info-callout-target-small'></div>");
 			});
 			$.each($("#header-self-bar .stats-indicator"), function () {
 				$(this).wrap("<div class='info-callout-target info-callout-target-small'></div>");
