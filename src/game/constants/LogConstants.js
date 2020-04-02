@@ -27,6 +27,8 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
         MSG_ID_USE_MARKET: "USE_MARKET",
         MSG_ID_USE_HOSPITAL: "USE_HOSPITAL",
         MSG_ID_USE_HOSPITAL2: "USE_HOSPITAL2",
+        MSG_ID_USE_TEMPLE: "USE_TEMPLE",
+        MSG_ID_USE_SHRINE: "USE_SHRINE",
         MSG_ID_BOUGHT_UPGRADE: "MSG_ID_BOUGHT_UPGRADE",
         MSG_ID_START_SEND_CAMP: "MSG_ID_START_SEND_CAMP",
         MSG_ID_FINISH_SEND_CAMP: "MSG_ID_FINISH_SEND_CAMP",

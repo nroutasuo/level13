@@ -221,6 +221,8 @@ define(['ash',
                 case "use_in_hospital": this.useHospital(param); break;
                 case "use_in_hospital2": this.useHospital2(param); break;
                 case "use_in_inn": this.useInn(param); break;
+                case "use_in_temple": this.useTemple(param); break;
+                case "use_in_shrine": this.useShrine(param); break;
 				// Item actions
                 case "craft": this.craftItem(param); break;
                 case "equip": this.equipItem(param); break;
@@ -866,6 +868,7 @@ define(['ash',
 			if (caravan.traderSelectedCurrency > 0) {
 				caravan.currency -= caravan.traderSelectedCurrency;
 				currencyComponent.currency += caravan.traderSelectedCurrency;
+                GameGlobals.gameState.unlockedFeatures.currency = true;
 			}
 
 			if (caravan.campSelectedCurrency) {
@@ -1337,6 +1340,24 @@ define(['ash',
 			this.completeAction("use_in_inn");
 
 			return false;
+		},
+
+		useTemple: function () {
+            this.playerStatsNodes.head.entity.get(DeityComponent).favour += 5;
+			this.completeAction("use_in_temple");
+			this.addLogMessage(LogConstants.MSG_ID_USE_TEMPLE, "Donated to the temple.");
+			this.forceStatsBarUpdate();
+		},
+
+		useShrine: function () {
+            if (Math.random() > 0.5) {
+                this.playerStatsNodes.head.entity.get(DeityComponent).favour += 1;
+    			this.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Spent some time listening to the spirits.");
+            } else {
+    			this.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Tried to meditate, but found no peace.");
+            }
+			this.completeAction("use_in_shrine");
+			this.forceStatsBarUpdate();
 		},
 
 		addFollower: function (follower) {

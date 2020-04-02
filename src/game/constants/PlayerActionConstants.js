@@ -729,6 +729,10 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         storage: [1, -1],
                     },
                 },
+
+                use_in_shrine: {
+                    busy: false,
+                },
                 
                 build_in_temple: {
                     deity: true,
@@ -737,6 +741,10 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         storage: [2, -1],
                         temple: [0, 1]
                     },
+                },
+
+                use_in_temple: {
+                    busy: false,
                 },
                 
                 craft_clothing_over_6: {
@@ -1949,6 +1957,10 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_metal: 200,
                 },
 
+                use_in_temple: {
+                    silver: 1,
+                },
+
                 build_in_researchcenter: {
                     resource_water: 200,
                     resource_metal: 1200,
@@ -2647,6 +2659,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 use_in_campfire: 60,
                 use_in_home: 180,
                 use_in_market: 300,
+                use_in_shrine: 240,
+                use_in_temple: 120,
                 scout_locale_i: 60,
                 scout_locale_u: 60,
                 clear_workshop: 60,
@@ -2663,6 +2677,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 use_in_campfire: 5,
                 use_in_market: 10,
                 use_in_home: 60,
+                use_in_shrine: 10,
+                use_in_temple: 5,
                 send_caravan: 60 * 10
             },
 
@@ -2730,6 +2746,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 use_in_market: "Go hear the latest gossip.",
                 use_in_hospital: "Heal injuries.",
                 use_in_inn: "Recruit followers.",
+                use_in_shrine: "Reconnect with the spirits",
+                use_in_temple: "Donate to the temple",
                 use_item_glowstick_1: "Create a temporary light in this location.",
                 use_out_collector_food: "Collect accumulated food.",
                 use_out_collector_water: "Collect accumulated water.",

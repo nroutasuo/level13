@@ -23,6 +23,7 @@ define([
     'game/nodes/sector/CampNode',
     'game/nodes/NearestCampNode',
     'game/components/type/LevelComponent',
+    'game/components/common/CurrencyComponent',
     'game/components/common/PositionComponent',
     'game/components/player/PlayerActionComponent',
     'game/components/player/BagComponent',
@@ -47,7 +48,7 @@ define([
 ], function (
 	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ImprovementConstants, ItemConstants, HazardConstants, BagConstants, MovementConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
-	LevelComponent, PositionComponent, PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, PerksComponent, DeityComponent,
+	LevelComponent, CurrencyComponent, PositionComponent, PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, PerksComponent, DeityComponent,
 	FightComponent, OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
 	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, SectorImprovementsComponent, TraderComponent,
 	CampComponent,
@@ -109,6 +110,9 @@ define([
                         log.w("Trying to deduct favour cost but there's no deity component!");
                 } else if (costName === "evidence") {
                     this.playerStatsNodes.head.evidence.value -= costAmount;
+                } else if (costName === "silver") {
+                    var currencyComponent = this.playerStatsNodes.head.entity.get(CurrencyComponent);
+                    currencyComponent.currency -= costAmount;
                 } else if (costNameParts[0] === "resource") {
                     currentStorage.resources.addResource(costNameParts[1], -costAmount);
                 } else if (costNameParts[0] === "item") {
@@ -872,6 +876,10 @@ define([
 
 					case "blueprint":
 						return 1;
+                    
+                    case "silver":
+    			         var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
+                        return currencyComponent.currency / costs.silver;
 
                     default:
                         log.w("Unknown cost: " + name);

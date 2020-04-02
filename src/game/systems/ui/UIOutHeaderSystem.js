@@ -416,7 +416,7 @@ define([
 			var inventoryUnlocked = false;
 
             GameGlobals.uiFunctions.toggle("#header-camp-storage", inCamp);
-            GameGlobals.uiFunctions.toggle("#header-camp-currency", inCamp && GameGlobals.gameState.unlockedFeatures.currency);
+            GameGlobals.uiFunctions.toggle("#header-camp-currency", inCamp && currencyComponent.currency > 0);
             GameGlobals.uiFunctions.toggle("#statsbar-resources", inCamp);
             GameGlobals.uiFunctions.toggle("#header-bag-storage", !inCamp && GameGlobals.gameState.unlockedFeatures.bag);
             GameGlobals.uiFunctions.toggle("#header-bag-currency", !inCamp && currencyComponent.currency > 0);
