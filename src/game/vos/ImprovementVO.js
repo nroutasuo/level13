@@ -14,6 +14,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
         spaceship1: "Colony Hull",
         spaceship2: "Colony Shield",
         spaceship3: "Colony Life Support",
+        greenhouse: "Greenhouse",
 		
         home: "Tent",
 		house: "Hut",

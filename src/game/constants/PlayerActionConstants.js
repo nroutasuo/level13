@@ -1711,6 +1711,11 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     cost_factor_e1_base: 1.295,
                     cost_factor_e2_exp: 2.3,
                 },
+                
+                build_out_greenhouse: {
+                    resource_metal: 100,
+                    resource_fuel: 10,
+                },
 
                 build_out_collector_food: {
                     resource_metal: 8

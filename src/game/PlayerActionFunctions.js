@@ -178,6 +178,7 @@ define(['ash',
                 case "build_out_passage_up_stairs": this.buildPassageUpStairs(param); break;
                 case "build_out_passage_up_elevator": this.buildPassageUpElevator(param); break;
                 case "build_out_passage_up_hole": this.buildPassageUpHole(param); break;
+                case "build_out_greenhouse": this.buildGreenhouse(param); break;
                 case "build_out_spaceship1": this.buildSpaceShip1(param); break;
                 case "build_out_spaceship2": this.buildSpaceShip2(param); break;
                 case "build_out_spaceship3": this.buildSpaceShip3(param); break;
@@ -276,13 +277,18 @@ define(['ash',
                 this.currentAction = null;
             GameGlobals.uiFunctions.completeAction(action);
         },
+        
+        getPositionVO: function (sectorPos) {
+			var l = parseInt(sectorPos.split(".")[0]);
+			var sX = parseInt(sectorPos.split(".")[1]);
+			var sY = parseInt(sectorPos.split(".")[2]);
+			return new PositionVO(l, sX, sY);
+        },
 
 		getActionSector: function (action, param) {
             if (!param) return null;
-			var l = parseInt(param.split(".")[0]);
-			var sX = parseInt(param.split(".")[1]);
-			var sY = parseInt(param.split(".")[2]);
-			return GameGlobals.levelHelper.getSectorByPosition(l, sX, sY);
+            var position = this.getPositionVO(param);
+			return GameGlobals.levelHelper.getSectorByPosition(position.level, position.sectorX, position.sectorY);
 		},
 
 		moveTo: function (direction) {
@@ -970,16 +976,14 @@ define(['ash',
 		},
 
 		buildPassage: function (sectorPos, up, passageType, action, neighbourAction) {
-			var l = parseInt(sectorPos.split(".")[0]);
-			var sX = parseInt(sectorPos.split(".")[1]);
-			var sY = parseInt(sectorPos.split(".")[2]);
+			var position = this.getPositionVO(sectorPos);
 			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(l);
 			action = action + "_" + levelOrdinal;
 			var sector = this.getActionSector(action, sectorPos);
 			neighbourAction = neighbourAction + "_" + levelOrdinal;
 
 			var sectorPosVO = StringUtils.getPosition(sectorPos);
-			var neighbour = GameGlobals.levelHelper.getSectorByPosition(up ? l + 1 : l - 1, sX, sY);
+			var neighbour = GameGlobals.levelHelper.getSectorByPosition(up ? position.level + 1 : position.level - 1, position.sectorX, position.sectorY);
 
 			if (sector && neighbour) {
 				var direction = up ? PositionConstants.DIRECTION_UP : PositionConstants.DIRECTION_DOWN;
@@ -994,6 +998,13 @@ define(['ash',
 				log.i(sectorPos);
 			}
 		},
+        
+        buildGreenhouse: function (sectorPos) {
+            var action = "build_out_greenhouse";
+			var position = this.getPositionVO(sectorPos);
+			var sector = this.getActionSector(action, sectorPos);
+            this.buildImprovement(action, improvementNames.greenhouse, sector);
+        },
 
 		buildTrap: function () {
 			this.buildImprovement("build_out_collector_food", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_collector_food"));
@@ -1178,12 +1189,8 @@ define(['ash',
 		},
 
 		buildSpaceShip: function (sectorPos, action) {
-			var l = parseInt(sectorPos.split(".")[0]);
-			var sX = parseInt(sectorPos.split(".")[1]);
-			var sY = parseInt(sectorPos.split(".")[2]);
+			var sectorPosVO = this.getPositionVO(sectorPos);
 			var sector = this.getActionSector(action, sectorPos);
-
-			var sectorPosVO = new PositionVO(l, sX, sY);
 			var playerPos = this.playerPositionNodes.head.position;
 
 			if (sector) {

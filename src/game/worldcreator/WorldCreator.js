@@ -179,13 +179,13 @@ define([
 
                     // sunlight
                     var isOutsideTower = Math.abs(y) > WorldCreatorConstants.TOWER_RADIUS || Math.abs(x) > WorldCreatorConstants.TOWER_RADIUS;
-                    var isEdgeSector = levelVO.isEdgeSector(x, y, 1);
+                    var isEdgeSector = levelVO.isEdgeSector(x, y, 2);
                     var isOpenEdge = false;
                     var isBrokenEdge = false;
                     if (l === topLevel) {
                         // surface: all lit
                         sectorVO.sunlit = 1;
-                    } else if (l === 13 || l === 12) {
+                    } else if (l === 13) {
                         // start levels: no sunlight
                         sectorVO.sunlit = 0;
                     } else {
@@ -195,9 +195,13 @@ define([
                         if (l === topLevel - 1 && distanceToCenter <= 6) {
                             sectorVO.sunlit = 1;
                         }
+                        
+                        if (isOutsideTower) {
+                            sectorVO.sunlit = 1;
+                        }
 
                         // all levels except surface: some broken or open edges
-                        if (isEdgeSector || isOutsideTower) {
+                        if (isEdgeSector) {
                             var dir = levelVO.getEdgeDirection(x, y, 1);
                             var dirIndex = sunlitEdgeDirections.indexOf(dir);
                             if (dirIndex >= 0) {

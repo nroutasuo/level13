@@ -152,7 +152,8 @@ define([
             
             var addValue = function (value, name) {
                 result += value;
-                sources[name] = value;
+                if (!sources[name]) sources[name] = 0;
+                sources[name] += value;
             };
             
             var addPenalty = function (id, active) {

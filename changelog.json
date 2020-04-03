@@ -4,7 +4,7 @@
             "version": "0.3.1",
             "phase": "alpha",
             "final": false,
-            "updated": "2020-04-01",
+            "updated": "2020-04-03",
             "changes": [
                 {
                     "type": "GD",
@@ -16,7 +16,7 @@
                 },
                 {
                     "type": "GD",
-                    "summary": "Add deity and favour",
+                    "summary": "Add deity and favour, temples, shrines and greenhouses",
                 },
                 {
                     "type": "GD",

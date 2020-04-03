@@ -492,6 +492,8 @@ define([
 			var sectorPosition = sectorEntity.get(PositionComponent);
             var statusComponent = sectorEntity.get(SectorStatusComponent);
             var sectorPassagesComponent = sectorEntity.get(PassagesComponent);
+            var featuresComponent = sectorEntity.get(SectorFeaturesComponent);
+            var improvementsComponent = sectorEntity.get(SectorImprovementsComponent);
             var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(sectorPosition.level);
 
             var scouted = statusComponent && statusComponent.scouted;
@@ -582,6 +584,17 @@ define([
                             var improvement = GameGlobals.playerActionsHelper.getImprovementNameForAction(actions[i]);
                             projects.push(new LevelProjectVO(new ImprovementVO(improvement), actions[i], sectorPosition));
                         }
+                    }
+                }
+            }
+            
+            // buildable workshops
+            if (featuresComponent.sunlit) {
+                if (improvementsComponent.getCount(improvementNames.greenhouse) <= 0) {
+                    var hasHazards = featuresComponent.hazards.poison > 0 || featuresComponent.hazards.radiation > 0;
+                    var hasWater = featuresComponent.resourcesScavengable.water > 0 || featuresComponent.resourcesCollectable.water > 0 || featuresComponent.hasSpring;
+                    if (!hasHazards && hasWater) {
+                        projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.greenhouse), "build_out_greenhouse", sectorPosition));
                     }
                 }
             }
