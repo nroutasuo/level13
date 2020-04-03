@@ -15,7 +15,7 @@ function (Ash) {
 
         constructor: function () {
             this.gridX = 10;
-            this.defaultBuildingSize = 15;
+            this.defaultBuildingSize = 14;
         },
         
         initCampSettings: function (campOrdinal, settings) {
@@ -103,6 +103,10 @@ function (Ash) {
                     return { x: s * 3, y: s };
                 case improvementNames.tradepost:
                     return { x: s * 1.25, y: s * 2.85 };
+                case improvementNames.shrine:
+                    return { x: s * 0.75, y: s * 2.5 };
+                case improvementNames.temple:
+                    return { x: s * 2, y: s * 2 };
             }
             return { x: s, y: s };
         },

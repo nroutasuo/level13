@@ -39,6 +39,13 @@ define(function () {
             ctx.fill();
         },
         
+        drawArc: function (ctx, color, x, y, r, from, to) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, r, from, to);
+            ctx.fill();
+        },
+        
         drawHexagon: function (ctx, color, size, x, y) {
             var r = size / 2;
             ctx.fillStyle = color;

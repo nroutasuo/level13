@@ -221,6 +221,11 @@ define([
                     var arcr = size.x / 2;
                     CanvasUtils.drawCircle(this.ctx, color, middlex, ypx + arcr, arcr);
                     break;
+                case improvementNames.temple:
+                    var arcr = Math.min(size.x / 2, size.y / 2);
+                    var anglePadding = Math.PI / 6;
+                    CanvasUtils.drawArc(this.ctx, color, middlex, middley, arcr, Math.PI - anglePadding, anglePadding);
+                    break;
             }
             
             // main structure
@@ -362,6 +367,20 @@ define([
                     this.ctx.fillRect(xpx, ypx + arcr + 4 + 6 - 1, size.x, 2);
                     var basew = size.x / 3 * 2;
                     CanvasUtils.drawTriangle(this.ctx, color, basew, basew, middlex, ybottom - basew + 1, -90 * Math.PI / 180);
+                    break;
+                case improvementNames.shrine:
+                    var baseH = 4;
+                    this.ctx.fillRect(xpx, basey - baseH, size.x, baseH);
+                    this.ctx.fillRect(xpx - 1, basey - baseH - 2, size.x + 2, 3);
+                    CanvasUtils.drawTriangle(this.ctx, color, size.x - 2, size.y, tipx, tipy, -90 * Math.PI / 180);
+                    break;
+                case improvementNames.temple:
+                    var baseH = size.y / 3;
+                    var towerW = 2;
+                    var towerH = size.y / 2;
+                    this.ctx.fillRect(xpx, basey - baseH, size.x, baseH);
+                    this.ctx.fillRect(xleft, ypx + size.y - towerH, towerW, towerH);
+                    this.ctx.fillRect(xright - towerW, ypx + size.y - towerH, towerW, towerH);
                     break;
                 default:
                     this.ctx.fillRect(xpx, ypx, size.x, size.y);
@@ -565,7 +584,11 @@ define([
             },
             6: {},
             7: {},
-            8: {},
+            8: {
+                predefinedPositions: {
+                    0: improvementNames.shrine,
+                }
+            },
             9: {},
             10: {},
             11: {},
