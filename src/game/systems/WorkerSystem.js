@@ -109,6 +109,11 @@ define([
 			campResources.addResource(resourceNames.rubber, rubber);
 			resourceAccComponent.addChange(resourceNames.rubber, rubber / time, "Plantation workers");
 			
+			// Workshop: Rubbermakers
+            var herbs = time * GameGlobals.campHelper.getHerbsProductionPerSecond(camp.assignedWorkers.gardener, improvementsComponent);
+			campResources.addResource(resourceNames.herbs, herbs);
+			resourceAccComponent.addChange(resourceNames.herbs, herbs / time, "Gardeners");
+			
 			// Advanced: Apothecaries
 			var herbsRequired = time * GameGlobals.campHelper.getHerbsConsumptionPerSecond(camp.assignedWorkers.apothecary);
 			if (herbsRequired > 0) {
