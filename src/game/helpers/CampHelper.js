@@ -61,7 +61,8 @@ define([
         },
         
         getHerbsProductionPerSecond: function (workers, improvementsComponent) {
-			var upgradeBonus = this.getUpgradeBonus(CampConstants.workerTypes.gardener.id);
+            workers = workers || 0;
+			var upgradeBonus = this.getUpgradeBonus(CampConstants.workerTypes.gardener.id) || 1;
 			return workers * CampConstants.PRODUCTION_HERBS_PER_WORKER_PER_S * upgradeBonus * GameConstants.gameSpeedCamp;
         },
         
@@ -178,7 +179,7 @@ define([
                 case CampConstants.workerTypes.rubbermaker.id:
                     return def.getLimitNum(campOrdinal, improvements) * CampConstants.RUBBER_WORKER_PER_WORKSHOP;
                 case CampConstants.workerTypes.gardener.id:
-                    return -1;
+                    return def.getLimitNum(campOrdinal, improvements) * CampConstants.GARDENER_PER_GREENHOUSE;
                 case CampConstants.workerTypes.apothecary.id:
                     return def.getLimitNum(campOrdinal, improvements) * CampConstants.getApothecariesPerShop(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.apothecary, upgrades));
                 case CampConstants.workerTypes.concrete.id:

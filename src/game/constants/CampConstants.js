@@ -71,6 +71,7 @@ define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
         // Workers per building
         CHEMISTS_PER_WORKSHOP: 5,
         RUBBER_WORKER_PER_WORKSHOP: 5,
+        GARDENER_PER_GREENHOUSE: 5,
     
         workerTypes: {
             scavenger: {
@@ -97,6 +98,8 @@ define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
             },
             gardener: {
                 id: "gardener",
+                getLimitNum: function (campOrdinal, improvements) { return GameGlobals.levelHelper.getCampBuiltOutImprovementsCount(campOrdinal, improvementNames.greenhouse); },
+                getLimitText: function (num) { return num + " greenhouses"; },
             },
             apothecary: {
                 id: "apothecary",
