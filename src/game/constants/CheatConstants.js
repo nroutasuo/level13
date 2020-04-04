@@ -13,6 +13,7 @@ define(function () {
         CHEAT_NAME_RUMOURS: "rumours",
         CHEAT_NAME_FAVOUR: "favour",
         CHEAT_NAME_POPULATION: "pop",
+        CHEAT_NAME_WORKERS: "workers",
         CHEAT_NAME_STAMINA: "stamina",
         CHEAT_NAME_POS: "pos",
         CHEAT_NAME_LEVEL: "gotolevel",

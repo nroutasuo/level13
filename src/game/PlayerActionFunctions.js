@@ -977,7 +977,7 @@ define(['ash',
 
 		buildPassage: function (sectorPos, up, passageType, action, neighbourAction) {
 			var position = this.getPositionVO(sectorPos);
-			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(l);
+			var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(position.level);
 			action = action + "_" + levelOrdinal;
 			var sector = this.getActionSector(action, sectorPos);
 			neighbourAction = neighbourAction + "_" + levelOrdinal;
@@ -1580,23 +1580,16 @@ define(['ash',
 			this.save();
         },
 
-		assignWorkers: function (sector, scavengers, trappers, waters, ropers, chemists, rubber, apothecaries, smiths, concrete, soldiers, scientists, clerics) {
+		assignWorkers: function (sector, assignment) {
 			sector = sector || this.playerLocationNodes.head.entity;
 			var camp = sector ? sector.get(CampComponent) : null;
 
 			if (camp) {
-				camp.assignedWorkers.scavenger = Math.max(0, Math.floor(scavengers));
-				camp.assignedWorkers.trapper = Math.max(0, Math.floor(trappers));
-				camp.assignedWorkers.water = Math.max(0, Math.floor(waters));
-				camp.assignedWorkers.ropemaker = Math.max(0, Math.floor(ropers));
-				camp.assignedWorkers.chemist = Math.max(0, Math.floor(chemists));
-				camp.assignedWorkers.rubbermaker = Math.max(0, Math.floor(rubber));
-				camp.assignedWorkers.apothecary = Math.max(0, Math.floor(apothecaries));
-				camp.assignedWorkers.toolsmith = Math.max(0, Math.floor(smiths));
-				camp.assignedWorkers.concrete = Math.max(0, Math.floor(concrete));
-				camp.assignedWorkers.soldier = Math.max(0, Math.floor(soldiers));
-				camp.assignedWorkers.scientist = Math.max(0, Math.floor(scientists));
-				camp.assignedWorkers.cleric = Math.max(0, Math.floor(clerics));
+                camp.assignedWorkers = {};
+                for (var key in CampConstants.workerTypes) {
+                    var val = assignment[key] || 0;
+                    camp.assignedWorkers[key] = Math.max(0, Math.floor(val));
+                }
 				GlobalSignals.workersAssignedSignal.dispatch(sector);
 			} else {
 				log.w("No camp found for worker assignment.");

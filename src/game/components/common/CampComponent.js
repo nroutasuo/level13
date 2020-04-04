@@ -22,8 +22,8 @@ define(['ash', 'game/constants/CampConstants', 'game/vos/RaidVO'], function (Ash
             this.rumourpool = 0;
             this.rumourpoolchecked = false;
             this.assignedWorkers = {};
-            for(var worker in CampConstants.WORKER_TYPES) {
-                this.assignedWorkers[worker] = 0;
+            for(var worker in CampConstants.workerTypes) {
+                this.assignedWorkers[worker.id] = 0;
             }
             this.campName = "";
             this.lastRaid = new RaidVO(null);

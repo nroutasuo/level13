@@ -127,9 +127,9 @@ define([
             var foodProduction = GameGlobals.campHelper.getFoodProductionPerSecond(1, improvements);
             var waterConsumption = GameGlobals.campHelper.getWaterConsumptionPerSecond(node.camp.population);
             var waterProduction = GameGlobals.campHelper.getWaterProductionPerSecond(1, improvements);
-            reservedWorkers[CampConstants.WORKER_TYPES.scavenger] = 1;
-            reservedWorkers[CampConstants.WORKER_TYPES.trapper] = Math.ceil(foodConsumption / foodProduction);
-            reservedWorkers[CampConstants.WORKER_TYPES.water] = Math.ceil(waterConsumption / waterProduction);
+            reservedWorkers[CampConstants.workerTypes.scavenger.id] = 1;
+            reservedWorkers[CampConstants.workerTypes.trapper.id] = Math.ceil(foodConsumption / foodProduction);
+            reservedWorkers[CampConstants.workerTypes.water.id] = Math.ceil(waterConsumption / waterProduction);
             var prioritizedWorkers = [];
             for (var key in node.camp.assignedWorkers) {
                 prioritizedWorkers.push({ name: key, min: reservedWorkers[key] || 0});

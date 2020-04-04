@@ -723,6 +723,7 @@ define(['ash',
             if (!campComponent)
                 return false;
 
+            var sector = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity;
             var improvementsComponent = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var playerPosition = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
             var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
@@ -735,44 +736,10 @@ define(['ash',
 
             // assign workers
             if (campComponent.getFreePopulation() > 0 || this.refreshWorkers) {
-                var currentFood = currentStorage.resources.getResource(resourceNames.food);
-                var currentWater = currentStorage.resources.getResource(resourceNames.water);
-                var currentRope = currentStorage.resources.getResource(resourceNames.rope);
-                var currentTools = currentStorage.resources.getResource(resourceNames.tools);
-                var maxStorage = currentStorage.storageCapacity;
-
-                var currentFoodRatio = currentFood / maxStorage;
-                var currentWaterRatio = currentWater / maxStorage;
-
-                var canRope = this.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdForWorker("weaver"));
-                var upgradesComponent = GameGlobals.playerActionFunctions.tribeUpgradesNodes.head.upgrades;
-
-                var maxApothecaries = improvementsComponent.getCount(improvementNames.apothecary) * CampConstants.getApothecariesPerShop(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.apothecary, upgradesComponent));
-                var maxConcrete = improvementsComponent.getCount(improvementNames.cementmill) * CampConstants.getWorkersPerMill(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.cementmill, upgradesComponent));
-                var maxSmiths = improvementsComponent.getCount(improvementNames.smithy) * CampConstants.getSmithsPerSmithy(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.smithy, upgradesComponent));
-                var maxSoldiers = improvementsComponent.getCount(improvementNames.barracks) * CampConstants.getSoldiersPerBarracks(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.barracks, upgradesComponent));
-                var maxScientists = improvementsComponent.getCount(improvementNames.library) * CampConstants.getScientistsPerLibrary(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.library, upgradesComponent));
-                var maxChemists = GameGlobals.levelHelper.getCampClearedWorkshopCount(playerPosition.level, resourceNames.fuel) * CampConstants.CHEMISTS_PER_WORKSHOP;
-                var maxRubber = GameGlobals.levelHelper.getCampClearedWorkshopCount(playerPosition.level, resourceNames.rubber) * CampConstants.RUBBER_WORKER_PER_WORKSHOP;
-
-                var pop = campComponent.population;
-
-                var waters = Math.max(1, Math.floor(pop / (currentWaterRatio > 0.5 ? 5 : 2.25)));
-                var trappers = Math.floor(pop / (currentFoodRatio > 0.5 ? 3 : 2));
-                var specialistPop = Math.floor(pop - trappers - waters);
-
-                var ropers = canRope && currentRope < maxStorage / 2 ? 1 : 0;
-                var chemists = Math.min(1, specialistPop - ropers, maxChemists);
-                var rubber = Math.min(1, specialistPop - ropers - chemists, maxRubber);
-                var smiths = Math.min((currentTools > maxSmiths * 0.9 ? 0 : 1), specialistPop - ropers - chemists - rubber, maxSmiths);
-                var apothecaries = Math.min(1, specialistPop - ropers - chemists - rubber - smiths, maxApothecaries);
-                var concrete = Math.min(1, specialistPop - ropers - chemists - rubber - smiths - apothecaries, maxConcrete);
-                var soldiers = Math.min(1, specialistPop - ropers - chemists - rubber - smiths - apothecaries - concrete, maxSoldiers);
-                var scientists = Math.min(1, specialistPop - ropers - chemists - rubber - smiths - apothecaries - concrete - soldiers, maxScientists);
-                var scavengers = Math.floor(pop - trappers - waters - ropers - chemist - rubber - apothecaries - smiths - concrete - soldiers - scientists);
-
-                GameGlobals.playerActionFunctions.assignWorkers(null, scavengers, trappers, waters, ropers, chemists, rubber, apothecaries, smiths, concrete, soldiers, scientists);
-                this.printStep("assigned workers (" + scavengers + ", " + trappers + ", " + waters + ", " + ropers + ", " + chemists + ", " + rubber + ", " + apothecaries + ", " + smiths + ", " + concrete + ", " + soldiers + ")");
+                var assignment = GameGlobals.campHelper.getDefaultWorkerAssignment(sector);
+                GameGlobals.playerActionFunctions.assignWorkers(null, assignment);
+                this.printStep("assigned workers");
+                console.log(assignment);
                 this.refreshWorkers = false;
                 return true;
             }

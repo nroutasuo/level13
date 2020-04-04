@@ -107,6 +107,9 @@ define(['ash',
             this.registerCheat(CheatConstants.CHEAT_NAME_POPULATION, "Add population to nearest camp.", ["value (1-n)"], function (params) {
                 this.addPopulation(Math.max(1, parseInt(params[0])));
             });
+            this.registerCheat(CheatConstants.CHEAT_NAME_WORKERS, "Auto-assign workers in nearest camp.", [], function (params) {
+                this.autoAssignWorkers();
+            });
             this.registerCheat(CheatConstants.CHEAT_NAME_STAMINA, "Refill stamina for free.", [], function () {
                 this.refillStamina();
             });
@@ -388,6 +391,14 @@ define(['ash',
             } else {
                 log.w("Camp not found.");
             }
+        },
+        
+        autoAssignWorkers: function () {
+            var currentSector = this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
+            var camp = currentSector.get(CampComponent);
+            if (!camp) return;
+            var assignment = GameGlobals.campHelper.getDefaultWorkerAssignment(currentSector);
+            GameGlobals.playerActionFunctions.assignWorkers(currentSector, assignment);
         },
 
         refillStamina: function () {

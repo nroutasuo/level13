@@ -4,6 +4,7 @@ define(['ash',
 		'game/GameGlobals',
 		'game/GlobalSignals',
 		'game/constants/GameConstants',
+		'game/constants/CampConstants',
 		'game/constants/UIConstants',
 		'game/constants/ItemConstants',
 		'game/constants/PlayerActionConstants',
@@ -11,7 +12,7 @@ define(['ash',
 		'game/helpers/ui/UIPopupManager',
 		'game/vos/ResourcesVO'
 	],
-	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ResourcesVO) {
+	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, CampConstants, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ResourcesVO) {
 
 		var UIFunctions = Ash.Class.extend({
 
@@ -119,19 +120,11 @@ define(['ash',
 				});
 
 				$("#in-assign-workers input.amount").change(function (e) {
-					var scavengers = parseInt($("#stepper-scavenger input").val());
-					var trappers = parseInt($("#stepper-trapper input").val());
-					var waters = parseInt($("#stepper-water input").val());
-					var ropers = parseInt($("#stepper-rope input").val());
-					var chemists = parseInt($("#stepper-fuel input").val());
-					var rubbers = parseInt($("#stepper-rubber input").val());
-					var apothecaries = parseInt($("#stepper-medicine input").val());
-					var smiths = parseInt($("#stepper-smith input").val());
-					var concrete = parseInt($("#stepper-concrete input").val());
-					var soldiers = parseInt($("#stepper-soldier input").val());
-					var scientists = parseInt($("#stepper-scientist input").val());
-					var clerics = parseInt($("#stepper-cleric input").val());
-					GameGlobals.playerActionFunctions.assignWorkers(null, scavengers, trappers, waters, ropers, chemists, rubbers, apothecaries, smiths, concrete, soldiers, scientists, clerics);
+                    var assignment = {};
+                    for (var key in CampConstants.workerTypes) {
+                        assignment[key] = parseInt($("#stepper-" + key + " input").val());
+                    }
+					GameGlobals.playerActionFunctions.assignWorkers(null, assignment);
 				});
 
 				// Buttons: In: Other

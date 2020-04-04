@@ -1,4 +1,4 @@
-define(['ash'], function (Ash) {
+define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
     
     var CampConstants = {
     
@@ -44,6 +44,7 @@ define(['ash'], function (Ash) {
         PRODUCTION_ROPE_PER_WORKER_PER_S: 0.03,
         PRODUCTION_FUEL_PER_WORKER_PER_S: 0.02,
         PRODUCTION_RUBBER_PER_WORKER_PER_S: 0.02,
+        PRODUCTION_HERBS_PER_WORKER_PER_S: 0.02,
         PRODUCTION_MEDICINE_PER_WORKER_PER_S: 0.01,
         PRODUCTION_TOOLS_PER_WORKER_PER_S: 0.02,
         PRODUCTION_CONCRETE_PER_WORKER_PER_S: 0.03,
@@ -70,19 +71,63 @@ define(['ash'], function (Ash) {
         // Workers per building
         CHEMISTS_PER_WORKSHOP: 5,
         RUBBER_WORKER_PER_WORKSHOP: 5,
-        
-        WORKER_TYPES: {
-            scavenger: "scavenger",
-            trapper: "trapper",
-            water: "water",
-            ropemaker: "ropemaker",
-            chemist: "chemist",
-            rubbermaker: "rubbermaker",
-            apothecary: "apothecary",
-            toolsmith: "toolsmith",
-            concrete: "concrete",
-            scientist: "scientist",
-            soldier: "soldier",
+    
+        workerTypes: {
+            scavenger: {
+                id: "scavenger",
+            },
+            trapper: {
+                id: "trapper",
+            },
+            water: {
+                id: "water",
+            },
+            ropemaker: {
+                id: "ropemaker",
+            },
+            chemist: {
+                id: "chemist",
+                getLimitNum: function (campOrdinal, improvements) { return GameGlobals.levelHelper.getCampClearedWorkshopCount(campOrdinal, resourceNames.fuel); },
+                getLimitText: function (num) { return num + " refineries cleared"; },
+            },
+            rubbermaker: {
+                id: "rubbermaker",
+                getLimitNum: function (campOrdinal, improvements) { return GameGlobals.levelHelper.getCampClearedWorkshopCount(campOrdinal, resourceNames.rubber); },
+                getLimitText: function (num) { return num + " plantations found"; },
+            },
+            gardener: {
+                id: "gardener",
+            },
+            apothecary: {
+                id: "apothecary",
+                getLimitNum: function (level, improvements) { return improvements.getCount(improvementNames.apothecary); },
+                getLimitText: function (num) { return num + " apothecaries built"; },
+            },
+            toolsmith: {
+                id: "toolsmith",
+                getLimitNum: function (level, improvements) { return improvements.getCount(improvementNames.smithy); },
+                getLimitText: function (num) { return num + " smithies built"; },
+            },
+            concrete: {
+                id: "concrete",
+                getLimitNum: function (level, improvements) { return improvements.getCount(improvementNames.cementmill); },
+                getLimitText: function (num) { return num + " cement mills built"; },
+            },
+            scientist: {
+                id: "scientist",
+                getLimitNum: function (level, improvements) { return improvements.getCount(improvementNames.library); },
+                getLimitText: function (num) { return num + " libraries built"; },
+            },
+            soldier: {
+                id: "soldier",
+                getLimitNum: function (level, improvements) { return improvements.getCount(improvementNames.barracks); },
+                getLimitText: function (num) { return num + " barracks built"; },
+            },
+            cleric: {
+                id: "cleric",
+                getLimitNum: function (level, improvements) { return improvements.getCount(improvementNames.temple); },
+                getLimitText: function (num) { return num + " temples built"; },
+            },
         },
         
         // storage capacity of one camp

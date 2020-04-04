@@ -4,11 +4,13 @@ define([
     'game/GameGlobals',
     'game/constants/GameConstants',
     'game/constants/CampConstants',
+	'game/components/common/CampComponent',
+	'game/components/common/PositionComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/type/LevelComponent',
     'game/nodes/sector/CampNode',
     'game/nodes/tribe/TribeUpgradesNode',
-], function (Ash, GameGlobals, GameConstants, CampConstants, SectorImprovementsComponent, LevelComponent, CampNode, TribeUpgradesNode) {
+], function (Ash, GameGlobals, GameConstants, CampConstants, CampComponent, PositionComponent, SectorImprovementsComponent, LevelComponent, CampNode, TribeUpgradesNode) {
     
     var CampHelper = Ash.Class.extend({
 		
@@ -56,6 +58,11 @@ define([
         getRubberProductionPerSecond: function (workers, improvementsComponent) {
 			var upgradeBonus = this.getUpgradeBonus("rubbermaker");
 			return workers * CampConstants.PRODUCTION_RUBBER_PER_WORKER_PER_S * upgradeBonus * GameConstants.gameSpeedCamp;
+        },
+        
+        getHerbsProductionPerSecond: function (workers, improvementsComponent) {
+			var upgradeBonus = this.getUpgradeBonus(CampConstants.workerTypes.gardener.id);
+			return workers * CampConstants.PRODUCTION_HERBS_PER_WORKER_PER_S * upgradeBonus * GameConstants.gameSpeedCamp;
         },
         
         getMedicineProductionPerSecond: function (workers, improvementsComponent) {
@@ -143,6 +150,51 @@ define([
             var innFactor = CampConstants.RUMOUR_BONUS_PER_INN_BASE;
             innFactor += innUpgradeLevel > 1 ? (innUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_INN_PER_UPGRADE : 0;
             return innCount > 0 ? Math.pow(innFactor, innCount) * accSpeedPopulation - accSpeedPopulation : 0;
+        },
+
+        getCampMaxPopulation: function (sector) {
+            var improvements = sector.get(SectorImprovementsComponent);
+            return CampConstants.getHousingCap(improvements);
+        },
+        
+        getMaxWorkers: function (sector, id) {
+            var def = CampConstants.workerTypes[id];
+            var position = sector.get(PositionComponent);
+            var level = position.level;
+            var improvements = sector.get(SectorImprovementsComponent);
+            var upgrades = this.tribeUpgradesNodes.head.upgrades;
+            var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+        
+            switch (def.id) {
+                case CampConstants.workerTypes.scavenger.id:
+                case CampConstants.workerTypes.water.id:
+                case CampConstants.workerTypes.trapper.id:
+                    return -1;
+                case CampConstants.workerTypes.ropemaker.id:
+                    var hasUnlockedRopers = GameGlobals.upgradeEffectsHelper.getWorkerLevel("weaver", upgrades) > 0;
+                    return hasUnlockedRopers ? -1 : 0;
+                case CampConstants.workerTypes.chemist.id:
+                    return def.getLimitNum(campOrdinal, improvements) * CampConstants.CHEMISTS_PER_WORKSHOP;
+                case CampConstants.workerTypes.rubbermaker.id:
+                    return def.getLimitNum(campOrdinal, improvements) * CampConstants.RUBBER_WORKER_PER_WORKSHOP;
+                case CampConstants.workerTypes.gardener.id:
+                    return -1;
+                case CampConstants.workerTypes.apothecary.id:
+                    return def.getLimitNum(campOrdinal, improvements) * CampConstants.getApothecariesPerShop(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.apothecary, upgrades));
+                case CampConstants.workerTypes.concrete.id:
+                    return def.getLimitNum(campOrdinal, improvements) * CampConstants.getWorkersPerMill(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.cementmill, upgrades));
+                case CampConstants.workerTypes.toolsmith.id:
+                    return def.getLimitNum(campOrdinal, improvements) * CampConstants.getSmithsPerSmithy(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.smithy, upgrades));
+                case CampConstants.workerTypes.scientist.id:
+                    var hasUnlockedScientists = GameGlobals.upgradeEffectsHelper.getWorkerLevel(def.id, upgrades) > 0;
+                    return hasUnlockedScientists ? def.getLimitNum(campOrdinal, improvements) * CampConstants.getScientistsPerLibrary(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.library, upgrades)) : 0;
+                case CampConstants.workerTypes.cleric.id:
+                    return def.getLimitNum(campOrdinal, improvements) * CampConstants.getClericsPerTemple(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.temple, upgrades));
+                case CampConstants.workerTypes.soldier.id:
+                    return def.getLimitNum(campOrdinal, improvements) * CampConstants.getSoldiersPerBarracks(GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.barracks, upgrades));
+                default:
+                    return -1;
+            }
         },
         
         getTargetReputation: function (campEntity, sectorImprovements, population, danger) {
@@ -248,7 +300,80 @@ define([
 			}
 			return upgradeLevel;
 		},
-		
+        
+        getDefaultWorkerAssignment: function (sector) {
+            var campComponent = sector.get(CampComponent);
+            
+            var pop = campComponent.population;
+            var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
+            var maxStorage = currentStorage.storageCapacity;
+            var currentFood = currentStorage.resources.getResource(resourceNames.food);
+            var currentWater = currentStorage.resources.getResource(resourceNames.water);
+            
+            var currentFoodRatio = currentFood / maxStorage;
+            var currentWaterRatio = currentWater / maxStorage;
+            
+            // sort worker types by priority
+            var workersByPrio = [[], [], []];
+            for (var key in CampConstants.workerTypes) {
+                var prio = 1;
+                var min = 0;
+                var preferred = 1;
+                var max = GameGlobals.campHelper.getMaxWorkers(sector, key);
+                switch (key) {
+                    case CampConstants.workerTypes.trapper.id:
+                        prio = 0;
+                        min = Math.max(1, Math.floor(pop / (currentFoodRatio > 0.5 ? 5 : 3)));
+                        preferred = min;
+                        break;
+                    case CampConstants.workerTypes.water.id:
+                        prio = 0;
+                        min = Math.max(1, Math.floor(pop / (currentWaterRatio > 0.5 ? 5 : 2.25)));
+                        preferred = min;
+                        break;
+                    case CampConstants.workerTypes.ropemaker.id:
+                    case CampConstants.workerTypes.scavenger.id:
+                        prio = 2;
+                        break;
+                }
+                workersByPrio[prio].push({ id: key, min: min, preferred: preferred, max: max });
+            }
+            console.log(workersByPrio);
+            
+            // assign workers by priority
+            var assignment = {};
+            var remaining = pop;
+            // - minimum
+            for (var i = 0; i < workersByPrio.length; i++) {
+                for (var j = 0; j < workersByPrio[i].length; j++) {
+                    var def = workersByPrio[i][j];
+                    var min = def.min;
+                    var max = def.max < 0 ? remaining : def.max;
+                    var num = Math.min(min, remaining, max);
+                    assignment[def.id] = num;
+                    remaining -= num;
+                }
+            }
+            // - preferred
+            if (remaining > 0) {
+                for (var i = 0; i < workersByPrio.length; i++) {
+                    for (var j = 0; j < workersByPrio[i].length; j++) {
+                        var def = workersByPrio[i][j];
+                        var max = def.max < 0 ? remaining : def.max;
+                        var preferred = def.preferred;
+                        var current = assignment[def.id];
+                        var num = Math.min(preferred - current, remaining, max);
+                        assignment[def.id] = current + num;
+                        remaining -= num;
+                    }
+                }
+            }
+            // rest to scavengers
+            assignment[CampConstants.workerTypes.scavenger.id] += remaining;
+            
+            return assignment;
+        }
+        
     });
     
     return CampHelper;
