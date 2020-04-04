@@ -123,6 +123,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
         switch (name) {
             case improvementNames.collector_food:
             case improvementNames.collector_water:
+            case improvementNames.greenhouse:
             case improvementNames.spaceship1:
             case improvementNames.spaceship2:
             case improvementNames.spaceship3:

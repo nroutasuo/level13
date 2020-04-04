@@ -352,6 +352,7 @@ define([
 		// Existing improvements. Workshops. Potential improvements (camp).
 		getFunctionalDescription: function (hasVision, isScouted, featuresComponent, workshopComponent, hasCampHere, hasCampOnLevel) {
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
+			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 
 			var description = "";
 
@@ -381,7 +382,11 @@ define([
 				var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
                 var workshopControl = sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP);
                 var workshopStatus = workshopControl ? "cleared for use" : "not cleared";
-				description += "There is " + Text.addArticle(workshopName) + " here (" + workshopStatus + "). ";
+				description += "There is <span class='hl-functionality'>" + Text.addArticle(workshopName) + "</span> here (" + workshopStatus + "). ";
+			}
+
+			if (isScouted && improvements.getCount(improvementNames.greenhouse) > 0) {
+				description += "There is a <span class='hl-functionality'>greenhouse</span> here. ";
 			}
 
 			return description;

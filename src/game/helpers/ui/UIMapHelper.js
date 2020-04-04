@@ -322,6 +322,9 @@ function (Ash, CanvasUtils,
             } else if (sector.has(WorkshopComponent)) {
                 hasIcon = true;
                 ctx.drawImage(this.icons["workshop" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
+            } else if (sectorImprovements.getCount(improvementNames.greenhouse)) {
+                hasIcon = true;
+                ctx.drawImage(this.icons["workshop" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             } else if (sector.has(CampComponent)) {
                 hasIcon = true;
                 ctx.drawImage(this.icons["camp" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);

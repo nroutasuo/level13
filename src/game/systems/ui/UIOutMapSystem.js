@@ -194,6 +194,7 @@ define([
             var result = [];
             if (sector.has(CampComponent)) result.push("camp");
             if (sector.has(WorkshopComponent)) result.push("workshop");
+            if (improvements.getCount(improvementNames.greenhouse)) result.push("greenhouse");
             if (!hasCampOnLevel && sectorFeatures.canHaveCamp()) result.push("good place for camp");
             if (sectorPassages.passageUp) {
     			var passageUpBuilt = improvements.getCount(improvementNames.passageUpStairs) +

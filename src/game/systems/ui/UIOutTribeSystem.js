@@ -315,7 +315,7 @@ define([
             UIConstants.updateCalloutContent("#camp-overview tr#" + rowID + " .camp-overview-stats-rumours", "rumours: " + UIConstants.roundValue(rumoursChange, true, true, 1000), true);
             
             var deityComponent = this.playerStatsNodes.head.entity.get(DeityComponent);
-            var favourChange = deityComponent.accumulationPerCamp[level] || 0;
+            var favourChange = deityComponent  ? deityComponent.accumulationPerCamp[level] || 0 : 0;
             GameGlobals.uiFunctions.toggle($("#camp-overview tr#" + rowID + " .camp-overview-stats-favour"), favourChange > 0);
             this.updateChangeIndicator($("#camp-overview tr#" + rowID + " .camp-overview-stats-favour .change-indicator"), favourChange);
             UIConstants.updateCalloutContent("#camp-overview tr#" + rowID + " .camp-overview-stats-favour", "favour: " + UIConstants.roundValue(favourChange, true, true, 1000), true);

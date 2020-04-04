@@ -143,7 +143,6 @@ define([
             
             var sys = this;
             if (updateTables) {
-            
                 GameGlobals.uiFunctions.toggle("#container-in-improvements-level-hidden", hiddenRegular > 0);
                 this.elements.hiddenImprovementsMsg.text(hiddenRegular + " projects hidden");
             

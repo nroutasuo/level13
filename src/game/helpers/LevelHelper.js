@@ -664,6 +664,27 @@ define([
             return count;
 		},
 
+        getCampBuiltOutImprovementsCount: function (campOrdinal, improvement) {
+            var levels = GameGlobals.gameState.getLevelsForCamp(campOrdinal);
+            var result = 0;
+            for (var i = 0; i < levels.length; i++) {
+                result += this.getLevelBuiltOutImprovementsCount(levels[i], improvement);
+            }
+            return result;
+        },
+        
+        getLevelBuiltOutImprovementsCount: function (level, improvement) {
+			var count = 0;
+            var improvementsComponent;
+            this.saveSectorsForLevel(level);
+			for (var i = 0; i < this.sectorEntitiesByLevel[level].length; i++) {
+                var sectorEntity = this.sectorEntitiesByLevel[level][i];
+                improvementsComponent = sectorEntity.get(SectorImprovementsComponent);
+                count += improvementsComponent.getCount(improvement);
+            }
+            return count;
+        },
+
 		isLevelUnlocked: function (level) {
 			if (level === 13) return true;
 			var levelEntity = this.getLevelEntityForPosition(level);
