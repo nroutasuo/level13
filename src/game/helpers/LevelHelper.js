@@ -621,6 +621,14 @@ define([
             return projects;
         },
         
+        getTotalClearedWorkshopCount: function (resourceName) {
+            var result = 0;
+            for (var i = 1; i <= 15; i++) {
+                result += this.getCampClearedWorkshopCount(i, resourceName);
+            }
+            return result;
+        },
+        
         getCampClearedWorkshopCount: function (campOrdinal, resourceName) {
             var levels = GameGlobals.gameState.getLevelsForCamp(campOrdinal);
             var result = 0;
@@ -718,11 +726,9 @@ define([
 		getLevelLocales: function (level, includeScouted, localeBracket, excludeLocaleVO, requireBlueprints) {
 			var locales = [];
 			var sectorPosition;
-			for (var node = this.sectorNodes.head; node; node = node.next) {
-				sectorPosition = node.entity.get(PositionComponent);
-				if (sectorPosition.level === level) {
-					locales = locales.concat(this.getSectorLocales(node.entity, includeScouted, localeBracket, excludeLocaleVO, requireBlueprints));
-				}
+			for (var i = 0; i < this.sectorEntitiesByLevel[level].length; i++) {
+                var sectorEntity = this.sectorEntitiesByLevel[level][i];
+				locales = locales.concat(this.getSectorLocales(sectorEntity, includeScouted, localeBracket, excludeLocaleVO, requireBlueprints));
 			}
 			return locales;
 		},

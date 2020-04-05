@@ -356,6 +356,7 @@ define([
         
         refreshPerks: function () {
             if (!this.playerStatsNodes.head) return;
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             var isResting = this.isResting();
 			var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
 			var perks = perksComponent.getAll();

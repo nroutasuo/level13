@@ -584,6 +584,7 @@ define([
 
         updateOutImprovementsVisibility: function () {
             if (!this.playerLocationNodes.head) return;
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);

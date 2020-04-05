@@ -1105,6 +1105,7 @@ define([
 		},
         
         getFallbackBlueprint: function (probability) {
+            if (GameGlobals.gameState.isAutoPlaying) return;
             var missedBlueprints = [];
 			var playerPos = this.playerLocationNodes.head.position;
 			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;

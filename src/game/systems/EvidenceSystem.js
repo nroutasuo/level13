@@ -50,7 +50,7 @@ define([
 					improvementsComponent = campNode.entity.get(SectorImprovementsComponent);
 					var accLibrary = GameGlobals.campHelper.getLibraryEvidenceGenerationPerSecond(improvementsComponent, libraryUpgradeLevel);
                     
-                    numScientists = campNode.camp.assignedWorkers.scientist;
+                    numScientists = campNode.camp.assignedWorkers.scientist || 0;
                     var accScientists = GameGlobals.campHelper.getEvidenceProductionPerSecond(numScientists, improvementsComponent);
 					var accSpeedCamp = accLibrary + accScientists;
 					accSpeed += accSpeedCamp;

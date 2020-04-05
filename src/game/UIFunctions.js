@@ -188,7 +188,7 @@ define(['ash',
 						var isProject = $(this).hasClass("action-level-project");
 						if (isProject) param = $(this).attr("sector");
 
-						var locationKey = uiFunctions.getLocationKey($(this));
+						var locationKey = uiFunctions.getLocationKey(action);
 						var isStarted = GameGlobals.playerActionFunctions.startAction(action, param);
 						if (!isStarted)
 							return;
@@ -505,10 +505,12 @@ define(['ash',
 				var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 				var cooldown = PlayerActionConstants.getCooldown(baseId);
 				if (cooldown > 0) {
-					var button = $("button[action='" + action + "']");
-					var locationKey = this.getLocationKey($(button));
+					var locationKey = this.getLocationKey(action);
 					GameGlobals.gameState.setActionCooldown(action, locationKey, cooldown);
-					this.startButtonCooldown($(button), cooldown);
+                    if (!GameGlobals.gameState.isAutoPlaying) {
+    					var button = $("button[action='" + action + "']");
+    					this.startButtonCooldown($(button), cooldown);
+                    }
 				}
 			},
 
@@ -679,7 +681,7 @@ define(['ash',
 					var action = $(this).attr("action");
 					var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 					if (action) {
-						var locationKey = uiFunctions.getLocationKey($(this));
+						var locationKey = uiFunctions.getLocationKey(action);
 						cooldownTotal = PlayerActionConstants.getCooldown(action);
 						cooldownLeft = Math.min(cooldownTotal, GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal) / 1000);
 						durationTotal = PlayerActionConstants.getDuration(baseId);
@@ -864,8 +866,7 @@ define(['ash',
 				);
 			},
 
-			getLocationKey: function (button) {
-				var action = $(button).attr("action");
+			getLocationKey: function (action) {
 				var isLocationAction = PlayerActionConstants.isLocationAction(action);
 				var playerPos = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
 				return GameGlobals.gameState.getActionLocationKey(isLocationAction, playerPos);
