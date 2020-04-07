@@ -19,6 +19,7 @@ define([
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/MovementOptionsComponent',
+	'game/components/player/DeityComponent',
 	'game/components/player/PlayerActionResultComponent',
     'game/components/common/LogMessagesComponent',
     'game/systems/PlayerPositionSystem'
@@ -41,6 +42,7 @@ define([
 	SectorFeaturesComponent,
 	SectorStatusComponent,
     MovementOptionsComponent,
+    DeityComponent,
     PlayerActionResultComponent,
 	LogMessagesComponent,
     PlayerPositionSystem
@@ -94,32 +96,41 @@ define([
 			
 			// Player is hungry or thirsty or out of stamina and is out exploring
             
+            var hasDeity = this.playerStatsNodes.head.entity.has(DeityComponent);
 			var hasLastVisitedCamp = this.lastVisitedCampNodes.head !== null;
 			var hasCampOnLevel = this.nearestCampNodes.head !== null;
 			
 			// TODO rework texts
 			
-			var msgAdjective = hasWater ? (hasFood ? "helpless" : "hungry") : "thirsty";
+			var msgAdjective = hasWater ? (hasFood ? "exhaused" : "hungry") : "thirsty";
 			var msgMain = "";
 			var msgLog = "";
-			
+            
+			// rescued by campers: back to nearest camp, keep items, get injured
 			if (hasCampOnLevel && this.lastVisitedCampNodes.head && this.lastVisitedCampNodes.head.camp.population >= 1 && Math.random() < 0.2) {
-				// rescued by campers: back to nearest camp, keep items, maybe injured
-				msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. Some of the scavengers found you and brought you home.";
+				msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. Some of the scavengers found you and brought you home.";
 				msgLog = "The world fades. You wake up back in camp.";
 				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 1, 0);
 				return;
 			}
-			
+            
+            // rescued by deity: back to nearest camp, keep items, maybe injured
+			if (hasDeity && this.lastVisitedCampNodes.head && Math.random() < 0.1) {
+				msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>You wake up back in camp. The spirits have guided you home.";
+				msgLog = "The world fades. You wake up back in camp.";
+				this.fadeOut(msgMain, msgLog, true, this.lastVisitedCampNodes.head.entity, 0, 0.5, 0);
+				return;
+			}
+            
+			// pass out and teleport to last visited camp: lose items, back to last visited camp, injury
 			if (hasLastVisitedCamp) {
-				// pass out and teleport to last visited camp: lose items, back to last visited camp, maybe injured
                 this.fadeOutToLastVisitedCamp(true, msgAdjective);
                 return;
 			}
-			
+            
+			// pass out and teleport to nearest safe sector (with scavengable food & water)
 			var sectorSafe = this.isSectorSafe(this.playerLocationNodes.head.entity);
 			if (!sectorSafe) {
-				// pass out and teleport to nearest safe sector (with scavengable food & water)
 				this.fadeOutToOutside(msgAdjective);
                 return;
 			}
@@ -169,7 +180,7 @@ define([
 				}
 			}
 			
-			var msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in a familiar area.";
+			var msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in a familiar area.";
 			var msgLog = "The world fades. You wake up with no memory how you got here.";
 			if (nearestKnownSafeSector) {
 				this.fadeOut(msgMain, msgLog, true, nearestKnownSafeSector, 1, 0, 0);
@@ -182,7 +193,7 @@ define([
         
         fadeOutToLastVisitedCamp: function (handleResults, msgAdjective) {
             if (!this.lastVisitedCampNodes.head) return;
-            var msgMain = "Exhausted and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in camp.";
+            var msgMain = "Weak and " + msgAdjective + ", you sit to rest. Your consciousness fades.<br/>When you wake up, you find yourself back in camp.";
             var msgLog = "The world fades. You wake up with no memory how you found your way back.";
             this.fadeOut(msgMain, msgLog, handleResults, this.lastVisitedCampNodes.head.entity, 1, 1, 0.25);
         },
