@@ -584,6 +584,10 @@ define(['ash',
 			var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
 			var sectorFeaturesComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var localeVO = sectorLocalesComponent.locales[i];
+            if (!localeVO) {
+                log.w("no such locale " + i + "/" + sectorLocalesComponent.locales.length);
+                return;
+            }
 			var action = "scout_locale_" + localeVO.getCategory() + "_" + i;
 
 			// TODO add more interesting log messages - especially for trade partners

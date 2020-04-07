@@ -79,7 +79,7 @@ define([
             sector.remove(FightComponent);
             var enemiesComponent = sector.get(EnemiesComponent);
             enemiesComponent.selectNextEnemy();
-            log.i("init fight: " + action);
+            if (GameGlobals.gameFlowLogger.isEnabled) log.i("init fight: " + action);
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
             var gangComponent = null;
             if (baseActionID == "fight_gang") {
