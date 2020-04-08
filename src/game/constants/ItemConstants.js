@@ -1,5 +1,5 @@
-define(['ash', 'game/constants/WorldCreatorConstants', 'game/constants/PlayerActionConstants', 'game/constants/UpgradeConstants', 'game/vos/ItemVO'],
-function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, ItemVO) {
+define(['ash', 'game/constants/PlayerActionConstants', 'game/constants/UpgradeConstants', 'game/constants/WorldConstants', 'game/vos/ItemVO'],
+function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) {
 
     var ItemConstants = {
         
@@ -39,13 +39,28 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             shade: "shade",
         },
         
-        itemDefinitions: {
-            light: [
+        CAMP_ORDINAL_BAG_2: 3,
+        CAMP_ORDINAL_BAG_3: 6,
+        CAMP_ORDINAL_BAG_4: 10,
+        CAMP_ORDINAL_BAG_5: 14,
+        
+        BAG_BONUS_1: 30,
+        BAG_BONUS_2: 40,
+        BAG_BONUS_3: 50,
+        BAG_BONUS_4: 80,
+        BAG_BONUS_5: 100,
+        BAG_BONUS_6: 150,
+        
+        itemDefinitions: { },
+
+
+        initDefinitions: function () {
+            this.itemDefinitions.light = [
                 new ItemVO("light1", "Lantern", "Light", 1, true, true, false, 3, 1, {light: 25}, "img/items/light-lantern.png", "Feeble light for basic survival in the dark undercorridors."),
                 new ItemVO("light2", "Electric light", "Light", 5, true, true, false, 5, 3, {light: 75}, "img/items/light-electric.png", "Advanced light for serious travellers."),
                 new ItemVO("light3", "Ghost light", "Light", 14, true, false, false, 9, 7, {light: 125}, "img/items/light-ghost.png", "They say the ghost light can show you more the darker places you go."),
-            ],
-            weapon: [
+            ];
+            this.itemDefinitions.weapon = [
                 new ItemVO("weapon1", "Shiv", "Weapon", 1, true, true, false, 2, 2, {atk: 3, spd: 0.9}, "img/items/weapon-shiv.png", "Improvised sharp poking implement."),
                 new ItemVO("weapon12", "Knife", "Weapon", 2, true, true, false, 2, 1, {atk: 4, spd: 1}, "img/items/weapon-shiv.png", "A bit sturdier than the shiv."),
                 new ItemVO("weapon122", "Sharp knife", "Weapon", 2, true, false, false, 6, 2, {atk: 5, spd: 1}, "img/items/weapon-shiv.png", "A good quality knife."),
@@ -60,8 +75,8 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("weapon6", "Custom SMG", "Weapon", 13, true, true, false, 5, 2, {atk: 116, spd: 1.5}, "img/items/weapon-shiv.png", "It may be made from scrap metal but it is still a serious weapon."),
                 new ItemVO("weapon7", "Improvised bazooka", "Weapon", 14, true, true, false, 3, 3, {atk: 180, spd: 1}, "img/items/weapon-shiv.png", "Powerful but heavy and somewhat unreliable construction of pipes, reclaimed weapon parts and improvised ammunition."),
                 new ItemVO("weapon8", "Rifle", "Weapon", 15, true, true, false, 3, 3, {atk: 200, spd: 1.25}, "img/items/weapon-shiv.png", "Deadly weapon similar to those that were mass-produced just before the Fall."),
-            ],
-            clothing_over: [
+            ];
+            this.itemDefinitions.clothing_over = [
                 new ItemVO("clothing_over_1", "Warm Coat", "Armor", 1, true, true, false, 5, 1, {def: 1, warmth: 20}, "img/items/clothing-2.png", "Something against the chill."),
                 new ItemVO("clothing_over_1x", "Lab Coat", "Armor", 2, true, false, false, 5, 1, {def: 1, warmth: 2, res_poison: 10}, "img/items/clothing-2.png", "Might protect from environmental hazards."),
                 new ItemVO("clothing_over_15", "Leather Jacket", "Armor", 2, true, true, false, 2, 1, {def: 4, warmth: 5, res_rad: 3, res_poison: 3}, "img/items/clothing-2.png", "A solid jacket."),
@@ -74,8 +89,8 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("clothing_over_45", "Scavenger vest", "Armor", 12, true, true, false, 3, 1, {def: 40, warmth: 20, res_rad: 10, res_poison: 10}, "img/items/clothing-2.png", "Novel technology for maximal survival in the post-Fall City"),
                 new ItemVO("clothing_over_5", "Riot police vest", "Armor", 13, true, false, false, 2, 2, {def: 100, warmth: 10, res_rad: 5, res_poison: 10}, "img/items/clothing-3.png", "Based on the old Surface Guard uniform with additional environmental proection."),
                 new ItemVO("clothing_over_6", "Exoskeleton", "Armor", 15, true, true, false, 8, 5, {def: 290, warmth: 10, res_rad: 30, res_poison: 20}, "img/items/clothing-3.png", "Futuristic armour designed for those exploring the world outside the City's protective walls."),
-            ],
-            clothing_upper: [
+            ];
+            this.itemDefinitions.clothing_upper = [
                 new ItemVO("clothing_upper_1", "Tattered shirt", "Shirt", 1, true, false, false, 1, 3, {warmth: 1}, "img/items/clothing-rags.png", "Barely counts for clothing, but for now it'll have to do."),
                 new ItemVO("clothing_upper_15", "T-shirt", "Shirt", 2, true, true, false, 2, 1, { def: 1, warmth: 2, res_rad: 1, res_poison: 1}, "img/items/clothing-shirt.png", "Standard shirt."),
                 new ItemVO("clothing_upper_2", "Factory uniform shirt", "Shirt", 5, true, false, false, 1, 1, {def: 2, warmth: 3, res_rad: 1, res_poison: 1}, "img/items/clothing-shirt-2.png", "Feels oddly comfortable in dark corridors and abandoned factories."),
@@ -84,8 +99,8 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("clothing_upper_4", "Protective shirt", "Shirt", 12, true, true, false, 5, 1, {def: 8, warmth: 15, res_rad: 5, res_poison: 5}, "img/items/clothing-3.png", "Specifically made for keeping travellers warm and safe."),
                 new ItemVO("clothing_upper_45", "Explorer's shirt", "Shirt", 13, true, false, false, 2, 2, {def: 10, warmth: 15, res_rad: 5, res_poison: 5}, "img/items/clothing-3.png", "Comes with many pockets."),
                 new ItemVO("clothing_upper_5", "Scavenger's shirt", "Shirt", 15, true, true, false, 4, 2, {def: 0, warmth: 25, res_rad: 40, res_poison: 60}, "img/items/clothing-3.png", "The best protection an explorer can hope for."),
-            ],
-            clothing_lower: [
+            ];
+            this.itemDefinitions.clothing_lower = [
                 new ItemVO("clothing_lower_1", "Ragged pants", "Legs", 1, true, false, false, 1, 3, {warmth: 1}, "img/items/clothing-rags.png", "Barely counts for clothing, but for now it'll have to do."),
                 new ItemVO("clothing_lower_15", "Basic pants", "Legs", 2, true, true, false, 3, 1, {def: 1, warmth: 1}, "img/items/clothing-rags.png", "Nothing wrong with these pants"),
                 new ItemVO("clothing_lower_2", "Factory uniform pants", "Legs", 5, true, false, false, 1, 1, {def: 1, warmth: 5}, "img/items/clothing-2.png", "Used to be the standard uniform in the dark levels of the City."),
@@ -93,8 +108,8 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("clothing_lower_4", "Padded pants", "Legs", 11, true, true, false, 3, 3, {def: 15, warmth: 10}, "img/items/clothing-3.png", "Protects from bites and scratches."),
                 new ItemVO("clothing_lower_45", "Explorer's pants", "Legs", 13, true, true, false, 5, 2, {def: 15, warmth: 10, res_rad: 5, res_poison: 5}, "img/items/clothing-3.png", "Protects from bites and scratches."),
                 new ItemVO("clothing_lower_5", "Long underwear", "Legs", 15, true, true, false, 3, 1, {def: 5, warmth: 50, res_rad: 1, res_poison: 1}, "img/items/clothing-3.png", "Nothing keeps you warm like long underwear."),
-            ],
-            clothing_head: [
+            ];
+            this.itemDefinitions.clothing_head = [
                 new ItemVO("clothing_head_0", "Sunglasses", "Head", 2, true, false, false, 5, 1, {shade: 30}, "img/items/clothing-hat-1.png", "If there was any sunlight, these would probably be handy."),
                 new ItemVO("clothing_head_1", "Wool hat", "Head", 2, true, true, false, 3, 1, {def: 1, warmth: 10}, "img/items/clothing-hat-1.png", "Warm basic headwear."),
                 new ItemVO("clothing_head_2", "Medical mask", "Head", 4, true, false, false, 5, 1, {res_poison: 15}, "img/items/clothing-hat-1.png", "Meager protection against the effects of polluted air."),
@@ -104,8 +119,8 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("clothing_head_l14", "Respirator", "Head", 8, true, true, false, 4, 2, {def: 5, warmth: 3, res_rad: 15, res_poison: 30, shade: 10}, "img/items/clothing-hat-2.png", "Offers reasonable protection from environmental hazards.", true),
                 new ItemVO("clothing_head_45", "Scavenger's hood", "Head", 12, true, true, false, 3, 1, {def: 10, warmth: 10, res_rad: 15, res_poison: 15, shade: 15}, "img/items/clothing-hat-2.png", "A practical, protective hood that doesn't get in the way."),
                 new ItemVO("clothing_head_5", "Explorer's helmet", "Head", 13, true, true, false, 5, 2, {def: 30, warmth: 15, res_rad: 20, res_poison: 10, shade: 50}, "img/items/clothing-hat-3.png", "Headgear designed specifically for scavenging in the City."),
-            ],
-            clothing_hands: [
+            ];
+            this.itemDefinitions.clothing_hands = [
                 new ItemVO("clothing_hands_1", "Mittens", "Hands", 2, true, true, false, 3, 1, {warmth: 5}, "img/items/clothing-hand-0.png", "Nothing keeps hands warm like fluffy mittens."),
                 new ItemVO("clothing_hands_12", "Leather Gloves", "Hands", 3, true, true, false, 3, 1, {def: 1, warmth: 3, res_rad: 1, res_poison: 1}, "img/items/clothing-hand-0.png", "Not only warm but also protective."),
                 new ItemVO("clothing_hands_2", "Work gloves", "Hands", 5, true, true, false, 1, 1, {def: 1, warmth: 5, res_rad: 3, res_poison: 3}, "img/items/clothing-hand-0.png", "Basic protection for hands."),
@@ -114,24 +129,24 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("clothing_hands_3", "Quality gloves", "Hands", 10, true, true, false, 2, 1, {def: 2, warmth: 7, res_rad: 5, res_poison: 10}, "img/items/clothing-hand-0.png", "No scavenger ever regretted having good gloves."),
                 new ItemVO("clothing_hands_4", "Scavenger's gloves", "Hands", 12, true, true, false, 3, 1, {def: 5, warmth: 15, res_rad: 15, res_poison: 15}, "img/items/clothing-hand-0.png", "Gloves that protect from almost all environmental hazards."),
                 new ItemVO("clothing_hands_5", "Synthetic gloves", "Hands", 14, true, false, false, 3, 2, {def: 8, warmth: 15, res_rad: 15, res_poison: 15}, "img/items/clothing-hand-0.png", "Gloves made from recycled advanced textiles from before the Fall."),
-            ],
-            shoes: [
+            ];
+            this.itemDefinitions.shoes = [
                 new ItemVO("shoe_1", "Improvised flip-flops", "Shoes", 1, true, true, false, 2, 1, {movement: 0.9}, "img/items/shoe-1.png", "Protects a scavenger's feet from sharp things that might be lying around."),
                 new ItemVO("shoe_2", "Worn trainers", "Shoes", 5, true, false, false, 5, 3, {movement: 0.8}, "img/items/shoe-2.png", "Decent shoes for walking in most places."),
                 new ItemVO("shoe_l14", "Rubber boots", "Shoes", 8, true, true, false, 5, 3, {movement: 0.9, res_rad: 5, res_poison: 5 }, "img/items/shoe-2.png", "Protection from environmental hazards. And snakes.", true),
                 new ItemVO("shoe_3", "Hiking boots", "Shoes", 10, true, false, false, 8, 5, {movement: 0.5}, "img/items/shoe-3.png", "Good shoes like these can make travelling much easier."),
-            ],
-            follower: [
-            ],
-            bag: [
-                new ItemVO("bag_0", "Plastic bag", "Bag", 1, true, true, false, 2, 5, {bag: WorldCreatorConstants.BAG_BONUS_1}, "img/items/bag-0.png", "It's not fancy, but allows one to carry around more stuff than their hands and pockets can hold."),
-                new ItemVO("bag_1", "Basic backpack", "Bag", WorldCreatorConstants.CAMP_ORDINAL_BAG_2 - 1, true, true, false, 4, 1, {bag: WorldCreatorConstants.BAG_BONUS_2}, "img/items/bag-1.png", "A more spacious bag with lots of pockets."),
-                new ItemVO("bag_2", "Jumbo backpack", "Bag", WorldCreatorConstants.CAMP_ORDINAL_BAG_3 - 1, true, true, false, 6, 2, {bag: WorldCreatorConstants.BAG_BONUS_3}, "img/items/bag-1.png", "A huge backpack with plenty of space."),
-                new ItemVO("bag_3", "Hiker's rucksack", "Bag", WorldCreatorConstants.CAMP_ORDINAL_BAG_4 - 1, true, false, false, 6, 3, {bag: WorldCreatorConstants.BAG_BONUS_4}, "img/items/bag-1.png", "With this bag, weight is starting to be more of a problem than space."),
-                new ItemVO("bag_4", "Scavenger bag", "Bag", WorldCreatorConstants.CAMP_ORDINAL_BAG_5 - 1, true, false, false, 8, 3, {bag: WorldCreatorConstants.BAG_BONUS_5}, "img/items/bag-1.png", "A really practical backpack with lots of pockets."),
-                new ItemVO("bag_5", "Automatic luggage", "Bag", 15, true, false, false, 10, 8, {"bag": WorldCreatorConstants.BAG_BONUS_6}, "img/items/bag-3.png", "Mechanical chest that automatically follows its owner around. No more worrying about carrying all that stuff yourself."),
-            ],
-            artefact: [
+            ];
+            this.itemDefinitions.follower = [
+            ];
+            this.itemDefinitions.bag = [
+                new ItemVO("bag_0", "Plastic bag", "Bag", 1, true, true, false, 2, 5, { bag: ItemConstants.BAG_BONUS_1 }, "img/items/bag-0.png", "It's not fancy, but allows one to carry around more stuff than their hands and pockets can hold."),
+                new ItemVO("bag_1", "Basic backpack", "Bag", ItemConstants.CAMP_ORDINAL_BAG_2 - 1, true, true, false, 4, 1, { bag: ItemConstants.BAG_BONUS_2}, "img/items/bag-1.png", "A more spacious bag with lots of pockets."),
+                new ItemVO("bag_2", "Jumbo backpack", "Bag", ItemConstants.CAMP_ORDINAL_BAG_3 - 1, true, true, false, 6, 2, { bag: ItemConstants.BAG_BONUS_3}, "img/items/bag-1.png", "A huge backpack with plenty of space."),
+                new ItemVO("bag_3", "Hiker's rucksack", "Bag", ItemConstants.CAMP_ORDINAL_BAG_4 - 1, true, false, false, 6, 3, {bag: ItemConstants.BAG_BONUS_4}, "img/items/bag-1.png", "With this bag, weight is starting to be more of a problem than space."),
+                new ItemVO("bag_4", "Scavenger bag", "Bag", ItemConstants.CAMP_ORDINAL_BAG_5 - 1, true, false, false, 8, 3, { bag: ItemConstants.BAG_BONUS_5}, "img/items/bag-1.png", "A really practical backpack with lots of pockets."),
+                new ItemVO("bag_5", "Automatic luggage", "Bag", 15, true, false, false, 10, 8, {"bag": this.BAG_BONUS_6}, "img/items/bag-3.png", "Mechanical chest that automatically follows its owner around. No more worrying about carrying all that stuff yourself."),
+            ];
+            this.itemDefinitions.artefact = [
                 new ItemVO("artefact_ground_1", "Runestone", "Artefact", 3, false, false, false, 8, 2, null, "img/items/artefact-test.png", "Puzzling piece of stone with an ancient rune on it."),
                 new ItemVO("artefact_ground_2", "Charred seed", "Artefact", 7, false, false, false, 10, 2, null, "img/items/artefact-test.png", "Seeds are said to contain life itself. They do not grow in the dark city."),
                 new ItemVO("artefact_ground_3", "Round stone", "Artefact", 3, false, false, false, 6, 1, null, "img/items/artefact-test.png", "Smooth stone that fits in the palm of a hand. There is something calming about it."),
@@ -148,8 +163,8 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("artefact_doom_4", "Pamphlet", "Artefact", 1, false, false, false, 5, 1, null, "img/items/artefact-test.png", "Bold political leaflet printed on thick paper urging residents of the 'sewers' to rebel against segregation."),
                 new ItemVO("artefact_doom_5", "Starchart", "Artefact", 15, false, false, false, 8, 2, null, "img/items/artefact-test.png", "Complicated astrological map with calculations indicating an event occurring on year 783."),
                 new ItemVO("artefact_science", "Data stick", "Artefact", 10, false, false, false, 7, 3, null, "img/items/artefact-test.png", "Some kind of a data storage. Unfortunately, nothing that reads it seems to have survived."),
-            ],
-            ingredient: [
+            ];
+            this.itemDefinitions.ingredient = [
                 new ItemVO("res_tape", "Duct tape", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-tape.png", "Used for crafting."),
                 new ItemVO("res_bands", "Elastic bands", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-bands.png", "Used for crafting."),
                 new ItemVO("res_silk", "Spider silk", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-silk.png", "Used for crafting."),
@@ -157,8 +172,8 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("res_hairpin", "Hairpin", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-pin.png", "Used for crafting."),
                 new ItemVO("res_bottle", "Plastic bottle", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-bottle.png", "Used for crafting."),
                 new ItemVO("res_leather", "Leather", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-leather.png", "Used for crafting."),
-            ],
-            exploration: [
+            ];
+            this.itemDefinitions.exploration = [
                 new ItemVO("exploration_1", "Lockpick", "Exploration", 1, false, true, false, 1, 1, null, "img/items/exploration-1.png", "Useful tool when exploring and scouting."),
                 new ItemVO("first_aid_kit_1", "Basic first aid kit", "Exploration", 3, false, true, true, 6, 1, null, "img/items/firstaid-1.png", "Heal light injuries on the go."),
                 new ItemVO("first_aid_kit_2", "Full first aid kit", "Exploration", 10, false, true, true, 8, 2, null, "img/items/firstaid-2.png", "Heal all injuries on the go."),
@@ -167,12 +182,11 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
                 new ItemVO("flee_1", "Smoke Bomb", "Exploration", 3, false, true, false, 8, 2, null, "img/items/weapon-bomb.png", "Can be used to escape a fight."),
                 new ItemVO("cache_metal_1", "Abandoned robot", "Exploration", 1, false, false, true, 5, -1, {}, "img/items/cahce-metal.png", "Can probably be taken apart down for some scrap metal"),
                 new ItemVO("cache_metal_2", "Broken appliance", "Exploration", 1, false, false, true, 5, -1, {}, "img/items/cahce-metal.png", "Can probably be taken apart down for some scrap metal"),
-            ],
-            uniqueEquipment: [
+            ];
+            this.itemDefinitions.uniqueEquipment = [
                 new ItemVO("equipment_map", "Map", "UniqueEquipment", 0, false, false, false, -1, -1, null, "img/items/exploration-map.png", "Helps navigating the City."),
-            ],
+            ];
         },
-
         
         isMultiplier: function (itemBonusType) {
             switch (itemBonusType) {
@@ -252,13 +266,13 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             var costs = PlayerActionConstants.costs["craft_" + item.id];
             if (costs) {
                 if (costs && costs.resource_fuel && costs.resource_fuel > 0) {
-                    addRequirement(WorldCreatorConstants.CAMP_ORDINAL_FUEL, WorldCreatorConstants.CAMP_STEP_POI_2);
+                    addRequirement(WorldConstants.CAMP_ORDINAL_FUEL, WorldConstants.CAMP_STEP_POI_2);
                 }
                 if (costs && costs.resource_rubber && costs.resource_rubber > 0) {
-                    addRequirement(WorldCreatorConstants.CAMP_ORDINAL_GROUND, WorldCreatorConstants.CAMP_STEP_POI_2);
+                    addRequirement(WorldConstants.CAMP_ORDINAL_GROUND, WorldConstants.CAMP_STEP_POI_2);
                 }
                 if (costs && costs.resource_herbs && costs.resource_herbs > 0) {
-                    addRequirement(WorldCreatorConstants.CAMP_ORDINAL_GROUND, WorldCreatorConstants.CAMP_STEP_POI_2);
+                    addRequirement(WorldConstants.CAMP_ORDINAL_GROUND, WorldConstants.CAMP_STEP_POI_2);
                 }
             }
             
@@ -294,19 +308,35 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
         },
         
         getBag: function (campOrdinal) {
-            if (campOrdinal < WorldCreatorConstants.CAMP_ORDINAL_BAG_2) {
+            if (campOrdinal < this.CAMP_ORDINAL_BAG_2) {
                 return this.itemDefinitions.bag[0];
             }
-            if (campOrdinal < WorldCreatorConstants.CAMP_ORDINAL_BAG_3) {
+            if (campOrdinal < this.CAMP_ORDINAL_BAG_3) {
                 return this.itemDefinitions.bag[1];
             }
-            if (campOrdinal < WorldCreatorConstants.CAMP_ORDINAL_BAG_4) {
+            if (campOrdinal < this.CAMP_ORDINAL_BAG_4) {
                 return this.itemDefinitions.bag[2];
             }
-            if (campOrdinal < WorldCreatorConstants.CAMP_ORDINAL_BAG_5) {
+            if (campOrdinal < this.CAMP_ORDINAL_BAG_5) {
                 return this.itemDefinitions.bag[3];
             }
             return this.itemDefinitions.bag[4];
+        },
+        
+        getBagBonus: function (levelOrdinal) {
+            if (levelOrdinal < this.CAMP_ORDINAL_BAG_2) {
+                return this.BAG_BONUS_1;
+            }
+            if (levelOrdinal < this.CAMP_ORDINAL_BAG_3) {
+                return this.BAG_BONUS_2;
+            }
+            if (levelOrdinal < this.CAMP_ORDINAL_BAG_4) {
+                return this.BAG_BONUS_3;
+            }
+            if (levelOrdinal < this.CAMP_ORDINAL_BAG_5) {
+                return this.BAG_BONUS_4;
+            }
+            return this.BAG_BONUS_5;
         },
         
         getShoes: function (campOrdinal) {
@@ -372,6 +402,8 @@ function (Ash, WorldCreatorConstants, PlayerActionConstants, UpgradeConstants, I
             }
         }
     };
+    
+    ItemConstants.initDefinitions();
     
     return ItemConstants;
 

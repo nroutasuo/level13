@@ -1,4 +1,4 @@
-define(['ash', 'game/worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHelper) {
+define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHelper) {
     var GameState = Ash.Class.extend({
 
         constructor: function () {

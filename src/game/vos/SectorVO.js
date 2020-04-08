@@ -1,4 +1,4 @@
-define(['ash', 'game/constants/WorldCreatorConstants','game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'],
+define(['ash', 'worldcreator/WorldCreatorConstants','game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'],
 function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
 
     var SectorVO = Ash.Class.extend({
@@ -50,7 +50,7 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
         },
         
         isOnEarlyZone: function () {
-            return this.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP || this.zone == WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE;
+            return this.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP || this.zone == WorldConstants.ZONE_PASSAGE_TO_PASSAGE;
         },
         
         updateCriticalPath: function () {

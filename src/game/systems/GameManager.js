@@ -4,9 +4,9 @@ define([
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
     'game/EntityCreator',
-    'game/worldcreator/WorldCreator',
-    'game/worldcreator/WorldCreatorHelper',
-    'game/worldcreator/WorldCreatorRandom',
+    'worldcreator/WorldCreator',
+    'worldcreator/WorldCreatorHelper',
+    'worldcreator/WorldCreatorRandom',
     'game/nodes/sector/SectorNode',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/level/LevelNode',
@@ -95,7 +95,7 @@ define([
         },
 
 		// Called on page load
-		setupGame: function () {
+		setupGame: function (worldVO) {
             log.i("START " + GameConstants.STARTTimeNow() + "\t loading and setting up game");
 			this.initializeEntities();
 			var loaded = this.loadGameState();
@@ -150,7 +150,7 @@ define([
             this.tickProvider.stop();
         },
 
-		initializeEntities: function () {
+		initializeEntities: function (worldVO) {
 			this.player = this.creator.createPlayer(GameGlobals.saveHelper.saveKeys.player);
 			this.tribe = this.creator.createTribe(GameGlobals.saveHelper.saveKeys.tribe);
 		},

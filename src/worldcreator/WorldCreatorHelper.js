@@ -2,11 +2,13 @@
 define([
 	'ash',
     'game/vos/ResourcesVO',
-	'game/worldcreator/WorldCreatorRandom',
-	'game/constants/WorldCreatorConstants',
+	'worldcreator/WorldCreatorRandom',
+	'worldcreator/WorldCreatorConstants',
 	'game/constants/LevelConstants',
 	'game/constants/PositionConstants',
-], function (Ash, ResourcesVO, WorldCreatorRandom, WorldCreatorConstants, LevelConstants, PositionConstants) {
+	'game/constants/SectorConstants',
+	'game/constants/WorldConstants',
+], function (Ash, ResourcesVO, WorldCreatorRandom, WorldCreatorConstants, LevelConstants, PositionConstants, SectorConstants, WorldConstants) {
 
     var WorldCreatorHelper = {
         
@@ -27,49 +29,46 @@ define([
 			var bottomLevel = this.getBottomLevel(seed);
             var rand = WorldCreatorRandom.random(seed % 1000 + level * sector + 5);
             
-            if (level === 13 && x === WorldCreatorConstants.FIRST_CAMP_X && y === WorldCreatorConstants.FIRST_CAMP_Y)
-                return WorldCreatorConstants.SECTOR_TYPE_SLUM;
-            
-			var sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
+			var sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
             if (level == topLevel) {
                 // special level: top level
-                sectorType = WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL;
-				if (rand < 0.2) sectorType = WorldCreatorConstants.SECTOR_TYPE_PUBLIC;
-				if (rand < 0.6) sectorType = WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL;
-				if (rand < 0.65) sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
+                sectorType = SectorConstants.SECTOR_TYPE_COMMERCIAL;
+				if (rand < 0.2) sectorType = SectorConstants.SECTOR_TYPE_PUBLIC;
+				if (rand < 0.6) sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+				if (rand < 0.65) sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
             } else if (level == 14) {
                 // special level: 14
-				sectorType = WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL;
-				if (rand < 0.3) sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
-				if (rand < 0.4) sectorType = WorldCreatorConstants.SECTOR_TYPE_SLUM;
+				sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+				if (rand < 0.3) sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+				if (rand < 0.4) sectorType = SectorConstants.SECTOR_TYPE_SLUM;
             } else if (level == bottomLevel) {
                 // special level: ground level
-				sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
-				if (rand < 0.1) sectorType = WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL;
-				if (rand < 0.2) sectorType = WorldCreatorConstants.SECTOR_TYPE_PUBLIC;
-				if (rand < 0.3) sectorType = WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL;
+				sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+				if (rand < 0.1) sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+				if (rand < 0.2) sectorType = SectorConstants.SECTOR_TYPE_PUBLIC;
+				if (rand < 0.3) sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
             } else if (level > topLevel - 5) {
 				// levels near top: mainly residentai
-				sectorType = WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL;
-				if (rand < 0.3) sectorType = WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL;
-				if (rand < 0.05) sectorType = WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL;
+				sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+				if (rand < 0.3) sectorType = SectorConstants.SECTOR_TYPE_COMMERCIAL;
+				if (rand < 0.05) sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
 			} else if (level > topLevel - 8) {
 				// first dark levels: mainly recent industrial and maintenance
-				sectorType = WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL;
-				if (rand < 0.4) sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
-				if (rand < 0.15) sectorType = WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL;
+				sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+				if (rand < 0.4) sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+				if (rand < 0.15) sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
 			} else if (level > 14) {
 				// levels baove 14: slums and maintenance
-				sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
-				if (rand < 0.3) sectorType = WorldCreatorConstants.SECTOR_TYPE_SLUM;
+				sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+				if (rand < 0.3) sectorType = SectorConstants.SECTOR_TYPE_SLUM;
 			} else {
 				// Old levels: mix of slum, maintenance, and everything else
-				sectorType = WorldCreatorConstants.SECTOR_TYPE_SLUM;
-				if (rand < 0.4) sectorType = WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL;
-				if (rand < 0.3) sectorType = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
-				if (rand < 0.2) sectorType = WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL;
-				if (rand < 0.1) sectorType = WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL;
-				if (rand < 0.1) sectorType = WorldCreatorConstants.SECTOR_TYPE_PUBLIC;
+				sectorType = SectorConstants.SECTOR_TYPE_SLUM;
+				if (rand < 0.4) sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+				if (rand < 0.3) sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+				if (rand < 0.2) sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+				if (rand < 0.1) sectorType = SectorConstants.SECTOR_TYPE_COMMERCIAL;
+				if (rand < 0.1) sectorType = SectorConstants.SECTOR_TYPE_PUBLIC;
 			}
 			return sectorType;
 		},
@@ -88,7 +87,7 @@ define([
             
             // Sector type based defaults
             switch (sectorType) {
-            case WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL:
+            case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
                 result.metal = 3;
                 result.food = WorldCreatorRandom.random(seed + l * x * y * 24 + x * 33 + 6) > 0.60 ? Math.round(sectorAbundanceFactor * 5 + sectorVO.wear / 2) : 0;
                 result.water = waterRandomPart > 0.82 ? 2 : 0;
@@ -96,26 +95,26 @@ define([
                 result.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.95 ? 1 : 0;
                 result.medicine = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.99 ? 1 : 0;
                 break;
-            case WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL:
+            case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
                 result.water = waterRandomPart > 0.9 ? 1 : 0;
                 result.metal = 8;
                 result.tools = (l > 13) ? WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.95 ? 1 : 0 : 0;
                 result.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.90 ? 1 : 0;
                 result.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.90 ? 1 : 0;
                 break;
-            case WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE:
+            case SectorConstants.SECTOR_TYPE_MAINTENANCE:
                 result.metal = 10;
                 result.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.90 ? 1 : 0;
                 result.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.90 ? 1 : 0;
                 result.tools = (l > 13) ? WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.90 ? 1 : 0 : 0;
                 break;
-            case WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL:
+            case SectorConstants.SECTOR_TYPE_COMMERCIAL:
                 result.water = waterRandomPart > 0.85 ? 2 : 0;
                 result.metal = 2;
                 result.food = Math.round(sectorAbundanceFactor * 10);
                 result.medicine = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.99 ? 1 : 0;
                 break;
-            case WorldCreatorConstants.SECTOR_TYPE_SLUM:
+            case SectorConstants.SECTOR_TYPE_SLUM:
                 result.metal = 7;
                 result.food = WorldCreatorRandom.random(seed / (l+10) + x * y * 63) > 0.75 ? Math.round(sectorAbundanceFactor * 5 + sectorVO.wear / 2) : 0;
                 result.water = waterRandomPart > 0.75 ? 1 : 0;
@@ -135,10 +134,6 @@ define([
             
             if (l === bottomLevel + 1) {
                 result.herbs = WorldCreatorRandom.random(seed * l / x + y * 423) * (10 - sectorVO.wear) / 2;
-            }
-            
-            if (sectorVO.camp || (l === 13 && x === WorldCreatorConstants.FIRST_CAMP_X && y === WorldCreatorConstants.FIRST_CAMP_Y)) {
-                result.food = Math.max(result.food, 3);
             }
             
             // Adjustment for required supplies
@@ -167,25 +162,20 @@ define([
             var result = new ResourcesVO();
             
             switch (sectorType) {
-            case WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL:
-            case WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL:
+            case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
+            case SectorConstants.SECTOR_TYPE_COMMERCIAL:
                 result.food = sectorNatureFactor > 0.2 ? Math.round(sectorNatureFactor * 10) : 0;
                 result.water = sectorWaterFactor > 0.75 ? Math.round(Math.min(10, sectorWaterFactor * 10)) : 0;
                 break;
-            case WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL:
-            case WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE:
+            case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
+            case SectorConstants.SECTOR_TYPE_MAINTENANCE:
                 result.food = sectorNatureFactor > 0.4 ? Math.round(sectorNatureFactor * 8) : 0;
                 result.water = sectorWaterFactor > 0.95 ? Math.round(Math.min(10, sectorWaterFactor * 11)) : 0;
                 break;
-            case WorldCreatorConstants.SECTOR_TYPE_SLUM:
+            case SectorConstants.SECTOR_TYPE_SLUM:
                 result.food = sectorNatureFactor > 0.1 ? Math.round(sectorNatureFactor * 10) : 0;
                 result.water = sectorWaterFactor > 0.9 ? Math.round(Math.min(10, sectorWaterFactor * 8)) : 0;
                 break;
-            }
-            
-            if (sectorVO.camp || (l === 13 && x === WorldCreatorConstants.FIRST_CAMP_X && y === WorldCreatorConstants.FIRST_CAMP_Y)) {
-                result.food = Math.max(result.food, 2);
-                result.water = Math.max(result.water, 2);
             }
             
             if (l === bottomLevel) {
@@ -299,15 +289,15 @@ define([
             };
             
             // camp
-            addPoint(camp.position, WorldCreatorConstants.ZONE_POI_TEMP);
+            addPoint(camp.position, WorldConstants.ZONE_POI_TEMP);
             
             // two sectors furthest away from the camp (but not next to each other)
             var sectorsByDistance = levelVO.sectors.slice(0).sort(WorldCreatorHelper.sortSectorsByDistanceTo(worldVO, camp));
-            addPoint(sectorsByDistance[sectorsByDistance.length - 1].position, WorldCreatorConstants.ZONE_EXTRA_CAMPABLE);
+            addPoint(sectorsByDistance[sectorsByDistance.length - 1].position, WorldConstants.ZONE_EXTRA_CAMPABLE);
             var i = 1;
             while (i < sectorsByDistance.length) {
                 i++;
-                var added = addPoint(sectorsByDistance[sectorsByDistance.length - i].position, WorldCreatorConstants.ZONE_POI_TEMP, 8);
+                var added = addPoint(sectorsByDistance[sectorsByDistance.length - i].position, WorldConstants.ZONE_POI_TEMP, 8);
                 if (added) break;
             }
             
@@ -318,7 +308,7 @@ define([
                 var pointDist = 7 + WorldCreatorRandom.randomInt(10101 + seed % 11 * 182 + i*549 + level * 28, 0, 7);
                 var pointPos = PositionConstants.getPositionOnPath(camp.position, direction, pointDist);
                 if (levelVO.containsPosition(pointPos)) {
-                    addPoint(pointPos, WorldCreatorConstants.ZONE_POI_TEMP, 6);
+                    addPoint(pointPos, WorldConstants.ZONE_POI_TEMP, 6);
                 }
             }
             
@@ -427,7 +417,7 @@ define([
             var camplessLevelOrdinals = this.getCamplessLevelOrdinals(seed);
             var levelOrdinal = this.getLevelOrdinal(seed, level);
             var campOrdinal = this.getCampOrdinal(seed, level);
-            return camplessLevelOrdinals.indexOf(levelOrdinal) < 0 && campOrdinal <= WorldCreatorConstants.CAMP_ORDINAL_LIMIT;
+            return camplessLevelOrdinals.indexOf(levelOrdinal) < 0 && campOrdinal <= WorldConstants.CAMP_ORDINAL_LIMIT;
         },
         
         isHardLevel: function (seed, level) {
@@ -442,7 +432,7 @@ define([
             if (level === 14) return LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
             
             var campOrdinal = this.getCampOrdinal(seed, level);
-            if (campOrdinal > WorldCreatorConstants.CAMP_ORDINAL_LIMIT)
+            if (campOrdinal > WorldConstants.CAMP_ORDINAL_LIMIT)
                 return LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT;
             
             var levelOrdinal = this.getLevelOrdinal(seed, level);

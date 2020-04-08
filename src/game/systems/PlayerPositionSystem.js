@@ -7,7 +7,6 @@ define([
     'game/constants/GameConstants',
     'game/constants/LevelConstants',
     'game/constants/LogConstants',
-    'game/constants/WorldCreatorConstants',
     'game/nodes/PlayerPositionNode',
     'game/nodes/level/LevelNode',
     'game/nodes/PlayerLocationNode',
@@ -21,7 +20,7 @@ define([
     'game/components/common/RevealedComponent',
     'game/components/common/CampComponent',
     'game/components/type/LevelComponent',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, LevelConstants, LogConstants, WorldCreatorConstants,
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, LevelConstants, LogConstants,
     PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode, CampNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, LogMessagesComponent, PositionComponent,
 	VisitedComponent, RevealedComponent, CampComponent, LevelComponent) {
@@ -258,11 +257,16 @@ define([
         handleInvalidPosition: function () {
             var playerPos = this.playerPositionNodes.head.position;
             log.w("Player location could not be found  (" + playerPos.level + "." + playerPos.sectorId() + ").");
-            log.w("Moving to a known valid position.");
-            playerPos.level = 13;
-            playerPos.sectorX = WorldCreatorConstants.FIRST_CAMP_X;
-            playerPos.sectorY = WorldCreatorConstants.FIRST_CAMP_Y;
-            playerPos.inCamp = false;
+            if (this.lastValidPosition) {
+                log.w("Moving to a known valid position");
+                playerPos.level = lastValidPos.level;
+                playerPos.sectorX = lastValidPos.sectorX;
+                playerPos.sectorY =lastValidPos.sectorY;
+                playerPos.inCamp = lastValidPos.inCamp;
+            } else {
+                log.w("Moving to start position");
+                // TODO fix
+            }
             this.lastUpdatePosition = null;
         },
 

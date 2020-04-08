@@ -4,7 +4,6 @@ define([
 	'game/constants/PerkConstants',
 	'game/constants/ItemConstants',
 	'game/constants/PositionConstants',
-	'game/constants/WorldCreatorConstants',
 	'game/components/player/BagComponent',
 	'game/components/player/ExcursionComponent',
 	'game/components/player/VisionComponent',
@@ -52,7 +51,6 @@ define([
 	PerkConstants,
 	ItemConstants,
 	PositionConstants,
-	WorldCreatorConstants,
 	BagComponent,
     ExcursionComponent,
 	VisionComponent,
@@ -120,7 +118,7 @@ define([
 				.add(new ResourceAccumulationComponent(saveKey))
 				.add(new RumoursComponent())
 				.add(new EvidenceComponent())
-				.add(new PositionComponent(13, WorldCreatorConstants.FIRST_CAMP_X, WorldCreatorConstants.FIRST_CAMP_Y, false))
+				.add(new PositionComponent(13, 0, 0, false))
 				.add(new LogMessagesComponent())
 				.add(new PlayerActionComponent())
 				.add(new SaveComponent(saveKey, [

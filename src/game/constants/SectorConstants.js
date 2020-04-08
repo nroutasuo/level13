@@ -17,6 +17,13 @@ define(['ash',
 		MAP_SECTOR_STATUS_VISITED_SCOUTED: "scouted",
 		MAP_SECTOR_STATUS_VISITED_CLEARED: "cleared",
         
+        SECTOR_TYPE_RESIDENTIAL: "residential",
+        SECTOR_TYPE_INDUSTRIAL: "industrial",
+        SECTOR_TYPE_MAINTENANCE: "maintenance",
+        SECTOR_TYPE_COMMERCIAL: "commercial",
+        SECTOR_TYPE_PUBLIC: "public",
+        SECTOR_TYPE_SLUM: "slum",
+        
         SECTOR_CONDITION_MAINTAINED: 0, // currently maintained
         SECTOR_CONDITION_RECENT: 1,     // well-kept pre-Fall
         SECTOR_CONDITION_WORN: 2,       // already in bad shape around the Fall

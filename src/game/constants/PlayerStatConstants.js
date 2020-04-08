@@ -6,7 +6,8 @@ define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
         VISION_BASE_SUNLIT: 50,
         HEALTH_MINIMUM: 10,
         HEALTH_TO_STAMINA_FACTOR: 10,
-
+        
+        MAX_SCOUT_LOCALE_STAMINA_COST: 500,
         STAMINA_GAINED_FROM_NAP: 25,
 
         getStaminaWarningLimit: function (staminaComponent) {

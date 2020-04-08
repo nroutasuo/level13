@@ -14,7 +14,6 @@ define([
     'game/constants/PerkConstants',
     'game/constants/UpgradeConstants',
     'game/constants/UIConstants',
-    'game/constants/WorldCreatorConstants',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/PlayerResourcesNode',
@@ -49,7 +48,6 @@ define([
     PerkConstants,
     UpgradeConstants,
     UIConstants,
-    WorldCreatorConstants,
     PlayerStatsNode,
     PlayerLocationNode,
     PlayerResourcesNode,
@@ -730,7 +728,7 @@ define([
                 var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
                 if (this.isLevelCleared()) {
                     campOrdinal += 1;
-                    step = WorldCreatorConstants.CAMP_STEP_START;
+                    step = WorldConstants.CAMP_STEP_START;
                 }
                 var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(campOrdinal, step, isHardLevel, itemsComponent, true);
                 var neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
@@ -790,7 +788,7 @@ define([
             var itemScores = {};
             var itemList;
             var itemDefinition;
-            var maxCampOrdinalBonus = step == WorldCreatorConstants.CAMP_STEP_END ? 1 : 0;
+            var maxCampOrdinalBonus = step == WorldConstants.CAMP_STEP_END ? 1 : 0;
             var maxCampOrdinal = campOrdinal + Math.floor(Math.random(maxCampOrdinalBonus + 1));
             var minCampOrdinal = Math.max(0, campOrdinal - 3);
             var campOrdinalMaxRarity = Math.min(campOrdinal, 5) * 2;

@@ -3,7 +3,6 @@ define([
     'ash',
     'game/GameGlobals',
     'game/GlobalSignals',
-	'game/constants/WorldCreatorConstants',
     'game/nodes/level/LevelNode',
     'game/nodes/sector/SectorNode',
     'game/components/common/PositionComponent',
@@ -13,7 +12,6 @@ define([
 ], function (Ash,
         GameGlobals,
         GlobalSignals,
-		WorldCreatorConstants,
 		LevelNode,
 		SectorNode,
 		PositionComponent,
@@ -33,9 +31,6 @@ define([
 			var sys = this;
 			this.levelNodes = engine.getNodeList(LevelNode);
 			this.sectorNodes = engine.getNodeList(SectorNode);
-			this.levelNodes.nodeAdded.add(function (node) {
-				sys.updateLevel(node.entity);
-			});
 			this.sectorNodes.nodeAdded.add(function (node) {
 				sys.updateSector(node.entity);
 			});
@@ -45,25 +40,12 @@ define([
 			GlobalSignals.improvementBuiltSignal.add(function () {
 				sys.updateAllSectors();
 			});
-			this.updateAllLevels();
 			this.updateAllSectors();
 		},
 
         removeFromEngine: function (engine) {
 			this.levelNodes = null;
 			this.sectorNodes = null;
-		},
-
-		updateAllLevels: function () {
-			for (var node = this.levelNodes.head; node; node = node.next) {
-				this.updateLevel(node.entity);
-			}
-		},
-
-		updateLevel: function (entity) {
-			for (var s = WorldCreatorConstants.FIRST_SECTOR; s <= WorldCreatorConstants.LAST_SECTOR; s++) {
-				this.updateLevelPassagesComponent(entity, s, null, false, null, false);
-			}
 		},
 
 		updateAllSectors: function () {

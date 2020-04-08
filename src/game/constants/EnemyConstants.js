@@ -1,7 +1,5 @@
-define(['ash',
-	'game/constants/WorldCreatorConstants',
-	'game/vos/EnemyVO'],
-function (Ash, WorldCreatorConstants, EnemyVO) {
+define(['ash', 'game/vos/EnemyVO'],
+function (Ash, EnemyVO) {
 
     var EnemyConstants = {
 		

@@ -1,6 +1,6 @@
 // Locale / point of interest: an additional scoutable location in a sector
-define(['ash', 'game/vos/ResourcesVO', 'game/constants/LocaleConstants', 'game/constants/WorldCreatorConstants'],
-function (Ash, ResourcesVO, LocaleConstants, WorldCreatorConstants) {
+define(['ash', 'game/vos/ResourcesVO', 'game/constants/LocaleConstants', 'game/constants/PlayerStatConstants'],
+function (Ash, ResourcesVO, LocaleConstants, PlayerStatConstants) {
 
 	localeTypes = {
 		factory: 0,
@@ -45,7 +45,7 @@ function (Ash, ResourcesVO, LocaleConstants, WorldCreatorConstants) {
         },
         
         getStaminaRequirement: function () {
-            var maxCost = WorldCreatorConstants.MAX_SCOUT_LOCALE_STAMINA_COST;
+            var maxCost = PlayerStatConstants.MAX_SCOUT_LOCALE_STAMINA_COST;
             var minCost = 100;
             var difficulty = 0.5;
             switch (this.type) {

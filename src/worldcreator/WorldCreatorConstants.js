@@ -1,4 +1,5 @@
-define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
+define(['ash', 'game/constants/PlayerStatConstants', 'game/constants/WorldConstants', 'utils/MathUtils'],
+function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
     
     var WorldCreatorConstants = {
         
@@ -8,29 +9,6 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         CRITICAL_PATH_TYPE_CAMP_TO_POI_1: "camp_to_poi_1",
         CRITICAL_PATH_TYPE_CAMP_TO_POI_2: "camp_to_poi_2",
         
-        ZONE_ENTRANCE: "z_e",
-        ZONE_PASSAGE_TO_CAMP: "z_p2c",
-        ZONE_PASSAGE_TO_PASSAGE: "z_p2p",
-        ZONE_POI_1: "z_poi1",
-        ZONE_POI_2: "z_poi2",
-        ZONE_CAMP_TO_PASSAGE: "z_c2p",
-        ZONE_EXTRA_CAMPABLE: "z_extra_c",
-        ZONE_EXTRA_UNCAMPABLE: "z_extra_u",
-        ZONE_POI_TEMP: "z_poi_temp",
-        
-        CAMP_STEP_PREVIOUS: 0,  // passage to level sector
-        CAMP_STEP_START: 1,     // zones up to and including POI_1
-        CAMP_STEP_POI_2: 2,     // zone POI_2
-        CAMP_STEP_END: 3,       // zones after POI_2
-        
-        // Sector features
-        SECTOR_TYPE_RESIDENTIAL: "residential",
-        SECTOR_TYPE_INDUSTRIAL: "industrial",
-        SECTOR_TYPE_MAINTENANCE: "maintenance",
-        SECTOR_TYPE_COMMERCIAL: "commercial",
-        SECTOR_TYPE_PUBLIC: "public",
-        SECTOR_TYPE_SLUM: "slum",
-        
         BUILDING_STYLE_RECENT: 0,
         BUILDING_STYLE_PROSPERITY_RICH: 1,
         BUILDING_STYLE_PROSPERITY_QUICK: 2,
@@ -38,12 +16,6 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         BUILDING_STYLE_URBAN_AFRICAN: 4,
         BUILDING_STYLE_URBAN_ASIAN: 5,
         BUILDING_STYLE_HISTORICAL: 6,
-        
-        CAMPS_BEFORE_GROUND: 8,
-        CAMPS_AFTER_GROUND: 7,
-        CAMPS_TOTAL: 15,
-        LEVEL_NUMBER_MIN: 25,
-        LEVEL_NUMBER_MAX: 27,
         
         DIAGONAL_PATH_PROBABILITY: 0.1,
         
@@ -58,39 +30,14 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         SECTOR_PATH_LENGTH_MAX: 15,
         SECTOR_RECT_EDGE_LENGTH_MAX: 20,
         
-        FIRST_CAMP_X: 1,
-        FIRST_CAMP_Y: 0,
-        
-        CAMP_ORDINAL_LIMIT: 8,
-        CAMP_ORDINAL_FUEL: 3,
-        CAMP_ORDINAL_GROUND: 8,
-        
         MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 5,
         MIN_LEVEL_ORDINAL_HAZARD_POISON: 3,
-        
-        MAX_SCOUT_LOCALE_STAMINA_COST: 500,
-        
-        CAMP_ORDINAL_BAG_2: 3,
-        CAMP_ORDINAL_BAG_3: 6,
-        CAMP_ORDINAL_BAG_4: 10,
-        CAMP_ORDINAL_BAG_5: 14,
-        
-        BAG_BONUS_1: 30,
-        BAG_BONUS_2: 40,
-        BAG_BONUS_3: 50,
-        BAG_BONUS_4: 80,
-        BAG_BONUS_5: 100,
-        BAG_BONUS_6: 150,
-        
-        isStartPosition: function (pos) {
-            return pos.level === 13 && pos.sectorX === this.FIRST_CAMP_X && pos.sectorY == this.FIRST_CAMP_Y;
-        },
         
         getNumSectors: function (campOrdinal, isSmall) {
             if (isSmall) return 80;
             if (campOrdinal < 2)
                 return 110;
-            if (campOrdinal < WorldCreatorConstants.CAMPS_BEFORE_GROUND)
+            if (campOrdinal < WorldConstants.CAMPS_BEFORE_GROUND)
                 return 170;
             if (campOrdinal < 12)
                 return 190;
@@ -120,7 +67,7 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_POI_1:
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_POI_2:
                     // there, scout/fight and back (these paths have a lot of points so less strict -> faster world creation)
-                    var maxScoutCost = WorldCreatorConstants.MAX_SCOUT_LOCALE_STAMINA_COST;
+                    var maxScoutCost = PlayerStatConstants.MAX_SCOUT_LOCALE_STAMINA_COST;
                     var fightCost = 10 * 3;
                     var actionCost = Math.max(fightCost, maxScoutCost);
                     maxLength = (maxLength - actionCost / movementCost) / 2;
@@ -156,22 +103,6 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
             return Math.floor(maxLength);
         },
         
-        getBagBonus: function (levelOrdinal) {
-            if (levelOrdinal < this.CAMP_ORDINAL_BAG_2) {
-                return this.BAG_BONUS_1;
-            }
-            if (levelOrdinal < this.CAMP_ORDINAL_BAG_3) {
-                return this.BAG_BONUS_2;
-            }
-            if (levelOrdinal < this.CAMP_ORDINAL_BAG_4) {
-                return this.BAG_BONUS_3;
-            }
-            if (levelOrdinal < this.CAMP_ORDINAL_BAG_5) {
-                return this.BAG_BONUS_4;
-            }
-            return this.BAG_BONUS_5;
-        },
-        
         getPopulationGrowthFactor: function (campOrdinal) {
             if (campOrdinal <= 0) return 0;
             switch (campOrdinal) {
@@ -198,17 +129,17 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         getZoneOrdinal: function (zone) {
             switch (zone) {
                 // all levels
-                case WorldCreatorConstants.ZONE_ENTRANCE: return 0;
+                case WorldConstants.ZONE_ENTRANCE: return 0;
                 // campable levels
-                case WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP: return 1;
-                case WorldCreatorConstants.ZONE_POI_1: return 2;
-                case WorldCreatorConstants.ZONE_POI_2: return 3;
-                case WorldCreatorConstants.ZONE_CAMP_TO_PASSAGE: return 4;
-                case WorldCreatorConstants.ZONE_EXTRA_CAMPABLE: return 5;
-                case WorldCreatorConstants.ZONE_POI_TEMP: return 6;
+                case WorldConstants.ZONE_PASSAGE_TO_CAMP: return 1;
+                case WorldConstants.ZONE_POI_1: return 2;
+                case WorldConstants.ZONE_POI_2: return 3;
+                case WorldConstants.ZONE_CAMP_TO_PASSAGE: return 4;
+                case WorldConstants.ZONE_EXTRA_CAMPABLE: return 5;
+                case WorldConstants.ZONE_POI_TEMP: return 6;
                 // uncampable levels
-                case WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE: return 1;
-                case WorldCreatorConstants.ZONE_EXTRA_UNCAMPABLE: return 2;
+                case WorldConstants.ZONE_PASSAGE_TO_PASSAGE: return 1;
+                case WorldConstants.ZONE_EXTRA_UNCAMPABLE: return 2;
                 default:
                     log.w("no ordinal defined for zone: " + zone);
                     return 5;
@@ -218,26 +149,6 @@ define(['ash', 'utils/MathUtils'], function (Ash, MathUtils) {
         isEarlierZone: function (zone1, zone2) {
             return this.getZoneOrdinal(zone1) < this.getZoneOrdinal(zone2);
         },
-        
-        getCampStep: function (zone) {
-            switch (zone) {
-                // all levels
-                case WorldCreatorConstants.ZONE_ENTRANCE: return WorldCreatorConstants.CAMP_STEP_PREVIOUS;
-                // campable levels
-                case WorldCreatorConstants.ZONE_PASSAGE_TO_CAMP: return WorldCreatorConstants.CAMP_STEP_START;
-                case WorldCreatorConstants.ZONE_POI_1: return WorldCreatorConstants.CAMP_STEP_START;
-                case WorldCreatorConstants.ZONE_POI_2: return WorldCreatorConstants.CAMP_STEP_POI_2;
-                case WorldCreatorConstants.ZONE_CAMP_TO_PASSAGE: return WorldCreatorConstants.CAMP_STEP_END;
-                case WorldCreatorConstants.ZONE_EXTRA_CAMPABLE: return WorldCreatorConstants.CAMP_STEP_END;
-                case WorldCreatorConstants.ZONE_POI_TEMP: return WorldCreatorConstants.CAMP_STEP_END;
-                // uncampable levels
-                case WorldCreatorConstants.ZONE_PASSAGE_TO_PASSAGE: return WorldCreatorConstants.CAMP_STEP_END;
-                case WorldCreatorConstants.ZONE_EXTRA_UNCAMPABLE: return WorldCreatorConstants.CAMP_STEP_END;
-                default:
-                    log.i("no camp step defined for zone: " + zone);
-                    return 5;
-            }
-        }
 
     };
     

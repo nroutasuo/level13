@@ -3,8 +3,8 @@
 define(
 ['ash',
     'utils/DescriptionMapper', 'text/Text', 'text/TextBuilder',
-    'game/constants/GameConstants', 'game/constants/SectorConstants', 'game/constants/WorldCreatorConstants', 'game/constants/PositionConstants', 'game/constants/MovementConstants'],
-function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConstants, WorldCreatorConstants, PositionConstants, MovementConstants) {
+    'game/constants/GameConstants', 'game/constants/SectorConstants', 'game/constants/PositionConstants', 'game/constants/MovementConstants'],
+function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConstants, PositionConstants, MovementConstants) {
     
     var TextConstants = {
 		
@@ -74,7 +74,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
             addOptions("an-items", [ "debris" ]);
             // - sector type: determines n-sector and affects many others
             switch (features.sectorType) {
-                case WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL:
+                case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
                     addOptions("n-sector", [ "apartment complex" ]);
                     addOptions("a-street-past", [ "beautiful", "calm", "orderly", "relaxed" ]);
                     addOptions("n-building", [ "residential tower", "apartment house", "residential building with countless of rows of identical balconies" ]);
@@ -82,7 +82,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                     addOptions("an-decos", [ "tram tracks" ]);
                     addOptions("a-building", [ "silent" ]);
                     break;
-                case WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL:
+                case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
                     addOptions("n-sector", [ "industrial complex" ]);
                     addOptions("a-street-past", [ "high-security" ]);
                     addOptions("n-building", [ "power plant", "factory", "storehouse", "workshop" ]);
@@ -90,7 +90,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                     addOptions("a-building", [ "decommissioned" ]);
                     addOptions("an-items", [ "broken machinery" ]);
                     break;
-                case WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE:
+                case SectorConstants.SECTOR_TYPE_MAINTENANCE:
                     addOptions("n-sector", [ "transport hall", "maintenance area", "transport hub" ]);
                     addOptions("a-street", [ "strange", "chaotic", "cluttered" ]);
                     addOptions("a-street-past", [ "orderly" ]);
@@ -100,7 +100,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                     addOptions("an-decos", [ "broken pipes", "broken trams" ]);
                     addOptions("an-items", [ "electrical wiring" ]);
                     break;
-                case WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL:
+                case SectorConstants.SECTOR_TYPE_COMMERCIAL:
                     addOptions("n-sector", [ "shopping mall", "shopping center", "office complex" ]);
                     addOptions("a-street-past", [ "glamorous", "buzzling" ]);
                     addOptions("n-building", [ "shopping center", "department store", "office building", "cafe", "bar" ]);
@@ -109,7 +109,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                     addOptions("an-decos", [ "empty fountains", "abandoned stalls" ]);
                     addOptions("an-items", [ "broken glass" ]);
                     break;
-                case WorldCreatorConstants.SECTOR_TYPE_PUBLIC:
+                case SectorConstants.SECTOR_TYPE_PUBLIC:
                     addOptions("n-sector", ["prison complex", "amusement park", "library"]);
                     addOptions("a-street-past", [ "leisurely" ]);
                     addOptions("n-building", [ "library", "prison", "school", "university", "park", "public square", "sports field", "metro station", "research laboratory", "government building" ]);
@@ -118,7 +118,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                     addOptions("an-decos", [ "withered trees" ]);
                     addOptions("an-items", [ "research samples" ]);
                     break;
-                case WorldCreatorConstants.SECTOR_TYPE_SLUM:
+                case SectorConstants.SECTOR_TYPE_SLUM:
                     addOptions("n-sector", [ "shanty town", "landfill site" ]);
                     addOptions("a-street-past", [ "gloomy", "crowded", "lively" ]);
                     addOptions("n-building", [ "apartment building" ]);
@@ -131,12 +131,12 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
             // - building density
             if (features.buildingDensity < 3) {
                 addOptions("n-street", [ "sector", "space", "square" ]);
-                if (features.sectorType == WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL || features.sectorType == WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL)
+                if (features.sectorType == SectorConstants.SECTOR_TYPE_RESIDENTIAL || features.sectorType == SectorConstants.SECTOR_TYPE_COMMERCIAL)
                     addOptions("n-street", [ "plaza", "courtyard" ]);
                 addOptions("a-street", [ "wide", "spacious", "enormous" ]);
             } else if (features.buildingDensity < 6) {
                 addOptions("n-street", [ "room", "throughfare", "square", "area", "hall" ]);
-                if (features.sectorType == WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL || features.sectorType == WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL)
+                if (features.sectorType == SectorConstants.SECTOR_TYPE_RESIDENTIAL || features.sectorType == SectorConstants.SECTOR_TYPE_COMMERCIAL)
                     addOptions("n-street", [ "boulevard", "avenue" ]);
                 addOptions("a-street", [ "wide", "spacious" ]);
             } else if (features.buildingDensity < 9) {
@@ -512,7 +512,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
 				return "leaking water pipe";
 			}
 			switch (featuresComponent.sectorType) {
-				case WorldCreatorConstants.SECTOR_TYPE_SLUM:
+				case SectorConstants.SECTOR_TYPE_SLUM:
 					return "well";
 			}
 			return "water tower";
@@ -654,12 +654,12 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
 	function initSectorTexts() {
         var wildcard = DescriptionMapper.WILDCARD;
         
-        var t_R = WorldCreatorConstants.SECTOR_TYPE_RESIDENTIAL;
-        var t_I = WorldCreatorConstants.SECTOR_TYPE_INDUSTRIAL;
-        var t_M = WorldCreatorConstants.SECTOR_TYPE_MAINTENANCE;
-        var t_C = WorldCreatorConstants.SECTOR_TYPE_COMMERCIAL;
-        var t_P = WorldCreatorConstants.SECTOR_TYPE_PUBLIC;
-        var t_S = WorldCreatorConstants.SECTOR_TYPE_SLUM;
+        var t_R = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+        var t_I = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+        var t_M = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+        var t_C = SectorConstants.SECTOR_TYPE_COMMERCIAL;
+        var t_P = SectorConstants.SECTOR_TYPE_PUBLIC;
+        var t_S = SectorConstants.SECTOR_TYPE_SLUM;
         
         // brackets for values like building density, wear, damage
         var b0 = [0, 0];

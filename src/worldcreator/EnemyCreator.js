@@ -5,7 +5,7 @@ define([
     'game/constants/PerkConstants',
     'game/constants/ItemConstants',
     'game/constants/FightConstants',
-    'game/constants/WorldCreatorConstants',
+    'game/constants/WorldConstants',
     'game/components/player/ItemsComponent',
     'game/vos/EnemyVO'
 ], function (
@@ -15,7 +15,7 @@ define([
     PerkConstants,
     ItemConstants,
     FightConstants,
-    WorldCreatorConstants,
+    WorldConstants,
     ItemsComponent,
     EnemyVO
 ) {
@@ -205,7 +205,7 @@ define([
             if (EnemyConstants.enemyDifficulties[enemy.id]) return EnemyConstants.enemyDifficulties[enemy.id];
             var enemyStats = FightConstants.getStrength(enemy.att, enemy.def, enemy.maxHP);
             var requiredStats;
-            var max = this.getDifficulty(WorldCreatorConstants.CAMPS_TOTAL, WorldCreatorConstants.CAMP_STEP_END);
+            var max = this.getDifficulty(WorldConstants.CAMPS_TOTAL, WorldConstants.CAMP_STEP_END);
             for (var i = 1; i <= max; i++) {
                 var campOrdinal = this.getCampOrdinalFromDifficulty(i);
                 var step = this.getStepFromDifficulty(i);
@@ -230,9 +230,9 @@ define([
         getRequiredStrength: function (campOrdinal, step, isHardLevel) {
             var prevOrdinal = campOrdinal;
             var prevStep = step - 1;
-            if (prevStep < WorldCreatorConstants.CAMP_STEP_START) {
+            if (prevStep < WorldConstants.CAMP_STEP_START) {
                 prevOrdinal = campOrdinal - 1;
-                prevStep = WorldCreatorConstants.CAMP_STEP_END;
+                prevStep = WorldConstants.CAMP_STEP_END;
             }
             var typicalStrength = this.getTypicalStrength(campOrdinal, step, isHardLevel);
             var typicalStrengthPrevious = this.getTypicalStrength(prevOrdinal, prevStep, isHardLevel);
@@ -246,7 +246,7 @@ define([
             // health
             var typicalHealth = 100;
             var healthyPerkFactor = PerkConstants.getPerk(PerkConstants.perkIds.healthBonus).effect;
-            if (campOrdinal >= WorldCreatorConstants.CAMPS_BEFORE_GROUND)
+            if (campOrdinal >= WorldConstants.CAMPS_BEFORE_GROUND)
                 typicalHealth = typicalHealth * healthyPerkFactor;
             if (campOrdinal < 1)
                 typicalHealth = 50;

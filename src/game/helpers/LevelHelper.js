@@ -8,7 +8,7 @@ define([
     'game/constants/PositionConstants',
     'game/constants/MovementConstants',
     'game/constants/SectorConstants',
-    'game/constants/WorldCreatorConstants',
+    'game/constants/WorldConstants',
     'game/nodes/level/LevelNode',
     'game/nodes/sector/SectorNode',
     'game/nodes/GangNode',
@@ -37,7 +37,7 @@ define([
 	PositionConstants,
 	MovementConstants,
 	SectorConstants,
-    WorldCreatorConstants,
+    WorldConstants,
 	LevelNode,
     SectorNode,
     GangNode,
@@ -210,7 +210,7 @@ define([
             var sector = this.getSectorByPosition(pos.level, pos.sectorX, pos.sectorY);
             if (!sector) return 1;
             var featuresComponent = sector.get(SectorFeaturesComponent);
-            return WorldCreatorConstants.getCampStep(featuresComponent.zone);
+            return WorldConstants.getCampStep(featuresComponent.zone);
         },
 
         findPathTo: function (startSector, goalSector, settings) {
@@ -331,7 +331,7 @@ define([
 
 			var currentLevel = playerPosition.level;
             var isDone;
-            var dlimit  = limitToCurrentLevel ? 1 : WorldCreatorConstants.LEVEL_NUMBER_MAX;
+            var dlimit  = limitToCurrentLevel ? 1 : WorldConstants.LEVEL_NUMBER_MAX;
 			for (var ld = 0; ld < dlimit; ld++) {
                 if (ld === 0) {
                     isDone = doLevel.call(this, currentLevel);

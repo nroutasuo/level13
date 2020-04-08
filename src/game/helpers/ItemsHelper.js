@@ -4,7 +4,7 @@ define([
     'game/constants/ItemConstants',
     'game/constants/UpgradeConstants',
     'game/constants/PlayerActionConstants',
-    'game/constants/WorldCreatorConstants',
+    'game/constants/WorldConstants',
     'game/nodes/tribe/TribeUpgradesNode',
 ], function (
     Ash,
@@ -12,7 +12,7 @@ define([
     ItemConstants,
     UpgradeConstants,
     PlayerActionConstants,
-    WorldCreatorConstants,
+    WorldConstants,
     TribeUpgradesNode
 ) {
     var ItemsHelper = Ash.Class.extend({
@@ -41,9 +41,9 @@ define([
         
         getAvailableClothingList: function (campOrdinal, step, includeCraftable, includeNonCraftable, includeMultiplePerType, preferredItemBonus, maxScavengeRarity, includeSpecialEquipment) {
             step = step || 2;
-            var adjustCampOrdinal = step == WorldCreatorConstants.CAMP_STEP_START || step == WorldCreatorConstants.CAMP_STEP_PREVIOUS;
+            var adjustCampOrdinal = step == WorldConstants.CAMP_STEP_START || step == WorldConstants.CAMP_STEP_PREVIOUS;
             var adjustedCampOrdinal = adjustCampOrdinal ? campOrdinal - 1 : campOrdinal;
-            var adjustedStep = adjustCampOrdinal ? WorldCreatorConstants.CAMP_STEP_END : step - 1;
+            var adjustedStep = adjustCampOrdinal ? WorldConstants.CAMP_STEP_END : step - 1;
             maxScavengeRarity = maxScavengeRarity || 100;
             var result = [];
             var clothingLists = [
@@ -116,8 +116,8 @@ define([
                 if (notNew) continue;
                 result.push(necessityClothing[i]);
             }
-            var prevWeapon = ItemConstants.getDefaultWeapon(campOrdinal - 1, WorldCreatorConstants.CAMP_STEP_END);
-            var weapon = ItemConstants.getDefaultWeapon(campOrdinal, WorldCreatorConstants.CAMP_STEP_END);
+            var prevWeapon = ItemConstants.getDefaultWeapon(campOrdinal - 1, WorldConstants.CAMP_STEP_END);
+            var weapon = ItemConstants.getDefaultWeapon(campOrdinal, WorldConstants.CAMP_STEP_END);
             if (weapon && (!prevWeapon || weapon.id !== prevWeapon.id)) result.push(weapon);
             return result;
         },
@@ -150,7 +150,7 @@ define([
         },
         
         getMinHazardColdForLevel: function (campOrdinal, step, isHardLevel) {
-            var minByLevel = this.getMaxHazardColdForLevel(campOrdinal - 1, WorldCreatorConstants.CAMP_STEP_START, isHardLevel);
+            var minByLevel = this.getMaxHazardColdForLevel(campOrdinal - 1, WorldConstants.CAMP_STEP_START, isHardLevel);
             var minByItems = 0;
             var defaultClothing = this.getDefaultClothing(campOrdinal, step, null, isHardLevel);
             for (var i = 0; i < defaultClothing.length; i++) {

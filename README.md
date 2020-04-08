@@ -39,7 +39,7 @@ At the start of a new game, a seed value is assigned. The world is generated bas
 
 (Sample level structure)
 
-The [WorldCreator](https://github.com/nroutasuo/level13/blob/master/src/game/worldcreator/WorldCreator.js) generates from the seed value
+The [WorldCreator](https://github.com/nroutasuo/level13/blob/master/src/worldcreator/WorldCreator.js) generates from the seed value
 
 * Basic structure of the world (ground level, surface level, sector locations and passages between levels)
 * World texture (sector features like building density and environmental hazards)

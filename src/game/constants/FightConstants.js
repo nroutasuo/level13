@@ -3,10 +3,10 @@ define(['ash',
 	'game/constants/PerkConstants',
 	'game/constants/LocaleConstants',
 	'game/constants/PositionConstants',
-	'game/constants/WorldCreatorConstants',
 	'game/constants/UpgradeConstants',
+	'game/constants/WorldConstants',
 	'game/vos/ResourcesVO'],
-function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants, WorldCreatorConstants, UpgradeConstants, ResourcesVO) {
+function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants, UpgradeConstants, WorldConstants, ResourcesVO) {
 
     var FightConstants = {
 	
@@ -84,7 +84,7 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
         getMaxFollowers: function (numCamps) {
 			var firstFollowerCamp = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_inn");
 			var numFollowerCamps = numCamps - firstFollowerCamp + 1;
-			var totalFollowerCamps = (WorldCreatorConstants.CAMPS_TOTAL - firstFollowerCamp + 1);
+			var totalFollowerCamps = (WorldConstants.CAMPS_TOTAL - firstFollowerCamp + 1);
 			var maxFollowers = Math.ceil(numFollowerCamps / totalFollowerCamps * this.MAX_FOLLOWER_MAX);
 			return Math.max(0, maxFollowers);
         },

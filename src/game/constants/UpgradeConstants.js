@@ -1,5 +1,5 @@
-define(['ash', 'game/constants/PlayerActionConstants', 'game/constants/TribeConstants', 'game/constants/WorldCreatorConstants', 'game/vos/UpgradeVO'],
-function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, UpgradeVO) {
+define(['ash', 'game/constants/PlayerActionConstants', 'game/constants/TribeConstants', 'game/constants/WorldConstants', 'game/vos/UpgradeVO'],
+function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO) {
     
     var UpgradeConstants = {
         
@@ -260,7 +260,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
                 costCampOrdinal = Math.max(costCampOrdinal, rumoursOrdinal);
             }
             if (costs.favour) {
-                costCampOrdinal = Math.max(costCampOrdinal, WorldCreatorConstants.CAMPS_BEFORE_GROUND);
+                costCampOrdinal = Math.max(costCampOrdinal, WorldConstants.CAMPS_BEFORE_GROUND);
                 var favourCampOrdinal = TribeConstants.getFirstCampOrdinalWithMinStat("favour", costs.favour);
                 costCampOrdinal = Math.max(costCampOrdinal, favourCampOrdinal);
             }
@@ -274,9 +274,9 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldCreatorConstants, Upg
             var result = 0;
             var blueprintType = this.getBlueprintType(upgrade);
             if (blueprintType == this.BLUEPRINT_TYPE_EARLY)
-                result = WorldCreatorConstants.CAMP_STEP_START;
+                result = WorldConstants.CAMP_STEP_START;
             if (blueprintType == this.BLUEPRINT_TYPE_LATE)
-                result = WorldCreatorConstants.CAMP_STEP_POI_2;
+                result = WorldConstants.CAMP_STEP_POI_2;
                 
             var requiredTech = this.getRequiredTech(upgrade);
             for (var i = 0; i < requiredTech.length; i++) {

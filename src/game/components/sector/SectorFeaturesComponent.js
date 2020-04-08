@@ -1,8 +1,8 @@
 // A component that describes features of a sector, both functional (ability to build stuff)
 // and purely aesthetic (description)
 define(
-    ['ash', 'game/constants/SectorConstants', 'game/constants/WorldCreatorConstants', 'game/vos/ResourcesVO'],
-    function (Ash, SectorConstants, WorldCreatorConstants, ResourcesVO) {
+    ['ash', 'game/constants/SectorConstants', 'game/vos/ResourcesVO'],
+    function (Ash, SectorConstants, ResourcesVO) {
     
     var SectorFeaturesComponent = Ash.Class.extend({
         
