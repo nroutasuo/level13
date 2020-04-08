@@ -80,11 +80,10 @@ define([
             var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
             var levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(level);
             var levelComponent = levelEntity.get(LevelComponent);
-            var levelVO = levelComponent.levelVO;
             // TODO add more detail depending on world structure (what kind of sector/level the camp is actually located on)
             // TODO define constants someplace neater
             var settings = Object.assign({}, this.campSettings[campOrdinal] || {});
-            settings.populationGrowthFactor = levelVO.populationGrowthFactor;
+            settings.populationFactor = levelComponent.populationFactor;
             GameGlobals.campVisHelper.initCampSettings(campOrdinal, settings);
         },
         

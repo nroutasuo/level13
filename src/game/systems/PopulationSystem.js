@@ -81,7 +81,7 @@ define([
         getPopulationChangePerSec: function (node) {
 			var camp = node.camp;
 			var reputation = node.reputation.value || 0;
-            var levelVO = GameGlobals.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent).levelVO;
+            var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent);
             var reqRepCurPop = CampConstants.getRequiredReputation(Math.floor(camp.population));
             var reqRepNextPop = CampConstants.getRequiredReputation(Math.floor(camp.population) + 1);
             
@@ -97,7 +97,7 @@ define([
             }
 
             if (changePerSec > 0) {
-                changePerSec *= levelVO.populationGrowthFactor;
+                changePerSec *= levelComponent.populationFactor;
             }
 
 			var improvements = node.entity.get(SectorImprovementsComponent);

@@ -733,13 +733,13 @@ define([
 
                     if (requirements.level) {
                         var level = sector.get(PositionComponent).level;
-                        var levelVO = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent).levelVO;
+                        var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
                         if (requirements.level.population) {
                             var levelPopReqDef = requirements.level.population;
                             var min = levelPopReqDef[0];
                             var max = levelPopReqDef[1];
                             if (max < 0) max = 9999999;
-                            var value = levelVO.populationGrowthFactor;
+                            var value = levelComponent.populationFactor;
                             if (min > value || max <= value) {
                                 if (min > amount) {
                                     reason = PlayerActionConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP;
@@ -1083,12 +1083,12 @@ define([
             var skipRounding = false;
 
             var sector = otherSector ? otherSector : (this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
-            var level = sector ? GameGlobals.levelHelper.getLevelEntityForSector(sector).get(LevelComponent).levelVO : null;
+            var levelComponent = sector ? GameGlobals.levelHelper.getLevelEntityForSector(sector).get(LevelComponent) : null;
 
             var ordinal1 = this.getActionOrdinal(action, sector);
             var ordinal2 = this.getActionSecondaryOrdinal(action, sector);
             
-            var isOutpost = level ? level.populationGrowthFactor < 1 : false;
+            var isOutpost = levelComponent ? levelComponent.populationFactor < 1 : false;
             var isCampBuildAction = action.indexOf("build_in_") >= 0;
 
 			var baseActionID = this.getBaseActionID(action);

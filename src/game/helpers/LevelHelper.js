@@ -101,12 +101,6 @@ define([
 			}
 			return null;
 		},
-        
-        getLevelVO: function (level) {
-            var entity = this.getLevelEntityForPosition(level);
-            if (!entity) return null;
-            return entity.get(LevelComponent).levelVO;
-        },
 
 		getSectorByPosition: function (level, sectorX, sectorY) {
 			var sectorPosition;
@@ -137,6 +131,11 @@ define([
 
 			return null;
 		},
+        
+        getSectorsByLevel: function (level) {
+            this.saveSectorsForLevel(level);
+			return this.sectorEntitiesByLevel[level];
+        },
         
         getGang: function (position, direction) {
             // TODO do some caching here
@@ -298,11 +297,10 @@ define([
                     return false;
                 // spiralling search: find sectors closest to current position first
                 var levelComponent = this.getLevelEntityForPosition(level).get(LevelComponent);
-                var levelVO = levelComponent.levelVO;
                 var checkPos = playerPosition.clone();
                 var spiralRadius = 0;
                 var spiralEdgeLength;
-                while ((checkPos.sectorX >= levelVO.minX && checkPos.sectorX <= levelVO.maxX) || (checkPos.sectorY >= levelVO.minY && checkPos.sectorY <= levelVO.maxY)) {
+                while ((checkPos.sectorX >= levelComponent.minX && checkPos.sectorX <= levelComponent.maxX) || (checkPos.sectorY >= levelComponent.minY && checkPos.sectorY <= levelComponent.maxY)) {
                     spiralEdgeLength = spiralRadius * 2 + 1;
                     checkPos = new PositionVO(playerPosition.level, playerPosition.sectorX - spiralRadius, playerPosition.sectorY - spiralRadius);
                     for (var spiralEdge = 0; spiralEdge < 4; spiralEdge++) {

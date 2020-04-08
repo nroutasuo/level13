@@ -312,7 +312,6 @@ define([
 
 		getTextureDescription: function (hasVision, sector, position, featuresComponent, statusComponent, localesComponent) {
             var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
-            var levelVO = GameGlobals.levelHelper.getLevelVO(position.level);
             
             // sector static description
             var features = GameGlobals.sectorHelper.getTextFeatures(sector);

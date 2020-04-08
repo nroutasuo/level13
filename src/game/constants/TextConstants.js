@@ -196,10 +196,10 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                 addOptions("na-items", [ "used medical masks" ]);
             }
             // level population
-            if (features.populationGrowthFactor == 0) {
+            if (features.populationFactor == 0) {
                 addOptions("a-building", [ "long abandoned" ]);
                 addOptions("a-building", [ "polluted" ]);
-            } else if (features.populationGrowthFactor < 1) {
+            } else if (features.populationFactor < 1) {
                 addOptions("a-street", [ "calm" ]);
                 addOptions("a-building", [ "empty" ]);
             } else {

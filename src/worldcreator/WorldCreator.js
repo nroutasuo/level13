@@ -12,9 +12,9 @@ define([
     'worldcreator/WorldCreatorRandom',
     'worldcreator/WorldCreatorDebug',
     'worldcreator/EnemyCreator',
-	'game/vos/WorldVO',
-	'game/vos/LevelVO',
-	'game/vos/SectorVO',
+	'worldcreator/WorldVO',
+	'worldcreator/LevelVO',
+	'worldcreator/SectorVO',
 	'game/vos/GangVO',
 	'game/vos/ResourcesVO',
 	'game/vos/LocaleVO',
@@ -87,8 +87,8 @@ define([
                 var notCampableReason = isCampableLevel ? null : WorldCreatorHelper.getNotCampableReason(seed, l);
 				var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
                 var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
-                var populationGrowthFactor = isCampableLevel ? WorldCreatorConstants.getPopulationGrowthFactor(campOrdinal) : 0;
-                var levelVO = new LevelVO(l, levelOrdinal, campOrdinal, isCampableLevel, isHardLevel, notCampableReason, populationGrowthFactor);
+                var populationFactor = isCampableLevel ? WorldCreatorConstants.getPopulationFactor(campOrdinal) : 0;
+                var levelVO = new LevelVO(l, levelOrdinal, campOrdinal, isCampableLevel, isHardLevel, notCampableReason, populationFactor);
 				this.world.addLevel(levelVO);
 
                 // passages up: previous passages down (positions)

@@ -281,12 +281,12 @@ define([
             addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_HOUSING, noHousing);
             
             // penalties: level population
-            var levelVO = GameGlobals.levelHelper.getLevelEntityForSector(campEntity).get(LevelComponent).levelVO;
-            if (levelVO.populationGrowthFactor < 1) {
-                var levelPopPenalty = resultWithoutPenalties * (1 - levelVO.populationGrowthFactor);
+            var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(campEntity).get(LevelComponent);
+            if (levelComponent.populationFactor < 1) {
+                var levelPopPenalty = resultWithoutPenalties * (1 - levelComponent.populationFactor);
                 addValue(-levelPopPenalty, "Level population");
             }
-            addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_LEVEL_POP, levelVO.populationGrowthFactor < 1);
+            addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_LEVEL_POP, levelComponent.populationFactor < 1);
             
             return { value: Math.max(0, result), sources: sources, penalties: penalties };
         },

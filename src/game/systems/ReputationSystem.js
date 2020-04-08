@@ -88,7 +88,7 @@ define([
         applyReputationAccumulation: function (campNode, time) {
             var reputationComponent = campNode.reputation;
             var sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
-            var levelVO = GameGlobals.levelHelper.getLevelEntityForSector(campNode.entity).get(LevelComponent).levelVO;
+            var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(campNode.entity).get(LevelComponent);
             reputationComponent.value = reputationComponent.value || 0;
             reputationComponent.targetValue = reputationComponent.targetValue || 0;
             
@@ -103,12 +103,12 @@ define([
             // level population factor
             var accLevelPop = 0;
             if (accTarget > 0) {
-                accLevelPop += accTarget * levelVO.populationGrowthFactor - accTarget;
-                accTarget *= levelVO.populationGrowthFactor;
+                accLevelPop += accTarget * levelComponent.populationFactor - accTarget;
+                accTarget *= levelComponent.populationFactor;
             }
             if (accRadio > 0) {
-                accLevelPop += accRadio * levelVO.populationGrowthFactor - accRadio;
-                accRadio *= levelVO.populationGrowthFactor;
+                accLevelPop += accRadio * levelComponent.populationFactor - accRadio;
+                accRadio *= levelComponent.populationFactor;
             }
             
             // limits

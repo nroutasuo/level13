@@ -946,7 +946,7 @@ define(['ash',
 			})
 
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "Built a camp.");
-			if (level.get(LevelComponent).levelVO.populationGrowthFactor < 1) {
+			if (level.get(LevelComponent).populationFactor < 1) {
 				this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP_LEVEL_POPULATION, "There are few signs of human life on this level.");
 			}
 			GlobalSignals.improvementBuiltSignal.dispatch();

@@ -9,6 +9,7 @@ define([
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorLocalesComponent',
+    'game/components/type/LevelComponent',
 ], function (
 	Ash,
     GameGlobals,
@@ -19,6 +20,7 @@ define([
 	SectorStatusComponent,
 	SectorFeaturesComponent,
     SectorLocalesComponent,
+    LevelComponent
 ) {
     var SectorHelper = Ash.Class.extend({
         
@@ -36,7 +38,8 @@ define([
             var position = sector.get(PositionComponent).getPosition();
             var featuresComponent = sector.get(SectorFeaturesComponent);
             var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(position.level);
-            var levelVO = GameGlobals.levelHelper.getLevelVO(position.level);
+            var levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(sector);
+            var levelComponent = levelEntity.get(LevelComponent);
             var hasCamp = sector.has(CampComponent);
             var hasGrove = false;
             
@@ -52,9 +55,9 @@ define([
             features.level = position.level;
             features.levelOrdinal = levelOrdinal;
             features.condition = featuresComponent.getCondition();
-            features.levelPopulationGrowthFactor = levelVO.populationGrowthFactor;
-            features.isSurfaceLevel = levelVO.level == GameGlobals.gameState.getSurfaceLevel();
-            features.isGroundLevel = levelVO.level == GameGlobals.gameState.getGroundLevel();
+            features.populationFactor = levelComponent.populationFactor;
+            features.isSurfaceLevel = position.level == GameGlobals.gameState.getSurfaceLevel();
+            features.isGroundLevel = position.level == GameGlobals.gameState.getGroundLevel();
             features.hasCamp = hasCamp;
             features.hasGrove = hasGrove;
             return features;

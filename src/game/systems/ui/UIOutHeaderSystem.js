@@ -26,6 +26,7 @@ define([
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/ReputationComponent',
+    'game/components/type/LevelComponent',
     'utils/UIState'
 ], function (Ash,
     GameGlobals, GlobalSignals, GameConstants, CampConstants, LevelConstants, UIConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
@@ -41,6 +42,7 @@ define([
 	SectorFeaturesComponent,
     SectorImprovementsComponent,
     ReputationComponent,
+    LevelComponent,
     UIState
 ) {
     var UIOutHeaderSystem = Ash.System.extend({
@@ -631,25 +633,26 @@ define([
             var result = { src: "", desc: "" };
             var position = sector.get(PositionComponent);
             var featuresComponent = sector.get(SectorFeaturesComponent);
-            var levelVO = GameGlobals.levelHelper.getLevelVO(position.level);
+            var levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(position.level);
+            var levelComponent = levelEntity.get(LevelComponent);
             var sunlit = featuresComponent.sunlit;
             var path = "img/";
             var base = "";
             var desc = "";
             if (inCamp) {
-                base = levelVO.populationGrowthFactor < 1 ? "ui-camp-outpost" : "ui-camp-default";
-                desc = levelVO.populationGrowthFactor < 1 ? "in camp | outpost" : "in camp | regular";
+                base = levelComponent.populationFactor < 1 ? "ui-camp-outpost" : "ui-camp-default";
+                desc = levelComponent.populationFactor < 1 ? "in camp | outpost" : "in camp | regular";
             } else {
                 var surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
                 var groundLevel = GameGlobals.gameState.getGroundLevel();
-                if (levelVO.level == surfaceLevel) {
+                if (position.level == surfaceLevel) {
                     base = "ui-level-sun";
                     desc = "outside | surface";
-                } else if (levelVO.level == groundLevel) {
+                } else if (position.level == groundLevel) {
                     base = "ui-level-ground";
                     desc = "outside | ground";
-                } else if (!levelVO.isCampable) {
-                    switch (levelVO.notCampableReason) {
+                } else if (!levelComponent.isCampable) {
+                    switch (levelComponent.notCampableReason) {
                         case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
                             base = "ui-level-radiation";
                             desc = "outside | radiation level";

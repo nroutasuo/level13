@@ -182,9 +182,9 @@ define([
 			if (levelPos === GameGlobals.gameState.getGroundLevel()) GameGlobals.gameState.unlockedFeatures.favour = true;
             
             var nextLevel = GameGlobals.gameState.getLevelForOrdinal(levelOrdinal + 1);
-            var levelVO = GameGlobals.levelHelper.getLevelVO(levelPos);
-            var nextLevelVO = GameGlobals.levelHelper.getLevelVO(nextLevel);
-            var isLastLevel = levelVO.notCampableReason != LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT && nextLevelVO.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT;
+            var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(levelPos).get(LevelComponent);
+            var nextLevelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(nextLevel).get(LevelComponent);
+            var isLastLevel = levelComponent.notCampableReason != LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT && nextLevelComponent.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT;
             if (isLastLevel) {
                 setTimeout(function () {
                     gtag('event', 'last_level_reached', { event_category: 'progression' })
@@ -207,18 +207,18 @@ define([
             
             var levelEntity = levelNode.entity;
             var levelComponent = levelEntity.get(LevelComponent);
-            var levelVO = levelComponent.levelVO;
+            var level = levelPos.level;
             
             var surfaceLevel = GameGlobals.gameState.getSurfaceLevel();
             var groundLevel = GameGlobals.gameState.getGroundLevel();
             
-            var msg = "Entered level " + levelVO.level + ". ";
-            if (levelVO.level == surfaceLevel) {
+            var msg = "Entered level " + level + ". ";
+            if (level == surfaceLevel) {
                 msg += "There is no ceiling here, the whole level is open to the elements. Sun glares down from an impossibly wide blue sky all above.";
-            } else if (levelVO.level == groundLevel) {
+            } else if (level == groundLevel) {
                 msg += "The floor here is different, uneven, organic. But also solid - there seems to be no way further down. There are more plants, mud, stone and signs of animal life.";
-            } else if (!levelVO.isCampable) {
-                switch (levelVO.notCampableReason) {
+            } else if (!levelComponent.isCampable) {
+                switch (levelComponent.notCampableReason) {
                     case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
                         msg += "You notice several graffiti warning about radiation.";
                         break;

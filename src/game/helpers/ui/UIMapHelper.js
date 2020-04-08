@@ -123,7 +123,6 @@ function (Ash, CanvasUtils,
             var sectorSize = this.getSectorSize(centered);
             var sunlit = $("body").hasClass("sunlit");
             var levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(mapPosition.level);
-            var levelVO = levelEntity.get(LevelComponent).levelVO;
 
             ctx.canvas.width = dimensions.canvasWidth;
             ctx.canvas.height = dimensions.canvasHeight;
@@ -179,7 +178,7 @@ function (Ash, CanvasUtils,
 
             // border on current
             var playerPosVO = this.playerPosNodes.head.position.getPosition();
-            if (playerPosVO.level == levelVO.level) {
+            if (playerPosVO.level == mapPosition.level) {
                 sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, playerPosVO.sectorX, playerPosVO.sectorY).x;
                 sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, playerPosVO.sectorX, playerPosVO.sectorY).y;
                 ctx.strokeStyle = ColorConstants.getColor(sunlit, "border_highlight");
@@ -466,22 +465,22 @@ function (Ash, CanvasUtils,
 
         getMapSectorDimensions: function (canvasId, mapSize, centered, mapPosition, visibleSectors, allSectors) {
             var level = mapPosition.level;
-            var levelVO = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent).levelVO;
+            var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
             var sectorSize = this.getSectorSize(centered);
 
             var dimensions = {};
-            dimensions.mapMinX = levelVO.minX;
-            dimensions.mapMaxX = levelVO.maxX;
-            dimensions.mapMinY = levelVO.minY;
-            dimensions.mapMaxY = levelVO.maxY;
+            dimensions.mapMinX = levelComponent.minX;
+            dimensions.mapMaxX = levelComponent.maxX;
+            dimensions.mapMinY = levelComponent.minY;
+            dimensions.mapMaxY = levelComponent.maxY;
 
-            dimensions.canvasMinX = levelVO.minX;
-            dimensions.canvasMaxX = levelVO.maxX;
-            dimensions.canvasMinY = levelVO.minY;
-            dimensions.canvasMaxY = levelVO.maxY;
+            dimensions.canvasMinX = levelComponent.minX;
+            dimensions.canvasMaxX = levelComponent.maxX;
+            dimensions.canvasMinY = levelComponent.minY;
+            dimensions.canvasMaxY = levelComponent.maxY;
 
             if (centered) {
-                var levelSize = Math.max(Math.abs(levelVO.minX - levelVO.maxX), Math.abs(levelVO.minY - levelVO.maxY));
+                var levelSize = Math.max(Math.abs(levelComponent.minX - levelComponent.maxX), Math.abs(levelComponent.minY - levelComponent.maxY));
                 mapSize = mapSize && mapSize > 0 ? mapSize : levelSize;
                 if (mapSize % 2 === 0) mapSize = mapSize + 1;
                 var mapDiameter = (mapSize - 1) / 2;

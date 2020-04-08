@@ -414,10 +414,18 @@ define(['ash',
         },
 
         goToLevel: function (level) {
-            var levelVO = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent).levelVO;
-            var i = Math.floor(Math.random() * levelVO.centralSectors.length);
-            var sector = levelVO.centralSectors[i];
-            this.setPlayerPosition(level, sector.position.sectorX, sector.position.sectorY);
+            for (var dx = 0; dx < 200; dx++) {
+                for (var dy = 0; dy < 200; dy++) {
+                    var sector = GameGlobals.levelHelper.getSectorByPosition(level, dx, dy);
+                    sector = sector || GameGlobals.levelHelper.getSectorByPosition(level, -dx, dy);
+                    sector = sector || GameGlobals.levelHelper.getSectorByPosition(level, dx, -dy);
+                    sector = sector || GameGlobals.levelHelper.getSectorByPosition(level, -dx, -dy);
+                    if (sector) {
+                        this.setPlayerPosition(level, sector.position.sectorX, sector.position.sectorY);
+                        return;
+                    }
+                }
+            }
         },
 
         addBuilding: function (name, amount) {
@@ -561,19 +569,20 @@ define(['ash',
             GameGlobals.playerActionFunctions.leaveCamp();
             var startSector = this.playerLocationNodes.head.entity;
             var originalPos = this.playerPositionNodes.head.position.getPosition();
-            var levelVO = GameGlobals.levelHelper.getLevelEntityForPosition(originalPos.level).get(LevelComponent).levelVO;
+            var level = originalPos.level;
+            var sectors = GameGlobals.levelHelper.getSectorsByLevel(level);
             var sectorVO;
             var i = 0;
             var binding = null;
             var updateFunction = function () {
-                if (i < levelVO.sectors.length) {
-                    sectorVO = levelVO.sectors[i];
-                    var goalSector = GameGlobals.levelHelper.getSectorByPosition(levelVO.level, sectorVO.position.sectorX, sectorVO.position.sectorY);
+                if (i < sectors.length) {
+                    sectorVO = sectors[i];
+                    var goalSector = GameGlobals.levelHelper.getSectorByPosition(level, sectorVO.position.sectorX, sectorVO.position.sectorY);
                     if (GameGlobals.levelHelper.isSectorReachable(startSector, goalSector)) {
-                        this.setPlayerPosition(levelVO.level, sectorVO.position.sectorX, sectorVO.position.sectorY);
+                        this.setPlayerPosition(level, sectorVO.position.sectorX, sectorVO.position.sectorY);
                         GameGlobals.playerActionFunctions.scout();
                     }
-                } else if (i == levelVO.sectors.length) {
+                } else if (i == sectors.length) {
                     this.setPlayerPosition(originalPos.level, originalPos.sectorX, originalPos.sectorY);
                     GameGlobals.uiFunctions.popupManager.closeAllPopups();
                     binding.detach();

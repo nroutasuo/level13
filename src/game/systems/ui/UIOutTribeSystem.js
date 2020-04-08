@@ -276,8 +276,8 @@ define([
             $("#camp-overview tr#" + rowID + " .camp-overview-raid .value").text(UIConstants.roundValue(raidDanger * 100) + "%");
             $("#camp-overview tr#" + rowID + " .camp-overview-raid .value").toggleClass("warning", raidWarning);
 
-            var levelVO = GameGlobals.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent).levelVO;
-			$("#camp-overview tr#" + rowID + " .camp-overview-levelpop").text(levelVO.populationGrowthFactor * 100 + "%");
+            var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(node.entity).get(LevelComponent);
+			$("#camp-overview tr#" + rowID + " .camp-overview-levelpop").text(levelComponent.populationFactor * 100 + "%");
 
             // TODO updateResourceIndicatorCallout is a performance bottleneck
 			var resources = node.entity.get(ResourcesComponent);

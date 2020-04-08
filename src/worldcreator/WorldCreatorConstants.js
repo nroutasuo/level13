@@ -103,7 +103,7 @@ function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
             return Math.floor(maxLength);
         },
         
-        getPopulationGrowthFactor: function (campOrdinal) {
+        getPopulationFactor: function (campOrdinal) {
             if (campOrdinal <= 0) return 0;
             switch (campOrdinal) {
                 // outposts

@@ -143,7 +143,7 @@ define([
 
 		createLevel: function (saveKey, pos, levelVO) {
 			var level = new Ash.Entity()
-				.add(new LevelComponent(pos, levelVO))
+				.add(new LevelComponent(pos, levelVO.isCampable, levelVO.notCampableReason, levelVO.populationFactor, levelVO.minX, levelVO.maxX, levelVO.minY, levelVO.maxY))
 				.add(new PositionComponent(pos))
 				.add(new LevelPassagesComponent())
 				.add(new SaveComponent(saveKey, [CampComponent, VisitedComponent]));

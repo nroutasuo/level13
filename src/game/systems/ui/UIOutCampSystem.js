@@ -506,8 +506,8 @@
 
             var showLevelStats = GameGlobals.gameState.numCamps > 1;
             if (showLevelStats) {
-                var levelVO = this.playerLevelNodes.head.level.levelVO;
-				$("#in-demographics-level-population .value").text(levelVO.populationGrowthFactor * 100 + "%");
+                var levelComponent = this.playerLevelNodes.head.level;
+				$("#in-demographics-level-population .value").text(levelComponent.populationFactor * 100 + "%");
             }
 
             GameGlobals.uiFunctions.toggle("#id-demographics-level", showLevelStats);
