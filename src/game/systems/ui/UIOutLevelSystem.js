@@ -118,10 +118,7 @@ define([
 
 			var posComponent = this.playerPosNodes.head.position;
 
-            if (!this.playerLocationNodes.head) {
-                log.w("No player location");
-                return;
-            }
+            if (!this.playerLocationNodes.head) return;
 
 			if (!posComponent.inCamp) {
 				this.updateLevelPage();

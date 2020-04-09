@@ -79,16 +79,23 @@ define([
 
 		update: function (time) {
             var playerPos = this.playerPositionNodes.head.position;
-            if (!this.lastUpdatePosition || !this.lastUpdatePosition.equals(playerPos)) {
+            if (!this.lastValidPosition || !this.lastValidPosition.equals(playerPos)) {
                 this.updateEntities(!this.lastUpdatePosition);
             }
 		},
 
 		updateEntities: function (updateAll) {
             var playerPos = this.playerPositionNodes.head.position;
-            this.updateLevelEntities(updateAll);
-            this.updateSectors(updateAll);
-            this.updateCamps();
+            var playerSector = GameGlobals.levelHelper.getSectorByPosition(playerPos.level, playerPos.sectorX, playerPos.sectorY);
+            
+            if (playerSector) {
+                this.updateLevelEntities(updateAll);
+                this.updateSectors(updateAll);
+                this.updateCamps();
+                this.lastValidPosition = playerPos.clone();
+            } else {
+                this.handleInvalidPosition();
+            }
             this.lastUpdatePosition = playerPos.clone();
         },
 
@@ -126,10 +133,6 @@ define([
                     this.updateSector(previousPlayerSector);
                 }
                 this.updateSector(playerSector);
-            }
-
-            if (!playerSector) {
-                this.handleInvalidPosition();
             }
         },
 
@@ -258,14 +261,19 @@ define([
             var playerPos = this.playerPositionNodes.head.position;
             log.w("Player location could not be found  (" + playerPos.level + "." + playerPos.sectorId() + ").");
             if (this.lastValidPosition) {
-                log.w("Moving to a known valid position");
-                playerPos.level = lastValidPos.level;
-                playerPos.sectorX = lastValidPos.sectorX;
-                playerPos.sectorY =lastValidPos.sectorY;
-                playerPos.inCamp = lastValidPos.inCamp;
+                log.w("Moving to a known valid position " + this.lastValidPosition);
+                playerPos.level = this.lastValidPosition.level;
+                playerPos.sectorX = this.lastValidPosition.sectorX;
+                playerPos.sectorY = this.lastValidPosition.sectorY;
+                playerPos.inCamp = this.lastValidPosition.inCamp;
             } else {
-                log.w("Moving to start position");
-                // TODO fix
+                var sectors = GameGlobals.levelHelper.getSectorsByLevel(playerPos.level);
+                var newPos = sectors[0].get(PositionComponent);
+                log.w("Moving to random position " + newPos);
+                playerPos.level = newPos.level;
+                playerPos.sectorX = newPos.sectorX;
+                playerPos.sectorY = newPos.sectorY;
+                playerPos.inCamp = false;
             }
             this.lastUpdatePosition = null;
         },
