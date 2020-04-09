@@ -64,7 +64,7 @@ function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
             switch (pathType) {
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_POI_1:
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_POI_2:
-                    // there, scout/fight and back (these paths have a lot of points so less strict -> faster world creation)
+                    // there, scout/fight, and back (these paths have a lot of points so less strict -> faster world creation)
                     var maxScoutCost = PlayerStatConstants.MAX_SCOUT_LOCALE_STAMINA_COST;
                     var fightCost = 10 * 3;
                     var actionCost = Math.max(fightCost, maxScoutCost);
@@ -75,7 +75,7 @@ function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
                 case this.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE:
                 case this.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP:
                 case this.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE:
-                    // one there, but the whole route can be CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE  + CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE + CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP
+                    // once there, but the whole route can be CAMP_TO_PASSAGE  + PASSAGE_TO_PASSAGE + PASSAGE_TO_CAMP
                     maxLength = maxLength / 3 - movementCostLevel / movementCost;
                     break;
                 default:

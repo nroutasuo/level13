@@ -21,9 +21,13 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
                         pieces[x + r] = feature.type.substring(0,1);
                     }
                 }
+                var posUp = worldVO.passagePositions[l].up;
+                var posDown = worldVO.passagePositions[l].down;
+                if (posUp) pieces[posUp.sectorX + r] = "U";
+                if (posDown) pieces[posDown.sectorX + r] = "D";
                 for (var i = 0; i < worldVO.campPositions[l].length; i++) {
                     var campPos = worldVO.campPositions[l][i];
-                    pieces[campPos.sectorX + r] = campOrdinal;
+                    pieces[campPos.sectorX + r] = (campOrdinal + "").substring(0,1);
                 }
                 s += "lvl " + l + "\t" + pieces.join("") +  "\n";
             }

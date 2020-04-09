@@ -7,6 +7,8 @@ define(['ash'], function (Ash) {
         bottomLevel: 0,
         
         features: [],
+        campPositions: [],
+        passagePositions: [],
 		levels: [],
 	
         constructor: function (seed, topLevel, bottomLevel) {

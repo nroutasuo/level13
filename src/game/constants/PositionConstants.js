@@ -124,9 +124,11 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
             var result = new PositionVO(0, 0, 0);
             if (positions && positions.length > 0) {
                 for (var i = 0; i < positions.length; i++) {
-                    result.level += positions[i].level;
-                    result.sectorX += positions[i].sectorX;
-                    result.sectorY += positions[i].sectorY;
+                    if (positions[i]) {
+                        result.level += positions[i].level;
+                        result.sectorX += positions[i].sectorX;
+                        result.sectorY += positions[i].sectorY;
+                    }
                 }
                 result.level /= positions.length;
                 result.sectorX /= positions.length;
