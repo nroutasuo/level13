@@ -14,6 +14,12 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
                     var piece = "-";
                     pieces[i] = piece;
                 }
+                for (var i = 0; i < worldVO.districts[l].length; i++) {
+                    var district = worldVO.districts[l][i];
+                    for (var x = district.getMinX(); x <= district.getMaxX(); x++) {
+                        pieces[x + r] = district.type.substring(0,1);
+                    }
+                }
                 for (var i = 0; i < worldVO.features.length; i++) {
                     var feature = worldVO.features[i];
                     if (!feature.spansLevel(l)) continue;

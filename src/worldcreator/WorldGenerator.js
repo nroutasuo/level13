@@ -5,9 +5,11 @@ define([
 	'worldcreator/WorldCreatorHelper',
     'worldcreator/WorldCreatorRandom',
     'worldcreator/WorldFeatureVO',
+    'worldcreator/DistrictVO',
 	'game/vos/PositionVO',
+    'game/constants/SectorConstants',
     'game/constants/PositionConstants',
-], function (Ash, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldFeatureVO, PositionVO, PositionConstants) {
+], function (Ash, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldFeatureVO, DistrictVO, PositionVO, SectorConstants, PositionConstants) {
     
     var WorldGenerator = {
         
@@ -15,6 +17,7 @@ define([
             worldVO.features = worldVO.features.concat(this.generateHoles(seed));
             worldVO.campPositions = this.generateCampPositions(seed, worldVO.features);
             worldVO.passagePositions = this.generatePassagePositions(seed, worldVO.features, worldVO.campPositions);
+            worldVO.districts = this.generateDistricts(seed, worldVO.features);
         },
         
         generateHoles: function (seed) {
@@ -97,6 +100,50 @@ define([
                 result[l] = { up: up, down: down };
             }
             return result;
+        },
+        
+        generateDistricts: function (seed, features) {
+            var result = [];
+			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
+			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
+            
+            // districts on specific levels
+			for (var l = topLevel; l >= bottomLevel; l--) {
+                result[l] = [];
+                if (l == 14) {
+                    this.generateDistrict(seed, result, SectorConstants.SECTOR_TYPE_INDUSTRIAL, l, 0, 0, 8, 8);
+                }
+            }
+            
+            // districts around features
+            for (var i = 0; i < features.length; i++) {
+                var feature = features[i];
+                switch (feature.type) {
+                    case WorldCreatorConstants.FEATURE_HOLE_SEA:
+                        this.generateDistrictAround(seed, result, feature, SectorConstants.SECTOR_TYPE_RESIDENTIAL, 3, bottomLevel, 20);
+                        break;
+                    case WorldCreatorConstants.FEATURE_HOLE_WELL:
+                        this.generateDistrictAround(seed, result, feature, SectorConstants.SECTOR_TYPE_RESIDENTIAL, 2, bottomLevel, topLevel);
+                        break;
+                    case WorldCreatorConstants.FEATURE_HOLE_MOUNTAIN:
+                        this.generateDistrictAround(seed, result, feature, SectorConstants.SECTOR_TYPE_INDUSTRIAL, 2, bottomLevel, topLevel);
+                        break;
+                }
+            }
+            
+            return result;
+        },
+        
+        generateDistrictAround: function (seed, districts, feature, type, padding, minLevel, maxLevel) {
+            for (var l = minLevel; l <= maxLevel; l++) {
+                if (feature.spansLevel(l)) {
+                    this.generateDistrict(seed, districts, type, l, feature.posX, feature.posY, feature.sizeX + padding * 2, feature.sizeY + padding * 2);
+                }
+            }
+        },
+        
+        generateDistrict: function (seed, districts, type, level, x, y, sizeX, sizeY) {
+            districts[level].push(new DistrictVO(level, x, y, sizeX, sizeY, type));
         },
         
         getPassagePosition: function (seed, level, features, campPos1, campPos2) {
