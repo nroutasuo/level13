@@ -9,14 +9,6 @@ function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
         CRITICAL_PATH_TYPE_CAMP_TO_POI_1: "camp_to_poi_1",
         CRITICAL_PATH_TYPE_CAMP_TO_POI_2: "camp_to_poi_2",
         
-        BUILDING_STYLE_RECENT: 0,
-        BUILDING_STYLE_PROSPERITY_RICH: 1,
-        BUILDING_STYLE_PROSPERITY_QUICK: 2,
-        BUILDING_STYLE_URBAN_EUROPEAN: 3,
-        BUILDING_STYLE_URBAN_AFRICAN: 4,
-        BUILDING_STYLE_URBAN_ASIAN: 5,
-        BUILDING_STYLE_HISTORICAL: 6,
-        
         DIAGONAL_PATH_PROBABILITY: 0.1,
         
         SURFACE_BLAST_RADIUS: 10,
@@ -26,6 +18,7 @@ function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
         
         MIN_CENTRAL_AREA_SIZE: 10,
         MAX_CENTRAL_AREA_SIZE: 25,
+        MAIN_AREA_SIZE: 50,
         SECTOR_PATH_LENGTH_MIN: 6,
         SECTOR_PATH_LENGTH_MAX: 15,
         SECTOR_RECT_EDGE_LENGTH_MAX: 20,

@@ -2,6 +2,29 @@
 define(['ash',], function (Ash) {
 
     var WorldCreatorDebug = {
+        
+        printWorldTemplate: function (worldVO) {
+            log.i(worldVO);
+        },
+        
+        printLevelTemplates: function (worldVO) {
+            for (var i = 0; i < worldVO.levels; i++) {
+                log.i(worldVO.levels[i]);
+            }
+        },
+        
+        printLevelStructure: function (worldVO) {
+            for (var i = 0; i < worldVO.levels; i++) {
+                log.i(worldVO, levels[i]);
+            }
+        },
+        
+        printSectorTemplates: function (worldVO) {
+			for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
+                var levelVO = worldVO.getLevel(l);
+                WorldCreatorDebug.printLevel(worldVO, levelVO);
+            }
+        },
 		
 		printWorld: function (worldVO, keys) {
 			log.i("Print world, seed: " + worldVO.seed + ", attributes: " + keys)

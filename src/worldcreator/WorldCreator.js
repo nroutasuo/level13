@@ -1,4 +1,5 @@
-// Stores world definitions and returns world-related constants given a seed. The seed should be a positive int.
+// Generates a world given a random seed. The seed should be a positive int.
+// A world (WorldVO) consists of LevelVOs which in turn consist of SectorVOs.
 define([
 	'ash',
     'utils/MathUtils',
@@ -15,6 +16,10 @@ define([
 	'worldcreator/WorldVO',
 	'worldcreator/LevelVO',
 	'worldcreator/SectorVO',
+	'worldcreator/WorldGenerator',
+	'worldcreator/LevelGenerator',
+	'worldcreator/StructureGenerator',
+	'worldcreator/SectorGenerator',
 	'game/vos/GangVO',
 	'game/vos/ResourcesVO',
 	'game/vos/LocaleVO',
@@ -30,7 +35,8 @@ define([
 ], function (
     Ash, MathUtils, GameConstants, ItemConstants, LevelConstants, TradeConstants, SectorConstants, WorldConstants,
     WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, EnemyCreator,
-    WorldVO, LevelVO, SectorVO, GangVO, ResourcesVO, LocaleVO, PositionVO, StashVO, PathConstraintVO,
+    WorldVO, LevelVO, SectorVO, WorldGenerator, LevelGenerator, StructureGenerator, SectorGenerator,
+    GangVO, ResourcesVO, LocaleVO, PositionVO, StashVO, PathConstraintVO,
     WorldCreatorConstants, PositionConstants, MovementConstants, EnemyConstants, UpgradeConstants, LocaleConstants
 ) {
     var context = "WorldCreator";
@@ -40,13 +46,32 @@ define([
 		world: null,
 
 		prepareWorld: function (seed, itemsHelper) {
+            /*
             this.enemyCreator = new EnemyCreator();
             this.enemyCreator.createEnemies();
+            */
 
 			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
             this.world = new WorldVO(seed, topLevel, bottomLevel);
+            
+            log.i("Step 1/4: World template", this.context);
+            WorldGenerator.prepareWorld(seed, this.world);
+            WorldCreatorDebug.printWorldTemplate(this.world);
+            
+            log.i("Step 2/4: Level templates", this.context);
+            LevelGenerator.prepareLevels(seed, this.world);
+            WorldCreatorDebug.printLevelTemplates(this.world);
+            
+            log.i("Step 3/4: Level structure", this.context);
+            StructureGenerator.prepareStructure(seed, this.world);
+            WorldCreatorDebug.printLevelStructure(this.world);
+            
+            log.i("Step 4/4: Sector templates", this.context);
+            SectorGenerator.prepareSectors(seed, this.world);
+            WorldCreatorDebug.printSectorTemplates(this.world);
 
+            /*
 			// base: paths, zones, passages, campable sectors and levels
 			this.prepareWorldStructure(seed, topLevel, bottomLevel);
 			// building density, state of repair
@@ -61,19 +86,18 @@ define([
 			this.prepareWorldResources(seed, topLevel, bottomLevel, itemsHelper);
 			// enemies (and gangs)
 			this.prepareWorldEnemies(seed, topLevel, bottomLevel);
-            
-			for (var l = topLevel; l >= bottomLevel; l--) {
-                var levelVO = this.world.getLevel(l);
-                // WorldCreatorDebug.printLevel(this.world, levelVO);
-            }
+            */
             
             return this.world;
 		},
 
         discardWorld: function () {
+            log.i("Discard world", this.context)
             this.world.levels = [];
             this.world = null;
         },
+        
+        /*
 
 		// campable sectors and levels, passages, zones
 		prepareWorldStructure: function (seed, topLevel, bottomLevel) {
@@ -1721,6 +1745,7 @@ define([
 		getSectorLocaleEnemyCount: function (level, sectorX, sectorY) {
 			return this.world.getLevel(level).getSector(sectorX, sectorY).numLocaleEnemies;
 		},
+        */
 
     };
 
