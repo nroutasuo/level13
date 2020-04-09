@@ -365,7 +365,7 @@ define(['ash',
                         var button = $(this).children("button")[0];
     					var action = $(button).attr("action");
                         if (!action) {
-                            log.w("Action button with no action " + uiFunctions.count);
+                            log.w("Action button with no action ");
                             log.i($(button))
                             return "";
                         }

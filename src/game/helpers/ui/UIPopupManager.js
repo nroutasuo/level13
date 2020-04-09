@@ -49,8 +49,9 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             var $defaultButton = null;
             $("#common-popup .buttonbox").empty();
             $("#common-popup .buttonbox").append("<button id='info-ok' class='action'>" + okButtonLabel + "</button>");
-            if (hasResult) $("#info-ok").attr("action", "accept_inventory");
+            $("#info-ok").attr("action", hasResult ? "accept_inventory" : null);
             $("#info-ok").toggleClass("inventory-selection-ok", hasResult);
+            $("#info-ok").toggleClass("action", hasResult);
             $("#info-ok").click(ExceptionHandler.wrapClick(function (e) {
                 popUpManager.closePopup("common-popup");
                 if (okCallback) okCallback(false);
