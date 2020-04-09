@@ -5,14 +5,15 @@ define(['ash'], function (Ash) {
 		seed: -1,
         topLevel: 0,
         bottomLevel: 0,
-        holes: [],
+        
+        features: [],
 		levels: [],
 	
         constructor: function (seed, topLevel, bottomLevel) {
 			this.seed = seed;
 			this.topLevel = topLevel;
 			this.bottomLevel = bottomLevel;
-            this.holes = [];
+            this.features = [];
 			this.levels = [];
         },
 		

@@ -1,10 +1,33 @@
 // debug helpers for the WorldCreator
-define(['ash',], function (Ash) {
+define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHelper) {
 
     var WorldCreatorDebug = {
         
         printWorldTemplate: function (worldVO) {
-            log.i(worldVO);
+            var s = "";
+			for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
+                var campOrdinal = WorldCreatorHelper.getCampOrdinal(worldVO.seed, l);
+                var r = 40;
+                var pieces = [];
+                for (var i = 0; i <= r * 2; i++) {
+                    var x = i - r;
+                    var piece = "-";
+                    pieces[i] = piece;
+                }
+                for (var i = 0; i < worldVO.features.length; i++) {
+                    var feature = worldVO.features[i];
+                    if (!feature.spansLevel(l)) continue;
+                    for (var x = feature.getMinX(); x <= feature.getMaxX(); x++) {
+                        pieces[x + r] = feature.type.substring(0,1);
+                    }
+                }
+                for (var i = 0; i < worldVO.campPositions[l].length; i++) {
+                    var campPos = worldVO.campPositions[l][i];
+                    pieces[campPos.sectorX + r] = campOrdinal;
+                }
+                s += "lvl " + l + "\t" + pieces.join("") +  "\n";
+            }
+            log.i(s);
         },
         
         printLevelTemplates: function (worldVO) {

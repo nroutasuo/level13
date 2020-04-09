@@ -26,6 +26,11 @@ function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
         MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 5,
         MIN_LEVEL_ORDINAL_HAZARD_POISON: 3,
         
+        FEATURE_HOLE_WELL: "well",
+        FEATURE_HOLE_COLLAPSE: "collapse",
+        FEATURE_HOLE_SEA: "sea",
+        FEATURE_HOLE_MOUNTAIN: "mountain",
+        
         getNumSectors: function (campOrdinal, isSmall) {
             if (isSmall) return 80;
             if (campOrdinal < 2)
