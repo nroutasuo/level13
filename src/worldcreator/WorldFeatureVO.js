@@ -20,6 +20,10 @@ define(['ash'], function (Ash) {
             this.type = type;
         },
         
+        containsPosition: function (position) {
+            return this.spansLevel(position.level) && position.sectorX >= this.getMinX() && position.sectorX <= this.getMaxX() && position.sectorY >= this.getMinY() && position.sectorY <= this.getMaxY();
+        },
+        
         spansLevel: function (l) {
             return l >= this.levelMin && l <= this.levelMax;
         },

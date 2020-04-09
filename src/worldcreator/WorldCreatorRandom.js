@@ -152,6 +152,18 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 			}
 			return neighbour;
 		},
+        
+		// Pseudo-random sector position on the given level, with a check for validity and look for nearby positions of position is not valid
+        randomSectorPositionWithCheck: function (seed, level, areaSize, centerPos, minDist, check) {
+            var tries = 0;
+            var start = this.randomSectorPosition(seed, level, areaSize, centerPos, minDist);
+            var result = start;
+            while (!check(result)) {
+                result = this.randomSectorPosition(seed + tries, level, areaSize, centerPos, minDist);
+                tries++;
+            }
+            return result;
+        },
 		
 		// Pseudo-random sector position on the given level, within the given area (distance from 0,0 or centerPos)
 		randomSectorPosition: function (seed, level, areaSize, centerPos, minDist) {
