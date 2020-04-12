@@ -41,8 +41,9 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
         },
         
         printLevelTemplates: function (worldVO) {
-            for (var i = 0; i < worldVO.levels; i++) {
-                log.i(worldVO.levels[i]);
+            for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
+                var levelVO = worldVO.levels[l];
+                log.i("Level " + levelVO.level + ", " + levelVO.zones.length + " zones");
             }
         },
         

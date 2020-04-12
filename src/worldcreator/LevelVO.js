@@ -11,6 +11,9 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
         notCampableReason: null,
         populationFactor: 0, // 1 = normal, 0.25 = outpost, 0 = not campable
         
+        zones: [],
+        
+        /*
         bagSize: 0,
 		centralAreaSize: 0,
         numLocales: 0,
@@ -32,6 +35,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 		maxX: 0,
 		minY: 0,
 		maxY: 0,
+        */
 	
         constructor: function (level, levelOrdinal, campOrdinal, isCampable, isHard, notCampableReason, populationFactor) {
 			this.level = level;
@@ -41,8 +45,10 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
             this.isHard = isHard;
             this.notCampableReason = notCampableReason;
             this.populationFactor = populationFactor;
+            
+            this.zones = [];
+            /*
             this.numLocales = 0;
-			
 			this.sectors = [];
 			this.centralSectors = [];
             this.campSectors = [];
@@ -57,6 +63,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			this.maxX = 0;
 			this.minY = 0;
 			this.maxY = 0;
+            */
         },
 		
 		addSector: function (sectorVO) {
