@@ -234,6 +234,19 @@ define([
             return result;
         },
         
+        getClosestPosition: function (positions, pos) {
+            var result = null;
+            var resultDist = 0;
+            for (var i = 0; i < positions.length; i++) {
+                var dist = PositionConstants.getDistanceTo(positions[i], pos);
+                if (!result || dist < resultDist) {
+                    result = positions[i];
+                    resultDist = dist;
+                }
+            }
+            return result;
+        },
+        
         getDistanceToCamp: function (worldVO, levelVO, sector) {
             if (sector.distanceToCamp >= 0) return sector.distanceToCamp;
             var result = 9999;

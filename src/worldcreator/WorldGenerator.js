@@ -1,4 +1,4 @@
-// Handles the first step of world generation, the abstract world template itself
+// Handles the first step of world generation, the abstract world template itself;
 define([
 	'ash',
 	'worldcreator/WorldCreatorConstants',
@@ -95,7 +95,8 @@ define([
 			for (var l = topLevel; l >= bottomLevel; l--) {
                 var campThisUp = this.getNextCampPosUp(seed, campPositions, l, true);
                 var campPosDown =  this.getNextCampPosDown(seed, campPositions, l, false);
-                var up = l == topLevel ? null : result[l+1].down;
+                var previousDown = l == topLevel ? null : result[l+1].down;
+                var up = previousDown ? new PositionVO(l, previousDown.sectorX, previousDown.sectorY) : null;
                 var down = l == bottomLevel ? null : this.getPassagePosition(seed, l, features, campThisUp, campPosDown);
                 result[l] = { up: up, down: down };
             }

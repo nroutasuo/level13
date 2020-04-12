@@ -2,42 +2,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 
     var LevelVO = Ash.Class.extend({
 	
-		level: -1,
-		levelOrdinal: -1,
-        campOrdinal: -1,
-        
-		isCampable: false,
-        isHard: false,
-        notCampableReason: null,
-        populationFactor: 0, // 1 = normal, 0.25 = outpost, 0 = not campable
-        
-        zones: [],
-        
-        /*
-        bagSize: 0,
-		centralAreaSize: 0,
-        numLocales: 0,
-		
-		sectors: [],
-		centralSectors: [],
-        centralRectSectors: [],
-        campSectors: [],
-        passageSectors: [],
-        passageUpSectors: null,
-        passageDownSector: null,
-        localeSectors: [],
-        possibleSpringSectors: [],
-		sectorsByPos: {},
-        
-        gangs: [],
-        
-		minX: 0,
-		maxX: 0,
-		minY: 0,
-		maxY: 0,
-        */
-	
-        constructor: function (level, levelOrdinal, campOrdinal, isCampable, isHard, notCampableReason, populationFactor) {
+        constructor: function (level, levelOrdinal, campOrdinal, isCampable, isHard, notCampableReason, populationFactor, numSectors) {
 			this.level = level;
 			this.levelOrdinal = levelOrdinal;
             this.campOrdinal  = campOrdinal;
@@ -45,11 +10,21 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
             this.isHard = isHard;
             this.notCampableReason = notCampableReason;
             this.populationFactor = populationFactor;
+            this.numSectors = numSectors;
             
+            this.campPositions = [];
+            this.passageUpPosition = null;
+            this.passageDownPosition = null;
             this.zones = [];
+			this.sectors = [];
+			this.sectorsByPos = [];
+			this.minX = 0;
+			this.maxX = 0;
+			this.minY = 0;
+			this.maxY = 0;
+            
             /*
             this.numLocales = 0;
-			this.sectors = [];
 			this.centralSectors = [];
             this.campSectors = [];
             this.passageSectors = [];
@@ -57,12 +32,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
             this.passageDownSectors = null;
             this.localeSectors = [];
             this.possibleSpringSectors = [];
-			this.sectorsByPos = [];
             this.gangs = [];
-			this.minX = 0;
-			this.maxX = 0;
-			this.minY = 0;
-			this.maxY = 0;
             */
         },
 		
@@ -84,10 +54,6 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			
 			this.sectors.push(sectorVO);
 			
-			if (this.isCentral(sectorVO.position.sectorX, sectorVO.position.sectorY)) this.centralSectors.push(sectorVO);
-            if (sectorVO.requiredResources && sectorVO.requiredResources.getResource("water") > 0) {
-            }
-			
 			if (!this.sectorsByPos[sectorVO.position.sectorX]) this.sectorsByPos[sectorVO.position.sectorX] = {};
 			this.sectorsByPos[sectorVO.position.sectorX][sectorVO.position.sectorY] = sectorVO;
             
@@ -98,24 +64,6 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
             
             return true;
 		},
-        
-        addGang: function (gangVO) {
-            this.gangs.push(gangVO);
-        },
-        
-        addCampSector: function (sectorVO) {
-            this.campSectors.push(sectorVO);
-        },
-        
-        addPassageUpSector: function (sectorVO) {
-            this.passageSectors.push(sectorVO);
-            this.passageUpSector = sectorVO;
-        },
-        
-        addPassageDownSector: function (sectorVO) {
-            this.passageSectors.push(sectorVO);
-            this.passageDownSector = sectorVO;
-        },
 		
 		hasSector: function (sectorX, sectorY) {
 			var colList = this.sectorsByPos[sectorX];
@@ -124,6 +72,10 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 				if (sector) return true;
 			}
 			return false;
+		},
+		
+		getSector: function (sectorX, sectorY) {
+			return this.hasSector(sectorX, sectorY) ? this.sectorsByPos[sectorX][sectorY] : null;
 		},
 		
 		getNeighbours: function (sectorX, sectorY, neighbourWrapFunc) {
@@ -141,6 +93,42 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			}
 			return neighbours;
 		},
+        
+        isCampPosition: function (pos) {
+            for (var i = 0; i < this.campPositions.length; i++) {
+                if (this.campPositions[i].equals(pos)) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        
+        isPassageUpPosition: function (pos) {
+            return this.passageUpPosition && this.passageUpPosition.equals(pos);
+        },
+        
+        isPassageDownPosition: function (pos) {
+            return this.passageDownPosition && this.passageDownPosition.equals(pos);
+        },
+        
+        /*
+        addGang: function (gangVO) {
+            this.gangs.push(gangVO);
+        },
+        
+        addCampSector: function (sectorVO) {
+            this.campSectors.push(sectorVO);
+        },
+        
+        addPassageUpSector: function (sectorVO) {
+            this.passageSectors.push(sectorVO);
+            this.passageUpSector = sectorVO;
+        },
+        
+        addPassageDownSector: function (sectorVO) {
+            this.passageSectors.push(sectorVO);
+            this.passageDownSector = sectorVO;
+        },
         
         getNextNeighbours: function (sectorVO, direction) {
             var result = [];
@@ -182,21 +170,6 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
             }
             return result;
         },
-		
-		getSector: function (sectorX, sectorY) {
-			return this.hasSector(sectorX, sectorY) ? this.sectorsByPos[sectorX][sectorY] : null;
-		},
-        
-        getZonePoint: function (sectorX, sectorY) {
-            if (!this.zonePoints) return null;
-            for (var i = 0; i < this.zonePoints.length; i++) {
-                var point = this.zonePoints[i];
-                if (point.position.sectorX == sectorX && point.position.sectorY == sectorY) {
-                    return point.zone;
-                }
-            }
-            return null;
-        },
         
         containsPosition: function (position) {
             if (position.y < this.minY) return false;
@@ -223,6 +196,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 		isCentral: function (sectorX, sectorY) {
 			return PositionConstants.isPositionInArea(new PositionVO(this.level, sectorX, sectorY), this.centralAreaSize);
 		},
+        */
 		
     });
 

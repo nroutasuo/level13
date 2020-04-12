@@ -43,13 +43,14 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
         printLevelTemplates: function (worldVO) {
             for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var levelVO = worldVO.levels[l];
-                log.i("Level " + levelVO.level + ", " + levelVO.zones.length + " zones");
+                log.i("Level " + levelVO.level + ", sectors: " + levelVO.numSectors + ", zones: " + levelVO.zones.length);
             }
         },
         
         printLevelStructure: function (worldVO) {
-            for (var i = 0; i < worldVO.levels; i++) {
-                log.i(worldVO, levels[i]);
+            for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
+                var levelVO = worldVO.levels[l];
+                this.printLevel(worldVO, levelVO);
             }
         },
         
@@ -117,27 +118,22 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				print += String(x).length > 1 ? String(x).substring(0, 2) : x + " ";
 			}
 		
-			for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
+			for (var y = levelVO.minY - 1; y <= levelVO.maxY + 1; y++) {
 				print += "\n";
 				print += y + "\t";
-				for (var x = levelVO.minX; x <= levelVO.maxX; x++) {
-                    var zonePoint = levelVO.getZonePoint(x, y);
+				for (var x = levelVO.minX - 1; x <= levelVO.maxX + 1; x++) {
 					if (levelVO.hasSector(x, y)) {
                         var sectorVO = levelVO.getSector(x, y);
                         var criticalPath = sectorVO.getCriticalPathC();
                         var zone = sectorVO.getZoneC();
-                        if (sectorVO.passageUp && sectorVO.passageDown)
+                        if (sectorVO.isPassageUp && sectorVO.isPassageDown)
                             print += "O ";
-                        else if (sectorVO.passageUp)
+                        else if (sectorVO.isPassageUp)
                             print += "U ";
-                        else if (sectorVO.passageDown)
+                        else if (sectorVO.isPassageDown)
                             print += "D ";
-                        else if (sectorVO.camp)
+                        else if (sectorVO.isCamp)
                             print += "C ";
-                        /*
-                        else if (zonePoint)
-                            print += "P ";
-                        */
                         /*
                         else if (sectorVO.locales.length > 0)
                             print += "L ";
@@ -151,14 +147,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
                         else
                             print += "+ ";
 					} else {
-                        /*
-                        if (zonePoint)
-                            print += "P ";
-                        else
-                    */if (levelVO.isCentral(x, y))
-                            print += "· ";
-                       else
-                            print += "  ";
+                        print += "  ";
                     }
 				}
 			}

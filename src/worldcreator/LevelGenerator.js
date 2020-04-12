@@ -21,8 +21,13 @@ define([
                 var ordinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
                 var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
                 var populationFactor = isCampableLevel ? WorldCreatorConstants.getPopulationFactor(campOrdinal) : 0;
+                var isSmallLevel = !isCampableLevel && l !== bottomLevel && l < topLevel - 1;
+                var numSectors = WorldCreatorConstants.getNumSectors(campOrdinal, isSmallLevel);
                 
-                var levelVO = new LevelVO(l, ordinal, campOrdinal, isCampableLevel, isHardLevel, notCampableReason, populationFactor);
+                var levelVO = new LevelVO(l, ordinal, campOrdinal, isCampableLevel, isHardLevel, notCampableReason, populationFactor, numSectors);
+                levelVO.campPositions = worldVO.campPositions[l];
+                levelVO.passageUpPosition = worldVO.passagePositions[l].up;
+                levelVO.passageDownPosition = worldVO.passagePositions[l].down;
                 levelVO.zones = this.generateZones(seed, levelVO);
                 worldVO.addLevel(levelVO);
             }

@@ -2,20 +2,13 @@ define(['ash'], function (Ash) {
 
     var WorldVO = Ash.Class.extend({
 	
-		seed: -1,
-        topLevel: 0,
-        bottomLevel: 0,
-        
-        features: [],
-        campPositions: [],
-        passagePositions: [],
-		levels: [],
-	
         constructor: function (seed, topLevel, bottomLevel) {
 			this.seed = seed;
 			this.topLevel = topLevel;
 			this.bottomLevel = bottomLevel;
             this.features = [];
+            this.campPositions = [];
+            this.passagePositions = [];
 			this.levels = [];
         },
 		
@@ -27,7 +20,6 @@ define(['ash'], function (Ash) {
 			return this.levels[l];
 		},
         
-        /*
         getPath: function (pos1, pos2, blockedByBlockers) {
             if (!this.paths) return null;
             var key = this.getPathKey(pos1, pos2, blockedByBlockers);
@@ -65,7 +57,6 @@ define(['ash'], function (Ash) {
                 return pos2;
             }
         },
-		*/
         
     });
 
