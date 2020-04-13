@@ -5,16 +5,20 @@ define([
 	'worldcreator/WorldCreatorHelper',
     'worldcreator/WorldCreatorRandom',
     'worldcreator/WorldFeatureVO',
+    'worldcreator/StageVO',
+    'worldcreator/CampStepVO',
     'worldcreator/DistrictVO',
 	'game/vos/PositionVO',
     'game/constants/SectorConstants',
     'game/constants/PositionConstants',
-], function (Ash, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldFeatureVO, DistrictVO, PositionVO, SectorConstants, PositionConstants) {
+    'game/constants/WorldConstants',
+], function (Ash, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldFeatureVO, StageVO, CampStepVO, DistrictVO, PositionVO, SectorConstants, PositionConstants, WorldConstants) {
     
     var WorldGenerator = {
         
         prepareWorld: function (seed, worldVO) {
             worldVO.features = worldVO.features.concat(this.generateHoles(seed));
+            worldVO.stages = this.generateStages(seed);
             worldVO.campPositions = this.generateCampPositions(seed, worldVO.features);
             worldVO.passagePositions = this.generatePassagePositions(seed, worldVO.features, worldVO.campPositions);
             worldVO.districts = this.generateDistricts(seed, worldVO.features);
@@ -55,6 +59,20 @@ define([
             }
             
             return result;
+        },
+        
+        generateStages: function (seed) {
+            var stages = [];
+            for (var campOrdinal = 1; campOrdinal <= WorldConstants.CAMPS_TOTAL; campOrdinal++) {
+                var levels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
+                var numSectorsTotal = WorldCreatorHelper.getNumSectorsForCamp(seed, campOrdinal);
+                var numSectorsEarly = WorldCreatorConstants.getNumSectors(campOrdinal, false) * 0.5;
+                var numSectorsLate = numSectorsTotal - numSectorsEarly;
+                
+                stages.push(new StageVO(campOrdinal, WorldConstants.CAMP_STAGE_EARLY, [ levels[0] ], numSectorsEarly));
+                stages.push(new StageVO(campOrdinal, WorldConstants.CAMP_STAGE_LATE, levels, numSectorsLate));
+            }
+            return stages;
         },
         
         generateCampPositions: function (seed, features) {

@@ -12,7 +12,10 @@ define(['ash', 'worldcreator/WorldCreatorConstants'], function (Ash, WorldCreato
         CAMP_ORDINAL_GROUND: 8,
         CAMPS_BEFORE_GROUND: 8,
         
-        CAMP_STEP_PREVIOUS: 0,  // passage to level sector
+        CAMP_STAGE_EARLY: "e",
+        CAMP_STAGE_LATE: "l",
+        
+        CAMP_STEP_PREVIOUS: 0,  // passage to camp sector
         CAMP_STEP_START: 1,     // zones up to and including POI_1
         CAMP_STEP_POI_2: 2,     // zone POI_2
         CAMP_STEP_END: 3,       // zones after POI_2

@@ -414,6 +414,18 @@ define([
             return result;
         },
         
+        getNumSectorsForCamp: function (seed, campOrdinal) {
+            var result = 0;
+            var levels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
+            for (var i = 0; i < levels.length; i++) {
+                var level = levels[i];
+                var isSmallLevel = WorldCreatorHelper.isSmallLevel(seed, level);
+                var numSectors = WorldCreatorConstants.getNumSectors(campOrdinal, isSmallLevel);
+                result += numSectors;
+            }
+            return result;
+        },
+        
         getLevelOrdinalForCampOrdinal: function (seed, campOrdinal) {
             // this assumes camplessLevelOrdinals are sorted from smallest to biggest
             var levelOrdinal = campOrdinal;
@@ -437,6 +449,13 @@ define([
             var hardLevelOrdinals = this.getHardLevelOrdinals(seed);
             var levelOrdinal = this.getLevelOrdinal(seed, level);
             return hardLevelOrdinals.includes(levelOrdinal);
+        },
+        
+        isSmallLevel: function (seed, level) {
+            var isCampableLevel = this.isCampableLevel(seed, level);
+			var topLevel = this.getHighestLevel(seed);
+			var bottomLevel = this.getBottomLevel(seed);
+            return !isCampableLevel && level !== bottomLevel && level < topLevel - 1;
         },
         
         getNotCampableReason: function (seed, level) {

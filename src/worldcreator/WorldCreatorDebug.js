@@ -35,7 +35,10 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
                     var campPos = worldVO.campPositions[l][i];
                     pieces[campPos.sectorX + r] = (campOrdinal + "").substring(0,1);
                 }
-                s += "lvl " + l + "\t" + pieces.join("") +  "\n";
+                
+                var ls = this.addPadding(l, 2);
+                var cs = this.addPadding(campOrdinal, 2);
+                s += "lvl " + ls + " camp " + cs + "\t" + pieces.join("") +  "\n";
             }
             log.i(s);
         },
@@ -43,7 +46,9 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
         printLevelTemplates: function (worldVO) {
             for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var levelVO = worldVO.levels[l];
-                log.i("Level " + levelVO.level + ", sectors: " + levelVO.numSectors + ", zones: " + levelVO.zones.length);
+                var stages = worldVO.getStages(l);
+                var stagess = stages.map(stage => stage.stage).join(",");
+                log.i("Level " + levelVO.level + ", camp ordinal: " + levelVO.campOrdinal + ", stages: " + stagess + ", sectors: " + levelVO.numSectors + ", zones: " + levelVO.zones.length);
             }
         },
         
@@ -109,9 +114,9 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 			//log.i(print.trim());
 		},
 		
-		printLevel: function (woldVO, levelVO) {
-			log.i("Print level, seed: " + woldVO.seed + ", level: " + levelVO.level + ", total sectors: " + levelVO.sectors.length + ", bounds: " + levelVO.minX + "." + levelVO.minY + "-" + levelVO.maxX + "." + levelVO.maxY);
-            log.i("central area: " + levelVO.centralAreaSize + ", bag size: " + levelVO.bagSize);
+		printLevel: function (worldVO, levelVO) {
+            console.groupCollapsed("Level " + levelVO.level + ", total sectors: " + levelVO.sectors.length);
+            log.i("seed: " + worldVO.seed + ", central area: " + levelVO.centralAreaSize + ", bag size: " + levelVO.bagSize+ ", bounds: " + levelVO.minX + "." + levelVO.minY + "-" + levelVO.maxX + "." + levelVO.maxY);
 			var print = "\t";
 		
 			for (var x = levelVO.minX; x <= levelVO.maxX; x++) {
@@ -152,7 +157,16 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 				}
 			}
 			log.i(print);
+            console.groupEnd();
 		},
+        
+        addPadding: function (s, minChars) {
+            var result = s + "";
+            while (result.length < minChars) {
+                result = " " + result;
+            }
+            return result;
+        },
         
     };
 

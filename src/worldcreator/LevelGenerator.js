@@ -14,6 +14,7 @@ define([
         prepareLevels: function (seed, worldVO) {
 			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
+            
 			for (var l = topLevel; l >= bottomLevel; l--) {
                 var isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, l);
                 var isHardLevel = WorldCreatorHelper.isHardLevel(seed, l);
@@ -21,7 +22,7 @@ define([
                 var ordinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
                 var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
                 var populationFactor = isCampableLevel ? WorldCreatorConstants.getPopulationFactor(campOrdinal) : 0;
-                var isSmallLevel = !isCampableLevel && l !== bottomLevel && l < topLevel - 1;
+                var isSmallLevel = WorldCreatorHelper.isSmallLevel(seed, l);
                 var numSectors = WorldCreatorConstants.getNumSectors(campOrdinal, isSmallLevel);
                 
                 var levelVO = new LevelVO(l, ordinal, campOrdinal, isCampableLevel, isHardLevel, notCampableReason, populationFactor, numSectors);

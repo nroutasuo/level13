@@ -6,9 +6,13 @@ define(['ash'], function (Ash) {
 			this.seed = seed;
 			this.topLevel = topLevel;
 			this.bottomLevel = bottomLevel;
+            
             this.features = [];
+            this.stages = [];
             this.campPositions = [];
             this.passagePositions = [];
+            this.disctricts = [];
+            
 			this.levels = [];
         },
 		
@@ -19,6 +23,17 @@ define(['ash'], function (Ash) {
 		getLevel: function (l) {
 			return this.levels[l];
 		},
+        
+        getStages: function (level) {
+            var result = [];
+            for (var i = 0; i < this.stages.length; i++) {
+                var stage = this.stages[i];
+                if (stage.spansLevel(level)) {
+                    result.push(stage);
+                }
+            }
+            return result;
+        },
         
         getPath: function (pos1, pos2, blockedByBlockers) {
             if (!this.paths) return null;
