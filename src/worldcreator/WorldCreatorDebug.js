@@ -115,7 +115,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
 		},
 		
 		printLevel: function (worldVO, levelVO) {
-            console.groupCollapsed("Level " + levelVO.level + ", total sectors: " + levelVO.sectors.length);
+            console.groupCollapsed("Level " + levelVO.level + ", sectors: " + levelVO.sectors.length + "/" + levelVO.numSectors);
             log.i("seed: " + worldVO.seed + ", central area: " + levelVO.centralAreaSize + ", bag size: " + levelVO.bagSize+ ", bounds: " + levelVO.minX + "." + levelVO.minY + "-" + levelVO.maxX + "." + levelVO.maxY);
 			var print = "\t";
 		
@@ -139,6 +139,8 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
                             print += "D ";
                         else if (sectorVO.isCamp)
                             print += "C ";
+                        else if (sectorVO.isFill)
+                            print += "F ";
                         /*
                         else if (sectorVO.locales.length > 0)
                             print += "L ";

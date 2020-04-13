@@ -11,6 +11,7 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
             this.notCampableReason = notCampableReason;
             this.populationFactor = populationFactor;
             this.numSectors = numSectors;
+            this.maxSectors = numSectors + 10;
             
             this.campPositions = [];
             this.passageUpPosition = null;

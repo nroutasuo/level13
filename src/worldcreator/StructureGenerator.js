@@ -34,7 +34,6 @@ define([
             var requiredPaths = this.getRequiredPaths(levelVO);
             this.createRequiredPaths(seed, worldVO, levelVO, requiredPaths);
             
-            /*
             // create the rest of the sectors randomly
             var attempts = 0;
             var maxAttempts = 1000;
@@ -50,7 +49,6 @@ define([
             
             // connect sectors that are close by direct distance by very far by path length
             this.createGapFills(worldVO, levelVO);
-            */
         },
         
         createRequiredPaths: function (seed, worldVO, levelVO, requiredPaths) {
@@ -211,10 +209,9 @@ define([
         },
 
         createGapFills: function (worldVO, levelVO) {
-            var furthestPathDist = 0;
             var getFurthestPair = function () {
+                var furthestPathDist = 0;
                 var furthestPair = [null, null];
-                furthestPathDist = 0;
                 for (var i = 0; i < levelVO.sectors.length; i++) {
                     var sector1 = levelVO.sectors[i];
                     for (var j = i; j < levelVO.sectors.length; j++) {
@@ -230,14 +227,18 @@ define([
                         }
                     }
                 }
-                return furthestPair;
+                return { sectors: furthestPair, pathDist: furthestPathDist };
             }
             
             var currentPair = getFurthestPair();
             
             var i = 0;
-            while (furthestPathDist > 15 && i < 10) {
-                this.createPathBetween(0, levelVO, currentPair[0].position, currentPair[1].position);
+            while (currentPair.pathDist > 15 && levelVO.sectors.length < levelVO.maxSectors && i < 100) {
+                var sectors = this.createPathBetween(0, levelVO, currentPair.sectors[0].position, currentPair.sectors[1].position);
+                for (var j = 0; j < sectors.length; j++) {
+                    sectors[j].isFill = true;
+                }
+                worldVO.resetPaths();
                 currentPair = getFurthestPair();
                 i++;
             }

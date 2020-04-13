@@ -67,9 +67,11 @@ define([
             StructureGenerator.prepareStructure(seed, this.world);
             WorldCreatorDebug.printLevelStructure(this.world);
             
+            /*
             log.i("Step 4/4: Sector templates", this.context);
             SectorGenerator.prepareSectors(seed, this.world);
-            WorldCreatorDebug.printSectorTemplates(this.world);
+            //WorldCreatorDebug.printSectorTemplates(this.world);
+            */
 
             /*
 			// base: paths, zones, passages, campable sectors and levels
