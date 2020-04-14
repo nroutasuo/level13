@@ -1,5 +1,5 @@
 // debug helpers for the WorldCreator
-define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHelper) {
+define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldConstants, WorldCreatorHelper) {
 
     var WorldCreatorDebug = {
         
@@ -33,7 +33,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
                 if (posDown) pieces[posDown.sectorX + r] = "D";
                 for (var i = 0; i < worldVO.campPositions[l].length; i++) {
                     var campPos = worldVO.campPositions[l][i];
-                    pieces[campPos.sectorX + r] = (campOrdinal + "").substring(0,1);
+                    pieces[campPos.sectorX + r] = "C";
                 }
                 
                 var ls = this.addPadding(l, 2);
@@ -111,22 +111,31 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
                 log.i(print);
                 print = "";
 			}
-			//log.i(print.trim());
 		},
 		
 		printLevel: function (worldVO, levelVO) {
-            console.groupCollapsed("Level " + levelVO.level + ", sectors: " + levelVO.sectors.length + "/" + levelVO.numSectors);
-            log.i("seed: " + worldVO.seed + ", central area: " + levelVO.centralAreaSize + ", bag size: " + levelVO.bagSize+ ", bounds: " + levelVO.minX + "." + levelVO.minY + "-" + levelVO.maxX + "." + levelVO.maxY);
+            console.groupCollapsed("Level " + levelVO.level + ", camp " + (levelVO.isCampable ? levelVO.campOrdinal :  "-")
+                + ", sectors: " + levelVO.sectors.length + "/" + levelVO.numSectors
+                + ", early: " + levelVO.getNumSectorsByStage(WorldConstants.CAMP_STAGE_EARLY) + "/" + WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, WorldConstants.CAMP_STAGE_EARLY)
+                + ", late: " + levelVO.getNumSectorsByStage(WorldConstants.CAMP_STAGE_LATE) + "/" + WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, WorldConstants.CAMP_STAGE_LATE)
+            );
+            log.i("seed: " + worldVO.seed + ", " + ", bounds: " + levelVO.minX + "." + levelVO.minY + "-" + levelVO.maxX + "." + levelVO.maxY);
 			var print = "\t";
+            var rx = 20;
+            var ry = 10;
+            var minX = Math.min(levelVO.minX, -rx);
+            var maxX = Math.max(levelVO.maxX, rx);
+            var minY = Math.min(levelVO.minY, -ry);
+            var maxY = Math.max(levelVO.maxY, ry);
 		
-			for (var x = levelVO.minX; x <= levelVO.maxX; x++) {
+			for (var x = minX; x <= maxX; x++) {
 				print += String(x).length > 1 ? String(x).substring(0, 2) : x + " ";
 			}
 		
-			for (var y = levelVO.minY - 1; y <= levelVO.maxY + 1; y++) {
+			for (var y = minY - 1; y <= maxY + 1; y++) {
 				print += "\n";
 				print += y + "\t";
-				for (var x = levelVO.minX - 1; x <= levelVO.maxX + 1; x++) {
+				for (var x = minX - 1; x <= maxX + 1; x++) {
 					if (levelVO.hasSector(x, y)) {
                         var sectorVO = levelVO.getSector(x, y);
                         var criticalPath = sectorVO.getCriticalPathC();
@@ -141,6 +150,8 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
                             print += "C ";
                         else if (sectorVO.isFill)
                             print += "F ";
+                        else if (sectorVO.stage)
+                            print += sectorVO.stage + " ";
                         /*
                         else if (sectorVO.locales.length > 0)
                             print += "L ";
@@ -148,9 +159,9 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
                         /*
                         else if (criticalPath >= 0)
                             print += criticalPath + " ";
-                        */
                         else if (zone >= 0)
                             print += zone + " ";
+                        */
                         else
                             print += "+ ";
 					} else {

@@ -120,7 +120,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
             return 0;
         },
         
-        getMiddlePoint: function (positions) {
+        getMiddlePoint: function (positions, rounded) {
             var result = new PositionVO(0, 0, 0);
             if (positions && positions.length > 0) {
                 for (var i = 0; i < positions.length; i++) {
@@ -133,6 +133,11 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
                 result.level /= positions.length;
                 result.sectorX /= positions.length;
                 result.sectorY /= positions.length;
+            }
+            if (rounded) {
+                result.level = Math.round(result.level);
+                result.sectorX = Math.round(result.sectorX);
+                result.sectorY = Math.round(result.sectorY);
             }
             return result;
         },

@@ -426,6 +426,16 @@ define([
             return result;
         },
         
+        getNumSectorsForLevelStage: function (worldVO, levelVO, stage) {
+            var stages = worldVO.getStages(levelVO.level);
+            for (var i = 0; i < stages.length; i++) {
+                if (stages[i].stage == stage) {
+                    return levelVO.numSectors / stages.length;
+                }
+            }
+            return 0;
+        },
+        
         getLevelOrdinalForCampOrdinal: function (seed, campOrdinal) {
             // this assumes camplessLevelOrdinals are sorted from smallest to biggest
             var levelOrdinal = campOrdinal;

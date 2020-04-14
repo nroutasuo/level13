@@ -1,4 +1,5 @@
-define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], function (Ash, PositionConstants, PositionVO) {
+define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'],
+function (Ash, PositionConstants, PositionVO) {
 
     var LevelVO = Ash.Class.extend({
 	
@@ -16,8 +17,11 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
             this.campPositions = [];
             this.passageUpPosition = null;
             this.passageDownPosition = null;
+            this.stageCenterPositions = {};
             this.zones = [];
+            
 			this.sectors = [];
+            this.sectorsByStage = {};
 			this.sectorsByPos = [];
 			this.minX = 0;
 			this.maxX = 0;
@@ -54,6 +58,8 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
 			}
 			
 			this.sectors.push(sectorVO);
+            if (!this.sectorsByStage[sectorVO.stage]) this.sectorsByStage[sectorVO.stage] = [];
+            this.sectorsByStage[sectorVO.stage].push(sectorVO);
 			
 			if (!this.sectorsByPos[sectorVO.position.sectorX]) this.sectorsByPos[sectorVO.position.sectorX] = {};
 			this.sectorsByPos[sectorVO.position.sectorX][sectorVO.position.sectorY] = sectorVO;
@@ -110,6 +116,10 @@ define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'], funct
         
         isPassageDownPosition: function (pos) {
             return this.passageDownPosition && this.passageDownPosition.equals(pos);
+        },
+        
+        getNumSectorsByStage: function (stage) {
+            return this.sectorsByStage[stage] ? this.sectorsByStage[stage].length : 0;
         },
         
         /*
