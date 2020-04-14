@@ -138,20 +138,21 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
 				for (var x = minX - 1; x <= maxX + 1; x++) {
 					if (levelVO.hasSector(x, y)) {
                         var sectorVO = levelVO.getSector(x, y);
+                        var defaultColor = sectorVO.stage == WorldConstants.CAMP_STAGE_EARLY ? "#555" : "#aaa";
                         //var criticalPath = sectorVO.getCriticalPathC();
                         //var zone = sectorVO.getZoneC();
                         if (sectorVO.isPassageUp && sectorVO.isPassageDown)
-                            print += "O ";
+                            print += "{O|blue} ";
                         else if (sectorVO.isPassageUp)
-                            print += "U ";
+                            print += "{U|blue} ";
                         else if (sectorVO.isPassageDown)
-                            print += "D ";
+                            print += "{D|blue} ";
                         else if (sectorVO.isCamp)
-                            print += "C ";
+                            print += "{C|red} ";
                         else if (sectorVO.isFill)
-                            print += "F ";
-                        else if (sectorVO.stage)
-                            print += sectorVO.stage + " ";
+                            print += "{F|" + defaultColor + "} ";
+                        else if (sectorVO.stage == WorldConstants.CAMP_STAGE_EARLY)
+                            print += "{+|" + defaultColor + "} ";
                         /*
                         else if (sectorVO.locales.length > 0)
                             print += "L ";
@@ -163,15 +164,37 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                             print += zone + " ";
                         */
                         else
-                            print += "+ ";
+                            print += "{·|" + defaultColor + "} ";
 					} else {
                         print += "  ";
                     }
 				}
 			}
-			log.i(print);
+            this.printWithHighlights(print);
+			//log.i(print);
             console.groupEnd();
 		},
+        
+        printWithHighlights: function (text) {
+            var splitText = text.split(' ');
+            var cssRules = [];
+            var styledText = '';
+            for (var split of splitText)  {
+                var content = split;
+                if (/^\{/.test(split)) {
+                    var parts = split.split("|");
+                    content = parts[0];
+                    var color = parts.length > 1 ? parts[1].replace("}","") : "blue";
+                    cssRules.push('color:' + color);
+                } else {
+                    cssRules.push('color:inherit')
+                }
+                styledText += `%c${content} `
+            };
+            styledText = styledText.replace(/\{/g, "");
+            styledText = styledText.replace(/\}/g, "");
+            console.log(styledText , ...cssRules)
+        },
         
         addPadding: function (s, minChars) {
             var result = s + "";
