@@ -33,30 +33,31 @@ define([
             if (l === topLevel) centerSize = 3;
             this.createRectangleFromCenter(levelVO, 0, new PositionVO(levelVO.level, 0, 0), centerSize * 2, centerSize * 2);
             
+            // create required paths
+            this.createRequiredPaths(seed, worldVO, levelVO, requiredPaths);
+            
+            // create random shapes to fill the level
             for (var i = 0; i < stages.length; i++) {
                 var stageVO = stages[i];
-                var maxSectors = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, stageVO.stage);
-                
-                // create required paths
-                this.createRequiredPaths(seed, worldVO, levelVO, requiredPaths[stageVO.stage]);
-                
-                // create the rest of the sectors randomly
-                /*
-                var attempts = 0;
-                var maxAttempts = 1000;
-                while (levelVO.getNumSectorsByStage(stageVO.stage) <= maxSectors && attempts < maxAttempts) {
-                    attempts++;
-                    if (attempts % 2 !== 0) {
-                        var isMassiveRectangle = levelVO.sectors.length < levelVO.numSectors / 4;
-                        this.createRectangles(seed, attempts, levelVO, isMassiveRectangle);
-                    } else {
-                        this.createPaths(seed, attempts, levelVO);
-                    }
+                this.generateLevelStage(seed, worldVO, levelVO, stageVO);
+            }
+            
+            // create sectors that are close by direct distance by very far by path length
+            this.createGapFills(worldVO, levelVO);
+        },
+        
+        generateLevelStage: function (seed, worldVO, levelVO, stageVO) {
+            var attempts = 0;
+            var maxAttempts = 1000;
+            var maxSectors = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, stageVO.stage);
+            var options = this.getDefaultOptions({ stage: stageVO.stage });
+            while (levelVO.getNumSectorsByStage(stageVO.stage) <= maxSectors && attempts < maxAttempts) {
+                attempts++;
+                if (attempts % 2 !== 0) {
+                    this.createRectangles(seed, attempts, levelVO, options);
+                } else {
+                    this.createPaths(seed, attempts, levelVO, options);
                 }
-                */
-                
-                // connect sectors that are close by direct distance by very far by path length
-                this.createGapFills(worldVO, levelVO);
             }
         },
         
@@ -84,25 +85,23 @@ define([
             }
         },
 
-        createRectangles: function (seed, pathSeed, levelVO, isMassive) {
+        createRectangles: function (seed, pathSeed, levelVO, options) {
             var l = levelVO.levelOrdinal;
             var pathRandomSeed = levelVO.sectors.length * 4 + l + pathSeed * 5;
-            var startingPosArray = levelVO.sectors;
+            var startingPosArray = this.getPathStartingPositions(levelVO, options);
             var pathStartingI = Math.floor(WorldCreatorRandom.random(seed * 938 * (l + 60) / pathRandomSeed + 2342 * l) * startingPosArray.length);
             var pathStartingPos = startingPosArray[pathStartingI].position.clone();
 
             var isDiagonal = WorldCreatorRandom.random(seed + (l * 44) * pathRandomSeed + pathSeed) < WorldCreatorConstants.DIAGONAL_PATH_PROBABILITY;
             var numRectangles = WorldCreatorRandom.randomInt((seed + pathRandomSeed * l - pathRandomSeed) / (pathSeed + 5), 1, 5);
             var startDirections = WorldCreatorRandom.randomDirections(seed * levelVO.levelOrdinal + 28381 + pathRandomSeed, numRectangles, false);
-            var maxRectangleSize = isMassive ?
-                WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX * 3 / 4 :
-                Math.min(WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX / 2, levelVO.centralAreaSize / 2);
+            var maxRectangleSize = WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX / 2;
             var w = WorldCreatorRandom.randomInt(seed + pathRandomSeed / pathSeed + pathSeed * l, 4, maxRectangleSize);
             var h = WorldCreatorRandom.randomInt(seed + pathRandomSeed * l + pathSeed - pathSeed * l, 4, maxRectangleSize);
 
             var startDirection;
             for (var i = 0; i < numRectangles; i++) {
-                if (!this.createRectangle(levelVO, i, pathStartingPos, w, h))
+                if (!this.createRectangle(levelVO, i, pathStartingPos, w, h, null, options))
                     break;
             }
         },
@@ -112,13 +111,13 @@ define([
             this.createRectangle(levelVO, i, corner, w, h, PositionConstants.DIRECTION_EAST);
         },
 
-        createRectangle: function (levelVO, i, startPos, w, h, startDirection) {
+        createRectangle: function (levelVO, i, startPos, w, h, startDirection, options) {
             startDirection = startDirection || WorldCreatorRandom.randomDirections(i, 1, true)[0];
             var sideStartPos = startPos;
             var currentDirection = startDirection;
             for (var j = 0; j < 4; j++) {
                 var sideLength = PositionConstants.isHorizontalDirection(currentDirection) ? w : h;
-                var result = this.createPath(levelVO, sideStartPos, currentDirection, sideLength);
+                var result = this.createPath(levelVO, sideStartPos, currentDirection, sideLength, false, options);
                 if (!result.completed) return false;
                 sideStartPos = PositionConstants.getPositionOnPath(sideStartPos, currentDirection, sideLength);
                 currentDirection = PositionConstants.getNextClockWise(currentDirection, false);
@@ -130,14 +129,15 @@ define([
             var l = levelVO.level;
             var dist = Math.ceil(PositionConstants.getDistanceTo(startPos, endPos));
             var result = [];
+            var options = this.getDefaultOptions({ criticalPathType: pathType });
             
             var pathLength;
             var totalLength = dist;
             if (dist == 0) {
-                result.push(this.createSector(levelVO, startPos, null, pathType));
+                result.push(this.createSector(levelVO, startPos, options).vo);
             } else if (dist == 1) {
-                result.push(this.createSector(levelVO, startPos, null, pathType));
-                result.push(this.createSector(levelVO, endPos, null, pathType));
+                result.push(this.createSector(levelVO, startPos, options).vo);
+                result.push(this.createSector(levelVO, endPos, options).vo);
             } else {
                 var allowDiagonals = WorldCreatorRandom.randomBool(50000 + (l + 5) * 55 + dist * 555);
                 var currentPos = startPos;
@@ -148,7 +148,7 @@ define([
                     var directionIndex = WorldCreatorRandom.randomInt(seed % 10200 + l * 555 + dist * 77 + i * 1001, 0, possibleDirections.length);
                     var direction = possibleDirections[directionIndex];
                     pathLength = PositionConstants.getDistanceInDirection(currentPos, endPos, direction) + 1;
-                    pathResult = this.createPath(levelVO, currentPos, direction, pathLength, pathType, true);
+                    pathResult = this.createPath(levelVO, currentPos, direction, pathLength, true, options);
                     result = result.concat(pathResult.path);
                     currentPos = PositionConstants.getPositionOnPath(currentPos, direction, pathLength - 1);
                     i++;
@@ -159,10 +159,10 @@ define([
             return result;
         },
 
-        createPaths: function (seed, pathSeed, levelVO) {
+        createPaths: function (seed, pathSeed, levelVO, options) {
             var l = levelVO.levelOrdinal;
             var pathRandomSeed = levelVO.sectors.length * 4 + l + pathSeed * 5;
-            var startingPosArray = levelVO.sectors;
+            var startingPosArray = this.getPathStartingPositions(levelVO, options);
             var pathStartingI = Math.floor(WorldCreatorRandom.random(seed * 938 * (l + 60) / pathRandomSeed + 2342 * l) * startingPosArray.length);
             var pathStartingPos = startingPosArray[pathStartingI].position.clone();
 
@@ -172,11 +172,11 @@ define([
             var pathLength;
             for (var di = 0; di < pathDirections.length; di++) {
                 pathLength = WorldCreatorRandom.randomInt(seed * 3 * pathRandomSeed * (di + 1) + (di + 3) * l + 55, WorldCreatorConstants.SECTOR_PATH_LENGTH_MIN, WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX);
-                this.createPath(levelVO, pathStartingPos, pathDirections[di], pathLength);
+                this.createPath(levelVO, pathStartingPos, pathDirections[di], pathLength, null, options);
             }
         },
 
-        createPath: function (levelVO, startPos, direction, len, criticalPathType, forceComplete) {
+        createPath: function (levelVO, startPos, direction, len, forceComplete, options) {
             if (len < 1) return { path: [], completed: false };;
             var result = [];
 
@@ -211,7 +211,7 @@ define([
                     continue;
                 }
 
-				result.push(this.createSector(levelVO, sectorPos, null, criticalPathType));
+				result.push(this.createSector(levelVO, sectorPos, options).vo);
             }
             return { path: result, completed: true };
         },
@@ -252,22 +252,91 @@ define([
             }
         },
 
-		createSector: function (levelVO, sectorPos, stage, criticalPathType) {
-            stage = stage || this.getDefaultStage(levelVO, sectorPos);
+		createSector: function (levelVO, sectorPos, options) {
+            options = options || this.getDefaultOptions();
+            var stage = options.stage || this.getDefaultStage(levelVO, sectorPos);
+            var criticalPathType = options.criticalPathType;
             var sectorVO = levelVO.getSector(sectorPos.sectorX, sectorPos.sectorY);
-            if (!sectorVO) {
+            var isNew = !sectorVO;
+            
+            if (isNew) {
     			sectorVO = new SectorVO(sectorPos, levelVO.isCampable, levelVO.notCampableReason);
                 sectorVO.stage = stage;
                 sectorVO.isCamp = levelVO.isCampPosition(sectorPos);
                 sectorVO.isPassageUp = levelVO.isPassageUpPosition(sectorPos);
                 sectorVO.isPassageDown = levelVO.isPassageDownPosition(sectorPos);
-    			levelVO.addSector(sectorVO);
+                if (criticalPathType) {
+                    sectorVO.addToCriticalPath(criticalPathType);
+                }
+    			var added = levelVO.addSector(sectorVO);
+                if (!added) {
+                    isNew = false;
+                    sectorVO = null;
+                }
             }
-            if (criticalPathType) {
-                sectorVO.addToCriticalPath(criticalPathType);
-            }
-            return sectorVO;
+            
+            return { isNew: isNew, vo: sectorVO };
 		},
+        getRequiredPaths: function (worldVO, levelVO) {
+            var level = levelVO.level;
+            var campOrdinal = levelVO.campOrdinal;
+            var campPositions = levelVO.campPositions;
+            var passageUpPosition = levelVO.passageUpPosition;
+            var passageDownPosition = levelVO.passageDownPosition;
+            
+            var maxPathLenP2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
+            var maxPathLenC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
+            
+            var requiredPaths = [];
+            
+            if (campPositions.length > 0) {
+                // passages up -> camps -> passages down
+                var isGoingDown = level <= 13 && level >= worldVO.bottomLevel;
+                var passageUpPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+                var passageUpStage = isGoingDown ? WorldConstants.CAMP_STAGE_EARLY : WorldConstants.CAMP_STAGE_LATE;
+                var passageDownPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE : WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP;
+                var passageDownStage = isGoingDown ? WorldConstants.CAMP_STAGE_LATE : WorldConstants.CAMP_STAGE_EARLY;
+                if (level == 13) {
+                    passageUpPathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+                    passageDownStage = WorldConstants.CAMP_STAGE_LATE;
+                    passageDownPathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+                }
+                for (var i = 1; i < campPositions.length; i++) {
+                    requiredPaths.push({ start: campPositions[0], end: campPositions[i], maxlen: -1, type: "camp_pos_to_camp_pos", stage: WorldConstants.CAMP_STAGE_EARLY });
+                }
+                if (passageUpPosition) {
+                    var closerCamp = WorldCreatorHelper.getClosestPosition(campPositions, passageUpPosition);
+                    requiredPaths.push({ start: closerCamp, end: passageUpPosition, maxlen: maxPathLenC2P, type: passageUpPathType, stage: passageUpStage });
+                }
+                if (passageDownPosition) {
+                    var closerCamp = WorldCreatorHelper.getClosestPosition(campPositions, passageDownPosition);
+                    requiredPaths.push({ start: closerCamp, end: passageDownPosition, maxlen: maxPathLenC2P, type: passageDownPathType, stage: passageDownStage });
+                }
+            } else if (!passageUpPosition) {
+                // just passage down sector
+                if (passageDownPosition) {
+                    requiredPaths.push({ start: passageDownPosition, end: passageDownPosition, maxlen: 1, type: WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE, stage: WorldConstants.CAMP_STAGE_LATE });
+                }
+            } else if (!passageDownPosition) {
+                // just passage up sector
+                if (passageUpPosition) {
+                    requiredPaths.push({ start: passageUpPosition, end: passageUpPosition, maxlen: 1, type: WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE, stage: WorldConstants.CAMP_STAGE_LATE });
+                }
+            } else {
+                // passage up -> passage down
+                requiredPaths.push({ start: passageUpPosition, end: passageDownPosition, maxlen: maxPathLenP2P, type: WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE, stage: WorldConstants.CAMP_STAGE_LATE });
+            }
+            return requiredPaths;
+        },
+        
+        getPathStartingPositions: function (levelVO, options) {
+            if (!options.stage)
+                return levelVO.sectors;
+            var stageSectors = levelVO.getSectorsByStage(options.stage);
+            if (stageSectors && stageSectors.length > 0)
+                return stageSectors;
+            return levelVO.sectors;
+        },
         
         getDefaultStage: function (levelVO, sectorPos) {
             var result = null;
@@ -289,58 +358,9 @@ define([
             return result;
         },
         
-        getRequiredPaths: function (worldVO, levelVO) {
-            var level = levelVO.level;
-            var campOrdinal = levelVO.campOrdinal;
-            var campPositions = levelVO.campPositions;
-            var passageUpPosition = levelVO.passageUpPosition;
-            var passageDownPosition = levelVO.passageDownPosition;
-            
-            var maxPathLenP2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
-            var maxPathLenC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
-            
-            var requiredPaths = {};
-            requiredPaths[WorldConstants.CAMP_STAGE_EARLY] = [];
-            requiredPaths[WorldConstants.CAMP_STAGE_LATE] = [];
-            
-            if (campPositions.length > 0) {
-                // passages up -> camps -> passages down
-                var isGoingDown = level <= 13 && level >= worldVO.bottomLevel;
-                var passageUpPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
-                var passageUpStage = isGoingDown ? WorldConstants.CAMP_STAGE_EARLY : WorldConstants.CAMP_STAGE_LATE;
-                var passageDownPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE : WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP;
-                var passageDownStage = isGoingDown ? WorldConstants.CAMP_STAGE_LATE : WorldConstants.CAMP_STAGE_EARLY;
-                if (level == 13) {
-                    passageUpPathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
-                    passageDownStage = WorldConstants.CAMP_STAGE_LATE;
-                    passageDownPathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
-                }
-                if (passageUpPosition) {
-                    var closerCamp = WorldCreatorHelper.getClosestPosition(campPositions, passageUpPosition);
-                    requiredPaths[passageUpStage].push({ start: closerCamp, end: passageUpPosition, maxlen: maxPathLenC2P, type: passageUpPathType, stage: passageUpStage });
-                }
-                if (passageDownPosition) {
-                    var closerCamp = WorldCreatorHelper.getClosestPosition(campPositions, passageDownPosition);
-                    requiredPaths[passageDownStage].push({ start: closerCamp, end: passageDownPosition, maxlen: maxPathLenC2P, type: passageDownPathType, stage: passageDownStage });
-                }
-                for (var i = 1; i < campPositions.length; i++) {
-                    requiredPaths[WorldConstants.CAMP_STAGE_EARLY].push({ start: campPositions[0], end: campPositions[i], maxlen: -1, type: "camp_pos_to_camp_pos", stage: WorldConstants.CAMP_STAGE_EARLY });
-                }
-            } else if (!passageUpPosition) {
-                // just passage down sector
-                if (passageDownPosition) {
-                    requiredPaths[WorldConstants.CAMP_STAGE_LATE].push({ start: passageDownPosition, end: passageDownPosition, maxlen: 1, type: WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE, stage: WorldConstants.CAMP_STAGE_LATE });
-                }
-            } else if (!passageDownPosition) {
-                // just passage up sector
-                if (passageUpPosition) {
-                    requiredPaths[WorldConstants.CAMP_STAGE_LATE].push({ start: passageUpPosition, end: passageUpPosition, maxlen: 1, type: WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE, stage: WorldConstants.CAMP_STAGE_LATE });
-                }
-            } else {
-                // passage up -> passage down
-                requiredPaths[WorldConstants.CAMP_STAGE_LATE].push({ start: passageUpPosition, end: passageDownPosition, maxlen: maxPathLenP2P, type: WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE, stage: WorldConstants.CAMP_STAGE_LATE });
-            }
-            return requiredPaths;
+        getDefaultOptions: function (options) {
+            options = options || {};
+            return { stage: options.stage, criticalPathType: options.criticalPathType };
         },
 
     };

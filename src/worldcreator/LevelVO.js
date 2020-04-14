@@ -118,6 +118,10 @@ function (Ash, PositionConstants, PositionVO) {
             return this.passageDownPosition && this.passageDownPosition.equals(pos);
         },
         
+        getSectorsByStage: function (stage) {
+            return this.sectorsByStage[stage] ? this.sectorsByStage[stage] : [];
+        },
+        
         getNumSectorsByStage: function (stage) {
             return this.sectorsByStage[stage] ? this.sectorsByStage[stage].length : 0;
         },

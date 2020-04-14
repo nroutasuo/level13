@@ -138,8 +138,8 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
 				for (var x = minX - 1; x <= maxX + 1; x++) {
 					if (levelVO.hasSector(x, y)) {
                         var sectorVO = levelVO.getSector(x, y);
-                        var criticalPath = sectorVO.getCriticalPathC();
-                        var zone = sectorVO.getZoneC();
+                        //var criticalPath = sectorVO.getCriticalPathC();
+                        //var zone = sectorVO.getZoneC();
                         if (sectorVO.isPassageUp && sectorVO.isPassageDown)
                             print += "O ";
                         else if (sectorVO.isPassageUp)
