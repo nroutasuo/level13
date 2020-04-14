@@ -76,22 +76,21 @@ define([
         },
         
         generateCampPositions: function (seed, features) {
-            var result = [];
+            var positionsByLevel = {};
 			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
             var maxCampDist = 4;
-            var isValid = function (pos) {
-                return !WorldGenerator.containsBlockingFeature(pos, features);
-            };
+            var generator = this;
 			for (var l = topLevel; l >= bottomLevel; l--) {
                 var positions = [];
                 var isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, l);
                 var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
-                var maxPathLen = WorldCreatorConstants.getMaxPathLength(campOrdinal - 1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
-                var maxCenterDist = maxPathLen / 2 - maxCampDist;
                 if (isCampableLevel) {
+                    var maxPathLen = WorldCreatorConstants.getMaxPathLength(campOrdinal - 1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
+                    var maxCenterDist = maxPathLen * 0.75 - maxCampDist;
                     var center = new PositionVO(l, 0, 0);
                     var firstPos = new PositionVO(l, 0, 0);
+                    var isValid = function (pos) { return generator.isValidCampPos(pos, positionsByLevel, features); };
                     if (l != 13) {
                         firstPos = WorldCreatorRandom.randomSectorPositionWithCheck(seed % 10 + (l+10) * 55, l, maxCenterDist, center, 0, isValid);
                     }
@@ -101,9 +100,9 @@ define([
                         positions.push(secondPos);
                     }
                 }
-                result[l] = positions;
+                positionsByLevel[l] = positions;
             }
-            return result;
+            return positionsByLevel;
         },
         
         generatePassagePositions: function (seed, features, campPositions) {
@@ -229,6 +228,23 @@ define([
             return [];
         },
 
+        isValidCampPos: function (pos, positionsByLevel, features) {
+            // blocked: positions in holes etc
+            if (WorldGenerator.containsBlockingFeature(pos, features)) return false;
+            // blocked: positions too close to camp positions on previous few levels (so that on levels between them passages up/down don't end up too close)
+            var threshold = 5;
+            for (var i = 2; i <= 3; i++) {
+                var prevPositions = positionsByLevel[pos.level + i];
+                if (!prevPositions) continue;
+                for (var j = 0; j < prevPositions.length; j++) {
+                    var prevPos = prevPositions[j];
+                    if (PositionConstants.getDistanceTo(pos, prevPos) < threshold) return false;
+                }
+            }
+            // otherwise ok
+            return true;
+        },
+        
         containsBlockingFeature: function (pos, features) {
             for (var i = 0; i < features.length; i++) {
                 var feature = features[i];
