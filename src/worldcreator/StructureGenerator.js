@@ -233,6 +233,7 @@ define([
                     var sector1 = levelVO.sectors[i];
                     for (var j = i; j < levelVO.sectors.length; j++) {
                         var sector2 = levelVO.sectors[j];
+                        if (sector1.stage != sector2.stage) continue;
                         var dist = PositionConstants.getDistanceTo(sector1.position, sector2.position);
                         if (dist > 1 && dist < 3) {
                             var path = WorldCreatorRandom.findPath(worldVO, sector1.position, sector2.position, false, true);

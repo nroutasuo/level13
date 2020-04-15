@@ -123,7 +123,7 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                 + ", early: " + levelVO.getNumSectorsByStage(WorldConstants.CAMP_STAGE_EARLY) + "/" + WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, WorldConstants.CAMP_STAGE_EARLY)
                 + ", late: " + levelVO.getNumSectorsByStage(WorldConstants.CAMP_STAGE_LATE) + "/" + WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, WorldConstants.CAMP_STAGE_LATE)
             );
-            log.i("seed: " + worldVO.seed + ", " + ", bounds: " + levelVO.minX + "." + levelVO.minY + "-" + levelVO.maxX + "." + levelVO.maxY);
+            log.i("seed: " + worldVO.seed + ", " + ", center: " + levelVO.levelCenterPosition +  ", bounds: " + levelVO.minX + "." + levelVO.minY + "-" + levelVO.maxX + "." + levelVO.maxY);
 			var print = "\t";
             var rx = 20;
             var ry = 10;
@@ -170,8 +170,11 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                         else
                             print += "{·|" + defaultColor + "} ";
 					} else {
-                        var features = worldVO.getFeatures({ level: levelVO.level, sectorX: x, sectorY: y});
-                        if (features.length > 0) {
+                        var position = { level: levelVO.level, sectorX: x, sectorY: y};
+                        var features = worldVO.getFeatures(position);
+                        if (levelVO.levelCenterPosition.equals(position)) {
+                            print += "{C|#eb2} ";
+                        } else if (features.length > 0) {
                             print += "{H|#ddd} ";
                         } else {
                             print += "  ";

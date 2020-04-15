@@ -158,7 +158,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
             var tries = 0;
             var start = this.randomSectorPosition(seed, level, areaSize, centerPos, minDist);
             var result = start;
-            while (!check(result)) {
+            while (!check(result) && tries < 1000) {
                 result = this.randomSectorPosition(seed + tries, level, areaSize, centerPos, minDist);
                 tries++;
             }

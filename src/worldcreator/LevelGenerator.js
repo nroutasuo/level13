@@ -32,6 +32,7 @@ define([
                 levelVO.passageUpPosition = worldVO.passagePositions[l].up;
                 levelVO.passageDownPosition = worldVO.passagePositions[l].down;
                 levelVO.stageCenterPositions = this.getStageCenterPositions(worldVO, levelVO);
+                levelVO.levelCenterPosition = this.getLevelCenterPosition(worldVO, levelVO);
                 levelVO.zones = this.generateZones(seed, levelVO);
                 worldVO.addLevel(levelVO);
             }
@@ -88,7 +89,19 @@ define([
                 }
             }
             return result;
-        }
+        },
+        
+        getLevelCenterPosition: function (worldVO, levelVO) {
+            var pois = [];
+            pois.push(new PositionVO(levelVO.level, 0, 0));
+            if (levelVO.isCampable) {
+                pois = pois.concat(levelVO.campPositions);
+            } else {
+                if (levelVO.passageUpPosition) pois.push(levelVO.passageUpPosition);
+                if (levelVO.passageDownPosition) pois.push(levelVO.passageDownPosition);
+            }
+            return PositionConstants.getMiddlePoint(pois, true);
+        },
         
     };
     
