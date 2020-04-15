@@ -249,12 +249,11 @@ define([
             
             // check that not too close or not too far from camps on this level or the level below
             var allCamps = campPos1.concat(campPos2);
-            var minCampDist = 3;
+            var minCampDist = 4;
             var maxCampDist = Math.min(15, maxPathLengthC2P);
             for (var i = 0; i < allCamps.length; i++) {
                 var campPos = allCamps[i];
                 if (campPos.level == pos.level || campPos.level == pos.level - 1) {
-                    log.i(pos + " vs camp pos " + campPos + ", dist: " + dist);
                     var dist = PositionConstants.getDistanceTo(pos, campPos);
                     if (dist < minCampDist) return false;
                     if (dist > maxCampDist) return false;
@@ -269,6 +268,26 @@ define([
                 var dist = PositionConstants.getDistanceTo(pos, passageUp);
                 if (dist < minPassageDist) return false;
                 if (dist > maxPassageDist && !isCampableLevel) return false;
+            }
+            
+            // check that late passage isn't between early passage and camps on this level (similar direction and shorter distance)
+            if (passageUp) {
+                var posE = level <= 13 ? passageUp : pos;
+                var posL = level <= 13 ? pos : passageUp;
+                for (var i = 0; i < allCamps.length; i++) {
+                    var campPos = allCamps[i];
+                    if (campPos.level == pos.level) {
+                        var dirE = PositionConstants.getDirectionFrom(campPos, posE);
+                        var dirL = PositionConstants.getDirectionFrom(campPos, posL);
+                        if (dirE == dirL) {
+                            var distE = PositionConstants.getDistanceTo(campPos, posE);
+                            var distL = PositionConstants.getDistanceTo(campPos, posL);
+                            if (distL < distE) {
+                                return false;
+                            }
+                        }
+                    }
+                }
             }
             
             return true;

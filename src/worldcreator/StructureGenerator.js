@@ -35,7 +35,6 @@ define([
             
             // create required paths
             this.createRequiredPaths(seed, worldVO, levelVO, requiredPaths);
-            
             // create random shapes to fill the level
             for (var i = 0; i < stages.length; i++) {
                 var stageVO = stages[i];
@@ -50,9 +49,10 @@ define([
             var attempts = 0;
             var maxAttempts = 1000;
             var maxSectors = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, stageVO.stage);
-            var options = this.getDefaultOptions({ stage: stageVO.stage });
             while (levelVO.getNumSectorsByStage(stageVO.stage) <= maxSectors && attempts < maxAttempts) {
                 attempts++;
+                var canConnectToDifferentStage = attempts > 5 && attempts % 5 == 0 && stageVO.stage != WorldConstants.CAMP_STAGE_EARLY;
+                var options = this.getDefaultOptions({ stage: stageVO.stage, canConnectToDifferentStage: canConnectToDifferentStage });
                 if (attempts % 2 !== 0) {
                     this.createRectangles(seed, attempts, levelVO, options);
                 } else {
@@ -71,16 +71,17 @@ define([
                 startPos = path.start.clone();
                 endPos = path.end.clone();
                 // generate required path
-                var overshoot = WorldCreatorRandom.randomInt(seed % 22 * 100 + levelVO.level * 10 + i * 66, 2, 8);
                 var existingSectors = levelVO.sectors.concat();
-                var path = this.createPathBetween(seed, levelVO, startPos, endPos, path.maxlen, path.type, overshoot);
+                var options1 = this.getDefaultOptions({ stage: path.stage, criticalPathType: path.type});
+                var path = this.createPathBetween(seed, levelVO, startPos, endPos, path.maxlen, options1);
                 // ensure new path is connected to the rest of the level
                 worldVO.resetPaths();
                 var pathToCenter = WorldCreatorRandom.findPath(worldVO, startPos, existingSectors[0].position, false, true);
                 if (!pathToCenter) {
                     var pair = WorldCreatorHelper.getClosestPair(existingSectors, path);
                     var pairDist = PositionConstants.getDistanceTo(pair[0].position, pair[1].position);
-                    this.createPathBetween(seed, levelVO, pair[0].position, pair[1].position, -1, path.type);
+                    var options2 = this.getDefaultOptions();
+                    this.createPathBetween(seed, levelVO, pair[0].position, pair[1].position, -1, options2);
                 }
             }
         },
@@ -124,20 +125,18 @@ define([
             }
         },
         
-        createPathBetween: function (seed, levelVO, startPos, endPos, maxlen, pathType, overshoot) {
-            overshoot = overshoot || 0;
+        createPathBetween: function (seed, levelVO, startPos, endPos, maxlen, options) {
             var l = levelVO.level;
             var dist = Math.ceil(PositionConstants.getDistanceTo(startPos, endPos));
             var result = [];
-            var options = this.getDefaultOptions({ criticalPathType: pathType });
             
             var pathLength;
             var totalLength = dist;
             if (dist == 0) {
-                result.push(this.createSector(levelVO, startPos, options).vo);
+                this.createAddSector(result, levelVO, startPos, options);
             } else if (dist == 1) {
-                result.push(this.createSector(levelVO, startPos, options).vo);
-                result.push(this.createSector(levelVO, endPos, options).vo);
+                this.createAddSector(result, levelVO, startPos, options);
+                this.createAddSector(result, levelVO, endPos, options);
             } else {
                 var allowDiagonals = WorldCreatorRandom.randomBool(50000 + (l + 5) * 55 + dist * 555);
                 var currentPos = startPos;
@@ -150,6 +149,7 @@ define([
                     pathLength = PositionConstants.getDistanceInDirection(currentPos, endPos, direction) + 1;
                     pathResult = this.createPath(levelVO, currentPos, direction, pathLength, true, options);
                     result = result.concat(pathResult.path);
+                    if (!pathResult.completed) break;
                     currentPos = PositionConstants.getPositionOnPath(currentPos, direction, pathLength - 1);
                     i++;
                     if (i > 100) break;
@@ -211,7 +211,12 @@ define([
                     continue;
                 }
 
-				result.push(this.createSector(levelVO, sectorPos, options).vo);
+                var sectorResult = this.createSector(levelVO, sectorPos, options);
+                if (sectorResult.vo) {
+	                result.push(sectorResult.vo);
+                } else {
+                    return { path: result, completed: false };
+                }
             }
             return { path: result, completed: true };
         },
@@ -242,7 +247,7 @@ define([
             
             var i = 0;
             while (currentPair.pathDist > 15 && levelVO.sectors.length < levelVO.maxSectors && i < 100) {
-                var sectors = this.createPathBetween(0, levelVO, currentPair.sectors[0].position, currentPair.sectors[1].position);
+                var sectors = this.createPathBetween(i, levelVO, currentPair.sectors[0].position, currentPair.sectors[1].position);
                 for (var j = 0; j < sectors.length; j++) {
                     sectors[j].isFill = true;
                 }
@@ -251,32 +256,59 @@ define([
                 i++;
             }
         },
+        
+        createAddSector: function (arr, levelVO, sectorPos, options) {
+            var sectorResult = this.createSector(levelVO, sectorPos, options);
+            if (sectorResult.vo) {
+                arr.push(sectorResult.vo);
+            }
+        },
 
 		createSector: function (levelVO, sectorPos, options) {
             options = options || this.getDefaultOptions();
             var stage = options.stage || this.getDefaultStage(levelVO, sectorPos);
             var criticalPathType = options.criticalPathType;
             var sectorVO = levelVO.getSector(sectorPos.sectorX, sectorPos.sectorY);
-            var isNew = !sectorVO;
+            var exists = sectorVO != null;
+            var created = false;
             
-            if (isNew) {
-    			sectorVO = new SectorVO(sectorPos, levelVO.isCampable, levelVO.notCampableReason);
-                sectorVO.stage = stage;
-                sectorVO.isCamp = levelVO.isCampPosition(sectorPos);
-                sectorVO.isPassageUp = levelVO.isPassageUpPosition(sectorPos);
-                sectorVO.isPassageDown = levelVO.isPassageDownPosition(sectorPos);
-                if (criticalPathType) {
-                    sectorVO.addToCriticalPath(criticalPathType);
-                }
-    			var added = levelVO.addSector(sectorVO);
-                if (!added) {
-                    isNew = false;
-                    sectorVO = null;
+            if (!exists) {
+                var isValid = this.isValidSectorPosition(levelVO, sectorPos, stage, options);
+                if (isValid) {
+        			sectorVO = new SectorVO(sectorPos, levelVO.isCampable, levelVO.notCampableReason);
+                    sectorVO.stage = stage;
+                    sectorVO.isCamp = levelVO.isCampPosition(sectorPos);
+                    sectorVO.isPassageUp = levelVO.isPassageUpPosition(sectorPos);
+                    sectorVO.isPassageDown = levelVO.isPassageDownPosition(sectorPos);
+                    if (criticalPathType) {
+                        sectorVO.addToCriticalPath(criticalPathType);
+                    }
+        			created = levelVO.addSector(sectorVO);
+                } else {
+                    log.w("invalid sector pos: " + sectorPos + " " + stage);
                 }
             }
             
-            return { isNew: isNew, vo: sectorVO };
+            return { isNew: created, vo: sectorVO };
 		},
+        
+        isValidSectorPosition: function (levelVO, sectorPos, stage, options) {
+            if (!options.criticalPathType) {
+                for (var levelStage in levelVO.stageCenterPositions) {
+                    if (levelStage == stage) continue;
+                    var positions = levelVO.stageCenterPositions[levelStage];
+                    for (var i = 0; i < positions.length; i++) {
+                        var pos = positions[i];
+                        var dist = PositionConstants.getDistanceTo(pos, sectorPos);
+                        if (dist < 2) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        },
+        
         getRequiredPaths: function (worldVO, levelVO) {
             var level = levelVO.level;
             var campOrdinal = levelVO.campOrdinal;
@@ -293,13 +325,14 @@ define([
                 // passages up -> camps -> passages down
                 var isGoingDown = level <= 13 && level >= worldVO.bottomLevel;
                 var passageUpPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
-                var passageUpStage = isGoingDown ? WorldConstants.CAMP_STAGE_EARLY : WorldConstants.CAMP_STAGE_LATE;
+                var passageUpStage = isGoingDown ? WorldConstants.CAMP_STAGE_EARLY : null;
                 var passageDownPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE : WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP;
-                var passageDownStage = isGoingDown ? WorldConstants.CAMP_STAGE_LATE : WorldConstants.CAMP_STAGE_EARLY;
+                var passageDownStage = isGoingDown ? null : WorldConstants.CAMP_STAGE_EARLY;
                 if (level == 13) {
                     passageUpPathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
-                    passageDownStage = WorldConstants.CAMP_STAGE_LATE;
+                    passageUpStage = null;
                     passageDownPathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+                    passageDownStage = null;
                 }
                 for (var i = 1; i < campPositions.length; i++) {
                     requiredPaths.push({ start: campPositions[0], end: campPositions[i], maxlen: -1, type: "camp_pos_to_camp_pos", stage: WorldConstants.CAMP_STAGE_EARLY });
@@ -332,6 +365,8 @@ define([
         getPathStartingPositions: function (levelVO, options) {
             if (!options.stage)
                 return levelVO.sectors;
+            if (options.canConnectToDifferentStage)
+                return levelVO.sectors;
             var stageSectors = levelVO.getSectorsByStage(options.stage);
             if (stageSectors && stageSectors.length > 0)
                 return stageSectors;
@@ -360,7 +395,7 @@ define([
         
         getDefaultOptions: function (options) {
             options = options || {};
-            return { stage: options.stage, criticalPathType: options.criticalPathType };
+            return { stage: options.stage, criticalPathType: options.criticalPathType, canConnectToDifferentStage: options.canConnectToDifferentStage };
         },
 
     };
