@@ -13,10 +13,12 @@ define([
     var StructureGenerator = {
         
         prepareStructure: function (seed, worldVO) {
+            this.currentFeatures = worldVO.features;
 			for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var levelVO = worldVO.levels[l];
                 this.createLevelStructure(seed, worldVO, levelVO);
             }
+            this.currentFeatures = null;
         },
         
         createLevelStructure: function(seed, worldVO, levelVO) {
@@ -31,7 +33,7 @@ define([
             if (l < 8) centerSize = 3;
             if (l === bottomLevel) centerSize = 7;
             if (l === topLevel) centerSize = 3;
-            this.createRectangleFromCenter(levelVO, 0, new PositionVO(levelVO.level, 0, 0), centerSize * 2, centerSize * 2);
+            this.createRectangleFromCenter(levelVO, 0, new PositionVO(levelVO.level, i, 0), centerSize * 2 - i, centerSize * 2 - i);
             
             // create required paths
             this.createRequiredPaths(seed, worldVO, levelVO, requiredPaths);
@@ -75,13 +77,15 @@ define([
                 var options1 = this.getDefaultOptions({ stage: path.stage, criticalPathType: path.type});
                 var path = this.createPathBetween(seed, levelVO, startPos, endPos, path.maxlen, options1);
                 // ensure new path is connected to the rest of the level
-                worldVO.resetPaths();
-                var pathToCenter = WorldCreatorRandom.findPath(worldVO, startPos, existingSectors[0].position, false, true);
-                if (!pathToCenter) {
-                    var pair = WorldCreatorHelper.getClosestPair(existingSectors, path);
-                    var pairDist = PositionConstants.getDistanceTo(pair[0].position, pair[1].position);
-                    var options2 = this.getDefaultOptions();
-                    this.createPathBetween(seed, levelVO, pair[0].position, pair[1].position, -1, options2);
+                if (existingSectors.length > 0) {
+                    worldVO.resetPaths();
+                    var pathToCenter = WorldCreatorRandom.findPath(worldVO, startPos, existingSectors[0].position, false, true);
+                    if (!pathToCenter) {
+                        var pair = WorldCreatorHelper.getClosestPair(existingSectors, path);
+                        var pairDist = PositionConstants.getDistanceTo(pair[0].position, pair[1].position);
+                        var options2 = this.getDefaultOptions();
+                        this.createPathBetween(seed, levelVO, pair[0].position, pair[1].position, -1, options2);
+                    }
                 }
             }
         },
@@ -293,6 +297,9 @@ define([
 		},
         
         isValidSectorPosition: function (levelVO, sectorPos, stage, options) {
+            // blocking features
+            if (WorldCreatorHelper.containsBlockingFeature(sectorPos, this.currentFeatures)) return false;
+            // blocking stage elements
             if (!options.criticalPathType) {
                 for (var levelStage in levelVO.stageCenterPositions) {
                     if (levelStage == stage) continue;

@@ -610,6 +610,16 @@ define([
 			return level >= highest - 5;
 		},
         
+        containsBlockingFeature: function (pos, features) {
+            for (var i = 0; i < features.length; i++) {
+                var feature = features[i];
+                if (feature.containsPosition(pos)) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        
     };
 
     return WorldCreatorHelper;

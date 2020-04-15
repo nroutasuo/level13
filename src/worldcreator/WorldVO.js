@@ -35,6 +35,16 @@ define(['ash'], function (Ash) {
             return result;
         },
         
+        getFeatures: function (pos) {
+            var result = [];
+            for (var i = 0; i < this.features.length; i++) {
+                if (this.features[i].containsPosition(pos)) {
+                    result.push(this.features[i]);
+                }
+            }
+            return result;
+        },
+        
         getPath: function (pos1, pos2, blockedByBlockers) {
             if (!this.paths) return null;
             var key = this.getPathKey(pos1, pos2, blockedByBlockers);

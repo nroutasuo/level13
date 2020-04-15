@@ -4,6 +4,7 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
     var WorldCreatorDebug = {
         
         printWorldTemplate: function (worldVO) {
+            console.groupCollapsed("World seed " + worldVO.seed);
             var s = "";
 			for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var campOrdinal = WorldCreatorHelper.getCampOrdinal(worldVO.seed, l);
@@ -33,23 +34,26 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                 if (posDown) pieces[posDown.sectorX + r] = "D";
                 for (var i = 0; i < worldVO.campPositions[l].length; i++) {
                     var campPos = worldVO.campPositions[l][i];
-                    pieces[campPos.sectorX + r] = "C";
+                    pieces[campPos.sectorX + r] = "{C|red}";
                 }
                 
                 var ls = this.addPadding(l, 2);
                 var cs = this.addPadding(campOrdinal, 2);
-                s += "lvl " + ls + " camp " + cs + "\t" + pieces.join("") +  "\n";
+                s += "lvl " + ls + " camp " + cs + "  " + pieces.join("") +  "\n";
             }
-            log.i(s);
+            this.printWithHighlights(s);
+            console.groupEnd();
         },
         
         printLevelTemplates: function (worldVO) {
+            console.groupCollapsed("Level templates");
             for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var levelVO = worldVO.levels[l];
                 var stages = worldVO.getStages(l);
                 var stagess = stages.map(stage => stage.stage).join(",");
                 log.i("Level " + levelVO.level + ", camp ordinal: " + levelVO.campOrdinal + ", stages: " + stagess + ", sectors: " + levelVO.numSectors + ", zones: " + levelVO.zones.length);
             }
+            console.groupEnd();
         },
         
         printLevelStructure: function (worldVO) {
@@ -138,7 +142,7 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
 				for (var x = minX - 1; x <= maxX + 1; x++) {
 					if (levelVO.hasSector(x, y)) {
                         var sectorVO = levelVO.getSector(x, y);
-                        var defaultColor = sectorVO.stage == WorldConstants.CAMP_STAGE_EARLY ? "#555" : "#aaa";
+                        var defaultColor = sectorVO.stage == WorldConstants.CAMP_STAGE_EARLY ? "#555" : "#999";
                         //var criticalPath = sectorVO.getCriticalPathC();
                         //var zone = sectorVO.getZoneC();
                         if (sectorVO.isPassageUp && sectorVO.isPassageDown)
@@ -166,33 +170,35 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                         else
                             print += "{·|" + defaultColor + "} ";
 					} else {
-                        print += "  ";
+                        var features = worldVO.getFeatures({ level: levelVO.level, sectorX: x, sectorY: y});
+                        if (features.length > 0) {
+                            print += "{H|#ddd} ";
+                        } else {
+                            print += "  ";
+                        }
                     }
 				}
 			}
             this.printWithHighlights(print);
-			//log.i(print);
             console.groupEnd();
 		},
         
         printWithHighlights: function (text) {
-            var splitText = text.split(' ');
+            var splitText = text.split(/\}|\{/);
             var cssRules = [];
             var styledText = '';
             for (var split of splitText)  {
                 var content = split;
-                if (/^\{/.test(split)) {
-                    var parts = split.split("|");
+                var parts = split.split("|");
+                if (parts.length > 1) {
                     content = parts[0];
-                    var color = parts.length > 1 ? parts[1].replace("}","") : "blue";
+                    var color = parts[1];
                     cssRules.push('color:' + color);
                 } else {
                     cssRules.push('color:inherit')
                 }
-                styledText += `%c${content} `
+                styledText += `%c${content}`
             };
-            styledText = styledText.replace(/\{/g, "");
-            styledText = styledText.replace(/\}/g, "");
             console.log(styledText , ...cssRules)
         },
         

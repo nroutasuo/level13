@@ -223,7 +223,7 @@ define([
 
         isValidCampPos: function (pos, positionsByLevel, features) {
             // blocked: positions in holes etc
-            if (WorldGenerator.containsBlockingFeature(pos, features)) return false;
+            if (WorldCreatorHelper.containsBlockingFeature(pos, features)) return false;
             // blocked: positions too close to camp positions on previous few levels (so that on levels between them passages up/down don't end up too close)
             var threshold = 5;
             for (var i = 2; i <= 3; i++) {
@@ -245,7 +245,7 @@ define([
             var level = pos.level;
             
             // check blocking features like holes
-            if (WorldGenerator.containsBlockingFeature(pos, features)) return false;
+            if (WorldCreatorHelper.containsBlockingFeature(pos, features)) return false;
             
             // check that not too close or not too far from camps on this level or the level below
             var allCamps = campPos1.concat(campPos2);
@@ -291,16 +291,6 @@ define([
             }
             
             return true;
-        },
-        
-        containsBlockingFeature: function (pos, features) {
-            for (var i = 0; i < features.length; i++) {
-                var feature = features[i];
-                if (feature.containsPosition(pos)) {
-                    return true;
-                }
-            }
-            return false;
         },
 
     };
