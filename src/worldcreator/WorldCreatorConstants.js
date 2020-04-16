@@ -11,14 +11,10 @@ function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
         
         DIAGONAL_PATH_PROBABILITY: 0.1,
         
-        SURFACE_BLAST_RADIUS: 10,
-        BELOW_SURFACE_BLAST_RADIUS: 6,
-        CENTRAL_CORRIDOR_RADIUS: 5,
         TOWER_RADIUS: 20,
-        
-        MIN_CENTRAL_AREA_SIZE: 10,
-        MAX_CENTRAL_AREA_SIZE: 25,
-        MAIN_AREA_SIZE: 50,
+        AREA_SIZE_CENTRAL: 20,
+        AREA_SIZE_MEDIUM: 30,
+        AREA_SIZE_OUTSKIRTS: 40,
         SECTOR_PATH_LENGTH_MIN: 6,
         SECTOR_PATH_LENGTH_MAX: 15,
         SECTOR_RECT_EDGE_LENGTH_MAX: 20,

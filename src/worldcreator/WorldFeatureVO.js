@@ -1,4 +1,4 @@
-define(['ash'], function (Ash) {
+define(['ash', 'worldcreator/WorldCreatorConstants'], function (Ash, WorldCreatorConstants) {
 
     var WorldFeatureVO = Ash.Class.extend({
         
@@ -30,23 +30,32 @@ define(['ash'], function (Ash) {
         
         getMinX: function () {
             if (this.sizeX <= 1) return this.posX;
-            return this.posX - Math.floor((this.sizeX-1)/2);
+            return this.posX - Math.floor((this.sizeX)/2);
         },
         
         getMaxX: function () {
             if (this.sizeX <= 1) return this.posX;
-            return this.posX + Math.ceil((this.sizeX-1)/2);
+            return this.posX + Math.floor((this.sizeX)/2);
         },
         
         getMinY: function () {
             if (this.sizeY <= 1) return this.posY;
-            return this.posY - Math.floor((this.sizeY-1)/2);
+            return this.posY - Math.floor((this.sizeY)/2);
         },
         
         getMaxY: function () {
-            if (this.posY <= 1) return this.posY;
-            return this.posY + Math.ceil((this.sizeY-1)/2);
+            if (this.sizeY <= 1) return this.posY;
+            return this.posY + Math.floor((this.sizeY)/2);
         },
+        
+        isBuilt: function () {
+            switch (this.type) {
+                case WorldCreatorConstants.FEATURE_HOLE_COLLAPSE:
+                    return false;
+                default:
+                    return true;
+            }
+        }
         
     });
 

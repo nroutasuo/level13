@@ -13,6 +13,12 @@ define(['ash'], function (Ash) {
 			this.sectorY = sectorY;
         },
         
+        normalize: function () {
+            this.level = Math.round(this.level);
+            this.sectorX = Math.round(this.sectorX);
+            this.sectorY = Math.round(this.sectorY);
+        },
+        
         getInGameFormat: function (includeLevel) {
             var sectorXS = this.sectorX < 0 ? -this.sectorX + "W" : this.sectorX + "E";
             var sectorYS = this.sectorY < 0 ? -this.sectorY + "N" : this.sectorY + "S";

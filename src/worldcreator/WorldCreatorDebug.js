@@ -127,19 +127,19 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
 			var print = "\t";
             var rx = 20;
             var ry = 10;
-            var minX = Math.min(levelVO.minX, -rx);
-            var maxX = Math.max(levelVO.maxX, rx);
-            var minY = Math.min(levelVO.minY, -ry);
-            var maxY = Math.max(levelVO.maxY, ry);
+            var minX = Math.min(levelVO.minX-1, -rx);
+            var maxX = Math.max(levelVO.maxX+1, rx);
+            var minY = Math.min(levelVO.minY-1, -ry);
+            var maxY = Math.max(levelVO.maxY+2, ry);
 		
 			for (var x = minX; x <= maxX; x++) {
 				print += String(x).length > 1 ? String(x).substring(0, 2) : x + " ";
 			}
 		
-			for (var y = minY - 1; y <= maxY + 1; y++) {
+			for (var y = minY; y <= maxY; y++) {
 				print += "\n";
 				print += y + "\t";
-				for (var x = minX - 1; x <= maxX + 1; x++) {
+				for (var x = minX; x <= maxX; x++) {
 					if (levelVO.hasSector(x, y)) {
                         var sectorVO = levelVO.getSector(x, y);
                         var defaultColor = sectorVO.stage == WorldConstants.CAMP_STAGE_EARLY ? "#555" : "#999";
@@ -175,9 +175,11 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                         if (levelVO.levelCenterPosition.equals(position)) {
                             print += "{C|#eb2} ";
                         } else if (features.length > 0) {
-                            print += "{H|#ddd} ";
+                            var feature = features[0];
+                            var char = feature.isBuilt() ? "T" : "H";
+                            print += "{" + char + "|#ddd} ";
                         } else {
-                            print += "  ";
+                            print += "{·|#eee} ";
                         }
                     }
 				}
