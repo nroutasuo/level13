@@ -22,8 +22,8 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
             return this.getPositionOnPath(sectorPos, direction, 1);
         },
         
-        getPositionOnPath: function (pathStartingPos, pathDirection, pathStep) {
-            var resultPos = pathStartingPos.clone();
+        getPositionOnPath: function (pathStartPos, pathDirection, pathStep, round) {
+            var resultPos = pathStartPos.clone();
             
             if (pathDirection === this.DIRECTION_NORTH || pathDirection === this.DIRECTION_NE || pathDirection === this.DIRECTION_NW)
                 resultPos.sectorY -= pathStep;
@@ -37,11 +37,38 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
             if (pathDirection === this.DIRECTION_UP) resultPos.level += pathStep;
             if (pathDirection === this.DIRECTION_DOWN) resultPos.level -= pathStep;
             
+            if (round) resultPos.normalize();
+            
             return resultPos;
+        },
+        
+        isOnPath: function (pos, pathStartPos, pathDirection, len) {
+            for (var i = 0; i < len; i++) {
+                var posOnPath = this.getPositionOnPath(pathStartPos, pathDirection, i);
+                if (pos.equals(posOnPath)) {
+                    return true;
+                }
+            }
+            return false;
         },
         
         isPositionInArea: function (sectorPos, areaSize) {
             return Math.abs(sectorPos.sectorX) <= areaSize && Math.abs(sectorPos.sectorY) <= areaSize;
+        },
+        
+        getAllPositionsInArea: function (pos, areaSize) {
+            pos = pos || new PositionVO(0, 0, 0);
+            var result = [];
+            result.push(new PositionVO(pos.level, pos.sectorX, pos.sectorY));
+            for (var x = 1; x <= areaSize; x++) {
+                for (var y = 1; y <= areaSize; y++) {
+                    result.push(new PositionVO(pos.level, pos.sectorX + x, pos.sectorY + y));
+                    result.push(new PositionVO(pos.level, pos.sectorX + x, pos.sectorY - y));
+                    result.push(new PositionVO(pos.level, pos.sectorX - x, pos.sectorY + y));
+                    result.push(new PositionVO(pos.level, pos.sectorX - x, pos.sectorY - y));
+                }
+            }
+            return result;
         },
         
         getYDirectionFrom: function (sectorPosFrom, sectorPosTo) {
