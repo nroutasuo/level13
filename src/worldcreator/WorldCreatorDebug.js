@@ -153,6 +153,8 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                             print += "{D|blue} ";
                         else if (sectorVO.isCamp)
                             print += "{C|red} ";
+                        else if (sectorVO.isPreferredConnection)
+                            print += "{P|" + defaultColor + "} ";
                         else if (sectorVO.isFill)
                             print += "{F|" + defaultColor + "} ";
                         else if (sectorVO.stage == WorldConstants.CAMP_STAGE_EARLY)

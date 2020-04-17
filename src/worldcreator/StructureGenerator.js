@@ -52,24 +52,26 @@ define([
             var s1 = (seed % 4 + 1) * 11 + (l + 9) * 666;
             var s2 = (seed % 6 + 1) * 9 + (l + 7) * 331;
             var s3 = (seed % 3 + 1) * 5 + (l + 11) * 561;
-            var sr = 10000 + seed % 100 + l * 66 + levelVO.campOrdinal * 22 + levelVO.numSectors;
+            var s4 = 10000 + seed % 100 + l * 66 + levelVO.campOrdinal * 22 + levelVO.numSectors;
             var pois = [];
             if (levelVO.passageUpPosition) pois.push(levelVO.passageUpPosition);
             if (levelVO.passageDownPosition) pois.push(levelVO.passageDownPosition);
-            var rand =  WorldCreatorRandom.random(sr);
-            if (rand < 0.15) {
-                this.createCentralParallels(s1, s2, s3, worldVO, levelVO, position, pois);
-            } else if (rand < 0.3) {
-                this.createCentralCrossings(s1, s2, s3, worldVO, levelVO, position, pois);
-            } else if (rand < 0.45) {
-                this.createCentralPlaza(s1, s2, s3, worldVO, levelVO, position, pois);
-            } else if (rand < 0.6) {
-                this.createCentralRectanglesSide(s1, s2, s3, worldVO, levelVO, position, pois);
-            } else if (rand < 0.7) {
-                this.createCentralRectanglesNested(s1, s2, s3, worldVO, levelVO, position, pois);
+            
+            var validShapes = [];
+            if (l == 13) {
+                validShapes = [ this.createCentralParallels, this.createCentralCrossings, this.createCentralRectanglesSide, this.createCentralRectanglesNested, this.createCentralRectanglesSimple ];
+            } else if (l == 14) {
+                validShapes = [ this.createCentralCrossings ];
+            } else if (l == worldVO.topLevel) {
+                validShapes = [ this.createCentralRectanglesNested ];
+            } else if (l == worldVO.bottomLevel) {
+                validShapes = [ this.createCentralRectanglesSide ];
             } else {
-                this.createCentralRectanglesSimple(s1, s2, s3, worldVO, levelVO, position, pois);
+                validShapes = [ this.createCentralParallels, this.createCentralCrossings, this.createCentralPlaza, this.createCentralRectanglesSide, this.createCentralRectanglesNested, this.createCentralRectanglesSimple ];
             }
+            var index = WorldCreatorRandom.randomInt(s4, 0, validShapes.length);
+            var shape = validShapes[index];
+            shape.apply(this, [s1, s2, s3, worldVO, levelVO, position, pois]);
         },
         
         createCentralParallels: function (s1, s2, s3, worldVO, levelVO, position, pois) {
@@ -264,13 +266,28 @@ define([
                 center.sectorY = poi.sectorY + WorldCreatorRandom.randomInt(s2, -1, 2);
             }
             center.normalize();
-            var size = 3;
-            var corner = Math.floor(size / 2) + 1;
-            this.createRectangleFromCenter(levelVO, 0, center, 3, 3);
-            this.createSector(levelVO, new PositionVO(levelVO.level, center.sectorX+corner, center.sectorY+corner));
-            this.createSector(levelVO, new PositionVO(levelVO.level, center.sectorX-corner, center.sectorY+corner));
-            this.createSector(levelVO, new PositionVO(levelVO.level, center.sectorX-corner, center.sectorY-corner));
-            this.createSector(levelVO, new PositionVO(levelVO.level, center.sectorX+corner, center.sectorY-corner));
+            
+            var size = 3 + WorldCreatorRandom.randomInt(s3, 0, 2) * 2;
+            this.createRectangleFromCenter(levelVO, 0, center, size, size);
+            
+            var cornerlen = 3 + WorldCreatorRandom.randomInt(s1, 0, 4) * 2;
+            var makeCorner = function (dir) {
+                var startPos = PositionConstants.getPositionOnPath(center, dir, 2);
+                StructureGenerator.createPath(levelVO, startPos, dir, cornerlen);
+            };
+            if (WorldCreatorRandom.randomBool(s2)) {
+                makeCorner(PositionConstants.DIRECTION_NE);
+                makeCorner(PositionConstants.DIRECTION_NW);
+                makeCorner(PositionConstants.DIRECTION_SE);
+                makeCorner(PositionConstants.DIRECTION_SW);
+            } else {
+                makeCorner(PositionConstants.DIRECTION_NORTH);
+                makeCorner(PositionConstants.DIRECTION_WEST);
+                makeCorner(PositionConstants.DIRECTION_SOUTH);
+                makeCorner(PositionConstants.DIRECTION_EAST);
+            }
+        },
+        
         },
         
         generateLevelStage: function (seed, worldVO, levelVO, stageVO) {
@@ -549,19 +566,20 @@ define([
 		},
         
         isValidSectorPosition: function (levelVO, sectorPos, stage, options) {
+            // exception for critical paths
+            if (options.criticalPathType) return { isValid: true };
             // blocking features
-            //if (WorldCreatorHelper.containsBlockingFeature(sectorPos, this.currentFeatures)) return { isValid: false, reason: "feature" };
+            if (WorldCreatorHelper.containsBlockingFeature(sectorPos, this.currentFeatures, true))
+                return { isValid: false, reason: "feature" };
             // blocking stage elements
-            if (!options.criticalPathType) {
-                for (var levelStage in levelVO.stageCenterPositions) {
-                    if (levelStage == stage) continue;
-                    var positions = levelVO.stageCenterPositions[levelStage];
-                    for (var i = 0; i < positions.length; i++) {
-                        var pos = positions[i];
-                        var dist = PositionConstants.getDistanceTo(pos, sectorPos);
-                        if (dist < 2) {
-                            return { isValid: false, reason: "stage" };
-                        }
+            for (var levelStage in levelVO.stageCenterPositions) {
+                if (levelStage == stage) continue;
+                var positions = levelVO.stageCenterPositions[levelStage];
+                for (var i = 0; i < positions.length; i++) {
+                    var pos = positions[i];
+                    var dist = PositionConstants.getDistanceTo(pos, sectorPos);
+                    if (dist < 2) {
+                        return { isValid: false, reason: "stage" };
                     }
                 }
             }
@@ -577,18 +595,24 @@ define([
             var checkOffset = function (x, y) {
                 var matches = 0;
                 var paths = getPathsFunc(x, y);
-                for (var p = 0; p < pois.length; p++) {
-                    var poi = pois[p];
-                    for (var i = 0; i < paths.length; i++) {
-                        var path = paths[i];
+                for (var i = 0; i < paths.length; i++) {
+                    var path = paths[i];
+                    for (var p = 0; p < pois.length; p++) {
+                        var poi = pois[p];
                         if (PositionConstants.isOnPath(poi, path.startPos, path.dir, path.len)) {
                             matches++;
+                        }
+                    }
+                    for (var j = 0; j < path.len; j++) {
+                        var pos = PositionConstants.getPositionOnPath(path.startPos, path.dir, j);
+                        if (WorldCreatorHelper.containsBlockingFeature(pos, StructureGenerator.currentFeatures, true)) {
+                            matches--;
                         }
                     }
                 }
                 return matches;
             };
-            var bestmatches = 0;
+            var bestmatches = -99;
             var candidates = PositionConstants.getAllPositionsInArea(null, maxoffset);
             for (var i = 0; i < candidates.length; i++) {
                 var matches = checkOffset(candidates[i].sectorX, candidates[i].sectorY);

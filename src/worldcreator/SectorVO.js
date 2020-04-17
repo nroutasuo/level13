@@ -3,18 +3,18 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
 
     var SectorVO = Ash.Class.extend({
 	
-        constructor: function (position, isCampableLevel, notCampableReason, requiredResources) {
+        constructor: function (position, isCampableLevel, notCampableReason) {
             this.id = Math.floor(Math.random() * 100000);
 			this.position = position;
             this.level = position.level;
             this.campableLevel = isCampableLevel;
             this.notCampableReason = notCampableReason;
-            this.requiredResources = requiredResources ? requiredResources : new ResourcesVO();
             
             this.isCamp = false;
             this.isPassageUp = false;
             this.isPassageDown = false;
             
+            this.requiredResources = new ResourcesVO();
             this.criticalPaths = [];
             this.locales = [];
 			this.movementBlockers = {};

@@ -610,9 +610,10 @@ define([
 			return level >= highest - 5;
 		},
         
-        containsBlockingFeature: function (pos, features) {
+        containsBlockingFeature: function (pos, features, allowNonBuilt) {
             for (var i = 0; i < features.length; i++) {
                 var feature = features[i];
+                if (allowNonBuilt && !feature.isBuilt()) continue;
                 if (feature.containsPosition(pos)) {
                     return true;
                 }
