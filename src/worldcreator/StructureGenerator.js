@@ -216,9 +216,18 @@ define([
             var outerS = innerS + 4 + WorldCreatorRandom.randomInt(s2, 0, 4) * 2;
             var getPaths = function (ox, oy) {
                 var result = [];
-                var pos = new PositionVO(position.level, position.sectorX + ox, position.sectorY + oy)
+                var pos = new PositionVO(position.level, position.sectorX + ox, position.sectorY + oy);
+                pos.normalize();
                 result = result.concat(StructureGenerator.getRectangleFromCenter(levelVO, 0, pos, innerS, innerS, false, isDiagonal));
                 result = result.concat(StructureGenerator.getRectangleFromCenter(levelVO, 0, pos, outerS, outerS, false, isDiagonal));
+                var numConnections = WorldCreatorRandom.randomInt(s3, 2, 4);
+                for (var i = 0; i < numConnections; i ++) {
+                    var connectionDir = WorldCreatorRandom.randomDirections(s3 + i * 1001, 1, true)[0];
+                    var connectionStartPos = PositionConstants.getPositionOnPath(pos, connectionDir, Math.round(innerS/2));
+                    var connectionLen = outerS / 2 - innerS / 2;
+                    if (isDiagonal && !PositionConstants.isDiagonal(connectionDir)) connectionLen = outerS - innerS;
+                    result.push(StructureGenerator.getPath(levelVO, connectionStartPos, connectionDir, connectionLen));
+                }
                 return result;
             };
             
@@ -330,7 +339,7 @@ define([
 
         getRectangleFromCenter: function (levelVO, i, center, w, h, forceComplete, isDiagonal) {
             if (isDiagonal) {
-                var corner = new PositionVO(center.level, center.sectorX, Math.round(center.sectorY - h));
+                var corner = new PositionVO(center.level, center.sectorX, center.sectorY - h + 1);
                 return this.getRectangle(levelVO, i, corner, w, h, PositionConstants.DIRECTION_SE, null, forceComplete);
             } else {
                 var corner = new PositionVO(center.level, Math.round(center.sectorX - w / 2), Math.round(center.sectorY - h / 2));
