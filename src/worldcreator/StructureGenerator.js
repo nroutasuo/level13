@@ -28,6 +28,9 @@ define([
             // create central structure
             this.createCentralStructure(seed, worldVO, levelVO);
             
+            // create other predefined structures
+            this.createSmallStructures(seed, worldVO, levelVO);
+            
             // create required paths
             var requiredPaths = this.getRequiredPaths(worldVO, levelVO);
             this.createRequiredPaths(seed, worldVO, levelVO, requiredPaths);
@@ -74,6 +77,20 @@ define([
             shape.apply(this, [s1, s2, s3, worldVO, levelVO, position, pois]);
         },
         
+        createSmallStructures: function (seed, worldVO, levelVO) {
+            var l = levelVO.level;
+            var s1 = (seed % 8 + 1) * 16 + (l + 11) * 76;
+            var s2 = (seed % 11 + 1) * 12 + (l + 4) * 199;
+            var s3 = (seed % 15 + 1) * 8 + (l + 7) * 444;
+            
+            if (levelVO.campPositions.length > 0) {
+                var existingSectors = levelVO.sectors.concat();
+                var pos = PositionConstants.getMiddlePoint(levelVO.campPositions);
+                var result = this.createSmallRectangle(s1, s2, s3, worldVO, levelVO, pos, levelVO.campPositions);
+                this.connectNewPath(worldVO, levelVO, existingSectors, result);
+            }
+        },
+        
         createCentralParallels: function (s1, s2, s3, worldVO, levelVO, position, pois) {
             var l = levelVO.level;
             
@@ -82,7 +99,7 @@ define([
             var num = WorldCreatorRandom.randomInt(s1, 2, max + 1);
             
             // choose length
-            var minlen = Math.min(11 + (max - num) * 2, levelVO.numSectors / 10);
+            var minlen = Math.min(9 + (max - num) * 2, levelVO.numSectors / 10);
             var maxlenstep = Math.min(5, Math.round(levelVO.numSectors / 20));
             var len = minlen + WorldCreatorRandom.randomInt(s2, 0, maxlenstep) * 2;
             
@@ -118,13 +135,14 @@ define([
             
             // check for offset to align to poi
             var maxoffset = 3;
-            var offset = this.getStructureOffset(maxoffset, pois, getPaths);
+            var offset = this.getStructureOffset(levelVO, maxoffset, pois, getPaths);
             
             // create sectors
             var paths = getPaths(offset.x, offset.y);
             for (var i = 0; i < paths.length; i++) {
                 var path = paths[i];
-                this.createPath(levelVO, path.startPos, path.dir, path.len, true);
+                var options = this.getDefaultOptions();
+                this.createPath(levelVO, path.startPos, path.dir, path.len, true, options);
             }
         },
         
@@ -162,7 +180,7 @@ define([
             
             // check for offset to align to poi
             var maxoffset = 5;
-            var offset = this.getStructureOffset(maxoffset, pois, getPaths);
+            var offset = this.getStructureOffset(levelVO, maxoffset, pois, getPaths);
             
             // create sectors
             var paths = getPaths(offset.x, offset.y);
@@ -200,7 +218,7 @@ define([
                 return result;
             };
             
-            var offset = this.getStructureOffset(4, pois, getPaths);
+            var offset = this.getStructureOffset(levelVO, 4, pois, getPaths);
             var paths = getPaths(offset.x, offset.y);
             for (var i = 0; i < paths.length; i++) {
                 var path = paths[i];
@@ -233,7 +251,7 @@ define([
                 return result;
             };
             
-            var offset = this.getStructureOffset(4, pois, getPaths);
+            var offset = this.getStructureOffset(levelVO, 4, pois, getPaths);
             var paths = getPaths(offset.x, offset.y);
             for (var i = 0; i < paths.length; i++) {
                 var path = paths[i];
@@ -250,7 +268,7 @@ define([
                 return result;
             };
             
-            var offset = this.getStructureOffset(5, pois, getPaths);
+            var offset = this.getStructureOffset(levelVO, 5, pois, getPaths);
             var paths = getPaths(offset.x, offset.y);
             for (var i = 0; i < paths.length; i++) {
                 var path = paths[i];
@@ -288,6 +306,32 @@ define([
             }
         },
         
+        createSmallRectangle: function (s1, s2, s3, worldVO, levelVO, position, pois) {
+            var w = 3 + WorldCreatorRandom.randomInt(s2, 0, 3);
+            var h = 3 + WorldCreatorRandom.randomInt(s3, 0, 3);
+            if (pois.length > 1) {
+                var matchHeight = WorldCreatorRandom.randomBool(s1);
+                if (matchHeight) {
+                    h = Math.max(3, Math.abs(pois[0].sectorY - pois[1].sectorY) + 1);
+                } else {
+                    w = Math.max(3, Math.abs(pois[0].sectorX - pois[1].sectorX) + 1);
+                }
+            }
+            var getPaths = function (ox, oy) {
+                var pos = new PositionVO(position.level, position.sectorX + ox, position.sectorY + oy)
+                var result = StructureGenerator.getRectangleFromCenter(levelVO, 0, pos, w, h, true, false);
+                return result;
+            };
+            
+            var result = [];
+            var offset = this.getStructureOffset(levelVO, 4, pois, getPaths);
+            var paths = getPaths(offset.x, offset.y);
+            for (var i = 0; i < paths.length; i++) {
+                var path = paths[i];
+                var pathResult = this.createPath(levelVO, path.startPos, path.dir, path.len, true);
+                result = result.concat(pathResult.path);
+            }
+            return result;
         },
         
         generateLevelStage: function (seed, worldVO, levelVO, stageVO) {
@@ -319,17 +363,7 @@ define([
                 var existingSectors = levelVO.sectors.concat();
                 var options1 = this.getDefaultOptions({ stage: path.stage, criticalPathType: path.type});
                 var path = this.createPathBetween(seed, levelVO, startPos, endPos, path.maxlen, options1);
-                // ensure new path is connected to the rest of the level
-                if (existingSectors.length > 0) {
-                    worldVO.resetPaths();
-                    var pathToCenter = WorldCreatorRandom.findPath(worldVO, startPos, existingSectors[0].position, false, true);
-                    if (!pathToCenter) {
-                        var pair = WorldCreatorHelper.getClosestPair(existingSectors, path);
-                        var pairDist = PositionConstants.getDistanceTo(pair[0].position, pair[1].position);
-                        var options2 = this.getDefaultOptions();
-                        this.createPathBetween(seed, levelVO, pair[0].position, pair[1].position, -1, options2);
-                    }
-                }
+                this.connectNewPath(worldVO, levelVO, existingSectors, path);
             }
         },
 
@@ -349,8 +383,9 @@ define([
 
             var startDirection;
             for (var i = 0; i < numRectangles; i++) {
-                if (!this.createRectangle(levelVO, i, pathStartingPos, w, h, null, options))
+                if (!this.createRectangle(levelVO, i, pathStartingPos, w, h, false, isDiagonal, options)) {
                     break;
+                }
             }
         },
 
@@ -491,6 +526,19 @@ define([
             }
             return { path: result, completed: true };
         },
+        
+        connectNewPath: function (worldVO, levelVO, existingSectors, newSectors) {
+            if (existingSectors.length < 1) return;
+            if (newSectors.length < 1) return;
+            worldVO.resetPaths();
+            var pathToCenter = WorldCreatorRandom.findPath(worldVO, newSectors[0].position, existingSectors[0].position, false, true);
+            if (!pathToCenter) {
+                var pair = WorldCreatorHelper.getClosestPair(existingSectors, newSectors);
+                var pairDist = PositionConstants.getDistanceTo(pair[0].position, pair[1].position);
+                var options2 = this.getDefaultOptions();
+                this.createPathBetween(worldVO.seed, levelVO, pair[0].position, pair[1].position, -1, options2);
+            }
+        },
 
         createGapFills: function (worldVO, levelVO) {
             var getFurthestPair = function () {
@@ -589,37 +637,44 @@ define([
             return { isValid: true };
         },
         
-        getStructureOffset: function (maxoffset, pois, getPathsFunc) {
+        getStructureOffset: function (levelVO, maxoffset, pois, getPathsFunc) {
             var offsetx = 0;
             var offsety = 0;
             var checkOffset = function (x, y) {
-                var matches = 0;
+                var points = 0;
                 var paths = getPathsFunc(x, y);
                 for (var i = 0; i < paths.length; i++) {
                     var path = paths[i];
                     for (var p = 0; p < pois.length; p++) {
                         var poi = pois[p];
                         if (PositionConstants.isOnPath(poi, path.startPos, path.dir, path.len)) {
-                            matches++;
+                            points++;
                         }
                     }
                     for (var j = 0; j < path.len; j++) {
                         var pos = PositionConstants.getPositionOnPath(path.startPos, path.dir, j);
                         if (WorldCreatorHelper.containsBlockingFeature(pos, StructureGenerator.currentFeatures, true)) {
-                            matches--;
+                            points--;
+                        }
+                        
+                        var neighbourCount = levelVO.getNeighbourCount(pos.sectorX, pos.sectorY);
+                        if (levelVO.hasSector(pos.sectorX, pos.sectorY)) {
+                            points += 0.1;
+                        } else if (neighbourCount > 2) {
+                            points -= 0.5 * neighbourCount;
                         }
                     }
                 }
-                return matches;
+                return points;
             };
-            var bestmatches = -99;
+            var bestpoints = -99;
             var candidates = PositionConstants.getAllPositionsInArea(null, maxoffset);
             for (var i = 0; i < candidates.length; i++) {
-                var matches = checkOffset(candidates[i].sectorX, candidates[i].sectorY);
-                if (matches > bestmatches) {
+                var points = checkOffset(candidates[i].sectorX, candidates[i].sectorY);
+                if (points > bestpoints) {
                     offsetx = candidates[i].sectorX;
                     offsety = candidates[i].sectorY;
-                    bestmatches = matches;
+                    bestpoints = points;
                 }
             }
             return { x: offsetx, y: offsety };

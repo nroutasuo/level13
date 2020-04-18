@@ -101,6 +101,19 @@ function (Ash, PositionConstants, PositionVO) {
 			return neighbours;
 		},
         
+        getNeighbourCount: function (sectorX, sectorY) {
+			var result = 0;
+			var startingPos = new PositionVO(this.level, sectorX, sectorY);
+			for (var i in PositionConstants.getLevelDirections()) {
+				var direction = PositionConstants.getLevelDirections()[i];
+				var neighbourPos = PositionConstants.getNeighbourPosition(startingPos, direction);
+				if (this.hasSector(neighbourPos.sectorX, neighbourPos.sectorY)) {
+					result++;
+				}
+			}
+			return result;
+        },
+        
         isCampPosition: function (pos) {
             for (var i = 0; i < this.campPositions.length; i++) {
                 if (this.campPositions[i].equals(pos)) {
