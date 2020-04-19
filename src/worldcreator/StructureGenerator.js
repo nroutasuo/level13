@@ -335,19 +335,61 @@ define([
         },
         
         generateLevelStage: function (seed, worldVO, levelVO, stageVO) {
-            var attempts = 0;
-            var maxAttempts = 1000;
+            var stage = stageVO.stage;
             var maxSectors = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, stageVO.stage);
-            while (levelVO.getNumSectorsByStage(stageVO.stage) <= maxSectors && attempts < maxAttempts) {
+            
+            // geneate random rectangles and paths
+            var attempts = 0;
+            var maxAttempts = 999;
+            while (levelVO.getNumSectorsByStage(stage) <= maxSectors && attempts < maxAttempts) {
                 attempts++;
-                var canConnectToDifferentStage = attempts > 5 && attempts % 5 == 0 && stageVO.stage != WorldConstants.CAMP_STAGE_EARLY;
-                var options = this.getDefaultOptions({ stage: stageVO.stage, canConnectToDifferentStage: canConnectToDifferentStage });
+                var canConnectToDifferentStage = attempts > 5 && attempts % 5 == 0 && stage != WorldConstants.CAMP_STAGE_EARLY;
+                var options = this.getDefaultOptions({ stage: stage, canConnectToDifferentStage: canConnectToDifferentStage });
                 if (attempts % 2 !== 0) {
                     this.createRectangles(seed, attempts, levelVO, options);
                 } else {
                     this.createPaths(seed, attempts, levelVO, options);
                 }
             }
+            
+            // ensure CAMP_STAGE_EARLY is connected
+            if (stage == WorldConstants.CAMP_STAGE_EARLY) {
+                var center = levelVO.campPositions[0];
+                var getConnectedSectors = function () {
+                    var sectors = levelVO.getSectorsByStage(stage);
+                    return StructureGenerator.getConnectedSectors(worldVO, center, sectors, stage);
+                };
+                var division = getConnectedSectors();
+                var attempts = 0;
+                var options = this.getDefaultOptions({ stage: stage });
+                while (division.disconnected.length > 0 && attempts < 100) {
+                    log.i("connecting disconnected parts of early stage on level " + levelVO.level);
+                    var pair = WorldCreatorHelper.getClosestPair(division.connected, division.disconnected);
+                    var pairDist = PositionConstants.getDistanceTo(pair[0].position, pair[1].position);
+                    this.createPathBetween(worldVO, levelVO, pair[0].position, pair[1].position, -1, options);
+                    worldVO.resetPaths();
+                    division = getConnectedSectors();
+                    attempts++;
+                }
+            }
+        },
+        
+        getConnectedSectors: function (worldVO, point, sectors, stage) {
+            var result = { connected: [], disconnected: [] };
+            for (var i = 0; i < sectors.length; i++) {
+                var sector = sectors[i];
+                if (PositionConstants.getDistanceTo(sector.position, point) <= 1) {
+                    result.connected.push(sector);
+                    continue;
+                }
+                var path = WorldCreatorRandom.findPath(worldVO, sector.position, point, false, true, stage);
+                if (path && path.length > 0) {
+                    result.connected.push(sector);
+                    continue;
+                }
+                result.disconnected.push(sector);
+            }
+            return result;
         },
         
         createRequiredPaths: function (seed, worldVO, levelVO, requiredPaths) {
@@ -483,9 +525,10 @@ define([
                 var allowDiagonals = dist > maxlen / 2;
                 
                 // calculate 2 paths: via existing sectors or direct
-                var closestExisting1 = WorldCreatorHelper.getClosestSector(levelVO.sectors, startPos);
-                var closestExisting2 = WorldCreatorHelper.getClosestSector(levelVO.sectors, endPos);
-                var pathExisting = WorldCreatorRandom.findPath(worldVO, closestExisting1.position, closestExisting2.position, false, true);
+                var validSectors = options.stage ? levelVO.getSectorsByStage(options.stage) : levelVO.sectors;
+                var closestExisting1 = WorldCreatorHelper.getClosestSector(validSectors, startPos);
+                var closestExisting2 = WorldCreatorHelper.getClosestSector(validSectors, endPos);
+                var pathExisting = WorldCreatorRandom.findPath(worldVO, closestExisting1.position, closestExisting2.position, false, true, options.stage);
                 
                 var pathsWithExisting = getConnectionPaths(startPos, closestExisting1.position).concat(getConnectionPaths(closestExisting2.position, endPos));
                 var lenWithExisting = getTotalLength(pathsWithExisting);

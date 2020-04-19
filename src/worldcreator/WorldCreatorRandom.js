@@ -260,7 +260,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 			return Math.round(Math.random() * 10000);
 		},
         
-        findPath: function (worldVO, startPos, endPos, blockByBlockers, omitWarnings) {
+        findPath: function (worldVO, startPos, endPos, blockByBlockers, omitWarnings, stage) {
             if (!startPos) {
                 log.w("No start pos defined.");
             }
@@ -269,7 +269,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
                 log.w("No goal pos defined.");
             }
             
-            var cachedPath = worldVO.getPath(startPos, endPos, blockByBlockers);
+            var cachedPath = worldVO.getPath(startPos, endPos, blockByBlockers, stage);
             if (cachedPath) {
                 return cachedPath;
             }
@@ -304,7 +304,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
                     var levelVO = worldVO.getLevel(pathSectorVO.position.level);
                     return levelVO.getNeighbours(pathSectorVO.result.sectorX, pathSectorVO.result.sectorY, function (sector) {
                         return makePathSectorVO(sector.position);
-                    });
+                    }, stage);
                 },
                 isBlocked: function (pathSectorVO, direction) {
                     if (!blockByBlockers) return false;
@@ -318,7 +318,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
             
             var result = PathFinding.findPath(startVO, goalVO, utilities, settings);
             
-            worldVO.addPath(startPos, endPos, blockByBlockers, result);
+            worldVO.addPath(startPos, endPos, blockByBlockers, stage, result);
             
             return result;
         },

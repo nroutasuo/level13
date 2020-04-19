@@ -72,11 +72,15 @@ function (Ash, PositionConstants, PositionVO) {
             return true;
 		},
 		
-		hasSector: function (sectorX, sectorY) {
+		hasSector: function (sectorX, sectorY, stage) {
 			var colList = this.sectorsByPos[sectorX];
 			if (colList) {
 				var sector = this.sectorsByPos[sectorX][sectorY];
-				if (sector) return true;
+				if (sector) {
+                    if (!stage || sector.stage == stage) {
+                        return true;
+                    }
+                }
 			}
 			return false;
 		},
@@ -85,7 +89,7 @@ function (Ash, PositionConstants, PositionVO) {
 			return this.hasSector(sectorX, sectorY) ? this.sectorsByPos[sectorX][sectorY] : null;
 		},
 		
-		getNeighbours: function (sectorX, sectorY, neighbourWrapFunc) {
+		getNeighbours: function (sectorX, sectorY, neighbourWrapFunc, stage) {
             if (!neighbourWrapFunc) {
                 neighbourWrapFunc = function (n) { return n; };
             }
@@ -94,7 +98,7 @@ function (Ash, PositionConstants, PositionVO) {
 			for (var i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var neighbourPos = PositionConstants.getNeighbourPosition(startingPos, direction);
-				if (this.hasSector(neighbourPos.sectorX, neighbourPos.sectorY)) {
+				if (this.hasSector(neighbourPos.sectorX, neighbourPos.sectorY, stage)) {
 					neighbours[direction] = neighbourWrapFunc(this.getSector(neighbourPos.sectorX, neighbourPos.sectorY));
 				}
 			}
