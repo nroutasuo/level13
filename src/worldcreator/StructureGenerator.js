@@ -436,7 +436,7 @@ define([
 
             var stage = levelVO.getSector(pathStartPos.sectorX, pathStartPos.sectorY).stage;
             if (!options.stage) options.stage = pathStartPos.stage;
-            this.createRectangle(levelVO, 0, pathStartPos, w, h, startDirection, options, false);
+            this.createRectangle(levelVO, 0, pathStartPos, w, h, startDirection, options, false, WorldCreatorConstants.CONNECTION_POINTS_RECT_ALL);
         },
 
         getRectangleFromCenter: function (levelVO, i, center, w, h, forceComplete, isDiagonal, connectionPointsType) {
@@ -473,10 +473,10 @@ define([
             return result;
         },
         
-        createRectangle: function (levelVO, i, startPos, w, h, startDirection, options, forceComplete) {
-            var paths = this.getRectangle(levelVO, i, startPos, w, h, startDirection, options, forceComplete);
+        createRectangle: function (levelVO, i, startPos, w, h, startDirection, options, forceComplete, connectionPointsType) {
+            var paths = this.getRectangle(levelVO, i, startPos, w, h, startDirection, options, forceComplete, connectionPointsType);
             for (var i = 0; i < paths.length; i++) {
-                var pathResult = this.createPath(levelVO, paths[i].startPos, paths[i].dir, paths[i].len, forceComplete, options);
+                var pathResult = this.createPath(levelVO, paths[i].startPos, paths[i].dir, paths[i].len, forceComplete, options, paths[i].connectionPointType);
                 if (!pathResult.completed) break;
             }
         },
@@ -579,7 +579,7 @@ define([
             var exisitingSectors = options.stage ? levelVO.getNumSectorsByStage(options.stage).length : levelVO.sectors.length;
             var maxLength = Math.min(WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX, maxSectors - exisitingSectors);
             var pathLength = WorldCreatorRandom.randomInt(s3, WorldCreatorConstants.SECTOR_PATH_LENGTH_MIN, maxLength);
-            this.createPath(levelVO, pathStartPos, startDirection, pathLength, null, options);
+            this.createPath(levelVO, pathStartPos, startDirection, pathLength, null, options, WorldCreatorConstants.CONNECTION_POINTS_PATH_ALL);
         },
         
         getPath: function (levelVO, startPos, direction, len, forceComplete, options, connectionPointType) {
