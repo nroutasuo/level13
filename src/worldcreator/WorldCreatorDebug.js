@@ -155,6 +155,8 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                             print += "{C|red} ";
                         else if (sectorVO.isPreferredConnection)
                             print += "{P|" + defaultColor + "} ";
+                        else if (sectorVO.isConnectionPoint)
+                            print += "{C|" + defaultColor + "} ";
                         else if (sectorVO.isFill)
                             print += "{F|" + defaultColor + "} ";
                         /*

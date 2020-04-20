@@ -15,12 +15,26 @@ function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
         AREA_SIZE_CENTRAL: 20,
         AREA_SIZE_MEDIUM: 30,
         AREA_SIZE_OUTSKIRTS: 40,
-        SECTOR_PATH_LENGTH_MIN: 6,
+        SECTOR_PATH_LENGTH_MIN: 5,
         SECTOR_PATH_LENGTH_MAX: 15,
         SECTOR_RECT_EDGE_LENGTH_MAX: 20,
         
         MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 5,
         MIN_LEVEL_ORDINAL_HAZARD_POISON: 3,
+        
+        CONNECTION_POINTS_PATH_END: "p-end",
+        CONNECTION_POINTS_PATH_ENDS: "p-ends",
+        CONNECTION_POINTS_PATH_START: "p-start",
+        CONNECTION_POINTS_PATH_MIDDLE: "p-middle",
+        CONNECTION_POINTS_PATH_CW: "p-cw",
+        CONNECTION_POINTS_PATH_CCW: "p-ccw",
+        CONNECTION_POINTS_PATH_ALL: "p-all",
+        
+        CONNECTION_POINTS_RECT_CORNERS: "r-corners",
+        CONNECTION_POINTS_RECT_MIDDLE: "r-middle",
+        CONNECTION_POINTS_RECT_OUTER: "r-outer",
+        CONNECTION_POINTS_RECT_INNER: "r-inner",
+        CONNECTION_POINTS_RECT_ALL: "r-all",
         
         FEATURE_HOLE_WELL: "well",
         FEATURE_HOLE_COLLAPSE: "collapse",

@@ -29,9 +29,10 @@ function (Ash, PositionConstants, PositionVO) {
 			this.minY = 0;
 			this.maxY = 0;
             
+            this.pendingConnectionPointsByStage = {};
+            
             /*
             this.numLocales = 0;
-			this.centralSectors = [];
             this.campSectors = [];
             this.passageSectors = [];
             this.passageUpSectors = null;
@@ -89,6 +90,14 @@ function (Ash, PositionConstants, PositionVO) {
 		getSector: function (sectorX, sectorY) {
 			return this.hasSector(sectorX, sectorY) ? this.sectorsByPos[sectorX][sectorY] : null;
 		},
+        
+        getSectorsByStage: function (stage) {
+            return this.sectorsByStage[stage] ? this.sectorsByStage[stage] : [];
+        },
+        
+        getNumSectorsByStage: function (stage) {
+            return this.sectorsByStage[stage] ? this.sectorsByStage[stage].length : 0;
+        },
 		
 		getNeighbours: function (sectorX, sectorY, neighbourWrapFunc, stage) {
             if (!neighbourWrapFunc) {
@@ -119,6 +128,26 @@ function (Ash, PositionConstants, PositionVO) {
 			return result;
         },
         
+        addPendingConnectionPoint: function (point) {
+            var sector = this.getSector(point.position.sectorX, point.position.sectorY);
+            if (!sector) return;
+            var stage = sector.stage;
+            if (!this.pendingConnectionPointsByStage[stage]) this.pendingConnectionPointsByStage[stage] = [];
+            this.pendingConnectionPointsByStage[stage].push(point);
+        },
+        
+        getPendingConnectionPoints: function (stage) {
+            if (!stage) {
+                var result = [];
+                for (var key in this.pendingConnectionPointsByStage) {
+                    result = result.concat(this.getPendingConnectionPoints(key));
+                }
+                return result;
+            }
+            if (!this.pendingConnectionPointsByStage[stage]) return [];
+            return this.pendingConnectionPointsByStage[stage];
+        },
+        
         isCampPosition: function (pos) {
             for (var i = 0; i < this.campPositions.length; i++) {
                 if (this.campPositions[i].equals(pos)) {
@@ -134,14 +163,6 @@ function (Ash, PositionConstants, PositionVO) {
         
         isPassageDownPosition: function (pos) {
             return this.passageDownPosition && this.passageDownPosition.equals(pos);
-        },
-        
-        getSectorsByStage: function (stage) {
-            return this.sectorsByStage[stage] ? this.sectorsByStage[stage] : [];
-        },
-        
-        getNumSectorsByStage: function (stage) {
-            return this.sectorsByStage[stage] ? this.sectorsByStage[stage].length : 0;
         },
         
         /*

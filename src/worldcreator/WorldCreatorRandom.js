@@ -13,7 +13,6 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 		
 		// Pseudo-random array of min (inclusive) to max (exclusive) existing sectors
         // options:
-        // - requireCentral (boolean): only include central sectors (default false)
         // - excludingFeature (string): exclude sectors that have this featue (for example "camp")
         // - excludedZones (array of strings): exclude sectors assigned to give zone
         // - pathConstraints (array of PathConstraintVO): all paths must be satisfied if present
@@ -23,7 +22,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 			var numSectors = this.randomInt(seed, min, max);
             
 			// pick sectors (use different algorithm depending on if we need to find a few or a lot of sectors)
-            var availableSectors = options.requireCentral ? levelVO.centralSectors : levelVO.sectors;
+            var availableSectors = levelVO.sectors;
             if (numSectors < 0.15 * availableSectors.length) {
                 sectors = this.getRandomSectorsSmall(seed, worldVO, levelVO, numSectors, options);
             } else {
@@ -79,7 +78,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
         
         getRandomSectorsBig:function (seed, worldVO, levelVO, numSectors, options) {
             var sectors = [];
-            var availableSectors = options.requireCentral ? levelVO.centralSectors : levelVO.sectors;
+            var availableSectors = levelVO.sectors;
             var maxDuplicates = options.numDuplicates || 1;
 
             // map possible sectors
@@ -182,7 +181,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 		// Pseudo-random existing sector on the given level
         // pathConstraints is an array of PathConstraintVOs and all paths must be satisfied if present
 		randomSector: function (seed, worldVO, levelVO, isCentral, pathConstraints) {
-            var sectors = isCentral ? levelVO.centralSectors : levelVO.sectors;
+            var sectors = levelVO.sectors;
             var startIndex = Math.floor(this.random(seed) * sectors.length);
             
             if (!pathConstraints || pathConstraints.length === 0) {
