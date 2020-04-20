@@ -192,11 +192,12 @@ define([
         
         createCentralRectanglesSide: function (s1, s2, s3, worldVO, levelVO, position, pois) {
             var l = levelVO.level;
+            var sizeFactor = Math.round(levelVO.numSectors / 50);
             var connected = WorldCreatorRandom.randomBool(s1);
             var horizontal = WorldCreatorRandom.randomBool(s2);
-            var size = 5 + WorldCreatorRandom.randomInt(s2, 0, 2) * 2;
+            var size = 5 + WorldCreatorRandom.randomInt(s2, 0, sizeFactor) * 2;
             var mindist = Math.floor(size / 2);
-            var dist = connected ? mindist : mindist + WorldCreatorRandom.randomInt(s2, 1, 3) * 2;
+            var dist = mindist + (connected ? 0 : WorldCreatorRandom.randomInt(s2, 1, sizeFactor) * 2);
             var x = horizontal ? dist : 0;
             var y = horizontal ? 0 : dist;
             
@@ -208,11 +209,12 @@ define([
                 
                 if (!connected) {
                     var pathpos = WorldCreatorRandom.randomInt(s1, Math.ceil(-dist/2), Math.floor(dist/2));
-                    var pathdist = Math.ceil(-dist + size/2);
+                    var pathdist = Math.round(-dist + size/2) - 1;
                     var pathx = horizontal ? pathdist : pathpos;
                     var pathy = horizontal ? pathpos : pathdist;
                     var pathdir = horizontal ? PositionConstants.DIRECTION_EAST : PositionConstants.DIRECTION_SOUTH;
-                    result.push(StructureGenerator.getPath(levelVO, new PositionVO(l, pos.sectorX + pathx, pos.sectorY + pathy), pathdir, dist, true));
+                    var len = (dist - mindist) * 2;
+                    result.push(StructureGenerator.getPath(levelVO, new PositionVO(l, pos.sectorX + pathx, pos.sectorY + pathy), pathdir, len, true));
                 }
                 
                 return result;
@@ -222,7 +224,7 @@ define([
             var paths = getPaths(offset.x, offset.y);
             for (var i = 0; i < paths.length; i++) {
                 var path = paths[i];
-                this.createPath(levelVO, path.startPos, path.dir, path.len, true);
+                this.createPath(levelVO, path.startPos, path.dir, path.len, false);
             }
         },
         
@@ -417,20 +419,15 @@ define([
             var pathStartPos = pathStartSector.position.clone();
 
             var isDiagonal = WorldCreatorRandom.random(seed + (l * 44) * pathRandomSeed + pathSeed) < WorldCreatorConstants.DIAGONAL_PATH_PROBABILITY;
-            var numRectangles = 1;
-            var startDirections = WorldCreatorRandom.randomDirections(seed * levelVO.levelOrdinal + 28381 + pathRandomSeed, numRectangles, false);
-            var maxRectangleSize = WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX / 2;
+            var startDirections = WorldCreatorRandom.randomDirections(seed * levelVO.levelOrdinal + 28381 + pathRandomSeed, 1, false);
+            var maxRectangleSize = Math.min(Math.floor(WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX * 0.75), Math.ceil(levelVO.numSectors)/11);
             var w = WorldCreatorRandom.randomInt(seed + pathRandomSeed / pathSeed + pathSeed * l, 4, maxRectangleSize);
             var h = WorldCreatorRandom.randomInt(seed + pathRandomSeed * l + pathSeed - pathSeed * l, 4, maxRectangleSize);
 
             var startDirection;
             var stage = pathStartSector.stage;
             if (!options.stage) options.stage = pathStartPos.stage;
-            for (var i = 0; i < numRectangles; i++) {
-                if (!this.createRectangle(levelVO, i, pathStartPos, w, h, startDirections[i], options, false)) {
-                    break;
-                }
-            }
+            this.createRectangle(levelVO, 0, pathStartPos, w, h, startDirections[0], options, false);
         },
 
         getRectangleFromCenter: function (levelVO, i, center, w, h, forceComplete, isDiagonal) {
@@ -469,7 +466,8 @@ define([
         createRectangle: function (levelVO, i, startPos, w, h, startDirection, options, forceComplete) {
             var paths = this.getRectangle(levelVO, i, startPos, w, h, startDirection, options, forceComplete);
             for (var i = 0; i < paths.length; i++) {
-                this.createPath(levelVO, paths[i].startPos, paths[i].dir, paths[i].len, forceComplete, options);
+                var pathResult = this.createPath(levelVO, paths[i].startPos, paths[i].dir, paths[i].len, forceComplete, options);
+                if (!pathResult.completed) break;
             }
         },
         
@@ -514,6 +512,7 @@ define([
                 return paths.length > 0 ? paths.reduce((sum, current) => sum + current.len, 0) : 0;
             };
             
+            var options = options || this.getDefaultOptions();
             var pathLength;
             var totalLength = dist;
             if (dist == 0) {
@@ -561,7 +560,11 @@ define([
 
             var pathLength;
             for (var di = 0; di < pathDirections.length; di++) {
-                pathLength = WorldCreatorRandom.randomInt(seed * 3 * pathRandomSeed * (di + 1) + (di + 3) * l + 55, WorldCreatorConstants.SECTOR_PATH_LENGTH_MIN, WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX);
+                var s = seed * 3 * pathRandomSeed * (di + 1) + (di + 3) * l + 55;
+                var maxSectors =  options.stage ? levelVO.numSectorsByStage[options.stage] : levelVO.numSectors;
+                var exisitingSectors = options.stage ? levelVO.getNumSectorsByStage(options.stage).length : levelVO.sectors.length;
+                var maxLength = Math.min(WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX, maxSectors - exisitingSectors);
+                pathLength = WorldCreatorRandom.randomInt(s, WorldCreatorConstants.SECTOR_PATH_LENGTH_MIN, maxLength);
                 this.createPath(levelVO, pathStartPos, pathDirections[di], pathLength, null, options);
             }
         },
@@ -573,22 +576,16 @@ define([
         createPath: function (levelVO, startPos, direction, len, forceComplete, options) {
             if (len < 1) return { path: [], completed: false };
             var result = [];
+            var options = options || this.getDefaultOptions();
             var sectorPos;
             for (var si = 0; si < len; si++) {
                 sectorPos = PositionConstants.getPositionOnPath(startPos, direction, si);
                 sectorPos.level = levelVO.level;
 
                 var sectorExists = levelVO.hasSector(sectorPos.sectorX, sectorPos.sectorY);
-
                 // stop path when intersecting existing paths
                 if (!forceComplete) {
-                    var sectorHasUnmatchingNeighbours = false;
-                    var neighbours = levelVO.getNeighbours(sectorPos.sectorX, sectorPos.sectorY);
-                    if (neighbours[PositionConstants.DIRECTION_EAST] && neighbours[PositionConstants.DIRECTION_SOUTH]) sectorHasUnmatchingNeighbours = true;
-                    if (neighbours[PositionConstants.DIRECTION_EAST] && neighbours[PositionConstants.DIRECTION_NORTH]) sectorHasUnmatchingNeighbours = true;
-                    if (neighbours[PositionConstants.DIRECTION_WEST] && neighbours[PositionConstants.DIRECTION_SOUTH]) sectorHasUnmatchingNeighbours = true;
-                    if (neighbours[PositionConstants.DIRECTION_WEST] && neighbours[PositionConstants.DIRECTION_NORTH]) sectorHasUnmatchingNeighbours = true;
-                    if (sectorExists || sectorHasUnmatchingNeighbours || Object.keys(neighbours).length > 4) {
+                    if (sectorExists || !this.isValidSectorPosition(levelVO, sectorPos, options.stage, options)) {
                         if (si > 0) {
                             return { path: result, completed: false };
                         } else {
@@ -714,6 +711,23 @@ define([
                     var dist = PositionConstants.getDistanceTo(pos, sectorPos);
                     if (dist < 2) {
                         return { isValid: false, reason: "stage" };
+                    }
+                }
+            }
+            // too many neighbours for this position or neighbouring positions
+            var numNeighbours = levelVO.getNeighbourCount(sectorPos.sectorX, sectorPos.sectorY);
+            if (numNeighbours > 4) {
+                return { isValid: false, reason: "num neighbours" };
+            }
+            var neighbours = levelVO.getNeighbours(sectorPos.sectorX, sectorPos.sectorY);
+            var directions = PositionConstants.getLevelDirections();
+            for (var d in directions) {
+                var direction = directions[d];
+                var neighbour = neighbours[direction];
+                if (neighbour) {
+                    var neighbourNumNeighbours = levelVO.getNeighbourCount(neighbour.position.sectorX, neighbour.position.sectorY);
+                    if (neighbourNumNeighbours >= 5) {
+                        return { isValid: false, reason: "neighbour num neighbours" };
                     }
                 }
             }

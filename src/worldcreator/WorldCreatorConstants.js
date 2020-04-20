@@ -28,14 +28,18 @@ function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
         FEATURE_HOLE_MOUNTAIN: "mountain",
         
         getNumSectors: function (campOrdinal, isSmall) {
-            if (isSmall) return 80;
+            var result = 200;
             if (campOrdinal < 2)
-                return 110;
+                result = 110;
             if (campOrdinal < WorldConstants.CAMPS_BEFORE_GROUND)
-                return 170;
+                result = 170;
             if (campOrdinal < 12)
-                return 190;
-            return 200;
+                result = 190;
+            if (isSmall) {
+                result = result * 0.5;
+                resutl = Math.round(result / 5) * 5;
+            }
+            return result;
         },
         
         getNumSectorsCentral: function (campOrdinal, isSmall) {

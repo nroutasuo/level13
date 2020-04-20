@@ -31,6 +31,8 @@ define([
                 levelVO.campPositions = worldVO.campPositions[l];
                 levelVO.passageUpPosition = worldVO.passagePositions[l].up;
                 levelVO.passageDownPosition = worldVO.passagePositions[l].down;
+                levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_EARLY] = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, WorldConstants.CAMP_STAGE_EARLY);
+                levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_LATE] = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, WorldConstants.CAMP_STAGE_LATE);
                 levelVO.stageCenterPositions = this.getStageCenterPositions(worldVO, levelVO);
                 levelVO.levelCenterPosition = this.getLevelCenterPosition(worldVO, levelVO);
                 levelVO.zones = this.generateZones(seed, levelVO);

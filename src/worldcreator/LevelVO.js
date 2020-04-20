@@ -13,6 +13,7 @@ function (Ash, PositionConstants, PositionVO) {
             this.populationFactor = populationFactor;
             this.numSectors = numSectors;
             this.maxSectors = numSectors + 10;
+            this.numSectorsByStage = {};
             
             this.campPositions = [];
             this.passageUpPosition = null;

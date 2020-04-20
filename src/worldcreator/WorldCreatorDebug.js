@@ -120,8 +120,8 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
 		printLevel: function (worldVO, levelVO) {
             console.groupCollapsed("Level " + levelVO.level + ", camp " + (levelVO.isCampable ? levelVO.campOrdinal :  "-")
                 + ", sectors: " + levelVO.sectors.length + "/" + levelVO.numSectors
-                + ", early: " + levelVO.getNumSectorsByStage(WorldConstants.CAMP_STAGE_EARLY) + "/" + WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, WorldConstants.CAMP_STAGE_EARLY)
-                + ", late: " + levelVO.getNumSectorsByStage(WorldConstants.CAMP_STAGE_LATE) + "/" + WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, WorldConstants.CAMP_STAGE_LATE)
+                + ", early: " + levelVO.getNumSectorsByStage(WorldConstants.CAMP_STAGE_EARLY) + "/" + levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_EARLY]
+                + ", late: " + levelVO.getNumSectorsByStage(WorldConstants.CAMP_STAGE_LATE) + "/" + levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_LATE]
             );
             log.i("seed: " + worldVO.seed + ", " + ", center: " + levelVO.levelCenterPosition +  ", bounds: " + levelVO.minX + "." + levelVO.minY + "-" + levelVO.maxX + "." + levelVO.maxY);
 			var print = "\t";
@@ -142,7 +142,7 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
 				for (var x = minX; x <= maxX; x++) {
 					if (levelVO.hasSector(x, y)) {
                         var sectorVO = levelVO.getSector(x, y);
-                        var defaultColor = sectorVO.stage == WorldConstants.CAMP_STAGE_EARLY ? "#555" : "#999";
+                        var defaultColor = sectorVO.stage == WorldConstants.CAMP_STAGE_EARLY ? "#111" : "#aaa";
                         //var criticalPath = sectorVO.getCriticalPathC();
                         //var zone = sectorVO.getZoneC();
                         if (sectorVO.isPassageUp && sectorVO.isPassageDown)
@@ -157,8 +157,6 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                             print += "{P|" + defaultColor + "} ";
                         else if (sectorVO.isFill)
                             print += "{F|" + defaultColor + "} ";
-                        else if (sectorVO.stage == WorldConstants.CAMP_STAGE_EARLY)
-                            print += "{+|" + defaultColor + "} ";
                         /*
                         else if (sectorVO.locales.length > 0)
                             print += "L ";
@@ -170,7 +168,7 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                             print += zone + " ";
                         */
                         else
-                            print += "{·|" + defaultColor + "} ";
+                            print += "{+|" + defaultColor + "} ";
 					} else {
                         var position = { level: levelVO.level, sectorX: x, sectorY: y};
                         var features = worldVO.getFeatures(position);
@@ -179,7 +177,7 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                         } else if (features.length > 0) {
                             var feature = features[0];
                             var char = feature.isBuilt() ? "T" : "H";
-                            print += "{" + char + "|#ddd} ";
+                            print += "{" + char + "|#eee} ";
                         } else {
                             print += "{·|#eee} ";
                         }

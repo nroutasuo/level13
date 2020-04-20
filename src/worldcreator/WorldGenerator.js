@@ -6,13 +6,12 @@ define([
     'worldcreator/WorldCreatorRandom',
     'worldcreator/WorldFeatureVO',
     'worldcreator/StageVO',
-    'worldcreator/CampStepVO',
     'worldcreator/DistrictVO',
 	'game/vos/PositionVO',
     'game/constants/SectorConstants',
     'game/constants/PositionConstants',
     'game/constants/WorldConstants',
-], function (Ash, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldFeatureVO, StageVO, CampStepVO, DistrictVO, PositionVO, SectorConstants, PositionConstants, WorldConstants) {
+], function (Ash, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldFeatureVO, StageVO, DistrictVO, PositionVO, SectorConstants, PositionConstants, WorldConstants) {
     
     var WorldGenerator = {
         
