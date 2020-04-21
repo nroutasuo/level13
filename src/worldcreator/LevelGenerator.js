@@ -35,6 +35,7 @@ define([
                 levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_LATE] = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, WorldConstants.CAMP_STAGE_LATE);
                 levelVO.stageCenterPositions = this.getStageCenterPositions(worldVO, levelVO);
                 levelVO.levelCenterPosition = this.getLevelCenterPosition(worldVO, levelVO);
+                levelVO.excursionStartPosition = this.getExcursionStartPosition(worldVO, levelVO);
                 levelVO.zones = this.generateZones(seed, levelVO);
                 worldVO.addLevel(levelVO);
             }
@@ -104,6 +105,16 @@ define([
             }
             return PositionConstants.getMiddlePoint(pois, true);
         },
+        
+        getExcursionStartPosition: function (worldVO, levelVO) {
+            if (levelVO.isCampable) {
+                return PositionConstants.getMiddlePoint(levelVO.campPositions);
+            }
+            if (levelVO.level < 13) {
+                return levelVO.passageUpPosition;
+            }
+            return levelVO.passageDownPosition;
+        }
         
     };
     

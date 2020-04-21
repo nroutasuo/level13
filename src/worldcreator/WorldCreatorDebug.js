@@ -52,8 +52,9 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                 var stages = worldVO.getStages(l);
                 var stagess = stages.map(stage => stage.stage).join(",");
                 log.i("Level " + levelVO.level + ", camp ordinal: " + levelVO.campOrdinal + ", stages: " + stagess + ", sectors: " + levelVO.numSectors + ", zones: " + levelVO.zones.length);
-                log.i("- passage positions: up: " + levelVO.passageUpPos + ", down: " + levelVO.passageDownPos);
+                log.i("- passage positions: up: " + levelVO.passageUpPosition + ", down: " + levelVO.passageDownPosition);
                 log.i("- camp positions: " + levelVO.campPositions.join(","));
+                log.i("- excursion start position: " + levelVO.excursionStartPosition);
             }
             console.groupEnd();
         },

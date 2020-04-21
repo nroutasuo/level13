@@ -108,6 +108,10 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
             return -1;
         },
 		
+		toString: function () {
+			return "s-" + this.position;
+		},
+		
     });
 
     return SectorVO;

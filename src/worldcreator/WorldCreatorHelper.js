@@ -203,35 +203,30 @@ define([
             return result;
         },
         
-        getClosestPair: function (sectors1, sectors2) {
+        getClosestPair: function (sectors1, sectors2, skip) {
+            skip = skip || 0;
             var result = [null, null];
             var resultDist = 9999;
+            var pairs = [];
             for (var i = 0; i < sectors1.length; i++) {
                 for (var j = 0; j < sectors2.length; j++) {
-                    var dist = PositionConstants.getDistanceTo(sectors1[i].position, sectors2[j].position);
-                    if (dist < resultDist) {
-                        result = [ sectors1[i], sectors2[j] ];
-                        resultDist = dist;
-                    }
-                    if (resultDist == 0) {
-                        return result;
-                    }
+                    pairs.push([sectors1[i], sectors2[j]]);
                 }
             }
-            return result;
+            pairs.sort(function (a, b) {
+                return PositionConstants.getDistanceTo(a[0].position, a[1].position) - PositionConstants.getDistanceTo(b[0].position, b[1].position);
+            });
+            return pairs[skip];
         },
         
-        getClosestSector: function (sectors, pos) {
-            var result = null;
-            var resultDist = 0;
-            for (var i = 0; i < sectors.length; i++) {
-                var dist = PositionConstants.getDistanceTo(sectors[i].position, pos);
-                if (!result || dist < resultDist) {
-                    result = sectors[i];
-                    resultDist = dist;
-                }
-            }
-            return result;
+        getClosestSector: function (sectors, pos, skip) {
+            skip = skip || 0;
+            if (skip >= sectors.length) skip = sectors.length - 1;
+            var sorted = sectors.concat();
+            sorted.sort(function (a, b) {
+                return PositionConstants.getDistanceTo(a.position, pos) - PositionConstants.getDistanceTo(b.position, pos);
+            });
+            return sorted[skip];
         },
         
         getClosestPosition: function (positions, pos) {
