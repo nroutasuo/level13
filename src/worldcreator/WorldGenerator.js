@@ -86,16 +86,16 @@ define([
                 var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
                 if (isCampableLevel) {
                     var maxPathLen = WorldCreatorConstants.getMaxPathLength(campOrdinal - 1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
-                    var maxCenterDist = Math.min(20, Math.floor(maxPathLen * 0.8 - maxCampDist));
+                    var maxCenterDist = Math.min(15, Math.floor(maxPathLen * 0.8 - maxCampDist));
                     var center = new PositionVO(l, 0, 0);
                     var firstPos = new PositionVO(l, 0, 0);
-                    var isValid = function (pos) { return WorldGenerator.isValidCampPos(pos, positionsByLevel, features); };
+                    var isValid = function (pos) { return WorldGenerator.isValidCampPos(seed, pos, positionsByLevel, features); };
                     if (l != 13) {
-                        firstPos = WorldCreatorRandom.randomSectorPositionWithCheck(seed % 10 + (l+10) * 55, l, maxCenterDist, center, 0, isValid);
+                        firstPos = WorldCreatorRandom.randomSectorPositionWithCheck(seed % 10 + (l+10) * 55, "camp pos", l, maxCenterDist, center, 0, isValid);
                     }
                     positions.push(firstPos);
                     if (l != 13) {
-                        var secondPos = WorldCreatorRandom.randomSectorPositionWithCheck(seed % 100 + (l+5)*10, l, maxCampDist, firstPos, 1, isValid);
+                        var secondPos = WorldCreatorRandom.randomSectorPositionWithCheck(seed % 100 + (l+5)*10, "camp pos", l, maxCampDist, firstPos, 1, isValid);
                         positions.push(secondPos);
                     }
                     // log.i("camp positions " + l + ": " + positions.join(" ") + " | maxCenterDist: " + maxCenterDist);
@@ -180,21 +180,21 @@ define([
             // find average of the max positions = position that adds 0 to the max path length
             var allPos = [furthest1, furthest2];
             var averagePos = PositionConstants.getMiddlePoint(allPos);
+            averagePos.level = level;
             
             // find out how much we can afford to add to the max path length by moving the passage from the "optimal" position
             var maxPathLength = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
             var startPathLength = Math.ceil(Math.max(PositionConstants.getDistanceTo(averagePos, furthest1), PositionConstants.getDistanceTo(averagePos, furthest2)));
             var maxDiff = Math.min(20, maxPathLength - startPathLength);
             var minDiff = Math.min(3, Math.floor(maxDiff / 2));
-            // log.i("passage position " + level + " " + furthest1 + " - " + furthest2 + " -> middle: " + averagePos + " -> maxPathLength: " + maxPathLength + ", startPathLength: " + startPathLength + ", maxDiff: " + maxDiff + ", minDiff: " + minDiff);
+             //log.i("passage position " + level + " " + furthest1 + " - " + furthest2 + " -> middle: " + averagePos + " -> maxPathLength: " + maxPathLength + ", startPathLength: " + startPathLength + ", maxDiff: " + maxDiff + ", minDiff: " + minDiff);
             
             // select random sector around averagePos
             var rseed = seed % 1000 + 7 + (level+13)*101;
             var result = WorldCreatorRandom.randomSectorPositionWithCheck(
-                rseed, level, maxDiff, averagePos, minDiff,
+                rseed, "passage down pos " + level, level, maxDiff, averagePos, minDiff,
                 (pos) => WorldGenerator.isValidPassageDownPos(seed, pos, features, passageUp, campPos1, campPos2)
             );
-            var pathLen = Math.ceil(PositionConstants.getDistanceTo(furthest1, result), PositionConstants.getDistanceTo(result, furthest2));
             return result;
             
         },
@@ -221,21 +221,35 @@ define([
             return [];
         },
 
-        isValidCampPos: function (pos, positionsByLevel, features) {
+        isValidCampPos: function (seed, pos, positionsByLevel, features) {
             // blocked: positions in holes etc
-            if (WorldCreatorHelper.containsBlockingFeature(pos, features)) return false;
+            if (WorldCreatorHelper.containsBlockingFeature(pos, features)) return { isValid: false, reason: "blocking feature" };
             // blocked: positions too close to camp positions on previous few levels (so that on levels between them passages up/down don't end up too close)
-            var threshold = 5;
+            var min = 5;
             for (var i = 2; i <= 3; i++) {
                 var prevPositions = positionsByLevel[pos.level + i];
                 if (!prevPositions) continue;
                 for (var j = 0; j < prevPositions.length; j++) {
                     var prevPos = prevPositions[j];
-                    if (PositionConstants.getDistanceTo(pos, prevPos) < threshold) return false;
+                    var dist = PositionConstants.getDistanceTo(pos, prevPos);
+                    if (dist < min) return { isValid: false, reason: "min distance between consecutive camps" };
+                }
+            }
+            // blocked: positions too far away from camp positions on previous level
+            var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, pos.level);
+            var maxPathLengthC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
+            var max = maxPathLengthC2P;
+            for (var i = 1; i < 2; i++) {
+                var prevPositions = positionsByLevel[pos.level + i];
+                if (!prevPositions) continue;
+                for (var j = 0; j < prevPositions.length; j++) {
+                    var prevPos = prevPositions[j];
+                    var dist = PositionConstants.getDistanceTo(pos, prevPos);
+                    if (dist > max) return { isValid: false, reason: "max distance between camps on consecutive levels", details: pos + " vs " + prevPos };
                 }
             }
             // otherwise ok
-            return true;
+            return { isValid: true };
         },
         
         isValidPassageDownPos: function (seed, pos, features, passageUp, campPos1, campPos2) {
@@ -245,18 +259,18 @@ define([
             var level = pos.level;
             
             // check blocking features like holes
-            if (WorldCreatorHelper.containsBlockingFeature(pos, features)) return false;
+            if (WorldCreatorHelper.containsBlockingFeature(pos, features)) return { isValid: false, reason: "blocking feature" };
             
             // check that not too close or not too far from camps on this level or the level below
             var allCamps = campPos1.concat(campPos2);
             var minCampDist = 4;
-            var maxCampDist = Math.min(15, maxPathLengthC2P);
+            var maxCampDist = Math.min(20, maxPathLengthC2P);
             for (var i = 0; i < allCamps.length; i++) {
                 var campPos = allCamps[i];
                 if (campPos.level == pos.level || campPos.level == pos.level - 1) {
-                    var dist = PositionConstants.getDistanceTo(pos, campPos);
-                    if (dist < minCampDist) return false;
-                    if (dist > maxCampDist) return false;
+                    var dist = Math.round(PositionConstants.getDistanceTo(pos, campPos));
+                    if (dist < minCampDist) return { isValid: false, reason: "min distance to camp", details: "camp pos " + campPos + " " + dist + "/" + minCampDist };
+                    if (dist > maxCampDist) return { isValid: false, reason: "max distance to camp", details: "camp pos: " + campPos + " " + dist + "/" + maxCampDist };
                 }
             }
             
@@ -266,8 +280,8 @@ define([
                 var minPassageDist = 3;
                 var maxPassageDist = Math.min(15, maxPathLengthP2P);
                 var dist = PositionConstants.getDistanceTo(pos, passageUp);
-                if (dist < minPassageDist) return false;
-                if (dist > maxPassageDist && !isCampableLevel) return false;
+                if (dist < minPassageDist) return { isValid: false, reason: "min distance to passage" };
+                if (dist > maxPassageDist && !isCampableLevel) return { isValid: false, reason: "max distance to passage" };
             }
             
             // check that late passage isn't between early passage and camps on this level (similar direction and shorter distance)
@@ -283,14 +297,14 @@ define([
                             var distE = PositionConstants.getDistanceTo(campPos, posE);
                             var distL = PositionConstants.getDistanceTo(campPos, posL);
                             if (distL < distE) {
-                                return false;
+                                return { isValid: false, reason: "late passage closer to camp", details: "level " + level };
                             }
                         }
                     }
                 }
             }
             
-            return true;
+            return { isValid: true };
         },
 
     };

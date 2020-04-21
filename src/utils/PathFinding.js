@@ -19,10 +19,12 @@ define(function () {
         findPath: function (startVO, goalVO, utilities, settings) {
             if (!startVO) {
                 log.w("No start sector defined.");
+                return null;
             }
 
             if (!goalVO) {
                 log.w("No goal sector defined.");
+                return null;
             }
 
             if (this.getKey(startVO) === this.getKey(goalVO)) return [];

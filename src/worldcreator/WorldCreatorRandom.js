@@ -153,15 +153,12 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 		},
         
 		// Pseudo-random sector position on the given level, with a check for validity and look for nearby positions of position is not valid
-        randomSectorPositionWithCheck: function (seed, level, areaSize, centerPos, minDist, check) {
-            var tries = 0;
-            var start = this.randomSectorPosition(seed, level, areaSize, centerPos, minDist);
-            var result = start;
-            while (!check(result) && tries < 1000) {
-                result = this.randomSectorPosition(seed + tries, level, areaSize, centerPos, minDist);
-                tries++;
-            }
-            return result;
+        randomSectorPositionWithCheck: function (seed, id, level, areaSize, centerPos, minDist, check) {
+            var getAlternative = function (i) {
+                var res = WorldCreatorRandom.randomSectorPosition(seed + i, level, areaSize, centerPos, minDist);
+                return res;
+            };
+            return this.randomResultWithCheck(seed, id, getAlternative, check);
         },
 		
 		// Pseudo-random sector position on the given level, within the given area (distance from 0,0 or centerPos)
@@ -233,11 +230,43 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
             }
             return true;
         },
+        
+        // get random result with a validity check function, try max 99 times with different seeds, keep track of fails
+        randomResultWithCheck: function (seed, id, resultFunc, checkFunc) {
+            // set up failed result bookeeping
+            var failReasons = {};
+            var checkResult = function (r) {
+                var checkResult = checkFunc(r);
+                if (!checkResult.isValid) {
+                    var reason = checkResult.reason || "unknown";
+                    var details = checkResult.details || "-";
+                    if (!failReasons[reason]) failReasons[reason] = { details: [], count: 0};
+                    failReasons[reason].count++
+                    if (details) failReasons[reason].details.push(details);
+                }
+                return checkResult.isValid;
+            };
+            // try to find a valid result
+            var maxtries = 99;
+            var result = null;
+            for (var i = 0; i < maxtries; i++) {
+                result = resultFunc(i);
+                if (checkResult(result)) {
+                    return result;
+                }
+            }
+            
+            // no valid result found, print fail reasons and return something
+            log.w("randomResultWithCheck [" + id + "] ran out of tries, returning invalid result");
+            log.i(failReasons);
+            
+            return result;
+        },
 		
 		// Pseudo-random int between min (inclusive) and max (exclusive)
 		randomInt: function (seed, min, max) {
             if (!isFinite(seed) || isNaN(seed)) {
-                throw new Error("Invalid seed for WorldCreatorRandom.randomInt");
+                throw new Error("Invalid seed for WorldCreatorRandom.randomInt: " + seed);
             }
 			return Math.floor(Math.min(max - 1, Math.floor(this.random(seed) * (max - min + 1)) + min));
 		},
@@ -275,6 +304,8 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
              
             var makePathSectorVO = function (position) {
                 if (!position) return null;
+                var levelVO = worldVO.getLevel(position.level);
+                if (!levelVO.hasSector(position.sectorX, position.sectorY)) return null;
                 return {
                     position: position,
                     isVisited: false,
@@ -297,6 +328,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
                     return result ? makePathSectorVO(result.position) : null;
                 },
                 getSectorByPosition: function (level, sectorX, sectorY) {
+                    var levelVO = worldVO.getLevel(level);
                     return makePathSectorVO(new PositionVO(level, sectorX, sectorY));
                 },
                 getSectorNeighboursMap: function (pathSectorVO) {
