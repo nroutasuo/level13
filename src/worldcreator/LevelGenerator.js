@@ -96,14 +96,15 @@ define([
         
         getLevelCenterPosition: function (worldVO, levelVO) {
             var pois = [];
-            pois.push(new PositionVO(levelVO.level, 0, 0));
             if (levelVO.isCampable) {
+                pois.push(new PositionVO(levelVO.level, 0, 0));
                 pois = pois.concat(levelVO.campPositions);
             } else {
                 if (levelVO.passageUpPosition) pois.push(levelVO.passageUpPosition);
                 if (levelVO.passageDownPosition) pois.push(levelVO.passageDownPosition);
             }
-            return PositionConstants.getMiddlePoint(pois, true);
+            var result = PositionConstants.getMiddlePoint(pois, true);
+            return result;
         },
         
         getExcursionStartPosition: function (worldVO, levelVO) {

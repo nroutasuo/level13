@@ -28,6 +28,7 @@ function (Ash, PositionConstants, PositionVO) {
 			this.maxX = 0;
 			this.minY = 0;
 			this.maxY = 0;
+            this.invalidPositions = [];
             
             this.pendingConnectionPointsByStage = {};
             
@@ -131,6 +132,7 @@ function (Ash, PositionConstants, PositionVO) {
         addPendingConnectionPoint: function (point) {
             var sector = this.getSector(point.position.sectorX, point.position.sectorY);
             if (!sector) return;
+            sector.isConnectionPoint = true;
             var stage = sector.stage;
             if (!this.pendingConnectionPointsByStage[stage]) this.pendingConnectionPointsByStage[stage] = [];
             this.pendingConnectionPointsByStage[stage].push(point);
@@ -146,6 +148,19 @@ function (Ash, PositionConstants, PositionVO) {
             }
             if (!this.pendingConnectionPointsByStage[stage]) return [];
             return this.pendingConnectionPointsByStage[stage];
+        },
+        
+        removePendingConnectionPoint: function (point) {
+            for (var key in this.pendingConnectionPointsByStage) {
+                var points = this.pendingConnectionPointsByStage[key];
+                for (var i = 0; i < points.length; i++) {
+                    var p = points[i];
+                    if (p.position.sectorX == point.position.sectorX && p.position.sectorY == point.position.sectorY) {
+                        points.splice(i, 1);
+                        return;
+                    }
+                }
+            }
         },
         
         isCampPosition: function (pos) {
@@ -164,6 +179,15 @@ function (Ash, PositionConstants, PositionVO) {
         isPassageDownPosition: function (pos) {
             return this.passageDownPosition && this.passageDownPosition.equals(pos);
         },
+        
+        isInvalidPosition: function (pos) {
+            for (var i = 0; i < this.invalidPositions.length; i++) {
+                if (pos.sectorX == this.invalidPositions[i].sectorX && pos.sectorY == this.invalidPositions[i].sectorY) {
+                    return true;
+                }
+            }
+            return false;
+        }
         
         /*
         addGang: function (gangVO) {

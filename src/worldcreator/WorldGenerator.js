@@ -253,7 +253,7 @@ define([
         },
         
         isValidPassageDownPos: function (seed, pos, features, passageUp, campPos1, campPos2) {
-            var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, pos.level);
+            var campOrdinal = Math.min(WorldCreatorHelper.getCampOrdinal(seed, pos.level), WorldCreatorHelper.getCampOrdinal(seed, pos.level - 1));
             var isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, pos.level);
             var maxPathLengthC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
             var level = pos.level;
@@ -277,11 +277,11 @@ define([
             // check that passages on same level are not too close and (on campless levels) not too far
             var maxPathLengthP2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
             if (passageUp) {
-                var minPassageDist = 3;
-                var maxPassageDist = Math.min(15, maxPathLengthP2P);
+                var minPassageDist = isCampableLevel ? 3 : 8;
+                var maxPassageDist = isCampableLevel ? 100 : Math.min(15, maxPathLengthP2P);
                 var dist = PositionConstants.getDistanceTo(pos, passageUp);
                 if (dist < minPassageDist) return { isValid: false, reason: "min distance to passage" };
-                if (dist > maxPassageDist && !isCampableLevel) return { isValid: false, reason: "max distance to passage" };
+                if (dist > maxPassageDist) return { isValid: false, reason: "max distance to passage" };
             }
             
             // check that late passage isn't between early passage and camps on this level (similar direction and shorter distance)

@@ -156,10 +156,8 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                             print += "{D|blue} ";
                         else if (sectorVO.isCamp)
                             print += "{C|red} ";
-                        else if (sectorVO.isPreferredConnection)
-                            print += "{P|" + defaultColor + "} ";
                         else if (sectorVO.isConnectionPoint)
-                            print += "{C|" + defaultColor + "} ";
+                            print += "{c|" + defaultColor + "} ";
                         else if (sectorVO.isFill)
                             print += "{F|" + defaultColor + "} ";
                         /*
@@ -179,6 +177,8 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                         var features = worldVO.getFeatures(position);
                         if (levelVO.levelCenterPosition.equals(position)) {
                             print += "{C|#eb2} ";
+                        } else if (levelVO.isInvalidPosition(position)) {
+                            print += "{·|#e11} ";
                         } else if (features.length > 0) {
                             var feature = features[0];
                             var char = feature.isBuilt() ? "T" : "H";
