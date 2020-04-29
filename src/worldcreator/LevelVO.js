@@ -89,6 +89,10 @@ function (Ash, PositionConstants, PositionVO) {
 		},
 		
 		getSector: function (sectorX, sectorY) {
+            if (sectorX && typeof (sectorX) != "number") {
+                sectorY = sectorX.sectorY;
+                sectorX = sectorX.sectorX;
+            }
 			return this.hasSector(sectorX, sectorY) ? this.sectorsByPos[sectorX][sectorY] : null;
 		},
         
@@ -187,7 +191,15 @@ function (Ash, PositionConstants, PositionVO) {
                 }
             }
             return false;
-        }
+        },
+        
+        containsPosition: function (position) {
+            if (position.y < this.minY) return false;
+            if (position.y > this.maxY) return false;
+            if (position.x < this.minX) return false;
+            if (position.x > this.maxX) return false;
+            return true;
+        },
         
         /*
         addGang: function (gangVO) {
@@ -247,14 +259,6 @@ function (Ash, PositionConstants, PositionVO) {
                 if (this.sectors[i].passageDown > 0) result.push(this.sectors[i]);
             }
             return result;
-        },
-        
-        containsPosition: function (position) {
-            if (position.y < this.minY) return false;
-            if (position.y > this.maxY) return false;
-            if (position.x < this.minX) return false;
-            if (position.x > this.maxX) return false;
-            return true;
         },
         
         isEdgeSector: function (sectorX, sectorY, padding) {

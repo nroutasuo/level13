@@ -62,14 +62,18 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
         printLevelStructure: function (worldVO) {
             for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var levelVO = worldVO.levels[l];
-                this.printLevel(worldVO, levelVO);
+                this.printLevel(worldVO, levelVO, function (sectorVO) {});
             }
         },
         
         printSectorTemplates: function (worldVO) {
 			for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var levelVO = worldVO.getLevel(l);
-                WorldCreatorDebug.printLevel(worldVO, levelVO);
+                this.printLevel(worldVO, levelVO, function (sectorVO) {
+                    var criticalPath = sectorVO.getCriticalPathC();
+                    var zone = sectorVO.getZoneC();
+                    return { char: zone, color: null }
+                });
             }
         },
 		
@@ -120,7 +124,7 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
 			}
 		},
 		
-		printLevel: function (worldVO, levelVO) {
+		printLevel: function (worldVO, levelVO, sectordef) {
             console.groupCollapsed("Level " + levelVO.level + ", camp " + (levelVO.isCampable ? levelVO.campOrdinal :  "-")
                 + ", sectors: " + levelVO.sectors.length + "/" + levelVO.numSectors
                 + ", early: " + levelVO.getNumSectorsByStage(WorldConstants.CAMP_STAGE_EARLY) + "/" + levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_EARLY]
@@ -146,9 +150,10 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
 					if (levelVO.hasSector(x, y)) {
                         var sectorVO = levelVO.getSector(x, y);
                         var defaultColor = sectorVO.stage == WorldConstants.CAMP_STAGE_EARLY ? "#111" : "#aaa";
-                        //var criticalPath = sectorVO.getCriticalPathC();
-                        //var zone = sectorVO.getZoneC();
-                        if (sectorVO.isPassageUp && sectorVO.isPassageDown)
+                        var def = sectordef(sectorVO);
+                        if (def)
+                            print += "{" + def.char + "|" + (def.color || defaultColor) + "} ";
+                        else if (sectorVO.isPassageUp && sectorVO.isPassageDown)
                             print += "{O|blue} ";
                         else if (sectorVO.isPassageUp)
                             print += "{U|blue} ";
@@ -160,16 +165,6 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                             print += "{c|" + defaultColor + "} ";
                         else if (sectorVO.isFill)
                             print += "{F|" + defaultColor + "} ";
-                        /*
-                        else if (sectorVO.locales.length > 0)
-                            print += "L ";
-                        */
-                        /*
-                        else if (criticalPath >= 0)
-                            print += criticalPath + " ";
-                        else if (zone >= 0)
-                            print += zone + " ";
-                        */
                         else
                             print += "{+|" + defaultColor + "} ";
 					} else {

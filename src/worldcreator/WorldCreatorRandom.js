@@ -334,6 +334,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
                 getSectorNeighboursMap: function (pathSectorVO) {
                     var levelVO = worldVO.getLevel(pathSectorVO.position.level);
                     return levelVO.getNeighbours(pathSectorVO.result.sectorX, pathSectorVO.result.sectorY, function (sector) {
+                        if (!sector) return null;
                         return makePathSectorVO(sector.position);
                     }, stage);
                 },
