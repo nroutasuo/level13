@@ -275,15 +275,15 @@ define([
             };
         },
         
-        sortSectorsByDistanceTo: function (worldVO, sector) {
+        sortSectorsByDistanceTo: function (position) {
             return function (a, b) {
-                var dista = PositionConstants.getDistanceTo(sector.position, a.position);
-                var distb = PositionConstants.getDistanceTo(sector.position, b.position);
+                var dista = PositionConstants.getDistanceTo(position, a.position);
+                var distb = PositionConstants.getDistanceTo(position, b.position);
                 return dista - distb;
             };
         },
         
-        getVornoiPoints: function (seed, worldVO, levelVO, passage1, camp) {
+        getVornoiPoints: function (seed, worldVO, levelVO) {
             var level = levelVO.level;
             var points = [];
             var addPoint = function (position, zone, minDistance) {
@@ -297,10 +297,11 @@ define([
             };
             
             // camp
-            addPoint(camp.position, WorldConstants.ZONE_POI_TEMP);
+            var campMiddle = PositionConstants.getMiddlePoint(levelVO.campPositions);
+            addPoint(campMiddle, WorldConstants.ZONE_POI_TEMP);
             
             // two sectors furthest away from the camp (but not next to each other)
-            var sectorsByDistance = levelVO.sectors.slice(0).sort(WorldCreatorHelper.sortSectorsByDistanceTo(worldVO, camp));
+            var sectorsByDistance = levelVO.sectors.slice(0).sort(WorldCreatorHelper.sortSectorsByDistanceTo(campMiddle));
             addPoint(sectorsByDistance[sectorsByDistance.length - 1].position, WorldConstants.ZONE_EXTRA_CAMPABLE);
             var i = 1;
             while (i < sectorsByDistance.length) {
@@ -314,7 +315,7 @@ define([
             for (var i in directions) {
                 var direction = directions[i];
                 var pointDist = 7 + WorldCreatorRandom.randomInt(10101 + seed % 11 * 182 + i*549 + level * 28, 0, 7);
-                var pointPos = PositionConstants.getPositionOnPath(camp.position, direction, pointDist);
+                var pointPos = PositionConstants.getPositionOnPath(campMiddle, direction, pointDist);
                 if (levelVO.containsPosition(pointPos)) {
                     addPoint(pointPos, WorldConstants.ZONE_POI_TEMP, 6);
                 }

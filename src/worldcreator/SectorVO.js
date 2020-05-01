@@ -1,5 +1,5 @@
-define(['ash', 'worldcreator/WorldCreatorConstants','game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'],
-function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
+define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorConstants','game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'],
+function (Ash, WorldConstants, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
 
     var SectorVO = Ash.Class.extend({
 	
@@ -97,7 +97,29 @@ function (Ash, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
         },
         
         getZoneC: function () {
-            return WorldCreatorConstants.getZoneOrdinal(this.zone);
+            switch (this.zone) {
+                case WorldConstants.ZONE_ENTRANCE:
+                    return "e";
+                case WorldConstants.ZONE_PASSAGE_TO_CAMP:
+                    return "p";
+                case WorldConstants.ZONE_POI_1:
+                    return "1";
+                case WorldConstants.ZONE_POI_2:
+                    return "2";
+                case WorldConstants.ZONE_CAMP_TO_PASSAGE:
+                    return "b";
+                case WorldConstants.ZONE_EXTRA_CAMPABLE:
+                    return "x";
+                case WorldConstants.ZONE_POI_TEMP:
+                    return "t";
+                case WorldConstants.ZONE_PASSAGE_TO_PASSAGE:
+                    return "i";
+                case WorldConstants.ZONE_EXTRA_UNCAMPABLE:
+                    return "x";
+                default:
+                    log.w("no debug char defined for zone " + this.zone);
+                    return WorldCreatorConstants.getZoneOrdinal(this.zone);
+            }
         },
         
         getCriticalPathC: function () {

@@ -149,18 +149,22 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
 				for (var x = minX; x <= maxX; x++) {
 					if (levelVO.hasSector(x, y)) {
                         var sectorVO = levelVO.getSector(x, y);
-                        var defaultColor = sectorVO.stage == WorldConstants.CAMP_STAGE_EARLY ? "#111" : "#aaa";
+                        var defaultColor = sectorVO.stage == WorldConstants.CAMP_STAGE_EARLY ? "#111" : "#abc";
+                        if (sectorVO.isCamp)
+                            defaultColor = "red";
+                        if (sectorVO.isPassageUp || sectorVO.isPassageDown)
+                            defaultColor = "blue";
                         var def = sectordef(sectorVO);
                         if (def)
                             print += "{" + def.char + "|" + (def.color || defaultColor) + "} ";
                         else if (sectorVO.isPassageUp && sectorVO.isPassageDown)
-                            print += "{O|blue} ";
+                            print += "{O|" + defaultColor + "} ";
                         else if (sectorVO.isPassageUp)
-                            print += "{U|blue} ";
+                            print += "{U|" + defaultColor + "} ";
                         else if (sectorVO.isPassageDown)
-                            print += "{D|blue} ";
+                            print += "{D|" + defaultColor + "} ";
                         else if (sectorVO.isCamp)
-                            print += "{C|red} ";
+                            print += "{C|" + defaultColor + "} ";
                         else if (sectorVO.isConnectionPoint)
                             print += "{c|" + defaultColor + "} ";
                         else if (sectorVO.isFill)
