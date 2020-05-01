@@ -22,56 +22,6 @@ define([
                 levelVO.getSector(path[j].sectorX, path[j].sectorY).addToCriticalPath(pathType);
             }
         },
-		
-		getSectorType: function (seed, level, levelVO, x, y) {
-            var sector = x + y + 2000;
-			var topLevel = this.getHighestLevel(seed);
-			var bottomLevel = this.getBottomLevel(seed);
-            var rand = WorldCreatorRandom.random(seed % 1000 + level * sector + 5);
-            
-			var sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
-            if (level == topLevel) {
-                // special level: top level
-                sectorType = SectorConstants.SECTOR_TYPE_COMMERCIAL;
-				if (rand < 0.2) sectorType = SectorConstants.SECTOR_TYPE_PUBLIC;
-				if (rand < 0.6) sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
-				if (rand < 0.65) sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
-            } else if (level == 14) {
-                // special level: 14
-				sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
-				if (rand < 0.3) sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
-				if (rand < 0.4) sectorType = SectorConstants.SECTOR_TYPE_SLUM;
-            } else if (level == bottomLevel) {
-                // special level: ground level
-				sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
-				if (rand < 0.1) sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
-				if (rand < 0.2) sectorType = SectorConstants.SECTOR_TYPE_PUBLIC;
-				if (rand < 0.3) sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
-            } else if (level > topLevel - 5) {
-				// levels near top: mainly residentai
-				sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
-				if (rand < 0.3) sectorType = SectorConstants.SECTOR_TYPE_COMMERCIAL;
-				if (rand < 0.05) sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
-			} else if (level > topLevel - 8) {
-				// first dark levels: mainly recent industrial and maintenance
-				sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
-				if (rand < 0.4) sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
-				if (rand < 0.15) sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
-			} else if (level > 14) {
-				// levels baove 14: slums and maintenance
-				sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
-				if (rand < 0.3) sectorType = SectorConstants.SECTOR_TYPE_SLUM;
-			} else {
-				// Old levels: mix of slum, maintenance, and everything else
-				sectorType = SectorConstants.SECTOR_TYPE_SLUM;
-				if (rand < 0.4) sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
-				if (rand < 0.3) sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
-				if (rand < 0.2) sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
-				if (rand < 0.1) sectorType = SectorConstants.SECTOR_TYPE_COMMERCIAL;
-				if (rand < 0.1) sectorType = SectorConstants.SECTOR_TYPE_PUBLIC;
-			}
-			return sectorType;
-		},
         
         getSectorScavengableResources: function (seed, topLevel, bottomLevel, sectorVO) {
             var l = sectorVO.position.level;

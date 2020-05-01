@@ -102,15 +102,13 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
 								var key = keys[k];
 								var keySplit = key.split(".");
 								if (keySplit.length === 1) {
-									if (sectorVO[key] || sectorVO[key] === 0) print += sectorVO[key] + " ";
+									if (sectorVO[key] || sectorVO[key] === 0) print += sectorVO[key].toString()[0] + " ";
 									else print += "[]";
 								} else {
 									if (sectorVO[keySplit[0]][keySplit[1]] || sectorVO[keySplit[0]][keySplit[1]] == 0) print += sectorVO[keySplit[0]][keySplit[1]] + " ";
 									else print += "[]";
 								}
 							}
-						} else if (levelVO.isCentral(x, y)) {
-							print += ". ";
 						} else {
 							print += "  ";
 						}

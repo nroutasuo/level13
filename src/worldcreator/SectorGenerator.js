@@ -2,11 +2,13 @@
 define([
 	'ash',
     'game/constants/PositionConstants',
+    'game/constants/SectorConstants',
     'game/constants/WorldConstants',
 	'worldcreator/WorldCreatorConstants',
     'worldcreator/WorldCreatorHelper',
-    'worldcreator/WorldCreatorRandom'
-], function (Ash, PositionConstants, WorldConstants, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom) {
+    'worldcreator/WorldCreatorRandom',
+    'worldcreator/WorldCreatorDebug'
+], function (Ash, PositionConstants, SectorConstants , WorldConstants, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug ) {
     
     var SectorGenerator = {
         
@@ -14,7 +16,14 @@ define([
             for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var levelVO = worldVO.levels[l];
                 this.generateZones(seed, worldVO, levelVO);
+                for (var s = 0; s < levelVO.sectors.length; s++) {
+                    var sectorVO = levelVO.sectors[s];
+                    sectorVO.sectorType = this.getSectorType(seed, worldVO, levelVO, sectorVO);
+                    this.generateTexture(seed, sectorVO);
+                }
+                
             }
+            WorldCreatorDebug.printWorld(worldVO, [ "sectorType" ]);
         },
         
         generateZones: function (seed, worldVO, levelVO) {
@@ -125,6 +134,150 @@ define([
                 }
             }
         },
+        
+        getSectorType: function (seed, worldVO, levelVO, sectorVO) {
+            var level = levelVO.level;
+            var r1 = 9000 + seed % 2000 + (levelVO.level + 5) * 11 + sectorVO.position.sectorX * 141 + sectorVO.position.sectorY * 153;
+            var rand = WorldCreatorRandom.random(r1);
+            
+			var sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+            if (level == worldVO.topLevel) {
+                // special level: top level
+                sectorType = SectorConstants.SECTOR_TYPE_COMMERCIAL;
+				if (rand < 0.6) sectorType = SectorConstants.SECTOR_TYPE_PUBLIC;
+				if (rand < 0.4) sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+				if (rand < 0.05) sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+            } else if (level > worldVO.topLevel - 4) {
+				// levels near top: mainly residentai
+                sectorType = SectorConstants.SECTOR_TYPE_COMMERCIAL;
+				if (rand < 0.7) sectorType = SectorConstants.SECTOR_TYPE_PUBLIC;
+				if (rand < 0.5) sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+				if (rand < 0.05) sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+			} else if (level > worldVO.topLevel - 8) {
+				// first dark levels: mainly recent industrial and maintenance
+				sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+				if (rand < 0.7) sectorType = SectorConstants.SECTOR_TYPE_COMMERCIAL;
+				if (rand < 0.65) sectorType = SectorConstants.SECTOR_TYPE_PUBLIC;
+				if (rand < 0.5) sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+				if (rand < 0.4) sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+				if (rand < 0.2) sectorType = SectorConstants.SECTOR_TYPE_SLUM;
+			} else if (level > 14) {
+				// levels baove 14: slums and maintenance
+				sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+				if (rand < 0.75) sectorType = SectorConstants.SECTOR_TYPE_PUBLIC;
+				if (rand < 0.7) sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+				if (rand < 0.5) sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+				if (rand < 0.4) sectorType = SectorConstants.SECTOR_TYPE_SLUM;
+            } else if (level == 14) {
+                // special level: 14
+				sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+				if (rand < 0.25) sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+				if (rand < 0.35) sectorType = SectorConstants.SECTOR_TYPE_SLUM;
+            } else if (level > 4) {
+				// levels below 14: mix of slum, maintenance, and everything else
+				sectorType = SectorConstants.SECTOR_TYPE_SLUM;
+				if (rand < 0.5) sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+				if (rand < 0.4) sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+				if (rand < 0.3) sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+				if (rand < 0.2) sectorType = SectorConstants.SECTOR_TYPE_COMMERCIAL;
+				if (rand < 0.1) sectorType = SectorConstants.SECTOR_TYPE_PUBLIC;
+            } else if (level > worldVO.bottomLevel) {
+                // levels near ground: old levels
+				sectorType = SectorConstants.SECTOR_TYPE_SLUM;
+				if (rand < 0.9) sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+				if (rand < 0.8) sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+				if (rand < 0.6) sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+				if (rand < 0.4) sectorType = SectorConstants.SECTOR_TYPE_COMMERCIAL;
+				if (rand < 0.2) sectorType = SectorConstants.SECTOR_TYPE_PUBLIC;
+            } else if (level == worldVO.bottomLevel) {
+                // special level: ground level
+				sectorType = SectorConstants.SECTOR_TYPE_MAINTENANCE;
+				if (rand < 0.8) sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+				if (rand < 0.6) sectorType = SectorConstants.SECTOR_TYPE_RESIDENTIAL;
+				if (rand < 0.4) sectorType = SectorConstants.SECTOR_TYPE_COMMERCIAL;
+				if (rand < 0.2) sectorType = SectorConstants.SECTOR_TYPE_PUBLIC;
+			}
+            
+            return sectorType;
+        },
+        
+        /*
+        SECTOR_TYPE_RESIDENTIAL: "residential",
+        SECTOR_TYPE_INDUSTRIAL: "industrial",
+        SECTOR_TYPE_MAINTENANCE: "maintenance",
+        SECTOR_TYPE_COMMERCIAL: "commercial",
+        SECTOR_TYPE_PUBLIC: "public",
+        SECTOR_TYPE_SLUM: "slum",
+        */
+        
+        generateTexture: function (seed, sectorVO) {
+            /*
+            var x = sectorVO.position.sectorX;
+            var y = sectorVO.position.sectorY;
+            var distanceToCenter = PositionConstants.getDistanceTo(sectorVO.position, new PositionVO(l, 0, 0));
+
+            // sunlight
+            var isOutsideTower = Math.abs(y) > WorldCreatorConstants.TOWER_RADIUS || Math.abs(x) > WorldCreatorConstants.TOWER_RADIUS;
+            var isEdgeSector = levelVO.isEdgeSector(x, y, 2);
+            var isOpenEdge = false;
+            var isBrokenEdge = false;
+            if (l === topLevel) {
+                // surface: all lit
+                sectorVO.sunlit = 1;
+            } else if (l === 13) {
+                // start levels: no sunlight
+                sectorVO.sunlit = 0;
+            } else {
+                sectorVO.sunlit = 0;
+
+                // one level below surface: center has broken "ceiling"
+                if (l === topLevel - 1 && distanceToCenter <= 6) {
+                    sectorVO.sunlit = 1;
+                }
+                
+                if (isOutsideTower) {
+                    sectorVO.sunlit = 1;
+                }
+
+                // all levels except surface: some broken or open edges
+                if (isEdgeSector) {
+                    var dir = levelVO.getEdgeDirection(x, y, 1);
+                    var dirIndex = sunlitEdgeDirections.indexOf(dir);
+                    if (dirIndex >= 0) {
+                        sectorVO.sunlit = 2;
+                        if (hasBrokenEdge && hasOpenEdge) {
+                            isBrokenEdge = dirIndex === 0;
+                            isOpenEdge = dirIndex > 1;
+                        } else if(hasBrokenEdge) {
+                            isBrokenEdge = true;
+                        } else {
+                            isOpenEdge = true;
+                        }
+                    }
+                }
+            }
+
+            // wear and damage
+            var explosionStrength = i - topLevel >= -3 && distanceToCenter <= 10 ? distanceToCenter * 2 : 0;
+            var wear = levelWear + WorldCreatorRandom.randomInt(seed * l * (x + 100) * (y + 100), -2, 2);
+            var damage = explosionStrength;
+            if (sectorVO.camp) wear = Math.min(3, wear);
+            if (sectorVO.camp) damage = Math.min(3, damage);
+            if (isOpenEdge) wear = Math.max(4, wear);
+            if (isBrokenEdge) wear = Math.max(6, wear);
+            if (l == 14) damage = Math.max(3, damage);
+            sectorVO.wear = MathUtils.clamp(Math.round(wear), 0, 10);
+            sectorVO.damage = MathUtils.clamp(Math.round(damage), 0, 10);
+
+            // buildingDensity
+            var buildingDensity = levelDensity + WorldCreatorRandom.randomInt(seed * l * x + y + x, -5, 5);
+            if (i == topLevel) buildingDensity = MathUtils.clamp(buildingDensity, 1, 8);
+            if (sectorVO.camp) {
+                buildingDensity = Math.min(1, Math.max(8, buildingDensity));
+            }
+            sectorVO.buildingDensity = MathUtils.clamp(Math.round(buildingDensity), 0, 10);
+            */
+        }
         
     };
     
