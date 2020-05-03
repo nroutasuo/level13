@@ -37,6 +37,7 @@ define([
                 levelVO.levelCenterPosition = this.getLevelCenterPosition(worldVO, levelVO);
                 levelVO.excursionStartPosition = this.getExcursionStartPosition(worldVO, levelVO);
                 levelVO.zones = this.generateZones(seed, levelVO);
+                levelVO.seaPadding = this.getSeaPadding(seed, levelVO);
                 worldVO.addLevel(levelVO);
             }
         },
@@ -115,6 +116,14 @@ define([
                 return levelVO.passageUpPosition;
             }
             return levelVO.passageDownPosition;
+        },
+        
+        getSeaPadding: function (seed, levelVO) {
+            var s1 = 5000 + seed % 1000 + (levelVO.level + 5) * 471;
+            var min = Math.floor(levelVO.level / 7);
+            var max = Math.max(min + 3, 3);
+            var result = WorldCreatorRandom.randomInt(s1, min, max);
+            return result;
         }
         
     };

@@ -35,10 +35,20 @@ define(['ash'], function (Ash) {
             return result;
         },
         
-        getFeatures: function (pos) {
+        getFeaturesByPos: function (pos) {
             var result = [];
             for (var i = 0; i < this.features.length; i++) {
                 if (this.features[i].containsPosition(pos)) {
+                    result.push(this.features[i]);
+                }
+            }
+            return result;
+        },
+        
+        getFeaturesByType: function (type) {
+            var result = [];
+            for (var i = 0; i < this.features.length; i++) {
+                if (this.features[i].type == type) {
                     result.push(this.features[i]);
                 }
             }

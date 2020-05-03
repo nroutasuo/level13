@@ -30,10 +30,10 @@ define([
             var explosionSize = 9;
             
             // wells
-            var num = 3;
+            var num = 4;
             for (var i = 0; i < num; i++) {
                 var pos = WorldCreatorRandom.randomSectorPosition(seed % 100 + i * 10, 0, WorldCreatorConstants.AREA_SIZE_CENTRAL + i*2);
-                var h = 1 + i + WorldCreatorRandom.randomInt(seed % 33 + 101 + i * 8, 0, 5);
+                var h = 2 + i + WorldCreatorRandom.randomInt(seed % 33 + 101 + i * 8, 0, 5);
                 var minS = Math.max(i + 2, h / 4);
                 var maxS = Math.min(10, h * 3);
                 var x = WorldCreatorRandom.randomInt(seed % 50 + 66 + i * 31, minS, maxS);

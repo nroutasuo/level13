@@ -260,24 +260,6 @@ function (Ash, PositionConstants, PositionVO) {
             }
             return result;
         },
-        
-        isEdgeSector: function (sectorX, sectorY, padding) {
-            return this.getEdgeDirection(sectorX, sectorY, padding) >= 0;
-        },
-        
-        getEdgeDirection: function (sectorX, sectorY, padding) {
-            if (!this.minY || !this.maxY || !this.minX || !this.maxX) return -1;
-            if (!padding) padding = 0;
-            if (sectorY <= this.minY + padding) return PositionConstants.DIRECTION_NORTH;
-            if (sectorY >= this.maxY - padding) return PositionConstants.DIRECTION_SOUTH;
-            if (sectorX <= this.minX + padding) return PositionConstants.DIRECTION_WEST;
-            if (sectorX >= this.maxX - padding) return PositionConstants.DIRECTION_EAST;
-            return -1;
-        },
-		
-		isCentral: function (sectorX, sectorY) {
-			return PositionConstants.isPositionInArea(new PositionVO(this.level, sectorX, sectorY), this.centralAreaSize);
-		},
         */
 		
     });

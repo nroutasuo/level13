@@ -77,49 +77,31 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
             }
         },
 		
-		printWorld: function (worldVO, keys) {
-			log.i("Print world, seed: " + worldVO.seed + ", attributes: " + keys)
-			var print = "";
-			var levelVO;
-			var sectorVO;
-			for (var i = worldVO.topLevel; i >= worldVO.bottomLevel; i--) {
-				print += "Level " + i + "\n";
-				levelVO = worldVO.levels[i];
-		
-				print += "\t  ";
-				for (var x = levelVO.minX; x <= levelVO.maxX; x++) {
-					print += String(x).length > 1 ? String(x).substring(0, 2) : x + " ";
-				}
-                print += "\n";
-                print += "central area: " + levelVO.centralAreaSize + ", bag size: " + levelVO.bagSize + "\n";
-			
-				for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
-					print += y + "\t[ ";
-					for (var x = levelVO.minX; x <= levelVO.maxX; x++) {
-						sectorVO = levelVO.getSector(x, y);
-						if (sectorVO) {
-							for (var k = 0; k < keys.length; k++) {
-								var key = keys[k];
-								var keySplit = key.split(".");
-								if (keySplit.length === 1) {
-									if (sectorVO[key] || sectorVO[key] === 0) print += sectorVO[key].toString()[0] + " ";
-									else print += "[]";
-								} else {
-									if (sectorVO[keySplit[0]][keySplit[1]] || sectorVO[keySplit[0]][keySplit[1]] == 0) print += sectorVO[keySplit[0]][keySplit[1]] + " ";
-									else print += "[]";
-								}
-							}
-						} else {
-							print += "  ";
-						}
-					}
-					print += " ]\n";
-				}
-				print = print.substring(0, print.length - 1);
-				print += "\n\n";
-                log.i(print);
-                print = "";
-			}
+		printWorld: function (worldVO, keys, color) {
+            var prepareValue = function (value) {
+                var char = value.toString()[0];
+                var c = value ? color || "#228B22" : null;
+                return { char: char, color: c };
+            };
+			for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
+                var levelVO = worldVO.getLevel(l);
+                this.printLevel(worldVO, levelVO, function (sectorVO) {
+                    for (var k = 0; k < keys.length; k++) {
+                        var key = keys[k];
+                        var keySplit = key.split(".");
+                        if (keySplit.length === 1) {
+                            if (sectorVO[key] || sectorVO[key] === 0) {
+                                return prepareValue(sectorVO[key]);
+                            }
+                        } else {
+                            if (sectorVO[keySplit[0]][keySplit[1]] || sectorVO[keySplit[0]][keySplit[1]] == 0) {
+                                return prepareValue(sectorVO[keySplit[0]][keySplit[1]]);
+                            }
+                        }
+                    }
+                    return null;
+                });
+            }
 		},
 		
 		printLevel: function (worldVO, levelVO, sectordef) {
@@ -171,7 +153,7 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                             print += "{+|" + defaultColor + "} ";
 					} else {
                         var position = { level: levelVO.level, sectorX: x, sectorY: y};
-                        var features = worldVO.getFeatures(position);
+                        var features = worldVO.getFeaturesByPos(position);
                         if (levelVO.levelCenterPosition.equals(position)) {
                             print += "{C|#eb2} ";
                         } else if (levelVO.isInvalidPosition(position)) {

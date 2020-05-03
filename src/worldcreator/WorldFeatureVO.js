@@ -28,6 +28,12 @@ define(['ash', 'worldcreator/WorldCreatorConstants'], function (Ash, WorldCreato
             return l >= this.levelMin && l <= this.levelMax;
         },
         
+        getDistanceTo: function (pos) {
+            var dx = Math.max(Math.abs(pos.sectorX - this.posX) - this.sizeX / 2, 0);
+            var dy = Math.max(Math.abs(pos.sectorY - this.posY) - this.sizeY / 2, 0);
+            return Math.sqrt(dx * dx + dy * dy);
+        },
+        
         getMinX: function () {
             if (this.sizeX <= 1) return this.posX;
             return this.posX - Math.floor((this.sizeX)/2);

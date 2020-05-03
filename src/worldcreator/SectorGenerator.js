@@ -1,14 +1,16 @@
 // Handles the first step of world generation, the abstract world template itself
 define([
 	'ash',
+    'utils/MathUtils',
     'game/constants/PositionConstants',
     'game/constants/SectorConstants',
     'game/constants/WorldConstants',
+    'game/vos/PositionVO',
 	'worldcreator/WorldCreatorConstants',
     'worldcreator/WorldCreatorHelper',
     'worldcreator/WorldCreatorRandom',
     'worldcreator/WorldCreatorDebug'
-], function (Ash, PositionConstants, SectorConstants , WorldConstants, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug ) {
+], function (Ash, MathUtils, PositionConstants, SectorConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug ) {
     
     var SectorGenerator = {
         
@@ -19,11 +21,12 @@ define([
                 for (var s = 0; s < levelVO.sectors.length; s++) {
                     var sectorVO = levelVO.sectors[s];
                     sectorVO.sectorType = this.getSectorType(seed, worldVO, levelVO, sectorVO);
-                    this.generateTexture(seed, sectorVO);
+                    sectorVO.sunlit = this.isSunlit(seed, worldVO, levelVO, sectorVO);
+                    this.generateTexture(seed, worldVO, levelVO, sectorVO);
                 }
                 
             }
-            WorldCreatorDebug.printWorld(worldVO, [ "sectorType" ]);
+            WorldCreatorDebug.printWorld(worldVO, [ "buildingDensity" ]);
         },
         
         generateZones: function (seed, worldVO, levelVO) {
@@ -201,82 +204,125 @@ define([
             return sectorType;
         },
         
-        /*
-        SECTOR_TYPE_RESIDENTIAL: "residential",
-        SECTOR_TYPE_INDUSTRIAL: "industrial",
-        SECTOR_TYPE_MAINTENANCE: "maintenance",
-        SECTOR_TYPE_COMMERCIAL: "commercial",
-        SECTOR_TYPE_PUBLIC: "public",
-        SECTOR_TYPE_SLUM: "slum",
-        */
-        
-        generateTexture: function (seed, sectorVO) {
-            /*
-            var x = sectorVO.position.sectorX;
-            var y = sectorVO.position.sectorY;
-            var distanceToCenter = PositionConstants.getDistanceTo(sectorVO.position, new PositionVO(l, 0, 0));
-
-            // sunlight
-            var isOutsideTower = Math.abs(y) > WorldCreatorConstants.TOWER_RADIUS || Math.abs(x) > WorldCreatorConstants.TOWER_RADIUS;
-            var isEdgeSector = levelVO.isEdgeSector(x, y, 2);
-            var isOpenEdge = false;
-            var isBrokenEdge = false;
-            if (l === topLevel) {
-                // surface: all lit
-                sectorVO.sunlit = 1;
-            } else if (l === 13) {
-                // start levels: no sunlight
-                sectorVO.sunlit = 0;
-            } else {
-                sectorVO.sunlit = 0;
-
-                // one level below surface: center has broken "ceiling"
-                if (l === topLevel - 1 && distanceToCenter <= 6) {
-                    sectorVO.sunlit = 1;
-                }
-                
-                if (isOutsideTower) {
-                    sectorVO.sunlit = 1;
-                }
-
-                // all levels except surface: some broken or open edges
-                if (isEdgeSector) {
-                    var dir = levelVO.getEdgeDirection(x, y, 1);
-                    var dirIndex = sunlitEdgeDirections.indexOf(dir);
-                    if (dirIndex >= 0) {
-                        sectorVO.sunlit = 2;
-                        if (hasBrokenEdge && hasOpenEdge) {
-                            isBrokenEdge = dirIndex === 0;
-                            isOpenEdge = dirIndex > 1;
-                        } else if(hasBrokenEdge) {
-                            isBrokenEdge = true;
-                        } else {
-                            isOpenEdge = true;
-                        }
+        isSunlit: function (seed, worldVO, levelVO, sectorVO) {
+            var l = sectorVO.position.level;
+            var isHole = function (pos) {
+                var features = worldVO.getFeaturesByPos(pos);
+                for (var i = 0; i < features.length; i++) {
+                    switch (features[i].type) {
+                        case WorldCreatorConstants.FEATURE_HOLE_WELL:
+                        case WorldCreatorConstants.FEATURE_HOLE_COLLAPSE:
+                        case WorldCreatorConstants.FEATURE_HOLE_SEA:
+                        case WorldCreatorConstants.FEATURE_HOLE_MOUNTAIN:
+                            return 1;
                     }
                 }
+                return 0;
+            };
+            if (l === worldVO.topLevel) {
+                // surface: all lit
+                return 1;
+            } else if (l === 13) {
+                // start level: no sunlight
+                return 0;
+            } else {
+                // others: sunlight only if ceiling or edge is open
+                // - sector itself is a hole
+                if (isHole(sectorVO.position)) return 1;
+                // - sector(s) above are holes or damaged enough
+                for (var level = l + 1; l <= worldVO.topLevel; l++) {
+                    var pos = new PositionVO(level, sectorVO.position.sectorX, sectorVO.position.sectorY);
+                    var sectorVO2 = worldVO.getLevel(l).getSector(pos.sectorX, pos.sectorY, 5);
+                    if (isHole(pos)) return 1;
+                    if (!sectorVO2 || (sectorVO.wear < 8 && sectorVO.damage < 5)) break;
+                    if (sectorVO2 && sectorVO2.sunlit) return 1;
+                }
+                // - sector is near edge to the sea
+                var sea = worldVO.getFeaturesByType(WorldCreatorConstants.FEATURE_HOLE_SEA)[0];
+                var distance = sea.getDistanceTo(sectorVO.position);
+                if (distance <= 1 + levelVO.seaPadding) return 1;
+                return 0;
             }
+        },
+        
+        generateTexture: function (seed, worldVO, levelVO, sectorVO) {
+            var l = sectorVO.position.level;
+            var x = sectorVO.position.sectorX;
+            var y = sectorVO.position.sectorY;
+            var features = worldVO.getFeaturesByPos(sectorVO.position);
+            var surroundingFeatures = WorldCreatorHelper.getFeaturesSurrounding(worldVO, levelVO, sectorVO.position);
 
-            // wear and damage
-            var explosionStrength = i - topLevel >= -3 && distanceToCenter <= 10 ? distanceToCenter * 2 : 0;
-            var wear = levelWear + WorldCreatorRandom.randomInt(seed * l * (x + 100) * (y + 100), -2, 2);
-            var damage = explosionStrength;
-            if (sectorVO.camp) wear = Math.min(3, wear);
-            if (sectorVO.camp) damage = Math.min(3, damage);
-            if (isOpenEdge) wear = Math.max(4, wear);
-            if (isBrokenEdge) wear = Math.max(6, wear);
-            if (l == 14) damage = Math.max(3, damage);
+            // wear
+            var levelWear = MathUtils.clamp((worldVO.topLevel - l) / (worldVO.topLevel - 5) * 8, 0, 10);
+            var wear = levelWear + WorldCreatorRandom.randomInt(seed * l + (x + 100) * 82 + (y + 100) * 82, -3, 3);
+            if (sectorVO.isCamp) wear = Math.min(3, wear);
             sectorVO.wear = MathUtils.clamp(Math.round(wear), 0, 10);
+
+            // damage
+            var damage = 0;
+            var getFeatureDamage = function (feature) {
+                switch (feature.type) {
+                    case WorldCreatorConstants.FEATURE_HOLE_WELL: return 1;
+                    case WorldCreatorConstants.FEATURE_HOLE_COLLAPSE: return 8;
+                    case WorldCreatorConstants.FEATURE_HOLE_SEA: return 3;
+                    default: return 0;
+                }
+            }
+            for (var i = 0; i < features.length; i++) {
+                damage = Math.max(damage, getFeatureDamage(features[i]));
+            }
+            for (var i = 0; i < surroundingFeatures.length; i++) {
+                var d = surroundingFeatures[i].getDistanceTo(sectorVO.position);
+                damage = Math.max(damage, getFeatureDamage(surroundingFeatures[i]) - d * 2);
+            }
+            if (sectorVO.isCamp) damage = Math.min(3, damage);
+            if (l == 14) damage = Math.max(3, damage);
             sectorVO.damage = MathUtils.clamp(Math.round(damage), 0, 10);
 
-            // buildingDensity
-            var buildingDensity = levelDensity + WorldCreatorRandom.randomInt(seed * l * x + y + x, -5, 5);
-            if (i == topLevel) buildingDensity = MathUtils.clamp(buildingDensity, 1, 8);
-            if (sectorVO.camp) {
-                buildingDensity = Math.min(1, Math.max(8, buildingDensity));
+            // building density
+            var levelDensity = MathUtils.clamp(WorldCreatorRandom.random(seed * 7 * l / 3 + 62) * 10, 2, 9);
+            if (l == worldVO.topLevel) levelDensity = 5;
+            if (l == worldVO.topLevel - 1) levelDensity = 5;
+            if (l == worldVO.topLevel - 2) levelDensity = 7;
+            if (l == worldVO.topLevel - 3) levelDensity = 8;
+            if (l == 14) levelDensity = 8;
+            if (l == worldVO.bottomLevel + 1) levelDensity = 6;
+            if (l == worldVO.bottomLevel) levelDensity = 3;
+            
+            var minDensity = 0;
+            var maxDensity = 10;
+            switch (sectorVO.sectorType) {
+                case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
+                    minDensity = 2;
+                    maxDensity = 8;
+                    break;
+                case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
+                    minDensity = 1;
+                    maxDensity = 10;
+                    break;
+                case SectorConstants.SECTOR_TYPE_MAINTENANCE:
+                    minDensity = 2;
+                    maxDensity = 10;
+                    break;
+                case SectorConstants.SECTOR_TYPE_COMMERCIAL:
+                    minDensity = 1;
+                    maxDensity = 10;
+                    break;
+                case SectorConstants.SECTOR_TYPE_PUBLIC:
+                    minDensity = 0;
+                    maxDensity = 7;
+                    break;
+                case SectorConstants.SECTOR_TYPE_SLUM:
+                    minDensity = 3;
+                    maxDensity = 10;
+                    break;
             }
-            sectorVO.buildingDensity = MathUtils.clamp(Math.round(buildingDensity), 0, 10);
-            */
+            
+            var randomDensity = WorldCreatorRandom.randomInt(seed * l * x + y + x, minDensity, maxDensity + 1);
+            if (sectorVO.isCamp) randomDensity = 5;
+            
+            var density = (levelDensity + randomDensity) / 2;
+            sectorVO.buildingDensity = MathUtils.clamp(Math.round(density), minDensity, maxDensity);
         }
         
     };

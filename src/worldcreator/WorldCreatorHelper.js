@@ -292,6 +292,23 @@ define([
             }
             return result;
         },
+        
+        getFeaturesSurrounding: function (worldVO, levelVO, pos) {
+            var result = [];
+            var candidates = PositionConstants.getAllPositionsInArea(pos, 5);
+            for (var i = 0; i < candidates.length; i++) {
+                var position = candidates[i];
+                var features = worldVO.getFeaturesByPos(position);
+                for (var j = 0; j < features.length; j++) {
+                    var feature = features[j];
+                    if (result.indexOf(feature) >= 0) {
+                        continue;
+                    }
+                    result.push(feature);
+                }
+            }
+            return result;
+        },
 		
 		getBottomLevel: function (seed) {
             switch (seed % 5) {
