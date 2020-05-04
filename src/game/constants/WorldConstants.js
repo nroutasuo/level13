@@ -48,6 +48,37 @@ define(['ash', 'worldcreator/WorldCreatorConstants'], function (Ash, WorldCreato
                     log.i("no camp step defined for zone: " + zone);
                     return 5;
             }
+        },
+        
+        getStage: function (zone) {
+            switch (zone) {
+                case WorldConstants.ZONE_ENTRANCE:
+                case WorldConstants.ZONE_PASSAGE_TO_CAMP:
+                case WorldConstants.ZONE_POI_1:
+                    return WorldConstants.CAMP_STAGE_EARLY;
+                case WorldConstants.ZONE_POI_2:
+                case WorldConstants.ZONE_CAMP_TO_PASSAGE:
+                case WorldConstants.ZONE_EXTRA_CAMPABLE:
+                case WorldConstants.ZONE_POI_TEMP:
+                case WorldConstants.ZONE_PASSAGE_TO_PASSAGE:
+                case WorldConstants.ZONE_EXTRA_UNCAMPABLE:
+                    return WorldConstants.CAMP_STAGE_LATE;
+                default:
+                    log.i("no camp stage defined for zone: " + zone);
+                    return WorldConstants.CAMP_STAGE_LATE;
+            }
+        },
+        
+        isAllowedZone: function (stage, zone) {
+            var zoneStage = WorldConstants.getStage(zone);
+            if (stage == zoneStage) return true;
+            switch (zone) {
+                case WorldConstants.ZONE_ENTRANCE:
+                case WorldConstants.ZONE_EXTRA_CAMPABLE:
+                case WorldConstants.ZONE_CAMP_TO_PASSAGE:
+                    return true;
+            }
+            return false;
         }
         
     };

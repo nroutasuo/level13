@@ -18,8 +18,8 @@ function (Ash, WorldConstants, WorldCreatorConstants, ResourcesVO, Environmental
             this.criticalPaths = [];
             this.locales = [];
 			this.movementBlockers = {};
-			this.passageUp = 0;
-			this.passageDown = 0;
+			this.passageUpType = null;
+			this.passageDownType = null;
             this.sunlit = false;
             this.hazards = new EnvironmentalHazardsVO();
             this.hasSpring = false;
@@ -81,7 +81,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, ResourcesVO, Environmental
 		},
         
         hasPassage: function () {
-            return this.passageUp > 0 || this.passageDown > 0;
+            return this.passageUpType || this.passageDownType;
         },
         */
         

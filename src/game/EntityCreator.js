@@ -163,8 +163,8 @@ define([
 				.add(new MovementOptionsComponent())
 				.add(new SectorStatusComponent())
 				.add(new PassagesComponent(
-					passageOptions.passageUp,
-					passageOptions.passageDown,
+					passageOptions.passageUpType,
+					passageOptions.passageDownType,
 					movementBlockers))
 				.add(new SectorFeaturesComponent(
 					level,
@@ -176,7 +176,6 @@ define([
 					sectorFeatures.sectorType,
 					sectorFeatures.sunlit,
 					sectorFeatures.hazards,
-					sectorFeatures.weather,
 					sectorFeatures.campable,
 					sectorFeatures.notCampableReason,
 					sectorFeatures.resourcesScavengable,

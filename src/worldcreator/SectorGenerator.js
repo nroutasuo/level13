@@ -2,15 +2,17 @@
 define([
 	'ash',
     'utils/MathUtils',
+    'game/constants/MovementConstants',
     'game/constants/PositionConstants',
     'game/constants/SectorConstants',
+    'game/constants/UpgradeConstants',
     'game/constants/WorldConstants',
     'game/vos/PositionVO',
 	'worldcreator/WorldCreatorConstants',
     'worldcreator/WorldCreatorHelper',
     'worldcreator/WorldCreatorRandom',
     'worldcreator/WorldCreatorDebug'
-], function (Ash, MathUtils, PositionConstants, SectorConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug ) {
+], function (Ash, MathUtils, MovementConstants, PositionConstants, SectorConstants, UpgradeConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug ) {
     
     var SectorGenerator = {
         
@@ -22,6 +24,11 @@ define([
                     var sectorVO = levelVO.sectors[s];
                     sectorVO.sectorType = this.getSectorType(seed, worldVO, levelVO, sectorVO);
                     sectorVO.sunlit = this.isSunlit(seed, worldVO, levelVO, sectorVO);
+                    sectorVO.passageUpType = this.getPassageUpType(seed, worldVO, levelVO, sectorVO);
+                    sectorVO.passageDownType = this.getPassageDownType(seed, worldVO, levelVO, sectorVO);
+                    if (sectorVO.passageDownType) {
+                        log.i("passageDownType, level " + l + " " + sectorVO.passageDownType)
+                    }
                     this.generateTexture(seed, worldVO, levelVO, sectorVO);
                 }
                 
@@ -242,6 +249,38 @@ define([
                 var distance = sea.getDistanceTo(sectorVO.position);
                 if (distance <= 1 + levelVO.seaPadding) return 1;
                 return 0;
+            }
+        },
+        
+        getPassageUpType: function (seed, worldVO, levelVO, sectorVO) {
+            if (!sectorVO.isPassageUp) return null;
+            var sectorUp  = worldVO.getLevel(levelVO.level + 1).getSector(sectorVO.position.sectorX, sectorVO.position.sectorY);
+            return sectorUp.passageDownType;
+        },
+        
+        getPassageDownType: function (seed, worldVO, levelVO, sectorVO) {
+            if (!sectorVO.isPassageDown) return null;
+            var l = levelVO.level;
+            var s1 = seed + l * 7 + sectorVO.position.sectorX * seed % 6 * 10;
+            var campOrdinal = levelVO.campOrdinal;
+            var unlockElevatorOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_passage_elevator");
+            if (l === 13) {
+                return MovementConstants.PASSAGE_TYPE_STAIRWELL;
+            } else if (campOrdinal > WorldConstants.CAMP_ORDINAL_LIMIT) {
+                return MovementConstants.PASSAGE_TYPE_BLOCKED;
+            } else if (l === 14) {
+                return MovementConstants.PASSAGE_TYPE_HOLE;
+            } else if (levelVO.isCampable && campOrdinal == unlockElevatorOrdinal) {
+                return MovementConstants.PASSAGE_TYPE_ELEVATOR;
+            } else {
+                var availablePassageTypes = [MovementConstants.PASSAGE_TYPE_STAIRWELL];
+                if (campOrdinal >= unlockElevatorOrdinal)
+                    availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_ELEVATOR);
+                if (l > 14)
+                    availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_HOLE);
+                var passageTypeIndex = WorldCreatorRandom.randomInt(s1, 0, availablePassageTypes.length);
+                var passageType = availablePassageTypes[passageTypeIndex];
+                return passageType;
             }
         },
         
