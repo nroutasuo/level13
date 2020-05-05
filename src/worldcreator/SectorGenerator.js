@@ -20,6 +20,7 @@ define([
             for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var levelVO = worldVO.levels[l];
                 this.generateZones(seed, worldVO, levelVO);
+                levelVO.paths = this.generatePaths(seed, worldVO, levelVO);
                 for (var s = 0; s < levelVO.sectors.length; s++) {
                     var sectorVO = levelVO.sectors[s];
                     sectorVO.sectorType = this.getSectorType(seed, worldVO, levelVO, sectorVO);
@@ -143,6 +144,48 @@ define([
                     setSectorZone(sector, WorldConstants.ZONE_EXTRA_UNCAMPABLE, true);
                 }
             }
+        },
+        
+        generatePaths: function (seed, worldVO, levelVO) {
+            var ids = "0123456789abcdefghijklmnopqrstuvwxyzåöäABCDEFGHIJKLMNOPQRSTUVWXYZÅÖÄ".split("");
+            var result = [];
+            var unvisitedSectors = [];
+            var visitSector = function (pos, pathID) {
+                var posSector = levelVO.getSector(pos);
+                if (!posSector) return;
+                if (posSector.pathID) return;
+                var index = unvisitedSectors.indexOf(posSector);
+                if (index < 0) return;
+                posSector.pathID = pathID;
+                unvisitedSectors.splice(index, 1);
+            };
+            var traverseSectors = function (startPos, sectors, pathStage) {
+                var traverse = [];
+                if (sectors.length <= 0) return;
+                unvisitedSectors = sectors.concat();
+                var currentPos = startPos;
+                var pathID = 0;
+                var i = 0;
+                while (unvisitedSectors.length > 0) {
+                    visitSector(currentPos, pathID);
+                    var sectorsByDistance = unvisitedSectors.slice(0).sort(WorldCreatorHelper.sortSectorsByDistanceTo(currentPos));
+                    var nextSector = sectorsByDistance[0];
+                    var path = WorldCreatorRandom.findPath(worldVO, currentPos, nextSector.position, false, true, pathStage);
+                    pathID =  ids[Math.round(i)] || "#";
+                    for (var j = 0; j < path.length; j++) {
+                        var pathPos = path[j];
+                        visitSector(pathPos, pathID);
+                        traverse.push(pathPos);
+                    }
+                    currentPos = nextSector.position;
+                    i++;
+                }
+                result.push(traverse);
+            }
+            var startPos = levelVO.excursionStartPosition;
+            traverseSectors(startPos, levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_EARLY), WorldConstants.CAMP_STAGE_EARLY);
+            traverseSectors(startPos, levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_LATE), null);
+            return result;
         },
         
         getSectorType: function (seed, worldVO, levelVO, sectorVO) {

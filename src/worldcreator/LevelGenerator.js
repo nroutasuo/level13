@@ -110,7 +110,7 @@ define([
         
         getExcursionStartPosition: function (worldVO, levelVO) {
             if (levelVO.isCampable) {
-                return PositionConstants.getMiddlePoint(levelVO.campPositions);
+                return levelVO.campPositions[0];
             }
             if (levelVO.level < 13) {
                 return levelVO.passageUpPosition;

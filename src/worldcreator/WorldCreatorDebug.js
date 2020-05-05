@@ -80,7 +80,7 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
 		printWorld: function (worldVO, keys, color) {
             var prepareValue = function (value) {
                 var char = value.toString()[0];
-                var c = value ? color || "#228B22" : null;
+                var c = value || value === 0 ? color : null;
                 return { char: char, color: c };
             };
 			for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {

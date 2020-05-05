@@ -779,13 +779,13 @@ define([
                         }
                     }
                 }
-                return { sectors: furthestPair, pathDist: furthestPathDist };
+                return { sectors: furthestPair, pathDist: furthestPathDist, stage: furthestPair[0].stage };
             }
             
             var currentPair = getFurthestPair();
-            var options = this.getDefaultOptions();
             var i = 0;
             while (currentPair.pathDist > 15 && i < 100) {
+                var options = this.getDefaultOptions({ stage: currentPair.stage });
                 var pathResult = this.createPathBetween(worldVO, levelVO, currentPair.sectors[0].position, currentPair.sectors[1].position, currentPair.pathDist, options);
                 if (pathResult.isComplete) {
                     for (var j = 0; j < pathResult.path.length; j++) {
