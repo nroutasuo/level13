@@ -24,7 +24,6 @@ define([
 	'game/vos/ResourcesVO',
 	'game/vos/LocaleVO',
 	'game/vos/PositionVO',
-	'game/vos/StashVO',
 	'game/vos/PathConstraintVO',
 	'worldcreator/WorldCreatorConstants',
 	'game/constants/PositionConstants',
@@ -36,7 +35,7 @@ define([
     Ash, MathUtils, GameConstants, ItemConstants, LevelConstants, TradeConstants, SectorConstants, WorldConstants,
     WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, EnemyCreator,
     WorldVO, LevelVO, SectorVO, WorldGenerator, LevelGenerator, StructureGenerator, SectorGenerator,
-    GangVO, ResourcesVO, LocaleVO, PositionVO, StashVO, PathConstraintVO,
+    GangVO, ResourcesVO, LocaleVO, PositionVO, PathConstraintVO,
     WorldCreatorConstants, PositionConstants, MovementConstants, EnemyConstants, UpgradeConstants, LocaleConstants
 ) {
     var context = "WorldCreator";

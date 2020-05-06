@@ -80,12 +80,13 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
 		printWorld: function (worldVO, keys, color) {
             var prepareValue = function (value) {
                 var char = value.toString()[0];
-                var c = value || value === 0 ? color : null;
+                var c = value ? color : null;
                 return { char: char, color: c };
             };
 			for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var levelVO = worldVO.getLevel(l);
                 this.printLevel(worldVO, levelVO, function (sectorVO) {
+                    if (!sectorVO) return null;
                     for (var k = 0; k < keys.length; k++) {
                         var key = keys[k];
                         var keySplit = key.split(".");
