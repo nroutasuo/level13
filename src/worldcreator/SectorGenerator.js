@@ -3,11 +3,14 @@ define([
 	'ash',
     'utils/MathUtils',
     'game/constants/ItemConstants',
+    'game/constants/LevelConstants',
     'game/constants/MovementConstants',
     'game/constants/PositionConstants',
     'game/constants/SectorConstants',
+	'game/constants/TradeConstants',
     'game/constants/UpgradeConstants',
     'game/constants/WorldConstants',
+	'game/vos/LocaleVO',
 	'game/vos/PathConstraintVO',
     'game/vos/PositionVO',
 	'game/vos/ResourcesVO',
@@ -18,8 +21,8 @@ define([
     'worldcreator/WorldCreatorDebug'
 ], function (
     Ash, MathUtils,
-    ItemConstants, MovementConstants, PositionConstants, SectorConstants, UpgradeConstants, WorldConstants,
-    PathConstraintVO, PositionVO, ResourcesVO, StashVO,
+    ItemConstants, LevelConstants, MovementConstants, PositionConstants, SectorConstants, TradeConstants, UpgradeConstants, WorldConstants,
+    LocaleVO, PathConstraintVO, PositionVO, ResourcesVO, StashVO,
     WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug
 ) {
     
@@ -28,7 +31,7 @@ define([
         prepareSectors: function (seed, worldVO, itemsHelper) {
             for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var levelVO = worldVO.levels[l];
-                // level features
+                // level-wide features 2
                 this.generateZones(seed, worldVO, levelVO);
                 this.generateStashes(seed, worldVO, levelVO, itemsHelper);
                 this.generateWorksops(seed, worldVO, levelVO);
@@ -48,11 +51,17 @@ define([
                     this.generateResources(seed, worldVO, levelVO, sectorVO);
                 }
                 
+                // level-wide features 2
+                this.generateLocales(seed, worldVO, levelVO);
+                this.generateMovementBlockers(seed, worldVO, levelVO);
             }
-            WorldCreatorDebug.printWorld(worldVO, [ "resourcesAll.water"], "blue");
-            //WorldCreatorDebug.printWorld(worldVO, [ "resourcesScavengable.food" ], "#ee8822");
+            
+            // debug
+            // WorldCreatorDebug.printWorld(worldVO, [ "locales.length", "red" ]);
+            // WorldCreatorDebug.printWorld(worldVO, [ "resourcesAll.water"], "blue");
+            // WorldCreatorDebug.printWorld(worldVO, [ "resourcesScavengable.food" ], "#ee8822");
             // WorldCreatorDebug.printWorld(worldVO, [ "workshopResource" ]);
-            // WorldCreatorDebug.printWorld(this.world, [ "criticalPaths.length" ]);
+            // WorldCreatorDebug.printWorld(worldVO, [ "criticalPaths.length" ]);
         },
         
         generateZones: function (seed, worldVO, levelVO) {
@@ -163,6 +172,111 @@ define([
             }
         },
         
+        generateMovementBlockers: function (seed, worldVO, levelVO) {
+            var l = levelVO.level;
+			var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
+            var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
+                        
+            var blockerTypes = this.getLevelBlockerTypes(levelVO);
+            if (blockerTypes.length < 1) return;
+            
+            var creator = this;
+            log.i("generateMovementBlockers " + levelVO.level);
+            var getBlockerType = function (seed) {
+                var typeix = blockerTypes.length > 1 ? WorldCreatorRandom.randomInt(seed, 0, blockerTypes.length) : 0;
+                return blockerTypes[typeix];
+            };
+            var addBlocker = function (seed, sectorVO, neighbourVO, addDiagonals, allowedCriticalPaths) {
+                if (!neighbourVO) neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
+                var blockerType = getBlockerType(seed);
+                creator.addMovementBlocker(worldVO, levelVO, sectorVO, neighbourVO, blockerType, { addDiagonals: addDiagonals, allowedCriticalPaths: allowedCriticalPaths });
+            };
+
+            var addBlockersBetween = function (seed, levelVO, pointA, pointB, maxPaths, allowedCriticalPaths) {
+                var path;
+                var index;
+                for (var i = 0; i < maxPaths; i++) {
+                    path = WorldCreatorRandom.findPath(worldVO, pointA, pointB, true, true);
+                    if (!path || path.length < 3) {
+                        break;
+                    }
+                    var min = Math.round(path.length / 2);
+                    var max = Math.max(min, path.length - 2);
+                    var finalSeed = Math.abs(seed + 6700 - (i+1) * 555);
+                    index = WorldCreatorRandom.randomInt(finalSeed, min, max);
+                    var sectorVO = levelVO.getSector(path[index].sectorX, path[index].sectorY);
+                    var neighbourVO = levelVO.getSector(path[index + 1].sectorX, path[index + 1].sectorY);
+                    addBlocker(finalSeed, sectorVO, neighbourVO, true, allowedCriticalPaths);
+                }
+            };
+            
+            // critical paths: between passages on certain levels
+            var numBetweenPassages = 0;
+            if (l === 14) numBetweenPassages = 5;
+            if (!levelVO.isCampable && campOrdinal == 7) numBetweenPassages = 5;
+            log.i("- numBetweenPassages: " + numBetweenPassages);
+            if (numBetweenPassages > 0) {
+                var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE ];
+                for (var i = 0; i < levelVO.passagePositions.length; i++) {
+                    for (var j = i + 1; j < levelVO.passagePositions.length; j++) {
+                        var rand = Math.round(2222 + seed + (i+21) * 41 + (j + 2) * 33);
+                        addBlockersBetween(rand, levelVO, levelVO.passagePositions[i], levelVO.passagePositions[j], numBetweenPassages, allowedCriticalPaths);
+                    }
+                }
+            }
+            
+            // campable levels: zone borders
+            if (levelVO.isCampable) {
+                var freq = 0.25;
+                // - from ZONE_PASSAGE_TO_CAMP to other (to lead player towards camp)
+                var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
+                var borderSectors1 = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldConstants.ZONE_PASSAGE_TO_CAMP, true);
+                log.i("- borderSectors1: " + borderSectors1.length);
+                for (var i = 0; i < borderSectors1.length; i++) {
+                    var pair = borderSectors1[i];
+                    var distanceToCamp = Math.min(
+                        WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, pair.sector),
+                        WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, pair.neighbour)
+                    );
+                    if (distanceToCamp > 3) {
+                        var s =  seed % 26 * 3331 + 100 + (i + 5) * 654;
+                        if (WorldCreatorRandom.random(s) < freq) {
+                            addBlocker(s * 2, pair.sector, pair.neighbour, true, allowedCriticalPaths);
+                        }
+                    }
+                }
+            }
+            
+            // campable levels: block all paths to one POI
+            // TODO check that that POI is in a different direction than first passage of the level, otherwise the movement blockers will just get blocked because blockers on zone ZONE_PASSAGE_TO_CAMP are not allowed
+            if (levelVO.isCampable && WorldCreatorRandom.randomBool(seed % 888 + l * 777, 0.75)) {
+                var localeSectors = levelVO.localeSectors;
+                var rand = seed % 333 + 1000 + l * 652;
+                var i = WorldCreatorRandom.randomInt(rand, 0, localeSectors.length);
+                var poiSector = localeSectors[i];
+                var campPos = levelVO.campPositions[0];
+                log.i("- block locale at " + poiSector.position, this);
+                var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
+                addBlockersBetween(rand, levelVO, campPos, poiSector.position, 3, allowedCriticalPaths);
+            }
+
+            // random ones
+            var numRandom = 1;
+            if (l === 14) numRandom = 2;
+            if (l === worldVO.topLevel - 1) numRandom = 4;
+            if (l === worldVO.topLevel) numRandom = 8;
+            log.i("- random: " + numRandom);
+            if (numRandom > 0) {
+                var randomSeed = seed % 8 * 1751 + 1000 + (l + 5) * 291;
+                var options = { excludingFeature: "camp" };
+                var sectors = WorldCreatorRandom.randomSectors(randomSeed, worldVO, levelVO, numRandom, numRandom + 1, options);
+                for (var i = 0; i < sectors.length; i++) {
+                    var addDiagonals = (l + i + 9) % 3 !== 0;
+                    addBlocker(randomSeed - (i + 1) * 321, sectors[i], null, addDiagonals);
+                }
+            }
+        },
+        
         generatePaths: function (seed, worldVO, levelVO) {
             var result = [];
             var unvisitedSectors = [];
@@ -212,7 +326,7 @@ define([
             // TODO handle multiple stashes per sector (currently just overwrites)
             var addStashes = function (sectorSeed, reason, stashType, itemID, num, numItemsPerStash, excludedZones) {
                 var options = { requireCentral: false, excludingFeature: "camp", excludedZones: excludedZones };
-                var stashSectors = WorldCreatorRandom.randomSectors(sectorSeed, this.world, levelVO, num, num + 1, options);
+                var stashSectors = WorldCreatorRandom.randomSectors(sectorSeed, worldVO, levelVO, num, num + 1, options);
                 for (var i = 0; i < stashSectors.length; i++) {
                     stashSectors[i].stashItem = itemID;
                     stashSectors[i].stash = new StashVO(stashType, numItemsPerStash, itemID);
@@ -564,40 +678,40 @@ define([
             var waterRandomPart = WorldCreatorRandom.random(seed * (l + 1000) * (x + y + 900) + 10134) * Math.abs(5 - sectorVO.wear) / 5;
             var sca = new ResourcesVO();
             switch (sectorType) {
-            case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
-                sca.metal = 3;
-                sca.food = WorldCreatorRandom.random(seed + l * x * y * 24 + x * 33 + 6) < 0.60 ? Math.round(sectorAbundanceFactor * 5 + sectorVO.wear / 2) : 0;
-                sca.water = waterRandomPart > 0.82 ? 2 : 0;
-                sca.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.95 ? 1 : 0;
-                sca.medicine = campOrdinal > 2 && WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.99 ? 1 : 0;
-                break;
-            case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
-                sca.water = waterRandomPart > 0.9 ? 1 : 0;
-                sca.metal = 8;
-                sca.tools = (l > 13) ? WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.95 ? 1 : 0 : 0;
-                sca.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.90 ? 1 : 0;
-                sca.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.90 ? 1 : 0;
-                sca.rubber = WorldCreatorRandom.random(seed / x * ll + x * y * 16) > 0.90 ? 1 : 0;
-                break;
-            case SectorConstants.SECTOR_TYPE_MAINTENANCE:
-                sca.metal = 10;
-                sca.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.90 ? 1 : 0;
-                sca.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.90 ? 1 : 0;
-                sca.tools = (l > 13) ? WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.90 ? 1 : 0 : 0;
-                break;
-            case SectorConstants.SECTOR_TYPE_COMMERCIAL:
-                sca.water = waterRandomPart > 0.85 ? 2 : 0;
-                sca.metal = 2;
-                sca.food = Math.round(sectorAbundanceFactor * 10);
-                sca.medicine = campOrdinal > 2 && WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.99 ? 1 : 0;
-                break;
-            case SectorConstants.SECTOR_TYPE_SLUM:
-                sca.metal = 7;
-                sca.food = WorldCreatorRandom.random(seed / (l+10) + x * y * 63) < 0.2 ? Math.round(sectorAbundanceFactor * 5 + sectorVO.wear / 2) : 0;
-                sca.water = waterRandomPart > 0.75 ? 1 : 0;
-                sca.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.85 ? 1 : 0;
-                sca.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.95 ? 1 : 0;
-                break;
+                case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
+                    sca.metal = 3;
+                    sca.food = WorldCreatorRandom.random(seed + l * x * y * 24 + x * 33 + 6) < 0.60 ? Math.round(sectorAbundanceFactor * 5 + sectorVO.wear / 2) : 0;
+                    sca.water = waterRandomPart > 0.82 ? 2 : 0;
+                    sca.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.95 ? 1 : 0;
+                    sca.medicine = campOrdinal > 2 && WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.99 ? 1 : 0;
+                    break;
+                case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
+                    sca.water = waterRandomPart > 0.9 ? 1 : 0;
+                    sca.metal = 8;
+                    sca.tools = (l > 13) ? WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.95 ? 1 : 0 : 0;
+                    sca.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.90 ? 1 : 0;
+                    sca.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.90 ? 1 : 0;
+                    sca.rubber = WorldCreatorRandom.random(seed / x * ll + x * y * 16) > 0.90 ? 1 : 0;
+                    break;
+                case SectorConstants.SECTOR_TYPE_MAINTENANCE:
+                    sca.metal = 10;
+                    sca.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.90 ? 1 : 0;
+                    sca.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.90 ? 1 : 0;
+                    sca.tools = (l > 13) ? WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.90 ? 1 : 0 : 0;
+                    break;
+                case SectorConstants.SECTOR_TYPE_COMMERCIAL:
+                    sca.water = waterRandomPart > 0.85 ? 2 : 0;
+                    sca.metal = 2;
+                    sca.food = Math.round(sectorAbundanceFactor * 10);
+                    sca.medicine = campOrdinal > 2 && WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.99 ? 1 : 0;
+                    break;
+                case SectorConstants.SECTOR_TYPE_SLUM:
+                    sca.metal = 7;
+                    sca.food = WorldCreatorRandom.random(seed / (l+10) + x * y * 63) < 0.2 ? Math.round(sectorAbundanceFactor * 5 + sectorVO.wear / 2) : 0;
+                    sca.water = waterRandomPart > 0.75 ? 1 : 0;
+                    sca.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.85 ? 1 : 0;
+                    sca.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.95 ? 1 : 0;
+                    break;
             }
             
             // collectable resources
@@ -676,6 +790,246 @@ define([
             sectorVO.resourcesCollectable = col;
             sectorVO.resourcesAll = sca.clone();
             sectorVO.resourcesAll.addAll(col);
+        },
+        
+        generateLocales: function (seed, worldVO, levelVO) {
+            var addLocale = function (sectorVO, locale) {
+                sectorVO.locales.push(locale);
+                levelVO.localeSectors.push(sectorVO);
+                levelVO.numLocales++;
+            };
+            
+            // 1) spawn trading partners
+            for (var i = 0; i < TradeConstants.TRADING_PARTNERS.length; i++) {
+                var partner = TradeConstants.TRADING_PARTNERS[i];
+                var levelOrdinal = WorldCreatorHelper.getLevelOrdinalForCampOrdinal(seed, partner.campOrdinal);
+                var level = WorldCreatorHelper.getLevelForOrdinal(seed, levelOrdinal);
+                var levelVO = worldVO.getLevel(level);
+                var sectorVO = WorldCreatorRandom.randomSector(seed - 9393 + i * i, worldVO, levelVO, false);
+                var locale = new LocaleVO(localeTypes.tradingpartner, true, false);
+                // log.i("trade partner at " + sectorVO.position)
+                addLocale(sectorVO, locale);
+            }
+            
+            // 2) spanw grove
+            var bottomLevelVO = worldVO.getLevel(worldVO.bottomLevel);
+            var groveSector = WorldCreatorRandom.randomSector(seed, worldVO, bottomLevelVO, true);
+            var groveLocale = new LocaleVO(localeTypes.grove, true, false);
+            groveSector.sunlit = 1;
+            addLocale(groveSector, groveLocale);
+
+            // 3) spawn other types (for blueprints)
+            var worldVO = worldVO;
+			var getLocaleType = function (localeRandom, sectorType, l, isEarly) {
+				var localeType = localeTypes.house;
+
+				// level-based
+				if (l >= worldVO.topLevel - 1 && localeRandom < 0.25)
+                    localeType = localeTypes.lab;
+				// sector type based
+				else {
+					switch (sectorType) {
+					case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
+					case SectorConstants.SECTOR_TYPE_PUBLIC:
+						if (localeRandom > 0.7) localeType = localeTypes.house;
+                        else if (localeRandom > 0.6) localeType = localeTypes.transport;
+                        else if (localeRandom > 0.55) localeType = localeTypes.sewer;
+                        else if (localeRandom > 0.45) localeType = localeTypes.warehouse;
+                        else if (localeRandom > 0.4) localeType = localeTypes.camp;
+                        else if (localeRandom > 0.3) localeType = localeTypes.hut;
+                        else if (localeRandom > 0.2 && !isEarly) localeType = localeTypes.hermit;
+                        else if (localeRandom > 0.1) localeType = localeTypes.caravan;
+                        else localeType = localeTypes.market;
+						break;
+
+                    case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
+                        if (localeRandom > 0.5) localeType = localeTypes.factory;
+                        else if (localeRandom > 0.3) localeType = localeTypes.warehouse;
+                        else if (localeRandom > 0.2) localeType = localeTypes.transport;
+                        else if (localeRandom > 0.1) localeType = localeTypes.sewer;
+                        else localeType = localeTypes.market;
+                        break;
+
+                    case SectorConstants.SECTOR_TYPE_MAINTENANCE:
+                        if (localeRandom > 0.6) localeType = localeTypes.maintenance;
+                        else if (localeRandom > 0.4) localeType = localeTypes.transport;
+                        else if (localeRandom > 0.3 && !isEarly) localeType = localeTypes.hermit;
+                        else if (localeRandom > 0.2) localeType = localeTypes.caravan;
+                        else localeType = localeTypes.sewer;
+                        break;
+
+                    case SectorConstants.SECTOR_TYPE_COMMERCIAL:
+                        if (localeRandom > 6) localeType = localeTypes.market;
+                        else if (localeRandom > 0.4) localeType = localeTypes.warehouse;
+                        else if (localeRandom > 0.3) localeType = localeTypes.transport;
+                        else if (localeRandom > 0.25) localeType = localeTypes.hut;
+                        else if (localeRandom > 0.2 && !isEarly) localeType = localeTypes.hermit;
+                        else if (localeRandom > 0.15 && !isEarly) localeType = localeTypes.caravan;
+                        else localeType = localeTypes.house;
+                        break;
+
+                    case SectorConstants.SECTOR_TYPE_SLUM:
+                        if (localeRandom > 0.4) localeType = localeTypes.house;
+                        else if (localeRandom > 0.35) localeType = localeTypes.camp;
+                        else if (localeRandom > 0.3) localeType = localeTypes.hut;
+                        else if (localeRandom > 0.25 && !isEarly) localeType = localeTypes.hermit;
+                        else localeType = localeTypes.sewer;
+                        break;
+                        
+                    case SectorConstants.SECTOR_TYPE_PUBLIC:
+                        if (localeRandom < 0.3) localeType = localeTypes.lab;
+                        else if (localeRandom < 0.6) localeType = localeTypes.transport;
+                        else localeType = localeTypes.library;
+                        break;
+
+					default:
+						log.w("Unknown sector type " + sectorType);
+                        return null;
+					}
+				}
+				return localeType;
+			};
+			var createLocales = function (worldVO, levelVO, campOrdinal, isEarly, count, countEasy) {
+                var pathConstraints = [];
+                for (var j = 0; j < levelVO.campPositions.length; j++) {
+                    var pathType = isEarly ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1 : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2;
+                    var pos = levelVO.campPositions[j];
+                    var length = WorldCreatorConstants.getMaxPathLength(campOrdinal, pathType);
+                    pathConstraints.push(new PathConstraintVO(pos, length, pathType));
+                }
+                var excludedZones = isEarly ? [ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_EXTRA_CAMPABLE, WorldConstants.ZONE_CAMP_TO_PASSAGE ] : [ WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_POI_1, WorldConstants.ZONE_EXTRA_CAMPABLE ];
+                var options = { requireCentral: false, excludingFeature: "camp", pathConstraints: pathConstraints, excludedZones: excludedZones, numDuplicates: 2 };
+                var l = levelVO.level;
+                var sseed = seed - (isEarly ? 5555 : 0) + (l + 50) * 2;
+				for (var i = 0; i < count; i++) {
+					var localePos = WorldCreatorRandom.randomSectors(sseed + i + i * 7394 * sseed + i * i * l + i, worldVO, levelVO, 1, 2, options);
+                    var sectorVO = localePos[0];
+                    if (!sectorVO) continue;
+                    var localeType = getLocaleType(WorldCreatorRandom.random(sseed + sseed + i * seed + localePos), sectorVO.sectorType, l, isEarly);
+                    var isEasy = i <= countEasy;
+                    var locale = new LocaleVO(localeType, isEasy, isEarly);
+                    addLocale(sectorVO, locale);
+                    // log.i(levelVO.level + " added locale: isEarly:" + isEarly + ", distance to camp: " + WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO) + ", zone: " + sectorVO.zone);
+                    for (var j = 0; j < pathConstraints.length; j++) {
+                        WorldCreatorHelper.addCriticalPath(worldVO, sectorVO.position, pathConstraints[j].startPosition, pathConstraints[j].pathType);
+                    }
+				}
+            };
+
+            for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
+                var levelVO = worldVO.getLevel(l);
+				var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
+
+                // TODO have some blueprints on campless levels too (but ensure not critical ones)
+                if (!levelVO.isCampable) continue;
+
+				// min number of (easy) locales ensures that player can get all upgrades intended for that level
+                // two "levels" of locales for critical paths, those on path 2 can require tech from path 1 to reach but not the other way around
+                var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_EARLY);
+                if (numEarlyBlueprints) {
+    				var minEarly = WorldCreatorConstants.getMinLocales(numEarlyBlueprints);
+                    var maxEarly = WorldCreatorConstants.getMaxLocales(numEarlyBlueprints);
+    				var countEarly = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minEarly, maxEarly + 1);
+                    createLocales(worldVO, levelVO, campOrdinal, true, countEarly, minEarly);
+                } else {
+                    log.w("no early blueprints on camp level " + l);
+                }
+
+                var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_LATE);
+                if (numLateBlueprints > 0) {
+                    var minLate = WorldCreatorConstants.getMinLocales(numLateBlueprints);
+                    var maxLate = WorldCreatorConstants.getMaxLocales(numLateBlueprints);
+    				var countLate = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minLate, maxLate + 1);
+                    createLocales(worldVO, levelVO, campOrdinal, false, countLate, minLate);
+                } else {
+                    log.w("no late blueprints on camp level " + l);
+                }
+			}
+        },
+        
+        addMovementBlocker: function(worldVO, levelVO, sectorVO, neighbourVO, blockerType, options, sectorcb, cb) {
+            var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
+            var neighbourDirection = PositionConstants.getDirectionFrom(neighbourVO.position, sectorVO.position);
+
+            // check for existing movement blocker
+            if (sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection]) {
+                var existing = sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection];
+                log.w(this, "skipping movement blocker (" + blockerType + "): sector already has movement blocker (" + existing + ")");
+                return;
+            }
+            
+            // check for too close to camp or in ZONE_PASSAGE_TO_CAMP
+            if (sectorVO.camp || neighbourVO.camp || (levelVO.isCampable && sectorVO.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP)) {
+                log.w(this, "skipping movement blocker (" + blockerType + "): too close to camp");
+                return;
+            }
+
+            // check for critical paths
+            var allowedForGangs = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
+            for (var i = 0; i < sectorVO.criticalPaths.length; i++) {
+                var pathType = sectorVO.criticalPaths[i];
+                if (options.allowedCriticalPaths && options.allowedCriticalPaths.indexOf(pathType) >= 0) continue;
+                if (blockerType === MovementConstants.BLOCKER_TYPE_GANG && allowedForGangs.indexOf(pathType) >= 0) continue;
+                for (var j = 0; j < neighbourVO.criticalPaths.length; j++) {
+                    if (pathType === neighbourVO.criticalPaths[j]) {
+                        log.w("(level " + levelVO.level + ") Skipping blocker on critical path: " + pathType + " (type: " + blockerType + ")");
+                        return;
+                    }
+                }
+            }
+                    
+            // add blocker
+            log.i("add movement blocker: " + sectorVO.position + " " + PositionConstants.getDirectionName(direction) + " " + blockerType);
+            sectorVO.addBlocker(direction, blockerType);
+            neighbourVO.addBlocker(neighbourDirection, blockerType);
+
+            // add blockers to adjacent paths too (if present) so player can't just walk around the blocker
+            if (options.addDiagonals) {
+                var diagonalsOptions = Object.assign({}, options);
+                diagonalsOptions.addDiagonals = false;
+                var nextNeighbours = levelVO.getNextNeighbours(sectorVO, direction);
+                for (var j = 0; j < nextNeighbours.length; j++) {
+                    this.addMovementBlocker(worldVO, levelVO, sectorVO, nextNeighbours[j], blockerType, diagonalsOptions, sectorcb);
+                }
+                nextNeighbours = levelVO.getNextNeighbours(neighbourVO, neighbourDirection);
+                for (var j = 0; j < nextNeighbours.length; j++) {
+                    this.addMovementBlocker(worldVO, levelVO, neighbourVO, nextNeighbours[j], blockerType, diagonalsOptions, sectorcb);
+                }
+            }
+            
+            worldVO.resetPaths();
+
+            if (sectorcb) {
+                sectorcb(sectorVO, direction);
+                sectorcb(neighbourVO, neighbourDirection);
+            }
+            
+            if (cb) {
+                cb();
+            }
+        },
+        
+        getLevelBlockerTypes: function (levelVO) {
+            var levelOrdinal = levelVO.levelOrdinal;
+            var campOrdinal = levelVO.campOrdinal;
+            var isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
+            var isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
+                        
+            var blockerTypes = [];
+            if (levelOrdinal > 1) {
+                blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
+                blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
+            }
+            if (campOrdinal >= 5) {
+                blockerTypes.push(MovementConstants.BLOCKER_TYPE_GAP);
+            }
+            if (campOrdinal >= 7) {
+                blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_TOXIC);
+            }
+            if (levelVO.level >= 14 && isRadiatedLevel) {
+                blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
+            }
+            return blockerTypes;
         }
         
     };

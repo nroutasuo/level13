@@ -490,6 +490,9 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                     modifier = "trade";
                     noun = "caravan";
                     break;
+                case localeTypes.library:
+                    modifier = "abandoned";
+                    modifier = "library";
     			default:
                     log.w("unknown locale type: " + locale.type);
                     noun = "building";

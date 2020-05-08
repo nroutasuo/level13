@@ -65,9 +65,9 @@ define([
         getDistanceToCamp: function (worldVO, levelVO, sector) {
             if (sector.distanceToCamp >= 0) return sector.distanceToCamp;
             var result = 9999;
-            for (var s = 0; s < levelVO.campSectors.length; s++) {
-                var campSector = levelVO.campSectors[s];
-                var path = WorldCreatorRandom.findPath(worldVO, sector.position, campSector.position, false, true);
+            for (var s = 0; s < levelVO.campPositions.length; s++) {
+                var campPos = levelVO.campPositions[s];
+                var path = WorldCreatorRandom.findPath(worldVO, sector.position, campPos, false, true);
                 if (path && path.length >= 0) {
                     var dist = path.length;
                     result = Math.min(result, dist);
@@ -79,9 +79,9 @@ define([
         
         getQuickDistanceToCamp: function (worldVO, levelVO, sector) {
             var result = 9999;
-            for (var s = 0; s < levelVO.campSectors.length; s++) {
-                var campSector = levelVO.campSectors[s];
-                var dist = PositionConstants.getDistanceTo(sector.position, campSector.position);
+            for (var s = 0; s < levelVO.campPositions.length; s++) {
+                var campPos = levelVO.campPositions[s];
+                var dist = PositionConstants.getDistanceTo(sector.position, campPos);
                 result = Math.min(result, dist);
             }
             return result;

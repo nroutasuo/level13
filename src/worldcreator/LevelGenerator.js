@@ -31,6 +31,9 @@ define([
                 levelVO.campPositions = worldVO.campPositions[l];
                 levelVO.passageUpPosition = worldVO.passagePositions[l].up;
                 levelVO.passageDownPosition = worldVO.passagePositions[l].down;
+                levelVO.passagePositions = [];
+                if (levelVO.passageUpPosition) levelVO.passagePositions.push(levelVO.passageUpPosition);
+                if (levelVO.passageDownPosition) levelVO.passagePositions.push(levelVO.passageDownPosition);
                 levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_EARLY] = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, WorldConstants.CAMP_STAGE_EARLY);
                 levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_LATE] = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, WorldConstants.CAMP_STAGE_LATE);
                 levelVO.stageCenterPositions = this.getStageCenterPositions(worldVO, levelVO);

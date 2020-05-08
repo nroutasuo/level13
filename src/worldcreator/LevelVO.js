@@ -32,13 +32,13 @@ function (Ash, PositionConstants, PositionVO) {
             
             this.pendingConnectionPointsByStage = {};
             
-            /*
+            this.localeSectors = [];
             this.numLocales = 0;
-            this.campSectors = [];
+            
+            /*
             this.passageSectors = [];
             this.passageUpSectors = null;
             this.passageDownSectors = null;
-            this.localeSectors = [];
             this.possibleSpringSectors = [];
             this.gangs = [];
             */
@@ -133,6 +133,19 @@ function (Ash, PositionConstants, PositionVO) {
 			return result;
         },
         
+        getNextNeighbours: function (sectorVO, direction) {
+            var result = [];
+            var neighbours = this.getNeighbours(sectorVO.position.sectorX, sectorVO.position.sectorY);
+            var nextDirections = [ PositionConstants.getNextCounterClockWise(direction, true), PositionConstants.getNextClockWise(direction, true)];
+            for (var j = 0; j < nextDirections.length; j++) {
+                var bonusNeighbour = neighbours[nextDirections[j]];
+                if (bonusNeighbour) {
+                    result.push(bonusNeighbour);
+                }
+            }
+            return result;
+        },
+        
         addPendingConnectionPoint: function (point) {
             var sector = this.getSector(point.position.sectorX, point.position.sectorY);
             if (!sector) return;
@@ -206,10 +219,6 @@ function (Ash, PositionConstants, PositionVO) {
             this.gangs.push(gangVO);
         },
         
-        addCampSector: function (sectorVO) {
-            this.campSectors.push(sectorVO);
-        },
-        
         addPassageUpSector: function (sectorVO) {
             this.passageSectors.push(sectorVO);
             this.passageUpSector = sectorVO;
@@ -218,19 +227,6 @@ function (Ash, PositionConstants, PositionVO) {
         addPassageDownSector: function (sectorVO) {
             this.passageSectors.push(sectorVO);
             this.passageDownSector = sectorVO;
-        },
-        
-        getNextNeighbours: function (sectorVO, direction) {
-            var result = [];
-            var neighbours = this.getNeighbours(sectorVO.position.sectorX, sectorVO.position.sectorY);
-            var nextDirections = [ PositionConstants.getNextCounterClockWise(direction, true), PositionConstants.getNextClockWise(direction, true)];
-            for (var j = 0; j < nextDirections.length; j++) {
-                var bonusNeighbour = neighbours[nextDirections[j]];
-                if (bonusNeighbour) {
-                    result.push(bonusNeighbour);
-                }
-            }
-            return result;
         },
         
         findPassageUp: function () {

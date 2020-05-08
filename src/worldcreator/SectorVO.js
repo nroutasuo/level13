@@ -56,15 +56,6 @@ function (Ash, WorldConstants, WorldCreatorConstants, ResourcesVO, Environmental
             this.criticalPaths.push(type);
             this.updateCriticalPath();
         },
-        
-        /*
-        hasWater: function () {
-            return this.hasSpring || this.resourcesScavengable.getResource(resourceNames.water) > 0 || this.resourcesCollectable.getResource(resourceNames.water) > 0;
-        },
-        
-        isOnEarlyZone: function () {
-            return this.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP || this.zone == WorldConstants.ZONE_PASSAGE_TO_PASSAGE;
-        },
 		
 		addBlocker: function (direction, blockerType, canOverride) {
             var existingType = this.movementBlockers[direction];
@@ -79,6 +70,15 @@ function (Ash, WorldConstants, WorldCreatorConstants, ResourcesVO, Environmental
 		getBlockerByDirection: function (direction) {
 			return this.movementBlockers[direction];
 		},
+        
+        /*
+        hasWater: function () {
+            return this.hasSpring || this.resourcesScavengable.getResource(resourceNames.water) > 0 || this.resourcesCollectable.getResource(resourceNames.water) > 0;
+        },
+        
+        isOnEarlyZone: function () {
+            return this.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP || this.zone == WorldConstants.ZONE_PASSAGE_TO_PASSAGE;
+        },
         
         hasPassage: function () {
             return this.passageUpType || this.passageDownType;

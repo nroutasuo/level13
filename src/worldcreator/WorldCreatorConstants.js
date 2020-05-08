@@ -162,6 +162,17 @@ function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
         isEarlierZone: function (zone1, zone2) {
             return this.getZoneOrdinal(zone1) < this.getZoneOrdinal(zone2);
         },
+        
+        getMinLocales: function (blueprints) {
+            return 2 + blueprints;
+        },
+        
+        getMaxLocales: function (blueprints) {
+            return Math.max(
+                this.getMinLocales(blueprints) + 2,
+                Math.round(blueprints + blueprints / 2)
+            );
+        },
 
     };
     

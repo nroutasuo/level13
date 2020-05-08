@@ -12,6 +12,7 @@ function (Ash, ResourcesVO, LocaleConstants, PlayerStatConstants) {
 		transport: 6,
 		sewer: 7,
         warehouse: 8,
+        library: 9,
 		
 		camp: 50,
 		hut: 51,
