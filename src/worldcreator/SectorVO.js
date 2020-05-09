@@ -71,10 +71,11 @@ function (Ash, WorldConstants, WorldCreatorConstants, ResourcesVO, Environmental
 			return this.movementBlockers[direction];
 		},
         
-        /*
         hasWater: function () {
             return this.hasSpring || this.resourcesScavengable.getResource(resourceNames.water) > 0 || this.resourcesCollectable.getResource(resourceNames.water) > 0;
         },
+        
+        /*
         
         isOnEarlyZone: function () {
             return this.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP || this.zone == WorldConstants.ZONE_PASSAGE_TO_PASSAGE;

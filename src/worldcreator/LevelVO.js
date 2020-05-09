@@ -34,13 +34,13 @@ function (Ash, PositionConstants, PositionVO) {
             
             this.localeSectors = [];
             this.numLocales = 0;
+            this.gangs = [];
             
             /*
             this.passageSectors = [];
             this.passageUpSectors = null;
             this.passageDownSectors = null;
             this.possibleSpringSectors = [];
-            this.gangs = [];
             */
         },
 		
@@ -213,11 +213,11 @@ function (Ash, PositionConstants, PositionVO) {
             if (position.x > this.maxX) return false;
             return true;
         },
-        
-        /*
         addGang: function (gangVO) {
             this.gangs.push(gangVO);
         },
+        
+        /*
         
         addPassageUpSector: function (sectorVO) {
             this.passageSectors.push(sectorVO);

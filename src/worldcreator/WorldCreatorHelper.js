@@ -428,6 +428,14 @@ define([
             }
             return this.hardLevelOrdinals[seed];
         },
+        
+        canHaveGang: function (sectorVO) {
+            if (!sectorVO) return false;
+            if (sectorVO.camp) return false;
+            if (sectorVO.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP) return false;
+            if (sectorVO.zone == WorldConstants.ZONE_PASSAGE_TO_PASSAGE) return false;
+            return true;
+        },
 		
 		isDarkLevel: function (seed, level) {
 			return !this.isEarthLevel(seed, level) && !this.isSunLevel(seed, level);

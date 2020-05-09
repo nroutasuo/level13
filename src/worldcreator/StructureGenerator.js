@@ -401,6 +401,11 @@ define([
                 var existingSectors = levelVO.sectors.concat();
                 var options = this.getDefaultOptions({ stage: path.stage, criticalPathType: path.type});
                 var pathResult = this.createPathBetween(worldVO, levelVO, startPos, endPos, path.maxlen, options, WorldCreatorConstants.CONNECTION_POINTS_PATH_ALL);
+                var sectorPath = WorldCreatorRandom.findPath(worldVO, startPos, endPos, false, true, path.stage);
+                for (var j = 0; j < sectorPath.length; j++) {
+                    var sector = levelVO.getSector(sectorPath[j]);
+                    sector.addToCriticalPath(path.type);
+                }
                 this.connectNewPath(worldVO, levelVO, existingSectors, pathResult.path);
             }
         },

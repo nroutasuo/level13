@@ -280,12 +280,6 @@ define([
             return result;
         },
         
-        sortByDifficulty: function (a, b) {
-            if (!EnemyConstants.enemyDifficulties) this.saveEnemyDifficulties();
-            var diff1 = EnemyConstants.enemyDifficulties[a.id];
-            var diff2 = EnemyConstants.enemyDifficulties[b.id];
-            return diff2-diff1;
-        }
     });
 
     return EnemyCreator;
