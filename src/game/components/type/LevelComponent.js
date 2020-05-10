@@ -12,9 +12,10 @@ define(['ash'], function (Ash) {
         minY: 0,
         maxY: 0,
         
-        constructor: function (pos, isCampable, notCampableReason, populationFactor, minX, maxX, minY, maxY) {
+        constructor: function (pos, isCampable, isHard, notCampableReason, populationFactor, minX, maxX, minY, maxY) {
             this.position = pos;
             this.isCampable = isCampable;
+            this.isHard = isHard;
             this.notCampableReason = notCampableReason;
             this.populationFactor = populationFactor;
             this.minX = minX;

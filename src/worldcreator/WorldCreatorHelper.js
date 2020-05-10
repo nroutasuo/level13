@@ -77,7 +77,7 @@ define([
             return result;
         },
         
-        getQuickDistanceToCamp: function (worldVO, levelVO, sector) {
+        getQuickDistanceToCamp: function (levelVO, sector) {
             var result = 9999;
             for (var s = 0; s < levelVO.campPositions.length; s++) {
                 var campPos = levelVO.campPositions[s];
@@ -429,11 +429,14 @@ define([
             return this.hardLevelOrdinals[seed];
         },
         
-        canHaveGang: function (sectorVO) {
+        canHaveGang: function (levelVO, sectorVO) {
             if (!sectorVO) return false;
-            if (sectorVO.camp) return false;
+            if (sectorVO.isCamp) return false;
+            if (sectorVO.zone == WorldConstants.ZONE_ENTRANCE) return false;
             if (sectorVO.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP) return false;
             if (sectorVO.zone == WorldConstants.ZONE_PASSAGE_TO_PASSAGE) return false;
+            var minDist = levelVO.level == 13 ? 4 : 2;
+            if (this.getQuickDistanceToCamp(levelVO, sectorVO) < 3) return false;
             return true;
         },
 		

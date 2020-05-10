@@ -194,7 +194,7 @@ define([
                     var x = sectorVO.position.sectorX;
                     var y = sectorVO.position.sectorY;
                     if (Math.abs(y) <= 2 && Math.abs(x) <= 2) continue;
-                    var distanceToCamp = WorldCreatorHelper.getQuickDistanceToCamp(worldVO, levelVO, sectorVO);
+                    var distanceToCamp = WorldCreatorHelper.getQuickDistanceToCamp(levelVO, sectorVO);
                     var distanceToCampThreshold = l == 13 ? 6 : 3;
                     if (distanceToCamp < distanceToCampThreshold) continue;
                         
@@ -837,6 +837,7 @@ define([
             var ll = levelVO.level === 0 ? levelVO.level : 50;
             var sectorType = sectorVO.sectorType;
 			var campOrdinal = levelVO.campOrdinal;
+            var isStartPosition = l == 13 && sectorVO.isCamp;
             
             // scavengeable resources
             var sRandom = (x * 22 + y * 3000);
@@ -904,7 +905,7 @@ define([
             }
             
             // define springs
-            if (col.water > 0 || sca.water > 0) {
+            if ((col.water > 0 || sca.water) > 0 && !isStartPosition) {
                 sectorVO.hasSpring =  WorldCreatorRandom.random(7777 + seed % 987 + ll * 7 + y * 71) < 0.25;
             } else {
                 sectorVO.hasSpring = false;
@@ -938,6 +939,14 @@ define([
                 col.food = 0;
             }
             
+            if (sectorVO.isCamp) {
+                sca.food = Math.max(sca.food, 3);
+                if (isStartPosition) {
+                    col.food = Math.max(sca.water, 3);
+                    col.water = Math.max(sca.water, 3);
+                }
+            }
+            
             // adjustments for required resources
             if (sectorVO.requiredResources) {
                 if (sectorVO.requiredResources.getResource("water") > 0) {
@@ -967,7 +976,7 @@ define([
             
             var addGang = function (sectorVO, neighbourVO, addDiagonals, force) {
                 if (!neighbourVO) neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
-                if (force || (WorldCreatorHelper.canHaveGang(sectorVO) && WorldCreatorHelper.canHaveGang(neighbourVO))) {
+                if (force || (WorldCreatorHelper.canHaveGang(levelVO, sectorVO) && WorldCreatorHelper.canHaveGang(levelVO, neighbourVO))) {
                     var blockerSettings = { addDiagonals: addDiagonals };
                     // callback is called twice, once for each sector
                     creator.addMovementBlocker(worldVO, levelVO, sectorVO, neighbourVO, blockerType, blockerSettings, function (s, direction) {
@@ -1004,8 +1013,8 @@ define([
                     index = WorldCreatorRandom.randomInt(finalSeed, min, max);
                     var sectorVO = levelVO.getSector(path[index].sectorX, path[index].sectorY);
                     var neighbourVO = levelVO.getSector(path[index + 1].sectorX, path[index + 1].sectorY);
-                    if (!WorldCreatorHelper.canHaveGang(sectorVO)) continue;
-                    if (!WorldCreatorHelper.canHaveGang(neighbourVO)) continue;
+                    if (!WorldCreatorHelper.canHaveGang(levelVO, sectorVO)) continue;
+                    if (!WorldCreatorHelper.canHaveGang(levelVO, neighbourVO)) continue;
                     if (addGang(sectorVO, neighbourVO, false)) num++;
                 }
                 return num;
@@ -1088,10 +1097,10 @@ define([
             var randomGangIndex = 0;
             for (var i = 0; i < levelVO.sectors.length; i++) {
                 var sectorVO = levelVO.sectors[i];
-                if (!WorldCreatorHelper.canHaveGang(sectorVO)) continue;
+                if (!WorldCreatorHelper.canHaveGang(levelVO, sectorVO)) continue;
                 if (randomGangIndex >= randomGangFreq) {
                     var neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
-                    if (!WorldCreatorHelper.canHaveGang(neighbourVO)) continue;
+                    if (!WorldCreatorHelper.canHaveGang(levelVO, neighbourVO)) continue;
                     var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
                     if (!sectorVO.movementBlockers[direction]) {
                         var addDiagonals = i % (randomGangFreq * 2) === 0;
