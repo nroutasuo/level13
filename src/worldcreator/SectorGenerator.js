@@ -347,13 +347,14 @@ define([
                 var typeix = blockerTypes.length > 1 ? WorldCreatorRandom.randomInt(seed, 0, blockerTypes.length) : 0;
                 return blockerTypes[typeix];
             };
-            var addBlocker = function (seed, sectorVO, neighbourVO, addDiagonals, allowedCriticalPaths) {
-                if (!neighbourVO) neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
-                var blockerType = getBlockerType(seed);
+            var addBlocker = function (seed, sectorVO, neighbourVO, type, addDiagonals, allowedCriticalPaths) {
+                neighbourVO = neighbourVO || WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
+                var blockerType = type || getBlockerType(seed);
+                log.i("level " + levelVO.level + " add blocker " + blockerType + " at " + sectorVO.position);
                 creator.addMovementBlocker(worldVO, levelVO, sectorVO, neighbourVO, blockerType, { addDiagonals: addDiagonals, allowedCriticalPaths: allowedCriticalPaths });
             };
 
-            var addBlockersBetween = function (seed, levelVO, pointA, pointB, maxPaths, allowedCriticalPaths) {
+            var addBlockersBetween = function (seed, levelVO, pointA, pointB, type, maxPaths, allowedCriticalPaths) {
                 var path;
                 var index;
                 for (var i = 0; i < maxPaths; i++) {
@@ -367,7 +368,7 @@ define([
                     index = WorldCreatorRandom.randomInt(finalSeed, min, max);
                     var sectorVO = levelVO.getSector(path[index].sectorX, path[index].sectorY);
                     var neighbourVO = levelVO.getSector(path[index + 1].sectorX, path[index + 1].sectorY);
-                    addBlocker(finalSeed, sectorVO, neighbourVO, true, allowedCriticalPaths);
+                    addBlocker(finalSeed, sectorVO, neighbourVO, type, true, allowedCriticalPaths);
                 }
             };
             
@@ -380,7 +381,8 @@ define([
                 for (var i = 0; i < levelVO.passagePositions.length; i++) {
                     for (var j = i + 1; j < levelVO.passagePositions.length; j++) {
                         var rand = Math.round(2222 + seed + (i+21) * 41 + (j + 2) * 33);
-                        addBlockersBetween(rand, levelVO, levelVO.passagePositions[i], levelVO.passagePositions[j], numBetweenPassages, allowedCriticalPaths);
+                        var type = l == 14 ? MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE : null;
+                        addBlockersBetween(rand, levelVO, levelVO.passagePositions[i], levelVO.passagePositions[j], type, numBetweenPassages, allowedCriticalPaths);
                     }
                 }
             }
@@ -400,7 +402,7 @@ define([
                     if (distanceToCamp > 3) {
                         var s =  seed % 26 * 3331 + 100 + (i + 5) * 654;
                         if (WorldCreatorRandom.random(s) < freq) {
-                            addBlocker(s * 2, pair.sector, pair.neighbour, true, allowedCriticalPaths);
+                            addBlocker(s * 2, pair.sector, pair.neighbour, null, true, allowedCriticalPaths);
                         }
                     }
                 }
@@ -415,7 +417,7 @@ define([
                 var poiSector = localeSectors[i];
                 var campPos = levelVO.campPositions[0];
                 var allowedCriticalPaths = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
-                addBlockersBetween(rand, levelVO, campPos, poiSector.position, 3, allowedCriticalPaths);
+                addBlockersBetween(rand, levelVO, campPos, poiSector.position, null, 3, allowedCriticalPaths);
             }
 
             // random ones
@@ -429,7 +431,7 @@ define([
                 var sectors = WorldCreatorRandom.randomSectors(randomSeed, worldVO, levelVO, numRandom, numRandom + 1, options);
                 for (var i = 0; i < sectors.length; i++) {
                     var addDiagonals = (l + i + 9) % 3 !== 0;
-                    addBlocker(randomSeed - (i + 1) * 321, sectors[i], null, addDiagonals);
+                    addBlocker(randomSeed - (i + 1) * 321, sectors[i], null, null, addDiagonals);
                 }
             }
         },
@@ -673,6 +675,14 @@ define([
 				if (rand < 0.4) sectorType = SectorConstants.SECTOR_TYPE_COMMERCIAL;
 				if (rand < 0.2) sectorType = SectorConstants.SECTOR_TYPE_PUBLIC;
 			}
+            
+            if (sectorVO.workshopResource == "fuel") {
+                sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+            }
+            
+            if (sectorVO.workshopResource == "rubber") {
+                sectorType = SectorConstants.SECTOR_TYPE_INDUSTRIAL;
+            }
             
             return sectorType;
         },
@@ -1426,7 +1436,7 @@ define([
             if (campOrdinal >= 5) {
                 blockerTypes.push(MovementConstants.BLOCKER_TYPE_GAP);
             }
-            if (campOrdinal >= 7) {
+            if (campOrdinal >= 7 && !isRadiatedLevel) {
                 blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_TOXIC);
             }
             if (levelVO.level >= 14 && isRadiatedLevel) {
