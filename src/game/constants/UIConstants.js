@@ -14,12 +14,11 @@ define(['ash',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/PassagesComponent',
-	'game/components/common/VisitedComponent',
-	'game/components/sector/improvements/WorkshopComponent',
+	'game/components/common/VisitedComponent'
 ], function (Ash, GameGlobals,
 	StoryConstants, PositionConstants, SectorConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
 	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
-	PassagesComponent, VisitedComponent, WorkshopComponent) {
+	PassagesComponent, VisitedComponent) {
 
 	var UIConstants = {
 

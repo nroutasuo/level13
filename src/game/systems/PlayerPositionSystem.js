@@ -56,6 +56,8 @@ define([
             });
 
             GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
+            GlobalSignals.add(this, GlobalSignals.gameResetSignal, this.onGameStarted);
+            GlobalSignals.add(this, GlobalSignals.worldReadySignal, this.onGameStarted);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.ontabChanged);
             GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.updateCamps);
 		},
@@ -71,10 +73,12 @@ define([
 
         onGameStarted: function () {
             this.lastUpdatePosition = null;
+            this.lastValidPosition = null;
         },
 
         ontabChanged: function () {
             this.lastUpdatePosition = null;
+            this.lastValidPosition = null;
         },
 
 		update: function (time) {

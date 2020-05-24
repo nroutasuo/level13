@@ -19,6 +19,10 @@ function (Ash, MovementConstants, PositionConstants, PassageVO, MovementBlockerV
             }
         },
         
+        hasLevelPassage: function () {
+            return this.passageUp || this.passageDown;
+        },
+        
         getBlocker: function (direction) {
             return typeof this.blockers[direction] === 'undefined' ? null : this.blockers[direction];
         },

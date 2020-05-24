@@ -36,9 +36,9 @@ define([
                 var levelVO = worldVO.levels[l];
                 // level-wide features 2
                 this.generateZones(seed, worldVO, levelVO);
-                this.generateHazards(seed, worldVO, levelVO, itemsHelper);
                 this.generateStashes(seed, worldVO, levelVO, itemsHelper);
                 this.generateWorksops(seed, worldVO, levelVO);
+                this.generateHazards(seed, worldVO, levelVO, itemsHelper);
                 levelVO.paths = this.generatePaths(seed, worldVO, levelVO);
                 // level path features
                 for (var p = 0; p < levelVO.paths.length; p++) {
@@ -239,6 +239,7 @@ define([
             var getMaxValue = function (sectorVO, isRadiation, zone) {
                 var step = WorldConstants.getCampStep(zone);
                 if (sectorVO.hazards.cold) return 0;
+                if (sectorVO.workshopResource != null) return 0;
                 if (isRadiation) {
                     return Math.min(100, itemsHelper.getMaxHazardRadiationForLevel(campOrdinal, step, levelVO.isHard));
                 } else {
@@ -350,7 +351,6 @@ define([
             var addBlocker = function (seed, sectorVO, neighbourVO, type, addDiagonals, allowedCriticalPaths) {
                 neighbourVO = neighbourVO || WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
                 var blockerType = type || getBlockerType(seed);
-                log.i("level " + levelVO.level + " add blocker " + blockerType + " at " + sectorVO.position);
                 creator.addMovementBlocker(worldVO, levelVO, sectorVO, neighbourVO, blockerType, { addDiagonals: addDiagonals, allowedCriticalPaths: allowedCriticalPaths });
             };
 
@@ -454,12 +454,15 @@ define([
                 unvisitedSectors = sectors.concat();
                 var currentPos = startPos;
                 var pathID = 0;
-                var i = 0;
                 while (unvisitedSectors.length > 0) {
                     visitSector(currentPos, pathID);
                     var sectorsByDistance = unvisitedSectors.slice(0).sort(WorldCreatorHelper.sortSectorsByDistanceTo(currentPos));
                     var nextSector = sectorsByDistance[0];
+                    if (!nextSector) break;
                     var path = WorldCreatorRandom.findPath(worldVO, currentPos, nextSector.position, false, true, pathStage);
+                    if (!path) {
+                        log.w("couldn't find level path " + currentPos + " " + nextSector.position);
+                    }
                     pathID =  result.length;
                     for (var j = 0; j < path.length; j++) {
                         var pathPos = path[j];
@@ -467,7 +470,6 @@ define([
                         traverse.push(pathPos);
                     }
                     currentPos = nextSector.position;
-                    i++;
                 }
                 result.push(traverse);
             }
@@ -548,24 +550,46 @@ define([
         },
         
         generateWorksops: function (seed, worldVO, levelVO) {
+            var campOrdinal = levelVO.campOrdinal;
+            var l = levelVO.level;
+            
+            // pick resource
             var workshopResource = null;
-            if (levelVO.isCampable && levelVO.campOrdinal === WorldConstants.CAMP_ORDINAL_FUEL)
+            if (levelVO.isCampable && campOrdinal === WorldConstants.CAMP_ORDINAL_FUEL)
                 workshopResource = "fuel";
+            if (levelVO.isCampable && (campOrdinal === WorldConstants.CAMP_ORDINAL_GREENHOUSE_1 || campOrdinal == WorldConstants.CAMP_ORDINAL_GREENHOUSE_2))
+                workshopResource = "herbs";
             if (levelVO.level == worldVO.bottomLevel)
                 workshopResource = "rubber";
             if (!workshopResource) return;
-            
-            var l = levelVO.level;
+
+            // pick sectors
+            var workshopSectors = [];
             var pathConstraints = [];
-            for (var i = 0; i < levelVO.campPositions.length; i++) {
-                var startPos = levelVO.campPositions[i];
-                var maxLength = WorldCreatorConstants.getMaxPathLength(levelVO.campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1);
-                pathConstraints.push(new PathConstraintVO(startPos, maxLength, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1));
+            switch (workshopResource) {
+                case "herbs":
+                    var sea = worldVO.getFeaturesByType(WorldCreatorConstants.FEATURE_HOLE_SEA)[0];
+                    var seaPos = sea.getPosition(l);
+                    var sectorsByDistance = levelVO.sectors.slice(0).sort(WorldCreatorHelper.sortSectorsByDistanceTo(seaPos));
+                    var sector = sectorsByDistance[0];
+                    workshopSectors.push(sector);
+                    break;
+                default:
+                    for (var i = 0; i < levelVO.campPositions.length; i++) {
+                        var startPos = levelVO.campPositions[i];
+                        var maxLength = WorldCreatorConstants.getMaxPathLength(levelVO.campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1);
+                        pathConstraints.push(new PathConstraintVO(startPos, maxLength, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1));
+                    }
+                    var options = { excludingFeature: "camp", pathConstraints: pathConstraints };
+                    workshopSectors = WorldCreatorRandom.randomSectors(seed * l * 2 / 7 * l, worldVO, levelVO, 1, 2, options);
+                    break;
             }
-            var options = { excludingFeature: "camp", pathConstraints: pathConstraints };
-            var workshopSectors = WorldCreatorRandom.randomSectors(seed * l * 2 / 7 * l, worldVO, levelVO, 1, 2, options);
+            
+            // set sector flags and critical paths
             for (var i = 0; i < workshopSectors.length; i++) {
                 workshopSectors[i].hasWorkshop = true;
+                workshopSectors[i].hasClearableWorkshop = workshopResource != "herbs";
+                workshopSectors[i].hasBuildableWorkshop = workshopResource == "herbs";
                 workshopSectors[i].workshopResource = resourceNames[workshopResource];
                 for (var j = 0; j < pathConstraints.length; j++) {
                     WorldCreatorHelper.addCriticalPath(worldVO, workshopSectors[i].position, pathConstraints[j].startPosition, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1);
@@ -708,6 +732,9 @@ define([
             } else if (l === 13) {
                 // start level: no sunlight
                 return 0;
+            } else if (sectorVO.workshopResource == "herbs") {
+                // greenhouse (herbs workshop) sectors: all lit
+                return 1;
             } else {
                 // others: sunlight only if ceiling or edge is open
                 // - sector itself is a hole
@@ -943,6 +970,9 @@ define([
             if (sectorVO.sunlit) {
                 sca.herbs = WorldCreatorRandom.random(seed * l / x + y * 423) > 0.75 ? 2 : 0;
             }
+            if (sectorVO.workshopResource == "herbs") {
+                col.water =  Math.max(col.water, 3);
+            }
 
             if (sectorVO.hazards.poison > 0 || sectorVO.hazards.radiation > 0) {
                 col.water = 0;
@@ -1043,7 +1073,7 @@ define([
                 sectorVO.hasRegularEnemies = !sectorVO.isCamp && WorldCreatorRandom.random(l * sectorVO.position.sectorX * seed + sectorVO.position.sectorY * seed + 4848) > 0.2;
 
                 // workshop and locale enemies (counts)
-                if (sectorVO.hasWorkshop) {
+                if (sectorVO.hasClearableWorkshop) {
                     sectorVO.numLocaleEnemies[LocaleConstants.LOCALE_ID_WORKSHOP] = 3;
                 }
 			}
@@ -1088,7 +1118,7 @@ define([
                 var campPos = levelVO.campPositions[s];
                 for (var i = 0; i < levelVO.sectors.length; i++) {
                     var sectorVO = levelVO.sectors[i];
-                    if (sectorVO.hasWorkshop) {
+                    if (sectorVO.hasClearableWorkshop) {
                         // camps to workshops (all paths)
                         var rand = Math.round(1000 + seed + (l+21) * 11 + (s + 2) * 31 + (i + 1) * 51);
                         addGangs(rand, "workshop", levelVO, campPos, sectorVO.position, 100);

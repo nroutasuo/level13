@@ -1,4 +1,4 @@
-define(['ash', 'worldcreator/WorldCreatorConstants'], function (Ash, WorldCreatorConstants) {
+define(['ash', 'worldcreator/WorldCreatorConstants', 'game/vos/PositionVO'], function (Ash, WorldCreatorConstants, PositionVO) {
 
     var WorldFeatureVO = Ash.Class.extend({
         
@@ -22,6 +22,10 @@ define(['ash', 'worldcreator/WorldCreatorConstants'], function (Ash, WorldCreato
         
         containsPosition: function (position) {
             return this.spansLevel(position.level) && position.sectorX >= this.getMinX() && position.sectorX <= this.getMaxX() && position.sectorY >= this.getMinY() && position.sectorY <= this.getMaxY();
+        },
+        
+        getPosition: function (level) {
+            return new PositionVO(level, this.posX, this.posY);
         },
         
         spansLevel: function (l) {

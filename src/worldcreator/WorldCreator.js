@@ -87,7 +87,10 @@ define([
 			sectorFeatures.resourcesScavengable = sectorVO.resourcesScavengable;
 			sectorFeatures.resourcesCollectable = sectorVO.resourcesCollectable;
 			sectorFeatures.workshopResource = sectorVO.workshopResource;
-            sectorFeatures.campable = sectorVO.camp;
+            sectorFeatures.hasWorkshop = sectorVO.hasWorkshop;
+            sectorFeatures.hasClearableWorkshop = sectorVO.hasClearableWorkshop;
+            sectorFeatures.hasBuildableWorkshop = sectorVO.hasBuildableWorkshop;
+            sectorFeatures.isCamp = sectorVO.isCamp;
             sectorFeatures.notCampableReason = sectorVO.notCampableReason;
             sectorFeatures.stash = sectorVO.stash || null;
 			return sectorFeatures;

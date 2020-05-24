@@ -176,7 +176,7 @@ define([
 					sectorFeatures.sectorType,
 					sectorFeatures.sunlit,
 					sectorFeatures.hazards,
-					sectorFeatures.campable,
+					sectorFeatures.isCamp,
 					sectorFeatures.notCampableReason,
 					sectorFeatures.resourcesScavengable,
 					sectorFeatures.resourcesCollectable,
@@ -199,7 +199,7 @@ define([
 					LastVisitedCampComponent
 				]));
 
-			if (sectorFeatures.workshopResource) {
+			if (sectorFeatures.hasClearableWorkshop) {
 				sector.add(new WorkshopComponent(sectorFeatures.workshopResource));
 			}
 

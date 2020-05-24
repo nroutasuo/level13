@@ -175,7 +175,7 @@ define([
                         if (!sectorVO) continue;
                         var up = WorldCreator.getPassageUp(i, x, y);
                         var down = WorldCreator.getPassageDown(i, x, y);
-                        var passageOptions = { passageUp: up, passageDown: down };
+                        var passageOptions = { passageUpType: up, passageDownType: down };
 						var blockers = sectorVO.movementBlockers;
                         this.creator.createSector(
                             GameGlobals.saveHelper.saveKeys.sector + i + "." + x + "." + y,

@@ -9,6 +9,8 @@ define(['ash', 'worldcreator/WorldCreatorConstants'], function (Ash, WorldCreato
         
         CAMP_ORDINAL_LIMIT: 8,
         CAMP_ORDINAL_FUEL: 3,
+        CAMP_ORDINAL_GREENHOUSE_1: 5,
+        CAMP_ORDINAL_GREENHOUSE_2: 7,
         CAMP_ORDINAL_GROUND: 8,
         CAMPS_BEFORE_GROUND: 8,
         
