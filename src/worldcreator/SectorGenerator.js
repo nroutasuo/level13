@@ -339,18 +339,21 @@ define([
             var l = levelVO.level;
 			var levelOrdinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
             var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
-                        
-            var blockerTypes = this.getLevelBlockerTypes(levelVO);
-            if (blockerTypes.length < 1) return;
+            
+            var blockerTypesEarly = this.getLevelBlockerTypes(levelVO, WorldConstants.CAMP_STAGE_EARLY);
+            var blockerTypesLate = this.getLevelBlockerTypes(levelVO, WorldConstants.CAMP_STAGE_LATE);
+            if (blockerTypesLate.length < 1) return;
             
             var creator = this;
-            var getBlockerType = function (seed) {
+            var getBlockerType = function (seed, stage) {
+                var blockerTypes = stage == WorldConstants.CAMP_STAGE_LATE ? blockerTypesLate : blockerTypesEarly;
                 var typeix = blockerTypes.length > 1 ? WorldCreatorRandom.randomInt(seed, 0, blockerTypes.length) : 0;
                 return blockerTypes[typeix];
             };
+            
             var addBlocker = function (seed, sectorVO, neighbourVO, type, addDiagonals, allowedCriticalPaths) {
                 neighbourVO = neighbourVO || WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
-                var blockerType = type || getBlockerType(seed);
+                var blockerType = type || getBlockerType(seed, sectorVO.stage);
                 creator.addMovementBlocker(worldVO, levelVO, sectorVO, neighbourVO, blockerType, { addDiagonals: addDiagonals, allowedCriticalPaths: allowedCriticalPaths });
             };
 
@@ -1181,6 +1184,8 @@ define([
                 var groveSector = WorldCreatorRandom.randomSector(seed, worldVO, levelVO, true);
                 var groveLocale = new LocaleVO(localeTypes.grove, true, false);
                 groveSector.sunlit = 1;
+                groveSector.hazards.radiation = 0;
+                groveSector.hazards.pollution = 0;
                 addLocale(groveSector, groveLocale);
             }
 
@@ -1452,26 +1457,31 @@ define([
 			return enemies;
         },
         
-        getLevelBlockerTypes: function (levelVO) {
+        getLevelBlockerTypes: function (levelVO, campStage) {
             var levelOrdinal = levelVO.levelOrdinal;
             var campOrdinal = levelVO.campOrdinal;
             var isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
             var isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
-                        
+
             var blockerTypes = [];
             if (levelOrdinal > 1) {
                 blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
                 blockerTypes.push(MovementConstants.BLOCKER_TYPE_DEBRIS);
             }
-            if (campOrdinal >= 5) {
+            
+            var unlockGapOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_bridge");
+            if (campOrdinal > unlockGapOrdinal || (campOrdinal == unlockGapOrdinal && campStage == WorldConstants.CAMP_STAGE_LATE)) {
                 blockerTypes.push(MovementConstants.BLOCKER_TYPE_GAP);
             }
+            
             if (campOrdinal >= 7 && !isRadiatedLevel) {
                 blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_TOXIC);
             }
+            
             if (levelVO.level >= 14 && isRadiatedLevel) {
                 blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
             }
+            
             return blockerTypes;
         }
         
