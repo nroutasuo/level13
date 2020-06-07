@@ -212,12 +212,17 @@ define([
                     var distanceToEdge = Math.min(Math.abs(y - levelVO.minY), Math.abs(y - levelVO.maxY), Math.abs(x - levelVO.minX), Math.abs(x - levelVO.maxX));
                     var edgeThreshold = isEarlyCriticalPath || isEarlyZone ? 7 : 5;
                     var centerThreshold = isEarlyCriticalPath || isEarlyZone ? WorldCreatorConstants.TOWER_RADIUS + 2 : WorldCreatorConstants.TOWER_RADIUS;
-                        
-                    if (l === worldVO.topLevel || distanceToEdge < edgeThreshold || Math.abs(y) > centerThreshold || Math.abs(x) > centerThreshold) {
+                    var isFullLevel = l === worldVO.topLevel;
+                    var coldEdgeDist = Math.max(edgeThreshold - distanceToEdge, Math.abs(y) - centerThreshold,  Math.abs(x) - centerThreshold);
+                    if (isFullLevel || coldEdgeDist > 0) {
                         var hazardValueRand = WorldCreatorRandom.random(3000 + seed / (l + 40) + x * y / 6 + seed + y * 2 + l * l * 959);
                         var value = hazardValueRand * 100;
-                        if (value < minHazardCold) value = minHazardCold;
-                        if (value > maxHazardCold) value = maxHazardCold;
+                        if (value < minHazardCold)
+                            value = minHazardCold;
+                        if (value > maxHazardCold)
+                            value = maxHazardCold;
+                        if (!isFullLevel && coldEdgeDist == 1)
+                            value = value / 2;
                         if (value > 10) {
                             value = Math.floor(value / 5) * 5;
                         } else {
