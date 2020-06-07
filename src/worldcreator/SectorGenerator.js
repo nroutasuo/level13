@@ -183,6 +183,7 @@ define([
             var l = levelVO.level == 0 ? 1342 : levelVO.level;
             var campOrdinal = levelVO.campOrdinal;
             var levelOrdinal = levelVO.levelOrdinal;
+            var directions = PositionConstants.getLevelDirections();
             
             // hazard areas (cold)
             if (levelVO.level != 14) {
@@ -244,6 +245,12 @@ define([
             var getMaxValue = function (sectorVO, isRadiation, zone) {
                 var step = WorldConstants.getCampStep(zone);
                 if (sectorVO.hazards.cold) return 0;
+                var neighbours = levelVO.getNeighbours(sectorVO.position.sectorX, sectorVO.position.sectorY);
+                for (var d in directions) {
+                    var direction = directions[d];
+                    var neighbour = neighbours[direction];
+                    if (neighbour && neighbour.hazards.cold) return 0;
+                }
                 if (sectorVO.workshopResource != null) return 0;
                 if (isRadiation) {
                     return Math.min(100, itemsHelper.getMaxHazardRadiationForLevel(campOrdinal, step, levelVO.isHard));
