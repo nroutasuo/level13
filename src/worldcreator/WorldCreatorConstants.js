@@ -22,6 +22,7 @@ function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
         
         MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 5,
         MIN_LEVEL_ORDINAL_HAZARD_POISON: 3,
+        WASTE_HAZARD_RADIUS: 2,
         
         CONNECTION_POINTS_PATH_END: "p-end",
         CONNECTION_POINTS_PATH_ENDS: "p-ends",

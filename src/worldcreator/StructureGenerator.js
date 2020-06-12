@@ -941,6 +941,7 @@ define([
             if (!ncheck.isValid) {
                 return { isValid: false, reason: "blocking neighbours " + ncheck.numNeighbours + " " + ncheck.sum };
             }
+            var directions = PositionConstants.getLevelDirections();
             var neighbours = levelVO.getNeighbours(sectorPos.sectorX, sectorPos.sectorY);
             for (var d in directions) {
                 var direction = directions[d];
