@@ -11,6 +11,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
         wasteClearedDirections: [],
         debrisClearedDirections: [],
         gapBridgedDirections: [],
+        hazardReduction: null, // not saved
 
         constructor: function () {
             this.discoveredResources = [];
@@ -20,6 +21,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
             this.wasteClearedDirections = [];
             this.debrisClearedDirections = [];
             this.gapBridgedDirections = [];
+            this.hazardReduction = {};
         },
 
         addDiscoveredResource: function (name) {
@@ -39,6 +41,14 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
                 if (this.localesScouted[i]) scouted++;
             }
             return scouted;
+        },
+        
+        getHazardReduction: function (hazard) {
+            if (!this.hazardReduction)
+                return 0;
+            if (!this.hazardReduction[hazard])
+                return 0;
+            return this.hazardReduction[hazard];
         },
 
         isBlockerCleared: function (direction, blockerType) {
@@ -83,11 +93,11 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
             if (this.localesScouted.length > 0)
                 copy.lS = this.localesScouted;
             if (this.wasteClearedDirections && this.wasteClearedDirections.length > 0)
-                copy.wd = this.wasteClearedDirections ? this.wasteClearedDirections  : [];
+                copy.wd = this.wasteClearedDirections;
             if (this.debrisClearedDirections && this.debrisClearedDirections.length > 0)
-                copy.dd = this.debrisClearedDirections ? this.debrisClearedDirections  : [];
+                copy.dd = this.debrisClearedDirections;
             if (this.gapBridgedDirections && this.gapBridgedDirections.length > 0)
-                copy.bd = this.gapBridgedDirections ? this.gapBridgedDirections  : [];
+                copy.bd = this.gapBridgedDirections;
             return Object.keys(copy).length > 0 ? copy : null;
         },
 

@@ -11,7 +11,7 @@ define(['ash'], function (Ash) {
             this.poison = 0;
             this.cold = 0;
         },
-        
+            
         getMainHazard: function () {
             if (this.radiation > this.poison && this.radiation > this.cold) return "radiation";
             if (this.poison > this.radiation && this.poison > this.cold) return "poison";
@@ -22,8 +22,20 @@ define(['ash'], function (Ash) {
             return null;
         },
         
+        hasHazard: function (hazard) {
+            return this[hazard] > 0;
+        },
+        
         hasHazards: function () {
             return this.radiation > 0 || this.poison > 0 || this.cold > 0;
+        },
+        
+        clone: function () {
+            var result = new EnvironmentalHazardsVO();
+            result.radiation = this.radiation;
+            result.poison = this.poison;
+            result.cold = this.cold;
+            return result;
         }
         
     });

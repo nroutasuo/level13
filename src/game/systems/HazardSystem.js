@@ -1,7 +1,7 @@
 // Add and remove hazard-based perks to the player based on ther location
 define([
     'ash',
-    'game/constants/HazardConstants',
+    'game/GameGlobals',
     'game/constants/PerkConstants',
     'game/constants/GameConstants',
     'game/constants/LogConstants',
@@ -9,13 +9,14 @@ define([
     'game/nodes/PlayerLocationNode',
     'game/components/common/LogMessagesComponent',
     'game/components/sector/SectorFeaturesComponent',
+    'game/components/sector/SectorStatusComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
     'game/components/player/PlayerActionComponent'
-], function (Ash,
-    HazardConstants, PerkConstants, GameConstants, LogConstants,
+], function (Ash, GameGlobals,
+    PerkConstants, GameConstants, LogConstants,
     PlayerPositionNode, PlayerLocationNode,
-    LogMessagesComponent, SectorFeaturesComponent, ItemsComponent, PerksComponent, PlayerActionComponent) {
+    LogMessagesComponent, SectorFeaturesComponent, SectorStatusComponent, ItemsComponent, PerksComponent, PlayerActionComponent) {
     
     var HazardSystem = Ash.System.extend({
         
@@ -45,11 +46,12 @@ define([
         
         addPerks: function () {
             var featuresComponent = this.locationNodes.head.entity.get(SectorFeaturesComponent);
+            var statusComponent = this.locationNodes.head.entity.get(SectorStatusComponent);
             var itemsComponent = this.playerNodes.head.entity.get(ItemsComponent);
-            var isAffectedByHazard = HazardConstants.isAffectedByHazard(featuresComponent, itemsComponent);
+            var isAffectedByHazard = GameGlobals.sectorHelper.isAffectedByHazard(featuresComponent, statusComponent, itemsComponent);
             if (isAffectedByHazard) {
                 var perksComponent = this.playerNodes.head.entity.get(PerksComponent);
-                var hazardPerks = HazardConstants.getPerksForSector(featuresComponent, itemsComponent);
+                var hazardPerks = GameGlobals.sectorHelper.getPerksForSector(featuresComponent, statusComponent, itemsComponent);
                 for (var i = 0; i < hazardPerks.length; i++) {
                     var perkID = hazardPerks[i];
                     var playerPerk = perksComponent.getPerk(perkID);
@@ -68,11 +70,12 @@ define([
             // TOOD performance buttleneck
             
             var featuresComponent = this.locationNodes.head.entity.get(SectorFeaturesComponent);
+            var statusComponent = this.locationNodes.head.entity.get(SectorStatusComponent);
             var busyComponent =  this.playerNodes.head.entity.get(PlayerActionComponent);
             var itemsComponent = this.playerNodes.head.entity.get(ItemsComponent);
             var perksComponent = this.playerNodes.head.entity.get(PerksComponent);
             
-            var hazardPerksForSector = HazardConstants.getPerksForSector(featuresComponent, itemsComponent);
+            var hazardPerksForSector = GameGlobals.sectorHelper.getPerksForSector(featuresComponent, statusComponent, itemsComponent);
             var hazardPerksAll = [ PerkConstants.perkIds.hazardCold, PerkConstants.perkIds.hazardPoison, PerkConstants.perkIds.hazardRadiation];
             for (var i = 0; i < hazardPerksAll.length; i++) {
                 var perkID = hazardPerksAll[i];

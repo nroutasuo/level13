@@ -5,7 +5,6 @@ define([
     'game/GlobalSignals',
     'game/constants/PositionConstants',
     'game/constants/LocaleConstants',
-    'game/constants/HazardConstants',
     'game/nodes/sector/SectorNode',
     'game/nodes/PlayerLocationNode',
     'game/nodes/player/ItemsNode',
@@ -23,7 +22,6 @@ define([
     GlobalSignals,
 	PositionConstants,
 	LocaleConstants,
-	HazardConstants,
 	SectorNode,
 	PlayerLocationNode,
     ItemsNode,
@@ -152,22 +150,24 @@ define([
 			var passagesComponent = entity.get(PassagesComponent);
 			var positionComponent = entity.get(PositionComponent);
             var featuresComponent = entity.get(SectorFeaturesComponent);
+            var statusComponent = entity.get(SectorStatusComponent);
             
 			var sectorKey = this.getSectorKey(positionComponent);
 			if (!this.neighboursDict[sectorKey]) this.findNeighbours(entity);
             
-            var isAffectedByHazard = HazardConstants.isAffectedByHazard(featuresComponent, this.itemsNodes.head.items);
+            var isAffectedByHazard = GameGlobals.sectorHelper.isAffectedByHazard(featuresComponent, statusComponent, this.itemsNodes.head.items);
             
 			// Allow n/s/w/e movement if neighbour exists and there is no active blocker AND no hazard
 			for (var i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var neighbour = this.getNeighbour(sectorKey, direction);
-                var isBlockedByHazard = neighbour ? isAffectedByHazard && !(neighbour.has(VisitedComponent) && !HazardConstants.isAffectedByHazard(neighbour.get(SectorFeaturesComponent), this.itemsNodes.head.items)) : false;
+                var isNeighbourAffectedByHazard = neighbour ? GameGlobals.sectorHelper.isAffectedByHazard(neighbour.get(SectorFeaturesComponent), neighbour.get(SectorStatusComponent), this.itemsNodes.head.items) : false;
+                var isBlockedByHazard = neighbour ? isAffectedByHazard && !(neighbour.has(VisitedComponent) && !isNeighbourAffectedByHazard) : false;
 				movementOptions.canMoveTo[direction] = neighbour != null;
                 movementOptions.canMoveTo[direction] = movementOptions.canMoveTo[direction] && !isBlockedByHazard;
 				movementOptions.canMoveTo[direction] = movementOptions.canMoveTo[direction] && !GameGlobals.movementHelper.isBlocked(entity, direction);
 				movementOptions.cantMoveToReason[direction] = GameGlobals.movementHelper.getBlockedReason(entity, direction);
-                if (isBlockedByHazard) movementOptions.cantMoveToReason[direction] = HazardConstants.getHazardDisabledReason(featuresComponent, this.itemsNodes.head.items);
+                if (isBlockedByHazard) movementOptions.cantMoveToReason[direction] = GameGlobals.sectorHelper.getHazardDisabledReason(featuresComponent, statusComponent, this.itemsNodes.head.items);
 				if (!neighbour) movementOptions.cantMoveToReason[direction] = "Nothing here.";
                 
                 //log.i(PositionConstants.getDirectionName(direction) + "\t" + isBlockedByHazard + " | " + movementOptions.cantMoveToReason[direction]);

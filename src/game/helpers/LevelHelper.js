@@ -589,7 +589,8 @@ define([
             // buildable workshops
             if (featuresComponent.sunlit) {
                 if (improvementsComponent.getCount(improvementNames.greenhouse) <= 0) {
-                    var hasHazards = featuresComponent.hazards.poison > 0 || featuresComponent.hazards.radiation > 0;
+                    var hazards = GameGlobals.sectorHelper.getEffectiveHazards(featuresComponent, statusComponent);
+                    var hasHazards = hazards.hasHazard("poison") || hazards.hasHazard("radiation");
                     var hasWater = featuresComponent.resourcesScavengable.water > 0 || featuresComponent.resourcesCollectable.water > 0 || featuresComponent.hasSpring;
                     if (!hasHazards && hasWater) {
                         projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.greenhouse), "build_out_greenhouse", sectorPosition));

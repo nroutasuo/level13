@@ -281,9 +281,9 @@ function (Ash, CanvasUtils,
             var isVisited = sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE && sectorStatus !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_VISIBLE;
             if (isVisited || this.isMapRevealed) {
                 var isSectorSunlit = sectorFeatures.sunlit;
-                var hasSectorHazard = sectorFeatures.hazards.hasHazards();
+                var hasSectorHazard = GameGlobals.sectorHelper.hasHazards(sectorFeatures, statusComponent);
                 if (isSectorSunlit || hasSectorHazard) {
-                    ctx.strokeStyle = this.getSectorStroke(sectorFeatures);
+                    ctx.strokeStyle = this.getSectorStroke(sectorFeatures, statusComponent);
                     ctx.lineWidth = Math.max(1, Math.round(sectorSize / 8));
                     ctx.beginPath();
                     ctx.moveTo(sectorXpx - 1, sectorYpx - 1);
@@ -569,10 +569,11 @@ function (Ash, CanvasUtils,
             }
         },
         
-        getSectorStroke: function (sectorFeatures) {
+        getSectorStroke: function (sectorFeatures, sectorStatus) {
             var isSectorSunlit = sectorFeatures.sunlit;
-            var hasSectorHazard = sectorFeatures.hazards.hasHazards();
-            var mainHazard = sectorFeatures.hazards.getMainHazard();
+            var hasSectorHazard = GameGlobals.sectorHelper.hasHazards(sectorFeatures, sectorStatus);
+            var hazards = GameGlobals.sectorHelper.getEffectiveHazards(sectorFeatures, sectorStatus);
+            var mainHazard = hazards.getMainHazard();
             
             if (hasSectorHazard) {
                 if (mainHazard == "cold")

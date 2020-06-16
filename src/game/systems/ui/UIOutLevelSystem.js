@@ -150,12 +150,12 @@ define([
 
 		updateLevelPage: function () {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
-			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 
 			var hasCamp = GameGlobals.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
 			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
-            var isScouted = sectorStatusComponent.scouted;
+            var isScouted = sectorStatus.scouted;
 
 			this.updateOutImprovementsStatus(hasCamp, improvements);
             this.updateNap(isScouted, hasCampHere);
@@ -165,10 +165,10 @@ define([
         updateLevelPageActions: function (isScouted, hasCamp, hasCampHere) {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             
-            var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+            var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var hasCamp = GameGlobals.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
 			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
-            var isScouted = sectorStatusComponent.scouted;
+            var isScouted = sectorStatus.scouted;
             
             var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
             var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
@@ -290,13 +290,13 @@ define([
 			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
 			var workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var statusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
             var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
 			var localesComponent = entity.get(SectorLocalesComponent);
 			var hasEnemies = enemiesComponent.hasEnemies;
 
 			var description = "<p>";
-			description += this.getTextureDescription(hasVision, entity, position, featuresComponent, statusComponent, localesComponent);
+			description += this.getTextureDescription(hasVision, entity, position, featuresComponent, sectorStatus, localesComponent);
 			description += this.getFunctionalDescription(hasVision, isScouted, featuresComponent, workshopComponent, hasCampHere, hasCampOnLevel);
 			description += "</p><p>";
 			description += this.getStatusDescription(hasVision, isScouted, hasEnemies, featuresComponent, passagesComponent, hasCampHere, hasCampOnLevel);
@@ -307,7 +307,7 @@ define([
 			return description;
 		},
 
-		getTextureDescription: function (hasVision, sector, position, featuresComponent, statusComponent, localesComponent) {
+		getTextureDescription: function (hasVision, sector, position, featuresComponent, sectorStatus, localesComponent) {
             var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
             
             // sector static description
@@ -319,8 +319,8 @@ define([
 				if (hasVision) desc += "The area is swathed in relentless <span class='hl-functionality'>daylight</span>. ";
 				else desc += "The area is swathed in blinding <span class='hl-functionality'>sunlight</span>. ";
 			} else {
-                if (statusComponent.glowStickSeconds > -5) {
-                    if (statusComponent.glowStickSeconds < 5)
+                if (sectorStatus.glowStickSeconds > -5) {
+                    if (sectorStatus.glowStickSeconds < 5)
                         desc += "The glowstick fades out.";
                     else
                         desc += "A glowstick casts a sickly <span class='hl-functionality'>light</span>.";
@@ -333,7 +333,7 @@ define([
             // locales / POIs description
             for (var i = 0; i < localesComponent.locales.length; i++) {
                 var locale = localesComponent.locales[i];
-                if (statusComponent.isLocaleScouted(i)) {
+                if (sectorStatus.isLocaleScouted(i)) {
                     if (locale.type == localeTypes.tradingpartner) {
                         var partner = TradeConstants.getTradePartner(campOrdinal);
                         desc += "<span class='hl-functionality'>" + partner.name + "</span> is located here. ";
@@ -479,6 +479,7 @@ define([
 			var enemyDesc = "";
 
 			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
+            var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
 			var hasEnemies = enemiesComponent.hasEnemies;
 
@@ -530,17 +531,18 @@ define([
                 }
             }
 
-            var hasHazards = featuresComponent.hazards.hasHazards();
+            var hasHazards = GameGlobals.sectorHelper.hasHazards(featuresComponent, sectorStatus);
+            var hazards = GameGlobals.sectorHelper.getEffectiveHazards(featuresComponent, sectorStatus);
             var hazardDesc = "";
             if (hasHazards) {
-                if (featuresComponent.hazards.radiation > 0) {
-                    hazardDesc += "This place is <span class='hl-functionality'>radioactive</span> (" + featuresComponent.hazards.radiation + "). ";
+                if (hazards.radiation > 0) {
+                    hazardDesc += "This place is <span class='hl-functionality'>radioactive</span> (" + hazards.radiation + "). ";
                 }
-                if (featuresComponent.hazards.poison > 0) {
-                    hazardDesc += "This place is dangerously <span class='hl-functionality'>polluted</span> (" + featuresComponent.hazards.poison + "). ";
+                if (hazards.poison > 0) {
+                    hazardDesc += "This place is dangerously <span class='hl-functionality'>polluted</span> (" + hazards.poison + "). ";
                 }
-                if (featuresComponent.hazards.cold > 0) {
-                    hazardDesc += "It's very <span class='hl-functionality'>cold</span> here (" + featuresComponent.hazards.cold + "). ";
+                if (hazards.cold > 0) {
+                    hazardDesc += "It's very <span class='hl-functionality'>cold</span> here (" + hazards.cold + "). ";
                 }
             }
 
@@ -582,9 +584,9 @@ define([
             if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 
-            var isScouted = sectorStatusComponent.scouted;
+            var isScouted = sectorStatus.scouted;
 
 			var collectorFood = improvements.getVO(improvementNames.collector_food);
 			var collectorWater = improvements.getVO(improvementNames.collector_water);
@@ -592,7 +594,7 @@ define([
 			var hasWater = isScouted && featuresComponent.resourcesCollectable.water > 0;
 			GameGlobals.uiFunctions.toggle("#out-improvements-collector-food", collectorFood.count > 0 || hasFood);
 			GameGlobals.uiFunctions.toggle("#out-improvements-collector-water", collectorWater.count > 0 || hasWater);
-			GameGlobals.uiFunctions.toggle("#out-improvements-camp", sectorStatusComponent.canBuildCamp);
+			GameGlobals.uiFunctions.toggle("#out-improvements-camp", sectorStatus.canBuildCamp);
         },
 
         updateOutImprovementsStatus: function(hasCamp, improvements) {
@@ -614,13 +616,13 @@ define([
             var position = currentSector.get(PositionComponent);
 			var sectorLocalesComponent = currentSector.get(SectorLocalesComponent);
 			var sectorFeaturesComponent = currentSector.get(SectorFeaturesComponent);
-			var sectorStatusComponent = currentSector.get(SectorStatusComponent);
+			var sectorStatus = currentSector.get(SectorStatusComponent);
 			$("#table-out-actions-locales").empty();
 			for (var i = 0; i < sectorLocalesComponent.locales.length; i++) {
 				var locale = sectorLocalesComponent.locales[i];
 				var button = "<button class='action multiline' action='scout_locale_" + locale.getCategory() + "_" + i + "'>" + TextConstants.getLocaleName(locale, sectorFeaturesComponent) + "</button>";
 				var info = "<span class='p-meta'>";
-                if (sectorStatusComponent.isLocaleScouted(i)) {
+                if (sectorStatus.isLocaleScouted(i)) {
                     if (locale.type == localeTypes.tradingpartner) {
                         var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
                         var partner = TradeConstants.getTradePartner(campOrdinal);
@@ -674,14 +676,14 @@ define([
         updateSectorDescription: function () {
             if (GameGlobals.gameState.uiStatus.isHidden) return;
 			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var sectorStatusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 
             var sector = this.playerLocationNodes.head.entity;
 			var vision = this.playerPosNodes.head.entity.get(VisionComponent).value;
 			var hasVision = vision > PlayerStatConstants.VISION_BASE;
 			var hasCamp = GameGlobals.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
 			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
-            var isScouted = sectorStatusComponent.scouted;
+            var isScouted = sectorStatus.scouted;
 
 			// Header
             var features = GameGlobals.sectorHelper.getTextFeatures(sector);

@@ -8,7 +8,6 @@ define([
 	'game/constants/PlayerStatConstants',
 	'game/constants/ImprovementConstants',
 	'game/constants/ItemConstants',
-	'game/constants/HazardConstants',
 	'game/constants/BagConstants',
 	'game/constants/MovementConstants',
 	'game/constants/UpgradeConstants',
@@ -46,7 +45,7 @@ define([
     'game/vos/ResourcesVO',
     'game/vos/ImprovementVO'
 ], function (
-	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ImprovementConstants, ItemConstants, HazardConstants, BagConstants, MovementConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
+	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	LevelComponent, CurrencyComponent, PositionComponent, PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, PerksComponent, DeityComponent,
 	FightComponent, OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
@@ -228,8 +227,9 @@ define([
                     }
                 }
 
-                if (HazardConstants.isAffectedByHazard(featuresComponent, itemsComponent) && !this.isActionIndependentOfHazards(action)) {
-                    return { value: 0, reason: HazardConstants.getHazardDisabledReason(featuresComponent, itemsComponent) };
+                var isAffectedByHazard = GameGlobals.sectorHelper.isAffectedByHazard(featuresComponent, statusComponent, itemsComponent)
+                if (isAffectedByHazard && !this.isActionIndependentOfHazards(action)) {
+                    return { value: 0, reason: GameGlobals.sectorHelper.getHazardDisabledReason(featuresComponent, statusComponent, itemsComponent) };
                 }
 
                 if (requirements) {

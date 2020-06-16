@@ -2,6 +2,8 @@
 define([
     'ash',
     'game/GameGlobals',
+    'game/constants/ItemConstants',
+    'game/constants/PerkConstants',
     'game/nodes/sector/SectorNode',
     'game/nodes/PlayerLocationNode',
     'game/components/common/CampComponent',
@@ -13,6 +15,8 @@ define([
 ], function (
 	Ash,
     GameGlobals,
+    ItemConstants,
+    PerkConstants,
 	SectorNode,
 	PlayerLocationNode,
     CampComponent,
@@ -61,6 +65,55 @@ define([
             features.hasCamp = hasCamp;
             features.hasGrove = hasGrove;
             return features;
+        },
+        
+        getEffectiveHazardValue: function (sectorFeatures, sectorStatus, hazard) {
+            var hazards = this.getEffectiveHazards(sectorFeatures, sectorStatus);
+            return hazards[hazard] || 0;
+        },
+        
+        getEffectiveHazards: function (sectorFeatures, sectorStatus) {
+            var result = sectorFeatures.hazards.clone();
+            result.radiation = Math.max(0, result.radiation - sectorStatus.getHazardReduction("radiation"));
+            result.poison = Math.max(0, result.poison - sectorStatus.getHazardReduction("poison"));
+            result.cold = Math.max(0, result.cold - sectorStatus.getHazardReduction("cold"));
+            return result;
+        },
+        
+        hasHazards: function (sectorFeatures, sectorStatus) {
+            var hazards = this.getEffectiveHazards(sectorFeatures, sectorStatus);
+            return hazards.hasHazards();
+        },
+            
+        isAffectedByHazard: function (featuresComponent, statusComponent, itemsComponent) {
+            var hazards = this.getEffectiveHazards(featuresComponent, statusComponent);
+            if (hazards.hasHazards() && this.getHazardDisabledReason(featuresComponent, statusComponent, itemsComponent) !== null) {
+                return true;
+            }
+            return false;
+        },
+        
+        getHazardDisabledReason: function (featuresComponent, statusComponent, itemsComponent) {
+            var hazards = this.getEffectiveHazards(featuresComponent, statusComponent);
+            if (hazards.radiation > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_radiation))
+                return "area too radioactive";
+            if (hazards.poison > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_poison))
+                return "area too polluted";
+            if (hazards.cold > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_cold))
+                return "area too cold";
+            return null;
+        },
+        
+        getPerksForSector: function (featuresComponent, statusComponent, itemsComponent) {
+            var hazards = this.getEffectiveHazards(featuresComponent, statusComponent);
+            var result = [];
+            if (hazards.radiation > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_radiation))
+                result.push(PerkConstants.perkIds.hazardRadiation);
+            if (hazards.poison > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_poison))
+                result.push(PerkConstants.perkIds.hazardPoison);
+            if (hazards.cold > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_cold))
+                result.push(PerkConstants.perkIds.hazardCold);
+            return result;
         },
 		
 		getLocationDiscoveredResources: function (sector) {
