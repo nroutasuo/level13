@@ -710,9 +710,6 @@ define(['ash',
             sectorStatus.setBlockerCleared(direction, blockerType);
             var neighbourStatus = neighbour.get(SectorStatusComponent);
             neighbourStatus.setBlockerCleared(oppositeDirection, blockerType);
-            
-            log.i(sectorStatus)
-            log.i(neighbourStatus)
         
             // complete
             this.completeAction(action);
