@@ -98,6 +98,22 @@ define([
                 var result = this.createSmallRectangle(s1, s2, s3, worldVO, levelVO, pos, levelVO.campPositions, w, h);
                 this.connectNewPath(worldVO, levelVO, existingSectors, result);
             }
+            
+            if (levelVO.level == 14) {
+                var center = levelVO.levelCenterPosition;
+                var num = 3;
+                var s = 3;
+                var d = 1;
+                var startX = center.sectorX - Math.floor(num/2) * s - Math.floor((num-1)/2)* d;
+                var path = [];
+                for (var i = 0; i < num; i++) {
+                    var existingSectors = levelVO.sectors.concat();
+                    var x = startX + i * s + i * d;
+                    var pos = new PositionVO(levelVO.level, x, center.sectorY);
+                    var result = this.createRectangleFromCenter(levelVO, 0, pos, s, s);
+                    this.connectNewPath(worldVO, levelVO, existingSectors, result);
+                }
+            }
         },
         
         createCentralParallels: function (s1, s2, s3, worldVO, levelVO, position, pois) {
@@ -444,10 +460,13 @@ define([
         },
         
         createRectangleFromCenter: function (levelVO, i, center, w, h, forceComplete, isDiagonal) {
+            var result = [];
             var paths = this.getRectangleFromCenter(levelVO, i, center, w, h, forceComplete, isDiagonal);
             for (var i = 0; i < paths.length; i++) {
-                this.createPath(levelVO, paths[i].startPos, paths[i].dir, paths[i].len, forceComplete);
+                var pathResult = this.createPath(levelVO, paths[i].startPos, paths[i].dir, paths[i].len, forceComplete);
+                result = result.concat(pathResult.path);
             }
+            return result;
         },
         
         getRectangle: function (levelVO, i, startPos, w, h, startDirection, options, forceComplete, connectionPointsType) {
