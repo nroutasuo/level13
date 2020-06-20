@@ -303,8 +303,10 @@ define([
         
         getNotCampableReason: function (seed, level) {
             if (this.isCampableLevel(seed, level)) return null;
+			var bottomLevel = this.getBottomLevel(seed);
             
             if (level === 14) return LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
+            if (level == bottomLevel) return LevelConstants.UNCAMPABLE_LEVEL_TYPE_SUPERSTITION;
             
             var campOrdinal = this.getCampOrdinal(seed, level);
             if (campOrdinal > WorldConstants.CAMP_ORDINAL_LIMIT)
