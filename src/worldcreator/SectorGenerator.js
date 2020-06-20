@@ -720,11 +720,13 @@ define([
             var sRandom = (x * 22 + y * 3000);
             var sectorAbundanceFactor = WorldCreatorRandom.random(seed * sRandom + (x + 99) * 7 * (y - 888));
             var waterRandomPart = WorldCreatorRandom.random(seed * (l + 1000) * (x + y + 900) + 10134) * Math.abs(5 - sectorVO.wear) / 5;
+            var s1 = 5000 + seed / (l+10) + x + x * y * 63 + sectorVO.buildingDensity * 3 + x % 3 * 123 + y % 4 * 81;
+            var r1 = WorldCreatorRandom.random(s1);
             var sca = new ResourcesVO();
             switch (sectorType) {
                 case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
                     sca.metal = 3;
-                    sca.food = WorldCreatorRandom.random(seed + l * x * y * 24 + x * 33 + 6) < 0.60 ? Math.round(sectorAbundanceFactor * 5 + sectorVO.wear / 2) : 0;
+                    sca.food = r1 < 0.3 ? Math.round(sectorAbundanceFactor * 5 + sectorVO.wear / 2) : 0;
                     sca.water = waterRandomPart > 0.82 ? 2 : 0;
                     sca.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.95 ? 1 : 0;
                     sca.medicine = campOrdinal > 2 && WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.99 ? 1 : 0;
@@ -746,12 +748,12 @@ define([
                 case SectorConstants.SECTOR_TYPE_COMMERCIAL:
                     sca.water = waterRandomPart > 0.85 ? 2 : 0;
                     sca.metal = 2;
-                    sca.food = Math.round(sectorAbundanceFactor * 10);
+                    sca.food = r1 < 0.5 ? Math.round(sectorAbundanceFactor * 10) : 0;
                     sca.medicine = campOrdinal > 2 && WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.99 ? 1 : 0;
                     break;
                 case SectorConstants.SECTOR_TYPE_SLUM:
                     sca.metal = 7;
-                    sca.food = WorldCreatorRandom.random(seed / (l+10) + x * y * 63) < 0.2 ? Math.round(sectorAbundanceFactor * 5 + sectorVO.wear / 2) : 0;
+                    sca.food = r1 < 0.2 ? Math.round(sectorAbundanceFactor * 5 + sectorVO.wear / 2) : 0;
                     sca.water = waterRandomPart > 0.75 ? 1 : 0;
                     sca.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.85 ? 1 : 0;
                     sca.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.95 ? 1 : 0;
@@ -761,22 +763,28 @@ define([
             // collectable resources
             var col = new ResourcesVO();
             var sectorCentralness = (10 - (Math.abs(x) / 10) + 10 - (Math.abs(y) / 10)) / 2;
-            var sectorNatureFactor = (WorldCreatorRandom.random(seed + (x + 1453) / 55 * (y - 455)) * (sectorVO.wear)) / 10;
+            var s11 = seed + (x + 1453) * 3 + (y * 4155) / 71 + sectorVO.wear * 35;
+            var s12 = (x % 2 + 1) * 449 + (x + 11) * 521 + (y + 50) * 121 + 2 * Math.abs(x) * Math.abs(y) + sectorCentralness * 541;
+            var r12 = WorldCreatorRandom.random(s12);
+            var sectorNatureFactor = (WorldCreatorRandom.random(s11) * (sectorVO.wear)) / 10;
             var sectorWaterFactor = (WorldCreatorRandom.random(seed / (x + 30) + (y + 102214)) * (sectorCentralness + 10)) / 25;
-            
             switch (sectorType) {
                 case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
+                    col.food = sectorNatureFactor > 0.55 || r12 > 0.7 ? 3 + sectorNatureFactor * 7 : 0;
+                    col.water = sectorWaterFactor > 0.75 ? Math.round(Math.min(10, sectorWaterFactor * 10)) : 0;
+                    break;
                 case SectorConstants.SECTOR_TYPE_COMMERCIAL:
-                    col.food = sectorNatureFactor > 0.2 ? Math.round(sectorNatureFactor * 10) : 0;
+                case SectorConstants.SECTOR_TYPE_PUBLIC:
+                    col.food = sectorNatureFactor > 0.75 || r12 > 0.8 ? 2 + Math.round(sectorNatureFactor * 8) : 0;
                     col.water = sectorWaterFactor > 0.75 ? Math.round(Math.min(10, sectorWaterFactor * 10)) : 0;
                     break;
                 case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
                 case SectorConstants.SECTOR_TYPE_MAINTENANCE:
-                    col.food = sectorNatureFactor > 0.4 ? Math.round(sectorNatureFactor * 8) : 0;
+                    col.food = sectorNatureFactor > 0.85 || r12 > 0.9 ? 2 + Math.round(sectorNatureFactor * 8) : 0;
                     col.water = sectorWaterFactor > 0.95 ? Math.round(Math.min(10, sectorWaterFactor * 11)) : 0;
                     break;
                 case SectorConstants.SECTOR_TYPE_SLUM:
-                    col.food = sectorNatureFactor > 0.1 ? Math.round(sectorNatureFactor * 10) : 0;
+                    col.food = sectorNatureFactor > 0.5 || r12 > 0.6 ? 3 + Math.round(sectorNatureFactor * 7) : 0;
                     col.water = sectorWaterFactor > 0.9 ? Math.round(Math.min(10, sectorWaterFactor * 8)) : 0;
                     break;
             }
@@ -1492,12 +1500,12 @@ define([
             // level-based
             if (l >= worldVO.topLevel - 1)
                 possibleTypes.push(localeTypes.lab);
-                
+            
             if (l == 14)
                 possibleTypes.push(localeTypes.factory);
                 
             // sector type based
-                switch (sectorType) {
+            switch (sectorType) {
                 case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
                     possibleTypes.push(localeTypes.house);
                     possibleTypes.push(localeTypes.transport);
@@ -1552,7 +1560,7 @@ define([
                 default:
                     log.w("Unknown sector type " + sectorType);
                     return null;
-                }
+            }
             
             var localeRandom = WorldCreatorRandom.random(s1);
             return possibleTypes[Math.floor(localeRandom * possibleTypes.length)];

@@ -184,6 +184,7 @@ define([
 		},
 		
         updateHazardReduction: function (entity) {
+            if (GameGlobals.gameState.uiStatus.isHidden) return;
             var statusComponent = entity.get(SectorStatusComponent);
 			var passagesComponent = entity.get(PassagesComponent);
     		var positionComponent = entity.get(PositionComponent);

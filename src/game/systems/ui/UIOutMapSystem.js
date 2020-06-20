@@ -285,6 +285,7 @@ define([
             if (!isVisited) return "?";
             var result = [];
 			var featuresComponent = sector.get(SectorFeaturesComponent);
+            var statusComponent = sector.get(SectorStatusComponent);
             var hazards = GameGlobals.sectorHelper.getEffectiveHazards(featuresComponent, statusComponent);
             if (featuresComponent.sunlit) result.push("sunlit");
             if (hazards.radiation > 0) result.push("radioactivity (" + hazards.radiation + ")");

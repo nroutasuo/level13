@@ -189,8 +189,12 @@ define([
 			if (levelPos === GameGlobals.gameState.getGroundLevel()) GameGlobals.gameState.unlockedFeatures.favour = true;
             
             var nextLevel = GameGlobals.gameState.getLevelForOrdinal(levelOrdinal + 1);
+            var nextLevelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(nextLevel);
+            if (!nextLevelEntity)
+                return;
+            
             var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(levelPos).get(LevelComponent);
-            var nextLevelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(nextLevel).get(LevelComponent);
+            var nextLevelComponent = nextLevelEntity.get(LevelComponent);
             var isLastLevel = levelComponent.notCampableReason != LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT && nextLevelComponent.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT;
             if (isLastLevel) {
                 setTimeout(function () {
