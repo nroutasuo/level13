@@ -140,6 +140,12 @@ function (Ash, ResourcesVO, LocaleConstants, PlayerStatConstants) {
 			}
         },
         
+        getDebugName: function () {
+            var value = this.type;
+            var key = Object.keys(localeTypes).filter(function(key) {return localeTypes[key] === value})[0];
+            return key;
+        }
+        
     });
 
     return LocaleVO;

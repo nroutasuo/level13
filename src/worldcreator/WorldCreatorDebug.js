@@ -78,6 +78,7 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
         },
 		
 		printWorld: function (worldVO, keys, color) {
+            log.i("print world " + keys.join(","));
             var prepareValue = function (value) {
                 var char = value.toString()[0];
                 var c = value ? color : null;

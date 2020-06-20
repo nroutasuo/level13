@@ -996,6 +996,7 @@ define([
         generateLocales: function (seed, worldVO, levelVO) {
             var l = levelVO.level;
 			var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, levelVO.level);
+            var generator = this;
                         
             var addLocale = function (sectorVO, locale) {
                 sectorVO.locales.push(locale);
@@ -1027,75 +1028,6 @@ define([
             }
 
             // 3) spawn other types (for blueprints)
-			var getLocaleType = function (localeRandom, sectorType, l, isEarly) {
-				var localeType = localeTypes.house;
-
-				// level-based
-				if (l >= worldVO.topLevel - 1 && localeRandom < 0.25)
-                    localeType = localeTypes.lab;
-				// sector type based
-				else {
-					switch (sectorType) {
-					case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
-					case SectorConstants.SECTOR_TYPE_PUBLIC:
-						if (localeRandom > 0.7) localeType = localeTypes.house;
-                        else if (localeRandom > 0.6) localeType = localeTypes.transport;
-                        else if (localeRandom > 0.55) localeType = localeTypes.sewer;
-                        else if (localeRandom > 0.45) localeType = localeTypes.warehouse;
-                        else if (localeRandom > 0.4) localeType = localeTypes.camp;
-                        else if (localeRandom > 0.3) localeType = localeTypes.hut;
-                        else if (localeRandom > 0.2 && !isEarly) localeType = localeTypes.hermit;
-                        else if (localeRandom > 0.1) localeType = localeTypes.caravan;
-                        else localeType = localeTypes.market;
-						break;
-
-                    case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
-                        if (localeRandom > 0.5) localeType = localeTypes.factory;
-                        else if (localeRandom > 0.3) localeType = localeTypes.warehouse;
-                        else if (localeRandom > 0.2) localeType = localeTypes.transport;
-                        else if (localeRandom > 0.1) localeType = localeTypes.sewer;
-                        else localeType = localeTypes.market;
-                        break;
-
-                    case SectorConstants.SECTOR_TYPE_MAINTENANCE:
-                        if (localeRandom > 0.6) localeType = localeTypes.maintenance;
-                        else if (localeRandom > 0.4) localeType = localeTypes.transport;
-                        else if (localeRandom > 0.3 && !isEarly) localeType = localeTypes.hermit;
-                        else if (localeRandom > 0.2) localeType = localeTypes.caravan;
-                        else localeType = localeTypes.sewer;
-                        break;
-
-                    case SectorConstants.SECTOR_TYPE_COMMERCIAL:
-                        if (localeRandom > 6) localeType = localeTypes.market;
-                        else if (localeRandom > 0.4) localeType = localeTypes.warehouse;
-                        else if (localeRandom > 0.3) localeType = localeTypes.transport;
-                        else if (localeRandom > 0.25) localeType = localeTypes.hut;
-                        else if (localeRandom > 0.2 && !isEarly) localeType = localeTypes.hermit;
-                        else if (localeRandom > 0.15 && !isEarly) localeType = localeTypes.caravan;
-                        else localeType = localeTypes.house;
-                        break;
-
-                    case SectorConstants.SECTOR_TYPE_SLUM:
-                        if (localeRandom > 0.4) localeType = localeTypes.house;
-                        else if (localeRandom > 0.35) localeType = localeTypes.camp;
-                        else if (localeRandom > 0.3) localeType = localeTypes.hut;
-                        else if (localeRandom > 0.25 && !isEarly) localeType = localeTypes.hermit;
-                        else localeType = localeTypes.sewer;
-                        break;
-                        
-                    case SectorConstants.SECTOR_TYPE_PUBLIC:
-                        if (localeRandom < 0.3) localeType = localeTypes.lab;
-                        else if (localeRandom < 0.6) localeType = localeTypes.transport;
-                        else localeType = localeTypes.library;
-                        break;
-
-					default:
-						log.w("Unknown sector type " + sectorType);
-                        return null;
-					}
-				}
-				return localeType;
-			};
 			var createLocales = function (worldVO, levelVO, campOrdinal, isEarly, count, countEasy) {
                 var pathConstraints = [];
                 for (var j = 0; j < levelVO.campPositions.length; j++) {
@@ -1112,7 +1044,9 @@ define([
 					var localePos = WorldCreatorRandom.randomSectors(sseed + i + i * 7394 * sseed + i * i * l + i, worldVO, levelVO, 1, 2, options);
                     var sectorVO = localePos[0];
                     if (!sectorVO) continue;
-                    var localeType = getLocaleType(WorldCreatorRandom.random(sseed + sseed + i * seed + localePos), sectorVO.sectorType, l, isEarly);
+                    var s1 = sseed + sectorVO.position.sectorX * 871 + sectorVO.position.sectorY * 659;
+                    var r1 = WorldCreatorRandom.random(s1);
+                    var localeType = generator.getLocaleType(worldVO, levelVO, sectorVO, s1, isEarly);
                     var isEasy = i <= countEasy;
                     var locale = new LocaleVO(localeType, isEasy, isEarly);
                     addLocale(sectorVO, locale);
@@ -1168,7 +1102,6 @@ define([
             var levelOrdinal = levelVO.levelOrdinal;
             isRadiation = isRadiation || WorldCreatorRandom.random(seed / 3381 + levelOrdinal * 777 + (s1+44)*(s1+11)) > 0.5;
             value = value ||  WorldCreatorRandom.random(levelOrdinal * (s1+11) / seed * 2 + seed/(s1+99+levelOrdinal) - s1*s1);
-            log.i("add hazard cluster " + centerSector.position + " " + radius + " " + value)
             for (var hx = centerSector.position.sectorX - radius; hx <= centerSector.position.sectorX + radius; hx++) {
                 for (var hy = centerSector.position.sectorY - radius; hy <= centerSector.position.sectorY + radius; hy++) {
                     var sectorVO = levelVO.getSector(hx, hy);
@@ -1549,7 +1482,81 @@ define([
             }
             
             return blockerTypes;
-        }
+        },
+        
+        getLocaleType: function (worldVO, levelVO, sectorVO, s1, isEarly) {
+            var possibleTypes = [];
+            var l = levelVO.level;
+            var sectorType = sectorVO.sectorType;
+
+            // level-based
+            if (l >= worldVO.topLevel - 1)
+                possibleTypes.push(localeTypes.lab);
+                
+            if (l == 14)
+                possibleTypes.push(localeTypes.factory);
+                
+            // sector type based
+                switch (sectorType) {
+                case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
+                    possibleTypes.push(localeTypes.house);
+                    possibleTypes.push(localeTypes.transport);
+                    possibleTypes.push(localeTypes.sewer);
+                    possibleTypes.push(localeTypes.warehouse);
+                    possibleTypes.push(localeTypes.camp);
+                    possibleTypes.push(localeTypes.hut);
+                    possibleTypes.push(localeTypes.hermit);
+                    possibleTypes.push(localeTypes.caravan);
+                    possibleTypes.push(localeTypes.market);
+                    break;
+
+                case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
+                    possibleTypes.push(localeTypes.factory);
+                    possibleTypes.push(localeTypes.warehouse);
+                    possibleTypes.push(localeTypes.transport);
+                    possibleTypes.push(localeTypes.sewer);
+                    break;
+
+                case SectorConstants.SECTOR_TYPE_MAINTENANCE:
+                    possibleTypes.push(localeTypes.maintenance);
+                    possibleTypes.push(localeTypes.transport);
+                    possibleTypes.push(localeTypes.hermit);
+                    possibleTypes.push(localeTypes.caravan);
+                    possibleTypes.push(localeTypes.sewer);
+                    break;
+
+                case SectorConstants.SECTOR_TYPE_COMMERCIAL:
+                    possibleTypes.push(localeTypes.market);
+                    possibleTypes.push(localeTypes.warehouse);
+                    possibleTypes.push(localeTypes.transport);
+                    possibleTypes.push(localeTypes.hut);
+                    possibleTypes.push(localeTypes.hermit);
+                    possibleTypes.push(localeTypes.caravan);
+                    possibleTypes.push(localeTypes.house);
+                    break;
+
+                case SectorConstants.SECTOR_TYPE_SLUM:
+                    possibleTypes.push(localeTypes.house);
+                    possibleTypes.push(localeTypes.camp);
+                    possibleTypes.push(localeTypes.hut);
+                    possibleTypes.push(localeTypes.hermit);
+                    possibleTypes.push(localeTypes.sewer);
+                    break;
+                    
+                case SectorConstants.SECTOR_TYPE_PUBLIC:
+                    possibleTypes.push(localeTypes.lab);
+                    possibleTypes.push(localeTypes.transport);
+                    possibleTypes.push(localeTypes.library);
+                    break;
+
+                default:
+                    log.w("Unknown sector type " + sectorType);
+                    return null;
+                }
+            
+            var localeRandom = WorldCreatorRandom.random(s1);
+            return possibleTypes[Math.floor(localeRandom * possibleTypes.length)];
+        },
         
     };
     
