@@ -770,7 +770,7 @@ define([
 			for (var i = 0; i < this.sectorEntitiesByLevel[level].length; i++) {
                 var sectorEntity = this.sectorEntitiesByLevel[level][i];
                 var featuresComponent = sectorEntity.get(SectorFeaturesComponent);
-                if (featuresComponent.stash) {
+                if (featuresComponent.stashes.length > 0) {
                     sectors.push(sectorEntity);
                 }
 			}

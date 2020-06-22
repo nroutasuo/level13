@@ -92,7 +92,7 @@ define([
             sectorFeatures.hasBuildableWorkshop = sectorVO.hasBuildableWorkshop;
             sectorFeatures.isCamp = sectorVO.isCamp;
             sectorFeatures.notCampableReason = sectorVO.notCampableReason;
-            sectorFeatures.stash = sectorVO.stash || null;
+            sectorFeatures.stashes = sectorVO.stashes || null;
 			return sectorFeatures;
 		},
 

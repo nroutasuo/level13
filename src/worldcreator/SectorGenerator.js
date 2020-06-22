@@ -474,13 +474,11 @@ define([
             var lateZones = [ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_EXTRA_CAMPABLE ];
             var earlyZones = [ WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_PASSAGE_TO_PASSAGE, WorldConstants.ZONE_POI_1 ];
             
-            // TODO handle multiple stashes per sector (currently just overwrites)
             var addStashes = function (sectorSeed, reason, stashType, itemID, num, numItemsPerStash, excludedZones) {
                 var options = { requireCentral: false, excludingFeature: "camp", excludedZones: excludedZones };
                 var stashSectors = WorldCreatorRandom.randomSectors(sectorSeed, worldVO, levelVO, num, num + 1, options);
                 for (var i = 0; i < stashSectors.length; i++) {
-                    stashSectors[i].stashItem = itemID;
-                    stashSectors[i].stash = new StashVO(stashType, numItemsPerStash, itemID);
+                    stashSectors[i].stashes.push(new StashVO(stashType, numItemsPerStash, itemID));
                     // log.i("add stash level " + l + " [" + reason + "]: " + itemID + " " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
                 }
             };

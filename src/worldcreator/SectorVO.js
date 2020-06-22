@@ -26,6 +26,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, ResourcesVO, Environmental
             this.resourcesScavengable = new ResourcesVO();
             this.resourcesCollectable = new ResourcesVO();
             this.numLocaleEnemies = {};
+            this.stashes = [];
             
             this.distanceToCamp = -1;
         },

@@ -23,13 +23,14 @@ define(
         // functionality
         hazards: null,
         campable: false,
+        stashes: [],
         
         // resources
         resourcesScavengable: null,
         resourcesCollectable: null,
         
         constructor: function (level, criticalPaths, zone, buildingDensity, wear, damage, sectorType, sunlit, hazards,
-                               campable, notCampableReason, resourcesScavengable, resourcesCollectable, hasSpring, stash) {
+                               campable, notCampableReason, resourcesScavengable, resourcesCollectable, hasSpring, stashes) {
             this.level = level;
             this.criticalPaths = criticalPaths;
             this.zone = zone;
@@ -44,7 +45,7 @@ define(
             this.resourcesScavengable = resourcesScavengable || new ResourcesVO();
             this.resourcesCollectable = resourcesCollectable || new ResourcesVO();
             this.hasSpring = hasSpring;
-            this.stash = stash || null;
+            this.stashes = stashes || [];
         },
         
         // Secondary attributes

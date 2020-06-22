@@ -12,6 +12,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
         debrisClearedDirections: [],
         gapBridgedDirections: [],
         hazardReduction: null, // not saved
+        stashesFound: 0,
 
         constructor: function () {
             this.discoveredResources = [];
@@ -22,6 +23,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
             this.debrisClearedDirections = [];
             this.gapBridgedDirections = [];
             this.hazardReduction = {};
+            this.stashesFound = 0;
         },
 
         addDiscoveredResource: function (name) {
@@ -98,6 +100,8 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
                 copy.dd = this.debrisClearedDirections;
             if (this.gapBridgedDirections && this.gapBridgedDirections.length > 0)
                 copy.bd = this.gapBridgedDirections;
+            if (this.stashesFound)
+                copy.sf = this.stashesFound;
             return Object.keys(copy).length > 0 ? copy : null;
         },
 
@@ -112,6 +116,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
             this.wasteClearedDirections = componentValues.wd ? componentValues.wd : [];
             this.debrisClearedDirections = componentValues.dd ? componentValues.dd : [];
             this.gapBridgedDirections = componentValues.bd ? componentValues.bd : [];
+            this.stashesFound = componentValues.sf ? componentValues.sf : 0;
         }
 
     });

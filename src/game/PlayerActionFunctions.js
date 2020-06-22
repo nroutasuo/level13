@@ -744,15 +744,20 @@ define(['ash',
             showResultPopup = showResultPopup && !GameGlobals.gameState.uiStatus.isHidden;
 			GameGlobals.fightHelper.handleRandomEncounter(action, function () {
 				var rewards = GameGlobals.playerActionResultsHelper.getResultVOByAction(action, hasCustomReward);
-				var sector = playerActionFunctions.playerStatsNodes.head.entity;
-				sector.add(new PlayerActionResultComponent(rewards));
+				var player = playerActionFunctions.playerStatsNodes.head.entity;
+                var sector = playerActionFunctions.playerLocationNodes.head.entity;
+                var sectorStatus = sector.get(SectorStatusComponent);
+				player.add(new PlayerActionResultComponent(rewards));
 				var resultPopupCallback = function (isTakeAll) {
 					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
+                    if (rewards.stashVO) {
+                        sectorStatus.stashesFound++;
+                    }
 					if (logMsgSuccess) playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
 					GameGlobals.playerActionResultsHelper.logResults(rewards);
 					playerActionFunctions.forceResourceBarUpdate();
 					playerActionFunctions.forceTabUpdate();
-					sector.remove(PlayerActionResultComponent);
+					player.remove(PlayerActionResultComponent);
 					GlobalSignals.inventoryChangedSignal.dispatch();
 					if (successCallback) successCallback();
 					playerActionFunctions.completeAction(action);

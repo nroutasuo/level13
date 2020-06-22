@@ -143,6 +143,7 @@ define([
             var rewards = new ResultVO("scavenge");
 
             var sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+            var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
             var sectorResources = sectorFeatures.resourcesScavengable;
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var playerPos = this.playerLocationNodes.head.position;
@@ -162,7 +163,7 @@ define([
             rewards.gainedItems = this.getRewardItems(itemProb, ingredientProb, this.itemResultTypes.scavenge, efficiency, itemsComponent, campOrdinal, step);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
             
-            this.addStash(rewards, sectorFeatures.stash);
+            this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
             rewards.gainedBlueprintPiece = this.getFallbackBlueprint(0.05 + efficiency * 0.15);
 
             return rewards;
@@ -898,12 +899,12 @@ define([
 			return null;
 		},
 
-        addStash: function (rewardsVO, stashVO) {
-            if (!stashVO) return;
-            var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-            if (sectorStatus.scavenged) return;
+        addStashes: function (rewardsVO, stashes, stashesFound) {
+            if (!stashes || stashes.length <= stashesFound) return;
+            var stashVO = stashes[stashesFound];
             if (!GameGlobals.gameState.uiStatus.isHidden)
-                log.i("found stash");
+                log.i("found stash: " + stashVO.stashType + " " + stashVO.itemID + " " + (stashesFound+1) + "/" + stashes.length);
+            rewardsVO.stashVO = stashVO;
             switch (stashVO.stashType) {
                 case StashVO.STASH_TYPE_ITEM:
                     for (var i = 0; i < stashVO.amount; i++) {

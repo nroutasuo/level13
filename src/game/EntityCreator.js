@@ -181,7 +181,7 @@ define([
 					sectorFeatures.resourcesScavengable,
 					sectorFeatures.resourcesCollectable,
 					sectorFeatures.hasSpring,
-					sectorFeatures.stash))
+					sectorFeatures.stashes))
 				.add(new SectorLocalesComponent(locales))
 				.add(new SaveComponent(saveKey, [
 					ResourcesComponent,
