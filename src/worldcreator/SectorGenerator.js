@@ -1358,6 +1358,7 @@ define([
             var s1 = seed + l * 7 + sectorVO.position.sectorX * seed % 6 * 10;
             var campOrdinal = levelVO.campOrdinal;
             var unlockElevatorOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_passage_elevator");
+            var unlockHoleOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_passage_hole");
             if (l === 13) {
                 return MovementConstants.PASSAGE_TYPE_STAIRWELL;
             } else if (campOrdinal > WorldConstants.CAMP_ORDINAL_LIMIT) {
@@ -1366,11 +1367,13 @@ define([
                 return MovementConstants.PASSAGE_TYPE_HOLE;
             } else if (levelVO.isCampable && campOrdinal == unlockElevatorOrdinal) {
                 return MovementConstants.PASSAGE_TYPE_ELEVATOR;
+            }else if (levelVO.isCampable && campOrdinal == unlockHoleOrdinal) {
+                return MovementConstants.PASSAGE_TYPE_HOLE;
             } else {
                 var availablePassageTypes = [MovementConstants.PASSAGE_TYPE_STAIRWELL];
                 if (campOrdinal >= unlockElevatorOrdinal)
                     availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_ELEVATOR);
-                if (l > 14)
+                if (campOrdinal >= unlockHoleOrdinal)
                     availablePassageTypes.push(MovementConstants.PASSAGE_TYPE_HOLE);
                 var passageTypeIndex = WorldCreatorRandom.randomInt(s1, 0, availablePassageTypes.length);
                 var passageType = availablePassageTypes[passageTypeIndex];
