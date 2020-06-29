@@ -32,8 +32,7 @@ define([
     'game/components/player/BagComponent',
     'game/components/player/DeityComponent',
     'game/vos/ResultVO',
-    'game/vos/ResourcesVO',
-	'game/vos/StashVO',
+    'game/vos/ResourcesVO'
 ], function (
     Ash,
     MathUtils,
@@ -67,8 +66,7 @@ define([
     BagComponent,
     DeityComponent,
     ResultVO,
-    ResourcesVO,
-    StashVO
+    ResourcesVO
 ) {
     var PlayerActionResultsHelper = Ash.Class.extend({
 
@@ -906,12 +904,15 @@ define([
                 log.i("found stash: " + stashVO.stashType + " " + stashVO.itemID + " " + (stashesFound+1) + "/" + stashes.length);
             rewardsVO.stashVO = stashVO;
             switch (stashVO.stashType) {
-                case StashVO.STASH_TYPE_ITEM:
-                    for (var i = 0; i < stashVO.amount; i++) {
-                        rewardsVO.gainedItems.push(ItemConstants.getItemByID(stashVO.itemID).clone());
+                case ItemConstants.STASH_TYPE_ITEM:
+                    var item = ItemConstants.getItemByID(stashVO.itemID);
+                    if (item) {
+                        for (var i = 0; i < stashVO.amount; i++) {
+                            rewardsVO.gainedItems.push(item.clone());
+                        }
                     }
                     break;
-                case StashVO.STASH_TYPE_SILVER:
+                case ItemConstants.STASH_TYPE_SILVER:
                     rewardsVO.gainedCurrency += stashVO.amount;
                     break;
             }

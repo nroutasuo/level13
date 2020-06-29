@@ -4,6 +4,9 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
     var ItemConstants = {
         
         PLAYER_DEFAULT_STORAGE: 10,
+            
+        STASH_TYPE_ITEM: "item",
+        STASH_TYPE_SILVER: "silver",
         
         itemTypes: {
             // Equippable / slots:

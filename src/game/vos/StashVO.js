@@ -2,9 +2,6 @@
 define(['ash'], function (Ash) {
 
     var StashVO = Ash.Class.extend({
-        
-        STASH_TYPE_ITEM: "item",
-        STASH_TYPE_SILVER: "silver",
 	
 		stashType: null,
 		amount: 0,
