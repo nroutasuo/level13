@@ -95,6 +95,7 @@ define([
             var passage2 = isGoingDown ? passageDown : passageUp;
             
             var setSectorZone = function (sector, zone, force) {
+                if (!sector) return;
                 var existingZone = sector.zone;
                 if (existingZone) {
                     var existingIndex = WorldCreatorConstants.getZoneOrdinal(existingZone);
@@ -113,6 +114,7 @@ define([
             };
             
             var setAreaZone = function (sector, zone, area, forceArea) {
+                if (!sector) return;
                 forceArea = forceArea || 0;
                 setSectorZone(sector, zone, forceArea > 0);
                 var d = area - 1;
@@ -1144,13 +1146,13 @@ define([
             // check for existing movement blocker
             if (sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection]) {
                 var existing = sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection];
-                log.w(this, "skipping movement blocker (" + blockerType + "): sector already has movement blocker (" + existing + ")");
+                //log.w(this, "skipping movement blocker (" + blockerType + "): sector already has movement blocker (" + existing + ")");
                 return;
             }
             
             // check for too close to camp or in ZONE_PASSAGE_TO_CAMP
             if (sectorVO.isCamp || neighbourVO.isCamp || (levelVO.isCampable && sectorVO.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP)) {
-                log.w(this, "skipping movement blocker (" + blockerType + "): too close to camp");
+                //log.w(this, "skipping movement blocker (" + blockerType + "): too close to camp");
                 return;
             }
 
@@ -1162,7 +1164,7 @@ define([
                 if (blockerType === MovementConstants.BLOCKER_TYPE_GANG && allowedForGangs.indexOf(pathType) >= 0) continue;
                 for (var j = 0; j < neighbourVO.criticalPaths.length; j++) {
                     if (pathType === neighbourVO.criticalPaths[j]) {
-                        log.w("(level " + levelVO.level + ") Skipping blocker on critical path: " + pathType + " (type: " + blockerType + ")");
+                        // log.w("(level " + levelVO.level + ") skipping movement blocker on critical path: " + pathType + " (type: " + blockerType + ")");
                         return;
                     }
                 }

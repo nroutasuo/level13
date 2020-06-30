@@ -229,7 +229,7 @@ define([
             if (hasSave) worldSeed = parseInt(loadedGameState.worldSeed);
             else worldSeed = WorldCreatorRandom.getNewSeed();
             log.i("START " + GameConstants.STARTTimeNow() + "\t creating world (seed: " + worldSeed + ")");
-            var worldVO = WorldCreator.prepareWorld(worldSeed, GameGlobals.itemsHelper);
+            var worldVO = this.getWorldVO(worldSeed);
             GameGlobals.gameState.worldSeed = worldVO.seed;
             gtag('set', { 'world_seed': worldSeed });
             GlobalSignals.worldReadySignal.dispatch(worldVO);
@@ -313,6 +313,31 @@ define([
                 return false;
             }
 		},
+        
+        getWorldVO: function (seed) {
+            var tries = 0;
+            var s = seed;
+            while (tries < 100) {
+                tries++;
+                log.i("generating world, try " + tries + ", seed: " + s);
+                try {
+                    var worldVO = WorldCreator.prepareWorld(s, GameGlobals.itemsHelper);
+                    var ok = WorldCreator.validateWorld(worldVO);
+                    if (ok) {
+                        return worldVO;
+                    } else {
+                        log.w("invalid world! seed: " + worldVO.seed + " discarding..")
+                    }
+                } catch (ex) {
+                    log.e("exception while generating world! seed: " + worldVO.seed + " discarding..");
+                    log.e(ex)
+                }
+                WorldCreator.discardWorld();
+                s = s + 111;
+            }
+            log.w("ran out of tries to generate world");
+            return null;
+        },
 
         getSaveObject: function () {
             var saveSystem = this.engine.getSystem(SaveSystem);

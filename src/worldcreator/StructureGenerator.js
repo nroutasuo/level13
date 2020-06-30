@@ -417,6 +417,12 @@ define([
                 var existingSectors = levelVO.sectors.concat();
                 var options = this.getDefaultOptions({ stage: path.stage, criticalPathType: path.type});
                 var pathResult = this.createPathBetween(worldVO, levelVO, startPos, endPos, path.maxlen, options, WorldCreatorConstants.CONNECTION_POINTS_PATH_ALL);
+                if (!pathResult.isComplete) {
+                    log.w("failed to create required path");
+                    log.i(path);
+                    log.i(pathResult);
+                    continue;
+                }
                 var sectorPath = WorldCreatorRandom.findPath(worldVO, startPos, endPos, false, true, path.stage);
                 for (var j = 0; j < sectorPath.length; j++) {
                     var sector = levelVO.getSector(sectorPath[j]);
@@ -854,7 +860,7 @@ define([
                     }
         			created = levelVO.addSector(sectorVO);
                 } else {
-                    log.w("invalid sector pos: " + sectorPos + " " + stage + " " + validResult.reason);
+                    //log.w("invalid sector pos: " + sectorPos + " " + stage + " " + validResult.reason);
                     levelVO.invalidPositions.push(sectorPos);
                 }
             }
@@ -882,7 +888,7 @@ define([
                 if (levelVO.hasSector(sectorPos.sectorX, sectorPos.sectorY)) {
                     var sector = levelVO.getSector(sectorPos.sectorX, sectorPos.sectorY);
                     if (options.stage && sector.stage != options.stage) {
-                        return { isValid: false, reason: "contains sector of wrong stage" };
+                        return { isValid: false, reason: "contains sector of wrong stage: " + sector.stage + " " + sector.position };
                     }
                 }
                 var validCheck = this.isValidSectorPosition(levelVO, sectorPos, stage, options);

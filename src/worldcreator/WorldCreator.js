@@ -53,6 +53,10 @@ define([
             
             return this.world;
 		},
+        
+        validateWorld: function (worldVO) {
+            return true;
+        },
 
         discardWorld: function () {
             log.i("Discard world", this.context)
