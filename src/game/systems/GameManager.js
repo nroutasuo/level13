@@ -5,7 +5,7 @@ define([
 	'game/constants/GameConstants',
     'game/EntityCreator',
     'worldcreator/WorldCreator',
-    'worldcreator/WorldCreatorHelper',
+    'worldcreator/WorldValidator',
     'worldcreator/WorldCreatorRandom',
     'game/nodes/sector/SectorNode',
     'game/nodes/player/PlayerStatsNode',
@@ -16,7 +16,7 @@ define([
     'game/systems/ui/UIOutLevelSystem',
     'game/systems/SaveSystem',
 	'utils/StringUtils',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, EntityCreator, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, PlayerStatsNode, LevelNode, GangNode, PositionComponent, GangComponent, UIOutLevelSystem, SaveSystem, StringUtils) {
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, EntityCreator, WorldCreator, WorldValidator, WorldCreatorRandom, SectorNode, PlayerStatsNode, LevelNode, GangNode, PositionComponent, GangComponent, UIOutLevelSystem, SaveSystem, StringUtils) {
 
     var GameManager = Ash.Class.extend({
 
@@ -107,7 +107,7 @@ define([
 			if (loaded) this.syncLoadedGameState();
 			if (!loaded) this.setupNewGame();
 
-            log.i("START " + GameConstants.STARTTimeNow() + "\t world ready");
+            log.i("START " + GameConstants.STARTTimeNow() + "\t game state ready");
             GlobalSignals.gameStateReadySignal.dispatch();
             setTimeout(function () {
                 WorldCreator.discardWorld();
@@ -167,7 +167,7 @@ define([
             var seed = worldVO.seed;
             var levelVO;
             var sectorVO;
-			for (var i = WorldCreatorHelper.getBottomLevel(seed); i <= WorldCreatorHelper.getHighestLevel(seed); i++) {
+			for (var i = worldVO.bottomLevel; i <= worldVO.topLevel; i++) {
                 levelVO = worldVO.getLevel(i);
 				this.creator.createLevel(GameGlobals.saveHelper.saveKeys.level + i, i, levelVO);
 				for (var y = levelVO.minY; y <= levelVO.maxY; y++) {
@@ -229,10 +229,11 @@ define([
             var worldSeed;
             if (hasSave) worldSeed = parseInt(loadedGameState.worldSeed);
             else worldSeed = WorldCreatorRandom.getNewSeed();
-            log.i("START " + GameConstants.STARTTimeNow() + "\t creating world (seed: " + worldSeed + ")");
-            var worldVO = this.getWorldVO(worldSeed);
+            log.i("START " + GameConstants.STARTTimeNow() + "\t creating world");
+            var worldVO = this.getWorldVO(worldSeed, hasSave);
+            log.i("START " + GameConstants.STARTTimeNow() + "\t world ready (seed: " + worldVO.seed + ")");
             GameGlobals.gameState.worldSeed = worldVO.seed;
-            gtag('set', { 'world_seed': worldSeed });
+            gtag('set', { 'world_seed': worldVO.seed });
             GlobalSignals.worldReadySignal.dispatch(worldVO);
 
             // Create other entities and fill components
@@ -283,13 +284,6 @@ define([
                     positionComponent = gangNode.entity.get(PositionComponent);
                     saveKey = GameGlobals.saveHelper.saveKeys.gang + positionComponent.level + "_" + positionComponent.sectorX + "_" + positionComponent.sectorY;
                     failedComponents += GameGlobals.saveHelper.loadEntity(entitiesObject, saveKey, gangNode.entity);
-                    //  gang-7_-0.5_1
-                    if (positionComponent.level == 7 && positionComponent.sectorX == -0.5 && positionComponent.sectorY == 1) {
-                        log.i("loadGameState " + saveKey);
-            			var savedComponents = entitiesObject[saveKey];
-                        log.i(savedComponents);
-                        log.i(gangNode.entity.get(GangComponent));
-                    }
                     if (!saveWarningShown && failedComponents > 0) {
                         saveWarningShown = true;
                         this.showSaveWarning(save.version);
@@ -315,29 +309,44 @@ define([
             }
 		},
         
-        getWorldVO: function (seed) {
-            var tries = 0;
-            var s = seed;
-            while (tries < 100) {
-                tries++;
-                log.i("generating world, try " + tries + ", seed: " + s);
-                try {
-                    var worldVO = WorldCreator.prepareWorld(s, GameGlobals.itemsHelper);
-                    var validationResult = WorldCreator.validateWorld(worldVO);
-                    if (validationResult.isValid) {
-                        return worldVO;
-                    } else {
-                        this.logFailedWorldSeed(s, validationResult.reason);
-                    }
-                } catch (ex) {
-                    this.logFailedWorldSeed(s, "exception: " + StringUtils.getExceptionDescription(ex).title);
-                    throw ex;
-                }
-                WorldCreator.discardWorld();
-                s = s + 111;
+        getWorldVO: function (seed, hasSave, numTries) {
+            numTries = numTries || 0;
+            numTries++;
+            var maxTries = 25;
+            
+            if (numTries > maxTries) {
+                log.e("ran out of tries to generate world");
+                return null;
             }
-            log.e("ran out of tries to generate world");
-            return null;
+            
+            log.i("generating world, try " + numTries + "/" + maxTries + ", seed: " + seed);
+            var worldVO;
+            var validationResult;
+            
+            try {
+                worldVO = WorldCreator.prepareWorld(seed, GameGlobals.itemsHelper);
+                validationResult = WorldValidator.validateWorld(worldVO);
+                if (validationResult.isValid) {
+                    return worldVO;
+                } else {
+                    this.logFailedWorldSeed(seed, validationResult.reason);
+                }
+            } catch (ex) {
+                validationResult = { isValid: false, reason: "exception: " + StringUtils.getExceptionDescription(ex).title };
+                this.logFailedWorldSeed(seed, validationResult.reason);
+                throw ex;
+            }
+            
+            if (GameConstants.isDebugVersion) {
+                log.i("stopping world generation");
+                return null;
+            } else if (hasSave) {
+                log.i("using broken world because old save exists");
+                return worldVO;
+            } else {
+                log.i("trying another seed");
+                return this.getWorldVO(seed + 111, hasSave, numTries);
+            }
         },
 
         getSaveObject: function () {

@@ -49,14 +49,9 @@ define([
             
             log.i("Step 4/4: Sector templates", this.context);
             SectorGenerator.prepareSectors(seed, this.world, itemsHelper, enemyCreator);
-            // WorldCreatorDebug.printSectorTemplates(this.world);
             
             return this.world;
 		},
-        
-        validateWorld: function (worldVO) {
-            return { isValid: true };
-        },
 
         discardWorld: function () {
             log.i("Discard world", this.context)
