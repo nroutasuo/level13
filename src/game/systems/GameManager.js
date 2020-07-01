@@ -15,7 +15,8 @@ define([
     'game/components/type/GangComponent',
     'game/systems/ui/UIOutLevelSystem',
     'game/systems/SaveSystem',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, EntityCreator, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, PlayerStatsNode, LevelNode, GangNode, PositionComponent, GangComponent, UIOutLevelSystem, SaveSystem) {
+	'utils/StringUtils',
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, EntityCreator, WorldCreator, WorldCreatorHelper, WorldCreatorRandom, SectorNode, PlayerStatsNode, LevelNode, GangNode, PositionComponent, GangComponent, UIOutLevelSystem, SaveSystem, StringUtils) {
 
     var GameManager = Ash.Class.extend({
 
@@ -322,20 +323,20 @@ define([
                 log.i("generating world, try " + tries + ", seed: " + s);
                 try {
                     var worldVO = WorldCreator.prepareWorld(s, GameGlobals.itemsHelper);
-                    var ok = WorldCreator.validateWorld(worldVO);
-                    if (ok) {
+                    var validationResult = WorldCreator.validateWorld(worldVO);
+                    if (validationResult.isValid) {
                         return worldVO;
                     } else {
-                        log.w("invalid world! seed: " + worldVO.seed + " discarding..")
+                        this.logFailedWorldSeed(s, validationResult.reason);
                     }
                 } catch (ex) {
-                    log.e("exception while generating world! seed: " + worldVO.seed + " discarding..");
-                    log.e(ex)
+                    this.logFailedWorldSeed(s, "exception: " + StringUtils.getExceptionDescription(ex).title);
+                    throw ex;
                 }
                 WorldCreator.discardWorld();
                 s = s + 111;
             }
-            log.w("ran out of tries to generate world");
+            log.e("ran out of tries to generate world");
             return null;
         },
 
@@ -389,6 +390,15 @@ define([
                 },
                 function () {}
             );
+        },
+
+        logFailedWorldSeed: function (seed, reason) {
+            log.e("geneating world failed! seed: " + seed + ", reason: " + reason);
+            var gadesc = "generating world with seed " + seed + " failed | " + reason;
+            gtag('event', 'exception', {
+                'description': gadesc,
+                'fatal': false,
+            });
         },
 
         onRestart: function (resetSave) {

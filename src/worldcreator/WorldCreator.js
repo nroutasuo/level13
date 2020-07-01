@@ -55,7 +55,7 @@ define([
 		},
         
         validateWorld: function (worldVO) {
-            return true;
+            return { isValid: true };
         },
 
         discardWorld: function () {

@@ -76,6 +76,7 @@ define([
     'game/helpers/UpgradeEffectsHelper',
     'game/helpers/ui/UIMapHelper',
     'game/helpers/ui/UITechTreeHelper',
+	'utils/StringUtils',
     'brejep/tickprovider',
 ], function (
     Ash,
@@ -155,6 +156,7 @@ define([
     UpgradeEffectsHelper,
     UIMapHelper,
     UITechTreeHelper,
+    StringUtils,
     TickProvider
 ) {
     var Level13 = Ash.Class.extend({
@@ -294,31 +296,18 @@ define([
 		},
 
         handleException: function (ex) {
-            var exshortdesc = (ex.name ? ex.name : "Unknown") + ": " + (ex.message ? ex.message : "No message");
-            var stack = (ex.stack ? ex.stack : "Not available");
-            var stackParts = stack.split("\n");
-            
-            var cleanString = function (s) {
-                var result = s.replace(/\n/g, "%0A").replace(/\'/g, "%27");
-                return encodeURI(result);
-            }
-
-            // track to ga
-            var gastack = stackParts[0];
-            if (stackParts.length > 0) gastack += " " + stackParts[1];
-            gastack = gastack.replace(/\s+/g, ' ');
-            gastack = gastack.replace(/\(.*:[\/\\]+.*[\/\\]/g, '(');
-            var gadesc = exshortdesc + " | " + gastack;
+            var desc = StringUtils.getExceptionDescription(ex);
+            var gadesc = desc.title + " | " + desc.shortstack;
             gtag('event', 'exception', {
                 'description': gadesc,
                 'fatal': true,
             });
             
             // show popup
-            var bugTitle = "[JS Error] " + cleanString(exshortdesc);
-            var bugBody =
-               "Details:%0A[Fill in any details here that you think will help tracking down this bug, such as what you did in the game just before it happened.]" +
-               "%0A%0AStacktrace:%0A" + cleanString(stack);
+            var bugTitle = encodeURI("[JS Error] " + desc.title);
+            var bugBody = encodeURI(
+               "Details:\n[Fill in any details here that you think will help tracking down this bug, such as what you did in the game just before it happened.]" +
+               "\n\nStacktrace:\n" + desc.stack);
             var url = "https://github.com/nroutasuo/level13/issues/new?title=" + bugTitle + "&body=" + bugBody + "&labels=exception";
             GameGlobals.uiFunctions.showInfoPopup(
                 "Error",
