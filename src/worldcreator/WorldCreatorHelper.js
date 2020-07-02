@@ -431,6 +431,59 @@ define([
             return this.hardLevelOrdinals[seed];
         },
         
+        getRequiredPaths: function (worldVO, levelVO) {
+            var level = levelVO.level;
+            var campOrdinal = levelVO.campOrdinal;
+            var campPositions = levelVO.campPositions;
+            var passageUpPosition = levelVO.passageUpPosition;
+            var passageDownPosition = levelVO.passageDownPosition;
+            
+            var maxPathLenP2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
+            var maxPathLenC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
+            
+            var requiredPaths = [];
+            
+            if (campPositions.length > 0) {
+                // passages up -> camps -> passages down
+                var isGoingDown = level <= 13 && level >= worldVO.bottomLevel;
+                var passageUpPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+                var passageUpStage = isGoingDown ? WorldConstants.CAMP_STAGE_EARLY : null;
+                var passageDownPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE : WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP;
+                var passageDownStage = isGoingDown ? null : WorldConstants.CAMP_STAGE_EARLY;
+                if (level == 13) {
+                    passageUpPathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+                    passageUpStage = null;
+                    passageDownPathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+                    passageDownStage = null;
+                }
+                for (var i = 1; i < campPositions.length; i++) {
+                    requiredPaths.push({ start: campPositions[0], end: campPositions[i], maxlen: -1, type: "camp_pos_to_camp_pos", stage: WorldConstants.CAMP_STAGE_EARLY });
+                }
+                if (passageUpPosition) {
+                    var closerCamp = WorldCreatorHelper.getClosestPosition(campPositions, passageUpPosition);
+                    requiredPaths.push({ start: closerCamp, end: passageUpPosition, maxlen: maxPathLenC2P, type: passageUpPathType, stage: passageUpStage });
+                }
+                if (passageDownPosition) {
+                    var closerCamp = WorldCreatorHelper.getClosestPosition(campPositions, passageDownPosition);
+                    requiredPaths.push({ start: closerCamp, end: passageDownPosition, maxlen: maxPathLenC2P, type: passageDownPathType, stage: passageDownStage });
+                }
+            } else if (!passageUpPosition) {
+                // just passage down sector
+                if (passageDownPosition) {
+                    requiredPaths.push({ start: passageDownPosition, end: passageDownPosition, maxlen: 0, type: WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE, stage: WorldConstants.CAMP_STAGE_LATE });
+                }
+            } else if (!passageDownPosition) {
+                // just passage up sector
+                if (passageUpPosition) {
+                    requiredPaths.push({ start: passageUpPosition, end: passageUpPosition, maxlen: 0, type: WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE, stage: WorldConstants.CAMP_STAGE_LATE });
+                }
+            } else {
+                // passage up -> passage down
+                requiredPaths.push({ start: passageUpPosition, end: passageDownPosition, maxlen: maxPathLenP2P, type: WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE, stage: WorldConstants.CAMP_STAGE_LATE });
+            }
+            return requiredPaths;
+        },
+        
         canHaveGang: function (levelVO, sectorVO) {
             if (!sectorVO) return false;
             if (sectorVO.isCamp) return false;
