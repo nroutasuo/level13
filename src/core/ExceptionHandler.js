@@ -10,12 +10,7 @@ define(function () {
                 try {
                     return func.apply($(this), e);
                 } catch (ex) {
-                    ex.message = ex.message || msg;
-                    if (ExceptionHandler.exceptionCallback) {
-                        ExceptionHandler.exceptionCallback(ex);
-                    } else {
-                        throw ex;
-                    }
+                    ExceptionHandler.handleException(ex, msg);
                 }
             };
         },
@@ -27,10 +22,19 @@ define(function () {
             } catch (ex) {
                 ex.message = ex.message || msg;
                 if (ExceptionHandler.exceptionCallback) {
-                    ExceptionHandler.exceptionCallback(ex);
+                    ExceptionHandler.exceptionCallback(ex, msg);
                 } else {
                     throw ex;
                 }
+            }
+        },
+        
+        handleException: function (ex, msg) {
+            ex.message = ex.message || msg;
+            if (ExceptionHandler.exceptionCallback) {
+                ExceptionHandler.exceptionCallback(ex);
+            } else {
+                throw ex;
             }
         }
     };
