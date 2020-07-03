@@ -304,8 +304,8 @@ define([
             });
             
             // show popup
-            var bugTitle = encodeURI("[JS Error] " + desc.title);
-            var bugBody = encodeURI(
+            var bugTitle = StringUtils.encodeURI("[JS Error] " + desc.title);
+            var bugBody = StringUtils.encodeURI(
                "Details:\n[Fill in any details here that you think will help tracking down this bug, such as what you did in the game just before it happened.]" +
                "\n\nStacktrace:\n" + desc.stack);
             var url = "https://github.com/nroutasuo/level13/issues/new?title=" + bugTitle + "&body=" + bugBody + "&labels=exception";

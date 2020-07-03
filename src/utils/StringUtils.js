@@ -21,6 +21,10 @@ define(['game/vos/PositionVO'], function (PositionVO) {
             shortstack = shortstack.replace(/\(.*:[\/\\]+.*[\/\\]/g, '(');
 
             return { title: title, shortstack: shortstack, stack: stack };
+        },
+        
+        encodeURI: function (s) {
+            return encodeURI(s).replace(/\'/g, "%27");
         }
         
     };
