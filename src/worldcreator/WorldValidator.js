@@ -22,7 +22,7 @@ define([
                 }
             }
             
-            var levelChecks = [ this.checkCriticalPaths ];
+            var levelChecks = [ this.checkCriticalPaths, this.checkNumberOfSectors ];
 			for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var levelVO = worldVO.levels[l];
                 for (var i = 0; i < levelChecks.length; i++) {
@@ -37,11 +37,6 @@ define([
         },
         
         checkSeed: function (worldVO) {
-            /*
-            if (worldVO.seed > 9000 && worldVO.seed < 10000) {
-                return { isValid: false, reason: "seed range" };
-            }
-            */
             return { isValid: true };
         },
         
@@ -58,6 +53,29 @@ define([
                 }
                 if (path.maxlen > 0 && sectorPath.length > path.maxlen) {
                     return { isValid: false, reason: "required path " + path.type + " on level " + levelVO.level + " is too long (" + sectorPath.length + "/" + path.maxlen + ")" };
+                }
+            }
+            return { isValid: true };
+        },
+        
+        checkNumberOfSectors: function (worldVO, levelVO) {
+            // NOTE: sectors per stage is a minimum used for evidence balancing etc, a bit of overshoot is ok
+            if (levelVO.sectors.length < levelVO.numSectors) {
+                return { isValid: false, reason: "too few sectors on level " + levelVO.level };
+            }
+            if (levelVO.sectors.length > levelVO.maxSectors) {
+                return { isValid: false, reason: "too many sectors on level " + levelVO.level };
+            }
+            var stages = [ WorldConstants.CAMP_STAGE_EARLY, WorldConstants.CAMP_STAGE_LATE ];
+            for (var i = 0; i < stages.length; i++) {
+                var stage = stages[i];
+                var numSectorsCreated = levelVO.getNumSectorsByStage(stage);
+                var numSectorsPlanned = levelVO.numSectorsByStage[stage];
+                if (numSectorsCreated < numSectorsPlanned) {
+                    return { isValid: false, reason: "too few sectors on level " + levelVO.level + " stage " + stage };
+                }
+                if (numSectorsCreated > numSectorsPlanned * 1.1) {
+                    return { isValid: false, reason: "too many sectors on level " + levelVO.level + " stage " + stage };
                 }
             }
             return { isValid: true };
