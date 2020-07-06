@@ -50,7 +50,6 @@ define(['ash',], function (Ash) {
         fightUpdateSignal: new Ash.Signals.Signal(),
 
         // game events
-        worldReadySignal: new Ash.Signals.Signal(),
         gameStateReadySignal: new Ash.Signals.Signal(),
         gameStartedSignal: new Ash.Signals.Signal(),
         saveGameSignal: new Ash.Signals.Signal(),

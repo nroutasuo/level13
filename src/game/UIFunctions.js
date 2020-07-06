@@ -1001,12 +1001,10 @@ define(['ash',
 			showInfoPopup: function (title, msg, buttonLabel, resultVO) {
 				if (!buttonLabel) buttonLabel = "Continue";
 				this.popupManager.showPopup(title, msg, buttonLabel, false, resultVO);
-				if (GameGlobals.gameState.uiStatus.isHidden) return;
 			},
 
 			showResultPopup: function (title, msg, resultVO, callback) {
 				this.popupManager.showPopup(title, msg, "Continue", false, resultVO, callback);
-				if (GameGlobals.gameState.uiStatus.isHidden) return;
 			},
 
 			showConfirmation: function (msg, callback) {

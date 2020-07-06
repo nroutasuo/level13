@@ -57,7 +57,6 @@ define([
 
             GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
             GlobalSignals.add(this, GlobalSignals.gameResetSignal, this.onGameStarted);
-            GlobalSignals.add(this, GlobalSignals.worldReadySignal, this.onGameStarted);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.ontabChanged);
             GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.updateCamps);
 		},
