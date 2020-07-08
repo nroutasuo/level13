@@ -364,6 +364,7 @@ define([
                     var validationResult;
                     try {
                         worldVO = WorldCreator.prepareWorld(s, GameGlobals.itemsHelper);
+                        log.i("START " + GameConstants.STARTTimeNow() + "\t validating world");
                         validationResult = WorldValidator.validateWorld(worldVO);
                         if (validationResult.isValid) {
                             resolve(worldVO);

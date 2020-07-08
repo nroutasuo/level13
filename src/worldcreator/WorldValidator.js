@@ -22,7 +22,7 @@ define([
                 }
             }
             
-            var levelChecks = [ this.checkCriticalPaths, this.checkNumberOfSectors ];
+            var levelChecks = [ this.checkCriticalPaths, this.checkNumberOfSectors, this.checkContinuousEarlyStage, this.checkCampsAndPassages ];
 			for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var levelVO = worldVO.levels[l];
                 for (var i = 0; i < levelChecks.length; i++) {
@@ -80,6 +80,78 @@ define([
             }
             return { isValid: true };
         },
+        
+        checkContinuousEarlyStage: function (worldVO, levelVO) {
+            var earlySectors = levelVO.sectorsByStage[WorldConstants.CAMP_STAGE_EARLY];
+            if (earlySectors && earlySectors.length > 1) {
+                for (var j = 1; j < earlySectors.length; j++) {
+                    var sectorPath = WorldCreatorRandom.findPath(worldVO, earlySectors[0].position, earlySectors[j].position, false, true, WorldConstants.CAMP_STAGE_EARLY);
+                    if (!sectorPath || sectorPath.length < 1) {
+                        return { isValid: false, reason: "early stage is not continuous on level " + levelVO.level };
+                    }
+                }
+            }
+            return { isValid: true };
+        },
+        
+        checkCampsAndPassages: function (worldVO, levelVO) {
+            var pois = [];
+            
+            // passages up
+            if (levelVO.level != worldVO.topLevel) {
+                if (!levelVO.passageUpPosition) {
+                    return { isValid: false, reason: "level " + levelVO.level + " missing passage up position" };
+                }
+                var sector = levelVO.getSector(levelVO.passageUpPosition.sectorX, levelVO.passageUpPosition.sectorY);
+                if (!sector) {
+                    return { isValid: false, reason: "level " + levelVO.level + " missing passage up sector" };
+                }
+                pois.push(levelVO.passageUpPosition);
+            }
+            
+            // camps
+            if (levelVO.isCampable) {
+                if (levelVO.campPositions.length <= 0) {
+                    return { isValid: false, reason: "campable level " + levelVO.level + " missing camp positions" };
+                }
+                for (var i = 0; i < levelVO.campPositions.length; i++) {
+                    var pos = levelVO.campPositions[i];
+                    var sector = levelVO.getSector(pos.sectorX, pos.sectorY);
+                    if (!sector) {
+                        return { isValid: false, reason: "camp position " + pos + " has no sector" };
+                    }
+                    pois.push(pos);
+                }
+            } else {
+                if (levelVO.campPositions.length > 0) {
+                    return { isValid: false, reason: "non-campable level " + levelVO.level + " has camp positions" };
+                }
+            }
+            
+            // passages down
+            if (levelVO.level != worldVO.bottomLevel) {
+                if (!levelVO.passageDownPosition) {
+                    return { isValid: false, reason: "level " + levelVO.level + " missing passage down position" };
+                }
+                var sector = levelVO.getSector(levelVO.passageDownPosition.sectorX, levelVO.passageDownPosition.sectorY);
+                if (!sector) {
+                    return { isValid: false, reason: "level " + levelVO.level + " missing passage down sector" };
+                }
+                pois.push(levelVO.passageDownPosition);
+            }
+            
+            // connections
+            if (pois.length > 1) {
+                for (var i = 0; i < pois.length - 1; i++) {
+                    var sectorPath = WorldCreatorRandom.findPath(worldVO, pois[i], pois[i + 1], false, true, null);
+                    if (!sectorPath || sectorPath.length < 1) {
+                        return { isValid: false, reason: "level " + levelVO.level + " pois not connected " };
+                    }
+                }
+            }
+            
+            return { isValid: true };
+        }
 
     };
 
