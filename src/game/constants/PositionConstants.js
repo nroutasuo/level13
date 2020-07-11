@@ -52,6 +52,13 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
             return false;
         },
         
+        isBetween: function (pos1, pos2, testPos) {
+            var dist = this.getDistanceTo(pos1, pos2);
+            if (dist < 2) return false;
+            var dir = this.getDirectionFrom(pos1, pos2);
+            return this.isOnPath(testPos, pos1, dir, dist);
+        },
+        
         isPositionInArea: function (sectorPos, areaSize) {
             return Math.abs(sectorPos.sectorX) <= areaSize && Math.abs(sectorPos.sectorY) <= areaSize;
         },

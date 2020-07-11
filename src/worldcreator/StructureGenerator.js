@@ -26,6 +26,7 @@ define([
         createLevelStructure: function(seed, worldVO, levelVO) {
             var l = levelVO.level;
             var stages = worldVO.getStages(l);
+            levelVO.requiredPaths = WorldCreatorHelper.getRequiredPaths(worldVO, levelVO);
             
             // create small predefined structures
             this.createSmallStructures(seed, worldVO, levelVO);
@@ -34,8 +35,7 @@ define([
             this.createCentralStructure(seed, worldVO, levelVO);
             
             // create required paths
-            var requiredPaths = WorldCreatorHelper.getRequiredPaths(worldVO, levelVO);
-            this.createRequiredPaths(seed, worldVO, levelVO, requiredPaths);
+            this.createRequiredPaths(seed, worldVO, levelVO);
             
             // create random shapes to fill the level (ensure EARLY stage is connected)
             for (var i = 0; i < stages.length; i++) {
@@ -404,13 +404,13 @@ define([
             }
         },
         
-        createRequiredPaths: function (seed, worldVO, levelVO, requiredPaths) {
-            if (requiredPaths.length === 0) return;
+        createRequiredPaths: function (seed, worldVO, levelVO) {
+            if (levelVO.requiredPaths.length === 0) return;
             var path;
             var startPos;
             var endPos;
-            for (var i = 0; i < requiredPaths.length; i++) {
-                path = requiredPaths[i];
+            for (var i = 0; i < levelVO.requiredPaths.length; i++) {
+                path = levelVO.requiredPaths[i];
                 startPos = path.start.clone();
                 endPos = path.end.clone();
                 var existingSectors = levelVO.sectors.concat();
@@ -1211,6 +1211,14 @@ define([
         },
         
         getDefaultStage: function (levelVO, sectorPos) {
+            for (var i = 0; i < levelVO.requiredPaths.length; i++) {
+                path = levelVO.requiredPaths[i];
+                if (path.stage == WorldConstants.CAMP_STAGE_EARLY) {
+                    if (PositionConstants.isBetween(path.start, path.end, sectorPos)) {
+                        return WorldConstants.CAMP_STAGE_EARLY;
+                    }
+                }
+            }
             var result = null;
             var shortestDist = -1;
             for (var stage in levelVO.stageCenterPositions) {
