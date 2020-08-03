@@ -103,6 +103,35 @@ define([
             };
         },
         
+        getNeighbours: function (levelVO, pos, pendingSectors) {
+            var result = levelVO.getNeighbours(pos.sectorX, pos.sectorY);
+            if (pendingSectors) {
+                for (var i = 0; i < pendingSectors.length; i++) {
+                    var pendingPos = pendingSectors[i];
+                    var distance = PositionConstants.getDistanceTo(pos, pendingPos);
+                    if (distance >= 1 && distance < 2) {
+                        var direction = PositionConstants.getDirectionFrom(pos, pendingPos);
+                        result[direction] = { position: pendingPos };
+                    }
+                }
+            }
+            return result;
+        },
+        
+        getNeighbourCount: function (levelVO, pos, pendingSectors) {
+            var result = levelVO.getNeighbourCount(pos.sectorX, pos.sectorY);
+            if (pendingSectors) {
+                for (var i = 0; i < pendingSectors.length; i++) {
+                    var pendingPos = pendingSectors[i];
+                    var distance = PositionConstants.getDistanceTo(pos, pendingPos);
+                    if (distance >= 1 && distance < 2) {
+                        result++;
+                    }
+                }
+            }
+            return result;
+        },
+        
         getVornoiPoints: function (seed, worldVO, levelVO) {
             var level = levelVO.level;
             var points = [];

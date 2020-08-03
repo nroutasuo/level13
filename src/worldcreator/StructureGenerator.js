@@ -240,7 +240,7 @@ define([
                     var pathy = horizontal ? pathpos : pathdist;
                     var pathdir = horizontal ? PositionConstants.DIRECTION_EAST : PositionConstants.DIRECTION_SOUTH;
                     var len = (dist - mindist) * 2;
-                    result.push(StructureGenerator.getPath(levelVO, new PositionVO(l, pos.sectorX + pathx, pos.sectorY + pathy), pathdir, len, true));
+                    result.push(StructureGenerator.getPathVO(levelVO, new PositionVO(l, pos.sectorX + pathx, pos.sectorY + pathy), pathdir, len, true));
                 }
                 
                 return result;
@@ -282,7 +282,7 @@ define([
                     var connectionStartPos = PositionConstants.getPositionOnPath(pos, connectionDir, Math.round(innerS/2));
                     var connectionLen = outerS / 2 - innerS / 2;
                     if (isDiagonal && !PositionConstants.isDiagonal(connectionDir)) connectionLen = outerS - innerS;
-                    result.push(StructureGenerator.getPath(levelVO, connectionStartPos, connectionDir, connectionLen));
+                    result.push(StructureGenerator.getPathVO(levelVO, connectionStartPos, connectionDir, connectionLen));
                 }
                 return result;
             };
@@ -429,7 +429,7 @@ define([
                     log.w("failed to create required path");
                     log.i(path);
                     log.i(pathResult);
-                    continue;
+                    throw new Error("failed to creare required path");
                 }
                 var sectorPath = WorldCreatorRandom.findPath(worldVO, startPos, endPos, false, true, path.stage);
                 for (var j = 0; j < sectorPath.length; j++) {
@@ -494,7 +494,7 @@ define([
             for (var j = 0; j < 4; j++) {
                 var sideLength = PositionConstants.isHorizontalDirection(currentDirection) ? w : h;
                 var connectionPointType = this.getPathConnectionPointType(connectionPointsType);
-                var path = this.getPath(levelVO, sideStartPos, currentDirection, sideLength, false, options, connectionPointType);
+                var path = this.getPathVO(levelVO, sideStartPos, currentDirection, sideLength, false, options, connectionPointType);
                 result.push(path);
                 if (!path.completed) return result;
                 sideStartPos = PositionConstants.getPositionOnPath(sideStartPos, currentDirection, sideLength - 1);
@@ -698,18 +698,25 @@ define([
             var result = this.createPath(levelVO, pathStartPos, startDirection, pathLength, false, options, WorldCreatorConstants.CONNECTION_POINTS_PATH_ALL);
         },
         
-        getPath: function (levelVO, startPos, direction, len, forceComplete, options, connectionPointType) {
+        getPathVO: function (levelVO, startPos, direction, len, forceComplete, options, connectionPointType) {
             return { startPos: startPos, dir: direction, len: len, completed: true, connectionPointType: connectionPointType };
         },
-
-        createPath: function (levelVO, startPos, direction, len, forceComplete, options, connectionPointType) {
+        
+        getPathVOPositions: function (pathVO) {
+            var result = [];
+            for (var si = 0; si < pathVO.len; si++) {
+                result.push(PositionConstants.getPositionOnPath(pathVO.startPos, pathVO.dir, si));
+            }
+            return result;
+        },
+        
+        getPath: function (levelVO, startPos, direction, len, forceComplete, options, connectionPointType) {
             if (len < 1) return { path: [], completed: false };
             var result = [];
             var options = options || this.getDefaultOptions();
             var sectorPos;
-            
-            // create sectors
             var completed = true;
+            
             for (var si = 0; si < len; si++) {
                 sectorPos = PositionConstants.getPositionOnPath(startPos, direction, si);
                 sectorPos.level = levelVO.level;
@@ -717,7 +724,7 @@ define([
                 
                 // stop path when intersecting existing paths
                 if (!forceComplete) {
-                    if (sectorExists || !this.isValidSectorPosition(levelVO, sectorPos, options.stage, options)) {
+                    if (sectorExists || !this.isValidSectorPosition(levelVO, sectorPos, options.stage, options, result)) {
                         if (si > 0) {
                             return { path: result, completed: false };
                         } else {
@@ -727,21 +734,44 @@ define([
                 }
 
                 if (sectorExists) {
-                    result.push(levelVO.getSector(sectorPos.sectorX, sectorPos.sectorY));
+                    result.push(sectorPos);
                     continue;
                 }
 
-                var sectorResult = this.createSector(levelVO, sectorPos, options);
+                var sectorResult = this.canCreateSector(levelVO, sectorPos, options);
                 
-                if (sectorResult.vo) {
-	                result.push(sectorResult.vo);
+                if (sectorResult.result || sectorResult.exists) {
+	                result.push(sectorPos);
                 } else {
                     completed = false;
                     break;
                 }
             }
             
-            // add connaction points (only for completed paths)
+            return { path: result, completed: completed };
+        },
+
+        createPath: function (levelVO, startPos, direction, len, forceComplete, options, connectionPointType) {
+            if (len < 1) return { path: [], completed: false };
+            var result = [];
+            var options = options || this.getDefaultOptions();
+            var sectorPos;
+            
+            var path = this.getPath(levelVO, startPos, direction, len, forceComplete, options, connectionPointType);
+            var completed = path.completed;
+            for (var i = 0; i < path.path.length; i++) {
+                var sectorPos = path.path[i];
+                var sectorExists = levelVO.hasSector(sectorPos.sectorX, sectorPos.sectorY);
+
+                if (sectorExists) {
+                    result.push(levelVO.getSector(sectorPos.sectorX, sectorPos.sectorY));
+                } else {
+                    var sectorResult = this.createSector(levelVO, sectorPos, options);
+                    result.push(sectorResult.vo);
+                }
+            }
+            
+            // add connection points
             for (var si = 0; si < len; si++) {
                 sectorPos = PositionConstants.getPositionOnPath(startPos, direction, si);
                 sectorPos.level = levelVO.level;
@@ -854,31 +884,51 @@ define([
                 arr.push(sectorResult.vo);
             }
         },
+        
+        canCreateSector: function (levelVO, sectorPos, options) {
+            sectorPos.normalize();
+            options = options || this.getDefaultOptions();
+            var stage = options.stage || this.getDefaultStage(levelVO, sectorPos);
+            var criticalPathType = options.criticalPathType;
+            var sectorVO = levelVO.getSector(sectorPos.sectorX, sectorPos.sectorY);
+            
+            var exists = sectorVO != null;
+            var result = false;
+            
+            if (!exists) {
+                var validResult = this.isValidSectorPosition(levelVO, sectorPos, stage, options);
+                if (validResult.isValid) {
+        			result = true;
+                } else {
+                    result = false;
+                    levelVO.invalidPositions.push(sectorPos);
+                }
+            }
+            
+            return { result: result, exists: exists, vo: sectorVO };
+        },
 
 		createSector: function (levelVO, sectorPos, options) {
             sectorPos.normalize();
             options = options || this.getDefaultOptions();
             var stage = options.stage || this.getDefaultStage(levelVO, sectorPos);
             var criticalPathType = options.criticalPathType;
-            var sectorVO = levelVO.getSector(sectorPos.sectorX, sectorPos.sectorY);
-            var exists = sectorVO != null;
             var created = false;
             
-            if (!exists) {
-                var validResult = this.isValidSectorPosition(levelVO, sectorPos, stage, options);
-                if (validResult.isValid) {
-        			sectorVO = new SectorVO(sectorPos, levelVO.isCampable, levelVO.notCampableReason);
-                    sectorVO.stage = stage;
-                    sectorVO.isCamp = levelVO.isCampPosition(sectorPos);
-                    sectorVO.isPassageUp = levelVO.isPassageUpPosition(sectorPos);
-                    sectorVO.isPassageDown = levelVO.isPassageDownPosition(sectorPos);
-                    if (criticalPathType) {
-                        sectorVO.addToCriticalPath(criticalPathType);
-                    }
-        			created = levelVO.addSector(sectorVO);
-                } else {
-                    //log.w("invalid sector pos: " + sectorPos + " " + stage + " " + validResult.reason);
-                    levelVO.invalidPositions.push(sectorPos);
+            var check = this.canCreateSector(levelVO,sectorPos, options);
+            var sectorVO = check.vo;
+            if (check.result) {
+                var vo = new SectorVO(sectorPos, levelVO.isCampable, levelVO.notCampableReason);
+                vo.stage = stage;
+                vo.isCamp = levelVO.isCampPosition(sectorPos);
+                vo.isPassageUp = levelVO.isPassageUpPosition(sectorPos);
+                vo.isPassageDown = levelVO.isPassageDownPosition(sectorPos);
+                if (criticalPathType) {
+                    vo.addToCriticalPath(criticalPathType);
+                }
+                created = levelVO.addSector(vo);
+                if (created) {
+                    sectorVO = vo;
                 }
             }
             
@@ -899,6 +949,7 @@ define([
         isValidPath: function (levelVO, path, stage, options) {
             var startPos = path.startPos;
             var direction = path.dir;
+            var pathPositions = this.getPathVOPositions(path);
             for (var si = 0; si < path.len; si++) {
                 sectorPos = PositionConstants.getPositionOnPath(startPos, direction, si);
                 sectorPos.level = levelVO.level;
@@ -908,15 +959,16 @@ define([
                         return { isValid: false, reason: "contains sector of wrong stage: " + sector.stage + " " + sector.position };
                     }
                 }
-                var validCheck = this.isValidSectorPosition(levelVO, sectorPos, stage, options);
+                var validCheck = this.isValidSectorPosition(levelVO, sectorPos, stage, options, pathPositions);
                 if (!validCheck.isValid) {
                     return { isValid: false, reason: validCheck.reason };
+                } else {
                 }
             }
             return { isValid: true };
         },
         
-        isValidSectorPosition: function (levelVO, sectorPos, stage, options) {
+        isValidSectorPosition: function (levelVO, sectorPos, stage, options, pendingSectors) {
             // exception for critical paths
             if (options.criticalPathType) return { isValid: true };
             
@@ -927,17 +979,17 @@ define([
                 
             // blocking stage elements
             if (stage) {
-            for (var levelStage in levelVO.stageCenterPositions) {
-                if (levelStage == stage) continue;
-                var positions = levelVO.stageCenterPositions[levelStage];
-                for (var i = 0; i < positions.length; i++) {
-                    var pos = positions[i];
-                    var dist = PositionConstants.getDistanceTo(pos, sectorPos);
-                    if (dist < 2) {
-                        return { isValid: false, reason: "stage" };
+                for (var levelStage in levelVO.stageCenterPositions) {
+                    if (levelStage == stage) continue;
+                    var positions = levelVO.stageCenterPositions[levelStage];
+                    for (var i = 0; i < positions.length; i++) {
+                        var pos = positions[i];
+                        var dist = PositionConstants.getDistanceTo(pos, sectorPos);
+                        if (dist < 2) {
+                            return { isValid: false, reason: "stage" };
+                        }
                     }
                 }
-            }
             }
             
             // too many neighbours for this position or neighbouring position
@@ -956,8 +1008,8 @@ define([
                 return sum;
             };
             var checkNeighbours = function (pos) {
-                var posneighbours = levelVO.getNeighbours(pos.sectorX, pos.sectorY);
-                var numNeighbours = levelVO.getNeighbourCount(pos.sectorX, pos.sectorY);
+                var posneighbours = WorldCreatorHelper.getNeighbours(levelVO, pos, pendingSectors);
+                var numNeighbours = WorldCreatorHelper.getNeighbourCount(levelVO, pos, pendingSectors);
                 if (!pos.equals(sectorPos)) {
                     numNeighbours++;
                     posneighbours[PositionConstants.getDirectionFrom(pos, sectorPos)] = { position: sectorPos };
@@ -985,8 +1037,8 @@ define([
             if (!ncheck.isValid) {
                 return { isValid: false, reason: "blocking neighbours " + ncheck.numNeighbours + " " + ncheck.sum };
             }
-            var directions = PositionConstants.getLevelDirections();
-            var neighbours = levelVO.getNeighbours(sectorPos.sectorX, sectorPos.sectorY);
+            
+            var neighbours = WorldCreatorHelper.getNeighbours(levelVO, sectorPos, pendingSectors);
             for (var d in directions) {
                 var direction = directions[d];
                 var neighbour = neighbours[direction];
@@ -1254,8 +1306,8 @@ define([
                         shortestDist = adjustedDist;
                         shortestDistCenter = pos;
                     }
-                    }
                 }
+            }
             
             // force late if nothing found
             if (shortestDist < 0) {
@@ -1263,14 +1315,14 @@ define([
             }
             
             // force EARLY if likely on early required path
-                for (var i = 0; i < levelVO.requiredPaths.length; i++) {
-                    path = levelVO.requiredPaths[i];
-                    if (path.stage == WorldConstants.CAMP_STAGE_EARLY) {
-                        if (PositionConstants.isBetween(path.start, path.end, sectorPos)) {
-                            return WorldConstants.CAMP_STAGE_EARLY;
-                        }
+            for (var i = 0; i < levelVO.requiredPaths.length; i++) {
+                path = levelVO.requiredPaths[i];
+                if (path.stage == WorldConstants.CAMP_STAGE_EARLY) {
+                    if (PositionConstants.isBetween(path.start, path.end, sectorPos)) {
+                        return WorldConstants.CAMP_STAGE_EARLY;
                     }
                 }
+            }
             
             // force LATE if far from anything
             var earlyCenter = PositionConstants.getMiddlePoint(levelVO.stageCenterPositions[WorldConstants.CAMP_STAGE_EARLY]);
@@ -1278,8 +1330,8 @@ define([
                 var distToEarly = PositionConstants.getDistanceTo(sectorPos, earlyCenter);
                 var lateThreshold = hasLateCenters ? 16 : 8;
                 if (distToEarly > lateThreshold) {
-                return WorldConstants.CAMP_STAGE_LATE;
-            }
+                    return WorldConstants.CAMP_STAGE_LATE;
+                }
             }
 
             return result;
