@@ -1,5 +1,5 @@
-define(['ash', 'game/constants/PositionConstants', 'game/vos/PositionVO'],
-function (Ash, PositionConstants, PositionVO) {
+define(['ash', 'worldcreator/WorldCreatorConstants', 'game/constants/PositionConstants', 'game/vos/PositionVO'],
+function (Ash, WorldCreatorConstants, PositionConstants, PositionVO) {
 
     var LevelVO = Ash.Class.extend({
 	
@@ -12,7 +12,7 @@ function (Ash, PositionConstants, PositionVO) {
             this.notCampableReason = notCampableReason;
             this.populationFactor = populationFactor;
             this.numSectors = numSectors;
-            this.maxSectors = numSectors + 10;
+            this.maxSectors = numSectors + WorldCreatorConstants.MAX_SECTOR_COUNT_OVERFLOW;
             this.numSectorsByStage = {};
             
             this.campPositions = [];
@@ -75,12 +75,12 @@ function (Ash, PositionConstants, PositionVO) {
             return true;
 		},
 		
-		hasSector: function (sectorX, sectorY, stage) {
+		hasSector: function (sectorX, sectorY, stage, excludeStage) {
 			var colList = this.sectorsByPos[sectorX];
 			if (colList) {
 				var sector = this.sectorsByPos[sectorX][sectorY];
 				if (sector) {
-                    if (!stage || sector.stage == stage) {
+                    if ((!stage || sector.stage == stage) && (!excludeStage || sector.stage != excludeStage)) {
                         return true;
                     }
                 }
@@ -120,13 +120,26 @@ function (Ash, PositionConstants, PositionVO) {
 			return neighbours;
 		},
         
-        getNeighbourCount: function (sectorX, sectorY) {
+        getNeighbourList: function (sectorX, sectorY, stage) {
+			var neighbours = [];
+			var startingPos = new PositionVO(this.level, sectorX, sectorY);
+			for (var i in PositionConstants.getLevelDirections()) {
+				var direction = PositionConstants.getLevelDirections()[i];
+				var neighbourPos = PositionConstants.getNeighbourPosition(startingPos, direction);
+				if (this.hasSector(neighbourPos.sectorX, neighbourPos.sectorY, stage)) {
+					neighbours.push(this.getSector(neighbourPos.sectorX, neighbourPos.sectorY));
+				}
+			}
+			return neighbours;
+        },
+        
+        getNeighbourCount: function (sectorX, sectorY, stage, excludeStage) {
 			var result = 0;
 			var startingPos = new PositionVO(this.level, sectorX, sectorY);
 			for (var i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var neighbourPos = PositionConstants.getNeighbourPosition(startingPos, direction);
-				if (this.hasSector(neighbourPos.sectorX, neighbourPos.sectorY)) {
+				if (this.hasSector(neighbourPos.sectorX, neighbourPos.sectorY, stage, excludeStage)) {
 					result++;
 				}
 			}

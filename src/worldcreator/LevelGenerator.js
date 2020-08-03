@@ -68,7 +68,9 @@ define([
             var level = levelVO.level;
             var stages = worldVO.getStages(level);
             if (stages.length == 1) {
-                result[stages[0].stage] = [ new PositionVO(level, 0, 0) ];
+                result[WorldConstants.CAMP_STAGE_EARLY] = [];
+                result[WorldConstants.CAMP_STAGE_LATE] = [];
+                result[stages[0].stage].push(new PositionVO(level, 0, 0));
             } else {
                 for (var i = 0; i < stages.length; i++) {
                     var stageVO = stages[i];

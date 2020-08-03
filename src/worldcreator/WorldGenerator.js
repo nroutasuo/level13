@@ -235,17 +235,17 @@ define([
                     if (dist < min) return { isValid: false, reason: "min distance between consecutive camps" };
                 }
             }
-            // blocked: positions too far away from camp positions on previous level
+            // blocked: positions too far away from camp positions on previous two levels level
             var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, pos.level);
             var maxPathLengthC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
-            var max = maxPathLengthC2P;
-            for (var i = 1; i < 2; i++) {
+            for (var i = 1; i < 3; i++) {
                 var prevPositions = positionsByLevel[pos.level + i];
                 if (!prevPositions) continue;
                 for (var j = 0; j < prevPositions.length; j++) {
                     var prevPos = prevPositions[j];
                     var dist = PositionConstants.getDistanceTo(pos, prevPos);
-                    if (dist > max) return { isValid: false, reason: "max distance between camps on consecutive levels", details: pos + " vs " + prevPos };
+                    var max = maxPathLengthC2P * (1 + (i-1) * 0.25);
+                    if (dist > max) return { isValid: false, reason: "max distance between camps on previous levels ", details: pos + " vs " + prevPos };
                 }
             }
             // otherwise ok
@@ -269,8 +269,9 @@ define([
                 var campPos = allCamps[i];
                 if (campPos.level == pos.level || campPos.level == pos.level - 1) {
                     var dist = Math.round(PositionConstants.getDistanceTo(pos, campPos));
+                    var bdist = PositionConstants.getBlockDistanceTo(pos, campPos);
                     if (dist < minCampDist) return { isValid: false, reason: "min distance to camp", details: "camp pos " + campPos + " " + dist + "/" + minCampDist };
-                    if (dist > maxCampDist) return { isValid: false, reason: "max distance to camp", details: "camp pos: " + campPos + " " + dist + "/" + maxCampDist };
+                    if (bdist > maxCampDist) return { isValid: false, reason: "max distance to camp", details: "camp pos: " + campPos + " " + bdist + "/" + maxCampDist };
                 }
             }
             
@@ -278,10 +279,10 @@ define([
             var maxPathLengthP2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
             if (passageUp) {
                 var minPassageDist = isCampableLevel ? 3 : 8;
-                var maxPassageDist = isCampableLevel ? 100 : Math.min(15, maxPathLengthP2P);
+                var maxPassageDist = isCampableLevel ? 100 : Math.min(20, maxPathLengthP2P);
                 var dist = PositionConstants.getDistanceTo(pos, passageUp);
-                if (dist < minPassageDist) return { isValid: false, reason: "min distance to passage" };
-                if (dist > maxPassageDist) return { isValid: false, reason: "max distance to passage" };
+                if (dist < minPassageDist) return { isValid: false, reason: "min distance to passage up " + passageUp, details: Math.round(dist) + "/" + minPassageDist };
+                if (dist > maxPassageDist) return { isValid: false, reason: "max distance to passage up " + passageUp, details: Math.round(dist) + "/" + maxPassageDist };
             }
             
             // check that late passage isn't between early passage and camps on this level (similar direction and shorter distance)
@@ -293,7 +294,9 @@ define([
                     if (campPos.level == pos.level) {
                         var dirE = PositionConstants.getDirectionFrom(campPos, posE);
                         var dirL = PositionConstants.getDirectionFrom(campPos, posL);
-                        if (dirE == dirL) {
+                        var isSame = dirE == dirL;
+                        var isNeighbouring = PositionConstants.isNeighbouringDirection(dirE, dirL, true);
+                        if (isSame || isNeighbouring) {
                             var distE = PositionConstants.getDistanceTo(campPos, posE);
                             var distL = PositionConstants.getDistanceTo(campPos, posL);
                             if (distL < distE) {

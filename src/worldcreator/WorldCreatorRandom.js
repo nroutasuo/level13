@@ -33,38 +33,58 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 		},
         
         getRandomSectorsSmall: function (seed, worldVO, levelVO, numSectors, options) {
-            var sectors = [];
-            var counts = {};
-            
             var maxDuplicates = options.numDuplicates || 1;
+            var sectors = [];
+            
+            var counts = {};
+            var rejectedByReason = {};
+            
+            var addRejection = function (sectorVO, reason) {
+                if (!rejectedByReason[reason]) {
+                    rejectedByReason[reason] = 0;
+                }
+                rejectedByReason[reason]++;
+            };
+            
             var checkDuplicates = function (sectorVO) {
                 if (maxDuplicates === 0) return true;
                 if (!sectorVO) return false;
                 if (counts[sectorVO.id] && counts[sectorVO.id] >= maxDuplicates) {
+                    addRejection(sectorVO, "duplicate");
                     return false;
                 }
                 return true;
             };
+            
 			var checkExclusion = function (sectorVO) {
                 if (!sectorVO) return false;
-				if (options.excludingFeature && sectorVO[options.excludingFeature]) return false;
+				if (options.excludingFeature && sectorVO[options.excludingFeature]) {
+                    addRejection(sectorVO, "excluding feature: " + options.excludingFeature);
+                    return false;
+                }
                 if (options.excludedZones) {
                     for (var i = 0; i < options.excludedZones.length; i++) {
-                        if (sectorVO.zone == options.excludedZones[i]) return false;
+                        if (sectorVO.zone == options.excludedZones[i]) {
+                            addRejection(sectorVO, "excluded zone: " + options.excludedZones[i]);
+                            return false;
+                        }
                     }
                 }
 				return true;
 			};
+            
 			for (var i = 0; i < numSectors; i++) {
 				var sector;
 				var additionalRandom = 0;
 				do {
-					sector = this.randomSector(seed + (i + 1) * 369 + additionalRandom * 55, worldVO, levelVO, options.requireCentral, options.pathConstraints);
+                    var s1 = seed + (i + 1) * 369 + additionalRandom * 55;
+					sector = this.randomSector(s1, worldVO, levelVO, options.requireCentral, options.pathConstraints);
 					additionalRandom++;
                     if (additionalRandom > 100) {
-                        log.w("getRandomSectorsSmall: Couldn't find random sector " + (i+1) + "/" + numSectors + " (level: " + levelVO.level + ")");
+                        log.w("getRandomSectorsSmall: Couldn't find random sector " + (i+1) + "/" + numSectors + " (level: " + levelVO.level + ") | " + s1);
                         log.i(options);
-                        log.i(counts)
+                        log.i(counts);
+                        log.i(rejectedByReason);
                         return sectors;
                     }
 				} while (!checkDuplicates(sector) || !checkExclusion(sector));

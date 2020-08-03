@@ -19,6 +19,7 @@ function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
         SECTOR_PATH_LENGTH_MAX: 15,
         SECTOR_RECT_EDGE_LENGTH_MAX: 20,
         START_RECT_SIZE: 5,
+        MAX_SECTOR_COUNT_OVERFLOW: 10,
         
         MIN_LEVEL_ORDINAL_HAZARD_RADIATION: 5,
         MIN_LEVEL_ORDINAL_HAZARD_POISON: 3,

@@ -210,7 +210,7 @@ define([
             var connectDirection = numy > numx ? ydir : xdir;
             for (var i = 0; i < paths.length; i++) {
                 var path = paths[i];
-                var connectionPoints = path.dir == connectDirection ? WorldCreatorConstants.CONNECTION_POINTS_PATH_ENDS : null;
+                var connectionPoints = WorldCreatorConstants.CONNECTION_POINTS_PATH_ENDS;
                 this.createPath(levelVO, path.startPos, path.dir, path.len, true, null, connectionPoints);
             }
         },
@@ -257,18 +257,26 @@ define([
         createCentralRectanglesNested: function (s1, s2, s3, worldVO, levelVO, position, pois) {
             var l = levelVO.level;
             var isDiagonal = WorldCreatorRandom.random(s1) < 0.15;
+            var minDiff = 4;
             var minSize = 3;
-            var maxSize = levelVO.numSectors / 10;
-            var maxStep = Math.floor(maxSize - minSize) / 2;
-            var innerS = minSize + WorldCreatorRandom.randomInt(s1, 0, Math.min(5, maxStep)) * 2;
-            var outerS = innerS + 4 + WorldCreatorRandom.randomInt(s2, 0, 4) * 2;
+            var maxSize = levelVO.numSectors / 12;
+            var outerS = WorldCreatorRandom.randomInt(s2, minSize + minDiff, maxSize + 1);
+            if (outerS % 2 == 0) outerS--;
+            var innerS = WorldCreatorRandom.randomInt(s1, minSize, outerS - minDiff + 1);
+            if (innerS % 2 == 0) innerS--;
+            if (innerS > outerS - minDiff || innerS < minSize) innerS = outerS;
+            var minConnections = 2;
+            var maxConnections = outerS > 7 ? 5 : 2;
+            var numConnections = WorldCreatorRandom.randomInt(s3, minConnections, maxConnections + 1);
+
             var getPaths = function (ox, oy) {
                 var result = [];
                 var pos = new PositionVO(position.level, position.sectorX + ox, position.sectorY + oy);
                 pos.normalize();
-                result = result.concat(StructureGenerator.getRectangleFromCenter(levelVO, 0, pos, innerS, innerS, false, isDiagonal));
+                if (innerS != outerS) {
+                    result = result.concat(StructureGenerator.getRectangleFromCenter(levelVO, 0, pos, innerS, innerS, false, isDiagonal));
+                }
                 result = result.concat(StructureGenerator.getRectangleFromCenter(levelVO, 0, pos, outerS, outerS, false, isDiagonal, WorldCreatorConstants.CONNECTION_POINTS_RECT_OUTER));
-                var numConnections = WorldCreatorRandom.randomInt(s3, 2, 5);
                 for (var i = 0; i < numConnections; i ++) {
                     var connectionDir = WorldCreatorRandom.randomDirections(s3 + i * 1001, 1, true)[0];
                     var connectionStartPos = PositionConstants.getPositionOnPath(pos, connectionDir, Math.round(innerS/2));
@@ -368,26 +376,27 @@ define([
         
         generateLevelStage: function (seed, worldVO, levelVO, stageVO) {
             var stage = stageVO.stage;
-            var maxSectors = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, stageVO.stage);
+            var numGoal = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, stageVO.stage);
+            var numPadding = Math.floor(WorldCreatorConstants.MAX_SECTOR_COUNT_OVERFLOW / 4);
             
             // geneate random rectangles and paths
             var attempts = 0;
             var failures = 0;
             var maxAttempts = 99;
-            var numSectors = levelVO.getNumSectorsByStage(stage);
-            while (numSectors <= maxSectors && attempts < maxAttempts) {
+            var numCurrent = levelVO.getNumSectorsByStage(stage);
+            while (numCurrent < numGoal && attempts < maxAttempts) {
                 attempts++;
                 var canConnectToDifferentStage = attempts > 5 && attempts % 5 == 0 && stage != WorldConstants.CAMP_STAGE_EARLY;
                 var options = this.getDefaultOptions({ stage: stage, canConnectToDifferentStage: canConnectToDifferentStage });
-                var numBefore = numSectors;
-                var numRemaining =  maxSectors - numSectors;
-                if (attempts % 2 == 0 && numRemaining > 15) {
-                    this.createRectangles(seed, attempts, levelVO, options);
+                var numBefore = numCurrent;
+                var numRemaining =  numGoal - numCurrent;
+                if (attempts % 2 == 0 && numRemaining > 12) {
+                    this.createRectangles(seed, attempts, levelVO, options, numRemaining + numPadding);
                 } else {
-                    this.createPaths(seed, attempts, levelVO, options);
+                    this.createPaths(seed, attempts, levelVO, options, numRemaining + numPadding);
                 }
-                numSectors = levelVO.getNumSectorsByStage(stage);
-                var numAfter = numSectors;
+                numCurrent = levelVO.getNumSectorsByStage(stage);
+                var numAfter = numCurrent;
                 var numCreated = numAfter - numBefore;
                 var isSuccess = numCreated > 1;
                 if (isSuccess) {
@@ -431,7 +440,7 @@ define([
             }
         },
 
-        createRectangles: function (seed, pathSeed, levelVO, options) {
+        createRectangles: function (seed, pathSeed, levelVO, options, maxlen) {
             var l = levelVO.levelOrdinal;
             var pathRandomSeed = levelVO.sectors.length * 4 + l + pathSeed * 5;
             var s1 = seed * levelVO.levelOrdinal + 28381 + pathRandomSeed;
@@ -444,13 +453,16 @@ define([
 
             var startDirection = this.getPathDirection(s1, s2, pathStartPoint);
                                     
-            var maxRectangleSize = Math.min(Math.floor(WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX * 0.75), Math.ceil(levelVO.numSectors)/11);
-            var w = WorldCreatorRandom.randomInt(seed + pathRandomSeed / pathSeed + pathSeed * l, 4, maxRectangleSize);
+            var maxRectangleSize = Math.min(Math.floor(WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX * 0.75), Math.ceil(levelVO.numSectors)/11, maxlen/4);
+            var w = WorldCreatorRandom.randomInt(seed + pathRandomSeed / pathSeed + pathSeed * l, 4, maxRectangleSize, maxlen/4);
             var h = WorldCreatorRandom.randomInt(seed + pathRandomSeed * l + pathSeed - pathSeed * l, 4, maxRectangleSize);
 
             var stage = levelVO.getSector(pathStartPos.sectorX, pathStartPos.sectorY).stage;
             if (!options.stage) options.stage = pathStartPos.stage;
-            var connectionPointsType = w > 5 && h > 5 ? WorldCreatorConstants.CONNECTION_POINTS_RECT_ALL : WorldCreatorConstants.CONNECTION_POINTS_RECT_CORNERS;
+            var connectionPointsType = WorldCreatorConstants.CONNECTION_POINTS_RECT_ALL;
+            if (w < 6 || h < 6) {
+                connectionPointsType = WorldCreatorConstants.CONNECTION_POINTS_RECT_CORNERS;
+            }
             this.createRectangle(levelVO, 0, pathStartPos, w, h, startDirection, options, false, connectionPointsType);
         },
 
@@ -609,6 +621,7 @@ define([
             var totalLength = dist;
             if (dist == 0) {
                 this.createAddSector(result.path, levelVO, startPos, options);
+                this.createAddSector(result.path, levelVO, endPos, options);
             } else if (dist == 1) {
                 this.createAddSector(result.path, levelVO, startPos, options);
                 this.createAddSector(result.path, levelVO, endPos, options);
@@ -661,7 +674,7 @@ define([
             return result;
         },
 
-        createPaths: function (seed, pathSeed, levelVO, options) {
+        createPaths: function (seed, pathSeed, levelVO, options, maxlen) {
             var l = levelVO.levelOrdinal;
             var pathRandomSeed = levelVO.sectors.length * 4 + l + pathSeed * 5;
             var s1 = seed + (l + 70) * pathRandomSeed;
@@ -678,6 +691,9 @@ define([
             var maxSectors = options.stage ? levelVO.numSectorsByStage[options.stage] : levelVO.numSectors;
             var existingSectors = options.stage ? levelVO.getNumSectorsByStage(options.stage) : levelVO.sectors.length;
             var maxLength = Math.max(WorldCreatorConstants.SECTOR_PATH_LENGTH_MIN, Math.min(WorldCreatorConstants.SECTOR_PATH_LENGTH_MAX, maxSectors - existingSectors));
+            if (maxLength > maxlen) {
+                maxLength = maxlen;
+            }
             var pathLength = WorldCreatorRandom.randomInt(s3, WorldCreatorConstants.SECTOR_PATH_LENGTH_MIN, maxLength + 1);
             var result = this.createPath(levelVO, pathStartPos, startDirection, pathLength, false, options, WorldCreatorConstants.CONNECTION_POINTS_PATH_ALL);
         },
@@ -693,6 +709,7 @@ define([
             var sectorPos;
             
             // create sectors
+            var completed = true;
             for (var si = 0; si < len; si++) {
                 sectorPos = PositionConstants.getPositionOnPath(startPos, direction, si);
                 sectorPos.level = levelVO.level;
@@ -719,7 +736,8 @@ define([
                 if (sectorResult.vo) {
 	                result.push(sectorResult.vo);
                 } else {
-                    return { path: result, completed: false };
+                    completed = false;
+                    break;
                 }
             }
             
@@ -731,7 +749,7 @@ define([
                 this.addConnectionPoint(levelVO, sectorPos, connectionPoint);
             }
             
-            return { path: result, completed: true };
+            return { path: result, completed: completed };
         },
         
         connectNewPath: function (worldVO, levelVO, existingSectors, newSectors) {
@@ -908,6 +926,7 @@ define([
             }
                 
             // blocking stage elements
+            if (stage) {
             for (var levelStage in levelVO.stageCenterPositions) {
                 if (levelStage == stage) continue;
                 var positions = levelVO.stageCenterPositions[levelStage];
@@ -918,6 +937,7 @@ define([
                         return { isValid: false, reason: "stage" };
                     }
                 }
+            }
             }
             
             // too many neighbours for this position or neighbouring position
@@ -1211,30 +1231,57 @@ define([
         },
         
         getDefaultStage: function (levelVO, sectorPos) {
-            for (var i = 0; i < levelVO.requiredPaths.length; i++) {
-                path = levelVO.requiredPaths[i];
-                if (path.stage == WorldConstants.CAMP_STAGE_EARLY) {
-                    if (PositionConstants.isBetween(path.start, path.end, sectorPos)) {
-                        return WorldConstants.CAMP_STAGE_EARLY;
-                    }
-                }
+            var hasEarlyCenters = levelVO.stageCenterPositions[WorldConstants.CAMP_STAGE_EARLY].length > 0;
+            var hasLateCenters = levelVO.stageCenterPositions[WorldConstants.CAMP_STAGE_LATE].length > 0;
+            
+            if (!hasEarlyCenters) {
+                return WorldConstants.CAMP_STAGE_LATE;
             }
+            
+            // default: nearest stage center
             var result = null;
             var shortestDist = -1;
+            var shorestDistCenter = null;
             for (var stage in levelVO.stageCenterPositions) {
                 var positions = levelVO.stageCenterPositions[stage];
+                var numOtherStageNeighbours = levelVO.getNeighbourCount(sectorPos.sectorX, sectorPos.sectorY, null, stage);
                 for (var i = 0; i < positions.length; i++) {
                     var pos = positions[i];
                     var dist = PositionConstants.getDistanceTo(pos, sectorPos);
-                    if (shortestDist < 0 || dist < shortestDist) {
+                    var adjustedDist = dist + numOtherStageNeighbours;
+                    if (shortestDist < 0 || adjustedDist < shortestDist) {
                         result = stage;
-                        shortestDist = dist;
+                        shortestDist = adjustedDist;
+                        shortestDistCenter = pos;
+                    }
                     }
                 }
+            
+            // force late if nothing found
+            if (shortestDist < 0) {
+                return WorldConstants.STAGE_LATE;
             }
-            if (shortestDist < 0 || shortestDist > 18) {
+            
+            // force EARLY if likely on early required path
+                for (var i = 0; i < levelVO.requiredPaths.length; i++) {
+                    path = levelVO.requiredPaths[i];
+                    if (path.stage == WorldConstants.CAMP_STAGE_EARLY) {
+                        if (PositionConstants.isBetween(path.start, path.end, sectorPos)) {
+                            return WorldConstants.CAMP_STAGE_EARLY;
+                        }
+                    }
+                }
+            
+            // force LATE if far from anything
+            var earlyCenter = PositionConstants.getMiddlePoint(levelVO.stageCenterPositions[WorldConstants.CAMP_STAGE_EARLY]);
+            if (earlyCenter) {
+                var distToEarly = PositionConstants.getDistanceTo(sectorPos, earlyCenter);
+                var lateThreshold = hasLateCenters ? 16 : 8;
+                if (distToEarly > lateThreshold) {
                 return WorldConstants.CAMP_STAGE_LATE;
             }
+            }
+
             return result;
         },
         

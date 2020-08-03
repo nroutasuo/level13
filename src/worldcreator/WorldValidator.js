@@ -143,9 +143,10 @@ define([
             // connections
             if (pois.length > 1) {
                 for (var i = 0; i < pois.length - 1; i++) {
+                    if (pois[i].equals(pois[i + 1])) continue;
                     var sectorPath = WorldCreatorRandom.findPath(worldVO, pois[i], pois[i + 1], false, true, null);
                     if (!sectorPath || sectorPath.length < 1) {
-                        return { isValid: false, reason: "level " + levelVO.level + " pois not connected " };
+                        return { isValid: false, reason: "level " + levelVO.level + " pois not connected: " + pois[i] +  " " + pois[i + 1] };
                     }
                 }
             }

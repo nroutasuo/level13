@@ -53,10 +53,11 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
         },
         
         isBetween: function (pos1, pos2, testPos) {
-            var dist = this.getDistanceTo(pos1, pos2);
-            if (dist < 2) return false;
-            var dir = this.getDirectionFrom(pos1, pos2);
-            return this.isOnPath(testPos, pos1, dir, dist);
+            var minx = Math.min(pos1.sectorX, pos2.sectorX);
+            var maxx = Math.max(pos1.sectorX, pos2.sectorX);
+            var miny = Math.min(pos1.sectorY, pos2.sectorY);
+            var maxy = Math.max(pos1.sectorY, pos2.sectorY);
+            return testPos.sectorX >= minx && testPos.sectorX <= maxx && testPos.sectorY >= miny && testPos.sectorY <= maxy;
         },
         
         isPositionInArea: function (sectorPos, areaSize) {
@@ -129,6 +130,10 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
             var ys = sectorPosFrom.sectorY - sectorPosTo.sectorY;
             ys = ys * ys;
             return Math.sqrt(xs + ys);
+        },
+        
+        getBlockDistanceTo: function (sectorPosFrom, sectorPosTo) {
+            return Math.abs(sectorPosFrom.sectorX - sectorPosTo.sectorX) + (Math.abs(sectorPosFrom.sectorY - sectorPosTo.sectorY));
         },
         
         getDistanceInDirection: function (sectorPosFrom, sectorPosTo, direction) {
@@ -250,9 +255,8 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
             }
         },
         
-        isNeighbouringDirection: function (direction1, direction2) {
-            return this.getNextClockWise(direction1, false) == direction2 || this.getNextClockWise(direction1, true) == direction2 ||
-                this.getNextClockWise(direction2, false) == direction1 || this.getNextClockWise(direction2, true) == direction1;
+        isNeighbouringDirection: function (direction1, direction2, includeDiagonals) {
+            return this.getNextClockWise(direction1, includeDiagonals) == direction2 || this.getNextCounterClockWise(direction1, includeDiagonals) == direction2;
         },
         
         getDirectionName: function (direction, short) {
