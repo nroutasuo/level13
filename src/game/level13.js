@@ -290,6 +290,7 @@ define([
 		},
 
 		start: function () {
+            log.i("START " + GameConstants.STARTTimeNow() + "\t start tick");
 			this.tickProvider.add(this.gameManager.update, this.gameManager);
 			this.tickProvider.start();
             this.gameManager.startGame();

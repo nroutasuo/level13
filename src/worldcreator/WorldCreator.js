@@ -27,7 +27,6 @@ define([
 		world: null,
 
 		prepareWorld: function (seed, itemsHelper) {
-            
             var enemyCreator = new EnemyCreator();
             enemyCreator.createEnemies();
 
@@ -35,21 +34,30 @@ define([
 			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
             this.world = new WorldVO(seed, topLevel, bottomLevel);
             
-            log.i("Step 1/4: World template", this.context);
-            WorldGenerator.prepareWorld(seed, this.world);
-            WorldCreatorDebug.printWorldTemplate(this.world);
+            try {
+                log.i("Step 1/4: World template", this.context);
+                WorldGenerator.prepareWorld(seed, this.world);
+            } finally {
+                WorldCreatorDebug.printWorldTemplate(this.world);
+            }
             
-            log.i("Step 2/4: Level templates", this.context);
-            LevelGenerator.prepareLevels(seed, this.world);
-            WorldCreatorDebug.printLevelTemplates(this.world);
+            try {
+                log.i("Step 2/4: Level templates", this.context);
+                LevelGenerator.prepareLevels(seed, this.world);
+            } finally {
+                WorldCreatorDebug.printLevelTemplates(this.world);
+            }
             
-            log.i("Step 3/4: Level structure", this.context);
-            StructureGenerator.prepareStructure(seed, this.world);
-            WorldCreatorDebug.printLevelStructure(this.world);
+            try {
+                log.i("Step 3/4: Level structure", this.context);
+                StructureGenerator.prepareStructure(seed, this.world);
+            } finally {
+                WorldCreatorDebug.printLevelStructure(this.world);
+            }
             
             log.i("Step 4/4: Sector templates", this.context);
             SectorGenerator.prepareSectors(seed, this.world, itemsHelper, enemyCreator);
-            
+                
             return this.world;
 		},
 

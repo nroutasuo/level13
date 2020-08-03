@@ -255,6 +255,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
         randomResultWithCheck: function (seed, id, resultFunc, checkFunc) {
             // set up failed result bookeeping
             var failReasons = {};
+            var failResults = [];
             var checkResult = function (r) {
                 var checkResult = checkFunc(r);
                 if (!checkResult.isValid) {
@@ -263,6 +264,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
                     if (!failReasons[reason]) failReasons[reason] = { details: [], count: 0};
                     failReasons[reason].count++
                     if (details) failReasons[reason].details.push(details);
+                    failResults.push(r + " | " + reason + " " + details);
                 }
                 return checkResult.isValid;
             };
@@ -279,6 +281,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
             // no valid result found, print fail reasons and return something
             log.w("randomResultWithCheck [" + id + "] ran out of tries, returning invalid result");
             log.i(failReasons);
+            //log.i(failResults)
             
             return result;
         },
