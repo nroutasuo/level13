@@ -15,10 +15,12 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                     var piece = "-";
                     pieces[i] = piece;
                 }
-                for (var i = 0; i < worldVO.districts[l].length; i++) {
-                    var district = worldVO.districts[l][i];
-                    for (var x = district.getMinX(); x <= district.getMaxX(); x++) {
-                        pieces[x + r] = district.type.substring(0,1);
+                if (worldVO.districts[l]) {
+                    for (var i = 0; i < worldVO.districts[l].length; i++) {
+                        var district = worldVO.districts[l][i];
+                        for (var x = district.getMinX(); x <= district.getMaxX(); x++) {
+                            pieces[x + r] = district.type.substring(0,1);
+                        }
                     }
                 }
                 for (var i = 0; i < worldVO.features.length; i++) {
@@ -28,13 +30,15 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                         pieces[x + r] = feature.type.substring(0,1);
                     }
                 }
-                var posUp = worldVO.passagePositions[l].up;
-                var posDown = worldVO.passagePositions[l].down;
-                if (posUp) pieces[posUp.sectorX + r] = "U";
-                if (posDown) pieces[posDown.sectorX + r] = "D";
-                for (var i = 0; i < worldVO.campPositions[l].length; i++) {
-                    var campPos = worldVO.campPositions[l][i];
-                    pieces[campPos.sectorX + r] = "{C|red}";
+                if (worldVO.passagePositions[l]) {
+                    var posUp = worldVO.passagePositions[l].up;
+                    var posDown = worldVO.passagePositions[l].down;
+                    if (posUp) pieces[posUp.sectorX + r] = "U";
+                    if (posDown) pieces[posDown.sectorX + r] = "D";
+                    for (var i = 0; i < worldVO.campPositions[l].length; i++) {
+                        var campPos = worldVO.campPositions[l][i];
+                        pieces[campPos.sectorX + r] = "{C|red}";
+                    }
                 }
                 
                 var ls = this.addPadding(l, 2);

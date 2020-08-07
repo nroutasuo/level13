@@ -63,6 +63,10 @@ function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
             return Math.round(this.getNumSectors(campOrdinal, isSmall) * 0.8);
         },
         
+        getMaxSectorOverflow: function (levelOrdinal) {
+            return this.MAX_SECTOR_COUNT_OVERFLOW + Math.floor(levelOrdinal / 5);
+        },
+        
         // max length of a path (limited by stamina) on the given camp ordinal
         // if a path spans several levels, lowest ordinal should be used
         getMaxPathLength: function (campOrdinal, pathType) {

@@ -235,7 +235,7 @@ define([
                     if (dist < min) return { isValid: false, reason: "min distance between consecutive camps" };
                 }
             }
-            // blocked: positions too far away from camp positions on previous two levels level
+            // blocked: positions too far away from camp positions on previous two levels
             var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, pos.level);
             var maxPathLengthC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
             for (var i = 1; i < 3; i++) {
@@ -243,8 +243,8 @@ define([
                 if (!prevPositions) continue;
                 for (var j = 0; j < prevPositions.length; j++) {
                     var prevPos = prevPositions[j];
-                    var dist = PositionConstants.getDistanceTo(pos, prevPos);
-                    var max = maxPathLengthC2P * (1 + (i-1) * 0.25);
+                    var dist = PositionConstants.getBlockDistanceTo(pos, prevPos);
+                    var max = Math.min(maxPathLengthC2P * (1 + (i-1) * 0.25), 35);
                     if (dist > max) return { isValid: false, reason: "max distance between camps on previous levels ", details: pos + " vs " + prevPos };
                 }
             }

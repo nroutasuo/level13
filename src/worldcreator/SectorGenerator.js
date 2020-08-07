@@ -453,7 +453,7 @@ define([
                     if (!nextSector) break;
                     var path = WorldCreatorRandom.findPath(worldVO, currentPos, nextSector.position, false, true, pathStage);
                     if (!path) {
-                        log.w("couldn't find level path " + currentPos + " " + nextSector.position);
+                        throw new Error("couldn't find level path " + currentPos + " " + nextSector.position);
                     }
                     pathID =  result.length;
                     for (var j = 0; j < path.length; j++) {

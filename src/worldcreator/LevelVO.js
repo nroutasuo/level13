@@ -12,7 +12,7 @@ function (Ash, WorldCreatorConstants, PositionConstants, PositionVO) {
             this.notCampableReason = notCampableReason;
             this.populationFactor = populationFactor;
             this.numSectors = numSectors;
-            this.maxSectors = numSectors + WorldCreatorConstants.MAX_SECTOR_COUNT_OVERFLOW;
+            this.maxSectors = numSectors + WorldCreatorConstants.getMaxSectorOverflow(levelOrdinal);
             this.numSectorsByStage = {};
             
             this.campPositions = [];

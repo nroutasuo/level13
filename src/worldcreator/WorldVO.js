@@ -11,7 +11,7 @@ define(['ash'], function (Ash) {
             this.stages = [];
             this.campPositions = [];
             this.passagePositions = [];
-            this.disctricts = [];
+            this.districts = [];
             
 			this.levels = [];
         },
