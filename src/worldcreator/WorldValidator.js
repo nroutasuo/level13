@@ -2,10 +2,11 @@ define([
 	'ash',
     'utils/MathUtils',
 	'game/constants/WorldConstants',
+	'game/constants/UpgradeConstants',
     'worldcreator/WorldCreatorHelper',
-    'worldcreator/WorldCreatorRandom'
+    'worldcreator/WorldCreatorRandom',
 ], function (
-    Ash, MathUtils, WorldConstants, WorldCreatorHelper, WorldCreatorRandom
+    Ash, MathUtils, WorldConstants, UpgradeConstants, WorldCreatorHelper, WorldCreatorRandom
 ) {
     var context = "WorldValidator";
 
@@ -22,11 +23,23 @@ define([
                 }
             }
             
-            var levelChecks = [ this.checkCriticalPaths, this.checkNumberOfSectors, this.checkContinuousEarlyStage, this.checkCampsAndPassages ];
+            var levelChecks = [ this.checkCriticalPaths, this.checkContinuousEarlyStage, this.checkCampsAndPassages, this.checkNumberOfSectors ];
 			for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var levelVO = worldVO.levels[l];
                 for (var i = 0; i < levelChecks.length; i++) {
                     var checkResult = levelChecks[i](worldVO, levelVO);
+                    if (!checkResult.isValid) {
+                        return { isValid: false, reason: checkResult.reason };
+                    }
+                }
+            }
+            
+            var campChecks = [ this.checkNumberOfLocales ];
+            for (var i = 0; i < WorldConstants.CAMPS_TOTAL; i++) {
+                var levels = WorldCreatorHelper.getLevelsForCamp(worldVO.seed, i);
+                var levelVOs = levels.map(level => worldVO.getLevel(level));
+                for (var j = 0; j < campChecks.length; j++) {
+                    var checkResult = campChecks[j](worldVO, i, levelVOs);
                     if (!checkResult.isValid) {
                         return { isValid: false, reason: checkResult.reason };
                     }
@@ -77,6 +90,36 @@ define([
                 if (numSectorsCreated > numSectorsPlanned * 1.1) {
                     return { isValid: false, reason: "too many sectors on level " + levelVO.level + " stage " + stage };
                 }
+            }
+            return { isValid: true };
+        },
+        
+        checkNumberOfLocales: function (worldVO, campOrdinal, levelVOs) {
+            var numEarlyLocales = 0;
+            var numLateLocales = 0;
+            for (var i = 0; i < levelVOs.length; i++) {
+                var levelVO = levelVOs[i];
+                for (var s = 0; s < levelVO.sectors.length; s++) {
+                    var sectorVO = levelVO.sectors[s];
+                    if (sectorVO.locales.length > 0) {
+                        for (var l = 0; l < sectorVO.locales.length; l++) {
+                            var isEarly = sectorVO.locales[l].isEarly;
+                            if (isEarly) {
+                                numEarlyLocales++;
+                            } else {
+                                numLateLocales++;
+                            }
+                        }
+                    }
+                }
+            }
+            var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_EARLY);
+            if (numEarlyLocales < numEarlyBlueprints) {
+                return { isValid: false, reason: "too few early locales for camp ordinal " + campOrdinal + " " + numEarlyLocales + "/" + numEarlyBlueprints };
+            }
+            var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_LATE);
+            if (numLateLocales < numLateBlueprints) {
+                return { isValid: false, reason: "too few late locales for camp ordinal " + campOrdinal + " " + numLateLocales + "/" + numLateBlueprints };
             }
             return { isValid: true };
         },
