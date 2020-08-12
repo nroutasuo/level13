@@ -507,7 +507,9 @@ define([
             var paths = this.getRectangle(levelVO, i, startPos, w, h, startDirection, options, forceComplete, connectionPointsType);
             for (var i = 0; i < paths.length; i++) {
                 var pathResult = this.createPath(levelVO, paths[i].startPos, paths[i].dir, paths[i].len, forceComplete, options, paths[i].connectionPointType);
-                if (!pathResult.completed) break;
+                if (!pathResult.completed) {
+                    break;
+                }
             }
         },
         
@@ -711,27 +713,28 @@ define([
         },
         
         getPath: function (levelVO, startPos, direction, len, forceComplete, options, connectionPointType) {
-            if (len < 1) return { path: [], completed: false };
+            if (len < 1) return { path: [], completed: false, reason: "too short" };
             var result = [];
             var options = options || this.getDefaultOptions();
             var sectorPos;
             var completed = true;
             var isValid = true;
+            var reason = "";
             
             for (var si = 0; si < len; si++) {
                 sectorPos = PositionConstants.getPositionOnPath(startPos, direction, si);
                 sectorPos.level = levelVO.level;
                 var sectorExists = levelVO.hasSector(sectorPos.sectorX, sectorPos.sectorY);
+                var positionCheck = this.isValidSectorPosition(levelVO, sectorPos, options.stage, options, result);
+                
+                // stop path if invalid position
+                if (!positionCheck.isValid) {
+                    return { path: result, completed: false, reason: positionCheck.reason };
+                    }
                 
                 // stop path when intersecting existing paths
-                if (!forceComplete) {
-                    if (sectorExists || !this.isValidSectorPosition(levelVO, sectorPos, options.stage, options, result).isValid) {
-                        if (si > 0) {
-                            return { path: result, completed: false };
-                        } else {
-                            continue;
-                        }
-                    }
+                if (si > 0 && si < len - 1 && !forceComplete && sectorExists) {
+                    return { path: result, completed: false, reason: "sector exists" };
                 }
 
                 if (sectorExists) {
@@ -744,19 +747,20 @@ define([
                 if (sectorResult.result || sectorResult.exists) {
 	                result.push(sectorPos);
                 } else {
-                    if (!sectorResult.resukt) {
+                    if (!sectorResult.result) {
                         isValid = false;
+                        reason = "couldn't create sector " + sectorResult.reason;
                     }
                     completed = false;
                     break;
                 }
             }
             
-            return { path: result, completed: completed, isValid: isValid };
+            return { path: result, completed: completed, isValid: isValid, reason: reason };
         },
 
         createPath: function (levelVO, startPos, direction, len, forceComplete, options, connectionPointType) {
-            if (len < 1) return { path: [], completed: false };
+            if (len < 1) return { path: [], completed: false, reason: "too short" };
             var result = [];
             var options = options || this.getDefaultOptions();
             var sectorPos;
@@ -764,7 +768,7 @@ define([
             var path = this.getPath(levelVO, startPos, direction, len, forceComplete, options, connectionPointType);
             
             if (!path.isValid) {
-                return { path: [], completed: false };
+                return { path: [], completed: false, reason: "get path: " + path.reason };
             }
             
             var completed = path.completed;
