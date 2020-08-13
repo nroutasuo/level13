@@ -21,12 +21,13 @@ define([
 	'worldcreator/WorldCreatorConstants',
     'worldcreator/WorldCreatorHelper',
     'worldcreator/WorldCreatorRandom',
-    'worldcreator/WorldCreatorDebug'
+    'worldcreator/WorldCreatorDebug',
+    'worldcreator/WorldCreatorLogger'
 ], function (
     Ash, MathUtils,
     EnemyConstants, ItemConstants, LevelConstants, LocaleConstants, MovementConstants, PositionConstants, SectorConstants, TradeConstants, UpgradeConstants, WorldConstants,
     GangVO, LocaleVO, PathConstraintVO, PositionVO, ResourcesVO, StashVO,
-    WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug
+    WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, WorldCreatorLogger
 ) {
     
     var SectorGenerator = {
@@ -105,7 +106,7 @@ define([
                 var stage = sector.stage;
                 if (!WorldConstants.isAllowedZone(stage, zone)) {
                     if (force) {
-                        log.w("incompatible zone: " + sector.position + " stage: " + stage + " zone: " + zone);
+                        WorldCreatorLogger.w("incompatible zone: " + sector.position + " stage: " + stage + " zone: " + zone);
                     } else {
                         return;
                     }
@@ -487,7 +488,7 @@ define([
                     var numItems = isAmountRange ? WorldCreatorRandom.randomInt(sectorSeed / 2, min, max) : numItemsPerStash;
                     var stash = new StashVO(stashType, numItems, itemID);
                     stashSectors[i].stashes.push(stash);
-                    // log.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " (" + min + "-" + max + ") " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
+                    // WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " (" + min + "-" + max + ") " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
                 }
             };
             
@@ -899,7 +900,7 @@ define([
                     });
                     return true;
                 } else {
-                    log.w("Skipped adding gang at " + sectorVO.position);
+                    WorldCreatorLogger.w("Skipped adding gang at " + sectorVO.position);
                     return false;
                 }
             };
@@ -1036,7 +1037,7 @@ define([
                 if (level == levelVO.level) {
                     var sectorVO = WorldCreatorRandom.randomSector(seed - 9393 + i * i, worldVO, levelVO, false);
                     var locale = new LocaleVO(localeTypes.tradingpartner, true, false);
-                    // log.i("trade partner at " + sectorVO.position)
+                    // WorldCreatorLogger.i("trade partner at " + sectorVO.position)
                     addLocale(sectorVO, locale);
                 }
             }
@@ -1074,7 +1075,7 @@ define([
                     var isEasy = i <= countEasy;
                     var locale = new LocaleVO(localeType, isEasy, isEarly);
                     addLocale(sectorVO, locale);
-                    // log.i(levelVO.level + " added locale: isEarly:" + isEarly + ", distance to camp: " + WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO) + ", zone: " + sectorVO.zone);
+                    // WorldCreatorLogger.i(levelVO.level + " added locale: isEarly:" + isEarly + ", distance to camp: " + WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO) + ", zone: " + sectorVO.zone);
                     for (var j = 0; j < pathConstraints.length; j++) {
                         WorldCreatorHelper.addCriticalPath(worldVO, sectorVO.position, pathConstraints[j].startPosition, pathConstraints[j].pathType);
                     }
@@ -1094,7 +1095,7 @@ define([
 				var countEarly = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minEarly, maxEarly + 1);
                 createLocales(worldVO, levelVO, campOrdinal, true, countEarly, minEarly);
             } else {
-                log.w("no early blueprints on camp level " + l);
+                WorldCreatorLogger.w("no early blueprints on camp level " + l);
             }
 
             var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_LATE);
@@ -1104,7 +1105,7 @@ define([
 				var countLate = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minLate, maxLate + 1);
                 createLocales(worldVO, levelVO, campOrdinal, false, countLate, minLate);
             } else {
-                log.w("no late blueprints on camp level " + l);
+                WorldCreatorLogger.w("no late blueprints on camp level " + l);
             }
         },
         
@@ -1146,13 +1147,13 @@ define([
             // check for existing movement blocker
             if (sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection]) {
                 var existing = sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection];
-                //log.w(this, "skipping movement blocker (" + blockerType + "): sector already has movement blocker (" + existing + ")");
+                WorldCreatorLogger.w("skipping movement blocker (" + blockerType + "): sector already has movement blocker (" + existing + ")");
                 return;
             }
             
             // check for too close to camp or in ZONE_PASSAGE_TO_CAMP
             if (sectorVO.isCamp || neighbourVO.isCamp || (levelVO.isCampable && sectorVO.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP)) {
-                //log.w(this, "skipping movement blocker (" + blockerType + "): too close to camp");
+                WorldCreatorLogger.w("skipping movement blocker (" + blockerType + "): too close to camp");
                 return;
             }
 
@@ -1164,7 +1165,7 @@ define([
                 if (blockerType === MovementConstants.BLOCKER_TYPE_GANG && allowedForGangs.indexOf(pathType) >= 0) continue;
                 for (var j = 0; j < neighbourVO.criticalPaths.length; j++) {
                     if (pathType === neighbourVO.criticalPaths[j]) {
-                        // log.w("(level " + levelVO.level + ") skipping movement blocker on critical path: " + pathType + " (type: " + blockerType + ")");
+                        WorldCreatorLogger.w("(level " + levelVO.level + ") skipping movement blocker on critical path: " + pathType + " (type: " + blockerType + ")");
                         return;
                     }
                 }
@@ -1436,7 +1437,7 @@ define([
 
             // check that we found some candidates
 			if (candidates.length < 1) {
-                log.w("No valid enemies defined for sector " + sectorVO.position + " difficulty " + enemyDifficulty);
+                WorldCreatorLogger.w("No valid enemies defined for sector " + sectorVO.position + " difficulty " + enemyDifficulty);
                 return enemies;
             }
             
@@ -1577,7 +1578,7 @@ define([
                     break;
 
                 default:
-                    log.w("Unknown sector type " + sectorType);
+                    WorldCreatorLogger.w("Unknown sector type " + sectorType);
                     return null;
             }
             

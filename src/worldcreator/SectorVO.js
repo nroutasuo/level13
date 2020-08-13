@@ -1,5 +1,5 @@
-define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorConstants','game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'],
-function (Ash, WorldConstants, WorldCreatorConstants, ResourcesVO, EnvironmentalHazardsVO) {
+define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorConstants', 'worldcreator/WorldCreatorLogger', 'game/vos/ResourcesVO', 'game/vos/EnvironmentalHazardsVO'],
+function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, ResourcesVO, EnvironmentalHazardsVO) {
 
     var SectorVO = Ash.Class.extend({
 	
@@ -62,7 +62,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, ResourcesVO, Environmental
             var existingType = this.movementBlockers[direction];
             if (existingType === blockerType) return;
             if (existingType) {
-                log.w("movement blocker already exists:" + this.movementBlockers[direction] + " (trying to add: " + blockerType + ")");
+                WorldCreatorLogger.w("movement blocker already exists:" + this.movementBlockers[direction] + " (trying to add: " + blockerType + ")");
                 return;
             }
 			this.movementBlockers[direction] = blockerType;
@@ -119,7 +119,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, ResourcesVO, Environmental
                 case WorldConstants.ZONE_EXTRA_UNCAMPABLE:
                     return "x";
                 default:
-                    log.w("no debug char defined for zone " + this.zone);
+                    WorldCreatorLogger.w("no debug char defined for zone " + this.zone);
                     return WorldCreatorConstants.getZoneOrdinal(this.zone);
             }
         },

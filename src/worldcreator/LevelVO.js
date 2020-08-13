@@ -1,5 +1,5 @@
-define(['ash', 'worldcreator/WorldCreatorConstants', 'game/constants/PositionConstants', 'game/vos/PositionVO'],
-function (Ash, WorldCreatorConstants, PositionConstants, PositionVO) {
+define(['ash', 'worldcreator/WorldCreatorConstants', 'worldcreator/WorldCreatorLogger', 'game/constants/PositionConstants', 'game/vos/PositionVO'],
+function (Ash, WorldCreatorConstants, WorldCreatorLogger, PositionConstants, PositionVO) {
 
     var LevelVO = Ash.Class.extend({
 	
@@ -46,17 +46,17 @@ function (Ash, WorldCreatorConstants, PositionConstants, PositionVO) {
 		
 		addSector: function (sectorVO) {
 			if (sectorVO === null) {
-				log.w("tried to add null sector to a level");
+				WorldCreatorLogger.w("tried to add null sector to a level");
                 return false;
 			}
             
             if (sectorVO.position.level !== this.level) {
-				log.w("tried to add sector (" + sectorVO.position + ") to wrong level (" + this.level + ")");
+				WorldCreatorLogger.w("tried to add sector (" + sectorVO.position + ") to wrong level (" + this.level + ")");
                 return false;
             }
 			
 			if (this.hasSector(sectorVO.position.sectorX, sectorVO.position.sectorY)) {
-				log.w("Level " + this.level + " already contains sector " + sectorVO.position);
+				WorldCreatorLogger.w("Level " + this.level + " already contains sector " + sectorVO.position);
                 return false;
 			}
 			

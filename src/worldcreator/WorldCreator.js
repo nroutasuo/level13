@@ -7,6 +7,7 @@ define([
     'worldcreator/WorldCreatorHelper',
     'worldcreator/WorldCreatorRandom',
     'worldcreator/WorldCreatorDebug',
+    'worldcreator/WorldCreatorLogger',
     'worldcreator/EnemyCreator',
 	'worldcreator/WorldVO',
 	'worldcreator/LevelVO',
@@ -17,7 +18,7 @@ define([
 	'worldcreator/SectorGenerator',
 ], function (
     Ash, MathUtils, WorldConstants,
-    WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, EnemyCreator,
+    WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, WorldCreatorLogger, EnemyCreator,
     WorldVO, LevelVO, SectorVO, WorldGenerator, LevelGenerator, StructureGenerator, SectorGenerator,
 ) {
     var context = "WorldCreator";
@@ -29,40 +30,47 @@ define([
 		prepareWorld: function (seed, itemsHelper) {
             var enemyCreator = new EnemyCreator();
             enemyCreator.createEnemies();
+            
+            WorldCreatorLogger.start(seed);
 
-			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
-			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
-            this.world = new WorldVO(seed, topLevel, bottomLevel);
-            
             try {
-                log.i("Step 1/4: World template", this.context);
-                WorldGenerator.prepareWorld(seed, this.world);
+    			var topLevel = WorldCreatorHelper.getHighestLevel(seed);
+    			var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
+                this.world = new WorldVO(seed, topLevel, bottomLevel);
+                
+                try {
+                    WorldCreatorLogger.i("Step 1/4: World template", this.context);
+                    WorldGenerator.prepareWorld(seed, this.world);
+                } finally {
+                    WorldCreatorDebug.printWorldTemplate(this.world);
+                }
+                
+                try {
+                    WorldCreatorLogger.i("Step 2/4: Level templates", this.context);
+                    LevelGenerator.prepareLevels(seed, this.world);
+                } finally {
+                    WorldCreatorDebug.printLevelTemplates(this.world);
+                }
+                
+                try {
+                    WorldCreatorLogger.i("Step 3/4: Level structure", this.context);
+                    StructureGenerator.prepareStructure(seed, this.world);
+                } finally {
+                    WorldCreatorDebug.printLevelStructure(this.world);
+                }
+                
+                WorldCreatorLogger.i("Step 4/4: Sector templates", this.context);
+                SectorGenerator.prepareSectors(seed, this.world, itemsHelper, enemyCreator);
             } finally {
-                WorldCreatorDebug.printWorldTemplate(this.world);
+                WorldCreatorLogger.i("Done");
+                WorldCreatorLogger.end();
             }
-            
-            try {
-                log.i("Step 2/4: Level templates", this.context);
-                LevelGenerator.prepareLevels(seed, this.world);
-            } finally {
-                WorldCreatorDebug.printLevelTemplates(this.world);
-            }
-            
-            try {
-                log.i("Step 3/4: Level structure", this.context);
-                StructureGenerator.prepareStructure(seed, this.world);
-            } finally {
-                WorldCreatorDebug.printLevelStructure(this.world);
-            }
-            
-            log.i("Step 4/4: Sector templates", this.context);
-            SectorGenerator.prepareSectors(seed, this.world, itemsHelper, enemyCreator);
                 
             return this.world;
 		},
 
         discardWorld: function () {
-            log.i("Discard world", this.context)
+            WorldCreatorLogger.i("Discard world", this.context)
             this.world.levels = [];
             this.world = null;
         },

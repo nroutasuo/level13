@@ -1,10 +1,11 @@
 // debug helpers for the WorldCreator
-define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldConstants, WorldCreatorHelper) {
+define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper', 'worldcreator/WorldCreatorLogger'],
+function (Ash, WorldConstants, WorldCreatorHelper, WorldCreatorLogger) {
 
     var WorldCreatorDebug = {
         
         printWorldTemplate: function (worldVO) {
-            console.groupCollapsed("World seed " + worldVO.seed);
+            WorldCreatorLogger.groupCollapsed("World seed " + worldVO.seed);
             var s = "";
 			for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var campOrdinal = WorldCreatorHelper.getCampOrdinal(worldVO.seed, l);
@@ -46,25 +47,25 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                 s += "lvl " + ls + " camp " + cs + "  " + pieces.join("") +  "\n";
             }
             this.printWithHighlights(s);
-            console.groupEnd();
+            WorldCreatorLogger.groupEnd();
         },
         
         printLevelTemplates: function (worldVO) {
-            console.groupCollapsed("Level templates");
+            WorldCreatorLogger.groupCollapsed("Level templates");
             for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var levelVO = worldVO.levels[l];
                 var stages = worldVO.getStages(l);
                 var stagess = stages.map(stage => stage.stage).join(",");
-                log.i("Level " + levelVO.level + ", camp ordinal: " + levelVO.campOrdinal + ", stages: " + stagess + ", sectors: " + levelVO.numSectors + ", zones: " + levelVO.zones.length);
-                log.i("- passage positions: up: " + levelVO.passageUpPosition + ", down: " + levelVO.passageDownPosition);
-                log.i("- camp positions: " + levelVO.campPositions.join(","));
-                log.i("- excursion start position: " + levelVO.excursionStartPosition);
+                WorldCreatorLogger.i("Level " + levelVO.level + ", camp ordinal: " + levelVO.campOrdinal + ", stages: " + stagess + ", sectors: " + levelVO.numSectors + ", zones: " + levelVO.zones.length);
+                WorldCreatorLogger.i("- passage positions: up: " + levelVO.passageUpPosition + ", down: " + levelVO.passageDownPosition);
+                WorldCreatorLogger.i("- camp positions: " + levelVO.campPositions.join(","));
+                WorldCreatorLogger.i("- excursion start position: " + levelVO.excursionStartPosition);
                 for (var i = 0; i < stages.length; i++) {
                     var stageVO = stages[i];
-                    log.i("- stage center positions [" + stageVO.stage + "]: " + levelVO.stageCenterPositions[stageVO.stage].join(","));
+                    WorldCreatorLogger.i("- stage center positions [" + stageVO.stage + "]: " + levelVO.stageCenterPositions[stageVO.stage].join(","));
                 }
             }
-            console.groupEnd();
+            WorldCreatorLogger.groupEnd();
         },
         
         printLevelStructure: function (worldVO) {
@@ -86,7 +87,7 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
         },
 		
 		printWorld: function (worldVO, keys, color) {
-            log.i("print world " + keys.join(","));
+            WorldCreatorLogger.i("print world " + keys.join(","));
             var prepareValue = function (value) {
                 var char = value.toString()[0];
                 var c = value ? color : null;
@@ -115,12 +116,12 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
 		},
 		
 		printLevel: function (worldVO, levelVO, sectordef) {
-            console.groupCollapsed("Level " + levelVO.level + ", camp " + (levelVO.isCampable ? levelVO.campOrdinal :  "-")
+            WorldCreatorLogger.groupCollapsed("Level " + levelVO.level + ", camp " + (levelVO.isCampable ? levelVO.campOrdinal :  "-")
                 + ", sectors: " + levelVO.sectors.length + "/" + levelVO.numSectors
                 + ", early: " + levelVO.getNumSectorsByStage(WorldConstants.CAMP_STAGE_EARLY) + "/" + levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_EARLY]
                 + ", late: " + levelVO.getNumSectorsByStage(WorldConstants.CAMP_STAGE_LATE) + "/" + levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_LATE]
             );
-            log.i("seed: " + worldVO.seed + ", " + ", center: " + levelVO.levelCenterPosition +  ", bounds: " + levelVO.minX + "." + levelVO.minY + "-" + levelVO.maxX + "." + levelVO.maxY);
+            WorldCreatorLogger.i("seed: " + worldVO.seed + ", " + ", center: " + levelVO.levelCenterPosition +  ", bounds: " + levelVO.minX + "." + levelVO.minY + "-" + levelVO.maxX + "." + levelVO.maxY);
 			var print = "\t";
             var rx = 20;
             var ry = 10;
@@ -179,7 +180,7 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
 				}
 			}
             this.printWithHighlights(print);
-            console.groupEnd();
+            WorldCreatorLogger.groupEnd();
 		},
         
         printWithHighlights: function (text) {
@@ -198,7 +199,7 @@ define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper
                 }
                 styledText += `%c${content}`
             };
-            console.log(styledText , ...cssRules)
+            WorldCreatorLogger.s(styledText , ...cssRules);
         },
         
         addPadding: function (s, minChars) {

@@ -2,12 +2,13 @@
 define([
     'ash',
     'utils/PathFinding',
+    'worldcreator/WorldCreatorLogger',
     'game/constants/PositionConstants',
     'game/constants/GameConstants',
     'game/constants/MovementConstants',
     'game/vos/PositionVO',
     'game/vos/PathConstraintVO'],
-function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants, PositionVO, PathConstraintVO) {
+function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants, MovementConstants, PositionVO, PathConstraintVO) {
 
     var WorldCreatorRandom = {
 		
@@ -81,10 +82,10 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
 					sector = this.randomSector(s1, worldVO, levelVO, options.requireCentral, options.pathConstraints);
 					additionalRandom++;
                     if (additionalRandom > 100) {
-                        log.w("getRandomSectorsSmall: Couldn't find random sector " + (i+1) + "/" + numSectors + " (level: " + levelVO.level + ") | " + s1);
-                        log.i(options);
-                        log.i(counts);
-                        log.i(rejectedByReason);
+                        WorldCreatorLogger.w("getRandomSectorsSmall: Couldn't find random sector " + (i+1) + "/" + numSectors + " (level: " + levelVO.level + ") | " + s1);
+                        WorldCreatorLogger.i(options);
+                        WorldCreatorLogger.i(counts);
+                        WorldCreatorLogger.i(rejectedByReason);
                         return sectors;
                     }
 				} while (!checkDuplicates(sector) || !checkExclusion(sector));
@@ -127,7 +128,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
             }
             
             if (numSectors > possibleSectors.length) {
-                log.w("Not enough valid sectors (" + possibleSectors.length + ") to pick random sectors (" + numSectors + ") (level: " + levelVO.level + ")");
+                WorldCreatorLogger.w("Not enough valid sectors (" + possibleSectors.length + ") to pick random sectors (" + numSectors + ") (level: " + levelVO.level + ")");
                 return possibleSectors;
             }
             
@@ -217,7 +218,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
             }
             
             // print some debug info about the failed sector and paths
-            log.w("Failed to find random sector that fulfills requirements: central: " + isCentral + ", " + (pathConstraints ? pathConstraints.length : 0) + " paths, " + sectors.length + " sectors (level: " + levelVO.level + ")");
+            WorldCreatorLogger.w("Failed to find random sector that fulfills requirements: central: " + isCentral + ", " + (pathConstraints ? pathConstraints.length : 0) + " paths, " + sectors.length + " sectors (level: " + levelVO.level + ")");
             var fails = [];
             for (var j = 0; j < pathConstraints.length; j++) {
                 fails[j] = 0;
@@ -227,7 +228,7 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
                         fails[j]++;
                     }
                 }
-                log.i("- " + pathConstraints[j].pathType + " max len " + pathConstraints[j].maxLength + ", start pos " + pathConstraints[j].startPosition + ": " + fails[j] + "/" + sectors.length + " fails");
+                WorldCreatorLogger.i("- " + pathConstraints[j].pathType + " max len " + pathConstraints[j].maxLength + ", start pos " + pathConstraints[j].startPosition + ": " + fails[j] + "/" + sectors.length + " fails");
             }
             return null;
 		},
@@ -236,14 +237,14 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
             if (!pathConstraints || pathConstraints.length === 0) return true;
             for (var j = 0; j < pathConstraints.length; j++) {
                 if (pathConstraints[j].maxLength <= 0) {
-                    log.w("Max path length is <= 0, skipping check.");
+                    WorldCreatorLogger.w("Max path length is <= 0, skipping check.");
                     continue;
                 }
                 var path = this.findPath(worldVO, pathConstraints[j].startPosition, sector.position, false, true);
                 if (!path) return false;
                 var pathLen = path.length;
                 if (pathLen > pathConstraints[j].maxLength) {
-                    if (logFails) log.i("path too long: " + pathLen + " / " + pathConstraints[j].maxLength + ", start: " + pathConstraints[j].startPosition + ", candidate " + sector.position);
+                    if (logFails) WorldCreatorLogger.i("path too long: " + pathLen + " / " + pathConstraints[j].maxLength + ", start: " + pathConstraints[j].startPosition + ", candidate " + sector.position);
                     return false;
                 }
                 if (pathLen <= 0) return false;
@@ -279,9 +280,9 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
             }
             
             // no valid result found, print fail reasons and return something
-            log.w("randomResultWithCheck [" + id + "] ran out of tries, returning invalid result");
-            log.i(failReasons);
-            //log.i(failResults)
+            WorldCreatorLogger.w("randomResultWithCheck [" + id + "] ran out of tries, returning invalid result");
+            WorldCreatorLogger.i(failReasons);
+            //WorldCreatorLogger.i(failResults)
             
             return result;
         },
@@ -313,11 +314,11 @@ function (Ash, PathFinding, PositionConstants, GameConstants, MovementConstants,
         
         findPath: function (worldVO, startPos, endPos, blockByBlockers, omitWarnings, stage) {
             if (!startPos) {
-                log.w("No start pos defined.");
+                WorldCreatorLogger.w("No start pos defined.");
             }
             
             if (!endPos) {
-                log.w("No goal pos defined.");
+                WorldCreatorLogger.w("No goal pos defined.");
             }
             
             var cachedPath = worldVO.getPath(startPos, endPos, blockByBlockers, stage);

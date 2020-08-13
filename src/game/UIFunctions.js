@@ -179,7 +179,6 @@ define(['ash',
 							return;
 						}
                         
-                        log.i("action button clicked: " + action);
 						GlobalSignals.actionButtonClickedSignal.dispatch(action);
 
 						var param = null;

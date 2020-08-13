@@ -7,8 +7,9 @@ define([
 	'worldcreator/WorldCreatorConstants',
     'worldcreator/WorldCreatorHelper',
     'worldcreator/WorldCreatorRandom',
+    'worldcreator/WorldCreatorLogger',
     'worldcreator/SectorVO',
-], function (Ash, PositionConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, SectorVO) {
+], function (Ash, PositionConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorLogger, SectorVO) {
     
     var StructureGenerator = {
         
@@ -400,16 +401,16 @@ define([
                 var numCreated = numAfter - numBefore;
                 var isSuccess = numCreated > 1;
                 if (isSuccess) {
-                    failuresfailures = 0;
+                    failures = 0;
                 } else {
                     failures++;
                 }
                 if (failures > 8) {
-                    log.w("problems generating level stage " + levelVO.level + " " + stageVO.stage);
+                    WorldCreatorLogger.w("problems generating level stage " + levelVO.level + " " + stageVO.stage);
                 }
             }
             if (attempts == maxAttempts) {
-                log.w("level " + levelVO.level + " " + stageVO.stage + "  could not be completed in " + attempts + " attempts");
+                WorldCreatorLogger.w("level " + levelVO.level + " " + stageVO.stage + "  could not be completed in " + attempts + " attempts");
             }
         },
         
@@ -426,9 +427,9 @@ define([
                 var options = this.getDefaultOptions({ stage: path.stage, criticalPathType: path.type});
                 var pathResult = this.createPathBetween(worldVO, levelVO, startPos, endPos, path.maxlen, options, WorldCreatorConstants.CONNECTION_POINTS_PATH_ALL);
                 if (!pathResult.isComplete) {
-                    log.w("failed to create required path");
-                    log.i(path);
-                    log.i(pathResult);
+                    WorldCreatorLogger.w("failed to create required path");
+                    WorldCreatorLogger.i(path);
+                    WorldCreatorLogger.i(pathResult);
                     throw new Error("failed to creare required path");
                 }
                 var sectorPath = WorldCreatorRandom.findPath(worldVO, startPos, endPos, false, true, path.stage);
@@ -524,12 +525,12 @@ define([
             if (startPosExists && endPosExists) {
                 var existingPath = WorldCreatorRandom.findPath(worldVO, startPos, endPos, false, true, options.stage);
                 if (existingPath && existingPath.length > 0 && (maxlen < 0 || existingPath.length < maxlen)) {
-                    // log.i("- path exists");
+                    // WorldCreatorLogger.i("- path exists");
                     return { path: [], isComplete: true };
                 }
             }
             
-            // log.i("createPathBetween " + startPos + " " + endPos + " " + options.stage + " " + options.criticalPathType + " / " + maxlen + ", dist: " + dist);
+            // WorldCreatorLogger.i("createPathBetween " + startPos + " " + endPos + " " + options.stage + " " + options.criticalPathType + " / " + maxlen + ", dist: " + dist);
             
             var getConnectionPaths = function (s1, s2, allowDiagonals) {
                 if (!s1 || !s2)
@@ -552,9 +553,9 @@ define([
                     var currentPos = current.currentPos;
                     var direction = current.currentDirection;
                     var pathLength = PositionConstants.getDistanceInDirection(currentPos, s2, direction) + 1;
-                        var pathCandidate = { startPos: currentPos, dir: direction, len: pathLength };
-                        var validCheck = StructureGenerator.isValidPath(levelVO, pathCandidate, null, options);
-                        if (validCheck.isValid) {
+                    var pathCandidate = { startPos: currentPos, dir: direction, len: pathLength };
+                    var validCheck = StructureGenerator.isValidPath(levelVO, pathCandidate, null, options);
+                    if (validCheck.isValid) {
                         var newPos = PositionConstants.getPositionOnPath(currentPos, direction, pathLength - 1);
                         current.paths.push(pathCandidate);
                         current.len += pathCandidate.len;
@@ -564,10 +565,10 @@ define([
                             var nextDirections = PositionConstants.getDirectionsFrom(currentPos, s2, allowDiagonals);
                             for (var i = 0; i < nextDirections.length; i++) {
                                 frontier.push({ currentPos: newPos, currentDirection: nextDirections[i], paths: current.paths.slice(), len: current.len });
+                            }
                         }
                     }
-                    }
-                    }
+                }
                 
                 if (validPaths.length == 0) {
                     return { paths: [], isValid: false };
@@ -590,8 +591,8 @@ define([
                         result.path = result.path.concat(pathResult.path);
                     }
                 } else {
-                    log.w("couldn't create path between " + s1 + " and " + s2 + " " + pathsResult.reason);
-                    log.i(pathsResult)
+                    WorldCreatorLogger.w("couldn't create path between " + s1 + " and " + s2 + " " + pathsResult.reason);
+                    WorldCreatorLogger.i(pathsResult)
                     result.isComplete = false;
                 }
             };
@@ -682,18 +683,18 @@ define([
                 var lenBetweenNearest = getTotalLength(pathsBetweenNearest) + getPathLength(pathFromStart) + getPathLength(pathFromEnd);
                 
                 // make path via existing or nearest if they exist and are short enough, otherwise direct
-                // log.i("- lenDirect: " + lenDirect + ", lenViaExisting: " + lenViaExisting + ", lenBetweenNearest: " + lenBetweenNearest + ", max alternative len: " + maxAlternativeLen + ", allowDiagonals: " + allowDiagonals);
+                // WorldCreatorLogger.i("- lenDirect: " + lenDirect + ", lenViaExisting: " + lenViaExisting + ", lenBetweenNearest: " + lenBetweenNearest + ", max alternative len: " + maxAlternativeLen + ", allowDiagonals: " + allowDiagonals);
                 if (isValidBetweenNearest && lenBetweenNearest <= maxAlternativeLen) {
-                    // log.i("- use nearest: " + startPosData.nearestConnected.position + " - " + endPosData.nearestConnected.position);
-                    // log.i(startPosData)
-                    // log.i(pathFromStart)
+                    // WorldCreatorLogger.i("- use nearest: " + startPosData.nearestConnected.position + " - " + endPosData.nearestConnected.position);
+                    // WorldCreatorLogger.i(startPosData)
+                    // WorldCreatorLogger.i(pathFromStart)
                     createConnectionPath(startPosData.nearestConnected.position, endPosData.nearestConnected.position, allowDiagonals);
                 } else if (isValidViaExisting && lenViaExisting <= maxAlternativeLen) {
-                    // log.i("- use existing " + startPosData.closestExisting + " " + endPosData.closestExisting);
+                    // WorldCreatorLogger.i("- use existing " + startPosData.closestExisting + " " + endPosData.closestExisting);
                     createConnectionPath(startPos, startPosData.closestExisting.position, true);
                     createConnectionPath(endPosData.closestExisting.position, endPos, true);
                 } else {
-                    // log.i("- create new");
+                    // WorldCreatorLogger.i("- create new");
                     createConnectionPath(startPos, endPos, allowDiagonals);
                 }
             }
@@ -755,7 +756,7 @@ define([
                 // stop path if invalid position
                 if (!positionCheck.isValid) {
                     return { path: result, completed: false, reason: positionCheck.reason };
-                    }
+                }
                 
                 // stop path when intersecting existing paths
                 if (si > 0 && si < len - 1 && !forceComplete && sectorExists) {
@@ -852,7 +853,7 @@ define([
             var options = this.getDefaultOptions({ stage: stage });
             var skip = 0;
             while (division.disconnected.length > 0 && attempts < 99) {
-                log.i("connecting disconnected parts of level " + levelVO.level + " stage " + (stage ? stage : "all") + ", division " + division.connected.length + "-" + division.disconnected.length + ", center: " + center + ", skip: " + skip);
+                WorldCreatorLogger.i("connecting disconnected parts of level " + levelVO.level + " stage " + (stage ? stage : "all") + ", division " + division.connected.length + "-" + division.disconnected.length + ", center: " + center + ", skip: " + skip);
                 var pair = WorldCreatorHelper.getClosestPair(division.connected, division.disconnected, skip);
                 var pairDist = PositionConstants.getDistanceTo(pair[0].position, pair[1].position);
                 var result = this.createPathBetween(worldVO, levelVO, pair[0].position, pair[1].position, -1, options);
@@ -864,7 +865,7 @@ define([
                     skip++;
                 }
                 if (attempts > 50) {
-                    log.i(division);
+                    WorldCreatorLogger.i(division);
                 }
                 attempts++;
             }
@@ -986,7 +987,7 @@ define([
             if (!point) return;
             if (!levelVO.hasSector(pos.sectorX, pos.sectorY)) return;
             
-            var maxdist = this.getMaxExcursionDistance(levelVO) - 3;
+            var maxdist = this.getMaxExcursionDistance(levelVO) - 5;
             var dist = PositionConstants.getDistanceTo(pos, levelVO.excursionStartPosition);
             if (dist > maxdist) return;
             
@@ -1220,7 +1221,7 @@ define([
                     }
                     break;
                 default:
-                    log.w("unknown path connection point type: " + type);
+                    WorldCreatorLogger.w("unknown path connection point type: " + type);
                     return null;
             }
         },
@@ -1243,7 +1244,7 @@ define([
                 case WorldCreatorConstants.CONNECTION_POINTS_RECT_ALL:
                     return WorldCreatorConstants.CONNECTION_POINTS_PATH_ALL;
                 default:
-                    log.w("unknown rectangle connection point type: " + rectConnectionPointType);
+                    WorldCreatorLogger.w("unknown rectangle connection point type: " + rectConnectionPointType);
                     return null;
             }
         },

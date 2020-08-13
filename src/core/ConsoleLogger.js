@@ -8,22 +8,49 @@ define(function () {
     
     window.log = {
         
-        i: function (msg, context) {
+        i: function (msg, context, ...style) {
             if (!ConsoleLogger.logInfo) return;
             var context = this.parseContext(context);
-            if (context) {
-                console.log("[" + context + "] " + msg);
+            
+            var m = "";
+            var o = null;
+            if (typeof(msg) == "object") {
+                o = msg;
             } else {
-                console.log(msg);
+                m = msg;
+            }
+            
+            if (context) {
+                if (m.length > 0) {
+                    m = " " + m;
+                }
+                m = "[" + context + "]" + m;
+            }
+            
+            if (style && style.length > 0) {
+                if (style.length == 1) {
+                    console.log("%c" + m, style[0]);
+                } else {
+                    console.log(m, ...style);
+                }
+            } else {
+                if (o) {
+                    console.log(m, o);
+                } else {
+                    console.log(m);
+                }
             }
         },
             
         w: function (msg, context) {
             if (!ConsoleLogger.logWarnings) return;
             var context = this.parseContext(context);
+            var m = msg;
             if (context) {
-                console.warn("[" + context + "] " + msg);
-            } else {
+                m = "[" + context + "] " + m;
+            }
+            console.warn(m);
+            if (typeof(msg) == "object" && typeof(m) != "object") {
                 console.warn(msg);
             }
         },
@@ -31,9 +58,12 @@ define(function () {
         e: function (msg, context) {
             if (!ConsoleLogger.logErrors) return;
             var context = this.parseContext(context);
+            var m = msg;
             if (context) {
-                console.error();("[" + context + "] " + msg);
-            } else {
+                m = "[" + context + "] " + m;
+            }
+            console.error(m);
+            if (typeof(msg) == "object" && typeof(m) != "object") {
                 console.error(msg);
             }
         },

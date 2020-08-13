@@ -1,5 +1,5 @@
-define(['ash', 'game/constants/PlayerStatConstants', 'game/constants/WorldConstants', 'utils/MathUtils'],
-function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
+define(['ash', 'worldcreator/WorldCreatorLogger', 'game/constants/PlayerStatConstants', 'game/constants/WorldConstants', 'utils/MathUtils'],
+function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtils) {
     
     var WorldCreatorConstants = {
         
@@ -100,7 +100,7 @@ function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
                     maxLength = maxLength / 3 - movementCostLevel / movementCost;
                     break;
                 default:
-                    log.w("Unknown path type: " + pathType);
+                    WorldCreatorLogger.w("Unknown path type: " + pathType);
                     break;
             }
             
@@ -160,7 +160,7 @@ function (Ash, PlayerStatConstants, WorldConstants, MathUtils) {
                 case WorldConstants.ZONE_PASSAGE_TO_PASSAGE: return 1;
                 case WorldConstants.ZONE_EXTRA_UNCAMPABLE: return 2;
                 default:
-                    log.w("no ordinal defined for zone: " + zone);
+                    WorldCreatorLogger.w("no ordinal defined for zone: " + zone);
                     return 5;
             }
         },

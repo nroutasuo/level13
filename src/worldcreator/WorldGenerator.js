@@ -4,6 +4,7 @@ define([
 	'worldcreator/WorldCreatorConstants',
 	'worldcreator/WorldCreatorHelper',
     'worldcreator/WorldCreatorRandom',
+    'worldcreator/WorldCreatorLogger',
     'worldcreator/WorldFeatureVO',
     'worldcreator/StageVO',
     'worldcreator/DistrictVO',
@@ -11,7 +12,7 @@ define([
     'game/constants/SectorConstants',
     'game/constants/PositionConstants',
     'game/constants/WorldConstants',
-], function (Ash, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldFeatureVO, StageVO, DistrictVO, PositionVO, SectorConstants, PositionConstants, WorldConstants) {
+], function (Ash, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorLogger, WorldFeatureVO, StageVO, DistrictVO, PositionVO, SectorConstants, PositionConstants, WorldConstants) {
     
     var WorldGenerator = {
         
@@ -98,7 +99,7 @@ define([
                         var secondPos = WorldCreatorRandom.randomSectorPositionWithCheck(seed % 100 + (l+5)*10, "camp pos", l, maxCampDist, firstPos, 1, isValid);
                         positions.push(secondPos);
                     }
-                    // log.i("camp positions " + l + ": " + positions.join(" ") + " | maxCenterDist: " + maxCenterDist);
+                    // WorldCreatorLogger.i("camp positions " + l + ": " + positions.join(" ") + " | maxCenterDist: " + maxCenterDist);
                 }
                 positionsByLevel[l] = positions;
             }
@@ -187,7 +188,7 @@ define([
             var startPathLength = Math.ceil(Math.max(PositionConstants.getDistanceTo(averagePos, furthest1), PositionConstants.getDistanceTo(averagePos, furthest2)));
             var maxDiff = Math.min(20, maxPathLength - startPathLength);
             var minDiff = Math.min(3, Math.floor(maxDiff / 2));
-             //log.i("passage position " + level + " " + furthest1 + " - " + furthest2 + " -> middle: " + averagePos + " -> maxPathLength: " + maxPathLength + ", startPathLength: " + startPathLength + ", maxDiff: " + maxDiff + ", minDiff: " + minDiff);
+             //WorldCreatorLogger.i("passage position " + level + " " + furthest1 + " - " + furthest2 + " -> middle: " + averagePos + " -> maxPathLength: " + maxPathLength + ", startPathLength: " + startPathLength + ", maxDiff: " + maxDiff + ", minDiff: " + minDiff);
             
             // select random sector around averagePos
             var rseed = seed % 1000 + 7 + (level+13)*101;

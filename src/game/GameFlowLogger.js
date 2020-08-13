@@ -15,6 +15,7 @@ define(['ash',
                 GlobalSignals.add(this, GlobalSignals.popupOpenedSignal, this.onPopupOpened);
                 GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.onPopupClosed);
                 GlobalSignals.add(this, GlobalSignals.actionStartedSignal, this.onActionStarted);
+                GlobalSignals.add(this, GlobalSignals.actionButtonClickedSignal, this.onActionButtonClicked);
                 GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onPlayerMoved);
             }
         },
@@ -49,6 +50,11 @@ define(['ash',
             if (param && action.indexOf(param) < 0) {
                 msg += " " + param;
             }
+            this.log(msg);
+        },
+        
+        onActionButtonClicked: function (action) {
+            var msg = "action button clicked: " + action;
             this.log(msg);
         },
         
