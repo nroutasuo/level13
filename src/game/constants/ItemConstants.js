@@ -244,9 +244,20 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
             }
         },
         
+        requiredCampAndStepToCraftCache: {},
+        
         getRequiredCampAndStepToCraft: function (item) {
+            if (ItemConstants.requiredCampAndStepToCraftCache[item.id]) {
+                return ItemConstants.requiredCampAndStepToCraftCache[item.id];
+            }
+            
+            var cacheAndReturn = function (res) {
+                ItemConstants.requiredCampAndStepToCraftCache[item.id] = res;
+                return res;
+            }
+            
             var result = { campOrdinal: 0, step: 0 };
-            if (!item.craftable) return result;
+            if (!item.craftable) return cacheAndReturn(result);
             
             var addRequirement = function (campOrdinal, step) {
                 if (campOrdinal > result.campOrdinal || (campOrdinal == result.campOrdinal && step > result.step)) {
@@ -279,7 +290,7 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
                 }
             }
             
-            return result;
+            return cacheAndReturn(result);
         },
         
         getFollower: function (level, campCount) {

@@ -434,7 +434,7 @@ define([
                 }
                 var sectorPath = WorldCreatorRandom.findPath(worldVO, startPos, endPos, false, true, path.stage);
                 for (var j = 0; j < sectorPath.length; j++) {
-                    var sector = levelVO.getSector(sectorPath[j]);
+                    var sector = levelVO.getSectorByPos(sectorPath[j]);
                     sector.addToCriticalPath(path.type);
                 }
                 this.connectNewPath(worldVO, levelVO, existingSectors, pathResult.path);
@@ -532,6 +532,8 @@ define([
             
             // WorldCreatorLogger.i("createPathBetween " + startPos + " " + endPos + " " + options.stage + " " + options.criticalPathType + " / " + maxlen + ", dist: " + dist);
             
+            var validSectors = options.stage ? levelVO.getSectorsByStage(options.stage) : levelVO.sectors;
+            
             var getConnectionPaths = function (s1, s2, allowDiagonals) {
                 if (!s1 || !s2)
                     return { paths: [], isValid: false };
@@ -611,20 +613,20 @@ define([
                 return result;
             };
             
-            var getNearestConnected = function (validSectors, position, targetSector) {
+            var getNearestConnected = function (validSectors, position, targetSector, maxdist) {
                 if (!levelVO.hasSector(position.sectorX, position.sectorY)) {
                     return { position: position };
                 }
-                var connectedSectors = StructureGenerator.getConnectedSectors(worldVO, position, validSectors, options.stage);
+                var connectedSectors = StructureGenerator.getConnectedSectors(worldVO, position, validSectors, options.stage, maxdist);
                 return WorldCreatorHelper.getClosestSector(connectedSectors.connected, targetSector);
             };
             
-            var getPointData = function (validSectors, point, otherPoint, allowDiagonals) {
+            var getPointData = function (validSectors, point, otherPoint, allowDiagonals, maxNearestConnectedDist) {
                 var data = {};
                 data.pos = point;
                 data.closestExisting = getClosestValid(validSectors, point, allowDiagonals);
                 data.connectionPathsToCE = getConnectionPaths(point, data.closestExisting.position, allowDiagonals).paths;
-                data.nearestConnected = getNearestConnected(validSectors, point, otherPoint);
+                data.nearestConnected = getNearestConnected(validSectors, point, otherPoint, maxNearestConnectedDist);
                 return data;
             };
             
@@ -651,13 +653,12 @@ define([
                 this.createAddSector(result.path, levelVO, endPos, options);
             } else {
                 var allowDiagonals = dist > maxlen / 2;
-                var validSectors = options.stage ? levelVO.getSectorsByStage(options.stage) : levelVO.sectors;
                 
                 // find important points and paths for both startPos and endPos (S)
                 // - closest existing point (sector in validSectors closest to S, can be S itself)
                 // - nearest connected (sector in validSectors that is connected to S, but closest to the other end point, can be null if S doesn't exist or is unconnected to anything else)
-                var startPosData = getPointData(validSectors, startPos, endPos, allowDiagonals);
-                var endPosData = getPointData(validSectors, endPos, startPos, allowDiagonals);
+                var startPosData = getPointData(validSectors, startPos, endPos, allowDiagonals, dist);
+                var endPosData = getPointData(validSectors, endPos, startPos, allowDiagonals, dist);
                 
                 // consider 3 alternative paths:
                 // - direct
@@ -846,7 +847,7 @@ define([
         connectLevelSectors: function (worldVO, levelVO, sectors, stage) {
             var center = levelVO.campPositions.length > 0 ? levelVO.campPositions[0] : levelVO.excursionStartPosition;
             var getConnectedSectors = function () {
-                return StructureGenerator.getConnectedSectors(worldVO, center, sectors, stage);
+                return StructureGenerator.getConnectedSectors(worldVO, center, sectors, stage, 0);
             };
             var division = getConnectedSectors();
             var attempts = 0;
@@ -1106,18 +1107,36 @@ define([
             return { isValid: true, isBlocked: false };
         },
         
-        getConnectedSectors: function (worldVO, point, sectors, stage) {
+        getConnectedSectors: function (worldVO, point, sectors, stage, maxdist) {
             var result = { connected: [], disconnected: [] };
             if (!point || !worldVO.getLevel(point.level).hasSector(point.sectorX, point.sectorY)) return result;
+            var knownConnectedPos = [];
+            var savedByDist = 0;
+            var savedByKnown = 0;
             for (var i = 0; i < sectors.length; i++) {
                 var sector = sectors[i];
-                if (PositionConstants.getDistanceTo(sector.position, point) <= 1) {
+                var dist = PositionConstants.getDistanceTo(sector.position, point);
+                if (dist <= 1) {
                     result.connected.push(sector);
+                    savedByDist++;
+                    continue;
+                }
+                if (maxdist && dist > maxdist) {
+                    savedByDist++;
+                    continue;
+                }
+                if (knownConnectedPos.indexOf(sector.position) >= 0) {
+                    savedByKnown++;
                     continue;
                 }
                 var path = WorldCreatorRandom.findPath(worldVO, sector.position, point, false, true, stage);
                 if (path && path.length > 0) {
                     result.connected.push(sector);
+                    for (var p = 0; p < path.length; p++) {
+                        if (knownConnectedPos.indexOf(path[p]) < 0) {
+                            knownConnectedPos.push(path[p]);
+                        }
+                    }
                     continue;
                 }
                 result.disconnected.push(sector);

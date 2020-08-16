@@ -90,8 +90,8 @@ define([
 			var bottomLevel = worldVO.bottomLevel;
             var isCampableLevel = levelVO.isCampable;
             var isGoingDown = level <= 13 && level >= bottomLevel;
-            var passageUp = levelVO.getSector(levelVO.passageUpPosition);
-            var passageDown = levelVO.getSector(levelVO.passageDownPosition);
+            var passageUp = levelVO.getSectorByPos(levelVO.passageUpPosition);
+            var passageDown = levelVO.getSectorByPos(levelVO.passageDownPosition);
             var passage1 = isGoingDown ? passageUp : passageDown;
             var passage2 = isGoingDown ? passageDown : passageUp;
             
@@ -145,7 +145,7 @@ define([
             
             if (isCampableLevel) {
                 // camp:
-                var campSector = levelVO.getSector(levelVO.campPositions[0]);
+                var campSector = levelVO.getSectorByPos(levelVO.campPositions[0]);
                 // - path to camp ZONE_PASSAGE_TO_CAMP
                 if (level != 13) {
                     setAreaZone(passage1, WorldConstants.ZONE_PASSAGE_TO_CAMP, 3, 1);
@@ -433,7 +433,7 @@ define([
             var result = [];
             var unvisitedSectors = [];
             var visitSector = function (pos, pathID) {
-                var posSector = levelVO.getSector(pos);
+                var posSector = levelVO.getSectorByPos(pos);
                 if (!posSector) return;
                 if (posSector.pathID && pos.pathID != 0) return;
                 var index = unvisitedSectors.indexOf(posSector);
@@ -630,7 +630,7 @@ define([
             };
             for (var i = 0; i < path.length; i++) {
                 var pos = path[i];
-                var sectorVO = levelVO.getSector(pos);
+                var sectorVO = levelVO.getSectorByPos(pos);
                 if (requireResource(i, path.length, sectorVO, stepsWater, maxStepsWater)) {
                     sectorVO.requiredResources.water = true;
                     stepsWater = -1;

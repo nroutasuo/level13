@@ -89,12 +89,13 @@ function (Ash, WorldCreatorConstants, WorldCreatorLogger, PositionConstants, Pos
 		},
 		
 		getSector: function (sectorX, sectorY) {
-            if (sectorX && typeof (sectorX) != "number") {
-                sectorY = sectorX.sectorY;
-                sectorX = sectorX.sectorX;
-            }
 			return this.hasSector(sectorX, sectorY) ? this.sectorsByPos[sectorX][sectorY] : null;
 		},
+        
+        getSectorByPos: function (pos) {
+            if (!pos) return null;
+            return this.getSector(pos.sectorX, pos.sectorY);
+        },
         
         getSectorsByStage: function (stage) {
             return this.sectorsByStage[stage] ? this.sectorsByStage[stage] : [];
@@ -113,8 +114,9 @@ function (Ash, WorldCreatorConstants, WorldCreatorLogger, PositionConstants, Pos
 			for (var i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
 				var neighbourPos = PositionConstants.getNeighbourPosition(startingPos, direction);
-				if (this.hasSector(neighbourPos.sectorX, neighbourPos.sectorY, stage)) {
-					neighbours[direction] = neighbourWrapFunc(this.getSector(neighbourPos.sectorX, neighbourPos.sectorY));
+                var neighbour = this.getSector(neighbourPos.sectorX, neighbourPos.sectorY);
+				if (neighbour && (!stage || neighbour.stage == stage)) {
+					neighbours[direction] = neighbourWrapFunc(neighbour);
 				}
 			}
 			return neighbours;

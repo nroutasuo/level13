@@ -240,6 +240,13 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
                     WorldCreatorLogger.w("Max path length is <= 0, skipping check.");
                     continue;
                 }
+                // check min possible path distance before doing pathfinding
+                var dist = PositionConstants.getBlockDistanceTo(pathConstraints[j].startPosition, sector.position);
+                if (dist > pathConstraints[j].maxLength) {
+                    if (logFails) WorldCreatorLogger.i("path distance too long: " + pathLen + " / " + pathConstraints[j].maxLength + ", start: " + pathConstraints[j].startPosition + ", candidate " + sector.position);
+                    return false;
+                }
+                // check path
                 var path = this.findPath(worldVO, pathConstraints[j].startPosition, sector.position, false, true);
                 if (!path) return false;
                 var pathLen = path.length;
