@@ -42,16 +42,14 @@ define([
             for (var i = 0; i < stages.length; i++) {
                 var stageVO = stages[i];
                 this.generateLevelStage(seed, worldVO, levelVO, stageVO);
-                if (stageVO.stage == WorldConstants.CAMP_STAGE_EARLY) {
-                    this.connectLevelSectors(worldVO, levelVO, levelVO.getSectorsByStage(stageVO.stage), stageVO.stage);
-                }
             }
-            
-            // ensure whole level is connected
-            this.connectLevelSectors(worldVO, levelVO, levelVO.sectors);
             
             // fill in annoying gaps (connect sectors that are close by direct distance but far by path length)
             this.createGapFills(worldVO, levelVO);
+            
+            // ensure whole level is connected
+            this.connectLevelSectors(worldVO, levelVO, levelVO.sectors);
+            this.connectLevelSectors(worldVO, levelVO, levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_EARLY), WorldConstants.CAMP_STAGE_EARLY);
         },
         
         createCentralStructure: function (seed, worldVO, levelVO) {
@@ -978,6 +976,7 @@ define([
                 created = levelVO.addSector(vo);
                 if (created) {
                     sectorVO = vo;
+                    levelVO.resetPaths();
                 }
             }
             

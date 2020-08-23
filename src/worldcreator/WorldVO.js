@@ -15,6 +15,14 @@ define(['ash'], function (Ash) {
             
 			this.levels = [];
         },
+        
+        clear: function () {
+            for (var l = this.topLevel; l >= this.bottomLevel; l--) {
+                var levelVO = this.levels[l];
+                levelVO.clear();
+            }
+            this.levels = [];
+        },
 		
 		addLevel: function (l) {
 			this.levels[l.level] = l;
@@ -69,6 +77,10 @@ define(['ash'], function (Ash) {
         
         resetPaths: function () {
             this.paths = {};
+            for (var l = this.topLevel; l >= this.bottomLevel; l--) {
+                var levelVO = this.levels[l];
+                levelVO.resetPaths();
+            }
         },
         
         getPathKey: function (pos1, pos2, blockedByBlockers, stage) {

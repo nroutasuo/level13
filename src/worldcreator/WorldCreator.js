@@ -71,7 +71,7 @@ define([
 
         discardWorld: function () {
             WorldCreatorLogger.i("Discard world", this.context)
-            this.world.levels = [];
+            this.world.clear();
             this.world = null;
         },
 

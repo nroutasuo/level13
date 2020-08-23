@@ -1,6 +1,6 @@
 // debug helpers for the WorldCreator
-define(['ash', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper', 'worldcreator/WorldCreatorLogger'],
-function (Ash, WorldConstants, WorldCreatorHelper, WorldCreatorLogger) {
+define(['ash', 'core/ConsoleLogger', 'game/constants/WorldConstants', 'worldcreator/WorldCreatorHelper', 'worldcreator/WorldCreatorLogger'],
+function (Ash, ConsoleLogger, WorldConstants, WorldCreatorHelper, WorldCreatorLogger) {
 
     var WorldCreatorDebug = {
         
@@ -51,6 +51,7 @@ function (Ash, WorldConstants, WorldCreatorHelper, WorldCreatorLogger) {
         },
         
         printLevelTemplates: function (worldVO) {
+            if (!ConsoleLogger.logInfo) return;
             WorldCreatorLogger.groupCollapsed("Level templates");
             for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var levelVO = worldVO.levels[l];
@@ -69,6 +70,7 @@ function (Ash, WorldConstants, WorldCreatorHelper, WorldCreatorLogger) {
         },
         
         printLevelStructure: function (worldVO) {
+            if (!ConsoleLogger.logInfo) return;
             for (var l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
                 var levelVO = worldVO.levels[l];
                 this.printLevel(worldVO, levelVO, function (sectorVO) {});

@@ -364,10 +364,12 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
                 },
                 getSectorNeighboursMap: function (pathSectorVO) {
                     var levelVO = worldVO.getLevel(pathSectorVO.position.level);
-                    return levelVO.getNeighbours(pathSectorVO.result.sectorX, pathSectorVO.result.sectorY, function (sector) {
-                        if (!sector) return null;
-                        return makePathSectorVO(sector.position);
-                    }, stage);
+                    var raw = levelVO.getNeighbours(pathSectorVO.result.sectorX, pathSectorVO.result.sectorY, stage);
+                    var wrapped = {};
+                    for (var dir in raw) {
+                        wrapped[dir] = makePathSectorVO(raw[dir].position);
+                    }
+                    return wrapped;
                 },
                 isBlocked: function (pathSectorVO, direction) {
                     if (!blockByBlockers) return false;

@@ -1,5 +1,5 @@
-define(['ash', 'worldcreator/WorldCreatorConstants', 'worldcreator/WorldCreatorLogger', 'game/constants/PositionConstants', 'game/vos/PositionVO'],
-function (Ash, WorldCreatorConstants, WorldCreatorLogger, PositionConstants, PositionVO) {
+define(['ash', 'utils/VOCache', 'worldcreator/WorldCreatorConstants', 'worldcreator/WorldCreatorLogger', 'game/constants/PositionConstants', 'game/vos/PositionVO'],
+function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConstants, PositionVO) {
 
     var LevelVO = Ash.Class.extend({
 	
@@ -36,12 +36,16 @@ function (Ash, WorldCreatorConstants, WorldCreatorLogger, PositionConstants, Pos
             this.numLocales = 0;
             this.gangs = [];
             
-            /*
-            this.passageSectors = [];
-            this.passageUpSectors = null;
-            this.passageDownSectors = null;
-            this.possibleSpringSectors = [];
-            */
+            this.neighboursCacheContext = "LevelVO-" + this.level;
+            VOCache.create(this.neighboursCacheContext, 500);
+        },
+        
+        clear: function () {
+            VOCache.delete(this.neighboursCacheContext);
+        },
+        
+        resetPaths: function () {
+            VOCache.clear(this.neighboursCacheContext);
         },
 		
 		addSector: function (sectorVO) {
@@ -89,7 +93,9 @@ function (Ash, WorldCreatorConstants, WorldCreatorLogger, PositionConstants, Pos
 		},
 		
 		getSector: function (sectorX, sectorY) {
-			return this.hasSector(sectorX, sectorY) ? this.sectorsByPos[sectorX][sectorY] : null;
+			var colList = this.sectorsByPos[sectorX];
+            if (!colList) return null;
+			return this.sectorsByPos[sectorX][sectorY];
 		},
         
         getSectorByPos: function (pos) {
@@ -105,20 +111,25 @@ function (Ash, WorldCreatorConstants, WorldCreatorLogger, PositionConstants, Pos
             return this.sectorsByStage[stage] ? this.sectorsByStage[stage].length : 0;
         },
 		
-		getNeighbours: function (sectorX, sectorY, neighbourWrapFunc, stage) {
-            if (!neighbourWrapFunc) {
-                neighbourWrapFunc = function (n) { return n; };
+		getNeighbours: function (sectorX, sectorY, stage) {
+            var cacheKey = VOCache.getDefaultKey(sectorX, sectorY, stage);
+            var cached = VOCache.getVO(this.neighboursCacheContext, cacheKey);
+            if (cached) {
+                return cached;
             }
+            
 			var neighbours = {};
 			var startingPos = new PositionVO(this.level, sectorX, sectorY);
-			for (var i in PositionConstants.getLevelDirections()) {
-				var direction = PositionConstants.getLevelDirections()[i];
+            var levelDirections = PositionConstants.getLevelDirections();
+			for (var i in levelDirections) {
+				var direction = levelDirections[i];
 				var neighbourPos = PositionConstants.getNeighbourPosition(startingPos, direction);
                 var neighbour = this.getSector(neighbourPos.sectorX, neighbourPos.sectorY);
 				if (neighbour && (!stage || neighbour.stage == stage)) {
-					neighbours[direction] = neighbourWrapFunc(neighbour);
+					neighbours[direction] = neighbour;
 				}
 			}
+            VOCache.addVO(this.neighboursCacheContext, cacheKey, neighbours);
 			return neighbours;
 		},
         
@@ -228,50 +239,11 @@ function (Ash, WorldCreatorConstants, WorldCreatorLogger, PositionConstants, Pos
             if (position.x > this.maxX) return false;
             return true;
         },
+        
         addGang: function (gangVO) {
             this.gangs.push(gangVO);
         },
         
-        /*
-        
-        addPassageUpSector: function (sectorVO) {
-            this.passageSectors.push(sectorVO);
-            this.passageUpSector = sectorVO;
-        },
-        
-        addPassageDownSector: function (sectorVO) {
-            this.passageSectors.push(sectorVO);
-            this.passageDownSector = sectorVO;
-        },
-        
-        findPassageUp: function () {
-            var all = this.getPassagesUp();
-            if (all.length > 0) return all[0];
-            return null;
-        },
-        
-        findPassageDown: function () {
-            var all = this.getPassagesDown();
-            if (all.length > 0) return all[0];
-            return null;
-        },
-        
-        getPassagesUp: function () {
-            var result = [];
-            for (var i = 0; i < this.sectors.length; i++) {
-                if (this.sectors[i].passageUp > 0) result.push(this.sectors[i]);
-            }
-            return result;
-        },
-        
-        getPassagesDown: function () {
-            var result = [];
-            for (var i = 0; i < this.sectors.length; i++) {
-                if (this.sectors[i].passageDown > 0) result.push(this.sectors[i]);
-            }
-            return result;
-        },
-        */
 		
     });
 

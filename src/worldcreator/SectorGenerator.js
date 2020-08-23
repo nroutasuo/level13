@@ -112,6 +112,7 @@ define([
                     }
                 }
                 sector.zone = zone;
+                levelVO.resetPaths();
             };
             
             var setAreaZone = function (sector, zone, area, forceArea) {

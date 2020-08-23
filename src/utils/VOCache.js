@@ -14,6 +14,16 @@ define(function () {
                 lastPruneTime: null,
              };
         },
+        
+        delete: function (context) {
+            this.caches[context] = {};
+            delete this.caches[context];
+        },
+        
+        clear: function (context) {
+            if (!this.caches[context]) return;
+            this.caches[context].items = {};
+        },
 
         getVO: function (context, key) {
             if (!this.caches[context]) return null;
@@ -26,7 +36,7 @@ define(function () {
         addVO: function (context, key, vo) {
             if (!this.caches[context]) this.create(context, this.defaultMaxKeys);
             this.caches[context].items[key] = {
-                vo: vo,
+                vo: Object.assign({}, vo),
                 addtime: new Date().getTime(),
                 accesstime: null
             };
@@ -74,7 +84,21 @@ define(function () {
             }
 
             cache.lastPruneTime = now;
-        }
+        },
+        
+        getDefaultKey: function (...args) {
+            var res = "";
+            for (var i = 0; i < args.length; i++) {
+                if (typeof(args[i]) == undefined || args[i] == null) {
+                    continue;
+                }
+                if (i > 0) {
+                    res = res + ".";
+                }
+                res = res + args[i];
+            }
+            return res;
+        },
     };
 
     return VOCache;
