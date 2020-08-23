@@ -211,6 +211,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
             var result = {};
             var rand = (features.buildingDensity + features.wear + features.damage) / 30;
             var pickRandom = function (options, excluded) {
+                if (!options || options.length <= 0) return "";
                 var validOptions = options.filter(option => !excluded.includes(option));
                 var i = Math.floor(rand * validOptions.length);
                 return validOptions[i];
