@@ -67,11 +67,15 @@ define([
             for (var campOrdinal = 1; campOrdinal <= WorldConstants.CAMPS_TOTAL; campOrdinal++) {
                 var levels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
                 var numSectorsTotal = WorldCreatorHelper.getNumSectorsForCamp(seed, campOrdinal);
-                var numSectorsEarly = WorldCreatorConstants.getNumSectors(campOrdinal, false) * 0.5;
-                var numSectorsLate = numSectorsTotal - numSectorsEarly;
-                
-                stages.push(new StageVO(campOrdinal, WorldConstants.CAMP_STAGE_EARLY, [ levels[0] ], numSectorsEarly));
-                stages.push(new StageVO(campOrdinal, WorldConstants.CAMP_STAGE_LATE, levels, numSectorsLate));
+                if (campOrdinal <= WorldConstants.CAMP_ORDINAL_LIMIT) {
+                    var numSectorsEarly = WorldCreatorConstants.getNumSectors(campOrdinal, false) * 0.5;
+                    var numSectorsLate = numSectorsTotal - numSectorsEarly;
+                    
+                    stages.push(new StageVO(campOrdinal, WorldConstants.CAMP_STAGE_EARLY, [ levels[0] ], numSectorsEarly));
+                    stages.push(new StageVO(campOrdinal, WorldConstants.CAMP_STAGE_LATE, levels, numSectorsLate));
+                } else {
+                    stages.push(new StageVO(campOrdinal, WorldConstants.CAMP_STAGE_LATE, levels, numSectorsTotal));
+                }
             }
             return stages;
         },
@@ -208,7 +212,7 @@ define([
                     return campPositions[i];
                 }
             }
-            return null;
+            return [];
         },
         
         getNextCampPosDown: function (seed, campPositions, from, inclusive) {

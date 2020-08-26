@@ -299,6 +299,7 @@ define([
         handleException: function (ex) {
             var desc = StringUtils.getExceptionDescription(ex);
             var gadesc = desc.title + " | " + desc.shortstack;
+            log.i("logging exception to gtag");
             gtag('event', 'exception', {
                 'description': gadesc,
                 'fatal': true,

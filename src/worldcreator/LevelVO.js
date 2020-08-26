@@ -91,6 +91,10 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 			}
 			return false;
 		},
+        
+        hasSectorByPos: function (pos) {
+            return this.hasSector(pos.sectorX, pos.sectorY)
+        },
 		
 		getSector: function (sectorX, sectorY) {
 			var colList = this.sectorsByPos[sectorX];

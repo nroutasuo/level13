@@ -391,7 +391,7 @@ define([
                     }
                 }
                 log.e("ran out of tries to generate world");
-                reject();
+                reject(new Error("ran out of tries to generate world"));
             }.bind(this));
         },
 
@@ -459,6 +459,7 @@ define([
         logFailedWorldSeed: function (seed, reason) {
             log.e("geneating world failed! seed: " + seed + ", reason: " + reason);
             var gadesc = "generating world with seed " + seed + " failed | " + reason;
+            log.i("logging exception to gtag");
             gtag('event', 'exception', {
                 'description': gadesc,
                 'fatal': false,

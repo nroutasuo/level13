@@ -95,6 +95,9 @@ define([
         },
         
         checkNumberOfLocales: function (worldVO, campOrdinal, levelVOs) {
+            if (campOrdinal > WorldConstants.CAMP_ORDINAL_LIMIT) {
+                return { isValid: true };
+            }
             var numEarlyLocales = 0;
             var numLateLocales = 0;
             for (var i = 0; i < levelVOs.length; i++) {

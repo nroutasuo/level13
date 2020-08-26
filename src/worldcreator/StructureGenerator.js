@@ -604,8 +604,8 @@ define([
                 var i = 0;
                 do {
                     result = WorldCreatorHelper.getClosestSector(validSectors, sector, i);
-                    pathsResult = getConnectionPaths(sector, result.position, allowDiagonals);
-                    connectionPaths = pathsResult.paths;
+                        pathsResult = getConnectionPaths(sector, result.position, allowDiagonals);
+                        connectionPaths = pathsResult.paths;
                     i++;
                 } while (!connectionPaths && i < validSectors.length);
                 return result;
@@ -622,9 +622,9 @@ define([
             var getPointData = function (validSectors, point, otherPoint, allowDiagonals, maxNearestConnectedDist) {
                 var data = {};
                 data.pos = point;
-                data.closestExisting = getClosestValid(validSectors, point, allowDiagonals);
-                data.connectionPathsToCE = getConnectionPaths(point, data.closestExisting.position, allowDiagonals).paths;
-                data.nearestConnected = getNearestConnected(validSectors, point, otherPoint, maxNearestConnectedDist);
+                    data.closestExisting = getClosestValid(validSectors, point, allowDiagonals);
+                    data.connectionPathsToCE = getConnectionPaths(point, data.closestExisting.position, allowDiagonals).paths;
+                    data.nearestConnected = getNearestConnected(validSectors, point, otherPoint, maxNearestConnectedDist);
                 return data;
             };
             
@@ -847,12 +847,17 @@ define([
             var getConnectedSectors = function () {
                 return StructureGenerator.getConnectedSectors(worldVO, center, sectors, stage, 0);
             };
+            var stageName =  (stage ? stage : "all");
             var division = getConnectedSectors();
             var attempts = 0;
             var options = this.getDefaultOptions({ stage: stage });
             var skip = 0;
-            while (division.disconnected.length > 0 && attempts < 99) {
-                WorldCreatorLogger.i("connecting disconnected parts of level " + levelVO.level + " stage " + (stage ? stage : "all") + ", division " + division.connected.length + "-" + division.disconnected.length + ", center: " + center + ", skip: " + skip);
+            while (division.disconnected.length > 0 && division.connected.length > 0) {
+                if (attempts > 99) {
+                    throw new Error("couldn't connect disconnected parts of level " + levelVO.level + " stage " + stageName);
+                }
+            
+                WorldCreatorLogger.i("connecting disconnected parts of level " + levelVO.level + " stage " + stageName + ", division " + division.connected.length + "-" + division.disconnected.length + ", center: " + center + ", skip: " + skip);
                 var pair = WorldCreatorHelper.getClosestPair(division.connected, division.disconnected, skip);
                 var pairDist = PositionConstants.getDistanceTo(pair[0].position, pair[1].position);
                 var result = this.createPathBetween(worldVO, levelVO, pair[0].position, pair[1].position, -1, options);
@@ -862,9 +867,6 @@ define([
                     skip = 0;
                 } else {
                     skip++;
-                }
-                if (attempts > 50) {
-                    WorldCreatorLogger.i(division);
                 }
                 attempts++;
             }
