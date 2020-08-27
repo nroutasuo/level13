@@ -31,6 +31,7 @@ define([
     'game/components/player/PerksComponent',
     'game/components/player/BagComponent',
     'game/components/player/DeityComponent',
+	'game/components/player/ExcursionComponent',
     'game/vos/ResultVO',
     'game/vos/ResourcesVO'
 ], function (
@@ -65,6 +66,7 @@ define([
     PerksComponent,
     BagComponent,
     DeityComponent,
+    ExcursionComponent,
     ResultVO,
     ResourcesVO
 ) {
@@ -288,6 +290,15 @@ define([
 		collectRewards: function (isTakeAll, rewards, campSector) {
             if (rewards == null)
                 return;
+            
+            if (rewards.action == "scavenge") {
+                var excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
+                if (this.isSomethingUsefulResult(rewards)) {
+                    excursionComponent.numConsecutiveScavengeUseless = 0;
+                } else {
+                    excursionComponent.numConsecutiveScavengeUseless++;
+                }
+            }
                 
 			var currentStorage = campSector ? GameGlobals.resourcesHelper.getCurrentCampStorage(campSector) : GameGlobals.resourcesHelper.getCurrentStorage();
 			var playerPos = this.playerLocationNodes.head.position;
@@ -637,11 +648,13 @@ define([
         // NOTE: Even if probabilityFactor and efficiency are 1 you can still get no results if availableResources are very scarce
 		getRewardResources: function (probabilityFactor, amountFactor, efficiency, availableResources) {
 			var results = new ResourcesVO();
-            if (Math.random() > probabilityFactor)
+            if (Math.random() > probabilityFactor) {
                 return results;
+            }
 
-            if (!availableResources || !availableResources.getTotal || availableResources.getTotal() <= 0)
+            if (!availableResources || !availableResources.getTotal || availableResources.getTotal() <= 0) {
                 return results;
+            }
 
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
@@ -670,9 +683,12 @@ define([
 				results.setResource(name, resultAmount);
 			}
 
-            // consolation prize: if found nothing at this point & sector contains plenty of metal, add 1 metal
-            if (results.getTotal() === 0) {
-                if (availableResources.getResource(resourceNames.metal) >= 5) {
+            // consolation prize: if found nothing (useful) at this point, add 1 metal every few tries
+            if (!this.isSomethingUsefulResources(results)) {
+                var excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
+                log.i("USELESS SCA? ELIGIBLE FOR CONSOLATION " + excursionComponent.numConsecutiveScavengeUseless);
+                var metalAmount = availableResources.getResource(resourceNames.metal);
+                if (metalAmount > 7 || (metalAmount > 3 && excursionComponent.numConsecutiveScavengeUseless > 0)) {
                     results.setResource(resourceNames.metal, 1);
                 }
             }
@@ -916,6 +932,41 @@ define([
                     rewardsVO.gainedCurrency += stashVO.amount;
                     break;
             }
+        },
+        
+        isSomethingUsefulResult: function (result) {
+            return this.isSomethingUsefulResources(result.gainedResources)
+                || result.gainedItems.length > 0
+                || result.gainedCurrency > 0
+                || result.gainedFollowers.length > 0
+                || result.gainedBlueprintPiece
+                || result.gainedEvidence > 0
+                || result.gainedRumours > 0
+                || result.gainedFavour > 0
+                || result.gainedReputation > 0
+                || result.gainedPopulation > 0;
+        },
+        
+        isSomethingUsefulResources: function (resources) {
+            if (resources.getTotal() === 0)
+            {
+                return false;
+            }
+			for (var key in resourceNames) {
+				var name = resourceNames[key];
+                var amount = resources.getResource(name);
+                if (amount > 0) {
+                    switch (name) {
+                        case resourceNames.water:
+                        case resourceNames.food:
+                            return this.playerResourcesNodes.head.resources.resources.getResource(name) < 10;
+                        default:
+                            return true;
+                    }
+                }
+            }
+            return false;
+            var isStartAndGotNoMetal = !GameGlobals.gameState.unlockedFeatures.camp && results.getResource(resourceNames.metal) === 0;
         },
 
         isRewardItemTypeLocked: function (itemType) {

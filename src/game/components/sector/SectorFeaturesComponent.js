@@ -1,8 +1,8 @@
 // A component that describes features of a sector, both functional (ability to build stuff)
 // and purely aesthetic (description)
 define(
-    ['ash', 'game/constants/SectorConstants', 'game/vos/ResourcesVO'],
-    function (Ash, SectorConstants, ResourcesVO) {
+    ['ash', 'game/constants/GameConstants', 'game/constants/SectorConstants', 'game/vos/ResourcesVO'],
+    function (Ash, GameConstants, SectorConstants, ResourcesVO) {
     
     var SectorFeaturesComponent = Ash.Class.extend({
         
@@ -66,9 +66,10 @@ define(
                 var name = resourceNames[key];
                 var amount = this.resourcesScavengable.getResource(name);
                 if (amount > 0 && discoveredResources.indexOf(name) >= 0) {
-                    var amountDesc = "scarce";
+                    var amountDesc =  "scarce";
                     if (amount > 3) amountDesc = "common"
                     if (amount > 7) amountDesc = "abundant"
+                    if (GameConstants.isDebugVersion) amountDesc += " " + amount;
                     s += key + " (" + amountDesc + "), ";
                 }
             }
