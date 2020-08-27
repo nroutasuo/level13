@@ -232,6 +232,7 @@ define([
 			var defaultInjury = PerkConstants.perkDefinitions.injury[0];
 			var perksComponent = entity.get(PerksComponent);
 			perksComponent.addPerk(defaultInjury.clone());
+			entity.add(new ExcursionComponent());
 
 			var logComponent = entity.get(LogMessagesComponent);
 			logComponent.addMessage(LogConstants.MSG_ID_START, "You are alone in a massive dark corridor, far below sunlight.");

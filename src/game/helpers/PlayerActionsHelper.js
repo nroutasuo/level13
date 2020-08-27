@@ -765,8 +765,10 @@ define([
                                 reason = "Min " + min + " naps needed.";
                                 lowestFraction = Math.min(lowestFraction, currentValue / min);
                             } else if (max > 0 && currentValue >= max) {
-                                reason = "Already rested outside recently.";
-                                lowestFraction = 0;
+                                if (GameGlobals.gameState.unlockedFeatures.camp) {
+                                    reason = "Already rested outside recently.";
+                                    lowestFraction = 0;
+                                }
                             }
                         }
                     }

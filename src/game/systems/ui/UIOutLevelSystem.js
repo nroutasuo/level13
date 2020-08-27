@@ -244,6 +244,8 @@ define([
                 var staminaCostToMove = staminaToCamp;
                 var missingStamina = staminaCostToMove - staminaComponent.stamina;
                 lowStamina = missingStamina > 0 && missingStamina <= PlayerStatConstants.STAMINA_GAINED_FROM_NAP;
+            } else {
+                lowStamina = staminaComponent.stamina < 15;
             }
 
             var collectorFood = improvementsComponent.getVO(improvementNames.collector_food);
@@ -268,7 +270,7 @@ define([
             var isValidDespairStamina = this.playerPosNodes.head.entity.get(StaminaComponent).stamina < PlayerActionConstants.costs.move_sector_east.stamina;
             var isValidDespairMove = !movementOptionsComponent.canMove(); // conceivably happens in hazard sectors if you lose equipment
             var isFirstPosition = !GameGlobals.gameState.unlockedFeatures.sectors;
-            var showDespair = !hasCampHere && !isFirstPosition && (isValidDespairHunger || isValidDespairThirst || isValidDespairStamina) || isValidDespairMove;
+            var showDespair = GameGlobals.gameState.unlockedFeatures.camp && !hasCampHere && !isFirstPosition && (isValidDespairHunger || isValidDespairThirst || isValidDespairStamina) || isValidDespairMove;
 
             if (this.isDespairShown !== showDespair) {
                 if (showDespair) {
