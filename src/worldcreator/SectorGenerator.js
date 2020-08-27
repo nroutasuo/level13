@@ -848,8 +848,10 @@ define([
             if (sectorVO.isCamp) {
                 sca.food = Math.max(sca.food, 3);
                 if (isStartPosition) {
-                    col.food = Math.max(sca.water, 3);
+                    col.food = Math.max(sca.food, 3);
                     col.water = Math.max(sca.water, 3);
+                    sca.food = MathUtils.clamp(sca.metal, 4, 7);
+                    sca.metal = MathUtils.clamp(sca.food, 3, 7);
                 }
             }
             
