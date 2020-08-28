@@ -686,7 +686,6 @@ define([
             // consolation prize: if found nothing (useful) at this point, add 1 metal every few tries
             if (!this.isSomethingUsefulResources(results)) {
                 var excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
-                log.i("USELESS SCA? ELIGIBLE FOR CONSOLATION " + excursionComponent.numConsecutiveScavengeUseless);
                 var metalAmount = availableResources.getResource(resourceNames.metal);
                 if (metalAmount > 7 || (metalAmount > 3 && excursionComponent.numConsecutiveScavengeUseless > 0)) {
                     results.setResource(resourceNames.metal, 1);
@@ -959,14 +958,13 @@ define([
                     switch (name) {
                         case resourceNames.water:
                         case resourceNames.food:
-                            return this.playerResourcesNodes.head.resources.resources.getResource(name) < 10;
+                            return GameGlobals.gameState.unlockedFeatures.camp && this.playerResourcesNodes.head.resources.resources.getResource(name) < 10;
                         default:
                             return true;
                     }
                 }
             }
             return false;
-            var isStartAndGotNoMetal = !GameGlobals.gameState.unlockedFeatures.camp && results.getResource(resourceNames.metal) === 0;
         },
 
         isRewardItemTypeLocked: function (itemType) {

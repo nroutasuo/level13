@@ -718,6 +718,12 @@ define([
                     break;
             }
             
+            var isStartPosition = l == 13 && sectorVO.isCamp;
+            if (isStartPosition) {
+                minDensity = 3;
+                maxDensity = 8;
+            }
+            
             var randomDensity = WorldCreatorRandom.randomInt(seed * l * x + y + x, minDensity, maxDensity + 1);
             if (sectorVO.isCamp) randomDensity = 5;
             
