@@ -255,7 +255,7 @@
             for (var key in CampConstants.workerTypes) {
                 var def = CampConstants.workerTypes[key];
                 var maxWorkers = GameGlobals.campHelper.getMaxWorkers(this.playerLocationNodes.head.entity, key);
-                if (maxWorkers < 0) continue;
+                if (maxWorkers <= 0) continue;
                 var num = def.getLimitNum(campOrdinal, improvements);
                 var text = def.getLimitText(num);
                 UIConstants.updateCalloutContent("#in-assign-" + def.id + " .in-assign-worker-limit .info-callout-target", text, true);

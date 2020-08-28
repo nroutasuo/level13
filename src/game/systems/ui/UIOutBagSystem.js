@@ -503,7 +503,13 @@ define([
         isItemUnlocked: function (itemDefinition) {
             var actionName = "craft_" + itemDefinition.id;
             var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
-            return reqsCheck.value >= 1 || reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_BAG_FULL || reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES;
+            if (reqsCheck.value >= 1)
+                return true;
+            if (reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_BAG_FULL)
+                return true;
+            if (reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES) 
+                return true;
+            return false;
         },
 
         isObsolete: function (itemVO) {

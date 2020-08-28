@@ -30,32 +30,38 @@ define([
         },
         
         getMetalProductionPerSecond: function (workers, improvementsComponent) {
+            workers = workers || 0;
 			var metalUpgradeBonus = this.getUpgradeBonus("scavenger");
 			return workers * CampConstants.PRODUCTION_METAL_PER_WORKER_PER_S * metalUpgradeBonus * GameConstants.gameSpeedCamp;
         },
         
         getFoodProductionPerSecond: function (workers, improvementsComponent) {
+            workers = workers || 0;
 			var foodUpgradeBonus = this.getUpgradeBonus("trapper");
 			return workers * CampConstants.PRODUCTION_FOOD_PER_WORKER_PER_S * foodUpgradeBonus * GameConstants.gameSpeedCamp;
         },
         
         getWaterProductionPerSecond: function (workers, improvementsComponent) {
+            workers = workers || 0;
 			var waterUpgradeBonus = this.getUpgradeBonus("collector");
 			var waterImprovementBonus = 1 + (improvementsComponent.getCount(improvementNames.aqueduct) / 4);
             return CampConstants.PRODUCTION_WATER_PER_WORKER_PER_S * workers * waterUpgradeBonus * waterImprovementBonus * GameConstants.gameSpeedCamp;
         },
         
         getRopeProductionPerSecond: function (workers, improvementsComponent) {
+            workers = workers || 0;
 			var ropeUpgradeBonus = this.getUpgradeBonus("weaver");
 			return workers * CampConstants.PRODUCTION_ROPE_PER_WORKER_PER_S * ropeUpgradeBonus * GameConstants.gameSpeedCamp;
         },
         
         getFuelProductionPerSecond: function (workers, improvementsComponent) {
+            workers = workers || 0;
 			var fuelUpgradeBonus = this.getUpgradeBonus("chemist");
 			return workers * CampConstants.PRODUCTION_FUEL_PER_WORKER_PER_S * fuelUpgradeBonus * GameConstants.gameSpeedCamp;
         },
         
         getRubberProductionPerSecond: function (workers, improvementsComponent) {
+            workers = workers || 0;
 			var upgradeBonus = this.getUpgradeBonus("rubbermaker");
 			return workers * CampConstants.PRODUCTION_RUBBER_PER_WORKER_PER_S * upgradeBonus * GameConstants.gameSpeedCamp;
         },
@@ -67,29 +73,34 @@ define([
         },
         
         getMedicineProductionPerSecond: function (workers, improvementsComponent) {
+            workers = workers || 0;
 			var medicineUpgradeBonus = this.getUpgradeBonus("apothecary");
             var levelBonus = 1 + improvementsComponent.getLevel(improvementNames.apothecary) / 10;
 			return workers * CampConstants.PRODUCTION_MEDICINE_PER_WORKER_PER_S * medicineUpgradeBonus * levelBonus * GameConstants.gameSpeedCamp;
         },
         
         getToolsProductionPerSecond: function (workers, improvementsComponent) {
+            workers = workers || 0;
 			var toolsUpgradeBonus = this.getUpgradeBonus("smith");
             var levelBonus = 1 + improvementsComponent.getLevel(improvementNames.smithy) / 10;
 			return workers * CampConstants.PRODUCTION_TOOLS_PER_WORKER_PER_S * toolsUpgradeBonus * levelBonus * GameConstants.gameSpeedCamp;
         },
         
         getConcreteProductionPerSecond: function (workers, improvementsComponent) {
+            workers = workers || 0;
 			var concreteUpgradeBonus = this.getUpgradeBonus("concrete");
             var levelBonus = 1 + improvementsComponent.getLevel(improvementNames.cementmill) / 10;
 			return workers * CampConstants.PRODUCTION_CONCRETE_PER_WORKER_PER_S * concreteUpgradeBonus * levelBonus * GameConstants.gameSpeedCamp;
         },
         
         getEvidenceProductionPerSecond: function (workers, improvementComponent) {
+            workers = workers || 0;
 			var evidenceUpgradeBonus = this.getUpgradeBonus("scientist");
 			return workers * CampConstants.PRODUCTION_EVIDENCE_PER_WORKER_PER_S * evidenceUpgradeBonus * GameConstants.gameSpeedCamp;
         },
         
         getFavourProductionPerSecond: function (workers, improvementComponent) {
+            workers = workers || 0;
 			var upgradeBonus = this.getUpgradeBonus("cleric");
 			return workers * CampConstants.PRODUCTION_FAVOUR_PER_WORKER_PER_S * upgradeBonus * GameConstants.gameSpeedCamp;
         },
@@ -105,14 +116,17 @@ define([
         },
         
         getHerbsConsumptionPerSecond: function (workers) {
+            workers = workers || 0;
             return workers * CampConstants.CONSUMPTION_HERBS_PER_WORKER_PER_S * GameConstants.gameSpeedCamp;
         },
         
         getMetalConsumptionPerSecondSmith: function (workers) {
+            workers = workers || 0;
             return workers * CampConstants.CONSUMPTION_METAL_PER_TOOLSMITH_PER_S * GameConstants.gameSpeedCamp;
         },
         
         getMetalConsumptionPerSecondConcrete: function (workers) {
+            workers = workers || 0;
             return workers * CampConstants.CONSUMPTION_METAL_PER_CONCRETE_PER_S * GameConstants.gameSpeedCamp;
         },
         
