@@ -1168,7 +1168,7 @@ define([
                 if (blockerType === MovementConstants.BLOCKER_TYPE_GANG && allowedForGangs.indexOf(pathType) >= 0) continue;
                 for (var j = 0; j < neighbourVO.criticalPaths.length; j++) {
                     if (pathType === neighbourVO.criticalPaths[j]) {
-                        WorldCreatorLogger.w("(level " + levelVO.level + ") skipping movement blocker on critical path: " + pathType + " (type: " + blockerType + ")");
+                        WorldCreatorLogger.w("skipping movement blocker on critical path: " + pathType + " (type: " + blockerType + ")");
                         return;
                     }
                 }

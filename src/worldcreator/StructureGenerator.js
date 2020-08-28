@@ -38,10 +38,13 @@ define([
             // create required paths
             this.createRequiredPaths(seed, worldVO, levelVO);
             
+            // ensure early stage is connected
+            this.connectLevelSectors(worldVO, levelVO, levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_EARLY), WorldConstants.CAMP_STAGE_EARLY);
+            
             // create random shapes to fill the level (ensure EARLY stage is connected)
             for (var i = 0; i < stages.length; i++) {
                 var stageVO = stages[i];
-                this.generateLevelStage(seed, worldVO, levelVO, stageVO);
+                this.generateLevelStage(seed, worldVO, levelVO, stageVO, 999);
             }
             
             // fill in annoying gaps (connect sectors that are close by direct distance but far by path length)
@@ -277,11 +280,13 @@ define([
                 }
                 result = result.concat(StructureGenerator.getRectangleFromCenter(levelVO, 0, pos, outerS, outerS, false, isDiagonal, WorldCreatorConstants.CONNECTION_POINTS_RECT_OUTER));
                 for (var i = 0; i < numConnections; i ++) {
-                    var connectionDir = WorldCreatorRandom.randomDirections(s3 + i * 1001, 1, true)[0];
+                    var includeDiagonals = outerS - innerS > 4;
+                    var connectionDir = WorldCreatorRandom.randomDirections(s3 + i * 1001, 1, includeDiagonals)[0];
                     var connectionStartPos = PositionConstants.getPositionOnPath(pos, connectionDir, Math.round(innerS/2));
                     var connectionLen = outerS / 2 - innerS / 2;
                     if (isDiagonal && !PositionConstants.isDiagonal(connectionDir)) connectionLen = outerS - innerS;
-                    result.push(StructureGenerator.getPathVO(levelVO, connectionStartPos, connectionDir, connectionLen));
+                    var connectionPathVO = StructureGenerator.getPathVO(levelVO, connectionStartPos, connectionDir, connectionLen);
+                    result.push(connectionPathVO);
                 }
                 return result;
             };
@@ -291,7 +296,7 @@ define([
             var options = this.getDefaultOptions();
             for (var i = 0; i < paths.length; i++) {
                 var path = paths[i];
-                this.createPath(levelVO, path.startPos, path.dir, path.len, true, options, path.connectionPointType);
+                var res = this.createPath(levelVO, path.startPos, path.dir, path.len, true, options, path.connectionPointType);
             }
         },
         
@@ -373,7 +378,7 @@ define([
             return result;
         },
         
-        generateLevelStage: function (seed, worldVO, levelVO, stageVO) {
+        generateLevelStage: function (seed, worldVO, levelVO, stageVO, maxAttempts) {
             var stage = stageVO.stage;
             var numGoal = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, stageVO.stage);
             var numPadding = Math.floor(WorldCreatorConstants.MAX_SECTOR_COUNT_OVERFLOW / 4);
@@ -381,7 +386,6 @@ define([
             // geneate random rectangles and paths
             var attempts = 0;
             var failures = 0;
-            var maxAttempts = 999;
             var numCurrent = levelVO.getNumSectorsByStage(stage);
             while (numCurrent < numGoal && attempts < maxAttempts) {
                 attempts++;
@@ -868,6 +872,8 @@ define([
             var skip = 0;
             while (division.disconnected.length > 0 && division.connected.length > 0) {
                 if (attempts > 99) {
+                    WorldCreatorLogger.i("disconnected sectors:");
+                    WorldCreatorLogger.i(division.disconnected.map(sector => sector.position))
                     throw new Error("couldn't connect disconnected parts of level " + levelVO.level + " stage " + stageName);
                 }
             
@@ -1075,8 +1081,11 @@ define([
                 var posneighbours = WorldCreatorHelper.getNeighbours(levelVO, pos, pendingSectors);
                 var numNeighbours = WorldCreatorHelper.getNeighbourCount(levelVO, pos, pendingSectors);
                 if (!pos.equals(sectorPos)) {
-                    numNeighbours++;
-                    posneighbours[PositionConstants.getDirectionFrom(pos, sectorPos)] = { position: sectorPos };
+                    var dir = PositionConstants.getDirectionFrom(pos, sectorPos);
+                    if (!posneighbours[dir]) {
+                        numNeighbours++;
+                        posneighbours[dir] = { position: sectorPos };
+                    }
                 }
                 if (numNeighbours <= 4) return { isValid: true, pos: pos, numNeighbours: numNeighbours, neighbours: posneighbours };
                 if (numNeighbours >= 7) return { isValid: false, pos: pos, numNeighbours: numNeighbours, neighbours: posneighbours };
@@ -1099,7 +1108,7 @@ define([
             };
             var ncheck = checkNeighbours(sectorPos);
             if (!ncheck.isValid) {
-                return { isValid: false, isBlocked: true, reason: "blocking neighbours " + ncheck.numNeighbours + " " + ncheck.sum };
+                return { isValid: false, isBlocked: true, reason: "blocking neighbours " + ncheck.numNeighbours + " " + ncheck.numends };
             }
             
             var neighbours = WorldCreatorHelper.getNeighbours(levelVO, sectorPos, pendingSectors);
@@ -1109,7 +1118,7 @@ define([
                 if (neighbour) {
                     var ncheck = checkNeighbours(neighbour.position);
                     if (!ncheck.isValid) {
-                        return { isValid: false, isBlocked: true, reason: "neighbour has blocking neighbours " + neighbour.position + " " + ncheck.numNeighbours + " " + ncheck.sum };
+                        return { isValid: false, isBlocked: true, reason: "neighbour has blocking neighbours " + neighbour.position + " " + ncheck.numNeighbours + " " + ncheck.numends + " " + pendingSectors };
                     }
                 }
             }
