@@ -14,6 +14,7 @@ define([
     'game/nodes/sector/CampNode',
     'game/components/common/CurrentPlayerLocationComponent',
     'game/components/sector/CurrentNearestCampComponent',
+    'game/components/sector/PassagesComponent',
     'game/components/common/LogMessagesComponent',
     'game/components/common/PositionComponent',
     'game/components/common/VisitedComponent',
@@ -22,7 +23,8 @@ define([
     'game/components/type/LevelComponent',
 ], function (Ash, GameGlobals, GlobalSignals, GameConstants, LevelConstants, LogConstants,
     PlayerPositionNode, LevelNode, PlayerLocationNode, SectorNode, CampNode,
-	CurrentPlayerLocationComponent, CurrentNearestCampComponent, LogMessagesComponent, PositionComponent,
+	CurrentPlayerLocationComponent, CurrentNearestCampComponent, PassagesComponent,
+    LogMessagesComponent, PositionComponent,
 	VisitedComponent, RevealedComponent, CampComponent, LevelComponent) {
 
     var PlayerPositionSystem = Ash.System.extend({
@@ -186,30 +188,6 @@ define([
             gtag('event', 'reach_new_level', { event_category: 'progression', value: levelOrdinal})
 			if (levelPos !== 13) GameGlobals.gameState.unlockedFeatures.levels = true;
 			if (levelPos === GameGlobals.gameState.getGroundLevel()) GameGlobals.gameState.unlockedFeatures.favour = true;
-            
-            var nextLevel = GameGlobals.gameState.getLevelForOrdinal(levelOrdinal + 1);
-            var nextLevelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(nextLevel);
-            if (!nextLevelEntity)
-                return;
-            
-            var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(levelPos).get(LevelComponent);
-            var nextLevelComponent = nextLevelEntity.get(LevelComponent);
-            var isLastLevel = levelComponent.notCampableReason != LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT && nextLevelComponent.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT;
-            if (isLastLevel) {
-                setTimeout(function () {
-                    gtag('event', 'last_level_reached', { event_category: 'progression' })
-                    var msg = "You've reached the last level of the current version of Level 13. ";
-                    msg += "You can still explore this level and find many new things, but you won't be able to progress further up.";
-                    msg += "<br/><br/>"
-                    msg += "<span class='p-meta'>Thank you for playing this far! The developer would love to hear your feedback. You can use any of these channels:</span>";
-    				msg += "<p>" + GameConstants.getFeedbackLinksHTML() + "</p>";
-                    GameGlobals.uiFunctions.showInfoPopup(
-                        "Last level",
-                        msg,
-                        "Continue"
-                    );
-                }, 200);
-            }
 		},
 
         handleEnterLevel: function (levelNode, levelPos, isInitLocation) {
@@ -247,8 +225,7 @@ define([
 			sectorEntity.add(new VisitedComponent());
 			sectorEntity.add(new RevealedComponent());
 
-            var sectorPosition = sectorEntity.get(PositionComponent);
-            var revealDiameter = 1;
+            var sectorPos = sectorEntity.get(PositionComponent);
 
             var neighbours = GameGlobals.levelHelper.getSectorNeighboursMap(sectorEntity);
             for (var direction in neighbours) {
@@ -261,6 +238,13 @@ define([
             if (isNew) {
                 GameGlobals.gameState.numVisitedSectors++;
     			GameGlobals.gameState.unlockedFeatures.sectors = true;
+                
+                var isLastAvailableLevel = this.isLastAvailableLevel(sectorPos.level);
+                var passages = sectorEntity.get(PassagesComponent);
+                
+                if (isLastAvailableLevel && passages.passageUp) {
+                    this.showEndMessage();
+                }
             }
 		},
 
@@ -283,6 +267,34 @@ define([
                 playerPos.inCamp = false;
             }
             this.lastUpdatePosition = null;
+        },
+        
+        showEndMessage: function () {
+            setTimeout(function () {
+                gtag('event', 'level_14_passage_up_reached', { event_category: 'progression' })
+                var msg = "You've reached the end of the current version of Level 13. ";
+                msg += "This is where the passage up to the next level would be, but you will not be able to build it yet. Congrats for surviving the last level!";
+                msg += "<br/><br/>"
+                msg += "<span class='p-meta'>Thank you for playing this far! The developer would love to hear your feedback. You can use any of these channels:</span>";
+                msg += "<p>" + GameConstants.getFeedbackLinksHTML() + "</p>";
+                GameGlobals.uiFunctions.showInfoPopup(
+                    "The end",
+                    msg,
+                    "Continue"
+                );
+            }, 200);
+        },
+
+        isLastAvailableLevel: function (level) {
+            var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(level);
+            var nextLevel = GameGlobals.gameState.getLevelForOrdinal(levelOrdinal + 1);
+            var nextLevelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(nextLevel);
+            if (!nextLevelEntity)
+                return false;
+            
+            var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
+            var nextLevelComponent = nextLevelEntity.get(LevelComponent);
+            return levelComponent.notCampableReason != LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT && nextLevelComponent.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT;
         },
 
         addLogMessage: function (msgID, msg, replacements, values) {
