@@ -989,6 +989,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 		unlock_item_bag2: true
                 	}
                 },
+                craft_clothing_over_w: {
+                	upgrades: {
+                        unlock_clothing_warm: true,
+                		unlock_item_clothing4h: true
+                	}
+                },
                 craft_clothing_upper_5: {
                 	upgrades: {
                 		unlock_item_clothing5l: true
@@ -2172,7 +2178,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     item_res_silk: 3,
                 },
                 
-                craft_clothing_hands_lvl14: {
+                craft_clothing_hands_l14: {
                     resource_rubber: 10,
                     item_res_silk: 2,
                 },
@@ -2203,6 +2209,11 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_metal: 50,
                     item_res_tape: 1,
                     item_res_bands: 2,
+                },
+
+                craft_clothing_over_w: {
+                    resource_rope: 20,
+                    item_res_silk: 1
                 },
                 
                 craft_clothing_over_l14: {

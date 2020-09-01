@@ -80,10 +80,11 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
                 new ItemVO("weapon8", "Rifle", "Weapon", 15, true, true, false, 3, 3, {atk: 200, spd: 1.25}, "img/items/weapon-shiv.png", "Deadly weapon similar to those that were mass-produced just before the Fall."),
             ];
             this.itemDefinitions.clothing_over = [
-                new ItemVO("clothing_over_1", "Warm Coat", "Armor", 1, true, true, false, 5, 1, {def: 1, warmth: 20}, "img/items/clothing-2.png", "Something against the chill."),
+                new ItemVO("clothing_over_1", "Warm Coat", "Armor", 1, true, true, false, 5, 1, {def: 1, warmth: 15}, "img/items/clothing-2.png", "Something against the chill."),
                 new ItemVO("clothing_over_1x", "Lab Coat", "Armor", 2, true, false, false, 5, 1, {def: 1, warmth: 2, res_poison: 10}, "img/items/clothing-2.png", "Might protect from environmental hazards."),
                 new ItemVO("clothing_over_15", "Leather Jacket", "Armor", 2, true, true, false, 2, 1, {def: 4, warmth: 5, res_rad: 3, res_poison: 3}, "img/items/clothing-2.png", "A solid jacket."),
                 new ItemVO("clothing_over_2", "Biker jacket", "Armor", 3, true, false, false, 2, 1, {def: 6, warmth: 10, res_rad: 3, res_poison: 3}, "img/items/clothing-2.png", "Doesn't make one invincible, but feels like it."),
+                new ItemVO("clothing_over_w", "Winter parka", "Armor", 5, true, true, false, 3, 2, {def: 2, warmth: 20}, "img/items/clothing-2.png", "Not sure what winter means but it's very warm."),
                 new ItemVO("clothing_over_25", "Army Jacket", "Armor", 5, true, false, false, 2, 1, {def: 15, warmth: 10, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Something that's actually produced with the aim of keeping one safe."),
                 new ItemVO("clothing_over_25x", "Warm Army Jacket", "Armor", 5, true, false, false, 5, 5, {def: 15, warmth: 15, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Something that's actually produced with the aim of keeping one safe."),
                 new ItemVO("clothing_over_3", "Scrap metal armor", "Armor", 7, true, true, false, 5, 2, {def: 25, warmth: 5, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "An ugly but surprisingly comfortable metal blanket"),
@@ -128,7 +129,7 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
                 new ItemVO("clothing_hands_12", "Leather Gloves", "Hands", 3, true, true, false, 3, 1, {def: 1, warmth: 3, res_rad: 1, res_poison: 1}, "img/items/clothing-hand-0.png", "Not only warm but also protective."),
                 new ItemVO("clothing_hands_2", "Work gloves", "Hands", 5, true, true, false, 1, 1, {def: 1, warmth: 5, res_rad: 3, res_poison: 3}, "img/items/clothing-hand-0.png", "Basic protection for hands."),
                 new ItemVO("clothing_hands_25", "Good gloves", "Hands", 7, true, true, false, 2, 1, {def: 2, warmth: 5, res_rad: 3, res_poison: 3}, "img/items/clothing-hand-0.png", "Good gloves make scavenging much safer."),
-                new ItemVO("clothing_hands_lvl14", "Hazmat gloves", "Hands", 8, true, true, false, 2, 1, {def: 2, warmth: 5, res_rad: 10, res_poison: 10}, "img/items/clothing-hand-0.png", "Protection from environmental hazards.", true),
+                new ItemVO("clothing_hands_l14", "Hazmat gloves", "Hands", 8, true, true, false, 2, 1, {def: 2, warmth: 5, res_rad: 10, res_poison: 10}, "img/items/clothing-hand-0.png", "Protection from environmental hazards.", true),
                 new ItemVO("clothing_hands_3", "Quality gloves", "Hands", 10, true, true, false, 2, 1, {def: 2, warmth: 7, res_rad: 5, res_poison: 10}, "img/items/clothing-hand-0.png", "No scavenger ever regretted having good gloves."),
                 new ItemVO("clothing_hands_4", "Scavenger's gloves", "Hands", 12, true, true, false, 3, 1, {def: 5, warmth: 15, res_rad: 15, res_poison: 15}, "img/items/clothing-hand-0.png", "Gloves that protect from almost all environmental hazards."),
                 new ItemVO("clothing_hands_5", "Synthetic gloves", "Hands", 14, true, false, false, 3, 2, {def: 8, warmth: 15, res_rad: 15, res_poison: 15}, "img/items/clothing-hand-0.png", "Gloves made from recycled advanced textiles from before the Fall."),
