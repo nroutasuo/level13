@@ -76,17 +76,6 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
             return this.hasSpring || this.resourcesScavengable.getResource(resourceNames.water) > 0 || this.resourcesCollectable.getResource(resourceNames.water) > 0;
         },
         
-        /*
-        
-        isOnEarlyZone: function () {
-            return this.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP || this.zone == WorldConstants.ZONE_PASSAGE_TO_PASSAGE;
-        },
-        
-        hasPassage: function () {
-            return this.passageUpType || this.passageDownType;
-        },
-        */
-        
         getCriticalPathPriority: function (pathType) {
             if (!pathType) return 99;
             switch (pathType) {

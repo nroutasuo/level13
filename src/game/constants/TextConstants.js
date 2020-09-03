@@ -81,6 +81,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                     addOptions("n-buildings", [ "residential towers", "apartments", "tower blocks", "identical residential towers" ]);
                     addOptions("an-decos", [ "tram tracks" ]);
                     addOptions("a-building", [ "silent" ]);
+                    addOptions("an-items", [ "garbage" ]);
                     break;
                 case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
                     addOptions("n-sector", [ "industrial complex" ]);
@@ -223,7 +224,8 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                     if (sel) {
                         selection.push(sel);
                     } else {
-                        log.w("could not select valid " + key + " " + (i+1) + "/" + num);
+                        log.w("could not select valid [" + key + "] " + (i+1) + "/" + num)
+                        log.w(options);
                     }
                 }
                 return selection;
@@ -484,7 +486,6 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                     break;
     			case localeTypes.hut:
     			case localeTypes.hermit:
-                    modifier = "hut";
                     noun = "hut";
                     break;
     			case localeTypes.caravan:
@@ -494,6 +495,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                 case localeTypes.library:
                     modifier = "abandoned";
                     modifier = "library";
+                    break;
     			default:
                     log.w("unknown locale type: " + locale.type);
                     noun = "building";

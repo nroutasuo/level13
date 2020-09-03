@@ -198,7 +198,7 @@
             $("#in-population-next").text(campComponent.populationChangePerSec >= 0 ? "Next worker:" : "Worker leaving:");
             $("#in-population-reputation").text("Reputation required: " + reqRepCur + " (current) " + reqRepNext + " (next)");
             $("#in-population h3").text("Population: " + Math.floor(campComponent.population) + " / " + (maxPopulation));
-            $("#in-population p#in-population-status").text("Free workers: " + freePopulation);
+            $("#in-population p#in-population-status").text("Unassigned workers: " + freePopulation);
 
             if (!isPopulationStill) {
                 var secondsToChange = 0;
