@@ -11,6 +11,7 @@ define(['ash',
     'game/constants/TradeConstants',
     'game/constants/UpgradeConstants',
     'game/components/common/CampComponent',
+    'game/components/common/PositionComponent',
     'game/components/player/AutoPlayComponent',
     'game/components/player/ItemsComponent',
     'game/components/player/PerksComponent',
@@ -37,6 +38,7 @@ define(['ash',
     TradeConstants,
     UpgradeConstants,
     CampComponent,
+    PositionComponent,
     AutoPlayComponent,
     ItemsComponent,
     PerksComponent,
@@ -571,15 +573,16 @@ define(['ash',
             var originalPos = this.playerPositionNodes.head.position.getPosition();
             var level = originalPos.level;
             var sectors = GameGlobals.levelHelper.getSectorsByLevel(level);
-            var sectorVO;
+            var sector;
             var i = 0;
             var binding = null;
             var updateFunction = function () {
                 if (i < sectors.length) {
-                    sectorVO = sectors[i];
-                    var goalSector = GameGlobals.levelHelper.getSectorByPosition(level, sectorVO.position.sectorX, sectorVO.position.sectorY);
+                    sector = sectors[i];
+                    var pos = sector.get(PositionComponent);
+                    var goalSector = GameGlobals.levelHelper.getSectorByPosition(level, pos.sectorX, pos.sectorY);
                     if (GameGlobals.levelHelper.isSectorReachable(startSector, goalSector)) {
-                        this.setPlayerPosition(level, sectorVO.position.sectorX, sectorVO.position.sectorY);
+                        this.setPlayerPosition(level, pos.sectorX, pos.sectorY);
                         GameGlobals.playerActionFunctions.scout();
                     }
                 } else if (i == sectors.length) {

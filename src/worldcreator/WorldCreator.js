@@ -61,6 +61,7 @@ define([
                 
                 WorldCreatorLogger.i("Step 4/4: Sector templates", this.context);
                 SectorGenerator.prepareSectors(seed, this.world, itemsHelper, enemyCreator);
+                //WorldCreatorDebug.printSectorTemplates(this.world);
                 WorldCreatorLogger.i("Done");
             } finally {
                 WorldCreatorLogger.end();

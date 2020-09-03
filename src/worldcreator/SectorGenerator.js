@@ -595,6 +595,7 @@ define([
             
             // set sector flags and critical paths
             for (var i = 0; i < workshopSectors.length; i++) {
+                WorldCreatorLogger.i("placed workshop " + workshopResource + " at " + workshopSectors[i].position);
                 workshopSectors[i].hasWorkshop = true;
                 workshopSectors[i].hasClearableWorkshop = workshopResource != "herbs";
                 workshopSectors[i].hasBuildableWorkshop = workshopResource == "herbs";
