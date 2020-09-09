@@ -421,8 +421,10 @@ define([
                             var requirementBoolean = upgradeRequirements[upgradeId];
                             var hasBoolean = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeId);
                             if (requirementBoolean != hasBoolean) {
-                                if (requirementBoolean) reason = "Upgrade required: " + UpgradeConstants.upgradeDefinitions[upgradeId].name;
-                                else reason = "Upgrade already researched (" + upgradeId + ")";
+                                var def = UpgradeConstants.upgradeDefinitions[upgradeId];
+                                var name = def ? def.name : upgradeId;
+                                if (requirementBoolean) reason = "Upgrade required: " + name;
+                                else reason = "Upgrade already researched (" + name + ")";
                                 if (doLog) log.w("" + reason);
                                 return { value: 0, reason: reason };
                             }

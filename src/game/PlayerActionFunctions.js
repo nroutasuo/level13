@@ -1363,7 +1363,10 @@ define(['ash',
 		},
 
 		useShrine: function () {
-            if (Math.random() > 0.5) {
+            let shrineLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.shrine, this.tribeUpgradesNodes.head.upgrades);
+            let successChance = 0.4 + shrineLevel * 0.1;
+            log.i("success chance: " + successChance)
+            if (Math.random() < successChance) {
                 this.playerStatsNodes.head.entity.get(DeityComponent).favour += 1;
     			this.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "Spent some time listening to the spirits.");
             } else {

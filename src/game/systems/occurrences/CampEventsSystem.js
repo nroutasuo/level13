@@ -9,6 +9,7 @@ define([
 	'game/constants/TradeConstants',
 	'game/constants/TextConstants',
 	'game/constants/UIConstants',
+	'game/constants/WorldConstants',
 	'game/nodes/player/PlayerResourcesNode',
 	'game/nodes/sector/CampNode',
 	'game/nodes/tribe/TribeUpgradesNode',
@@ -22,7 +23,7 @@ define([
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/vos/RaidVO',
 ], function (
-	Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants, UIConstants,
+	Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants, UIConstants, WorldConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	CampComponent, PositionComponent, LogMessagesComponent, ItemsComponent,
 	TraderComponent, RaidComponent, CampEventTimersComponent,

@@ -293,10 +293,12 @@ define([
             
             if (rewards.action == "scavenge") {
                 var excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
-                if (this.isSomethingUsefulResult(rewards)) {
-                    excursionComponent.numConsecutiveScavengeUseless = 0;
-                } else {
-                    excursionComponent.numConsecutiveScavengeUseless++;
+                if (excursionComponent) {
+                    if (this.isSomethingUsefulResult(rewards)) {
+                        excursionComponent.numConsecutiveScavengeUseless = 0;
+                    } else {
+                        excursionComponent.numConsecutiveScavengeUseless++;
+                    }
                 }
             }
                 
@@ -687,7 +689,7 @@ define([
             if (!this.isSomethingUsefulResources(results)) {
                 var excursionComponent = this.playerResourcesNodes.head.entity.get(ExcursionComponent);
                 var metalAmount = availableResources.getResource(resourceNames.metal);
-                if (metalAmount > 7 || (metalAmount > 3 && excursionComponent.numConsecutiveScavengeUseless > 0)) {
+                if (metalAmount > 7 || (metalAmount > 3 && excursionComponent && excursionComponent.numConsecutiveScavengeUseless > 0)) {
                     results.setResource(resourceNames.metal, 1);
                 }
             }
