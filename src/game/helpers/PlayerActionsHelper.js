@@ -817,8 +817,6 @@ define([
                             }
                         }
                     }
-
-                    return { value: lowestFraction, reason: reason };
                 }
 
                 var item = this.getItemForCraftAction(action);
@@ -832,8 +830,8 @@ define([
                         }
                     }
                 }
-
-                return { value: 1 };
+                
+                return { value: lowestFraction, reason: reason };
             };
 
             if (!this.cache.reqs[reqsID]) {
