@@ -3,8 +3,8 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
     
     var UpgradeConstants = {
         
-        BLUEPRINT_TYPE_EARLY: "b-early",
-        BLUEPRINT_TYPE_LATE: "b-late",
+        BLUEPRINT_BRACKET_EARLY: "b-early",
+        BLUEPRINT_BRACKET_LATE: "b-late",
         
         upgradeIds: {
         	unlock_item_clothing5l: "unlock_item_clothing5l",
@@ -199,18 +199,18 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
             return 3;
         },
         
-        getBlueprintType: function (upgradeId) {
+        getBlueprintBracket: function (upgradeId) {
             var ordinal = this.getBlueprintCampOrdinal(upgradeId);
-            if (this.blueprintsByCampOrdinal[ordinal][0].indexOf(upgradeId) >= 0) return this.BLUEPRINT_TYPE_EARLY;
-            if (this.blueprintsByCampOrdinal[ordinal][1].indexOf(upgradeId) >= 0) return this.BLUEPRINT_TYPE_LATE;
+            if (this.blueprintsByCampOrdinal[ordinal][0].indexOf(upgradeId) >= 0) return this.BLUEPRINT_BRACKET_EARLY;
+            if (this.blueprintsByCampOrdinal[ordinal][1].indexOf(upgradeId) >= 0) return this.BLUEPRINT_BRACKET_LATE;
             return null;
         },
         
         getblueprintsByCampOrdinal: function (campOrdinal, blueprintType) {
             if (!this.blueprintsByCampOrdinal[campOrdinal]) return [];
-            if (blueprintType == this.BLUEPRINT_TYPE_EARLY) {
+            if (blueprintType == this.BLUEPRINT_BRACKET_EARLY) {
                 return this.blueprintsByCampOrdinal[campOrdinal][0];
-            } else if (blueprintType == this.BLUEPRINT_TYPE_LATE) {
+            } else if (blueprintType == this.BLUEPRINT_BRACKET_LATE) {
                 return this.blueprintsByCampOrdinal[campOrdinal][1];
             } else {
                 return this.blueprintsByCampOrdinal[campOrdinal][0].concat(this.blueprintsByCampOrdinal[campOrdinal][1]);
@@ -272,10 +272,10 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
     
         getMinimumLevelStepForUpgrade: function (upgrade) {
             var result = 0;
-            var blueprintType = this.getBlueprintType(upgrade);
-            if (blueprintType == this.BLUEPRINT_TYPE_EARLY)
+            var blueprintType = this.getBlueprintBracket(upgrade);
+            if (blueprintType == this.BLUEPRINT_BRACKET_EARLY)
                 result = WorldConstants.CAMP_STEP_START;
-            if (blueprintType == this.BLUEPRINT_TYPE_LATE)
+            if (blueprintType == this.BLUEPRINT_BRACKET_LATE)
                 result = WorldConstants.CAMP_STEP_POI_2;
                 
             var requiredTech = this.getRequiredTech(upgrade);

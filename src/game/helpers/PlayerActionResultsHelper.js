@@ -1115,7 +1115,7 @@ define([
             
 			var playerPos = this.playerLocationNodes.head.position;
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
-            var blueprintType = localeVO.isEarly ? UpgradeConstants.BLUEPRINT_TYPE_EARLY : UpgradeConstants.BLUEPRINT_TYPE_LATE;
+            var blueprintType = localeVO.isEarly ? UpgradeConstants.BLUEPRINT_BRACKET_EARLY : UpgradeConstants.BLUEPRINT_BRACKET_LATE;
 			var levelBlueprints = UpgradeConstants.getblueprintsByCampOrdinal(campOrdinal, blueprintType);
 
 			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;

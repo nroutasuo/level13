@@ -1098,7 +1098,7 @@ define([
 
 			// min number of (easy) locales ensures that player can get all upgrades intended for that level
             // two "levels" of locales for critical paths, those on path 2 can require tech from path 1 to reach but not the other way around
-            var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_EARLY);
+            var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY);
             if (numEarlyBlueprints) {
 				var minEarly = WorldCreatorConstants.getMinLocales(numEarlyBlueprints);
                 var maxEarly = WorldCreatorConstants.getMaxLocales(numEarlyBlueprints);
@@ -1108,7 +1108,7 @@ define([
                 WorldCreatorLogger.w("no early blueprints on camp level " + l);
             }
 
-            var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_LATE);
+            var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE);
             if (numLateBlueprints > 0) {
                 var minLate = WorldCreatorConstants.getMinLocales(numLateBlueprints);
                 var maxLate = WorldCreatorConstants.getMaxLocales(numLateBlueprints);
@@ -1511,6 +1511,7 @@ define([
                 blockerTypes.push(MovementConstants.BLOCKER_TYPE_GAP);
             }
             
+            // TODO non-hardcoded levels
             if (campOrdinal >= 7 && !isRadiatedLevel) {
                 blockerTypes.push(MovementConstants.BLOCKER_TYPE_WASTE_TOXIC);
             }

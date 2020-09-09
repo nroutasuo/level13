@@ -116,11 +116,11 @@ define([
                     }
                 }
             }
-            var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_EARLY);
+            var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY);
             if (numEarlyLocales < numEarlyBlueprints) {
                 return { isValid: false, reason: "too few early locales for camp ordinal " + campOrdinal + " " + numEarlyLocales + "/" + numEarlyBlueprints };
             }
-            var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_TYPE_LATE);
+            var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE);
             if (numLateLocales < numLateBlueprints) {
                 return { isValid: false, reason: "too few late locales for camp ordinal " + campOrdinal + " " + numLateLocales + "/" + numLateBlueprints };
             }
