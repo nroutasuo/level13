@@ -395,6 +395,27 @@ define([
                             }
                         }
                     }
+                    
+                    if (requirements.workers) {
+                        var workerRequirements = requirements.workers;
+                        
+                        for (let workerType in workerRequirements) {
+                            var requirementDef = workerRequirements[workerType];
+                            var min = requirementDef[0];
+                            var max = requirementDef[1];
+                            if (max < 0) max = 9999999;
+                            
+                            var amount = campComponent.assignedWorkers[workerType] || 0;
+                            log.i(workerType + " " + min + "-" + max + " | " + amount)
+                            
+                            if (min > amount || max <= amount) {
+                                var reason = min < max ? workerType + " required" : "no " + workerType + " required";
+                                if (doLog) log.w("" + reason);
+                                if (min > amount) return { value: amount/min, reason: reason };
+                                else return { value: 0, reason: reason };
+                            }
+                        }
+                    }
 
                     if (requirements.perks) {
                         var perkRequirements = requirements.perks;
@@ -1049,7 +1070,13 @@ define([
                     return requirements;
                 case "create_blueprint":
                     requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
-                    requirements.blueprintpieces = action.replace(baseActionID + "_", "");
+                    let upgradeId = action.replace(baseActionID + "_", "");
+                    let type = UpgradeConstants.getUpgradeType(upgradeId);
+                    requirements.blueprintpieces = upgradeId;
+                    if (type == UpgradeConstants.UPGRADE_TYPE_FAVOUR) {
+                        requirements.workers = {};
+                        requirements.workers.cleric = [1, -1];
+                    }
                     return requirements;
                 case "build_out_passage_up_stairs":
                 case "build_out_passage_up_elevator":

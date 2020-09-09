@@ -98,6 +98,9 @@ define([
                 var blueprintVO = this.tribeNodes.head.upgrades.newBlueprints[i];
                 if (blueprintVO.completed) continue;
                 if (this.tribeNodes.head.upgrades.hasUpgrade(blueprintVO.upgradeId)) continue;
+                var actionName = "create_blueprint_" + blueprintVO.upgradeId;
+                var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
+                if (reqsCheck.value < 1) continue;
                 if (blueprintVO.currentPieces === blueprintVO.maxPieces) count++;
             }
             return count;

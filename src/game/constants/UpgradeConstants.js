@@ -6,6 +6,10 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
         BLUEPRINT_BRACKET_EARLY: "b-early",
         BLUEPRINT_BRACKET_LATE: "b-late",
         
+        UPGRADE_TYPE_RUMOURS: "rumours",
+        UPGRADE_TYPE_FAVOUR: "favour",
+        UPGRADE_TYPE_EVIDENCE: "evidence",
+        
         upgradeIds: {
         	unlock_item_clothing5l: "unlock_item_clothing5l",
         	unlock_item_clothing8: "unlock_item_clothing8",
@@ -204,6 +208,14 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
             if (this.blueprintsByCampOrdinal[ordinal][0].indexOf(upgradeId) >= 0) return this.BLUEPRINT_BRACKET_EARLY;
             if (this.blueprintsByCampOrdinal[ordinal][1].indexOf(upgradeId) >= 0) return this.BLUEPRINT_BRACKET_LATE;
             return null;
+        },
+        
+        getUpgradeType: function (upgradeId) {
+			let costs = PlayerActionConstants.costs[upgradeId];
+			let type = UpgradeConstants.UPGRADE_TYPE_RUMOURS;
+			if (costs.favour > 0) type = UpgradeConstants.UPGRADE_TYPE_FAVOUR;
+			else if (costs.evidence > 0) type = UpgradeConstants.UPGRADE_TYPE_EVIDENCE;
+            return type;
         },
         
         getblueprintsByCampOrdinal: function (campOrdinal, blueprintType) {

@@ -415,10 +415,7 @@ define(['ash',
 		},
 
 		getBlueprintPieceIcon: function (upgradeId) {
-			var costs = PlayerActionConstants.costs[upgradeId];
-			var type = "rumours";
-			if (costs.favour > 0) type = "favour";
-			else if (costs.evidence > 0) type = "evidence";
+            let type = UpgradeConstants.getUpgradeType(upgradeId);
 			return "<img src='img/items/blueprints/blueprint-" + type + ".png' />";
 		},
 
