@@ -76,6 +76,7 @@ define([
             }
             
             // debug
+            //WorldCreatorDebug.printWorld(worldVO, [ "hasRegularEnemies"], "red" );
             // WorldCreatorDebug.printWorld(worldVO, [ "possibleEnemies.length" ]);
             // WorldCreatorDebug.printWorld(worldVO, [ "enemyDifficulty" ]);
             // WorldCreatorDebug.printWorld(worldVO, [ "hazards.radiation" ], "red");
@@ -936,8 +937,11 @@ define([
             };
             
             // sector-based: possible enemies, random encounters and locales
+            let center = levelVO.levelCenterPosition;
             for (var i = 0; i < levelVO.sectors.length; i++) {
                 var sectorVO = levelVO.sectors[i];
+                let dist = PositionConstants.getDistanceTo(center, sectorVO.position);
+                var distanceToCamp = WorldCreatorHelper.getQuickDistanceToCamp(levelVO, sectorVO);
                 sectorVO.possibleEnemies = [];
                 sectorVO.hasRegularEnemies = 0;
 
@@ -945,7 +949,14 @@ define([
                 sectorVO.possibleEnemies = this.getPossibleEnemies(seed, worldVO, levelVO, sectorVO, enemyCreator);
 
                 // regular enemies (random encounters not tied to locales / gangs)
-                sectorVO.hasRegularEnemies = !sectorVO.isCamp && WorldCreatorRandom.random(l * sectorVO.position.sectorX * seed + sectorVO.position.sectorY * seed + 4848) > 0.2;
+                if (distanceToCamp < 3) {
+                    sectorVO.hasRegularEnemies = false;
+                } else {
+                    let baseThreshold = levelVO.isCampable ? 0.15 : 0.65;
+                    let distanceFactor = MathUtils.map(dist, 0, 25, 0, 1);
+                    let r = WorldCreatorRandom.random(l * sectorVO.position.sectorX * seed + sectorVO.position.sectorY * seed + 4848);
+                    sectorVO.hasRegularEnemies = r < baseThreshold + distanceFactor;
+                }
 
                 // workshop and locale enemies (counts)
                 if (sectorVO.hasClearableWorkshop) {

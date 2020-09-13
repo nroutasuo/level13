@@ -41,11 +41,12 @@ define([
 
 		handleRandomEncounter: function (action, winCallback, fleeCallback, loseCallback) {
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
-            var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
 			var hasEnemies = this.hasEnemiesCurrentLocation(action);
 			if (hasEnemies && GameGlobals.gameState.unlockedFeatures.camp) {
                 var vision = this.playerStatsNodes.head.vision.value;
-				var encounterProbability = PlayerActionConstants.getRandomEncounterProbability(baseActionID, vision, encounterFactor);
+                var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
+                var sectorFactor = GameGlobals.sectorHelper.getDangerFactor(this.playerLocationNodes.head.entity);
+				var encounterProbability = PlayerActionConstants.getRandomEncounterProbability(baseActionID, vision, sectorFactor, encounterFactor);
 				if (Math.random() < encounterProbability) {
 					this.pendingEnemies = this.getEnemyCount(action);
                     this.totalEnemies = this.pendingEnemies;

@@ -152,6 +152,17 @@ define([
             
             return resources;
 		},
+        
+        getDangerFactor: function (sectorEntity) {
+            if (!sectorEntity) return 1;
+            let levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(sectorEntity);
+            let levelComponent = levelEntity.get(LevelComponent);
+            let result = 1;
+            if (!levelComponent.isCampable) {
+                result *= 2;
+            }
+            return result;
+        }
 		
     });
     

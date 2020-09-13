@@ -6,6 +6,7 @@ define([
 	'game/constants/UIConstants',
 	'game/constants/PlayerStatConstants',
 	'game/constants/PlayerActionConstants',
+    'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/player/AutoPlayNode',
 ], function (Ash,
@@ -15,11 +16,13 @@ define([
 	UIConstants,
 	PlayerStatConstants,
 	PlayerActionConstants,
+    PlayerLocationNode,
 	PlayerStatsNode,
 	AutoPlayNode,
 ) {
 	var UIOutElementsSystem = Ash.System.extend({
-
+        
+		playerLocationNodes: null,
 		playerStatsNodes: null,
 		autoPlayNodes: null,
 
@@ -36,6 +39,7 @@ define([
 
 		addToEngine: function (engine) {
 			this.engine = engine;
+            this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			this.autoPlayNodes = engine.getNodeList(AutoPlayNode);
             
@@ -62,6 +66,7 @@ define([
 
 		removeFromEngine: function (engine) {
 			this.engine = null;
+            this.playerLocationNodes = null;
             this.playerStatsNodes = null;
 			this.autoPlayNodes = null;
 		},
@@ -209,10 +214,12 @@ define([
 		},
 
 		updateButtonCalloutRisks: function ($button, action, buttonElements) {
+            var sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button) || this.playerLocationNodes.head.entity;
 			var playerVision = this.playerStatsNodes.head.vision.value;
 			var hasEnemies = GameGlobals.fightHelper.hasEnemiesCurrentLocation(action);
 			var baseActionId = GameGlobals.playerActionsHelper.getBaseActionID(action);
             var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
+            var sectorDangerFactor = GameGlobals.sectorHelper.getDangerFactor(sectorEntity);
 
 			var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
 			var injuryRiskBase = injuryRisk > 0 ? PlayerActionConstants.getInjuryProbability(action) : 0;
@@ -220,8 +227,8 @@ define([
 			var inventoryRisk = PlayerActionConstants.getLoseInventoryProbability(action, playerVision);
 			var inventoryRiskBase = inventoryRisk > 0 ? PlayerActionConstants.getLoseInventoryProbability(action) : 0;
 			var inventoryRiskVision = inventoryRisk - inventoryRiskBase;
-			var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision, encounterFactor) : 0;
-			var fightRiskBase = fightRisk > 0 ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision, encounterFactor) : 0;
+			var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision, sectorDangerFactor, encounterFactor) : 0;
+			var fightRiskBase = fightRisk > 0 ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision, sectorDangerFactor, encounterFactor) : 0;
 			var fightRiskVision = fightRisk - fightRiskBase;
 			GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskInjury, injuryRisk > 0);
 			if (injuryRisk > 0)
