@@ -103,19 +103,13 @@ function (Ash, ItemVO, ItemConstants) {
             var result = 0;
             for (var bonusKey in ItemConstants.itemBonusTypes) {
                 var bonusType = ItemConstants.itemBonusTypes[bonusKey];
-                var currentBonus = currentItem ? currentItem.getBonus(bonusType) : 0;
-                var newBonus = item.getBonus(bonusType);
-                if (!ItemConstants.isIncreasing(bonusType)) {
-                    currentBonus = -currentBonus;
-                    newBonus = -newBonus;
-                }
-                if (bonusType == ItemConstants.itemBonusTypes.fight_att) {
-                    currentBonus = currentBonus * (currentItem ? currentItem.getBonus(ItemConstants.itemBonusTypes.fight_speed) : 1);
-                    newBonus = newBonus * item.getBonus(ItemConstants.itemBonusTypes.fight_speed);
-                }
+                var currentBonus = ItemConstants.getItemBonusComparisonValue(currentItem, bonusType);
+                var newBonus = ItemConstants.getItemBonusComparisonValue(item, bonusType);
+                
                 if (bonusType == ItemConstants.itemBonusTypes.fight_speed) {
                     continue;
                 }
+                
                 if (newBonus < currentBonus) {
                     if (result > 0) return 0;
                     result = -1;

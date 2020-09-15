@@ -245,6 +245,20 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
             }
         },
         
+        getItemBonusComparisonValue: function (item, bonusType) {
+            if (!bonusType) {
+                return item.getTotalBonus();
+            }
+            let result = item ? item.getBonus(bonusType) : 0;
+            if (!ItemConstants.isIncreasing(bonusType)) {
+                result = -result;
+            }
+            if (bonusType == ItemConstants.itemBonusTypes.fight_att) {
+                result = result * (item ? item.getBonus(ItemConstants.itemBonusTypes.fight_speed) : 1);
+            }
+            return result;
+        },
+        
         requiredCampAndStepToCraftCache: {},
         
         getRequiredCampAndStepToCraft: function (item) {
@@ -354,7 +368,7 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
             return this.BAG_BONUS_5;
         },
         
-        getShoes: function (campOrdinal) {
+        getRandomShoes: function (campOrdinal) {
             if (campOrdinal < this.itemDefinitions.shoes[1].requiredCampOrdinal) {
                 return this.itemDefinitions.shoes[0];
             }

@@ -23,6 +23,28 @@ define([
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
         },
         
+        isAvailable: function (item, campOrdinal, step, includeCraftable, includeNonCraftable, maxScavengeRarity) {
+            maxScavengeRarity = maxScavengeRarity || 100;
+            var adjustCampOrdinal = step == WorldConstants.CAMP_STEP_START || step == WorldConstants.CAMP_STEP_PREVIOUS;
+            var adjustedCampOrdinal = adjustCampOrdinal ? campOrdinal - 1 : campOrdinal;
+            var adjustedStep = adjustCampOrdinal ? WorldConstants.CAMP_STEP_END : step - 1;
+            
+            let result = false;
+            
+            // craftable items: by craftable camp ordinal
+            if (item.craftable && includeCraftable) {
+                var req = ItemConstants.getRequiredCampAndStepToCraft(item);
+                result = req.campOrdinal < adjustedCampOrdinal || (req.campOrdinal == adjustedCampOrdinal && req.step <= adjustedStep);
+            }
+
+            // non-craftable items: by item defintiion camp ordinal
+            if (!item.craftable && includeNonCraftable) {
+                result = item.requiredCampOrdinal <= adjustedCampOrdinal && item.scavengeRarity <= maxScavengeRarity;
+            }
+            
+            return result;
+        },
+        
         getDefaultClothing: function (campOrdinal, step, itemBonusType, isHardLevel) {
             return this.getBestClothing(campOrdinal, step, itemBonusType, this.MAX_SCA_RARITY_DEFAULT_CLOTHING, isHardLevel);
         },
@@ -41,10 +63,6 @@ define([
         
         getAvailableClothingList: function (campOrdinal, step, includeCraftable, includeNonCraftable, includeMultiplePerType, preferredItemBonus, maxScavengeRarity, includeSpecialEquipment) {
             step = step || 2;
-            var adjustCampOrdinal = step == WorldConstants.CAMP_STEP_START || step == WorldConstants.CAMP_STEP_PREVIOUS;
-            var adjustedCampOrdinal = adjustCampOrdinal ? campOrdinal - 1 : campOrdinal;
-            var adjustedStep = adjustCampOrdinal ? WorldConstants.CAMP_STEP_END : step - 1;
-            maxScavengeRarity = maxScavengeRarity || 100;
             var result = [];
             var clothingLists = [
                 ItemConstants.itemDefinitions.clothing_over,
@@ -65,22 +83,12 @@ define([
                 clothingList = clothingLists[i];
                 for (var j = 0; j < clothingList.length; j++) {
                     clothingItem = clothingList[j];
-                    isAvailable = false;
                     
                     if (clothingItem.isSpecialEquipment && !includeSpecialEquipment) continue;
                     
-                    // craftable items: by craftable camp ordinal
-                    if (clothingItem.craftable && includeCraftable) {
-                        var req = ItemConstants.getRequiredCampAndStepToCraft(clothingItem);
-                        isAvailable = req.campOrdinal < adjustedCampOrdinal || (req.campOrdinal == adjustedCampOrdinal && req.step <= adjustedStep);
-                    }
-
-                    // non-craftable items: by item defintiion camp ordinal
-                    if (!clothingItem.craftable && includeNonCraftable) {
-                        isAvailable = clothingItem.requiredCampOrdinal <= adjustedCampOrdinal && clothingItem.scavengeRarity <= maxScavengeRarity;
-                    }
-
+                    isAvailable = this.isAvailable(clothingItem, campOrdinal, step, includeCraftable, includeNonCraftable, maxScavengeRarity);
                     var bonus = preferredItemBonus ? clothingItem.getBonus(preferredItemBonus) : clothingItem.getTotalBonus();
+                    
                     if (isAvailable && bonus > 0 && (!bestAvailableItem || bestAvailableItemBonus < bonus)) {
                         bestAvailableItem = clothingItem;
                         bestAvailableItemBonus = bonus;
@@ -120,6 +128,23 @@ define([
             var weapon = ItemConstants.getDefaultWeapon(campOrdinal, WorldConstants.CAMP_STEP_END);
             if (weapon && (!prevWeapon || weapon.id !== prevWeapon.id)) result.push(weapon);
             return result;
+        },
+        
+        getBestAvailableItem: function (campOrdinal, itemType, itemBonusType) {
+            let bestItem = null;
+            let bestBonus = 0;
+            for (var i = 0; i < ItemConstants.itemDefinitions[itemType].length; i++) {
+                let item = ItemConstants.itemDefinitions[itemType][i];
+                if (!this.isAvailable(item, campOrdinal, WorldConstants.CAMP_STAGE_EARLY, true, true)) {
+                    continue;
+                }
+                let bonus = ItemConstants.getItemBonusComparisonValue(item, itemBonusType)
+                if (!bestItem || bonus > bestBonus) {
+                    bestItem = item;
+                    bestBonus = bonus;
+                }
+            }
+            return bestItem;
         },
         
         getMaxHazardRadiationForLevel: function (campOrdinal, step, isHardLevel) {

@@ -476,6 +476,8 @@ define([
         
         generateStashes: function (seed, worldVO, levelVO) {
             var l = levelVO.level;
+            let nextLevel = WorldCreatorHelper.getLevelForOrdinal(seed, levelVO.levelOrdinal + 1);
+            let nextLevelVO = worldVO.getLevel(nextLevel) || levelVO;
             var lateZones = [ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_EXTRA_CAMPABLE ];
             var earlyZones = [ WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_PASSAGE_TO_PASSAGE, WorldConstants.ZONE_POI_1 ];
             var earlyZonesEntrance = [ WorldConstants.ZONE_ENTRANCE ];
@@ -484,19 +486,21 @@ define([
                 var options = { requireCentral: false, excludingFeature: "camp", excludedZones: excludedZones };
                 var stashSectors = WorldCreatorRandom.randomSectors(sectorSeed, worldVO, levelVO, num, num + 1, options);
                 var isAmountRange = typeof(numItemsPerStash) !== "number";
-                var min = isAmountRange ? numItemsPerStash[0] : numItemsPerStash;
-                var max = isAmountRange ? numItemsPerStash[1] : numItemsPerStash;
+                var min = Math.round(isAmountRange ? numItemsPerStash[0] : numItemsPerStash);
+                var max = Math.round(isAmountRange ? numItemsPerStash[1] : numItemsPerStash);
                 for (var i = 0; i < stashSectors.length; i++) {
                     var numItems = isAmountRange ? WorldCreatorRandom.randomInt(sectorSeed / 2, min, max) : numItemsPerStash;
                     var stash = new StashVO(stashType, numItems, itemID);
                     stashSectors[i].stashes.push(stash);
-                    // WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " (" + min + "-" + max + ") " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
+                    WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " (" + min + "-" + max + ") " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
                 }
             };
             
             // stashes: lock picks
             if (l == 13) {
                 addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, "lockpick", ItemConstants.STASH_TYPE_ITEM, "exploration_1", 1, 1, lateZones);
+            } else if (!levelVO.isCampable) {
+                addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, "lockpick", ItemConstants.STASH_TYPE_ITEM, "exploration_1", 1, 1);
             }
             
             // stashes: hairpins (for lockpics)
@@ -507,15 +511,19 @@ define([
             addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, "hairpin", ItemConstants.STASH_TYPE_ITEM, "res_hairpin", numHairpinStashes, pinsPerStash);
             
             // stashes: ingredients for craftable equipment (campable levels)
-            var requiredEquipment = this.itemsHelper.getRequiredEquipment(levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, levelVO.isHard);
+            let stashIngredients;
+            let requiredEquipment = this.itemsHelper.getRequiredEquipment(levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, levelVO.isHard);
             if (levelVO.isCampable) {
-                var requiredEquipmentIngredients = this.itemsHelper.getIngredientsToCraftMany(requiredEquipment);
-                var numStashIngredients = MathUtils.clamp(Math.floor(requiredEquipmentIngredients.length / 2), 1, 3);
-                for (var i = 0; i < numStashIngredients; i++) {
-                    var def = requiredEquipmentIngredients[i];
-                    var amount = MathUtils.clamp(def.amount / 3, 3, 10);
-                    addStashes(seed % 13 + l * 7 + 5 + (i+1) * 10, "craftable ingredients", ItemConstants.STASH_TYPE_ITEM, def.id, 2, amount);
-                }
+                stashIngredients = this.itemsHelper.getIngredientsToCraftMany(requiredEquipment);
+            } else {
+                requiredEquipment = this.itemsHelper.getRequiredEquipment(nextLevelVO.campOrdinal, WorldConstants.CAMP_STEP_POI_2, nextLevelVO.isHard);
+                stashIngredients = this.itemsHelper.getIngredientsToCraftMany(requiredEquipment);
+            }
+            let numStashIngredients = MathUtils.clamp(Math.floor(stashIngredients.length / 2), 1, 3);
+            for (var i = 0; i < numStashIngredients; i++) {
+                var def = stashIngredients[i];
+                var amount = MathUtils.clamp(def.amount / 3, 3, 10);
+                addStashes(seed % 13 + l * 7 + 5 + (i+1) * 10, "craftable ingredients", ItemConstants.STASH_TYPE_ITEM, def.id, 2, amount);
             }
             
             // stashes: non-craftable equipment
@@ -555,7 +563,26 @@ define([
                 addStashes(500 + seed / 5 + (l + 5) * 2541, "currency", ItemConstants.STASH_TYPE_SILVER, "", numCurrencyStashes, currencyAmount, excludedZones);
             }
             
-            // TODO add rare and non-essential stuff no non-campable levels
+            // stashes: uncraftable misc items (uncampable levels)
+            if (!levelVO.isCampable) {
+                let searchDefs = [
+                    { itemType: "shoes", itemBonusType: ItemConstants.itemBonusTypes.movement, probability: 0.5 },
+                    { itemType: "bag", itemBonusType: ItemConstants.itemBonusTypes.bag, probability: 0.5 },
+                    { itemType: "light", itemBonusType: ItemConstants.itemBonusTypes.light, probability: 0.5 },
+                    { itemType: "clothing_head", itemBonusType: ItemConstants.itemBonusTypes.shade, probability: 0.2 },
+                    { itemType: "weapon", itemBonusType: ItemConstants.itemBonusTypes.fight_att, probability: 0.2 },
+                ];
+                for (let i = 0; i < searchDefs.length; i++) {
+                    let searchDef = searchDefs[i];
+                    let bestItem = this.itemsHelper.getBestAvailableItem(nextLevelVO.campOrdinal, searchDef.itemType, searchDef.itemBonusType);
+                    if (!bestItem.craftable) log.i(searchDef.itemType + " " + bestItem.id)
+                    let s1 = 6000 + seed % 8 + (l + 5) * 555 + i * 44;
+                    let s2 = 5001 + seed % 5 * 301 + (l + 5) * 102 + i * 66;
+                    if (bestItem && !bestItem.craftable && WorldCreatorRandom.random(s1) < searchDef.probability) {
+                        addStashes(s2, "uncraftable " + searchDef.itemType, ItemConstants.STASH_TYPE_ITEM, bestItem.id, 1, 1);
+                    }
+                }
+            }
         },
         
         generateWorksops: function (seed, worldVO, levelVO) {
