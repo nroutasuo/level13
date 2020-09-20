@@ -98,10 +98,11 @@ define([
             if (campOrdinal > WorldConstants.CAMP_ORDINAL_LIMIT) {
                 return { isValid: true };
             }
-            var numEarlyLocales = 0;
-            var numLateLocales = 0;
+            
             for (var i = 0; i < levelVOs.length; i++) {
                 var levelVO = levelVOs[i];
+                var numEarlyLocales = 0;
+                var numLateLocales = 0;
                 for (var s = 0; s < levelVO.sectors.length; s++) {
                     var sectorVO = levelVO.sectors[s];
                     if (sectorVO.locales.length > 0) {
@@ -115,14 +116,15 @@ define([
                         }
                     }
                 }
-            }
-            var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY);
-            if (numEarlyLocales < numEarlyBlueprints) {
-                return { isValid: false, reason: "too few early locales for camp ordinal " + campOrdinal + " " + numEarlyLocales + "/" + numEarlyBlueprints };
-            }
-            var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE);
-            if (numLateLocales < numLateBlueprints) {
-                return { isValid: false, reason: "too few late locales for camp ordinal " + campOrdinal + " " + numLateLocales + "/" + numLateBlueprints };
+                let levelIndex = WorldCreatorHelper.getLevelIndexForCamp(worldVO.seed, campOrdinal, levelVO.level);
+                var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY, levelIndex);
+                if (numEarlyLocales < numEarlyBlueprints) {
+                    return { isValid: false, reason: "too few early locales for level " + levelVO.level + ", camp ordinal " + campOrdinal + " " + numEarlyLocales + "/" + numEarlyBlueprints };
+                }
+                var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE, levelIndex);
+                if (numLateLocales < numLateBlueprints) {
+                    return { isValid: false, reason: "too few late locales for level " + levelVO.level + ", camp ordinal " + campOrdinal + " " + numLateLocales + "/" + numLateBlueprints };
+                }
             }
             return { isValid: true };
         },

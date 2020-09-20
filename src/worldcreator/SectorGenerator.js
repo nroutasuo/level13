@@ -492,7 +492,7 @@ define([
                     var numItems = isAmountRange ? WorldCreatorRandom.randomInt(sectorSeed / 2, min, max) : numItemsPerStash;
                     var stash = new StashVO(stashType, numItems, itemID);
                     stashSectors[i].stashes.push(stash);
-                    WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " (" + min + "-" + max + ") " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
+                    //WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " (" + min + "-" + max + ") " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
                 }
             };
             
@@ -575,7 +575,6 @@ define([
                 for (let i = 0; i < searchDefs.length; i++) {
                     let searchDef = searchDefs[i];
                     let bestItem = this.itemsHelper.getBestAvailableItem(nextLevelVO.campOrdinal, searchDef.itemType, searchDef.itemBonusType);
-                    if (!bestItem.craftable) log.i(searchDef.itemType + " " + bestItem.id)
                     let s1 = 6000 + seed % 8 + (l + 5) * 555 + i * 44;
                     let s2 = 5001 + seed % 5 * 301 + (l + 5) * 102 + i * 66;
                     if (bestItem && !bestItem.craftable && WorldCreatorRandom.random(s1) < searchDef.probability) {
@@ -1109,7 +1108,9 @@ define([
                     var length = WorldCreatorConstants.getMaxPathLength(campOrdinal, pathType);
                     pathConstraints.push(new PathConstraintVO(pos, length, pathType));
                 }
-                var excludedZones = isEarly ? [ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_EXTRA_CAMPABLE, WorldConstants.ZONE_CAMP_TO_PASSAGE ] : [ WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_POI_1, WorldConstants.ZONE_EXTRA_CAMPABLE ];
+                var excludedZones = isEarly ?
+                    [ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_CAMP_TO_PASSAGE, WorldConstants.ZONE_EXTRA_CAMPABLE ] :
+                    [ WorldConstants.ZONE_ENTRANCE, WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_POI_1, WorldConstants.ZONE_EXTRA_CAMPABLE ];
                 var options = { requireCentral: false, excludingFeature: "camp", pathConstraints: pathConstraints, excludedZones: excludedZones, numDuplicates: 2 };
                 var l = levelVO.level;
                 var sseed = seed - (isEarly ? 5555 : 0) + (l + 50) * 2;
@@ -1129,31 +1130,29 @@ define([
                     }
 				}
             };
-
-
-            // TODO have some blueprints on campless levels too (but ensure not critical ones)
-            if (!levelVO.isCampable) return;
-
+            
 			// min number of (easy) locales ensures that player can get all upgrades intended for that level
-            // two "levels" of locales for critical paths, those on path 2 can require tech from path 1 to reach but not the other way around
-            var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY);
+            // two brackets of locales for critical paths, those on path 2 can require tech from path 1 to reach but not the other way around
+            let levelIndex = WorldCreatorHelper.getLevelIndexForCamp(seed, campOrdinal, levelVO.level);
+            log.i("level " + levelVO.level + " camp ordinal " + campOrdinal + ", level index: " + levelIndex);
+            var earlyBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY, levelIndex);
+            var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY, levelIndex);
+            log.i("- early: " + earlyBlueprints.join(","))
             if (numEarlyBlueprints) {
 				var minEarly = WorldCreatorConstants.getMinLocales(numEarlyBlueprints);
                 var maxEarly = WorldCreatorConstants.getMaxLocales(numEarlyBlueprints);
 				var countEarly = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minEarly, maxEarly + 1);
                 createLocales(worldVO, levelVO, campOrdinal, true, countEarly, minEarly);
-            } else {
-                WorldCreatorLogger.w("no early blueprints on camp level " + l);
             }
 
-            var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE);
+            var lateBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE, levelIndex);
+            var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE, levelIndex);
+            log.i("- late: " + lateBlueprints.join(","))
             if (numLateBlueprints > 0) {
                 var minLate = WorldCreatorConstants.getMinLocales(numLateBlueprints);
                 var maxLate = WorldCreatorConstants.getMaxLocales(numLateBlueprints);
 				var countLate = WorldCreatorRandom.randomInt((seed % 84) * l * l * l + 1, minLate, maxLate + 1);
                 createLocales(worldVO, levelVO, campOrdinal, false, countLate, minLate);
-            } else {
-                WorldCreatorLogger.w("no late blueprints on camp level " + l);
             }
         },
         

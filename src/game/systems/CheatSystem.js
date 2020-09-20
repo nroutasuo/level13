@@ -467,7 +467,7 @@ define(['ash',
 
         addBlueprintsForLevel: function (campOrdinal) {
             var id;
-            var blueprints = UpgradeConstants.getblueprintsByCampOrdinal(campOrdinal);
+            var blueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal);
 			for (var i in blueprints) {
                 id = blueprints[i];
                 this.addBlueprints(id, UpgradeConstants.piecesByBlueprint[id]);

@@ -186,15 +186,15 @@ define([
         getScoutLocaleRewards: function (localeVO) {
             var rewards = new ResultVO("scout");
             var localeCategory = localeVO.getCategory();
-
-            var availableResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable.clone();
-            availableResources.addAll(localeVO.getResourceBonus(GameGlobals.gameState.unlockedFeatures.resources));
-            availableResources.limitAll(0, 10);
-            var efficiency = this.getScavengeEfficiency();
-            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var playerPos = this.playerLocationNodes.head.position;
             var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
             var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
+
+            var availableResources = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent).resourcesScavengable.clone();
+            availableResources.addAll(localeVO.getResourceBonus(GameGlobals.gameState.unlockedFeatures.resources, campOrdinal));
+            availableResources.limitAll(0, 10);
+            var efficiency = this.getScavengeEfficiency();
+            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var step = GameGlobals.levelHelper.getCampStep(playerPos);
             var localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
 
@@ -1117,8 +1117,9 @@ define([
             
 			var playerPos = this.playerLocationNodes.head.position;
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
+            let levelIndex = GameGlobals.gameState.getLevelIndex(playerPos.level);
             var blueprintType = localeVO.isEarly ? UpgradeConstants.BLUEPRINT_BRACKET_EARLY : UpgradeConstants.BLUEPRINT_BRACKET_LATE;
-			var levelBlueprints = UpgradeConstants.getblueprintsByCampOrdinal(campOrdinal, blueprintType);
+			var levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, blueprintType, levelIndex);
 
 			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
 			var blueprintsToFind = [];
@@ -1144,8 +1145,8 @@ define([
             
             if (!GameGlobals.gameState.uiStatus.isHidden) {
                 log.i("get result blueprint: " + blueprintType + " | pieces to find: " + blueprintPiecesToFind + " / unscouted locales: " + numUnscoutedLocales + " -> prob: " + Math.round(findBlueprintProbability*100)/100 + ", scouted locales: " + numScoutedLocales);
-                // log.i(levelBlueprints);
-                // log.i(blueprintsToFind);
+                log.i(levelBlueprints);
+                log.i(blueprintsToFind);
             }
 
             var isFirstEver = playerPos.level == 13 && numScoutedLocales == 0;
@@ -1164,13 +1165,14 @@ define([
 			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
             var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
-            for (var i = 1; i <= levelOrdinal; i++) {
+            for (var i = 1; i < levelOrdinal; i++) {
                 var level = GameGlobals.gameState.getLevelForOrdinal(i);
                 var allLocales = GameGlobals.levelHelper.getLevelLocales(level, true, null, true).length;
                 var unscoutedLocales = GameGlobals.levelHelper.getLevelLocales(level, false, null, true).length;
                 if (allLocales > 0 && unscoutedLocales === 0) {
                     var c = GameGlobals.gameState.getCampOrdinal(level);
-                    var levelBlueprints = UpgradeConstants.getblueprintsByCampOrdinal(c);
+                    var levelIndex = GameGlobals.gameState.getLevelIndex(level);
+                    var levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(c, null, levelIndex);
         			for (var j = 0; j < levelBlueprints.length; j++) {
 		                var blueprintId = levelBlueprints[j];
 		                if (upgradesComponent.hasUpgrade(blueprintId)) continue;

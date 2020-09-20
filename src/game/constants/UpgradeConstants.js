@@ -99,21 +99,21 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
         
         // camp ordinal > a list of blueprints, first array is early and second is late
         blueprintsByCampOrdinal: {
-        	1: [["unlock_item_shoe1"], ["unlock_building_passage_staircase"]],
-        	2: [["unlock_building_tradingpost", "unlock_weapon_15"], ["unlock_clothing_warm", "unlock_building_darkfarm"]],
-        	3: [["unlock_building_library", "unlock_building_market"], ["unlock_building_inn", "unlock_building_fortifications"]],
-        	4: [["unlock_item_weapon2"], ["upgrade_worker_scavenger"]],
-        	5: [["unlock_item_clothing4h", "unlock_building_bridge"], ["unlock_building_passage_elevator", "unlock_building_lights"]],
-        	6: [["unlock_building_smithy", "unlock_item_bag22"], ["upgrade_building_market", "upgrade_worker_collector1", "unlock_building_cementmill"]],
-        	7: [["upgrade_building_storage1"], ["unlock_building_passage_hole", "unlock_building_house2"]],
-        	8: [["unlock_item_weapon4", "unlock_item_clothing5"], ["upgrade_building_market2", "unlock_item_clothing3"]],
-        	9: [["upgrade_building_campfire"], ["upgrade_worker_trapper"]],
-        	10: [["unlock_item_weapon5", "unlock_item_clothing4"], ["unlock_item_bag3", "unlock_building_aqueduct", "upgrade_building_library2"]],
-        	11: [["unlock_item_clothing6", "unlock_item_clothing4he"], ["unlock_item_weapon52", "upgrade_building_storage2", "upgrade_building_fortifications"]],
-        	12: [["unlock_item_weapon58"], ["unlock_item_scavenger_gear", "upgrade_worker_chemist"]],
-        	13: [["unlock_item_weapon6"], ["upgrade_building_apothecary", "unlock_building_radio", "upgrade_building_hospital"]],
-        	14: [["unlock_building_researchcenter", "unlock_item_weapon7"], ["unlock_item_bag_4", "improve_building_market3", "upgrade_building_cementmill"]],
-        	15: [["unlock_building_ceiling", "unlock_item_clothing5l"], ["unlock_item_clothing8", "unlock_item_weapon8", "unlock_building_spaceship1", "unlock_building_spaceship2", "unlock_building_spaceship3"]],
+        	1: [["unlock_item_shoe1"], ["unlock_building_passage_staircase"], []],
+        	2: [["unlock_building_tradingpost", "unlock_weapon_15"], ["unlock_clothing_warm"], ["unlock_building_darkfarm"]],
+        	3: [["unlock_building_library", "unlock_building_market"], ["unlock_building_inn", "unlock_building_fortifications"], []],
+        	4: [["unlock_item_weapon2"], ["upgrade_worker_scavenger"], []],
+        	5: [["unlock_item_clothing4h", "unlock_building_bridge"], ["unlock_building_passage_elevator"], ["unlock_building_lights"]],
+        	6: [["unlock_building_smithy", "unlock_item_bag22"], ["upgrade_building_market", "unlock_building_cementmill"], ["upgrade_worker_collector1"]],
+        	7: [["upgrade_building_storage1"], ["unlock_building_passage_hole", "unlock_building_house2"], []],
+        	8: [["unlock_item_weapon4", "unlock_item_clothing5"], ["upgrade_building_market2", "unlock_item_clothing3"], []],
+        	9: [["upgrade_building_campfire"], ["upgrade_worker_trapper"], []],
+        	10: [["unlock_item_weapon5", "unlock_item_clothing4"], ["unlock_item_bag3", "unlock_building_aqueduct", "upgrade_building_library2"], []],
+        	11: [["unlock_item_clothing6", "unlock_item_clothing4he"], ["unlock_item_weapon52", "upgrade_building_storage2", "upgrade_building_fortifications"], []],
+        	12: [["unlock_item_weapon58"], ["unlock_item_scavenger_gear", "upgrade_worker_chemist"], []],
+        	13: [["unlock_item_weapon6"], ["upgrade_building_apothecary", "unlock_building_radio", "upgrade_building_hospital"], []],
+        	14: [["unlock_building_researchcenter", "unlock_item_weapon7"], ["unlock_item_bag_4", "improve_building_market3", "upgrade_building_cementmill"], []],
+        	15: [["unlock_building_ceiling", "unlock_item_clothing5l"], ["unlock_item_clothing8", "unlock_item_weapon8", "unlock_building_spaceship1", "unlock_building_spaceship2", "unlock_building_spaceship3"], []],
         },
         
         piecesByBlueprint: {
@@ -207,6 +207,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
             var ordinal = this.getBlueprintCampOrdinal(upgradeId);
             if (this.blueprintsByCampOrdinal[ordinal][0].indexOf(upgradeId) >= 0) return this.BLUEPRINT_BRACKET_EARLY;
             if (this.blueprintsByCampOrdinal[ordinal][1].indexOf(upgradeId) >= 0) return this.BLUEPRINT_BRACKET_LATE;
+            if (this.blueprintsByCampOrdinal[ordinal][2].indexOf(upgradeId) >= 0) return this.BLUEPRINT_BRACKET_LATE;
             return null;
         },
         
@@ -218,20 +219,32 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
             return type;
         },
         
-        getblueprintsByCampOrdinal: function (campOrdinal, blueprintType) {
+        getBlueprintsByCampOrdinal: function (campOrdinal, blueprintType, levelIndex) {
             if (!this.blueprintsByCampOrdinal[campOrdinal]) return [];
-            if (blueprintType == this.BLUEPRINT_BRACKET_EARLY) {
-                return this.blueprintsByCampOrdinal[campOrdinal][0];
-            } else if (blueprintType == this.BLUEPRINT_BRACKET_LATE) {
-                return this.blueprintsByCampOrdinal[campOrdinal][1];
-            } else {
-                return this.blueprintsByCampOrdinal[campOrdinal][0].concat(this.blueprintsByCampOrdinal[campOrdinal][1]);
+            
+            let result = [];
+            
+            if (blueprintType == this.BLUEPRINT_BRACKET_EARLY || !blueprintType) {
+                if (levelIndex == 0 || levelIndex == undefined) {
+                    result = result.concat(this.blueprintsByCampOrdinal[campOrdinal][0]);
+                }
             }
+            if (blueprintType == this.BLUEPRINT_BRACKET_LATE || !blueprintType) {
+                if (levelIndex == 0 || levelIndex == undefined) {
+                    result = result.concat(this.blueprintsByCampOrdinal[campOrdinal][1]);
+                }
+                
+                if (levelIndex == 1 || levelIndex == undefined) {
+                    result = result.concat(this.blueprintsByCampOrdinal[campOrdinal][2]);
+                }
+            }
+            
+            return result;
         },
         
-        getPiecesByCampOrdinal: function (campOrdinal, blueprintType) {
+        getPiecesByCampOrdinal: function (campOrdinal, blueprintType, levelIndex) {
             var pieceCount = 0;
-            var blueprints = this.getblueprintsByCampOrdinal(campOrdinal, blueprintType);
+            var blueprints = this.getBlueprintsByCampOrdinal(campOrdinal, blueprintType, levelIndex);
             for (var i = 0; i < blueprints.length; i++) {
                 pieceCount += this.getMaxPiecesForBlueprint(blueprints[i]);
             }
