@@ -32,6 +32,7 @@ define([
     'game/components/player/BagComponent',
     'game/components/player/DeityComponent',
 	'game/components/player/ExcursionComponent',
+    'game/components/type/LevelComponent',
     'game/vos/ResultVO',
     'game/vos/ResourcesVO'
 ], function (
@@ -67,6 +68,7 @@ define([
     BagComponent,
     DeityComponent,
     ExcursionComponent,
+    LevelComponent,
     ResultVO,
     ResourcesVO
 ) {
@@ -150,6 +152,8 @@ define([
             var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
             var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
             var step = GameGlobals.levelHelper.getCampStep(playerPos);
+            var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(playerPos.level).get(LevelComponent);
+            var isHardLevel = levelComponent.isHard;
             var efficiency = this.getScavengeEfficiency();
 
              // starts from 1 and approaches 0.5 as campOrdinal increases
@@ -160,7 +164,7 @@ define([
             var ingredientProb = 0.01 * ingredientCampOrdinalFactor + efficiency * 0.02;
 
             rewards.gainedResources = this.getRewardResources(resourceProb, 1, efficiency, sectorResources);
-            rewards.gainedItems = this.getRewardItems(itemProb, ingredientProb, this.itemResultTypes.scavenge, efficiency, itemsComponent, campOrdinal, step);
+            rewards.gainedItems = this.getRewardItems(itemProb, ingredientProb, this.itemResultTypes.scavenge, efficiency, itemsComponent, campOrdinal, step, isHardLevel);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
             
             this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound);
@@ -196,6 +200,8 @@ define([
             var efficiency = this.getScavengeEfficiency();
             var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
             var step = GameGlobals.levelHelper.getCampStep(playerPos);
+            var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(playerPos.level).get(LevelComponent);
+            var isHardLevel = levelComponent.isHard;
             var localeDifficulty = (localeVO.requirements.vision[0] + localeVO.costs.stamina / 10) / 100;
 
             // blueprints
@@ -225,9 +231,9 @@ define([
                 // items and resources
                 if (localeCategory === "u") {
                     rewards.gainedResources = this.getRewardResources(1, 5 * localeDifficulty, efficiency, availableResources);
-                    rewards.gainedItems = this.getRewardItems(0.5, 0, this.itemResultTypes.scavenge, 1, itemsComponent, campOrdinal, step);
+                    rewards.gainedItems = this.getRewardItems(0.5, 0, this.itemResultTypes.scavenge, 1, itemsComponent, campOrdinal, step, isHardLevel);
                 } else {
-                    rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.meet, 1, itemsComponent, campOrdinal, step);
+                    rewards.gainedItems = this.getRewardItems(0.25, 0, this.itemResultTypes.meet, 1, itemsComponent, campOrdinal, step, isHardLevel);
                 }
             }
 
@@ -263,10 +269,12 @@ define([
 				var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
                 var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
                 var step = GameGlobals.levelHelper.getCampStep(playerPos);
+                var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(playerPos.level).get(LevelComponent);
+                var isHardLevel = levelComponent.isHard;
 				availableResources.setResource(resourceNames.food, 10);
 				availableResources.setResource(resourceNames.metal, 3);
 				rewards.gainedResources = this.getRewardResources(0.25, 2, this.getScavengeEfficiency(), availableResources);
-                rewards.gainedItems = this.getRewardItems(0.15, 0.2, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step);
+                rewards.gainedItems = this.getRewardItems(0.15, 0.2, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step, isHardLevel);
 				rewards.gainedReputation = 1;
             } else {
 				rewards = this.getFadeOutResults(0.5, 1, 1);
@@ -722,12 +730,11 @@ define([
         // itemTypeLimits: list of item types and their probabilities ([ type: relative_probability ])
         // efficiency: 0-1 current scavenge efficiency of the player, affects chance to find something
         // currentItems: ItemsComponent
-		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, efficiency, currentItems, campOrdinal, step) {
+		getRewardItems: function (itemProbability, ingredientProbability, itemTypeLimits, efficiency, currentItems, campOrdinal, step, isHardLevel) {
 			var result = [];
 			var hasBag = currentItems.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
             var hasCamp = GameGlobals.gameState.unlockedFeatures.camp;
             var hasDecentEfficiency = efficiency > 0.1;
-            var isHardLevel = false;
 
 			// Neccessity items (map, bag) that the player should find quickly if missing
 			var necessityItem = this.getNecessityItem(itemProbability, itemTypeLimits, efficiency, currentItems, campOrdinal);
@@ -742,13 +749,18 @@ define([
             }
             
             // Necessity ingredient (stuff blocking the player from progressing)
+            // TODO replace with something that's not random & is better communicated in-game
             if (hasCamp && hasDecentEfficiency) {
                 var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
-                if (this.isLevelCleared()) {
-                    campOrdinal += 1;
-                    step = WorldConstants.CAMP_STEP_START;
+                let niCampOrdinal = campOrdinal;
+                let niStep = step + 1;
+                let niIsHardlevel = isHardLevel;
+                if (step > WorldConstants.CAMP_STEP_END) {
+                    niCampOrdinal += 1;
+                    niStep = WorldConstants.CAMP_STEP_START;
+                    niIsHardlevel = false;
                 }
-                var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(campOrdinal, step, isHardLevel, itemsComponent, true);
+                var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(niCampOrdinal, step, niIsHardlevel, itemsComponent, true);
                 var neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
                 if (!GameGlobals.gameState.uiStatus.isHidden)
                     log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp);
@@ -1191,12 +1203,6 @@ define([
             }
             return null;
         },
-        
-        isLevelCleared: function () {
-            var playerPos = this.playerLocationNodes.head.position;
-            var mapStatus = GameGlobals.levelHelper.getLevelStats(playerPos.level);
-            return mapStatus.percentClearedSectors >= 1;
-        }
 
     });
 
