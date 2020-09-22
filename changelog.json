@@ -4,8 +4,16 @@
             "version": "0.3.1",
             "phase": "alpha",
             "final": false,
-            "updated": "2020-08-29",
+            "updated": "2020-09-20",
             "changes": [
+                {
+                    "type": "GD",
+                    "summary": "Add more challenges and rewards to campless levels (more encounters, blueprints)",
+                },
+                {
+                    "type": "GD",
+                    "summary": "Improved world generation",
+                },
                 {
                     "type": "GD",
                     "summary": "Unlock the ground level",
