@@ -186,13 +186,11 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
                 return this.campOrdinalsByBlueprint[upgradeId];
             }
             for (var key in this.blueprintsByCampOrdinal) {
-                if (this.blueprintsByCampOrdinal[key][0].indexOf(upgradeId) >= 0) {
-                    this.campOrdinalsByBlueprint[upgradeId] = key;
-                    return key;
-                }
-                if (this.blueprintsByCampOrdinal[key][1].indexOf(upgradeId) >= 0) {
-                    this.campOrdinalsByBlueprint[upgradeId] = key;
-                    return key;
+                for (var i = 0; i < 3; i++) {
+                    if (this.blueprintsByCampOrdinal[key][i].indexOf(upgradeId) >= 0) {
+                        this.campOrdinalsByBlueprint[upgradeId] = key;
+                        return key;
+                    }
                 }
             }
 			return 1;

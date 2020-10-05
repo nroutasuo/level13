@@ -69,7 +69,7 @@ function (Ash, ResourcesVO, LocaleConstants, PlayerStatConstants) {
             return Math.floor((minCost + (maxCost - minCost) * difficulty) / 100) * 100;
         },
         
-        getResourceBonus: function (unlockedResources) {
+        getResourceBonus: function (unlockedResources, campOrdinal) {
             var res = new ResourcesVO();
             switch (this.type) {
             case localeTypes.factory:
@@ -80,11 +80,11 @@ function (Ash, ResourcesVO, LocaleConstants, PlayerStatConstants) {
             case localeTypes.house:
                 res.addResource(resourceNames.food, 10);
                 res.addResource(resourceNames.water, 10);
-                res.addResource(resourceNames.medicine, 5);
+                if (campOrdinal > 2) res.addResource(resourceNames.medicine, 5);
                 break;
             case localeTypes.lab:
                 res.addResource(resourceNames.water, 5);
-                res.addResource(resourceNames.medicine, 10);
+                if (campOrdinal > 1) res.addResource(resourceNames.medicine, 10);
                 break;
             case localeTypes.grove:
                 res.addResource(resourceNames.water, 5);

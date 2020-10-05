@@ -84,7 +84,7 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
                 new ItemVO("clothing_over_1x", "Lab Coat", "Armor", 2, true, false, false, 5, 1, {def: 1, warmth: 2, res_poison: 10}, "img/items/clothing-2.png", "Might protect from environmental hazards."),
                 new ItemVO("clothing_over_15", "Leather Jacket", "Armor", 2, true, true, false, 2, 1, {def: 4, warmth: 5, res_rad: 3, res_poison: 3}, "img/items/clothing-2.png", "A solid jacket."),
                 new ItemVO("clothing_over_2", "Biker jacket", "Armor", 3, true, false, false, 2, 1, {def: 6, warmth: 10, res_rad: 3, res_poison: 3}, "img/items/clothing-2.png", "Doesn't make one invincible, but feels like it."),
-                new ItemVO("clothing_over_w", "Winter parka", "Armor", 5, true, true, false, 3, 2, {def: 2, warmth: 20}, "img/items/clothing-2.png", "Not sure what winter means but it's very warm."),
+                new ItemVO("clothing_over_w", "Winter parka", "Armor", 5, true, true, false, 3, 2, {def: 2, warmth: 20}, "img/items/clothing-2.png", "Seasons are hardly a thing in the City but it does get cold."),
                 new ItemVO("clothing_over_25", "Army Jacket", "Armor", 5, true, false, false, 2, 1, {def: 15, warmth: 10, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Something that's actually produced with the aim of keeping one safe."),
                 new ItemVO("clothing_over_25x", "Warm Army Jacket", "Armor", 5, true, false, false, 5, 5, {def: 15, warmth: 15, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Something that's actually produced with the aim of keeping one safe."),
                 new ItemVO("clothing_over_3", "Scrap metal armor", "Armor", 7, true, true, false, 5, 2, {def: 25, warmth: 5, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "An ugly but surprisingly comfortable metal blanket"),
@@ -274,7 +274,7 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
             var result = { campOrdinal: 0, step: 0 };
             if (!item.craftable) return cacheAndReturn(result);
             
-            var addRequirement = function (campOrdinal, step) {
+            var addRequirement = function (campOrdinal, step, source) {
                 if (campOrdinal > result.campOrdinal || (campOrdinal == result.campOrdinal && step > result.step)) {
                     result = { campOrdinal: campOrdinal, step: step };
                 }
@@ -287,7 +287,7 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
                 for (var k = 0; k < requiredTech.length; k++) {
                     var campOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredTech[k]);
                     var step = UpgradeConstants.getMinimumLevelStepForUpgrade(requiredTech[k]);
-                    addRequirement(campOrdinal, step);
+                    addRequirement(campOrdinal, step, requiredTech[k]);
                 }
             }
             
@@ -295,13 +295,13 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
             var costs = PlayerActionConstants.costs["craft_" + item.id];
             if (costs) {
                 if (costs && costs.resource_fuel && costs.resource_fuel > 0) {
-                    addRequirement(WorldConstants.CAMP_ORDINAL_FUEL, WorldConstants.CAMP_STEP_POI_2);
+                    addRequirement(WorldConstants.CAMP_ORDINAL_FUEL, WorldConstants.CAMP_STEP_POI_2, "fuel");
                 }
                 if (costs && costs.resource_rubber && costs.resource_rubber > 0) {
-                    addRequirement(WorldConstants.CAMP_ORDINAL_GROUND, WorldConstants.CAMP_STEP_POI_2);
+                    addRequirement(WorldConstants.CAMP_ORDINAL_GROUND, WorldConstants.CAMP_STEP_POI_2, "rubber");
                 }
                 if (costs && costs.resource_herbs && costs.resource_herbs > 0) {
-                    addRequirement(WorldConstants.CAMP_ORDINAL_GROUND, WorldConstants.CAMP_STEP_POI_2);
+                    addRequirement(WorldConstants.CAMP_ORDINAL_GROUND, WorldConstants.CAMP_STEP_POI_2, "herbs");
                 }
             }
             

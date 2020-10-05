@@ -482,6 +482,8 @@ define([
             var earlyZones = [ WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_PASSAGE_TO_PASSAGE, WorldConstants.ZONE_POI_1 ];
             var earlyZonesEntrance = [ WorldConstants.ZONE_ENTRANCE ];
             
+            // TODO position (some) stashes more purposefully in hard-to-reach places (distance from camp? sectors marked as high-reward during pathfinding?)
+            
             var addStashes = function (sectorSeed, reason, stashType, itemID, num, numItemsPerStash, excludedZones) {
                 var options = { requireCentral: false, excludingFeature: "camp", excludedZones: excludedZones };
                 var stashSectors = WorldCreatorRandom.randomSectors(sectorSeed, worldVO, levelVO, num, num + 1, options);
@@ -489,10 +491,10 @@ define([
                 var min = Math.round(isAmountRange ? numItemsPerStash[0] : numItemsPerStash);
                 var max = Math.round(isAmountRange ? numItemsPerStash[1] : numItemsPerStash);
                 for (var i = 0; i < stashSectors.length; i++) {
-                    var numItems = isAmountRange ? WorldCreatorRandom.randomInt(sectorSeed / 2, min, max) : numItemsPerStash;
+                    var numItems = isAmountRange ? WorldCreatorRandom.randomInt(sectorSeed * 2, min, max) : numItemsPerStash;
                     var stash = new StashVO(stashType, numItems, itemID);
                     stashSectors[i].stashes.push(stash);
-                    //WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " (" + min + "-" + max + ") " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
+                    // WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " (" + min + "-" + max + ") " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
                 }
             };
             
@@ -545,22 +547,26 @@ define([
             if (l == 13) {
                 addStashes(seed / 3 * 338 + l * 402, "metal", ItemConstants.STASH_TYPE_ITEM, "cache_metal_1", 2, 1, lateZones);
                 addStashes(seed / 5 * 931 + l * 442, "metal", ItemConstants.STASH_TYPE_ITEM, "cache_metal_2", 2, 1, lateZones);
+            }
+            if (l % 2 == 0) {
+                addStashes(seed / 7 * 937 + l * 331, "metal", ItemConstants.STASH_TYPE_ITEM, "cache_metal_1", 3, 1);
             } else {
-                if (l % 2 == 0)
-                    addStashes(seed / 5 * 931 + l * 442, "metal", ItemConstants.STASH_TYPE_ITEM, "cache_metal_1", 1, 1);
-                else
-                    addStashes(seed / 5 * 931 + l * 442, "metal", ItemConstants.STASH_TYPE_ITEM, "cache_metal_2", 1, 1);
+                addStashes(seed / 7 * 937 + l * 331, "metal", ItemConstants.STASH_TYPE_ITEM, "cache_metal_2", 3, 1);
             }
             
-            // stashes: currency (uncampable levels)
-            if (levelVO.campOrdinal > 2 && !levelVO.isCampable) {
-                var itemValues = requiredEquipment.map(item => TradeConstants.getItemValue(item)).sort();
-                var minItemValue = Math.ceil(itemValues[0]);
-                var maxItemValue = Math.ceil(itemValues[itemValues.length - 1]);
-                var numCurrencyStashes = WorldCreatorRandom.randomInt(700 + seed % 7 * 1112 + (l+7) * 3412, 1, 3);
-                var currencyAmount = [Math.ceil(minItemValue / 2), maxItemValue * 2];
-                var excludedZones = levelVO.isCampable ? earlyZones : earlyZonesEntrance;
-                addStashes(500 + seed / 5 + (l + 5) * 2541, "currency", ItemConstants.STASH_TYPE_SILVER, "", numCurrencyStashes, currencyAmount, excludedZones);
+            // stashes: currency (uncampable levels and late zones)
+            if (levelVO.campOrdinal > 2) {
+                var minCurrencyStashes = levelVO.isCampable ? 0 : 1;
+                var maxCurrencyStashes = levelVO.isCampable ? 1 : 3;
+                var numCurrencyStashes = WorldCreatorRandom.randomInt(700 + seed % 7 * 1112 + (l+7) * 3412, minCurrencyStashes, maxCurrencyStashes + 1);
+                if (numCurrencyStashes > 0) {
+                    var itemValues = requiredEquipment.map(item => TradeConstants.getItemValue(item)).sort();
+                    var minItemValue = Math.ceil(itemValues[0]);
+                    var maxItemValue = Math.ceil(itemValues[itemValues.length - 1] * 1.5);
+                    var currencyAmount = [minItemValue, maxItemValue];
+                    var excludedZones = levelVO.isCampable ? earlyZones : earlyZonesEntrance;
+                    addStashes(500 + seed / 5 + (l + 5) * 2541, "currency", ItemConstants.STASH_TYPE_SILVER, "", numCurrencyStashes, currencyAmount, excludedZones);
+                }
             }
             
             // stashes: uncraftable misc items (uncampable levels)
@@ -581,6 +587,25 @@ define([
                         addStashes(s2, "uncraftable " + searchDef.itemType, ItemConstants.STASH_TYPE_ITEM, bestItem.id, 1, 1);
                     }
                 }
+            }
+            
+            // stashes: one-use exploration items (uncampable levels and late zones)
+            var consumableItems = [ "first_aid_kit_1", "first_aid_kit_2", "glowstick_1", "consumable_weapon_1", "flee_1" ];
+            var validItems = [];
+            for (var i = 0; i < consumableItems.length; i++) {
+                var item = ItemConstants.getItemByID(consumableItems[i]);
+                if (!item) continue;
+                if (!this.itemsHelper.isAvailable(item, levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, true, true, 9)) continue;
+                var req = ItemConstants.getRequiredCampAndStepToCraft(item);
+                validItems.push(item);
+            }
+            var numItems = Math.min(levelVO.isCampable ? 1 : 3, validItems.length);
+            for (var i = 0; i < numItems; i++) {
+                var s3 = 2222 + (l + 8) * 281 + (i + 16) * 182 + i * i * 2;
+                var index = WorldCreatorRandom.randomInt(s3, 0, validItems.length);
+                var item = validItems[index];
+                var itemAmount = levelVO.isCampable ? 1 : [ 1, 3 ];
+                addStashes(1000 + seed % 11 * 71 + (l + 15) * 15 + (i + 21) * 16, "consumables", ItemConstants.STASH_TYPE_ITEM, item.id, 1, itemAmount);
             }
         },
         
@@ -1134,10 +1159,8 @@ define([
 			// min number of (easy) locales ensures that player can get all upgrades intended for that level
             // two brackets of locales for critical paths, those on path 2 can require tech from path 1 to reach but not the other way around
             let levelIndex = WorldCreatorHelper.getLevelIndexForCamp(seed, campOrdinal, levelVO.level);
-            log.i("level " + levelVO.level + " camp ordinal " + campOrdinal + ", level index: " + levelIndex);
             var earlyBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY, levelIndex);
             var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY, levelIndex);
-            log.i("- early: " + earlyBlueprints.join(","))
             if (numEarlyBlueprints) {
 				var minEarly = WorldCreatorConstants.getMinLocales(numEarlyBlueprints);
                 var maxEarly = WorldCreatorConstants.getMaxLocales(numEarlyBlueprints);
@@ -1147,7 +1170,6 @@ define([
 
             var lateBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE, levelIndex);
             var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE, levelIndex);
-            log.i("- late: " + lateBlueprints.join(","))
             if (numLateBlueprints > 0) {
                 var minLate = WorldCreatorConstants.getMinLocales(numLateBlueprints);
                 var maxLate = WorldCreatorConstants.getMaxLocales(numLateBlueprints);
