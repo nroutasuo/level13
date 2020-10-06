@@ -14,12 +14,14 @@ define(['ash'], function (Ash) {
         groupN: [],
 		activeV: [],
 		defeatedV: [],
+        
+        droppedResources: [],
 		
 		attRandomFactor: 1,
         
 		hp: 100,
 	
-        constructor: function (id, name, type, nouns, groupN, activeV, defeatedV, att, def, hp, speed, rarity) {
+        constructor: function (id, name, type, nouns, groupN, activeV, defeatedV, att, def, hp, speed, rarity, droppedResources) {
             this.id = id;
 			this.name = name;
 			this.type = type;
@@ -33,6 +35,8 @@ define(['ash'], function (Ash) {
             this.groupN = groupN;
 			this.activeV = activeV;
 			this.defeatedV = defeatedV;
+            
+            this.droppedResources = droppedResources || [];
 			
 			this.attRandomFactor = Math.random() - 0.5;
 			this.enemyID = this.name.replace(/ /g, "-") + "-" + this.att + "-" + this.def;

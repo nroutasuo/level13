@@ -12,10 +12,9 @@ define([
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/FightNode',
     'game/components/player/ItemsComponent',
-    'game/components/sector/FightComponent',
     'game/components/sector/FightEncounterComponent',
     'game/components/sector/EnemiesComponent'
-], function (Ash, Text, UIState, GameGlobals, GlobalSignals, FightConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightComponent, FightEncounterComponent, EnemiesComponent) {
+], function (Ash, Text, UIState, GameGlobals, GlobalSignals, FightConstants, ItemConstants, TextConstants, UIConstants, PlayerLocationNode, PlayerStatsNode, FightNode, ItemsComponent, FightEncounterComponent, EnemiesComponent) {
     
     var FightPopupStateEnum = {
         CLOSED: 0,

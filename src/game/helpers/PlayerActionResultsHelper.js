@@ -259,11 +259,11 @@ define([
             return rewards;
         },
 
-		getFightRewards: function (won) {
+		getFightRewards: function (won, enemyVO) {
 			var rewards = new ResultVO("fight");
             if (won) {
 				// TODO make fight rewards dependent on enemy difficulty (amount) and type (no metal drops from rats)
-				var availableResources = new ResourcesVO();
+				var availableResources = this.getAvailableResourcesForEnemy(enemyVO);
 				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 				var playerPos = this.playerLocationNodes.head.position;
 				var levelOrdinal = GameGlobals.gameState.getLevelOrdinal(playerPos.level);
@@ -271,10 +271,9 @@ define([
                 var step = GameGlobals.levelHelper.getCampStep(playerPos);
                 var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(playerPos.level).get(LevelComponent);
                 var isHardLevel = levelComponent.isHard;
-				availableResources.setResource(resourceNames.food, 10);
-				availableResources.setResource(resourceNames.metal, 3);
-				rewards.gainedResources = this.getRewardResources(0.25, 2, this.getScavengeEfficiency(), availableResources);
-                rewards.gainedItems = this.getRewardItems(0.15, 0.2, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step, isHardLevel);
+                
+				rewards.gainedResources = this.getRewardResources(0.5, 2, this.getScavengeEfficiency(), availableResources);
+                rewards.gainedItems = this.getRewardItems(0, 1, this.itemResultTypes.fight, 1, itemsComponent, campOrdinal, step, isHardLevel);
 				rewards.gainedReputation = 1;
             } else {
 				rewards = this.getFadeOutResults(0.5, 1, 1);
@@ -1203,6 +1202,14 @@ define([
             }
             return null;
         },
+
+        getAvailableResourcesForEnemy: function (enemyVO) {
+            let result = new ResourcesVO();
+            for (let i = 0; i < enemyVO.droppedResources.length; i++) {
+                result.setResource(enemyVO.droppedResources[i], 10);
+            }
+            return result;
+        }
 
     });
 

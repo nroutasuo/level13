@@ -9,7 +9,6 @@ define([
     'game/nodes/FightNode',
     'game/nodes/player/PlayerStatsNode',
     'game/components/common/PositionComponent',
-    'game/components/sector/FightComponent',
     'game/components/sector/FightEncounterComponent',
     'game/components/sector/SectorControlComponent',
     'game/components/player/ItemsComponent',
@@ -17,7 +16,7 @@ define([
 ], function (Ash, GameGlobals, GlobalSignals, FightConstants, PositionConstants, EnemyConstants,
     FightNode, PlayerStatsNode,
     PositionComponent,
-    FightComponent, FightEncounterComponent, SectorControlComponent,
+    FightEncounterComponent, SectorControlComponent,
     ItemsComponent, PlayerActionResultComponent) {
 	
     var FightSystem = Ash.System.extend({
@@ -196,7 +195,7 @@ define([
                     }
                 }
                 
-                this.fightNodes.head.fight.resultVO = GameGlobals.playerActionResultsHelper.getFightRewards(won);
+                this.fightNodes.head.fight.resultVO = GameGlobals.playerActionResultsHelper.getFightRewards(won, enemy);
                 this.playerStatsNodes.head.entity.add(new PlayerActionResultComponent(this.fightNodes.head.fight.resultVO));
                 
                 enemy.resetHP();
