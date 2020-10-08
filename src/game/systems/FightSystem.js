@@ -183,12 +183,15 @@ define([
             
             this.fightNodes.head.fight.finishedPending = true;
             setTimeout(function () {
-                if (won) {
-                    var sectorControlComponent = sector.get(SectorControlComponent);
-    				var encounterComponent = sector.get(FightEncounterComponent);
-                    if (encounterComponent.gangComponent) {
-                        encounterComponent.gangComponent.addWin();
-                    } else {
+                var encounterComponent = sector.get(FightEncounterComponent);
+                if (encounterComponent.gangComponent) {
+                    // gang
+                    encounterComponent.gangComponent.addAttempt();
+                    if (won) encounterComponent.gangComponent.addWin();
+                } else {
+                    // random encounter
+                    if (won) {
+                        var sectorControlComponent = sector.get(SectorControlComponent);
         				var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(encounterComponent.context);
         				var localeId = FightConstants.getEnemyLocaleId(baseActionID, encounterComponent.context);
         				sectorControlComponent.addWin(localeId);

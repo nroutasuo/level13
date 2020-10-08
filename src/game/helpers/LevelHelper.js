@@ -4,6 +4,8 @@ define([
     'game/GameGlobals',
     'utils/PathFinding',
     'utils/VOCache',
+    'game/constants/EnemyConstants',
+    'game/constants/FightConstants',
     'game/constants/LocaleConstants',
     'game/constants/PositionConstants',
     'game/constants/MovementConstants',
@@ -33,6 +35,8 @@ define([
     GameGlobals,
     PathFinding,
     VOCache,
+    EnemyConstants,
+    FightConstants,
 	LocaleConstants,
 	PositionConstants,
 	MovementConstants,
@@ -137,6 +141,52 @@ define([
 			return this.sectorEntitiesByLevel[level];
         },
         
+        getNumAvailableGangs: function (campOrdinal, playerStamina, itemsComponent) {
+            let result = 0;
+            
+            log.i("getNumAvailableGangs " + campOrdinal)
+            for (var node = this.gangNodes.head; node; node = node.next) {
+				let gangPosition = node.entity.get(PositionComponent);
+                let gangCampOrdinal = GameGlobals.gameState.getCampOrdinal(gangPosition.level);
+                // wrong level
+                if (gangCampOrdinal != campOrdinal) {
+                    continue;
+                }
+                // already defeated
+                if (node.gang.isDefeated()) {
+                    continue;
+                }
+                // too many failed attempts, player not likely to back
+                if (node.gang.numAttempts - node.gang.numEnemiesDefeated > 1) {
+                    continue;
+                }
+                // too low win chance
+                var enemy = EnemyConstants.getEnemy(node.gang.enemyID);
+                var winChance = FightConstants.getFightWinProbability(enemy, playerStamina, itemsComponent);
+                if (winChance < 0.5) {
+                    continue;
+                }
+                // not visible and accessible
+                var sectors = this.getSectorsForGang(gangPosition);
+                var hasValidSector = false;
+                for (var i = 0; i < sectors.length; i++) {
+                    let pos = sectors[i].get(PositionComponent);
+                    let visited = sectors[i].has(VisitedComponent);
+                    let canExplore = GameGlobals.sectorHelper.canExploreSector(sectors[i], itemsComponent);
+                    if (visited && canExplore) {
+                        hasValidSector = true;
+                        break;
+                    }
+                }
+                if (!hasValidSector) {
+                    continue;
+                }
+                
+                result++;
+            }
+            return result;
+        },
+        
         getGang: function (position, direction) {
             // TODO do some caching here
             var level = position.level;
@@ -151,6 +201,34 @@ define([
                 }
 			}
             return null;
+        },
+        
+        getSectorsForGang: function (gangPosition) {
+            var level = gangPosition.level;
+            var result = [];
+            var sectorX = [];
+            if (gangPosition.sectorX % 1 == 0) {
+                sectorX.push(gangPosition.sectorX);
+            } else {
+                sectorX.push(Math.floor(gangPosition.sectorX));
+                sectorX.push(Math.ceil(gangPosition.sectorX));
+            }
+            var sectorY = [];
+            if (gangPosition.sectorY % 1 == 0) {
+                sectorY.push(gangPosition.sectorY);
+            } else {
+                sectorY.push(Math.floor(gangPosition.sectorY));
+                sectorY.push(Math.ceil(gangPosition.sectorY));
+            }
+            for (var x = 0; x < sectorX.length; x++) {
+                for (var y = 0; y < sectorY.length; y++) {
+                    let sector = this.getSectorByPosition(level, sectorX[x], sectorY[y]);
+                    if (sector) {
+                        result.push(sector);
+                    }
+                }
+            }
+            return result;
         },
 
         // todo use neighboursmap so we benefit from the same cache

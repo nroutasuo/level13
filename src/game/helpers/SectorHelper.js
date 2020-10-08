@@ -67,6 +67,12 @@ define([
             return features;
         },
         
+        canExploreSector: function (sectorEntity, itemsComponent) {
+            let featuresComponent = sectorEntity.get(SectorFeaturesComponent);
+            var statusComponent = sectorEntity.get(SectorStatusComponent);
+            return !this.isAffectedByHazard(featuresComponent, statusComponent, itemsComponent);
+        },
+        
         getEffectiveHazardValue: function (sectorFeatures, sectorStatus, hazard) {
             var hazards = this.getEffectiveHazards(sectorFeatures, sectorStatus);
             return hazards[hazard] || 0;

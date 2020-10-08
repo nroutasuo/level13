@@ -4,16 +4,22 @@ define(['ash'], function (Ash) {
         
         numEnemies: 0,
         numEnemiesDefeated: 0,
+        numAttempts: 0,
         enemyID: null,
         
         constructor: function (gangVO) {
             this.numEnemies = gangVO.numEnemies;
             this.numEnemiesDefeated = 0;
+            this.numAttempts = 0;
             this.enemyID = gangVO.enemyID;
         },
         
         getEnemyCount: function () {
             return this.numEnemies - this.numEnemiesDefeated;
+        },
+        
+        addAttempt: function () {
+            this.numAttempts++;
         },
         
         addWin: function () {
@@ -33,11 +39,15 @@ define(['ash'], function (Ash) {
             if (this.numEnemiesDefeated > 0) {
                 copy.nd = this.numEnemiesDefeated;
             }
+            if (this.numAttempts > 0 && this.getEnemyCount() > 0) {
+                copy.na = this.numAttempts;
+            }
             return Object.keys(copy).length > 0 ? copy : null;
         },
 
         customLoadFromSave: function (componentValues) {
             this.numEnemiesDefeated = componentValues.nd ? componentValues.nd : 0;
+            this.numAttempts = componentValues.na ? componentValues.na : 0;
         }
         
     });

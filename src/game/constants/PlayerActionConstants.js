@@ -2818,14 +2818,14 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 return 0;
             },
 
-            getRandomEncounterProbability: function (baseActionID, vision, actionFactor) {
+            getRandomEncounterProbability: function (baseActionID, vision, sectorFactor, actionFactor) {
                 if (vision === undefined) vision = 100;
                 if (actionFactor === undefined) actionFactor = 1;
                 if (this.randomEncounterProbabilities[baseActionID]) {
                     var baseProbability = this.randomEncounterProbabilities[baseActionID][0];
                     var visionFactor = Math.pow(1 - (vision / 100), 2);
                     var visionProbability = this.randomEncounterProbabilities[baseActionID][1] * visionFactor;
-                    return (baseProbability + visionProbability) * actionFactor;
+                    return (baseProbability + visionProbability) * actionFactor * sectorFactor;
                 }
                 return 0;
             },

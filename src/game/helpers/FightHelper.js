@@ -88,7 +88,7 @@ define([
                 var position = this.playerLocationNodes.head.position;
                 var gangEntity = GameGlobals.levelHelper.getGang(position, direction);
                 gangComponent = gangEntity.get(GangComponent);
-                log.i("gang enemy: " + gangComponent.enemyID);
+                log.i("gang enemy: " + gangComponent.enemyID + ", previous attempts: " + gangComponent.numAttempts);
             }
             var enemy = this.getEnemy(enemiesComponent, gangComponent);
 			sector.add(new FightEncounterComponent(enemy, action, this.pendingEnemies, this.totalEnemies, gangComponent));
@@ -96,7 +96,6 @@ define([
         },
 
         startFight: function () {
-            log.i("start fight");
             // TODO move to PlayerActionFunctions
             if (GameGlobals.playerActionsHelper.checkAvailability("fight", true)) {
                 GameGlobals.playerActionsHelper.deductCosts("fight");
@@ -108,7 +107,7 @@ define([
 					if (GameGlobals.logWarnings) log.w("Encounter or enemy not initialized - cannot start fight.");
 				}
             } else {
-                if (GameGlobals.logWarnings) log.w("Can't start fight- availability check failed");
+                if (GameGlobals.logWarnings) log.w("Can't start fight - availability check failed");
             }
         },
 

@@ -76,7 +76,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             
             var rand = Math.random();
             var rand2 = Math.random();
-            if (rand <= 0.2 && !neededIngredient) {
+            if (rand <= 0.2) {
                 // 1) equipment trader: sells (equipment caterogy), buys equipment, uses currency
                 var categories = [];
                 if (rand2 <= 0.33) {
@@ -100,6 +100,9 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                 while (sellItems.length < 4 && prob <= 1) {
                     addSellItemsFromCategories(categories, prob, 1, true);
                     prob += 0.05;
+                }
+                if (neededIngredient) {
+                    addSellItemsFromCategories([ "ingredient"], 0.25, 5 + campOrdinal + 2, true);
                 }
                 buyItemTypes = categories;
                 usesCurrency = true;
@@ -142,7 +145,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                 addSellItemsFromCategories([ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head", "shoes", "bag", "exploration" ], 0.05, 1, false);
                 buyItemTypes = [ "ingredient" ];
                 usesCurrency = false;
-            } else if (rand <= 0.8 && !neededIngredient) {
+            } else if (rand <= 0.8) {
                 // 4) resource trader: sells and buys a specific resource
                 if (rand2 <= 0.2 && unlockedResources.herbs) {
                     name = "Herbs trader";

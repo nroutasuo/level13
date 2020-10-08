@@ -751,6 +751,7 @@ define([
             // TODO replace with something that's not random & is better communicated in-game
             if (hasCamp && hasDecentEfficiency) {
                 var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+                var playerStamina = this.playerStatsNodes.head.stamina;
                 let niCampOrdinal = campOrdinal;
                 let niStep = step + 1;
                 let niIsHardlevel = isHardLevel;
@@ -759,11 +760,12 @@ define([
                     niStep = WorldConstants.CAMP_STEP_START;
                     niIsHardlevel = false;
                 }
+                var numAvailableGangs = GameGlobals.levelHelper.getNumAvailableGangs(campOrdinal, playerStamina, itemsComponent);
                 var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(niCampOrdinal, step, niIsHardlevel, itemsComponent, true);
                 var neededIngredientProp = MathUtils.clamp(ingredientProbability * 10, 0.15, 0.35);
                 if (!GameGlobals.gameState.uiStatus.isHidden)
-                    log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp);
-                if (neededIngredient && Math.random() < neededIngredientProp) {
+                    log.i("neededIngredient: " + (neededIngredient ? neededIngredient.id : "null") + ", prob: " + neededIngredientProp + ", gangs: " + numAvailableGangs);
+                if (neededIngredient && numAvailableGangs <= 1 && Math.random() < neededIngredientProp) {
                     var max = Math.floor(Math.random() * 5);
                     var amount = Math.floor(Math.random() * efficiency * max) + 1;
     				for (var i = 0; i <= amount; i++) {
