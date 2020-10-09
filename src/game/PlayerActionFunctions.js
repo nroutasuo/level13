@@ -483,12 +483,14 @@ define(['ash',
 
 		scavenge: function () {
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+            var efficiency = GameGlobals.playerActionResultsHelper.getScavengeEfficiency();
 			GameGlobals.gameState.unlockedFeatures.scavenge = true;
 
 			var logMsg = "";
 			var playerMaxVision = this.playerStatsNodes.head.vision.maximum;
 			var sector = this.playerLocationNodes.head.entity;
 			var sunlit = sector.get(SectorFeaturesComponent).sunlit;
+            
 			if (playerMaxVision <= PlayerStatConstants.VISION_BASE) {
 				if (sunlit) logMsg = "Rummaged blindly for loot. ";
 				else logMsg = "Rummaged in the dark. ";
@@ -501,6 +503,7 @@ define(['ash',
 			var logMsgDefeat = logMsg + "Got into a fight and was defeated.";
 			var successCallback = function () {
 				sectorStatus.scavenged = true;
+                sectorStatus.weightedTimesScavenged += efficiency;
 			};
 			this.handleOutActionResults("scavenge", LogConstants.MSG_ID_SCAVENGE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, null, successCallback);
 		},
@@ -759,6 +762,7 @@ define(['ash',
 					playerActionFunctions.forceTabUpdate();
 					player.remove(PlayerActionResultComponent);
 					GlobalSignals.inventoryChangedSignal.dispatch();
+                    GlobalSignals.sectorScavengedSignal.dispatch();
 					if (successCallback) successCallback();
 					playerActionFunctions.completeAction(action);
 				};

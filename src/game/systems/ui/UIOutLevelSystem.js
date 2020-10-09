@@ -101,6 +101,9 @@ define([
             GlobalSignals.sectorScoutedSignal.add(function () {
                 sys.updateAll();
             });
+            GlobalSignals.sectorScavengedSignal.add(function () {
+                sys.updateSectorDescription();
+            });
             GlobalSignals.visionChangedSignal.add(function () {
                 sys.updateAll();
             });
@@ -304,7 +307,7 @@ define([
 			description += this.getStatusDescription(hasVision, isScouted, hasEnemies, featuresComponent, passagesComponent, hasCampHere, hasCampOnLevel);
 			description += this.getMovementDescription(isScouted, passagesComponent, entity);
 			description += "</p><p>";
-			description += this.getResourcesDescription(isScouted, featuresComponent);
+			description += this.getResourcesDescription(isScouted, featuresComponent, sectorStatus);
 			description += "</p>";
 			return description;
 		},
@@ -405,13 +408,14 @@ define([
 			return description;
 		},
 
-        getResourcesDescription: function (isScouted, featuresComponent) {
+        getResourcesDescription: function (isScouted, featuresComponent, statusComponent) {
             if (!featuresComponent) return;
             var description = "";
+            description += "Scavenged: " + UIConstants.roundValue(statusComponent.getScavengedPercent()) + "%";
 			if (featuresComponent.resourcesScavengable.getTotal() > 0) {
 				var discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources();
 				if (discoveredResources.length > 0) {
-					description += "Resources found by scavenging: " + featuresComponent.getScaResourcesString(discoveredResources);
+					description += "\nResources found by scavenging: " + featuresComponent.getScaResourcesString(discoveredResources);
 				}
 			}
 			return description;

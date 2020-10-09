@@ -144,7 +144,6 @@ define([
         getNumAvailableGangs: function (campOrdinal, playerStamina, itemsComponent) {
             let result = 0;
             
-            log.i("getNumAvailableGangs " + campOrdinal)
             for (var node = this.gangNodes.head; node; node = node.next) {
 				let gangPosition = node.entity.get(PositionComponent);
                 let gangCampOrdinal = GameGlobals.gameState.getCampOrdinal(gangPosition.level);

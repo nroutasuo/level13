@@ -155,6 +155,7 @@ define([
             var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(playerPos.level).get(LevelComponent);
             var isHardLevel = levelComponent.isHard;
             var efficiency = this.getScavengeEfficiency();
+            var scavengedPercent = sectorStatus.getScavengedPercent();
 
              // starts from 1 and approaches 0.5 as campOrdinal increases
             var ingredientCampOrdinalFactor = (campOrdinal + 1) / campOrdinal / 2;
@@ -163,6 +164,7 @@ define([
             var itemProb = efficiency * 0.022;
             var ingredientProb = 0.01 * ingredientCampOrdinalFactor + efficiency * 0.02;
 
+            let finalEfficiency = efficiency * (1 - scavengedPercent/100);
             rewards.gainedResources = this.getRewardResources(resourceProb, 1, efficiency, sectorResources);
             rewards.gainedItems = this.getRewardItems(itemProb, ingredientProb, this.itemResultTypes.scavenge, efficiency, itemsComponent, campOrdinal, step, isHardLevel);
             rewards.gainedCurrency = this.getRewardCurrency(efficiency);
