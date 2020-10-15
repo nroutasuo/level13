@@ -204,7 +204,7 @@ define([
         },
         
         getNeededIngredient: function (campOrdinal, step, isHardLevel, itemsComponent, isStrict) {
-            var checkItem = function(item) {
+            var checkItem = function (item) {
                 if (!item.craftable) return null;
                 if (itemsComponent.getCountById(item.id, true) < (isStrict ? 1 : 1)) {
                     var ingredients = GameGlobals.itemsHelper.getIngredientsToCraft(item.id);

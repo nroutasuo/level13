@@ -84,6 +84,8 @@ define([
             // WorldCreatorDebug.printWorld(worldVO, [ "resourcesScavengable.food" ], "#ee8822");
             // WorldCreatorDebug.printWorld(worldVO, [ "workshopResource" ]);
             // WorldCreatorDebug.printWorld(worldVO, [ "criticalPaths.length" ], "red" );
+            // WorldCreatorDebug.printWorld(worldVO, [ "requiredResources.food" ], "red" );
+            // WorldCreatorDebug.printWorld(worldVO, [ "requiredResources.water" ], "blue" );
         },
         
         generateZones: function (seed, worldVO, levelVO) {
@@ -494,7 +496,7 @@ define([
                     var numItems = isAmountRange ? WorldCreatorRandom.randomInt(sectorSeed * 2, min, max) : numItemsPerStash;
                     var stash = new StashVO(stashType, numItems, itemID);
                     stashSectors[i].stashes.push(stash);
-                    // WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " (" + min + "-" + max + ") " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
+                    WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " (" + min + "-" + max + ") " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
                 }
             };
             
@@ -511,6 +513,11 @@ define([
             if (l == 13) numHairpinStashes = 5;
             if (!levelVO.isCampable) numHairpinStashes = 5;
             addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, "hairpin", ItemConstants.STASH_TYPE_ITEM, "res_hairpin", numHairpinStashes, pinsPerStash);
+            
+            // stashes: stamina potions
+            if (!levelVO.isCampable) {
+                addStashes(seed % 45 * (l + 11) * 9 + (l+100)*7 + 1111, "stamina potions", ItemConstants.STASH_TYPE_ITEM, "stamina_potion_1", 1, 1);
+            }
             
             // stashes: ingredients for craftable equipment (campable levels)
             let stashIngredients;
@@ -867,7 +874,7 @@ define([
             }
             
             // define springs
-            if ((col.water > 0 || sca.water) > 0 && !isStartPosition) {
+            if ((col.water > 0 || sca.water > 0) && this.canHaveSpring(sectorVO)) {
                 sectorVO.hasSpring =  WorldCreatorRandom.random(7777 + seed % 987 + ll * 7 + y * 71) < 0.25;
             } else {
                 sectorVO.hasSpring = false;
@@ -917,10 +924,18 @@ define([
             // adjustments for required resources
             if (sectorVO.requiredResources) {
                 if (sectorVO.requiredResources.getResource("water") > 0) {
-                    col.water = Math.max(col.water, 3);
+                    if (this.isRequiredResourceWaterSpring(sectorVO)) {
+                        sectorVO.hasSpring = true;
+                    } else {
+                        col.water = Math.max(col.water, 3);
+                    }
                 }
                 if (sectorVO.requiredResources.getResource("food") > 0) {
-                    sca.food = Math.max(sca.food, 3);
+                    if (this.isRequiredResourceFoodTrap(sectorVO)) {
+                        col.food = Math.max(col.food, 3);
+                    } else {
+                        sca.food = Math.max(sca.food, 3);
+                    }
                 }
             }
             
@@ -940,6 +955,8 @@ define([
             var randomGangFreq = 45;
                 
             var blockerType = MovementConstants.BLOCKER_TYPE_GANG;
+            
+            // TODO make gangs not consists of only one enemy
             
             var addGang = function (sectorVO, neighbourVO, addDiagonals, force) {
                 if (!neighbourVO) neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
@@ -1416,6 +1433,25 @@ define([
                 if (distance <= 1 + levelVO.seaPadding) return 1;
                 return 0;
             }
+        },
+        
+        isRequiredResourceWaterSpring: function (sectorVO) {
+            return this.canHaveSpring(sectorVO) && sectorVO.position.sectorX % 5 == 0;
+        },
+        
+        isRequiredResourceFoodTrap: function (sectorVO) {
+            return sectorVO.isOnCriticalPath()
+                || sectorVO.zone == WorldConstants.ZONE_ENTRANCE
+                || sectorVO.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP
+                || sectorVO.zone == WorldConstants.ZONE_PASSAGE_TO_PASSAGE
+                || sectorVO.zone == WorldConstants.ZONE_POI_1
+                || sectorVO.zone == WorldConstants.ZONE_POI_2
+                || sectorVO.zone == WorldConstants.ZONE_CAMP_TO_PASSAGE;
+        },
+        
+        canHaveSpring: function (sectorVO) {
+            var isStartPosition = sectorVO.position.level == 13 && sectorVO.isCamp;
+            return !isStartPosition && !sectorVO.hazards.radiation && !sectorVO.hazards.pollution;
         },
         
         getPassageUpType: function (seed, worldVO, levelVO, sectorVO) {

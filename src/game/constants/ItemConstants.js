@@ -186,6 +186,7 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
                 new ItemVO("flee_1", "Smoke Bomb", "Exploration", 3, false, true, false, 8, 2, null, "img/items/weapon-bomb.png", "Can be used to escape a fight."),
                 new ItemVO("cache_metal_1", "Abandoned robot", "Exploration", 1, false, false, true, 5, -1, {}, "img/items/cahce-metal.png", "Can probably be taken apart down for some scrap metal"),
                 new ItemVO("cache_metal_2", "Broken appliance", "Exploration", 1, false, false, true, 5, -1, {}, "img/items/cahce-metal.png", "Can probably be taken apart down for some scrap metal"),
+                new ItemVO("stamina_potion_1", "Energy drink", "Exploration", 1, false, false, true, 8, 7, {}, "img/items/stamina-1.png", "Smells awful, but keeps you going for a bit longer."),
             ];
             this.itemDefinitions.uniqueEquipment = [
                 new ItemVO("equipment_map", "Map", "UniqueEquipment", 0, false, false, false, -1, -1, null, "img/items/exploration-map.png", "Helps navigating the City."),

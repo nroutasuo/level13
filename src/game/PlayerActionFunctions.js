@@ -159,6 +159,15 @@ define(['ash',
 						this.addLogMessage(LogConstants.MSG_ID_START_SEND_CAMP, "A trade caravan heads out.");
                         GlobalSignals.caravanSentSignal.dispatch();
 						break;
+                        
+                    case "use_in_home":
+            			var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
+            			var hasStaminaPerk = perksComponent.hasPerk(PerkConstants.perkIds.staminaBonus);
+                        if (hasStaminaPerk) {
+                            perksComponent.removeItemsById(PerkConstants.perkIds.staminaBonus);
+                            this.playerStatsNodes.head.stamina.isPendingPenalty = true;
+                        }
+                        break;
 				}
 			}
 		},
@@ -503,7 +512,7 @@ define(['ash',
 			var logMsgDefeat = logMsg + "Got into a fight and was defeated.";
 			var successCallback = function () {
 				sectorStatus.scavenged = true;
-                sectorStatus.weightedTimesScavenged += efficiency;
+                sectorStatus.weightedNumScavenges += efficiency;
 			};
 			this.handleOutActionResults("scavenge", LogConstants.MSG_ID_SCAVENGE, logMsgSuccess, logMsgFlee, logMsgDefeat, true, null, successCallback);
 		},
@@ -1259,6 +1268,12 @@ define(['ash',
 
 		useHome: function () {
 			this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
+            
+            if (this.playerStatsNodes.head.stamina.isPendingPenalty) {
+                var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
+    			perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.staminaBonusPenalty, 300));
+            }
+            
 			this.completeAction("use_in_home");
 			this.forceStatsBarUpdate();
 		},
@@ -1446,12 +1461,13 @@ define(['ash',
 
 		useItem: function (itemId) {
 			var actionName = "use_item_" + itemId;
+            var sys = this;
 			var reqs = GameGlobals.playerActionsHelper.getReqs(actionName);
-
+            var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
+            
 			switch (itemId) {
 				case "first_aid_kit_1":
 				case "first_aid_kit_2":
-					var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
 					var injuries = perksComponent.getPerksByType(PerkConstants.perkTypes.injury);
 					var minValue = reqs.perks.Injury[0];
 					var injuryToHeal = null;
@@ -1469,6 +1485,17 @@ define(['ash',
         			this.addLogMessage(LogConstants.MSG_ID_USE_FIRST_AID_KIT, "Used a first aid kit.");
 					this.forceStatsBarUpdate();
 					break;
+                
+                case "stamina_potion_1":
+                    perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.staminaBonus));
+    				this.engine.updateComplete.addOnce(function () {
+            			sys.addLogMessage(LogConstants.MSG_ID_USE_STAMINA_POTION, "Feeling stronger and more awake.");
+                        sys.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_POTION_1;
+        				sys.engine.updateComplete.addOnce(function () {
+        					sys.forceStatsBarUpdate();
+                        });
+                    });
+                    break;
 
 				case "glowstick_1":
 					var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
@@ -1483,7 +1510,7 @@ define(['ash',
                     var itemName = itemNameParts[itemNameParts.length - 1];
         			var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 					currentStorage.resources.addResource(resourceNames.metal, value);
-        			this.addLogMessage(LogConstants.MSG_ID_USE_FIRST_AID_KIT, "Took apart the " + itemName + ". Gained " + value + " metal.");
+        			this.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, "Took apart the " + itemName + ". Gained " + value + " metal.");
                     break;
 
 				default:

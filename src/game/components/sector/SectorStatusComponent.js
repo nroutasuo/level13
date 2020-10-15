@@ -10,7 +10,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
         wasteClearedDirections: [],
         debrisClearedDirections: [],
         gapBridgedDirections: [],
-        weightedTimesScavenged: 0,
+        weightedNumScavenges: 0,
         stashesFound: 0,
         
         glowStickSeconds: -100, // not saved
@@ -24,7 +24,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
             this.wasteClearedDirections = [];
             this.debrisClearedDirections = [];
             this.gapBridgedDirections = [];
-            this.weightedTimesScavenged = 0;
+            this.weightedNumScavenges = 0;
             this.stashesFound = 0;
             
             this.hazardReduction = {};
@@ -51,7 +51,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
         },
         
         getScavengedPercent: function () {
-            return this.weightedTimesScavenged / (10+this.weightedTimesScavenged) * 100;
+            return this.weightedNumScavenges / (10+this.weightedNumScavenges) * 100;
         },
         
         getHazardReduction: function (hazard) {
@@ -109,8 +109,8 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
                 copy.dd = this.debrisClearedDirections;
             if (this.gapBridgedDirections && this.gapBridgedDirections.length > 0)
                 copy.bd = this.gapBridgedDirections;
-            if (this.weightedTimesScavenged)
-                copy.sw = this.weightedTimesScavenged;
+            if (this.weightedNumScavenges)
+                copy.sw = this.weightedNumScavenges;
             if (this.stashesFound)
                 copy.sf = this.stashesFound;
             return Object.keys(copy).length > 0 ? copy : null;
@@ -127,7 +127,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
             this.wasteClearedDirections = componentValues.wd ? componentValues.wd : [];
             this.debrisClearedDirections = componentValues.dd ? componentValues.dd : [];
             this.gapBridgedDirections = componentValues.bd ? componentValues.bd : [];
-            this.weightedTimesScavenged = componentValues.sw ? componentValues.sw : 0;
+            this.weightedNumScavenges = componentValues.sw ? componentValues.sw : 0;
             this.stashesFound = componentValues.sf ? componentValues.sf : 0;
         }
 

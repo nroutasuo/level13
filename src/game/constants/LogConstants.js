@@ -38,6 +38,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
         MSG_ID_ADD_HAZARD_PERK: "MSG_ID_ADD_HAZARD_PERK",
         MSG_ID_TIME_HAZARD_PERK: "MSG_ID_TIME_HAZARD_PERK",
         MSG_ID_REMOVE_HAZARD_PERK: "MSG_ID_REMOVE_HAZARD_PERK",
+        MSG_ID_REMOVE_STAMINA_PERK: "MSG_ID_REMOVE_STAMINA_PERK",
         MSG_ID_FOUND_BLUEPRINT_FIRST: "MSG_ID_FOUND_BLUEPRINT_FIRST",
         MSG_ID_FOUND_ITEM_FIRST: "MSG_ID_FOUND_ITEM_FIRST",
         MSG_ID_LOST_ITEM: "MSG_ID_LOST_ITEM",
@@ -103,6 +104,9 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
         // items
         MSG_ID_ADD_FOLLOWER: "ADD_FOLLOWER",
         MSG_ID_CRAFT_ITEM: "CRAFT_ITEM",
+        MSG_ID_USE_FIRST_AID_KIT: "MSG_ID_USE_FIRST_AID_KIT",
+        MSG_ID_USE_STAMINA_POTION: "MSG_ID_USE_STAMINA",
+        MSG_ID_USE_METAL_CACHE: "MSG_ID_USE_METAL_CACHE",
 
 		mergedMessages: [
             ["SCAVENGE", "SCOUT", "SCOUT"],

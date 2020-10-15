@@ -171,7 +171,7 @@ define([
 			var playerVision = playerStatsNode.vision.value;
 			var maxVision = playerStatsNode.vision.maximum;
             var shownVision = UIConstants.roundValue(playerVision, true, false);
-			var maxStamina = Math.round(playerStatsNode.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
+			var maxStamina =  UIConstants.roundValue(playerStatsNode.stamina.maxStamina);
             var isResting = this.isResting();
             var isHealing = busyComponent && busyComponent.getLastActionName() == "use_in_hospital";
 

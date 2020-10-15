@@ -4,7 +4,7 @@
             "version": "0.3.1",
             "phase": "alpha",
             "final": false,
-            "updated": "2020-09-20",
+            "updated": "2020-10-15",
             "changes": [
                 {
                     "type": "GD",
@@ -13,6 +13,10 @@
                 {
                     "type": "GD",
                     "summary": "Improved world generation",
+                },
+                {
+                    "type": "GD",
+                    "summary": "Improved sector descriptions",
                 },
                 {
                     "type": "GD",
@@ -36,7 +40,7 @@
                 },
                 {
                     "type": "GD",
-                    "summary": "Improved sector descriptions",
+                    "summary": "New consumable item that restores stamina",
                 },
                 {
                     "type": "WG",
