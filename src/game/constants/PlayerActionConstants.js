@@ -40,6 +40,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     health: 80,
                     sector: {
                         scouted: true,
+                        hazards: {
+                            poison: [1, -1],
+                        }
                     },
                     busy: false,
                 },
@@ -49,6 +52,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     health: 100,
                     sector: {
                         scouted: true,
+                        hazards: {
+                            radiation: [1, -1]
+                        }
                     },
                     busy: false,
                 },
@@ -278,14 +284,23 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 build_out_collector_food: {
                     vision: [30, -1],
+                    improvements: {
+                        collector_food:  [-1, 1],
+                    },
                     sector: {
                         collectable_food: true,
                         scouted: true,
+                        hazards: {
+                            radiation: [0, 1]
+                        }
                     }
                 },
 
                 build_out_collector_water: {
                     vision: [30, -1],
+                    improvements: {
+                        collector_water: [-1, 1],
+                    },
                     sector: {
                         collectable_water: true,
                         scouted: true,
