@@ -707,6 +707,13 @@ define([
                                 }
                             }
                         }
+                        
+                        if (requirements.sector.buildingDensity) {
+                            var result = this.checkRequirementsRange(requirements.sector.buildingDensity, featuresComponent.buildingDensity, "Sector too sparsely built", "Sector too densely built");
+                            if (result) {
+                                return result;
+                            }
+                        }
                     }
 
                     if (requirements.level) {
