@@ -402,7 +402,7 @@ define(['ash',
 					content += "<span>" + description + "</span>";
 				}
 
-				// visible if button is enabled: costs & risks
+				// visible if button is enabled: costs, special requirements, & risks
 				var costs = GameGlobals.playerActionsHelper.getCosts(action);
 				var hasCosts = action && costs && Object.keys(costs).length > 0;
 				if (hasCosts) {
@@ -421,6 +421,36 @@ define(['ash',
 					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
 					enabledContent += "<span class='action-duration'>duration: " + Math.round(duration * 100) / 100 + "s</span>";
 				}
+                
+                let specialReqs = GameGlobals.playerActionsHelper.getSpecialReqs(action);
+                if (specialReqs) {
+                    let s = "";
+                    for (let key in specialReqs) {
+                        switch (key) {
+                            case "improvementsOnLevel":
+                                let actionImprovementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action);
+                                for (let improvementID in specialReqs[key]) {
+                                    let range = specialReqs[key][improvementID];
+                                    let rangeText = UIConstants.getRangeText(range);
+                                    let displayName = GameGlobals.playerActionsHelper.getImprovementDisplayName(improvementID);
+                                    if (actionImprovementName == displayName) {
+                                        displayName = "";
+                                    }
+                                    s += rangeText + " " + displayName + " on level";
+                                }
+                                break;
+                            default:
+                                s += key + ": " + specialReqs[key];
+                                log.w("unknown special req: " + key);
+                                break;
+                        }
+                    }
+                    if (s.length > 0) {
+    					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
+                        s.trim();
+                        enabledContent += "<span class='action-special-reqs'>" + s + "</span>";
+                    }
+                }
 
                 var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
 				var injuryRiskMax = PlayerActionConstants.getInjuryProbability(action, 0);

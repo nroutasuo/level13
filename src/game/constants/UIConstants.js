@@ -509,6 +509,21 @@ define(['ash',
 		getResourceImg: function (name) {
 			return "<img src='img/res-" + name + ".png' alt='" + name + "'/>"
 		},
+        
+        getRangeText: function (range) {
+            var min = range[0];
+            var max = range[1];
+            if (min >= 0 && max >= 0) {
+                return min + "-" + max;
+            }
+            if (min >= 0) {
+                return "min " + min;
+            }
+            if (max >= 0) {
+                return "max " + max;
+            }
+            return "";
+        },
 
 		cleanupText: function (text) {
 			return text.replace(/'/g, "&#39;")

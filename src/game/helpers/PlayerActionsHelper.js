@@ -322,48 +322,40 @@ define([
 
                     if (requirements.improvements) {
                         var improvementRequirements = requirements.improvements;
-
-                        for (var improvName in improvementRequirements) {
-                            var amount = 0;
-                            var requirementImprovementName = improvementNames[improvName];
-                            switch (improvName) {
-                                case "camp":
-                                    // TODO global function for camps per level & get rid of PositionComponent & engine
-                                    for (var node = this.engine.getNodeList(CampNode).head; node; node = node.next) {
-                                        if (node.entity.get(PositionComponent).level === this.playerLocationNodes.head.position.level)
-                                            amount++;
-                                    }
-                                    break;
-                                case "passageUp":
-                                    amount =
-                                        improvementComponent.getCount(improvementNames.passageUpStairs) +
-                                        improvementComponent.getCount(improvementNames.passageUpElevator) +
-                                        improvementComponent.getCount(improvementNames.passageUpHole);
-                                    requirementImprovementName = "passage";
-                                    break;
-                                case "passageDown":
-                                    amount =
-                                        improvementComponent.getCount(improvementNames.passageDownStairs) +
-                                        improvementComponent.getCount(improvementNames.passageDownElevator) +
-                                        improvementComponent.getCount(improvementNames.passageDownHole);
-                                    requirementImprovementName = "passage";
-                                    break;
-                                default:
-                                    amount = improvementComponent.getCount(requirementImprovementName);
-                                    break;
-                            }
+                        for (var improvementID in improvementRequirements) {
+                            var amount = this.getCurrentImprovementCount(improvementComponent, campComponent, improvementID);
+                            var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
                             
-                            var range = improvementRequirements[improvName];
+                            var range = improvementRequirements[improvementID];
                             var actionImprovementName = this.getImprovementNameForAction(action, true);
                             if (!actionImprovementName) actionImprovementName = "Improvement";
-                            var displayImprovementName = actionImprovementName === requirementImprovementName ? "" :  requirementImprovementName;
-                                
-                            var currentVal = featuresComponent.hazards[hazard] || 0;
+                            var displayName = actionImprovementName === requiredImprovementDisplayName ? "" :  requiredImprovementDisplayName;
+                            
                             var result = this.checkRequirementsRange(range, amount,
-                                "{min}x " + displayImprovementName + " required",
-                                "max " + displayImprovementName + " built",
-                                displayImprovementName + " required",
-                                displayImprovementName + " already built"
+                                "{min}x " + displayName + " required",
+                                "max " + displayName + " built",
+                                displayName + " required",
+                                displayName + " already built"
+                            );
+                            if (result) {
+                                result.reason.trim();
+                                return result;
+                            }
+                        }
+                    }
+                    
+                    if (requirements.improvementsOnLevel) {
+                        var improvementRequirements = requirements.improvementsOnLevel;
+                        for (var improvementID in improvementRequirements) {
+                            var amount = this.getCurrentImprovementCountOnLevel(positionComponent.level, improvementID);
+                            var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
+                            var displayName = actionImprovementName === requiredImprovementDisplayName ? "" :  requiredImprovementDisplayName;
+                            var range = improvementRequirements[improvementID];
+                            var result = this.checkRequirementsRange(range, amount,
+                                "{min}x " + displayName + " on level required",
+                                "max {max} " + displayName + " on level",
+                                displayName + " required on level",
+                                displayName + " already built on level"
                             );
                             if (result) {
                                 return result;
@@ -719,22 +711,16 @@ define([
                     if (requirements.level) {
                         var level = sector.get(PositionComponent).level;
                         var levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
+
                         if (requirements.level.population) {
-                            var levelPopReqDef = requirements.level.population;
-                            var min = levelPopReqDef[0];
-                            var max = levelPopReqDef[1];
-                            if (max < 0) max = 9999999;
+                            var range = requirements.level.population;
                             var value = levelComponent.populationFactor;
-                            if (min > value || max <= value) {
-                                if (min > amount) {
-                                    reason = PlayerActionConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP;
-                                    if (min > 1) reason += ": " + min + "x " + improvName;
-                                } else {
-                                    reason = "Too many people on this level.";
-                                    if (max > 1) reason += ": " + max + "x " + improvName;
-                                }
-                                if (min > amount) return { value: amount/min, reason: reason };
-                                else return { value: 0, reason: reason };
+                            let result = this.checkRequirementsRange(range, value,
+                                PlayerActionConstants.DISABLED_REASON_NOT_ENOUGH_LEVEL_POP,
+                                "Too many people on this level",
+                            );
+                            if (result) {
+                                return result;
                             }
                         }
                     }
@@ -1018,16 +1004,18 @@ define([
         },
 
 		getReqs: function (action, sector) {
-            if (!this.playerLocationNodes.head) return;
-            var sector = sector || this.playerLocationNodes.head.entity;
+            var sector = sector || (this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
 			var baseActionID = this.getBaseActionID(action);
 			var requirements = {};
 			switch (baseActionID) {
 				case "scout_locale_i":
 				case "scout_locale_u":
-					var localei = parseInt(action.split("_")[3]);
-					var sectorLocalesComponent = sector.get(SectorLocalesComponent);
-					var localeVO = sectorLocalesComponent.locales[localei];
+                    var localeVO;
+                    if (sector) {
+    					var localei = parseInt(action.split("_")[3]);
+    					var sectorLocalesComponent = sector.get(SectorLocalesComponent);
+    					localeVO = sectorLocalesComponent.locales[localei];
+                    }
 					requirements = localeVO == null ? {} : localeVO.requirements;
                     requirements.sector = {};
                     requirements.sector.scouted = true;
@@ -1075,6 +1063,18 @@ define([
 					return PlayerActionConstants.requirements[action];
 			}
 		},
+        
+        getSpecialReqs: function (action) {
+            let reqs = this.getReqs(action);
+            let result = {};
+            if (!reqs) {
+                return result;
+            }
+            if (reqs.improvementsOnLevel) {
+                result.improvementsOnLevel = reqs.improvementsOnLevel;
+            }
+            return result;
+        },
         
         // NOTE: if you change this mess, keep GDD up to date
         getCost: function (baseCost, linearScale, e1Scale, e1Base, e2Scale, e2Exp, ordinal1, ordinal2, statusFactor) {
@@ -1479,6 +1479,48 @@ define([
 
                 default: return false;
             }
+        },
+        
+        getImprovementDisplayName: function (improvementID) {
+            switch (improvementID) {
+                case "passageUp":
+                case "passageDown":
+                    return "passage";
+                default:
+                    return improvementNames[improvementID];
+            }
+        },
+        
+        getCurrentImprovementCount: function (improvementComponent, campComponent, improvementID) {
+            switch (improvementID) {
+                case "camp":
+                    return campComponent ? 1 : 0;
+                case "passageUp":
+                    return
+                        improvementComponent.getCount(improvementNames.passageUpStairs) +
+                        improvementComponent.getCount(improvementNames.passageUpElevator) +
+                        improvementComponent.getCount(improvementNames.passageUpHole);
+                case "passageDown":
+                    return
+                        improvementComponent.getCount(improvementNames.passageDownStairs) +
+                        improvementComponent.getCount(improvementNames.passageDownElevator) +
+                        improvementComponent.getCount(improvementNames.passageDownHole);
+                default:
+                    return improvementComponent.getCount(improvementNames[improvementID]);
+            }
+        },
+        
+        getCurrentImprovementCountOnLevel: function (level, improvementID) {
+            // TODO cache result for performance?
+            let result = 0;
+            let sectors = GameGlobals.levelHelper.getSectorsByLevel(level);
+            for (let i = 0; i < sectors.length; i++) {
+                let sector = sectors[i];
+                let improvements = sector.get(SectorImprovementsComponent);
+                let campComponent = sector.get(CampComponent);
+                result += this.getCurrentImprovementCount(improvements, campComponent, improvementID);
+            }
+            return result;
         },
         
         getPathToNearestCamp: function (sector) {
