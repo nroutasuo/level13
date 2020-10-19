@@ -510,9 +510,12 @@ define(['ash',
 			return "<img src='img/res-" + name + ".png' alt='" + name + "'/>"
 		},
         
-        getRangeText: function (range) {
+        getRangeText: function (range, count) {
             var min = range[0];
             var max = range[1];
+            
+            if (!count && count !== 0) {
+                // text without current count
             if (min >= 0 && max >= 0) {
                 return min + "-" + max;
             }
@@ -522,6 +525,19 @@ define(['ash',
             if (max >= 0) {
                 return "max " + max;
             }
+            } else {
+                // text with current count
+                if (min >= 0 && max >= 0) {
+                    return count + "/" + min + "-" + max;
+                }
+                if (min >= 0) {
+                    return count + "/" + min;
+                }
+                if (max >= 0) {
+                    return count + "/" + max;
+                }
+            }
+            
             return "";
         },
 

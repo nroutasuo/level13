@@ -424,30 +424,9 @@ define(['ash',
                 
                 let specialReqs = GameGlobals.playerActionsHelper.getSpecialReqs(action);
                 if (specialReqs) {
-                    let s = "";
-                    for (let key in specialReqs) {
-                        switch (key) {
-                            case "improvementsOnLevel":
-                                let actionImprovementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action);
-                                for (let improvementID in specialReqs[key]) {
-                                    let range = specialReqs[key][improvementID];
-                                    let rangeText = UIConstants.getRangeText(range);
-                                    let displayName = GameGlobals.playerActionsHelper.getImprovementDisplayName(improvementID);
-                                    if (actionImprovementName == displayName) {
-                                        displayName = "";
-                                    }
-                                    s += rangeText + " " + displayName + " on level";
-                                }
-                                break;
-                            default:
-                                s += key + ": " + specialReqs[key];
-                                log.w("unknown special req: " + key);
-                                break;
-                        }
-                    }
+                    let s = this.getSpecialReqsText(action);
                     if (s.length > 0) {
     					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
-                        s.trim();
                         enabledContent += "<span class='action-special-reqs'>" + s + "</span>";
                     }
                 }
@@ -489,6 +468,37 @@ define(['ash',
 					return "";
 				}
 			},
+            
+            getSpecialReqsText: function (action) {
+                var position = GameGlobals.playerActionFunctions.playerPositionNodes.head ? GameGlobals.playerActionFunctions.playerPositionNodes.head.position : {};
+                let s = "";
+                let specialReqs = GameGlobals.playerActionsHelper.getSpecialReqs(action);
+                if (specialReqs) {
+                    for (let key in specialReqs) {
+                        switch (key) {
+                            case "improvementsOnLevel":
+                                let actionImprovementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action);
+                                for (let improvementID in specialReqs[key]) {
+                                    let range = specialReqs[key][improvementID];
+                                    let count = GameGlobals.playerActionsHelper.getCurrentImprovementCountOnLevel(position.level, improvementID);
+                                    let rangeText = UIConstants.getRangeText(range);
+                                    let displayName = GameGlobals.playerActionsHelper.getImprovementDisplayName(improvementID);
+                                    if (actionImprovementName == displayName) {
+                                        displayName = "";
+                                    }
+                                    s += rangeText + " " + displayName + " on level (" + count + ")";
+                                }
+                                break;
+                            default:
+                                s += key + ": " + specialReqs[key];
+                                log.w("unknown special req: " + key);
+                                break;
+                        }
+                    }
+                }
+                s.trim();
+                return s;
+            },
 
 			generateSteppers: function (scope) {
 				$(scope + " .stepper").append("<button type='button' class='btn-glyph' data-type='minus' data-field=''>-</button>");

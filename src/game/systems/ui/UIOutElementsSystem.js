@@ -168,6 +168,7 @@ define([
 					this.updateButtonCalloutCosts($button, action, buttonStatus, buttonElements, costs, costsStatus);
 				}
 				this.updateButtonCalloutRisks($button, action, buttonElements);
+                this.updateButtonSpecialReqs($button, action, buttonElements);
 			} else {
 				var lastReason = buttonStatus.disabledReason;
 				if (lastReason !== disabledReason) {
@@ -242,6 +243,13 @@ define([
 			if (fightRisk > 0)
 				buttonElements.calloutRiskFightValue.text(UIConstants.roundValue((fightRiskBase + fightRiskVision) * 100, true, true));
 		},
+        
+        updateButtonSpecialReqs: function ($button, action, buttonElements) {
+            if (!buttonElements.calloutSpecialReqs || buttonElements.calloutSpecialReqs.length == 0) {
+                return;
+            }
+            buttonElements.calloutSpecialReqs.text(GameGlobals.uiFunctions.getSpecialReqsText(action));
+        },
 
 		updateButtonCooldownOverlays: function ($button, action, buttonStatus, buttonElements, sectorEntity, isHardDisabled, costsStatus) {
 			costsStatus.bottleneckCostFraction = Math.min(costsStatus.bottleneckCostFraction, GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity).value);
@@ -390,6 +398,7 @@ define([
 					elements.calloutRiskInventoryValue = elements.calloutRiskInventory.children(".action-risk-value");
 					elements.calloutRiskFight = elements.calloutContentEnabled.children(".action-risk-fight");
 					elements.calloutRiskFightValue = elements.calloutRiskFight.children(".action-risk-value");
+                    elements.calloutSpecialReqs = elements.calloutContentEnabled.children(".action-special-reqs")
 					elements.cooldownReqs = $button.siblings(".cooldown-reqs");
 					elements.cooldownDuration = $button.children(".cooldown-duration");
 					elements.cooldownAction = $button.children(".cooldown-action");
