@@ -30,6 +30,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 		},
         
         PERK_RECOVERY_FACTOR_REST: 3,
+        TIMER_DISABLED: -1,
 	
 		getPerk: function (perkId, effectTimer) {
 			for (var key in this.perkDefinitions) {

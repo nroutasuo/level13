@@ -19,7 +19,6 @@ define([
     'game/components/player/BagComponent',
     'game/components/player/DeityComponent',
     'game/components/player/ItemsComponent',
-    'game/components/player/PerksComponent',
     'game/components/player/PlayerActionComponent',
     'game/components/common/PositionComponent',
     'game/components/common/CampComponent',
@@ -35,7 +34,6 @@ define([
     BagComponent,
 	DeityComponent,
 	ItemsComponent,
-	PerksComponent,
 	PlayerActionComponent,
 	PositionComponent,
     CampComponent,
@@ -360,7 +358,7 @@ define([
             if (!this.playerStatsNodes.head) return;
             if (GameGlobals.gameState.uiStatus.isHidden) return;
             var isResting = this.isResting();
-			var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
+			var perksComponent = this.playerStatsNodes.head.perks;
 			var perks = perksComponent.getAll();
             var now = new Date().getTime();
             $("ul#list-items-perks").empty();
@@ -390,7 +388,7 @@ define([
         },
 
 		updatePerks: function () {
-			var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
+			var perksComponent = this.playerStatsNodes.head.perks;
 			var perks = perksComponent.getAll();
             var isResting = this.isResting();
 

@@ -1,4 +1,5 @@
 define(['ash',
+    'game/GameGlobals',
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
 	'game/constants/LocaleConstants',
@@ -6,7 +7,7 @@ define(['ash',
 	'game/constants/UpgradeConstants',
 	'game/constants/WorldConstants',
 	'game/vos/ResourcesVO'],
-function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants, UpgradeConstants, WorldConstants, ResourcesVO) {
+function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, PositionConstants, UpgradeConstants, WorldConstants, ResourcesVO) {
 
     var FightConstants = {
 	
@@ -174,7 +175,8 @@ function (Ash, ItemConstants, PerkConstants, LocaleConstants, PositionConstants,
             if (ratio < 0.05) ratio = 0.05;
             if (ratio > 0.95) ratio = 0.95;
             
-            log.i("getFightWinProbability: time alive player: " + timeAlivePlayerMin + "-" + timeAlivePlayerMax + ", enemy: " + timeAliveEnemy + " -> " + ratio);
+            if (GameGlobals.gameFlowLogger.isEnabled)
+                log.i("getFightWinProbability: time alive player: " + timeAlivePlayerMin + "-" + timeAlivePlayerMax + ", enemy: " + timeAliveEnemy + " -> " + ratio);
             return ratio;
         },
         		

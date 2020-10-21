@@ -109,18 +109,6 @@ define([
                 return "area too cold";
             return null;
         },
-        
-        getPerksForSector: function (featuresComponent, statusComponent, itemsComponent) {
-            var hazards = this.getEffectiveHazards(featuresComponent, statusComponent);
-            var result = [];
-            if (hazards.radiation > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_radiation))
-                result.push(PerkConstants.perkIds.hazardRadiation);
-            if (hazards.poison > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_poison))
-                result.push(PerkConstants.perkIds.hazardPoison);
-            if (hazards.cold > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_cold))
-                result.push(PerkConstants.perkIds.hazardCold);
-            return result;
-        },
 		
 		getLocationDiscoveredResources: function (sector) {
             var resources = [];

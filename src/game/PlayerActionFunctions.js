@@ -31,7 +31,6 @@ define(['ash',
 	'game/components/player/BagComponent',
 	'game/components/player/ExcursionComponent',
 	'game/components/player/ItemsComponent',
-	'game/components/player/PerksComponent',
 	'game/components/player/DeityComponent',
 	'game/components/player/PlayerActionComponent',
 	'game/components/player/PlayerActionResultComponent',
@@ -64,7 +63,7 @@ define(['ash',
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
 	NearestCampNode, LastVisitedCampNode, CampNode, TribeUpgradesNode,
 	PositionComponent, ResourcesComponent,
-	BagComponent, ExcursionComponent, ItemsComponent, PerksComponent, DeityComponent, PlayerActionComponent, PlayerActionResultComponent,
+	BagComponent, ExcursionComponent, ItemsComponent, DeityComponent, PlayerActionComponent, PlayerActionResultComponent,
 	CampComponent, CurrencyComponent, LevelComponent, SectorImprovementsComponent, SectorCollectorsComponent, WorkshopComponent,
 	ReputationComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, LastVisitedCampComponent,
 	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, TraderComponent,
@@ -161,10 +160,10 @@ define(['ash',
 						break;
                         
                     case "use_in_home":
-            			var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
+            			var perksComponent = this.playerStatsNodes.head.perks;
             			var hasStaminaPerk = perksComponent.hasPerk(PerkConstants.perkIds.staminaBonus);
                         if (hasStaminaPerk) {
-                            perksComponent.removeItemsById(PerkConstants.perkIds.staminaBonus);
+                            perksComponent.removePerkById(PerkConstants.perkIds.staminaBonus);
                             this.playerStatsNodes.head.stamina.isPendingPenalty = true;
                         }
                         break;
@@ -1270,7 +1269,7 @@ define(['ash',
 			this.playerStatsNodes.head.stamina.stamina = this.playerStatsNodes.head.stamina.health * PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR;
             
             if (this.playerStatsNodes.head.stamina.isPendingPenalty) {
-                var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
+                var perksComponent = this.playerStatsNodes.head.perks;
     			perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.staminaBonusPenalty, 300));
             }
             
@@ -1316,8 +1315,8 @@ define(['ash',
         },
 
 		useHospital: function () {
-			var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
-			perksComponent.removeItemsByType(PerkConstants.perkTypes.injury);
+			var perksComponent = this.playerStatsNodes.head.perks;
+			perksComponent.removePerksByType(PerkConstants.perkTypes.injury);
 
 			this.playerStatsNodes.head.stamina.stamina = 1000;
 			this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL, "Healed all injuries.");
@@ -1328,7 +1327,7 @@ define(['ash',
 		},
 
 		useHospital2: function () {
-			var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
+			var perksComponent = this.playerStatsNodes.head.perks;
 			perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.healthAugment));
 			this.addLogMessage(LogConstants.MSG_ID_USE_HOSPITAL2, "Improved health.");
 			this.forceResourceBarUpdate();
@@ -1463,7 +1462,7 @@ define(['ash',
 			var actionName = "use_item_" + itemId;
             var sys = this;
 			var reqs = GameGlobals.playerActionsHelper.getReqs(actionName);
-            var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
+            var perksComponent = this.playerStatsNodes.head.perks;
             
 			switch (itemId) {
 				case "first_aid_kit_1":
@@ -1478,7 +1477,7 @@ define(['ash',
 						}
 					}
 					if (injuryToHeal !== null) {
-						perksComponent.removeItemsById(injuryToHeal.id);
+						perksComponent.removePerkById(injuryToHeal.id);
 					} else {
 						log.w("No injury found that can be healed!");
 					}

@@ -86,14 +86,14 @@ function (Ash, GlobalSignals, PerkVO, PerkConstants) {
             return this.perks[type] ? this.perks[type] : [];
         },
 
-        removeItemsByType: function (type) {
+        removePerksByType: function (type) {
             if (typeof this.perks[type] !== 'undefined') {
                 this.perks[type] = [];
             }
             GlobalSignals.perksChangedSignal.dispatch();
         },
 
-        removeItemsById: function (perkId) {
+        removePerkById: function (perkId) {
             for (var key in this.perks) {
                 for( var i = 0; i < this.perks[key].length; i++) {
                     if (this.perks[key][i].id === perkId) {

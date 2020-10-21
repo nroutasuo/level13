@@ -45,7 +45,7 @@ define([
             if (isEncumbered && !hasWeightPerk) {
                 perksComponent.addPerk(PerkConstants.getPerk(PerkConstants.perkIds.encumbered));
             } else if (!isEncumbered && hasWeightPerk) {
-                perksComponent.removeItemsById(PerkConstants.perkIds.encumbered);
+                perksComponent.removePerkById(PerkConstants.perkIds.encumbered);
             }
             
 			GameGlobals.gameState.unlockedFeatures.bag = GameGlobals.gameState.unlockedFeatures.bag || playerItems.getAll().length > 0;

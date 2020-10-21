@@ -215,7 +215,7 @@ define(['ash',
 						continue;
 					}
 					if (value <= 0 && !showAllBonuses) {}
-					result += this.getItemBonusName(bonusType);
+					result += this.getItemBonusName(bonusType, true);
 					result += useLineBreaks && !showAllBonuses ? "<br/>" : " ";
 					result += this.getItemBonusText(item, bonusType);
 				}
@@ -231,7 +231,7 @@ define(['ash',
 			return result;
 		},
 
-		getItemBonusName: function (bonusType) {
+		getItemBonusName: function (bonusType, short) {
 			switch (bonusType) {
 				case ItemConstants.itemBonusTypes.light: return "max vision";
 				case ItemConstants.itemBonusTypes.fight_att: return "attack";
@@ -241,9 +241,9 @@ define(['ash',
 				case ItemConstants.itemBonusTypes.bag: return "bag size";
                 case ItemConstants.itemBonusTypes.fight_def: return "defence";
                 case ItemConstants.itemBonusTypes.res_cold: return "warmth";
-                case ItemConstants.itemBonusTypes.res_radiation: return "radiation protection";
-                case ItemConstants.itemBonusTypes.res_poison: return "poison protection";
-                case ItemConstants.itemBonusTypes.shade: return "sunblindness protection";
+                case ItemConstants.itemBonusTypes.res_radiation: return short ? "radiation prot" : "radiation protection";
+                case ItemConstants.itemBonusTypes.res_poison: return short ? "poison prot" : "poison protection";
+                case ItemConstants.itemBonusTypes.shade: return short ? "sun prot" : "sunblindness protection";
 				default:
 					return null;
 			}
@@ -516,15 +516,15 @@ define(['ash',
             
             if (!count && count !== 0) {
                 // text without current count
-            if (min >= 0 && max >= 0) {
-                return min + "-" + max;
-            }
-            if (min >= 0) {
-                return "min " + min;
-            }
-            if (max >= 0) {
-                return "max " + max;
-            }
+                if (min >= 0 && max >= 0) {
+                    return min + "-" + max;
+                }
+                if (min >= 0) {
+                    return "min " + min;
+                }
+                if (max >= 0) {
+                    return "max " + max;
+                }
             } else {
                 // text with current count
                 if (min >= 0 && max >= 0) {

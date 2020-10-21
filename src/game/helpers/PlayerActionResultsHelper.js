@@ -28,7 +28,6 @@ define([
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/SectorLocalesComponent',
     'game/components/player/ItemsComponent',
-    'game/components/player/PerksComponent',
     'game/components/player/BagComponent',
     'game/components/player/DeityComponent',
 	'game/components/player/ExcursionComponent',
@@ -64,7 +63,6 @@ define([
     SectorStatusComponent,
     SectorLocalesComponent,
     ItemsComponent,
-    PerksComponent,
     BagComponent,
     DeityComponent,
     ExcursionComponent,
@@ -381,7 +379,7 @@ define([
 			}
 
 			if (rewards.gainedInjuries) {
-				var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
+				var perksComponent = this.playerStatsNodes.head.perks;
 				for (var i = 0; i < rewards.gainedInjuries.length; i++) {
 					perksComponent.addPerk(rewards.gainedInjuries[i].clone());
 				}
@@ -1109,7 +1107,7 @@ define([
         },
 
 		getResultInjuries: function (injuryProbability) {
-            var perksComponent = this.playerStatsNodes.head.entity.get(PerksComponent);
+            var perksComponent = this.playerStatsNodes.head.perks;
 			var result = [];
 
             var currentEffect = perksComponent.getTotalEffect(PerkConstants.perkTypes.injury);

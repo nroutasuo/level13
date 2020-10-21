@@ -44,6 +44,7 @@ define([
     'game/systems/FightSystem',
     'game/systems/FollowerSystem',
     'game/systems/PopulationSystem',
+    'game/systems/PerkSystem',
     'game/systems/WorkerSystem',
     'game/systems/FaintingSystem',
     'game/systems/ReputationSystem',
@@ -54,7 +55,6 @@ define([
     'game/systems/GlobalResourcesSystem',
     'game/systems/GlobalResourcesResetSystem',
     'game/systems/BagSystem',
-    'game/systems/HazardSystem',
     'game/systems/UnlockedFeaturesSystem',
     'game/systems/occurrences/CampEventsSystem',
     'game/PlayerActionFunctions',
@@ -124,6 +124,7 @@ define([
     FightSystem,
     FollowerSystem,
     PopulationSystem,
+    PerkSystem,
     WorkerSystem,
     FaintingSystem,
     ReputationSystem,
@@ -134,7 +135,6 @@ define([
     GlobalResourcesSystem,
     GlobalResourcesResetSystem,
     BagSystem,
-    HazardSystem,
     UnlockedFeaturesSystem,
     CampEventsSystem,
     PlayerActionFunctions,
@@ -240,11 +240,11 @@ define([
 			this.engine.addSystem(new VisionSystem(), SystemPriorities.update);
 			this.engine.addSystem(new StaminaSystem(), SystemPriorities.update);
 			this.engine.addSystem(new BagSystem(), SystemPriorities.update);
-			this.engine.addSystem(new HazardSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CollectorSystem(), SystemPriorities.update);
 			this.engine.addSystem(new FightSystem(), SystemPriorities.update);
 			this.engine.addSystem(new FollowerSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PopulationSystem(), SystemPriorities.update);
+			this.engine.addSystem(new PerkSystem(), SystemPriorities.update);
 			this.engine.addSystem(new WorkerSystem(), SystemPriorities.update);
 			this.engine.addSystem(new FaintingSystem(), SystemPriorities.update);
 			this.engine.addSystem(new ReputationSystem(), SystemPriorities.update);

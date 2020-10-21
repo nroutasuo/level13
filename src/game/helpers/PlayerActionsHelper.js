@@ -28,7 +28,6 @@ define([
     'game/components/player/BagComponent',
     'game/components/player/ExcursionComponent',
     'game/components/player/ItemsComponent',
-    'game/components/player/PerksComponent',
     'game/components/player/DeityComponent',
     'game/components/sector/FightComponent',
     'game/components/sector/OutgoingCaravansComponent',
@@ -47,7 +46,7 @@ define([
 ], function (
 	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
-	LevelComponent, CurrencyComponent, PositionComponent, PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, PerksComponent, DeityComponent,
+	LevelComponent, CurrencyComponent, PositionComponent, PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, DeityComponent,
 	FightComponent, OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
 	SectorFeaturesComponent, SectorStatusComponent, SectorLocalesComponent, SectorControlComponent, SectorImprovementsComponent, TraderComponent,
 	CampComponent,
@@ -173,7 +172,7 @@ define([
 
             var checkRequirementsInternal = function (action, sector) {
                 var playerVision = this.playerStatsNodes.head.vision.value;
-                var playerPerks = this.playerResourcesNodes.head.entity.get(PerksComponent);
+                var playerPerks = this.playerStatsNodes.head.perks;
                 var playerStamina = this.playerStatsNodes.head.stamina.stamina;
                 var deityComponent = this.playerResourcesNodes.head.entity.get(DeityComponent);
                 
@@ -963,6 +962,7 @@ define([
 
             var sector = this.playerLocationNodes.head.entity;
             var passageComponent = sector.get(PassagesComponent);
+            var playerStatsNode = this.playerStatsNodes.head;
             var playerEntity = this.playerStatsNodes.head.entity;
 
             var getShoeBonus = function () {
@@ -973,7 +973,7 @@ define([
             }
 
             var getPerkBonus = function () {
-                var perksComponent = playerEntity.get(PerksComponent);
+                var perksComponent = playerStatsNode.perks;
                 var perkBonus = perksComponent.getTotalEffect(PerkConstants.perkTypes.movement);
                 if (perkBonus === 0) perkBonus = 1;
                 return perkBonus;

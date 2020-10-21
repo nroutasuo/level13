@@ -171,7 +171,7 @@ define([
 			if (!isThirsty) {
 				if (hasThirstPerk) {
 					if (!inCamp) this.log("No longer thirsty.");
-					perksComponent.removeItemsById(PerkConstants.perkIds.thirst);
+					perksComponent.removePerkById(PerkConstants.perkIds.thirst);
 				}
 			} else if (!hasThirstPerk) {
 				if (!inCamp && (GameGlobals.gameState.unlockedFeatures.resources.water)) this.log("Out of water!");
@@ -181,7 +181,7 @@ define([
 			if (!isHungry) {
 				if (hasHungerPerk) {
 					if (!inCamp) this.log("No longer hungry.");
-					perksComponent.removeItemsById(PerkConstants.perkIds.hunger);
+					perksComponent.removePerkById(PerkConstants.perkIds.hunger);
 				}
 			} else if (!hasHungerPerk) {
 				if (!inCamp && (GameGlobals.gameState.unlockedFeatures.resources.food)) this.log("Out of food!");

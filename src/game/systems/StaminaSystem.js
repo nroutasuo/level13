@@ -40,7 +40,6 @@ define([
             if (GameGlobals.gameState.isPaused) return;
             for (var node = this.nodeList.head; node; node = node.next) {
                 this.updateStamina(node, time);
-                this.updatePerks(node, time);
             }
         },
 
@@ -115,21 +114,6 @@ define([
                 }
             }
             this.isWarning = isWarning;
-        },
-        
-        updatePerks: function (node, time) {
-            var perksComponent = node.perks;
-            var penaltyPerk = perksComponent.getPerk(PerkConstants.perkIds.staminaBonusPenalty);
-            if (penaltyPerk) {
-                // adjust perk timer
-                penaltyPerk.effectTimer -= time * GameConstants.gameSpeedExploration;
-                if (penaltyPerk.effectTimer < 0) {
-                    // remove perk
-                    perksComponent.removeItemsById(penaltyPerk.id);
-                    var logComponent = node.entity.get(LogMessagesComponent);
-                    logComponent.addMessage(LogConstants.MSG_ID_REMOVE_STAMINA_PERK, "Feeling better again.");
-                }
-            }
         },
         
         updateWarningLimit: function () {
