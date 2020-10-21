@@ -691,6 +691,7 @@ define([
                 var improvement = improvementList[i];
                 if (improvement.name === improvementNames.collector_food) continue;
                 if (improvement.name === improvementNames.collector_water) continue;
+                if (improvement.name === improvementNames.beacon) continue;
                 projects.push(new LevelProjectVO(improvement, "", sectorPosition));
             }
 

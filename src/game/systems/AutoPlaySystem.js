@@ -555,6 +555,7 @@ define(['ash',
 		},
 
         buildOutImprovements: function () {
+            // TODO build beacons
             if (!GameGlobals.playerActionFunctions.playerLocationNodes.head) return;
 			var improvementsComponent = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 

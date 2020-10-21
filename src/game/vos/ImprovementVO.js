@@ -4,6 +4,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
     improvementNames = {
 		collector_food: "Trap",
 		collector_water: "Bucket",
+        beacon: "Beacon",
 		
 		passageUpStairs: "Staircase Up",
 		passageUpElevator: "Elevator Up (Repair)",

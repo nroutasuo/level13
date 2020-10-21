@@ -99,6 +99,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
         MSG_ID_BUILT_PASSAGE: "BUILT_PASSAGE",
         MSG_ID_BUILT_TRAP: "BUILT_TRAP",
         MSG_ID_BUILT_BUCKET: "BUILT_BUCKET",
+        MSG_ID_BUILT_BEACON: "MSG_ID_BUILT_BEACON",
         MSG_ID_BUILT_SPACESHIP: "BUILT_SPACESHIP",
 
         // items

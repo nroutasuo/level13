@@ -177,6 +177,7 @@ define(['ash',
 				// Out improvements
                 case "build_out_collector_water": this.buildBucket(param); break;
                 case "build_out_collector_food": this.buildTrap(param); break;
+                case "build_out_beacon": this.buildBeacon(param); break;
                 case "use_out_collector_water": this.collectWater(param); break;
                 case "use_out_collector_food": this.collectFood(param); break;
                 case "build_out_camp": this.buildCamp(param); break;
@@ -284,6 +285,7 @@ define(['ash',
             if (this.currentAction == action)
                 this.currentAction = null;
             GameGlobals.uiFunctions.completeAction(action);
+            GlobalSignals.actionCompletedSignal.dispatch();
         },
         
         getPositionVO: function (sectorPos) {
@@ -1039,6 +1041,12 @@ define(['ash',
 				this.playerLocationNodes.head.entity.add(new SectorCollectorsComponent());
             GlobalSignals.improvementBuiltSignal.dispatch();
 		},
+        
+        buildBeacon: function () {
+			this.buildImprovement("build_out_beacon", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_out_beacon"));
+			this.addLogMessage(LogConstants.MSG_ID_BUILT_BEACON, "Beacon is ready.");
+            GlobalSignals.improvementBuiltSignal.dispatch();
+        },
 
 		buildHouse: function (otherSector) {
 			this.buildImprovement("build_in_house", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_house"), otherSector);

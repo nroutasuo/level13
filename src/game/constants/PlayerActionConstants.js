@@ -304,7 +304,28 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     sector: {
                         collectable_water: true,
                         scouted: true,
+                        hazards: {
+                            radiation: [0, 1]
+                        }
                     }
+                },
+                
+                build_out_beacon: {
+                    vision: [30, -1],
+                    improvements: {
+                        beacon: [-1, 1],
+                    },
+                    improvementsOnLevel: {
+                        beacon: [-1, 3],
+                    },
+                    sector: {
+                        scouted: true,
+                        hazards: {
+                            poison: [0, 1],
+                            radiation: [0, 1]
+                        },
+                        buildingDensity: [2, 8]
+                    },
                 },
 
                 use_out_collector_food: {
@@ -1745,6 +1766,11 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 build_out_collector_water: {
                     resource_metal: 8
                 },
+
+                build_out_beacon: {
+                    resource_metal: 10,
+                    resource_fuel: 1,
+                },
                 
                 clear_debris: {
                     resource_rope: 50,
@@ -2770,6 +2796,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 despair: "Give up. Stop moving. Rest.",
                 build_out_collector_food: "Accumulates food.",
                 build_out_collector_water: "Accumulates water.",
+                build_out_beacon: "Makes exploration in surrounding sectors easier",
                 build_out_camp: "A place to rest.",
                 improve_in_campfire: "Increase rumour generation",
                 improve_in_library: "Increase evidence generation",
