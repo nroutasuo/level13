@@ -27,6 +27,8 @@ define([
 		autoPlayNodes: null,
 
 		engine: null,
+        
+        buttonCalloutSignalParams: { isButtonCalloutElement: true },
 
 		elementsCalloutContainers: null,
 		elementsVisibleButtons: [],
@@ -50,10 +52,10 @@ define([
 			GlobalSignals.add(this, GlobalSignals.updateButtonsSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.featureUnlockedSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onElementsVisibilityChanged);
-			GlobalSignals.add(this, GlobalSignals.elementToggledSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.elementCreatedSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.actionButtonClickedSignal, this.onElementsVisibilityChanged);
+			GlobalSignals.add(this, GlobalSignals.elementToggledSignal, this.onElementsVisibilityChanged);
             
 			GlobalSignals.add(this, GlobalSignals.updateButtonsSignal, this.onButtonStatusChanged);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onButtonStatusChanged);
@@ -161,8 +163,8 @@ define([
 			var disabledReason = GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
 			var isDisabledOnlyForCooldown = (!(disabledReason) && this.hasButtonCooldown($button));
 			if (!isHardDisabled || isDisabledOnlyForCooldown) {
-				GameGlobals.uiFunctions.toggle($enabledContent, true);
-				GameGlobals.uiFunctions.toggle($disabledContent, false);
+				GameGlobals.uiFunctions.toggle($enabledContent, true, this.buttonCalloutSignalParams);
+				GameGlobals.uiFunctions.toggle($disabledContent, false, this.buttonCalloutSignalParams);
 				var hasCosts = action && costs && Object.keys(costs).length > 0;
 				if (hasCosts) {
 					this.updateButtonCalloutCosts($button, action, buttonStatus, buttonElements, costs, costsStatus);
@@ -172,8 +174,8 @@ define([
 			} else {
 				var lastReason = buttonStatus.disabledReason;
 				if (lastReason !== disabledReason) {
-					GameGlobals.uiFunctions.toggle($enabledContent, false);
-					GameGlobals.uiFunctions.toggle($disabledContent, true);
+					GameGlobals.uiFunctions.toggle($enabledContent, false, this.buttonCalloutSignalParams);
+					GameGlobals.uiFunctions.toggle($disabledContent, true, this.buttonCalloutSignalParams);
 					buttonElements.calloutSpanDisabledReason.html(disabledReason);
 					buttonStatus.disabledReason = disabledReason;
 				}
@@ -208,7 +210,7 @@ define([
 				if (value !== buttonStatus.displayedCosts[key]) {
 					var $costSpanValue = buttonElements.costSpanValues[key];
 					$costSpanValue.html(UIConstants.getDisplayValue(value));
-					GameGlobals.uiFunctions.toggle($costSpan, value > 0);
+					GameGlobals.uiFunctions.toggle($costSpan, value > 0, this.buttonCalloutSignalParams);
 					buttonStatus.displayedCosts[key] = value;
 				}
 			}
@@ -231,15 +233,15 @@ define([
 			var fightRisk = hasEnemies ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision, sectorDangerFactor, encounterFactor) : 0;
 			var fightRiskBase = fightRisk > 0 ? PlayerActionConstants.getRandomEncounterProbability(baseActionId, playerVision, sectorDangerFactor, encounterFactor) : 0;
 			var fightRiskVision = fightRisk - fightRiskBase;
-			GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskInjury, injuryRisk > 0);
+			GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskInjury, injuryRisk > 0, this.buttonCalloutSignalParams);
 			if (injuryRisk > 0)
 				buttonElements.calloutRiskInjuryValue.text(UIConstants.roundValue((injuryRiskBase + injuryRiskVision) * 100, true, true));
 
-			GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskInventory, inventoryRisk > 0);
+			GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskInventory, inventoryRisk > 0, this.buttonCalloutSignalParams);
 			if (inventoryRisk > 0)
 				buttonElements.calloutRiskInventoryValue.text(UIConstants.roundValue((inventoryRiskBase + inventoryRiskVision) * 100, true, true));
 
-			GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskFight, fightRisk > 0);
+			GameGlobals.uiFunctions.toggle(buttonElements.calloutRiskFight, fightRisk > 0, this.buttonCalloutSignalParams);
 			if (fightRisk > 0)
 				buttonElements.calloutRiskFightValue.text(UIConstants.roundValue((fightRiskBase + fightRiskVision) * 100, true, true));
 		},
@@ -358,7 +360,7 @@ define([
 					$.each(targets.children(), function () {
 						visible = visible && $(this).css("display") !== "none";
 					});
-					GameGlobals.uiFunctions.toggle($(this), visible);
+					GameGlobals.uiFunctions.toggle($(this), visible, this.buttonCalloutSignalParams);
 				}
 			});
 		},
@@ -430,7 +432,10 @@ define([
 			});
 		},
         
-        onElementsVisibilityChanged: function () {
+        onElementsVisibilityChanged: function (elements, show, params) {
+            if (params && params.isButtonCalloutElement)  {
+                return;
+            }
             this.elementsVisibilityChanged = true;
         },
         

@@ -799,7 +799,7 @@ define(['ash',
 				}
 			},
 
-			toggle: function (element, show) {
+			toggle: function (element, show, signalParams) {
 				var $element = typeof (element) === "string" ? $(element) : element;
 				if (($element).length === 0)
 					return;
@@ -815,7 +815,7 @@ define(['ash',
 				$element.toggle(show);
                 // NOTE: For some reason the element isn't immediately :visible for checks in UIOutElementsSystem without the timeout
                 setTimeout(function () {
-                    GlobalSignals.elementToggledSignal.dispatch(element, show);
+                    GlobalSignals.elementToggledSignal.dispatch(element, show, signalParams);
                 }, 1);
 			},
 
