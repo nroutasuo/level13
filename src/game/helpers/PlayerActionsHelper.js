@@ -957,10 +957,10 @@ define([
         },
 
         // Returns the cost factor of a given action, usually 1, but may depend on the current status for some actions
-        getCostFactor: function (action, cost) {
+        getCostFactor: function (action, cost, otherSector) {
             if (!this.playerLocationNodes || !this.playerLocationNodes.head) return 1;
 
-            var sector = this.playerLocationNodes.head.entity;
+            var sector = otherSector || this.playerLocationNodes.head.entity;
             var passageComponent = sector.get(PassagesComponent);
             var playerStatsNode = this.playerStatsNodes.head;
             var playerEntity = this.playerStatsNodes.head.entity;
@@ -978,6 +978,11 @@ define([
                 if (perkBonus === 0) perkBonus = 1;
                 return perkBonus;
             }
+            
+            var getBeaconBonus = function () {
+                let perksComponent = playerStatsNode.perks;
+                return GameGlobals.sectorHelper.getBeaconMovementBonus(sector, perksComponent);
+            }
 
             var factor = 1;
             switch (action) {
@@ -989,9 +994,14 @@ define([
                 case "move_sector_se":
                 case "move_sector_sw":
                 case "move_sector_nw":
+                    if (cost == "stamina") {
+                        factor *= getShoeBonus();
+                        factor *= getPerkBonus();
+                        factor *= getBeaconBonus();
+                    }
+                    break;
                 case "move_level_down":
                 case "move_level_up":
-                case "move_camp_level":
                 case "move_camp_global":
                     if (cost == "stamina") {
                         factor *= getShoeBonus();
@@ -1120,7 +1130,7 @@ define([
 
 				for (var key in costs) {
 					if (key.indexOf("cost_factor") >= 0) continue;
-                    var statusFactor = this.getCostFactor(action, key);
+                    var statusFactor = this.getCostFactor(action, key, otherSector);
 
                     var value = costs[key];
                     var baseCost = 0;
@@ -1163,8 +1173,16 @@ define([
 				switch (baseActionID) {
 					case "move_camp_level":
                         var path = this.getPathToNearestCamp(sector);
-                        var sectorsToMove = path ? path.length : 99;
-                        return this.getCosts("move_sector_west", sectorsToMove);
+                        if (path) {
+                            for (var i = 0; i < path.length; i++) {
+                                let costs = this.getCosts("move_sector_west", 1, path[i]);
+                                this.addCosts(result, costs);
+                            }
+                        } else {
+                            let costs = this.getCosts("move_sector_west");
+                            this.addCosts(result, costs);
+                        }
+                        break;
 
 					case "move_camp_global":
                         var statusFactor = this.getCostFactor(action, "stamina");
@@ -1235,6 +1253,18 @@ define([
 
 			return result;
 		},
+        
+        addCosts: function (result, costs) {
+            for (var key in costs) {
+                if (key.indexOf("cost_factor") >= 0) continue;
+                if (!result[key]) {
+                    result[key] = 0;
+                }
+                
+                var value = costs[key];
+                result[key] += value;
+            }
+        },
 
 		getDescription: function (action) {
 			if (action) {

@@ -4,6 +4,7 @@ define([
     'game/GlobalSignals',
 	'game/constants/GameConstants',
     'game/constants/ItemConstants',
+    'game/constants/PerkConstants',
     'game/constants/PlayerStatConstants',
     'game/constants/LogConstants',
     'game/nodes/player/VisionNode',
@@ -19,6 +20,7 @@ define([
     GlobalSignals,
     GameConstants,
     ItemConstants,
+    PerkConstants,
     PlayerStatConstants,
     LogConstants,
     VisionNode,
@@ -73,6 +75,7 @@ define([
 			var featuresComponent = this.locationNodes.head.entity.get(SectorFeaturesComponent);
             var statusComponent = this.locationNodes.head.entity.get(SectorStatusComponent);
 			var itemsComponent = node.items;
+			var perksComponent = node.perks;
 			var improvements = this.locationNodes.head.entity.get(SectorImprovementsComponent);
 			var inCamp = node.entity.get(PositionComponent).inCamp;
 			var sunlit = featuresComponent.sunlit;
@@ -118,17 +121,25 @@ define([
 					addAccumulation("Sunglasses", shadeBonus / maxValueBase);
 				}
 			} else {
+                // equipment
 				var lightItem = itemsComponent.getEquipped(ItemConstants.itemTypes.light)[0];
 				if (lightItem && lightItem.getBonus(ItemConstants.itemBonusTypes.light) + maxValueBase > maxValue) {
 					maxValue = lightItem.getBonus(ItemConstants.itemBonusTypes.light) + maxValueBase;
 					addAccumulation(lightItem.name, lightItem.getBonus(ItemConstants.itemBonusTypes.light) / maxValueBase);
 				}
+                // consumable items
                 if (statusComponent.glowStickSeconds > 0) {
                     // TODO remove hardcoded glowstick vision value
                     maxValue = 30 + maxValueBase;
                     addAccumulation("Glowstick", 30 / maxValueBase);
                 }
                 statusComponent.glowStickSeconds -= time * GameConstants.gameSpeedExploration;
+                // pekrs
+                var perkBonus = perksComponent.getTotalEffect(PerkConstants.perkTypes.light);
+                if (perkBonus > 0) {
+                    maxValue += perkBonus;
+                    addAccumulation("Beacon" , perkBonus);
+                }
 			}
 			
 			// Set final values

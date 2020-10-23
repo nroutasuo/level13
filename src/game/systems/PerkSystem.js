@@ -7,13 +7,14 @@ define([
     'game/constants/LogConstants',
     'game/constants/ItemConstants',
     'game/constants/PerkConstants',
+	'game/components/common/PositionComponent',
     'game/components/common/LogMessagesComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/player/PlayerActionComponent',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/PlayerLocationNode',
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, ItemConstants, PerkConstants, LogMessagesComponent, SectorFeaturesComponent, SectorStatusComponent, PlayerActionComponent, PlayerStatsNode, PlayerLocationNode) {
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, ItemConstants, PerkConstants, PositionComponent, LogMessagesComponent, SectorFeaturesComponent, SectorStatusComponent, PlayerActionComponent, PlayerStatsNode, PlayerLocationNode) {
     
     var PerkSystem = Ash.System.extend({
         
@@ -26,9 +27,10 @@ define([
             this.engine = engine;
             this.playerNodes = engine.getNodeList(PlayerStatsNode);
             this.locationNodes = engine.getNodeList(PlayerLocationNode);
+            GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onGameShown);
             GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onPlayerMoved);
             GlobalSignals.add(this, GlobalSignals.equipmentChangedSignal, this.onEquipmentChanged);
-            GlobalSignals.add(this, GlobalSignals.actionCompletedSignal, this.onActionCompleted);
+            GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onImprovementBuilt);
         },
         
         removeFromEngine: function (engine) {
@@ -73,7 +75,13 @@ define([
         },
         
         updateLocationPerks: function () {
-            // TODO add beacon perk
+            if (!this.locationNodes.head) return;
+            let isActive = GameGlobals.sectorHelper.isBeaconActive(this.locationNodes.head.position.getPosition());
+            if (isActive) {
+                this.addOrUpdatePerk(PerkConstants.perkIds.lightBeacon, PerkConstants.TIMER_DISABLED);
+            } else {
+                this.deactivatePerk(PerkConstants.perkIds.lightBeacon, 0)
+            }
         },
         
         updateHazardPerks: function () {
@@ -132,6 +140,10 @@ define([
                     msg = "Feeling nauseous.";
                     break;
                     
+                case PerkConstants.perkIds.lightBeacon:
+                    msg = "Nearby beacon lights the way";
+                    break;
+                    
                 default:
                     log.w("unknown perk " + perkID);
                     break;
@@ -146,6 +158,11 @@ define([
                 case PerkConstants.perkIds.hazardCold:
                     msg = "Warmer here.";
                     break;
+                    
+                case PerkConstants.perkIds.lightBeacon:
+                    msg = "Outside the beacon's range.";
+                    break;
+                    
                 default:
                     msg = "Safer here.";
                     break;
@@ -172,6 +189,10 @@ define([
                 case PerkConstants.perkIds.staminaBonusPenalty:
                     msg = "Feeling better again.";
                     
+                case PerkConstants.perkIds.lightBeacon:
+                    return;
+                    break;
+                    
                 default:
                     log.w("unknown perk " + perkID);
                     break;
@@ -196,6 +217,15 @@ define([
             return busyComponent && busyComponent.getLastActionName() == "use_in_home";
         },
         
+        onGameShown: function () {
+            let sys = this;
+            // TODO add signal for this - game shown and one freame (systmes like LevelPassagesSystem have had time to update)
+            this.engine.updateComplete.addOnce(function () {
+                sys.updateLocationPerks();
+                sys.updateHazardPerks();
+            });
+        },
+        
         onPlayerMoved: function () {
             this.updateLocationPerks();
             this.updateHazardPerks();
@@ -205,8 +235,9 @@ define([
             this.updateHazardPerks();
         },
         
-        onActionCompleted: function () {
+        onImprovementBuilt: function () {
             this.updateHazardPerks();
+            this.updateLocationPerks();
         },
         
         

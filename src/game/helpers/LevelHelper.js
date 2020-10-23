@@ -366,45 +366,29 @@ define([
             return null;
         },
 
-        forEverySectorFromLocation: function (playerPosition, func, limitToCurrentLevel) {
-            // TODO go by path distance, not distance in coordinates
+        forEverySectorFromLocation: function (pos, func, limitToCurrentLevel) {
+            // TODO go by path distance, not distance in coordinates / make that an option
 
 			var doLevel = function (level) {
                 if (!this.isLevelUnlocked(level))
                     return false;
-                // spiralling search: find sectors closest to current position first
-                var levelComponent = this.getLevelEntityForPosition(level).get(LevelComponent);
-                var checkPos = playerPosition.clone();
-                var spiralRadius = 0;
-                var spiralEdgeLength;
-                while ((checkPos.sectorX >= levelComponent.minX && checkPos.sectorX <= levelComponent.maxX) || (checkPos.sectorY >= levelComponent.minY && checkPos.sectorY <= levelComponent.maxY)) {
-                    spiralEdgeLength = spiralRadius * 2 + 1;
-                    checkPos = new PositionVO(playerPosition.level, playerPosition.sectorX - spiralRadius, playerPosition.sectorY - spiralRadius);
-                    for (var spiralEdge = 0; spiralEdge < 4; spiralEdge++) {
-                        for (var spiralEdgeI = 0; spiralEdgeI < spiralEdgeLength; spiralEdgeI++) {
-                            if (spiralEdgeI > 0) {
-                                if (spiralEdge === 0) checkPos.sectorX++;
-                                if (spiralEdge === 1) checkPos.sectorY++;
-                                if (spiralEdge === 2) checkPos.sectorX--;
-                                if (spiralEdge === 3) checkPos.sectorY--;
-
-                                var sector = this.getSectorByPosition(level, checkPos.sectorX, checkPos.sectorY);
-                                if (sector) {
-                                    var isDone = func(sector);
-                                    if (isDone) {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                        spiralRadius++;
+                let sectors = this.getSectorsByLevel(level).slice(0);
+                sectors.sort(function  (a, b) {
+                    let posA = a.get(PositionComponent).getPosition();
+                    let posB = b.get(PositionComponent).getPosition();
+                    return PositionConstants.getDistanceTo(posA, pos) - PositionConstants.getDistanceTo(posB, pos);
+                });
+                for (let i = 0; i < sectors.length; i++) {
+                    let sector = sectors[i];
+                    let done = func(sector);
+                    if (done) {
+                        return true;
                     }
                 }
-
                 return false;
             };
 
-			var currentLevel = playerPosition.level;
+			var currentLevel = pos.level;
             var isDone;
             var dlimit  = limitToCurrentLevel ? 1 : WorldConstants.LEVEL_NUMBER_MAX;
 			for (var ld = 0; ld < dlimit; ld++) {
@@ -853,6 +837,20 @@ define([
                 }
 			}
             return sectors;
+        },
+        
+        getNearestBeacon: function (pos) {
+            let result = null;
+            let checkSector = function (sector) {
+                let improvementsComponent = sector.get(SectorImprovementsComponent);
+                if (improvementsComponent.getCount(improvementNames.beacon) > 0) {
+                    result = sector;
+                    return true;
+                }
+                return false;
+            };
+            this.forEverySectorFromLocation(pos, checkSector, true);
+            return result;
         },
 
         saveSectorsForLevel: function (level) {

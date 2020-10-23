@@ -4,6 +4,7 @@ define([
     'game/GameGlobals',
     'game/constants/ItemConstants',
     'game/constants/PerkConstants',
+    'game/constants/PositionConstants',
     'game/nodes/sector/SectorNode',
     'game/nodes/PlayerLocationNode',
     'game/components/common/CampComponent',
@@ -17,6 +18,7 @@ define([
     GameGlobals,
     ItemConstants,
     PerkConstants,
+    PositionConstants,
 	SectorNode,
 	PlayerLocationNode,
     CampComponent,
@@ -108,6 +110,25 @@ define([
             if (hazards.cold > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_cold))
                 return "area too cold";
             return null;
+        },
+        
+        isBeaconActive: function (position) {
+            let beacon = GameGlobals.levelHelper.getNearestBeacon(position);
+            let beaconPos = beacon ? beacon.get(PositionComponent) : null;
+            let dist = beaconPos ? PositionConstants.getDistanceTo(position, beaconPos) : -1;
+            return dist >= 0 && dist < 5;
+        },
+        
+        getBeaconMovementBonus: function (sector, perksComponent) {
+            let isActive = GameGlobals.sectorHelper.isBeaconActive(sector.get(PositionComponent).getPosition());
+            if (!isActive) return 1;
+            var perkBonus = PerkConstants.getPerk(PerkConstants.perkIds.lightBeacon).effect;
+            if (perkBonus === 0) {
+                perkBonus = 1;
+            } else {
+                perkBonus = 1 - perkBonus / 100;
+            }
+            return perkBonus;
         },
 		
 		getLocationDiscoveredResources: function (sector) {

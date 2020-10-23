@@ -282,11 +282,15 @@ define(['ash',
 
 		getPerkBonusText: function (perk) {
 			var value = 0;
-			if (perk.effect < 1) {
-				value = "-" + Math.round(100 - perk.effect * 100) + "%";
-			} else {
-				value = "+" + Math.round((perk.effect - 1) * 100) + "%";
-			}
+            if (PerkConstants.isPercentageEffect(perk.type)) {
+    			if (perk.effect < 1) {
+    				value = "-" + Math.round(100 - perk.effect * 100) + "%";
+    			} else {
+    				value = "+" + Math.round((perk.effect - 1) * 100) + "%";
+    			}
+            } else {
+                value = "+" + perk.effect;
+            }
 
 			var effect = perk.type;
 			switch (perk.type) {

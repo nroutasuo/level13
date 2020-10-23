@@ -7,6 +7,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 			movement: "Movement",
 			health: "Health",
 			stamina: "Stamina",
+            light: "Light",
 		},
 		
 		perkIds: {
@@ -20,6 +21,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
             encumbered: "encumbered",
             staminaBonus: "energized",
             staminaBonusPenalty: "headache",
+            lightBeacon: "beacon",
 		},
 		
 		perkDefinitions: {
@@ -50,6 +52,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 				case this.perkTypes.health: return true;
 				case this.perkTypes.injury: return true;
 				case this.perkTypes.stamina: return true;
+				case this.perkTypes.movement: return true;
 				default: return false;
 			}
 		},
@@ -66,6 +69,8 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
     
     PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.staminaBonus, "Energized", "Stamina", 1.5, "img/items/health-positive.png"));
     PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.staminaBonusPenalty, "Headache", "Stamina", 0.9, "img/items/health-negative.png"));
+    
+    PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.lightBeacon, "Beacon", "Light", 20, "img/items/perk-light-beacon.png"));
     
     var lightInjuryEffect = 0.9;
     var medInjuryEffect = 0.7;

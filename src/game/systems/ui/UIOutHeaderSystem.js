@@ -245,7 +245,7 @@ define([
                 GameGlobals.uiFunctions.toggle("#header-camp-reputation", false);
             }
 
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			var itemsComponent = this.playerStatsNodes.head.items;
             var fightAtt = FightConstants.getPlayerAtt(playerStatsNode.stamina, itemsComponent);
             var fightDef = FightConstants.getPlayerDef(playerStatsNode.stamina, itemsComponent);
             var fightStrength = FightConstants.getStrength(fightAtt, fightDef, playerStatsNode.stamina.maxHP);
@@ -312,7 +312,7 @@ define([
 		updateItems: function (forced, inCamp) {
             if (inCamp) return;
 
-			var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+			var itemsComponent = this.playerStatsNodes.head.items;
 
 			var items = itemsComponent.getUnique(inCamp);
 			if (forced || items.length !== this.lastItemsUpdateItemCount) {
@@ -472,7 +472,7 @@ define([
 		},
 
         updateItemStats: function (inCamp) {
-            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+            var itemsComponent = this.playerStatsNodes.head.items;
             var playerStamina = this.playerStatsNodes.head.stamina;
             var visibleStats = 0;
             for (var bonusKey in ItemConstants.itemBonusTypes) {
@@ -492,6 +492,12 @@ define([
                         value = FightConstants.getPlayerDef(playerStamina, itemsComponent);
                         detail = FightConstants.getPlayerDefDesc(playerStamina, itemsComponent);
                         isVisible = GameGlobals.gameState.unlockedFeatures.fight;
+                        break;
+                        
+                    case ItemConstants.itemBonusTypes.movement:
+                        let perksComponent = this.playerStatsNodes.head.perks;
+                        value *= GameGlobals.sectorHelper.getBeaconMovementBonus(this.currentLocationNodes.head.entity, this.playerStatsNodes.head.perks);
+                        isVisible = true;
                         break;
 
                     case ItemConstants.itemBonusTypes.light:
