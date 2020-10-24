@@ -5,6 +5,7 @@ define([
     'game/constants/ItemConstants',
     'game/constants/PerkConstants',
     'game/constants/PositionConstants',
+    'game/constants/ExplorationConstants',
     'game/nodes/sector/SectorNode',
     'game/nodes/PlayerLocationNode',
     'game/components/common/CampComponent',
@@ -19,6 +20,7 @@ define([
     ItemConstants,
     PerkConstants,
     PositionConstants,
+    ExplorationConstants,
 	SectorNode,
 	PlayerLocationNode,
     CampComponent,
@@ -116,7 +118,7 @@ define([
             let beacon = GameGlobals.levelHelper.getNearestBeacon(position);
             let beaconPos = beacon ? beacon.get(PositionComponent) : null;
             let dist = beaconPos ? PositionConstants.getDistanceTo(position, beaconPos) : -1;
-            return dist >= 0 && dist < 5;
+            return dist >= 0 && dist < ExplorationConstants.BEACON_RADIUS;
         },
         
         getBeaconMovementBonus: function (sector, perksComponent) {

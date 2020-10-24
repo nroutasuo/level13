@@ -28,6 +28,7 @@ define([
     var UIOutMapSystem = Ash.System.extend({
 
         context: "UIOutMapSystem",
+        
         playerPositionNodes: null,
 		playerLocationNodes: null,
 

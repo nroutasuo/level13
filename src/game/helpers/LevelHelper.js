@@ -852,6 +852,19 @@ define([
             this.forEverySectorFromLocation(pos, checkSector, true);
             return result;
         },
+        
+        getAllSectorsWithImprovement: function (level, improvementName) {
+            var sectors = [];
+            this.saveSectorsForLevel(level);
+			for (var i = 0; i < this.sectorEntitiesByLevel[level].length; i++) {
+                var sector = this.sectorEntitiesByLevel[level][i];
+                let improvementsComponent = sector.get(SectorImprovementsComponent);
+                if (improvementsComponent.getCount(improvementName) > 0) {
+                    sectors.push(sector);
+                }
+			}
+            return sectors;
+        },
 
         saveSectorsForLevel: function (level) {
             if (this.sectorEntitiesByLevel[level] && this.sectorEntitiesByLevel[level] !== null && this.sectorEntitiesByLevel[level].length > 0) {

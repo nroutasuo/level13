@@ -5,6 +5,7 @@ define(['ash',
     'game/constants/ColorConstants',
     'game/constants/UIConstants',
     'game/constants/CanvasConstants',
+    'game/constants/ExplorationConstants',
     'game/constants/MovementConstants',
     'game/constants/PositionConstants',
     'game/constants/SectorConstants',
@@ -21,7 +22,7 @@ define(['ash',
     'game/components/type/SectorComponent',
     'game/vos/PositionVO'],
 function (Ash, CanvasUtils,
-    GameGlobals, ColorConstants, UIConstants, CanvasConstants, MovementConstants, PositionConstants, SectorConstants,
+    GameGlobals, ColorConstants, UIConstants, CanvasConstants, ExplorationConstants, MovementConstants, PositionConstants, SectorConstants,
     PlayerPositionNode,
     LevelComponent, CampComponent, PositionComponent, SectorStatusComponent, SectorLocalesComponent, SectorFeaturesComponent, PassagesComponent, SectorImprovementsComponent, WorkshopComponent, SectorComponent,
     PositionVO) {
@@ -46,6 +47,7 @@ function (Ash, CanvasUtils,
             this.initIcon("unknown", "map-unvisited");
             this.initIcon("workshop", "map-workshop");
             this.initIcon("water", "map-water");
+            this.initIcon("beacon", "map-beacon");
         },
 
         initIcon: function(key, name) {
@@ -158,6 +160,23 @@ function (Ash, CanvasUtils,
             }
             
             this.drawGridOnCanvas(ctx, sectorSize, dimensions, centered);
+            
+            // borders on beacons
+            ctx.strokeStyle = ColorConstants.getColor(sunlit, "map_stroke_sector_sunlit");
+            ctx.lineWidth = centered ? 2 : 1;
+            let beaconSectors = GameGlobals.levelHelper.getAllSectorsWithImprovement(mapPosition.level, improvementNames.beacon);
+            for (var i = 0; i < beaconSectors.length; i++) {
+                sector = beaconSectors[i];
+                sectorStatus = SectorConstants.getSectorStatus(sector);
+                sectorPos = sector.get(PositionComponent);
+                if (this.showSectorOnMap(centered, sector, sectorStatus)) {
+                    sectorXpx = this.getSectorPixelPos(dimensions, centered, sectorSize, sectorPos.sectorX,  sectorPos.sectorY).x;
+                    sectorYpx = this.getSectorPixelPos(dimensions, centered, sectorSize, sectorPos.sectorX,  sectorPos.sectorY).y;
+                    ctx.beginPath();
+                    ctx.arc(sectorXpx + sectorSize * 0.5, sectorYpx + 0.5 * sectorSize, sectorSize * (ExplorationConstants.BEACON_RADIUS - 1) * 2, 0, 2 * Math.PI);
+                    ctx.stroke();
+                }
+            }
 
             // sectors and paths
             for (var y = dimensions.minVisibleY; y <= dimensions.maxVisibleY; y++) {
@@ -338,6 +357,9 @@ function (Ash, CanvasUtils,
             } else if (unScoutedLocales > 0) {
                 hasIcon = true;
                 ctx.drawImage(this.icons["interest" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
+            } else if (sectorImprovements.getCount(improvementNames.beacon) > 0) {
+                hasIcon = true;
+                ctx.drawImage(this.icons["beacon" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             }
     
             // sector contents: resources
