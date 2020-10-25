@@ -254,7 +254,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                             return "Far above in the ceiling there is a hole, a mouth leading into blackness.";
                     } else {
                         if (sunlit)
-                            return "There is a massive sinkhole here. A street is visible below, dizzyingly far away.";
+                            return "There is a massive sinkhole here. A street is visible far, far below.";
                         else
                             return "There is a massive sinkhole here. Only vast emptiness is visible below.";
                     }
