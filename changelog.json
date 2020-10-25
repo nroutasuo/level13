@@ -4,20 +4,8 @@
             "version": "0.3.1",
             "phase": "alpha",
             "final": false,
-            "updated": "2020-10-15",
+            "updated": "2020-10-25",
             "changes": [
-                {
-                    "type": "GD",
-                    "summary": "Add more challenges and rewards to campless levels (more encounters, blueprints)",
-                },
-                {
-                    "type": "GD",
-                    "summary": "Improved world generation",
-                },
-                {
-                    "type": "GD",
-                    "summary": "Improved sector descriptions",
-                },
                 {
                     "type": "GD",
                     "summary": "Unlock the ground level",
@@ -41,6 +29,22 @@
                 {
                     "type": "GD",
                     "summary": "New consumable item that restores stamina",
+                },
+				{
+					"type": "GD",
+					"summary": "New building: beacon"
+				},
+                {
+                    "type": "GD",
+                    "summary": "More challenges and rewards to campless levels (more encounters, blueprints)",
+                },
+                {
+                    "type": "GD",
+                    "summary": "Improved sector descriptions",
+                },
+                {
+                    "type": "WG",
+                    "summary": "Improved world generation",
                 },
                 {
                     "type": "WG",
