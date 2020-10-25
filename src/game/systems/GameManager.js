@@ -65,7 +65,7 @@ define([
                 if (!this.partialTickModeStarted) {
                     var remainingTicks = Math.ceil(totalTime / this.maxGameTickTime);
                     var showThinking = remainingTicks >= 20;
-                    if (!this.partialTickModeStarted) log.i("partial tick, estimated remaining: " + remainingTicks + ", showThinking: " + showThinking, "tick");
+                    if (!this.partialTickModeStarted && GameGlobals.gameFlowLogger.isEnabled) log.i("partial tick, estimated remaining: " + remainingTicks + ", showThinking: " + showThinking, "tick");
                     if (showThinking) {
                         this.gameHidden = true;
                         GameGlobals.uiFunctions.hideGame(false, true);
@@ -75,12 +75,12 @@ define([
                     }
                     this.partialTickModeStarted = true;
                 } else {
-                    log.i("partial tick " + tickTime, "tick");
+                    if (GameGlobals.gameFlowLogger.isEnabled) log.i("partial tick " + tickTime, "tick");
                 }
             } else {
                 // normal tick
                 if (this.partialTickModeStarted) {
-                    log.i("normal", "tick");
+                    if (GameGlobals.gameFlowLogger.isEnabled) log.i("normal", "tick");
                     if (this.gameHidden) {
                         GameGlobals.uiFunctions.showGame();
                         this.gameHidden = false;
