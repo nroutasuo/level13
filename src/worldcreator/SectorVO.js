@@ -16,6 +16,8 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
             
             this.requiredResources = new ResourcesVO();
             this.criticalPaths = [];
+            this.criticalPathTypes = [];
+            this.criticalPathIndices = [];
             this.locales = [];
 			this.movementBlockers = {};
 			this.passageUpType = null;
@@ -32,29 +34,33 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
         },
         
         isOnCriticalPath: function (type) {
-            return this.criticalPaths.indexOf(type) >= 0;
+            return this.criticalPathTypes.indexOf(type) >= 0;
         },
         
         isOnEarlyCriticalPath: function () {
-            if (this.criticalPaths.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1) >= 0) return true;
-            if (this.criticalPaths.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP) >= 0) return true;
-            if (this.criticalPaths.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE) >= 0) return true;
+            if (this.criticalPathTypes.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1) >= 0) return true;
+            if (this.criticalPathTypes.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP) >= 0) return true;
+            if (this.criticalPathTypes.indexOf(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE) >= 0) return true;
             return false;
         },
         
         updateCriticalPath: function () {
             this.criticalPath = "-";
-            for (var i = 0; i < this.criticalPaths.length; i++) {
-                if (this.getCriticalPathPriority(this.criticalPaths[i] < this.getCriticalPathPriority(this.criticalPath))) {
-                    var split = this.criticalPaths[i].split("_");
+            for (var i = 0; i < this.criticalPathTypes.length; i++) {
+                if (this.getCriticalPathPriority(this.criticalPathTypes[i] < this.getCriticalPathPriority(this.criticalPath))) {
+                    var split = this.criticalPathTypes[i].split("_");
                     this.criticalPath = split[split.length - 1][0];
                 }
             }
         },
         
-        addToCriticalPath: function (type) {
-            if (this.criticalPaths.indexOf(type) >= 0) return;
-            this.criticalPaths.push(type);
+        addToCriticalPath: function (path) {
+            if (this.criticalPaths.indexOf(path) >= 0) return;
+            let index = path.length;
+            this.criticalPaths.push(path);
+            this.criticalPathTypes.push(path.type);
+            this.criticalPathIndices.push(index);
+            path.length++;
             this.updateCriticalPath();
         },
 		

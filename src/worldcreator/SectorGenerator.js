@@ -22,12 +22,13 @@ define([
     'worldcreator/WorldCreatorHelper',
     'worldcreator/WorldCreatorRandom',
     'worldcreator/WorldCreatorDebug',
-    'worldcreator/WorldCreatorLogger'
+    'worldcreator/WorldCreatorLogger',
+    'worldcreator/CriticalPathVO',
 ], function (
     Ash, MathUtils,
     EnemyConstants, ItemConstants, LevelConstants, LocaleConstants, MovementConstants, PositionConstants, SectorConstants, TradeConstants, UpgradeConstants, WorldConstants,
     GangVO, LocaleVO, PathConstraintVO, PositionVO, ResourcesVO, StashVO,
-    WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, WorldCreatorLogger
+    WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, WorldCreatorLogger, CriticalPathVO
 ) {
     
     var SectorGenerator = {
@@ -55,6 +56,7 @@ define([
                 // sector features
                 for (var s = 0; s < levelVO.sectors.length; s++) {
                     var sectorVO = levelVO.sectors[s];
+                    sectorVO.requiredFeatures = this.getRequiredFeatures(seed, worldVO, levelVO, sectorVO);
                     sectorVO.sectorType = this.getSectorType(seed, worldVO, levelVO, sectorVO);
                     sectorVO.sunlit = this.isSunlit(seed, worldVO, levelVO, sectorVO);
                     sectorVO.passageUpType = this.getPassageUpType(seed, worldVO, levelVO, sectorVO);
@@ -76,7 +78,7 @@ define([
             }
             
             // debug
-            //WorldCreatorDebug.printWorld(worldVO, [ "hasRegularEnemies"], "red" );
+            // WorldCreatorDebug.printWorld(worldVO, [ "hasRegularEnemies"], "red" );
             // WorldCreatorDebug.printWorld(worldVO, [ "possibleEnemies.length" ]);
             // WorldCreatorDebug.printWorld(worldVO, [ "enemyDifficulty" ]);
             // WorldCreatorDebug.printWorld(worldVO, [ "hazards.radiation" ], "red");
@@ -496,7 +498,7 @@ define([
                     var numItems = isAmountRange ? WorldCreatorRandom.randomInt(sectorSeed * 2, min, max) : numItemsPerStash;
                     var stash = new StashVO(stashType, numItems, itemID);
                     stashSectors[i].stashes.push(stash);
-                    WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " (" + min + "-" + max + ") " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
+                    // WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " (" + min + "-" + max + ") " + stashSectors[i].position + " " + stashSectors[i].zone + " | " + (excludedZones ? excludedZones.join(",") : "-"))
                 }
             };
             
@@ -654,13 +656,14 @@ define([
             
             // set sector flags and critical paths
             for (var i = 0; i < workshopSectors.length; i++) {
-                WorldCreatorLogger.i("placed workshop " + workshopResource + " at " + workshopSectors[i].position);
+                // WorldCreatorLogger.i("placed workshop " + workshopResource + " at " + workshopSectors[i].position);
                 workshopSectors[i].hasWorkshop = true;
                 workshopSectors[i].hasClearableWorkshop = workshopResource != "herbs";
                 workshopSectors[i].hasBuildableWorkshop = workshopResource == "herbs";
                 workshopSectors[i].workshopResource = resourceNames[workshopResource];
                 for (var j = 0; j < pathConstraints.length; j++) {
-                    WorldCreatorHelper.addCriticalPath(worldVO, workshopSectors[i].position, pathConstraints[j].startPosition, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1);
+                    let criticalPathVO = new CriticalPathVO(WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, workshopSectors[i].position, pathConstraints[j].startPosition);
+                    WorldCreatorHelper.addCriticalPath(worldVO, criticalPathVO);
                 }
             }
         },
@@ -703,6 +706,27 @@ define([
                 stepsWater++;
                 stepsFood++;
             }
+        },
+        
+        getRequiredFeatures: function (seed, worldVO, levelVO, sectorVO) {
+            let requiredFeatures = {};
+            
+            // middle of paths to passages: require features allowing a beacon
+            for (let i = 0; i < sectorVO.criticalPaths.length; i++) {
+                let pathVO = sectorVO.criticalPaths[i];
+                let pathType = pathVO.type;
+                let isBeaconPath =
+                    (levelVO.isCampable && pathType == WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE) ||
+                    (!levelVO.isCampable && WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
+                if (isBeaconPath && pathVO.length > 4) {
+                    let index = sectorVO.criticalPathIndices[i];
+                    if (index == Math.round(pathVO.length / 2)) {
+                        requiredFeatures.beacon = true;
+                    }
+                }
+            }
+            
+            return requiredFeatures;
         },
         
         generateTexture: function (seed, worldVO, levelVO, sectorVO) {
@@ -781,6 +805,11 @@ define([
             var isStartPosition = l == 13 && sectorVO.isCamp;
             if (isStartPosition) {
                 minDensity = 3;
+                maxDensity = 8;
+            }
+            
+            if (sectorVO.requiredFeatures.beacon) {
+                minDensity = 2;
                 maxDensity = 8;
             }
             
@@ -1168,7 +1197,8 @@ define([
                     addLocale(sectorVO, locale);
                     // WorldCreatorLogger.i(levelVO.level + " added locale: isEarly:" + isEarly + ", distance to camp: " + WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO) + ", zone: " + sectorVO.zone);
                     for (var j = 0; j < pathConstraints.length; j++) {
-                        WorldCreatorHelper.addCriticalPath(worldVO, sectorVO.position, pathConstraints[j].startPosition, pathConstraints[j].pathType);
+                        let criticalPathVO = new CriticalPathVO(pathConstraints[j].pathType, sectorVO.position, pathConstraints[j].startPosition);
+                        WorldCreatorHelper.addCriticalPath(worldVO, criticalPathVO);
                     }
 				}
             };
@@ -1246,11 +1276,11 @@ define([
             // check for critical paths
             var allowedForGangs = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
             for (var i = 0; i < sectorVO.criticalPaths.length; i++) {
-                var pathType = sectorVO.criticalPaths[i];
+                var pathType = sectorVO.criticalPaths[i].type;
                 if (options.allowedCriticalPaths && options.allowedCriticalPaths.indexOf(pathType) >= 0) continue;
                 if (blockerType === MovementConstants.BLOCKER_TYPE_GANG && allowedForGangs.indexOf(pathType) >= 0) continue;
                 for (var j = 0; j < neighbourVO.criticalPaths.length; j++) {
-                    if (pathType === neighbourVO.criticalPaths[j]) {
+                    if (pathType === neighbourVO.criticalPaths[j].type) {
                         WorldCreatorLogger.w("skipping movement blocker on critical path: " + pathType + " (type: " + blockerType + ")");
                         return;
                     }

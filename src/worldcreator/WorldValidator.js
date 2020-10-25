@@ -11,6 +11,8 @@ define([
     var context = "WorldValidator";
 
     var WorldValidator = {
+        
+        // TODO check that there's at least a few (useful?) beacon spots per level
 
         validateWorld: function (worldVO) {
             worldVO.resetPaths();

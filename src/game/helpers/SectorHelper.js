@@ -132,6 +132,10 @@ define([
             }
             return perkBonus;
         },
+        
+        canHaveBeacon: function (sector) {
+            return GameGlobals.playerActionsHelper.isRequirementsMet("build_out_beacon", sector);
+        },
 		
 		getLocationDiscoveredResources: function (sector) {
             var resources = [];

@@ -15,11 +15,11 @@ define([
         camplessLevelOrdinals: {},
         hardLevelOrdinals: {},
         
-        addCriticalPath: function (worldVO, pathStartPos, pathEndPos, pathType) {
-            var path = WorldCreatorRandom.findPath(worldVO, pathStartPos, pathEndPos);
+        addCriticalPath: function (worldVO, criticalPathVO) {
+            var path = WorldCreatorRandom.findPath(worldVO, criticalPathVO.startPos, criticalPathVO.endPos);
             for (var j = 0; j < path.length; j++) {
                 var levelVO = worldVO.getLevel(path[j].level);
-                levelVO.getSector(path[j].sectorX, path[j].sectorY).addToCriticalPath(pathType);
+                levelVO.getSector(path[j].sectorX, path[j].sectorY).addToCriticalPath(criticalPathVO);
             }
         },
         

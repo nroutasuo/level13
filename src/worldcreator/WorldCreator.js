@@ -91,7 +91,7 @@ define([
 		getSectorFeatures: function (level, sectorX, sectorY) {
 			var sectorVO = this.world.getLevel(level).getSector(sectorX, sectorY);
 			var sectorFeatures = {};
-            sectorFeatures.criticalPaths = sectorVO.criticalPaths || [];
+            sectorFeatures.criticalPaths = sectorVO.criticalPathTypes || [];
             sectorFeatures.zone = sectorVO.zone;
 			sectorFeatures.buildingDensity = sectorVO.buildingDensity;
 			sectorFeatures.wear = sectorVO.wear;
@@ -117,7 +117,7 @@ define([
 		},
 
 		getCriticalPaths: function (level, sectorX, sectorY) {
-			return this.world.getLevel(level).getSector(sectorX, sectorY).criticalPaths;
+			return this.world.getLevel(level).getSector(sectorX, sectorY).criticalPathTypes;
 		},
 
 		getSectorEnemies: function (level, sectorX, sectorY) {

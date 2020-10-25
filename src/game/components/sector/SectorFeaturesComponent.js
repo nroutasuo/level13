@@ -51,7 +51,11 @@ define(
         // Secondary attributes
         
         isOnCriticalPath: function (type) {
-            return this.criticalPaths.indexOf(type) >= 0;
+            if (type) {
+                return this.criticalPathTypes.indexOf(type) >= 0;
+            } else {
+                return this.criticalPathTypes.length > 0;
+            }
         },
         
         canHaveCamp: function () {

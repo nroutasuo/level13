@@ -9,7 +9,8 @@ define([
     'worldcreator/WorldCreatorRandom',
     'worldcreator/WorldCreatorLogger',
     'worldcreator/SectorVO',
-], function (Ash, PositionConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorLogger, SectorVO) {
+    'worldcreator/CriticalPathVO',
+], function (Ash, PositionConstants, WorldConstants, PositionVO, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorLogger, SectorVO, CriticalPathVO) {
     
     var StructureGenerator = {
         
@@ -425,8 +426,9 @@ define([
                 path = levelVO.requiredPaths[i];
                 startPos = path.start.clone();
                 endPos = path.end.clone();
+                var criticalPathVO = new CriticalPathVO(path.type, path.start, path.end);
                 var existingSectors = levelVO.sectors.concat();
-                var options = this.getDefaultOptions({ stage: path.stage, criticalPathType: path.type});
+                var options = this.getDefaultOptions({ stage: path.stage, criticalPath: criticalPathVO });
                 var pathResult = this.createPathBetween(worldVO, levelVO, startPos, endPos, path.maxlen, options, WorldCreatorConstants.CONNECTION_POINTS_PATH_ALL);
                 if (!pathResult.isComplete) {
                     WorldCreatorLogger.w("failed to create required path on level " + levelVO.level);
@@ -438,7 +440,7 @@ define([
                 var sectorPath = WorldCreatorRandom.findPath(worldVO, startPos, endPos, false, true, stage);
                 for (var j = 0; j < sectorPath.length; j++) {
                     var sector = levelVO.getSectorByPos(sectorPath[j]);
-                    sector.addToCriticalPath(path.type);
+                    sector.addToCriticalPath(criticalPathVO);
                 }
                 this.connectNewPath(worldVO, levelVO, existingSectors, pathResult.path);
             }
@@ -525,7 +527,7 @@ define([
             var startPosExists = levelVO.hasSector(startPos.sectorX, startPos.sectorY);
             var endPosExists = levelVO.hasSector(endPos.sectorX, endPos.sectorY);
             
-            // WorldCreatorLogger.i("createPathBetween " + startPos + " " + endPos + " " + options.stage + " " + options.criticalPathType + " / " + maxlen + ", dist: " + dist);
+            // WorldCreatorLogger.i("createPathBetween " + startPos + " " + endPos + " " + options.stage + " " + options.criticalPath + " / " + maxlen + ", dist: " + dist);
             
             if (startPosExists && endPosExists) {
                 var stage = options.stage == WorldConstants.CAMP_STAGE_EARLY ? options.stage : null;
@@ -958,7 +960,6 @@ define([
             sectorPos.normalize();
             options = options || this.getDefaultOptions();
             var stage = options.stage || this.getDefaultStage(levelVO, sectorPos);
-            var criticalPathType = options.criticalPathType;
             var sectorVO = levelVO.getSector(sectorPos.sectorX, sectorPos.sectorY);
             
             var exists = sectorVO != null;
@@ -981,10 +982,9 @@ define([
             sectorPos.normalize();
             options = options || this.getDefaultOptions();
             var stage = options.stage || this.getDefaultStage(levelVO, sectorPos);
-            var criticalPathType = options.criticalPathType;
             var created = false;
             
-            var check = this.canCreateSector(levelVO,sectorPos, options);
+            var check = this.canCreateSector(levelVO, sectorPos, options);
             var sectorVO = check.vo;
             if (check.result) {
                 var vo = new SectorVO(sectorPos, levelVO.isCampable, levelVO.notCampableReason);
@@ -992,8 +992,9 @@ define([
                 vo.isCamp = levelVO.isCampPosition(sectorPos);
                 vo.isPassageUp = levelVO.isPassageUpPosition(sectorPos);
                 vo.isPassageDown = levelVO.isPassageDownPosition(sectorPos);
-                if (criticalPathType) {
-                    vo.addToCriticalPath(criticalPathType);
+                var criticalPath = options.criticalPath;
+                if (criticalPath) {
+                    vo.addToCriticalPath(criticalPath);
                 }
                 created = levelVO.addSector(vo);
                 if (created) {
@@ -1040,7 +1041,7 @@ define([
         
         isValidSectorPosition: function (levelVO, sectorPos, stage, options, pendingSectors) {
             // exception for critical paths
-            if (options.criticalPathType) return { isValid: true, isBlocked: false };
+            if (options.criticalPath) return { isValid: true, isBlocked: false };
             
             // blocking features
             if (WorldCreatorHelper.containsBlockingFeature(sectorPos, this.currentFeatures, true)) {
@@ -1434,7 +1435,7 @@ define([
             options = options || {};
             return {
                 stage: options.stage,
-                criticalPathType: options.criticalPathType,
+                criticalPath: options.criticalPath,
                 canConnectToDifferentStage: options.canConnectToDifferentStage
             };
         },
