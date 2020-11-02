@@ -15,6 +15,7 @@ define([
 	'game/constants/PerkConstants',
 	'game/constants/UIConstants',
 	'game/constants/TextConstants',
+	'game/constants/WorldConstants',
     'game/nodes/player/PlayerStatsNode',
     'game/nodes/player/PlayerResourcesNode',
     'game/nodes/PlayerLocationNode',
@@ -44,7 +45,7 @@ define([
     'game/vos/ResourcesVO',
     'game/vos/ImprovementVO'
 ], function (
-	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants,
+	Ash, GameGlobals, GlobalSignals, PositionConstants, PlayerActionConstants, PlayerStatConstants, ImprovementConstants, ItemConstants, BagConstants, MovementConstants, UpgradeConstants, FightConstants, PerkConstants, UIConstants, TextConstants, WorldConstants,
 	PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode, TribeUpgradesNode, CampNode, NearestCampNode,
 	LevelComponent, CurrencyComponent, PositionComponent, PlayerActionComponent, BagComponent, ExcursionComponent, ItemsComponent, DeityComponent,
 	FightComponent, OutgoingCaravansComponent, PassagesComponent, EnemiesComponent, MovementOptionsComponent,
@@ -60,7 +61,7 @@ define([
         tribeUpgradesNodes: null,
         nearestCampNodes: null,
 
-        cache: { reqs: {}, baseActionID: {} },
+        cache: { reqs: {}, baseActionID: {}, ActionNameForImprovement: {} },
 
 		constructor: function (engine) {
 			this.engine = engine;
@@ -790,6 +791,8 @@ define([
         },
         
         checkRequirementsRange: function (range, value, minreason, maxreason, minreason1, maxreason1) {
+            minreason = minreason || "";
+            maxreason = minreason || "";
             var min = range[0];
             var max = range[1];
             if (max < 0) max = 9999999;
@@ -930,8 +933,15 @@ define([
                 case "build_out_passage_up_stairs":
                 case "build_out_passage_up_elevator":
                 case "build_out_passage_up_hole":
-                    // level ordinal
-                    return action.substring(action.lastIndexOf("_") + 1);
+                    let levelOrdinal = action.substring(action.lastIndexOf("_") + 1);
+                    let campOrdinal = GameGlobals.gameState.getCampOrdinalForLevelOrdinal(levelOrdinal);
+                    // exception_ passage up from level 13
+                    if (baseActionID.indexOf("_up_") >= 0) {
+                         if (campOrdinal <= WorldConstants.CAMP_ORDINAL_GROUND) {
+                            campOrdinal = WorldConstants.CAMP_ORDINAL_GROUND;
+                        }
+                    }
+                    return campOrdinal;
 
                 default: return 1;
             }
@@ -1090,7 +1100,7 @@ define([
         getCost: function (baseCost, linearScale, e1Scale, e1Base, e2Scale, e2Exp, ordinal1, ordinal2, statusFactor) {
             var linearIncrease = linearScale * ordinal1;
             var expIncrease1 = e1Scale * Math.pow(e1Base, ordinal1-1);
-            var expIncrease2 = e2Scale * Math.pow(ordinal2-1, e2Exp);
+            var expIncrease2 = e2Scale * Math.pow(ordinal2 - 1, e2Exp);
             return (baseCost + linearIncrease + expIncrease1 + expIncrease2) * statusFactor;
         },
 
@@ -1101,9 +1111,6 @@ define([
             if (!action) return null;
             if (!multiplier) multiplier = 1;
 
-			var result = {};
-            var skipRounding = false;
-
             var sector = otherSector ? otherSector : (this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
             var levelComponent = sector ? GameGlobals.levelHelper.getLevelEntityForSector(sector).get(LevelComponent) : null;
 
@@ -1111,6 +1118,13 @@ define([
             var ordinal2 = this.getActionSecondaryOrdinal(action, sector);
             
             var isOutpost = levelComponent ? levelComponent.populationFactor < 1 : false;
+            
+            return this.getCostsByOrdinal(action, multiplier, ordinal1, ordinal2, isOutpost, sector);
+        },
+        
+        getCostsByOrdinal: function (action, multiplier, ordinal1, ordinal2, isOutpost, sector) {
+			var result = {};
+            var skipRounding = false;
             var isCampBuildAction = action.indexOf("build_in_") >= 0;
 
 			var baseActionID = this.getBaseActionID(action);
@@ -1130,7 +1144,7 @@ define([
 
 				for (var key in costs) {
 					if (key.indexOf("cost_factor") >= 0) continue;
-                    var statusFactor = this.getCostFactor(action, key, otherSector);
+                    var statusFactor = this.getCostFactor(action, key, sector);
 
                     var value = costs[key];
                     var baseCost = 0;
@@ -1169,7 +1183,6 @@ define([
                     }
 				}
 			} else {
-				var sector = otherSector || this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null;
 				switch (baseActionID) {
 					case "move_camp_level":
                         var path = this.getPathToNearestCamp(sector);
@@ -1408,6 +1421,11 @@ define([
         getActionNameForImprovement: function (improvementName) {
             // TODO make this nicer - list action names somewhere outside of html?
             // TODO list action <-> improvement name mapping only once (now here and in getImprovementNameForAction)
+            
+            if (this.cache.ActionNameForImprovement[improvementName]) {
+                return this.cache.ActionNameForImprovement[improvementName];
+            }
+            
             var helper = this;
             var result = null;
             switch (improvementName) {
@@ -1437,8 +1455,10 @@ define([
                     return false;
                 }
             });
+
             if (result == null)
                 log.w("No action name found for improvement: " + improvementName);
+            this.cache.ActionNameForImprovement[improvementName] = result;
             return result;
         },
 

@@ -4,13 +4,18 @@ define([
     'game/GameGlobals',
     'game/constants/GameConstants',
     'game/constants/CampConstants',
+    'game/constants/ImprovementConstants',
+    'game/constants/OccurrenceConstants',
+    'game/constants/UpgradeConstants',
+    'game/constants/WorldConstants',
 	'game/components/common/CampComponent',
 	'game/components/common/PositionComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/type/LevelComponent',
     'game/nodes/sector/CampNode',
     'game/nodes/tribe/TribeUpgradesNode',
-], function (Ash, GameGlobals, GameConstants, CampConstants, CampComponent, PositionComponent, SectorImprovementsComponent, LevelComponent, CampNode, TribeUpgradesNode) {
+], function (Ash, GameGlobals, GameConstants, CampConstants, ImprovementConstants, OccurrenceConstants, UpgradeConstants, WorldConstants,
+    CampComponent, PositionComponent, SectorImprovementsComponent, LevelComponent, CampNode, TribeUpgradesNode) {
     
     var CampHelper = Ash.Class.extend({
 		
@@ -212,7 +217,7 @@ define([
             }
         },
         
-        getTargetReputation: function (campEntity, sectorImprovements, population, danger) {
+        getTargetReputation: function (improvementsComponent, resourcesVO, population, populationFactor, danger) {
             var result = 0;
             var sources = {}; // text -> value
             var penalties = {}; // id -> bool
@@ -228,14 +233,14 @@ define([
             };
             
             // base: building happiness values
-            var allImprovements = sectorImprovements.getAll(improvementTypes.camp);
+            var allImprovements = improvementsComponent.getAll(improvementTypes.camp);
             for (var i in allImprovements) {
                 var improvementVO = allImprovements[i];
                 var level = improvementVO.level || 1;
                 var defaultBonus = improvementVO.getReputationBonus();
                 switch (improvementVO.name) {
                     case improvementNames.generator:
-                        var numHouses = sectorImprovements.getCount(improvementNames.house) + sectorImprovements.getCount(improvementNames.house2);
+                        var numHouses = improvementsComponent.getCount(improvementNames.house) + improvementsComponent.getCount(improvementNames.house2);
                         var generatorBonus = numHouses * CampConstants.REPUTATION_PER_HOUSE_FROM_GENERATOR * (1 + level * 0.02);
                         generatorBonus = Math.round(generatorBonus * 100) / 100;
                         addValue(generatorBonus, "Generator");
@@ -252,10 +257,8 @@ define([
             var resultWithoutPenalties = result;
             
             // penalties: food and water
-            var storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campEntity);
-            var resources = storage ? storage.resources : null;
-            var noFood = resources && resources.getResource(resourceNames.food) <= 0;
-            var noWater = resources && resources.getResource(resourceNames.water) <= 0;
+            var noFood = resourcesVO && resourcesVO.getResource(resourceNames.food) <= 0;
+            var noWater = resourcesVO && resourcesVO.getResource(resourceNames.water) <= 0;
             var penalty = Math.max(5, Math.ceil(resultWithoutPenalties));
             if (noFood) {
                 addValue(-penalty, "No food");
@@ -284,7 +287,7 @@ define([
             addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_DEFENCES, noDefences);
             
             // penalties: over-crowding
-            var housingCap = CampConstants.getHousingCap(sectorImprovements);
+            var housingCap = CampConstants.getHousingCap(improvementsComponent);
             var population = Math.floor(population);
             var noHousing = population > housingCap;
             if (noHousing) {
@@ -295,12 +298,11 @@ define([
             addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_HOUSING, noHousing);
             
             // penalties: level population
-            var levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(campEntity).get(LevelComponent);
-            if (levelComponent.populationFactor < 1) {
-                var levelPopPenalty = resultWithoutPenalties * (1 - levelComponent.populationFactor);
+            if (populationFactor < 1) {
+                var levelPopPenalty = resultWithoutPenalties * (1 - populationFactor);
                 addValue(-levelPopPenalty, "Level population");
             }
-            addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_LEVEL_POP, levelComponent.populationFactor < 1);
+            addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_LEVEL_POP, populationFactor < 1);
             
             return { value: Math.max(0, result), sources: sources, penalties: penalties };
         },
@@ -315,6 +317,203 @@ define([
 			}
 			return upgradeLevel;
 		},
+        
+        isOutpost: function (campOrdinal) {
+            return this.getPopulationFactor(campOrdinal) < 1;
+        },
+        
+        getPopulationFactor: function (campOrdinal) {
+            let level = GameGlobals.gameState.getLevelForCamp(campOrdinal);
+            let levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
+            return levelComponent.populationFactor;
+        },
+        
+        getMaxTotalStorage: function (maxCampOrdinal) {
+            let result = 0;
+            let storageUpgradeLevel = GameGlobals.upgradeEffectsHelper.getExpectedBuildingUpgradeLevel(improvementNames.storage, campOrdinal);
+            
+            let storageCounts = {};
+            let builtSomething = true;
+            while (builtSomething) {
+                builtSomething = false;
+                let totalStorage = 0;
+                
+                // calculate current total
+                for (var campOrdinal = 1; campOrdinal <= maxCampOrdinal; campOrdinal++) {
+                    if (!storageCounts[campOrdinal]) storageCounts[campOrdinal] = 0;
+                    let storageCount = storageCounts[campOrdinal];
+                    let campStorage = CampConstants.getStorageCapacity(storageCount, storageUpgradeLevel);
+                    totalStorage += campStorage;
+                }
+                
+                // build more
+                for (var campOrdinal = 1; campOrdinal <= maxCampOrdinal; campOrdinal++) {
+                    let storageCount = storageCounts[campOrdinal];
+                    let isOutpost = this.isOutpost(campOrdinal);
+                    let nextCost = GameGlobals.playerActionsHelper.getCostsByOrdinal("build_in_storage", 1, storageCount + 1, 1, isOutpost).resource_metal;
+                    if (nextCost <= totalStorage) {
+                        storageCounts[campOrdinal]++;
+                        builtSomething = true;
+                    }
+                }
+                
+                result = totalStorage;
+            }
+
+            return result;
+        },
+        
+        getMaxTotalPopulation: function (maxCampOrdinal) {
+            
+            // housing cap per camp
+            let totalStorage = this.getMaxTotalStorage(maxCampOrdinal);
+            let housingPerCamp = {};
+            for (let campOrdinal = 1; campOrdinal <= maxCampOrdinal; campOrdinal++) {
+                let isOutpost = this.isOutpost(campOrdinal);
+                let numHouses = this.getMaxImprovementsPerCamp(improvementNames.house, totalStorage, isOutpost);
+                let numHouses2 = this.getMaxImprovementsPerCamp(improvementNames.house2, totalStorage, isOutpost);
+                housingPerCamp[campOrdinal] = CampConstants.getHousingCap2(numHouses, numHouses2);
+            }
+            
+            // reputation camp per camp
+            let reputationCapPerCamp = {};
+            let reputationPerCamp = {};
+            for (let campOrdinal = 1; campOrdinal <= maxCampOrdinal; campOrdinal++) {
+                let improvementsComponent = this.getDefaultImprovements(maxCampOrdinal, campOrdinal, totalStorage);
+                let populationFactor = this.getPopulationFactor(campOrdinal);
+                let danger = 0;
+                let reputation = GameGlobals.campHelper.getTargetReputation(improvementsComponent, null, 0, populationFactor, danger).value;
+                let reputationCap = CampConstants.getMaxPopulation(reputation);
+                reputationPerCamp[campOrdinal] = reputation;
+                reputationCapPerCamp[campOrdinal] = reputationCap;
+            }
+            
+            // population per camp
+            let result = 0;
+            for (let campOrdinal = 1; campOrdinal <= maxCampOrdinal; campOrdinal++) {
+                let pop = Math.min(housingPerCamp[campOrdinal], reputationCapPerCamp[campOrdinal]);
+                log.i("camp " + campOrdinal + " at " + maxCampOrdinal + ": "
+                    + "housing: "+ housingPerCamp[campOrdinal]
+                    + ", reputation: " + Math.round(reputationPerCamp[campOrdinal]*10)/10 + "(" + reputationCapPerCamp[campOrdinal] + ")"
+                    + " -> population: " + pop);
+                result += pop;
+            }
+            return result;
+        },
+        
+        getMaxImprovementsPerCamp: function (improvementName, totalStorage, isOutpost) {
+            let result = 0;
+            let actionName = GameGlobals.playerActionsHelper.getActionNameForImprovement(improvementName);
+            let getNextCost = function () {
+                let ordinal = result + 1;
+                return GameGlobals.playerActionsHelper.getCostsByOrdinal(actionName, 1, ordinal, 1, isOutpost).resource_metal;
+            };
+            while (getNextCost() <= totalStorage) {
+                result++;
+            }
+            return result;
+        },
+        
+        // TODO move to a CampBalancingHelper (+ other functions that don't deal in CURRENT but HYPOTHETICAL state but don't go to constants either)
+        
+        getDefaultImprovements: function (maxCampOrdinal, campOrdinal, storage) {
+            let isOutpost = this.isOutpost(campOrdinal);
+            
+            let canBuild = function (improvementName, actionName, ordinal) {
+                if (ordinal >= 100) return false;
+                
+                // check danger
+                var soldiers = CampConstants.workerTypes.soldier.getLimitNum(maxCampOrdinal, result);
+                var soldierLevel = 1;
+                var danger =  OccurrenceConstants.getRaidDanger(result, soldiers, soldierLevel);
+                var defenceLimit = CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
+                var noDefences = danger > defenceLimit;
+                if (noDefences) {
+                    if (improvementName != improvementNames.fortification && improvementName != improvementNames.fortification2) {
+                        return false;
+                    }
+                }
+                
+                let reqs = GameGlobals.playerActionsHelper.getReqs(actionName);
+                
+                // check for deity
+                if (reqs && reqs.deity && maxCampOrdinal < 8) {
+                    return false;
+                }
+                
+                // check required other improvements
+                if (reqs && reqs.improvements) {
+                    var improvementRequirements = reqs.improvements;
+                    for (var requiredImprovementID in improvementRequirements) {
+                        if (requiredImprovementID == "camp") continue;
+                        let requiredImprovementName = improvementNames[requiredImprovementID];
+                        var amount = result.getCount(requiredImprovementName);
+                        var range = improvementRequirements[requiredImprovementID];
+                        if (range) {
+                            let reqsCheck = GameGlobals.playerActionsHelper.checkRequirementsRange(range, amount);
+                            if (reqsCheck) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                
+                // check required upgrades
+                if (reqs && reqs.upgrades) {
+                    var upgradeRequirements = reqs.upgrades;
+                    for (var upgradeId in upgradeRequirements) {
+                        var requirementBoolean = upgradeRequirements[upgradeId];
+                        var requiredTechCampOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(upgradeId);
+                        var hasBoolean = requiredTechCampOrdinal <= maxCampOrdinal;
+                        if (requirementBoolean != hasBoolean) {
+                            return false;
+                        }
+                    }
+                }
+                
+                // check costs
+                let costs = GameGlobals.playerActionsHelper.getCostsByOrdinal(actionName, 1, ordinal, 1, isOutpost);
+                if (costs) {
+                    for (let key in costs) {
+                        if (key == "resource_fuel" && maxCampOrdinal < WorldConstants.CAMP_ORDINAL_FUEL) {
+                            return false;
+                        }
+                        if (key == "resource_rubber" && maxCampOrdinal < 8) {
+                            return false;
+                        }
+                        var costAmount = costs[key];
+                        if (costAmount > storage) {
+                            return false;
+                        }
+                    }
+                }
+                
+                return true;
+            }
+            
+            let result = new SectorImprovementsComponent();
+            let builtSomething = true;
+            let numBuilt = 0;
+            while (builtSomething) {
+                builtSomething = false;
+                for (var improvementID in ImprovementConstants.campImprovements) {
+                    let improvementName = improvementNames[improvementID];
+                    let actionName = GameGlobals.playerActionsHelper.getActionNameForImprovement(improvementName);
+                    let ordinal = result.getCount(improvementName) + 1;
+                    
+                    if (!canBuild(improvementName, actionName, ordinal)) {
+                        continue;
+                    }
+                    
+                    builtSomething = true;
+                    numBuilt++;
+                    result.add(improvementName, 1);
+                    break;
+                }
+            }
+            
+            return result;
+        },
         
         getDefaultWorkerAssignment: function (sector) {
             var campComponent = sector.get(CampComponent);

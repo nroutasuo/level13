@@ -143,8 +143,15 @@ define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
         
         // population cap of one camp
         getHousingCap: function (improvementsComponent) {
-            var result = improvementsComponent.getCount(improvementNames.house) * CampConstants.POPULATION_PER_HOUSE;
-            result += improvementsComponent.getCount(improvementNames.house2) * CampConstants.POPULATION_PER_HOUSE2;
+            return this.getHousingCap2(
+                improvementsComponent.getCount(improvementNames.house),
+                improvementsComponent.getCount(improvementNames.house2));
+            return result;
+        },
+        
+        getHousingCap2: function (numHouses, numHouses2) {
+            var result = numHouses * CampConstants.POPULATION_PER_HOUSE;
+            result += numHouses2 * CampConstants.POPULATION_PER_HOUSE2;
             return result;
         },
         

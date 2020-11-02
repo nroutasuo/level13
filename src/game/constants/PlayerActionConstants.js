@@ -45,6 +45,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         }
                     },
                     busy: false,
+                    upgrades: {
+                        unlock_action_clear_waste_t: true,
+                    }
                 },
 
                 clear_waste_r: {
@@ -57,6 +60,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                         }
                     },
                     busy: false,
+                    upgrades: {
+                        unlock_action_clear_waste_r: true,
+                    }
                 },
                 
                 clear_debris: {
@@ -644,9 +650,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 build_in_ceiling: {
                     sunlit: true,
+                    improvements: {
+                        ceiling: [-1, 1],
+                    },
                     upgrades: {
                         unlock_building_ceiling: true,
-                    }
+                    },
                 },
 
                 build_in_fortification: {
@@ -684,7 +693,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 build_in_barracks: {
-                    improvements: {},
+                    improvements: {
+                        barracks: [-1, 10],
+                    },
                     upgrades: {
                         unlock_building_barracks: true,
                     }
@@ -693,6 +704,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 build_in_apothecary: {
                     improvements: {
                         house: [2, -1],
+                        apothecary: [-1, 10],
                     },
                     upgrades: {
                         unlock_building_apothecary: true,
@@ -710,6 +722,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 build_in_smithy: {
                     improvements: {
                         house: [2, -1],
+                        smithy: [-1, 10],
                     },
                     upgrades: {
                         unlock_building_smithy: true,
@@ -726,6 +739,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 build_in_cementmill: {
                     improvements: {
                         house: [2, -1],
+                        cementmill: [-1, 10],
                     },
                     upgrades: {
                         unlock_building_cementmill: true,
@@ -742,6 +756,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 build_in_researchcenter: {
                     improvements: {
                         library: [1, -1],
+                        researchcenter: [-1, 1],
                     },
                     upgrades: {
                         unlock_building_researchcenter: true,
@@ -763,6 +778,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     improvements: {
                         house: [1, -1],
                         storage: [1, -1],
+                        shrine: [-1, 1],
                     },
                 },
 
@@ -1741,9 +1757,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 build_out_passage_down_stairs: {
-                    resource_metal: [50, 100, 50, 5500, 0],
+                    resource_metal: [50, 100, 50, 500, 0],
                     resource_rope: 10,
-                    cost_factor_e1_base: 1.295,
+                    cost_factor_e1_base: 1.01,
                     cost_factor_e2_exp: 2.3,
                 },
 
