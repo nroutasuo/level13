@@ -175,8 +175,6 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
             if (ratio < 0.05) ratio = 0.05;
             if (ratio > 0.95) ratio = 0.95;
             
-            if (GameGlobals.gameFlowLogger.isEnabled)
-                log.i("getFightWinProbability: time alive player: " + timeAlivePlayerMin + "-" + timeAlivePlayerMax + ", enemy: " + timeAliveEnemy + " -> " + ratio);
             return ratio;
         },
         		

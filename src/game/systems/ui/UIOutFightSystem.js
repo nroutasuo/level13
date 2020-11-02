@@ -291,6 +291,7 @@ define([
 				var playerStamina = this.playerStatsNodes.head.stamina;
                 var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
                 var chances = FightConstants.getFightWinProbability(currentEnemy, playerStamina, itemsComponent);
+                log.i("getFightWinProbability:" + chances);
                 var chancesText = this.getFightChancesText(chances);
                 var spanClass = chances < 0.4 ? "warning": "";
                 statsText += "<br/>";
