@@ -81,6 +81,10 @@ define([
 			var liMsg;
 			for	(var index = 0; index < messages.length; index++) {
 				msg = messages[index];
+                if (msg.text.length < 3) {
+                    log.w("log contains empty message")
+                    log.w(msg);
+                }
 				var li = '<li';
 				if (msg.loadedFromSave)
 					li += ' class="log-loaded"';
