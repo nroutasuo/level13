@@ -52,6 +52,7 @@ define([
 			this.improvingUpgradesByImprovement[improvementNames.radiotower] = ["improve_building_market3"];
 			this.improvingUpgradesByImprovement[improvementNames.shrine] = ["upgrade_building_shrine"];
 			this.improvingUpgradesByImprovement[improvementNames.stable] = ["upgrade_outgoing_caravans"];
+			this.improvingUpgradesByImprovement[improvementNames.temple] = ["upgrade_building_temple2", "upgrade_building_temple3"];
 			
 			this.improvingUpgradesByWorker["scavenger"] = ["upgrade_worker_scavenger"];
 			this.improvingUpgradesByWorker["trapper"] = ["upgrade_worker_trapper"];
@@ -62,7 +63,7 @@ define([
 			this.improvingUpgradesByWorker["collector"] = ["upgrade_worker_collector1"];
 			this.improvingUpgradesByWorker["chemist"] = ["upgrade_worker_chemist"];
 			this.improvingUpgradesByWorker["apothecary"] = ["upgrade_building_apothecary"];
-			this.improvingUpgradesByWorker["scientist"] = ["unlock_building_researchcenter", "improve_building_market3"];
+			this.improvingUpgradesByWorker["scientist"] = ["unlock_building_researchcenter"];
 			
 			this.improvingUpgradesByEvent[OccurrenceConstants.campOccurrenceTypes.trader] = [ "upgrade_building_market", "upgrade_building_market2" ];
             
