@@ -180,12 +180,12 @@ define([
             var directions = PositionConstants.getLevelDirections();
             for (var i = 0; i < levelVO.sectors.length; i++) {
                 var sector = levelVO.sectors[i];
-                if (sector.zone == zone) continue;
+                if (sector.zone != zone) continue;
                 var neighbours = levelVO.getNeighbours(sector.position.sectorX, sector.position.sectorY);
                 for (var d in directions) {
                     var direction = directions[d];
                     var neighbour = neighbours[direction];
-                    if (neighbour && neighbour.zone == zone) {
+                    if (neighbour && neighbour.zone != zone) {
                         result.push({ sector: sector, neighbour: neighbour });
                         if (!includeAllPairs) break;
                     }
@@ -520,14 +520,42 @@ define([
             return requiredPaths;
         },
         
-        canHaveGang: function (levelVO, sectorVO) {
+        canSectorHaveGang: function (levelVO, sectorVO, direction) {
             if (!sectorVO) return false;
             if (sectorVO.isCamp) return false;
             if (sectorVO.zone == WorldConstants.ZONE_ENTRANCE) return false;
-            if (sectorVO.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP) return false;
-            if (sectorVO.zone == WorldConstants.ZONE_PASSAGE_TO_PASSAGE) return false;
+            if (direction && sectorVO.movementBlockers[direction]) return false;
+            
             var minDist = levelVO.level == 13 ? 4 : 2;
             if (this.getQuickDistanceToCamp(levelVO, sectorVO) < 3) return false;
+            return true;
+        },
+        
+        canPairHaveGang: function (levelVO, sectorVO1, sectorVO2) {
+            if (sectorVO1.zone == sectorVO2.zone) {
+                if (sectorVO1.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP) return false;
+                if (sectorVO1.zone == WorldConstants.ZONE_PASSAGE_TO_PASSAGE) return false;
+            }
+            return true;
+        },
+        
+        canHaveBlocker: function (levelVO, sectorVO1, sectorVO2, allowedCriticalPaths) {
+            var distanceToCamp = Math.min(
+                WorldCreatorHelper.getQuickDistanceToCamp(levelVO, sectorVO1),
+                WorldCreatorHelper.getQuickDistanceToCamp(levelVO, sectorVO2)
+            );
+            if (distanceToCamp <= 3) return false;
+            
+            for (var i = 0; i < sectorVO1.criticalPaths.length; i++) {
+                var pathType = sectorVO1.criticalPaths[i].type;
+                if (allowedCriticalPaths && allowedCriticalPaths.indexOf(pathType) >= 0) continue;
+                for (var j = 0; j < sectorVO2.criticalPaths.length; j++) {
+                    if (pathType === sectorVO2.criticalPaths[j].type) {
+                        return false;
+                    }
+                }
+            }
+            
             return true;
         },
 		

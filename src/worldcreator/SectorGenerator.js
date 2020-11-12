@@ -361,13 +361,26 @@ define([
                     if (!path || path.length < 3) {
                         break;
                     }
-                    var min = Math.round(path.length / 2);
-                    var max = Math.max(min, path.length - 2);
+                    var padding = Math.round(path.length / 6);
+                    var min = Math.max(1, padding);
+                    var max =  MathUtils.clamp(path.length - padding, min, path.length - 2);
                     var finalSeed = Math.abs(seed + 6700 - (i+1) * 555);
                     index = WorldCreatorRandom.randomInt(finalSeed, min, max);
-                    var sectorVO = levelVO.getSector(path[index].sectorX, path[index].sectorY);
-                    var neighbourVO = levelVO.getSector(path[index + 1].sectorX, path[index + 1].sectorY);
-                    addBlocker(finalSeed, sectorVO, neighbourVO, type, true, allowedCriticalPaths);
+                    
+                    // try a few indices
+                    for (let j = 0; j < (max-min); j++)
+                    {
+                        index += j;
+                        if (index > max) index = min;
+                        var sectorVO = levelVO.getSector(path[index].sectorX, path[index].sectorY);
+                        var neighbourVO = levelVO.getSector(path[index + 1].sectorX, path[index + 1].sectorY);
+                        if (!WorldCreatorHelper.canPairHaveGang(levelVO, sectorVO, neighbourVO)) {
+                            continue;
+                        } else {
+                            addBlocker(finalSeed, sectorVO, neighbourVO, type, true, allowedCriticalPaths);
+                            break;
+                        }
+                    }
                 }
             };
             
@@ -394,11 +407,7 @@ define([
                 var borderSectors1 = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldConstants.ZONE_PASSAGE_TO_CAMP, true);
                 for (var i = 0; i < borderSectors1.length; i++) {
                     var pair = borderSectors1[i];
-                    var distanceToCamp = Math.min(
-                        WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, pair.sector),
-                        WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, pair.neighbour)
-                    );
-                    if (distanceToCamp > 3) {
+                    if (WorldCreatorHelper.canHaveBlocker(levelVO, pair.sector, pair.neighbour, allowedCriticalPaths)) {
                         var s =  seed % 26 * 3331 + 100 + (i + 5) * 654;
                         if (WorldCreatorRandom.random(s) < freq) {
                             addBlocker(s * 2, pair.sector, pair.neighbour, null, true, allowedCriticalPaths);
@@ -429,8 +438,9 @@ define([
                 var options = { excludingFeature: "camp" };
                 var sectors = WorldCreatorRandom.randomSectors(randomSeed, worldVO, levelVO, numRandom, numRandom + 1, options);
                 for (var i = 0; i < sectors.length; i++) {
+                    var sector = sectors[i];
                     var addDiagonals = (l + i + 9) % 3 !== 0;
-                    addBlocker(randomSeed - (i + 1) * 321, sectors[i], null, null, addDiagonals);
+                    addBlocker(randomSeed - (i + 1) * 321, sector, null, null, addDiagonals);
                 }
             }
         },
@@ -987,9 +997,16 @@ define([
             
             // TODO make gangs not consists of only one enemy
             
-            var addGang = function (sectorVO, neighbourVO, addDiagonals, force) {
+            var addGang = function (sectorVO, neighbourVO, addDiagonals) {
                 if (!neighbourVO) neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
-                if (force || (WorldCreatorHelper.canHaveGang(levelVO, sectorVO) && WorldCreatorHelper.canHaveGang(levelVO, neighbourVO))) {
+                var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
+                var neighbourDirection = PositionConstants.getDirectionFrom(neighbourVO.position, sectorVO.position);
+                
+                var canHaveGang =
+                    WorldCreatorHelper.canPairHaveGang(levelVO, sectorVO, neighbourVO, true) &&
+                    WorldCreatorHelper.canSectorHaveGang(levelVO, sectorVO, direction, true) &&
+                    WorldCreatorHelper.canSectorHaveGang(levelVO, neighbourVO, neighbourDirection, true);
+                if (canHaveGang) {
                     var blockerSettings = { addDiagonals: addDiagonals };
                     // callback is called twice, once for each sector
                     creator.addMovementBlocker(worldVO, levelVO, sectorVO, neighbourVO, blockerType, blockerSettings, function (s, direction) {
@@ -1008,7 +1025,7 @@ define([
                     });
                     return true;
                 } else {
-                    WorldCreatorLogger.w("Skipped adding gang at " + sectorVO.position);
+                    WorldCreatorLogger.w("Skipped adding gang at " + sectorVO.position + " " + sectorVO.isCamp + " " + sectorVO.zone + " " + sectorVO.movementBlockers[direction]);
                     return false;
                 }
             };
@@ -1026,8 +1043,11 @@ define([
                     index = WorldCreatorRandom.randomInt(finalSeed, min, max);
                     var sectorVO = levelVO.getSector(path[index].sectorX, path[index].sectorY);
                     var neighbourVO = levelVO.getSector(path[index + 1].sectorX, path[index + 1].sectorY);
-                    if (!WorldCreatorHelper.canHaveGang(levelVO, sectorVO)) continue;
-                    if (!WorldCreatorHelper.canHaveGang(levelVO, neighbourVO)) continue;
+                    var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
+                    var neighbourDirection = PositionConstants.getDirectionFrom(neighbourVO.position, sectorVO.position);
+                    if (!WorldCreatorHelper.canSectorHaveGang(levelVO, sectorVO, direction)) continue;
+                    if (!WorldCreatorHelper.canSectorHaveGang(levelVO, neighbourVO, neighbourDirection)) continue;
+                    if (!WorldCreatorHelper.canPairHaveGang(levelVO, sectorVO, neighbourVO)) continue;
                     if (addGang(sectorVO, neighbourVO, false)) num++;
                 }
                 return num;
@@ -1066,13 +1086,16 @@ define([
             var borderSectors = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldConstants.ZONE_PASSAGE_TO_CAMP, true);
             for (var i = 0; i < borderSectors.length; i++) {
                 var pair = borderSectors[i];
+                if (pair.sector.zone == WorldConstants.ZONE_ENTRANCE || pair.neighbour.zone == WorldConstants.ZONE_ENTRANCE) continue;
+                var direction = PositionConstants.getDirectionFrom(pair.sector.position, pair.neighbour.position);
+                if (pair.sector.movementBlockers[direction]) continue;
                 var distanceToCamp = Math.min(
-                    WorldCreatorHelper.getDistanceToCamp(this.world, levelVO, pair.sector),
-                    WorldCreatorHelper.getDistanceToCamp(this.world, levelVO, pair.neighbour)
+                    WorldCreatorHelper.getQuickDistanceToCamp(levelVO, pair.sector),
+                    WorldCreatorHelper.getQuickDistanceToCamp(levelVO, pair.neighbour)
                 );
                 var distanceToCampThreshold = l == 13 ? 4 : 2;
                 if (distanceToCamp > distanceToCampThreshold) {
-                    addGang(pair.sector, pair.neighbour, true, true);
+                    addGang(pair.sector, pair.neighbour, true);
                 }
             }
                 
@@ -1090,7 +1113,7 @@ define([
                     var distance1 = WorldCreatorRandom.findPath(worldVO, pair.sector.position, passage2.position, false, true).length;
                     var distance2 = WorldCreatorRandom.findPath(worldVO, pair.neighbour.position, passage2.position, false, true).length;
                     if (distance1 > distance2) {
-                        addGang(pair.sector, pair.neighbour, true, true);
+                        addGang(pair.sector, pair.neighbour, true);
                     }
                 }
             }
@@ -1120,10 +1143,13 @@ define([
             var randomGangIndex = 0;
             for (var i = 0; i < levelVO.sectors.length; i++) {
                 var sectorVO = levelVO.sectors[i];
-                if (!WorldCreatorHelper.canHaveGang(levelVO, sectorVO)) continue;
+                if (!WorldCreatorHelper.canSectorHaveGang(levelVO, sectorVO)) continue;
                 if (randomGangIndex >= randomGangFreq) {
                     var neighbourVO = WorldCreatorRandom.getRandomSectorNeighbour(seed, levelVO, sectorVO, true);
-                    if (!WorldCreatorHelper.canHaveGang(levelVO, neighbourVO)) continue;
+                    var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
+                    var neighbourDirection = PositionConstants.getDirectionFrom(neighbourVO.position, sectorVO.position);
+                    if (!WorldCreatorHelper.canSectorHaveGang(levelVO, neighbourVO, neighbourDirection)) continue;
+                    if (!WorldCreatorHelper.canPairHaveGang(levelVO, sectorVO, neighbourVO)) continue;
                     var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
                     if (!sectorVO.movementBlockers[direction]) {
                         var addDiagonals = i % (randomGangFreq * 2) === 0;
@@ -1231,7 +1257,7 @@ define([
                 var direction = directions[d];
                 var blocker = sectorVO.movementBlockers[direction];
                 if (blocker == MovementConstants.BLOCKER_TYPE_WASTE_TOXIC) {
-                    this.addHazardCluster(seed, d, levelVO, sectorVO, WorldCreatorConstants.WASTE_HAZARD_RADIUS, 1, false, true);
+                    this.addHazardCluster(seed, d, levelVO, sectorVO, WorldCreatorLogger.wASTE_HAZARD_RADIUS, 1, false, true);
                 }
                 if (blocker == MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE) {
                     this.addHazardCluster(seed, d, levelVO, sectorVO, WorldCreatorConstants.WASTE_HAZARD_RADIUS, 1, true, true);
@@ -1260,20 +1286,24 @@ define([
             var direction = PositionConstants.getDirectionFrom(sectorVO.position, neighbourVO.position);
             var neighbourDirection = PositionConstants.getDirectionFrom(neighbourVO.position, sectorVO.position);
 
-            // check for existing movement blocker
             if (sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection]) {
                 var existing = sectorVO.movementBlockers[direction] || neighbourVO.movementBlockers[neighbourDirection];
-                WorldCreatorLogger.w("skipping movement blocker (" + blockerType + "): sector already has movement blocker (" + existing + ")");
-                return;
+                if (!options.skipWarnings && blockerType != existing) {
+                    WorldCreatorLogger.w("skipping movement blocker (" + blockerType + "): sector already has movement blocker (" + existing + ")");
+                }
+                return false;
             }
             
-            // check for too close to camp or in ZONE_PASSAGE_TO_CAMP
-            if (sectorVO.isCamp || neighbourVO.isCamp || (levelVO.isCampable && sectorVO.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP)) {
-                WorldCreatorLogger.w("skipping movement blocker (" + blockerType + "): too close to camp");
-                return;
+            if (sectorVO.isCamp || neighbourVO.isCamp) {
+                if (!options.skipWarnings) WorldCreatorLogger.w("skipping movement blocker (" + blockerType + "): too close to camp ");
+                return false;
+            }
+            
+            if (sectorVO.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP && neighbourVO.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP) {
+                if (!options.skipWarnings) WorldCreatorLogger.w("skipping movement blocker (" + blockerType + "): in ZONE_PASSAGE_TO_CAMP");
+                return false;
             }
 
-            // check for critical paths
             var allowedForGangs = [ WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE ];
             for (var i = 0; i < sectorVO.criticalPaths.length; i++) {
                 var pathType = sectorVO.criticalPaths[i].type;
@@ -1281,8 +1311,8 @@ define([
                 if (blockerType === MovementConstants.BLOCKER_TYPE_GANG && allowedForGangs.indexOf(pathType) >= 0) continue;
                 for (var j = 0; j < neighbourVO.criticalPaths.length; j++) {
                     if (pathType === neighbourVO.criticalPaths[j].type) {
-                        WorldCreatorLogger.w("skipping movement blocker on critical path: " + pathType + " (type: " + blockerType + ")");
-                        return;
+                        if (!options.skipWarnings) WorldCreatorLogger.w("skipping movement blocker on critical path: " + pathType + " (type: " + blockerType + ")");
+                        return false;
                     }
                 }
             }
@@ -1295,6 +1325,7 @@ define([
             if (options.addDiagonals) {
                 var diagonalsOptions = Object.assign({}, options);
                 diagonalsOptions.addDiagonals = false;
+                diagonalsOptions.skipWarnings = true;
                 var nextNeighbours = levelVO.getNextNeighbours(sectorVO, direction);
                 for (var j = 0; j < nextNeighbours.length; j++) {
                     this.addMovementBlocker(worldVO, levelVO, sectorVO, nextNeighbours[j], blockerType, diagonalsOptions, sectorcb);
@@ -1315,6 +1346,8 @@ define([
             if (cb) {
                 cb();
             }
+            
+            return true;
         },
         
         setSectorHazard: function (levelVO, sectorVO, hazardValueRand, isRadiation, override) {

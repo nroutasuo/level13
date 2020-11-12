@@ -408,7 +408,7 @@ define([
                 } else {
                     failures++;
                 }
-                if (failures > 8) {
+                if (failures > 25) {
                     WorldCreatorLogger.w("problems generating level stage " + levelVO.level + " " + stageVO.stage);
                 }
             }
