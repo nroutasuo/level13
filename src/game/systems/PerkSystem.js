@@ -146,7 +146,7 @@ define([
                     
                 default:
                     log.w("unknown perk " + perkID);
-                    break;
+                    return;
             }
             logComponent.addMessage(LogConstants.MSG_ID_ADD_HAZARD_PERK, msg);
         },
@@ -188,14 +188,14 @@ define([
                 
                 case PerkConstants.perkIds.staminaBonusPenalty:
                     msg = "Feeling better again.";
+                    break;
                     
                 case PerkConstants.perkIds.lightBeacon:
                     return;
-                    break;
                     
                 default:
                     log.w("unknown perk " + perkID);
-                    break;
+                    return;
             }
             logComponent.addMessage(LogConstants.MSG_ID_REMOVE_HAZARD_PERK, msg);
         },
