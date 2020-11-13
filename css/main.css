@@ -443,6 +443,12 @@ body.dark td > div.container-btn-action {
 body.dark button {
   cursor: pointer;
 }
+body.dark ::-moz-selection {
+  background: #ccc;
+}
+body.dark ::selection {
+  background: #ccc;
+}
 body.dark h1,
 body.dark h2,
 body.dark h3,
@@ -2295,6 +2301,12 @@ body.sunlit td > div.container-btn-action {
 }
 body.sunlit button {
   cursor: pointer;
+}
+body.sunlit ::-moz-selection {
+  background: #ccc;
+}
+body.sunlit ::selection {
+  background: #ccc;
 }
 body.sunlit h1,
 body.sunlit h2,
