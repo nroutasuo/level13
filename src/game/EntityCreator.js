@@ -229,9 +229,10 @@ define([
         },
 
 		initPlayer: function (entity) {
-			var defaultInjury = PerkConstants.perkDefinitions.injury[0];
+			var defaultInjury = PerkConstants.perkDefinitions.injury[0].clone();
+            defaultInjury.effectTimer = PerkConstants.TIMER_DISABLED;
 			var perksComponent = entity.get(PerksComponent);
-			perksComponent.addPerk(defaultInjury.clone());
+			perksComponent.addPerk(defaultInjury);
 			entity.add(new ExcursionComponent());
 
 			var logComponent = entity.get(LogMessagesComponent);

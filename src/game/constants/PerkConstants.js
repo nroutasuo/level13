@@ -39,7 +39,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 				for (var i = 0; i < this.perkDefinitions[key].length; i++) {
 					if (this.perkDefinitions[key][i].id === perkId) {
                         var result = this.perkDefinitions[key][i].clone();
-                        result.effectTimer = effectTimer || -1;
+                        result.effectTimer = effectTimer || PerkConstants.TIMER_DISABLED;
                         return result;
                     };
 				}

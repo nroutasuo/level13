@@ -381,7 +381,7 @@ define([
 			if (rewards.gainedInjuries) {
 				var perksComponent = this.playerStatsNodes.head.perks;
 				for (var i = 0; i < rewards.gainedInjuries.length; i++) {
-					perksComponent.addPerk(rewards.gainedInjuries[i].clone());
+					perksComponent.addPerk(PerkConstants.getPerk(rewards.gainedInjuries[i].id));
 				}
 			}
 

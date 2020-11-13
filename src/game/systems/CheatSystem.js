@@ -553,7 +553,7 @@ define(['ash',
             var perksComponent = this.playerPositionNodes.head.entity.get(PerksComponent);
             var injuryi = Math.round(Math.random() * PerkConstants.perkDefinitions.injury.length);
             var defaultInjury = PerkConstants.perkDefinitions.injury[injuryi];
-            perksComponent.addPerk(defaultInjury.clone());
+            perksComponent.addPerk(PerkConstants.getPerk(defaultInjury.id));
         },
 
         revealMap: function (value) {
