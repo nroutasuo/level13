@@ -6,6 +6,7 @@ define([
     'game/constants/PositionConstants',
     'game/constants/TextConstants',
 	'game/constants/TradeConstants',
+	'game/constants/UIConstants',
     'game/nodes/PlayerLocationNode',
     'game/nodes/PlayerPositionNode',
     'game/components/common/CampComponent',
@@ -20,7 +21,7 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/improvements/WorkshopComponent',
     'game/systems/CheatSystem'
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, PositionConstants, TextConstants, TradeConstants,
+], function (Ash, GameGlobals, GlobalSignals, GameConstants, PositionConstants, TextConstants, TradeConstants, UIConstants,
     PlayerLocationNode, PlayerPositionNode,
     CampComponent, PositionComponent, VisitedComponent, EnemiesComponent, PassagesComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent, SectorImprovementsComponent, WorkshopComponent,
     CheatSystem) {
@@ -130,16 +131,18 @@ define([
             GameGlobals.uiFunctions.toggle($("#mainmap-sector-details-content-debug"), hasSector && GameConstants.isCheatsEnabled);
 
             if (hasSector) {
+                let statusComponent =  this.selectedSector.get(SectorStatusComponent);
                 var position = this.selectedSector.get(PositionComponent).getPosition();
-    			var isScouted = this.selectedSector.get(SectorStatusComponent).scouted;
+    			var isScouted = statusComponent.scouted;
                 var isVisited = this.selectedSector.has(VisitedComponent);
     			var sectorFeatures = this.selectedSector.get(SectorFeaturesComponent);
                 var features = GameGlobals.sectorHelper.getTextFeatures(this.selectedSector);
                 var header = isVisited ? TextConstants.getSectorName(isScouted, features) : "Sector";
+                let scavengedPercent = UIConstants.roundValue(statusComponent.getScavengedPercent());
                 $("#mainmap-sector-details-name").text(header);
                 $("#mainmap-sector-details-pos").text(position.getInGameFormat(false));
                 $("#mainmap-sector-details-poi").text(this.getPOIText(this.selectedSector, isScouted));
-                $("#mainmap-sector-details-res-sca").text(this.getResScaText(this.selectedSector, isScouted));
+                $("#mainmap-sector-details-res-sca").text(this.getResScaText(this.selectedSector, isScouted) + " (" + scavengedPercent + "% scavenged)");
                 $("#mainmap-sector-details-res-col").text(this.getCollectorsText(this.selectedSector, isScouted));
                 $("#mainmap-sector-details-threats").text(this.getThreatsText(this.selectedSector, isScouted));
                 $("#mainmap-sector-details-blockers").text(this.getBlockersText(this.selectedSector, isScouted));
