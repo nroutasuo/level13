@@ -91,8 +91,8 @@ define([
             definitions.sunlit.push(this.createEnemy("drove of boars", "drove of boars", "sunlit", [c.nAnimal], [], [], [c.dDrive], 8, 5, 1, 0.8, [ resourceNames.food ]));
             definitions.sunlit.push(this.createEnemy("swarm of pidgeons", "swarm of pidgeons", "sunlit", [c.nPest, c.nAnimal], [c.gFlock, c.gSwarm], [c.aInfest], [c.dDrive], 9, 5, 0.75, 1.1, 10, [ resourceNames.food ]));
             definitions.sunlit.push(this.createEnemy("great black pelican", "great black pelican", "sunlit", [c.nPest, c.nAnimal], [], [c.aInfest, c.aGuard], [c.dKilled, c.dDrive], 15, 5, 0.5, 0.9, 35, [ resourceNames.food ]));
-            // dark
-            definitions.dark.push(this.createEnemy("cockroach", "cockroach", "dark", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover, c.aOverrun], [c.dCleared], 0, 1, 0.4, 1, 10, [ resourceNames.food ]));
+            
+            definitions.dark.push(this.createEnemy("cockroach", "cockroach", "dark", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover, c.aOverrun], [c.dCleared], 0, 1, 0.4, 2, 10, [ resourceNames.food ]));
             definitions.dark.push(this.createEnemy("cave bat", "cave bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 2, 4, 0.4, 1.1, 20, [ resourceNames.food ]));
             definitions.dark.push(this.createEnemy("ghost bat", "ghost bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 3, 6, 0.8, 1, 50, [ resourceNames.food ]));
             definitions.dark.push(this.createEnemy("vampire bat", "vampire bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 3, 5, 0.7, 1, 70, [ resourceNames.food ]));
@@ -252,7 +252,7 @@ define([
             if (campOrdinal >= WorldConstants.CAMPS_BEFORE_GROUND)
                 typicalHealth = typicalHealth * healthyPerkFactor;
             if (campOrdinal < 1)
-                typicalHealth = 50;
+                typicalHealth = 75;
 
             // items
             var typicalItems = new ItemsComponent();

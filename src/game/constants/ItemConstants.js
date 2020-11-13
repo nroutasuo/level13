@@ -169,13 +169,13 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
                 new ItemVO("artefact_science", "Data stick", "Artefact", 10, false, false, false, 7, 3, null, "img/items/artefact-test.png", "Some kind of a data storage. Unfortunately, nothing that reads it seems to have survived."),
             ];
             this.itemDefinitions.ingredient = [
-                new ItemVO("res_tape", "Duct tape", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-tape.png", "Used for crafting."),
-                new ItemVO("res_bands", "Elastic bands", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-bands.png", "Used for crafting."),
-                new ItemVO("res_silk", "Spider silk", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-silk.png", "Used for crafting."),
-                new ItemVO("res_glowbug", "Glowbug", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-glowbug.png", "Used for crafting."),
-                new ItemVO("res_hairpin", "Hairpin", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-pin.png", "Used for crafting."),
-                new ItemVO("res_bottle", "Plastic bottle", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-bottle.png", "Used for crafting."),
-                new ItemVO("res_leather", "Leather", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-leather.png", "Used for crafting."),
+                new ItemVO("res_tape", "Duct tape", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-tape.png", "Useful for crafting."),
+                new ItemVO("res_bands", "Elastic bands", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-bands.png", "Useful for crafting."),
+                new ItemVO("res_silk", "Spider silk", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-silk.png", "Useful for crafting."),
+                new ItemVO("res_glowbug", "Glowbug", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-glowbug.png", "Useful for crafting."),
+                new ItemVO("res_hairpin", "Hairpin", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-pin.png", "Useful for crafting."),
+                new ItemVO("res_bottle", "Plastic bottle", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-bottle.png", "Useful for crafting."),
+                new ItemVO("res_leather", "Leather", "Ingredient", 1, false, false, false, 1, 1, null, "img/items/res-leather.png", "Useful for crafting."),
             ];
             this.itemDefinitions.exploration = [
                 new ItemVO("exploration_1", "Lockpick", "Exploration", 1, false, true, false, 1, 1, null, "img/items/exploration-1.png", "Useful tool when exploring and scouting."),

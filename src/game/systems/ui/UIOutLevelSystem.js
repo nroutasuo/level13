@@ -411,11 +411,13 @@ define([
         getResourcesDescription: function (isScouted, featuresComponent, statusComponent) {
             if (!featuresComponent) return;
             var description = "";
-            description += "Scavenged: " + UIConstants.roundValue(statusComponent.getScavengedPercent()) + "%";
+            if (GameGlobals.gameState.unlockedFeatures.scavenge) {
+                description += "Scavenged: " + UIConstants.roundValue(statusComponent.getScavengedPercent()) + "% ";
+            }
 			if (featuresComponent.resourcesScavengable.getTotal() > 0) {
 				var discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources();
 				if (discoveredResources.length > 0) {
-					description += "\nResources found by scavenging: " + featuresComponent.getScaResourcesString(discoveredResources);
+					description += "Resources found: " + featuresComponent.getScaResourcesString(discoveredResources);
 				}
 			}
 			return description;

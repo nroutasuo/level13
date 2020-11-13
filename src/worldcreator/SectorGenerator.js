@@ -1685,6 +1685,7 @@ define([
             var possibleTypes = [];
             var l = levelVO.level;
             var sectorType = sectorVO.sectorType;
+            var distanceToCamp = WorldCreatorHelper.getQuickDistanceToCamp(levelVO, sectorVO);
 
             // level-based
             if (l >= worldVO.topLevel - 1)
@@ -1700,11 +1701,13 @@ define([
                     possibleTypes.push(localeTypes.transport);
                     possibleTypes.push(localeTypes.sewer);
                     possibleTypes.push(localeTypes.warehouse);
-                    possibleTypes.push(localeTypes.camp);
                     possibleTypes.push(localeTypes.hut);
-                    possibleTypes.push(localeTypes.hermit);
-                    possibleTypes.push(localeTypes.caravan);
                     possibleTypes.push(localeTypes.market);
+                    if (distanceToCamp > 3) {
+                        possibleTypes.push(localeTypes.camp);
+                        possibleTypes.push(localeTypes.caravan);
+                        possibleTypes.push(localeTypes.hermit);
+                    }
                     break;
 
                 case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
@@ -1734,10 +1737,12 @@ define([
 
                 case SectorConstants.SECTOR_TYPE_SLUM:
                     possibleTypes.push(localeTypes.house);
-                    possibleTypes.push(localeTypes.camp);
                     possibleTypes.push(localeTypes.hut);
                     possibleTypes.push(localeTypes.hermit);
                     possibleTypes.push(localeTypes.sewer);
+                    if (distanceToCamp > 3) {
+                        possibleTypes.push(localeTypes.camp);
+                    }
                     break;
                     
                 case SectorConstants.SECTOR_TYPE_PUBLIC:

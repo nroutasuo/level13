@@ -552,7 +552,6 @@ define([
                 }
                 workersByPrio[prio].push({ id: key, min: min, preferred: preferred, max: max });
             }
-            console.log(workersByPrio);
             
             // assign workers by priority
             var assignment = {};

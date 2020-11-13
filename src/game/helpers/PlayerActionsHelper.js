@@ -281,6 +281,14 @@ define([
                         }
                     }
 
+                    if (requirements.population) {
+                        var currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
+                        var result = this.checkRequirementsRange(requirements.population, currentPopulation, "{min} population required", "Maximum {max} population", "workers required", "no workers allowed");
+                        if (result) {
+                            return result;
+                        }
+                    }
+
                     if (typeof requirements.rumourpoolchecked != "undefined") {
                         if (campComponent) {
                             var campValue = campComponent.rumourpoolchecked;
@@ -289,14 +297,6 @@ define([
                                 if (requirements.rumourpoolchecked) reason = "There are new rumours.";
                                 return { value: 0, reason: reason };
                             }
-                        }
-                    }
-
-                    if (requirements.population) {
-                        var currentPopulation = campComponent ? campComponent.population : 0;
-                        var result = this.checkRequirementsRange(requirements.population, currentPopulation, "{min} population required", "Maximum {max} population");
-                        if (result) {
-                            result;
                         }
                     }
 
@@ -1546,15 +1546,13 @@ define([
                 case "camp":
                     return campComponent ? 1 : 0;
                 case "passageUp":
-                    return
-                        improvementComponent.getCount(improvementNames.passageUpStairs) +
-                        improvementComponent.getCount(improvementNames.passageUpElevator) +
-                        improvementComponent.getCount(improvementNames.passageUpHole);
+                    return improvementComponent.getCount(improvementNames.passageUpStairs)
+                        + improvementComponent.getCount(improvementNames.passageUpElevator)
+                        + improvementComponent.getCount(improvementNames.passageUpHole);
                 case "passageDown":
-                    return
-                        improvementComponent.getCount(improvementNames.passageDownStairs) +
-                        improvementComponent.getCount(improvementNames.passageDownElevator) +
-                        improvementComponent.getCount(improvementNames.passageDownHole);
+                    return improvementComponent.getCount(improvementNames.passageDownStairs)
+                        + improvementComponent.getCount(improvementNames.passageDownElevator)
+                        + improvementComponent.getCount(improvementNames.passageDownHole);
                 default:
                     return improvementComponent.getCount(improvementNames[improvementID]);
             }
