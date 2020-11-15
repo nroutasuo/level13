@@ -280,7 +280,7 @@ define(['ash',
             GameGlobals.playerActionFunctions.passTime(mins * 60);
         },
 
-        setAutoPlay: function (type, numCampsTarget, expeditionTarget) {
+        setAutoPlay: function (type, numCampsTarget) {
             var start = false;
             var stop = false;
             var isExpedition = false;
@@ -332,7 +332,7 @@ define(['ash',
                     if (isExpedition) {
                         component.isPendingExploring = true;
                         component.isExpedition = true;
-                        component.forcedExpeditionType = expeditionTarget;
+                        component.autoExploratioVO.limitToCurrentLevel = true;
                     }
                     this.playerStatsNodes.head.entity.add(component);
                 }

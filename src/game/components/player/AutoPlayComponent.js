@@ -1,10 +1,9 @@
-define(['ash'], function (Ash) {
+define(['ash', 'game/vos/AutoExplorationVO'], function (Ash, AutoExplorationVO) {
 
     var AutoPlayComponent = Ash.Class.extend({
 
         // autoplay goal
         isExpedition: false,
-        forcedExpeditionType: null,
 
         // general status
         isPendingExploring: false,
@@ -12,25 +11,18 @@ define(['ash'], function (Ash) {
         isManagingCamps: false,
 
         // explore objective
-        exploreGoal: null,
-        exploreSector: null,
-        explorePath: null,
-        exploreResource: null,
-        isExploreGoalComplete: false,
-
+        explorationVO: null,
+        
         constructor: function () {
+            this.explorationVO = new AutoExplorationVO();
         },
 
         isExploreObjectiveSet: function () {
-            return this.exploreGoal;
+            return this.explorationVO.isExploreObjectiveSet();
         },
 
         setExploreObjective: function (goal, sector, path, resource) {
-            this.exploreGoal = goal;
-            this.exploreSector = sector;
-            this.explorePath = path;
-            this.exploreResource = resource;
-            this.isExploreGoalComplete = false;
+            this.explorationVO.setExploreObjective(goal, sector, path, resource);
         }
 
     });

@@ -819,7 +819,7 @@ define([
 				locale = sectorLocalesComponent.locales[i];
 				var action = "scout_locale_" + locale.getCategory() + "_" + i;
 				if (!sectorStatus.isLocaleScouted(i)) {
-					if (GameGlobals.playerActionsHelper.checkAvailability(action, true, sectorEntity))
+					if (GameGlobals.playerActionsHelper.checkAvailability(action, false, sectorEntity))
 						locales.push(locale);
                 }
 			}

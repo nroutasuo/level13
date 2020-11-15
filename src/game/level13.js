@@ -59,6 +59,7 @@ define([
     'game/systems/occurrences/CampEventsSystem',
     'game/PlayerActionFunctions',
     'game/UIFunctions',
+    'game/helpers/AutoPlayHelper',
     'game/helpers/PlayerActionsHelper',
     'game/helpers/PlayerActionResultsHelper',
     'game/helpers/ui/ChangeLogHelper',
@@ -139,6 +140,7 @@ define([
     CampEventsSystem,
     PlayerActionFunctions,
     UIFunctions,
+    AutoPlayHelper,
     PlayerActionsHelper,
     PlayerActionResultsHelper,
     ChangeLogHelper,
@@ -208,6 +210,7 @@ define([
 
             GameGlobals.itemsHelper = new ItemsHelper(this.engine);
 			GameGlobals.upgradeEffectsHelper = new UpgradeEffectsHelper();
+            GameGlobals.autoPlayHelper = new AutoPlayHelper();
 			GameGlobals.saveHelper = new SaveHelper();
             GameGlobals.changeLogHelper = new ChangeLogHelper();
             GameGlobals.gameFlowLogger = new GameFlowLogger();
