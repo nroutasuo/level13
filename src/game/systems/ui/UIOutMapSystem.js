@@ -236,19 +236,30 @@ define([
             else return result.join(", ");
         },
         
-        getCollectorsText: function (sector) {
+        getCollectorsText: function (sector, isScouted) {
             var improvements = sector.get(SectorImprovementsComponent);
+			var featuresComponent = sector.get(SectorFeaturesComponent);
+            
 			var collectorFood = improvements.getVO(improvementNames.collector_food);
 			var collectorWater = improvements.getVO(improvementNames.collector_water);
             
-            var result = [];
-            if (collectorFood.count === 1) result.push("1 trap");
-            if (collectorFood.count > 1) result.push("traps");
-            if (collectorWater.count === 1) result.push("1 bucket");
-            if (collectorWater.count > 1) result.push("buckets");
+            var result1 = [];
+            var result2 = [];
+            if (isScouted) {
+                if (collectorFood.count === 1) result1.push("1 trap");
+                if (collectorFood.count > 1) result1.push("traps");
+                if (collectorFood.count == 0 && featuresComponent.resourcesCollectable.food > 0) result2.push ("food")
+                if (collectorWater.count === 1) result1.push("1 bucket");
+                if (collectorWater.count > 1) result1.push("buckets");
+                if (collectorWater.count == 0 && featuresComponent.resourcesCollectable.water > 0) result2.push ("water")
+            }
             
-            if (result.length < 1) return "-";
-            else return result.join(", ");
+            let part1 = "-";
+            if (result1.length > 0) part1 = result1.join(", ");
+            
+            let part2 = "";
+            if (result2.length > 0) part2 = " (can collect " + result2.join(", ") + ")";
+            return part1 + part2;
         },
         
         getThreatsText: function (sector, isScouted) {
