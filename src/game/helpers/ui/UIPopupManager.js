@@ -83,6 +83,10 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             GlobalSignals.popupOpenedSignal.dispatch("common-popup");
             $("#common-popup").slideDown(150, popUpManager.repositionPopups);
             
+            gtag('event', 'screen_view', {
+                'screen_name': "popup-common"
+            });
+            
             GameGlobals.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");
             GameGlobals.uiFunctions.generateCallouts("#common-popup .buttonbox");
             
