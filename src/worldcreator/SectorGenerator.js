@@ -684,6 +684,24 @@ define([
             var maxStepsFood = Math.floor(bagSize / 2 * 0.75);
             var stepsWater = 0;
             var stepsFood = 0;
+            // near passages
+            let excludedZones = levelVO.isCampable ?
+                [ WorldConstants.ZONE_EXTRA_CAMPABLE ] :
+                [ WorldConstants.ZONE_EXTRA_UNCAMPABLE ];
+            for (let i = 0; i < levelVO.passagePositions.length; i++) {
+                let passagePos = levelVO.passagePositions[i];
+                let pathConstraints = [];
+                pathConstraints.push(new PathConstraintVO(passagePos, 3, null));
+                let options = { requireCentral: false, excludingFeature: "camp", pathConstraints: pathConstraints, excludedZones: excludedZones };
+                let safeSectors = WorldCreatorRandom.randomSectors(seed % 10000 + levelVO.level * 192 + i * 991, worldVO, levelVO, 1, 2, options);
+                if (safeSectors.length == 1) {
+                    safeSectors[0].requiredResources.water = true;
+                    safeSectors[0].requiredResources.food = true;
+                } else {
+                    WorldCreatorLogger.w("Couldn't find safe sector for passage on level " + levelVO.level);
+                }
+            }
+            // based on paths
             var requireResource = function (i, count, sectorVO, steps, maxSteps) {
                 // end of path, probably a dead end and need supplies to return
                 if (i == count - 1 && steps > 3)
