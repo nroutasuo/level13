@@ -15,6 +15,7 @@ define(function () {
         CHEAT_NAME_POPULATION: "pop",
         CHEAT_NAME_WORKERS: "workers",
         CHEAT_NAME_STAMINA: "stamina",
+        CHEAT_NAME_SET_STAMINA: "setStamina",
         CHEAT_NAME_POS: "pos",
         CHEAT_NAME_LEVEL: "gotolevel",
         CHEAT_NAME_HEAL: "heal",

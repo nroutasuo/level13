@@ -113,7 +113,11 @@ define(['ash',
                 this.autoAssignWorkers();
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_STAMINA, "Refill stamina for free.", [], function () {
-                this.refillStamina();
+                this.refillStamina(value);
+            });
+            this.registerCheat(CheatConstants.CHEAT_NAME_SET_STAMINA, "Set stamina.", [ "value" ], function (params) {
+                var value = parseInt(params[0]);
+                this.setStamina(value);
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_POS, "Set position of the player. Must be an existing sector.", ["level", "x", "y"], function (params) {
                 this.setPlayerPosition(parseInt(params[0]), parseInt(params[1]), parseInt(params[2]));
@@ -405,6 +409,10 @@ define(['ash',
 
         refillStamina: function () {
             this.playerStatsNodes.head.stamina.stamina = 1000;
+        },
+
+        setStamina: function (value) {
+            this.playerStatsNodes.head.stamina.stamina = value;
         },
 
         setPlayerPosition: function (lvl, x, y, inCamp) {
