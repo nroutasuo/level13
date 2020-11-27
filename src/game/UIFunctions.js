@@ -1037,9 +1037,9 @@ define(['ash',
 				this.generateCallouts("#" + popupID);
 			},
 
-			showInfoPopup: function (title, msg, buttonLabel, resultVO) {
+			showInfoPopup: function (title, msg, buttonLabel, resultVO, callback) {
 				if (!buttonLabel) buttonLabel = "Continue";
-				this.popupManager.showPopup(title, msg, buttonLabel, false, resultVO);
+				this.popupManager.showPopup(title, msg, buttonLabel, false, resultVO, callback);
 			},
 
 			showResultPopup: function (title, msg, resultVO, callback) {

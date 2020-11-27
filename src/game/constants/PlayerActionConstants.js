@@ -361,7 +361,33 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     },
                 },
 
+                use_out_collector_food_one: {
+                    vision: [10, -1],
+                    improvements: {
+                        collector_food: [1, -1],
+                    },
+                    sector: {
+                        collected_food: 1,
+                    },
+                    bag: {
+                        full: false,
+                    },
+                },
+
                 use_out_collector_water: {
+                    vision: [10, -1],
+                    improvements: {
+                        collector_water: [1, -1],
+                    },
+                    sector: {
+                        collected_water: 1,
+                    },
+                    bag: {
+                        full: false,
+                    },
+                },
+
+                use_out_collector_water_one: {
                     vision: [10, -1],
                     improvements: {
                         collector_water: [1, -1],
@@ -2921,7 +2947,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 use_in_temple: "Donate to the temple",
                 use_item_glowstick_1: "Create a temporary light in this location.",
                 use_out_collector_food: "Collect accumulated food.",
+                use_out_collector_food_one: "Collect accumulated food.",
                 use_out_collector_water: "Collect accumulated water.",
+                use_out_collector_water_one: "Collect accumulated water.",
                 leave_camp: "Venture out into the corridors.",
                 launch: "Leave this planet and launch for the great unknown."
             },

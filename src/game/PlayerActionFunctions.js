@@ -179,7 +179,9 @@ define(['ash',
                 case "build_out_collector_food": this.buildTrap(param); break;
                 case "build_out_beacon": this.buildBeacon(param); break;
                 case "use_out_collector_water": this.collectWater(param); break;
+                case "use_out_collector_water_one": this.collectWater(param, 1); break;
                 case "use_out_collector_food": this.collectFood(param); break;
+                case "use_out_collector_food_one": this.collectFood(param, 1); break;
                 case "build_out_camp": this.buildCamp(param); break;
                 case "build_out_passage_down_stairs": this.buildPassageDownStairs(param); break;
                 case "build_out_passage_down_elevator": this.buildPassageDownElevator(param); break;
@@ -730,7 +732,7 @@ define(['ash',
         },
 
 		nap: function () {
-			var sys = this;
+            var sys = this;
             var excursionComponent = sys.playerStatsNodes.head.entity.get(ExcursionComponent);
             GameGlobals.uiFunctions.setGameElementsVisibility(false);
             GameGlobals.uiFunctions.showInfoPopup(
@@ -740,22 +742,22 @@ define(['ash',
                 null,
                 () => {
         			GameGlobals.uiFunctions.hideGame(false);
-			this.passTime(60, function () {
-				setTimeout(function () {
-                    GameGlobals.uiFunctions.showGame();
+        			this.passTime(60, function () {
+        				setTimeout(function () {
+                            GameGlobals.uiFunctions.showGame();
             				GameGlobals.uiFunctions.onPlayerMoved(); // reset cooldowns
-                    if (excursionComponent) excursionComponent.numNaps++;
-					sys.playerStatsNodes.head.vision.value = Math.min(sys.playerStatsNodes.head.vision.value, PlayerStatConstants.VISION_BASE);
-					var logMsgSuccess = "Found a park bench to sleep on. Barely feel rested.";
-					var logMsgFlee = "Tried to rest but got attacked.";
-					var logMsgDefeat = logMsgFlee;
-					sys.handleOutActionResults("nap", LogConstants.MSG_ID_NAP, logMsgSuccess, logMsgFlee, logMsgDefeat, false, false,
-						function () {
-							sys.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_NAP;
-						},
-					);
-				}, 300);
-			});
+                            if (excursionComponent) excursionComponent.numNaps++;
+        					sys.playerStatsNodes.head.vision.value = Math.min(sys.playerStatsNodes.head.vision.value, PlayerStatConstants.VISION_BASE);
+        					var logMsgSuccess = "Found a park bench to sleep on. Barely feel rested.";
+        					var logMsgFlee = "Tried to rest but got attacked.";
+        					var logMsgDefeat = logMsgFlee;
+        					sys.handleOutActionResults("nap", LogConstants.MSG_ID_NAP, logMsgSuccess, logMsgFlee, logMsgDefeat, false, false,
+        						function () {
+        							sys.playerStatsNodes.head.stamina.stamina += PlayerStatConstants.STAMINA_GAINED_FROM_NAP;
+        						},
+        					);
+        				}, 300);
+        			});
                 }
             );
 		},
@@ -773,9 +775,9 @@ define(['ash',
 				player.add(new PlayerActionResultComponent(rewards));
                 var popupMsg = logMsgSuccess;
                 if (rewards.foundStashVO) {
-                        sectorStatus.stashesFound++;
+                    sectorStatus.stashesFound++;
                     popupMsg += TextConstants.getFoundStashMessage(rewards.foundStashVO);
-                    }
+                }
 				var resultPopupCallback = function (isTakeAll) {
 					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
 					if (logMsgSuccess) playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
@@ -1277,12 +1279,12 @@ define(['ash',
             this.addLogMessage(LogConstants.MSG_ID_IMPROVED_CEMENTMILL, "Improved the cement mills.");
         },
 
-		collectFood: function () {
-			this.collectCollector("use_out_collector_food", "collector_food");
+		collectFood: function (param, amount) {
+			this.collectCollector("use_out_collector_food", "collector_food", amount);
 		},
 
-		collectWater: function () {
-			this.collectCollector("use_out_collector_water", "collector_water");
+		collectWater: function (param, amount) {
+			this.collectCollector("use_out_collector_water", "collector_water", amount);
 		},
 
 		useHome: function () {
@@ -1590,7 +1592,7 @@ define(['ash',
 			}
 		},
 
-		collectCollector: function (actionName, improvementName) {
+		collectCollector: function (actionName, improvementName, amount) {
 			var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
 			var bagComponent = this.playerPositionNodes.head.entity.get(BagComponent);
 
@@ -1600,12 +1602,15 @@ define(['ash',
 			var resourcesVO = improvementVO.storedResources;
 
 			var maxToCollect = Math.max(0, bagComponent.totalCapacity - bagComponent.usedCapacity);
+            if (amount) {
+                maxToCollect = Math.min(maxToCollect, amount);
+            }
 			var totalCollected = 0;
 			for (var key in resourceNames) {
 				var name = resourceNames[key];
-				var amount = Math.floor(resourcesVO.getResource(name))
-				if (amount >= 1) {
-					var toCollect = Math.min(amount, maxToCollect - totalCollected);
+				var improvementAmount = Math.floor(resourcesVO.getResource(name))
+				if (improvementAmount >= 1) {
+					var toCollect = Math.min(improvementAmount, maxToCollect - totalCollected);
 					currentStorage.resources.addResource(name, toCollect);
 					resourcesVO.addResource(name, -toCollect);
 					totalCollected += toCollect;
