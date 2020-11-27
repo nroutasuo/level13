@@ -730,12 +730,20 @@ define(['ash',
         },
 
 		nap: function () {
-			GameGlobals.uiFunctions.hideGame(false);
 			var sys = this;
+            var excursionComponent = sys.playerStatsNodes.head.entity.get(ExcursionComponent);
+            GameGlobals.uiFunctions.setGameElementsVisibility(false);
+            GameGlobals.uiFunctions.showInfoPopup(
+                "Rest",
+                "Found a bench to sleep on and tried to regain some energy.",
+                "Continue",
+                null,
+                () => {
+        			GameGlobals.uiFunctions.hideGame(false);
 			this.passTime(60, function () {
 				setTimeout(function () {
                     GameGlobals.uiFunctions.showGame();
-                    var excursionComponent = sys.playerStatsNodes.head.entity.get(ExcursionComponent);
+            				GameGlobals.uiFunctions.onPlayerMoved(); // reset cooldowns
                     if (excursionComponent) excursionComponent.numNaps++;
 					sys.playerStatsNodes.head.vision.value = Math.min(sys.playerStatsNodes.head.vision.value, PlayerStatConstants.VISION_BASE);
 					var logMsgSuccess = "Found a park bench to sleep on. Barely feel rested.";
@@ -748,6 +756,8 @@ define(['ash',
 					);
 				}, 300);
 			});
+                }
+            );
 		},
 
 		handleOutActionResults: function (action, logMsgId, logMsgSuccess, logMsgFlee, logMsgDefeat, showResultPopup, hasCustomReward, successCallback, failCallback) {
@@ -761,11 +771,13 @@ define(['ash',
                 var sector = playerActionFunctions.playerLocationNodes.head.entity;
                 var sectorStatus = sector.get(SectorStatusComponent);
 				player.add(new PlayerActionResultComponent(rewards));
+                var popupMsg = logMsgSuccess;
+                if (rewards.foundStashVO) {
+                        sectorStatus.stashesFound++;
+                    popupMsg += TextConstants.getFoundStashMessage(rewards.foundStashVO);
+                    }
 				var resultPopupCallback = function (isTakeAll) {
 					GameGlobals.playerActionResultsHelper.collectRewards(isTakeAll, rewards);
-                    if (rewards.stashVO) {
-                        sectorStatus.stashesFound++;
-                    }
 					if (logMsgSuccess) playerActionFunctions.addLogMessage(logMsgId, logMsgSuccess);
 					GameGlobals.playerActionResultsHelper.logResults(rewards);
 					playerActionFunctions.forceResourceBarUpdate();
@@ -777,7 +789,7 @@ define(['ash',
 					playerActionFunctions.completeAction(action);
 				};
 				if (showResultPopup) {
-					GameGlobals.uiFunctions.showResultPopup(TextConstants.getActionName(baseActionID), logMsgSuccess, rewards, resultPopupCallback);
+					GameGlobals.uiFunctions.showResultPopup(TextConstants.getActionName(baseActionID), popupMsg, rewards, resultPopupCallback);
 				} else {
 					resultPopupCallback();
 				}

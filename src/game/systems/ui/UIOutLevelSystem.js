@@ -215,79 +215,49 @@ define([
         },
 
         updateNap: function (isScouted, hasCampHere) {
-            // TODO move some of the requirements to PlayerActionConstants
-            
             if (hasCampHere) {
                 GameGlobals.uiFunctions.toggle(this.elements.btnNap, false);
                 return;
             }
             
-            var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-            var excursionComponent = this.playerPosNodes.head.entity.get(ExcursionComponent);
-            var improvementsComponent = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
             var staminaComponent = this.playerPosNodes.head.entity.get(StaminaComponent);
-            
             var hasFirstCamp = GameGlobals.gameState.numCamps > 0;
-			var hasCollectibleFood = isScouted && featuresComponent.resourcesCollectable.food > 0;
-			var hasCollectibleWater = isScouted && (featuresComponent.resourcesCollectable.water > 0 || featuresComponent.hasSpring);
-            var waterAvailable = GameGlobals.resourcesHelper.getCurrentStorage().resources.water > 1 || hasCollectibleWater;
-            var foodAvailable = GameGlobals.resourcesHelper.getCurrentStorage().resources.food > 1 || hasCollectibleFood;
-            var suppliesAvailable = waterAvailable && foodAvailable;
-            var blockedBySupplies = hasFirstCamp && !suppliesAvailable;
-            
-            if (blockedBySupplies) {
-                GameGlobals.uiFunctions.toggle(this.elements.btnNap, false);
-                return;
-            }
 
-            var lowStamina = false;
             var costToCamp = GameGlobals.playerActionsHelper.getCosts("move_camp_level");
-            if (GameGlobals.playerActionsHelper.isRequirementsMet("move_camp_level")) {
-                var staminaToCamp = costToCamp.stamina || 10;
-                var staminaCostToMove = staminaToCamp;
-                var missingStamina = staminaCostToMove - staminaComponent.stamina;
-                lowStamina = missingStamina > 0 && missingStamina <= PlayerStatConstants.STAMINA_GAINED_FROM_NAP;
-            } else {
-                lowStamina = staminaComponent.stamina < 15;
-            }
+            var staminaToCamp = costToCamp.stamina || 10;
+            var staminaCostToMove = staminaToCamp;
+            var missingStamina = staminaCostToMove - staminaComponent.stamina;
+            var lowStamina = missingStamina > 0 || staminaComponent.stamina <= PlayerStatConstants.STAMINA_GAINED_FROM_NAP;
 
-            var collectorFood = improvementsComponent.getVO(improvementNames.collector_food);
-            var collectorWater = improvementsComponent.getVO(improvementNames.collector_water);
-            var storedFood = collectorFood.storedResources.getResource(resourceNames.food);
-            var storedWater = collectorWater.storedResources.getResource(resourceNames.water);
-            var lowFood = GameGlobals.resourcesHelper.getCurrentStorage().resources.food + storedFood < Math.min(costToCamp.resource_food, 5);
-            var lowWater = GameGlobals.resourcesHelper.getCurrentStorage().resources.water + storedWater < Math.min(costToCamp.resource_water, 5);
-
-            var blockedByTutorial = !hasFirstCamp && staminaComponent.stamina > 15;
-            var showNap = (lowStamina || (lowWater && hasCollectibleWater) || (lowFood && hasCollectibleFood)) && !blockedBySupplies && !blockedByTutorial;
-            GameGlobals.uiFunctions.toggle(this.elements.btnNap, showNap);
+            let blockedByTutorial = !hasFirstCamp && staminaComponent.stamina > 15;
+            GameGlobals.uiFunctions.toggle(this.elements.btnNap, lowStamina && !blockedByTutorial);
         },
 
         updateDespair: function (hasCampHere) {
             var logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
             var posComponent = this.playerLocationNodes.head.position;
             var movementOptionsComponent = this.playerLocationNodes.head.entity.get(MovementOptionsComponent);
-            var discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources();
-            var isValidDespairHunger = discoveredResources.indexOf(resourceNames.food) < 0 && GameGlobals.gameState.unlockedFeatures.resources.food && GameGlobals.resourcesHelper.getCurrentStorage().resources.food < 1;
-            var isValidDespairThirst = discoveredResources.indexOf(resourceNames.water) < 0 && GameGlobals.gameState.unlockedFeatures.resources.water && GameGlobals.resourcesHelper.getCurrentStorage().resources.water < 1;
+            var isValidDespairHunger = GameGlobals.gameState.unlockedFeatures.resources.food && !this.hasAccessToResource(resourceNames.food, true);
+            var isValidDespairThirst = GameGlobals.gameState.unlockedFeatures.resources.water && !this.hasAccessToResource(resourceNames.water, true);
             var isValidDespairStamina = this.playerPosNodes.head.entity.get(StaminaComponent).stamina < PlayerActionConstants.costs.move_sector_east.stamina;
-            var isValidDespairMove = !movementOptionsComponent.canMove(); // conceivably happens in hazard sectors if you lose equipment
+            var isValidDespairMove = !movementOptionsComponent.canMove(); // can happen in hazard sectors if you lose equipment
             var isFirstPosition = !GameGlobals.gameState.unlockedFeatures.sectors;
-            var showDespair = GameGlobals.gameState.unlockedFeatures.camp && !hasCampHere && !isFirstPosition && (isValidDespairHunger || isValidDespairThirst || isValidDespairStamina) || isValidDespairMove;
-
-            if (this.isDespairShown !== showDespair) {
-                if (showDespair) {
-                    this.showDespairTimeoutID = window.setTimeout(function () {
-                        logComponent.addMessage(LogConstants.MSG_ID_DESPAIR_AVAILABLE, LogConstants.getDespairMessage(isValidDespairHunger, isValidDespairThirst, isValidDespairStamina, isValidDespairMove));
-                        GameGlobals.uiFunctions.toggle("#out-action-despair", true);
-                    }, 1250);
-                    // TODO do this somewhere other than UI system - maybe a global detection if despair is available
-                } else {
-                    if (this.showDespairTimeoutID) window.clearTimeout(this.showDespairTimeoutID);
-                    GameGlobals.uiFunctions.toggle("#out-action-despair", false);
-                }
-                this.isDespairShown = showDespair;
+            var showDespair = GameGlobals.gameState.unlockedFeatures.camp && !hasCampHere && !isFirstPosition && (isValidDespairHunger || isValidDespairThirst || isValidDespairStamina || isValidDespairMove);
+            if (this.isDespairShown === showDespair) {
+                return;
             }
+            
+            if (showDespair) {
+                this.showDespairTimeoutID = window.setTimeout(function () {
+                    logComponent.addMessage(LogConstants.MSG_ID_DESPAIR_AVAILABLE, LogConstants.getDespairMessage(isValidDespairHunger, isValidDespairThirst, isValidDespairStamina, isValidDespairMove));
+                    GameGlobals.uiFunctions.toggle("#out-action-despair", true);
+                }, 1250);
+                // TODO do this somewhere other than UI system - maybe a global detection if despair is available
+            } else {
+                if (this.showDespairTimeoutID) window.clearTimeout(this.showDespairTimeoutID);
+                GameGlobals.uiFunctions.toggle("#out-action-despair", false);
+            }
+            this.isDespairShown = showDespair;
         },
 
 		getDescription: function (entity, hasCampHere, hasCampOnLevel, hasVision, isScouted) {
@@ -722,6 +692,40 @@ define([
             this.pendingUpdateMap = false;
             GameGlobals.uiMapHelper.rebuildMap("minimap", null, this.playerLocationNodes.head.position.getPosition(), UIConstants.MAP_MINIMAP_SIZE, true);
 		},
+        
+        hasAccessToResource: function (resourceName, includeScavenge) {
+            if (GameGlobals.resourcesHelper.getCurrentStorage().resources.getResource(resourceName) >= 1) {
+                return true;
+            }
+            if (includeScavenge && this.hasScavengeableResource(resourceName)) {
+                return true;
+            }
+            if (this.hasCollectibleResource(resourceName)) {
+                return true;
+            }
+                         
+            return false;
+        },
+        
+        hasScavengeableResource: function (resourceName) {
+            var discoveredResources = GameGlobals.sectorHelper.getLocationDiscoveredResources();
+            if (discoveredResources.indexOf(resourceName) > 0) {
+                return true;
+            }
+            return false;
+        },
+        
+        hasCollectibleResource: function (resourceName) {
+            var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			var statusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+            var isScouted = statusComponent.scouted;
+			if (isScouted && featuresComponent.resourcesCollectable.getResource(resourceName) > 0) {
+                return true;
+            }
+            if (isScouted && resourceName == resourceNames.water && featuresComponent.hasSpring) {
+                return true;
+            }
+        },
     });
 
     return UIOutLevelSystem;

@@ -97,10 +97,15 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 nap: {
                     sector: {
                         hasCamp: false,
+                        scouted: true,
+                        hazards: {
+                            poison: [0, 1],
+                            radiation: [0, 1]
+                        }
                     },
                     excursion: {
                         numNaps: [0, 1],
-                    }
+                    },
                 },
 
                 send_caravan: {
@@ -1689,15 +1694,20 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 fight_gang: {
                     stamina: 10,
                 },
+                
+                nap: {
+                    resource_food: 1,
+                    resource_water: 1,
+                },
 
                 move_level_up: {
-                    stamina: 100,
+                    stamina: 30,
                     resource_food: 1,
                     resource_water: 1,
                 },
 
                 move_level_down: {
-                    stamina: 100,
+                    stamina: 30,
                     resource_food: 1,
                     resource_water: 1,
                 },

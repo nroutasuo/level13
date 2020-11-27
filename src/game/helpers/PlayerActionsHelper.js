@@ -241,9 +241,9 @@ define([
                     }
 
                     if (requirements.stamina) {
-                        if (playerStamina < requirements.stamina) {
-                            reason = "Not enough stamina";
-                            lowestFraction = Math.min(lowestFraction, playerStamina / requirements.stamina);
+                        var result = this.checkRequirementsRange(requirements.stamina, playerStamina, "{min} stamina needed", "{max} stamina max");
+                        if (result) {
+                            return result;
                         }
                     }
 
@@ -560,8 +560,11 @@ define([
                         }
                         if (typeof requirements.sector.enemies != "undefined") {
                             var enemiesComponent = sector.get(EnemiesComponent);
-                            if ((enemiesComponent.possibleEnemies.length > 0) != requirements.sector.enemies) {
-                                return { value: 0, reason: "Sector enemies required / not allowed" };
+                            if (enemiesComponent.hasEnemies != requirements.sector.enemies) {
+                                if (requirements.sector.enemies)
+                                    return { value: 0, reason: "Sector enemies required" };
+                                else
+                                    return { value: 0, reason: "Too dangerous here" };
                             }
                         }
                         if (typeof requirements.sector.scouted != "undefined") {
@@ -792,7 +795,7 @@ define([
         
         checkRequirementsRange: function (range, value, minreason, maxreason, minreason1, maxreason1) {
             minreason = minreason || "";
-            maxreason = minreason || "";
+            maxreason = maxreason || "";
             var min = range[0];
             var max = range[1];
             if (max < 0) max = 9999999;
@@ -1182,75 +1185,71 @@ define([
                         }
                     }
 				}
-			} else {
-				switch (baseActionID) {
-					case "move_camp_level":
-                        var path = this.getPathToNearestCamp(sector);
-                        if (path) {
-                            for (var i = 0; i < path.length; i++) {
-                                let costs = this.getCosts("move_sector_west", 1, path[i]);
-                                this.addCosts(result, costs);
-                            }
-                        } else {
-                            let costs = this.getCosts("move_sector_west");
+			}
+            
+			switch (baseActionID) {
+				case "move_camp_level":
+                    var path = this.getPathToNearestCamp(sector);
+                    if (path) {
+                        for (var i = 0; i < path.length; i++) {
+                            let costs = this.getCosts("move_sector_west", 1, path[i]);
                             this.addCosts(result, costs);
                         }
-                        break;
+                    } else {
+                        let costs = this.getCosts("move_sector_west");
+                        this.addCosts(result, costs);
+                    }
+                    break;
 
-					case "move_camp_global":
-                        var statusFactor = this.getCostFactor(action, "stamina");
-						result.stamina = 10 * PlayerActionConstants.costs.move_sector_west.stamina * statusFactor;
-						break;
+				case "move_camp_global":
+                    var statusFactor = this.getCostFactor(action, "stamina");
+					result.stamina = 10 * PlayerActionConstants.costs.move_sector_west.stamina * statusFactor;
+					break;
 
-					case "scout_locale_i":
-					case "scout_locale_u":
-						var localei = parseInt(action.split("_")[3]);
-						var sectorLocalesComponent = sector.get(SectorLocalesComponent);
-						var localeVO = sectorLocalesComponent.locales[localei];
-						if (localeVO) result = localeVO.costs;
-                        break;
+				case "scout_locale_i":
+				case "scout_locale_u":
+					var localei = parseInt(action.split("_")[3]);
+					var sectorLocalesComponent = sector.get(SectorLocalesComponent);
+					var localeVO = sectorLocalesComponent.locales[localei];
+					if (localeVO) result = localeVO.costs;
+                    break;
 
-                    case "use_item":
-                    case "use_item_fight":
-                        var itemName = action.replace(baseActionID + "_", "item_");
-                        var itemCost = {};
-                        itemCost[itemName] = 1;
-                        result = itemCost;
-                        break;
+                case "use_item":
+                case "use_item_fight":
+                    var itemName = action.replace(baseActionID + "_", "item_");
+                    var itemCost = {};
+                    itemCost[itemName] = 1;
+                    result = itemCost;
+                    break;
 
-                    case "unlock_upgrade":
-                        result = { blueprint: 1 };
-                        break;
+                case "unlock_upgrade":
+                    result = { blueprint: 1 };
+                    break;
 
-                    case "send_caravan":
-                        var caravansComponent = sector.get(OutgoingCaravansComponent);
-                        result["resource_food"] = 50;
-                        result["resource_metal"] = 0;
-                        result["resource_rope"] = 0;
-                        result["resource_fuel"] = 0;
-                        result["resource_rubber"] = 0;
-                        result["resource_herbs"] = 0;
-                        result["resource_medicine"] = 0;
-                        result["resource_tools"] = 0;
-                        result["resource_concrete"] = 0;
-                        if (caravansComponent && caravansComponent.pendingCaravan) {
-                            var key = "resource_" + caravansComponent.pendingCaravan.sellGood;
-                            if (!result[key]) result[key] = 0;
-                            result[key] += caravansComponent.pendingCaravan.sellAmount;
-                        }
-                        skipRounding = true;
-                        break;
-
-                    case "nap":
-                        var costs = {};
-                        var currentStorage = GameGlobals.resourcesHelper.getCurrentStorage();
-                        var currentResources = currentStorage ? currentStorage.resources : null;
-                        costs["resource_food"] = currentResources ? Math.min(3, Math.floor(currentResources.getResource(resourceNames.food))) : 3;
-                        costs["resource_water"] = currentResources ? Math.min(3, Math.floor(currentResources.getResource(resourceNames.water))) : 3;
-                        result = costs;
-                        skipRounding = true;
-                        break;
-				}
+                case "send_caravan":
+                    var caravansComponent = sector.get(OutgoingCaravansComponent);
+                    result["resource_food"] = 50;
+                    result["resource_metal"] = 0;
+                    result["resource_rope"] = 0;
+                    result["resource_fuel"] = 0;
+                    result["resource_rubber"] = 0;
+                    result["resource_herbs"] = 0;
+                    result["resource_medicine"] = 0;
+                    result["resource_tools"] = 0;
+                    result["resource_concrete"] = 0;
+                    if (caravansComponent && caravansComponent.pendingCaravan) {
+                        var key = "resource_" + caravansComponent.pendingCaravan.sellGood;
+                        if (!result[key]) result[key] = 0;
+                        result[key] += caravansComponent.pendingCaravan.sellAmount;
+                    }
+                    skipRounding = true;
+                    break;
+                    
+                case "nap":
+                    if (GameGlobals.gameState.numCamps < 1) {
+                        result = {};
+                    }
+                    break;
 			}
 
             // round all costs, big ones to 5 and the rest to int

@@ -8,7 +8,7 @@ define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
         HEALTH_TO_STAMINA_FACTOR: 10,
         
         MAX_SCOUT_LOCALE_STAMINA_COST: 500,
-        STAMINA_GAINED_FROM_NAP: 25,
+        STAMINA_GAINED_FROM_NAP: 30,
         STAMINA_GAINED_FROM_POTION_1: 200,
 
         getStaminaWarningLimit: function (staminaComponent) {
