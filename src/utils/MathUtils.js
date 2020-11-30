@@ -27,6 +27,10 @@ define(function () {
             }
             return bag[Math.floor(Math.random() * bag.length)];
         },
+        
+        roundToMultiple: function (value, multiple) {
+            return Math.round(value / multiple) * multiple;
+        }
     };
 
     return MathUtils;

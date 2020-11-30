@@ -26,7 +26,8 @@ define([
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/ReputationComponent',
     'game/components/type/LevelComponent',
-    'utils/UIState'
+    'utils/UIState',
+    'utils/UIUtils'
 ], function (Ash,
     GameGlobals, GlobalSignals, GameConstants, CampConstants, LevelConstants, UIConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
     SaveSystem,
@@ -41,7 +42,8 @@ define([
     SectorImprovementsComponent,
     ReputationComponent,
     LevelComponent,
-    UIState
+    UIState,
+    UIUtils
 ) {
     var UIOutHeaderSystem = Ash.System.extend({
 
@@ -50,6 +52,8 @@ define([
 		tribeNodes: null,
 		currentLocationNodes: null,
 		engine: null,
+        
+        previousShownCampResAmount: {},
 
 		constructor: function () {
             this.elements = {};
@@ -94,6 +98,7 @@ define([
             GlobalSignals.healthChangedSignal.add(function () { sys.onHealthChanged(); });
             GlobalSignals.tribeStatsChangedSignal.add(function () { sys.onTribeStatsChanged(); });
             GlobalSignals.inventoryChangedSignal.add(function () { sys.onInventoryChanged(); });
+            GlobalSignals.equipmentChangedSignal.add(function () { sys.onEquipmentChanged(); });
             GlobalSignals.slowUpdateSignal.add(function () { sys.slowUpdate(); });
             GlobalSignals.changelogLoadedSignal.add(function () { sys.updateGameVersion(); });
             GlobalSignals.add(this, GlobalSignals.perksChangedSignal, this.onPerksChanged);
@@ -189,12 +194,12 @@ define([
             this.elements.valStamina.toggleClass("warning", playerStamina <= this.staminaWarningLimit);
             this.elements.valHealth.toggleClass("warning", playerStatsNode.stamina.health <= 25);
 
-			this.elements.valRumours.text(UIConstants.roundValue(playerStatsNode.rumours.value, true, false));
+            UIUtils.animateNumber(this.elements.valRumours, playerStatsNode.rumours.value, "", (v) => { return UIConstants.roundValue(v, true, false); });
 			GameGlobals.uiFunctions.toggle("#stats-rumours", playerStatsNode.rumours.isAccumulating);
 			this.updateStatsCallout("", "stats-rumours", playerStatsNode.rumours.accSources);
             this.updateChangeIndicator(this.elements.changeIndicatorRumours, playerStatsNode.rumours.accumulation, playerStatsNode.rumours.isAccumulating);
-
-			this.elements.valEvidence.text(UIConstants.roundValue(playerStatsNode.evidence.value, true, false));
+            
+            UIUtils.animateNumber(this.elements.valEvidence, playerStatsNode.evidence.value, "", (v) => { return UIConstants.roundValue(v, true, false); });
 			GameGlobals.uiFunctions.toggle("#stats-evidence", GameGlobals.gameState.unlockedFeatures.evidence);
 			this.updateStatsCallout("", "stats-evidence", playerStatsNode.evidence.accSources);
             this.updateChangeIndicator(this.elements.changeIndicatorEvidence, playerStatsNode.evidence.accumulation, GameGlobals.gameState.unlockedFeatures.evidence);
@@ -202,7 +207,7 @@ define([
             var hasDeity = this.deityNodes.head != null;
             GameGlobals.uiFunctions.toggle("#stats-favour", hasDeity);
             if (hasDeity) {
-    			this.elements.valFavour.text(UIConstants.roundValue(this.deityNodes.head.deity.favour, true, false));
+                UIUtils.animateNumber(this.elements.valFavour, this.deityNodes.head.deity.favour, "", (v) => { return UIConstants.roundValue(v, true, false); });
     			this.updateStatsCallout("", "stats-favour", this.deityNodes.head.deity.accSources);
                 this.updateChangeIndicator(this.elements.changeIndicatorFavour, this.deityNodes.head.deity.accumulation, GameGlobals.gameState.unlockedFeatures.favour);
             }
@@ -250,16 +255,9 @@ define([
             var fightDef = FightConstants.getPlayerDef(playerStatsNode.stamina, itemsComponent);
             var fightStrength = FightConstants.getStrength(fightAtt, fightDef, playerStatsNode.stamina.maxHP);
 
-            $("#stats-fight .value").text(fightStrength);
-            $("#stats-fight-att .value").text(fightAtt);
-            $("#stats-fight-def .value").text(fightDef);
-			GameGlobals.uiFunctions.toggle("#stats-fight", GameGlobals.gameState.unlockedFeatures.fight);
-			GameGlobals.uiFunctions.toggle("#stats-fight-att", GameGlobals.gameState.unlockedFeatures.fight);
-			GameGlobals.uiFunctions.toggle("#stats-fight-def", GameGlobals.gameState.unlockedFeatures.fight);
-
             GameGlobals.uiFunctions.toggle("#stats-scavenge", GameGlobals.gameState.unlockedFeatures.scavenge && !isInCamp);
 			var scavengeEfficiency = Math.round(GameGlobals.playerActionResultsHelper.getScavengeEfficiency() * 100);
-			this.elements.valScavenge.text(scavengeEfficiency + "%");
+            UIUtils.animateNumber(this.elements.valScavenge, scavengeEfficiency, "%", Math.round);
 			UIConstants.updateCalloutContent("#stats-scavenge", "Increases scavenge loot<hr/>health: " + Math.round(maxStamina/10) + "<br/>vision: " + Math.round(playerVision));
             this.updateChangeIndicator(this.elements.changeIndicatorScavenge, maxVision - shownVision, shownVision < maxVision);
 		},
@@ -414,6 +412,8 @@ define([
 			var showStorageName = GameGlobals.resourcesHelper.getCurrentStorageName();
 			var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
 			var inventoryUnlocked = false;
+            let now =  Date.now();
+            let timeSinceLastCampUpdateSeconds = (now - (this.lastCampResourceUpdate || 0)) / 1000;
 
             GameGlobals.uiFunctions.toggle("#header-camp-storage", inCamp);
             GameGlobals.uiFunctions.toggle("#header-camp-currency", inCamp && currencyComponent.currency > 0);
@@ -427,28 +427,33 @@ define([
             $("#header-bag-currency .value").text(currencyComponent ? currencyComponent.currency : "??");
 
 			for (var key in resourceNames) {
-				var name = resourceNames[key];
-                var currentAmount = showResources.getResource(name);
-				var resourceUnlocked = GameGlobals.gameState.unlockedFeatures.resources[name] === true || currentAmount > 0;
+				let name = resourceNames[key];
+                let currentAmount = showResources.getResource(name);
+                let currentAccumulation = showResourceAcc.resourceChange.getResource(name);
+				let resourceUnlocked = GameGlobals.gameState.unlockedFeatures.resources[name] === true || currentAmount > 0;
 				inventoryUnlocked = inventoryUnlocked || resourceUnlocked;
                 if (inCamp) {
+                    let previousAmount = this.previousShownCampResAmount[name] || 0;
+                    let change = (currentAmount - previousAmount) / timeSinceLastCampUpdateSeconds;
+                    let animate = Math.abs(Math.abs(change) - Math.abs(currentAccumulation)) > 0.5;
                     UIConstants.updateResourceIndicator(
                         "#resources-" + name,
                         Math.floor(currentAmount),
-                        showResourceAcc == null ? 0 : Math.round(showResourceAcc.resourceChange.getResource(name) * 10000) / 10000,
+                        showResourceAcc == null ? 0 : Math.round(currentAccumulation * 10000) / 10000,
                         storageCap,
-                        false,
                         true,
                         true,
                         true,
                         name === resourceNames.food || name === resourceNames.water,
-                        resourceUnlocked
+                        resourceUnlocked,
+                        animate
                     );
                     if (showResourceAcc) {
                         UIConstants.updateResourceIndicatorCallout("#resources-" + name, showResourceAcc.getSources(name));
                     }
                     $("#header-camp-storage .label").text(showStorageName);
                     $("#header-camp-storage .value").text(storageCap);
+                    this.previousShownCampResAmount[name] = currentAmount;
                 } else {
                     var isSupplies = name === resourceNames.food || name === resourceNames.water;
                     UIConstants.updateResourceIndicator(
@@ -459,9 +464,9 @@ define([
                         false,
                         false,
                         false,
-                        false,
                         name === resourceNames.food || name === resourceNames.water,
-                        resourceUnlocked && (name === "water" || name === "food" || showResources.getResource(name) > 0)
+                        resourceUnlocked && (name === "water" || name === "food" || showResources.getResource(name) > 0),
+                        true
                     );
 
                     var bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
@@ -469,6 +474,10 @@ define([
                     $("#header-bag-storage .value-total").text(storageCap);
                 }
 			}
+            
+            if (inCamp) {
+                this.lastCampResourceUpdate = now;
+            }
 		},
 
         updateItemStats: function (inCamp) {
@@ -509,7 +518,7 @@ define([
                         isVisible = true;
                         break;
                 }
-                $("#stats-equipment-" + bonusKey + " .value").text(UIConstants.roundValue(value, true, true));
+                UIUtils.animateNumber($("#stats-equipment-" + bonusKey + " .value"), value, "", (v) => { return UIConstants.roundValue(v, true, true); });
                 GameGlobals.uiFunctions.toggle("#stats-equipment-" + bonusKey, isVisible && value > 0);
                 UIConstants.updateCalloutContent("#stats-equipment-" + bonusKey, detail);
 
@@ -696,6 +705,7 @@ define([
             this.updateLocation();
             this.updateHeaderTexts();
             this.updateResources();
+            this.updatePlayerStats();
         },
 
         onHealthChanged: function () {
@@ -713,6 +723,12 @@ define([
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.updateResources();
             this.updatePlayerStats();
+        },
+        
+        onEquipmentChanged: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
+            this.updatePlayerStats();
+            this.updateItemStats();
         },
 
 		onVisionChanged: function () {

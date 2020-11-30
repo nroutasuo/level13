@@ -14,6 +14,8 @@ define(['ash',
 	],
 	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, CampConstants, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ResourcesVO) {
 
+        // TODO separate generic utils and tabs handling to a different file
+
 		var UIFunctions = Ash.Class.extend({
 
             context: "UIFunctions",

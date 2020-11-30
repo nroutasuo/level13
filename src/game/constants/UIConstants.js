@@ -14,11 +14,12 @@ define(['ash',
 	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/PassagesComponent',
-	'game/components/common/VisitedComponent'
+	'game/components/common/VisitedComponent',
+    'utils/UIUtils'
 ], function (Ash, GameGlobals,
 	StoryConstants, PositionConstants, SectorConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
 	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
-	PassagesComponent, VisitedComponent) {
+	PassagesComponent, VisitedComponent, UIUtils) {
 
 	var UIConstants = {
 
@@ -357,13 +358,17 @@ define(['ash',
 			return div;
 		},
 
-		updateResourceIndicator: function (id, value, change, storage, showStorage, showChangeIcon, showChange, showDetails, showWarning, visible) {
+		updateResourceIndicator: function (id, value, change, storage, showChangeIcon, showChange, showDetails, showWarning, visible, animate) {
 			GameGlobals.uiFunctions.toggle(id, visible);
 			GameGlobals.uiFunctions.toggle($(id).parent(), visible);
-			var roundedValue = this.roundValue(value, true, false);
 			if (visible) {
-				$(id).children(".value").text(showStorage ? roundedValue + " / " + storage : roundedValue);
-				$(id).children(".value").toggleClass("warning", showWarning && roundedValue < 5);
+                let $valueElement = $(id).children(".value");
+                if (animate || UIUtils.isAnimating($valueElement)) {
+                    UIUtils.animateNumber($valueElement, value, "", (v) => { return UIConstants.roundValue(v, true, false); });
+                } else {
+                    $valueElement.text(UIConstants.roundValue(value, true, false));
+                }
+				$(id).children(".value").toggleClass("warning", showWarning && value < 5);
 				$(id).children(".change").toggleClass("warning", change < 0);
 				GameGlobals.uiFunctions.toggle($(id).children(".change"), showChange);
 				GameGlobals.uiFunctions.toggle($(id).children(".forecast"), showDetails);

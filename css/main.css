@@ -484,6 +484,14 @@ body.dark .p-dense p {
 body.dark p.nomargin {
   margin: 0;
 }
+body.dark .ui-anim {
+  transform: scale(1.15, 1.15);
+  opacity: 0.8;
+  font-weight: bold;
+}
+body.dark .ui-anim-negative {
+  color: #e64646 !important;
+}
 body.dark button {
   width: 95pt;
   padding: 8px 16px;
@@ -2342,6 +2350,14 @@ body.sunlit .p-dense p {
 }
 body.sunlit p.nomargin {
   margin: 0;
+}
+body.sunlit .ui-anim {
+  transform: scale(1.15, 1.15);
+  opacity: 0.8;
+  font-weight: bold;
+}
+body.sunlit .ui-anim-negative {
+  color: #e64646 !important;
 }
 body.sunlit button {
   width: 95pt;
