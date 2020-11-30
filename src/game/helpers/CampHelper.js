@@ -257,17 +257,19 @@ define([
             var resultWithoutPenalties = result;
             
             // penalties: food and water
-            var noFood = resourcesVO && resourcesVO.getResource(resourceNames.food) <= 0;
-            var noWater = resourcesVO && resourcesVO.getResource(resourceNames.water) <= 0;
-            var penalty = Math.max(5, Math.ceil(resultWithoutPenalties));
-            if (noFood) {
-                addValue(-penalty, "No food");
+            if (population >= 1) {
+                var noFood = resourcesVO && resourcesVO.getResource(resourceNames.food) <= 0;
+                var noWater = resourcesVO && resourcesVO.getResource(resourceNames.water) <= 0;
+                var penalty = Math.max(5, Math.ceil(resultWithoutPenalties));
+                if (noFood) {
+                    addValue(-penalty, "No food");
+                }
+                if (noWater) {
+                    addValue(-penalty, "No water");
+                }
+                addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_FOOD, noFood);
+                addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_WATER, noWater);
             }
-            if (noWater) {
-                addValue(-penalty, "No water");
-            }
-            addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_FOOD, noFood);
-            addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_WATER, noWater);
             
             // penalties: defences
             var defenceLimit = CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
