@@ -3,8 +3,12 @@
 define(
 ['ash',
     'utils/DescriptionMapper', 'text/Text', 'text/TextBuilder',
-    'game/constants/GameConstants', 'game/constants/SectorConstants', 'game/constants/PositionConstants', 'game/constants/MovementConstants'],
-function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConstants, PositionConstants, MovementConstants) {
+    'game/constants/GameConstants',
+    'game/constants/ItemConstants',
+    'game/constants/SectorConstants',
+    'game/constants/PositionConstants',
+    'game/constants/MovementConstants'],
+function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, ItemConstants, SectorConstants, PositionConstants, MovementConstants) {
     
     var TextConstants = {
 		
@@ -136,12 +140,12 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                     addOptions("n-street", [ "plaza", "courtyard" ]);
                 addOptions("a-street", [ "wide", "spacious", "enormous" ]);
             } else if (features.buildingDensity < 6) {
-                addOptions("n-street", [ "room", "throughfare", "square", "area", "hall" ]);
+                addOptions("n-street", [ "throughfare", "square", "area", "hall" ]);
                 if (features.sectorType == SectorConstants.SECTOR_TYPE_RESIDENTIAL || features.sectorType == SectorConstants.SECTOR_TYPE_COMMERCIAL)
                     addOptions("n-street", [ "boulevard", "avenue" ]);
                 addOptions("a-street", [ "wide", "spacious" ]);
             } else if (features.buildingDensity < 9) {
-                addOptions("n-street", [ "street", "street", "alley", "complex", "sector" ]);
+                addOptions("n-street", [ "street", "room", "street", "alley", "complex", "sector" ]);
                 addOptions("a-street", [ "narrow" ]);
             } else {
                 addOptions("n-street", [ "corridor", "passage", "alley" ]);
@@ -322,6 +326,18 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
                         }
                         return "There is " + span + " here, " + state + ".";
                 }
+            }
+        },
+        
+        getFoundStashMessage: function (stashVO) {
+            switch (stashVO.stashType) {
+                case ItemConstants.STASH_TYPE_ITEM:
+                    return "Found an item stash.";
+                case ItemConstants.STASH_TYPE_SILVER:
+                    return "Found some coins.";
+                default:
+                    log.w("Unknown stash type: " + stashVO.stashType);
+                    return "Found a stash.";
             }
         },
         
@@ -705,7 +721,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, SectorConsta
         DescriptionMapper.add("sector-vision", { wear: b23, damage: b0 }, "A former [n-sector] with [A] [a-street-past] atmosphere lingering from its past");
         DescriptionMapper.add("sector-vision", { wear: b23, damage: b0 }, "Once [a-street-past] [n-sector] with a few [an-decos] and [A] [a-building] [n-building]");
         DescriptionMapper.add("sector-vision", { wear: b33 }, "[A] [a-building] building whose original purpose is hard to determine, stripped down to bare concrete");
-        DescriptionMapper.add("sector-vision", { wear: b33 }, "[A] [a-building] building whose original purpose is hard to determine, stripped down to concrete, with an impressive spiral staircase in the middle");
+        DescriptionMapper.add("sector-vision", { buildingDensity: b22, wear: b33 }, "[A] [a-building] building whose original purpose is hard to determine, stripped down to concrete, with an impressive spiral staircase in the middle");
         DescriptionMapper.add("sector-vision", { wear: b33 }, "[A] [a-street] [a-sectortype] [n-street] with a few large unidentifiable ruins looming over it");
         DescriptionMapper.add("sector-vision", { wear: b33 }, "A completely ruined [a-sectortype] [n-street]");
         DescriptionMapper.add("sector-vision", { wear: b33 }, "A rubble-covered [n-street] surrounded by the crumbling remains of [a-sectortype] buildings");

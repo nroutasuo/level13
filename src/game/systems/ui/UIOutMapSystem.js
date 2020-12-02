@@ -148,7 +148,7 @@ define([
                 $("#mainmap-sector-details-blockers").text(this.getBlockersText(this.selectedSector, isScouted));
                 $("#mainmap-sector-details-env").text(this.getEnvironmentText(this.selectedSector, isScouted));
                 $("#mainmap-sector-details-distance").text(this.getDistanceText(this.selectedSector));
-                $("#mainmap-sector-debug-text").text("Zone: " + sectorFeatures.zone + ", enemy difficulty: " + sectorFeatures);
+                $("#mainmap-sector-debug-text").text("Zone: " + sectorFeatures.zone);
             }
         },
 
@@ -221,7 +221,7 @@ define([
                     if (locale.type == localeTypes.tradingpartner) {
                         var campOrdinal = GameGlobals.gameState.getCampOrdinal(sector.get(PositionComponent).level);
                         var partner = TradeConstants.getTradePartner(campOrdinal);
-                        result.push(partner.name);
+                        result.push(partner.name + " (trade partner)");
                     }
                 }
             }

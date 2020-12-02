@@ -205,6 +205,7 @@ define([
                 if (item.type === ItemConstants.itemTypes.follower) continue;
                 if (item.type === ItemConstants.itemTypes.artefact) continue;
                 if (item.type === ItemConstants.itemTypes.note) continue;
+                if (item.type === ItemConstants.itemTypes.ingredient) continue;
                 
                 var count = itemsComponent.getCountById(item.id, true);
                 var showCount = item.equipped ? count - 1 : count;

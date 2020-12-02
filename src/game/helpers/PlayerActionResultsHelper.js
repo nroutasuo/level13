@@ -218,11 +218,11 @@ define([
             if (localeVO.type !== localeTypes.tradingpartner && localeVO.type != localeTypes.grove) {
                 // population and followers
                 if (localeCategory === "u") {
-                    if (this.nearestCampNodes.head) {
+                    if (this.nearestCampNodes.head && campOrdinal > 1) {
                         rewards.gainedPopulation = Math.random() < 0.05 ? 1 : 0;
                     }
                 } else {
-                    if (this.nearestCampNodes.head) {
+                    if (this.nearestCampNodes.head && campOrdinal > 1) {
                         rewards.gainedPopulation = Math.random() < 0.2 ? 1 : 0;
                     }
                     rewards.gainedFollowers = this.getRewardFollowers(0.1);
@@ -243,7 +243,7 @@ define([
 		getUseSpringRewards: function () {
 			var rewards = new ResultVO("use_spring");
             var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
-            var water = Math.min(bagComponent.totalCapacity - bagComponent.usedCapacity, 30);
+            var water = Math.floor(Math.min(bagComponent.totalCapacity - bagComponent.usedCapacity, 30));
 			rewards.gainedResources = new ResourcesVO();
 			rewards.gainedResources.water = water;
 			return rewards;
@@ -715,6 +715,10 @@ define([
 		},
 
         getRewardCurrency: function (efficiency) {
+			let playerPos = this.playerLocationNodes.head.position;
+            if (playerPos.level == 13)
+                return 0;
+                
             if (efficiency < 0.5)
                 return 0;
 
@@ -932,7 +936,7 @@ define([
             var stashVO = stashes[stashesFound];
             if (!GameGlobals.gameState.uiStatus.isHidden)
                 log.i("found stash: " + stashVO.stashType + " " + stashVO.itemID + " " + (stashesFound+1) + "/" + stashes.length);
-            rewardsVO.stashVO = stashVO;
+            rewardsVO.foundStashVO = stashVO;
             switch (stashVO.stashType) {
                 case ItemConstants.STASH_TYPE_ITEM:
                     var item = ItemConstants.getItemByID(stashVO.itemID);

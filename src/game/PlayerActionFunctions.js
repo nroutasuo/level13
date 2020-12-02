@@ -707,7 +707,7 @@ define(['ash',
         
         clearDebris: function (sectorPos) {
             this.clearBlocker("clear_debris", MovementConstants.BLOCKER_TYPE_DEBRIS, sectorPos)
-			this.addLogMessage(LogConstants.MSG_ID_CLEAR_DEBRIS, "Cleared debris.");
+			this.addLogMessage(LogConstants.MSG_ID_CLEAR_DEBRIS, "Sent out a team to clear debris.");
         },
         
         clearBlocker: function (action, blockerType, sectorPos) {

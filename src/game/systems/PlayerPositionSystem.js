@@ -211,7 +211,7 @@ define([
                         msg += "You notice several graffiti warning about radiation.";
                         break;
                     case LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION:
-                        msg += "There are signs of serious pollution.";
+                        msg += "There are signs of significant pollution.";
                         break;
                     default:
                         msg += "This area seems eerily devoid of any signs of recent human activity.";
