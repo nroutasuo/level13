@@ -120,7 +120,8 @@ define(['ash',
 			if (!GameGlobals.playerActionsHelper.checkAvailability(action, true, otherSector)) {
 				return false;
 			}
-
+            
+            GlobalSignals.actionStartingSignal.dispatch(action, param);
 			GameGlobals.playerActionsHelper.deductCosts(action);
 			this.forceResourceBarUpdate();
 

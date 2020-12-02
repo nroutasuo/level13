@@ -28,6 +28,11 @@ define(function () {
             return bag[Math.floor(Math.random() * bag.length)];
         },
         
+        roundToPlaces: function (value, places) {
+            let multiple = Math.pow(10, places);
+            return MathUtils.roundToMultiple(value, multiple);
+        },
+        
         roundToMultiple: function (value, multiple) {
             return Math.round(value / multiple) * multiple;
         }

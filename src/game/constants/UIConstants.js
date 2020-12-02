@@ -74,7 +74,8 @@ define(['ash',
 		},
 
 		getItemSlot: function (itemsComponent, item, count, isLost, simple, showBagOptions, bagOptions) {
-			var imageDiv = "<div class='item-slot-image'>" + this.getItemDiv(itemsComponent, item, count, this.getItemCallout(item, false, showBagOptions, bagOptions)) + "</div>";
+            let itemDev = this.getItemDiv(itemsComponent, item, count, this.getItemCallout(item, false, showBagOptions, bagOptions));
+			var imageDiv = "<div class='item-slot-image'>"+ itemDev + "</div>";
 			var liclasses = "item-slot item-slot-small lvl13-box-1 ";
 			if (simple) liclasses += "item-slot-simple";
 			if (isLost) liclasses += "item-slot-lost";
@@ -357,6 +358,11 @@ define(['ash',
 
 			return div;
 		},
+        
+        completeResourceIndicatorAnimations: function (id) {
+            let $valueElement = $(id).children(".value");
+            UIUtils.animateNumberEnd($valueElement);
+        },
 
 		updateResourceIndicator: function (id, value, change, storage, showChangeIcon, showChange, showDetails, showWarning, visible, animate) {
 			GameGlobals.uiFunctions.toggle(id, visible);
@@ -502,13 +508,19 @@ define(['ash',
 
 		roundValue: function (value, showDecimalsWhenSmall, showDecimalsAlways, decimalDivisor) {
             decimalDivisor = decimalDivisor || 100;
-			var divisor = 0;
+			let divisor = 0;
 			if (showDecimalsWhenSmall && value <= 10) divisor = decimalDivisor;
 			if (showDecimalsAlways) divisor = decimalDivisor;
 
 			if (value % 1 === 0 || divisor <= 0) return Math.round(value);
             
-			return Math.round(value * divisor) / divisor;
+			let result = Math.round(value * divisor) / divisor;
+            
+            if (result == 0) {
+                return "< " + (0.5 / divisor);
+            }
+            
+            return result;
 		},
 
 		getDisplayValue: function (value) {

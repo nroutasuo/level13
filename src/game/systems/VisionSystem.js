@@ -48,9 +48,12 @@ define([
             this.engine = engine;
             this.visionNodes = engine.getNodeList(VisionNode);
             this.locationNodes = engine.getNodeList(PlayerLocationNode);
+            
+            GlobalSignals.add(this, GlobalSignals.playerMovedSignal, this.onPlayerMoved, GlobalSignals.PRIORITY_HIGH);
         },
 
         removeFromEngine: function (engine) {
+            GlobalSignals.removeAll(this);
             this.visionNodes = null;
             this.locationNodes = null;
             this.engine = null;
@@ -64,9 +67,10 @@ define([
 
         updateNode: function (node, time) {
             if (GameGlobals.gameState.isPaused) return;
+            if (GameGlobals.gameState.isHidden) return;
             
 			var vision = node.vision;
-            if (!vision.value) vision.value = 0;
+            if (!vision.value || isNaN(vision.value)) vision.value = 0;
 			var oldMaximum = vision.maximum;
 			var oldValue = vision.value;
 			
@@ -82,7 +86,7 @@ define([
             
             var maxValue = 0;
             var visionPerSec = 0;
-            var accSpeedFactor = Math.max(100 - oldValue, 10) / 250;
+            var accSpeedFactor = Math.max(100 - oldValue, 10) / 200;
             
             vision.accSources = [];
             var addAccumulation = function (sourceName, value) {
@@ -100,7 +104,7 @@ define([
 				if (!sunlit) {
 					if (improvements.getCount(improvementNames.campfire) > 0) {
                         maxValue = Math.max(maxValue, 70);
-                        addAccumulation("Campfire", 70 / maxValueBase);
+                        addAccumulation("Campfire", 70 / maxValueBase * 2);
                     }
 					if (improvements.getCount(improvementNames.lights) > 0) {
                         maxValue = Math.max(maxValue, 100);
@@ -201,6 +205,10 @@ define([
                 GlobalSignals.visionChangedSignal.dispatch();
             }
         },
+        
+        onPlayerMoved: function () {
+            this.update(0);
+        }
     });
 
     return VisionSystem;

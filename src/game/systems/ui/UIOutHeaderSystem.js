@@ -92,6 +92,7 @@ define([
 
             var sys = this;
             GlobalSignals.playerMovedSignal.add(function () { sys.onPlayerMoved(); });
+            GlobalSignals.actionStartingSignal.add(function () { sys.onActionStarting(); });
             GlobalSignals.actionStartedSignal.add(function () { sys.onInventoryChanged(); });
             GlobalSignals.visionChangedSignal.add(function () { sys.onVisionChanged(); });
             GlobalSignals.tabChangedSignal.add(function () { sys.onTabChanged(); });
@@ -154,7 +155,7 @@ define([
 
             var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
             var isInCamp = playerPosition.inCamp;
-			this.updatePlayerStats(isInCamp);
+			this.updatePlayerStats();
 			this.updateDeity();
 			this.updateItems(false, isInCamp);
 			this.updateResources();
@@ -165,8 +166,10 @@ define([
 			this.elements.gameVersion.text("v. " + GameGlobals.changeLogHelper.getCurrentVersionNumber());
         },
 
-		updatePlayerStats: function (isInCamp) {
+		updatePlayerStats: function () {
             if (!this.currentLocationNodes.head) return;
+            var playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
+            var isInCamp = playerPosition.inCamp;
 			var campComponent = this.currentLocationNodes.head.entity.get(CampComponent);
             var busyComponent = this.playerStatsNodes.head.entity.get(PlayerActionComponent);
 			var playerStatsNode = this.playerStatsNodes.head;
@@ -255,11 +258,16 @@ define([
             var fightDef = FightConstants.getPlayerDef(playerStatsNode.stamina, itemsComponent);
             var fightStrength = FightConstants.getStrength(fightAtt, fightDef, playerStatsNode.stamina.maxHP);
 
-            GameGlobals.uiFunctions.toggle("#stats-scavenge", GameGlobals.gameState.unlockedFeatures.scavenge && !isInCamp);
-			var scavengeEfficiency = Math.round(GameGlobals.playerActionResultsHelper.getScavengeEfficiency() * 100);
-            UIUtils.animateNumber(this.elements.valScavenge, scavengeEfficiency, "%", Math.round);
-			UIConstants.updateCalloutContent("#stats-scavenge", "Increases scavenge loot<hr/>health: " + Math.round(maxStamina/10) + "<br/>vision: " + Math.round(playerVision));
-            this.updateChangeIndicator(this.elements.changeIndicatorScavenge, maxVision - shownVision, shownVision < maxVision);
+            let showScavangeAbilityLastUpdate = this.showScavangeAbilityLastUpdate;
+            let showScavangeAbility = GameGlobals.gameState.unlockedFeatures.scavenge && !isInCamp;
+            GameGlobals.uiFunctions.toggle("#stats-scavenge", showScavangeAbility);
+            if (showScavangeAbility) {
+    			var scavengeEfficiency = Math.round(GameGlobals.playerActionResultsHelper.getScavengeEfficiency() * 100);
+                UIUtils.animateOrSetNumber(this.elements.valScavenge, showScavangeAbilityLastUpdate, scavengeEfficiency, "%", Math.round);
+    			UIConstants.updateCalloutContent("#stats-scavenge", "Increases scavenge loot<hr/>health: " + Math.round(maxStamina/10) + "<br/>vision: " + Math.round(playerVision));
+                this.updateChangeIndicator(this.elements.changeIndicatorScavenge, maxVision - shownVision, shownVision < maxVision);
+            }
+            this.showScavangeAbilityLastUpdate = showScavangeAbility;
 		},
 
         updateChangeIndicator: function (indicator, accumulation, show, showFastIncrease) {
@@ -479,6 +487,14 @@ define([
                 this.lastCampResourceUpdate = now;
             }
 		},
+        
+        completeResourceAnimations: function () {
+			for (var key in resourceNames) {
+				let name = resourceNames[key];
+                UIConstants.completeResourceIndicatorAnimations("#resources-bag-" + name);
+                UIConstants.completeResourceIndicatorAnimations("#resources-bag-" + name);
+            }
+        },
 
         updateItemStats: function (inCamp) {
             var itemsComponent = this.playerStatsNodes.head.items;
@@ -697,6 +713,10 @@ define([
 		getShowResourceAcc: function () {
 			return GameGlobals.resourcesHelper.getCurrentStorageAccumulation(false);
 		},
+        
+        onActionStarting: function (action) {
+            this.completeResourceAnimations();
+        },
 
         onPlayerMoved: function () {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
@@ -754,6 +774,7 @@ define([
             this.updateResources();
             this.updateVisionStatus();
             this.updatePlayerStats();
+            this.refreshPerks();
         }
     });
 

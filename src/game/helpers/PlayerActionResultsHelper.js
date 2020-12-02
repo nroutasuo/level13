@@ -645,8 +645,8 @@ define([
 
         // typically between 0-1 (can be boosted past 1)
 		getScavengeEfficiency: function () {
-			var playerVision = this.playerStatsNodes.head.vision.value;
-			var playerHealth = this.playerStatsNodes.head.stamina.health;
+			var playerVision = this.playerStatsNodes.head.vision.value || 0;
+			var playerHealth = this.playerStatsNodes.head.stamina.health || 0;
             return (playerHealth / 100) * (playerVision / 100);
         },
 
