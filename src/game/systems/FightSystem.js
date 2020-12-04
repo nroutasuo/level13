@@ -157,7 +157,7 @@ define([
             playerStamina.hp -= playerChange;
             playerStamina.hp = Math.max(playerStamina.hp, 0);
             
-            if (playerChange !== 0 || enemyChange !== 0) {
+            if (playerChange !== 0 || enemyChange !== 0 || extraEnemyDamage !== 0) {
                 GlobalSignals.fightUpdateSignal.dispatch(playerChange, enemyChange);
             }
         },
