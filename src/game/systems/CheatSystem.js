@@ -113,7 +113,7 @@ define(['ash',
                 this.autoAssignWorkers();
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_STAMINA, "Refill stamina for free.", [], function () {
-                this.refillStamina(value);
+                this.refillStamina();
             });
             this.registerCheat(CheatConstants.CHEAT_NAME_SET_STAMINA, "Set stamina.", [ "value" ], function (params) {
                 var value = parseInt(params[0]);
