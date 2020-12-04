@@ -10,9 +10,10 @@ define(['ash',
 		'game/constants/PlayerActionConstants',
 		'game/constants/PositionConstants',
 		'game/helpers/ui/UIPopupManager',
-		'game/vos/ResourcesVO'
+		'game/vos/ResourcesVO',
+        'utils/MathUtils',
 	],
-	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, CampConstants, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ResourcesVO) {
+	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, CampConstants, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ResourcesVO, MathUtils) {
 
         // TODO separate generic utils and tabs handling to a different file
 
@@ -266,6 +267,20 @@ define(['ash',
 					$element.addClass("click-bound");
 					$element.click(ExceptionHandler.wrapClick(fn));
                 });
+            },
+            
+            updateButtonCooldowns: function (scope) {
+                scope = scope || "";
+                let updates = false;
+                let sys = this;
+                $.each($(scope + " button.action"), function () {
+					var action = $(this).attr("action");
+					if (action) {
+						sys.updateButtonCooldown($(this), action);
+                        updates = true;
+					}
+				});
+                return updates;
             },
 
 			registerCollapsibleContainerListeners: function (scope) {
@@ -712,27 +727,8 @@ define(['ash',
 
 			onPlayerMoved: function () {
 				if (GameGlobals.gameState.uiStatus.isHidden) return;
-				var uiFunctions = this;
-				var cooldownLeft;
-				var cooldownTotal;
-				var durationLeft;
-				var durationTotal;
                 var updates = false;
-				$.each($("button.action"), function () {
-					var action = $(this).attr("action");
-					var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-					if (action) {
-						var locationKey = uiFunctions.getLocationKey(action);
-						cooldownTotal = PlayerActionConstants.getCooldown(action);
-						cooldownLeft = Math.min(cooldownTotal, GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal) / 1000);
-						durationTotal = PlayerActionConstants.getDuration(baseId);
-						durationLeft = Math.min(durationTotal, GameGlobals.gameState.getActionDuration(action, locationKey, durationTotal) / 1000);
-						if (cooldownLeft > 0) uiFunctions.startButtonCooldown($(this), cooldownTotal, cooldownLeft);
-						else uiFunctions.stopButtonCooldown($(this));
-						if (durationLeft > 0) uiFunctions.startButtonDuration($(this), cooldownTotal, durationLeft);
-                        updates = true;
-					}
-				});
+				updates = this.updateButtonCooldowns("") || updates;
                 if (updates)
                     GlobalSignals.updateButtonsSignal.dispatch();
 			},
@@ -864,10 +860,22 @@ define(['ash',
 				$(button).children(".cooldown-action").css("width", "100%");
                 GlobalSignals.updateButtonsSignal.dispatch();
 			},
+            
+            updateButtonCooldown: function (button, action) {
+                var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
+                var locationKey = this.getLocationKey(action);
+                cooldownTotal = PlayerActionConstants.getCooldown(baseId);
+                cooldownLeft = Math.min(cooldownTotal, GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal) / 1000);
+                durationTotal = PlayerActionConstants.getDuration(baseId);
+                durationLeft = Math.min(durationTotal, GameGlobals.gameState.getActionDuration(action, locationKey, durationTotal) / 1000);
+                if (cooldownLeft > 0) this.startButtonCooldown(button, cooldownTotal, cooldownLeft);
+                else this.stopButtonCooldown(button);
+                if (durationLeft > 0) this.startButtonDuration(button, cooldownTotal, durationLeft);
+            },
 
 			startButtonCooldown: function (button, cooldown, cooldownLeft) {
 				if (GameGlobals.gameState.uiStatus.isHidden) return;
-				var action = $(button).attr("action");
+                var action = $(button).attr("action");
                 if (!GameGlobals.playerActionsHelper.isRequirementsMet(action)) return;
 				if (!cooldownLeft) cooldownLeft = cooldown;
 				var uiFunctions = this;

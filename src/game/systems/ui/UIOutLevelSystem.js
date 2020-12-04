@@ -195,7 +195,6 @@ define([
             GameGlobals.uiFunctions.toggle("#out-action-scout", GameGlobals.gameState.unlockedFeatures.vision);
             GameGlobals.uiFunctions.toggle("#out-action-use-spring", isScouted && featuresComponent.hasSpring);
             GameGlobals.uiFunctions.toggle("#out-action-investigate", GameGlobals.gameState.unlockedFeatures.investigate);
-            GameGlobals.uiFunctions.toggle("#out-action-fight-gang", GameGlobals.gameState.unlockedFeatures.fight);
 
             var showWorkshop = isScouted && workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)
             GameGlobals.uiFunctions.toggle("#out-action-clear-workshop", showWorkshop);
@@ -648,6 +647,8 @@ define([
             GameGlobals.uiFunctions.registerActionButtonListeners("#container-out-actions-movement-related");
             GameGlobals.uiFunctions.generateButtonOverlays("#container-out-actions-movement-related");
             GameGlobals.uiFunctions.generateCallouts("#container-out-actions-movement-related");
+            GameGlobals.uiFunctions.updateButtonCooldowns("#container-out-actions-movement-related");
+            
             GlobalSignals.elementCreatedSignal.dispatch();
 		},
 
