@@ -722,7 +722,7 @@ define(['ash',
 			onTextInputKeyUp: function (e) {
 				var value = $(e.target).val();
 				value = value.replace(/[&\/\\#,+()$~%.'":*?<>{}\[\]=]/g, '_');
-				$(e.target).val(value)
+				$(e.target).val(value);
 			},
 
 			onPlayerMoved: function () {
@@ -938,7 +938,7 @@ define(['ash',
 				var name = $input.attr('name');
 				var minValue = parseInt($input.attr('min'));
 				var maxValue = parseInt($input.attr('max'));
-				var valueCurrent = parseInt($input.val());
+				var valueCurrent = MathUtils.clamp(parseInt($input.val()), minValue, maxValue);
 
 				var decEnabled = false;
 				var incEnabled = false;
