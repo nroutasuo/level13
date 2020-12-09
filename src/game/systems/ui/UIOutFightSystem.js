@@ -360,7 +360,8 @@ define([
 				case "scout_locale_i":
 					return "attacked while scouting";
 				case "clear_workshop":
-					return "workshop " + enemy.activeV + " " + enemiesNoun;
+			         var enemyActiveV = TextConstants.getEnemyActiveVerb([ enemy ]);
+					return "workshop " + enemyActiveV + " " + enemiesNoun;
 				case "fight_gang":
 					return Text.addArticle(enemyNoun) + " is blocking passage";
 				default:

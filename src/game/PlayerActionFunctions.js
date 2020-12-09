@@ -667,7 +667,7 @@ define(['ash',
             var name = TextConstants.getWorkshopName(workshopComponent.resource);
 			var action = "clear_workshop";
 			var logMsgSuccess = "Workshop cleared. Workers can now use it.";
-			var logMsgFlee = "The " + name + " is too dangerous.";
+			var logMsgFlee = "Fled the " + name + ".";
 			var logMsgDefeat = "Got driven out of the " + name + ".";
 
 			var playerActionFunctions = this;
@@ -786,9 +786,9 @@ define(['ash',
 					playerActionFunctions.forceResourceBarUpdate();
 					playerActionFunctions.forceTabUpdate();
 					player.remove(PlayerActionResultComponent);
+					if (successCallback) successCallback();
 					GlobalSignals.inventoryChangedSignal.dispatch();
                     GlobalSignals.sectorScavengedSignal.dispatch();
-					if (successCallback) successCallback();
 					playerActionFunctions.completeAction(action);
 				};
 				if (showResultPopup) {

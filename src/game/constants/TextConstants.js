@@ -306,9 +306,9 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, ItemConstant
                 switch (passageVO.type) {
                     case MovementConstants.PASSAGE_TYPE_HOLE:
                         if (isBuilt) {
-                            return "A brand new " + makeHighlight("elevator " + directionName) + " has been built here.";
+                            return "A brand new " + makeHighlight("elevator " + directionName) + " has been built here. ";
                         } else {
-                            return "There is a " + makeHighlight("hole") + " in the level " + (direction === PositionConstants.DIRECTION_UP ? "ceiling" : "floor") + " here.";
+                            return "There is a " + makeHighlight("hole") + " in the level " + (direction === PositionConstants.DIRECTION_UP ? "ceiling" : "floor") + " here. ";
                         }
                     default:
                         var name = passageVO.name.toLowerCase() + " " + directionName;
@@ -324,7 +324,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, ItemConstant
                         } else {
                             state = "but it needs to be repaired";
                         }
-                        return "There is " + span + " here, " + state + ".";
+                        return "There is " + span + " here, " + state + ". ";
                 }
             }
         },

@@ -283,8 +283,8 @@ define([
                 var directionName = PositionConstants.getDirectionName(direction);
 				var blocker = passagesComponent.getBlocker(direction);
 				if (blocker) {
-                	var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
-                    var blockerName = TextConstants.getMovementBlockerName(blocker, enemiesComponent).toLowerCase();
+                	let enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
+                    let blockerName = TextConstants.getMovementBlockerName(blocker, enemiesComponent).toLowerCase();
                     if (GameGlobals.movementHelper.isBlocked(sector, direction)) {
                         result.push(blockerName + " (" + directionName + ")");
                     }
