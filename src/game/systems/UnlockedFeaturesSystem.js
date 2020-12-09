@@ -5,17 +5,18 @@ define([
     'game/GlobalSignals',
     'game/constants/ItemConstants',
     'game/constants/UpgradeConstants',
+    'game/nodes/player/ItemsNode',
     'game/nodes/sector/CampNode',
 	'game/nodes/tribe/TribeUpgradesNode',
     'game/components/sector/improvements/SectorImprovementsComponent',
-    'game/components/player/ItemsComponent',
     'game/vos/ResourcesVO'
-], function (Ash, GameGlobals, GlobalSignals, ItemConstants, UpgradeConstants, CampNode, TribeUpgradesNode, SectorImprovementsComponent, ItemsComponent, ResourcesVO) {
+], function (Ash, GameGlobals, GlobalSignals, ItemConstants, UpgradeConstants, ItemsNode, CampNode, TribeUpgradesNode, SectorImprovementsComponent, ResourcesVO) {
     var UnlockedFeaturesSystem = Ash.System.extend({
 	    
 		gameState: null,
 		campNodes: null,
         tribeUpgradesNodes: null,
+        itemNodes: null,
 	
         constructor: function () {
         },
@@ -24,6 +25,7 @@ define([
             this.engine = engine;
 			this.campNodes = engine.getNodeList(CampNode);
             this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
+			this.itemNodes = engine.getNodeList(ItemsNode);
         },
 
         removeFromEngine: function (engine) {
@@ -35,7 +37,7 @@ define([
 			var numCamps = 0;
 			var numTradePostCamps = 0;
             
-            GameGlobals.gameState.gamePlayedSeconds += time;
+            GameGlobals.gameState.gameTime += time;
 			
 			// Global improvements
 			for (var node = this.campNodes.head; node; node = node.next) {

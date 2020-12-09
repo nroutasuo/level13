@@ -92,7 +92,7 @@ define([
                     this.partialTickModeStarted = false;
                 }
             }
-                
+            
             this.engine.update(tickTime);
         },
 

@@ -15,11 +15,11 @@ define(['ash',
 	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/PassagesComponent',
 	'game/components/common/VisitedComponent',
-    'utils/UIUtils'
+    'utils/UIAnimations'
 ], function (Ash, GameGlobals,
 	StoryConstants, PositionConstants, SectorConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants,
 	PositionComponent, CampComponent, SectorStatusComponent, SectorLocalesComponent,
-	PassagesComponent, VisitedComponent, UIUtils) {
+	PassagesComponent, VisitedComponent, UIAnimations) {
 
 	var UIConstants = {
 
@@ -361,7 +361,7 @@ define(['ash',
         
         completeResourceIndicatorAnimations: function (id) {
             let $valueElement = $(id).children(".value");
-            UIUtils.animateNumberEnd($valueElement);
+            UIAnimations.animateNumberEnd($valueElement);
         },
 
 		updateResourceIndicator: function (id, value, change, storage, showChangeIcon, showChange, showDetails, showWarning, visible, animate) {
@@ -369,11 +369,8 @@ define(['ash',
 			GameGlobals.uiFunctions.toggle($(id).parent(), visible);
 			if (visible) {
                 let $valueElement = $(id).children(".value");
-                if (animate || UIUtils.isAnimating($valueElement)) {
-                    UIUtils.animateNumber($valueElement, value, "", (v) => { return UIConstants.roundValue(v, true, false); });
-                } else {
-                    $valueElement.text(UIConstants.roundValue(value, true, false));
-                }
+                animate = animate || UIAnimations.isAnimating($valueElement);
+                UIAnimations.animateOrSetNumber($valueElement, animate, value, "", (v) => { return UIConstants.roundValue(v, true, false); });
 				$(id).children(".value").toggleClass("warning", showWarning && value < 5);
 				$(id).children(".change").toggleClass("warning", change < 0);
 				GameGlobals.uiFunctions.toggle($(id).children(".change"), showChange);
@@ -485,8 +482,8 @@ define(['ash',
 			return "less than a minute";
 		},
 
-		getInGameDate: function (gamePlayedSeconds) {
-			var secondSinceGameStart = gamePlayedSeconds;
+		getInGameDate: function (gameTime) {
+			var secondSinceGameStart = gameTime;
 			var inGameDaysSinceGameStart = Math.floor(secondSinceGameStart / 86400 * 365);
 			var inGameWeeksSinceGameStart = inGameDaysSinceGameStart / 40;
 

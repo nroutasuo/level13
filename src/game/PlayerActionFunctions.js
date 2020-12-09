@@ -959,7 +959,7 @@ define(['ash',
 			var position = sector.get(PositionComponent).getPosition();
             log.i("Build camp " + position);
 			var campComponent = new CampComponent(position.toString());
-			campComponent.foundedTimeStamp = GameGlobals.gameState.gamePlayedSeconds;
+			campComponent.foundedTimeStamp = GameGlobals.gameState.gameTime;
 			sector.add(campComponent);
 			sector.add(new CampEventTimersComponent());
 			sector.add(new OutgoingCaravansComponent());

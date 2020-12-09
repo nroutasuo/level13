@@ -9,7 +9,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
             this.level = 0;
             this.worldSeed = 0;
             this.gameStartTimeStamp = 0;
-            this.gamePlayedSeconds = 0;
+            this.gameTime = 0;
             this.isPaused = false;
             this.numCamps = 0;
             this.numTradePostCamps = 0;
@@ -151,7 +151,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
             var timestamp = this.actionCooldownEndTimestamps[actionKey];
             if (timestamp) {
                 var now = new Date().getTime();
-                var diff = timestamp - now;
+                var diff = (timestamp - now) / 1000;
                 if (diff > 0) {
                     if (max && diff > max) {
                         log.w("fix action cooldown: " + diff + " -> " + max);

@@ -27,7 +27,7 @@ define([
     'game/components/sector/ReputationComponent',
     'game/components/type/LevelComponent',
     'utils/UIState',
-    'utils/UIUtils'
+    'utils/UIAnimations'
 ], function (Ash,
     GameGlobals, GlobalSignals, GameConstants, CampConstants, LevelConstants, UIConstants, ItemConstants, FightConstants, UpgradeConstants, PlayerStatConstants,
     SaveSystem,
@@ -43,7 +43,7 @@ define([
     ReputationComponent,
     LevelComponent,
     UIState,
-    UIUtils
+    UIAnimations
 ) {
     var UIOutHeaderSystem = Ash.System.extend({
 
@@ -54,6 +54,8 @@ define([
 		engine: null,
         
         previousShownCampResAmount: {},
+        previousStats: {},
+        previousStatsUpdates: {},
 
 		constructor: function () {
             this.elements = {};
@@ -196,24 +198,14 @@ define([
             this.elements.valVision.toggleClass("warning", playerVision <= 25);
             this.elements.valStamina.toggleClass("warning", playerStamina <= this.staminaWarningLimit);
             this.elements.valHealth.toggleClass("warning", playerStatsNode.stamina.health <= 25);
-
-            UIUtils.animateNumber(this.elements.valRumours, playerStatsNode.rumours.value, "", (v) => { return UIConstants.roundValue(v, true, false); });
-			GameGlobals.uiFunctions.toggle("#stats-rumours", playerStatsNode.rumours.isAccumulating);
-			this.updateStatsCallout("", "stats-rumours", playerStatsNode.rumours.accSources);
-            this.updateChangeIndicator(this.elements.changeIndicatorRumours, playerStatsNode.rumours.accumulation, playerStatsNode.rumours.isAccumulating);
-            
-            UIUtils.animateNumber(this.elements.valEvidence, playerStatsNode.evidence.value, "", (v) => { return UIConstants.roundValue(v, true, false); });
-			GameGlobals.uiFunctions.toggle("#stats-evidence", GameGlobals.gameState.unlockedFeatures.evidence);
-			this.updateStatsCallout("", "stats-evidence", playerStatsNode.evidence.accSources);
-            this.updateChangeIndicator(this.elements.changeIndicatorEvidence, playerStatsNode.evidence.accumulation, GameGlobals.gameState.unlockedFeatures.evidence);
             
             var hasDeity = this.deityNodes.head != null;
-            GameGlobals.uiFunctions.toggle("#stats-favour", hasDeity);
-            if (hasDeity) {
-                UIUtils.animateNumber(this.elements.valFavour, this.deityNodes.head.deity.favour, "", (v) => { return UIConstants.roundValue(v, true, false); });
-    			this.updateStatsCallout("", "stats-favour", this.deityNodes.head.deity.accSources);
-                this.updateChangeIndicator(this.elements.changeIndicatorFavour, this.deityNodes.head.deity.accumulation, GameGlobals.gameState.unlockedFeatures.favour);
-            }
+            this.updatePlayerStat("rumours", playerStatsNode.rumours, playerStatsNode.rumours.isAccumulating, playerStatsNode.rumours.value, this.elements.valRumours, this.elements.changeIndicatorRumours);
+            this.updatePlayerStat("evidence", playerStatsNode.evidence, GameGlobals.gameState.unlockedFeatures.evidence, playerStatsNode.evidence.value, this.elements.valEvidence, this.elements.changeIndicatorEvidence);
+            if (hasDeity)
+                this.updatePlayerStat("favour", this.deityNodes.head.deity, hasDeity, this.deityNodes.head.deity.favour, this.elements.valFavour, this.elements.changeIndicatorFavour);
+            else
+                this.updatePlayerStat("favour", null, hasDeity, 0, this.elements.valFavour, this.elements.changeIndicatorFavour);
 
             GameGlobals.uiFunctions.toggle($("#header-tribe-container"), GameGlobals.gameState.unlockedFeatures.evidence || playerStatsNode.rumours.isAccumulating);
 
@@ -263,12 +255,29 @@ define([
             GameGlobals.uiFunctions.toggle("#stats-scavenge", showScavangeAbility);
             if (showScavangeAbility) {
     			var scavengeEfficiency = Math.round(GameGlobals.playerActionResultsHelper.getScavengeEfficiency() * 100);
-                UIUtils.animateOrSetNumber(this.elements.valScavenge, showScavangeAbilityLastUpdate, scavengeEfficiency, "%", Math.round);
+                UIAnimations.animateOrSetNumber(this.elements.valScavenge, showScavangeAbilityLastUpdate, scavengeEfficiency, "%", Math.round);
     			UIConstants.updateCalloutContent("#stats-scavenge", "Increases scavenge loot<hr/>health: " + Math.round(maxStamina/10) + "<br/>vision: " + Math.round(playerVision));
                 this.updateChangeIndicator(this.elements.changeIndicatorScavenge, maxVision - shownVision, shownVision < maxVision);
             }
             this.showScavangeAbilityLastUpdate = showScavangeAbility;
 		},
+        
+        updatePlayerStat: function (stat, component, isVisible, currentValue, valueElement, changeIndicatorElement) {
+            GameGlobals.uiFunctions.toggle("#stats-" + stat, isVisible);
+            if (!isVisible) return;
+            
+            let now =  GameGlobals.gameState.gameTime;
+            let previousValue = this.previousStats[stat] || 0;
+            let previousUpdate = this.previousStatsUpdates[stat] || 0;
+        
+            let animate = UIAnimations.shouldAnimateChange(previousValue, currentValue, previousUpdate, now, component.accumulation);
+            UIAnimations.animateOrSetNumber(valueElement, animate, currentValue, "", (v) => { return UIConstants.roundValue(v, true, false); });
+            
+			this.updateStatsCallout("", "stats-" + stat, component.accSources);
+            this.updateChangeIndicator(changeIndicatorElement, component.accumulation, isVisible);
+            this.previousStats[stat] = currentValue;
+            this.previousStatsUpdates[stat] = now;
+        },
 
         updateChangeIndicator: function (indicator, accumulation, show, showFastIncrease) {
             if (show) {
@@ -420,8 +429,7 @@ define([
 			var showStorageName = GameGlobals.resourcesHelper.getCurrentStorageName();
 			var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
 			var inventoryUnlocked = false;
-            let now =  Date.now();
-            let timeSinceLastCampUpdateSeconds = (now - (this.lastCampResourceUpdate || 0)) / 1000;
+            let now =  GameGlobals.gameState.gameTime;
 
             GameGlobals.uiFunctions.toggle("#header-camp-storage", inCamp);
             GameGlobals.uiFunctions.toggle("#header-camp-currency", inCamp && currencyComponent.currency > 0);
@@ -442,8 +450,7 @@ define([
 				inventoryUnlocked = inventoryUnlocked || resourceUnlocked;
                 if (inCamp) {
                     let previousAmount = this.previousShownCampResAmount[name] || 0;
-                    let change = (currentAmount - previousAmount) / timeSinceLastCampUpdateSeconds;
-                    let animate = Math.abs(Math.abs(change) - Math.abs(currentAccumulation)) > 0.5;
+                    let animate = UIAnimations.shouldAnimateChange(previousAmount, currentAmount, this.lastCampResourceUpdate, now, currentAccumulation);
                     UIConstants.updateResourceIndicator(
                         "#resources-" + name,
                         Math.floor(currentAmount),
@@ -534,7 +541,7 @@ define([
                         isVisible = true;
                         break;
                 }
-                UIUtils.animateNumber($("#stats-equipment-" + bonusKey + " .value"), value, "", (v) => { return UIConstants.roundValue(v, true, true); });
+                UIAnimations.animateNumber($("#stats-equipment-" + bonusKey + " .value"), value, "", (v) => { return UIConstants.roundValue(v, true, true); });
                 GameGlobals.uiFunctions.toggle("#stats-equipment-" + bonusKey, isVisible && value > 0);
                 UIConstants.updateCalloutContent("#stats-equipment-" + bonusKey, detail);
 
@@ -627,7 +634,7 @@ define([
             GameGlobals.uiFunctions.toggle(this.elements.date, showCalendar);
             GameGlobals.uiFunctions.toggle("#grid-tab-header", GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.out || isInCamp);
 
-            this.elements.date.text(UIConstants.getInGameDate(GameGlobals.gameState.gamePlayedSeconds));
+            this.elements.date.text(UIConstants.getInGameDate(GameGlobals.gameState.gameTime));
         },
 
         updateVisionStatus: function () {
