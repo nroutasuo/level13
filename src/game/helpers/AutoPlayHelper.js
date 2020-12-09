@@ -2,9 +2,12 @@ define(['ash',
     'game/GameGlobals',
 	'game/constants/AutoPlayConstants',
 	'game/constants/BagConstants',
+	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
+	'game/constants/PositionConstants',
     'game/components/common/PositionComponent',
 	'game/components/common/ResourcesComponent',
+	'game/components/common/VisitedComponent',
 	'game/components/player/BagComponent',
 	'game/components/player/PlayerActionResultComponent',
 	'game/components/player/PerksComponent',
@@ -15,9 +18,12 @@ define(['ash',
     GameGlobals,
     AutoPlayConstants,
     BagConstants,
+    ItemConstants,
     PerkConstants,
+    PositionConstants,
     PositionComponent,
     ResourcesComponent,
+    VisitedComponent,
     BagComponent,
     PlayerActionResultComponent,
     PerksComponent,
@@ -98,10 +104,10 @@ define(['ash',
                 sector = nearestUnscoutedSector;
                 path = GameGlobals.levelHelper.findPathTo(startSector, sector);
             } else {
-                var nearestSectorsByRes = this.getNearestSectorsByRes(autoExploratioVO);
+                var goalSectorsByRes = this.getGoalSectorsByRes(autoExploratioVO);
                 goal = AutoPlayConstants.GOALTYPES.SCAVENGE_RESOURCES;
-                resource = this.getExploreResource(nearestSectorsByRes);
-                sector = nearestSectorsByRes[resource];
+                resource = this.getExploreResource(goalSectorsByRes);
+                sector = goalSectorsByRes[resource];
                 path = GameGlobals.levelHelper.findPathTo(startSector, sector);
             }
             
@@ -136,51 +142,93 @@ define(['ash',
             }
         },
 
-        getNearestSectorsByRes: function (autoExploratioVO) {
-            var result = {};
-			var checkSector = function (sector) {
-                if (Object.keys(result).length === resourceNames.length) {
+        getGoalSectorsByRes: function (autoExploratioVO) {
+            let maxSteps = this.getMaxMoveSteps();
+            let result = {};
+            let result2 = {};
+            let playerLocation = GameGlobals.playerActionFunctions.playerLocationNodes.head.entity;
+            let playerPosition = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
+            let getDistanceFactor = function (resourceName, pathlen) {
+                let len = Math.min(pathlen, maxSteps);
+                if (resourceName == resourceNames.metal) {
+                    let ideallen = Math.min(maxSteps, 5);
+                    return Math.abs(len - ideallen);
+                } else {
+                    return (maxSteps - len)
+                }
+            }
+            let getScore = function (sector, resourceName, pathlen) {
+                let featuresComponent = sector.get(SectorFeaturesComponent);
+                let scavengeable = featuresComponent.resourcesScavengable.getResource(resourceName) || 0;
+                let collectable = featuresComponent.resourcesCollectable.getResource(resourceName) || 0;
+                if (scavengeable == 0 && collectable == 0)
+                    return 0;
+                // TODO account for scavenged percent
+                let distanceFactor = getDistanceFactor(resourceName, pathlen);
+                return (scavengeable + collectable) * distanceFactor;
+            };
+			let checkSector = function (sector) {
+                if (!sector.has(VisitedComponent))
+                    return false;
+                let position = sector.get(PositionComponent).getPosition();
+                let distance = PositionConstants.getDistanceTo(position, playerPosition);
+                if (distance > maxSteps) {
                     return true;
                 }
-                var featuresComponent = sector.get(SectorFeaturesComponent);
-				for (var key in resourceNames) {
-					var name = resourceNames[key];
-                    if (result[name])
+                let path = GameGlobals.levelHelper.findPathTo(playerLocation, sector, { skipBlockers: true, skipUnvisited: true });
+                if (!path || path.length > maxSteps) {
+                    return false;
+                }
+				for (let key in resourceNames) {
+					let name = resourceNames[key];
+                    let score = getScore(sector, name, path.length);
+                    if (score <= 0)
                         continue;
-                    if (featuresComponent.resourcesScavengable.getResource(name) > 0 || featuresComponent.resourcesCollectable.getResource(name) > 0) {
+                    let existing = result[name];
+                    if (!existing) {
                         result[name] = sector;
+                        result2[name] = position;
+                        continue;
+                    }
+                    
+                    let existingScore = getScore(existing, name, path.length);
+                    if (score > existingScore) {
+                        result[name] = sector;
+                        result2[name] = position;
+                        continue;
                     }
                 }
                 return false;
 			};
-            var playerPosition = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
             GameGlobals.levelHelper.forEverySectorFromLocation(playerPosition, checkSector, autoExploratioVO.limitToCurrentLevel);
+            log.i(result2)
             return result;
         },
 
-        getExploreResource: function (nearestSectorsByRes) {
+        getExploreResource: function (goalSectorsByRes) {
             if (!GameGlobals.gameState.unlockedFeatures.camp || !GameGlobals.playerActionFunctions.nearestCampNodes.head.entity)
                 return resourceNames.metal;
 
             var campStorage = GameGlobals.resourcesHelper.getCurrentCampStorage(GameGlobals.playerActionFunctions.nearestCampNodes.head.entity);
             var campResources = campStorage.resources;
             var campPopulation = GameGlobals.playerActionFunctions.nearestCampNodes.head.camp.population;
-
-            var healCosts = GameGlobals.playerActionsHelper.getCosts("use_in_hospital");
-            var isWaterLow = campResources.getResource(resourceNames.water) < Math.max(10 + campPopulation * 2.5, healCosts.resource_water);
+            
+            var hasHospital = this.getTotalImprovementsCount(improvementNames.hospital) > 0;
+            var healCosts = hasHospital ? GameGlobals.playerActionsHelper.getCosts("use_in_hospital") : { resource_water: 0, resource_food: 0};
+            var isWaterLow = campResources.getResource(resourceNames.water) < Math.max(5 + campPopulation * 2.5, healCosts.resource_water);
             if (isWaterLow)
-                if (nearestSectorsByRes[resourceNames.water])
+                if (goalSectorsByRes[resourceNames.water])
                     return resourceNames.water;
 
-            var isFoodLow = campResources.getResource(resourceNames.food) < Math.max(10 + campPopulation * 2.5, healCosts.resource_food);
+            var isFoodLow = campResources.getResource(resourceNames.food) < Math.max(5 + campPopulation * 2.5, healCosts.resource_food);
             if (isFoodLow)
-                if (nearestSectorsByRes[resourceNames.food])
+                if (goalSectorsByRes[resourceNames.food])
                     return resourceNames.food;
 
             var action = this.getNextImprovementAction() || this.getNextProjectAction();
             if (action) {
                 var missingResource = action.costFactorRes;
-                if (missingResource && nearestSectorsByRes[missingResource])
+                if (missingResource && goalSectorsByRes[missingResource])
                     return missingResource;
             }
 
@@ -190,7 +238,7 @@ define(['ash',
                 var name = resourceNames[key];
                 if (!GameGlobals.gameState.unlockedFeatures.resources[name])
                     continue;
-                if (!nearestSectorsByRes[name])
+                if (!goalSectorsByRes[name])
                     continue;
                 var campAmount = campResources.getResource(name);
                 if (campAmount < leastAmount || leastAmount < 0) {
@@ -359,6 +407,17 @@ define(['ash',
             var bagComponent = GameGlobals.playerActionFunctions.playerStatsNodes.head.entity.get(BagComponent);
             return bagComponent.totalCapacity - bagComponent.usedCapacity < 2;
 		},
+        
+        getMaxMoveSteps: function () {
+			let playerResources = GameGlobals.resourcesHelper.getPlayerStorage();
+            let water = playerResources.resources.getResource(resourceNames.water);
+            let food = playerResources.resources.getResource(resourceNames.food);
+            let result = Math.min(
+                Math.floor(Math.min(water, food) / 2),
+                Math.floor(GameGlobals.playerActionFunctions.playerStatsNodes.head.stamina.stamina / 10) / 2
+            );
+            return result;
+        },
 
         getTotalImprovementsCount: function (name) {
             var result = 0;
