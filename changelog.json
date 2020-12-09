@@ -8,19 +8,11 @@
             "changes": [
                 {
                     "type": "GD",
-                    "summary": "Unlock the ground level",
+                    "summary": "Unlock the ground level and level 14, an extremely radioactive level",
                 },
                 {
                     "type": "GD",
-                    "summary": "Unlock level 14, an extremely radioactive level",
-                },
-                {
-                    "type": "GD",
-                    "summary": "Add deity and favour, temples, shrines and greenhouses",
-                },
-                {
-                    "type": "GD",
-                    "summary": "New resource: rubber",
+                    "summary": "Add deity and favour, temples, shrines, greenhouses, and a new resource (rubber)",
                 },
                 {
                     "type": "GD",
@@ -43,17 +35,17 @@
                     "summary": "Improved sector descriptions",
                 },
                 {
-                    "type": "WG",
-                    "summary": "Improved world generation",
+                    "type": "GB",
+                    "summary": "Make all fights drop crafting ingredients",
+                },
+                {
+                    "type": "UI",
+                    "summary": "UI improvements (collect 1, clearer rest outside)"
                 },
                 {
                     "type": "WG",
-                    "summary": "World validation",
-                }
-                {
-                    "type": "WG",
-                    "summary": "Hard levels",
-                }
+                    "summary": "Improved world generation (structure, hard levels, validation)",
+                },
             ]
         },
         {

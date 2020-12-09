@@ -22,12 +22,13 @@ define([
 	'game/components/sector/events/CampEventTimersComponent',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/vos/RaidVO',
+    'text/Text'
 ], function (
 	Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, OccurrenceConstants, TradeConstants, TextConstants, UIConstants, WorldConstants,
 	PlayerResourcesNode, CampNode, TribeUpgradesNode,
 	CampComponent, PositionComponent, LogMessagesComponent, ItemsComponent,
 	TraderComponent, RaidComponent, CampEventTimersComponent,
-	SectorImprovementsComponent, RaidVO) {
+	SectorImprovementsComponent, RaidVO, Text) {
 
 	var CampEventsSystem = Ash.System.extend({
 
@@ -233,7 +234,7 @@ define([
                     var neededIngredient = GameGlobals.itemsHelper.getNeededIngredient(numCamps, WorldConstants.CAMP_STEP_END, isHardLevel, itemsComponent, false);
 					var caravan = TradeConstants.getRandomIncomingCaravan(numCamps, GameGlobals.gameState.level, GameGlobals.gameState.unlockedFeatures.resources, neededIngredient);
 					campNode.entity.add(new TraderComponent(caravan));
-					logMsg = "A trader arrives.";
+					logMsg = Text.capitalize(Text.addArticle(caravan.name)) + " arrives. ";
 					break;
 
 				case OccurrenceConstants.campOccurrenceTypes.raid:

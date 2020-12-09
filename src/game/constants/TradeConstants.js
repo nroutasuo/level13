@@ -80,10 +80,10 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                 // 1) equipment trader: sells (equipment caterogy), buys equipment, uses currency
                 var categories = [];
                 if (rand2 <= 0.33) {
-                    name = "Weapon trader";
+                    name = "weapons trader";
                     categories.push("weapon");
                 } else if (rand2 <= 0.66) {
-                    name = "Clothing trader";
+                    name = "clothing trader";
                     categories.push("clothing_over");
                     categories.push("clothing_upper");
                     categories.push("clothing_lower");
@@ -91,7 +91,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                     categories.push("clothing_head");
                     categories.push("shoes");
                 } else {
-                    name = "Equipment trader";
+                    name = "equipment trader";
                     categories.push("light");
                     categories.push("bag");
                     categories.push("exploration");
@@ -108,7 +108,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                 usesCurrency = true;
             } else if (rand <= 0.4) {
                 // 2) misc trader: sells ingredients, random items, buys all items, uses currency
-                name = "General trader";
+                name = "general trader";
                 var categories = [];
                 while (categories.length < 3) {
                     if (Math.random() <= 0.2) categories.push("light");
@@ -135,7 +135,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                 usesCurrency = true;
             } else if (rand <= 0.6 || neededIngredient) {
                 // 3) ingredient trader: sells ingredients, buys ingredients, occational items, no currency
-                name = "Crafting trader";
+                name = "crafting trader";
                 var prob = 0.25;
                 var num = 5 + campOrdinal * 3;
                 while (sellItems.length < num && prob < 1) {
@@ -148,30 +148,30 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             } else if (rand <= 0.8) {
                 // 4) resource trader: sells and buys a specific resource
                 if (rand2 <= 0.2 && unlockedResources.herbs) {
-                    name = "Herbs trader";
+                    name = "herbs trader";
                     sellResources.addResource(resourceNames.herbs, minResAmount + Math.random() * randResAmount);
                     buyResources.push(resourceNames.herbs);
                     if (unlockedResources.medicine && Math.random() < 0.75) {
-                        name = "Medicine trader";
+                        name = "medicine trader";
                         sellResources.addResource(resourceNames.medicine, minResAmount + Math.random() * randResAmount);
                         buyResources.push(resourceNames.medicine);
                     }
                 } else if (rand2 <= 0.3 && unlockedResources.tools) {
-                    name = "Tools trader";
+                    name = "tools trader";
                     sellResources.addResource(resourceNames.tools, minResAmount + Math.random() * randResAmount);
                     buyResources.push(resourceNames.tools);
                 } else if (rand2 <= 0.4 && unlockedResources.fuel) {
-                    name = "Fuel trader";
+                    name = "fuel trader";
                     sellResources.addResource(resourceNames.fuel, minResAmount + Math.random() * randResAmount);
                     buyResources.push(resourceNames.fuel);
                 } else if (rand2 < 0.7) {
-                    name = "Supplies trader";
+                    name = "supplies trader";
                     sellResources.addResource(resourceNames.water, minResAmount + Math.random() * randResAmount);
                     sellResources.addResource(resourceNames.food, minResAmount + Math.random() * randResAmount);
                     buyResources.push(resourceNames.water);
                     buyResources.push(resourceNames.food);
                 } else {
-                    name = "Materials trader";
+                    name = "materials trader";
                     sellResources.addResource(resourceNames.metal, minResAmount + Math.random() * randResAmount);
                         buyResources.push(resourceNames.metal);
                     sellResources.addResource(resourceNames.rope, minResAmount + Math.random() * randResAmount);
@@ -185,7 +185,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             } else {
                 // 5) trading partner trader: buys and sells same stuff as partner, plus occational items, currency based on partner
                 var partner = this.getRandomTradePartner(campOrdinal);
-                name = "Trader from " + partner.name;
+                name = "trader from " + partner.name;
                 for (var i = 0; i < partner.sellsResources.length; i++) {
                     sellResources.addResource(partner.sellsResources[i], minResAmount + Math.random() * randResAmount);
                 }
