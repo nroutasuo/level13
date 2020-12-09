@@ -236,8 +236,8 @@ define([
             var logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
             var posComponent = this.playerLocationNodes.head.position;
             var movementOptionsComponent = this.playerLocationNodes.head.entity.get(MovementOptionsComponent);
-            var isValidDespairHunger = GameGlobals.gameState.unlockedFeatures.resources.food && !this.hasAccessToResource(resourceNames.food, true);
-            var isValidDespairThirst = GameGlobals.gameState.unlockedFeatures.resources.water && !this.hasAccessToResource(resourceNames.water, true);
+            var isValidDespairHunger = GameGlobals.gameState.unlockedFeatures.resources.food && !this.hasAccessToResource(resourceNames.food, true, false);
+            var isValidDespairThirst = GameGlobals.gameState.unlockedFeatures.resources.water && !this.hasAccessToResource(resourceNames.water, true, false);
             var isValidDespairStamina = this.playerPosNodes.head.entity.get(StaminaComponent).stamina < PlayerActionConstants.costs.move_sector_east.stamina;
             var isValidDespairMove = !movementOptionsComponent.canMove(); // can happen in hazard sectors if you lose equipment
             var isFirstPosition = !GameGlobals.gameState.unlockedFeatures.sectors;
@@ -694,14 +694,14 @@ define([
             GameGlobals.uiMapHelper.rebuildMap("minimap", null, this.playerLocationNodes.head.position.getPosition(), UIConstants.MAP_MINIMAP_SIZE, true);
 		},
         
-        hasAccessToResource: function (resourceName, includeScavenge) {
+        hasAccessToResource: function (resourceName, includeScavenge, includeUnbuiltCollectible) {
             if (GameGlobals.resourcesHelper.getCurrentStorage().resources.getResource(resourceName) >= 1) {
                 return true;
             }
             if (includeScavenge && this.hasScavengeableResource(resourceName)) {
                 return true;
             }
-            if (this.hasCollectibleResource(resourceName)) {
+            if (this.hasCollectibleResource(resourceName, includeUnbuiltCollectible)) {
                 return true;
             }
                          
@@ -716,17 +716,30 @@ define([
             return false;
         },
         
-        hasCollectibleResource: function (resourceName) {
+        hasCollectibleResource: function (resourceName, includeUnbuilt) {
             var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			var statusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+            
             var isScouted = statusComponent.scouted;
+                
 			if (isScouted && featuresComponent.resourcesCollectable.getResource(resourceName) > 0) {
-                return true;
+                return includeUnbuilt || improvements.getVO(this.getCollectorName(resourceName)).count > 0;
             }
             if (isScouted && resourceName == resourceNames.water && featuresComponent.hasSpring) {
-                return true;
+                return includeUnbuilt || improvements.getVO(this.getCollectorName(resourceName)).count > 0;
             }
         },
+        
+        getCollectorName: function (resourceName) {
+            if (resourceName == resourceNames.water) {
+                return improvementNames.collector_water;
+            }
+            if (resourceName == resourceNames.food) {
+                return improvementNames.collector_food;
+            }
+            return null;
+        }
     });
 
     return UIOutLevelSystem;
