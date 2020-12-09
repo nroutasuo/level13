@@ -65,7 +65,7 @@ define([
 				$("#list-followers").append(li);
 			}
 
-			var hasFollowers = $("#list-followers li").length > 0;
+			var hasFollowers = items.length > 0;
 			var showFollowers = hasFollowers || GameGlobals.gameState.unlockedFeatures.followers;
 			GameGlobals.uiFunctions.toggle("#list-followers", hasFollowers);
 			GameGlobals.uiFunctions.toggle("#header-followers", showFollowers);

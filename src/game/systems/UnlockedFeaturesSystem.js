@@ -63,6 +63,13 @@ define([
                 }
 				numCamps++;
 			}
+            
+            if (!GameGlobals.gameState.unlockedFeatures.followers) {
+                var itemsComponent = this.itemNodes.head.items;
+    			var numFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower).length;
+                GameGlobals.gameState.unlockedFeatures.followers = GameGlobals.gameState.unlockedFeatures.followers || numFollowers > 0;
+            }
+            
             if (GameGlobals.gameState.numCamps !== numCamps) {
                 GameGlobals.gameState.numCamps = numCamps;
                 gtag('set', { 'max_camp': GameGlobals.gameState.numCamps });
