@@ -287,11 +287,15 @@
                 }
                 tds += "<td>" + buildButton + "</td>";
                 tds += "<td><span class='improvement-badge improvement-count'>0</span></td>";
-                tds += "<td style='position:relative'><span class='improvement-badge improvement-level'>0</span><span class='improvement-badge improvement-upgrade-level'>0</span></td>";
+                tds += "<td style='position:relative'><span class='improvement-badge improvement-level'>0</span>";
+                tds += "<span class='improvement-badge improvement-upgrade-level'>0</span>";
+                tds += "</td>";
                 tds += "<td>" + improveButton + "</td>";
                 tds += "<td>" + useButton + "</td>";
                 trs += "<tr id='in-improvements-" + key + "'>" + tds + "</tr>";
             }
+            let ths = "<tr class='header-mini'><th></th><th>count</th><th>lvl</th><th></th><th></th></tr>"
+            $table.append(ths);
             $table.append(trs);
             
             // TODO save elements already in the previous loop

@@ -426,6 +426,9 @@ body.dark tr.current {
   background: #2f322f;
   border-color: #2f322f;
 }
+body.dark tr.header-mini {
+  font-size: 85%;
+}
 body.dark hr {
   color: #555;
   margin: 1em 5px;
@@ -2292,6 +2295,9 @@ body.sunlit td.bg-reset {
 body.sunlit tr.current {
   background: #e6e6e6;
   border-color: #e6e6e6;
+}
+body.sunlit tr.header-mini {
+  font-size: 85%;
 }
 body.sunlit hr {
   color: #999;
