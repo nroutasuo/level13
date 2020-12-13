@@ -44,7 +44,7 @@ define(['ash',
 					var unScoutedLocales = localesComponent.locales.length - statusComponent.getNumLocalesScouted();
 					var sectorControlComponent = sector.get(SectorControlComponent);
 					var hasUnclearedWorkshop = workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP);
-					var isCleared = unScoutedLocales === 0 && !hasUnclearedWorkshop;
+					var isCleared = unScoutedLocales <= 0 && !hasUnclearedWorkshop;
 					if (isCleared) {
 						return this.MAP_SECTOR_STATUS_VISITED_CLEARED;
 					} else {
