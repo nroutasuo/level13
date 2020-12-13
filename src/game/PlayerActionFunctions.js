@@ -1121,7 +1121,7 @@ define(['ash',
 
 		buildStable: function () {
 			this.buildImprovement("build_in_stable", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_stable"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_STABLE, "Built an caravan stable.");
+			this.addLogMessage(LogConstants.MSG_ID_BUILT_STABLE, "Built a caravan stable.");
 		},
 
 		buildBarracks: function () {

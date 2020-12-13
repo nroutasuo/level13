@@ -2947,9 +2947,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 use_in_temple: "Donate to the temple",
                 use_item_glowstick_1: "Create a temporary light in this location.",
                 use_out_collector_food: "Collect accumulated food.",
-                use_out_collector_food_one: "Collect accumulated food.",
+                use_out_collector_food_one: "Collect 1 food.",
                 use_out_collector_water: "Collect accumulated water.",
-                use_out_collector_water_one: "Collect accumulated water.",
+                use_out_collector_water_one: "Collect 1 water.",
                 leave_camp: "Venture out into the corridors.",
                 launch: "Leave this planet and launch for the great unknown."
             },

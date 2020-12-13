@@ -39,7 +39,7 @@ define(function () {
                     if (!this.isPredefinedVar(v)) continue;
                     if (!replacedVars[v]) replacedVars[v] = 0;
                     var var_ordinal = replacedVars[v] || 0;
-                    var word_ordinal = this.getWordOrdinal(v, var_ordinal, template);
+                    var word_ordinal = this.getWordOrdinal(v, var_ordinal, result);
                     var replacement = this.getPredefinedParam(v, word_ordinal, result);
                     if (this.isDebugMode) replacement = this.parametrify(replacement);
                     result = result.replace(vars[i], replacement);
