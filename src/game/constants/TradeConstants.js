@@ -143,7 +143,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                     prob += 0.05;
                 }
                 addSellItemsFromCategories([ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head", "shoes", "bag", "exploration" ], 0.05, 1, false);
-                buyItemTypes = [ "ingredient" ];
+                buyItemTypes.push("ingredient");
                 usesCurrency = false;
             } else if (rand <= 0.8) {
                 // 4) resource trader: sells and buys a specific resource
