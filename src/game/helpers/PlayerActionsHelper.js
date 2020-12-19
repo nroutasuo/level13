@@ -1328,9 +1328,9 @@ define([
                 if (a.indexOf("use_item") >= 0) return "use_item";
     			if (a.indexOf("unlock_upgrade_") >= 0) return "unlock_upgrade";
     			if (a.indexOf("create_blueprint_") >= 0) return "create_blueprint";
-    			if (a.indexOf("clear_waste_t") >= 0) return "clear_waste_t";
-    			if (a.indexOf("clear_waste_r") >= 0) return "clear_waste_r";
-    			if (a.indexOf("clear_debris_") >= 0) return "clear_debris";
+    			if (a.indexOf("clear_waste_t") == 0) return "clear_waste_t";
+    			if (a.indexOf("clear_waste_r") == 0) return "clear_waste_r";
+    			if (a.indexOf("clear_debris_") == 0) return "clear_debris";
     			if (a.indexOf("fight_gang_") >= 0) return "fight_gang";
     			if (a.indexOf("send_caravan_") >= 0) return "send_caravan";
                 if (a.indexOf("use_in_inn_select_") >= 0) return "use_in_inn_select";
@@ -1473,6 +1473,14 @@ define([
 				default: return null;
             }
         },
+        
+        getActionDisplayName: function (action) {
+			var baseActionID = this.getBaseActionID(action);
+            switch (baseActionID) {
+                case "clear_waste_r": return "clear waste";
+            }
+            return action;
+        },
 
         getEncounterFactor: function (action) {
 			var baseActionID = this.getBaseActionID(action);
@@ -1507,11 +1515,13 @@ define([
                 case "craft": return true;
                 case "equip": return true;
                 case "unequip": return true;
-                case "clear_debris": return true;
-                case "bridge_gap": return true;
                 case "move_camp_level": return true;
                 case "despair": return true;
                 case "accept_inventory": return true;
+
+                case "build_out_greenhouse": return true;
+                case "clear_debris": return true;
+                case "bridge_gap": return true;
 
                 case "move_sector_north":
                 case "move_sector_south":

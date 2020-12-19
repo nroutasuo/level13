@@ -199,8 +199,7 @@ define([
                 return UpgradeStatusEnum.UNLOCKED;
             if (GameGlobals.playerActionsHelper.checkAvailability(id, false))
                 return UpgradeStatusEnum.UNLOCKABLE;
-            var requirements = GameGlobals.playerActionsHelper.checkRequirements(id, false);
-            if (requirements.value > 0)
+            if (GameGlobals.playerActionsHelper.isRequirementsMet(id))
                 return UpgradeStatusEnum.VISIBLE;
             if (this.tribeNodes.head.upgrades.hasAvailableBlueprint(id))
                 return UpgradeStatusEnum.VISIBLE;
@@ -227,7 +226,9 @@ define([
 			switch (status) {
                 case UpgradeStatusEnum.VISIBLE:
                 case UpgradeStatusEnum.UNLOCKABLE:
-    				buttonTD = "<td class='minwidth'><button class='action' action='" + upgradeDefinition.id + "'>research</button></td>";
+                    let action = upgradeDefinition.id;
+                    let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+    				buttonTD = "<td class='minwidth'><button class='action' action='" + action + "' baseaction='" + baseActionID + "'>research</button></td>";
                     break;
                 case UpgradeStatusEnum.BLUEPRINT_USABLE:
 			         buttonTD = "<td class='minwidth'><button class='action' action='unlock_upgrade_" + upgradeDefinition.id + "'>unlock</button></td>";
@@ -307,15 +308,21 @@ define([
 					effects += ", ";
 				}
 
-				var unlockedUI = GameGlobals.upgradeEffectsHelper.getUnlockedUI(upgradeId);
-				if (unlockedUI.length > 0) {
-					for (var i in unlockedUI) {
-						effects += "show " + unlockedUI[i];
+				var unlockedActions = GameGlobals.upgradeEffectsHelper.getUnlockedGeneralActions(upgradeId);
+				if (unlockedActions.length > 0) {
+					for (var i in unlockedActions) {
+						effects += "enable " + GameGlobals.playerActionsHelper.getActionDisplayName(unlockedActions[i]);
 					}
 					effects += ", ";
 				}
 
-				// TODO unlocked upgrades? only when other requirements met / blueprint not required?
+				var improvedOccurrences = GameGlobals.upgradeEffectsHelper.getImprovedOccurrences(upgradeId);
+				if (improvedOccurrences.length > 0) {
+					for (var i in improvedOccurrences) {
+						effects += "improved " + improvedOccurrences[i];
+					}
+					effects += ", ";
+				}
 
 				if (effects.length > 0) effects = effects.slice(0, -2);
 			}

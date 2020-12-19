@@ -447,6 +447,7 @@
                 });
                 for (var i = 0; i < numCaravans; i++) {
                     var caravan = caravansComponent.outgoingCaravans[i];
+                    // TODO fix to use game time (and check other usages)
                     var duration = caravan.returnDuration * 1000;
                     var timeLeft = caravan.returnTimeStamp - new Date().getTime();
                     $("#in-occurrences-outgoing-caravans-" + i).data("progress-percent",  (1 - timeLeft / duration) * 100);

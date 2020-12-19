@@ -72,22 +72,11 @@ define([
 		
 		getUnlockedBuildings: function (upgradeId) {
 			// TODO separate in and out improvements
-			// TODO performance
-			var buildings = [];
-			var reqsDefinition;
-			var improvementName;
-			for (var action in PlayerActionConstants.requirements) {
-				reqsDefinition = PlayerActionConstants.requirements[action];
-				if (reqsDefinition.upgrades) {
-					for (var requiredUpgradeId in reqsDefinition.upgrades) {
-						if (requiredUpgradeId === upgradeId) {
-							improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action, true);
-							if (improvementName) buildings.push(improvementName);
-						}
-					}
-				}
-			}
-			return buildings;
+            let actions = this.getUnlockedActions(upgradeId, function (action) {
+                let improvementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action, true);
+                return improvementName;
+            });
+            return actions.map(action => GameGlobals.playerActionsHelper.getImprovementNameForAction(action, true));
 		},
 		
 		getUnlockedItems: function (upgradeId) {
@@ -199,6 +188,34 @@ define([
 			}
 			return events;
 		},
+        
+        getUnlockedGeneralActions: function (upgradeId) {
+            return this.getUnlockedActions(upgradeId, function (action) {
+                let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+                if (baseActionID.indexOf("build_") >= 0) return false;
+                if (baseActionID.indexOf("craft_") >= 0) return false;
+                if (baseActionID.indexOf("unlock_") >= 0) return false;
+                if (baseActionID.indexOf("upgrade_") >= 0) return false;
+                return true;
+            });
+        },
+        
+        getUnlockedActions: function (upgradeId, filter) {
+			// TODO performance
+			var result = [];
+			var reqsDefinition;
+			for (var action in PlayerActionConstants.requirements) {
+				reqsDefinition = PlayerActionConstants.requirements[action];
+				if (reqsDefinition.upgrades && filter(action)) {
+					for (var requiredUpgradeId in reqsDefinition.upgrades) {
+						if (requiredUpgradeId === upgradeId) {
+							result.push(action);
+						}
+					}
+				}
+			}
+			return result;
+        },
 		
 		getUpgradeIdForWorker: function (worker) {
 			return this.upgradesByWorker[worker];
