@@ -237,6 +237,7 @@ define([
 			log.i("START " + GameConstants.STARTTimeNow() + "\t initializing systems");
 
 			this.engine.addSystem(new SaveSystem(), SystemPriorities.preUpdate);
+			this.engine.addSystem(new LevelPassagesSystem(), SystemPriorities.preupdate);
 			this.engine.addSystem(new PlayerPositionSystem(), SystemPriorities.preupdate);
 
 			this.engine.addSystem(new GlobalResourcesResetSystem(), SystemPriorities.update);
@@ -256,7 +257,6 @@ define([
 			this.engine.addSystem(new FavourSystem(), SystemPriorities.update);
 			this.engine.addSystem(new PlayerActionSystem(), SystemPriorities.update);
 			this.engine.addSystem(new SectorStatusSystem(), SystemPriorities.update);
-			this.engine.addSystem(new LevelPassagesSystem(), SystemPriorities.update);
 			this.engine.addSystem(new UnlockedFeaturesSystem(), SystemPriorities.update);
 			this.engine.addSystem(new GlobalResourcesSystem(), SystemPriorities.update);
 			this.engine.addSystem(new CampEventsSystem(), SystemPriorities.update);
@@ -294,9 +294,9 @@ define([
 
 		start: function () {
             log.i("START " + GameConstants.STARTTimeNow() + "\t start tick");
+            this.gameManager.startGame();
 			this.tickProvider.add(this.gameManager.update, this.gameManager);
 			this.tickProvider.start();
-            this.gameManager.startGame();
 		},
 
         handleException: function (ex) {

@@ -31,16 +31,12 @@ define([
 			var sys = this;
 			this.levelNodes = engine.getNodeList(LevelNode);
 			this.sectorNodes = engine.getNodeList(SectorNode);
-			this.sectorNodes.nodeAdded.add(function (node) {
-				sys.updateSector(node.entity);
-			});
-			GlobalSignals.gameStartedSignal.add(function () {
+			GlobalSignals.gameStateReadySignal.add(function () {
 				sys.updateAllSectors();
 			});
 			GlobalSignals.improvementBuiltSignal.add(function () {
 				sys.updateAllSectors();
 			});
-			this.updateAllSectors();
 		},
 
         removeFromEngine: function (engine) {

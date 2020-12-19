@@ -149,8 +149,8 @@ define([
 
             var sys = this;
             setTimeout(function () {
-                GameGlobals.uiFunctions.showGame();
                 GlobalSignals.gameStartedSignal.dispatch();
+                GameGlobals.uiFunctions.showGame();
             }, 250);
 		},
 

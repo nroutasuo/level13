@@ -102,6 +102,7 @@ define([
             GlobalSignals.tribeStatsChangedSignal.add(function () { sys.onTribeStatsChanged(); });
             GlobalSignals.inventoryChangedSignal.add(function () { sys.onInventoryChanged(); });
             GlobalSignals.equipmentChangedSignal.add(function () { sys.onEquipmentChanged(); });
+            GlobalSignals.actionCompletedSignal.add(function () { sys.onPlayerActionCompleted(); });
             GlobalSignals.slowUpdateSignal.add(function () { sys.slowUpdate(); });
             GlobalSignals.changelogLoadedSignal.add(function () { sys.updateGameVersion(); });
             GlobalSignals.add(this, GlobalSignals.perksChangedSignal, this.onPerksChanged);
@@ -756,6 +757,11 @@ define([
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             this.updatePlayerStats();
             this.updateItemStats();
+        },
+        
+        onPlayerActionCompleted: function () {
+		    if (GameGlobals.gameState.uiStatus.isHidden) return;
+            this.updatePlayerStats();
         },
 
 		onVisionChanged: function () {
