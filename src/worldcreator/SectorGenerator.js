@@ -1250,8 +1250,9 @@ define([
 			// min number of (easy) locales ensures that player can get all upgrades intended for that level
             // two brackets of locales for critical paths, those on path 2 can require tech from path 1 to reach but not the other way around
             let levelIndex = WorldCreatorHelper.getLevelIndexForCamp(seed, campOrdinal, levelVO.level);
-            var earlyBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY, levelIndex);
-            var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY, levelIndex);
+            let maxLevelIndex = WorldCreatorHelper.getMaxLevelIndexForCamp(seed, campOrdinal, levelVO.level);
+            var earlyBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY, levelIndex, maxLevelIndex);
+            var numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY, levelIndex, maxLevelIndex);
             if (numEarlyBlueprints) {
 				var minEarly = WorldCreatorConstants.getMinLocales(numEarlyBlueprints);
                 var maxEarly = WorldCreatorConstants.getMaxLocales(numEarlyBlueprints);
@@ -1259,8 +1260,8 @@ define([
                 createLocales(worldVO, levelVO, campOrdinal, true, countEarly, minEarly);
             }
 
-            var lateBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE, levelIndex);
-            var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE, levelIndex);
+            var lateBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE, levelIndex, maxLevelIndex);
+            var numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE, levelIndex, maxLevelIndex);
             if (numLateBlueprints > 0) {
                 var minLate = WorldCreatorConstants.getMinLocales(numLateBlueprints);
                 var maxLate = WorldCreatorConstants.getMaxLocales(numLateBlueprints);

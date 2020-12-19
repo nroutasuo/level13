@@ -117,6 +117,11 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
             var campOrdinal = this.getCampOrdinal(level);
             return WorldCreatorHelper.getLevelIndexForCamp(this.worldSeed, campOrdinal, level);
         },
+        
+        getMaxLevelIndex: function (level) {
+            var campOrdinal = this.getCampOrdinal(level);
+            return WorldCreatorHelper.getMaxLevelIndexForCamp(this.worldSeed, campOrdinal, level);
+        },
 
         getTotalLevels: function () {
             return WorldCreatorHelper.getHighestLevel(this.worldSeed) - WorldCreatorHelper.getBottomLevel(this.worldSeed) + 1;

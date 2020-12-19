@@ -310,9 +310,8 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
             return type;
         },
         
-        getBlueprintsByCampOrdinal: function (campOrdinal, blueprintType, levelIndex) {
+        getBlueprintsByCampOrdinal: function (campOrdinal, blueprintType, levelIndex, maxLevelIndex) {
             if (!this.blueprintsByCampOrdinal[campOrdinal]) return [];
-            
             let result = [];
             
             if (blueprintType == this.BLUEPRINT_BRACKET_EARLY || !blueprintType) {
@@ -325,7 +324,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
                     result = result.concat(this.blueprintsByCampOrdinal[campOrdinal][1]);
                 }
                 
-                if (levelIndex == 1 || levelIndex == undefined) {
+                if (levelIndex == 1 || maxLevelIndex < 1 || levelIndex == undefined) {
                     result = result.concat(this.blueprintsByCampOrdinal[campOrdinal][2]);
                 }
             }
@@ -333,9 +332,9 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
             return result;
         },
         
-        getPiecesByCampOrdinal: function (campOrdinal, blueprintType, levelIndex) {
+        getPiecesByCampOrdinal: function (campOrdinal, blueprintType, levelIndex, maxLevelIndex) {
             var pieceCount = 0;
-            var blueprints = this.getBlueprintsByCampOrdinal(campOrdinal, blueprintType, levelIndex);
+            var blueprints = this.getBlueprintsByCampOrdinal(campOrdinal, blueprintType, levelIndex, maxLevelIndex);
             for (var i = 0; i < blueprints.length; i++) {
                 pieceCount += this.getMaxPiecesForBlueprint(blueprints[i]);
             }
