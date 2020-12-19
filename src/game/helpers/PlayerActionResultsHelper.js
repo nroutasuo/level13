@@ -6,6 +6,7 @@ define([
     'game/GlobalSignals',
     'game/constants/GameConstants',
     'game/constants/ExplorationConstants',
+    'game/constants/FightConstants',
     'game/constants/LocaleConstants',
     'game/constants/PlayerActionConstants',
     'game/constants/LogConstants',
@@ -41,6 +42,7 @@ define([
     GlobalSignals,
     GameConstants,
     ExplorationConstants,
+    FightConstants,
     LocaleConstants,
     PlayerActionConstants,
     LogConstants,
@@ -793,12 +795,19 @@ define([
 
 		getRewardFollowers: function (probability) {
 			var followers = [];
-			if (Math.random() < probability) {
-				var playerPos = this.playerLocationNodes.head.position;
-				var campCount = GameGlobals.gameState.numCamps;
-				var follower = ItemConstants.getFollower(playerPos.level, campCount);
-				followers.push(follower);
-			}
+            
+            var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
+            var numCurrentFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower, true).length;
+            var numMaxFollowers = FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps);
+            if (numCurrentFollowers < numMaxFollowers)
+            {
+    			if (Math.random() < probability) {
+    				var playerPos = this.playerLocationNodes.head.position;
+    				var campCount = GameGlobals.gameState.numCamps;
+    				var follower = ItemConstants.getFollower(playerPos.level, campCount);
+    				followers.push(follower);
+    			}
+            }
 			return followers;
 		},
 
@@ -1093,7 +1102,7 @@ define([
             if (loseAllProbability <= 0 && loseOneProbability <= 0)
                 return lostFollowers;
                 
-            var playerFollowers = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAllByType(ItemConstants.itemTypes.follower);
+            var playerFollowers = this.playerResourcesNodes.head.entity.get(ItemsComponent).getAllByType(ItemConstants.itemTypes.follower, true);
             if (playerFollowers.length < 1)
                 return lostFollowers;
                 

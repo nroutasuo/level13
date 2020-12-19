@@ -247,15 +247,17 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
         },
         
         getItemBonusComparisonValue: function (item, bonusType) {
+            if (!item) return 0;
+            
             if (!bonusType) {
                 return item.getTotalBonus();
             }
-            let result = item ? item.getBonus(bonusType) : 0;
+            let result = item.getBonus(bonusType);
             if (!ItemConstants.isIncreasing(bonusType)) {
-                result = -result;
+                result = 100-result;
             }
             if (bonusType == ItemConstants.itemBonusTypes.fight_att) {
-                result = result * (item ? item.getBonus(ItemConstants.itemBonusTypes.fight_speed) : 1);
+                result = result * item.getBonus(ItemConstants.itemBonusTypes.fight_speed);
             }
             return result;
         },

@@ -66,7 +66,7 @@ define([
             
             if (!GameGlobals.gameState.unlockedFeatures.followers) {
                 var itemsComponent = this.itemNodes.head.items;
-    			var numFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower).length;
+    			var numFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower, true).length;
                 GameGlobals.gameState.unlockedFeatures.followers = GameGlobals.gameState.unlockedFeatures.followers || numFollowers > 0;
             }
             
