@@ -16,11 +16,12 @@ define([
     'game/components/type/LevelComponent',
     'game/components/sector/improvements/SectorImprovementsComponent',
     'game/components/sector/events/TraderComponent',
-    'game/components/sector/events/RaidComponent'
+    'game/components/sector/events/RaidComponent',
+    'game/components/sector/OutgoingCaravansComponent'
 ], function (
     Ash, GameGlobals, GlobalSignals, UIConstants, CampConstants, OccurrenceConstants,
     CampNode, PlayerPositionNode, PlayerStatsNode, TribeUpgradesNode,
-    PositionComponent, ResourcesComponent, ResourceAccumulationComponent, DeityComponent, LevelComponent, SectorImprovementsComponent, TraderComponent, RaidComponent
+    PositionComponent, ResourcesComponent, ResourceAccumulationComponent, DeityComponent, LevelComponent, SectorImprovementsComponent, TraderComponent, RaidComponent, OutgoingCaravansComponent
 ) {
     var UIOutTribeSystem = Ash.System.extend({
 
@@ -39,7 +40,8 @@ define([
             EVENT_TRADER: "event_trader",
             POP_UNASSIGNED: "population-unassigned",
             POP_DECREASING: "population-decreasing",
-            POP_INCREASING: "population-increasing"
+            POP_INCREASING: "population-increasing",
+            EVENT_OUTGOING_CARAVAN: "population-increasing"
         },
 
         constructor: function () {
@@ -154,6 +156,7 @@ define([
         updateCampNotifications: function (node) {
 			var camp = node.camp;
 			var level = node.entity.get(PositionComponent).level;
+			var caravansComponent = node.entity.get(OutgoingCaravansComponent);
 			var playerPosComponent = this.playerPosNodes.head.position;
             var isPlayerInCampLevel = level === playerPosComponent.level;
 
@@ -165,6 +168,8 @@ define([
             var secondsSinceLastRaid = camp.lastRaid ? Math.floor((new Date() - camp.lastRaid.timestamp) / 1000) : 0;
             var hasRecentRaid = camp.lastRaid && !camp.lastRaid.wasVictory && camp.lastRaid.isValid() && secondsSinceLastRaid < 60 * 60;
             var unAssignedPopulation = camp.getFreePopulation();
+            
+            var numCaravans = caravansComponent.outgoingCaravans.length;
 
             if (!isPlayerInCampLevel) {
                 if (hasRaid) {
@@ -188,6 +193,9 @@ define([
                 }
                 if (camp.populationChangePerSec > 0) {
                     this.notifications[level].push(this.campNotificationTypes.POP_INCREASING);
+                }
+                if (numCaravans > 0) {
+                    this.notifications[level].push(this.campNotificationTypes.EVENT_OUTGOING_CARAVAN);
                 }
             }
         },
@@ -335,6 +343,7 @@ define([
                 case this.campNotificationTypes.EVENT_TRADER: return "trader";
                 case this.campNotificationTypes.POP_UNASSIGNED: return "unassigned workers";
                 case this.campNotificationTypes.POP_DECREASING: return "population decreasing";
+                case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return "outgoing caravan";
                 default: return "";
             }
         },
@@ -354,6 +363,7 @@ define([
                 case this.campNotificationTypes.EVENT_TRADER: return "There is a trader currently on level " + level + ".";
                 case this.campNotificationTypes.POP_UNASSIGNED: return "Unassigned workers on level " + level + ".";
                 case this.campNotificationTypes.POP_DECREASING: return "Population is decreasing on level " + level + "!";
+                case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return "Outgoing caravan on level " + level + ".";
                 case this.campNotificationTypes.POP_INCREASING: return "Population is increasing on level " + level + ".";
                 default: return null;
             }
@@ -367,7 +377,8 @@ define([
                 case this.campNotificationTypes.EVENT_TRADER: return 3;
                 case this.campNotificationTypes.POP_UNASSIGNED: return 2;
                 case this.campNotificationTypes.POP_DECREASING: return 1;
-                case this.campNotificationTypes.POP_INCREASING: return 4;
+                case this.campNotificationTypes.POP_INCREASING: return 5;
+                case this.campNotificationTypes.EVENT_OUTGOING_CARAVAN: return 4;
                 default: return 5;
             }
         },
