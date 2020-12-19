@@ -74,20 +74,23 @@ define([
                 // check event changes
 				for (var key in OccurrenceConstants.campOccurrenceTypes) {
 					var event = OccurrenceConstants.campOccurrenceTypes[key];
-					if (this.isCampValidForEvent(campNode, event)) {
-						if (this.hasCampEvent(campNode, event)) {
-							if (this.isEventEnded(campNode, event)) {
-								this.endEvent(campNode, event);
-							}
-						} else if (!this.isScheduled(campNode, event)) {
-                            this.scheduleEvent(campNode, event);
-						} else {
-							if (campTimers.isTimeToStart(event)) {
-								this.startEvent(campNode, event);
-							}
+                    let isValid = this.isCampValidForEvent(campNode, event);
+                    let hasEvent = this.hasCampEvent(campNode, event);
+                    
+                    if (hasEvent) {
+                        if (this.isEventEnded(campNode, event)) {
+							this.endEvent(campNode, event);
 						}
-					} else {
-						this.removeTimer(campNode, event);
+                    } else if (isValid) {
+                        if (!this.isScheduled(campNode, event)) {
+                            this.scheduleEvent(campNode, event);
+                        } else {
+    						if (campTimers.isTimeToStart(event)) {
+    							this.startEvent(campNode, event);
+    						}
+                        }
+                    } else {
+                        this.removeTimer(campNode, event);
 					}
 				}
 			}
@@ -159,8 +162,6 @@ define([
         },
 
 		endEvent: function (campNode, event) {
-			if (!this.isCampValidForEvent(campNode, event)) return;
-            
 			log.i("Ending " + event + " at " + campNode.camp.campName + " (" + campNode.position.level + ")");
             var campTimers = campNode.entity.get(CampEventTimersComponent);
 			campTimers.onEventEnded(event);
