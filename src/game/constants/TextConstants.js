@@ -4,11 +4,12 @@ define(
 ['ash',
     'utils/DescriptionMapper', 'text/Text', 'text/TextBuilder',
     'game/constants/GameConstants',
+    'game/constants/EnemyConstants',
     'game/constants/ItemConstants',
     'game/constants/SectorConstants',
     'game/constants/PositionConstants',
     'game/constants/MovementConstants'],
-function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, ItemConstants, SectorConstants, PositionConstants, MovementConstants) {
+function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstants, ItemConstants, SectorConstants, PositionConstants, MovementConstants) {
     
     var TextConstants = {
 		
@@ -582,11 +583,12 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, ItemConstant
 			return this.getCommonText(enemyList, "defeatedV", "", "defeated", false);
 		},
         
-        getMovementBlockerName: function (blockerVO, enemiesComponent) {
+        getMovementBlockerName: function (blockerVO, enemiesComponent, gangComponent) {
 			switch (blockerVO.type) {
                 case MovementConstants.BLOCKER_TYPE_GANG:
-                    var groupNoun = this.getEnemyGroupNoun(enemiesComponent.possibleEnemies);
-                    var enemyNoun = this.getEnemyNoun(enemiesComponent.possibleEnemies);
+                    let enemies = this.getAllEnemies(enemiesComponent, gangComponent);
+                    var groupNoun = this.getEnemyGroupNoun(enemies);
+                    var enemyNoun = this.getEnemyNoun(enemies);
                     return groupNoun + " of " + enemyNoun;
                 default:
                     return blockerVO.name;
@@ -594,13 +596,27 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, ItemConstant
             return "";
         },
         
-        getMovementBlockerAction: function (blockerVO, enemiesComponent) {
+        getMovementBlockerAction: function (blockerVO, enemiesComponent, gangComponent) {
 			switch (blockerVO.type) {
 				case MovementConstants.BLOCKER_TYPE_GAP: return "Bridge gap";
 				case MovementConstants.BLOCKER_TYPE_WASTE_TOXIC: return "Clear waste";
 				case MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE: return "Clear waste";
-				case MovementConstants.BLOCKER_TYPE_GANG: return "Fight " + this.getEnemyNoun(enemiesComponent.possibleEnemies);
+				case MovementConstants.BLOCKER_TYPE_GANG:
+                    let enemies = this.getAllEnemies(enemiesComponent, gangComponent);
+                    return "Fight " + this.getEnemyNoun(enemies);
 	 	 	}
+        },
+        
+        getAllEnemies: function (enemiesComponent, gangComponent) {
+            let enemies = [];
+            if (enemiesComponent.possibleEnemies) {
+                enemies = enemiesComponent.possibleEnemies.concat();
+            }
+            if (gangComponent) {
+                var gangEnemy = EnemyConstants.getEnemy(gangComponent.enemyID);
+                enemies.push(gangEnemy);
+	 	 	}
+            return enemies;
         },
 		
 		getUnblockedVerb: function (blockerType) {

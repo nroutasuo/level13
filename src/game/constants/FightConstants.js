@@ -103,6 +103,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
         
         // Damage done by player to an enemy per sec
         getEnemyDamagePerSec: function (enemy, playerStamina, itemsComponent) {
+            if (!enemy) return 0;
             var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
             return this.getDamagePerSec(playerAtt, enemy.def);
         },
@@ -115,6 +116,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
         
         // Damage done by the enemy to the player per sec
         getPlayerDamagePerSec: function (enemy, playerStamina, itemsComponent) {
+            if (!enemy) return 0;
             var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent);
             return this.getDamagePerSec(enemy.att, playerDef);
         },
@@ -161,6 +163,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
         },
         
         getFightWinProbability: function(enemy, playerStamina, itemsComponent) {
+            if (!enemy) return 1;
             var enemyDamage = this.getEnemyDamagePerSec(enemy, playerStamina, itemsComponent);
             var playerDamage = this.getPlayerDamagePerSec(enemy, playerStamina, itemsComponent);
             

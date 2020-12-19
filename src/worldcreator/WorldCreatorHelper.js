@@ -541,6 +541,9 @@ define([
                 if (sectorVO1.zone == WorldConstants.ZONE_PASSAGE_TO_CAMP) return false;
                 if (sectorVO1.zone == WorldConstants.ZONE_PASSAGE_TO_PASSAGE) return false;
             }
+            if (sectorVO1.possibleEnemies.length == 0 && sectorVO2.possibleEnemies.length == 0) {
+                return false;
+            }
             return true;
         },
         

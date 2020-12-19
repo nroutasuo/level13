@@ -19,6 +19,7 @@ define([
     'game/components/common/CampComponent',
     'game/components/common/VisitedComponent',
     'game/components/type/LevelComponent',
+    'game/components/type/GangComponent',
     'game/components/sector/SectorStatusComponent',
     'game/components/sector/SectorLocalesComponent',
     'game/components/sector/SectorFeaturesComponent',
@@ -50,6 +51,7 @@ define([
     CampComponent,
     VisitedComponent,
     LevelComponent,
+    GangComponent,
 	SectorStatusComponent,
 	SectorLocalesComponent,
 	SectorFeaturesComponent,
@@ -200,6 +202,12 @@ define([
                 }
 			}
             return null;
+        },
+        
+        getGangComponent: function (position, direction) {
+            var gangEntity = GameGlobals.levelHelper.getGang(position, direction);
+            if (!gangEntity) return null;
+            return gangEntity.get(GangComponent);
         },
         
         getSectorsForGang: function (gangPosition) {

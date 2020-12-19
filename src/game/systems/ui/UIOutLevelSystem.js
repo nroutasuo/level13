@@ -395,6 +395,7 @@ define([
 		getMovementDescription: function (isScouted, passagesComponent, entity) {
 			var description = "";
 			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+            var position = entity.get(PositionComponent);
 
 			// Passages up / down
 			var passageUpBuilt = improvements.getCount(improvementNames.passageUpStairs) +
@@ -419,7 +420,8 @@ define([
 
 				if (blocker) {
                 	var enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
-                    var blockerName = TextConstants.getMovementBlockerName(blocker, enemiesComponent).toLowerCase();
+                    var gangComponent = GameGlobals.levelHelper.getGangComponent(position, direction);
+                    var blockerName = TextConstants.getMovementBlockerName(blocker, enemiesComponent, gangComponent).toLowerCase();
                     if (GameGlobals.movementHelper.isBlocked(entity, direction)) {
                         switch (blocker.type) {
                             case MovementConstants.BLOCKER_TYPE_DEBRIS:
@@ -432,7 +434,6 @@ define([
                                 break;
                         }
                     } else {
-                        var position = entity.get(PositionComponent).getPosition();
                         var gang = GameGlobals.levelHelper.getGang(position, direction);
                         if (blocker.type == MovementConstants.BLOCKER_TYPE_DEBRIS) {
                             description += "Debris to the " + directionName + " has been cleared away. ";
@@ -623,13 +624,16 @@ define([
 			var currentSector = this.playerLocationNodes.head.entity;
 			var movementOptionsComponent = currentSector.get(MovementOptionsComponent);
             var enemiesComponent = currentSector.get(EnemiesComponent);
+            var enemiesComponent = currentSector.get(PositionComponent);
+            var position = currentSector.get(PositionComponent).getPosition();
 			$("#container-out-actions-movement-related").empty();
 
 			function addBlockerActionButton(blocker, direction) {
                 if (blocker.type !== MovementConstants.BLOCKER_TYPE_GAP) {
                     if (!movementOptionsComponent.canMoveToDirection(direction)) {
                         var action = blocker.actionBaseID + "_" + direction;
-                        var description = TextConstants.getMovementBlockerAction(blocker, enemiesComponent) + " (" +  PositionConstants.getDirectionName(direction, true) + ")";
+                        var gangComponent = GameGlobals.levelHelper.getGangComponent(position, direction);
+                        var description = TextConstants.getMovementBlockerAction(blocker, enemiesComponent, gangComponent) + " (" +  PositionConstants.getDirectionName(direction, true) + ")";
                         var button = "<button class='action' action='" + action + "'>" + description + "</button>";
                         $("#container-out-actions-movement-related").append(button);
                     }

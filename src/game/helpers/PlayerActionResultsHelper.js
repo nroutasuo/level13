@@ -1135,8 +1135,9 @@ define([
 			var playerPos = this.playerLocationNodes.head.position;
 			var campOrdinal = GameGlobals.gameState.getCampOrdinal(playerPos.level);
             let levelIndex = GameGlobals.gameState.getLevelIndex(playerPos.level);
+            let maxLevelIndex = GameGlobals.gameState.getMaxLevelIndex(playerPos.level);
             var blueprintType = localeVO.isEarly ? UpgradeConstants.BLUEPRINT_BRACKET_EARLY : UpgradeConstants.BLUEPRINT_BRACKET_LATE;
-			var levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, blueprintType, levelIndex);
+			var levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(campOrdinal, blueprintType, levelIndex, maxLevelIndex);
 
 			var upgradesComponent = this.tribeUpgradesNodes.head.upgrades;
 			var blueprintsToFind = [];
@@ -1189,7 +1190,8 @@ define([
                 if (allLocales > 0 && unscoutedLocales === 0) {
                     var c = GameGlobals.gameState.getCampOrdinal(level);
                     var levelIndex = GameGlobals.gameState.getLevelIndex(level);
-                    var levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(c, null, levelIndex);
+                    let maxLevelIndex = GameGlobals.gameState.getMaxLevelIndex(playerPos.level);
+                    var levelBlueprints = UpgradeConstants.getBlueprintsByCampOrdinal(c, null, levelIndex, maxLevelIndex);
         			for (var j = 0; j < levelBlueprints.length; j++) {
 		                var blueprintId = levelBlueprints[j];
 		                if (upgradesComponent.hasUpgrade(blueprintId)) continue;

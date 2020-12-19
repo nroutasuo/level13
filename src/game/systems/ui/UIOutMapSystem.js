@@ -277,14 +277,16 @@ define([
             if (!isScouted) return "?";
             var result = [];
             
+            var position = sector.get(PositionComponent);
             var passagesComponent = sector.get(PassagesComponent);
 			for (var i in PositionConstants.getLevelDirections()) {
 				var direction = PositionConstants.getLevelDirections()[i];
                 var directionName = PositionConstants.getDirectionName(direction);
 				var blocker = passagesComponent.getBlocker(direction);
 				if (blocker) {
+                    var gangComponent = GameGlobals.levelHelper.getGangComponent(position, direction);
                 	let enemiesComponent = this.playerLocationNodes.head.entity.get(EnemiesComponent);
-                    let blockerName = TextConstants.getMovementBlockerName(blocker, enemiesComponent).toLowerCase();
+                    let blockerName = TextConstants.getMovementBlockerName(blocker, enemiesComponent, gangComponent).toLowerCase();
                     if (GameGlobals.movementHelper.isBlocked(sector, direction)) {
                         result.push(blockerName + " (" + directionName + ")");
                     }
