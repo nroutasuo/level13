@@ -1370,7 +1370,7 @@ define(['ash',
 			}
 			if (auto) {
     			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
-    			var currentFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower);
+    			var currentFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower, true);
 				if (currentFollowers.length === 0 && availableFollowers.length > 0) {
 					this.addFollower(availableFollowers[0]);
 					return true;

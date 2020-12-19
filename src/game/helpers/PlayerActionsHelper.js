@@ -454,7 +454,7 @@ define([
                     }
                     
                     if (typeof requirements.max_followers_reached !== "undefined") {
-                        var numCurrentFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower).length;
+                        var numCurrentFollowers = itemsComponent.getAllByType(ItemConstants.itemTypes.follower, true).length;
                         var numMaxFollowers = FightConstants.getMaxFollowers(GameGlobals.gameState.numCamps);
                         var currentValue = numCurrentFollowers >= numMaxFollowers;
                         var requiredValue = requirements.max_followers_reached;
