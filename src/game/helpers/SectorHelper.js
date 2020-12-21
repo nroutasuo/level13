@@ -115,6 +115,7 @@ define([
         },
         
         isBeaconActive: function (position) {
+            if (position.inCamp) return false;
             let beacon = GameGlobals.levelHelper.getNearestBeacon(position);
             let beaconPos = beacon ? beacon.get(PositionComponent) : null;
             let dist = beaconPos ? PositionConstants.getDistanceTo(position, beaconPos) : -1;
