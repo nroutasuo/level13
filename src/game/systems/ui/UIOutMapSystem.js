@@ -226,6 +226,11 @@ define([
                 }
             }
             
+            
+            if (improvements.getCount(improvementNames.beacon) > 0) {
+                result.push("beacon");
+            }
+            
             if (result.length < 1) return "-";
             else return result.join(", ");
         },

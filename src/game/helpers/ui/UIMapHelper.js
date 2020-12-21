@@ -162,8 +162,8 @@ function (Ash, CanvasUtils,
             this.drawGridOnCanvas(ctx, sectorSize, dimensions, centered);
             
             // borders on beacons
-            ctx.strokeStyle = ColorConstants.getColor(sunlit, "map_stroke_sector_sunlit");
-            ctx.lineWidth = centered ? 2 : 1;
+            ctx.strokeStyle = ColorConstants.getColor(sunlit, "map_stroke_sector_lit");
+            ctx.lineWidth = centered ? 4 : 2;
             let beaconSectors = GameGlobals.levelHelper.getAllSectorsWithImprovement(mapPosition.level, improvementNames.beacon);
             for (var i = 0; i < beaconSectors.length; i++) {
                 sector = beaconSectors[i];
