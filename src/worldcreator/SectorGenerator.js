@@ -148,7 +148,7 @@ define([
             };
                         
             // entrance to level ZONE_ENTRANCE
-            setAreaZone(passage1, WorldConstants.ZONE_ENTRANCE, level == 14 ? 4 : 2, 2);
+            setAreaZone(passage1, WorldConstants.ZONE_ENTRANCE, 2, 2);
             
             if (isCampableLevel) {
                 // camp:
