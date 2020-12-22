@@ -76,7 +76,7 @@ define([
         
         updateLocationPerks: function () {
             if (!this.locationNodes.head) return;
-            let isActive = GameGlobals.sectorHelper.isBeaconActive(this.locationNodes.head.position.getPosition());
+            let isActive = GameGlobals.sectorHelper.isBeaconActive(this.playerNodes.head.entity.get(PositionComponent));
             if (isActive) {
                 this.addOrUpdatePerk(PerkConstants.perkIds.lightBeacon, PerkConstants.TIMER_DISABLED);
             } else {
@@ -117,10 +117,12 @@ define([
         
         deactivatePerk: function (perkID, timer) {
             let perksComponent = this.playerNodes.head.perks;
-            let playerPerk = perksComponent.getPerk(perkID);
-            if (playerPerk) {
-                playerPerk.effectTimer = timer;
-                this.addPerkDeactivatedMessage(perkID);
+            let perk = perksComponent.getPerk(perkID);
+            if (perk) {
+                if (perk.effectTimer == PerkConstants.TIMER_DISABLED || perk.effectTimer > timer) {
+                    perk.effectTimer = timer;
+                    this.addPerkDeactivatedMessage(perkID);
+                }
             }
         },
         
