@@ -41,7 +41,7 @@ define([
             POP_UNASSIGNED: "population-unassigned",
             POP_DECREASING: "population-decreasing",
             POP_INCREASING: "population-increasing",
-            EVENT_OUTGOING_CARAVAN: "population-increasing"
+            EVENT_OUTGOING_CARAVAN: "outoing-caravan"
         },
 
         constructor: function () {
