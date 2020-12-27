@@ -1473,14 +1473,6 @@ define([
 				default: return null;
             }
         },
-        
-        getActionDisplayName: function (action) {
-			var baseActionID = this.getBaseActionID(action);
-            switch (baseActionID) {
-                case "clear_waste_r": return "clear waste";
-            }
-            return action;
-        },
 
         getEncounterFactor: function (action) {
 			var baseActionID = this.getBaseActionID(action);

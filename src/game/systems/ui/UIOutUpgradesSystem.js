@@ -5,8 +5,9 @@ define([
     'game/constants/PlayerActionConstants',
     'game/constants/UIConstants',
     'game/constants/UpgradeConstants',
+    'game/constants/TextConstants',
     'game/nodes/tribe/TribeUpgradesNode',
-], function (Ash, GameGlobals, GlobalSignals, PlayerActionConstants, UIConstants, UpgradeConstants, TribeUpgradesNode) {
+], function (Ash, GameGlobals, GlobalSignals, PlayerActionConstants, UIConstants, UpgradeConstants, TextConstants, TribeUpgradesNode) {
     
     var UpgradeStatusEnum = {
         HIDDEN: 0,
@@ -311,7 +312,8 @@ define([
 				var unlockedActions = GameGlobals.upgradeEffectsHelper.getUnlockedGeneralActions(upgradeId);
 				if (unlockedActions.length > 0) {
 					for (var i in unlockedActions) {
-						effects += "enable " + GameGlobals.playerActionsHelper.getActionDisplayName(unlockedActions[i]);
+                        let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(unlockedActions[i])
+						effects += "enable " + TextConstants.getActionName(baseActionID);
 					}
 					effects += ", ";
 				}

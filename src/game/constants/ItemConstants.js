@@ -80,11 +80,11 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
                 new ItemVO("weapon8", "Rifle", "Weapon", 15, true, true, false, 3, 3, {atk: 200, spd: 1.25}, "img/items/weapon-shiv.png", "Deadly weapon similar to those that were mass-produced just before the Fall."),
             ];
             this.itemDefinitions.clothing_over = [
-                new ItemVO("clothing_over_1", "Warm Coat", "Armor", 1, true, true, false, 5, 1, {def: 1, warmth: 15}, "img/items/clothing-2.png", "Something against the chill."),
+                new ItemVO("clothing_over_1", "Warm Coat", "Armor", 1, true, true, false, 5, 1, {def: 1, warmth: 15}, "img/items/clothing-warm.png", "Something against the chill."),
                 new ItemVO("clothing_over_1x", "Lab Coat", "Armor", 2, true, false, false, 5, 1, {def: 1, warmth: 2, res_poison: 10}, "img/items/clothing-2.png", "Might protect from environmental hazards."),
                 new ItemVO("clothing_over_15", "Leather Jacket", "Armor", 2, true, true, false, 2, 1, {def: 4, warmth: 5, res_rad: 3, res_poison: 3}, "img/items/clothing-2.png", "A solid jacket."),
                 new ItemVO("clothing_over_2", "Biker jacket", "Armor", 3, true, false, false, 2, 1, {def: 6, warmth: 10, res_rad: 3, res_poison: 3}, "img/items/clothing-2.png", "Doesn't make one invincible, but feels like it."),
-                new ItemVO("clothing_over_w", "Winter parka", "Armor", 5, true, true, false, 3, 2, {def: 2, warmth: 20}, "img/items/clothing-2.png", "Seasons are hardly a thing in the City but it does get cold."),
+                new ItemVO("clothing_over_w", "Winter parka", "Armor", 5, true, true, false, 3, 2, {def: 2, warmth: 20}, "img/items/clothing-warm.png", "Seasons are hardly a thing in the City but it does get cold."),
                 new ItemVO("clothing_over_25", "Army Jacket", "Armor", 5, true, false, false, 2, 1, {def: 15, warmth: 10, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Something that's actually produced with the aim of keeping one safe."),
                 new ItemVO("clothing_over_25x", "Warm Army Jacket", "Armor", 5, true, false, false, 5, 5, {def: 15, warmth: 15, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Something that's actually produced with the aim of keeping one safe."),
                 new ItemVO("clothing_over_3", "Scrap metal armor", "Armor", 7, true, true, false, 5, 2, {def: 25, warmth: 5, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "An ugly but surprisingly comfortable metal blanket"),
@@ -118,9 +118,9 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
                 new ItemVO("clothing_head_1", "Wool hat", "Head", 2, true, true, false, 3, 1, {def: 1, warmth: 10}, "img/items/clothing-hat-1.png", "Warm basic headwear."),
                 new ItemVO("clothing_head_2", "Medical mask", "Head", 4, true, false, false, 5, 1, {res_poison: 15}, "img/items/clothing-hat-1.png", "Meager protection against the effects of polluted air."),
                 new ItemVO("clothing_head_25", "Bike helmet", "Head", 5, true, false, false, 3, 1, {def: 3}, "img/items/clothing-hat-2.png", "A bit clumsy, but quite useful in a fight."),
-                new ItemVO("clothing_head_4", "Gas mask", "Head", 6, true, true, false, 2, 1, {def: 5, warmth: 3, res_rad: 5, res_poison: 30, shade: 10}, "img/items/clothing-hat-2.png", "Gives a definite sense of security in dangerous environments."),
+                new ItemVO("clothing_head_4", "Gas mask", "Head", 6, true, true, false, 2, 1, {def: 5, warmth: 3, res_rad: 5, res_poison: 30, shade: 10}, "img/items/clothing-mask.png", "Gives a definite sense of security in dangerous environments."),
                 new ItemVO("clothing_head_3", "Scrap metal helmet", "Head", 7, true, true, false, 4, 2, {def: 5, warmth: 5, res_rad: 5, res_poison: 5, shade: 10}, "img/items/clothing-hat-2.png", "Perfect apparel for the post-apocalyptic hero."),
-                new ItemVO("clothing_head_l14", "Respirator", "Head", 8, true, true, false, 4, 2, {def: 5, warmth: 3, res_rad: 15, res_poison: 30, shade: 10}, "img/items/clothing-hat-2.png", "Offers reasonable protection from environmental hazards.", true),
+                new ItemVO("clothing_head_l14", "Respirator", "Head", 8, true, true, false, 4, 2, {def: 5, warmth: 3, res_rad: 15, res_poison: 30, shade: 10}, "img/items/clothing-mask.png", "Offers reasonable protection from environmental hazards.", true),
                 new ItemVO("clothing_head_45", "Scavenger's hood", "Head", 12, true, true, false, 3, 1, {def: 10, warmth: 10, res_rad: 15, res_poison: 15, shade: 15}, "img/items/clothing-hat-2.png", "A practical, protective hood that doesn't get in the way."),
                 new ItemVO("clothing_head_5", "Explorer's helmet", "Head", 13, true, true, false, 5, 2, {def: 30, warmth: 15, res_rad: 20, res_poison: 10, shade: 50}, "img/items/clothing-hat-3.png", "Headgear designed specifically for scavenging in the City."),
             ];
@@ -182,7 +182,7 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
                 new ItemVO("first_aid_kit_1", "Basic first aid kit", "Exploration", 3, false, true, true, 6, 1, null, "img/items/firstaid-1.png", "Heal light injuries on the go."),
                 new ItemVO("first_aid_kit_2", "Full first aid kit", "Exploration", 10, false, true, true, 8, 2, null, "img/items/firstaid-2.png", "Heal all injuries on the go."),
                 new ItemVO("glowstick_1", "Glowstick", "Exploration", 1, false, true, true, 8, 2, null, "img/items/glowstick-1.png", "Temporary light. Can be used as a distraction."),
-                new ItemVO("consumable_weapon_1", "Shuriken", "Exploration", 2, false, true, false, 8, 2, null, "img/items/exploration-gear.png", "One-use weapon."),
+                new ItemVO("consumable_weapon_1", "Shuriken", "Exploration", 2, false, true, false, 8, 2, null, "img/items/weapon-consumable-1.png", "One-use weapon."),
                 new ItemVO("flee_1", "Smoke Bomb", "Exploration", 3, false, true, false, 8, 2, null, "img/items/weapon-bomb.png", "Can be used to escape a fight."),
                 new ItemVO("cache_metal_1", "Abandoned robot", "Exploration", 1, false, false, true, 5, -1, {}, "img/items/cahce-metal.png", "Can probably be taken apart down for some scrap metal"),
                 new ItemVO("cache_metal_2", "Broken appliance", "Exploration", 1, false, false, true, 5, -1, {}, "img/items/cahce-metal.png", "Can probably be taken apart down for some scrap metal"),
@@ -248,7 +248,6 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
         
         getItemBonusComparisonValue: function (item, bonusType) {
             if (!item) return 0;
-            
             if (!bonusType) {
                 return item.getTotalBonus();
             }

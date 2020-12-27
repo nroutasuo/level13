@@ -18,6 +18,9 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
                 case "scout_locale_i":
                 case "scout_locale_u":
                     return "Scout";
+                case "clear_waste_r": return "clear radioactive waste";
+                case "clear_waste_t": return "clear toxic waste";
+                case "build_out_greenhouse": return "build greenhouse";
                 default:
                     return baseActionID;
             }
@@ -615,7 +618,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
             if (gangComponent) {
                 var gangEnemy = EnemyConstants.getEnemy(gangComponent.enemyID);
                 enemies.push(gangEnemy);
-	 	 	}
+            }
             return enemies;
         },
 		
@@ -726,7 +729,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
         DescriptionMapper.add("sector-vision", { buildingDensity: b12, isGroundLevel: false, campable: false }, "[A] [a-street] bridge over the level below with separate levels for tram tracks, utilities and pedestrians");
         DescriptionMapper.add("sector-vision", { buildingDensity: b22 }, "Some kind of [A] [a-sectortype] complex with several narrow passages this way and that");
         DescriptionMapper.add("sector-vision", { buildingDensity: b13 }, "A wide square with [A] [a-building] [n-building] on one side and what looks like the remains of [A] [a-building] [n-building] on the other");
-        DescriptionMapper.add("sector-vision", { buildingDensity: b23 }, "[A] [a-street] [n-street] beneath a vast [n-building]");
+        DescriptionMapper.add("sector-vision", { buildingDensity: b23, isSurfaceLevel: false }, "[A] [a-street] [n-street] beneath a vast [n-building]");
         DescriptionMapper.add("sector-vision", { buildingDensity: b23 }, "A street with multiple levels of passages crawling along the walls of the surrounding [a-sectortype] buildings");
         DescriptionMapper.add("sector-vision", { buildingDensity: b33 }, "Some sort of [A] [a-sectortype] corridor between two vast [n-buildings] with barely enough space to walk");
         DescriptionMapper.add("sector-vision", { buildingDensity: b33 }, "[A] [a-street] [n-street] between two vast [n-buildings] with barely enough space fit through");

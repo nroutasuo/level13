@@ -201,7 +201,10 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
             unlock_building_hospital: "Treating basic injuries.",
             unlock_worker_rope: "Using scavenged fiber and cloth to make rope, a useful building and crafting material.",
             unlock_item_shoe1: "The varied skill of making useful things out of whatever happens to be available",
-            unlock_action_clear_waste_r: "Allow clearing some radioactive waste.",
+            unlock_action_clear_waste_r: "Allow clearing some radioactive waste in the environment.",
+            unlock_action_clear_waste_t: "Allow clearing some toxic waste in the environment.",
+            upgrade_building_temple2: "Bring the community together.",
+            unlock_building_greenhouse: "Grow herbs in some rare locations in the City where conditions are right.",
         },
         
         piecesByBlueprint: {
