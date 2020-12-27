@@ -61,6 +61,7 @@ define([
             GlobalSignals.add(this, GlobalSignals.gameResetSignal, this.onGameStarted);
             GlobalSignals.add(this, GlobalSignals.tabChangedSignal, this.ontabChanged);
             GlobalSignals.add(this, GlobalSignals.campBuiltSignal, this.updateCamps);
+            GlobalSignals.add(this, GlobalSignals.sectorScoutedSignal, this.onSectorScouted);
 		},
 
 		removeFromEngine: function (engine) {
@@ -80,6 +81,10 @@ define([
         ontabChanged: function () {
             this.lastUpdatePosition = null;
             this.lastValidPosition = null;
+        },
+        
+        onSectorScouted: function () {
+            this.triggerEndMessage();
         },
 
 		update: function (time) {
@@ -204,7 +209,7 @@ define([
             if (levelPos == surfaceLevel) {
                 msg += "There is no ceiling here, the whole level is open to the elements. Sun glares down from an impossibly wide blue sky all above.";
             } else if (levelPos == groundLevel) {
-                msg += "The floor here is different, uneven, organic. But also solid - there seems to be no way further down. There are more plants, mud, stone and signs of animal life.";
+                msg += "The floor here is different, uneven, organic. But also continuous - there seems to be no way further down. There are more plants, mud, stone and signs of animal life.";
             } else if (!levelComponent.isCampable) {
                 switch (levelComponent.notCampableReason) {
                     case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:
@@ -238,13 +243,6 @@ define([
             if (isNew) {
                 GameGlobals.gameState.numVisitedSectors++;
     			GameGlobals.gameState.unlockedFeatures.sectors = true;
-                
-                var isLastAvailableLevel = this.isLastAvailableLevel(sectorPos.level);
-                var passages = sectorEntity.get(PassagesComponent);
-                
-                if (isLastAvailableLevel && passages.passageUp) {
-                    this.showEndMessage();
-                }
             }
 		},
 
@@ -269,20 +267,30 @@ define([
             this.lastUpdatePosition = null;
         },
         
+        triggerEndMessage: function () {
+            var playerPos = this.playerPositionNodes.head.position;
+            var isLastAvailableLevel = this.isLastAvailableLevel(playerPos.level);
+            var sector = this.playerLocationNodes.head.entity;
+            var passages = sector.get(PassagesComponent);
+            if (isLastAvailableLevel && passages.passageUp) {
+                this.showEndMessage();
+            }
+        },
+        
         showEndMessage: function () {
             setTimeout(function () {
                 gtag('event', 'level_14_passage_up_reached', { event_category: 'progression' })
                 var msg = "You've reached the end of the current version of Level 13. ";
-                msg += "This is where the passage up to the next level would be, but you will not be able to build it yet. Congrats for surviving the last level!";
+                msg += "You will not be able to repair the passage up it yet. Congrats on surviving to the end!";
                 msg += "<br/><br/>"
-                msg += "<span class='p-meta'>Thank you for playing this far! The developer would love to hear your feedback. You can use any of these channels:</span>";
+                msg += "<span class='p-meta'>Thank you for playing this far. The developer would love to hear your feedback. You can use any of these channels:</span>";
                 msg += "<p>" + GameConstants.getFeedbackLinksHTML() + "</p>";
                 GameGlobals.uiFunctions.showInfoPopup(
                     "The end",
                     msg,
                     "Continue"
                 );
-            }, 200);
+            }, 300);
         },
 
         isLastAvailableLevel: function (level) {
