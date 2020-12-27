@@ -109,9 +109,15 @@ function (Ash, ItemVO, ItemConstants) {
         },
         
         getEquipmentComparisonWithItems: function (item, items) {
+            if (!item) return 0;
+            if (!items || items.length == 0) return 1;
             var result = 0;
             for (let i = 0; i < items.length; i++) {
-                result = Math.min(result, this.getEquipmentComparisonWithItem(item, items[i]));
+                if (i == 0) {
+                    result = this.getEquipmentComparisonWithItem(item, items[i]);
+                } else {
+                    result = Math.min(result, this.getEquipmentComparisonWithItem(item, items[i]));
+                }
             }
             return result;
         },
@@ -126,6 +132,9 @@ function (Ash, ItemVO, ItemConstants) {
                 
                 // TODO take speed inco account, but only together with damage
                 if (bonusType == ItemConstants.itemBonusTypes.fight_speed) {
+                    continue;
+                }
+                if (currentBonus == newBonus) {
                     continue;
                 }
                 if (newBonus < currentBonus) {
@@ -194,6 +203,7 @@ function (Ash, ItemVO, ItemConstants) {
 
         // Equips the given item regardless of whether it's better than the previous equipment
         equip: function (item) {
+            if (!item) return;
             if (item.equippable) {
                 var previousItems = this.getEquipped(item.type);
                 for (var i = 0; i < previousItems.length; i++) {

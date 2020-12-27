@@ -775,7 +775,7 @@ define(['ash',
                 var sectorStatus = sector.get(SectorStatusComponent);
 				player.add(new PlayerActionResultComponent(rewards));
                 var popupMsg = logMsgSuccess;
-                if (rewards.foundStashVO) {
+                if (rewards && rewards.foundStashVO) {
                     sectorStatus.stashesFound++;
                     popupMsg += TextConstants.getFoundStashMessage(rewards.foundStashVO);
                 }
