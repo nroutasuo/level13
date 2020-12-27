@@ -453,8 +453,10 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
     = new UpgradeVO("unlock_item_scavenger_gear", "Augmented Clothing 2", UpgradeConstants.upgradeDescriptions.unlock_item_scavenger_gear);
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_worker_chemist]
     = new UpgradeVO("upgrade_worker_chemist", "Chemistry", UpgradeConstants.upgradeDescriptions.upgrade_worker_chemist);
+    /*
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_shrine]
     = new UpgradeVO("upgrade_building_shrine", "Philosophy", UpgradeConstants.upgradeDescriptions.upgrade_building_shrine);
+    */
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_weapon52]
     = new UpgradeVO("unlock_item_weapon52", "Axe-making 2", UpgradeConstants.upgradeDescriptions.unlock_item_weapon52);
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_clothing6]
@@ -463,8 +465,10 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
     = new UpgradeVO("upgrade_building_storage2", "Refrigeration", UpgradeConstants.upgradeDescriptions.upgrade_building_storage2);
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_fortifications]
     = new UpgradeVO("upgrade_building_fortifications", "Concrete Fortifications", UpgradeConstants.upgradeDescriptions.upgrade_building_fortifications);
+    /*
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_clothing3h]
     = new UpgradeVO("unlock_item_clothing3h", "Glove-making 2", UpgradeConstants.upgradeDescriptions.unlock_item_clothing3h);
+    */
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_clothing4he]
     = new UpgradeVO("unlock_item_clothing4he", "Gas Masks", UpgradeConstants.upgradeDescriptions.unlock_item_clothing4he);
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_bag3]
@@ -483,8 +487,10 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
     = new UpgradeVO("upgrade_building_temple2", "Rituals", UpgradeConstants.upgradeDescriptions.upgrade_building_temple2);
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_worker_trapper]
     = new UpgradeVO("upgrade_worker_trapper", "Food preservation", UpgradeConstants.upgradeDescriptions.upgrade_worker_trapper);
+    /*
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_barracks]
     = new UpgradeVO("unlock_building_barracks", "Military", UpgradeConstants.upgradeDescriptions.unlock_building_barracks);
+    */
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_campfire]
     = new UpgradeVO("upgrade_building_campfire", "Brewing", UpgradeConstants.upgradeDescriptions.upgrade_building_campfire);
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_building_inn]

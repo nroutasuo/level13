@@ -1203,7 +1203,7 @@ define([
 
 				case "move_camp_global":
                     var statusFactor = this.getCostFactor(action, "stamina");
-					result.stamina = 10 * PlayerActionConstants.costs.move_sector_west.stamina * statusFactor;
+					result.stamina = PlayerActionConstants.costs.move_level_down.stamina * statusFactor;
 					break;
 
 				case "scout_locale_i":

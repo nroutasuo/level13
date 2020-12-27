@@ -296,13 +296,14 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                 case resourceNames.metal: value = 0.005; break;
                 
                 case resourceNames.rope: value = 0.02; break;
-                case resourceNames.herbs: value = 0.02; break;
                 case resourceNames.fuel: value = 0.02; break;
-                case resourceNames.rubber: value = 0.03; break;
 
                 case resourceNames.medicine: value = 0.05; break;
                 case resourceNames.tools: value = 0.05; break;
                 case resourceNames.concrete: value = 0.05; break;
+                
+                case resourceNames.rubber: value = 0.05; break;
+                case resourceNames.herbs: value = 0.05; break;
             }
             if (isTrader)
                 value = value + value * TradeConstants.VALUE_MARKUP_INCOMING_CARAVANS;
@@ -363,12 +364,13 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                     value = 0;
                     break;
             }
+            
             if (isTrader)
                 value = value + value * TradeConstants.VALUE_MARKUP_INCOMING_CARAVANS;
             else
                 value = value - value * TradeConstants.VALUE_DISCOUNT_CAMP_ITEMS;
             
-            value = Math.round(value * 10) / 10;
+            value = Math.round(value * 100) / 100;
                 
             return value;
         },

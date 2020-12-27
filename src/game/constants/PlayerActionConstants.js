@@ -514,6 +514,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 build_in_darkfarm: {
                     improvements: {
                         campfire: [1, -1],
+                        storage: [1, -1],
                     },
                     upgrades: {
                         unlock_building_darkfarm: true,
@@ -667,6 +668,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     },
                     improvements: {
                         generator: [0, 1],
+                        house: [2, -1],
                         campfire: [1, -1],
                     }
                 },
@@ -766,7 +768,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     },
                     upgrades: {
                         unlock_building_smithy: true,
-                    }
+                    },
+                    population: [9, -1],
                 },
                 
                 improve_in_smithy: {
@@ -783,7 +786,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     },
                     upgrades: {
                         unlock_building_cementmill: true,
-                    }
+                    },
+                    population: [9, -1],
                 },
                 
                 improve_in_cementmill: {
@@ -1160,6 +1164,10 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 use_item_cache_metal_2: {
                     inCamp: true,
                 },
+                
+                use_item_stamina_potion_1: {
+                    inCamp: false,
+                },
 
                 create_blueprint: {
                     inCamp: true,
@@ -1385,6 +1393,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 upgrade_building_temple2: {
+                	upgrades: {
+                		upgrade_building_inn: true,
+                	}
                 },
 
                 upgrade_worker_trapper: {
@@ -1393,7 +1404,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 unlock_building_barracks: {
                 	upgrades: {
-                		unlock_building_fortifications: true,
+                		unlock_building_house2: true,
                 	}
                 },
 
@@ -1533,7 +1544,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 unlock_item_clothing4h: {
                 	blueprint: 5,
                 	upgrades: {
-                		unlock_item_shoe1: true,
+                		unlock_clothing_basic: true,
+                		unlock_item_clothing2: true,
                 	}
                 },
 
@@ -1573,14 +1585,14 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 unlock_building_bridge: {
                 	blueprint: 4,
                 	upgrades: {
-                		upgrade_worker_scavenger: true,
+                		unlock_building_passage_staircase: true,
                 	}
                 },
 
                 unlock_item_weapon2: {
                 	blueprint: 4,
                 	upgrades: {
-                		unlock_item_shoe1: true,
+                		unlock_weapon_15: true,
                 	}
                 },
 
@@ -1862,8 +1874,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
                 
                 build_out_greenhouse: {
-                    resource_metal: 100,
-                    resource_fuel: 10,
+                    resource_metal: 300,
+                    resource_fuel: 300,
+                    resource_tools: 100,
                 },
 
                 build_out_collector_food: {
@@ -1901,7 +1914,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 build_in_generator: {
-                    resource_metal: 50,
+                    resource_metal: 300,
                     resource_fuel: 100
                 },
 
@@ -2006,9 +2019,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 build_in_market: {
-                    resource_metal: 50,
+                    resource_metal: 200,
                     resource_rope: 100,
-                    resource_fuel: 5,
                     cost_factor_e1_base: 1.5,
                 },
 
@@ -2104,7 +2116,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 build_in_shrine: {
-                    resource_herbs: 50,
                     resource_food: 50,
                     resource_water: 50,
                     resource_metal: 100,
@@ -2134,7 +2145,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 craft_light1: {
-                    resource_metal: 8,
+                    resource_metal: 7,
                 },
 
                 craft_light2: {
@@ -2170,6 +2181,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 
                 craft_consumable_weapon_1: {
                     resource_metal: 10,
+                    item_res_bands: 1,
                 },
                 
                 craft_flee_1: {
@@ -2444,8 +2456,8 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 craft_shoe_1: {
                     resource_rope: 10,
-                    item_res_tape: 1,
-                    item_res_leather: 3,
+                    item_res_tape: 2,
+                    item_res_leather: 5,
                 },
                 
                 craft_shoe_l14: {
@@ -2462,14 +2474,11 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_rope: 80,
                     item_res_leather: 5,
                 },
-
                 craft_bag_2: {
                     resource_rope: 100,
-                    resource_herbs: 10,
                     item_res_leather: 10,
                     item_res_bands: 3,
                 },
-                                
                 unlock_item_clothing5l: {
                 	rumours: 17182,
                 },
@@ -2810,7 +2819,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_clothing_basic: {
-                	rumours: 38,
+                	rumours: 48,
                 },
 
                 unlock_clothing_warm: {
@@ -2830,7 +2839,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_building_passage_staircase: {
-                	evidence: 39,
+                	evidence: 49,
                 },
 
                 unlock_building_hospital: {
@@ -2854,7 +2863,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 use_in_campfire: 60,
                 use_in_home: 180,
                 use_in_market: 300,
-                use_in_shrine: 240,
+                use_in_shrine: 600,
                 use_in_temple: 120,
                 scout_locale_i: 60,
                 scout_locale_u: 60,
@@ -2944,7 +2953,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 use_in_hospital: "Heal injuries.",
                 use_in_inn: "Recruit followers.",
                 use_in_shrine: "Reconnect with the spirits",
-                use_in_temple: "Donate to the temple",
+                use_in_temple: "Donate silver for favour with the spirits",
                 use_item_glowstick_1: "Create a temporary light in this location.",
                 use_out_collector_food: "Collect accumulated food.",
                 use_out_collector_food_one: "Collect 1 food.",
