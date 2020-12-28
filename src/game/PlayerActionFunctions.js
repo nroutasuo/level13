@@ -631,7 +631,7 @@ define(['ash',
                 GameGlobals.gameState.unlockedFeatures.favour = true;
                 GlobalSignals.featureUnlockedSignal.dispatch();
                 if (!this.playerStatsNodes.head.entity.has(DeityComponent)) {
-                    this.playerStatsNodes.head.entity.add(new DeityComponent("Deity"))
+                    this.playerStatsNodes.head.entity.add(new DeityComponent())
                 }
                 logMsgSuccess += "The trees seem alive. They whisper, but the words are unintelligible. You have found a source of <span class='hl-functionality'>ancient power</span>.";
             }

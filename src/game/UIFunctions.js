@@ -137,9 +137,11 @@ define(['ash',
 						"Rename Camp",
 						"Give your camp a new name",
 						prevCampName,
+                        true,
 						function (input) {
 							GameGlobals.playerActionFunctions.setNearestCampName(input);
-						});
+						}
+                    );
 				});
 			},
 
@@ -1081,12 +1083,22 @@ define(['ash',
 				this.popupManager.showPopup(title, msg, buttonLabel, cancelButtonLabel, null, okCallback, cancelCallback);
 			},
 
-			showInput: function (title, msg, defaultValue, callback) {
+			showInput: function (title, msg, defaultValue, allowCancel, confirmCallback, inputCallback) {
+                // TODO improve input validation (check and show feedback on input, not just on confirm)
+                
 				var okCallback = function () {
-					var input = $("#common-popup input").val();
-					callback(input);
+					let input = $("#common-popup input").val();
+                    let ok = inputCallback ? inputCallback(input) : true;
+                    if (ok) {
+	                   confirmCallback(input);
+                       return true;
+                   } else {
+                       log.w("invalid input: " + input);
+                       return false;
+                   }
 				};
-				this.popupManager.showPopup(title, msg, "Confirm", "Cancel", null, okCallback);
+                let cancelButtonLabel = allowCancel ? "Cancel" : null;
+				this.popupManager.showPopup(title, msg, "Confirm", cancelButtonLabel, null, okCallback);
 
 				var uiFunctions = this;
 				var maxChar = 40;

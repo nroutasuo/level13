@@ -321,7 +321,7 @@ define([
 			var hasDeity = this.deityNodes.head != null;
 			GameGlobals.uiFunctions.toggle("#statsbar-deity", hasDeity);
 			if (hasDeity) {
-				$("#deity-name").text(this.deityNodes.head.deity.name);
+				$("#deity-name").text(this.deityNodes.head.deity.name || "?");
 			}
 		},
 

@@ -53,8 +53,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             $("#info-ok").toggleClass("inventory-selection-ok", hasResult);
             $("#info-ok").toggleClass("action", hasResult);
             $("#info-ok").click(ExceptionHandler.wrapClick(function (e) {
-                popUpManager.closePopup("common-popup");
-                if (okCallback) okCallback(false);
+                popUpManager.handleOkButton(false, okCallback);
             }));
             $defaultButton = $("#info-ok");
             
@@ -62,8 +61,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             if (showTakeAll) {
                 $("#common-popup .buttonbox").append("<button id='confirmation-takeall' class='action' action='take_all'>Take all</button>");
                 $("#confirmation-takeall").click(ExceptionHandler.wrapClick(function (e) {
-                    popUpManager.closePopup("common-popup");
-                    if (okCallback) okCallback(true);
+                    popUpManager.handleOkButton(true, okCallback);
                 }));
                 $defaultButton = $("#confirmation-takeall");
             }
@@ -96,6 +94,12 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             
             // pause the game while a popup is open
             GameGlobals.gameState.isPaused = this.hasOpenPopup();
+        },
+        
+        handleOkButton: function (isTakeAll, okCallback) {
+            let canClose = !okCallback || okCallback(isTakeAll) !== false;
+            if (!canClose) return;
+            this.closePopup("common-popup");
         },
         
         closePopup: function (id) {
