@@ -629,6 +629,13 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     }
                 },
                 
+                improve_in_market: {
+                    improvements: {
+                        camp: [1, -1],
+                        market: [1, -1],
+                    }
+                },
+                
                 use_in_market: {
                     improvements: {
                         market: [1, -1],
@@ -1853,23 +1860,23 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 build_out_passage_down_hole: {
-                    resource_metal: [50, 100, 50, 5500, 0],
-                    resource_concrete: 50,
-                    cost_factor_e1_base: 1.295,
+                    resource_metal: [0, 100, 50, 500, 0],
+                    resource_concrete: [50, 25, 0, 0, 0],
+                    cost_factor_e1_base: 1.35,
                     cost_factor_e2_exp: 2.3,
                 },
 
                 build_out_passage_down_stairs: {
-                    resource_metal: [50, 100, 50, 500, 0],
+                    resource_metal: [0, 100, 50, 500, 0],
                     resource_rope: 10,
-                    cost_factor_e1_base: 1.01,
+                    cost_factor_e1_base: 1.35,
                     cost_factor_e2_exp: 2.3,
                 },
 
                 build_out_passage_down_elevator: {
-                    resource_metal: [50, 100, 50, 5500, 0],
-                    resource_fuel: 10,
-                    cost_factor_e1_base: 1.295,
+                    resource_metal: [0, 100, 50, 500, 0],
+                    resource_fuel: [10, 10, 0, 0, 0],
+                    cost_factor_e1_base: 1.35,
                     cost_factor_e2_exp: 2.3,
                 },
                 
@@ -1897,12 +1904,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 bridge_gap: {
-                    resource_metal: 150,
-                    resource_rope: 150,
+                    resource_metal: 300,
+                    resource_rope: 500,
                 },
 
                 build_in_house: {
-                    resource_metal: 30,
+                    resource_metal: 28,
                     cost_factor_e1_base: 2,
                 },
 
@@ -1915,21 +1922,22 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 build_in_generator: {
                     resource_metal: 300,
-                    resource_fuel: 100
+                    resource_rope: 100,
+                    resource_fuel: 200
                 },
 
                 improve_in_generator: {
                     resource_metal: [0, 0, 20, 0, 0],
                     resource_fuel: [10, 3, 2, 0, 0],
-                    resource_concrete: 10,
-                    resource_fuel: 10,
+                    resource_concrete: 50,
+                    resource_fuel: 50,
                     cost_factor_e1_base: 1.5,
                 },
 
                 build_in_lights: {
-                    resource_metal: 100,
-                    resource_rope: 10,
-                    resource_concrete: 10,
+                    resource_metal: 200,
+                    resource_rope: 100,
+                    resource_concrete: 50,
                     resource_fuel: 50,
                 },
 
@@ -1941,7 +1949,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_metal: [0, 0, 50, 0, 0],
                     resource_rope: [5, 2, 2, 0, 2],
                     resource_concrete: [20, 2, 2, 0, 8],
-                    cost_factor_e1_base: 1.65,
+                    cost_factor_e1_base: 1.75,
                     cost_factor_e1_base_outpost: 2.5,
                 },
 
@@ -2023,6 +2031,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     resource_rope: 100,
                     cost_factor_e1_base: 1.5,
                 },
+                
+                improve_in_market: {
+                    resource_metal: [40, 50, 10, 0, 0],
+                    resource_rope: [40, 50, 10, 0, 0],
+                    cost_factor_e1_base: 1.5,
+                },
 
                 build_in_library: {
                     resource_metal: 200,
@@ -2089,9 +2103,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
                 
                 improve_in_smithy: {
-                    resource_metal: [30, 0, 5, 0, 0],
-                    resource_rope: [20, 0, 5, 0, 0],
-                    resource_tools: 10,
+                    resource_metal: [100, 0, 5, 0, 0],
+                    resource_rope: [50, 0, 5, 0, 0],
+                    resource_tools: 50,
                     cost_factor_e1_base: 2,
                 },
 
@@ -2951,6 +2965,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 improve_in_square: "Increase reputation bonus",
                 improve_in_generator: "Increase reputation bonus",
                 improve_in_apothecary: "Increase efficiency",
+                improve_in_market: "Increase rumours gained from visiting",
                 improve_in_smithy: "Increase efficiency",
                 improve_in_cementmill: "Increase efficiency",
                 improve_in_temple: "Increase favour generation",

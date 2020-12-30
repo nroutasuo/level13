@@ -241,7 +241,7 @@ define([
                 switch (improvementVO.name) {
                     case improvementNames.generator:
                         var numHouses = improvementsComponent.getCount(improvementNames.house) + improvementsComponent.getCount(improvementNames.house2);
-                        var generatorBonus = numHouses * CampConstants.REPUTATION_PER_HOUSE_FROM_GENERATOR * (1 + level * 0.02);
+                        var generatorBonus = numHouses * CampConstants.REPUTATION_PER_HOUSE_FROM_GENERATOR * (1 + level * 0.1);
                         generatorBonus = Math.round(generatorBonus * 100) / 100;
                         addValue(generatorBonus, "Generator");
                         break;

@@ -225,6 +225,7 @@ define(['ash',
                 case "improve_in_library": this.improveLibrary(param); break;
                 case "improve_in_square": this.improveSquare(param); break;
                 case "improve_in_generator": this.improveGenerator(param); break;
+                case "improve_in_market": this.improveMarket(param); break;
                 case "improve_in_apothecary": this.improveApothecary(param); break;
                 case "improve_in_smithy": this.improveSmithy(param); break;
                 case "improve_in_cementmill": this.improveCementMill(param); break;
@@ -1265,6 +1266,11 @@ define(['ash',
             this.addLogMessage(LogConstants.MSG_ID_IMPROVED_GENERATOR, "Fixed up the generator.");
         },
         
+        improveMarket: function () {
+            this.improveImprovement("improve_in_market");
+            this.addLogMessage(LogConstants.MSG_ID_IMPROVED_MARKET, "Upgraded the market");
+        },
+        
         improveApothecary: function () {
             this.improveImprovement("improve_in_apothecary");
             this.addLogMessage(LogConstants.MSG_ID_IMPROVED_APOTHECARY, "Improved the apothecaries.");
@@ -1326,10 +1332,12 @@ define(['ash',
         useMarket: function () {
 			var campSector = this.nearestCampNodes.head.entity;
 			var campComponent = campSector.get(CampComponent);
+			var improvementsComponent = campSector.get(SectorImprovementsComponent);
 			// TODO move this check to startAction
-            // TODO add a bit of randomness to the number of rumours received?
 			if (campSector) {
-				this.playerStatsNodes.head.rumours.value += CampConstants.RUMOURS_PER_VISIT_MARKET;
+                var marketLevel = improvementsComponent.getLevel(improvementNames.market);
+                var marketUpgradeLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.market, this.tribeUpgradesNodes.head.upgrades);
+				this.playerStatsNodes.head.rumours.value += CampConstants.getRumoursPerVisitMarket(marketLevel, marketUpgradeLevel);
 				this.addLogMessage(LogConstants.MSG_ID_USE_MARKET, "Visited the market and listened to the latest gossip.");
 			} else {
 				log.w("No camp sector found.");

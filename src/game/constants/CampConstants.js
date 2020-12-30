@@ -22,7 +22,7 @@ define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
         RUMOURS_BONUS_PER_MARKET_PER_UPGRADE: 0.01,
         RUMOUR_BONUS_PER_INN_BASE: 1.1,
         RUMOURS_BONUS_PER_INN_PER_UPGRADE: 0.01,
-        RUMOURS_PER_VISIT_MARKET: 2,
+        RUMOURS_PER_VISIT_MARKET_BASE: 0,
         
         // Evidence
         EVIDENCE_BONUS_PER_LIBRARY_LEVEL: 0.15,
@@ -193,7 +193,12 @@ define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
         
         getSoldierDefence: function (upgradeLevel) {
             return (1 + upgradeLevel);
-        }
+        },
+        
+        getRumoursPerVisitMarket: function (marketLevel, marketUpgradeLevel) {
+            marketLevel = marketLevel || 1;
+            return CampConstants.RUMOURS_PER_VISIT_MARKET_BASE + marketLevel + (marketUpgradeLevel - 1);
+        },
     
     };
     

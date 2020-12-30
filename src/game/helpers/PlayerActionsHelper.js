@@ -1391,6 +1391,7 @@ define([
                 case "build_in_aqueduct": return improvementNames.aqueduct;
                 case "build_in_stable": return improvementNames.stable;
                 case "build_in_market": return improvementNames.market;
+                case "improve_in_market": return improvementNames.market;
                 case "build_in_radiotower": return improvementNames.radiotower;
                 case "build_in_researchcenter": return improvementNames.researchcenter;
                 case "improve_in_campfire": return improvementNames.campfire;
