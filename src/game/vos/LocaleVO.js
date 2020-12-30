@@ -37,7 +37,7 @@ function (Ash, ResourcesVO, LocaleConstants, PlayerStatConstants) {
 			this.costs = {};
 			this.costs.stamina = this.getStaminaRequirement();
             if (type !== localeTypes.grove) {
-	             this.costs.item_exploration_1 = this.getCategory() == "u" ? 1 : 0;
+	             this.costs.item_exploration_1 = 1;
             }
 		},
         

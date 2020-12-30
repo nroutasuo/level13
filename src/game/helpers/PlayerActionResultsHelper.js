@@ -866,7 +866,7 @@ define([
                         campOrdinalFactor = 1 - Math.abs(campOrdinal - itemDefinition.requiredCampOrdinal) / maxCampOrdinalDiff;
                     score *= campOrdinalFactor;
                     if (itemDefinition.craftable)
-                        score = score / 2;
+                        score = score / 3;
                     if (itemDefinition.craftable && isObsoletable)
                         score = score / 2;
                     itemScores[itemDefinition.id] = score;

@@ -493,6 +493,9 @@ define([
             var l = levelVO.level;
             let nextLevel = WorldCreatorHelper.getLevelForOrdinal(seed, levelVO.levelOrdinal + 1);
             let nextLevelVO = worldVO.getLevel(nextLevel) || levelVO;
+            let levelIndex = WorldCreatorHelper.getLevelIndexForCamp(seed, levelVO.campOrdinal, levelVO.level);
+            let maxLevelIndex = WorldCreatorHelper.getMaxLevelIndexForCamp(seed, levelVO.campOrdinal, levelVO.level);
+            
             var lateZones = [ WorldConstants.ZONE_POI_2, WorldConstants.ZONE_EXTRA_CAMPABLE ];
             var earlyZones = [ WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_PASSAGE_TO_PASSAGE, WorldConstants.ZONE_POI_1 ];
             var earlyZonesEntrance = [ WorldConstants.ZONE_ENTRANCE ];
@@ -522,9 +525,9 @@ define([
             
             // stashes: hairpins (for lockpics)
             var pinsPerStash = 3;
-            var numHairpinStashes = 2;
-            if (l == 13) numHairpinStashes = 5;
-            if (!levelVO.isCampable) numHairpinStashes = 5;
+            var numHairpinStashes = 1;
+            if (l == 13) numHairpinStashes = 3;
+            if (!levelVO.isCampable) numHairpinStashes = 3;
             addStashes(seed * l * 8 / 3 + (l+100)*14 + 3333, "hairpin", ItemConstants.STASH_TYPE_ITEM, "res_hairpin", numHairpinStashes, pinsPerStash);
             
             // stashes: stamina potions
@@ -538,21 +541,24 @@ define([
             if (levelVO.isCampable) {
                 stashIngredients = this.itemsHelper.getIngredientsToCraftMany(requiredEquipment);
             } else {
-                requiredEquipment = this.itemsHelper.getRequiredEquipment(nextLevelVO.campOrdinal, WorldConstants.CAMP_STEP_POI_2, nextLevelVO.isHard);
+                requiredEquipment = this.itemsHelper.getRequiredEquipment(nextLevelVO.campOrdinal, WorldConstants.CAMP_STEP_POI_1, nextLevelVO.isHard);
                 stashIngredients = this.itemsHelper.getIngredientsToCraftMany(requiredEquipment);
             }
             let numStashIngredients = MathUtils.clamp(Math.floor(stashIngredients.length / 2), 1, 3);
             for (var i = 0; i < numStashIngredients; i++) {
                 var def = stashIngredients[i];
-                var amount = MathUtils.clamp(def.amount / 3, 3, 10);
-                addStashes(seed % 13 + l * 7 + 5 + (i+1) * 10, "craftable ingredients", ItemConstants.STASH_TYPE_ITEM, def.id, 2, amount);
+                var amount = def.amount > 9 ? 10 : def.amount > 5 ? 6 : 3;
+                addStashes(seed % 13 + l * 7 + 5 + (i+1) * 10, "craftable ingredients", ItemConstants.STASH_TYPE_ITEM, def.id, 1, amount);
             }
             
             // stashes: non-craftable equipment
-            var newEquipment = this.itemsHelper.getNewEquipment(levelVO.campOrdinal);
-            for (var i = 0; i < newEquipment.length; i++) {
-                if (!newEquipment[i].craftable && newEquipment[i].scavengeRarity <= 5) {
-                    addStashes(seed / 3 + (l+551)*8 + (i+103)*18, "non-craftable equipment", ItemConstants.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1, lateZones);
+            // TODO don't do these per level but per equipment; place one instance of each non-craftable equipment somewhere
+            if (levelIndex == 0) {
+                var newEquipment = this.itemsHelper.getNewEquipment(levelVO.campOrdinal);
+                for (var i = 0; i < newEquipment.length; i++) {
+                    if (!newEquipment[i].craftable && newEquipment[i].scavengeRarity <= 5) {
+                        addStashes(seed / 3 + (l+551)*8 + (i+103)*18, "non-craftable equipment", ItemConstants.STASH_TYPE_ITEM, newEquipment[i].id, 1, 1, lateZones);
+                    }
                 }
             }
             

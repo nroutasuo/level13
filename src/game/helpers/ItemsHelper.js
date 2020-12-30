@@ -38,6 +38,7 @@ define([
             }
 
             // non-craftable items: by item defintiion camp ordinal
+            // TODO don't check for scavenge rarity, it's not a common way to find items, trade rarity instead? + take into account levels with no trade
             if (!item.craftable && includeNonCraftable) {
                 result = item.requiredCampOrdinal <= adjustedCampOrdinal && item.scavengeRarity <= maxScavengeRarity;
             }
