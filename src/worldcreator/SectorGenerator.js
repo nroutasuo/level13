@@ -539,10 +539,10 @@ define([
             let stashIngredients;
             let requiredEquipment = this.itemsHelper.getRequiredEquipment(levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, levelVO.isHard);
             if (levelVO.isCampable) {
-                stashIngredients = this.itemsHelper.getIngredientsToCraftMany(requiredEquipment);
+                stashIngredients = ItemConstants.getIngredientsToCraftMany(requiredEquipment);
             } else {
                 requiredEquipment = this.itemsHelper.getRequiredEquipment(nextLevelVO.campOrdinal, WorldConstants.CAMP_STEP_POI_1, nextLevelVO.isHard);
-                stashIngredients = this.itemsHelper.getIngredientsToCraftMany(requiredEquipment);
+                stashIngredients = ItemConstants.getIngredientsToCraftMany(requiredEquipment);
             }
             let numStashIngredients = MathUtils.clamp(Math.floor(stashIngredients.length / 2), 1, 3);
             for (var i = 0; i < numStashIngredients; i++) {

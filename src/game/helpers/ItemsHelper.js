@@ -208,7 +208,7 @@ define([
             var checkItem = function (item) {
                 if (!item.craftable) return null;
                 if (itemsComponent.getCountById(item.id, true) < (isStrict ? 1 : 1)) {
-                    var ingredients = GameGlobals.itemsHelper.getIngredientsToCraft(item.id);
+                    var ingredients = ItemConstants.getIngredientsToCraft(item.id);
                     for (var i = 0; i < ingredients.length; i++) {
                         var def = ingredients[i];
                         if (itemsComponent.getCountById(def.id, true) < (isStrict ? def.amount : Math.max(def.amount, 3))) {
@@ -291,48 +291,6 @@ define([
                 log.w("no crafting recipe uses ingredient: " + item.id);
             }
             return false;
-        },
-        
-        getIngredientsToCraftMany: function (items) {
-            var result = [];
-            var getResultEntry = function (id) {
-                for (var i = 0; i < result.length; i++) {
-                    if (result[i].id == id) return result[i];
-                }
-                var newEntry = { id: id, amount: 0 };
-                result.push(newEntry);
-                return newEntry;
-            };
-            for (var i = 0; i < items.length; i++) {
-                var item = items[i];
-                if (!item.craftable) continue;
-                var itemIngredients = this.getIngredientsToCraft(item.id);
-                if (!itemIngredients || itemIngredients.length < 1) continue;
-                for (var j = 0; j < itemIngredients.length; j++) {
-                    var itemEntry = itemIngredients[j];
-                    var resultEntry = getResultEntry(itemEntry.id);
-                    resultEntry.amount = resultEntry.amount + itemEntry.amount;
-                }
-            }
-            
-            result.sort(function (a, b) {
-                return b.amount - a.amount;
-            });
-            
-            return result;
-        },
-        
-        getIngredientsToCraft: function (itemID) {
-            var craftAction = "craft_" + itemID;
-            var costs = PlayerActionConstants.costs[craftAction];
-            var result = [];
-            if (!costs) return result;
-			for (var key in costs) {
-                if (key.startsWith("item_res_")) {
-                    result.push({ id: key.replace("item_", ""), amount: costs[key] });
-                }
-            }
-            return result;
         },
         
         isObsolete: function (itemVO, itemsComponent, inCamp) {

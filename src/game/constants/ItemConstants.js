@@ -81,14 +81,14 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
             ];
             this.itemDefinitions.clothing_over = [
                 new ItemVO("clothing_over_1", "Warm Coat", "Armor", 1, true, true, false, 5, 1, {def: 1, warmth: 15}, "img/items/clothing-warm.png", "Something against the chill."),
-                new ItemVO("clothing_over_1x", "Lab Coat", "Armor", 2, true, false, false, 5, 1, {def: 1, warmth: 2, res_poison: 10}, "img/items/clothing-2.png", "Might protect from environmental hazards."),
+                new ItemVO("clothing_over_1x", "Lab Coat", "Armor", 2, true, false, false, 5, 2, {def: 1, warmth: 2, res_poison: 10}, "img/items/clothing-2.png", "Might protect from environmental hazards."),
                 new ItemVO("clothing_over_15", "Leather Jacket", "Armor", 2, true, true, false, 2, 1, {def: 4, warmth: 5, res_rad: 3, res_poison: 3}, "img/items/clothing-2.png", "A solid jacket."),
                 new ItemVO("clothing_over_2", "Biker jacket", "Armor", 3, true, false, false, 2, 1, {def: 6, warmth: 10, res_rad: 3, res_poison: 3}, "img/items/clothing-2.png", "Doesn't make one invincible, but feels like it."),
                 new ItemVO("clothing_over_w", "Winter parka", "Armor", 5, true, true, false, 3, 2, {def: 2, warmth: 20}, "img/items/clothing-warm.png", "Seasons are hardly a thing in the City but it does get cold."),
                 new ItemVO("clothing_over_25", "Army Jacket", "Armor", 5, true, false, false, 2, 1, {def: 15, warmth: 10, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Something that's actually produced with the aim of keeping one safe."),
-                new ItemVO("clothing_over_25x", "Warm Army Jacket", "Armor", 5, true, false, false, 5, 5, {def: 15, warmth: 15, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Something that's actually produced with the aim of keeping one safe."),
+                new ItemVO("clothing_over_25x", "Warm Army Jacket", "Armor", 5, true, false, false, 5, 4, {def: 15, warmth: 15, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Something that's actually produced with the aim of keeping one safe."),
                 new ItemVO("clothing_over_3", "Scrap metal armor", "Armor", 7, true, true, false, 5, 2, {def: 25, warmth: 5, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "An ugly but surprisingly comfortable metal blanket"),
-                new ItemVO("clothing_over_l14", "Hazmat suit", "Armor", 8, true, true, false, 5, 2, {movement: 1.1, def: 1, warmth: 5, res_rad: 15, res_poison: 15}, "img/items/clothing-2.png", "Effective protection against radiation, but clumsy to move around in.", true),
+                new ItemVO("clothing_over_l14", "Hazmat suit", "Armor", 8, true, true, false, 5, -1, {movement: 1.1, def: 1, warmth: 5, res_rad: 15, res_poison: 15}, "img/items/clothing-2.png", "Effective protection against radiation, but clumsy to move around in.", true),
                 new ItemVO("clothing_over_4", "Kevlar vest", "Armor", 10, true, true, false, 3, 2, {def: 40, res_rad: 5, res_poison: 5}, "img/items/clothing-2.png", "Heavy, but worth it."),
                 new ItemVO("clothing_over_45", "Scavenger vest", "Armor", 12, true, true, false, 3, 1, {def: 40, warmth: 20, res_rad: 10, res_poison: 10}, "img/items/clothing-2.png", "Novel technology for maximal survival in the post-Fall City"),
                 new ItemVO("clothing_over_5", "Riot police vest", "Armor", 13, true, false, false, 2, 2, {def: 100, warmth: 10, res_rad: 5, res_poison: 10}, "img/items/clothing-3.png", "Based on the old Surface Guard uniform with additional environmental proection."),
@@ -108,19 +108,19 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
                 new ItemVO("clothing_lower_1", "Ragged pants", "Legs", 1, true, false, false, 1, 3, {warmth: 1}, "img/items/clothing-rags.png", "Barely counts for clothing, but for now it'll have to do."),
                 new ItemVO("clothing_lower_15", "Basic pants", "Legs", 2, true, true, false, 3, 1, {def: 1, warmth: 1}, "img/items/clothing-rags.png", "Nothing wrong with these pants"),
                 new ItemVO("clothing_lower_2", "Factory uniform pants", "Legs", 5, true, false, false, 1, 1, {def: 1, warmth: 5}, "img/items/clothing-2.png", "Used to be the standard uniform in the dark levels of the City."),
-                new ItemVO("clothing_lower_3", "Guard uniform pants", "Legs", 8, true, true, false, 1, 2, {def: 3, warmth: 8}, "img/items/clothing-2.png", "Looks official, but not particularly protective."),
-                new ItemVO("clothing_lower_4", "Padded pants", "Legs", 11, true, true, false, 3, 3, {def: 15, warmth: 10}, "img/items/clothing-3.png", "Protects from bites and scratches."),
-                new ItemVO("clothing_lower_45", "Explorer's pants", "Legs", 13, true, true, false, 5, 2, {def: 15, warmth: 10, res_rad: 5, res_poison: 5}, "img/items/clothing-3.png", "Protects from bites and scratches."),
-                new ItemVO("clothing_lower_5", "Long underwear", "Legs", 15, true, true, false, 3, 1, {def: 5, warmth: 50, res_rad: 1, res_poison: 1}, "img/items/clothing-3.png", "Nothing keeps you warm like long underwear."),
+                new ItemVO("clothing_lower_3", "Guard uniform pants", "Legs", 8, true, true, false, 1, 1, {def: 3, warmth: 8}, "img/items/clothing-2.png", "Looks official, but not particularly protective."),
+                new ItemVO("clothing_lower_4", "Padded pants", "Legs", 11, true, true, false, 3, 1, {def: 15, warmth: 10}, "img/items/clothing-3.png", "Protects from bites and scratches."),
+                new ItemVO("clothing_lower_45", "Explorer's pants", "Legs", 13, true, true, false, 5, 1, {def: 15, warmth: 10, res_rad: 5, res_poison: 5}, "img/items/clothing-3.png", "Protects from bites and scratches."),
+                new ItemVO("clothing_lower_5", "Long underwear", "Legs", 15, true, true, false, 3, 2, {def: 5, warmth: 50, res_rad: 1, res_poison: 1}, "img/items/clothing-3.png", "Nothing keeps you warm like long underwear."),
             ];
             this.itemDefinitions.clothing_head = [
                 new ItemVO("clothing_head_0", "Sunglasses", "Head", 2, true, false, false, 5, 1, {shade: 30}, "img/items/clothing-hat-1.png", "If there was any sunlight, these would probably be handy."),
                 new ItemVO("clothing_head_1", "Wool hat", "Head", 2, true, true, false, 3, 1, {def: 1, warmth: 10}, "img/items/clothing-hat-1.png", "Warm basic headwear."),
-                new ItemVO("clothing_head_2", "Medical mask", "Head", 4, true, false, false, 5, 1, {res_poison: 15}, "img/items/clothing-hat-1.png", "Meager protection against the effects of polluted air."),
+                new ItemVO("clothing_head_2", "Medical mask", "Head", 4, true, false, false, 5, 2, {res_poison: 15}, "img/items/clothing-hat-1.png", "Meager protection against the effects of polluted air."),
                 new ItemVO("clothing_head_25", "Bike helmet", "Head", 5, true, false, false, 3, 1, {def: 3}, "img/items/clothing-hat-2.png", "A bit clumsy, but quite useful in a fight."),
-                new ItemVO("clothing_head_4", "Gas mask", "Head", 6, true, true, false, 2, 1, {def: 5, warmth: 3, res_rad: 5, res_poison: 30, shade: 10}, "img/items/clothing-mask.png", "Gives a definite sense of security in dangerous environments."),
+                new ItemVO("clothing_head_4", "Gas mask", "Head", 6, true, true, false, 2, 2, {def: 5, warmth: 3, res_rad: 5, res_poison: 30, shade: 10}, "img/items/clothing-mask.png", "Gives a definite sense of security in dangerous environments."),
                 new ItemVO("clothing_head_3", "Scrap metal helmet", "Head", 7, true, true, false, 4, 2, {def: 5, warmth: 5, res_rad: 5, res_poison: 5, shade: 10}, "img/items/clothing-hat-2.png", "Perfect apparel for the post-apocalyptic hero."),
-                new ItemVO("clothing_head_l14", "Respirator", "Head", 8, true, true, false, 4, 2, {def: 5, warmth: 3, res_rad: 15, res_poison: 30, shade: 10}, "img/items/clothing-mask.png", "Offers reasonable protection from environmental hazards.", true),
+                new ItemVO("clothing_head_l14", "Respirator", "Head", 8, true, true, false, 4, 6, {def: 5, warmth: 3, res_rad: 15, res_poison: 30, shade: 10}, "img/items/clothing-mask.png", "Offers reasonable protection from environmental hazards.", true),
                 new ItemVO("clothing_head_45", "Scavenger's hood", "Head", 12, true, true, false, 3, 1, {def: 10, warmth: 10, res_rad: 15, res_poison: 15, shade: 15}, "img/items/clothing-hat-2.png", "A practical, protective hood that doesn't get in the way."),
                 new ItemVO("clothing_head_5", "Explorer's helmet", "Head", 13, true, true, false, 5, 2, {def: 30, warmth: 15, res_rad: 20, res_poison: 10, shade: 50}, "img/items/clothing-hat-3.png", "Headgear designed specifically for scavenging in the City."),
             ];
@@ -128,8 +128,8 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
                 new ItemVO("clothing_hands_1", "Mittens", "Hands", 2, true, true, false, 3, 1, {warmth: 5}, "img/items/clothing-hand-0.png", "Nothing keeps hands warm like fluffy mittens."),
                 new ItemVO("clothing_hands_12", "Leather Gloves", "Hands", 3, true, true, false, 3, 1, {def: 1, warmth: 3, res_rad: 1, res_poison: 1}, "img/items/clothing-hand-0.png", "Not only warm but also protective."),
                 new ItemVO("clothing_hands_2", "Work gloves", "Hands", 5, true, true, false, 1, 1, {def: 1, warmth: 5, res_rad: 3, res_poison: 3}, "img/items/clothing-hand-0.png", "Basic protection for hands."),
-                new ItemVO("clothing_hands_25", "Good gloves", "Hands", 7, true, true, false, 2, 1, {def: 2, warmth: 5, res_rad: 3, res_poison: 3}, "img/items/clothing-hand-0.png", "Good gloves make scavenging much safer."),
-                new ItemVO("clothing_hands_l14", "Hazmat gloves", "Hands", 8, true, true, false, 2, 1, {def: 2, warmth: 5, res_rad: 10, res_poison: 10}, "img/items/clothing-hand-0.png", "Protection from environmental hazards.", true),
+                new ItemVO("clothing_hands_25", "Good gloves", "Hands", 7, true, true, false, 2, 2, {def: 2, warmth: 5, res_rad: 3, res_poison: 3}, "img/items/clothing-hand-0.png", "Good gloves make scavenging much safer."),
+                new ItemVO("clothing_hands_l14", "Hazmat gloves", "Hands", 8, true, true, false, 2, -1, {def: 2, warmth: 5, res_rad: 10, res_poison: 10}, "img/items/clothing-hand-0.png", "Protection from environmental hazards.", true),
                 new ItemVO("clothing_hands_3", "Quality gloves", "Hands", 10, true, true, false, 2, 1, {def: 2, warmth: 7, res_rad: 5, res_poison: 10}, "img/items/clothing-hand-0.png", "No scavenger ever regretted having good gloves."),
                 new ItemVO("clothing_hands_4", "Scavenger's gloves", "Hands", 12, true, true, false, 3, 1, {def: 5, warmth: 15, res_rad: 15, res_poison: 15}, "img/items/clothing-hand-0.png", "Gloves that protect from almost all environmental hazards."),
                 new ItemVO("clothing_hands_5", "Synthetic gloves", "Hands", 14, true, false, false, 3, 2, {def: 8, warmth: 15, res_rad: 15, res_poison: 15}, "img/items/clothing-hand-0.png", "Gloves made from recycled advanced textiles from before the Fall."),
@@ -183,10 +183,10 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
                 new ItemVO("first_aid_kit_2", "Full first aid kit", "Exploration", 10, false, true, true, 8, 2, null, "img/items/firstaid-2.png", "Heal all injuries on the go."),
                 new ItemVO("glowstick_1", "Glowstick", "Exploration", 1, false, true, true, 8, 2, null, "img/items/glowstick-1.png", "Temporary light. Can be used as a distraction."),
                 new ItemVO("consumable_weapon_1", "Shuriken", "Exploration", 2, false, true, false, 8, 2, null, "img/items/weapon-consumable-1.png", "One-use weapon."),
-                new ItemVO("flee_1", "Smoke Bomb", "Exploration", 3, false, true, false, 8, 2, null, "img/items/weapon-bomb.png", "Can be used to escape a fight."),
+                new ItemVO("flee_1", "Smoke Bomb", "Exploration", 3, false, true, false, 8, 1, null, "img/items/weapon-bomb.png", "Can be used to escape a fight."),
                 new ItemVO("cache_metal_1", "Abandoned robot", "Exploration", 1, false, false, true, 5, -1, {}, "img/items/cahce-metal.png", "Can probably be taken apart down for some scrap metal"),
                 new ItemVO("cache_metal_2", "Broken appliance", "Exploration", 1, false, false, true, 5, -1, {}, "img/items/cahce-metal.png", "Can probably be taken apart down for some scrap metal"),
-                new ItemVO("stamina_potion_1", "Rejuv shot", "Exploration", 1, false, false, true, 8, 7, {}, "img/items/stamina-1.png", "Smells awful, but keeps you going for a bit longer."),
+                new ItemVO("stamina_potion_1", "Rejuv shot", "Exploration", 1, false, false, true, 8, 2, {}, "img/items/stamina-1.png", "Smells awful, but keeps you going for a bit longer."),
             ];
             this.itemDefinitions.uniqueEquipment = [
                 new ItemVO("equipment_map", "Map", "UniqueEquipment", 0, false, false, false, -1, -1, null, "img/items/exploration-map.png", "Helps navigating the City."),
@@ -257,6 +257,48 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
             }
             if (bonusType == ItemConstants.itemBonusTypes.fight_att) {
                 result = result * item.getBonus(ItemConstants.itemBonusTypes.fight_speed);
+            }
+            return result;
+        },
+        
+        getIngredientsToCraftMany: function (items) {
+            var result = [];
+            var getResultEntry = function (id) {
+                for (var i = 0; i < result.length; i++) {
+                    if (result[i].id == id) return result[i];
+                }
+                var newEntry = { id: id, amount: 0 };
+                result.push(newEntry);
+                return newEntry;
+            };
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                if (!item.craftable) continue;
+                var itemIngredients = this.getIngredientsToCraft(item.id);
+                if (!itemIngredients || itemIngredients.length < 1) continue;
+                for (var j = 0; j < itemIngredients.length; j++) {
+                    var itemEntry = itemIngredients[j];
+                    var resultEntry = getResultEntry(itemEntry.id);
+                    resultEntry.amount = resultEntry.amount + itemEntry.amount;
+                }
+            }
+            
+            result.sort(function (a, b) {
+                return b.amount - a.amount;
+            });
+            
+            return result;
+        },
+        
+        getIngredientsToCraft: function (itemID) {
+            var craftAction = "craft_" + itemID;
+            var costs = PlayerActionConstants.costs[craftAction];
+            var result = [];
+            if (!costs) return result;
+			for (var key in costs) {
+                if (key.startsWith("item_res_")) {
+                    result.push({ id: key.replace("item_", ""), amount: costs[key] });
+                }
             }
             return result;
         },

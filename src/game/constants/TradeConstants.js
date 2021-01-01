@@ -1,8 +1,8 @@
 define([
     'ash',
-    'game/constants/ItemConstants', 'game/constants/UpgradeConstants', 'game/constants/BagConstants',
+    'game/constants/PlayerActionConstants', 'game/constants/ItemConstants', 'game/constants/UpgradeConstants', 'game/constants/BagConstants',
     'game/vos/TradingPartnerVO', 'game/vos/IncomingCaravanVO', 'game/vos/ResourcesVO', 'game/vos/ResultVO'],
-function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, IncomingCaravanVO, ResourcesVO, ResultVO) {
+function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, IncomingCaravanVO, ResourcesVO, ResultVO) {
     
     var TradeConstants = {
         
@@ -17,7 +17,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
         VALUE_DISCOUNT_CAMP_ITEMS: 0.25,
         
         TRADING_PARTNERS: [
-            new TradingPartnerVO(3, "Bone Crossing", [resourceNames.rope], [resourceNames.metal], false, false, [ "weapon" ], [ "weapon", "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
+            new TradingPartnerVO(3, "Bone Crossing", [resourceNames.rope], [resourceNames.metal], false, false, [ "weapon" ], [ "weapon", "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head", "exploration" ]),
             new TradingPartnerVO(4, "Slugger Town", [resourceNames.metal], [resourceNames.food], false, true, [], ["exploration", "shoes" ]),
             new TradingPartnerVO(6, "Old Waterworks", [resourceNames.fuel], [], true, false, [], [ "clothing_over", "clothing_upper", "clothing_lower", "clothing_hands", "clothing_head" ]),
             new TradingPartnerVO(7, "Mill Road Academy", [resourceNames.food, resourceNames.water], [resourceNames.metal], true, false, [], [ "weapon", "artefact" ]),
@@ -35,7 +35,6 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             var buyResources = [];
             var usesCurrency = false;
             
-            // TODO rare traders with blueprints?
             // TODO adjust resource amounts based on resource rarity / value (plenty of metal, less herbs)
             var minResAmount = 40 + campOrdinal * 10;
             var randResAmount = 450 + campOrdinal * 50;
@@ -48,7 +47,10 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                     var itemList = ItemConstants.itemDefinitions[category];
                     for (var i in itemList) {
                         var itemDefinition = itemList[i];
-                        var isNeeded = neededIngredient && itemDefinition.id == neededIngredient;
+                        // check hard requirements
+                        var tradeRarity = itemDefinition.tradeRarity;
+                        if (tradeRarity <= 0)
+                            continue;
                         if (itemDefinition.requiredCampOrdinal > campOrdinal + 1)
                             continue;
                         if (ItemConstants.isQuicklyObsoletable(category)) {
@@ -57,15 +59,19 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                         }
                         if (!includeCommon && isObsoletable && itemDefinition.craftable && itemDefinition.requiredCampOrdinal < campOrdinal)
                             continue;
-                        var tradeRarity = itemDefinition.tradeRarity;
-                        if (tradeRarity <= 0)
+                        var craftingReq = ItemConstants.getRequiredCampAndStepToCraft(itemDefinition);
+                        if (craftingReq.campOrdinal > campOrdinal + 1)
                             continue;
+                        // check probability
+                        var isNeededIngredient = neededIngredient && itemDefinition.id == neededIngredient;
                         var itemProbability = probability * (1/tradeRarity);
-                        if (Math.random() > itemProbability && !isNeeded)
+                        if (craftingReq.campOrdinal > campOrdinal || itemDefinition.requiredCampOrdinal > campOrdinal) {
+                            itemProbability *= 0.5;
+                        }
+                        if (Math.random() > itemProbability && !isNeededIngredient) {
                             continue;
-                        var req = ItemConstants.getRequiredCampAndStepToCraft(itemDefinition);
-                        if (req.campOrdinal > campOrdinal + 2)
-                            continue;
+                        }
+                        // add item
                         var amount = Math.ceil(Math.random() * maxAmount);
                         for (var j = 0; j < amount; j++) {
                             sellItems.push(itemDefinition.clone());
@@ -349,11 +355,10 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                     value = TradeConstants.VALUE_INGREDIENTS;
                     break;
                 case ItemConstants.itemTypes.exploration:
-                    // TODO instead of hard-coded ids, check if craftable & crafting doesn't require any ingredients -> cheap
-                    if (item.id == "consumable_weapon_1")
-                        value = 0.25;
-                    else
-                        value = 0.5;
+                    value = 1;
+                    if (item.craftable) {
+                        value = this.getItemValueByCraftingIngredients(item);
+                    }
                     break;
                 case ItemConstants.itemTypes.uniqueEquipment:
                     value = 1;
@@ -374,6 +379,19 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             value = Math.round(value * 100) / 100;
                 
             return value;
+        },
+        
+        getItemValueByCraftingIngredients: function (item) {
+            var craftAction = "craft_" + item.id;
+            var costs = PlayerActionConstants.costs[craftAction];
+            let result = costs ? 0.1 * Object.keys(costs).length : 0;
+            let ingredients = ItemConstants.getIngredientsToCraft(item.id);
+            for (var i = 0; i < ingredients.length; i++) {
+                let def = ingredients[i];
+                let ingredient = ItemConstants.getItemByID(def.id);
+                result += def.amount * this.getItemValue(ingredient);
+            }
+            return result;
         },
         
         getBlueprintValue: function (upgradeID) {
