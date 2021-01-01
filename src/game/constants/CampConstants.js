@@ -64,7 +64,7 @@ define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
         REPUTATION_PENALTY_TYPE_LEVEL_POP: "LEVEL_POPULATION",
         
         // raids
-        CAMP_BASE_DEFENCE: 5,
+        CAMP_BASE_DEFENCE: 7,
         FORTIFICATION_1_DEFENCE: 6,
         FORTIFICATION_2_DEFENCE: 10,
         

@@ -9,13 +9,13 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 		},
 		
 		OCCURRENCE_CAMP_TRADER_LENGTH: 60 * 5,
-		OCCURRENCE_CAMP_TRADER_COOLDOWN: 60 * 10,
+		OCCURRENCE_CAMP_TRADER_COOLDOWN: 60 * 15,
 		OCCURRENCE_CAMP_TRADER_VARIATION: 60 * 70,
 		OCCURRENCE_CAMP_TRADER_START: 60,
 		OCCURRENCE_CAMP_TRADER_VARIATION_START: 60 * 3,
 		
 		OCCURRENCE_CAMP_RAID_LENGTH: 10,
-		OCCURRENCE_CAMP_RAID_COOLDOWN: 60 * 15,
+		OCCURRENCE_CAMP_RAID_COOLDOWN: 60 * 20,
 		OCCURRENCE_CAMP_RAID_VARIATION: 60 * 60,
 		
 		getTimeToNext: function (occurrenceType, isNew, upgradeFactor, campPopulation, campMaxPopulation, numCamps) {
@@ -36,7 +36,7 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
     					minimumTime = this.OCCURRENCE_CAMP_TRADER_COOLDOWN;
     					baseTime = this.OCCURRENCE_CAMP_TRADER_VARIATION;
                     }
-                    numCampsFactor = 1 / (Math.ceil(numCamps / 5)); // decreasing 1 (numcamps 1-5) -> 0.33 (numCamps 11-15)
+                    numCampsFactor = 1 / (Math.ceil(numCamps / 4)); // decreasing frequency when lots of camps
 					break;
 				
 				case this.campOccurrenceTypes.raid:
@@ -73,7 +73,6 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
         getRaidDangerPoints: function (improvements) {
 			var dangerPoints = 0;
 			dangerPoints += improvements.getTotal(improvementTypes.camp);
-			dangerPoints -= improvements.getCount(improvementNames.home);
             dangerPoints -= improvements.getCount(improvementNames.fortification);
             dangerPoints -= improvements.getCount(improvementNames.fortification2);
             return dangerPoints * 0.9;
@@ -93,12 +92,14 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 		},
         
         getFortificationsDefencePoints: function (improvements) {
-			var regularFortifications = improvements.getCount(improvementNames.fortification);
-            var improvedFortifications = improvements.getCount(improvementNames.fortification2);
+			var regularFortifications = improvements.getCount(improvementNames.fortification) || 0;
+            var improvedFortifications = improvements.getCount(improvementNames.fortification2) || 0;
             return regularFortifications * CampConstants.FORTIFICATION_1_DEFENCE + improvedFortifications * CampConstants.FORTIFICATION_2_DEFENCE;
         },
         
         getSoldierDefencePoints: function (soldiers, soldierLevel) {
+            soldiers = soldiers || 0;
+            soldierLevel = soldierLevel || 0;
             return soldiers * CampConstants.getSoldierDefence(soldierLevel);
         },
 	
