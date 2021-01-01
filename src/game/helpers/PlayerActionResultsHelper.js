@@ -219,15 +219,11 @@ define([
             
             if (localeVO.type !== localeTypes.tradingpartner && localeVO.type != localeTypes.grove) {
                 // population and followers
-                if (localeCategory === "u") {
-                    if (this.nearestCampNodes.head && campOrdinal > 1) {
-                        rewards.gainedPopulation = Math.random() < 0.05 ? 1 : 0;
-                    }
-                } else {
-                    if (this.nearestCampNodes.head && campOrdinal > 1) {
-                        rewards.gainedPopulation = Math.random() < 0.2 ? 1 : 0;
-                    }
+                if (localeCategory !== "u") {
                     rewards.gainedFollowers = this.getRewardFollowers(0.1);
+                    if (rewards.gainedFollowers.length == 0 && this.nearestCampNodes.head && campOrdinal > 1) {
+                        rewards.gainedPopulation = Math.random() < 0.1 ? 1 : 0;
+                    }
                 }
                 
                 // items and resources
