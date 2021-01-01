@@ -277,7 +277,7 @@ define([
 				var inventoryAmount = this.traderTotalItems[itemID] - selectedAmount;
 				UIConstants.updateItemSlot(this.traderInventoryLis[itemID], inventoryAmount);
 				UIConstants.updateItemSlot(this.traderOfferLis[itemID], selectedAmount);
-				traderOfferValue += selectedAmount * TradeConstants.getItemValue(item, true);
+				traderOfferValue += selectedAmount * TradeConstants.getItemValue(item, true, false);
 				visibleLisTraderInventory += inventoryAmount > 0 ? 1 : 0;
 				visibleLisTraderOffer += selectedAmount > 0 ? 1 : 0;
 			}
@@ -289,7 +289,7 @@ define([
 				var inventoryAmount = this.campTotalItems[itemID] - selectedAmount;
 				UIConstants.updateItemSlot(this.campInventoryLis[itemID], inventoryAmount);
 				UIConstants.updateItemSlot(this.campOfferLis[itemID], selectedAmount);
-				campOfferValue += selectedAmount * TradeConstants.getItemValue(item);
+				campOfferValue += selectedAmount * TradeConstants.getItemValue(item, false, true);
 				visibleLisCampInventory += inventoryAmount > 0 ? 1 : 0;
 				visibleLisCampOffer += selectedAmount > 0 ? 1 : 0;
 			}

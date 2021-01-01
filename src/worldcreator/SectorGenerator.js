@@ -586,7 +586,7 @@ define([
                 var maxCurrencyStashes = levelVO.isCampable ? 1 : 3;
                 var numCurrencyStashes = WorldCreatorRandom.randomInt(700 + seed % 7 * 1112 + (l+7) * 3412, minCurrencyStashes, maxCurrencyStashes + 1);
                 if (numCurrencyStashes > 0) {
-                    var itemValues = requiredEquipment.map(item => TradeConstants.getItemValue(item)).sort();
+                    var itemValues = requiredEquipment.map(item => TradeConstants.getItemValue(item, false, false)).sort();
                     var minItemValue = Math.ceil(itemValues[0]);
                     var maxItemValue = Math.ceil(itemValues[itemValues.length - 1] * 1.5);
                     var currencyAmount = [minItemValue, maxItemValue];

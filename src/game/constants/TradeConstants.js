@@ -293,9 +293,9 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             switch (name) {
                 case resourceNames.water: value = 0.01; break;
                 case resourceNames.food: value = 0.01; break;
-                case resourceNames.metal: value = 0.005; break;
+                case resourceNames.metal: value = 0.01; break;
                 
-                case resourceNames.rope: value = 0.02; break;
+                case resourceNames.rope: value = 0.015; break;
                 case resourceNames.fuel: value = 0.02; break;
 
                 case resourceNames.medicine: value = 0.05; break;
@@ -310,7 +310,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             return value;
         },
         
-        getItemValue: function (item, isTrader) {
+        getItemValue: function (item, isTrader, isUsed) {
             var value = 0;
             switch (item.type) {
                 case ItemConstants.itemTypes.light:
@@ -335,11 +335,12 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
                     value = Math.max(0.1, (item.getTotalBonus() / 12));
                     break;
                 case ItemConstants.itemTypes.shoes:
-                    var shoeBonus = item.getTotalBonus(ItemConstants.itemBonusTypes.movement);
-                    value = Math.pow(((shoeBonus)*5), 2);
+                    var shoeBonus = 1 - item.getBonus(ItemConstants.itemBonusTypes.movement);
+                    var otherBonus = item.getTotalBonus() - shoeBonus;
+                    value = Math.pow(((shoeBonus)*5), 2) + otherBonus / 10;
                     break;
                 case ItemConstants.itemTypes.bag:
-                    value = Math.pow(((item.getTotalBonus() - 25) / 20), 1.5);
+                    value = Math.pow(((item.getTotalBonus() - 25) / 15), 1.75);
                     break;
                 case ItemConstants.itemTypes.follower:
                     value = 0;
@@ -367,7 +368,7 @@ function (Ash, ItemConstants, UpgradeConstants, BagConstants, TradingPartnerVO, 
             
             if (isTrader)
                 value = value + value * TradeConstants.VALUE_MARKUP_INCOMING_CARAVANS;
-            else
+            else if (isUsed)
                 value = value - value * TradeConstants.VALUE_DISCOUNT_CAMP_ITEMS;
             
             value = Math.round(value * 100) / 100;
