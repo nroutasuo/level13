@@ -52,7 +52,7 @@ define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
         PRODUCTION_FAVOUR_PER_WORKER_PER_S: 0.00075,
         
         // reputation
-        REPUTATION_TO_POPULATION_FACTOR: 0.82,
+        REPUTATION_TO_POPULATION_FACTOR: 0.83,
         REPUTATION_TO_POPULATION_OFFSET: -0.25,
         REPUTATION_PER_RADIO_PER_SEC: 0.1,
         REPUTATION_PER_HOUSE_FROM_GENERATOR: 0.3,
