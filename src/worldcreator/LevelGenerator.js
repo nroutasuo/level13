@@ -124,8 +124,13 @@ define([
         },
         
         getSeaPadding: function (seed, levelVO) {
+            var bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
+            var isBottomLevel = bottomLevel == levelVO.level;
             var s1 = 5000 + seed % 1000 + (levelVO.level + 5) * 471;
             var min = Math.floor(levelVO.level / 7);
+            if (isBottomLevel) {
+                min = 3;
+            }
             var max = Math.max(min + 3, 3);
             var result = WorldCreatorRandom.randomInt(s1, min, max);
             return result;
