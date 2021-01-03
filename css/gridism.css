@@ -142,8 +142,6 @@
 		right: -10em !important;
 		width: 9em !important;
 	}
-    
-	div.popup { max-width: 80% !important }
 
     .popup .inventorybox ul {
         width: 370px !important; /* 8 * 46px (li width) + padding */
@@ -191,6 +189,8 @@
 	width: 100% !important;
 	max-width: 100% !important;
 	margin: 0px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 
     .popup .inventorybox ul {
