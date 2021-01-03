@@ -86,10 +86,10 @@
 .align-right  { text-align: right; }
 .pull-left    { float: left; }
 .pull-right   { float: right; }
-.limit-height { 
-	height:100%; 
+.limit-height {
+	height:100%;
 	position: fixed;
-	overflow-y: hidden; 
+	overflow-y: hidden;
 	overflow-x: overlay;
 	width: 22%;
 }
@@ -118,7 +118,7 @@
 		padding-left: 5px !important;
 	}
   
-	.limit-height { 
+	.limit-height {
 		max-height: 200px;
 		width: 100%;
 		max-width: 100% !important;
@@ -132,7 +132,7 @@
 		width: 100% !important;
 		max-width: 100% !important;
 		left: 0;
-		top: inherit !important; 
+		top: inherit !important;
 	}
 	dl {
 		padding: 0 10em 0 0 !important;
@@ -162,7 +162,6 @@
   }
   
 	ul#switch-tabs li {
-		display: list-item;
 		border-radius: 0px 0px 0px 0px;
 		-webkit-border-radius: 0px 0px 0px 0px;
 		-moz-border-radius: 0px 0px 0px 0px;
@@ -171,7 +170,7 @@
 		top: 0;
 	}
   
-	ul#switch-tabs li.selected {  
+	ul#switch-tabs li.selected {
 		padding-bottom: 7px;
 	}
 	
