@@ -111,6 +111,7 @@ define([
                 sys.updateAll();
             });
             GlobalSignals.add(this, GlobalSignals.movementBlockerClearedSignal, this.updateAll);
+            GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 			this.rebuildVis();
             this.updateUnlockedFeatures();
 		},
@@ -129,6 +130,10 @@ define([
                     this.rebuildVis();
 			}
 		},
+        
+        slowUpdate: function () {
+			this.updateOutImprovementsStatus();
+        },
 
 		updateAll: function () {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
@@ -143,6 +148,7 @@ define([
             this.updateLevelPageActions();
             this.updateUnlockedFeatures();
 			this.updateOutImprovementsList();
+			this.updateOutImprovementsStatus();
         },
 
         updateUnlockedFeatures: function () {
@@ -160,7 +166,6 @@ define([
 			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
             var isScouted = sectorStatus.scouted;
 
-			this.updateOutImprovementsStatus(hasCamp, improvements);
             this.updateNap(isScouted, hasCampHere);
             this.updateDespair(hasCampHere);
 		},
@@ -575,7 +580,10 @@ define([
 			GameGlobals.uiFunctions.toggle("#out-improvements-camp", sectorStatus.canBuildCamp);
         },
 
-        updateOutImprovementsStatus: function(hasCamp, improvements) {
+        updateOutImprovementsStatus: function () {
+            var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
+			var hasCamp = GameGlobals.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
+        
 			var collectorFood = improvements.getVO(improvementNames.collector_food);
 			var collectorWater = improvements.getVO(improvementNames.collector_water);
 			var collectorFoodCapacity = collectorFood.storageCapacity.food * collectorFood.count;

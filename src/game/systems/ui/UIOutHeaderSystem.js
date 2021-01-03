@@ -163,6 +163,8 @@ define([
 			this.updateItems(false, isInCamp);
 			this.updateResources();
             this.updateItemStats();
+            
+            GameGlobals.uiFunctions.updateCallouts("ul#list-items-perks");
         },
         
         updateGameVersion: function () {
@@ -414,9 +416,6 @@ define([
                 $("#perk-header-" + perk.id + " .info-callout-target").attr("description", desc);
                 $("#perk-header-" + perk.id + " .info-callout-target").toggleClass("event-ending", perk.effectTimer >= 0 && perk.effectTimer < 5);
             }
-            
-            // TODO performance bottleneck - don't call every frame? only if timed perks?
-            GameGlobals.uiFunctions.updateCallouts("ul#list-items-perks");
 		},
 
 		updateResources: function () {

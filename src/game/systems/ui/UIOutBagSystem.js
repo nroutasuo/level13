@@ -484,6 +484,7 @@ define([
 
         onInventoryChanged: function () {
             if (GameGlobals.gameState.uiStatus.isHidden) return;
+            if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.bag) return;
             this.updateItems();
             this.updateUseItems();
             this.updateCrafting();
