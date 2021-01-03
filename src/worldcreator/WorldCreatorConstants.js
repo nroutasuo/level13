@@ -48,9 +48,9 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
             var result = 200;
             if (campOrdinal < 2)
                 result = 110;
-            if (campOrdinal < WorldConstants.CAMPS_BEFORE_GROUND)
+            else if (campOrdinal < WorldConstants.CAMPS_BEFORE_GROUND)
                 result = 170;
-            if (campOrdinal < 12)
+            else if (campOrdinal < 12)
                 result = 190;
             if (isSmall) {
                 result = result * 0.5;
