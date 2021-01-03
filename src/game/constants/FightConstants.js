@@ -18,9 +18,9 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
         HIT_STUN_TIME: 0.25,
         
         // applies both to enemy and player damage and makes fights to faster (with fewer hits)
-        FIGHT_DAMAGE_BASE: 18,
+        FIGHT_DAMAGE_BASE: 16,
         // applies to both enemy and player and makes fights go faster (less time between hits)
-        FIGHT_SPEED_FACTOR: 1,
+        FIGHT_SPEED_FACTOR: 1.2,
         
         PARTICIPANT_TYPE_FRIENDLY: 0,
         PARTICIPANT_TYPE_ENEMY: 1,
