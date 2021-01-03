@@ -1001,6 +1001,11 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 		unlock_item_clothing3: true
                 	}
                 },
+                craft_shoe_l14: {
+                	upgrades: {
+                		unlock_action_clear_waste_t: true
+                	}
+                },
                 craft_clothing_lower_3: {
                 	upgrades: {
                 		unlock_item_clothing3: true
@@ -1028,7 +1033,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
                 craft_weapon3: {
                 	upgrades: {
-                		unlock_building_smithy: true
+                		unlock_item_weapon3: true
                 	}
                 },
                 craft_bag_2: {
@@ -1078,7 +1083,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 	}
                 },
                 craft_clothing_lower_15: {
-                    
                 	upgrades: {
                 		unlock_clothing_basic: true
                 	}
@@ -1441,6 +1445,9 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 
                 unlock_item_weapon4: {
                 	blueprint: 8,
+                	upgrades: {
+                		unlock_building_smithy: true,
+                	}
                 },
 
                 unlock_item_clothing5: {
@@ -1500,14 +1507,14 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 	}
                 },
 
-                unlock_action_clear_waste_r: {
-                	blueprint: 6,
+                unlock_building_smithy: {
+                	blueprint: 7,
                 	upgrades: {
                 		upgrade_building_library: true,
                 	}
                 },
 
-                unlock_building_smithy: {
+                unlock_action_clear_waste_r: {
                 	blueprint: 6,
                 	upgrades: {
                 		upgrade_building_library: true,
@@ -1519,6 +1526,10 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 	upgrades: {
                 		unlock_item_shoe1: true,
                 	}
+                },
+
+                unlock_item_weapon3: {
+                	blueprint: 6,
                 },
 
                 unlock_item_firstaid: {
@@ -1552,7 +1563,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 	blueprint: 5,
                 	upgrades: {
                 		unlock_clothing_basic: true,
-                		unlock_item_clothing2: true,
                 	}
                 },
 
@@ -2233,7 +2243,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 craft_weapon3: {
                     resource_metal: 100,
                     resource_rope: 10,
-                    resource_tools: 2,
                     item_res_tape: 1,
                     item_res_bottle: 1,
                 },
@@ -2499,47 +2508,47 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     item_res_leather: 10,
                     item_res_bands: 5,
                 },
-                
+                                
                 unlock_item_clothing5l: {
-                	rumours: 17182,
+                	rumours: 17291,
                 },
 
                 unlock_item_clothing8: {
-                	rumours: 17898,
+                	rumours: 18011,
                 },
 
                 unlock_item_weapon8: {
                 	evidence: 87,
-                	favour: 402,
+                	favour: 403,
                 },
 
                 unlock_building_ceiling: {
                 	evidence: 65,
-                	favour: 301,
+                	favour: 302,
                 },
 
                 unlock_building_spaceship1: {
-                	rumours: 17898,
+                	rumours: 18011,
                 	evidence: 109,
                 },
 
                 unlock_building_spaceship2: {
-                	rumours: 21477,
+                	rumours: 21613,
                 	evidence: 131,
                 },
 
                 unlock_building_spaceship3: {
-                	rumours: 21477,
+                	rumours: 21613,
                 	evidence: 131,
                 },
 
                 unlock_item_bag_4: {
                 	evidence: 77,
-                	favour: 253,
+                	favour: 254,
                 },
 
                 improve_building_market3: {
-                	rumours: 13207,
+                	rumours: 13307,
                 	evidence: 96,
                 	favour: 317,
                 },
@@ -2553,12 +2562,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_item_weapon7: {
-                	rumours: 15848,
+                	rumours: 15968,
                 	evidence: 116,
                 },
 
                 upgrade_building_hospital: {
-                	rumours: 8981,
+                	rumours: 9049,
                 },
 
                 upgrade_building_apothecary: {
@@ -2571,12 +2580,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_building_radio: {
-                	rumours: 14084,
+                	rumours: 14204,
                 	evidence: 112,
                 },
 
                 unlock_itemclothing_lower_45: {
-                	rumours: 14084,
+                	rumours: 14204,
                 	favour: 131,
                 },
 
@@ -2593,7 +2602,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_item_scavenger_gear: {
-                	rumours: 11024,
+                	rumours: 11144,
                 },
 
                 upgrade_worker_chemist: {
@@ -2602,7 +2611,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 upgrade_building_shrine: {
-                	rumours: 8819,
+                	rumours: 8915,
                 	favour: 126,
                 },
 
@@ -2612,20 +2621,20 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_item_clothing6: {
-                	rumours: 2737,
+                	rumours: 2770,
                 },
 
                 upgrade_building_storage2: {
-                	rumours: 3041,
+                	rumours: 3078,
                 	evidence: 99,
                 },
 
                 upgrade_building_fortifications: {
-                	rumours: 3041,
+                	rumours: 3078,
                 },
 
                 unlock_item_clothing3h: {
-                	rumours: 2737,
+                	rumours: 2770,
                 	favour: 51,
                 },
 
@@ -2635,17 +2644,17 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_item_bag3: {
-                	rumours: 1896,
+                	rumours: 1924,
                 	evidence: 57,
                 },
 
                 unlock_item_weapon5: {
-                	rumours: 2529,
+                	rumours: 2565,
                 	evidence: 76,
                 },
 
                 unlock_building_aqueduct: {
-                	rumours: 3034,
+                	rumours: 3078,
                 	favour: 76,
                 },
 
@@ -2654,7 +2663,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 upgrade_building_library2: {
-                	rumours: 2782,
+                	rumours: 2822,
                 	evidence: 83,
                 },
 
@@ -2663,36 +2672,36 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 upgrade_building_temple2: {
-                	favour: 12,
+                	favour: 11,
                 },
 
                 upgrade_worker_trapper: {
-                	favour: 12,
+                	favour: 11,
                 },
 
                 unlock_building_barracks: {
-                	rumours: 2652,
+                	rumours: 2692,
                 	evidence: 119,
                 },
 
                 upgrade_building_campfire: {
-                	rumours: 2387,
+                	rumours: 2423,
                 	evidence: 107,
                 	favour: 10,
                 },
 
                 upgrade_building_inn: {
-                	rumours: 2652,
-                	favour: 12,
+                	rumours: 2692,
+                	favour: 11,
                 },
 
                 upgrade_building_market2: {
-                	rumours: 2652,
-                	favour: 12,
+                	rumours: 2692,
+                	favour: 11,
                 },
 
                 unlock_item_clothingl14: {
-                	rumours: 977,
+                	rumours: 1000,
                 	favour: 5,
                 },
 
@@ -2701,12 +2710,12 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_item_clothing5: {
-                	rumours: 977,
+                	rumours: 1000,
                 	evidence: 79,
                 },
 
                 unlock_item_clothing3: {
-                	rumours: 782,
+                	rumours: 800,
                 },
 
                 unlock_action_clear_waste_t: {
@@ -2715,67 +2724,71 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_building_greenhouse: {
-                	rumours: 977,
+                	rumours: 1000,
                 	favour: 5,
                 },
 
                 upgrade_outgoing_caravans: {
-                	rumours: 826,
+                	rumours: 846,
                 },
 
                 unlock_item_clothing_hands_25: {
-                	rumours: 775,
+                	rumours: 793,
                 },
 
                 upgrade_building_storage1: {
-                	evidence: 109,
+                	evidence: 86,
                 },
 
                 unlock_building_passage_hole: {
-                	evidence: 80,
+                	evidence: 63,
                 },
 
                 unlock_building_house2: {
-                	rumours: 1291,
-                	evidence: 91,
-                },
-
-                unlock_action_clear_waste_r: {
-                	rumours: 1010,
-                	evidence: 54,
+                	rumours: 1321,
+                	evidence: 72,
                 },
 
                 unlock_building_smithy: {
-                	evidence: 67,
+                	evidence: 72,
+                },
+
+                unlock_action_clear_waste_r: {
+                	rumours: 781,
+                	evidence: 71,
                 },
 
                 unlock_item_bag22: {
-                	evidence: 59,
+                	evidence: 78,
+                },
+
+                unlock_item_weapon3: {
+                	rumours: 781,
                 },
 
                 unlock_item_firstaid: {
-                	rumours: 1010,
+                	rumours: 781,
                 },
 
                 upgrade_worker_collector1: {
-                	rumours: 1262,
+                	rumours: 977,
                 },
 
                 unlock_building_cementmill: {
-                	evidence: 59,
+                	evidence: 78,
                 },
 
                 upgrade_building_market: {
-                	rumours: 251,
+                	rumours: 260,
                 },
 
                 unlock_item_clothing4h: {
-                	rumours: 188,
+                	rumours: 195,
                 	evidence: 51,
                 },
 
                 unlock_building_passage_elevator: {
-                	rumours: 251,
+                	rumours: 260,
                 	evidence: 68,
                 },
 
@@ -2784,11 +2797,11 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_item_weapon25: {
-                	rumours: 251,
+                	rumours: 260,
                 },
 
                 upgrade_building_library: {
-                	rumours: 213,
+                	rumours: 260,
                 },
 
                 unlock_building_beacon: {
@@ -2800,17 +2813,17 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                 },
 
                 unlock_item_weapon2: {
-                	rumours: 274,
+                	rumours: 280,
                 	evidence: 42,
                 },
 
                 upgrade_worker_scavenger: {
-                	rumours: 343,
+                	rumours: 350,
                 	evidence: 52,
                 },
 
                 unlock_outgoing_caravans: {
-                	rumours: 377,
+                	rumours: 385,
                 },
 
                 unlock_building_library: {

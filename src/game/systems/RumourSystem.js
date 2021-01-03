@@ -50,7 +50,7 @@ define([
 					improvementsComponent = campNode.entity.get(SectorImprovementsComponent);
                     
 					var accSpeedPopulation = CampConstants.RUMOURS_PER_POP_PER_SEC_BASE * Math.floor(campNode.camp.population) * GameConstants.gameSpeedCamp;
-					var accSpeedCampfire = GameGlobals.campHelper.getCamprifeRumourGenerationPerSecond(improvementsComponent, campfireUpgradeLevel, accSpeedPopulation);
+					var accSpeedCampfire = GameGlobals.campHelper.getCampfireRumourGenerationPerSecond(improvementsComponent, campfireUpgradeLevel, accSpeedPopulation);
                     var accSpeedMarket = GameGlobals.campHelper.getMarketRumourGenerationPerSecond(improvementsComponent, marketUpgradeLevel, accSpeedPopulation);
 					var accSpeedInn = GameGlobals.campHelper.getInnRumourGenerationPerSecond(improvementsComponent, innUpgradeLevel, accSpeedPopulation);
                     
