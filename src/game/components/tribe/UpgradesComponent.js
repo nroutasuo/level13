@@ -80,6 +80,11 @@ function (Ash, UpgradeConstants, UpgradeVO, BlueprintVO) {
             var blueprintVO = this.getBlueprint(upgradeId);
             return blueprintVO && blueprintVO.completed && this.newBlueprints.indexOf(blueprintVO) >= 0;
         },
+        
+        hasUnfinishedBlueprint: function (upgradeId) {
+            var blueprintVO = this.getBlueprint(upgradeId);
+            return blueprintVO;// && !blueprintVO.completed && this.newBlueprints.indexOf(blueprintVO) >= 0;
+        },
 
         getUnfinishedBlueprints: function () {
             var unfinished = [];

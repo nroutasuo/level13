@@ -11,10 +11,11 @@ define([
     
     var UpgradeStatusEnum = {
         HIDDEN: 0,
-        BLUEPRINT_USABLE: 1,
-        VISIBLE: 2,
-        UNLOCKABLE: 3,
-        UNLOCKED: 4,
+        BLUEPRINT_IN_PROGRESS: 1,
+        BLUEPRINT_USABLE: 2,
+        VISIBLE: 3,
+        UNLOCKABLE: 4,
+        UNLOCKED: 5,
     };
     
     var UIOutUpgradesSystem = Ash.System.extend({
@@ -72,12 +73,13 @@ define([
         },
 
         updateBubble: function () {
-			var blueprintsNum = this.numCurrentNewBlueprints;
+            var completedBlueprintsNum = Math.max(0, this.getCurrentCompletableCount());
+			var newBlueprintsNum = this.numCurrentNewBlueprints;
 			var upgradesNum = this.numCurrentResearchableUpgrades - this.numShownResearchableUpgrades;
-            var newBubbleNumber = blueprintsNum + upgradesNum;
+            var newBubbleNumber = completedBlueprintsNum + newBlueprintsNum + upgradesNum;
             if (this.bubbleNumber === newBubbleNumber)
                 return;
-            this.bubbleNumber = blueprintsNum + upgradesNum;
+            this.bubbleNumber = newBubbleNumber;
             $("#switch-upgrades .bubble").text(this.bubbleNumber);
             GameGlobals.uiFunctions.toggle("#switch-upgrades .bubble", this.bubbleNumber > 0);
         },
@@ -124,6 +126,7 @@ define([
 						$("#upgrades-list").append(tr);
                         break;
                     case UpgradeStatusEnum.BLUEPRINT_USABLE:
+                    case UpgradeStatusEnum.BLUEPRINT_IN_PROGRESS:
 						var tr = this.getUpgradeTR(upgradeDefinition, status);
 							$("#blueprints-list").append(tr);
                         break;
@@ -175,6 +178,21 @@ define([
                 $("#upgrade-details-effect").text(this.getEffectDescription(this.vis.selectedID, false));
             }
         },
+        
+        getCurrentCompletableCount: function () {
+            if (!this.tribeNodes.head) return 0;
+            var count = 0;
+			for (var i = 0; i < this.tribeNodes.head.upgrades.newBlueprints.length; i++) {
+                var blueprintVO = this.tribeNodes.head.upgrades.newBlueprints[i];
+                if (blueprintVO.completed) continue;
+                if (this.tribeNodes.head.upgrades.hasUpgrade(blueprintVO.upgradeId)) continue;
+                var actionName = "create_blueprint_" + blueprintVO.upgradeId;
+                var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
+                if (reqsCheck.value < 1) continue;
+                if (blueprintVO.currentPieces === blueprintVO.maxPieces) count++;
+            }
+            return count;
+        },
             
         onTabChanged: function () {
             var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.upgrades;
@@ -206,6 +224,8 @@ define([
                 return UpgradeStatusEnum.VISIBLE;
             if (this.tribeNodes.head.upgrades.hasNewBlueprint(id))
                 return UpgradeStatusEnum.BLUEPRINT_USABLE;
+            if (this.tribeNodes.head.upgrades.hasUnfinishedBlueprint(id))
+                return UpgradeStatusEnum.BLUEPRINT_IN_PROGRESS;
                 
             return UpgradeStatusEnum.HIDDEN;
         },
@@ -234,18 +254,30 @@ define([
                 case UpgradeStatusEnum.BLUEPRINT_USABLE:
 			         buttonTD = "<td class='minwidth'><button class='action' action='unlock_upgrade_" + upgradeDefinition.id + "'>unlock</button></td>";
                      break;
+                case UpgradeStatusEnum.BLUEPRINT_IN_PROGRESS:
+                    var blueprintVO = this.tribeNodes.head.upgrades.getBlueprint(upgradeDefinition.id);
+                    var piecesTD = "<td style='text-align:left'>";
+                    for (var j = 0; j < blueprintVO.maxPieces; j++) {
+                        var icon = j < blueprintVO.currentPieces ? UIConstants.getBlueprintPieceIcon(blueprintVO.upgradeId) : "";
+                        var classes = "blueprint-piece-box" + (j < blueprintVO.currentPieces ? " blueprint-piece-box-found" : " blueprint-piece-box-missing");
+                        piecesTD += "<div class='" + classes + "'>" + icon + "</div>";
+                    }
+                    piecesTD += "</td>";
+                    descriptionTD = piecesTD;
+                    iconTD = "<td class='hide-on-mobiles list-amount'>" + blueprintVO.currentPieces + " / " + blueprintVO.maxPieces + "</td>";
+                    buttonTD = "<td class='list-action'><button class='action multiline' action='create_blueprint_" + upgradeDefinition.id + "'>Combine</button></td>";
+                    break;
                 default:
 		            buttonTD = "<td></td>";
                     break;
             }
-
 			return "<tr data-upgrade-id='" + upgradeDefinition.id + "' data-status='" + status + "'>" + nameTD + "" + descriptionTD + "" + iconTD + "" + buttonTD + "</tr>";
 		},
 
 		getEffectDescription: function (upgradeId, status) {
 			var effects = "";
 
-			if (status == UpgradeStatusEnum.BLUEPRINT_USABLE) {
+			if (status == UpgradeStatusEnum.BLUEPRINT_USABLE || status == UpgradeStatusEnum.BLUEPRINT_IN_PROGRESS) {
 				effects = "";
 			} else {
 				var unlockedBuildings = GameGlobals.upgradeEffectsHelper.getUnlockedBuildings(upgradeId);
