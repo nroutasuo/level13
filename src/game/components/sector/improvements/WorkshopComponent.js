@@ -1,12 +1,16 @@
 // marks the sector as having a workshop and defines the resource associated with the workshop
-// only added to clearable workshops that already exist on the map, not workshops that the player can build (greenhouse)
+// a workshop can be clearable (fight enemies to use) or buildable (requires building project to use)
 define(['ash'], function (Ash) {
     var WorkshopComponent = Ash.Class.extend({
         
         resource: null,
+        isClearable: false,
+        isBuildable: false,
         
-        constructor: function (resourceName) {
+        constructor: function (resourceName, isClearable, isBuildable) {
 			this.resource = resourceName;
+            this.isClearable = isClearable;
+            this.isBuildable = isBuildable;
         },
         
     });

@@ -197,7 +197,7 @@ define([
             
             var result = [];
             if (sector.has(CampComponent)) result.push("camp");
-            if (sector.has(WorkshopComponent)) result.push("workshop");
+            if (sector.has(WorkshopComponent) && sector.get(WorkshopComponent).isClearable) result.push("workshop");
             if (improvements.getCount(improvementNames.greenhouse)) result.push("greenhouse");
             if (!hasCampOnLevel && sectorFeatures.canHaveCamp()) result.push("good place for camp");
             if (sectorPassages.passageUp) {

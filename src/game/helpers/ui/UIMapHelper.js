@@ -336,10 +336,10 @@ function (Ash, CanvasUtils,
             if (!isRevealed && !this.isMapRevealed) {
                 hasIcon = true;
                 ctx.drawImage(this.icons["unknown" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosYCentered);
-            } else if (sector.has(WorkshopComponent)) {
+            } else if (sector.has(WorkshopComponent) && sector.get(WorkshopComponent).isClearable) {
                 hasIcon = true;
                 ctx.drawImage(this.icons["workshop" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
-            } else if (sectorImprovements.getCount(improvementNames.greenhouse)) {
+            } else if (sectorImprovements.getCount(improvementNames.greenhouse) > 0) {
                 hasIcon = true;
                 ctx.drawImage(this.icons["workshop" + (useSunlitImage ? "-sunlit" : "")], iconPosX, iconPosY);
             } else if (sector.has(CampComponent)) {

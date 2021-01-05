@@ -658,10 +658,8 @@ define([
             // buildable workshops
             if (featuresComponent.sunlit) {
                 if (improvementsComponent.getCount(improvementNames.greenhouse) <= 0) {
-                    var hazards = GameGlobals.sectorHelper.getEffectiveHazards(featuresComponent, statusComponent);
-                    var hasHazards = hazards.hasHazard("poison") || hazards.hasHazard("radiation");
-                    var hasWater = featuresComponent.resourcesScavengable.water > 0 || featuresComponent.resourcesCollectable.water > 0 || featuresComponent.hasSpring;
-                    if (!hasHazards && hasWater) {
+                    let workshopComponent = sectorEntity.get(WorkshopComponent);
+                    if (workshopComponent && workshopComponent.resource == resourceNames.herbs) {
                         projects.push(new LevelProjectVO(new ImprovementVO(improvementNames.greenhouse), "build_out_greenhouse", sectorPosition));
                     }
                 }
@@ -734,7 +732,8 @@ define([
 			featuresComponent = sectorEntity.get(SectorFeaturesComponent);
 			sectorControlComponent = sectorEntity.get(SectorControlComponent);
 			if (sectorEntity.has(WorkshopComponent)) {
-				if (!sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)) {
+                let workshopComponent = sectorEntity.get(WorkshopComponent);
+				if (workshopComponent.isClearable && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)) {
 					count++;
 				}
 			}

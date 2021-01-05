@@ -546,7 +546,7 @@ define(['ash',
 				}
                 
 				var workshopComponent = sector.get(WorkshopComponent);
-				if (workshopComponent) {
+				if (workshopComponent && workshopComponent.isClearable) {
 					found = true;
 					logMsg += "<br/>Found " + Text.addArticle(TextConstants.getWorkshopName(workshopComponent.resource));
 				}

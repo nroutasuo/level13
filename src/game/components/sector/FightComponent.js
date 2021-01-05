@@ -28,6 +28,10 @@ define(['ash', 'game/vos/FightItemEffectsVO'], function (Ash, FightItemEffectsVO
             this.nextTurnPlayer = 0;
         },
         
+        isActive: function () {
+            return !this.finished && !this.finishedPending && !this.fled;
+        },
+        
         addItemUsed: function (itemID) {
             if (!this.itemsUsed[itemID])
                 this.itemsUsed[itemID] = 0;

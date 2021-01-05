@@ -201,9 +201,9 @@ define([
             GameGlobals.uiFunctions.toggle("#out-action-use-spring", isScouted && featuresComponent.hasSpring);
             GameGlobals.uiFunctions.toggle("#out-action-investigate", GameGlobals.gameState.unlockedFeatures.investigate);
 
-            var showWorkshop = isScouted && workshopComponent != null && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)
+            var showWorkshop = isScouted && workshopComponent != null && workshopComponent.isClearable && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP)
             GameGlobals.uiFunctions.toggle("#out-action-clear-workshop", showWorkshop);
-            if (workshopComponent) {
+            if (showWorkshop) {
                 var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
                 this.elements.btnClearWorkshop.find(".btn-label").text("scout " + workshopName);
             }
@@ -352,7 +352,7 @@ define([
 
 			if (hasCampHere) description += "There is a <span class='hl-functionality'>camp</span> here. ";
 
-			if (isScouted && workshopComponent) {
+			if (isScouted && workshopComponent && workshopComponent.isClearable) {
 				var workshopName = TextConstants.getWorkshopName(workshopComponent.resource);
                 var workshopControl = sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP);
                 var workshopStatus = workshopControl ? "cleared for use" : "not cleared";

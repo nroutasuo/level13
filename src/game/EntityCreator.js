@@ -199,9 +199,9 @@ define([
 					LastVisitedCampComponent
 				]));
 
-			if (sectorFeatures.hasClearableWorkshop) {
-				sector.add(new WorkshopComponent(sectorFeatures.workshopResource));
-			}
+            if (sectorFeatures.hasWorkshop) {
+	             sector.add(new WorkshopComponent(sectorFeatures.workshopResource, sectorFeatures.hasClearableWorkshop, sectorFeatures.hasBuildableWorkshop));
+            }
 
 			this.engine.addEntity(sector);
 			return sector;
