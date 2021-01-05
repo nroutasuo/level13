@@ -195,12 +195,18 @@ define([
              //WorldCreatorLogger.i("passage position " + level + " " + furthest1 + " - " + furthest2 + " -> middle: " + averagePos + " -> maxPathLength: " + maxPathLength + ", startPathLength: " + startPathLength + ", maxDiff: " + maxDiff + ", minDiff: " + minDiff);
             
             // select random sector around averagePos
-            var rseed = seed % 1000 + 7 + (level+13)*101;
-            var result = WorldCreatorRandom.randomSectorPositionWithCheck(
-                rseed, "passage down pos " + level, level, maxDiff, averagePos, minDiff,
-                (pos) => WorldGenerator.isValidPassageDownPos(seed, pos, features, passageUp, campPos1, campPos2)
-            );
-            return result;
+            let candidates = [];
+            for (let i = 0; i < 5; i++) {
+                var rseed = seed % (1000 - i * 99) + 7 + (level + 13) * 101;
+                var candidate = WorldCreatorRandom.randomSectorPositionWithCheck(
+                    rseed, "passage down pos " + level, level, maxDiff, averagePos, minDiff,
+                    (pos) => WorldGenerator.isValidPassageDownPos(seed, pos, features, passageUp, campPos1, campPos2)
+                );
+                let score = PositionConstants.getDistanceTo(candidate, averagePos);
+                candidates.push({ result: candidate, score: score });
+            }
+            candidates.sort(function (a, b) { return a.score - b.score; });
+            return candidates[0].result;
             
         },
         
