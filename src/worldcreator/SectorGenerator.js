@@ -972,6 +972,9 @@ define([
             
             if (sectorVO.isCamp) {
                 sca.food = Math.max(sca.food, 3);
+                if (WorldCreatorRandom.randomBool(l * 100 + x * 377 + y * 598, 0.5)) {
+                    col.water = Math.max(col.water, 3);
+                }
                 if (isStartPosition) {
                     col.food = Math.max(sca.food, 3);
                     col.water = Math.max(sca.water, 3);
