@@ -318,17 +318,22 @@ define([
                 // bar
 				var isAnimated = $progressbar.data("animated") === true;
 				if (!isAnimated) {
-					$progressbar.data("animated", true);
 					var percent = ($progressbar.data('progress-percent') / 100);
-					var animationLength = $progressbar.data("animation-counter") > 0 ? ($progressbar.data('animation-length')) : 0;
-					var progressWrapWidth = $progressbar.width();
-					var progressWidth = percent * progressWrapWidth;
-					$progressbar.children(".progress-bar").stop().animate({
-						left: progressWidth
-					}, animationLength, function () {
-						$(this).parent().data("animated", false);
-						$(this).parent().data("animation-counter", $progressbar.parent().data("animation-counter") + 1);
-					});
+                    var percentShown = $progressbar.data("progress-percent-shown");
+                    if (!percentShown && percentShown !== 0) percentShown = -1;
+                    if (Math.abs(percent - percentShown) > 0.0005) {
+    					$progressbar.data("animated", true);
+    					var animationLength = $progressbar.data("animation-counter") > 0 ? ($progressbar.data('animation-length')) : 0;
+    					var progressWrapWidth = $progressbar.width();
+    					var progressWidth = percent * progressWrapWidth;
+    					$progressbar.children(".progress-bar").stop().animate({
+    						left: progressWidth
+    					}, animationLength, function () {
+    						$(this).parent().data("animated", false);
+    						$(this).parent().data("progress-percent-shown", percent);
+    						$(this).parent().data("animation-counter", $progressbar.parent().data("animation-counter") + 1);
+    					});
+                    }
 				} else {
 					$progressbar.data("animation-counter", 0);
 				}
