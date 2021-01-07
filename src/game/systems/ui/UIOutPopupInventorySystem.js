@@ -32,18 +32,17 @@ define([
 
         onNodeAdded: function (node) {
             this.pendingListUpdate = true;
+            this.pendingButtonsUpdate = true;
         },
 
         update: function () {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (!this.playerActionResultNodes.head)
                 return;
-            if (!($(".popup").is(":visible")) || $(".popup").data("fading") == true)
-                return;
-            if (!($(".popup #info-results").is(":visible")) && !($(".popup #fight-popup-results").is(":visible")))
-                return;
 
-            this.updateButtons();
+            if (this.pendingButtonsUpdate) {
+                this.updateButtons();
+            }
 
             if (this.pendingListUpdate) {
                 this.updateLists();
@@ -58,6 +57,7 @@ define([
                 var canPickSomething = rewards.gainedResources.getTotal() > 0 || rewards.gainedItems.length > 0;
                 $(".inventory-selection-ok .btn-label").text(hasPickedSomething ? "Take selected" : canPickSomething ? "Leave all" : "Continue");
                 $(".inventory-selection-ok").toggleClass("btn-secondary", !hasPickedSomething && canPickSomething);
+                this.pendingButtonsUpdate = false;
             }
         },
 
@@ -139,6 +139,7 @@ define([
                 }
 
                 sys.updateLists();
+                sys.pendingButtonsUpdate = true;
             };
 
             this.addItemsToLists(rewards, playerAllItems);
