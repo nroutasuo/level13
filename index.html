@@ -300,10 +300,10 @@
                                 </tr>
                             </table>
                             <div id="out-actions-movement" class="actionbox">
-                            <button class="action action-location" id="out-action-enter" action="enter_camp">Enter camp</button>
-                            <button class="action btn-icon" id="out-action-move-up" action="move_level_up"><span>Move up</span></button>
-                            <button class="action btn-icon" id="out-action-move-down" action="move_level_down"><span>Move down</span></button>
-                            <button class="action btn-icon" id="out-action-move-camp" action="move_camp_level"><span>Back to camp</span></button>
+                            <button class="action action-location tabbutton" data-tab="switch-out" id="out-action-enter" action="enter_camp">Enter camp</button>
+                            <button class="action btn-icon tabbutton" data-tab="switch-out" id="out-action-move-up" action="move_level_up"><span>Move up</span></button>
+                            <button class="action btn-icon tabbutton" data-tab="switch-out" id="out-action-move-down" action="move_level_down"><span>Move down</span></button>
+                            <button class="action btn-icon tabbutton" data-tab="switch-out" id="out-action-move-camp" action="move_camp_level"><span>Back to camp</span></button>
                             <p id="out-action-move-camp-details" class="p-meta button-detail-label">(2 blocks)</p>
                             <button class="action btn-icon" id="out-action-nap" action="nap"><span>Rest</span></button>
                             <button class="action action-location" id="out-action-despair" action="despair">Despair</button>
@@ -315,7 +315,7 @@
 								<h3>Search</h3>
 							</div>
                             <div id="out-actions" class="actionbox">
-                            <button class="action action-location" id="out-action-sca" action="scavenge">Scavenge</button>
+                            <button class="action action-location tabbutton" data-tab="switch-out" id="out-action-sca" action="scavenge">Scavenge</button>
                             <button class="action action-location" id="out-action-scout" action="scout">Scout</button>
                             <button class="action action-location" id="out-action-investigate" action="investigate">Investigate</button>
                             <button class="action action-location" id="out-action-clear-workshop" action="clear_workshop">Scout workshop</button>
@@ -583,7 +583,7 @@
 		</div>
 	</div><!-- sticky footer -->
                         
-    <div id="fight-popup" class="popup fill-on-mobiles" style="display:none">
+    <div id="fight-popup" class="popup fill-on-mobiles hidden-by-default" style="display:none">
         <h3 id="fight-title"></h3>
         <p id="fight-desc"></p>
         <div class="infobox" id="fight-popup-enemy-info">
@@ -628,7 +628,7 @@
         </div>
     </div>
     
-    <div id="inn-popup" class="popup fill-on-mobiles" style="display:none">
+    <div id="inn-popup" class="popup fill-on-mobiles hidden-by-default" style="display:none">
         <h3>Inn</h3>
         <div id="inn-popup-state-recruit">
             <p id="inn-popup-desc">Some travellers staying at the inn are willing to join your party.</p>
@@ -646,7 +646,7 @@
         </div>
     </div>
     
-    <div id="incoming-caravan-popup" class="popup popup-wide fill-on-mobiles" style="display:none">
+    <div id="incoming-caravan-popup" class="popup popup-wide fill-on-mobiles hidden-by-default" style="display:none">
         <h3>Trader</h3>
         <p id="incoming-caravan-popup-markup"></p>
         <div class="inventorybox" style="display:flex">
@@ -681,7 +681,7 @@
         </div>
     </div>
     
-    <div id="manage-save-popup" class="popup fill-on-mobiles" style="display:none">
+    <div id="manage-save-popup" class="popup fill-on-mobiles hidden-by-default" style="display:none">
         <h3>Export / import save</h3>
         <p>Export / import your save data for backup or to continue playing on another computer.<br/>Note that the game is still in alpha and updates can break your save.</p>
         <p>Your world seed: <span id="save-seed">?</span><br>Current version: <span id="save-version">?</span></p>
@@ -699,7 +699,7 @@
         </div>
     </div>
     
-    <div id="common-popup" class="popup fill-on-mobiles" style="display:none">
+    <div id="common-popup" class="popup fill-on-mobiles hidden-by-default" style="display:none">
         <h3></h3>
         <p id="common-popup-desc"></p>
         <p id="common-popup-input-container"><input class="text" autocomplete="false" autofocus="true"/></p>

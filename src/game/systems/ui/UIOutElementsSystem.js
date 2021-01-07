@@ -101,7 +101,7 @@ define([
 
         slowUpdate: function () {
             if (GameGlobals.gameState.uiStatus.isHidden) return;
-            this.updateVisibleButtonsList();
+            if (GameGlobals.gameState.uiStatus.isPaused) return;
             this.updateButtons();
         },
 
@@ -365,6 +365,7 @@ define([
 			});
 		},
 
+        // TODO performance
 		updateButtonContainer: function (button, isVisible) {
 			$(button).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");
 			var container = $(button).parent().parent(".callout-container");

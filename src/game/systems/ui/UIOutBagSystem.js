@@ -255,7 +255,7 @@ define([
 
         makeCraftingButton: function(itemDefinition) {
             var actionName = "craft_" + itemDefinition.id;
-            return "<button class='action multiline' action='" + actionName + "'>" + itemDefinition.name + "</button>";
+            return "<button class='action tabbutton multiline' action='" + actionName + "' data-tab='switch-bag'>" + itemDefinition.name + "</button>";
         },
 
         updateUseItems: function () {
@@ -371,7 +371,7 @@ define([
 						}
                         if (showCount > 0) {
                             var options = { canEquip: canEquip, isEquipped: item.equipped, canUnequip: false, canDiscard: canDiscard };
-                            var smallSlot = UIConstants.getItemSlot(itemsComponent, item, showCount, false, false, true, options);
+                            var smallSlot = UIConstants.getItemSlot(itemsComponent, item, showCount, false, false, true, options, "switch-bag");
                             $("#bag-items").append(smallSlot);
                             this.inventoryItemsBag.push(item);
                         }
@@ -441,7 +441,7 @@ define([
             }
 
             var options = { canEquip: false, isEquipped: true, canUnequip: true };
-			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemsComponent, itemVO, null, UIConstants.getItemCallout(itemVO, false, true, options), true) : "");
+			$(slot).children(".item-slot-image").html(itemVO ? UIConstants.getItemDiv(itemsComponent, itemVO, null, UIConstants.getItemCallout(itemVO, false, true, options, "switch-bag"), true) : "");
 			$(slot).children(".item-slot-name").html(itemVO ? itemVO.name.toLowerCase() : "");
 
 			GameGlobals.uiFunctions.toggle($(slot).children(".item-slot-type-empty"), itemVO === null);

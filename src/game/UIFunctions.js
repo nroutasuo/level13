@@ -63,6 +63,7 @@ define(['ash',
             
             init: function () {
 				this.generateElements();
+                this.hideElements();
 				this.registerListeners();
 				this.registerGlobalMouseEvents();
             },
@@ -331,6 +332,10 @@ define(['ash',
 					$("#container-equipment-stats").append(div);
 				}
 			},
+            
+            hideElements: function () {
+                this.toggle($(".hidden-by-default"), false);
+            },
 
 			generateTabBubbles: function () {
 				$("#switch li").append("<div class='bubble' style='display:none'>1</div>");
@@ -652,6 +657,9 @@ define(['ash',
 				$.each($(".tabelement"), function () {
 					uiFunctions.slideToggleIf($(this), null, $(this).attr("data-tab") === tabID, transitionTime, 200);
 				});
+                $.each($(".tabbutton"), function () {
+					uiFunctions.slideToggleIf($(this), null, $(this).attr("data-tab") === tabID, transitionTime, 200);
+				});
 
 				GlobalSignals.tabChangedSignal.dispatch(tabID, tabProps);
 			},
@@ -818,6 +826,12 @@ define(['ash',
                     GlobalSignals.elementToggledSignal.dispatch(element, show, signalParams);
                 }, 1);
 			},
+            
+            toggleContainer: function (element, show, signalParams) {
+				var $element = typeof (element) === "string" ? $(element) : element;
+                this.toggle($element, show, signalParams);
+                this.toggle($element.children("button"), show, signalParams);
+            },
 
 			isElementToggled: function (element) {
 				var $element = typeof (element) === "string" ? $(element) : element;
@@ -849,10 +863,18 @@ define(['ash',
 
 			isElementVisible: function (element) {
 				var $element = typeof (element) === "string" ? $(element) : element;
-				var toggled = this.isElementToggled(element);
+				var toggled = this.isElementToggled($element);
 				if (toggled === false)
 					return false;
-				return (($element).is(":visible"));
+                var $e = $element.parent();
+                while ($e && $e.length > 0) {
+                    var parentToggled = this.isElementToggled($e);
+                    if (parentToggled === false) {
+                        return false;
+                    }
+                    $e = $e.parent();
+                }
+                return (($element).is(":visible"));
 			},
 
 			stopButtonCooldown: function (button) {

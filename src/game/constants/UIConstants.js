@@ -73,8 +73,8 @@ define(['ash',
 			return div;
 		},
 
-		getItemSlot: function (itemsComponent, item, count, isLost, simple, showBagOptions, bagOptions) {
-            let itemDev = this.getItemDiv(itemsComponent, item, count, this.getItemCallout(item, false, showBagOptions, bagOptions));
+		getItemSlot: function (itemsComponent, item, count, isLost, simple, showBagOptions, bagOptions, tab) {
+            let itemDev = this.getItemDiv(itemsComponent, item, count, this.getItemCallout(item, false, showBagOptions, bagOptions, tab));
 			var imageDiv = "<div class='item-slot-image'>"+ itemDev + "</div>";
 			var liclasses = "item-slot item-slot-small lvl13-box-1 ";
 			if (simple) liclasses += "item-slot-simple";
@@ -89,7 +89,7 @@ define(['ash',
 			GameGlobals.uiFunctions.toggle($slot, count > 0);
 		},
 
-		getItemCallout: function (item, smallCallout, showBagOptions, bagOptions) {
+		getItemCallout: function (item, smallCallout, showBagOptions, bagOptions, tab) {
 			var detail = " (" + this.getItemBonusDescription(item, true, false) + ")";
 			if (detail.length < 5) detail = "";
 			var weight = BagConstants.getItemCapacity(item);
@@ -98,19 +98,27 @@ define(['ash',
 				itemCalloutContent += "</br>Weight: " + weight;
 			itemCalloutContent += "</br>" + item.description;
 			if (smallCallout) itemCalloutContent = item.name + (detail.length > 0 ? " " + detail : "");
+            
+            var makeButton = function (action, name) {
+                if (!tab) {
+                     return "<button class='action btn-narrow' action='" + action + "'>" + name + "</button>";
+                } else {
+                     return "<button class='action tabbutton btn-narrow' data-tab='" + tab + "' action='" + action + "'>" + name + "</button>";
+                }
+            };
 
 			if (showBagOptions) {
 				var options = "<div class='item-bag-options'>";
 				if (bagOptions.canEquip) {
 					var action = "equip_" + item.id;
-					options += "<button class='action btn-narrow' action='" + action + "'>Equip</button>";
+					options += makeButton(action, "Equip");
 				} else if (bagOptions.canUnequip) {
 					var action = "unequip_" + item.id;
-					options += "<button class='action btn-narrow' action='" + action + "'>Unequip</button>";
+					options += makeButton(action, "Unequip");
 				}
 				if (bagOptions.canDiscard) {
 					var action = "discard_" + item.id;
-					options += "<button class='action btn-narrow' action='" + action + "'>Discard</button>";
+					options += makeButton(action, "Discard");
 				}
 				options += "</div>";
 				itemCalloutContent += options;
