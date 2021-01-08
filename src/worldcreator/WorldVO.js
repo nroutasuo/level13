@@ -63,20 +63,23 @@ define(['ash'], function (Ash) {
             return result;
         },
         
-        getPath: function (pos1, pos2, blockedByBlockers, stage) {
-            if (!this.paths) return null;
+        getPath: function (pos1, pos2, blockedByBlockers, stage, anyPath) {
+            let map = anyPath ? this.pathsAny : this.pathsLatest;
+            if (!map) return null;
             var key = this.getPathKey(pos1, pos2, blockedByBlockers, stage);
-            return this.paths[key];
+            return map[key];
         },
         
         addPath: function (pos1, pos2, blockedByBlockers, stage, path) {
             var key = this.getPathKey(pos1, pos2, blockedByBlockers, stage);
-            if (!this.paths) this.paths = {};
-            this.paths[key] = path;
+            if (!this.pathsAny) this.pathsAny = {};
+            if (!this.pathsLatest) this.pathsLatest = {};
+            this.pathsAny[key] = path;
+            this.pathsLatest[key] = path;
         },
         
         resetPaths: function () {
-            this.paths = {};
+            this.pathsLatest = {};
             for (var l = this.topLevel; l >= this.bottomLevel; l--) {
                 var levelVO = this.levels[l];
                 levelVO.resetPaths();

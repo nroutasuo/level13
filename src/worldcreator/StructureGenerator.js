@@ -42,7 +42,7 @@ define([
             // ensure early stage is connected
             this.connectLevelSectors(worldVO, levelVO, levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_EARLY), WorldConstants.CAMP_STAGE_EARLY);
             
-            // create random shapes to fill the level (ensure EARLY stage is connected)
+            // create random shapes to fill the level
             for (var i = 0; i < stages.length; i++) {
                 var stageVO = stages[i];
                 this.generateLevelStage(seed, worldVO, levelVO, stageVO, 999);
@@ -843,7 +843,6 @@ define([
         connectNewPath: function (worldVO, levelVO, existingSectors, newSectors) {
             if (existingSectors.length < 1) return;
             if (newSectors.length < 1) return;
-            worldVO.resetPaths();
             var pathToCenter = WorldCreatorRandom.findPath(worldVO, newSectors[0].position, existingSectors[0].position, false, true);
             if (!pathToCenter) {
                 var options = this.getDefaultOptions();
@@ -865,7 +864,8 @@ define([
         connectLevelSectors: function (worldVO, levelVO, sectors, stage) {
             var center = levelVO.campPositions.length > 0 ? levelVO.campPositions[0] : levelVO.excursionStartPosition;
             var getConnectedSectors = function () {
-                return StructureGenerator.getConnectedSectors(worldVO, center, sectors, stage, 0);
+                let res = StructureGenerator.getConnectedSectors(worldVO, center, sectors, stage, 0);
+                return res;
             };
             var stageName =  (stage ? stage : "all");
             var division = getConnectedSectors();
@@ -884,7 +884,6 @@ define([
                 var pairDist = PositionConstants.getDistanceTo(pair[0].position, pair[1].position);
                 var result = this.createPathBetween(worldVO, levelVO, pair[0].position, pair[1].position, -1, options);
                 if (result.path && result.path.length > 0) {
-                    worldVO.resetPaths();
                     division = getConnectedSectors();
                     skip = 0;
                 } else {
@@ -930,16 +929,16 @@ define([
                 return { sectors: furthestPair, pathDist: furthestPathDist, stage: furthestPair[0].stage };
             }
             
+            // NOTE: getFurthestPair is a huge performance bottleneck (loops plus pathfinding), only a few tries
             var currentPair = getFurthestPair();
             var i = 0;
-            while (currentPair.pathDist > 15 && i < 100) {
+            while (currentPair.pathDist > 15 && i < 8) {
                 var options = this.getDefaultOptions({ stage: currentPair.stage });
                 var pathResult = this.createPathBetween(worldVO, levelVO, currentPair.sectors[0].position, currentPair.sectors[1].position, currentPair.pathDist, options);
                 if (pathResult.isComplete) {
                     for (var j = 0; j < pathResult.path.length; j++) {
                         pathResult.path[j].isFill = true;
                     }
-                    worldVO.resetPaths();
                 } else {
                     failedPairs.push(currentPair);
                 }
@@ -1138,7 +1137,8 @@ define([
             var knownConnectedPos = [];
             var savedByDist = 0;
             var savedByKnown = 0;
-            for (var i = 0; i < sectors.length; i++) {
+            // NOTE: WorldCreatorRandom.findPath can utilize caching more efficiently when starting from long paths, and sectors added late are more likely to be far from things
+            for (var i = sectors.length - 1; i >= 0; i--) {
                 var sector = sectors[i];
                 var dist = PositionConstants.getDistanceTo(sector.position, point);
                 if (dist <= 1) {
@@ -1151,10 +1151,11 @@ define([
                     continue;
                 }
                 if (knownConnectedPos.indexOf(sector.position) >= 0) {
+                    result.connected.push(sector);
                     savedByKnown++;
                     continue;
                 }
-                var path = WorldCreatorRandom.findPath(worldVO, sector.position, point, false, true, stage);
+                var path = WorldCreatorRandom.findPath(worldVO, sector.position, point, false, true, stage, true);
                 if (path && path.length > 0) {
                     result.connected.push(sector);
                     for (var p = 0; p < path.length; p++) {

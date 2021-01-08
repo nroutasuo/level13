@@ -6,9 +6,10 @@ define([
     'game/constants/PositionConstants',
     'game/constants/GameConstants',
     'game/constants/MovementConstants',
+    'game/constants/WorldConstants',
     'game/vos/PositionVO',
     'game/vos/PathConstraintVO'],
-function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants, MovementConstants, PositionVO, PathConstraintVO) {
+function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants, MovementConstants, WorldConstants, PositionVO, PathConstraintVO) {
 
     var WorldCreatorRandom = {
 		
@@ -319,7 +320,8 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
 			return Math.round(Math.random() * 10000);
 		},
         
-        findPath: function (worldVO, startPos, endPos, blockByBlockers, omitWarnings, stage) {
+        // anyPath: if true, not necessarily SHORTEST path, just one known to exist
+        findPath: function (worldVO, startPos, endPos, blockByBlockers, omitWarnings, stage, anyPath) {
             if (!startPos) {
                 WorldCreatorLogger.w("No start pos defined.");
             }
@@ -328,11 +330,16 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
                 WorldCreatorLogger.w("No goal pos defined.");
             }
             
-            var cachedPath = worldVO.getPath(startPos, endPos, blockByBlockers, stage);
+            if (startPos.equals(endPos)) {
+                return [];
+            }
+            
+            var cachedPath = this.getCachedPath(worldVO, startPos, endPos, blockByBlockers, stage, anyPath);
             if (cachedPath) {
+                //log.i("got cached path " + startPos + " to " + endPos);
                 return cachedPath;
             }
-             
+            
             var makePathSectorVO = function (position) {
                 if (!position) return null;
                 var levelVO = worldVO.getLevel(position.level);
@@ -383,9 +390,33 @@ function (Ash, PathFinding, WorldCreatorLogger, PositionConstants, GameConstants
             
             var result = PathFinding.findPath(startVO, goalVO, utilities, settings);
             
-            worldVO.addPath(startPos, endPos, blockByBlockers, stage, result);
+            this.addCachedPath(worldVO, startPos, endPos, blockByBlockers, stage, result);
             
             return result;
+        },
+        
+        getCachedPath: function (worldVO, startPos, endPos, blockByBlockers, stage, anyPath) {
+            let res = worldVO.getPath(startPos, endPos, blockByBlockers, stage, anyPath);
+            if (res) return res;
+            if (!stage) {
+                res = worldVO.getPath(startPos, endPos, blockByBlockers, WorldConstants.CAMP_STAGE_EARLY, anyPath)
+                    || worldVO.getPath(startPos, endPos, blockByBlockers, WorldConstants.CAMP_STAGE_LATE, anyPath);
+            }
+            return res;
+        },
+        
+        addCachedPath: function (worldVO, startPos, endPos, blockByBlockers, stage, path) {
+            if (path) {
+                // cache path and subpaths
+                for (var p = path.length; p > 0; p--) {
+                    let subPath = path.slice(0, p);
+                    let subPathEndPos = subPath[subPath.length - 1];
+                    worldVO.addPath(startPos, subPathEndPos, blockByBlockers, stage, subPath);
+                }
+            } else {
+                // only cache the fact that there is no path
+                worldVO.addPath(startPos, endPos, blockByBlockers, stage, path);
+            }
         },
         
     };

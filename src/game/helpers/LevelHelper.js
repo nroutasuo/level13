@@ -270,8 +270,9 @@ define([
                 rawResult = cachedMap;
             } else {
     			var startingPos = sectorPos.getPosition();
-    			for (var i in PositionConstants.getLevelDirections()) {
-    				var direction = PositionConstants.getLevelDirections()[i];
+                var directions = PositionConstants.getLevelDirections();
+    			for (var i in directions) {
+    				var direction = directions[i];
     				var neighbourPos = PositionConstants.getPositionOnPath(startingPos, direction, 1);
                     var neighbour = this.getSectorByPosition(neighbourPos.level, neighbourPos.sectorX, neighbourPos.sectorY);
                     rawResult[direction] = neighbour;

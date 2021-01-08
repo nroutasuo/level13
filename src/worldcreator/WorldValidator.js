@@ -136,7 +136,7 @@ define([
             var earlySectors = levelVO.sectorsByStage[WorldConstants.CAMP_STAGE_EARLY];
             if (earlySectors && earlySectors.length > 1) {
                 for (var j = 1; j < earlySectors.length; j++) {
-                    var sectorPath = WorldCreatorRandom.findPath(worldVO, earlySectors[0].position, earlySectors[j].position, false, true, WorldConstants.CAMP_STAGE_EARLY);
+                    var sectorPath = WorldCreatorRandom.findPath(worldVO, earlySectors[0].position, earlySectors[j].position, false, true, WorldConstants.CAMP_STAGE_EARLY, true);
                     if (!sectorPath || sectorPath.length < 1) {
                         return { isValid: false, reason: "early stage is not continuous on level " + levelVO.level };
                     }

@@ -1,4 +1,4 @@
-define(['ash', 'worldcreator/WorldCreatorConstants'], function (Ash, WorldCreatorConstants) {
+define(['ash'], function (Ash) {
     
     var WorldConstants = {
     
