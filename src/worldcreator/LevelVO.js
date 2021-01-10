@@ -119,7 +119,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
             var cacheKey = VOCache.getDefaultKey(sectorX, sectorY, stage);
             var cached = VOCache.getVO(this.neighboursCacheContext, cacheKey);
             if (cached) {
-                return cached;
+                return Object.assign({}, cached);
             }
             
 			var neighbours = {};
@@ -133,7 +133,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, PositionConst
 					neighbours[direction] = neighbour;
 				}
 			}
-            VOCache.addVO(this.neighboursCacheContext, cacheKey, neighbours);
+            VOCache.addVO(this.neighboursCacheContext, cacheKey, Object.assign({}, neighbours));
 			return neighbours;
 		},
         
