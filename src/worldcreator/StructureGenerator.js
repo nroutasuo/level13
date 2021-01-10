@@ -40,7 +40,7 @@ define([
             this.createRequiredPaths(seed, worldVO, levelVO);
             
             // ensure early stage is connected
-            this.connectLevelSectors(worldVO, levelVO, levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_EARLY), WorldConstants.CAMP_STAGE_EARLY);
+            this.connectLevelSectors(worldVO, levelVO, levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_EARLY), WorldConstants.CAMP_STAGE_EARLY, false);
             
             // create random shapes to fill the level
             for (var i = 0; i < stages.length; i++) {
@@ -52,8 +52,8 @@ define([
             this.createGapFills(worldVO, levelVO);
             
             // ensure whole level is connected
-            this.connectLevelSectors(worldVO, levelVO, levelVO.sectors);
-            this.connectLevelSectors(worldVO, levelVO, levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_EARLY), WorldConstants.CAMP_STAGE_EARLY);
+            this.connectLevelSectors(worldVO, levelVO, levelVO.sectors, null, true);
+            this.connectLevelSectors(worldVO, levelVO, levelVO.getSectorsByStage(WorldConstants.CAMP_STAGE_EARLY), WorldConstants.CAMP_STAGE_EARLY, true);
         },
         
         createCentralStructure: function (seed, worldVO, levelVO) {
@@ -579,12 +579,12 @@ define([
                         }
                     } else {
                         invalidPaths.push(pathCandidate);
-                        invalidPathReasons.push(validCheck.reason);
+                        invalidPathReasons.push(pathCandidate.startPos + " " + PositionConstants.getDirectionName(pathCandidate.dir) + " " + pathCandidate.len + " " + validCheck.reason);
                     }
                 }
                 
                 if (validPaths.length == 0) {
-                    return { paths: [], isValid: false, reason: "no valid paths | invalid paths: " + invalidPathReasons.length }; //+ invalidPathReasons.join(",") };
+                    return { paths: [], isValid: false, reason: "no valid paths | invalid paths: " + invalidPathReasons.join(",") };
                 }
                 
                 validPaths.sort(function (a, b) {
@@ -861,7 +861,7 @@ define([
             }
         },
         
-        connectLevelSectors: function (worldVO, levelVO, sectors, stage) {
+        connectLevelSectors: function (worldVO, levelVO, sectors, stage, errorOnFail) {
             var center = levelVO.campPositions.length > 0 ? levelVO.campPositions[0] : levelVO.excursionStartPosition;
             var getConnectedSectors = function () {
                 let res = StructureGenerator.getConnectedSectors(worldVO, center, sectors, stage, 0);
@@ -876,7 +876,10 @@ define([
                 if (attempts > 99) {
                     WorldCreatorLogger.i("disconnected sectors:");
                     WorldCreatorLogger.i(division.disconnected.map(sector => sector.position))
-                    throw new Error("couldn't connect disconnected parts of level " + levelVO.level + " stage " + stageName);
+                    if (errorOnFail) {
+                        throw new Error("couldn't connect disconnected parts of level " + levelVO.level + " stage " + stageName);
+                    }
+                    break;
                 }
             
                 WorldCreatorLogger.i("connecting disconnected parts of level " + levelVO.level + " stage " + stageName + ", division " + division.connected.length + "-" + division.disconnected.length + ", center: " + center + ", skip: " + skip);
@@ -1118,7 +1121,7 @@ define([
                 if (neighbour) {
                     var ncheck = checkNeighbours(neighbour.position);
                     if (!ncheck.isValid) {
-                        return { isValid: false, isBlocked: true, reason: "neighbour has blocking neighbours " + neighbour.position + " " + ncheck.numNeighbours + " " + ncheck.numends + " " + pendingSectors };
+                        return { isValid: false, isBlocked: true, reason: "neighbour has blocking neighbours " + neighbour.position + " " + ncheck.numNeighbours + " " + ncheck.numends + " | " + pendingSectors.join(",") };
                     }
                 }
             }
