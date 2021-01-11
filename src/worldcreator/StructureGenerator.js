@@ -801,6 +801,19 @@ define([
                 }
             }
             
+            // for longer paths, check they don't have too high average neighbour count (excluding start and end pos) (blocks parallel diagonals and some really crowded cross-paths)
+            if (isValid && result.length > 5 && !forceComplete) {
+                let totalNeighbours = 0;
+                for (let i = 1; i < result.length - 1; i++) {
+                    totalNeighbours += WorldCreatorHelper.getNeighbourCount(levelVO, result[i], result);
+                }
+                let averageNeighbours = totalNeighbours / (result.length - 2);
+                if (averageNeighbours > 3.5) {
+                    isValid = false;
+                    reason = "path has too many neighbours";
+                }
+            }
+            
             return { path: result, completed: completed, isValid: isValid, reason: reason };
         },
 
@@ -1035,7 +1048,6 @@ define([
                 var validCheck = this.isValidSectorPosition(levelVO, sectorPos, stage, options, pathPositions);
                 if (validCheck.isBlocked) {
                     return { isValid: false, reason: validCheck.reason };
-                } else {
                 }
             }
             return { isValid: true };
