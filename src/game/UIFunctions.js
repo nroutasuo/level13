@@ -371,6 +371,7 @@ define(['ash',
                 });
 
 				// Button callouts
+                // TODO performance bottleneck - detach elements to edit
 				var uiFunctions = this;
                 $.each($(scope + " div.container-btn-action"), function () {
                     var $container = $(this);
@@ -870,9 +871,11 @@ define(['ash',
 					return false;
                 var $e = $element.parent();
                 while ($e && $e.length > 0) {
-                    var parentToggled = this.isElementToggled($e);
-                    if (parentToggled === false) {
-                        return false;
+                    if (!$e.hasClass("collapsible-content")) {
+                        var parentToggled = this.isElementToggled($e);
+                        if (parentToggled === false) {
+                            return false;
+                        }
                     }
                     $e = $e.parent();
                 }
