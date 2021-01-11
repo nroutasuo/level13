@@ -743,7 +743,7 @@ define(['ash',
                     GlobalSignals.updateButtonsSignal.dispatch();
 			},
 
-			slideToggleIf: function (element, replacement, show, durationIn, durationOut) {
+			slideToggleIf: function (element, replacement, show, durationIn, durationOut, cb) {
 				var visible = this.isElementToggled(element);
 				var toggling = ($(element).attr("data-toggling") == "true");
 				var sys = this;
@@ -754,6 +754,7 @@ define(['ash',
 					$(element).slideToggle(durationIn, function () {
 						sys.toggle(element, true);
 						$(element).attr("data-toggling", "false");
+                        if (cb) cb();
 					});
 				} else if (!show && (visible == true || visible == null) && !toggling) {
 					$(element).attr("data-toggling", "true");
@@ -761,6 +762,7 @@ define(['ash',
 						if (replacement) sys.toggle(replacement, true);
 						sys.toggle(element, false);
 						$(element).attr("data-toggling", "false");
+                        if (cb) cb();
 					});
 				}
 			},

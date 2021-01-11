@@ -78,8 +78,8 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             $("#common-popup").wrap("<div class='popup-overlay' style='display:none'></div>");
             GameGlobals.uiFunctions.toggle(".popup-overlay", true);
             popUpManager.repositionPopups();
+            GameGlobals.uiFunctions.slideToggleIf($("#common-popup"), null, true, 150, 150, popUpManager.repositionPopups);
             GlobalSignals.popupOpenedSignal.dispatch("common-popup");
-            $("#common-popup").slideDown(150, popUpManager.repositionPopups);
             
             gtag('event', 'screen_view', {
                 'screen_name': "popup-common"
@@ -107,7 +107,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             if (popupManager.popupQueue.length === 0) {
                 GlobalSignals.popupClosingSignal.dispatch(id);
                 $("#" + id).data("fading", true);
-                $("#" + id).slideUp(100, function () {
+                GameGlobals.uiFunctions.slideToggleIf($("#" + id), null, false, 100, 100, function () {
                     GameGlobals.uiFunctions.toggle(".popup-overlay", false);
                     $("#" + id).unwrap();
                     $("#" + id).data("fading", false);
