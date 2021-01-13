@@ -284,26 +284,26 @@
                         <h3>Wander</h3>
                             <table id="table-out-actions-movement">
                                 <tr>
-                                    <td><button class="action btn-icon action-move" id="out-action-move-nw" action="move_sector_nw"><span>NW</span></button></td>
-                                    <td><button class="action btn-icon action-move" id="out-action-move-north" action="move_sector_north"><span>N</span></button></td>
-                                    <td><button class="action btn-icon action-move" id="out-action-move-ne" action="move_sector_ne"><span>NE</span></button></td>
+                                    <td><button class="action btn-icon action-move tabbutton" data-tab="switch-out" id="out-action-move-nw" action="move_sector_nw"><span>NW</span></button></td>
+                                    <td><button class="action btn-icon action-move tabbutton" data-tab="switch-out" id="out-action-move-north" action="move_sector_north"><span>N</span></button></td>
+                                    <td><button class="action btn-icon action-move tabbutton" data-tab="switch-out" id="out-action-move-ne" action="move_sector_ne"><span>NE</span></button></td>
                                 </tr>
                                 <tr>
-                                    <td><button class="action btn-icon action-move" id="out-action-move-west" action="move_sector_west"><span>W</span></button></td>
+                                    <td><button class="action btn-icon action-move tabbutton" data-tab="switch-out" id="out-action-move-west" action="move_sector_west"><span>W</span></button></td>
                                     <td></td>
-                                    <td><button class="action btn-icon action-move" id="out-action-move-east" action="move_sector_east"><span>E</span></button></td>
+                                    <td><button class="action btn-icon action-move tabbutton" data-tab="switch-out" id="out-action-move-east" action="move_sector_east"><span>E</span></button></td>
                                 </tr>
                                 <tr>
-                                    <td><button class="action btn-icon action-move" id="out-action-move-sw" action="move_sector_sw"><span>SW</span></button></td>
-                                    <td><button class="action btn-icon action-move" id="out-action-move-south" action="move_sector_south"><span>S</span></button></td>
-                                    <td><button class="action btn-icon action-move" id="out-action-move-se" action="move_sector_se"><span>SE</span></button></td>
+                                    <td><button class="action btn-icon action-move tabbutton" data-tab="switch-out" id="out-action-move-sw" action="move_sector_sw"><span>SW</span></button></td>
+                                    <td><button class="action btn-icon action-move tabbutton" data-tab="switch-out" id="out-action-move-south" action="move_sector_south"><span>S</span></button></td>
+                                    <td><button class="action btn-icon action-move tabbutton" data-tab="switch-out" id="out-action-move-se" action="move_sector_se"><span>SE</span></button></td>
                                 </tr>
                             </table>
                             <div id="out-actions-movement" class="actionbox">
-                            <button class="action action-location tabbutton" data-tab="switch-out" id="out-action-enter" action="enter_camp">Enter camp</button>
-                            <button class="action btn-icon tabbutton" data-tab="switch-out" id="out-action-move-up" action="move_level_up"><span>Move up</span></button>
-                            <button class="action btn-icon tabbutton" data-tab="switch-out" id="out-action-move-down" action="move_level_down"><span>Move down</span></button>
-                            <button class="action btn-icon tabbutton" data-tab="switch-out" id="out-action-move-camp" action="move_camp_level"><span>Back to camp</span></button>
+                            <button class="action action-location" data-tab="switch-out" id="out-action-enter" action="enter_camp">Enter camp</button>
+                            <button class="action btn-icon" data-tab="switch-out" id="out-action-move-up" action="move_level_up"><span>Move up</span></button>
+                            <button class="action btn-icon" data-tab="switch-out" id="out-action-move-down" action="move_level_down"><span>Move down</span></button>
+                            <button class="action btn-icon" data-tab="switch-out" id="out-action-move-camp" action="move_camp_level"><span>Back to camp</span></button>
                             <p id="out-action-move-camp-details" class="p-meta button-detail-label">(2 blocks)</p>
                             <button class="action btn-icon" id="out-action-nap" action="nap"><span>Rest</span></button>
                             <button class="action action-location" id="out-action-despair" action="despair">Despair</button>
@@ -492,7 +492,6 @@
 								<div class="subheader"><h3>Blueprints</h3></div>
 								<table id="blueprints-list" class="fullwidth">
 								</table>
-                                <p id="blueprints-list-empty-message">There are currently no blueprints in progress.</p>
 							</div>
 							<div id="world-upgrades" class="actionbox">
 								<div class="subheader"><h3>Available upgrades</h3></div>
