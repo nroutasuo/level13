@@ -1484,6 +1484,7 @@ define([
         			var sectorLocalesComponent = this.playerLocationNodes.head.entity.get(SectorLocalesComponent);
                     var i = GameGlobals.playerActionsHelper.getActionIDParam(action);
         			var localeVO = sectorLocalesComponent.locales[i];
+                    if (!localeVO) return 1;
                     switch (localeVO.type) {
                         case localeTypes.tradingPartner:
                         case localeTypes.grove:

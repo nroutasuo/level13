@@ -110,6 +110,7 @@ define([
             GlobalSignals.gameShownSignal.add(function () {
                 sys.updateAll();
             });
+            GlobalSignals.add(this, GlobalSignals.collectorCollectedSignal, this.updateOutImprovementsStatus);
             GlobalSignals.add(this, GlobalSignals.movementBlockerClearedSignal, this.updateAll);
             GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 			this.rebuildVis();
@@ -620,6 +621,7 @@ define([
                 info += "</span>";
 				$("#table-out-actions-locales").append("<tr><td>" + button + "</td><td>" + info + "</td></tr>");
 			}
+            GameGlobals.buttonHelper.updateButtonDisabledStates("#table-out-actions-locales", true);
             GameGlobals.uiFunctions.registerActionButtonListeners("#table-out-actions-locales");
             GameGlobals.uiFunctions.generateButtonOverlays("#table-out-actions-locales");
             GameGlobals.uiFunctions.generateCallouts("#table-out-actions-locales");

@@ -1632,6 +1632,7 @@ define(['ash',
 			}
 
 			GlobalSignals.inventoryChangedSignal.dispatch();
+			GlobalSignals.collectorCollectedSignal.dispatch();
 			this.forceResourceBarUpdate();
 		},
 

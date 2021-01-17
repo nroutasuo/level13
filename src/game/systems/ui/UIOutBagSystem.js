@@ -1,5 +1,6 @@
 define([
     'ash',
+    'utils/UIState',
     'game/GameGlobals',
     'game/GlobalSignals',
     'game/constants/UIConstants',
@@ -7,7 +8,7 @@ define([
     'game/constants/PlayerActionConstants',
     'game/nodes/player/ItemsNode',
     'game/components/common/PositionComponent',
-], function (Ash, GameGlobals, GlobalSignals, UIConstants, ItemConstants, PlayerActionConstants, ItemsNode, PositionComponent) {
+], function (Ash, UIState, GameGlobals, GlobalSignals, UIConstants, ItemConstants, PlayerActionConstants, ItemsNode, PositionComponent) {
 
     var UIOutBagSystem = Ash.System.extend({
 
@@ -17,7 +18,6 @@ define([
         inventoryItemsAll: [],
         inventoryItemsBag: [],
 
-		bubbleNumber: -1,
         craftableItems: -1,
         lastShownCraftableItems: -1,
 		numCraftableUnlockedUnseen: -1,
@@ -149,21 +149,18 @@ define([
         updateBubble: function () {
             var isStatIncreaseAvailable = this.isStatIncreaseAvailable();
             var numImmediatelyUsable = this.getNumImmediatelyUsable();
-            var newBubbleNumber = Math.max(0, this.numCraftableUnlockedUnseen + this.numCraftableAvailableUnseen + numImmediatelyUsable);
-            if (this.isStatIncreaseShown == isStatIncreaseAvailable && this.bubbleNumber === newBubbleNumber)
-                return;
-                
-            this.bubbleNumber = newBubbleNumber;
-            this.isStatIncreaseShown = isStatIncreaseAvailable;
-
-            if (this.isStatIncreaseShown) {
-                $("#switch-bag .bubble").text("");
-                $("#switch-bag .bubble").toggleClass("bubble-increase", true);
-            } else {
-                $("#switch-bag .bubble").text(this.bubbleNumber);
-                $("#switch-bag .bubble").toggleClass("bubble-increase", false);
-            }
-            GameGlobals.uiFunctions.toggle("#switch-bag .bubble", this.bubbleNumber > 0 || this.isStatIncreaseShown);
+            var bubbleNumber = Math.max(0, this.numCraftableUnlockedUnseen + this.numCraftableAvailableUnseen + numImmediatelyUsable);
+            var state = bubbleNumber + (isStatIncreaseAvailable ? 1000 : 0);
+            UIState.refreshState(this, "bubble-num", state, function () {
+                if (isStatIncreaseAvailable) {
+                    $("#switch-bag .bubble").text("");
+                    $("#switch-bag .bubble").toggleClass("bubble-increase", true);
+                } else {
+                    $("#switch-bag .bubble").text(bubbleNumber);
+                    $("#switch-bag .bubble").toggleClass("bubble-increase", false);
+                }
+                GameGlobals.uiFunctions.toggle("#switch-bag .bubble", bubbleNumber > 0 || isStatIncreaseAvailable);
+            });
         },
 
 		updateItems: function () {
@@ -521,8 +518,11 @@ define([
         
         isStatIncreaseAvailable: function () {
             var itemsComponent = this.itemNodes.head.items;
-			for (var i = 0; i < this.inventoryItemsBag.length; i++) {
-                var item = this.inventoryItemsBag[i];
+            var inCamp = this.itemNodes.head.entity.get(PositionComponent).inCamp;
+            var items = itemsComponent.getUnique(inCamp);
+			for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                if (item.equipped) continue;
                 if (!item.equippable) continue;
                 var comparison = itemsComponent.getEquipmentComparison(item);
                 if (comparison > 0) return true;

@@ -130,23 +130,9 @@ define([
 		},
 
 		updateButtonDisabledState: function ($button, action, buttonStatus, buttonElements) {
+            var playerVision = this.playerStatsNodes.head.vision.value;
 			var isAutoPlaying = this.autoPlayNodes.head;
-			var disabledBase = this.isButtonDisabled($button);
-			var disabledVision = this.isButtonDisabledVision($button);
-			var disabledBasic = !disabledVision && disabledBase;
-			var disabledResources = !disabledVision && !disabledBasic && this.isButtonDisabledResources($button);
-			var disabledCooldown = !disabledVision && !disabledBasic && !disabledResources && this.hasButtonCooldown($button);
-			var disabledDuration = !disabledVision && !disabledBasic && !disabledResources && !disabledCooldown && this.hasButtonDuration($button);
-			var isDisabled = disabledBasic || disabledVision || disabledResources || disabledCooldown || disabledDuration;
-            
-			$button.toggleClass("btn-disabled", isDisabled);
-			$button.toggleClass("btn-disabled-basic", disabledBasic);
-			$button.toggleClass("btn-disabled-vision", disabledVision);
-			buttonElements.container.toggleClass("btn-disabled-vision", disabledVision);
-			$button.toggleClass("btn-disabled-resources", disabledResources);
-			$button.toggleClass("btn-disabled-cooldown", disabledCooldown || disabledDuration);
-			$button.attr("disabled", isDisabled || isAutoPlaying);
-			return disabledBase || disabledVision;
+            return GameGlobals.buttonHelper.updateButtonDisabledState($button, buttonElements.container, playerVision, isAutoPlaying);
 		},
 
 		updateButtonCallout: function ($button, action, buttonStatus, buttonElements, isHardDisabled) {
@@ -162,7 +148,7 @@ define([
 			// callout content
 			var sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button);
 			var disabledReason = GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity).reason;
-			var isDisabledOnlyForCooldown = (!(disabledReason) && this.hasButtonCooldown($button));
+			var isDisabledOnlyForCooldown = (!(disabledReason) && GameGlobals.buttonHelper.hasButtonCooldown($button));
 			if (!isHardDisabled || isDisabledOnlyForCooldown) {
 				GameGlobals.uiFunctions.toggle($enabledContent, true, this.buttonCalloutSignalParams);
 				GameGlobals.uiFunctions.toggle($disabledContent, false, this.buttonCalloutSignalParams);
@@ -263,52 +249,6 @@ define([
 				buttonElements.cooldownReqs.css("width", ((costsStatus.bottleneckCostFraction) * 100) + "%");
 				buttonStatus.bottleneckCostFraction = costsStatus.bottleneckCostFraction;
 			}
-		},
-
-		hasButtonCooldown: function ($button) {
-			return ($button.attr("data-hasCooldown") === "true");
-		},
-
-		hasButtonDuration: function (button) {
-			return ($(button).attr("data-isInProgress") === "true");
-		},
-
-		isButtonDisabledVision: function ($button) {
-			var action = $button.attr("action");
-			if (action) {
-				var playerVision = this.playerStatsNodes.head.vision.value;
-				var requirements = GameGlobals.playerActionsHelper.getReqs(action);
-				if (requirements && requirements.vision) return (playerVision < requirements.vision[0]);
-			}
-			return false;
-		},
-
-		isButtonDisabled: function ($button) {
-			if ($button.hasClass("btn-meta")) return false;
-
-			if ($button.attr("data-type") === "minus") {
-				var input = $button.siblings("input");
-				return parseInt(input.val()) <= parseInt(input.attr("min"));
-			}
-
-			if ($button.attr("data-type") === "plus") {
-				var input = $button.siblings("input");
-				return parseInt(input.val()) >= parseInt(input.attr("max"));
-			}
-
-			if (!($button.hasClass("action"))) return false;
-
-			var action = $button.attr("action");
-			if (!action) return false;
-            
-			var sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button);
-			var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity);
-			return reqsCheck.value < 1 && reqsCheck.reason !== PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES;
-		},
-
-		isButtonDisabledResources: function (button) {
-			var action = $(button).attr("action");
-			return GameGlobals.playerActionsHelper.checkCosts(action, false) < 1;
 		},
 
 		updateProgressbars: function () {
