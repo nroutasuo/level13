@@ -350,14 +350,6 @@ define([
 					effects += ", ";
 				}
 
-				var improvedOccurrences = GameGlobals.upgradeEffectsHelper.getImprovedOccurrences(upgradeId);
-				if (improvedOccurrences.length > 0) {
-					for (var i in improvedOccurrences) {
-						effects += "improved " + improvedOccurrences[i];
-					}
-					effects += ", ";
-				}
-
 				if (effects.length > 0) effects = effects.slice(0, -2);
 			}
 

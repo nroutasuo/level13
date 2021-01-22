@@ -404,8 +404,8 @@ define([
         },
 
         onTabChanged: function () {
+            this.sortCampNodes();
             if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.world) {
-                this.sortCampNodes();
                 this.refresh();
             }
         },

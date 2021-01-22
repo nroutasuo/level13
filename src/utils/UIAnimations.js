@@ -24,15 +24,15 @@ define([
             return Math.abs(changePerSec - accumulationPerSec) > 0.5;
         },
         
-        animateOrSetNumber: function ($elem, animate, targetValue, suffix, roundingFunc) {
+        animateOrSetNumber: function ($elem, animate, targetValue, suffix, flipNegative, roundingFunc) {
             if (animate) {
-                UIAnimations.animateNumber($elem, targetValue, suffix, roundingFunc);
+                UIAnimations.animateNumber($elem, targetValue, suffix, flipNegative, roundingFunc);
             } else {
                 UIAnimations.setNumber($elem, targetValue, roundingFunc, suffix);
             }
         },
         
-        animateNumber: function ($elem, targetValue, suffix, roundingFunc) {
+        animateNumber: function ($elem, targetValue, suffix, flipNegative, roundingFunc) {
             let animType = "number-anim";
             let roundedTargetValue = roundingFunc(targetValue);
             let currentTargetValue = parseFloat(UIAnimations.getCurrentTarget($elem, animType));
@@ -76,6 +76,7 @@ define([
             // TODO extend to support pattenrs, like "value / max"
             
             let isNegative = diff < 0;
+            if (flipNegative) isNegative = !isNegative;
             let stepValue = numValueSteps > 1 ? diff / numValueSteps : diff;
             
             let step = 0;

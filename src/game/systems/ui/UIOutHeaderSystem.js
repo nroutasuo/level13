@@ -203,12 +203,12 @@ define([
             this.elements.valHealth.toggleClass("warning", playerStatsNode.stamina.health <= 25);
             
             var hasDeity = this.deityNodes.head != null;
-            this.updatePlayerStat("rumours", playerStatsNode.rumours, playerStatsNode.rumours.isAccumulating, playerStatsNode.rumours.value, this.elements.valRumours, this.elements.changeIndicatorRumours);
-            this.updatePlayerStat("evidence", playerStatsNode.evidence, GameGlobals.gameState.unlockedFeatures.evidence, playerStatsNode.evidence.value, this.elements.valEvidence, this.elements.changeIndicatorEvidence);
+            this.updatePlayerStat("rumours", playerStatsNode.rumours, playerStatsNode.rumours.isAccumulating, playerStatsNode.rumours.value, false, this.elements.valRumours, this.elements.changeIndicatorRumours);
+            this.updatePlayerStat("evidence", playerStatsNode.evidence, GameGlobals.gameState.unlockedFeatures.evidence, playerStatsNode.evidence.value, false, this.elements.valEvidence, this.elements.changeIndicatorEvidence);
             if (hasDeity)
-                this.updatePlayerStat("favour", this.deityNodes.head.deity, hasDeity, this.deityNodes.head.deity.favour, this.elements.valFavour, this.elements.changeIndicatorFavour);
+                this.updatePlayerStat("favour", this.deityNodes.head.deity, hasDeity, this.deityNodes.head.deity.favour, false, this.elements.valFavour, this.elements.changeIndicatorFavour);
             else
-                this.updatePlayerStat("favour", null, hasDeity, 0, this.elements.valFavour, this.elements.changeIndicatorFavour);
+                this.updatePlayerStat("favour", null, hasDeity, 0, this.elements.valFavour, false, this.elements.changeIndicatorFavour);
 
             GameGlobals.uiFunctions.toggle($("#header-tribe-container"), GameGlobals.gameState.unlockedFeatures.evidence || playerStatsNode.rumours.isAccumulating);
 
@@ -258,14 +258,14 @@ define([
             GameGlobals.uiFunctions.toggle("#stats-scavenge", showScavangeAbility);
             if (showScavangeAbility) {
     			var scavengeEfficiency = Math.round(GameGlobals.playerActionResultsHelper.getScavengeEfficiency() * 100);
-                UIAnimations.animateOrSetNumber(this.elements.valScavenge, showScavangeAbilityLastUpdate, scavengeEfficiency, "%", Math.round);
+                UIAnimations.animateOrSetNumber(this.elements.valScavenge, showScavangeAbilityLastUpdate, scavengeEfficiency, "%", false, Math.round);
     			UIConstants.updateCalloutContent("#stats-scavenge", "Increases scavenge loot<hr/>health: " + Math.round(maxStamina/10) + "<br/>vision: " + Math.round(playerVision));
                 this.updateChangeIndicator(this.elements.changeIndicatorScavenge, maxVision - shownVision, shownVision < maxVision);
             }
             this.showScavangeAbilityLastUpdate = showScavangeAbility;
 		},
         
-        updatePlayerStat: function (stat, component, isVisible, currentValue, valueElement, changeIndicatorElement) {
+        updatePlayerStat: function (stat, component, isVisible, currentValue, flipNegative, valueElement, changeIndicatorElement) {
             GameGlobals.uiFunctions.toggle("#stats-" + stat, isVisible);
             if (!isVisible) return;
             
@@ -274,7 +274,7 @@ define([
             let previousUpdate = this.previousStatsUpdates[stat] || 0;
         
             let animate = UIAnimations.shouldAnimateChange(previousValue, currentValue, previousUpdate, now, component.accumulation);
-            UIAnimations.animateOrSetNumber(valueElement, animate, currentValue, "", (v) => { return UIConstants.roundValue(v, true, false); });
+            UIAnimations.animateOrSetNumber(valueElement, animate, currentValue, "", flipNegative, (v) => { return UIConstants.roundValue(v, true, false); });
             
 			this.updateStatsCallout("", "stats-" + stat, component.accSources);
             this.updateChangeIndicator(changeIndicatorElement, component.accumulation, isVisible);
@@ -513,6 +513,7 @@ define([
                 var value = bonus;
                 var detail = itemsComponent.getCurrentBonusDesc(bonusType);
                 var isVisible = true;
+                var flipNegative = false;
                 switch (bonusType) {
                     case ItemConstants.itemBonusTypes.fight_att:
                         value = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
@@ -530,6 +531,7 @@ define([
                         let perksComponent = this.playerStatsNodes.head.perks;
                         value *= GameGlobals.sectorHelper.getBeaconMovementBonus(this.currentLocationNodes.head.entity, this.playerStatsNodes.head.perks);
                         isVisible = true;
+                        flipNegative = true;
                         break;
 
                     case ItemConstants.itemBonusTypes.light:
@@ -541,7 +543,7 @@ define([
                         isVisible = true;
                         break;
                 }
-                UIAnimations.animateNumber($("#stats-equipment-" + bonusKey + " .value"), value, "", (v) => { return UIConstants.roundValue(v, true, true); });
+                UIAnimations.animateNumber($("#stats-equipment-" + bonusKey + " .value"), value, "", flipNegative, (v) => { return UIConstants.roundValue(v, true, true); });
                 GameGlobals.uiFunctions.toggle("#stats-equipment-" + bonusKey, isVisible && value > 0);
                 UIConstants.updateCalloutContent("#stats-equipment-" + bonusKey, detail);
 

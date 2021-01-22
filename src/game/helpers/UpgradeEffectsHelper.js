@@ -197,6 +197,7 @@ define([
                 if (baseActionID.indexOf("craft") >= 0) return false;
                 if (baseActionID.indexOf("unlock_") >= 0) return false;
                 if (baseActionID.indexOf("upgrade_") >= 0) return false;
+                if (baseActionID.indexOf("use_in_") >= 0) return false;
                 return true;
             });
         },

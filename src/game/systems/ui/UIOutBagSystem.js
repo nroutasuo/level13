@@ -524,6 +524,7 @@ define([
                 var item = items[i];
                 if (item.equipped) continue;
                 if (!item.equippable) continue;
+                if (item.type == ItemConstants.itemTypes.follower) continue;
                 var comparison = itemsComponent.getEquipmentComparison(item);
                 if (comparison > 0) return true;
             }

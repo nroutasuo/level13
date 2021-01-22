@@ -49,8 +49,6 @@
         lastShownAvailableBuildingCount: 0,
         currentEvents: 0,
         lastShownEvents: 0,
-        currentPopulation: 0,
-        lastShownPopulation: 0,
 
         elements: {
             improvementRows: [],
@@ -143,10 +141,15 @@
         },
 
         updateBubble: function () {
+            var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+            if (!campComponent) return;
             var buildingNum = this.availableBuildingCount - this.lastShownAvailableBuildingCount + this.visibleBuildingCount - this.lastShownVisibleBuildingCount;
             var eventNum = this.currentEvents - this.lastShownEvents;
-            var populationNum = this.currentPopulation - this.lastShownPopulation;
-            var newBubbleNumber = buildingNum + eventNum + populationNum;
+
+            let currentPopulation = Math.floor(campComponent.population);
+            var freePopulation = campComponent.getFreePopulation();
+
+            var newBubbleNumber = buildingNum + eventNum + freePopulation;
             if (this.bubbleNumber === newBubbleNumber)
                 return;
             this.bubbleNumber = newBubbleNumber;
@@ -159,8 +162,7 @@
             var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
 			if (!campComponent) return;
 
-            this.currentPopulation = Math.floor(campComponent.population);
-            if (isActive) this.lastShownPopulation = this.currentPopulation;
+            let currentPopulation = Math.floor(campComponent.population);
 
             if (!isActive) return;
             

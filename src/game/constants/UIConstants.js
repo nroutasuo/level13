@@ -378,7 +378,7 @@ define(['ash',
 			if (visible) {
                 let $valueElement = $(id).children(".value");
                 animate = animate || UIAnimations.isAnimating($valueElement);
-                UIAnimations.animateOrSetNumber($valueElement, animate, value, "", (v) => { return UIConstants.roundValue(v, true, false); });
+                UIAnimations.animateOrSetNumber($valueElement, animate, value, "", false, (v) => { return UIConstants.roundValue(v, true, false); });
 				$(id).children(".value").toggleClass("warning", showWarning && value < 5);
 				$(id).children(".change").toggleClass("warning", change < 0);
 				GameGlobals.uiFunctions.toggle($(id).children(".change"), showChange);
