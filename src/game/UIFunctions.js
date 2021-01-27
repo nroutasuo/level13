@@ -144,6 +144,8 @@ define(['ash',
 						}
                     );
 				});
+                
+                $(document).on("keyup", this.onKeyUp);
 			},
 
 			registerGlobalMouseEvents: function () {
@@ -702,6 +704,36 @@ define(['ash',
 
 				this.updateStepperButtons("#" + $(input).parent().attr("id"));
 			},
+            
+            onKeyUp: function (e) {
+                var playerPos = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
+                if (!e.shiftKey && !playerPos.inCamp) {
+                    if (e.keyCode == 65) {
+                        GameGlobals.playerActionFunctions.startAction("move_sector_west");
+                    }
+                    if (e.keyCode == 87) {
+                        GameGlobals.playerActionFunctions.startAction("move_sector_nnorth");
+                    }
+                    if (e.keyCode == 83) {
+                        GameGlobals.playerActionFunctions.startAction("move_sector_south")
+                    }
+                    if (e.keyCode == 68) {
+                        GameGlobals.playerActionFunctions.startAction("move_sector_east")
+                    }
+                    if (e.keyCode == 81) {
+                        GameGlobals.playerActionFunctions.startAction("move_sector_nw")
+                    }
+                    if (e.keyCode == 69) {
+                        GameGlobals.playerActionFunctions.startAction("move_sector_ne")
+                    }
+                    if (e.keyCode == 90) {
+                        GameGlobals.playerActionFunctions.startAction("move_sector_sw")
+                    }
+                    if (e.keyCode == 67) {
+                        GameGlobals.playerActionFunctions.startAction("move_sector_se")
+                    }
+                }
+            },
 
 			onNumberInputKeyDown: function (e) {
 				// Allow: backspace, delete, tab, escape, enter and .
