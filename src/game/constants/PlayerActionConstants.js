@@ -40,9 +40,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     health: 80,
                     sector: {
                         scouted: true,
-                        hazards: {
-                            poison: [1, -1],
-                        }
                     },
                     busy: false,
                     upgrades: {
@@ -55,9 +52,6 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
                     health: 100,
                     sector: {
                         scouted: true,
-                        hazards: {
-                            radiation: [1, -1]
-                        }
                     },
                     busy: false,
                     upgrades: {

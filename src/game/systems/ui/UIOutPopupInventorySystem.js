@@ -39,6 +39,8 @@ define([
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
             if (!this.playerActionResultNodes.head)
                 return;
+                
+            if (!this.playerActionResultNodes.head.result.pendingResultVO) return;
 
             if (this.pendingButtonsUpdate) {
                 this.updateButtons();
@@ -53,8 +55,8 @@ define([
             var resultNode = this.playerActionResultNodes.head;
             if (resultNode) {
                 var rewards = resultNode.result.pendingResultVO;
-                var hasPickedSomething = rewards.selectedItems.length > 0 || rewards.selectedResources.getTotal() > 0 || rewards.discardedItems.length > 0 || rewards.discardedResources.getTotal() > 0;
-                var canPickSomething = rewards.gainedResources.getTotal() > 0 || rewards.gainedItems.length > 0;
+                var hasPickedSomething = rewards && (rewards.selectedItems.length > 0 || rewards.selectedResources.getTotal() > 0 || rewards.discardedItems.length > 0 || rewards.discardedResources.getTotal() > 0);
+                var canPickSomething = rewards && (rewards.gainedResources.getTotal() > 0 || rewards.gainedItems.length > 0);
                 $(".inventory-selection-ok .btn-label").text(hasPickedSomething ? "Take selected" : canPickSomething ? "Leave all" : "Continue");
                 $(".inventory-selection-ok").toggleClass("btn-secondary", !hasPickedSomething && canPickSomething);
                 this.pendingButtonsUpdate = false;
@@ -175,6 +177,8 @@ define([
 
         addItemsToLists: function (rewards, playerAllItems) {
 			var itemsComponent = this.itemNodes.head.items;
+            
+            if (!rewards) return;
 
             var lostItemCounts = {};
             var lostItemVOs = {};
@@ -260,6 +264,7 @@ define([
         },
 
         addResourcesToLists: function (rewards, resultNode) {
+            if (!rewards) return;
             // bag resources: non-discarded to kept, discarded to found
             // gained resources: non-selected to found, selected to kept
             for (var key in resourceNames) {
