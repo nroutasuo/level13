@@ -320,20 +320,20 @@ define(['ash',
 			var getItemSortVal = function (itemVO) {
 				var typeVal = 0;
 				switch (itemVO.type) {
-					case ItemConstants.itemTypes.bag: typeVal = 1; break;
-					case ItemConstants.itemTypes.light: typeVal = 2; break;
-					case ItemConstants.itemTypes.weapon: typeVal = 4; break;
-					case ItemConstants.itemTypes.clothing_over: typeVal = 5; break;
-					case ItemConstants.itemTypes.clothing_upper: typeVal = 6; break;
-					case ItemConstants.itemTypes.clothing_lower: typeVal = 7; break;
-					case ItemConstants.itemTypes.clothing_hands: typeVal = 8; break;
-					case ItemConstants.itemTypes.clothing_head: typeVal = 9; break;
-					case ItemConstants.itemTypes.shoes: typeVal = 10; break;
-					case ItemConstants.itemTypes.exploration: typeVal = 11; break;
-					case ItemConstants.itemTypes.ingredient: typeVal = 12; break;
+                    case ItemConstants.itemTypes.exploration: typeVal = 1; break;
+					case ItemConstants.itemTypes.bag: typeVal = 11; break;
+					case ItemConstants.itemTypes.light: typeVal = 12; break;
+					case ItemConstants.itemTypes.weapon: typeVal = 13; break;
+					case ItemConstants.itemTypes.clothing_over: typeVal = 14; break;
+					case ItemConstants.itemTypes.clothing_upper: typeVal = 15; break;
+					case ItemConstants.itemTypes.clothing_lower: typeVal = 16; break;
+					case ItemConstants.itemTypes.clothing_hands: typeVal = 17; break;
+					case ItemConstants.itemTypes.clothing_head: typeVal = 18; break;
+					case ItemConstants.itemTypes.shoes: typeVal = 19; break;
+					case ItemConstants.itemTypes.ingredient: typeVal = 21; break;
 					case ItemConstants.itemTypes.uniqueEquipment: typeVal = 0; break;
-					case ItemConstants.itemTypes.artefact: typeVal = 13; break;
-					case ItemConstants.itemTypes.note: typeVal = 14; break;
+					case ItemConstants.itemTypes.artefact: typeVal = 31; break;
+					case ItemConstants.itemTypes.note: typeVal = 32; break;
 					case ItemConstants.itemTypes.follower: typeVal = 0; break;
 				}
 				return typeVal * 1000 - itemVO.getTotalBonus();
