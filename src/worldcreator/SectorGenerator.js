@@ -1211,7 +1211,8 @@ define([
             
             // 2) spanw grove
             if (levelVO.level == worldVO.bottomLevel) {
-                var groveSector = WorldCreatorRandom.randomSector(seed, worldVO, levelVO, true);
+                var options = { excludingFeature: "workshopResource" };
+                var groveSector = WorldCreatorRandom.randomSectors(seed, worldVO, levelVO, 1, 2, options)[0];
                 var groveLocale = new LocaleVO(localeTypes.grove, true, false);
                 groveSector.sunlit = 1;
                 groveSector.hazards.radiation = 0;
