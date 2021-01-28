@@ -712,7 +712,7 @@ define(['ash',
                         GameGlobals.playerActionFunctions.startAction("move_sector_west");
                     }
                     if (e.keyCode == 87) {
-                        GameGlobals.playerActionFunctions.startAction("move_sector_nnorth");
+                        GameGlobals.playerActionFunctions.startAction("move_sector_north");
                     }
                     if (e.keyCode == 83) {
                         GameGlobals.playerActionFunctions.startAction("move_sector_south")
