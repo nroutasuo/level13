@@ -57,6 +57,7 @@ define([
             
             // limit tick length
             var tickTime = Math.min(totalTime, this.maxGameTickTime);
+            var playTime = Math.min(tickTime, time);
             var newPendingUpdateTime = totalTime - tickTime;
             GameGlobals.gameState.pendingUpdateTime = newPendingUpdateTime;
             
@@ -94,6 +95,9 @@ define([
             }
             
             this.engine.update(tickTime);
+            
+            GameGlobals.gameState.gameTime += tickTime;
+            GameGlobals.gameState.playTime += playTime;
         },
 
 		// Called on page load
@@ -375,7 +379,9 @@ define([
                     } catch (ex) {
                         validationResult = { isValid: false, reason: "exception: " + StringUtils.getExceptionDescription(ex).title };
                         this.logFailedWorldSeed(seed, validationResult.reason);
-                        throw ex;
+                        if (GameConstants.isDebugVersion) {
+                            throw ex;
+                        }
                     }
                     
                     // failed attempt (validation or exception)

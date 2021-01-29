@@ -81,9 +81,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
             GameGlobals.uiFunctions.slideToggleIf($("#common-popup"), null, true, 150, 150, popUpManager.repositionPopups);
             GlobalSignals.popupOpenedSignal.dispatch("common-popup");
             
-            gtag('event', 'screen_view', {
-                'screen_name': "popup-common"
-            });
+            gtag('event', 'screen_view', { 'screen_name': "popup-common" });
             
             GameGlobals.uiFunctions.generateButtonOverlays("#common-popup .buttonbox");
             GameGlobals.uiFunctions.generateCallouts("#common-popup .buttonbox");
