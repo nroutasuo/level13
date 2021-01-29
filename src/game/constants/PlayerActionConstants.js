@@ -3010,6 +3010,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
             UNAVAILABLE_REASON_BAG_FULL: "Bag full.",
             UNAVAILABLE_REASON_NOT_IN_CAMP: "Must be in camp to do this.",
             DISABLED_REASON_NOT_ENOUGH_LEVEL_POP: "Not enough people on this level.",
+            UNAVAILABLE_REASON_BUSY: "Busy",
 
             hasAction: function (action) {
                 return this.requirements[action] || this.costs[action] || this.cooldowns[action] || this.durations[action] || this.descriptions[action] || false;

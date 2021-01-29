@@ -269,7 +269,8 @@ define([
                         var reqsCheck = GameGlobals.playerActionsHelper.checkRequirements(actionName, false);
                         var isAvailable = GameGlobals.playerActionsHelper.checkAvailability(actionName, false);
                         var costsCheck = GameGlobals.playerActionsHelper.checkCosts(actionName);
-                        var showItem = isAvailable || (costsCheck >= 1 && reqsCheck.reason == PlayerActionConstants.UNAVAILABLE_REASON_NOT_IN_CAMP);
+                        var isVisibleDisabledReason = reqsCheck.reason == PlayerActionConstants.UNAVAILABLE_REASON_NOT_IN_CAMP || reqsCheck.reason.indexOf(PlayerActionConstants.UNAVAILABLE_REASON_BUSY) >= 0;
+                        var showItem = isAvailable || (costsCheck >= 1 && isVisibleDisabledReason);
                         if (showItem) {
                             itemDefinitionList.push(itemDefinition);
                         }

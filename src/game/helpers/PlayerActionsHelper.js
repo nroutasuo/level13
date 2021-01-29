@@ -436,7 +436,7 @@ define([
                         var requiredValue = requirements.busy;
                         if (currentValue !== requiredValue) {
                             var timeLeft = Math.ceil(playerActionComponent.getBusyTimeLeft());
-                            if (currentValue) reason = "Busy " + playerActionComponent.getBusyDescription() + " (" + timeLeft + "s)";
+                            if (currentValue) reason = PlayerActionConstants.UNAVAILABLE_REASON_BUSY + " " + playerActionComponent.getBusyDescription() + " (" + timeLeft + "s)";
                             else reason = "Need to be busy to do this.";
                             return { value: 0, reason: reason };
                         }

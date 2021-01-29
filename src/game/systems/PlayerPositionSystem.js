@@ -192,7 +192,6 @@ define([
             gtag('set', { 'max_level': levelOrdinal });
             gtag('event', 'reach_new_level', { event_category: 'progression', value: levelOrdinal})
 			if (levelPos !== 13) GameGlobals.gameState.unlockedFeatures.levels = true;
-			if (levelPos === GameGlobals.gameState.getGroundLevel()) GameGlobals.gameState.unlockedFeatures.favour = true;
 		},
 
         handleEnterLevel: function (levelNode, levelPos, isInitLocation) {
