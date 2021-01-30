@@ -358,6 +358,12 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
         getMinimumCampOrdinalForUpgrade: function (upgrade) {
             if (this.getMinimumCampOrdinalForUpgrade[upgrade]) return this.getMinimumCampOrdinalForUpgrade[upgrade];
             
+            if (!this.upgradeDefinitions[upgrade]) {
+                log.w("no such upgrade: " + upgrade);
+                this.getMinimumCampOrdinalForUpgrade[upgrade] = 99;
+                return 99;
+            }
+            
             // required tech
             var requiredTech = this.getRequiredTech(upgrade);
             var requiredTechCampOrdinal = 0;
