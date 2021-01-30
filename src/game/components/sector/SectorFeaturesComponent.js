@@ -15,6 +15,7 @@ define(
         wear: 0,
         damage: 0,
         sunlit: false,
+        ground: false,
         
         // pathfinding attributes
         criticalPaths: [],
@@ -29,7 +30,7 @@ define(
         resourcesScavengable: null,
         resourcesCollectable: null,
         
-        constructor: function (level, criticalPaths, zone, buildingDensity, wear, damage, sectorType, sunlit, hazards,
+        constructor: function (level, criticalPaths, zone, buildingDensity, wear, damage, sectorType, sunlit, ground, hazards,
                                campable, notCampableReason, resourcesScavengable, resourcesCollectable, hasSpring, stashes) {
             this.level = level;
             this.criticalPaths = criticalPaths;
@@ -39,6 +40,7 @@ define(
             this.damage = damage;
             this.sectorType = sectorType;
             this.sunlit = sunlit;
+            this.ground = ground;
             this.hazards = hazards;
             this.campable = campable;
             this.notCampableReason = notCampableReason;

@@ -175,6 +175,7 @@ define([
 					sectorFeatures.damage,
 					sectorFeatures.sectorType,
 					sectorFeatures.sunlit,
+                    sectorFeatures.ground,
 					sectorFeatures.hazards,
 					sectorFeatures.isCamp,
 					sectorFeatures.notCampableReason,

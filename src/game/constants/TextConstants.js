@@ -534,12 +534,20 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 		},
 		
 		getSpringName: function (featuresComponent) {
-			if (featuresComponent.wear > 6 || featuresComponent.damage > 4) {
+            let hasHazards = featuresComponent.hazards.hasHazards();
+            let type = featuresComponent.sectorType;
+            if (featuresComponent.ground && featuresComponent.buildingDensity < 6
+                 && !hasHazards && type != SectorConstants.SECTOR_TYPE_INDUSTRIAL) {
+                return "stream";
+            }
+            if (type == SectorConstants.SECTOR_TYPE_SLUM && featuresComponent.damage < 3 && featuresComponent.buildingDensity < 8) {
+                return "old well";
+            }
+            if (type != SectorConstants.SECTOR_TYPE_SLUM && type != SectorConstants.SECTOR_TYPE_MAINTENANCE && featuresComponent.wear < 5 && featuresComponent.damage < 3) {
+                return "drinking fountain";
+            }
+			if (featuresComponent.wear > 6 || featuresComponent.damage > 3) {
 				return "leaking water pipe";
-			}
-			switch (featuresComponent.sectorType) {
-				case SectorConstants.SECTOR_TYPE_SLUM:
-					return "well";
 			}
 			return "water tower";
 		},
@@ -741,6 +749,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
         DescriptionMapper.add("sector-vision", { wear: b23, damage: b0 }, "Once [a-street-past] [n-sector] with a few [an-decos] and [A] [a-building] [n-building]");
         DescriptionMapper.add("sector-vision", { wear: b33 }, "[A] [a-building] building whose original purpose is hard to determine, stripped down to bare concrete");
         DescriptionMapper.add("sector-vision", { buildingDensity: b22, wear: b33 }, "[A] [a-building] building whose original purpose is hard to determine, stripped down to concrete, with an impressive spiral staircase in the middle");
+        DescriptionMapper.add("sector-vision", { buildingDensity: b22, wear: b33 }, "[A] [a-street] corridor with remains of [an-items] from long-gone inhabitants");
         DescriptionMapper.add("sector-vision", { wear: b33 }, "[A] [a-street] [a-sectortype] [n-street] with a few large unidentifiable ruins looming over it");
         DescriptionMapper.add("sector-vision", { wear: b33 }, "A completely ruined [a-sectortype] [n-street]");
         DescriptionMapper.add("sector-vision", { wear: b33 }, "A rubble-covered [n-street] surrounded by the crumbling remains of [a-sectortype] buildings");
@@ -805,7 +814,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
         DescriptionMapper.add("sector-novision", { sunlit: true, buildingDensity: b23, wear: b22 }, "A street or corridor with an abandoned air. Details fade in the blinding light");
         DescriptionMapper.add("sector-novision", { sunlit: true, buildingDensity: b23, wear: b12 }, "A quiet street or corridor. Details fade in the sunlight");
         DescriptionMapper.add("sector-novision", { sunlit: true, buildingDensity: b33 }, "A dense passage with barely enough space to walk. You feel your way in the blinding light");
-        DescriptionMapper.add("sector-novision", { sunlit: true }, "A space inside the city, beaming in sunlight");
+        DescriptionMapper.add("sector-novision", { sunlit: true }, "A space inside the city, indistinct in the blinding light");
     }
     
     initSectorTexts();
