@@ -44,23 +44,21 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
         FEATURE_HOLE_SEA: "sea",
         FEATURE_HOLE_MOUNTAIN: "mountain",
         
-        getNumSectors: function (campOrdinal, isSmall) {
-            var result = 200;
+        getNumSectors: function (campOrdinal) {
+            let defaultBigLevel = 170;
+            let defaultSmallLevel = 85;
+            
             if (campOrdinal < 2)
-                result = 110;
-            else if (campOrdinal < WorldConstants.CAMPS_BEFORE_GROUND)
-                result = 170;
-            else if (campOrdinal < 12)
-                result = 190;
-            if (isSmall) {
-                result = result * 0.5;
-                resutl = Math.round(result / 5) * 5;
-            }
-            return result;
-        },
-        
-        getNumSectorsCentral: function (campOrdinal, isSmall) {
-            return Math.round(this.getNumSectors(campOrdinal, isSmall) * 0.8);
+                return Math.round(defaultBigLevel * 0.65);
+            if (campOrdinal == 2)
+                return Math.round(defaultBigLevel + defaultSmallLevel * 0.65);
+            if (campOrdinal < WorldConstants.CAMPS_BEFORE_GROUND)
+                return Math.round(defaultBigLevel + defaultSmallLevel * 0.65 + campOrdinal * 5);
+            if (campOrdinal == WorldConstants.CAMPS_BEFORE_GROUND)
+                return Math.round(defaultBigLevel * 2 + defaultSmallLevel * 0.65 + campOrdinal * 5); // ground and level 14 included
+            if (campOrdinal < WorldConstants.CAMPS_TOTAL)
+                return Math.round(defaultBigLevel + defaultSmallLevel * 0.65 + campOrdinal * 5);
+            return Math.round(defaultBigLevel * 1.5);
         },
         
         getMaxSectorOverflow: function (levelOrdinal) {

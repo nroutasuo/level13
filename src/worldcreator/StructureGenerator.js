@@ -381,7 +381,7 @@ define([
         
         generateLevelStage: function (seed, worldVO, levelVO, stageVO, maxAttempts) {
             var stage = stageVO.stage;
-            var numGoal = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, stageVO.stage);
+            var numGoal = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO.seed, levelVO.campOrdinal, levelVO.level, stageVO.stage);
             var numPadding = Math.floor(WorldCreatorConstants.MAX_SECTOR_COUNT_OVERFLOW / 4);
             
             // geneate random rectangles and paths

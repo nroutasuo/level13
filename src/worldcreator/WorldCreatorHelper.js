@@ -288,26 +288,59 @@ define([
             return levels.length - 1;
         },
         
-        getNumSectorsForCamp: function (seed, campOrdinal) {
-            var result = 0;
-            var levels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
-            for (var i = 0; i < levels.length; i++) {
-                var level = levels[i];
-                var isSmallLevel = WorldCreatorHelper.isSmallLevel(seed, level);
-                var numSectors = WorldCreatorConstants.getNumSectors(campOrdinal, isSmallLevel);
-                result += numSectors;
+        getNumSectorsForLevel: function (seed, level) {
+            let levelOrdinal = this.getLevelOrdinal(seed, level);
+            let campOrdinal = this.getCampOrdinal(seed, level);
+            let levels = this.getLevelsForCamp(seed, campOrdinal);
+            let numSectorsForCampOrdinal = WorldCreatorConstants.getNumSectors(campOrdinal);
+            if (levels.length == 1) return numSectorsForCampOrdinal;
+            
+            let getSizeFactor = function (l) {
+                if (WorldCreatorHelper.isSmallLevel(seed, l))
+                    return 0.5;
+                return 1;
+            };
+            let sizeFactor = getSizeFactor(level);
+            let totalSizeFactor = levels.map(level => getSizeFactor(level)).reduce((total, num) => total + num);
+            let ratio = sizeFactor / totalSizeFactor;
+            return Math.round(numSectorsForCampOrdinal * ratio);
+        },
+        
+        getNumSectorsForLevels: function (seed, levels) {
+            let result = 0;
+            for (let i = 0; i < levels.length; i++) {
+                result += this.getNumSectorsForLevel(seed, levels[i]);
             }
             return result;
         },
         
-        getNumSectorsForLevelStage: function (worldVO, levelVO, stage) {
-            var stages = worldVO.getStages(levelVO.level);
-            for (var i = 0; i < stages.length; i++) {
-                if (stages[i].stage == stage) {
-                    return levelVO.numSectors / stages.length;
-                }
+        getNumSectorsForStage: function (seed, campOrdinal, stage) {
+            var levels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
+            let result = 0;
+            for (let i = 0; i < levels.length; i++) {
+                result += WorldCreatorHelper.getNumSectorsForLevelStage(seed, campOrdinal, levels[i], stage);
             }
-            return 0;
+            return result;
+        },
+        
+        getNumSectorsForLevelStage: function (seed, campOrdinal, level, stage) {
+            var isCampableLevel = this.isCampableLevel(seed, level);
+            if (!isCampableLevel && stage == WorldConstants.CAMP_STAGE_EARLY)
+                return 0;
+            
+            let numSectorsLevel = WorldCreatorHelper.getNumSectorsForLevel(seed, level);
+            if (!isCampableLevel) {
+                return numSectorsLevel;
+            }
+            
+            var campLevels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
+            let earlyRatio = campLevels.length > 1 ? 0.6 : 0.5;
+            let numEarlySectors = Math.round(earlyRatio * numSectorsLevel);
+            if (stage == WorldConstants.CAMP_STAGE_EARLY) {
+                return numEarlySectors;
+            } else {
+                return numSectorsLevel - numEarlySectors;
+            }
         },
         
         getLevelOrdinalForCampOrdinal: function (seed, campOrdinal) {

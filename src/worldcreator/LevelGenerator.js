@@ -24,8 +24,7 @@ define([
                 var ordinal = WorldCreatorHelper.getLevelOrdinal(seed, l);
                 var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
                 var populationFactor = isCampableLevel ? WorldCreatorConstants.getPopulationFactor(campOrdinal) : 0;
-                var isSmallLevel = WorldCreatorHelper.isSmallLevel(seed, l);
-                var numSectors = WorldCreatorConstants.getNumSectors(campOrdinal, isSmallLevel);
+                var numSectors = WorldCreatorHelper.getNumSectorsForLevel(seed, l);
                 
                 var levelVO = new LevelVO(l, ordinal, campOrdinal, isCampableLevel, isHardLevel, notCampableReason, populationFactor, numSectors);
                 levelVO.campPositions = worldVO.campPositions[l];
@@ -34,8 +33,8 @@ define([
                 levelVO.passagePositions = [];
                 if (levelVO.passageUpPosition) levelVO.passagePositions.push(levelVO.passageUpPosition);
                 if (levelVO.passageDownPosition) levelVO.passagePositions.push(levelVO.passageDownPosition);
-                levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_EARLY] = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, WorldConstants.CAMP_STAGE_EARLY);
-                levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_LATE] = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO, levelVO, WorldConstants.CAMP_STAGE_LATE);
+                levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_EARLY] = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO.seed, levelVO.campOrdinal, levelVO.level, WorldConstants.CAMP_STAGE_EARLY);
+                levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_LATE] = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO.seed, levelVO.campOrdinal, levelVO.level, WorldConstants.CAMP_STAGE_LATE);
                 levelVO.stageCenterPositions = this.getStageCenterPositions(worldVO, levelVO);
                 levelVO.levelCenterPosition = this.getLevelCenterPosition(worldVO, levelVO);
                 levelVO.excursionStartPosition = this.getExcursionStartPosition(worldVO, levelVO);
