@@ -281,7 +281,7 @@ define([
             setTimeout(function () {
                 gtag('event', 'level_14_passage_up_reached', { event_category: 'progression' })
                 var msg = "You've reached the end of the current version of Level 13. ";
-                msg += "You will not be able to repair the passage up it yet. Congrats on surviving to the end!";
+                msg += "You can continue exploring this level, but it will not be possible to repair the passage up yet. Congrats on surviving to the end!";
                 msg += "<br/><br/>"
                 msg += "<span class='p-meta'>Thank you for playing this far. The developer would love to hear your feedback. You can use any of these channels:</span>";
                 msg += "<p>" + GameConstants.getFeedbackLinksHTML() + "</p>";

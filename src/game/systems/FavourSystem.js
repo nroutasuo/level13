@@ -79,7 +79,7 @@ define([
             let sys = this;
             GameGlobals.uiFunctions.showInput(
                 "Name deity",
-                "Now that you've built a temple, you should choose a name by which to call this deity.",
+                "Now that you've built a temple, you should choose a name by which to your people will call this deity.",
                 "",
                 false,
                 function (input) {

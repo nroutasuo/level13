@@ -75,7 +75,7 @@ define(
                     var amountDesc =  "scarce";
                     if (amount > 3) amountDesc = "common"
                     if (amount > 7) amountDesc = "abundant"
-                    if (GameConstants.isDebugVersion) amountDesc += " " + amount;
+                    if (GameConstants.isDebugVersion) amountDesc += " " + Math.round(amount);
                     s += key + " (" + amountDesc + "), ";
                 }
             }

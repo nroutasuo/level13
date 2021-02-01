@@ -95,6 +95,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
         MSG_ID_IMPROVED_SMITHY: "MSG_ID_IMPROVED_SMITHY",
         MSG_ID_IMPROVED_CEMENTMILL: "MSG_ID_IMPROVED_CEMENTMILL",
         MSG_ID_IMPROVED_MARKET: "MSG_ID_IMPROVED_MARKET",
+        MSG_ID_IMPROVED_TEMPLE: "MSG_ID_IMPROVED_TEMPLE",
 
         // out buildings
         MSG_ID_BUILT_PASSAGE: "BUILT_PASSAGE",
