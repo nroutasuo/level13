@@ -631,12 +631,14 @@ define([
         generateWorksops: function (seed, worldVO, levelVO) {
             var campOrdinal = levelVO.campOrdinal;
             var l = levelVO.level;
+            let levelIndex = WorldCreatorHelper.getLevelIndexForCamp(seed, campOrdinal, levelVO.level);
+            let maxLevelIndex = WorldCreatorHelper.getMaxLevelIndexForCamp(seed, campOrdinal, levelVO.level);
             
             // pick resource
             var workshopResource = null;
             if (levelVO.isCampable && campOrdinal === WorldConstants.CAMP_ORDINAL_FUEL)
                 workshopResource = "fuel";
-            if (levelVO.isCampable && (campOrdinal === WorldConstants.CAMP_ORDINAL_GREENHOUSE_1 || campOrdinal == WorldConstants.CAMP_ORDINAL_GREENHOUSE_2))
+            if (levelIndex == maxLevelIndex && (campOrdinal === WorldConstants.CAMP_ORDINAL_GREENHOUSE_1 || campOrdinal == WorldConstants.CAMP_ORDINAL_GREENHOUSE_2))
                 workshopResource = "herbs";
             if (levelVO.level == worldVO.bottomLevel)
                 workshopResource = "rubber";
@@ -870,7 +872,7 @@ define([
                     sca.food = r1 < 0.3 ? Math.round(sectorAbundanceFactor * 5 + sectorVO.wear / 2) : 0;
                     sca.water = waterRandomPart > 0.8 ? 2 : 0;
                     sca.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.95 ? 1 : 0;
-                    sca.medicine = campOrdinal > 2 && WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.99 ? 1 : 0;
+                    sca.medicine = campOrdinal > 3 && WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.99 ? 1 : 0;
                     break;
                 case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
                     sca.water = waterRandomPart > 0.9 ? 1 : 0;
@@ -878,7 +880,7 @@ define([
                     sca.tools = (l > 13) ? WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.95 ? 1 : 0 : 0;
                     sca.rope = WorldCreatorRandom.random(seed + l * x / y * 44 + 6) > 0.90 ? 1 : 0;
                     sca.fuel = WorldCreatorRandom.random(seed / (l + 5) + x * x * y + 66) > 0.90 ? 1 : 0;
-                    if (l > 13) {
+                    if (l > 14) {
                         sca.rubber = WorldCreatorRandom.random(seed / x * ll + x * y * 16) > 0.90 ? 1 : 0;
                     }
                     break;
@@ -933,7 +935,7 @@ define([
             }
             
             // define springs
-            if ((col.water > 0 || sca.water > 0) && this.canHaveSpring(sectorVO)) {
+            if ((col.water > 0 || sca.water > 0) && this.canHaveSpring(levelVO, sectorVO)) {
                 sectorVO.hasSpring =  WorldCreatorRandom.random(7777 + seed % 987 + ll * 7 + y * 71) < 0.25;
             } else {
                 sectorVO.hasSpring = false;
@@ -954,7 +956,6 @@ define([
             if (l === worldVO.bottomLevel + 1) {
                 col.food = col.food > 0 ? col.food + 1 : 0;
                 col.water = col.water > 0 ? col.water + 1 : 0;
-                sca.herbs = WorldCreatorRandom.random(seed * l / x + y * 423) * (10 - sectorVO.wear) / 2;
             }
             
             // adjustments for sector features
@@ -986,7 +987,7 @@ define([
             // adjustments for required resources
             if (sectorVO.requiredResources) {
                 if (sectorVO.requiredResources.getResource("water") > 0) {
-                    if (this.isRequiredResourceWaterSpring(sectorVO)) {
+                    if (this.isRequiredResourceWaterSpring(levelVO, sectorVO)) {
                         sectorVO.hasSpring = true;
                     } else {
                         col.water = Math.max(col.water, 3);
@@ -1534,8 +1535,8 @@ define([
             }
         },
         
-        isRequiredResourceWaterSpring: function (sectorVO) {
-            return this.canHaveSpring(sectorVO) && sectorVO.position.sectorX % 5 == 0;
+        isRequiredResourceWaterSpring: function (levelVO, sectorVO) {
+            return this.canHaveSpring(levelVO, sectorVO) && sectorVO.position.sectorX % 5 == 0;
         },
         
         isRequiredResourceFoodTrap: function (sectorVO) {
@@ -1549,9 +1550,22 @@ define([
             return isPreferredZone && sectorVO.hazards.radiation <= 0;
         },
         
-        canHaveSpring: function (sectorVO) {
+        canHaveSpring: function (levelVO, sectorVO) {
             var isStartPosition = sectorVO.position.level == 13 && sectorVO.isCamp;
-            return !isStartPosition && !sectorVO.hazards.radiation && !sectorVO.hazards.pollution;
+            if (isStartPosition) return false;
+            if (sectorVO.hazards.radiation || sectorVO.hazards.pollution) return false;
+            
+            var directions = PositionConstants.getLevelDirections();
+            var neighbours = levelVO.getNeighbours(sectorVO.position.sectorX, sectorVO.position.sectorY);
+            for (var d in directions) {
+                var direction = directions[d];
+                var neighbour = neighbours[direction];
+                if (neighbour && neighbour.hasSpring) {
+                    return false;
+                }
+            }
+            
+            return true;
         },
         
         getPassageUpType: function (seed, worldVO, levelVO, sectorVO) {

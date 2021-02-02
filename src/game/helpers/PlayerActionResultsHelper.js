@@ -699,13 +699,14 @@ define([
                 }
             }
 
-            // if result only consists of one resource, for convenience limit to free space -> can always use "take all"
+            // if result only consists of one resource and difference is not too big, for convenience limit to free space -> can always use "take all"
             var names = results.getNames();
             if (names.length === 1) {
+                var amount = results.getResource(names[0]);
                 var bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
                 var freeSpace = Math.floor(bagComponent.totalCapacity - bagComponent.usedCapacity);
-                if (freeSpace > 0) {
-                    results.setResource(names[0], Math.floor(Math.min(results.getResource(names[0]), freeSpace)));
+                if (freeSpace > 0 && freeSpace < amount / 2) {
+                    results.setResource(names[0], Math.floor(Math.min(amount, freeSpace)));
                 }
             }
 
