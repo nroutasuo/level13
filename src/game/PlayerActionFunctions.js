@@ -643,6 +643,10 @@ define(['ash',
 				sectorStatus.localesScouted[i] = true;
 				if (tradingPartner) {
                     GameGlobals.gameState.foundTradingPartners.push(tradingPartner);
+                    if (!GameGlobals.gameState.unlockedFeatures.trade) {
+                        GameGlobals.gameState.unlockedFeatures.trade = true;
+                        GlobalSignals.featureUnlockedSignal.dispatch();
+                    }
 				}
 				playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 				playerActionFunctions.save();
@@ -1104,6 +1108,10 @@ define(['ash',
 		buildStorage: function (sector) {
 			this.buildImprovement("build_in_storage", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_storage"), sector);
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_STORAGE, "Built a storage.");
+            if (!GameGlobals.gameState.unlockedFeatures.trade) {
+                GameGlobals.gameState.unlockedFeatures.trade = true;
+                GlobalSignals.featureUnlockedSignal.dispatch();
+            }
 		},
 
 		buildFortification: function () {
@@ -1181,6 +1189,10 @@ define(['ash',
 		buildMarket: function () {
 			this.buildImprovement("build_in_market", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_market"));
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_MARKET, "Built a market.");
+            if (!GameGlobals.gameState.unlockedFeatures.trade) {
+                GameGlobals.gameState.unlockedFeatures.trade = true;
+                GlobalSignals.featureUnlockedSignal.dispatch();
+            }
 		},
 
 		buildTradingPost: function () {

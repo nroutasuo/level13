@@ -41,9 +41,6 @@ define([
 			for (var node = this.campNodes.head; node; node = node.next) {
 				var improvementsComponent = node.entity.get(SectorImprovementsComponent);
 				if (improvementsComponent.getCount(improvementNames.tradepost) > 0) {
-                    if (!GameGlobals.gameState.unlockedFeatures.trade)
-                        GlobalSignals.featureUnlockedSignal.dispatch();
-					GameGlobals.gameState.unlockedFeatures.trade = true;
 					numTradePostCamps++;
 				}
 				if (improvementsComponent.getCount(improvementNames.inn) > 0) {
