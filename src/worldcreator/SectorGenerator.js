@@ -208,8 +208,12 @@ define([
             var levelOrdinal = levelVO.levelOrdinal;
             var generator = this;
             
+            var isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
+            var isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
+            
             // hazard areas (cold)
             var hasCold = levelVO.level != 14;
+            let centerRadius = isPollutedLevel || isRadiatedLevel ? 6 : 2;
             if (hasCold) {
                 for (var s = 0; s < levelVO.sectors.length; s++) {
                     // - block for certain sectors
@@ -218,7 +222,7 @@ define([
                     if (sectorVO.isOnCriticalPath(WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP)) continue;
                     var x = sectorVO.position.sectorX;
                     var y = sectorVO.position.sectorY;
-                    if (Math.abs(y) <= 2 && Math.abs(x) <= 2) continue;
+                    if (Math.abs(y) <= centerRadius && Math.abs(x) <= centerRadius) continue;
                     var distanceToCamp = WorldCreatorHelper.getQuickDistanceToCamp(levelVO, sectorVO);
                     var distanceToCampThreshold = l == 13 ? 6 : 3;
                     if (distanceToCamp < distanceToCampThreshold) continue;
@@ -263,9 +267,6 @@ define([
                 return;
             }
                 
-            var isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
-            var isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
-            
             if (!(isPollutedLevel || isRadiatedLevel)) {
                 // normal level
                 // - random clusters
