@@ -4,7 +4,7 @@ define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
     
         // population
         POPULATION_PER_HOUSE: 4,
-        POPULATION_PER_HOUSE2: 10,
+        POPULATION_PER_HOUSE2: 6,
         POOL_RUMOURS_PER_POPULATION: 3,
         
         // Storage
