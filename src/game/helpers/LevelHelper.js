@@ -290,6 +290,11 @@ define([
 
 			return result;
         },
+        
+        getNeighbour: function (sector, direction) {
+            let map = this.getSectorNeighboursMap(sector);
+            return map[direction];
+        },
 
         getCampStep: function (pos) {
             var sector = this.getSectorByPosition(pos.level, pos.sectorX, pos.sectorY);
@@ -636,7 +641,13 @@ define([
                             projects.push(new LevelProjectVO(null, "bridge_gap", sectorPosition, direction, "Gap", "bridge"));
                             break;
         				case MovementConstants.BLOCKER_TYPE_DEBRIS:
-                            projects.push(new LevelProjectVO(null, "clear_debris", sectorPosition, direction, "Debris", "clear"));
+                            let actionName = "clear_debris_e";
+                            let neighbour = this.getNeighbour(sectorEntity, direction);
+                            let neighbourFeaturesComponent = neighbour.get(SectorFeaturesComponent);
+                            if (!featuresComponent.isEarlyZone() || !neighbourFeaturesComponent.isEarlyZone()) {
+                                actionName = "clear_debris_l";
+                            }
+                            projects.push(new LevelProjectVO(null, actionName, sectorPosition, direction, "Debris", "clear"));
                             break;
                     }
                 }

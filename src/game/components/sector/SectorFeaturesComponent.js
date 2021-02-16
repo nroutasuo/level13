@@ -1,8 +1,8 @@
 // A component that describes features of a sector, both functional (ability to build stuff)
 // and purely aesthetic (description)
 define(
-    ['ash', 'game/constants/GameConstants', 'game/constants/SectorConstants', 'game/vos/ResourcesVO'],
-    function (Ash, GameConstants, SectorConstants, ResourcesVO) {
+    ['ash', 'game/constants/GameConstants', 'game/constants/SectorConstants', 'game/constants/WorldConstants', 'game/vos/ResourcesVO'],
+    function (Ash, GameConstants, SectorConstants, WorldConstants, ResourcesVO) {
     
     var SectorFeaturesComponent = Ash.Class.extend({
         
@@ -96,6 +96,10 @@ define(
             if (this.wear > 0)
                 return SectorConstants.SECTOR_CONDITION_RECENT;
             return SectorConstants.SECTOR_CONDITION_MAINTAINED;
+        },
+        
+        isEarlyZone: function () {
+            return WorldConstants.getStage(this.zone) == WorldConstants.CAMP_STAGE_EARLY;
         }
         
     });

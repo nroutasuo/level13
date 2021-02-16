@@ -63,7 +63,6 @@ function (Ash, ResourcesVO, LocaleConstants, PlayerStatConstants) {
                 case localeTypes.tradingpartner: difficulty = 0.15; break;
                 case localeTypes.hut: difficulty = 0.35; break;
                 case localeTypes.hermit: difficulty = 0.5; break;
-                case localeTypes.caravan: difficulty = 0.4; break;
                 default: return 20;
             }
             return Math.floor((minCost + (maxCost - minCost) * difficulty) / 100) * 100;
@@ -116,7 +115,6 @@ function (Ash, ResourcesVO, LocaleConstants, PlayerStatConstants) {
                 case localeTypes.camp:
                 case localeTypes.hut:
                 case localeTypes.hermit:
-                case localeTypes.caravan:
                 case localeTypes.tradingpartner:
 					return "i";
 				

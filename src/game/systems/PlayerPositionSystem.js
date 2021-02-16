@@ -209,7 +209,7 @@ define([
             if (levelPos == surfaceLevel) {
                 msg += "There is no ceiling here, the whole level is open to the elements. Sun glares down from an impossibly wide blue sky all above.";
             } else if (levelPos == groundLevel) {
-                msg += "The floor here is different, uneven, organic. But also continuous - there seems to be no way further down. There are more plants, mud, stone and signs of animal life.";
+                msg += "The floor here is different - uneven, organic, continuous. There seems to be no way further down. There are more plants, mud, stone and signs of animal life.";
             } else if (!levelComponent.isCampable) {
                 switch (levelComponent.notCampableReason) {
                     case LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION:

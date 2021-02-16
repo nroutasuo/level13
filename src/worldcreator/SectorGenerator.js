@@ -207,7 +207,7 @@ define([
             var campOrdinal = levelVO.campOrdinal;
             var levelOrdinal = levelVO.levelOrdinal;
             var generator = this;
-            
+                
             var isPollutedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
             var isRadiatedLevel = levelVO.notCampableReason === LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION;
             
@@ -266,7 +266,7 @@ define([
             if (levelOrdinal < WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_RADIATION && levelOrdinal < WorldCreatorConstants.MIN_LEVEL_ORDINAL_HAZARD_POISON) {
                 return;
             }
-                
+            
             if (!(isPollutedLevel || isRadiatedLevel)) {
                 // normal level
                 // - random clusters
@@ -1770,7 +1770,6 @@ define([
                     possibleTypes.push(localeTypes.market);
                     if (distanceToCamp > 3 && levelVO.level !== 13) {
                         possibleTypes.push(localeTypes.camp);
-                        possibleTypes.push(localeTypes.caravan);
                         possibleTypes.push(localeTypes.hermit);
                     }
                     break;
@@ -1786,7 +1785,6 @@ define([
                     possibleTypes.push(localeTypes.maintenance);
                     possibleTypes.push(localeTypes.transport);
                     possibleTypes.push(localeTypes.hermit);
-                    possibleTypes.push(localeTypes.caravan);
                     possibleTypes.push(localeTypes.sewer);
                     break;
 
@@ -1796,7 +1794,6 @@ define([
                     possibleTypes.push(localeTypes.transport);
                     possibleTypes.push(localeTypes.hut);
                     possibleTypes.push(localeTypes.hermit);
-                    possibleTypes.push(localeTypes.caravan);
                     possibleTypes.push(localeTypes.house);
                     break;
 

@@ -21,6 +21,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
                 case "clear_waste_r": return "clear radioactive waste";
                 case "clear_waste_t": return "clear toxic waste";
                 case "build_out_greenhouse": return "build greenhouse";
+                case "bridge_gap": return "bridge gap";
                 default:
                     return baseActionID;
             }
@@ -57,7 +58,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
             var type = hasVision ? "sector-vision" : "sector-novision";
             var template = DescriptionMapper.get(type, features);
             if (features.hasGrove) {
-                template = "A [a-street] park overrun by plantlife. In the middle there is a grove of mature trees. Though strange and wild, it also seems somehow peaceful";
+                template = " [A] [a-street] park overrun by plantlife. In the middle there is a grove of mature trees. Though strange and wild, it also seems somehow peaceful";
             }
             var params = this.getSectorTextParams(features);
             var phrase = TextBuilder.build(template, params);
@@ -120,18 +121,18 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
                     break;
                 case SectorConstants.SECTOR_TYPE_PUBLIC:
                     addOptions("n-sector", ["prison complex", "amusement park", "library"]);
-                    addOptions("a-street-past", [ "leisurely" ]);
+                    addOptions("a-street-past", [ "leisurely", "orderly", "cheerful" ]);
                     addOptions("n-building", [ "library", "prison", "school", "university", "park", "public square", "sports field", "metro station", "research laboratory", "government building" ]);
                     addOptions("n-buildings", [ "public buildings", "government buildings" ]);
                     addOptions("a-building", [ "empty", "inaccessible" ]);
                     addOptions("an-decos", [ "withered trees" ]);
-                    addOptions("an-items", [ "research samples" ]);
+                    addOptions("an-items", [ "research samples", "trash" ]);
                     break;
                 case SectorConstants.SECTOR_TYPE_SLUM:
                     addOptions("n-sector", [ "shanty town", "landfill site" ]);
                     addOptions("a-street-past", [ "gloomy", "crowded", "lively" ]);
                     addOptions("n-building", [ "apartment building" ]);
-                    addOptions("a-building", [ "abandoned" ]);
+                    addOptions("a-building", [ "abandoned", "sketchy" ]);
                     addOptions("n-buildings", [ "shacks", "huts", "slum residences", "residential towers that don't seem to have ever been connected to the grid" ]);
                     addOptions("an-decos", [ "collapsed shacks", "garbage piles" ]);
                     addOptions("an-items", [ "rusted pipes" ]);
@@ -149,7 +150,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
                     addOptions("n-street", [ "boulevard", "avenue" ]);
                 addOptions("a-street", [ "wide", "spacious" ]);
             } else if (features.buildingDensity < 9) {
-                addOptions("n-street", [ "street", "room", "street", "alley", "complex", "sector" ]);
+                addOptions("n-street", [ "street", "street", "alley", "complex", "sector" ]);
                 addOptions("a-street", [ "narrow" ]);
             } else {
                 addOptions("n-street", [ "corridor", "passage", "alley" ]);
@@ -161,7 +162,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
                     addOptions("a-street", [ "ruined", "crumbling" ]);
                     addOptions("n-buildings", [ "crumbling ruins" ]);
                     addOptions("n-buildings", [ "crumbling ruins" ]);
-                    addOptions("a-building", [ "ruined" ]);
+                    addOptions("a-building", [ "ruined", "skeletal" ]);
                     break;
                 case SectorConstants.SECTOR_CONDITION_DAMAGED:
                     addOptions("a-street", [ "damaged", "destroyed", "broken" ]);
@@ -180,7 +181,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
                 case SectorConstants.SECTOR_CONDITION_MAINTAINED:
                     break;
             }
-            // sunlight
+            // - sunlight
             if (features.sunlit) {
                 addOptions("a-street", [ "sunlit", "sun-swathed", "bright", "windy" ]);
                 addOptions("a-building", [ "vibrant", "sunlit" ]);
@@ -188,7 +189,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
             } else {
                 addOptions("a-street", [ "dark" ]);
             }
-            // hazards
+            // - hazards
             if (features.hazards.cold > 0) {
                 addOptions("a-street", [ "cold" ]);
             }
@@ -204,9 +205,9 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
                 addOptions("a-building", [ "polluted" ]);
                 addOptions("na-items", [ "used medical masks" ]);
             }
-            // level population
+            // - level population
             if (features.populationFactor == 0) {
-                addOptions("a-building", [ "long abandoned" ]);
+                addOptions("a-building", [ "long abandoned", "empty" ]);
                 addOptions("a-building", [ "polluted" ]);
             } else if (features.populationFactor < 1) {
                 addOptions("a-street", [ "calm" ]);
@@ -214,6 +215,17 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
             } else {
                 addOptions("a-building", [ "recently looted" ]);
                 addOptions("na-items", [ "signs of recent scavengers" ]);
+            }
+            // - level: architectural style / age
+            if (features.level < 6) {
+                addOptions("a-street", [ "ancient", "quaint" ]);
+                addOptions("a-building", [ "ancient", "obsolete", "quaint", "historical" ]);
+            } else if (features.level < 14) {
+                addOptions("a-street", [ "dated" ]);
+                addOptions("a-building", [ "dated" ]);
+            } else if (features.level < 18) {
+                addOptions("a-street", [ "modern" ]);
+                addOptions("a-building", [ "modern", "stylish", "functional" ]);
             }
             
             // 2) Build final result by selecting from options
@@ -508,12 +520,9 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
     			case localeTypes.hermit:
                     noun = "hut";
                     break;
-    			case localeTypes.caravan:
-                    modifier = "trade";
-                    noun = "caravan";
-                    break;
                 case localeTypes.library:
                     modifier = "abandoned";
+                    if (sectorFeatures.level < 10) modifier = "ancient";
                     modifier = "library";
                     break;
     			default:
@@ -730,9 +739,11 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
         DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "[A] [a-street] [n-sector] littered with [an-items] and [an-items]");
         DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "[A] [a-street] [n-street] lined with [a-building] [n-buildings]");
         DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "[A] [a-street] [n-street] surrounded by [n-buildings]");
+        DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "[A] [a-street] [n-street] surrounded by [a-buildings] [n-buildings]");
         DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "[A] [n-street] with some [an-decos] and [a-building] [n-buildings]");
         DescriptionMapper.add("sector-vision", { sectorType: wildcard }, "[A] [a-street] [n-street] between some [n-buildings]");
         DescriptionMapper.add("sector-vision", { isSurfaceLevel: false }, "[A] [n-street] at the base of an enormous pillar supporting the level above");
+        DescriptionMapper.add("sector-vision", { isSurfaceLevel: false, wear: b12 }, "[A] [a-street] [n-street] with long-abandoned buildings covered in strange moss.");
         DescriptionMapper.add("sector-vision", { buildingDensity: b0, isGroundLevel: false }, "A system of bridges and passages connecting several buildings around a dizzying opening to the level below");
         DescriptionMapper.add("sector-vision", { buildingDensity: b12, isGroundLevel: false, campable: false }, "[A] [a-street] bridge over the level below with separate levels for tram tracks, utilities and pedestrians");
         DescriptionMapper.add("sector-vision", { buildingDensity: b22 }, "Some kind of [A] [a-sectortype] complex with several narrow passages this way and that");
@@ -748,7 +759,6 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
         DescriptionMapper.add("sector-vision", { wear: b23, damage: b0 }, "A former [n-sector] with [A] [a-street-past] atmosphere lingering from its past");
         DescriptionMapper.add("sector-vision", { wear: b23, damage: b0 }, "Once [a-street-past] [n-sector] with a few [an-decos] and [A] [a-building] [n-building]");
         DescriptionMapper.add("sector-vision", { wear: b33 }, "[A] [a-building] building whose original purpose is hard to determine, stripped down to bare concrete");
-        DescriptionMapper.add("sector-vision", { buildingDensity: b22, wear: b33 }, "[A] [a-building] building whose original purpose is hard to determine, stripped down to concrete, with an impressive spiral staircase in the middle");
         DescriptionMapper.add("sector-vision", { buildingDensity: b22, wear: b33 }, "[A] [a-street] corridor with remains of [an-items] from long-gone inhabitants");
         DescriptionMapper.add("sector-vision", { wear: b33 }, "[A] [a-street] [a-sectortype] [n-street] with a few large unidentifiable ruins looming over it");
         DescriptionMapper.add("sector-vision", { wear: b33 }, "A completely ruined [a-sectortype] [n-street]");
@@ -775,6 +785,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
         DescriptionMapper.add("sector-vision", { sectorType: t_C, buildingDensity: b13 }, "A plaza under an elevated building with what must have once been a waterfall in the middle");
         DescriptionMapper.add("sector-vision", { sectorType: t_C, buildingDensity: b13 }, "[A] wide fenced terrace attached to a massive tower overlooking the [a-street] streets below");
         DescriptionMapper.add("sector-vision", { sectorType: t_C, buildingDensity: b13 }, "A round courtyard enclosed by a [a-building] office building");
+        DescriptionMapper.add("sector-vision", { sectorType: t_C, buildingDensity: b22, wear: b33 }, "[A] [a-building] building whose original purpose is hard to determine, stripped down to concrete, with an impressive spiral staircase in the middle");
         DescriptionMapper.add("sector-vision", { sectorType: t_P }, "[A] [n-street] dominated by huge building that looks like it was once a public facility of some kind");
         DescriptionMapper.add("sector-vision", { sectorType: t_P }, "A stretch of abandoned highway with some smaller buildings on the side" );
         DescriptionMapper.add("sector-vision", { sectorType: t_P, buildingDensity: b12 }, "[A] [a-street] [n-street] dominated a row of solemn statues" );

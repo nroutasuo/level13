@@ -39,11 +39,12 @@ define([
             definitions.global.push(this.createEnemy("robot from a forgotten war", "robot from a forgotten war", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aGuard, c.aInfest], [c.dDisabled], 9, 5, 0.5, 0.9, 60, [ resourceNames.metal, resourceNames.fuel ]));
             definitions.global.push(this.createEnemy("aggressive alligator", "aggressive alligator", "global", [c.nPest, c.nAnimal], [c.gPack, c.gMob], [c.aOverrun, c.aGuard, c.aInfest], [c.dCleared, c.dKilled], 10, 5, 0.3, 0.8, 75, [ resourceNames.food ]));
             definitions.global.push(this.createEnemy("drone from a forgotten war", "drone from a forgotten war", "global", [c.nPest, c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aGuard, c.aInfest], [c.dDisabled], 11, 4, 0.5, 1.25, 60, [ resourceNames.metal ]));
-            definitions.global.push(this.createEnemy("malfunctioning fire door", "malfunctioning fire door", "global", [c.nBot], [], [c.aGuard], [c.dDisabled], 11, 6, 0.1, 0.5, 65, [ resourceNames.metal ]));
+            definitions.global.push(this.createEnemy("malfunctioning fire door", "malfunctioning fire door", "global", [c.nBot], [], [c.aGuard], [c.dDisabled], 11, 4, 0.1, 0.5, 65, [ resourceNames.metal ]));
             definitions.global.push(this.createEnemy("antagonistic fire door", "antagonistic fire door", "global", [c.nBot], [], [c.aGuard], [c.dDisabled], 12, 7, 0.2, 0.5, 50, [ resourceNames.metal ]));
             // nohazard
+            
             definitions.nohazard.push(this.createEnemy("rabid dog", "rabid dog", "nohazard", [c.nPest, c.nAnimal], [c.gPack], [c.aInfest], [c.dKilled], 2, 8, 1.25, 0.6, [ resourceNames.food ]));
-            definitions.nohazard.push(this.createEnemy("gigantic spider", "gigantic spider", "nohazard", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled], 4, 5, 0.8, 1, 20, [ resourceNames.food ]));
+            definitions.nohazard.push(this.createEnemy("gigantic spider", "gigantic spider", "nohazard", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aGuard], [c.dKilled], 4, 5, 0.7, 1, 20, [ resourceNames.food ]));
             definitions.nohazard.push(this.createEnemy("fire salamander", "fire salamander", "nohazard", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gMob, c.gHorde], [c.aInfest], [c.dKilled], 6, 5, 0.6, 1, 50, [ resourceNames.food ]));
             definitions.nohazard.push(this.createEnemy("tiger snake", "tiger snake", "nohazard", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aOverrun], [c.dCleared, c.dDrive], 7, 5, 0.3, 1, 35, [ resourceNames.food ]));
             definitions.nohazard.push(this.createEnemy("haywire guard bot 1", "haywire guard bot 1", "nohazard", [c.nBot], [c.gGang, c.gSwarm, c.gMob], [c.aPatrol, c.aGuard, c.aInfest], [c.dDisabled], 12, 5, 0.2, 0.8, 50, [ resourceNames.metal, resourceNames.fuel ]));
@@ -91,12 +92,13 @@ define([
             definitions.sunlit.push(this.createEnemy("drove of boars", "drove of boars", "sunlit", [c.nAnimal], [], [], [c.dDrive], 8, 5, 1, 0.8, [ resourceNames.food ]));
             definitions.sunlit.push(this.createEnemy("swarm of pidgeons", "swarm of pidgeons", "sunlit", [c.nPest, c.nAnimal], [c.gFlock, c.gSwarm], [c.aInfest], [c.dDrive], 9, 5, 0.75, 1.1, 10, [ resourceNames.food ]));
             definitions.sunlit.push(this.createEnemy("great black pelican", "great black pelican", "sunlit", [c.nPest, c.nAnimal], [], [c.aInfest, c.aGuard], [c.dKilled, c.dDrive], 15, 5, 0.5, 0.9, 35, [ resourceNames.food ]));
-            
+            // dark
             definitions.dark.push(this.createEnemy("cockroach", "cockroach", "dark", [c.nPest, c.nAnimal], [c.gSwarm], [c.aInfest, c.aCover, c.aOverrun], [c.dCleared], 0, 1, 0.4, 2, 10, [ resourceNames.food ]));
             definitions.dark.push(this.createEnemy("cave bat", "cave bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 2, 4, 0.4, 1.1, 20, [ resourceNames.food ]));
             definitions.dark.push(this.createEnemy("ghost bat", "ghost bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 3, 6, 0.8, 1, 50, [ resourceNames.food ]));
             definitions.dark.push(this.createEnemy("vampire bat", "vampire bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 3, 5, 0.7, 1, 70, [ resourceNames.food ]));
             definitions.dark.push(this.createEnemy("albino salamander", "albino salamander", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gMob, c.gHorde], [c.aInfest], [c.dKilled], 6, 5, 0.6, 1, 50, [ resourceNames.food ]));
+            definitions.dark.push(this.createEnemy("flying fox", "flying fox", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 7, 4, 0.7, 1, 70, [ resourceNames.food ]));
             definitions.dark.push(this.createEnemy("giant albino salamander", "giant albino salamander", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gMob, c.gHorde], [c.aInfest], [c.dKilled], 9, 5, 0.6, 1, 50, [ resourceNames.food ]));
             definitions.dark.push(this.createEnemy("great vampire bat", "great vampire bat", "dark", [c.nPest, c.nAnimal], [c.gPack, c.gSwarm, c.gFlock, c.gHorde], [c.aInfest], [c.dCleared, c.dDrive], 10, 5, 0.7, 1, 70, [ resourceNames.food ]));
             // dense
@@ -111,7 +113,7 @@ define([
             definitions.sparse.push(this.createEnemy("territorial magpie", "territorial magpie", "sparse", [c.nPest, c.nAnimal], [], [c.aInfest], [], 5, 4, 0.7, 1.2, 35, [ resourceNames.food ]));
             definitions.global.push(this.createEnemy("agitated murder of crows", "agitated murder of crows", "global", [c.nPest, c.nAnimal], [c.gFlock, c.gSwarm], [c.aInfest], [c.dDrive], 10, 5, 1.25, 1.3, [ resourceNames.food ]));
             definitions.global.push(this.createEnemy("military bot", "military bot", "global", [c.nBot], [c.gMob], [c.aPatrol, c.aGuard], [c.dDisabled], 13, 5, 0.8, 1.2, 85, [ resourceNames.metal, resourceNames.fuel ]));
-            definitions.global.push(this.createEnemy("advanced military bot", "advanced military bot", "global", [c.nBot], [c.gMob], [c.aPatrol, c.aGuard], [c.dDisabled], 14, 5, 0.8, 1.2, 85, [ resourceNames.metal, resourceNames.fuel ]));
+            definitions.global.push(this.createEnemy("advanced military bot", "advanced military bot", "global", [c.nBot], [c.gMob], [c.aPatrol, c.aGuard], [c.dDisabled], 14, 6, 0.8, 1.2, 85, [ resourceNames.metal, resourceNames.fuel ]));
             // water
             definitions.water.push(this.createEnemy("mugger", "mugger", "water", [c.nGangster], [c.gGang], [c.aInfest], [c.dDrive], 10, 5, 0.5, 0.9, 15, [ resourceNames.food, resourceNames.water ]));
             definitions.water.push(this.createEnemy("threathening mugger", "threathening mugger", "water", [c.nGangster], [c.gGang], [c.aInfest], [c.dDrive], 11, 5, 0.5, 0.9, 15, [ resourceNames.food, resourceNames.water ]));

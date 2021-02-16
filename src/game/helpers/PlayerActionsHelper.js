@@ -1021,6 +1021,7 @@ define([
                         factor *= getPerkBonus();
                     }
                     break;
+                    
             }
 
             return factor;
@@ -1079,7 +1080,8 @@ define([
                 case "move_camp_global":
                 case "use_in_inn_select":
                 case "send_caravan":
-                case "clear_debris":
+                case "clear_debris_e":
+                case "clear_debris_l":
                 case "bridge_gap":
                     return PlayerActionConstants.requirements[baseActionID];
 				default:

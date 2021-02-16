@@ -48,7 +48,7 @@ define(['game/constants/CampConstants'], function (CampConstants) {
                 useActionName: "Donate",
             },
             shrine: {
-                description: "A place for personal spirituality.",
+                description: "A place to connect to the strange spirits.",
                 useActionName: "Meditate",
             },
             barracks: {
