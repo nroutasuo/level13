@@ -111,9 +111,9 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
         	3: [["unlock_building_library", "unlock_building_market"], ["unlock_building_inn", "unlock_building_fortifications"], []],
         	4: [["unlock_building_bridge", "unlock_item_weapon2"], ["upgrade_worker_scavenger"], ["unlock_building_beacon"]],
         	5: [["unlock_item_clothing4h"], ["upgrade_building_market", "unlock_building_passage_elevator"], ["unlock_building_lights"]],
-        	6: [["unlock_action_clear_waste_r", "unlock_item_bag22", "unlock_item_weapon3"], ["unlock_building_cementmill"], ["upgrade_worker_collector1"]],
+        	6: [["unlock_action_clear_waste_t", "unlock_item_bag22", "unlock_item_weapon3"], ["unlock_building_cementmill"], ["upgrade_worker_collector1"]],
         	7: [["upgrade_building_storage1", "unlock_building_smithy"], ["unlock_building_passage_hole"], ["unlock_building_house2"]],
-        	8: [["unlock_item_weapon4", "unlock_item_clothing5", "unlock_action_clear_waste_t"], ["unlock_item_clothing3"], ["unlock_item_clothingl14"]],
+        	8: [["unlock_item_weapon4", "unlock_item_clothing5", "unlock_action_clear_waste_r"], ["unlock_item_clothing3"], ["unlock_item_clothingl14"]],
         	9: [["upgrade_building_campfire"], ["upgrade_building_market2"], ["upgrade_worker_trapper"]],
         	10: [["unlock_item_weapon5", "unlock_item_clothing4"], ["unlock_building_aqueduct", "upgrade_building_library2"], ["unlock_item_bag3"]],
         	11: [["unlock_item_clothing6", "unlock_item_clothing4he"], ["unlock_item_weapon52", "upgrade_building_storage2", "upgrade_building_fortifications"], []],
@@ -516,8 +516,8 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
     = new UpgradeVO("unlock_item_clothing5", "Armour", UpgradeConstants.upgradeDescriptions.unlock_item_clothing5);
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_clothing3]
     = new UpgradeVO("unlock_item_clothing3", "Guard Uniform", UpgradeConstants.upgradeDescriptions.unlock_item_clothing3);
-    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_action_clear_waste_t]
-    = new UpgradeVO("unlock_action_clear_waste_t", "Hazard Management 2", UpgradeConstants.upgradeDescriptions.unlock_action_clear_waste_t);
+    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_action_clear_waste_r]
+    = new UpgradeVO("unlock_action_clear_waste_r", "Hazard Management 2", UpgradeConstants.upgradeDescriptions.unlock_action_clear_waste_t);
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_greenhouse]
     = new UpgradeVO("unlock_building_greenhouse", "Greenhouses", UpgradeConstants.upgradeDescriptions.unlock_building_greenhouse);
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.upgrade_outgoing_caravans]
@@ -532,8 +532,8 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
     = new UpgradeVO("unlock_building_house2", "Tower blocks", UpgradeConstants.upgradeDescriptions.unlock_building_house2);
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_building_smithy]
     = new UpgradeVO("unlock_building_smithy", "Metal working 1", UpgradeConstants.upgradeDescriptions.unlock_building_smithy);
-    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_action_clear_waste_r]
-    = new UpgradeVO("unlock_action_clear_waste_r", "Hazard Management 1", UpgradeConstants.upgradeDescriptions.unlock_action_clear_waste_r);
+    UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_action_clear_waste_t]
+    = new UpgradeVO("unlock_action_clear_waste_t", "Hazard Management 1", UpgradeConstants.upgradeDescriptions.unlock_action_clear_waste_r);
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_bag22]
     = new UpgradeVO("unlock_item_bag22", "Bag-making", UpgradeConstants.upgradeDescriptions.unlock_item_bag22);
     UpgradeConstants.upgradeDefinitions[UpgradeConstants.upgradeIds.unlock_item_weapon3]

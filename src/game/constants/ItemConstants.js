@@ -68,7 +68,7 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
                 new ItemVO("weapon12", "Knife", "Weapon", 2, true, true, false, 2, 1, {atk: 4, spd: 1}, "img/items/weapon-shiv.png", "A bit sturdier than the shiv."),
                 new ItemVO("weapon122", "Sharp knife", "Weapon", 2, true, false, false, 6, 2, {atk: 5, spd: 1}, "img/items/weapon-shiv.png", "A good quality knife."),
                 new ItemVO("weapon2", "Spear", "Weapon", 4, true, true, false, 3, 1, {atk: 6, spd: 0.9}, "img/items/weapon-shiv.png", "Old-fashioned but reliable weapon."),
-                new ItemVO("weapon25", "Heavy Axe", "Weapon", 5, true, true, false, 3, 1, {atk: 12, spd: 0.5}, "img/items/weapon-shiv.png", "Easy to use and reliable."),
+                new ItemVO("weapon25", "Heavy Axe", "Weapon", 5, true, true, false, 3, 1, {atk: 12, spd: 0.6}, "img/items/weapon-shiv.png", "Easy to use and reliable."),
                 new ItemVO("weapon3", "Crossbow", "Weapon", 6, true, true, false, 3, 1, {atk: 12, spd: 0.9}, "img/items/weapon-shiv.png", "A deadly ranged weapon."),
                 new ItemVO("weapon35", "Improved Crossbow", "Weapon", 6, true, false, false, 8, 2, {atk: 14, spd: 0.9}, "img/items/weapon-shiv.png", "An extra deadly ranged weapon."),
                 new ItemVO("weapon4", "Pistol", "Weapon", 8, true, true, false, 4, 1, {atk: 24, spd: 1.1}, "img/items/weapon-shiv.png", "A crude single-shot pistol, like a hand-held miniature cannon."),
