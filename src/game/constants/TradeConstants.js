@@ -53,6 +53,8 @@ function (Ash, PlayerActionConstants, ItemConstants, UpgradeConstants, BagConsta
                             continue;
                         if (itemDefinition.requiredCampOrdinal > campOrdinal + 1)
                             continue;
+                        if (campOrdinal <= 8 && itemDefinition.requiredCampOrdinal >= 9)
+                            continue;
                         if (ItemConstants.isQuicklyObsoletable(category)) {
                             if (itemDefinition.requiredCampOrdinal > 0 && itemDefinition.requiredCampOrdinal <= campOrdinal - 5)
                                 continue;
