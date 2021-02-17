@@ -162,7 +162,7 @@ define([
             
             var resourceProb = 0.95 + efficiency * 0.05;
             var itemProb = efficiency * 0.022;
-            var ingredientProb = 0.01 * ingredientCampOrdinalFactor + efficiency * 0.02;
+            var ingredientProb = 0.005 * ingredientCampOrdinalFactor + efficiency * 0.02;
 
             let finalEfficiency = efficiency * (1 - scavengedPercent/100);
             rewards.gainedResources = this.getRewardResources(resourceProb, 1, efficiency, sectorResources);
