@@ -450,9 +450,16 @@ define([
         
         showVersionWarning: function (saveVersion) {
             var currentVersion = GameGlobals.changeLogHelper.getCurrentVersionNumber();
+            var changelogLink = "<a href='changelog.html' target='changelog'>changelog</a>";
+            var message = "";
+            message += "Your save version is incompatible than the current version. Most likely the game has been updated since you last played. See the " + changelogLink + " for details."
+            message += "<br><br/>";
+            message += "Save version: " + saveVersion + "<br/>Current version: " + currentVersion;
+            message += "<br><br/>";
+            message += " Restart the game or continue at your own risk.";
             GameGlobals.uiFunctions.showQuestionPopup(
                 "Update",
-                "Your save version is older than the current version. Most likely the game has been updated since you last played. Restart the game or continue at your own risk.<br><br/>Save version: " + saveVersion + "<br/>Current version: " + currentVersion,
+                message,
                 "Restart",
                 "Continue",
                 function () {
