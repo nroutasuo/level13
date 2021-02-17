@@ -3,24 +3,24 @@
         {
             "version": "0.3.1",
             "phase": "alpha",
-            "final": false,
-            "updated": "2020-10-25",
+            "final": true,
+            "released": "2021-02-18",
             "changes": [
                 {
                     "type": "GD",
-                    "summary": "Unlock the ground level and level 14, an extremely radioactive level",
+                    "summary": "Unlock the ground level and level 14, an extremely radioactive level"
                 },
                 {
                     "type": "GD",
-                    "summary": "Add deity and favour, temples, shrines, greenhouses, and a new resource (rubber)",
+                    "summary": "Add deity and favour, temples, shrines, greenhouses, and a new resource (rubber)"
                 },
                 {
                     "type": "GD",
-                    "summary": "New equipment for surviving extremely irradiated levels",
+                    "summary": "New equipment for surviving extremely irradiated levels"
                 },
                 {
                     "type": "GD",
-                    "summary": "New consumable item that restores stamina",
+                    "summary": "New consumable item that restores stamina"
                 },
 				{
 					"type": "GD",
@@ -28,31 +28,30 @@
 				},
                 {
                     "type": "GD",
-                    "summary": "More challenges and rewards to campless levels (more encounters, blueprints)",
+                    "summary": "More challenges and rewards to campless levels (more encounters, blueprints)"
                 },
                 {
                     "type": "GD",
-                    "summary": "Improved sector descriptions",
+                    "summary": "Improved sector descriptions"
                 },
                 {
                     "type": "GB",
-                    "summary": "Make all fights drop crafting ingredients",
+                    "summary": "Make all fights drop crafting ingredients"
                 },
                 {
                     "type": "UI",
-                    "summary": "UI improvements (collect 1, clearer rest outside)"
+                    "summary": "UI improvements (collect 1, improve rest outside)"
                 },
                 {
                     "type": "WG",
-                    "summary": "Improved world generation (structure, hard levels, validation)",
-                },
+                    "summary": "Improved world generation (structure, hard levels, validation)"
+                }
             ]
         },
         {
             "version": "0.2.7",
             "phase": "alpha",
             "final": true,
-            "updated": "2020-02-13",
             "released": "2020-02-13",
             "requiredVersion": "0.2.5",
             "changes": [
@@ -70,7 +69,6 @@
             "version": "0.2.6",
             "phase": "alpha",
             "final": true,
-            "updated": "2020-02-06",
             "released": "2020-02-06",
             "requiredVersion": "0.2.5",
             "changes": [
@@ -84,7 +82,6 @@
             "version": "0.2.5",
             "phase": "alpha",
             "final": true,
-            "updated": "2020-02-01",
             "released": "2020-02-01",
             "changes": [
                 {
@@ -133,7 +130,6 @@
             "version": "0.2.4",
             "phase": "alpha",
             "final": true,
-            "updated": "2019-04-13",
             "released": "2019-04-13",
             "changes": [
                 {
@@ -146,7 +142,6 @@
 			"version": "0.2.3",
 			"phase": "alpha",
 			"final": true,
-			"updated": "2019-04-07",
 			"released": "2019-04-07",
 			"changes": [
                 {
@@ -182,11 +177,11 @@
 					"summary": "Improved world generation and better level structure"
 				}
 			]
-		},{
+		},
+        {
 			"version": "0.2.2",
 			"phase": "alpha",
 			"final": true,
-			"updated": "2018-08-10",
 			"released": "2018-08-10",
 			"changes": [
                 {
@@ -219,7 +214,6 @@
 			"version": "0.2.1",
 			"phase": "alpha",
 			"final": true,
-			"updated": "2018-03-19",
 			"released": "2018-03-19",
 			"changes": [{
 					"type": "GD",
@@ -239,7 +233,6 @@
 			"version": "0.1.7",
 			"phase": "alpha",
 			"final": true,
-			"updated": "2017-08-19",
 			"released": "2017-08-19",
 			"changes": [{
 					"type": "GD",
@@ -263,7 +256,6 @@
 			"version": "0.1.6",
 			"phase": "alpha",
 			"final": true,
-			"updated": "2017-04-25",
 			"released": "2017-04-25",
 			"changes": [{
 					"type": "DEV",
@@ -283,7 +275,6 @@
 			"version": "0.1.5",
 			"phase": "alpha",
 			"final": true,
-			"updated": "2017-01-01",
 			"released": "2017-01-01",
 			"changes": [{
 					"type": "GD",
@@ -307,7 +298,6 @@
 			"version": "0.1.4",
 			"phase": "alpha",
 			"final": true,
-			"updated": "2016-11-06",
 			"released": "2016-11-06",
 			"changes": [{
 					"type": "GD",
@@ -331,7 +321,6 @@
 			"version": "0.1.3",
 			"phase": "alpha",
 			"final": true,
-			"updated": "2016-10-16",
 			"released": "2016-10-16",
 			"changes": [{
 					"type": "GD",
@@ -364,7 +353,6 @@
 			"phase": "alpha",
 			"final": true,
 			"released": "2016-03-20",
-			"updated": "2016-03-20",
 			"changes": [{
 					"type": "GD",
 					"summary": "Some items can be left in the camp (and not lost them when fainting)"
@@ -416,7 +404,6 @@
 			"phase": "alpha",
 			"final": true,
 			"released": "2015-09-02",
-			"updated": "2015-09-02",
 			"changes": [{
 					"type": "GD",
 					"summary": "Initial list of upgrades, upgrades balancing & blueprint mechanic"
@@ -444,7 +431,6 @@
 			"phase": "alpha",
 			"final": true,
 			"released": "2015-07-08",
-			"updated": "2015-07-08",
 			"changes": [{
 					"type": "GB",
 					"summary": "Initial building list"
