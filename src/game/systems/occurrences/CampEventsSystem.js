@@ -323,20 +323,21 @@ define([
 		},
 
 		getTimeToNext: function (campNode, event) {
-            var isNew = this.isNew(event);
-			var numCamps = GameGlobals.gameState.numCamps;
-			return OccurrenceConstants.getTimeToNext(event, isNew, this.getEventUpgradeFactor(event), campNode.camp.population, campNode.camp.maxPopulation, numCamps);
+            let isNew = this.isNew(event);
+			let numCamps = GameGlobals.gameState.numCamps;
+            let upgradeLevel = this.getEventUpgradeLevel(event);
+			return OccurrenceConstants.getTimeToNext(event, isNew, upgradeLevel, campNode.camp.population, numCamps);
 		},
 
-		getEventUpgradeFactor: function (event) {
-			var upgradeLevel = 0;
+		getEventUpgradeLevel: function (event) {
+			var upgradeLevel = 1;
 			var eventUpgrades = GameGlobals.upgradeEffectsHelper.getImprovingUpgradeIdsForOccurrence(event);
 			var eventUpgrade;
 			for (var i in eventUpgrades) {
 				eventUpgrade = eventUpgrades[i];
 				if (this.tribeUpgradesNodes.head.upgrades.hasUpgrade(eventUpgrade)) upgradeLevel++;
 			}
-			return (upgradeLevel * 0.05) + 1;
+			return upgradeLevel;
 		},
         
 		addLogMessage: function (msg, replacements, values, camp) {

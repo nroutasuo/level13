@@ -579,7 +579,7 @@
             return productionS + generalConsumptionS + specialConsumptionS;
         },
 
-        onTabChanged: function () {
+        onTabChanged: function () {            
             if (GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in) {
                 this.refresh();
             }

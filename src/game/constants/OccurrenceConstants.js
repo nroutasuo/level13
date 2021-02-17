@@ -9,49 +9,77 @@ function (Ash, MathUtils, CampConstants, GameConstants) {
 		},
 		
 		OCCURRENCE_CAMP_TRADER_LENGTH: 60 * 5,
-		OCCURRENCE_CAMP_TRADER_COOLDOWN: 60 * 15,
-		OCCURRENCE_CAMP_TRADER_VARIATION: 60 * 70,
-		OCCURRENCE_CAMP_TRADER_START: 60,
-		OCCURRENCE_CAMP_TRADER_VARIATION_START: 60 * 3,
+		OCCURRENCE_CAMP_TRADER_COOLDOWN: 60 * 25,
+		OCCURRENCE_CAMP_TRADER_COOLDOWN_START: 60,
+		OCCURRENCE_CAMP_TRADER_VARIATION: 2,
 		
 		OCCURRENCE_CAMP_RAID_LENGTH: 10,
 		OCCURRENCE_CAMP_RAID_COOLDOWN: 60 * 20,
-		OCCURRENCE_CAMP_RAID_VARIATION: 60 * 60,
+		OCCURRENCE_CAMP_RAID_VARIATION: 3,
 		
-		getTimeToNext: function (occurrenceType, isNew, upgradeFactor, campPopulation, campMaxPopulation, numCamps) {
-			var minimumTime = 1;
-            var baseTime = 1;
-			var randomFactor = Math.random();
-
-            var pop = (campPopulation + campMaxPopulation)/2;
-            var populationFactor = MathUtils.clamp(2.25-Math.log(pop+1)/2.5, 0.5, 2);
-            var numCampsFactor = 1;
-			
+		getTimeToNext: function (occurrenceType, isNew, upgradeLevel, campPopulation, numCamps) {
+			let minimumTime = this.getMinimumTimeToNext(occurrenceType, isNew, numCamps);
+            let maximumTime = this.getMaximumTimeToNext(occurrenceType, isNew, numCamps);
+            
+			let randomFactor = Math.random();
+            let upgradeFactor = 1 - (upgradeLevel - 1) * 0.05;
+            let populationFactor = 1;
+            if (campPopulation < 4) {
+                populationFactor = 3;
+            } else if (campPopulation < 8) {
+                populationFactor = 2;
+            } else if (campPopulation < 12) {
+                populationFactor = 1.5;
+            } else if (campPopulation < 16) {
+                populationFactor = 1.25;
+            } else if (campPopulation < 32) {
+                populationFactor = 1;
+            } else {
+                populationFactor = 0.9;
+            }
+            
+            var variationFactor = MathUtils.clamp(randomFactor * upgradeFactor * populationFactor, 0, 1);
+            var diff = maximumTime - minimumTime;
+            var result = Math.floor(minimumTime + diff * variationFactor);
+            return result / GameConstants.gameSpeedCamp;
+		},
+        
+        getMinimumTimeToNext: function (occurrenceType, isNew, numCamps) {
+            // base value per event type
+            let base = 60 * 10;
+            switch (occurrenceType) {
+                case this.campOccurrenceTypes.trader:
+                    if (isNew) {
+                        base = this.OCCURRENCE_CAMP_TRADER_COOLDOWN_START;
+                    } else {
+                        base = this.OCCURRENCE_CAMP_TRADER_COOLDOWN;
+                    }
+                    break;
+                
+                case this.campOccurrenceTypes.raid:
+                    base = this.OCCURRENCE_CAMP_RAID_COOLDOWN;
+                    break;
+            }
+            // decreasing frequency when lots of camps
+            let numCampsFactor = MathUtils.clamp(Math.ceil(numCamps / 2), 0.1, 10);
+            return base * numCampsFactor;
+        },
+        
+        getMaximumTimeToNext: function (occurrenceType, isNew, numCamps) {
+            let variation = 2;
             switch (occurrenceType) {
 				case this.campOccurrenceTypes.trader:
-                    if (isNew) {
-    					minimumTime = this.OCCURRENCE_CAMP_TRADER_START;
-    					baseTime = this.OCCURRENCE_CAMP_TRADER_VARIATION_START;
-                    } else {
-    					minimumTime = this.OCCURRENCE_CAMP_TRADER_COOLDOWN;
-    					baseTime = this.OCCURRENCE_CAMP_TRADER_VARIATION;
-                    }
-                    numCampsFactor = 1 / (Math.ceil(numCamps / 4)); // decreasing frequency when lots of camps
+					variation = this.OCCURRENCE_CAMP_TRADER_VARIATION;
 					break;
 				
 				case this.campOccurrenceTypes.raid:
-					minimumTime = this.OCCURRENCE_CAMP_RAID_COOLDOWN;
-					baseTime = this.OCCURRENCE_CAMP_RAID_VARIATION;
+					variation = this.OCCURRENCE_CAMP_RAID_VARIATION;
 					break;
 			}
-            
-            minimumTime *= Math.max(1, populationFactor);
-            
-            var result = Math.floor(minimumTime + baseTime * randomFactor * upgradeFactor * populationFactor * numCampsFactor);
-            return result / GameConstants.gameSpeedCamp;
-		},
+            return this.getMinimumTimeToNext(occurrenceType, isNew, numCamps) * variation;
+        },
 		
-		getDuration: function(occurrenceType) {
+		getDuration: function (occurrenceType) {
 			switch(occurrenceType) {
 			case this.campOccurrenceTypes.trader:
 				return this.OCCURRENCE_CAMP_TRADER_LENGTH;
