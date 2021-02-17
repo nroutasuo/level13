@@ -94,6 +94,7 @@ define([
 
             var sys = this;
             GlobalSignals.playerMovedSignal.add(function () { sys.onPlayerMoved(); });
+            GlobalSignals.playerEnteredCampSignal.add(function () { sys.onPlayerEnteredCamp(); });
             GlobalSignals.actionStartingSignal.add(function () { sys.onActionStarting(); });
             GlobalSignals.actionStartedSignal.add(function () { sys.onInventoryChanged(); });
             GlobalSignals.visionChangedSignal.add(function () { sys.onVisionChanged(); });
@@ -148,8 +149,14 @@ define([
 			this.updateGameMsg();
 			this.updateNotifications(isInCamp);
 			this.updatePerks();
-
-            if (isInCamp && !campComponent) return;
+            
+            if (this.pendingResourceUpdateTime) {
+                this.pendingResourceUpdateTime -= time;
+                if (this.pendingResourceUpdateTime <= 0) {
+                    this.updateResources();
+                    this.pendingResourceUpdateTime = 0;
+                }
+            }
 		},
 
         slowUpdate: function () {
@@ -161,7 +168,7 @@ define([
 			this.updatePlayerStats();
 			this.updateDeity();
 			this.updateItems(false, isInCamp);
-			this.updateResources();
+            this.updateResourcesIfNotPending();
             this.updateItemStats();
             
             GameGlobals.uiFunctions.updateCallouts("ul#list-items-perks");
@@ -417,6 +424,11 @@ define([
                 $("#perk-header-" + perk.id + " .info-callout-target").toggleClass("event-ending", perk.effectTimer >= 0 && perk.effectTimer < 5);
             }
 		},
+        
+        updateResourcesIfNotPending: function () {
+            if (this.pendingResourceUpdateTime) return;
+            this.updateResources();
+        },
 
 		updateResources: function () {
             if (!this.playerStatsNodes.head) return;
@@ -430,6 +442,7 @@ define([
 			var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
 			var inventoryUnlocked = false;
             let now =  GameGlobals.gameState.gameTime;
+            let changedInOut = inCamp != this.lastResourceUpdateInCamp;
 
             GameGlobals.uiFunctions.toggle("#header-camp-storage", inCamp);
             GameGlobals.uiFunctions.toggle("#header-camp-currency", inCamp && currencyComponent.currency > 0);
@@ -450,7 +463,7 @@ define([
 				inventoryUnlocked = inventoryUnlocked || resourceUnlocked;
                 if (inCamp) {
                     let previousAmount = this.previousShownCampResAmount[name] || 0;
-                    let animate = UIAnimations.shouldAnimateChange(previousAmount, currentAmount, this.lastCampResourceUpdate, now, currentAccumulation);
+                    let animate = !changedInOut && UIAnimations.shouldAnimateChange(previousAmount, currentAmount, this.lastCampResourceUpdate, now, currentAccumulation);
                     UIConstants.updateResourceIndicator(
                         "#resources-" + name,
                         Math.floor(currentAmount),
@@ -481,7 +494,7 @@ define([
                         false,
                         name === resourceNames.food || name === resourceNames.water,
                         resourceUnlocked && (name === "water" || name === "food" || showResources.getResource(name) > 0),
-                        true
+                        !changedInOut
                     );
 
                     var bagComponent = this.playerStatsNodes.head.entity.get(BagComponent);
@@ -493,6 +506,7 @@ define([
             if (inCamp) {
                 this.lastCampResourceUpdate = now;
             }
+            this.lastResourceUpdateInCamp = inCamp;
 		},
         
         completeResourceAnimations: function () {
@@ -733,8 +747,12 @@ define([
             this.updateStaminaWarningLimit();
             this.updateLocation();
             this.updateHeaderTexts();
-            this.updateResources();
+            this.updateResourcesIfNotPending();
             this.updatePlayerStats();
+        },
+        
+        onPlayerEnteredCamp: function () {
+            this.pendingResourceUpdateTime = 0.75;
         },
 
         onHealthChanged: function () {
@@ -750,7 +768,7 @@ define([
 
         onInventoryChanged: function () {
 		    if (GameGlobals.gameState.uiStatus.isHidden) return;
-            this.updateResources();
+            this.updateResourcesIfNotPending();
             this.updatePlayerStats();
         },
         
@@ -785,7 +803,7 @@ define([
             this.updateStaminaWarningLimit();
             this.updateLocation();
             this.updateHeaderTexts();
-            this.updateResources();
+            this.updateResourcesIfNotPending();
             this.updateVisionStatus();
             this.updatePlayerStats();
             this.refreshPerks();

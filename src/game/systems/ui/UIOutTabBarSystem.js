@@ -94,7 +94,7 @@ define([
             GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-followers", null, GameGlobals.gameState.unlockedFeatures.followers, 100, 0);
             GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-out", null, !isInCamp, 100, 0);
             GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-map", null, hasMap, 100, 0);
-            GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-trade", null, isInCamp && hasTradingPost, 100, 0);
+            GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-trade", null, isInCamp && GameGlobals.gameState.unlockedFeatures.trade, 100, 0);
             GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-projects", null, isInCamp && hasProjects, 100, 0);
             GameGlobals.uiFunctions.tabToggleIf("#switch-tabs #switch-embark", null, isInCamp, 0);
         },

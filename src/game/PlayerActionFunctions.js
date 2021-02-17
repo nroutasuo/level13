@@ -462,6 +462,7 @@ define(['ash',
 					GameGlobals.uiFunctions.showTab(GameGlobals.uiFunctions.elementIDs.tabs.in);
 				}
                 GlobalSignals.playerMovedSignal.dispatch(playerPos);
+                GlobalSignals.playerEnteredCampSignal.dispatch();
                 this.forceResourceBarUpdate();
                 this.forceTabUpdate();
                 this.save();
