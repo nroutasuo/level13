@@ -8,11 +8,11 @@
             "changes": [
                 {
                     "type": "GD",
-                    "summary": "Unlock the ground level and level 14, an extremely radioactive level"
+                    "summary": "New levels (the ground level and level 14, an extremely radioactive level)"
                 },
                 {
                     "type": "GD",
-                    "summary": "Add deity and favour, temples, shrines, greenhouses, and a new resource (rubber)"
+                    "summary": "Deity, favour, temples, shrines, greenhouses, and a new resource (rubber)"
                 },
                 {
                     "type": "GD",
@@ -39,8 +39,12 @@
                     "summary": "Make all fights drop crafting ingredients"
                 },
                 {
+                    "type": "GB",
+                    "summary": "Introduce scavenged %, giving diminishing rewards for scavenging the same sector"
+                },
+                {
                     "type": "UI",
-                    "summary": "UI improvements (collect 1, improve rest outside)"
+                    "summary": "UI improvements (collect 1, simplify rest outside, animations for numbers)"
                 },
                 {
                     "type": "WG",
