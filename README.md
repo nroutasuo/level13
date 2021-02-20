@@ -18,7 +18,7 @@ Major features still missing are story and RPG elements. Player progress is curr
 
 ## Code Overview
 
-The project uses [jQuery](https://jquery.com/), [Require.js](http://requirejs.org/), and [Ash.js](https://github.com/brejep/ash-js) and is structured according to an entity system framework into entities, components and systems. The playable version lives on the **gh-pages** branch whereas **master** may contain untested and and unbalanced features.
+The project uses [jQuery](https://jquery.com/), [Require.js](http://requirejs.org/), and [Ash.js](https://github.com/brejep/ash-js) and is structured according to an entity system framework into entities, components and systems. The playable version lives on the **gh-pages** branch whereas **master** may contain untested and unbalanced features.
 
 ### Entities and Components
 
