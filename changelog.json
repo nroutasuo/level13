@@ -8,7 +8,15 @@
             "changes": [
                 {
                     "type": "GB",
-                    "summary": "Bugfixes and balancing adjustments"
+                    "summary": "Adjust upgrade unlocking order (ensure unlocking Knife doesn't block Compass)"
+                },
+                {
+                    "type": "DEV",
+                    "summary": "Small bugfixes"
+                },
+                {
+                    "type": "DEV",
+                    "summary": "Add tools page with limited cheats to help players affected by bugs"
                 }
             ]
         },

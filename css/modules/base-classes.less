@@ -70,6 +70,28 @@ span.hl-functionality {
 	color: @color-text-meta;
 }
 
+.columns-container {
+    display: flex;
+}
+
+.columns-child {
+    flex: 1;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.columns-child:first-child {
+    padding-left: 0px;
+}
+
+.columns-child:last-child {
+    padding-right: 0px;
+}
+
+.columns-child-small {
+    flex: 0;
+}
+
 // TABLE UTILITY CLASSES
 
 table.fullwidth {
