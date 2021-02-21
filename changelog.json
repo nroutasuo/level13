@@ -1,6 +1,18 @@
 {
 	"versions": [
         {
+            "version": "0.3.2",
+            "requiredVersion": "0.3.1",
+            "phase": "alpha",
+            "final": false,
+            "changes": [
+                {
+                    "type": "GB",
+                    "summary": "Bugfixes and balancing adjustments"
+                }
+            ]
+        },
+        {
             "version": "0.3.1",
             "phase": "alpha",
             "final": true,
