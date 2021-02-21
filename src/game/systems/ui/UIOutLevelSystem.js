@@ -133,6 +133,7 @@ define([
 		},
         
         slowUpdate: function () {
+            if (!this.playerLocationNodes.head) return;
 			this.updateOutImprovementsStatus();
         },
 
@@ -582,6 +583,7 @@ define([
         },
 
         updateOutImprovementsStatus: function () {
+            if (!this.playerLocationNodes.head) return;
             var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			var hasCamp = GameGlobals.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
         
