@@ -4,7 +4,8 @@
             "version": "0.3.2",
             "requiredVersion": "0.3.1",
             "phase": "alpha",
-            "final": false,
+            "final": true,
+            "released": "2021-02-21",
             "changes": [
                 {
                     "type": "GB",
