@@ -130,8 +130,6 @@ define([
             function (save) { fixSaveGrantEvidence(save, evidenceCost) },
             function (save) { fixSaveGrantRumours(save, 58) },
         ]);
-        log.i(save);
-        log.i(result);
         exportSave(result);
         showMessage("Fix applied. Removed upgrade 'Knife' and reinbursed " + evidenceCost + " Evidence and " + rumourCost + " Rumours. Copy new save from the Output box.");
     }
