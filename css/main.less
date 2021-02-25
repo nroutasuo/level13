@@ -18,49 +18,49 @@
 // COLOR THEMES (dark and sunlit)
 
 body.dark {
-    @import "themes/theme-dark";
-    background: @color-bg-page;
-    color: @color-text-default;
-    .color-theme(dark);
-    .vision-steps-themed(10);
+	@import "themes/theme-dark";
+	background: @color-bg-page;
+	color: @color-text-default;
+	.color-theme(dark);
+	.vision-steps-themed(10);
 }
 
 body.sunlit {
-    @import "themes/theme-sunlit";
-    background: @color-bg-page;
-    color: @color-text-default;
-    .color-theme(sunlit);
-    .vision-steps-themed(10);
-    #vision-overlay {
-        display: none;
-    }
+	@import "themes/theme-sunlit";
+	background: @color-bg-page;
+	color: @color-text-default;
+	.color-theme(sunlit);
+	.vision-steps-themed(10);
+	#vision-overlay {
+		display: none;
+	}
 }
 
 .color-theme(@theme) {
-    // MODULES USING THEMES
-    @import "modules/base-classes";
-    @import "modules/base-elements";
-    @import "modules/base-typography";
-    @import "modules/elements-buttons";
-    @import "modules/elements-common";
-    @import "modules/elements-input";
-    @import "modules/elements-meta";
-    @import "modules/elements-special";
-    @import "modules/loader";
-    @import "modules/scrollbar";
-    @import "modules/vis";
+	// MODULES USING THEMES
+	@import "modules/base-classes";
+	@import "modules/base-elements";
+	@import "modules/base-typography";
+	@import "modules/elements-buttons";
+	@import "modules/elements-common";
+	@import "modules/elements-input";
+	@import "modules/elements-meta";
+	@import "modules/elements-special";
+	@import "modules/loader";
+	@import "modules/scrollbar";
+	@import "modules/vis";
 }
 
 .vision-steps-themed(@counter) when (@counter >= 0) {
-    .vision-steps-themed(@counter - 1);
-    &.vision-step-@{counter} {
-        @overlay-cover: min(75% + @counter * 3, 99%);
-        @overlay-opacity: max(75% - @counter * 0.05, 0);
-        
-        #vision-overlay {
-            background: -moz-radial-gradient(circle, rgba(255,255,255,0) 50%, fade(@color-bg-page, @overlay-opacity) @overlay-cover, @color-bg-page 100%);
-            background: -webkit-radial-gradient(circle, rgba(255,255,255,0) 50%, fade(@color-bg-page, @overlay-opacity) @overlay-cover, @color-bg-page 100%);
-            background: radial-gradient(circle, rgba(255,255,255,0) 50%, fade(@color-bg-page, @overlay-opacity) @overlay-cover, @color-bg-page 100%);
-        }
-    }
+	.vision-steps-themed(@counter - 1);
+	&.vision-step-@{counter} {
+		@overlay-cover: min(75% + @counter * 3, 99%);
+		@overlay-opacity: max(75% - @counter * 0.05, 0);
+		
+		#vision-overlay {
+			background: -moz-radial-gradient(circle, rgba(255,255,255,0) 50%, fade(@color-bg-page, @overlay-opacity) @overlay-cover, @color-bg-page 100%);
+			background: -webkit-radial-gradient(circle, rgba(255,255,255,0) 50%, fade(@color-bg-page, @overlay-opacity) @overlay-cover, @color-bg-page 100%);
+			background: radial-gradient(circle, rgba(255,255,255,0) 50%, fade(@color-bg-page, @overlay-opacity) @overlay-cover, @color-bg-page 100%);
+		}
+	}
 }

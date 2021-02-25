@@ -1,14 +1,14 @@
 define(['ash'
 ], function (Ash) {
 
-    var LevelConstants = {
+	var LevelConstants = {
 		
 		UNCAMPABLE_LEVEL_TYPE_RADIATION: "UNCAMPABLE_LEVEL_TYPE_RADIATION",
 		UNCAMPABLE_LEVEL_TYPE_POLLUTION: "UNCAMPABLE_LEVEL_TYPE_POLLUTION",
 		UNCAMPABLE_LEVEL_TYPE_SUPERSTITION: "UNCAMPABLE_LEVEL_TYPE_SUPERSTITION",
-        
+		
 		UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT: "UNCAMPABLE_LEVEL_TYPE_ORDINAL_LIMIT",
-        
-    };
-    return LevelConstants;
+		
+	};
+	return LevelConstants;
 });

@@ -1,10 +1,10 @@
 define([
-    'ash', 'game/components/player/ItemsComponent'
+	'ash', 'game/components/player/ItemsComponent'
 ], function(Ash, ItemsComponent) {
-    
-    var ItemsNode = Ash.Node.create({
-        items : ItemsComponent
-    });
+	
+	var ItemsNode = Ash.Node.create({
+		items : ItemsComponent
+	});
 
-    return ItemsNode;
+	return ItemsNode;
 });

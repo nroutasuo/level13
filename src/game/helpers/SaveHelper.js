@@ -22,7 +22,7 @@ define([
 			tribe: "tribe",
 			sector: "s-",
 			level: "level-",
-            gang: "gang-"
+			gang: "gang-"
 		},
 
 		optionalComponents: [CampComponent, CurrencyComponent, DeityComponent, ReputationComponent, VisitedComponent, RevealedComponent, LastVisitedCampComponent, OutgoingCaravansComponent, TraderComponent, CampEventTimersComponent, RaidComponent, ExcursionComponent],

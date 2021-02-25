@@ -1,9 +1,9 @@
 define([
-    'ash', 'game/components/type/LevelComponent'
+	'ash', 'game/components/type/LevelComponent'
 ], function(Ash, LevelComponent) {
-    var LevelNode = Ash.Node.create({
-        level : LevelComponent
-    });
+	var LevelNode = Ash.Node.create({
+		level : LevelComponent
+	});
 
-    return LevelNode;
+	return LevelNode;
 });

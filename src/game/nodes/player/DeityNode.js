@@ -1,10 +1,10 @@
 define([
-    'ash', 'game/components/player/DeityComponent'
+	'ash', 'game/components/player/DeityComponent'
 ], function(Ash, DeityComponent) {
-    
-    var DeityNode = Ash.Node.create({
-        deity : DeityComponent
-    });
+	
+	var DeityNode = Ash.Node.create({
+		deity : DeityComponent
+	});
 
-    return DeityNode;
+	return DeityNode;
 });

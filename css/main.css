@@ -1144,7 +1144,7 @@ body.dark .actionbox {
   padding: 3px 0px;
 }
 body.dark .textbox {
-  padding: 10px  0px;
+  padding: 10px 0px;
   max-width: 70em;
 }
 body.dark .inventorybox {
@@ -3042,7 +3042,7 @@ body.sunlit .actionbox {
   padding: 3px 0px;
 }
 body.sunlit .textbox {
-  padding: 10px  0px;
+  padding: 10px 0px;
   max-width: 70em;
 }
 body.sunlit .inventorybox {

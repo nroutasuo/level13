@@ -1,19 +1,19 @@
 // Singleton with helper methods for resource storage etc
 define([
-    'ash',
-    'game/nodes/player/PlayerResourcesNode',
-    'game/nodes/NearestCampNode',
-    'game/nodes/tribe/TribeResourcesNode',
-    'game/components/common/PositionComponent',
-    'game/components/common/ResourcesComponent',
-    'game/components/common/CurrencyComponent',
-    'game/components/common/ResourceAccumulationComponent',
-    'game/components/sector/improvements/SectorImprovementsComponent'
+	'ash',
+	'game/nodes/player/PlayerResourcesNode',
+	'game/nodes/NearestCampNode',
+	'game/nodes/tribe/TribeResourcesNode',
+	'game/components/common/PositionComponent',
+	'game/components/common/ResourcesComponent',
+	'game/components/common/CurrencyComponent',
+	'game/components/common/ResourceAccumulationComponent',
+	'game/components/sector/improvements/SectorImprovementsComponent'
 ], function (Ash,
-    PlayerResourcesNode, NearestCampNode, TribeResourcesNode,
+	PlayerResourcesNode, NearestCampNode, TribeResourcesNode,
 	PositionComponent, ResourcesComponent, CurrencyComponent, ResourceAccumulationComponent, SectorImprovementsComponent) {
 
-    var ResourceHelper = Ash.Class.extend({
+	var ResourceHelper = Ash.Class.extend({
 
 		playerResourcesNodes: null,
 		nearestCampNodes: null,
@@ -26,7 +26,7 @@ define([
 		},
 
 		getCurrentStorage: function (excludePlayer) {
-            if (!this.playerResourcesNodes.head) return null;
+			if (!this.playerResourcesNodes.head) return null;
 
 			var playerResources = this.getPlayerStorage();
 			var campResources = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity.get(ResourcesComponent) : null;
@@ -50,14 +50,14 @@ define([
 			var globalResources = this.getGlobalStorage();
 
 			var currentResources = campResources;
-            if (this.hasAccessToTradeNetwork(campEntity)) {
-                currentResources = globalResources;
-            }
+			if (this.hasAccessToTradeNetwork(campEntity)) {
+				currentResources = globalResources;
+			}
 
 			return currentResources;
-        },
+		},
 
-        getCurrentCurrency: function () {
+		getCurrentCurrency: function () {
 			var playerCurrencys = this.getPlayerCurrency();
 			var campCurrencys = this.nearestCampNodes.head != null ? this.nearestCampNodes.head.entity.get(CurrencyComponent) : null;
 			var globalCurrencys = this.globalResourcesNodes.head.currency;
@@ -73,11 +73,11 @@ define([
 			}
 
 			return currentCurrencys;
-        },
+		},
 
 		getCurrentStorageCap: function () {
 			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
-			var showStorage =  this.playerResourcesNodes.head.entity.get(ResourcesComponent).storageCapacity;
+			var showStorage = this.playerResourcesNodes.head.entity.get(ResourcesComponent).storageCapacity;
 
 			if (playerPosition.inCamp && this.hasCampStorage()) {
 				showStorage = this.nearestCampNodes.head.entity.get(ResourcesComponent).storageCapacity;
@@ -91,7 +91,7 @@ define([
 
 		getCurrentStorageName: function () {
 			var playerPosition = this.playerResourcesNodes.head.entity.get(PositionComponent);
-			var showStorage =  this.playerResourcesNodes.head.entity.get(ResourcesComponent).storageCapacity;
+			var showStorage = this.playerResourcesNodes.head.entity.get(ResourcesComponent).storageCapacity;
 			var storageName = "Bag capacity";
 
 			if (showStorage < 10) {
@@ -127,20 +127,20 @@ define([
 		},
 
 		hasAccessToTradeNetwork: function (campEntity) {
-            if (!campEntity && !this.nearestCampNodes.head) return false;
-            var entity = campEntity || this.nearestCampNodes.head.entity;
-            var improvements = entity.get(SectorImprovementsComponent);
-            if (improvements.getCount(improvementNames.tradepost) > 0) {
-                return true;
-            }
+			if (!campEntity && !this.nearestCampNodes.head) return false;
+			var entity = campEntity || this.nearestCampNodes.head.entity;
+			var improvements = entity.get(SectorImprovementsComponent);
+			if (improvements.getCount(improvementNames.tradepost) > 0) {
+				return true;
+			}
 			return false;
 		},
 
-        getNumCampsInTradeNetwork: function (sectorEntity) {
-            if (!this.hasAccessToTradeNetwork(sectorEntity))
-                return 1;
-            return this.globalResourcesNodes.head.tribe.numCampsInTradeNetwork;
-        },
+		getNumCampsInTradeNetwork: function (sectorEntity) {
+			if (!this.hasAccessToTradeNetwork(sectorEntity))
+				return 1;
+			return this.globalResourcesNodes.head.tribe.numCampsInTradeNetwork;
+		},
 
 		hasCampStorage: function () {
 			if (this.nearestCampNodes.head) {
@@ -153,15 +153,15 @@ define([
 			return this.playerResourcesNodes.head ? this.playerResourcesNodes.head.resources : null;
 		},
 
-        getPlayerCurrency: function () {
+		getPlayerCurrency: function () {
 			return this.playerResourcesNodes.head ? this.playerResourcesNodes.head.currency : null;
-        },
+		},
 
-        getGlobalStorage: function () {
-            return this.globalResourcesNodes.head ? this.globalResourcesNodes.head.resources : null;
-        }
+		getGlobalStorage: function () {
+			return this.globalResourcesNodes.head ? this.globalResourcesNodes.head.resources : null;
+		}
 
-    });
+	});
 
-    return ResourceHelper;
+	return ResourceHelper;
 });

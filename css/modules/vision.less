@@ -1,47 +1,47 @@
 
 .opacity-transition() {
-    -webkit-transition: opacity 1.5s ease-in-out;
-    -moz-transition: opacity 1.5s ease-in-out;
-    -ms-transition: opacity 1.5s ease-in-out;
-    -o-transition: opacity 1.5s ease-in-out;
-    transition: opacity 1.5s ease-in-out;
+	-webkit-transition: opacity 1.5s ease-in-out;
+	-moz-transition: opacity 1.5s ease-in-out;
+	-ms-transition: opacity 1.5s ease-in-out;
+	-o-transition: opacity 1.5s ease-in-out;
+	transition: opacity 1.5s ease-in-out;
 }
 
 .opacity-transition-reset() {
-    -webkit-transition: none;
-    -moz-transition: none;
-    -ms-transition: none;
-    -o-transition: none;
-    transition: none;
+	-webkit-transition: none;
+	-moz-transition: none;
+	-ms-transition: none;
+	-o-transition: none;
+	transition: none;
 }
 
 img, p, span, h1, h2, h3, div, span, canvas {
-    .opacity-transition();
+	.opacity-transition();
 }
 
 #vision-overlay {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    pointer-events: none;
-    z-index: 10;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	pointer-events: none;
+	z-index: 10;
 }
 
 .vision_steps(@counter) when (@counter >= 0) {
-    .vision_steps(@counter - 1);
-    .vision-step-@{counter} {
-        #grid-main {
-            opacity: min(1, 0.5 + @counter * 0.1);
-            
-            img, .canvas-container canvas, .vision-image, .vis-container {
-                opacity: min(1, 0.15 + @counter * 0.17);
-            }
-            p, h1, h2, h3, .vision-text, .stats-indicator, .list-amount, .item-name, #mainmap-sector-details-content td, #log span {
-                opacity: min(1, 0.5 + @counter * 0.10);
-            }
-        }
-    }
+	.vision_steps(@counter - 1);
+	.vision-step-@{counter} {
+		#grid-main {
+			opacity: min(1, 0.5 + @counter * 0.1);
+			
+			img, .canvas-container canvas, .vision-image, .vis-container {
+				opacity: min(1, 0.15 + @counter * 0.17);
+			}
+			p, h1, h2, h3, .vision-text, .stats-indicator, .list-amount, .item-name, #mainmap-sector-details-content td, #log span {
+				opacity: min(1, 0.5 + @counter * 0.10);
+			}
+		}
+	}
 }
 
 .vision_steps(10);

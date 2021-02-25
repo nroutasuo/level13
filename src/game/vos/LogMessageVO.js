@@ -1,23 +1,23 @@
 define(['ash', 'game/constants/TextConstants'], function (Ash, TextConstants) {
-    
-    var LogMessageVO = Ash.Class.extend({
-        
+	
+	var LogMessageVO = Ash.Class.extend({
+		
 		constructor: function (logMsgID, message, replacements, values, campLevel, timeOffset) {
-            timeOffset = timeOffset || 0;
-            this.logMsgID = logMsgID;
+			timeOffset = timeOffset || 0;
+			this.logMsgID = logMsgID;
 			this.message = message;
 			this.replacements = replacements ? replacements : [];
 			this.values = values ? values : [];
-            this.campLevel = campLevel;
+			this.campLevel = campLevel;
 			
 			this.time = new Date();
-            if (timeOffset != 0) {
-                this.time.setSeconds(this.time.getSeconds() - timeOffset);
-            }
+			if (timeOffset != 0) {
+				this.time.setSeconds(this.time.getSeconds() - timeOffset);
+			}
 			this.loadedFromSave = false;
 			this.combined = 0;
 			this.text = this.createText();
-        },
+		},
 	
 		setPending: function (visibleLevel, visibleSector, visibleInCamp) {
 			this.pendingLevel = visibleLevel;
@@ -26,7 +26,7 @@ define(['ash', 'game/constants/TextConstants'], function (Ash, TextConstants) {
 		},
 	
 		setPendingOver: function () {
-            this.loadedFromSave = false;
+			this.loadedFromSave = false;
 			this.time = new Date();
 		},
 		
@@ -38,12 +38,12 @@ define(['ash', 'game/constants/TextConstants'], function (Ash, TextConstants) {
 		
 		getText: function () {
 			if (!this.text) {
-                this.createText();
+				this.createText();
 			}
 			return this.text;
 		}
 	
-    });
+	});
 
-    return LogMessageVO;
+	return LogMessageVO;
 });

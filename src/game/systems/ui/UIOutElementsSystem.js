@@ -6,7 +6,7 @@ define([
 	'game/constants/UIConstants',
 	'game/constants/PlayerStatConstants',
 	'game/constants/PlayerActionConstants',
-    'game/nodes/PlayerLocationNode',
+	'game/nodes/PlayerLocationNode',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/player/AutoPlayNode',
 ], function (Ash,
@@ -16,19 +16,19 @@ define([
 	UIConstants,
 	PlayerStatConstants,
 	PlayerActionConstants,
-    PlayerLocationNode,
+	PlayerLocationNode,
 	PlayerStatsNode,
 	AutoPlayNode,
 ) {
 	var UIOutElementsSystem = Ash.System.extend({
-        
+		
 		playerLocationNodes: null,
 		playerStatsNodes: null,
 		autoPlayNodes: null,
 
 		engine: null,
-        
-        buttonCalloutSignalParams: { isButtonCalloutElement: true },
+		
+		buttonCalloutSignalParams: { isButtonCalloutElement: true },
 
 		elementsCalloutContainers: null,
 		elementsVisibleButtons: [],
@@ -41,11 +41,11 @@ define([
 
 		addToEngine: function (engine) {
 			this.engine = engine;
-            this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
+			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
 			this.autoPlayNodes = engine.getNodeList(AutoPlayNode);
-            
-            GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
+			
+			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 
 			this.refreshGlobalSavedElements();
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.onElementsVisibilityChanged);
@@ -57,11 +57,11 @@ define([
 			GlobalSignals.add(this, GlobalSignals.actionButtonClickedSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.elementToggledSignal, this.onElementsVisibilityChanged);
 			GlobalSignals.add(this, GlobalSignals.popupOpenedSignal, this.onElementsVisibilityChanged);
-            
+			
 			GlobalSignals.add(this, GlobalSignals.updateButtonsSignal, this.onButtonStatusChanged);
 			GlobalSignals.add(this, GlobalSignals.improvementBuiltSignal, this.onButtonStatusChanged);
 			GlobalSignals.add(this, GlobalSignals.actionStartedSignal, this.onButtonStatusChanged);
-            
+			
 			GlobalSignals.add(this, GlobalSignals.gameShownSignal, this.refreshGlobalSavedElements);
 			GlobalSignals.add(this, GlobalSignals.calloutsGeneratedSignal, this.refreshGlobalSavedElements);
 			this.elementsVisibilityChanged = true;
@@ -69,29 +69,29 @@ define([
 
 		removeFromEngine: function (engine) {
 			this.engine = null;
-            this.playerLocationNodes = null;
-            this.playerStatsNodes = null;
+			this.playerLocationNodes = null;
+			this.playerStatsNodes = null;
 			this.autoPlayNodes = null;
 		},
 
 		update: function (time) {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (this.elementsVisibilityChanged) {
-                this.updateVisibleButtonsList();
+				this.updateVisibleButtonsList();
 				this.updateVisibleProgressbarsList();
-    			this.updateInfoCallouts();
-                this.updateButtons();
+				this.updateInfoCallouts();
+				this.updateButtons();
 				this.elementsVisibilityChanged = false;
 				this.buttonStatusChanged = false;
 				this.elementsVisibilityChangedFrames++;
 			} else {
 				this.elementsVisibilityChangedFrames = 0;
 			}
-            
-            if (this.buttonStatusChanged) {
-                this.buttonStatusChanged = false;
-                this.updateButtons();
-            }
+			
+			if (this.buttonStatusChanged) {
+				this.buttonStatusChanged = false;
+				this.updateButtons();
+			}
 
 			if (this.elementsVisibilityChangedFrames > 5) {
 				log.w("element visibility updated too often");
@@ -100,11 +100,11 @@ define([
 			this.updateProgressbars();
 		},
 
-        slowUpdate: function () {
-            if (GameGlobals.gameState.uiStatus.isHidden) return;
-            if (GameGlobals.gameState.uiStatus.isPaused) return;
-            this.updateButtons();
-        },
+		slowUpdate: function () {
+			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			if (GameGlobals.gameState.uiStatus.isPaused) return;
+			this.updateButtons();
+		},
 
 		refreshGlobalSavedElements: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
@@ -113,26 +113,26 @@ define([
 
 		updateButtons: function () {
 			var sys = this;
-            var actions = [];
+			var actions = [];
 			for (var i = 0; i < this.elementsVisibleButtons.length; i++) {
 				var $button = $(this.elementsVisibleButtons[i]);
-                var action = $button.attr("action");
+				var action = $button.attr("action");
 				if (!action) {
 					continue;
-                }
+				}
 				var buttonStatus = sys.buttonStatuses[i];
 				var buttonElements = sys.buttonElements[i];
 				var isHardDisabled = sys.updateButtonDisabledState($button, action, buttonStatus, buttonElements);
 				sys.updateButtonCallout($button, action, buttonStatus, buttonElements, isHardDisabled);
-                actions.push(action + "(" + isHardDisabled + ")");
+				actions.push(action + "(" + isHardDisabled + ")");
 			}
-            // log.i("updated buttons " + actions.join(","));
+			// log.i("updated buttons " + actions.join(","));
 		},
 
 		updateButtonDisabledState: function ($button, action, buttonStatus, buttonElements) {
-            var playerVision = this.playerStatsNodes.head.vision.value;
+			var playerVision = this.playerStatsNodes.head.vision.value;
 			var isAutoPlaying = this.autoPlayNodes.head;
-            return GameGlobals.buttonHelper.updateButtonDisabledState($button, buttonElements.container, playerVision, isAutoPlaying);
+			return GameGlobals.buttonHelper.updateButtonDisabledState($button, buttonElements.container, playerVision, isAutoPlaying);
 		},
 
 		updateButtonCallout: function ($button, action, buttonStatus, buttonElements, isHardDisabled) {
@@ -157,7 +157,7 @@ define([
 					this.updateButtonCalloutCosts($button, action, buttonStatus, buttonElements, costs, costsStatus);
 				}
 				this.updateButtonCalloutRisks($button, action, buttonElements);
-                this.updateButtonSpecialReqs($button, action, buttonElements);
+				this.updateButtonSpecialReqs($button, action, buttonElements);
 			} else {
 				var lastReason = buttonStatus.disabledReason;
 				if (lastReason !== disabledReason) {
@@ -176,7 +176,7 @@ define([
 			var playerHealth = this.playerStatsNodes.head.stamina.health;
 			var showStorage = GameGlobals.resourcesHelper.getCurrentStorageCap();
 			if (!buttonStatus.displayedCosts) buttonStatus.displayedCosts = {};
-            
+			
 			for (var key in costs) {
 				var $costSpan = buttonElements.costSpans[key];
 				if (!$costSpan || $costSpan.length == 0) {
@@ -204,12 +204,12 @@ define([
 		},
 
 		updateButtonCalloutRisks: function ($button, action, buttonElements) {
-            var sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button) || this.playerLocationNodes.head.entity;
+			var sectorEntity = GameGlobals.buttonHelper.getButtonSectorEntity($button) || this.playerLocationNodes.head.entity;
 			var playerVision = this.playerStatsNodes.head.vision.value;
 			var hasEnemies = GameGlobals.fightHelper.hasEnemiesCurrentLocation(action);
 			var baseActionId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-            var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
-            var sectorDangerFactor = GameGlobals.sectorHelper.getDangerFactor(sectorEntity);
+			var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
+			var sectorDangerFactor = GameGlobals.sectorHelper.getDangerFactor(sectorEntity);
 
 			var injuryRisk = PlayerActionConstants.getInjuryProbability(action, playerVision);
 			var injuryRiskBase = injuryRisk > 0 ? PlayerActionConstants.getInjuryProbability(action) : 0;
@@ -232,13 +232,13 @@ define([
 			if (fightRisk > 0)
 				buttonElements.calloutRiskFightValue.text(UIConstants.roundValue((fightRiskBase + fightRiskVision) * 100, true, true));
 		},
-        
-        updateButtonSpecialReqs: function ($button, action, buttonElements) {
-            if (!buttonElements.calloutSpecialReqs || buttonElements.calloutSpecialReqs.length == 0) {
-                return;
-            }
-            buttonElements.calloutSpecialReqs.text(GameGlobals.uiFunctions.getSpecialReqsText(action));
-        },
+		
+		updateButtonSpecialReqs: function ($button, action, buttonElements) {
+			if (!buttonElements.calloutSpecialReqs || buttonElements.calloutSpecialReqs.length == 0) {
+				return;
+			}
+			buttonElements.calloutSpecialReqs.text(GameGlobals.uiFunctions.getSpecialReqsText(action));
+		},
 
 		updateButtonCooldownOverlays: function ($button, action, buttonStatus, buttonElements, sectorEntity, isHardDisabled, costsStatus) {
 			costsStatus.bottleneckCostFraction = Math.min(costsStatus.bottleneckCostFraction, GameGlobals.playerActionsHelper.checkRequirements(action, false, sectorEntity).value);
@@ -254,46 +254,46 @@ define([
 		updateProgressbars: function () {
 			for (var i = 0; i < this.elementsVisibleProgressbars.length; i++) {
 				var $progressbar = $(this.elementsVisibleProgressbars[i]);
-                var id = $progressbar.attr("id");
-                
-                // bar
+				var id = $progressbar.attr("id");
+				
+				// bar
 				var isAnimated = $progressbar.data("animated") === true;
 				if (!isAnimated) {
 					var percent = ($progressbar.data('progress-percent') / 100);
-                    var percentShown = $progressbar.data("progress-percent-shown");
-                    if (!percentShown && percentShown !== 0) percentShown = -1;
-                    if (Math.abs(percent - percentShown) > 0.0005) {
-    					$progressbar.data("animated", true);
-    					var animationLength = $progressbar.data("animation-counter") > 0 ? ($progressbar.data('animation-length')) : 0;
-    					var progressWrapWidth = $progressbar.width();
-    					var progressWidth = percent * progressWrapWidth;
-    					$progressbar.children(".progress-bar").stop().animate({
-    						left: progressWidth
-    					}, animationLength, function () {
-    						$(this).parent().data("animated", false);
-    						$(this).parent().data("progress-percent-shown", percent);
-    						$(this).parent().data("animation-counter", $progressbar.parent().data("animation-counter") + 1);
-    					});
-                    }
+					var percentShown = $progressbar.data("progress-percent-shown");
+					if (!percentShown && percentShown !== 0) percentShown = -1;
+					if (Math.abs(percent - percentShown) > 0.0005) {
+						$progressbar.data("animated", true);
+						var animationLength = $progressbar.data("animation-counter") > 0 ? ($progressbar.data('animation-length')) : 0;
+						var progressWrapWidth = $progressbar.width();
+						var progressWidth = percent * progressWrapWidth;
+						$progressbar.children(".progress-bar").stop().animate({
+							left: progressWidth
+						}, animationLength, function () {
+							$(this).parent().data("animated", false);
+							$(this).parent().data("progress-percent-shown", percent);
+							$(this).parent().data("animation-counter", $progressbar.parent().data("animation-counter") + 1);
+						});
+					}
 				} else {
 					$progressbar.data("animation-counter", 0);
 				}
-                
-                // change indicator
-                var now = new Date().getTime();
-                var changeTime = $progressbar.data('change-time');
-                var changeAnimTime = $progressbar.data('change-anim-time');
-                if (!changeAnimTime || changeTime > changeAnimTime) {
-                    var changePercent = $progressbar.data('change-percent');
-                    $progressbar.children(".progress-bar-change").finish().animate({
-                        width: changePercent + "%",
-                        left: progressWidth,
-                        opacity: 1,
-                    }, animationLength).delay(100).animate({
-                        opacity: 0
-                    }, 300);
-                    $progressbar.data('change-anim-time', now);
-                }
+				
+				// change indicator
+				var now = new Date().getTime();
+				var changeTime = $progressbar.data('change-time');
+				var changeAnimTime = $progressbar.data('change-anim-time');
+				if (!changeAnimTime || changeTime > changeAnimTime) {
+					var changePercent = $progressbar.data('change-percent');
+					$progressbar.children(".progress-bar-change").finish().animate({
+						width: changePercent + "%",
+						left: progressWidth,
+						opacity: 1,
+					}, animationLength).delay(100).animate({
+						opacity: 0
+					}, 300);
+					$progressbar.data('change-anim-time', now);
+				}
 			}
 		},
 
@@ -311,7 +311,7 @@ define([
 			});
 		},
 
-        // TODO performance
+		// TODO performance
 		updateButtonContainer: function (button, isVisible) {
 			$(button).siblings(".cooldown-reqs").css("display", isVisible ? "block" : "none");
 			var container = $(button).parent().parent(".callout-container");
@@ -324,7 +324,7 @@ define([
 			this.elementsVisibleButtons = [];
 			this.buttonStatuses = [];
 			this.buttonElements = [];
-            var buttonActions = [];
+			var buttonActions = [];
 			var sys = this;
 			$.each($("button.action"), function () {
 				var $button = $(this);
@@ -347,7 +347,7 @@ define([
 					elements.calloutRiskInventoryValue = elements.calloutRiskInventory.children(".action-risk-value");
 					elements.calloutRiskFight = elements.calloutContentEnabled.children(".action-risk-fight");
 					elements.calloutRiskFightValue = elements.calloutRiskFight.children(".action-risk-value");
-                    elements.calloutSpecialReqs = elements.calloutContentEnabled.children(".action-special-reqs")
+					elements.calloutSpecialReqs = elements.calloutContentEnabled.children(".action-special-reqs")
 					elements.cooldownReqs = $button.siblings(".cooldown-reqs");
 					elements.cooldownDuration = $button.children(".cooldown-duration");
 					elements.cooldownAction = $button.children(".cooldown-action");
@@ -360,10 +360,10 @@ define([
 						elements.costSpanValues[key] = elements.costSpans[key].children(".action-cost-value");
 					}
 					sys.buttonElements.push(elements);
-                    buttonActions.push(action);
+					buttonActions.push(action);
 				}
 			});
-            // log.i("update visible buttons:" + this.elementsVisibleButtons.length + ":" + buttonActions.join(","));
+			// log.i("update visible buttons:" + this.elementsVisibleButtons.length + ":" + buttonActions.join(","));
 		},
 
 		updateVisibleProgressbarsList: function () {
@@ -378,18 +378,18 @@ define([
 				}
 			});
 		},
-        
-        onElementsVisibilityChanged: function (elements, show, params) {
-            if (params && params.isButtonCalloutElement)  {
-                return;
-            }
-            this.elementsVisibilityChanged = true;
-        },
-        
-        onButtonStatusChanged: function () {
-            this.buttonStatusChanged = true;
-        }
-        
+		
+		onElementsVisibilityChanged: function (elements, show, params) {
+			if (params && params.isButtonCalloutElement) {
+				return;
+			}
+			this.elementsVisibilityChanged = true;
+		},
+		
+		onButtonStatusChanged: function () {
+			this.buttonStatusChanged = true;
+		}
+		
 	});
 
 	return UIOutElementsSystem;
