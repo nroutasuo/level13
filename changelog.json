@@ -1,6 +1,18 @@
 {
 	"versions": [
         {
+            "version": "0.3.3",
+            "requiredVersion": "0.3.1",
+            "phase": "alpha",
+            "final": false,
+            "changes": [
+                {
+                    "type": "DEV",
+                    "summary": "Small bugfixes"
+                }
+            ]
+        },
+        {
             "version": "0.3.2",
             "requiredVersion": "0.3.1",
             "phase": "alpha",
