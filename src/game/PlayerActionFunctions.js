@@ -964,8 +964,8 @@ define(['ash',
 			var sector = this.playerLocationNodes.head.entity;
 			var level = GameGlobals.levelHelper.getLevelEntityForSector(sector);
 			var position = sector.get(PositionComponent).getPosition();
-            var campOrdinal = GameGlobals.gameState.getCampOrdinal(level);
-            log.i("Build camp " + position);
+            var campOrdinal = GameGlobals.gameState.getCampOrdinal(position.level);
+            log.i("Build camp " + position + " ordinal " + campOrdinal);
 			var campComponent = new CampComponent(position.toString());
 			campComponent.foundedTimeStamp = GameGlobals.gameState.gameTime;
 			sector.add(campComponent);
@@ -980,8 +980,8 @@ define(['ash',
 			improvementsComponent.add(improvementNames.home);
 
 			GameGlobals.gameState.unlockedFeatures.camp = true;
-			gtag('event', 'build_camp', { event_category: 'progression', event_label: campOrdinal })
-			gtag('event', 'build_camp_time', { event_category: 'game_time', event_label: campOrdinal, value: GameGlobals.gameState.playTime })
+			gtag('event', 'build_camp', { event_category: 'progression', event_label: campOrdinal });
+			gtag('event', 'build_camp_time', { event_category: 'game_time', event_label: campOrdinal, value: GameGlobals.gameState.playTime });
 
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "Built a camp.");
 			if (level.get(LevelComponent).populationFactor < 1) {
