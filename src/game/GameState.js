@@ -16,6 +16,7 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
             this.numTradePostCamps = 0;
             this.numVisitedSectors = 0;
             this.isFinished = false;
+            this.playedVersions = [];
 
             this.unlockedFeatures = {
                 scavenge: false,
@@ -82,6 +83,13 @@ define(['ash', 'worldcreator/WorldCreatorHelper'], function (Ash, WorldCreatorHe
             for (var i = 0; i < cooldownkeys.length; i++) {
                 this.actionCooldownEndTimestamps[cooldownkeys[i]] = this.actionCooldownEndTimestamps[cooldownkeys[i]] - seconds * 1000;
             }
+        },
+        
+        savePlayedVersion: function (version) {
+            if (this.playedVersions.indexOf(version) < 0) {
+                this.playedVersions.push(version);
+            }
+            log.i("played versions: " + this.playedVersions.join(","));
         },
 
         getLevelOrdinal: function (level) {
