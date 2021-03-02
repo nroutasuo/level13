@@ -54,6 +54,7 @@ define([
 				
 				deityComponent.addChange("Temples", accTemple, campNode.position.level);
 				deityComponent.addChange("Clerics", accClerics, campNode.position.level);
+				deityComponent.favour += time * accCamp;
 				deityComponent.accumulation += accCamp;
 				deityComponent.accumulationPerCamp[campNode.position.level] = accCamp;
 			}
