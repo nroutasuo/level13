@@ -176,7 +176,6 @@ define([
 		},
 
 		pauseGame: function () {
-			GameGlobals.uiFunctions.hideGame(false);
 			this.tickProvider.stop();
 		},
 

@@ -14,14 +14,14 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 			GlobalSignals.add(this, GlobalSignals.popupResizedSignal, this.onPopupResized);
 		},
 		
-		showPopup: function (title, msg, okButtonLabel, cancelButtonLabel, resultVO, okCallback, cancelCallback) {
-			if (GameGlobals.gameState.uiStatus.isHidden) {
+		showPopup: function (title, msg, okButtonLabel, cancelButtonLabel, resultVO, okCallback, cancelCallback, isMeta) {
+			if (GameGlobals.gameState.uiStatus.isHidden && !isMeta) {
 				this.hiddenQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback });
 				return;
 			}
 			
 			if (this.hasOpenPopup()) {
-				this.popupQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback });
+				this.popupQueue.push({title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback, isMeta: isMeta });
 				return;
 			}
 			
@@ -157,7 +157,7 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 		showQueuedPopup: function () {
 			if (this.popupQueue.length > 0) {
 				var queued = this.popupQueue.pop();
-				this.showPopup(queued.title, queued.msg, queued.okButtonLabel, queued.cancelButtonLabel, queued.resultVO, queued.okCallback, queued.cancelCallback);
+				this.showPopup(queued.title, queued.msg, queued.okButtonLabel, queued.cancelButtonLabel, queued.resultVO, queued.okCallback, queued.cancelCallback, queued.isMeta);
 			}
 		},
 		

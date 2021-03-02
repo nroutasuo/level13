@@ -305,12 +305,16 @@ define([
 				'fatal': true,
 			});
 			
+			this.gameManager.pauseGame();
+			GameGlobals.uiFunctions.hideGame(false);
+			
 			// show popup
 			var bugTitle = StringUtils.encodeURI("[JS Error] " + desc.title);
 			var bugBody = StringUtils.encodeURI(
 			   "Details:\n[Fill in any details here that you think will help tracking down this bug, such as what you did in the game just before it happened.]" +
 			   "\n\nStacktrace:\n" + desc.stack);
 			var url = "https://github.com/nroutasuo/level13/issues/new?title=" + bugTitle + "&body=" + bugBody + "&labels=exception";
+			GameGlobals.uiFunctions.popupManager.closeAllPopups();
 			GameGlobals.uiFunctions.showInfoPopup(
 				"Error",
 				"You've found a bug! Please reload the page to continue playing.<br\><br\>" +
@@ -318,11 +322,11 @@ define([
 				url +
 				"' target='_blank'>reporting</a> the problem on Github.",
 				"ok",
-				null
+				null,
+				null,
+				true
 			);
 			
-			this.gameManager.pauseGame();
-			GameGlobals.uiFunctions.hideGame(false);
 			throw ex;
 		},
 

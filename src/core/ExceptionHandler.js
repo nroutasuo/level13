@@ -20,12 +20,7 @@ define(function () {
 			try {
 				func.apply(caller);
 			} catch (ex) {
-				ex.message = ex.message || msg;
-				if (ExceptionHandler.exceptionCallback) {
-					ExceptionHandler.exceptionCallback(ex, msg);
-				} else {
-					throw ex;
-				}
+				ExceptionHandler.handleException(ex, msg);
 			}
 		},
 		
