@@ -692,6 +692,11 @@ define(['ash',
 			var positionComponent = this.playerLocationNodes.head.entity.get(PositionComponent);
 			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
 			var blocker = passagesComponent.getBlocker(direction);
+			
+			if (!blocker) {
+				log.w("can't clear waste - no blocker here");
+				return;
+			}
 
 			var logMsgSuccess = "Cleared the waste. The area is now safe to pass through.";
 			var logMsgFailBase = "Attempted to clear the waste but got attacked. ";

@@ -125,6 +125,10 @@ define([
 				case "nap":
 					resultVO = this.getNapRewards();
 					break;
+				case "clear_waste_r":
+				case "clear_waste_t":
+					resultVO = new ResultVO(baseActionID);
+					break;
 				default:
 					log.w("Unknown action: " + baseActionID + ". Can't create result vo.");
 					return null;
