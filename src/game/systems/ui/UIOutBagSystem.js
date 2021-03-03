@@ -507,7 +507,7 @@ define([
 			if (reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_BAG_FULL)
 				return true;
 			if (reqsCheck.reason === PlayerActionConstants.UNAVAILABLE_REASON_LOCKED_RESOURCES)
-				return false;
+				return true;
 			return false;
 		},
 
