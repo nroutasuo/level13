@@ -9,7 +9,8 @@ define([
 	'use strict';
 	
 	function registerButtonListeners() {
-		$("#fix-evidence-knife-compass").click(function () { fixEvidenceKnifeCompass(); });
+		$("#fix-evidence-knife-compass").click(function () { applyFixEvidenceKnifeCompass(); });
+		$("#fix-evidence-crafting").click(function () { applyFixEvidenceCrafting(); });
 	}
 	
 	function showMessage(str) {
@@ -103,7 +104,7 @@ define([
 		save.entitiesObject.player.Rumours.value = newValue;
 	}
 	
-	function fixEvidenceKnifeCompass() {
+	function applyFix(checkActions, fixActions, message) {
 		let save = loadSave();
 		let isSaveValid = validateSave(save);
 		if (!isSaveValid) {
@@ -111,27 +112,48 @@ define([
 			return;
 		}
 		
-		let checkResult = checkSave(save, [
-			function (save) { return checkSaveHasUpgrade(save, "unlock_building_tradingpost", false); },
-			function (save) { return checkSaveHasUpgrade(save, "unlock_weapon_15", true); },
-		]);
+		let checkResult = checkSave(save, checkActions);
 		
 		if (!checkResult.ok) {
 			showMessage("This save is not valid for this fix. Reason: " + checkResult.reason);
 			return;
 		}
 		
+		let result = fixSave(save, fixActions);
+		exportSave(result);
+		showMessage("Fix applied. " + message + " Copy new save from the Output box.");
+	}
+	
+	function applyFixEvidenceKnifeCompass() {
 		// cost in 0.3.1
 		let evidenceCost = 80;
 		let rumourCost = 58;
 		
-		let result = fixSave(save, [
+		applyFix([
+			function (save) { return checkSaveHasUpgrade(save, "unlock_building_tradingpost", false); },
+			function (save) { return checkSaveHasUpgrade(save, "unlock_weapon_15", true); },
+		], [
 			function (save) { fixSaveRemoveUpgrade(save, "unlock_weapon_15") },
 			function (save) { fixSaveGrantEvidence(save, evidenceCost) },
 			function (save) { fixSaveGrantRumours(save, 58) },
-		]);
-		exportSave(result);
-		showMessage("Fix applied. Removed upgrade 'Knife' and reinbursed " + evidenceCost + " Evidence and " + rumourCost + " Rumours. Copy new save from the Output box.");
+		],
+			"Removed upgrade 'Knife' and reinbursed " + evidenceCost + " Evidence and " + rumourCost + " Rumours."
+		);
+	}
+	
+	function applyFixEvidenceCrafting() {
+		// cost in 0.3.2
+		let evidenceCost = 50;
+		
+		applyFix([
+			function (save) { return checkSaveHasUpgrade(save, "unlock_item_clothing2", false); },
+			function (save) { return checkSaveHasUpgrade(save, "unlock_building_passage_staircase", true); },
+		], [
+			function (save) { fixSaveRemoveUpgrade(save, "unlock_building_passage_staircase") },
+			function (save) { fixSaveGrantEvidence(save, evidenceCost) },
+		],
+			"Removed upgrade 'Building Projects' and reimbursed " + evidenceCost + " Evidence."
+		);
 	}
 	
 	registerButtonListeners();
