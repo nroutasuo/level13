@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <title>Level 13 | Tools</title>
+	<meta charset="utf-8" />
+	<title>Level 13 | Tools</title>
 	<meta itemprop="description" name="description" property="og:description" content="A text-based science fiction adventure game.">
 	<meta itemprop="image" property="og:image" content="favicon.png" />
 	<meta itemprop="name" property="og:title" content="Level 13" />
@@ -17,51 +17,59 @@
 </head>
 
 <body class="wrap wider dark" style="height:100%">
-    <a name="top"></a>
-    <div class="sub-page-container">
+	<a name="top"></a>
+	<div class="sub-page-container">
 
-            <h1>Level 13 Tools</h1>
-            
-            <a href="index.html">← Game</a> |
-            <a href="faq.html">FAQ</a> |
-            <a href="changelog.html">Changelog</a>
-            
-            <div class="textbox">
-            <h2>What is this page?</h2>
+			<h1>Level 13 Tools</h1>
+			
+			<a href="index.html">← Game</a> |
+			<a href="faq.html">FAQ</a> |
+			<a href="changelog.html">Changelog</a>
+			
+			<div class="textbox">
+			<h2>What is this page?</h2>
 
-            <p>This page contains some tools and cheats for players who have been affected by bugs and balancing issues in the game. The cheats here are quite specific, so unless you've been directed here to fix a specific issue, they will likely not be useful to you.</p>
-            
-            </div>
-            
-            <div class="textbox lvl13-box-1" style="padding-left: 10px; padding-right: 10px">
-            <h2>Load save</h2>
-            
-            <p>Copy paste the save you want to fix to the "Input" box. You can export your save from the game via the import/export popup in the footer. Once a fix has been applied, the fixed save will appear in the "Output" box. You can import it to the game using the same popup.</p>
-            <div class="columns-container">
-                <div class="columns-child">
-                    <h4>Input</h4>
-                    <textarea id="save-input" style="width:99%" rows="5"></textarea>
-                </div>
-                <div class="columns-child">
-                    <h4>Output</h4>
-                    <textarea id="save-output" style="width:99%" rows="5"></textarea>
-                </div>
-            </div>
-            </div>
-            
-            <div class="textbox">
-            <h2>Tools</h2>
-            <h3>PROBLEM: Stuck on level 12 with not enough evidence</h3>
-            <div class="columns-container">
-                <div class="columns-child"><p>If you played version 0.3.1 and bought all other available upgrades before Compass, you might have gotten stuck without enough evidence to buy Compass. This tool will remove the Knife upgrade from you and reinburse the amount of Evidence you spent on it, allowing you to continue.</p></div>
-                <div class="columns-child columns-child-small"><button id="fix-evidence-knife-compass">Fix</button></div>
-            </div>
-            </div>
-            
-            <p><a href="#top">Back to top</a></p>
-    </div>
+			<p>This page contains some tools and cheats for players who have been affected by bugs and balancing issues in the game. The cheats here are quite specific, so unless you've been directed here to fix a specific issue, they will likely not be useful to you.</p>
+			
+			</div>
+			
+			<div class="textbox lvl13-box-1" style="padding-left: 10px; padding-right: 10px">
+			<h2>Load save</h2>
+			
+			<p>Paste the save you want to fix to the "Input" box. You can export your save from the game via the import/export popup in the footer. Once a fix has been applied, the fixed save will appear in the "Output" box. You can then import it to the game using the same popup.</p>
+			<div class="columns-container">
+				<div class="columns-child">
+					<h4>Input</h4>
+					<textarea id="save-input" style="width:99%" rows="5"></textarea>
+				</div>
+				<div class="columns-child">
+					<h4>Output</h4>
+					<textarea id="save-output" style="width:99%" rows="5"></textarea>
+				</div>
+			</div>
+			</div>
+			
+			<div class="textbox">
+			<h2>Tools</h2>
+			
+			<h3>PROBLEM: Stuck on level 13 with not enough evidence</h3>
+			<div class="columns-container">
+				<div class="columns-child"><p>If you unlocked Building Projects before Crafting, you might have gotten stuck without enough evidence for Crafting and no more sectors you can scout due to them being too cold. This tool will remove the Building Projects upgrade and reinburse the amount of Evidence you spent on it, allowing you to get Crafting first and continue.</p></div>
+				<div class="columns-child columns-child-small"><button id="fix-evidence-crafting">Fix</button></div>
+			</div>
+			
+			<h3>PROBLEM: Stuck on level 12 with not enough evidence</h3>
+			<div class="columns-container">
+				<div class="columns-child"><p>If you played version 0.3.1 and bought all other available upgrades before Compass, you might have gotten stuck without enough evidence to buy Compass. This tool will remove the Knife upgrade from you and reinburse the amount of Evidence you spent on it, allowing you to continue.</p></div>
+				<div class="columns-child columns-child-small"><button id="fix-evidence-knife-compass">Fix</button></div>
+			</div>
+			
+			</div>
+			
+			<p><a href="#top">Back to top</a></p>
+	</div>
 
 	<!-- RequireJS -->
-    <script data-main="src/config-tools" src="lib/requirejs/require.min.js"></script>
+	<script data-main="src/config-tools" src="lib/requirejs/require.min.js"></script>
 </body>
 </html>
