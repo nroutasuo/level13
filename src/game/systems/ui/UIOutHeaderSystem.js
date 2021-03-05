@@ -256,9 +256,6 @@ define([
 			}
 
 			var itemsComponent = this.playerStatsNodes.head.items;
-			var fightAtt = FightConstants.getPlayerAtt(playerStatsNode.stamina, itemsComponent);
-			var fightDef = FightConstants.getPlayerDef(playerStatsNode.stamina, itemsComponent);
-			var fightStrength = FightConstants.getStrength(fightAtt, fightDef, playerStatsNode.stamina.maxHP);
 
 			let showScavangeAbilityLastUpdate = this.showScavangeAbilityLastUpdate;
 			let showScavangeAbility = GameGlobals.gameState.unlockedFeatures.scavenge && !isInCamp;
@@ -544,6 +541,7 @@ define([
 					case ItemConstants.itemBonusTypes.movement:
 						let perksComponent = this.playerStatsNodes.head.perks;
 						value *= GameGlobals.sectorHelper.getBeaconMovementBonus(this.currentLocationNodes.head.entity, this.playerStatsNodes.head.perks);
+						value = Math.round(value * 10) / 10;
 						isVisible = true;
 						flipNegative = true;
 						break;

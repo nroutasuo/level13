@@ -242,13 +242,21 @@ function (Ash, ItemVO, ItemConstants) {
 		},
 
 		getCurrentBonus: function (bonusType, itemType) {
-			var bonus = 0;
+			var isMultiplier = ItemConstants.isMultiplier(bonusType);
+			var bonus = isMultiplier ? 1 : 0;
 			for (var key in this.items) {
 				if (!itemType || itemType === key) {
 					for (var i = 0; i < this.items[key].length; i++) {
 						var item = this.items[key][i];
 						if (item.equipped || itemType == ItemConstants.itemTypes.follower) {
-							bonus += item.getBonus(bonusType);
+							let itemBonus = item.getBonus(bonusType);
+							if (isMultiplier) {
+								if (itemBonus != 0) {
+									bonus *= itemBonus;
+								}
+							} else {
+								bonus += itemBonus;
+							}
 						}
 					}
 				}
