@@ -523,7 +523,7 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 				case localeTypes.library:
 					modifier = "abandoned";
 					if (sectorFeatures.level < 10) modifier = "ancient";
-					modifier = "library";
+					noun = "library";
 					break;
 				default:
 					log.w("unknown locale type: " + locale.type);
