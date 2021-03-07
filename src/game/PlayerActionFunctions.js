@@ -1219,7 +1219,7 @@ define(['ash',
 
 		buildSquare: function () {
 			this.buildImprovement("build_in_square", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_square"));
-			this.addLogMessage(LogConstants.MSG_ID_BUILT_SQUARE, "Built a square. The camp feels more like a town withing the City already.");
+			this.addLogMessage(LogConstants.MSG_ID_BUILT_SQUARE, "Built a square. The camp feels more like a town within the City already.");
 		},
 
 		buildGarden: function () {
