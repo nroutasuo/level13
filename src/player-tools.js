@@ -11,6 +11,7 @@ define([
 	function registerButtonListeners() {
 		$("#fix-evidence-knife-compass").click(function () { applyFixEvidenceKnifeCompass(); });
 		$("#fix-evidence-crafting").click(function () { applyFixEvidenceCrafting(); });
+		$("#fix-evidence-textile-arts").click(function () { applyFixEvidenceTextileArts(); });
 	}
 	
 	function showMessage(str) {
@@ -153,6 +154,21 @@ define([
 			function (save) { fixSaveGrantEvidence(save, evidenceCost) },
 		],
 			"Removed upgrade 'Building Projects' and reimbursed " + evidenceCost + " Evidence."
+		);
+	}
+	
+	function applyFixEvidenceTextileArts() {
+		// cost in 0.3.2
+		let evidenceCost = 80;
+		
+		applyFix([
+			function (save) { return checkSaveHasUpgrade(save, "unlock_clothing_warm", false); },
+			function (save) { return checkSaveHasUpgrade(save, "unlock_building_tradingpost", true); },
+		], [
+			function (save) { fixSaveRemoveUpgrade(save, "unlock_building_tradingpost") },
+			function (save) { fixSaveGrantEvidence(save, evidenceCost) },
+		],
+			"Removed upgrade 'Compass' and reimbursed " + evidenceCost + " Evidence."
 		);
 	}
 	
