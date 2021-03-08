@@ -102,7 +102,7 @@ define([
 			
 			// TODO rework texts
 			
-			var msgAdjective = hasWater ? (hasFood ? "exhaused" : "hungry") : "thirsty";
+			var msgAdjective = hasWater ? (hasFood ? "exhausted" : "hungry") : "thirsty";
 			var msgMain = "";
 			var msgLog = "";
 			
