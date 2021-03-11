@@ -202,6 +202,7 @@ define([
 						GameGlobals.gameState[key] = loadedGameState[key];
 					}
 				}
+				GameGlobals.gameState.pendingUpdateTime = 0;
 				GameGlobals.gameState.savePlayedVersion(GameGlobals.changeLogHelper.getCurrentVersionNumber());
 				GameGlobals.gameState.isPaused = false;
 				gtag('set', { 'max_level': GameGlobals.gameState.level });
