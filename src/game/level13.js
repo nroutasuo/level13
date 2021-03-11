@@ -176,6 +176,7 @@ define([
 			this.initializePlugins(plugins);
 
 			GameGlobals.uiFunctions.init();
+			GameGlobals.uiFunctions.hideGame();
 			GlobalSignals.pageSetUpSignal.dispatch();
 			
 			ExceptionHandler.exceptionCallback = function (ex) { game.handleException(ex) };
