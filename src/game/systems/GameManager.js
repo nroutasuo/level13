@@ -348,12 +348,13 @@ define([
 						log.w(failedComponents + " components failed to load.");
 					}
 					
-					if (!saveWarningShown && GameGlobals.changeLogHelper.isOldVersion(save.version)) {
-						this.showVersionWarning(save.version);
-					}
-					
 					log.i("START " + GameConstants.STARTTimeNow() + "\t entity state loaded");
-					resolve();
+					
+					if (!saveWarningShown && GameGlobals.changeLogHelper.isOldVersion(save.version)) {
+						this.showVersionWarning(save.version, () => { resolve(); });
+					} else {
+						resolve();
+					}
 				}
 			})
 		},
@@ -449,7 +450,7 @@ define([
 			);
 		},
 		
-		showVersionWarning: function (saveVersion) {
+		showVersionWarning: function (saveVersion, continueCallback) {
 			var currentVersion = GameGlobals.changeLogHelper.getCurrentVersionNumber();
 			var changelogLink = "<a href='changelog.html' target='changelog'>changelog</a>";
 			var message = "";
@@ -466,7 +467,9 @@ define([
 				function () {
 					GameGlobals.uiFunctions.restart();
 				},
-				function () { },
+				function () {
+					continueCallback();
+				},
 				true
 			);
 		},
