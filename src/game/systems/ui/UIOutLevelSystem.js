@@ -714,11 +714,19 @@ define([
 			if (GameGlobals.resourcesHelper.getCurrentStorage().resources.getResource(resourceName) >= 1) {
 				return true;
 			}
-			if (includeScavenge && this.hasScavengeableResource(resourceName)) {
-				return true;
-			}
-			if (this.hasCollectibleResource(resourceName, includeUnbuiltCollectible)) {
-				return true;
+			
+			var statusComponent = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			var itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
+			var isAffectedByHazard = GameGlobals.sectorHelper.isAffectedByHazard(featuresComponent, statusComponent, itemsComponent);
+			
+			if (!isAffectedByHazard) {
+				if (includeScavenge && this.hasScavengeableResource(resourceName)) {
+					return true;
+				}
+				if (this.hasCollectibleResource(resourceName, includeUnbuiltCollectible)) {
+					return true;
+				}
 			}
 						 
 			return false;
