@@ -3052,7 +3052,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 					var baseProbability = this.randomEncounterProbabilities[baseActionID][0];
 					var visionFactor = Math.pow(1 - (vision / 100), 2);
 					var visionProbability = this.randomEncounterProbabilities[baseActionID][1] * visionFactor;
-					return (baseProbability + visionProbability) * actionFactor * sectorFactor;
+					return Math.min(1, (baseProbability + visionProbability) * actionFactor * sectorFactor);
 				}
 				return 0;
 			},
