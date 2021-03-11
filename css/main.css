@@ -1941,6 +1941,9 @@ body.dark .fight-damage-indicator {
   -o-transition: none;
   transition: none;
 }
+body.dark #manage-save-textarea {
+  font-size: 85%;
+}
 body.dark .loading-content,
 body.dark .thinking-content {
   position: fixed;
@@ -3848,6 +3851,9 @@ body.sunlit .fight-damage-indicator {
   -ms-transition: none;
   -o-transition: none;
   transition: none;
+}
+body.sunlit #manage-save-textarea {
+  font-size: 85%;
 }
 body.sunlit .loading-content,
 body.sunlit .thinking-content {

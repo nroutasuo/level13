@@ -6,6 +6,7 @@ var UIOutManageSaveSystem = Ash.System.extend({
 		spanSaveVersion: null,
 		textField: null,
 		loadImportcontainer: null,
+		spanWarning: null,
 		spanMsg: null,
 
 		constructor: function () {
@@ -13,6 +14,7 @@ var UIOutManageSaveSystem = Ash.System.extend({
 			this.spanSaveVersion = $("#save-version");
 			this.textField = $("#manage-save-textarea");
 			this.loadImportcontainer = $("#load-import-container");
+			this.spanWarning = $("#manage-save-warning");
 			this.spanMsg = $("#manage-save-msg");
 
 			var system = this;
@@ -52,41 +54,40 @@ var UIOutManageSaveSystem = Ash.System.extend({
 		initialize: function () {
 			this.spanSaveSeed.text(GameGlobals.gameState.worldSeed);
 			this.spanSaveVersion.text(GameGlobals.changeLogHelper.getCurrentVersionNumber());
-			this.textField.toggle(false);
-			GameGlobals.uiFunctions.toggle(this.loadImportcontainer, false);
-			GameGlobals.uiFunctions.toggle(this.spanMsg, false);
+			this.resetElements();
 		},
 
 		resetElements: function () {
-			this.textField.text("");
+			this.textField.val("");
 			GameGlobals.uiFunctions.toggle(this.spanMsg, false);
+			GameGlobals.uiFunctions.toggle(this.spanWarning, false);
 			GameGlobals.uiFunctions.toggle(this.textField, false);
 			GameGlobals.uiFunctions.toggle(this.loadImportcontainer, false);
 		},
 
 		openExport: function () {
+			this.resetElements();
 			var saveSystem = this.engine.getSystem(SaveSystem);
-
-			GameGlobals.uiFunctions.toggle(this.loadImportcontainer, false);
 			var saveString = saveSystem.getCompressedSaveJSON();
 			var saveJSON = saveSystem.getSaveJSONfromCompressed(saveString);
-			var isOk = GameGlobals.saveHelper.parseSaveJSON(saveJSON);
+			var saveObject = GameGlobals.saveHelper.parseSaveJSON(saveJSON);
+			var isOk = saveObject != null;
 			if (isOk) {
-				GameGlobals.uiFunctions.toggle(this.spanMsg, false);
-				this.textField.text(saveString);
 				GameGlobals.uiFunctions.toggle(this.textField, true);
+				this.textField.val(saveString);
 				this.textField.select();
-			} else {
 				GameGlobals.uiFunctions.toggle(this.spanMsg, true);
-				this.spanMsg.text("Error exporting save.");
+				this.spanMsg.text("Exported.");
+			} else {
+				GameGlobals.uiFunctions.toggle(this.spanWarning, true);
+				this.spanWarning.text("Error exporting save.");
 			}
 		},
 
 		openImport: function () {
-			this.textField.text("");
+			this.resetElements();
 			GameGlobals.uiFunctions.toggle(this.textField, true);
 			GameGlobals.uiFunctions.toggle(this.loadImportcontainer, true);
-			GameGlobals.uiFunctions.toggle(this.spanMsg, false);
 		},
 
 		loadImport: function () {
@@ -97,7 +98,7 @@ var UIOutManageSaveSystem = Ash.System.extend({
 			var isOk = GameGlobals.saveHelper.parseSaveJSON(importJSON);
 			if (isOk) {
 				var sys = this;
-				this.textField.text("");
+				this.textField.val("");
 				GameGlobals.uiFunctions.popupManager.closePopup("manage-save-popup");
 				GameGlobals.uiFunctions.showConfirmation(
 					"Are you sure you want to load this save? Your current progress will be lost.<br/><br/>" +
@@ -108,8 +109,8 @@ var UIOutManageSaveSystem = Ash.System.extend({
 						sys.loadState(importJSON);
 					});
 			} else {
-				GameGlobals.uiFunctions.toggle(this.spanMsg, true);
-				this.spanMsg.text("Failed to import save.");
+				GameGlobals.uiFunctions.toggle(this.spanWarning, true);
+				this.spanWarning.text("Failed to import save.");
 			}
 		},
 
