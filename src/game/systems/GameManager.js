@@ -444,7 +444,8 @@ define([
 				function () {
 					GameGlobals.uiFunctions.restart();
 				},
-				function () {}
+				function () {},
+				true
 			);
 		},
 		
@@ -465,7 +466,8 @@ define([
 				function () {
 					GameGlobals.uiFunctions.restart();
 				},
-				function () {}
+				function () { },
+				true
 			);
 		},
 

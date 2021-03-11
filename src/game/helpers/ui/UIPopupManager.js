@@ -75,7 +75,10 @@ function (Ash, ExceptionHandler, GameGlobals, GlobalSignals) {
 			}
 			
 			// overlay
-			$("#common-popup").wrap("<div class='popup-overlay' style='display:none'></div>");
+			let overlayClass = isMeta ? "popup-overlay-meta" : "popup-overlay-ingame";
+			$("#common-popup").toggleClass("popup-meta", isMeta);
+			$("#common-popup").toggleClass("popup-ingame", !isMeta);
+			$("#common-popup").wrap("<div class='popup-overlay " + overlayClass + "' style='display:none'></div>");
 			GameGlobals.uiFunctions.toggle(".popup-overlay", true);
 			popUpManager.repositionPopups();
 			GameGlobals.uiFunctions.slideToggleIf($("#common-popup"), null, true, 150, 150, popUpManager.repositionPopups);

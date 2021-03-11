@@ -1129,7 +1129,7 @@ define(['ash',
 				this.popupManager.showPopup("Confirmation", msg, "Confirm", "Cancel", null, okCallback, cancelCallback);
 			},
 
-			showQuestionPopup: function (title, msg, buttonLabel, cancelButtonLabel, callbackOK, callbackNo) {
+			showQuestionPopup: function (title, msg, buttonLabel, cancelButtonLabel, callbackOK, callbackNo, isMeta) {
 				var uiFunctions = this;
 				var okCallback = function (e) {
 					uiFunctions.popupManager.closePopup("common-popup");
@@ -1139,7 +1139,7 @@ define(['ash',
 					uiFunctions.popupManager.closePopup("common-popup");
 					if (callbackNo) callbackNo();
 				};
-				this.popupManager.showPopup(title, msg, buttonLabel, cancelButtonLabel, null, okCallback, cancelCallback);
+				this.popupManager.showPopup(title, msg, buttonLabel, cancelButtonLabel, null, okCallback, cancelCallback, isMeta);
 			},
 
 			showInput: function (title, msg, defaultValue, allowCancel, confirmCallback, inputCallback) {
