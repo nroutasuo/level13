@@ -407,6 +407,9 @@ body.dark table.spacious td:last-child {
 body.dark table.spacious td:first-child {
   padding-left: 0px;
 }
+body.dark table.borders td {
+  border: 1px solid #3a3a3a;
+}
 body.dark td.minwidth {
   width: 5%;
 }
@@ -2317,6 +2320,9 @@ body.sunlit table.spacious td:last-child {
 }
 body.sunlit table.spacious td:first-child {
   padding-left: 0px;
+}
+body.sunlit table.borders td {
+  border: 1px solid #aaa;
 }
 body.sunlit td.minwidth {
   width: 5%;

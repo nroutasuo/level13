@@ -359,6 +359,19 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
 			return [];
 		},
 		
+		getRequiredTechAll: function (upgradeID) {
+			let result = [];
+			let direct = this.getRequiredTech(upgradeID);
+			for (let i = 0; i < direct.length; i++) {
+				result.push(direct[i])
+				let indirect = this.getRequiredTechAll(direct[i]);
+				for (let j = 0; j < indirect.length; j++) {
+					result.push(indirect[j]);
+				}
+			}
+			return result;
+		},
+		
 		getMinimumCampOrdinalForUpgrade: function (upgrade) {
 			if (this.getMinimumCampOrdinalForUpgrade[upgrade]) return this.getMinimumCampOrdinalForUpgrade[upgrade];
 			
@@ -403,7 +416,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
 			return result;
 		},
 	
-		getMinimumLevelStepForUpgrade: function (upgrade) {
+		getMinimumCampStepForUpgrade: function (upgrade) {
 			var result = 0;
 			var blueprintType = this.getBlueprintBracket(upgrade);
 			if (blueprintType == this.BLUEPRINT_BRACKET_EARLY)
@@ -413,7 +426,7 @@ function (Ash, PlayerActionConstants, TribeConstants, WorldConstants, UpgradeVO)
 				
 			var requiredTech = this.getRequiredTech(upgrade);
 			for (var i = 0; i < requiredTech.length; i++) {
-				result = Math.max(result, this.getMinimumLevelStepForUpgrade(requiredTech[i]));
+				result = Math.max(result, this.getMinimumCampStepForUpgrade(requiredTech[i]));
 			}
 			
 			return result;

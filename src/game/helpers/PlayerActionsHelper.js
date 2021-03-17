@@ -66,19 +66,21 @@ define([
 		constructor: function (engine) {
 			this.engine = engine;
 
-			this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
-			this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
-			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
-			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
-			this.nearestCampNodes = engine.getNodeList(NearestCampNode);
+			if (engine) {
+				this.playerStatsNodes = engine.getNodeList(PlayerStatsNode);
+				this.playerResourcesNodes = engine.getNodeList(PlayerResourcesNode);
+				this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
+				this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
+				this.nearestCampNodes = engine.getNodeList(NearestCampNode);
 
-			var sys = this;
-			this.engine.updateComplete.add(function () {
-				sys.cache.reqs = {};
-			});
-			GlobalSignals.add(this, GlobalSignals.actionStartedSignal, function () {
-				sys.cache.reqs = {};
-			});
+				var sys = this;
+				this.engine.updateComplete.add(function () {
+					sys.cache.reqs = {};
+				});
+				GlobalSignals.add(this, GlobalSignals.actionStartedSignal, function () {
+					sys.cache.reqs = {};
+				});
+			}
 		},
 
 		deductCosts: function (action) {

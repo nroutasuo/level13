@@ -90,7 +90,7 @@ define([
 					for (var requiredUpgradeId in reqsDefinition.upgrades) {
 						if (requiredUpgradeId === upgradeId) {
 							item = GameGlobals.playerActionsHelper.getItemForCraftAction(action);
-							if (item) items.push(item.name);
+							if (item) items.push(item);
 						}
 					}
 				}

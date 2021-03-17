@@ -330,7 +330,7 @@ function (Ash, PlayerActionConstants, UpgradeConstants, WorldConstants, ItemVO) 
 				var requiredTech = Object.keys(reqs.upgrades);
 				for (var k = 0; k < requiredTech.length; k++) {
 					var campOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredTech[k]);
-					var step = UpgradeConstants.getMinimumLevelStepForUpgrade(requiredTech[k]);
+					var step = UpgradeConstants.getMinimumCampStepForUpgrade(requiredTech[k]);
 					addRequirement(campOrdinal, step, requiredTech[k]);
 				}
 			}

@@ -138,8 +138,7 @@ define([
 		getLibraryEvidenceGenerationPerSecond: function (improvementsComponent, libraryUpgradeLevel) {
 			var libraryCount = improvementsComponent.getCount(improvementNames.library);
 			var libraryLevel = improvementsComponent.getLevel(improvementNames.library);
-			var libraryLevelFactor = (1 + libraryLevel * CampConstants.EVIDENCE_BONUS_PER_LIBRARY_LEVEL);
-			return 0.0015 * libraryCount * libraryUpgradeLevel * libraryLevelFactor * GameConstants.gameSpeedCamp;
+			return CampConstants.getLibraryEvidenceGenerationPerSecond(libraryCount, libraryLevel, libraryUpgradeLevel) * GameConstants.gameSpeedCamp;
 		},
 		
 		getTempleFavourGenerationPerSecond: function (improvementsComponent, templeUpgradeLevel) {

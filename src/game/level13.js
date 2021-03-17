@@ -3,11 +3,10 @@ define([
 	'core/ExceptionHandler',
 	'core/ConsoleLogger',
 	'game/GameGlobals',
-	'game/GameFlowLogger',
+	'game/GameGlobalsInitializer',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
 	'game/constants/SystemPriorities',
-	'game/GameState',
 	'game/systems/GameManager',
 	'game/systems/SaveSystem',
 	'game/systems/AutoPlaySystem',
@@ -56,26 +55,7 @@ define([
 	'game/systems/BagSystem',
 	'game/systems/UnlockedFeaturesSystem',
 	'game/systems/occurrences/CampEventsSystem',
-	'game/PlayerActionFunctions',
 	'game/UIFunctions',
-	'game/helpers/AutoPlayHelper',
-	'game/helpers/PlayerActionsHelper',
-	'game/helpers/PlayerActionResultsHelper',
-	'game/helpers/ui/ChangeLogHelper',
-	'game/helpers/ItemsHelper',
-	'game/helpers/EndingHelper',
-	'game/helpers/CampVisHelper',
-	'game/helpers/ResourcesHelper',
-	'game/helpers/MovementHelper',
-	'game/helpers/FightHelper',
-	'game/helpers/LevelHelper',
-	'game/helpers/SectorHelper',
-	'game/helpers/CampHelper',
-	'game/helpers/ButtonHelper',
-	'game/helpers/SaveHelper',
-	'game/helpers/UpgradeEffectsHelper',
-	'game/helpers/ui/UIMapHelper',
-	'game/helpers/ui/UITechTreeHelper',
 	'utils/StringUtils',
 	'brejep/tickprovider',
 ], function (
@@ -83,11 +63,10 @@ define([
 	ExceptionHandler,
 	ConsoleLogger,
 	GameGlobals,
-	GameFlowLogger,
+	GameGlobalsInitializer,
 	GlobalSignals,
 	GameConstants,
 	SystemPriorities,
-	GameState,
 	GameManager,
 	SaveSystem,
 	AutoPlaySystem,
@@ -136,26 +115,7 @@ define([
 	BagSystem,
 	UnlockedFeaturesSystem,
 	CampEventsSystem,
-	PlayerActionFunctions,
 	UIFunctions,
-	AutoPlayHelper,
-	PlayerActionsHelper,
-	PlayerActionResultsHelper,
-	ChangeLogHelper,
-	ItemsHelper,
-	EndingHelper,
-	CampVisHelper,
-	ResourcesHelper,
-	MovementHelper,
-	FightHelper,
-	LevelHelper,
-	SectorHelper,
-	CampHelper,
-	ButtonHelper,
-	SaveHelper,
-	UpgradeEffectsHelper,
-	UIMapHelper,
-	UITechTreeHelper,
 	StringUtils,
 	TickProvider
 ) {
@@ -171,7 +131,7 @@ define([
 			this.tickProvider = new TickProvider(null, function (ex) { game.handleException(ex) });
 			this.gameManager = new GameManager(this.tickProvider, this.engine);
 
-			this.initializeGameGlobals();
+			GameGlobalsInitializer.init(this.engine);
 			this.addSystems();
 			this.initializePlugins(plugins);
 
@@ -190,35 +150,6 @@ define([
 					game.gameManager.setupGame();
 				});
 			});
-		},
-
-		initializeGameGlobals: function () {
-			GameGlobals.gameState = new GameState();
-			GameGlobals.playerActionsHelper = new PlayerActionsHelper(this.engine);
-			GameGlobals.playerActionFunctions = new PlayerActionFunctions(this.engine);
-
-			GameGlobals.resourcesHelper = new ResourcesHelper(this.engine);
-			GameGlobals.levelHelper = new LevelHelper(this.engine);
-			GameGlobals.movementHelper = new MovementHelper(this.engine);
-			GameGlobals.sectorHelper = new SectorHelper(this.engine);
-			GameGlobals.fightHelper = new FightHelper(this.engine);
-			GameGlobals.campHelper = new CampHelper(this.engine);
-			GameGlobals.endingHelper = new EndingHelper(this.engine);
-			GameGlobals.campVisHelper = new CampVisHelper();
-			GameGlobals.playerActionResultsHelper = new PlayerActionResultsHelper(this.engine);
-
-			GameGlobals.itemsHelper = new ItemsHelper(this.engine);
-			GameGlobals.upgradeEffectsHelper = new UpgradeEffectsHelper();
-			GameGlobals.autoPlayHelper = new AutoPlayHelper();
-			GameGlobals.saveHelper = new SaveHelper();
-			GameGlobals.changeLogHelper = new ChangeLogHelper();
-			GameGlobals.gameFlowLogger = new GameFlowLogger();
-
-			GameGlobals.uiMapHelper = new UIMapHelper(this.engine);
-			GameGlobals.uiTechTreeHelper = new UITechTreeHelper(this.engine);
-			GameGlobals.buttonHelper = new ButtonHelper();
-
-			GameGlobals.uiFunctions = new UIFunctions();
 		},
 
 		initializePlugins: function (plugins) {

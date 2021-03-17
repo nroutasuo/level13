@@ -1,14 +1,17 @@
-define(['ash'], function (Ash) {
+define(['ash', 'game/vos/localeVO'], function (Ash, LocaleVO) {
 
 	var ExplorationConstants = {
 		
 		BEACON_RADIUS: 4,
 		
-		getScoutLocaleReward: function (localeCategory, campOrdinal) {
-			if (localeCategory === "u") {
-				return Math.ceil(campOrdinal / 3);
-			} else {
-				return 0;
+		getScoutLocaleReward: function (localeType, campOrdinal) {
+			switch (localeType) {
+				case localeTypes.grove:
+				case localeTypes.tradingpartner:
+					return 0;
+				
+				default:
+					return Math.ceil(campOrdinal / 3);
 			}
 		},
 		

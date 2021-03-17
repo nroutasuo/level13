@@ -218,7 +218,7 @@ define([
 				rewards.gainedFavour = 2;
 			} else if (localeVO.type == localeTypes.tradingpartner) {
 			} else {
-				rewards.gainedEvidence = ExplorationConstants.getScoutLocaleReward(localeCategory, campOrdinal);
+				rewards.gainedEvidence = ExplorationConstants.getScoutLocaleReward(localeVO.type, campOrdinal);
 			}
 			
 			if (localeVO.type !== localeTypes.tradingpartner && localeVO.type != localeTypes.grove) {

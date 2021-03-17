@@ -319,7 +319,7 @@ define([
 				if (unlockedItems.length > 0) {
 					effects += "items: ";
 					for (var i in unlockedItems) {
-						effects += unlockedItems[i].toLowerCase();
+						effects += unlockedItems[i].name.toLowerCase();
 						effects += ", ";
 					}
 				}

@@ -199,6 +199,11 @@ define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
 			marketLevel = marketLevel || 1;
 			return CampConstants.RUMOURS_PER_VISIT_MARKET_BASE + marketLevel + (marketUpgradeLevel - 1);
 		},
+		
+		getLibraryEvidenceGenerationPerSecond: function (libraryCount, libraryLevel, libraryUpgradeLevel) {
+			var libraryLevelFactor = (1 + libraryLevel * CampConstants.EVIDENCE_BONUS_PER_LIBRARY_LEVEL);
+			return 0.0015 * libraryCount * libraryUpgradeLevel * libraryLevelFactor;
+		}
 	
 	};
 	
