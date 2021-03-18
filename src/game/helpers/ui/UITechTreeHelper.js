@@ -434,7 +434,7 @@ function (Ash, CanvasUtils, GameGlobals, CanvasConstants, ColorConstants, Player
 				node.definition = definition;
 				node.campOrdinal = UpgradeConstants.getMinimumCampOrdinalForUpgrade(definition.id);
 				node.level = Math.floor(node.campOrdinal / 3);
-				node.requiresIDs = reqs && reqs.upgrades ? Object.keys(reqs.upgrades) : [];
+				node.requiresIDs = reqs && reqs.upgrades ? [ Object.keys(reqs.upgrades)[0] ] : []; // only visualize first requirement
 				tree.addNode(node);
 			}
 			tree.connectNodes();

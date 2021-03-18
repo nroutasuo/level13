@@ -378,6 +378,9 @@ body.dark .p-meta {
 body.dark .columns-container {
   display: flex;
 }
+body.dark .columns-container-vcenter {
+  align-items: center;
+}
 body.dark .columns-child {
   flex: 1;
   padding-left: 5px;
@@ -2291,6 +2294,9 @@ body.sunlit .p-meta {
 }
 body.sunlit .columns-container {
   display: flex;
+}
+body.sunlit .columns-container-vcenter {
+  align-items: center;
 }
 body.sunlit .columns-child {
   flex: 1;

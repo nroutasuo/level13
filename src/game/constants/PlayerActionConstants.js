@@ -1658,6 +1658,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 					blueprint: 2,
 					upgrades: {
 						unlock_item_shoe1: true,
+						unlock_building_tradingpost: true,
 					}
 				},
 
@@ -1678,6 +1679,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 					blueprint: 2,
 					upgrades: {
 						unlock_building_tradingpost: true,
+						unlock_clothing_warm: true,
 					}
 				},
 
@@ -2853,7 +2855,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 				},
 
 				unlock_weapon_15: {
-					rumours: 58,
+					evidence: 72,
 				},
 
 				unlock_clothing_basic: {
@@ -2861,7 +2863,7 @@ function (Ash, GameConstants, CampConstants, ImprovementConstants) {
 				},
 
 				unlock_clothing_warm: {
-					evidence: 56,
+					rumours: 58,
 				},
 
 				unlock_building_darkfarm: {
