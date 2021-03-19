@@ -542,7 +542,7 @@ define([
 						let perksComponent = this.playerStatsNodes.head.perks;
 						value *= GameGlobals.sectorHelper.getBeaconMovementBonus(this.currentLocationNodes.head.entity, this.playerStatsNodes.head.perks);
 						value = Math.round(value * 10) / 10;
-						isVisible = true;
+						isVisible = GameGlobals.gameState.unlockedFeatures.camp;
 						flipNegative = true;
 						break;
 
@@ -563,7 +563,7 @@ define([
 					visibleStats++;
 			}
 
-			GameGlobals.uiFunctions.toggle("#header-self-bar > hr", visibleStats > 0)
+			GameGlobals.uiFunctions.toggle("#header-self-bar > hr", visibleStats > 1)
 		},
 
 		updateGameMsg: function () {
@@ -805,6 +805,7 @@ define([
 			this.updateVisionStatus();
 			this.updatePlayerStats();
 			this.refreshPerks();
+			this.updateItemStats();
 		}
 	});
 
