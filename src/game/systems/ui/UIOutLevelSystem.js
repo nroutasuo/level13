@@ -572,6 +572,7 @@ define([
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 
 			var isScouted = sectorStatus.scouted;
+			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
 
 			var collectorFood = improvements.getVO(improvementNames.collector_food);
 			var collectorWater = improvements.getVO(improvementNames.collector_water);
@@ -579,7 +580,7 @@ define([
 			var hasWater = isScouted && featuresComponent.resourcesCollectable.water > 0;
 			GameGlobals.uiFunctions.toggle("#out-improvements-collector-food", collectorFood.count > 0 || hasFood);
 			GameGlobals.uiFunctions.toggle("#out-improvements-collector-water", collectorWater.count > 0 || hasWater);
-			GameGlobals.uiFunctions.toggle("#out-improvements-camp", sectorStatus.canBuildCamp);
+			GameGlobals.uiFunctions.toggle("#out-improvements-camp", sectorStatus.canBuildCamp || hasCampHere);
 		},
 
 		updateOutImprovementsStatus: function () {
@@ -591,7 +592,6 @@ define([
 			var collectorWater = improvements.getVO(improvementNames.collector_water);
 			var collectorFoodCapacity = collectorFood.storageCapacity.food * collectorFood.count;
 			var collectorWaterCapacity = collectorWater.storageCapacity.water * collectorWater.count;
-			$("#out-improvements-camp .list-amount").text(hasCamp ? "1" : "0");
 			$("#out-improvements-collector-food .list-storage").text(
 				collectorFoodCapacity > 0 ? (Math.floor(collectorFood.storedResources.food * 10) / 10) + " / " + collectorFoodCapacity : "");
 			$("#out-improvements-collector-water .list-storage").text(

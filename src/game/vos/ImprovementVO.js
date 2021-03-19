@@ -2,6 +2,7 @@ define(['ash', 'game/vos/ResourcesVO'], function (Ash, ResourcesVO) {
 	
 	// Global static definitions
 	improvementNames = {
+		camp: "Camp",
 		collector_food: "Trap",
 		collector_water: "Bucket",
 		beacon: "Beacon",
