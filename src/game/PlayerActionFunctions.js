@@ -1433,6 +1433,7 @@ define(['ash',
 			this.playerStatsNodes.head.entity.get(DeityComponent).favour += 5;
 			this.completeAction("use_in_temple");
 			this.addLogMessage(LogConstants.MSG_ID_USE_TEMPLE, "Donated to the temple.");
+			GlobalSignals.inventoryChangedSignal.dispatch();
 			this.forceStatsBarUpdate();
 		},
 

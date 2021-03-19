@@ -112,7 +112,7 @@ define([
 				} else if (costName === "evidence") {
 					this.playerStatsNodes.head.evidence.value -= costAmount;
 				} else if (costName === "silver") {
-					var currencyComponent = this.playerStatsNodes.head.entity.get(CurrencyComponent);
+					var currencyComponent = GameGlobals.resourcesHelper.getCurrentCurrency();
 					currencyComponent.currency -= costAmount;
 				} else if (costNameParts[0] === "resource") {
 					currentStorage.resources.addResource(costNameParts[1], -costAmount);
