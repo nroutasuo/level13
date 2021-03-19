@@ -39,8 +39,7 @@ function (Ash, ItemVO, ItemConstants) {
 				log.w("Trying to discard un-discardable item.");
 				return;
 			}
-
-			// TODO prefer carried items when discarding
+			
 
 			if (typeof this.items[item.type] !== 'undefined') {
 				var typeItems = this.items[item.type];
@@ -48,7 +47,9 @@ function (Ash, ItemVO, ItemConstants) {
 				for (var i = 0; i < typeItems.length; i++) {
 					if (typeItems[i].id === item.id && typeItems[i].equipped == item.equipped) {
 						splicei = i;
-						break;
+						if (typeItems[i].carried) {
+							break;
+						}
 					}
 				}
 				
