@@ -20,6 +20,7 @@ define(['ash',
 	'game/components/sector/improvements/SectorImprovementsComponent',
 	'game/components/sector/SectorControlComponent',
 	'game/components/sector/SectorFeaturesComponent',
+	'game/components/sector/SectorStatusComponent',
 	'game/components/sector/events/CampEventTimersComponent',
 	'game/components/type/LevelComponent',
 	'game/nodes/player/PlayerStatsNode',
@@ -47,6 +48,7 @@ define(['ash',
 	SectorImprovementsComponent,
 	SectorControlComponent,
 	SectorFeaturesComponent,
+	SectorStatusComponent,
 	CampEventTimersComponent,
 	LevelComponent,
 	PlayerStatsNode,
@@ -579,6 +581,7 @@ define(['ash',
 			GameGlobals.playerActionFunctions.leaveCamp();
 			var startSector = this.playerLocationNodes.head.entity;
 			var originalPos = this.playerPositionNodes.head.position.getPosition();
+			var itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
 			var level = originalPos.level;
 			var sectors = GameGlobals.levelHelper.getSectorsByLevel(level);
 			var sector;
@@ -590,8 +593,13 @@ define(['ash',
 					var pos = sector.get(PositionComponent);
 					var goalSector = GameGlobals.levelHelper.getSectorByPosition(level, pos.sectorX, pos.sectorY);
 					if (GameGlobals.levelHelper.isSectorReachable(startSector, goalSector)) {
-						this.setPlayerPosition(level, pos.sectorX, pos.sectorY);
-						GameGlobals.playerActionFunctions.scout();
+						var statusComponent = goalSector.get(SectorStatusComponent);
+						var featuresComponent = goalSector.get(SectorFeaturesComponent);
+						var isAffectedByHazard = GameGlobals.sectorHelper.isAffectedByHazard(featuresComponent, statusComponent, itemsComponent);
+						if (!isAffectedByHazard) {
+							this.setPlayerPosition(level, pos.sectorX, pos.sectorY);
+							GameGlobals.playerActionFunctions.scout();
+						}
 					}
 				} else if (i == sectors.length) {
 					this.setPlayerPosition(originalPos.level, originalPos.sectorX, originalPos.sectorY);
