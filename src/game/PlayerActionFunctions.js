@@ -1114,10 +1114,6 @@ define(['ash',
 		buildStorage: function (sector) {
 			this.buildImprovement("build_in_storage", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_storage"), sector);
 			this.addLogMessage(LogConstants.MSG_ID_BUILT_STORAGE, "Built a storage.");
-			if (!GameGlobals.gameState.unlockedFeatures.trade) {
-				GameGlobals.gameState.unlockedFeatures.trade = true;
-				GlobalSignals.featureUnlockedSignal.dispatch();
-			}
 		},
 
 		buildFortification: function () {
