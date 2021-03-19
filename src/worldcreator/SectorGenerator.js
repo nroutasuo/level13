@@ -974,14 +974,14 @@ define([
 			
 			if (sectorVO.isCamp) {
 				sca.food = Math.max(sca.food, 3);
+				sca.metal = MathUtils.clamp(sca.metal, 3, 7);
 				if (WorldCreatorRandom.randomBool(l * 100 + x * 377 + y * 598, 0.5)) {
 					col.water = Math.max(col.water, 3);
 				}
 				if (isStartPosition) {
+					sca.food = MathUtils.clamp(sca.food, 4, 6);
 					col.food = Math.max(sca.food, 3);
 					col.water = Math.max(sca.water, 3);
-					sca.food = MathUtils.clamp(sca.metal, 4, 7);
-					sca.metal = MathUtils.clamp(sca.food, 3, 7);
 				}
 			}
 			
