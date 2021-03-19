@@ -1093,7 +1093,7 @@ define(['ash',
 
 			showSpecialPopup: function (popupID) {
 				if ($("#" + popupID).is(":visible")) return;
-				$("#" + popupID).wrap("<div class='popup-overlay' style='display:none'></div>");
+				$("#" + popupID).wrap("<div class='popup-overlay popup-overlay-ingame' style='display:none'></div>");
 				var uiFunctions = this;
 				$(".popup-overlay").fadeIn(200, function () {
 					uiFunctions.popupManager.repositionPopups();
