@@ -1,4 +1,4 @@
-define(['ash', 'game/vos/localeVO'], function (Ash, LocaleVO) {
+define(['ash', 'game/vos/LocaleVO'], function (Ash, LocaleVO) {
 
 	var ExplorationConstants = {
 		
