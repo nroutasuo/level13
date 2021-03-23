@@ -52,7 +52,7 @@ define([
 	ItemConstants,
 	PositionConstants,
 	BagComponent,
-    ExcursionComponent,
+	ExcursionComponent,
 	VisionComponent,
 	StaminaComponent,
 	ReputationComponent,
@@ -61,7 +61,7 @@ define([
 	DeityComponent,
 	ItemsComponent,
 	PerksComponent,
-    GangComponent,
+	GangComponent,
 	PlayerComponent,
 	TribeComponent,
 	LevelComponent,
@@ -133,8 +133,8 @@ define([
 					EvidenceComponent,
 					LogMessagesComponent,
 					PlayerActionComponent,
-                    ExcursionComponent,
-                    DeityComponent
+					ExcursionComponent,
+					DeityComponent
 				]));
 
 			this.engine.addEntity(player);
@@ -168,14 +168,14 @@ define([
 					movementBlockers))
 				.add(new SectorFeaturesComponent(
 					level,
-                    sectorFeatures.criticalPaths,
-                    sectorFeatures.zone,
+					sectorFeatures.criticalPaths,
+					sectorFeatures.zone,
 					sectorFeatures.buildingDensity,
 					sectorFeatures.wear,
 					sectorFeatures.damage,
 					sectorFeatures.sectorType,
 					sectorFeatures.sunlit,
-                    sectorFeatures.ground,
+					sectorFeatures.ground,
 					sectorFeatures.hazards,
 					sectorFeatures.isCamp,
 					sectorFeatures.notCampableReason,
@@ -200,9 +200,9 @@ define([
 					LastVisitedCampComponent
 				]));
 
-            if (sectorFeatures.hasWorkshop) {
-	             sector.add(new WorkshopComponent(sectorFeatures.workshopResource, sectorFeatures.hasClearableWorkshop, sectorFeatures.hasBuildableWorkshop));
-            }
+			if (sectorFeatures.hasWorkshop) {
+				 sector.add(new WorkshopComponent(sectorFeatures.workshopResource, sectorFeatures.hasClearableWorkshop, sectorFeatures.hasBuildableWorkshop));
+			}
 
 			this.engine.addEntity(sector);
 			return sector;
@@ -219,19 +219,19 @@ define([
 			this.engine.addEntity(tribe);
 			return tribe;
 		},
-        
-        createGang: function (saveKey, level, posX, posY, gangVO) {
-            var gang = new Ash.Entity()
-                .add(new PositionComponent(level, posX, posY))
-                .add(new GangComponent(gangVO))
-                .add(new SaveComponent(saveKey, [GangComponent]));
-            this.engine.addEntity(gang);
-            return gang;
-        },
+		
+		createGang: function (saveKey, level, posX, posY, gangVO) {
+			var gang = new Ash.Entity()
+				.add(new PositionComponent(level, posX, posY))
+				.add(new GangComponent(gangVO))
+				.add(new SaveComponent(saveKey, [GangComponent]));
+			this.engine.addEntity(gang);
+			return gang;
+		},
 
 		initPlayer: function (entity) {
 			var defaultInjury = PerkConstants.perkDefinitions.injury[0].clone();
-            defaultInjury.effectTimer = PerkConstants.TIMER_DISABLED;
+			defaultInjury.effectTimer = PerkConstants.TIMER_DISABLED;
 			var perksComponent = entity.get(PerksComponent);
 			perksComponent.addPerk(defaultInjury);
 			entity.add(new ExcursionComponent());
@@ -239,13 +239,13 @@ define([
 			var logComponent = entity.get(LogMessagesComponent);
 			logComponent.addMessage(LogConstants.MSG_ID_START, "You are alone in a massive dark corridor, far below sunlight.");
 		},
-        
-        syncPlayer: function (entity) {
-            var inCamp = entity.get(PositionComponent).inCamp;
+		
+		syncPlayer: function (entity) {
+			var inCamp = entity.get(PositionComponent).inCamp;
 			if (!inCamp && !entity.has(ExcursionComponent)) {
 				entity.add(new ExcursionComponent());
 			}
-        },
+		},
 
 		syncSector: function (entity) {
 			if (entity.has(CampComponent) && !entity.has(CampEventTimersComponent)) {

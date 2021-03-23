@@ -1,14 +1,14 @@
 require.config({
 
-    deps: ["player-tools"],
+	deps: ["player-tools"],
 
-    baseUrl: 'src',
+	baseUrl: 'src',
 
-    paths: {
-        ash: "../lib/ash/ash.min",
-        jquery: "../lib/jquery/",
-        lzstring: "../lib/lzstring",
-        game: "game"
-    },
+	paths: {
+		ash: "../lib/ash/ash.min",
+		jquery: "../lib/jquery/",
+		lzstring: "../lib/lzstring",
+		game: "game"
+	},
 
 });

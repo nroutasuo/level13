@@ -378,6 +378,9 @@ body.dark .p-meta {
 body.dark .columns-container {
   display: flex;
 }
+body.dark .columns-container-vcenter {
+  align-items: center;
+}
 body.dark .columns-child {
   flex: 1;
   padding-left: 5px;
@@ -406,6 +409,9 @@ body.dark table.spacious td:last-child {
 }
 body.dark table.spacious td:first-child {
   padding-left: 0px;
+}
+body.dark table.borders td {
+  border: 1px solid #3a3a3a;
 }
 body.dark td.minwidth {
   width: 5%;
@@ -846,19 +852,29 @@ body.dark div.popup {
   margin: 0;
   min-width: 30%;
   max-width: 60%;
-  z-index: 16;
   -webkit-box-shadow: 1px 2px 7px 3px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 1px 2px 7px 3px rgba(0, 0, 0, 0.25);
   box-shadow: 1px 2px 7px 3px rgba(0, 0, 0, 0.25);
+}
+body.dark div.popup-ingame {
+  z-index: 16;
+}
+body.dark div.popup-meta {
+  z-index: 26;
 }
 body.dark div.popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 15;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.85);
+}
+body.dark div.popup-overlay-ingame {
+  z-index: 15;
+}
+body.dark div.popup-overlay-meta {
+  z-index: 25;
 }
 body.dark .tab-options {
   float: right;
@@ -1144,7 +1160,7 @@ body.dark .actionbox {
   padding: 3px 0px;
 }
 body.dark .textbox {
-  padding: 10px  0px;
+  padding: 10px 0px;
   max-width: 70em;
 }
 body.dark .inventorybox {
@@ -1931,6 +1947,9 @@ body.dark .fight-damage-indicator {
   -o-transition: none;
   transition: none;
 }
+body.dark #manage-save-textarea {
+  font-size: 85%;
+}
 body.dark .loading-content,
 body.dark .thinking-content {
   position: fixed;
@@ -2276,6 +2295,9 @@ body.sunlit .p-meta {
 body.sunlit .columns-container {
   display: flex;
 }
+body.sunlit .columns-container-vcenter {
+  align-items: center;
+}
 body.sunlit .columns-child {
   flex: 1;
   padding-left: 5px;
@@ -2304,6 +2326,9 @@ body.sunlit table.spacious td:last-child {
 }
 body.sunlit table.spacious td:first-child {
   padding-left: 0px;
+}
+body.sunlit table.borders td {
+  border: 1px solid #aaa;
 }
 body.sunlit td.minwidth {
   width: 5%;
@@ -2744,19 +2769,29 @@ body.sunlit div.popup {
   margin: 0;
   min-width: 30%;
   max-width: 60%;
-  z-index: 16;
   -webkit-box-shadow: 1px 2px 5px 2px rgba(96, 96, 96, 0.25);
   -moz-box-shadow: 1px 2px 5px 2px rgba(96, 96, 96, 0.25);
   box-shadow: 1px 2px 5px 2px rgba(96, 96, 96, 0.25);
+}
+body.sunlit div.popup-ingame {
+  z-index: 16;
+}
+body.sunlit div.popup-meta {
+  z-index: 26;
 }
 body.sunlit div.popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 15;
   width: 100%;
   height: 100%;
   background-color: rgba(215, 215, 215, 0.85);
+}
+body.sunlit div.popup-overlay-ingame {
+  z-index: 15;
+}
+body.sunlit div.popup-overlay-meta {
+  z-index: 25;
 }
 body.sunlit .tab-options {
   float: right;
@@ -3042,7 +3077,7 @@ body.sunlit .actionbox {
   padding: 3px 0px;
 }
 body.sunlit .textbox {
-  padding: 10px  0px;
+  padding: 10px 0px;
   max-width: 70em;
 }
 body.sunlit .inventorybox {
@@ -3828,6 +3863,9 @@ body.sunlit .fight-damage-indicator {
   -ms-transition: none;
   -o-transition: none;
   transition: none;
+}
+body.sunlit #manage-save-textarea {
+  font-size: 85%;
 }
 body.sunlit .loading-content,
 body.sunlit .thinking-content {

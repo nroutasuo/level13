@@ -1,215 +1,232 @@
 {
 	"versions": [
-        {
-            "version": "0.3.2",
-            "requiredVersion": "0.3.1",
-            "phase": "alpha",
-            "final": true,
-            "released": "2021-02-21",
-            "changes": [
-                {
-                    "type": "GB",
-                    "summary": "Adjust upgrade unlocking order (ensure unlocking Knife doesn't block Compass)"
-                },
-                {
-                    "type": "DEV",
-                    "summary": "Small bugfixes"
-                },
-                {
-                    "type": "DEV",
-                    "summary": "Add tools page with limited cheats to help players affected by bugs"
-                }
-            ]
-        },
-        {
-            "version": "0.3.1",
-            "phase": "alpha",
-            "final": true,
-            "released": "2021-02-18",
-            "changes": [
-                {
-                    "type": "GD",
-                    "summary": "New levels (the ground level and level 14, an extremely radioactive level)"
-                },
-                {
-                    "type": "GD",
-                    "summary": "Deity, favour, temples, shrines, greenhouses, and a new resource (rubber)"
-                },
-                {
-                    "type": "GD",
-                    "summary": "New equipment for surviving extremely irradiated levels"
-                },
-                {
-                    "type": "GD",
-                    "summary": "New consumable item that restores stamina"
-                },
+		{
+			"version": "0.3.3",
+			"requiredVersion": "0.3.1",
+			"released": "2021-03-23",
+			"phase": "alpha",
+			"final": true,
+			"changes": [
+				{
+					"type": "GB",
+					"summary": "Adjust upgrade/evidence balancing"
+				},
+				{
+					"type": "DEV",
+					"summary": "Small bugfixes"
+				}
+			]
+		},
+		{
+			"version": "0.3.2",
+			"requiredVersion": "0.3.1",
+			"phase": "alpha",
+			"final": true,
+			"released": "2021-02-21",
+			"changes": [
+				{
+					"type": "GB",
+					"summary": "Adjust upgrade unlocking order (ensure unlocking Knife doesn't block Compass)"
+				},
+				{
+					"type": "DEV",
+					"summary": "Small bugfixes"
+				},
+				{
+					"type": "DEV",
+					"summary": "Add tools page with limited cheats to help players affected by bugs"
+				}
+			]
+		},
+		{
+			"version": "0.3.1",
+			"phase": "alpha",
+			"final": true,
+			"released": "2021-02-18",
+			"changes": [
+				{
+					"type": "GD",
+					"summary": "New levels (the ground level and level 14, an extremely radioactive level)"
+				},
+				{
+					"type": "GD",
+					"summary": "Deity, favour, temples, shrines, greenhouses, and a new resource (rubber)"
+				},
+				{
+					"type": "GD",
+					"summary": "New equipment for surviving extremely irradiated levels"
+				},
+				{
+					"type": "GD",
+					"summary": "New consumable item that restores stamina"
+				},
 				{
 					"type": "GD",
 					"summary": "New building: beacon"
 				},
-                {
-                    "type": "GD",
-                    "summary": "More challenges and rewards to campless levels (more encounters, blueprints)"
-                },
-                {
-                    "type": "GD",
-                    "summary": "Improved sector descriptions"
-                },
-                {
-                    "type": "GB",
-                    "summary": "Make all fights drop crafting ingredients"
-                },
-                {
-                    "type": "GB",
-                    "summary": "Introduce scavenged %, giving diminishing rewards for scavenging the same sector"
-                },
-                {
-                    "type": "UI",
-                    "summary": "UI improvements (collect 1, simplify rest outside, animations for numbers)"
-                },
-                {
-                    "type": "WG",
-                    "summary": "Improved world generation (structure, hard levels, validation)"
-                }
-            ]
-        },
-        {
-            "version": "0.2.7",
-            "phase": "alpha",
-            "final": true,
-            "released": "2020-02-13",
-            "requiredVersion": "0.2.5",
-            "changes": [
-                {
-                    "type": "GB",
-                    "summary": "Adjust upgrade unlocking order (Block Knife from being unlocked on Level 13)"
-                },
-                {
-                    "type": "DEV",
-                    "summary": "Bugfixes"
-                }
-            ]
-        },
-        {
-            "version": "0.2.6",
-            "phase": "alpha",
-            "final": true,
-            "released": "2020-02-06",
-            "requiredVersion": "0.2.5",
-            "changes": [
-                {
-                    "type": "DEV",
-                    "summary": "Bugfixes"
-                }
-            ]
-        },
-        {
-            "version": "0.2.5",
-            "phase": "alpha",
-            "final": true,
-            "released": "2020-02-01",
-            "changes": [
-                {
-                    "type": "GD",
-                    "summary": "Add possibility to improve (some) buildings for small effect boosts"
-                },
-                {
-                    "type": "GD",
-                    "summary": "Add active and passive rumour generation to markets"
-                },
-                {
-                    "type": "GD",
-                    "summary": "Add a new movement blocker: debris"
-                },
-                {
-                    "type": "GB",
-                    "summary": "Adjust level sizes and structure"
-                },
-                {
-                    "type": "GB",
-                    "summary": "Adjust balancing (raids, rumours, upgrades, reputation)"
-                },
-                {
-                    "type": "GB",
-                    "summary": "Add more items, equipment and crafting materials"
-                },
-                {
-                    "type": "GB",
-                    "summary": "Add more enemies and make enemy difficulty more dynamic"
-                },
-                {
-                    "type": "UI",
-                    "summary": "Improve fight UI"
-                },
-                {
-                    "type": "DEV",
-                    "summary": "Refactor CSS styles and color themes for easier maintanability"
-                },
-                {
-                    "type": "DEV",
-                    "summary": "Bugfixes and testing tools"
-                }
-            ]
-        },
-        {
-            "version": "0.2.4",
-            "phase": "alpha",
-            "final": true,
-            "released": "2019-04-13",
-            "changes": [
-                {
-                    "type": "DEV",
-                    "summary": "Bugfixes"
-                }
-            ]
-        },
-        {
+				{
+					"type": "GD",
+					"summary": "More challenges and rewards to campless levels (more encounters, blueprints)"
+				},
+				{
+					"type": "GD",
+					"summary": "Improved sector descriptions"
+				},
+				{
+					"type": "GB",
+					"summary": "Make all fights drop crafting ingredients"
+				},
+				{
+					"type": "GB",
+					"summary": "Introduce scavenged %, giving diminishing rewards for scavenging the same sector"
+				},
+				{
+					"type": "UI",
+					"summary": "UI improvements (collect 1, simplify rest outside, animations for numbers)"
+				},
+				{
+					"type": "WG",
+					"summary": "Improved world generation (structure, hard levels, validation)"
+				}
+			]
+		},
+		{
+			"version": "0.2.7",
+			"phase": "alpha",
+			"final": true,
+			"released": "2020-02-13",
+			"requiredVersion": "0.2.5",
+			"changes": [
+				{
+					"type": "GB",
+					"summary": "Adjust upgrade unlocking order (Block Knife from being unlocked on Level 13)"
+				},
+				{
+					"type": "DEV",
+					"summary": "Bugfixes"
+				}
+			]
+		},
+		{
+			"version": "0.2.6",
+			"phase": "alpha",
+			"final": true,
+			"released": "2020-02-06",
+			"requiredVersion": "0.2.5",
+			"changes": [
+				{
+					"type": "DEV",
+					"summary": "Bugfixes"
+				}
+			]
+		},
+		{
+			"version": "0.2.5",
+			"phase": "alpha",
+			"final": true,
+			"released": "2020-02-01",
+			"changes": [
+				{
+					"type": "GD",
+					"summary": "Add possibility to improve (some) buildings for small effect boosts"
+				},
+				{
+					"type": "GD",
+					"summary": "Add active and passive rumour generation to markets"
+				},
+				{
+					"type": "GD",
+					"summary": "Add a new movement blocker: debris"
+				},
+				{
+					"type": "GB",
+					"summary": "Adjust level sizes and structure"
+				},
+				{
+					"type": "GB",
+					"summary": "Adjust balancing (raids, rumours, upgrades, reputation)"
+				},
+				{
+					"type": "GB",
+					"summary": "Add more items, equipment and crafting materials"
+				},
+				{
+					"type": "GB",
+					"summary": "Add more enemies and make enemy difficulty more dynamic"
+				},
+				{
+					"type": "UI",
+					"summary": "Improve fight UI"
+				},
+				{
+					"type": "DEV",
+					"summary": "Refactor CSS styles and color themes for easier maintanability"
+				},
+				{
+					"type": "DEV",
+					"summary": "Bugfixes and testing tools"
+				}
+			]
+		},
+		{
+			"version": "0.2.4",
+			"phase": "alpha",
+			"final": true,
+			"released": "2019-04-13",
+			"changes": [
+				{
+					"type": "DEV",
+					"summary": "Bugfixes"
+				}
+			]
+		},
+		{
 			"version": "0.2.3",
 			"phase": "alpha",
 			"final": true,
 			"released": "2019-04-07",
 			"changes": [
-                {
-                    "type": "UI",
-                    "summary": "Improved tech tree visualization"
-                },
-                {
-                    "type": "UI",
-                    "summary": "Improved maps"
-                },
-                {
-                    "type": "GD",
-                    "summary": "New building: caravan stable"
-                },
-                {
+				{
+					"type": "UI",
+					"summary": "Improved tech tree visualization"
+				},
+				{
+					"type": "UI",
+					"summary": "Improved maps"
+				},
+				{
+					"type": "GD",
+					"summary": "New building: caravan stable"
+				},
+				{
 					"type": "DEV",
 					"summary": "Smaller saves"
 				},
-                {
+				{
 					"type": "GB",
 					"summary": "Bigger difference between camps on different levels (population density)"
 				},
-                {
+				{
 					"type": "GB",
 					"summary": "Balancing improvements (upgrades, storage capacity, building costs)"
 				},
-                {
+				{
 					"type": "UI",
 					"summary": "Visual view of the current camp and its buildings"
 				},
-                {
+				{
 					"type": "GB",
 					"summary": "Improved world generation and better level structure"
 				}
 			]
 		},
-        {
+		{
 			"version": "0.2.2",
 			"phase": "alpha",
 			"final": true,
 			"released": "2018-08-10",
 			"changes": [
-                {
+				{
 					"type": "DEV",
 					"summary": "Option to export/import save. (Breaks old saves)"
 				},
@@ -338,7 +355,7 @@
 				},
 				{
 					"type": "GD",
-					"summary": "Improved sector generation  (more intersections and more interesting level shapes)"
+					"summary": "Improved sector generation (more intersections and more interesting level shapes)"
 				}
 			]
 		},

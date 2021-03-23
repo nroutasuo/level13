@@ -2,15 +2,15 @@
 // and purely aesthetic (description)
 define(['ash'], function (Ash) {
 
-    var SectorLocalesComponent = Ash.Class.extend({
-        
-        locales: [],
-        
-        constructor: function (locales) {
-            this.locales = locales;
-        },
-        
-    });
+	var SectorLocalesComponent = Ash.Class.extend({
+		
+		locales: [],
+		
+		constructor: function (locales) {
+			this.locales = locales;
+		},
+		
+	});
 
-    return SectorLocalesComponent;
+	return SectorLocalesComponent;
 });

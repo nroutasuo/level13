@@ -33,17 +33,17 @@ div.info-callout {
 }
 
 .info-callout-target {
-    border-width: 0px;
-    border-style: solid;
-    padding: 0px;
-    margin: 0px;
-    cursor: help;
-    display: inline-block;
+	border-width: 0px;
+	border-style: solid;
+	padding: 0px;
+	margin: 0px;
+	cursor: help;
+	display: inline-block;
 }
 
 div.info-callout-content {
-    width: 100%;
-    vertical-align: middle;
+	width: 100%;
+	vertical-align: middle;
 }
 
 div.btn-callout-content, div.info-callout-content {
@@ -53,8 +53,8 @@ div.btn-callout-content, div.info-callout-content {
 }
 
 .item div.info-callout-target, .res div.info-callout-target, .resultlist li div.info-callout-target, .itemlist div.info-callout-target {
-    border-width: 0px;
-    background-color: inherit;
+	border-width: 0px;
+	background-color: inherit;
 }
 
 .info-callout-target-small + div.info-callout {
@@ -71,7 +71,7 @@ div.callout-container {
 div.btn-callout-content, div.info-callout-content {
 	font-size: @font-size-small;
 	overflow-wrap: break-word;
-    line-height: 1.45em;
+	line-height: 1.45em;
 }
 
 div.btn-callout-content, div.info-callout-content {
@@ -79,23 +79,23 @@ div.btn-callout-content, div.info-callout-content {
 }
 
 .info-callout button {
-    padding: 4px 8px;
+	padding: 4px 8px;
 }
 
 div.btn-callout-content, div.info-callout-content {
-    .shadowed-basic();
+	.shadowed-basic();
 }
 
 // CALLOUT ARROWS
 
 div.callout-arrow-up {
-    border-bottom-color: @color-border-strong !important;
+	border-bottom-color: @color-border-strong !important;
 	width: 0;
 	height: 0;
 	z-index: 10;
 	position: relative;
 	top: 0px;
-    margin: 0 0 0 @callout-arrow-size/2;
+	margin: 0 0 0 @callout-arrow-size/2;
 	margin: 0px auto;
 	border-left: @callout-arrow-size solid transparent;
 	border-right: @callout-arrow-size solid transparent;
@@ -109,11 +109,11 @@ div.callout-arrow-up {
 // ACTION CALLOUT DETAILS
 
 span.action-risk {
-    display: block;
+	display: block;
 }
 
 span.action-cost-blocker-storage {
-    text-decoration: line-through;
+	text-decoration: line-through;
 }
 
 span.action-cost-blocker {
@@ -130,8 +130,8 @@ span.action-cost-blocker {
 
 ul.tabs {
 	margin: 0;
-    padding: 0;
-    list-style-type: none;
+	padding: 0;
+	list-style-type: none;
 }
 
 ul.tabs li {
@@ -139,23 +139,23 @@ ul.tabs li {
 	margin: 0px 1px;
 	padding: 5px 10px 5px 10px;
 	border-width: 1px;
-    border-style: solid;
+	border-style: solid;
 	position: relative;
 	z-index: 0;
 	white-space: nowrap;
-    top: 2px;
-    height: 32px;
+	top: 2px;
+	height: 32px;
 	cursor: pointer;
 	text-transform: lowercase;
-    background-color: @color-bg-page;
-    border-color: @color-border-box-2;
-    box-sizing: border-box;
+	background-color: @color-bg-page;
+	border-color: @color-border-box-2;
+	box-sizing: border-box;
 }
 
 ul.tabs li.selected {
 	font-weight: bold;
 	z-index: 2;
-    width: auto;
+	width: auto;
 }
 
 ul.tabs li.selected {
@@ -172,15 +172,15 @@ ul.tabs li.selected {
 }
 
 ul.tabs li span {
-    display: inline-block;
-    overflow-x: hidden;
-    width: 100%;
+	display: inline-block;
+	overflow-x: hidden;
+	width: 100%;
 }
 
 // POPUPS
 
 div.popup {
-    background: @color-bg-popup;
+	background: @color-bg-popup;
 	border: 2px solid @color-border-box-1;
 	padding: 20px;
 	text-align: center;
@@ -190,24 +190,38 @@ div.popup {
 	margin: 0;
 	min-width: 30%;
 	max-width: 60%;
+	.shadowed-basic();
+}
+
+div.popup-ingame {
 	z-index: 16;
-    .shadowed-basic();
+}
+
+div.popup-meta {
+	z-index: 26;
 }
 
 div.popup-overlay {
 	position:fixed;
 	top:0;
 	left:0;
-    z-index:15;
-    width:100%;
-    height:100%;
-    background-color: @color-popup-overlay;
+	width:100%;
+	height:100%;
+	background-color: @color-popup-overlay;
+}
+
+div.popup-overlay-ingame {
+	z-index:15;
+}
+
+div.popup-overlay-meta {
+	z-index: 25;
 }
 
 // TAB OPTIONS
 
 .tab-options {
-    float: right;
+	float: right;
 }
 
 // STEPPERS
@@ -217,7 +231,7 @@ div.popup-overlay {
 	min-width: 70px;
 	vertical-align: middle;
 	margin: 1px;
-    white-space: nowrap;
+	white-space: nowrap;
 }
 
 .stepper button {
@@ -235,38 +249,38 @@ div.popup-overlay {
 // HORIZONTAL SELECT
 
 .horizontal-select {
-    display: flex;
-    align-items: center;
-    margin: 2px 0;
+	display: flex;
+	align-items: center;
+	margin: 2px 0;
 }
 
 .horizontal-select-title {
-    background: @color-bg-box-1;
-    padding: 1px 8px;
+	background: @color-bg-box-1;
+	padding: 1px 8px;
 }
 
 .horizontal-select-list {
-    padding: 0;
-    margin: 0;
+	padding: 0;
+	margin: 0;
 }
 
 .horizontal-select-option {
-    background: @color-bg-button;
-    border: 1px solid @color-border-strong;
-    padding: 1px 5px;
-    margin: 0 2px;
-    display: inline-block;
-    cursor: pointer;
-    border-radius: 3px;
+	background: @color-bg-button;
+	border: 1px solid @color-border-strong;
+	padding: 1px 5px;
+	margin: 0 2px;
+	display: inline-block;
+	cursor: pointer;
+	border-radius: 3px;
 }
 
 .horizontal-select-option:hover {
-    background: @color-bg-element-2;
-    border-color: ligten(@color-border-strong, 10%);
+	background: @color-bg-element-2;
+	border-color: ligten(@color-border-strong, 10%);
 }
 
 .horizontal-select-option.selected {
-    background: @color-bg-element-2;
+	background: @color-bg-element-2;
 }
 
 // STATS INDICATORS
@@ -283,12 +297,12 @@ div.popup-overlay {
 }
 
 .stats-indicator span.label {
-    text-transform: lowercase;
+	text-transform: lowercase;
 }
 
 .stats-indicator span.value {
 	text-align: center;
-    margin-left: 4px;
+	margin-left: 4px;
 }
 
 .stats-indicator .value, .stats-indicator .value-total, .stats-indicator .change, .stats-indicator .forecast {
@@ -301,26 +315,26 @@ div.popup-overlay {
 }
 
 .stats-indicator .progress {
-    height: 0.5em;
-    width: 35px;
-    display: inline-block;
-    vertical-align: middle;
+	height: 0.5em;
+	width: 35px;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 .stats-indicator .progress-wrap {
-    margin: auto 1px auto 3px;
+	margin: auto 1px auto 3px;
 }
 
 // CHANGE INDICATORS
 
-.change-indicator  {
+.change-indicator {
 	width: 1em;
 	height: 1em;
 	display: inline-block;
 	background-size: 100%;
 	margin: 0px 2px;
 	opacity: 0.75;
-    vertical-align: middle;
+	vertical-align: middle;
 }
 
 .indicator-even {
@@ -333,7 +347,7 @@ div.popup-overlay {
 }
 
 .item-comparison-badge .indicator-decrease {
-    opacity: 0.25;
+	opacity: 0.25;
 }
 
 .indicator-increase {
@@ -346,13 +360,13 @@ div.popup-overlay {
 
 .indicator-equipped {
 	background-image: @img-indicator-checkmark-default;
-    opacity: 0.5;
+	opacity: 0.5;
 }
 
 // COLLAPSIBLE CONTAINERS
 
 .collapsible-container {
-    margin: 5px 0px;
+	margin: 5px 0px;
 }
 
 .collapsible-container {
@@ -360,7 +374,7 @@ div.popup-overlay {
 }
 
 .collapsible-header {
-    background: @color-bg-element-1;
+	background: @color-bg-element-1;
 	cursor: pointer;
 	margin: 0px;
 	padding: 5px 30px 5px 10px;
@@ -392,42 +406,42 @@ div.popup-overlay {
 .progress-wrap {
 	background-color: @color-bg-element-3;
 	margin: 2px 0;
-    border: 0px;
+	border: 0px;
 	overflow: hidden;
 	position: relative;
 }
 
 .progress-bar {
-    left: 0;
-    top: 0;
-    position: absolute;
+	left: 0;
+	top: 0;
+	position: absolute;
 	background: @color-bg-element-1;
 }
 
 .progress-label {
-    left: 0;
-    top: 0;
-    position: absolute;
+	left: 0;
+	top: 0;
+	position: absolute;
 	width: 100%;
 	font-size: @font-size-small;
 	text-align: center;
-    vertical-align: text-top;
+	vertical-align: text-top;
 }
 
 .progress-bar-change {
-    background: @color-bg-element-2;
-    position: absolute;
-    width: 0%;
-    .opacity-transition-reset();
+	background: @color-bg-element-2;
+	position: absolute;
+	width: 0%;
+	.opacity-transition-reset();
 }
 
 // SCROLLABLE CANVASES
 
 .canvas-container {
-    text-align: center;
-    overflow: hidden;
-    position: relative;
-    border-width: 1px !important;
+	text-align: center;
+	overflow: hidden;
+	position: relative;
+	border-width: 1px !important;
 }
 
 .canvas-container {
@@ -435,61 +449,61 @@ div.popup-overlay {
 }
 
 .scroll-position-container {
-    padding: 5px;
-    position: relative;
-    overflow: hidden;
+	padding: 5px;
+	position: relative;
+	overflow: hidden;
 }
 
 .scroll-position-indicator {
-    position: absolute;
-    background: @color-border-box-1;
+	position: absolute;
+	background: @color-border-box-1;
 }
 
 .scroll-position-indicator-vertical {
-    width: 100%;
-    height: 50%;
-    min-height: 10px;
-    min-width: 10px;
-    top: 10px;
-    left: 0;
+	width: 100%;
+	height: 50%;
+	min-height: 10px;
+	min-width: 10px;
+	top: 10px;
+	left: 0;
 }
 
 .scroll-position-indicator-horizontal {
-    height: 100%;
-    width: 50%;
-    min-width: 10px;
-    min-height: 10px;
-    top: 0;
-    left: 10px;
+	height: 100%;
+	width: 50%;
+	min-width: 10px;
+	min-height: 10px;
+	top: 0;
+	left: 10px;
 }
 
 .scrollable.scroll-enabled {
-    cursor: all-scroll;
+	cursor: all-scroll;
 }
 
 // BUBBLES (content notifications)
 
 .bubble {
-    background-color: @color-bg-contrast;
-    color: @color-text-dark;
-    background-size: 12px;
-    background-repeat: no-repeat;
-    background-position: center;
-    position: absolute;
-    top: -6px;
-    right: -6px;
-    width: 16px;
-    height: 16px;
-    text-align: center;
-    border-radius: 8px;
+	background-color: @color-bg-contrast;
+	color: @color-text-dark;
+	background-size: 12px;
+	background-repeat: no-repeat;
+	background-position: center;
+	position: absolute;
+	top: -6px;
+	right: -6px;
+	width: 16px;
+	height: 16px;
+	text-align: center;
+	border-radius: 8px;
 	font-weight: bold;
-    font-size: @font-size-small;
+	font-size: @font-size-small;
 }
 
 table .bubble {
-    position: inherit;
-    top: inherit;
-    left: inherit;
+	position: inherit;
+	top: inherit;
+	left: inherit;
 }
 
 .bubble-even {
@@ -512,20 +526,20 @@ table .bubble {
 // CONTAINERS
 
 .container-relative {
-    position: relative;
-    display: inline-block;
+	position: relative;
+	display: inline-block;
 }
 
 .container-relative p {
-    margin: 0;
+	margin: 0;
 }
 
 .container-nomargin {
-    margin: 0;
+	margin: 0;
 }
 
 .statsbar {
-    padding: 3px 2px;
+	padding: 3px 2px;
 }
 
 // INFOBOXES
@@ -540,17 +554,17 @@ table .bubble {
 
 .infobox-scrollable {
 	border: 1px solid @color-border-box-2;
-   text-align: left;
-   margin-left: auto;
-   margin-right: auto;
-   overflow-y: auto;
-   padding-left: 10px;
-   padding-right: 10px;
-   max-height: 12em;
+	text-align: left;
+	margin-left: auto;
+	margin-right: auto;
+	overflow-y: auto;
+	padding-left: 10px;
+	padding-right: 10px;
+	max-height: 12em;
 }
 
 .infobox-scrollable-header {
-    margin: 1.5em 0 0 0;
+	margin: 1.5em 0 0 0;
 }
 
 // ACTIONBOXES
@@ -562,95 +576,95 @@ table .bubble {
 // TEXTBOXES
 
 .textbox {
-    padding: 10px  0px;
-    max-width: 70em;
+	padding: 10px 0px;
+	max-width: 70em;
 }
 
 // INVENTORYBOX
 
 .inventorybox {
-    border-color: @color-border-box-1;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 10px;
-    padding: 5px 0px 2px 0px;
-    margin: 5px 0px;
-    min-height: 1em;
-    min-width: 1em;
-    vertical-align: top;
+	border-color: @color-border-box-1;
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 10px;
+	padding: 5px 0px 2px 0px;
+	margin: 5px 0px;
+	min-height: 1em;
+	min-width: 1em;
+	vertical-align: top;
 }
 
 .inventorybox ul li {
-    background: inherit !important;
-    margin: 0px 2px 2px 0px;
-    padding: 0;
-    border-width: 1px;
-    border-style: solid;
-    display: inline-block;
-    position: relative;
+	background: inherit !important;
+	margin: 0px 2px 2px 0px;
+	padding: 0;
+	border-width: 1px;
+	border-style: solid;
+	display: inline-block;
+	position: relative;
 }
 
 .inventorydivision {
-    width: 49%;
-    display: table-cell;
-    position: relative;
-    vertical-align: top;
-    padding-top: 2.5em;
-    margin-top: -5px;
+	width: 49%;
+	display: table-cell;
+	position: relative;
+	vertical-align: top;
+	padding-top: 2.5em;
+	margin-top: -5px;
 }
 
 .inventorydivision-with-footer {
-    padding-bottom: 2em;
+	padding-bottom: 2em;
 }
 
 .inventorydivision .inventorybox-header {
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin: 0;
-    width: 100%;
-    padding: 5px 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin: 0;
+	width: 100%;
+	padding: 5px 0;
 }
 
 .inventorydivision:first-child .inventorybox-header {
-    border-radius: 10px 0 0 0;
+	border-radius: 10px 0 0 0;
 }
 
 .inventorydivision:last-child .inventorybox-header {
-    border-radius: 0 10px 0 0;
+	border-radius: 0 10px 0 0;
 }
 
 .inventorydivision .inventorybox-footer {
-    position: absolute;
-    bottom: 3px;
-    left: 0;
-    margin: 0;
-    width: 100%;
+	position: absolute;
+	bottom: 3px;
+	left: 0;
+	margin: 0;
+	width: 100%;
 }
 
 #common-popup .inventorybox ul {
-    min-width: 380px;
-    width: 100%;
+	min-width: 380px;
+	width: 100%;
 }
 
 .inventorybox ul, .ul-horizontal {
-    padding: 0px;
-    margin: 0px;
+	padding: 0px;
+	margin: 0px;
 }
 
 .inventorybox-negative > li {
-    opacity: 80%;
+	opacity: 80%;
 }
 
 .highlightbox, .inventorybox-header, .inventorybox-footer {
 	background: @color-bg-element-1;
-    border-color: @color-bg-element-1;
+	border-color: @color-bg-element-1;
 }
 
 // ITEMs
 
 .li-item-negative {
-    background: @color-bg-warning !important;
+	background: @color-bg-warning !important;
 	border: 1px solid @color-border-warning !important;
 }
 
@@ -661,101 +675,101 @@ table .bubble {
 @item-div-size: 18px;
 
 .item-slot {
-    background: inherit !important;
-    margin: 0px 2px 2px 0px;
-    padding: 0;
-    border-width: 1px;
-    border-style: solid;
-    display: inline-block;
-    position: relative;
+	background: inherit !important;
+	margin: 0px 2px 2px 0px;
+	padding: 0;
+	border-width: 1px;
+	border-style: solid;
+	display: inline-block;
+	position: relative;
 }
 
 .item-slot.highlighted {
-    border-color: lighten(@color-border-strong, 15%);
-    color: lighten(@color-text-default, 15%);
+	border-color: lighten(@color-border-strong, 15%);
+	color: lighten(@color-text-default, 15%);
 }
 
 .item-slot-big {
-    width: @item-slot-big-width;
-    height: @item-slot-big-height;
+	width: @item-slot-big-width;
+	height: @item-slot-big-height;
 }
 
 .item-slot-small {
-    width: 37px;
-    height: 37px;
+	width: 37px;
+	height: 37px;
 }
 
 .item-slot-equipped {
-    border-color: @color-border-strong;
+	border-color: @color-border-strong;
 }
 
 .item-equipped {
-    background: @color-bg-element-1;
+	background: @color-bg-element-1;
 }
 
 .item-slot-type-empty {
-    text-align: center;
-    width: @item-slot-big-width;
-    height: @item-slot-big-height;
-    line-height: @item-slot-big-height;
-    display: inline-block;
-    opacity: 0.25;
-    font-style: oblique;
+	text-align: center;
+	width: @item-slot-big-width;
+	height: @item-slot-big-height;
+	line-height: @item-slot-big-height;
+	display: inline-block;
+	opacity: 0.25;
+	font-style: oblique;
 }
 
 .item-slot-type-equipped {
-    text-align: center;
-    width: @item-slot-big-width;
-    height: @item-slot-big-height;
-    line-height: @item-slot-big-height;
-    display: inline-block;
+	text-align: center;
+	width: @item-slot-big-width;
+	height: @item-slot-big-height;
+	line-height: @item-slot-big-height;
+	display: inline-block;
 }
 
 .item-slot-image {
-    position: absolute;
+	position: absolute;
 }
 
 .item-slot-big .item-slot-image {
-    left: @item-slot-big-width / 2 - @item-div-size;
-    top:  @item-slot-big-height / 2 - @item-div-size + 10px;
+	left: @item-slot-big-width / 2 - @item-div-size;
+	top: @item-slot-big-height / 2 - @item-div-size + 10px;
 }
 
 .item-slot-name, .item-slot-type-equipped {
-    background-color: @color-bg-element-1;
-    width: 100%;
-    text-align: center;
-    overflow: hidden;
-    line-height: 1.05em;
-    height: auto;
-    max-height: 1.9em;
-    padding: 0.35em 0;
+	background-color: @color-bg-element-1;
+	width: 100%;
+	text-align: center;
+	overflow: hidden;
+	line-height: 1.05em;
+	height: auto;
+	max-height: 1.9em;
+	padding: 0.35em 0;
 }
 
 .item-slot.highlighted .item-slot-type-equipped {
-    background: lighten( @color-bg-element-1, 8%);
+	background: lighten( @color-bg-element-1, 8%);
 }
 
 .item-slot-effect {
-    display: none;
+	display: none;
 }
 
 .item-slot-name {
-    bottom: 0px;
-    opacity: 0;
+	bottom: 0px;
+	opacity: 0;
 }
 
 .item-slot-type-equipped {
-    top: 0px;
+	top: 0px;
 }
 
 .item-slot-simple {
-    border-width: 0px !important;
+	border-width: 0px !important;
 }
 
 div.item-slot > div, div.item-slot > span {
-    position: absolute;
-    font-size: @font-size-small;
-    cursor: default;
+	position: absolute;
+	font-size: @font-size-small;
+	cursor: default;
 }
 
 // ITEM AND RESOURCE DIVS
@@ -779,9 +793,9 @@ ul.itemlist, ul.resultlist {
 	padding: 5px;
 	border-width: 2px;
 	border-style: solid;
-    border-radius: 50%;
-    width: @item-div-size;
-    height: @item-div-size;
+	border-radius: 50%;
+	width: @item-div-size;
+	height: @item-div-size;
 }
 
 .item, .res, .li-item-negative, .li-item-positive {
@@ -790,15 +804,15 @@ ul.itemlist, ul.resultlist {
 }
 
 .item.highlighted {
-    background: lighten(@color-bg-box-1, 10%);
-    border-color: lighten(@color-border-box-1, 20%);
+	background: lighten(@color-bg-box-1, 10%);
+	border-color: lighten(@color-border-box-1, 20%);
 }
 
 .res {
-    border-radius: 0 !important;
-    margin: 8px 6px 6px 6px !important;
-    padding: 0px !important;
-    border-width: 1px;
+	border-radius: 0 !important;
+	margin: 8px 6px 6px 6px !important;
+	padding: 0px !important;
+	border-width: 1px;
 }
 
 .item img, .li-item-negative img, .li-item-positive img {
@@ -809,15 +823,15 @@ ul.itemlist, ul.resultlist {
 }
 
 .res img {
-    margin: -2px 1px 8px 1px;
+	margin: -2px 1px 8px 1px;
 	vertical-align: middle;
 	height: 12px;
 	width: 12px;
 }
 
 .item div.item-count, .res div.item-count {
-    border-width: 1px;
-    color: @color-text-secondary;
+	border-width: 1px;
+	color: @color-text-secondary;
 	font-size: @font-size-tiny;
 	position: absolute;
 	bottom: -0.9em;
@@ -848,55 +862,55 @@ li.item-with-count {
 }
 
 .inventorybox-negative, .item-slot-lost .item-count {
-    border: 1px solid @color-border-warning !important;
+	border: 1px solid @color-border-warning !important;
 }
 
 // ITEM COMPARISON
 
 .item-comparison-indicator {
-    background-size: 100%;
-    border: none;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 10px;
-    height: 10px;
+	background-size: 100%;
+	border: none;
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 10px;
+	height: 10px;
 }
 
 .item-comparison-badge {
-    top: -11px;
-    right: -11px;
-    position: absolute;
-    border-width: 1px;
-    border-style: solid;
-    border-color: @color-border-strong;
-    padding: 2px;
-    border-radius: 6px;
-    background: @color-bg-box-1;
+	top: -11px;
+	right: -11px;
+	position: absolute;
+	border-width: 1px;
+	border-style: solid;
+	border-color: @color-border-strong;
+	padding: 2px;
+	border-radius: 6px;
+	background: @color-bg-box-1;
 }
 
 // DEBUG OVERLAY
 
 .dev-hud {
-    opacity: 0.75;
-    background: #999;
-    padding: 1px;
-    border-radius: 5px;
-    z-index: 100;
+	opacity: 0.75;
+	background: #999;
+	padding: 1px;
+	border-radius: 5px;
+	z-index: 100;
 }
 
 .dev-hud:hover {
-    opacity: 1;
+	opacity: 1;
 }
 
 // STATUS BADGE
 
 .status-badge {
-    float: right;
-    padding: 0 0.75em;
-    border-radius: 1em;
-    height: 1em
+	float: right;
+	padding: 0 0.75em;
+	border-radius: 1em;
+	height: 1em
 }
 
 .status-badge {
-    background: @color-bg-element-1;
+	background: @color-bg-element-1;
 }

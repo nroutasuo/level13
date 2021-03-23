@@ -1,25 +1,25 @@
 define(['ash'], function (Ash) {
 
-    var OutgoingCaravansComponent = Ash.Class.extend({
+	var OutgoingCaravansComponent = Ash.Class.extend({
 
-        pendingCaravan: null,
-        outgoingCaravans: [],
+		pendingCaravan: null,
+		outgoingCaravans: [],
 
-        constructor: function () {
-            this.pendingCaravan = null;
-            this.outgoingCaravans = [];
-        },
+		constructor: function () {
+			this.pendingCaravan = null;
+			this.outgoingCaravans = [];
+		},
 
-        getCustomSaveObject: function () {
-            var copy = {};
-            copy.outgoingCaravans = this.outgoingCaravans;
-            return copy;
-        },
+		getCustomSaveObject: function () {
+			var copy = {};
+			copy.outgoingCaravans = this.outgoingCaravans;
+			return copy;
+		},
 
-        getSaveKey: function () {
-            return "OutgoingCaravans";
-        },
-    });
+		getSaveKey: function () {
+			return "OutgoingCaravans";
+		},
+	});
 
-    return OutgoingCaravansComponent;
+	return OutgoingCaravansComponent;
 });

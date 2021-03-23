@@ -1,13 +1,13 @@
 define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
-    
-    var PerkConstants = {
+	
+	var PerkConstants = {
 	
 		perkTypes: {
 			injury: "Injury",
 			movement: "Movement",
 			health: "Health",
 			stamina: "Stamina",
-            light: "Light",
+			light: "Light",
 		},
 		
 		perkIds: {
@@ -18,10 +18,10 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 			hazardRadiation: "hazard-radiation",
 			hazardPoison: "hazard-poison",
 			hazardCold: "hazard-cold",
-            encumbered: "encumbered",
-            staminaBonus: "energized",
-            staminaBonusPenalty: "headache",
-            lightBeacon: "beacon",
+			encumbered: "encumbered",
+			staminaBonus: "energized",
+			staminaBonusPenalty: "headache",
+			lightBeacon: "beacon",
 		},
 		
 		perkDefinitions: {
@@ -30,18 +30,18 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 			stamina: [],
 			movement: [],
 		},
-        
-        PERK_RECOVERY_FACTOR_REST: 3,
-        TIMER_DISABLED: -1,
+		
+		PERK_RECOVERY_FACTOR_REST: 3,
+		TIMER_DISABLED: -1,
 	
 		getPerk: function (perkId, effectTimer) {
 			for (var key in this.perkDefinitions) {
 				for (var i = 0; i < this.perkDefinitions[key].length; i++) {
 					if (this.perkDefinitions[key][i].id === perkId) {
-                        var result = this.perkDefinitions[key][i].clone();
-                        result.effectTimer = effectTimer || PerkConstants.TIMER_DISABLED;
-                        return result;
-                    };
+						var result = this.perkDefinitions[key][i].clone();
+						result.effectTimer = effectTimer || PerkConstants.TIMER_DISABLED;
+						return result;
+					};
 				}
 			}
 			return null;
@@ -57,7 +57,7 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 			}
 		},
 	};
-    
+	
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.hunger, "Hunger", "Health", 0.5, "img/items/health-negative.png"));
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.thirst, "Thirst", "Health", 0.5, "img/items/health-negative.png"));
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.healthBonus, "Healthy", "Health", 1.25, "img/items/health-positive.png"));
@@ -65,31 +65,31 @@ define(['ash', 'game/vos/PerkVO'], function (Ash, PerkVO) {
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.hazardRadiation, "Radiation sickness", "Health", 0.25, "img/items/health-negative.png"));
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.hazardPoison, "Poisoned", "Health", 0.5, "img/items/health-negative.png"));
 	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.hazardCold, "Cold", "Health", 0.75, "img/items/health-negative.png"));
-    PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.encumbered, "Encumbered", "Movement", 1.5, "img/items/weight.png"));
-    
-    PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.staminaBonus, "Energized", "Stamina", 1.5, "img/items/health-positive.png"));
-    PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.staminaBonusPenalty, "Headache", "Stamina", 0.9, "img/items/health-negative.png"));
-    
-    PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.lightBeacon, "Beacon", "Light", 20, "img/items/perk-light-beacon.png"));
-    
-    var lightInjuryEffect = 0.9;
-    var medInjuryEffect = 0.7;
-    var seriousInjuryEffect = 0.5;
-    var bodyParts = ["Leg", "Arm", "Head", "Foot", "Chest", "Hand"];
-    for (var i = 0; i < bodyParts.length; i++) {
-        var id = bodyParts[i].toLowerCase();
-        PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-big-" + id, bodyParts[i] + " wound (serious)", "Injury", seriousInjuryEffect, "img/items/injury-1.png"));
-        PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-med-" + id, bodyParts[i] + " wound (medium)", "Injury", medInjuryEffect, "img/items/injury-2.png"));
-        PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-small-" + id, bodyParts[i] + " wound (light)", "Injury", lightInjuryEffect, "img/items/injury-3.png"));
-    }
-    var injuryTypes = [ "Burn", "Strained ankle", "Broken rib"];
-    for (var j = 0; j < injuryTypes.length; j++) {
-        var id = injuryTypes[j].toLowerCase();
-        PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-big-" + id, injuryTypes[j] + " (serious)", "Injury", seriousInjuryEffect, "img/items/injury-1.png"));
-        PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-med-" + id, injuryTypes[j] + " (medium)", "Injury", medInjuryEffect, "img/items/injury-2.png"));
-        PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-small-" + id, injuryTypes[j] + " (light)", "Injury", lightInjuryEffect, "img/items/injury-3.png"));
-    }
+	PerkConstants.perkDefinitions.health.push(new PerkVO(PerkConstants.perkIds.encumbered, "Encumbered", "Movement", 1.5, "img/items/weight.png"));
+	
+	PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.staminaBonus, "Energized", "Stamina", 1.5, "img/items/health-positive.png"));
+	PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.staminaBonusPenalty, "Headache", "Stamina", 0.9, "img/items/health-negative.png"));
+	
+	PerkConstants.perkDefinitions.stamina.push(new PerkVO(PerkConstants.perkIds.lightBeacon, "Beacon", "Light", 20, "img/items/perk-light-beacon.png"));
+	
+	var lightInjuryEffect = 0.9;
+	var medInjuryEffect = 0.7;
+	var seriousInjuryEffect = 0.5;
+	var bodyParts = ["Leg", "Arm", "Head", "Foot", "Chest", "Hand"];
+	for (var i = 0; i < bodyParts.length; i++) {
+		var id = bodyParts[i].toLowerCase();
+		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-big-" + id, bodyParts[i] + " wound (serious)", "Injury", seriousInjuryEffect, "img/items/injury-1.png"));
+		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-med-" + id, bodyParts[i] + " wound (medium)", "Injury", medInjuryEffect, "img/items/injury-2.png"));
+		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-small-" + id, bodyParts[i] + " wound (light)", "Injury", lightInjuryEffect, "img/items/injury-3.png"));
+	}
+	var injuryTypes = [ "Burn", "Strained ankle", "Broken rib"];
+	for (var j = 0; j < injuryTypes.length; j++) {
+		var id = injuryTypes[j].toLowerCase();
+		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-big-" + id, injuryTypes[j] + " (serious)", "Injury", seriousInjuryEffect, "img/items/injury-1.png"));
+		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-med-" + id, injuryTypes[j] + " (medium)", "Injury", medInjuryEffect, "img/items/injury-2.png"));
+		PerkConstants.perkDefinitions.injury.push(new PerkVO("injury-small-" + id, injuryTypes[j] + " (light)", "Injury", lightInjuryEffect, "img/items/injury-3.png"));
+	}
 	
 	return PerkConstants;
-    
+	
 });

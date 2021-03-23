@@ -1,6 +1,6 @@
 // A class that checks raw user input from the DOM and passes game-related actions to PlayerActionFunctions
 define(['ash',
-        'core/ExceptionHandler',
+		'core/ExceptionHandler',
 		'game/GameGlobals',
 		'game/GlobalSignals',
 		'game/constants/GameConstants',
@@ -11,15 +11,15 @@ define(['ash',
 		'game/constants/PositionConstants',
 		'game/helpers/ui/UIPopupManager',
 		'game/vos/ResourcesVO',
-        'utils/MathUtils',
+		'utils/MathUtils',
 	],
 	function (Ash, ExceptionHandler, GameGlobals, GlobalSignals, GameConstants, CampConstants, UIConstants, ItemConstants, PlayerActionConstants, PositionConstants, UIPopupManager, ResourcesVO, MathUtils) {
 
-        // TODO separate generic utils and tabs handling to a different file
+		// TODO separate generic utils and tabs handling to a different file
 
 		var UIFunctions = Ash.Class.extend({
 
-            context: "UIFunctions",
+			context: "UIFunctions",
 			popupManager: null,
 
 			elementIDs: {
@@ -34,7 +34,7 @@ define(['ash',
 					upgrades: "switch-upgrades",
 					blueprints: "switch-blueprints",
 					world: "switch-world",
-                    embark: "switch-embark"
+					embark: "switch-embark"
 				},
 			},
 
@@ -60,13 +60,13 @@ define(['ash',
 			constructor: function () {
 				this.popupManager = new UIPopupManager(this);
 			},
-            
-            init: function () {
+			
+			init: function () {
 				this.generateElements();
-                this.hideElements();
+				this.hideElements();
 				this.registerListeners();
 				this.registerGlobalMouseEvents();
-            },
+			},
 
 			registerListeners: function () {
 				var elementIDs = this.elementIDs;
@@ -124,10 +124,10 @@ define(['ash',
 				});
 
 				$("#in-assign-workers input.amount").change(function (e) {
-                    var assignment = {};
-                    for (var key in CampConstants.workerTypes) {
-                        assignment[key] = parseInt($("#stepper-" + key + " input").val());
-                    }
+					var assignment = {};
+					for (var key in CampConstants.workerTypes) {
+						assignment[key] = parseInt($("#stepper-" + key + " input").val());
+					}
 					GameGlobals.playerActionFunctions.assignWorkers(null, assignment);
 				});
 
@@ -138,30 +138,30 @@ define(['ash',
 						"Rename Camp",
 						"Give your camp a new name",
 						prevCampName,
-                        true,
+						true,
 						function (input) {
 							GameGlobals.playerActionFunctions.setNearestCampName(input);
 						}
-                    );
+					);
 				});
-                
-                $(document).on("keyup", this.onKeyUp);
+				
+				$(document).on("keyup", this.onKeyUp);
 			},
 
 			registerGlobalMouseEvents: function () {
 				GameGlobals.gameState.uiStatus.mouseDown = false;
-                GameGlobals.gameState.uiStatus.mouseDownElement = null;
+				GameGlobals.gameState.uiStatus.mouseDownElement = null;
 				$(document).on('mouseleave', function (e) {
 					GameGlobals.gameState.uiStatus.mouseDown = false;
-                    GameGlobals.gameState.uiStatus.mouseDownElement = null;
+					GameGlobals.gameState.uiStatus.mouseDownElement = null;
 				});
 				$(document).on('mouseup', function (e) {
 					GameGlobals.gameState.uiStatus.mouseDown = false;
-                    GameGlobals.gameState.uiStatus.mouseDownElement = null;
+					GameGlobals.gameState.uiStatus.mouseDownElement = null;
 				});
 				$(document).on('mousedown', function (e) {
 					GameGlobals.gameState.uiStatus.mouseDown = true;
-                    GameGlobals.gameState.uiStatus.mouseDownElement = e.target;
+					GameGlobals.gameState.uiStatus.mouseDownElement = e.target;
 				});
 			},
 
@@ -176,9 +176,9 @@ define(['ash',
 						log.w("trying to bind click twice! id: " + $element.attr("id"));
 						return;
 					}
-                    if ($element.hasClass("action-manual-trigger")) {
-                        return;
-                    }
+					if ($element.hasClass("action-manual-trigger")) {
+						return;
+					}
 					$element.addClass("click-bound");
 					$element.click(ExceptionHandler.wrapClick(function (e) {
 						var action = $(this).attr("action");
@@ -186,7 +186,7 @@ define(['ash',
 							log.w("No action mapped for button.");
 							return;
 						}
-                        
+						
 						GlobalSignals.actionButtonClickedSignal.dispatch(action);
 
 						var param = null;
@@ -226,7 +226,7 @@ define(['ash',
 					GameGlobals.fightHelper.endFight(true);
 				});
 				$(scope + "#out-action-fight-cancel").click(function (e) {
-                    GameGlobals.fightHelper.endFight(false);
+					GameGlobals.fightHelper.endFight(false);
 					GameGlobals.playerActionFunctions.flee();
 				});
 				$(scope + "#inn-popup-btn-cancel").click(function (e) {
@@ -261,9 +261,9 @@ define(['ash',
 				// Buttons: Bag: Item details
 				// some in UIOoutBagSystem
 			},
-            
-            registerCustomButtonListeners: function (scope, btnClass, fn) {
-                $.each($(scope + " button." + btnClass), function () {
+			
+			registerCustomButtonListeners: function (scope, btnClass, fn) {
+				$.each($(scope + " button." + btnClass), function () {
 					var $element = $(this);
 					if ($element.hasClass("click-bound")) {
 						log.w("trying to bind click twice! id: " + $element.attr("id"));
@@ -271,22 +271,22 @@ define(['ash',
 					}
 					$element.addClass("click-bound");
 					$element.click(ExceptionHandler.wrapClick(fn));
-                });
-            },
-            
-            updateButtonCooldowns: function (scope) {
-                scope = scope || "";
-                let updates = false;
-                let sys = this;
-                $.each($(scope + " button.action"), function () {
+				});
+			},
+			
+			updateButtonCooldowns: function (scope) {
+				scope = scope || "";
+				let updates = false;
+				let sys = this;
+				$.each($(scope + " button.action"), function () {
 					var action = $(this).attr("action");
 					if (action) {
 						sys.updateButtonCooldown($(this), action);
-                        updates = true;
+						updates = true;
 					}
 				});
-                return updates;
-            },
+				return updates;
+			},
 
 			registerCollapsibleContainerListeners: function (scope) {
 				var sys = this;
@@ -326,7 +326,7 @@ define(['ash',
 				// equipment stats labels
 				for (var bonusKey in ItemConstants.itemBonusTypes) {
 					var bonusType = ItemConstants.itemBonusTypes[bonusKey];
-                    if (bonusType == ItemConstants.itemBonusTypes.fight_speed) continue;
+					if (bonusType == ItemConstants.itemBonusTypes.fight_speed) continue;
 					var div = "<div id='stats-equipment-" + bonusKey + "' class='stats-indicator stats-indicator-secondary'>";
 					div += "<span class='label'>" + UIConstants.getItemBonusName(bonusType).replace(" ", "<br/>") + "</span>";
 					div += "<br/>";
@@ -334,10 +334,10 @@ define(['ash',
 					$("#container-equipment-stats").append(div);
 				}
 			},
-            
-            hideElements: function () {
-                this.toggle($(".hidden-by-default"), false);
-            },
+			
+			hideElements: function () {
+				this.toggle($(".hidden-by-default"), false);
+			},
 
 			generateTabBubbles: function () {
 				$("#switch li").append("<div class='bubble' style='display:none'>1</div>");
@@ -354,62 +354,62 @@ define(['ash',
 
 			generateCallouts: function (scope) {
 				// Info callouts
-                $.each($(scope + " .info-callout-target"), function () {
-                    var $target = $(this);
-                    var generated = $target.data("callout-generated");
-                    if (generated) {
-                        log.w("Info callout already generated! id: " + $target.attr("id") + ", scope: " + scope);
-                        log.i($target);
-                        return;
-                    }
-	                $target.wrap('<div class="callout-container"></div>');
-	                $target.after(function () {
-                        var description = $(this).attr("description");
-                        var content = description;
-                        content = '<div class="callout-arrow-up"></div><div class="info-callout-content">' + content + "</div>";
-                        return '<div class="info-callout">' + content + '</div>'
-    				});
-                    $target.data("callout-generated", true);
-                });
+				$.each($(scope + " .info-callout-target"), function () {
+					var $target = $(this);
+					var generated = $target.data("callout-generated");
+					if (generated) {
+						log.w("Info callout already generated! id: " + $target.attr("id") + ", scope: " + scope);
+						log.i($target);
+						return;
+					}
+					$target.wrap('<div class="callout-container"></div>');
+					$target.after(function () {
+						var description = $(this).attr("description");
+						var content = description;
+						content = '<div class="callout-arrow-up"></div><div class="info-callout-content">' + content + "</div>";
+						return '<div class="info-callout">' + content + '</div>'
+					});
+					$target.data("callout-generated", true);
+				});
 
 				// Button callouts
-                // TODO performance bottleneck - detach elements to edit
+				// TODO performance bottleneck - detach elements to edit
 				var uiFunctions = this;
-                $.each($(scope + " div.container-btn-action"), function () {
-                    var $container = $(this);
-                    var generated = $container.data("callout-generated");
-                    if (generated) {
-                        {
-                            log.w("Button callout already generated!");
-                            log.i($container);
-                        }
-                        return;
-                    }
-                    $container.data("callout-generated", true);
-    				$container.wrap('<div class="callout-container"></div>');
-    				$container.after(function () {
-                        var button = $(this).children("button")[0];
-    					var action = $(button).attr("action");
-                        if (!action) {
-                            log.w("Action button with no action ");
-                            log.i($(button))
-                            return "";
-                        }
-    					if (action === "take_all" || action === "accept_inventory" || action === "use_in_inn_cancel" || action === "fight")
-    						return "";
-    					return uiFunctions.generateActionButtonCallout(action);
-    				});
-                });
+				$.each($(scope + " div.container-btn-action"), function () {
+					var $container = $(this);
+					var generated = $container.data("callout-generated");
+					if (generated) {
+						{
+							log.w("Button callout already generated!");
+							log.i($container);
+						}
+						return;
+					}
+					$container.data("callout-generated", true);
+					$container.wrap('<div class="callout-container"></div>');
+					$container.after(function () {
+						var button = $(this).children("button")[0];
+						var action = $(button).attr("action");
+						if (!action) {
+							log.w("Action button with no action ");
+							log.i($(button))
+							return "";
+						}
+						if (action === "take_all" || action === "accept_inventory" || action === "use_in_inn_cancel" || action === "fight")
+							return "";
+						return uiFunctions.generateActionButtonCallout(action);
+					});
+				});
 
 				GlobalSignals.calloutsGeneratedSignal.dispatch();
 			},
-            
-            updateCallouts: function (scope) {
-                $.each($(scope + " .callout-container"), function () {
-                    var description = $(this).children(".info-callout-target").attr("description");
-    				$(this).find(".info-callout-content").html(description);
-                });
-            },
+			
+			updateCallouts: function (scope) {
+				$.each($(scope + " .callout-container"), function () {
+					var description = $(this).children(".info-callout-target").attr("description");
+					$(this).find(".info-callout-content").html(description);
+				});
+			},
 
 			generateActionButtonCallout: function (action) {
 				var baseActionId = GameGlobals.playerActionsHelper.getBaseActionID(action);
@@ -417,11 +417,11 @@ define(['ash',
 				var content = "";
 				var enabledContent = "";
 				var disabledContent = "";
-                
-                /*
-                var ordinal = GameGlobals.playerActionsHelper.getActionOrdinal(action);
-                content += "<span>" + action + " " + ordinal +  "</span>"
-                */
+				
+				/*
+				var ordinal = GameGlobals.playerActionsHelper.getActionOrdinal(action);
+				content += "<span>" + action + " " + ordinal + "</span>"
+				*/
 
 				// always visible: description
 				var description = GameGlobals.playerActionsHelper.getDescription(action);
@@ -439,7 +439,7 @@ define(['ash',
 						var item = ItemConstants.getItemByID(itemName);
 						var name = (this.names.resources[key] ? this.names.resources[key] : item !== null ? item.name : key).toLowerCase();
 						var value = costs[key];
-                        enabledContent += "<span class='action-cost action-cost-" + key + "'>" + name + ": <span class='action-cost-value'>" + UIConstants.getDisplayValue(value) + "</span><br/></span>";
+						enabledContent += "<span class='action-cost action-cost-" + key + "'>" + name + ": <span class='action-cost-value'>" + UIConstants.getDisplayValue(value) + "</span><br/></span>";
 					}
 				}
 
@@ -448,17 +448,17 @@ define(['ash',
 					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
 					enabledContent += "<span class='action-duration'>duration: " + Math.round(duration * 100) / 100 + "s</span>";
 				}
-                
-                let specialReqs = GameGlobals.playerActionsHelper.getSpecialReqs(action);
-                if (specialReqs) {
-                    let s = this.getSpecialReqsText(action);
-                    if (s.length > 0) {
-    					if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
-                        enabledContent += "<span class='action-special-reqs'>" + s + "</span>";
-                    }
-                }
+				
+				let specialReqs = GameGlobals.playerActionsHelper.getSpecialReqs(action);
+				if (specialReqs) {
+					let s = this.getSpecialReqsText(action);
+					if (s.length > 0) {
+						if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
+						enabledContent += "<span class='action-special-reqs'>" + s + "</span>";
+					}
+				}
 
-                var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
+				var encounterFactor = GameGlobals.playerActionsHelper.getEncounterFactor(action);
 				var injuryRiskMax = PlayerActionConstants.getInjuryProbability(action, 0);
 				var inventoryRiskMax = PlayerActionConstants.getLoseInventoryProbability(action, 0);
 				var fightRiskMax = PlayerActionConstants.getRandomEncounterProbability(baseActionId, 0, 1, encounterFactor);
@@ -495,37 +495,37 @@ define(['ash',
 					return "";
 				}
 			},
-            
-            getSpecialReqsText: function (action) {
-                var position = GameGlobals.playerActionFunctions.playerPositionNodes.head ? GameGlobals.playerActionFunctions.playerPositionNodes.head.position : {};
-                let s = "";
-                let specialReqs = GameGlobals.playerActionsHelper.getSpecialReqs(action);
-                if (specialReqs) {
-                    for (let key in specialReqs) {
-                        switch (key) {
-                            case "improvementsOnLevel":
-                                let actionImprovementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action);
-                                for (let improvementID in specialReqs[key]) {
-                                    let range = specialReqs[key][improvementID];
-                                    let count = GameGlobals.playerActionsHelper.getCurrentImprovementCountOnLevel(position.level, improvementID);
-                                    let rangeText = UIConstants.getRangeText(range);
-                                    let displayName = GameGlobals.playerActionsHelper.getImprovementDisplayName(improvementID);
-                                    if (actionImprovementName == displayName) {
-                                        displayName = "";
-                                    }
-                                    s += rangeText + " " + displayName + " on level (" + count + ")";
-                                }
-                                break;
-                            default:
-                                s += key + ": " + specialReqs[key];
-                                log.w("unknown special req: " + key);
-                                break;
-                        }
-                    }
-                }
-                s.trim();
-                return s;
-            },
+			
+			getSpecialReqsText: function (action) {
+				var position = GameGlobals.playerActionFunctions.playerPositionNodes.head ? GameGlobals.playerActionFunctions.playerPositionNodes.head.position : {};
+				let s = "";
+				let specialReqs = GameGlobals.playerActionsHelper.getSpecialReqs(action);
+				if (specialReqs) {
+					for (let key in specialReqs) {
+						switch (key) {
+							case "improvementsOnLevel":
+								let actionImprovementName = GameGlobals.playerActionsHelper.getImprovementNameForAction(action);
+								for (let improvementID in specialReqs[key]) {
+									let range = specialReqs[key][improvementID];
+									let count = GameGlobals.playerActionsHelper.getCurrentImprovementCountOnLevel(position.level, improvementID);
+									let rangeText = UIConstants.getRangeText(range);
+									let displayName = GameGlobals.playerActionsHelper.getImprovementDisplayName(improvementID);
+									if (actionImprovementName == displayName) {
+										displayName = "";
+									}
+									s += rangeText + " " + displayName + " on level (" + count + ")";
+								}
+								break;
+							default:
+								s += key + ": " + specialReqs[key];
+								log.w("unknown special req: " + key);
+								break;
+						}
+					}
+				}
+				s.trim();
+				return s;
+			},
 
 			generateSteppers: function (scope) {
 				$(scope + " .stepper").append("<button type='button' class='btn-glyph' data-type='minus' data-field=''>-</button>");
@@ -543,16 +543,16 @@ define(['ash',
 			},
 
 			generateButtonOverlays: function (scope) {
-                $.each($(scope + " button.action"), function () {
-                    $btn = $(this);
-                    var text = $btn.text();
-                    $btn.text("");
-    				$btn.append("<span class='btn-label'>" + text + "</span>");
-                });
-                $(scope + " button.action").append("<div class='cooldown-action' style='display:none' />");
-                $(scope + " button.action").append("<div class='cooldown-duration' style='display:none' />");
-                $(scope + " button.action").wrap("<div class='container-btn-action' />");
-                $(scope + " div.container-btn-action").append("<div class='cooldown-reqs' />");
+				$.each($(scope + " button.action"), function () {
+					$btn = $(this);
+					var text = $btn.text();
+					$btn.text("");
+					$btn.append("<span class='btn-label'>" + text + "</span>");
+				});
+				$(scope + " button.action").append("<div class='cooldown-action' style='display:none' />");
+				$(scope + " button.action").append("<div class='cooldown-duration' style='display:none' />");
+				$(scope + " button.action").wrap("<div class='container-btn-action' />");
+				$(scope + " div.container-btn-action").append("<div class='cooldown-reqs' />");
 			},
 
 			startGame: function () {
@@ -573,57 +573,57 @@ define(['ash',
 				if (cooldown > 0) {
 					var locationKey = this.getLocationKey(action);
 					GameGlobals.gameState.setActionCooldown(action, locationKey, cooldown);
-                    if (!GameGlobals.gameState.isAutoPlaying) {
-    					var button = $("button[action='" + action + "']");
-    					this.startButtonCooldown($(button), cooldown);
-                    }
+					if (!GameGlobals.gameState.isAutoPlaying) {
+						var button = $("button[action='" + action + "']");
+						this.startButtonCooldown($(button), cooldown);
+					}
 				}
 			},
 
 			showGame: function () {
-                this.hideGameCounter = this.hideGameCounter || 1;
-                this.hideGameCounter--;
-                if (this.hideGameCounter > 0) return;
-                this.setGameOverlay(false, false);
-                this.setGameElementsVisibility(true);
-                this.setUIStatus(false, false);
+				this.hideGameCounter = this.hideGameCounter || 1;
+				this.hideGameCounter--;
+				if (this.hideGameCounter > 0) return;
+				this.setGameOverlay(false, false);
+				this.setGameElementsVisibility(true);
+				this.setUIStatus(false, false);
 				GlobalSignals.gameShownSignal.dispatch();
 			},
 
 			hideGame: function (showLoading, showThinking) {
-                this.hideGameCounter = this.hideGameCounter || 0;
-                this.hideGameCounter++;
-                showThinking = showThinking && !showLoading;
-                this.setGameOverlay(showLoading, showThinking);
+				this.hideGameCounter = this.hideGameCounter || 0;
+				this.hideGameCounter++;
+				showThinking = showThinking && !showLoading;
+				this.setGameOverlay(showLoading, showThinking);
 				this.setGameElementsVisibility(showThinking);
-                this.setUIStatus(true, true);
+				this.setUIStatus(true, true);
 			},
-            
-            blockGame: function () {
-                this.setUIStatus(GameGlobals.gameState.uiStatus.isHidden, true);
-            },
-            
-            unblockGame: function () {
-                this.setUIStatus(GameGlobals.gameState.uiStatus.isHidden, false);
-            },
-            
-            setUIStatus: function (isHidden, isBlocked) {
-                isBlocked = isBlocked || isHidden;
-                GameGlobals.gameState.uiStatus.isHidden = isHidden;
-                GameGlobals.gameState.uiStatus.isBlocked = isBlocked;
-            },
-            
-            setGameOverlay: function (isLoading, isThinking) {
-                isThinking = isThinking && !isLoading;
-                $(".loading-content").css("display", isLoading ? "block" : "none");
-                $(".thinking-content").css("display", isThinking ? "block" : "none");
-            },
-            
-            setGameElementsVisibility: function (visible) {
-                $(".sticky-footer").css("display", visible ? "block" : "none");
-                $("#grid-main").css("display", visible ? "block" : "none");
-                $("#unit-main").css("display", visible ? "block" : "none");
-            },
+			
+			blockGame: function () {
+				this.setUIStatus(GameGlobals.gameState.uiStatus.isHidden, true);
+			},
+			
+			unblockGame: function () {
+				this.setUIStatus(GameGlobals.gameState.uiStatus.isHidden, false);
+			},
+			
+			setUIStatus: function (isHidden, isBlocked) {
+				isBlocked = isBlocked || isHidden;
+				GameGlobals.gameState.uiStatus.isHidden = isHidden;
+				GameGlobals.gameState.uiStatus.isBlocked = isBlocked;
+			},
+			
+			setGameOverlay: function (isLoading, isThinking) {
+				isThinking = isThinking && !isLoading;
+				$(".loading-content").css("display", isLoading ? "block" : "none");
+				$(".thinking-content").css("display", isThinking ? "block" : "none");
+			},
+			
+			setGameElementsVisibility: function (visible) {
+				$(".sticky-footer").css("display", visible ? "block" : "none");
+				$("#grid-main").css("display", visible ? "block" : "none");
+				$("#unit-main").css("display", visible ? "block" : "none");
+			},
 
 			restart: function () {
 				$("#log ul").empty();
@@ -640,7 +640,7 @@ define(['ash',
 				html += "<span id='changelog-version'>version " + GameGlobals.changeLogHelper.getCurrentVersionNumber() + "<br/>updated " + GameGlobals.changeLogHelper.getCurrentVersionDate() + "</span>";
 				html += "<p>Note that this game is still in development and many features are incomplete and unbalanced. Updates might break saves. Feedback and bug reports are appreciated!</p>";
 				html += "<p>Feedback:<br/>" + GameConstants.getFeedbackLinksHTML() + "</p>";
-                html += "<p>More info:<br/><a href='faq.html' target='faq'>faq</a> | <a href='changelog.html' target='changelog'>changelog</a></p>";
+				html += "<p>More info:<br/><a href='faq.html' target='faq'>faq</a> | <a href='changelog.html' target='changelog'>changelog</a></p>";
 				return html;
 			},
 
@@ -660,7 +660,7 @@ define(['ash',
 				$.each($(".tabelement"), function () {
 					uiFunctions.slideToggleIf($(this), null, $(this).attr("data-tab") === tabID, transitionTime, 200);
 				});
-                $.each($(".tabbutton"), function () {
+				$.each($(".tabbutton"), function () {
 					uiFunctions.slideToggleIf($(this), null, $(this).attr("data-tab") === tabID, transitionTime, 200);
 				});
 
@@ -704,36 +704,36 @@ define(['ash',
 
 				this.updateStepperButtons("#" + $(input).parent().attr("id"));
 			},
-            
-            onKeyUp: function (e) {
-                var playerPos = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
-                if (!e.shiftKey && !playerPos.inCamp) {
-                    if (e.keyCode == 65) {
-                        GameGlobals.playerActionFunctions.startAction("move_sector_west");
-                    }
-                    if (e.keyCode == 87) {
-                        GameGlobals.playerActionFunctions.startAction("move_sector_north");
-                    }
-                    if (e.keyCode == 83) {
-                        GameGlobals.playerActionFunctions.startAction("move_sector_south")
-                    }
-                    if (e.keyCode == 68) {
-                        GameGlobals.playerActionFunctions.startAction("move_sector_east")
-                    }
-                    if (e.keyCode == 81) {
-                        GameGlobals.playerActionFunctions.startAction("move_sector_nw")
-                    }
-                    if (e.keyCode == 69) {
-                        GameGlobals.playerActionFunctions.startAction("move_sector_ne")
-                    }
-                    if (e.keyCode == 90) {
-                        GameGlobals.playerActionFunctions.startAction("move_sector_sw")
-                    }
-                    if (e.keyCode == 67) {
-                        GameGlobals.playerActionFunctions.startAction("move_sector_se")
-                    }
-                }
-            },
+			
+			onKeyUp: function (e) {
+				var playerPos = GameGlobals.playerActionFunctions.playerPositionNodes.head.position;
+				if (!e.shiftKey && !playerPos.inCamp) {
+					if (e.keyCode == 65) {
+						GameGlobals.playerActionFunctions.startAction("move_sector_west");
+					}
+					if (e.keyCode == 87) {
+						GameGlobals.playerActionFunctions.startAction("move_sector_north");
+					}
+					if (e.keyCode == 83) {
+						GameGlobals.playerActionFunctions.startAction("move_sector_south")
+					}
+					if (e.keyCode == 68) {
+						GameGlobals.playerActionFunctions.startAction("move_sector_east")
+					}
+					if (e.keyCode == 81) {
+						GameGlobals.playerActionFunctions.startAction("move_sector_nw")
+					}
+					if (e.keyCode == 69) {
+						GameGlobals.playerActionFunctions.startAction("move_sector_ne")
+					}
+					if (e.keyCode == 90) {
+						GameGlobals.playerActionFunctions.startAction("move_sector_sw")
+					}
+					if (e.keyCode == 67) {
+						GameGlobals.playerActionFunctions.startAction("move_sector_se")
+					}
+				}
+			},
 
 			onNumberInputKeyDown: function (e) {
 				// Allow: backspace, delete, tab, escape, enter and .
@@ -770,10 +770,10 @@ define(['ash',
 
 			onPlayerMoved: function () {
 				if (GameGlobals.gameState.uiStatus.isHidden) return;
-                var updates = false;
+				var updates = false;
 				updates = this.updateButtonCooldowns("") || updates;
-                if (updates)
-                    GlobalSignals.updateButtonsSignal.dispatch();
+				if (updates)
+					GlobalSignals.updateButtonsSignal.dispatch();
 			},
 
 			slideToggleIf: function (element, replacement, show, durationIn, durationOut, cb) {
@@ -787,7 +787,7 @@ define(['ash',
 					$(element).slideToggle(durationIn, function () {
 						sys.toggle(element, true);
 						$(element).attr("data-toggling", "false");
-                        if (cb) cb();
+						if (cb) cb();
 					});
 				} else if (!show && (visible == true || visible == null) && !toggling) {
 					$(element).attr("data-toggling", "true");
@@ -795,7 +795,7 @@ define(['ash',
 						if (replacement) sys.toggle(replacement, true);
 						sys.toggle(element, false);
 						$(element).attr("data-toggling", "false");
-                        if (cb) cb();
+						if (cb) cb();
 					});
 				}
 			},
@@ -856,17 +856,17 @@ define(['ash',
 					return;
 				$element.attr("data-visible", show);
 				$element.toggle(show);
-                // NOTE: For some reason the element isn't immediately :visible for checks in UIOutElementsSystem without the timeout
-                setTimeout(function () {
-                    GlobalSignals.elementToggledSignal.dispatch(element, show, signalParams);
-                }, 1);
+				// NOTE: For some reason the element isn't immediately :visible for checks in UIOutElementsSystem without the timeout
+				setTimeout(function () {
+					GlobalSignals.elementToggledSignal.dispatch(element, show, signalParams);
+				}, 1);
 			},
-            
-            toggleContainer: function (element, show, signalParams) {
+			
+			toggleContainer: function (element, show, signalParams) {
 				var $element = typeof (element) === "string" ? $(element) : element;
-                this.toggle($element, show, signalParams);
-                this.toggle($element.children("button"), show, signalParams);
-            },
+				this.toggle($element, show, signalParams);
+				this.toggle($element.children("button"), show, signalParams);
+			},
 
 			isElementToggled: function (element) {
 				var $element = typeof (element) === "string" ? $(element) : element;
@@ -901,17 +901,17 @@ define(['ash',
 				var toggled = this.isElementToggled($element);
 				if (toggled === false)
 					return false;
-                var $e = $element.parent();
-                while ($e && $e.length > 0) {
-                    if (!$e.hasClass("collapsible-content")) {
-                        var parentToggled = this.isElementToggled($e);
-                        if (parentToggled === false) {
-                            return false;
-                        }
-                    }
-                    $e = $e.parent();
-                }
-                return (($element).is(":visible"));
+				var $e = $element.parent();
+				while ($e && $e.length > 0) {
+					if (!$e.hasClass("collapsible-content")) {
+						var parentToggled = this.isElementToggled($e);
+						if (parentToggled === false) {
+							return false;
+						}
+					}
+					$e = $e.parent();
+				}
+				return (($element).is(":visible"));
 			},
 
 			stopButtonCooldown: function (button) {
@@ -919,25 +919,25 @@ define(['ash',
 				$(button).attr("data-hasCooldown", "false");
 				$(button).children(".cooldown-action").css("display", "none");
 				$(button).children(".cooldown-action").css("width", "100%");
-                GlobalSignals.updateButtonsSignal.dispatch();
+				GlobalSignals.updateButtonsSignal.dispatch();
 			},
-            
-            updateButtonCooldown: function (button, action) {
-                var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
-                var locationKey = this.getLocationKey(action);
-                cooldownTotal = PlayerActionConstants.getCooldown(baseId);
-                cooldownLeft = Math.min(cooldownTotal, GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal) / 1000);
-                durationTotal = PlayerActionConstants.getDuration(baseId);
-                durationLeft = Math.min(durationTotal, GameGlobals.gameState.getActionDuration(action, locationKey, durationTotal) / 1000);
-                if (cooldownLeft > 0) this.startButtonCooldown(button, cooldownTotal, cooldownLeft);
-                else this.stopButtonCooldown(button);
-                if (durationLeft > 0) this.startButtonDuration(button, cooldownTotal, durationLeft);
-            },
+			
+			updateButtonCooldown: function (button, action) {
+				var baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
+				var locationKey = this.getLocationKey(action);
+				cooldownTotal = PlayerActionConstants.getCooldown(baseId);
+				cooldownLeft = Math.min(cooldownTotal, GameGlobals.gameState.getActionCooldown(action, locationKey, cooldownTotal) / 1000);
+				durationTotal = PlayerActionConstants.getDuration(baseId);
+				durationLeft = Math.min(durationTotal, GameGlobals.gameState.getActionDuration(action, locationKey, durationTotal) / 1000);
+				if (cooldownLeft > 0) this.startButtonCooldown(button, cooldownTotal, cooldownLeft);
+				else this.stopButtonCooldown(button);
+				if (durationLeft > 0) this.startButtonDuration(button, cooldownTotal, durationLeft);
+			},
 
 			startButtonCooldown: function (button, cooldown, cooldownLeft) {
 				if (GameGlobals.gameState.uiStatus.isHidden) return;
-                var action = $(button).attr("action");
-                if (!GameGlobals.playerActionsHelper.isRequirementsMet(action)) return;
+				var action = $(button).attr("action");
+				if (!GameGlobals.playerActionsHelper.isRequirementsMet(action)) return;
 				if (!cooldownLeft) cooldownLeft = cooldown;
 				var uiFunctions = this;
 				var startingWidth = (cooldownLeft / cooldown * 100);
@@ -1040,7 +1040,7 @@ define(['ash',
 					$(this).attr("data-long-tap-timeout", 0);
 				};
 				$element.on('mousedown', function (e) {
-                    var target = e.target;
+					var target = e.target;
 					var $target = $(this);
 					cancelLongTap()
 					var timer = setTimeout(function () {
@@ -1093,7 +1093,7 @@ define(['ash',
 
 			showSpecialPopup: function (popupID) {
 				if ($("#" + popupID).is(":visible")) return;
-				$("#" + popupID).wrap("<div class='popup-overlay' style='display:none'></div>");
+				$("#" + popupID).wrap("<div class='popup-overlay popup-overlay-ingame' style='display:none'></div>");
 				var uiFunctions = this;
 				$(".popup-overlay").fadeIn(200, function () {
 					uiFunctions.popupManager.repositionPopups();
@@ -1108,9 +1108,9 @@ define(['ash',
 				this.generateCallouts("#" + popupID);
 			},
 
-			showInfoPopup: function (title, msg, buttonLabel, resultVO, callback) {
+			showInfoPopup: function (title, msg, buttonLabel, resultVO, callback, isMeta) {
 				if (!buttonLabel) buttonLabel = "Continue";
-				this.popupManager.showPopup(title, msg, buttonLabel, false, resultVO, callback);
+				this.popupManager.showPopup(title, msg, buttonLabel, false, resultVO, callback, null, isMeta);
 			},
 
 			showResultPopup: function (title, msg, resultVO, callback) {
@@ -1129,7 +1129,7 @@ define(['ash',
 				this.popupManager.showPopup("Confirmation", msg, "Confirm", "Cancel", null, okCallback, cancelCallback);
 			},
 
-			showQuestionPopup: function (title, msg, buttonLabel, cancelButtonLabel, callbackOK, callbackNo) {
+			showQuestionPopup: function (title, msg, buttonLabel, cancelButtonLabel, callbackOK, callbackNo, isMeta) {
 				var uiFunctions = this;
 				var okCallback = function (e) {
 					uiFunctions.popupManager.closePopup("common-popup");
@@ -1139,24 +1139,24 @@ define(['ash',
 					uiFunctions.popupManager.closePopup("common-popup");
 					if (callbackNo) callbackNo();
 				};
-				this.popupManager.showPopup(title, msg, buttonLabel, cancelButtonLabel, null, okCallback, cancelCallback);
+				this.popupManager.showPopup(title, msg, buttonLabel, cancelButtonLabel, null, okCallback, cancelCallback, isMeta);
 			},
 
 			showInput: function (title, msg, defaultValue, allowCancel, confirmCallback, inputCallback) {
-                // TODO improve input validation (check and show feedback on input, not just on confirm)
-                
+				// TODO improve input validation (check and show feedback on input, not just on confirm)
+				
 				var okCallback = function () {
 					let input = $("#common-popup input").val();
-                    let ok = inputCallback ? inputCallback(input) : true;
-                    if (ok) {
-	                   confirmCallback(input);
-                       return true;
-                   } else {
-                       log.w("invalid input: " + input);
-                       return false;
-                   }
+					let ok = inputCallback ? inputCallback(input) : true;
+					if (ok) {
+						confirmCallback(input);
+						return true;
+					} else {
+						log.w("invalid input: " + input);
+						return false;
+					}
 				};
-                let cancelButtonLabel = allowCancel ? "Cancel" : null;
+				let cancelButtonLabel = allowCancel ? "Cancel" : null;
 				this.popupManager.showPopup(title, msg, "Confirm", cancelButtonLabel, null, okCallback);
 
 				var uiFunctions = this;

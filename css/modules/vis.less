@@ -3,156 +3,156 @@
 // MAPS
 
 #minimap {
-    overflow: hidden;
+	overflow: hidden;
 }
 
 #mainmap {
-    overflow: hidden;
+	overflow: hidden;
 }
 
 #mainmap, #researched-upgrades-vis {
-    overflow: hidden;
+	overflow: hidden;
 }
 
 .canvas-overlay {
-    position: absolute;
-    top: 0;
-    pointer-events: none;
+	position: absolute;
+	top: 0;
+	pointer-events: none;
 }
 
 .canvas-overlay-cell {
-    position: absolute;
-    pointer-events: auto;
-    cursor: pointer;
-    font-size: 70%;
-    display: table;
-    line-height: 0.85;
+	position: absolute;
+	pointer-events: auto;
+	cursor: pointer;
+	font-size: 70%;
+	display: table;
+	line-height: 0.85;
 }
 
 .canvas-overlay-cell:hover {
 }
 
 .canvas-overlay-cell p {
-  display: table-cell;
-  vertical-align: middle;
-  text-align: center;
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
 }
 
 .map-overlay-cell {
-    width: 11px;
-    height: 11px;
-    border: none;
+	width: 11px;
+	height: 11px;
+	border: none;
 }
 
 .map-overlay-cell:hover {
-    background: @color-text-default;
+	background: @color-text-default;
 }
 
 .map-overlay-cell.selected {
-    background: @color-text-default;
-    outline: 4px solid @color-text-meta;
+	background: @color-text-default;
+	outline: 4px solid @color-text-meta;
 }
 
 // TECH TREE
 
 #researched-upgrades-vis-container {
-    max-height: 300px;
+	max-height: 300px;
 }
 
 .upgrades-overlay-cell {
-    width: 85px;
-    height: 22px;
-    color: @color-text-dark;
+	width: 85px;
+	height: 22px;
+	color: @color-text-dark;
 }
 
 .upgrades-overlay-cell:hover {
-    background: fade(@color-text-default, 10%)
+	background: fade(@color-text-default, 10%)
 }
 
 
 // CAMP VIS
 
 #tab-vis-in {
-    border: 2px solid @color-border-box-1;
-    padding: 0;
+	border: 2px solid @color-border-box-1;
+	padding: 0;
 }
 
 #tab-vis-in-container {
-    position: relative;
-    margin: 0 auto;
-    padding: 0;
-    overflow: hidden;
-    height: 100px;
+	position: relative;
+	margin: 0 auto;
+	padding: 0;
+	overflow: hidden;
+	height: 100px;
 }
 
 #vis-camp-info-overlay {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 16px;
-    background: @color-bg-element-1;
-    font-size: @font-size-tiny;
-    padding: 1px;
-    vertical-align: middle;
-    text-align: center;
-    z-index: 9;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 16px;
+	background: @color-bg-element-1;
+	font-size: @font-size-tiny;
+	padding: 1px;
+	vertical-align: middle;
+	text-align: center;
+	z-index: 9;
 }
 
 .vis-camp-layer {
-    position: absolute;
-    top: 0;
+	position: absolute;
+	top: 0;
 }
 
 .vis-camp-building-container {
-    background: transparent;
-    border-radius: 3px;
-    border: 2px dotted transparent;
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-    font-size: 75%;
-    color: transparent;
+	background: transparent;
+	border-radius: 3px;
+	border: 2px dotted transparent;
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 2;
+	font-size: 75%;
+	color: transparent;
 }
 
 .vis-camp-building-container.filled {
-    display: none;
+	display: none;
 }
 
 .vis-camp-floor {
-    background: @color-bg-element-1;
-    position: absolute;
-    left: 0px;
+	background: @color-bg-element-1;
+	position: absolute;
+	left: 0px;
 }
 
 .vis-camp-building {
-    position: absolute;
-    opacity: 1;
-    width: 12px;
-    height: 12px;
-    z-index: 3;
-    font-size: 75%;
+	position: absolute;
+	opacity: 1;
+	width: 12px;
+	height: 12px;
+	z-index: 3;
+	font-size: 75%;
 }
 
 .vis-camp-building-z0 {
-    z-index: 4;
+	z-index: 4;
 }
 
 .vis-camp-building-z1 {
-    z-index: 3;
+	z-index: 3;
 }
 
 .vis-camp-building-z2 {
-    z-index: 2;
+	z-index: 2;
 }
 
 .vis-camp-building-z3 {
-    z-index: 1;
+	z-index: 1;
 }
 
 .vis-camp-building-z4 {
-    z-index: 0;
+	z-index: 0;
 }

@@ -1,8 +1,8 @@
 define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConstants) {
-    
-    var MovementBlockerVO = Ash.Class.extend({
 	
-        constructor: function (type) {
+	var MovementBlockerVO = Ash.Class.extend({
+	
+		constructor: function (type) {
 			this.type = type;
 			this.name = this.getName();
 			this.bridgeable = type === MovementConstants.BLOCKER_TYPE_GAP;
@@ -11,7 +11,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.flyable = type === MovementConstants.BLOCKER_TYPE_GAP || MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE || MovementConstants.BLOCKER_TYPE_WASTE_TOXIC;
 			
 			this.actionBaseID = this.getActionBaseId();
-        },
+		},
 		
 		getName: function () {
 			switch (this.type) {
@@ -19,8 +19,8 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				case MovementConstants.BLOCKER_TYPE_WASTE_TOXIC: return "Toxic waste";
 				case MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE: return "Radioactive waste";
 				case MovementConstants.BLOCKER_TYPE_GANG: return "Gang";
-                case MovementConstants.BLOCKER_TYPE_DEBRIS: return "Debris";
-	 	 	}
+				case MovementConstants.BLOCKER_TYPE_DEBRIS: return "Debris";
+			}
 		},
 		
 		getActionBaseId: function () {
@@ -30,10 +30,10 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				case MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE: return "clear_waste_r";
 				case MovementConstants.BLOCKER_TYPE_GANG: return "fight_gang";
 				case MovementConstants.BLOCKER_TYPE_DEBRIS: return "clear_debris";
-	 	 	}
+			}
 		},
 		
-    });
+	});
 
-    return MovementBlockerVO;
+	return MovementBlockerVO;
 });

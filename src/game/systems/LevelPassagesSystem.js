@@ -1,24 +1,24 @@
 // A system that updates a Levels's LevelPassagesComponent based on sectors on the level
 define([
-    'ash',
-    'game/GameGlobals',
-    'game/GlobalSignals',
-    'game/nodes/level/LevelNode',
-    'game/nodes/sector/SectorNode',
-    'game/components/common/PositionComponent',
-    'game/components/level/LevelPassagesComponent',
-    'game/components/sector/PassagesComponent',
-    'game/components/sector/improvements/SectorImprovementsComponent',
+	'ash',
+	'game/GameGlobals',
+	'game/GlobalSignals',
+	'game/nodes/level/LevelNode',
+	'game/nodes/sector/SectorNode',
+	'game/components/common/PositionComponent',
+	'game/components/level/LevelPassagesComponent',
+	'game/components/sector/PassagesComponent',
+	'game/components/sector/improvements/SectorImprovementsComponent',
 ], function (Ash,
-        GameGlobals,
-        GlobalSignals,
+		GameGlobals,
+		GlobalSignals,
 		LevelNode,
 		SectorNode,
 		PositionComponent,
 		LevelPassagesComponent,
 		PassagesComponent,
 		SectorImprovementsComponent) {
-    var LevelPassagesSystem = Ash.System.extend({
+	var LevelPassagesSystem = Ash.System.extend({
 
 		levelNodes: null,
 		sectorNodes: null,
@@ -39,7 +39,7 @@ define([
 			});
 		},
 
-        removeFromEngine: function (engine) {
+		removeFromEngine: function (engine) {
 			this.levelNodes = null;
 			this.sectorNodes = null;
 		},
@@ -81,7 +81,7 @@ define([
 			levelPassagesComponent.passagesDownBuilt[s] = passageDownBuilt;
 		},
 
-    });
+	});
 
-    return LevelPassagesSystem;
+	return LevelPassagesSystem;
 });
