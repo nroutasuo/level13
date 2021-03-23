@@ -3,9 +3,14 @@
 		{
 			"version": "0.3.3",
 			"requiredVersion": "0.3.1",
+			"released": "2021-03-23",
 			"phase": "alpha",
-			"final": false,
+			"final": true,
 			"changes": [
+				{
+					"type": "GB",
+					"summary": "Adjust upgrade/evidence balancing"
+				},
 				{
 					"type": "DEV",
 					"summary": "Small bugfixes"
