@@ -1,0 +1,3203 @@
+{
+    "cooldowns": {
+        "clear_workshop": 60,
+        "despair": 10,
+        "fight_gang": 60,
+        "scavenge": 10,
+        "scout_locale_i": 60,
+        "scout_locale_u": 60,
+        "send_caravan": 600,
+        "use_in_campfire": 60,
+        "use_in_home": 180,
+        "use_in_inn": 1800,
+        "use_in_market": 360,
+        "use_in_shrine": 600,
+        "use_in_temple": 120,
+        "use_spring": 60
+    },
+    "costs": {
+        "bridge_gap": {
+            "resource_metal": 300,
+            "resource_rope": 500
+        },
+        "build_in_apothecary": {
+            "cost_factor_e1_base": 1.5,
+            "resource_metal": 100,
+            "resource_rope": 50
+        },
+        "build_in_aqueduct": {
+            "cost_factor_e1_base": 2,
+            "resource_concrete": 50,
+            "resource_metal": 300,
+            "resource_rubber": 10
+        },
+        "build_in_barracks": {
+            "cost_factor_e1_base": 1.2,
+            "resource_concrete": 200,
+            "resource_metal": 100,
+            "resource_rope": 50
+        },
+        "build_in_campfire": {
+            "cost_factor_e1_base": 2,
+            "resource_food": 10,
+            "resource_metal": 5
+        },
+        "build_in_ceiling": {
+            "resource_rope": 1000
+        },
+        "build_in_cementmill": {
+            "cost_factor_e1_base": 1.5,
+            "resource_fuel": 10,
+            "resource_metal": 500,
+            "resource_rope": 10
+        },
+        "build_in_darkfarm": {
+            "cost_factor_e1_base": 2,
+            "resource_fuel": 5,
+            "resource_metal": 50,
+            "resource_water": 20
+        },
+        "build_in_fortification": {
+            "cost_factor_e1_base": 1.5,
+            "resource_metal": 350,
+            "resource_rope": 100
+        },
+        "build_in_fortification2": {
+            "cost_factor_e1_base": 1.5,
+            "resource_concrete": 100
+        },
+        "build_in_garden": {
+            "cost_factor_e1_base": 3,
+            "resource_metal": 100,
+            "resource_rope": 50,
+            "resource_water": 50
+        },
+        "build_in_generator": {
+            "resource_fuel": 200,
+            "resource_metal": 100,
+            "resource_rope": 100
+        },
+        "build_in_hospital": {
+            "resource_metal": 120,
+            "resource_rope": 30
+        },
+        "build_in_house": {
+            "cost_factor_e1_base": 2,
+            "resource_metal": 28
+        },
+        "build_in_house2": {
+            "cost_factor_e1_base": 1.75,
+            "resource_concrete": 100,
+            "resource_metal": 800,
+            "resource_rope": 50
+        },
+        "build_in_inn": {
+            "resource_fuel": 20,
+            "resource_metal": 50,
+            "resource_rope": 20
+        },
+        "build_in_library": {
+            "cost_factor_e1_base": 2,
+            "resource_metal": 200,
+            "resource_rope": 150
+        },
+        "build_in_lights": {
+            "resource_concrete": 50,
+            "resource_fuel": 50,
+            "resource_metal": 200,
+            "resource_rope": 100
+        },
+        "build_in_market": {
+            "cost_factor_e1_base": 1.5,
+            "resource_metal": 200,
+            "resource_rope": 100
+        },
+        "build_in_radiotower": {
+            "cost_factor_e1_base": 1.5,
+            "resource_metal": 500,
+            "resource_rope": 50
+        },
+        "build_in_researchcenter": {
+            "resource_metal": 1200,
+            "resource_rope": 100,
+            "resource_rubber": 100,
+            "resource_water": 200
+        },
+        "build_in_shrine": {
+            "resource_food": 50,
+            "resource_metal": 100,
+            "resource_water": 50
+        },
+        "build_in_smithy": {
+            "cost_factor_e1_base": 1.5,
+            "resource_fuel": 10,
+            "resource_metal": 200,
+            "resource_rope": 50
+        },
+        "build_in_square": {
+            "resource_metal": 200,
+            "resource_rope": 100
+        },
+        "build_in_stable": {
+            "cost_factor_e1_base": 1.75,
+            "resource_fuel": 30,
+            "resource_metal": 200,
+            "resource_rope": 50
+        },
+        "build_in_storage": {
+            "cost_factor_e1_base": 1.75,
+            "cost_factor_e1_base_outpost": 2.5,
+            "resource_concrete": [
+                20,
+                2,
+                2,
+                0,
+                8
+            ],
+            "resource_metal": [
+                0,
+                0,
+                50,
+                0,
+                0
+            ],
+            "resource_rope": [
+                5,
+                2,
+                2,
+                0,
+                2
+            ]
+        },
+        "build_in_temple": {
+            "resource_food": 100,
+            "resource_herbs": 50,
+            "resource_metal": 200
+        },
+        "build_in_tradepost": {
+            "resource_metal": 72
+        },
+        "build_out_beacon": {
+            "resource_fuel": 1,
+            "resource_metal": 10
+        },
+        "build_out_camp": {
+            "resource_food": 2,
+            "resource_metal": 10
+        },
+        "build_out_collector_food": {
+            "resource_metal": 8
+        },
+        "build_out_collector_water": {
+            "resource_metal": 8
+        },
+        "build_out_greenhouse": {
+            "resource_fuel": 100,
+            "resource_metal": 300,
+            "resource_tools": 100
+        },
+        "build_out_passage_down_elevator": {
+            "cost_factor_e1_base": 1.35,
+            "cost_factor_e2_exp": 2.3,
+            "resource_fuel": [
+                10,
+                10,
+                0,
+                0,
+                0
+            ],
+            "resource_metal": [
+                0,
+                100,
+                50,
+                500,
+                0
+            ]
+        },
+        "build_out_passage_down_hole": {
+            "cost_factor_e1_base": 1.35,
+            "cost_factor_e2_exp": 2.3,
+            "resource_concrete": [
+                50,
+                25,
+                0,
+                0,
+                0
+            ],
+            "resource_metal": [
+                0,
+                100,
+                50,
+                500,
+                0
+            ]
+        },
+        "build_out_passage_down_stairs": {
+            "cost_factor_e1_base": 1.35,
+            "cost_factor_e2_exp": 2.3,
+            "resource_metal": [
+                0,
+                100,
+                50,
+                500,
+                0
+            ],
+            "resource_rope": 10
+        },
+        "build_out_passage_up_elevator": {
+            "cost_factor_e1_base": 1.295,
+            "cost_factor_e2_exp": 2.3,
+            "resource_fuel": 10,
+            "resource_metal": [
+                50,
+                100,
+                50,
+                5500,
+                0
+            ]
+        },
+        "build_out_passage_up_hole": {
+            "cost_factor_e1_base": 1.295,
+            "cost_factor_e2_exp": 2.3,
+            "resource_concrete": 50,
+            "resource_metal": [
+                50,
+                100,
+                50,
+                5500,
+                0
+            ]
+        },
+        "build_out_passage_up_stairs": {
+            "cost_factor_e1_base": 1.295,
+            "cost_factor_e2_exp": 2.3,
+            "resource_metal": [
+                50,
+                100,
+                50,
+                5500,
+                0
+            ],
+            "resource_rope": 10
+        },
+        "build_out_spaceship1": {
+            "resource_concrete": 10000,
+            "resource_metal": 20000,
+            "resource_rope": 3000,
+            "resource_rubber": 1000,
+            "resource_tools": 1000
+        },
+        "build_out_spaceship2": {
+            "resource_concrete": 1000,
+            "resource_metal": 10000,
+            "resource_rope": 5000,
+            "resource_tools": 2000
+        },
+        "build_out_spaceship3": {
+            "resource_concrete": 1000,
+            "resource_fuel": 800,
+            "resource_medicine": 3000,
+            "resource_metal": 10000,
+            "resource_rope": 5000,
+            "resource_tools": 1000
+        },
+        "clear_debris_e": {
+            "resource_rope": 30
+        },
+        "clear_debris_l": {
+            "resource_rope": 50
+        },
+        "clear_waste_r": {
+            "stamina": 50
+        },
+        "clear_waste_t": {
+            "stamina": 50
+        },
+        "clear_workshop": {
+            "stamina": 10
+        },
+        "craft_bag_0": {
+            "item_res_tape": 1,
+            "resource_rope": 20
+        },
+        "craft_bag_1": {
+            "item_res_leather": 5,
+            "resource_rope": 80
+        },
+        "craft_bag_2": {
+            "item_res_bands": 5,
+            "item_res_leather": 10,
+            "resource_rope": 100
+        },
+        "craft_clothing_hands_1": {
+            "item_res_silk": 1,
+            "resource_rope": 10
+        },
+        "craft_clothing_hands_12": {
+            "item_res_leather": 2,
+            "resource_rope": 10
+        },
+        "craft_clothing_hands_2": {
+            "item_res_leather": 3,
+            "resource_rope": 10
+        },
+        "craft_clothing_hands_25": {
+            "item_res_leather": 3,
+            "item_res_silk": 3,
+            "resource_rope": 20
+        },
+        "craft_clothing_hands_3": {
+            "item_res_leather": 3,
+            "item_res_silk": 5,
+            "resource_rope": 20
+        },
+        "craft_clothing_hands_4": {
+            "item_res_silk": 5,
+            "item_res_tape": 5,
+            "resource_rope": 20
+        },
+        "craft_clothing_hands_l14": {
+            "item_res_leather": 1,
+            "item_res_silk": 3,
+            "resource_rubber": 10,
+            "resource_tools": 10
+        },
+        "craft_clothing_head_1": {
+            "item_res_silk": 1,
+            "resource_rope": 10
+        },
+        "craft_clothing_head_2": {
+            "item_res_silk": 3,
+            "resource_rope": 50
+        },
+        "craft_clothing_head_3": {
+            "item_res_tape": 3,
+            "resource_metal": 60,
+            "resource_rope": 10
+        },
+        "craft_clothing_head_4": {
+            "item_res_bands": 6,
+            "item_res_leather": 3
+        },
+        "craft_clothing_head_45": {
+            "item_res_silk": 2,
+            "resource_rope": 50
+        },
+        "craft_clothing_head_5": {
+            "item_res_bands": 5,
+            "item_res_silk": 10,
+            "resource_metal": 20,
+            "resource_rope": 20,
+            "resource_tools": 10
+        },
+        "craft_clothing_head_l14": {
+            "item_res_bands": 5,
+            "resource_fuel": 2,
+            "resource_rubber": 10
+        },
+        "craft_clothing_lower_15": {
+            "item_res_leather": 1,
+            "resource_rope": 10
+        },
+        "craft_clothing_lower_2": {
+            "item_res_bands": 1,
+            "resource_rope": 10
+        },
+        "craft_clothing_lower_3": {
+            "item_res_silk": 2,
+            "resource_rope": 20
+        },
+        "craft_clothing_lower_4": {
+            "item_res_bands": 1,
+            "item_res_silk": 5,
+            "resource_rope": 20
+        },
+        "craft_clothing_lower_45": {
+            "item_res_bands": 5,
+            "item_res_silk": 3,
+            "resource_rope": 50
+        },
+        "craft_clothing_lower_5": {
+            "item_res_silk": 10,
+            "resource_rope": 50
+        },
+        "craft_clothing_over_1": {
+            "item_res_silk": 1,
+            "resource_rope": 10
+        },
+        "craft_clothing_over_15": {
+            "item_res_leather": 5,
+            "resource_rope": 30
+        },
+        "craft_clothing_over_3": {
+            "item_res_bands": 2,
+            "item_res_tape": 1,
+            "resource_metal": 50
+        },
+        "craft_clothing_over_4": {
+            "item_res_bands": 3,
+            "item_res_silk": 10,
+            "resource_metal": 10,
+            "resource_rope": 10
+        },
+        "craft_clothing_over_45": {
+            "item_res_silk": 10,
+            "item_res_tape": 3,
+            "resource_rope": 10
+        },
+        "craft_clothing_over_6": {
+            "item_res_silk": 10,
+            "resource_metal": 100,
+            "resource_rubber": 10
+        },
+        "craft_clothing_over_l14": {
+            "item_res_silk": 2,
+            "item_res_tape": 2,
+            "resource_rubber": 60
+        },
+        "craft_clothing_over_w": {
+            "item_res_silk": 5,
+            "resource_rope": 20
+        },
+        "craft_clothing_upper_1": {
+            "resource_rope": 5
+        },
+        "craft_clothing_upper_15": {
+            "item_res_silk": 1,
+            "resource_rope": 10
+        },
+        "craft_clothing_upper_3": {
+            "item_res_silk": 5,
+            "resource_rope": 30
+        },
+        "craft_clothing_upper_4": {
+            "item_res_silk": 10,
+            "resource_rope": 30
+        },
+        "craft_clothing_upper_5": {
+            "item_res_silk": 20,
+            "resource_rope": 5
+        },
+        "craft_consumable_weapon_1": {
+            "item_res_bands": 1,
+            "resource_metal": 10
+        },
+        "craft_exploration_1": {
+            "item_res_hairpin": 1,
+            "resource_metal": 5
+        },
+        "craft_first_aid_kit_1": {
+            "item_res_bands": 3,
+            "item_res_bottle": 1,
+            "resource_herbs": 10,
+            "resource_water": 10
+        },
+        "craft_first_aid_kit_2": {
+            "item_res_bands": 5,
+            "item_res_bottle": 3,
+            "resource_medicine": 10,
+            "resource_water": 20
+        },
+        "craft_flee_1": {
+            "item_res_bottle": 1,
+            "item_res_tape": 2,
+            "resource_water": 5
+        },
+        "craft_glowstick_1": {
+            "item_res_glowbug": 1,
+            "item_res_tape": 2,
+            "resource_fuel": 10
+        },
+        "craft_light1": {
+            "resource_metal": 7
+        },
+        "craft_light2": {
+            "item_res_bottle": 1,
+            "item_res_hairpin": 2,
+            "resource_fuel": 20,
+            "resource_metal": 50
+        },
+        "craft_shoe_1": {
+            "item_res_leather": 5,
+            "item_res_tape": 2,
+            "resource_rope": 10
+        },
+        "craft_shoe_l14": {
+            "item_res_bands": 10,
+            "resource_rubber": 20
+        },
+        "craft_weapon1": {
+            "resource_metal": 10,
+            "resource_rope": 1
+        },
+        "craft_weapon12": {
+            "item_res_bands": 2,
+            "resource_metal": 15,
+            "resource_rope": 5
+        },
+        "craft_weapon2": {
+            "item_res_bands": 3,
+            "item_res_tape": 3,
+            "resource_metal": 20,
+            "resource_rope": 10
+        },
+        "craft_weapon25": {
+            "item_res_bands": 3,
+            "item_res_tape": 5,
+            "resource_metal": 50,
+            "resource_rope": 10
+        },
+        "craft_weapon3": {
+            "item_res_bottle": 1,
+            "item_res_tape": 1,
+            "resource_metal": 100,
+            "resource_rope": 10
+        },
+        "craft_weapon4": {
+            "item_res_bands": 10,
+            "item_res_hairpin": 3,
+            "resource_fuel": 5,
+            "resource_metal": 100,
+            "resource_rope": 5
+        },
+        "craft_weapon5": {
+            "item_res_bands": 10,
+            "item_res_hairpin": 1,
+            "resource_fuel": 50,
+            "resource_metal": 200,
+            "resource_tools": 20
+        },
+        "craft_weapon52": {
+            "item_res_leather": 2,
+            "item_res_tape": 5,
+            "resource_metal": 100
+        },
+        "craft_weapon58": {
+            "item_res_bands": 10,
+            "item_res_hairpin": 1,
+            "resource_fuel": 10,
+            "resource_metal": 100
+        },
+        "craft_weapon6": {
+            "item_res_bands": 20,
+            "item_res_hairpin": 2,
+            "resource_fuel": 100,
+            "resource_metal": 300,
+            "resource_tools": 50
+        },
+        "craft_weapon7": {
+            "item_res_bands": 20,
+            "item_res_tape": 5,
+            "resource_fuel": 100,
+            "resource_metal": 500,
+            "resource_tools": 50
+        },
+        "craft_weapon8": {
+            "item_res_bands": 20,
+            "item_res_hairpin": 3,
+            "resource_fuel": 100,
+            "resource_metal": 300,
+            "resource_tools": 50
+        },
+        "fight_gang": {
+            "stamina": 10
+        },
+        "flee": {
+            "stamina": 20
+        },
+        "improve_building_market3": {
+            "evidence": 126,
+            "favour": 353,
+            "rumours": 14859
+        },
+        "improve_in_apothecary": {
+            "cost_factor_e1_base": 2,
+            "resource_metal": [
+                30,
+                0,
+                5,
+                0,
+                0
+            ],
+            "resource_rope": [
+                10,
+                0,
+                5,
+                0,
+                0
+            ],
+            "resource_tools": 10
+        },
+        "improve_in_campfire": {
+            "cost_factor_e1_base": 2,
+            "resource_food": 5,
+            "resource_metal": [
+                2,
+                18,
+                10,
+                0,
+                0
+            ],
+            "resource_rope": [
+                5,
+                5,
+                0,
+                0,
+                2
+            ]
+        },
+        "improve_in_cementmill": {
+            "cost_factor_e1_base": 2,
+            "resource_metal": [
+                40,
+                0,
+                5,
+                0,
+                0
+            ],
+            "resource_rope": [
+                10,
+                0,
+                5,
+                0,
+                0
+            ],
+            "resource_tools": 10
+        },
+        "improve_in_generator": {
+            "cost_factor_e1_base": 1.5,
+            "resource_concrete": 50,
+            "resource_fuel": 50,
+            "resource_metal": [
+                0,
+                0,
+                20,
+                0,
+                0
+            ]
+        },
+        "improve_in_library": {
+            "cost_factor_e1_base": 1.8,
+            "resource_metal": [
+                55,
+                20,
+                10,
+                0,
+                0
+            ],
+            "resource_rope": 50
+        },
+        "improve_in_market": {
+            "cost_factor_e1_base": 1.5,
+            "resource_metal": [
+                40,
+                50,
+                10,
+                0,
+                0
+            ],
+            "resource_rope": [
+                40,
+                50,
+                10,
+                0,
+                0
+            ]
+        },
+        "improve_in_smithy": {
+            "cost_factor_e1_base": 2,
+            "resource_metal": [
+                100,
+                0,
+                5,
+                0,
+                0
+            ],
+            "resource_rope": [
+                50,
+                0,
+                5,
+                0,
+                0
+            ],
+            "resource_tools": 50
+        },
+        "improve_in_square": {
+            "cost_factor_e1_base": 1.25,
+            "resource_metal": [
+                0,
+                0,
+                80,
+                0,
+                0
+            ],
+            "resource_rope": [
+                0,
+                0,
+                20,
+                0,
+                0
+            ],
+            "resource_tools": [
+                0,
+                0,
+                10,
+                0,
+                2
+            ]
+        },
+        "improve_in_temple": {
+            "cost_factor_e1_base": 2,
+            "resource_herbs": [
+                50,
+                0,
+                5,
+                0,
+                0
+            ],
+            "resource_metal": [
+                50,
+                0,
+                5,
+                0,
+                0
+            ]
+        },
+        "launch": {
+            "resource_fuel": 10000
+        },
+        "move_level_down": {
+            "resource_food": 1,
+            "resource_water": 1,
+            "stamina": 30
+        },
+        "move_level_up": {
+            "resource_food": 1,
+            "resource_water": 1,
+            "stamina": 30
+        },
+        "move_sector_east": {
+            "resource_food": 1,
+            "resource_water": 1,
+            "stamina": 10
+        },
+        "move_sector_ne": {
+            "resource_food": 1,
+            "resource_water": 1,
+            "stamina": 10
+        },
+        "move_sector_north": {
+            "resource_food": 1,
+            "resource_water": 1,
+            "stamina": 10
+        },
+        "move_sector_nw": {
+            "resource_food": 1,
+            "resource_water": 1,
+            "stamina": 10
+        },
+        "move_sector_se": {
+            "resource_food": 1,
+            "resource_water": 1,
+            "stamina": 10
+        },
+        "move_sector_south": {
+            "resource_food": 1,
+            "resource_water": 1,
+            "stamina": 10
+        },
+        "move_sector_sw": {
+            "resource_food": 1,
+            "resource_water": 1,
+            "stamina": 10
+        },
+        "move_sector_west": {
+            "resource_food": 1,
+            "resource_water": 1,
+            "stamina": 10
+        },
+        "nap": {
+            "resource_food": 1,
+            "resource_water": 1
+        },
+        "scavenge": {
+            "stamina": 3
+        },
+        "scout": {
+            "stamina": 5
+        },
+        "unlock_action_clear_waste_r": {
+            "evidence": 253,
+            "favour": 6
+        },
+        "unlock_action_clear_waste_t": {
+            "evidence": 100,
+            "rumours": 415
+        },
+        "unlock_building_apothecary": {
+            "favour": 71
+        },
+        "unlock_building_aqueduct": {
+            "favour": 85,
+            "rumours": 2757
+        },
+        "unlock_building_barracks": {
+            "evidence": 244,
+            "rumours": 1860
+        },
+        "unlock_building_beacon": {
+            "evidence": 141
+        },
+        "unlock_building_bridge": {
+            "evidence": 88
+        },
+        "unlock_building_ceiling": {
+            "evidence": 80,
+            "favour": 327
+        },
+        "unlock_building_cementmill": {
+            "evidence": 125
+        },
+        "unlock_building_darkfarm": {
+            "evidence": 100,
+            "rumours": 73
+        },
+        "unlock_building_fortifications": {
+            "evidence": 129,
+            "rumours": 47
+        },
+        "unlock_building_greenhouse": {
+            "favour": 5,
+            "rumours": 580
+        },
+        "unlock_building_hospital": {
+            "evidence": 18
+        },
+        "unlock_building_house2": {
+            "evidence": 242,
+            "rumours": 547
+        },
+        "unlock_building_inn": {
+            "evidence": 86,
+            "rumours": 75
+        },
+        "unlock_building_library": {
+            "evidence": 69
+        },
+        "unlock_building_lights": {
+            "evidence": 194
+        },
+        "unlock_building_market": {
+            "rumours": 62
+        },
+        "unlock_building_passage_elevator": {
+            "evidence": 97,
+            "rumours": 170
+        },
+        "unlock_building_passage_hole": {
+            "evidence": 121
+        },
+        "unlock_building_passage_staircase": {
+            "evidence": 50
+        },
+        "unlock_building_radio": {
+            "evidence": 147,
+            "rumours": 13750
+        },
+        "unlock_building_researchcenter": {
+            "evidence": 75
+        },
+        "unlock_building_smithy": {
+            "evidence": 121
+        },
+        "unlock_building_spaceship1": {
+            "evidence": 133,
+            "rumours": 20036
+        },
+        "unlock_building_spaceship2": {
+            "evidence": 160,
+            "rumours": 24043
+        },
+        "unlock_building_spaceship3": {
+            "evidence": 160,
+            "rumours": 24043
+        },
+        "unlock_building_tradingpost": {
+            "evidence": 80
+        },
+        "unlock_clothing_basic": {
+            "rumours": 47
+        },
+        "unlock_clothing_warm": {
+            "rumours": 58
+        },
+        "unlock_item_bag2": {
+            "rumours": 62
+        },
+        "unlock_item_bag22": {
+            "evidence": 125
+        },
+        "unlock_item_bag3": {
+            "evidence": 74,
+            "rumours": 1723
+        },
+        "unlock_item_bag_4": {
+            "evidence": 101,
+            "favour": 282
+        },
+        "unlock_item_clothing2": {
+            "rumours": 9
+        },
+        "unlock_item_clothing3": {
+            "rumours": 618
+        },
+        "unlock_item_clothing3h": {
+            "favour": 57,
+            "rumours": 2898
+        },
+        "unlock_item_clothing4": {
+            "evidence": 99
+        },
+        "unlock_item_clothing4h": {
+            "evidence": 73,
+            "rumours": 127
+        },
+        "unlock_item_clothing4he": {
+            "evidence": 99,
+            "favour": 48
+        },
+        "unlock_item_clothing5": {
+            "evidence": 169,
+            "rumours": 618
+        },
+        "unlock_item_clothing5l": {
+            "rumours": 19234
+        },
+        "unlock_item_clothing6": {
+            "rumours": 2898
+        },
+        "unlock_item_clothing8": {
+            "rumours": 20036
+        },
+        "unlock_item_clothing_hands_25": {
+            "rumours": 479
+        },
+        "unlock_item_clothing_head_5": {
+            "favour": 98
+        },
+        "unlock_item_clothingl14": {
+            "favour": 5,
+            "rumours": 618
+        },
+        "unlock_item_firstaid": {
+            "rumours": 467
+        },
+        "unlock_item_scavenger_gear": {
+            "rumours": 10416
+        },
+        "unlock_item_shoe1": {
+            "evidence": 28,
+            "rumours": 9
+        },
+        "unlock_item_weapon2": {
+            "evidence": 57,
+            "rumours": 223
+        },
+        "unlock_item_weapon25": {
+            "rumours": 170
+        },
+        "unlock_item_weapon3": {
+            "rumours": 519
+        },
+        "unlock_item_weapon4": {
+            "evidence": 338
+        },
+        "unlock_item_weapon5": {
+            "evidence": 99,
+            "rumours": 2297
+        },
+        "unlock_item_weapon52": {
+            "evidence": 132,
+            "favour": 63
+        },
+        "unlock_item_weapon58": {
+            "evidence": 189
+        },
+        "unlock_item_weapon6": {
+            "evidence": 125
+        },
+        "unlock_item_weapon7": {
+            "evidence": 151,
+            "rumours": 17831
+        },
+        "unlock_item_weapon8": {
+            "evidence": 107,
+            "favour": 436
+        },
+        "unlock_itemclothing_lower_45": {
+            "favour": 131,
+            "rumours": 13750
+        },
+        "unlock_outgoing_caravans": {
+            "rumours": 306
+        },
+        "unlock_weapon_15": {
+            "evidence": 72
+        },
+        "unlock_worker_rope": {
+            "rumours": 7
+        },
+        "upgrade_building_apothecary": {
+            "evidence": 147,
+            "favour": 131
+        },
+        "upgrade_building_campfire": {
+            "evidence": 146,
+            "favour": 10,
+            "rumours": 1674
+        },
+        "upgrade_building_cementmill": {
+            "evidence": 101
+        },
+        "upgrade_building_fortifications": {
+            "rumours": 3221
+        },
+        "upgrade_building_hospital": {
+            "rumours": 10104
+        },
+        "upgrade_building_inn": {
+            "favour": 11,
+            "rumours": 1860
+        },
+        "upgrade_building_library": {
+            "rumours": 204
+        },
+        "upgrade_building_library2": {
+            "evidence": 109,
+            "rumours": 2527
+        },
+        "upgrade_building_market": {
+            "rumours": 170
+        },
+        "upgrade_building_market2": {
+            "favour": 13,
+            "rumours": 1488
+        },
+        "upgrade_building_shrine": {
+            "favour": 126,
+            "rumours": 8333
+        },
+        "upgrade_building_storage1": {
+            "evidence": 121
+        },
+        "upgrade_building_storage2": {
+            "evidence": 132,
+            "rumours": 3221
+        },
+        "upgrade_building_temple2": {
+            "favour": 11
+        },
+        "upgrade_building_temple3": {
+            "favour": 131
+        },
+        "upgrade_outgoing_caravans": {
+            "rumours": 513
+        },
+        "upgrade_worker_chemist": {
+            "evidence": 142,
+            "favour": 118
+        },
+        "upgrade_worker_collector1": {
+            "rumours": 648
+        },
+        "upgrade_worker_scavenger": {
+            "evidence": 71,
+            "rumours": 278
+        },
+        "upgrade_worker_trapper": {
+            "favour": 11
+        },
+        "use_in_hospital": {
+            "resource_food": 50,
+            "resource_water": 30
+        },
+        "use_in_hospital2": {
+            "resource_food": 15,
+            "resource_water": 100
+        },
+        "use_in_inn": {},
+        "use_in_inn_select": {
+            "cost_factor_e1_base": 1.5,
+            "resource_food": 100,
+            "resource_water": 15
+        },
+        "use_in_temple": {
+            "silver": 1
+        },
+        "use_spring": {
+            "stamina": 1
+        }
+    },
+    "descriptions": {
+        "bridge_gap": "Build a bridge to cross the gap",
+        "build_out_beacon": "Makes exploration in surrounding sectors easier",
+        "build_out_camp": "A place to rest.",
+        "build_out_collector_food": "Accumulates food.",
+        "build_out_collector_water": "Accumulates water.",
+        "clear_debris": "Clear the debris blocking the way.",
+        "clear_waste_r": "Clear the radiactive waste.",
+        "clear_waste_t": "Clear the pollution.",
+        "clear_workshop": "Scout the workshop to see if it can be used.",
+        "create_blueprint": "Combine pieces to a blueprint.",
+        "despair": "Give up. Stop moving. Rest.",
+        "enter_camp": "Rest and manage camp.",
+        "fight_gang": "Clear the enemies blocking passage.",
+        "flee": "Abandon what you were doing and run.",
+        "improve_in_apothecary": "Increase efficiency",
+        "improve_in_campfire": "Increase rumour generation",
+        "improve_in_cementmill": "Increase efficiency",
+        "improve_in_generator": "Increase reputation bonus",
+        "improve_in_library": "Increase evidence generation",
+        "improve_in_market": "Increase rumours gained from visiting",
+        "improve_in_smithy": "Increase efficiency",
+        "improve_in_square": "Increase reputation bonus",
+        "improve_in_temple": "Increase favour generation",
+        "investigate": "Look for resources.",
+        "launch": "Leave this planet and launch for the great unknown.",
+        "leave_camp": "Venture out into the corridors.",
+        "move_camp_global": "Shortcut to the camp on this level.",
+        "move_camp_level": "Shortcut back to the nearest camp.",
+        "nap": "Sleep rough and regain a bit of stamina.",
+        "scavenge": "Look for resources.",
+        "scout": "Scout the area for evidence.",
+        "scout_locale_i": "Find out if there is anyone living here.",
+        "scout_locale_u": "Scout for additional resources and evidence.",
+        "send_caravan": "Send caravan out.",
+        "trade_with_caravan": "Confirm trade.",
+        "use_in_campfire": "Collect rumours from the population.",
+        "use_in_home": "Recover stamina.",
+        "use_in_hospital": "Heal injuries.",
+        "use_in_inn": "Recruit followers.",
+        "use_in_market": "Go hear the latest gossip.",
+        "use_in_shrine": "Reconnect with the spirits",
+        "use_in_temple": "Donate silver for favour with the spirits",
+        "use_item_glowstick_1": "Create a temporary light in this location.",
+        "use_out_collector_food": "Collect accumulated food.",
+        "use_out_collector_food_one": "Collect 1 food.",
+        "use_out_collector_water": "Collect accumulated water.",
+        "use_out_collector_water_one": "Collect 1 water.",
+        "use_spring": "Get water."
+    },
+    "durations": {
+        "clear_waste_r": 10,
+        "clear_waste_t": 5,
+        "send_caravan": 600,
+        "use_in_campfire": 5,
+        "use_in_home": 60,
+        "use_in_hospital": 180,
+        "use_in_market": 10,
+        "use_in_shrine": 10,
+        "use_in_temple": 5
+    },
+    "injuryProbabilities": {
+        "despair": [
+            0.75,
+            0
+        ],
+        "scavenge": [
+            0.0005,
+            0.005
+        ],
+        "scout": [
+            0.005,
+            0.01
+        ]
+    },
+    "location_actions": {
+        "clear_workshop": true,
+        "despair": true,
+        "fight_gang": true,
+        "investigate": true,
+        "scavenge": true,
+        "scout": true,
+        "use_in_home": false,
+        "use_in_hospital": false,
+        "use_in_hospital2": false,
+        "use_in_inn_cancel": false,
+        "use_spring": true
+    },
+    "loseInventoryProbabilities": {
+        "despair": [
+            0.75,
+            0
+        ],
+        "scavenge": [
+            0,
+            0.03
+        ],
+        "scout": [
+            0,
+            0.03
+        ]
+    },
+    "randomEncounterProbabilities": {
+        "clear_waste_r": [
+            0.1,
+            0.1
+        ],
+        "clear_waste_t": [
+            0.1,
+            0.1
+        ],
+        "clear_workshop": [
+            1,
+            0
+        ],
+        "fight_gang": [
+            1,
+            0
+        ],
+        "nap": [
+            0.1,
+            0
+        ],
+        "scavenge": [
+            0.02,
+            0.02
+        ],
+        "scout_locale_i": [
+            0.2,
+            0.1
+        ],
+        "scout_locale_u": [
+            0.1,
+            0.1
+        ],
+        "use_spring": [
+            0.1,
+            0.1
+        ]
+    },
+    "requirements": {
+        "accept_inventory": {
+            "bag": {
+                "validSelection": true
+            }
+        },
+        "bridge_gap": {
+            "upgrades": {
+                "unlock_building_bridge": true
+            }
+        },
+        "build_in_apothecary": {
+            "improvements": {
+                "apothecary": [
+                    -1,
+                    10
+                ],
+                "house": [
+                    2,
+                    -1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_apothecary": true
+            }
+        },
+        "build_in_aqueduct": {
+            "upgrades": {
+                "unlock_building_aqueduct": true
+            }
+        },
+        "build_in_barracks": {
+            "improvements": {
+                "barracks": [
+                    -1,
+                    10
+                ]
+            },
+            "upgrades": {
+                "unlock_building_barracks": true
+            }
+        },
+        "build_in_campfire": {
+            "improvements": {
+                "camp": [
+                    1,
+                    -1
+                ],
+                "campfire": [
+                    -1,
+                    1
+                ]
+            }
+        },
+        "build_in_ceiling": {
+            "improvements": {
+                "ceiling": [
+                    -1,
+                    1
+                ]
+            },
+            "sunlit": true,
+            "upgrades": {
+                "unlock_building_ceiling": true
+            }
+        },
+        "build_in_cementmill": {
+            "improvements": {
+                "cementmill": [
+                    -1,
+                    10
+                ],
+                "house": [
+                    2,
+                    -1
+                ]
+            },
+            "population": [
+                9,
+                -1
+            ],
+            "upgrades": {
+                "unlock_building_cementmill": true
+            }
+        },
+        "build_in_darkfarm": {
+            "improvements": {
+                "campfire": [
+                    1,
+                    -1
+                ],
+                "storage": [
+                    1,
+                    -1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_darkfarm": true
+            }
+        },
+        "build_in_fortification": {
+            "improvements": {
+                "house": [
+                    1,
+                    -1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_fortifications": true
+            }
+        },
+        "build_in_fortification2": {
+            "improvements": {
+                "house": [
+                    1,
+                    -1
+                ]
+            },
+            "upgrades": {
+                "upgrade_building_fortifications": true
+            }
+        },
+        "build_in_garden": {
+            "improvements": {
+                "house": [
+                    1,
+                    -1
+                ]
+            },
+            "upgrades": {
+                "upgrade_building_inn": true
+            }
+        },
+        "build_in_generator": {
+            "improvements": {
+                "campfire": [
+                    1,
+                    -1
+                ],
+                "generator": [
+                    0,
+                    1
+                ],
+                "house": [
+                    2,
+                    -1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_lights": true
+            }
+        },
+        "build_in_home": {
+            "improvements": {
+                "home": [
+                    -1,
+                    1
+                ]
+            }
+        },
+        "build_in_hospital": {
+            "improvements": {
+                "camp": [
+                    1,
+                    -1
+                ],
+                "campfire": [
+                    1,
+                    -1
+                ],
+                "hospital": [
+                    0,
+                    1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_hospital": true
+            }
+        },
+        "build_in_house": {
+            "improvements": {
+                "camp": [
+                    1,
+                    -1
+                ],
+                "campfire": [
+                    1,
+                    -1
+                ]
+            }
+        },
+        "build_in_house2": {
+            "improvements": {
+                "house": [
+                    3,
+                    -1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_house2": true
+            }
+        },
+        "build_in_inn": {
+            "improvements": {
+                "inn": [
+                    0,
+                    1
+                ]
+            },
+            "level": {
+                "population": [
+                    1,
+                    -1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_inn": true
+            }
+        },
+        "build_in_library": {
+            "improvements": {
+                "house": [
+                    1,
+                    -1
+                ],
+                "library": [
+                    -1,
+                    1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_library": true
+            }
+        },
+        "build_in_lights": {
+            "improvements": {
+                "lights": [
+                    0,
+                    1
+                ]
+            },
+            "sunlit": false,
+            "upgrades": {
+                "unlock_building_lights": true
+            }
+        },
+        "build_in_market": {
+            "improvements": {
+                "market": [
+                    0,
+                    1
+                ],
+                "tradepost": [
+                    1,
+                    -1
+                ]
+            },
+            "level": {
+                "population": [
+                    1,
+                    -1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_market": true
+            }
+        },
+        "build_in_radiotower": {
+            "improvements": {},
+            "level": {
+                "population": [
+                    1.1,
+                    -1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_radio": true
+            }
+        },
+        "build_in_researchcenter": {
+            "improvements": {
+                "library": [
+                    1,
+                    -1
+                ],
+                "researchcenter": [
+                    -1,
+                    1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_researchcenter": true
+            }
+        },
+        "build_in_shrine": {
+            "deity": true,
+            "improvements": {
+                "house": [
+                    1,
+                    -1
+                ],
+                "shrine": [
+                    -1,
+                    1
+                ],
+                "storage": [
+                    1,
+                    -1
+                ]
+            }
+        },
+        "build_in_smithy": {
+            "improvements": {
+                "house": [
+                    2,
+                    -1
+                ],
+                "smithy": [
+                    -1,
+                    10
+                ]
+            },
+            "population": [
+                9,
+                -1
+            ],
+            "upgrades": {
+                "unlock_building_smithy": true
+            }
+        },
+        "build_in_square": {
+            "improvements": {
+                "camp": [
+                    1,
+                    -1
+                ],
+                "campfire": [
+                    1,
+                    -1
+                ],
+                "square": [
+                    0,
+                    1
+                ],
+                "storage": [
+                    2,
+                    -1
+                ],
+                "tradepost": [
+                    1,
+                    -1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_passage_staircase": true
+            }
+        },
+        "build_in_stable": {
+            "improvements": {
+                "market": [
+                    1,
+                    -1
+                ],
+                "stable": [
+                    -1,
+                    2
+                ]
+            },
+            "upgrades": {
+                "unlock_outgoing_caravans": true
+            }
+        },
+        "build_in_temple": {
+            "deity": true,
+            "improvements": {
+                "house": [
+                    2,
+                    -1
+                ],
+                "storage": [
+                    2,
+                    -1
+                ],
+                "temple": [
+                    0,
+                    1
+                ]
+            }
+        },
+        "build_in_tradepost": {
+            "improvements": {
+                "house": [
+                    1,
+                    -1
+                ],
+                "tradepost": [
+                    0,
+                    1
+                ]
+            },
+            "numCamps": 2,
+            "upgrades": {
+                "unlock_building_tradingpost": true
+            }
+        },
+        "build_out_beacon": {
+            "improvements": {
+                "beacon": [
+                    -1,
+                    1
+                ]
+            },
+            "improvementsOnLevel": {
+                "beacon": [
+                    -1,
+                    3
+                ]
+            },
+            "sector": {
+                "buildingDensity": [
+                    2,
+                    8
+                ],
+                "hazards": {
+                    "poison": [
+                        0,
+                        1
+                    ],
+                    "radiation": [
+                        0,
+                        1
+                    ]
+                },
+                "scouted": true
+            },
+            "upgrades": {
+                "unlock_building_beacon": true
+            },
+            "vision": [
+                30,
+                -1
+            ]
+        },
+        "build_out_camp": {
+            "improvements": {
+                "camp": [
+                    0,
+                    1
+                ]
+            },
+            "sector": {
+                "canHaveCamp": true
+            },
+            "vision": [
+                30,
+                -1
+            ]
+        },
+        "build_out_collector_food": {
+            "improvements": {
+                "collector_food": [
+                    -1,
+                    1
+                ]
+            },
+            "sector": {
+                "collectable_food": true,
+                "hazards": {
+                    "radiation": [
+                        0,
+                        1
+                    ]
+                },
+                "scouted": true
+            },
+            "vision": [
+                30,
+                -1
+            ]
+        },
+        "build_out_collector_water": {
+            "improvements": {
+                "collector_water": [
+                    -1,
+                    1
+                ]
+            },
+            "sector": {
+                "collectable_water": true,
+                "hazards": {
+                    "radiation": [
+                        0,
+                        1
+                    ]
+                },
+                "scouted": true
+            },
+            "vision": [
+                30,
+                -1
+            ]
+        },
+        "build_out_greenhouse": {
+            "upgrades": {
+                "unlock_building_greenhouse": true
+            }
+        },
+        "build_out_passage_down_elevator": {
+            "improvements": {
+                "passageDownElevator": [
+                    0,
+                    1
+                ]
+            },
+            "sector": {
+                "passageDown": 2
+            },
+            "upgrades": {
+                "unlock_building_passage_elevator": true
+            }
+        },
+        "build_out_passage_down_hole": {
+            "improvements": {
+                "passageDownHole": [
+                    0,
+                    1
+                ]
+            },
+            "sector": {
+                "passageDown": 1
+            },
+            "upgrades": {
+                "unlock_building_passage_hole": true
+            }
+        },
+        "build_out_passage_down_stairs": {
+            "improvements": {
+                "passageDownStairs": [
+                    0,
+                    1
+                ]
+            },
+            "sector": {
+                "passageDown": 3
+            },
+            "upgrades": {
+                "unlock_building_passage_staircase": true
+            }
+        },
+        "build_out_passage_up_elevator": {
+            "improvements": {
+                "passageUpElevator": [
+                    0,
+                    1
+                ]
+            },
+            "sector": {
+                "passageUp": 2
+            },
+            "upgrades": {
+                "unlock_building_passage_elevator": true
+            }
+        },
+        "build_out_passage_up_hole": {
+            "improvements": {
+                "passageUpHole": [
+                    0,
+                    1
+                ]
+            },
+            "sector": {
+                "passageUp": 1
+            },
+            "upgrades": {
+                "unlock_building_passage_hole": true
+            }
+        },
+        "build_out_passage_up_stairs": {
+            "improvements": {
+                "passageUpStairs": [
+                    0,
+                    1
+                ]
+            },
+            "sector": {
+                "passageUp": 3
+            },
+            "upgrades": {
+                "unlock_building_passage_staircase": true
+            }
+        },
+        "build_out_spaceship1": {
+            "improvements": {
+                "spaceship1": [
+                    0,
+                    1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_spaceship1": true
+            }
+        },
+        "build_out_spaceship2": {
+            "improvements": {
+                "spaceship1": [
+                    1,
+                    -1
+                ],
+                "spaceship2": [
+                    0,
+                    1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_spaceship2": true
+            }
+        },
+        "build_out_spaceship3": {
+            "improvements": {
+                "spaceship3": [
+                    0,
+                    1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_spaceship3": true
+            }
+        },
+        "clear_debris": {
+            "sector": {
+                "acessible_to_workers": true,
+                "scouted": true
+            }
+        },
+        "clear_waste_r": {
+            "busy": false,
+            "health": 100,
+            "sector": {
+                "scouted": true
+            },
+            "upgrades": {
+                "unlock_action_clear_waste_r": true
+            },
+            "vision": [
+                50,
+                -1
+            ]
+        },
+        "clear_waste_t": {
+            "busy": false,
+            "health": 80,
+            "sector": {
+                "scouted": true
+            },
+            "upgrades": {
+                "unlock_action_clear_waste_t": true
+            },
+            "vision": [
+                50,
+                -1
+            ]
+        },
+        "clear_workshop": {
+            "health": 70,
+            "sector": {
+                "scouted": true
+            },
+            "vision": [
+                30,
+                -1
+            ]
+        },
+        "craft_bag_0": {
+            "upgrades": {
+                "unlock_item_shoe1": true
+            }
+        },
+        "craft_bag_1": {
+            "upgrades": {
+                "unlock_item_bag2": true
+            }
+        },
+        "craft_bag_2": {
+            "upgrades": {
+                "unlock_item_bag22": true
+            }
+        },
+        "craft_bag_3": {
+            "upgrades": {
+                "unlock_item_bag3": true
+            }
+        },
+        "craft_bag_4": {
+            "upgrades": {
+                "unlock_item_bag_4": true
+            }
+        },
+        "craft_clothing_hands_1": {
+            "upgrades": {
+                "unlock_clothing_warm": true
+            }
+        },
+        "craft_clothing_hands_12": {
+            "upgrades": {
+                "unlock_item_bag2": true
+            }
+        },
+        "craft_clothing_hands_2": {
+            "upgrades": {
+                "unlock_item_clothing4h": true
+            }
+        },
+        "craft_clothing_hands_25": {
+            "upgrades": {
+                "unlock_item_clothing_hands_25": true
+            }
+        },
+        "craft_clothing_hands_3": {
+            "upgrades": {
+                "unlock_item_clothing3h": true
+            }
+        },
+        "craft_clothing_hands_4": {
+            "upgrades": {
+                "unlock_item_scavenger_gear": true
+            }
+        },
+        "craft_clothing_hands_l14": {
+            "upgrades": {
+                "unlock_item_clothingl14": true
+            }
+        },
+        "craft_clothing_head_1": {
+            "upgrades": {
+                "unlock_clothing_warm": true
+            }
+        },
+        "craft_clothing_head_3": {
+            "upgrades": {
+                "unlock_item_clothing5": true
+            }
+        },
+        "craft_clothing_head_4": {
+            "upgrades": {
+                "unlock_item_clothing4he": true
+            }
+        },
+        "craft_clothing_head_45": {
+            "upgrades": {
+                "unlock_item_scavenger_gear": true
+            }
+        },
+        "craft_clothing_head_5": {
+            "upgrades": {
+                "unlock_item_clothing_head_5": true
+            }
+        },
+        "craft_clothing_head_l14": {
+            "upgrades": {
+                "unlock_item_clothingl14": true
+            }
+        },
+        "craft_clothing_lower_15": {
+            "upgrades": {
+                "unlock_clothing_basic": true
+            }
+        },
+        "craft_clothing_lower_3": {
+            "upgrades": {
+                "unlock_item_clothing3": true
+            }
+        },
+        "craft_clothing_lower_4": {
+            "upgrades": {
+                "unlock_item_clothing6": true
+            }
+        },
+        "craft_clothing_lower_45": {
+            "upgrades": {
+                "unlock_itemclothing_lower_45": true
+            }
+        },
+        "craft_clothing_lower_5": {
+            "upgrades": {
+                "unlock_item_clothing5l": true
+            }
+        },
+        "craft_clothing_over_1": {
+            "upgrades": {
+                "unlock_item_clothing2": true
+            }
+        },
+        "craft_clothing_over_15": {
+            "upgrades": {
+                "unlock_item_bag2": true
+            }
+        },
+        "craft_clothing_over_3": {
+            "upgrades": {
+                "unlock_item_clothing5": true
+            }
+        },
+        "craft_clothing_over_4": {
+            "upgrades": {
+                "unlock_item_clothing4": true
+            }
+        },
+        "craft_clothing_over_45": {
+            "upgrades": {
+                "unlock_item_scavenger_gear": true
+            }
+        },
+        "craft_clothing_over_6": {
+            "upgrades": {
+                "unlock_item_clothing8": true
+            }
+        },
+        "craft_clothing_over_l14": {
+            "upgrades": {
+                "unlock_item_clothingl14": true
+            }
+        },
+        "craft_clothing_over_w": {
+            "upgrades": {
+                "unlock_item_clothing4h": true
+            }
+        },
+        "craft_clothing_upper_15": {
+            "upgrades": {
+                "unlock_clothing_basic": true
+            }
+        },
+        "craft_clothing_upper_3": {
+            "upgrades": {
+                "unlock_item_clothing3": true
+            }
+        },
+        "craft_clothing_upper_4": {
+            "upgrades": {
+                "unlock_item_clothing6": true
+            }
+        },
+        "craft_clothing_upper_45": {
+            "upgrades": {
+                "unlock_itemclothing_lower_45": true
+            }
+        },
+        "craft_clothing_upper_5": {
+            "upgrades": {
+                "unlock_item_clothing5l": true
+            }
+        },
+        "craft_consumable_weapon_1": {
+            "upgrades": {
+                "upgrade_worker_scavenger": true
+            }
+        },
+        "craft_exploration_1": {},
+        "craft_first_aid_kit_1": {
+            "upgrades": {
+                "unlock_item_firstaid": true
+            }
+        },
+        "craft_first_aid_kit_2": {
+            "upgrades": {
+                "upgrade_building_hospital": true
+            }
+        },
+        "craft_flee_1": {
+            "upgrades": {
+                "unlock_building_darkfarm": true
+            }
+        },
+        "craft_glowstick_1": {
+            "upgrades": {
+                "unlock_building_apothecary": true
+            }
+        },
+        "craft_light2": {
+            "upgrades": {
+                "unlock_building_lights": true
+            }
+        },
+        "craft_shoe_1": {
+            "upgrades": {
+                "unlock_item_shoe1": true
+            }
+        },
+        "craft_shoe_l14": {
+            "upgrades": {
+                "unlock_action_clear_waste_r": true
+            }
+        },
+        "craft_weapon12": {
+            "upgrades": {
+                "unlock_weapon_15": true
+            }
+        },
+        "craft_weapon2": {
+            "upgrades": {
+                "unlock_item_weapon2": true
+            }
+        },
+        "craft_weapon25": {
+            "upgrades": {
+                "unlock_item_weapon25": true
+            }
+        },
+        "craft_weapon3": {
+            "upgrades": {
+                "unlock_item_weapon3": true
+            }
+        },
+        "craft_weapon4": {
+            "upgrades": {
+                "unlock_item_weapon4": true
+            }
+        },
+        "craft_weapon5": {
+            "upgrades": {
+                "unlock_item_weapon5": true
+            }
+        },
+        "craft_weapon52": {
+            "upgrades": {
+                "unlock_item_weapon52": true
+            }
+        },
+        "craft_weapon58": {
+            "upgrades": {
+                "unlock_item_weapon58": true
+            }
+        },
+        "craft_weapon6": {
+            "upgrades": {
+                "unlock_item_weapon6": true
+            }
+        },
+        "craft_weapon7": {
+            "upgrades": {
+                "unlock_item_weapon7": true
+            }
+        },
+        "craft_weapon8": {
+            "upgrades": {
+                "unlock_item_weapon8": true
+            }
+        },
+        "create_blueprint": {
+            "inCamp": true
+        },
+        "fight": {
+            "busy": false
+        },
+        "fight_gang": {
+            "health": 70,
+            "vision": [
+                50,
+                -1
+            ]
+        },
+        "improve_building_market3": {
+            "blueprint": 14,
+            "upgrades": {
+                "unlock_building_radio": true
+            }
+        },
+        "improve_in_apothecary": {
+            "improvements": {
+                "apothecary": [
+                    1,
+                    -1
+                ],
+                "camp": [
+                    1,
+                    -1
+                ]
+            }
+        },
+        "improve_in_campfire": {
+            "improvements": {
+                "camp": [
+                    1,
+                    -1
+                ],
+                "campfire": [
+                    1,
+                    -1
+                ]
+            },
+            "population": [
+                1,
+                -1
+            ]
+        },
+        "improve_in_cementmill": {
+            "improvements": {
+                "camp": [
+                    1,
+                    -1
+                ],
+                "cementmill": [
+                    1,
+                    -1
+                ]
+            }
+        },
+        "improve_in_generator": {
+            "improvements": {
+                "camp": [
+                    1,
+                    -1
+                ],
+                "generator": [
+                    1,
+                    -1
+                ]
+            }
+        },
+        "improve_in_library": {
+            "improvements": {
+                "camp": [
+                    1,
+                    -1
+                ],
+                "library": [
+                    1,
+                    -1
+                ]
+            }
+        },
+        "improve_in_market": {
+            "improvements": {
+                "camp": [
+                    1,
+                    -1
+                ],
+                "market": [
+                    1,
+                    -1
+                ]
+            }
+        },
+        "improve_in_smithy": {
+            "improvements": {
+                "camp": [
+                    1,
+                    -1
+                ],
+                "smithy": [
+                    1,
+                    -1
+                ]
+            }
+        },
+        "improve_in_square": {
+            "improvements": {
+                "camp": [
+                    1,
+                    -1
+                ],
+                "square": [
+                    1,
+                    -1
+                ]
+            }
+        },
+        "launch": {
+            "busy": false,
+            "improvements": {
+                "spaceship1": [
+                    1,
+                    -1
+                ],
+                "spaceship2": [
+                    1,
+                    -1
+                ],
+                "spaceship3": [
+                    1,
+                    -1
+                ]
+            }
+        },
+        "leave_camp": {
+            "bag": {
+                "validSelection": true
+            },
+            "busy": false
+        },
+        "move_camp_global": {
+            "busy": false
+        },
+        "move_camp_level": {
+            "busy": false,
+            "path_to_camp": true
+        },
+        "move_level_down": {
+            "busy": false,
+            "improvements": {
+                "passageDown": [
+                    1,
+                    -1
+                ]
+            },
+            "sector": {
+                "passageDown": true
+            },
+            "vision": [
+                25,
+                -1
+            ]
+        },
+        "move_level_up": {
+            "busy": false,
+            "improvements": {
+                "passageUp": [
+                    1,
+                    -1
+                ]
+            },
+            "sector": {
+                "passageUp": true
+            },
+            "vision": [
+                25,
+                -1
+            ]
+        },
+        "move_sector_east": {
+            "busy": false,
+            "inCamp": false,
+            "sector": {
+                "blockerEAST": false
+            },
+            "vision": [
+                5,
+                -1
+            ]
+        },
+        "move_sector_ne": {
+            "busy": false,
+            "inCamp": false,
+            "sector": {
+                "blockerNE": false
+            },
+            "vision": [
+                5,
+                -1
+            ]
+        },
+        "move_sector_north": {
+            "busy": false,
+            "inCamp": false,
+            "sector": {
+                "blockerNORTH": false
+            },
+            "vision": [
+                5,
+                -1
+            ]
+        },
+        "move_sector_nw": {
+            "busy": false,
+            "inCamp": false,
+            "sector": {
+                "blockerNW": false
+            },
+            "vision": [
+                5,
+                -1
+            ]
+        },
+        "move_sector_se": {
+            "busy": false,
+            "inCamp": false,
+            "sector": {
+                "blockerSE": false
+            },
+            "vision": [
+                4
+            ]
+        },
+        "move_sector_south": {
+            "busy": false,
+            "inCamp": false,
+            "sector": {
+                "blockerSOUTH": false
+            },
+            "vision": [
+                5,
+                -1
+            ]
+        },
+        "move_sector_sw": {
+            "busy": false,
+            "inCamp": false,
+            "sector": {
+                "blockerSW": false
+            },
+            "vision": [
+                5,
+                -1
+            ]
+        },
+        "move_sector_west": {
+            "busy": false,
+            "inCamp": false,
+            "sector": {
+                "blockerWEST": false
+            },
+            "vision": [
+                5,
+                -1
+            ]
+        },
+        "nap": {
+            "excursion": {
+                "numNaps": [
+                    0,
+                    1
+                ]
+            },
+            "sector": {
+                "hasCamp": false,
+                "hazards": {
+                    "poison": [
+                        0,
+                        1
+                    ],
+                    "radiation": [
+                        0,
+                        1
+                    ]
+                },
+                "scouted": true
+            }
+        },
+        "scavenge": {
+            "busy": false,
+            "vision": [
+                10,
+                -1
+            ]
+        },
+        "scout": {
+            "busy": false,
+            "sector": {
+                "scouted": false
+            },
+            "vision": [
+                30,
+                -1
+            ]
+        },
+        "send_caravan": {
+            "improvements": {
+                "tradepost": [
+                    1,
+                    -1
+                ]
+            },
+            "outgoingcaravan": {
+                "available": true,
+                "validSelection": true
+            }
+        },
+        "take_all": {
+            "bag": {
+                "validSelectionAll": true
+            }
+        },
+        "trade_with_caravan": {
+            "incomingcaravan": {
+                "validSelection": true
+            }
+        },
+        "unlock_action_clear_waste_r": {
+            "blueprint": 8,
+            "upgrades": {
+                "upgrade_building_library": true
+            }
+        },
+        "unlock_action_clear_waste_t": {
+            "blueprint": 6,
+            "upgrades": {
+                "upgrade_building_library": true
+            }
+        },
+        "unlock_building_apothecary": {
+            "upgrades": {
+                "unlock_building_greenhouse": true
+            }
+        },
+        "unlock_building_aqueduct": {
+            "blueprint": 10,
+            "upgrades": {
+                "upgrade_worker_collector1": true
+            }
+        },
+        "unlock_building_barracks": {
+            "upgrades": {
+                "unlock_building_house2": true
+            }
+        },
+        "unlock_building_beacon": {
+            "blueprint": 4,
+            "upgrades": {
+                "unlock_building_tradingpost": true
+            }
+        },
+        "unlock_building_bridge": {
+            "blueprint": 4,
+            "upgrades": {
+                "unlock_building_passage_staircase": true
+            }
+        },
+        "unlock_building_ceiling": {
+            "blueprint": 15,
+            "upgrades": {
+                "upgrade_building_library2": true
+            }
+        },
+        "unlock_building_cementmill": {
+            "blueprint": 6,
+            "upgrades": {
+                "upgrade_building_library": true
+            }
+        },
+        "unlock_building_darkfarm": {
+            "blueprint": 2,
+            "upgrades": {
+                "unlock_building_tradingpost": true,
+                "unlock_clothing_warm": true
+            }
+        },
+        "unlock_building_fortifications": {
+            "blueprint": 3,
+            "upgrades": {
+                "unlock_building_passage_staircase": true
+            }
+        },
+        "unlock_building_greenhouse": {
+            "upgrades": {
+                "upgrade_worker_collector1": true
+            }
+        },
+        "unlock_building_hospital": {
+            "upgrades": {
+                "unlock_worker_rope": true
+            }
+        },
+        "unlock_building_house2": {
+            "blueprint": 7,
+            "upgrades": {
+                "unlock_building_passage_elevator": true
+            }
+        },
+        "unlock_building_inn": {
+            "blueprint": 3,
+            "upgrades": {
+                "unlock_building_market": true
+            }
+        },
+        "unlock_building_library": {
+            "blueprint": 3
+        },
+        "unlock_building_lights": {
+            "blueprint": 5,
+            "upgrades": {
+                "unlock_building_darkfarm": true
+            }
+        },
+        "unlock_building_market": {
+            "blueprint": 3,
+            "upgrades": {
+                "unlock_building_tradingpost": true
+            }
+        },
+        "unlock_building_passage_elevator": {
+            "blueprint": 5,
+            "upgrades": {
+                "unlock_building_passage_staircase": true
+            }
+        },
+        "unlock_building_passage_hole": {
+            "blueprint": 7,
+            "upgrades": {
+                "unlock_building_passage_staircase": true
+            }
+        },
+        "unlock_building_passage_staircase": {
+            "blueprint": 1,
+            "upgrades": {
+                "unlock_item_shoe1": true
+            }
+        },
+        "unlock_building_radio": {
+            "blueprint": 13
+        },
+        "unlock_building_researchcenter": {
+            "blueprint": 14,
+            "upgrades": {
+                "upgrade_building_library2": true
+            }
+        },
+        "unlock_building_smithy": {
+            "blueprint": 7,
+            "upgrades": {
+                "upgrade_building_library": true
+            }
+        },
+        "unlock_building_spaceship1": {
+            "blueprint": 15,
+            "upgrades": {
+                "unlock_building_bridge": true
+            }
+        },
+        "unlock_building_spaceship2": {
+            "blueprint": 15,
+            "upgrades": {
+                "unlock_building_bridge": true
+            }
+        },
+        "unlock_building_spaceship3": {
+            "blueprint": 15,
+            "upgrades": {
+                "unlock_building_bridge": true
+            }
+        },
+        "unlock_building_tradingpost": {
+            "blueprint": 2
+        },
+        "unlock_clothing_basic": {
+            "upgrades": {
+                "unlock_item_shoe1": true
+            }
+        },
+        "unlock_clothing_warm": {
+            "blueprint": 2,
+            "upgrades": {
+                "unlock_worker_rope": true
+            }
+        },
+        "unlock_item_bag2": {
+            "upgrades": {
+                "unlock_clothing_warm": true
+            }
+        },
+        "unlock_item_bag22": {
+            "blueprint": 6,
+            "upgrades": {
+                "unlock_item_shoe1": true
+            }
+        },
+        "unlock_item_bag3": {
+            "blueprint": 10
+        },
+        "unlock_item_bag_4": {
+            "blueprint": 14,
+            "upgrades": {
+                "unlock_item_bag3": true
+            }
+        },
+        "unlock_item_clothing2": {
+            "upgrades": {
+                "unlock_item_shoe1": true
+            }
+        },
+        "unlock_item_clothing3": {
+            "blueprint": 8,
+            "upgrades": {
+                "unlock_building_passage_hole": true
+            }
+        },
+        "unlock_item_clothing3h": {
+            "upgrades": {
+                "unlock_item_bag3": true
+            }
+        },
+        "unlock_item_clothing4": {
+            "blueprint": 10,
+            "upgrades": {
+                "unlock_item_shoe1": true
+            }
+        },
+        "unlock_item_clothing4h": {
+            "blueprint": 5,
+            "upgrades": {
+                "unlock_clothing_basic": true
+            }
+        },
+        "unlock_item_clothing4he": {
+            "blueprint": 11
+        },
+        "unlock_item_clothing5": {
+            "blueprint": 8,
+            "upgrades": {
+                "unlock_building_smithy": true
+            }
+        },
+        "unlock_item_clothing5l": {
+            "blueprint": 15,
+            "upgrades": {
+                "unlock_item_scavenger_gear": true
+            }
+        },
+        "unlock_item_clothing6": {
+            "blueprint": 11
+        },
+        "unlock_item_clothing8": {
+            "blueprint": 15,
+            "upgrades": {
+                "unlock_item_scavenger_gear": true
+            }
+        },
+        "unlock_item_clothing_hands_25": {
+            "upgrades": {
+                "unlock_item_bag22": true
+            }
+        },
+        "unlock_item_clothing_head_5": {
+            "upgrades": {
+                "unlock_itemclothing_lower_45": true
+            }
+        },
+        "unlock_item_clothingl14": {
+            "blueprint": 8,
+            "upgrades": {
+                "upgrade_building_storage1": true
+            }
+        },
+        "unlock_item_firstaid": {
+            "upgrades": {
+                "upgrade_worker_collector1": true
+            }
+        },
+        "unlock_item_scavenger_gear": {
+            "blueprint": 12,
+            "upgrades": {
+                "upgrade_worker_chemist": true
+            }
+        },
+        "unlock_item_shoe1": {
+            "blueprint": 1
+        },
+        "unlock_item_weapon2": {
+            "blueprint": 4,
+            "upgrades": {
+                "unlock_weapon_15": true
+            }
+        },
+        "unlock_item_weapon25": {
+            "upgrades": {
+                "unlock_item_weapon2": true
+            }
+        },
+        "unlock_item_weapon3": {
+            "blueprint": 6
+        },
+        "unlock_item_weapon4": {
+            "blueprint": 8,
+            "upgrades": {
+                "unlock_building_smithy": true
+            }
+        },
+        "unlock_item_weapon5": {
+            "blueprint": 10
+        },
+        "unlock_item_weapon52": {
+            "blueprint": 11
+        },
+        "unlock_item_weapon58": {
+            "blueprint": 12,
+            "upgrades": {
+                "unlock_item_weapon5": true
+            }
+        },
+        "unlock_item_weapon6": {
+            "blueprint": 13
+        },
+        "unlock_item_weapon7": {
+            "blueprint": 14,
+            "upgrades": {
+                "upgrade_building_library2": true
+            }
+        },
+        "unlock_item_weapon8": {
+            "blueprint": 15,
+            "upgrades": {
+                "unlock_item_weapon6": true
+            }
+        },
+        "unlock_itemclothing_lower_45": {
+            "blueprint": 13,
+            "upgrades": {
+                "unlock_item_scavenger_gear": true
+            }
+        },
+        "unlock_outgoing_caravans": {
+            "upgrades": {
+                "unlock_building_market": true
+            }
+        },
+        "unlock_weapon_15": {
+            "blueprint": 2,
+            "upgrades": {
+                "unlock_building_tradingpost": true,
+                "unlock_item_shoe1": true
+            }
+        },
+        "unlock_worker_rope": {},
+        "upgrade_building_apothecary": {
+            "blueprint": 13,
+            "upgrades": {
+                "upgrade_building_library2": true
+            }
+        },
+        "upgrade_building_campfire": {
+            "blueprint": 9
+        },
+        "upgrade_building_cementmill": {
+            "blueprint": 14,
+            "upgrades": {
+                "unlock_building_cementmill": true
+            }
+        },
+        "upgrade_building_fortifications": {
+            "blueprint": 11,
+            "upgrades": {
+                "unlock_building_cementmill": true
+            }
+        },
+        "upgrade_building_hospital": {
+            "blueprint": 14,
+            "upgrades": {
+                "unlock_item_firstaid": true
+            }
+        },
+        "upgrade_building_inn": {
+            "upgrades": {
+                "upgrade_building_campfire": true
+            }
+        },
+        "upgrade_building_library": {
+            "blueprint": 5,
+            "upgrades": {
+                "unlock_building_library": true
+            }
+        },
+        "upgrade_building_library2": {
+            "blueprint": 10,
+            "upgrades": {
+                "unlock_building_apothecary": true
+            }
+        },
+        "upgrade_building_market": {
+            "blueprint": 5,
+            "upgrades": {
+                "unlock_building_market": true
+            }
+        },
+        "upgrade_building_market2": {
+            "blueprint": 9,
+            "upgrades": {
+                "upgrade_building_market": true
+            }
+        },
+        "upgrade_building_shrine": {
+            "upgrades": {
+                "unlock_building_apothecary": true
+            }
+        },
+        "upgrade_building_storage1": {
+            "blueprint": 7
+        },
+        "upgrade_building_storage2": {
+            "blueprint": 11,
+            "upgrades": {
+                "upgrade_building_storage1": true
+            }
+        },
+        "upgrade_building_temple2": {
+            "upgrades": {
+                "upgrade_building_inn": true
+            }
+        },
+        "upgrade_building_temple3": {
+            "upgrades": {
+                "upgrade_building_temple2": true
+            }
+        },
+        "upgrade_outgoing_caravans": {
+            "upgrades": {
+                "unlock_outgoing_caravans": true
+            }
+        },
+        "upgrade_worker_chemist": {
+            "blueprint": 12,
+            "upgrades": {
+                "upgrade_building_library2": true
+            }
+        },
+        "upgrade_worker_collector1": {
+            "blueprint": 6,
+            "upgrades": {
+                "unlock_item_shoe1": true
+            }
+        },
+        "upgrade_worker_scavenger": {
+            "blueprint": 4,
+            "upgrades": {
+                "unlock_item_shoe1": true
+            }
+        },
+        "upgrade_worker_trapper": {
+            "blueprint": 9
+        },
+        "use_in_campfire": {
+            "busy": false,
+            "population": [
+                1,
+                -1
+            ],
+            "rumourpoolchecked": false
+        },
+        "use_in_home": {
+            "busy": false,
+            "maxStamina": false
+        },
+        "use_in_hospital": {
+            "improvements": {
+                "hospital": [
+                    1,
+                    -1
+                ]
+            },
+            "perks": {
+                "Injury": [
+                    0.1,
+                    1
+                ]
+            }
+        },
+        "use_in_hospital2": {
+            "improvements": {
+                "hospital": [
+                    1,
+                    -1
+                ]
+            },
+            "upgrades": {
+                "upgrade_building_hospital": true
+            }
+        },
+        "use_in_inn": {
+            "busy": false,
+            "improvements": {
+                "inn": [
+                    1,
+                    -1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_inn": true
+            }
+        },
+        "use_in_inn_select": {
+            "max_followers_reached": false
+        },
+        "use_in_market": {
+            "busy": false,
+            "improvements": {
+                "market": [
+                    1,
+                    -1
+                ]
+            }
+        },
+        "use_in_shrine": {
+            "busy": false
+        },
+        "use_in_temple": {
+            "busy": false
+        },
+        "use_item_cache_metal_1": {
+            "inCamp": true
+        },
+        "use_item_cache_metal_2": {
+            "inCamp": true
+        },
+        "use_item_fight_consumable_weapon_1": {
+            "uses_in_fight": {
+                "consumable_weapon_1": [
+                    -1,
+                    1
+                ]
+            }
+        },
+        "use_item_fight_glowstick_1": {
+            "uses_in_fight": {
+                "glowstick_1": [
+                    -1,
+                    1
+                ]
+            }
+        },
+        "use_item_first_aid_kit_1": {
+            "busy": false,
+            "perks": {
+                "Injury": [
+                    0.6,
+                    0.99,
+                    true
+                ]
+            }
+        },
+        "use_item_first_aid_kit_2": {
+            "busy": false,
+            "perks": {
+                "Injury": [
+                    0.05,
+                    0.99,
+                    true
+                ]
+            }
+        },
+        "use_item_glowstick_1": {
+            "vision": [
+                0,
+                30
+            ]
+        },
+        "use_item_stamina_potion_1": {
+            "inCamp": false
+        },
+        "use_out_collector_food": {
+            "bag": {
+                "full": false
+            },
+            "improvements": {
+                "collector_food": [
+                    1,
+                    -1
+                ]
+            },
+            "sector": {
+                "collected_food": 1
+            },
+            "vision": [
+                10,
+                -1
+            ]
+        },
+        "use_out_collector_food_one": {
+            "bag": {
+                "full": false
+            },
+            "improvements": {
+                "collector_food": [
+                    1,
+                    -1
+                ]
+            },
+            "sector": {
+                "collected_food": 1
+            },
+            "vision": [
+                10,
+                -1
+            ]
+        },
+        "use_out_collector_water": {
+            "bag": {
+                "full": false
+            },
+            "improvements": {
+                "collector_water": [
+                    1,
+                    -1
+                ]
+            },
+            "sector": {
+                "collected_water": 1
+            },
+            "vision": [
+                10,
+                -1
+            ]
+        },
+        "use_out_collector_water_one": {
+            "bag": {
+                "full": false
+            },
+            "improvements": {
+                "collector_water": [
+                    1,
+                    -1
+                ]
+            },
+            "sector": {
+                "collected_water": 1
+            },
+            "vision": [
+                10,
+                -1
+            ]
+        },
+        "use_spring": {
+            "bag": {
+                "full": false
+            },
+            "sector": {
+                "scouted": true,
+                "spring": true
+            },
+            "vision": [
+                10,
+                -1
+            ]
+        }
+    }
+}
