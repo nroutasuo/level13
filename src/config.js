@@ -11,6 +11,7 @@ require.config({
 		ash: "../lib/ash/ash.min",
 		jquery: "../lib/jquery/",
 		lzstring: "../lib/lzstring",
+        json: "../lib/requirejs/json",
 		utils: "utils",
 		game: "game"
 	},
