@@ -1,0 +1,767 @@
+{
+    "improve_building_market3": {
+        "blueprintCampOrdinal": 14,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {
+            "improvesBuildings": "market 4 radio 2 library 5",
+            "unlocksOccurrence": "hacking"
+        },
+        "id": "improve_building_market3",
+        "name": "Network"
+    },
+    "unlock_action_clear_waste_r": {
+        "blueprintCampOrdinal": 8,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_action_clear_waste_r",
+        "name": "Hazard Management 2"
+    },
+    "unlock_action_clear_waste_t": {
+        "blueprintCampOrdinal": 6,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_action_clear_waste_t",
+        "name": "Hazard Management 1"
+    },
+    "unlock_building_apothecary": {
+        "effects": {
+            "unlocksWorker": "apothecary"
+        },
+        "id": "unlock_building_apothecary",
+        "name": "Alchemy"
+    },
+    "unlock_building_aqueduct": {
+        "blueprintCampOrdinal": 10,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 4,
+        "effects": {},
+        "id": "unlock_building_aqueduct",
+        "name": "Aqueducts"
+    },
+    "unlock_building_barracks": {
+        "effects": {
+            "unlocksWorker": "soldier"
+        },
+        "id": "unlock_building_barracks",
+        "name": "Military"
+    },
+    "unlock_building_beacon": {
+        "blueprintCampOrdinal": 4,
+        "blueprintIsCampless": true,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_building_beacon",
+        "name": "Beacons"
+    },
+    "unlock_building_bridge": {
+        "blueprintCampOrdinal": 4,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_building_bridge",
+        "name": "Bridge-building"
+    },
+    "unlock_building_ceiling": {
+        "blueprintCampOrdinal": 15,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_building_ceiling",
+        "name": "UV Protection"
+    },
+    "unlock_building_cementmill": {
+        "blueprintCampOrdinal": 6,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {
+            "unlocksWorker": "concrete"
+        },
+        "id": "unlock_building_cementmill",
+        "name": "Cement"
+    },
+    "unlock_building_darkfarm": {
+        "blueprintCampOrdinal": 2,
+        "blueprintIsCampless": true,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 4,
+        "effects": {},
+        "id": "unlock_building_darkfarm",
+        "name": "Urban Heliculture"
+    },
+    "unlock_building_fortifications": {
+        "blueprintCampOrdinal": 3,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_building_fortifications",
+        "name": "Fortifications"
+    },
+    "unlock_building_greenhouse": {
+        "effects": {},
+        "id": "unlock_building_greenhouse",
+        "name": "Greenhouses"
+    },
+    "unlock_building_hospital": {
+        "effects": {},
+        "id": "unlock_building_hospital",
+        "name": "Field medicine"
+    },
+    "unlock_building_house2": {
+        "blueprintCampOrdinal": 7,
+        "blueprintIsCampless": true,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 2,
+        "effects": {},
+        "id": "unlock_building_house2",
+        "name": "Tower blocks"
+    },
+    "unlock_building_inn": {
+        "blueprintCampOrdinal": 3,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_building_inn",
+        "name": "Hospitality"
+    },
+    "unlock_building_library": {
+        "blueprintCampOrdinal": 3,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "effects": {
+            "unlocksUI": "calendar"
+        },
+        "id": "unlock_building_library",
+        "name": "Libraries"
+    },
+    "unlock_building_lights": {
+        "blueprintCampOrdinal": 5,
+        "blueprintIsCampless": true,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 2,
+        "effects": {},
+        "id": "unlock_building_lights",
+        "name": "Electric light"
+    },
+    "unlock_building_market": {
+        "blueprintCampOrdinal": 3,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "effects": {
+            "unlocksOccurrence": "trader"
+        },
+        "id": "unlock_building_market",
+        "name": "Trade"
+    },
+    "unlock_building_passage_elevator": {
+        "blueprintCampOrdinal": 5,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_building_passage_elevator",
+        "name": "Elevator mechanics"
+    },
+    "unlock_building_passage_hole": {
+        "blueprintCampOrdinal": 7,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 5,
+        "effects": {},
+        "id": "unlock_building_passage_hole",
+        "name": "Engineering"
+    },
+    "unlock_building_passage_staircase": {
+        "blueprintCampOrdinal": 1,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_building_passage_staircase",
+        "name": "Building projects"
+    },
+    "unlock_building_radio": {
+        "blueprintCampOrdinal": 13,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {
+            "improvesBuildings": "inn 3"
+        },
+        "id": "unlock_building_radio",
+        "name": "Radio"
+    },
+    "unlock_building_researchcenter": {
+        "blueprintCampOrdinal": 14,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 2,
+        "effects": {
+            "improvesBuildings": "library 4",
+            "improvesWorker": "scientist"
+        },
+        "id": "unlock_building_researchcenter",
+        "name": "Laboratories"
+    },
+    "unlock_building_smithy": {
+        "blueprintCampOrdinal": 7,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "effects": {
+            "unlocksWorker": "smith"
+        },
+        "id": "unlock_building_smithy",
+        "name": "Metal working 1"
+    },
+    "unlock_building_spaceship1": {
+        "blueprintCampOrdinal": 15,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_building_spaceship1",
+        "name": "Space Colony Hull"
+    },
+    "unlock_building_spaceship2": {
+        "blueprintCampOrdinal": 15,
+        "blueprintIsCampless": true,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 2,
+        "effects": {},
+        "id": "unlock_building_spaceship2",
+        "name": "Space Colony Shield"
+    },
+    "unlock_building_spaceship3": {
+        "blueprintCampOrdinal": 15,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 5,
+        "effects": {},
+        "id": "unlock_building_spaceship3",
+        "name": "Space Colony Life Support"
+    },
+    "unlock_building_tradingpost": {
+        "blueprintCampOrdinal": 2,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 2,
+        "effects": {},
+        "id": "unlock_building_tradingpost",
+        "name": "Compass"
+    },
+    "unlock_clothing_basic": {
+        "effects": {},
+        "id": "unlock_clothing_basic",
+        "name": "Weaving"
+    },
+    "unlock_clothing_warm": {
+        "blueprintCampOrdinal": 2,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 2,
+        "effects": {},
+        "id": "unlock_clothing_warm",
+        "name": "Textile Arts"
+    },
+    "unlock_item_bag2": {
+        "effects": {},
+        "id": "unlock_item_bag2",
+        "name": "Leather-working"
+    },
+    "unlock_item_bag22": {
+        "blueprintCampOrdinal": 6,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 2,
+        "effects": {},
+        "id": "unlock_item_bag22",
+        "name": "Bag-making"
+    },
+    "unlock_item_bag3": {
+        "blueprintCampOrdinal": 10,
+        "blueprintIsCampless": true,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 2,
+        "effects": {},
+        "id": "unlock_item_bag3",
+        "name": "Bag-making 2"
+    },
+    "unlock_item_bag_4": {
+        "blueprintCampOrdinal": 14,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 4,
+        "effects": {},
+        "id": "unlock_item_bag_4",
+        "name": "Bag-making 3"
+    },
+    "unlock_item_clothing2": {
+        "effects": {},
+        "id": "unlock_item_clothing2",
+        "name": "Sewing"
+    },
+    "unlock_item_clothing3": {
+        "blueprintCampOrdinal": 8,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 2,
+        "effects": {},
+        "id": "unlock_item_clothing3",
+        "name": "Guard Uniform"
+    },
+    "unlock_item_clothing3h": {
+        "effects": {},
+        "id": "unlock_item_clothing3h",
+        "name": "Glove-making 2"
+    },
+    "unlock_item_clothing4": {
+        "blueprintCampOrdinal": 10,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_item_clothing4",
+        "name": "Vest plating"
+    },
+    "unlock_item_clothing4h": {
+        "blueprintCampOrdinal": 5,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "effects": {
+            "improvesWorker": "rope-maker"
+        },
+        "id": "unlock_item_clothing4h",
+        "name": "Advanced Textiles"
+    },
+    "unlock_item_clothing4he": {
+        "blueprintCampOrdinal": 11,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 2,
+        "effects": {},
+        "id": "unlock_item_clothing4he",
+        "name": "Gas Masks"
+    },
+    "unlock_item_clothing5": {
+        "blueprintCampOrdinal": 8,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 4,
+        "effects": {},
+        "id": "unlock_item_clothing5",
+        "name": "Armour"
+    },
+    "unlock_item_clothing5l": {
+        "blueprintCampOrdinal": 15,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_item_clothing5l",
+        "name": "Scavenger Gear"
+    },
+    "unlock_item_clothing6": {
+        "blueprintCampOrdinal": 11,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_item_clothing6",
+        "name": "Augmented Clothing 1"
+    },
+    "unlock_item_clothing8": {
+        "blueprintCampOrdinal": 15,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 4,
+        "effects": {},
+        "id": "unlock_item_clothing8",
+        "name": "Exoskeletons"
+    },
+    "unlock_item_clothing_hands_25": {
+        "effects": {},
+        "id": "unlock_item_clothing_hands_25",
+        "name": "Glove-making"
+    },
+    "unlock_item_clothing_head_5": {
+        "effects": {},
+        "id": "unlock_item_clothing_head_5",
+        "name": "Helmet-making"
+    },
+    "unlock_item_clothingl14": {
+        "blueprintCampOrdinal": 8,
+        "blueprintIsCampless": true,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 2,
+        "effects": {},
+        "id": "unlock_item_clothingl14",
+        "name": "Hazmat Clothing"
+    },
+    "unlock_item_firstaid": {
+        "effects": {},
+        "id": "unlock_item_firstaid",
+        "name": "First Aid"
+    },
+    "unlock_item_scavenger_gear": {
+        "blueprintCampOrdinal": 12,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_item_scavenger_gear",
+        "name": "Augmented Clothing 2"
+    },
+    "unlock_item_shoe1": {
+        "blueprintCampOrdinal": 1,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 2,
+        "effects": {},
+        "id": "unlock_item_shoe1",
+        "name": "Crafting"
+    },
+    "unlock_item_weapon2": {
+        "blueprintCampOrdinal": 4,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_item_weapon2",
+        "name": "Spear"
+    },
+    "unlock_item_weapon25": {
+        "effects": {},
+        "id": "unlock_item_weapon25",
+        "name": "Axe-making"
+    },
+    "unlock_item_weapon3": {
+        "blueprintCampOrdinal": 6,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_item_weapon3",
+        "name": "Crossbow"
+    },
+    "unlock_item_weapon4": {
+        "blueprintCampOrdinal": 8,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "effects": {
+            "improvesBuildings": "smithy 2",
+            "improvesWorker": "smith"
+        },
+        "id": "unlock_item_weapon4",
+        "name": "Metal working 2"
+    },
+    "unlock_item_weapon5": {
+        "blueprintCampOrdinal": 10,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 5,
+        "effects": {
+            "improvesBuildings": "barracks 2",
+            "improvesWorker": "soldier"
+        },
+        "id": "unlock_item_weapon5",
+        "name": "Revolvers"
+    },
+    "unlock_item_weapon52": {
+        "blueprintCampOrdinal": 11,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 2,
+        "effects": {},
+        "id": "unlock_item_weapon52",
+        "name": "Axe-making 2"
+    },
+    "unlock_item_weapon58": {
+        "blueprintCampOrdinal": 12,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "unlock_item_weapon58",
+        "name": "Shotgun"
+    },
+    "unlock_item_weapon6": {
+        "blueprintCampOrdinal": 13,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 4,
+        "effects": {},
+        "id": "unlock_item_weapon6",
+        "name": "Automatic pistols"
+    },
+    "unlock_item_weapon7": {
+        "blueprintCampOrdinal": 14,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 5,
+        "effects": {
+            "improvesBuildings": "barracks 3",
+            "improvesWorker": "soldier"
+        },
+        "id": "unlock_item_weapon7",
+        "name": "Jet engine"
+    },
+    "unlock_item_weapon8": {
+        "blueprintCampOrdinal": 15,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 2,
+        "effects": {},
+        "id": "unlock_item_weapon8",
+        "name": "Rifle"
+    },
+    "unlock_itemclothing_lower_45": {
+        "blueprintCampOrdinal": 13,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 2,
+        "effects": {},
+        "id": "unlock_itemclothing_lower_45",
+        "name": "Augmented Clothing 3"
+    },
+    "unlock_outgoing_caravans": {
+        "effects": {},
+        "id": "unlock_outgoing_caravans",
+        "name": "Caravans"
+    },
+    "unlock_weapon_15": {
+        "blueprintCampOrdinal": 2,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 2,
+        "effects": {},
+        "id": "unlock_weapon_15",
+        "name": "Knife"
+    },
+    "unlock_worker_rope": {
+        "effects": {
+            "unlocksWorker": "rope"
+        },
+        "id": "unlock_worker_rope",
+        "name": "Rope-making"
+    },
+    "upgrade_building_apothecary": {
+        "blueprintCampOrdinal": 13,
+        "blueprintIsCampless": true,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 5,
+        "effects": {
+            "improvesBuildings": "apothecary 2",
+            "improvesWorker": "apothecary"
+        },
+        "id": "upgrade_building_apothecary",
+        "name": "Medicine"
+    },
+    "upgrade_building_campfire": {
+        "blueprintCampOrdinal": 9,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 3,
+        "effects": {
+            "improvesBuildings": "campfire 2"
+        },
+        "id": "upgrade_building_campfire",
+        "name": "Brewing"
+    },
+    "upgrade_building_cementmill": {
+        "blueprintCampOrdinal": 14,
+        "blueprintIsCampless": true,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {
+            "improvesBuildings": "cementmill 2",
+            "improvesWorker": "concrete"
+        },
+        "id": "upgrade_building_cementmill",
+        "name": "Internal Combustion Engine"
+    },
+    "upgrade_building_fortifications": {
+        "blueprintCampOrdinal": 11,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {},
+        "id": "upgrade_building_fortifications",
+        "name": "Concrete Fortifications"
+    },
+    "upgrade_building_hospital": {
+        "blueprintCampOrdinal": 14,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {
+            "improvesBuildings": "hospital 2"
+        },
+        "id": "upgrade_building_hospital",
+        "name": "Surgery"
+    },
+    "upgrade_building_inn": {
+        "effects": {
+            "improvesBuildings": "inn 2"
+        },
+        "id": "upgrade_building_inn",
+        "name": "Music"
+    },
+    "upgrade_building_library": {
+        "blueprintCampOrdinal": 5,
+        "blueprintIsCampless": true,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 2,
+        "effects": {
+            "improvesBuildings": "library 2"
+        },
+        "id": "upgrade_building_library",
+        "name": "Education"
+    },
+    "upgrade_building_library2": {
+        "blueprintCampOrdinal": 10,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {
+            "improvesBuildings": "library 3",
+            "unlocksWorker": "scientist"
+        },
+        "id": "upgrade_building_library2",
+        "name": "Scientific Method"
+    },
+    "upgrade_building_market": {
+        "blueprintCampOrdinal": 5,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {
+            "improvesBuildings": "market 2",
+            "improvesOccurrence": "trader++"
+        },
+        "id": "upgrade_building_market",
+        "name": "Currency"
+    },
+    "upgrade_building_market2": {
+        "blueprintCampOrdinal": 9,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 3,
+        "effects": {
+            "improvesBuildings": "market 3",
+            "improvesOccurrence": "trader++"
+        },
+        "id": "upgrade_building_market2",
+        "name": "Paper Money"
+    },
+    "upgrade_building_shrine": {
+        "effects": {
+            "improvesBuildings": "shrine 2"
+        },
+        "id": "upgrade_building_shrine",
+        "name": "Philosophy"
+    },
+    "upgrade_building_storage1": {
+        "blueprintCampOrdinal": 7,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": true,
+        "blueprintPieces": 2,
+        "effects": {
+            "improvesBuildings": "storage 2"
+        },
+        "id": "upgrade_building_storage1",
+        "name": "Pest Control"
+    },
+    "upgrade_building_storage2": {
+        "blueprintCampOrdinal": 11,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 5,
+        "effects": {
+            "improvesBuildings": "storage 3"
+        },
+        "id": "upgrade_building_storage2",
+        "name": "Refrigeration"
+    },
+    "upgrade_building_temple2": {
+        "effects": {
+            "improvesBuildings": "temple 2"
+        },
+        "id": "upgrade_building_temple2",
+        "name": "Rituals"
+    },
+    "upgrade_building_temple3": {
+        "effects": {
+            "improvesBuildings": "temple 3"
+        },
+        "id": "upgrade_building_temple3",
+        "name": "Worship"
+    },
+    "upgrade_outgoing_caravans": {
+        "effects": {
+            "improvesBuildings": "stable"
+        },
+        "id": "upgrade_outgoing_caravans",
+        "name": "Bigger caravans"
+    },
+    "upgrade_worker_chemist": {
+        "blueprintCampOrdinal": 12,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 2,
+        "effects": {
+            "improvesWorker": "chemist"
+        },
+        "id": "upgrade_worker_chemist",
+        "name": "Chemistry"
+    },
+    "upgrade_worker_collector1": {
+        "blueprintCampOrdinal": 6,
+        "blueprintIsCampless": true,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 2,
+        "effects": {
+            "improvesWorker": "collectors"
+        },
+        "id": "upgrade_worker_collector1",
+        "name": "Water purification"
+    },
+    "upgrade_worker_scavenger": {
+        "blueprintCampOrdinal": 4,
+        "blueprintIsCampless": false,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 4,
+        "effects": {
+            "improvesWorker": "scavenger"
+        },
+        "id": "upgrade_worker_scavenger",
+        "name": "Smelting"
+    },
+    "upgrade_worker_trapper": {
+        "blueprintCampOrdinal": 9,
+        "blueprintIsCampless": true,
+        "blueprintIsEarly": false,
+        "blueprintPieces": 2,
+        "effects": {
+            "improvesWorker": "trapper"
+        },
+        "id": "upgrade_worker_trapper",
+        "name": "Food preservation"
+    }
+}

@@ -72,7 +72,8 @@ define([
 			GameGlobals.gameState.numTradePostCamps = numTradePostCamps;
 			
 			if (!GameGlobals.gameState.unlockedFeatures.projects) {
-				GameGlobals.gameState.unlockedFeatures.projects = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(UpgradeConstants.upgradeIds.unlock_building_passage_staircase);
+				// TODO check with upgrade effects (has unlocked any upgrade that unlocks projects)
+				GameGlobals.gameState.unlockedFeatures.projects = this.tribeUpgradesNodes.head.upgrades.hasUpgrade("unlock_building_passage_staircase");
 				if (GameGlobals.gameState.unlockedFeatures.projects)
 					GlobalSignals.featureUnlockedSignal.dispatch();
 			}
