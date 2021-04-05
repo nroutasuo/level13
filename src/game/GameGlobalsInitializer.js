@@ -70,8 +70,8 @@ define([
 			}
 			
 			GameGlobals.upgradeEffectsHelper = new UpgradeEffectsHelper();
+			GameGlobals.itemsHelper = new ItemsHelper();
 			if (engine) {
-				GameGlobals.itemsHelper = new ItemsHelper(engine);
 				GameGlobals.autoPlayHelper = new AutoPlayHelper();
 				GameGlobals.saveHelper = new SaveHelper();
 				GameGlobals.changeLogHelper = new ChangeLogHelper();

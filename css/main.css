@@ -437,6 +437,13 @@ body.dark td.list-main {
 body.dark td.item-name {
   min-width: 8em;
 }
+body.dark td.text-overflow {
+  font-size: 75%;
+  width: 6em;
+  max-width: 6em;
+  overflow: hidden;
+  white-space: nowrap;
+}
 body.dark th.th-number {
   text-align: center;
 }
@@ -2353,6 +2360,13 @@ body.sunlit td.list-main {
 }
 body.sunlit td.item-name {
   min-width: 8em;
+}
+body.sunlit td.text-overflow {
+  font-size: 75%;
+  width: 6em;
+  max-width: 6em;
+  overflow: hidden;
+  white-space: nowrap;
 }
 body.sunlit th.th-number {
   text-align: center;

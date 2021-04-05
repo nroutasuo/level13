@@ -29,6 +29,18 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			note: "note",
 		},
 		
+		itemTypesEquipment: {
+			bag: "bag",
+			light: "light",
+			weapon: "weapon",
+			clothing_over: "clothing_over",
+			clothing_upper: "clothing_upper",
+			clothing_lower: "clothing_lower",
+			clothing_hands: "clothing_hands",
+			clothing_head: "clothing_head",
+			shoes: "shoes",
+		},
+		
 		itemBonusTypes: {
 			light: "light",
 			fight_att: "atk",

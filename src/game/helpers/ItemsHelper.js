@@ -5,7 +5,6 @@ define([
 	'game/constants/UpgradeConstants',
 	'game/constants/PlayerActionConstants',
 	'game/constants/WorldConstants',
-	'game/nodes/tribe/TribeUpgradesNode',
 ], function (
 	Ash,
 	GameGlobals,
@@ -13,15 +12,12 @@ define([
 	UpgradeConstants,
 	PlayerActionConstants,
 	WorldConstants,
-	TribeUpgradesNode
 ) {
 	var ItemsHelper = Ash.Class.extend({
 		
 		MAX_SCA_RARITY_DEFAULT_CLOTHING: 1,
 
-		constructor: function (engine) {
-			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
-		},
+		constructor: function () {},
 		
 		isAvailable: function (item, campOrdinal, step, includeCraftable, includeNonCraftable, maxScavengeRarity) {
 			maxScavengeRarity = maxScavengeRarity || 100;
@@ -44,6 +40,29 @@ define([
 			}
 			
 			return result;
+		},
+		
+		getDefaultEquipment: function (campOrdinal, step, itemBonusType, isHardLevel) {
+			let result = {}
+			
+			let clothing = this.getDefaultClothing(campOrdinal, step, itemBonusType, isHardLevel);
+			var itemsByType = {};
+			for (var j = 0; j < clothing.length; j++) {
+				var item = clothing[j];
+				itemsByType[item.type] = item;
+			}
+			let slotTypes = Object.keys(ItemConstants.itemTypesEquipment);
+			for (var j = 0; j < slotTypes.length; j++) {
+				let slotType = slotTypes[j];
+				let existing = itemsByType[slotType];
+				if (existing) {
+					result[slotType] = existing;
+				} else {
+					result[slotType] = this.getBestAvailableItem(campOrdinal, slotType, itemBonusType);
+				}
+			}
+			
+			return Object.values(result);
 		},
 		
 		getDefaultClothing: function (campOrdinal, step, itemBonusType, isHardLevel) {
@@ -78,6 +97,7 @@ define([
 			var clothingList;
 			var clothingItem;
 			var isAvailable;
+			
 			for (var i = 0; i < clothingLists.length; i++) {
 				bestAvailableItem = null;
 				bestAvailableItemBonus = 0;
