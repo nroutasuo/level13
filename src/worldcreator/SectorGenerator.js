@@ -700,7 +700,7 @@ define([
 				}
 			}
 			// based on paths
-			var bagSize = ItemConstants.getBagBonus(levelVO.levelOrdinal);
+			var bagSize = ItemConstants.getBagBonus(levelVO.campOrdinal);
 			var maxStepsWater = Math.floor(bagSize / 2.5);
 			var maxStepsFood = Math.floor(bagSize / 3);
 			var stepsWater = 0;

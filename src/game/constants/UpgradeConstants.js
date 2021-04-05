@@ -321,8 +321,6 @@ function (Ash, UpgradeData, PlayerActionConstants, TribeConstants, WorldConstant
 	};
 	
 	UpgradeConstants.loadData(UpgradeData);
-	
-	console.log(UpgradeConstants);
 
 	return UpgradeConstants;
 	

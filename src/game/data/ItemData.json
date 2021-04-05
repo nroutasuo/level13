@@ -1,0 +1,1781 @@
+{
+    "artefact_doom_1": {
+        "description": "Unnerving piece of black rock. Something is etched on it in an unfamiliar language.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_doom_1",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Volcanic rock",
+        "rarityScavenge": 7,
+        "rarityTrade": 3,
+        "requiredCampOrdinal": 4,
+        "type": "artefact"
+    },
+    "artefact_doom_2": {
+        "description": "Heavy key with a demonic eel-like ornament so intricately carved it feels almost alive. Strangely cold to the touch.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_doom_2",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Temple key",
+        "rarityScavenge": 7,
+        "rarityTrade": 3,
+        "requiredCampOrdinal": 3,
+        "type": "artefact"
+    },
+    "artefact_doom_3": {
+        "description": "Fragile, yellow and light pink shell that must have been looted from a museum.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_doom_3",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Seashell",
+        "rarityScavenge": 9,
+        "rarityTrade": 5,
+        "requiredCampOrdinal": 2,
+        "type": "artefact"
+    },
+    "artefact_doom_4": {
+        "description": "Bold political leaflet printed on thick paper urging residents of the 'sewers' to rebel against segregation.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_doom_4",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Pamphlet",
+        "rarityScavenge": 5,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 1,
+        "type": "artefact"
+    },
+    "artefact_doom_5": {
+        "description": "Complicated astrological map with calculations indicating an event occurring on year 783.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_doom_5",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Starchart",
+        "rarityScavenge": 8,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 15,
+        "type": "artefact"
+    },
+    "artefact_ground_1": {
+        "description": "Puzzling piece of stone with an ancient rune on it.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_ground_1",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Runestone",
+        "rarityScavenge": 8,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 3,
+        "type": "artefact"
+    },
+    "artefact_ground_2": {
+        "description": "Seeds are said to contain life itself. They do not grow in the dark city.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_ground_2",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Charred seed",
+        "rarityScavenge": 10,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 7,
+        "type": "artefact"
+    },
+    "artefact_ground_3": {
+        "description": "Smooth stone that fits in the palm of a hand. There is something calming about it.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_ground_3",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Round stone",
+        "rarityScavenge": 6,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 3,
+        "type": "artefact"
+    },
+    "artefact_ground_4": {
+        "description": "Small leather pouch with a string that allows it to be worn around the neck. All it contains is some kind of a powder.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_ground_4",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Leather pouch",
+        "rarityScavenge": 6,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 1,
+        "type": "artefact"
+    },
+    "artefact_history_1": {
+        "description": "Long since dried and useless as a writing implement, but still popular among sages and philosophers as a symbol of knowledge.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_history_1",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Fountain pen",
+        "rarityScavenge": 6,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 1,
+        "type": "artefact"
+    },
+    "artefact_history_2": {
+        "description": "A beautiful orb said to have formed in the Sea, a massive body of water that is the origin of all life.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_history_2",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Pearl",
+        "rarityScavenge": 8,
+        "rarityTrade": 3,
+        "requiredCampOrdinal": 7,
+        "type": "artefact"
+    },
+    "artefact_history_3": {
+        "description": "An old circular data storage with the word 'backup' written on it. Without an electric computing machine, it's impossible to stay if it is still readable.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_history_3",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "CD",
+        "rarityScavenge": 6,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 1,
+        "type": "artefact"
+    },
+    "artefact_science": {
+        "description": "Some kind of a data storage. Unfortunately, nothing that reads it seems to have survived.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_science",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Data stick",
+        "rarityScavenge": 7,
+        "rarityTrade": 3,
+        "requiredCampOrdinal": 10,
+        "type": "artefact"
+    },
+    "artefact_surface_1": {
+        "description": "Leftovers from a bygone time. They say there used to be fish tanks, somewhere near the surface.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_surface_1",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Canned tuna",
+        "rarityScavenge": 5,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 15,
+        "type": "artefact"
+    },
+    "artefact_surface_2": {
+        "description": "Chips like these used to be placed under people's skins, giving them certain powers. It probably doesn't work anymore.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_surface_2",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "ID Chip",
+        "rarityScavenge": 7,
+        "rarityTrade": 3,
+        "requiredCampOrdinal": 15,
+        "type": "artefact"
+    },
+    "artefact_surface_3": {
+        "description": "Worn but still mostly legible, this notebook seems to contain calculations related to fuel consumption of some kind of a large and complex vehicle over very long distances.",
+        "icon": "img/items/artefact-test.png",
+        "id": "artefact_surface_3",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Scientist's notebook",
+        "rarityScavenge": 7,
+        "rarityTrade": 3,
+        "requiredCampOrdinal": 15,
+        "type": "artefact"
+    },
+    "bag_0": {
+        "bonuses": {
+            "bag": 30
+        },
+        "description": "It's not fancy, but allows one to carry around more stuff than their hands and pockets can hold.",
+        "icon": "img/items/bag-0.png",
+        "id": "bag_0",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Plastic bag",
+        "rarityScavenge": 2,
+        "rarityTrade": 5,
+        "requiredCampOrdinal": 1,
+        "source": "equipment",
+        "type": "bag"
+    },
+    "bag_1": {
+        "bonuses": {
+            "bag": 40
+        },
+        "description": "A more spacious bag with lots of pockets.",
+        "icon": "img/items/bag-1.png",
+        "id": "bag_1",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Basic backpack",
+        "rarityScavenge": 4,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 2,
+        "source": "equipment",
+        "type": "bag"
+    },
+    "bag_2": {
+        "bonuses": {
+            "bag": 50
+        },
+        "description": "A huge backpack with plenty of space.",
+        "icon": "img/items/bag-1.png",
+        "id": "bag_2",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Jumbo backpack",
+        "rarityScavenge": 6,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 5,
+        "source": "equipment",
+        "type": "bag"
+    },
+    "bag_3": {
+        "bonuses": {
+            "bag": 80
+        },
+        "description": "With this bag, weight is starting to be more of a problem than space.",
+        "icon": "img/items/bag-1.png",
+        "id": "bag_3",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Hiker's rucksack",
+        "rarityScavenge": 6,
+        "rarityTrade": 3,
+        "requiredCampOrdinal": 10,
+        "source": "equipment",
+        "type": "bag"
+    },
+    "bag_4": {
+        "bonuses": {
+            "bag": 100
+        },
+        "description": "A really practical backpack with lots of pockets.",
+        "icon": "img/items/bag-1.png",
+        "id": "bag_4",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Scavenger bag",
+        "rarityScavenge": 8,
+        "rarityTrade": 3,
+        "requiredCampOrdinal": 13,
+        "source": "equipment",
+        "type": "bag"
+    },
+    "bag_5": {
+        "bonuses": {
+            "bag": 120
+        },
+        "description": "Mechanical chest that automatically follows its owner around. No more worrying about carrying all that stuff yourself.",
+        "icon": "img/items/bag-3.png",
+        "id": "bag_5",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Automatic luggage",
+        "rarityScavenge": 10,
+        "rarityTrade": 8,
+        "requiredCampOrdinal": 15,
+        "source": "equipment",
+        "type": "bag"
+    },
+    "cache_metal_1": {
+        "description": "Can probably be taken apart down for some scrap metal",
+        "icon": "img/items/cahce-metal.png",
+        "id": "cache_metal_1",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Abandoned robot",
+        "rarityScavenge": 5,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 1,
+        "type": "exploration"
+    },
+    "cache_metal_2": {
+        "description": "Can probably be taken apart down for some scrap metal",
+        "icon": "img/items/cahce-metal.png",
+        "id": "cache_metal_2",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Broken appliance",
+        "rarityScavenge": 5,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 1,
+        "type": "exploration"
+    },
+    "clothing_hands_1": {
+        "bonuses": {
+            "warmth": 5
+        },
+        "description": "Nothing keeps hands warm like fluffy mittens.",
+        "icon": "img/items/clothing-hand-0.png",
+        "id": "clothing_hands_1",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Mittens",
+        "rarityScavenge": 3,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 2,
+        "source": "equipment",
+        "type": "clothing_hands"
+    },
+    "clothing_hands_12": {
+        "bonuses": {
+            "def": 1,
+            "res_poison": 1,
+            "res_rad": 1,
+            "warmth": 3
+        },
+        "description": "Not only warm but also protective.",
+        "icon": "img/items/clothing-hand-0.png",
+        "id": "clothing_hands_12",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Leather gloves",
+        "rarityScavenge": 3,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 3,
+        "source": "equipment",
+        "type": "clothing_hands"
+    },
+    "clothing_hands_2": {
+        "bonuses": {
+            "def": 1,
+            "res_poison": 3,
+            "res_rad": 3,
+            "warmth": 5
+        },
+        "description": "Basic protection for hands.",
+        "icon": "img/items/clothing-hand-0.png",
+        "id": "clothing_hands_2",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Work gloves",
+        "rarityScavenge": 1,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 5,
+        "source": "equipment",
+        "type": "clothing_hands"
+    },
+    "clothing_hands_25": {
+        "bonuses": {
+            "def": 2,
+            "res_poison": 3,
+            "res_rad": 3,
+            "warmth": 5
+        },
+        "description": "Good gloves make scavenging much safer.",
+        "icon": "img/items/clothing-hand-0.png",
+        "id": "clothing_hands_25",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Good gloves",
+        "rarityScavenge": 2,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 7,
+        "source": "equipment",
+        "type": "clothing_hands"
+    },
+    "clothing_hands_3": {
+        "bonuses": {
+            "def": 2,
+            "res_poison": 10,
+            "res_rad": 5,
+            "warmth": 7
+        },
+        "description": "No scavenger ever regretted having good gloves.",
+        "icon": "img/items/clothing-hand-0.png",
+        "id": "clothing_hands_3",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Quality gloves",
+        "rarityScavenge": 2,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 10,
+        "source": "equipment",
+        "type": "clothing_hands"
+    },
+    "clothing_hands_4": {
+        "bonuses": {
+            "def": 5,
+            "res_poison": 15,
+            "res_rad": 15,
+            "warmth": 15
+        },
+        "description": "Gloves that protect from almost all environmental hazards.",
+        "icon": "img/items/clothing-hand-0.png",
+        "id": "clothing_hands_4",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Scavenger's gloves",
+        "rarityScavenge": 3,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 12,
+        "source": "equipment",
+        "type": "clothing_hands"
+    },
+    "clothing_hands_5": {
+        "bonuses": {
+            "def": 8,
+            "res_poison": 15,
+            "res_rad": 15,
+            "warmth": 15
+        },
+        "description": "Gloves made from recycled advanced textiles from before the Fall.",
+        "icon": "img/items/clothing-hand-0.png",
+        "id": "clothing_hands_5",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Synthetic gloves",
+        "rarityScavenge": 3,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 14,
+        "source": "equipment",
+        "type": "clothing_hands"
+    },
+    "clothing_hands_l14": {
+        "bonuses": {
+            "def": 2,
+            "res_poison": 10,
+            "res_rad": 10,
+            "warmth": 5
+        },
+        "description": "Protection from environmental hazards.",
+        "icon": "img/items/clothing-hand-0.png",
+        "id": "clothing_hands_l14",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isSpecialEquipment": true,
+        "isUseable": false,
+        "name": "Hazmat gloves",
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 8,
+        "source": "equipment",
+        "type": "clothing_hands"
+    },
+    "clothing_head_0": {
+        "bonuses": {
+            "shade": 30
+        },
+        "description": "If there was any sunlight, these would probably be handy.",
+        "icon": "img/items/clothing-hat-1.png",
+        "id": "clothing_head_0",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Sunglasses",
+        "rarityScavenge": 5,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 2,
+        "source": "equipment",
+        "type": "clothing_head"
+    },
+    "clothing_head_1": {
+        "bonuses": {
+            "def": 1,
+            "warmth": 10
+        },
+        "description": "Warm basic headwear.",
+        "icon": "img/items/clothing-hat-1.png",
+        "id": "clothing_head_1",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Wool hat",
+        "rarityScavenge": 3,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 2,
+        "source": "equipment",
+        "type": "clothing_head"
+    },
+    "clothing_head_2": {
+        "bonuses": {
+            "res_poison": 15
+        },
+        "description": "Meager protection against the effects of polluted air.",
+        "icon": "img/items/clothing-hat-1.png",
+        "id": "clothing_head_2",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Medical mask",
+        "rarityScavenge": 5,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 4,
+        "source": "equipment",
+        "type": "clothing_head"
+    },
+    "clothing_head_25": {
+        "bonuses": {
+            "def": 3
+        },
+        "description": "A bit clumsy, but quite useful in a fight.",
+        "icon": "img/items/clothing-hat-2.png",
+        "id": "clothing_head_25",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Bike helmet",
+        "rarityScavenge": 3,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 5,
+        "source": "equipment",
+        "type": "clothing_head"
+    },
+    "clothing_head_3": {
+        "bonuses": {
+            "def": 5,
+            "res_poison": 5,
+            "res_rad": 5,
+            "shade": 10,
+            "warmth": 5
+        },
+        "description": "Perfect apparel for the post-apocalyptic hero.",
+        "icon": "img/items/clothing-hat-2.png",
+        "id": "clothing_head_3",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Scrap metal helmet",
+        "rarityScavenge": 4,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 7,
+        "source": "equipment",
+        "type": "clothing_head"
+    },
+    "clothing_head_4": {
+        "bonuses": {
+            "def": 5,
+            "res_poison": 30,
+            "res_rad": 5,
+            "shade": 10,
+            "warmth": 3
+        },
+        "description": "Gives a definite sense of security in dangerous environments.",
+        "icon": "img/items/clothing-mask.png",
+        "id": "clothing_head_4",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Gas mask",
+        "rarityScavenge": 2,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 6,
+        "source": "equipment",
+        "type": "clothing_head"
+    },
+    "clothing_head_45": {
+        "bonuses": {
+            "def": 10,
+            "res_poison": 15,
+            "res_rad": 15,
+            "shade": 10,
+            "warmth": 10
+        },
+        "description": "A practical, protective hood that doesn't get in the way.",
+        "icon": "img/items/clothing-hat-2.png",
+        "id": "clothing_head_45",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Scavenger's hood",
+        "rarityScavenge": 3,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 12,
+        "source": "equipment",
+        "type": "clothing_head"
+    },
+    "clothing_head_5": {
+        "bonuses": {
+            "def": 30,
+            "res_poison": 10,
+            "res_rad": 20,
+            "shade": 50,
+            "warmth": 15
+        },
+        "description": "Headgear designed specifically for scavenging in the City.",
+        "icon": "img/items/clothing-hat-3.png",
+        "id": "clothing_head_5",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Explorer's helmet",
+        "rarityScavenge": 5,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 13,
+        "source": "equipment",
+        "type": "clothing_head"
+    },
+    "clothing_head_l14": {
+        "bonuses": {
+            "def": 5,
+            "res_poison": 30,
+            "res_rad": 15,
+            "shade": 10,
+            "warmth": 3
+        },
+        "description": "Offers reasonable protection from environmental hazards.",
+        "icon": "img/items/clothing-mask.png",
+        "id": "clothing_head_l14",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isSpecialEquipment": true,
+        "isUseable": false,
+        "name": "Respirator",
+        "rarityScavenge": 4,
+        "rarityTrade": 6,
+        "requiredCampOrdinal": 8,
+        "source": "equipment",
+        "type": "clothing_head"
+    },
+    "clothing_lower_1": {
+        "bonuses": {
+            "warmth": 1
+        },
+        "description": "Barely counts for clothing, but for now it'll have to do.",
+        "icon": "img/items/clothing-rags.png",
+        "id": "clothing_lower_1",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Ragged pants",
+        "rarityScavenge": 1,
+        "rarityTrade": 3,
+        "requiredCampOrdinal": 1,
+        "source": "equipment",
+        "type": "clothing_lower"
+    },
+    "clothing_lower_15": {
+        "bonuses": {
+            "def": 1,
+            "warmth": 1
+        },
+        "description": "Nothing wrong with these pants",
+        "icon": "img/items/clothing-rags.png",
+        "id": "clothing_lower_15",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Basic pants",
+        "rarityScavenge": 3,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 2,
+        "source": "equipment",
+        "type": "clothing_lower"
+    },
+    "clothing_lower_2": {
+        "bonuses": {
+            "def": 1,
+            "warmth": 5
+        },
+        "description": "Used to be the standard uniform in the dark levels of the City.",
+        "icon": "img/items/clothing-2.png",
+        "id": "clothing_lower_2",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Factory uniform pants",
+        "rarityScavenge": 1,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 5,
+        "source": "equipment",
+        "type": "clothing_lower"
+    },
+    "clothing_lower_3": {
+        "bonuses": {
+            "def": 3,
+            "warmth": 8
+        },
+        "description": "Looks official, but not particularly protective.",
+        "icon": "img/items/clothing-2.png",
+        "id": "clothing_lower_3",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Guard uniform pants",
+        "rarityScavenge": 1,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 8,
+        "source": "equipment",
+        "type": "clothing_lower"
+    },
+    "clothing_lower_4": {
+        "bonuses": {
+            "def": 15,
+            "warmth": 10
+        },
+        "description": "Protects from bites and scratches.",
+        "icon": "img/items/clothing-3.png",
+        "id": "clothing_lower_4",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Padded pants",
+        "rarityScavenge": 3,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 11,
+        "source": "equipment",
+        "type": "clothing_lower"
+    },
+    "clothing_lower_45": {
+        "bonuses": {
+            "def": 15,
+            "res_poison": 5,
+            "res_rad": 5,
+            "warmth": 10
+        },
+        "description": "Protects from bites and scratches.",
+        "icon": "img/items/clothing-3.png",
+        "id": "clothing_lower_45",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Explorer's pants",
+        "rarityScavenge": 5,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 13,
+        "source": "equipment",
+        "type": "clothing_lower"
+    },
+    "clothing_lower_5": {
+        "bonuses": {
+            "def": 5,
+            "res_poison": 1,
+            "res_rad": 1,
+            "warmth": 50
+        },
+        "description": "Nothing keeps you warm like long underwear.",
+        "icon": "img/items/clothing-3.png",
+        "id": "clothing_lower_5",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Long underwear",
+        "rarityScavenge": 3,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 15,
+        "source": "equipment",
+        "type": "clothing_lower"
+    },
+    "clothing_over_1": {
+        "bonuses": {
+            "def": 1,
+            "warmth": 15
+        },
+        "description": "Something against the chill.",
+        "icon": "img/items/clothing-warm.png",
+        "id": "clothing_over_1",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Warm coat",
+        "rarityScavenge": 5,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 1,
+        "source": "equipment",
+        "type": "clothing_over"
+    },
+    "clothing_over_15": {
+        "bonuses": {
+            "def": 4,
+            "res_poison": 3,
+            "res_rad": 3,
+            "warmth": 5
+        },
+        "description": "A solid jacket.",
+        "icon": "img/items/clothing-2.png",
+        "id": "clothing_over_15",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Leather jacket",
+        "rarityScavenge": 2,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 2,
+        "source": "equipment",
+        "type": "clothing_over"
+    },
+    "clothing_over_1x": {
+        "bonuses": {
+            "def": 1,
+            "res_poison": 10,
+            "warmth": 2
+        },
+        "description": "Might protect from environmental hazards.",
+        "icon": "img/items/clothing-2.png",
+        "id": "clothing_over_1x",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Lab coat",
+        "rarityScavenge": 5,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 2,
+        "source": "equipment",
+        "type": "clothing_over"
+    },
+    "clothing_over_2": {
+        "bonuses": {
+            "def": 6,
+            "res_poison": 3,
+            "res_rad": 3,
+            "warmth": 10
+        },
+        "description": "Doesn't make one invincible, but feels like it.",
+        "icon": "img/items/clothing-2.png",
+        "id": "clothing_over_2",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Biker jacket",
+        "rarityScavenge": 2,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 3,
+        "source": "equipment",
+        "type": "clothing_over"
+    },
+    "clothing_over_25": {
+        "bonuses": {
+            "def": 15,
+            "res_poison": 5,
+            "res_rad": 5,
+            "warmth": 10
+        },
+        "description": "Something that's actually produced with the aim of keeping one safe.",
+        "icon": "img/items/clothing-2.png",
+        "id": "clothing_over_25",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Army jacket",
+        "rarityScavenge": 2,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 5,
+        "source": "equipment",
+        "type": "clothing_over"
+    },
+    "clothing_over_25x": {
+        "bonuses": {
+            "def": 15,
+            "res_poison": 5,
+            "res_rad": 5,
+            "warmth": 15
+        },
+        "description": "Something that's actually produced with the aim of keeping one safe.",
+        "icon": "img/items/clothing-2.png",
+        "id": "clothing_over_25x",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Warm army jacket",
+        "rarityScavenge": 5,
+        "rarityTrade": 4,
+        "requiredCampOrdinal": 5,
+        "source": "equipment",
+        "type": "clothing_over"
+    },
+    "clothing_over_3": {
+        "bonuses": {
+            "def": 25,
+            "res_poison": 5,
+            "res_rad": 5,
+            "warmth": 5
+        },
+        "description": "An ugly but surprisingly comfortable metal blanket",
+        "icon": "img/items/clothing-2.png",
+        "id": "clothing_over_3",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Scrap metal armor",
+        "rarityScavenge": 5,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 7,
+        "source": "equipment",
+        "type": "clothing_over"
+    },
+    "clothing_over_4": {
+        "bonuses": {
+            "def": 40,
+            "res_poison": 5,
+            "res_rad": 5
+        },
+        "description": "Heavy, but worth it.",
+        "icon": "img/items/clothing-2.png",
+        "id": "clothing_over_4",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Kevlar vest",
+        "rarityScavenge": 3,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 10,
+        "source": "equipment",
+        "type": "clothing_over"
+    },
+    "clothing_over_45": {
+        "bonuses": {
+            "def": 40,
+            "res_poison": 10,
+            "res_rad": 10,
+            "warmth": 20
+        },
+        "description": "Novel technology for maximal survival in the post-Fall City",
+        "icon": "img/items/clothing-2.png",
+        "id": "clothing_over_45",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Scavenger vest",
+        "rarityScavenge": 3,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 12,
+        "source": "equipment",
+        "type": "clothing_over"
+    },
+    "clothing_over_5": {
+        "bonuses": {
+            "def": 100,
+            "res_poison": 10,
+            "res_rad": 5,
+            "warmth": 10
+        },
+        "description": "Based on the old Surface Guard uniform with additional environmental proection.",
+        "icon": "img/items/clothing-3.png",
+        "id": "clothing_over_5",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Riot police vest",
+        "rarityScavenge": 2,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 13,
+        "source": "equipment",
+        "type": "clothing_over"
+    },
+    "clothing_over_6": {
+        "bonuses": {
+            "def": 290,
+            "res_poison": 20,
+            "res_rad": 30,
+            "warmth": 10
+        },
+        "description": "Futuristic armour designed for those exploring the world outside the City's protective walls.",
+        "icon": "img/items/clothing-3.png",
+        "id": "clothing_over_6",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Exoskeleton",
+        "rarityScavenge": 8,
+        "rarityTrade": 5,
+        "requiredCampOrdinal": 15,
+        "source": "equipment",
+        "type": "clothing_over"
+    },
+    "clothing_over_l14": {
+        "bonuses": {
+            "def": 1,
+            "movement": 1.1,
+            "res_poison": 15,
+            "res_rad": 15,
+            "warmth": 5
+        },
+        "description": "Effective protection against radiation, but clumsy to move around in.",
+        "icon": "img/items/clothing-2.png",
+        "id": "clothing_over_l14",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isSpecialEquipment": true,
+        "isUseable": false,
+        "name": "Hazmat suit",
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 8,
+        "source": "equipment",
+        "type": "clothing_over"
+    },
+    "clothing_over_w": {
+        "bonuses": {
+            "def": 2,
+            "warmth": 20
+        },
+        "description": "Seasons are hardly a thing in the City but it does get cold.",
+        "icon": "img/items/clothing-warm.png",
+        "id": "clothing_over_w",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Winter parka",
+        "rarityScavenge": 3,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 5,
+        "source": "equipment",
+        "type": "clothing_over"
+    },
+    "clothing_upper_1": {
+        "bonuses": {
+            "warmth": 1
+        },
+        "description": "Barely counts for clothing, but for now it'll have to do.",
+        "icon": "img/items/clothing-rags.png",
+        "id": "clothing_upper_1",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Tattered shirt",
+        "rarityScavenge": 1,
+        "rarityTrade": 3,
+        "requiredCampOrdinal": 1,
+        "source": "equipment",
+        "type": "clothing_upper"
+    },
+    "clothing_upper_15": {
+        "bonuses": {
+            "def": 1,
+            "res_poison": 1,
+            "res_rad": 1,
+            "warmth": 2
+        },
+        "description": "Standard shirt.",
+        "icon": "img/items/clothing-shirt.png",
+        "id": "clothing_upper_15",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "T-shirt",
+        "rarityScavenge": 2,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 2,
+        "source": "equipment",
+        "type": "clothing_upper"
+    },
+    "clothing_upper_2": {
+        "bonuses": {
+            "def": 2,
+            "res_poison": 1,
+            "res_rad": 1,
+            "warmth": 3
+        },
+        "description": "Feels oddly comfortable in dark corridors and abandoned factories.",
+        "icon": "img/items/clothing-shirt-2.png",
+        "id": "clothing_upper_2",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Factory uniform shirt",
+        "rarityScavenge": 1,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 5,
+        "source": "equipment",
+        "type": "clothing_upper"
+    },
+    "clothing_upper_3": {
+        "bonuses": {
+            "def": 5,
+            "res_poison": 3,
+            "res_rad": 3,
+            "warmth": 10
+        },
+        "description": "Looks official, but not particularly protective.",
+        "icon": "img/items/clothing-shirt-2.png",
+        "id": "clothing_upper_3",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Guard uniform shirt",
+        "rarityScavenge": 1,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 8,
+        "source": "equipment",
+        "type": "clothing_upper"
+    },
+    "clothing_upper_35": {
+        "bonuses": {
+            "def": 5,
+            "res_poison": 5,
+            "res_rad": 5,
+            "warmth": 12
+        },
+        "description": "Shirt made from recycled advanced textiles used before the Fall.",
+        "icon": "img/items/clothing-2.png",
+        "id": "clothing_upper_35",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Synthetic shirt",
+        "rarityScavenge": 2,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 9,
+        "source": "equipment",
+        "type": "clothing_upper"
+    },
+    "clothing_upper_4": {
+        "bonuses": {
+            "def": 8,
+            "res_poison": 5,
+            "res_rad": 5,
+            "warmth": 15
+        },
+        "description": "Specifically made for keeping travellers warm and safe.",
+        "icon": "img/items/clothing-3.png",
+        "id": "clothing_upper_4",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Protective shirt",
+        "rarityScavenge": 5,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 12,
+        "source": "equipment",
+        "type": "clothing_upper"
+    },
+    "clothing_upper_45": {
+        "bonuses": {
+            "def": 10,
+            "res_poison": 5,
+            "res_rad": 5,
+            "warmth": 15
+        },
+        "description": "Comes with many pockets.",
+        "icon": "img/items/clothing-3.png",
+        "id": "clothing_upper_45",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Explorer's shirt",
+        "rarityScavenge": 2,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 13,
+        "source": "equipment",
+        "type": "clothing_upper"
+    },
+    "clothing_upper_5": {
+        "bonuses": {
+            "res_poison": 60,
+            "res_rad": 40,
+            "warmth": 25
+        },
+        "description": "The best protection an explorer can hope for.",
+        "icon": "img/items/clothing-3.png",
+        "id": "clothing_upper_5",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Scavenger's shirt",
+        "rarityScavenge": 4,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 15,
+        "source": "equipment",
+        "type": "clothing_upper"
+    },
+    "consumable_weapon_1": {
+        "description": "One-use weapon.",
+        "icon": "img/items/weapon-consumable-1.png",
+        "id": "consumable_weapon_1",
+        "isCraftable": true,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Shuriken",
+        "rarityScavenge": 8,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 2,
+        "type": "exploration"
+    },
+    "equipment_map": {
+        "description": "Helps navigating the City.",
+        "icon": "img/items/exploration-map.png",
+        "id": "equipment_map",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Map",
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "requiredCampOrdinal": 0,
+        "type": "uniqueEquipment"
+    },
+    "exploration_1": {
+        "description": "Useful tool when exploring and scouting.",
+        "icon": "img/items/exploration-1.png",
+        "id": "exploration_1",
+        "isCraftable": true,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Lockpick",
+        "rarityScavenge": 1,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 1,
+        "type": "exploration"
+    },
+    "first_aid_kit_1": {
+        "description": "Heal light injuries on the go.",
+        "icon": "img/items/firstaid-1.png",
+        "id": "first_aid_kit_1",
+        "isCraftable": true,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Basic first aid kit",
+        "rarityScavenge": 6,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 3,
+        "type": "exploration"
+    },
+    "first_aid_kit_2": {
+        "description": "Heal all injuries on the go.",
+        "icon": "img/items/firstaid-2.png",
+        "id": "first_aid_kit_2",
+        "isCraftable": true,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Full first aid kit",
+        "rarityScavenge": 8,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 10,
+        "type": "exploration"
+    },
+    "flee_1": {
+        "description": "Can be used to escape a fight.",
+        "icon": "img/items/weapon-bomb.png",
+        "id": "flee_1",
+        "isCraftable": true,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Smoke Bomb",
+        "rarityScavenge": 8,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 3,
+        "type": "exploration"
+    },
+    "glowstick_1": {
+        "description": "Temporary light. Can be used as a distraction.",
+        "icon": "img/items/glowstick-1.png",
+        "id": "glowstick_1",
+        "isCraftable": true,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Glowstick",
+        "rarityScavenge": 8,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 1,
+        "type": "exploration"
+    },
+    "light1": {
+        "bonuses": {
+            "light": 25
+        },
+        "description": "Feeble light for basic survival in the dark undercorridors.",
+        "icon": "img/items/light-lantern.png",
+        "id": "light1",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Lantern",
+        "rarityScavenge": 3,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 1,
+        "source": "equipment",
+        "type": "light"
+    },
+    "light2": {
+        "bonuses": {
+            "light": 75
+        },
+        "description": "Advanced light for serious travellers.",
+        "icon": "img/items/light-electric.png",
+        "id": "light2",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Electric light",
+        "rarityScavenge": 5,
+        "rarityTrade": 3,
+        "requiredCampOrdinal": 5,
+        "source": "equipment",
+        "type": "light"
+    },
+    "light3": {
+        "bonuses": {
+            "light": 125
+        },
+        "description": "They say the ghost light can show you more the darker places you go.",
+        "icon": "img/items/light-ghost.png",
+        "id": "light3",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Ghost light",
+        "rarityScavenge": 9,
+        "rarityTrade": 7,
+        "requiredCampOrdinal": 15,
+        "source": "equipment",
+        "type": "light"
+    },
+    "res_bands": {
+        "description": "Useful for crafting.",
+        "icon": "img/items/res-bands.png",
+        "id": "res_bands",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Elastic bands",
+        "rarityScavenge": 1,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 1,
+        "type": "ingredient"
+    },
+    "res_bottle": {
+        "description": "Useful for crafting.",
+        "icon": "img/items/res-bottle.png",
+        "id": "res_bottle",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Plastic bottle",
+        "rarityScavenge": 1,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 1,
+        "type": "ingredient"
+    },
+    "res_glowbug": {
+        "description": "Useful for crafting.",
+        "icon": "img/items/res-glowbug.png",
+        "id": "res_glowbug",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Glowbug",
+        "rarityScavenge": 1,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 1,
+        "type": "ingredient"
+    },
+    "res_hairpin": {
+        "description": "Useful for crafting.",
+        "icon": "img/items/res-pin.png",
+        "id": "res_hairpin",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Hairpin",
+        "rarityScavenge": 1,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 1,
+        "type": "ingredient"
+    },
+    "res_leather": {
+        "description": "Useful for crafting.",
+        "icon": "img/items/res-leather.png",
+        "id": "res_leather",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Leather",
+        "rarityScavenge": 1,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 1,
+        "type": "ingredient"
+    },
+    "res_silk": {
+        "description": "Useful for crafting.",
+        "icon": "img/items/res-silk.png",
+        "id": "res_silk",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Spider silk",
+        "rarityScavenge": 1,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 1,
+        "type": "ingredient"
+    },
+    "res_tape": {
+        "description": "Useful for crafting.",
+        "icon": "img/items/res-tape.png",
+        "id": "res_tape",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": false,
+        "name": "Duct tape",
+        "rarityScavenge": 1,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 1,
+        "type": "ingredient"
+    },
+    "shoe_1": {
+        "bonuses": {
+            "movement": 0.9
+        },
+        "description": "Protects a scavenger's feet from sharp things that might be lying around.",
+        "icon": "img/items/shoe-1.png",
+        "id": "shoe_1",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Improvised flip-flops",
+        "rarityScavenge": 2,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 1,
+        "source": "equipment",
+        "type": "shoes"
+    },
+    "shoe_2": {
+        "bonuses": {
+            "movement": 0.8
+        },
+        "description": "Decent shoes for walking in most places.",
+        "icon": "img/items/shoe-2.png",
+        "id": "shoe_2",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Worn trainers",
+        "rarityScavenge": 5,
+        "rarityTrade": 3,
+        "requiredCampOrdinal": 5,
+        "source": "equipment",
+        "type": "shoes"
+    },
+    "shoe_3": {
+        "bonuses": {
+            "movement": 0.5
+        },
+        "description": "Good shoes like these can make travelling much easier.",
+        "icon": "img/items/shoe-3.png",
+        "id": "shoe_3",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Hiking boots",
+        "rarityScavenge": 8,
+        "rarityTrade": 5,
+        "requiredCampOrdinal": 10,
+        "source": "equipment",
+        "type": "shoes"
+    },
+    "shoe_l14": {
+        "bonuses": {
+            "movement": 0.9,
+            "res_poison": 5,
+            "res_rad": 5
+        },
+        "description": "Protection from environmental hazards. And snakes.",
+        "icon": "img/items/shoe-2.png",
+        "id": "shoe_l14",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isSpecialEquipment": true,
+        "isUseable": false,
+        "name": "Rubber boots",
+        "rarityScavenge": 5,
+        "rarityTrade": 3,
+        "requiredCampOrdinal": 8,
+        "source": "equipment",
+        "type": "shoes"
+    },
+    "stamina_potion_1": {
+        "description": "Smells awful, but restores stamina.",
+        "icon": "img/items/stamina-1.png",
+        "id": "stamina_potion_1",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "name": "Rejuv shot",
+        "rarityScavenge": 8,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 1,
+        "type": "exploration"
+    },
+    "weapon1": {
+        "bonuses": {
+            "atk": 3,
+            "spd": 0.9
+        },
+        "description": "Improvised sharp poking implement.",
+        "icon": "img/items/weapon-shiv.png",
+        "id": "weapon1",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Shiv",
+        "rarityScavenge": 2,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 1,
+        "source": "equipment",
+        "type": "weapon"
+    },
+    "weapon12": {
+        "bonuses": {
+            "atk": 4,
+            "spd": 1
+        },
+        "description": "A bit sturdier than the shiv.",
+        "icon": "img/items/weapon-shiv.png",
+        "id": "weapon12",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Knife",
+        "rarityScavenge": 2,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 2,
+        "source": "equipment",
+        "type": "weapon"
+    },
+    "weapon122": {
+        "bonuses": {
+            "atk": 5,
+            "spd": 1
+        },
+        "description": "A good quality knife.",
+        "icon": "img/items/weapon-shiv.png",
+        "id": "weapon122",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Sharp knife",
+        "rarityScavenge": 6,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 2,
+        "source": "equipment",
+        "type": "weapon"
+    },
+    "weapon2": {
+        "bonuses": {
+            "atk": 6,
+            "spd": 0.9
+        },
+        "description": "Old-fashioned but reliable weapon.",
+        "icon": "img/items/weapon-shiv.png",
+        "id": "weapon2",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Spear",
+        "rarityScavenge": 3,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 4,
+        "source": "equipment",
+        "type": "weapon"
+    },
+    "weapon25": {
+        "bonuses": {
+            "atk": 12,
+            "spd": 0.6
+        },
+        "description": "Easy to use and reliable.",
+        "icon": "img/items/weapon-shiv.png",
+        "id": "weapon25",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Heavy axe",
+        "rarityScavenge": 3,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 5,
+        "source": "equipment",
+        "type": "weapon"
+    },
+    "weapon3": {
+        "bonuses": {
+            "atk": 12,
+            "spd": 0.9
+        },
+        "description": "A deadly ranged weapon.",
+        "icon": "img/items/weapon-shiv.png",
+        "id": "weapon3",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Crossbow",
+        "rarityScavenge": 3,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 6,
+        "source": "equipment",
+        "type": "weapon"
+    },
+    "weapon35": {
+        "bonuses": {
+            "atk": 14,
+            "spd": 0.9
+        },
+        "description": "An extra deadly ranged weapon.",
+        "icon": "img/items/weapon-shiv.png",
+        "id": "weapon35",
+        "isCraftable": false,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Improved crossbow",
+        "rarityScavenge": 8,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 6,
+        "source": "equipment",
+        "type": "weapon"
+    },
+    "weapon4": {
+        "bonuses": {
+            "atk": 24,
+            "spd": 1.1
+        },
+        "description": "A crude single-shot pistol, like a hand-held miniature cannon.",
+        "icon": "img/items/weapon-shiv.png",
+        "id": "weapon4",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Pistol",
+        "rarityScavenge": 4,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 8,
+        "source": "equipment",
+        "type": "weapon"
+    },
+    "weapon5": {
+        "bonuses": {
+            "atk": 30,
+            "spd": 1.1
+        },
+        "description": "A more sophisticated handgun that allows several shots before reloading.",
+        "icon": "img/items/weapon-shiv.png",
+        "id": "weapon5",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Revolver",
+        "rarityScavenge": 4,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 10,
+        "source": "equipment",
+        "type": "weapon"
+    },
+    "weapon52": {
+        "bonuses": {
+            "atk": 38,
+            "spd": 0.75
+        },
+        "description": "A formidable axe specifically designed for combat",
+        "icon": "img/items/weapon-shiv.png",
+        "id": "weapon52",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Scrap metal waraxe",
+        "rarityScavenge": 1,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 11,
+        "source": "equipment",
+        "type": "weapon"
+    },
+    "weapon58": {
+        "bonuses": {
+            "atk": 60,
+            "spd": 1
+        },
+        "description": "Devastating short-range firearm.",
+        "icon": "img/items/weapon-shiv.png",
+        "id": "weapon58",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Crude shotgun",
+        "rarityScavenge": 5,
+        "rarityTrade": 1,
+        "requiredCampOrdinal": 12,
+        "source": "equipment",
+        "type": "weapon"
+    },
+    "weapon6": {
+        "bonuses": {
+            "atk": 116,
+            "spd": 1.5
+        },
+        "description": "It may be made from scrap metal but it is still a serious weapon.",
+        "icon": "img/items/weapon-shiv.png",
+        "id": "weapon6",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Custom smg",
+        "rarityScavenge": 5,
+        "rarityTrade": 2,
+        "requiredCampOrdinal": 13,
+        "source": "equipment",
+        "type": "weapon"
+    },
+    "weapon7": {
+        "bonuses": {
+            "atk": 180,
+            "spd": 1
+        },
+        "description": "Powerful but heavy and somewhat unreliable construction of pipes, reclaimed weapon parts and improvised ammunition.",
+        "icon": "img/items/weapon-shiv.png",
+        "id": "weapon7",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Improvised bazooka",
+        "rarityScavenge": 3,
+        "rarityTrade": 3,
+        "requiredCampOrdinal": 14,
+        "source": "equipment",
+        "type": "weapon"
+    },
+    "weapon8": {
+        "bonuses": {
+            "atk": 200,
+            "spd": 1.25
+        },
+        "description": "Deadly weapon similar to those that were mass-produced just before the Fall.",
+        "icon": "img/items/weapon-shiv.png",
+        "id": "weapon8",
+        "isCraftable": true,
+        "isEquippable": true,
+        "isUseable": false,
+        "name": "Rifle",
+        "rarityScavenge": 3,
+        "rarityTrade": 3,
+        "requiredCampOrdinal": 15,
+        "source": "equipment",
+        "type": "weapon"
+    }
+}
