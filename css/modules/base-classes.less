@@ -70,6 +70,10 @@ span.hl-functionality {
 	color: @color-text-meta;
 }
 
+.dimmed {
+	color: @color-text-dimmed;
+}
+
 .columns-container {
 	display: flex;
 }
@@ -118,8 +122,21 @@ table.spacious td:first-child {
 	padding-left: 0px;
 }
 
+table.updating td {
+	background: @color-bg-warning;
+}
+
 table.borders td {
 	border: 1px solid @color-border-box-2;
+}
+
+table.borders th {
+	background: @color-bg-element-1;
+}
+
+table th.sortable {
+	background: @color-bg-element-2;
+	cursor: pointer;
 }
 
 // TABLE CELL UTILITY CLASSES
