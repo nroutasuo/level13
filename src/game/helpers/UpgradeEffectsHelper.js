@@ -203,6 +203,9 @@ define([
 		},
 		
 		getExpectedBuildingUpgradeLevel: function (building, campOrdinal) {
+			if (campOrdinal < this.getCampOrdinalToUnlockBuilding(building)) {
+				return 0;
+			}
 			var upgradeLevel = 1;
 			var buildingUpgrades = this.getUpgradeIdsForImprovement(building);
 			var buildingUpgrade;
@@ -235,7 +238,25 @@ define([
 			}
 			
 			return result;
-		}
+		},
+
+		getCampOrdinalToUnlockBuilding: function (building) {
+			// TODO extend with checking for required buildings' requirements
+			// TODO extend for checking required resources
+			let result = 1;
+			let action = GameGlobals.playerActionsHelper.getActionNameForImprovement(building);
+			let reqsDefinition = PlayerActionConstants.requirements[action];
+			if (reqsDefinition && reqsDefinition.upgrades) {
+				for (var requiredUpgradeId in reqsDefinition.upgrades) {
+					result = Math.max(result, UpgradeConstants.getMinimumCampOrdinalForUpgrade(requiredUpgradeId));
+				}
+			}
+			switch (building) {
+				case improvementNames.temple: return 8;
+				case improvementNames.shrine: return 8;
+			}
+			return result;
+		},
 		
 	});
 	

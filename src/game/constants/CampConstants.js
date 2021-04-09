@@ -29,6 +29,7 @@ define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
 		
 		// Favour
 		FAVOUR_BONUS_PER_TEMPLE_LEVEL: 0.1,
+		FAVOUR_PER_DONATION: 5,
 		
 		// Cost of workers
 		CONSUMPTION_WATER_PER_WORKER_PER_S: 0.02,
@@ -203,6 +204,29 @@ define(['ash', 'game/GameGlobals'], function (Ash, GameGlobals) {
 		getLibraryEvidenceGenerationPerSecond: function (libraryCount, libraryLevel, libraryUpgradeLevel) {
 			var libraryLevelFactor = (1 + libraryLevel * CampConstants.EVIDENCE_BONUS_PER_LIBRARY_LEVEL);
 			return 0.0015 * libraryCount * libraryUpgradeLevel * libraryLevelFactor;
+		},
+		
+		getCampfireRumourGenerationPerSecond: function (campfireCount, campfireLevel, campfireUpgradeLevel, accSpeedPopulation) {
+			var campfireFactor = CampConstants.RUMOUR_BONUS_PER_CAMPFIRE_BASE;
+			campfireFactor += campfireLevel > 1 ? (campfireLevel - 1) * CampConstants.RUMOURS_BONUS_PER_CAMPFIRE_PER_LEVEL : 0;
+			campfireFactor += campfireUpgradeLevel > 1 ? (campfireUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_CAMPFIRE_PER_UPGRADE : 0;
+			return campfireCount > 0 ? Math.pow(campfireFactor, campfireCount) * accSpeedPopulation - accSpeedPopulation : 0;
+		},
+		
+		getMarketRumourGenerationPerSecond: function (marketCount, marketUpgradeLevel, accSpeedPopulation) {
+			var marketFactor = CampConstants.RUMOUR_BONUS_PER_MARKET_BASE;
+			marketFactor += marketUpgradeLevel > 1 ? (marketUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_MARKET_PER_UPGRADE : 0;
+			return marketCount > 0 ? Math.pow(marketFactor, marketCount) * accSpeedPopulation - accSpeedPopulation : 0;
+		},
+		
+		getInnRumourGenerationPerSecond: function (innCount, innUpgradeLevel, accSpeedPopulation) {
+			var innFactor = CampConstants.RUMOUR_BONUS_PER_INN_BASE;
+			innFactor += innUpgradeLevel > 1 ? (innUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_INN_PER_UPGRADE : 0;
+			return innCount > 0 ? Math.pow(innFactor, innCount) * accSpeedPopulation - accSpeedPopulation : 0;
+		},
+		
+		getMeditatinSuccessRate: function (shrineLevel) {
+			return 0.4 + shrineLevel * 0.1;
 		}
 	
 	};

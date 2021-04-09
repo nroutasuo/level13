@@ -61,7 +61,7 @@ define([
 		tribeUpgradesNodes: null,
 		nearestCampNodes: null,
 
-		cache: { reqs: {}, baseActionID: {}, ActionNameForImprovement: {} },
+		cache: { reqs: {}, baseActionID: {} },
 
 		constructor: function (engine) {
 			this.engine = engine;
@@ -1030,7 +1030,7 @@ define([
 		},
 
 		getReqs: function (action, sector) {
-			var sector = sector || (this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
+			var sector = sector || (this.playerLocationNodes && this.playerLocationNodes.head ? this.playerLocationNodes.head.entity : null);
 			var baseActionID = this.getBaseActionID(action);
 			var requirements = {};
 			switch (baseActionID) {
@@ -1360,112 +1360,125 @@ define([
 			return "";
 		},
 
-		getImprovementNameForAction: function(action, disableWarnings) {
-			var baseId = this.getBaseActionID(action);
-			switch (baseId) {
-				case "build_out_collector_food": return improvementNames.collector_food;
-				case "build_out_collector_water": return improvementNames.collector_water;
-				case "build_out_beacon": return improvementNames.beacon;
-				case "build_in_home": return improvementNames.home;
-				case "build_in_house": return improvementNames.house;
-				case "build_in_storage": return improvementNames.storage;
-				case "build_in_hospital": return improvementNames.hospital;
-				case "build_in_tradepost": return improvementNames.tradepost;
-				case "build_in_inn": return improvementNames.inn;
-				case "build_out_spaceship1": return improvementNames.spaceship1;
-				case "build_out_spaceship2": return improvementNames.spaceship2;
-				case "build_out_spaceship3": return improvementNames.spaceship3;
-				case "build_in_campfire": return improvementNames.campfire;
-				case "build_in_darkfarm": return improvementNames.darkfarm;
-				case "build_in_garden": return improvementNames.garden;
-				case "build_in_square": return improvementNames.square;
-				case "build_in_house2": return improvementNames.house2;
-				case "build_in_generator": return improvementNames.generator;
-				case "build_in_lights": return improvementNames.lights;
-				case "build_in_ceiling": return improvementNames.ceiling;
-				case "build_in_apothecary": return improvementNames.apothecary;
-				case "build_in_smithy": return improvementNames.smithy;
-				case "build_in_cementmill": return improvementNames.cementmill;
-				case "build_in_library": return improvementNames.library;
-				case "build_in_shrine": return improvementNames.shrine;
-				case "build_in_temple": return improvementNames.temple;
-				case "build_in_barracks": return improvementNames.barracks;
-				case "build_in_fortification": return improvementNames.fortification;
-				case "build_in_fortification2": return improvementNames.fortification2;
-				case "build_in_aqueduct": return improvementNames.aqueduct;
-				case "build_in_stable": return improvementNames.stable;
-				case "build_in_market": return improvementNames.market;
-				case "improve_in_market": return improvementNames.market;
-				case "build_in_radiotower": return improvementNames.radiotower;
-				case "build_in_researchcenter": return improvementNames.researchcenter;
-				case "improve_in_campfire": return improvementNames.campfire;
-				case "improve_in_library": return improvementNames.library;
-				case "improve_in_square": return improvementNames.square;
-				case "improve_in_generator": return improvementNames.generator;
-				case "improve_in_apothecary": return improvementNames.apothecary;
-				case "improve_in_smithy": return improvementNames.smithy;
-				case "improve_in_cementmill": return improvementNames.cementmill;
-				case "improve_in_temple": return improvementNames.temple;
-				case "build_out_passage_up_stairs": return improvementNames.passageUpStairs;
-				case "build_out_passage_up_elevator": return improvementNames.passageUpElevator;
-				case "build_out_passage_up_hole": return improvementNames.passageUpHole;
-				case "build_out_passage_down_stairs": return improvementNames.passageDownStairs;
-				case "build_out_passage_down_elevator": return improvementNames.passageDownElevator;
-				case "build_out_passage_down_hole": return improvementNames.passageDownHole;
-				case "send_caravan": return improvementNames.tradepost;
-				case "build_out_camp": return "";
-
-				default:
-					if(!disableWarnings)
-						log.w("No improvement name found for action " + action);
-					return "";
-			}
-		},
-
-		getActionNameForImprovement: function (improvementName) {
-			// TODO make this nicer - list action names somewhere outside of html?
-			// TODO list action <-> improvement name mapping only once (now here and in getImprovementNameForAction)
-			
-			if (this.cache.ActionNameForImprovement[improvementName]) {
-				return this.cache.ActionNameForImprovement[improvementName];
-			}
-			
-			var helper = this;
-			var result = null;
+		getActionNameForImprovement: function (improvementName, disableWarnings) {
 			switch (improvementName) {
+				case improvementNames.collector_food: return "build_out_collector_food";
+				case improvementNames.collector_water: return "build_out_collector_water";
+				case improvementNames.beacon: return "build_out_beacon";
+				case improvementNames.home: return "build_in_home";
+				case improvementNames.house: return "build_in_house";
+				case improvementNames.storage: return "build_in_storage";
+				case improvementNames.hospital: return "build_in_hospital";
+				case improvementNames.tradepost: return "build_in_tradepost";
+				case improvementNames.inn: return "build_in_inn";
+				case improvementNames.spaceship1: return "build_out_spaceship1";
+				case improvementNames.spaceship2: return "build_out_spaceship2";
+				case improvementNames.spaceship3: return "build_out_spaceship3";
+				case improvementNames.campfire: return "build_in_campfire";
+				case improvementNames.darkfarm: return "build_in_darkfarm";
+				case improvementNames.garden: return "build_in_garden";
+				case improvementNames.square: return "build_in_square";
+				case improvementNames.house2: return "build_in_house2";
+				case improvementNames.generator: return "build_in_generator";
+				case improvementNames.lights: return "build_in_lights";
+				case improvementNames.ceiling: return "build_in_ceiling";
+				case improvementNames.apothecary: return "build_in_apothecary";
+				case improvementNames.smithy: return "build_in_smithy";
+				case improvementNames.cementmill: return "build_in_cementmill";
+				case improvementNames.library: return "build_in_library";
+				case improvementNames.shrine: return "build_in_shrine";
+				case improvementNames.temple: return "build_in_temple";
+				case improvementNames.barracks: return "build_in_barracks";
+				case improvementNames.fortification: return "build_in_fortification";
+				case improvementNames.fortification2: return "build_in_fortification2";
+				case improvementNames.aqueduct: return "build_in_aqueduct";
+				case improvementNames.stable: return "build_in_stable";
+				case improvementNames.market: return "build_in_market";
+				case improvementNames.radiotower: return "build_in_radiotower";
+				case improvementNames.researchcenter: return "build_in_researchcenter";
 				case improvementNames.passageUpStairs: return "build_out_passage_up_stairs";
 				case improvementNames.passageUpElevator: return "build_out_passage_up_elevator";
 				case improvementNames.passageUpHole: return "build_out_passage_up_hole";
 				case improvementNames.passageDownStairs: return "build_out_passage_down_stairs";
 				case improvementNames.passageDownElevator: return "build_out_passage_down_elevator";
 				case improvementNames.passageDownHole: return "build_out_passage_down_hole";
-				case improvementNames.spaceship1: return "build_out_spaceship1";
-				case improvementNames.spaceship2: return "build_out_spaceship2";
-				case improvementNames.spaceship3: return "build_out_spaceship3";
+				case "build_out_camp": return "";
+				default:
+					if (!disableWarnings) {
+						log.w("No improvement action name found for improvement " + improvementName);
+					}
+					return "";
 			}
-			$.each($("#in-improvements tr"), function () {
-				var actionName = $(this).find("button.action-build").attr("action");
-				var improvement = helper.getImprovementNameForAction(actionName);
-				if ((improvement == improvementName)) {
-					result = actionName;
-					return false; // breaks each
-				}
-			});
-			$.each($("#out-improvements tr"), function () {
-				var actionName = $(this).find("button.action-build").attr("action");
-				var improvement = helper.getImprovementNameForAction(actionName);
-				if ((improvement == improvementName)) {
-					result = actionName;
-					return false;
-				}
-			});
-
-			if (result == null)
-				log.w("No action name found for improvement: " + improvementName);
-			this.cache.ActionNameForImprovement[improvementName] = result;
-			return result;
 		},
 
+		getImprovementNameForAction: function(action, disableWarnings) {
+			var baseId = this.getBaseActionID(action);
+        	switch (baseId) {
+				case "build_out_collector_food": return improvementNames.collector_food;
+                case "build_out_collector_water": return improvementNames.collector_water;
+                case "build_out_beacon": return improvementNames.beacon;
+                case "build_in_home": return improvementNames.home;
+                case "build_in_house": return improvementNames.house;
+                case "build_in_storage": return improvementNames.storage;
+                case "build_in_hospital": return improvementNames.hospital;
+                case "build_in_tradepost": return improvementNames.tradepost;
+                case "build_in_inn": return improvementNames.inn;
+                case "build_out_spaceship1": return improvementNames.spaceship1;
+                case "build_out_spaceship2": return improvementNames.spaceship2;
+                case "build_out_spaceship3": return improvementNames.spaceship3;
+                case "build_in_campfire": return improvementNames.campfire;
+                case "build_in_darkfarm": return improvementNames.darkfarm;
+                case "build_in_garden": return improvementNames.garden;
+                case "build_in_square": return improvementNames.square;
+                case "build_in_house2": return improvementNames.house2;
+                case "build_in_generator": return improvementNames.generator;
+                case "build_in_lights": return improvementNames.lights;
+                case "build_in_ceiling": return improvementNames.ceiling;
+                case "build_in_apothecary": return improvementNames.apothecary;
+                case "build_in_smithy": return improvementNames.smithy;
+                case "build_in_cementmill": return improvementNames.cementmill;
+                case "build_in_library": return improvementNames.library;
+                case "build_in_shrine": return improvementNames.shrine;
+                case "build_in_temple": return improvementNames.temple;
+                case "build_in_barracks": return improvementNames.barracks;
+                case "build_in_fortification": return improvementNames.fortification;
+                case "build_in_fortification2": return improvementNames.fortification2;
+                case "build_in_aqueduct": return improvementNames.aqueduct;
+                case "build_in_stable": return improvementNames.stable;
+                case "build_in_market": return improvementNames.market;
+                case "improve_in_market": return improvementNames.market;
+                case "build_in_radiotower": return improvementNames.radiotower;
+                case "build_in_researchcenter": return improvementNames.researchcenter;
+                case "improve_in_campfire": return improvementNames.campfire;
+                case "improve_in_library": return improvementNames.library;
+                case "improve_in_square": return improvementNames.square;
+                case "improve_in_generator": return improvementNames.generator;
+                case "improve_in_apothecary": return improvementNames.apothecary;
+                case "improve_in_smithy": return improvementNames.smithy;
+                case "improve_in_cementmill": return improvementNames.cementmill;
+                case "improve_in_temple": return improvementNames.temple;
+                case "build_out_passage_up_stairs": return improvementNames.passageUpStairs;
+                case "build_out_passage_up_elevator": return improvementNames.passageUpElevator;
+                case "build_out_passage_up_hole": return improvementNames.passageUpHole;
+                case "build_out_passage_down_stairs": return improvementNames.passageDownStairs;
+                case "build_out_passage_down_elevator": return improvementNames.passageDownElevator;
+                case "build_out_passage_down_hole": return improvementNames.passageDownHole;
+                case "send_caravan": return improvementNames.tradepost;
+                case "build_out_camp": return "";
+			}
+			for (var key in improvementNames) {
+				var improvementName = improvementNames[key];
+				var improvementActionName = this.getActionNameForImprovement(improvementName, disableWarnings);
+				if (improvementActionName == baseId) {
+					return improvementName;
+				}
+			}
+			if (!disableWarnings) {
+				log.w("No improvement name found for action " + action);
+			}
+			return "";
+		},
+		
 		getItemForCraftAction: function (actionName) {
 			var baseActionName = this.getBaseActionID(actionName);
 			switch (baseActionName) {

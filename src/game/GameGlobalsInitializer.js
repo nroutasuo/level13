@@ -57,21 +57,17 @@ define([
 				GameGlobals.playerActionFunctions = new PlayerActionFunctions(engine);
 			}
 			
+			GameGlobals.upgradeEffectsHelper = new UpgradeEffectsHelper();
+			GameGlobals.itemsHelper = new ItemsHelper();
+			GameGlobals.campHelper = new CampHelper(engine);
 			if (engine) {
 				GameGlobals.resourcesHelper = new ResourcesHelper(engine);
 				GameGlobals.levelHelper = new LevelHelper(engine);
 				GameGlobals.movementHelper = new MovementHelper(engine);
 				GameGlobals.sectorHelper = new SectorHelper(engine);
 				GameGlobals.fightHelper = new FightHelper(engine);
-				GameGlobals.campHelper = new CampHelper(engine);
 				GameGlobals.endingHelper = new EndingHelper(engine);
-				GameGlobals.campVisHelper = new CampVisHelper();
 				GameGlobals.playerActionResultsHelper = new PlayerActionResultsHelper(engine);
-			}
-			
-			GameGlobals.upgradeEffectsHelper = new UpgradeEffectsHelper();
-			GameGlobals.itemsHelper = new ItemsHelper();
-			if (engine) {
 				GameGlobals.autoPlayHelper = new AutoPlayHelper();
 				GameGlobals.saveHelper = new SaveHelper();
 				GameGlobals.changeLogHelper = new ChangeLogHelper();
@@ -82,8 +78,8 @@ define([
 				GameGlobals.uiMapHelper = new UIMapHelper(engine);
 				GameGlobals.uiTechTreeHelper = new UITechTreeHelper(engine);
 				GameGlobals.buttonHelper = new ButtonHelper();
-
 				GameGlobals.uiFunctions = new UIFunctions();
+				GameGlobals.campVisHelper = new CampVisHelper();
 			}
 		}
 		

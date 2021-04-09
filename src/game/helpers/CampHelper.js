@@ -14,14 +14,17 @@ define([
 	'game/components/type/LevelComponent',
 	'game/nodes/sector/CampNode',
 	'game/nodes/tribe/TribeUpgradesNode',
+	'worldcreator/WorldCreatorConstants',
 ], function (Ash, GameGlobals, GameConstants, CampConstants, ImprovementConstants, OccurrenceConstants, UpgradeConstants, WorldConstants,
-	CampComponent, PositionComponent, SectorImprovementsComponent, LevelComponent, CampNode, TribeUpgradesNode) {
+	CampComponent, PositionComponent, SectorImprovementsComponent, LevelComponent, CampNode, TribeUpgradesNode, WorldCreatorConstants) {
 	
 	var CampHelper = Ash.Class.extend({
 		
 		constructor: function (engine) {
-			this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
-			this.campNodes = engine.getNodeList(CampNode);
+			if (engine) {
+				this.tribeUpgradesNodes = engine.getNodeList(TribeUpgradesNode);
+				this.campNodes = engine.getNodeList(CampNode);
+			}
 		},
 		
 		getTotalNumImprovementsBuilt: function (improvementName) {
@@ -151,24 +154,18 @@ define([
 		getCampfireRumourGenerationPerSecond: function (improvementsComponent, campfireUpgradeLevel, accSpeedPopulation) {
 			var campfireCount = improvementsComponent.getCount(improvementNames.campfire);
 			var campfireLevel = improvementsComponent.getLevel(improvementNames.campfire);
-			var campfireFactor = CampConstants.RUMOUR_BONUS_PER_CAMPFIRE_BASE;
-			campfireFactor += campfireLevel > 1 ? (campfireLevel - 1) * CampConstants.RUMOURS_BONUS_PER_CAMPFIRE_PER_LEVEL : 0;
-			campfireFactor += campfireUpgradeLevel > 1 ? (campfireUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_CAMPFIRE_PER_UPGRADE : 0;
-			return campfireCount > 0 ? Math.pow(campfireFactor, campfireCount) * accSpeedPopulation - accSpeedPopulation : 0;
+			return CampConstants.getCampfireRumourGenerationPerSecond(campfireCount, campfireLevel, campfireUpgradeLevel, accSpeedPopulation);
 		},
 		
 		getMarketRumourGenerationPerSecond: function (improvementsComponent, marketUpgradeLevel, accSpeedPopulation) {
 			var marketCount = improvementsComponent.getCount(improvementNames.market);
-			var marketFactor = CampConstants.RUMOUR_BONUS_PER_MARKET_BASE;
-			marketFactor += marketUpgradeLevel > 1 ? (marketUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_MARKET_PER_UPGRADE : 0;
-			return marketCount > 0 ? Math.pow(marketFactor, marketCount) * accSpeedPopulation - accSpeedPopulation : 0;
+			var marketLevel = 1;
+			return CampConstants.getMarketRumourGenerationPerSecond(marketCount, marketUpgradeLevel, accSpeedPopulation);
 		},
 		
 		getInnRumourGenerationPerSecond: function (improvementsComponent, innUpgradeLevel, accSpeedPopulation) {
 			var innCount = improvementsComponent.getCount(improvementNames.inn);
-			var innFactor = CampConstants.RUMOUR_BONUS_PER_INN_BASE;
-			innFactor += innUpgradeLevel > 1 ? (innUpgradeLevel - 1) * CampConstants.RUMOURS_BONUS_PER_INN_PER_UPGRADE : 0;
-			return innCount > 0 ? Math.pow(innFactor, innCount) * accSpeedPopulation - accSpeedPopulation : 0;
+			return CampConstants.getInnRumourGenerationPerSecond(innCount, innUpgradeLevel, accSpeedPopulation);
 		},
 
 		getCampMaxPopulation: function (sector) {
@@ -324,14 +321,12 @@ define([
 		},
 		
 		getPopulationFactor: function (campOrdinal) {
-			let level = GameGlobals.gameState.getLevelForCamp(campOrdinal);
-			let levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
-			return levelComponent.populationFactor;
+			return WorldCreatorConstants.getPopulationFactor(campOrdinal);
 		},
 		
 		getMaxTotalStorage: function (maxCampOrdinal) {
 			let result = 0;
-			let storageUpgradeLevel = GameGlobals.upgradeEffectsHelper.getExpectedBuildingUpgradeLevel(improvementNames.storage, campOrdinal);
+			let storageUpgradeLevel = GameGlobals.upgradeEffectsHelper.getExpectedBuildingUpgradeLevel(improvementNames.storage, maxCampOrdinal);
 			
 			let storageCounts = {};
 			let builtSomething = true;
@@ -365,41 +360,45 @@ define([
 		},
 		
 		getMaxTotalPopulation: function (maxCampOrdinal) {
-			
-			// housing cap per camp
-			let totalStorage = this.getMaxTotalStorage(maxCampOrdinal);
-			let housingPerCamp = {};
-			for (let campOrdinal = 1; campOrdinal <= maxCampOrdinal; campOrdinal++) {
-				let isOutpost = this.isOutpost(campOrdinal);
-				let numHouses = this.getMaxImprovementsPerCamp(improvementNames.house, totalStorage, isOutpost);
-				let numHouses2 = this.getMaxImprovementsPerCamp(improvementNames.house2, totalStorage, isOutpost);
-				housingPerCamp[campOrdinal] = CampConstants.getHousingCap2(numHouses, numHouses2);
-			}
-			
-			// reputation camp per camp
-			let reputationCapPerCamp = {};
-			let reputationPerCamp = {};
-			for (let campOrdinal = 1; campOrdinal <= maxCampOrdinal; campOrdinal++) {
-				let improvementsComponent = this.getDefaultImprovements(maxCampOrdinal, campOrdinal, totalStorage);
-				let populationFactor = this.getPopulationFactor(campOrdinal);
-				let danger = 0;
-				let reputation = GameGlobals.campHelper.getTargetReputation(improvementsComponent, null, 0, populationFactor, danger).value;
-				let reputationCap = CampConstants.getMaxPopulation(reputation);
-				reputationPerCamp[campOrdinal] = reputation;
-				reputationCapPerCamp[campOrdinal] = reputationCap;
-			}
-			
-			// population per camp
 			let result = 0;
 			for (let campOrdinal = 1; campOrdinal <= maxCampOrdinal; campOrdinal++) {
-				let pop = Math.min(housingPerCamp[campOrdinal], reputationCapPerCamp[campOrdinal]);
-				log.i("camp " + campOrdinal + " at " + maxCampOrdinal + ": "
-					+ "housing: "+ housingPerCamp[campOrdinal]
-					+ ", reputation: " + Math.round(reputationPerCamp[campOrdinal]*10)/10 + "(" + reputationCapPerCamp[campOrdinal] + ")"
-					+ " -> population: " + pop);
+				let pop = this.getMaxPopulation(campOrdinal, maxCampOrdinal);
 				result += pop;
 			}
 			return result;
+		},
+		
+		// max population on camp # when player has ## camps
+		getMaxPopulation: function (campOrdinal, maxCampOrdinal) {
+			let housingCap = this.getMaxHousing(campOrdinal, maxCampOrdinal);
+			let reputation = this.getMaxReputation(campOrdinal, maxCampOrdinal);
+			let reputationCap = CampConstants.getMaxPopulation(reputation);
+			
+			return Math.min(housingCap, reputationCap);
+		},
+		
+		getMaxHousing: function (campOrdinal, maxCampOrdinal) {
+			let totalStorage = this.getMaxTotalStorage(maxCampOrdinal);
+			let isOutpost = this.isOutpost(campOrdinal);
+			let numHouses = this.getMaxImprovementsPerCamp(improvementNames.house, totalStorage, isOutpost);
+			let numHouses2 = this.getMaxImprovementsPerCamp(improvementNames.house2, totalStorage, isOutpost);
+			return CampConstants.getHousingCap2(numHouses, numHouses2);
+		},
+		
+		getTotalMaxHousing: function (campOrdinal) {
+			let result = 0;
+			for (let i = 1; i <= campOrdinal; i++) {
+				result += this.getMaxHousing(i, campOrdinal);
+			}
+			return result;
+		},
+		
+		getMaxReputation: function (campOrdinal, maxCampOrdinal, ignorePopulationFactor) {
+			let totalStorage = this.getMaxTotalStorage(maxCampOrdinal);
+			let improvementsComponent = this.getDefaultImprovements(maxCampOrdinal, campOrdinal, totalStorage, ignorePopulationFactor);
+			let populationFactor = ignorePopulationFactor ? 1 : this.getPopulationFactor(campOrdinal);
+			let danger = 0;
+			return GameGlobals.campHelper.getTargetReputation(improvementsComponent, null, 0, populationFactor, danger).value;
 		},
 		
 		getMaxImprovementsPerCamp: function (improvementName, totalStorage, isOutpost) {
@@ -417,8 +416,8 @@ define([
 		
 		// TODO move to a CampBalancingHelper (+ other functions that don't deal in CURRENT but HYPOTHETICAL state but don't go to constants either)
 		
-		getDefaultImprovements: function (maxCampOrdinal, campOrdinal, storage) {
-			let isOutpost = this.isOutpost(campOrdinal);
+		getDefaultImprovements: function (maxCampOrdinal, campOrdinal, storage, ignorePopulationFactor) {
+			let isOutpost = ignorePopulationFactor ? false : this.isOutpost(campOrdinal);
 			
 			let canBuild = function (improvementName, actionName, ordinal) {
 				if (ordinal >= 100) return false;

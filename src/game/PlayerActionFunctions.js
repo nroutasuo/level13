@@ -1426,7 +1426,7 @@ define(['ash',
 		},
 
 		useTemple: function () {
-			this.playerStatsNodes.head.entity.get(DeityComponent).favour += 5;
+			this.playerStatsNodes.head.entity.get(DeityComponent).favour += CampConstants.FAVOUR_PER_DONATION;
 			this.completeAction("use_in_temple");
 			this.addLogMessage(LogConstants.MSG_ID_USE_TEMPLE, "Donated to the temple.");
 			GlobalSignals.inventoryChangedSignal.dispatch();
@@ -1435,7 +1435,7 @@ define(['ash',
 
 		useShrine: function () {
 			let shrineLevel = GameGlobals.upgradeEffectsHelper.getBuildingUpgradeLevel(improvementNames.shrine, this.tribeUpgradesNodes.head.upgrades);
-			let successChance = 0.4 + shrineLevel * 0.1;
+			let successChance = CampConstants.getMeditatinSuccessRate(shrineLevel);
 			log.i("success chance: " + successChance)
 			if (Math.random() < successChance) {
 				this.playerStatsNodes.head.entity.get(DeityComponent).favour += 1;
