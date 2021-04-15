@@ -5,7 +5,7 @@ function (Ash, EnemyVO) {
 		
 		enemyTypes: {
 			// nohazard, cold, toxic, radiation, sunlit, dark, dense, sparse, water (sectors that contain AND neighbours)
-			global: "global",     // anywhere
+			global: "global",     	// anywhere
 			nohazard: "nohazard",   // sectors with no hazards
 			cold: "cold",           // cold sectors
 			toxic: "toxic",         // toxic sectors
@@ -34,30 +34,6 @@ function (Ash, EnemyVO) {
 		
 		// saved for convenience & startup speed
 		enemyDifficulties: null,
-		
-		// For TextConstants: nouns and verbs to describe enemies
-		nPest: "urban pests",
-		nAnimal: "aggressive animals",
-		nGangster: "bandits",
-		nBot: "bots",
-		
-		gPack: "pack",
-		gGang: "gang",
-		gSwarm: "swarm",
-		gMob: "mob",
-		gFlock: "flock",
-		gHorde: "horde",
-		gCluster: "cluster",
-		
-		aPatrol: "patrolled by",
-		aGuard: "guarded by",
-		aInfest: "infested with",
-		aOverrun: "overrun with",
-		
-		dCleared: "cleared",
-		dDisabled: "disabled",
-		dKilled: "killed",
-		dDrive: "driven away",
 		
 		getEnemy: function (enemyID) {
 			for (var type in this.enemyDefinitions ) {
