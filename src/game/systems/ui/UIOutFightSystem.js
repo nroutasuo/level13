@@ -87,16 +87,16 @@ define([
 			var enemy = this.fightNodes.head.fight.enemy;
 			var playerStamina = this.playerStatsNodes.head.stamina;
 			var playerVal = Math.round(playerStamina.hp / playerStamina.maxHP * 100);
-			var playerChangeVal = Math.round(this.lastPlayerDamage);
+			var playerChangeVal = Math.round(this.lastDamageToPlayer);
 			var enemyVal = Math.round(enemy.hp / enemy.maxHP * 100);
-			var enemyChangeVal = Math.round(this.lastEnemyDamage);
+			var enemyChangeVal = Math.round(this.lastDamageToEnemy);
 			$("#fight-bar-enemy").data("progress-percent", enemyVal);
 			$("#fight-bar-enemy").data("change-percent", enemyChangeVal);
-			$("#fight-bar-enemy").data("change-time", this.lastEnemyDamageUpdated);
+			$("#fight-bar-enemy").data("change-time", this.lastDamageToEnemyUpdated);
 			$("#fight-bar-enemy").data("animation-length", this.progressBarAnimationLen);
 			$("#fight-bar-self").data("progress-percent", playerVal);
 			$("#fight-bar-self").data("change-percent", playerChangeVal);
-			$("#fight-bar-self").data("change-time", this.lastPlayerDamageUpdated);
+			$("#fight-bar-self").data("change-time", this.lastDamageToPlayerUpdated);
 			$("#fight-bar-self").data("animation-length", this.progressBarAnimationLen);
 				
 			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
@@ -128,23 +128,23 @@ define([
 			}
 		},
 		
-		updatePlayerDamage: function (damage) {
-			this.lastPlayerDamage = UIConstants.roundValue(damage, true);
-			this.lastPlayerDamageUpdated = new Date().getTime();
-			$("#fight-damage-indictor-self").text(-this.lastPlayerDamage);
+		updateDamageToPlayer: function (damage) {
+			this.lastDamageToPlayer = UIConstants.roundValue(damage, true);
+			this.lastDamageToPlayerUpdated = new Date().getTime();
+			$("#fight-damage-indictor-self").text(-this.lastDamageToPlayer);
 			this.animateDamageIndicator($("#fight-damage-indictor-self"));
 		},
 		
-		updateEnemyDamage: function (damage) {
-			this.lastEnemyDamage = UIConstants.roundValue(damage, true);
-			this.lastEnemyDamageUpdated = new Date().getTime();
-			$("#fight-damage-indictor-enemy").text(-this.lastEnemyDamage);
+		updateDamageToEnemy: function (damage) {
+			this.lastDamageToEnemy = UIConstants.roundValue(damage, true);
+			this.lastDamageToEnemyUpdated = new Date().getTime();
+			$("#fight-damage-indictor-enemy").text(-this.lastDamageToEnemy);
 			this.animateDamageIndicator($("#fight-damage-indictor-enemy"));
 		},
 		
 		refresh: function () {
-			this.lastPlayerDamage = 0;
-			this.lastEnemyDamage = 0;
+			this.lastDamageToPlayer = 0;
+			this.lastDamageToEnemy = 0;
 		},
 		
 		refreshState: function () {
@@ -227,9 +227,9 @@ define([
 			var items = itemsComponent.getEquipped();
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
-				var bonusAtk = item.getBonus(ItemConstants.itemBonusTypes.fight_att) > 0;
+				var bonusatt = item.getBonus(ItemConstants.itemBonusTypes.fight_att) > 0;
 				var bonusDef = item.getBonus(ItemConstants.itemBonusTypes.fight_def) > 0;
-				if (bonusAtk || bonusDef) {
+				if (bonusatt || bonusDef) {
 					this.numItems++;
 					$("ul#list-fight-items").append("<li>" + UIConstants.getItemDiv(null, item, null, UIConstants.getItemCallout(item, true), true) + "</li>");
 				}
@@ -285,7 +285,7 @@ define([
 			var enemiesComponent = sector.get(EnemiesComponent);
 			var currentEnemy = encounterComponent.enemy;
 			if (currentEnemy == null) return;
-			var statsText = " att: " + currentEnemy.att + " | def: " + currentEnemy.def + " " + " | hp: " + currentEnemy.maxHP + " ";
+			var statsText = " att: " + currentEnemy.getAtt() + " | def: " + currentEnemy.getDef() + " " + " | hp: " + currentEnemy.getMaxHP() + " ";
 			
 			if (this.state == FightPopupStateEnum.FIGHT_PENDING) {
 				var playerStamina = this.playerStatsNodes.head.stamina;
@@ -424,13 +424,13 @@ define([
 			}
 		},
 		
-		onFightUpdate: function (playerDamage, enemyDamage) {
+		onFightUpdate: function (damageToPlayer, damageToEnemy) {
 			if (this.state !== FightPopupStateEnum.FIGHT_ACTIVE) return;
-			if (playerDamage) {
-				this.updatePlayerDamage(playerDamage);
+			if (damageToPlayer) {
+				this.updateDamageToPlayer(damageToPlayer);
 			}
-			if (enemyDamage) {
-				this.updateEnemyDamage(enemyDamage);
+			if (damageToEnemy) {
+				this.updateDamageToEnemy(damageToEnemy);
 			}
 			this.updateFightActive();
 		},

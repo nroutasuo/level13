@@ -80,12 +80,9 @@ define([
 			var playerStamina = this.playerStatsNodes.head.stamina;
 			playerStamina.resetHP();
 			
-			var enemyDamagePerSec = FightConstants.getEnemyDamagePerSec(enemy, playerStamina, itemsComponent);
-			var playerDamagePerSec = FightConstants.getPlayerDamagePerSec(enemy, playerStamina, itemsComponent);
-			var playerRandomDamagePerSec = FightConstants.getRandomDamagePerSec(enemy, playerStamina, itemsComponent);
-			var duration = Math.min(enemy.hp / enemyDamagePerSec, playerStamina.hp / (playerDamagePerSec + playerRandomDamagePerSec));
+			var duration = FightConstants.getFightExpectedDuration(enemy, playerStamina, itemsComponent);
 			var winChance = FightConstants.getFightWinProbability(enemy, playerStamina, itemsComponent);
-			this.log("init fight | expected duration: " + Math.round(duration*100)/100 + ", win chance: " + Math.round(winChance*100)/100);
+			this.log("init fight | enemy IV: " + enemy.getIVAverage() + " | expected duration: " + Math.round(duration*100)/100 + ", win chance: " + Math.round(winChance*100)/100);
 		},
 		
 		applyFightStep: function (time) {
@@ -102,17 +99,16 @@ define([
 			itemEffects.enemyStunnedSeconds = Math.max(itemEffects.enemyStunnedSeconds, 0);
 			
 			// player turn
-			var enemyDamage = 0;
+			var damageByPlayer = 0;
 			var enemyChange = 0;
 			this.fightNodes.head.fight.nextTurnPlayer -= fightTime;
 			if (this.fightNodes.head.fight.nextTurnPlayer <= 0) {
 				var isMiss = Math.random() < FightConstants.getMissChance(FightConstants.PARTICIPANT_TYPE_FRIENDLY);
 				if (!isMiss) {
-					enemyDamage = FightConstants.getEnemyDamagePerAttack(enemy, playerStamina, itemsComponent);
+					damageByPlayer = FightConstants.getDamageByPlayerPerHit(enemy, playerStamina, itemsComponent);
 					var attackTime = FightConstants.getPlayerAttackTime(itemsComponent);
 					this.fightNodes.head.fight.nextTurnPlayer = attackTime;
-					this.fightNodes.head.fight.nextTurnEnemy += Math.min(FightConstants.HIT_STUN_TIME, attackTime * 0.75);
-					enemyChange = this.getFinalDamage(enemyDamage, FightConstants.PARTICIPANT_TYPE_FRIENDLY);
+					enemyChange = this.getFinalDamage(damageByPlayer, FightConstants.PARTICIPANT_TYPE_FRIENDLY);
 					this.log("player hit: " + enemyChange);
 				} else {
 					this.log("player missed");
@@ -120,21 +116,18 @@ define([
 			}
 			
 			// enemy turn
-			var playerDamage = 0;
-			var playerRandomDamage = 0;
+			var damageByEnemy = 0;
 			var playerChange = 0;
 			if (itemEffects.enemyStunnedSeconds <= 0) {
 				this.fightNodes.head.fight.nextTurnEnemy -= fightTime;
 				if (this.fightNodes.head.fight.nextTurnEnemy <= 0) {
 					var isMiss = Math.random() < FightConstants.getMissChance(FightConstants.PARTICIPANT_TYPE_ENEMY);
 					if (!isMiss) {
-						playerDamage = FightConstants.getPlayerDamagePerAttack(enemy, playerStamina, itemsComponent);
-						playerRandomDamage = FightConstants.getRandomDamagePerAttack(enemy, playerStamina, itemsComponent);
+						damageByEnemy = FightConstants.getDamageByPlayerPerHit(enemy, playerStamina, itemsComponent);
 						var attackTime = FightConstants.getEnemyAttackTime(enemy);
 						this.fightNodes.head.fight.nextTurnEnemy = attackTime;
-						this.fightNodes.head.fight.nextTurnPlayer += Math.min(FightConstants.HIT_STUN_TIME, attackTime * 0.75);
-						playerChange = this.getFinalDamage(playerDamage + playerRandomDamage, FightConstants.PARTICIPANT_TYPE_ENEMY);
-						this.log("enemy hit: " + playerChange + " (" + Math.round(playerRandomDamage * 100)/100 + ")");
+						playerChange = this.getFinalDamage(damageByEnemy, FightConstants.PARTICIPANT_TYPE_ENEMY);
+						this.log("enemy hit: " + playerChange);
 					} else {
 						this.log("enemy missed");
 					}
@@ -144,20 +137,20 @@ define([
 			}
 			
 			// item effects: extra damage
-			var extraEnemyDamage = 0;
+			var extraDamageToEnemy = 0;
 			if (itemEffects.damage > 0) {
-				extraEnemyDamage += itemEffects.damage;
+				extraDamageToEnemy += itemEffects.damage;
 				itemEffects.damage = 0;
-				this.log("item damage: " + extraEnemyDamage);
+				this.log("item damage: " + extraDamageToEnemy);
 			}
 
 			// apply effects
-			enemy.hp -= (enemyChange + extraEnemyDamage);
+			enemy.hp -= (enemyChange + extraDamageToEnemy);
 			enemy.hp = Math.max(enemy.hp, 0);
 			playerStamina.hp -= playerChange;
 			playerStamina.hp = Math.max(playerStamina.hp, 0);
 			
-			if (playerChange !== 0 || enemyChange !== 0 || extraEnemyDamage !== 0) {
+			if (playerChange !== 0 || enemyChange !== 0 || extraDamageToEnemy !== 0) {
 				GlobalSignals.fightUpdateSignal.dispatch(playerChange, enemyChange);
 			}
 		},
@@ -166,12 +159,8 @@ define([
 			if (value <= 0) return 0;
 			var result = value;
 			if (result < 1) result = 1;
-			if (Math.random() < FightConstants.getGoodHitChance(participantType))
-				result = result * 1.15;
-			else if (Math.random() < FightConstants.getPoorHitChance(participantType))
-				result = result * 0.85;
-			else if (Math.random() < FightConstants.getCriticalHitChance(participantType))
-				result = result * 1.5;
+			if (Math.random() < FightConstants.getCriticalHitChance(participantType))
+				result = result * 2;
 			return Math.round(result * 4)/4;
 		},
 		

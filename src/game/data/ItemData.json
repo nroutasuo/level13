@@ -1528,7 +1528,7 @@
     },
     "weapon1": {
         "bonuses": {
-            "atk": 3,
+            "att": 3,
             "spd": 0.9
         },
         "description": "Improvised sharp poking implement.",
@@ -1546,7 +1546,7 @@
     },
     "weapon12": {
         "bonuses": {
-            "atk": 4,
+            "att": 4,
             "spd": 1
         },
         "description": "A bit sturdier than the shiv.",
@@ -1564,7 +1564,7 @@
     },
     "weapon122": {
         "bonuses": {
-            "atk": 5,
+            "att": 5,
             "spd": 1
         },
         "description": "A good quality knife.",
@@ -1582,7 +1582,7 @@
     },
     "weapon2": {
         "bonuses": {
-            "atk": 6,
+            "att": 6,
             "spd": 0.9
         },
         "description": "Old-fashioned but reliable weapon.",
@@ -1600,7 +1600,7 @@
     },
     "weapon25": {
         "bonuses": {
-            "atk": 12,
+            "att": 12,
             "spd": 0.6
         },
         "description": "Easy to use and reliable.",
@@ -1618,7 +1618,7 @@
     },
     "weapon3": {
         "bonuses": {
-            "atk": 12,
+            "att": 12,
             "spd": 0.9
         },
         "description": "A deadly ranged weapon.",
@@ -1636,7 +1636,7 @@
     },
     "weapon35": {
         "bonuses": {
-            "atk": 14,
+            "att": 14,
             "spd": 0.9
         },
         "description": "An extra deadly ranged weapon.",
@@ -1654,7 +1654,7 @@
     },
     "weapon4": {
         "bonuses": {
-            "atk": 24,
+            "att": 24,
             "spd": 1.1
         },
         "description": "A crude single-shot pistol, like a hand-held miniature cannon.",
@@ -1672,7 +1672,7 @@
     },
     "weapon5": {
         "bonuses": {
-            "atk": 30,
+            "att": 30,
             "spd": 1.1
         },
         "description": "A more sophisticated handgun that allows several shots before reloading.",
@@ -1690,7 +1690,7 @@
     },
     "weapon52": {
         "bonuses": {
-            "atk": 38,
+            "att": 38,
             "spd": 0.75
         },
         "description": "A formidable axe specifically designed for combat",
@@ -1708,7 +1708,7 @@
     },
     "weapon58": {
         "bonuses": {
-            "atk": 60,
+            "att": 60,
             "spd": 1
         },
         "description": "Devastating short-range firearm.",
@@ -1726,7 +1726,7 @@
     },
     "weapon6": {
         "bonuses": {
-            "atk": 116,
+            "att": 116,
             "spd": 1.5
         },
         "description": "It may be made from scrap metal but it is still a serious weapon.",
@@ -1744,7 +1744,7 @@
     },
     "weapon7": {
         "bonuses": {
-            "atk": 180,
+            "att": 180,
             "spd": 1
         },
         "description": "Powerful but heavy and somewhat unreliable construction of pipes, reclaimed weapon parts and improvised ammunition.",
@@ -1762,7 +1762,7 @@
     },
     "weapon8": {
         "bonuses": {
-            "atk": 200,
+            "att": 200,
             "spd": 1.25
         },
         "description": "Deadly weapon similar to those that were mass-produced just before the Fall.",

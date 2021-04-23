@@ -43,7 +43,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 		
 		itemBonusTypes: {
 			light: "light",
-			fight_att: "atk",
+			fight_att: "att",
 			fight_def: "def",
 			fight_speed: "spd",
 			movement: "movement",
@@ -244,7 +244,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			var name = "Follower";
 			var type = this.itemTypes.follower;
 			var strength = parseInt(id.split("-")[1]);
-			var bonuses = {atk: strength};
+			var bonuses = {att: strength};
 
 			// TODO persist image depending on id
 			var icon = "img/items/follower-" + Math.floor(Math.random() * 4 + 1) + ".png";

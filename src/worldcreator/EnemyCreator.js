@@ -114,8 +114,8 @@ define([
 
 		// get the difficulty level (1-3*15, corresponding to camp ordinal and step) of a given enemy
 		getEnemyDifficultyLevel: function (enemy) {
-			if (EnemyConstants.enemyDifficulties[enemy.id]) return EnemyConstants.enemyDifficulties[enemy.id];
-			var enemyStats = FightConstants.getStrength(enemy.att, enemy.def, enemy.maxHP);
+			if (EnemyConstants.enemyDifficulties && EnemyConstants.enemyDifficulties[enemy.id]) return EnemyConstants.enemyDifficulties[enemy.id];
+			var enemyStats = FightConstants.getStrength(enemy.att, enemy.def, enemy.speed, enemy.maxHP);
 			var requiredStats;
 			var max = this.getDifficulty(WorldConstants.CAMPS_TOTAL, WorldConstants.CAMP_STEP_END);
 			for (var i = 1; i <= max; i++) {
