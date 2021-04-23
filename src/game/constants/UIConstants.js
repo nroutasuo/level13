@@ -246,10 +246,10 @@ define(['ash',
 				case ItemConstants.itemBonusTypes.light: return "max vision";
 				case ItemConstants.itemBonusTypes.fight_att: return "attack";
 				case ItemConstants.itemBonusTypes.fight_def: return "defence";
+				case ItemConstants.itemBonusTypes.fight_shield: return "shield";
 				case ItemConstants.itemBonusTypes.fight_speed: return "attack speed";
 				case ItemConstants.itemBonusTypes.movement: return "movement cost";
 				case ItemConstants.itemBonusTypes.bag: return "bag size";
-				case ItemConstants.itemBonusTypes.fight_def: return "defence";
 				case ItemConstants.itemBonusTypes.res_cold: return "warmth";
 				case ItemConstants.itemBonusTypes.res_radiation: return short ? "radiation prot" : "radiation protection";
 				case ItemConstants.itemBonusTypes.res_poison: return short ? "poison prot" : "poison protection";

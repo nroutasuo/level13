@@ -426,6 +426,9 @@ body.dark table th.sortable {
   background: #444;
   cursor: pointer;
 }
+body.dark table.highlight-row tr:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
 body.dark td.minwidth {
   width: 5%;
 }
@@ -1045,6 +1048,17 @@ body.dark .progress-wrap {
   border: 0px;
   overflow: hidden;
   position: relative;
+}
+body.dark .progress-wrap-science {
+  background-color: #358 !important;
+}
+body.dark .progress-multibar-container {
+  display: flex;
+  margin: 2px 0;
+}
+body.dark .progress-multibar-container .progress-wrap {
+  display: inline-block !important;
+  margin: 0px;
 }
 body.dark .progress-bar {
   left: 0;
@@ -2366,6 +2380,9 @@ body.sunlit table th.sortable {
   background: #ddd;
   cursor: pointer;
 }
+body.sunlit table.highlight-row tr:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
 body.sunlit td.minwidth {
   width: 5%;
 }
@@ -2985,6 +3002,17 @@ body.sunlit .progress-wrap {
   border: 0px;
   overflow: hidden;
   position: relative;
+}
+body.sunlit .progress-wrap-science {
+  background-color: #6af !important;
+}
+body.sunlit .progress-multibar-container {
+  display: flex;
+  margin: 2px 0;
+}
+body.sunlit .progress-multibar-container .progress-wrap {
+  display: inline-block !important;
+  margin: 0px;
 }
 body.sunlit .progress-bar {
   left: 0;

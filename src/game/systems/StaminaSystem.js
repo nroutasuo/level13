@@ -2,6 +2,7 @@ define([
 	'ash',
 	'game/GameGlobals',
 	'game/GlobalSignals',
+	'game/constants/FightConstants',
 	'game/constants/GameConstants',
 	'game/constants/LogConstants',
 	'game/constants/PlayerStatConstants',
@@ -9,7 +10,7 @@ define([
 	'game/nodes/player/StaminaNode',
 	'game/components/common/LogMessagesComponent',
 	'game/components/player/PlayerActionComponent'
-], function (Ash, GameGlobals, GlobalSignals, GameConstants, LogConstants, PlayerStatConstants, PerkConstants, StaminaNode, LogMessagesComponent, PlayerActionComponent) {
+], function (Ash, GameGlobals, GlobalSignals, FightConstants, GameConstants, LogConstants, PlayerStatConstants, PerkConstants, StaminaNode, LogMessagesComponent, PlayerActionComponent) {
 	var StaminaSystem = Ash.System.extend({
 		
 		gameState: null,
@@ -46,6 +47,7 @@ define([
 		updateStamina: function (node, time) {
 			var staminaComponent = node.stamina;
 			var perksComponent = node.perks;
+			var itemsComponent = node.items;
 			var busyComponent = node.entity.get(PlayerActionComponent);
 			var isResting = busyComponent && busyComponent.getLastActionName() == "use_in_home";
 			var isHealing = busyComponent && busyComponent.getLastActionName() == "use_in_hospital";
@@ -114,6 +116,9 @@ define([
 				}
 			}
 			this.isWarning = isWarning;
+			
+			// shield
+			staminaComponent.maxShield = FightConstants.getPlayerShield(staminaComponent, itemsComponent);
 		},
 		
 		updateWarningLimit: function () {

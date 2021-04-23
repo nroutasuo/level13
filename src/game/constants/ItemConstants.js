@@ -46,6 +46,7 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			fight_att: "att",
 			fight_def: "def",
 			fight_speed: "spd",
+			fight_shield: "shield",
 			movement: "movement",
 			bag: "bag",
 			res_cold: "warmth",

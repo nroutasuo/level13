@@ -57,10 +57,16 @@ define([
 			var def = Math.max(campOrdinal, Math.round(stats * (1 - attRatio)));
 			var att = Math.max(campOrdinal, Math.round(stats * attRatio));
 			
+			// TODO formalize shield
+			var shield = 0;
+			if (name.indexOf("bot") >= 0) {
+				shield = Math.round(hp * 0.5);
+				hp = shield;
+			}
+			
 			droppedResources = droppedResources || [ ];
 			
-			// log.i("createEnemy " + name + " " + strength + " -> " + FightConstants.getStrength(att, def, hp) + " | " + hp + " " + att + " " + def);
-			return new EnemyVO(id, name, type, nouns, groupN, activeV, defeatedV, att, def, hp, speed, rarity, droppedResources);
+			return new EnemyVO(id, name, type, nouns, groupN, activeV, defeatedV, att, def, hp, shield, speed, rarity, droppedResources);
 		},
 
 		// get enemies by type (string) and difficulty (campOrdinal and step)

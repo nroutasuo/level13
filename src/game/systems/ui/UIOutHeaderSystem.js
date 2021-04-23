@@ -515,6 +515,7 @@ define([
 		},
 
 		updateItemStats: function (inCamp) {
+			if (!this.currentLocationNodes.head) return;
 			var itemsComponent = this.playerStatsNodes.head.items;
 			var playerStamina = this.playerStatsNodes.head.stamina;
 			var visibleStats = 0;
@@ -535,6 +536,12 @@ define([
 					case ItemConstants.itemBonusTypes.fight_def:
 						value = FightConstants.getPlayerDef(playerStamina, itemsComponent);
 						detail = FightConstants.getPlayerDefDesc(playerStamina, itemsComponent);
+						isVisible = GameGlobals.gameState.unlockedFeatures.fight;
+						break;
+
+					case ItemConstants.itemBonusTypes.fight_shield:
+						value = FightConstants.getPlayerShield(playerStamina, itemsComponent);
+						detail = FightConstants.getPlayerShieldDesc(playerStamina, itemsComponent);
 						isVisible = GameGlobals.gameState.unlockedFeatures.fight;
 						break;
 						

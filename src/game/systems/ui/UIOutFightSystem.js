@@ -87,17 +87,31 @@ define([
 			var enemy = this.fightNodes.head.fight.enemy;
 			var playerStamina = this.playerStatsNodes.head.stamina;
 			var playerVal = Math.round(playerStamina.hp / playerStamina.maxHP * 100);
+			var playerShieldVal = playerStamina.maxShield > 0 ? Math.round(playerStamina.shield / playerStamina.maxShield * 100) : 0;
 			var playerChangeVal = Math.round(this.lastDamageToPlayer);
 			var enemyVal = Math.round(enemy.hp / enemy.maxHP * 100);
+			var enemyShieldVal = enemy.maxShield > 0 ? Math.round(enemy.shield / enemy.maxShield * 100) : 0;
 			var enemyChangeVal = Math.round(this.lastDamageToEnemy);
+			
 			$("#fight-bar-enemy").data("progress-percent", enemyVal);
 			$("#fight-bar-enemy").data("change-percent", enemyChangeVal);
 			$("#fight-bar-enemy").data("change-time", this.lastDamageToEnemyUpdated);
 			$("#fight-bar-enemy").data("animation-length", this.progressBarAnimationLen);
+			
+			$("#fight-bar-enemy-shield").data("progress-percent", enemyShieldVal);
+			$("#fight-bar-enemy-shield").data("change-percent", enemyChangeVal);
+			$("#fight-bar-enemy-shield").data("change-time", this.lastDamageToEnemyUpdated);
+			$("#fight-bar-enemy-shield").data("animation-length", this.progressBarAnimationLen);
+			
 			$("#fight-bar-self").data("progress-percent", playerVal);
 			$("#fight-bar-self").data("change-percent", playerChangeVal);
 			$("#fight-bar-self").data("change-time", this.lastDamageToPlayerUpdated);
 			$("#fight-bar-self").data("animation-length", this.progressBarAnimationLen);
+				
+			$("#fight-bar-self-shield").data("progress-percent", playerShieldVal);
+			$("#fight-bar-self-shield").data("change-percent", playerChangeVal);
+			$("#fight-bar-self-shield").data("change-time", this.lastDamageToPlayerUpdated);
+			$("#fight-bar-self-shield").data("animation-length", this.progressBarAnimationLen);
 				
 			var playerAtt = FightConstants.getPlayerAtt(playerStamina, itemsComponent);
 			var playerDef = FightConstants.getPlayerDef(playerStamina, itemsComponent);
@@ -213,10 +227,21 @@ define([
 		
 		refreshFightActive: function () {
 			// progress bars
-			$("#fight-bar-enemy").data("last-change-value", 0);
-			$("#fight-bar-enemy").data("progress-percent", 100);
-			$("#fight-bar-self").data("last-change-value", 0);
-			$("#fight-bar-self").data("progress-percent", 100);
+			$.each($("#fight-popup-bars .progress-wrap"), function () {
+				$(this).data("last-change-value", 0);
+				$(this).data("progress-percent", 100);
+			});
+			
+			var sector = this.playerLocationNodes.head.entity;
+			var encounterComponent = sector.get(FightEncounterComponent);
+			var currentEnemy = encounterComponent.enemy;
+			$("#fight-bar-enemy").css("width", Math.ceil(currentEnemy.getMaxHP() / (currentEnemy.getMaxHP() + currentEnemy.maxShield) * 100) + "%");
+			$("#fight-bar-enemy-shield").css("width", Math.floor(currentEnemy.maxShield / (currentEnemy.getMaxHP() + currentEnemy.maxShield) * 100) + "%");
+			
+			var playerStamina = this.playerStatsNodes.head.stamina;
+			$("#fight-bar-self").css("width", Math.ceil(playerStamina.maxHP / (playerStamina.maxHP + playerStamina.maxShield) * 100) + "%");
+			$("#fight-bar-self-shield").css("width", Math.floor(playerStamina.maxShield / (playerStamina.maxHP + playerStamina.maxShield) * 100) + "%");
+			
 			$("#fight-damage-indictor-self").text("");
 			$("#fight-damage-indictor-enemy").text("");
 			
@@ -292,7 +317,7 @@ define([
 				var itemsComponent = this.playerStatsNodes.head.entity.get(ItemsComponent);
 				var chances = FightConstants.getFightWinProbability(currentEnemy, playerStamina, itemsComponent);
 				log.i("getFightWinProbability:" + chances);
-				var chancesText = this.getFightChancesText(chances);
+				var chancesText = TextConstants.getFightChancesText(chances);
 				var spanClass = chances < 0.4 ? "warning": "";
 				statsText += "<br/>";
 				statsText += "<span class='" + spanClass + "'>" + chancesText + "</span>";

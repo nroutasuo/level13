@@ -8,6 +8,7 @@ define(['ash'], function (Ash) {
 		def: 0,
 		speed: 0,
 		maxHP: 100,
+		maxShield: 100,
 		rarity: 0, // 0-100
 		
 		nouns: [],
@@ -24,8 +25,9 @@ define(['ash'], function (Ash) {
 		speedIV: 0,
 		
 		hp: 100,
+		shield: 0,
 	
-		constructor: function (id, name, type, nouns, groupN, activeV, defeatedV, att, def, hp, speed, rarity, droppedResources) {
+		constructor: function (id, name, type, nouns, groupN, activeV, defeatedV, att, def, hp, shield, speed, rarity, droppedResources) {
 			this.id = id;
 			this.name = name;
 			this.type = type;
@@ -34,6 +36,8 @@ define(['ash'], function (Ash) {
 			this.speed = speed || 1;
 			this.maxHP = hp;
 			this.hp = this.maxHP;
+			this.maxShield = shield;
+			this.shield = this.maxShield;
 			this.rarity = rarity ? Math.min(Math.max(Math.round(rarity), 0), 100) : 0;
 			
 			this.nouns = nouns;
@@ -53,6 +57,10 @@ define(['ash'], function (Ash) {
 		
 		resetHP: function () {
 			this.hp = this.maxHP;
+		},
+		
+		resetShield: function () {
+			this.shield = this.maxShield;
 		},
 		
 		getIVAverage: function () {
@@ -89,7 +97,7 @@ define(['ash'], function (Ash) {
 		},
 		
 		clone: function () {
-			return new EnemyVO(this.id, this.name, this.type, this.nouns, this.groupN, this.activeV, this.defeatedV, this.att, this.def, this.maxHP, this.speed, this.rarity);
+			return new EnemyVO(this.id, this.name, this.type, this.nouns, this.groupN, this.activeV, this.defeatedV, this.att, this.def, this.maxHP, this.maxShield, this.speed, this.rarity);
 		},
 		
 		cloneWithIV: function (iv) {

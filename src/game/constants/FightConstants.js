@@ -89,6 +89,14 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			return desc;
 		},
 		
+		getPlayerShield: function (playerStamina, itemsComponent) {
+			return itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_shield);
+		},
+		
+		getPlayerShieldDesc: function (playerStamina, itemsComponent) {
+			return "equipment: " + itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.fight_shield);
+		},
+		
 		getPlayerSpeed: function (itemsComponent) {
 			let weapons = itemsComponent.getEquipped(ItemConstants.itemTypes.weapon);
 			let weapon = weapons.length > 0 ? weapons[0] : null;

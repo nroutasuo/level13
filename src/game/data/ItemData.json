@@ -978,6 +978,7 @@
             "def": 100,
             "res_poison": 10,
             "res_rad": 5,
+            "shield": 20,
             "warmth": 10
         },
         "description": "Based on the old Surface Guard uniform with additional environmental proection.",
@@ -998,6 +999,7 @@
             "def": 290,
             "res_poison": 20,
             "res_rad": 30,
+            "shield": 100,
             "warmth": 10
         },
         "description": "Futuristic armour designed for those exploring the world outside the City's protective walls.",
