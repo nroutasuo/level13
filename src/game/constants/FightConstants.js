@@ -119,7 +119,7 @@ function (Ash, GameGlobals, ItemConstants, PerkConstants, LocaleConstants, Posit
 			return Math.max(0, maxFollowers);
 		},
 		
-		getTypicalFollowers: function (numCamps) {
+		getTypicalNumFollowers: function (numCamps) {
 			var firstFollowerCamp = UpgradeConstants.getMinimumCampOrdinalForUpgrade("unlock_building_inn");
 			if (numCamps <= firstFollowerCamp) return 0;
 			return this.getMaxFollowers(numCamps);

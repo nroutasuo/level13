@@ -184,9 +184,10 @@ define([
 			}
 
 			// followers
-			var numFollowers = FightConstants.getTypicalFollowers(campOrdinal);
-			for (var f = 0; f < numFollowers; f++)
-				typicalItems.addItem(ItemConstants.getFollower(13, campOrdinal));
+			var numFollowers = FightConstants.getTypicalNumFollowers(campOrdinal);
+			for (var f = 0; f < numFollowers; f++) {
+				typicalItems.addItem(ItemConstants.getFollower(13, campOrdinal, 0.5));
+			}
 			
 			typicalItems.autoEquipAll();
 

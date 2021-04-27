@@ -227,11 +227,12 @@ function (Ash, ItemData, PlayerActionConstants, UpgradeConstants, WorldConstants
 			return cacheAndReturn(result);
 		},
 		
-		getFollower: function (level, campCount) {
+		getFollower: function (level, campCount, rand) {
+			rand = rand || Math.random();
 			var minStrength = campCount;
 			var maxStrength = 1.5 + campCount * 1.5;
 			var strengthDiff = maxStrength - minStrength;
-			var strength = Math.round(minStrength + strengthDiff * Math.random());
+			var strength = Math.round(minStrength + strengthDiff * rand);
 			var type = "d";
 			if (level < 5)
 				type = "g";
